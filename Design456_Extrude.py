@@ -42,6 +42,17 @@ class Design456_Extrude:
 		f.Symmetric = False
 		f.TaperAngle = 0.0
 		f.TaperAngleRev = 0.0
+		#this part is not working .. don't know why
+#		newShape=Part.getShape(f,'',needSubElement=False,refine=False)
+#		newObj=App.ActiveDocument.addObject('Part::Feature','Extrude').Shape=newShape
+#		App.ActiveDocument.recompute()
+#		App.ActiveDocument.ActiveObject.Label=f.Label
+#		App.ActiveDocument.recompute()
+#		import time
+#		import sleep
+#		sleep(0.5)
+#		App.ActiveDocument.removeObject(f.Name)
+#		App.ActiveDocument.removeObject(m.Name)
 		App.ActiveDocument.recompute()
 		return
 
