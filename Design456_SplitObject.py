@@ -18,7 +18,7 @@ from FreeCAD import Base
 from time import time as _time, sleep as _sleep
 
 class Design456_SplitObject:
-	"""Devide object in to two parts"""
+	"""Divide object in to two parts"""
 	def Activated(self):
 		#Save object name that will be devided.
 		selection = Gui.Selection.getSelectionEx()
