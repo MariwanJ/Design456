@@ -27,7 +27,7 @@ class Design456_Extrude:
 		f.Base = App.activeDocument().getObject(m.Name)
 		f.DirMode = "Normal" 
 		f.DirLink = selection[0].Object
-		#TODO: This if might not work always ? 
+		#TODO: This "if" might not work always ? 
 	#	if(m.Placement.Rotation.Axis.x==1):
 	#		f.Base.MapMode='ObjectYZ'
 	#	elif (m.Placement.Rotation.Axis.y==1):
