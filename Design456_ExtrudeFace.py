@@ -23,17 +23,17 @@ class Design456_ExtrudeFace:
 				gpl = s[0].Object.getGlobalPlacement()
 				sh.Placement = gpl
 			name =s[0].SubElementNames[0]
-			fullname = objName+"_"+name            #Name of the face extracted
+			fullname = objName+"_"+name			   #Name of the face extracted
 			newobj = s[0].Document.addObject("Part::Feature",fullname)
 			newobj.Shape = sh.getElement(name)
-			selection =newobj                      #The face extraced
+			selection =newobj					   #The face extraced
 			activeSel=Gui.Selection.getSelection(App.ActiveDocument.Name)
 			Gui.Selection.removeSelection(activeSel[0])
-			Gui.Selection.addSelection(selection)           #Select the face extracted before
+			Gui.Selection.addSelection(selection)			#Select the face extracted before
 			App.ActiveDocument.recompute()
 			m = App.activeDocument().getObject(fullname)
-			f = App.activeDocument().addObject('Part::Extrusion','ExtrudeFace')   # Add extrusion
-			f.Base = newobj             # App.activeDocument().getObject(fullname)
+			f = App.activeDocument().addObject('Part::Extrusion','ExtrudeFace')	  # Add extrusion
+			f.Base = newobj				# App.activeDocument().getObject(fullname)
 			f.DirMode = "Normal" 
 			f.DirLink = None	
 #			if(m.Placement.Rotation.Axis.x==1):
@@ -51,7 +51,7 @@ class Design456_ExtrudeFace:
 			f.TaperAngle = 0.0
 			f.TaperAngleRev = 0.0
 			App.ActiveDocument.recompute()
-			App.ActiveDocument.addObject('Part::Feature',f.Name+'N').Shape=Part.getShape(f,'',needSubElement=False,refine=False)        
+			App.ActiveDocument.addObject('Part::Feature',f.Name+'N').Shape=Part.getShape(f,'',needSubElement=False,refine=False)		
 			App.ActiveDocument.removeObject(f.Name)
 			App.ActiveDocument.removeObject(m.Name)
 			App.ActiveDocument.recompute()
@@ -63,7 +63,7 @@ class Design456_ExtrudeFace:
 		return {
 				'Pixmap' : Design456Init.ICON_PATH + '/ExtrudeFace.svg',
 				'MenuText': 'ExtrudeFace',
-				'ToolTip':  'ExtrudeFace'
+				'ToolTip':	'ExtrudeFace'
 				}
 
 Gui.addCommand('Design456_ExtrudeFace', Design456_ExtrudeFace())
