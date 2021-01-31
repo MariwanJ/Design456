@@ -12,20 +12,23 @@ import Design456Init
 from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
-
-class Design456_Move:
+#Modify this command to be TWEAK 
+class Design456_Tweak:
 	def __init__(self):
 		return
-	#TODO : Not working .. fix it 
 	def Activated(self):
-		Gui.runCommand('Draft_Move',0)
-		return
-
+		try:
+			#TODO:Needs to be implemented .
+			#Gui.runCommand('Draft_Move',0)
+			return
+		except ImportError as err:
+			App.Console.PrintError("'ExtrudeFace' Failed. "
+								   "{err}\n".format(err=str(err)))
 	def GetResources(self):
 		return {
-				'Pixmap' : Design456Init.ICON_PATH + '/Move.svg',
-				'MenuText': 'Move',
-				'ToolTip':	'Move Object'
+				'Pixmap' : Design456Init.ICON_PATH + '/Tweak.svg',
+				'MenuText': 'Tweak',
+				'ToolTip':	'Tweak the Object'
 				}
 
-Gui.addCommand('Design456_Move', Design456_Move())
+Gui.addCommand('Design456_Tweak', Design456_Tweak())
