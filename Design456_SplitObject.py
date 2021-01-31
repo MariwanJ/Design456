@@ -40,7 +40,7 @@ class Design456_SplitObject:
 		#We need this delay to let user choose the split form. And 	
 		getExtrude_cs=None  #Dummy variable used to wait for the Extrude_cs be made
 		while (getExtrude_cs==None):
-			getExtrude_cs=App.ActiveDocument.getObject('Extrude_cs')
+			getExtrude_cs=App.ActiveDocument.getObject(nameOfselectedObject+'_cs')
 			_sleep(.1)
 			Gui.updateGui() 
 		### Begin command Part_Compound
@@ -61,6 +61,8 @@ class Design456_SplitObject:
 			App.ActiveDocument.removeObject(obj.Name)
 		App.ActiveDocument.removeObject(j.Name)
 		App.ActiveDocument.removeObject(totalName)
+		App.ActiveDocument.removeObject(getExtrude_cs)
+		
 		App.ActiveDocument.recompute()
 			
 	def GetResources(self):
