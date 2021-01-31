@@ -5,7 +5,7 @@
 **Important Note:** **WIP!!!** Please feel free to suggest, contribute, join, help, debug etc... I am new to both Python and FreeCAD Python. My background is in cplusplus, c, Assembly, and other languages. I hope you find this workbench useful. 
 
 ### Aim 
-FreeCAD primarily utilizes a parameteric modeling paradigm. This workbench will work to develop a 'direct modeling' approach. This approach is more common in popular CAD solutions. For example, clicking on a face and being able to extrude by moving the mouse, instead of specifying a the distance by entering a number in to a text field.  
+FreeCAD primarily utilizes a parametric modeling paradigm. This workbench will work to develop a 'direct modeling' approach. This approach is more common in popular CAD solutions. For example, clicking on a face and being able to extrude by moving the mouse, instead of specifying a the distance by entering a number in to a text field.  
 
 ### Usage
 
