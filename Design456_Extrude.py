@@ -13,7 +13,7 @@ from PySide import QtGui, QtCore
 import Draft
 import Part
 import FACE_D as Face
-
+from time import time as _time, sleep as _sleep
 
 class Design456_Extrude:
 	def __init__(self):
@@ -23,36 +23,40 @@ class Design456_Extrude:
 		App.ActiveDocument.recompute()
 		selection = Gui.Selection.getSelectionEx()
 		m = App.activeDocument().getObject(selection[0].Object.Name)
-		f = App.activeDocument().addObject('Part::Extrusion','Extrude')
+		f = App.activeDocument().addObject('Part::Extrusion','ExtrudeOriginal')
 		f.Base = App.activeDocument().getObject(m.Name)
 		f.DirMode = "Normal" 
-		f.DirLink = None
+		f.DirLink = selection[0].Object
 		#TODO: This if might not work always ? 
-		if(m.Placement.Rotation.Axis.x==1):
-			f.Base.MapMode='ObjectYZ'
-		elif (m.Placement.Rotation.Axis.y==1):
-			f.Base.MapMode='ObjectXZ'
-		elif (m.Placement.Rotation.Axis.z==1):
-			f.Base.MapMode='ObjectXY'
+	#	if(m.Placement.Rotation.Axis.x==1):
+	#		f.Base.MapMode='ObjectYZ'
+	#	elif (m.Placement.Rotation.Axis.y==1):
+	#		f.Base.MapMode='ObjectXZ'
+	#	elif (m.Placement.Rotation.Axis.z==1):
+	#		f.Base.MapMode='ObjectXY'
 		
 		f.LengthFwd = QtGui.QInputDialog.getDouble(None,"Get length","Input:")[0]
+		while(f.LengthFwd==0):
+			_sleep(.1)
+			Gui.updateGui() 
 		f.LengthRev = 0.0
 		f.Solid = True
 		f.Reversed = False
 		f.Symmetric = False
 		f.TaperAngle = 0.0
 		f.TaperAngleRev = 0.0
+		
 		#this part is not working .. don't know why
-#		newShape=Part.getShape(f,'',needSubElement=False,refine=False)
-#		newObj=App.ActiveDocument.addObject('Part::Feature','Extrude').Shape=newShape
-#		App.ActiveDocument.recompute()
-#		App.ActiveDocument.ActiveObject.Label=f.Label
-#		App.ActiveDocument.recompute()
-#		import time
-#		import sleep
-#		sleep(0.5)
-#		App.ActiveDocument.removeObject(f.Name)
-#		App.ActiveDocument.removeObject(m.Name)
+		#newShape=Part.g etShape(f,'',needSubElement=False,refine=False)
+		#newObj=App.ActiveDocument.addObject('Part::Feature','Extrude').Shape=newShape
+		#App.ActiveDocument.recompute()
+		#App.ActiveDocument.ActiveObject.Label=f.Label
+		
+		#App.ActiveDocument.recompute()
+		#f.Visibility=False 
+		m.Visibility=False
+		#App.ActiveDocument.removeObject(f.Name)
+		#App.ActiveDocument.removeObject(m.Name)
 		App.ActiveDocument.recompute()
 		return
 
