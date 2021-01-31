@@ -4,6 +4,10 @@
 #*	Design456 Workbench													   *
 #*	Auth : Mariwan Jalal and others										   *
 #***************************************************************************
+__title__ = "FreeCAD Design456 Workbench - Init file"
+__author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
+__url__ = "https://www.freecadweb.org"
+
 
 class Design456_Workbench (Workbench):
 	"Design456 Workbench object"
@@ -12,6 +16,7 @@ class Design456_Workbench (Workbench):
 		self.__class__.Icon = Design456Init.ICON_PATH + '/WorkbenchIcon.svg'
 		self.__class__.MenuText = "Design456"
 		self.__class__.ToolTip = "A workbench easy designing objects"
+		
 
 	def Initialize(self):
 		"This function is executed when FreeCAD starts"
@@ -27,24 +32,149 @@ class Design456_Workbench (Workbench):
 					   "Design456_Move"
 					]
 		self.appendToolbar("Design456", self.list)
-		self.appendMenu("Design456 Menu", self.list) #TODO : Might be wrong or it is wrong :(
+		self.appendMenu("Design456", self.list) 
+		
+		
+		#DRAFT 
+		def QT_TRANSLATE_NOOP(context, text):
+			return text
+
+		# Run self-tests
+		dependencies_OK = False
+		try:
+			from pivy import coin
+			if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
+				raise AssertionError("FreeCAD and Pivy use different versions "
+									 "of Coin. "
+									 "This will lead to unexpected behaviour.")
+		except AssertionError:
+			FreeCAD.Console.PrintWarning("Error: FreeCAD and Pivy "
+										 "use different versions of Coin. "
+										 "This will lead to unexpected "
+										 "behaviour.\n")
+		except ImportError:
+			FreeCAD.Console.PrintWarning("Error: Pivy not found, "
+										 "Draft Workbench will be disabled.\n")
+		except Exception:
+			FreeCAD.Console.PrintWarning("Error: Unknown error "
+										 "while trying to load Pivy.\n")
+		else:
+			dependencies_OK = True
+
+		if not dependencies_OK:
+			return
+
+		# Import Draft tools, icons
+		try:
+			import Draft_rc
+			import DraftTools
+			import DraftGui
+			import DraftFillet
+			FreeCADGui.addLanguagePath(":/translations")
+			FreeCADGui.addIconPath(":/icons")
+		except Exception as exc:
+			FreeCAD.Console.PrintError(exc)
+			FreeCAD.Console.PrintError("Error: Initializing one or more "
+									   "of the Draft modules failed, "
+									   "Draft will not work as expected.\n")
+
+		# Set up command lists
+		import draftutils.init_tools as it
+		self.drawing_commands = it.get_draft_drawing_commands()
+		self.annotation_commands = it.get_draft_annotation_commands()
+		self.modification_commands = it.get_draft_modification_commands()
+		self.context_commands = it.get_draft_context_commands()
+		self.line_commands = it.get_draft_line_commands()
+		self.utility_commands = it.get_draft_utility_commands()
+		self.utility_small = it.get_draft_small_commands()
+
+		# Set up toolbars
+		self.appendToolbar(QT_TRANSLATE_NOOP("Draft", "Draft creation tools"), self.drawing_commands)
+		self.appendToolbar(QT_TRANSLATE_NOOP("Draft", "Draft annotation tools"), self.annotation_commands)
+		self.appendToolbar(QT_TRANSLATE_NOOP("Draft", "Draft modification tools"), self.modification_commands)
+		self.appendToolbar(QT_TRANSLATE_NOOP("Draft", "Draft utility tools"), self.utility_small)
+
+		# Set up menus
+		self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
+		self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Annotation"), self.annotation_commands)
+		self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Modification"), self.modification_commands)
+		self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Utilities"), self.utility_commands + self.context_commands)
+
+		# Set up preferences pages
+		if hasattr(FreeCADGui, "draftToolBar"):
+			if not hasattr(FreeCADGui.draftToolBar, "loadedPreferences"):
+				FreeCADGui.addPreferencePage(":/ui/preferences-draft.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+				FreeCADGui.addPreferencePage(":/ui/preferences-draftinterface.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+				FreeCADGui.addPreferencePage(":/ui/preferences-draftsnap.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+				FreeCADGui.addPreferencePage(":/ui/preferences-draftvisual.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+				FreeCADGui.addPreferencePage(":/ui/preferences-drafttexts.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+				FreeCADGui.draftToolBar.loadedPreferences = True
+			#END DRAFT
 	
 	def Activated(self):
 		if not(FreeCAD.ActiveDocument):
 			FreeCAD.newDocument()
-
+			
+		#FROM DRAFT 
+		if hasattr(FreeCADGui, "draftToolBar"):
+			FreeCADGui.draftToolBar.Activated()
+		if hasattr(FreeCADGui, "Snapper"):
+			FreeCADGui.Snapper.show()
+			import draftutils.init_draft_statusbar as dsb
+			dsb.show_draft_statusbar()
+		FreeCAD.Console.PrintLog("Draft workbench activated Inside Design456.\n")
 		FreeCAD.Console.PrintMessage('Design456 workbench loaded\n')
 		return
 
 	def Deactivated(self):
 		"workbench deactivated"
+		if hasattr(FreeCADGui, "draftToolBar"):
+			FreeCADGui.draftToolBar.Deactivated()
+		if hasattr(FreeCADGui, "Snapper"):
+			FreeCADGui.Snapper.hide()
+			import draftutils.init_draft_statusbar as dsb
+			dsb.hide_draft_statusbar()
+		FreeCAD.Console.PrintLog("Design456/Draft workbench deactivated.\n")
 		return
 
 	def ContextMenu(self, recipient):
 		"right-clicks on screen"
-		self.appendContextMenu("Design456 commands", self.list)
+		self.appendContextMenu("Design456", self.list)
+		#from DRAFT 
+		"""Define an optional custom context menu."""
+		from DraftGui import translate
+		if recipient == "View":
+			if FreeCAD.activeDraftCommand is None:
+				if FreeCADGui.Selection.getSelection():
+					self.appendContextMenu("Draft", self.drawing_commands + self.modification_commands)
+					self.appendContextMenu("Utilities", self.context_commands)
+				else:
+					self.appendContextMenu("Draft", self.drawing_commands)
+			else:
+				if FreeCAD.activeDraftCommand.featureName in (translate("draft", "Line"),
+															  translate("draft", "Wire"),
+															  translate("draft", "Polyline"),
+															  translate("draft", "BSpline"),
+															  translate("draft", "BezCurve"),
+															  translate("draft", "CubicBezCurve")):
+					self.appendContextMenu("", self.line_commands)
+		else:
+			if FreeCADGui.Selection.getSelection():
+				self.appendContextMenu("Utilities", self.context_commands)
+		#END DRAFT
 
 	def GetClassName(self): 
 		return "Gui::PythonWorkbench"
 	   
 Gui.addWorkbench(Design456_Workbench())
+#FROM DRAFT 
+# Preference pages for importing and exporting various file formats
+# are independent of the loading of the workbench and can be loaded at startup
+import Draft_rc
+from PySide.QtCore import QT_TRANSLATE_NOOP
+FreeCADGui.addPreferencePage(":/ui/preferences-dxf.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
+FreeCADGui.addPreferencePage(":/ui/preferences-dwg.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
+FreeCADGui.addPreferencePage(":/ui/preferences-svg.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
+FreeCADGui.addPreferencePage(":/ui/preferences-oca.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
+
+FreeCAD.__unit_test__ += ["TestDraftGui"]
