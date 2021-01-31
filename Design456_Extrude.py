@@ -46,17 +46,19 @@ class Design456_Extrude:
 		f.TaperAngle = 0.0
 		f.TaperAngleRev = 0.0
 		
-		#this part is not working .. don't know why
-		#newShape=Part.g etShape(f,'',needSubElement=False,refine=False)
-		#newObj=App.ActiveDocument.addObject('Part::Feature','Extrude').Shape=newShape
-		#App.ActiveDocument.recompute()
-		#App.ActiveDocument.ActiveObject.Label=f.Label
+		#Make a simple copy of the object
+		App.ActiveDocument.recompute()
 		
-		#App.ActiveDocument.recompute()
-		#f.Visibility=False 
+		newShape=Part.getShape(f,'',needSubElement=False,refine=False)
+		newObj=App.ActiveDocument.addObject('Part::Feature','Extrude').Shape=newShape
+		App.ActiveDocument.recompute()
+		App.ActiveDocument.ActiveObject.Label=f.Label
+		
+		App.ActiveDocument.recompute()
+		f.Visibility=False 
 		m.Visibility=False
-		#App.ActiveDocument.removeObject(f.Name)
-		#App.ActiveDocument.removeObject(m.Name)
+		App.ActiveDocument.removeObject(f.Name)
+		App.ActiveDocument.removeObject(m.Name)
 		App.ActiveDocument.recompute()
 		return
 
