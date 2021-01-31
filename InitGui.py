@@ -63,6 +63,32 @@ class Design456_Workbench (Workbench):
 
 		if not dependencies_OK:
 			return
+		#END DRAFT 
+		#PART 
+		import PartGui
+
+		try:
+			import BasicShapes.CommandShapes
+		except ImportError as err:
+			App.Console.PrintError("'BasicShapes' package cannot be loaded. "
+								   "{err}\n".format(err=str(err)))
+
+		try:
+			import CompoundTools._CommandCompoundFilter
+			import CompoundTools._CommandExplodeCompound
+		except ImportError as err:
+			App.Console.PrintError("'CompoundTools' package cannot be loaded. "
+								   "{err}\n".format(err=str(err)))
+
+		try:
+			bop = __import__("BOPTools")
+			bop.importAll()
+			bop.addCommands()
+			PartGui.BOPTools = bop
+		except Exception as err:
+			App.Console.PrintError("'BOPTools' package cannot be loaded. "
+								   "{err}\n".format(err=str(err)))
+		#END PART
 
 		# Import Draft tools, icons
 		try:
