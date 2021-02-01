@@ -33,7 +33,7 @@ class Design456_Workbench (Workbench):
 					   "Design456_ExtrudeFace" ,
 					   "Design456_SplitObject",
 					   "Design456_Tweak",
-					   "Design456_loftOnDirection"
+					   "Design456_loftOnDirection",
 					]
 		self.appendToolbar("Design456", self.list)
 		self.appendMenu("Design456", self.list) 
