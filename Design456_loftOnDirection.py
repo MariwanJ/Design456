@@ -23,7 +23,7 @@ from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
 class Design456_loftOnDirection_ui(object):
 	def setupUi(self, Dialog):
 		Dialog.setObjectName("Loft On Direction")
-		Dialog.resize(243, 195)
+		#Dialog.resize(243, 195)
 		self.btnOK = QtGui.QPushButton(Dialog)
 		self.btnOK.setGeometry(QtCore.QRect(160, 130, 80, 25))
 		self.btnOK.setDefault(True)
@@ -81,7 +81,6 @@ class Design456_loftOnDirection_ui(object):
 	def retranslateUi(self, Design456_loftOnDirection_ui):
 		_translate = QtCore.QCoreApplication.translate
 		Design456_loftOnDirection_ui.setWindowTitle(_translate("Design456_loftOnDirection_ui", "Dialog"))
-		self.btnOK.setText(_translate("Design456_loftOnDirection_ui", "OK"))
 		QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"), Dialog.runClass)
 		QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"), Dialog.exit)
 		self.btnCancel.setText(_translate("Design456_loftOnDirection_ui", "Cancel"))
@@ -100,15 +99,11 @@ class Design456_loftOnDirection_ui(object):
 			sel			   = Gui.Selection.getSelection()
 			
 			#### configuration ####
-			ValueLenght=(double)(self.inLength.value
-			#ValueLenght = -100	   # value length loft if is negation " - " reverse the loft
-			ValueScaleX=(double) self.inScaleX.value()
-			#ValueScaleX	 = 1.000   # value scale 1.0 by default
-			ValueScaleY=(double)self.inScaleY.value()
+			ValueLenght=(double)(self.inLength.value())		
+			ValueScaleX=(double)(self.inScaleX.value())
+			ValueScaleY=(double)(self.inScaleY.value())
+			ValueScaleZ=(double)(self.inScaleZ.value())
 			
-			#ValueScaleY	 = 1.000   # value scale 1.0 by default
-			ValueScaleZ=(double)self.inScaleZ.value()
-			#ValueScaleZ	 = 1.000   # value scale 1.0 by default
 			####
 			createAxis	= 0		   # 0 = not Axis, other = Axis
 			createLoft	= 1		   # 0 = not loft, other = loft
