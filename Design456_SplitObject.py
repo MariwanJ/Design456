@@ -12,7 +12,6 @@ import Design456Init
 from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
-import Part
 import BOPTools.SplitFeatures as SPLIT
 from FreeCAD import Base
 from time import time as _time, sleep as _sleep
