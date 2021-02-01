@@ -8,6 +8,7 @@ __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
 
+import BOPTools # as bop
 
 class Design456_Workbench (Workbench):
 	"Design456 Workbench object"
@@ -16,7 +17,7 @@ class Design456_Workbench (Workbench):
 		self.__class__.Icon = Design456Init.ICON_PATH + '/WorkbenchIcon.svg'
 		self.__class__.MenuText = "Design456"
 		self.__class__.ToolTip = "A workbench easy designing objects"
-		
+	
 
 	def Initialize(self):
 		"This function is executed when FreeCAD starts"
@@ -25,11 +26,14 @@ class Design456_Workbench (Workbench):
 		import	Design456_ExtrudeFace
 		import	Design456_SplitObject
 		import	Design456_Tweak
+		import  Design456_loftOnDirection
+		
 		self.list = [ "Design456_Extrude" , 
 					   "Design456_Extract", 
 					   "Design456_ExtrudeFace" ,
 					   "Design456_SplitObject",
-					   "Design456_Tweak"
+					   "Design456_Tweak",
+					   "Design456_loftOnDirection"
 					]
 		self.appendToolbar("Design456", self.list)
 		self.appendMenu("Design456", self.list) 
@@ -46,12 +50,12 @@ class Design456_Workbench (Workbench):
 			if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
 				raise AssertionError("FreeCAD and Pivy use different versions "
 									 "of Coin. "
-									 "This will lead to unexpected behaviour.")
+									 "This will lead to unexpected behavior.")
 		except AssertionError:
 			FreeCAD.Console.PrintWarning("Error: FreeCAD and Pivy "
 										 "use different versions of Coin. "
 										 "This will lead to unexpected "
-										 "behaviour.\n")
+										 "behavior.\n")
 		except ImportError:
 			FreeCAD.Console.PrintWarning("Error: Pivy not found, "
 										 "Draft Workbench will be disabled.\n")
