@@ -21,6 +21,7 @@ from FreeCAD import Base
 from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
 
 class Design456_loftOnDirection_ui(object):
+	
 	def setupUi(self, loftOnDirection):
 		loftOnDirection.setObjectName("Loft On Direction")
 		#loftOnDirection.resize(243, 195)
@@ -79,6 +80,8 @@ class Design456_loftOnDirection_ui(object):
 		self.verticalLayout_3.addLayout(self.horizontalLayout)
 		self.retranslateUi(loftOnDirection)
 		QtCore.QMetaObject.connectSlotsByName(loftOnDirection)
+	def GetOut(self):
+		loftOnDirection.hide()
 		
 	def retranslateUi(self, loftOnDirection):		
 		_translate = QtCore.QCoreApplication.translate
@@ -95,12 +98,10 @@ class Design456_loftOnDirection_ui(object):
 		self.lblScaleZ.setText(_translate("loftOnDirection", "ScaleZ"))
 		
 		QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"), self.runClass)
-		QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"), self.GoOut)
+		QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"), self.GetOut)
 		QtCore.QObject.connect(self.btnOK,QtCore.SIGNAL("pressed()"),self.runClass)
 		QtCore.QMetaObject.connectSlotsByName(loftOnDirection)
 	
-	def GoOut(self):
-		self.hide()
 	def runClass(self):
 		try:
 			selectedEdge   = Gui.Selection.getSelectionEx()[0].SubObjects[0]	  # select one element
@@ -162,7 +163,7 @@ class Design456_loftOnDirection_ui(object):
 					firsFace.ViewObject.Visibility = False
 					objClone.ViewObject.Visibility = False
 					App.ActiveDocument.recompute()
-					self.hide()
+					self.GetOut()
 					#### section hidden faces work
 			
 		except ImportError as err:
