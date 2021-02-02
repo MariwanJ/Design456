@@ -19,7 +19,7 @@ from draftutils.translate import translate
 #Modify this command to be TWEAK 
 class Design456_Tweak:
 	def __init__(self):
-		#super(Design456_Tweak, self).__init__()
+		super(Design456_Tweak, self).__init__()
 		return
 	def Activated(self):
 		try:

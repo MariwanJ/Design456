@@ -80,15 +80,14 @@ class Design456_loftOnDirection_ui(object):
 		self.verticalLayout_3.addLayout(self.horizontalLayout)
 		self.retranslateUi(loftOnDirection)
 		QtCore.QMetaObject.connectSlotsByName(loftOnDirection)
-	def GetOut(self):
-		loftOnDirection.hide()
+
 		
 	def retranslateUi(self, loftOnDirection):		
 		_translate = QtCore.QCoreApplication.translate
 		loftOnDirection.setWindowTitle(_translate("loftOnDirection", "Dialog"))
 		self.btnCancel.setText(_translate("loftOnDirection", "Cancel"))
 		self.label_5.setText(_translate("loftOnDirection", "Select Change variables"))
-		loftOnDirection.setWindowTitle(_translate("loftOnDirection", "Dialog"))
+		loftOnDirection.setWindowTitle(_translate("loftOnDirection", "Loft On Direction"))
 		self.btnOK.setText(_translate("loftOnDirection", "OK"))
 		self.btnCancel.setText(_translate("loftOnDirection", "Cancel"))
 	
@@ -163,9 +162,9 @@ class Design456_loftOnDirection_ui(object):
 					firsFace.ViewObject.Visibility = False
 					objClone.ViewObject.Visibility = False
 					App.ActiveDocument.recompute()
-					self.GetOut()
-					#### section hidden faces work
 			
+					#### section hidden faces work
+			self.GetOut()
 		except ImportError as err:
 				App.Console.PrintError("'Design456_loftOnDirection' Failed. "
 							   "{err}\n".format(err=str(err)))		
@@ -177,6 +176,9 @@ class Design456_loftOnDirection():
 
 	def Activated(self):
 		self.d.show()	
+	def GetOut(self):
+		self.hide()
+	
 	def GetResources(self):
 		return{
 			'Pixmap' :	Design456Init.ICON_PATH +  '/loftOnDirection.svg',
