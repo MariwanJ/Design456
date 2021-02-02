@@ -25,15 +25,13 @@ class Design456_Workbench (Workbench):
 		import	Design456_Extract  
 		import	Design456_ExtrudeFace
 		import	Design456_SplitObject
-		import	Design456_Tweak
 		import  Design456_loftOnDirection
 		
 		self.list = [ "Design456_Extrude" , 
 					   "Design456_Extract", 
 					   "Design456_ExtrudeFace" ,
 					   "Design456_SplitObject",
-					   "Design456_Tweak",
-					   "Design456_loftOnDirection",
+					   "Design456_loftOnDirection"
 					]
 		self.appendToolbar("Design456", self.list)
 		self.appendMenu("Design456", self.list) 
