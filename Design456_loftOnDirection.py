@@ -81,6 +81,8 @@ class Design456_loftOnDirection_ui(object):
 		self.retranslateUi(loftOnDirection)
 		QtCore.QMetaObject.connectSlotsByName(loftOnDirection)
 
+	def GetOut(self):
+		print ("not implemente")
 		
 	def retranslateUi(self, loftOnDirection):		
 		_translate = QtCore.QCoreApplication.translate
