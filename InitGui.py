@@ -26,14 +26,15 @@ class Design456_Workbench (Workbench):
 		import	Design456_ExtrudeFace
 		import	Design456_SplitObject
 		import  Design456_loftOnDirection
-		
+		import  Design456_Tweak
 		Gui.runCommand('Std_PerspectiveCamera',1)
 		
 		self.list = [ "Design456_Extrude" , 
 					   "Design456_Extract", 
 					   "Design456_ExtrudeFace" ,
 					   "Design456_SplitObject",
-					   "Design456_loftOnDirection"
+					   "Design456_loftOnDirection",
+					   "Design456_Tweak"
 					]
 		self.appendToolbar("Design456", self.list)
 		self.appendMenu("Design456", self.list) 
