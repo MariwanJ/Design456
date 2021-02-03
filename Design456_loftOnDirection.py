@@ -6,9 +6,10 @@
 # 25/05/2020 03/07/2020 07/07/2020 15/07/2020
 #
 #Made to class and added to Design456 by Mariwan Jalal as requested by the Macro author (mario52)
+# Please notice that the usage of this command should be studied. 
+# We need to figure out what is the best way to use it.
 #https://forum.freecadweb.org/viewtopic.php?f=8&t=54893&start=10
 
-import os
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -21,17 +22,26 @@ from FreeCAD import Base
 from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
 
 class Design456_loftOnDirection_ui(object):
-	
+	def __init__(self, loftOnDirection):
+		self.window=loftOnDirection
+		
 	def setupUi(self, loftOnDirection):
+		self.window=loftOnDirection
 		loftOnDirection.setObjectName("Loft On Direction")
-		#loftOnDirection.resize(243, 195)
+		loftOnDirection.resize(300, 250)
+		self.chkLoft = QtGui.QCheckBox(loftOnDirection)
+		self.chkLoft.setGeometry(QtCore.QRect(160, 70, 82, 23))
+		self.chkLoft.setObjectName("chkLoft")
+		self.chkAxis = QtGui.QCheckBox(loftOnDirection)
+		self.chkAxis.setGeometry(QtCore.QRect(160, 90, 82, 23))
+		self.chkAxis.setObjectName("chkAxis")
 		self.btnOK = QtGui.QPushButton(loftOnDirection)
 		self.btnOK.setGeometry(QtCore.QRect(160, 130, 80, 25))
 		self.btnOK.setDefault(True)
-		#self.btnOK.setObjectName("btnOK")
+		self.btnOK.setObjectName("btnOK")
 		self.btnCancel = QtGui.QPushButton(loftOnDirection)
 		self.btnCancel.setGeometry(QtCore.QRect(160, 160, 80, 25))
-		#self.btnCancel.setObjectName("btnCancel")
+		self.btnCancel.setObjectName("btnCancel")
 		self.layoutWidget = QtGui.QWidget(loftOnDirection)
 		self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 136, 151))
 		self.layoutWidget.setObjectName("layoutWidget")
@@ -75,6 +85,12 @@ class Design456_loftOnDirection_ui(object):
 		self.inScaleZ = QtGui.QDoubleSpinBox(self.layoutWidget)
 		self.inScaleZ.setRange(-100000.0, 100000.0)
 		self.inScaleZ.setObjectName("inScaleZ")
+
+		
+		#Default Values 
+		self.chkAxis.setChecked(0)
+		self.chkLoft.setChecked(1)
+		
 		self.verticalLayout_2.addWidget(self.inScaleZ)
 		self.horizontalLayout.addLayout(self.verticalLayout_2)
 		self.verticalLayout_3.addLayout(self.horizontalLayout)
@@ -82,11 +98,12 @@ class Design456_loftOnDirection_ui(object):
 		QtCore.QMetaObject.connectSlotsByName(loftOnDirection)
 
 	def GetOut(self):
-		print ("not implemente")
+
+		self.window.hide()
 		
-	def retranslateUi(self, loftOnDirection):		
+	def retranslateUi(self, loftOnDirection):		 
 		_translate = QtCore.QCoreApplication.translate
-		loftOnDirection.setWindowTitle(_translate("loftOnDirection", "Dialog"))
+		loftOnDirection.setWindowTitle(_translate("loftOnDirection", "loftOnDirection"))
 		self.btnCancel.setText(_translate("loftOnDirection", "Cancel"))
 		self.label_5.setText(_translate("loftOnDirection", "Select Change variables"))
 		loftOnDirection.setWindowTitle(_translate("loftOnDirection", "Loft On Direction"))
@@ -97,12 +114,38 @@ class Design456_loftOnDirection_ui(object):
 		self.lblScaleX.setText(_translate("loftOnDirection", "ScaleX"))
 		self.lblScaleY.setText(_translate("loftOnDirection", "ScaleY"))
 		self.lblScaleZ.setText(_translate("loftOnDirection", "ScaleZ"))
+		self.chkLoft.setText(_translate("loftOnDirection", "Loft"))
+		self.chkAxis.setText(_translate("loftOnDirection", "Axis"))
 		
-		QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"), self.runClass)
-		QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"), self.GetOut)
+		QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"),self.runClass)
 		QtCore.QObject.connect(self.btnOK,QtCore.SIGNAL("pressed()"),self.runClass)
+		QtCore.QObject.connect(self.btnCancel, QtCore.SIGNAL("accepted()"), self.GetOut)
 		QtCore.QMetaObject.connectSlotsByName(loftOnDirection)
-	
+
+	def msgBOXShow(self):
+		# Create a simple loftOnDirection QMessageBox
+		msg="Wrong object"
+		diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, '2D Shape selected', msg)
+		diag.setWindowModality(QtCore.Qt.ApplicationModal)
+		self.GetOut()
+		diag.exec_()
+		
+		"""msg = 'Example of warning message'
+		errorloftOnDirection(msg)
+		raise(Exception(msg))
+		"""
+	def checkIfShapeIsValid(self):
+		geTobject=Gui.Selection.getSelectionEx()[0]
+		selectedEdge = geTobject.SubObjects[0]		# select one element
+		"""This must be fix it. I don't know how to distinguish between 2s and 3d objects.
+		I will return for now always 0 but this MUST BE FIXED.2021-02-03 Mariwan
+		if(selectedEdge.Volume ==0):
+				#We have a 2D shape .. 
+				self.msgBOXShow()
+				return 1
+			else:
+				return 0
+			"""
 	def runClass(self):
 		try:
 			selectedEdge   = Gui.Selection.getSelectionEx()[0].SubObjects[0]	  # select one element
@@ -116,8 +159,8 @@ class Design456_loftOnDirection_ui(object):
 			ValueScaleZ=(float)(self.inScaleZ.value())
 			
 			####
-			createAxis	= 0		   # 0 = not Axis, other = Axis
-			createLoft	= 1		   # 0 = not loft, other = loft
+			createAxis	= self.chkAxis.isChecked()		   # 0 = not Axis, other = Axis
+			createLoft	= self.chkLoft.isChecked()		   # 0 = not loft, other = loft
 			#### configuration ####
 			
 			if hasattr(selectedEdge,'Surface'):
@@ -138,7 +181,7 @@ class Design456_loftOnDirection_ui(object):
 				########## section axis
 				if createAxis != 0:
 					########## section axis
-					points=[FreeCAD.Vector(0.0,0.0,0.0),FreeCAD.Vector(0.0,0.0,(ValueLenght) )]
+					points=[App.Vector(0.0,0.0,0.0),App.Vector(0.0,0.0,(ValueLenght) )]
 					centerX = Draft.makeWire(points,closed=False,face=False,support=None)
 					centerX.Placement = plr
 					centerX.Label = "Axis_" + SubElementName
@@ -155,31 +198,38 @@ class Design456_loftOnDirection_ui(object):
 					objClone.Placement.Base = (App.Vector(direction).scale(ValueLenght, ValueLenght, ValueLenght))
 				
 					#### section loft
-					App.activeDocument().addObject('Part::Loft','Loft')
-					App.activeDocument().ActiveObject.Sections=[App.activeDocument().getObject(firsFace.Name), App.activeDocument().getObject(objClone.Name), ]
-					App.activeDocument().ActiveObject.Solid = True
-					####
+					newObj=App.activeDocument().addObject('Part::Loft','Loft')
+					App.ActiveDocument.ActiveObject.Sections=[App.activeDocument().getObject(firsFace.Name), App.activeDocument().getObject(objClone.Name), ]
+					App.ActiveDocument.ActiveObject.Solid = True
+					newObj=App.ActiveDocument.ActiveObject
+					App.ActiveDocument.recompute()
 				
-					#### section hidden faces work
-					firsFace.ViewObject.Visibility = False
-					objClone.ViewObject.Visibility = False
+					#copy 
+					App.ActiveDocument.addObject('Part::Feature',newObj.Name+'N').Shape=Part.getShape(newObj,'',needSubElement=False,refine=False)	
+					App.ActiveDocument.recompute()
+						
+					#Remove Old objects. I don't like to keep so many objects without any necessity. 
+					for obj in newObj.Sections:
+						App.ActiveDocument.removeObject(obj.Name)
+					App.ActiveDocument.removeObject(newObj.Name)
 					App.ActiveDocument.recompute()
 			
 					#### section hidden faces work
-			self.GetOut()
+			self.window.hide()
 		except ImportError as err:
 				App.Console.PrintError("'Design456_loftOnDirection' Failed. "
 							   "{err}\n".format(err=str(err)))		
 class Design456_loftOnDirection():
 	def __init__(self):
 	  self.d = QtGui.QWidget()
-	  self.ui = Design456_loftOnDirection_ui()
+	  self.ui = Design456_loftOnDirection_ui(self)
 	  self.ui.setupUi(self.d)
 
 	def Activated(self):
+		self.d.setWindowModality(QtCore.Qt.ApplicationModal)
+		if( self.ui.checkIfShapeIsValid()==1):
+			return
 		self.d.show()	
-	def GetOut(self):
-		self.hide()
 	
 	def GetResources(self):
 		return{

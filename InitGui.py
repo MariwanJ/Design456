@@ -27,6 +27,8 @@ class Design456_Workbench (Workbench):
 		import	Design456_SplitObject
 		import  Design456_loftOnDirection
 		
+		Gui.runCommand('Std_PerspectiveCamera',1)
+		
 		self.list = [ "Design456_Extrude" , 
 					   "Design456_Extract", 
 					   "Design456_ExtrudeFace" ,
