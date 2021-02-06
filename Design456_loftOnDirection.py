@@ -191,15 +191,15 @@ class Design456_loftOnDirection_ui(object):
 				if createLoft != 0:
 					#### section scale ####
 					Part.show(selectedEdge.copy())
-					firsFace = App.ActiveDocument.ActiveObject
-					objClone = Draft.scale(App.ActiveDocument.ActiveObject,App.Vector(ValueScaleX, ValueScaleY, ValueScaleZ),center=App.Vector(plr.Base),copy=True)#False
+					firstFace = App.ActiveDocument.ActiveObject
+					objClone = Draft.scale(App.activeDocument().ActiveObject,App.Vector(ValueScaleX, ValueScaleY, ValueScaleZ),center=App.Vector(plr.Base),copy=True)#False
 				
 					#### section placement face in length and direction
 					objClone.Placement.Base = (App.Vector(direction).scale(ValueLenght, ValueLenght, ValueLenght))
 				
 					#### section loft
 					newObj=App.activeDocument().addObject('Part::Loft','Loft')
-					App.ActiveDocument.ActiveObject.Sections=[App.activeDocument().getObject(firsFace.Name), App.activeDocument().getObject(objClone.Name), ]
+					App.ActiveDocument.ActiveObject.Sections=[App.activeDocument().getObject(firstFace.Name), App.activeDocument().getObject(objClone.Name), ]
 					App.ActiveDocument.ActiveObject.Solid = True
 					newObj=App.ActiveDocument.ActiveObject
 					App.ActiveDocument.recompute()
