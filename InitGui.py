@@ -68,6 +68,7 @@ class Design456_Workbench (Workbench):
 		if not dependencies_OK:
 			return
 		#END DRAFT 
+		"""	 Doesn't work .. I Don't konw why.2020-02-06	
 		#PART 
 		import PartGui
 
@@ -93,7 +94,7 @@ class Design456_Workbench (Workbench):
 			App.Console.PrintError("'BOPTools' package cannot be loaded. "
 								   "{err}\n".format(err=str(err)))
 		#END PART
-
+		"""
 		# Import Draft tools, icons
 		try:
 			import Draft_rc
