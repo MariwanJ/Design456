@@ -25,8 +25,10 @@ class Design456_Workbench (Workbench):
 		import	Design456_Extract  
 		import	Design456_ExtrudeFace
 		import	Design456_SplitObject
-		import  Design456_loftOnDirection
-		import  Design456_Tweak
+		import	Design456_loftOnDirection
+		import	Design456_Tweak
+		import Design456_Part as designPart
+		#from Part import CommandShapes  #Tube  not working
 		Gui.runCommand('Std_PerspectiveCamera',1)
 		
 		self.list = [ "Design456_Extrude" , 
@@ -38,8 +40,13 @@ class Design456_Workbench (Workbench):
 					]
 		self.appendToolbar("Design456", self.list)
 		self.appendMenu("Design456", self.list) 
+		print(designPart.Design456_Part_ToolBar.list)
+		self.appendToolbar("Design456_Part",designPart.Design456_Part_ToolBar.list)
+		self.appendMenu("Design456_Part",designPart.Design456_Part_ToolBar.list)
+		#Design456_Part
+		#self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
 		
-		
+		#Design456_Part
 		#DRAFT 
 		def QT_TRANSLATE_NOOP(context, text):
 			return text
