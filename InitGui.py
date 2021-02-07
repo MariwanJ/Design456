@@ -26,7 +26,7 @@ class Design456_Workbench (Workbench):
 		import	Design456_ExtrudeFace
 		import	Design456_SplitObject
 		import	Design456_loftOnDirection
-		import	Design456_Tweak
+		#import	Design456_Tweak   not yet
 		import Design456_Part as designPart
 		#from Part import CommandShapes  #Tube  not working
 		Gui.runCommand('Std_PerspectiveCamera',1)
