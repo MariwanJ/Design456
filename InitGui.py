@@ -26,7 +26,7 @@ class Design456_Workbench (Workbench):
 		import	Design456_ExtrudeFace
 		import	Design456_SplitObject
 		import	Design456_loftOnDirection
-		import	Design456_Tweak
+		#import	Design456_Tweak
 		import Design456_Part as designPart
 		#from Part import CommandShapes  #Tube  not working
 		Gui.runCommand('Std_PerspectiveCamera',1)
@@ -156,6 +156,7 @@ class Design456_Workbench (Workbench):
 									   "Draft will not work as expected.\n")	
 	def Activated(self):
 		try:
+			import WorkingPlane
 			if not(FreeCAD.ActiveDocument):
 				FreeCAD.newDocument()
 				
@@ -166,6 +167,14 @@ class Design456_Workbench (Workbench):
 				FreeCADGui.Snapper.show()
 				import draftutils.init_draft_statusbar as dsb
 				dsb.show_draft_statusbar()
+			#Fix the view of the grid make it as 123D Design
+			App.DraftWorkingPlane.alignToPointAndAxis(FreeCAD.Vector(0.0, 0.0, 0.0), FreeCAD.Vector(0, 0, 1), 0.0)
+			Gui.Snapper.setGrid()
+			Gui.activeDocument().activeView().viewTop()
+			Gui.activeDocument().activeView().viewIsometric()
+			for x in range(1, 10):
+				FreeCADGui.ActiveDocument.ActiveView.zoomOut()
+			
 			FreeCAD.Console.PrintLog("Draft workbench activated Inside Design456.\n")
 			FreeCAD.Console.PrintMessage('Design456 workbench loaded\n')
 			return
@@ -193,9 +202,12 @@ class Design456_Workbench (Workbench):
 	def ContextMenu(self, recipient):
 		"right-clicks on screen"
 		try:
+			import Design456_Part as designPart
 			self.appendContextMenu("Design456", self.list)
 			#from DRAFT 
 			"""Define an optional custom context menu."""
+			#from Design456_PART
+			self.appendContextMenu("Design456_Part",designPart.Design456_Part_ToolBar.list)
 			from DraftGui import translate
 			if recipient == "View":
 				if FreeCAD.activeDraftCommand is None:

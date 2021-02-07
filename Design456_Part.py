@@ -65,7 +65,6 @@ class Design456_Part_Box:
 				'MenuText': 'Part_Box',
 				'ToolTip':	'Part Box'
 				}
-
 Gui.addCommand('Design456_Part_Box', Design456_Part_Box())						
 
 #Cylinder
@@ -128,7 +127,7 @@ class Design456_Part_Sphere:
 				'MenuText': 'Part_Sphere',
 				'ToolTip':	'Part Sphere'
 				}
-
+Gui.addCommand('Design456_Part_Sphere', Design456_Part_Sphere())
 # Cone
 class Design456_Part_Cone:
 		
@@ -147,3 +146,4 @@ class Design456_Part_Cone:
 				'MenuText': 'Part_Cone',
 				'ToolTip':	'Part Cone'
 				}
+Gui.addCommand('Design456_Part_Cone', Design456_Part_Cone())
