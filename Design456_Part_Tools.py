@@ -32,18 +32,19 @@ import Design456Init
 
 
 from PySide import QtCore, QtGui
-"""
-class Design456_Part_Template:
+
+class Design456_Part_Tools:
 	list= [ "Design456_Part_Merge" ,
+			"Design456_Part_Subtract",
  
 			] 
 			   
-	"""Design456 Part Template Toolbar"""
+	"""Design456 Part Tools Toolbar"""
 	def GetResources(self):
 		return{
-				'Pixmap' :	 Design456Init.ICON_PATH +	'/Part_Template.svg',
-				'MenuText': 'Template',
-				'ToolTip':	'Template'
+				'Pixmap' :	 Design456Init.ICON_PATH +	'/Part_Tools.svg',
+				'MenuText': 'Tools',
+				'ToolTip':	'Tools'
 			}
 	
 	def IsActive(self):
@@ -51,17 +52,17 @@ class Design456_Part_Template:
 			return False
 		else:
 			return True
-			
+	
 	"""Message box (error) """
 	def errorDialog(self,msg):
 		# Create a simple dialog QMessageBox
 		# The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question} 
-		diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Template ', self.msg)
+		diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', self.msg)
 		diag.setWindowModality(QtCore.Qt.ApplicationModal)
 		diag.exec_()
 	 
 	def Activated(self):
-		self.appendToolbar("Design456_Part_Template", self.list)
+		self.appendToolbar("Design456_Part_Tools", self.list)
 		
 
 
@@ -83,16 +84,15 @@ class Design456_Part_Merge:
 				
 			newObj=App.activeDocument().addObject("Part::MultiFuse","MergedTemp")
 			newObj.Shapes = allObjects 
+			App.ActiveDocument.recompute()
 						#Make a simple copy
 			newShape=Part.getShape(newObj,'',needSubElement=False,refine=False)
 			NewJ=App.ActiveDocument.addObject('Part::Feature','Merged').Shape=newShape
-			
+			App.ActiveDocument.recompute()
 			#Remove Old objects
 			for obj in allObjects:
 				App.ActiveDocument.removeObject(obj.Name)
 			App.ActiveDocument.removeObject(newObj.Name)
-			
-			
 			App.ActiveDocument.recompute()
 		except ImportError as err:
 			App.Console.PrintError("'Part::Merge' Failed. "
@@ -104,4 +104,43 @@ class Design456_Part_Merge:
 				'ToolTip':	'Part Merge'
 				}
 Gui.addCommand('Design456_Part_Merge', Design456_Part_Merge())						
-"""
+
+
+# Subtract
+class Design456_Part_Subtract:
+		
+	def Activated(self):
+		try:
+			s = Gui.Selection.getSelectionEx()
+			temp=None
+			if (len(s)<2) :
+				#Two object must be selected
+				errMessage= "Select two or more objects to Subtract"
+				self.errorDialog(errMessage)
+				return
+			newObj=App.activeDocument().addObject("Part::Cut","Subtract")
+			newObj.Base =App.ActiveDocument.getObject(s[0].ObjectName) # Target
+			newObj.Tool =App.ActiveDocument.getObject(s[1].ObjectName) # Subtracted shape/object
+			App.ActiveDocument.recompute()
+						#Make a simple copy
+			newShape=Part.getShape(newObj,'',needSubElement=False,refine=False)
+			NewJ=App.ActiveDocument.addObject('Part::Feature','Subtract').Shape=newShape
+			App.ActiveDocument.recompute()
+			#Remove Old objects
+			allObjects=[]
+			for o in s:
+				allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
+			for obj in allObjects:
+				App.ActiveDocument.removeObject(obj.Name)
+			App.ActiveDocument.removeObject(newObj.Name)
+			App.ActiveDocument.recompute()
+		except ImportError as err:
+			App.Console.PrintError("'Part::Subtract' Failed. "
+								   "{err}\n".format(err=str(err)))
+	def GetResources(self):
+		return {
+				'Pixmap' : Design456Init.ICON_PATH + '/Part_Subtract.svg',
+				'MenuText': 'Part_Subtract',
+				'ToolTip':	'Part Subtract'
+				}
+Gui.addCommand('Design456_Part_Subtract', Design456_Part_Subtract())						
