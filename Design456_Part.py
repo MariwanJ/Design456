@@ -45,8 +45,6 @@ class Design456_Part_ToolBar:
 	def Activated(self):
 		self.appendToolbar("Design456_Part_ToolBar", self.list)
 		
-
-
 # BOX
 class Design456_Part_Box:
 		
