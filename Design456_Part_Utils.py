@@ -1,7 +1,7 @@
 #***************************************************************************
 #*																		   *
 #*	Open source - FreeCAD												   *
-#*	Design456 Part													   *
+#*	Design456 Part Utils								    			   *
 #*	Auth : Mariwan Jalal and others										   *
 #***************************************************************************
 import os
@@ -12,7 +12,6 @@ from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
 import Design456Init 
-#from Part import CommandShapes  #Tube   not working
 
 
 class Design456_Part_Utils:
