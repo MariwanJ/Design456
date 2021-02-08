@@ -22,18 +22,18 @@
 #*  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 #***************************************************************************
 #*This command is inpired and suggested by Mario52, modified by Mariwan Jalal
-#https://forum.freecadweb.org/viewtopic.php?f=22&t=46690&sid=18c0765424496ef734ce5b78914f7197
-#https://forum.freecadweb.org/viewtopic.php?f=13&t=48276&p=413611#p413611
-#https://forum.freecadweb.org/viewtopic.php?f=13&t=48276&p=414467#p414467
-#https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
-# mario52
-# 25/05/2020 03/07/2020 07/07/2020 15/07/2020
-#
-# converted the code  to a class and added to Design456 by Mariwan Jalal 
-* as requested by the Macro author (mario52)
-# Please notice that the usage of this command should be studied. 
-# We need to figure out what is the best way to use it.
-#https://forum.freecadweb.org/viewtopic.php?f=8&t=54893&start=10
+#*https://forum.freecadweb.org/viewtopic.php?f=22&t=46690&sid=18c0765424496ef734ce5b78914f7197
+#*https://forum.freecadweb.org/viewtopic.php?f=13&t=48276&p=413611#p413611
+#*https://forum.freecadweb.org/viewtopic.php?f=13&t=48276&p=414467#p414467
+#*https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
+#*mario52
+#*25/05/2020 03/07/2020 07/07/2020 15/07/2020
+#*
+#*converted the code  to a class and added to Design456 by Mariwan Jalal 
+#* as requested by the Macro author (mario52)
+#*Please notice that the usage of this command should be studied. 
+#*We need to figure out what is the best way to use it.
+#*https://forum.freecadweb.org/viewtopic.php?f=8&t=54893&start=10
 
 import ImportGui
 import FreeCAD as App
