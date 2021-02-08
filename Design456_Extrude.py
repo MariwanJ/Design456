@@ -20,8 +20,6 @@ class Design456_Extrude:
 		return
 	def Activated(self):
 		try:
-			Gui.activeDocument().activeView().viewIsometric()
-			App.ActiveDocument.recompute()
 			selection = Gui.Selection.getSelectionEx()
 			m = App.activeDocument().getObject(selection[0].Object.Name)
 			f = App.activeDocument().addObject('Part::Extrusion','ExtrudeOriginal')
