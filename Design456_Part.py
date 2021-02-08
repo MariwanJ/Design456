@@ -1,8 +1,25 @@
 #***************************************************************************
+#*                                                                         *
+#*  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
+#*                                                                         *
+#*  Copyright (C) 2021                                                     *
 #*																		   *
-#*	Open source - FreeCAD												   *
-#*	Design456 Part													   *
-#*	Auth : Mariwan Jalal and others										   *
+#*                                                                         *
+#*  This library is free software; you can redistribute it and/or          *
+#*  modify it under the terms of the GNU Lesser General Public             *
+#*  License as published by the Free Software Foundation; either           *
+#*  version 2 of the License, or (at your option) any later version.       *
+#*                                                                         *
+#*  This library is distributed in the hope that it will be useful,        *
+#*  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+#*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+#*  Lesser General Public License for more details.                        *
+#*                                                                         *
+#*  You should have received a copy of the GNU Lesser General Public       *
+#*  License along with this library; if not, If not, see                   *
+#*  <http://www.gnu.org/licenses/>.                                        *
+#*                                                                         *
+#*  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 #***************************************************************************
 import os
 import ImportGui
@@ -235,8 +252,14 @@ class Design456_Part_Hemisphere:
 		
 	def Activated(self):
 		try:
-			App.ActiveDocument.addObject("Part::Hemisphere","Hemisphere")
-			App.ActiveDocument.ActiveObject.Label = "Hemisphere"
+			
+			App.ActiveDocument.addObject("Part::Sphere","Hemisphere")
+			App.ActiveDocument.Sphere.Radius=11.00
+			App.ActiveDocument.Sphere.Angle1=-90.00
+			App.ActiveDocument.Sphere.Angle2= 90.00
+			App.ActiveDocument.Sphere.Angle3=-180.00
+			App.ActiveDocument.Sphere.Placement=App.Placement(App.Vector(0.00,0.00,0.00),App.Rotation(App.Vector(0.00,0.00,1.00),0.00))
+			App.ActiveDocument.Sphere.Label='Hemisphere'
 			App.ActiveDocument.recompute()
 			#Gui.SendMsgToActiveView("ViewFit")
 		except ImportError as err:

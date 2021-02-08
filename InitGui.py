@@ -1,9 +1,27 @@
 #***************************************************************************
+#*                                                                         *
+#*  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
+#*                                                                         *
+#*  Copyright (C) 2021                                                     *
 #*																		   *
-#*	Open source - FreeCAD												   *
-#*	Design456 Workbench													   *
-#*	Auth : Mariwan Jalal and others										   *
+#*                                                                         *
+#*  This library is free software; you can redistribute it and/or          *
+#*  modify it under the terms of the GNU Lesser General Public             *
+#*  License as published by the Free Software Foundation; either           *
+#*  version 2 of the License, or (at your option) any later version.       *
+#*                                                                         *
+#*  This library is distributed in the hope that it will be useful,        *
+#*  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+#*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+#*  Lesser General Public License for more details.                        *
+#*                                                                         *
+#*  You should have received a copy of the GNU Lesser General Public       *
+#*  License along with this library; if not, If not, see                   *
+#*  <http://www.gnu.org/licenses/>.                                        *
+#*                                                                         *
+#*  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 #***************************************************************************
+
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
@@ -27,10 +45,11 @@ class Design456_Workbench (Workbench):
 		import	Design456_SplitObject
 		import	Design456_loftOnDirection
 		
-		#import	Design456_Tweak   not yet
+		#import	Design456_Tweak	  not yet
 
 		import Design456_Part as designPart
-		#from Part import CommandShapes  #Tube  not working
+		import Design456_Part_Tools as pUtils
+		#from Part import CommandShapes	 #Tube	not working
 		Gui.runCommand('Std_PerspectiveCamera',1)
 		
 		self.list = [ "Design456_Extrude" , 
@@ -38,13 +57,16 @@ class Design456_Workbench (Workbench):
 					   "Design456_ExtrudeFace" ,
 					   "Design456_SplitObject",
 					   "Design456_loftOnDirection",
-					   "Design456_Tweak"
+"""					   "Design456_Tweak"              """
+					   
 					]
 		self.appendToolbar("Design456", self.list)
 		self.appendMenu("Design456", self.list) 
 		print(designPart.Design456_Part_ToolBar.list)
 		self.appendToolbar("Design456_Part",designPart.Design456_Part_ToolBar.list)
+		self.appendToolbar("Design456_Part_Tools",pUtils.Design456_Part_Tools.list)
 		self.appendMenu("Design456_Part",designPart.Design456_Part_ToolBar.list)
+		self.appendMenu("Design456_Part_Tools",pUtils.Design456_Part_Tools.list)
 		#Design456_Part
 		#self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
 		
@@ -174,7 +196,7 @@ class Design456_Workbench (Workbench):
 			Gui.Snapper.setGrid()
 			Gui.activeDocument().activeView().viewTop()
 			Gui.activeDocument().activeView().viewIsometric()
-			for x in range(1, 10):
+			for x in range(1, 12):
 				FreeCADGui.ActiveDocument.ActiveView.zoomOut()
 			
 			FreeCAD.Console.PrintLog("Draft workbench activated Inside Design456.\n")
