@@ -260,13 +260,13 @@ class Design456_Part_Hemisphere:
 	def Activated(self):
 		try:
 			
-			App.ActiveDocument.addObject("Part::Sphere","Hemisphere")
-			App.ActiveDocument.Sphere.Radius=11.00
-			App.ActiveDocument.Sphere.Angle1=-90.00
-			App.ActiveDocument.Sphere.Angle2= 90.00
-			App.ActiveDocument.Sphere.Angle3=-180.00
-			App.ActiveDocument.Sphere.Placement=App.Placement(App.Vector(0.00,0.00,0.00),App.Rotation(App.Vector(0.00,0.00,1.00),0.00))
-			App.ActiveDocument.Sphere.Label='Hemisphere'
+			neObj= App.ActiveDocument.addObject("Part::Sphere","Hemisphere")
+			neObj.Radius=QtGui.QInputDialog.getDouble(None,"Radius","Input:")[0]
+			neObj.Placement=App.Placement(App.Vector(0.00,0.00,0.00),App.Rotation(App.Vector(1.00,0.00,0.00),90.00))
+			neObj.Label='Hemisphere'
+			neObj.Angle1= '-90.00 deg'
+			neObj.Angle2= '90.00 deg'
+			neObj.Angle3='180.00 deg'
 			App.ActiveDocument.recompute()
 			#Gui.SendMsgToActiveView("ViewFit")
 		except ImportError as err:

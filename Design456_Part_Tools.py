@@ -36,7 +36,8 @@ from PySide import QtCore, QtGui
 class Design456_Part_Tools:
 	list= [ "Design456_Part_Merge" ,
 			"Design456_Part_Subtract",
-			"Design456_Part_Intersect"
+			"Design456_Part_Intersect",
+			"Design456_Part_Group"
  
 			] 
 			   
@@ -189,3 +190,33 @@ class Design456_Part_Intersect:
 				'ToolTip':	'Part Intersect'
 				}
 Gui.addCommand('Design456_Part_Intersect', Design456_Part_Intersect())						
+# Group
+class Design456_Part_Group:
+		
+	def Activated(self):
+		try:
+			s = Gui.Selection.getSelectionEx()
+			temp=None
+			if (len(s)<2) :
+				#Two object must be selected
+				errMessage= "Select two or more objects to create a group"
+				self.errorDialog(errMessage)
+				return
+
+			newObj= App.activeDocument().Tip = App.activeDocument().addObject('App::Part','Group')
+			newObj.Label = 'Group'
+			for obj_name in s:
+				obj= App.ActiveDocument.getObject(obj_name)
+				newObj.addObject(obj)
+
+			App.ActiveDocument.recompute()
+		except ImportError as err:
+			App.Console.PrintError("'Part::Part' Failed. "
+								   "{err}\n".format(err=str(err)))
+	def GetResources(self):
+		return {
+				'Pixmap' : Design456Init.ICON_PATH + '/Part_Group.svg',
+				'MenuText': 'Part_Group',
+				'ToolTip':	'Part Group'
+				}
+Gui.addCommand('Design456_Part_Group', Design456_Part_Group())						
