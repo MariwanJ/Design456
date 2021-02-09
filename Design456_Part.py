@@ -27,7 +27,12 @@ import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
 import Draft
-import Part
+import Part  as _part
+#import PartGui
+import BasicShapes.CommandShapes
+#import CompoundTools._CommandCompoundFilter
+import CompoundTools._CommandExplodeCompound
+  
 import Design456Init 
 #from Part import CommandShapes  #Tube   not working
 
@@ -108,8 +113,10 @@ class Design456_Part_Tube:
 		
 	def Activated(self):
 		try:
-			
+			"""Gui.activateWorkbench("PartWorkbench")
+			Gui.activateWorkbench("Design456_Workbench")"""
 			Gui.runCommand('Part_Tube',0)
+			
 			App.ActiveDocument.recompute()
 			#Gui.SendMsgToActiveView("ViewFit")
 		except ImportError as err:
