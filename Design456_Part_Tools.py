@@ -205,8 +205,8 @@ class Design456_Part_Group:
 
 			newObj= App.activeDocument().Tip = App.activeDocument().addObject('App::Part','Group')
 			newObj.Label = 'Group'
-			for obj_name in s:
-				obj= App.ActiveDocument.getObject(obj_name)
+			for obj_ in s:
+				obj= App.ActiveDocument.getObject(obj_.ObjectName)
 				newObj.addObject(obj)
 
 			App.ActiveDocument.recompute()
