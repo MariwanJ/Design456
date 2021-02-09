@@ -9,7 +9,7 @@ import Draft
 import Part
 import FACE_D as Face
 import Design456_Extract as face_extract
-
+import Design456_Part_Tools as tools
 class Design456_ExtrudeFace:
 	def __init__(self):
 		return
@@ -51,10 +51,24 @@ class Design456_ExtrudeFace:
 			f.TaperAngle = 0.0
 			f.TaperAngleRev = 0.0
 			App.ActiveDocument.recompute()
-			App.ActiveDocument.addObject('Part::Feature',f.Name+'N').Shape=Part.getShape(f,'',needSubElement=False,refine=False)		
+			newPart_=App.ActiveDocument.addObject('Part::Feature',f.Name+'N')
+			newPart_.Shape=Part.getShape(f,'',needSubElement=False,refine=False)
 			App.ActiveDocument.removeObject(f.Name)
 			App.ActiveDocument.removeObject(m.Name)
+			"""  # This will not work for split object as they are not two separate objects.
+			#Make the two objects merged
+			obj1= App.ActiveDocument.getObject(s[0].ObjectName)
+			obj2= newPart_
+			selections =  Gui.Selection.getSelectionEx()
+			for i in selections:
+				Gui.Selection.removeSelection(selections)
+				
+			Gui.Selection.addSelection(obj1)
+			Gui.Selection.addSelection(obj2)
+			Gui.runCommand('Design456_Part_Merge',0)
+			"""
 			App.ActiveDocument.recompute()
+
 			return
 		except ImportError as err:
 			App.Console.PrintError("'ExtrudeFace' Failed. "
