@@ -1,25 +1,25 @@
 #***************************************************************************
-#*                                                                         *
-#*  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
-#*                                                                         *
-#*  Copyright (C) 2021                                                     *
 #*																		   *
-#*                                                                         *
-#*  This library is free software; you can redistribute it and/or          *
-#*  modify it under the terms of the GNU Lesser General Public             *
-#*  License as published by the Free Software Foundation; either           *
-#*  version 2 of the License, or (at your option) any later version.       *
-#*                                                                         *
-#*  This library is distributed in the hope that it will be useful,        *
-#*  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
-#*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
-#*  Lesser General Public License for more details.                        *
-#*                                                                         *
-#*  You should have received a copy of the GNU Lesser General Public       *
-#*  License along with this library; if not, If not, see                   *
-#*  <http://www.gnu.org/licenses/>.                                        *
-#*                                                                         *
-#*  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
+#*	This file is part of the Open Source Design456 Workbench - FreeCAD.	   *
+#*																		   *
+#*	Copyright (C) 2021													   *
+#*																		   *
+#*																		   *
+#*	This library is free software; you can redistribute it and/or		   *
+#*	modify it under the terms of the GNU Lesser General Public			   *
+#*	License as published by the Free Software Foundation; either		   *
+#*	version 2 of the License, or (at your option) any later version.	   *
+#*																		   *
+#*	This library is distributed in the hope that it will be useful,		   *
+#*	but WITHOUT ANY WARRANTY; without even the implied warranty of		   *
+#*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU	   *
+#*	Lesser General Public License for more details.						   *
+#*																		   *
+#*	You should have received a copy of the GNU Lesser General Public	   *
+#*	License along with this library; if not, If not, see				   *
+#*	<http://www.gnu.org/licenses/>.										   *
+#*																		   *
+#*	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 #***************************************************************************
 import os
 import ImportGui
@@ -54,15 +54,7 @@ class Design456_Part_Tools:
 			return False
 		else:
 			return True
-	
-	"""Message box (error) """
-	def errorDialog(self,msg):
-		# Create a simple dialog QMessageBox
-		# The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question} 
-		diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', self.msg)
-		diag.setWindowModality(QtCore.Qt.ApplicationModal)
-		diag.exec_()
-	 
+ 
 	def Activated(self):
 		self.appendToolbar("Design456_Part_Tools", self.list)
 		
@@ -70,6 +62,14 @@ class Design456_Part_Tools:
 
 # Merge
 class Design456_Part_Merge:
+		
+	"""Message box (error) """
+	def errorDialog(self,msg):
+		# Create a simple dialog QMessageBox
+		# The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question} 
+		diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', msg)
+		diag.setWindowModality(QtCore.Qt.ApplicationModal)
+		diag.exec_()
 		
 	def Activated(self):
 		try:
@@ -114,6 +114,14 @@ Gui.addCommand('Design456_Part_Merge', Design456_Part_Merge())
 # Subtract
 class Design456_Part_Subtract:
 		
+	"""Message box (error) """
+	def errorDialog(self,msg):
+		# Create a simple dialog QMessageBox
+		# The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question} 
+		diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', msg)
+		diag.setWindowModality(QtCore.Qt.ApplicationModal)
+		diag.exec_()
+		
 	def Activated(self):
 		try:
 			s = Gui.Selection.getSelectionEx()
@@ -156,6 +164,14 @@ Gui.addCommand('Design456_Part_Subtract', Design456_Part_Subtract())
 # Intersect
 class Design456_Part_Intersect:
 		
+	"""Message box (error) """
+	def errorDialog(self,msg):
+		# Create a simple dialog QMessageBox
+		# The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question} 
+		diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', msg)
+		diag.setWindowModality(QtCore.Qt.ApplicationModal)
+		diag.exec_()
+	
 	def Activated(self):
 		try:
 			s = Gui.Selection.getSelectionEx()
@@ -192,6 +208,14 @@ class Design456_Part_Intersect:
 Gui.addCommand('Design456_Part_Intersect', Design456_Part_Intersect())						
 # Group
 class Design456_Part_Group:
+	
+	"""Message box (error) """
+	def errorDialog(self,msg):
+		# Create a simple dialog QMessageBox
+		# The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question} 
+		diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', msg)
+		diag.setWindowModality(QtCore.Qt.ApplicationModal)
+		diag.exec_()
 		
 	def Activated(self):
 		try:
