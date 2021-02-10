@@ -100,6 +100,8 @@ class Design456_Workbench (Workbench):
 		if not dependencies_OK:
 			return
 		#END DRAFT 
+		#ADD Gear 
+		#END Gear 
 		"""	 Doesn't work .. I Don't konw why.2020-02-06	
 		#PART 
 		import PartGui
