@@ -240,10 +240,10 @@ class Design456_Part_Pyramid:
 		try:
 
 				obj = App.Placement()
-				height= QtGui.QInputDialog.getInt(None,"Height","Height:")[0]
+				Faces= QtGui.QInputDialog.getInt(None,"Faces","Faces:")[0]
 				obj.Rotation.Q = (0.0, 0.0, 0, 1.0)
 				obj.Base = App.Vector(0.0, 0.0, 0.0)
-				newObj = _draft.makePolygon(height, radius=10, inscribed=True, placement=obj, face=True, support=None)
+				newObj = _draft.makePolygon(Faces, radius=10, inscribed=True, placement=obj, face=True, support=None)
 				_draft.autogroup(newObj)
 				App.ActiveDocument.recompute()	
 				Gui.Selection.clearSelection()
