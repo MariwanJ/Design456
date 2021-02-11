@@ -40,8 +40,8 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
-import Draft
-import Part
+import Draft as _draft
+import Part as _part
 import BOPTools.SplitFeatures as SPLIT
 from FreeCAD import Base
 from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
@@ -207,7 +207,7 @@ class Design456_loftOnDirection_ui(object):
 				if createAxis != 0:
 					########## section axis
 					points=[App.Vector(0.0,0.0,0.0),App.Vector(0.0,0.0,(ValueLenght) )]
-					centerX = Draft.makeWire(points,closed=False,face=False,support=None)
+					centerX = _draft.makeWire(points,closed=False,face=False,support=None)
 					centerX.Placement = plr
 					centerX.Label = "Axis_" + SubElementName
 					########## section axis
@@ -215,22 +215,22 @@ class Design456_loftOnDirection_ui(object):
 				#### section scale ####
 				if createLoft != 0:
 					#### section scale ####
-					Part.show(selectedEdge.copy())
+					_part.show(selectedEdge.copy())
 					firstFace = App.ActiveDocument.ActiveObject
-					objClone = Draft.scale(App.activeDocument().ActiveObject,App.Vector(ValueScaleX, ValueScaleY, ValueScaleZ),center=App.Vector(plr.Base),copy=True)#False
+					objClone = _draft.scale(App.activeDocument().ActiveObject,App.Vector(ValueScaleX, ValueScaleY, ValueScaleZ),center=App.Vector(plr.Base),copy=True)#False
 				
 					#### section placement face in length and direction
 					objClone.Placement.Base = (App.Vector(direction).scale(ValueLenght, ValueLenght, ValueLenght))
 				
 					#### section loft
-					newObj=App.activeDocument().addObject('Part::Loft','Loft')
+					newObj=App.activeDocument().addObject('PART::Loft','Loft')
 					App.ActiveDocument.ActiveObject.Sections=[App.activeDocument().getObject(firstFace.Name), App.activeDocument().getObject(objClone.Name), ]
 					App.ActiveDocument.ActiveObject.Solid = True
 					newObj=App.ActiveDocument.ActiveObject
 					App.ActiveDocument.recompute()
 				
 					#copy 
-					App.ActiveDocument.addObject('Part::Feature',newObj.Name+'N').Shape=Part.getShape(newObj,'',needSubElement=False,refine=False)	
+					App.ActiveDocument.addObject('PART::Feature',newObj.Name+'N').Shape=_part.getShape(newObj,'',needSubElement=False,refine=False)	
 					App.ActiveDocument.recompute()
 						
 					#Remove Old objects. I don't like to keep so many objects without any necessity. 
