@@ -1,40 +1,40 @@
 #***************************************************************************
-#*                                                                         *
-#*  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
-#*                                                                         *
-#*  Copyright (C) 2021                                                     *
 #*																		   *
-#*                                                                         *
-#*  This library is free software; you can redistribute it and/or          *
-#*  modify it under the terms of the GNU Lesser General Public             *
-#*  License as published by the Free Software Foundation; either           *
-#*  version 2 of the License, or (at your option) any later version.       *
-#*                                                                         *
-#*  This library is distributed in the hope that it will be useful,        *
-#*  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
-#*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
-#*  Lesser General Public License for more details.                        *
-#*                                                                         *
-#*  You should have received a copy of the GNU Lesser General Public       *
-#*  License along with this library; if not, If not, see                   *
-#*  <http://www.gnu.org/licenses/>.                                        *
-#*                                                                         *
-#*  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
+#*	This file is part of the Open Source Design456 Workbench - FreeCAD.	   *
+#*																		   *
+#*	Copyright (C) 2021													   *
+#*																		   *
+#*																		   *
+#*	This library is free software; you can redistribute it and/or		   *
+#*	modify it under the terms of the GNU Lesser General Public			   *
+#*	License as published by the Free Software Foundation; either		   *
+#*	version 2 of the License, or (at your option) any later version.	   *
+#*																		   *
+#*	This library is distributed in the hope that it will be useful,		   *
+#*	but WITHOUT ANY WARRANTY; without even the implied warranty of		   *
+#*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU	   *
+#*	Lesser General Public License for more details.						   *
+#*																		   *
+#*	You should have received a copy of the GNU Lesser General Public	   *
+#*	License along with this library; if not, If not, see				   *
+#*	<http://www.gnu.org/licenses/>.										   *
+#*																		   *
+#*	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 #***************************************************************************
 import os
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
-import Draft
-import Part  as _part
+import Draft as _draft
+import Part	 as _part
 #import PartGui
 import BasicShapes.CommandShapes
 #import CompoundTools._CommandCompoundFilter
 import CompoundTools._CommandExplodeCompound
   
 import Design456Init 
-#from Part import CommandShapes  #Tube   not working
+#from Part import CommandShapes	 #Tube	 not working
 
 
 class Design456_Part_ToolBar:
@@ -63,7 +63,7 @@ class Design456_Part_ToolBar:
 			return False
 		else:
 			return True
-    
+	
 	def Activated(self):
 		self.appendToolbar("Design456_Part_ToolBar", self.list)
 		
@@ -238,12 +238,51 @@ class Design456_Part_Pyramid:
 		
 	def Activated(self):
 		try:
-			App.ActiveDocument.addObject("Part::Pyramid","Pyramid")
-			App.ActiveDocument.ActiveObject.Label = "Pyramid"
-			App.ActiveDocument.recompute()
-			#Gui.SendMsgToActiveView("ViewFit")
+
+				obj = App.Placement()
+				height= QtGui.QInputDialog.getInt(None,"Height","Height:")[0]
+				obj.Rotation.Q = (0.0, 0.0, 0, 1.0)
+				obj.Base = App.Vector(0.0, 0.0, 0.0)
+				newObj = _draft.makePolygon(height, radius=10, inscribed=True, placement=obj, face=True, support=None)
+				_draft.autogroup(newObj)
+				App.ActiveDocument.recompute()	
+				Gui.Selection.clearSelection()
+				Gui.Selection.addSelection(App.ActiveDocument.Name,newObj.Name,'Face1',0,0,0)
+				selectedEdge   = Gui.Selection.getSelectionEx()[0].SubObjects[0]	  # select one element
+				
+				#loft
+				plr = plDirection = App.Placement()
+				yL = selectedEdge.CenterOfMass
+				uv = selectedEdge.Surface.parameter(yL)
+				nv = selectedEdge.normalAt(uv[0], uv[1])
+				direction = yL.sub(nv + yL)
+				r = App.Rotation(App.Vector(0,0,1),direction)
+				plDirection.Rotation.Q = r.Q
+				plDirection.Base = yL
+				plr = plDirection
+				
+				firstFace =newObj
+				point = _draft.makePoint(0, 0.0, 10.0)
+				
+				newObj1=App.activeDocument().addObject('Part::Loft','tempPyramid')
+				App.ActiveDocument.ActiveObject.Sections=[firstFace, point, ]
+				App.ActiveDocument.ActiveObject.Solid = True
+				newObj1=App.ActiveDocument.ActiveObject
+				App.ActiveDocument.recompute()
+			
+				#copy 
+				App.ActiveDocument.addObject('Part::Feature','Pyramid').Shape=_part.getShape(newObj1,'',needSubElement=False,refine=False)	
+				App.ActiveDocument.recompute()
+					
+				#Remove Old objects. I don't like to keep so many objects without any necessity. 
+				for obj in newObj1.Sections:
+					App.ActiveDocument.removeObject(obj.Name)	
+				App.ActiveDocument.removeObject(newObj1.Name)	#Gui.SendMsgToActiveView("ViewFit")
+				#App.ActiveDocument.removeObject(point)
+				App.ActiveDocument.recompute()
+				
 		except ImportError as err:
-			App.Console.PrintError("'Part::Pyramid' Failed. "
+			    App.Console.PrintError("'Part::Pyramid' Failed. "
 								   "{err}\n".format(err=str(err)))
 	def GetResources(self):
 		return {
