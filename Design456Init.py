@@ -26,7 +26,11 @@ import FreeCAD as App
 __dir__ = os.path.dirname(__file__)
 ICON_PATH = os.path.join( __dir__, 'Resources/icons' )
 IMAGE_PATH = os.path.join( __dir__, 'Resources/images' )
-TABLE_PATH = os.path.join( __dir__, 'tables' )
+
+PYRAMID_PATH=os.path.join( __dir__, 'submodules/PyramidMo' )
+PYRAMID_ICON_PATH=os.path.join( __dir__, 'submodules/PyramidMo/Resources/icons' )
+
+
 #PART
 App.addImportType("BREP format (*.brep *.brp)","Part")
 App.addExportType("BREP format (*.brep *.brp)","Part")
