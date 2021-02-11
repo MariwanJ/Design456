@@ -1,0 +1,3 @@
+[submodule "submodules/PyramidMo"]
+	path = submodules/PyramidMo
+	url = https://github.com/MariwanJ/pyramid
