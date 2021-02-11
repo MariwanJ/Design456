@@ -12,7 +12,7 @@
 #*                                                                         *
 #*  This library is distributed in the hope that it will be useful,        *
 #*  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
-#*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+#*  MERCHANTABILITY or FITNESS FOR A PartICULAR PURPOSE.  See the GNU      *
 #*  Lesser General Public License for more details.                        *
 #*                                                                         *
 #*  You should have received a copy of the GNU Lesser General Public       *
@@ -33,6 +33,7 @@
 #* as requested by the Macro author (mario52)
 #*Please notice that the usage of this command should be studied. 
 #*We need to figure out what is the best way to use it.
+#*https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
 #*https://forum.freecadweb.org/viewtopic.php?f=8&t=54893&start=10
 
 import ImportGui
@@ -178,7 +179,7 @@ class Design456_loftOnDirection_ui(object):
 			sel			   = Gui.Selection.getSelection()
 			
 			#### configuration ####
-			ValueLenght=(float)(self.inLength.value())	   
+			ValueLenght=-(float)(self.inLength.value())	   
 			ValueScaleX=(float)(self.inScaleX.value())
 			ValueScaleY=(float)(self.inScaleY.value())
 			ValueScaleZ=(float)(self.inScaleZ.value())
@@ -196,7 +197,7 @@ class Design456_loftOnDirection_ui(object):
 				uv = selectedEdge.Surface.parameter(yL)
 				nv = selectedEdge.normalAt(uv[0], uv[1])
 				direction = yL.sub(nv + yL)
-				r = App.Rotation(App.Vector(0,0,1),direction)
+				r = App.Rotation(App.Vector(0,0,0),direction)
 				plDirection.Rotation.Q = r.Q
 				plDirection.Base = yL
 				plr = plDirection
@@ -223,14 +224,14 @@ class Design456_loftOnDirection_ui(object):
 					objClone.Placement.Base = (App.Vector(direction).scale(ValueLenght, ValueLenght, ValueLenght))
 				
 					#### section loft
-					newObj=App.activeDocument().addObject('PART::Loft','Loft')
+					newObj=App.activeDocument().addObject('Part::Loft','Loft')
 					App.ActiveDocument.ActiveObject.Sections=[App.activeDocument().getObject(firstFace.Name), App.activeDocument().getObject(objClone.Name), ]
 					App.ActiveDocument.ActiveObject.Solid = True
 					newObj=App.ActiveDocument.ActiveObject
 					App.ActiveDocument.recompute()
 				
 					#copy 
-					App.ActiveDocument.addObject('PART::Feature',newObj.Name+'N').Shape=_part.getShape(newObj,'',needSubElement=False,refine=False)	
+					App.ActiveDocument.addObject('Part::Feature',newObj.Name+'N').Shape=_part.getShape(newObj,'',needSubElement=False,refine=False)	
 					App.ActiveDocument.recompute()
 						
 					#Remove Old objects. I don't like to keep so many objects without any necessity. 
