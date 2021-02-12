@@ -264,6 +264,11 @@ class Design456_Tweak(gui_move.Move):
             'ToolTip':  'Move Object'
         }
 
+    def proceed(self):
+        super(Design456_Tweak, self).proceed()
+        state = QtCore.Qt.CheckState()
+        self.ui.isSubelementMode.setCheckState(state.Checked)
+
     def move_subelements(self):
         """Move the subelements."""
         try:
