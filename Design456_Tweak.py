@@ -1,15 +1,36 @@
-#***************************************************************************
-#*                                                                           *
-#*    Open source - FreeCAD                                                   *
-#*    Design456 Workbench                                                       *
-#*    Auth : Mariwan Jalal and others                                           *
-#***************************************************************************
+# ***************************************************************************
+# *                                                                         *
+# *  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
+# *                                                                         *
+# *  Copyright (C) 2021                                                     *
+# *																		   *
+# *                                                                         *
+# *  This library is free software; you can redistribute it and/or          *
+# *  modify it under the terms of the GNU Lesser General Public             *
+# *  License as published by the Free Software Foundation; either           *
+# *  version 2 of the License, or (at your option) any later version.       *
+# *                                                                         *
+# *  This library is distributed in the hope that it will be useful,        *
+# *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# *  Lesser General Public License for more details.                        *
+# *                                                                         *
+# *  You should have received a copy of the GNU Lesser General Public       *
+# *  License along with this library; if not, If not, see                   *
+# *  <http://www.gnu.org/licenses/>.                                        *
+# *                                                                         *
+# *	Author :carlopav
+#  This is pulled to the main github at the link bellow 
+#  github.com/MariwanJ/Design456/commits/5911dd3817aba28df6f5b215d39ef8851b974d5f
+# *  See the forum :
+#  Modified by     Mariwan Jalal	 mariwan.jalal@gmail.com			   *
+# ***************************************************************************
 import os
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-from PySide import QtGui, QtCore # https://www.freecadweb.org/wiki/PySide
+from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
 
@@ -23,7 +44,7 @@ from draftutils.translate import translate
 
 def moveSubElements(obj, sub_objects_names, vector):
     """moveSubElements(obj, sub_objects_names, vector)
-    
+
     Move the given object sub_objects according to a vector or crates an new one
     if the object is not a Part::Feature.
     Parameters
@@ -62,7 +83,7 @@ def moveSubElements(obj, sub_objects_names, vector):
     if not new_shape.isValid():
         should_fix = move_subelements_msgbox()
         if should_fix:
-            new_shape.fix(0.001,0.001,0.001)
+            new_shape.fix(0.001, 0.001, 0.001)
 
     if new_shape:
         if hasattr(obj, 'TypeId') and obj.TypeId == 'Part::Feature':
@@ -83,7 +104,8 @@ def parse_shape(shape, selected_subelements, vector):
 
     if shape.ShapeType in ("Compound", "CompSolid", "Solid", "Shell", "Wire"):
         # No geometry involved
-        new_sub_shapes, touched_subshapes = parse_sub_shapes(shape, selected_subelements, vector)
+        new_sub_shapes, touched_subshapes = parse_sub_shapes(
+            shape, selected_subelements, vector)
 
         if shape.ShapeType == "Compound":
             new_shape = Part.Compound(new_sub_shapes)
@@ -108,7 +130,8 @@ def parse_shape(shape, selected_subelements, vector):
         touched = True
 
     elif shape.ShapeType == "Face":
-        new_sub_shapes, touched_subshapes = parse_sub_shapes(shape, selected_subelements, vector)
+        new_sub_shapes, touched_subshapes = parse_sub_shapes(
+            shape, selected_subelements, vector)
         if touched_subshapes == 1 or touched_subshapes == 2:
             print("some subshapes touched " + shape.ShapeType + " recreated.")
             if shape.Surface.TypeId == 'Part::GeomPlane':
@@ -120,12 +143,13 @@ def parse_shape(shape, selected_subelements, vector):
                 print("Face geometry not supported")
         elif touched_subshapes == 0:
             print("subshapes not touched " + shape.ShapeType + " not touched.")
-            new_shape = shape 
+            new_shape = shape
             touched = False
 
     elif shape.ShapeType == "Edge":
         # TODO: Add geometry check
-        new_sub_shapes, touched_subshapes = parse_sub_shapes(shape, selected_subelements, vector)
+        new_sub_shapes, touched_subshapes = parse_sub_shapes(
+            shape, selected_subelements, vector)
         if touched_subshapes == 2:
             print("all subshapes touched. " + shape.ShapeType + " translated.")
             # all subshapes touched
@@ -134,12 +158,13 @@ def parse_shape(shape, selected_subelements, vector):
         elif touched_subshapes == 1:
             # some subshapes touched: recreate the edge as a straight vector: TODO Add geometry check
             print("some subshapes touched " + shape.ShapeType + " recreated.")
-            new_shape = Part.makeLine(new_sub_shapes[0].Point, new_sub_shapes[1].Point)
+            new_shape = Part.makeLine(
+                new_sub_shapes[0].Point, new_sub_shapes[1].Point)
             touched = True
         elif touched_subshapes == 0:
             # subshapes not touched
             print("subshapes not touched " + shape.ShapeType + " not touched.")
-            new_shape = shape 
+            new_shape = shape
             touched = False
 
     elif shape.ShapeType == "Vertex":
@@ -185,7 +210,8 @@ def parse_sub_shapes(shape, selected_subelements, vector):
     touched_subshapes = []
     if shape.SubShapes:
         for sub_shape in shape.SubShapes:
-            new_sub_shape, touched_subshape = parse_shape(sub_shape, selected_subelements, vector)
+            new_sub_shape, touched_subshape = parse_shape(
+                sub_shape, selected_subelements, vector)
             sub_shapes.append(new_sub_shape)
 
             if touched_subshape:
@@ -220,23 +246,23 @@ def move_subelements_msgbox():
         return True
     elif ret == QtGui.QMessageBox.No:
         return False
-		
+
 
 class Design456_Tweak(gui_move.Move):
     def __init__(self):
         super(Design456_Tweak, self).__init__()
 
-    #TODO : Not working .. fix it 
+    # TODO : Not working .. fix it
     def Activated(self):
         super(Design456_Tweak, self).Activated()
         return
 
     def GetResources(self):
         return {
-                'Pixmap' : Design456Init.ICON_PATH + '/Move.svg',
-                'MenuText': 'Move',
-                'ToolTip':  'Move Object'
-                }
+            'Pixmap': Design456Init.ICON_PATH + '/Move.svg',
+            'MenuText': 'Move',
+            'ToolTip':  'Move Object'
+        }
 
     def move_subelements(self):
         """Move the subelements."""
@@ -250,37 +276,39 @@ class Design456_Tweak(gui_move.Move):
         except Exception:
             _err(translate("draft", "Some subelements could not be moved."))
         import Draft
-        #try:
+        # try:
         if self.ui.isCopy.isChecked():
             self.commit(translate("draft", "Copy"),
                         self.build_copy_subelements_command())
         else:
-            #self.commit(translate("draft", "Move"), # Moult implementation start
+            # self.commit(translate("draft", "Move"), # Moult implementation start
             #            self.build_move_subelements_command()) # Moult implementation end
 
-            objects={}
+            objects = {}
 
             # create a dictionary with {'obj.Name' : 'list of selected SubObjects'}
             for sel in self.selected_subelements:
                 if not sel.Object.Name in objects:
-                    objects[sel.Object.Name]=[]
+                    objects[sel.Object.Name] = []
                 if sel.SubObjects:
                     objects[sel.Object.Name].extend(sel.SubElementNames)
 
-            App.ActiveDocument.openTransaction(translate("Draft","Move subelements"))
+            App.ActiveDocument.openTransaction(
+                translate("Draft", "Move subelements"))
 
-            for name in objects: # for each object
+            for name in objects:  # for each object
                 # get the object and its shape
-                #Gui.addModule("Draft")
-                #Gui.doCommand('Draft.moveSubElements(' +
+                # Gui.addModule("Draft")
+                # Gui.doCommand('Draft.moveSubElements(' +
                 #                'FreeCAD.ActiveDocument.' + name + ', ' +
                 #                str(objects[name]) + ', ' +
                 #                DraftVecUtils.toString(self.vector) +
                 #                ')')
-                moveSubElements(App.ActiveDocument.getObject(name),objects[name], self.vector)
+                moveSubElements(App.ActiveDocument.getObject(
+                    name), objects[name], self.vector)
             App.ActiveDocument.commitTransaction()
 
-        #except Exception:
+        # except Exception:
         #    _err(translate("draft", "Some subelements could not be moved."))
 
 
