@@ -19,7 +19,7 @@
 # *	License along with this library; if not, If not, see				   *
 # *	<http://www.gnu.org/licenses/>.										   *
 # *																		   *
-# *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
+# *	Author :Mariwan Jalal	 mariwan.jalal@gmail.com			           *
 # ***************************************************************************
 import os
 import ImportGui
@@ -29,7 +29,7 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
 import Design456Init
-
+import Design456_Tweak
 
 from PySide import QtCore, QtGui
 
@@ -38,7 +38,8 @@ class Design456_Part_Tools:
     list = ["Design456_Part_Merge",
             "Design456_Part_Subtract",
             "Design456_Part_Intersect",
-            "Design456_Part_Group"]
+            "Design456_Part_Group",
+            "Design456_Tweak"]
 
     """Design456 Part Tools Toolbar"""
 
@@ -267,5 +268,6 @@ class Design456_Part_Group:
             'MenuText': 'Part_Group',
                         'ToolTip':	'Part Group'
         }
+
 
 Gui.addCommand('Design456_Part_Group', Design456_Part_Group())

@@ -48,7 +48,7 @@ class Design456_Workbench (Workbench):
         import Design456_SplitObject
         import Design456_loftOnDirection
         import Design456_Pyramid as pyr
-        # import	Design456_Tweak	  not yet
+        import	Design456_Tweak	 as twk
 
         import Design456_Part as designPart
         import Design456_Part_Tools as pUtils
@@ -60,8 +60,6 @@ class Design456_Workbench (Workbench):
                      "Design456_ExtrudeFace",
                      "Design456_SplitObject",
                      "Design456_loftOnDirection",
-                     """					   "Design456_Tweak"              """
-
                      ]
         self.appendToolbar("Design456", self.list)
         self.appendMenu("Design456", self.list)
@@ -76,6 +74,7 @@ class Design456_Workbench (Workbench):
         self.appendMenu("Design456_Part_Tools",
                         pUtils.Design456_Part_Tools.list)
         self.appendMenu("Design456_Pyramid", pyr.Design456_Pyramid.list)
+        
 
         # Design456_Part
         #self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
@@ -259,6 +258,7 @@ class Design456_Workbench (Workbench):
             self.appendContextMenu("Design456", self.list)
             self.appendContextMenu("Design456_Pyramid",
                                    pyr.Design456_Pyramid.list)
+            self.appendContextMenu("Design456_Tweak",twk.Design456.list)
             # from DRAFT
             """Define an optional custom context menu."""
             # from Design456_PART
