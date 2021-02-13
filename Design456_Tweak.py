@@ -41,6 +41,7 @@ from draftutils.translate import translate
 
 # This part is higly experimental and used for moveSubElements function
 # it's and experiment by carlopav initially aimed at Draft WB, but not completed.
+# We need to make this work better, for specific usage. More works must be done-Mariwan
 
 def moveSubElements(obj, sub_objects_names, vector):
     """moveSubElements(obj, sub_objects_names, vector)
@@ -252,7 +253,6 @@ class Design456_Tweak(gui_move.Move):
     def __init__(self):
         super(Design456_Tweak, self).__init__()
 
-    # TODO : Not working .. fix it
     def Activated(self):
         super(Design456_Tweak, self).Activated()
         return
