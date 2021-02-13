@@ -133,6 +133,8 @@ class PartMover(object):
             self.obj.Placement.Base = newPos
             App.ActiveDocument.recompute()
             self.removeCallbacks()
+        else:
+            return
 
     def KeyboardEvent(self, info):
         print('Escape pressed\n')
