@@ -28,6 +28,8 @@ import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft as _draft
 import Part as _part
+import FACE_D as faced
+
 #import PartGui
 import BasicShapes.CommandShapes
 #import CompoundTools._CommandCompoundFilter
@@ -61,7 +63,7 @@ class Design456_Part_ToolBar:
         }
 
     def IsActive(self):
-        if FreeCAD.ActiveDocument == None:
+        if App.ActiveDocument == None:
             return False
         else:
             return True
@@ -76,9 +78,11 @@ class Design456_Part_Box:
 
     def Activated(self):
         try:
-            App.ActiveDocument.addObject("Part::Box", "Box")
-            App.ActiveDocument.ActiveObject.Label = "Cube"
+            newObj = App.ActiveDocument.addObject("Part::Box", "Box")
+            newObj.Label = "Cube"
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Box' Failed. "
@@ -101,9 +105,11 @@ class Design456_Part_Cylinder:
 
     def Activated(self):
         try:
-            App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
+            newObj = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
             App.ActiveDocument.ActiveObject.Label = "Cylinder"
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Cylinder' Failed. "
@@ -128,9 +134,12 @@ class Design456_Part_Tube:
             """Gui.activateWorkbench("PartWorkbench")
             Gui.activateWorkbench("Design456_Workbench")"""
             Gui.runCommand('Part_Tube', 0)
-
-            App.ActiveDocument.recompute()
-            # Gui.SendMsgToActiveView("ViewFit")
+            newObj =App.ActiveDocument.ActiveObject
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
+            App.newObj.recompute()
+            # Gui.SendMsgToActiveView("V
+            # iewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Tube' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -151,9 +160,11 @@ class Design456_Part_Sphere:
 
     def Activated(self):
         try:
-            App.ActiveDocument.addObject("Part::Sphere", "Sphere")
+            newObj = App.ActiveDocument.addObject("Part::Sphere", "Sphere")
             App.ActiveDocument.ActiveObject.Label = "Sphere"
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Sphere' Failed. "
@@ -175,9 +186,11 @@ class Design456_Part_Cone:
 
     def Activated(self):
         try:
-            App.ActiveDocument.addObject("Part::Cone", "Cone")
+            newObj = App.ActiveDocument.addObject("Part::Cone", "Cone")
             App.ActiveDocument.ActiveObject.Label = "Cone"
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Cone' Failed. "
@@ -199,9 +212,11 @@ class Design456_Part_Torus:
 
     def Activated(self):
         try:
-            App.ActiveDocument.addObject("Part::Torus", "Torus")
+            newObj = App.ActiveDocument.addObject("Part::Torus", "Torus")
             App.ActiveDocument.ActiveObject.Label = "Torus"
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Torus' Failed. "
@@ -224,9 +239,11 @@ class Design456_Part_Wedge:
 
     def Activated(self):
         try:
-            App.ActiveDocument.addObject("Part::Wedge", "Wedge")
+            newObj = App.ActiveDocument.addObject("Part::Wedge", "Wedge")
             App.ActiveDocument.ActiveObject.Label = "Wedge"
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Wedge' Failed. "
@@ -248,9 +265,11 @@ class Design456_Part_Prism:
 
     def Activated(self):
         try:
-            App.ActiveDocument.addObject("Part::Prism", "Prism")
+            newObj = App.ActiveDocument.addObject("Part::Prism", "Prism")
             App.ActiveDocument.ActiveObject.Label = "Prism"
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Prism' Failed. "
@@ -308,7 +327,7 @@ class Design456_Part_Pyramid:
             App.ActiveDocument.recompute()
 
             # copy
-            App.ActiveDocument.addObject('Part::Feature', 'Pyramid').Shape = _part.getShape(
+            newOBJ = App.ActiveDocument.addObject('Part::Feature', 'Pyramid').Shape = _part.getShape(
                 newObj1, '', needSubElement=False, refine=False)
             App.ActiveDocument.recompute()
 
@@ -319,6 +338,8 @@ class Design456_Part_Pyramid:
             App.ActiveDocument.removeObject(newObj1.Name)
             # App.ActiveDocument.removeObject(point)
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newOBJ)
 
         except ImportError as err:
             App.Console.PrintError("'Part::Pyramid' Failed. "
@@ -341,7 +362,8 @@ class Design456_Part_Hemisphere:
     def Activated(self):
         try:
 
-            neObj = App.ActiveDocument.addObject("Part::Sphere", "tempHemisphere")
+            neObj = App.ActiveDocument.addObject(
+                "Part::Sphere", "tempHemisphere")
             neObj.Radius = QtGui.QInputDialog.getDouble(
                 None, "Radius", "Input:")[0]
             neObj.Placement = App.Placement(App.Vector(
@@ -353,6 +375,7 @@ class Design456_Part_Hemisphere:
             # Gui.SendMsgToActiveView("ViewFit")
             sh = neObj.Shape
             nsh = sh.defeaturing([sh.Face2, ])
+            defat=None
             if not sh.isPartner(nsh):
                 defeat = App.ActiveDocument.addObject(
                     'Part::Feature', 'Hemisphere').Shape = nsh
@@ -360,6 +383,9 @@ class Design456_Part_Hemisphere:
             else:
                 App.Console.PrintError('Defeaturing failed\n')
             App.ActiveDocument.recompute()
+            newObj= App.ActiveDocument.ActiveObject
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
 
         except ImportError as err:
             App.Console.PrintError("'Part::Hemisphere' Failed. "
@@ -382,9 +408,12 @@ class Design456_Part_Ellipsoid:
 
     def Activated(self):
         try:
-            App.ActiveDocument.addObject("Part::Ellipsoid", "Ellipsoid")
+            newObj = App.ActiveDocument.addObject(
+                "Part::Ellipsoid", "Ellipsoid")
             App.ActiveDocument.ActiveObject.Label = "Ellipsoid"
             App.ActiveDocument.recompute()
+            v = Gui.ActiveDocument.activeView()
+            faced.PartMover(v, newObj)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Ellipsoid' Failed. "
