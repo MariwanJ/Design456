@@ -137,7 +137,7 @@ class Design456_Part_Tube:
             newObj =App.ActiveDocument.ActiveObject
             v = Gui.ActiveDocument.activeView()
             faced.PartMover(v, newObj)
-            App.newObj.recompute()
+            App.ActiveDocument.recompute()
             # Gui.SendMsgToActiveView("V
             # iewFit")
         except ImportError as err:
@@ -339,7 +339,7 @@ class Design456_Part_Pyramid:
             # App.ActiveDocument.removeObject(point)
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newOBJ)
+            faced.PartMover(v, App.ActiveDocument.ActiveObject)
 
         except ImportError as err:
             App.Console.PrintError("'Part::Pyramid' Failed. "
