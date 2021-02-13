@@ -21,8 +21,8 @@
 # *																		   *
 # *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 # ***************************************************************************
+
 from PySide import QtCore, QtGui
-import polyhedrons
 import sys
 import os
 import ImportGui
@@ -32,10 +32,11 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
 import Design456Init
+
+
 sys.path.append(Design456Init.PYRAMID_PATH)
-
-
 class Design456_Pyramid:
+    import polyhedrons
     list = ["Pyramid",
             "Tetrahedron",
             "Hexahedron",
@@ -47,6 +48,10 @@ class Design456_Pyramid:
             ]
 
     """Design456 Pyramid Toolbar"""
+    def Activated(self):
+        # creates a new toolbar with your commands
+        self.appendToolbar("Pyramid", self.list)
+        self.appendMenu("Pyramid", self.list)  # creates a new menu
 
     def GetResources(self):
         return{
@@ -54,14 +59,3 @@ class Design456_Pyramid:
             'MenuText': 'Pyramid',
                         'ToolTip':	'Pyramid'
         }
-
-    def IsActive(self):
-        if FreeCAD.ActiveDocument == None:
-            return False
-        else:
-            return True
-
-    def Activated(self):
-        # creates a new toolbar with your commands
-        self.appendToolbar("Pyramid", self.list)
-        self.appendMenu("Pyramid", self.list)  # creates a new menu
