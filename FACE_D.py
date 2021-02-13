@@ -92,48 +92,63 @@ class FACE_D:
                                    "{err}\n".format(err=str(err)))
 
 
-#This class is from A2P WB modified by Mariwan
-class PartMover:
-    def __init__(self, view, obj):
+# This class is from A2P WB modified by Mariwan
+class PartMover(object):
+    def __init__(self, CallerObject, view, obj, deleteOnEscape):
+        self.CallerObject = CallerObject
         self.obj = obj
         self.initialPosition = self.obj.Placement.Base
         self.view = view
-        self.callbackMove = self.view.addEventCallback("SoLocation2Event",self.moveMouse)
-        self.callbackClick = self.view.addEventCallback("SoMouseButtonEvent",self.clickMouse)
-        self.callbackKey = self.view.addEventCallback("SoKeyboardEvent",self.KeyboardEvent)
-        self.objectToDelete = None # object reference when pressing the escape key
+        self.deleteOnEscape = deleteOnEscape
+        self.callbackMove = self.view.addEventCallback(
+            "SoLocation2Event", self.moveMouse)
+        self.callbackClick = self.view.addEventCallback(
+            "SoMouseButtonEvent", self.clickMouse)
+        self.callbackKey = self.view.addEventCallback(
+            "SoKeyboardEvent", self.KeyboardEvent)
+        self.objectToDelete = None  # object reference when pressing the escape key
+        #Gui.Selection.clearSelection()
+        #Gui.Selection.addSelection(App.ActiveDocument.Name,
+        #                           self.CallerObject.Name)
+    def Deactivated(self):
+        self.removeCallbacks()
         
     def moveMouse(self, info):
-        newPos = self.view.getPoint( *info['Position'] )
+        newPos = self.view.getPoint(*info['Position'])
         self.obj.Placement.Base = newPos
-        
+        self.newPosition=newPos
+
     def removeCallbacks(self):
-        self.view.removeEventCallback("SoLocation2Event",self.callbackMove)
-        self.view.removeEventCallback("SoMouseButtonEvent",self.callbackClick)
-        self.view.removeEventCallback("SoKeyboardEvent",self.callbackKey)
-        
+        print('Remove callback')
+        self.view.removeEventCallback("SoLocation2Event", self.callbackMove)
+        self.view.removeEventCallback("SoMouseButtonEvent", self.callbackClick)
+        self.view.removeEventCallback("SoKeyboardEvent", self.callbackKey)
+
     def clickMouse(self, info):
-        if info['Button'] == 'BUTTON1' and info['State'] == 'DOWN':
-            #if not info['ShiftDown'] and not info['CtrlDown']: #struggles within Inventor Navigation
-            if not info['ShiftDown']:
-                self.removeCallbacks()
-                App.ActiveDocument.recompute()
-            elif info['ShiftDown']:
-                self.obj = duplicateImportedPart(self.obj)
-                self.deleteOnEscape = True
-                
+        if (info['Button'] == 'BUTTON1' and 
+            info['State'] == 'DOWN'):
+            # if not info['ShiftDown'] and not info['CtrlDown']: #struggles within Inventor Navigation
+            print('Mouse click \n')
+            newPos = self.view.getPoint(*info['Position'])
+            self.obj.Placement.Base = newPos
+            App.ActiveDocument.recompute()
+            self.removeCallbacks()
+
     def KeyboardEvent(self, info):
+        print('Escape pressed\n')
         if info['State'] == 'UP' and info['Key'] == 'ESCAPE':
             self.removeCallbacks()
             if not self.deleteOnEscape:
                 self.obj.Placement.Base = self.initialPosition
             else:
-                self.objectToDelete = self.obj #This can be asked by a timer in a calling func...
-                #This causes a crash in FC0.19/Qt5/Py3             
-                #FreeCAD.activeDocument().removeObject(self.obj.Name)
-#===============================================================================
+                # This can be asked by a timer in a calling func...
+                self.objectToDelete = self.obj
+
+                # This causes a crash in FC0.19/Qt5/Py3
+                # FreeCAD.activeDocument().removeObject(self.obj.Name)
+# ===============================================================================
 toolTip = \
-'''
+    '''
 Move the selected part.
 
 Select a part and hit this

@@ -81,8 +81,8 @@ class Design456_Part_Box:
             newObj = App.ActiveDocument.addObject("Part::Box", "Box")
             newObj.Label = "Cube"
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Box' Failed. "
@@ -108,8 +108,8 @@ class Design456_Part_Cylinder:
             newObj = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
             App.ActiveDocument.ActiveObject.Label = "Cylinder"
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Cylinder' Failed. "
@@ -135,8 +135,8 @@ class Design456_Part_Tube:
             Gui.activateWorkbench("Design456_Workbench")"""
             Gui.runCommand('Part_Tube', 0)
             newObj =App.ActiveDocument.ActiveObject
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             App.ActiveDocument.recompute()
             # Gui.SendMsgToActiveView("V
             # iewFit")
@@ -163,8 +163,8 @@ class Design456_Part_Sphere:
             newObj = App.ActiveDocument.addObject("Part::Sphere", "Sphere")
             App.ActiveDocument.ActiveObject.Label = "Sphere"
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Sphere' Failed. "
@@ -189,8 +189,8 @@ class Design456_Part_Cone:
             newObj = App.ActiveDocument.addObject("Part::Cone", "Cone")
             App.ActiveDocument.ActiveObject.Label = "Cone"
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Cone' Failed. "
@@ -215,8 +215,8 @@ class Design456_Part_Torus:
             newObj = App.ActiveDocument.addObject("Part::Torus", "Torus")
             App.ActiveDocument.ActiveObject.Label = "Torus"
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Torus' Failed. "
@@ -242,8 +242,8 @@ class Design456_Part_Wedge:
             newObj = App.ActiveDocument.addObject("Part::Wedge", "Wedge")
             App.ActiveDocument.ActiveObject.Label = "Wedge"
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Wedge' Failed. "
@@ -268,8 +268,8 @@ class Design456_Part_Prism:
             newObj = App.ActiveDocument.addObject("Part::Prism", "Prism")
             App.ActiveDocument.ActiveObject.Label = "Prism"
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Prism' Failed. "
@@ -338,8 +338,8 @@ class Design456_Part_Pyramid:
             App.ActiveDocument.removeObject(newObj1.Name)
             # App.ActiveDocument.removeObject(point)
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, App.ActiveDocument.ActiveObject)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
 
         except ImportError as err:
             App.Console.PrintError("'Part::Pyramid' Failed. "
@@ -384,8 +384,8 @@ class Design456_Part_Hemisphere:
                 App.Console.PrintError('Defeaturing failed\n')
             App.ActiveDocument.recompute()
             newObj= App.ActiveDocument.ActiveObject
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
 
         except ImportError as err:
             App.Console.PrintError("'Part::Hemisphere' Failed. "
@@ -412,8 +412,8 @@ class Design456_Part_Ellipsoid:
                 "Part::Ellipsoid", "Ellipsoid")
             App.ActiveDocument.ActiveObject.Label = "Ellipsoid"
             App.ActiveDocument.recompute()
-            v = Gui.ActiveDocument.activeView()
-            faced.PartMover(v, newObj)
+            v = Gui.ActiveDocument.ActiveView
+            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Ellipsoid' Failed. "

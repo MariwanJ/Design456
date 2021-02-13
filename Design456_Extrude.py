@@ -95,12 +95,4 @@ class Design456_Extrude:
 				'ToolTip':	'Extrude'
 				}
 
-#TODO:Maybe we don't need this after I combined Draft with Design456
-class ActivateGrid():
-	def Activated(self):
-		my_grid = DraftTrackers.gridTracker()
-		my_grid.set()
-		my_grid.on()
-		return
-		
 Gui.addCommand('Design456_Extrude', Design456_Extrude())
