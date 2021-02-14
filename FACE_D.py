@@ -98,6 +98,7 @@ class FACE_D:
             should use twice ESC
 """
 class PartMover(object):
+    view=obj=None
     def __init__(self, CallerObject, view, obj, deleteOnEscape):
         self.CallerObject = CallerObject
         self.obj = obj

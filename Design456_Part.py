@@ -379,7 +379,7 @@ class Design456_Part_Hemisphere:
             neObj = App.ActiveDocument.addObject(
                 "Part::Sphere", "tempHemisphere")
             neObj.Radius = QtGui.QInputDialog.getDouble(
-                None, "Radius", "Input:")[0]
+                None, "Radius", "Radius:")[0]
             neObj.Placement = App.Placement(App.Vector(
                 0.00, 0.00, 0.00), App.Rotation(App.Vector(1.00, 0.00, 0.00), 90.00))
             neObj.Angle1 = '-90.00 deg'
