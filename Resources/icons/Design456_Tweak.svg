@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -14,8 +12,8 @@
    viewBox="0 0 16.933333 16.933334"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="Tweak.svg">
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)"
+   sodipodi:docname="Design456_Tweak.svg">
   <defs
      id="defs2">
     <inkscape:perspective
@@ -51,7 +49,8 @@
      inkscape:window-height="1001"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:document-rotation="0" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -73,16 +72,16 @@
        id="text880"
        y="290.68137"
        x="12.384888"
-       style="font-style:normal;font-variant:normal;font-weight:400;font-size:0.94217581px;line-height:125%;font-family:'Times New Roman';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.05888599"
+       style="font-style:normal;font-variant:normal;font-weight:400;font-size:0.942176px;line-height:125%;font-family:'Times New Roman';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.058886"
        xml:space="preserve"
        transform="scale(0.99031093,1.0097839)"><tspan
          id="tspan878"
          y="290.68137"
          x="12.384888"
          sodipodi:role="line"
-         style="stroke-width:0.05888599"><tspan
+         style="stroke-width:0.058886"><tspan
            id="tspan876"
-           style="font-style:normal;font-variant:normal;font-weight:400;font-size:0.94217581px;font-family:'Times New Roman';fill:#000000;stroke-width:0.05888599"
+           style="font-style:normal;font-variant:normal;font-weight:400;font-size:0.942176px;font-family:'Times New Roman';fill:#000000;stroke-width:0.058886"
            dy="0"
            dx="0"> </tspan></tspan></text>
     <path
@@ -115,9 +114,9 @@
          id="text917"
          y="257.62088"
          x="36.875187"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.3554399px;line-height:1.25;font-family:Brigherdz;-inkscape-font-specification:Brigherdz;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.05888599"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.35544px;line-height:1.25;font-family:Brigherdz;-inkscape-font-specification:Brigherdz;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.058886"
          xml:space="preserve"><tspan
-           style="stroke:#000000;stroke-width:0.05888599;stroke-opacity:1"
+           style="stroke:#000000;stroke-width:0.058886;stroke-opacity:1"
            y="257.62088"
            x="36.875187"
            id="tspan915"
@@ -129,9 +128,9 @@
          id="text917-7"
          y="243.20839"
          x="35.632004"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.63799667px;line-height:1.25;font-family:Brigherdz;-inkscape-font-specification:Brigherdz;letter-spacing:0px;word-spacing:0px;fill:#e12b2a;fill-opacity:1;stroke:none;stroke-width:0.06594991"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.638px;line-height:1.25;font-family:Brigherdz;-inkscape-font-specification:Brigherdz;letter-spacing:0px;word-spacing:0px;fill:#e12b2a;fill-opacity:1;stroke:none;stroke-width:0.0659499"
          xml:space="preserve"><tspan
-           style="fill:#e12b2a;fill-opacity:1;stroke:#000000;stroke-width:0.06594991;stroke-opacity:1"
+           style="fill:#e12b2a;fill-opacity:1;stroke:#000000;stroke-width:0.0659499;stroke-opacity:1"
            y="243.20839"
            x="35.632004"
            id="tspan915-7"
