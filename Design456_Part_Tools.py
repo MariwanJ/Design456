@@ -271,3 +271,45 @@ class Design456_Part_Group:
 
 
 Gui.addCommand('Design456_Part_Group', Design456_Part_Group())
+
+
+# Compund
+class Design456_Part_Compound:
+		
+	def Activated(self):
+		try:
+			s = Gui.Selection.getSelectionEx()
+			temp=None
+			if (len(s)<2) :
+				#Two object must be selected
+				errMessage= "Select two or more objects to Merge"
+				self.errorDialog(errMessage)
+				return
+			allObjects=[]
+			for o in s:
+				allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
+			
+			newObj=App.activeDocument().addObject("Part::Compound","TempCompound")
+			App.ActiveDocument.Compund.Links = allObjects 
+						#Make a simple copy
+			newShape=Part.getShape(newObj,'',needSubElement=False,refine=False)
+			NewJ=App.ActiveDocument.addObject('Part::Feature','Compound').Shape=newShape
+			
+			#Remove Old objects
+			for obj in allObjects:
+				App.ActiveDocument.removeObject(obj.Name)
+			App.ActiveDocument.removeObject(newObj.Name)
+			
+			
+			App.ActiveDocument.recompute()
+		except ImportError as err:
+			App.Console.PrintError("'Part::Compund' Failed. "
+								   "{err}\n".format(err=str(err)))
+	def GetResources(self):
+		return {
+				'Pixmap' : Design456Init.ICON_PATH + '/Part_Compund.svg',
+				'MenuText': 'Part_Compund',
+				'ToolTip':	'Part Compound'
+				}
+Gui.addCommand('Design456_Part_Compound', Design456_Part_Compound())						
+"""
