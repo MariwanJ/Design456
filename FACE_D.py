@@ -176,8 +176,6 @@ class PartMover(object):
             print('Mouse click error')
             return
 
-        self.Number_of_Planes = len(Selected_Planes)
-
 
 """ This class will return back info about the         
     face selected. Many options are available but
