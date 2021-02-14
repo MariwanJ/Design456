@@ -1,6 +1,6 @@
 # ***************************************************************************
 # *                                                                         *
-# *  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
+# *  This file is part of the Open Source Design456 Workbench - App.    *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
 # *																		   *
@@ -24,6 +24,8 @@
 
 from PySide.QtCore import QT_TRANSLATE_NOOP
 import Draft_rc
+import FreeCAD as App
+import FreeCADGui as Gui
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
@@ -47,7 +49,7 @@ class Design456_Workbench (Workbench):
         import Design456_ExtrudeFace
         import Design456_SplitObject
         import Design456_loftOnDirection
-        import	Design456_Tweak	 as twk
+
 
         import Design456_Part as designPart
         import Design456_Part_Tools as pUtils
@@ -85,20 +87,20 @@ class Design456_Workbench (Workbench):
         dependencies_OK = False
         try:
             from pivy import coin
-            if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
+            if Gui.getSoDBVersion() != coin.SoDB.getVersion():
                 raise AssertionError("FreeCAD and Pivy use different versions "
                                      "of Coin. "
                                      "This will lead to unexpected behavior.")
         except AssertionError:
-            FreeCAD.Console.PrintWarning("Error: FreeCAD and Pivy "
+            App.Console.PrintWarning("Error: FreeCAD and Pivy "
                                          "use different versions of Coin. "
                                          "This will lead to unexpected "
                                          "behavior.\n")
         except ImportError:
-            FreeCAD.Console.PrintWarning("Error: Pivy not found, "
+            App.Console.PrintWarning("Error: Pivy not found, "
                                          "Draft Workbench will be disabled.\n")
         except Exception:
-            FreeCAD.Console.PrintWarning("Error: Unknown error "
+            App.Console.PrintWarning("Error: Unknown error "
                                          "while trying to load Pivy.\n")
         else:
             dependencies_OK = True
@@ -141,11 +143,11 @@ class Design456_Workbench (Workbench):
             import DraftTools
             import DraftGui
             import DraftFillet
-            FreeCADGui.addLanguagePath(":/translations")
-            FreeCADGui.addIconPath(":/icons")
+            Gui.addLanguagePath(":/translations")
+            Gui.addIconPath(":/icons")
         except Exception as exc:
-            FreeCAD.Console.PrintError(exc)
-            FreeCAD.Console.PrintError("Error: Initializing one or more "
+            App.Console.PrintError(exc)
+            App.Console.PrintError("Error: Initializing one or more "
                                        "of the Draft modules failed, "
                                        "Draft will not work as expected.\n")
         try:
@@ -181,54 +183,54 @@ class Design456_Workbench (Workbench):
 
             # Set up preferences pages
             if hasattr(FreeCADGui, "draftToolBar"):
-                if not hasattr(FreeCADGui.draftToolBar, "loadedPreferences"):
-                    FreeCADGui.addPreferencePage(
+                if not hasattr(Gui.draftToolBar, "loadedPreferences"):
+                    Gui.addPreferencePage(
                         ":/ui/preferences-draft.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.addPreferencePage(
+                    Gui.addPreferencePage(
                         ":/ui/preferences-draftinterface.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.addPreferencePage(
+                    Gui.addPreferencePage(
                         ":/ui/preferences-draftsnap.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.addPreferencePage(
+                    Gui.addPreferencePage(
                         ":/ui/preferences-draftvisual.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.addPreferencePage(
+                    Gui.addPreferencePage(
                         ":/ui/preferences-drafttexts.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.draftToolBar.loadedPreferences = True
+                    Gui.draftToolBar.loadedPreferences = True
                 # END DRAFT
         except Exception as exc:
-            FreeCAD.Console.PrintError(exc)
-            FreeCAD.Console.PrintError("Error: Initializing one or more "
+            App.Console.PrintError(exc)
+            App.Console.PrintError("Error: Initializing one or more "
                                        "of the Draft modules failed, "
                                        "Draft will not work as expected.\n")
 
     def Activated(self):
         try:
             import WorkingPlane
-            if not(FreeCAD.ActiveDocument):
-                FreeCAD.newDocument()
+            if not(App.ActiveDocument):
+                App.newDocument()
 
             # FROM DRAFT
             if hasattr(FreeCADGui, "draftToolBar"):
-                FreeCADGui.draftToolBar.Activated()
+                Gui.draftToolBar.Activated()
             if hasattr(FreeCADGui, "Snapper"):
-                FreeCADGui.Snapper.show()
+                Gui.Snapper.show()
                 import draftutils.init_draft_statusbar as dsb
                 dsb.show_draft_statusbar()
             # Fix the view of the grid make it as 123D Design
             App.DraftWorkingPlane.alignToPointAndAxis(
-                FreeCAD.Vector(0.0, 0.0, 0.0), FreeCAD.Vector(0, 0, 1), 0.0)
+                App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, 1), 0.0)
             Gui.Snapper.setGrid()
             Gui.activeDocument().activeView().viewTop()
             Gui.activeDocument().activeView().viewIsometric()
             for x in range(1, 12):
-                FreeCADGui.ActiveDocument.ActiveView.zoomOut()
+                Gui.ActiveDocument.ActiveView.zoomOut()
 
-            FreeCAD.Console.PrintLog(
+            App.Console.PrintLog(
                 "Draft workbench activated Inside Design456.\n")
-            FreeCAD.Console.PrintMessage('Design456 workbench loaded\n')
+            App.Console.PrintMessage('Design456 workbench loaded\n')
             return
         except Exception as exc:
-            FreeCAD.Console.PrintError(exc)
-            FreeCAD.Console.PrintError("Error: Draft activation "
+            App.Console.PrintError(exc)
+            App.Console.PrintError("Error: Draft activation "
                                        "failed, "
                                        "Draft will not work as expected.\n")
 
@@ -236,24 +238,24 @@ class Design456_Workbench (Workbench):
         try:
             "workbench deactivated"
             if hasattr(FreeCADGui, "draftToolBar"):
-                FreeCADGui.draftToolBar.Deactivated()
+                Gui.draftToolBar.Deactivated()
             if hasattr(FreeCADGui, "Snapper"):
-                FreeCADGui.Snapper.hide()
+                Gui.Snapper.hide()
                 import draftutils.init_draft_statusbar as dsb
                 dsb.hide_draft_statusbar()
-            FreeCAD.Console.PrintLog(
+            App.Console.PrintLog(
                 "Design456/Draft workbench deactivated.\n")
             return
         except Exception as exc:
-            FreeCAD.Console.PrintError(exc)
-            FreeCAD.Console.PrintError("Error: Draft deactivation failed\n")
+            App.Console.PrintError(exc)
+            App.Console.PrintError("Error: Draft deactivation failed\n")
 
     def ContextMenu(self, recipient):
         "right-clicks on screen"
         try:
             import Design456_Part as designPart
+            import Design456_Tweak as twk
             self.appendContextMenu("Design456", self.list)
-            self.appendContextMenu("Design456_Tweak",twk.Design456.list)
             # from DRAFT
             """Define an optional custom context menu."""
             # from Design456_PART
@@ -261,8 +263,8 @@ class Design456_Workbench (Workbench):
                 "Design456_Part", designPart.Design456_Part_ToolBar.list)
             from DraftGui import translate
             if recipient == "View":
-                if FreeCAD.activeDraftCommand is None:
-                    if FreeCADGui.Selection.getSelection():
+                if App.activeDraftCommand is None:
+                    if Gui.Selection.getSelection():
                         self.appendContextMenu(
                             "Draft", self.drawing_commands + self.modification_commands)
                         self.appendContextMenu(
@@ -270,7 +272,7 @@ class Design456_Workbench (Workbench):
                     else:
                         self.appendContextMenu("Draft", self.drawing_commands)
                 else:
-                    if FreeCAD.activeDraftCommand.featureName in (translate("draft", "Line"),
+                    if App.activeDraftCommand.featureName in (translate("draft", "Line"),
                                                                   translate(
                                                                       "draft", "Wire"),
                                                                   translate(
@@ -282,12 +284,12 @@ class Design456_Workbench (Workbench):
                                                                   translate("draft", "CubicBezCurve")):
                         self.appendContextMenu("", self.line_commands)
             else:
-                if FreeCADGui.Selection.getSelection():
+                if Gui.Selection.getSelection():
                     self.appendContextMenu("Utilities", self.context_commands)
             # END DRAFT
         except Exception as exc:
-            FreeCAD.Console.PrintError(exc)
-            FreeCAD.Console.PrintError("Error: Draft ContexMenu "
+            App.Console.PrintError(exc)
+            App.Console.PrintError("Error: Draft ContexMenu "
                                        "failed, "
                                        "Draft will not work as expected.\n")
 
@@ -299,13 +301,13 @@ Gui.addWorkbench(Design456_Workbench())
 # FROM DRAFT
 # Preference pages for importing and exporting various file formats
 # are independent of the loading of the workbench and can be loaded at startup
-FreeCADGui.addPreferencePage(
+Gui.addPreferencePage(
     ":/ui/preferences-dxf.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
-FreeCADGui.addPreferencePage(
+Gui.addPreferencePage(
     ":/ui/preferences-dwg.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
-FreeCADGui.addPreferencePage(
+Gui.addPreferencePage(
     ":/ui/preferences-svg.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
-FreeCADGui.addPreferencePage(
+Gui.addPreferencePage(
     ":/ui/preferences-oca.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
 
-FreeCAD.__unit_test__ += ["TestDraftGui"]
+App.__unit_test__ += ["TestDraftGui"]

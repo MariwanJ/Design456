@@ -339,17 +339,23 @@ class Design456_Part_Shell:
             currentObj = App.ActiveDocument.getObject(s[0].ObjectName)
             currentObjLink = currentObj.getLinkedObject(True)
             thickObj = App.ActiveDocument.addObject("Part::Thickness", "tempThickness")
-            getSel=s[0]
-            getfacename = faced.getInfo(getSel).getFaceName
-            thickObj.Faces=App.ActiveDocument.getObject(currentObj,getfacename,)
-            NewJ = App.ActiveDocument.addObject('Part::Feature', 'Thickness').Shape = newShape
-
+            thickObj.Value=QtGui.QInputDialog.getDouble(None, "Thickness", "Value:")[0]
+            thickObj.Join=0
+            thickObj.Mode=0
+            thickObj.Intersection =False
+            thickObj.SelfIntersection = False
+            getfacename = faced.getInfo(s[0]).getFaceName()
+            thickObj.Faces=(currentObj,getfacename,)
+            NewJ = App.ActiveDocument.addObject('Part::Feature', 'Thickness').Shape = thickObj.Shape
+            App.ActiveDocument.recompute()
+            """
             # Remove Old objects
             for obj in allObjects:
                 App.ActiveDocument.removeObject(obj.Name)
-            App.ActiveDocument.removeObject(newObj.Name)
+            App.ActiveDocument.removeObject(thickObj.Name)
 
             App.ActiveDocument.recompute()
+            """
         except ImportError as err:
             App.Console.PrintError("'Part::Shell' Failed. "
                                    "{err}\n".format(err=str(err)))
