@@ -93,6 +93,10 @@ class FACE_D:
 
 
 # This class is from A2P WB modified by Mariwan
+""" TODO : There is a bug either it is FreeCAD or this class
+            The callback is not removed after click. You
+            should use twice ESC
+"""
 class PartMover(object):
     def __init__(self, CallerObject, view, obj, deleteOnEscape):
         self.CallerObject = CallerObject
@@ -107,51 +111,53 @@ class PartMover(object):
         self.callbackKey = self.view.addEventCallback(
             "SoKeyboardEvent", self.KeyboardEvent)
         self.objectToDelete = None  # object reference when pressing the escape key
-        #Gui.Selection.clearSelection()
-        #Gui.Selection.addSelection(App.ActiveDocument.Name,
+        # Gui.Selection.clearSelection()
+        # Gui.Selection.addSelection(App.ActiveDocument.Name,
         #                           self.CallerObject.Name)
+
     def Deactivated(self):
         self.removeCallbacks()
-        
+
     def moveMouse(self, info):
         try:
             newPos = self.view.getPoint(*info['Position'])
             self.obj.Placement.Base = newPos
-            self.newPosition=newPos
+            self.newPosition = newPos
         except:
             print('Mouse move error')
             return
 
-
     def removeCallbacks(self):
         try:
             print('Remove callback')
-            self.view.removeEventCallback("SoLocation2Event", self.callbackMove)
-            self.view.removeEventCallback("SoMouseButtonEvent", self.callbackClick)
+            self.view.removeEventCallback(
+                "SoLocation2Event", self.callbackMove)
+            self.view.removeEventCallback(
+                "SoMouseButtonEvent", self.callbackClick)
             self.view.removeEventCallback("SoKeyboardEvent", self.callbackKey)
             App.closeActiveTransaction(True)
             self.active = False
             self.info = None
-            self.view = None 
+            self.view = None
         except:
-                print('remove callback error')
-                return
+            print('remove callback error')
+            return
 
     def clickMouse(self, info):
         try:
-            if (info['Button'] == 'BUTTON1' and 
-                info['State'] == 'DOWN'):
+            if (info['Button'] == 'BUTTON1' and
+                    info['State'] == 'DOWN'):
                 # if not info['ShiftDown'] and not info['CtrlDown']: #struggles within Inventor Navigation
                 print('Mouse click \n')
                 newPos = self.view.getPoint(*info['Position'])
                 self.obj.Placement.Base = newPos
                 self.removeCallbacks()
-                self.obj=None
+                self.obj = None
                 App.ActiveDocument.recompute()
             return
         except:
-                print('Mouse click error')
-                return
+            print('Mouse click error')
+            return
 
     def KeyboardEvent(self, info):
         try:
@@ -167,5 +173,192 @@ class PartMover(object):
                     # This causes a crash in FC0.19/Qt5/Py3
                     # FreeCAD.activeDocument().removeObject(self.obj.Name)
         except:
-                print('Mouse click error')
-                return
+            print('Mouse click error')
+            return
+
+        self.Number_of_Planes = len(Selected_Planes)
+
+
+""" This class will return back info about the         
+    face selected. Many options are available but
+    I will put only what I need See the note bellow for available info
+    Give the class Gui.Selection()[nr] where nr is the face you want to get info
+    
+
+TODO: This class will be update to be witable for all kind of movements of objects
+    Mariwan 
+"""
+
+
+class getInfo(object):
+    def __init__(self, object):
+        self.obj = object
+
+    def getFaceName(self):
+        return (self.obj.SubElementNames[0])
+
+    def getObjectCenterOfMass(self):
+        return(self.obj.SubObjects[0].CenterOfMass)
+
+    def getObjectX(self):
+        return(self.obj.SubObjects[0].CenterOfMass.x)
+
+    def getObjectY(self):
+        return(self.obj.SubObjects[0].CenterOfMass.y)
+
+    def getObjectZ(self):
+        return(self.obj.SubObjects[0].CenterOfMass.z)
+
+    def getObjectBase(self):
+        return (self.obj.SubObjects[0].Placement.Base())
+
+    def getObjectPlacement(self):
+        return (self.obj.SubObjects[0].Placement())
+
+    def getObjectRotation(self):
+        return (self.obj.SubObjects[0].Placement.Rotation())
+
+    def getObjectParameterRange(self):
+        return (self.obj.SubObjects[0].ParameterRange())
+
+
+"""
+You can get these infos from obj.SubObjects[0]. which is a face
+
+Area
+BoundBox
+CenterOfMass
+CompSolids
+Compounds
+Content
+Edges
+Faces
+Length
+Mass
+Matrix
+MatrixOfInertia
+MemSize
+Module
+Orientation
+OuterWire
+ParameterRange
+Placement
+PrincipalProperties
+ShapeType
+Shells
+Solids
+StaticMoments
+SubShapes
+Surface
+Tag
+Tolerance
+TypeId
+Vertexes
+Volume
+Wire
+Wires
+addWire
+ancestorsOfType
+check
+childShapes
+cleaned
+common
+complement
+copy
+countElement
+curvatureAt
+curveOnSurface
+cut
+cutHoles
+defeaturing
+derivative1At
+derivative2At
+distToShape
+dumpContent
+dumpToString
+exportBinary
+exportBrep
+exportBrepToString
+exportIges
+exportStep
+exportStl
+extrude
+findPlane
+fix
+fixTolerance
+fuse
+generalFuse
+getAllDerivedFrom
+getElement
+getFacesFromSubelement
+getTolerance
+getUVNodes
+globalTolerance
+hashCode
+importBinary
+importBrep
+importBrepFromString
+inTolerance
+isClosed
+isCoplanar
+isDerivedFrom
+isEqual
+isInfinite
+isInside
+isNull
+isPartOfDomain
+isPartner
+isSame
+isValid
+limitTolerance
+makeChamfer
+makeFillet
+makeHalfSpace
+makeOffset
+makeOffset2D
+makeOffsetShape
+makeParallelProjection
+makePerspectiveProjection
+makeShapeFromMesh
+makeThickness
+makeWires
+mirror
+multiFuse
+normalAt
+nullify
+oldFuse
+optimalBoundingBox
+overTolerance
+project
+proximity
+read
+reflectLines
+removeInternalWires
+removeShape
+removeSplitter
+replaceShape
+restoreContent
+reverse
+reversed
+revolve
+rotate
+rotated
+scale
+scaled
+section
+sewShape
+slice
+slices
+tangentAt
+tessellate
+toNurbs
+transformGeometry
+transformShape
+transformed
+translate
+translated
+validate
+valueAt
+writeInventor
+
+        """

@@ -27,85 +27,34 @@ import FreeCADGui as Gui
 import Draft
 import Part
 import Design456Init
+import FACE_D as faced
+
+# Move an object to the location of the mouse click on another surface
 
 
-class Design456_Tool_Magnet:
-    obj1 = obj2 = None
-    sub1 = sub2 = None
-    clickpos1 = clickpos2 = None
-    doc = obj = sub = None
-    # Obj1 will be moved on top of Object2
+class Design456_Magnet:
 
-    def __init__(self, view):
-        self.view = view
+    def Activated(self):
+        s = Gui.Selection.getSelectionEx()
+        if (len(s) < 1):
+            # Two object must be selected
+            errMessage = "Select two or more objects to use Magnet Tool"
+            self.errorDialog(errMessage)
+            return
+        sub1 = Gui.Selection.getSelectionEx()[0]
+        sub2 = Gui.Selection.getSelectionEx()[1]
 
-    def setPreselection(self, doc, obj, sub):                # Preselection object
-        # The part of the object name
-        self.doc = doc
-        self.obj = obj
-        self.sub = sub
-        #App.Console.PrintMessage(str(sub) + "\n")
-
-    """
-    def addSelection(self,doc,obj,sub,pnt):               # Selection object
-        App.Console.PrintMessage("addSelection"+ "\n")
-        # Name of the document
-        App.Console.PrintMessage(str(doc)+ "\n")
-        App.Console.PrintMessage(str(obj)+ "\n")          # Name of the object
-        # The part of the object name
-        App.Console.PrintMessage(str(sub)+ "\n")
-        # Coordinates of the object
-        App.Console.PrintMessage(str(pnt)+ "\n")
-        App.Console.PrintMessage("______"+ "\n")
-    """
-
-    def logPosition(self, info):
-        down = (info["State"] == "DOWN")
-        pos = info["Position"]
-        if (down):
-            if(self.clickpos1 == None):
-                self.clickpos1 = self.view.getPoint(pos)
-            elif(self.clickpos2 == None):
-                self.clickpos2 = self.view.getPoint(pos)
-            else:
-                clickpos1 = self.view.getPoint(pos)
-                clickpos2 = None
-        self.setSelection(self.doc, self.obj, self.sub)
-
-    def Magnet(self, OBJ1, OBJ2):
         # Move OBJ1 to be on Top2
-        print(self.clickpos2)
-        print(OBJ1.Placement)
-        OBJ1.Placement = self.clickpos2
+        obj2info = faced.getInfo(sub2)
+        sub1.Object.Placement.Base = obj2info.getObjectCenterOfMass()
         App.ActiveDocument.recompute()
-        print(OBJ1.Placement)
 
-    def removeSelection(self, doc, obj, sub):                # Delete the selected object
-        #App.Console.PrintMessage("removeSelection" + "\n")
-        return
-
-    def setSelection(self, doc, obj, sub):                           # Selection in ComboView
-        if (self.obj1 == None):
-            self.obj1 = obj
-            self.sub1 = sub
-        elif(self.obj2 == None):
-            self.obj2 = obj
-            self.sub2 = sub
-        else:
-            # We have two objects do the job.
-            self.Magnet(self.obj1, self.obj2)
-
-    # If click on the screen, clear the selection
-    def clearSelection(self, doc):
-        # If click on another object, clear the previous object
-        return
-        #App.Console.PrintMessage("clearSelection" + "\n")
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/Part_Magnet.svg',
+            'MenuText': 'Part_Magnet',
+                        'ToolTip':	'Part Magnet'
+        }
 
 
-v = Gui.activeDocument().activeView()
-s = Design456_Tool_Magnet(v)
-# install the function mode resident
-
-c = v.addEventCallback("SoMouseButtonEvent", s.logPosition)
-Gui.Selection.addObserver(s)
-# FreeCADGui.Selection.removeObserver(s)
+Gui.addCommand('Design456_Magnet', Design456_Magnet())

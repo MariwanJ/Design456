@@ -30,6 +30,7 @@ import Draft
 import Part
 import Design456Init
 import Design456_Tweak
+import Design456_Magnet
 
 from PySide import QtCore, QtGui
 
@@ -39,7 +40,9 @@ class Design456_Part_Tools:
             "Design456_Part_Subtract",
             "Design456_Part_Intersect",
             "Design456_Part_Group",
-            "Design456_Tweak"]
+            "Design456_Tweak",
+            "Design456_Magnet",
+            "Design456_Part_Shell"]
 
     """Design456 Part Tools Toolbar"""
 
@@ -275,27 +278,74 @@ Gui.addCommand('Design456_Part_Group', Design456_Part_Group())
 
 # Compund
 class Design456_Part_Compound:
-		
+
 	def Activated(self):
 		try:
 			s = Gui.Selection.getSelectionEx()
-			temp=None
-			if (len(s)<2) :
-				#Two object must be selected
-				errMessage= "Select two or more objects to Merge"
+			temp = None
+			if (len(s) < 2):
+				# Two object must be selected
+				errMessage = "Select two or more objects to Merge"
 				self.errorDialog(errMessage)
 				return
-			allObjects=[]
+			allObjects = []
 			for o in s:
 				allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
-			
-			newObj=App.activeDocument().addObject("Part::Compound","TempCompound")
-			App.ActiveDocument.Compund.Links = allObjects 
-						#Make a simple copy
+
+			newObj = App.activeDocument().addObject("Part::Compound", "TempCompound")
+			App.ActiveDocument.Compund.Links = allObjects
+						# Make a simple copy
+			newShape = Part.getShape(newObj, '', needSubElement=False, refine=False)
+			NewJ = App.ActiveDocument.addObject(
+			    'Part::Feature', 'Compound').Shape = newShape
+
+			# Remove Old objects
+			for obj in allObjects:
+				App.ActiveDocument.removeObject(obj.Name)
+			App.ActiveDocument.removeObject(newObj.Name)
+
+			App.ActiveDocument.recompute()
+		except ImportError as err:
+			App.Console.PrintError("'Part::Compund' Failed. "
+								   "{err}\n".format(err=str(err)))
+
+	def GetResources(self):
+		return {
+				'Pixmap': Design456Init.ICON_PATH + '/Part_Compund.svg',
+				'MenuText': 'Part_Compund',
+				'ToolTip':	'Part Compound'
+				}
+
+
+Gui.addCommand('Design456_Part_Compound', Design456_Part_Compound())
+
+# Shell
+
+
+class Design456_Part_Shell:
+	def Activated(self):
+		try:
+			s = Gui.Selection.getSelectionEx()
+			temp = None
+			if (len(s) < 1):
+				# Two object must be selected
+				errMessage = "Select two or more objects to Merge"
+				self.errorDialog(errMessage)
+				return
+			allObjects = []
+			for o in s:
+				allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
+			currentObj = App.ActiveDocument.getObject(s[0].ObjectName)
+			currentObjLink = currentObj.getLinkedObject(True)
+			thickObj = App.ActiveDocument.addObject("Part::Thickness", "tempThickness")
+			objAttr=getattr(currentObjLink.ViewObject,'Color',thickObj.ViewObject.LineColor)
+			thickObj.ViewObject.LineColor=objAttr
+			newObj=thickObj
+			# Make a simple copy
 			newShape=Part.getShape(newObj,'',needSubElement=False,refine=False)
 			NewJ=App.ActiveDocument.addObject('Part::Feature','Compound').Shape=newShape
 			
-			#Remove Old objects
+			# Remove Old objects
 			for obj in allObjects:
 				App.ActiveDocument.removeObject(obj.Name)
 			App.ActiveDocument.removeObject(newObj.Name)
@@ -303,13 +353,12 @@ class Design456_Part_Compound:
 			
 			App.ActiveDocument.recompute()
 		except ImportError as err:
-			App.Console.PrintError("'Part::Compund' Failed. "
+			App.Console.PrintError("'Part::Shell' Failed. "
 								   "{err}\n".format(err=str(err)))
 	def GetResources(self):
 		return {
-				'Pixmap' : Design456Init.ICON_PATH + '/Part_Compund.svg',
-				'MenuText': 'Part_Compund',
-				'ToolTip':	'Part Compound'
+				'Pixmap' : Design456Init.ICON_PATH + '/PartDesign_Shell.svg',
+				'MenuText': 'Part_Shell',
+				'ToolTip':	'Part Shell'
 				}
-Gui.addCommand('Design456_Part_Compound', Design456_Part_Compound())						
-"""
+Gui.addCommand('Design456_Part_Shell', Design456_Part_Shell())
