@@ -114,50 +114,58 @@ class PartMover(object):
         self.removeCallbacks()
         
     def moveMouse(self, info):
-        newPos = self.view.getPoint(*info['Position'])
-        self.obj.Placement.Base = newPos
-        self.newPosition=newPos
-
-    def removeCallbacks(self):
-        print('Remove callback')
-        self.view.removeEventCallback("SoLocation2Event", self.callbackMove)
-        self.view.removeEventCallback("SoMouseButtonEvent", self.callbackClick)
-        self.view.removeEventCallback("SoKeyboardEvent", self.callbackKey)
-
-    def clickMouse(self, info):
-        if (info['Button'] == 'BUTTON1' and 
-            info['State'] == 'DOWN'):
-            # if not info['ShiftDown'] and not info['CtrlDown']: #struggles within Inventor Navigation
-            print('Mouse click \n')
+        try:
             newPos = self.view.getPoint(*info['Position'])
             self.obj.Placement.Base = newPos
-            App.ActiveDocument.recompute()
-            self.removeCallbacks()
-        else:
+            self.newPosition=newPos
+        except:
+            print('Mouse move error')
             return
 
+
+    def removeCallbacks(self):
+        try:
+            print('Remove callback')
+            self.view.removeEventCallback("SoLocation2Event", self.callbackMove)
+            self.view.removeEventCallback("SoMouseButtonEvent", self.callbackClick)
+            self.view.removeEventCallback("SoKeyboardEvent", self.callbackKey)
+            App.closeActiveTransaction(True)
+            self.active = False
+            self.info = None
+            self.view = None 
+        except:
+                print('remove callback error')
+                return
+
+    def clickMouse(self, info):
+        try:
+            if (info['Button'] == 'BUTTON1' and 
+                info['State'] == 'DOWN'):
+                # if not info['ShiftDown'] and not info['CtrlDown']: #struggles within Inventor Navigation
+                print('Mouse click \n')
+                newPos = self.view.getPoint(*info['Position'])
+                self.obj.Placement.Base = newPos
+                self.removeCallbacks()
+                self.obj=None
+                App.ActiveDocument.recompute()
+            return
+        except:
+                print('Mouse click error')
+                return
+
     def KeyboardEvent(self, info):
-        print('Escape pressed\n')
-        if info['State'] == 'UP' and info['Key'] == 'ESCAPE':
-            self.removeCallbacks()
-            if not self.deleteOnEscape:
-                self.obj.Placement.Base = self.initialPosition
-            else:
-                # This can be asked by a timer in a calling func...
-                self.objectToDelete = self.obj
+        try:
+            print('Escape pressed\n')
+            if info['State'] == 'UP' and info['Key'] == 'ESCAPE':
+                self.removeCallbacks()
+                if not self.deleteOnEscape:
+                    self.obj.Placement.Base = self.initialPosition
+                else:
+                    # This can be asked by a timer in a calling func...
+                    self.objectToDelete = self.obj
 
-                # This causes a crash in FC0.19/Qt5/Py3
-                # FreeCAD.activeDocument().removeObject(self.obj.Name)
-# ===============================================================================
-toolTip = \
-    '''
-Move the selected part.
-
-Select a part and hit this
-button. The part can be moved
-around by mouse.
-
-If the part is constrained, it
-will jump back by next solving
-of the assembly.
-'''
+                    # This causes a crash in FC0.19/Qt5/Py3
+                    # FreeCAD.activeDocument().removeObject(self.obj.Name)
+        except:
+                print('Mouse click error')
+                return

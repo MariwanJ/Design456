@@ -259,9 +259,9 @@ class Design456_Tweak(gui_move.Move):
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Move.svg',
-            'MenuText': 'Move',
-            'ToolTip':  'Move Object'
+            'Pixmap': Design456Init.ICON_PATH + '/Design456_Tweak.svg',
+            'MenuText': 'Tweak',
+            'ToolTip':  'Tweak Object'
         }
 
     def proceed(self):

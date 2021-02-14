@@ -37,9 +37,12 @@ import CompoundTools._CommandExplodeCompound
 
 import Design456Init
 # from Part import CommandShapes	 #Tube	 not working
+import sys
+import os
 
-
+sys.path.append(Design456Init.PYRAMID_PATH)
 class Design456_Part_ToolBar:
+    import polyhedrons
     list = ["Design456_Part_Box",
             "Design456_Part_Cylinder",
             "Design456_Part_Tube",
@@ -50,8 +53,19 @@ class Design456_Part_ToolBar:
             "Design456_Part_Prism",
             "Design456_Part_Pyramid",
             "Design456_Part_Hemisphere",
-            "Design456_Part_Ellipsoid"
+            "Design456_Part_Ellipsoid",
+            "Pyramid",
+            "Tetrahedron",
+            #"Hexahedron",               #No need for this as box is in part.
+            "Octahedron",
+            "Dodecahedron",
+            "Icosahedron",
+            "Icosahedron_truncated",
+            "Geodesic_sphere"
             ]
+
+
+
 
     """Design456 Part Toolbar"""
 
