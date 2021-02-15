@@ -49,6 +49,7 @@ class Design456_Workbench (Workbench):
         import Design456_ExtrudeFace
         import Design456_SplitObject
         import Design456_loftOnDirection
+        import Design456_Part_Utils
 
 
         import Design456_Part as designPart
@@ -61,6 +62,7 @@ class Design456_Workbench (Workbench):
                      "Design456_ExtrudeFace",
                      "Design456_SplitObject",
                      "Design456_loftOnDirection",
+                     "Design456_CommonFace"
                      ]
         self.appendToolbar("Design456", self.list)
         self.appendMenu("Design456", self.list)

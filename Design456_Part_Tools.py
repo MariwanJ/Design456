@@ -22,6 +22,7 @@
 # *	Author :Mariwan Jalal	 mariwan.jalal@gmail.com			           *
 # ***************************************************************************
 import os
+import sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -338,7 +339,7 @@ class Design456_Part_Shell:
                 allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
             currentObj = App.ActiveDocument.getObject(s[0].ObjectName)
             currentObjLink = currentObj.getLinkedObject(True)
-            thickObj = App.ActiveDocument.addObject("Part::Thickness", "tempThickness")
+            thickObj = App.ActiveDocument.addObject("Part::Thickness", "Thickness")
             thickObj.Value=QtGui.QInputDialog.getDouble(None, "Thickness", "Value:")[0]
             thickObj.Join=0
             thickObj.Mode=0
@@ -346,16 +347,15 @@ class Design456_Part_Shell:
             thickObj.SelfIntersection = False
             getfacename = faced.getInfo(s[0]).getFaceName()
             thickObj.Faces=(currentObj,getfacename,)
-            NewJ = App.ActiveDocument.addObject('Part::Feature', 'Thickness').Shape = thickObj.Shape
             App.ActiveDocument.recompute()
-            """
+            NewJ = App.ActiveDocument.addObject('Part::Feature', 'Shell').Shape = thickObj.Shape
+            App.ActiveDocument.recompute()
             # Remove Old objects
             for obj in allObjects:
                 App.ActiveDocument.removeObject(obj.Name)
             App.ActiveDocument.removeObject(thickObj.Name)
 
             App.ActiveDocument.recompute()
-            """
         except ImportError as err:
             App.Console.PrintError("'Part::Shell' Failed. "
                                    "{err}\n".format(err=str(err)))
