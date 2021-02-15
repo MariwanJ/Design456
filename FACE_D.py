@@ -220,6 +220,18 @@ class getInfo(object):
     def getObjectParameterRange(self):
         return (self.obj.SubObjects[0].ParameterRange())
 
+class fillet(object):
+    def __init__(self, object):
+          self.oject = object
+    def dofillet():
+        edges=[]
+        for i in myshape.Edges:
+            if shouldEdgeBeFilleted(i):
+                edges.append(i)
+        newshape = myshape.makeFillet(radius, edges)
+    
+    def filletSide(self):
+        return
 
 """
 You can get these infos from obj.SubObjects[0]. which is a face
