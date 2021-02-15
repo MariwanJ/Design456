@@ -22,6 +22,7 @@
 # *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 # ***************************************************************************
 import os
+import sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -37,8 +38,8 @@ import CompoundTools._CommandExplodeCompound
 
 import Design456Init
 # from Part import CommandShapes	 #Tube	 not working
-import sys
-import os
+
+
 
 sys.path.append(Design456Init.PYRAMID_PATH)
 class Design456_Part_ToolBar:
@@ -150,7 +151,10 @@ class Design456_Part_Tube:
             Gui.runCommand('Part_Tube', 0)
             newObj =App.ActiveDocument.ActiveObject
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            App.ActiveDocument.recompute()
+            """the PartMover causes FreeCAD to crash  -
+              FreeCAD has a bug .. it is related to the mouse 2021-02-15 Mariwan"""
+           # faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             App.ActiveDocument.recompute()
             # Gui.SendMsgToActiveView("V
             # iewFit")

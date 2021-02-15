@@ -29,4 +29,87 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
 import Design456Init
-from PySide import QtCore, QtGui
+
+
+class Design456_Utils:
+	list = ["Design456_CommonFace"
+			]
+
+	"""Design456 Utils"""
+
+	def GetResources(self):
+		return{
+			'Pixmap':	Design456Init.ICON_PATH + '/Part_Utils.svg',
+			'MenuText': 'Box',
+						'ToolTip': 'Box'
+		}
+
+	def IsActive(self):
+		if App.ActiveDocument == None:
+			return False
+		else:
+			return True
+
+	def Activated(self):
+		self.appendToolbar("Design456_Part_Utils", Design456_Part_Utils())
+
+
+class Design456_CommonFace:
+	def Activated(self):
+		selection = Gui.Selection.getSelectionEx()
+		nObjects = []
+		nObjects.clear()
+		for a2dobj in selection:
+			m = App.activeDocument().getObject(a2dobj.Object.Name)
+			f = App.activeDocument().addObject('Part::Extrusion', 'ExtrudeOriginal')
+			f.Base = App.activeDocument().getObject(m.Name)
+			f.DirMode = "Normal"
+			f.DirLink = a2dobj.Object
+			f.LengthFwd = 0.001
+			f.LengthRev = 0.0
+			f.Solid = True
+			f.Reversed = False
+			f.Symmetric = False
+			f.TaperAngle = 0.0
+			f.TaperAngleRev = 0.0
+
+			# Make a simple copy of the object
+			App.ActiveDocument.recompute()
+
+			newShape = Part.getShape(f, '', needSubElement=False, refine=False)
+			newObj = App.ActiveDocument.addObject('Part::Feature', 'Extrude')
+			newObj.Shape = newShape
+			App.ActiveDocument.recompute()
+			App.ActiveDocument.ActiveObject.Label = f.Label
+
+			App.ActiveDocument.recompute()
+			f.Visibility = False
+			m.Visibility = False
+			App.ActiveDocument.removeObject(f.Name)
+			App.ActiveDocument.removeObject(m.Name)
+			App.ActiveDocument.recompute()
+			nObjects.append(newObj)
+		tempResult = App.ActiveDocument.addObject("Part::MultiCommon", "tempWire")
+		# Extract the common part
+		tempResult.Shapes = nObjects
+		App.ActiveDocument.recompute()
+		# Extract the face
+		sh = tempResult.Shape.copy()
+		if hasattr(tempResult, "getGlobalPlacement"):
+			gpl = tempResult.getGlobalPlacement()
+			sh.Placement = gpl
+		__shape = Part.getShape(tempResult,'',needSubElement=False,refine=True)
+		Result=App.ActiveDocument.addObject('Part::Feature','Common').Shape=__shape
+		App.ActiveDocument.ActiveObject.Label='Wire'
+		for name in nObjects:
+			App.ActiveDocument.removeObject(name.Name)	
+		App.ActiveDocument.removeObject(tempResult.Name)		
+		App.ActiveDocument.recompute()
+	def GetResources(self):
+			return{
+			'Pixmap':	Design456Init.ICON_PATH + '/CommonFace.svg',
+			'MenuText': 'CommonFace',
+			'ToolTip':	'CommonFace between 2-2D shapes'
+		}
+
+Gui.addCommand('Design456_CommonFace', Design456_CommonFace())
