@@ -72,39 +72,37 @@ class Design456_CommonFace:
 			f.Symmetric = False
 			f.TaperAngle = 0.0
 			f.TaperAngleRev = 0.0
-
-			# Make a simple copy of the object
 			App.ActiveDocument.recompute()
-
-			newShape = Part.getShape(f, '', needSubElement=False, refine=False)
+			
+			# Make a simple copy of the object
+			newShape = Part.getShape(f, '', needSubElement=False, refine=True)
 			newObj = App.ActiveDocument.addObject('Part::Feature', 'Extrude')
 			newObj.Shape = newShape
 			App.ActiveDocument.recompute()
 			App.ActiveDocument.ActiveObject.Label = f.Label
-
 			App.ActiveDocument.recompute()
-			f.Visibility = False
-			m.Visibility = False
 			App.ActiveDocument.removeObject(f.Name)
 			App.ActiveDocument.removeObject(m.Name)
 			App.ActiveDocument.recompute()
 			nObjects.append(newObj)
 		tempResult = App.ActiveDocument.addObject("Part::MultiCommon", "tempWire")
-		# Extract the common part
-		tempResult.Shapes = nObjects
+		tempResult.Shapes =nObjects
 		App.ActiveDocument.recompute()
-		# Extract the face
-		sh = tempResult.Shape.copy()
-		if hasattr(tempResult, "getGlobalPlacement"):
-			gpl = tempResult.getGlobalPlacement()
-			sh.Placement = gpl
-		__shape = Part.getShape(tempResult,'',needSubElement=False,refine=True)
-		Result=App.ActiveDocument.addObject('Part::Feature','Common').Shape=__shape
-		App.ActiveDocument.ActiveObject.Label='Wire'
+		newShape=Part.getShape(tempResult,'', needSubElement=False, refine=True)
+		Result=App.ActiveDocument.addObject('Part::Feature','Shape')
+		Result.Shape=newShape
 		for name in nObjects:
 			App.ActiveDocument.removeObject(name.Name)	
-		App.ActiveDocument.removeObject(tempResult.Name)		
+		App.ActiveDocument.removeObject(tempResult.Name)
 		App.ActiveDocument.recompute()
+		Gui.Selection.clearSelection()
+		Gui.Selection.addSelection(App.ActiveDocument.Name,Result.Name)
+		s=Gui.Selection.getSelectionEx()[0]
+		#TODO: I must find a way to select to top face. This will not work always
+		Gui.Selection.addSelection(App.ActiveDocument.Name,Result.Name,'Face4',0,0,0)
+		#extract code here 
+  
+  
 	def GetResources(self):
 			return{
 			'Pixmap':	Design456Init.ICON_PATH + '/CommonFace.svg',
