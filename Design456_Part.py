@@ -1,6 +1,6 @@
 # ***************************************************************************
 # *																		   *
-# *	This file is part of the Open Source Design456 Workbench - FreeCAD.	   *
+# *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *																		   *
 # *	Copyright (C) 2021													   *
 # *																		   *
@@ -20,7 +20,7 @@
 # *	<http://www.gnu.org/licenses/>.										   *
 # *																		   *
 # *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
-# ***************************************************************************
+# **************************************************************************
 import os
 import sys
 import ImportGui

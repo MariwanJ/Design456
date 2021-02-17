@@ -1,9 +1,9 @@
 # ***************************************************************************
 # *                                                                         *
-# *  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
+# *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		   *
+# *																		    *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -29,13 +29,15 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
 import Design456Init
+import FACE_D as faced
+import Design456_MakeFaceArray
 
-
-class Design456_Utils:
-	list = ["Design456_CommonFace"
+class Design456_Part_Utils:
+	list = ["Design456_CommonFace",
+			"Design456_MakeFaceArray"
 			]
 
-	"""Design456 Utils"""
+	"""Design456 Part Utils"""
 
 	def GetResources(self):
 		return{
@@ -99,7 +101,8 @@ class Design456_CommonFace:
 		Gui.Selection.addSelection(App.ActiveDocument.Name,Result.Name)
 		s=Gui.Selection.getSelectionEx()[0]
 		#TODO: I must find a way to select to top face. This will not work always
-		Gui.Selection.addSelection(App.ActiveDocument.Name,Result.Name,'Face4',0,0,0)
+		fName=faced(s).getFaceName()
+		Gui.Selection.addSelection(App.ActiveDocument.Name,Result.Name,fName,0,0,0)
 		#extract code here 
   
   

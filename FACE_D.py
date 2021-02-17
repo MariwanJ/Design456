@@ -1,9 +1,9 @@
 # ***************************************************************************
 # *                                                                         *
-# *  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
+# *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		   *
+# *																		    *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -184,7 +184,7 @@ class PartMover(object):
     Give the class Gui.Selection()[nr] where nr is the face you want to get info
     
 
-TODO: This class will be update to be witable for all kind of movements of objects
+TODO: This class must be updated to be able for all kind of movement of objects
     Mariwan 
 """
 

@@ -1,6 +1,6 @@
 # ***************************************************************************
 # *																		   *
-# *	This file is part of the Open Source Design456 Workbench - FreeCAD.	   *
+# *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *																		   *
 # *	Copyright (C) 2021													   *
 # *																		   *
