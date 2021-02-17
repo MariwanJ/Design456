@@ -97,8 +97,11 @@ class FACE_D:
             The callback is not removed after click. You
             should use twice ESC
 """
+
+
 class PartMover(object):
-    view=obj=None
+    view = obj = None
+
     def __init__(self, CallerObject, view, obj, deleteOnEscape):
         self.CallerObject = CallerObject
         self.obj = obj
@@ -188,6 +191,7 @@ TODO: This class must be updated to be able for all kind of movement of objects
     Mariwan 
 """
 
+
 class getInfo(object):
     def __init__(self, object):
         self.obj = object
@@ -218,42 +222,45 @@ class getInfo(object):
 
     def getObjectParameterRange(self):
         return (self.obj.SubObjects[0].ParameterRange())
-    
-	def returnFaceName(self):
-        nrOfFaces=len(self.Obj.Shape.Faces)
-        if(nrofFaces==1):
+
+    def returnFaceName(self):
+        nrOfFaces = len(self.Obj.Shape.Faces)
+        if(nrofFaces == 1):
             return 'Face1'
-        if(nrofFaces==2):
+        if(nrofFaces == 2):
             return 'Face2'
-        if(nrofFaces==3):
+        if(nrofFaces == 3):
             return 'Face3'
-        if(nrofFaces==4):
+        if(nrofFaces == 4):
             return 'Face4'
-        if(nrofFaces==5):
+        if(nrofFaces == 5):
             return 'Face5'
-        if(nrofFaces==6):
+        if(nrofFaces == 6):
             return 'Face6'
-        if(nrofFaces==7):
+        if(nrofFaces == 7):
             return 'Face7'
-        if(nrofFaces==8):
+        if(nrofFaces == 8):
             return 'Face8'
-        if(nrofFaces==1):
+        if(nrofFaces == 1):
             return 'Face9'
-        if(nrofFaces==1):
+        if(nrofFaces == 1):
             return 'Face10'
+
 
 class fillet(object):
     def __init__(self, object):
-          self.oject = object
+        self.oject = object
+
     def dofillet():
-        edges=[]
+        edges = []
         for i in myshape.Edges:
             if shouldEdgeBeFilleted(i):
                 edges.append(i)
         newshape = myshape.makeFillet(radius, edges)
-    
+
     def filletSide(self):
         return
+
 
 """
 You can get these infos from obj.SubObjects[0]. which is a face
