@@ -1,9 +1,9 @@
 # ***************************************************************************
 # *                                                                         *
-# *  This file is part of the Open Source Design456 Workbench - App.    *
+# *  This file is a part of the Open Source Design456 Workbench - App.      *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		   *
+# *																		    *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -49,11 +49,9 @@ class Design456_Workbench (Workbench):
         import Design456_ExtrudeFace
         import Design456_SplitObject
         import Design456_loftOnDirection
-        import Design456_Part_Utils
-
-
         import Design456_Part as designPart
-        import Design456_Part_Tools as pUtils
+        import Design456_Part_Tools as pTools
+        import Design456_Part_Utils as pUtils
         # from Part import CommandShapes	 #Tube	not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
@@ -61,22 +59,27 @@ class Design456_Workbench (Workbench):
                      "Design456_Extract",
                      "Design456_ExtrudeFace",
                      "Design456_SplitObject",
-                     "Design456_loftOnDirection",
-                     "Design456_CommonFace"
+                     "Design456_loftOnDirection"
                      ]
         self.appendToolbar("Design456", self.list)
         self.appendMenu("Design456", self.list)
-        print(designPart.Design456_Part_ToolBar.list)
-        self.appendToolbar(
-            "Design456_Part", designPart.Design456_Part_ToolBar.list)
-        self.appendToolbar("Design456_Part_Tools",
-                           pUtils.Design456_Part_Tools.list)
+        
+        self.appendToolbar("Design456_Part", 
+                           designPart.Design456_Part_ToolBar.list)
         self.appendMenu("Design456_Part",
                         designPart.Design456_Part_ToolBar.list)
-        self.appendMenu("Design456_Part_Tools",
-                        pUtils.Design456_Part_Tools.list)
-        
+        combineList=[]
+        self.appendToolbar("Design456_Tools",pTools.Design456_Part_Tools.list)
+        self.appendToolbar("Design456_Tools",pUtils.Design456_Part_Utils.list)
 
+        self.appendMenu("Design456_Tools",pTools.Design456_Part_Tools.list)
+        self.appendMenu("Design456_Tools",pUtils.Design456_Part_Utils.list)
+        
+        """self.appendToolbar("Design456_Utils",pUtils.Design456_Part_Utils.list
+                        )     
+        self.appendMenu("Design456_Utils",
+                        pUtils.Design456_Part_Utils.list)     
+        """
         # Design456_Part
         #self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
 
@@ -110,35 +113,7 @@ class Design456_Workbench (Workbench):
         if not dependencies_OK:
             return
         # END DRAFT
-        # ADD Gear
-        # END Gear
-        """	 Doesn't work .. I Don't konw why.2020-02-06	
-		#PART 
-		import PartGui
-
-		try:
-			import BasicShapes.CommandShapes
-		except ImportError as err:
-			App.Console.PrintError("'BasicShapes' package cannot be loaded. "
-								   "{err}\n".format(err=str(err)))
-
-		try:
-			import CompoundTools._CommandCompoundFilter
-			import CompoundTools._CommandExplodeCompound
-		except ImportError as err:
-			App.Console.PrintError("'CompoundTools' package cannot be loaded. "
-								   "{err}\n".format(err=str(err)))
-
-		try:
-			bop = __import__("BOPTools")
-			bop.importAll()
-			bop.addCommands()
-			PartGui.BOPTools = bop
-		except Exception as err:
-			App.Console.PrintError("'BOPTools' package cannot be loaded. "
-								   "{err}\n".format(err=str(err)))
-		#END PART
-		"""
+   
         # Import Draft tools, icons
         try:
             import Draft_rc
