@@ -1,9 +1,9 @@
 # ***************************************************************************
 # *                                                                         *
-# *  This file is part of the Open Source Design456 Workbench - FreeCAD.    *
+# *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		   *
+# *																		    *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -19,12 +19,12 @@
 # *  License along with this library; if not, If not, see                   *
 # *  <http://www.gnu.org/licenses/>.                                        *
 # *                                                                         *
-# *	Author :carlopav
-#  This is pulled to the main github at the link bellow
-#  github.com/MariwanJ/Design456/commits/5911dd3817aba28df6f5b215d39ef8851b974d5f
-# *  See the forum :
-#  Modified by     Mariwan Jalal	 mariwan.jalal@gmail.com			   *
-# ***************************************************************************
+# *	Author :carlopav                                                        *
+# *This is pulled to the main github at the link bellow                     *
+# *github.com/MariwanJ/Design456/commits/5911dd3817aba28df6f5b215d39ef8851b974d5f
+# *  See the forum :                                                       *
+# *Modified by     Mariwan Jalal	 mariwan.jalal@gmail.com			   *
+# **************************************************************************
 import os
 import ImportGui
 import FreeCAD as App
@@ -257,12 +257,6 @@ class Design456_Tweak(gui_move.Move):
         super(Design456_Tweak, self).Activated()
         return
 
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.ICON_PATH + '/Design456_Tweak.svg',
-            'MenuText': 'Tweak',
-            'ToolTip':  'Tweak Object'
-        }
 
     def proceed(self):
         super(Design456_Tweak, self).proceed()
@@ -316,5 +310,11 @@ class Design456_Tweak(gui_move.Move):
         # except Exception:
         #    _err(translate("draft", "Some subelements could not be moved."))
 
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/Design456_Tweak.svg',
+            'MenuText': 'Tweak',
+            'ToolTip':  'Tweak Object'
+        }
 
 Gui.addCommand('Design456_Tweak', Design456_Tweak())
