@@ -36,10 +36,10 @@ class Design456_Magnet:
 
     def Activated(self):
         s = Gui.Selection.getSelectionEx()
-        if (len(s) < 1):
+        if (len(s) < 2):
             # Two object must be selected
             errMessage = "Select two or more objects to use Magnet Tool"
-            self.errorDialog(errMessage)
+            faced.getInfo(s).errorDialog(errMessage)
             return
         sub1 = Gui.Selection.getSelectionEx()[0]
         sub2 = Gui.Selection.getSelectionEx()[1]
