@@ -32,7 +32,7 @@ import Part
 import BOPTools.SplitFeatures as SPLIT
 from FreeCAD import Base
 from time import time as _time, sleep as _sleep
-
+import FACE_D as faced
 
 class Design456_SplitObject:
     """Devide object in to two parts"""
@@ -41,6 +41,11 @@ class Design456_SplitObject:
         try:
             # Save object name that will be divided.
             selection = Gui.Selection.getSelectionEx()
+            if (len(selection) < 1):
+                # An object must be selected
+                errMessage = "Select an object to use Split Tool"
+                faced.getInfo(selection).errorDialog(errMessage)
+                return
             shape = selection[0].Object.Shape
             bb = shape.BoundBox
             length = max(bb.XLength, bb.YLength, bb.ZLength)

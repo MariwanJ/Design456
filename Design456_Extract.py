@@ -29,14 +29,20 @@ import Design456Init
 from PySide import QtGui, QtCore
 import Draft
 import Part
+import FACE_D as faced
 
 
 class Design456_Extract:
-    """Extract the selected shapes from objects"""
+    """Extract the selected face from objects"""
 
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
+            if (len(s) < 1):
+                # An object must be selected
+                errMessage = "Select a face from an objects to use Extract"
+                faced.getInfo(s).errorDialog(errMessage)
+                return
             for o in s:
                 objName = o.ObjectName
                 sh = o.Object.Shape.copy()

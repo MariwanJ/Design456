@@ -146,8 +146,6 @@ class Design456_Part_Tube:
 
     def Activated(self):
         try:
-            """Gui.activateWorkbench("PartWorkbench")
-            Gui.activateWorkbench("Design456_Workbench")"""
             Gui.runCommand('Part_Tube', 0)
             newObj =App.ActiveDocument.ActiveObject
             v = Gui.ActiveDocument.ActiveView
@@ -156,8 +154,6 @@ class Design456_Part_Tube:
               FreeCAD has a bug .. it is related to the mouse 2021-02-15 Mariwan"""
            # faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             App.ActiveDocument.recompute()
-            # Gui.SendMsgToActiveView("V
-            # iewFit")
         except ImportError as err:
             App.Console.PrintError("'Part::Tube' Failed. "
                                    "{err}\n".format(err=str(err)))

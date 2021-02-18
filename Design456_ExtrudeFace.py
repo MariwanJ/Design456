@@ -28,7 +28,7 @@ import Design456Init
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
-import FACE_D as Face
+import FACE_D as faced
 import Design456_Extract as face_extract
 import Design456_Part_Tools as tools
 
@@ -40,6 +40,11 @@ class Design456_ExtrudeFace:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
+            if (len(s) < 1):
+                # An object must be selected
+                errMessage = "Select an object to use Extrude Face"
+                faced.getInfo(s).errorDialog(errMessage)
+                return
             objName = s[0].ObjectName
             sh = s[0].Object.Shape.copy()
             if hasattr(s[0].Object, "getGlobalPlacement"):

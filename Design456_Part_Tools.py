@@ -67,15 +67,6 @@ class Design456_Part_Tools:
 # Merge
 class Design456_Part_Merge:
 
-    """Message box (error) """
-
-    def errorDialog(self, msg):
-        # Create a simple dialog QMessageBox
-        # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
-        diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', msg)
-        diag.setWindowModality(QtCore.Qt.ApplicationModal)
-        diag.exec_()
-
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
@@ -83,7 +74,7 @@ class Design456_Part_Merge:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Merge"
-                self.errorDialog(errMessage)
+                faced.getInfo(s).errorDialog(errMessage)
                 return
             allObjects = []
             for o in s:
@@ -124,15 +115,6 @@ Gui.addCommand('Design456_Part_Merge', Design456_Part_Merge())
 # Subtract
 class Design456_Part_Subtract:
 
-    """Message box (error) """
-
-    def errorDialog(self, msg):
-        # Create a simple dialog QMessageBox
-        # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
-        diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', msg)
-        diag.setWindowModality(QtCore.Qt.ApplicationModal)
-        diag.exec_()
-
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
@@ -140,7 +122,7 @@ class Design456_Part_Subtract:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Subtract"
-                self.errorDialog(errMessage)
+                faced.getInfo(s).errorDialog(errMessage)
                 return
             newObj = App.activeDocument().addObject("Part::Cut", "Subtract")
             newObj.Base = App.ActiveDocument.getObject(
@@ -184,13 +166,6 @@ class Design456_Part_Intersect:
 
     """Message box (error) """
 
-    def errorDialog(self, msg):
-        # Create a simple dialog QMessageBox
-        # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
-        diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Tools ', msg)
-        diag.setWindowModality(QtCore.Qt.ApplicationModal)
-        diag.exec_()
-
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
@@ -198,7 +173,7 @@ class Design456_Part_Intersect:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Intersect"
-                self.errorDialog(errMessage)
+                faced.getInfo(s).errorDialog(errMessage)
                 return
             newObj = App.activeDocument().addObject("Part::MultiCommon", "tempIntersect")
             newObj.Shapes = [App.ActiveDocument.getObject(
@@ -252,7 +227,7 @@ class Design456_Part_Group:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to create a group"
-                self.errorDialog(errMessage)
+                faced.getInfo(s).errorDialog(errMessage)
                 return
 
             newObj = App.activeDocument().Tip = App.activeDocument().addObject('App::Part', 'Group')
@@ -287,7 +262,7 @@ class Design456_Part_Compound:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Merge"
-                self.errorDialog(errMessage)
+                faced.getInfo(s).errorDialog(errMessage)
                 return
             allObjects = []
             for o in s:
@@ -331,8 +306,8 @@ class Design456_Part_Shell:
             temp = None
             if (len(s) < 1):
                 # Two object must be selected
-                errMessage = "Select two or more objects to Merge"
-                self.errorDialog(errMessage)
+                errMessage = "Select two or more objects to use Shell Tool"
+                faced.getInfo(s).errorDialog(errMessage)
                 return
             allObjects = []
             for o in s:
