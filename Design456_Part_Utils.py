@@ -103,7 +103,7 @@ class Design456_CommonFace:
 		#TODO: I must find a way to select to top face. This will not work always
 		obFcce=faced.getInfo(s)
 		fName=obFcce.returnFaceName
-		Gui.Selection.addSelection(s,fName)
+		Gui.Selection.addSelection(App.ActiveDocument.Name,Result.Name,fName,0,0,0)
 		#extract code here 
   
 	def GetResources(self):
