@@ -223,29 +223,32 @@ class getInfo(object):
     def getObjectParameterRange(self):
         return (self.obj.SubObjects[0].ParameterRange())
 
-    def returnFaceName(self):
-        nrOfFaces = len(self.Obj.Shape.Faces)
-        if(nrofFaces == 1):
-            return 'Face1'
-        if(nrofFaces == 2):
-            return 'Face2'
-        if(nrofFaces == 3):
-            return 'Face3'
-        if(nrofFaces == 4):
-            return 'Face4'
-        if(nrofFaces == 5):
-            return 'Face5'
-        if(nrofFaces == 6):
-            return 'Face6'
-        if(nrofFaces == 7):
-            return 'Face7'
-        if(nrofFaces == 8):
-            return 'Face8'
-        if(nrofFaces == 1):
-            return 'Face9'
-        if(nrofFaces == 1):
-            return 'Face10'
+    """Message box (error) """
 
+    def errorDialog(self, msg):
+        # Create a simple dialog QMessageBox
+        # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
+        diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Error', msg)
+        diag.setWindowModality(QtCore.Qt.ApplicationModal)
+        diag.exec_()
+        
+    def SelectTopFace(self):
+        t=self.obj
+        faceData=None
+        counter=1
+        centerofmass=None
+        Highiest=0
+        for fac in t.Object.Shape.Faces:
+            if(fac.CenterOfMass.z>Highiest):
+                Highiest=fac.CenterOfMass.z
+                centerofmass=fac.CenterOfMass
+                Result=counter
+            counter=counter+1
+        # Gui.Selection.addSelection('Unnamed','Shape','Face4',-2.45152,-3.78272,5)
+        FaceName='Face'+str(Result)
+        Gui.Selection.clearSelection()
+        Gui.Selection.addSelection(App.ActiveDocument.Name, t.Object.Name,FaceName, centerofmass.x,centerofmass.y,centerofmass.z)
+        return FaceName
 
 class fillet(object):
     def __init__(self, object):
