@@ -56,7 +56,15 @@ class Design456_Part_Utils:
 	def Activated(self):
 		self.appendToolbar("Design456_Part_Utils", Design456_Part_Utils())
 
-
+class GenCommandForPartUtils:
+    def __init__(self, object, typeOfCommand):
+        self.obj = object
+    def DoCommand(self):
+        if(typeOfCommand==1):  #Common
+            tempResult = App.ActiveDocument.addObject("Part::MultiCommon", "tempWire") 
+        elif(typeOfCommand==1):# join or fusion
+                App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor=getattr(App.getDocument('Unnamed').getObject('Cylinder').getLinkedObject(True).ViewObject,'ShapeColor',App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor)
+                
 class Design456_CommonFace:
 	def Activated(self):
 		selection = Gui.Selection.getSelectionEx()
@@ -94,7 +102,7 @@ class Design456_CommonFace:
 				App.ActiveDocument.removeObject(m.Name)
 				App.ActiveDocument.recompute()
 				nObjects.append(newObj)
-			tempResult = App.ActiveDocument.addObject("Part::MultiCommon", "tempWire")
+			tempResult = App.ActiveDocument.addObject("Part::MultiCommon", "tempWire") #Change this line to get other options.
 			tempResult.Shapes =nObjects
 			App.ActiveDocument.recompute()
 			newShape=Part.getShape(tempResult,'', needSubElement=False, refine=True)
