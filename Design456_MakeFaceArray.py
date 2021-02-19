@@ -36,6 +36,7 @@ def angleBetween(ve1, ve2):
 
 
 def face_direction(face):
+    # Find normal of face & center of mass
     yL = face.CenterOfMass
     uv = face.Surface.parameter(yL)
     nv = face.normalAt(uv[0], uv[1])
@@ -66,15 +67,17 @@ def transform_tool(tool, base_face, tool_face, point=App.Vector(0, 0, 0), angle=
     return tool
 
 
-def faceArray(tool, tool_face, base_faces, skip_edges, offset):
+def faceArray(tool, tool_face, base_faces, skip_edges, offset, align):
     tool_list = []
     for base_face in base_faces:
         skiplist = []
+        # generate hashcode for skiped edges
         for skip_edge in skip_edges:
             skiplist.append(skip_edge.hashCode())
         # print(skiplist)
 
         wire_list = []
+        # remove wires with skip edge specified based on hashcode
         for i, wire in enumerate(base_face.Wires):
             if i != 0:
                 for edge in wire.Edges:
@@ -88,6 +91,40 @@ def faceArray(tool, tool_face, base_faces, skip_edges, offset):
             make_face = Part.Face(wire)
             dir, point = face_direction(make_face)
             offsetPoint = point - base_face.CenterOfMass + dir * offset
+
+            # Aligned, if align option specified
+        if align:
+            # Alignment Based on Largest edge of both faces
+            size = 0.0
+            for medge in make_face.Edges:
+                if medge.Length > size and issubclass(type(medge.Curve), (Part.Line)):
+                    base_face_edge = medge
+                    size = medge.Length
+            # print(size)
+            #Part.show(base_face_edge, "base_face_edge")
+            base_vec = base_face_edge.valueAt(
+                base_face_edge.LastParameter) - base_face_edge.valueAt(base_face_edge.FirstParameter)
+
+            size = 0.0
+            for nedge in tool_face.Edges:
+                if nedge.Length > size and issubclass(type(nedge.Curve), (Part.Line)):
+                    tool_face_edge = nedge
+                    size = nedge.Length
+            # print(size)
+            #Part.show(tool_face_edge, "tool_face_edge")
+            tool_vec = tool_face_edge.valueAt(
+                tool_face_edge.LastParameter) - tool_face_edge.valueAt(tool_face_edge.FirstParameter)
+
+            #        # Alignment Based on boundbox (useful, if oriented boundbox available)
+            #        base_vec = FreeCAD.Vector (make_face.BoundBox.XMax, make_face.BoundBox.YMax, make_face.BoundBox.ZMax)
+            #              - FreeCAD.Vector (make_face.BoundBox.XMin, make_face.BoundBox.YMin, make_face.BoundBox.ZMin)
+            #        tool_vec = FreeCAD.Vector (tool_face.BoundBox.XMax, tool_face.BoundBox.YMax, tool_face.BoundBox.ZMax)
+            #                - FreeCAD.Vector (tool_face.BoundBox.XMin, tool_face.BoundBox.YMin, tool_face.BoundBox.ZMin)
+            angle = angleBetween(base_vec, tool_vec)
+            # print(angle)
+            tool_tran = transform_tool(
+                tool_copy, base_face, tool_face, offsetPoint, angle)
+        else:
             tool_tran = transform_tool(
                 tool_copy, base_face, tool_face, offsetPoint)
             #Part.show(tool_tran, "tool_tran")
@@ -112,6 +149,7 @@ class MakeFaceArray:
                         "Parameters", "Skipped Linked Edges")
         obj.addProperty("App::PropertyBool", "Fuse", "Parameters",
                         "Specifies, if array should be fused").Fuse = False
+        obj.addProperty("App::PropertyBool","Align","Parameters","Specifies, if Base Aligned to largest line edge").Align = False
         obj.Proxy = self
 
     def execute(self, fp):
@@ -128,7 +166,7 @@ class MakeFaceArray:
             skip_edges = []
 
         face_array = faceArray(
-            base, base_face, linked_faces, skip_edges, -fp.Offset.Value)
+            base, base_face, linked_faces, skip_edges, -fp.Offset.Value, fp.Align)
 
         # Fuses, if Fuse pption set to True
         if fp.Fuse:
@@ -177,7 +215,7 @@ class FaceArrayViewProvider:
     def claimChildren(self):
         objs = []
         if hasattr(self.Object, "Base"):
-            objs.append(self.Object.Base)
+            objs.append(self.Object.Base[0])
         return objs
 
 #  def getIcon(self):
@@ -226,5 +264,6 @@ class Design456_MakeFaceArray():
             'MenuText': 'Make Face Array',
             'ToolTip': 'Make Face Array'
         }
+
 
 Gui.addCommand('Design456_MakeFaceArray', Design456_MakeFaceArray())
