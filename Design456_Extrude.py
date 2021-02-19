@@ -59,7 +59,7 @@ class Design456_Extrude:
         #		f.Base.MapMode='ObjectXY'
 
             f.LengthFwd = QtGui.QInputDialog.getDouble(
-                None, "Get length", "Input:")[0]
+                None, "Get length", "Length:")[0]
             while(f.LengthFwd == 0):
                 _sleep(.1)
                 Gui.updateGui()
