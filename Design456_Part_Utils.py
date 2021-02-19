@@ -62,9 +62,24 @@ class GenCommandForPartUtils:
     def DoCommand(self):
         if(typeOfCommand==1):  #Common
             tempResult = App.ActiveDocument.addObject("Part::MultiCommon", "tempWire") 
+            return tempResult
         elif(typeOfCommand==1):# join or fusion
                 App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor=getattr(App.getDocument('Unnamed').getObject('Cylinder').getLinkedObject(True).ViewObject,'ShapeColor',App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor)
-                
+                return tempResult
+        elif(typeOfCommand==1):# join or fusion
+                App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor=getattr(App.getDocument('Unnamed').getObject('Cylinder').getLinkedObject(True).ViewObject,'ShapeColor',App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor)
+                return tempResult
+        elif(typeOfCommand==1):# join or fusion
+               App.getDocument('Unnamed').getObject('Cut').ViewObject.ShapeColor=getattr(App.getDocument('Unnamed').getObject('Cylinder').getLinkedObject(True).ViewObject,'ShapeColor',App.getDocument('Unnamed').getObject('Cut').ViewObject.ShapeColor)
+                return tempResult
+        elif(typeOfCommand==1):# join or fusion
+                App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor=getattr(App.getDocument('Unnamed').getObject('Cylinder').getLinkedObject(True).ViewObject,'ShapeColor',App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor)
+                return tempResult
+        elif(typeOfCommand==1):# join or fusion
+                App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor=getattr(App.getDocument('Unnamed').getObject('Cylinder').getLinkedObject(True).ViewObject,'ShapeColor',App.getDocument('Unnamed').getObject('Fusion').ViewObject.ShapeColor)
+                return tempResult
+
+
 class Design456_CommonFace:
 	def Activated(self):
 		selection = Gui.Selection.getSelectionEx()
