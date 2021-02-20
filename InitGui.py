@@ -30,7 +30,6 @@ __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
 
-import BOPTools  # as bop
 
 
 class Design456_Workbench (Workbench):
@@ -44,6 +43,7 @@ class Design456_Workbench (Workbench):
 
     def Initialize(self):
         "This function is executed when FreeCAD starts"
+        import BOPTools  # as bop
         import Design456_Extrude  # import all	 needed files
         import Design456_Extract
         import Design456_ExtrudeFace
@@ -52,34 +52,24 @@ class Design456_Workbench (Workbench):
         import Design456_Part as designPart
         import Design456_Part_Tools as pTools
         import Design456_Part_Utils as pUtils
+        
         # from Part import CommandShapes	 #Tube	not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
-        self.list = ["Design456_Extrude",
-                     "Design456_Extract",
-                     "Design456_ExtrudeFace",
-                     "Design456_SplitObject",
-                     "Design456_loftOnDirection"
-                     ]
-        self.appendToolbar("Design456", self.list)
-        self.appendMenu("Design456", self.list)
-        
-        self.appendToolbar("Design456_Part", 
-                           designPart.Design456_Part_ToolBar.list)
+        self.appendToolbar("Design456_Part",
+                           designPart.Design456_Part.list)
         self.appendMenu("Design456_Part",
-                        designPart.Design456_Part_ToolBar.list)
-        combineList=[]
-        self.appendToolbar("Design456_Tools",pTools.Design456_Part_Tools.list)
-        self.appendToolbar("Design456_Tools",pUtils.Design456_Part_Utils.list)
+                        designPart.Design456_Part.list)
+        self.appendMenu("Design456_2DTools", pUtils.Design456_Part_Utils.list)
 
-        self.appendMenu("Design456_Tools",pTools.Design456_Part_Tools.list)
-        self.appendMenu("Design456_Tools",pUtils.Design456_Part_Utils.list)
-        
-        """self.appendToolbar("Design456_Utils",pUtils.Design456_Part_Utils.list
-                        )     
-        self.appendMenu("Design456_Utils",
-                        pUtils.Design456_Part_Utils.list)     
-        """
+        combineList = []
+        self.appendToolbar("Design456_Tools", pTools.Design456_Part_Tools.list)
+        self.appendToolbar("Design456_2DTools",
+                           pUtils.Design456_Part_Utils.list)
+
+        self.appendMenu("Design456_Tools", pTools.Design456_Part_Tools.list)
+        self.appendMenu("Design456_2DTools", pUtils.Design456_Part_Utils.list)
+
         # Design456_Part
         #self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
 
@@ -98,22 +88,22 @@ class Design456_Workbench (Workbench):
                                      "This will lead to unexpected behavior.")
         except AssertionError:
             App.Console.PrintWarning("Error: FreeCAD and Pivy "
-                                         "use different versions of Coin. "
-                                         "This will lead to unexpected "
-                                         "behavior.\n")
+                                     "use different versions of Coin. "
+                                     "This will lead to unexpected "
+                                     "behavior.\n")
         except ImportError:
             App.Console.PrintWarning("Error: Pivy not found, "
-                                         "Draft Workbench will be disabled.\n")
+                                     "Draft Workbench will be disabled.\n")
         except Exception:
             App.Console.PrintWarning("Error: Unknown error "
-                                         "while trying to load Pivy.\n")
+                                     "while trying to load Pivy.\n")
         else:
             dependencies_OK = True
 
         if not dependencies_OK:
             return
         # END DRAFT
-   
+
         # Import Draft tools, icons
         try:
             import Draft_rc
@@ -125,8 +115,8 @@ class Design456_Workbench (Workbench):
         except Exception as exc:
             App.Console.PrintError(exc)
             App.Console.PrintError("Error: Initializing one or more "
-                                       "of the Draft modules failed, "
-                                       "Draft will not work as expected.\n")
+                                   "of the Draft modules failed, "
+                                   "Draft will not work as expected.\n")
         try:
             # Set up command lists
             import draftutils.init_tools as it
@@ -176,8 +166,8 @@ class Design456_Workbench (Workbench):
         except Exception as exc:
             App.Console.PrintError(exc)
             App.Console.PrintError("Error: Initializing one or more "
-                                       "of the Draft modules failed, "
-                                       "Draft will not work as expected.\n")
+                                   "of the Draft modules failed, "
+                                   "Draft will not work as expected.\n")
 
     def Activated(self):
         try:
@@ -208,8 +198,8 @@ class Design456_Workbench (Workbench):
         except Exception as exc:
             App.Console.PrintError(exc)
             App.Console.PrintError("Error: Draft activation "
-                                       "failed, "
-                                       "Draft will not work as expected.\n")
+                                   "failed, "
+                                   "Draft will not work as expected.\n")
 
     def Deactivated(self):
         try:
@@ -230,14 +220,28 @@ class Design456_Workbench (Workbench):
     def ContextMenu(self, recipient):
         "right-clicks on screen"
         try:
+            import BOPTools  # as bop
+            import Design456_Extrude  # import all	 needed files
+            import Design456_Extract
+            import Design456_ExtrudeFace
+            import Design456_SplitObject
+            import Design456_loftOnDirection
             import Design456_Part as designPart
-            import Design456_Tweak as twk
-            self.appendContextMenu("Design456", self.list)
+            import Design456_Part_Tools as pTools
+            import Design456_Part_Utils as pUtils
+            
+            self.appendContextMenu(
+                "Design456_Part", designPart.Design456_Part.list)
+            self.appendContextMenu(
+                "Design456_Tools", pTools.Design456_Part_Tools.list)
+            self.appendContextMenu("Design456_2DTools",
+                                   pUtils.Design456_Part_Utils.list)
+
             # from DRAFT
             """Define an optional custom context menu."""
             # from Design456_PART
             self.appendContextMenu(
-                "Design456_Part", designPart.Design456_Part_ToolBar.list)
+                "Design456_Part", designPart.Design456_Part.list)
             from DraftGui import translate
             if recipient == "View":
                 if App.activeDraftCommand is None:
@@ -250,15 +254,15 @@ class Design456_Workbench (Workbench):
                         self.appendContextMenu("Draft", self.drawing_commands)
                 else:
                     if App.activeDraftCommand.featureName in (translate("draft", "Line"),
-                                                                  translate(
-                                                                      "draft", "Wire"),
-                                                                  translate(
-                                                                      "draft", "Polyline"),
-                                                                  translate(
-                                                                      "draft", "BSpline"),
-                                                                  translate(
-                                                                      "draft", "BezCurve"),
-                                                                  translate("draft", "CubicBezCurve")):
+                                                              translate(
+                            "draft", "Wire"),
+                            translate(
+                            "draft", "Polyline"),
+                            translate(
+                            "draft", "BSpline"),
+                            translate(
+                            "draft", "BezCurve"),
+                            translate("draft", "CubicBezCurve")):
                         self.appendContextMenu("", self.line_commands)
             else:
                 if Gui.Selection.getSelection():
@@ -267,8 +271,8 @@ class Design456_Workbench (Workbench):
         except Exception as exc:
             App.Console.PrintError(exc)
             App.Console.PrintError("Error: Draft ContexMenu "
-                                       "failed, "
-                                       "Draft will not work as expected.\n")
+                                   "failed, "
+                                   "Draft will not work as expected.\n")
 
     def GetClassName(self):
         return "Gui::PythonWorkbench"

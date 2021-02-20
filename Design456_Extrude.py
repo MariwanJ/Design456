@@ -45,13 +45,13 @@ class Design456_Extrude:
                 errMessage = "Select a face to use Extrude"
                 faced.getInfo(selection).errorDialog(errMessage)
                 return
-            m = App.activeDocument().getObject(selection[0].Object.Name)
+            m = selection[0].Object
             f = App.activeDocument().addObject('Part::Extrusion', 'ExtrudeOriginal')
             faceSelected= faced.getInfo(selection[0]).getFaceName()
-            f.Base=App.activeDocument().getObject(faceSelected)
+            f.Base=m
             #f.Base = App.activeDocument().getObject(m.Name)
-            f.DirMode = "Normal"
-            f.DirLink = selection[0].Object
+            f.DirMode = "Custom"
+            f.DirLink =None
             # TODO: This "if" might not work always ?
         #	if(m.Placement.Rotation.Axis.x==1):
         #		f.Base.MapMode='ObjectYZ'
@@ -82,11 +82,11 @@ class Design456_Extrude:
             App.ActiveDocument.ActiveObject.Label = f.Label
 
             App.ActiveDocument.recompute()
-            f.Visibility = False
-            m.Visibility = False
+            """
             App.ActiveDocument.removeObject(f.Name)
             App.ActiveDocument.removeObject(m.Name)
             App.ActiveDocument.recompute()
+            """
             return
         except ImportError as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "

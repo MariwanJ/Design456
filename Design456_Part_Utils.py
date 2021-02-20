@@ -30,7 +30,6 @@ import Draft
 import Part
 import Design456Init
 import FACE_D as faced
-import Design456_MakeFaceArray
 
 """Design456 Part Utils"""
 
@@ -39,7 +38,8 @@ class Design456_Part_Utils:
     list = ["Design456_CommonFace",
             "Design456_CombineFaces",
             "Design456_SubtractFaces",
-            "Design456_MakeFaceArray"
+            "Design456_Part_Surface"
+
 
             ]
 
@@ -109,7 +109,7 @@ class GenCommandForPartUtils:
 
                 # Make a simple copy of the object
                 newShape = Part.getShape(
-                    f, '', needSubElement=False, refine=True)
+                    f, '', needSubElement=False, refine=False)
                 newObj = App.ActiveDocument.addObject(
                     'Part::Feature', 'Extrude')
                 newObj.Shape = newShape
@@ -124,12 +124,12 @@ class GenCommandForPartUtils:
             tempResult = self.DoCommand(self.commandType)
             if(commandType == 1):
                 tempResult.Shapes = nObjects
-            elif(commandType == 2 or commandType==3):
+            elif(commandType == 2 or commandType == 3):
                 tempResult.Tool = nObjects[1]
                 tempResult.Base = nObjects[0]
             App.ActiveDocument.recompute()
             newShape = Part.getShape(
-                tempResult, '', needSubElement=False, refine=True)
+                tempResult, '', needSubElement=False, refine=False)
             Result = App.ActiveDocument.addObject('Part::Feature', 'Shape')
             Result.Shape = newShape
             for name in nObjects:
@@ -206,3 +206,48 @@ class Design456_SubtractFaces:
 
 
 Gui.addCommand('Design456_SubtractFaces', Design456_SubtractFaces())
+
+
+# Surface between two line
+class Design456_Part_Surface:
+
+    def Activated(self):
+        s = Gui.Selection.getSelectionEx()
+        if (len(s) < 2 or len(s) > 2):
+            # Two object must be selected at least
+            errMessage = "Select two edges or two wire to make a face or "
+            faced.getInfo(s).errorDialog(errMessage)
+            return
+        newObj = App.ActiveDocument.addObject(
+            'Part::RuledSurface', 'tempSurface')
+        for sub in s:
+            newObj.Curve1 = (s[0].Object, s[0].SubElementNames)
+            newObj.Curve2 = (s[1].Object, s[1].SubElementNames)
+        App.ActiveDocument.recompute()
+        # Make a simple copy of the object
+        newShape = Part.getShape(
+            newObj, '', needSubElement=False, refine=False)
+        App.ActiveDocument.addObject(
+            'Part::Feature', 'Surface').Shape = newShape
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.ActiveObject.Label = 'Surface'
+        App.ActiveDocument.recompute()
+        try:
+            App.ActiveDocument.removeObject(newObj.Name)
+            App.ActiveDocument.removeObject(s[0].Object.Name)
+            App.ActiveDocument.removeObject(s[1].Object.Name)
+
+            App.ActiveDocument.recompute()
+        except ImportError as err:
+            App.Console.PrintError("'Part Surface' Failed. "
+                                   "{err}\n".format(err=str(err)))
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/Part_Surface.svg',
+            'MenuText': 'Part_Surface',
+            'ToolTip':	'Part Surface'
+        }
+
+
+Gui.addCommand('Design456_Part_Surface', Design456_Part_Surface())
