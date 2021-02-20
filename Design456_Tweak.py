@@ -60,9 +60,6 @@ def moveSubElements(obj, sub_objects_names, vector):
     shape : Part.Shape
         Return the new Shape or None.
     """
-
-    import Part
-
     if not isinstance(sub_objects_names, list):
         sub_objects_names = [sub_objects_names]
 
@@ -99,8 +96,6 @@ def parse_shape(shape, selected_subelements, vector):
     """ Parse the given shape and rebuild it according to its
     original topological structure
     """
-    import Part
-
     print('Parsing ' + shape.ShapeType + '\n')
 
     if shape.ShapeType in ("Compound", "CompSolid", "Solid", "Shell", "Wire"):
