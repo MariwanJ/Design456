@@ -47,7 +47,9 @@ class Design456_Extrude:
                 return
             m = App.activeDocument().getObject(selection[0].Object.Name)
             f = App.activeDocument().addObject('Part::Extrusion', 'ExtrudeOriginal')
-            f.Base = App.activeDocument().getObject(m.Name)
+            faceSelected= faced.getInfo(selection[0]).getFaceName()
+            f.Base=App.activeDocument().getObject(faceSelected)
+            #f.Base = App.activeDocument().getObject(m.Name)
             f.DirMode = "Normal"
             f.DirLink = selection[0].Object
             # TODO: This "if" might not work always ?

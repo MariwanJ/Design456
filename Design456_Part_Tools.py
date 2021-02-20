@@ -344,3 +344,69 @@ class Design456_Part_Shell:
 
 
 Gui.addCommand('Design456_Part_Shell', Design456_Part_Shell())
+
+
+class Design456_Part_Fillet:
+
+    def Activated(self):
+        s = Gui.Selection.getSelectionEx()
+        if (len(s) < 1):
+            # Two object must be selected
+            errMessage = "Select a face or an edge use Magnet Fillet"
+            faced.getInfo(s).errorDialog(errMessage)
+            return
+        sub1 = Gui.Selection.getSelectionEx()[0]
+        newObj=App.ActiveDocument.addObject("Part::Fillet","Fillet")
+        App.ActiveDocument.Fillet.Base = newObj
+        App.ActiveDocument.recompute()
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/Part_Magnet.svg',
+            'MenuText': 'Part_Magnet',
+                        'ToolTip':	'Part Magnet'
+        }
+
+
+Gui.addCommand('Design456_Magnet', Design456_Magnet())
+
+
+
+#fillet
+
+
+# Gui.runCommand('Std_DlgMacroRecord',0)
+Gui.runCommand('Part_Fillet',0)
+# Gui.Selection.addSelection('Unnamed','Box','Edge1')
+# Gui.Selection.removeSelection('Unnamed','Box','Edge1')
+FreeCAD.ActiveDocument.addObject("Part::Fillet","Fillet")
+FreeCAD.ActiveDocument.Fillet.Base = FreeCAD.ActiveDocument.Box
+__fillets__ = []
+__fillets__.append((10,1.00,1.00))
+FreeCAD.ActiveDocument.Fillet.Edges = __fillets__
+del __fillets__
+FreeCADGui.ActiveDocument.Box.Visibility = False
+
+
+
+#chamfer
+
+# Gui.runCommand('Std_DlgMacroRecord',0)
+# Gui.Selection.addSelection('Unnamed','Box','Edge10',7.19846,0,10)
+Gui.runCommand('Part_Chamfer',0)
+FreeCAD.ActiveDocument.addObject("Part::Chamfer","Chamfer")
+FreeCAD.ActiveDocument.Chamfer.Base = FreeCAD.ActiveDocument.Box
+__fillets__ = []
+__fillets__.append((10,1.00,1.00))
+FreeCAD.ActiveDocument.Chamfer.Edges = __fillets__
+del __fillets__
+FreeCADGui.ActiveDocument.Box.Visibility = False
+
+#Surface between two line
+
+FreeCAD.ActiveDocument.addObject('Part::RuledSurface', 'Ruled Surface')
+FreeCAD.ActiveDocument.ActiveObject.Curve1=(FreeCAD.ActiveDocument.Box001,['Edge7'])
+FreeCAD.ActiveDocument.ActiveObject.Curve2=(FreeCAD.ActiveDocument.Box,['Edge5'])
+
+
+
