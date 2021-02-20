@@ -42,7 +42,7 @@ import Design456Init
 
 
 sys.path.append(Design456Init.PYRAMID_PATH)
-class Design456_Part_ToolBar:
+class Design456_Part:
     import polyhedrons
     list = ["Design456_Part_Box",
             "Design456_Part_Cylinder",
@@ -84,7 +84,7 @@ class Design456_Part_ToolBar:
             return True
 
     def Activated(self):
-        self.appendToolbar("Design456_Part_ToolBar", self.list)
+        self.appendToolbar("Design456_Part", self.list)
 
 # BOX
 
