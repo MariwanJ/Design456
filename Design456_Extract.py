@@ -53,6 +53,7 @@ class Design456_Extract:
                     fullname = objName+"_"+name
                     newobj = o.Document.addObject("Part::Feature", fullname)
                     newobj.Shape = sh.getElement(name)
+            
             App.ActiveDocument.recompute()
         except ImportError as err:
             App.Console.PrintError("'Design456_Extract' Failed. "
