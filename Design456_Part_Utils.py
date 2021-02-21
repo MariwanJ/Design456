@@ -169,24 +169,7 @@ class Design456_CommonFace:
 
 Gui.addCommand('Design456_CommonFace', Design456_CommonFace())
 
-# Combine two faces
 
-
-class Design456_CombineFaces:
-    def Activated(self):
-        cmp = GenCommandForPartUtils()
-        cmp.makeIt(2)
-        App.ActiveDocument.recompute()
-
-    def GetResources(self):
-        return{
-            'Pixmap':	Design456Init.ICON_PATH + '/CombineFaces.svg',
-            'MenuText': 'Subtract Face',
-            'ToolTip':	'Subtract 2-2D Faces'
-        }
-
-
-Gui.addCommand('Design456_CombineFaces', Design456_CombineFaces())
 
 # Subtract faces
 
@@ -194,49 +177,63 @@ Gui.addCommand('Design456_CombineFaces', Design456_CombineFaces())
 class Design456_SubtractFaces:
     def Activated(self):
         cmp = GenCommandForPartUtils()
-        cmp.makeIt(3)
+        cmp.makeIt(2)
         App.ActiveDocument.recompute()
 
     def GetResources(self):
         return{
             'Pixmap':	Design456Init.ICON_PATH + '/SubtractFace.svg',
-            'MenuText': 'Combine Faces',
-            'ToolTip':	'Combine 2-2D Faces'
+            'MenuText': 'Subtract Faces',
+            'ToolTip':	'Subtract 2-2D Faces'
         }
 
 
 Gui.addCommand('Design456_SubtractFaces', Design456_SubtractFaces())
 
+# Combine two faces
+class Design456_CombineFaces:
+    def Activated(self):
+        cmp = GenCommandForPartUtils()
+        cmp.makeIt(3)
+        App.ActiveDocument.recompute()
 
+    def GetResources(self):
+        return{
+            'Pixmap':	Design456Init.ICON_PATH + '/CombineFaces.svg',
+            'MenuText': 'Combine Face',
+            'ToolTip':	'Combine 2-2D Faces'
+        }
+
+
+Gui.addCommand('Design456_CombineFaces', Design456_CombineFaces())
 # Surface between two line
 class Design456_Part_Surface:
 
     def Activated(self):
-        s = Gui.Selection.getSelectionEx()
-        if (len(s) < 2 or len(s) > 2):
-            # Two object must be selected at least
-            errMessage = "Select two edges or two wire to make a face or "
-            faced.getInfo(s).errorDialog(errMessage)
-            return
-        newObj = App.ActiveDocument.addObject(
-            'Part::RuledSurface', 'tempSurface')
-        for sub in s:
-            newObj.Curve1 = (s[0].Object, s[0].SubElementNames)
-            newObj.Curve2 = (s[1].Object, s[1].SubElementNames)
-        App.ActiveDocument.recompute()
-        # Make a simple copy of the object
-        newShape = Part.getShape(
-            newObj, '', needSubElement=False, refine=False)
-        App.ActiveDocument.addObject(
-            'Part::Feature', 'Surface').Shape = newShape
-        App.ActiveDocument.recompute()
-        App.ActiveDocument.ActiveObject.Label = 'Surface'
-        App.ActiveDocument.recompute()
         try:
+            s = Gui.Selection.getSelectionEx()
+            if (len(s) < 2 or len(s) > 2):
+                # Two object must be selected at least
+                errMessage = "Select two edges or two wire to make a face or "
+                faced.getInfo(s).errorDialog(errMessage)
+                return
+            newObj = App.ActiveDocument.addObject(
+                'Part::RuledSurface', 'tempSurface')
+            for sub in s:
+                newObj.Curve1 = (s[0].Object, s[0].SubElementNames)
+                newObj.Curve2 = (s[1].Object, s[1].SubElementNames)
+            App.ActiveDocument.recompute()
+            # Make a simple copy of the object
+            newShape = Part.getShape(
+                newObj, '', needSubElement=False, refine=False)
+            App.ActiveDocument.addObject(
+                'Part::Feature', 'Surface').Shape = newShape
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.ActiveObject.Label = 'Surface'
+            App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(newObj.Name)
             App.ActiveDocument.removeObject(s[0].Object.Name)
             App.ActiveDocument.removeObject(s[1].Object.Name)
-
             App.ActiveDocument.recompute()
         except ImportError as err:
             App.Console.PrintError("'Part Surface' Failed. "

@@ -35,19 +35,26 @@ import FACE_D as faced
 class Design456_Magnet:
 
     def Activated(self):
-        s = Gui.Selection.getSelectionEx()
-        if (len(s) < 2):
-            # Two object must be selected
-            errMessage = "Select two or more objects to use Magnet Tool"
-            faced.getInfo(s).errorDialog(errMessage)
-            return
-        sub1 = Gui.Selection.getSelectionEx()[0]
-        sub2 = Gui.Selection.getSelectionEx()[1]
+        try:
+            s = Gui.Selection.getSelectionEx()
+            if (len(s) < 2):
+                # Two object must be selected
+                errMessage = "Select two or more objects to use Magnet Tool"
+                faced.getInfo(s).errorDialog(errMessage)
+                return
+            sub1 = Gui.Selection.getSelectionEx()[0]
+            sub2 = Gui.Selection.getSelectionEx()[1]
+            # Move OBJ1 to be on Top2
+            obj2info = faced.getInfo(sub2)
+            print('result=')
+            print(obj2info)
+            sub1.Object.Placement.Base = obj2info.getObjectCenterOfMass()
+            sub1.Object.Placement.Base
+            App.ActiveDocument.recompute()
+        except ImportError as err:
+            App.Console.PrintError("'Magnet' Failed. " 
+                                   "{err}\n".format(err=str(err)))
 
-        # Move OBJ1 to be on Top2
-        obj2info = faced.getInfo(sub2)
-        sub1.Object.Placement.Base = obj2info.getObjectCenterOfMass()
-        App.ActiveDocument.recompute()
 
     def GetResources(self):
         return {
