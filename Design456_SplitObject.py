@@ -79,17 +79,21 @@ class Design456_SplitObject:
             j.Proxy.execute(j)
             j.purgeTouched()
             App.ActiveDocument.recompute()
-
-            # Make a simple copy
-            newShape = Part.getShape(j, '', needSubElement=False, refine=False)
-            NewJ = App.ActiveDocument.addObject(
+            if j.isValid() == False:
+                App.ActiveDocument.removeObject(j.Name)
+                # Shape is not OK
+                errMessage = "Failed to fillet the objects"
+                faced.getInfo(selection).errorDialog(errMessage)
+            else:
+                # Make a simple copy
+                newShape = Part.getShape(j, '', needSubElement=False, refine=False)
+                NewJ = App.ActiveDocument.addObject(
                 'Part::Feature', 'SplitedObject').Shape = newShape
-
-            # Remove Old objects
-            for obj in j.Objects:
-                App.ActiveDocument.removeObject(obj.Name)
-            App.ActiveDocument.removeObject(totalName)
-            App.ActiveDocument.removeObject(j.Name)
+                # Remove Old objects
+                for obj in j.Objects:
+                    App.ActiveDocument.removeObject(obj.Name)
+                App.ActiveDocument.removeObject(totalName)
+                App.ActiveDocument.removeObject(j.Name)
 
             App.ActiveDocument.recompute()
         except ImportError as err:

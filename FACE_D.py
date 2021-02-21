@@ -190,39 +190,91 @@ class PartMover(object):
 TODO: This class must be updated to be able for all kind of movement of objects
     Mariwan 
 """
+
+
 class getInfo(object):
     def __init__(self, object):
         self.obj = object
 
     def getFaceName(self):
-        return (self.obj.SubElementNames[0])
-    
+        try:
+            Result=(self.obj.SubElementNames[0])
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getFaceName' Failed. "
+                                   "{err}\n".format(err=str(err)))
+
     def getFullFaceName(self):
-        return (self.obj.FullName)
-    
+        try:
+            Result=(self.obj.FullName)
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getFullFaceName' Failed. "
+                                   "{err}\n".format(err=str(err)))
+
     def getObjectCenterOfMass(self):
-        return(self.obj.SubObjects[0].CenterOfMass)
+        try:
+            Result=self.obj.SubObjects[0].CenterOfMass
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getObjectCenterOfMass' Failed. "
+                                   "{err+}\n".format(err=str(err)))
 
     def getObjectX(self):
-        return(self.obj.SubObjects[0].CenterOfMass.x)
+        try:
+            Result= self.obj.SubObjects[0].CenterOfMass.x
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getObjectX' Failed. "
+                                   "{err+}\n".format(err=str(err)))
 
     def getObjectY(self):
-        return(self.obj.SubObjects[0].CenterOfMass.y)
+        try:
+            Result=self.obj.SubObjects[0].CenterOfMass.y
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getObjectY' Failed. "
+                                   "{err+}\n".format(err=str(err)))
 
     def getObjectZ(self):
-        return(self.obj.SubObjects[0].CenterOfMass.z)
+        try:
+            Result = self.obj.SubObjects[0].CenterOfMass.z
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getObjectZ' Failed. "
+                                   "{err+}\n".format(err=str(err)))
 
     def getObjectBase(self):
-        return (self.obj.SubObjects[0].Placement.Base())
+        try:
+            Result= self.obj.SubObjects[0].Placement.Base()
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getObjectBase' Failed. "
+                                   "{err+}\n".format(err=str(err)))
 
     def getObjectPlacement(self):
-        return (self.obj.SubObjects[0].Placement())
+        try:
+            Result=self.obj.SubObjects[0].Placement()
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getObjectPlacement' Failed. "
+                                   "{err+}\n".format(err=str(err)))
+        
 
     def getObjectRotation(self):
-        return (self.obj.SubObjects[0].Placement.Rotation())
-
+        try:
+            Result=self.obj.SubObjects[0].Placement.Rotation()
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getObjectX' Failed. "
+                                   "{err+}\n".format(err=str(err)))
     def getObjectParameterRange(self):
-        return (self.obj.SubObjects[0].ParameterRange())
+        try:
+            Result =self.obj.SubObjects[0].ParameterRange()
+            return Result
+        except ImportError as err:
+            App.Console.PrintError("'getObjectParameterRange' Failed. "
+                                   "{err+}\n".format(err=str(err)))
 
     """Message box (error) """
 
@@ -232,26 +284,28 @@ class getInfo(object):
         diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Error', msg)
         diag.setWindowModality(QtCore.Qt.ApplicationModal)
         diag.exec_()
-        
+
     def SelectTopFace(self):
-        t=self.obj
-        faceData=None
-        counter=1
-        centerofmass=None
-        Highiest=0
+        t = self.obj
+        faceData = None
+        counter = 1
+        centerofmass = None
+        Highiest = 0
         for fac in t.Object.Shape.Faces:
-            if(fac.CenterOfMass.z>Highiest):
-                Highiest=fac.CenterOfMass.z
-                centerofmass=fac.CenterOfMass
-                Result=counter
-            counter=counter+1
+            if(fac.CenterOfMass.z > Highiest):
+                Highiest = fac.CenterOfMass.z
+                centerofmass = fac.CenterOfMass
+                Result = counter
+            counter = counter+1
         # Gui.Selection.addSelection('Unnamed','Shape','Face4',-2.45152,-3.78272,5)
-        FaceName='Face'+str(Result)
+        FaceName = 'Face'+str(Result)
         print(FaceName)
         print(Highiest)
         Gui.Selection.clearSelection()
-        Gui.Selection.addSelection(App.ActiveDocument.Name, t.Object.Name,FaceName, centerofmass.x,centerofmass.y,centerofmass.z)
+        Gui.Selection.addSelection(App.ActiveDocument.Name, t.Object.Name,
+                                   FaceName, centerofmass.x, centerofmass.y, centerofmass.z)
         return FaceName
+
 
 class fillet(object):
     def __init__(self, object):
