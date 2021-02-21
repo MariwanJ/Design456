@@ -190,15 +190,16 @@ class PartMover(object):
 TODO: This class must be updated to be able for all kind of movement of objects
     Mariwan 
 """
-
-
 class getInfo(object):
     def __init__(self, object):
         self.obj = object
 
     def getFaceName(self):
         return (self.obj.SubElementNames[0])
-
+    
+    def getFullFaceName(self):
+        return (self.obj.FullName)
+    
     def getObjectCenterOfMass(self):
         return(self.obj.SubObjects[0].CenterOfMass)
 
@@ -246,6 +247,8 @@ class getInfo(object):
             counter=counter+1
         # Gui.Selection.addSelection('Unnamed','Shape','Face4',-2.45152,-3.78272,5)
         FaceName='Face'+str(Result)
+        print(FaceName)
+        print(Highiest)
         Gui.Selection.clearSelection()
         Gui.Selection.addSelection(App.ActiveDocument.Name, t.Object.Name,FaceName, centerofmass.x,centerofmass.y,centerofmass.z)
         return FaceName

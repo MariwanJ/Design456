@@ -308,6 +308,8 @@ class Design456_Part_Pyramid:
 
             obj = App.Placement()
             Faces = QtGui.QInputDialog.getInt(None, "Faces", "Faces:")[0]
+            if(Faces==0):
+                return # Nothing to do here 
             obj.Rotation.Q = (0.0, 0.0, 0, 1.0)
             obj.Base = App.Vector(0.0, 0.0, 0.0)
             newObj = _draft.makePolygon(
@@ -376,10 +378,11 @@ class Design456_Part_Hemisphere:
     def Activated(self):
         try:
 
-            neObj = App.ActiveDocument.addObject(
-                "Part::Sphere", "tempHemisphere")
-            neObj.Radius = QtGui.QInputDialog.getDouble(
-                None, "Radius", "Radius:")[0]
+            neRaduis= QtGui.QInputDialog.getDouble(None, "Radius", "Radius:",0,1.0,10000.0,2)[0]
+            if(neRaduis==0):
+                return #Nothing to do here.
+            neObj = App.ActiveDocument.addObject("Part::Sphere", "tempHemisphere")
+            neObj.Radius=neRaduis 
             neObj.Placement = App.Placement(App.Vector(
                 0.00, 0.00, 0.00), App.Rotation(App.Vector(1.00, 0.00, 0.00), 90.00))
             neObj.Angle1 = '-90.00 deg'

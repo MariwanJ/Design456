@@ -39,12 +39,17 @@ class Design456_ExtrudeFace:
 
     def Activated(self):
         try:
+            
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 1):
                 # An object must be selected
                 errMessage = "Select an object to use Extrude Face"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            lengthForward=QtGui.QInputDialog.getDouble(None, "Get value", "Input:",0,-10000.0,10000.0,2)[0]
+            if(lengthForward==0):
+                return #nothing to do here
+            
             objName = s[0].ObjectName
             sh = s[0].Object.Shape.copy()
             if hasattr(s[0].Object, "getGlobalPlacement"):
@@ -73,8 +78,7 @@ class Design456_ExtrudeFace:
 #			elif (m.Placement.Rotation.Axis.z==1):
 #				f.Base.MapMode='ObjectXY'
 
-            f.LengthFwd = QtGui.QInputDialog.getDouble(
-                None, "Get value", "Input:")[0]
+            f.LengthFwd = lengthForward
             f.LengthRev = 0.0
             f.Solid = True
             f.Reversed = False

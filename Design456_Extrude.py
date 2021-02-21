@@ -60,8 +60,7 @@ class Design456_Extrude:
         #	elif (m.Placement.Rotation.Axis.z==1):
         #		f.Base.MapMode='ObjectXY'
 
-            f.LengthFwd = QtGui.QInputDialog.getDouble(
-                None, "Get length", "Length:")[0]
+            f.LengthFwd = QtGui.QInputDialog.getDouble( None, "Get length", "Length:",0,-10000.0,10000.0,2)[0]
             while(f.LengthFwd == 0):
                 _sleep(.1)
                 Gui.updateGui()
@@ -78,15 +77,14 @@ class Design456_Extrude:
             newShape = Part.getShape(f, '', needSubElement=False, refine=False)
             newObj = App.ActiveDocument.addObject(
                 'Part::Feature', 'Extrude').Shape = newShape
-            App.ActiveDocument.recompute()
             App.ActiveDocument.ActiveObject.Label = f.Label
 
+            #Remove old objects 
+            App.ActiveDocument.clearUndos()
             App.ActiveDocument.recompute()
-            """
             App.ActiveDocument.removeObject(f.Name)
             App.ActiveDocument.removeObject(m.Name)
             App.ActiveDocument.recompute()
-            """
             return
         except ImportError as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "
