@@ -39,17 +39,18 @@ class Design456_ExtrudeFace:
 
     def Activated(self):
         try:
-            
+
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 1):
                 # An object must be selected
                 errMessage = "Select an object to use Extrude Face"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
-            lengthForward=QtGui.QInputDialog.getDouble(None, "Get value", "Input:",0,-10000.0,10000.0,2)[0]
-            if(lengthForward==0):
-                return #nothing to do here
-            
+            lengthForward = QtGui.QInputDialog.getDouble(
+                None, "Get value", "Input:", 0, -10000.0, 10000.0, 2)[0]
+            if(lengthForward == 0):
+                return  # nothing to do here
+
             objName = s[0].ObjectName
             sh = s[0].Object.Shape.copy()
             if hasattr(s[0].Object, "getGlobalPlacement"):
@@ -71,13 +72,6 @@ class Design456_ExtrudeFace:
             f.Base = newobj				# App.activeDocument().getObject(fullname)
             f.DirMode = "Normal"
             f.DirLink = None
-#			if(m.Placement.Rotation.Axis.x==1):
-#				f.Base.MapMode='ObjectYZ'
-#			elif (m.Placement.Rotation.Axis.y==1):
-#				f.Base.MapMode='ObjectXZ'
-#			elif (m.Placement.Rotation.Axis.z==1):
-#				f.Base.MapMode='ObjectXY'
-
             f.LengthFwd = lengthForward
             f.LengthRev = 0.0
             f.Solid = True
@@ -90,20 +84,26 @@ class Design456_ExtrudeFace:
                 'Part::Feature', f.Name+'N')
             newPart_.Shape = Part.getShape(
                 f, '', needSubElement=False, refine=False)
-            App.ActiveDocument.removeObject(f.Name)
-            App.ActiveDocument.removeObject(m.Name)
-            """  # This will not work for split object as they are not two separate objects.
-			#Make the two objects merged
-			obj1= App.ActiveDocument.getObject(s[0].ObjectName)
-			obj2= newPart_
-			selections =  Gui.Selection.getSelectionEx()
-			for i in selections:
-				Gui.Selection.removeSelection(selections)
-				
-			Gui.Selection.addSelection(obj1)
-			Gui.Selection.addSelection(obj2)
-			Gui.runCommand('Design456_Part_Merge',0)
-			"""
+            if newPart_.isValid() == False:
+                App.ActiveDocument.removeObject(newPart_.Name)
+                App.ActiveDocument.removeObject(f.Name)
+                # Shape is not OK
+                errMessage = "Failed to extrude the Face"
+                faced.getInfo(m).errorDialog(errMessage)
+            else:
+                # remove old objects
+                App.ActiveDocument.removeObject(f.Name)
+                App.ActiveDocument.removeObject(m.Name)
+                # This will not work for split objects as they are not two separate objects.2021-02-22
+                # Make the two objects merged
+                obj1 = App.ActiveDocument.getObject(s[0].ObjectName)
+                obj2 = newPart_
+                selections = Gui.Selection.getSelectionEx()
+                for i in selections:
+                    Gui.Selection.removeSelection(selections)
+                    Gui.Selection.addSelection(obj1)
+                    Gui.Selection.addSelection(obj2)
+                    Gui.runCommand('Design456_Part_Merge', 0)
             App.ActiveDocument.recompute()
 
             return

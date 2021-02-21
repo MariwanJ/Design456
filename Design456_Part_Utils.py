@@ -109,7 +109,7 @@ class GenCommandForPartUtils:
 
                 # Make a simple copy of the object
                 newShape = Part.getShape(
-                    f, '', needSubElement=False, refine=False)
+                    f, '', needSubElement=False, refine=True)
                 newObj = App.ActiveDocument.addObject(
                     'Part::Feature', 'Extrude')
                 newObj.Shape = newShape
@@ -129,7 +129,7 @@ class GenCommandForPartUtils:
                 tempResult.Base = nObjects[0]
             App.ActiveDocument.recompute()
             newShape = Part.getShape(
-                tempResult, '', needSubElement=False, refine=False)
+                tempResult, '', needSubElement=False, refine=True)
             Result = App.ActiveDocument.addObject('Part::Feature', 'Shape')
             Result.Shape = newShape
             for name in nObjects:
@@ -170,7 +170,6 @@ class Design456_CommonFace:
 Gui.addCommand('Design456_CommonFace', Design456_CommonFace())
 
 
-
 # Subtract faces
 
 
@@ -191,6 +190,8 @@ class Design456_SubtractFaces:
 Gui.addCommand('Design456_SubtractFaces', Design456_SubtractFaces())
 
 # Combine two faces
+
+
 class Design456_CombineFaces:
     def Activated(self):
         cmp = GenCommandForPartUtils()
@@ -207,16 +208,27 @@ class Design456_CombineFaces:
 
 Gui.addCommand('Design456_CombineFaces', Design456_CombineFaces())
 # Surface between two line
+
+
 class Design456_Part_Surface:
 
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 2 or len(s) > 2):
-                # Two object must be selected at least
+                # Two object must be selected
                 errMessage = "Select two edges or two wire to make a face or "
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            from textwrap import wrap
+            for ss in s:
+                word = ss.FullName
+                if(word.find('Vertex') != -1):
+                    # Two lines or curves or wires must be selected
+                    errMessage = "Select two edges or two wires not Vertex"
+                    faced.getInfo(s).errorDialog(errMessage)
+                    return
+
             newObj = App.ActiveDocument.addObject(
                 'Part::RuledSurface', 'tempSurface')
             for sub in s:
@@ -225,16 +237,24 @@ class Design456_Part_Surface:
             App.ActiveDocument.recompute()
             # Make a simple copy of the object
             newShape = Part.getShape(
-                newObj, '', needSubElement=False, refine=False)
-            App.ActiveDocument.addObject(
-                'Part::Feature', 'Surface').Shape = newShape
-            App.ActiveDocument.recompute()
+                newObj, '', needSubElement=False, refine=True)
+            tempNewObj = App.ActiveDocument.addObject(
+                'Part::Feature', 'Surface')
+            tempNewObj.Shape = newShape
             App.ActiveDocument.ActiveObject.Label = 'Surface'
             App.ActiveDocument.recompute()
-            App.ActiveDocument.removeObject(newObj.Name)
-            App.ActiveDocument.removeObject(s[0].Object.Name)
-            App.ActiveDocument.removeObject(s[1].Object.Name)
-            App.ActiveDocument.recompute()
+            if tempNewObj.isValid() == False:
+                App.ActiveDocument.removeObject(tempNewObj.Name)
+                # Shape is not OK
+                errMessage = "Failed to fillet the objects"
+                faced.getInfo(s).errorDialog(errMessage)
+            else:
+                App.ActiveDocument.removeObject(newObj.Name)
+                #Removing these could cause problem if the line is a part of an object
+                #You cannot hide them eithe. TODO: I have to find a solution later 
+                #App.ActiveDocument.removeObject(s[0].Object.Name)
+                #App.ActiveDocument.removeObject(s[1].Object.Name)
+                App.ActiveDocument.recompute()
         except ImportError as err:
             App.Console.PrintError("'Part Surface' Failed. "
                                    "{err}\n".format(err=str(err)))
