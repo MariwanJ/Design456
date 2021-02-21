@@ -55,6 +55,12 @@ class Design456_Extract:
                     newobj.Shape = sh.getElement(name)
             
             App.ActiveDocument.recompute()
+            if  newobj.isValid()==False:
+                App.ActiveDocument.removeObject(newObj.Name)
+                # Shape is not OK
+                errMessage = "Failed to extrude the shape"
+                faced.getInfo(s).errorDialog(errMessage)
+                return
         except ImportError as err:
             App.Console.PrintError("'Design456_Extract' Failed. "
                                    "{err}\n".format(err=str(err)))

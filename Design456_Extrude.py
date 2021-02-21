@@ -73,19 +73,25 @@ class Design456_Extrude:
 
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
-
             newShape = Part.getShape(f, '', needSubElement=False, refine=False)
             newObj = App.ActiveDocument.addObject(
                 'Part::Feature', 'Extrude').Shape = newShape
             App.ActiveDocument.ActiveObject.Label = f.Label
-
-            #Remove old objects 
-            App.ActiveDocument.clearUndos()
+            #if something went wrong .. delete all new objecst.
+            if  newObj.isValid()==False:
+                App.ActiveDocument.removeObject(newObj.Name)
+                App.ActiveDocument.removeObject(f.Name)
+                # Shape is not OK
+                errMessage = "Failed to extrude the shape"
+                faced.getInfo(m).errorDialog(errMessage)
+            else:
+                #Remove old objects 
+                App.ActiveDocument.clearUndos()
+                App.ActiveDocument.recompute()
+                App.ActiveDocument.removeObject(f.Name)
+                App.ActiveDocument.removeObject(m.Name)
+                return
             App.ActiveDocument.recompute()
-            App.ActiveDocument.removeObject(f.Name)
-            App.ActiveDocument.removeObject(m.Name)
-            App.ActiveDocument.recompute()
-            return
         except ImportError as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "
                                    "{err}\n".format(err=str(err)))
