@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *                                                                         *
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
@@ -260,7 +263,7 @@ class Design456_loftOnDirection_ui(object):
 
                     # section hidden faces work
             self.window.hide()
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Design456_loftOnDirection' Failed. "
                                    "{err}\n".format(err=str(err)))
 

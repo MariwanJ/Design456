@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *                                                                         *
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
@@ -255,7 +258,7 @@ class Design456_Part_Surface:
                 #App.ActiveDocument.removeObject(s[0].Object.Name)
                 #App.ActiveDocument.removeObject(s[1].Object.Name)
                 App.ActiveDocument.recompute()
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part Surface' Failed. "
                                    "{err}\n".format(err=str(err)))
 

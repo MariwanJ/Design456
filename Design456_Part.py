@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *																		   *
 # *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
@@ -99,7 +102,7 @@ class Design456_Part_Box:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Box' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -126,7 +129,7 @@ class Design456_Part_Cylinder:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Cylinder' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -154,7 +157,7 @@ class Design456_Part_Tube:
               FreeCAD has a bug .. it is related to the mouse 2021-02-15 Mariwan"""
            # faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             App.ActiveDocument.recompute()
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Tube' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -180,7 +183,7 @@ class Design456_Part_Sphere:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Sphere' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -206,7 +209,7 @@ class Design456_Part_Cone:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Cone' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -232,7 +235,7 @@ class Design456_Part_Torus:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Torus' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -259,7 +262,7 @@ class Design456_Part_Wedge:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Wedge' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -285,7 +288,7 @@ class Design456_Part_Prism:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Prism' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -357,7 +360,7 @@ class Design456_Part_Pyramid:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
 
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Pyramid' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -404,7 +407,7 @@ class Design456_Part_Hemisphere:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
 
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Hemisphere' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -432,7 +435,7 @@ class Design456_Part_Ellipsoid:
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Part::Ellipsoid' Failed. "
                                    "{err}\n".format(err=str(err)))
 

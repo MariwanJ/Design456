@@ -24,56 +24,45 @@ from __future__ import unicode_literals
 # *																		   *
 # *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 # **************************************************************************
-import os
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
-import Design456Init
-from PySide import QtGui, QtCore
 import Draft
 import Part
+import Design456Init
 import FACE_D as faced
 
+# Move an object to the location of the mouse click on another surface
 
-class Design456_Extract:
-    """Extract the selected face from objects"""
+
+class Design456_3Point:
 
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
-            if (len(s) < 1):
-                # An object must be selected
-                errMessage = "Select a face from an objects to use Extract"
+            if (len(s) < 3):
+                # Two object must be selected
+                errMessage = "Select two or more objects to use Magnet Tool"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
-            for o in s:
-                objName = o.ObjectName
-                sh = o.Object.Shape.copy()
-                if hasattr(o.Object, "getGlobalPlacement"):
-                    gpl = o.Object.getGlobalPlacement()
-                    sh.Placement = gpl
-                for name in o.SubElementNames:
-                    fullname = objName+"_"+name
-                    newobj = o.Document.addObject("Part::Feature", fullname)
-                    newobj.Shape = sh.getElement(name)
+            sub1 = Gui.Selection.getSelectionEx()[0]
+            sub2 = Gui.Selection.getSelectionEx()[1]
+            sub3=  Gui.Selection.getSelectionEx()[2]
             
+
+
             App.ActiveDocument.recompute()
-            if  newobj.isValid()==False:
-                App.ActiveDocument.removeObject(newObj.Name)
-                # Shape is not OK
-                errMessage = "Failed to extrude the shape"
-                faced.getInfo(s).errorDialog(errMessage)
-                return
         except Exception as err:
-            App.Console.PrintError("'Design456_Extract' Failed. "
+            App.Console.PrintError("'Magnet' Failed. " 
                                    "{err}\n".format(err=str(err)))
 
+
     def GetResources(self):
-        return{
-            'Pixmap':	Design456Init.ICON_PATH + '/Extract.svg',
-            'MenuText': 'Extract',
-            'ToolTip': 'Extract selected subshapes from objects'
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/Part_Magnet.svg',
+            'MenuText': 'Part_Magnet',
+                        'ToolTip':	'Part Magnet'
         }
 
 
-Gui.addCommand('Design456_Extract', Design456_Extract())
+Gui.addCommand('Design456_3Point', Design456_3Point())
