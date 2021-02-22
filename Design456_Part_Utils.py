@@ -152,6 +152,7 @@ class GenCommandForPartUtils:
                 "Part::Feature", self.localShapeName)
             newobj.Shape = sh.getElement(faceName)
             App.ActiveDocument.removeObject(Result.Name)
+            del nObjects[:]
 
 
 class Design456_CommonFace:
@@ -257,6 +258,9 @@ class Design456_Part_Surface:
                 #You cannot hide them eithe. TODO: I have to find a solution later 
                 #App.ActiveDocument.removeObject(s[0].Object.Name)
                 #App.ActiveDocument.removeObject(s[1].Object.Name)
+                s[0].Object.ViewObject.Visibility=False
+                s[1].Object.ViewObject.Visibility=False
+                
                 App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Part Surface' Failed. "
