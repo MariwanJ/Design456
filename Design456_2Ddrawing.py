@@ -41,7 +41,9 @@ import FACE_D as faced
 # Move an object to the location of the mouse click on another surface
 
 class Design456_2Ddrawing:
-    list = ["Design456_Arc3Points"
+    list = ["Design456_Arc3Points",
+            "Design456_MultiPointToWireOpen",
+            "Design456_MultiPointToWireClose",
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
@@ -90,7 +92,7 @@ class Design456_Arc3Points:
             App.ActiveDocument.ActiveObject.Label = "Arc_3_Points"
             App.ActiveDocument.removeObject(W.label)
             for n in allSelected:
-                App.ActiveDomument.removeObject(n)
+                App.ActiveDocument.removeObject(n)
             del allSelected[:]
             App.ActiveDocument.recompute()
 
@@ -105,5 +107,75 @@ class Design456_Arc3Points:
                         'ToolTip':	'Arc 3Points'
         }
 
-
 Gui.addCommand('Design456_Arc3Points', Design456_Arc3Points())
+
+
+class Design456_MultiPointToWireOpen:
+    def Activated(self):
+        try:
+            selected = Gui.Selection.getSelectionEx()
+            if (len(selected) < 2 ):
+                # Two object must be selected
+                errMessage = "Select two or more objects to use MultiPointsToLineOpen Tool"
+                faced.getInfo(selected).errorDialog(errMessage)
+                return
+            allSelected=[]
+            for t in selected:
+                allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
+            Wire1 = Draft.makeWire(allSelected, closed=False)
+            for n in selected:
+                App.ActiveDocument.removeObject(n.Object.Name)
+                
+            del allSelected[:]
+            App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'MultiPointToWire' Failed. "
+                                   "{err}\n".format(err=str(err)))
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireOpen.svg',
+            'MenuText': 'Arc3Points',
+                        'ToolTip':	'Arc 3Points'
+        }
+
+
+Gui.addCommand('Design456_MultiPointToWireOpen', Design456_MultiPointToWireOpen())
+
+
+
+class Design456_MultiPointToWireClose:
+    def Activated(self):
+        try:
+            selected = Gui.Selection.getSelectionEx()
+            if (len(selected) < 2):
+                # Two object must be selected
+                errMessage = "Select two or more objects to use MultiPointsToLineClose Tool"
+                faced.getInfo(selected).errorDialog(errMessage)
+                return
+            allSelected=[]
+            for t in selected:
+                allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
+
+            Wire1 = Draft.makeWire(allSelected, closed=True)
+
+            for n in selected:
+                App.ActiveDocument.removeObject(n.Object.Name)
+            #del allSelected[:]
+            
+            App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'MultiPointsToLineClosed' Failed. "
+                                   "{err}\n".format(err=str(err)))
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireClosed.svg',
+            'MenuText': 'Multi-Points To Line Close',
+                        'ToolTip':	'Multi-Points To Line Close'
+        }
+
+
+Gui.addCommand('Design456_MultiPointToWireClose', Design456_MultiPointToWireClose())
