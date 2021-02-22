@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *                                                                         *
 # *  This file is a part of the Open Source Design456 Workbench - App.      *
@@ -91,7 +94,7 @@ class Design456_Workbench (Workbench):
                                      "use different versions of Coin. "
                                      "This will lead to unexpected "
                                      "behavior.\n")
-        except ImportError:
+        except Exception:
             App.Console.PrintWarning("Error: Pivy not found, "
                                      "Draft Workbench will be disabled.\n")
         except Exception:

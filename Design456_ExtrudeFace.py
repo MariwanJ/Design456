@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *																		   *
 # *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
@@ -107,7 +110,7 @@ class Design456_ExtrudeFace:
             App.ActiveDocument.recompute()
 
             return
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'ExtrudeFace' Failed. "
                                    "{err}\n".format(err=str(err)))
 

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *                                                                         *
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
@@ -48,7 +51,7 @@ class FACE_D:
                 return "y"
             else:
                 return "x"
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'FACE_D.getDirectionAxis' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -67,7 +70,7 @@ class FACE_D:
             o = ViewObserver(v)
             c = v.addEventCallback("SoMouseButtonEvent", o.logPosition)
             return pnt
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'FACE_D.getDirectionAxis' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -87,7 +90,7 @@ class FACE_D:
             App.ActiveDocument.recompute()
             return self.newobj
             #o.Object.ViewObject.Visibility = False
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'FACE_D.ExtractFace' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -200,7 +203,7 @@ class getInfo(object):
         try:
             Result=(self.obj.SubElementNames[0])
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getFaceName' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -208,7 +211,7 @@ class getInfo(object):
         try:
             Result=(self.obj.FullName)
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getFullFaceName' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -216,7 +219,7 @@ class getInfo(object):
         try:
             Result=self.obj.SubObjects[0].CenterOfMass
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getObjectCenterOfMass' Failed. "
                                    "{err+}\n".format(err=str(err)))
 
@@ -224,7 +227,7 @@ class getInfo(object):
         try:
             Result= self.obj.SubObjects[0].CenterOfMass.x
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getObjectX' Failed. "
                                    "{err+}\n".format(err=str(err)))
 
@@ -232,7 +235,7 @@ class getInfo(object):
         try:
             Result=self.obj.SubObjects[0].CenterOfMass.y
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getObjectY' Failed. "
                                    "{err+}\n".format(err=str(err)))
 
@@ -240,7 +243,7 @@ class getInfo(object):
         try:
             Result = self.obj.SubObjects[0].CenterOfMass.z
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getObjectZ' Failed. "
                                    "{err+}\n".format(err=str(err)))
 
@@ -248,7 +251,7 @@ class getInfo(object):
         try:
             Result= self.obj.SubObjects[0].Placement.Base()
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getObjectBase' Failed. "
                                    "{err+}\n".format(err=str(err)))
 
@@ -256,7 +259,7 @@ class getInfo(object):
         try:
             Result=self.obj.SubObjects[0].Placement()
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getObjectPlacement' Failed. "
                                    "{err+}\n".format(err=str(err)))
         
@@ -265,14 +268,14 @@ class getInfo(object):
         try:
             Result=self.obj.SubObjects[0].Placement.Rotation()
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getObjectX' Failed. "
                                    "{err+}\n".format(err=str(err)))
     def getObjectParameterRange(self):
         try:
             Result =self.obj.SubObjects[0].ParameterRange()
             return Result
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'getObjectParameterRange' Failed. "
                                    "{err+}\n".format(err=str(err)))
 
@@ -306,6 +309,29 @@ class getInfo(object):
                                    FaceName, centerofmass.x, centerofmass.y, centerofmass.z)
         return FaceName
 
+    #From Mario Macro_CenterCenterFace at 
+    #https://wiki.freecadweb.org/Macro_CenterFace/fr    
+    def objectRealPlacement3D(self):    # search the real Placement
+        try:
+            objectPlacement      = self.obj.Object.Shape.Placement
+            objectPlacementBase  = App.Vector(objectPlacement.Base)
+            #### 
+            objectWorkCenter     = objectPlacementBase
+            ####
+            if hasattr(self.obj, "getGlobalPlacement"):
+                globalPlacement       = self.obj.Object.getGlobalPlacement()
+                globalPlacementBase   = App.Vector(globalPlacement.Base)
+                ####
+                objectRealPlacement3D = globalPlacementBase.sub(objectWorkCenter)#mode=0 adapte pour BBox + Centerpoints
+                ####
+            else:
+                objectRealPlacement3D = objectWorkCenter
+            return objectRealPlacement3D
+        except Exception as err:
+            App.Console.PrintError("'Magnet' Failed. " 
+                                   "{err}\n".format(err=str(err)))
+            return self.getObjectCenterOfMass()
+    
 
 class fillet(object):
     def __init__(self, object):

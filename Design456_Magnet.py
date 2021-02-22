@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *																		   *
 # *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
@@ -45,15 +48,24 @@ class Design456_Magnet:
             sub1 = Gui.Selection.getSelectionEx()[0]
             sub2 = Gui.Selection.getSelectionEx()[1]
             # Move OBJ1 to be on Top2
-            obj2info = faced.getInfo(sub2)
-            print('result=')
-            print(obj2info)
-            sub1.Object.Placement.Base = obj2info.getObjectCenterOfMass()
+            obj2info = faced.getInfo(sub2)            
+            sub1.Object.Placement.Base = obj2info.objectRealPlacement3D()
+            try:
+                height=float (sub1.Object.Height)
+            except:
+                height=float(sub1.Object.Shape.BoundBox.ZLength)
+                
+            sub1.Object.Placement.Base.z=sub1.Object.Placement.Base.z+height
+            #sub1.Object.Placement.Base.x=sub1.Object.Placement.Base.x+float(sub1.Object.Shape.BoundBox.XLength)
+            #sub1.Object.Placement.Base.y=sub1.Object.Placement.Base.y+float(sub1.Object.Shape.BoundBox.YLength)
+            #sub1.Object.Placement.Base = obj2info.getObjectCenterOfMass()
+            
             sub1.Object.Placement.Base
             App.ActiveDocument.recompute()
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Magnet' Failed. " 
                                    "{err}\n".format(err=str(err)))
+
 
 
     def GetResources(self):
