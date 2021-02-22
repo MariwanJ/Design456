@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *																		   *
 # *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
@@ -92,7 +95,7 @@ class Design456_Extrude:
                 App.ActiveDocument.removeObject(m.Name)
                 return
             App.ActiveDocument.recompute()
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "
                                    "{err}\n".format(err=str(err)))
 
@@ -100,7 +103,7 @@ class Design456_Extrude:
         try:
             Gui.SendMsgToActiveView("ViewFit")
             self.timer.stop()
-        except ImportError as err:
+        except Exception as err:
             App.Console.PrintError("'Design456_Extrude_ViewFit' Failed. "
                                    "{err}\n".format(err=str(err)))
 

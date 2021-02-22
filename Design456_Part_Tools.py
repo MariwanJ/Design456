@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
 # ***************************************************************************
 # *																		   *
 # *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
@@ -119,7 +122,7 @@ class Design456_Part_Merge:
 					App.ActiveDocument.removeObject(obj.Name)
 				App.ActiveDocument.removeObject(newObj.Name)
 			App.ActiveDocument.recompute()
-		except ImportError as err:
+		except Exception as err:
 			App.Console.PrintError("'Part::Merge' Failed. "
 								   "{err}\n".format(err=str(err)))
 
@@ -174,7 +177,7 @@ class Design456_Part_Subtract:
 					App.ActiveDocument.removeObject(obj.Name)
 				App.ActiveDocument.removeObject(newObj.Name)
 			App.ActiveDocument.recompute()
-		except ImportError as err:
+		except Exception as err:
 			App.Console.PrintError("'Part::Subtract' Failed. "
 								   "{err}\n".format(err=str(err)))
 
@@ -218,7 +221,7 @@ class Design456_Part_Intersect:
 				App.ActiveDocument.removeObject(obj.Name)
 			App.ActiveDocument.removeObject(newObj.Name)
 			App.ActiveDocument.recompute()
-		except ImportError as err:
+		except Exception as err:
 			App.Console.PrintError("'Part::Intersect' Failed. "
 								   "{err}\n".format(err=str(err)))
 
@@ -258,7 +261,7 @@ class Design456_Part_Group:
 				newObj.addObject(obj)
 
 			App.ActiveDocument.recompute()
-		except ImportError as err:
+		except Exception as err:
 			App.Console.PrintError("'Part::Part' Failed. "
 								   "{err}\n".format(err=str(err)))
 
@@ -300,7 +303,7 @@ class Design456_Part_Compound:
 			App.ActiveDocument.removeObject(newObj.Name)
 
 			App.ActiveDocument.recompute()
-		except ImportError as err:
+		except Exception as err:
 			App.Console.PrintError("'Part::Compund' Failed. "
 								   "{err}\n".format(err=str(err)))
 
@@ -357,7 +360,7 @@ class Design456_Part_Shell:
 				App.ActiveDocument.removeObject(thickObj.Name)
 
 			App.ActiveDocument.recompute()
-		except ImportError as err:
+		except Exception as err:
 			App.Console.PrintError("'Part::Shell' Failed. "
 								   "{err}\n".format(err=str(err)))
 
@@ -430,7 +433,7 @@ class Design456_Part_Fillet:
 				App.ActiveDocument.removeObject(tempNewObj.Name)
 			App.ActiveDocument.recompute()
 
-		except ImportError as err:
+		except Exception as err:
 			App.Console.PrintError("'Fillet' Failed. "
 								   "{err}\n".format(err=str(err)))
 
@@ -495,7 +498,7 @@ class Design456_Part_Chamfer:
 				App.ActiveDocument.removeObject(sub1.Object.Name)
 				App.ActiveDocument.removeObject(tempNewObj.Name)
 			App.ActiveDocument.recompute()
-		except ImportError as err:
+		except Exception as err:
 			App.Console.PrintError("'Chamfer' Failed. "
 								   "{err}\n".format(err=str(err)))
 
