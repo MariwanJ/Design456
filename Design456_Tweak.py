@@ -92,7 +92,9 @@ def moveSubElements(obj, sub_objects_names, vector):
         else:
             new_obj = App.ActiveDocument.addObject("Part::Feature", "Feature")
             new_obj.Shape = new_shape
+        del selected_subelements[:]
         return new_shape
+        
 
 
 def parse_shape(shape, selected_subelements, vector):
@@ -227,7 +229,6 @@ def parse_sub_shapes(shape, selected_subelements, vector):
     elif 0 in touched_subshapes:
         # no subshapes touched
         touched = 0
-
     return sub_shapes, touched
 
 
