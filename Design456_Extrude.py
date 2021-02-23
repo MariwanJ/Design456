@@ -53,12 +53,12 @@ class Design456_Extrude:
             faceSelected = faced.getInfo(selection[0]).getFaceName()
             f.Base = m
             #f.Base = App.activeDocument().getObject(m.Name)
-            f.DirMode = "Normal"
+            f.DirMode = "Normal"            #Dont use Custom as it leads to PROBLEM!
             f.DirLink = None
             degreeAngle = m.Placement.Rotation.Angle*180*22/7  # Convert to Radians
             print(degreeAngle)
             """
-            
+            YOU SHOULD NOT SPECIFY THIS .. OTHERWISE WOULD BE WRONG!!
             if degreeAngle == 0:
                 f.Dir = m.Placement.Rotation.Axis
             elif ((degreeAngle== 90) or (degreeAngle== -90)):
