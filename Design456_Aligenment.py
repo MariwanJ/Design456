@@ -32,13 +32,137 @@ import Part
 import Design456Init
 import FACE_D as faced
 
+# Toolbar class
+"""Design456_Alignment"""
 
 
+class Design456_Alignment:
+    list = ["Design456_AlignFlatToPlane",
+            "Design456_TopSideView",
+            "Design456_BottomView",
+            "Design456_LeftSideView",
+            "Design456_RightSideView",
+            "Design456_LeftSideView",
+            "Design456_FrontSideView",
+            "",
+            "",
+            
+
+            ]
+
+    def Activated(self):
+        self.appendToolbar("Design456_Alignment", self.list)
+
+    def GetResources(self):
+        import Design456Init
+        return{
+            'Pixmap':	 Design456Init.ICON_PATH + '/Alignments.svg',
+            'MenuText': 'Alignments',
+            'ToolTip':	'Alignments'
+        }
 
 
+# Object Alignment
+class Design456_AlignFlatToPlane:
+    def Activated(self):
+        try:
+            Selectedobjects = Gui.Selection.getSelectionEx()
+            for eachObj in Selectedobjects:
+                eachObj.Object.Placement.Base.z = 0
+        except Exception as err:
+            App.Console.PrintError("'Design456_Extract' Failed. "
+                                   "{err}\n".format(err=str(err)))
 
-class Gate:
-  def allow(self,doc,obj,sub):
-    return len(Gui.Selection.getSelectionEx()) == 0
+    def GetResources(self):
+        import Design456Init
+        return{
+            'Pixmap':	 Design456Init.ICON_PATH + '/AlignToPlane.svg',
+            'MenuText': '2Ddrawing',
+            'ToolTip':	'2Ddrawing'
+        }
 
-Gui.Selection.addSelectionGate(Gate())
+    def Activated(self):
+        self.appendToolbar("Design456_SelectionGate", self.list)
+Gui.Selection.addSelectionGate("Align to plane",Design456_AlignFlatToPlane())
+
+# Plane Alignments
+
+#Top
+class Design456_TopSideView:
+    def Activated(self):
+        App.DraftWorkingPlane.alignToPointAndAxis(
+            App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, 1), 0.0)
+
+    def GetResources(self):
+        import Design456Init
+        return{
+            'Pixmap':	 Design456Init.ICON_PATH + '/TopSideView.svg',
+            'MenuText': 'Top Side View',
+            'ToolTip':	'Top Side View'
+            }
+
+Gui.Selection.addSelectionGate("To Side View",Design456_TopSideViewActivate())
+
+#Bottom View
+class Design456_BottomView:
+    def Activated(self):
+        App.DraftWorkingPlane.alignToPointAndAxis(
+            App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, -1), 0.0)
+
+    def GetResources(self):
+        import Design456Init
+        return{
+            'Pixmap':	 Design456Init.ICON_PATH + '/BottomSideView.svg',
+            'MenuText': 'Bottom Side View',
+            'ToolTip':	'Bottom Side View'
+            }
+
+Gui.Selection.addSelectionGate("Bottom Side View",Design456_BottomViewActivate())
+
+#Left
+class Design456_LeftSideView:
+    def Activated(self):
+        App.DraftWorkingPlane.alignToPointAndAxis(
+            App.Vector(0.0, 0.0, 0.0), App.Vector(0, 1, 0), 0.0)
+
+    def GetResources(self):
+        import Design456Init
+        return{
+            'Pixmap':	 Design456Init.ICON_PATH + '/LeftSideView.svg',
+            'MenuText': 'Left Side View',
+            'ToolTip':	'Left Side View'
+            }
+
+Gui.Selection.addSelectionGate("Left Side View",Design456_LeftSideViewActivate())
+
+#Front
+class Design456_FrontSideView:
+    def Activated(self):
+        App.DraftWorkingPlane.alignToPointAndAxis(
+            App.Vector(0.0, 0.0, 0.0), App.Vector(1, 0, 0), 0.0)
+
+    def GetResources(self):
+        import Design456Init
+        return{
+            'Pixmap':	 Design456Init.ICON_PATH + '/FrontSideView.svg',
+            'MenuText': 'Front Side View',
+            'ToolTip':	'Front Side View'
+            }
+
+Gui.Selection.addSelectionGate("Left Side View",Design456_LeftSideViewActivate())
+
+#Back
+class Design456_BackSideView:
+    def Activated(self):
+        App.DraftWorkingPlane.alignToPointAndAxis(
+            App.Vector(0.0, 0.0, 0.0), App.Vector(-1, 0, 0), 0.0)
+
+    def GetResources(self):
+        import Design456Init
+        return{
+            'Pixmap':	 Design456Init.ICON_PATH + '/BacktSideView.svg',
+            'MenuText': 'Back Side View',
+            'ToolTip':	'Back Side View'
+            }
+
+Gui.Selection.addSelectionGate("Right Side view",Design456_RightSideViewActivate)
