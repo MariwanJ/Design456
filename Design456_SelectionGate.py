@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 # *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 # **************************************************************************
 
-# This will be used to avoid user select wrong object, Body, Face, Edges or Vertices 
+# This will be used to avoid user select wrong object, Body, Face, Edges or Vertices
 import os
 import ImportGui
 import FreeCAD as App
@@ -33,12 +33,13 @@ import FreeCADGui as Gui
 import Design456Init
 from PySide import QtGui, QtCore
 
-#Toolbar class
+# Toolbar class
+
 class Design456_SelectionGate:
-    list = ["Design456_BodySelectionMode",
-            "Design456_FaceSelectionMode",
+    list = ["Design456_VertexSelectionMode",
             "Design456_EdgesSelectionMode",
-            "Design456_VertexSelectionMode",
+            "Design456_FaceSelectionMode",
+            "Design456_BodySelectionMode",
 
             ]
     """Design456_SelectionGate"""
@@ -113,6 +114,8 @@ class GateSelect2:
         }
 
 # Only Vertices are allowed
+
+
 class GateSelect3:
     def Activated(self):
         import FACE_D as faced
