@@ -31,6 +31,7 @@ import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
+
 # TODO: Do we need this? I must check it later
 
 
@@ -201,7 +202,7 @@ class getInfo(object):
 
     def getFaceName(self):
         try:
-            Result=(self.obj.SubElementNames[0])
+            Result = (self.obj.SubElementNames[0])
             return Result
         except Exception as err:
             App.Console.PrintError("'getFaceName' Failed. "
@@ -209,7 +210,7 @@ class getInfo(object):
 
     def getFullFaceName(self):
         try:
-            Result=(self.obj.FullName)
+            Result = (self.obj.FullName)
             return Result
         except Exception as err:
             App.Console.PrintError("'getFullFaceName' Failed. "
@@ -217,7 +218,7 @@ class getInfo(object):
 
     def getObjectCenterOfMass(self):
         try:
-            Result=self.obj.SubObjects[0].CenterOfMass
+            Result = self.obj.SubObjects[0].CenterOfMass
             return Result
         except Exception as err:
             App.Console.PrintError("'getObjectCenterOfMass' Failed. "
@@ -225,7 +226,7 @@ class getInfo(object):
 
     def getObjectX(self):
         try:
-            Result= self.obj.SubObjects[0].CenterOfMass.x
+            Result = self.obj.SubObjects[0].CenterOfMass.x
             return Result
         except Exception as err:
             App.Console.PrintError("'getObjectX' Failed. "
@@ -233,7 +234,7 @@ class getInfo(object):
 
     def getObjectY(self):
         try:
-            Result=self.obj.SubObjects[0].CenterOfMass.y
+            Result = self.obj.SubObjects[0].CenterOfMass.y
             return Result
         except Exception as err:
             App.Console.PrintError("'getObjectY' Failed. "
@@ -249,7 +250,7 @@ class getInfo(object):
 
     def getObjectBase(self):
         try:
-            Result= self.obj.SubObjects[0].Placement.Base()
+            Result = self.obj.SubObjects[0].Placement.Base()
             return Result
         except Exception as err:
             App.Console.PrintError("'getObjectBase' Failed. "
@@ -257,23 +258,23 @@ class getInfo(object):
 
     def getObjectPlacement(self):
         try:
-            Result=self.obj.SubObjects[0].Placement()
+            Result = self.obj.SubObjects[0].Placement()
             return Result
         except Exception as err:
             App.Console.PrintError("'getObjectPlacement' Failed. "
                                    "{err+}\n".format(err=str(err)))
-        
 
     def getObjectRotation(self):
         try:
-            Result=self.obj.SubObjects[0].Placement.Rotation()
+            Result = self.obj.SubObjects[0].Placement.Rotation()
             return Result
         except Exception as err:
             App.Console.PrintError("'getObjectX' Failed. "
                                    "{err+}\n".format(err=str(err)))
+
     def getObjectParameterRange(self):
         try:
-            Result =self.obj.SubObjects[0].ParameterRange()
+            Result = self.obj.SubObjects[0].ParameterRange()
             return Result
         except Exception as err:
             App.Console.PrintError("'getObjectParameterRange' Failed. "
@@ -309,29 +310,30 @@ class getInfo(object):
                                    FaceName, centerofmass.x, centerofmass.y, centerofmass.z)
         return FaceName
 
-    #From Mario Macro_CenterCenterFace at 
-    #https://wiki.freecadweb.org/Macro_CenterFace/fr    
+    # From Mario Macro_CenterCenterFace at
+    # https://wiki.freecadweb.org/Macro_CenterFace/fr
     def objectRealPlacement3D(self):    # search the real Placement
         try:
-            objectPlacement      = self.obj.Object.Shape.Placement
-            objectPlacementBase  = App.Vector(objectPlacement.Base)
-            #### 
-            objectWorkCenter     = objectPlacementBase
+            objectPlacement = self.obj.Object.Shape.Placement
+            objectPlacementBase = App.Vector(objectPlacement.Base)
+            ####
+            objectWorkCenter = objectPlacementBase
             ####
             if hasattr(self.obj, "getGlobalPlacement"):
-                globalPlacement       = self.obj.Object.getGlobalPlacement()
-                globalPlacementBase   = App.Vector(globalPlacement.Base)
+                globalPlacement = self.obj.Object.getGlobalPlacement()
+                globalPlacementBase = App.Vector(globalPlacement.Base)
                 ####
-                objectRealPlacement3D = globalPlacementBase.sub(objectWorkCenter)#mode=0 adapte pour BBox + Centerpoints
+                objectRealPlacement3D = globalPlacementBase.sub(
+                    objectWorkCenter)  # mode=0 adapte pour BBox + Centerpoints
                 ####
             else:
                 objectRealPlacement3D = objectWorkCenter
             return objectRealPlacement3D
         except Exception as err:
-            App.Console.PrintError("'Magnet' Failed. " 
+            App.Console.PrintError("'Magnet' Failed. "
                                    "{err}\n".format(err=str(err)))
             return self.getObjectCenterOfMass()
-    
+
 
 class fillet(object):
     def __init__(self, object):
@@ -346,6 +348,7 @@ class fillet(object):
 
     def filletSide(self):
         return
+
 
 
 """
