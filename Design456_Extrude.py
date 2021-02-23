@@ -56,6 +56,8 @@ class Design456_Extrude:
             f.DirMode = "Custom"
             f.DirLink =None
             # TODO: This "if" might not work always ?
+            print(m.Placement.Rotation.Axis)
+            f.Dir=m.Placement.Rotation.Axis
         #	if(m.Placement.Rotation.Axis.x==1):
         #		f.Base.MapMode='ObjectYZ'
         #	elif (m.Placement.Rotation.Axis.y==1):

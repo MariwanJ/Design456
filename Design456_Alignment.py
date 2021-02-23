@@ -35,17 +35,14 @@ import FACE_D as faced
 # Toolbar class
 """Design456_Alignment"""
 
-
 class Design456_Alignment:
-    list = ["Design456_AlignFlatToPlane",
+    list = ["Design456_AlignToPlane",
             "Design456_TopSideView",
             "Design456_BottomView",
             "Design456_LeftSideView",
             "Design456_RightSideView",
-            "Design456_LeftSideView",
             "Design456_FrontSideView",
-            "",
-            "",
+            "Design456_BackSideView"
             
 
             ]
@@ -68,7 +65,8 @@ class Design456_AlignFlatToPlane:
         try:
             Selectedobjects = Gui.Selection.getSelectionEx()
             for eachObj in Selectedobjects:
-                eachObj.Object.Placement.Base.z = 0
+                eachObj.Object.Placement.Base.z = 0.0
+                
         except Exception as err:
             App.Console.PrintError("'Design456_Extract' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -80,10 +78,8 @@ class Design456_AlignFlatToPlane:
             'MenuText': '2Ddrawing',
             'ToolTip':	'2Ddrawing'
         }
-
-    def Activated(self):
-        self.appendToolbar("Design456_SelectionGate", self.list)
-Gui.Selection.addSelectionGate("Align to plane",Design456_AlignFlatToPlane())
+        
+Gui.addCommand('Design456_AlignToPlane',Design456_AlignFlatToPlane())
 
 # Plane Alignments
 
@@ -91,7 +87,10 @@ Gui.Selection.addSelectionGate("Align to plane",Design456_AlignFlatToPlane())
 class Design456_TopSideView:
     def Activated(self):
         App.DraftWorkingPlane.alignToPointAndAxis(
-            App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, 1), 0.0)
+            App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 1.0), 0.0)
+        Gui.activeDocument().activeView().viewTop()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
         import Design456Init
@@ -101,13 +100,16 @@ class Design456_TopSideView:
             'ToolTip':	'Top Side View'
             }
 
-Gui.Selection.addSelectionGate("To Side View",Design456_TopSideViewActivate())
+Gui.addCommand('Design456_TopSideView',Design456_TopSideView())
 
 #Bottom View
 class Design456_BottomView:
     def Activated(self):
         App.DraftWorkingPlane.alignToPointAndAxis(
-            App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, -1), 0.0)
+            App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, -1.0), 0.0)
+        Gui.activeDocument().activeView().viewBottom()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
         import Design456Init
@@ -117,13 +119,16 @@ class Design456_BottomView:
             'ToolTip':	'Bottom Side View'
             }
 
-Gui.Selection.addSelectionGate("Bottom Side View",Design456_BottomViewActivate())
+Gui.addCommand('Design456_BottomView',Design456_BottomView())
 
 #Left
 class Design456_LeftSideView:
     def Activated(self):
         App.DraftWorkingPlane.alignToPointAndAxis(
-            App.Vector(0.0, 0.0, 0.0), App.Vector(0, 1, 0), 0.0)
+            App.Vector(0.0, 0.0, 0.0), App.Vector(1.0,0.0 , 0.0), 0.0)
+        Gui.activeDocument().activeView().viewLeft()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
         import Design456Init
@@ -133,13 +138,35 @@ class Design456_LeftSideView:
             'ToolTip':	'Left Side View'
             }
 
-Gui.Selection.addSelectionGate("Left Side View",Design456_LeftSideViewActivate())
+Gui.addCommand('Design456_LeftSideView',Design456_LeftSideView())
+
+#Right
+class Design456_RightSideView:
+    def Activated(self):
+        App.DraftWorkingPlane.alignToPointAndAxis(
+            App.Vector(0.0, 0.0, 0.0), App.Vector(-1.0, 0.0, 0.0), 0.0)
+        Gui.activeDocument().activeView().viewRight()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
+
+    def GetResources(self):
+        import Design456Init
+        return{
+            'Pixmap':	 Design456Init.ICON_PATH + '/RightSideView.svg',
+            'MenuText': 'Right Side View',
+            'ToolTip':	'Right Side View'
+            }
+
+Gui.addCommand('Design456_RightSideView',Design456_RightSideView())
 
 #Front
 class Design456_FrontSideView:
     def Activated(self):
         App.DraftWorkingPlane.alignToPointAndAxis(
-            App.Vector(0.0, 0.0, 0.0), App.Vector(1, 0, 0), 0.0)
+            App.Vector(0.0, 0.0, 0.0), App.Vector(0.0,1.0, 0.0), 0.0)
+        Gui.activeDocument().activeView().viewFront()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
         import Design456Init
@@ -149,20 +176,23 @@ class Design456_FrontSideView:
             'ToolTip':	'Front Side View'
             }
 
-Gui.Selection.addSelectionGate("Left Side View",Design456_LeftSideViewActivate())
+Gui.addCommand('Design456_FrontSideView',Design456_FrontSideView())
 
 #Back
 class Design456_BackSideView:
     def Activated(self):
         App.DraftWorkingPlane.alignToPointAndAxis(
-            App.Vector(0.0, 0.0, 0.0), App.Vector(-1, 0, 0), 0.0)
+            App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, -1.0, 0.0), 0.0)
+        Gui.activeDocument().activeView().viewRear()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
         import Design456Init
         return{
             'Pixmap':	 Design456Init.ICON_PATH + '/BacktSideView.svg',
-            'MenuText': 'Back Side View',
-            'ToolTip':	'Back Side View'
+            'MenuText': 'Backside View',
+            'ToolTip':	'BackSide View'
             }
 
-Gui.Selection.addSelectionGate("Right Side view",Design456_RightSideViewActivate)
+Gui.addCommand('Design456_BackSideView',Design456_BackSideView())
