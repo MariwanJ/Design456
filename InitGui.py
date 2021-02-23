@@ -67,6 +67,7 @@ class Design456_Workbench (Workbench):
                            pUtils.Design456_Part_Utils.list)
         self.appendToolbar("Design456_2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
         self.appendToolbar("Selection Mode",SelGate.Design456_SelectionGate.list)
+        self.appendToolbar("Design456_Alignments", align.Design456_Alignment.list)
  
         self.appendMenu("Design456_Part",designPart.Design456_Part.list)
         self.appendMenu("Design456_Tools", pTools.Design456_Part_Tools.list)
