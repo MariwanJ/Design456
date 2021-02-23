@@ -36,12 +36,13 @@ __url__ = "https://www.freecadweb.org"
 
 class Design456_Workbench (Workbench):
     "Design456 Workbench object"
-
+    runOnce =None 
     def __init__(self):
         import Design456Init
         self.__class__.Icon = Design456Init.ICON_PATH + '/WorkbenchIcon.svg'
         self.__class__.MenuText = "Design456"
         self.__class__.ToolTip = "A workbench easy designing objects"
+        self.runOnce=True
 
     def Initialize(self):
         "This function is executed when FreeCAD starts"
@@ -177,6 +178,8 @@ class Design456_Workbench (Workbench):
     def Activated(self):
         try:
             import WorkingPlane
+            from draftguitools.gui_trackers import gridTracker
+
             if not(App.ActiveDocument):
                 App.newDocument()
 
@@ -190,12 +193,17 @@ class Design456_Workbench (Workbench):
             # Fix the view of the grid make it as 123D Design
             App.DraftWorkingPlane.alignToPointAndAxis(
                 App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, 1), 0.0)
-            Gui.Snapper.setGrid()
-            Gui.activeDocument().activeView().viewTop()
-            Gui.activeDocument().activeView().viewIsometric()
-            for x in range(1, 12):
-                Gui.ActiveDocument.ActiveView.zoomOut()
-
+            # Show the Grid always
+            g=gridTracker()
+            g.on()
+            #Show Top view - Isometric always
+            if self.runOnce==True:
+                Gui.activeDocument().activeView().viewTop()
+                Gui.activeDocument().activeView().viewIsometric()
+                Gui.SendMsgToActiveView("ViewFit")
+                for x in range(1, 6):
+                    Gui.ActiveDocument.ActiveView.zoomOut()
+                self.runOnce=False
             App.Console.PrintLog(
                 "Draft workbench activated Inside Design456.\n")
             App.Console.PrintMessage('Design456 workbench loaded\n')
