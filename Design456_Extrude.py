@@ -50,22 +50,24 @@ class Design456_Extrude:
                 return
             m = selection[0].Object
             f = App.activeDocument().addObject('Part::Extrusion', 'ExtrudeOriginal')
-            faceSelected= faced.getInfo(selection[0]).getFaceName()
-            f.Base=m
+            faceSelected = faced.getInfo(selection[0]).getFaceName()
+            f.Base = m
             #f.Base = App.activeDocument().getObject(m.Name)
-            f.DirMode = "Custom"
-            f.DirLink =None
-            # TODO: This "if" might not work always ?
-            print(m.Placement.Rotation.Axis)
-            f.Dir=m.Placement.Rotation.Axis
-        #	if(m.Placement.Rotation.Axis.x==1):
-        #		f.Base.MapMode='ObjectYZ'
-        #	elif (m.Placement.Rotation.Axis.y==1):
-        #		f.Base.MapMode='ObjectXZ'
-        #	elif (m.Placement.Rotation.Axis.z==1):
-        #		f.Base.MapMode='ObjectXY'
-
-            f.LengthFwd = QtGui.QInputDialog.getDouble( None, "Get length", "Length:",0,-10000.0,10000.0,2)[0]
+            f.DirMode = "Normal"
+            f.DirLink = None
+            degreeAngle = m.Placement.Rotation.Angle*180*22/7  # Convert to Radians
+            print(degreeAngle)
+            """
+            
+            if degreeAngle == 0:
+                f.Dir = m.Placement.Rotation.Axis
+            elif ((degreeAngle== 90) or (degreeAngle== -90)):
+                f.Dir = (0, 1, 0)
+            elif ((degreeAngle == 120) or (degreeAngle== -120)):
+                f.Dir = (1, 0, 0)
+            """
+            f.LengthFwd = QtGui.QInputDialog.getDouble(
+                None, "Get length", "Length:", 0, -10000.0, 10000.0, 2)[0]
             while(f.LengthFwd == 0):
                 _sleep(.1)
                 Gui.updateGui()
@@ -82,15 +84,15 @@ class Design456_Extrude:
             newObj = App.ActiveDocument.addObject(
                 'Part::Feature', 'Extrude').Shape = newShape
             App.ActiveDocument.ActiveObject.Label = f.Label
-            #if something went wrong .. delete all new objecst.
-            if  newObj.isValid()==False:
+            # if something went wrong .. delete all new objecst.
+            if newObj.isValid() == False:
                 App.ActiveDocument.removeObject(newObj.Name)
                 App.ActiveDocument.removeObject(f.Name)
                 # Shape is not OK
                 errMessage = "Failed to extrude the shape"
                 faced.getInfo(m).errorDialog(errMessage)
             else:
-                #Remove old objects 
+                # Remove old objects
                 App.ActiveDocument.clearUndos()
                 App.ActiveDocument.recompute()
                 App.ActiveDocument.removeObject(f.Name)
