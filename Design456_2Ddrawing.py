@@ -136,8 +136,8 @@ class Design456_MultiPointToWireOpen:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireOpen.svg',
-            'MenuText': 'Arc3Points',
-                        'ToolTip':	'Arc 3Points'
+            'MenuText': 'Multi-Points To Line Open',
+                        'ToolTip':	'Multi-Points To Line Open'
         }
 
 
