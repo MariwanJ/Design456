@@ -25,6 +25,8 @@ Please leave comments, bugs, fixes in the issue queue of this repository.
 
 * FreeCAD forum thread [announcing Design456 workbench](https://forum.freecadweb.org/viewtopic.php?f=8&t=54893)  
 
+### Get it 
+git clone --recurse-submodules -j8 https://github.com/MariwanJ/Design456
 
 ### Developer
 
