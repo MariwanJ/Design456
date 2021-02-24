@@ -64,6 +64,7 @@ class Design456_AlignFlatToPlane:
     def Activated(self):
         try:
             Selectedobjects = Gui.Selection.getSelectionEx()
+            #This must be modied
             for eachObj in Selectedobjects:
                 eachObj.Object.Placement.Base.z = 0.0
                 
