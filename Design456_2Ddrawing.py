@@ -71,7 +71,7 @@ class Design456_Arc3Points:
             selected = Gui.Selection.getSelectionEx()
             if (len(selected) < 3 or len(selected) > 3):
                 # Two object must be selected
-                errMessage = "Select two or more objects to use Magnet Tool"
+                errMessage = "Select two or more objects to useArc3Points Tool"
                 faced.getInfo(selected).errorDialog(errMessage)
                 return
             allSelected=[]
@@ -81,18 +81,10 @@ class Design456_Arc3Points:
             S1 = Part.Shape([C1])
             W = Part.Wire(S1.Edges)
             Part.show(W)
-            W.Label = "tempArc_3_Points"
             App.ActiveDocument.recompute()
-
-            # make a simple copy
-            newObjShape = Part.getShape(
-                W, '', needSubElement=False, refine=False)
-            App.ActiveDocument.addObject(
-                'Part::Feature', 'Shape').Shape = newObjShape
             App.ActiveDocument.ActiveObject.Label = "Arc_3_Points"
-            App.ActiveDocument.removeObject(W.label)
-            for n in allSelected:
-                App.ActiveDocument.removeObject(n)
+            for n in selected:
+                App.ActiveDocument.removeObject(n.ObjectName)
             del allSelected[:]
             App.ActiveDocument.recompute()
 
