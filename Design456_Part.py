@@ -132,7 +132,10 @@ class Design456_Part_Cylinder:
         except Exception as err:
             App.Console.PrintError("'Part::Cylinder' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Cylinder.svg',
@@ -160,7 +163,10 @@ class Design456_Part_Tube:
         except Exception as err:
             App.Console.PrintError("'Part::Tube' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Tube.svg',
@@ -186,7 +192,10 @@ class Design456_Part_Sphere:
         except Exception as err:
             App.Console.PrintError("'Part::Sphere' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Sphere.svg',
@@ -212,7 +221,10 @@ class Design456_Part_Cone:
         except Exception as err:
             App.Console.PrintError("'Part::Cone' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Cone.svg',
@@ -238,7 +250,10 @@ class Design456_Part_Torus:
         except Exception as err:
             App.Console.PrintError("'Part::Torus' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Torus.svg',
@@ -265,7 +280,10 @@ class Design456_Part_Wedge:
         except Exception as err:
             App.Console.PrintError("'Part::Wedge' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Wedge.svg',
@@ -291,7 +309,10 @@ class Design456_Part_Prism:
         except Exception as err:
             App.Console.PrintError("'Part::Prism' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Prism.svg',
@@ -363,7 +384,10 @@ class Design456_Part_Pyramid:
         except Exception as err:
             App.Console.PrintError("'Part::Pyramid' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Pyramid.svg',
@@ -410,7 +434,10 @@ class Design456_Part_Hemisphere:
         except Exception as err:
             App.Console.PrintError("'Part::Hemisphere' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Hemisphere.svg',
@@ -438,7 +465,10 @@ class Design456_Part_Ellipsoid:
         except Exception as err:
             App.Console.PrintError("'Part::Ellipsoid' Failed. "
                                    "{err}\n".format(err=str(err)))
-
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Ellipsoid.svg',
