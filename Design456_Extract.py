@@ -40,6 +40,8 @@ class Design456_Extract:
 
     def Activated(self):
         try:
+            objectCreate=False
+            newobj=App.ActiveDocument.ActiveObject  #Dummy code.
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 1):
                 # An object must be selected
@@ -56,10 +58,12 @@ class Design456_Extract:
                     fullname = objName+"_"+name
                     newobj = o.Document.addObject("Part::Feature", fullname)
                     newobj.Shape = sh.getElement(name)
+                    objectCreate=True
             
             App.ActiveDocument.recompute()
             if  newobj.isValid()==False:
-                App.ActiveDocument.removeObject(newObj.Name)
+                if objectCreate==True:
+                    App.ActiveDocument.removeObject(newObj.Name)
                 # Shape is not OK
                 errMessage = "Failed to extrude the shape"
                 faced.getInfo(s).errorDialog(errMessage)

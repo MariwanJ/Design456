@@ -252,13 +252,16 @@ class Design456_loftOnDirection_ui(object):
 
                     # copy
                     App.ActiveDocument.addObject('Part::Feature', newObj.Name+'N').Shape = _part.getShape(
-                        newObj, '', needSubElement=False, refine=False)
+                        newObj, '', needSubElement=False, refine=True)
                     App.ActiveDocument.recompute()
 
                     # Remove Old objects. I don't like to keep so many objects without any necessity.
+                    """
+                    I will stop this to the time I fix this module totally
                     for obj in newObj.Sections:
                         App.ActiveDocument.removeObject(obj.Name)
                     App.ActiveDocument.removeObject(newObj.Name)
+                    """
                     App.ActiveDocument.recompute()
 
                     # section hidden faces work
