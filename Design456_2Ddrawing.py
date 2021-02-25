@@ -84,12 +84,10 @@ class Design456_Arc3Points:
             if selectedOne1.HasSubObjects and len(selected) == 1:
                 # We have only one object that we take verticies from
                 oneObject = True
-                print("one object has the points")
                 subObjects = selected[0].SubObjects
                 for n in subObjects:
                     allSelected.append(n.Point)
             elif len(selected) == 3:
-                print("3 points")
                 for t in selected:
                     allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
                     print (len(allSelected))
