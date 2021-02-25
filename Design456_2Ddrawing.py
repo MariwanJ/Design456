@@ -68,23 +68,40 @@ class Design456_2Ddrawing:
 class Design456_Arc3Points:
     def Activated(self):
         try:
+            oneObject=False
             selected = Gui.Selection.getSelectionEx()
-            if (len(selected) < 3 or len(selected) > 3):
+            selectedOne1=Gui.Selection.getSelectionEx()[0]
+            selectedOne2=Gui.Selection.getSelectionEx()[0]
+            selectedOne3=Gui.Selection.getSelectionEx()[0]
+            allSelected=[]
+            if ((len(selected) < 3 or len(selected) > 3) and (selectedOne1.HasSubObjects==False or selectedOne2.HasSubObjects==False or selectedOne3.HasSubObjects==False   )):
                 # Two object must be selected
                 errMessage = "Select two or more objects to useArc3Points Tool"
                 faced.getInfo(selected).errorDialog(errMessage)
                 return
-            allSelected=[]
-            for t in selected:
-                allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
+            if selectedOne1.HasSubObjects and len(selected)==1:
+                # We have only one object that we take verticies from
+                oneObject=True 
+                subObjects=selected[0].SubObjects
+                for n in subObjects:
+                    allSelected.append(n.Point)
+            elif len(selected==3):
+                for t in selected:
+                    allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
+            else: 
+                    oneObject=False
+                    print("Not implemented")
+                    return
             C1 = Part.Arc(App.Vector(allSelected[0]), App.Vector(allSelected[1]), App.Vector(allSelected[2]))
             S1 = Part.Shape([C1])
             W = Part.Wire(S1.Edges)
             Part.show(W)
             App.ActiveDocument.recompute()
             App.ActiveDocument.ActiveObject.Label = "Arc_3_Points"
-            for n in selected:
-                App.ActiveDocument.removeObject(n.ObjectName)
+            #Remove only if it is not one object
+            if oneObject==False:
+                for n in selected:
+                    App.ActiveDocument.removeObject(n.ObjectName)
             del allSelected[:]
             App.ActiveDocument.recompute()
 
