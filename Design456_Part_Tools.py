@@ -117,10 +117,10 @@ class Design456_Part_Merge:
 				NewJ = App.ActiveDocument.addObject(
 					'Part::Feature', 'Merged').Shape = newShape
 				App.ActiveDocument.recompute()
-				   		# Remove Old objects
-				for obj in allObjects:
-					App.ActiveDocument.removeObject(obj.Name)
-				App.ActiveDocument.removeObject(newObj.Name)
+				# Remove Old objects
+				#for obj in allObjects:
+				#	App.ActiveDocument.removeObject(obj.Name)
+				#App.ActiveDocument.removeObject(newObj.Name)
 			App.ActiveDocument.recompute()
 			del allObjects[:]
 		except Exception as err:
