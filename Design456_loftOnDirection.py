@@ -39,6 +39,7 @@ from __future__ import unicode_literals
 # *https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
 # *https://forum.freecadweb.org/viewtopic.php?f=8&t=54893&start=10
 
+import os,sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -269,6 +270,10 @@ class Design456_loftOnDirection_ui(object):
         except Exception as err:
             App.Console.PrintError("'Design456_loftOnDirection' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
 
 
 class Design456_loftOnDirection():

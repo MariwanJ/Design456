@@ -24,6 +24,7 @@ from __future__ import unicode_literals
 # *																		   *
 # *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 # ***************************************************************************
+import os,sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -34,7 +35,6 @@ import Part
 import FACE_D as faced
 import Design456_Extract as face_extract
 import Design456_Part_Tools as tools
-
 
 class Design456_ExtrudeFace:
     def __init__(self):
@@ -113,6 +113,10 @@ class Design456_ExtrudeFace:
         except Exception as err:
             App.Console.PrintError("'ExtrudeFace' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
 
     def GetResources(self):
         return {
