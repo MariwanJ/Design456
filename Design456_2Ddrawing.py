@@ -30,6 +30,7 @@ from __future__ import unicode_literals
 #                                                                          *
 # * Modfied by: Mariwan Jalal	 mariwan.jalal@gmail.com	               *
 # **************************************************************************
+import os,sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -39,6 +40,7 @@ import Design456Init
 import FACE_D as faced
 
 # Move an object to the location of the mouse click on another surface
+
 
 class Design456_2Ddrawing:
     list = ["Design456_Arc3Points",
@@ -68,38 +70,42 @@ class Design456_2Ddrawing:
 class Design456_Arc3Points:
     def Activated(self):
         try:
-            oneObject=False
+            oneObject = False
             selected = Gui.Selection.getSelectionEx()
-            selectedOne1=Gui.Selection.getSelectionEx()[0]
-            selectedOne2=Gui.Selection.getSelectionEx()[0]
-            selectedOne3=Gui.Selection.getSelectionEx()[0]
-            allSelected=[]
-            if ((len(selected) < 3 or len(selected) > 3) and (selectedOne1.HasSubObjects==False or selectedOne2.HasSubObjects==False or selectedOne3.HasSubObjects==False   )):
+            selectedOne1 = Gui.Selection.getSelectionEx()[0]
+            selectedOne2 = Gui.Selection.getSelectionEx()[0]
+            selectedOne3 = Gui.Selection.getSelectionEx()[0]
+            allSelected = []
+            if ((len(selected) < 3 or len(selected) > 3) and (selectedOne1.HasSubObjects == False or selectedOne2.HasSubObjects == False or selectedOne3.HasSubObjects == False)):
                 # Two object must be selected
                 errMessage = "Select two or more objects to useArc3Points Tool"
                 faced.getInfo(selected).errorDialog(errMessage)
                 return
-            if selectedOne1.HasSubObjects and len(selected)==1:
+            if selectedOne1.HasSubObjects and len(selected) == 1:
                 # We have only one object that we take verticies from
-                oneObject=True 
-                subObjects=selected[0].SubObjects
+                oneObject = True
+                print("one object has the points")
+                subObjects = selected[0].SubObjects
                 for n in subObjects:
                     allSelected.append(n.Point)
-            elif len(selected==3):
+            elif len(selected) == 3:
+                print("3 points")
                 for t in selected:
                     allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
-            else: 
-                    oneObject=False
-                    print("Not implemented")
-                    return
+                    print (len(allSelected))
+            else:
+                oneObject = False
+                print("A combination of objects")
+                print("Not implemented")
+                return
             C1 = Part.Arc(App.Vector(allSelected[0]), App.Vector(allSelected[1]), App.Vector(allSelected[2]))
             S1 = Part.Shape([C1])
             W = Part.Wire(S1.Edges)
             Part.show(W)
             App.ActiveDocument.recompute()
             App.ActiveDocument.ActiveObject.Label = "Arc_3_Points"
-            #Remove only if it is not one object
-            if oneObject==False:
+            # Remove only if it is not one object
+            if oneObject == False:
                 for n in selected:
                     App.ActiveDocument.removeObject(n.ObjectName)
             del allSelected[:]
@@ -108,6 +114,11 @@ class Design456_Arc3Points:
         except Exception as err:
             App.Console.PrintError("'Arc3Points' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+            
 
     def GetResources(self):
         return {
@@ -116,25 +127,41 @@ class Design456_Arc3Points:
                         'ToolTip':	'Arc 3Points'
         }
 
+
 Gui.addCommand('Design456_Arc3Points', Design456_Arc3Points())
 
 
-class Design456_MultiPointToWireOpen:
+class Design456_MultiPointToWire:
+    def __init__(self,type):
+        self.type = type
+
     def Activated(self):
         try:
             selected = Gui.Selection.getSelectionEx()
-            if (len(selected) < 2 ):
+            oneObject = False
+
+            for n in selected:
+                if n.HasSubObjects == True:
+                    oneObject = True
+            if (len(selected) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to use MultiPointsToLineOpen Tool"
                 faced.getInfo(selected).errorDialog(errMessage)
                 return
-            allSelected=[]
+            allSelected = []
             for t in selected:
-                allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
-            Wire1 = Draft.makeWire(allSelected, closed=False)
+                allSelected.append(t.PickedPoints)
+            if self.type == 0:
+                Wire1 = Draft.makeWire(allSelected, closed=True)
+            else:
+                Wire1 = Draft.makeWire(allSelected, closed=False)
+            """
+            I have to find a way to avoid deleting Verticies if they are a part from another object.
+            This is disabled at the moment.       
+            
             for n in selected:
                 App.ActiveDocument.removeObject(n.Object.Name)
-                
+            """
             del allSelected[:]
             App.ActiveDocument.recompute()
 
@@ -142,41 +169,14 @@ class Design456_MultiPointToWireOpen:
             App.Console.PrintError("'MultiPointToWire' Failed. "
                                    "{err}\n".format(err=str(err)))
 
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireOpen.svg',
-            'MenuText': 'Multi-Points To Line Open',
-                        'ToolTip':	'Multi-Points To Line Open'
-        }
-
-
-Gui.addCommand('Design456_MultiPointToWireOpen', Design456_MultiPointToWireOpen())
-
-
 
 class Design456_MultiPointToWireClose:
     def Activated(self):
         try:
-            selected = Gui.Selection.getSelectionEx()
-            if (len(selected) < 2):
-                # Two object must be selected
-                errMessage = "Select two or more objects to use MultiPointsToLineClose Tool"
-                faced.getInfo(selected).errorDialog(errMessage)
-                return
-            allSelected=[]
-            for t in selected:
-                allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
-
-            Wire1 = Draft.makeWire(allSelected, closed=True)
-
-            for n in selected:
-                App.ActiveDocument.removeObject(n.Object.Name)
-            #del allSelected[:]
-            
-            App.ActiveDocument.recompute()
-
+            newObj= Design456_MultiPointToWire(0)
+            newObj.Activated()
         except Exception as err:
-            App.Console.PrintError("'MultiPointsToLineClosed' Failed. "
+            App.Console.PrintError("'MultiPointToWireClose' Failed. "
                                    "{err}\n".format(err=str(err)))
 
     def GetResources(self):
@@ -187,4 +187,25 @@ class Design456_MultiPointToWireClose:
         }
 
 
-Gui.addCommand('Design456_MultiPointToWireClose', Design456_MultiPointToWireClose())
+class Design456_MultiPointToWireOpen:
+    def Activated(self):
+        try:
+            newObj= Design456_MultiPointToWire(1)
+            newObj.Activated()
+
+        except Exception as err:
+            App.Console.PrintError("'MultiPointToWireOpen' Failed. "
+                                   "{err}\n".format(err=str(err)))
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireOpen.svg',
+            'MenuText': 'Multi-Points To Line Open',
+                        'ToolTip':	'Multi-Points To Line Open'
+        }
+
+
+Gui.addCommand('Design456_MultiPointToWireOpen',
+               Design456_MultiPointToWireOpen())
+Gui.addCommand('Design456_MultiPointToWireClose',
+               Design456_MultiPointToWireClose())
