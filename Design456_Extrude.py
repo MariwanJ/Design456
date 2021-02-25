@@ -84,6 +84,7 @@ class Design456_Extrude:
             newObj = App.ActiveDocument.addObject(
                 'Part::Feature', 'Extrude').Shape = newShape
             App.ActiveDocument.ActiveObject.Label = f.Label
+            App.ActiveDocument.recompute()
             # if something went wrong .. delete all new objecst.
             if newObj.isValid() == False:
                 App.ActiveDocument.removeObject(newObj.Name)
