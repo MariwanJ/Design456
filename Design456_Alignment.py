@@ -64,13 +64,16 @@ class Design456_AlignFlatToPlane:
     def Activated(self):
         try:
             Selectedobjects = Gui.Selection.getSelectionEx()
-            #This must be modied
+            #This must be modified
             for eachObj in Selectedobjects:
                 eachObj.Object.Placement.Base.z = 0.0
                 
         except Exception as err:
             App.Console.PrintError("'Design456_Extract' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
         import Design456Init
