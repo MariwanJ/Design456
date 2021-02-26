@@ -39,7 +39,8 @@ from __future__ import unicode_literals
 # *https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
 # *https://forum.freecadweb.org/viewtopic.php?f=8&t=54893&start=10
 
-import os,sys
+import os
+import sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -50,7 +51,7 @@ import Part as _part
 import BOPTools.SplitFeatures as SPLIT
 from FreeCAD import Base
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-
+import FACE_D as faced
 
 class Design456_loftOnDirection_ui(object):
     def __init__(self, loftOnDirection):
@@ -187,11 +188,19 @@ class Design456_loftOnDirection_ui(object):
 
     def runClass(self):
         try:
+            sel = Gui.Selection.getSelection()
+            if(len(sel) <1 or len(sel)>1 or 
+               len(Gui.Selection.getSelectionEx()[0].SubElementNames)==0):
+                # Two object must be selected
+                errMessage = "Select a face to use LoftOnDirection Tool"
+                faced.getInfo(sel[0]).errorDialog(errMessage)
+                return
+    
             selectedEdge = Gui.Selection.getSelectionEx(
             )[0].SubObjects[0]	  # select one element
             SubElementName = Gui.Selection.getSelectionEx()[
                 0].SubElementNames[0]
-            sel = Gui.Selection.getSelection()
+            
 
             #### configuration ####
             ValueLenght = -(float)(self.inLength.value())
@@ -214,6 +223,8 @@ class Design456_loftOnDirection_ui(object):
                 direction = yL.sub(nv + yL)
                 r = App.Rotation(App.Vector(0, 0, 0), direction)
                 plDirection.Rotation.Q = r.Q
+                print("00000000000")
+                print(r.Q)
                 plDirection.Base = yL
                 plr = plDirection
                 print("surface : ", sel[0].Name, " ",
@@ -236,13 +247,37 @@ class Design456_loftOnDirection_ui(object):
                     #### section scale ####
                     _part.show(selectedEdge.copy())
                     firstFace = App.ActiveDocument.ActiveObject
-                    objClone = _draft.scale(App.activeDocument().ActiveObject, App.Vector(
-                        ValueScaleX, ValueScaleY, ValueScaleZ), center=App.Vector(plr.Base), copy=True)  # False
+                    objClone = _draft.scale(firstFace, App.Vector(
+                        ValueScaleX, ValueScaleY, ValueScaleZ), center=App.Vector(plDirection.Base), copy=True)  # False
 
                     # section placement face in length and direction
-                    objClone.Placement.Base = (App.Vector(direction).scale(
+                    newLocation = (App.Vector(direction).scale(
                         ValueLenght, ValueLenght, ValueLenght))
-
+                    if (direction.x != 0 and abs(direction.x)==direction.x):
+                        newLocation.x = newLocation.x+selectedEdge.Placement.Base.x*direction.x
+                    elif (direction.x != 0 and abs(direction.x)!=direction.x):
+                        newLocation.x = newLocation.x-selectedEdge.Placement.Base.x*direction.x
+                    else:
+                        newLocation.x = selectedEdge.Placement.Base.x
+                    if (direction.y != 0 and abs(direction.y)==direction.y): #posative >0
+                        newLocation.y = newLocation.y+selectedEdge.Placement.Base.y*direction.y
+                    elif (direction.y != 0 and abs(direction.x)!=direction.y): #negative <0
+                        newLocation.y = newLocation.y-selectedEdge.Placement.Base.y*direction.y
+                    else:
+                        newLocation.y = selectedEdge.Placement.Base.y
+                    if (direction.z != 0 and abs(direction.z)==direction.z):
+                        newLocation.z = newLocation.z+selectedEdge.Placement.Base.z*direction.z
+                    elif (direction.z != 0 and abs(direction.z)!=direction.z): #negative <0:
+                        newLocation.z = newLocation.z-selectedEdge.Placement.Base.z*direction.z
+                    else:
+                        newLocation.z = selectedEdge.Placement.Base.z
+                    """
+                    print(selectedEdge.Placement.Base)
+                    print(newLocation)
+                    """
+                    objClone.Placement.Base = newLocation
+                    #print(objClone.Placement.Base)
+                    
                     # section loft
                     newObj = App.activeDocument().addObject('Part::Loft', 'Loft')
                     App.ActiveDocument.ActiveObject.Sections = [App.activeDocument().getObject(
@@ -257,14 +292,12 @@ class Design456_loftOnDirection_ui(object):
                     App.ActiveDocument.recompute()
 
                     # Remove Old objects. I don't like to keep so many objects without any necessity.
-                    """
-                    I will stop this to the time I fix this module totally
+                    
                     for obj in newObj.Sections:
                         App.ActiveDocument.removeObject(obj.Name)
                     App.ActiveDocument.removeObject(newObj.Name)
-                    """
                     App.ActiveDocument.recompute()
-
+                    
                     # section hidden faces work
             self.window.hide()
         except Exception as err:
@@ -273,7 +306,6 @@ class Design456_loftOnDirection_ui(object):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
 
 
 class Design456_loftOnDirection():
