@@ -25,14 +25,13 @@ from __future__ import unicode_literals
 # *  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # ***************************************************************************
 import os
+import sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
-
-# TODO: Do we need this? I must check it later
 
 
 class FACE_D:
@@ -55,25 +54,31 @@ class FACE_D:
         except Exception as err:
             App.Console.PrintError("'FACE_D.getDirectionAxis' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def MousePosition(self, info):
         try:
             down = (info["State"] == "DOWN")
             pos = info["Position"]
             # if (down):
-            FreeCAD.Console.PrintMessage(
+            App.Console.PrintMessage(
                 "Clicked on position: ("+str(pos[0])+", "+str(pos[1])+")\n")
             pnt = self.view.getPoint(pos)
-            FreeCAD.Console.PrintMessage(
+            App.Console.PrintMessage(
                 "World coordinates: " + str(pnt) + "\n")
             info = self.view.getObjectInfo(pos)
-            FreeCAD.Console.PrintMessage("Object info: " + str(info) + "\n")
-            o = ViewObserver(v)
-            c = v.addEventCallback("SoMouseButtonEvent", o.logPosition)
+            App.Console.PrintMessage("Object info: " + str(info) + "\n")
+            o = self.ViewObserver(self.v)
+            c = self.v.addEventCallback("SoMouseButtonEvent", o.logPosition)
             return pnt
         except Exception as err:
             App.Console.PrintError("'FACE_D.getDirectionAxis' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def ExtractFace(self):
         try:
@@ -90,10 +95,12 @@ class FACE_D:
                     newobj.Shape = sh.getElement(name)
             App.ActiveDocument.recompute()
             return self.newobj
-            #o.Object.ViewObject.Visibility = False
         except Exception as err:
             App.Console.PrintError("'FACE_D.ExtractFace' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
 
 # This class is from A2P WB modified by Mariwan
@@ -131,8 +138,12 @@ class PartMover(object):
             newPos = self.view.getPoint(*info['Position'])
             self.obj.Placement.Base = newPos
             self.newPosition = newPos
-        except:
-            print('Mouse move error')
+        except Exception as err:
+            App.Console.PrintError("'Mouse movements error' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
             return
 
     def removeCallbacks(self):
@@ -147,8 +158,12 @@ class PartMover(object):
             self.active = False
             self.info = None
             self.view = None
-        except:
-            print('remove callback error')
+        except Exception as err:
+            App.Console.PrintError("'remove callback error' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
             return
 
     def clickMouse(self, info):
@@ -163,8 +178,12 @@ class PartMover(object):
                 self.obj = None
                 App.ActiveDocument.recompute()
             return
-        except:
-            print('Mouse click error')
+        except Exception as err:
+            App.Console.PrintError("'Mouse click error' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
             return
 
     def KeyboardEvent(self, info):
@@ -179,24 +198,27 @@ class PartMover(object):
                     self.objectToDelete = self.obj
 
                     # This causes a crash in FC0.19/Qt5/Py3
-                    # FreeCAD.activeDocument().removeObject(self.obj.Name)
-        except:
-            print('Mouse click error')
+                    # App.activeDocument().removeObject(self.obj.Name)
+        except Exception as err:
+            App.Console.PrintError("'Keyboard error' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
             return
 
 
-""" This class will return back info about the         
+""" This class will return back info about the
     face selected. Many options are available but
-    I will put only what I need See the note bellow for available info
+    I will put only what I need. See the note bellow for available info
     Give the class Gui.Selection()[nr] where nr is the face you want to get info
-    
 
-TODO: This class must be updated to be able for all kind of movement of objects
-    Mariwan 
+TODO: This class must be updated to be able to move all kind of objects
+    Mariwan
 """
 
 
-class getInfo(object):
+class getInfo:
     def __init__(self, object):
         self.obj = object
 
@@ -336,6 +358,7 @@ class getInfo(object):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return self.getObjectCenterOfMass()
+
 
 """
 You can get these infos from obj.SubObjects[0]. which is a face

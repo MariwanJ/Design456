@@ -10,7 +10,7 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   sodipodi:docname="MultiPointsToLineOpen.svg"
+   sodipodi:docname="MultiPointsToWireOpen.svg"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
    sodipodi:version="0.32"
    id="svg11300"
@@ -2181,7 +2181,7 @@
         <dc:source>http://commons.wikimedia.org/wiki/Tango_icon</dc:source>
         <cc:license
            rdf:resource="http://creativecommons.org/licenses/by-sa/2.0/" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
       <cc:License
          rdf:about="http://creativecommons.org/licenses/by-sa/2.0/">
@@ -2254,8 +2254,9 @@
        transform="scale(-1)" />
     <path
        style="fill:none;fill-opacity:1;stroke:#00e000;stroke-width:1.06117201px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 7.8238946,5.90085 8.3146465,23.0057 18.252371,38.210013 40.581582,35.549258 28.067409,22.625593 42.053838,10.842252 Z"
+       d="M 28.067409,22.625593 42.053838,10.842252 7.8238946,5.90085 8.3146465,23.0057 18.252371,38.210013 40.581582,35.549258"
        id="path6196"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccc" />
   </g>
 </svg>
