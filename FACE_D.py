@@ -126,9 +126,6 @@ class PartMover(object):
         self.callbackKey = self.view.addEventCallback(
             "SoKeyboardEvent", self.KeyboardEvent)
         self.objectToDelete = None  # object reference when pressing the escape key
-        # Gui.Selection.clearSelection()
-        # Gui.Selection.addSelection(App.ActiveDocument.Name,
-        #                           self.CallerObject.Name)
 
     def Deactivated(self):
         self.removeCallbacks()
@@ -188,8 +185,9 @@ class PartMover(object):
 
     def KeyboardEvent(self, info):
         try:
-            print('Escape pressed\n')
+            
             if info['State'] == 'UP' and info['Key'] == 'ESCAPE':
+                print('Escape pressed\n')
                 self.removeCallbacks()
                 if not self.deleteOnEscape:
                     self.obj.Placement.Base = self.initialPosition
@@ -199,6 +197,7 @@ class PartMover(object):
 
                     # This causes a crash in FC0.19/Qt5/Py3
                     # App.activeDocument().removeObject(self.obj.Name)
+                self.obj = None
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -224,11 +223,28 @@ class getInfo:
 
     def getFaceName(self):
         try:
-            Result = (self.obj.SubElementNames[0])
-            return Result
+            if(hasattr(self.obj,'SubElementNames')):
+                Result = (self.obj.SubElementNames[0])
+                return Result
+            else:
+                return None
         except Exception as err:
             App.Console.PrintError("'getFaceName' Failed. "
                                    "{err}\n".format(err=str(err)))
+
+    def getObjectFromFaceName( self, face_name):
+        try:
+            self.faceName=face_name        
+            if(self.obj.SubElementNames[0].startswith('Face')):
+                faceNumber = int( self.faceName[4:]) -1
+            return self.obj.Object.Shape.Faces[faceNumber]
+        
+        except Exception as err:
+            App.Console.PrintError("'Design456_Extract' Failed. "
+                                   "{err}\n".format(err=str(err)))        
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def getFullFaceName(self):
         try:
@@ -237,6 +253,7 @@ class getInfo:
         except Exception as err:
             App.Console.PrintError("'getFullFaceName' Failed. "
                                    "{err}\n".format(err=str(err)))
+            
 
     def getObjectCenterOfMass(self):
         try:

@@ -223,7 +223,6 @@ class Design456_loftOnDirection_ui(object):
                 direction = yL.sub(nv + yL)
                 r = App.Rotation(App.Vector(0, 0, 0), direction)
                 plDirection.Rotation.Q = r.Q
-                print("00000000000")
                 print(r.Q)
                 plDirection.Base = yL
                 plr = plDirection
