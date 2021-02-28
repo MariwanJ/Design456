@@ -49,8 +49,6 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft as _draft
 import Part as _part
 import BOPTools.SplitFeatures as SPLIT
-from FreeCAD import Base
-from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import FACE_D as faced
 
 class Design456_loftOnDirection_ui(object):

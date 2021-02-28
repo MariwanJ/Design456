@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 # *																		   *
 # *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 # ***************************************************************************
-import os
+import os,sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
