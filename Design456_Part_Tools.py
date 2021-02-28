@@ -153,7 +153,7 @@ class Design456_Part_Subtract:
                 errMessage = "Select two or more objects to Subtract"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
-            newObj = App.activeDocument().addObject("Part::Cut", "Subtract")
+            newObj = App.activeDocument().addObject("Part::Cut", "tempSubtract")
             newObj.Base = App.ActiveDocument.getObject(
                 s[0].ObjectName)  # Target
             newObj.Tool = App.ActiveDocument.getObject(
