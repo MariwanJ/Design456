@@ -30,12 +30,13 @@ from __future__ import unicode_literals
 #                                                                          *
 # * Modfied by: Mariwan Jalal	 mariwan.jalal@gmail.com	               *
 # **************************************************************************
-import os,sys
+import os
+import sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft
-import Part
+import Draft as _draft
+import Part as _part
 import Design456Init
 import FACE_D as faced
 
@@ -46,6 +47,7 @@ class Design456_2Ddrawing:
     list = ["Design456_Arc3Points",
             "Design456_MultiPointToWireOpen",
             "Design456_MultiPointToWireClose",
+            "Design456_2DTrim",
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
@@ -89,14 +91,16 @@ class Design456_Arc3Points:
                     allSelected.append(n.Point)
             elif len(selected) == 3:
                 for t in selected:
-                    allSelected.append(t.Object.Shape.Vertexes[0].Placement.Base)
-                    print (len(allSelected))
+                    allSelected.append(
+                        t.Object.Shape.Vertexes[0].Placement.Base)
+                    print(len(allSelected))
             else:
                 oneObject = False
                 print("A combination of objects")
                 print("Not implemented")
                 return
-            C1 = Part.Arc(App.Vector(allSelected[0]), App.Vector(allSelected[1]), App.Vector(allSelected[2]))
+            C1 = Part.Arc(App.Vector(allSelected[0]), App.Vector(
+                allSelected[1]), App.Vector(allSelected[2]))
             S1 = Part.Shape([C1])
             W = Part.Wire(S1.Edges)
             Part.show(W)
@@ -115,8 +119,6 @@ class Design456_Arc3Points:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
-            
 
     def GetResources(self):
         return {
@@ -130,7 +132,7 @@ Gui.addCommand('Design456_Arc3Points', Design456_Arc3Points())
 
 
 class Design456_MultiPointToWire:
-    def __init__(self,type):
+    def __init__(self, type):
         self.type = type
 
     def Activated(self):
@@ -174,7 +176,7 @@ class Design456_MultiPointToWire:
 class Design456_MultiPointToWireClose:
     def Activated(self):
         try:
-            newObj= Design456_MultiPointToWire(0)
+            newObj = Design456_MultiPointToWire(0)
             newObj.Activated()
         except Exception as err:
             App.Console.PrintError("'MultiPointToWireClose' Failed. "
@@ -191,7 +193,7 @@ class Design456_MultiPointToWireClose:
 class Design456_MultiPointToWireOpen:
     def Activated(self):
         try:
-            newObj= Design456_MultiPointToWire(1)
+            newObj = Design456_MultiPointToWire(1)
             newObj.Activated()
 
         except Exception as err:
@@ -212,31 +214,76 @@ Gui.addCommand('Design456_MultiPointToWireClose',
                Design456_MultiPointToWireClose())
 
 
-#Trim all selected lines, vertixes and leav the object open
-#Warning: This command destroy the 2D shape and will loose the face.
+# Trim all selected lines, vertixes and leav the object open
+# Warning: This command destroy the 2D shape and will loose the face.
 
 class Design456_2DTrim:
     def Activated(self):
-        sel=Gui.Selection.getSelectionEx()
-        for s in sel:
-            if s.HasSubObjects:
-                #We have subojects that should be trimmed 
-                sub_s=s.subObjects
-                if len(sub_s)>1 :
-                    #We have more than one sub-element
-                elif len(sub_s)==1:
-                    #Onliny one sub-element
-                    if len(sub_s.Edges)==1:
-                        #We have one edge. Remove it and job is done.
-                        
         try:
-       
-            App.ActiveDocument.recompute()
+            sel = Gui.Selection.getSelectionEx()
+            if len(sel) > 1:
+                # several selections - Error
+                errMessage = "Select one or more edges to trim"
+                faced.getInfo(sel).errorDialog(errMessage)
+                return
+            TotalResult=[]
+            sel1=sel[0]
+            if sel1.HasSubObjects:
+                # We have several objects that has subobject(Edges) that should be trimmed
+                TotalResult.clear()
+                _edg = sel1.SubObjects[0]
+                result=self.copyObjectDeleteTwoPoints(sel1, _edg.Vertexes)
+                counter=len(result)
+                for i in range (0,counter):
+                    TotalResult.append(App.Vector(result[i].Point))
+                    
+                # We have all points
+                _placement = sel1.Object.Placement
+                _placement.Rotation.Q = sel1.Object.Placement.Rotation.Q
+                # Add New Object
+                print("Results are ")
+                print(TotalResult)
+                pnew2DObject = _draft.makeWire(TotalResult, placement=None, closed=False, face=True, support=None)
+                pnew2DObject.Start= App.Vector( _edg.Vertexes[1].Point)
+                _draft.autogroup(pnew2DObject)
+                saveName = sel1.Object.Label
+                App.ActiveDocument.removeObject(sel1.ObjectName)
+                App.ActiveDocument.recompute()
+                pnew2DObject.Label = saveName
 
+            else:
+                # No Edges found
+                errMessage = "Select one or more edges to trim"
+                faced.getInfo(sel1).errorDialog(errMessage)
+                return
         except Exception as err:
             App.Console.PrintError("'Trim 2D' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
+    def copyObjectDeleteTwoPoints(self, selObj, listOfSkippedPoints):
+        try:
+            currentObject=App.ActiveDocument.getObject(selObj.Object.Name)
+            _edges =currentObject.Shape.Edges
+            _all_points = []
+            VERT=selObj.Object.Shape.Vertexes
+            _all_points=list(set(VERT)-set(listOfSkippedPoints))                 
+            return _all_points
+        except Exception as err:
+            App.Console.PrintError("'copyObjectDeleteTwoPoints' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/2D_TrimLine.svg',
+            'MenuText': 'Trim Line',
+                        'ToolTip':	'Trim Line or edge in a 2D shape'
+        }
+
+Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
