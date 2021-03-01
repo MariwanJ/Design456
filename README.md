@@ -13,7 +13,7 @@ FreeCAD primarily utilizes a parametric modeling paradigm. This workbench will w
 2. `git clone --recurse-submodules -j8 https://github.com/MariwanJ/Design456`
 3. Restart FreeCAD
 
-Result: The Design456 workbench should no be available in the workbench drop-down menu
+Result: The Design456 workbench should now be available in the workbench drop-down menu
 
 **Note:** Please keep this workbench up-to-date by pulling changes from this repository via `git`. This can be done before each time Design456 will be used.  
 
@@ -30,7 +30,7 @@ Initial inspiration came from exploring the a template workbench named D3D-Print
 ### Notes
 
 - Use Face to extract a face from a side.  
-- You cannot use `Extrude` to Extrude a side. Instead use the other function `Copy-Face-Extrude`  
+- You cannot use `Extrude` to Extrude a side. Instead use the other function `Copy-Face-Extrude` or lof-on-direction 
 - Tutorials and guides will be written /made later 
 
 ### Feedback
