@@ -75,7 +75,7 @@ class Design456_Part_Tools:
         }
 
     def IsActive(self):
-        if App.ActiveDocument == None:
+        if App.ActiveDocument is None:
             return False
         else:
             return True
