@@ -210,3 +210,33 @@ Gui.addCommand('Design456_MultiPointToWireOpen',
                Design456_MultiPointToWireOpen())
 Gui.addCommand('Design456_MultiPointToWireClose',
                Design456_MultiPointToWireClose())
+
+
+#Trim all selected lines, vertixes and leav the object open
+#Warning: This command destroy the 2D shape and will loose the face.
+
+class Design456_2DTrim:
+    def Activated(self):
+        sel=Gui.Selection.getSelectionEx()
+        for s in sel:
+            if s.HasSubObjects:
+                #We have subojects that should be trimmed 
+                sub_s=s.subObjects
+                if len(sub_s)>1 :
+                    #We have more than one sub-element
+                elif len(sub_s)==1:
+                    #Onliny one sub-element
+                    if len(sub_s.Edges)==1:
+                        #We have one edge. Remove it and job is done.
+                        
+        try:
+       
+            App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'Trim 2D' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
