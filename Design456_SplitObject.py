@@ -67,7 +67,7 @@ class Design456_SplitObject:
             # get object name
             # We need this delay to let user choose the split form. And
             getExtrude_cs = None  # Dummy variable used to wait for the Extrude_cs be made
-            while (getExtrude_cs == None):
+            while (getExtrude_cs is None):
                 getExtrude_cs = App.ActiveDocument.getObject(totalName)
                 _sleep(.1)
                 Gui.updateGui()
