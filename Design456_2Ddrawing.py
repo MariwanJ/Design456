@@ -47,7 +47,7 @@ class Design456_2Ddrawing:
     list = ["Design456_Arc3Points",
             "Design456_MultiPointToWireOpen",
             "Design456_MultiPointToWireClose",
-
+            "Design456_2DTrim",
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
@@ -213,3 +213,110 @@ Gui.addCommand('Design456_MultiPointToWireOpen',
 Gui.addCommand('Design456_MultiPointToWireClose',
                Design456_MultiPointToWireClose())
 
+
+# Trim all selected lines, vertixes and leav the object open
+# Warning: This command destroy the 2D shape and will loose the face.
+
+class Design456_2DTrim:
+    def Activated(self):
+
+        try:
+            sel = Gui.Selection.getSelectionEx()
+            if len(sel) > 1:
+                # several selections - Error
+                errMessage = "Select one or more edges to trim"
+                faced.getInfo(sel).errorDialog(errMessage)
+                return
+            SelectedPoints=[]
+            sel1=sel[0]
+
+            if sel1.HasSubObjects:
+                # We have several objects that has subobject(Edges) that should be trimmed
+
+                # Save position and angle
+                _placement = sel1.Object.Placement
+                _placement.Rotation.Q = sel1.Object.Placement.Rotation.Q
+                currentObject=App.ActiveDocument.getObject(sel1.Object.Name)                
+                saveName=sel1.Object.Name
+                SelectedPoints.clear()
+                _edg = sel1.SubObjects[0]
+                #TODO: trim only 2 points at the momoent
+                Vert= _edg.Vertexes
+                for n in Vert: 
+                    SelectedPoints.append(App.Vector(n.Point))
+                
+                _all_points = []
+                #Bring all points from the object
+                for item in sel1.Object.Shape.Vertexes:
+                    _all_points.append(App.Vector(item.Point))
+                position1= position2=None
+                count=0
+                #First find their locaitons
+                for item in _all_points:
+                    if SelectedPoints[0]==item:
+                        position1=count
+                    elif (SelectedPoints[1]==item):
+                        position2=count
+                    count=count+1
+                #Try to reconstruct the shape/wire
+                TestTwoObjectCreate=False
+                totalPoints=len(_all_points)
+
+                _all_points2=[]
+                if(abs(position2-position1)==1):
+                    #They are in series 
+                    #if position1==0 and position2==totalPoints:
+                        #Nothing will be removed .. only the close should be removed
+                    #    return _all_points
+                    if position1!=0 and position2!=totalPoints-1:
+                        #In the middle of the array. 
+                        # Two objects must be created.
+                        for i in range(position1+1,position2):
+                            _all_points2.append(_all_points[i])
+                            _all_points.pop(i)
+                            pnew2DObject1 = _draft.makeWire(_all_points2, placement=None, closed=False, face=False, support=None)
+                            pnew2DObject1.Label=saveName
+                            pnew2DObject1.First=_all_points2[0]
+                            pnew2DObject1.Last=_all_points2[len(_all_points2)]
+
+                    if position1==0 and position2!=totalPoints-1:
+                        #First Points, remove  'closed' and start = pos+1
+                        _all_points.pop(position1)
+                        first=_all_points[0]
+                        #don't add first point
+                    elif position2==totalPoints-1:
+                        #point 2 is the last point in the shape
+                        last=_all_points[position2-2]
+                        _all_points.pop(position2-1)
+                        #don't add last point
+                    pnew2DObject2 = _draft.makeWire(_all_points, placement=None, closed=False, face=False, support=None)
+                    saveName = sel1.Object.Label
+                    App.ActiveDocument.removeObject(sel1.ObjectName)
+                    App.ActiveDocument.recompute()
+                    pnew2DObject2.Label = saveName
+                    pnew2DObject2.First=_all_points[0]
+                    pnew2DObject2.Last=_all_points[len(_all_points)]
+                    
+
+
+            else:
+                # No Edges found
+                errMessage = "Select one or more edges to trim"
+                faced.getInfo(sel1).errorDialog(errMessage)
+                return
+        except Exception as err:
+            App.Console.PrintError("'Trim 2D' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/2D_TrimLine.svg',
+            'MenuText': 'Trim Line',
+                        'ToolTip':	'Trim Line or edge in a 2D shape'
+        }
+
+Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
