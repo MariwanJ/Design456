@@ -263,12 +263,8 @@ class Design456_2DTrim:
                     elif (SelectedPoints[1]==WireOrEdgeMadeOfPoints[j]):
                         position2=count
                     count=count+1
-                print("Points are")
-                print(position1)
-                print(position2)
                 #Try to reconstruct the shape/wire
                 TestTwoObjectCreate=False
-                _all_points1=[]
                 _all_points2=[]
                 objType=faced.getInfo(sel1).selectedObjectType()
                 closedShape=None
@@ -283,6 +279,7 @@ class Design456_2DTrim:
                     print("close")
                 print(objType)
                 if closedShape==True:
+                    print(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,")
                     #We have a shape with closed lines
                     #Here we need to do 2 things, 1 remove closed, 2 rearrange start-en
                     scan1=min(position1,position2)
