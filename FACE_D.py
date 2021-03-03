@@ -30,8 +30,8 @@ import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-import Draft
-import Part
+import Draft  as _draft
+import Part  as _part
 
 
 class FACE_D:
@@ -321,6 +321,16 @@ class getInfo:
 
     """Message box (error) """
 
+    def selectedObjectType(self):
+        if isinstance(self.obj.Object, _part.Shape):
+            return "Shape"
+        if hasattr(self.obj.Object, 'Proxy'):
+            if hasattr(self.obj.Object.Proxy, "Type"):
+                return self.obj.Object.Proxy.Type
+        if hasattr(self.obj.Object, 'TypeId'):
+            return self.obj.Object.TypeId
+        return "Unknown"
+    
     def errorDialog(self, msg):
         # Create a simple dialog QMessageBox
         # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
