@@ -22,13 +22,7 @@ from __future__ import unicode_literals
 # *	License along with this library; if not, If not, see				   *
 # *	<http://www.gnu.org/licenses/>.										   *
 # *																		   *
-# *	Author : __title__   = "Macro_Make_Arc_3_points"                       *
-# *__author__  = "Mario52"                                                 *
-# *__url__     = "http://www.freecadweb.org/index-fr.html"                 *
-# *__version__ = "00.01"                                                   *
-# *__date__    = "14/07/2016"                                              *
-#                                                                          *
-# * Modfied by: Mariwan Jalal	 mariwan.jalal@gmail.com	               *
+# *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
 # **************************************************************************
 import os
 import sys
@@ -48,6 +42,7 @@ class Design456_2Ddrawing:
             "Design456_MultiPointToWireOpen",
             "Design456_MultiPointToWireClose",
             "Design456_2DTrim",
+            "Design456_2DExtend",
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
@@ -68,7 +63,15 @@ class Design456_2Ddrawing:
     def Activated(self):
         self.appendToolbar("Design456_2Ddrawing", self.list)
 
-
+#***************************************************************************
+# *	Author : __title__   = "Macro_Make_Arc_3_points"                       *
+# *__author__  = "Mario52"                                                 *
+# *__url__     = "http://www.freecadweb.org/index-fr.html"                 *
+# *__version__ = "00.01"                                                   *
+# *__date__    = "14/07/2016"                                              *
+#                                                                          *
+# * Modfied by: Mariwan Jalal	 mariwan.jalal@gmail.com    04/03/2021     *
+#***************************************************************************
 class Design456_Arc3Points:
     def Activated(self):
         try:
@@ -377,3 +380,34 @@ class Design456_2DTrim:
 
 
 Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
+
+
+class Design456_2DExtend:
+    def Activated(self):
+        try:
+            sel = Gui.Selection.getSelectionEx()
+            if len(sel) < 1:
+                # several selections - Error
+                errMessage = "Select a line or a point to extend."
+                faced.getInfo(sel).errorDialog(errMessage)
+                return
+            sel=Gui.Selection.getSelectionEx()[0]
+            Vert= sel1.SubObjects[0].Vertexes
+            lastpoint= Vert[len(Vert).Point)
+            newExtendedSection= Draft.makePoint(lastpoint)
+            
+            
+            
+        except Exception as err:
+            App.Console.PrintError("'Extend Line ' Failed. "
+                                   "{err}\n".format(err=str(err)))
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/2D_ExtendLine.svg',
+            'MenuText': 'Extend Line',
+                        'ToolTip':	'Extend Exisiting Line'
+        }
+
+
+Gui.addCommand('Design456_2DExtend', Design456_2DExtend())
