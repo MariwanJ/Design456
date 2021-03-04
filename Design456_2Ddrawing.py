@@ -411,8 +411,8 @@ class Design456_2DExtend:
             sel.Object.End=App.Vector(lastpoint)
             currentPoint=(Vert[len(Vert)-1]).Point
             print(currentPoint)
-            self.movePoint(self,currentPoint)
-            App.ActiveDocument.recompute()
+            view= Gui.activateView
+            self.callbackMove = view.addEventCallback("SoLocation2Event", self.moveMouse)
             
         except Exception as err:
             App.Console.PrintError("'Extend' Failed. "
@@ -420,17 +420,14 @@ class Design456_2DExtend:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-    def movePoint(self,point):
-            view= Gui.activateView() 
-            self.callbackMove = self.view.addEventCallback(
-            "SoLocation2Event", self.moveMouse)
+
             
     def Deactivated(self):
             self.removeCallbacks()
     def moveMouse(self, info):
         try:
-            view= Gui.activateView() 
-            newPos = self.view.getPoint(*info['Position'])
+            view= Gui.activateView
+            newPos = view.getPoint(*info['Position'])
             return newPos
         except Exception as err:
             App.Console.PrintError("'Mouse movements' Failed. "
@@ -441,7 +438,7 @@ class Design456_2DExtend:
             return None
     def clickMouse(self, info):
         try:
-            view= Gui.activateView() 
+            view= Gui.activateView
             if (info['Button'] == 'BUTTON1' and
                     info['State'] == 'DOWN'):
                 print('Mouse click \n')
