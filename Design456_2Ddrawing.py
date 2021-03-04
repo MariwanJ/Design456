@@ -32,7 +32,7 @@ from __future__ import unicode_literals
 # **************************************************************************
 import os
 import sys
-import  ImportGui
+import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 import Draft as _draft
@@ -222,13 +222,13 @@ class Design456_2DTrim:
 
         try:
             sel = Gui.Selection.getSelectionEx()
-            if len(sel) > 1:
+            if len(sel) < 1:
                 # several selections - Error
                 errMessage = "Select one or more edges to trim"
                 faced.getInfo(sel).errorDialog(errMessage)
                 return
-            SelectedPoints=[]
-            sel1=sel[0]
+            SelectedPoints = []
+            sel1 = sel[0]
 
             if sel1.HasSubObjects:
                 # We have several objects that has subobject(Edges) that should be trimmed
@@ -236,119 +236,125 @@ class Design456_2DTrim:
                 # Save position and angle
                 _placement = sel1.Object.Placement
                 _placement.Rotation.Q = sel1.Object.Placement.Rotation.Q
-                currentObject=App.ActiveDocument.getObject(sel1.Object.Name)                
-                SelectedPoints.clear()  #points in the targeted line to be trimmed
+                currentObject = App.ActiveDocument.getObject(sel1.Object.Name)
+                SelectedPoints.clear()  # points in the targeted line to be trimmed
                 _edg = sel1.SubObjects[0]
-                #TODO: trim only 2 points at the momoent
-                Vert= _edg.Vertexes
-                
-                #Save all points we have in the edge or line/wire which should be trimmed
-                for n in Vert: 
+                # TODO: trim only 2 points at the momoent
+                Vert = _edg.Vertexes
+
+                # Save all points we have in the edge or line/wire which should be trimmed
+                for n in Vert:
                     SelectedPoints.append(App.Vector(n.Point))
-                
+
                 WireOrEdgeMadeOfPoints = []
-                #Bring all points from the object
+                # Bring all points from the object
                 for item in sel1.Object.Shape.Vertexes:
                     WireOrEdgeMadeOfPoints.append(App.Vector(item.Point))
-                print ("Len of the wire")
-                totalPoints=len(WireOrEdgeMadeOfPoints)
-                print(totalPoints)
-                position1= position2=None
-                count=0
-                #First find their locations
-                               
+                totalPoints = len(WireOrEdgeMadeOfPoints)
+                position1 = position2 = None
+                count = 0
+                # First find their locations
+
                 for j in range(totalPoints):
-                    if SelectedPoints[0]==WireOrEdgeMadeOfPoints[j]:
-                        position1=count
-                    elif (SelectedPoints[1]==WireOrEdgeMadeOfPoints[j]):
-                        position2=count
-                    count=count+1
-                #Try to reconstruct the shape/wire
-                TestTwoObjectCreate=False
-                _all_points2=[]
-                objType=faced.getInfo(sel1).selectedObjectType()
-                closedShape=None
-                EndPoint=StartPoint=None
-                if (objType=='Wire' or objType=='Line'):
-                    closedShape=sel1.Object.Closed
-                    print("Closed")
-                elif objType=='Unkown':
-                    closedShape=False
+                    if SelectedPoints[0] == WireOrEdgeMadeOfPoints[j]:
+                        position1 = count
+                    elif (SelectedPoints[1] == WireOrEdgeMadeOfPoints[j]):
+                        position2 = count
+                    count = count+1
+                # Try to reconstruct the shape/wire
+                TestTwoObjectCreate = False
+                _all_points2 = []
+                objType = faced.getInfo(sel1).selectedObjectType()
+                closedShape = None
+                EndPoint = StartPoint = None
+                if (objType == 'Wire' or objType == 'Line'):
+                    closedShape = sel1.Object.Closed
+                elif objType == 'Unkown':
+                    closedShape = False
+                    return  # We don't know what the shape is
+                elif objType == 'Arc':
+                    App.ActiveDocument.removeObject(sel1.Object.Name)
+                    return
                 else:
-                    closedShape=True
-                    print("close")
-                print(objType)
-                if closedShape==True:
-                    print(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,")
-                    #We have a shape with closed lines
-                    #Here we need to do 2 things, 1 remove closed, 2 rearrange start-en
-                    scan1=min(position1,position2)
-                    scan2=max(position1,position2)
-                    sortAll=0
-                    Index=scan1
-                    while(sortAll <totalPoints):
+                    closedShape = True
+                if closedShape == True:
+                    # We have a shape with closed lines
+                    # Here we need to do 2 things, 1 remove closed, 2 rearrange start-end
+                    scan1 = min(position1, position2)
+                    scan2 = max(position1, position2)
+                    sortAll = 0
+                    Index = scan2
+                    EndPoint = WireOrEdgeMadeOfPoints[scan1]
+                    StartPoint = WireOrEdgeMadeOfPoints[scan2]
+                    while(sortAll < totalPoints):
                         _all_points2.append(WireOrEdgeMadeOfPoints[Index])
-                        Index=Index+1
-                        if Index>=totalPoints:
-                            Index=0
-                        sortAll=sortAll+1
-                    WireOrEdgeMadeOfPoints=_all_points2
-                    EndPoint=WireOrEdgeMadeOfPoints[len(WireOrEdgeMadeOfPoints)-1]
-                    StartPoint=WireOrEdgeMadeOfPoints[0]
-                elif(abs(position2-position1)==1):
-                    #It must be a line and not closed
-                    if position1!=0 and position2!=totalPoints-1:
-                        #In the middle of the array. 
+                        Index = Index+1
+                        if Index >= totalPoints:
+                            Index = 0
+                        sortAll = sortAll+1
+                    WireOrEdgeMadeOfPoints.clear()
+                    WireOrEdgeMadeOfPoints = _all_points2
+
+                elif(abs(position2-position1) == 1):
+                    # It must be a line and not closed
+                    if position1 != 0 and position2 != totalPoints-1:
+                        # In the middle of the array.
                         # Two objects must be created.
                         print("between first and last")
                         _all_points2.clear()
-                        plusOrMinus=0
-                        scan1=min(position1,position2)
-                        scan2=max(position1,position2)
-                        SaveValue=None
-                        index =0
-                        while (index <=scan1):
+                        plusOrMinus = 0
+                        scan1 = min(position1, position2)
+                        scan2 = max(position1, position2)
+                        SaveValue = None
+                        index = 0
+                        while (index <= scan1):
                             _all_points2.append(WireOrEdgeMadeOfPoints[index])
-                            index=index+1
-                        index=0
-                        StartPoint=WireOrEdgeMadeOfPoints[scan2]
-                        for index in range(0,scan2):
+                            index = index+1
+                        index = 0
+                        StartPoint = WireOrEdgeMadeOfPoints[scan2]
+                        for index in range(0, scan2):
                             print(index)
                             WireOrEdgeMadeOfPoints.pop(index)
-                            
-                        #StartPoint=WireOrEdgeMadeOfPoints[0]
-                        EndPoint=WireOrEdgeMadeOfPoints[len(WireOrEdgeMadeOfPoints)-1]
-                        
-                        pnew2DObject1 = _draft.makeWire(_all_points2, placement=None, closed=False, face=False, support=None)
-                        pnew2DObject1.Label='Wire'
-                        pnew2DObject1.Start=_all_points2[0]
-                        pnew2DObject1.End=_all_points2[len(_all_points2)-1]
 
-                    elif position1==0 and position2!=totalPoints-1:
-                        #First Points, remove  'closed' and start = pos+1
+                        EndPoint = WireOrEdgeMadeOfPoints[len(
+                            WireOrEdgeMadeOfPoints)-1]
+
+                        pnew2DObject1 = _draft.makeWire(
+                            _all_points2, placement=None, closed=False, face=False, support=None)
+                        pnew2DObject1.Label = 'Wire'
+                        pnew2DObject1.Start = _all_points2[0]
+                        pnew2DObject1.End = _all_points2[len(_all_points2)-1]
+
+                    elif position1 == 0 and position2 != totalPoints-1:
+                        # First Points, remove  'closed' and start = pos+1
                         print("in the begining")
+                        StartPoint = WireOrEdgeMadeOfPoints[position2]
                         WireOrEdgeMadeOfPoints.pop(position1)
-                        StartPoint=WireOrEdgeMadeOfPoints[0]
-                        EndPoint=WireOrEdgeMadeOfPoints[len(WireOrEdgeMadeOfPoints)-1]
-                        #don't add first point
-                    elif position2==totalPoints-1:
-                        #point 2 is the last point in the shape
+                        EndPoint = WireOrEdgeMadeOfPoints[len(
+                            WireOrEdgeMadeOfPoints)-1]
+                        # don't add first point
+                    elif position2 == totalPoints-1:
+                        # point 2 is the last point in the shape
                         print("at the end")
-                        EndPoint=WireOrEdgeMadeOfPoints[position2-1]
+                        StartPoint = WireOrEdgeMadeOfPoints[0]
+                        EndPoint = WireOrEdgeMadeOfPoints[position2-1]
                         WireOrEdgeMadeOfPoints.pop(position2-1)
-                        StartPoint=WireOrEdgeMadeOfPoints[0]
-                        #don't add last point
-                
-                    pnew2DObject2 = _draft.makeWire(WireOrEdgeMadeOfPoints, placement=None, closed=False, face=False, support=None)
-                    App.ActiveDocument.removeObject(sel1.ObjectName)
-                    App.ActiveDocument.recompute()
-                    pnew2DObject2.Label = 'Wire'
-                    print (EndPoint)
-                    print(StartPoint)
-                    pnew2DObject2.End=EndPoint
-                    pnew2DObject2.Start=StartPoint
-                    App.ActiveDocument.recompute() 
 
+                        # don't add last point
+
+                pnew2DObject2 = _draft.makeWire(
+                    WireOrEdgeMadeOfPoints, placement=None, closed=False, face=False, support=None)
+                App.ActiveDocument.removeObject(sel1.ObjectName)
+                App.ActiveDocument.recompute()
+                pnew2DObject2.Label = 'Wire'
+
+                pnew2DObject2.End = EndPoint
+                pnew2DObject2.Start = StartPoint
+
+                # If nothing left, remove the object
+                if len(pnew2DObject2.Shape.Vertexes) == 0:
+                    App.ActiveDocument.removeObject(pnew2DObject2.Label)
+                App.ActiveDocument.recompute()
 
             else:
                 # No Edges found
@@ -362,12 +368,12 @@ class Design456_2DTrim:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/2D_TrimLine.svg',
             'MenuText': 'Trim Line',
                         'ToolTip':	'Trim Line or edge in a 2D shape'
         }
+
 
 Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
