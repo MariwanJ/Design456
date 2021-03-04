@@ -110,41 +110,6 @@ class FACE_D:
 """
 
 
-
-class PointMover(object):
-    view = obj = None
-
-    def __init__(self, CallerObject, view, obj, deleteOnEscape):
-        self.CallerObject = CallerObject
-        self.obj = obj
-        self.initialPosition = self.obj   #It is a point not Verticies
-        self.view = view
-        self.deleteOnEscape = deleteOnEscape
-        self.callbackMove = self.view.addEventCallback(
-            "SoLocation2Event", self.moveMouse)
-        self.callbackClick = self.view.addEventCallback(
-            "SoMouseButtonEvent", self.clickMouse)
-        self.callbackKey = self.view.addEventCallback(
-            "SoKeyboardEvent", self.KeyboardEvent)
-        self.objectToDelete = None  # object reference when pressing the escape key
-
-    def Deactivated(self):
-        self.removeCallbacks()
-
-    def moveMouse(self, info):
-        try:
-            
-            newPos = self.view.getPoint(*info['Position'])
-            self.obj.Placement.Base = newPos
-            self.newPosition = newPos
-        except Exception as err:
-            App.Console.PrintError("'Mouse movements error' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            return
-
 class PartMover(object):
     view = obj = None
 

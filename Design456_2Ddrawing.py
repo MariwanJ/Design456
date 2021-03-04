@@ -411,11 +411,11 @@ class Design456_2DExtend:
             sel.Object.End=App.Vector(lastpoint)
             currentPoint=(Vert[len(Vert)-1]).Point
             print(currentPoint)
-            (Vert[len(Vert)-1]).Point= self.movePoint(currentPoint)
+            self.movePoint(self,currentPoint)
             App.ActiveDocument.recompute()
             
         except Exception as err:
-            App.Console.PrintError("'Trim 2D' Failed. "
+            App.Console.PrintError("'Extend' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
