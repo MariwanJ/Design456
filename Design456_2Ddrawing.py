@@ -315,12 +315,14 @@ class Design456_2DTrim:
                             index = index+1
                         index = 0
                         StartPoint = WireOrEdgeMadeOfPoints[scan2]
+                        EndPoint = WireOrEdgeMadeOfPoints[len(
+                            WireOrEdgeMadeOfPoints)-1]
+                        
                         for index in range(0, scan2):
                             print(index)
                             WireOrEdgeMadeOfPoints.pop(index)
 
-                        EndPoint = WireOrEdgeMadeOfPoints[len(
-                            WireOrEdgeMadeOfPoints)-1]
+
 
                         pnew2DObject1 = _draft.makeWire(
                             _all_points2, placement=None, closed=False, face=False, support=None)
@@ -385,6 +387,7 @@ Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
 class Design456_2DExtend:
     def Activated(self):
         try:
+            import FACE_D as faced
             sel = Gui.Selection.getSelectionEx()
             if len(sel) < 1:
                 # several selections - Error
@@ -392,15 +395,21 @@ class Design456_2DExtend:
                 faced.getInfo(sel).errorDialog(errMessage)
                 return
             sel=Gui.Selection.getSelectionEx()[0]
-            Vert= sel1.SubObjects[0].Vertexes
-            lastpoint= Vert[len(Vert).Point)
-            newExtendedSection= Draft.makePoint(lastpoint)
-            
-            
+            Vert= sel.SubObjects[0].Vertexes
+            lastpoint= Vert[len(Vert)-1].Point
+            newExtendedSection= _draft.makePoint(lastpoint)
+            App.ActiveDocument.recompute()
+            Vert.append(newExtendedSection.Shape.Vertexes[0].Point)
+            sel.Object.End= newExtendedSection.Shape.Vertexes[0].Point
+            faced.PartMover(self,Gui.ActiveDocument.ActiveView,newExtendedSection,True)
+            App.ActiveDocument.recompute()
             
         except Exception as err:
-            App.Console.PrintError("'Extend Line ' Failed. "
+            App.Console.PrintError("'Trim 2D' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
         return {
