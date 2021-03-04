@@ -397,11 +397,21 @@ class Design456_2DExtend:
             sel=Gui.Selection.getSelectionEx()[0]
             Vert= sel.SubObjects[0].Vertexes
             lastpoint= Vert[len(Vert)-1].Point
-            newExtendedSection= _draft.makePoint(lastpoint)
-            App.ActiveDocument.recompute()
-            Vert.append(newExtendedSection.Shape.Vertexes[0].Point)
-            sel.Object.End= newExtendedSection.Shape.Vertexes[0].Point
-            faced.PartMover(self,Gui.ActiveDocument.ActiveView,newExtendedSection,True)
+            #move the point by 1
+            lastpoint.x=lastpoint.x+1
+            lastpoint.y=lastpoint.y+1
+           
+            points=[]
+            ss=sel.Object.Points
+            for item in ss:
+                points.append(App.Vector(item))
+            points.append(App.Vector(lastpoint))
+            print(points)
+            sel.Object.Points=points
+            sel.Object.End=App.Vector(lastpoint)
+            currentPoint=(Vert[len(Vert)-1]).Point
+            print(currentPoint)
+            (Vert[len(Vert)-1]).Point= self.movePoint(currentPoint)
             App.ActiveDocument.recompute()
             
         except Exception as err:
@@ -410,7 +420,59 @@ class Design456_2DExtend:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
+    def movePoint(self,point):
+            view= Gui.activateView() 
+            self.callbackMove = self.view.addEventCallback(
+            "SoLocation2Event", self.moveMouse)
+            
+    def Deactivated(self):
+            self.removeCallbacks()
+    def moveMouse(self, info):
+        try:
+            view= Gui.activateView() 
+            newPos = self.view.getPoint(*info['Position'])
+            return newPos
+        except Exception as err:
+            App.Console.PrintError("'Mouse movements' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return None
+    def clickMouse(self, info):
+        try:
+            view= Gui.activateView() 
+            if (info['Button'] == 'BUTTON1' and
+                    info['State'] == 'DOWN'):
+                print('Mouse click \n')
+                newPos = self.view.getPoint(*info['Position'])
+                self.removeCallbacks()
+                self.obj = None
+            return newPos
+        except Exception as err:
+            App.Console.PrintError("'Mouse click ' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return None
+          
+    def removeCallbacks(self):
+        try:
+            print('Remove callback')
+            self.view.removeEventCallback("SoLocation2Event", self.callbackMove)
+            App.closeActiveTransaction(True)
+            self.active = False
+            self.info = None
+            self.view = None
+        except Exception as err:
+            App.Console.PrintError("'Mouse move point' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+        
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/2D_ExtendLine.svg',
