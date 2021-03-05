@@ -34,12 +34,8 @@ import Draft  as _draft
 import Part  as _part
 
 
-class FACE_D:
-    def __init__(self, view):
-        self.view = view
-        v = Gui.activeDocument().activeView()
-
-    def getDirectionAxis(self):
+class  getDirectionAxis():
+    def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
             obj = s[0]
@@ -52,13 +48,18 @@ class FACE_D:
             else:
                 return "x"
         except Exception as err:
-            App.Console.PrintError("'FACE_D.getDirectionAxis' Failed. "
+            App.Console.PrintError("'getDirectionAxis' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def MousePosition(self, info):
+class MousePosition:
+    def __init__(self, view):
+        self.view = view
+        v = Gui.activeDocument().activeView()
+
+    def getPosition(self, info):
         try:
             down = (info["State"] == "DOWN")
             pos = info["Position"]
@@ -79,7 +80,7 @@ class FACE_D:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
+"""
     def ExtractFace(self):
         try:
             s = Gui.Selection.getSelectionEx()
@@ -102,17 +103,10 @@ class FACE_D:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
-# This class is from A2P WB modified by Mariwan
-""" TODO : There is a bug either it is FreeCAD or this class
-            The callback is not removed after click. You
-            should use twice ESC
 """
 
 
 class PartMover(object):
-    view = obj = None
-
     def __init__(self, CallerObject, view, obj, deleteOnEscape):
         self.CallerObject = CallerObject
         self.obj = obj
@@ -122,17 +116,17 @@ class PartMover(object):
         self.callbackMove = self.view.addEventCallback(
             "SoLocation2Event", self.moveMouse)
         self.callbackClick = self.view.addEventCallback(
-            "SoMouseButtonEvent", self.clickMouse)
+            "SoMouseButtonEvent", self.MouseClick)
         self.callbackKey = self.view.addEventCallback(
             "SoKeyboardEvent", self.KeyboardEvent)
         self.objectToDelete = None  # object reference when pressing the escape key
 
     def Deactivated(self):
-        self.removeCallbacks()
+        self.remove_callbacks()
 
     def moveMouse(self, info):
         try:
-            
+            self.active=True
             newPos = self.view.getPoint(*info['Position'])
             self.obj.Placement.Base = newPos
             self.newPosition = newPos
@@ -144,15 +138,14 @@ class PartMover(object):
             print(exc_type, fname, exc_tb.tb_lineno)
             return
 
-    def removeCallbacks(self):
+    def remove_callbacks(self):
         try:
             print('Remove callback')
-            self.view.removeEventCallback(
-                "SoLocation2Event", self.callbackMove)
-            self.view.removeEventCallback(
-                "SoMouseButtonEvent", self.callbackClick)
-            self.view.removeEventCallback("SoKeyboardEvent", self.callbackKey)
+            self.view.removeEventCallback("SoLocation2Event", self.moveMouse)
+            self.view.removeEventCallback("SoMouseButtonEvent", self.MouseClick)
+            self.view.removeEventCallback("SoKeyboardEvent", self.KeyboardEvent)
             App.closeActiveTransaction(True)
+            Gui.Selection.removeObserver(self) 
             self.active = False
             self.info = None
             self.view = None
@@ -164,7 +157,7 @@ class PartMover(object):
             print(exc_type, fname, exc_tb.tb_lineno)
             return
 
-    def clickMouse(self, info):
+    def MouseClick(self, info):
         try:
             if (info['Button'] == 'BUTTON1' and
                     info['State'] == 'DOWN'):
@@ -172,7 +165,7 @@ class PartMover(object):
                 print('Mouse click \n')
                 newPos = self.view.getPoint(*info['Position'])
                 self.obj.Placement.Base = newPos
-                self.removeCallbacks()
+                self.remove_callbacks()
                 self.obj = None
                 App.ActiveDocument.recompute()
             return
@@ -189,7 +182,7 @@ class PartMover(object):
             
             if info['State'] == 'UP' and info['Key'] == 'ESCAPE':
                 print('Escape pressed\n')
-                self.removeCallbacks()
+                self.remove_callbacks()
                 if not self.deleteOnEscape:
                     self.obj.Placement.Base = self.initialPosition
                 else:
@@ -241,7 +234,7 @@ class getInfo:
             return self.obj.Object.Shape.Faces[faceNumber]
         
         except Exception as err:
-            App.Console.PrintError("'Design456_Extract' Failed. "
+            App.Console.PrintError("'getObjectFromFaceName' Failed. "
                                    "{err}\n".format(err=str(err)))        
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

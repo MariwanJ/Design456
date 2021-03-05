@@ -63,7 +63,7 @@ class Design456_2Ddrawing:
     def Activated(self):
         self.appendToolbar("Design456_2Ddrawing", self.list)
 
-#***************************************************************************
+# ***************************************************************************
 # *	Author : __title__   = "Macro_Make_Arc_3_points"                       *
 # *__author__  = "Mario52"                                                 *
 # *__url__     = "http://www.freecadweb.org/index-fr.html"                 *
@@ -71,7 +71,9 @@ class Design456_2Ddrawing:
 # *__date__    = "14/07/2016"                                              *
 #                                                                          *
 # * Modfied by: Mariwan Jalal	 mariwan.jalal@gmail.com    04/03/2021     *
-#***************************************************************************
+# ***************************************************************************
+
+
 class Design456_Arc3Points:
     def Activated(self):
         try:
@@ -317,12 +319,10 @@ class Design456_2DTrim:
                         StartPoint = WireOrEdgeMadeOfPoints[scan2]
                         EndPoint = WireOrEdgeMadeOfPoints[len(
                             WireOrEdgeMadeOfPoints)-1]
-                        
+
                         for index in range(0, scan2):
                             print(index)
                             WireOrEdgeMadeOfPoints.pop(index)
-
-
 
                         pnew2DObject1 = _draft.makeWire(
                             _all_points2, placement=None, closed=False, face=False, support=None)
@@ -384,35 +384,116 @@ class Design456_2DTrim:
 Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
 
 
+class mousePointMove:
+    def __init__(self,  _view, obj):
+        self.object = obj
+        self._view = _view
+        self.callbackMove = self._view.addEventCallback("SoLocation2Event", self.moveMouse)
+        self.callbackClick = self._view.addEventCallback("SoMouseButtonEvent", self.clickMouse)
+        
+    def moveMouse(self, info):
+        try:
+            _view_=Gui.ActiveDocument.ActiveView
+            points=self.object.Object.Points
+            lastPoint= points[len(points)-1]  #last point
+            lastPoint=App.Vector(_view_.getPoint(*info['Position']))
+            direction=faced.getDirectionAxis()
+            if direction=='x':
+                lastPoint.x=points[0].x
+            elif direction =='y':
+                lastPoint.y=points[0].y
+            elif direction=='z':
+                lastPoint.z=points[0].z
+            self.object.Object.End=lastPoint
+            App.ActiveDocument.recompute()
+
+
+        except Exception as err:
+            App.Console.PrintError("'Extend' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def clickMouse(self, info):
+        try:
+            _view = Gui.ActiveDocument.ActiveView
+            if (info['Button'] == 'BUTTON1' and info['State'] == 'DOWN'):
+                print('Mouse click \n')
+                newPos = App.Vector(_view.getPoint(*info['Position']))
+                poin= self.object.Object.Points
+                poin[len(poin)-1] = newPos
+                direction=faced.getDirectionAxis()
+                if direction=='x':
+                    newPos.x=poin[0].x
+                elif direction =='y':
+                    newPos.y=poin[0].y
+                elif direction=='z':
+                    newPos.z=poin[0].z
+
+                self.object.Object.End=newPos
+                App.ActiveDocument.recompute()
+                self.remove_callbacks()
+                
+                
+
+        except Exception as err:
+            App.Console.PrintError("'Mouse click ' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return None
+
+    def remove_callbacks(self):
+        try:
+            _view=Gui.ActiveDocument.ActiveView
+            print('Remove clickMouse callback')
+            _view.removeEventCallback("SoLocation2Event", self.moveMouse)
+            _view.removeEventCallback("SoMouseButtonEvent", self.moveMouse)
+            Gui.Selection.removeObserver(self) 
+            
+            App.closeActiveTransaction(True)
+            self.active = False
+            self.info = None
+            _view = None
+        except Exception as err:
+            App.Console.PrintError("'Mouse move point' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+
+    def Deactivated(self):
+        self.remove_callbacks()
+
+
 class Design456_2DExtend:
     def Activated(self):
         try:
-            import FACE_D as faced
+            view = Gui.ActiveDocument.ActiveView
             sel = Gui.Selection.getSelectionEx()
             if len(sel) < 1:
                 # several selections - Error
                 errMessage = "Select a line or a point to extend."
                 faced.getInfo(sel).errorDialog(errMessage)
                 return
-            sel=Gui.Selection.getSelectionEx()[0]
-            Vert= sel.SubObjects[0].Vertexes
-            lastpoint= Vert[len(Vert)-1].Point
-            #move the point by 1
-            lastpoint.x=lastpoint.x+1
-            lastpoint.y=lastpoint.y+1
+            
+            sel = Gui.Selection.getSelectionEx()[0]
+            VertPo = sel.Object.Points
+            
+            newPoint=[]
+            poin= sel.Object.Points
+            for i in poin:
+                newPoint.append(App.Vector(i))
+            newPoint.append(App.Vector(newPoint[len(newPoint)-1]))  #add last point and then moved  
            
-            points=[]
-            ss=sel.Object.Points
-            for item in ss:
-                points.append(App.Vector(item))
-            points.append(App.Vector(lastpoint))
-            print(points)
-            sel.Object.Points=points
-            sel.Object.End=App.Vector(lastpoint)
-            currentPoint=(Vert[len(Vert)-1]).Point
-            print(currentPoint)
-            view=Gui.ActiveDocument.ActiveView
-            self.callbackMove = view.addEventCallback("SoLocation2Event", self.moveMouse)
+            sel.Object.Points=newPoint 
+            m=mousePointMove(view, sel)
+            mousePointMove.remove_callbacks(m)
+            view = Gui.ActiveDocument.ActiveView
+            del newPoint[:]
             
         except Exception as err:
             App.Console.PrintError("'Extend' Failed. "
@@ -421,55 +502,6 @@ class Design456_2DExtend:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-            
-    def Deactivated(self):
-            self.removeCallbacks()
-    def moveMouse(self, info):
-        try:
-            view=Gui.ActiveDocument.ActiveView
-            newPos = view.getPoint(*info['Position'])
-            return newPos
-        except Exception as err:
-            App.Console.PrintError("'Mouse movements' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            return None
-    def clickMouse(self, info):
-        try:
-            view= Gui.ActiveDocument.ActiveView
-            if (info['Button'] == 'BUTTON1' and
-                    info['State'] == 'DOWN'):
-                print('Mouse click \n')
-                newPos = self.view.getPoint(*info['Position'])
-                self.removeCallbacks()
-                self.obj = None
-            return newPos
-        except Exception as err:
-            App.Console.PrintError("'Mouse click ' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            return None
-          
-    def removeCallbacks(self):
-        try:
-            print('Remove callback')
-            self.view.removeEventCallback("SoLocation2Event", self.callbackMove)
-            App.closeActiveTransaction(True)
-            self.active = False
-            self.info = None
-            self.view = None
-        except Exception as err:
-            App.Console.PrintError("'Mouse move point' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            return
-        
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/2D_ExtendLine.svg',
