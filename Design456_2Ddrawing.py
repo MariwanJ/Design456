@@ -411,7 +411,7 @@ class Design456_2DExtend:
             sel.Object.End=App.Vector(lastpoint)
             currentPoint=(Vert[len(Vert)-1]).Point
             print(currentPoint)
-            view= Gui.activateView
+            view=Gui.ActiveDocument.ActiveView
             self.callbackMove = view.addEventCallback("SoLocation2Event", self.moveMouse)
             
         except Exception as err:
@@ -426,7 +426,7 @@ class Design456_2DExtend:
             self.removeCallbacks()
     def moveMouse(self, info):
         try:
-            view= Gui.activateView
+            view=Gui.ActiveDocument.ActiveView
             newPos = view.getPoint(*info['Position'])
             return newPos
         except Exception as err:
@@ -438,7 +438,7 @@ class Design456_2DExtend:
             return None
     def clickMouse(self, info):
         try:
-            view= Gui.activateView
+            view= Gui.ActiveDocument.ActiveView
             if (info['Button'] == 'BUTTON1' and
                     info['State'] == 'DOWN'):
                 print('Mouse click \n')
