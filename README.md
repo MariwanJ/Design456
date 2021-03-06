@@ -33,7 +33,7 @@ Initial inspiration came from exploring the a template workbench named D3D-Print
 - You cannot use `Extrude` to Extrude a side. Instead use the other function `Copy-Face-Extrude` or loft-on-direction 
 - Tutorials and guides will be written /made later 
 - At this stage, Undo-Redo is not functioning at all. Please be aware of that. Work on a copy of your object. If you find out it works, after that do it on your origional object.
-- There might be other issues, as I am along on this porject it is difficult to do all the works quickly. I have in my plane to test all these functions in deep. But at the moment, I wish to implement them and learn how I can do them as I am still in the begning of learning. 
+- There might be other issues, as I am along on this project, it is difficult to do all the works quickly. I have in my plane to test all these functions in deep. But at the moment, I wish to implement them and learn how I can do them. I am still in the begning of the learning. 
 
 ### Feedback
 
