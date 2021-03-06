@@ -2,7 +2,7 @@
 
 [![](http://img.youtube.com/vi/upgNYkZRY7I/0.jpg)](http://www.youtube.com/watch?v=upgNYkZRY7I "Design456 Workbench")
 
-**Important Note:** **WIP!!!** Please feel free to suggest, contribute, join, help, debug etc... I am new to both Python and FreeCAD Python. My background is in other languages. I hope you find this workbench useful. 
+**Important Note:** **WIP!!!** Please feel free to suggest, contribute, join, help, debug etc... I am new to both Python and FreeCAD Python. My background is in other languages. I hope you find this workbench useful.
 
 ### Aim 
 FreeCAD primarily utilizes a parametric modeling paradigm. This workbench will work to develop a 'direct modeling' approach. This approach is more common in popular CAD solutions. For example, clicking on a face and being able to extrude by moving the mouse, instead of specifying a the distance by entering a number in to a text field.  
@@ -29,9 +29,11 @@ Initial inspiration came from exploring the a template workbench named D3D-Print
 
 ### Notes
 
+- Caution: at this stage, Undo-Redo is not functioning at all. Please be aware of this. It's recommended to work on a copy of your object. If you find out it works on your test object, then apply it to your origional object.  
+- There might be other issues, as I am the sole developer on this project, it is difficult to do all the work quickly. I have in my plan to test all these functions in quite depth. But at the moment, I wish to implement them and learn how I can do them. I am still in the beggining of the learning process.  
 - Use Face to extract a face from a side.  
-- You cannot use `Extrude` to Extrude a side. Instead use the other function `Copy-Face-Extrude` or loft-on-direction 
-- Tutorials and guides will be written /made later 
+- You cannot use `Extrude` to Extrude a side. Instead use the other function `Copy-Face-Extrude` or `loft-on-direction` 
+- Tutorials and guides will be written /made later  
 
 ### Feedback
 
