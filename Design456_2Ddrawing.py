@@ -386,117 +386,48 @@ class Design456_2DTrim:
 Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
 
 
-class mousePointMove:
-    def __init__(self,obj,view):
-        self.object = obj
-        self.view = view
-        self.callbackClicked = self.view.addEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.mouseClick) #"SoLocation2Event"
-        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.mouseMove)
-
-    def convertToVector(self,pos):
-        try:
-            import Design456Init
-            point=[]
-            tempPoint=self.view.getPoint(pos[0], pos[1])        
-            if Design456Init.DefaultDirectionOfExtrusion=='x':        
-                point.append( App.Vector(0.0,tempPoint[0],tempPoint[1]) )
-            elif Design456Init.DefaultDirectionOfExtrusion=='y':
-                point.append(App.Vector(tempPoint[0],0.0,tempPoint[1])) 
-            elif Design456Init.DefaultDirectionOfExtrusion=='z':
-                point.append(App.Vector(tempPoint[0],tempPoint[1],0.0))
-            return point
-        except Exception as err:
-                App.Console.PrintError("'converToVector' Failed. "
-                                       "{err}\n".format(err=str(err)))
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                print(exc_type, fname, exc_tb.tb_lineno)
-        
-
-    def mouseMove(self,events):
-        try:
-            event = events.getEvent()
-            pos = event.getPosition().getValue()
-            point=self.convertToVector(pos)
-            points=self.object.Object.Points
-            lastPoint= points[len(points)-1]  #last point
-            lastPoint=  point[0]  #App.Vector(_view_.getPoint(*info['Position']))
-            self.object.Object.End=lastPoint
-            App.ActiveDocument.recompute()
-
-        except Exception as err:
-            App.Console.PrintError("'Extend' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def mouseClick(self, events):
-        try:
-            import Design456Init
-            event = events.getEvent()
-            eventState= event.getState()
-            if eventState == coin.SoMouseButtonEvent.DOWN:
-                pos=event.getPosition()
-                point=self.convertToVector(pos)
-                print('Mouse click \n')
-                poin= self.object.Object.Points
-                print (point)
-                poin[len(poin)-1] = point[0]
-                self.object.Object.End= point[0] 
-                App.ActiveDocument.recompute()
-                self.remove_callbacks()
-
-        except Exception as err:
-            App.Console.PrintError("'Mouse click ' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            return None
-
-    def remove_callbacks(self):
-        try:
-            print('Remove MouseClick callback')
-            self.view.removeEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClicked)
-            self.view.removeEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-            
-        except Exception as err:
-            App.Console.PrintError("'Mouse move point' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            return
-
-    def Deactivated(self):
-        self.remove_callbacks()
-
-
 class Design456_2DExtend:
     def Activated(self):
         try:
-            sel = Gui.Selection.getSelectionEx()
-            if len(sel) < 1:
+            s = Gui.Selection.getSelectionEx()
+
+            if len(s) < 1:
                 # several selections - Error
                 errMessage = "Select a line or a point to extend."
-                faced.getInfo(sel).errorDialog(errMessage)
+                faced.getInfo(s).errorDialog(errMessage)
                 return
-            
-            sel = Gui.Selection.getSelectionEx()[0]
-            VertPo = sel.Object.Points
-            
-            newPoint=[]
-            poin= sel.Object.Points
+            sel = s[0]
+            _type = faced.getInfo(sel).selectedObjectType()
+            if not (_type == 'Wire' or _type == 'Line'):
+                print(_type)
+                print("Wrong object selected")
+                return  # Not supported yet.
+                # TODO: Is it necessary to extend Arc, Square ..etc shapes? Don't know now
+            # User decided where to extend the line.
+            # Otherwise we extend the line only to the end of the line
+            VertPoint=None
+            if hasattr(sel.SubObjects[0], 'Point'):
+                VertPoint = sel.SubObjects[0].Point
+            elif hasattr(sel.SubObjects[0], 'Edges'):
+                poin = sel.SubObjects[0].Vertexes[1].Point
+                VertPoint=sel.SubObjects[0].Vertexes[1].Point #last point
+            newPoint = []
+            poin = sel.Object.Points
             for i in poin:
                 newPoint.append(App.Vector(i))
-            newPoint.append(App.Vector(newPoint[len(newPoint)-1]))  #add last point and then moved  
+            if VertPoint == newPoint[len(newPoint)-1]:
+                # add last point and then moved
+                newPoint.append(App.Vector(newPoint[len(newPoint)-1]))
+            else:
+                # add last point and then
+                print(VertPoint)
+                newPoint.append(App.Vector(VertPoint))
             _view = Gui.ActiveDocument.ActiveView
 
-            sel.Object.Points=newPoint 
-            mousePointMove(sel,_view)
+            sel.Object.Points = newPoint
+            faced.mousePointMove(sel, _view)
             del newPoint[:]
-            
+
         except Exception as err:
             App.Console.PrintError("'Extend' Failed. "
                                    "{err}\n".format(err=str(err)))

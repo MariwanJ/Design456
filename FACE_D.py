@@ -32,7 +32,7 @@ import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft  as _draft
 import Part  as _part
-
+from pivy import coin
 
 class  getDirectionAxis():
     def Activated(self):
@@ -80,31 +80,95 @@ class MousePosition:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-"""
-    def ExtractFace(self):
+
+
+class mousePointMove:
+    def __init__(self,obj,view):
+        self.object = obj
+        self.view = view
+        self.callbackClicked = self.view.addEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.mouseClick) #"SoLocation2Event"
+        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.mouseMove)
+        StartMovePoint=0
+        
+    def convertToVector(self,pos):
         try:
-            s = Gui.Selection.getSelectionEx()
-            for o in s:
-                objName = o.ObjectName
-                sh = o.Object.Shape.copy()
-                if hasattr(o.Object, "getGlobalPlacement"):
-                    gpl = o.Object.getGlobalPlacement()
-                    sh.Placement = gpl
-                for name in o.SubElementNames:
-                    fullname = objName+"_"+name
-                    newobj = o.Document.addObject("Part::Feature", fullname)
-                    newobj.Shape = sh.getElement(name)
-            App.ActiveDocument.recompute()
-            return self.newobj
+            import Design456Init
+            point=[]
+            tempPoint=self.view.getPoint(pos[0], pos[1])        
+            if Design456Init.DefaultDirectionOfExtrusion=='x':        
+                point.append( App.Vector(0.0,tempPoint[0],tempPoint[1]) )
+            elif Design456Init.DefaultDirectionOfExtrusion=='y':
+                point.append(App.Vector(tempPoint[0],0.0,tempPoint[1])) 
+            elif Design456Init.DefaultDirectionOfExtrusion=='z':
+                point.append(App.Vector(tempPoint[0],tempPoint[1],0.0))
+            return point
         except Exception as err:
-            App.Console.PrintError("'FACE_D.ExtractFace' Failed. "
+                App.Console.PrintError("'converToVector' Failed. "
+                                       "{err}\n".format(err=str(err)))
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+        
+
+    def mouseMove(self,events):
+        try:
+            event = events.getEvent()
+            pos = event.getPosition().getValue()
+            point=self.convertToVector(pos)
+            points=self.object.Object.Points
+            lastPoint= points[len(points)-1]  #last point
+            lastPoint=  point[0]  #App.Vector(_view_.getPoint(*info['Position']))
+            self.object.Object.End=lastPoint
+            App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'Extend' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-"""
+    def mouseClick(self, events):
+        try:
+            import Design456Init
+            event = events.getEvent()
+            eventState= event.getState()
+            getButton= event.getButton() 
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
+                pos=event.getPosition()
+                point=self.convertToVector(pos)
+                print('Mouse click \n')
+                poin= self.object.Object.Points
+                print (point)
+                poin[len(poin)-1] = point[0]
+                self.object.Object.End= point[0] 
+                App.ActiveDocument.recompute()
+                self.remove_callbacks()
 
+        except Exception as err:
+            App.Console.PrintError("'Mouse click ' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return None
+
+    def remove_callbacks(self):
+        try:
+            print('Remove MouseClick callback')
+            self.view.removeEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClicked)
+            self.view.removeEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+            
+        except Exception as err:
+            App.Console.PrintError("'Mouse move point' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+
+    def Deactivated(self):
+        self.remove_callbacks()
 
 class PartMover(object):
     def __init__(self, CallerObject, view, obj, deleteOnEscape):
