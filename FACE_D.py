@@ -113,11 +113,11 @@ class PartMover(object):
         self.initialPosition = self.obj.Placement.Base
         self.view = view
         self.deleteOnEscape = deleteOnEscape
-        self.callbackMove = self.view.addEventCallback(
+        self.callbackMove = self.view.addEventCallbackPivy(
             "SoLocation2Event", self.moveMouse)
-        self.callbackClick = self.view.addEventCallback(
+        self.callbackClick = self.view.addEventCallbackPivy(
             "SoMouseButtonEvent", self.MouseClick)
-        self.callbackKey = self.view.addEventCallback(
+        self.callbackKey = self.view.addEventCallbackPivy(
             "SoKeyboardEvent", self.KeyboardEvent)
         self.objectToDelete = None  # object reference when pressing the escape key
 
@@ -141,9 +141,9 @@ class PartMover(object):
     def remove_callbacks(self):
         try:
             print('Remove callback')
-            self.view.removeEventCallback("SoLocation2Event", self.moveMouse)
-            self.view.removeEventCallback("SoMouseButtonEvent", self.MouseClick)
-            self.view.removeEventCallback("SoKeyboardEvent", self.KeyboardEvent)
+            self.view.removeEventCallbackPivy ("SoLocation2Event", self.callbackMove)
+            self.view.removeEventCallbackPivy ("SoMouseButtonEvent", self.callbackClick)
+            self.view.removeEventCallbackPivy ("SoKeyboardEvent", self.callbackKey)
             App.closeActiveTransaction(True)
             Gui.Selection.removeObserver(self) 
             self.active = False
