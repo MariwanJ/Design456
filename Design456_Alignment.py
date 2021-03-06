@@ -29,7 +29,7 @@ import sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
-import Design456Init
+
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft as _draft
 import Part as _part
@@ -98,9 +98,11 @@ Gui.addCommand('Design456_AlignToPlane',Design456_AlignFlatToPlane())
 #Top
 class Design456_TopSideView:
     def Activated(self):
+        import Design456Init
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 1.0), 0.0)
         Gui.activeDocument().activeView().viewTop()
+        Design456Init.DefaultDirectionOfExtrusion='z'
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
 
@@ -116,9 +118,11 @@ Gui.addCommand('Design456_TopSideView',Design456_TopSideView())
 
 #Bottom View
 class Design456_BottomView:
+    import Design456Init
     def Activated(self):
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, -1.0), 0.0)
+        Design456Init.DefaultDirectionOfExtrusion='z'
         Gui.activeDocument().activeView().viewBottom()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
@@ -136,8 +140,10 @@ Gui.addCommand('Design456_BottomView',Design456_BottomView())
 #Left
 class Design456_LeftSideView:
     def Activated(self):
+        import Design456Init
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(1.0,0.0 , 0.0), 0.0)
+        Design456Init.DefaultDirectionOfExtrusion='x'
         Gui.activeDocument().activeView().viewLeft()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
@@ -155,8 +161,10 @@ Gui.addCommand('Design456_LeftSideView',Design456_LeftSideView())
 #Right
 class Design456_RightSideView:
     def Activated(self):
+        import Design456Init
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(-1.0, 0.0, 0.0), 0.0)
+        Design456Init.DefaultDirectionOfExtrusion='x'
         Gui.activeDocument().activeView().viewRight()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
@@ -174,8 +182,10 @@ Gui.addCommand('Design456_RightSideView',Design456_RightSideView())
 #Front
 class Design456_FrontSideView:
     def Activated(self):
+        import Design456Init
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0,1.0, 0.0), 0.0)
+        Design456Init.DefaultDirectionOfExtrusion='y'
         Gui.activeDocument().activeView().viewFront()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
@@ -192,9 +202,11 @@ Gui.addCommand('Design456_FrontSideView',Design456_FrontSideView())
 
 #Back
 class Design456_BackSideView:
+    import Design456Init
     def Activated(self):
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, -1.0, 0.0), 0.0)
+        Design456Init.DefaultDirectionOfExtrusion='y'
         Gui.activeDocument().activeView().viewRear()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
