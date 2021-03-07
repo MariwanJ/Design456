@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		    *
+# *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -22,11 +22,11 @@ from __future__ import unicode_literals
 # *  License along with this library; if not, If not, see                   *
 # *  <http://www.gnu.org/licenses/>.                                        *
 # *                                                                         *
-# *	Author :carlopav                                                        *
+# * Author :carlopav                                                        *
 # *This is pulled to the main github at the link bellow                     *
 # *github.com/MariwanJ/Design456/commits/5911dd3817aba28df6f5b215d39ef8851b974d5f
 # *  See the forum :                                                       *
-# *Modified by     Mariwan Jalal	 mariwan.jalal@gmail.com			   *
+# *Modified by     Mariwan Jalal     mariwan.jalal@gmail.com               *
 # **************************************************************************
 import os
 import ImportGui

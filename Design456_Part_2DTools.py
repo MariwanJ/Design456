@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		    *
+# *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -137,9 +137,9 @@ class Design456_CommonFace:
 
     def GetResources(self):
         return{
-            'Pixmap':	Design456Init.ICON_PATH + '/CommonFace.svg',
+            'Pixmap':   Design456Init.ICON_PATH + '/CommonFace.svg',
             'MenuText': 'CommonFace',
-            'ToolTip':	'CommonFace between 2-2D Faces'
+            'ToolTip':  'CommonFace between 2-2D Faces'
         }
 
 
@@ -157,9 +157,9 @@ class Design456_SubtractFaces:
 
     def GetResources(self):
         return{
-            'Pixmap':	Design456Init.ICON_PATH + '/SubtractFace.svg',
+            'Pixmap':   Design456Init.ICON_PATH + '/SubtractFace.svg',
             'MenuText': 'Subtract Faces',
-            'ToolTip':	'Subtract 2-2D Faces'
+            'ToolTip':  'Subtract 2-2D Faces'
         }
 
 
@@ -176,9 +176,9 @@ class Design456_CombineFaces:
 
     def GetResources(self):
         return{
-            'Pixmap':	Design456Init.ICON_PATH + '/CombineFaces.svg',
+            'Pixmap':   Design456Init.ICON_PATH + '/CombineFaces.svg',
             'MenuText': 'Combine Face',
-            'ToolTip':	'Combine 2-2D Faces'
+            'ToolTip':  'Combine 2-2D Faces'
         }
 
 
@@ -245,18 +245,19 @@ class Design456_Part_Surface:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Surface.svg',
             'MenuText': 'Part_Surface',
-            'ToolTip':	'Part Surface'
+            'ToolTip':  'Part Surface'
         }
 
 
 Gui.addCommand('Design456_Part_Surface', Design456_Part_Surface())
 
 
-
 """Design456 Part 2D Tools"""
 
 
-class Design456_2DToolsGroup:
+class Design456_Part_2DToolsGroup:
+    def __init__(self):
+        return
 
     """Gui command for the group of 2D tools."""
 
@@ -268,11 +269,15 @@ class Design456_2DToolsGroup:
                 "Design456_Part_Surface"
 
                 )
-    def GetResources(self):
-            return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_2DTools.svg',
-            'MenuText': 'Part_Merge',
-            'ToolTip':	'Part Merge'
-        }
 
-Gui.addCommand("Design456 2DTools", Design456_2DToolsGroup())
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools for modifying 2D Shapes")
+        return {'Pixmap':  Design456Init.ICON_PATH +'/Design456_2DTools.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "2Dtools"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+
+Gui.addCommand("Design456_Part_2DToolsGroup", Design456_Part_2DToolsGroup())

@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -8,31 +6,13 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64"
    height="64"
    viewBox="0 0 16.933333 16.933334"
    version="1.1"
-   id="svg4562"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="SplitObject.svg">
+   id="svg4562">
   <defs
      id="defs4556">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="-28.851587 : 0.56393347 : 1"
-       inkscape:vp_y="0 : 375.36991 : 0"
-       inkscape:vp_z="35.741855 : 0.56393347 : 1"
-       inkscape:persp3d-origin="3.4451332 : -18.016873 : 1"
-       id="perspective1083" />
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 148.5 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="210 : 148.5 : 1"
-       inkscape:persp3d-origin="105 : 99.000001 : 1"
-       id="perspective1004" />
     <linearGradient
        id="linearGradient5113"
        osb:paint="solid">
@@ -42,27 +22,6 @@
          id="stop5111" />
     </linearGradient>
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="7.9195959"
-     inkscape:cx="15.825467"
-     inkscape:cy="35.733948"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     units="px"
-     inkscape:snap-nodes="false"
-     inkscape:snap-others="false" />
   <metadata
      id="metadata4559">
     <rdf:RDF>
@@ -71,79 +30,57 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-280.06665)">
     <g
        id="g1129"
        transform="matrix(0.08138261,0,0,0.09931663,-0.08879793,273.01063)">
       <g
-         inkscape:corner7="-0.13275529 : 0.054220214 : 0.25 : 1"
-         inkscape:corner0="0.042073883 : 0.083884829 : 0 : 1"
-         inkscape:perspectiveID="#perspective1083"
          style="fill:#4d4d4d;fill-opacity:1;stroke:#000000;stroke-width:2.48692918;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke"
-         id="g1067"
-         sodipodi:type="inkscape:box3d">
+         id="g1067">
         <path
            points="27.400773,218.74616 107.28655,222.05865 107.28655,135.2848 27.400773,111.15473 "
            d="m 27.400773,111.15473 v 107.59143 l 79.885777,3.31249 V 135.2848 Z"
-           inkscape:box3dsidetype="6"
            style="fill:#353564;fill-rule:evenodd;stroke:none;stroke-linejoin:round"
-           id="path1069"
-           sodipodi:type="inkscape:box3dside" />
+           id="path1069" />
         <path
            points="179.38009,119.5456 179.38009,219.89803 107.28655,222.05865 107.28655,135.2848 "
            d="m 107.28655,135.2848 72.09354,-15.7392 v 100.35243 l -72.09354,2.16062 z"
-           inkscape:box3dsidetype="11"
            style="fill:#e9e9ff;fill-rule:evenodd;stroke:none;stroke-linejoin:round"
-           id="path1079"
-           sodipodi:type="inkscape:box3dside" />
+           id="path1079" />
         <path
            points="104.17237,215.29493 179.38009,219.89803 107.28655,222.05865 27.400773,218.74616 "
            d="m 27.400773,218.74616 76.771597,-3.45123 75.20772,4.6031 -72.09354,2.16062 z"
-           inkscape:box3dsidetype="13"
            style="fill:#f1d64e;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-linejoin:round;stroke-opacity:1"
-           id="path1077"
-           sodipodi:type="inkscape:box3dside" />
+           id="path1077" />
         <path
            points="104.17237,215.29489 179.38009,219.89799 179.38009,119.54556 104.17237,86.013944 "
            d="M 104.17237,86.013944 V 215.29489 l 75.20772,4.6031 V 119.54556 Z"
-           inkscape:box3dsidetype="14"
            style="fill:#fffeaa;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-linejoin:round;stroke-opacity:1"
            id="path1075"
-           sodipodi:type="inkscape:box3dside"
            transform="matrix(1.0009992,0,0,0.94527935,-0.14166691,12.070095)" />
         <path
            points="104.17237,86.013944 104.17237,215.29489 27.400773,218.74612 27.400773,111.15469 "
            d="M 27.400773,111.15469 104.17237,86.013944 V 215.29489 l -76.771597,3.45123 z"
-           inkscape:box3dsidetype="3"
            style="fill:#ff6600;fill-rule:evenodd;stroke:#000000;stroke-linejoin:round;stroke-opacity:1"
            id="path1073"
-           sodipodi:type="inkscape:box3dside"
            transform="matrix(1.0010333,0,0,0.94230118,-0.06797604,12.660585)" />
       </g>
       <path
-         sodipodi:nodetypes="ccc"
-         inkscape:connector-curvature="0"
          id="path1085"
          d="m 26.726951,157.75257 76.774959,-20.57179 75.17696,20.53492"
          style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
       <path
-         sodipodi:nodetypes="ccccc"
-         inkscape:connector-curvature="0"
          id="path1073-3"
          d="m 28.218492,269.95779 -0.817713,-158.80291 76.771591,-9.31222 0.85231,159.55788 z"
          style="fill:#ff0500;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.48692918;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
          transform="matrix(1,0,0,0.38786556,-3.8370477e-7,52.652211)" />
       <path
-         sodipodi:nodetypes="ccccc"
-         inkscape:connector-curvature="0"
          id="path1075-0"
          d="m 104.75842,106.23924 -0.58605,151.45846 75.20773,10.45715 0.70782,-125.04856 z"
          style="fill:#c0f314;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2.48692918;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"

@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		    *
+# *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -167,22 +167,22 @@ class Design456_loftOnDirection_ui(object):
         diag.exec_()
 
         """msg = 'Example of warning message'
-		errorloftOnDirection(msg)
-		raise(Exception(msg))
-		"""
+        errorloftOnDirection(msg)
+        raise(Exception(msg))
+        """
 
     def checkIfShapeIsValid(self):
         geTobject = Gui.Selection.getSelectionEx()[0]
-        selectedEdge = geTobject.SubObjects[0]		# select one element
+        selectedEdge = geTobject.SubObjects[0]      # select one element
         """This must be fix it. I don't know how to distinguish between 2s and 3d objects.
-		I will return for now always 0 but this MUST BE FIXED.2021-02-03 Mariwan
-		if(selectedEdge.Volume ==0):
-				#We have a 2D shape .. 
-				self.msgBOXShow()
-				return 1
-			else:
-				return 0
-			"""
+        I will return for now always 0 but this MUST BE FIXED.2021-02-03 Mariwan
+        if(selectedEdge.Volume ==0):
+                #We have a 2D shape .. 
+                self.msgBOXShow()
+                return 1
+            else:
+                return 0
+            """
 
     def runClass(self):
         try:
@@ -195,7 +195,7 @@ class Design456_loftOnDirection_ui(object):
                 return
     
             selectedEdge = Gui.Selection.getSelectionEx(
-            )[0].SubObjects[0]	  # select one element
+            )[0].SubObjects[0]    # select one element
             SubElementName = Gui.Selection.getSelectionEx()[
                 0].SubElementNames[0]
             
@@ -207,8 +207,8 @@ class Design456_loftOnDirection_ui(object):
             ValueScaleZ = (float)(self.inScaleZ.value())
 
             ####
-            createAxis = self.chkAxis.isChecked()		   # 0 = not Axis, other = Axis
-            createLoft = self.chkLoft.isChecked()		   # 0 = not loft, other = loft
+            createAxis = self.chkAxis.isChecked()          # 0 = not Axis, other = Axis
+            createLoft = self.chkLoft.isChecked()          # 0 = not loft, other = loft
             #### configuration ####
 
             if hasattr(selectedEdge, 'Surface'):
@@ -225,7 +225,7 @@ class Design456_loftOnDirection_ui(object):
                 plDirection.Base = yL
                 plr = plDirection
                 print("surface : ", sel[0].Name, " ",
-                      SubElementName, "	 ", direction)
+                      SubElementName, "  ", direction)
                 # section direction
 
                 # section axis
@@ -319,9 +319,9 @@ class Design456_loftOnDirection():
 
     def GetResources(self):
         return{
-            'Pixmap':	Design456Init.ICON_PATH + '/loftOnDirection.svg',
+            'Pixmap':   Design456Init.ICON_PATH + '/loftOnDirection.svg',
             'MenuText': 'loftOnDirection',
-            'ToolTip':	'Loft On Direction'
+            'ToolTip':  'Loft On Direction'
         }
 
 
