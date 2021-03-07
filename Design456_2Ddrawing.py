@@ -2,27 +2,27 @@
 from __future__ import unicode_literals
 #
 # ***************************************************************************
-# *																		   *
-# *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
-# *																		   *
-# *	Copyright (C) 2021													   *
-# *																		   *
-# *																		   *
-# *	This library is free software; you can redistribute it and/or		   *
-# *	modify it under the terms of the GNU Lesser General Public			   *
-# *	License as published by the Free Software Foundation; either		   *
-# *	version 2 of the License, or (at your option) any later version.	   *
-# *																		   *
-# *	This library is distributed in the hope that it will be useful,		   *
-# *	but WITHOUT ANY WARRANTY; without even the implied warranty of		   *
-# *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU	   *
-# *	Lesser General Public License for more details.						   *
-# *																		   *
-# *	You should have received a copy of the GNU Lesser General Public	   *
-# *	License along with this library; if not, If not, see				   *
-# *	<http://www.gnu.org/licenses/>.										   *
-# *																		   *
-# *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# *                                                                        *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 import os
 import sys
@@ -50,9 +50,9 @@ class Design456_2Ddrawing:
 
     def GetResources(self):
         return{
-            'Pixmap':	 Design456Init.ICON_PATH + '/2D_Drawing.svg',
+            'Pixmap':    Design456Init.ICON_PATH + '/2D_Drawing.svg',
             'MenuText': '2Ddrawing',
-            'ToolTip':	'2Ddrawing'
+            'ToolTip':  '2Ddrawing'
         }
 
     def IsActive(self):
@@ -65,13 +65,13 @@ class Design456_2Ddrawing:
         self.appendToolbar("Design456_2Ddrawing", self.list)
 
 # ***************************************************************************
-# *	Author : __title__   = "Macro_Make_Arc_3_points"                       *
+# * Author : __title__   = "Macro_Make_Arc_3_points"                       *
 # *__author__  = "Mario52"                                                 *
 # *__url__     = "http://www.freecadweb.org/index-fr.html"                 *
 # *__version__ = "00.01"                                                   *
 # *__date__    = "14/07/2016"                                              *
 #                                                                          *
-# * Modfied by: Mariwan Jalal	 mariwan.jalal@gmail.com    04/03/2021     *
+# * Modfied by: Mariwan Jalal    mariwan.jalal@gmail.com    04/03/2021     *
 # ***************************************************************************
 
 
@@ -90,7 +90,7 @@ class Design456_Arc3Points:
                 faced.getInfo(selected).errorDialog(errMessage)
                 return
             if selectedOne1.HasSubObjects and len(selected) == 1:
-                # We have only one object that we take verticies from
+                # We have only one object that we take vertices from
                 oneObject = True
                 subObjects = selected[0].SubObjects
                 for n in subObjects:
@@ -130,7 +130,7 @@ class Design456_Arc3Points:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Arc3Points.svg',
             'MenuText': 'Arc3Points',
-                        'ToolTip':	'Arc 3Points'
+                        'ToolTip':  'Arc 3Points'
         }
 
 
@@ -162,7 +162,7 @@ class Design456_MultiPointToWire:
             else:
                 Wire1 = _draft.makeWire(allSelected, closed=False)
             """
-            I have to find a way to avoid deleting Verticies if they are a part from another object.
+            I have to find a way to avoid deleting Vertices if they are a part from another object.
             This is disabled at the moment.       
             
             for n in selected:
@@ -192,7 +192,7 @@ class Design456_MultiPointToWireClose:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireClosed.svg',
             'MenuText': 'Multi-Points To Line Close',
-                        'ToolTip':	'Multi-Points To Line Close'
+                        'ToolTip':  'Multi-Points To Line Close'
         }
 
 
@@ -210,7 +210,7 @@ class Design456_MultiPointToWireOpen:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireOpen.svg',
             'MenuText': 'Multi-Points To Line Open',
-                        'ToolTip':	'Multi-Points To Line Open'
+                        'ToolTip':  'Multi-Points To Line Open'
         }
 
 
@@ -220,7 +220,7 @@ Gui.addCommand('Design456_MultiPointToWireClose',
                Design456_MultiPointToWireClose())
 
 
-# Trim all selected lines, vertixes and leav the object open
+# Trim all selected lines, vertices and leave the object open
 # Warning: This command destroy the 2D shape and will loose the face.
 
 class Design456_2DTrim:
@@ -245,7 +245,7 @@ class Design456_2DTrim:
                 currentObject = App.ActiveDocument.getObject(sel1.Object.Name)
                 SelectedPoints.clear()  # points in the targeted line to be trimmed
                 _edg = sel1.SubObjects[0]
-                # TODO: trim only 2 points at the momoent
+                # TODO: trim only 2 points at the moment
                 Vert = _edg.Vertexes
 
                 # Save all points we have in the edge or line/wire which should be trimmed
@@ -275,7 +275,7 @@ class Design456_2DTrim:
                 EndPoint = StartPoint = None
                 if (objType == 'Wire' or objType == 'Line'):
                     closedShape = sel1.Object.Closed
-                elif objType == 'Unkown':
+                elif objType == 'Unknown':
                     closedShape = False
                     return  # We don't know what the shape is
                 elif objType == 'Arc':
@@ -379,7 +379,7 @@ class Design456_2DTrim:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/2D_TrimLine.svg',
             'MenuText': 'Trim Line',
-                        'ToolTip':	'Trim Line or edge in a 2D shape'
+                        'ToolTip':  'Trim Line or edge in a 2D shape'
         }
 
 
@@ -439,7 +439,7 @@ class Design456_2DExtend:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/2D_ExtendLine.svg',
             'MenuText': 'Extend Line',
-                        'ToolTip':	'Extend Exisiting Line'
+                        'ToolTip':  'Extend Existing Line'
         }
 
 

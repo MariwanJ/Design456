@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 # *  This file is a part of the Open Source Design456 Workbench - App.      *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		    *
+# *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -49,10 +49,10 @@ class Design456_Workbench (Workbench):
         import BOPTools  # as bop
         import Design456_Part as designPart
         import Design456_2Ddrawing as TwoDDraw
-        import Design456_Tools as _tools
+        import Design456_Part_Tools as _tools
         import Design456_SelectionGate as SelGate
         
-        # from Part import CommandShapes	 #Tube	not working
+        # from Part import CommandShapes     #Tube  not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
         self.appendToolbar("Design456_Part", designPart.Design456_Part.list)
@@ -223,7 +223,7 @@ class Design456_Workbench (Workbench):
         try:
             import BOPTools  # as bop
             import Design456_Part as designPart
-            import Design456_Tools as pTools
+            import Design456_Part_Tools as pTools
             import Design456_2Ddrawing as TwoDDraw
             
 
@@ -232,7 +232,7 @@ class Design456_Workbench (Workbench):
             self.appendContextMenu("Design456_2Ddrawing",
                                    TwoDDraw.Design456_2Ddrawing.list)
             self.appendContextMenu(
-                "Design456_Tools", pTools.Design456_Part_Tools.list)
+                "Design456 Tools", pTools.Design456_Part_Tools.list)
 
             # from DRAFT
             """Define an optional custom context menu."""
