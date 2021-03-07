@@ -34,34 +34,6 @@ import Part
 import Design456Init
 import FACE_D as faced
 
-"""Design456 Part Utils"""
-
-
-class Design456_Part_Utils:
-    list = ["Design456_CommonFace",
-            "Design456_CombineFaces",
-            "Design456_SubtractFaces",
-            "Design456_Part_Surface"
-
-
-            ]
-
-    def GetResources(self):
-        return{
-            'Pixmap':	Design456Init.ICON_PATH + '/Part_Utils.svg',
-            'MenuText': 'Box',
-            'ToolTip': 'Box'
-        }
-
-    def IsActive(self):
-        if App.ActiveDocument is None:
-            return False
-        else:
-            return True
-
-    def Activated(self):
-        self.appendToolbar("Design456_Part_Utils", Design456_Part_Utils())
-
 
 class GenCommandForPartUtils:
     localShapeName = ""
@@ -254,13 +226,13 @@ class Design456_Part_Surface:
                 faced.getInfo(s).errorDialog(errMessage)
             else:
                 App.ActiveDocument.removeObject(newObj.Name)
-                #Removing these could cause problem if the line is a part of an object
-                #You cannot hide them eithe. TODO: I have to find a solution later 
-                #App.ActiveDocument.removeObject(s[0].Object.Name)
-                #App.ActiveDocument.removeObject(s[1].Object.Name)
-                s[0].Object.ViewObject.Visibility=False
-                s[1].Object.ViewObject.Visibility=False
-                
+                # Removing these could cause problem if the line is a part of an object
+                # You cannot hide them eithe. TODO: I have to find a solution later
+                # App.ActiveDocument.removeObject(s[0].Object.Name)
+                # App.ActiveDocument.removeObject(s[1].Object.Name)
+                s[0].Object.ViewObject.Visibility = False
+                s[1].Object.ViewObject.Visibility = False
+
                 App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Part Surface' Failed. "
@@ -268,7 +240,7 @@ class Design456_Part_Surface:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Surface.svg',
@@ -278,3 +250,29 @@ class Design456_Part_Surface:
 
 
 Gui.addCommand('Design456_Part_Surface', Design456_Part_Surface())
+
+
+
+"""Design456 Part 2D Tools"""
+
+
+class Design456_2DToolsGroup:
+
+    """Gui command for the group of 2D tools."""
+
+    def GetCommands(self):
+        """2D Face commands."""
+        return ("Design456_CommonFace",
+                "Design456_CombineFaces",
+                "Design456_SubtractFaces",
+                "Design456_Part_Surface"
+
+                )
+    def GetResources(self):
+            return {
+            'Pixmap': Design456Init.ICON_PATH + '/Part_2DTools.svg',
+            'MenuText': 'Part_Merge',
+            'ToolTip':	'Part Merge'
+        }
+
+Gui.addCommand("Design456 2DTools", Design456_2DToolsGroup())
