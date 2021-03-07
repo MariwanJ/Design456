@@ -100,11 +100,14 @@ class Design456_Part_Box:
             newObj.Label = "Cube"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except Exception as err:
             App.Console.PrintError("'Part::Box' Failed. "
                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
         return {
@@ -127,7 +130,7 @@ class Design456_Part_Cylinder:
             App.ActiveDocument.ActiveObject.Label = "Cylinder"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except Exception as err:
             App.Console.PrintError("'Part::Cylinder' Failed. "
@@ -156,9 +159,7 @@ class Design456_Part_Tube:
             newObj =App.ActiveDocument.ActiveObject
             v = Gui.ActiveDocument.ActiveView
             App.ActiveDocument.recompute()
-            """the PartMover causes FreeCAD to crash  -
-              FreeCAD has a bug .. it is related to the mouse 2021-02-15 Mariwan"""
-           # faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Part::Tube' Failed. "
@@ -187,7 +188,7 @@ class Design456_Part_Sphere:
             App.ActiveDocument.ActiveObject.Label = "Sphere"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except Exception as err:
             App.Console.PrintError("'Part::Sphere' Failed. "
@@ -216,7 +217,7 @@ class Design456_Part_Cone:
             App.ActiveDocument.ActiveObject.Label = "Cone"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except Exception as err:
             App.Console.PrintError("'Part::Cone' Failed. "
@@ -245,7 +246,7 @@ class Design456_Part_Torus:
             App.ActiveDocument.ActiveObject.Label = "Torus"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except Exception as err:
             App.Console.PrintError("'Part::Torus' Failed. "
@@ -275,7 +276,7 @@ class Design456_Part_Wedge:
             App.ActiveDocument.ActiveObject.Label = "Wedge"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except Exception as err:
             App.Console.PrintError("'Part::Wedge' Failed. "
@@ -304,7 +305,7 @@ class Design456_Part_Prism:
             App.ActiveDocument.ActiveObject.Label = "Prism"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except Exception as err:
             App.Console.PrintError("'Part::Prism' Failed. "
@@ -379,7 +380,7 @@ class Design456_Part_Pyramid:
             # App.ActiveDocument.removeObject(point)
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
 
         except Exception as err:
             App.Console.PrintError("'Part::Pyramid' Failed. "
@@ -429,7 +430,7 @@ class Design456_Part_Hemisphere:
             App.ActiveDocument.recompute()
             newObj= App.ActiveDocument.ActiveObject
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
 
         except Exception as err:
             App.Console.PrintError("'Part::Hemisphere' Failed. "
@@ -460,7 +461,7 @@ class Design456_Part_Ellipsoid:
             App.ActiveDocument.ActiveObject.Label = "Ellipsoid"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(newObj,v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
             # Gui.SendMsgToActiveView("ViewFit")
         except Exception as err:
             App.Console.PrintError("'Part::Ellipsoid' Failed. "
