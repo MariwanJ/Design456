@@ -34,7 +34,7 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft as _draft
 import Part as _part
 import FACE_D as faced
-
+import Design456Init
 # Toolbar class
 """Design456_Alignment"""
 
@@ -43,12 +43,19 @@ class Design456_AlignFlatToPlane:
     def Activated(self):
         try:
             Selectedobjects = Gui.Selection.getSelectionEx()
-            #This must be modified
+            #This must be modified          
+            
             for eachObj in Selectedobjects:
-                eachObj.Object.Placement.Base.z = 0.0
+                if Design456Init.DefaultDirectionOfExtrusion=='z':
+                    eachObj.Object.Placement.Base.z = 0.0
+                elif Design456Init.DefaultDirectionOfExtrusion=='y':
+                    eachObj.Object.Placement.Base.y = 0.0
+                elif Design456Init.DefaultDirectionOfExtrusion=='x':
+                    eachObj.Object.Placement.Base.x = 0.0
+
                 
         except Exception as err:
-            App.Console.PrintError("'Design456_Extract' Failed. "
+            App.Console.PrintError("'Align to Plain' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -58,8 +65,8 @@ class Design456_AlignFlatToPlane:
         import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + '/AlignToPlane.svg',
-            'MenuText': '2Ddrawing',
-            'ToolTip':  '2Ddrawing'
+            'MenuText': 'Align To Plane',
+            'ToolTip':  'Align to Plane'
         }
         
 Gui.addCommand('Design456_AlignToPlane',Design456_AlignFlatToPlane())
@@ -70,6 +77,7 @@ Gui.addCommand('Design456_AlignToPlane',Design456_AlignFlatToPlane())
 class Design456_TopSideView:
     def Activated(self):
         import Design456Init
+        Gui.runCommand("Draft_ToggleGrid")
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 1.0), 0.0)
         Gui.activeDocument().activeView().viewTop()
@@ -91,6 +99,7 @@ Gui.addCommand('Design456_TopSideView',Design456_TopSideView())
 class Design456_BottomView:
     import Design456Init
     def Activated(self):
+        Gui.runCommand("Draft_ToggleGrid")
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, -1.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion='z'
@@ -112,6 +121,7 @@ Gui.addCommand('Design456_BottomView',Design456_BottomView())
 class Design456_LeftSideView:
     def Activated(self):
         import Design456Init
+        Gui.runCommand("Draft_ToggleGrid")
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(1.0,0.0 , 0.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion='x'
@@ -133,6 +143,7 @@ Gui.addCommand('Design456_LeftSideView',Design456_LeftSideView())
 class Design456_RightSideView:
     def Activated(self):
         import Design456Init
+        Gui.runCommand("Draft_ToggleGrid")
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(-1.0, 0.0, 0.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion='x'
@@ -154,6 +165,7 @@ Gui.addCommand('Design456_RightSideView',Design456_RightSideView())
 class Design456_FrontSideView:
     def Activated(self):
         import Design456Init
+        Gui.runCommand("Draft_ToggleGrid")
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0,1.0, 0.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion='y'
@@ -175,6 +187,7 @@ Gui.addCommand('Design456_FrontSideView',Design456_FrontSideView())
 class Design456_BackSideView:
     import Design456Init
     def Activated(self):
+        Gui.runCommand("Draft_ToggleGrid")
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, -1.0, 0.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion='y'

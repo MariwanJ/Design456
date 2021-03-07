@@ -38,6 +38,9 @@ import Design456_loftOnDirection
 import Design456_Extrude
 import Design456_ExtrudeFace
 import Design456_SplitObject
+import Design456_Magnet
+import Design456_Tweak
+import Design456_MakeFaceArray
 
 from PySide import QtCore, QtGui
 
