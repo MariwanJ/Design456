@@ -2,29 +2,30 @@
 from __future__ import unicode_literals
 #
 # ***************************************************************************
-# *																		   *
-# *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
-# *																		   *
-# *	Copyright (C) 2021													   *
-# *																		   *
-# *																		   *
-# *	This library is free software; you can redistribute it and/or		   *
-# *	modify it under the terms of the GNU Lesser General Public			   *
-# *	License as published by the Free Software Foundation; either		   *
-# *	version 2 of the License, or (at your option) any later version.	   *
-# *																		   *
-# *	This library is distributed in the hope that it will be useful,		   *
-# *	but WITHOUT ANY WARRANTY; without even the implied warranty of		   *
-# *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU	   *
-# *	Lesser General Public License for more details.						   *
-# *																		   *
-# *	You should have received a copy of the GNU Lesser General Public	   *
-# *	License along with this library; if not, If not, see				   *
-# *	<http://www.gnu.org/licenses/>.										   *
-# *																		   *
-# *	Author :Mariwan Jalal	 mariwan.jalal@gmail.com			           *
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# *                                                                        *
+# * Author :Mariwan Jalal    mariwan.jalal@gmail.com                       *
 # ***************************************************************************
-import sys, os
+import sys
+import os
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -33,6 +34,10 @@ import Draft
 import Part
 import Design456Init
 import FACE_D as faced
+import Design456_loftOnDirection
+import Design456_Extrude
+import Design456_ExtrudeFace
+import Design456_SplitObject
 
 from PySide import QtCore, QtGui
 
@@ -72,7 +77,7 @@ class Design456_Part_Merge:
                 App.ActiveDocument.recompute()
                 # Remove Old objects
                 # for obj in allObjects:
-                #	App.ActiveDocument.removeObject(obj.Name)
+                #   App.ActiveDocument.removeObject(obj.Name)
                 # App.ActiveDocument.removeObject(newObj.Name)
             App.ActiveDocument.recompute()
             del allObjects[:]
@@ -87,7 +92,7 @@ class Design456_Part_Merge:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Merge.svg',
             'MenuText': 'Part_Merge',
-            'ToolTip':	'Part Merge'
+            'ToolTip':  'Part Merge'
         }
 
 
@@ -147,7 +152,7 @@ class Design456_Part_Subtract:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Subtract.svg',
             'MenuText': 'Part_Subtract',
-            'ToolTip':	'Part Subtract'
+            'ToolTip':  'Part Subtract'
         }
 
 
@@ -197,7 +202,7 @@ class Design456_Part_Intersect:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Intersect.svg',
             'MenuText': 'Part_Intersect',
-            'ToolTip':	'Part Intersect'
+            'ToolTip':  'Part Intersect'
         }
 
 
@@ -243,7 +248,7 @@ class Design456_Part_Group:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Group.svg',
             'MenuText': 'Part_Group',
-            'ToolTip':	'Part Group'
+            'ToolTip':  'Part Group'
         }
 
 
@@ -291,7 +296,7 @@ class Design456_Part_Compound:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Compund.svg',
             'MenuText': 'Part_Compund',
-            'ToolTip':	'Part Compound'
+            'ToolTip':  'Part Compound'
         }
 
 
@@ -356,7 +361,7 @@ class Design456_Part_Shell:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/PartDesign_Shell.svg',
             'MenuText': 'Part_Shell',
-            'ToolTip':	'Part Shell'
+            'ToolTip':  'Part Shell'
         }
 
 
@@ -388,9 +393,9 @@ class Design456_Part_Fillet:
             if (len(names) != 0):
                 counter = 1
                 """ we need to take the rest of the string
-							i.e. 'Edge15' --> take out 'Edge'-->4 bytes
-							len('Edge')] -->4
-				"""
+                            i.e. 'Edge15' --> take out 'Edge'-->4 bytes
+                            len('Edge')] -->4
+                """
                 for name in names:
                     edgeNumbor = int(name[4:len(name)])
                     EdgesToBeChanged.append((edgeNumbor, Radius, Radius))
@@ -432,7 +437,7 @@ class Design456_Part_Fillet:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Fillet.svg',
             'MenuText': 'Part_Fillet',
-            'ToolTip':	'Part Fillet'
+            'ToolTip':  'Part Fillet'
         }
 
 
@@ -500,16 +505,15 @@ class Design456_Part_Chamfer:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Chamfer.svg',
             'MenuText': 'Part_Chamfer',
-            'ToolTip':	'Part Chamfer'
+            'ToolTip':  'Part Chamfer'
         }
 
 
 Gui.addCommand('Design456_Part_Chamfer', Design456_Part_Chamfer())
 
 
-
 class Design456_Part_3DToolsGroup:
-
+        
     """Design456 Part 3D Tools"""
 
     def GetCommands(self):
@@ -531,11 +535,15 @@ class Design456_Part_3DToolsGroup:
                 "Design456_MakeFaceArray",
 
                 )
-    def GetResources(self):
-            return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_3DTools.svg',
-            'MenuText': 'Part_Merge',
-            'ToolTip':	'Part Merge'
-        }
 
-Gui.addCommand("Design456 3DTools", Design456_Part_3DToolsGroup())
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools for modifying 3D Shapes")
+        return {'Pixmap':  Design456Init.ICON_PATH +'/Design456_3DTools.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "3Dtools"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+
+Gui.addCommand("Design456_Part_3DToolsGroup", Design456_Part_3DToolsGroup())

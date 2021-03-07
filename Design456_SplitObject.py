@@ -6,7 +6,7 @@ from __future__ import unicode_literals
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
 # *  Copyright (C) 2021                                                     *
-# *																		    *
+# *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
 # *  modify it under the terms of the GNU Lesser General Public             *
@@ -57,7 +57,7 @@ class Design456_SplitObject:
             totalName = nameOfselectedObject+'_cs'
 
             """ slow function . . you need to use wait before getting 
-				the answer as the execution is continuing down """
+                the answer as the execution is continuing down """
             Gui.runCommand('Part_CrossSections', 0)
             gcompund = App.ActiveDocument.addObject(
                 "Part::Compound", "Compound")
@@ -108,7 +108,7 @@ class Design456_SplitObject:
             
     def GetResources(self):
         return{
-            'Pixmap':	Design456Init.ICON_PATH + '/SplitObject.svg',
+            'Pixmap':   Design456Init.ICON_PATH + '/SplitObject.svg',
             'MenuText': 'Split Object',
             'ToolTip': 'Divide object in to two parts'
         }

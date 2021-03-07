@@ -1,50 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64"
    height="64"
    viewBox="0 0 16.933333 16.933334"
    version="1.1"
-   id="svg8"
-   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="ExtractFace.svg">
+   id="svg8">
   <defs
-     id="defs2">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="-31.173902 : 31.676741 : 1"
-       inkscape:vp_y="379.46659 : 173.80964 : 0"
-       inkscape:vp_z="4.450431 : -53.115759 : 1"
-       inkscape:persp3d-origin="-32.145332 : -19.323085 : 1"
-       id="perspective815" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="5.9803699"
-     inkscape:cx="88.609794"
-     inkscape:cy="-10.406575"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     units="px"
-     inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1" />
+     id="defs2" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -53,75 +20,55 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-280.06665)">
     <g
        id="g874"
        transform="matrix(0.95620607,0,0,0.99279899,-64.075125,190.96472)">
       <g
-         inkscape:corner7="0.36174158 : 0.13156406 : 0.25 : 1"
-         inkscape:corner0="0.56064766 : 0.15816374 : 0 : 1"
-         inkscape:perspectiveID="#perspective815"
          style="fill:#d35f5f;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:14.15433025;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="g817"
-         sodipodi:type="inkscape:box3d">
+         id="g817">
         <path
            points="67.21162,93.054931 67.82637,102.34034 73.656316,99.76844 73.975465,90.071032 "
            d="m 73.975465,90.071032 -6.763845,2.983899 0.61475,9.285409 5.829946,-2.5719 z"
-           inkscape:box3dsidetype="6"
            style="fill:#353564;fill-rule:evenodd;stroke:none;stroke-width:6.20949888;stroke-linejoin:round"
-           id="path819"
-           sodipodi:type="inkscape:box3dside" />
+           id="path819" />
         <path
            points="78.499966,102.83773 71.950542,105.72704 67.82637,102.34034 73.656316,99.76844 "
            d="m 73.656316,99.76844 4.84365,3.06929 -6.549424,2.88931 -4.124172,-3.3867 z"
-           inkscape:box3dsidetype="11"
            style="fill:#e9e9ff;fill-rule:evenodd;stroke:none;stroke-width:6.20949888;stroke-linejoin:round"
-           id="path829"
-           sodipodi:type="inkscape:box3dside" />
+           id="path829" />
         <path
            points="79.754969,92.287337 78.499966,102.83773 73.656316,99.76844 73.975465,90.071032 "
            d="m 73.975465,90.071032 5.779504,2.216305 -1.255003,10.550393 -4.84365,-3.06929 z"
-           inkscape:box3dsidetype="5"
            style="fill:#4d4d9f;fill-rule:evenodd;stroke:none;stroke-width:6.20949888;stroke-linejoin:round"
-           id="path821"
-           sodipodi:type="inkscape:box3dside" />
+           id="path821" />
         <path
            points="72.003148,95.707086 71.950542,105.72704 67.82637,102.34034 67.21162,93.054931 "
            d="m 67.21162,93.054931 4.791528,2.652155 -0.05261,10.019954 -4.124172,-3.3867 z"
-           inkscape:box3dsidetype="13"
            style="fill:#ffb380;fill-rule:evenodd;stroke:#000000;stroke-width:0.4105382;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-           id="path827"
-           sodipodi:type="inkscape:box3dside" />
+           id="path827" />
         <path
            points="72.003148,95.707086 71.950542,105.72704 78.499966,102.83773 79.754969,92.287337 "
            d="m 79.754969,92.287337 -7.751821,3.419749 -0.05261,10.019954 6.549424,-2.88931 z"
-           inkscape:box3dsidetype="14"
            style="fill:#ffccaa;fill-rule:evenodd;stroke:#000000;stroke-width:0.4105382;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-           id="path825"
-           sodipodi:type="inkscape:box3dside" />
+           id="path825" />
         <path
            points="79.754969,92.287337 72.003148,95.707086 67.21162,93.054931 73.975465,90.071032 "
            d="m 73.975465,90.071032 5.779504,2.216305 -7.751821,3.419749 -4.791528,-2.652155 z"
-           inkscape:box3dsidetype="3"
            style="fill:#ff6600;fill-rule:evenodd;stroke:#000000;stroke-width:0.4105382;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
-           id="path823"
-           sodipodi:type="inkscape:box3dside" />
+           id="path823" />
       </g>
       <path
          points="78.614452,104.7051 93.483239,98.835763 95.689532,79.214005 78.091006,86.160884 "
          d="M 78.091006,86.160884 78.614452,104.7051 93.483239,98.835763 95.689532,79.214005 Z"
-         inkscape:box3dsidetype="14"
          style="fill:#ff6600;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.84717059;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path825-2"
-         sodipodi:type="inkscape:box3dside"
          transform="matrix(0.43478239,0,0,0.540124,42.509122,50.398053)" />
     </g>
   </g>

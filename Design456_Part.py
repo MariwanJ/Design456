@@ -2,27 +2,27 @@
 from __future__ import unicode_literals
 #
 # ***************************************************************************
-# *																		   *
-# *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
-# *																		   *
-# *	Copyright (C) 2021													   *
-# *																		   *
-# *																		   *
-# *	This library is free software; you can redistribute it and/or		   *
-# *	modify it under the terms of the GNU Lesser General Public			   *
-# *	License as published by the Free Software Foundation; either		   *
-# *	version 2 of the License, or (at your option) any later version.	   *
-# *																		   *
-# *	This library is distributed in the hope that it will be useful,		   *
-# *	but WITHOUT ANY WARRANTY; without even the implied warranty of		   *
-# *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU	   *
-# *	Lesser General Public License for more details.						   *
-# *																		   *
-# *	You should have received a copy of the GNU Lesser General Public	   *
-# *	License along with this library; if not, If not, see				   *
-# *	<http://www.gnu.org/licenses/>.										   *
-# *																		   *
-# *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# *                                                                        *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 import os
 import sys
@@ -40,7 +40,7 @@ import BasicShapes.CommandShapes
 import CompoundTools._CommandExplodeCompound
 
 import Design456Init
-# from Part import CommandShapes	 #Tube	 not working
+# from Part import CommandShapes     #Tube   not working
 
 
 
@@ -75,7 +75,7 @@ class Design456_Part:
 
     def GetResources(self):
         return{
-            'Pixmap':	Design456Init.ICON_PATH + '/Part_Box.svg',
+            'Pixmap':   Design456Init.ICON_PATH + '/Part_Box.svg',
             'MenuText': 'Box',
                         'ToolTip': 'Box'
         }
@@ -113,7 +113,7 @@ class Design456_Part_Box:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Box.svg',
             'MenuText': 'Part_Box',
-                        'ToolTip':	'Part Box'
+                        'ToolTip':  'Part Box'
         }
 
 
@@ -143,7 +143,7 @@ class Design456_Part_Cylinder:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Cylinder.svg',
             'MenuText': 'Part_Cylinder',
-                        'ToolTip':	'Part Cylinder'
+                        'ToolTip':  'Part Cylinder'
         }
 
 
@@ -172,7 +172,7 @@ class Design456_Part_Tube:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Tube.svg',
             'MenuText': 'Part_Tube',
-                        'ToolTip':	'Part Tube'
+                        'ToolTip':  'Part Tube'
         }
 
 
@@ -201,7 +201,7 @@ class Design456_Part_Sphere:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Sphere.svg',
             'MenuText': 'Part_Sphere',
-                        'ToolTip':	'Part Sphere'
+                        'ToolTip':  'Part Sphere'
         }
 
 
@@ -230,7 +230,7 @@ class Design456_Part_Cone:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Cone.svg',
             'MenuText': 'Part_Cone',
-                        'ToolTip':	'Part Cone'
+                        'ToolTip':  'Part Cone'
         }
 
 
@@ -259,7 +259,7 @@ class Design456_Part_Torus:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Torus.svg',
             'MenuText': 'Part_Torus',
-                        'ToolTip':	'Part Torus'
+                        'ToolTip':  'Part Torus'
         }
 
 
@@ -289,7 +289,7 @@ class Design456_Part_Wedge:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Wedge.svg',
             'MenuText': 'Part_Wedge',
-                        'ToolTip':	'Part Wedge'
+                        'ToolTip':  'Part Wedge'
         }
 
 
@@ -318,7 +318,7 @@ class Design456_Part_Prism:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Prism.svg',
             'MenuText': 'Part_Prism',
-                        'ToolTip':	'Part Prism'
+                        'ToolTip':  'Part Prism'
         }
 
 
@@ -345,7 +345,7 @@ class Design456_Part_Pyramid:
             Gui.Selection.addSelection(
                 App.ActiveDocument.Name, newObj.Name, 'Face1', 0, 0, 0)
             selectedEdge = Gui.Selection.getSelectionEx(
-            )[0].SubObjects[0]	  # select one element
+            )[0].SubObjects[0]    # select one element
 
             # loft
             plr = plDirection = App.Placement()
@@ -393,7 +393,7 @@ class Design456_Part_Pyramid:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Pyramid.svg',
             'MenuText': 'Part_Pyramid',
-                        'ToolTip':	'Part Pyramid'
+                        'ToolTip':  'Part Pyramid'
         }
 
 
@@ -443,7 +443,7 @@ class Design456_Part_Hemisphere:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Hemisphere.svg',
             'MenuText': 'Part_Hemisphere',
-                        'ToolTip':	'Part Hemisphere'
+                        'ToolTip':  'Part Hemisphere'
         }
 
 
@@ -474,7 +474,7 @@ class Design456_Part_Ellipsoid:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Ellipsoid.svg',
             'MenuText': 'Part_Ellipsoid',
-                        'ToolTip':	'Part Ellipsoid'
+                        'ToolTip':  'Part Ellipsoid'
         }
 
 

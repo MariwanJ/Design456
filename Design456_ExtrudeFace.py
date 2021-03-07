@@ -2,27 +2,27 @@
 from __future__ import unicode_literals
 #
 # ***************************************************************************
-# *																		   *
-# *	This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
-# *																		   *
-# *	Copyright (C) 2021													   *
-# *																		   *
-# *																		   *
-# *	This library is free software; you can redistribute it and/or		   *
-# *	modify it under the terms of the GNU Lesser General Public			   *
-# *	License as published by the Free Software Foundation; either		   *
-# *	version 2 of the License, or (at your option) any later version.	   *
-# *																		   *
-# *	This library is distributed in the hope that it will be useful,		   *
-# *	but WITHOUT ANY WARRANTY; without even the implied warranty of		   *
-# *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU	   *
-# *	Lesser General Public License for more details.						   *
-# *																		   *
-# *	You should have received a copy of the GNU Lesser General Public	   *
-# *	License along with this library; if not, If not, see				   *
-# *	<http://www.gnu.org/licenses/>.										   *
-# *																		   *
-# *	Author : Mariwan Jalal	 mariwan.jalal@gmail.com					   *
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# *                                                                        *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # ***************************************************************************
 import os,sys
 import ImportGui
@@ -71,8 +71,8 @@ class Design456_ExtrudeFace:
             App.ActiveDocument.recompute()
             m = App.activeDocument().getObject(fullname)
             f = App.activeDocument().addObject(
-                'Part::Extrusion', 'ExtrudeFace')	  # Add extrusion
-            f.Base = newobj				# App.activeDocument().getObject(fullname)
+                'Part::Extrusion', 'ExtrudeFace')     # Add extrusion
+            f.Base = newobj             # App.activeDocument().getObject(fullname)
             f.DirMode = "Normal"
             f.DirLink = None
             f.LengthFwd = lengthForward
@@ -122,7 +122,7 @@ class Design456_ExtrudeFace:
         return {
             'Pixmap': Design456Init.ICON_PATH + '/ExtrudeFace.svg',
             'MenuText': 'ExtrudeFace',
-                        'ToolTip':	'ExtrudeFace'
+                        'ToolTip':  'ExtrudeFace'
         }
 
 
