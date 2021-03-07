@@ -144,6 +144,12 @@ class mousePointMove:
                 self.object.Object.End= point[0] 
                 App.ActiveDocument.recompute()
                 self.remove_callbacks()
+        except Exception as err:
+            App.Console.PrintError("'converToVector' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
         except Exception as err:
             App.Console.PrintError("'Mouse click ' Failed. "
@@ -167,31 +173,55 @@ class mousePointMove:
             print(exc_type, fname, exc_tb.tb_lineno)
             return
 
-    def Deactivated(self):
-        self.remove_callbacks()
 
-class PartMover(object):
-    def __init__(self, CallerObject, view, obj, deleteOnEscape):
-        self.CallerObject = CallerObject
+class PartMover:
+    def __init__(self, view, obj, deleteOnEscape):
         self.obj = obj
         self.initialPosition = self.obj.Placement.Base
         self.view = view
         self.deleteOnEscape = deleteOnEscape
-        self.callbackMove = self.view.addEventCallbackPivy(
-            "SoLocation2Event", self.moveMouse)
-        self.callbackClick = self.view.addEventCallbackPivy(
-            "SoMouseButtonEvent", self.MouseClick)
-        self.callbackKey = self.view.addEventCallbackPivy(
-            "SoKeyboardEvent", self.KeyboardEvent)
+        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.moveMouse)
+        self.callbackClick = self.view.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick)
+        self.callbackKey = self.view.addEventCallbackPivy(coin.SoKeyboardEvent.getClassTypeId() , self.KeyboardEvent)
         self.objectToDelete = None  # object reference when pressing the escape key
-
-    def Deactivated(self):
-        self.remove_callbacks()
-
-    def moveMouse(self, info):
+        self.Direction =None
+        
+    def convertToVector(self,pos):
+        try:
+            import Design456Init
+            
+            tempPoint=self.view.getPoint(pos[0], pos[1])    
+            if(self.Direction==None):
+                if Design456Init.DefaultDirectionOfExtrusion=='x':        
+                    point=( App.Vector(0.0,tempPoint[0],tempPoint[1]) )
+                elif Design456Init.DefaultDirectionOfExtrusion=='y':
+                    point=(App.Vector(tempPoint[0],0.0,tempPoint[1])) 
+                elif Design456Init.DefaultDirectionOfExtrusion=='z':
+                    point=(App.Vector(tempPoint[0],tempPoint[1],0.0))
+            else:
+                
+                if (self.Direction=='X'):
+                    point=( App.Vector(tempPoint[0],self.obj.Placement.Base.y,self.obj.Placement.Base.z))
+                elif (self.Direction=='Y'):
+                    point=( App.Vector(self.obj.Placement.Base.x,tempPoint[1],self.obj.Placement.Base.z))
+                elif (self.Direction=='Z'):
+                    point=( App.Vector(self.obj.Placement.Base.x,self.obj.Placement.Base.y,tempPoint[0]))
+            return point     
+            
+        except Exception as err:
+            App.Console.PrintError("'Mouse click error' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+        
+    def moveMouse(self, events):
         try:
             self.active=True
-            newPos = self.view.getPoint(*info['Position'])
+            event = events.getEvent()
+            newPos = self.convertToVector(event.getPosition().getValue())
+            print(newPos)
             self.obj.Placement.Base = newPos
             self.newPosition = newPos
         except Exception as err:
@@ -205,11 +235,9 @@ class PartMover(object):
     def remove_callbacks(self):
         try:
             print('Remove callback')
-            self.view.removeEventCallbackPivy ("SoLocation2Event", self.callbackMove)
-            self.view.removeEventCallbackPivy ("SoMouseButtonEvent", self.callbackClick)
-            self.view.removeEventCallbackPivy ("SoKeyboardEvent", self.callbackKey)
-            App.closeActiveTransaction(True)
-            Gui.Selection.removeObserver(self) 
+            self.view.removeEventCallbackPivy (coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+            self.view.removeEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
+            self.view.removeEventCallbackPivy (coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
             self.active = False
             self.info = None
             self.view = None
@@ -221,17 +249,21 @@ class PartMover(object):
             print(exc_type, fname, exc_tb.tb_lineno)
             return
 
-    def MouseClick(self, info):
+    def MouseClick(self, events):
         try:
-            if (info['Button'] == 'BUTTON1' and
-                    info['State'] == 'DOWN'):
+            import Design456Init
+            event = events.getEvent()
+            eventState= event.getState()
+            getButton= event.getButton() 
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
                 # if not info['ShiftDown'] and not info['CtrlDown']: #struggles within Inventor Navigation
-                print('Mouse click \n')
-                newPos = self.view.getPoint(*info['Position'])
+                pos=event.getPosition()
+                point=self.convertToVector(pos)
+                newPos = point
                 self.obj.Placement.Base = newPos
-                self.remove_callbacks()
                 self.obj = None
                 App.ActiveDocument.recompute()
+                self.remove_callbacks()
             return
         except Exception as err:
             App.Console.PrintError("'Mouse click error' Failed. "
@@ -241,20 +273,28 @@ class PartMover(object):
             print(exc_type, fname, exc_tb.tb_lineno)
             return
 
-    def KeyboardEvent(self, info):
+    def KeyboardEvent(self, events):
         try:
+            event = events.getEvent()
+            eventState=event.getState()
+            if (type(event) == coin.SoKeyboardEvent):
+                key = event.getKey()
             
-            if info['State'] == 'UP' and info['Key'] == 'ESCAPE':
-                print('Escape pressed\n')
+            if key == coin.SoKeyboardEvent.X and eventState== coin.SoButtonEvent.UP:
+                self.Direction='X'
+            if key == coin.SoKeyboardEvent.Y and eventState== coin.SoButtonEvent.UP:
+                self.Direction='Y'
+            if key == coin.SoKeyboardEvent.Z and eventState== coin.SoButtonEvent.UP:
+                self.Direction='Z'
+                
+            if key == coin.SoKeyboardEvent.ESCAPE and eventState== coin.SoButtonEvent.UP:
                 self.remove_callbacks()
                 if not self.deleteOnEscape:
                     self.obj.Placement.Base = self.initialPosition
                 else:
                     # This can be asked by a timer in a calling func...
                     self.objectToDelete = self.obj
-
-                    # This causes a crash in FC0.19/Qt5/Py3
-                    # App.activeDocument().removeObject(self.obj.Name)
+                App.activeDocument().removeObject(self.obj.Name)
                 self.obj = None
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "
