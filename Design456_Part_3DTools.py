@@ -24,8 +24,7 @@ from __future__ import unicode_literals
 # *																		   *
 # *	Author :Mariwan Jalal	 mariwan.jalal@gmail.com			           *
 # ***************************************************************************
-import os
-import sys
+import sys, os
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -33,55 +32,9 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft
 import Part
 import Design456Init
-import Design456_Tweak
-import Design456_Magnet
 import FACE_D as faced
-import Design456_Extract
-import Design456_Extrude
-import Design456_loftOnDirection
-import Design456_SplitObject
 
 from PySide import QtCore, QtGui
-import Design456_MakeFaceArray
-
-
-class Design456_Part_Tools:
-    list = ["Design456_Extrude",
-            "Design456_Extract",
-            "Design456_ExtrudeFace",
-            "Design456_SplitObject",
-            "Design456_loftOnDirection",
-            "Design456_Part_Merge",
-            "Design456_Part_Subtract",
-            "Design456_Part_Intersect",
-            "Design456_Part_Group",
-            "Design456_Magnet",
-            "Design456_Tweak",
-            "Design456_Part_Shell",
-            "Design456_Part_Fillet",
-            "Design456_Part_Chamfer",
-            "Design456_MakeFaceArray"
-
-
-            ]
-
-    """Design456 Part Tools Toolbar"""
-
-    def GetResources(self):
-        return{
-            'Pixmap':	 Design456Init.ICON_PATH + '/Part_Tools.svg',
-            'MenuText': 'Tools',
-            'ToolTip':	'Tools'
-        }
-
-    def IsActive(self):
-        if App.ActiveDocument is None:
-            return False
-        else:
-            return True
-
-    def Activated(self):
-        self.appendToolbar("Design456_Part_Tools", self.list)
 
 
 # Merge
@@ -239,7 +192,7 @@ class Design456_Part_Intersect:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Intersect.svg',
@@ -474,7 +427,7 @@ class Design456_Part_Fillet:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Fillet.svg',
@@ -542,7 +495,7 @@ class Design456_Part_Chamfer:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/Part_Chamfer.svg',
@@ -552,3 +505,37 @@ class Design456_Part_Chamfer:
 
 
 Gui.addCommand('Design456_Part_Chamfer', Design456_Part_Chamfer())
+
+
+
+class Design456_Part_3DToolsGroup:
+
+    """Design456 Part 3D Tools"""
+
+    def GetCommands(self):
+        """3D Modifying Tools."""
+        return ("Design456_Extrude",
+                "Design456_Extract",
+                "Design456_ExtrudeFace",
+                "Design456_SplitObject",
+                "Design456_loftOnDirection",
+                "Design456_Part_Merge",
+                "Design456_Part_Subtract",
+                "Design456_Part_Intersect",
+                "Design456_Part_Group",
+                "Design456_Magnet",
+                "Design456_Tweak",
+                "Design456_Part_Shell",
+                "Design456_Part_Fillet",
+                "Design456_Part_Chamfer",
+                "Design456_MakeFaceArray",
+
+                )
+    def GetResources(self):
+            return {
+            'Pixmap': Design456Init.ICON_PATH + '/Part_3DTools.svg',
+            'MenuText': 'Part_Merge',
+            'ToolTip':	'Part Merge'
+        }
+
+Gui.addCommand("Design456 3DTools", Design456_Part_3DToolsGroup())
