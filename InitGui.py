@@ -47,34 +47,22 @@ class Design456_Workbench (Workbench):
     def Initialize(self):
         "This function is executed when FreeCAD starts"
         import BOPTools  # as bop
-        import Design456_Extrude  # import all	 needed files
-        import Design456_Extract
-        import Design456_ExtrudeFace
-        import Design456_SplitObject
-        import Design456_loftOnDirection
         import Design456_Part as designPart
-        import Design456_Part_Tools as pTools
-        import Design456_Part_Utils as pUtils
         import Design456_2Ddrawing as TwoDDraw
+        import Design456_Tools as _tools
         import Design456_SelectionGate as SelGate
-        import Design456_Alignment as align
+        
         # from Part import CommandShapes	 #Tube	not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
-        self.appendToolbar("Design456_Part",
-                           designPart.Design456_Part.list)
-        self.appendToolbar("Design456_Tools", pTools.Design456_Part_Tools.list)
-        self.appendToolbar("Design456_2DTools",
-                           pUtils.Design456_Part_Utils.list)
-        self.appendToolbar("Design456_2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
+        self.appendToolbar("Design456_Part", designPart.Design456_Part.list)
+        self.appendToolbar("Design456 2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
+        self.appendToolbar("Design456 Tools", _tools.Design456_Part_Tools.list)
         self.appendToolbar("Selection Mode",SelGate.Design456_SelectionGate.list)
-        self.appendToolbar("Design456_Alignments", align.Design456_Alignment.list)
  
         self.appendMenu("Design456_Part",designPart.Design456_Part.list)
-        self.appendMenu("Design456_Tools", pTools.Design456_Part_Tools.list)
         self.appendMenu("Design456_2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
-        self.appendMenu("Design456_2DTools", pUtils.Design456_Part_Utils.list)
-        self.appendMenu("Design456_Alignments", align.Design456_Alignment.list)
+        self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
 
         # Design456_Part
         #self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
@@ -234,25 +222,18 @@ class Design456_Workbench (Workbench):
         "right-clicks on screen"
         try:
             import BOPTools  # as bop
-            import Design456_Extrude  # import all	 needed files
-            import Design456_Extract
-            import Design456_ExtrudeFace
-            import Design456_SplitObject
-            import Design456_loftOnDirection
             import Design456_Part as designPart
-            import Design456_Part_Tools as pTools
-            import Design456_Part_Utils as pUtils
+            import Design456_Tools as pTools
             import Design456_2Ddrawing as TwoDDraw
+            
 
             self.appendContextMenu(
                 "Design456_Part", designPart.Design456_Part.list)
-            self.appendContextMenu(
-                "Design456_Tools", pTools.Design456_Part_Tools.list)
-            self.appendContextMenu("Design456_2DTools",
-                                   pUtils.Design456_Part_Utils.list)
-
             self.appendContextMenu("Design456_2Ddrawing",
                                    TwoDDraw.Design456_2Ddrawing.list)
+            self.appendContextMenu(
+                "Design456_Tools", pTools.Design456_Part_Tools.list)
+
             # from DRAFT
             """Define an optional custom context menu."""
             # from Design456_PART
