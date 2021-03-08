@@ -139,9 +139,8 @@ class mousePointMove:
                 point=self.convertToVector(pos)
                 print('Mouse click \n')
                 poin= self.object.Object.Points
-                print (point)
                 poin[len(poin)-1] = point[0]
-                self.object.Object.End= point[0] 
+                #self.object.Object.End= point[0] 
                 App.ActiveDocument.recompute()
                 self.remove_callbacks()
         except Exception as err:

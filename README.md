@@ -10,7 +10,7 @@ FreeCAD primarily utilizes a parametric modeling paradigm. This workbench will w
 ### Install 
 
 1. `cd  ~/.FreeCAD/Mod`
-2. `git clone --recurse-submodules -j8 https://github.com/MariwanJ/Design456`
+2. `git clone https://github.com/MariwanJ/Design456`
 3. Restart FreeCAD
 
 Result: The Design456 workbench should now be available in the workbench drop-down menu
