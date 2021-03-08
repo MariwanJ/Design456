@@ -221,7 +221,6 @@ class PartMover:
             self.active=True
             event = events.getEvent()
             newPos = self.convertToVector(event.getPosition().getValue())
-            print(newPos)
             self.obj.Placement.Base = newPos
             self.newPosition = newPos
         except Exception as err:
@@ -256,7 +255,6 @@ class PartMover:
             eventState= event.getState()
             getButton= event.getButton() 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
-                # if not info['ShiftDown'] and not info['CtrlDown']: #struggles within Inventor Navigation
                 pos=event.getPosition()
                 point=self.convertToVector(pos)
                 newPos = point
@@ -303,15 +301,16 @@ class PartMover:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
+#TODO: This class must be updated to be able to move all kind of objects
+#    Mariwan
 
 
-""" This class will return back info about the
-    face selected. Many options are available but
-    I will put only what I need. See the note bellow for available info
-    Give the class Gui.Selection()[nr] where nr is the face you want to get info
+""" This class will return back info about the selected
+    face. Many options are available but
+    I will put only what I need at the moment. 
+    See the note bellow for available info
+    Give the class object Gui.Selection()[No] where No is the face you want to get info
 
-TODO: This class must be updated to be able to move all kind of objects
-    Mariwan
 """
 
 
