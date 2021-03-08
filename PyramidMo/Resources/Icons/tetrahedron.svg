@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   width="101.08743mm"
+   height="101.08743mm"
+   viewBox="0 0 101.08743 101.08743"
+   version="1.1"
+   id="svg8">
+  <defs
+     id="defs2" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     transform="translate(-47.23081,-96.250299)">
+    <path
+       style="fill:#ef9b3a;fill-opacity:1;stroke:#000000;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       d="M 53.106534,179.9856 85.960576,156.58272 99.237209,103.02613 Z"
+       id="path882" />
+    <path
+       style="fill:#ffff67;stroke:#000000;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+       d="M 142.2175,182.91096 99.237209,103.02613 85.960576,156.58272 Z"
+       id="path884" />
+    <rect
+       style="opacity:1;fill:#808080;fill-opacity:0;stroke:#0000ff;stroke-width:0.05;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round"
+       id="rect890"
+       width="101.03743"
+       height="101.03743"
+       x="47.25581"
+       y="96.275299" />
+    <path
+       style="fill:#cce51b;fill-opacity:1;stroke:#000000;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 53.106534,179.9856 85.960576,156.58272 142.2175,182.91096 Z"
+       id="path896" />
+  </g>
+</svg>

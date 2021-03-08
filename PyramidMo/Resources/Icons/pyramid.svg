@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   width="64.967514mm"
+   height="65.860146mm"
+   viewBox="0 0 64.967514 65.860146"
+   version="1.1"
+   id="svg8">
+  <defs
+     id="defs2" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     transform="translate(-106.77563,-147.35658)">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 155.49413,152.98228 -28.91606,28.69103 19.35238,9.00111 z"
+       id="path880" />
+    <path
+       style="fill:#fdff50;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 126.57807,181.67331 -11.70144,3.2629 8.8886,12.37652 20.02746,8.66357 11.02636,-3.2629 -8.8886,-12.03898 z"
+       id="path882" />
+    <path
+       style="fill:#fe6298;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 114.87663,184.93621 40.6175,-31.95393 -28.91606,28.69103 z"
+       id="path884" />
+    <path
+       style="fill:#ff0e8c;fill-opacity:0.09708738;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 154.81905,202.7134 0.67508,-49.73112 -9.56368,37.69214 z"
+       id="path886" />
+    <rect
+       style="opacity:1;fill:none;fill-opacity:0;stroke:none;stroke-width:0.75;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect888"
+       width="64.967514"
+       height="65.860146"
+       x="106.77563"
+       y="147.35658" />
+    <path
+       style="fill:#ff6620;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 126.57807,181.67331 28.91606,-28.69103 -9.56368,37.69214 z"
+       id="path890" />
+  </g>
+</svg>
