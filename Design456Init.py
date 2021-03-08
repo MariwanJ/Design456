@@ -30,9 +30,9 @@ __dir__ = os.path.dirname(__file__)
 ICON_PATH = os.path.join(__dir__, 'Resources/icons')
 IMAGE_PATH = os.path.join(__dir__, 'Resources/images')
 
-PYRAMID_PATH = os.path.join(__dir__, 'submodules/PyramidMo')
+PYRAMID_PATH = os.path.join(__dir__, 'PyramidMo')
 PYRAMID_ICON_PATH = os.path.join(
-    __dir__, 'submodules/PyramidMo/Resources/icons')
+    __dir__, 'PyramidMo/Resources/icons')
 
 
 # PART
@@ -44,7 +44,7 @@ App.addImportType("STEP with colors (*.step *.stp)", "Import")
 App.addExportType("STEP with colors (*.step *.stp)", "Import")
 
 #WB Default  view 
-#Default Extrusion direction, i.e. 2D/3D ojbecs are placed on XY plane by default.
-DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the plane shoulde be saved here.
+#Default Extrusion direction, i.e. 2D/3D objects are placed on XY plane by default.
+DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the plane should be saved here.
 
 App.__unit_test__ += ["TestPartApp"]
