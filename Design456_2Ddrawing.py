@@ -409,22 +409,30 @@ class Design456_2DExtend:
             if hasattr(sel.SubObjects[0], 'Point'):
                 VertPoint = sel.SubObjects[0].Point
             elif hasattr(sel.SubObjects[0], 'Edges'):
-                poin = sel.SubObjects[0].Vertexes[1].Point
+                _point = sel.SubObjects[0].Vertexes[1].Point
                 VertPoint=sel.SubObjects[0].Vertexes[1].Point #last point
             newPoint = []
-            poin = sel.Object.Points
-            for i in poin:
+            _point = sel.Object.Points
+            positionSave=0
+            
+            for i in _point:
                 newPoint.append(App.Vector(i))
+                if VertPoint==i:
+                    positionSave=newPoint.index(i)
             if VertPoint == newPoint[len(newPoint)-1]:
                 # add last point and then moved
                 newPoint.append(App.Vector(newPoint[len(newPoint)-1]))
-            else:
+                sel.Object.Points = newPoint
+                sel.Object.End=VertPoint
+            elif positionSave==0:
                 # add last point and then
-                print(VertPoint)
-                newPoint.append(App.Vector(VertPoint))
+
+                newPoint.insert(0,App.Vector(VertPoint))
+                sel.Object.Points = newPoint
+                sel.Object.Start= VertPoint
             _view = Gui.ActiveDocument.ActiveView
 
-            sel.Object.Points = newPoint
+
             faced.mousePointMove(sel, _view)
             del newPoint[:]
 
