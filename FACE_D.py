@@ -93,14 +93,14 @@ class mousePointMove:
     def convertToVector(self,pos):
         try:
             import Design456Init
-            point=[]
+            point=None
             tempPoint=self.view.getPoint(pos[0], pos[1])        
             if Design456Init.DefaultDirectionOfExtrusion=='x':        
-                point.append( App.Vector(0.0,tempPoint[0],tempPoint[1]) )
+                point= App.Vector(0.0,tempPoint[0],tempPoint[1]) 
             elif Design456Init.DefaultDirectionOfExtrusion=='y':
-                point.append(App.Vector(tempPoint[0],0.0,tempPoint[1])) 
+                point=App.Vector(tempPoint[0],0.0,tempPoint[1]) 
             elif Design456Init.DefaultDirectionOfExtrusion=='z':
-                point.append(App.Vector(tempPoint[0],tempPoint[1],0.0))
+                point=App.Vector(tempPoint[0],tempPoint[1],0.0)
             return point
         except Exception as err:
                 App.Console.PrintError("'converToVector' Failed. "
@@ -116,9 +116,8 @@ class mousePointMove:
             pos = event.getPosition().getValue()
             point=self.convertToVector(pos)
             points=self.object.Object.Points
-            lastPoint= points[len(points)-1]  #last point
-            lastPoint=  point[0]  #App.Vector(_view_.getPoint(*info['Position']))
-            self.object.Object.End=lastPoint
+            #lastPoint=  point  
+            self.object.Object.End=point
             App.ActiveDocument.recompute()
 
         except Exception as err:
@@ -138,9 +137,9 @@ class mousePointMove:
                 pos=event.getPosition()
                 point=self.convertToVector(pos)
                 print('Mouse click \n')
-                poin= self.object.Object.Points
-                poin[len(poin)-1] = point[0]
-                #self.object.Object.End= point[0] 
+                _point= self.object.Object.Points
+                _point[len(_point)-1] = point
+                #self.object.Object.End= point 
                 App.ActiveDocument.recompute()
                 self.remove_callbacks()
         except Exception as err:
