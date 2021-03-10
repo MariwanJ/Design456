@@ -201,7 +201,7 @@ class Design456_loftOnDirection_ui(object):
             
 
             #### configuration ####
-            ValueLenght = -(float)(self.inLength.value())
+            ValueLength = -(float)(self.inLength.value())
             ValueScaleX = (float)(self.inScaleX.value())
             ValueScaleY = (float)(self.inScaleY.value())
             ValueScaleZ = (float)(self.inScaleZ.value())
@@ -232,7 +232,7 @@ class Design456_loftOnDirection_ui(object):
                 if createAxis != 0:
                     # section axis
                     points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
-                        0.0, 0.0, (ValueLenght))]
+                        0.0, 0.0, ValueLength)]
                     centerX = _draft.makeWire(
                         points, closed=False, face=False, support=None)
                     centerX.Placement = plr
@@ -249,14 +249,14 @@ class Design456_loftOnDirection_ui(object):
 
                     # section placement face in length and direction
                     newLocation = (App.Vector(direction).scale(
-                        ValueLenght, ValueLenght, ValueLenght))
+                        ValueLength, ValueLength, ValueLength))
                     if (direction.x != 0 and abs(direction.x)==direction.x):
                         newLocation.x = newLocation.x+selectedEdge.Placement.Base.x*direction.x
                     elif (direction.x != 0 and abs(direction.x)!=direction.x):
                         newLocation.x = newLocation.x-selectedEdge.Placement.Base.x*direction.x
                     else:
                         newLocation.x = selectedEdge.Placement.Base.x
-                    if (direction.y != 0 and abs(direction.y)==direction.y): #posative >0
+                    if (direction.y != 0 and abs(direction.y)==direction.y): #positive >0
                         newLocation.y = newLocation.y+selectedEdge.Placement.Base.y*direction.y
                     elif (direction.y != 0 and abs(direction.x)!=direction.y): #negative <0
                         newLocation.y = newLocation.y-selectedEdge.Placement.Base.y*direction.y
