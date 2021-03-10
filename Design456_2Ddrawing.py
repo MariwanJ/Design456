@@ -192,8 +192,8 @@ class Design456_MultiPointsToWireClose:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireClosed.svg',
-            'MenuText': 'Multi-Points To Wire Close',
-                        'ToolTip':  'Multi-Points To Wire Close'
+            'MenuText': 'Multi-Points To Wire Closed',
+                        'ToolTip':  'Multi-Points To Wire Closed'
         }
 
 
