@@ -65,7 +65,7 @@ class Design456_Extract:
                 if objectCreate==True:
                     App.ActiveDocument.removeObject(newObj.Name)
                 # Shape is not OK
-                errMessage = "Failed to extrude the shape"
+                errMessage = "Failed to extract the shape"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
         except Exception as err:

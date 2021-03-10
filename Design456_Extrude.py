@@ -53,6 +53,8 @@ class Design456_Extrude:
             faceSelected = faced.getInfo(selection[0]).getFaceName()
             f.Base = m
             #f.Base = App.activeDocument().getObject(m.Name)
+            # F.DirMode causes too many failure. Some faces needs custom, other needs Normal. 
+            #Difficult to know when you use each of them.
             f.DirMode = "Normal"            #Dont use Custom as it leads to PROBLEM!
             f.DirLink = None
             degreeAngle = m.Placement.Rotation.Angle*180*22/7  # Convert to Radians
