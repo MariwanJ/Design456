@@ -40,8 +40,8 @@ import FACE_D as faced
 
 class Design456_2Ddrawing:
     list = ["Design456_Arc3Points",
-            "Design456_MultiPointToWireOpen",
-            "Design456_MultiPointToWireClose",
+            "Design456_MultiPointsToWireOpen",
+            "Design456_MultiPointsToWireClose",
             "Design456_2DTrim",
             "Design456_2DExtend",
 
@@ -137,7 +137,7 @@ class Design456_Arc3Points:
 Gui.addCommand('Design456_Arc3Points', Design456_Arc3Points())
 
 
-class Design456_MultiPointToWire:
+class Design456_MultiPointsToWire:
     def __init__(self, type):
         self.type = type
 
@@ -156,7 +156,8 @@ class Design456_MultiPointToWire:
                 return
             allSelected = []
             for t in selected:
-                allSelected.append(t.PickedPoints)
+                allSelected.append(t.PickedPoints[0])
+            print(allSelected)
             if self.type == 0:
                 Wire1 = _draft.makeWire(allSelected, closed=True)
             else:
@@ -172,20 +173,20 @@ class Design456_MultiPointToWire:
             App.ActiveDocument.recompute()
 
         except Exception as err:
-            App.Console.PrintError("'MultiPointToWire' Failed. "
+            App.Console.PrintError("'MultiPointsToWire' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
 
-class Design456_MultiPointToWireClose:
+class Design456_MultiPointsToWireClose:
     def Activated(self):
         try:
-            newObj = Design456_MultiPointToWire(0)
+            newObj = Design456_MultiPointsToWire(0)
             newObj.Activated()
         except Exception as err:
-            App.Console.PrintError("'MultiPointToWireClose' Failed. "
+            App.Console.PrintError("'MultiPointsToWireClose' Failed. "
                                    "{err}\n".format(err=str(err)))
 
     def GetResources(self):
@@ -196,14 +197,14 @@ class Design456_MultiPointToWireClose:
         }
 
 
-class Design456_MultiPointToWireOpen:
+class Design456_MultiPointsToWireOpen:
     def Activated(self):
         try:
-            newObj = Design456_MultiPointToWire(1)
+            newObj = Design456_MultiPointsToWire(1)
             newObj.Activated()
 
         except Exception as err:
-            App.Console.PrintError("'MultiPointToWireOpen' Failed. "
+            App.Console.PrintError("'MultiPointsToWireOpen' Failed. "
                                    "{err}\n".format(err=str(err)))
 
     def GetResources(self):
@@ -214,10 +215,10 @@ class Design456_MultiPointToWireOpen:
         }
 
 
-Gui.addCommand('Design456_MultiPointToWireOpen',
-               Design456_MultiPointToWireOpen())
-Gui.addCommand('Design456_MultiPointToWireClose',
-               Design456_MultiPointToWireClose())
+Gui.addCommand('Design456_MultiPointsToWireOpen',
+               Design456_MultiPointsToWireOpen())
+Gui.addCommand('Design456_MultiPointsToWireClose',
+               Design456_MultiPointsToWireClose())
 
 
 # Trim all selected lines, vertices and leave the object open
