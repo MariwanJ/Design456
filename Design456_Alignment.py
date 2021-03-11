@@ -192,7 +192,7 @@ class Design456_BackSideView:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/BacktSideView.svg',
+            'Pixmap':    Design456Init.ICON_PATH + '/BackSideView.svg',
             'MenuText': 'Backside View',
             'ToolTip':  'BackSide View'
             }
