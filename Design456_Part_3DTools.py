@@ -131,7 +131,7 @@ class Design456_Part_Subtract:
             if newObj.isValid() == False:
                 App.ActiveDocument.removeObject(NewJ.Name)
                 # Shape is not OK
-                errMessage = "Failed to subract objects"
+                errMessage = "Failed to subtract objects"
                 faced.getInfo(s).errorDialog(errMessage)
             else:
                 # Remove Old objects
