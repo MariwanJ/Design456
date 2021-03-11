@@ -31,7 +31,7 @@ import math
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-
+import os,sys
 
 def angleBetween(ve1, ve2):
     # Find angle between two vectors in degrees
@@ -79,7 +79,11 @@ def faceArray(tool, tool_face, base_faces, skip_edges, offset, align):
             skiplist.append(skip_edge.hashCode())
         # print(skiplist)
 
+        make_face=None
+        tool_copy=None
+        offsetPoint=None
         wire_list = []
+        
         # remove wires with skip edge specified based on hashcode
         for i, wire in enumerate(base_face.Wires):
             if i != 0:
@@ -138,14 +142,15 @@ def faceArray(tool, tool_face, base_faces, skip_edges, offset, align):
 class MakeFaceArray:
     def __init__(self, obj):
         '''"Add wall or Wall with radius bend" '''
-        selobj = Gui.Selection.getSelectionEx()
+        self.selobj=obj
+        self.selobj = Gui.Selection.getSelectionEx()
         facelist = [(baseobj.Object, baseobj.SubElementNames)
-                    for baseobj in selobj[1:]]
+                    for baseobj in self.selobj[1:]]
 
         obj.addProperty("App::PropertyDistance", "Offset",
                         "Parameters", "Offset for Array").Offset = 0.0
         obj.addProperty("App::PropertyLinkSub", "Base", "Parameters", "The base object that will be dupicated").Base = (
-            selobj[0].Object, selobj[0].SubElementNames)
+            self.selobj[0].Object, self.selobj[0].SubElementNames)
         obj.addProperty("App::PropertyLinkSubList", "Faces",
                         "Parameters", "Linked Faces").Faces = facelist
         obj.addProperty("App::PropertyLinkSubList", "SkipEdges",
@@ -157,29 +162,36 @@ class MakeFaceArray:
 
     def execute(self, fp):
         '''"Print a short message when doing a recomputation, this method is mandatory" '''
+        try:
+            face_array=None
+            base = fp.Base[0].Shape
+            base_face = base.getElement(fp.Base[1][0])
+            linked_faces = [element[0].Shape.getElement(
+                element[1][i]) for element in fp.Faces for i in range(len(element[1]))]
+            if fp.SkipEdges:
+                skip_edges = [element[0].Shape.getElement(
+                    element[1][i]) for element in fp.SkipEdges for i in range(len(element[1]))]
+            else:
+                skip_edges = []
 
-        base = fp.Base[0].Shape
-        base_face = base.getElement(fp.Base[1][0])
-        linked_faces = [element[0].Shape.getElement(
-            element[1][i]) for element in fp.Faces for i in range(len(element[1]))]
-        if fp.SkipEdges:
-            skip_edges = [element[0].Shape.getElement(
-                element[1][i]) for element in fp.SkipEdges for i in range(len(element[1]))]
-        else:
-            skip_edges = []
+            face_array = faceArray(
+                base, base_face, linked_faces, skip_edges, -fp.Offset.Value, fp.Align)
 
-        face_array = faceArray(
-            base, base_face, linked_faces, skip_edges, -fp.Offset.Value, fp.Align)
+            # Fuses, if Fuse pption set to True
+            if fp.Fuse:
+                array = face_array[0].multiFuse(face_array[1:])
+            else:
+                array = Part.Compound(face_array)
+            #Part.show(array, "array")
 
-        # Fuses, if Fuse pption set to True
-        if fp.Fuse:
-            array = face_array[0].multiFuse(face_array[1:])
-        else:
-            array = Part.Compound(face_array)
-        #Part.show(array, "array")
-
-        fp.Shape = array
-        Gui.ActiveDocument.getObject(fp.Base[0].Name).Visibility = False
+            fp.Shape = array
+            Gui.ActiveDocument.getObject(fp.Base[0].Name).Visibility = False
+        except Exception as err:
+            App.Console.PrintError("'Part::Subtract' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
 
 class FaceArrayViewProvider:
