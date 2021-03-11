@@ -34,7 +34,7 @@ import Part as _part
 import Design456Init
 from pivy import coin
 import FACE_D as faced
-
+import math as _math
 # Move an object to the location of the mouse click on another surface
 
 
@@ -44,6 +44,7 @@ class Design456_2Ddrawing:
             "Design456_MultiPointsToWireClose",
             "Design456_2DTrim",
             "Design456_2DExtend",
+            "Design456_Star"
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
@@ -453,3 +454,49 @@ class Design456_2DExtend:
 
 
 Gui.addCommand('Design456_2DExtend', Design456_2DExtend())
+
+
+class Design456_Star:
+
+    def Activated(self):
+        try:
+            self.drawStar(5)
+            App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'Arc3Points' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def drawStar(self,nrOfCorner):
+        Points=[]
+        corners=nrOfCorner
+        innerRadius=4
+        outerRadius=4
+        for i in range(0,corners):
+            alpha = (2 * i + 2 - corners % 4) / (2 * corners) * _math.pi;
+            if i%2 ==1:
+                radius =innerRadius 
+            else: 
+                radius= outerRadius;
+            x = _math.cos(alpha) * radius;
+            y = _math.sin(alpha) * radius;
+            Points.append(App.Vector(x,y,0.0))
+        newSTAR=  _draft.makeWire(Points, placement= [(0,0,1);0.0,(0,0,0))], closed=False, face=True, support=None)             
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/Star.svg',
+            'MenuText': 'Star',
+                        'ToolTip':  'Star'
+        }
+
+Gui.addCommand('Design456_Star', Design456_Star())
+
+
+
+
+
+
