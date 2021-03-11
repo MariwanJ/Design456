@@ -74,14 +74,14 @@ class Design456_Part_Merge:
 
                 # Make a simple copy
                 newShape = Part.getShape(
-                    newObj, '', needSubElement=False, refine=False)
+                    newObj, '', needSubElement=False, refine=True)
                 NewJ = App.ActiveDocument.addObject(
                     'Part::Feature', 'Merged').Shape = newShape
                 App.ActiveDocument.recompute()
                 # Remove Old objects
-                # for obj in allObjects:
-                #   App.ActiveDocument.removeObject(obj.Name)
-                # App.ActiveDocument.removeObject(newObj.Name)
+                for obj in allObjects:
+                   App.ActiveDocument.removeObject(obj.Name)
+                App.ActiveDocument.removeObject(newObj.Name)
             App.ActiveDocument.recompute()
             del allObjects[:]
         except Exception as err:
@@ -273,11 +273,12 @@ class Design456_Part_Compound:
             for o in s:
                 allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
 
-            newObj = App.activeDocument().addObject("Part::Compound", "TempCompound")
-            App.ActiveDocument.Compund.Links = allObjects
+            newObj = App.ActiveDocument.addObject("Part::Compound", "TempCompound")
+            newObj.Links = allObjects
             # Make a simple copy
+            App.ActiveDocument.recompute()
             newShape = Part.getShape(
-                newObj, '', needSubElement=False, refine=False)
+                newObj, '', needSubElement=False, refine=True)
             NewJ = App.ActiveDocument.addObject(
                 'Part::Feature', 'Compound').Shape = newShape
 
@@ -289,7 +290,7 @@ class Design456_Part_Compound:
             App.ActiveDocument.recompute()
             del allObjects[:]
         except Exception as err:
-            App.Console.PrintError("'Part::Compund' Failed. "
+            App.Console.PrintError("'Part::Compound' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -297,8 +298,8 @@ class Design456_Part_Compound:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Compund.svg',
-            'MenuText': 'Part_Compund',
+            'Pixmap': Design456Init.ICON_PATH + '/Design456Part_Compound.svg',
+            'MenuText': 'Part Compound',
             'ToolTip':  'Part Compound'
         }
 
@@ -536,6 +537,7 @@ class Design456_Part_3DToolsGroup:
                 "Design456_Part_Fillet",
                 "Design456_Part_Chamfer",
                 "Design456_MakeFaceArray",
+                "Design456_Part_Compound",
 
                 )
 
