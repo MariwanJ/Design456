@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from PySide.QtCore import QT_TRANSLATE_NOOP
+from draftobjects.base import DraftObject
 #
 # ***************************************************************************
 # *                                                                        *
@@ -165,8 +167,8 @@ class Design456_MultiPointsToWire:
                 Wire1 = _draft.makeWire(allSelected, closed=False)
             """
             I have to find a way to avoid deleting Vertices if they are a part from another object.
-            This is disabled at the moment.       
-            
+            This is disabled at the moment.
+
             for n in selected:
                 App.ActiveDocument.removeObject(n.Object.Name)
             """
@@ -407,33 +409,32 @@ class Design456_2DExtend:
                 # TODO: Is it necessary to extend Arc, Square ..etc shapes? Don't know now
             # User decided where to extend the line.
             # Otherwise we extend the line only to the end of the line
-            VertPoint=None
+            VertPoint = None
             if hasattr(sel.SubObjects[0], 'Point'):
                 VertPoint = sel.SubObjects[0].Point
             elif hasattr(sel.SubObjects[0], 'Edges'):
                 _point = sel.SubObjects[0].Vertexes[1].Point
-                VertPoint=sel.SubObjects[0].Vertexes[1].Point #last point
+                VertPoint = sel.SubObjects[0].Vertexes[1].Point  # last point
             newPoint = []
             _point = sel.Object.Points
-            positionSave=0
-            
+            positionSave = 0
+
             for i in _point:
                 newPoint.append(App.Vector(i))
-                if VertPoint==i:
-                    positionSave=newPoint.index(i)
+                if VertPoint == i:
+                    positionSave = newPoint.index(i)
             if VertPoint == newPoint[len(newPoint)-1]:
                 # add last point and then moved
                 newPoint.append(App.Vector(newPoint[len(newPoint)-1]))
                 sel.Object.Points = newPoint
-                sel.Object.End=VertPoint
-            elif positionSave==0:
+                sel.Object.End = VertPoint
+            elif positionSave == 0:
                 # add last point and then
 
-                newPoint.insert(0,App.Vector(VertPoint))
+                newPoint.insert(0, App.Vector(VertPoint))
                 sel.Object.Points = newPoint
-                sel.Object.Start= VertPoint
+                sel.Object.Start = VertPoint
             _view = Gui.ActiveDocument.ActiveView
-
 
             faced.mousePointMove(sel, _view)
             del newPoint[:]
@@ -460,43 +461,62 @@ class Design456_Star:
 
     def Activated(self):
         try:
-            self.drawStar(5)
-            App.ActiveDocument.recompute()
+            plc = App.Placement()
+            _points = []
+            obj = _draft.makeWire(_points, placement=plc,closed=True, face=True, support=None)
+            _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
+            obj.addProperty("App::PropertyAngle", "Angle", "Desing46", _tip).Angle
+            _tip = QT_TRANSLATE_NOOP("App::Property", "Inner Radius of the star")
+            obj.addProperty("App::PropertyLength","InnerRadius", "Desing46", _tip).InnerRadius
+            _tip = QT_TRANSLATE_NOOP("App::Property", "Outer Radius of the star")
+            obj.addProperty("App::PropertyLength","OuterRadius", "Desing46", _tip).OuterRadius
+            _tip = QT_TRANSLATE_NOOP("App::Property", "Corners of the star")
+            obj.addProperty("App::PropertyInteger","Corners", "Desing46", _tip).Corners
+            _tip = QT_TRANSLATE_NOOP("App::Property", "Make Face")
+            obj.addProperty("App::PropertyBool","MakeFace", "Desing46", _tip).MakeFace
+            _tip = QT_TRANSLATE_NOOP("App::Property", "The area of this object")
+            obj.addProperty("App::PropertyArea", "Area","Desing46", _tip)
+            obj.Corners = 10  # default
+            obj.InnerRadius = 10
+            obj.OuterRadius = 20
+            obj.Angle = 360
+            for i in range(0, obj.Corners):
+                alpha = (2 * i + 2 - obj.Corners % 4)/(obj.Corners) * _math.pi
+                if i % 2 == 1:
+                    radius = obj.InnerRadius
+                else:
+                    radius = obj.OuterRadius
+                x = _math.cos(alpha) * radius
+                y = _math.sin(alpha) * radius
+                _points.append(App.Vector(x, y, 0.0))
 
+            obj.Points=_points
+            App.ActiveDocument.recompute()
+            shape=obj.Shape
+            obj.Shape = shape
+           
+            if hasattr(obj, "MakeFace"):
+                if obj.MakeFace:
+                    shape = _part.Face(shape)
+                else:
+                    shape = _part.Face(shape)
+            if hasattr(obj, "Area") and hasattr(shape, "Area"):
+                object.Area = shape.Area
+            obj.positionBySupport()
+            
         except Exception as err:
-            App.Console.PrintError("'Arc3Points' Failed. "
+            App.Console.PrintError("'Star' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def drawStar(self,nrOfCorner):
-        Points=[]
-        corners=nrOfCorner
-        innerRadius=4
-        outerRadius=4
-        for i in range(0,corners):
-            alpha = (2 * i + 2 - corners % 4) / (2 * corners) * _math.pi;
-            if i%2 ==1:
-                radius =innerRadius 
-            else: 
-                radius= outerRadius;
-            x = _math.cos(alpha) * radius;
-            y = _math.sin(alpha) * radius;
-            Points.append(App.Vector(x,y,0.0))
-        newSTAR=  _draft.makeWire(Points, placement= [(0,0,1);0.0,(0,0,0))], closed=False, face=True, support=None)             
-
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Star.svg',
+            'Pixmap': Design456Init.ICON_PATH + '/Design456_Star.svg',
             'MenuText': 'Star',
                         'ToolTip':  'Star'
         }
 
+
 Gui.addCommand('Design456_Star', Design456_Star())
-
-
-
-
-
-
