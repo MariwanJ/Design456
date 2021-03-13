@@ -457,29 +457,72 @@ class Design456_2DExtend:
 Gui.addCommand('Design456_2DExtend', Design456_2DExtend())
 
 
-class Design456_Star:
+class ViewProviderBox:
 
-    def Activated(self):
+    obj_name = "Star"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        # return str(App.getUserAppDataDir()) + 'Mod' + '/Pyramids-and-Polyhedrons/Resources/Icons/' + (self.obj_name).lower() + '.svg'
+        return (Design456Init.ICON_PATH + '/Design456_Star.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+# ===========================================================================
+
+
+class Star:
+
+    def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=360, _Corners=40):
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
+        obj.addProperty("App::PropertyAngle", "Angle",
+                        "Star", _tip).Angle = _Angle
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Inner Radius of the star")
+        obj.addProperty("App::PropertyLength", "InnerRadius",
+                        "Star", _tip).InnerRadius = _InnerRadius
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Outer Radius of the star")
+        obj.addProperty("App::PropertyLength", "OuterRadius",
+                        "Star", _tip).OuterRadius = _OuterRadius
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Corners of the star")
+        obj.addProperty("App::PropertyInteger", "Corners",
+                        "Star", _tip).Corners = _Corners
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Make Face")
+        obj.addProperty("App::PropertyBool", "MakeFace",
+                        "Star", _tip).MakeFace = True
+        _tip = QT_TRANSLATE_NOOP("App::Property", "The area of this object")
+        obj.addProperty("App::PropertyArea", "Area", "Star", _tip).Area
+        obj.Proxy = self
+
+    def execute(self, obj):
         try:
-            plc = App.Placement()
             _points = []
-            obj = _draft.makeWire(_points, placement=plc,closed=True, face=True, support=None)
-            _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
-            obj.addProperty("App::PropertyAngle", "Angle", "Desing46", _tip).Angle
-            _tip = QT_TRANSLATE_NOOP("App::Property", "Inner Radius of the star")
-            obj.addProperty("App::PropertyLength","InnerRadius", "Desing46", _tip).InnerRadius
-            _tip = QT_TRANSLATE_NOOP("App::Property", "Outer Radius of the star")
-            obj.addProperty("App::PropertyLength","OuterRadius", "Desing46", _tip).OuterRadius
-            _tip = QT_TRANSLATE_NOOP("App::Property", "Corners of the star")
-            obj.addProperty("App::PropertyInteger","Corners", "Desing46", _tip).Corners
-            _tip = QT_TRANSLATE_NOOP("App::Property", "Make Face")
-            obj.addProperty("App::PropertyBool","MakeFace", "Desing46", _tip).MakeFace
-            _tip = QT_TRANSLATE_NOOP("App::Property", "The area of this object")
-            obj.addProperty("App::PropertyArea", "Area","Desing46", _tip)
-            obj.Corners = 10  # default
-            obj.InnerRadius = 10
-            obj.OuterRadius = 20
-            obj.Angle = 360
+            plc = App.Placement()
+            
             for i in range(0, obj.Corners):
                 alpha = (2 * i + 2 - obj.Corners % 4)/(obj.Corners) * _math.pi
                 if i % 2 == 1:
@@ -489,34 +532,48 @@ class Design456_Star:
                 x = _math.cos(alpha) * radius
                 y = _math.sin(alpha) * radius
                 _points.append(App.Vector(x, y, 0.0))
-
-            obj.Points=_points
-            App.ActiveDocument.recompute()
-            shape=obj.Shape
-            obj.Shape = shape
-           
-            if hasattr(obj, "MakeFace"):
-                if obj.MakeFace:
-                    shape = _part.Face(shape)
-                else:
-                    shape = _part.Face(shape)
-            if hasattr(obj, "Area") and hasattr(shape, "Area"):
-                object.Area = shape.Area
-            obj.positionBySupport()
+            obj.Shape = _draft.makeWire(_points,closed=True,face=True,support=None).Shape
+            obj.Shape.Object.Start=_points[0]
+            obj.Shape.Object.End=_points[len(_points)-1]
+            _draft.autogroup(obj)
+            obj.Closed= True       
             
+            if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
+                obj.Area = obj.Shape.Area
+            
+            obj.Placement= plc
+            #obj.positionBySupport()
+
         except Exception as err:
             App.Console.PrintError("'Star' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            return
 
+
+
+class Design456_Star:
+    def Activated(self):
+        try:
+            newObj = App.ActiveDocument.addObject("Part::FeaturePython", "Star")
+            Star(newObj)
+            ViewProviderBox(newObj.ViewObject, "Star")
+            App.ActiveDocument.recompute()
+                
+        except Exception as err:
+            App.Console.PrintError("'StarCommand' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+            
     def GetResources(self):
-        return {
-            'Pixmap': Design456Init.ICON_PATH + '/Design456_Star.svg',
-            'MenuText': 'Star',
-                        'ToolTip':  'Star'
-        }
+        return {'Pixmap': Design456Init.ICON_PATH+ '/Design456_Star.svg',
+                'MenuText': "Star",
+                'ToolTip': "Generate a Star"}
 
 
 Gui.addCommand('Design456_Star', Design456_Star())
