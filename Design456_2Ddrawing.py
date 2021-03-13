@@ -532,11 +532,14 @@ class Star:
                 x = _math.cos(alpha) * radius
                 y = _math.sin(alpha) * radius
                 _points.append(App.Vector(x, y, 0.0))
-            obj.Shape = _draft.makeWire(_points,closed=True,face=True,support=None).Shape
-            obj.Shape.Object.Start=_points[0]
-            obj.Shape.Object.End=_points[len(_points)-1]
+            test = _draft.makeWire(_points,closed=True,face=True,support=None)
+
+            test.Start=_points[0]
+            test.End=_points[len(_points)-1]
             _draft.autogroup(obj)
-            obj.Closed= True       
+            test.Closed= True       
+
+            obj.Shape=test.Shape
             
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
