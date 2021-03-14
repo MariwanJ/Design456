@@ -532,20 +532,21 @@ class Star:
                 x = _math.cos(alpha) * radius
                 y = _math.sin(alpha) * radius
                 _points.append(App.Vector(x, y, 0.0))
-            test = _draft.makeWire(_points,closed=True,face=True,support=None)
-
-            test.Start=_points[0]
-            test.End=_points[len(_points)-1]
-            _draft.autogroup(obj)
-            test.Closed= True       
-
-            obj.Shape=test.Shape
+            test = _part.makePolygon(_points)
+            obj.Shape.Edges.append(test.Edges)
+            obj.Shape.Faces.append(_part.Face(test))
+            print(obj.Shape.Faces)
+            print(obj.Shape.Edges)
+            print(test.Edges)
             
+            """
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
-            
+            """
             obj.Placement= plc
             #obj.positionBySupport()
+            return obj
+            
 
         except Exception as err:
             App.Console.PrintError("'Star' Failed. "
@@ -561,8 +562,8 @@ class Design456_Star:
     def Activated(self):
         try:
             newObj = App.ActiveDocument.addObject("Part::FeaturePython", "Star")
-            Star(newObj)
             ViewProviderBox(newObj.ViewObject, "Star")
+            newObj=Star(newObj)
             App.ActiveDocument.recompute()
                 
         except Exception as err:
