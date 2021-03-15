@@ -63,7 +63,7 @@ class Design456_Extract:
             App.ActiveDocument.recompute()
             if  newobj.isValid()==False:
                 if objectCreate==True:
-                    App.ActiveDocument.removeObject(newObj.Name)
+                    App.ActiveDocument.removeObject(newobj.Name)
                 # Shape is not OK
                 errMessage = "Failed to extract the shape"
                 faced.getInfo(s).errorDialog(errMessage)
