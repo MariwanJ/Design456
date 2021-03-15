@@ -55,8 +55,8 @@ class Design456_Extrude:
             #f.Base = App.activeDocument().getObject(m.Name)
             # F.DirMode causes too many failure. Some faces needs custom, other needs Normal. 
             #Difficult to know when you use each of them.
-            f.DirMode = "Normal"            #Dont use Custom as it leads to PROBLEM!
-            f.DirLink = None
+            f.DirMode = "Normal"            #Don't use Custom as it leads to PROBLEM!
+            f.DirLink = None                #Above statement is not always correct. Some faces require 'custom'
             degreeAngle = m.Placement.Rotation.Angle*180*22/7  # Convert to Radians
             print(degreeAngle)
             """
@@ -68,8 +68,9 @@ class Design456_Extrude:
             elif ((degreeAngle == 120) or (degreeAngle== -120)):
                 f.Dir = (1, 0, 0)
             """
-            f.LengthFwd = QtGui.QInputDialog.getDouble(
-                None, "Get length", "Length:", 0, -10000.0, 10000.0, 2)[0]
+            #Extrude must get a negative number 
+            f.LengthFwd = (-1)*(QtGui.QInputDialog.getDouble(
+                None, "Get length", "Length:", 0, -10000.0, 10000.0, 2)[0])
             while(f.LengthFwd == 0):
                 _sleep(.1)
                 Gui.updateGui()

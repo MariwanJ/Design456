@@ -495,10 +495,12 @@ class ViewProviderBox:
 
 # ===========================================================================
 
-
+"""
+Create a 2D Star based on the Inner radius outer radius, corners and the angle.
+"""
 class Star:
 
-    def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=360, _Corners=40):
+    def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=2*_math.pi, _Corners=40):
         _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
         obj.addProperty("App::PropertyAngle", "Angle",
                         "Star", _tip).Angle = _Angle
@@ -520,30 +522,29 @@ class Star:
 
     def execute(self, obj):
         try:
+            if obj.OuterRadius< obj.InnerRadius  :
+                #you cannot have it smaller 
+                obj.OuterRadius=obj.InnerRadius
             _points = []
-            plc = App.Placement()
-            
+
             for i in range(0, obj.Corners):
-                alpha = (2 * i + 2 - obj.Corners % 4)/(obj.Corners) * _math.pi
+                alpha = _math.pi *(2 * i + 2 - obj.Corners % 2)/(obj.Corners) 
                 if i % 2 == 1:
                     radius = obj.InnerRadius
                 else:
                     radius = obj.OuterRadius
-                x = _math.cos(alpha) * radius
-                y = _math.sin(alpha) * radius
+                y = _math.cos(alpha) * radius
+                x = _math.sin(alpha) * radius
                 _points.append(App.Vector(x, y, 0.0))
-            test = _part.makePolygon(_points)
+                if i==0: 
+                    saveFirstPoint=App.Vector(x,y,0.0)
+                if alpha>obj.Angle : 
+                    break
+            _points.append(saveFirstPoint)
             test = _part.makePolygon(_points)
             obj.Shape = _part.Face(test)
-
-            
-            
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
-            
-            obj.Placement= plc
-           #obj.positionBySupport()
-            return obj
             
 
         except Exception as err:
@@ -562,6 +563,8 @@ class Design456_Star:
             newObj = App.ActiveDocument.addObject("Part::FeaturePython", "Star")
             ViewProviderBox(newObj.ViewObject, "Star")
             newObj=Star(newObj)
+            plc = App.Placement()
+            newObj.Placement=plc
             App.ActiveDocument.recompute()
                 
         except Exception as err:
@@ -575,7 +578,7 @@ class Design456_Star:
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH+ '/Design456_Star.svg',
                 'MenuText': "Star",
-                'ToolTip': "Generate a Star"}
+                'ToolTip': "Draw a Star"}
 
 
 Gui.addCommand('Design456_Star', Design456_Star())
