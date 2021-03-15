@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from PySide.QtCore import QT_TRANSLATE_NOOP
+from draftobjects.base import DraftObject
 #
 # ***************************************************************************
 # *                                                                        *
@@ -34,7 +36,7 @@ import Part as _part
 import Design456Init
 from pivy import coin
 import FACE_D as faced
-
+import math as _math
 # Move an object to the location of the mouse click on another surface
 
 
@@ -44,6 +46,7 @@ class Design456_2Ddrawing:
             "Design456_MultiPointsToWireClose",
             "Design456_2DTrim",
             "Design456_2DExtend",
+            "Design456_Star"
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
@@ -164,8 +167,8 @@ class Design456_MultiPointsToWire:
                 Wire1 = _draft.makeWire(allSelected, closed=False)
             """
             I have to find a way to avoid deleting Vertices if they are a part from another object.
-            This is disabled at the moment.       
-            
+            This is disabled at the moment.
+
             for n in selected:
                 App.ActiveDocument.removeObject(n.Object.Name)
             """
@@ -406,33 +409,32 @@ class Design456_2DExtend:
                 # TODO: Is it necessary to extend Arc, Square ..etc shapes? Don't know now
             # User decided where to extend the line.
             # Otherwise we extend the line only to the end of the line
-            VertPoint=None
+            VertPoint = None
             if hasattr(sel.SubObjects[0], 'Point'):
                 VertPoint = sel.SubObjects[0].Point
             elif hasattr(sel.SubObjects[0], 'Edges'):
                 _point = sel.SubObjects[0].Vertexes[1].Point
-                VertPoint=sel.SubObjects[0].Vertexes[1].Point #last point
+                VertPoint = sel.SubObjects[0].Vertexes[1].Point  # last point
             newPoint = []
             _point = sel.Object.Points
-            positionSave=0
-            
+            positionSave = 0
+
             for i in _point:
                 newPoint.append(App.Vector(i))
-                if VertPoint==i:
-                    positionSave=newPoint.index(i)
+                if VertPoint == i:
+                    positionSave = newPoint.index(i)
             if VertPoint == newPoint[len(newPoint)-1]:
                 # add last point and then moved
                 newPoint.append(App.Vector(newPoint[len(newPoint)-1]))
                 sel.Object.Points = newPoint
-                sel.Object.End=VertPoint
-            elif positionSave==0:
+                sel.Object.End = VertPoint
+            elif positionSave == 0:
                 # add last point and then
 
-                newPoint.insert(0,App.Vector(VertPoint))
+                newPoint.insert(0, App.Vector(VertPoint))
                 sel.Object.Points = newPoint
-                sel.Object.Start= VertPoint
+                sel.Object.Start = VertPoint
             _view = Gui.ActiveDocument.ActiveView
-
 
             faced.mousePointMove(sel, _view)
             del newPoint[:]
@@ -453,3 +455,130 @@ class Design456_2DExtend:
 
 
 Gui.addCommand('Design456_2DExtend', Design456_2DExtend())
+
+
+class ViewProviderBox:
+
+    obj_name = "Star"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        # return str(App.getUserAppDataDir()) + 'Mod' + '/Pyramids-and-Polyhedrons/Resources/Icons/' + (self.obj_name).lower() + '.svg'
+        return (Design456Init.ICON_PATH + '/Design456_Star.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+# ===========================================================================
+
+"""
+Create a 2D Star based on the Inner radius outer radius, corners and the angle.
+"""
+class Star:
+
+    def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=2*_math.pi, _Corners=40):
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
+        obj.addProperty("App::PropertyAngle", "Angle",
+                        "Star", _tip).Angle = _Angle
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Inner Radius of the star")
+        obj.addProperty("App::PropertyLength", "InnerRadius",
+                        "Star", _tip).InnerRadius = _InnerRadius
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Outer Radius of the star")
+        obj.addProperty("App::PropertyLength", "OuterRadius",
+                        "Star", _tip).OuterRadius = _OuterRadius
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Corners of the star")
+        obj.addProperty("App::PropertyInteger", "Corners",
+                        "Star", _tip).Corners = _Corners
+        _tip = QT_TRANSLATE_NOOP("App::Property", "Make Face")
+        obj.addProperty("App::PropertyBool", "MakeFace",
+                        "Star", _tip).MakeFace = True
+        _tip = QT_TRANSLATE_NOOP("App::Property", "The area of this object")
+        obj.addProperty("App::PropertyArea", "Area", "Star", _tip).Area
+        obj.Proxy = self
+
+    def execute(self, obj):
+        try:
+            if obj.OuterRadius< obj.InnerRadius  :
+                #you cannot have it smaller 
+                obj.OuterRadius=obj.InnerRadius
+            _points = []
+
+            for i in range(0, obj.Corners):
+                alpha = _math.pi *(2 * i + 2 - obj.Corners % 2)/(obj.Corners) 
+                if i % 2 == 1:
+                    radius = obj.InnerRadius
+                else:
+                    radius = obj.OuterRadius
+                y = _math.cos(alpha) * radius
+                x = _math.sin(alpha) * radius
+                _points.append(App.Vector(x, y, 0.0))
+                if i==0: 
+                    saveFirstPoint=App.Vector(x,y,0.0)
+                if alpha>obj.Angle : 
+                    break
+            _points.append(saveFirstPoint)
+            test = _part.makePolygon(_points)
+            obj.Shape = _part.Face(test)
+            if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
+                obj.Area = obj.Shape.Area
+            
+
+        except Exception as err:
+            App.Console.PrintError("'Star' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+
+
+
+class Design456_Star:
+    def Activated(self):
+        try:
+            newObj = App.ActiveDocument.addObject("Part::FeaturePython", "Star")
+            ViewProviderBox(newObj.ViewObject, "Star")
+            newObj=Star(newObj)
+            plc = App.Placement()
+            newObj.Placement=plc
+            App.ActiveDocument.recompute()
+                
+        except Exception as err:
+            App.Console.PrintError("'StarCommand' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+            
+    def GetResources(self):
+        return {'Pixmap': Design456Init.ICON_PATH+ '/Design456_Star.svg',
+                'MenuText': "Star",
+                'ToolTip': "Draw a Star"}
+
+
+Gui.addCommand('Design456_Star', Design456_Star())
