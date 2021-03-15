@@ -535,16 +535,14 @@ class Star:
             test = _part.makePolygon(_points)
             test = _part.makePolygon(_points)
             obj.Shape = _part.Face(test)
-            print(obj.Shape.Faces)
-            print(obj.Shape.Edges)
-            print(test.Edges)
+
             
-            """
+            
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
-            """
+            
             obj.Placement= plc
-            #obj.positionBySupport()
+           #obj.positionBySupport()
             return obj
             
 
