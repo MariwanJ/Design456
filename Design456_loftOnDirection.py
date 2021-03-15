@@ -221,11 +221,10 @@ class Design456_loftOnDirection_ui(object):
                 direction = yL.sub(nv + yL)
                 r = App.Rotation(App.Vector(0, 0, 0), direction)
                 plDirection.Rotation.Q = r.Q
-                print(r.Q)
+                #print(r.Q)
                 plDirection.Base = yL
                 plr = plDirection
-                print("surface : ", sel[0].Name, " ",
-                      SubElementName, "  ", direction)
+                #print("surface : ", sel[0].Name, " ",SubElementName, "  ", direction)
                 # section direction
 
                 # section axis
@@ -268,12 +267,8 @@ class Design456_loftOnDirection_ui(object):
                         newLocation.z = newLocation.z-selectedEdge.Placement.Base.z*direction.z
                     else:
                         newLocation.z = selectedEdge.Placement.Base.z
-                    """
-                    print(selectedEdge.Placement.Base)
-                    print(newLocation)
-                    """
                     objClone.Placement.Base = newLocation
-                    #print(objClone.Placement.Base)
+                    
                     
                     # section loft
                     newObj = App.activeDocument().addObject('Part::Loft', 'Loft')
