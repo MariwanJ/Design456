@@ -533,8 +533,8 @@ class Star:
                 y = _math.sin(alpha) * radius
                 _points.append(App.Vector(x, y, 0.0))
             test = _part.makePolygon(_points)
-            obj.Shape.Edges.append(test.Edges)
-            obj.Shape.Faces.append(_part.Face(test))
+            test = _part.makePolygon(_points)
+            obj.Shape = _part.Face(test)
             print(obj.Shape.Faces)
             print(obj.Shape.Edges)
             print(test.Edges)
