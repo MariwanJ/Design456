@@ -38,6 +38,8 @@ class  getDirectionAxis():
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
+            if len(s)==0:
+                return  #nothing to do we cannot calculate the direction
             obj = s[0]
             faceSel = obj.SubObjects[0]
             dir = faceSel.normalAt(0, 0)
@@ -438,16 +440,15 @@ class getInfo:
         faceData = None
         counter = 1
         centerofmass = None
-        Highiest = 0
+        Highest = 0
+        Result=0
         for fac in t.Object.Shape.Faces:
-            if(fac.CenterOfMass.z > Highiest):
-                Highiest = fac.CenterOfMass.z
+            if(fac.CenterOfMass.z > Highest):
+                Hightest = fac.CenterOfMass.z
                 centerofmass = fac.CenterOfMass
                 Result = counter
             counter = counter+1
         FaceName = 'Face'+str(Result)
-        print(FaceName)
-        print(Highiest)
         Gui.Selection.clearSelection()
         Gui.Selection.addSelection(App.ActiveDocument.Name, t.Object.Name,
                                    FaceName, centerofmass.x, centerofmass.y, centerofmass.z)
