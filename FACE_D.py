@@ -435,24 +435,6 @@ class getInfo:
         diag.setWindowModality(QtCore.Qt.ApplicationModal)
         diag.exec_()
 
-    def SelectTopFace(self):
-        t = self.obj
-        faceData = None
-        counter = 1
-        centerofmass = None
-        Highest = 0
-        Result=0
-        for fac in t.Object.Shape.Faces:
-            if(fac.CenterOfMass.z > Highest):
-                Hightest = fac.CenterOfMass.z
-                centerofmass = fac.CenterOfMass
-                Result = counter
-            counter = counter+1
-        FaceName = 'Face'+str(Result)
-        Gui.Selection.clearSelection()
-        Gui.Selection.addSelection(App.ActiveDocument.Name, t.Object.Name,
-                                   FaceName, centerofmass.x, centerofmass.y, centerofmass.z)
-        return FaceName
 
     # From Mario Macro_CenterCenterFace at
     # https://wiki.freecadweb.org/Macro_CenterFace/fr
@@ -480,5 +462,35 @@ class getInfo:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return self.getObjectCenterOfMass()
-        
-        
+
+#send object to this class you get back top-face's name  
+class SelectTopFace: 
+    def __init__(self, obj):
+          self.obj = obj
+          self.name_facename=""
+          
+    def Activated(self):
+        try:
+            if self.obj==None:
+                return
+            counter = 1
+            centerofmass = None
+            Highest = 0
+            Result=0
+            for fac in self.obj.Shape.Faces:
+                if(fac.CenterOfMass.z > Highest):
+                    Highest = fac.CenterOfMass.z
+                    centerofmass = fac.CenterOfMass
+                    Result = counter
+                counter = counter+1
+            self._facename = 'Face'+str(Result)
+            Gui.Selection.clearSelection()
+            Gui.Selection.addSelection(App.ActiveDocument.Name, self.obj.Name,self._facename, centerofmass.x, centerofmass.y, centerofmass.z)
+            return self._facename
+        except Exception as err:
+            App.Console.PrintError("'SelectTopFace' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return self.obj.SubObjects[0].CenterOfMass
