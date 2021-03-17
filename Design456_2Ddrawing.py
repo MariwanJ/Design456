@@ -565,6 +565,7 @@ class Design456_Star:
             newObj=Star(newObj)
             plc = App.Placement()
             newObj.Placement=plc
+            newObj.Placement.Rotation.Axis=App.Vector(0,0,1)
             App.ActiveDocument.recompute()
                 
         except Exception as err:
