@@ -67,18 +67,12 @@ class GenCommandForPartUtils:
             nObjects = []
             nObjects.clear()
             GlobalPlacement = App.activeDocument().getObject(
-                selection[1].Object.Name).Placement
+                selection[0].Object.Name).Placement
             for a2dobj in selection:
                 m = App.activeDocument().getObject(a2dobj.Object.Name)
                 f = App.activeDocument().addObject('Part::Extrusion', 'ExtrudeOriginal')
                 f.Base =App.activeDocument().getObject(m.Name)
                 f.DirMode = "Normal"
-                if faced.getDirectionAxis()=="x":
-                    f.Dir = (1,0,0)
-                elif faced.getDirectionAxis()=="y":
-                    f.Dir = (0,1,0)
-                else:
-                    f.Dir = (0,0,1)
                 f.DirLink = a2dobj.Object
                 f.LengthFwd = 1.00
                 f.LengthRev = 0.0
@@ -95,10 +89,11 @@ class GenCommandForPartUtils:
                 newObj = App.ActiveDocument.addObject(
                     'Part::Feature', 'Extrude')
                 newObj.Shape = newShape
+                App.ActiveDocument.recompute()
                 App.ActiveDocument.ActiveObject.Label = f.Label
                 App.ActiveDocument.recompute()
-                #App.ActiveDocument.removeObject(f.Name)
-                #App.ActiveDocument.removeObject(m.Name)
+                App.ActiveDocument.removeObject(f.Name)
+                App.ActiveDocument.removeObject(m.Name)
                 App.ActiveDocument.recompute()
                 nObjects.append(newObj)
 
@@ -124,7 +119,7 @@ class GenCommandForPartUtils:
             faceName = obFace.SelectTopFace()
             # Extract the face
             sh = Result.Shape.copy()
-            sh.Placement = GlobalPlacement  # Result.Placement
+            #sh.Placement = GlobalPlacement  # Result.Placement
             sh.Placement.Base.z = -1
             newobj = Result.Document.addObject(
                 "Part::Feature", self.localShapeName)
