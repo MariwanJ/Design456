@@ -24,15 +24,16 @@ from __future__ import unicode_literals
 # *                                                                         *
 # *  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # ***************************************************************************
-import os
+import os,sys
 import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-import Draft
-import Part
+import Draft as _draft
+import Part  as _part
 import Design456Init
 import FACE_D as faced
+
 
 
 class GenCommandForPartUtils:
@@ -44,88 +45,104 @@ class GenCommandForPartUtils:
         self.typeOfCommand = typeOfCommand
         self.localShapeName = ""
         if(self.typeOfCommand == 1):  # Common
-            tempResult = App.ActiveDocument.addObject(
-                "Part::MultiCommon", "tempWire")
+            tempResult = App.ActiveDocument.addObject("Part::MultiCommon", "tempWire")
             self.localShapeName = "Common2DShapes"
         elif(self.typeOfCommand == 2):  # Cut  - Subtract
             tempResult = App.ActiveDocument.addObject("Part::Cut", "tempWire")
             self.localShapeName = "Subtract2DShapes"
         elif(self.typeOfCommand == 3):  # merge or fusion
-            tempResult = App.ActiveDocument.addObject("Part::Fuse", "tempWire")
+            tempResult = App.ActiveDocument.addObject("Part::MultiFuse", "tempWire")
             self.localShapeName = "Combine2DShapes"
         return tempResult
 
     def makeIt(self, commandType):
-        self.commandType = commandType
-        selection = Gui.Selection.getSelectionEx()
-        # Two object must be selected
-        if(len(selection) < 2 or len(selection) > 2):
-            errMessage = "Select two objects to use Common 2D Tool"
-            faced.getInfo(selection).errorDialog(errMessage)
-        else:
+        try:
             nObjects = []
-            nObjects.clear()
-            GlobalPlacement = App.activeDocument().getObject(
-                selection[0].Object.Name).Placement
-            for a2dobj in selection:
-                m = App.activeDocument().getObject(a2dobj.Object.Name)
-                f = App.activeDocument().addObject('Part::Extrusion', 'ExtrudeOriginal')
-                f.Base = App.activeDocument().getObject(m.Name)
-                f.DirMode = "Normal"
-                f.DirLink = a2dobj.Object
-                f.LengthFwd = 1.00
-                f.LengthRev = 0.0
-                f.Solid = True
-                f.Reversed = False
-                f.Symmetric = False
-                f.TaperAngle = 0.0
-                f.TaperAngleRev = 0.0
+            newShape=None
+            simpl_cpy=None
+            self.commandType = commandType
+            selection = Gui.Selection.getSelectionEx()
+            # Two object must be selected
+            if(len(selection) < 2 or len(selection) > 2):
+                errMessage = "Select two objects to use Common 2D Tool"
+                faced.getInfo(selection).errorDialog(errMessage)
+                return None
+            else:
+                nObjects.clear()
+                GlobalPlacement = App.ActiveDocument.getObject(selection[0].Object.Name).Placement
+                for a2dobj in selection:
+                    m = App.ActiveDocument.getObject(a2dobj.Object.Name)
+                    f = App.ActiveDocument.addObject('Part::Extrusion', 'ExtrudeOriginal')
+                    f.Base =App.ActiveDocument.getObject(m.Name)
+                    f.DirMode = "Normal"
+                    f.DirLink = a2dobj.Object
+                    if faced.getDirectionAxis()=="x":
+                        f.Dir = (1,0,0)
+                    elif faced.getDirectionAxis()=="y":
+                        f.Dir = (0,1,0)
+                    else:
+                        f.Dir = (0,0,1)
+                        
+                    f.LengthFwd = 1.00
+                    f.LengthRev = 0.0
+                    f.Solid = True
+                    f.Reversed = False
+                    f.Symmetric = False
+                    f.TaperAngle = 0.0
+                    f.TaperAngleRev = 0.0
+                    App.ActiveDocument.recompute()
+    
+                    # Make a simple copy of the object
+                    newShape = _part.getShape( f, '', needSubElement=False, refine=True)
+                    newObj = App.ActiveDocument.addObject('Part::Feature', 'Extrude')
+                    newObj.Shape = newShape
+                    App.ActiveDocument.recompute()
+                    App.ActiveDocument.ActiveObject.Label = f.Label
+                    App.ActiveDocument.recompute()
+                    App.ActiveDocument.removeObject(f.Name)
+                    App.ActiveDocument.removeObject(m.Name)
+                    App.ActiveDocument.recompute()
+                    nObjects.append(newObj)
+    
+                tempResult = self.DoCommand(self.commandType)  #Create the common 3D shape
+                if(self.commandType == 1 or self.commandType == 3):
+                    tempResult.Shapes = nObjects
+                    tempResult.Refine = True
+                elif(self.commandType == 2 ):
+                    tempResult.Tool = nObjects[1]
+                    tempResult.Base = nObjects[0]
                 App.ActiveDocument.recompute()
+                #Make a simple version
+                newShape = _part.getShape(tempResult, '', needSubElement=False, refine=False)
+                simpl_cpy = App.ActiveDocument.addObject('Part::Feature', 'Shape')
+                simpl_cpy.Shape = newShape   #simple version of the 3D common
+                App.ActiveDocument.recompute()
+                for name in nObjects:
+                    App.ActiveDocument.removeObject(name.Name)
+                App.ActiveDocument.removeObject(tempResult.Name)
+                App.ActiveDocument.recompute()
+            # Extract the face
+            sh = simpl_cpy.Shape.copy()
+            #sh.Placement = GlobalPlacement  # Result.Placement
+            sh.Placement.Base.z = -1
 
-                # Make a simple copy of the object
-                newShape = Part.getShape(
-                    f, '', needSubElement=False, refine=True)
-                newObj = App.ActiveDocument.addObject(
-                    'Part::Feature', 'Extrude')
-                newObj.Shape = newShape
-                App.ActiveDocument.recompute()
-                App.ActiveDocument.ActiveObject.Label = f.Label
-                App.ActiveDocument.recompute()
-                App.ActiveDocument.removeObject(f.Name)
-                App.ActiveDocument.removeObject(m.Name)
-                App.ActiveDocument.recompute()
-                nObjects.append(newObj)
-
-            tempResult = self.DoCommand(self.commandType)
-            if(commandType == 1):
-                tempResult.Shapes = nObjects
-            elif(commandType == 2 or commandType == 3):
-                tempResult.Tool = nObjects[1]
-                tempResult.Base = nObjects[0]
-            App.ActiveDocument.recompute()
-            newShape = Part.getShape(
-                tempResult, '', needSubElement=False, refine=True)
-            Result = App.ActiveDocument.addObject('Part::Feature', 'Shape')
-            Result.Shape = newShape
-            for name in nObjects:
-                App.ActiveDocument.removeObject(name.Name)
-            App.ActiveDocument.removeObject(tempResult.Name)
             Gui.Selection.clearSelection()
             App.ActiveDocument.recompute()
-            Gui.Selection.addSelection(App.ActiveDocument.Name, Result.Name)
+            Gui.Selection.addSelection(App.ActiveDocument.Name, simpl_cpy.Name)
             s = Gui.Selection.getSelectionEx()[0]
-            obFace = faced.getInfo(s)
-            faceName = obFace.SelectTopFace()
-            # Extract the face
-            sh = Result.Shape.copy()
-            sh.Placement = GlobalPlacement  # Result.Placement
-            sh.Placement.Base.z = -1
-            newobj = Result.Document.addObject(
-                "Part::Feature", self.localShapeName)
+            faceName = faced.SelectTopFace(simpl_cpy).Activated()
+            
+            newobj = App.ActiveDocument.addObject("Part::Feature", self.localShapeName)
+            print (faceName)
             newobj.Shape = sh.getElement(faceName)
-            App.ActiveDocument.removeObject(Result.Name)
+            App.ActiveDocument.removeObject(simpl_cpy.Name)
             del nObjects[:]
-
+        except Exception as err:
+            App.Console.PrintError("'makeIt' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
 class Design456_CommonFace:
 
@@ -212,10 +229,9 @@ class Design456_Part_Surface:
                 newObj.Curve2 = (s[1].Object, s[1].SubElementNames)
             App.ActiveDocument.recompute()
             # Make a simple copy of the object
-            newShape = Part.getShape(
+            newShape = _part.getShape(
                 newObj, '', needSubElement=False, refine=True)
-            tempNewObj = App.ActiveDocument.addObject(
-                'Part::Feature', 'Surface')
+            tempNewObj = App.ActiveDocument.addObject('Part::Feature', 'Surface')
             tempNewObj.Shape = newShape
             App.ActiveDocument.ActiveObject.Label = 'Surface'
             App.ActiveDocument.recompute()
@@ -227,7 +243,7 @@ class Design456_Part_Surface:
             else:
                 App.ActiveDocument.removeObject(newObj.Name)
                 # Removing these could cause problem if the line is a part of an object
-                # You cannot hide them eithe. TODO: I have to find a solution later
+                # You cannot hide them either. TODO: I have to find a solution later
                 # App.ActiveDocument.removeObject(s[0].Object.Name)
                 # App.ActiveDocument.removeObject(s[1].Object.Name)
                 s[0].Object.ViewObject.Visibility = False
@@ -266,7 +282,7 @@ class Design456_Part_2DToolsGroup:
         return ("Design456_CommonFace",
                 "Design456_CombineFaces",
                 "Design456_SubtractFaces",
-                "Design456_Part_Surface"
+                "Design456_Part_Surface",
 
                 )
 
