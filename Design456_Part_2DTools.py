@@ -84,7 +84,7 @@ class GenCommandForPartUtils:
                 App.ActiveDocument.recompute()
 
                 # Make a simple copy of the object
-                newShape = Part.getShape(
+                newShape = _part.getShape(
                     f, '', needSubElement=False, refine=True)
                 newObj = App.ActiveDocument.addObject(
                     'Part::Feature', 'Extrude')
@@ -104,7 +104,7 @@ class GenCommandForPartUtils:
                 tempResult.Tool = nObjects[1]
                 tempResult.Base = nObjects[0]
             App.ActiveDocument.recompute()
-            newShape = Part.getShape(
+            newShape = _part.getShape(
                 tempResult, '', needSubElement=False, refine=True)
             Result = App.ActiveDocument.addObject('Part::Feature', 'Shape')
             Result.Shape = newShape
@@ -213,7 +213,7 @@ class Design456_Part_Surface:
                 newObj.Curve2 = (s[1].Object, s[1].SubElementNames)
             App.ActiveDocument.recompute()
             # Make a simple copy of the object
-            newShape = Part.getShape(
+            newShape = _part.getShape(
                 newObj, '', needSubElement=False, refine=True)
             tempNewObj = App.ActiveDocument.addObject(
                 'Part::Feature', 'Surface')
