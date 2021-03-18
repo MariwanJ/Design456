@@ -46,7 +46,9 @@ class Design456_2Ddrawing:
             "Design456_MultiPointsToWireClose",
             "Design456_2DTrim",
             "Design456_2DExtend",
-            "Design456_Star"
+            "Design456_joinTwoLines",
+            "Design456_Star",
+            
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
@@ -583,3 +585,87 @@ class Design456_Star:
 
 
 Gui.addCommand('Design456_Star', Design456_Star())
+
+
+class Design456_joinTwoLines:
+    def Activated(self):
+        try:
+            _points=[]
+            s=Gui.Selection.getSelectionEx()
+            if len(s)>2 : 
+                # Two object must be selected
+                errMessage = "Select only two vertices "
+                faced.getInfo(s).errorDialog(errMessage)
+                return
+            elif len(s)==1:
+                #We have one line .. end and start will be one.
+                for pnt in s[0].Object.Shape.Vertexes:
+                    if(pnt!=s[0].Object.End):
+                         _points.append( pnt.Point)
+                newObj=_draft.makeWire(_points)
+                newObj.Start=_points[0]
+                newObj.End=_points[0]
+                App.ActiveDocument.removeObject(s[0].Object.Name)
+                App.ActiveDocument.recompute()
+            elif len(s)==2:
+                s1=s[0]
+                s2=s[1]
+                tempPoint=None
+
+                p1=[]
+                p2=[]
+                p1.append(s1.Object.Start)
+                p1.append(s1.Object.End)
+                p2.append(s2.Object.Start)
+                p2.append(s2.Object.End)
+                if p2[0]== s2.SubObjects[0].Point:
+                    for pnt in reversed(s2.Object.Shape.Vertexes):
+                        _points.append(pnt.Point)
+                else:
+                    for pnt in s2.Object.Shape.Vertexes:
+                        _points.append(pnt.Point)
+
+                if p1[0]!= s1.SubObjects[0].Point:
+                    for pnt in reversed(s1.Object.Shape.Vertexes):    
+                       if pnt.Point!= p1[0]:
+                            #Start and selected is the same ignore it
+                            _points.append(pnt.Point)
+                else:
+                    for pnt in s1.Object.Shape.Vertexes:    
+                       if pnt.Point!= p1[1]:
+                            #End and selected is the same ignore it
+                            _points.append(pnt.Point)
+
+                plc=s2.Object.Placement
+                plc.Rotation.Q= s2.Object.Placement.Rotation.Q
+                ang=s2.Object.Placement.Rotation.Angle
+                axes=s2.Object.Placement.Rotation.Axis
+                newObj=_draft.makeWire(_points)
+                newObj.Start= _points[0]
+                newObj.End=_points[len(_points)-1]
+
+                #newObj.Placement=plc
+                #newObj.Placement.Rotation.Axis=axes
+                #newObj.Placement.Rotation.Angle=ang
+
+                App.ActiveDocument.removeObject(s1.Object.Name)
+                App.ActiveDocument.removeObject(s2.Object.Name)
+            App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'Part Surface' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Join two lines")
+        return {'Pixmap':  Design456Init.ICON_PATH +'/Design456_JoinLines.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "joinTwoLines"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand('Design456_joinTwoLines', Design456_joinTwoLines()) 
