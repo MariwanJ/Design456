@@ -166,8 +166,8 @@ class Design456_Workbench (Workbench):
     def Activated(self):
         try:
             import WorkingPlane
-            from draftguitools.gui_trackers import gridTracker
-
+            #from draftguitools.gui_trackers import gridTracker
+            from plane import Grid as gr
             if not(App.ActiveDocument):
                 App.newDocument()
 
@@ -182,8 +182,12 @@ class Design456_Workbench (Workbench):
             App.DraftWorkingPlane.alignToPointAndAxis(
                 App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, 1), 0.0)
             # Show the Grid always
-            g=gridTracker()
-            g.on()
+            #g=gridTracker()
+            v=Gui.ActiveDocument.ActiveView
+            #New plane axis 2021-03-22
+            planeShow=gr(v)
+            planeShow.Activated()
+            #g.ff()                #draft Grid  --> I will try to remove it in the future Mariwan 2021-03-22
             #Show Top view - Isometric always
             if self.runOnce==True:
                 Gui.activeDocument().activeView().viewTop()
@@ -203,6 +207,7 @@ class Design456_Workbench (Workbench):
                                    "Draft will not work as expected.\n")
 
     def Deactivated(self):
+        from plane import Grid as gr
         try:
             "workbench deactivated"
             if hasattr(FreeCADGui, "draftToolBar"):
@@ -213,6 +218,7 @@ class Design456_Workbench (Workbench):
                 dsb.hide_draft_statusbar()
             App.Console.PrintLog(
                 "Design456/Draft workbench deactivated.\n")
+            gr.removeGarbage()
             return
         except Exception as exc:
             App.Console.PrintError(exc)
