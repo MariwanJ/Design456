@@ -3,7 +3,7 @@ import sys
 import FreeCAD
 import FreeCADGui as Gui
 import pivy.coin as coin
-import init
+import InitGui
 import Draft as _draft
 
 
