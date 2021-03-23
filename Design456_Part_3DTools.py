@@ -40,7 +40,7 @@ import Design456_ExtrudeFace
 import Design456_SplitObject
 import Design456_Magnet
 import Design456_Tweak
-import Design456_DunJourrAccord
+import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 
 
@@ -536,8 +536,8 @@ class Design456_Part_3DToolsGroup:
                 "Design456_Part_Fillet",
                 "Design456_Part_Chamfer",
                 "Design456_Part_Compound",
-                "Design456_DunJourrAccord1",
-                "Design456_DunJourrAccord2",
+                "Design456_unifySplitFuse1",
+                "Design456_unifySplitFuse2",
 
                 )
 
