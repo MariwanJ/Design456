@@ -83,9 +83,9 @@ class Grid:
         col1= coin.SoBaseColor()
         col2= coin.SoBaseColor()
         col3= coin.SoBaseColor()
-        col1.rgb= stndColor.get_red()      # RED
         col2.rgb= stndColor.get_green()    # GREEN
         col3.rgb= stndColor.get_blue() # BLUE
+        col1.rgb= stndColor.get_red()      # RED
         
         LengthOfGrid = 1000  # mm
         counter = LengthOfGrid

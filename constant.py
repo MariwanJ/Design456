@@ -1,7 +1,6 @@
 import os,sys
 
 class stndColor:
-    
     def get_blue1():
         return (0.250, 0.027, 0.949)
     def get_blue2():
