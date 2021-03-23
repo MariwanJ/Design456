@@ -106,13 +106,6 @@ class Grid:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno) 
 
-        except Exception as err:
-            FreeCAD.Console.PrintError("'Plane' Failed. "
-                                       "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
         
     def removeGarbage(self):
         for i in (self.collectGarbage):
