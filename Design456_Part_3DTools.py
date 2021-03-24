@@ -538,6 +538,7 @@ class Design456_Part_3DToolsGroup:
                 "Design456_Part_Compound",
                 "Design456_unifySplitFuse1",
                 "Design456_unifySplitFuse2",
+                "Design_ColorizeObject",
 
                 )
 
