@@ -68,8 +68,8 @@ class Design456_Extrude:
             elif ((degreeAngle == 120) or (degreeAngle== -120)):
                 f.Dir = (1, 0, 0)
             """
-            #Extrude must get a negative number 
-            f.LengthFwd = (-1)*(QtGui.QInputDialog.getDouble(
+            #Extrude must get a negative number ???
+            f.LengthFwd =(QtGui.QInputDialog.getDouble(
                 None, "Get length", "Length:", 0, -10000.0, 10000.0, 2)[0])
             while(f.LengthFwd == 0):
                 _sleep(.1)
