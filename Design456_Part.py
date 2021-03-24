@@ -480,11 +480,14 @@ class Design456_Part_Ellipsoid:
 
 Gui.addCommand('Design456_Part_Ellipsoid', Design456_Part_Ellipsoid())
 
-#Macro_D_Un_Jour_Random_Color_Faces
-#Mario52
-#23/03/2021
-#https://forum.freecadweb.org/viewtopic.php?f=22&t=56732
-#
+#########################################################################
+#Macro_D_Un_Jour_Random_Color_Faces                                     #
+#Author : Mario52                                                       #
+#23/03/2021                                                             #
+#https://forum.freecadweb.org/viewtopic.php?f=22&t=56732                #
+# Modified and added to Design456 by :                                  #
+# Mariwan Jalal     mariwan.jalal@gmail.com                             #
+#########################################################################
 class Design_ColorizeObject:
      
     def Activated(self): 
