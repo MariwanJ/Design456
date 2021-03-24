@@ -479,3 +479,38 @@ class Design456_Part_Ellipsoid:
 
 
 Gui.addCommand('Design456_Part_Ellipsoid', Design456_Part_Ellipsoid())
+
+#########################################################################
+#Macro_D_Un_Jour_Random_Color_Faces                                     #
+#Author : Mario52                                                       #
+#23/03/2021                                                             #
+#https://forum.freecadweb.org/viewtopic.php?f=22&t=56732                #
+# Modified and added to Design456 by :                                  #
+# Mariwan Jalal     mariwan.jalal@gmail.com                             #
+#########################################################################
+class Design_ColorizeObject:
+     
+    def Activated(self): 
+        import random
+        try:
+            aa = Gui.Selection.getSelection()[0]  # selection objet
+            colors = []
+            for ii in range(len(aa.Shape.Faces)):
+                colors.append((random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1), 0.0)) #red, green, blue, transparence
+       
+            aa.ViewObject.DiffuseColor = colors 
+        
+        except Exception as err:
+            App.Console.PrintError("'Part::Hemisphere' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/Design456_Colorize.svg',
+            'MenuText': 'Colorize object',
+                        'ToolTip':  'Colorize object randomly'
+        }
+Gui.addCommand('Design_ColorizeObject', Design_ColorizeObject())
