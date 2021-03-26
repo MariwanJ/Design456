@@ -38,6 +38,7 @@ class Fr_Group(fr_widget.Fr_Widget):
     #Any drawign/Every thing should be added to this later 
     __SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
     _widgets=[]
+    
     def __init__(self, x,y,z,h,w,t,l):
         super().__init__(x,y,z,h,w,t,l)
         
