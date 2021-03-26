@@ -29,7 +29,6 @@ from __future__ import unicode_literals
 # *Modified by     Mariwan Jalal     mariwan.jalal@gmail.com               *
 # **************************************************************************
 import os
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
