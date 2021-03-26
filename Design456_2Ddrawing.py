@@ -28,7 +28,6 @@ from draftobjects.base import DraftObject
 # **************************************************************************
 import os
 import sys
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 import Draft as _draft

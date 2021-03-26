@@ -25,38 +25,35 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-import sys
-import FreeCAD as App
+import os,sys
+import FreeCAD  as App
 import FreeCADGui as Gui
-import Design456Init
+import pivy.coin as coin
+import fr_widget
+import init
+import fr_draw
+import constant
 
-import  Design456_Part_3DTools
-import  Design456_Part_2DTools
-import  Design456_Alignment   
-
-class Design456_Part_Tools:
-    list = ["Design456_Part_3DToolsGroup",
-            "Design456_Part_2DToolsGroup",
-            "Design456_AlignmentGroup",
-            
-            ]
-
-    """Design456 Part Tools Toolbar"""
-
-    def GetResources(self):
-        return{
-            'Pixmap':    Design456Init.ICON_PATH + '/Part_Tools.svg',
-            'MenuText': 'Tools',
-            'ToolTip':  'Tools'
-        }
-
-    def IsActive(self):
-        """Return True when this command should be available."""
-        if Gui.activeDocument():
-            return True
-        else:
-            return False
+#Group class. Use this to collect several widgets.
+class Fr_Edge(fr_widget.Fr_Widget):
+    def __init__(self, x,y,z,h,w,t,l):
+        super().__init__(x,y,z,h,w,t,l)
+        self.__type=constant.FR_WidgetType.Face
+    def draw(self):
+        p1=(self.__x,self.__y,self.__z)
+        p2=(self.__x+self.__w,self.__y+self.__h,self.__z)                   
+        __coinNode=fr_draw.draw_line(p1,p2,self.color(),self.__t)   #(p1, p2,color,LineWidth)
+    def redraw(self):
+        del self.__coinNode
+        self.draw()
+    def  handle(self,events):
+        if self.active():
+            if events ==constant.FR_EVENTS.MOUSE_LEFT_CLICK():
+                self.__color=constant.FR_COLOR.FR_Select1()
+                self.redraw()
+                return 1          
+    def Activate(self):
+        self.draw()
+    def Deactivate(self):
+        del self.__coinNode
         
-    def Activated(self):
-        self.appendToolbar("Design456_Part_Tools", self.list)

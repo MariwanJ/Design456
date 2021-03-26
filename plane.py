@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 #
 # ***************************************************************************
 # *                                                                        *
-# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# * This file is a part of the Open Source Design456 Workbench - App.  *
 # *                                                                        *
 # * Copyright (C) 2021                                                     *
 # *                                                                        *
@@ -24,13 +24,14 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
+
 import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import InitGui
-import Draft as _draft
-
+import Design456Init
+sys.path.append(Design456Init.WIDGETS3D_PATH)
+from constant import FR_COLOR
 
 def dim_dash(p1, p2,color,LineWidth):
     dash = coin.SoSeparator()
@@ -57,7 +58,7 @@ class Grid:
         self.sg=None
         
     def removeAllAxis(self):
-        self.removeGarbage(self)
+        self.removeGarbage()
     
     def Activated(self):
         try:
@@ -85,18 +86,13 @@ class Grid:
         counter = LengthOfGrid
         try:
             line = []
-            P1x=(-2)
-            P1y=0 
-            P2x=2
-            P1y=0
             for i in range(0, counter, GridSize):
                 #X direction
-                P1x=(-2)
+                P1x=-2
                 P1y=0 
-                P2x=2
+                P2x=+2
                 P1y=0
                 line.append(dim_dash((P1x,P1y,-bothSideLength+i ),(P2x,P1y , -bothSideLength+i ),col,1))  # x                
-             
             for i in line:
                 self.sg.addChild(i)
                 self.collectGarbage.append(i)
@@ -109,13 +105,13 @@ class Grid:
             print(exc_type, fname, exc_tb.tb_lineno) 
                             
     def draw_XandYandZZeroAxis(self):
-        from constant import stndColor
+
         col1= coin.SoBaseColor()
         col2= coin.SoBaseColor()
         col3= coin.SoBaseColor()
-        col2.rgb= stndColor.get_green()    # GREEN
-        col3.rgb= stndColor.get_blue() # BLUE
-        col1.rgb= stndColor.get_red()      # RED
+        col1.rgb= FR_COLOR.FR_Red()      # RED
+        col2.rgb= FR_COLOR.FR_Green()    # GREEN
+        col3.rgb= FR_COLOR.FR_Blue() # BLUE
         
         LengthOfGrid = 1000  # mm
         counter = LengthOfGrid
@@ -144,9 +140,9 @@ class Grid:
         self.collectGarbage.clear()
         
     def drawXYPlane(self):
-        from constant import stndColor
+        from constant import FR_COLOR
         col= coin.SoBaseColor()
-        col.rgb=stndColor.get_blue4()  
+        col.rgb=FR_COLOR.FR_Blue4()  
         LengthOfGrid = 1000  # mm
         bothSideLength = LengthOfGrid/2
         GridSize = 5
@@ -189,3 +185,10 @@ class Grid:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno) 
+
+        except Exception as err:
+            App.Console.PrintError("'Plane' Failed. "
+                                       "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)

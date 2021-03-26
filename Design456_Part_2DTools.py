@@ -25,7 +25,6 @@ from __future__ import unicode_literals
 # *  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # ***************************************************************************
 import os,sys
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide

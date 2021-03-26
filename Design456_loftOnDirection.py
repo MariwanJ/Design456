@@ -41,7 +41,6 @@ from __future__ import unicode_literals
 
 import os
 import sys
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init

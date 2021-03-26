@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 #
@@ -24,39 +25,56 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-
 import os
 import sys
-import FreeCAD as App
+import FreeCAD  as App
 import FreeCADGui as Gui
-import Design456Init
-
-import  Design456_Part_3DTools
-import  Design456_Part_2DTools
-import  Design456_Alignment   
-
-class Design456_Part_Tools:
-    list = ["Design456_Part_3DToolsGroup",
-            "Design456_Part_2DToolsGroup",
-            "Design456_AlignmentGroup",
-            
-            ]
-
-    """Design456 Part Tools Toolbar"""
-
-    def GetResources(self):
-        return{
-            'Pixmap':    Design456Init.ICON_PATH + '/Part_Tools.svg',
-            'MenuText': 'Tools',
-            'ToolTip':  'Tools'
-        }
-
-    def IsActive(self):
-        """Return True when this command should be available."""
-        if Gui.activeDocument():
-            return True
-        else:
-            return False
+import pivy.coin as coin
+import init
+import Draft as _draft
+import fr_widget 
+#Group class. Use this to collect several widgets.
+class Fr_Group(fr_widget.Fr_Widget):
+    #Any drawign/Every thing should be added to this later 
+    __SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+    _widgets=[]
+    def __init__(self, x,y,z,h,w,t,l):
+        super().__init__(x,y,z,h,w,t,l)
         
-    def Activated(self):
-        self.appendToolbar("Design456_Part_Tools", self.list)
+    def addWidget(self,widg):
+        self._widgets.append(widg)
+        
+    def draw(self):
+        for i in self._node:
+            i.draw(self)
+    def draw_label(self):
+        for i in self._widgets:
+           i.draw_label() 
+    
+    def redraw(self):
+        for i in self._widgets:
+            i.draw(self)
+
+    def deactivate(self):
+        for widg in self._widgets:
+            del widg
+        self._widgets.clear()
+
+    """send event to all widgets
+       Targeted Widget should return 1 if it uses the event 
+       Sometimes it several widgets needs to get the event, 
+       at that time it can do the job it has and later return the
+       events itself. 
+       To know if the widget was the target, you have to 
+       calculate the dimension and the mouse position.
+       If the mouse position is inside the same 
+       dimension of the widget, the widget was the target,
+       otherwise it should just neglect it.
+    """
+    def handle(self,events):
+        for widg in self._widgets:
+            if widg.handle(events) == 1:
+                #Events reached the targeted widget go out
+                return 1
+ 
+            
