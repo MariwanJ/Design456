@@ -192,8 +192,8 @@ class Design456_Workbench (Workbench):
             if self.runOnce==True:
                 Gui.activeDocument().activeView().viewTop()
                 Gui.activeDocument().activeView().viewIsometric()
-                Gui.SendMsgToActiveView("ViewFit")
-                for x in range(1, 6):
+               # Gui.SendMsgToActiveView("ViewFit")
+                for x in range(1, 10):
                     Gui.ActiveDocument.ActiveView.zoomOut()
                 self.runOnce=False
             App.Console.PrintLog(
