@@ -31,152 +31,78 @@ import sys
 #Widgets type 
 class FR_WidgetType:
     #FR_Widget is a generic definition, FR_Group will be such a widget
-    def FR_Widget():
-        return 0
-    def FR_Edge(): 
-        return 10
-    def FR_Face():
-        return 20   #2D Shape
-    def FR_BOX():
-        return 30    #3D Shape
-    def FR_Button():
-        return 20
-    def FR_Wheel():
-        return 30
+    FR_Widget=          0
+    FR_Edge=           10
+    FR_Face=           20   #2D Shape
+    FR_BOX=            30    #3D Shape
+    FR_Button=         20
+    FR_Wheel=          30
     
 class FR_COLOR:
     #Transparency - No color will be applied
-    def Fr_Transparency():
-        return None 
-
-    def FR_White():
-        return (1, 1, 1)
-    def FR_Silver():
-        return (0.75, 0.75,0.75)
-
-    def FR_Gray():
-        return (0.5, 0.5, 0.5)
-    def FR_Gray0():
-        return (0.411, 0.411, 0.411)
-    def FR_Gray1():
-        return (0.670, 0.670, 0.670)
-    def FR_Gray2():
-        return (0.780, 0.780, 0.780)
-    def FR_Gray3():
-        return (0.901, 0.901, 0.901)
-
-    def FR_Black():
-        return (0, 0, 0)
-    def FR_Red():
-        return (1, 0, 0)
-    def FR_Maroon():
-        return (0.5, 0, 0)
-    def FR_Yellow():
-        return (1, 1, 0)
     
-    def FR_Select1():
-        return (0.917, 0.960, 0)
-    def FR_Select1():
-        return (0.917, 0.960, 0)
-    def FR_Select1():
-        return (0.917, 0.960, 0)
-    def FR_Select2():
-        return (0.968, 0.992, 0.407)
-    def FR_Select3():
-        return (1, 0.847, 0.439)
-        
-    def FR_Olive():
-        return (0.5, 0.5, 0)
-    def FR_Lime():
-        return (0, 1,  0)
-    def FR_Green():
-        return (0, 0.5, 0)
-    def FR_Aqua():
-        return (0, 1,  1)
-    def FR_Teal():
-        return (0, 0.5, 0.5)
-    def FR_Blue():
-        return (0, 0,  1)
-        
-    def FR_Blue1():
-        return (0.250, 0.027, 0.949)
-    def FR_Blue2():
-        return(0.450, 0.462, 0.909)
-    def FR_Blue3():
-        return (0.4, 0.623, 0.941)
-    def FR_Blue4():
-        return(0.384, 0.749, 0.937)
-    def FR_Blue5():
-        return (0.301, 0.854, 0.976)
+    Fr_Transparency = (-1.00,-1.00,-100)  #No color 
+    FR_White =        (1.00, 1.00, 1.00)
+    FR_Silver=        (0.75, 0.75, 0.75)
+    FR_Gray=          (0.50, 0.50, 0.50)
+    FR_Gray0=         (0.41, 0.41, 0.41)
+    FR_Gray1=         (0.67, 0.67, 0.67)
+    FR_Gray2=         (0.78, 0.78, 0.78)
+    FR_Gray3=         (0.90, 0.90, 0.90)
 
-    def FR_Navy():
-        return (0, 0,  0.5)
-
-    def FR_Fuchsia():
-        return (1, 0,  1)
-    def FR_Purple():
-        return (0.5, 0,  0.5)
-    def FR_White():
-        return (1, 1, 1)
+    FR_Black=         (0.00, 0.00, 0.00)
+    FR_Red=           (1.00, 0.00, 0.00)
+    FR_Maroon=        (0.50, 0.00, 0.00)
+    FR_Yellow=        (1.00, 1.00, 0.00)
+    FR_Select1=       (0.92, 0.96, 0.00)
+    FR_Select2=       (0.97, 0.99, 0.41)
+    FR_Select3=       (1.00, 0.85, 0.44)    
+    FR_Olive=         (0.50, 0.50, 0.00)
+    FR_Lime=          (0.00, 1.00, 0.00)
+    FR_Green=         (0.00, 0.50, 0.00)
+    FR_Aqua=          (0.00, 1.00, 1.00)
+    FR_Teal=          (0.00, 0.50, 0.50)
+    FR_Blue=          (0.00, 0.00, 1.00)
+    FR_Blue1=         (0.25, 0.03, 0.95)
+    FR_Blue2=         (0.45, 0.46, 0.91)
+    FR_Blue3=         (0.40, 0.62, 0.94)
+    FR_Blue4=         (0.38, 0.75, 0.94)
+    FR_Blue5=         (0.30, 0.85, 0.98)
+    FR_Navy=          (0.00, 0.00, 0.50)
+    FR_Fuchsia=       (1.00, 0.00, 1.00)
+    FR_Purple=        (0.50, 0.00, 0.50)
+    FR_White=         (1.00, 1.00, 1.00)
 
 #Box type when for widgets
-class FR_BoxType:
-    def FR_NoBox():         #There will not be any boundary box or bkg box
-        return 0
-    def FR_FLAT_BOX():
-        return 10
-    def FR_UP_BOX():
-        return 20
-    def FR_DOWN_BOX():
-        return 30
-    def FR_BORDER_FRAME():
-        return 40      
-    def FR_ROUNDED_BOX():
-        return 50
-    def FR_ROUNDED_FRAME():
-        return 60
-    def FR_ROUND_FLAT_BOX():
-        return 70
-    def FR_ROUND_UP_BOX():
-        return 80
-    def FR_ROUND_DOWN_BOX():
-        return 90
-    def FR_OVAL_BOX():
-        return 100
-    def FR_OVAL_FRAME():
-        return 110
-    def FR_TRIANGLE_BOX():
-        return 110
-    def FR_TRIANGLE_FRAME():
-        return 110
+class FR_BoxType: #There will not be any boundary box or bkg box
+    FR_NoBox=                 0
+    FR_FLAT_BOX=             10
+    FR_UP_BOX=               20
+    FR_DOWN_BOX=             30
+    FR_BORDER_FRAME=         40      
+    FR_ROUNDED_BOX=          50
+    FR_ROUNDED_FRAME=        60
+    FR_ROUND_FLAT_BOX=       70
+    FR_ROUND_UP_BOX=         80
+    FR_ROUND_DOWN_BOX=       90
+    FR_OVAL_BOX=            100
+    FR_OVAL_FRAME=          110
+    FR_TRIANGLE_BOX=        120
+    FR_TRIANGLE_FRAME=      130
         
 
 class FR_EVENTS:    
-    def SKIP_EVENT():
-        return 0
-    def MOUSE_LEFT_CLICK():
-        return 10
-    def MOUSE_RIGHT_CLICK():
-        return 20
-    def MOUSE_SCROLL_CLICK():
-        return 70
-    def MOUSE_MIDDLE_CLICK():
-        return 70
-    def MOUSE_ENTER_CLICK():
-        return 30
-    def MOUSE_KEY_UP():
-        return 60
-    def MOUSE_KEY_DOWN():
-        return 70
-    def KEYBOARD_ENTER():
-        return 80
-    def MOUSE_DRAG():
-        return 90
-    def MOUSE_MOVE():
-        return 100
-    def MOUSE_():
-        return 110
+    SKIP_EVENT=               0
+    MOUSE_LEFT_CLICK=        10
+    MOUSE_RIGHT_CLICK=       20
+    MOUSE_MIDDLE_CLICK=      30
+    MOUSE_ENTER_CLICK=       40
+    MOUSE_DRAG=              50
+    MOUSE_MOVE=              60
 
-    
-    
-
+    MOUSE_KEY_UP=            70
+    MOUSE_KEY_DOWN=          80
+    FR_ENTER=                90
+    FR_CTRL=                 100
+    FR_SHIFT=                110
+    FR_ALT=                  120
