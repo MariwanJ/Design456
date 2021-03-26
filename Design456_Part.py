@@ -496,7 +496,7 @@ class Design_ColorizeObject:
             aa = Gui.Selection.getSelection()[0]  # selection objet
             colors = []
             for ii in range(len(aa.Shape.Faces)):
-                colors.append((random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1), 0.0)) #red, green, blue, transparence
+                colors.append((random.uniform(0.25, 1), random.uniform(0.25, 1), random.uniform(0.25, 1), 0.0)) #red, green, blue, transparence
        
             aa.ViewObject.DiffuseColor = colors 
         
