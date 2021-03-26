@@ -85,13 +85,18 @@ class Grid:
         counter = LengthOfGrid
         try:
             line = []
+            P1x=(-2)
+            P1y=0 
+            P2x=2
+            P1y=0
             for i in range(0, counter, GridSize):
                 #X direction
-                P1x=-2
+                P1x=(-2)
                 P1y=0 
                 P2x=2
                 P1y=0
                 line.append(dim_dash((P1x,P1y,-bothSideLength+i ),(P2x,P1y , -bothSideLength+i ),col,1))  # x                
+             
             for i in line:
                 self.sg.addChild(i)
                 self.collectGarbage.append(i)
