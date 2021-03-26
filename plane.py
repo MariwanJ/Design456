@@ -1,6 +1,31 @@
-import os
-import sys
-import FreeCAD
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
+# ***************************************************************************
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# *                                                                        *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
+# **************************************************************************
+import os,sys
+import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import InitGui
@@ -45,7 +70,7 @@ class Grid:
             self.draw_XandYandZZeroAxis()
 
         except Exception as err:
-            FreeCAD.Console.PrintError("'Plane' Failed. "
+            App.Console.PrintError("'Plane' Failed. "
                                        "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -72,7 +97,7 @@ class Grid:
                 self.collectGarbage.append(i)
                 
         except Exception as err:
-            FreeCAD.Console.PrintError("'Plane' Failed. "
+            App.Console.PrintError("'Plane' Failed. "
                                        "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -83,9 +108,9 @@ class Grid:
         col1= coin.SoBaseColor()
         col2= coin.SoBaseColor()
         col3= coin.SoBaseColor()
-        col1.rgb= stndColor.get_red()      # RED
         col2.rgb= stndColor.get_green()    # GREEN
         col3.rgb= stndColor.get_blue() # BLUE
+        col1.rgb= stndColor.get_red()      # RED
         
         LengthOfGrid = 1000  # mm
         counter = LengthOfGrid
@@ -100,18 +125,11 @@ class Grid:
                 self.collectGarbage.append(line[i])
 
         except Exception as err:
-            FreeCAD.Console.PrintError("'Plane' Failed. "
+            App.Console.PrintError("'Plane' Failed. "
                                        "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno) 
-
-        except Exception as err:
-            FreeCAD.Console.PrintError("'Plane' Failed. "
-                                       "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
 
         
     def removeGarbage(self):
@@ -161,15 +179,8 @@ class Grid:
                 self.collectGarbage.append(i)
 
         except Exception as err:
-            FreeCAD.Console.PrintError("'Plane' Failed. "
+            App.Console.PrintError("'Plane' Failed. "
                                        "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno) 
-
-        except Exception as err:
-            FreeCAD.Console.PrintError("'Plane' Failed. "
-                                       "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
