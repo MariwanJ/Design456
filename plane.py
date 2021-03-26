@@ -109,9 +109,9 @@ class Grid:
         col1= coin.SoBaseColor()
         col2= coin.SoBaseColor()
         col3= coin.SoBaseColor()
-        col1.rgb= FR_COLOR.FR_Red()      # RED
-        col2.rgb= FR_COLOR.FR_Green()    # GREEN
-        col3.rgb= FR_COLOR.FR_Blue() # BLUE
+        col1.rgb= FR_COLOR.FR_Red      # RED
+        col2.rgb= FR_COLOR.FR_Green    # GREEN
+        col3.rgb= FR_COLOR.FR_Blue     # BLUE
         
         LengthOfGrid = 1000  # mm
         counter = LengthOfGrid
@@ -140,9 +140,8 @@ class Grid:
         self.collectGarbage.clear()
         
     def drawXYPlane(self):
-        from constant import FR_COLOR
         col= coin.SoBaseColor()
-        col.rgb=FR_COLOR.FR_Blue4()  
+        col.rgb=FR_COLOR.FR_Blue4 
         LengthOfGrid = 1000  # mm
         bothSideLength = LengthOfGrid/2
         GridSize = 5
