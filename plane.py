@@ -57,7 +57,7 @@ class Grid:
         self.sg=None
         
     def removeAllAxis(self):
-        self.removeGarbage()
+        self.removeGarbage(self)
     
     def Activated(self):
         try:
