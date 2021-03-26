@@ -25,38 +25,36 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-import sys
+import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Design456Init
+import pivy.coin as coin
+import init
 
-import  Design456_Part_3DTools
-import  Design456_Part_2DTools
-import  Design456_Alignment   
+#draw a line in 3D world
+def draw_line(p1, p2,color,LineWidth):
+    dash = coin.SoSeparator()
+    v = coin.SoVertexProperty()
+    v.vertex.set1Value(0, p1)
+    v.vertex.set1Value(1, p2)
+    line = coin.SoLineSet()
+    line.vertexProperty = v
+    style = coin.SoDrawStyle()
+    style.lineWidth = LineWidth
+    dash.addChild(style)
+    dash.addChild(color)
+    dash.addChild(line)
+    return draw_line
 
-class Design456_Part_Tools:
-    list = ["Design456_Part_3DToolsGroup",
-            "Design456_Part_2DToolsGroup",
-            "Design456_AlignmentGroup",
-            
-            ]
-
-    """Design456 Part Tools Toolbar"""
-
-    def GetResources(self):
-        return{
-            'Pixmap':    Design456Init.ICON_PATH + '/Part_Tools.svg',
-            'MenuText': 'Tools',
-            'ToolTip':  'Tools'
-        }
-
-    def IsActive(self):
-        """Return True when this command should be available."""
-        if Gui.activeDocument():
-            return True
-        else:
-            return False
-        
-    def Activated(self):
-        self.appendToolbar("Design456_Part_Tools", self.list)
+# Draw a square 3D World
+def draw_square(p1, p2,p3,p4,color,LineWidth):
+    dash = coin.SoSeparator()
+    v = coin.SoVertexProperty()
+    square = coin.SbBox2d(p1,p2,p3,p4)
+    square.vertexProperty = v
+    style = coin.SoDrawStyle()
+    style.lineWidth = LineWidth
+    dash.addChild(style)
+    dash.addChild(color)
+    dash.addChild(square)
+    return draw_square
