@@ -39,13 +39,16 @@ import fr_draw
 import constant
 
 """
-Base class used to create all Widgets
+Abstract Base class used to create all Widgets
 You need to subclass this object 
-to be able to create other widgets.
+to be able to create other objects,
 and you should always have a Fr_Group 
-widget which acts like a container for widget.
-fr_window widget will take care of events 
-and is subclassed from fr_group
+widget which acts like a container for the widgets.
+fr_window widget will take care of that,
+events will be distributed by fr_window
+and it is a subclassed object from fr_group.
+fr_group doesn't need to be drawn, but 
+you can implement draw function
 """
 
       
@@ -59,14 +62,16 @@ class Fr_Widget (object):
     __l=""
     __coinNode=coin.SoSeparator
     __visible=True
-    __bkgColor=constant.Fr_Color.FR_Gray()
-    __frgColor=constant.Fr_Color.FR.White()
-    __color1=constant.FR_Color.FR_Gray()
-    __color2=constant.FR_Color.FR_Black()
+    __bkgColor=constant.Fr_Color.FR_Gray
+    __frgColor=constant.Fr_Color.FR.White
+    __color1=constant.FR_Color.FR_Gray
+    __color2=constant.FR_Color.FR_Black
     __box=None
     __active=False
     __parent=None
-    __type=constant.FR_WidgetType.FR_Widget():
+    __type=constant.FR_WidgetType.FR_Widget
+    __hasFocus=False
+    
 
      
     #Coin SoSeparator (node)
@@ -84,7 +89,10 @@ class Fr_Widget (object):
         raise NotImplementedError()
     def redraw(self):
         raise NotImplementedError()
-    
+    def take_focus(self):
+        __hasFocus=True
+    def remove_focus(self):
+        __hasFocus=False
     #get private values     
     def x(self):
         return self.__x
