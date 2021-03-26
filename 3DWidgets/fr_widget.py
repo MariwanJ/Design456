@@ -47,6 +47,8 @@ widget which acts like a container for widget.
 fr_window widget will take care of events 
 and is subclassed from fr_group
 """
+
+      
 class Fr_Widget (object):
     __x=0
     __y=0
@@ -65,7 +67,8 @@ class Fr_Widget (object):
     __active=False
     __parent=None
     __type=constant.FR_WidgetType.FR_Widget():
-    
+
+     
     #Coin SoSeparator (node)
 
     def __init__(self, x,y,z=0,h,w,t=1,l=""):

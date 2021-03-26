@@ -35,12 +35,18 @@ import fr_group
 import fr_widget
 import constant
 
-
+class mouseDimension:
+      Coin_x=0
+      Coin_y=0
+      Coin_z=0
+      Qt_x=0
+      Qt_y=0
+      
 class Fr_Window(fr_group.Fr_Group):
     __view=None
     __lastEvent=None
-    __lastKeyEvent=[]       #Might be more than one key.
-    __lastEventXYZ=App.Vertex(0,0,0)       #This should keep the mouse pointer position on the 3D view
+    __lastKeyEvent=[]                     #Might be more than one key.
+    __lastEventXYZ=mouseDimension()       #This should keep the mouse pointer position on the 3D view   
     
     def __init__(self, x,y,z,h,w,t,l):
         super().__init__(x,y,z,h,w,t,l)
@@ -61,70 +67,44 @@ class Fr_Window(fr_group.Fr_Group):
         getEvent = events.getEvent()
         if (type(getEvent) == coin.SoMouseButtonEvent):
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON1):
-                lastEvent=constant.Fr_Events.MOUSE_LEFT_CLICK()
+                lastEvent=constant.Fr_Events.MOUSE_LEFT_CLICK
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON3):
-                lastEvent=constant.Fr_Events.MOUSE_MIDDLE_CLICK()
+                lastEvent=constant.Fr_Events.MOUSE_MIDDLE_CLICK
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON2):
-                lastEvent=constant.Fr_Events.MOUSE_RIGHT_CLICK()
-            
+                lastEvent=constant.Fr_Events.MOUSE_RIGHT_CLICK
+               #mouse movement        
+        elif (type(event) == coin.SoLocation2Event):
+            pos = Gui.ActiveDocument.ActiveView.getCursorPos()
+            pnt = self.view.getPoint(pos)
+            __lastEventXYZ.coin_x=pnt.x
+            __lastEventXYZ.coin_y=pnt.y
+            __lastEventXYZ.coin_z=pnt.z
+            __lastEventXYZ.Qt_x=pos[0]
+            __lastEventXYZ.Qt_y=pos[1]
+        #Take care of Keyboard events     
         elif (type(event) == coin.SoKeyboardEvent):
             key = ""
             try:
                 key = event.getKey()
+            #Take care of CTRL,SHIFT,ALT
+                if (key == coin.SoKeyboardEvent.LEFT_CONTROL or coin.SoKeyboardEvent.RIGHT_CONTROL ) and event.getState() == coin.SoButtonEvent.DOWN:
+                    __lastKeyEvent.append(key)
+                elif(key == coin.SoKeyboardEvent.LEFT_SHIFT or coin.SoKeyboardEvent.RIGHT_SHIFT ) and event.getState() == coin.SoButtonEvent.DOWN:
+                    __lastKeyEvent.append(key)
+                elif(key == coin.SoKeyboardEvent.LEFT_ALT or coin.SoKeyboardEvent.RIGHT_ALT ) and event.getState() == coin.SoButtonEvent.DOWN:
+                    __lastKeyEvent.append(key)
+                #Take care of all other keys.
+                if(event.getState() == coin.SoButtonEvent.UP):
+                    _lastKeyEvent.append(key)
             except ValueError:
                 # there is no character for this value
                 key = ""
-            
-            if (key == coin.SoKeyboardEvent.LEFT_CONTROL() or coin.SoKeyboardEvent.RIGHT_CONTROL() ) and 
-                    event.getState() == coin.SoButtonEvent.DOWN:
-                __lastKeyEvent.append(constant.FR_EVENTS        
-                
-                    self.snap = True
-                elif event.getState() == coin.SoButtonEvent.UP:
-                    self.snap = False
-            elif key == coin.SoKeyboardEvent.RETURN:
-                self.accept()
-                self.finish()
-            elif key == coin.SoKeyboardEvent.BACKSPACE and event.getState() == coin.SoButtonEvent.UP:
-                self.removePole()
-            elif key == coin.SoKeyboardEvent.I and event.getState() == coin.SoButtonEvent.UP:
-                self.increaseDegree()
-            elif key == coin.SoKeyboardEvent.D and event.getState() == coin.SoButtonEvent.UP:
-                self.decreaseDegree()
-            elif key == coin.SoKeyboardEvent.ESCAPE:
-                self.abort()
-                self.finish()
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-        elif (type(event) == coin.SoLocation2Event):
-            pos = App.ActiveDocument.ActiveView.getCursorPos()
-            
-            pnt = self.view.getPoint(pos)
-           FreeCAD.Console.PrintMessage("World coordinates: " + str(pnt) + "\n")
-           info = self.view.getObjectInfo(pos)
-            
-            
-            self.point = self.view.getPoint(pos[0],pos[1])
-            if self.snap:
-                self.getSnapPoint(pos)
-            self.cursorUpdate()
+ 
+            for wdg in self._widgets:
+                if wdg.isActive():
+                    wdg.handel(events)
     ''' 
-        Remove all callbacks registerd for Fr_Window widget
+        Remove all callbacks registered for Fr_Window widget
     '''    
     def exitFr_Window(self):
         self.view.removeEventCallbackPivy( coin.SoKeyboSoMouseButtonEvent.getClassTypeId(), self.event_process)
