@@ -47,7 +47,7 @@ import FACE_D as faced
 import math as _math
 
 
-class Design456_DunJourrAccord1:
+class Design456_unifySplitFuse1:
     
     def Activated(self):
          
@@ -127,7 +127,7 @@ class Design456_DunJourrAccord1:
                 App.ActiveDocument.removeObject(shapeFace1.Name)
                 App.ActiveDocument.removeObject(shapeFace2.Name)
         except Exception as err:
-            App.Console.PrintError("'DunJourrAccord1' Failed. "
+            App.Console.PrintError("'UnifySplitFuse1' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -143,16 +143,16 @@ class Design456_DunJourrAccord1:
             return 0
     def GetResources(self):
             return{
-            'Pixmap':    Design456Init.ICON_PATH + '/DunJourrAccord1.svg',
-            'MenuText': 'unJourrAccord1',
-            'ToolTip':  'unJourrAccord1'
+            'Pixmap':    Design456Init.ICON_PATH + '/unifySplitFuse1.svg',
+            'MenuText': 'unify-Split & Fuse',
+            'ToolTip':  'unify Split and Fuse'
         }
             
-Gui.addCommand('Design456_DunJourrAccord1', Design456_DunJourrAccord1())
+Gui.addCommand('Design456_unifySplitFuse1', Design456_unifySplitFuse1())
 
 
 
-class Design456_DunJourrAccord2:
+class Design456_unifySplitFuse2:
     def Activated(self):
         try:
             sel = Gui.Selection.getSelection()
@@ -289,8 +289,8 @@ class Design456_DunJourrAccord2:
             return 0
     def GetResources(self):
             return{
-            'Pixmap':    Design456Init.ICON_PATH + '/DunJourrAccord2.svg',
-            'MenuText': 'unJourrAccord2',
-            'ToolTip':  'unJourrAccord2'
+            'Pixmap':    Design456Init.ICON_PATH + '/UnifySplitFuse2.svg',
+            'MenuText': 'unify-Split & Fuse 2',
+            'ToolTip':  'unify Split and Fuse2'
         }
-Gui.addCommand('Design456_DunJourrAccord2', Design456_DunJourrAccord2())
+Gui.addCommand('Design456_unifySplitFuse2', Design456_unifySplitFuse2())
