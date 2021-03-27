@@ -29,7 +29,7 @@ import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import init
+import Design456Init
 
 #draw a line in 3D world
 def draw_line(p1, p2,color,LineWidth):
