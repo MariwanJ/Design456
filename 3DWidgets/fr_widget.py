@@ -33,7 +33,7 @@ import os,sys
 import FreeCAD  as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import init
+import Design456Init
 import Draft as _draft
 import fr_draw 
 import constant
@@ -62,10 +62,10 @@ class Fr_Widget (object):
     __l=""
     __coinNode=coin.SoSeparator
     __visible=True
-    __bkgColor=constant.Fr_Color.FR_Gray
-    __frgColor=constant.Fr_Color.FR.White
-    __color1=constant.FR_Color.FR_Gray
-    __color2=constant.FR_Color.FR_Black
+    __bkgColor=constant.FR_COLOR.FR_Gray
+    __frgColor=constant.FR_COLOR.FR_White
+    __color1=constant.FR_COLOR.FR_Gray
+    __color2=constant.FR_COLOR.FR_Black
     __box=None
     __active=False
     __parent=None
@@ -76,10 +76,10 @@ class Fr_Widget (object):
      
     #Coin SoSeparator (node)
 
-    def __init__(self, x,y,z=0,h,w,t=1,l=""):
+    def __init__(self, x,y,z,h,w,t=0,l=""):
         self.__x=x
         self.__y=y
-        self.__z=z
+        self.__z=z=0
         self.__h=h
         self.__w=w
         self.__t=t
@@ -142,7 +142,7 @@ class Fr_Widget (object):
         self.redraw()
     def active(self):
         return self.__active
-    
+        
     def hide():
         raise NotImplementedError()
     def show():
