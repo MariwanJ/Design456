@@ -50,18 +50,18 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if event==const.Events.MOUSE_LEFT_CLICK:
             self.setFocus(self)
     def draw(self):
-        p1=(x,y,z)
-        p2=(x+w,y+h,z+t)
-        self.__color1= constant.FR_COLOR.FR_Green
-        self.__color2= constant.FR_COLOR.FR_Yellow  #Focus
+        p1=(self.x,self.y,self.z)
+        p2=(self.x+self.w,self.y+self.h,self.z+self.t)
+        self.color1= constant.FR_COLOR.FR_Green
+        self.color2= constant.FR_COLOR.FR_Yellow  #Focus
         LineWidth=4
-        if self.__hasFocus:
-            selfwidget=fr_draw.draw_line(p1, p2, self.__color1, LineWidth)
+        if self.hasFocus:
+            selfwidget=fr_draw.draw_line(p1, p2, self.color1, LineWidth)
         else:
-            selfwidget=fr_draw.draw_line(p1, p2, self.__color2, LineWidth)
-        parent(self).__SeneGraph.add(selfwidget)
+            selfwidget=fr_draw.draw_line(p1, p2, self.color2, LineWidth)
+        self.parent.addSeneNode(selfwidget)
     
     def redraw(self):
-        parent(self).__SeneGraph.remove(selfwidget)
+        parent(self).removeSeneNode(selfwidget)
         selfwidget=None
         self.draw()
