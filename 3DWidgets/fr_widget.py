@@ -53,53 +53,53 @@ you can implement draw function
 
       
 class Fr_Widget (object):
-    __x=0
-    __y=0
-    __z=0
-    __h=0
-    __w=0
-    __t=0
-    __l=""
-    __coinNode=coin.SoSeparator
-    __visible=True
-    __bkgColor=constant.FR_COLOR.FR_Gray
-    __frgColor=constant.FR_COLOR.FR_White
-    __color1=constant.FR_COLOR.FR_Gray
-    __color2=constant.FR_COLOR.FR_Black
-    __box=None
-    __active=False
-    __parent=None
-    __type=constant.FR_WidgetType.FR_Widget
-    __hasFocus=False
+    x=0
+    y=0
+    z=0
+    h=0
+    w=0
+    t=0
+    l=""
+    coinNode=coin.SoSeparator
+    visible=True
+    bkgColor=constant.FR_COLOR.FR_Gray
+    frgColor=constant.FR_COLOR.FR_White
+    color1=constant.FR_COLOR.FR_Gray
+    color2=constant.FR_COLOR.FR_Black
+    box=None
+    active=False
+    parent=None
+    type=constant.FR_WidgetType.FR_Widget
+    hasFocus=False
     
 
      
     #Coin SoSeparator (node)
 
     def __init__(self, x,y,z,h,w,t=0,l=""):
-        self.__x=x
-        self.__y=y
-        self.__z=z=0
-        self.__h=h
-        self.__w=w
-        self.__t=t
-        self.__l=l
+        self.x=x
+        self.y=y
+        self.z=z=0
+        self.h=h
+        self.w=w
+        self.t=t
+        self.l=l
         
     def remove_drawing(self):
         raise NotImplementedError()
     def redraw(self):
         raise NotImplementedError()
     def take_focus(self):
-        __hasFocus=True
+        hasFocus=True
     def remove_focus(self):
-        __hasFocus=False
-    #get private values     
+        hasFocus=False
+    """    #get private values     
     def x(self):
         return self.__x
     def y(self):
-        return self.__x
+        return self.__y
     def z(self):
-        return self.__x
+        return self.__z
     def l(self):
         return self.__l
     def w(self):
@@ -108,7 +108,7 @@ class Fr_Widget (object):
         return self.__h
     def l(self):
         return self.__l
-        
+            
     #set private variables
     def x(self,x):
         self.__x=x
@@ -124,24 +124,24 @@ class Fr_Widget (object):
         self.__t=t
     def l(self,l):
         self.__l=l
-
+    """
     #Activate, deactivate, get status of widget
     def visible(self):
         return self.__visible
     def show(self):
-        self.__visible=True
+        self.visible=True
         self.redraw()
     def hide(self):
-        self.__visible=False
+        self.visible=False
         self.redraw()
     def activate(self):
-        self.__active=True
+        self.active=True
         self.redraw()
     def deactivate(self):
-        self.__active=False
+        self.active=False
         self.redraw()
     def active(self):
-        return self.__active
+        return self.active
         
     def hide():
         raise NotImplementedError()
@@ -156,24 +156,26 @@ class Fr_Widget (object):
     def handle (self,event):
         raise NotImplementedError()
     def parent(self):
-        return self.__parent
+        return self.parent
+    def parent(self,parent):
+        self.parent=parent
     def type(self):
-        return self.__type
+        return self.type
     def position(self,x,y,z):
-        self.__x=x
-        self.__y=y
-        self.__z=z
+        self.x=x
+        self.y=y
+        self.z=z
     def resize(self,x,y,z,W,H,T): #Width, height, thickness
-        __x=x
-        __y=y
-        __z=z
-        __w=W
-        __h=H
-        __t=T
+        x=x
+        y=y
+        z=z
+        w=W
+        h=H
+        t=T
         self.redraw()
     def size (self,W,H,Z):
         self.resize(self._x,self._y,self._z,W,H,T)
-        
+            
     #Take care of all events 
     def handle():
         raise NotImplementedError()

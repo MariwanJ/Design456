@@ -218,7 +218,7 @@ class Design456_Workbench (Workbench):
                 dsb.hide_draft_statusbar()
             App.Console.PrintLog(
                 "Design456/Draft workbench deactivated.\n")
-            gr.removeGarbage()
+            gr.removeGarbage(gr)
             return
         except Exception as exc:
             App.Console.PrintError(exc)
