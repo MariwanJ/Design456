@@ -36,31 +36,38 @@ import fr_widget
 #Group class. Use this to collect several widgets.
 class Fr_Group(fr_widget.Fr_Widget):
     #Any drawign/Every thing should be added to this later 
-    __SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
-    _widgets=[]
+    SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+    children=[]
     
     def __init__(self, x,y,z,h,w,t,l):
-        super(self,Fr_Group).__init__(x,y,z,h,w,t,l)
+        super().__init__(x,y,z,h,w,t,l)
         
     def addWidget(self,widget):
-        self._widgets.append(widget)
+        self.children.append(widget)
         
     def draw(self):
-        for i in super()._node:
-            i.draw(self)
+        for i in self.children:
+            i.draw()
     def draw_label(self):
-        for i in self._widgets:
+        for i in self.children:
            i.draw_label() 
     
     def redraw(self):
-        for i in self._widgets:
+        for i in self.children:
             i.draw(self)
 
     def deactivate(self):
-        for widget in super()._widgets:
+        for widget in self.children:
             del widget
-        self._widgets.clear()
+        self.children.clear()
 
+    def addSeneNode(self, sen):
+        self.SeneGraph.addChild(sen)
+        
+    def removeSeneNode(self, sen):
+        self.SeneGraph.removeChild(sen)
+
+        
     """send event to all widgets
        Targeted Widget should return 1 if it uses the event 
        Sometimes it several widgets needs to get the event, 
@@ -73,7 +80,7 @@ class Fr_Group(fr_widget.Fr_Widget):
        otherwise it should just neglect it.
     """
     def handle(self,events):
-        for widg in self._widgets:
+        for widg in self.children:
             if widg.handle(events) == 1:
                 #Events reached the targeted widget go out
                 return 1

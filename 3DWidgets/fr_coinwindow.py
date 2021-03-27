@@ -26,7 +26,8 @@ from fr_group import Fr_Group
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os, sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
@@ -43,16 +44,19 @@ class mouseDimension:
     Qt_x = 0
     Qt_y = 0
 
+
 '''
 This is a class for coin3D Window
 
 '''
+
+
 class Fr_CoinWindow(fr_group.Fr_Group):
-    __view = None
-    __lastEvent = None
-    __lastKeyEvent = []  # Might be more than one key.
+    view =Gui.ActiveDocument.ActiveView
+    lastEvent = None
+    lastKeyEvent = []  # Might be more than one key.
     # This should keep the mouse pointer position on the 3D view
-    __lastEventXYZ = mouseDimension()
+    lastEventXYZ = mouseDimension()
 
     def __init__(self, x, y, z, h, w, t, l):
         super().__init__(x, y, z, h, w, t, l)
@@ -68,29 +72,30 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.callback = self.view.addEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.handle)     # Keyboard
         self.view.removeEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(
-        ), self.handle(events))                # Mouse Move
+        ), self.handle)                # Mouse Move
 
     # All event come to this function. We classify the event to be processed by each widget later.
 
     def handle(self, events):
         # write down all possible events.
+        print("event")
         getEvent = events.getEvent()
         if (type(getEvent) == coin.SoMouseButtonEvent):
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON1):
-                lastEvent = constant.Fr_Events.MOUSE_LEFT_CLICK
+                lastEvent = constant.FR_EVENTS.MOUSE_LEFT_CLICK
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON3):
-                lastEvent = constant.Fr_Events.MOUSE_MIDDLE_CLICK
+                lastEvent = constant.FR_EVENTS.MOUSE_MIDDLE_CLICK
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON2):
-                lastEvent = constant.Fr_Events.MOUSE_RIGHT_CLICK
+                lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_CLICK
                # mouse movement
         elif (type(event) == coin.SoLocation2Event):
             pos = Gui.ActiveDocument.ActiveView.getCursorPos()
             pnt = self.view.getPoint(pos)
-            __lastEventXYZ.coin_x = pnt.x
-            __lastEventXYZ.coin_y = pnt.y
-            __lastEventXYZ.coin_z = pnt.z
-            __lastEventXYZ.Qt_x = pos[0]
-            __lastEventXYZ.Qt_y = pos[1]
+            self.lastEventXYZ.coin_x = pnt.x
+            self.lastEventXYZ.coin_y = pnt.y
+            self.lastEventXYZ.coin_z = pnt.z
+            self.lastEventXYZ.Qt_x = pos[0]
+            self.lastEventXYZ.Qt_y = pos[1]
         # Take care of Keyboard events
         elif (type(event) == coin.SoKeyboardEvent):
             key = ""
@@ -98,14 +103,14 @@ class Fr_CoinWindow(fr_group.Fr_Group):
                 key = event.getKey()
             # Take care of CTRL,SHIFT,ALT
                 if (key == coin.SoKeyboardEvent.LEFT_CONTROL or coin.SoKeyboardEvent.RIGHT_CONTROL) and event.getState() == coin.SoButtonEvent.DOWN:
-                    __lastKeyEvent.append(key)
+                    self.lastKeyEvent.append(key)
                 elif(key == coin.SoKeyboardEvent.LEFT_SHIFT or coin.SoKeyboardEvent.RIGHT_SHIFT) and event.getState() == coin.SoButtonEvent.DOWN:
-                    __lastKeyEvent.append(key)
+                    self.lastKeyEvent.append(key)
                 elif(key == coin.SoKeyboardEvent.LEFT_ALT or coin.SoKeyboardEvent.RIGHT_ALT) and event.getState() == coin.SoButtonEvent.DOWN:
-                    __lastKeyEvent.append(key)
+                    self.lastKeyEvent.append(key)
                 # Take care of all other keys.
                 if(event.getState() == coin.SoButtonEvent.UP):
-                    _lastKeyEvent.append(key)
+                    self.lastKeyEvent.append(key)
             except ValueError:
                 # there is no character for this value
                 key = ""
@@ -129,7 +134,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     '''
 
     def checkIfEventIsRelevantForWidget(self, widget):
-        if __lastEventXYZ.x >= widget.x and __lastEventXYZ.x <= (widget.x+widget.w) and __lastEventXYZ.y >= widget.y and __lastEventXYZ.y <= (widget.y+widget.h) and __lastEventXYZ.z >= widget.z and __lastEventXYZ.z <= (widget.z+widget.t):
+        if self.lastEventXYZ.x >= widget.x and self.lastEventXYZ.x <= (widget.x+widget.w) and self.lastEventXYZ.y >= widget.y and self.lastEventXYZ.y <= (widget.y+widget.h) and self.lastEventXYZ.z >= widget.z and self.lastEventXYZ.z <= (widget.z+widget.t):
             return True
         else:
             return False
@@ -141,24 +146,29 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             coin.SoKeyboardEvent.getClassTypeId(), self.event_process)
         self.view.removeEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.event_process)
-    
+
     def draw(self):
-        super().draw()
+        # call group(parent)'s draw
+        fr_group.Fr_Group.draw(self)
         '''For this object itself, it will not have any real drawing. 
          It will keep control of drawing the children but itself, nothing
          will be drawn.  
          '''
+
     def hide(self):
         print("Not implemented")
-        
-    def addChild(self,childWdg):
-        self._widgets.append(childWdg)
+
+    def addChild(self, childWdg):
+        self.children.append(childWdg)
+        childWdg.parent = self
 
     def show(self):
         self.draw()
+        self.addCallbacks()
         
-    def removeChild(self,childWdg):
+    def removeChild(self, childWdg):
         try:
-            self._widgets.remove(childWdg)
+            self.children.remove(childWdg)
+            self.removeCallbacks()
         except:
             print("not found")

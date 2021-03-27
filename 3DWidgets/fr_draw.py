@@ -33,28 +33,47 @@ import Design456Init
 
 #draw a line in 3D world
 def draw_line(p1, p2,color,LineWidth):
-    dash = coin.SoSeparator()
-    v = coin.SoVertexProperty()
-    v.vertex.set1Value(0, p1)
-    v.vertex.set1Value(1, p2)
-    line = coin.SoLineSet()
-    line.vertexProperty = v
-    style = coin.SoDrawStyle()
-    style.lineWidth = LineWidth
-    dash.addChild(style)
-    dash.addChild(color)
-    dash.addChild(line)
-    return draw_line
-
+    try:
+        dash = coin.SoSeparator()
+        v = coin.SoVertexProperty()
+        v.vertex.set1Value(0, p1)
+        v.vertex.set1Value(1, p2)
+        line = coin.SoLineSet()
+        line.vertexProperty = v
+        style = coin.SoDrawStyle()
+        style.lineWidth = LineWidth
+        dash.addChild(style)
+        col1= coin.SoBaseColor()  #must be converted to SoBaseColor
+        col1.rgb=color
+        dash.addChild(col1)
+        dash.addChild(line)
+        return dash
+    
+    except Exception as err:
+        App.Console.PrintError("'makeIt' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        
 # Draw a square 3D World
 def draw_square(p1, p2,p3,p4,color,LineWidth):
-    dash = coin.SoSeparator()
-    v = coin.SoVertexProperty()
-    square = coin.SbBox2d(p1,p2,p3,p4)
-    square.vertexProperty = v
-    style = coin.SoDrawStyle()
-    style.lineWidth = LineWidth
-    dash.addChild(style)
-    dash.addChild(color)
-    dash.addChild(square)
-    return draw_square
+    try:
+        dash = coin.SoSeparator()
+        v = coin.SoVertexProperty()
+        square = coin.SbBox2d(p1,p2,p3,p4)
+        square.vertexProperty = v
+        style = coin.SoDrawStyle()
+        style.lineWidth = LineWidth
+        dash.addChild(style)
+        dash.addChild(color)
+        dash.addChild(square)
+        return draw_square
+
+    except Exception as err:
+        App.Console.PrintError("'makeIt' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        
