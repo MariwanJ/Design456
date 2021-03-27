@@ -26,12 +26,11 @@ from fr_group import Fr_Group
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-import sys
+import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import init
+import Design456Init
 import fr_group
 import fr_widget
 import constant
@@ -44,8 +43,11 @@ class mouseDimension:
     Qt_x = 0
     Qt_y = 0
 
+'''
+This is a class for coin3D Window
 
-class Fr_Window(fr_group.Fr_Group):
+'''
+class Fr_CoinWindow(fr_group.Fr_Group):
     __view = None
     __lastEvent = None
     __lastKeyEvent = []  # Might be more than one key.
@@ -62,15 +64,15 @@ class Fr_Window(fr_group.Fr_Group):
 
     def addCallbacks(self):
         self.callback = self.view.addEventCallbackPivy(
-            coin.SoMouseButtonEvent.getClassTypeId(), self.event_process)  # Mouse buttons
+            coin.SoMouseButtonEvent.getClassTypeId(), self.handle)  # Mouse buttons
         self.callback = self.view.addEventCallbackPivy(
-            coin.SoKeyboardEvent.getClassTypeId(), self.event_process)     # Keyboard
+            coin.SoKeyboardEvent.getClassTypeId(), self.handle)     # Keyboard
         self.view.removeEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(
-        ), self.event_process)                # Mouse Move
+        ), self.handle(events))                # Mouse Move
 
     # All event come to this function. We classify the event to be processed by each widget later.
 
-    def event_process(self, events):
+    def handle(self, events):
         # write down all possible events.
         getEvent = events.getEvent()
         if (type(getEvent) == coin.SoMouseButtonEvent):
@@ -114,7 +116,7 @@ class Fr_Window(fr_group.Fr_Group):
                 if that is required.
                 If an object is not active, the event will not reach it.
                 or if it is not visible.
-                Be aware that the EVENT must be inside the dimention of the widget.
+                Be aware that the EVENT must be inside the dimension of the widget.
                 Since parent don't know that directly. Widget itself should take care
                 of that. You must check that always.
             """
@@ -139,3 +141,24 @@ class Fr_Window(fr_group.Fr_Group):
             coin.SoKeyboardEvent.getClassTypeId(), self.event_process)
         self.view.removeEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.event_process)
+    
+    def draw(self):
+        super().draw()
+        '''For this object itself, it will not have any real drawing. 
+         It will keep control of drawing the children but itself, nothing
+         will be drawn.  
+         '''
+    def hide(self):
+        print("Not implemented")
+        
+    def addChild(self,childWdg):
+        self._widgets.append(childWdg)
+
+    def show(self):
+        self.draw()
+        
+    def removeChild(self,childWdg):
+        try:
+            self._widgets.remove(childWdg)
+        except:
+            print("not found")

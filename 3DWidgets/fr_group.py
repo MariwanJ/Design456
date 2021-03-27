@@ -30,7 +30,7 @@ import sys
 import FreeCAD  as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import init
+import Design456Init
 import Draft as _draft
 import fr_widget 
 #Group class. Use this to collect several widgets.
@@ -40,13 +40,13 @@ class Fr_Group(fr_widget.Fr_Widget):
     _widgets=[]
     
     def __init__(self, x,y,z,h,w,t,l):
-        super().__init__(x,y,z,h,w,t,l)
+        super(self,Fr_Group).__init__(x,y,z,h,w,t,l)
         
-    def addWidget(self,widg):
-        self._widgets.append(widg)
+    def addWidget(self,widget):
+        self._widgets.append(widget)
         
     def draw(self):
-        for i in self._node:
+        for i in super()._node:
             i.draw(self)
     def draw_label(self):
         for i in self._widgets:
@@ -57,8 +57,8 @@ class Fr_Group(fr_widget.Fr_Widget):
             i.draw(self)
 
     def deactivate(self):
-        for widg in self._widgets:
-            del widg
+        for widget in super()._widgets:
+            del widget
         self._widgets.clear()
 
     """send event to all widgets

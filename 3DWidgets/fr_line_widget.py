@@ -25,36 +25,43 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
+"""
+This class is the base class for all widgets created in coin3D
+
+"""
 import os,sys
 import FreeCAD  as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import fr_widget
 import Design456Init
-import fr_draw
+import Draft as _draft
+import fr_draw 
+import fr_widget
 import constant
 
-#Group class. Use this to collect several widgets.
-class Fr_Edge(fr_widget.Fr_Widget):
-    def __init__(self, x,y,z,h,w,t,l):
-        super().__init__(x,y,z,h,w,t,l)
-        self.__type=constant.FR_WidgetType.Face
-        
+
+
+class Fr_Line_Widget(fr_widget.Fr_Widget):
+    selfwidget=None
+    def __init__(self, x,y,z,w,h,t,l=""):
+      super().__init__(x,y,z,h,w,t,l)
+      
+    def handel(self, event):
+        if event==const.Events.MOUSE_LEFT_CLICK:
+            self.setFocus(self)
     def draw(self):
-        p1=(self.__x,self.__y,self.__z)
-        p2=(self.__x+self.__w,self.__y+self.__h,self.__z)                   
-        __coinNode=fr_draw.draw_line(p1,p2,self.color(),self.__t)   #(p1, p2,color,LineWidth)
+        p1=(x,y,z)
+        p2=(x+w,y+h,z+t)
+        self.__color1= constant.FR_COLOR.FR_Green
+        self.__color2= constant.FR_COLOR.FR_Yellow  #Focus
+        LineWidth=4
+        if self.__hasFocus:
+            selfwidget=fr_draw.draw_line(p1, p2, self.__color1, LineWidth)
+        else:
+            selfwidget=fr_draw.draw_line(p1, p2, self.__color2, LineWidth)
+        parent(self).__SeneGraph.add(selfwidget)
+    
     def redraw(self):
-        del self.__coinNode
+        parent(self).__SeneGraph.remove(selfwidget)
+        selfwidget=None
         self.draw()
-    def  handle(self,events):
-        if self.active():
-            if events ==constant.FR_EVENTS.MOUSE_LEFT_CLICK():
-                self.__color=constant.FR_COLOR.FR_Select1()
-                self.redraw()
-                return 1          
-    def Activate(self):
-        self.draw()
-    def Deactivate(self):
-        del self.__coinNode
-        
