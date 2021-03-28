@@ -44,19 +44,20 @@ import constant
 class Fr_Line_Widget(fr_widget.Fr_Widget):
     selfwidget=None
     def __init__(self, x,y,z,w,h,t,l=""):
-      super().__init__(x,y,z,h,w,t,l)
+        WidgetType=constant.FR_WidgetType.FR_EDGE
+        super().__init__(x,y,z,h,w,t,l)
       
-    def handel(self, event):
+    def handle(self, event):
         print("fr_line_widget event")
-        if event==const.Events.MOUSE_LEFT_CLICK:
-            self.setFocus(self)
+        if event==constant.FR_EVENTS.MOUSE_LEFT_CLICK:
+            self.take_focus(self)
     def draw(self):
         p1=(self.x,self.y,self.z)
         p2=(self.x+self.w,self.y+self.h,self.z+self.t)
-        self.color1= constant.FR_COLOR.FR_Green
-        self.color2= constant.FR_COLOR.FR_Yellow  #Focus
+        self.color1= constant.FR_COLOR.FR_GREEN
+        self.color2= constant.FR_COLOR.FR_YELLOW  #Focus
         LineWidth=4
-        if self.hasFocus:
+        if self.has_focus():
             selfwidget=fr_draw.draw_line(p1, p2, self.color1, LineWidth)
         else:
             selfwidget=fr_draw.draw_line(p1, p2, self.color2, LineWidth)
