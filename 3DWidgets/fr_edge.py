@@ -39,6 +39,7 @@ class Fr_Edge(fr_widget.Fr_Widget):
     coinNode=None
     def __init__(self, x,y,z,h,w,t,l):
         super().__init__(x,y,z,h,w,t,l)
+        WidgetType=constant.FR_WidgetType.FR_EDGE
         self.type=constant.FR_WidgetType.Face
         
     def draw(self):
@@ -51,7 +52,7 @@ class Fr_Edge(fr_widget.Fr_Widget):
     def  handle(self,events):
         if self.active():
             if events ==constant.FR_EVENTS.MOUSE_LEFT_CLICK():
-                self.color1=constant.FR_COLOR.FR_Select1()
+                self.color1=constant.FR_COLOR.FR_SELECT1
                 self.redraw()
                 return 1          
     def Activate(self):

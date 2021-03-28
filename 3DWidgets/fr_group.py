@@ -33,6 +33,8 @@ import pivy.coin as coin
 import Design456Init
 import Draft as _draft
 import fr_widget 
+import constant 
+
 #Group class. Use this to collect several widgets.
 class Fr_Group(fr_widget.Fr_Widget):
     #Any drawign/Every thing should be added to this later 
@@ -40,6 +42,7 @@ class Fr_Group(fr_widget.Fr_Widget):
     children=[]
     
     def __init__(self, x,y,z,h,w,t,l):
+        WidgetType=constant.FR_WidgetType.FR_GROUP
         super().__init__(x,y,z,h,w,t,l)
         
     def addWidget(self,widget):

@@ -62,14 +62,14 @@ class Fr_Widget (object):
     l=""
     coinNode=coin.SoSeparator
     visible=True
-    bkgColor=constant.FR_COLOR.FR_Gray
-    frgColor=constant.FR_COLOR.FR_White
-    color1=constant.FR_COLOR.FR_Gray
-    color2=constant.FR_COLOR.FR_Black
+    bkgColor=constant.FR_COLOR.FR_GRAY
+    frgColor=constant.FR_COLOR.FR_WHITE
+    color1=constant.FR_COLOR.FR_GRAY
+    color2=constant.FR_COLOR.FR_BLACK
     box=None
-    active=False
+    active=True
     parent=None
-    type=constant.FR_WidgetType.FR_Widget
+    WidgetType=constant.FR_WidgetType.FR_WIDGET
     hasFocus=False
     
 
@@ -90,9 +90,11 @@ class Fr_Widget (object):
     def redraw(self):
         raise NotImplementedError()
     def take_focus(self):
-        hasFocus=True
+        self.hasFocus=True
+    def has_focus(self):
+        return self.hasFocus
     def remove_focus(self):
-        hasFocus=False
+        self.hasFocus=False
     """    #get private values     
     def x(self):
         return self.__x
@@ -153,8 +155,6 @@ class Fr_Widget (object):
         raise NotImplementedError()
     def draw_label():
         raise NotImplementedError()
-    def handle (self,event):
-        raise NotImplementedError()
     def parent(self):
         return self.parent
     def parent(self,parent):
@@ -166,18 +166,18 @@ class Fr_Widget (object):
         self.y=y
         self.z=z
     def resize(self,x,y,z,W,H,T): #Width, height, thickness
-        x=x
-        y=y
-        z=z
-        w=W
-        h=H
-        t=T
+        self.x=x
+        self.y=y
+        self.z=z
+        self.w=W
+        self.h=H
+        self.t=T
         self.redraw()
     def size (self,W,H,Z):
-        self.resize(self._x,self._y,self._z,W,H,T)
+        self.resize(self.x,self.y,self.z,W,H,T)
             
     #Take care of all events 
-    def handle():
+    def handle(self,events):
         raise NotImplementedError()
 
     #Callbacks 

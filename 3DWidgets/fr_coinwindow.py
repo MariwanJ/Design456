@@ -46,17 +46,16 @@ class mouseDimension:
 
 
 '''
-This is a class for coin3D Window
-
+  This is a class for coin3D Window
 '''
-
-
 class Fr_CoinWindow(fr_group.Fr_Group):
-    view =Gui.ActiveDocument.ActiveView
+
+    view = Gui.ActiveDocument.ActiveView
     lastEvent = None
     lastKeyEvent = []  # Might be more than one key.
     # This should keep the mouse pointer position on the 3D view
     lastEventXYZ = mouseDimension()
+    WidgetType=constant.FR_WidgetType.FR_COINWINDOW
 
     def __init__(self, x, y, z, h, w, t, l):
         super().__init__(x, y, z, h, w, t, l)
@@ -79,6 +78,19 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def handle(self, events):
         # write down all possible events.
         getEvent = events.getEvent()
+        # Mouse position must be registered always
+        pos = Gui.ActiveDocument.ActiveView.getCursorPos()
+        pnt = self.view.getPoint(pos)
+        self.lastEventXYZ.coin_x = pnt.x
+        self.lastEventXYZ.coin_y = pnt.y
+        self.lastEventXYZ.coin_z = pnt.z
+        self.lastEventXYZ.Qt_x = pos[0]
+        self.lastEventXYZ.Qt_y = pos[1]
+        print("00000")
+        print(self.lastEventXYZ.coin_x)
+        print(self.lastEventXYZ.coin_y)
+        print(self.lastEventXYZ.coin_z)
+        print("00000")
         if (type(getEvent) == coin.SoMouseButtonEvent):
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON1):
                 lastEvent = constant.FR_EVENTS.MOUSE_LEFT_CLICK
@@ -87,14 +99,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON2):
                 lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_CLICK
                # mouse movement
-        elif (type(getEvent) == coin.SoLocation2Event):
-            pos = Gui.ActiveDocument.ActiveView.getCursorPos()
-            pnt = self.view.getPoint(pos)
-            self.lastEventXYZ.coin_x = pnt.x
-            self.lastEventXYZ.coin_y = pnt.y
-            self.lastEventXYZ.coin_z = pnt.z
-            self.lastEventXYZ.Qt_x = pos[0]
-            self.lastEventXYZ.Qt_y = pos[1]
         # Take care of Keyboard events
         elif (type(getEvent) == coin.SoKeyboardEvent):
             key = ""
@@ -125,18 +129,29 @@ class Fr_CoinWindow(fr_group.Fr_Group):
                 of that. You must check that always.
                 Here we will distribute the event to the children
             """
-            
-            for wdg in self.children:
-                if wdg.active() and wdg.visible():
-                    if(self.checkIfEventIsRelevantForWidget(wdg)):
-                        if wdg.handel(getEvent) == 1:
-                            break
+
+        for wdg in self.children:
+            if (wdg.active() and wdg.visible() and wdg.type != constant.FR_WidgetType.FR_Widget):
+                if(self.checkIfEventIsRelevantForWidget(wdg)):
+                    if wdg.handle(getEvent) == 1:
+                        break
     '''
         Remove all callbacks registered for Fr_Window widget
     '''
 
     def checkIfEventIsRelevantForWidget(self, widget):
-        if self.lastEventXYZ.x >= widget.x and self.lastEventXYZ.x <= (widget.x+widget.w) and self.lastEventXYZ.y >= widget.y and self.lastEventXYZ.y <= (widget.y+widget.h) and self.lastEventXYZ.z >= widget.z and self.lastEventXYZ.z <= (widget.z+widget.t):
+        handelV = App.Vector(self.lastEventXYZ.Coin_x,self.lastEventXYZ.Coin_y, self.lastEventXYZ.Coin_z)
+        v1 = App.Vector(widget.x, widget.y, widget.z)
+        v2 = App.Vector(widget.x+widget.w, widget.y +widget.h, widget.z+widget.t)
+        distance = handelV.distanceToLine(handelV, v2)
+        print("-----------------")
+        print(handelV)
+        print(v1)
+        print(v2)
+        print("-------------------")
+        print("Distans=")
+        print(distance)
+        if distance == 0:
             return True
         else:
             return False
@@ -167,7 +182,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def show(self):
         self.draw()
         self.addCallbacks()
-        
+
     def removeChild(self, childWdg):
         try:
             self.children.remove(childWdg)
