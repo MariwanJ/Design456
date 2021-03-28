@@ -47,6 +47,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
       super().__init__(x,y,z,h,w,t,l)
       
     def handel(self, event):
+        print("fr_line_widget event")
         if event==const.Events.MOUSE_LEFT_CLICK:
             self.setFocus(self)
     def draw(self):

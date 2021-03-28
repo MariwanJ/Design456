@@ -127,7 +127,7 @@ class Fr_Widget (object):
     """
     #Activate, deactivate, get status of widget
     def visible(self):
-        return self.__visible
+        return self.visible
     def show(self):
         self.visible=True
         self.redraw()
