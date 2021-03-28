@@ -31,47 +31,50 @@ import sys
 #Widgets type 
 class FR_WidgetType:
     #FR_Widget is a generic definition, FR_Group will be such a widget
-    FR_Widget=          0
-    FR_Edge=           10
-    FR_Face=           20   #2D Shape
-    FR_BOX=            30    #3D Shape
-    FR_Button=         20
-    FR_Wheel=          30
-    
+    FR_WIDGET=          0
+    FR_GROUP=          10 
+    FR_COINWINDOW=     20    #3D World
+    FR_QTWINDOW=       30    #2D World
+    FR_EDGE=           40
+    FR_FACE=           50    
+    FR_BOX=            60    
+    FR_BUTTON=         70
+    FR_WHEEL=          80
+
 class FR_COLOR:
     #Transparency - No color will be applied
     
-    Fr_Transparency = (-1.00,-1.00,-100)  #No color 
-    FR_White =        (1.00, 1.00, 1.00)
-    FR_Silver=        (0.75, 0.75, 0.75)
-    FR_Gray=          (0.50, 0.50, 0.50)
-    FR_Gray0=         (0.41, 0.41, 0.41)
-    FR_Gray1=         (0.67, 0.67, 0.67)
-    FR_Gray2=         (0.78, 0.78, 0.78)
-    FR_Gray3=         (0.90, 0.90, 0.90)
+    FR_TRANSPARENCY = (-1.00,-1.00,-100)  #No color 
+    FR_WHITE =        (1.00, 1.00, 1.00)
+    FR_SILVER=        (0.75, 0.75, 0.75)
+    FR_GRAY=          (0.50, 0.50, 0.50)
+    FR_GRAY0=         (0.41, 0.41, 0.41)
+    FR_GRAY1=         (0.67, 0.67, 0.67)
+    FR_GRAY2=         (0.78, 0.78, 0.78)
+    FR_GRAY3=         (0.90, 0.90, 0.90)
 
-    FR_Black=         (0.00, 0.00, 0.00)
-    FR_Red=           (1.00, 0.00, 0.00)
-    FR_Maroon=        (0.50, 0.00, 0.00)
-    FR_Yellow=        (1.00, 1.00, 0.00)
-    FR_Select1=       (0.92, 0.96, 0.00)
-    FR_Select2=       (0.97, 0.99, 0.41)
-    FR_Select3=       (1.00, 0.85, 0.44)    
-    FR_Olive=         (0.50, 0.50, 0.00)
-    FR_Lime=          (0.00, 1.00, 0.00)
-    FR_Green=         (0.00, 0.50, 0.00)
-    FR_Aqua=          (0.00, 1.00, 1.00)
-    FR_Teal=          (0.00, 0.50, 0.50)
-    FR_Blue=          (0.00, 0.00, 1.00)
-    FR_Blue1=         (0.25, 0.03, 0.95)
-    FR_Blue2=         (0.45, 0.46, 0.91)
-    FR_Blue3=         (0.40, 0.62, 0.94)
-    FR_Blue4=         (0.38, 0.75, 0.94)
-    FR_Blue5=         (0.30, 0.85, 0.98)
-    FR_Navy=          (0.00, 0.00, 0.50)
-    FR_Fuchsia=       (1.00, 0.00, 1.00)
-    FR_Purple=        (0.50, 0.00, 0.50)
-    FR_White=         (1.00, 1.00, 1.00)
+    FR_BLACK=         (0.00, 0.00, 0.00)
+    FR_RED=           (1.00, 0.00, 0.00)
+    FR_MAROON=        (0.50, 0.00, 0.00)
+    FR_YELLOW=        (1.00, 1.00, 0.00)
+    FR_SELECT1=       (0.92, 0.96, 0.00)
+    FR_SELECT2=       (0.97, 0.99, 0.41)
+    FR_SELECT3=       (1.00, 0.85, 0.44)    
+    FR_OLIVE=         (0.50, 0.50, 0.00)
+    FR_LIME=          (0.00, 1.00, 0.00)
+    FR_GREEN=         (0.00, 0.50, 0.00)
+    FR_AQUA=          (0.00, 1.00, 1.00)
+    FR_TEAL=          (0.00, 0.50, 0.50)
+    FR_BLUE=          (0.00, 0.00, 1.00)
+    FR_BLUE1=         (0.25, 0.03, 0.95)
+    FR_BLUE2=         (0.45, 0.46, 0.91)
+    FR_BLUE3=         (0.40, 0.62, 0.94)
+    FR_BLUE4=         (0.38, 0.75, 0.94)
+    FR_BLUE5=         (0.30, 0.85, 0.98)
+    FR_NAVY=          (0.00, 0.00, 0.50)
+    FR_FUCHSIA=       (1.00, 0.00, 1.00)
+    FR_PURPLE=        (0.50, 0.00, 0.50)
+    FR_WHITE=         (1.00, 1.00, 1.00)
 
 #Box type when for widgets
 class FR_BoxType: #There will not be any boundary box or bkg box
