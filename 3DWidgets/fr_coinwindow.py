@@ -78,7 +78,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
 
     def handle(self, events):
         # write down all possible events.
-        print("event")
         getEvent = events.getEvent()
         if (type(getEvent) == coin.SoMouseButtonEvent):
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON1):
@@ -88,7 +87,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON2):
                 lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_CLICK
                # mouse movement
-        elif (type(event) == coin.SoLocation2Event):
+        elif (type(getEvent) == coin.SoLocation2Event):
             pos = Gui.ActiveDocument.ActiveView.getCursorPos()
             pnt = self.view.getPoint(pos)
             self.lastEventXYZ.coin_x = pnt.x
@@ -97,19 +96,19 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             self.lastEventXYZ.Qt_x = pos[0]
             self.lastEventXYZ.Qt_y = pos[1]
         # Take care of Keyboard events
-        elif (type(event) == coin.SoKeyboardEvent):
+        elif (type(getEvent) == coin.SoKeyboardEvent):
             key = ""
             try:
-                key = event.getKey()
+                key = getEvent.getKey()
             # Take care of CTRL,SHIFT,ALT
-                if (key == coin.SoKeyboardEvent.LEFT_CONTROL or coin.SoKeyboardEvent.RIGHT_CONTROL) and event.getState() == coin.SoButtonEvent.DOWN:
+                if (key == coin.SoKeyboardEvent.LEFT_CONTROL or coin.SoKeyboardEvent.RIGHT_CONTROL) and getEvent.getState() == coin.SoButtonEvent.DOWN:
                     self.lastKeyEvent.append(key)
-                elif(key == coin.SoKeyboardEvent.LEFT_SHIFT or coin.SoKeyboardEvent.RIGHT_SHIFT) and event.getState() == coin.SoButtonEvent.DOWN:
+                elif(key == coin.SoKeyboardEvent.LEFT_SHIFT or coin.SoKeyboardEvent.RIGHT_SHIFT) and getEvent.getState() == coin.SoButtonEvent.DOWN:
                     self.lastKeyEvent.append(key)
-                elif(key == coin.SoKeyboardEvent.LEFT_ALT or coin.SoKeyboardEvent.RIGHT_ALT) and event.getState() == coin.SoButtonEvent.DOWN:
+                elif(key == coin.SoKeyboardEvent.LEFT_ALT or coin.SoKeyboardEvent.RIGHT_ALT) and getEvent.getState() == coin.SoButtonEvent.DOWN:
                     self.lastKeyEvent.append(key)
                 # Take care of all other keys.
-                if(event.getState() == coin.SoButtonEvent.UP):
+                if(getEvent.getState() == coin.SoButtonEvent.UP):
                     self.lastKeyEvent.append(key)
             except ValueError:
                 # there is no character for this value
@@ -124,11 +123,14 @@ class Fr_CoinWindow(fr_group.Fr_Group):
                 Be aware that the EVENT must be inside the dimension of the widget.
                 Since parent don't know that directly. Widget itself should take care
                 of that. You must check that always.
+                Here we will distribute the event to the children
             """
-            for wdg in self._widgets:
+            
+            for wdg in self.children:
                 if wdg.active() and wdg.visible():
-                    if wdg.handel(events) == 1:
-                        break
+                    if(self.checkIfEventIsRelevantForWidget(wdg)):
+                        if wdg.handel(getEvent) == 1:
+                            break
     '''
         Remove all callbacks registered for Fr_Window widget
     '''
