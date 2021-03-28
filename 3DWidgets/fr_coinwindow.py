@@ -131,7 +131,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             """
 
         for wdg in self.children:
-            if (wdg.active() and wdg.visible() and wdg.type != constant.FR_WidgetType.FR_Widget):
+            if (wdg.active() and wdg.visible() and wdg.type != constant.FR_WidgetType.FR_WIDGET):
                 if(self.checkIfEventIsRelevantForWidget(wdg)):
                     if wdg.handle(getEvent) == 1:
                         break
