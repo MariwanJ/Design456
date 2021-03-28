@@ -109,9 +109,9 @@ class Grid:
         col1= coin.SoBaseColor()
         col2= coin.SoBaseColor()
         col3= coin.SoBaseColor()
-        col1.rgb= FR_COLOR.FR_Red      # RED
-        col2.rgb= FR_COLOR.FR_Green    # GREEN
-        col3.rgb= FR_COLOR.FR_Blue     # BLUE
+        col1.rgb= FR_COLOR.FR_RED      # RED
+        col2.rgb= FR_COLOR.FR_GREEN    # GREEN
+        col3.rgb= FR_COLOR.FR_BLUE    # BLUE
         
         LengthOfGrid = 1000  # mm
         counter = LengthOfGrid
