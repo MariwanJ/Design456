@@ -87,18 +87,13 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         #First mouse move event
         get_event = events.getEvent()
         if (type(get_event) == coin.SoLocation2Event):
-            pos=get_event.getPosition()
-            pnt = self.view.getPoint(pos)
-            self.lastEventXYZ.coin_x = pnt.x
-            self.lastEventXYZ.coin_y = pnt.y
-            self.lastEventXYZ.coin_z = pnt.z
+            pos=get_event.getPosition().getValue() 
+            pnt = self.view.getPoint(pos[0],pos[1])
+            self.lastEventXYZ.Coin_x = pnt.x
+            self.lastEventXYZ.Coin_y = pnt.y
+            self.lastEventXYZ.Coin_z = pnt.z
             self.lastEventXYZ.Qt_x = pos[0]
             self.lastEventXYZ.Qt_y = pos[1]
-            print(pnt.x)
-            print(pnt.y)
-            print(pnt.z)
-            print(pos[0])
-            print(pos[1])
         # Take care of Keyboard events
         elif (type(get_event) == coin.SoKeyboardEvent):
             key = ""
@@ -142,15 +137,15 @@ class Fr_CoinWindow(fr_group.Fr_Group):
 
         for wdg in self.children:
             if (wdg.active() and wdg.visible() and wdg.type != constant.FR_WidgetType.FR_WIDGET):
-                if(self.checkIfEventIsRelevantForWidget(wdg)):
-                    if wdg.handle(getEvent) == 1:
-                        break
+                #if(self.checkIfEventIsRelevantForWidget(wdg)):
+                if wdg.handle(get_event) == 1:
+                    break
 
     def checkIfEventIsRelevantForWidget(self, widget):
         handelV = App.Vector(self.lastEventXYZ.Coin_x,self.lastEventXYZ.Coin_y, self.lastEventXYZ.Coin_z)
         v1 = App.Vector(widget.x, widget.y, widget.z)
         v2 = App.Vector(widget.x+widget.w, widget.y +widget.h, widget.z+widget.t)
-        distance = handelV.distanceToLine(handelV, v2)
+        distance = handelV.distanceToLine(v1, v2)
         print("-----------------")
         print(handelV)
         print(v1)

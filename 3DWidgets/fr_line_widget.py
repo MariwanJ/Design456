@@ -48,9 +48,25 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         super().__init__(x,y,z,h,w,t,l)
       
     def handle(self, event):
-        print("fr_line_widget event")
-        if event==constant.FR_EVENTS.MOUSE_LEFT_CLICK:
-            self.take_focus(self)
+        print (self.parent)
+        print("line")
+        if self.parent.lastEvent==constant.FR_EVENTS.MOUSE_LEFT_CLICK:
+            render_manager = view.getViewer().getSoRenderManager()
+            ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
+            ray_pick.setPoint(coin.SbVec2s(*event.getPosition()))
+            ray_pick.apply(render_manager.getSceneGraph())
+            picked_points = ray_pick.getPickedPointList()
+            path = picked_points[0].getPath()
+            length = path.getLength()
+            point = path.getNode(length - 1)
+            print(point)
+            print(selfwidget)
+            if selfwidget==point:
+                self.take_focus(self)
+            
+            
+            
+            
     def draw(self):
         p1=(self.x,self.y,self.z)
         p2=(self.x+self.w,self.y+self.h,self.z+self.t)
