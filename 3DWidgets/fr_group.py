@@ -66,6 +66,7 @@ class Fr_Group(fr_widget.Fr_Widget):
 
     def addSeneNode(self, sen):
         self.SeneGraph.addChild(sen)
+        self.wdgsoSwitch.addChild(sen)
         
     def removeSeneNode(self, sen):
         self.SeneGraph.removeChild(sen)

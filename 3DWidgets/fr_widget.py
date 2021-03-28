@@ -71,7 +71,7 @@ class Fr_Widget (object):
     parent=None
     WidgetType=constant.FR_WidgetType.FR_WIDGET
     hasFocus=False
-    
+    wdgsoSwitch=coin.SoSwitch()
 
      
     #Coin SoSeparator (node)
@@ -84,6 +84,7 @@ class Fr_Widget (object):
         self.w=w
         self.t=t
         self.l=l
+        self.wdgsoSwitch.whichChild =coin.SO_SWITCH_ALL  #Show all
         
     def remove_drawing(self):
         raise NotImplementedError()
@@ -91,10 +92,12 @@ class Fr_Widget (object):
         raise NotImplementedError()
     def take_focus(self):
         self.hasFocus=True
+        self.redraw()
     def has_focus(self):
         return self.hasFocus
     def remove_focus(self):
         self.hasFocus=False
+        self.redraw()
     """    #get private values     
     def x(self):
         return self.__x
@@ -130,12 +133,6 @@ class Fr_Widget (object):
     #Activate, deactivate, get status of widget
     def visible(self):
         return self.visible
-    def show(self):
-        self.visible=True
-        self.redraw()
-    def hide(self):
-        self.visible=False
-        self.redraw()
     def activate(self):
         self.active=True
         self.redraw()
@@ -146,9 +143,15 @@ class Fr_Widget (object):
         return self.active
         
     def hide():
-        raise NotImplementedError()
-    def show():
-        raise NotImplementedError()
+        self.visible=False
+        self.wdgsoSwitch.whichChild =coin.SO_SWITCH_NONE #hide all children
+        self.redraw()
+
+    def show(self):
+        self.visible=True
+        self.wdgsoSwitch.whichChild =coin.SO_SWITCH_ALL #Show all children
+        self.redraw()
+        
     def draw_box(self):
         raise NotImplementedError()
     def draw():

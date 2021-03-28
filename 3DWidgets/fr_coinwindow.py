@@ -36,13 +36,16 @@ import fr_group
 import fr_widget
 import constant
 
+from dataclasses import dataclass
 
+#Struct to keep the mouse position in both world
+@dataclass
 class mouseDimension:
-    Coin_x = 0
-    Coin_y = 0
-    Coin_z = 0
-    Qt_x = 0
-    Qt_y = 0
+    Coin_x:float = 0.0
+    Coin_y:float = 0.0
+    Coin_z:float = 0.0
+    Qt_x  :float = 0.0
+    Qt_y  :float = 0.0
 
 
 '''
@@ -56,67 +59,74 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     # This should keep the mouse pointer position on the 3D view
     lastEventXYZ = mouseDimension()
     WidgetType=constant.FR_WidgetType.FR_COINWINDOW
-
+    callbackMove  =None
+    callbackClick =None
+    callbackKey   =None
     def __init__(self, x, y, z, h, w, t, l):
         super().__init__(x, y, z, h, w, t, l)
-        __view = Gui.ActiveDocument.ActiveView
+        view = Gui.ActiveDocument.ActiveView
         self.addCallbacks
 
+    '''
+        Remove all callbacks registered for Fr_Window widget
+    '''
     def removeCallbacks(self):
-        pass
+        self.view.removeEventCallbackPivy (coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+        self.view.removeEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
+        self.view.removeEventCallbackPivy (coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
+            
 
     def addCallbacks(self):
-        self.callback = self.view.addEventCallbackPivy(
-            coin.SoMouseButtonEvent.getClassTypeId(), self.handle)  # Mouse buttons
-        self.callback = self.view.addEventCallbackPivy(
-            coin.SoKeyboardEvent.getClassTypeId(), self.handle)     # Keyboard
-        self.view.removeEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(
-        ), self.handle)                # Mouse Move
-
+        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.handle)
+        self.callbackClick = self.view.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), self.handle)
+        self.callbackKey = self.view.addEventCallbackPivy(coin.SoKeyboardEvent.getClassTypeId() , self.handle)
     # All event come to this function. We classify the event to be processed by each widget later.
 
     def handle(self, events):
         # write down all possible events.
-        getEvent = events.getEvent()
-        # Mouse position must be registered always
-        pos = Gui.ActiveDocument.ActiveView.getCursorPos()
-        pnt = self.view.getPoint(pos)
-        self.lastEventXYZ.coin_x = pnt.x
-        self.lastEventXYZ.coin_y = pnt.y
-        self.lastEventXYZ.coin_z = pnt.z
-        self.lastEventXYZ.Qt_x = pos[0]
-        self.lastEventXYZ.Qt_y = pos[1]
-        print("00000")
-        print(self.lastEventXYZ.coin_x)
-        print(self.lastEventXYZ.coin_y)
-        print(self.lastEventXYZ.coin_z)
-        print("00000")
-        if (type(getEvent) == coin.SoMouseButtonEvent):
-            if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON1):
-                lastEvent = constant.FR_EVENTS.MOUSE_LEFT_CLICK
-            if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON3):
-                lastEvent = constant.FR_EVENTS.MOUSE_MIDDLE_CLICK
-            if (type(getEvent) == coin.SoMouseButtonEvent and getEvent.getState() == coin.SoMouseButtonEvent.DOWN and getEvent.getButton() == coin.SoMouseButtonEvent.BUTTON2):
-                lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_CLICK
-               # mouse movement
+        #First mouse move event
+        get_event = events.getEvent()
+        if (type(get_event) == coin.SoLocation2Event):
+            pos=get_event.getPosition()
+            pnt = self.view.getPoint(pos)
+            self.lastEventXYZ.coin_x = pnt.x
+            self.lastEventXYZ.coin_y = pnt.y
+            self.lastEventXYZ.coin_z = pnt.z
+            self.lastEventXYZ.Qt_x = pos[0]
+            self.lastEventXYZ.Qt_y = pos[1]
+            print(pnt.x)
+            print(pnt.y)
+            print(pnt.z)
+            print(pos[0])
+            print(pos[1])
         # Take care of Keyboard events
-        elif (type(getEvent) == coin.SoKeyboardEvent):
+        elif (type(get_event) == coin.SoKeyboardEvent):
             key = ""
             try:
-                key = getEvent.getKey()
+                key = get_event.getKey()
             # Take care of CTRL,SHIFT,ALT
-                if (key == coin.SoKeyboardEvent.LEFT_CONTROL or coin.SoKeyboardEvent.RIGHT_CONTROL) and getEvent.getState() == coin.SoButtonEvent.DOWN:
+                if (key == coin.SoKeyboardEvent.LEFT_CONTROL or coin.SoKeyboardEvent.RIGHT_CONTROL) and get_event.getState() == coin.SoButtonEvent.DOWN:
                     self.lastKeyEvent.append(key)
-                elif(key == coin.SoKeyboardEvent.LEFT_SHIFT or coin.SoKeyboardEvent.RIGHT_SHIFT) and getEvent.getState() == coin.SoButtonEvent.DOWN:
+                elif(key == coin.SoKeyboardEvent.LEFT_SHIFT or coin.SoKeyboardEvent.RIGHT_SHIFT) and get_event.getState() == coin.SoButtonEvent.DOWN:
                     self.lastKeyEvent.append(key)
-                elif(key == coin.SoKeyboardEvent.LEFT_ALT or coin.SoKeyboardEvent.RIGHT_ALT) and getEvent.getState() == coin.SoButtonEvent.DOWN:
+                elif(key == coin.SoKeyboardEvent.LEFT_ALT or coin.SoKeyboardEvent.RIGHT_ALT) and get_event.getState() == coin.SoButtonEvent.DOWN:
                     self.lastKeyEvent.append(key)
                 # Take care of all other keys.
-                if(getEvent.getState() == coin.SoButtonEvent.UP):
+                if(get_event.getState() == coin.SoButtonEvent.UP):
                     self.lastKeyEvent.append(key)
             except ValueError:
                 # there is no character for this value
                 key = ""
+        elif (type(get_event) == coin.SoMouseButtonEvent):
+            eventState= get_event.getState()
+            getButton=  get_event.getButton()
+            lastEvent=None
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
+                lastEvent = constant.FR_EVENTS.MOUSE_LEFT_CLICK
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON2:
+                lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_CLICK
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON3:
+                lastEvent = constant.FR_EVENTS.MOUSE_MIDDLE_CLICK
 
             """
                 When handle return 1, it means that the widgets (child) used the event
@@ -135,9 +145,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
                 if(self.checkIfEventIsRelevantForWidget(wdg)):
                     if wdg.handle(getEvent) == 1:
                         break
-    '''
-        Remove all callbacks registered for Fr_Window widget
-    '''
 
     def checkIfEventIsRelevantForWidget(self, widget):
         handelV = App.Vector(self.lastEventXYZ.Coin_x,self.lastEventXYZ.Coin_y, self.lastEventXYZ.Coin_z)

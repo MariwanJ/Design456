@@ -141,7 +141,7 @@ class Grid:
         
     def drawXYPlane(self):
         col= coin.SoBaseColor()
-        col.rgb=FR_COLOR.FR_Blue4 
+        col.rgb=FR_COLOR.FR_BLUE4 
         LengthOfGrid = 1000  # mm
         bothSideLength = LengthOfGrid/2
         GridSize = 5
