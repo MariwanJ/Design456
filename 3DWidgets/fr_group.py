@@ -72,48 +72,20 @@ class Fr_Group(fr_widget.Fr_Widget):
         self.SeneGraph.removeChild(sen)
 
         
-    """send event to all widgets
-       Targeted Widget should return 1 if it uses the event 
-       Sometimes it several widgets needs to get the event, 
-       at that time it can do the job it has and later return the
-       events itself. 
-       To know if the widget was the target, you have to 
-       calculate the dimension and the mouse position.
-       If the mouse position is inside the same 
-       dimension of the widget, the widget was the target,
-       otherwise it should just neglect it.
-    """
+
     def handle(self,events):
+        """send events to all widgets
+        Targeted Widget should return 1 if it uses the event 
+        Sometimes there might be several widgets that need to get the event, 
+        at that time return the event to achieve that. 
+        To find the target widget, you have to 
+        calculate find  the clicked object related to the mouse position.
+        Widgets shouldn't get the event if they are not targeted to not 
+        waste cpu:s time.     
+        
+        """
         for widg in self.children:
             if widg.handle(events) == 1:
                 #Events reached the targeted widget go out
                 return 1
  
-    #This section is from DRAFT
-    #It must help in finding the correct node 
-    #which represent the widget.
-    def getEditNode(self, pos):
-        """Get edit node from given screen position."""
-        node = self.sendRay(pos)
-        return node
-    
-    def sendRay(self, mouse_pos):
-        """Send a ray through the scene and return the nearest entity."""
-        ray_pick = coin.SoRayPickAction(self.render_manager.getViewportRegion())
-        ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
-        ray_pick.setRadius(self.pick_radius)
-        ray_pick.setPickAll(True)
-        ray_pick.apply(self.render_manager.getSceneGraph())
-        picked_point = ray_pick.getPickedPointList()
-        return self.searchEditNode(picked_point)
-
-    def searchEditNode(self, picked_point):
-        """Search edit node inside picked point list and return node number."""
-        for point in picked_point:
-            path = point.getPath()
-            length = path.getLength()
-            point = path.getNode(length - 2)
-            #import DraftTrackers
-            if hasattr(point,"subElementName") and 'EditNode' in str(point.subElementName.getValue()):
-                return point
-        return None

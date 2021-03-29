@@ -65,6 +65,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def __init__(self, x, y, z, h, w, t, l):
         super().__init__(x, y, z, h, w, t, l)
         view = Gui.ActiveDocument.ActiveView
+        self.parent=self    # No parent and this is the main window
         self.addCallbacks
 
     '''
@@ -115,13 +116,13 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         elif (type(get_event) == coin.SoMouseButtonEvent):
             eventState= get_event.getState()
             getButton=  get_event.getButton()
-            lastEvent=None
+            self.lastEvent=None
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
-                lastEvent = constant.FR_EVENTS.MOUSE_LEFT_CLICK
+                self.lastEvent = constant.FR_EVENTS.MOUSE_LEFT_CLICK
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON2:
-                lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_CLICK
+                self.lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_CLICK
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON3:
-                lastEvent = constant.FR_EVENTS.MOUSE_MIDDLE_CLICK
+                self.lastEvent = constant.FR_EVENTS.MOUSE_MIDDLE_CLICK
 
             """
                 When handle return 1, it means that the widgets (child) used the event
