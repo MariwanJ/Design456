@@ -205,7 +205,9 @@ class Fr_Widget (object):
     
     def sendRay(self, mouse_pos):
         """Send a ray through the scene and return the nearest entity."""
-        ray_pick = coin.SoRayPickAction(self.render_manager.getViewportRegion())
+        viewer = Gui.ActiveDocument.ActiveView.getViewer()
+        render_manager = viewer.getSoRenderManager()
+        ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
         ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
         ray_pick.setRadius(self.pick_radius)
         ray_pick.setPickAll(True)
