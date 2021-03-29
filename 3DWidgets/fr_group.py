@@ -40,7 +40,7 @@ class Fr_Group(fr_widget.Fr_Widget):
     #Any drawign/Every thing should be added to this later 
     SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
     children=[]
-    
+    pick_radius= 3 # See if this must be a parameter in the GUI /Mariwan
     def __init__(self, x,y,z,h,w,t,l):
         WidgetType=constant.FR_WidgetType.FR_GROUP
         super().__init__(x,y,z,h,w,t,l)
@@ -89,4 +89,31 @@ class Fr_Group(fr_widget.Fr_Widget):
                 #Events reached the targeted widget go out
                 return 1
  
-            
+    #This section is from DRAFT
+    #It must help in finding the correct node 
+    #which represent the widget.
+    def getEditNode(self, pos):
+        """Get edit node from given screen position."""
+        node = self.sendRay(pos)
+        return node
+    
+    def sendRay(self, mouse_pos):
+        """Send a ray through the scene and return the nearest entity."""
+        ray_pick = coin.SoRayPickAction(self.render_manager.getViewportRegion())
+        ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
+        ray_pick.setRadius(self.pick_radius)
+        ray_pick.setPickAll(True)
+        ray_pick.apply(self.render_manager.getSceneGraph())
+        picked_point = ray_pick.getPickedPointList()
+        return self.searchEditNode(picked_point)
+
+    def searchEditNode(self, picked_point):
+        """Search edit node inside picked point list and return node number."""
+        for point in picked_point:
+            path = point.getPath()
+            length = path.getLength()
+            point = path.getNode(length - 2)
+            #import DraftTrackers
+            if hasattr(point,"subElementName") and 'EditNode' in str(point.subElementName.getValue()):
+                return point
+        return None
