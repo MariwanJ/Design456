@@ -42,7 +42,6 @@ import constant
 
 
 class Fr_Line_Widget(fr_widget.Fr_Widget):
-    selfwidget=None
     def __init__(self, x,y,z,w,h,t,l=""):
         WidgetType=constant.FR_WidgetType.FR_EDGE
         super().__init__(x,y,z,h,w,t,l)
@@ -51,21 +50,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         print (self.parent)
         print("line")
         if self.parent.lastEvent==constant.FR_EVENTS.MOUSE_LEFT_CLICK:
-            render_manager = view.getViewer().getSoRenderManager()
-            ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
-            ray_pick.setPoint(coin.SbVec2s(*event.getPosition()))
-            ray_pick.apply(render_manager.getSceneGraph())
-            picked_points = ray_pick.getPickedPointList()
-            path = picked_points[0].getPath()
-            length = path.getLength()
-            point = path.getNode(length - 1)
-            print(point)
-            print(selfwidget)
-            if selfwidget==point:
+            clickedNode=self.getEditNode(App.Vector(self.parent.lastEventXYZ.Coin_x,
+                                        self.parent.lastEventXYZ.Coin_y,
+                                        self.parent.lastEventXYZ.Coin_z
+                                        )
+            if selfwidget==clickedNode:
                 self.take_focus(self)
-            
-            
-            
             
     def draw(self):
         p1=(self.x,self.y,self.z)
@@ -74,12 +64,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.color2= constant.FR_COLOR.FR_YELLOW  #Focus
         LineWidth=4
         if self.has_focus():
-            selfwidget=fr_draw.draw_line(p1, p2, self.color1, LineWidth)
+            coinNode=fr_draw.draw_line(p1, p2, self.color1, LineWidth)
         else:
-            selfwidget=fr_draw.draw_line(p1, p2, self.color2, LineWidth)
-        self.parent.addSeneNode(selfwidget)
+            coinNode=fr_draw.draw_line(p1, p2, self.color2, LineWidth)
+        self.parent.addSeneNode(coinNode)
     
     def redraw(self):
-        parent(self).removeSeneNode(selfwidget)
-        selfwidget=None
+        parent(self).removeSeneNode(coinNode)
+        coinNode=None
         self.draw()
