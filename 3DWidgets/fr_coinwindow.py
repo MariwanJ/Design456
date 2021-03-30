@@ -42,32 +42,38 @@ from dataclasses import dataclass
 @dataclass
 class mouseDimension:
     
-    Coin_x = 0.0
-    Coin_y = 0.0
-    Coin_z = 0.0
-    Qt_x   = 0.0
-    Qt_y   = 0.0
-    pos  =None
+    global Coin_x 
+    global Coin_y 
+    global Coin_z 
+    global Qt_x   
+    global Qt_y   
+    global pos  
 
 '''
   This is a class for coin3D Window
 '''
 class Fr_CoinWindow(fr_group.Fr_Group):
 
-    view = Gui.ActiveDocument.ActiveView
-    lastEvent = None
-    lastKeyEvent = []  # Might be more than one key.
+    global view
+    global lastEvent 
+    global lastKeyEvent
+    
     # This should keep the mouse pointer position on the 3D view
-    lastEventXYZ = mouseDimension()
-    WidgetType=constant.FR_WidgetType.FR_COINWINDOW
+    global lastEventXYZ 
     callbackMove  =None
     callbackClick =None
     callbackKey   =None
+    
     def __init__(self, x, y, z, h, w, t, l):
-        super().__init__(x, y, z, h, w, t, l)
-        view = Gui.ActiveDocument.ActiveView
+        self.view = Gui.ActiveDocument.ActiveView
         self.parent=self    # No parent and this is the main window
         self.addCallbacks
+        self.lastEvent= None
+        self.lastKeyEvent= []  # Might be more than one key.
+        self.lastEventXYZ = mouseDimension()
+        self.WidgetType=constant.FR_WidgetType.FR_COINWINDOW
+        
+        super().__init__(x, y, z, h, w, t, l)
 
     '''
         Remove all callbacks registered for Fr_Window widget
@@ -143,7 +149,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             """
 
         for wdg in self.children:
-            if (wdg.active() and wdg.visible() and wdg.type != constant.FR_WidgetType.FR_WIDGET):
+            if (wdg.active and wdg.visible and wdg.type != constant.FR_WidgetType.FR_WIDGET):
                 #if(self.checkIfEventIsRelevantForWidget(wdg)):
                 if wdg.handle(get_event) == 1:
                     break
