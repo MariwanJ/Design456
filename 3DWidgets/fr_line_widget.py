@@ -25,10 +25,6 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-"""
-This class is the base class for all widgets created in coin3D
-
-"""
 import os,sys
 import FreeCAD  as App
 import FreeCADGui as Gui
@@ -39,22 +35,27 @@ import fr_draw
 import fr_widget
 import constant
 
-
-
 class Fr_Line_Widget(fr_widget.Fr_Widget):
+    
+    """
+    This class is for drawing a line in  coin3D
+    """
     def __init__(self, x,y,z,w,h,t,l=""):
-        WidgetType=constant.FR_WidgetType.FR_EDGE
+        self.WidgetType=constant.FR_WidgetType.FR_EDGE
         super().__init__(x,y,z,h,w,t,l)
       
     def handle(self, event):
         #print(constant.FR_EVENTS.MOUSE_LEFT_CLICK)
         if self.parent.lastEvent==constant.FR_EVENTS.MOUSE_LEFT_CLICK:
+            print ("7777777777777777777777")
+            print(self.parent.lastEventXYZ.pos)
             clickedNode=self.getEditNode(self.parent.lastEventXYZ.pos)
             print("---------------")
-            print(clickedNode)
-            print(self.coinNode)
+            print(dir(clickedNode[0]))
+            print(self.coinNode.getNodeId())
             print("---------------")
-            if self.coinNode==clickedNode[0] :
+            if self.coinNode.getNodeId() == clickedNode.getNodeId():
+            #if self.coinNode==clickedNode[0] :
                 self.take_focus(self)
             
     def draw(self):

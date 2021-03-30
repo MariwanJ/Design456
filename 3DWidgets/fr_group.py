@@ -38,11 +38,12 @@ import constant
 #Group class. Use this to collect several widgets.
 class Fr_Group(fr_widget.Fr_Widget):
     #Any drawign/Every thing should be added to this later 
-    SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
-    children=[]
-    pick_radius= 3 # See if this must be a parameter in the GUI /Mariwan
+    global SeneGraph 
+    global children
     def __init__(self, x,y,z,h,w,t,l):
-        WidgetType=constant.FR_WidgetType.FR_GROUP
+        self.WidgetType=constant.FR_WidgetType.FR_GROUP
+        self.SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        self.children=[]
         super().__init__(x,y,z,h,w,t,l)
         
     def addWidget(self,widget):
