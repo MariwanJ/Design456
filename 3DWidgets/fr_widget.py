@@ -215,7 +215,7 @@ class Fr_Widget (object):
         ray_pick.apply(render_manager.getSceneGraph())
         picked_point = ray_pick.getPickedPointList()
         return picked_point
-        return self.searchEditNode(picked_point)
+        #return self.searchEditNode(picked_point)
     def searchEditNode(self, picked_point):
         """Search edit node inside picked point list and return node number."""
         for point in picked_point:
