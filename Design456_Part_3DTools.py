@@ -297,7 +297,7 @@ class Design456_Part_Compound:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Design456Part_Compound.svg',
+            'Pixmap': Design456Init.ICON_PATH + '/Design456_Part_Compound.svg',
             'MenuText': 'Part Compound',
             'ToolTip':  'Part Compound'
         }
