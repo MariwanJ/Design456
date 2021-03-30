@@ -53,31 +53,30 @@ you can implement draw function
 
       
 class Fr_Widget (object):
-    x=0
-    y=0
-    z=0
-    h=0
-    w=0
-    t=0
-    l=""
-    coinNode=coin.SoSeparator
-    visible=True
-    bkgColor=constant.FR_COLOR.FR_GRAY
-    frgColor=constant.FR_COLOR.FR_WHITE
-    color1=constant.FR_COLOR.FR_GRAY
-    color2=constant.FR_COLOR.FR_BLACK
-    box=None
-    active=True
-    parent=None
-    WidgetType=constant.FR_WidgetType.FR_WIDGET
-    hasFocus=False
-    wdgsoSwitch=coin.SoSwitch()
-    pick_radius=3;
-
+    global x
+    global y
+    global z
+    global h
+    global w
+    global t
+    global l
+    global coinNode
+    global visible
+    global bkgColor
+    global frgColor
+    global color1
+    global color2
+    global box
+    global active
+    global parent
+    global WidgetType
+    global hasFocus
+    global wdgsoSwitch
+    global pick_radius
      
     #Coin SoSeparator (node)
 
-    def __init__(self, x,y,z,h,w,t=0,l=""):
+    def __init__(self, x=0,y=0,z=0,h=0,w=0,t=0,l=""):
         self.x=x
         self.y=y
         self.z=z=0
@@ -85,6 +84,19 @@ class Fr_Widget (object):
         self.w=w
         self.t=t
         self.l=l
+        self.coinNode=coin.SoSeparator
+        self.visible=True
+        self.bkgColor=constant.FR_COLOR.FR_GRAY
+        self.frgColor=constant.FR_COLOR.FR_WHITE
+        self.color1=constant.FR_COLOR.FR_GRAY
+        self.color2=constant.FR_COLOR.FR_BLACK
+        self.box=None
+        self.active=True
+        self.parent=None
+        self.WidgetType=constant.FR_WidgetType.FR_WIDGET
+        self.hasFocus=False
+        self.wdgsoSwitch=coin.SoSwitch()
+        self.pick_radius= 3 # See if this must be a parameter in the GUI /Mariwan
         self.wdgsoSwitch.whichChild =coin.SO_SWITCH_ALL  #Show all
         
     def remove_drawing(self):
@@ -214,8 +226,9 @@ class Fr_Widget (object):
         ray_pick.setPickAll(True)
         ray_pick.apply(render_manager.getSceneGraph())
         picked_point = ray_pick.getPickedPointList()
-        return picked_point
-        #return self.searchEditNode(picked_point)
+        print("picked_point0000000000000")
+        print(picked_point)
+        return self.searchEditNode(picked_point)
     def searchEditNode(self, picked_point):
         """Search edit node inside picked point list and return node number."""
         for point in picked_point:
