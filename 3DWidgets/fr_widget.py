@@ -72,6 +72,7 @@ class Fr_Widget (object):
     WidgetType=constant.FR_WidgetType.FR_WIDGET
     hasFocus=False
     wdgsoSwitch=coin.SoSwitch()
+    pick_radius=3;
 
      
     #Coin SoSeparator (node)
@@ -211,8 +212,9 @@ class Fr_Widget (object):
         ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
         ray_pick.setRadius(self.pick_radius)
         ray_pick.setPickAll(True)
-        ray_pick.apply(self.render_manager.getSceneGraph())
+        ray_pick.apply(render_manager.getSceneGraph())
         picked_point = ray_pick.getPickedPointList()
+        return picked_point
         return self.searchEditNode(picked_point)
     def searchEditNode(self, picked_point):
         """Search edit node inside picked point list and return node number."""

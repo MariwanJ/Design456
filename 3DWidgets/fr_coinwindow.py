@@ -41,12 +41,13 @@ from dataclasses import dataclass
 #Struct to keep the mouse position in both world
 @dataclass
 class mouseDimension:
-    Coin_x:float = 0.0
-    Coin_y:float = 0.0
-    Coin_z:float = 0.0
-    Qt_x  :float = 0.0
-    Qt_y  :float = 0.0
-
+    
+    Coin_x = 0.0
+    Coin_y = 0.0
+    Coin_z = 0.0
+    Qt_x   = 0.0
+    Qt_y   = 0.0
+    pos  =None
 
 '''
   This is a class for coin3D Window
@@ -88,7 +89,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         #First mouse move event
         get_event = events.getEvent()
         if (type(get_event) == coin.SoLocation2Event):
-            pos=get_event.getPosition().getValue() 
+ 
+            self.lastEventXYZ.pos=get_event.getPosition()
+            pos=self.lastEventXYZ.pos.getValue()
             pnt = self.view.getPoint(pos[0],pos[1])
             self.lastEventXYZ.Coin_x = pnt.x
             self.lastEventXYZ.Coin_y = pnt.y
@@ -116,6 +119,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         elif (type(get_event) == coin.SoMouseButtonEvent):
             eventState= get_event.getState()
             getButton=  get_event.getButton()
+ 
+            print(self.lastEventXYZ.pos)
+ 
             self.lastEvent=None
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
                 self.lastEvent = constant.FR_EVENTS.MOUSE_LEFT_CLICK

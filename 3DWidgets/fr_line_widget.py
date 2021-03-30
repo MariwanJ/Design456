@@ -49,11 +49,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def handle(self, event):
         #print(constant.FR_EVENTS.MOUSE_LEFT_CLICK)
         if self.parent.lastEvent==constant.FR_EVENTS.MOUSE_LEFT_CLICK:
-            clickedNode=self.getEditNode(App.Vector(self.parent.lastEventXYZ.Coin_x,
-                                        self.parent.lastEventXYZ.Coin_y,
-                                        self.parent.lastEventXYZ.Coin_z))
-            
-            if self.coinNode==clickedNode :
+            clickedNode=self.getEditNode(self.parent.lastEventXYZ.pos)
+            print("---------------")
+            print(clickedNode)
+            print(self.coinNode)
+            print("---------------")
+            if self.coinNode==clickedNode[0] :
                 self.take_focus(self)
             
     def draw(self):
