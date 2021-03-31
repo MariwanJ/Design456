@@ -63,7 +63,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     callbackMove  =None
     callbackClick =None
     callbackKey   =None
-    
+ 
     def __init__(self, x, y, z, h, w, t, l):
         self.view = Gui.ActiveDocument.ActiveView
         self.parent=self    # No parent and this is the main window
@@ -72,7 +72,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.lastKeyEvent= []  # Might be more than one key.
         self.lastEventXYZ = mouseDimension()
         self.WidgetType=constant.FR_WidgetType.FR_COINWINDOW
-        
         super().__init__(x, y, z, h, w, t, l)
 
     '''
@@ -126,7 +125,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             eventState= get_event.getState()
             getButton=  get_event.getButton()
  
-            print(self.lastEventXYZ.pos)
+            #print(self.lastEventXYZ.pos)
  
             self.lastEvent=None
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
@@ -159,13 +158,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         v1 = App.Vector(widget.x, widget.y, widget.z)
         v2 = App.Vector(widget.x+widget.w, widget.y +widget.h, widget.z+widget.t)
         distance = handelV.distanceToLine(v1, v2)
-        print("-----------------")
-        print(handelV)
-        print(v1)
-        print(v2)
-        print("-------------------")
-        print("Distans=")
-        print(distance)
         if distance == 0:
             return True
         else:

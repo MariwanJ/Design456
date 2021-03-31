@@ -44,6 +44,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         self.WidgetType=constant.FR_WidgetType.FR_GROUP
         self.SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self.children=[]
+        self.MainCoinNode=self.SeneGraph # Main and 
         super().__init__(x,y,z,h,w,t,l)
         
     def addWidget(self,widget):
