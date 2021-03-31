@@ -231,10 +231,14 @@ class Fr_Widget (object):
         return self.searchEditNode(picked_point)
     def searchEditNode(self, picked_point):
         """Search edit node inside picked point list and return node number."""
+        print("here piced")
+        print(picked_point)
         if picked_point !=None and picked_point!= 0: 
                 path = picked_point.getPath()
                 length = path.getLength()
+                return path.getHead()
                 for i in path: 
                     if i.isOfType(coin.SoDragger.getClassTypeId()):
-                        return i
+                        break
+                point = path.getNode(length - 2)
         return None

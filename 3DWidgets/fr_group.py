@@ -38,13 +38,13 @@ import constant
 #Group class. Use this to collect several widgets.
 class Fr_Group(fr_widget.Fr_Widget):
     #Any drawign/Every thing should be added to this later 
-    global SeneGraph 
+    global Root_SeneGraph  
     global children
     def __init__(self, x,y,z,h,w,t,l):
         self.WidgetType=constant.FR_WidgetType.FR_GROUP
-        self.SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self.children=[]
-        self.MainCoinNode=self.SeneGraph # Main and 
+        self.MainCoinNode=self.Root_SeneGraph # Main and 
         super().__init__(x,y,z,h,w,t,l)
         
     def addWidget(self,widget):
@@ -67,11 +67,11 @@ class Fr_Group(fr_widget.Fr_Widget):
         self.children.clear()
 
     def addSeneNode(self, sen):
-        self.SeneGraph.addChild(sen)
-        self.wdgsoSwitch.addChild(sen)
+        self.Root_SeneGraph.addChild(sen)  #add sen to the root
+        self.wdgsoSwitch.addChild(sen)  #add switch also
         
     def removeSeneNode(self, sen):
-        self.SeneGraph.removeChild(sen)
+        self.Root_SeneGraph.removeChild(sen)
 
         
 
