@@ -47,14 +47,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def handle(self, event):
         #print(constant.FR_EVENTS.MOUSE_LEFT_CLICK)
         if self.parent.lastEvent==constant.FR_EVENTS.MOUSE_LEFT_CLICK:
-            print ("7777777777777777777777")
-            print(self.parent.lastEventXYZ.pos)
             clickedNode=self.getEditNode(self.parent.lastEventXYZ.pos)
-            print("---------------")
-            print(dir(clickedNode[0]))
-            print(self.coinNode.getNodeId())
-            print("---------------")
-            if self.coinNode.getNodeId() == clickedNode.getNodeId():
+            print(self.WidgetCoinNode)
+            print(clickedNode)
+            if self.WidgetCoinNode== clickedNode:
             #if self.coinNode==clickedNode[0] :
                 self.take_focus(self)
             
@@ -65,10 +61,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.color2= constant.FR_COLOR.FR_YELLOW  #Focus
         LineWidth=4
         if self.has_focus():
-            coinNode=fr_draw.draw_line(p1, p2, self.color1, LineWidth)
+            self.WidgetCoinNode=fr_draw.draw_line(p1, p2, self.color1, LineWidth)
         else:
-            coinNode=fr_draw.draw_line(p1, p2, self.color2, LineWidth)
-        self.parent.addSeneNode(coinNode)
+            self.WidgetCoinNode=fr_draw.draw_line(p1, p2, self.color2, LineWidth)
+        self.parent.addSeneNode(self.WidgetCoinNode)
     
     def redraw(self):
         parent(self).removeSeneNode(coinNode)
