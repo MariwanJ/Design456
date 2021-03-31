@@ -60,7 +60,7 @@ class Fr_Widget (object):
     global w
     global t
     global l
-    global coinNode
+    global WidgetCoinNode  #This is for the children or the widget itself
     global visible
     global bkgColor
     global frgColor
@@ -84,7 +84,7 @@ class Fr_Widget (object):
         self.w=w
         self.t=t
         self.l=l
-        self.coinNode=coin.SoSeparator
+        self.WidgetCoinNode=coin.SoSeparator
         self.visible=True
         self.bkgColor=constant.FR_COLOR.FR_GRAY
         self.frgColor=constant.FR_COLOR.FR_WHITE
@@ -225,17 +225,16 @@ class Fr_Widget (object):
         ray_pick.setRadius(self.pick_radius)
         ray_pick.setPickAll(True)
         ray_pick.apply(render_manager.getSceneGraph())
-        picked_point = ray_pick.getPickedPointList()
-        print("picked_point0000000000000")
-        print(picked_point)
+        picked_point = ray_pick.getPickedPoint()
+        #print("picked_point0000000000000")
+        #print(picked_point)
         return self.searchEditNode(picked_point)
     def searchEditNode(self, picked_point):
         """Search edit node inside picked point list and return node number."""
-        for point in picked_point:
-            path = point.getPath()
-            length = path.getLength()
-            point = path.getNode(length - 2)
-            #import DraftTrackers
-            if hasattr(point,"subElementName") and 'EditNode' in str(point.subElementName.getValue()):
-                return point
+        if picked_point !=None and picked_point!= 0: 
+                path = picked_point.getPath()
+                length = path.getLength()
+                for i in path: 
+                    if i.isOfType(coin.SoDragger.getClassTypeId()):
+                        return i
         return None
