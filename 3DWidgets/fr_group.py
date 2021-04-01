@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 #
@@ -42,9 +41,8 @@ class Fr_Group(fr_widget.Fr_Widget):
     global children
     def __init__(self, x,y,z,h,w,t,l):
         self.WidgetType=constant.FR_WidgetType.FR_GROUP
-        self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()  #Root of the children (coin)
         self.children=[]
-        self.MainCoinNode=self.Root_SeneGraph # Main and 
         super().__init__(x,y,z,h,w,t,l)
         
     def addWidget(self,widget):
@@ -55,11 +53,11 @@ class Fr_Group(fr_widget.Fr_Widget):
             i.draw()
     def draw_label(self):
         for i in self.children:
-           i.draw_label() 
+            i.draw_label() 
     
     def redraw(self):
         for i in self.children:
-            i.draw(self)
+            i.redraw(self)
 
     def deactivate(self):
         for widget in self.children:
@@ -72,8 +70,6 @@ class Fr_Group(fr_widget.Fr_Widget):
         
     def removeSeneNode(self, sen):
         self.Root_SeneGraph.removeChild(sen)
-
-        
 
     def handle(self,events):
         """send events to all widgets
