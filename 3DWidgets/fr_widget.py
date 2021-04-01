@@ -38,21 +38,22 @@ import Draft as _draft
 import fr_draw 
 import constant
 
-"""
-Abstract Base class used to create all Widgets
-You need to subclass this object 
-to be able to create other objects,
-and you should always have a Fr_Group 
-widget which acts like a container for the widgets.
-fr_window widget will take care of that,
-events will be distributed by fr_window
-and it is a subclassed object from fr_group.
-fr_group doesn't need to be drawn, but 
-you can implement draw function
-"""
+
 
       
 class Fr_Widget (object):
+    """
+    Abstract Base class used to create all Widgets
+    You need to subclass this object 
+    to be able to create other objects,
+    and you should always have a Fr_Group 
+    widget which acts like a container for the widgets.
+    fr_window widget will take care of that,
+    events will be distributed by fr_window
+    and it is a subclassed object from fr_group.
+    fr_group doesn't need to be drawn, but 
+    you can implement draw function
+    """
     global x
     global y
     global z
@@ -99,63 +100,54 @@ class Fr_Widget (object):
         self.pick_radius= 3 # See if this must be a parameter in the GUI /Mariwan
         self.wdgsoSwitch.whichChild =coin.SO_SWITCH_ALL  #Show all
         
-    def remove_drawing(self):
-        raise NotImplementedError()
     def redraw(self):
         raise NotImplementedError()
     def take_focus(self):
+        if self.has_focus==True:
+            return # nothing to do here
         self.hasFocus=True
         self.redraw()
+    
+    def move(self,x,y,z):
+        """ Move the widget to a new location.
+        The new location is reference to the 
+        left-upper corner"""
+        raise NotImplementedError()
+
+    def move_centerOfMass(self,x,y,z):
+        """ Move the widget to a new location.
+        The new location is reference to the 
+        center of mass"""
+        raise NotImplementedError()
+
     def has_focus(self):
         return self.hasFocus
     def remove_focus(self):
-        self.hasFocus=False
-        self.redraw()
-    """    #get private values     
-    def x(self):
-        return self.__x
-    def y(self):
-        return self.__y
-    def z(self):
-        return self.__z
-    def l(self):
-        return self.__l
-    def w(self):
-        return self.__w
-    def h(self):
-        return self.__h
-    def l(self):
-        return self.__l
-            
-    #set private variables
-    def x(self,x):
-        self.__x=x
-    def y(self,y):
-        self.__y=y
-    def z(self,z):
-        self.__z=z
-    def w(self,w):
-        self.__w=w
-    def h(self,h):
-        self.__h=h
-    def t(self,t):
-        self.__t=t
-    def l(self,l):
-        self.__l=l
-    """
+        if self.hasFocus==False:
+            return # nothing to do
+        else:
+            self.hasFocus=False
+            self.redraw()
+
     #Activate, deactivate, get status of widget
-    def visible(self):
+    def is_visible(self):
         return self.visible
     def activate(self):
+        if self.active:
+            return #nothing to do 
         self.active=True
         self.redraw()
     def deactivate(self):
+        if self.active==False :
+            return #Nothing to do 
         self.active=False
         self.redraw()
-    def active(self):
+    def is_active(self):
         return self.active
         
     def hide():
+        if self.visible==False:
+            return # nothing to do 
         self.visible=False
         self.wdgsoSwitch.whichChild =coin.SO_SWITCH_NONE #hide all children
         self.redraw()
@@ -177,6 +169,11 @@ class Fr_Widget (object):
         self.parent=parent
     def type(self):
         return self.type
+    def getPosition(self):
+        return (x,y,z)
+    def getPositionAsVertex(self):
+        return App.Vertex(x,y,z)
+    
     def position(self,x,y,z):
         self.x=x
         self.y=y
@@ -189,6 +186,7 @@ class Fr_Widget (object):
         self.h=H
         self.t=T
         self.redraw()
+        
     def size (self,W,H,Z):
         self.resize(self.x,self.y,self.z,W,H,T)
             
@@ -218,27 +216,34 @@ class Fr_Widget (object):
     
     def sendRay(self, mouse_pos):
         """Send a ray through the scene and return the nearest entity."""
-        viewer = Gui.ActiveDocument.ActiveView.getViewer()
-        render_manager = viewer.getSoRenderManager()
-        ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
-        ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
-        ray_pick.setRadius(self.pick_radius)
-        ray_pick.setPickAll(True)
-        ray_pick.apply(render_manager.getSceneGraph())
-        picked_point = ray_pick.getPickedPoint()
-        #print("picked_point0000000000000")
-        #print(picked_point)
-        return self.searchEditNode(picked_point)
+        try:
+            viewer = Gui.ActiveDocument.ActiveView.getViewer()
+            render_manager = viewer.getSoRenderManager()
+            ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
+            ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
+            ray_pick.setRadius(self.pick_radius)
+            ray_pick.setPickAll(True)
+            ray_pick.apply(render_manager.getSceneGraph())
+            picked_point = ray_pick.getPickedPoint()
+            return self.searchEditNode(picked_point)
+        except Exception as err:
+            App.Console.PrintError("'SplitObject' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def searchEditNode(self, picked_point):
-        """Search edit node inside picked point list and return node number."""
-        print("here piced")
-        print(picked_point)
-        if picked_point !=None and picked_point!= 0: 
+        """Search edit node inside picked point list and return node ."""
+        try:
+            if picked_point !=None and picked_point!= 0: 
                 path = picked_point.getPath()
-                length = path.getLength()
-                return path.getHead()
-                for i in path: 
-                    if i.isOfType(coin.SoDragger.getClassTypeId()):
-                        break
-                point = path.getNode(length - 2)
-        return None
+                pickedNode = path.getTail()       
+                return pickedNode
+        except Exception as err:
+            App.Console.PrintError("'SplitObject' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            

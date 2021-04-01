@@ -34,29 +34,11 @@ import Design456Init
 import fr_draw
 import constant
 
-#Group class. Use this to collect several widgets.
-class Fr_Edge(fr_widget.Fr_Widget):
-    coinNode=None
-    def __init__(self, x,y,z,h,w,t,l):
-        super().__init__(x,y,z,h,w,t,l)
-        WidgetType=constant.FR_WidgetType.FR_EDGE
-        self.type=constant.FR_WidgetType.Face
-        
-    def draw(self):
-        p1=(self.x,self.y,self.z)
-        p2=(self.x+self.w,self.y+self.h,self.z)                   
-        self.coinNode=fr_draw.draw_line(p1,p2,self.color(),self.t)   #(p1, p2,color,LineWidth)
-    def redraw(self):
-        del self.coinNode
-        self.draw()
-    def  handle(self,events):
-        if self.active():
-            if events ==constant.FR_EVENTS.MOUSE_LEFT_CLICK():
-                self.color1=constant.FR_COLOR.FR_SELECT1
-                self.redraw()
-                return 1          
+#
+class Fr_Polygon(fr_widget.Fr_Widget):
+
     def Activate(self):
-        self.draw()
+        raise NotImplementedError()
     def Deactivate(self):
-        del self.coinNode
+        raise NotImplementedError()
         

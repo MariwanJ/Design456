@@ -180,7 +180,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
          '''
 
     def hide(self):
-        print("Not implemented")
+        self.deactivate()
 
     def addChild(self, childWdg):
         self.children.append(childWdg)
@@ -193,6 +193,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def removeChild(self, childWdg):
         try:
             self.children.remove(childWdg)
-            self.removeCallbacks()
         except:
             print("not found")
+    def deactivate(self):
+        self.removeCallbacks()
+        self.parent.deactivate()
