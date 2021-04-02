@@ -245,3 +245,16 @@ SoFile.getClassId()
                      "Left CTRL : snap",
                      "Enter : Accept",
                      "Esc : Abort"]
+                     
+                     
+                     
+                     
+    def checkIfEventIsRelevantForWidget(self, widget):
+        handelV = App.Vector(self.lastEventXYZ.Coin_x,self.lastEventXYZ.Coin_y, self.lastEventXYZ.Coin_z)
+        v1 = App.Vector(widget.x, widget.y, widget.z)
+        v2 = App.Vector(widget.x+widget.w, widget.y +widget.h, widget.z+widget.t)
+        distance = handelV.distanceToLine(v1, v2)
+        if distance == 0:
+            return True
+        else:
+            return False

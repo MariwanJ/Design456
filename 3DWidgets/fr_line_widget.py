@@ -49,15 +49,15 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     def handle(self, event):
         """
-        This function is responsbile of taking events and doing 
+        This function is responsbile of taking events and processing 
         the actions required. If the object is not targeted, 
         the function will skip the events. But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
         processed the event and no other widgets needs to get the 
-        event.
+        event. Window object is responsible for distributing the events.
         """
-        if self.parent.lastEvent == constant.FR_EVENTS.MOUSE_LEFT_CLICK:
-            clickedNode = self.getEditNode(self.parent.lastEventXYZ.pos)
+        if self.parent.lastEvent == constant.FR_EVENTS.MOUSE_LEFT_PUSH:
+            clickedNode = fr.objectCMouse_Coin3d(self.parent.lastEventXYZ.pos).getEditNode()
             find = False
             for i in self.WidgetCoinNode:
                 if i == None or clickedNode == None:
