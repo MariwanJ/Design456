@@ -101,8 +101,14 @@ class Fr_Widget (object):
         self.wdgsoSwitch.whichChild =coin.SO_SWITCH_ALL  #Show all
         
     def redraw(self):
+        """
+        After the widgets damages, this function should be called.        
+        """
         raise NotImplementedError()
     def take_focus(self):
+        """
+        Set focus to the widget. Which should redraw it also.
+        """
         if self.has_focus==True:
             return # nothing to do here
         self.hasFocus=True
@@ -121,8 +127,16 @@ class Fr_Widget (object):
         raise NotImplementedError()
 
     def has_focus(self):
+        """
+        Check if the widget has focus
+        """
         return self.hasFocus
     def remove_focus(self):
+        """
+        Remove the focus from the widget. 
+        This happend by clicking anything 
+        else than the widget itself
+        """
         if self.hasFocus==False:
             return # nothing to do
         else:
@@ -131,6 +145,10 @@ class Fr_Widget (object):
 
     #Activate, deactivate, get status of widget
     def is_visible(self):
+        """ 
+        return the internal variable which keep 
+        the status of the widgets visibility
+        """
         return self.visible
     def activate(self):
         if self.active:
@@ -138,10 +156,17 @@ class Fr_Widget (object):
         self.active=True
         self.redraw()
     def deactivate(self):
+        """
+        Deactivate the widget. which causes that no handle comes to the widget
+        """
         if self.active==False :
             return #Nothing to do 
         self.active=False
-        self.redraw()
+    def destructor(self):
+        """
+        This will remove the widget totally. 
+        """
+        
     def is_active(self):
         return self.active
         
@@ -196,14 +221,28 @@ class Fr_Widget (object):
 
     #Callbacks 
     def callbackDeactivate(self):
+        """ called when the widget deactivates"""
         raise NotImplementedError()
     def callbackClicked(self):
+        """ Called when the widget is clicked"""
         raise NotImplementedError()        
     def callbackRedraw(self):
+        """ called when the redraw is happening"""
         raise NotImplementedError()
     def callbackMove(self):
+        """  called when the widget is moved"""
         raise NotImplementedError()
     def callbackRotate(self):
+        """ Called when the widget is rotated"""
+        raise NotImplementedError()
+    def callbackgetFocus(self):
+        """ called when the widget get focus""" 
+        raise NotImplementedError()
+    def callbackRemoveFocus(self):
+        """ called when the widget looses the focus"""
+        raise NotImplementedError()
+    def callbackResized(self):
+        """ called when the widget is resized""" 
         raise NotImplementedError()
 
     #This section is from DRAFT

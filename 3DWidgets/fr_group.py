@@ -37,12 +37,15 @@ import constant
 #Group class. Use this to collect several widgets.
 class Fr_Group(fr_widget.Fr_Widget):
     #Any drawign/Every thing should be added to this later 
-    global Root_SeneGraph  
+    #This will keep the link to the main window.
+    global mainfrCoinWindow
+    global mainfrQtWindow
     global children
     def __init__(self, x,y,z,h,w,t,l):
         self.WidgetType=constant.FR_WidgetType.FR_GROUP
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()  #Root of the children (coin)
         self.children=[]
+        self.mainfrCoinWindow=self.mainfrQtWindow=None # Initialize them as None. 
         super().__init__(x,y,z,h,w,t,l)
         
     def addWidget(self,widget):
@@ -60,9 +63,18 @@ class Fr_Group(fr_widget.Fr_Widget):
             i.redraw(self)
 
     def deactivate(self):
+        """
+        Before deactivating the group, we have to remove all children.
+        Think about, you might have several groups inside the Fr_CoinWindow
+        """
         for widget in self.children:
+            #Remove objects in the Root_SeneGraph
+            self.removeSeneNode(widget.wdgsoSwitch)
+            self.removeSeneNode(widget.WidgetCoinNode)
+            #Remove the widget itself from the group 
+            children.remove(children)
             del widget
-        self.children.clear()
+        del self.children[:]
 
     def addSeneNode(self, sen):
         self.Root_SeneGraph.addChild(sen)  #add sen to the root
