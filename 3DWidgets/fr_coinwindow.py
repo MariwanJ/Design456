@@ -58,6 +58,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     global lastEvent 
     global lastKeyEvent
     
+    # This is the holder of all objects.It should be here not inside the Fr_Group
+    global Root_SeneGraph  
+    
     # This should keep the mouse pointer position on the 3D view
     global lastEventXYZ 
     callbackMove  =None
@@ -72,6 +75,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.lastKeyEvent= []  # Might be more than one key.
         self.lastEventXYZ = mouseDimension()
         self.WidgetType=constant.FR_WidgetType.FR_COINWINDOW
+        self.mainfrCoinWindow=self   # Keep a link to the main window
         super().__init__(x, y, z, h, w, t, l)
 
     '''
@@ -164,20 +168,20 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             return False
 
     def exitFr_Window(self):
-        self.view.removeEventCallbackPivy(
-            coin.SoKeyboSoMouseButtonEvent.getClassTypeId(), self.event_process)
-        self.view.removeEventCallbackPivy(
-            coin.SoKeyboardEvent.getClassTypeId(), self.event_process)
-        self.view.removeEventCallbackPivy(
-            coin.SoLocation2Event.getClassTypeId(), self.event_process)
+        self.view.removeEventCallbackPivy (coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+        self.view.removeEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
+        self.view.removeEventCallbackPivy (coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
+        self.parent.deactivate()  # Call Fr_Groups deactivate to remove all widgets.
+        
 
     def draw(self):
+        '''Fr_CoinWindow itself, will not have any real drawing. 
+        It will keep control of drawing the children but itself, nothing
+        will be drawn.  
+        '''
         # call group(parent)'s draw
         fr_group.Fr_Group.draw(self)
-        '''For this object itself, it will not have any real drawing. 
-         It will keep control of drawing the children but itself, nothing
-         will be drawn.  
-         '''
+
 
     def hide(self):
         self.deactivate()
@@ -187,6 +191,16 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         childWdg.parent = self
 
     def show(self):
+        """
+        Show the window on the 3D World
+        Normally if you don't have any widget, 
+        this will draw nothing. But the callbacks
+        will be created. Fr_CoinWindow will 
+        not have any boarder or drawing itself.
+        Its purpose is to keep the children, distribute
+        handle and other things which might be added 
+        later to this class.
+        """
         self.draw()
         self.addCallbacks()
 
@@ -196,5 +210,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         except:
             print("not found")
     def deactivate(self):
-        self.removeCallbacks()
+        """
+        Like exit in normal window. This will end the windows
+        """
+        self.exitFr_Window()
         self.parent.deactivate()
