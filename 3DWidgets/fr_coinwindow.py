@@ -35,19 +35,10 @@ import Design456Init
 import fr_group
 import fr_widget
 import constant
-
+from fr import root_handle
 from dataclasses import dataclass
 
-#Struct to keep the mouse position in both world
-@dataclass
-class mouseDimension:
-    
-    global Coin_x 
-    global Coin_y 
-    global Coin_z 
-    global Qt_x   
-    global Qt_y   
-    global pos  
+
 
 '''
   This is a class for coin3D Window
@@ -55,14 +46,11 @@ class mouseDimension:
 class Fr_CoinWindow(fr_group.Fr_Group):
 
     global view
-    global lastEvent 
-    global lastKeyEvent
     
     # This is the holder of all objects.It should be here not inside the Fr_Group
     global Root_SeneGraph  
-    
-    # This should keep the mouse pointer position on the 3D view
-    global lastEventXYZ 
+    global link_to_root_handle   
+ 
     callbackMove  =None
     callbackClick =None
     callbackKey   =None
@@ -71,11 +59,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.view = Gui.ActiveDocument.ActiveView
         self.parent=self    # No parent and this is the main window
         self.addCallbacks
-        self.lastEvent= None
         self.lastKeyEvent= []  # Might be more than one key.
-        self.lastEventXYZ = mouseDimension()
+
         self.WidgetType=constant.FR_WidgetType.FR_COINWINDOW
-        self.mainfrCoinWindow=self   # Keep a link to the main window
         super().__init__(x, y, z, h, w, t, l)
 
     '''
@@ -88,9 +74,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             
 
     def addCallbacks(self):
-        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.handle)
-        self.callbackClick = self.view.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), self.handle)
-        self.callbackKey = self.view.addEventCallbackPivy(coin.SoKeyboardEvent.getClassTypeId() , self.handle)
+        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), fr.root_handle)
+        self.callbackClick = self.view.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), fr.root_handle)
+        self.callbackKey = self.view.addEventCallbackPivy(coin.SoKeyboardEvent.getClassTypeId() , fr.root_handle)
     # All event come to this function. We classify the event to be processed by each widget later.
 
     def handle(self, events):
@@ -153,19 +139,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
 
         for wdg in self.children:
             if (wdg.active and wdg.visible and wdg.type != constant.FR_WidgetType.FR_WIDGET):
-                #if(self.checkIfEventIsRelevantForWidget(wdg)):
                 if wdg.handle(get_event) == 1:
                     break
-
-    def checkIfEventIsRelevantForWidget(self, widget):
-        handelV = App.Vector(self.lastEventXYZ.Coin_x,self.lastEventXYZ.Coin_y, self.lastEventXYZ.Coin_z)
-        v1 = App.Vector(widget.x, widget.y, widget.z)
-        v2 = App.Vector(widget.x+widget.w, widget.y +widget.h, widget.z+widget.t)
-        distance = handelV.distanceToLine(v1, v2)
-        if distance == 0:
-            return True
-        else:
-            return False
 
     def exitFr_Window(self):
         self.view.removeEventCallbackPivy (coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
