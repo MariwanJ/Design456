@@ -35,119 +35,58 @@ import Design456Init
 import fr_group
 import fr_widget
 import constant
-from fr import root_handle
-from dataclasses import dataclass
-
+import fr_coin3d
 
 
 '''
-  This is a class for coin3D Window
+This is a class for coin3D Window
 '''
+
 class Fr_CoinWindow(fr_group.Fr_Group):
 
     global view
-    
+
     # This is the holder of all objects.It should be here not inside the Fr_Group
-    global Root_SeneGraph  
-    global link_to_root_handle   
- 
-    callbackMove  =None
-    callbackClick =None
-    callbackKey   =None
- 
+    global Root_SeneGraph
+    global link_to_root_handle
+
+    callbackMove = None
+    callbackClick = None
+    callbackKey = None
+
     def __init__(self, x, y, z, h, w, t, l):
         self.view = Gui.ActiveDocument.ActiveView
-        self.parent=self    # No parent and this is the main window
+        self.parent = self    # No parent and this is the main window
         self.addCallbacks
-        self.lastKeyEvent= []  # Might be more than one key.
-
-        self.WidgetType=constant.FR_WidgetType.FR_COINWINDOW
+        self.lastKeyEvent = []  # Might be more than one key.
+        self.WidgetType = constant.FR_WidgetType.FR_COINWINDOW
+        # Activate callbacks
+        fr_coin3d.root_handle.addCallbacks()
         super().__init__(x, y, z, h, w, t, l)
 
-    '''
-        Remove all callbacks registered for Fr_Window widget
-    '''
-    def removeCallbacks(self):
-        self.view.removeEventCallbackPivy (coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-        self.view.removeEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
-        self.view.removeEventCallbackPivy (coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
-            
-
-    def addCallbacks(self):
-        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), fr.root_handle)
-        self.callbackClick = self.view.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), fr.root_handle)
-        self.callbackKey = self.view.addEventCallbackPivy(coin.SoKeyboardEvent.getClassTypeId() , fr.root_handle)
     # All event come to this function. We classify the event to be processed by each widget later.
 
     def handle(self, events):
-        # write down all possible events.
-        #First mouse move event
-        get_event = events.getEvent()
-        if (type(get_event) == coin.SoLocation2Event):
- 
-            self.lastEventXYZ.pos=get_event.getPosition()
-            pos=self.lastEventXYZ.pos.getValue()
-            pnt = self.view.getPoint(pos[0],pos[1])
-            self.lastEventXYZ.Coin_x = pnt.x
-            self.lastEventXYZ.Coin_y = pnt.y
-            self.lastEventXYZ.Coin_z = pnt.z
-            self.lastEventXYZ.Qt_x = pos[0]
-            self.lastEventXYZ.Qt_y = pos[1]
-        # Take care of Keyboard events
-        elif (type(get_event) == coin.SoKeyboardEvent):
-            key = ""
-            try:
-                key = get_event.getKey()
-            # Take care of CTRL,SHIFT,ALT
-                if (key == coin.SoKeyboardEvent.LEFT_CONTROL or coin.SoKeyboardEvent.RIGHT_CONTROL) and get_event.getState() == coin.SoButtonEvent.DOWN:
-                    self.lastKeyEvent.append(key)
-                elif(key == coin.SoKeyboardEvent.LEFT_SHIFT or coin.SoKeyboardEvent.RIGHT_SHIFT) and get_event.getState() == coin.SoButtonEvent.DOWN:
-                    self.lastKeyEvent.append(key)
-                elif(key == coin.SoKeyboardEvent.LEFT_ALT or coin.SoKeyboardEvent.RIGHT_ALT) and get_event.getState() == coin.SoButtonEvent.DOWN:
-                    self.lastKeyEvent.append(key)
-                # Take care of all other keys.
-                if(get_event.getState() == coin.SoButtonEvent.UP):
-                    self.lastKeyEvent.append(key)
-            except ValueError:
-                # there is no character for this value
-                key = ""
-        elif (type(get_event) == coin.SoMouseButtonEvent):
-            eventState= get_event.getState()
-            getButton=  get_event.getButton()
- 
-            #print(self.lastEventXYZ.pos)
- 
-            self.lastEvent=None
-            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_LEFT_CLICK
-            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON2:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_CLICK
-            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON3:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_MIDDLE_CLICK
-
-            """
-                When handle return 1, it means that the widgets (child) used the event
-                No more widgets should get the event. Coin can use the rest of the event
-                if that is required.
-                If an object is not active, the event will not reach it.
-                or if it is not visible.
-                Be aware that the EVENT must be inside the dimension of the widget.
-                Since parent don't know that directly. Widget itself should take care
-                of that. You must check that always.
-                Here we will distribute the event to the children
-            """
-
+        """
+            When handle return 1, it means that the widgets (child) used the event
+            No more widgets should get the event. Coin can use the rest of the event
+            if that is required.
+            If an object is not active, the event will not reach it.
+            or if it is not visible.
+            Be aware that the EVENT must be inside the dimension of the widget.
+            Since parent don't know that directly. Widget itself should take care
+            of that. You must check that always.
+            Here we will distribute the event to the children
+        """
         for wdg in self.children:
             if (wdg.active and wdg.visible and wdg.type != constant.FR_WidgetType.FR_WIDGET):
                 if wdg.handle(get_event) == 1:
                     break
 
     def exitFr_Window(self):
-        self.view.removeEventCallbackPivy (coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-        self.view.removeEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
-        self.view.removeEventCallbackPivy (coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
-        self.parent.deactivate()  # Call Fr_Groups deactivate to remove all widgets.
-        
+        fr_coin3d.root_handle.removeCallbacks()
+        # Call Fr_Groups deactivate to remove all widgets.
+        self.parent.deactivate()
 
     def draw(self):
         '''Fr_CoinWindow itself, will not have any real drawing. 
@@ -156,7 +95,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         '''
         # call group(parent)'s draw
         fr_group.Fr_Group.draw(self)
-
 
     def hide(self):
         self.deactivate()
@@ -177,13 +115,13 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         later to this class.
         """
         self.draw()
-        self.addCallbacks()
 
     def removeChild(self, childWdg):
         try:
             self.children.remove(childWdg)
         except:
             print("not found")
+
     def deactivate(self):
         """
         Like exit in normal window. This will end the windows
