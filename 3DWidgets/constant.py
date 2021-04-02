@@ -122,6 +122,8 @@ class FR_EVENTS:
     #No constant for keyboard as it is defined already in coin.
     # Regarding the enum key definition in COIN3D. We don't want to redefine them. 
     # to find them use coin.SoKeyboardEvent.(Key name here without brackets)
-  
-  
-  
+
+class FR_WINDOWTYPE:
+    WIN_COIN3D=0
+    WIN_QT=1
+    
