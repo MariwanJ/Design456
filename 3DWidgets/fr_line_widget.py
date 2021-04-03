@@ -60,7 +60,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             for i in self.WidgetCoinNode:
                 if i == None or clickedNode == None:
                     break
-                if i.getClassTypeId() == clickedNode.getClassTypeId():
+                if i.getClassTypeId() == clickedNode.getClassTypeId() and i== clickedNode:
                     find = True
                     break  # We don't need to search more
             if find == True:
