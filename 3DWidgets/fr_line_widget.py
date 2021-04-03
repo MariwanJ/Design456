@@ -36,7 +36,7 @@ import fr_widget
 import constant
 import fr_coin3d
 
-VECTOR = list[App.Vector] # don't know how to not write this for every file.
+VECTOR = list[App.Base.Vector] # don't know how to not write this for every file.
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     """

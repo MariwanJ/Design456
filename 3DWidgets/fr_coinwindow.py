@@ -54,7 +54,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     callbackClick = None
     callbackKey = None
 
-    def __init__(self, x, y, z, h, w, t, l):
+    def __init__(self,args:VECTOR=None, l=""):
+        if args==None:
+            args=[App.Vector(0,0,0), App.Vector(400,400,0)]  #Default vector
         self.view = Gui.ActiveDocument.ActiveView
         self.parent = self    # No parent and this is the main window
         self.lastKeyEvent = []  # Might be more than one key.
@@ -62,7 +64,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.link_to_root_handle=fr_coin3d.root_handle()
         self.link_to_root_handle.wind=self
         # Activate callbacks
-        super().__init__(x, y, z, h, w, t, l)
+        super().__init__(args, l)
 
     # All event come to this function. We classify the event to be processed by each widget later.
 
