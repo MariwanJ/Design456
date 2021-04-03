@@ -70,9 +70,6 @@ def objectMouseClick_Coin3d(mouse_pos,pick_radius):
     # This section is from DRAFT
     # It must help in finding the correct node
     # which represent the widget.
-    #def __init__(self, mouse_pos):
-    #    self.mouse_pos = mouse_pos
-    #def getEditNode(self):
     """Get edit node from given screen position."""
     viewer = Gui.ActiveDocument.ActiveView.getViewer()
     render_manager = viewer.getSoRenderManager()

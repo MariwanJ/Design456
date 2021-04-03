@@ -61,7 +61,7 @@ def draw_square(p1, p2,p3,p4,color,LineWidth):
     try:
         dash = coin.SoSeparator()
         v = coin.SoVertexProperty()
-        square = coin.SbBox2d(p1,p2,p3,p4)
+        square = coin.SbBox3f(p1,p2,p3,p4)
         square.vertexProperty = v
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
