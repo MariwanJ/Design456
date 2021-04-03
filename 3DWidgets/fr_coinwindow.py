@@ -57,11 +57,11 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def __init__(self, x, y, z, h, w, t, l):
         self.view = Gui.ActiveDocument.ActiveView
         self.parent = self    # No parent and this is the main window
-        self.addCallbacks
         self.lastKeyEvent = []  # Might be more than one key.
         self.WidgetType = constant.FR_WidgetType.FR_COINWINDOW
+        self.link_to_root_handle=fr_coin3d.root_handle()
+        self.link_to_root_handle.wind=self
         # Activate callbacks
-        fr_coin3d.root_handle.addCallbacks()
         super().__init__(x, y, z, h, w, t, l)
 
     # All event come to this function. We classify the event to be processed by each widget later.
@@ -80,7 +80,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         for wdg in self.children:
             if (wdg.active and wdg.visible and wdg.type != constant.FR_WidgetType.FR_WIDGET):
-                if wdg.handle(get_event) == 1:
+                if wdg.handle(events) == 1:
                     break
 
     def exitFr_Window(self):
@@ -128,3 +128,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         self.exitFr_Window()
         self.parent.deactivate()
+    def callback(self,data):
+        #not sure what I should do here yet.
+        pass 
+    
