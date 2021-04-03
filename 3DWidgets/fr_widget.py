@@ -53,19 +53,15 @@ class Fr_Widget (object):
     fr_group doesn't need to be drawn, but 
     you can implement draw function
     """
-    global x
-    global y
-    global z
-    global h
-    global w
-    global t
+    import FreeCAD as App
+    global _vector
     global l
     global WidgetCoinNode  # This is for the children or the widget itself
     global visible
-    global bkgColor
-    global frgColor
-    global color1
-    global color2
+    global bkgColor  # Background color
+    global activeColor  # When widget not selected (normal)
+    global selColor  # When widget is selected
+    global inactiveColor  # Inactive widget.
     global box
     global active
     global parent
@@ -76,21 +72,18 @@ class Fr_Widget (object):
     global when_
 
     # Coin SoSeparator (node)
-
-    def __init__(self, x=0, y=0, z=0, h=0, w=0, t=0, l=""):
-        self.x = x
-        self.y = y
-        self.z = z = 0
-        self.h = h
-        self.w = w
-        self.t = t
-        self.l = l
+    VECTOR = list[App.Vector]
+    def __init__(self, args:VECTOR=None,l=""):
+        if args==None : 
+            args=[]
+        self._vector=args       # This should be like App.vectors 
+        self.l = l       
         self.WidgetCoinNode = coin.SoSeparator
         self.visible = True
-        self.bkgColor = constant.FR_COLOR.FR_GRAY
-        self.frgColor = constant.FR_COLOR.FR_WHITE
-        self.color1 = constant.FR_COLOR.FR_GRAY
-        self.color2 = constant.FR_COLOR.FR_BLACK
+        self.bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
+        self.activeCol = constant.FR_COLOR.FR_GRAY0
+        self.inactiveCol = constant.FR_COLOR.FR_GRAY2
+        self.selCol = constant.FR_COLOR.FR_BLACK
         self.box = None
         self.active = True
         self.parent = None
@@ -221,17 +214,12 @@ class Fr_Widget (object):
         self.y = y
         self.z = z
 
-    def resize(self, x, y, z, W, H, T):  # Width, height, thickness
-        self.x = x
-        self.y = y
-        self.z = z
-        self.w = W
-        self.h = H
-        self.t = T
+    def resize(self,args:VECTOR):  # Width, height, thickness
+        self._vector=args
         self.redraw()
 
-    def size(self, W, H, Z):
-        self.resize(self.x, self.y, self.z, W, H, T)
+    def size(self, args:VECTOR):
+        self.resize(args)
 
     # Take care of all events
     def handle(self, events):
@@ -259,6 +247,22 @@ class Fr_Widget (object):
         should be implemented by the widget you create
         """
         self.callback(data)
+
+    def ActiveColor(self, color):
+        """ Foreground color at normal status"""
+        self.activeCol = color
+
+    def SelectionColor(self, color):
+        """ Foreground color when widget selected i.e. has focus"""
+        self.selCol = color
+
+    def InActiveColor(self, color):
+        """ Foreground color when widget is disabled - not active """
+        self.inactiveCol = color
+
+    def InActiveColor(self, color):
+        """ Background color . To disable background color use FR_COLOR.FR_TRANSPARENCY which is the default """
+        self.inactiveCol = color
 
     def When(self, value):
         """
