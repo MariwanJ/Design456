@@ -29,18 +29,17 @@ from __future__ import unicode_literals
 This class is the base class for all widgets created in coin3D
 
 """
-import os,sys
-import FreeCAD  as App
+import os
+import sys
+import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 import Draft as _draft
-import fr_draw 
+import fr_draw
 import constant
 
 
-
-      
 class Fr_Widget (object):
     """
     Abstract Base class used to create all Widgets
@@ -61,7 +60,7 @@ class Fr_Widget (object):
     global w
     global t
     global l
-    global WidgetCoinNode  #This is for the children or the widget itself
+    global WidgetCoinNode  # This is for the children or the widget itself
     global visible
     global bkgColor
     global frgColor
@@ -74,53 +73,69 @@ class Fr_Widget (object):
     global hasFocus
     global wdgsoSwitch
     global pick_radius
-     
-    #Coin SoSeparator (node)
+    global when_
 
-    def __init__(self, x=0,y=0,z=0,h=0,w=0,t=0,l=""):
-        self.x=x
-        self.y=y
-        self.z=z=0
-        self.h=h
-        self.w=w
-        self.t=t
-        self.l=l
-        self.WidgetCoinNode=coin.SoSeparator
-        self.visible=True
-        self.bkgColor=constant.FR_COLOR.FR_GRAY
-        self.frgColor=constant.FR_COLOR.FR_WHITE
-        self.color1=constant.FR_COLOR.FR_GRAY
-        self.color2=constant.FR_COLOR.FR_BLACK
-        self.box=None
-        self.active=True
-        self.parent=None
-        self.WidgetType=constant.FR_WidgetType.FR_WIDGET
-        self.hasFocus=False
-        self.wdgsoSwitch=coin.SoSwitch()
-        self.pick_radius= 3 # See if this must be a parameter in the GUI /Mariwan
-        self.wdgsoSwitch.whichChild =coin.SO_SWITCH_ALL  #Show all
-        
+    # Coin SoSeparator (node)
+
+    def __init__(self, x=0, y=0, z=0, h=0, w=0, t=0, l=""):
+        self.x = x
+        self.y = y
+        self.z = z = 0
+        self.h = h
+        self.w = w
+        self.t = t
+        self.l = l
+        self.WidgetCoinNode = coin.SoSeparator
+        self.visible = True
+        self.bkgColor = constant.FR_COLOR.FR_GRAY
+        self.frgColor = constant.FR_COLOR.FR_WHITE
+        self.color1 = constant.FR_COLOR.FR_GRAY
+        self.color2 = constant.FR_COLOR.FR_BLACK
+        self.box = None
+        self.active = True
+        self.parent = None
+        self.WidgetType = constant.FR_WidgetType.FR_WIDGET
+        self.hasFocus = False
+        self.wdgsoSwitch = coin.SoSwitch()
+        self.pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
+        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+        self.when_ = constant.Fr_When.FR_WHEN_NEVER
+
+    def draw_box(self):
+        raise NotImplementedError()
+
+    def draw():
+        """ main draw function. This is responsible for all draw on screen"""
+        raise NotImplementedError()
+
+    def draw_label():
+        """ draw label for the widget 
+        for coin3d Class SoText2 should be used 
+        """
+        raise NotImplementedError()
+
     def redraw(self):
         """
         After the widgets damages, this function should be called.        
         """
         raise NotImplementedError()
+
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
         """
-        if self.has_focus==True:
-            return # nothing to do here
-        self.hasFocus=True
+        if self.has_focus == True:
+            return  # nothing to do here
+        self.hasFocus = True
         self.redraw()
-    
-    def move(self,x,y,z):
+
+    def move(self, x, y, z):
         """ Move the widget to a new location.
         The new location is reference to the 
         left-upper corner"""
         raise NotImplementedError()
 
-    def move_centerOfMass(self,x,y,z):
+    def move_centerOfMass(self, x, y, z):
         """ Move the widget to a new location.
         The new location is reference to the 
         center of mass"""
@@ -131,117 +146,129 @@ class Fr_Widget (object):
         Check if the widget has focus
         """
         return self.hasFocus
+
     def remove_focus(self):
         """
         Remove the focus from the widget. 
         This happend by clicking anything 
         else than the widget itself
         """
-        if self.hasFocus==False:
-            return # nothing to do
+        if self.hasFocus == False:
+            return  # nothing to do
         else:
-            self.hasFocus=False
+            self.hasFocus = False
             self.redraw()
 
-    #Activate, deactivate, get status of widget
+    # Activate, deactivate, get status of widget
     def is_visible(self):
         """ 
         return the internal variable which keep 
         the status of the widgets visibility
         """
         return self.visible
+
     def activate(self):
         if self.active:
-            return #nothing to do 
-        self.active=True
+            return  # nothing to do
+        self.active = True
         self.redraw()
+
     def deactivate(self):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.active==False :
-            return #Nothing to do 
-        self.active=False
+        if self.active == False:
+            return  # Nothing to do
+        self.active = False
+
     def destructor(self):
         """
         This will remove the widget totally. 
         """
-        
+
     def is_active(self):
         return self.active
-        
+
     def hide():
-        if self.visible==False:
-            return # nothing to do 
-        self.visible=False
-        self.wdgsoSwitch.whichChild =coin.SO_SWITCH_NONE #hide all children
+        if self.visible == False:
+            return  # nothing to do
+        self.visible = False
+        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
         self.redraw()
 
     def show(self):
-        self.visible=True
-        self.wdgsoSwitch.whichChild =coin.SO_SWITCH_ALL #Show all children
+        self.visible = True
+        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
         self.redraw()
-        
-    def draw_box(self):
-        raise NotImplementedError()
-    def draw():
-        raise NotImplementedError()
-    def draw_label():
-        raise NotImplementedError()
+
     def parent(self):
         return self.parent
-    def parent(self,parent):
-        self.parent=parent
+
+    def parent(self, parent):
+        self.parent = parent
+
     def type(self):
         return self.type
+
     def getPosition(self):
-        return (x,y,z)
+        return (x, y, z)
+
     def getPositionAsVertex(self):
-        return App.Vertex(x,y,z)
-    
-    def position(self,x,y,z):
-        self.x=x
-        self.y=y
-        self.z=z
-    def resize(self,x,y,z,W,H,T): #Width, height, thickness
-        self.x=x
-        self.y=y
-        self.z=z
-        self.w=W
-        self.h=H
-        self.t=T
+        return App.Vertex(x, y, z)
+
+    def position(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def resize(self, x, y, z, W, H, T):  # Width, height, thickness
+        self.x = x
+        self.y = y
+        self.z = z
+        self.w = W
+        self.h = H
+        self.t = T
         self.redraw()
-        
-    def size (self,W,H,Z):
-        self.resize(self.x,self.y,self.z,W,H,T)
-            
-    #Take care of all events 
-    def handle(self,events):
+
+    def size(self, W, H, Z):
+        self.resize(self.x, self.y, self.z, W, H, T)
+
+    # Take care of all events
+    def handle(self, events):
         raise NotImplementedError()
 
-    #Callbacks 
-    def callbackDeactivate(self):
-        """ called when the widget deactivates"""
-        raise NotImplementedError()
-    def callbackClicked(self):
-        """ Called when the widget is clicked"""
-        raise NotImplementedError()        
-    def callbackRedraw(self):
-        """ called when the redraw is happening"""
-        raise NotImplementedError()
-    def callbackMove(self):
-        """  called when the widget is moved"""
-        raise NotImplementedError()
-    def callbackRotate(self):
-        """ Called when the widget is rotated"""
-        raise NotImplementedError()
-    def callbackgetFocus(self):
-        """ called when the widget get focus""" 
-        raise NotImplementedError()
-    def callbackRemoveFocus(self):
-        """ called when the widget looses the focus"""
-        raise NotImplementedError()
-    def callbackResized(self):
-        """ called when the widget is resized""" 
+    # Callbacks
+    def callback(self, data):
+        """ Each widget has a single callback.
+            But you can add as many call back as you 
+            want if you sub class any widget
+            and at the handle you call them.
+            Depending on what kind of widget
+            you make, this callback could 
+            be used there. run do_callback 
+            to activate this.
+        """
         raise NotImplementedError()
 
+    # call the main callback for the widget
+    def do_callback(self, data):
+        """
+        This will activate the callback. 
+        Use this function to run the callback.
+        This is implemented here but the callback
+        should be implemented by the widget you create
+        """
+        self.callback(data)
+
+    def When(self, value):
+        """
+        When do the callback should be run?
+        values are in constant.Fr_When
+        """
+        self.when = value
+
+    def When(self):
+        """"
+        Internal value of when
+        """
+        return self.when
