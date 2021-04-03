@@ -72,7 +72,7 @@ class Fr_Widget (object):
     global when_
 
     # Coin SoSeparator (node)
-    VECTOR = list[App.Vector]
+    VECTOR = list[App.Base.Vector]
     def __init__(self, args:VECTOR=None,l=""):
         if args==None : 
             args=[]
