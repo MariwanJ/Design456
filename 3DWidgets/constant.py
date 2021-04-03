@@ -127,3 +127,15 @@ class FR_WINDOWTYPE:
     WIN_COIN3D=0
     WIN_QT=1
     
+class Fr_When: 
+    """
+    Fr_Widget.when()
+    This decide when the callback is called
+    """
+    FR_WHEN_NEVER		      = 0  # Never call the callback
+    FR_WHEN_CHANGED	          = 1  # Do the callback only when the widget value changes
+    FR_WHEN_NOT_CHANGED	      = 2  # Do the callback whenever the user interacts with the widget
+    FR_WHEN_RELEASE	          = 4  # Do the callback when the button or key is released and the value changes
+    FR_WHEN_RELEASE_ALWAYS    = 6  # Do the callback when the button or key is released, even if the value doesn't change
+    FR_WHEN_ENTER_KEY	      = 8  # Do the callback when the user presses the ENTER key and the value changes
+    FR_WHEN_ENTER_KEY_ALWAYS  =10  # Do the callback when the user presses the ENTER key, even if the value doesn't change
