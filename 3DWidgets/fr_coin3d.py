@@ -66,26 +66,28 @@ def objectUnderMouse_Coin3d(self, win):
 # get Object clicked in COIN3D
 
 
-def objectMouseClick_Coin3d(mouse_pos):
+def objectMouseClick_Coin3d(mouse_pos,pick_radius):
     # This section is from DRAFT
     # It must help in finding the correct node
     # which represent the widget.
-    def __init__(self, mouse_pos):
-        self.mouse_pos = mouse_pos
-    def getEditNode(self):
-        """Get edit node from given screen position."""
-        viewer = Gui.ActiveDocument.ActiveView.getViewer()
-        render_manager = viewer.getSoRenderManager()
-        ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
-        ray_pick.setPoint(coin.SbVec2s(*self.mouse_pos))
-        ray_pick.setRadius(self.pick_radius)
-        ray_pick.setPickAll(True)
-        ray_pick.apply(render_manager.getSceneGraph())
-        picked_point = ray_pick.getPickedPoint()
-        if picked_point != None and self.picked_point != 0:
-            path = picked_point.getPath()
-            pickedNode = path.getTail()
-            return pickedNode
+    #def __init__(self, mouse_pos):
+    #    self.mouse_pos = mouse_pos
+    #def getEditNode(self):
+    """Get edit node from given screen position."""
+    viewer = Gui.ActiveDocument.ActiveView.getViewer()
+    render_manager = viewer.getSoRenderManager()
+    ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
+    ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
+    ray_pick.setRadius(pick_radius)
+    ray_pick.setPickAll(True)
+    ray_pick.apply(render_manager.getSceneGraph())
+    picked_point = ray_pick.getPickedPoint()
+    if picked_point != None and picked_point != 0:
+        path = picked_point.getPath()
+        pickedNode = path.getTail()
+        return pickedNode
+    else:
+        None
 
         
 class root_handle():
