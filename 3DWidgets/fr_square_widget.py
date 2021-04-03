@@ -36,11 +36,12 @@ import fr_widget
 import constant
 import fr_coin3d
 
+
 VECTOR = list[App.Vector] # don't know how to not write this for every file.
-class Fr_Line_Widget(fr_widget.Fr_Widget):
+class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
 
     """
-    This class is for drawing a line in coin3D world
+    This class is for drawing a line in  coin3D
     """
     global _lineWidth
 
@@ -48,12 +49,15 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if args==None:
             args=[]
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
-        self._lineWidth = 1  # Default line width
-        super().__init__(args,l)
+        self._lineWidth = 1  # default line width
+        super().__init__()
 
-    def lineWidth(self, width):
-        """ Set the line width"""
-        self._lineWidth = width
+    def addVertices(self, vertices):
+        self.vertices.clear()
+        self.vertices = vertices
+
+    def LineWidth(self, width):
+        self._linewidth = width
 
     def handle(self, event):
         """
@@ -87,11 +91,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
-        if len(self._vector)<2:
-             raise ValueError('Must be 2 Vectors')
-        p1 = self._vector[0]
-        p2 = self._vector[1]
-
+        if len(self._vector) < 4:
+            raise ValueError('Vertices must be 4')
         if self.active() and self.has_focus():
             usedColor = self.selCol
         elif self.active() and (self.has_focus() != 1):
@@ -99,9 +100,16 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         elif self.active() != 1:
             usedColor = self.inactiveCol
         if self.is_visible():
-            self.WidgetCoinNode = fr_draw.draw_line(
-                p1, p2, usedColor, self.lineWidth)
-            self.parent.addSeneNode(self.WidgetCoinNode)
+            self.WidgetCoinNode.append(fr_draw.draw_line(self_vector[0], self_vector[1], usedColor, self.lineWidth))
+            self.WidgetCoinNode.append(fr_draw.draw_line(self_vector[1], self_vector[2], usedColor, self.lineWidth))
+            self.WidgetCoinNode.append(fr_draw.draw_line(self_vector[2], self_vector[3], usedColor, self.lineWidth))
+            self.WidgetCoinNode.append(fr_draw.draw_line(self_vector[3], self_vector[0], usedColor, self.lineWidth))
+
+            self.parent.addSeneNode(self.WidgetCoinNode[0])
+            self.parent.addSeneNode(self.WidgetCoinNode[1])
+            self.parent.addSeneNode(self.WidgetCoinNode[2])
+            self.parent.addSeneNode(self.WidgetCoinNode[3])
+
         else:
             return  # We draw nothing .. This is here just for clarity of the code
 
@@ -109,23 +117,15 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """ When drawing damages, a redraw must be done.
         This function will redraw the widget on the 3D
         Scene"""
-        if self.is_visible():
-            self.parent.removeSeneNode(self.WidgetCoinNode)
-            self.WidgetCoinNode = None
-            self.draw()
+        for i in self.WidgetCoinNode:
+            self.parent.removeSeneNode(i)
+        self.WidgetCoinNode = None
+        self.draw()
 
-    def move(self,newVecPos):
+    def move(self, newVector):
         """
         Move the object to the new location referenced by the 
         left-top corner of the object. Or the start of the line
         if it is a line.
         """
-        self.resize(newVecPos[0],newVecPos[1])
-
-    def getVertexStart(self):
-        """Return the vertex of the start point"""
-        return App.Vertex(self._vector[0])
-
-    def getVertexEnd(self):
-        """Return the vertex of the end point"""
-        return App.Vertex(self.x+self.w, self.y+self.h, self.z+self.t)
+        self.resize(newVector)
