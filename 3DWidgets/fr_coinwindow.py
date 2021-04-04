@@ -57,10 +57,10 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def __init__(self, args:fr_widget.VECTOR=None,l=""):
         if args==None:
             args=[App.Vector(0,0,0), App.Vector(400,400,0)]  #Default vector
-        self.view = Gui.ActiveDocument.ActiveView
-        self.parent = self    # No parent and this is the main window
+        self._view = Gui.ActiveDocument.ActiveView
+        self._parent = self    # No parent and this is the main window
         self.lastKeyEvent = []  # Might be more than one key.
-        self.WidgetType = constant.FR_WidgetType.FR_COINWINDOW
+        self._widgetType = constant.FR_WidgetType.FR_COINWINDOW
         self.link_to_root_handle=fr_coin3d.root_handle()
         self.link_to_root_handle.wind=self
         # Activate callbacks
@@ -81,7 +81,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             Here we will distribute the event to the children
         """
         for wdg in self.children:
-            if (wdg.active and wdg.visible and wdg.type != constant.FR_WidgetType.FR_WIDGET):
+            if (wdg._active and wdg._visible and wdg._widgetType != constant.FR_WidgetType.FR_WIDGET):
                 if wdg.handle(events) == 1:
                     break
 
@@ -103,7 +103,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
 
     def addChild(self, childWdg):
         self.children.append(childWdg)
-        childWdg.parent = self
+        childWdg._parent = self
 
     def show(self):
         """

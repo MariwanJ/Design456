@@ -86,7 +86,8 @@ class Fr_Widget (object):
     global _pick_radius
     global _when
 
-    def __init__(self, args: VECTOR = None, l=""):
+   # def __init__(self, args: VECTOR = None, l=""):
+    def __init__(self, args: List[App.Vector]=[], l: str=""):
         """ 
         Default values which is shared wit all objects.
 
@@ -109,6 +110,7 @@ class Fr_Widget (object):
         self._wdgsoSwitch = coin.SoSwitch()
         self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+        self._wdgsoSwitch.addChild(self._widgetCoinNode)  # put the node inside the switch
         self._when = constant.FR_WHEN.FR_WHEN_NEVER
 
     def draw_box(self):
@@ -175,7 +177,7 @@ class Fr_Widget (object):
         return the internal variable which keep 
         the status of the widgets visibility
         """
-        return self.visible
+        return self._visible
 
     def activate(self):
         if self._active:
@@ -199,23 +201,21 @@ class Fr_Widget (object):
     def is_active(self):
         return self._active
 
-    def hide():
-        if self.visible == False:
+    def hide(self):
+        if self._visible == False:
             return  # nothing to do
         self._visible = False
-        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
+        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
         self.redraw()
 
     def show(self):
-        self._visible = True
-        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
-        self.redraw()
+        raise NotImplementedError
 
     def parent(self):
-        return self.parent
+        return self._parent
 
     def parent(self, parent):
-        self.parent = parent
+        self._parent = parent
 
     def type(self):
         return self._widgetType
@@ -225,8 +225,8 @@ class Fr_Widget (object):
         If args is defined, return the first point
         which is the first point in the widget
         """
-        if len(args) > 0:
-            return (args[0])
+        if len(self._vector) > 0:
+            return (self._vector[0])
         return None
 
     def getPositionAsVertex(self):
@@ -235,7 +235,7 @@ class Fr_Widget (object):
         first point in the widget
         """
         if(self.getPosition()):
-            return App.Vertex(arg[0])
+            return App.Vertex(self._vector[0])
         else:
             return None
 
@@ -285,15 +285,15 @@ class Fr_Widget (object):
 
     def SelectionColor(self, color):
         """ Foreground color when widget selected i.e. has focus"""
-        self.selCol = color
+        self._selCol = color
 
     def InActiveColor(self, color):
         """ Foreground color when widget is disabled - not active """
-        self.inactiveCol = color
+        self._inactiveCol = color
 
-    def InActiveColor(self, color):
+    def BkgColor(self, color):
         """ Background color . To disable background color use FR_COLOR.FR_TRANSPARENCY which is the default """
-        self.inactiveCol = color
+        self._bkgColor = color
 
     def When(self, value):
         """
