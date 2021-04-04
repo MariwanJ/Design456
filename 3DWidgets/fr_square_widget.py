@@ -51,8 +51,8 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         super().__init__(args,l)
 
     def addVertices(self, vertices):
-        self.vertices.clear()
-        self.vertices = vertices
+        self._vector.clear()
+        self._vector = vertices
 
     def LineWidth(self, width):
         self._linewidth = width
@@ -70,7 +70,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self.parent.link_to_root_handle.lastEventXYZ.pos, self.pick_radius)
             find = False
-            for i in self.WidgetCoinNode:
+            for i in self._widgetCoinNode:
                 if i == None or clickedNode == None:
                     break
                 if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
@@ -91,23 +91,18 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """
         if len(self._vector) < 4:
             raise ValueError('Vertices must be 4')
-        if self.active() and self.has_focus():
-            usedColor = self.selCol
-        elif self.active() and (self.has_focus() != 1):
-            usedColor = self.activeCol
-        elif self.active() != 1:
-            usedColor = self.inactiveCol
+        if self.is_active() and self.has_focus():
+            usedColor = self._selCol
+        elif self.is_active() and (self.has_focus() != 1):
+            usedColor = self._activeCol
+        elif self.is_active() != 1:
+            usedColor = self._inactiveCol
         if self.is_visible():
-            self.WidgetCoinNode.append(fr_draw.draw_line(self_vector[0], self_vector[1], usedColor, self.lineWidth))
-            self.WidgetCoinNode.append(fr_draw.draw_line(self_vector[1], self_vector[2], usedColor, self.lineWidth))
-            self.WidgetCoinNode.append(fr_draw.draw_line(self_vector[2], self_vector[3], usedColor, self.lineWidth))
-            self.WidgetCoinNode.append(fr_draw.draw_line(self_vector[3], self_vector[0], usedColor, self.lineWidth))
-
-            self.parent.addSeneNode(self.WidgetCoinNode[0])
-            self.parent.addSeneNode(self.WidgetCoinNode[1])
-            self.parent.addSeneNode(self.WidgetCoinNode[2])
-            self.parent.addSeneNode(self.WidgetCoinNode[3])
-
+            self._widgetCoinNode=fr_draw.draw_square_frame(self._vector,usedColor, self._lineWidth)
+            if self._widgetCoinNode is not None:
+                self._parent.addSeneNode(self._widgetCoinNode)
+            else:
+                raise ValueError("Couldn't draw the Fr_SquareFrame_Widget") 
         else:
             return  # We draw nothing .. This is here just for clarity of the code
 
@@ -115,9 +110,11 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """ When drawing damages, a redraw must be done.
         This function will redraw the widget on the 3D
         Scene"""
-        for i in self.WidgetCoinNode:
-            self.parent.removeSeneNode(i)
-        self.WidgetCoinNode = None
+        if self._widgetCoinNode is not None:
+            for i in self._widgetCoinNode:
+                self._parent.removeSeneNode(i)
+            self._widgetCoinNode.clear()
+            self._widgetCoinNode = None
         self.draw()
 
     def move(self, newVector):
@@ -127,3 +124,9 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         if it is a line.
         """
         self.resize(newVector)
+    def show(self):
+        self._visible = True
+        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
+        #self.redraw()
+    def hide(self):
+        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE # Show all children

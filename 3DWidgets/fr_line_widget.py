@@ -59,6 +59,8 @@ wn.show()                    # show the window and it's widgets.
 
 
 """
+
+
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     """
@@ -66,12 +68,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     """
     global _lineWidth
 
-    def __init__(self, args:fr_widget.VECTOR=None,l=""):
-        if args==None:
-            args=[]
+    def __init__(self, args: fr_widget.VECTOR = None, l=""):
+        if args == None:
+            args = []
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
         self._lineWidth = 1  # Default line width
-        super().__init__(args,l)
+        super().__init__(args, l)
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -90,7 +92,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self.parent.link_to_root_handle.lastEventXYZ.pos, self.pick_radius)
             find = False
-            for i in self.WidgetCoinNode:
+            for i in self._widgetCoinNode:
                 if i == None or clickedNode == None:
                     break
                 if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
@@ -109,8 +111,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
-        if len(self._vector)<2:
-             raise ValueError('Must be 2 Vectors')
+        if len(self._vector) < 2:
+            raise ValueError('Must be 2 Vectors')
         p1 = self._vector[0]
         p2 = self._vector[1]
 
@@ -121,9 +123,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         elif self.is_active() != 1:
             usedColor = self.inactiveCol
         if self.is_visible():
-            self.WidgetCoinNode = fr_draw.draw_line(
+            self._widgetCoinNode = fr_draw.draw_line(
                 p1, p2, usedColor, self._lineWidth)
-            self.parent.addSeneNode(self.WidgetCoinNode)
+            self.parent.addSeneNode(self._widgetCoinNode)
         else:
             return  # We draw nothing .. This is here just for clarity of the code
 
@@ -132,17 +134,17 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This function will redraw the widget on the 3D
         Scene"""
         if self.is_visible():
-            self.parent.removeSeneNode(self.WidgetCoinNode)
-            self.WidgetCoinNode = None
+            self.parent.removeSeneNode(self._widgetCoinNode)
+            self._widgetCoinNode = None
             self.draw()
 
-    def move(self,newVecPos):
+    def move(self, newVecPos):
         """
         Move the object to the new location referenced by the 
         left-top corner of the object. Or the start of the line
         if it is a line.
         """
-        self.resize(newVecPos[0],newVecPos[1])
+        self.resize(newVecPos[0], newVecPos[1])
 
     def getVertexStart(self):
         """Return the vertex of the start point"""
@@ -151,3 +153,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def getVertexEnd(self):
         """Return the vertex of the end point"""
         return App.Vertex(self.x+self.w, self.y+self.h, self.z+self.t)
+
+    def show(self):
+        self._visible = True
+        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
+        self.redraw()

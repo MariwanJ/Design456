@@ -71,16 +71,21 @@ class Fr_Group(fr_widget.Fr_Widget):
         """
         for widget in self.children:
             #Remove objects in the Root_SeneGraph
-            self.removeSeneNode(widget.wdgsoSwitch)
-            self.removeSeneNode(widget.WidgetCoinNode)
+            self.removeSeneNode(widget._wdgsoSwitch)
+            self.removeSeneNode(widget._widgetCoinNode)
             #Remove the widget itself from the group 
             children.remove(children)
             del widget
         del self.children[:]
 
     def addSeneNode(self, sen):
-        self.Root_SeneGraph.addChild(sen)  #add sen to the root
-        self.wdgsoSwitch.addChild(sen)  #add switch also
+        if len(sen)>1:
+            for i in sen:
+                self.Root_SeneGraph.addChild(i)  #add sen to the root
+                self._wdgsoSwitch.addChild(i)  #add switch also
+        elif len(sen)==1:
+            self.Root_SeneGraph.addChild(sen)  #add sen to the root
+            self._wdgsoSwitch.addChild(sen)  #add switch also
         
     def removeSeneNode(self, sen):
         self.Root_SeneGraph.removeChild(sen)

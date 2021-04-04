@@ -97,7 +97,7 @@ def draw_polygon(vertices,color,LineWidth):
 
     
 # Draw a square 3D World
-def draw_square(p1, p2,p3,p4,color,LineWidth):
+def draw_square(vector,color,LineWidth):
     """ Draw a square and return the SoSeparator"""
     return draw_polygon([p1,p2,p3,p4],color,LineWidth)
 
@@ -105,8 +105,8 @@ def draw_square_frame(vertices,color,LineWidth):
     if len(vertices)<3 : 
         raise ValueError('Vertices must be more than 2')
     result=[]
-    result.append(draw_line(vertices[0],vertices[1]))
-    result.draw_line(vertices[1],vertices[2])
-    result.draw_line(vertices[2],vertices[3])
-    result.draw_line(vertices[3],vertices[0])
+    result.append(draw_line(vertices[0],vertices[1],color,LineWidth))
+    result.append(draw_line(vertices[1],vertices[2],color,LineWidth))
+    result.append(draw_line(vertices[2],vertices[3],color,LineWidth))
+    result.append(draw_line(vertices[3],vertices[0],color,LineWidth))
     return result
