@@ -208,19 +208,19 @@ class root_handle():
             self.lastEvent = constant.FR_EVENTS.FR_NO_EVENT
 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_LEFT_PUSH
+                self.lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH 
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_LEFT_RELEASE
+                self.lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_PUSH
+                self.lastEvent = constant.FR_EVENTS.FR_MOUSE_RIGHT_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON2:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_RIGHT_RELEASE
+                self.lastEvent = constant.FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON3:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_MIDDLE_PUSH
+                self.lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON3:
-                self.lastEvent = constant.FR_EVENTS.MOUSE_MIDDLE_RELEASE
+                self.lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
             self.wind.handle(self.lastEvent)
             
         # Take care of Keyboard events

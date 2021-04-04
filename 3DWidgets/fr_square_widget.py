@@ -36,8 +36,6 @@ import fr_widget
 import constant
 import fr_coin3d
 
-
-VECTOR = list[App.Vector] # don't know how to not write this for every file.
 class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
 
     """
@@ -45,12 +43,12 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     """
     global _lineWidth
 
-    def __init__(self,args:VECTOR=None, l=""):
+    def __init__(self, args:fr_widget.VECTOR=[],l=""):
         if args==None:
             args=[]
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
         self._lineWidth = 1  # default line width
-        super().__init__()
+        super().__init__(args,l)
 
     def addVertices(self, vertices):
         self.vertices.clear()

@@ -34,7 +34,6 @@ import Draft as _draft
 import fr_widget 
 import constant 
 
-VECTOR = list[App.Base.Vector] 
 #Group class. Use this to collect several widgets.
 class Fr_Group(fr_widget.Fr_Widget):
     #Any drawign/Every thing should be added to this later 
@@ -42,14 +41,14 @@ class Fr_Group(fr_widget.Fr_Widget):
     global mainfrCoinWindow
     global mainfrQtWindow
     global children
-    def __init__(self, args:VECTOR=None,l=""):
-        if args==None : 
+    def __init__(self, args:fr_widget.VECTOR=None,l=""):
+        if args==None:
             args=[]
         self.WidgetType=constant.FR_WidgetType.FR_GROUP
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()  #Root of the children (coin)
         self.children=[]
         self.mainfrCoinWindow=self.mainfrQtWindow=None # Initialize them as None. 
-        super().__init__(x,y,z,h,w,t,l)
+        super().__init__(args,l)
         
     def addWidget(self,widget):
         self.children.append(widget)
