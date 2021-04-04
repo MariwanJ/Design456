@@ -35,7 +35,30 @@ import fr_draw
 import fr_widget
 import constant
 import fr_coin3d
+"""
+Example how to use this widget. 
 
+import fr_coinwindow as wn
+import fr_line_widget as line
+import FreeCAD as App
+g=[]
+p1=(0,0,0)     # first point in the line and for the windows
+g=[]
+p2=(400,400,0) # width and hight of the window .. z is not a matter (generally this has no effect)
+p3=(20,20,0)   # Second point in the line 
+g.append(p1)
+g.append(p2)
+wn=wn.Fr_CoinWindow(g,"MyWindow")  # Create the window, label has no effect at the moment
+g.clear()
+g.append(p1)
+g.append(p3)
+ln =line.Fr_Line_Widget(g)   # draw the line - nothing will be visible yet
+wn.addChild(ln)              # Add it to the window as a child 
+ln.parent=wn                 # define parent for the widget
+wn.show()                    # show the window and it's widgets. 
+
+
+"""
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     """
