@@ -38,7 +38,22 @@ import Design456Init
 import Draft as _draft
 import fr_draw
 import constant
+from dataclasses import dataclass
+from typing import List
 
+
+#Struct definition of a point
+@dataclass
+class point:
+    def __init__(self):
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
+
+
+#List of points which should be used everywhere 
+VECTOR = List[point]
+# Coin SoSeparator (node)
 
 class Fr_Widget (object):
     """
@@ -55,44 +70,46 @@ class Fr_Widget (object):
     """
     import FreeCAD as App
     global _vector
-    global l
-    global WidgetCoinNode  # This is for the children or the widget itself
-    global visible
-    global bkgColor  # Background color
-    global activeColor  # When widget not selected (normal)
-    global selColor  # When widget is selected
-    global inactiveColor  # Inactive widget.
-    global box
-    global active
-    global parent
-    global WidgetType
-    global hasFocus
-    global wdgsoSwitch
-    global pick_radius
-    global when_
+    global _l
+    global _widgetCoinNode  # This is for the children or the widget itself
+    global _visible
+    global _bkgColor  # Background color
+    global _activeColor  # When widget not selected (normal)
+    global _selColor  # When widget is selected
+    global _inactiveColor  # Inactive widget.
+    global _box
+    global _active
+    global _parent
+    global _widgetType
+    global _hasFocus
+    global _wdgsoSwitch
+    global _pick_radius
+    global _when
 
-    # Coin SoSeparator (node)
-    VECTOR = list[App.Base.Vector]
-    def __init__(self, args:VECTOR=None,l=""):
-        if args==None : 
-            args=[]
-        self._vector=args       # This should be like App.vectors 
-        self.l = l       
-        self.WidgetCoinNode = coin.SoSeparator
-        self.visible = True
-        self.bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-        self.activeCol = constant.FR_COLOR.FR_GRAY0
-        self.inactiveCol = constant.FR_COLOR.FR_GRAY2
-        self.selCol = constant.FR_COLOR.FR_BLACK
-        self.box = None
-        self.active = True
-        self.parent = None
-        self.WidgetType = constant.FR_WidgetType.FR_WIDGET
-        self.hasFocus = False
-        self.wdgsoSwitch = coin.SoSwitch()
-        self.pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
-        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-        self.when_ = constant.Fr_When.FR_WHEN_NEVER
+    def __init__(self, args: VECTOR = None, l=""):
+        """ 
+        Default values which is shared wit all objects.
+
+        """
+        if args == None:
+            args = []
+        self._vector = args       # This should be like App.vectors
+        self._l = l
+        self._widgetCoinNode = coin.SoSeparator
+        self._visible = True
+        self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
+        self._activeCol = constant.FR_COLOR.FR_GRAY0
+        self._inactiveCol = constant.FR_COLOR.FR_GRAY2
+        self._selCol = constant.FR_COLOR.FR_BLACK
+        self._box = None
+        self._active = True
+        self._parent = None
+        self._widgetType = constant.FR_WidgetType.FR_WIDGET
+        self._hasFocus = False
+        self._wdgsoSwitch = coin.SoSwitch()
+        self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
+        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+        self._when = constant.FR_WHEN.FR_WHEN_NEVER
 
     def draw_box(self):
         raise NotImplementedError()
@@ -119,7 +136,7 @@ class Fr_Widget (object):
         """
         if self.has_focus == True:
             return  # nothing to do here
-        self.hasFocus = True
+        self._hasFocus = True
         self.redraw()
 
     def move(self, x, y, z):
@@ -138,7 +155,7 @@ class Fr_Widget (object):
         """
         Check if the widget has focus
         """
-        return self.hasFocus
+        return self._hasFocus
 
     def remove_focus(self):
         """
@@ -146,10 +163,10 @@ class Fr_Widget (object):
         This happend by clicking anything 
         else than the widget itself
         """
-        if self.hasFocus == False:
+        if self._hasFocus == False:
             return  # nothing to do
         else:
-            self.hasFocus = False
+            self._hasFocus = False
             self.redraw()
 
     # Activate, deactivate, get status of widget
@@ -161,18 +178,18 @@ class Fr_Widget (object):
         return self.visible
 
     def activate(self):
-        if self.active:
+        if self._active:
             return  # nothing to do
-        self.active = True
+        self._active = True
         self.redraw()
 
     def deactivate(self):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.active == False:
+        if self._active == False:
             return  # Nothing to do
-        self.active = False
+        self._active = False
 
     def destructor(self):
         """
@@ -180,17 +197,17 @@ class Fr_Widget (object):
         """
 
     def is_active(self):
-        return self.active
+        return self._active
 
     def hide():
         if self.visible == False:
             return  # nothing to do
-        self.visible = False
+        self._visible = False
         self.wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
         self.redraw()
 
     def show(self):
-        self.visible = True
+        self._visible = True
         self.wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
         self.redraw()
 
@@ -201,24 +218,37 @@ class Fr_Widget (object):
         self.parent = parent
 
     def type(self):
-        return self.type
+        return self._widgetType
 
     def getPosition(self):
-        return (x, y, z)
+        """
+        If args is defined, return the first point
+        which is the first point in the widget
+        """
+        if len(args) > 0:
+            return (args[0])
+        return None
 
     def getPositionAsVertex(self):
-        return App.Vertex(x, y, z)
+        """
+        if args is defined, return the vertex of the 
+        first point in the widget
+        """
+        if(self.getPosition()):
+            return App.Vertex(arg[0])
+        else:
+            return None
 
     def position(self, x, y, z):
         self.x = x
         self.y = y
         self.z = z
 
-    def resize(self,args:VECTOR):  # Width, height, thickness
-        self._vector=args
+    def resize(self, args: VECTOR):  # Width, height, thickness
+        self._vector = args
         self.redraw()
 
-    def size(self, args:VECTOR):
+    def size(self, args: VECTOR):
         self.resize(args)
 
     # Take care of all events
@@ -241,8 +271,9 @@ class Fr_Widget (object):
     # call the main callback for the widget
     def do_callback(self, data):
         """
-        This will activate the callback. 
+        This will activate the callback call. 
         Use this function to run the callback.
+        This will be controlled by _when value
         This is implemented here but the callback
         should be implemented by the widget you create
         """
@@ -269,10 +300,10 @@ class Fr_Widget (object):
         When do the callback should be run?
         values are in constant.Fr_When
         """
-        self.when = value
+        self._when = value
 
     def When(self):
         """"
-        Internal value of when
+        Internal value of when. This will decide when the widget-callback will happen.
         """
-        return self.when
+        return self._when

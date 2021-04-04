@@ -36,7 +36,6 @@ import fr_widget
 import constant
 import fr_coin3d
 
-VECTOR = list[App.Base.Vector] # don't know how to not write this for every file.
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     """
@@ -44,7 +43,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     """
     global _lineWidth
 
-    def __init__(self,args:VECTOR=None, l=""):
+    def __init__(self, args:fr_widget.VECTOR=None,l=""):
         if args==None:
             args=[]
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
@@ -64,7 +63,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        if self.parent.link_to_root_handle.lastEvent == constant.FR_EVENTS.MOUSE_LEFT_PUSH:
+        if self.parent.link_to_root_handle.lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self.parent.link_to_root_handle.lastEventXYZ.pos, self.pick_radius)
             find = False
@@ -92,15 +91,15 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         p1 = self._vector[0]
         p2 = self._vector[1]
 
-        if self.active() and self.has_focus():
+        if self.is_active() and self.has_focus():
             usedColor = self.selCol
-        elif self.active() and (self.has_focus() != 1):
+        elif self.is_active() and (self.has_focus() != 1):
             usedColor = self.activeCol
-        elif self.active() != 1:
+        elif self.is_active() != 1:
             usedColor = self.inactiveCol
         if self.is_visible():
             self.WidgetCoinNode = fr_draw.draw_line(
-                p1, p2, usedColor, self.lineWidth)
+                p1, p2, usedColor, self._lineWidth)
             self.parent.addSeneNode(self.WidgetCoinNode)
         else:
             return  # We draw nothing .. This is here just for clarity of the code
