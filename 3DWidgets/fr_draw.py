@@ -34,6 +34,8 @@ import Design456Init
 #draw a line in 3D world
 def draw_line(p1, p2,color,LineWidth):
     try:
+        print(p1)
+        print(p2)
         dash = coin.SoSeparator()
         v = coin.SoVertexProperty()
         v.vertex.set1Value(0, p1)

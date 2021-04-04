@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 #
 # ***************************************************************************
@@ -25,29 +24,63 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os,sys
-import FreeCAD  as App
+import os, sys
+import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import fr_widget
 import Design456Init
-import fr_draw
-import constant
 
-#
-class Fr_Polygon(fr_widget.Fr_Widget):
-    def __init__(self, args:fr_widget.VECTOR=[],l=""):
-        if args==None:
-            args=[]
-        self.WidgetType = constant.FR_WidgetType.FR_EDGE
-        self._lineWidth = 1  # default line width
-        super().__init__(args,l)
-    def Activate(self):
-        raise NotImplementedError()
-    def Deactivate(self):
-        raise NotImplementedError()
-        
-    def draw(self,vectors):
-        mynormal= coin.SoNormal
-        mynormal.vector.set1Values(0,8,norms)
-        obelisk
+
+def draw_label(labelcolor = (0.,0.,0.), labelfont = 'sans', size = 14, trans = (0,0,0), text = ''):
+    global textNode
+    _textNode=coin.SoSeparator()   # A Separator to separate the text from the drawing
+    _textNode.coinColor=coin.coin.SoMaterial()
+    _textNode.binding = coin.SoMaterialBinding()
+    _textNode.binding.value = coin.SoMaterialBinding.PER_PART
+    _textNode.addChild(self.binding)
+    _textNode.addChild(self.coinColor)
+    _textNode.color = color
+    _textNode.fontNode = coin.SoFont()
+    _textNode.transNode = coin.SoTransform()
+    _textNode.textNode = coin.SoText2()
+    _textNode.addChild(self.fontNode)
+    _textNode.addChild(self.transNode)
+    _textNode.addChild(self.textNode)
+    _textNode.font  = font
+    _textNode.size  = size
+    _textNode.trans = trans
+    _textNode.text  = text
+    return _textNode  # Return the created SoSeparator that contains the text
+
+    """@property
+    def font(self):
+        return self.fontNode.name.getValue()
+
+    @font.setter
+    def font(self, name):
+        self.fontNode.name = name
+
+    @property
+    def size(self):
+        return self.fontNode.size.getValue()
+
+    @size.setter
+    def size(self, size):
+        self.fontNode.size.setValue(size)
+
+    @property
+    def trans(self):
+        return self.transNode.translation.getValue().getValue()
+
+    @trans.setter
+    def trans(self, trans):
+        self.transNode.translation.setValue([trans[0],trans[1],trans[2]])
+
+    @property
+    def text(self):
+        return self.textNode.string.getValues()[0]
+
+    @text.setter
+    def text(self, text):
+        self.textNode.string = text
+    """
