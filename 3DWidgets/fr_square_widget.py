@@ -46,12 +46,14 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     global _lineWidth
 
     # def __init__(self, args:fr_widget.VECTOR=[],l=""):
-    def __init__(self, args: List[App.Vector] = [], l: str = ""):
+    def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
         if args == None:
             args = []
-        self.WidgetType = constant.FR_WidgetType.FR_EDGE
-        self._lineWidth = 1  # default line width
-        super().__init__(args, l)
+        self._widgetType = constant.FR_WidgetType.Fr_SquareFrame_Widget
+        self._lineWidth = lineWidth # default line width
+        self._label=label
+        self._vector=args
+        super().__init__(args, label)
 
     def addVertices(self, vertices):
         self._vector.clear()
@@ -69,17 +71,17 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        if self.parent.link_to_root_handle.lastEvent == constant.FR_EVENTS.MOUSE_LEFT_PUSH:
+        if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.MOUSE_LEFT_PUSH:
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self.parent.link_to_root_handle.lastEventXYZ.pos, self.pick_radius)
-            find = False
+            found = False
             for i in self._widgetCoinNode:
                 if i == None or clickedNode == None:
                     break
                 if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
-                    find = True
+                    found = True
                     break  # We don't need to search more
-            if find == True:
+            if found == True:
                 self.take_focus()
                 return 1
             else:
@@ -101,11 +103,10 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         elif self.is_active() != 1:
             usedColor = self._inactiveColor
         if self.is_visible():
-            self._widgetCoinNode = fr_draw.draw_square_frame(
-                self._vector, usedColor, self._lineWidth)
-            if self._widgetCoinNode is not None:
+            list= fr_draw.draw_square_frame(self._vector, usedColor, self._lineWidth)
+            if list is not None:
                 # put the node inside the switch
-                self.addSoNodeToSoSwitch()
+                self.addSoNodeToSoSwitch(list)
                 self._parent.addSoSwitch(self._wdgsoSwitch)
             else:
                 raise ValueError("Couldn't draw the Fr_SquareFrame_Widget")
