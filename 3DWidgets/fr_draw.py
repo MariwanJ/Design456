@@ -41,6 +41,7 @@ def draw_line(p1, p2, color, LineWidth):
         v = coin.SoVertexProperty()
         v.vertex.set1Value(0, p1)
         v.vertex.set1Value(1, p2)
+        coords = coin.SoTransform()
         line = coin.SoLineSet()
         line.vertexProperty = v
         style = coin.SoDrawStyle()
@@ -50,6 +51,7 @@ def draw_line(p1, p2, color, LineWidth):
         col1.rgb = color
         dash.addChild(col1)
         dash.addChild(line)
+        dash.addChild(coords)
         return dash
 
     except Exception as err:
@@ -69,6 +71,7 @@ def draw_box(*vertices, color, LineWidth):
         raise ValueError('Vertices must be 4')
     dash = coin.SoSeparator()
     v = coin.SoVertexProperty()
+    coords = coin.SoTransform()
     square = coin.SbBox3f(p1, p2, p3, p4)
     square.vertexProperty = v
     style = coin.SoDrawStyle()
@@ -76,6 +79,7 @@ def draw_box(*vertices, color, LineWidth):
     dash.addChild(style)
     dash.addChild(color)
     dash.addChild(square)
+    dash.addChild(coords)
     return draw_square
 
 
@@ -86,16 +90,31 @@ def draw_polygon(vertices, color, LineWidth):
     """
     if len(vertices) < 4:
         raise ValueError('Vertices must be 4')
-    dash = coin.SoSeparator()
-    v = coin.SoVertexProperty()
-    square = coin.SbBox3f(vertices[0], vertices[1], vertices[2], vertices[3])
-    square.vertexProperty = v
+    _polygon = coin.SoSeparator()
+    col=coin.SoBaseColor()
+    col.rgb= color
+    coords = coin.SoTransform()
+    data=coin.SoCoordinate3()
+    face=coin.SoIndexedFaceSet()
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth
-    dash.addChild(style)
-    dash.addChild(color)
-    dash.addChild(square)
-    return draw_square
+    _polygon.addChild(style)
+    _polygon.addChild(col)
+    _polygon.addChild(coords)
+    _polygon.addChild(data)
+    _polygon.addChild(face)
+ 
+    i = 0   
+    for vr in vertices:
+        data.point.set1Value(i, vr[0], vr[1], vr[2])
+    i += 1;
+    polygons = [0, 1, 2, 3, -1] # -1 means that the n-gon is terminated and a new one can be created with the next points
+
+    i = 0
+    for p in polygons:
+        face.coordIndex.set1Value(i, p)
+    i += 1;
+    return _polygon
 
 
 # Draw a square 3D World
@@ -108,6 +127,7 @@ def draw_square_frame(vertices, color, LineWidth):
     if len(vertices) < 3:
         raise ValueError('Vertices must be more than 2')
     result = []
+
     result.append(draw_line(vertices[0], vertices[1], color, LineWidth))
     result.append(draw_line(vertices[1], vertices[2], color, LineWidth))
     result.append(draw_line(vertices[2], vertices[3], color, LineWidth))

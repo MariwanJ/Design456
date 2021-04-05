@@ -24,22 +24,19 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-
 import os
 import sys
+import Design456Init
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import Design456Init
+import constant
 import fr_draw
 import fr_widget
-import constant
 import fr_coin3d
 from typing import List
 
-
 class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
-
     """
     This class is for drawing a line in  coin3D
     """
@@ -49,7 +46,6 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
         if args == None:
             args = []
-        self._widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
         self._lineWidth = lineWidth # default line width
         self._label=label
         self._vector=args
@@ -71,10 +67,13 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. fr_coinwindow object is responsible for distributing the events.
         """
-        if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.MOUSE_LEFT_PUSH:
+
+        if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
+            print("handle")
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
             found = False
+            print(self._wdgsoSwitch.findChild(clickedNode) )
             if self._wdgsoSwitch.findChild(clickedNode) != -1:
                 found = True
                 if found == True:
@@ -93,6 +92,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
+        self._widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
         if len(self._vector) < 4:
             raise ValueError('Vertices must be 4')
         if self.is_active() and self.has_focus():
