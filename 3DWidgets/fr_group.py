@@ -111,14 +111,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         calculate find  the clicked object related to the mouse position.
         Widgets shouldn't get the event if they are not targeted.
         """
-        print("Group handle")
-        print(len(self._children))
         for wdg in self._children:
-            print( wdg.is_active())
-            print(wdg.is_visible())
-            print(wdg._widgetType )
-            print(constant.FR_WidgetType.FR_WIDGET)
-            print(wdg._widgetType != constant.FR_WidgetType.FR_WIDGET)
             if (wdg.is_active() and wdg.is_visible() and wdg._widgetType != constant.FR_WidgetType.FR_WIDGET):
                 if wdg.handle(events) == 1:
                     break

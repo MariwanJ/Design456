@@ -59,6 +59,7 @@ class Fr_Widget (object):
     global _vector  # Drawing vertices
     global _label               # label
     global _widgetCoinNode  # Keeps link to the drawing. CoinNodes are children of SoSwitch
+    global _wdgsoSwitch     # Keeps the link to the SoSwitch used in the widgets. (important)
     global _visible
     global _bkgColor  # Background color
     global _activeColor  # When widget not selected (normal)
@@ -69,8 +70,6 @@ class Fr_Widget (object):
     global _parent  # Parent windows
     global _widgetType  # Widgets type . Look at the constants
     global _hasFocus  # If the widget is clicked - has focus
-    # Keeps the link to the SoSwitch used in the widgets. (important)
-    global _wdgsoSwitch
     global _pick_radius     # Used to make clicking objects on 3DCOIN easier
     global _when            # Decide when the callback is called.
     global _userData        # UserData for widgets callback
@@ -88,7 +87,7 @@ class Fr_Widget (object):
         self._widgetCoinNode = coin.SoSeparator()
         self._visible = True
         self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-        self._activeColor = constant.FR_COLOR.FR_GRAY0
+        self._activeColor = constant.FR_COLOR.FR_BLUE3
         self._inactiveColor = constant.FR_COLOR.FR_GRAY2
         self._selColor = constant.FR_COLOR.FR_YELLOW
         self._box = None
@@ -120,23 +119,13 @@ class Fr_Widget (object):
         """
         After the widgets damages, this function should be called.        
         """
-        if self.is_visible():
-            # Remove the node from the switch as a child
-            self.removeSoNodeFromSoSwitch()
-            # Remove the seneNodes from the widget
-            self.removeSeneNodes()
-            # Remove the SoSwitch from fr_coinwindo
-            self._parent.removeSoSwitch(self._wdgsoSwitch)
-            self.draw()
+        raise NotImplementedError()
 
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
         """
-        if self.has_focus == True:
-            return  # nothing to do here
-        self._hasFocus = True
-        self.redraw()
+        raise NotImplementedError()
 
     def move(self, x, y, z):
         """ Move the widget to a new location.
@@ -162,13 +151,9 @@ class Fr_Widget (object):
         This happend by clicking anything 
         else than the widget itself
         """
-        if self._hasFocus == False:
-            return  # nothing to do
-        else:
-            self._hasFocus = False
-            self.redraw()
-
+        raise NotImplementedError()
     # Activate, deactivate, get status of widget
+
     def is_visible(self):
         """ 
         return the internal variable which keep 
@@ -177,18 +162,13 @@ class Fr_Widget (object):
         return self._visible
 
     def activate(self):
-        if self._active:
-            return  # nothing to do
-        self._active = True
-        self.redraw()
+        raise NotImplementedError()
 
     def deactivate(self):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self._active == False:
-            return  # Nothing to do
-        self._active = False
+        raise NotImplementedError()
 
     def destructor(self):
         """
@@ -200,11 +180,7 @@ class Fr_Widget (object):
         return self._active
 
     def hide(self):
-        if self._visible == False:
-            return  # nothing to do
-        self._visible = False
-        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
-        self.redraw()
+        raise NotImplementedError()
 
     def show(self):
         self.draw()
@@ -238,16 +214,14 @@ class Fr_Widget (object):
             return None
 
     def position(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
+        """put the position of the object, Reference to the first vector """
+        raise NotImplementedError()
 
     def resize(self, args: List[App.Vector]):  # Width, height, thickness
-        self._vector = args
-        self.redraw()
+        raise NotImplementedError()
 
     def size(self, args: List[App.Vector]):
-        self.resize(args)
+        NotImplementedError()
 
     # Take care of all events
     def handle(self, events):
@@ -306,7 +280,10 @@ class Fr_Widget (object):
         Internal value of when. This will decide when the widget-callback will happen.
         """
         return self._when
-
+    def addSeneNodes(self,list):
+        for i in list:
+            self._widgetCoinNode.addChild(i)
+            
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
         self._widgetCoinNode.removeAllChildren()
@@ -324,4 +301,5 @@ class Fr_Widget (object):
             Remove the children from the widgetCOINnode which is the soseparators
             i.e. all drawing, color ..etc for the widget 
         """
-        self._widgetCoinNode.removeAllChildren()
+        self._wdgsoSwitch.removeAllChildren()
+    

@@ -36,6 +36,7 @@ import fr_widget
 import constant
 import fr_coin3d
 from typing import List
+
 """
 Example how to use this widget. 
 
@@ -49,14 +50,14 @@ p2=(400,400,0) # width and hight of the window .. z is not a matter (generally t
 p3=(20,20,0)   # Second point in the line 
 g.append(p1)
 g.append(p2)
-wn=wn.Fr_CoinWindow(g,"MyWindow")  # Create the window, label has no effect at the moment
+wny=wn.Fr_CoinWindow(g,"MyWindow")  # Create the window, label has no effect at the moment
 g.clear()
 g.append(p1)
 g.append(p3)
-ln =line.Fr_Line_Widget(g)   # draw the line - nothing will be visible yet
-wn.addChild(ln)              # Add it to the window as a child 
-ln.parent=wn                 # define parent for the widget
-wn.show()                    # show the window and it's widgets. 
+ln =line.Fr_Line_Widget(g,"",5)   # draw the line - nothing will be visible yet
+wny.addChild(ln)              # Add it to the window as a child 
+ln.parent=wny                 # define parent for the widget
+wny.show()                    # show the window and it's widgets. 
 
 
 """
@@ -70,7 +71,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     global _lineWidth
 
     # def __init__(self, args: fr_widget.VECTOR = None, l=""):
-    def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
+    def __init__(self, args: List[App.Vector] = [], label: str = "", lineWidth=1):
         if args == None:
             args = []
         self._lineWidth = lineWidth  # Default line width
@@ -89,24 +90,13 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        print("parent is ")
-        print(self._parent)
-        print("link to root is ")
-        print(self._parent.link_to_root_handle)
-        print("last event is ")
-        print(self._parent.link_to_root_handle._lastEvent)
-        print ("if is ")
-        print(self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH)
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            print("check")
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
-            found= False
-            didcouldbethere=self._wdgsoSwitch.findChild(clickedNode)
-            print(didcouldbethere) 
+            found = False
             if self._wdgsoSwitch.findChild(clickedNode) != -1:
-                found =True
-            #for i in self._widgetCoinNode:
+                found = True
+            # for i in self._widgetCoinNode:
             #    if i == None or clickedNode == None:
             #        break
             #    if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
@@ -115,6 +105,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             if found == True:
                 self.take_focus()
                 self.do_callback(self._userData)
+                found=False
                 return 1
             else:
                 self.remove_focus()
@@ -140,21 +131,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             usedColor = self._inactiveColor
         if self.is_visible():
             list = fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
-            self.addSoNodeToSoSwitch(list)                  # put the node inside the switch
-            self._parent.addSoSwitch(self._wdgsoSwitch)
-        else:
-            return  # We draw nothing .. This is here just for clarity of the code
-
-    # def redraw(self):
-    #    """ When drawing damages, a redraw must be done.
-    #    This function will redraw the widget on the 3D
-    #    Scene"""
-    #    if self.is_visible():
-    #        self.removeSoNodeFromSoSwitch()   # Remove the node from the switch as a child
-    #        self.removeSeneNodes()            # Remove the seneNodes from the widget
-    #        self._parent.removeSoSwitch()     # Remove the SoSwitch from fr_coinwindow
-    #        self._widgetCoinNode.clear()      # clear the list
-    #        self.draw()                       # Redraw the whole object
+            # put the node inside the switch
+            self.addSeneNodes(list)                         #Add SoSeparator
+            self.addSoNodeToSoSwitch(self._widgetCoinNode)  #Add SoSeparator as child to Switch
+            self._parent.addSoSwitch(self._wdgsoSwitch)     #Add the switch to the SeneGraph
+        else: 
+            return  # We draw nothing .. This is here just for clarifying the code
 
     def move(self, newVecPos):
         """
@@ -170,9 +152,83 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     def getVertexEnd(self):
         """Return the vertex of the end point"""
-        return App.Vertex(self.x+self.w, self.y+self.h, self.z+self.t)
+        return App.Vertex(self._vector[1])
 
     def show(self):
         self._visible = True
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
         self.redraw()
+
+    def redraw(self):
+        """
+        After the widgets damages, this function should be called.        
+        """
+        if self.is_visible():
+            # Remove the seneNodes from the widget
+            self.removeSeneNodes()
+            # Remove the node from the switch as a child
+            self.removeSoNodeFromSoSwitch()
+            # Remove the SoSwitch from fr_coinwindo
+            self._parent.removeSoSwitch(self._wdgsoSwitch)
+            print("redraw")
+            self.draw()
+
+    def take_focus(self):
+        """
+        Set focus to the widget. Which should redraw it also.
+        """
+        if self._hasFocus == True:
+            return  # nothing to do here
+        self._hasFocus = True
+        self.redraw()
+
+    def activate(self):
+        if self._active:
+            return  # nothing to do
+        self._active = True
+        self.redraw()
+
+    def deactivate(self):
+        """
+        Deactivate the widget. which causes that no handle comes to the widget
+        """
+        if self._active == False:
+            return  # Nothing to do
+        self._active = False
+
+    def destructor(self):
+        """
+        This will remove the widget totally. 
+        """
+        self.removeSeneNodes()
+
+    def is_active(self):
+        return self._active
+
+    def hide(self):
+        if self._visible == False:
+            return  # nothing to do
+        self._visible = False
+        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
+        self.redraw()
+
+    def remove_focus(self):
+        """
+        Remove the focus from the widget. 
+        This happend by clicking anything 
+        else than the widget itself
+        """
+        if self._hasFocus == False:
+            return  # nothing to do
+        else:
+            self._hasFocus = False
+            self.redraw()
+
+    def resize(self, args: List[App.Vector]):  # Width, height, thickness
+        """Resize the widget by using the new vectors"""
+        self._vector = args
+        self.redraw()
+
+    def size(self, args: List[App.Vector]):
+        """Resize the widget by using the new vectors"""
+        self.resize(args)
