@@ -73,7 +73,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
         if args == None:
             args = []
-        self._widgetType = constant.FR_WidgetType.FR_EDGE
         self._lineWidth = lineWidth  # Default line width
         super().__init__(args, label)
 
@@ -90,15 +89,18 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
+        print("parent is ")
         print(self._parent)
+        print("link to root is ")
         print(self._parent.link_to_root_handle)
-        
+        print("last event is ")
         print(self._parent.link_to_root_handle._lastEvent)
-        
+        print ("if is ")
+        print(self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH)
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             print("check")
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.parent.link_to_root_handle.lastEventXYZ.pos, self.pick_radius)
+                self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
             found= False
             didcouldbethere=self._wdgsoSwitch.findChild(clickedNode)
             print(didcouldbethere) 
@@ -110,7 +112,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             #    if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
             #        find = True
             #        break  # We don't need to search more
-            if find == True:
+            if found == True:
                 self.take_focus()
                 self.do_callback(self._userData)
                 return 1
@@ -124,6 +126,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
+        self._widgetType = constant.FR_WidgetType.FR_EDGE
         if len(self._vector) < 2:
             raise ValueError('Must be 2 Vectors')
         p1 = self._vector[0]

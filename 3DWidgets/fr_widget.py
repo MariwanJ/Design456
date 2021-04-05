@@ -41,6 +41,7 @@ import constant
 from dataclasses import dataclass
 from typing import List
 
+
 class Fr_Widget (object):
     """
     Abstract Base class used to create all Widgets
@@ -72,8 +73,9 @@ class Fr_Widget (object):
     global _wdgsoSwitch
     global _pick_radius     # Used to make clicking objects on 3DCOIN easier
     global _when            # Decide when the callback is called.
-    global _userData        # UserData for widgets callback 
+    global _userData        # UserData for widgets callback
    # def __init__(self, args: VECTOR = None, l=""):
+
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         """ 
         Default values which is shared wit all objects.
@@ -88,7 +90,7 @@ class Fr_Widget (object):
         self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
         self._activeColor = constant.FR_COLOR.FR_GRAY0
         self._inactiveColor = constant.FR_COLOR.FR_GRAY2
-        self._selColor = constant.FR_COLOR.FR_BLACK
+        self._selColor = constant.FR_COLOR.FR_YELLOW
         self._box = None
         self._active = True
         self._parent = None
@@ -99,7 +101,7 @@ class Fr_Widget (object):
         self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
         self._when = constant.FR_WHEN.FR_WHEN_NEVER
-        self._userData=None
+        self._userData = None
 
     def draw_box(self):
         raise NotImplementedError()
@@ -119,9 +121,12 @@ class Fr_Widget (object):
         After the widgets damages, this function should be called.        
         """
         if self.is_visible():
-            self.removeSoNodeFromSoSwitch()                 # Remove the node from the switch as a child
-            self.removeSeneNodes()                          # Remove the seneNodes from the widget
-            self._parent.removeSoSwitch(self._wdgsoSwitch)  # Remove the SoSwitch from fr_coinwindo
+            # Remove the node from the switch as a child
+            self.removeSoNodeFromSoSwitch()
+            # Remove the seneNodes from the widget
+            self.removeSeneNodes()
+            # Remove the SoSwitch from fr_coinwindo
+            self._parent.removeSoSwitch(self._wdgsoSwitch)
             self.draw()
 
     def take_focus(self):
@@ -259,7 +264,8 @@ class Fr_Widget (object):
             be used there. run do_callback 
             to activate this.
         """
-        raise NotImplementedError()
+        pass  # Subclassed widget must create callback function. Abstract class has no callback
+        #raise NotImplementedError()
 
     # call the main callback for the widget
     def do_callback(self, data):
@@ -304,9 +310,9 @@ class Fr_Widget (object):
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
         self._widgetCoinNode.removeAllChildren()
-        del self._widgetCoinNode
+        #del self._widgetCoinNode
 
-    def addSoNodeToSoSwitch(self,listOfSoSeparator):
+    def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
         to the switch. The switch should be able to hide/visible them by a command
         """

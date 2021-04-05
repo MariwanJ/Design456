@@ -31,7 +31,7 @@ import sys
 #Widgets type 
 class FR_WidgetType:
     #FR_Widget is a generic definition, FR_Group will be such a widget
-    FR_WIDGET=          0
+    FR_WIDGET=         -1
     FR_GROUP=          10 
     FR_COINWINDOW=     20    #3D World
     FR_QTWINDOW=       30    #2D World

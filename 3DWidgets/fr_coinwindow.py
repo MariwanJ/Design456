@@ -63,40 +63,25 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     callbackClick = None
     callbackKey = None
 
-    # def __init__(self, args:fr_widget.VECTOR=None,l=""):
-    def __init__(self, args: List[App.Vector] = [], l: str = ""):
+    def __init__(self, args: List[App.Vector] = [], label: str = ""):
         if args == None:
             args = [App.Vector(0, 0, 0), App.Vector(
                 400, 400, 0)]  # Default vector
         self._view = Gui.ActiveDocument.ActiveView
-        self._parent = self    # No parent and this is the main window
-        self.lastKeyEvent = []  # Might be more than one key.
+        self._parent = self  # No parent and this is the main window
         self._widgetType = constant.FR_WidgetType.FR_COINWINDOW
         self.link_to_root_handle = fr_coin3d.root_handle()
         self.link_to_root_handle._wind = self
         self.link_to_root_handle.addCallbacks()
         # Activate callbacks
-        super().__init__(args, l)
+        super().__init__(args, label)
 
     def exitFr_Window(self):
         fr_coin3d.root_handle.removeCallbacks()
         # Call Fr_Groups deactivate to remove all widgets.
-        self.parent.deactivate()
-
-    def draw(self):
-        '''Fr_CoinWindow itself, will not have any real drawing. 
-        It will keep control of drawing the children but itself, nothing
-        will be drawn.  
-        '''
-        # call group(parent)'s draw
-        fr_group.Fr_Group.draw(self)
 
     def hide(self):
         self.deactivate()
-
-    def addChild(self, childWdg):
-        self.children.append(childWdg)
-        childWdg._parent = self
 
     def show(self):
         """
@@ -111,18 +96,12 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         self.draw()
 
-    def removeChild(self, childWdg):
-        try:
-            self.children.remove(childWdg)
-        except:
-            print("not found")
 
     def deactivate(self):
         """
         Like exit in normal window. This will end the windows
         """
         self.exitFr_Window()
-        self.parent.deactivate()
 
     def callback(self, data):
         # not sure what I should do here yet.
