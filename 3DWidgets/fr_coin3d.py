@@ -66,7 +66,7 @@ def objectUnderMouse_Coin3d(self, win):
 # get Object clicked in COIN3D
 
 
-def objectMouseClick_Coin3d(mouse_pos,pick_radius):
+def objectMouseClick_Coin3d(mouse_pos, pick_radius):
     # This section is from DRAFT
     # It must help in finding the correct node
     # which represent the widget.
@@ -86,7 +86,7 @@ def objectMouseClick_Coin3d(mouse_pos,pick_radius):
     else:
         None
 
-        
+
 class root_handle():
     """
         The most critical part of the widgets. This will take care of 
@@ -208,7 +208,7 @@ class root_handle():
             self.lastEvent = constant.FR_EVENTS.FR_NO_EVENT
 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH 
+                self.lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 self.lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
 
@@ -222,7 +222,7 @@ class root_handle():
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON3:
                 self.lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
             self.wind.handle(self.lastEvent)
-            
+
         # Take care of Keyboard events
         elif (self.typeofevent == coin.SoKeyboardEvent):
             """

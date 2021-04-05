@@ -25,29 +25,36 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os,sys
-import FreeCAD  as App
+import os
+import sys
+import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import fr_widget
 import Design456Init
 import fr_draw
 import constant
+from typing import List
 
 #
+
+
 class Fr_Polygon(fr_widget.Fr_Widget):
-    def __init__(self, args:fr_widget.VECTOR=[],l=""):
-        if args==None:
-            args=[]
+    # def __init__(self, args:fr_widget.VECTOR=[],l=""):
+    def __init__(self, args: List[App.Vector] = [], l: str = ""):
+        if args == None:
+            args = []
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
         self._lineWidth = 1  # default line width
-        super().__init__(args,l)
+        super().__init__(args, l)
+
     def Activate(self):
         raise NotImplementedError()
+
     def Deactivate(self):
         raise NotImplementedError()
-        
-    def draw(self,vectors):
-        mynormal= coin.SoNormal
-        mynormal.vector.set1Values(0,8,norms)
+
+    def draw(self, vectors):
+        mynormal = coin.SoNormal
+        mynormal.vector.set1Values(0, 8, norms)
         obelisk

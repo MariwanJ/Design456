@@ -35,6 +35,7 @@ import fr_draw
 import fr_widget
 import constant
 import fr_coin3d
+from typing import List
 """
 Example how to use this widget. 
 
@@ -68,7 +69,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     """
     global _lineWidth
 
-    def __init__(self, args: fr_widget.VECTOR = None, l=""):
+    # def __init__(self, args: fr_widget.VECTOR = None, l=""):
+    def __init__(self, args: List[App.Vector] = [], l: str = ""):
         if args == None:
             args = []
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
@@ -119,24 +121,26 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self.is_active() and self.has_focus():
             usedColor = self.selCol
         elif self.is_active() and (self.has_focus() != 1):
-            usedColor = self.activeCol
+            usedColor = self._activeColor
         elif self.is_active() != 1:
-            usedColor = self.inactiveCol
+            usedColor = self._inactiveColor
         if self.is_visible():
-            self._widgetCoinNode = fr_draw.draw_line(
-                p1, p2, usedColor, self._lineWidth)
-            self.parent.addSeneNode(self._widgetCoinNode)
+            self._widgetCoinNode = fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
+            self.addSoNodeToSoSwitch()                  # put the node inside the switch
+            self.parent.addSoSwitch(self._wdgsoSwitch)
         else:
             return  # We draw nothing .. This is here just for clarity of the code
 
-    def redraw(self):
-        """ When drawing damages, a redraw must be done.
-        This function will redraw the widget on the 3D
-        Scene"""
-        if self.is_visible():
-            self.parent.removeSeneNode(self._widgetCoinNode)
-            self._widgetCoinNode = None
-            self.draw()
+    # def redraw(self):
+    #    """ When drawing damages, a redraw must be done.
+    #    This function will redraw the widget on the 3D
+    #    Scene"""
+    #    if self.is_visible():
+    #        self.removeSoNodeFromSoSwitch()   # Remove the node from the switch as a child
+    #        self.removeSeneNodes()            # Remove the seneNodes from the widget
+    #        self._parent.removeSoSwitch()     # Remove the SoSwitch from fr_coinwindow
+    #        self._widgetCoinNode.clear()      # clear the list
+    #        self.draw()                       # Redraw the whole object
 
     def move(self, newVecPos):
         """

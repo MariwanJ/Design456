@@ -42,7 +42,7 @@ from dataclasses import dataclass
 from typing import List
 
 
-#Struct definition of a point
+# Struct definition of a point
 @dataclass
 class point:
     def __init__(self):
@@ -51,9 +51,10 @@ class point:
         self.z = 0.0
 
 
-#List of points which should be used everywhere 
+# List of points which should be used everywhere
 VECTOR = List[point]
 # Coin SoSeparator (node)
+
 
 class Fr_Widget (object):
     """
@@ -69,25 +70,26 @@ class Fr_Widget (object):
     you can implement draw function
     """
     import FreeCAD as App
-    global _vector
-    global _l
-    global _widgetCoinNode  # This is for the children or the widget itself
+    global _vector  # Drawing vertices
+    global _l               # label
+    global _widgetCoinNode  # Keeps link to the drawing. CoinNodes are children of SoSwitch
     global _visible
     global _bkgColor  # Background color
     global _activeColor  # When widget not selected (normal)
     global _selColor  # When widget is selected
     global _inactiveColor  # Inactive widget.
     global _box
-    global _active
-    global _parent
-    global _widgetType
-    global _hasFocus
+    global _active  # If widget is active
+    global _parent  # Parent windows
+    global _widgetType  # Widgets type . Look at the constants
+    global _hasFocus  # If the widget is clicked - has focus
+    # Keeps the link to the SoSwitch used in the widgets. (important)
     global _wdgsoSwitch
-    global _pick_radius
-    global _when
+    global _pick_radius     # Used to make clicking objects on 3DCOIN easier
+    global _when            # Decide when the callback is called.
 
    # def __init__(self, args: VECTOR = None, l=""):
-    def __init__(self, args: List[App.Vector]=[], l: str=""):
+    def __init__(self, args: List[App.Vector] = [], l: str = ""):
         """ 
         Default values which is shared wit all objects.
 
@@ -99,18 +101,18 @@ class Fr_Widget (object):
         self._widgetCoinNode = coin.SoSeparator
         self._visible = True
         self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-        self._activeCol = constant.FR_COLOR.FR_GRAY0
-        self._inactiveCol = constant.FR_COLOR.FR_GRAY2
-        self._selCol = constant.FR_COLOR.FR_BLACK
+        self._activeColor = constant.FR_COLOR.FR_GRAY0
+        self._inactiveColor = constant.FR_COLOR.FR_GRAY2
+        self._selColor = constant.FR_COLOR.FR_BLACK
         self._box = None
         self._active = True
         self._parent = None
         self._widgetType = constant.FR_WidgetType.FR_WIDGET
         self._hasFocus = False
+        # each node is a child of the switch, Add drawings a children for this switch
         self._wdgsoSwitch = coin.SoSwitch()
         self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-        self._wdgsoSwitch.addChild(self._widgetCoinNode)  # put the node inside the switch
         self._when = constant.FR_WHEN.FR_WHEN_NEVER
 
     def draw_box(self):
@@ -130,7 +132,12 @@ class Fr_Widget (object):
         """
         After the widgets damages, this function should be called.        
         """
-        raise NotImplementedError()
+        if self.is_visible():
+            self.removeSoNodeFromSoSwitch()   # Remove the node from the switch as a child
+            self.removeSeneNodes()            # Remove the seneNodes from the widget
+            self._parent.removeSoSwitch()     # Remove the SoSwitch from fr_coinwindow
+            self._widgetCoinNode.clear()      # clear the list
+            self.draw()
 
     def take_focus(self):
         """
@@ -197,6 +204,7 @@ class Fr_Widget (object):
         """
         This will remove the widget totally. 
         """
+        self.removeSeneNodes()
 
     def is_active(self):
         return self._active
@@ -209,7 +217,7 @@ class Fr_Widget (object):
         self.redraw()
 
     def show(self):
-        raise NotImplementedError
+        self.draw()
 
     def parent(self):
         return self._parent
@@ -307,3 +315,17 @@ class Fr_Widget (object):
         Internal value of when. This will decide when the widget-callback will happen.
         """
         return self._when
+
+    def removeSeneNodes(self):
+        """ Remove SeneNodes children and itself"""
+        for i in self._widgetCoinNode:
+            self._widgetCoinNode.removeChild(i)
+        del sel.f_widgetCoinNode[:]
+
+    def addSoNodeToSoSwitch(self):
+        for i in self._widgetCoinNode:
+            self._wdgsoSwitch.addChild(i)
+
+    def removeSoNodeFromSoSwitch(self):
+        for i in self._widgetCoinNode:
+            self._wdgsoSwitch.removeChild(i)
