@@ -34,7 +34,6 @@ import Design456Init
 import fr_draw
 import fr_widget
 import constant
-import fr_coin3d
 from typing import List
 
 """
@@ -90,6 +89,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
+        print("handle square")
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
@@ -102,7 +102,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             #    if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
             #        find = True
             #        break  # We don't need to search more
+            print("not found")
             if found == True:
+                print("found")
                 self.take_focus()
                 self.do_callback(self._userData)
                 found=False
