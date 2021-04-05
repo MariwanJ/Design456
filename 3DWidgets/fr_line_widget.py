@@ -70,12 +70,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     global _lineWidth
 
     # def __init__(self, args: fr_widget.VECTOR = None, l=""):
-    def __init__(self, args: List[App.Vector] = [], l: str = ""):
+    def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
         if args == None:
             args = []
-        self.WidgetType = constant.FR_WidgetType.FR_EDGE
-        self._lineWidth = 1  # Default line width
-        super().__init__(args, l)
+        self._widgetType = constant.FR_WidgetType.FR_EDGE
+        self._lineWidth = lineWidth  # Default line width
+        super().__init__(args, label)
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -90,18 +90,29 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        if self.parent.link_to_root_handle.lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
+        print(self._parent)
+        print(self._parent.link_to_root_handle)
+        
+        print(self._parent.link_to_root_handle._lastEvent)
+        
+        if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
+            print("check")
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self.parent.link_to_root_handle.lastEventXYZ.pos, self.pick_radius)
-            find = False
-            for i in self._widgetCoinNode:
-                if i == None or clickedNode == None:
-                    break
-                if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
-                    find = True
-                    break  # We don't need to search more
+            found= False
+            didcouldbethere=self._wdgsoSwitch.findChild(clickedNode)
+            print(didcouldbethere) 
+            if self._wdgsoSwitch.findChild(clickedNode) != -1:
+                found =True
+            #for i in self._widgetCoinNode:
+            #    if i == None or clickedNode == None:
+            #        break
+            #    if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
+            #        find = True
+            #        break  # We don't need to search more
             if find == True:
                 self.take_focus()
+                self.do_callback(self._userData)
                 return 1
             else:
                 self.remove_focus()
@@ -119,15 +130,15 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         p2 = self._vector[1]
 
         if self.is_active() and self.has_focus():
-            usedColor = self.selCol
+            usedColor = self._selColor
         elif self.is_active() and (self.has_focus() != 1):
             usedColor = self._activeColor
         elif self.is_active() != 1:
             usedColor = self._inactiveColor
         if self.is_visible():
-            self._widgetCoinNode = fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
-            self.addSoNodeToSoSwitch()                  # put the node inside the switch
-            self.parent.addSoSwitch(self._wdgsoSwitch)
+            list = fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
+            self.addSoNodeToSoSwitch(list)                  # put the node inside the switch
+            self._parent.addSoSwitch(self._wdgsoSwitch)
         else:
             return  # We draw nothing .. This is here just for clarity of the code
 

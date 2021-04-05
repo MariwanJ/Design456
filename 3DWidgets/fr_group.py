@@ -41,9 +41,9 @@ from typing import List
 class Fr_Group(fr_widget.Fr_Widget):
     # Any drawign/Every thing should be added to this later
     # This will keep the link to the main window.
-    global mainfrCoinWindow
-    global mainfrQtWindow
-    global children
+    global _mainfrCoinWindow
+    global _mainfrQtWindow
+    global _children
     # def __init__(self, args:fr_widget.VECTOR=None,l=""):
 
     def __init__(self, args: List[App.Vector] = [], l: str = ""):
@@ -54,22 +54,22 @@ class Fr_Group(fr_widget.Fr_Widget):
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self.children = []
         # Initialize them as None.
-        self.mainfrCoinWindow = self.mainfrQtWindow = None
+        self._mainfrCoinWindow = self._mainfrQtWindow = None
         super().__init__(args, l)
 
     def addWidget(self, widget):
-        self.children.append(widget)
+        self._children.append(widget)
 
     def draw(self):
-        for i in self.children:
+        for i in self._children:
             i.draw()
 
     def draw_label(self):
-        for i in self.children:
+        for i in self._children:
             i.draw_label()
 
     def redraw(self):
-        for i in self.children:
+        for i in self._children:
             i.redraw()
 
     def deactivate(self):
@@ -77,12 +77,12 @@ class Fr_Group(fr_widget.Fr_Widget):
         Before deactivating the group, we have to remove all children.
         Think about, you might have several groups inside the Fr_CoinWindow
         """
-        for widget in self.children:
+        for widget in self._children:
             # Remove objects in the Root_SeneGraph
             self.removeSeneNode(widget._wdgsoSwitch)
             self.removeSeneNode(widget._widgetCoinNode)
             # Remove the widget itself from the group
-            children.remove(children)
+            children.remove(_children)
             del widget
         del self.children[:]
 
@@ -95,6 +95,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         """ remove switch tree from the SeneGraph"""
         self.Root_SeneGraph.removeChild(_soSwitch)
 
+    # All events distributed by this function. We classify the event to be processed by each widget later.
     def handle(self, events):
         """send events to all widgets
         Targeted Widget should return 1 if it uses the event 
@@ -102,11 +103,9 @@ class Fr_Group(fr_widget.Fr_Widget):
         at that time return the event to achieve that. 
         To find the target widget, you have to 
         calculate find  the clicked object related to the mouse position.
-        Widgets shouldn't get the event if they are not targeted to not 
-        waste cpu:s time.     
-
+        Widgets shouldn't get the event if they are not targeted.
         """
-        for widg in self.children:
-            if widg.handle(events) == 1:
-                # Events reached the targeted widget go out
-                return 1
+        for wdg in self._children:
+            if (wdg.is_active() and wdg.is_visible() and wdg._widgetType != constant.FR_WidgetType.FR_WIDGET):
+                if wdg.handle(events) == 1:
+                    break

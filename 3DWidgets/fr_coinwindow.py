@@ -73,28 +73,10 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.lastKeyEvent = []  # Might be more than one key.
         self._widgetType = constant.FR_WidgetType.FR_COINWINDOW
         self.link_to_root_handle = fr_coin3d.root_handle()
-        self.link_to_root_handle.wind = self
+        self.link_to_root_handle._wind = self
+        self.link_to_root_handle.addCallbacks()
         # Activate callbacks
         super().__init__(args, l)
-
-    # All event come to this function. We classify the event to be processed by each widget later.
-
-    def handle(self, events):
-        """
-            When handle return 1, it means that the widgets (child) used the event
-            No more widgets should get the event. Coin can use the rest of the event
-            if that is required.
-            If an object is not active, the event will not reach it.
-            or if it is not visible.
-            Be aware that the EVENT must be inside the dimension of the widget.
-            Since parent don't know that directly. Widget itself should take care
-            of that. You must check that always.
-            Here we will distribute the event to the children
-        """
-        for wdg in self.children:
-            if (wdg._active and wdg._visible and wdg._widgetType != constant.FR_WidgetType.FR_WIDGET):
-                if wdg.handle(events) == 1:
-                    break
 
     def exitFr_Window(self):
         fr_coin3d.root_handle.removeCallbacks()

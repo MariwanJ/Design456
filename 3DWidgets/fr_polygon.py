@@ -41,11 +41,11 @@ from typing import List
 
 class Fr_Polygon(fr_widget.Fr_Widget):
     # def __init__(self, args:fr_widget.VECTOR=[],l=""):
-    def __init__(self, args: List[App.Vector] = [], l: str = ""):
+    def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
         if args == None:
             args = []
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
-        self._lineWidth = 1  # default line width
+        self._lineWidth = lineWidth  # default line width
         super().__init__(args, l)
 
     def Activate(self):
