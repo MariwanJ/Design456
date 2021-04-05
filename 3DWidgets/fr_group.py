@@ -49,16 +49,22 @@ class Fr_Group(fr_widget.Fr_Widget):
     def __init__(self, args: List[App.Vector] = [], l: str = ""):
         if args == None:
             args = []
-        self.WidgetType = constant.FR_WidgetType.FR_GROUP
+        self._widgetType = constant.FR_WidgetType.FR_GROUP
         # Root of the children (coin)
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
-        self.children = []
+        self._children = []
         # Initialize them as None.
         self._mainfrCoinWindow = self._mainfrQtWindow = None
         super().__init__(args, l)
 
-    def addWidget(self, widget):
-        self._children.append(widget)
+    def addWidget(self, widg):
+        self._children.append(widg)
+
+    def removeWidget(self, widg):
+        try:
+            self._children.remove(widg)
+        except:
+            print("not found")
 
     def draw(self):
         for i in self._children:
@@ -84,7 +90,7 @@ class Fr_Group(fr_widget.Fr_Widget):
             # Remove the widget itself from the group
             children.remove(_children)
             del widget
-        del self.children[:]
+        del self.children
 
     def addSoSwitch(self, _soSwitch):
         """ Add new switch tree to the SeneGraph"""
@@ -105,7 +111,14 @@ class Fr_Group(fr_widget.Fr_Widget):
         calculate find  the clicked object related to the mouse position.
         Widgets shouldn't get the event if they are not targeted.
         """
+        print("Group handle")
+        print(len(self._children))
         for wdg in self._children:
+            print( wdg.is_active())
+            print(wdg.is_visible())
+            print(wdg._widgetType )
+            print(constant.FR_WidgetType.FR_WIDGET)
+            print(wdg._widgetType != constant.FR_WidgetType.FR_WIDGET)
             if (wdg.is_active() and wdg.is_visible() and wdg._widgetType != constant.FR_WidgetType.FR_WIDGET):
                 if wdg.handle(events) == 1:
                     break

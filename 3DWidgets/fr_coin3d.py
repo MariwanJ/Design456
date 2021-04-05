@@ -208,9 +208,7 @@ class root_handle():
             
             eventState = self._get_event.getState()  # pressed down , or it is release
             getButton = self._get_event.getButton()
-            print("event state")
-            print(eventState)
-            
+           
             self._lastEvent = constant.FR_EVENTS.FR_NO_EVENT
 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
@@ -227,7 +225,6 @@ class root_handle():
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
-            print(self._lastEvent)
             self._wind.handle(self._lastEvent)
 
         # Take care of Keyboard events
@@ -268,7 +265,7 @@ class root_handle():
                 else:
                     # Take care of all other keys.
                     self._e_state = None
-                    self._wind.handle(events)
+                self._wind.handle(events)
 
             except ValueError:
                 # there is no character for this value
