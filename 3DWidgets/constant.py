@@ -28,18 +28,23 @@ from __future__ import unicode_literals
 import os
 import sys
 
-#Widgets type 
+#Widgets type. QT widget will get QT in their names.
 class FR_WidgetType:
-    #FR_Widget is a generic definition, FR_Group will be such a widget
-    FR_WIDGET=         -1
-    FR_GROUP=          10 
-    FR_COINWINDOW=     20    #3D World
-    FR_QTWINDOW=       30    #2D World
-    FR_EDGE=           40
-    FR_FACE=           50    
-    FR_BOX=            60    
-    FR_BUTTON=         70
-    FR_WHEEL=          80
+    """ Internal names of the widgets. QT widget will get 'qt' in their names """
+    FR_WIDGET=         "Base Widget"
+    FR_VERTEX=         "Single Vertex"
+    FR_GROUP=          "Group Widget" 
+    FR_COINWINDOW=     "Coin3D Window"    #3D World
+    FR_QTWINDOW=       "QT Window"        #2D World
+    FR_EDGE=           "Edge Widget"
+    FR_FACE=           "Face Widget"    
+    FR_SQUARE_FRAME=   "Square frame"
+    FR_TRIANGLE=       "Triangle frame"
+    FR_POLYGON=        "Polygon Widget"
+    
+    FR_BOX=            "Box Widget"    
+    FR_WHEEL=          "Wheel Widget"
+    
 
 class FR_COLOR:
     #Transparency - No color will be applied
