@@ -35,7 +35,6 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import Draft as _draft
 import fr_draw
 import constant
 from dataclasses import dataclass
@@ -281,12 +280,12 @@ class Fr_Widget (object):
         """
         return self._when
     def addSeneNodes(self,list):
-        for i in list:
-            self._widgetCoinNode.addChild(i)
+        self._widgetCoinNode=list
             
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
-        self._widgetCoinNode.removeAllChildren()
+        for i in self._widgetCoinNode: 
+            i.removeAllChildren()
         #del self._widgetCoinNode
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
