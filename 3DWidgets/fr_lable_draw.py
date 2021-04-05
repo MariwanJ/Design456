@@ -24,17 +24,18 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os, sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 
 
-def draw_label(labelcolor = (0.,0.,0.), labelfont = 'sans', size = 14, trans = (0,0,0), text = ''):
+def draw_label(labelcolor=(0., 0., 0.), labelfont='sans', size=14, trans=(0, 0, 0), text=''):
     global textNode
-    _textNode=coin.SoSeparator()   # A Separator to separate the text from the drawing
-    _textNode.coinColor=coin.coin.SoMaterial()
+    _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
+    _textNode.coinColor = coin.coin.SoMaterial()
     _textNode.binding = coin.SoMaterialBinding()
     _textNode.binding.value = coin.SoMaterialBinding.PER_PART
     _textNode.addChild(self.binding)
@@ -46,10 +47,10 @@ def draw_label(labelcolor = (0.,0.,0.), labelfont = 'sans', size = 14, trans = (
     _textNode.addChild(self.fontNode)
     _textNode.addChild(self.transNode)
     _textNode.addChild(self.textNode)
-    _textNode.font  = font
-    _textNode.size  = size
+    _textNode.font = font
+    _textNode.size = size
     _textNode.trans = trans
-    _textNode.text  = text
+    _textNode.text = text
     return _textNode  # Return the created SoSeparator that contains the text
 
     """@property

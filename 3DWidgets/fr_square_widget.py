@@ -35,6 +35,8 @@ import fr_draw
 import fr_widget
 import constant
 import fr_coin3d
+from typing import List
+
 
 class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
 
@@ -43,12 +45,13 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     """
     global _lineWidth
 
-    def __init__(self, args:fr_widget.VECTOR=[],l=""):
-        if args==None:
-            args=[]
+    # def __init__(self, args:fr_widget.VECTOR=[],l=""):
+    def __init__(self, args: List[App.Vector] = [], l: str = ""):
+        if args == None:
+            args = []
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
         self._lineWidth = 1  # default line width
-        super().__init__(args,l)
+        super().__init__(args, l)
 
     def addVertices(self, vertices):
         self._vector.clear()
@@ -92,30 +95,32 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         if len(self._vector) < 4:
             raise ValueError('Vertices must be 4')
         if self.is_active() and self.has_focus():
-            usedColor = self._selCol
+            usedColor = self._selColor
         elif self.is_active() and (self.has_focus() != 1):
-            usedColor = self._activeCol
+            usedColor = self._activeColor
         elif self.is_active() != 1:
-            usedColor = self._inactiveCol
+            usedColor = self._inactiveColor
         if self.is_visible():
-            self._widgetCoinNode=fr_draw.draw_square_frame(self._vector,usedColor, self._lineWidth)
+            self._widgetCoinNode = fr_draw.draw_square_frame(
+                self._vector, usedColor, self._lineWidth)
             if self._widgetCoinNode is not None:
-                self._parent.addSeneNode(self._widgetCoinNode)
+                # put the node inside the switch
+                self.addSoNodeToSoSwitch()
+                self._parent.addSoSwitch(self._wdgsoSwitch)
             else:
-                raise ValueError("Couldn't draw the Fr_SquareFrame_Widget") 
+                raise ValueError("Couldn't draw the Fr_SquareFrame_Widget")
         else:
             return  # We draw nothing .. This is here just for clarity of the code
 
-    def redraw(self):
-        """ When drawing damages, a redraw must be done.
-        This function will redraw the widget on the 3D
-        Scene"""
-        if self._widgetCoinNode is not None:
-            for i in self._widgetCoinNode:
-                self._parent.removeSeneNode(i)
-            self._widgetCoinNode.clear()
-            self._widgetCoinNode = None
-        self.draw()
+    # def redraw(self):
+    #    """ When drawing damages, a redraw must be done.
+    #    This function will redraw the widget on the 3D
+    #    Scene"""
+    #    self.removeSoNodeFromSoSwitch()   # Remove the node from the switch as a child
+    #    self.removeSeneNodes()            # Remove the seneNodes from the widget
+    #    self._parent.removeSoSwitch()     # Remove the SoSwitch from fr_coinwindow
+    #    self._widgetCoinNode.clear()      # clear the list
+    #    self.draw()                       # Redraw the whole object
 
     def move(self, newVector):
         """
@@ -124,9 +129,11 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         if it is a line.
         """
         self.resize(newVector)
+
     def show(self):
         self._visible = True
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
-        #self.redraw()
+        # self.redraw()
+
     def hide(self):
-        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE # Show all children
+        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # Show all children

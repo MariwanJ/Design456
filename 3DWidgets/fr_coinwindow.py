@@ -36,17 +36,26 @@ import fr_group
 import fr_widget
 import constant
 import fr_coin3d
-
+from typing import List
 
 '''
 This is a class for coin3D Window
 '''
 
-class Fr_CoinWindow(fr_group.Fr_Group):
 
+class Fr_CoinWindow(fr_group.Fr_Group):
+    """
+    Main window which acts like a server for the children. 
+    It distribute the events, keep track of adding switches to
+    the SeneGraph. Switches keep track of nodes and their 
+    drawing. So the tree is like that SeneGraph-->Switches->Node->drawings
+
+
+    """
     global view
 
     # This is the holder of all objects.It should be here not inside the Fr_Group
+    # this is the root senegraph. It keeps all switch. Switches will keep drawing
     global Root_SeneGraph
     global link_to_root_handle
 
@@ -54,15 +63,17 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     callbackClick = None
     callbackKey = None
 
-    def __init__(self, args:fr_widget.VECTOR=None,l=""):
-        if args==None:
-            args=[App.Vector(0,0,0), App.Vector(400,400,0)]  #Default vector
+    # def __init__(self, args:fr_widget.VECTOR=None,l=""):
+    def __init__(self, args: List[App.Vector] = [], l: str = ""):
+        if args == None:
+            args = [App.Vector(0, 0, 0), App.Vector(
+                400, 400, 0)]  # Default vector
         self._view = Gui.ActiveDocument.ActiveView
         self._parent = self    # No parent and this is the main window
         self.lastKeyEvent = []  # Might be more than one key.
         self._widgetType = constant.FR_WidgetType.FR_COINWINDOW
-        self.link_to_root_handle=fr_coin3d.root_handle()
-        self.link_to_root_handle.wind=self
+        self.link_to_root_handle = fr_coin3d.root_handle()
+        self.link_to_root_handle.wind = self
         # Activate callbacks
         super().__init__(args, l)
 
@@ -111,9 +122,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         Normally if you don't have any widget, 
         this will draw nothing. But the callbacks
         will be created. Fr_CoinWindow will 
-        not have any boarder or drawing itself.
-        Its purpose is to keep the children, distribute
-        handle and other things which might be added 
+        not have any boarder,label or drawing by itself.
+        The purpose of this object is to keep the children, 
+        distribute events and other things that might be added 
         later to this class.
         """
         self.draw()
@@ -130,7 +141,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         self.exitFr_Window()
         self.parent.deactivate()
-    def callback(self,data):
-        #not sure what I should do here yet.
-        pass 
-    
+
+    def callback(self, data):
+        # not sure what I should do here yet.
+        pass
