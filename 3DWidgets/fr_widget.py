@@ -285,7 +285,7 @@ class Fr_Widget (object):
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
         for i in self._widgetCoinNode: 
-            i.removeAllChildren()
+            del i 
         #del self._widgetCoinNode
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
