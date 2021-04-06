@@ -49,8 +49,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     It distribute the events, keep track of adding switches to
     the SeneGraph. Switches keep track of nodes and their 
     drawing. So the tree is like that SeneGraph-->Switches->Node->drawings
-
-
     """
     global view
 
@@ -106,3 +104,14 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def callback(self, data):
         # not sure what I should do here yet.
         pass
+    # We need to have it here to give parent to the widget
+    def addWidget(self, widg):
+        """ 
+        Add the new created widget to the list.
+        Base class of this window, which is a fr_group,
+        has the list. This function will add the new widget
+        to the list and keep the link to the window inside
+        the widget itself.
+        """
+        self._children.append(widg)
+        widg._parent=self           #Save a link to parent in the widget

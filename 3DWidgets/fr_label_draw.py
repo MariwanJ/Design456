@@ -32,22 +32,22 @@ import pivy.coin as coin
 import Design456Init
 
 
-def draw_label(labelcolor=(0., 0., 0.), labelfont='sans', size=14, trans=(0, 0, 0), text=''):
+def draw_label(labelcolor=(0.0, 0.0, 0.0), labelfont='sans', size=14, trans=(0, 0, 0), text=''):
     global textNode
     _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
-    _textNode.coinColor = coin.coin.SoMaterial()
+    _textNode.coinColor = coin.SoMaterial()
     _textNode.binding = coin.SoMaterialBinding()
     _textNode.binding.value = coin.SoMaterialBinding.PER_PART
-    _textNode.addChild(self.binding)
-    _textNode.addChild(self.coinColor)
-    _textNode.color = color
+    _textNode.addChild(_textNode.binding)
+    _textNode.addChild(_textNode.coinColor)
+    _textNode.coinColor.rgb = labelcolor
     _textNode.fontNode = coin.SoFont()
     _textNode.transNode = coin.SoTransform()
     _textNode.textNode = coin.SoText2()
-    _textNode.addChild(self.fontNode)
-    _textNode.addChild(self.transNode)
-    _textNode.addChild(self.textNode)
-    _textNode.font = font
+    _textNode.addChild(_textNode.fontNode)
+    _textNode.addChild(_textNode.transNode)
+    _textNode.addChild(_textNode.textNode)
+    _textNode.font = labelfont
     _textNode.size = size
     _textNode.trans = trans
     _textNode.text = text

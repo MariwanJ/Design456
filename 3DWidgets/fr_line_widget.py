@@ -36,7 +36,7 @@ import fr_widget
 import constant
 import fr_coin3d
 from typing import List
-
+import fr_label_draw
 """
 Example how to use this widget. 
 
@@ -55,8 +55,7 @@ g.clear()
 g.append(p1)
 g.append(p3)
 ln =line.Fr_Line_Widget(g,"",5)   # draw the line - nothing will be visible yet
-wny.addChild(ln)              # Add it to the window as a child 
-ln._parent=wny                 # define parent for the widget
+wny.addWidget(ln)              # Add it to the window as a child 
 wny.show()                    # show the window and it's widgets. 
 
 
@@ -90,7 +89,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        print("handle square")
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
@@ -103,12 +101,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             #    if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
             #        find = True
             #        break  # We don't need to search more
-            print("not found")
             if found == True:
-                print("found")
                 self.take_focus()
                 self.do_callback(self._userData)
-                found=False
+                found = False
                 return 1
             else:
                 self.remove_focus()
@@ -133,14 +129,25 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         elif self.is_active() != 1:
             usedColor = self._inactiveColor
         if self.is_visible():
-            list = fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
+            linedraw =fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
+            lbl=self.draw_label()  
             # put the node inside the switch
-            self.addSeneNodes(list)                         #Add SoSeparator
-            self.addSoNodeToSoSwitch(self._widgetCoinNode)  #Add SoSeparator as child to Switch
-            self._parent.addSoSwitch(self._wdgsoSwitch)     #Add the switch to the SeneGraph
-        else: 
-            return  # We draw nothing .. This is here just for clarifying the code
+            self.addSeneNodes(linedraw)  # Add SoSeparator
+            # Add SoSeparator as child to Switch
+            self.addSoNodeToSoSwitch(self._widgetCoinNode)
+            self.addSoNodeToSoSwitch(lbl)
+            # Add the switch to the SeneGraph
+            self._parent.addSoSwitch(self._wdgsoSwitch)
 
+        else:
+            return  # We draw nothing .. This is here just for clarifying the code
+        
+    def draw_label(self):
+        lbl=fr_label_draw.draw_label(self._lblColor,'sans',14,self._vector[0],self._label)
+        self.addSoNodeToSoSwitch(lbl)
+        return lbl
+        
+    
     def move(self, newVecPos):
         """
         Move the object to the new location referenced by the 
@@ -173,7 +180,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             self.removeSoNodeFromSoSwitch()
             # Remove the SoSwitch from fr_coinwindo
             self._parent.removeSoSwitch(self._wdgsoSwitch)
-            print("redraw")
             self.draw()
 
     def take_focus(self):
