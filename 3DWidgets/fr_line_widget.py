@@ -34,6 +34,7 @@ import Design456Init
 import fr_draw
 import fr_widget
 import constant
+import fr_coin3d
 from typing import List
 
 """
@@ -55,7 +56,7 @@ g.append(p1)
 g.append(p3)
 ln =line.Fr_Line_Widget(g,"",5)   # draw the line - nothing will be visible yet
 wny.addChild(ln)              # Add it to the window as a child 
-ln.parent=wny                 # define parent for the widget
+ln._parent=wny                 # define parent for the widget
 wny.show()                    # show the window and it's widgets. 
 
 
