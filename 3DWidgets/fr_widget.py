@@ -89,6 +89,7 @@ class Fr_Widget (object):
         self._activeColor = constant.FR_COLOR.FR_BLUE3
         self._inactiveColor = constant.FR_COLOR.FR_GRAY2
         self._selColor = constant.FR_COLOR.FR_YELLOW
+        self._lblColor= constant.FR_COLOR.FR_BLACK
         self._box = None
         self._active = True
         self._parent = None
@@ -286,7 +287,6 @@ class Fr_Widget (object):
         """ Remove SeneNodes children and itself"""
         for i in self._widgetCoinNode: 
             del i 
-        #del self._widgetCoinNode
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc

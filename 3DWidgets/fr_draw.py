@@ -62,7 +62,7 @@ def draw_line(p1, p2, color, LineWidth):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_box(*vertices, color, LineWidth):
+def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
     """
         Draw any box. This will be the base of all multi-point drawing.
         Curves, and arc is not here.

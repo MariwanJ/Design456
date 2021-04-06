@@ -69,21 +69,19 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """
 
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            print("handle")
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
             found = False
-            print(self._wdgsoSwitch.findChild(clickedNode) )
             if self._wdgsoSwitch.findChild(clickedNode) != -1:
                 found = True
-                if found == True:
-                    self.take_focus()
-                    self.do_callback(self._userData)
-                    found=False
-                    return 1
-                else:
-                    self.remove_focus()
-                    return event  # We couldn't use the event .. so return the event itself
+            if found == True:
+                self.take_focus()
+                self.do_callback(self._userData)
+                found=False
+                return 1
+            else:
+                self.remove_focus()
+                return event  # We couldn't use the event .. so return the event itself
 
 
     def draw(self):
@@ -106,7 +104,8 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
             if list is not None:
                 # put the node inside the switch
                 self.addSeneNodes(list)                         #Add SoSeparator
-                self.addSoNodeToSoSwitch(self._widgetCoinNode)  #Add SoSeparator as child to Switch
+                for i in list: 
+                    self.addSoNodeToSoSwitch(i)  #Add SoSeparator as child to Switch
                 self._parent.addSoSwitch(self._wdgsoSwitch)     #Add the switch to the SeneGraph
             else:
                 raise ValueError("Couldn't draw the Fr_SquareFrame_Widget")
