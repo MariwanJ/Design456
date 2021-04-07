@@ -1,6 +1,8 @@
 
 # from say import *
-import FreeCAD,FreeCADGui,Sketcher,Part
+import FreeCAD as App
+import FreeCADGui as Gui
+,Sketcher,Part
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -46,7 +48,7 @@ class Folding(FeaturePython):
 
 def createFolding(obj=None):
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Folding")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","Folding")
 	Folding(a)
 	ViewProvider(a.ViewObject)
 	return a
@@ -83,11 +85,11 @@ def fold(obj):
 			v=curve.parameter(p)
 			t=curve.tangent(v)
 	#		print (v,t,p)
-			n=t[0].cross(FreeCAD.Vector(0,0,1))
+			n=t[0].cross(App.Vector(0,0,1))
 			polg=Part.makePolygon([p+10000*n,p-10000*n])
 			col2 += [polg]
 			
-			ss=bs.makeParallelProjection(polg,FreeCAD.Vector(0,0,1))
+			ss=bs.makeParallelProjection(polg,App.Vector(0,0,1))
 			sps=[v.Point for v in ss.Vertexes]
 			#print sps
 			if len(sps) == 2:
@@ -108,7 +110,7 @@ def fold(obj):
 
 	comp=[]
 	for i,p in enumerate(ptsa):
-		if ptsa[i]<>ptsb[i]:
+		if ptsa[i]!=ptsb[i]:
 			pol=Part.makePolygon([ptsa[i],ptsb[i]])
 			comp.append(pol)
 	segments.Shape=Part.Compound(comp)
@@ -120,16 +122,16 @@ def fold(obj):
 		if i<obj.maxi or obj.maxi==0:
 
 			if i==0:
-				matrix3=FreeCAD.Placement(FreeCAD.Vector(0,0,0),
-					FreeCAD.Rotation(ptsa[i]-ptsb[i],
+				matrix3=App.Placement(App.Vector(0,0,0),
+					App.Rotation(ptsa[i]-ptsb[i],
 					0.01*obj.factor*arcs[0]),ptsa[i]).toMatrix()
 			else:
-				matrix3=FreeCAD.Placement(FreeCAD.Vector(0,0,0),
-					FreeCAD.Rotation(ptsa[i]-ptsb[i],
+				matrix3=App.Placement(App.Vector(0,0,0),
+					App.Rotation(ptsa[i]-ptsb[i],
 					0.01*obj.factor*(arcs[i]-arcs[i-1])),ptsa[i]).toMatrix()
 
 		else:
-			matrix3=FreeCAD.Placement().toMatrix()
+			matrix3=App.Placement().toMatrix()
 
 		a=ptsa[i]
 		b=ptsb[i]

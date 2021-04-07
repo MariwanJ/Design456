@@ -28,11 +28,11 @@ def testRandomCylinder():
 	a.gridCount=20
 	
 	ps=a.Proxy.getPoints()
-	print "points ps",len(ps)
+	print ("points ps",len(ps)
 
 	if 0:
-		print "random .."
-		ps=np.array(FreeCAD.ps).swapaxes(0,1)
+		print ("random .."
+		ps=np.array(App.ps).swapaxes(0,1)
 		temp,ct=ps.shape
 		ps[2] += 100*np.random.random(ct)
 		ps=ps.swapaxes(0,1)
@@ -72,8 +72,8 @@ def testRandomCylinder():
 	a.Proxy.updatePoles()
 	a.Proxy.showGriduv()
 	
-	FreeCAD.a=a
-	FreeCAD.ps=ps
+	App.a=a
+	App.ps=ps
 
 	Gui.activeDocument().activeView().viewAxonometric()
 	Gui.SendMsgToActiveView("ViewFit")

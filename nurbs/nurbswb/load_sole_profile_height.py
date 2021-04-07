@@ -8,9 +8,10 @@ the skeche contains exactly one bspline curve
 
 
 #\cond
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 import os, nurbswb
 global __dir__
@@ -35,12 +36,12 @@ def run():
 		if aktiv==None:
 			showdialog("Fehler","no Sole Document","first open or create a sole document")
 
-		fn=FreeCAD.ParamGet('User parameter:Plugins/shoe').GetString("height profile")
+		fn=App.ParamGet('User parameter:Plugins/shoe').GetString("height profile")
 		if fn=='':
 			fn= __dir__+"/../testdata/heelsv3.fcstd"
-			FreeCAD.ParamGet('User parameter:Plugins/shoe').SetString("height profile",fn)
+			App.ParamGet('User parameter:Plugins/shoe').SetString("height profile",fn)
 
-		dok=FreeCAD.open(fn)
+		dok=App.open(fn)
 
 		sss=dok.findObjects("Sketcher::SketchObject")
 

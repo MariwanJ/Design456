@@ -6,7 +6,7 @@ Gui.ActiveDocument=None
 import FreeCAD
 if 0:
 	try:
-		FreeCAD.open(u"/home/thomas/Schreibtisch/tt_offset_example.fcstd")
+		App.open(u"/home/thomas/Schreibtisch/tt_offset_example.fcstd")
 		App.setActiveDocument("tt_offset_example")
 		App.ActiveDocument=App.getDocument("tt_offset_example")
 		Gui.ActiveDocument=Gui.getDocument("tt_offset_example")
@@ -41,11 +41,11 @@ def myupdate(obj):
 		rc=f(1.0*i/l*(len(data)-1))/fl.factor
 		return rc
 
-	print "update .."
+	print ("update .."
 	apols=[]
 	apols1=[]
 	apols2=[]
-	print "lens"
+	print ("lens"
 	print len(obj.curveO.Shape.Edges)
 	print len(obj.curveI.Shape.Edges)
 	obj.curveI
@@ -158,7 +158,7 @@ class DynaOffset(nurbswb.pyob.FeaturePython):
 	def XonChanged(proxy,obj,prop):
 		'''run myExecute for property prop: relativePosition and vertexNumber'''
 		
-		print "onChanged ",prop
+		print ("onChanged ",prop
 		if prop.startswith("val"):
 			data=[]
 			for i in range(12):
@@ -177,7 +177,7 @@ class DynaOffset(nurbswb.pyob.FeaturePython):
 def createDynaoffset(name="DynamicOffset"):
 	'''create a DynaOffset node'''
 
-	obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
+	obj = App.ActiveDocument.addObject("Part::FeaturePython",name)
 
 	obj.addProperty("App::PropertyLink", "data", "Values")
 	obj.addProperty("App::PropertyLink", "curveO", "Values")

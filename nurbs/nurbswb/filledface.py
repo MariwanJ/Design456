@@ -99,7 +99,7 @@ class FilledFace(PartFeature):
 def createFilledFace(name="MyFilledFace"):
 	'''create a FilledFace object'''
 
-	ffobj = FreeCAD.activeDocument().addObject(
+	ffobj = App.activeDocument().addObject(
 		"Part::FeaturePython", name)
 	FilledFace(ffobj)
 	return ffobj
@@ -107,7 +107,7 @@ def createFilledFace(name="MyFilledFace"):
 
 if __name__ == '__main__':
 
-	b = FreeCAD.activeDocument().addObject(
+	b = App.activeDocument().addObject(
 		"Part::FeaturePython", "MyFilledFace")
 	FilledFace(b)
 	'''
@@ -126,10 +126,10 @@ if __name__ == '__main__':
 
 	import Draft
 
-	pts=[FreeCAD.Vector(p) for p in [(0,0,0),(100,0,0),(300,200,100)]]
+	pts=[App.Vector(p) for p in [(0,0,0),(100,0,0),(300,200,100)]]
 	w1=Draft.makeBSpline(pts)
 
-	pts=[FreeCAD.Vector(p) for p in [(0,0,0),(100,200,0),(300,200,100)]]
+	pts=[App.Vector(p) for p in [(0,0,0),(100,200,0),(300,200,100)]]
 	w2=Draft.makeBSpline(pts)
 
 	import nurbswb.filledface

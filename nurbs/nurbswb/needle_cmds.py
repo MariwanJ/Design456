@@ -4,7 +4,9 @@ import numpy as np
 
 from PySide import QtGui
 
-import FreeCAD,FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
 App=FreeCAD
 
 import nurbswb.needle
@@ -51,7 +53,7 @@ def addRib(dialog):
 	# modifications 
 	i=dialog.pos
 	if i == 0:
-		print "kann keine ripee vroschieben"
+		print ("kann keine ripee vroschieben"
 		return
 
 	t=(bb[i-1]+bb[i])*0.5
@@ -164,7 +166,7 @@ def CaddStrongRibEdge(obj,i):
 	st=0.98
 
 	if bb.shape[0]==i:
-		print "Keine verlaengerung uebers einde hinaus moegliche"
+		print ("Keine verlaengerung uebers einde hinaus moegliche"
 		return
 
 	t=bb[i-1]*st+bb[i]*(1-st)
@@ -228,7 +230,7 @@ def delMeridian(dialog):
 	(curve,bb,scaler,twister)=App.activeDocument().MyNeedle.Proxy.Model()
 
 	if curve.shape[0]<5:
-		print "zu wenig Punkte "
+		print ("zu wenig Punkte "
 		return
 
 	# modifications 
@@ -247,7 +249,7 @@ def CdelMeridian(obj,i):
 	(curve,bb,scaler,twister)=obj.Proxy.Model()
 
 	if curve.shape[0]<5:
-		print "zu wenig Punkte "
+		print ("zu wenig Punkte "
 		return
 
 	# modifications 
@@ -266,7 +268,7 @@ def CdelRib(obj,i):
 	i = i
 	
 	if bb.shape[0]<5:
-		print "zu wenig Punkte "
+		print ("zu wenig Punkte "
 		return
 
 	# modifications 
@@ -425,9 +427,9 @@ class BackboneEditor(QtGui.QWidget):
 def pressed(index,obj):
 	sel,ci,ri,data = getdata(index)
 	if sel == "bcmd":
-		FreeCAD.t=RibEditor(obj,"Rib Editor",ri)
+		App.t=RibEditor(obj,"Rib Editor",ri)
 	elif  sel == "ccmd":
-		FreeCAD.t=BackboneEditor(obj,"Backbone Editor",ri)
+		App.t=BackboneEditor(obj,"Backbone Editor",ri)
 	else:
 		pass
 
@@ -448,10 +450,10 @@ def cmdAdd():
 	for sen in s.SubElementNames:
 		print sen[4:]
 		if s.Object.Name[0:4]=='Ribs':
-			print "ribs ..."
+			print ("ribs ..."
 			CaddRib(needle,int(sen[4:]))
 		if s.Object.Name[0:9]=='Meridians':
-			print "meridians ..."
+			print ("meridians ..."
 			CaddMeridian(needle,int(sen[4:]))
 
 
@@ -472,10 +474,10 @@ def cmdDel():
 	for sen in s.SubElementNames:
 		print sen[4:]
 		if s.Object.Name[0:4]=='Ribs':
-			print "ribs ..."
+			print ("ribs ..."
 			CdelRib(needle,int(sen[4:]))
 		if s.Object.Name[0:9]=='Meridians':
-			print "meridians ..."
+			print ("meridians ..."
 			CdelMeridian(needle,int(sen[4:]))
 
 

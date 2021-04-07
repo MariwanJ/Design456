@@ -103,7 +103,7 @@ def createPointGrid(pts,objname="MyGrid",uc=0,vc=0):
 
 	pc=App.ActiveDocument.getObject(objname)
 	if pc == None:
-		pc = FreeCAD.ActiveDocument.addObject("Points::FeaturePython",objname)
+		pc = App.ActiveDocument.addObject("Points::FeaturePython",objname)
 		Grid(pc)
 
 	ViewProvider(pc.ViewObject)
@@ -128,7 +128,7 @@ def createMesh(pts,parentName,parent=None,uc=0,vc=0):
 
 	mm=App.ActiveDocument.getObject(parentName+'_M')
 	if mm == None:
-		mm = FreeCAD.ActiveDocument.addObject("Mesh::FeaturePython",parentName+'_M')
+		mm = App.ActiveDocument.addObject("Mesh::FeaturePython",parentName+'_M')
 		mm.addProperty("App::PropertyInteger", "uc", "_aux", "automatic update Shape")
 		mm.addProperty("App::PropertyInteger", "vc", "_aux", "automatic update Shape")
 		mm.addProperty("App::PropertyLink", "parent", "_aux", "automatic update Shape")
@@ -146,7 +146,7 @@ def createNurbs(pts,parentName,parent=None,uc=0,vc=0):
 
 	nu=App.ActiveDocument.getObject(parentName+"_N")
 	if nu == None:
-		nu = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",parentName+"_N")
+		nu = App.ActiveDocument.addObject("Part::FeaturePython",parentName+"_N")
 		Nurbs(nu)
 
 	ViewProvider(nu.ViewObject)
@@ -204,7 +204,7 @@ def gentest():
 	pts=[]
 	for u in range(uc+1):
 		for v in range(vc+1):
-			pts += [FreeCAD.Vector(10*u,10*v,0)]
+			pts += [App.Vector(10*u,10*v,0)]
 
 	ptsa=np.array(pts).reshape(uc+1,vc+1,3)
 
@@ -229,7 +229,7 @@ def gentest():
 			try: ptsa[u-dd:u+dd+1,v-dd:v+dd+1,2] += dh
 			except:pass
 
-	pts=[FreeCAD.Vector(p) for p in np.array(ptsa).reshape((uc+1)*(vc+1),3)]
+	pts=[App.Vector(p) for p in np.array(ptsa).reshape((uc+1)*(vc+1),3)]
 	a=time.time()
 	print ("create data",a-z)
 	Gui.updateGui()
@@ -247,12 +247,12 @@ def gentest():
 	Gui.updateGui()
 
 	import Draft
-	points = [FreeCAD.Vector(58.8695373535,57.1275939941,0.0),
-		FreeCAD.Vector(96.9049606323,188.666870117,0.0),FreeCAD.Vector(209.426513672,218.778274536,0.0),
-		FreeCAD.Vector(358.398712158,192.62890625,0.0),FreeCAD.Vector(499.446899414,143.499771118,0.0),
-		FreeCAD.Vector(624.646850586,206.09979248,0.0),FreeCAD.Vector(680.11529541,388.352996826,0.0),
-		FreeCAD.Vector(581.064575195,518.307495117,0.0),FreeCAD.Vector(383.755706787,529.401123047,0.0),
-		FreeCAD.Vector(285.497436523,488.196105957,0.0),FreeCAD.Vector(76.302444458,466.801116943,0.0)]
+	points = [App.Vector(58.8695373535,57.1275939941,0.0),
+		App.Vector(96.9049606323,188.666870117,0.0),App.Vector(209.426513672,218.778274536,0.0),
+		App.Vector(358.398712158,192.62890625,0.0),App.Vector(499.446899414,143.499771118,0.0),
+		App.Vector(624.646850586,206.09979248,0.0),App.Vector(680.11529541,388.352996826,0.0),
+		App.Vector(581.064575195,518.307495117,0.0),App.Vector(383.755706787,529.401123047,0.0),
+		App.Vector(285.497436523,488.196105957,0.0),App.Vector(76.302444458,466.801116943,0.0)]
 	spline = Draft.makeBSpline(points,closed=False,face=True,support=None)
 
 

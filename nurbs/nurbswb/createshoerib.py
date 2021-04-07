@@ -43,18 +43,18 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
 	debug=True
 	debug=False
 	
-	print "----createshoerib------------------"
+	print ("----createshoerib------------------"
 	print name
 	print moves
 	print box
-	print "-------------------------"
+	print ("-------------------------"
 
 	label=name
 	try: body=App.activeDocument().Body
 	except:	body=App.activeDocument().addObject('PartDesign::Body','Body')
 
 	#sk=App.activeDocument().addObject('Sketcher::SketchObject',name)
-	sk = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	sk = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	_ViewProvider(sk.ViewObject) 
 
 
@@ -67,7 +67,7 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
 	#create a regular naz-gon
 	anz=16
 	r=50
-	pts= [FreeCAD.Vector(r*np.sin(2*np.pi/anz*i),r*np.cos(2*np.pi/anz*i)+50,0) for i in range(anz)]
+	pts= [App.Vector(r*np.sin(2*np.pi/anz*i),r*np.cos(2*np.pi/anz*i)+50,0) for i in range(anz)]
 
 	#create the helper circles for the bspline curve
 	for i,p in enumerate(pts):
@@ -177,7 +177,7 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
 	sk.renameConstraint(d, u'tangentTopB')
 
 	if r+l<-10:
-		print "verletzung --------------createshoerib zeile 152---- r+l",r+l
+		print ("verletzung --------------createshoerib zeile 152---- r+l",r+l
 		print r+l
 
 

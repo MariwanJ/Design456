@@ -10,9 +10,10 @@
 #-------------------------------------------------
 
 #\cond
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 import PySide
 from PySide import  QtGui,QtCore
@@ -38,7 +39,7 @@ def createListWidget(obj=None,propname=None):
 		listWidget.addItem(item)
 		
 	def f(*arg):
-		print "itemsele cahgned"
+		print ("itemsele cahgned"
 		print  (arg,listWidget)
 		print listWidget.selectedItems()
 		for item in  listWidget.selectedItems():
@@ -61,7 +62,7 @@ def createListWidget(obj=None,propname=None):
 			if not a in listWidget.sels:
 				bb.append(a)
 			else:
-				print "skip ", a.Label
+				print ("skip ", a.Label
 
 		# wrte list back to objects
 		setattr(ref,propname,bb)
@@ -126,7 +127,7 @@ def hu():
 
 	label="Spreadsheet"
 	sws=mdiarea.subWindowList()
-	print "windows ..."
+	print ("windows ..."
 	for w2 in sws:
 		print str(w2.windowTitle())
 		if str(w2.windowTitle()).startswith(label):
@@ -145,11 +146,11 @@ def hu():
 			w.setGeometry(50, 30, 1650, 350)
 			w.show()
 			sw.close()
-			FreeCAD.ss=w
+			App.ss=w
 			return w
 
-	FreeCAD.ss.hide()
-	FreeCAD.ss.show()
+	App.ss.hide()
+	App.ss.show()
 
 
 ## create a Controller Widget for a property
@@ -210,7 +211,7 @@ def createPropWidget(obj,propname):
 
 	def valueChangedA(val):
 		'''update obj and ref with new value''' 
-		print "update ----------"
+		print ("update ----------"
 		
 		ref=obj.getPropertyByName(propname+"Source")
 		print (ref.Label,propname,val)
@@ -395,16 +396,16 @@ class ControlPanel(PartFeature):
 
 	## read the propertyx values from the source objects into the local property holder 
 	def refresh(proxy):
-		print "aktualisiere attribute"
+		print ("aktualisiere attribute"
 		obj=proxy.Object
 		for propname in obj.props:
 			print obj
 			# ref holen
 			pp=obj.getPropertyByName(propname)
 			ref=obj.getPropertyByName(propname+"Source")
-			print "Source",ref.Label
+			print ("Source",ref.Label
 			aa=ref.getPropertyByName(propname)
-			print "value",aa
+			print ("value",aa
 			setattr(obj,propname,aa)
 
 
@@ -485,9 +486,9 @@ class ControlPanel(PartFeature):
 			pass
 
 		try: self.dialog.hide()
-		except: print "no dialog to hide"
-		try: self.dialog=dialog(obj);print "dialog created"
-		except: print "cannot create dialog"
+		except: print ("no dialog to hide"
+		try: self.dialog=dialog(obj);print ("dialog created"
+		except: print ("cannot create dialog"
 
 ##create generic panel without data,
 #
@@ -496,7 +497,7 @@ class ControlPanel(PartFeature):
 def run():
 	'''create a generic panel without data'''
 
-	a=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyMonitor")
+	a=App.activeDocument().addObject("Part::FeaturePython","MyMonitor")
 	ControlPanel(a)
 
 
@@ -531,7 +532,7 @@ if __name__ == '__main__':
 	App.ActiveDocument.recompute()
 
 	#-------------------------------
-	a=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyControlPanel")
+	a=App.activeDocument().addObject("Part::FeaturePython","MyControlPanel")
 	m=ControlPanel(a)
 	#-----------------------------
 

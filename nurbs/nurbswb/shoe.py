@@ -10,9 +10,10 @@
 #-------------------------------------------------
 
 ##\cond
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 from PySide import QtGui
 import Part,Mesh,Draft,Points
@@ -33,7 +34,7 @@ print __dir__
 ##\cond
 def Myarray2Poly(arr,bb):
 
-	print "Polygon Variante"
+	print ("Polygon Variante"
 
 	pst=np.array(arr)
 	try: NbVPoles,NbUPoles,_t1 =pst.shape
@@ -44,32 +45,32 @@ def Myarray2Poly(arr,bb):
 	for i,pps in enumerate(pst):
 		if i == 0: continue 
 
-		pvs=[FreeCAD.Vector(p) for p in pps]
+		pvs=[App.Vector(p) for p in pps]
 		# print pvs
 		pol=Part.makePolygon(pvs)
 		comp.append(pol)
-		FreeCAD.pol=pol
+		App.pol=pol
 		App.ActiveDocument.RibsPoly.OutList[i].Shape=pol
 
 	for i,pps in enumerate(pst.swapaxes(0,1)):
-		pvs=[FreeCAD.Vector(p) for p in pps[1:]]
+		pvs=[App.Vector(p) for p in pps[1:]]
 		pol=Part.makePolygon(pvs)
 		comp.append(pol)
 		App.ActiveDocument.MeridiansPoly.OutList[i].Shape=pol
 
-	pvs=[FreeCAD.Vector(p) for p in bb[1:]]
+	pvs=[App.Vector(p) for p in bb[1:]]
 	pol=Part.makePolygon(pvs)
 	comp.append(pol)
 
 	for i,pps in enumerate(pst):
 		if i == 0: continue 
-		pvs=[FreeCAD.Vector(pps[0]),FreeCAD.Vector(bb[i]),FreeCAD.Vector(pps[-1])]
+		pvs=[App.Vector(pps[0]),App.Vector(bb[i]),App.Vector(pps[-1])]
 		pol=Part.makePolygon(pvs)
 		comp.append(pol)
 
 
 	t=Part.Compound(comp)
-	FreeCAD.t=t
+	App.t=t
 
 	return (t,comp)
 
@@ -102,14 +103,14 @@ def createBS(arr):
 
 	if degree == 1: cylinder = False
 
-	ps=[[FreeCAD.Vector(pst[v,u,0],pst[v,u,1],pst[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
+	ps=[[App.Vector(pst[v,u,0],pst[v,u,1],pst[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
 
 	kv=[1.0/(NbVPoles-3)*i for i in range(NbVPoles-2)]
 	mv=[4] +[1]*(NbVPoles-4) +[4]
 
 
 	if  NbVPoles == 2:
-		print "KKKK"
+		print ("KKKK"
 		kv=[0,1]
 		mv=[2,2]
 		vdegree=1
@@ -169,7 +170,7 @@ def Xrun():
 
 
 	# get the poles from shoe.py 
-	pts=FreeCAD.shoe_pst.copy()
+	pts=App.shoe_pst.copy()
 	pts[:,:,1] *= -1
 
 	# die flaeche
@@ -202,7 +203,7 @@ def Myarray2NurbsD3(arr,label="MyWall",degree=3):
 
 	pst=psta
 
-	FreeCAD.shoe_pst=pst
+	App.shoe_pst=pst
 #	bs.setVPeriodic()
 
 	pst[:,:,1] *= -1
@@ -285,8 +286,8 @@ def toUVMesh(bs, uf=5, vf=5):
 
 		mm=np.array(ss)[:,2].max()
 		#add closing points
-		ss.append(FreeCAD.Vector(0,0,0))
-		ss.append(FreeCAD.Vector(0,0,mm))
+		ss.append(App.Vector(0,0,0))
+		ss.append(App.Vector(0,0,mm))
 
 		topfaces=[]
 		x=0
@@ -311,9 +312,9 @@ def toUVMesh(bs, uf=5, vf=5):
 					faces.append(((vc+1)*x+y+1,(vc+1)*(x+1)+y+1,(vc+1)*(x+1)+y))
 
 		if 0:
-			FreeCAD.Console.PrintMessage(str(("size of the mesh:",uc,vc))+"\n")
-			FreeCAD.Console.PrintMessage(str(("number of points" ,len(ss)))+"\n")
-			FreeCAD.Console.PrintMessage(str(("faces:",len(faces)))+"\n")
+			App.Console.PrintMessage(str(("size of the mesh:",uc,vc))+"\n")
+			App.Console.PrintMessage(str(("number of points" ,len(ss)))+"\n")
+			App.Console.PrintMessage(str(("faces:",len(faces)))+"\n")
 
 		if len(faces)<100000:
 			t=Mesh.Mesh((ss,faces))
@@ -332,7 +333,7 @@ def toUVMesh(bs, uf=5, vf=5):
 				App.activeDocument().ActiveObject.ViewObject.Lighting="Two side"
 				App.activeDocument().ActiveObject.ViewObject.DisplayMode = u"Wireframe"
 				App.activeDocument().ActiveObject.ViewObject.LineColor = (.70,.00,0.00)
-				FreeCAD.Console.PrintMessage(str(t))
+				App.Console.PrintMessage(str(t))
 
 		return t
 
@@ -361,13 +362,13 @@ def extrude(profile,path=None):
 	return c
 
 def myrot(v,twister):
-	v=FreeCAD.Vector(v)
+	v=App.Vector(v)
 	[xa,ya,za]=twister
-	p2=FreeCAD.Placement()
-	p2.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,0,1),za).multiply(FreeCAD.Rotation(FreeCAD.Vector(0,1,0),ya).multiply(FreeCAD.Rotation(FreeCAD.Vector(1,0,0),xa)))
+	p2=App.Placement()
+	p2.Rotation=App.Rotation(App.Vector(0,0,1),za).multiply(App.Rotation(App.Vector(0,1,0),ya).multiply(App.Rotation(App.Vector(1,0,0),xa)))
 #	print ("Rotation Euler",p2.Rotation.toEuler())
 
-	p=FreeCAD.Placement()
+	p=App.Placement()
 	p.Base=v
 	rc=p2.multiply(p)
 	return rc.Base
@@ -417,7 +418,7 @@ def npa2ssa(arr,spreadsheet,c1,r1,color=None):
 		cla=0
 	c2=c1+cla
 	r2=r1+rla
-#	print "update ss -------------  xxx"
+#	print ("update ss -------------  xxx"
 #	print arr
 #	print (c1,r1,cla)
 
@@ -425,7 +426,7 @@ def npa2ssa(arr,spreadsheet,c1,r1,color=None):
 		for r in range(r1,r2):
 			cn=cellname(c1,r)
 			ss.set(cn,str(arr[r-r1]))
-			if color<>None: ss.setBackground(cn,color)
+			if color!=None: ss.setBackground(cn,color)
 	else:
 		for r in range(r1,r2):
 			for c in range(c1,c2):
@@ -433,7 +434,7 @@ def npa2ssa(arr,spreadsheet,c1,r1,color=None):
 				#print (cn,c,r,arr[r-r1,c-c1])
 				ss.set(cn,str(arr[r-r1,c-c1]))
 				#print ("!!",cn,c,r,arr[r-r1,c-c1],ss.get(cn))
-				if color<>None: ss.setBackground(cn,color)
+				if color!=None: ss.setBackground(cn,color)
 
 def gendata(ss,twister,sc):
 	print ("gendata",ss.Label)
@@ -492,7 +493,7 @@ if 0 and __name__=='__main__':
 
 	App.ActiveDocument=None
 	Gui.ActiveDocument=None
-	FreeCAD.open(u"/home/thomas/Schreibtisch/nadel_daten.fcstd")
+	App.open(u"/home/thomas/Schreibtisch/nadel_daten.fcstd")
 	App.setactiveDocument()("nadel_daten")
 	App.ActiveDocument=App.getDocument("nadel_daten")
 	Gui.ActiveDocument=Gui.getDocument("nadel_daten")
@@ -566,7 +567,7 @@ class Needle(PartFeature):
 		ViewProvider(obj.ViewObject)
 
 	def onDocumentRestored(self, fp):
-		print "onDocumentRestored "
+		print ("onDocumentRestored "
 		print fp.Label
 		self.Object=fp
 	##endcond
@@ -601,7 +602,7 @@ class Needle(PartFeature):
 
 		curves=[]
 		pols=[]
-		ribs=FreeCAD.ribs
+		ribs=App.ribs
 
 		#for r in obj.Ribs:
 		for r in ribs:
@@ -618,7 +619,7 @@ class Needle(PartFeature):
 			curves=np.array(curves)
 			curves=curves.reshape(len(obj.Ribs),len(pols),3)
 
-		if obj.backboneSource <> None and not obj.externSourcesOff:
+		if obj.backboneSource != None and not obj.externSourcesOff:
 			cs=obj.backboneSource.Shape.Edge1.Curve
 			bb=obj.backboneSource.Points
 			bl=len(bb)
@@ -641,7 +642,7 @@ class Needle(PartFeature):
 		#pa=bbc.LastParameter
 		#ps=bbc.FirstParameter
 
-		#print "-----------------------------------------------"
+		#print ("-----------------------------------------------"
 		for n in range(len(bb)):
 
 			v=ps +(pa-ps)*n/(len(bb)-1)
@@ -670,7 +671,7 @@ class Needle(PartFeature):
 #-----------------------------
 
 		if len(curves) <len(scaler):
-				print "zu wenig rippen"
+				print ("zu wenig rippen"
 				return
 
 		poles= scale2(curves,scaler)
@@ -708,7 +709,7 @@ class Needle(PartFeature):
 		if obj.Backbone == None:
 			obj.Backbone=App.activeDocument().addObject('Part::Feature','Backbone')
 		
-		#obj.Backbone.Shape=Part.makePolygon([FreeCAD.Vector(b) for b in bb])
+		#obj.Backbone.Shape=Part.makePolygon([App.Vector(b) for b in bb])
 		bs=Part.BSplineCurve()
 		#bs.buildFromPoles(bb)
 		bs.interpolate(bb)
@@ -721,7 +722,7 @@ class Needle(PartFeature):
 	def createRibTemplate(proxy,obj,curve):
 		if obj.RibTemplate == None:
 			obj.RibTemplate=App.activeDocument().addObject('Part::Feature','Rib template')
-		#obj.RibTemplate.Shape=Part.makePolygon([FreeCAD.Vector(c) for c in curve])
+		#obj.RibTemplate.Shape=Part.makePolygon([App.Vector(c) for c in curve])
 
 		bs=Part.BSplineCurve()
 		c=curve
@@ -736,7 +737,7 @@ class Needle(PartFeature):
 
 	def createMesh(proxy,obj,bs):
 			vb=True
-			if obj.Mesh <> None:
+			if obj.Mesh != None:
 				vb=obj.Mesh.ViewObject.Visibility
 				App.activeDocument().removeObject(obj.Mesh.Name)
 			obj.Mesh=toUVMesh(bs,obj.MeshUCount,obj.MeshVCount)
@@ -806,13 +807,13 @@ class Needle(PartFeature):
 			try:
 				App.activeDocument().recompute()
 			except:
-				print "recompute jack "
-				dokname=FreeCAD.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+				print ("recompute jack "
+				dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
 				App.getDocument(dokname).recompute()
 				pass
 
 	def getExampleModel(self,model):
-		print "getExampleModel"
+		print ("getExampleModel"
 		print model
 		m=model()
 		print model().curve
@@ -854,22 +855,22 @@ class Needle(PartFeature):
 		self.table=table
 
 	def clicked(self,index):
-		print "Clicked",index
+		print ("Clicked",index
 		self.dumpix(index)
 		print (getdata(index))
 
 	def entered(self,index):
-		print "Entered"
+		print ("Entered"
 		self.dumpix(index)
 
 	def pressed(self,index):
 		import nurbswb.needle_cmds
 		reload(nurbswb.needle_cmds)
 		nurbswb.needle_cmds.pressed(index,App.activeDocument().MyNeedle)
-		print "Pressed"
+		print ("Pressed"
 
 	def changed(self,index):
-		print "Changed"
+		print ("Changed"
 		self.dumpix(index)
 
 	def dumpix(self,index): 
@@ -879,13 +880,13 @@ class Needle(PartFeature):
 
 	def showRib(self,ri):
 		Gui.Selection.clearSelection()
-		dokname=FreeCAD.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+		dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
 		d=App.getDocument(dokname)
 		Gui.Selection.addSelection(d.getObject('Ribs'),"Edge" +str(ri))
 
 	def showMeridian(self,ri):
 		Gui.Selection.clearSelection()
-		dokname=FreeCAD.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+		dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
 		d=App.getDocument(dokname)
 		Gui.Selection.addSelection(d.getObject('Meridians'),"Edge" +str(ri))
 
@@ -904,23 +905,23 @@ class Needle(PartFeature):
 def importCurves(obj):
 	ss=obj.Spreadsheet
 	print ss.Label
-	if obj.ribtemplateSource <> None and not obj.externSourcesOff:
+	if obj.ribtemplateSource != None and not obj.externSourcesOff:
 		cs=obj.ribtemplateSource.Shape.Edge1.Curve
 		curve=cs.getPoles()
 		cl=len(curve)
 		npa2ssa(curve,ss,2,3)
-		print "update curve",curve
+		print ("update curve",curve
 
 
-	if obj.backboneSource <> None and not obj.externSourcesOff:
+	if obj.backboneSource != None and not obj.externSourcesOff:
 		cs=obj.backboneSource.Shape.Edge1.Curve
 		bb=cs.getPoles()
 		bl=len(bb)
 		npa2ssa(bb,ss,7,3)
-		print "update backbone",bb
+		print ("update backbone",bb
 
 def createShoeNeedle(label="MyShoe"):
-	a=FreeCAD.activeDocument().addObject("Part::FeaturePython",label)
+	a=App.activeDocument().addObject("Part::FeaturePython",label)
 
 	n=Needle(a)
 	a.useSpreadsheet=True
@@ -1042,7 +1043,7 @@ def main_test():
 	import nurbswb.shoe as shoe
 	reload( nurbswb.shoe)
 
-	dokname=FreeCAD.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+	dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
 	try: App.closeDocument(dokname)
 	except: pass
 
@@ -1052,22 +1053,22 @@ def main_test():
 	Gui.ActiveDocument=Gui.getDocument(dokname)
 
 	if 1:
-		points=[FreeCAD.Vector(192.694291746,-129.634476444,0.0),FreeCAD.Vector(130.429397583,-0.657173752785,0.0),FreeCAD.Vector(-52.807308197,-112.73400116,0.0),FreeCAD.Vector(-127.525184631,-71.8170700073,0.0),FreeCAD.Vector(-205.801071167,-274.622741699,0.0),FreeCAD.Vector(28.1370697021,-262.169769287,0.0),FreeCAD.Vector(125.981895447,-187.451873779,0.0)]
+		points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,0.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
 		Draft.makeBSpline(points,closed=True,face=True,support=None)
 		# BSpline
 
-		points=[FreeCAD.Vector(-37.2293014526,1.68375661825e-08,0.28248746792),FreeCAD.Vector(132.959136963,6.57217134591e-06,110.262731687),FreeCAD.Vector(149.817367554,1.45151301104e-05,243.523458616),FreeCAD.Vector(-69.3403015137,2.18838984602e-05,367.150869505),FreeCAD.Vector(-182.531646729,2.7960740423e-05,469.103353635),FreeCAD.Vector(-256.549041748,5.67015768864e-05,951.294546262)]
+		points=[App.Vector(-37.2293014526,1.68375661825e-08,0.28248746792),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,951.294546262)]
 		Draft.makeBSpline(points,closed=False,face=True,support=None)
 		# Bspline001
 
 
-		#points=[FreeCAD.Vector(-73.5499812578,-192.458589192,0.0),FreeCAD.Vector(-35.2118430692,-245.401746512,0.0),FreeCAD.Vector(-148.400562353,-232.622317741,0.0),FreeCAD.Vector(-115.539281652,-172.376687886,0.0)]
-		points=[FreeCAD.Vector(592.694291746,-169.634476444,0.0),FreeCAD.Vector(130.429397583,-0.657173752785,0.0),FreeCAD.Vector(-52.807308197,-112.73400116,0.0),FreeCAD.Vector(-127.525184631,-71.8170700073,0.0),FreeCAD.Vector(-295.801071167,-294.622741699,0.0),FreeCAD.Vector(28.1370697021,-262.169769287,0.0),FreeCAD.Vector(125.981895447,-187.451873779,0.0)]
+		#points=[App.Vector(-73.5499812578,-192.458589192,0.0),App.Vector(-35.2118430692,-245.401746512,0.0),App.Vector(-148.400562353,-232.622317741,0.0),App.Vector(-115.539281652,-172.376687886,0.0)]
+		points=[App.Vector(592.694291746,-169.634476444,0.0),App.Vector(130.429397583,-0.657173752785,0.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-295.801071167,-294.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
 
-		Draft.makeBSpline(points,closed=True,face=True,support=FreeCAD.activeDocument().getObject("BSpline"))
+		Draft.makeBSpline(points,closed=True,face=True,support=App.activeDocument().getObject("BSpline"))
 		# Bspline002
 
-		points=[FreeCAD.Vector(-37.2293014526,1.68375661825e-08,-10),FreeCAD.Vector(132.959136963,6.57217134591e-06,110.262731687),FreeCAD.Vector(149.817367554,1.45151301104e-05,243.523458616),FreeCAD.Vector(-69.3403015137,2.18838984602e-05,367.150869505),FreeCAD.Vector(-182.531646729,2.7960740423e-05,469.103353635),FreeCAD.Vector(-256.549041748,5.67015768864e-05,1200)]
+		points=[App.Vector(-37.2293014526,1.68375661825e-08,-10),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,1200)]
 		Draft.makeBSpline(points,closed=False,face=True,support=None)
 		# Bspline003
 
@@ -1106,7 +1107,7 @@ def main_test():
 
 		# zweiter koerper
 
-		b=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyShoe")
+		b=App.activeDocument().addObject("Part::FeaturePython","MyShoe")
 		bn=needle.Needle(b)
 
 
@@ -1132,7 +1133,7 @@ def main_test():
 
 
 		Gui.SendMsgToActiveView("ViewFit")
-		print "fertig"
+		print ("fertig"
 		 
 
 
@@ -1152,14 +1153,14 @@ def genss(sk):
 		''' ribs aus daten'''
 
 		poles=sk.Shape.Edge1.Curve.getPoles()
-		points=[FreeCAD.Vector(0,p[0],p[1]) for p in poles]
+		points=[App.Vector(0,p[0],p[1]) for p in poles]
 
 
 #		ps=points[8:]+points[:8]
 		points=ps
 
 #		p=points[0]
-#		ps=[FreeCAD.Vector(0,p.y-5,p.z),FreeCAD.Vector(0,p.y-10,p.z)]+points+[FreeCAD.Vector(0,p.y+10,p.z),FreeCAD.Vector(0,p.y+5,p.z)] 
+#		ps=[App.Vector(0,p.y-5,p.z),App.Vector(0,p.y-10,p.z)]+points+[App.Vector(0,p.y+10,p.z),App.Vector(0,p.y+5,p.z)] 
 #		points=ps
 
 		print len(points)
@@ -1186,7 +1187,7 @@ def run():
 	''' shoe.run() '''
 
 	# get the name for the documente from FC config
-	dokname=FreeCAD.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+	dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
 
 	# start with a new document
 	try: App.closeDocument(dokname)
@@ -1213,7 +1214,7 @@ def run():
 
 
 
-	print "import ............"
+	print ("import ............"
 	# import the configuration from shoedata 
 	import nurbswb.shoedata
 	reload(nurbswb.shoedata)
@@ -1231,10 +1232,10 @@ def run():
 	ribs=[nurbswb.createshoerib.run("rib_"+str(i),[[8,0,0]],boxes[i],zoff=0) for i in range(1,15)]
 
 	# for debugging 
-	FreeCAD.ribs=ribs
+	App.ribs=ribs
 
 	# create a backbone curve
-	points=[FreeCAD.Vector(tuple(v)) for v in bbps]
+	points=[App.Vector(tuple(v)) for v in bbps]
 
 	babo=Draft.makeBSpline(points,closed=False,face=True,support=None)
 	babo.Label="Backbone"
@@ -1328,14 +1329,14 @@ def run():
 	pts=np.array(fa.Shape.Face1.Surface.getPoles())
 	comp=[]
 	for yy in pts:
-		pas=[FreeCAD.Vector(tuple(p)) for p in yy]
+		pas=[App.Vector(tuple(p)) for p in yy]
 		pol=Part.makePolygon(pas)
 		cur=createSimpleBSC(pas)
 		comp +=[pol,cur.toShape()]
 
 	pts=pts.swapaxes(0,1)
 	for yy in pts:
-		pas=[FreeCAD.Vector(tuple(p)) for p in yy]
+		pas=[App.Vector(tuple(p)) for p in yy]
 		pol=Part.makePolygon(pas)
 		cur=createSimpleBSC(pas)
 		comp +=[pol,cur.toShape()]

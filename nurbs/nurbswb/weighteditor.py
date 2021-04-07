@@ -53,13 +53,13 @@ def pk(obj=None,w=None):
 		pass
 
 		# Hilfswire machen
-		if obj<>None:
+		if obj!=None:
 			a=obj
 		else:
 			[a]=Gui.Selection.getSelection()
 		bc=a.Shape.Edge1.Curve
 		pts=a.Shape.Edge1.Curve.getPoles()
-		print "Poles", len(pts)
+		print ("Poles", len(pts)
 		if len(w.texts)==0:
 			for i,p in enumerate(pts):
 				t=Draft.makeText([str(i+1),'','','',''],p,True)
@@ -76,7 +76,7 @@ def pk(obj=None,w=None):
 		pn.ViewObject.LineColor=(1.,0.,1.)
 
 		pts2=[bc.value(k) for k in bc.getKnots()]
-		print "Knots:",len(pts2)
+		print ("Knots:",len(pts2)
 		# _t=Draft.makeWire(pts,closed=True,face=False)
 		p2=Part.makePolygon(pts2)
 		kn.Shape=p2

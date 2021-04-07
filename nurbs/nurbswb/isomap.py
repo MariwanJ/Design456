@@ -13,9 +13,10 @@
 
 from nurbswb.say import *
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 
 import Part,Mesh,Draft,Points
@@ -102,11 +103,11 @@ def run_fulltest(obj, mpv=0.5, mpu=0.5, fx=-1, fy=-1, vc=30, uc=30 ):
 			comps=[]
 
 			for pts in ptsa:
-				comps += [ Part.makePolygon([FreeCAD.Vector(fx*p[0],fy*p[1],0) for p in pts]) ]
+				comps += [ Part.makePolygon([App.Vector(fx*p[0],fy*p[1],0) for p in pts]) ]
 
 			ptsa=np.array(ptsa).swapaxes(0,1)
 			for pts in ptsa:
-				comps += [ Part.makePolygon([FreeCAD.Vector(fx*p[0],fy*p[1],0) for p in pts]) ]
+				comps += [ Part.makePolygon([App.Vector(fx*p[0],fy*p[1],0) for p in pts]) ]
 
 			Part.show(Part.Compound(comps))
 
@@ -145,7 +146,7 @@ def run_test_1(obj,bs,uv2x,uv2y,fx,fy,refpos):
 		vm=0.7/20*a
 		y=uv2y(vm,um)
 		x=uv2x(vm,um)
-		ptss.append(FreeCAD.Vector(fx*x,fy*y,0))
+		ptss.append(App.Vector(fx*x,fy*y,0))
 		ptsk.append(bs.value(um,vm))
 
 	w1=Draft.makeWire(ptss)
@@ -168,7 +169,7 @@ def run_test_1(obj,bs,uv2x,uv2y,fx,fy,refpos):
 
 		y=uv2y(vm,um)
 		x=uv2x(vm,um)
-		ptss.append(FreeCAD.Vector(fx*x,fy*y,0))
+		ptss.append(App.Vector(fx*x,fy*y,0))
 		ptsk.append(bs.value(um,vm))
 
 	w1=Draft.makeWire(ptss)
@@ -238,7 +239,7 @@ def run_test_2(obj,bs,xy2u,xy2v,fx,fy,refpos):
 				else:
 					col += [Part.makePolygon([ze,zn,zw,zs,ze])]
 			except:
-				print "error polxygon"
+				print ("error polxygon"
 
 
 #			print(m-10,n-13,"!", np.round(d,1))
@@ -282,11 +283,11 @@ def run_test_circle(bs,xy2u,xy2v,RM=15,uc=10,vc=10):
 					l=(pa-pm).Length
 					pss.append(pa)
 				except:
-					print "error circle2 line near 408"
+					print ("error circle2 line near 408"
 			try:
 				col +=[Part.makePolygon(pss+[pm])]
 			except:
-				print "error 412"
+				print ("error 412"
 
 	Part.show(Part.Compound(col))
 	App.ActiveDocument.ActiveObject.ViewObject.LineColor=(1.,1.,0.)

@@ -54,7 +54,7 @@ def run():
 		# 1.5 und 1 gehen nicht 
 		for t in (20,16,14,12,6,2,1.5,1):
 			bc=bc0.copy()
-			print "huhu"
+			print ("huhu"
 			rc=bc.removeKnot(pos,0,t)
 			print (t,rc)
 			if rc:

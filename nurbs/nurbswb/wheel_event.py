@@ -19,9 +19,9 @@ import sys,time
 
 '''
 # parameter
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
 
 '''
 
@@ -116,19 +116,19 @@ class EventFilter(QtCore.QObject):
 						self.dialog.dial.setValue(val)
 						return True
 					elif e.key() == QtCore.Qt.Key_Up :
-						self.mouseWheel += FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
+						self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
 						self.dialog.ef_action("up",self,self.mouseWheel) 
 						return True
 					elif e.key() == QtCore.Qt.Key_Down :
-						self.mouseWheel -= FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10) 
+						self.mouseWheel -= App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10) 
 						self.dialog.ef_action("down",self,self.mouseWheel)
 						return True
 					elif e.key() == QtCore.Qt.Key_PageUp :
-						self.mouseWheel += FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+						self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
 						self.dialog.ef_action("up!",self,self.mouseWheel)
 						return True
 					elif e.key() == QtCore.Qt.Key_PageDown :
-						self.mouseWheel -= FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+						self.mouseWheel -= App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
 						self.dialog.ef_action("down!",self,self.mouseWheel)
 						return True
 					else: # letter key pressed
@@ -151,7 +151,7 @@ class EventFilter(QtCore.QObject):
  						if r in ['l','r','h','x','y','z','n','t','b']:
 							self.key=str(r)
 							self.mode=str(r)
-							FreeCAD.ParamGet('User parameter:Plugins/nurbs').SetString("editorKey",self.key)
+							App.ParamGet('User parameter:Plugins/nurbs').SetString("editorKey",self.key)
 							self.dialog.ef_action(r,self)
 							self.dialog.modelab.setText("Direction: "+ r)
 						if r == '0':
@@ -189,7 +189,7 @@ class EventFilter(QtCore.QObject):
 
 			if event.type() == QtCore.QEvent.ContextMenu : #and o.__class__ == QtGui.QWidget:
 					# hier contextmenue rechte maus auschalten
-					FreeCAD.Console.PrintMessage('!! cancel -------------------------------------context-----------\n')
+					App.Console.PrintMessage('!! cancel -------------------------------------context-----------\n')
 					return False
 					pass
 
@@ -201,11 +201,11 @@ class EventFilter(QtCore.QObject):
 				self.posx=pos.x()
 				self.posy=pos.y()
 
-				##FreeCAD.Console.PrintMessage("wheel: " + str(self.mouseWheel) + " pos: " +str(e.pos())+ "\n")
+				##App.Console.PrintMessage("wheel: " + str(self.mouseWheel) + " pos: " +str(e.pos())+ "\n")
 				#self.modedat[self.mode]=self.mouseWheel
 				self.dialog.ef_action("wheel",self,self.mouseWheel)
 
-				noDefaultWheel = self.mode<>'n'
+				noDefaultWheel = self.mode!='n'
 				
 				if noDefaultWheel:
 					return True 
@@ -217,18 +217,18 @@ class EventFilter(QtCore.QObject):
 					event.type() == QtCore.QEvent.MouseButtonRelease or\
 					event.type() == QtCore.QEvent.MouseButtonDblClick:
 
-#				FreeCAD.Console.PrintMessage(str(event.type())+ " " + str(o) +'!!\n')
+#				App.Console.PrintMessage(str(event.type())+ " " + str(o) +'!!\n')
 
 				if event.button() == QtCore.Qt.MidButton or  event.button() == QtCore.Qt.MiddleButton:
-#					FreeCAD.Console.PrintMessage('!-------------------------------------!!  X middle \n')
+#					App.Console.PrintMessage('!-------------------------------------!!  X middle \n')
 					return False
 
 				if event.button() == QtCore.Qt.LeftButton:
-#					FreeCAD.Console.PrintMessage('!! X one left\n')
+#					App.Console.PrintMessage('!! X one left\n')
 					return False
 
 				elif event.button() == QtCore.Qt.RightButton:
-#					FreeCAD.Console.PrintMessage('!! X one right\n')
+#					App.Console.PrintMessage('!! X one right\n')
 					return False
 
 		except:
@@ -310,7 +310,7 @@ class MyWidget(QtGui.QWidget):
 #		App.getDocument("Unnamed").Spreadsheet.touch()
 #		App.getDocument("Unnamed").recompute()
 
-		dokname=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+		dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
 		App.ActiveDocument=App.getDocument(dokname)
 		Gui.ActiveDocument=Gui.getDocument(dokname)
 		App.ActiveDocument.Spreadsheet.touch()
@@ -328,7 +328,7 @@ class MyWidget(QtGui.QWidget):
 		stop()
 
 	def getsource(self):
-		dokname=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+		dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
 		return App.getDocument(dokname).getObject(self.source)
 
 	def update(self):
@@ -349,7 +349,7 @@ class MyWidget(QtGui.QWidget):
 				try:
 					t=hd.Target.Shape.Vertex1.Point
 				except:
-					t=FreeCAD.Vector()
+					t=App.Vector()
 				print ("Target",t)
 				pp=bb.Shape.Edge1.Curve.getPoles()
 				points=pp
@@ -359,12 +359,12 @@ class MyWidget(QtGui.QWidget):
 					pp2=[t]+pp[pos+1:]
 
 				bs=bb.Shape.Edge1.Curve.copy()
-				bs.setPole(pos+1,FreeCAD.Vector(t))
+				bs.setPole(pos+1,App.Vector(t))
 				bb.Shape=bs.toShape()
 				points=pp2
 
 			except:
-				print "ExCEPT - need to create helper BSpline"
+				print ("ExCEPT - need to create helper BSpline"
 				src=self.getsource()
 				points=src.Shape.Edge1.Curve.getPoles()
 				mybsc=App.activeDocument().addObject('Part::Feature','BSpline')
@@ -391,7 +391,7 @@ class MyWidget(QtGui.QWidget):
 #			try:
 #				t=hd.Target.Shape.Point
 #			except:
-#				t=FreeCAD.Vector()
+#				t=App.Vector()
 
 			t1=hd.Target.Shape.Vertex1.Point
 			t=hd.Target.Shape.Vertex2.Point
@@ -409,9 +409,9 @@ class MyWidget(QtGui.QWidget):
 			print ("len pp, pp2",len(pp),len(pp2))
 
 			bs=bb.Shape.Edge1.Curve.copy()
-			bs.setPole(pi1+1,FreeCAD.Vector(t1))
-			bs.setPole(pi+1,FreeCAD.Vector(t))
-			bs.setPole(pi2+1,FreeCAD.Vector(t2))
+			bs.setPole(pi1+1,App.Vector(t1))
+			bs.setPole(pi+1,App.Vector(t))
+			bs.setPole(pi2+1,App.Vector(t2))
 
 			bb=hd.TargetCurve
 			bb.Shape=bs.toShape()
@@ -454,11 +454,11 @@ class MyWidget(QtGui.QWidget):
 			bs=dok.BSpline.Shape.Edge1.Curve.copy()
 			if pos==0: posa =len(pp)
 			else: posa= pos
-			bs.setPole(posa,FreeCAD.Vector(t1))
+			bs.setPole(posa,App.Vector(t1))
 			if pos==len(pp)-1: posb =1
 			else: posb= pos+2
 
-			bs.setPole(posb,FreeCAD.Vector(t2))
+			bs.setPole(posb,App.Vector(t2))
 			dok.BSpline.Shape=bs.toShape()
 
 			pol=Part.makePolygon(pp2+[pp2[0]])
@@ -468,7 +468,7 @@ class MyWidget(QtGui.QWidget):
 			points=pp2
 
 		elif mode==4:
-			print "rotate NEIOGHJHGJH"
+			print ("rotate NEIOGHJHGJH"
 			
 #-----------------------
 		elif mode==3:
@@ -508,11 +508,11 @@ class MyWidget(QtGui.QWidget):
 			bs=dok.BSpline.Shape.Edge1.Curve.copy()
 			if pos==0: posa =len(pp)
 			else: posa= pos
-			bs.setPole(posa,FreeCAD.Vector(t1))
+			bs.setPole(posa,App.Vector(t1))
 			if pos==len(pp)-1: posb =1
 			else: posb= pos+2
 
-			bs.setPole(posb,FreeCAD.Vector(t2))
+			bs.setPole(posb,App.Vector(t2))
 			dok.BSpline.Shape=bs.toShape()
 
 			pol=Part.makePolygon(pp2+[pp2[0]])
@@ -536,7 +536,7 @@ class MyWidget(QtGui.QWidget):
 
 
 		else:
-			print "!!!!!!!!!!!!!! no imp for this mode!!"
+			print ("!!!!!!!!!!!!!! no imp for this mode!!"
 
 
 
@@ -565,7 +565,7 @@ class MyWidget(QtGui.QWidget):
 
 	def cursor(self,dok,cords=(0,0,0),restore=False):
 		'''pointer to the selected pole/coords as a red quad'''
-		v=Part.Point(FreeCAD.Vector(cords)).toShape()
+		v=Part.Point(App.Vector(cords)).toShape()
 		try: curs=dok.Cursor
 		except: 
 			curs=dok.addObject('Part::Feature','Cursor')
@@ -595,7 +595,7 @@ class MyWidget(QtGui.QWidget):
 		''' set cursor as dialer backcall'''
 		hd=self.helperDok()
 		self.cursor(hd,self.points[p],True)
-		FreeCAD.ParamGet('User parameter:Plugins/nurbs').SetInt("Cursor",p)
+		App.ParamGet('User parameter:Plugins/nurbs').SetInt("Cursor",p)
 		self.setSelection(p)
 
 
@@ -621,7 +621,7 @@ class MyWidget(QtGui.QWidget):
 
 	def setsharp(self,v):
 		if self.imode==3:
-			print "mode 3"
+			print ("mode 3"
 			self.setsharp3(v)
 			return
 		
@@ -649,11 +649,11 @@ class MyWidget(QtGui.QWidget):
 		bs=dok.BSpline.Shape.Edge1.Curve.copy()
 		if pos==0: posa =len(pp)
 		else: posa= pos
-		bs.setPole(posa,FreeCAD.Vector(t1))
+		bs.setPole(posa,App.Vector(t1))
 		if pos==len(pp)-1: posb =1
 		else: posb= pos+2
 
-		bs.setPole(posb,FreeCAD.Vector(t2))
+		bs.setPole(posb,App.Vector(t2))
 		dok.BSpline.Shape=bs.toShape()
 
 		pol=Part.makePolygon(pp2+[pp2[0]])
@@ -695,11 +695,11 @@ class MyWidget(QtGui.QWidget):
 		bs=dok.BSpline.Shape.Edge1.Curve.copy()
 		if pos==0: posa =len(pp)
 		else: posa= pos
-		bs.setPole(posa,FreeCAD.Vector(t1))
+		bs.setPole(posa,App.Vector(t1))
 		if pos==len(pp)-1: posb =1
 		else: posb= pos+2
 
-		bs.setPole(posb,FreeCAD.Vector(t2))
+		bs.setPole(posb,App.Vector(t2))
 		dok.BSpline.Shape=bs.toShape()
 
 		pol=Part.makePolygon(pp2+[pp2[0]])
@@ -712,7 +712,7 @@ class MyWidget(QtGui.QWidget):
 
 	def target_old(self,dok,cords=(0,0,0)):
 		''' set changed pole to '''
-		v=Part.Point(FreeCAD.Vector(cords)).toShape()
+		v=Part.Point(App.Vector(cords)).toShape()
 		try: curs=dok.Target
 		except: 
 			curs=dok.addObject('Part::Feature','Target')
@@ -724,12 +724,12 @@ class MyWidget(QtGui.QWidget):
 
 	def target(self,dok,cords=(0,0,0),coordlist=[]):
 		''' set changed pole to '''
-		if len(coordlist)>1 and coordlist[0]<>coordlist[1]:
+		if len(coordlist)>1 and coordlist[0]!=coordlist[1]:
 			col=Part.makePolygon(coordlist)
 			v=Part.makeCompound([col])
 		else:
 			if len(coordlist)==1: cords=coordlist[0]
-			v=Part.Point(FreeCAD.Vector(cords)).toShape()
+			v=Part.Point(App.Vector(cords)).toShape()
 
 		try: curs=dok.Target
 		except: 
@@ -744,7 +744,7 @@ class MyWidget(QtGui.QWidget):
 	def settarget(self):
 		'''set the target depending on the mouse wheel roll and mode key'''
 		if self.imode==3:
-			print "SET IMODE 3"
+			print ("SET IMODE 3"
 			ef=self.ef
 
 
@@ -753,7 +753,7 @@ class MyWidget(QtGui.QWidget):
 			#return
 
 		if self.imode==4:
-			print "SET IMODE 4"
+			print ("SET IMODE 4"
 			self.settarget4()
 			return
 
@@ -771,35 +771,35 @@ class MyWidget(QtGui.QWidget):
 #		print ('pl,pos,lpos,rpos',pl,pos,lpos,rpos)
 
 
-		if  self.imode<>3:
-			diff=FreeCAD.Vector()
+		if  self.imode!=3:
+			diff=App.Vector()
 			ef=self.ef
 			if ef.key in  ['x','y','z']:
 				kx,ky,kz=0,0,0
-				if ef.key=='x': kx=ef.mouseWheel * FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
-				if ef.key=='y': ky=ef.mouseWheel * FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
-				if ef.key=='z': kz=ef.mouseWheel * FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
+				if ef.key=='x': kx=ef.mouseWheel * App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
+				if ef.key=='y': ky=ef.mouseWheel * App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
+				if ef.key=='z': kz=ef.mouseWheel * App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
 
 				#changed point 
-				diff=FreeCAD.Vector(kx,ky,kz)
+				diff=App.Vector(kx,ky,kz)
 				t=self.points[pos] + diff
 			elif  ef.key=='t':
-				a=FreeCAD.Vector(self.points[lpos])-FreeCAD.Vector(self.points[rpos])
+				a=App.Vector(self.points[lpos])-App.Vector(self.points[rpos])
 				a.normalize()
-				diff=a.multiply(ef.mouseWheel *FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1))
+				diff=a.multiply(ef.mouseWheel *App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1))
 				t=self.points[pos] + diff 
 			elif  ef.key=='n' or  ef.key=='b':
-				a=FreeCAD.Vector(self.points[lpos])-FreeCAD.Vector(self.points[rpos])
-				b=FreeCAD.Vector(self.points[lpos])-FreeCAD.Vector(self.points[pos])
+				a=App.Vector(self.points[lpos])-App.Vector(self.points[rpos])
+				b=App.Vector(self.points[lpos])-App.Vector(self.points[pos])
 				c=a.cross(b)
 				if  ef.key=='n': d=c.cross(a)
 				else: d=c
 				d.normalize()
-				diff=d.multiply(ef.mouseWheel * FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1))
+				diff=d.multiply(ef.mouseWheel * App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1))
 				t=self.points[pos] + diff 
 			elif  ef.key=='r':
-				d=FreeCAD.Vector(self.points[pos][0],self.points[pos][1],0).normalize()
-				diff=d.multiply(ef.mouseWheel * FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1))
+				d=App.Vector(self.points[pos][0],self.points[pos][1],0).normalize()
+				diff=d.multiply(ef.mouseWheel * App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1))
 				t=self.points[pos] + diff 
 			else:
 				print ("mode not implemented ",ef.key)
@@ -831,7 +831,7 @@ class MyWidget(QtGui.QWidget):
 
 			# bspline curve
 			bs=dok.BSpline.Shape.Edge1.Curve.copy()
-			bs.setPole(pos+1,FreeCAD.Vector(t))
+			bs.setPole(pos+1,App.Vector(t))
 			if self.imode==1:
 				bs.setPole(pos,self.points[pos-1]+diff)
 				bs.setPole(pos+2,self.points[pos+1]+diff)
@@ -863,10 +863,10 @@ class MyWidget(QtGui.QWidget):
 		ppax=[]
 
 		if self.source=='Backbone':
-			print "recompute Backbone #########################################"
-			xV=FreeCAD.Vector(100,0,0)
-			yV=FreeCAD.Vector(0,100,0)
-			zV=FreeCAD.Vector(0,0,141)
+			print ("recompute Backbone #########################################"
+			xV=App.Vector(100,0,0)
+			yV=App.Vector(0,100,0)
+			zV=App.Vector(0,0,141)
 
 			source=self.getsource()
 			needle=source.InList[0]
@@ -889,20 +889,20 @@ class MyWidget(QtGui.QWidget):
 
 
 
-				p2=FreeCAD.Placement()
-				p2.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,0,1),za).multiply(FreeCAD.Rotation(FreeCAD.Vector(0,1,0),ya).multiply(FreeCAD.Rotation(FreeCAD.Vector(1,0,0),xa)))
+				p2=App.Placement()
+				p2.Rotation=App.Rotation(App.Vector(0,0,1),za).multiply(App.Rotation(App.Vector(0,1,0),ya).multiply(App.Rotation(App.Vector(1,0,0),xa)))
 
-				ph=FreeCAD.Placement()
+				ph=App.Placement()
 				ph.Base=xV
 				xR=p2.multiply(ph).Base
-				ph=FreeCAD.Placement()
+				ph=App.Placement()
 				ph.Base=yV
 				yR=p2.multiply(ph).Base
-				ph=FreeCAD.Placement()
+				ph=App.Placement()
 				ph.Base=zV
 				zR=p2.multiply(ph).Base
 
-				p=FreeCAD.Vector(p)
+				p=App.Vector(p)
 
 				if 1:
 					pp=Part.makePolygon([p,p+xR,p+xR+yR,p])
@@ -916,7 +916,7 @@ class MyWidget(QtGui.QWidget):
 
 		# all together 
 		bb.Shape=Part.Compound([pol])
-		if ppax<>[]:
+		if ppax!=[]:
 			bax.Shape=Part.Compound(ppax + [bs.toShape()])
 
 		dok.recompute()
@@ -941,7 +941,7 @@ class MyWidget(QtGui.QWidget):
 	def settarget4(self):
 		'''rotate neighbors'''
 
-		print "settarget 4"
+		print ("settarget 4"
 
 		dok=self.helperDok()
 		pl=len(self.points)
@@ -964,25 +964,25 @@ class MyWidget(QtGui.QWidget):
 		print (dt1,dt2)
 		
 		# rotation
-		p2=FreeCAD.Placement()
-		#p2.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,0,1),za).multiply(FreeCAD.Rotation(FreeCAD.Vector(0,1,0),ya).multiply(FreeCAD.Rotation(FreeCAD.Vector(1,0,0),xa)))
+		p2=App.Placement()
+		#p2.Rotation=App.Rotation(App.Vector(0,0,1),za).multiply(App.Rotation(App.Vector(0,1,0),ya).multiply(App.Rotation(App.Vector(1,0,0),xa)))
 		ef=self.ef
-		kr=ef.mouseWheel * FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
-		p2.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,0,1),kr)
+		kr=ef.mouseWheel * App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
+		p2.Rotation=App.Rotation(App.Vector(0,0,1),kr)
 		
 		print (t1,t2)
-		ph=FreeCAD.Placement()
+		ph=App.Placement()
 		ph.Base=dt1
 		drt1=p2.multiply(ph).Base
 		t1=t+drt1
 
-		ph=FreeCAD.Placement()
+		ph=App.Placement()
 		ph.Base=dt2
 		drt2=p2.multiply(ph).Base
 		t2=t+drt2
 
 		print (t1,t2)
-		print "kilo"
+		print ("kilo"
 		self.target(dok,coordlist=[t1,t,t2]) 
 
 #		try: dok.Sphere
@@ -1013,9 +1013,9 @@ class MyWidget(QtGui.QWidget):
 
 		# bspline curve
 		bs=dok.BSpline.Shape.Edge1.Curve.copy()
-		bs.setPole(pos,FreeCAD.Vector(t1))
-		bs.setPole(pos+1,FreeCAD.Vector(t))
-		bs.setPole(pos+2,FreeCAD.Vector(t2))
+		bs.setPole(pos,App.Vector(t1))
+		bs.setPole(pos+1,App.Vector(t))
+		bs.setPole(pos+2,App.Vector(t2))
 		dok.BSpline.Shape=bs.toShape()
 		sss=bs.toShape()
 
@@ -1028,12 +1028,12 @@ class MyWidget(QtGui.QWidget):
 		pp3=[]
 		ppax=[]
 		
-		print "wwww"
+		print ("wwww"
 
 		if self.source=='Backbone':
-			xV=FreeCAD.Vector(100,0,0)
-			yV=FreeCAD.Vector(0,100,0)
-			zV=FreeCAD.Vector(0,0,141)
+			xV=App.Vector(100,0,0)
+			yV=App.Vector(0,100,0)
+			zV=App.Vector(0,0,141)
 
 			source=self.getsource()
 			needle=source.InList[0]
@@ -1056,20 +1056,20 @@ class MyWidget(QtGui.QWidget):
 
 
 
-				p2=FreeCAD.Placement()
-				p2.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,0,1),za).multiply(FreeCAD.Rotation(FreeCAD.Vector(0,1,0),ya).multiply(FreeCAD.Rotation(FreeCAD.Vector(1,0,0),xa)))
+				p2=App.Placement()
+				p2.Rotation=App.Rotation(App.Vector(0,0,1),za).multiply(App.Rotation(App.Vector(0,1,0),ya).multiply(App.Rotation(App.Vector(1,0,0),xa)))
 
-				ph=FreeCAD.Placement()
+				ph=App.Placement()
 				ph.Base=xV
 				xR=p2.multiply(ph).Base
-				ph=FreeCAD.Placement()
+				ph=App.Placement()
 				ph.Base=yV
 				yR=p2.multiply(ph).Base
-				ph=FreeCAD.Placement()
+				ph=App.Placement()
 				ph.Base=zV
 				zR=p2.multiply(ph).Base
 
-				p=FreeCAD.Vector(p)
+				p=App.Vector(p)
 
 				if 1:
 					pp=Part.makePolygon([p,p+xR,p+xR+yR,p])
@@ -1083,7 +1083,7 @@ class MyWidget(QtGui.QWidget):
 
 		# all together 
 		bb.Shape=Part.Compound([pol])
-		if ppax<>[]:
+		if ppax!=[]:
 			bax.Shape=Part.Compound(ppax + [bs.toShape(),sss])
 
 		dok.recompute()
@@ -1112,7 +1112,7 @@ class MyWidget(QtGui.QWidget):
 		'''callback from list'''
 		self.imode=index
 		print self.mode.currentText()
-		FreeCAD.ParamGet('User parameter:Plugins/nurbs').SetString("editorMode",str(self.mode.currentText()))
+		App.ParamGet('User parameter:Plugins/nurbs').SetString("editorMode",str(self.mode.currentText()))
 		if index not in [2,3]:
 			self.rotsl.hide()
 			self.dials.hide()
@@ -1148,14 +1148,14 @@ def dialog(source):
 	mode.addItem("sharpen/smooth edge") #2
 	mode.addItem("colinear neighbors") #3
 	mode.addItem("rotate neighbors") #4
-	#FreeCAD.ParamGet('User parameter:Plugins/nurbs').SetString("editorMode","move pole and neighbors")
+	#App.ParamGet('User parameter:Plugins/nurbs').SetString("editorMode","move pole and neighbors")
 	
 	
 	mode.currentIndexChanged.connect(w.setmode)
 	w.mode=mode
 	
 
-	editorkey=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("editorKey","h")
+	editorkey=App.ParamGet('User parameter:Plugins/nurbs').GetString("editorKey","h")
 	lab=QtGui.QLabel("Direction: " + editorkey)
 	w.key=editorkey
 	w.modelab=lab
@@ -1176,7 +1176,7 @@ def dialog(source):
 
 	dial=QtGui.QDial() 
 	dial.setNotchesVisible(True)
-	dial.setValue(FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetInt("Cursor",0))
+	dial.setValue(App.ParamGet('User parameter:Plugins/nurbs').GetInt("Cursor",0))
 	dial.valueChanged.connect(w.setcursor2)
 	w.dial=dial
 	
@@ -1260,14 +1260,14 @@ class SelObserver:
 		#App.Console.PrintMessage("addSelection"+ "\n")
 		#App.Console.PrintMessage(str(sub)+ "\n")          # The part of the object name
 		# App.Console.PrintMessage(str(pnt)+ "\n")          # Coordinates of the object
-		if str(doc) <> 'Aux': return
-		if str(obj) <> 'TargetCurve': return
+		if str(doc) != 'Aux': return
+		if str(obj) != 'TargetCurve': return
 		sel=str(sub)
 		if sel.startswith('Vertex'):
 			nr=sel[6:]
-			FreeCAD.eventfilter.dialog.dial.setValue(int(nr)-1)
+			App.eventfilter.dialog.dial.setValue(int(nr)-1)
 		else:
-			print "no vertext"
+			print ("no vertext"
 			return
 
 
@@ -1297,7 +1297,7 @@ def start(source):
 	FreeCADGui.Selection.addObserver(s)                       # install the function mode resident
 	ef.selObserver=s
 
-	FreeCAD.eventfilter=ef
+	App.eventfilter=ef
 
 	mw=QtGui.qApp
 	mw.installEventFilter(ef)
@@ -1320,7 +1320,7 @@ def start(source):
 
 	ef.dialog.show()
 	
-	editorMode=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("editorMode","move pole")
+	editorMode=App.ParamGet('User parameter:Plugins/nurbs').GetString("editorMode","move pole")
 	ef.dialog.mode.setCurrentIndex(ef.dialog.mode.findText(editorMode))
 	tt=Gui.activeDocument().activeView()
 	tt.stopAnimating()
@@ -1342,7 +1342,7 @@ def stop():
 	''' stop eventserver'''
 
 	mw=QtGui.qApp
-	ef=FreeCAD.eventfilter
+	ef=App.eventfilter
 	mw.removeEventFilter(ef)
 	ef.keyPressed2=False
 	ef.dialog.hide()
@@ -1365,13 +1365,13 @@ def undock(label='Spreadsheet'):
 		a=App.activeDocument().MyNeedle
 		a.Proxy.startssevents()
 	except:
-		print "cannot active eventmanager"
+		print ("cannot active eventmanager"
 
 	mw=FreeCADGui.getMainWindow()
 	mdiarea=mw.findChild(QtGui.QMdiArea)
 
 	sws=mdiarea.subWindowList()
-	print "windows ..."
+	print ("windows ..."
 	for w2 in sws:
 		print str(w2.windowTitle())
 		if str(w2.windowTitle()).startswith(label):
@@ -1390,7 +1390,7 @@ def undock(label='Spreadsheet'):
 			w.setGeometry(50, 30, 1650, 350)
 			w.show()
 			sw.close()
-			FreeCAD.ss=w
+			App.ss=w
 			return w
 
 

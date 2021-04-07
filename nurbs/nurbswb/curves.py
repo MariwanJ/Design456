@@ -87,7 +87,7 @@ class OffsetSpline(nurbswb.pyob.FeaturePython):
 		fa.Shape=bc.toShape()
 		fa.ViewObject.LineColor=(.0,1.0,.0)
 
-		if obj.ofout<>0:
+		if obj.ofout!=0:
 			ofs=App.ActiveDocument.getObject(name+"_offOut")
 			if ofs==None: ofs=App.ActiveDocument.addObject("Part::Offset2D",name+"_offOut")
 			ofs.Source = fa
@@ -95,7 +95,7 @@ class OffsetSpline(nurbswb.pyob.FeaturePython):
 			ofs.Value = obj.ofout
 			ofs.recompute()
 
-		if obj.ofin<>0:
+		if obj.ofin!=0:
 			ofsi=App.ActiveDocument.getObject(name+"_offIn")
 			if ofsi==None: ofsi=App.ActiveDocument.addObject("Part::Offset2D",name+"_offIn")
 			ofsi.Source = fa
@@ -127,7 +127,7 @@ class Ufo(nurbswb.pyob.FeaturePython):
 	##\endcond
 
 	def onChanged(proxy,obj,prop):
-		print "ufo changed"
+		print ("ufo changed"
 		return
 #		'''run myExecute for property prop: "ofin" and "ofout"'''
 #		if prop not in ["ofin","ofout"]: return
@@ -135,7 +135,7 @@ class Ufo(nurbswb.pyob.FeaturePython):
 
 
 	def myExecute(proxy,obj):
-		print "ufo my execute "
+		print ("ufo my execute "
 		return
 		#	ofsi.recompute()
 
@@ -163,7 +163,7 @@ def runOffsetSpline(name="MyOffSp"):
 
 
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	obj.addProperty("App::PropertyInteger", "ofin", "Base", "end").ofin=10
 	obj.addProperty("App::PropertyInteger", "ofout", "Base", "end").ofout=10
 
@@ -244,15 +244,15 @@ class Star(nurbswb.pyob.FeaturePython):
 
 		if obj.parent == None: return
 
-		relpos=FreeCAD.Placement(obj.relativePosition)
+		relpos=App.Placement(obj.relativePosition)
 		
-		if obj.tangentCond <>0 and obj.VertexNumber <> 0:
+		if obj.tangentCond !=0 and obj.VertexNumber != 0:
 			rc=dirs(obj.parent,obj.VertexNumber-1)
 			
 			if obj.tangentCond > len(rc): obj.tangentCond =len(rc)
 			if obj.tangentCond < 0: obj.tangentCond = 0
 
-			print "genutzer Winkel ", rc[obj.tangentCond-1] *180/np.pi
+			print ("genutzer Winkel ", rc[obj.tangentCond-1] *180/np.pi
 			if obj.tangentInverse:
 				relpos.Rotation.Angle += np.pi + rc[obj.tangentCond-1]
 			else:
@@ -262,7 +262,7 @@ class Star(nurbswb.pyob.FeaturePython):
 		if obj.VertexNumber==0:
 			pos=obj.parent.Placement
 		else:
-			pos=FreeCAD.Placement(obj.parent.Shape.Vertexes[obj.VertexNumber-1].Point,FreeCAD.Rotation())
+			pos=App.Placement(obj.parent.Shape.Vertexes[obj.VertexNumber-1].Point,App.Rotation())
 
 		obj.Placement=pos.multiply(relpos)
 
@@ -283,7 +283,7 @@ def runStar(name="MyStar"):
 	'''
 
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	obj.addProperty("App::PropertyInteger", "VertexNumber", "Parent", ).VertexNumber=0
 	obj.addProperty("App::PropertyInteger", "tangentCond", "Parent", )
 	obj.addProperty("App::PropertyBool", "tangentInverse", "Parent", )

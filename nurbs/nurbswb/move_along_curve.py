@@ -21,8 +21,8 @@ def srun(w):
 
 def dropcopy(w):
 	c=w.target
-	FreeCAD.ActiveDocument.addObject('Part::Feature','Copy_of_'+c.Label+"_at_"+str(w.ha.value())).Shape=c.Shape
-	FreeCAD.ActiveDocument.recompute()
+	App.ActiveDocument.addObject('Part::Feature','Copy_of_'+c.Label+"_at_"+str(w.ha.value())).Shape=c.Shape
+	App.ActiveDocument.recompute()
 
 ## put the object c  on the curve bc in relative position  v
 # @param bc bspline curve
@@ -48,11 +48,11 @@ def movepos(bc,c,v):
 	harc=np.arcsin(t.z)
 	harc *=180.0/np.pi
 
-	pl=FreeCAD.Placement()
-	pl.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,1,0,),90-harc)
+	pl=App.Placement()
+	pl.Rotation=App.Rotation(App.Vector(0,1,0,),90-harc)
 
-	pa=FreeCAD.Placement()
-	pa.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,0,1,),zarc)
+	pa=App.Placement()
+	pa.Rotation=App.Rotation(App.Vector(0,0,1,),zarc)
 	pl2=pa.multiply(pl)
 
 	pl2.Base=p

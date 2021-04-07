@@ -15,7 +15,7 @@ def showdialog(title="Fehler",text="Schau in den ReportView fuer mehr Details",d
 	msg.setIcon(QtGui.QMessageBox.Warning)
 	msg.setText(text)
 	msg.setWindowTitle(title)
-	if detail<>None:   msg.setDetailedText(detail)
+	if detail!=None:   msg.setDetailedText(detail)
 	msg.exec_()
 
 
@@ -25,7 +25,7 @@ def sayexc(title='Fehler',mess=''):
 	lls=eval(ttt)
 	l=len(lls)
 	l2=lls[(l-3):]
-	FreeCAD.Console.PrintError(mess + "\n" +"-->  ".join(l2))
+	App.Console.PrintError(mess + "\n" +"-->  ".join(l2))
 	showdialog(title,text=mess,detail="--> ".join(l2))
 
 
@@ -47,7 +47,7 @@ def run():
 	if pts==None: # some test data
 		anz=16
 		r=100
-		pts= [FreeCAD.Vector(r*np.sin(2*np.pi/anz*i),r*np.cos(2*np.pi/anz*i),0) for i in range(anz)]
+		pts= [App.Vector(r*np.sin(2*np.pi/anz*i),r*np.cos(2*np.pi/anz*i),0) for i in range(anz)]
 
 	for i,p in enumerate(pts):
 		sk.addGeometry(Part.Circle(App.Vector(int(round(p.x)),int(round(p.y)),0),App.Vector(0,0,1),10),True)

@@ -57,7 +57,7 @@ def get_SelectedObjects(info=0, printError=True):
 			return True
 		return False
 			
-	m_actDoc=FreeCAD.ActiveDocument
+	m_actDoc=App.ActiveDocument
 	
 	if m_actDoc.Name:    
 		# Return a list of SelectionObjects for a given document name.
@@ -206,7 +206,7 @@ class _Command2():
 		import re
 		ta=True
 		if ta:
-			FreeCAD.ActiveDocument.openTransaction(self.name)
+			App.ActiveDocument.openTransaction(self.name)
 		if self.command != '':
 			if self.modul != '':
 				modul = self.modul
@@ -215,14 +215,14 @@ class _Command2():
 			Gui.doCommand("import " + modul)
 			Gui.doCommand("import " + self.lmod)
 			Gui.doCommand("reload(" + self.lmod + ")")
-			docstring = "print;print " + re.sub(r'\(.*\)', '.__doc__', self.command)
+			docstring = "print;print (" + re.sub(r'\(.*\)', '.__doc__', self.command)
 
 			Gui.doCommand(docstring)
 			Gui.doCommand(self.command)
 		if ta:
-			FreeCAD.ActiveDocument.commitTransaction()
-		if FreeCAD.ActiveDocument != None:
-			FreeCAD.ActiveDocument.recompute()
+			App.ActiveDocument.commitTransaction()
+		if App.ActiveDocument != None:
+			App.ActiveDocument.recompute()
 
 
 
@@ -263,7 +263,7 @@ class _Command():
 		else: return False
 
 	def Activated(self):
-		#FreeCAD.ActiveDocument.openTransaction("create " + self.name)
+		#App.ActiveDocument.openTransaction("create " + self.name)
 		if self.command != '':
 			if self.modul !='': modul=self.modul
 			else: modul=self.name
@@ -271,9 +271,9 @@ class _Command():
 			FreeCADGui.doCommand("import "+self.lmod)
 			FreeCADGui.doCommand("reload("+self.lmod+")")
 			FreeCADGui.doCommand(self.command)
-		#FreeCAD.ActiveDocument.commitTransaction()
-		if FreeCAD.ActiveDocument is not None:
-			FreeCAD.ActiveDocument.recompute()
+		#App.ActiveDocument.commitTransaction()
+		if App.ActiveDocument is not None:
+			App.ActiveDocument.recompute()
 
 
 class _alwaysActive(_Command):
@@ -317,7 +317,7 @@ def onselex1():
 
 
 # the menu entry list
-FreeCAD.tcmds5=[]
+App.tcmds5=[]
 
 # create menu entries 
 '''
@@ -326,7 +326,7 @@ def c1(menu,name,*info):
 	name1="Nurbs_"+name
 	t=_Command(name,*info)
 	FreeCADGui.addCommand(name1,t)
-	FreeCAD.tcmds5.append([menu,name1,name,'always',info])
+	App.tcmds5.append([menu,name1,name,'always',info])
 '''
 
 def c1a(menu,isactive,name,*info):
@@ -335,7 +335,7 @@ def c1a(menu,isactive,name,*info):
 	t=_Command(name,*info)
 	t.IsActive=isactive
 	FreeCADGui.addCommand(name1,t)
-	FreeCAD.tcmds5.append([menu,name1,name,isactive,info])
+	App.tcmds5.append([menu,name1,name,isactive,info])
 
 '''
 def c2(menu,title,name,*info):
@@ -343,7 +343,7 @@ def c2(menu,title,name,*info):
 	global _Command
 	title1="Nurbs_"+title
 	FreeCADGui.addCommand(title1,_Command(name,*info))
-	FreeCAD.tcmds5.append([menu,title1,name,'always',info])
+	App.tcmds5.append([menu,title1,name,'always',info])
 '''
 
 def c2a(menu,isactive,title,name,*info):
@@ -352,7 +352,7 @@ def c2a(menu,isactive,title,name,*info):
 	title1="Nurbs_"+title
 	t.IsActive=isactive
 	FreeCADGui.addCommand(title1,t)
-	FreeCAD.tcmds5.append([menu,title1,name,isactive,info])
+	App.tcmds5.append([menu,title1,name,isactive,info])
 
 
 
@@ -370,12 +370,12 @@ def c2b(menu,isactive,title,name,text,icon,cmd=None,*info):
 	name1="Nurbs_"+title
 	t.IsActive=isactive
 	FreeCADGui.addCommand(name1,t)
-	FreeCAD.tcmds5.append([menu,name1])
+	App.tcmds5.append([menu,name1])
 
 #-----------------------------
 
 # the menu entry list
-FreeCAD.tcmdsNurbs = []
+App.tcmdsNurbs = []
 # create menu entries
 
 
@@ -399,7 +399,7 @@ def c3b(menu, isactive, name, text, icon=None, cmd=None, *info):
 	t.IsActive = isactive
 	Gui.addCommand(name1, t)
 
-	FreeCAD.tcmdsNurbs.append([menu, name1])
+	App.tcmdsNurbs.append([menu, name1])
 	return name1
 
 def c3bI(menu, isactive, name, text, icon='None', cmd=None, tooltip='',*info):
@@ -421,7 +421,7 @@ def c3bI(menu, isactive, name, text, icon='None', cmd=None, tooltip='',*info):
 	name1 = "Nurbs_" + title
 	t.IsActive = isactive
 	Gui.addCommand(name1, t)
-	FreeCAD.tcmdsNurbs.append([menu, name1])
+	App.tcmdsNurbs.append([menu, name1])
 	return name1
 
 
@@ -441,7 +441,7 @@ def c3bG(menu, isactive, name, text, icon='None', cmd=None, *info):
 	name1 = "Transportation_" + title
 	t.IsActive = isactive
 	Gui.addCommand(name1, t)
-	FreeCAD.tcmdsNurbs.append([menu, name1])
+	App.tcmdsNurbs.append([menu, name1])
 	return name1
 
 
@@ -452,7 +452,7 @@ def c3bG(menu, isactive, name, text, icon='None', cmd=None, *info):
 # special conditions for actions
 def onneedle():
 	'''open the needle file'''
-	dokname=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+	dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
 	try: App.getDocument(dokname); return True
 	except: return False
 
@@ -463,7 +463,7 @@ def onspread():
 
 
 
-if FreeCAD.GuiUp:
+if App.GuiUp:
 
 	beztools=[]
 	_beztools=[]
@@ -978,7 +978,7 @@ static char * nurbs_xpm[] = {
 
 		menues={}
 		ml=[]
-		for _t in FreeCAD.tcmds5:
+		for _t in App.tcmds5:
 			c=_t[0]
 			a=_t[1]
 			try:menues[tuple(c)].append(a)
@@ -993,7 +993,7 @@ static char * nurbs_xpm[] = {
 		# create menues
 		menues = {}
 		ml = []
-		for _t in FreeCAD.tcmdsNurbs:
+		for _t in App.tcmdsNurbs:
 			c = _t[0]
 			a = _t[1]
 			try:

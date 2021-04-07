@@ -8,9 +8,10 @@
 #-------------------------------------------------
 
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 from PySide import QtGui
 import Part,Mesh,Draft
@@ -32,7 +33,7 @@ def Myarray2NurbsD3(arr,label="MyWall",degree=3,obj=None):
 	
 	if degree == 1: cylinder = False
 	
-	ps=[[FreeCAD.Vector(pst[v,u,0],pst[v,u,1],pst[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
+	ps=[[App.Vector(pst[v,u,0],pst[v,u,1],pst[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
 
 	kv=[1.0/(NbVPoles-3)*i for i in range(NbVPoles-2)]
 	mv=[4] +[1]*(NbVPoles-4) +[4]
@@ -42,7 +43,7 @@ def Myarray2NurbsD3(arr,label="MyWall",degree=3,obj=None):
 		mv=[2] +[1]*(NbVPoles-2) +[2]
 
 	if  NbVPoles == 2:
-		print "KKKK"
+		print ("KKKK"
 		kv=[0,1]
 		mv=[2,2]
 		vdegree=1
@@ -123,8 +124,8 @@ def toUVMesh(bs, uf=5, vf=5):
 
 		mm=np.array(ss)[:,2].max()
 		#add closing points
-		ss.append(FreeCAD.Vector(0,0,0))
-		ss.append(FreeCAD.Vector(0,0,mm))
+		ss.append(App.Vector(0,0,0))
+		ss.append(App.Vector(0,0,mm))
 
 		topfaces=[]
 		x=0
@@ -151,9 +152,9 @@ def toUVMesh(bs, uf=5, vf=5):
 		# print ss
 		# print faces
 		if 0:
-			FreeCAD.Console.PrintMessage(str(("size of the mesh:",uc,vc))+"\n")
-			FreeCAD.Console.PrintMessage(str(("number of points" ,len(ss)))+"\n")
-			FreeCAD.Console.PrintMessage(str(("faces:",len(faces)))+"\n")
+			App.Console.PrintMessage(str(("size of the mesh:",uc,vc))+"\n")
+			App.Console.PrintMessage(str(("number of points" ,len(ss)))+"\n")
+			App.Console.PrintMessage(str(("faces:",len(faces)))+"\n")
 
 
 
@@ -163,7 +164,7 @@ def toUVMesh(bs, uf=5, vf=5):
 			App.activeDocument().ActiveObject.ViewObject.Lighting="Two side"
 			App.activeDocument().ActiveObject.ViewObject.DisplayMode = u"Wireframe"
 			App.activeDocument().ActiveObject.ViewObject.LineColor = (.70,.00,0.00)
-			#FreeCAD.Console.PrintMessage(str(t))
+			#App.Console.PrintMessage(str(t))
 			return App.activeDocument().ActiveObject
 		else:
 			raise Exception("big mesh not implemented")
@@ -175,7 +176,7 @@ def toUVMesh(bs, uf=5, vf=5):
 				App.activeDocument().ActiveObject.ViewObject.Lighting="Two side"
 				App.activeDocument().ActiveObject.ViewObject.DisplayMode = u"Wireframe"
 				App.activeDocument().ActiveObject.ViewObject.LineColor = (.70,.00,0.00)
-				FreeCAD.Console.PrintMessage(str(t))
+				App.Console.PrintMessage(str(t))
 
 		return t
 
@@ -197,16 +198,16 @@ def extrude(profile,path=None):
 	return c
 
 def myrot(v,twister):
-	v=FreeCAD.Vector(v)
+	v=App.Vector(v)
 	xa=0
 	ya=0
 	za=10
 	[xa,ya,za]=twister
-	p2=FreeCAD.Placement()
-	p2.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,0,1),za).multiply(FreeCAD.Rotation(FreeCAD.Vector(0,1,0),ya).multiply(FreeCAD.Rotation(FreeCAD.Vector(1,0,0),xa)))
+	p2=App.Placement()
+	p2.Rotation=App.Rotation(App.Vector(0,0,1),za).multiply(App.Rotation(App.Vector(0,1,0),ya).multiply(App.Rotation(App.Vector(1,0,0),xa)))
 #	print ("Rotation Euler",p2.Rotation.toEuler())
 
-	p=FreeCAD.Placement()
+	p=App.Placement()
 	p.Base=v
 	rc=p2.multiply(p)
 #	print v
@@ -215,7 +216,7 @@ def myrot(v,twister):
 
 
 def twist(profile,twister):
-#	print "twister"
+#	print ("twister"
 	c=np.array(profile)
 	vc,uc,_t=c.shape
 	rc=[]
@@ -266,14 +267,14 @@ def npa2ssa(arr,spreadsheet,c1,r1,color=None):
 		for r in range(r1,r2):
 			cn=cellname(c1,r)
 			ss.set(cn,str(arr[r-r1]))
-			if color<>None: ss.setBackground(cn,color)
+			if color!=None: ss.setBackground(cn,color)
 	else:
 		for r in range(r1,r2):
 			for c in range(c1,c2):
 				cn=cellname(c,r)
 	#			print (cn,c,r,)
 				ss.set(cn,str(arr[r-r1,c-c1]))
-				if color<>None: ss.setBackground(cn,color)
+				if color!=None: ss.setBackground(cn,color)
 
 def gendata(ss):
 	print ("gendata",ss.Label)
@@ -383,7 +384,7 @@ if 0 and __name__=='__main__':
 
 	App.ActiveDocument=None
 	Gui.ActiveDocument=None
-	FreeCAD.open(u"/home/thomas/Schreibtisch/nadel_daten.fcstd")
+	App.open(u"/home/thomas/Schreibtisch/nadel_daten.fcstd")
 	App.setactiveDocument()("nadel_daten")
 	App.ActiveDocument=App.getDocument("nadel_daten")
 	Gui.ActiveDocument=Gui.getDocument("nadel_daten")
@@ -458,7 +459,7 @@ class Needle(PartFeature):
 		ViewProvider(obj.ViewObject)
 
 	def onDocumentRestored(self, fp):
-		print "onDocumentRestored "
+		print ("onDocumentRestored "
 		print fp.Label
 		self.Object=fp
 
@@ -492,12 +493,12 @@ class Needle(PartFeature):
 		ss=obj.Spreadsheet
 
 
-		if obj.ribtemplateSource <> None and not obj.externSourcesOff:
+		if obj.ribtemplateSource != None and not obj.externSourcesOff:
 			cs=obj.ribtemplateSource.Shape.Edge1.Curve
 			curve=cs.getPoles()
 			cl=len(curve)
 			npa2ssa(curve,ss,2,3)
-			print "update curve",curve
+			print ("update curve",curve
 		else:
 			cl=int(ss.get('B1'))
 			curve=ssa2npa(ss,2,3,4,3+cl-1)
@@ -506,12 +507,12 @@ class Needle(PartFeature):
 				curve.append(curve[1])
 
 
-		if obj.backboneSource <> None and not obj.externSourcesOff:
+		if obj.backboneSource != None and not obj.externSourcesOff:
 			cs=obj.backboneSource.Shape.Edge1.Curve
 			bb=cs.getPoles()
 			bl=len(bb)
 			npa2ssa(bb,ss,7,3)
-			print "update backbone",bb
+			print ("update backbone",bb
 
 		else:
 			bl=int(ss.get('G1'))
@@ -531,7 +532,7 @@ class Needle(PartFeature):
 		pa=bbc.LastParameter
 		ps=bbc.FirstParameter
 
-		print "-----------------------------------------------"
+		print ("-----------------------------------------------"
 		for n in range(len(bb)):
 			v=ps +(pa-ps)*n/(len(bb)-1)
 			print ("!!",n,v)
@@ -551,10 +552,10 @@ class Needle(PartFeature):
 			# twister[n]=[0,0,harc]
 			
 			print twister[n]
-		print "---------------------------------------ccccccccc--------"
+		print ("---------------------------------------ccccccccc--------"
 		print len(twister)
 		print twister
-		print "huhu"
+		print ("huhu"
 		#'''
 
 
@@ -579,7 +580,7 @@ class Needle(PartFeature):
 		if obj.Backbone == None:
 			obj.Backbone=App.activeDocument().addObject('Part::Feature','Backbone')
 		
-		#obj.Backbone.Shape=Part.makePolygon([FreeCAD.Vector(b) for b in bb])
+		#obj.Backbone.Shape=Part.makePolygon([App.Vector(b) for b in bb])
 		bs=Part.BSplineCurve()
 		bs.buildFromPoles(bb)
 		obj.Backbone.Shape=bs.toShape()
@@ -591,7 +592,7 @@ class Needle(PartFeature):
 	def createRibTemplate(proxy,obj,curve):
 		if obj.RibTemplate == None:
 			obj.RibTemplate=App.activeDocument().addObject('Part::Feature','Rib template')
-		#obj.RibTemplate.Shape=Part.makePolygon([FreeCAD.Vector(c) for c in curve])
+		#obj.RibTemplate.Shape=Part.makePolygon([App.Vector(c) for c in curve])
 
 		bs=Part.BSplineCurve()
 		c=curve
@@ -606,7 +607,7 @@ class Needle(PartFeature):
 
 	def createMesh(proxy,obj,bs):
 			vb=True
-			if obj.Mesh <> None:
+			if obj.Mesh != None:
 				vb=obj.Mesh.ViewObject.Visibility
 				App.activeDocument().removeObject(obj.Mesh.Name)
 			obj.Mesh=toUVMesh(bs,obj.MeshUCount,obj.MeshVCount)
@@ -673,13 +674,13 @@ class Needle(PartFeature):
 			try:
 				App.activeDocument()().recompute()
 			except:
-				print "recompute jack "
-				dokname=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+				print ("recompute jack "
+				dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
 				App.getDocument(dokname).recompute()
 				pass
 
 	def getExampleModel(self,model):
-		print "getExampleModel"
+		print ("getExampleModel"
 		print model
 		m=model()
 		print model().curve
@@ -720,22 +721,22 @@ class Needle(PartFeature):
 		self.table=table
 
 	def clicked(self,index):
-		print "Clicked",index
+		print ("Clicked",index
 		self.dumpix(index)
 		print (getdata(index))
 
 	def entered(self,index):
-		print "Entered"
+		print ("Entered"
 		self.dumpix(index)
 
 	def pressed(self,index):
 		import nurbswb.needle_cmds
 		reload(nurbswb.needle_cmds)
 		nurbswb.needle_cmds.pressed(index,App.activeDocument().MyNeedle)
-		print "Pressed"
+		print ("Pressed"
 
 	def changed(self,index):
-		print "Changed"
+		print ("Changed"
 		self.dumpix(index)
 
 	def dumpix(self,index): 
@@ -745,13 +746,13 @@ class Needle(PartFeature):
 
 	def showRib(self,ri):
 		Gui.Selection.clearSelection()
-		dokname=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+		dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
 		d=App.getDocument(dokname)
 		Gui.Selection.addSelection(d.getObject('Ribs'),"Edge" +str(ri))
 
 	def showMeridian(self,ri):
 		Gui.Selection.clearSelection()
-		dokname=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+		dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
 		d=App.getDocument(dokname)
 		Gui.Selection.addSelection(d.getObject('Meridians'),"Edge" +str(ri))
 
@@ -770,23 +771,23 @@ class Needle(PartFeature):
 def importCurves(obj):
 	ss=obj.Spreadsheet
 	print ss.Label
-	if obj.ribtemplateSource <> None and not obj.externSourcesOff:
+	if obj.ribtemplateSource != None and not obj.externSourcesOff:
 		cs=obj.ribtemplateSource.Shape.Edge1.Curve
 		curve=cs.getPoles()
 		cl=len(curve)
 		npa2ssa(curve,ss,2,3)
-		print "update curve",curve
+		print ("update curve",curve
 
 
-	if obj.backboneSource <> None and not obj.externSourcesOff:
+	if obj.backboneSource != None and not obj.externSourcesOff:
 		cs=obj.backboneSource.Shape.Edge1.Curve
 		bb=cs.getPoles()
 		bl=len(bb)
 		npa2ssa(bb,ss,7,3)
-		print "update backbone",bb
+		print ("update backbone",bb
 
 def createNeedle(label="MyNeedle"):
-	a=FreeCAD.activeDocument().addObject("Part::FeaturePython",label)
+	a=App.activeDocument().addObject("Part::FeaturePython",label)
 	n=Needle(a)
 	a.useSpreadsheet=True
 	# gendata(a.Spreadsheet)
@@ -895,7 +896,7 @@ def run():
 #		import nurbswb.needle as needle
 #		reload( nurbswb.needle)
 
-		dokname=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+		dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
 		try: App.closeDocument(dokname)
 		except: pass
 
@@ -915,14 +916,14 @@ def run():
 		import nurbswb.needle_models
 		reload (nurbswb.needle_models)
 		# a.Proxy.getExampleModel(nurbswb.needle_models.modelBanana)
-		model=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("NeedleModel","modelSimple")
+		model=App.ParamGet('User parameter:Plugins/nurbs').GetString("NeedleModel","modelSimple")
 
 		print ("a.Proxy.getExampleModel(nurbswb.needle_models."+ model+")")
 		eval("a.Proxy.getExampleModel(nurbswb.needle_models."+ model+")")
 
 
 #		import Draft
-#		points=[FreeCAD.Vector(192.694291746,-129.634476444,0.0),FreeCAD.Vector(130.429397583,-0.657173752785,40.0),FreeCAD.Vector(-52.807308197,-112.73400116,0.0),FreeCAD.Vector(-127.525184631,-71.8170700073,0.0),FreeCAD.Vector(-205.801071167,-274.622741699,0.0),FreeCAD.Vector(28.1370697021,-262.169769287,0.0),FreeCAD.Vector(125.981895447,-187.451873779,0.0)]
+#		points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,40.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
 #		# Draft BSpline
 #		Draft.makeBSpline(points,closed=True,face=True,support=None)
 #		import Part
@@ -955,7 +956,7 @@ if  __name__=='__main__':
 	import nurbswb.needle as needle
 	reload( nurbswb.needle)
 
-	dokname=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+	dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
 	try: App.closeDocument(dokname)
 	except: pass
 
@@ -965,20 +966,20 @@ if  __name__=='__main__':
 	Gui.ActiveDocument=Gui.getDocument(dokname)
 
 	if 0:
-		points=[FreeCAD.Vector(192.694291746,-129.634476444,0.0),FreeCAD.Vector(130.429397583,-0.657173752785,0.0),FreeCAD.Vector(-52.807308197,-112.73400116,0.0),FreeCAD.Vector(-127.525184631,-71.8170700073,0.0),FreeCAD.Vector(-205.801071167,-274.622741699,0.0),FreeCAD.Vector(28.1370697021,-262.169769287,0.0),FreeCAD.Vector(125.981895447,-187.451873779,0.0)]
+		points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,0.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
 		Draft.makeBSpline(points,closed=True,face=True,support=None)
 		# BSpline
 
-		points=[FreeCAD.Vector(-37.2293014526,1.68375661825e-08,0.28248746792),FreeCAD.Vector(132.959136963,6.57217134591e-06,110.262731687),FreeCAD.Vector(149.817367554,1.45151301104e-05,243.523458616),FreeCAD.Vector(-69.3403015137,2.18838984602e-05,367.150869505),FreeCAD.Vector(-182.531646729,2.7960740423e-05,469.103353635),FreeCAD.Vector(-256.549041748,5.67015768864e-05,951.294546262)]
+		points=[App.Vector(-37.2293014526,1.68375661825e-08,0.28248746792),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,951.294546262)]
 		Draft.makeBSpline(points,closed=False,face=True,support=None)
 		# Bspline001
 
 
-		points=[FreeCAD.Vector(-73.5499812578,-192.458589192,0.0),FreeCAD.Vector(-35.2118430692,-245.401746512,0.0),FreeCAD.Vector(-148.400562353,-232.622317741,0.0),FreeCAD.Vector(-115.539281652,-172.376687886,0.0)]
-		Draft.makeBSpline(points,closed=True,face=True,support=FreeCAD.activeDocument().getObject("BSpline"))
+		points=[App.Vector(-73.5499812578,-192.458589192,0.0),App.Vector(-35.2118430692,-245.401746512,0.0),App.Vector(-148.400562353,-232.622317741,0.0),App.Vector(-115.539281652,-172.376687886,0.0)]
+		Draft.makeBSpline(points,closed=True,face=True,support=App.activeDocument().getObject("BSpline"))
 		# Bspline002
 
-		points=[FreeCAD.Vector(-37.2293014526,1.68375661825e-08,-10),FreeCAD.Vector(132.959136963,6.57217134591e-06,110.262731687),FreeCAD.Vector(149.817367554,1.45151301104e-05,243.523458616),FreeCAD.Vector(-69.3403015137,2.18838984602e-05,367.150869505),FreeCAD.Vector(-182.531646729,2.7960740423e-05,469.103353635),FreeCAD.Vector(-256.549041748,5.67015768864e-05,1200)]
+		points=[App.Vector(-37.2293014526,1.68375661825e-08,-10),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,1200)]
 		Draft.makeBSpline(points,closed=False,face=True,support=None)
 		# Bspline003
 
@@ -1007,7 +1008,7 @@ if  __name__=='__main__':
 
 		# zweiter koerper
 
-		b=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyNeedle")
+		b=App.activeDocument().addObject("Part::FeaturePython","MyNeedle")
 		bn=needle.Needle(b)
 
 
@@ -1033,7 +1034,7 @@ if  __name__=='__main__':
 
 
 		Gui.SendMsgToActiveView("ViewFit")
-		print "fertig"
+		print ("fertig"
 		 
 
 

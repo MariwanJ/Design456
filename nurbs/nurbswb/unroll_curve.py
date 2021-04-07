@@ -7,9 +7,10 @@
 #-- GNU Lesser General Public License (LGPL)
 #-------------------------------------------------
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 from PySide import QtCore
 from pivy import coin
@@ -74,27 +75,27 @@ def unroll(mode):
 		pp=c.value(0)
 		print  "Startpunkt",pp
 		#bp=nos[0]
-		#bp=FreeCAD.Vector(0,1,0)
+		#bp=App.Vector(0,1,0)
 
 	else:
-		pp=FreeCAD.Vector()
-		bp=FreeCAD.Vector(0,1,0)
+		pp=App.Vector()
+		bp=App.Vector(0,1,0)
 
-	tp=FreeCAD.Vector(1,0,0)
-#	tp=FreeCAD.Vector(1,0,0.3).normalize()
+	tp=App.Vector(1,0,0)
+#	tp=App.Vector(1,0,0.3).normalize()
 	tp=c.tangent(0)[0]
-	print "-------------------"
-	print "Startpunk",pp
-	print "Tangente",tp
+	print ("-------------------"
+	print ("Startpunk",pp
+	print ("Tangente",tp
 
 	if 1:
-		pp=FreeCAD.Vector()
-		tp=FreeCAD.Vector(1,0,0)
-		bp=FreeCAD.Vector(0,1,0)
+		pp=App.Vector()
+		tp=App.Vector(1,0,0)
+		bp=App.Vector(0,1,0)
 
 
 
-	# bp=FreeCAD.Vector(0,1,0)
+	# bp=App.Vector(0,1,0)
 	ptsn=[pp]
 
 	for i in range(lenp-1):
@@ -103,10 +104,10 @@ def unroll(mode):
 		a=tgs[i+1]-tgs[i]
 		if mode=='yaw':
 			w=a.dot(nos[i].cross(tgs[i]))
-			npa=FreeCAD.Vector(0,0,1).cross(tp)
+			npa=App.Vector(0,0,1).cross(tp)
 		else:
 			w=a.dot(nos[i])
-			npa=FreeCAD.Vector(0,0,1)
+			npa=App.Vector(0,0,1)
 			npa=tp.cross(bp)
 		print (i,w)
 		tpn=tp*np.cos(np.arcsin(w)) + npa*np.sin(np.arcsin(w))
@@ -121,7 +122,7 @@ def unroll(mode):
 		pp=ppn
 
 	#Draft.makeWire(pts[:-2])
-	#ptsn2=[p+FreeCAD.Vector(0,0,10) for p in ptsn]
+	#ptsn2=[p+App.Vector(0,0,10) for p in ptsn]
 	#ptsn=ptsn2
 	
 	if 1:
@@ -166,35 +167,35 @@ def combineCT():
 	et=objt.Shape.Edge1
 	kt=et.Curve
 
-	p=FreeCAD.Vector()
-	start=FreeCAD.Vector()
+	p=App.Vector()
+	start=App.Vector()
 	start=kc.value(0)
-	print "start",start
+	print ("start",start
 	
 	
 	
 	
 
-	t=FreeCAD.Vector(1,0,0)
-	t=FreeCAD.Vector(1,0,0.8).normalize()
+	t=App.Vector(1,0,0)
+	t=App.Vector(1,0,0.8).normalize()
 	
 	t=kc.tangent(0)[0]
 
 	#-------------------
-	start=FreeCAD.Vector (1000.0000000000025, -6.585502339306361e-13, -5.684341886080802e-14)
-	t=FreeCAD.Vector (0.12085567006180127, 0.9814887436862094, -0.14857238313757795)
-#	t=FreeCAD.Vector ( 0.9814887436862094, 0.12085567006180127,0.14857238313757795)
+	start=App.Vector (1000.0000000000025, -6.585502339306361e-13, -5.684341886080802e-14)
+	t=App.Vector (0.12085567006180127, 0.9814887436862094, -0.14857238313757795)
+#	t=App.Vector ( 0.9814887436862094, 0.12085567006180127,0.14857238313757795)
 	
 	#-------------------
 
 
 
 	if 0:
-		p=FreeCAD.Vector()
-		start=FreeCAD.Vector()
-		t=FreeCAD.Vector(1,0,0)
+		p=App.Vector()
+		start=App.Vector()
+		t=App.Vector(1,0,0)
 
-	nn=FreeCAD.Vector(0,0,1)
+	nn=App.Vector(0,0,1)
 	b=t.cross(nn)
 	print nn
 
@@ -206,8 +207,8 @@ def combineCT():
 		b=t.cross(nn)
 		start=a.value(0)
 
-	ptt=FreeCAD.Placement(t,FreeCAD.Rotation())
-	ptn=FreeCAD.Placement(nn,FreeCAD.Rotation())
+	ptt=App.Placement(t,App.Rotation())
+	ptn=App.Placement(nn,App.Rotation())
 
 	tpts=[p]
 
@@ -238,7 +239,7 @@ def combineCT():
 #		rt *= 0.4
 #		rt *= 0.1
 
-	#	r3=App.Rotation(FreeCAD.Vector(0,0,1),rc)
+	#	r3=App.Rotation(App.Vector(0,0,1),rc)
 
 		rX=App.Rotation(b,rc*180/np.pi)
 	#	rX=App.Rotation(b,0)
@@ -246,9 +247,9 @@ def combineCT():
 
 		#print (rc,rt)
 
-		pc=FreeCAD.Placement(FreeCAD.Vector(),rX)
-		pt=FreeCAD.Placement(FreeCAD.Vector(),rY)
-	#	pc=FreeCAD.Placement()
+		pc=App.Placement(App.Vector(),rX)
+		pt=App.Placement(App.Vector(),rY)
+	#	pc=App.Placement()
 
 
 		t9=pt.multiply(pc).multiply(ptt)
@@ -256,7 +257,7 @@ def combineCT():
 		#t9=ptt.multiply(pc).multiply(pt)
 		ptt=t9
 		t=t9.Base
-		#ptn=FreeCAD.Placement(nn,FreeCAD.Rotation())
+		#ptn=App.Placement(nn,App.Rotation())
 		
 		t8=pc.multiply(ptn)
 		nn=t8.Base.normalize()
@@ -264,9 +265,9 @@ def combineCT():
 		
 		b=t.cross(nn).normalize()
 		p=p+t
-	#	print "t ",t
-		print "n ",nn
-	#	print "b ",b
+	#	print ("t ",t
+		print ("n ",nn
+	#	print ("b ",b
 	#	print 
 		tpts += [p]
 

@@ -63,7 +63,7 @@ def splitEdges(obj=None,show=True):
 		arcl={}
 		for e in g.edges(n):
 			fe=g.get_edge_data(*e)['edge']
-			if (fe.valueAt(fe.FirstParameter)-FreeCAD.Vector(vecs[n])).Length<0.0001:
+			if (fe.valueAt(fe.FirstParameter)-App.Vector(vecs[n])).Length<0.0001:
 				arc=np.arctan2(*fe.tangentAt(fe.FirstParameter)[0:2])
 			else:
 				vv=fe.tangentAt(fe.LastParameter)*(-1)
@@ -101,14 +101,14 @@ def splitEdges(obj=None,show=True):
 						_ = points[vkey([p[0],p[1],0.0])]
 					except:
 						# liegt Punkt innen?
-						pp=FreeCAD.Vector(p[0],p[1],0.0)
+						pp=App.Vector(p[0],p[1],0.0)
 						(cmin,cmax)=c1.ParameterRange
 						cp1=c1.Curve.parameter(pp)
 						if cmin<cp1 and cp1<cmax:
 							(cmin,cmax)=c2.ParameterRange
 							cp=c2.Curve.parameter(pp)
 							if (cmin<cp and cp<cmax):
-								pts+=[FreeCAD.Vector(p[0],p[1])]
+								pts+=[App.Vector(p[0],p[1])]
 								cuts[c1i] += [cp1]
 								cuts2[c2i] += [cp]
 								print(("schnitt",c1i,c2i,cp1,cp))
@@ -200,7 +200,7 @@ def createPattern(obj=None,rx=3,ry=2,sx=200,sy=100,all_faces=None):
 		arcl={}
 		for e in g.edges(n):
 			fe=g.get_edge_data(*e)['edge']
-			if (fe.valueAt(fe.FirstParameter)-FreeCAD.Vector(vecs[n])).Length<0.001:
+			if (fe.valueAt(fe.FirstParameter)-App.Vector(vecs[n])).Length<0.001:
 				arc=np.arctan2(*fe.tangentAt(fe.FirstParameter)[0:2])
 			else:
 				vv=fe.tangentAt(fe.LastParameter)*(-1)
@@ -243,7 +243,7 @@ def createPattern(obj=None,rx=3,ry=2,sx=200,sy=100,all_faces=None):
 		tz.ViewObject.LineWidth=3
 
 		if 0: # display simplified polygon only
-			pts=[FreeCAD.Vector(vecs[p]) for p in pol]
+			pts=[App.Vector(vecs[p]) for p in pol]
 			tz.Shape=Part.makePolygon(pts)
 
 		comps=[]
@@ -332,40 +332,40 @@ def _createArray(show=True,obj=None):
 
 	edges=[]
 
-	pm=FreeCAD.Placement(FreeCAD.Vector(0,0,0),	FreeCAD.Rotation(FreeCAD.Vector(0,0,1),0))
+	pm=App.Placement(App.Vector(0,0,0),	App.Rotation(App.Vector(0,0,1),0))
 	pms=[pm]
 
 	if obj.modeX=='mirror':
-		pm2=FreeCAD.Placement(FreeCAD.Vector(0,0,0),FreeCAD.Rotation(FreeCAD.Vector(1,0,0),180))
+		pm2=App.Placement(App.Vector(0,0,0),App.Rotation(App.Vector(1,0,0),180))
 		pms += [pm2]
 
 	if obj.modeY=='mirror':
-		pm2=FreeCAD.Placement(FreeCAD.Vector(0,0,0),FreeCAD.Rotation(FreeCAD.Vector(0,1,0),180))
+		pm2=App.Placement(App.Vector(0,0,0),App.Rotation(App.Vector(0,1,0),180))
 		pms += [pm2]
 
 	if obj.modeY=='rotate':
-		pm2=FreeCAD.Placement(FreeCAD.Vector(0,obj.sizeY,0),FreeCAD.Rotation(FreeCAD.Vector(0,0,1),180))
+		pm2=App.Placement(App.Vector(0,obj.sizeY,0),App.Rotation(App.Vector(0,0,1),180))
 		pms += [pm2]
 
 	if obj.modeX=='rotate':
-		pm2=FreeCAD.Placement(FreeCAD.Vector(obj.sizeX,0,0),FreeCAD.Rotation(FreeCAD.Vector(0,0,1),180))
+		pm2=App.Placement(App.Vector(obj.sizeX,0,0),App.Rotation(App.Vector(0,0,1),180))
 		pms += [pm2]
 
 	if obj.modeX=='mirror' and obj.modeY=='mirror':
-		pm2=FreeCAD.Placement(FreeCAD.Vector(0,0,0),FreeCAD.Rotation(FreeCAD.Vector(0,0,1),180))
+		pm2=App.Placement(App.Vector(0,0,0),App.Rotation(App.Vector(0,0,1),180))
 		pms += [pm2]
 
 	if obj.modeX=='rotate' and obj.modeY=='rotate':
-		pm2=FreeCAD.Placement(FreeCAD.Vector(-obj.sizeX,-obj.sizeY,0),FreeCAD.Rotation(FreeCAD.Vector(0,0,1),0))
+		pm2=App.Placement(App.Vector(-obj.sizeX,-obj.sizeY,0),App.Rotation(App.Vector(0,0,1),0))
 		pms += [pm2]
 
 
 	if obj.modeX=='rotate' and obj.modeY=='mirror':
-		pm2=FreeCAD.Placement(FreeCAD.Vector(-obj.sizeX,0,0),FreeCAD.Rotation(FreeCAD.Vector(1,0,0),180))
+		pm2=App.Placement(App.Vector(-obj.sizeX,0,0),App.Rotation(App.Vector(1,0,0),180))
 		pms += [pm2]
 
 	if obj.modeX=='mirror' and obj.modeY=='rotate':
-		pm2=FreeCAD.Placement(FreeCAD.Vector(0,-obj.sizeY,0),FreeCAD.Rotation(FreeCAD.Vector(0,1,0),180))
+		pm2=App.Placement(App.Vector(0,-obj.sizeY,0),App.Rotation(App.Vector(0,1,0),180))
 		pms += [pm2]
 
 
@@ -391,10 +391,10 @@ def _createArray(show=True,obj=None):
 					es2 +=[sh2]
 
 	if obj.createBorder:
-		a=FreeCAD.Vector(0,0)
-		b=FreeCAD.Vector(xc*obj.sizeX,0)
-		d=FreeCAD.Vector(0,yc*obj.sizeY)
-		c=FreeCAD.Vector(xc*obj.sizeX,yc*obj.sizeY)
+		a=App.Vector(0,0)
+		b=App.Vector(xc*obj.sizeX,0)
+		d=App.Vector(0,yc*obj.sizeY)
+		c=App.Vector(xc*obj.sizeX,yc*obj.sizeY)
 		sh=Part.makePolygon([a,b,c,d,a])
 
 		for pm in pms:
@@ -504,7 +504,7 @@ class Pattern(FeaturePython):
 				self.all_faces.ViewObject.hide()
 			except: pass
 
-			self.all_faces=FreeCAD.ActiveDocument.addObject("Part::Compound","All_Faces")
+			self.all_faces=App.ActiveDocument.addObject("Part::Compound","All_Faces")
 
 			col=splitEdges(Part.makeCompound(col),show=False)
 			createPattern(Part.makeCompound(col),
@@ -518,7 +518,7 @@ def createPatternV3(obj=None,target=None,createPlanarPattern=False):
 	'''create a pattern object'''
 
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Pattern")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","Pattern")
 	Pattern(a)
 	ViewProvider(a.ViewObject)
 	a.createPlanarPattern=createPlanarPattern
@@ -627,7 +627,7 @@ def mapcurve(points,border,target,repeatX,repeatY):
 			vss2=mapv(vss,f)
 			uss2=mapu(uss,f)
 
-			pts2d +=[FreeCAD.Base.Vector2d(u,v) for u,v in zip(uss2,vss2)]
+			pts2d +=[App.Base.Vector2d(u,v) for u,v in zip(uss2,vss2)]
 
 			#geschlossen
 			#bs2d.buildFromPolesMultsKnots(pts2d,[1]*(len(pts2d)+1),list(range(len(pts2d)+1)),True,1)

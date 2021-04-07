@@ -25,7 +25,7 @@ def getpols(obj):
 	po1a=[]
 	po1=c1.getPoles()
 	for p in po1:
-		pm=FreeCAD.Placement()
+		pm=App.Placement()
 		pm.Base=p
 		pn=pl1.multiply(pm)
 		po1a.append(pn.Base)
@@ -149,7 +149,7 @@ def createShape(obj):
 	obj.ViewObject.LineColor=(1.0,1.0,0.0)
 	obj.ViewObject.ShapeColor=color
 	
-	print "Weights .."
+	print ("Weights .."
 	print bs.getWeights()
 
 
@@ -245,7 +245,7 @@ class ViewProvider:
 class SimpleHood(PartFeature):
 	def __init__(self, obj):
 		PartFeature.__init__(self, obj)
-		obj.addProperty("App::PropertyVector","Size","Base").Size=FreeCAD.Vector(300,-100,200)
+		obj.addProperty("App::PropertyVector","Size","Base").Size=App.Vector(300,-100,200)
 		obj.addProperty("App::PropertyEnumeration","xProfile","Base")
 		obj.xProfile=["ellipse","parabola","hyperbola"]
 		obj.addProperty("App::PropertyEnumeration","yProfile","Base")
@@ -269,7 +269,7 @@ class SimpleHood(PartFeature):
 
 
 def run():
-	b=FreeCAD.activeDocument().addObject("Part::FeaturePython","MySimpleHood")
+	b=App.activeDocument().addObject("Part::FeaturePython","MySimpleHood")
 	bn=SimpleHood(b)
 
 

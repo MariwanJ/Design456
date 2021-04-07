@@ -8,7 +8,7 @@ def showdialog(title="Fehler",text="Schau in den ReportView fuer mehr Details",d
 	msg.setIcon(QtGui.QMessageBox.Warning)
 	msg.setText(text)
 	msg.setWindowTitle(title)
-	if detail<>None:   msg.setDetailedText(detail)
+	if detail!=None:   msg.setDetailedText(detail)
 	msg.exec_()
 
 
@@ -18,7 +18,7 @@ def sayexc(title='Fehler',mess=''):
 	lls=eval(ttt)
 	l=len(lls)
 	l2=lls[(l-3):]
-	FreeCAD.Console.PrintError(mess + "\n" +"-->  ".join(l2))
+	App.Console.PrintError(mess + "\n" +"-->  ".join(l2))
 	showdialog(title,text=mess,detail="--> ".join(l2))
 
 
@@ -72,10 +72,10 @@ def diag(p,pts,u0,v0):
 	(u,v)=bs.parameter(p)
 
 	if u>1 or u<0 or v>1 or v<0:
-		#print "Punkt ausserhalb"
+		#print ("Punkt ausserhalb"
 		return [False,p]
 	else:
-		#print "drin"
+		#print ("drin"
 		if u<=0.5:
 			un=u/0.5*u0
 		else:
@@ -147,7 +147,7 @@ class Trafo(nurbswb.pyob.FeaturePython):
 	def myexecute(self,obj):
 
 		#calculate the point coordinats for source and target frame
-		if obj.source<>None:
+		if obj.source!=None:
 			pts1= np.float32([(p.x,p.y) for p in obj.source.Points])
 		else:
 			tpts1=[obj.model.Shape.BoundBox.getPoint(i) for i in range(4)]
@@ -163,8 +163,8 @@ class Trafo(nurbswb.pyob.FeaturePython):
 		bc=Part.BSplineCurve()
 		bc.buildFromPolesMultsKnots(c,ms,ks,True,2)
 
-		try: bb=FreeCAD.ActiveDocument.cc
-		except: bb=FreeCAD.activeDocument().addObject("Part::Spline","cc")
+		try: bb=App.ActiveDocument.cc
+		except: bb=App.activeDocument().addObject("Part::Spline","cc")
 
 		bb.ViewObject.ControlPoints=True
 		bb.Label="Source Poles"
@@ -178,9 +178,9 @@ class Trafo(nurbswb.pyob.FeaturePython):
 
 		if not obj.useCenter:
 			##a = cv2.perspectiveTransform(np.array([pts3]), M)
-			##ptsa=[FreeCAD.Vector(p[0],p[1],0) for p in a[0]]
+			##ptsa=[App.Vector(p[0],p[1],0) for p in a[0]]
 			a=[trafo(p[0],p[1],M) for p in pts3]
-			ptsa=[FreeCAD.Vector(p[0],p[1],0) for p in a]
+			ptsa=[App.Vector(p[0],p[1],0) for p in a]
 
 		else:
 			
@@ -207,13 +207,13 @@ class Trafo(nurbswb.pyob.FeaturePython):
 			pts3= np.float32([(p[1].x,p[1].y) for p in lrc])
 ##			a = cv2.perspectiveTransform(np.array([pts3]), M)
 			a=[trafo(p[0],p[1],M) for p in pts3]
-##			ptsa=[FreeCAD.Vector(p[0],p[1],0) for p in a]
+##			ptsa=[App.Vector(p[0],p[1],0) for p in a]
 
 			
 			pas=[]
 			for i,p in enumerate(lrc):
 				[flag,pt]=p
-				if flag: p2=FreeCAD.Vector(a[i][0],a[i][1],0)
+				if flag: p2=App.Vector(a[i][0],a[i][1],0)
 				else: p2=pt
 				pas.append(p2)
 			ptsa=pas
@@ -231,8 +231,8 @@ class Trafo(nurbswb.pyob.FeaturePython):
 
 		#create the target poles helper
 
-		try: ee=FreeCAD.ActiveDocument.ee
-		except: ee=FreeCAD.activeDocument().addObject("Part::Spline","ee")
+		try: ee=App.ActiveDocument.ee
+		except: ee=App.activeDocument().addObject("Part::Spline","ee")
 
 		ee.Shape=bc.toShape()
 		ee.ViewObject.hide()
@@ -249,7 +249,7 @@ def run():
 		raise Exception("nothing selected")
 
 	model=Gui.Selection.getSelection()[0]
-	if model.Shape.Edge1.Curve.__class__.__name__ <>'BSplineCurve':
+	if model.Shape.Edge1.Curve.__class__.__name__ !='BSplineCurve':
 		print model.Label
 		print model.Shape.Edge1.Curve.__class__.__name__
 		showdialog('Error','edge of the selected curve is not a BSpline','method is only implemented for BSpline Curves')
@@ -260,7 +260,7 @@ def run():
 		points2=source.Points
 		# todo: rectangle as source frame
 	except:
-		print "use bound box as source frame"
+		print ("use bound box as source frame"
 		print model.Shape.BoundBox
 		points2=[model.Shape.BoundBox.getPoint(i) for i in range(4)]
 		source=None
@@ -272,16 +272,16 @@ def run():
 	line2.ViewObject.LineColor = (1.00,0.00,1.00)
 	line2.Label="Target Frame"
 
-	b=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyTransform")
+	b=App.activeDocument().addObject("Part::FeaturePython","MyTransform")
 	tt=Trafo(b)
 
 	b.source=source
 	b.target=line2
 	b.model=model
 	b.center=center
-	b.useCenter= center <> None
+	b.useCenter= center != None
 
-	FreeCAD.activeDocument().recompute()
+	App.activeDocument().recompute()
 
 
 # run()
