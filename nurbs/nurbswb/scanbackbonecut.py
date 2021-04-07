@@ -56,34 +56,34 @@ def displayCut(label,pl,pts,showpoints=True,showwire=False,showxypoints=False,sh
 	color=(random.random(),random.random(),random.random())
 
 	plst=" Base:" + str(pl.Base) +" Rot Euler:" + str(pl.Rotation.toEuler())
-	plst="FreeCAD.Placement(FreeCAD." + str(pl.Base) +", FreeCAD.Rotation" + str(pl.Rotation.toEuler())+") "
+	plst="App.Placement(App." + str(pl.Base) +", App.Rotation" + str(pl.Rotation.toEuler())+") "
 
 
 	plinv=pl.inverse()
-	rot2=FreeCAD.Placement(FreeCAD.Vector(),FreeCAD.Rotation(FreeCAD.Vector(0,0,1),90))
+	rot2=App.Placement(App.Vector(),App.Rotation(App.Vector(0,0,1),90))
 	plinv=rot2.multiply(plinv)
 	plaa=plinv.inverse()
 	plcc=plaa.multiply(plinv)
 
 # kann weg
-#	print "rotation A"
-#	print " Base:" + str(plinv.Base) +" Rot Euler:" + str(plinv.Rotation.toEuler())
-#	print "rotation B"
-#	print " Base:" + str(plaa.Base) +" Rot Euler:" + str(plaa.Rotation.toEuler())
-#	print "rotation C"
-#	print " Base:" + str(plcc.Base) +" Rot Euler:" + str(plcc.Rotation.toEuler())
+#	print ("rotation A"
+#	print (" Base:" + str(plinv.Base) +" Rot Euler:" + str(plinv.Rotation.toEuler())
+#	print ("rotation B"
+#	print (" Base:" + str(plaa.Base) +" Rot Euler:" + str(plaa.Rotation.toEuler())
+#	print ("rotation C"
+#	print (" Base:" + str(plcc.Base) +" Rot Euler:" + str(plcc.Rotation.toEuler())
 
 
-	#pts2=[FreeCAD.Vector(round(p.x),round(p.y),round(p.z)) for p in pts2]
+	#pts2=[App.Vector(round(p.x),round(p.y),round(p.z)) for p in pts2]
 	pts2=[plinv.multVec(p) for p in pts]
 
-	#pts2a=[FreeCAD.Vector(p.x,p.y,0) for p in pts2 if zmin<=p.z and p.z<=zmax]
-	pts2a=[FreeCAD.Vector(round(p.x),round(p.y),round(p.z)) for p in pts2 if round(p.z)==z0]
+	#pts2a=[App.Vector(p.x,p.y,0) for p in pts2 if zmin<=p.z and p.z<=zmax]
+	pts2a=[App.Vector(round(p.x),round(p.y),round(p.z)) for p in pts2 if round(p.z)==z0]
 
-	try: scp=FreeCAD.ActiveDocument.Scanpoints
-	except: scp=FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup","Scanpoints")
-	try: scps=FreeCAD.ActiveDocument.ScanpointsSource
-	except: scps=FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup","ScanpointsSource")
+	try: scp=App.ActiveDocument.Scanpoints
+	except: scp=App.ActiveDocument.addObject("App::DocumentObjectGroup","Scanpoints")
+	try: scps=App.ActiveDocument.ScanpointsSource
+	except: scps=App.ActiveDocument.addObject("App::DocumentObjectGroup","ScanpointsSource")
 
 
 	# if no points found - create an empty point set
@@ -91,19 +91,19 @@ def displayCut(label,pl,pts,showpoints=True,showwire=False,showxypoints=False,sh
 
 		if showxypoints:
 			Points.show(Points.Points([]))
-			FreeCAD.ActiveDocument.ActiveObject.ViewObject.ShapeColor=color
-			FreeCAD.ActiveDocument.ActiveObject.ViewObject.PointSize=5
-			FreeCAD.ActiveDocument.ActiveObject.Label="Points Map xy " +plst
-			FreeCAD.ActiveDocument.ActiveObject.Label=label+"t=" +plst + "#"
-			FreeCAD.ActiveDocument.ActiveObject.Label="t=" +plst + "#"
-			scp.addObject(FreeCAD.ActiveDocument.ActiveObject)
+			App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=color
+			App.ActiveDocument.ActiveObject.ViewObject.PointSize=5
+			App.ActiveDocument.ActiveObject.Label="Points Map xy " +plst
+			App.ActiveDocument.ActiveObject.Label=label+"t=" +plst + "#"
+			App.ActiveDocument.ActiveObject.Label="t=" +plst + "#"
+			scp.addObject(App.ActiveDocument.ActiveObject)
 
 		if showpoints:
 			Points.show(Points.Points([]))
-			FreeCAD.ActiveDocument.ActiveObject.ViewObject.ShapeColor=color
-			FreeCAD.ActiveDocument.ActiveObject.ViewObject.PointSize=5
-			FreeCAD.ActiveDocument.ActiveObject.Label="Points " +plst
-			scps.addObject(FreeCAD.ActiveDocument.ActiveObject)
+			App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=color
+			App.ActiveDocument.ActiveObject.ViewObject.PointSize=5
+			App.ActiveDocument.ActiveObject.Label="Points " +plst
+			scps.addObject(App.ActiveDocument.ActiveObject)
 
 		return
 
@@ -112,17 +112,17 @@ def displayCut(label,pl,pts,showpoints=True,showwire=False,showxypoints=False,sh
 
 		if showxypoints:
 			Points.show(p2)
-			FreeCAD.ActiveDocument.ActiveObject.ViewObject.ShapeColor=color
-			FreeCAD.ActiveDocument.ActiveObject.ViewObject.PointSize=5
-			FreeCAD.ActiveDocument.ActiveObject.Label="Points Map xy " +plst
-			FreeCAD.ActiveDocument.ActiveObject.Label=label+"t=" +plst + "#"
-			FreeCAD.ActiveDocument.ActiveObject.Label="t=" +plst + "#"
-			scp.addObject(FreeCAD.ActiveDocument.ActiveObject)
+			App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=color
+			App.ActiveDocument.ActiveObject.ViewObject.PointSize=5
+			App.ActiveDocument.ActiveObject.Label="Points Map xy " +plst
+			App.ActiveDocument.ActiveObject.Label=label+"t=" +plst + "#"
+			App.ActiveDocument.ActiveObject.Label="t=" +plst + "#"
+			scp.addObject(App.ActiveDocument.ActiveObject)
 
 
 	# create a wire from a central projection
 	(px,py,pz)=np.array(pts2a).swapaxes(0,1)
-	mymean=FreeCAD.Vector(px.mean(),py.mean(),pz.mean())
+	mymean=App.Vector(px.mean(),py.mean(),pz.mean())
 	aps={}
 	for v in pts2a:
 		vm=v-mymean
@@ -141,29 +141,29 @@ def displayCut(label,pl,pts,showpoints=True,showwire=False,showxypoints=False,sh
 	tt=path.swapaxes(0,1)
 	y1 = sp.signal.medfilt(tt[1],f)
 	y0 = sp.signal.medfilt(tt[0],f)
-	l5=[FreeCAD.Vector(p) for p in np.array([y0,y1,tt[2]]).swapaxes(0,1)] 
+	l5=[App.Vector(p) for p in np.array([y0,y1,tt[2]]).swapaxes(0,1)] 
 
 	if showxywire:
 		Draft.makeWire(l5)
-		FreeCAD.ActiveDocument.ActiveObject.ViewObject.LineColor=color
-		FreeCAD.ActiveDocument.ActiveObject.Label="Median filter " + str(f)  + " " + plst
+		App.ActiveDocument.ActiveObject.ViewObject.LineColor=color
+		App.ActiveDocument.ActiveObject.Label="Median filter " + str(f)  + " " + plst
 
 	if showwire:
 		# place the wire back into the shoe
 		invmin=[pl.multVec(p) for p in l5]
 		Draft.makeWire(invmin)
-		FreeCAD.ActiveDocument.ActiveObject.ViewObject.LineColor=color
-		FreeCAD.ActiveDocument.ActiveObject.Label="Wire "+ plst
+		App.ActiveDocument.ActiveObject.ViewObject.LineColor=color
+		App.ActiveDocument.ActiveObject.Label="Wire "+ plst
 
 	if showpoints:
 		# display the used points inside the shoe
 		sels=[plaa.multVec(p) for p in pts2a]
 		s2=Points.Points(sels)
 		Points.show(s2)
-		FreeCAD.ActiveDocument.ActiveObject.ViewObject.ShapeColor=color
-		FreeCAD.ActiveDocument.ActiveObject.ViewObject.PointSize=5
-		FreeCAD.ActiveDocument.ActiveObject.Label="Points " +plst
-		scps.addObject(FreeCAD.ActiveDocument.ActiveObject)
+		App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=color
+		App.ActiveDocument.ActiveObject.ViewObject.PointSize=5
+		App.ActiveDocument.ActiveObject.Label="Points " +plst
+		scps.addObject(App.ActiveDocument.ActiveObject)
 
 	return plaa
 
@@ -186,7 +186,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 	''' create slices of the pointcloud near the ribs '''
 
 	try: 
-		FreeCAD.ActiveDocument.getObject(point_cloud)
+		App.ActiveDocument.getObject(point_cloud)
 	except: 
 		Points.insert(__dir__+"/../testdata/"+point_cloud+".asc","Shoe")
 
@@ -203,14 +203,14 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 
 	trafos=[]
 	for i,b in enumerate(bbps):
-		# if i<>5 : continue
+		# if i!=5 : continue
 		alpha=twister[i][1]
 		beta=twister[i][2]
 		alpha=0
 		beta=0
 
-		pla=FreeCAD.Placement(FreeCAD.Vector(b),FreeCAD.Rotation(FreeCAD.Vector(0,0,1),-beta).multiply(FreeCAD.Rotation(FreeCAD.Vector(0,1,0),alpha-90)))
-		pcl=FreeCAD.ActiveDocument.shoe_last_scanned.Points.Points
+		pla=App.Placement(App.Vector(b),App.Rotation(App.Vector(0,0,1),-beta).multiply(App.Rotation(App.Vector(0,1,0),alpha-90)))
+		pcl=App.ActiveDocument.shoe_last_scanned.Points.Points
 
 		trafo=displayCut("cut "+str(i),pla,pcl,showpoints=showpoints,showxywire=showxywire,showxypoints=showxypoints)
 		trafos.append(trafo)
@@ -219,15 +219,15 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 	import nurbswb.createsketchspline
 	reload(nurbswb.createsketchspline)
 
-	scp=FreeCAD.ActiveDocument.Scanpoints
+	scp=App.ActiveDocument.Scanpoints
 	jj=scp.OutList
 
-	clo=FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup","clones2")
+	clo=App.ActiveDocument.addObject("App::DocumentObjectGroup","clones2")
 
 	for i,p in enumerate(jj):
 		
 		# move the sketches into the ribs folders
-		grp=FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup","GRP "+str(i+1))
+		grp=App.ActiveDocument.addObject("App::DocumentObjectGroup","GRP "+str(i+1))
 		try:
 			l2=App.ActiveDocument.Profiles.OutList[2].Label
 			grp.addObject(jj[i])

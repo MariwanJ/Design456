@@ -9,9 +9,10 @@
 
 
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 from PySide import QtGui
 import Part,Mesh,Draft,Points
@@ -76,7 +77,7 @@ def createShape(obj,force=False):
 
 		if obj.westSeam:
 			seam=obj.westSeam
-			print "Seam.....WEST........."
+			print ("Seam.....WEST........."
 			print seam
 			tvs=[]
 			for i in range(30):
@@ -100,7 +101,7 @@ def createShape(obj,force=False):
 
 		if obj.eastSeam:
 			seam=obj.eastSeam
-			print "Seam.......EAST......."
+			print ("Seam.......EAST......."
 			tvs=[]
 			print l.shape
 			for i in range(30):
@@ -122,7 +123,7 @@ def createShape(obj,force=False):
 
 	pts2=pts2.swapaxes(0,1)
 
-	if 0 or obj.nordSeam<>None or  obj.southSeam<>None:
+	if 0 or obj.nordSeam!=None or  obj.southSeam!=None:
 		#----------- nord und sued
 
 		pts=pts2.copy()
@@ -135,7 +136,7 @@ def createShape(obj,force=False):
 
 		if obj.nordSeam:
 			seam=obj.nordSeam
-			print "Seam......NORD........"
+			print ("Seam......NORD........"
 			print seam
 			tvs=[]
 			for i in range(30):
@@ -160,7 +161,7 @@ def createShape(obj,force=False):
 
 		if obj.southSeam:
 			seam=obj.southSeam
-			print "Seam.......South......."
+			print ("Seam.......South......."
 			tvs=[]
 			for i in range(30):
 				n="t"+str(i)
@@ -227,43 +228,43 @@ def createShape(obj,force=False):
 
 
 	if 0:
-		print "tangenten links"
+		print ("tangenten links"
 		print pts[0]-l
 
-		print "kurve links"
+		print ("kurve links"
 		print pts[0]
 
 
-		print "tangenten rechts"
+		print ("tangenten rechts"
 		print pts[-1]-r
-		print "kurve rechts"
+		print ("kurve rechts"
 		print pts[-1]
 
 
 
-	if 0 and FreeCAD.tangentsleft == [] and obj.tangentsleft==[] and force:
-		print "create tangents"
+	if 0 and App.tangentsleft == [] and obj.tangentsleft==[] and force:
+		print ("create tangents"
 		for i in range(cu):
-			t=Draft.makeWire([FreeCAD.Vector(pts[0,i]),FreeCAD.Vector(l[i])])
+			t=Draft.makeWire([App.Vector(pts[0,i]),App.Vector(l[i])])
 			t.ViewObject.LineColor=(1.0,1.,0.)
 			t.ViewObject.LineWidth=10
 			t.Label="Tangent left " + str(i+1)
-			FreeCAD.tangentsleft.append(t)
-			t=Draft.makeWire([FreeCAD.Vector(pts[-1,i]),FreeCAD.Vector(r2[i])])
+			App.tangentsleft.append(t)
+			t=Draft.makeWire([App.Vector(pts[-1,i]),App.Vector(r2[i])])
 			t.ViewObject.LineColor=(1.0,1.,0.)
 			t.ViewObject.LineWidth=10
 			t.Label="Tangent right " + str(i+1)
 	else:
-		if obj.tangentsleft <> []:
-			print "setze tvektoren neu"
+		if obj.tangentsleft != []:
+			print ("setze tvektoren neu"
 			for i in range(cu):
-				obj.tangentsleft[i].Start=FreeCAD.Vector(pts[0,i])
-				obj.tangentsleft[i].End=FreeCAD.Vector(l[i])
+				obj.tangentsleft[i].Start=App.Vector(pts[0,i])
+				obj.tangentsleft[i].End=App.Vector(l[i])
 				obj.tangentsleft[i].Proxy.execute(obj.tangentsleft[i])
 
 
 	obj.Shape=bs.toShape()
-	print "tangenten linksAA"
+	print ("tangenten linksAA"
 	print obj.tangentsleft
 	hp=App.ActiveDocument.getObject(obj.Name+"BS")
 	print hp
@@ -271,14 +272,14 @@ def createShape(obj,force=False):
 		hp=App.ActiveDocument.addObject('Part::Spline',obj.Name+"BS")
 
 	hp.Shape=bs.toShape()
-	print "2kkoay"
+	print ("2kkoay"
 
 
 
 class TangentFace(PartFeature):
 	def __init__(self, obj):
 		PartFeature.__init__(self, obj)
-		obj.addProperty("App::PropertyVector","Size","Base").Size=FreeCAD.Vector(300,-100,200)
+		obj.addProperty("App::PropertyVector","Size","Base").Size=App.Vector(300,-100,200)
 		obj.addProperty("App::PropertyLink","source","Base")
 		obj.addProperty("App::PropertyLink","westSeam","Base")
 		obj.addProperty("App::PropertyLink","eastSeam","Base")
@@ -316,11 +317,11 @@ class TangentFace(PartFeature):
 
 
 	def execute(proxy,obj):
-		print "myexecute tanface"
+		print ("myexecute tanface"
 		if hasattr(obj,"westSeam"):
-			print "run proxy seam"
+			print ("run proxy seam"
 			createShapeV2(obj)
-		print "done myex"
+		print ("done myex"
 
 	def onChanged(self, obj, prop):
 		if prop in ['factorA','factorB','displayShape','flipEast','flipWest']:
@@ -360,13 +361,13 @@ class Seam(PartFeature):
 
 	def execute(proxy,obj):
 
-		if obj.source<>None:
+		if obj.source!=None:
 			print("execute ")
 			try:
 				sf=obj.source.Shape.Face1.Surface
 				sf.getPoles
 			except:
-				print "konvertiere zu nurbs"
+				print ("konvertiere zu nurbs"
 				ff=obj.source.Shape.Face1.toNurbs()
 				sf=ff.Face1.Surface
 
@@ -492,7 +493,7 @@ class Seam(PartFeature):
 				shape=bs.toShape()
 				pl=obj.endPlane
 
-				V=pl.Placement.Rotation.multVec(FreeCAD.Vector(0,0,1)).normalize()
+				V=pl.Placement.Rotation.multVec(App.Vector(0,0,1)).normalize()
 				P=V.dot(pl.Placement.Base)
 				ends=[]
 				anz=spols.shape[1]
@@ -512,7 +513,7 @@ class Seam(PartFeature):
 
 
 def createTangentFace():
-	b=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyTangentFace")
+	b=App.activeDocument().addObject("Part::FeaturePython","MyTangentFace")
 	bn=FilledFace(b)
 
 
@@ -635,16 +636,16 @@ if __name__ == '__main__':
 	ks.vmin=0
 
 	#create the seam
-	wseam=FreeCAD.activeDocument().addObject("Part::FeaturePython","SeamW")
+	wseam=App.activeDocument().addObject("Part::FeaturePython","SeamW")
 	Seam(wseam)
 
-	eseam=FreeCAD.activeDocument().addObject("Part::FeaturePython","SeamE")
+	eseam=App.activeDocument().addObject("Part::FeaturePython","SeamE")
 	Seam(eseam)
 
-	nseam=FreeCAD.activeDocument().addObject("Part::FeaturePython","SeamN")
+	nseam=App.activeDocument().addObject("Part::FeaturePython","SeamN")
 	Seam(nseam)
 
-	sseam=FreeCAD.activeDocument().addObject("Part::FeaturePython","SeamS")
+	sseam=App.activeDocument().addObject("Part::FeaturePython","SeamS")
 	Seam(sseam)
 
 
@@ -663,12 +664,12 @@ if __name__ == '__main__':
 	poles=np.array(kn.Shape.Face1.Surface.getPoles()).swapaxes(0,1)
 	for i,p in enumerate(poles[0]):
 		v=poles[0][i]-poles[1][i]
-		setattr(nseam,"t"+str(i),FreeCAD.Vector(v)*5)
+		setattr(nseam,"t"+str(i),App.Vector(v)*5)
 
 	poles=np.array(ks.Shape.Face1.Surface.getPoles()).swapaxes(0,1)
 	for i,p in enumerate(poles[0]):
 		v=poles[0][i]-poles[1][i]
-		setattr(sseam,"t"+str(i),FreeCAD.Vector(v)*5)
+		setattr(sseam,"t"+str(i),App.Vector(v)*5)
 
 
 	# seams von segmenten abhaengig machen
@@ -680,7 +681,7 @@ if __name__ == '__main__':
 	wseam.source=kw
 
 
-	b=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyTangentialFace")
+	b=App.activeDocument().addObject("Part::FeaturePython","MyTangentialFace")
 	bn=TangentFace(b)
 	b.westSeam=wseam
 	b.eastSeam=eseam
@@ -748,9 +749,9 @@ if __name__ == '__main__':
 def runseam():
 
 	source=None
-	if len( Gui.Selection.getSelection())<>0:
+	if len( Gui.Selection.getSelection())!=0:
 		source=Gui.Selection.getSelection()[0]
-	s=FreeCAD.activeDocument().addObject("Part::FeaturePython","SeamW")
+	s=App.activeDocument().addObject("Part::FeaturePython","SeamW")
 	Seam(s)
 	s.source=source
 	try:
@@ -761,9 +762,9 @@ def runseam():
 def runtangentsurface():
 
 	source=None
-	if len( Gui.Selection.getSelection())<>0:
+	if len( Gui.Selection.getSelection())!=0:
 		source=Gui.Selection.getSelection()[0]
-	b=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyTangentialFace")
+	b=App.activeDocument().addObject("Part::FeaturePython","MyTangentialFace")
 	TangentFace(b)
 #	b.westSeam=App.ActiveDocument.SeamW007
 #	b.eastSeam=App.ActiveDocument.SeamW006
@@ -783,7 +784,7 @@ def machFlaeche(psta,ku=None,closed=False,bs=None,swap=False):
 		degree=3
 
 		if 0:
-			print "bs-dump: v"
+			print ("bs-dump: v"
 			print bs.VDegree
 			print bs.getVMultiplicities()
 			print bs.getVKnots()
@@ -791,7 +792,7 @@ def machFlaeche(psta,ku=None,closed=False,bs=None,swap=False):
 			print bs.getPoles()[0:2][0:2]
 			print np.array(bs.getPoles()).shape
 
-		ps=[[FreeCAD.Vector(psta[v,u,0],psta[v,u,1],psta[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
+		ps=[[App.Vector(psta[v,u,0],psta[v,u,1],psta[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
 
 		kv=[1.0/(NbVPoles-3)*i for i in range(NbVPoles-2)]
 		if ku==None: ku=[1.0/(NbUPoles-3)*i for i in range(NbUPoles-2)]
@@ -803,7 +804,7 @@ def machFlaeche(psta,ku=None,closed=False,bs=None,swap=False):
 #		mv=[5,3,2,5]
 #		print mv
 #		print sum(mv)
-#		print "--------------"
+#		print ("--------------"
 #		kv=range(len(mv))
 
 		mu=[4,4]
@@ -845,11 +846,11 @@ def machFlaeche(psta,ku=None,closed=False,bs=None,swap=False):
 
 import numpy as np
 
-print "temp module"
+print ("temp module"
 
 def createShapeV2(obj):
 	if not obj.swap:
-		if obj.westSeam<>None and obj.eastSeam <> None:
+		if obj.westSeam!=None and obj.eastSeam != None:
 			print obj.westSeam.Label
 			sfw=obj.westSeam.Shape.Face1.Surface
 			print sfw.NbVPoles
@@ -873,12 +874,12 @@ def createShapeV2(obj):
 			
 			closed=sfw.isUClosed()
 #			closed=True
-			print "-------------------------"
+			print ("-------------------------"
 			bs=machFlaeche(poles,closed=closed)
 			obj.Shape=bs.toShape()
 
 	else:
-		if obj.nordSeam<>None and obj.southSeam <> None:
+		if obj.nordSeam!=None and obj.southSeam != None:
 			sfw=obj.nordSeam.Shape.Face1.Surface
 			print sfw.NbVPoles
 			print sfw.NbUPoles
@@ -908,7 +909,7 @@ def createShapeV2(obj):
 #		closed=True
 		bs=machFlaeche(poles,closed=closed)
 		obj.Shape=bs.toShape()
-	print "fertig"
+	print ("fertig"
 
 
 '''

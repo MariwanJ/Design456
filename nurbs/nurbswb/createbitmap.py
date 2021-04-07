@@ -3,9 +3,10 @@
 import time
 
 import numpy as np
-import FreeCAD,FreeCADGui,Part
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+,Part
+
 
 
 
@@ -28,7 +29,7 @@ def qrcodeFace(message='qr',degree=2,showPoints=False,window=None):
 	pts=[]
 	for x in range(l):
 		for y in range(l):
-			pts.append(FreeCAD.Vector(x,y,float(str(lns[x][y]))))
+			pts.append(App.Vector(x,y,float(str(lns[x][y]))))
 
 	if 0: # idee zweite bild ueberlagern
 		number2=pyqrcode.create('abbceraaaYaaawqwqwwr')
@@ -40,7 +41,7 @@ def qrcodeFace(message='qr',degree=2,showPoints=False,window=None):
 		pts=[]
 		for x in range(l):
 			for y in range(l):
-				pts.append(FreeCAD.Vector(x,y,float(str(lns[x][y]))+float(str(lns2[x][y]))))
+				pts.append(App.Vector(x,y,float(str(lns[x][y]))+float(str(lns2[x][y]))))
 
 
 	du=degree
@@ -140,7 +141,7 @@ def qrcodeFace(message='qr',degree=2,showPoints=False,window=None):
 	bv=len(kvs)
 	bu=len(kus)
 
-	if window<>None:
+	if window!=None:
 		window.progressbar.setValue(0)
 
 	if 1:
@@ -152,7 +153,7 @@ def qrcodeFace(message='qr',degree=2,showPoints=False,window=None):
 			Gui.updateGui()
 			fg.Shape=Part.Compound(sps)
 
-			if window<>None:
+			if window!=None:
 				window.progressbar.setValue(10*a/bv)
 
 
@@ -163,16 +164,16 @@ def qrcodeFace(message='qr',degree=2,showPoints=False,window=None):
 			Gui.updateGui()
 			fg.Shape=Part.Compound(sps)
 
-			if window<>None:
+			if window!=None:
 				window.progressbar.setValue(10+10*b/bu)
 
 
 	if degree>0:
 		sps=[]
 		for a in range(0,bv/d+1):
-			if window<>None:
+			if window!=None:
 				window.progressbar.setValue(100*a/(bv/d))
-			FreeCAD.Console.PrintMessage(" "+str(a))
+			App.Console.PrintMessage(" "+str(a))
 			for b in range(0,bu/d+1):
 				d=5
 				bs2=bs.copy()
@@ -212,7 +213,7 @@ def qrcodeFace(message='qr',degree=2,showPoints=False,window=None):
 	if showPoints:
 
 		import Points
-		ptsa=[FreeCAD.Vector(p) for p in pts2.reshape(cu*cu,3)]
+		ptsa=[App.Vector(p) for p in pts2.reshape(cu*cu,3)]
 		Points.show(Points.Points(ptsa))
 		App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.,0.,0.)
 		App.ActiveDocument.ActiveObject.ViewObject.PointSize=4
@@ -268,7 +269,7 @@ def dialog():
 
 
 def run():
-	print "run it"
+	print ("run it"
 	rc=dialog()
 
 

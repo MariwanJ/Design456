@@ -10,9 +10,10 @@
 import random
 import Draft,Part
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 import scipy as sp
 from scipy.signal import argrelextrema
@@ -29,7 +30,7 @@ def showdialog(title="Fehler",text="Schau in den ReportView fuer mehr Details",d
 	msg.setIcon(QtGui.QMessageBox.Warning)
 	msg.setText(text)
 	msg.setWindowTitle(title)
-	if detail<>None:   msg.setDetailedText(detail)
+	if detail!=None:   msg.setDetailedText(detail)
 	msg.exec_()
 
 
@@ -39,7 +40,7 @@ def sayexc(title='Fehler',mess=''):
 	lls=eval(ttt)
 	l=len(lls)
 	l2=lls[(l-3):]
-	FreeCAD.Console.PrintError(mess + "\n" +"-->  ".join(l2))
+	App.Console.PrintError(mess + "\n" +"-->  ".join(l2))
 	showdialog(title,text=mess,detail="--> ".join(l2))
 
 
@@ -50,22 +51,22 @@ def orderdata(obj,inner=False,plotit=False,medianfil=0,cf=True):
 	pts=None
 	try:
 		pts=obj.Points.Points
-		print "Points"
+		print ("Points"
 	except:
 		pts=obj.Points
-		print "Draft"
+		print ("Draft"
 
 	npts=np.array(pts).swapaxes(0,1)
 	mp=(npts[0].mean(),npts[1].mean(),npts[2].mean())
 
-	vm=FreeCAD.Vector(mp)
-	lengths=np.array([(FreeCAD.Vector(p)-vm).Length for p in pts])
+	vm=App.Vector(mp)
+	lengths=np.array([(App.Vector(p)-vm).Length for p in pts])
 
 	lax=lengths.max()
 	lin=lengths.min()
 	lea=lengths.mean()
 
-	pl2=FreeCAD.Placement()
+	pl2=App.Placement()
 	pl2.Base=vm
 
 	# beschraenkende kreise
@@ -92,8 +93,8 @@ def orderdata(obj,inner=False,plotit=False,medianfil=0,cf=True):
 		vn=v-vm
 		#	print np.arctan2(vm.x,vm.y)
 		try:
-			if aps[np.arctan2(vn.x,vn.y)] <> vn:
-				print "Fehler 2 punkte gleiche richtung"
+			if aps[np.arctan2(vn.x,vn.y)] != vn:
+				print ("Fehler 2 punkte gleiche richtung"
 				print v
 				print aps[np.arctan2(vn.x,vn.y)]
 		except:
@@ -167,7 +168,7 @@ def orderdata(obj,inner=False,plotit=False,medianfil=0,cf=True):
 	z  =  x*0
 
 	pps=np.array([x,y,z]).swapaxes(0,1)
-	goods=[FreeCAD.Vector(tuple(p))+vm for p in pps[1:]]
+	goods=[App.Vector(tuple(p))+vm for p in pps[1:]]
 	Draft.makeWire(goods,closed=True,face=False)
 
 
@@ -186,7 +187,7 @@ def run():
 	}
 
 	# parameter -----------------
-	t=FreeCAD.ParamGet('User parameter:Plugins/nurbs/'+'orderpoints')
+	t=App.ParamGet('User parameter:Plugins/nurbs/'+'orderpoints')
 	l=t.GetContents()
 	if l==None: l=[]
 	for k in l: p[k[1]]=k[2]

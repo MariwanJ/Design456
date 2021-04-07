@@ -18,20 +18,20 @@ def testRandomTorus():
 	a.gridCount=20
 	
 	ps=a.Proxy.getPoints()
-	print "points ps",len(ps)
+	print ("points ps",len(ps)
 
 	ps=a.Proxy.getPoints()
-	print "A"
+	print ("A"
 	a.Proxy.togrid(ps)
-	print "B"
+	print ("B"
 	a.Proxy.updatePoles()
-	print "C"
+	print ("C"
 	a.Proxy.showGriduv()
 
 	'''
 	if 0:
-		print "random .."
-		ps=np.array(FreeCAD.ps).swapaxes(0,1)
+		print ("random .."
+		ps=np.array(App.ps).swapaxes(0,1)
 		temp,ct=ps.shape
 		ps[2] += 100*np.random.random(ct)
 		ps=ps.swapaxes(0,1)
@@ -72,8 +72,8 @@ def testRandomTorus():
 	'''
 
 
-	FreeCAD.a=a
-	FreeCAD.ps=ps
+	App.a=a
+	App.ps=ps
 
 	Gui.activeDocument().activeView().viewAxonometric()
 	Gui.SendMsgToActiveView("ViewFit")

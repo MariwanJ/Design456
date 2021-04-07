@@ -7,7 +7,9 @@
 #-- GNU Lesser General Public License (LGPL)
 #-------------------------------------------------
 
-import FreeCAD,FreeCADGui,Sketcher,Part
+import FreeCAD as App
+import FreeCADGui as Gui
+,Sketcher,Part
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -44,26 +46,26 @@ class _VP(ViewProvider):
 		self.methodA(None)
 
 	def methodA(self,obj):
-		print "my Method A"
-		FreeCAD.activeDocument().recompute()
+		print ("my Method A"
+		App.activeDocument().recompute()
 
 	def methodB(self,obj):
-		print "my method B"
-		FreeCAD.activeDocument().recompute()
+		print ("my method B"
+		App.activeDocument().recompute()
 
 	def methodC(self,obj):
-		print "my method C"
-		FreeCAD.activeDocument().recompute()
+		print ("my method C"
+		App.activeDocument().recompute()
 
 	def unsetEdit(self,vobj,mode=0):
 		self.methodC(None)
 
 
 	def doubleClicked(self,vobj):
-		print "double clicked"
+		print ("double clicked"
 		self.myedit(vobj.Object)
 
-		print "Ende double clicked"
+		print ("Ende double clicked"
 
 
 def getNamedConstraint(sketch,name):
@@ -139,7 +141,7 @@ def run(sk):
 			jj=sk.addConstraint(Sketcher.Constraint('Distance',20,10))
 			sk.setDriving(jj,False)
 			sk.setVirtualSpace(jj, True)
-			print "done"
+			print ("done")
 
 	except: pass
 
@@ -147,8 +149,8 @@ def run(sk):
 #		sk.setVirtualSpace(c, True)
 
 	try:
-		#poles=[ sk.getPoint(i,1) +FreeCAD.Vector(0,0,random.random()*2000) for i in range(sk.polescount)]
-		#poles=[ sk.getPoint(i,1) +FreeCAD.Vector(0,0,0) for i in range(sk.polescount*3)]
+		#poles=[ sk.getPoint(i,1) +App.Vector(0,0,random.random()*2000) for i in range(sk.polescount)]
+		#poles=[ sk.getPoint(i,1) +App.Vector(0,0,0) for i in range(sk.polescount*3)]
 
 		# gleich doppelte Punkte
 		poles=[]
@@ -168,7 +170,7 @@ def run(sk):
 def init_bezierring(sk,count=5,source=None):
 
 
-	if source <> None:
+	if source != None:
 		ptsa=source.Shape.Wires[0].discretize(count*2*10)
 		ptsb=[]
 
@@ -187,20 +189,20 @@ def init_bezierring(sk,count=5,source=None):
 		ptsb += [last]
 
 		# map from xz scan to xy sketch
-		pts=[FreeCAD.Vector(p.x,p.z,0) for p in ptsb]
+		pts=[App.Vector(p.x,p.z,0) for p in ptsb]
 
 	else: # a generated circle with some noise
 		r=100
 		pts=[]
 		for i in range(count):
-			p=FreeCAD.Vector(r*np.cos(2*i*np.pi/count),r*np.sin(2*i*np.pi/count),0)
-			p2=FreeCAD.Vector(r*np.cos((2*i+1)*np.pi/count),r*np.sin((2*i+1)*np.pi/count),0)
-			p2 += FreeCAD.Vector((0.5-random.random())*0.2*r,(0.5-random.random())*0.2*r)
+			p=App.Vector(r*np.cos(2*i*np.pi/count),r*np.sin(2*i*np.pi/count),0)
+			p2=App.Vector(r*np.cos((2*i+1)*np.pi/count),r*np.sin((2*i+1)*np.pi/count),0)
+			p2 += App.Vector((0.5-random.random())*0.2*r,(0.5-random.random())*0.2*r)
 			pm=(p+p2)*0.5
 			pts +=[p,pm,p2]
 
 	for i in range(count):
-			if i <> 0: # connect to the last segment with a connector line
+			if i != 0: # connect to the last segment with a connector line
 				lc=sk.addGeometry(Part.LineSegment(pts[3*i-1],pts[3*i]),False)
 				sk.addConstraint(Sketcher.Constraint('Coincident',lb,2,lc,1))
 
@@ -221,7 +223,7 @@ def init_bezierring(sk,count=5,source=None):
 #			sk.addConstraint(Sketcher.Constraint('Block',lb))
 			sk.addConstraint(Sketcher.Constraint('Coincident',la,2,lb,1))
 
-			if i <> 0: # connect connector line to the new created segment
+			if i != 0: # connect connector line to the new created segment
 				sk.addConstraint(Sketcher.Constraint('Coincident',lc,2,la,1))
 
 	# close the figure
@@ -239,10 +241,10 @@ def init_bezierring(sk,count=5,source=None):
 
 def createBezierSketch(name="BezierRing",source=None):
 
-	if source <> None:
+	if source != None:
 		name="Sk_"+source.Label+'_'
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	BezierSketch(obj)
 	obj.polescount=7
 	init_bezierring(obj,count=obj.polescount,source=source)
@@ -277,29 +279,29 @@ class FollowerSketch(FeaturePython):
 		if len(obj.Geometry)==0: return
 		if not obj.init:return
 
-		if time.time()-self.timestamp<0.1 and prop<>"force":
+		if time.time()-self.timestamp<0.1 and prop!="force":
 			return
 		self.timestamp=time.time()
 
 
 		if prop=='Geometry' or prop=="force":
-			print "Anpassen"
+			print ("Anpassen"
 			try:
 				print obj.getPoint(0,1)
 			except:
-				print "noch nix da"
+				print ("noch nix da"
 
 				return
 			p=obj.getPoint(0,1)
 			c=App.ActiveDocument.BSpline.Shape.Curve
 			u=c.parameter(p)
-			print "versuche zu setzen"
+			print ("versuche zu setzen"
 
 			p2=c.value(u)
 
 			print p
 			print p2
-			print "##"
+			print ("##"
 			obj.movePoint(0,1,p2)
 			# constraints einschalten hier haRD CODED
 			ax=getNamedConstraint(obj,"ax")
@@ -313,21 +315,21 @@ class FollowerSketch(FeaturePython):
 			App.ActiveDocument.Sketch.setDriving(ax,False)
 			App.ActiveDocument.Sketch.setDriving(ay,False)
 			# auschcalten
-			print "fertig"
+			print ("fertig"
 
 
 
 	def execute(proxy,obj):
-		print "execute"
+		print ("execute"
 		obj.recompute()
 
 
 def createFollowerSketch(name="Follower",source=None):
 
-	if source <> None:
+	if source != None:
 		name="Sk_"+source.Label+'_'
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	FollowerSketch(obj)
 	import sketcher
 	import sketcher.feedbacksketch
@@ -388,22 +390,22 @@ class ArcSketch(FeaturePython):
 				p0=sk.getPoint(bg,2)
 				ps=sk.getPoint(ag,2)
 			except:
-				print "points not found"
+				print ("points not found"
 				return
 
 			alpha=np.arccos((p2-ps).normalize().dot((p0-ps).normalize()))
 			radius=(p2-ps).Length*np.tan(alpha*0.5)
 
-			print "Richtung ", (p2-ps).normalize().dot((p0-ps).normalize())
+			print ("Richtung ", (p2-ps).normalize().dot((p0-ps).normalize())
 
 			vv=(p2-ps).normalize().cross((p0-ps).normalize())
 
 			f= vv.z< 0
 
 			if not f:
-				mp=p2-(p2-ps).normalize().cross(FreeCAD.Vector(0,0,1))*radius
+				mp=p2-(p2-ps).normalize().cross(App.Vector(0,0,1))*radius
 			else:
-				mp=p2+(p2-ps).normalize().cross(FreeCAD.Vector(0,0,1))*radius
+				mp=p2+(p2-ps).normalize().cross(App.Vector(0,0,1))*radius
 
 			r2=(p2-mp)
 			r0=(p0-mp)
@@ -436,10 +438,10 @@ def createArcSketch(name="TwoArc",source=None):
 	except:
 		pass
 
-	if source <> None:
+	if source != None:
 		name="Sk_"+source.Label+'_'
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	ArcSketch(obj)
 	obj.source=source
 	obj.init=True
@@ -475,11 +477,11 @@ def createLabel(obj,ref,ctext):
 	print l.Target[1][0]
 
 	if l.Target[1][0].startswith("Edge") or l.Target[1][0].startswith("Fac") :
-		print "a"
+		print ("a"
 		pp=getattr(l.Target[0].Shape,l.Target[1][0]).CenterOfMass
 		l.TargetPoint=getattr(l.Target[0].Shape,l.Target[1][0]).CenterOfMass
 	else:
-		print "b"
+		print ("b"
 		pp=getattr(l.Target[0].Shape,l.Target[1][0]).Point
 		l.TargetPoint=getattr(l.Target[0].Shape,l.Target[1][0]).Point
 
@@ -504,7 +506,7 @@ def createLabel(obj,ref,ctext):
 import Draft
 def createLabels():
 
-	obj=FreeCAD.ActiveDocument.Sketch
+	obj=App.ActiveDocument.Sketch
 	dat=[
 		['Vertex1',['extern ref start',]],
 		['Vertex2',['extern ref end',]],
@@ -531,7 +533,7 @@ def createLabels():
 
 def createLabels():
 
-#	obj=FreeCAD.ActiveDocument.Sketch
+#	obj=App.ActiveDocument.Sketch
 	for obj in Gui.Selection.getSelection():
 		dat=[]
 		for i,e in enumerate(obj.Shape.Vertexes):

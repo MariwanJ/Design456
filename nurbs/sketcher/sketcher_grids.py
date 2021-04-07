@@ -11,7 +11,9 @@
 # from say import *
 # import nurbswb.pyob
 #------------------------------
-import FreeCAD,FreeCADGui,Sketcher,Part
+import FreeCAD as App
+import FreeCADGui as Gui
+,Sketcher,Part
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -63,7 +65,7 @@ def creategrid(uc=3,vc=5,sk=None):
 
 # sketche grid generator
 
-	print "create grid ..."
+	print ("create grid ..."
 	gct=sk.GeometryCount
 	for i in range(gct):
 		sk.delGeometry(gct-i-1)
@@ -95,13 +97,13 @@ def creategrid(uc=3,vc=5,sk=None):
 		l=les
 		#print l
 		_=sk.addConstraint(Sketcher.Constraint('Coincident',l[0],1,l[2],1)) 
-		if a<>vc:
+		if a!=vc:
 			_=sk.addConstraint(Sketcher.Constraint('Coincident',l[0],2,l[0]+1,1)) 
-		if b<>uc:
+		if b!=uc:
 			_=sk.addConstraint(Sketcher.Constraint('Coincident',l[2],2,l[2]+1,1)) 
 		if a == vc:
 			_=sk.addConstraint(Sketcher.Constraint('Coincident',l[0],2,l[3],1))
-			if b<> uc:
+			if b!= uc:
 				_=sk.addConstraint(Sketcher.Constraint('Coincident',l[3],2,l[3]+1,1)) 
 		if b == uc:
 			_=sk.addConstraint(Sketcher.Constraint('Coincident',l[2],2,l[1],1)) 
@@ -158,9 +160,9 @@ class GridSketch(FeaturePython):
 		if not self.Lock:
 			self.Lock=True
 			try:
-				#print "run myexecute"
+				#print ("run myexecute"
 				self.myExecute(obj)
-				#print "myexecute done"
+				#print ("myexecute done"
 			except Exception as ex:
 				print(ex)
 				print('myExecute error')
@@ -181,7 +183,7 @@ class GridSketch(FeaturePython):
 
 
 def createGridSketch(name="MyGridSketch"):
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	GridSketch(obj)
 	App.ActiveDocument.recompute()
 	return obj

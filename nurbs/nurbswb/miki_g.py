@@ -118,9 +118,9 @@ def VerticalLayoutTab(title=''):
 	w = MikiWidget(t, "Reconstruction WB")
 
 	try:
-		FreeCAD.w5.append(w)
+		App.w5.append(w)
 	except:
-		FreeCAD.w5 = [w]
+		App.w5 = [w]
 
 	if title != '':
 		w.setWindowTitle(title)
@@ -164,9 +164,9 @@ def DockWidget(title=''):
 	w.show()
 	# ComboViewShowWidget(w,True)
 	try:
-		FreeCAD.w5.append(w)
+		App.w5.append(w)
 	except:
-		FreeCAD.w5 = [w]
+		App.w5 = [w]
 
 	getdockwindowMgr2(w, "FreeCAD")
 	return w
@@ -191,9 +191,9 @@ def MainWindow(title=''):
 	w.show()
 
 	try:
-		FreeCAD.w5.append(w)
+		App.w5.append(w)
 	except:
-		FreeCAD.w5 = [w]
+		App.w5 = [w]
 	return w
 
 
@@ -566,8 +566,8 @@ class Miki(object):
 							print ([v,cn])
 							print (l)
 							print parent
-							ex="parent."+l[4]+"(FreeCAD."+str(v)+")"
-							print "*** "+ex
+							ex="parent."+l[4]+"(App."+str(v)+")"
+							print ("*** "+ex
 						elif l[4]=='setValue':
 							parent.setValue(v)
 							continue
@@ -605,7 +605,7 @@ class Miki(object):
 						else:
 							ex = "parent." + l[4] + "='" + v + "'"
 					elif cn=='Vector':
-							ex="parent."+l[4]+"(FreeCAD."+str(v)+")"
+							ex="parent."+l[4]+"(App."+str(v)+")"
 					else:
 						print ("nicht implementierter typ B")
 						print ([v,cn])
@@ -656,8 +656,8 @@ class Miki(object):
 
 
 		if str(c.__class__).startswith("<type 'PySide.QtGui.") or  str(c.__class__).startswith("<class 'nurbswb.miki"):
-#			print "!!",c
-#			print "!!",p," -- ",p.__class__.__name__
+#			print ("!!",c
+#			print ("!!",p," -- ",p.__class__.__name__
 			if p.__class__.__name__ ==  '_MyTabWidget':
 				p.addWidget(c)
 			else:
@@ -670,7 +670,7 @@ class Miki(object):
 
 		if	p.__class__.__name__ == 'object' or \
 			str(p.__class__).startswith("<class 'geodat.miki."):
-#			print "Add children to object"
+#			print ("Add children to object"
 			try:
 				p.children.append(c)
 			except:
@@ -693,8 +693,8 @@ class Miki(object):
 						if c.startswith('__MAGIC_'):
 							run_magic(p,c)
 					except:
-						FreeCAD.Console.PrintError("\naddObject funktioniert nicht A")
-						FreeCAD.Console.PrintError([p, c])
+						App.Console.PrintError("\naddObject funktioniert nicht A")
+						App.Console.PrintError([p, c])
 		except:
 				try:
 					p.addObject(c)
@@ -703,8 +703,8 @@ class Miki(object):
 						if c.startswith('__MAGIC_'):
 							run_magic(p,c)
 					except:
-						FreeCAD.Console.PrintError("\naddObject funktioniert nicht B")
-						FreeCAD.Console.PrintError([p, c])
+						App.Console.PrintError("\naddObject funktioniert nicht B")
+						App.Console.PrintError([p, c])
 
 
 	def run(self, string, cmd=None):
@@ -832,11 +832,11 @@ class MikiDockWidget(QtGui.QDockWidget):
 		# optionaler Top button
 		if 0:
 			self.pushButton00 = QtGui.QPushButton(
-	  QtGui.QIcon('icons:freecad.svg'), objectname)
+	  QtGui.QIcon('icons:App.svg'), objectname)
 			layout.addWidget(self.pushButton00)
 
 		self.pushButton01 = QtGui.QPushButton(
-			QtGui.QIcon(FreeCAD.ConfigGet('UserAppData') + '/Mod/mylib/icons/mars.png'),
+			QtGui.QIcon(App.ConfigGet('UserAppData') + '/Mod/mylib/icons/mars.png'),
 			"Mars")
 		# self.pushButton01.clicked.connect(self.start)
 
@@ -866,7 +866,7 @@ class MikiDockWidget(QtGui.QDockWidget):
 		# dwl.addWidget(b)
 		self.add_top(b)
 
-		b = QtGui.QPushButton(QtGui.QIcon('icons:freecad.svg'), 'Icon+Button')
+		b = QtGui.QPushButton(QtGui.QIcon('icons:App.svg'), 'Icon+Button')
 		# dwl.addWidget(b)
 		self.add_top(b)
 
@@ -913,7 +913,7 @@ def getMainWindowByName(name):
 
 	r = QtGui.QMainWindow()
 
-	FreeCAD.r = r
+	App.r = r
 	r.setWindowTitle(name)
 	r.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 	r.show()
@@ -926,8 +926,8 @@ class _MyTabWidget(QtGui.QTabWidget):
 		self.setMinimumSize(500, 800)
 
 	def addWidget(self,w):
-		print "addWidget----------------"
-		print "count ",self.count()
+		print ("addWidget----------------"
+		print ("count ",self.count()
 		self.addTab(w,self.tabname)
 		self.show()
 
@@ -955,9 +955,9 @@ def MyTabWidget(title=''):
 #	w.show()
 
 	try:
-		FreeCAD.w5.append(w)
+		App.w5.append(w)
 	except:
-		FreeCAD.w5 = [w]
+		App.w5 = [w]
 	return w
 
 
@@ -1077,11 +1077,11 @@ class PicWidget(QtGui.QLabel):
 		im[10:20,10:20]=[140,240,140]
 		image_profile = QtGui.QImage(im.data, im.shape[1], im.shape[0], cc, QtGui.QImage.Format_RGB888)
 	#	image_profile = QtGui.QImage(image_path) #QImage object
-		if frame.sizeX<>0 and frame.sizeY<>0:
+		if frame.sizeX!=0 and frame.sizeY!=0:
 			image_profile = image_profile.scaled(frame.sizeX,frame.sizeY, aspectRatioMode=QtCore.Qt.KeepAspectRatio, transformMode=QtCore.Qt.SmoothTransformation) # To scale image for example and keep its Aspect Ration    
 		label_Image.setPixmap(QtGui.QPixmap.fromImage(image_profile))
 		frame.setMinimumSize(PySide.QtCore.QSize( im.shape[1], im.shape[0]))
-		if frame.sizeX<>0 and frame.sizeY<>0:
+		if frame.sizeX!=0 and frame.sizeY!=0:
 			frame.setMinimumSize(PySide.QtCore.QSize(frame.sizeX,frame.sizeY))
 		label_Image.setAlignment(QtCore.Qt.AlignCenter)
 		

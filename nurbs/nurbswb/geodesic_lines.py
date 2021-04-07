@@ -15,7 +15,9 @@
 # https://dl.acm.org/citation.cfm?id=1654774
 # chinese whispers
 
-import FreeCAD,FreeCADGui,Sketcher,Part
+import FreeCAD as App
+import FreeCADGui as Gui
+,Sketcher,Part
 import Draft
 
 
@@ -136,7 +138,7 @@ class Geodesic(FeaturePython):
 
 
 	def attach(self,vobj):
-		print "attach -------------------------------------"
+		print ("attach -------------------------------------"
 		self.Object = vobj.Object
 		self.obj2 = vobj.Object
 
@@ -154,7 +156,7 @@ class Geodesic(FeaturePython):
 			if fp.form=='face':
 				fp.Placement=fp.obj.obj.Placement
 			else:
-				fp.Placement=FreeCAD.Placement()
+				fp.Placement=App.Placement()
 
 		if fp.mode=="geodesic":
 			fp.Shape=updateGeodesic(fp)
@@ -170,12 +172,12 @@ class Geodesic(FeaturePython):
 def createGeodesicA(obj=None):
 	'''create a geodesic from the default psoition 50 50 and direction for testing'''
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Geodesic")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","Geodesic")
 
 	Geodesic(a)
 	a.obj=obj
 	ViewProvider(a.ViewObject)
-	if obj<>None:
+	if obj!=None:
 		a.Label="Geodesic for "+obj.Label
 
 	a.mode="geodesic"
@@ -205,14 +207,14 @@ def createPatch(obj=None,wire=None):
 	try: _=obj.uvdUdim
 	except: obj,wire=wire,obj
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Patch")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","Patch")
 
 	Geodesic(a,True)
 	a.obj=obj
 	a.wire=wire
 
 	ViewProvider(a.ViewObject)
-	if obj<>None:
+	if obj!=None:
 		a.Label="Patch for "+obj.Label
 	a.mode="patch"
 	
@@ -234,7 +236,7 @@ def createPatch(obj=None,wire=None):
 def createCurvature(obj=None):
 	'''create a curvature object'''
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Curvature")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","Curvature")
 
 	Geodesic(a)
 	a.obj=obj
@@ -275,7 +277,7 @@ def colorPath(pts,color='0 1 0',name=None):
 	  }
 	'''
 
-	if name <> None:
+	if name != None:
 		iv=App.ActiveDocument.getObject(name)
 		if iv==None:iv=App.ActiveDocument.addObject("App::InventorObject",name)
 		iv.Buffer=buf % ('0 0 0',color,ivPts(pts))
@@ -296,10 +298,10 @@ def genRibForGeodesic(fp,u,v,d,lang,ribflag,color='0 1 1'):
 		umin,umax,vmin,vmax=f.ParameterRange
 
 		(t1,t2)=sf.tangent(u,v)
-		t=FreeCAD.Vector(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2)
+		t=App.Vector(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2)
 
 		lang=int(round(lang))
-		#print "loops genrib",lang
+		#print ("loops genrib",lang
 		for i in range(lang):
 			pot=sf.value(u,v)
 			u2=(u-umin)/(umax-umin)
@@ -326,7 +328,7 @@ def genRibForGeodesic(fp,u,v,d,lang,ribflag,color='0 1 1'):
 			uvs += [(u,v)]
 
 			if u<umin or v<vmin or u>umax or v>vmax:
-				print "Abbruch!"
+				print ("Abbruch!"
 				break
 
 			p=sf.value(u,v)
@@ -375,11 +377,11 @@ def getface_old(count=10):
 	for p in tps:
 			v=curve.parameter(p)
 			t=curve.tangent(v)
-			n=t[0].cross(FreeCAD.Vector(0,0,1))
+			n=t[0].cross(App.Vector(0,0,1))
 			polg=Part.makePolygon([p+10000*n,p-10000*n])
 			col2 += [polg]
 			
-			ss=bs.makeParallelProjection(polg,FreeCAD.Vector(0,0,1))
+			ss=bs.makeParallelProjection(polg,App.Vector(0,0,1))
 			sps=[v.Point for v in ss.Vertexes]
 			#print sps
 			if len(sps) == 2:
@@ -403,7 +405,7 @@ def getface_old(count=10):
 	f=count/track.Length
 	f=1
 	for i,p in enumerate(ptsa):
-		if ptsa[i]<>ptsb[i]:
+		if ptsa[i]!=ptsb[i]:
 			pol=Part.makePolygon([ptsa[i],ptsb[i]])
 			comp.append(pol)
 #			print(i, (ptsa[i]-tps[i]).Length,(ptsb[i]-tps[i]).Length)
@@ -425,7 +427,7 @@ def drawColorLines(fp,name,ivs):
 
 
 def updateGeodesic(fp):
-		print "run updateStarG"
+		print ("run updateStarG"
 
 		gridon=True
 
@@ -440,17 +442,17 @@ def updateGeodesic(fp):
 
 		ak=1
 
-		if fp.pre<>None:
+		if fp.pre!=None:
 			obj=fp.pre.obj
 			d=fp.pre.directionrib
 			d=fp.pre.directione+fp.pre.directionrib
 			
 			u=fp.pre.ue
 			v=fp.pre.ve
-			if fp.obj<>obj: fp.obj=obj
-			if fp.u<>u: fp.u=u
-			if fp.v<>v: fp.v=v
-			if fp.direction<>d:	
+			if fp.obj!=obj: fp.obj=obj
+			if fp.u!=u: fp.u=u
+			if fp.v!=v: fp.v=v
+			if fp.direction!=d:	
 				fp.direction=d
 
 
@@ -485,8 +487,8 @@ def updateGeodesic(fp):
 		#	t2 *= -1
 		#d=60-d
 
-		#t=FreeCAD.Vector(np.cos(np.pi*d/180)*t1*-1+np.sin(-np.pi*-d/180)*t2*-1)
-		t=FreeCAD.Vector(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2)
+		#t=App.Vector(np.cos(np.pi*d/180)*t1*-1+np.sin(-np.pi*-d/180)*t2*-1)
+		t=App.Vector(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2)
 		t *= -1
 
 
@@ -539,14 +541,14 @@ def updateGeodesic(fp):
 				nuvs += [(u1,v1)]
 				puvs += [(u2,v2)]
 				uvs2.reverse()
-				if i<>0:
+				if i!=0:
 					#uvsarr += [uvs2[:-1]+uvs1]
 					ttu=uvs2[:-1]+uvs1
 					ttu.reverse()
 					uvsarr += [ttu]
 					
 				if ribflag:
-					if i<>0:
+					if i!=0:
 						shapas += r1 + r2
 				if i==0:
 					ribm=r1+r2
@@ -562,7 +564,7 @@ def updateGeodesic(fp):
 
 			# ribs
 			if 1:
-				rib=FreeCAD.Vector(np.cos(np.pi*d2/180)*t+np.sin(np.pi*d2/180)*sf.normal(u,v).cross(t))
+				rib=App.Vector(np.cos(np.pi*d2/180)*t+np.sin(np.pi*d2/180)*sf.normal(u,v).cross(t))
 				pts += [sf.value(u,v)+ rib*-2,sf.value(u,v)]
 				pts += [sf.value(u,v)+ rib*2,sf.value(u,v)]
 
@@ -581,7 +583,7 @@ def updateGeodesic(fp):
 
 
 			if u<umin or v<vmin or u>umax or v>vmax:
-				print "qaBBruch!"
+				print ("qaBBruch!"
 			
 				break
 			p=sf.value(u,v)
@@ -614,7 +616,7 @@ def updateGeodesic(fp):
 		t2=t1.cross(nn)
 		t2.normalize()
 
-		t=FreeCAD.Vector(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2)
+		t=App.Vector(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2)
 
 		puvs.reverse()
 		nuvs.reverse()
@@ -682,7 +684,7 @@ def updateGeodesic(fp):
 
 			# ribs
 			if 1:
-				rib=FreeCAD.Vector(np.cos(np.pi*d2/180)*t+np.sin(np.pi*d2/180)*sf.normal(u,v).cross(t))
+				rib=App.Vector(np.cos(np.pi*d2/180)*t+np.sin(np.pi*d2/180)*sf.normal(u,v).cross(t))
 				pts += [sf.value(u,v)+ rib*-2,sf.value(u,v)]
 				pts += [sf.value(u,v)+ rib*2,sf.value(u,v)]
 				if i==0:
@@ -725,7 +727,7 @@ def updateGeodesic(fp):
 			if v>vmax:v=vmax
 
 			if u<umin or v<vmin or u>umax or v>vmax:
-				print "qaBBruch!"
+				print ("qaBBruch!"
 				break
 
 
@@ -746,9 +748,9 @@ def updateGeodesic(fp):
 			# print ("time aa bb,loop",tbb-taa,i,(tbb-taa)/fp.lang*1000000/lang2)
 
 
-#		FreeCAD.uvsarr=np.array(uvsarr)
-#		FreeCAD.sf=sf
-#		print "size uvs arr",FreeCAD.uvsarr.shape
+#		App.uvsarr=np.array(uvsarr)
+#		App.sf=sf
+#		print ("size uvs arr",App.uvsarr.shape
 #		print (fp.lang,lang2)
 
 		ar=np.array(uvsarr)
@@ -781,7 +783,7 @@ def updateGeodesic(fp):
 		ut=fp.ut*0.01
 		vt=fp.vt*0.01
 #		pt=Part.Point(sf.value(ut,vt))
-#		print "Abstand"
+#		print ("Abstand"
 #		print pt
 #		print shape.distToShape(pt.toShape())
 #		print (pt,shape.distToShape(pt.toShape())[0])
@@ -811,20 +813,20 @@ def updateGeodesic(fp):
 			shape2=Part.Compound([
 						shape,
 						Part.makePolygon([
-							pend,pend+FreeCAD.Vector(0,10,0),
-							pend,pend+FreeCAD.Vector(0,-10,0),
-							pend,pend+FreeCAD.Vector(10,0,0),
-							pend,pend+FreeCAD.Vector(-10,0,0),
-							pend,pend+FreeCAD.Vector(0,0,10),
-							pend,pend+FreeCAD.Vector(0,0,-10),
+							pend,pend+App.Vector(0,10,0),
+							pend,pend+App.Vector(0,-10,0),
+							pend,pend+App.Vector(10,0,0),
+							pend,pend+App.Vector(-10,0,0),
+							pend,pend+App.Vector(0,0,10),
+							pend,pend+App.Vector(0,0,-10),
 						]),
 						Part.makePolygon([
-							pstart,pstart+FreeCAD.Vector(0,10,0),
-							pstart,pstart+FreeCAD.Vector(0,-10,0),
-							pstart,pstart+FreeCAD.Vector(10,0,0),
-							pstart,pstart+FreeCAD.Vector(-10,0,0),
-							pstart,pstart+FreeCAD.Vector(0,0,10),
-							pstart,pstart+FreeCAD.Vector(0,0,-10),
+							pstart,pstart+App.Vector(0,10,0),
+							pstart,pstart+App.Vector(0,-10,0),
+							pstart,pstart+App.Vector(10,0,0),
+							pstart,pstart+App.Vector(-10,0,0),
+							pstart,pstart+App.Vector(0,0,10),
+							pstart,pstart+App.Vector(0,0,-10),
 						])
 
 					])
@@ -840,7 +842,7 @@ def updateGeodesic(fp):
 			drawColorLines(fp,name,riba+ribm+ribb)
 
 		bc=Part.BSplineCurve()
-		FreeCAD.ptsbb=ptsbb
+		App.ptsbb=ptsbb
 		if fp.tolerance==0:
 			bc.interpolate(ptsbb)
 		else:
@@ -878,7 +880,7 @@ def updateGeodesic(fp):
 
 
 def updatePatch_old(fp):
-		print "run update Patch"
+		print ("run update Patch"
 
 		gridon=True
 
@@ -888,17 +890,17 @@ def updatePatch_old(fp):
 		v=fp.v
 		obj=fp.obj
 
-		if fp.pre<>None:
+		if fp.pre!=None:
 			obj=fp.pre.obj
 			d=fp.pre.directionrib
 			d=fp.pre.directione+fp.pre.directionrib
 			
 			u=fp.pre.ue
 			v=fp.pre.ve
-			if fp.obj<>obj: fp.obj=obj
-			if fp.u<>u: fp.u=u
-			if fp.v<>v: fp.v=v
-			if fp.direction<>d:	
+			if fp.obj!=obj: fp.obj=obj
+			if fp.u!=u: fp.u=u
+			if fp.v!=v: fp.v=v
+			if fp.direction!=d:	
 				fp.direction=d
 
 
@@ -915,7 +917,7 @@ def updatePatch_old(fp):
 		v=vmin + (vmax-vmin)*v
 
 		(t1,t2)=sf.tangent(u,v)
-		t=FreeCAD.Vector(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2)
+		t=App.Vector(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2)
 
 		shapas=''
 		puvs=[(u,v)]
@@ -960,7 +962,7 @@ def updatePatch_old(fp):
 
 			# ribs
 			if 1:
-				rib=FreeCAD.Vector(np.cos(np.pi*d2/180)*t+np.sin(np.pi*d2/180)*sf.normal(u,v).cross(t))
+				rib=App.Vector(np.cos(np.pi*d2/180)*t+np.sin(np.pi*d2/180)*sf.normal(u,v).cross(t))
 				pts += [sf.value(u,v)+ rib*-3,sf.value(u,v)]
 				pts += [sf.value(u,v)+ rib*3,sf.value(u,v)]
 
@@ -975,7 +977,7 @@ def updatePatch_old(fp):
 			if v>vmax:v=vmax
 
 			if u<umin or v<vmin or u>umax or v>vmax:
-				print "qaBBruch!"
+				print ("qaBBruch!"
 				break
 			p=sf.value(u,v)
 
@@ -985,8 +987,8 @@ def updatePatch_old(fp):
 			t.normalize()
 
 
-		FreeCAD.uvsp=uvsp
-		FreeCAD.sf=sf
+		App.uvsp=uvsp
+		App.sf=sf
 #		if hasattr(obj,"uvdarray"):
 #		fp.uvdarray=list(np.array(uvsp).reshape(lang*lang2*2))
 
@@ -1017,7 +1019,7 @@ def updatePatch_old(fp):
 		ut=fp.ut*0.01
 		vt=fp.vt*0.01
 #		pt=Part.Point(sf.value(ut,vt))
-#		print "Abstand"
+#		print ("Abstand"
 #		print pt
 #		print shape.distToShape(pt.toShape())
 #		print (pt,shape.distToShape(pt.toShape())[0])
@@ -1025,7 +1027,7 @@ def updatePatch_old(fp):
 
 		pend=sf.value(ut,vt)
 		pt=Part.Point(sf.value(ut,vt))
-#		print "Abstand"
+#		print ("Abstand"
 #		print pt
 #		print shape.distToShape(pt.toShape())
 		fp.dist= shape.distToShape(pt.toShape())[0]
@@ -1040,12 +1042,12 @@ def updatePatch_old(fp):
 		fp.directione=180./np.pi*np.arctan2(b,a)
 
 		shape2=Part.Compound([shape,Part.makePolygon([
-				pend,pend+FreeCAD.Vector(0,10,0),
-				pend,pend+FreeCAD.Vector(0,-10,0),
-				pend,pend+FreeCAD.Vector(10,0,0),
-				pend,pend+FreeCAD.Vector(-10,0,0),
-				pend,pend+FreeCAD.Vector(0,0,10),
-				pend,pend+FreeCAD.Vector(0,0,-10),
+				pend,pend+App.Vector(0,10,0),
+				pend,pend+App.Vector(0,-10,0),
+				pend,pend+App.Vector(10,0,0),
+				pend,pend+App.Vector(-10,0,0),
+				pend,pend+App.Vector(0,0,10),
+				pend,pend+App.Vector(0,0,-10),
 				])]+[pshape] )
 
 		shape2=Part.Compound([shape,pshape,nshape])
@@ -1106,14 +1108,14 @@ def updateCurvaturePath(fp,redirect,flip):
 			if v>vmax:v=vmax
 
 			if u<umin or v<vmin or u>umax or v>vmax:
-				print "qaBBruch!"
+				print ("qaBBruch!"
 				break
 			p=sf.value(u,v)
 			
 			pts += [ p]
 			# (t1,t2)=sf.tangent(u,v)
 			(t1,t2)=sf.curvatureDirections(u,v)
-#			print "---------t ",t
+#			print ("---------t ",t
 #			print t1
 #			print t2
 			print (round(t.dot(t1)*100),round(t.dot(t2)*100))
@@ -1121,7 +1123,7 @@ def updateCurvaturePath(fp,redirect,flip):
 			dt2=t.dot(t2)
 			pts += [p+t1,p,p+t2,p]
 			if abs(dt1)<0.82 and abs(dt2)<0.82:
-				print "worry "
+				print ("worry "
 				pts += [p+t1,p,p+t2,p]
 #			else:
 
@@ -1141,7 +1143,7 @@ def updateCurvaturePath(fp,redirect,flip):
 		vt=fp.vt*0.01
 		pend=sf.value(ut,vt)
 		pt=Part.Point(sf.value(ut,vt))
-		print "Abstand"
+		print ("Abstand"
 		print pt
 		print shape.distToShape(pt.toShape())
 		t= shape.distToShape(pt.toShape())
@@ -1262,11 +1264,11 @@ def updatePatch(fp):
 	try: ws= fp.wire.Shape.Wires
 	except: ws=None
 	
-	if ws <> None: ws2=ws
+	if ws != None: ws2=ws
 	else: ws2=[fp.wire.Shape]
 
-	print ws
-	print ws2
+	print (ws)
+	print (ws)2
 	ress=[]
 	for w in ws2:
 		print ("loop",w,ress)
@@ -1295,17 +1297,17 @@ def updatePatch(fp):
 			if v>=vdim: v=vdim-1
 
 
-			if (u,v) <>(ul,vl):
+			if (u,v) !=(ul,vl):
 				uvs += [(u,v)]
 				ul,vl=u,v
 
 		# ausgangskurve 2D
-		pts2=[FreeCAD.Vector(u,v,0) for (u,v) in uvs]
+		pts2=[App.Vector(u,v,0) for (u,v) in uvs]
 
 		# berechne 3D Kurve ..
 		pts=[]
 		print usvarr.shape
-		print "A"
+		print ("A"
 		
 		for up,vp in uvs:
 			print (up,vp)
@@ -1323,7 +1325,7 @@ def updatePatch(fp):
 			t=sf
 			pts2da=[sf.parameter(p) for p in pts[1:]]
 			pts2da=[sf.parameter(p) for p in pts]
-			pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+			pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 
 			bs2d = Part.Geom2d.BSplineCurve2d()
 			bs2d.setPeriodic()
@@ -1340,14 +1342,14 @@ def updatePatch(fp):
 
 			e1 = bs2d.toShape(t)
 			print len(pts2d)
-			print "huhwu"
+			print ("huhwu"
 			return e1
 		#----------------------
 
 		if fp.form=='face':
 			t=sf
 			pts2da=[sf.parameter(p) for p in pts[1:]]
-			pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+			pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 
 			bs2d = Part.Geom2d.BSplineCurve2d()
 			bs2d.setPeriodic()
@@ -1363,7 +1365,7 @@ def updatePatch(fp):
 
 
 			e1 = bs2d.toShape(t)
-			FreeCAD.e1=e1
+			App.e1=e1
 
 			if fp.reverse:
 				e1.reverse()
@@ -1378,7 +1380,7 @@ def updatePatch(fp):
 
 		if fp.form=='polygon':
 			shape=Part.makePolygon(pts)
-			if ws <> None: ress += [shape]
+			if ws != None: ress += [shape]
 			else:
 				return shape
 
@@ -1386,7 +1388,7 @@ def updatePatch(fp):
 			bc=Part.BSplineCurve()
 			bc.approximate(pts,DegMin=1,DegMax=1,Tolerance=fp.tolerance)
 			#if fp.closed: bc.setPeriodic()
-			if ws <> None: ress += [bc.toShape()]
+			if ws != None: ress += [bc.toShape()]
 			else:
 				return bc.toShape()
 
@@ -1394,7 +1396,7 @@ def updatePatch(fp):
 			bc=Part.BSplineCurve()
 			bc.approximate(pts,DegMax=3,Tolerance=fp.tolerance)
 			#if fp.closed: bc.setPeriodic()
-			if ws <> None: ress += [bc.toShape()]
+			if ws != None: ress += [bc.toShape()]
 			else:
 				return bc.toShape()
 
@@ -1417,7 +1419,7 @@ def approx_step():
 	better=True
 	print (ds,dsa)
 	if ds<dsa:
-		print "wird nicht besser A"
+		print ("wird nicht besser A"
 		a.direction -= 1
 		App.activeDocument().recompute()
 		ds=a.dist
@@ -1427,7 +1429,7 @@ def approx_step():
 
 		print (ds,dsa)
 		if ds<dsa:
-			print "wird nicht besser B"
+			print ("wird nicht besser B"
 			a.direction += 1
 			App.activeDocument().recompute()
 			better=False
@@ -1443,7 +1445,7 @@ def approx_step():
 
 	print (ds,dsa)
 	if ds<=dsa:
-		print "wird nicht besser C"
+		print ("wird nicht besser C"
 		a.lang += 1
 		App.activeDocument().recompute()
 
@@ -1454,20 +1456,20 @@ def approx_step():
 
 		print (ds,dsa)
 		if ds<=dsa:
-			print "wird nicht besser D"
+			print ("wird nicht besser D"
 			a.lang -= 1
 			App.activeDocument().recompute()
 			better=False
-	print "a lang ",a.lang
-	print "hah ", better
+	print ("a lang ",a.lang
+	print ("hah ", better
 	return better
 
 
 def approx_geodesic(n=10):
 	for i in range(n): 
-		print "------------step ",i
+		print ("------------step ",i
 		rc=approx_step()
-		print "----------result ",rc
+		print ("----------result ",rc
 		if not rc: break
 '''
 
@@ -1502,7 +1504,7 @@ def genRibForUpdateDistance(f,u=50,v=50,d=0,lang=30,gridsize=20):
 
 		a=np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2
 #		print a
-		t=FreeCAD.Vector(tuple(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2))
+		t=App.Vector(tuple(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2))
 
 		lang=int(round(lang))
 
@@ -1580,7 +1582,7 @@ def genrib_outdated(f,u=50,v=50,d=0,lang=30,gridsize=20):
 
 		a=np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2
 #		print a
-		t=FreeCAD.Vector(tuple(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2))
+		t=App.Vector(tuple(np.cos(np.pi*d/180)*t1+np.sin(np.pi*d/180)*t2))
 
 		lang=int(round(lang))
 
@@ -1628,14 +1630,14 @@ def genrib_outdated(f,u=50,v=50,d=0,lang=30,gridsize=20):
 
 def updateDistance(fp):
 
-	print "update distance"
+	print ("update distance"
 	try:
 		obj=fp.obj
 		lang=fp.lang
 		u=fp.u
 		v=fp.v
 	except:
-		print "still not ready"
+		print ("still not ready"
 		return Part.Shape()
 
 	f=obj.Shape.Faces[0]
@@ -1652,7 +1654,7 @@ def updateDistance(fp):
 
 	for d in range(dr):
 		pts,norms,tans=genRibForUpdateDistance(f,u=u,v=v,d=360/dr*d,lang=lang,gridsize=fp.gridsize)
-		comp += [Part.makePolygon([FreeCAD.Vector(p) for p in pts])]
+		comp += [Part.makePolygon([App.Vector(p) for p in pts])]
 
 		star += [pts]
 		startans += [tans]
@@ -1667,9 +1669,9 @@ def updateDistance(fp):
 		for i in range(lang+1):
 			d2 = d+1 if d+1<dr else 0
 
-			dd=FreeCAD.Vector(star[d][i]-star[d-1][i]).Length + FreeCAD.Vector(star[d][i]-star[d2][i]).Length -4*i*np.sin(0.5*np.pi/180*360/dr)
+			dd=App.Vector(star[d][i]-star[d-1][i]).Length + App.Vector(star[d][i]-star[d2][i]).Length -4*i*np.sin(0.5*np.pi/180*360/dr)
 
-			dd=FreeCAD.Vector(star[d][i]-star[d-1][i]).Length + FreeCAD.Vector(star[d][i]-star[d2][i]).Length -4*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize
+			dd=App.Vector(star[d][i]-star[d-1][i]).Length + App.Vector(star[d][i]-star[d2][i]).Length -4*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize
 
 
 			if fp.relativeForce:
@@ -1697,8 +1699,8 @@ def updateDistance(fp):
 	else: nf=1  
 	for i in range(1,lang+1):
 		if i %5 == 0:
-			pts=[FreeCAD.Vector(tuple(p))  for p in rstar[i]]
-			norms=[FreeCAD.Vector(tuple(p))  for p in rstarnorms[i]]
+			pts=[App.Vector(tuple(p))  for p in rstar[i]]
+			norms=[App.Vector(tuple(p))  for p in rstarnorms[i]]
 			pps=[]
 			for j in range(len(pts))+[0]:
 				#pps += [ rstar[i,j],rstar[i,j]-dists[j,i]*1*rstarnorms[i,j],rstar[i,j]]
@@ -1706,40 +1708,40 @@ def updateDistance(fp):
 				
 				if dists[j,i]>0:
 					cp += colorPath([
-						FreeCAD.Vector(rstar[i,j]),
-						FreeCAD.Vector(rstar[i,j]+dists[j,i]*nf*rstarnorms[i,j])],
+						App.Vector(rstar[i,j]),
+						App.Vector(rstar[i,j]+dists[j,i]*nf*rstarnorms[i,j])],
 						color='1 1 0',name=None)
 
 
 				else:
 					cp += colorPath([
-						FreeCAD.Vector(rstar[i,j]),
-						FreeCAD.Vector(rstar[i,j]-dists[j,i]*nf*rstarnorms[i,j])],
+						App.Vector(rstar[i,j]),
+						App.Vector(rstar[i,j]-dists[j,i]*nf*rstarnorms[i,j])],
 						color='1 0 0',name=None)
 
 				if j==dr-1: j2=0
 				else: j2=j+1
 				if j<dr and i>0:
-					dxd=FreeCAD.Vector(0.02,0.02,0.02)
+					dxd=App.Vector(0.02,0.02,0.02)
 
 					if dists[j,i]>0: color='1 1 0'
 					else: color='1 0 0'
 
 					cp += colorPath([
-							FreeCAD.Vector(star[j][i])+FreeCAD.Vector(star[j][i]-star[j2][i]).normalize()*(-1)*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize,
-							FreeCAD.Vector(star[j2][i])+FreeCAD.Vector(star[j2][i]-star[j][i]).normalize()*(-1)*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize
+							App.Vector(star[j][i])+App.Vector(star[j][i]-star[j2][i]).normalize()*(-1)*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize,
+							App.Vector(star[j2][i])+App.Vector(star[j2][i]-star[j][i]).normalize()*(-1)*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize
 							],
 							color=color,name=None)
 
 					if 1:
 						cp += colorPath([
-								FreeCAD.Vector(star[j][i])+dxd,
-								FreeCAD.Vector(star[j][i])+dxd+FreeCAD.Vector(star[j][i]-star[j-1][i]).normalize()*(-1)*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize
+								App.Vector(star[j][i])+dxd,
+								App.Vector(star[j][i])+dxd+App.Vector(star[j][i]-star[j-1][i]).normalize()*(-1)*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize
 								],
 								color='0 0.3 0',name=None)
 						cp += colorPath([
-								FreeCAD.Vector(star[j][i])+FreeCAD.Vector(star[j][i]-star[j2][i]).normalize()*(-1)*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize,
-								FreeCAD.Vector(star[j][i]),
+								App.Vector(star[j][i])+App.Vector(star[j][i]-star[j2][i]).normalize()*(-1)*i*np.sin(0.5*np.pi/180*360/dr)*0.1*fp.gridsize,
+								App.Vector(star[j][i]),
 								],
 								color='0 0.4 0.',name=None)
 
@@ -1750,7 +1752,7 @@ def updateDistance(fp):
 						round(dists[j,i]/factor,2),
 						round(1000.*dists[j,i]/(i*np.pi/dr)/factor,2),i)
 
-			comp += [Part.makePolygon([FreeCAD.Vector(p) for p in pps])]
+			comp += [Part.makePolygon([App.Vector(p) for p in pps])]
 
 
 	name="Pull_and_Press"
@@ -1762,7 +1764,7 @@ def geodesicDistance():
 
 	obj=Gui.Selection.getSelection()[0]
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","distance")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","distance")
 
 	Geodesic(a,False)
 	a.obj=obj
@@ -1782,7 +1784,7 @@ def geodesicDistance():
 	a.flipNormals=True
 
 	ViewProvider(a.ViewObject)
-	if obj<>None:
+	if obj!=None:
 		a.Label="Distance for "+obj.Label
 	a.mode="distance"
 	
@@ -1791,7 +1793,7 @@ def geodesicDistance():
 #-------------------------------
 # aus Draft.py
 
-if FreeCAD.GuiUp:
+if App.GuiUp:
 	from PySide import QtCore
 	from PySide.QtCore import QT_TRANSLATE_NOOP
 	gui = True
@@ -1822,7 +1824,7 @@ class MyDraftLabel:
 
 		obj.setEditorMode("Text",1)
 		obj.StraightDistance = 15
-		obj.TargetPoint = FreeCAD.Vector(2,-1,0)
+		obj.TargetPoint = App.Vector(2,-1,0)
 		obj.CustomText = "Label"
 		self.Type = "Label"
 
@@ -1831,9 +1833,9 @@ class MyDraftLabel:
 		if obj.StraightDirection != "Custom":
 			p1 = obj.Placement.Base
 			if obj.StraightDirection == "Horizontal":
-				p2 = FreeCAD.Vector(obj.StraightDistance.Value,0,0)
+				p2 = App.Vector(obj.StraightDistance.Value,0,0)
 			else:
-				p2 = FreeCAD.Vector(0,obj.StraightDistance.Value,0)
+				p2 = App.Vector(0,obj.StraightDistance.Value,0)
 			p2 = obj.Placement.multVec(p2)
 			# p3 = obj.Placement.multVec(obj.TargetPoint)
 			p3 = obj.TargetPoint
@@ -1858,23 +1860,23 @@ class MyDraftLabel:
 				if obj.Target[1]:
 					if "Vertex" in obj.Target[1][0]:
 						p = obj.Target[0].Shape.Vertexes[int(obj.Target[1][0][6:])-1].Point
-				obj.Text = [FreeCAD.Units.Quantity(x,FreeCAD.Units.Length).UserString for x in tuple(p)]
+				obj.Text = [App.Units.Quantity(x,App.Units.Length).UserString for x in tuple(p)]
 			elif obj.LabelType == "Length":
 				if obj.Target[0].isDerivedFrom("Part::Feature"):
 					if hasattr(obj.Target[0].Shape,"Length"):
-						obj.Text = [FreeCAD.Units.Quantity(obj.Target[0].Shape.Length,FreeCAD.Units.Length).UserString]
+						obj.Text = [App.Units.Quantity(obj.Target[0].Shape.Length,App.Units.Length).UserString]
 					if "Edge" in obj.Target[1][0]:
-						obj.Text = [FreeCAD.Units.Quantity(obj.Target[0].Shape.Edges[int(obj.Target[1][0][4:])-1].Length,FreeCAD.Units.Length).UserString]
+						obj.Text = [App.Units.Quantity(obj.Target[0].Shape.Edges[int(obj.Target[1][0][4:])-1].Length,App.Units.Length).UserString]
 			elif obj.LabelType == "Area":
 				if obj.Target[0].isDerivedFrom("Part::Feature"):
 					if hasattr(obj.Target[0].Shape,"Area"):
-						obj.Text = [FreeCAD.Units.Quantity(obj.Target[0].Shape.Area,FreeCAD.Units.Area).UserString]
+						obj.Text = [App.Units.Quantity(obj.Target[0].Shape.Area,App.Units.Area).UserString]
 					if "Face" in obj.Target[1][0]:
-						obj.Text = [FreeCAD.Units.Quantity(obj.Target[0].Shape.Faces[int(obj.Target[1][0][4:])-1].Area,FreeCAD.Units.Area).UserString]
+						obj.Text = [App.Units.Quantity(obj.Target[0].Shape.Faces[int(obj.Target[1][0][4:])-1].Area,App.Units.Area).UserString]
 			elif obj.LabelType == "Volume":
 				if obj.Target[0].isDerivedFrom("Part::Feature"):
 					if hasattr(obj.Target[0].Shape,"Volume"):
-						obj.Text = [FreeCAD.Units.Quantity(obj.Target[0].Shape.Volume,FreeCAD.Units.Volume).UserString]
+						obj.Text = [App.Units.Quantity(obj.Target[0].Shape.Volume,App.Units.Volume).UserString]
 
 		try: _=obj.obj.Shape
 		except: return
@@ -2072,17 +2074,17 @@ class MyViewProviderDraftLabel:
 		elif prop in ["TextSize","TextAlignment"]:
 			if hasattr(vobj,"TextSize") and hasattr(vobj,"TextAlignment"):
 				self.font.size = vobj.TextSize.Value
-				v = FreeCAD.Vector(1,0,0)
+				v = App.Vector(1,0,0)
 				if vobj.Object.StraightDistance > 0:
 					v = v.negative()
 				v.multiply(vobj.TextSize/10)
 				tsize = self.getTextSize(vobj)
 				if len(vobj.Object.Text) > 1:
-					v = v.add(FreeCAD.Vector(0,(tsize[1]-1)*2,0))
+					v = v.add(App.Vector(0,(tsize[1]-1)*2,0))
 				if vobj.TextAlignment == "Top":
-					v = v.add(FreeCAD.Vector(0,-tsize[1]*2,0))
+					v = v.add(App.Vector(0,-tsize[1]*2,0))
 				elif vobj.TextAlignment == "Middle":
-					v = v.add(FreeCAD.Vector(0,-tsize[1],0))
+					v = v.add(App.Vector(0,-tsize[1],0))
 				v = vobj.Object.Placement.Rotation.multVec(v)
 				pos = vobj.Object.Placement.Base.add(v)
 				self.textpos.translation.setValue(pos)
@@ -2101,11 +2103,11 @@ class MyViewProviderDraftLabel:
 					if not DraftVecUtils.isNull(v1):
 						v1.normalize()
 						import DraftGeomUtils
-						v2 = FreeCAD.Vector(0,0,1)
+						v2 = App.Vector(0,0,1)
 						if round(v2.getAngle(v1),4) in [0,round(math.pi,4)]:
-							v2 = FreeCAD.Vector(0,1,0)
+							v2 = App.Vector(0,1,0)
 						v3 = v1.cross(v2).negative()
-						q = FreeCAD.Placement(DraftVecUtils.getPlaneRotation(v1,v3,v2)).Rotation.Q
+						q = App.Placement(DraftVecUtils.getPlaneRotation(v1,v3,v2)).Rotation.Q
 						self.arrowpos.rotation.setValue((q[0],q[1],q[2],q[3]))
 		elif prop == "ArrowSize":
 			if hasattr(vobj,"ArrowSize"):
@@ -2118,11 +2120,11 @@ class MyViewProviderDraftLabel:
 				if vobj.Frame == "Rectangle":
 					tsize = self.getTextSize(vobj)
 					pts = []
-					base = vobj.Object.Placement.Base.sub(FreeCAD.Vector(self.textpos.translation.getValue().getValue()))
-					pts.append(base.add(FreeCAD.Vector(0,tsize[1]*3,0)))
-					pts.append(pts[-1].add(FreeCAD.Vector(-tsize[0]*6,0,0)))
-					pts.append(pts[-1].add(FreeCAD.Vector(0,-tsize[1]*6,0)))
-					pts.append(pts[-1].add(FreeCAD.Vector(tsize[0]*6,0,0)))
+					base = vobj.Object.Placement.Base.sub(App.Vector(self.textpos.translation.getValue().getValue()))
+					pts.append(base.add(App.Vector(0,tsize[1]*3,0)))
+					pts.append(pts[-1].add(App.Vector(-tsize[0]*6,0,0)))
+					pts.append(pts[-1].add(App.Vector(0,-tsize[1]*6,0)))
+					pts.append(pts[-1].add(App.Vector(tsize[0]*6,0,0)))
 					pts.append(pts[0])
 					self.fcoords.point.setValues(pts)
 					self.frame.coordIndex.setValues(0,len(pts),range(len(pts)))
@@ -2137,9 +2139,9 @@ class MyViewProviderDraftLabel:
 
 
 def makeLabel(targetpoint=None,target=None,direction=None,distance=None,labeltype=None,placement=None):
-	obj = FreeCAD.ActiveDocument.addObject("App::FeaturePython","MyLabel")
+	obj = App.ActiveDocument.addObject("App::FeaturePython","MyLabel")
 	MyDraftLabel(obj)
-	if FreeCAD.GuiUp:
+	if App.GuiUp:
 		MyViewProviderDraftLabel(obj.ViewObject)
 	if targetpoint:
 		obj.TargetPoint = targetpoint
@@ -2153,7 +2155,7 @@ def makeLabel(targetpoint=None,target=None,direction=None,distance=None,labeltyp
 		obj.LabelType = labeltype
 	if placement:
 		obj.Placement = placement
-	FreeCAD.ActiveDocument.recompute()
+	App.ActiveDocument.recompute()
 	return obj
 
 
@@ -2191,7 +2193,7 @@ def createMarker(u=20,v=50):
 def findGeodesicToTarget(start=None,target=None,d=10):
 
 	print 
-	print "step"
+	print ("step"
 
 	if start==None:
 		start=Gui.Selection.getSelection()[0]
@@ -2209,8 +2211,8 @@ def findGeodesicToTarget(start=None,target=None,d=10):
 
 	sf=f.Surface
 
-	print "Start:",start.TargetPoint
-	print "Ziel:",target.TargetPoint
+	print ("Start:",start.TargetPoint
+	print ("Ziel:",target.TargetPoint
 	print ("----------",u,v)
  
 	lang=30
@@ -2228,7 +2230,7 @@ def findGeodesicToTarget(start=None,target=None,d=10):
 				for dl in [-1,0,1]:
 						if lang+faktor*dl <=0: continue
 						pts,norms,tans=genRibForUpdateDistance(f,u=u,v=v,d=d+faktor*dd,lang=lang+faktor*dl,gridsize=10)
-						ptsa=[FreeCAD.Vector(tuple(p)) for p in pts]
+						ptsa=[App.Vector(tuple(p)) for p in pts]
 						la=(pt-ptsa[-1]).Length
 						if la<minl:
 							minl=la
@@ -2247,7 +2249,7 @@ def findGeodesicToTarget(start=None,target=None,d=10):
 			dti=time.time()-ta
 			print ("Loop time ",dti,len(pts),dti/len(pts))
 			if not found: 
-				print "nichts mehr gefunden"
+				print ("nichts mehr gefunden"
 				break
 
 		print (lange,de)
@@ -2255,7 +2257,7 @@ def findGeodesicToTarget(start=None,target=None,d=10):
 		pts,norms,tans=genRibForUpdateDistance(f,u=u,v=v,d=de,lang=lange,gridsize=10)
 
 		#display the current path
-		ptsa=[FreeCAD.Vector(tuple(p)) for p in pts]
+		ptsa=[App.Vector(tuple(p)) for p in pts]
 		cp2=colorPath(ptsa,color='1 0 0',name=None)
 		name="A_"
 		drawColorLines(start.obj,name,cp2)
@@ -2280,7 +2282,7 @@ def findGeodesicToTarget(start=None,target=None,d=10):
 
 
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Geodesic")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","Geodesic")
 
 	Geodesic(a)
 	a.obj=start.obj
@@ -2346,10 +2348,10 @@ def createShoeMarkers():
 
 
 	for m in markers:
-		print "!",m
+		print ("!",m
 
 		l = makeLabel(
-			targetpoint=FreeCAD.Vector (0.0, -18.226360321044922, 53.260826110839844),
+			targetpoint=App.Vector (0.0, -18.226360321044922, 53.260826110839844),
 			direction='Horizontal',
 			labeltype='Position',
 		)
@@ -2361,7 +2363,7 @@ def createShoeMarkers():
 		l.u,l.v=float(m[1]),float(m[2])
 		App.activeDocument().recompute()
 		App.activeDocument().recompute()
-		l.Placement.Base=FreeCAD.Vector(l.TargetPoint.x,l.TargetPoint.y*3,l.TargetPoint.z+30)
+		l.Placement.Base=App.Vector(l.TargetPoint.x,l.TargetPoint.y*3,l.TargetPoint.z+30)
 		l.ViewObject.LineColor=(1.0,.6,0.)
 		l.ViewObject.LineWidth=4.
 		App.activeDocument().recompute()

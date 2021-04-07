@@ -10,9 +10,10 @@
 import random
 import Draft,Part
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 
 from scipy.signal import argrelextrema
@@ -28,7 +29,7 @@ def showdialog(title="Fehler",text="Schau in den ReportView fuer mehr Details",d
 	msg.setIcon(QtGui.QMessageBox.Warning)
 	msg.setText(text)
 	msg.setWindowTitle(title)
-	if detail<>None:   msg.setDetailedText(detail)
+	if detail!=None:   msg.setDetailedText(detail)
 	msg.exec_()
 
 
@@ -38,7 +39,7 @@ def sayexc(title='Fehler',mess=''):
 	lls=eval(ttt)
 	l=len(lls)
 	l2=lls[(l-3):]
-	FreeCAD.Console.PrintError(mess + "\n" +"-->  ".join(l2))
+	App.Console.PrintError(mess + "\n" +"-->  ".join(l2))
 	showdialog(title,text=mess,detail="--> ".join(l2))
 
 
@@ -54,7 +55,7 @@ def simplecurve(wire,ct=20,plotit=False,offset=0,debug=False):
 		pts=pts[kshift:]+pts[:kshift]
 
 
-		off=FreeCAD.Vector(0,0,offset)
+		off=App.Vector(0,0,offset)
 
 
 
@@ -68,8 +69,8 @@ def simplecurve(wire,ct=20,plotit=False,offset=0,debug=False):
 		if debug:
 			sp=App.ActiveDocument.addObject("Part::Spline","approx Spline")
 			sp.Shape=sc
-		FreeCAD.sc=sc
-		FreeCAD.bc=bc
+		App.sc=sc
+		App.bc=bc
 		
 		# calculate the interpolation points
 		x=np.array(range(ct+1))
@@ -80,7 +81,7 @@ def simplecurve(wire,ct=20,plotit=False,offset=0,debug=False):
 		for i in x:
 			jj=1.0/ct*i
 			v2=(bc.centerOfCurvature(jj)-bc.value(jj))
-			v1=FreeCAD.sc.tangentAt(jj)
+			v1=App.sc.tangentAt(jj)
 			v=v1.cross(v2)
 			if v.z>0: ff=1 
 			else: ff=-1
@@ -114,13 +115,13 @@ def simplecurve(wire,ct=20,plotit=False,offset=0,debug=False):
 	#
 	# kleine aenderungen ueberspringen
 	#
-		if th<>0:
+		if th!=0:
 			nn=[zc[0]]
 			#for v in zc[1:-2]:
 			for v in range(len(zc)-2):
 #				print v
 				if  abs(y[zc[v]]-y[zc[v+1]])<th and  abs(y[zc[v+1]]-y[zc[v+2]])<th:
-#					print "skip ",v
+#					print ("skip ",v
 					pass
 				else: nn.append(zc[v+1])
 			nn.append(zc[-1])
@@ -238,7 +239,7 @@ def run():
 		}
 
 		# parameter -----------------
-		t=FreeCAD.ParamGet('User parameter:Plugins/nurbs/'+'simplecurve')
+		t=App.ParamGet('User parameter:Plugins/nurbs/'+'simplecurve')
 		l=t.GetContents()
 		if l==None: l=[]
 		for k in l: p[k[1]]=k[2]

@@ -64,8 +64,8 @@ def kruemmung(sf,u,v):
 
 	ru=None
 	rv=None
-	if ku<>0: ru=round(1/ku,3)
-	if kv<>0: rv=round(1/kv,3)
+	if ku!=0: ru=round(1/ku,3)
+	if kv!=0: rv=round(1/kv,3)
 
 	# print ("Krmmungen:",ku,kv,"Krmmungsradien:", ru,rv)
 

@@ -31,7 +31,7 @@ class SketchClone(nurbswb.pyob.FeaturePython):
 		'''run myExecute for some properties'''
 
 		if prop == 'base':
-			print "Changed Base"
+			print ("Changed Base"
 			if obj.base == None:
 				return
 
@@ -69,10 +69,10 @@ class SketchClone(nurbswb.pyob.FeaturePython):
 						count +=1
 						obj.movePoint(i,j,posn+obj.offset)
 						rc=obj.solve()
-						if rc <>0: print ("solve 0 rc=",rc)
+						if rc !=0: print ("solve 0 rc=",rc)
 
 			rc=obj.solve()
-			if rc <>0: print ("solve 0 rc=",rc)
+			if rc !=0: print ("solve 0 rc=",rc)
 			obj.recompute()
 			# bsk.recompute()
 		except:
@@ -94,7 +94,7 @@ class SketchClone(nurbswb.pyob.FeaturePython):
 		if obj == None: return
 		obj.recompute() 
 		tsum=0
-		print ""
+		print (""
 		for i in range(10):
 			rc=self.myExecute(obj,i)
 			tsum += rc
@@ -107,12 +107,12 @@ class SketchClone(nurbswb.pyob.FeaturePython):
 
 def runSketchClone(name="MyCloneAndMore"):
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	obj.addProperty("App::PropertyLink", "base", "Base",)
 	obj.addProperty("App::PropertyBool", "off", "Base",)
 	obj.addProperty("App::PropertyIntegerList", "relation", "Base",)
 	obj.addProperty("App::PropertyVector", "offset", "Base",)
-	obj.offset=FreeCAD.Vector(0,0,0)
+	obj.offset=App.Vector(0,0,0)
 	SketchClone(obj)
 
 	obj.ViewObject.DrawStyle = u"Dashdot"

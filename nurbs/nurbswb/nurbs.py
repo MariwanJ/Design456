@@ -32,7 +32,7 @@ if 0: # change render to show triangulations
 
 def setNice(flag=True): 
 	''' make smooth skins '''
-	p = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Part")
+	p = App.ParamGet("User parameter:BaseApp/Preferences/Mod/Part")
 	w=p.GetFloat("MeshDeviation")
 	if flag:
 		p.SetFloat("MeshDeviation",0.05)
@@ -119,14 +119,14 @@ class Nurbs(PartFeature):
 
 
 	def attach(self,vobj):
-		print "attach -------------------------------------"
+		print ("attach -------------------------------------"
 		self.Object = vobj.Object
 		self.obj2 = vobj.Object
 
 
 
 	def onChanged(self, fp, prop):
-		#print "changed ",prop
+		#print ("changed ",prop
 
 		if prop == 'nNodes_u' and  fp.nNodes_u <= fp.degree_u:
 			fp.nNodes_u = fp.degree_u + 1
@@ -169,9 +169,9 @@ class Nurbs(PartFeature):
 
 	def update(self, fp):
 		if hasattr(fp,"polobj"):
-			if fp.polobj<>None: App.ActiveDocument.removeObject(fp.polobj.Name) 
+			if fp.polobj!=None: App.ActiveDocument.removeObject(fp.polobj.Name) 
 			fp.polobj=self.createSurface(fp,fp.poles)
-			if fp.polobj<>None:
+			if fp.polobj!=None:
 				fp.polobj.ViewObject.PointSize=4
 				fp.polobj.ViewObject.PointColor=(1.0,0.0,0.0)
 
@@ -265,7 +265,7 @@ class Nurbs(PartFeature):
 		nNodes_u=self.obj2.nNodes_u
 		nNodes_v=self.obj2.nNodes_v
 
-		print "poles and knots"
+		print ("poles and knots"
 		print(nNodes_u,nNodes_v)
 		print (bs.NbUPoles,bs.NbVPoles)
 		nNodes_u=bs.NbUPoles
@@ -275,14 +275,14 @@ class Nurbs(PartFeature):
 			# meridiane
 			pps=[]
 			p=bs.getPole(1+iu,1)
-			pps=[p.add(FreeCAD.Vector(0,-20,0))]
+			pps=[p.add(App.Vector(0,-20,0))]
 
 			for iv in range(nNodes_v):
 				p=bs.getPole(1+iu,1+iv)
 				pps.append(p)
 
 			p=bs.getPole(1+iu,nNodes_v)
-			pps.append(p.add(FreeCAD.Vector(0,20,0)))
+			pps.append(p.add(App.Vector(0,20,0)))
 
 
 			ss=Part.makePolygon(pps)
@@ -295,13 +295,13 @@ class Nurbs(PartFeature):
 		for iv in range(nNodes_v):
 			# breitengrade
 			p=bs.getPole(1,1+iv)
-			pps=[p.add(FreeCAD.Vector(-20,0,0))]
+			pps=[p.add(App.Vector(-20,0,0))]
 			for iu in range(nNodes_u):
 				p=bs.getPole(1+iu,1+iv)
 				pps.append(p)
 
 			p=bs.getPole(nNodes_u,1+iv)
-			pps.append(p.add(FreeCAD.Vector(20,0,0)))
+			pps.append(p.add(App.Vector(20,0,0)))
 
 
 			ss=Part.makePolygon(pps)
@@ -312,10 +312,10 @@ class Nurbs(PartFeature):
 			try:
 				ss=Part.makePolygon(pps2)
 				## horizontale
-				#if iv<>1:
+				#if iv!=1:
 				sss.append(ss)
 			except:
-				print "kein polygon fuer",pps2
+				print ("kein polygon fuer",pps2
 
 		comp=Part.Compound(sss)
 		return comp
@@ -343,7 +343,7 @@ class Nurbs(PartFeature):
 		cs=[]
 
 		for n in 0,ka-1:
-			pts=[FreeCAD.Vector(tuple(p)) for p in poles[n]]
+			pts=[App.Vector(tuple(p)) for p in poles[n]]
 			bc=Part.BSplineCurve()
 			bc.buildFromPolesMultsKnots(pts,multies,bs.getVKnots(),False,2,weights[n])
 			cs.append(bc.toShape())
@@ -353,7 +353,7 @@ class Nurbs(PartFeature):
 		multies=bs.getUMultiplicities()
 
 		for n in 0,kb-1:
-			pts=[FreeCAD.Vector(tuple(p)) for p in poles[n]]
+			pts=[App.Vector(tuple(p)) for p in poles[n]]
 			bc=Part.BSplineCurve()
 			bc.buildFromPolesMultsKnots(pts,multies,bs.getUKnots(),False,2,weights[n])
 			cs.append(bc.toShape())
@@ -363,10 +363,10 @@ class Nurbs(PartFeature):
 
 		#create wire and face
 		Draft.upgrade(App.ActiveDocument.ActiveObject,delete=True)
-		FreeCAD.ActiveDocument.recompute()
+		App.ActiveDocument.recompute()
 
 		Draft.upgrade(App.ActiveDocument.ActiveObject,delete=True)
-		FreeCAD.ActiveDocument.recompute()
+		App.ActiveDocument.recompute()
 
 		# bottom face ...
 		cur=App.ActiveDocument.ActiveObject
@@ -501,7 +501,7 @@ class Nurbs(PartFeature):
 			   [0,4,1],[1,4,1],[2,4,1],[3,4,1],[4,4,1]]
 
 
-		if poles<>None:
+		if poles!=None:
 			cc=""
 			for l in poles: cc += str(l)
 			coor=eval(cc)
@@ -527,7 +527,7 @@ class Nurbs(PartFeature):
 
 
 #----------------------------------------------------------------------------------
-		print "len A coor " ,len(coor)
+		print ("len A coor " ,len(coor)
 
 #		knot_u=[0,0,0.2,0.4,0.6,0.8,1,1]
 #		knot_u=[0,0,0.2, 0.4,0.4, 0.6,0.8,1,1]
@@ -574,7 +574,7 @@ class Nurbs(PartFeature):
 						 bs.insertVKnot(knot_v[i],1,0.0000001)
 
 		print ("dim nodes",nNodes_v,nNodes_u)
-		print "len coor " ,len(coor)
+		print ("len coor " ,len(coor)
 #		print ("knot_u",knot_u)
 #		print ("knot_v",knot_v)
 		print ("poles u count", bs.NbUPoles)
@@ -592,7 +592,7 @@ class Nurbs(PartFeature):
 		# nNodes_v,nNodes_u=nNodes_u,nNodes_v
 
 		if obj.model=="NurbsSuface":
-			print "Nurbs surface !!!"
+			print ("Nurbs surface !!!"
 			poles2=np.array(coor).reshape(nNodes_v,nNodes_u,3)
 			print poles2.shape
 
@@ -651,12 +651,12 @@ class Nurbs(PartFeature):
 					
 					try:
 						#print("getpole",bs.getPole(jj+1,ii+1))
-						bs.setPole(jj+1,ii+1,FreeCAD.Vector((coor[i][0],coor[i][1],coor[i][2])),weights[jj,ii])
+						bs.setPole(jj+1,ii+1,App.Vector((coor[i][0],coor[i][1],coor[i][2])),weights[jj,ii])
 						bs.setWeight(jj+1,ii+1,4)
-						# print i,FreeCAD.Vector((coor[i][0],coor[i][1],coor[i][2]))
-						print([ii+1,jj+1,FreeCAD.Vector((coor[i][0],coor[i][1],coor[i][2])),weights[jj,ii]])
+						# print i,App.Vector((coor[i][0],coor[i][1],coor[i][2]))
+						print([ii+1,jj+1,App.Vector((coor[i][0],coor[i][1],coor[i][2])),weights[jj,ii]])
 					except:
-							print([ii+1,jj+1,FreeCAD.Vector((coor[i][0],coor[i][1],coor[i][2])),weights[jj,ii]])
+							print([ii+1,jj+1,App.Vector((coor[i][0],coor[i][1],coor[i][2])),weights[jj,ii]])
 							
 							sayexc("error setPols ii,jj:"+str([ii+1,jj+1]))
 							print("getpole exc reverse --",bs.getPole(jj+1,ii+1))
@@ -667,13 +667,13 @@ class Nurbs(PartFeature):
 		# create aux parts
 		if obj.solid: obj.Shape=self.create_solid(bs)
 		else: 
-			if FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetBool("createNurbsShape",True):
+			if App.ParamGet('User parameter:Plugins/nurbs').GetBool("createNurbsShape",True):
 				obj.Shape=bs.toShape()
 
 		vis=False
 		vis=True
 		if obj.grid:
-			if obj.gridobj<>None: 
+			if obj.gridobj!=None: 
 				vis=obj.gridobj.ViewObject.Visibility
 				App.ActiveDocument.removeObject(obj.gridobj.Name)
 			obj.gridobj=self.create_grid(bs,obj.gridCount)
@@ -683,7 +683,7 @@ class Nurbs(PartFeature):
 		if 0 and obj.base:
 			# create the socket box 
 			mx=np.array(coor).reshape(nNodes_v,nNodes_u,3)
-			print "create box"
+			print ("create box"
 
 			print (mx.shape)
 			a0=tuple(mx[0,0])
@@ -715,8 +715,8 @@ class Nurbs(PartFeature):
 			Part.show(comp)
 			App.ActiveDocument.ActiveObject.Label="Nurbs with Base"
 
-			FreeCAD.ActiveDocument.recompute()
-			FreeCAD.ActiveDocument.recompute()
+			App.ActiveDocument.recompute()
+			App.ActiveDocument.recompute()
 
 			# bottom face ...
 			cur=App.ActiveDocument.ActiveObject
@@ -736,7 +736,7 @@ class Nurbs(PartFeature):
 		# create a pole grid with spines
 		
 		#--- hack
-		#print "ABBRUCH Zeile 661"
+		#print ("ABBRUCH Zeile 661"
 		#return None
 		#---
 
@@ -752,7 +752,7 @@ class Nurbs(PartFeature):
 
 		nurbstime=time.time()
 
-		print "XB"
+		print ("XB"
 		
 		polesobj=None
 		comptime=time.time()
@@ -760,7 +760,7 @@ class Nurbs(PartFeature):
 		if  obj.polpoints:
 			#create the poles for visualization
 			#the pole point cloud
-			pts=[FreeCAD.Vector(tuple(c)) for c in coor]
+			pts=[App.Vector(tuple(c)) for c in coor]
 			vts=[Part.Vertex(pp) for pp in pts]
 
 			#and the surface
@@ -768,8 +768,8 @@ class Nurbs(PartFeature):
 			# vts.append(obj.Shape)
 			comp=Part.makeCompound(vts)
 			comptime=time.time()
-			try: yy=FreeCAD.ActiveDocument.Poles
-			except: yy=FreeCAD.ActiveDocument.addObject("Part::Feature","Poles")
+			try: yy=App.ActiveDocument.Poles
+			except: yy=App.ActiveDocument.addObject("Part::Feature","Poles")
 
 			yy.Shape=comp
 			polesobj=App.ActiveDocument.ActiveObject
@@ -805,7 +805,7 @@ class Nurbs(PartFeature):
 			uc=self.obj2.nNodes_u
 			for v in range(vc):
 				for u in range(uc):
-					ps.append(FreeCAD.Vector(u*self.obj2.stepU,v*self.obj2.stepV,0))
+					ps.append(App.Vector(u*self.obj2.stepU,v*self.obj2.stepV,0))
 			return ps
 		else:
 			t=eval(str(self.obj2.poles))
@@ -845,7 +845,7 @@ class Nurbs(PartFeature):
 
 
 		comp=Part.makeCompound(ls)
-		if self.grid <> None:
+		if self.grid != None:
 			self.grid.Shape=comp
 		else:
 			Part.show(comp)
@@ -900,7 +900,7 @@ class Nurbs(PartFeature):
 	def movePoint(self,u,v,dx,dy,dz):
 		''' relative move ofa pole point '''
 
-		FreeCAD.ActiveDocument.openTransaction("move Point " + str((u,v,dx,dy,dz)))
+		App.ActiveDocument.openTransaction("move Point " + str((u,v,dx,dy,dz)))
 
 		self.g[v][u][0] += dx
 		self.g[v][u][1] += dy
@@ -908,12 +908,12 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 	def elevateUline(self,vp,height=40):
 		''' change the height of all poles with the same u value'''
 
-		FreeCAD.ActiveDocument.openTransaction("elevate ULine" + str([vp,height]))
+		App.ActiveDocument.openTransaction("elevate ULine" + str([vp,height]))
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -923,12 +923,12 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 
 	def elevateVline(self,vp,height=40):
 
-		#FreeCAD.ActiveDocument.openTransaction("elevate VLine" + str([vp,height]))
+		#App.ActiveDocument.openTransaction("elevate VLine" + str([vp,height]))
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -938,12 +938,12 @@ class Nurbs(PartFeature):
 
 		#self.updatePoles()
 		#self.showGriduv()
-		#FreeCAD.ActiveDocument.commitTransaction()
+		#App.ActiveDocument.commitTransaction()
 
 	def elevateRectangle(self,v,u,dv,du,height=50):
 		''' change the height of all poles inside a rectangle of the pole grid'''
 
-		FreeCAD.ActiveDocument.openTransaction("elevate rectangle " + str((u,v,dv,du,height)))
+		App.ActiveDocument.openTransaction("elevate rectangle " + str((u,v,dv,du,height)))
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -955,13 +955,13 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 
 	def elevateCircle(self,u=20,v=30,radius=10,height=60):
 		''' change the height for poles around a cenral pole '''
 
-		FreeCAD.ActiveDocument.openTransaction("elevate Circle " + str((u,v,radius,height)))
+		App.ActiveDocument.openTransaction("elevate Circle " + str((u,v,radius,height)))
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -978,12 +978,12 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 	def elevateCircle2(self,u=20,v=30,radius=10,height=60):
 		''' change the height for poles around a cenral pole '''
 
-		FreeCAD.ActiveDocument.openTransaction("elevate Circle " + str((u,v,radius,height)))
+		App.ActiveDocument.openTransaction("elevate Circle " + str((u,v,radius,height)))
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -999,14 +999,14 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 
 
 	def createWaves(self,height=10,depth=-5):
 		'''wave pattern over all'''
 
-		FreeCAD.ActiveDocument.openTransaction("create waves " + str((height,depth)))
+		App.ActiveDocument.openTransaction("create waves " + str((height,depth)))
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -1021,13 +1021,13 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 
 	def addUline(self,vp,pos=0.5):
 		''' insert a line of poles after vp, pos is relative to the next Uline'''
 
-		FreeCAD.ActiveDocument.openTransaction("add ULine " +str((vp,pos))) 
+		App.ActiveDocument.openTransaction("add ULine " +str((vp,pos))) 
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -1055,13 +1055,13 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 
 
 	def addVline(self,vp,pos=0.5):
 
-		#FreeCAD.ActiveDocument.openTransaction("add Vline " + str((vp,pos)))
+		#App.ActiveDocument.openTransaction("add Vline " + str((vp,pos)))
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -1087,13 +1087,13 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		#FreeCAD.ActiveDocument.commitTransaction()
+		#App.ActiveDocument.commitTransaction()
 
 
 	def addS(self,vp):
 		''' harte kante links, weicher uebergang, harte kante rechts ''' 
 
-		FreeCAD.ActiveDocument.openTransaction("add vertical S " + str(vp))
+		App.ActiveDocument.openTransaction("add vertical S " + str(vp))
 
 		uc=self.obj2.nNodes_u
 		vc=self.obj2.nNodes_v
@@ -1118,7 +1118,7 @@ class Nurbs(PartFeature):
 
 		self.updatePoles()
 		self.showGriduv()
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 
 	def updatePoles(self):
@@ -1251,7 +1251,7 @@ class ViewProviderNurbs:
 	def edit(self):
 		import nurbs_dialog
 		reload (nurbs_dialog)
-		FreeCAD.tt=self
+		App.tt=self
 		self.Object.Object.generatePoles=False
 		self.Object.Object.Label="Nurbs individual"
 		self.miki=nurbs_dialog.mydialog(self.Object)
@@ -1270,7 +1270,7 @@ class ViewProviderNurbs:
 
 def makeNurbs(uc=5,vc=7):
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Nurbs")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","Nurbs")
 	a.Label="Nurbs generated"
 	Nurbs(a,uc,vc)
 	ViewProviderNurbs(a.ViewObject)
@@ -1302,7 +1302,7 @@ def createnurbs():
 	[0.0, 270.0, 0.0], [40.0, 270.0, 0.0], [80.0, 270.0, 0.0], [120.0, 270.0, 0.0], [160.0, 270.0, 0.0], [200.0, 270.0, 0.0]]'''
 
 	polarr=eval(polestring)
-	ps=[FreeCAD.Vector(tuple(v)) for v in polarr]
+	ps=[App.Vector(tuple(v)) for v in polarr]
 	
 	a.poles=polestring
 	#ps=a.Proxy.getPoints()
@@ -1347,8 +1347,8 @@ def testRandomB():
 	ps=a.Proxy.getPoints()
 
 	if 0:
-		print "random .."
-		ps=np.array(FreeCAD.ps).swapaxes(0,1)
+		print ("random .."
+		ps=np.array(App.ps).swapaxes(0,1)
 		temp,ct=ps.shape
 		ps[2] += 100*np.random.random(ct)
 		ps=ps.swapaxes(0,1)
@@ -1388,8 +1388,8 @@ def testRandomB():
 	a.Proxy.updatePoles()
 	a.Proxy.showGriduv()
 	
-	FreeCAD.a=a
-	FreeCAD.ps=ps
+	App.a=a
+	App.ps=ps
 
 	Gui.activeDocument().activeView().viewAxonometric()
 	Gui.SendMsgToActiveView("ViewFit")
@@ -1415,11 +1415,11 @@ def testRandomCylinder():
 	a.gridCount=20
 	
 	ps=a.Proxy.getPoints()
-	print "points ps",len(ps)
+	print ("points ps",len(ps)
 
 	if 0:
-		print "random .."
-		ps=np.array(FreeCAD.ps).swapaxes(0,1)
+		print ("random .."
+		ps=np.array(App.ps).swapaxes(0,1)
 		temp,ct=ps.shape
 		ps[2] += 100*np.random.random(ct)
 		ps=ps.swapaxes(0,1)
@@ -1459,8 +1459,8 @@ def testRandomCylinder():
 	a.Proxy.updatePoles()
 	a.Proxy.showGriduv()
 	
-	FreeCAD.a=a
-	FreeCAD.ps=ps
+	App.a=a
+	App.ps=ps
 
 	Gui.activeDocument().activeView().viewAxonometric()
 	Gui.SendMsgToActiveView("ViewFit")
@@ -1479,23 +1479,23 @@ def testRandomSphere():
 
 	pass1=15
 	pass2=10
-#	FreeCAD.ParamGet('User parameter:Plugins/nurbs').SetBool("createNurbsShape",True)
+#	App.ParamGet('User parameter:Plugins/nurbs').SetBool("createNurbsShape",True)
 
 	#for larger tests
-	#FreeCAD.ParamGet('User parameter:Plugins/nurbs').SetBool("createNurbsShape",False)
+	#App.ParamGet('User parameter:Plugins/nurbs').SetBool("createNurbsShape",False)
 
 
-#	FreeCAD.ParamGet('User parameter:Plugins/nurbs/randomSphere').SetInt("countLatitude",30)
-#	FreeCAD.ParamGet('User parameter:Plugins/nurbs/randomSphere').SetInt("countLongitude",120)
-#	FreeCAD.ParamGet('User parameter:Plugins/nurbs/randomSphere').SetInt("countRandom1",200)
-#	FreeCAD.ParamGet('User parameter:Plugins/nurbs/randomSphere').SetInt("countRandom2",100)
+#	App.ParamGet('User parameter:Plugins/nurbs/randomSphere').SetInt("countLatitude",30)
+#	App.ParamGet('User parameter:Plugins/nurbs/randomSphere').SetInt("countLongitude",120)
+#	App.ParamGet('User parameter:Plugins/nurbs/randomSphere').SetInt("countRandom1",200)
+#	App.ParamGet('User parameter:Plugins/nurbs/randomSphere').SetInt("countRandom2",100)
 
 
 
-	na=FreeCAD.ParamGet('User parameter:Plugins/nurbs/randomSphere').GetInt("countLatitude",100)
-	b=FreeCAD.ParamGet('User parameter:Plugins/nurbs/randomSphere').GetInt("countLongitude",100)
-	pass1=FreeCAD.ParamGet('User parameter:Plugins/nurbs/randomSphere').GetInt("countRandom1",100)
-	pass2=FreeCAD.ParamGet('User parameter:Plugins/nurbs/randomSphere').GetInt("countRandom2",100)
+	na=App.ParamGet('User parameter:Plugins/nurbs/randomSphere').GetInt("countLatitude",100)
+	b=App.ParamGet('User parameter:Plugins/nurbs/randomSphere').GetInt("countLongitude",100)
+	pass1=App.ParamGet('User parameter:Plugins/nurbs/randomSphere').GetInt("countRandom1",100)
+	pass2=App.ParamGet('User parameter:Plugins/nurbs/randomSphere').GetInt("countRandom2",100)
 	
 
 
@@ -1532,11 +1532,11 @@ def testRandomSphere():
 	
 
 	ps=a.Proxy.getPoints()
-	print "points ps",len(ps)
+	print ("points ps",len(ps)
 
 	if 0:
-		print "random .."
-		ps=np.array(FreeCAD.ps).swapaxes(0,1)
+		print ("random .."
+		ps=np.array(App.ps).swapaxes(0,1)
 		temp,ct=ps.shape
 		ps[2] += 100*np.random.random(ct)
 		ps=ps.swapaxes(0,1)
@@ -1576,13 +1576,13 @@ def testRandomSphere():
 
 
 	ps.resize(na*b,3)
-	print "A"
+	print ("A"
 	print time.time()
 	Gui.updateGui()
 
 	
 	a.Proxy.togrid(ps)
-	print "B"
+	print ("B"
 	print time.time()
 	Gui.updateGui()
 
@@ -1590,19 +1590,19 @@ def testRandomSphere():
 
 	a.Proxy.updatePoles()
 	
-	print "c"
+	print ("c"
 	print time.time()
 	Gui.updateGui()
 	a.Proxy.showGriduv()
-	print "d"
+	print ("d"
 	print time.time()
 	Gui.updateGui()
 
-	FreeCAD.ActiveDocument.recompute()
-	FreeCAD.ActiveDocument.recompute()
+	App.ActiveDocument.recompute()
+	App.ActiveDocument.recompute()
 
-	FreeCAD.a=a
-	FreeCAD.ps=ps
+	App.a=a
+	App.ps=ps
 
 	Gui.activeDocument().activeView().viewAxonometric()
 	Gui.SendMsgToActiveView("ViewFit")
@@ -1628,21 +1628,21 @@ def testRandomTorus():
 	a.gridCount=20
 	
 	ps=a.Proxy.getPoints()
-	print "points ps",len(ps)
+	print ("points ps",len(ps)
 
 	ps=a.Proxy.getPoints()
-	print "A"
+	print ("A"
 	a.Proxy.togrid(ps)
-	print "B"
+	print ("B"
 	a.Proxy.updatePoles()
-	print "C"
+	print ("C"
 	a.Proxy.showGriduv()
 
 
 	'''
 	if 0:
-		print "random .."
-		ps=np.array(FreeCAD.ps).swapaxes(0,1)
+		print ("random .."
+		ps=np.array(App.ps).swapaxes(0,1)
 		temp,ct=ps.shape
 		ps[2] += 100*np.random.random(ct)
 		ps=ps.swapaxes(0,1)
@@ -1683,8 +1683,8 @@ def testRandomTorus():
 	'''
 
 
-	FreeCAD.a=a
-	FreeCAD.ps=ps
+	App.a=a
+	App.ps=ps
 
 	Gui.activeDocument().activeView().viewAxonometric()
 	Gui.SendMsgToActiveView("ViewFit")

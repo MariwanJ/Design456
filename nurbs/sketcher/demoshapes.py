@@ -11,11 +11,10 @@
 # from say import *
 # import nurbswb.pyob
 #------------------------------
-import FreeCAD,FreeCADGui,Sketcher,Part
-
-App = FreeCAD
-Gui = FreeCADGui
-
+import FreeCAD as App
+import FreeCADGui as Gui
+import Sketcher
+import Part
 import numpy as np
 import time
 
@@ -38,10 +37,10 @@ def methodA(obj):
 		v1=obj.baseClientA.Shape.Vertexes
 		v2=obj.baseClientB.Shape.Vertexes
 	except:
-		print "cannont build shape for .." 
-		print obj.Label
-		print obj.baseClientA.Label
-		print obj.baseClientB.Label
+		print ("cannont build shape for .." )
+		print (obj.Label)
+		print (obj.baseClientA.Label)
+		print (obj.baseClientB.Label)
 		return Part.Shape()
 
 	pts=[]
@@ -49,18 +48,18 @@ def methodA(obj):
 	for i,v in enumerate(v1):
 		p=v.Point
 		z=v2[i].Point.z
-		pts.append(FreeCAD.Vector(p.x,p.y,z))
-		pts2.append(FreeCAD.Vector(p.x,p.y+25,z+10))
+		pts.append(App.Vector(p.x,p.y,z))
+		pts2.append(App.Vector(p.x,p.y+25,z+10))
 
-	print pts
+	print (pts)
 
 	sh=Part.makeLoft([Part.makePolygon(pts),Part.makePolygon(pts2)])
-	print sh
+	print (sh)
 	return Part.Compound([sh])
 
 
 def methodB(obj):
-	print "method B not impl."
+	print ("method B not impl.")
 	return None
 
 methods={

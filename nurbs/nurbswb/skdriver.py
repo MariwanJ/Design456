@@ -42,7 +42,7 @@ class Driver(nurbswb.pyob.FeaturePython):
 
 	def onBeforeChange(proxy,obj,prop):
 		'''create a backup of the point coordinates'''
-		if prop <> "Geometry": return
+		if prop != "Geometry": return
 
 #		print ("onBeforeChange",prop)
 		proxy.podump=[]
@@ -68,7 +68,7 @@ class Driver(nurbswb.pyob.FeaturePython):
 
 		if prop in ["radiusA","radiusB"]:
 			print ("onchanged",prop)
-			if obj.base <>None:
+			if obj.base !=None:
 				obj.base.setDatum(5,obj.radiusA)
 				obj.base.setDatum(6,obj.radiusB)
 			proxy.myExecute(obj)
@@ -80,7 +80,7 @@ class Driver(nurbswb.pyob.FeaturePython):
 		if obj.off:
 			print obj.Label + " is deactivated (off)"
 			return
-#		print "start"
+#		print ("start"
 #		print obj.relation
 
 		for its in range(2):
@@ -108,24 +108,24 @@ class Driver(nurbswb.pyob.FeaturePython):
 						print (a,b,c,d,e)
 						sayexc()
 						tomove.append(False)
-						FreeCAD.obj=obj
+						App.obj=obj
 						return
 
 				for i,(a,b,c,d,e) in enumerate(rel):
 					try:
 						if a==0 : 
-							FreeCAD.obj=obj
+							App.obj=obj
 							pos=obj.getPoint(b,c)
 							#if (proxy.oldpos[(b,c)]-pos).Length>0.1:
 							if tomove[i]:
 								bsk.movePoint(d,e,pos)
 							rc=bsk.solve()
-							if rc <>0: print ("solve 0 rc=",rc)
+							if rc !=0: print ("solve 0 rc=",rc)
 	#					else:
 	#						pos=bsk.getPoint(b,c)
 	#						obj.movePoint(d,e,pos)
 	#						rc=obj.solve()
-	#						if rc <>0: print ("solve 1 rc=",rc)
+	#						if rc !=0: print ("solve 1 rc=",rc)
 					except:
 						sayexc("movepoint"+str(i))
 
@@ -136,7 +136,7 @@ class Driver(nurbswb.pyob.FeaturePython):
 							pos=bsk.getPoint(d,e)
 							obj.movePoint(b,c,pos)
 							rc=obj.solve()
-							if rc <>0: print ("solve 1 rc=",rc)
+							if rc !=0: print ("solve 1 rc=",rc)
 					except:
 						sayexc("movepoint"+str(i))
 
@@ -169,7 +169,7 @@ def runDriver(name="MyDriver"):
 	''' an example driver for a special test sketch'''
 
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	obj.addProperty("App::PropertyLink", "base", "Base",)
 
 	obj.addProperty("App::PropertyBool", "off", "Base",)
@@ -255,7 +255,7 @@ def runribtest():
 
 def runrib(rib,name,nr=None):
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	obj.addProperty("App::PropertyLink", "base", "Base",)
 
 	obj.addProperty("App::PropertyBool", "off", "Base",)
@@ -315,7 +315,7 @@ def runrib(rib,name,nr=None):
 						pos=bsk.getPoint(d,e)
 						obj.movePoint(b,c,pos)
 						rc=obj.solve()
-						if rc <>0: print ("solve 1 rc=",rc)
+						if rc !=0: print ("solve 1 rc=",rc)
 				except:
 					sayexc("movepoint"+str(i))
 
@@ -330,7 +330,7 @@ def runrib(rib,name,nr=None):
 	Gui.SendMsgToActiveView("ViewFit")
 	Gui.activeDocument().activeView().viewTop()
 
-	if nr<> None:
+	if nr!= None:
 		grp=App.ActiveDocument.getObject('GRP_'+str(nr))
 		grp.addObject(obj)
 		obj.ViewObject.hide()
@@ -348,7 +348,7 @@ def create_rib_driverALT(nr):
 
 	name="ribdriver_" +str(nr)
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	obj.addProperty("App::PropertyLink", "base", "Base",)
 
 	obj.addProperty("App::PropertyBool", "off", "Base",)
@@ -463,16 +463,16 @@ def recomputeAll():
 	for i in range(2,15):
 		obj=App.ActiveDocument.getObject('rib_'+str(i))
 		dob=App.ActiveDocument.getObject('ribdriver_'+str(i))
-		if obj <> None:
+		if obj != None:
 			obj.touch()
 		# deactivate the driver feedback to speed up
-		if dob<>None:
+		if dob!=None:
 			dob.off=True
 
 	App.activeDocument().recompute()
 
 	for i in range(2,15):
 		dob=App.ActiveDocument.getObject('ribdriver_'+str(i))
-		if dob<>None:
+		if dob!=None:
 			dob.off=False
 

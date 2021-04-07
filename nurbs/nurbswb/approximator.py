@@ -36,9 +36,9 @@ from scipy import misc
 def getPart(name="hugo"):
 	'''objekt bereitstellen bzw. anlegen'''
 
-	obj=FreeCAD.ActiveDocument.getObject(name)
+	obj=App.ActiveDocument.getObject(name)
 	if obj== None:
-		obj=FreeCAD.ActiveDocument.addObject("Part::Feature",name)
+		obj=App.ActiveDocument.addObject("Part::Feature",name)
 	return obj
 
 
@@ -133,10 +133,10 @@ class PointCloudApprox(FeaturePython):
 					p=c.parameter(pb)
 					n=c.normal(p)
 					if abs((pb-pa).dot(n))<obj.threshold:
-						pts += [FreeCAD.Vector(p,(pb-pa).dot(n))]
+						pts += [App.Vector(p,(pb-pa).dot(n))]
 
 				except:
-					print "ignore",i
+					print ("ignore",i
 
 		hop=getPart(name+"_helper")
 		hop.Shape=Part.Compound(comps)
@@ -166,11 +166,11 @@ class PointCloudApprox(FeaturePython):
 				ll=len(x)
 
 				(x2,y2)=runfilt(x0+x+xx,y+y+y,obj.degree,0.001*obj.lowfilter)
-				pts3=[FreeCAD.Vector(x,y) for (x,y) in zip(x2[ll:2*ll],y2[ll:2*ll])]
+				pts3=[App.Vector(x,y) for (x,y) in zip(x2[ll:2*ll],y2[ll:2*ll])]
 
 			else:
 				(x2,y2)=runfilt(x,y,obj.degree,0.001*obj.lowfilter)
-				pts3=[FreeCAD.Vector(x,y) for (x,y) in zip(x2,y2)]
+				pts3=[App.Vector(x,y) for (x,y) in zip(x2,y2)]
 
 
 			pts4=[]
@@ -184,11 +184,11 @@ class PointCloudApprox(FeaturePython):
 
 			import nurbswb.smooth
 			reload(nurbswb.smooth)
-			smooth=FreeCAD.ActiveDocument.getObject("smooth"+"_"+name)
+			smooth=App.ActiveDocument.getObject("smooth"+"_"+name)
 			if smooth == None:
 				nurbswb.smooth.smoothWire(hop,"smooth"+"_"+name)
 			else:
-				print "setze smooth count ",dd
+				print ("setze smooth count ",dd
 				smooth.Wire=hop
 				smooth.discretizeCount=dd
 
@@ -209,7 +209,7 @@ def createPointCloudApprox():
 	[points,start]= Gui.Selection.getSelection()
 	name=points.Name+"_from_"+start.Name
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
+	a=App.ActiveDocument.addObject("Part::FeaturePython",name)
 	PointCloudApprox(a,name,points,start)
 	ViewProvider(a.ViewObject)
 	return a
@@ -290,9 +290,9 @@ def _smoothPointcloudGUI():
 			modus=self.root.ids['mode'].currentText()
 	
 			try:
-				print "part is ..",self.part
+				print ("part is ..",self.part
 			except: 
-				print "noch kein objekt zugewiesen"
+				print ("noch kein objekt zugewiesen"
 				return
 
 			try:
@@ -332,7 +332,7 @@ class ImagePoints(FeaturePython):
 		for u in range(uc):
 			for v in range(vc):
 				if face2[u,v] >obj.min and face2[u,v] < obj.max:
-					pts += [FreeCAD.Vector(v,u,face2[u,v]*obj.params[3])]
+					pts += [App.Vector(v,u,face2[u,v]*obj.params[3])]
 
 		obj.Points=Points.Points(pts)
 
@@ -388,14 +388,14 @@ class ImagePoints2(FeaturePython):
 
 		#face=face[10:,-10:]
 		(uc,vc,_)=face.shape
-		print "Bildsize",face.shape
+		print ("Bildsize",face.shape
 
 		if obj.mode=='generic':
 			poles=[]
 			for u in range(uc):
 				pts=[]
 				for v in range(vc):
-						pts += [FreeCAD.Vector(v,u,0.01*sum(face[u,v]))]
+						pts += [App.Vector(v,u,0.01*sum(face[u,v]))]
 				poles += [pts]
 
 		if obj.mode=='cylinder':
@@ -407,7 +407,7 @@ class ImagePoints2(FeaturePython):
 				for v in range(vc):
 						ss=sum(face[u,v])
 						ss=face[u,v,0]*obj.params[0]+face[u,v,1]*obj.params[1]+face[u,v,2]*obj.params[2]
-						pts += [FreeCAD.Vector((R+h*ss)*np.cos(v*np.pi*0.5/vc),
+						pts += [App.Vector((R+h*ss)*np.cos(v*np.pi*0.5/vc),
 								-(R+h*ss)*np.sin(v*np.pi*0.5/vc),-R*u/uc*np.pi*0.4)]
 				poles += [pts]
 
@@ -433,7 +433,7 @@ class ImagePoints2(FeaturePython):
 				scv=vc
 
 
-			print "grundfigur start"
+			print ("grundfigur start"
 			poles=np.array(bs.getPoles())
 			print poles.shape
 
@@ -470,8 +470,8 @@ class ImagePoints2(FeaturePython):
 
 
 #			print ("ups",ups)
-			print "---------------"
-			print "len bs knots" ,len(bs.getUKnots())
+			print ("---------------"
+			print ("len bs knots" ,len(bs.getUKnots())
 			print
 			yinterp = np.interp(bs.getUKnots(), ups, range(len(ups)))
 #			print yinterp
@@ -522,7 +522,7 @@ class ImagePoints2(FeaturePython):
 			
 			
 			#-------------------------------------
-			print "Figur shape",poles.shape
+			print ("Figur shape",poles.shape
 			print ("upuesl", bs.getUKnots())
 			print ("vpuesl", bs.getVKnots())
 
@@ -536,7 +536,7 @@ class ImagePoints2(FeaturePython):
 			
 
 			uc2,vc2=scu,scv
-			print "Grundfigur", poles2.shape
+			print ("Grundfigur", poles2.shape
 			
 			print ("uc2,vc2",uc2,vc2)
 			print len(vps)
@@ -544,7 +544,7 @@ class ImagePoints2(FeaturePython):
 
 #			for u in range(2,uc2-2):
 #				for v in range(2,vc2-2):
-#					[ui,vi]=bs.parameter(FreeCAD.Vector(poles[u,v]))
+#					[ui,vi]=bs.parameter(App.Vector(poles[u,v]))
 #					n=bs.normal(ui,vi)
 #					ss=face[u,v,0]*obj.params[0]+face[u,v,1]*obj.params[1]+face[u,v,2]*obj.params[2]
 #					poles2[u,v] +=  0.001*obj.factor*ss*n
@@ -564,12 +564,12 @@ class ImagePoints2(FeaturePython):
 					print len(ups[:-1])
 					print len(ups)
 					print len(ssa)
-					print "huhu"
+					print ("huhu"
 					yinterp = np.interp(bs.getUKnots(), ups, ssa)
 	#				print u
 	#				print yinterp
 					ssab += [yinterp]
-	#			print "erstes shape"
+	#			print ("erstes shape"
 	#			print np.array(ssab).shape
 	#			print len(bs.getUKnots())
 	#			print bs.getUKnots()
@@ -577,15 +577,15 @@ class ImagePoints2(FeaturePython):
 	#			print bs.getVKnots()
 
 				ssab=np.array(ssab).swapaxes(0,1)
-				print "ssab.shape ",ssab.shape
-				print "--------------"
+				print ("ssab.shape ",ssab.shape
+				print ("--------------"
 				ssba=[[0]*len(bs.getVKnots())]
 				#vps += [0]
 		
 				
 				for ui,u in enumerate(bs.getUKnots()):
 					ssa=[0]
-					print "-------------"
+					print ("-------------"
 					print len(vps[:-1])
 					print len(ssab[ui])
 					yinterp = np.interp(bs.getVKnots(), vps[:-2], ssab[ui])
@@ -594,19 +594,19 @@ class ImagePoints2(FeaturePython):
 					ssba += [yinterp]
 
 				ssba += [[0]*len(bs.getVKnots())]
-				print "zweites shape"
+				print ("zweites shape"
 				print np.array(ssba).shape
-	#			print "u ",len(bs.getUKnots())
-	#			print "v ", len(bs.getVKnots())
+	#			print ("u ",len(bs.getUKnots())
+	#			print ("v ", len(bs.getVKnots())
 				
 				ssba=np.array(ssba)
 
-				print "Zielarray poles2 shape ", poles2.shape
+				print ("Zielarray poles2 shape ", poles2.shape
 				print ("belegugn",len(bs.getUKnots()),len(bs.getVKnots()))
 
 				for u in range(len(bs.getUKnots())):
 					for v in range(len(bs.getVKnots())):
-						[ui,vi]=bs.parameter(FreeCAD.Vector(poles[u+1,v+1]))
+						[ui,vi]=bs.parameter(App.Vector(poles[u+1,v+1]))
 						n=bs.normal(ui,vi)
 						poles2[u+1,v+1] +=  0.001*obj.factor*(ssba[u,v])*n
 
@@ -632,7 +632,7 @@ class ImagePoints2(FeaturePython):
 	#				print u
 	#				print yinterp
 					ssab += [yinterp]
-				print "erstes shape"
+				print ("erstes shape"
 	#			print np.array(ssab).shape
 				print len(bs.getUKnots())
 	#			print bs.getUKnots()
@@ -640,8 +640,8 @@ class ImagePoints2(FeaturePython):
 	#			print bs.getVKnots()
 
 				ssab=np.array(ssab).swapaxes(0,1)
-				print "ssab.shape ",ssab.shape
-	#			print "--------------"
+				print ("ssab.shape ",ssab.shape
+	#			print ("--------------"
 				ssba=[]
 				#vps += [0]
 		
@@ -661,19 +661,19 @@ class ImagePoints2(FeaturePython):
 					ssba += [yinterp]
 
 #				ssba += [[0]*len(bs.getVKnots())]
-				print "zweites shape"
+				print ("zweites shape"
 				print np.array(ssba).shape
-	#			print "u ",len(bs.getUKnots())
-	#			print "v ", len(bs.getVKnots())
+	#			print ("u ",len(bs.getUKnots())
+	#			print ("v ", len(bs.getVKnots())
 				
 				ssba=np.array(ssba)
 
-				print "Zielarray poles2 shape ", poles2.shape
+				print ("Zielarray poles2 shape ", poles2.shape
 				print ("belegugn",len(bs.getUKnots()),len(bs.getVKnots()))
 
 				for u in range(len(bs.getUKnots())):
 					for v in range(len(bs.getVKnots())):
-						[ui,vi]=bs.parameter(FreeCAD.Vector(poles[u+1,v+1]))
+						[ui,vi]=bs.parameter(App.Vector(poles[u+1,v+1]))
 						n=bs.normal(ui,vi)
 						poles2[u,v] +=100
 						#poles2[u,v] +=  0.001*obj.factor*(ssba[u,v])*n
@@ -694,7 +694,7 @@ class ImagePoints2(FeaturePython):
 			comps=[]
 			for pols in [poles,poles.swapaxes(0,1)]:
 				for ps in pols:
-					comps += [Part.makePolygon([FreeCAD.Vector(p) for p in ps])]
+					comps += [Part.makePolygon([App.Vector(p) for p in ps])]
 			obj.Shape=Part.Compound(comps)
 
 		else:
@@ -821,7 +821,7 @@ class MinLengthBezier(FeaturePython):
 
 	def runMinLength(self,fp,ptsa,f=0.5):
 
-		if fp.start<>0 or fp.end<>0:
+		if fp.start!=0 or fp.end!=0:
 			ptsa=ptsa[fp.start:fp.end]
 
 		if fp.closed:
@@ -877,7 +877,7 @@ class MinLengthBezier(FeaturePython):
 
 			fp.Proxy.loops += 1
 
-			if alpha <> None:
+			if alpha != None:
 
 				if fp.Proxy.loops == 1 :
 					if fp.useStart:
@@ -908,13 +908,13 @@ class MinLengthBezier(FeaturePython):
 						else:
 							k1=min((ptsa[i+1]-ptsa[i]).Length*kk,k)
 
-						if i <> 0:
-							pts += [ ptsa[i]-FreeCAD.Vector(np.cos(alpha[la+i])*np.cos(alpha[i])*k2,
+						if i != 0:
+							pts += [ ptsa[i]-App.Vector(np.cos(alpha[la+i])*np.cos(alpha[i])*k2,
 								np.cos(alpha[la+i])*np.sin(alpha[i])*k2,np.sin(alpha[la+i])*k2) ]
 
 						pts += [ptsa[i]]
-						if i <>len(ptsa)-1:
-							pts += [ ptsa[i]+FreeCAD.Vector(np.cos(alpha[la+i])*np.cos(alpha[i])*k1,
+						if i !=len(ptsa)-1:
+							pts += [ ptsa[i]+App.Vector(np.cos(alpha[la+i])*np.cos(alpha[i])*k1,
 								np.cos(alpha[la+i])*np.sin(alpha[i])*k1,np.sin(alpha[la+i])*k1) ]
 
 				else:
@@ -923,12 +923,12 @@ class MinLengthBezier(FeaturePython):
 					for i in range(0,len(ptsa)):
 						k=fp.factorList[i]*0.01*fp.factor
 						#k=30
-						if i <> 0:
-							pts += [ ptsa[i]-FreeCAD.Vector(np.cos(alpha[la+i])*np.cos(alpha[i])*k,
+						if i != 0:
+							pts += [ ptsa[i]-App.Vector(np.cos(alpha[la+i])*np.cos(alpha[i])*k,
 									np.cos(alpha[la+i])*np.sin(alpha[i])*k,np.sin(alpha[la+i])*k) ]
 						pts += [ptsa[i]]
-						if i <>len(ptsa)-1:
-							pts += [ ptsa[i]+FreeCAD.Vector(np.cos(alpha[la+i])*np.cos(alpha[i])*k,
+						if i !=len(ptsa)-1:
+							pts += [ ptsa[i]+App.Vector(np.cos(alpha[la+i])*np.cos(alpha[i])*k,
 									np.cos(alpha[la+i])*np.sin(alpha[i])*k,np.sin(alpha[la+i])*k) ]
 
 #			print alpha
@@ -957,7 +957,7 @@ class MinLengthBezier(FeaturePython):
 		if fp.method=='Default':
 			rc=minimize(lengthMin,alphas,tol=1.)
 		elif fp.method=='simple':
-			print "simple structure - no optimize"
+			print ("simple structure - no optimize"
 			_ = lengthMin(alphas)
 			
 			return
@@ -965,7 +965,7 @@ class MinLengthBezier(FeaturePython):
 			rc=minimize(lengthMin,alphas,method=fp.method,tol=fp.tol)
 
 		print (fp.method,rc.success,rc.message,fp.Proxy.loops)
-		print "Length ",round(fp.Shape.Edge1.Length,1)
+		print ("Length ",round(fp.Shape.Edge1.Length,1)
 		fp.length=fp.Shape.Edge1.Length
 		fp.alphaList=list(rc.x)
 		e=fp.Shape.Edge1
@@ -975,8 +975,8 @@ class MinLengthBezier(FeaturePython):
 		anz=1000
 		cc=np.array([bc.curvature(size*u/anz)**2 for u in range(anz+1)])
 
-		print "Curvature mean ",round(cc.mean()*10**6,1)
-		print "Curvature max ",round(cc.max()*10**6,1)
+		print ("Curvature mean ",round(cc.mean()*10**6,1)
+		print ("Curvature max ",round(cc.max()*10**6,1)
 		
 		print ("Radius",round(1/cc.mean(),1),round(1/cc.max(),1),round(1/cc.min(),1))
 
@@ -1065,7 +1065,7 @@ class MinLengthBezier(FeaturePython):
 	def runMyMinSoft(self,fp,ptsa,f=0.5):
 
 		# Tangenten
-		#print "ptsa",ptsa
+		#print ("ptsa",ptsa
 		zz=(len(ptsa)-4)/3
 		#assert(zz==2)
 		tangs=[ptsa[1]-ptsa[0]]
@@ -1162,7 +1162,7 @@ class MinLengthBezier(FeaturePython):
 		xtras=[]
 		bc=fp.Shape.Edge1.Curve
 		for i in fp.extraKnots:
-				print "extra knot ",i
+				print ("extra knot ",i
 				bc.insertKnot(i,3)
 				pt=bc.value(i)
 				xtras += [Part.makeSphere(1,pt)]
@@ -1284,11 +1284,11 @@ def _createMyMinSoftGUI():
 
 '''
 if 1:
-	pts=[FreeCAD.Vector(0,0,0),
-			FreeCAD.Vector(300,0,0),
-			FreeCAD.Vector(500,200,300),
-			FreeCAD.Vector(500,400,500),
-			FreeCAD.Vector(500,400,800),
+	pts=[App.Vector(0,0,0),
+			App.Vector(300,0,0),
+			App.Vector(500,200,300),
+			App.Vector(500,400,500),
+			App.Vector(500,400,800),
 			]
 	import Draft
 	Draft.makeWire(pts)
@@ -1380,7 +1380,7 @@ class ConstantCurvatureBezier(FeaturePython):
 			fp.Proxy.cc2=cc2
 
 			fp.alphaList=list(alpha)
-#			print "!"
+#			print ("!"
 #			print (cc2.max(),cc2.min())
 #			print (abs(cc2.max()-cc2.min()),cc2.mean())
 #			print bc.length()
@@ -1394,7 +1394,7 @@ class ConstantCurvatureBezier(FeaturePython):
 
 #			print rc
 #			if fp.Proxy.loops>3000: 	
-#				print "loops ende"
+#				print ("loops ende"
 #				return 0 
 
 			return rc *10**4
@@ -1434,7 +1434,7 @@ class ConstantCurvatureBezier(FeaturePython):
 			except:
 				pass
 
-			if fp.start<>0 or fp.end<>0:
+			if fp.start!=0 or fp.end!=0:
 				pts=pts[3*fp.start:3*fp.end+1]
 
 			ll=len(pts)/3
@@ -1514,9 +1514,9 @@ def  activateExecution():
 
 def myMinA(pts):
 	'''meine midimal-Methdoe A'''
-#	a=FreeCAD.Vector(0,0,0)
-#	b=FreeCAD.Vector(50,100,0)
-#	c=FreeCAD.Vector(200,0,0)
+#	a=App.Vector(0,0,0)
+#	b=App.Vector(50,100,0)
+#	c=App.Vector(200,0,0)
 
 	[a,b,c]=pts
 	#Part.show(Part.makePolygon([a,b,c]))
@@ -1539,7 +1539,7 @@ def myMinA(pts):
 			for i in range(n+1):
 				s += [cu.curvature(1.0*i/(n+1))]
 			ss=(np.max(s)-np.min(s))/np.mean(s)**1.0
-			ptr += [FreeCAD.Vector(iar,ibr,ss)]
+			ptr += [App.Vector(iar,ibr,ss)]
 
 	#Points.show(Points.Points(ptr))
 
@@ -1577,7 +1577,7 @@ def runMyMinA(fp, pts):
 #		pts=[v.Point for v in s.Shape.Wires[0].Vertexes]
 		s=fp
 
-		if fp.start<>0 or fp.end<>0:
+		if fp.start!=0 or fp.end!=0:
 			pts=pts[fp.start:fp.end]
 
 		if fp.closed:
@@ -1608,7 +1608,7 @@ def runMyMinA(fp, pts):
 
 		def makeSimpleCurve(pts):
 			
-			print "makeSimpleCurve"
+			print ("makeSimpleCurve"
 #			print pts
 
 			pr=[]
@@ -1659,7 +1659,7 @@ def runMyMinA(fp, pts):
 				if fp.useStart:
 					ast=fp.alphaStart*np.pi/18.0
 					bs=fp.betaStart*np.pi/18.0
-					tg=-FreeCAD.Vector(np.cos(bs)*np.cos(ast),np.cos(bs)*np.sin(ast),np.sin(bs))
+					tg=-App.Vector(np.cos(bs)*np.cos(ast),np.cos(bs)*np.sin(ast),np.sin(bs))
 					pr=[pts[0],pts[0]+tg*k,pts[1]+(pts[0]-pts[2]).normalize()*k,pts[1]]
 
 				if fp.useEnd:
@@ -1678,7 +1678,7 @@ def runMyMinA(fp, pts):
 				if fp.useEnd:
 					ast=fp.alphaEnd*np.pi/18.0
 					bs=fp.betaEnd*np.pi/18.0
-					tg=FreeCAD.Vector(np.cos(bs)*np.cos(ast),np.cos(bs)*np.sin(ast),np.sin(bs))
+					tg=App.Vector(np.cos(bs)*np.cos(ast),np.cos(bs)*np.sin(ast),np.sin(bs))
 					pr=[pts[1],pts[1]+(pts[2]-pts[0]).normalize()*k,pts[2]+tg*k,pts[2]]
 
 
@@ -1695,11 +1695,11 @@ def runMyMinA(fp, pts):
 			return pr
 
 
-		print "Loop---------------------------"
+		print ("Loop---------------------------"
 		ll=len(pts)
 		if ll<3:
-			print "brauche wenigstens 3 punkte"
-			print "ABBRuch"
+			print ("brauche wenigstens 3 punkte"
+			print ("ABBRuch"
 			return
 
 		j=0
@@ -1724,7 +1724,7 @@ def runMyMinA(fp, pts):
 			direct2=np.arctan2(d2.x,d2.y)
 			dd=direct-direct2
 #			print ("Richtung Punkt           ",pts[j+1]) 
-#			print "start ",start
+#			print ("start ",start
 			if direct>0:
 				if direct2<direct and direct2>direct-np.pi: 
 					dd=-1
@@ -1776,7 +1776,7 @@ class PolesFrame(FeaturePython):
 
 	def onChanged(self,fp,prop):
 
-		if prop<>'ribs':  return
+		if prop!='ribs':  return
 #		try: self.restored
 #		except: return
 
@@ -1811,7 +1811,7 @@ class PolesFrame(FeaturePython):
 
 
 	def execute(self,obj):
-		print "execute"
+		print ("execute"
 		self.onChanged(obj,"ribs")
 		pass
 
@@ -1848,7 +1848,7 @@ def swapCurves(sel=None,mode='polygons',extraknots=None):
 			cc=s.Shape.Edge1.Curve
 			xtras += [s.Shape.Edge1]
 			for i in extraknots[isx]:
-#				print "!extra knot ",i
+#				print ("!extra knot ",i
 				cc.insertKnot(i,3)
 				pt=cc.value(i)
 				xtras += [Part.makeSphere(1,pt)]
@@ -1861,7 +1861,7 @@ def swapCurves(sel=None,mode='polygons',extraknots=None):
 	if mode == 'polar':
 		return polar,xtras
 	for pts in polar:
-		ptsa=[FreeCAD.Vector(p[0],p[1],p[2])  for p in pts]
+		ptsa=[App.Vector(p[0],p[1],p[2])  for p in pts]
 		Part.show(Part.makePolygon(ptsa))
 
 
@@ -1882,13 +1882,13 @@ def curvestoFace(polsarr=None,mode="Bezier Face"):
 				polsarr += [pols]
 
 	poles=np.array(polsarr)
-	print "curves to shape ",poles.shape
+	print ("curves to shape ",poles.shape
 	try:
 		b,a,_=poles.shape
 	except:
-		print "Probleme mit Punktematrix- Segemente nicht leich lang -- Abbruch"
+		print ("Probleme mit Punktematrix- Segemente nicht leich lang -- Abbruch"
 		return
-	print "huhuhu"
+	print ("huhuhu"
 #	a,b=b,a
 	af=Part.BSplineSurface()
 	
@@ -2031,12 +2031,12 @@ class Ribface(FeaturePython):
 		polars,xtras=swapCurves(ss,mode='polar',extraknots=extraknots)
 	#	print pols
 	#	print pols[0][0]
-	#	print FreeCAD.Vector(pols[0][0])
+	#	print App.Vector(pols[0][0])
 		polesarrN=[]
 		for polsA in polars:
 		#	for pts in polar:
-		#		ptsa=[FreeCAD.Vector(p[0],p[1],p[2])  for p in pts]
-			pols=[FreeCAD.Vector(p) for p in polsA]
+		#		ptsa=[App.Vector(p[0],p[1],p[2])  for p in pts]
+			pols=[App.Vector(p) for p in polsA]
 
 			polsn=[pols[0]]
 			kf= obj.factor
@@ -2103,12 +2103,12 @@ def findrib():
 
 
 	x=3
-	v=FreeCAD.Vector(x,0)
+	v=App.Vector(x,0)
 
 	for i in range(50):
 		m=a.parameter(v)
 		pp=a.value(m)
-		v=FreeCAD.Vector(x,pp.y)
+		v=App.Vector(x,pp.y)
 		print (i,v,(pp-v).Length)
 		if (pp-v).Length<0.001:
 			break
@@ -2124,7 +2124,7 @@ def usage(msg=""):
 	if msg!="": msg= "\n"+msg+"\n"
 	errorDialog("Fehler in "+ inspect.stack()[1][1].split('/')[-1]+" line:"+str(inspect.stack()[1][2])+
 		"\n"+eval(inspect.stack()[1][3]+".__doc__") +msg)
-	FreeCAD.Console.PrintError("Error"+str(inspect.stack()[1][1:4])+msg)
+	App.Console.PrintError("Error"+str(inspect.stack()[1][1:4])+msg)
 #################################################################
 
 
@@ -2142,18 +2142,18 @@ man auf eine Freiformfläche aufkleben ann.
 #	except:
 #		usage("geht nur, wenn ein Kegel da ist")
 
-	grp=FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup","Defaut")
-	oba=FreeCAD.ActiveDocument.addObject("Part::Feature","A")
-	obb=FreeCAD.ActiveDocument.addObject("Part::Feature","B")
-	obc=FreeCAD.ActiveDocument.addObject("Part::Feature","C")
+	grp=App.ActiveDocument.addObject("App::DocumentObjectGroup","Defaut")
+	oba=App.ActiveDocument.addObject("Part::Feature","A")
+	obb=App.ActiveDocument.addObject("Part::Feature","B")
+	obc=App.ActiveDocument.addObject("Part::Feature","C")
 
-	VX=FreeCAD.Vector(1,0,0)
-	VZ=FreeCAD.Vector(0,0,1)
+	VX=App.Vector(1,0,0)
+	VZ=App.Vector(0,0,1)
 
 
 	if 0:
-		lens=FreeCAD.lens
-		arcs=FreeCAD.arcs
+		lens=App.lens
+		arcs=App.arcs
 	else:
 		print ("verwende fest kodierte werte")
 		arcs=[90,90,90]
@@ -2167,7 +2167,7 @@ man auf eine Freiformfläche aufkleben ann.
 	alpha=np.arccos(jj)
 	y=b*np.sin(alpha)
 	x=b*np.cos(alpha)
-	pts=[FreeCAD.Vector(),FreeCAD.Vector(lens[0],0),FreeCAD.Vector(x,y)]
+	pts=[App.Vector(),App.Vector(lens[0],0),App.Vector(x,y)]
 	Draft.makeWire(pts,closed=True)
 
 	tts=[170,-40,pts[1].x,pts[1].y]
@@ -2181,22 +2181,22 @@ man auf eine Freiformfläche aufkleben ann.
 
 			p0=pts[0]
 			p1=p0+VX*tf
-			p3=FreeCAD.Vector(tts[2],tts[3])
-			p2=p3+FreeCAD.Rotation(VZ,tts[0]).multVec(VX)*tf
+			p3=App.Vector(tts[2],tts[3])
+			p2=p3+App.Rotation(VZ,tts[0]).multVec(VX)*tf
 			bc=Part.BSplineCurve()
 			bc.buildFromPolesMultsKnots([p0,p1,p2,p3],[4,4],[0,1],False,3)
 			minf += (bc.length()-lens[0])**2
 			oba.Shape=bc.toShape()
 
-			p4=p3+FreeCAD.Rotation(VZ,tts[0]-arcs[0]).multVec(VX)*tf
-			p6=FreeCAD.Vector(tts[4],tts[5])
-			p5=p6+FreeCAD.Rotation(VZ,tts[1]).multVec(VX)*tf
+			p4=p3+App.Rotation(VZ,tts[0]-arcs[0]).multVec(VX)*tf
+			p6=App.Vector(tts[4],tts[5])
+			p5=p6+App.Rotation(VZ,tts[1]).multVec(VX)*tf
 			bc.buildFromPolesMultsKnots([p3,p4,p5,p6],[4,4],[0,1],False,3)
 			minf += (bc.length()-lens[1])**2
 			obb.Shape=bc.toShape()
 
-			p7=p6+FreeCAD.Rotation(VZ,tts[1]-arcs[2]).multVec(VX)*tf
-			p8=p0+FreeCAD.Rotation(VZ,arcs[1]).multVec(VX)*tf
+			p7=p6+App.Rotation(VZ,tts[1]-arcs[2]).multVec(VX)*tf
+			p8=p0+App.Rotation(VZ,arcs[1]).multVec(VX)*tf
 			bc.buildFromPolesMultsKnots([p6,p7,p8,p0],[4,4],[0,1],False,3)
 			minf += (bc.length()-lens[2])**2
 			obc.Shape=bc.toShape()
@@ -2230,10 +2230,10 @@ man auf eine Freiformfläche aufkleben ann.
 			App.ActiveDocument.removeObject(grp.Name)
 
 	for m in methods:
-		grp=FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroup",m)
-		oba=FreeCAD.ActiveDocument.addObject("Part::Feature","A"+m)
-		obb=FreeCAD.ActiveDocument.addObject("Part::Feature","B"+m)
-		obc=FreeCAD.ActiveDocument.addObject("Part::Feature","C"+m)
+		grp=App.ActiveDocument.addObject("App::DocumentObjectGroup",m)
+		oba=App.ActiveDocument.addObject("Part::Feature","A"+m)
+		obb=App.ActiveDocument.addObject("Part::Feature","B"+m)
+		obc=App.ActiveDocument.addObject("Part::Feature","C"+m)
 		for ob in [oba,obb,obc]: grp.addObject(ob)
 		rc=minimize(minFun,tts,method=m,tol=10.0)
 
@@ -2251,7 +2251,7 @@ man auf eine Freiformfläche aufkleben ann.
 			App.ActiveDocument.removeObject(grp.Name)
 
 		#break
-	print "FERTIG"
+	print ("FERTIG"
 
 
 
@@ -2268,7 +2268,7 @@ def AA():
 	def minFun(paramsB,show=False):
 		
 		if 0:
-		#	print "paramsb",paramsB
+		#	print ("paramsb",paramsB
 			#params[0]=5
 			params[1]=paramsB[0]
 			#params[1]=25
@@ -2280,8 +2280,8 @@ def AA():
 		params=paramsB
 		
 		#params[5]=0.4
-		S=FreeCAD.Vector(params[0:3])
-		R=FreeCAD.Vector(
+		S=App.Vector(params[0:3])
+		R=App.Vector(
 			np.cos(params[3])*np.cos(params[4]),
 			np.sin(params[3])*np.cos(params[4]),
 			np.sin(params[4]))
@@ -2292,7 +2292,7 @@ def AA():
 #		print ("R",R) 
 		fval=0.
 		ptsa=[]
-		#fval += (S-FreeCAD.Vector(5,20,5)).Length**2*100
+		#fval += (S-App.Vector(5,20,5)).Length**2*100
 		lx=[0,1,4,5]
 		lx=[2,3,6,7]
 		#lx=range(8)
@@ -2307,9 +2307,9 @@ def AA():
 			n2=n.cross(R).normalize()
 			r2a=n2*np.sin(alpha)
 			r2=R*np.cos(alpha)+r2a
-#			print "r2 ",r2
+#			print ("r2 ",r2
 			if 10:
-				# print "r2",r2
+				# print ("r2",r2
 				#print("lens",alpha, (p-S).dot(r2),(p-S).Length)
 				#print (abs((p-S).dot(r2))-(p-S).Length)**2
 #				print("l-",alpha, (p-S).dot(r2))
@@ -2341,7 +2341,7 @@ def AA():
 				pass
 		
 #		if show:
-#			print "fval", fval
+#			print ("fval", fval
 #			Draft.makeWire(ptsa)
 
 
@@ -2374,7 +2374,7 @@ def AA():
 	# bounds fuer 4,5,7
 	methods=[methods[i] for i in [5]]
 
-	print "auswertung------------"
+	print ("auswertung------------"
 	for m in methods:
 		minv=10**10
 		for a in range(10,30):
@@ -2391,7 +2391,7 @@ def AA():
 				if rc.success:
 #					print ("-----------",round(rc.fun,8),rc.x,a,b)
 					if minv>rc.fun:
-						print "*"
+						print ("*"
 						minv=rc.fun
 						result=rc.x
 #				else:
@@ -2407,8 +2407,8 @@ def AA():
 			
 			params2=result
 			
-			S=FreeCAD.Vector(params2[0:3])
-			R=FreeCAD.Vector(
+			S=App.Vector(params2[0:3])
+			R=App.Vector(
 					np.cos(params2[3])*np.cos(params2[4]),
 					np.sin(params2[3])*np.cos(params2[4]),
 					np.sin(params2[4]))
@@ -2451,7 +2451,7 @@ def AA():
 	def minFun(paramsB,show=False):
 		
 		if 0:
-		#	print "paramsb",paramsB
+		#	print ("paramsb",paramsB
 			params[0]=5
 #			params[1]=paramsB[0]
 			params[1]=25
@@ -2464,8 +2464,8 @@ def AA():
 		params[3:5]=paramsB
 		
 		#params[5]=0.4
-		S=FreeCAD.Vector(params[0:3])
-		R=FreeCAD.Vector(
+		S=App.Vector(params[0:3])
+		R=App.Vector(
 			np.cos(params[3])*np.cos(params[4]),
 			np.sin(params[3])*np.cos(params[4]),
 			np.sin(params[4]))
@@ -2523,7 +2523,7 @@ def AA():
 	# bounds fuer 4,5,7
 	methods=[methods[i] for i in [1]]
 
-	print "auswertung------------"
+	print ("auswertung------------"
 	
 	for m in methods:
 		minv=10**10
@@ -2546,25 +2546,25 @@ def AA():
 							if rc.success:
 			#					print ("-----------",round(rc.fun,8),rc.x,a,b)
 								if minv>rc.fun:
-									print "*"
+									print ("*"
 									minv=rc.fun
 									result=rc.x
 									pos=[x,z,p]
 									print ("!minv ",round(minv*10**5,2), [round(r,3) for r in result],a,b,p)
-									print "pos ",pos
+									print ("pos ",pos
 							else:
 								print (m,rc.success,rc.message)
 						if  minv< 0.1:
 							print ("!minv ",minv, [round(r,3) for r in result],a,b,p)
 							print (bb,round(minv*10**5,2),x,z,p)
-							print "pos ",pos
+							print ("pos ",pos
 								
 							
 							params2=params
 							params2[3:5]=result
 
-							S=FreeCAD.Vector(params2[0:3])
-							R=FreeCAD.Vector(
+							S=App.Vector(params2[0:3])
+							R=App.Vector(
 									np.cos(params2[3])*np.cos(params2[4]),
 									np.sin(params2[3])*np.cos(params2[4]),
 									np.sin(params2[4]))
@@ -2609,7 +2609,7 @@ def huhu():
 				if rc.success:
 #					print ("-----------",round(rc.fun,8),rc.x,a,b)
 					if minv>rc.fun:
-						print "*"
+						print ("*"
 						minv=rc.fun
 						result=rc.x
 #				else:
@@ -2625,8 +2625,8 @@ def huhu():
 			
 			params2=result
 			
-			S=FreeCAD.Vector(params2[0:3])
-			R=FreeCAD.Vector(
+			S=App.Vector(params2[0:3])
+			R=App.Vector(
 					np.cos(params2[3])*np.cos(params2[4]),
 					np.sin(params2[3])*np.cos(params2[4]),
 					np.sin(params2[4]))

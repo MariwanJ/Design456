@@ -7,9 +7,10 @@ import time
 import glob
 
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 import PySide
 from PySide import  QtGui,QtCore
@@ -29,13 +30,13 @@ def run(w):
 	print (w)
 	print (w.obj)
 	print ("-------------")
-	FreeCAD.oo=w.obj
+	App.oo=w.obj
 	sk=w.obj.Object #.Object
 	print (sk.Label)
 	print (sk.Name)
 
 def hideAllConstraints(w,show=False):
-	FreeCAD.wob=w.obj
+	App.wob=w.obj
 	sk=w.obj.Object
 	c=sk.Constraints
 	for i in range(len(c)):
@@ -62,8 +63,8 @@ def setEndpoints(w,show=None):
 	for i in [13,14,15,16,22]:
 		sk.toggleDriving(i)
 
-	posa=FreeCAD.Vector(-250000,40000,0)
-	posb=FreeCAD.Vector(800000,50000,0)
+	posa=App.Vector(-250000,40000,0)
+	posb=App.Vector(800000,50000,0)
 	l=(posa-posb).Length
 	#posa
 	sk.setDatum(13,posa.x)
@@ -87,11 +88,11 @@ def setEndpoints(w,show=None):
 def lockEndpoints(w,mode=0):
 	sk=w.obj.Object
 	if mode==1:
-		print "toggle 1"
+		print ("toggle 1"
 		sk.toggleDriving(13)
 		sk.toggleDriving(14)
 	if mode==2:
-		print "toggle 2"
+		print ("toggle 2"
 		sk.toggleDriving(15)
 		sk.toggleDriving(16)
 	sk.solve()
@@ -114,8 +115,8 @@ def runSelection(w,mode=None):
 			except:
 				c=sk.addConstraint(Sketcher.Constraint('Block',el-1)) 
 				sk.renameConstraint(c, u'block edge ' + str(el) )
-				if sk.solve()<>0:
-					print "kann block nicht ausfuehren"
+				if sk.solve()!=0:
+					print ("kann block nicht ausfuehren"
 					sk.delConstraint(c)
 					sk.solve()
 
@@ -232,7 +233,7 @@ def ComboViewShowWidget(widget, tabMode=True):
 	tab.addTab(widget, widget.tabname)
 	tab.setCurrentIndex(2)
 
-	print "ComboViewShowWidget done."
+	print ("ComboViewShowWidget done."
 	widget.tab = tab
 	return widget
 
@@ -261,7 +262,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
 		vobj.Proxy = self
 
 	def getIcon(self):
-		return FreeCAD.ConfigGet("UserAppData") +'/Mod/freecad-nurbs/icons/sketchdriver.svg'
+		return App.ConfigGet("UserAppData") +'/Mod/freecad-nurbs/icons/sketchdriver.svg'
 
 	def setupContextMenu(self, obj, menu):
 		menu.clear()
@@ -276,7 +277,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
 
 	def myedit(self,obj):
 		self.methodB(None)
-		FreeCAD.oo2=obj
+		App.oo2=obj
 		self.Object=obj
 		Gui.activeDocument().setEdit(obj.Name)
 		self.methodA(None)
@@ -284,28 +285,28 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
 	def methodA(self,obj):
 #		print ("my Method A Finisher")
 #		Gui.activateWorkbench("DraftWorkbench")
-		FreeCAD.activeDocument().recompute()
+		App.activeDocument().recompute()
 
 	def methodB(self,obj):
 		print ("my method B Starter")
 		# test starting an extra dialog
-		FreeCAD.d=dialog(self)
-		FreeCAD.d.show()
-		FreeCAD.activeDocument().recompute()
+		App.d=dialog(self)
+		App.d.show()
+		App.activeDocument().recompute()
 
 	def methodC(self,obj):
 		print ("my method C After Edit finished")
 		Gui.activateWorkbench("NurbsWorkbench")
-		print "kl"
-#		FreeCAD.d.hide()
-#		FreeCAD.d.deleteLater()
-		print "ha"
-		FreeCAD.activeDocument().recompute()
-		print "hu"
+		print ("kl"
+#		App.d.hide()
+#		App.d.deleteLater()
+		print ("ha"
+		App.activeDocument().recompute()
+		print ("hu"
 		mw = getMainWindow()
 		tab = getComboView(mw)
 		c = tab.count()
-		print "count ",c
+		print ("count ",c
 		c = tab.count()
 
 		# clear the combo  window
@@ -316,7 +317,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
 
 		tab.setCurrentIndex(0)
 		tab.setCurrentIndex(0)
-		print "set tab domne"
+		print ("set tab domne"
 
 
 
@@ -397,7 +398,7 @@ def loadSketch(fn,sourcename='Sketch',targetname='Sketch'):
 	if ad==None:
 		ad=App.newDocument("Unnamed")
 
-	rc=FreeCAD.open(fn)
+	rc=App.open(fn)
 	print ("read ",fn)
 	print ("active document",ad,ad.Label,ad.Name)
 
@@ -427,7 +428,7 @@ def loadSketch(fn,sourcename='Sketch',targetname='Sketch'):
 
 def getfiles():
 	'''list sketcher files library''' 
-	files=glob.glob(FreeCAD.ConfigGet("UserAppData") +'sketchlib/'+'*_sk.fcstd')
+	files=glob.glob(App.ConfigGet("UserAppData") +'sketchlib/'+'*_sk.fcstd')
 	files.sort()
 	return files
 
@@ -437,7 +438,7 @@ def saveSketch(w=None):
 	'''save Gui.Selection  sketch into a file inside the sketch lib directory'''
 
 	sel=Gui.Selection.getSelection()[0]
-	fn=FreeCAD.ConfigGet("UserAppData") +'sketchlib/'+sel.Name+"_"+str(int(round(time.time())))+"_sk.fcstd"
+	fn=App.ConfigGet("UserAppData") +'sketchlib/'+sel.Name+"_"+str(int(round(time.time())))+"_sk.fcstd"
 	nd=App.newDocument("XYZ")
 	App.ActiveDocument=nd
 	copySketch(sel,"Sketch")
@@ -554,7 +555,7 @@ def setDatum(sk,datname,datvalue):
 	sk.setDriving(c,True)
 	sk.setDatum(c,datvalue)
 	sk.setDriving(c,cd)
-	print "rc solve",sk.solve()
+	print ("rc solve",sk.solve()
 	
 
 def reportSketch(sk):
@@ -568,7 +569,7 @@ def reportSketch(sk):
 		if c.Type in datumtypes:
 			print (ci,c.Name,c.Type,c.Value,c.Driving,c.InVirtualSpace,[c.First,c.FirstPos])
 
-	print "nameless datum ------------------"
+	print ("nameless datum ------------------"
 	for ci,c in enumerate(cs):
 		# only datums
 		if c.Type in datumtypes and c.Name=='':
@@ -579,7 +580,7 @@ def reportSketch(sk):
 		try:
 			setDatum(sk,'line_A',v)
 		except:
-			print "kann nicht ",v 
+			print ("kann nicht ",v 
 
 def createConstraint(sk,line,name,value,blue=False):
 		rc=sk.addConstraint(Sketcher.Constraint('Distance',line,value)) 
@@ -599,7 +600,7 @@ def connectAll(sk):
 						for j2 in [1,2]:
 							if sk.getPoint(i,j)==sk.getPoint(i2,j2):
 								cc=sk.addConstraint(Sketcher.Constraint('Coincident',i,j,i2,j2)) 
-								if sk.solve()<>0:
+								if sk.solve()!=0:
 									sk.delConstraint(cc)
 
 
@@ -607,10 +608,10 @@ def genQuadrangle():
 		name="Viereck"
 		sk=App.activeDocument().addObject('Sketcher::SketchObjectPython',name)
 		_ViewProvider(sk.ViewObject)
-		A=FreeCAD.Vector(-100,-50,0)
-		B=FreeCAD.Vector(100,-50,0)
-		C=FreeCAD.Vector(100,50,0)
-		D=FreeCAD.Vector(-100,50,0)
+		A=App.Vector(-100,-50,0)
+		B=App.Vector(100,-50,0)
+		C=App.Vector(100,50,0)
+		D=App.Vector(-100,50,0)
 
 		a=sk.addGeometry(Part.LineSegment(A,B),False)
 		b=sk.addGeometry(Part.LineSegment(B,C),False)
@@ -636,24 +637,24 @@ def genQuadrangle():
 
 		sk.solve()
 		App.activeDocument().recompute()
-		print "done"
+		print ("done")
 		reportSketch(sk)
 
-		FreeCAD.ActiveDocument.openTransaction("set length_c 105")
+		App.ActiveDocument.openTransaction("set length_c 105")
 		sk.setDatum(length_c,105)
 		reportSketch(sk)
-		FreeCAD.ActiveDocument.commitTransaction()
+		App.ActiveDocument.commitTransaction()
 
 		# Fehler erkennen
-		FreeCAD.ActiveDocument.openTransaction("set length_c 1205")
+		App.ActiveDocument.openTransaction("set length_c 1205")
 		try:
 			sk.setDatum(length_c,1200)
-			FreeCAD.ActiveDocument.commitTransaction()
+			App.ActiveDocument.commitTransaction()
 		except:
-			print "Fehler gemacht"
+			print ("Fehler gemacht"
 			reportSketch(sk)
-			print "roll back"
-			#FreeCAD.ActiveDocument.abortTransaction()
+			print ("roll back"
+			#App.ActiveDocument.abortTransaction()
 		reportSketch(sk)
 		App.activeDocument().recompute()
 		

@@ -11,9 +11,10 @@
 import random
 import Draft,Part,Points
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 from scipy.signal import argrelextrema
 import numpy as np
@@ -32,7 +33,7 @@ def run():
 	}
 
 	# parameter -----------------
-	t=FreeCAD.ParamGet('User parameter:Plugins/nurbs/'+'genrandomdat')
+	t=App.ParamGet('User parameter:Plugins/nurbs/'+'genrandomdat')
 	l=t.GetContents()
 	if l==None: l=[]
 	for k in l: p[k[1]]=k[2]
@@ -58,7 +59,7 @@ def run():
 	z=np.zeros(count)
 
 	pps=np.array([x,y,z]).swapaxes(0,1)
-	goods=[FreeCAD.Vector(tuple(p)) for p in pps]
+	goods=[App.Vector(tuple(p)) for p in pps]
 
 	Points.show(Points.Points(goods))
 	App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,0.0,0.0)

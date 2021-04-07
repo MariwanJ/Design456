@@ -12,9 +12,10 @@
 ##\cond
 from nurbswb.say import *
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 from PySide import QtGui
 import Part,Mesh,Draft,Points
@@ -24,7 +25,7 @@ import random
 
 
 def machkurve(pss):
-		ps=[FreeCAD.Vector(p) for p in pss]
+		ps=[App.Vector(p) for p in pss]
 		bc=Part.BSplineCurve()
 		bc.buildFromPoles(ps)
 		res=App.ActiveDocument.addObject("Part::Spline","kurve")
@@ -85,7 +86,7 @@ def machFlaeche(psta,ku=None,objName="XXd"):
 
 		degree=3
 
-		ps=[[FreeCAD.Vector(psta[v,u,0],psta[v,u,1],psta[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
+		ps=[[App.Vector(psta[v,u,0],psta[v,u,1],psta[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
 
 		kv=[1.0/(NbVPoles-3)*i for i in range(NbVPoles-2)]
 		if ku==None: ku=[1.0/(NbUPoles-3)*i for i in range(NbUPoles-2)]
@@ -167,23 +168,23 @@ def run():
 	pl3.reverse()
 
 	# tangent constraint 
-	pl1x=[ p+FreeCAD.Vector(10,0,-10) for p in pl2]
-	pl1xa=[ p+FreeCAD.Vector(20,0,-20) for p in pl2]
-	pl1xb=[ p+FreeCAD.Vector(30,0,-30) for p in pl2]
+	pl1x=[ p+App.Vector(10,0,-10) for p in pl2]
+	pl1xa=[ p+App.Vector(20,0,-20) for p in pl2]
+	pl1xb=[ p+App.Vector(30,0,-30) for p in pl2]
 
 	# bergruecken 
 	pl3x=[]
 	for i in range(len(pl2)):
-		pl3x += [pl2[i]*0.7+pl3[i]*0.3+FreeCAD.Vector(0,0,500*random.random())]
+		pl3x += [pl2[i]*0.7+pl3[i]*0.3+App.Vector(0,0,500*random.random())]
 
 	pl2x=[]	
 	for i in range(len(pl2)):
-		pl2x += [pl2[i]*0.2+pl3[i]*0.8+FreeCAD.Vector(0,0,500*random.random())]
+		pl2x += [pl2[i]*0.2+pl3[i]*0.8+App.Vector(0,0,500*random.random())]
 
 	# tangent constraint
-	pl3xa=[ p+FreeCAD.Vector(-10,0,0) for p in pl3]
-	pl3xb=[ p+FreeCAD.Vector(-20,0,0) for p in pl3]
-	pl3xc=[ p+FreeCAD.Vector(-30,0,0) for p in pl3]
+	pl3xa=[ p+App.Vector(-10,0,0) for p in pl3]
+	pl3xb=[ p+App.Vector(-20,0,0) for p in pl3]
+	pl3xc=[ p+App.Vector(-30,0,0) for p in pl3]
 
 
 	psta=np.array([pl2,pl1x,pl1xa,pl1xb,pl3x,pl2x,pl3xc,pl3xb,pl3xa,pl3])
@@ -197,7 +198,7 @@ def runB():
 	''' testcase for a expression baes mountain profile '''
 
 	import numpy as np
-	print "WARNING:this is a testcase only"
+	print ("WARNING:this is a testcase only"
 	# hard coded test data
 	kl=App.ActiveDocument.subedge
 	kr=App.ActiveDocument.subedge001
@@ -214,7 +215,7 @@ def runB():
 
 
 	rots=[0.0] + [
-			(kali[i]-kare[i]).normalize().cross((kali[0]-kare[0]).normalize()).dot(FreeCAD.Vector(0,0,1)) 
+			(kali[i]-kare[i]).normalize().cross((kali[0]-kare[0]).normalize()).dot(App.Vector(0,0,1)) 
 			for i in range(1,lena)
 		]
 	rots=np.arcsin(rots)
@@ -224,17 +225,17 @@ def runB():
 		yy=(kare[0]-kali[0])*scales[i]
 
 		polyp=[
-			FreeCAD.Vector(),
-			FreeCAD.Vector(0,0,115),
-			FreeCAD.Vector(0,0,130),
+			App.Vector(),
+			App.Vector(0,0,115),
+			App.Vector(0,0,130),
 
-			((kare[0]-kali[0])*0.3+FreeCAD.Vector(0,0,200))*scales[i],
-			((kare[0]-kali[0])*0.3+FreeCAD.Vector(0,0,200))*scales[i]+FreeCAD.Vector(40,0,0),
-			((kare[0]-kali[0])*0.3+FreeCAD.Vector(0,0,200))*scales[i]+FreeCAD.Vector(80,0,0),
+			((kare[0]-kali[0])*0.3+App.Vector(0,0,200))*scales[i],
+			((kare[0]-kali[0])*0.3+App.Vector(0,0,200))*scales[i]+App.Vector(40,0,0),
+			((kare[0]-kali[0])*0.3+App.Vector(0,0,200))*scales[i]+App.Vector(80,0,0),
 
-			yy+FreeCAD.Vector(0,0,50),
-			yy+FreeCAD.Vector(0,0,25),
-			yy+FreeCAD.Vector(),
+			yy+App.Vector(0,0,50),
+			yy+App.Vector(0,0,25),
+			yy+App.Vector(),
 		]
 
 		pol=Part.makePolygon(polyp)
@@ -242,8 +243,8 @@ def runB():
 		if 1: # display the control points polygons
 			res=App.ActiveDocument.addObject("Part::Spline","aa"+str(i)+"__")
 			res.Shape=pol
-			res.Placement=FreeCAD.Placement(kali[i],FreeCAD.Rotation()).multiply(
-				FreeCAD.Placement(FreeCAD.Vector(),FreeCAD.Rotation(FreeCAD.Vector(0,0,1),-180.0*rots[i]/np.pi)))
+			res.Placement=App.Placement(kali[i],App.Rotation()).multiply(
+				App.Placement(App.Vector(),App.Rotation(App.Vector(0,0,1),-180.0*rots[i]/np.pi)))
 
 #		print kali[i]
 #		print rots[i]

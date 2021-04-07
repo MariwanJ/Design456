@@ -3,7 +3,7 @@
 import numpy as np
 import Draft
 
-ps=FreeCAD.ps
+ps=App.ps
 ps.reshape(20,10,3)
 bs=App.ActiveDocument.Nurbs.Proxy.bs
 poles=np.array(bs.getPoles())
@@ -26,7 +26,7 @@ kps.shape
 # gitter der knoten
 polygons=[]
 for u in range(len(uknots)):
-	pts=[FreeCAD.Vector(tuple(v)) for v in kps[u]]
+	pts=[App.Vector(tuple(v)) for v in kps[u]]
 	#Draft.makeWire(pts)
 	polygons.append(Part.makePolygon(pts))
 
@@ -34,7 +34,7 @@ kpsv=kps.swapaxes(0,1)
 
 
 for t in range(len(vknots)):
-	pts=[FreeCAD.Vector(tuple(v)) for v in kpsv[t]]
+	pts=[App.Vector(tuple(v)) for v in kpsv[t]]
 	#Draft.makeWire(pts)
 	polygons.append(Part.makePolygon(pts))
 
@@ -84,11 +84,11 @@ def createSocket(obj):
 	for e in egs:
 		p1=e.Vertexes[0].Point
 		p2=e.Vertexes[1].Point
-		p3=FreeCAD.Vector(p2)
+		p3=App.Vector(p2)
 		p3.z = -100
 		if p3 not in b:
 			b.append(p3)
-		p4 = FreeCAD.Vector(p1)
+		p4 = App.Vector(p1)
 		p4.z = -100
 		if p4 not in b:
 			b.append(p4)
