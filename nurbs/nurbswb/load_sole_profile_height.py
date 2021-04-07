@@ -31,59 +31,59 @@ from nurbswb.say import *
 
 def run():
 
-	try:
-		aktiv=App.ActiveDocument
-		if aktiv==None:
-			showdialog("Fehler","no Sole Document","first open or create a sole document")
+    try:
+        aktiv=App.ActiveDocument
+        if aktiv==None:
+            showdialog("Fehler","no Sole Document","first open or create a sole document")
 
-		fn=App.ParamGet('User parameter:Plugins/shoe').GetString("height profile")
-		if fn=='':
-			fn= __dir__+"/../testdata/heelsv3.fcstd"
-			App.ParamGet('User parameter:Plugins/shoe').SetString("height profile",fn)
+        fn=App.ParamGet('User parameter:Plugins/shoe').GetString("height profile")
+        if fn=='':
+            fn= __dir__+"/../testdata/heelsv3.fcstd"
+            App.ParamGet('User parameter:Plugins/shoe').SetString("height profile",fn)
 
-		dok=App.open(fn)
+        dok=App.open(fn)
 
-		sss=dok.findObjects("Sketcher::SketchObject")
+        sss=dok.findObjects("Sketcher::SketchObject")
 
-		try:
-			s=sss[0]
-			c=s.Shape.Edge1.Curve
-		except: 
-			showdialog("Error","Height profile document has no sketch")
-
-
-		pts=c.discretize(86)
-
-		mpts=[]
-		for i in [0,15,25,35,45,55,65,75,85]:
-			mpts.append(pts[i])
+        try:
+            s=sss[0]
+            c=s.Shape.Edge1.Curve
+        except: 
+            showdialog("Error","Height profile document has no sketch")
 
 
-		App.closeDocument(dok.Name)
+        pts=c.discretize(86)
 
-		dok2=aktiv
-		App.setActiveDocument(dok2.Name)
-
-		ss=dok2.Spreadsheet
-
+        mpts=[]
+        for i in [0,15,25,35,45,55,65,75,85]:
+            mpts.append(pts[i])
 
 
+        App.closeDocument(dok.Name)
 
-		# daten ins spreadsheet schreiben
-		for s in range(8):
-			cn=cellname(s+3,9)
-			ss.set(cn,str(mpts[-s-1].y))
+        dok2=aktiv
+        App.setActiveDocument(dok2.Name)
 
-		# ferse hochlegen
-		for j in range(7):
-			cn=cellname(j+2,26)
-			ss.set(cn,str((mpts[-1].y)))
+        ss=dok2.Spreadsheet
 
 
-		dok2.recompute()
-		import nurbswb.sole
-		reload(nurbswb.sole)
-		nurbswb.sole.run()
-		dok2.recompute()
 
-	except : showdialog() 
+
+        # daten ins spreadsheet schreiben
+        for s in range(8):
+            cn=cellname(s+3,9)
+            ss.set(cn,str(mpts[-s-1].y))
+
+        # ferse hochlegen
+        for j in range(7):
+            cn=cellname(j+2,26)
+            ss.set(cn,str((mpts[-1].y)))
+
+
+        dok2.recompute()
+        import nurbswb.sole
+        reload(nurbswb.sole)
+        nurbswb.sole.run()
+        dok2.recompute()
+
+    except : showdialog() 

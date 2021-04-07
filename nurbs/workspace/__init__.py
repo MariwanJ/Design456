@@ -315,14 +315,14 @@ import workspace
 reload(workspace)
 
 def testme():
-	ad=App.ActiveDocument.Name
-	cc=Gui.Selection.getSelection()[0]
-	workspace.createWsLink("TestMeWorkspace")
-	workspace.createLink(cc,"TestMeWorkspace")
-	App.setActiveDocument(ad)
-	App.ActiveDocument=App.getDocument(ad)
-	Gui.ActiveDocument=Gui.getDocument(ad)
-	App.ActiveDocument.recompute()
+    ad=App.ActiveDocument.Name
+    cc=Gui.Selection.getSelection()[0]
+    workspace.createWsLink("TestMeWorkspace")
+    workspace.createLink(cc,"TestMeWorkspace")
+    App.setActiveDocument(ad)
+    App.ActiveDocument=App.getDocument(ad)
+    Gui.ActiveDocument=Gui.getDocument(ad)
+    App.ActiveDocument.recompute()
 
 
 Gui.Selection.addSelection(App.ActiveDocument.Box)

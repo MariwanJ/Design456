@@ -147,11 +147,11 @@ def loadModel(s):
 
 
 # def displayMatplot():
-#	# display in matplotlib
-#	pos=nx.get_node_attributes(g,'pos')
-#	nx.draw(g,pos)
-#	#p-l-t.show()
-#	# p-l-t.savefig("/tmp/path.png")
+#    # display in matplotlib
+#    pos=nx.get_node_attributes(g,'pos')
+#    nx.draw(g,pos)
+#    #p-l-t.show()
+#    # p-l-t.savefig("/tmp/path.png")
 
 
 def getkey(n):
@@ -169,32 +169,32 @@ def getkey(n):
         v2 = App.Vector(v).normalize()
         v2es += v2
 
-#	print ("huhu ", len( g.node[n]['fdirs'])
+#    print ("huhu ", len( g.node[n]['fdirs'])
     v2fs = App.Vector()
     for v in g.node[n]['fdirs']:
-        #		print v
+        #        print v
         v2 = App.Vector(v)
         v2.normalize()
         v2fs += v2
 
-#	return (#g.node[n]['ec'],
-#		0,
-#		App.Vector(ptokey(v2fs)).Length,
-#		App.Vector(ptokey(v2es)).Length
-#		)
+#    return (#g.node[n]['ec'],
+#        0,
+#        App.Vector(ptokey(v2fs)).Length,
+#        App.Vector(ptokey(v2es)).Length
+#        )
 
 
-#	print v2fs
-#	print v2es
-#	print ("fdirs",len(g.node[n]['fdirs'])
-#	print ("edirs",len(g.node[n]['edirs'])
+#    print v2fs
+#    print v2es
+#    print ("fdirs",len(g.node[n]['fdirs'])
+#    print ("edirs",len(g.node[n]['edirs'])
 
-#	print ("getkey",(
-#		g.node[n]['ec'],
-#		0,
-#		App.Vector(v2fs).Length,
-#		App.Vector(v2es).Length
-#		)
+#    print ("getkey",(
+#        g.node[n]['ec'],
+#        0,
+#        App.Vector(v2fs).Length,
+#        App.Vector(v2es).Length
+#        )
 
 # ----------------
     return (
@@ -241,8 +241,8 @@ def createKeys():
     kp = {}
 
     for n in g.nodes():
-        #			print n
-        #			print g.node[n]
+        #            print n
+        #            print g.node[n]
         try:
             g.node[n]['fdirs']
         except:
@@ -390,13 +390,13 @@ def runAna(model, silent=False):
     for i, v in enumerate(sp.Vertexes):
         pp=(round(v.Point.x, 2), round(v.Point.y, 2), round(v.Point.z, 2))
         try:
-            #			print (pp,i)
-            #			print ("found ",points[pp])
+            #            print (pp,i)
+            #            print ("found ",points[pp])
             gi=points[pp]
 
             g.node[gi]["label"]=bm.Label+":Vertex"+str(i+1)
             g.node[gi]["Vertex"]=v
-#			print g.node[gi]
+#            print g.node[gi]
         except:
             print("NOT FOUND"
             pass
@@ -404,13 +404,13 @@ def runAna(model, silent=False):
     for i, f in enumerate(sp.Faces):
         print("Face ", i, len(f.Vertexes))
         for v in f.Vertexes:
-            #			print (v,ptokey(v.Point),points[ptokey(v.Point)])
+            #            print (v,ptokey(v.Point),points[ptokey(v.Point)])
             pix=points[ptokey(v.Point)]
-#			print g.node[pix]
+#            print g.node[pix]
 
             # flaechennormale anfuegen
             (u, v)=f.Surface.parameter(v.Point)
-#			print( pix,"Addiere Flaechennoirmalw",(u,v),f.normalAt(u,v))
+#            print( pix,"Addiere Flaechennoirmalw",(u,v),f.normalAt(u,v))
             try:
                 g.node[pix]['fdirs'].append(f.normalAt(u, v))
             except:
@@ -420,13 +420,13 @@ def runAna(model, silent=False):
         c=f.CenterOfMass
         pp=(round(c.x, 2), round(c.y, 2), round(c.z, 2))
         try:
-            #			print (pp,i)
-            #			print ("found ",points[pp])
+            #            print (pp,i)
+            #            print ("found ",points[pp])
             gi=points[pp]
 
             g.node[gi]["label"]=bm.Label+":Face"+str(i+1)
             g.node[gi]["Face"]=f
-#			print g.node[gi]
+#            print g.node[gi]
         except:
             print("NOT FOUND"
             pass
@@ -469,7 +469,7 @@ def runAna(model, silent=False):
     App.g=g
     App.a=model
 
-#	print len(sp.Vertexes)
+#    print len(sp.Vertexes)
     addToVertexStore()
 
 
@@ -478,8 +478,8 @@ def runCompare():
     resetVertexStore()
     s=Gui.Selection.getSelection()
     for model in s:
-        #		g=nx.Graph()
-        #		App.g=g
+        #        g=nx.Graph()
+        #        App.g=g
         print("Startrnstand"
         for v in g.nodes():
             print g.node[v]['fdirs']
@@ -502,7 +502,7 @@ def displayQualityPoints():
             if g.node[v]['quality'] == q:
                 pts.append(g.node[v]['vector'])
 
-#		print pts
+#        print pts
         if pts != []:
             Points.show(Points.Points(pts))
             App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
@@ -545,11 +545,11 @@ def addToVertexStore():
         print g.node[v]['label']
         print g.node[v]['quality']-1
         print g.node[v]['keys']
-#		print g.node[v]['keys'][g.node[v]['quality']-1]
+#        print g.node[v]['keys'][g.node[v]['quality']-1]
         print("ha"
 
-#		key=(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],"!>",
-#			g.node[v]['quality'],"<!",g.node[v]['keys'])
+#        key=(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],"!>",
+#            g.node[v]['quality'],"<!",g.node[v]['keys'])
 
         key=(a.Label, g.node[v]['label'], v, g.node[v]['keys'][0], "!>",
                g.node[v]['quality'], "<!", g.node[v]['keys'])
@@ -579,7 +579,7 @@ def printVertexStore():
         for v in vs:
             if str(v[1]) != '----':
                 print v[1:-1]
-#				print ("	",v[-1]
+#                print ("    ",v[-1]
 
 
 def displayVertexStore():
@@ -618,23 +618,23 @@ def displayVertexStore():
             # print keyd[k][0][1]
             # print keyd[k][1][1]
 
-#	if pts!=[]:
-#		#print pts
-#		Points.show(Points.Points(pts))
-#		App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
-#			random.random(),random.random(),random.random())
-#		App.ActiveDocument.ActiveObject.ViewObject.PointSize= 10
+#    if pts!=[]:
+#        #print pts
+#        Points.show(Points.Points(pts))
+#        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
+#            random.random(),random.random(),random.random())
+#        App.ActiveDocument.ActiveObject.ViewObject.PointSize= 10
 #
-#		App.ActiveDocument.ActiveObject.Label="Common Points "
+#        App.ActiveDocument.ActiveObject.Label="Common Points "
 
 
-#	print ("no found -----------------------------"
+#    print ("no found -----------------------------"
     pts=[]
     for k in keys:
         if keys[k] == 1:
-            #			print k,keys[k]
-            #			print keyd[k]
-            #			print ("!!",keyd[k][0][0]
+            #            print k,keys[k]
+            #            print keyd[k]
+            #            print ("!!",keyd[k][0][0]
             pts.append(keyd[k][0][0])
 
     print
@@ -662,7 +662,7 @@ def displayVertexStore():
                             print k
                             first=False
                         print p[1]
-#						print p
+#                        print p
                         print q[1]
                         anz += 1
                         gps += [App.Vector(p[0]), App.Vector(q[0])]
@@ -679,17 +679,17 @@ def displayVertexStore():
         App.ActiveDocument.ActiveObject.Label="Gefundene unique keys -- bestes ergebnis"
 
 
-#	if pts!=[]:
-#		#print pts
-#		Points.show(Points.Points(pts))
-#		App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
-#			random.random(),random.random(),random.random())
-#		App.ActiveDocument.ActiveObject.ViewObject.PointSize= 10
+#    if pts!=[]:
+#        #print pts
+#        Points.show(Points.Points(pts))
+#        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
+#            random.random(),random.random(),random.random())
+#        App.ActiveDocument.ActiveObject.ViewObject.PointSize= 10
 #
-#		App.ActiveDocument.ActiveObject.Label="No common Points "
+#        App.ActiveDocument.ActiveObject.Label="No common Points "
 #
-#	print ("common found:",found
-#	print count
+#    print ("common found:",found
+#    print count
 
 
 def loadTest1():
@@ -713,8 +713,8 @@ def loadTest2():
 def getkeytab(g, nodes):
     keys={}
     for n in nodes:
-        #		print n
-        #		print g.node[n]
+        #        print n
+        #        print g.node[n]
         k=getkeyg(g, n)
         try:
             keys[k] += [n]
@@ -734,7 +734,7 @@ def getUniques(keys):
 def Test4():
     g=App.g
     print("Test 4")
-#	print g.nodes()
+#    print g.nodes()
 
     keys=getkeytab(g, g.nodes())
 
@@ -756,7 +756,7 @@ def Test4():
 
         found=False
         print("loop i= ")
-		print(i)
+        print(i)
         for n in uniqs:
             nbs=g.neighbors(n)
             nbs2=[]
@@ -766,9 +766,9 @@ def Test4():
 
             keys=getkeytab(g, nbs2)
 
-#			print
-#			print ("node ",n,getkeyg(g,n),nbs2)
-#			print nbs
+#            print
+#            print ("node ",n,getkeyg(g,n),nbs2)
+#            print nbs
 
             for k in keys:
                 print(k, keys[k])
@@ -779,7 +779,7 @@ def Test4():
                 print(uniqs2)
                 for u in uniqs2:
                     if u not in uniqs:
-                        #				print ("-add--------------------",u
+                        #                print ("-add--------------------",u
                         found=True
                         uniqs += [u]
                         g.node[u]['upath']=g.node[n]['upath']+[u]
@@ -808,9 +808,9 @@ def Test4():
         if n not in uniqs:
             k=getkeyg(g, n)
             print(k, n, g.node[n]['label'], g.node[n]['vector'])
-#			print (n,g.node[n]['label'])
-#			print g.node[n]['edirs']
-#			print g.node[n]['fdirs']
+#            print (n,g.node[n]['label'])
+#            print g.node[n]['edirs']
+#            print g.node[n]['fdirs']
             noups.append(App.Vector(g.node[n]['vector']))
 
     Points.show(Points.Points(noups))
