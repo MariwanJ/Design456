@@ -5,7 +5,7 @@ import numpy as np
 
 
 def srun(w):
-    print w.m.currentIndex()
+    print (w.m.currentIndex())
     a=w.target
     model='modelS'
     import nurbswb.sole_models
