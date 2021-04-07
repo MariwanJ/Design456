@@ -94,7 +94,7 @@ def mergeSketchSpline(pts=None,label="BSpline Sketch",periodic=True,name="Sketch
 
 		radius=2.0
 		cj=sk.addConstraint(Sketcher.Constraint('Radius',j,radius)) 
-		print ("Constraint ",cj
+		print ("Constraint ",cj)
 		sk.renameConstraint(cj, 'Weight ' +str(cj+1))
 
 		#i=5; App.ActiveDocument.Sketch016.setDatum(i,40))
@@ -115,7 +115,7 @@ def mergeSketchSpline(pts=None,label="BSpline Sketch",periodic=True,name="Sketch
 	for i,j in enumerate(js):
 
 		conList.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',j,3,k,i))
-		print ("okay"
+		print ("okay")
 
 	sk.addConstraint(conList)
 
@@ -159,14 +159,14 @@ def runall():
 	s=sx[0]
 	name="mergeS_"+s.Name
 	for so in s.Shape.Edges:
-		print so
+		print (so)
 		try:
 			bc=so.Curve
-			print bc
+			print (bc)
 			pts=bc.getPoles()
-			print pts
+			print (pts)
 			l=s.Label
-			print  l
+			print  (l)
 			print (l,len(pts))
 			periodic=bc.isPeriodic()
 			# createSketchSpline(pts,str(l) + " Sketch" ,periodic)

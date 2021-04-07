@@ -64,7 +64,7 @@ class Point(object):
 		self.fs += [f]
 
 	def printFaces(self):
-		print self.point
+		print (self.point
 		for f in self.fs:
 			print f.Label," ",
 		print
@@ -501,7 +501,7 @@ class Multiface(object):
 
 			else:
 				print ("useselections"
-				print self.selection
+				print (self.selection
 			#--------------------------------------------
 				for (sfi,ui,vi,p) in self.selection:
 						sf=self.comp[sfi].Surface
@@ -1342,7 +1342,7 @@ def SurfaceEditor():
 						val1=int(val1)
 						val2=int(val2)
 						self.multiface.selection += [[0,3*val1,3*val2,None]]
-						print self.multiface.selection
+						print (self.multiface.selection
 						self.update()
 
 				if len(sp)==2:
@@ -1366,7 +1366,7 @@ def SurfaceEditor():
 						
 						for v in range(pp+1):
 							self.multiface.selection += [[0,3*val,3*v,None]]
-						print self.multiface.selection
+						print (self.multiface.selection
 						self.update()
 					if cmd=='selv':
 						print ("select v ring"
@@ -1379,7 +1379,7 @@ def SurfaceEditor():
 
 				if len(sp)==0:
 					print ("Hide mode .........."
-					print self.last
+					print (self.last
 					if self.last !='hide':
 						App.ActiveDocument.BeGrid.ViewObject.Visibility= not App.ActiveDocument.BeGrid.ViewObject.Visibility
 						self.last='hide'

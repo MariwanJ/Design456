@@ -302,7 +302,7 @@ class EventFilter(QtCore.QObject):
 						print ("Enter Action-----------------------------"
 						# enter creates a new point ...
 						# vf=App.Vector(self.x,self.y,self.z)
-						print self.pos
+						print (self.pos
 						if self.mode=='marker':
 							createMarker(self)
 						return True
@@ -1180,12 +1180,12 @@ class MyApp(object):
 			self.root.ids['runbutton'].show()
 
 			self.update()
-			print self.root
-			print self.obj
-			print self.obj.Object.Label
+			print (self.root
+			print (self.obj
+			print (self.obj.Object.Label
 
 			print ("shape .."
-			print self.obj.Object.Proxy.g.shape
+			print (self.obj.Object.Proxy.g.shape
 
 
 	'''
@@ -1217,9 +1217,9 @@ class MyApp(object):
 
 	def update(self):
 		print ("update"
-		print self.dialog.ef.mode
-		print self.dialog.ef.h
-		print self.dialog.ef.r
+		print (self.dialog.ef.mode
+		print (self.dialog.ef.h
+		print (self.dialog.ef.r
 
 
 

@@ -91,7 +91,7 @@ class EventFilter(QtCore.QObject):
 					# only two function keys implemented, no modifieres
 					if e.key()== QtCore.Qt.Key_F2:
 						say("------------F2-- show mode and moddata---------------")
-						print self.mode
+						print (self.mode
 						return False
 					elif e.key()== QtCore.Qt.Key_Escape:
 						say("------------Escape-----------------")
@@ -1111,7 +1111,7 @@ class MyWidget(QtGui.QWidget):
 	def setmode(self,index):
 		'''callback from list'''
 		self.imode=index
-		print self.mode.currentText()
+		print (self.mode.currentText()
 		App.ParamGet('User parameter:Plugins/nurbs').SetString("editorMode",str(self.mode.currentText()))
 		if index not in [2,3]:
 			self.rotsl.hide()

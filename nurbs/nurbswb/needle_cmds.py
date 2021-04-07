@@ -297,7 +297,7 @@ class RibEditor(QtGui.QWidget):
 		self.title=title
 		self.pos=pos
 		self.obj=obj
-		print self.obj.Spreadsheet.Label
+		print (self.obj.Spreadsheet.Label
 		self.initUI()
 
 	def initUI(self):      
@@ -367,7 +367,7 @@ class BackboneEditor(QtGui.QWidget):
 		self.title=title
 		self.pos=pos
 		self.obj=obj
-		print self.obj.Spreadsheet.Label
+		print (self.obj.Spreadsheet.Label
 		self.initUI()
 
 	def initUI(self):      
