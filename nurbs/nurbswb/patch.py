@@ -15,8 +15,6 @@ from nurbswb.say import *
 import FreeCAD as App
 import FreeCADGui as Gui
 
-
-
 from PySide import QtGui
 import Part,Mesh,Draft,Points
 

@@ -1,5 +1,5 @@
-import FreeCAD 
-import FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
 
 import numpy as np
 

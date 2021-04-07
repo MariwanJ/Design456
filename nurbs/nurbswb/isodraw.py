@@ -33,7 +33,7 @@ import nurbswb
 
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)
-print __dir__
+print ( __dir__)
 
 
 class PartFeature:
@@ -517,7 +517,7 @@ class Map(PartFeature):
         proxy.uv2y=uv2y
         proxy.xy2u=xy2u
         proxy.xy2v=xy2v
-        print ("getmap done"
+        print ("getmap done")
 
     
 
@@ -553,7 +553,7 @@ def createGrid(mapobj,upmode=False):
         bs=face.Surface
     except: return Part.Shape()
     
-    print ("createGrid for special faces"
+    print ("createGrid for special faces")
     print face
     import numpy as np
 

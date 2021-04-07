@@ -84,7 +84,7 @@ def test1():
 
 
     Gui.SendMsgToActiveView("ViewFit")
-    print ("fertig"
+    print ("fertig")
      
 
 

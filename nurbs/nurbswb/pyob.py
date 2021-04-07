@@ -7,10 +7,8 @@
 
 
 ##\cond
-import FreeCAD
-import FreeCADGui
-
-
+import FreeCAD as App 
+import FreeCADGui as Gui
 import PySide
 
 import Part

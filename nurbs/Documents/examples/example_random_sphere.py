@@ -20,7 +20,7 @@ def testRandomSphere():
     print ("points ps",len(ps)
 
     if 0:
-        print ("random .."
+        print ("random ..")
         ps=np.array(App.ps).swapaxes(0,1)
         temp,ct=ps.shape
         ps[2] += 100*np.random.random(ct)

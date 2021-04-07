@@ -6,8 +6,8 @@
 #--
 #-- GNU Lesser General Public License (LGPL)
 #-------------------------------------------------
-import FreeCAD
-import FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
 import Points,Part,Draft
 import numpy as np
 import random

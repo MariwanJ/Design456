@@ -3,7 +3,7 @@
 # (c) microelly
 #
 
-print ("shoedata version 0.92"
+print ("shoedata version 0.92")
 
 ## shoeAdam ist das erste Schuh-Modell
 #

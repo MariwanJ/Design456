@@ -11,11 +11,11 @@
 import FreeCAD, Part, FreeCADGui
 
 def printinfo(sp):
-        print ("\n" *2
-        print ("degree ",sp.Degree, " continuity ", sp.Continuity
-        print ("count poles ", len(sp.getPoles())
-        print ("knots ", sp.KnotSequence
-        print ("weights ",sp.getWeights()
+        print ("\n" *2)
+        print ("degree ",sp.Degree, " continuity ", sp.Continuity)
+        print ("count poles ", len(sp.getPoles()))
+        print ("knots ", sp.KnotSequence)
+        print ("weights ",sp.getWeights())
 
 
 class PartFeature:

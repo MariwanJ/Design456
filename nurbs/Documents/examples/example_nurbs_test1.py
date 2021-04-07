@@ -63,7 +63,7 @@ def createNurbs():
     a.Proxy.movePoint(4,6,0,0,60)
     a.Proxy.movePoint(2,5,0,0,60)
 
-    print ("add Uline"
+    print ("add Uline")
     a.Proxy.addUline(8)
     a.Proxy.addUline(8)
     a.Proxy.addUline(8)

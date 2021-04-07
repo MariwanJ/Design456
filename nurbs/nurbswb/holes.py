@@ -18,7 +18,7 @@ def run():
 
     wireobs=sel[1:]
 
-    print face
+    print (face)
     wires=[]
     for w in wireobs:
         print w.Shape.Wires

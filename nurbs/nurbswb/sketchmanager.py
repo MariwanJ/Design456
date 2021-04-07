@@ -6,12 +6,8 @@ import nurbswb.pyob
 import time
 import glob
 
-
 import FreeCAD as App
 import FreeCADGui as Gui
-
-
-
 import PySide
 from PySide import  QtGui,QtCore
 

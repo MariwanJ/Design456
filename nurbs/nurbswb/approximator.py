@@ -1964,7 +1964,7 @@ def extraKnots():
 
     for k in kkk:
         if k not in k2sa:
-            print k
+            print (k)
 
 
 class Ribface(FeaturePython):
@@ -2323,7 +2323,7 @@ def AA():
     # bounds fuer 4,5,7
     methods = [methods[i] for i in [5]]
 
-    print("auswertung------------"
+    print("auswertung------------")
     for m in methods:
         minv=10**10
         for a in range(10, 30):
@@ -2378,9 +2378,6 @@ def AA():
 
 
             # minFun(rc.x,True)
-
-
-
 
 #
 # version 2
