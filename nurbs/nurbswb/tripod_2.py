@@ -526,9 +526,9 @@ for s in Gui.Selection.getSelectionEx():
 '''
 
 fs=App.ActiveDocument.Thickness.Shape.Faces
-print len(fs)
+print  (len(fs)
 fs += App.ActiveDocument.Surface001.Shape.Faces
-print len(fs)
+print  (len(fs)
 Part.show(Part.makeShell(fs))
 
 '''

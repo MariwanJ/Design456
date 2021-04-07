@@ -4,8 +4,8 @@ import FreeCADGui as Gui
 
 
 def run():
-    ''' hilfsmethode wendet Placement aus dem Label an, 
-    um Objekte(Sketch) an die gewuenschte Stelle im Raum zu verschieben'''
+    ''' auxiliary method applies placement from the label,
+     to move objects (sketch) to the desired place in the room'''
 
     for y in Gui.Selection.getSelection():
         if y.Label.startswith('t='):

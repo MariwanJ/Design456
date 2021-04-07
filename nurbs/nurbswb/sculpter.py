@@ -62,7 +62,7 @@ def check(pp,mode,updateNurbs=False,widget=None):
     if not updateNurbs:
 #        print ("modify"
         App.ptsk=ptsk
-#        print len(ptsk)
+#        print  (len(ptsk)
         ff=-1
         for i,p in enumerate(ptsk):
             #if i <2: print (i,(p-pp).Length)

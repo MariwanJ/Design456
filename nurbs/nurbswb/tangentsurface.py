@@ -188,14 +188,14 @@ def createShape(obj,force=False):
     kvs=[1.0/(cv-dv)*i for i in range(cv-dv+1)]
     kus=[1.0/(cu-du)*i for i in range(cu-du+1)]
 
-    print len(kvs)
-#    print len(kus)
+    print  (len(kvs)
+#    print  (len(kus)
 #    kvs=[-1,-0.6,-0.4,-0.2]+ obj.source.Shape.Face1.Surface.getVKnots() +[1.2,1.4,1.6,1.8]
 # knotenvektor stimmt nicht .#+#
     kvs=obj.source.Shape.Face1.Surface.getVKnots()
 #    kus=[-1]+ obj.source.Shape.Face1.Surface.getUKnots() +[1.5]
 
-    print len(kvs)
+    print  (len(kvs)
     print obj.source.Shape.Face1.Surface.getVKnots()
 
 

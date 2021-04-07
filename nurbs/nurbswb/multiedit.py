@@ -1564,14 +1564,14 @@ def SurfaceEditor():
             if hasattr(self,'multiface'):
                 self.multiface.update(params=self,force=False)
                 App.activeDocument().recompute()
-                print len(self.multiface.selection)
+                print  (len(self.multiface.selection)
                 print ("update ",time.time()-ta
 
         def apply(self):
             ta=time.time()
             self.multiface.update(params=self,force=True)
             App.activeDocument().recompute()
-            print len(self.multiface.selection)
+            print  (len(self.multiface.selection)
             print ("update ",time.time()-ta
             App.ActiveDocument.getObject(self.multiface.nameE).ViewObject.hide()
             App.activeDocument().recompute()
@@ -1581,7 +1581,7 @@ def SurfaceEditor():
         def xyz_update(self):
             ta=time.time()
             
-            print len(self.multiface.selection)
+            print  (len(self.multiface.selection)
             selps=[App.Vector(p[3]) for p in self.multiface.selection]
             sels=self.multiface.selection
             self.multiface.selection=[]
@@ -1590,7 +1590,7 @@ def SurfaceEditor():
                 print ("X"
                 self.multiface.movePoint(vt,App.Vector(0,0,2000),True,params=self,useselections=True)
             App.activeDocument().recompute()
-            print len(self.multiface.selection)
+            print  (len(self.multiface.selection)
             print ("update ",time.time()-ta
 
 

@@ -256,7 +256,7 @@ def createKeys():
             kp[key] = 1
 
     anz = 0
-    print("Keys, count occur"
+    print("Keys, count occur")
     for k in kp:
         print(k, kp[k])
         if kp[k] == 1:
@@ -268,15 +268,15 @@ def createKeys():
 
 def setQuality(nodes, kp):
     for n in nodes:
-        key=g.node[n]['key']
+        key = g.node[n]['key']
         if kp[key] == 1:
-            g.node[n]['quality']=1
+            g.node[n]['quality'] = 1
 
 
 def getNeighborEdges(n):
     ''' freecad edges from a point n '''
-    col=[]
-    nbs=g.neighbors(n)
+    col = []
+    nbs = g.neighbors(n)
     for nb in nbs:
         col += [g.edge[n][nb]['fcedge']]
     return col
@@ -286,7 +286,7 @@ def getNeighborEdges(n):
 
 def displayNB(nodes):
     ''' diasplay neighbor edges as Part'''
-    col=[]
+    col = []
     for n in nodes:
         col += getNeighborEdges(n)
     Part.show(Part.Compound(col))
@@ -296,19 +296,19 @@ def berechneKeyLevel(i=1):
     '''key for level i is the i-th neighbor sum of the keys'''
 
     for n in g.nodes():
-        nbs=g.neighbors(n)
-        kka={}
-        aas=0
-        bbs=0
-        ccs=0
+        nbs = g.neighbors(n)
+        kka = {}
+        aas = 0
+        bbs = 0
+        ccs = 0
         for nb in nbs:
-            (a, b, c)=g.node[nb]['keys'][i-1]
+            (a, b, c) = g.node[nb]['keys'][i-1]
             aas += a
             bbs += b
             ccs += c
 
         try:
-            g.node[n]['keys'][i]=(aas, bbs, ccs)
+            g.node[n]['keys'][i] = (aas, bbs, ccs)
         except:
             g.node[n]['keys'].append((aas, bbs, ccs))
 
@@ -317,18 +317,18 @@ def werteausLevel(i=1):
     ''' which points have unique keys at level i'''
 
     # count the key occurrences
-    kp={}
+    kp = {}
     for n in g.nodes():
         if g.node[n]['quality'] == 0:
-            key=g.node[n]['keys'][i]
+            key = g.node[n]['keys'][i]
             try:
                 kp[key] += 1
             except:
-                kp[key]=1
+                kp[key] = 1
 
     # which points have unique keys
-    anz=0
-    anzg=0
+    anz = 0
+    anzg = 0
 
     # count the unique points
     for k in kp:
@@ -338,9 +338,9 @@ def werteausLevel(i=1):
     # set the quality of the unique points
     for n in g.nodes():
         if g.node[n]['quality'] == 0:
-            key=g.node[n]['keys'][i]
+            key = g.node[n]['keys'][i]
             if kp[key] == 1:
-                g.node[n]['quality']=i+1
+                g.node[n]['quality'] = i+1
                 anzg += 1
         else:
             anzg += 1
@@ -353,86 +353,86 @@ def werteausLevel(i=1):
 def zeigeQ(i):
     ''' display the indetification quality level as Sub Grid '''
 
-    ns=[]
+    ns = []
     for n in g.nodes():
         if g.node[n]['quality'] == i:
             ns.append(n)
 
     # print ns
     displayNB(ns)
-    App.ActiveDocument.ActiveObject.Label="Quality" + str(i)
-    App.ActiveDocument.ActiveObject.ViewObject.LineColor=(
+    App.ActiveDocument.ActiveObject.Label = "Quality" + str(i)
+    App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
         random.random(), random.random(), random.random())
 
 
 def run():
     '''run analysis for one selected object'''
-    s=Gui.Selection.getSelection()
-    model=s[0]
+    s = Gui.Selection.getSelection()
+    model = s[0]
     runAna(model)
 
 
 def runAna(model, silent=False):
     '''main analysis method'''
 
-    print("NodesA", g.nodes()
-    mp=createFaceMidPointmodel(model)
-    print("NodesB", g.nodes()
+    print("NodesA", g.nodes())
+    mp = createFaceMidPointmodel(model)
+    print("NodesB", g.nodes())
     loadModel(mp)
 
-    print("Model ", mp.Label
-    print("NodesC", g.nodes()
+    print("Model ", mp.Label)
+    print("NodesC", g.nodes())
 
     # link labels and geometry from freecad to networkx
-    bm=model
-    sp=bm.Shape
+    bm = model
+    sp = bm.Shape
 
     for i, v in enumerate(sp.Vertexes):
-        pp=(round(v.Point.x, 2), round(v.Point.y, 2), round(v.Point.z, 2))
+        pp = (round(v.Point.x, 2), round(v.Point.y, 2), round(v.Point.z, 2))
         try:
             #            print (pp,i)
             #            print ("found ",points[pp])
-            gi=points[pp]
+            gi = points[pp]
 
-            g.node[gi]["label"]=bm.Label+":Vertex"+str(i+1)
-            g.node[gi]["Vertex"]=v
+            g.node[gi]["label"] = bm.Label+":Vertex"+str(i+1)
+            g.node[gi]["Vertex"] = v
 #            print g.node[gi]
         except:
-            print("NOT FOUND"
+            print("NOT FOUND")
             pass
 
     for i, f in enumerate(sp.Faces):
         print("Face ", i, len(f.Vertexes))
         for v in f.Vertexes:
             #            print (v,ptokey(v.Point),points[ptokey(v.Point)])
-            pix=points[ptokey(v.Point)]
+            pix = points[ptokey(v.Point)]
 #            print g.node[pix]
 
             # flaechennormale anfuegen
-            (u, v)=f.Surface.parameter(v.Point)
+            (u, v) = f.Surface.parameter(v.Point)
 #            print( pix,"Addiere Flaechennoirmalw",(u,v),f.normalAt(u,v))
             try:
                 g.node[pix]['fdirs'].append(f.normalAt(u, v))
             except:
-                g.node[pix]['fdirs']=[(f.normalAt(u, v))]
-            print("len fdirs", len(g.node[pix]['fdirs'])
+                g.node[pix]['fdirs'] = [(f.normalAt(u, v))]
+            print("len fdirs", len(g.node[pix]['fdirs']))
 
-        c=f.CenterOfMass
-        pp=(round(c.x, 2), round(c.y, 2), round(c.z, 2))
+        c = f.CenterOfMass
+        pp = (round(c.x, 2), round(c.y, 2), round(c.z, 2))
         try:
             #            print (pp,i)
             #            print ("found ",points[pp])
-            gi=points[pp]
+            gi = points[pp]
 
-            g.node[gi]["label"]=bm.Label+":Face"+str(i+1)
-            g.node[gi]["Face"]=f
+            g.node[gi]["label"] = bm.Label+":Face"+str(i+1)
+            g.node[gi]["Face"] = f
 #            print g.node[gi]
         except:
-            print("NOT FOUND"
+            print("NOT FOUND")
             pass
 
-    kp=createKeys()
-    print g.nodes()
+    kp = createKeys()
+    print(g.nodes())
 
     setQuality(g.nodes(), kp)
 
@@ -441,62 +441,62 @@ def runAna(model, silent=False):
 
     # calculate and display top quality nodes
     if 1:
-        ns=[]
+        ns = []
         for n in g.nodes():
             if g.node[n]['quality'] == 1:
                 ns.append(n)
         # print ns
         if not silent:
             displayNB(ns)
-            App.ActiveDocument.ActiveObject.Label="Top Quality"
-            App.ActiveDocument.ActiveObject.ViewObject.LineColor=(
+            App.ActiveDocument.ActiveObject.Label = "Top Quality"
+            App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
                 random.random(), random.random(), random.random())
 
     # calculate all levels
     for i in range(1, 10):
         berechneKeyLevel(i=i)
-        rc=werteausLevel(i=i)
+        rc = werteausLevel(i=i)
         if rc == 0:
             break
 
-    last=i
+    last = i
     # zeige alle indentifizierten Punkte im Verbund
     if not silent:
         for i in range(1, last):
             zeigeQ(i)
 
     # hold the data for postprocessing in a global variable
-    App.g=g
-    App.a=model
+    App.g = g
+    App.a = model
 
-#    print len(sp.Vertexes)
+#    print  (len(sp.Vertexes)
     addToVertexStore()
 
 
 def runCompare():
     '''run analysis for more parts and display the results'''
     resetVertexStore()
-    s=Gui.Selection.getSelection()
+    s = Gui.Selection.getSelection()
     for model in s:
         #        g=nx.Graph()
         #        App.g=g
-        print("Startrnstand"
+        print("Startrnstand")
         for v in g.nodes():
-            print g.node[v]['fdirs']
-            print g.node[v]['edirs']
-            g.node[v]['fdirs']=[]
-            g.node[v]['edirs']=[]
-        print("--------------"
-        print("NodesA", g.nodes()
+            print(g.node[v]['fdirs'])
+            print(g.node[v]['edirs'])
+            g.node[v]['fdirs'] = []
+            g.node[v]['edirs'] = []
+        print("--------------")
+        print("NodesA", g.nodes())
         runAna(model, silent=True)
     displayVertexStore()
 
 
 def displayQualityPoints():
     '''display the quality points as point clouds'''
-    g=App.g
+    g = App.g
     for q in range(1, 7):
-        pts=[]
+        pts = []
         for v in g.nodes():
             # print g.node[v]['quality']
             if g.node[v]['quality'] == q:
@@ -505,22 +505,22 @@ def displayQualityPoints():
 #        print pts
         if pts != []:
             Points.show(Points.Points(pts))
-            App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
+            App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
                 random.random(), random.random(), random.random())
-            App.ActiveDocument.ActiveObject.ViewObject.PointSize=10
+            App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
 
-            App.ActiveDocument.ActiveObject.Label="Points Quality " + str(q)
+            App.ActiveDocument.ActiveObject.Label = "Points Quality " + str(q)
 
 
 def printData():
     '''print some diagnostic data'''
-    g=App.g
+    g = App.g
     for v in g.nodes():
-        print v
-        print g.node[v]['quality']
-        print g.node[v]['keys']
-        print g.node[v]['vector']
-        print g.node[v]['keys'][g.node[v]['quality']-1]
+        print(v)
+        print(g.node[v]['quality'])
+        print(g.node[v]['keys'])
+        print(g.node[v]['vector'])
+        print(g.node[v]['keys'][g.node[v]['quality']-1])
 
 
 def addToVertexStore():
@@ -529,29 +529,29 @@ def addToVertexStore():
     try:
         App.PT
     except:
-        App.PT={}
+        App.PT = {}
 
-    print("addtoVertexStore"
-    g=App.g
-    a=App.a
+    print("add to Vertex-Store")
+    g = App.g
+    a = App.a
     for v in g.nodes():
 
         try:
             g.node[v]['label']
         except:
-            g.node[v]['label']='----'
+            g.node[v]['label'] = '----'
 
-        print("kkkk"
-        print g.node[v]['label']
-        print g.node[v]['quality']-1
-        print g.node[v]['keys']
+        print("kkkk")
+        print(g.node[v]['label'])
+        print(g.node[v]['quality']-1)
+        print(g.node[v]['keys'])
 #        print g.node[v]['keys'][g.node[v]['quality']-1]
-        print("ha"
+        print("ha")
 
 #        key=(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],"!>",
 #            g.node[v]['quality'],"<!",g.node[v]['keys'])
 
-        key=(a.Label, g.node[v]['label'], v, g.node[v]['keys'][0], "!>",
+        key = (a.Label, g.node[v]['label'], v, g.node[v]['keys'][0], "!>",
                g.node[v]['quality'], "<!", g.node[v]['keys'])
 
         try:
@@ -560,53 +560,53 @@ def addToVertexStore():
                 # print ("added"
         except:
             # App.PT[g.node[v]['vector']] =[(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],g.node[v]['quality'])]
-            App.PT[g.node[v]['vector']]=[key]
+            App.PT[g.node[v]['vector']] = [key]
 
 
 def resetVertexStore():
     '''clear the vertex store for next analysis'''
-    App.PT={}
-    print App.PT
+    App.PT = {}
+    print(App.PT)
 
 
 def printVertexStore():
     '''print the vertex store'''
-    print("The vertex Store"
+    print("The vertex Store")
     for j in App.PT:
         print
-        print j
-        vs=App.PT[j]
+        print(j)
+        vs = App.PT[j]
         for v in vs:
             if str(v[1]) != '----':
-                print v[1:-1]
+                print (v[1:-1])
 #                print ("    ",v[-1]
 
 
 def displayVertexStore():
     '''print the vertex store'''
-    print("The vertex Store compare"
-    found=0
-    count=0
-    keys={}
-    keyd={}
+    print("The vertex Store compare")
+    found = 0
+    count = 0
+    keys = {}
+    keyd = {}
 
     for j in App.PT:
         # print
         # print j
-        vs=App.PT[j]
+        vs = App.PT[j]
         for v in vs:
             if str(v[1]) == '----':
                 continue
-            k=v[3]
+            k = v[3]
             count += 1
             try:
                 keys[k] += 1
                 keyd[k] += [(j, v[:-2])]
                 # print v
             except:
-                keys[k]=1
-                keyd[k]=[(j, v[:-2])]
-    pts=[]
+                keys[k] = 1
+                keyd[k] = [(j, v[:-2])]
+    pts = []
     for k in keys:
         if keys[k] > 1:
             found += 1
@@ -629,7 +629,7 @@ def displayVertexStore():
 
 
 #    print ("no found -----------------------------"
-    pts=[]
+    pts = []
     for k in keys:
         if keys[k] == 1:
             #            print k,keys[k]
@@ -638,18 +638,18 @@ def displayVertexStore():
             pts.append(keyd[k][0][0])
 
     print
-    print("nach keys ausgegeben"
+    print("after keys issued")
     for k in keys:
         if k[0] % 100 != 0:  # ignore reine flaechen
             print
-            print k
+            print(k)
             for p in keyd[k]:
-                print p[1]
+                print(p[1])
 
-    anz=0
-    gps=[]
+    anz = 0
+    gps = []
     print
-    print("nach keys ausgegeben nur noch paare-------------------------------"
+    print("after keys issued only pairs -------------------------------")
     for k in keys:
         first=True
         if k[0] % 100 != 0:  # ignore reine flaechen
@@ -659,15 +659,15 @@ def displayVertexStore():
                     if p[1][1].startswith(p[1][0]):
                         if first:
                             print
-                            print k
+                            print (k)
                             first=False
-                        print p[1]
+                        print (p[1])
 #                        print p
-                        print q[1]
+                        print (q[1])
                         anz += 1
                         gps += [App.Vector(p[0]), App.Vector(q[0])]
 
-    print("gefundene paare ")
+    print("found pairs  ")
     print(anz)
 
     if gps != []:
@@ -693,7 +693,7 @@ def displayVertexStore():
 
 
 def loadTest1():
-    print __file__
+    print (__file__)
     # hier relativen pfad reintun
     App.open(u"/home/thomas/Schreibtisch/zwei_gleiche_fenster.fcstd")
     App.setActiveDocument("zwei_gleiche_fenster")

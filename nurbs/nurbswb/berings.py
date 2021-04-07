@@ -461,7 +461,7 @@ class Bering(FeaturePython):
         ms=[6,5,6]
         ks=range(len(ms))
         print ms
-        print len(pts)
+        print  (len(pts)
         print ks
         
         bc.buildFromPolesMultsKnots(pts,ms,ks,False,degree)
@@ -2041,14 +2041,14 @@ def BSplineToBezierCurve():
 
             pp=bc.getPoles()
 #                print p
-            print len(bc.getPoles())
+            print  (len(bc.getPoles())
             print pp[0]
             print pp[-1]
 
         Draft.makeWire(poles)
     #    return
 
-        print len(poles)
+        print  (len(poles)
         mults=[4]+[3]*((len(poles)-1)/3-1)+[4]
         knots=range(len(mults))
         print ("huhu"
