@@ -91,7 +91,7 @@ class EventFilter(QtCore.QObject):
                 p = cursor.pos()
 
 #                if p.x()<100 or p.y()<100: 
-#                    print ("jump cursor facedraw 92"
+#                    print ("jump cursor facedraw 92")
 #                    cursor.setPos(p.x()+100, p.y()+100)
                 #-----------------------------------
 

@@ -13,9 +13,6 @@ import Draft,Part
 import FreeCAD as App
 import FreeCADGui as Gui
 
-
-
-
 from scipy.signal import argrelextrema
 import numpy as np
 #import matplotlib.pyplot as plt

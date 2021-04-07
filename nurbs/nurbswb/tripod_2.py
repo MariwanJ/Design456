@@ -7,10 +7,8 @@
 #-- GNU Lesser General Public License (LGPL)
 #-------------------------------------------------
 
-import FreeCAD, FreeCADGui
-
-Gui=FreeCADGui
-App=FreeCAD
+import FreeCAD as App
+import FreeCADGui as Gui
 import Part
 
 from nurbswb.say import say

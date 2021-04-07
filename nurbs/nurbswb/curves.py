@@ -135,7 +135,7 @@ class Ufo(nurbswb.pyob.FeaturePython):
 
 
     def myExecute(proxy,obj):
-        print ("ufo my execute "
+        print ("ufo my execute ")
         return
         #    ofsi.recompute()
 
@@ -252,7 +252,7 @@ class Star(nurbswb.pyob.FeaturePython):
             if obj.tangentCond > len(rc): obj.tangentCond =len(rc)
             if obj.tangentCond < 0: obj.tangentCond = 0
 
-            print ("genutzer Winkel ", rc[obj.tangentCond-1] *180/np.pi
+            print ("genutzer Winkel ", rc[obj.tangentCond-1] *180/np.pi)
             if obj.tangentInverse:
                 relpos.Rotation.Angle += np.pi + rc[obj.tangentCond-1]
             else:

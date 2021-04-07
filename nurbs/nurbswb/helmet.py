@@ -50,15 +50,15 @@ class _VPH(ViewProvider):
         
 
     def methodA(self,obj):
-        print ("my Method A"
+        print ("my Method A")
         App.activeDocument().recompute()
 
     def methodB(self,obj):
-        print ("my method B"
+        print ("my method B")
         App.activeDocument().recompute()
 
     def methodC(self,obj):
-        print ("my method C !!"
+        print ("my method C !!")
         print obj
 
         App.activeDocument().recompute()
@@ -71,10 +71,10 @@ class _VPH(ViewProvider):
 
 
     def doubleClicked(self,vobj):
-        print ("double clicked"
+        print ("double clicked")
         self.myedit(vobj.Object)
         
-        print ("Ende double clicked"
+        print ("Ende double clicked")
 
 #-------------------------------
 
@@ -125,10 +125,10 @@ class Helmet(FeaturePython):
 
     def onChanged(self, fp, prop):
         #if not hasattr(fp,'onchange') or not fp.onchange : return
-        print ("########################## changed ",prop
+        print ("########################## changed ",prop)
         if prop =="height":
-            print ("change XXXX"
-            print fp.height
+            print ("change XXXX")
+            print (fp.height)
             fp.equator.movePoint(1,2,App.Vector(0,fp.height))
             fp.meridian.movePoint(1,2,App.Vector(0,fp.height))
             fp.equator.solve()
@@ -199,7 +199,7 @@ def createSketch(sk):
         sk.addGeometry(Part.LineSegment(pts[i-1],pts[i]),False)
 
     for i in range(3):
-        print ("aa",i
+        print ("aa",i)
         sk.addConstraint(Sketcher.Constraint('Coincident',16+i,2,16+i+1,1)) 
 
     sk.addConstraint(Sketcher.Constraint('Coincident',19,2,16,1)) 
@@ -211,7 +211,7 @@ def createSketch(sk):
         sk.addConstraint(Sketcher.Constraint('Parallel',2*i+1,2*i+2)) 
 
     for i in [0,7,16,18]:
-        print i
+        print (i)
         sk.addConstraint(Sketcher.Constraint('Vertical',i)) 
 
     for i in [3,11,17,19]:
@@ -286,7 +286,7 @@ def run(fp):
     ptsall[3,1:4,0]=pts2[3].x
     ptsall[1,1:4,0]=pts2[1].x
     
-    print ("arquator"
+    print ("arquator")
     pa=fp.equator.getPoint(1,1)
     pb=fp.equator.getPoint(2,2)
 
@@ -294,7 +294,7 @@ def run(fp):
     ptsall[1,1:4,0]=pa.x
 
 
-    print ("meridan"
+    print ("meridan")
     pa=fp.meridian.getPoint(1,1)
     pb=fp.meridian.getPoint(2,2)
     
@@ -395,7 +395,7 @@ def run(fp):
                 False,3)
             comps += [bc.toShape()]
 
-#    print ("ptse23,",ptse2
+#    print ("ptse23,",ptse2)
 
     if 0:
         for yy in [yy2a,yy3a]:    

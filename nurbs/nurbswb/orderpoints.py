@@ -13,8 +13,6 @@ import Draft,Part
 import FreeCAD as App
 import FreeCADGui as Gui
 
-
-
 import scipy as sp
 from scipy.signal import argrelextrema
 import numpy as np

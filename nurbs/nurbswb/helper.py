@@ -44,9 +44,9 @@ class Helper(nurbswb.pyob.FeaturePython):
     def create_knotes_shape2(self):
         '''create a grid of iso curves '''
 #        #bs=self.obj2.source.Proxy.getBS()
-#        print ("obj2",self.obj2
+#        print ("obj2",self.obj2)
         bs=self.obj2.source.Shape.Face1.Surface
-#        print ("bs",bs
+#        print ("bs",bs)
 #        #shape=nurbswb.helper.create_knotes_shape(None,bs)
 
         uk=bs.getUKnots()
@@ -76,8 +76,8 @@ class Helper(nurbswb.pyob.FeaturePython):
 
         comp=Part.Compound(sss)
         self.obj2.Shape=comp
-        print comp
-        print sss
+        print (comp)
+        print (sss)
         return comp
 
     def create_curve(self):
@@ -186,10 +186,10 @@ class ViewProviderHelper(nurbswb.pyob.ViewProvider):
                 elif mode == "isoGrid":
                     #fp.Shape=App.ActiveDocument.Torus.Shape
                     #fp.Shape=fp.source.Proxy.create_grid_shape()
-                    print ("update isogrid"
+                    print ("update isogrid")
                     fp.Proxy.create_knotes_shape2()
                 elif mode == "uIso" or mode == "vIso":
-                    print ("create Curve"
+                    print ("create Curve")
                     fp.Proxy.create_curve()
                 else:
                     # fp.Shape=App.ActiveDocument.Cylinder.Shape

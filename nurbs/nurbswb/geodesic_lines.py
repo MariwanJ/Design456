@@ -972,7 +972,7 @@ def updatePatch_old(fp):
             if v>vmax:v=vmax
 
             if u<umin or v<vmin or u>umax or v>vmax:
-                print ("qcancellation!"
+                print ("qcancellation!")
                 break
             p=sf.value(u,v)
 
@@ -1118,7 +1118,7 @@ def updateCurvaturePath(fp,redirect,flip):
             dt2=t.dot(t2)
             pts += [p+t1,p,p+t2,p]
             if abs(dt1)<0.82 and abs(dt2)<0.82:
-                print ("worry "
+                print ("worry ")
                 pts += [p+t1,p,p+t2,p]
 #            else:
 
@@ -1138,12 +1138,12 @@ def updateCurvaturePath(fp,redirect,flip):
         vt=fp.vt*0.01
         pend=sf.value(ut,vt)
         pt=Part.Point(sf.value(ut,vt))
-        print ("Abstand"
-        print pt
-        print shape.distToShape(pt.toShape())
+        print ("Abstand")
+        print (pt)
+        print (shape.distToShape(pt.toShape()))
         t= shape.distToShape(pt.toShape())
-        print t
-        print t[0]
+        print (t)
+        print (t[0])
         fp.dist=t[0]
 
         return shape
@@ -1337,7 +1337,7 @@ def updatePatch(fp):
 
             e1 = bs2d.toShape(t)
             print  (len(pts2d)
-            print ("huhwu"
+            print ("huhwu")
             return e1
         #----------------------
 
@@ -1625,14 +1625,14 @@ def genrib_outdated(f,u=50,v=50,d=0,lang=30,gridsize=20):
 
 def updateDistance(fp):
 
-    print ("update distance"
+    print ("update distance")
     try:
         obj=fp.obj
         lang=fp.lang
         u=fp.u
         v=fp.v
     except:
-        print ("still not ready"
+        print ("still not ready")
         return Part.Shape()
 
     f=obj.Shape.Faces[0]
@@ -2188,7 +2188,7 @@ def createMarker(u=20,v=50):
 def findGeodesicToTarget(start=None,target=None,d=10):
 
     print 
-    print ("step"
+    print ("step")
 
     if start==None:
         start=Gui.Selection.getSelection()[0]
@@ -2206,8 +2206,8 @@ def findGeodesicToTarget(start=None,target=None,d=10):
 
     sf=f.Surface
 
-    print ("Start:",start.TargetPoint
-    print ("Ziel:",target.TargetPoint
+    print ("Start:",start.TargetPoint)
+    print ("Ziel:",target.TargetPoint)
     print ("----------",u,v)
  
     lang=30
@@ -2244,7 +2244,7 @@ def findGeodesicToTarget(start=None,target=None,d=10):
             dti=time.time()-ta
             print ("Loop time ",dti,len(pts),dti/len(pts))
             if not found: 
-                print ("nichts mehr gefunden"
+                print ("nichts mehr gefunden")
                 break
 
         print (lange,de)
@@ -2343,7 +2343,7 @@ def createShoeMarkers():
 
 
     for m in markers:
-        print ("!",m
+        print ("!",m)
 
         l = makeLabel(
             targetpoint=App.Vector (0.0, -18.226360321044922, 53.260826110839844),

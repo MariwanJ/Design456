@@ -1,5 +1,4 @@
 import FreeCAD as App
-import FreeCADGui
 import Points,Part,Draft
 import numpy as np
 import random
@@ -9,14 +8,8 @@ from scipy import signal
 from PySide import QtGui
 import sys,traceback,random
 
-import Points
-
-
 import FreeCADGui as Gui
 import numpy as np
-import Draft
-
-
 import Draft
 
 if 0:
@@ -32,7 +25,7 @@ if 0:
 
 
     pts=[bc.value(k) for k in bc.getKnots()]
-    print  (len(pts)
+    print  (len(pts))
     Draft.makeWire(pts)
     App.ActiveDocument.ActiveObject.Label="Knotes "+a.Label
     App.ActiveDocument.ActiveObject.ViewObject.PointSize=10
