@@ -5,23 +5,23 @@ import random
 
 def test3():
 
-	a= nurbswb.nurbs.makeNurbs(5,9)
-	a.model="NurbsCylinder"
-	a.solid=False
-	a.base=False
-	# a.grid=False
-	ps=a.Proxy.getPoints()
-	a.Proxy.togrid(ps)
-	
-	
-	a.Proxy.updatePoles()
-	a.Proxy.showGriduv()
+    a= nurbswb.nurbs.makeNurbs(5,9)
+    a.model="NurbsCylinder"
+    a.solid=False
+    a.base=False
+    # a.grid=False
+    ps=a.Proxy.getPoints()
+    a.Proxy.togrid(ps)
+    
+    
+    a.Proxy.updatePoles()
+    a.Proxy.showGriduv()
 
-	App.activeDocument().recompute()
-	Gui.updateGui()
+    App.activeDocument().recompute()
+    Gui.updateGui()
 
-	Gui.activeDocument().activeView().viewAxonometric()
-	Gui.SendMsgToActiveView("ViewFit")
+    Gui.activeDocument().activeView().viewAxonometric()
+    Gui.SendMsgToActiveView("ViewFit")
 
 
 test3()

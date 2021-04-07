@@ -21,46 +21,46 @@ import time
 
 
 def myShape(obj,shapeBuilder):
-	print (shapeBuilder) 
-	try:
-		return methods[shapeBuilder](obj)
-	except:
-		return None
-	if shapeBuilder=="xy+xz":
-		return methodA(obj)
-	else:
-		return None
+    print (shapeBuilder) 
+    try:
+        return methods[shapeBuilder](obj)
+    except:
+        return None
+    if shapeBuilder=="xy+xz":
+        return methodA(obj)
+    else:
+        return None
 
 
 def methodA(obj):
-	try:
-		v1=obj.baseClientA.Shape.Vertexes
-		v2=obj.baseClientB.Shape.Vertexes
-	except:
-		print ("cannont build shape for .." )
-		print (obj.Label)
-		print (obj.baseClientA.Label)
-		print (obj.baseClientB.Label)
-		return Part.Shape()
+    try:
+        v1=obj.baseClientA.Shape.Vertexes
+        v2=obj.baseClientB.Shape.Vertexes
+    except:
+        print ("cannont build shape for .." )
+        print (obj.Label)
+        print (obj.baseClientA.Label)
+        print (obj.baseClientB.Label)
+        return Part.Shape()
 
-	pts=[]
-	pts2=[]
-	for i,v in enumerate(v1):
-		p=v.Point
-		z=v2[i].Point.z
-		pts.append(App.Vector(p.x,p.y,z))
-		pts2.append(App.Vector(p.x,p.y+25,z+10))
+    pts=[]
+    pts2=[]
+    for i,v in enumerate(v1):
+        p=v.Point
+        z=v2[i].Point.z
+        pts.append(App.Vector(p.x,p.y,z))
+        pts2.append(App.Vector(p.x,p.y+25,z+10))
 
-	print (pts)
+    print (pts)
 
-	sh=Part.makeLoft([Part.makePolygon(pts),Part.makePolygon(pts2)])
-	print (sh)
-	return Part.Compound([sh])
+    sh=Part.makeLoft([Part.makePolygon(pts),Part.makePolygon(pts2)])
+    print (sh)
+    return Part.Compound([sh])
 
 
 def methodB(obj):
-	print ("method B not impl.")
-	return None
+    print ("method B not impl.")
+    return None
 
 methods={
 "xy+xz":methodA,

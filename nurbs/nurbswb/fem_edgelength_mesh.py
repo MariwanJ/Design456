@@ -1,293 +1,303 @@
 # -*- coding: utf-8 -*-
-#-------------------------------------------------
-#-- simualtion force by edge length
-#--
-#-- microelly 2017 v 0.2
-#--
-#-- GNU Lesser General Public License (LGPL)
-#-------------------------------------------------
+# -------------------------------------------------
+# -- simualtion force by edge length
+# --
+# -- microelly 2017 v 0.2
+# --
+# -- GNU Lesser General Public License (LGPL)
+# -------------------------------------------------
 
 
 import FreeCAD as App
 import FreeCADGui as Gui
 
-
-
-import Part,Points
+import Part
+import Points
 
 import networkx as nx
 import random
-import os 
+import os
 import nurbswb
 
 
 if 0:
-	# load a testfile
-	try:
-		App.open(u"/home/thomas/Schreibtisch/netz_test_data.fcstd")
-		App.setActiveDocument("netz_test_data")
-		App.ActiveDocument=App.getDocument("netz_test_data")
-		Gui.ActiveDocument=Gui.getDocument("netz_test_data")
-	except: pass
+    # load a testfile
+    try:
+        App.open(u"/home/thomas/Schreibtisch/netz_test_data.fcstd")
+        App.setActiveDocument("netz_test_data")
+        App.ActiveDocument = App.getDocument("netz_test_data")
+        Gui.ActiveDocument = Gui.getDocument("netz_test_data")
+    except:
+        pass
 
 
-def copySketch(source,target):
-	'''Sketch uebernehmen'''
-	for g in source.Geometry:
-		target.addGeometry(g)
-	for eg in source.ExternalGeometry:
-#		print (eg,	eg[0],eg[1])
-		for g in eg[1]:
-			target.addExternal(eg[0].Name,g)
-	for i,c in enumerate(source.Constraints):
-#		print i,c
-		target.addConstraint(c)
+def copySketch(source, target):
+    '''Sketch uebernehmen'''
+    for g in source.Geometry:
+        target.addGeometry(g)
+    for eg in source.ExternalGeometry:
+        #        print (eg,    eg[0],eg[1])
+        for g in eg[1]:
+            target.addExternal(eg[0].Name, g)
+    for i, c in enumerate(source.Constraints):
+        #        print i,c
+        target.addConstraint(c)
 
 
 def getForceSketch():
-	'''open and reset the force visualisation sketch'''
-	ska=App.ActiveDocument.getObject("Force")
-	if ska==None:
-		ska=App.ActiveDocument.addObject('Sketcher::SketchObject','Force')
-		ska.ViewObject.LineColor=(1.0,.0,.0)
-		ska.ViewObject.LineWidth=4
+    '''open and reset the force visualization sketch'''
+    ska = App.ActiveDocument.getObject("Force")
+    if ska == None:
+        ska = App.ActiveDocument.addObject('Sketcher::SketchObject', 'Force')
+        ska.ViewObject.LineColor = (1.0, .0, .0)
+        ska.ViewObject.LineWidth = 4
 
-	gct=ska.GeometryCount
-	for i in range(gct):
-		ska.delGeometry(gct-i-1)
+    gct = ska.GeometryCount
+    for i in range(gct):
+        ska.delGeometry(gct-i-1)
 
-	ska.solve()
-	return ska
+    ska.solve()
+    return ska
+
 
 def getBaseSketch():
-	sks=Gui.Selection.getSelection()[0]
-	sk=App.ActiveDocument.addObject('Sketcher::SketchObject',"CopySim_" + sks.Name)
-	sk.Label='Copy of ' + sks.Label
-	copySketch(sks,sk)
-	return  sk
+    sks = Gui.Selection.getSelection()[0]
+    sk = App.ActiveDocument.addObject(
+        'Sketcher::SketchObject', "CopySim_" + sks.Name)
+    sk.Label = 'Copy of ' + sks.Label
+    copySketch(sks, sk)
+    return sk
 
 
 def get_sval(s):
-	'''parse the content substring of a geometry '''
-	(a,b)=s.split("=")
-	return int(eval(b))
+    '''parse the content substring of a geometry '''
+    (a, b) = s.split("=")
+    return int(eval(b))
 
-def findnode(conix,n):
-	for k in conix:
-		if n in conix[k]:
-			return k
-	print ("findnode fehler bei ",n
-	print 
-	return -1
+
+def findnode(conix, n):
+    for k in conix:
+        if n in conix[k]:
+            return k
+    print("findnode fehler bei ", n)
+    print()
+    return -1
 
 
 def getGraph(sk):
-	'''sketch to graph'''
+    '''sketch to graph'''
 
-	# modul variables
-	g=nx.Graph()
-	points={}
+    # modul variables
+    g = nx.Graph()
+    points = {}
 
-	for i,geo in enumerate(sk.Geometry):
-#		print geo.__class__.__name__
-		if geo.__class__.__name__ !=  'LineSegment': continue
-#		print (i,geo.StartPoint,geo.EndPoint)
-		g.add_node((i,1))
-		g.add_node((i,2))
+    for i, geo in enumerate(sk.Geometry):
+        #        print geo.__class__.__name__
+        if geo.__class__.__name__ != 'LineSegment':
+            continue
+#        print (i,geo.StartPoint,geo.EndPoint)
+        g.add_node((i, 1))
+        g.add_node((i, 2))
 
-	for c in sk.Constraints:
-	#	print c.Content
-		tt=c.Content.split(' ')
-		if  tt[2]!='Type="1"': continue
+    for c in sk.Constraints:
+        #    print c.Content
+        tt = c.Content.split(' ')
+        if tt[2] != 'Type="1"':
+            continue
 
-		First=get_sval(tt[4])
-		FirstPos=get_sval(tt[5])
-		Second=get_sval(tt[6])
-		SecondPos=get_sval(tt[7])
+        First = get_sval(tt[4])
+        FirstPos = get_sval(tt[5])
+        Second = get_sval(tt[6])
+        SecondPos = get_sval(tt[7])
 
-		if First=='-1' or Second=='-1': 
-			continue
+        if First == '-1' or Second == '-1':
+            continue
 
-		g.add_edge(
-				(int(First),int(FirstPos)),
-				(int(Second),int(SecondPos))
-			)
+        g.add_edge(
+            (int(First), int(FirstPos)),
+            (int(Second), int(SecondPos))
+        )
 
-	# umwandeln in echten topologischen graphen
-	conix={}
-	g2=nx.Graph()
+    # umwandeln in echten topologischen graphen
+    conix = {}
+    g2 = nx.Graph()
 
-	for i,cons in enumerate(nx.connected_components(g)):
-		conix[i]=cons
-		g2.add_node(i)
+    for i, cons in enumerate(nx.connected_components(g)):
+        conix[i] = cons
+        g2.add_node(i)
 
-	for i in conix:
-		print i,conix[i]
+    for i in conix:
+        print(i, conix[i])
 
+        for i, geo in enumerate(sk.Geometry):
 
-		for i,geo in enumerate(sk.Geometry):
+            # circle radius as 2D height
+            if geo.__class__.__name__ == 'Circle':
+                n1 = findnode(conix, (i, 3))
+                g2.node[n1]['vector'] = sk.getPoint(i, 3)
+                g2.node[n1]['radius'] = 1.0*geo.Radius
+                print("circle found", geo.Radius, n1)
+                continue
 
-			# circle radius as 2D height
-			if geo.__class__.__name__ ==  'Circle': 
-				n1=findnode(conix,(i,3))
-				g2.node[n1]['vector']= sk.getPoint(i,3)
-				g2.node[n1]['radius']= 1.0*geo.Radius
-				print ("circle found",geo.Radius,n1)
-				continue
+            # process only lines
+            if geo.__class__.__name__ != 'LineSegment':
+                continue
 
-			# process only lines 
-			if geo.__class__.__name__ !=  'LineSegment': continue
+            n1 = findnode(conix, (i, 1))
+            g2.node[n1]['vector'] = sk.getPoint(i, 1)
+            n2 = findnode(conix, (i, 2))
+            g2.node[n2]['vector'] = sk.getPoint(i, 2)
+            g2.add_edge(n1, n2)
 
-			n1=findnode(conix,(i,1))
-			g2.node[n1]['vector']= sk.getPoint(i,1)
-			n2=findnode(conix,(i,2))
-			g2.node[n2]['vector']= sk.getPoint(i,2)
-			g2.add_edge(n1,n2)
+        rc = sk.solve()
+        rc = App.activeDocument().recompute()
 
-		rc=sk.solve()
-		rc=App.activeDocument().recompute()
-
-	return conix,g2
+    return conix, g2
 
 
 def add_zdim(g2):
-	''' add the 3D dimension to sketcher 2D data'''
-	for n2 in g2.nodes():
-		try: z=g2.node[n2]['radius']
-		except: 
-			g2.node[n2]['radius']=0
-			z=0
+    ''' add the 3D dimension to sketcher 2D data'''
+    for n2 in g2.nodes():
+        try:
+            z = g2.node[n2]['radius']
+        except:
+            g2.node[n2]['radius'] = 0
+            z = 0
 
-		if g2.node[n2]['radius']==0: 
-			# gravitation
-			z=-1
+        if g2.node[n2]['radius'] == 0:
+            # gravitation
+            z = -1
 
-		g2.node[n2]['vector'].z=z
-
-def calculateForce(g2,n):
-	'''calculate force and new position for node n'''
-
-	f=0.003
-
-	nbs=g2.neighbors(n)
-	v0=g2.node[n]['vector']
-	r=App.Vector()
-
-	for nb in nbs:
-
-		#model A
-		if 1:
-			mk=2
-			tf=g2.node[nb]['vector'] -v0 
-			if tf.Length > mk:
-				fac= 1.0*(tf.Length-mk)/mk
-				tf=tf * fac
-			else:
-				tf= App.Vector()
-
-		#model B
-		if 0:
-			tf=g2.node[nb]['vector'] -v0 
-
-		r += tf
-
-	force=r*f
-	newpos=v0+force
-	return (newpos,force)
+        g2.node[n2]['vector'].z = z
 
 
-def run(animate=True,itercount=101):
+def calculateForce(g2, n):
+    '''calculate force and new position for node n'''
 
-		ska=getForceSketch()
-		sk=getBaseSketch()
+    f = 0.003
 
-		conix,g2=getGraph(sk)
-		add_zdim(g2)
+    nbs = g2.neighbors(n)
+    v0 = g2.node[n]['vector']
+    r = App.Vector()
 
-		for lp in range(itercount):
+    for nb in nbs:
 
-			#cleasr the force sketch
-			gct=ska.GeometryCount
-			for i in range(gct):
-				ska.delGeometry(gct-i-1)
-			ska.solve()
+        # model A
+        if 1:
+            mk = 2
+            tf = g2.node[nb]['vector'] - v0
+            if tf.Length > mk:
+                fac = 1.0*(tf.Length-mk)/mk
+                tf = tf * fac
+            else:
+                tf = App.Vector()
 
-			sumforces=0
+        # model B
+        if 0:
+            tf = g2.node[nb]['vector'] - v0
 
-			for n in g2.nodes():
-				# calculate the force in node n
-				(newpos,force)=calculateForce(g2,n)
+        r += tf
 
-				# apply the force
-				sumforces +=  force.Length
-				g2.node[n]['vector2']=newpos
+    force = r*f
+    newpos = v0+force
+    return (newpos, force)
 
-				(a,b)=list(conix[n])[0]
-				rc=sk.movePoint(a,b,newpos,0)
 
-				rc=sk.solve()
-				v1=sk.getPoint(a,b)
+def run(animate=True, itercount=101):
 
-				g2.node[n]['vector2']=v1
-				if newpos.z>0:
-					g2.node[n]['vector2'].z=newpos.z
+    ska = getForceSketch()
+    sk = getBaseSketch()
 
-				# if a height is given by a circle preserve this value
-				if g2.node[n]['radius']!=0:
-					g2.node[n]['vector2'].z=g2.node[n]['radius']
+    conix, g2 = getGraph(sk)
+    add_zdim(g2)
 
-				if force.Length> 0.1:
-					ska.addGeometry(Part.Circle(v1,App.Vector(0,0,1),force.Length),False)
-					ska.addGeometry(Part.LineSegment(v1,v1+force),False)
+    for lp in range(itercount):
 
-			#create the 3D model
-			col=[]
-			for (a,b) in g2.edges():
-				h=App.Vector(0,0,random.random()*20)
-				col += [Part.LineSegment(g2.node[a]['vector2'],g2.node[b]['vector2']).toShape()]
+        # cleasr the force sketch
+        gct = ska.GeometryCount
+        for i in range(gct):
+            ska.delGeometry(gct-i-1)
+        ska.solve()
 
-			color=(random.random(),random.random(),random.random())
+        sumforces = 0
 
-			if animate: # update grid
-				n3=App.ActiveDocument.getObject("grid")
-				if n3==None:
-					n3=App.ActiveDocument.addObject("Part::Feature","grid")
-			else: # create new grif each time
-				n3=App.ActiveDocument.addObject("Part::Feature","grid")
-				n3.ViewObject.Transparency=70
-			n3.ViewObject.LineColor=color
-			n3.Shape=Part.Compound(col)
+        for n in g2.nodes():
+            # calculate the force in node n
+            (newpos, force) = calculateForce(g2, n)
 
-			rc=App.activeDocument().recompute()
-			print ("SUM FORCES",lp, sumforces)
-			Gui.updateGui()
+            # apply the force
+            sumforces += force.Length
+            g2.node[n]['vector2'] = newpos
 
-			for n in g2.nodes():
-				g2.node[n]['vector']=g2.node[n]['vector2']
+            (a, b) = list(conix[n])[0]
+            rc = sk.movePoint(a, b, newpos, 0)
 
-		# erzuegen einer flaeche
-		if 0:
-			import numpy as np
+            rc = sk.solve()
+            v1 = sk.getPoint(a, b)
 
-			pts=[]
+            g2.node[n]['vector2'] = v1
+            if newpos.z > 0:
+                g2.node[n]['vector2'].z = newpos.z
 
-			for b in range(4):
-				for a in range(5):
-					n=findnode(conix,(a+b*5,1))
-					pts.append(g2.node[n]['vector2'])
-				n=findnode(conix,(a+b*5,2))
-				pts.append(g2.node[n]['vector2'])
+            # if a height is given by a circle preserve this value
+            if g2.node[n]['radius'] != 0:
+                g2.node[n]['vector2'].z = g2.node[n]['radius']
 
-			pts=np.array(pts).reshape(4,6,3)
-			bs=Part.BSplineSurface()
-			bs.interpolate(pts)
+            if force.Length > 0.1:
+                ska.addGeometry(Part.Circle(
+                    v1, App.Vector(0, 0, 1), force.Length), False)
+                ska.addGeometry(Part.LineSegment(v1, v1+force), False)
 
-			n3=App.ActiveDocument.addObject("Part::Spline","face")
-			n3.Shape=bs.toShape()
-			n3.ViewObject.Transparency=70
-			n3.ViewObject.ShapeColor=color
+        # create the 3D model
+        col = []
+        for (a, b) in g2.edges():
+            h = App.Vector(0, 0, random.random()*20)
+            col += [Part.LineSegment(g2.node[a]['vector2'],
+                                     g2.node[b]['vector2']).toShape()]
 
-		rc=App.activeDocument().recompute()
+        color = (random.random(), random.random(), random.random())
 
-if __name__=='__main__':
-	run()
+        if animate:  # update grid
+            n3 = App.ActiveDocument.getObject("grid")
+            if n3 == None:
+                n3 = App.ActiveDocument.addObject("Part::Feature", "grid")
+        else:  # create new grif each time
+            n3 = App.ActiveDocument.addObject("Part::Feature", "grid")
+            n3.ViewObject.Transparency = 70
+        n3.ViewObject.LineColor = color
+        n3.Shape = Part.Compound(col)
+
+        rc = App.activeDocument().recompute()
+        print("SUM FORCES", lp, sumforces)
+        Gui.updateGui()
+
+        for n in g2.nodes():
+            g2.node[n]['vector'] = g2.node[n]['vector2']
+
+    # erzuegen einer flaeche
+    if 0:
+        import numpy as np
+
+        pts = []
+
+        for b in range(4):
+            for a in range(5):
+                n = findnode(conix, (a+b*5, 1))
+                pts.append(g2.node[n]['vector2'])
+            n = findnode(conix, (a+b*5, 2))
+            pts.append(g2.node[n]['vector2'])
+
+        pts = np.array(pts).reshape(4, 6, 3)
+        bs = Part.BSplineSurface()
+        bs.interpolate(pts)
+
+        n3 = App.ActiveDocument.addObject("Part::Spline", "face")
+        n3.Shape = bs.toShape()
+        n3.ViewObject.Transparency = 70
+        n3.ViewObject.ShapeColor = color
+
+    rc = App.activeDocument().recompute()
+
+
+if __name__ == '__main__':
+    run()
