@@ -90,14 +90,14 @@ class EventFilter(QtCore.QObject):
 				px=p.x()
 				py=p.y()
 				if p.x()<100 or p.y()<100: 
-					print ("jump cursor facedraw 92"
+					print ("jump cursor facedraw 92")
 #					cursor.setPos(p.x()+100, p.y()+100)
 				#-----------------------------------
 
 				if t!=None: # if objects are under the mouse
 					for tix,tt in enumerate(t):
 						print ("objunder ",tix,tt,tt['Object'],tt['Component'])
-						print  self.fob.Label
+						print  (self.fob.Label)
 						uxx=ef.xy2u(px,py)
 						vxx=ef.xy2v(px,py)
 						print (vxx,uxx)
@@ -301,7 +301,7 @@ class EventFilter(QtCore.QObject):
 def drawcurve(wire,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
-	print ("drawcurve"
+	print ("drawcurve")
 
 	#startposition
 	wplace=wire.Placement
@@ -322,7 +322,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 	su=bs.UPeriod()
 	sv=bs.VPeriod()
 
-	print ("hacks etze uv, sv auf 1"
+	print ("hacks etze uv, sv auf 1")
 	su=face.ParameterRange[1]
 	sv=face.ParameterRange[3]
 
@@ -376,7 +376,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 
 			#wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
 			#wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-			print ("HHHHHHHHHHHHHHHHH"
+			print ("HHHHHHHHHHHHHHHHH")
 
 ## 	new wire for next drawing
 
@@ -385,7 +385,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
-	print ("drawring"
+	print ("drawring")
 
 	es=[]
 	for wireA in wires:
@@ -410,7 +410,7 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 		su=bs.UPeriod()
 		sv=bs.VPeriod()
 
-		print ("hacks etze uv, sv auf 1"
+		print ("hacks etze uv, sv auf 1")
 		su=face.ParameterRange[1]
 		sv=face.ParameterRange[3]
 
@@ -433,10 +433,10 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 
 		e1_1 = bs2d.toShape(t)
 
-		print ("huhuhu"
+		print ("huhuhu")
 		sp=App.ActiveDocument.getObject(wireA.Label+"_Spline")
-		print  sp
-		print wireA.Label
+		print  (sp)
+		print  (wireA.Label)
 		if sp==None:
 			sp=App.ActiveDocument.addObject("Part::Spline",wireA.Label+"_Spline")
 		sp.Shape=e1_1
@@ -460,7 +460,7 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 			su=bs.UPeriod()
 			sv=bs.VPeriod()
 
-			print ("hacks etze uv, sv auf 1"
+			print ("hacks etze uv, sv auf 1")
 			su=face.ParameterRange[1]
 			sv=face.ParameterRange[3]
 
@@ -525,7 +525,7 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 
 				#wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
 				#wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-				print ("RRRRRRRRRRRRRRRRR"
+				print ("RRRRRRRRRRRRRRRRR")
 
 
 

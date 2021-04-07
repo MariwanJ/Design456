@@ -8,7 +8,7 @@ import time
  
 import FreeCAD as App
 import FreeCADGui as Gui
-,Part,Draft
+import Part,Draft
 
 
 
@@ -82,11 +82,11 @@ def rowcol(w,*args):
 		print (i.row(),i.column())
 		pts.append(App.Vector(w.data[i.row()]))
 
-	print ("huhuhuhsfsdfdf u"
-	print pts
-	print ("selection changed ---------------",w.scale
+	print ("huhuhuhsfsdfdf u")
+	print (pts)
+	print ("selection changed ---------------",w.scale)
 	w.selection.update(pts,scale=w.scale)
-	print ("-----------------"
+	print ("-----------------")
 
 def rowcol2(w,*args):
 	print ("2-------------------selection row/column changed")
@@ -100,11 +100,11 @@ def rowcol2(w,*args):
 	for i in w.table.selectedItems():
 		print (i.row(),i.column())
 		pts.append(App.Vector(w.data[i.row()]))
-	print ("huhuhuhu"
-	print pts
-	print ("selection changed ---------------",w.scale
+	print ("huhuhuhu")
+	print (pts)
+	print ("selection changed ---------------",w.scale)
 	w.selection.update(pts,scale=w.scale)
-	print ("-----------------"
+	print ("-----------------")
 
 def posfromsel(w):
 	t=FreeCADGui.Selection.getSelectionEx()[0]
@@ -229,9 +229,9 @@ def pointEditor(obj,scale=1):
 
 
 def run(scale=1):
-	print ("RUN ---",scale
+	print ("RUN ---",scale)
 	obj=FreeCADGui.Selection.getSelection()[0]
-	print obj
+	print (obj)
 	return pointEditor(obj,scale=scale)
 
 

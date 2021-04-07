@@ -41,13 +41,13 @@ def myupdate(obj):
 		rc=f(1.0*i/l*(len(data)-1))/fl.factor
 		return rc
 
-	print ("update .."
+	print ("update ..")
 	apols=[]
 	apols1=[]
 	apols2=[]
-	print ("lens"
-	print len(obj.curveO.Shape.Edges)
-	print len(obj.curveI.Shape.Edges)
+	print ("lens")
+	print (len(obj.curveO.Shape.Edges))
+	print (len(obj.curveI.Shape.Edges))
 	obj.curveI
 	obj.curveO
 	for i,e in enumerate(obj.curveI.Shape.Edges):
@@ -158,12 +158,12 @@ class DynaOffset(nurbswb.pyob.FeaturePython):
 	def XonChanged(proxy,obj,prop):
 		'''run myExecute for property prop: relativePosition and vertexNumber'''
 		
-		print ("onChanged ",prop
+		print ("onChanged ",prop)
 		if prop.startswith("val"):
 			data=[]
 			for i in range(12):
 				data.append(getattr(obj, "val%03d" % (i)))
-			print data
+			print (data)
 			obj.datalist=data
 	##\endcond
 

@@ -43,11 +43,11 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
 	debug=True
 	debug=False
 	
-	print ("----createshoerib------------------"
-	print name
-	print moves
-	print box
-	print ("-------------------------"
+	print ("----createshoerib------------------")
+	print (name)
+	print (moves)
+	print (box)
+	print ("-------------------------")
 
 	label=name
 	try: body=App.activeDocument().Body
@@ -177,8 +177,8 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
 	sk.renameConstraint(d, u'tangentTopB')
 
 	if r+l<-10:
-		print ("verletzung --------------createshoerib zeile 152---- r+l",r+l
-		print r+l
+		print ("verletzung --------------createshoerib zeile 152---- r+l",r+l)
+		print (r+l)
 
 
 	#move the main points to the right position
@@ -240,7 +240,7 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
 
 
 def test():
-	'''creat some ribs'''
+	'''create some ribs'''
 
 	sk1=run("rib1",[[8,0,0],[0,0,120],[4,120,-10],[12,-130,0]])
 	sk2=run("rib2",[[8,0,0],[0,0,150],[4,70,10],[12,-90,100]])

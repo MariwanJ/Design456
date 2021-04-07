@@ -392,7 +392,7 @@ class Miki():
 				print 
 				print ("Anchors ...."
 				print
-				print self.anchors
+				print (self.anchors
 				print
 
 
@@ -411,7 +411,7 @@ class Miki():
 #					print name
 					try: 
 #						print ("class check ..."
-#						print self.classes
+#						print (self.classes
 						self.classes[name]
 						f=name+"()"
 						f2=name
@@ -489,7 +489,7 @@ class Miki():
 				#-----------------------------------
 			if l[3]=='att val' or  l[3]=='anchor attr':
 #					print l
-#					print self.lines[l[2]]
+#					print (self.lines[l[2]]
 					
 
 					method=l[4]
@@ -673,7 +673,7 @@ class Miki():
 		for ob in self.objects:
 			print ob
 
-		print self.anchors
+		print (self.anchors
 
 		for r in self.roots():
 			print r

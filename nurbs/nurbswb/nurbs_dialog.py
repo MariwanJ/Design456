@@ -509,14 +509,14 @@ class MyApp(object):
 
 	def relativeMode(self):
 		print("RELATVE MODE")
-		print self.root.ids['relativemode'].isChecked()
+		print (self.root.ids['relativemode'].isChecked()
 		if self.root.ids['relativemode'].isChecked():
 			self.obj.Object.Proxy.gBase =  self.obj.Object.Proxy.g.copy()
 #			try: self.root.ids['updateRelative'].show()
 #			except: pass
 #		else:
 #			self.root.ids['updateRelative'].hide()
-		print self.obj.Object.Proxy.gBase.shape
+		print (self.obj.Object.Proxy.gBase.shape
 		print ("set  relative"
 
 	def calculatePoleGrid(self):
@@ -664,7 +664,7 @@ class MyApp(object):
 
 					self.root.ids['h'].setText(str(h))
 					print ("hole weight von ",((v)*uc+u,"uc,vc",uc,vc)
-		#			print self.obj.Object.weights
+		#			print (self.obj.Object.weights
 					w=self.obj.Object.weights[(v)*uc+u]
 					self.root.ids['wd'].setValue(w)
 		#			self.root.ids['w'].setText(str(h))
@@ -713,7 +713,7 @@ class MyApp(object):
 
 #		print ("hole weight von ",((v)*uc+u)
 #		print ("hole weight von ",((v)*uc+u,"uc,vc",uc,vc)
-#		print self.obj.Object.weights
+#		print (self.obj.Object.weights
 
 
 
@@ -758,12 +758,12 @@ class MyApp(object):
 		return
 
 		print ("get obj"
-		print self.root
-		print self.obj
-		print self.obj.Object.Label
+		print (self.root
+		print (self.obj
+		print (self.obj.Object.Label
 
 		print ("shape .."
-		print self.obj.Object.Proxy.g.shape
+		print (self.obj.Object.Proxy.g.shape
 
 
 	def vFinished(self):

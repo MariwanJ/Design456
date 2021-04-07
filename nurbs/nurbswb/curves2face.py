@@ -25,7 +25,7 @@ def run():
 			obj.Placement=t #.inverse()
 
 
-		print len(obj.Shape.Edge1.Curve.getPoles())
+		print (len(obj.Shape.Edge1.Curve.getPoles()))
 		pts=obj.Shape.Edge1.Curve.discretize(30)
 		allpts.append(pts)
 
