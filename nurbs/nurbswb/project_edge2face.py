@@ -229,7 +229,7 @@ def concatenateWires(wires):
         pts += wb
         wa = wb
 
-    print len(pts)
+    print  (len(pts)
 
     pts2=[]
     for i,p in enumerate(pts):

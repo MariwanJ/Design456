@@ -26,13 +26,13 @@ if 0:
     [a]=Gui.Selection.getSelection()
     bc=a.Shape.Edge1.Curve
     pts=a.Shape.Edge1.Curve.getPoles()
-    #print len(pts)
+    #print  (len(pts)
     #Draft.makeWire(pts)
     #App.ActiveDocument.ActiveObject.Label="Poles "+a.Label
 
 
     pts=[bc.value(k) for k in bc.getKnots()]
-    print len(pts)
+    print  (len(pts)
     Draft.makeWire(pts)
     App.ActiveDocument.ActiveObject.Label="Knotes "+a.Label
     App.ActiveDocument.ActiveObject.ViewObject.PointSize=10
@@ -63,12 +63,12 @@ def run():
                 App.ActiveDocument.ActiveObject.Label="BC-"+str(pos)+" "+str(t)+" "+ a.Object.Label
 
             #    pts=bc.getPoles()
-            #    print len(pts)
+            #    print  (len(pts)
             #    Draft.makeWire(pts)
             #    App.ActiveDocument.ActiveObject.Label="W-"+str(pos)+" "+a.Object.Label
                 if 0:
                     pts=[bc.value(k) for k in bc.getKnots()]
-            #        print len(pts)
+            #        print  (len(pts)
                     Draft.makeWire(pts)
                     App.ActiveDocument.ActiveObject.Label="Kn " +str(t)+a.Object.Label
                     App.ActiveDocument.ActiveObject.ViewObject.PointSize=12

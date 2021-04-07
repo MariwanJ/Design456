@@ -123,7 +123,7 @@ def createBS(arr):
         # bug 
         ku=[1.0/(NbUPoles)*i for i in range(NbUPoles+1)]
         mu=[1]*(NbUPoles+1)
-        print len(ps)
+        print  (len(ps)
         print sum(mu)
 
     else:
@@ -842,7 +842,7 @@ class Needle(PartFeature):
 
         App.activeDocument().Spreadsheet.ViewObject.startEditing(0)
         subw=mdiarea.subWindowList()
-    #    print len(subw)
+    #    print  (len(subw)
         for i in subw:
     #        print i.widget().metaObject().className()
             if i.widget().metaObject().className() == "SpreadsheetGui::SheetView":
@@ -964,7 +964,7 @@ def startssevents2():
 
     App.activeDocument().Spreadsheet.ViewObject.startEditing(0)
     subw=mdiarea.subWindowList()
-#    print len(subw)
+#    print  (len(subw)
     for i in subw:
 #        print i.widget().metaObject().className()
         if i.widget().metaObject().className() == "SpreadsheetGui::SheetView":
@@ -1163,7 +1163,7 @@ def genss(sk):
 #        ps=[App.Vector(0,p.y-5,p.z),App.Vector(0,p.y-10,p.z)]+points+[App.Vector(0,p.y+10,p.z),App.Vector(0,p.y+5,p.z)] 
 #        points=ps
 
-        print len(points)
+        print  (len(points)
         return sk
 
 

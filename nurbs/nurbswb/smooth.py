@@ -488,7 +488,7 @@ def sliceMeshbySketch():
 
     cs = mesh.crossSections([(ddA,ddB)],0.01)
     ptsW=[App.Vector(p) for p in cs[0][0]]
-    print len(ptsW)
+    print  (len(ptsW)
     import Draft
     pol=Part.makePolygon(ptsW)
     ptsW=pol.discretize(20)

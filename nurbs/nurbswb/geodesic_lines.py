@@ -579,7 +579,7 @@ def updateGeodesic(fp):
 
 
             if u<umin or v<vmin or u>umax or v>vmax:
-                print ("qcancellation!")
+                print ("cancellation!")
                 break
             p=sf.value(u,v)
 
@@ -1336,7 +1336,7 @@ def updatePatch(fp):
 
 
             e1 = bs2d.toShape(t)
-            print len(pts2d)
+            print  (len(pts2d)
             print ("huhwu"
             return e1
         #----------------------
