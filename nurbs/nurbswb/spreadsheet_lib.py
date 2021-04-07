@@ -12,9 +12,8 @@
 #
 
 
-import FreeCAD,Part,Draft
-
-App=FreeCAD
+import FreeCAD as App
+import Part,Draft
 
 import numpy as np
 import random

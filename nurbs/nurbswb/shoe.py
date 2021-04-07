@@ -13,20 +13,16 @@
 import FreeCAD as App
 import FreeCADGui as Gui
 
-
-
 from PySide import QtGui
 import Part,Mesh,Draft,Points
 
-
 import numpy as np
 import random
-
 import os, nurbswb
 
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)
-print __dir__
+print ( __dir__)
 
 ##\endcond
 

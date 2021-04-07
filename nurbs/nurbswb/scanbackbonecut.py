@@ -5,8 +5,8 @@
 
 ##\cond
 
-import FreeCAD
-import FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
 import Points,Part,Draft
 import numpy as np
 import random
@@ -22,7 +22,7 @@ import nurbswb
 
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)
-print __dir__
+print ( __dir__)
 
 App=FreeCAD
 

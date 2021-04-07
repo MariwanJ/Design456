@@ -11,9 +11,6 @@
 import FreeCAD as App
 import FreeCADGui as Gui
 
-
-
-
 from PySide import QtCore,QtGui
 from pivy import coin
 import numpy as np

@@ -13,7 +13,7 @@
 from PySide import QtGui,QtCore
 from nurbswb.say import *
 
-import FreeCAD
+import FreeCAD as App
 import sys,time
 import random
 

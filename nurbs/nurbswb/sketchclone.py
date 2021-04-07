@@ -48,7 +48,7 @@ class SketchClone(nurbswb.pyob.FeaturePython):
         ''' position to parent'''
 
         if obj.off:
-            print obj.Label + " is deactivated (off)"
+            print (obj.Label + " is deactivated (off)")
             return 0
 
         if obj.base == None:

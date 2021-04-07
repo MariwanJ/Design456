@@ -18,19 +18,19 @@ def testRandomTorus():
     a.gridCount=20
     
     ps=a.Proxy.getPoints()
-    print ("points ps",len(ps)
+    print ("points ps",len(ps))
 
     ps=a.Proxy.getPoints()
-    print ("A"
+    print ("A")
     a.Proxy.togrid(ps)
-    print ("B"
+    print ("B")
     a.Proxy.updatePoles()
-    print ("C"
+    print ("C")
     a.Proxy.showGriduv()
 
     '''
     if 0:
-        print ("random .."
+        print ("random ..")
         ps=np.array(App.ps).swapaxes(0,1)
         temp,ct=ps.shape
         ps[2] += 100*np.random.random(ct)
