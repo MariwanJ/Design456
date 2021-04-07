@@ -13,7 +13,7 @@ def createsole(sk):
 		ll=sk.addGeometry(Part.LineSegment(App.Vector(10*p,0,0),App.Vector(10*p+10,0,0)),False)
 		sk.toggleConstruction(ll) 
 		sk.addConstraint(Sketcher.Constraint('Horizontal',ll)) 
-		print ll
+		print (ll)
 		if ll>0:
 			sk.addConstraint(Sketcher.Constraint('Coincident',ll-1,2,ll,1)) 
 			sk.addConstraint(Sketcher.Constraint('Equal',0,ll)) 
@@ -52,7 +52,7 @@ def createsole(sk):
 	# App.ActiveDocument.sohle.renameConstraint(cLL, u'LL')
 
 	for p in range(11):
-		print p
+		print (p)
 		p=10-p
 		#	if p!=12:
 		#ll=sk.addGeometry(Part.LineSegment(App.Vector(10*p,-40.,0),App.Vector(10*p+10,-40.,0)),False)
@@ -67,7 +67,7 @@ def createsole(sk):
 
 
 	for p in range(11):
-			print p
+			print (p)
 			ll=sk.addGeometry(Part.LineSegment(App.Vector(10*p,40.,0),App.Vector(10*p+10,40.,0)),False)
 			sk.addConstraint(Sketcher.Constraint('Coincident',11+p,2,ll,1)) 
 			sk.addConstraint(Sketcher.Constraint('Coincident',12+p,2,ll,2)) 

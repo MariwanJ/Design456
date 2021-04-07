@@ -194,9 +194,9 @@ class EventFilter(QtCore.QObject):
 
 					elif e.key() ==  QtCore.Qt.Key_F8:
 						say("-------------8----------")
-						print self.colorA
+						print (self.colorA)
 						self.colorA =(self.colorA+1)%7
-						print self.colorA
+						print (self.colorA)
 						drawColorpath(self.pts,self.colors,self.colorA,self.drawname)
 
 #-hack
@@ -253,7 +253,7 @@ class EventFilter(QtCore.QObject):
 						self.lastkey=e.text()
 
 						#color select for drawing
-						print ("SET Color--------------",r
+						print ("SET Color--------------",r)
 						if 0:
 							if r=='h':
 								self.colorA=0
@@ -332,7 +332,7 @@ class EventFilter(QtCore.QObject):
 def drawcurve(wire,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
-	print ("drawcurve"
+	print ("drawcurve")
 
 	#startposition
 	wplace=wire.Placement
@@ -355,7 +355,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 
 	bs=sf
 
-	print ("hacks SSetze uv, sv auf 1"
+	print ("hacks SSetze uv, sv auf 1")
 	su=face.ParameterRange[1]
 	sv=face.ParameterRange[3]
 
@@ -415,7 +415,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 
 			#wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
 			#wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-			print ("HHHHHHHHHHHHHHHHH"
+			print ("HHHHHHHHHHHHHHHHH")
 
 ## 	new wire for next drawing
 
@@ -424,7 +424,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
-	print ("drawring"
+	print ("drawring")
 
 	es=[]
 	for wireA in wires:
@@ -465,8 +465,8 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 
 
 		sp=App.ActiveDocument.getObject(wireA.Label+"_ASpline")
-		print  sp
-		print wireA.Label
+		print  (sp)
+		print (wireA.Label)
 		if sp==None:
 			sp=App.ActiveDocument.addObject("Part::Spline",wireA.Label+"_Spline")
 		sp.Shape=e1_1
@@ -490,7 +490,7 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 			su=bs.UPeriod()
 			sv=bs.VPeriod()
 
-			print ("hacks etze uv, sv auf 1"
+			print ("hacks etze uv, sv auf 1")
 			su=face.ParameterRange[1]
 			sv=face.ParameterRange[3]
 
@@ -555,7 +555,7 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 
 				#wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
 				#wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-				print ("RRRRRRRRRRRRRRRRR"
+				print ("RRRRRRRRRRRRRRRRR")
 
 
 
@@ -726,7 +726,7 @@ def genbuffer(pts,color=5):
 	pts - list of points
 	colors - list of color indexes
 	'''
-	print ("genbuffer",len(pts)
+	print ("genbuffer",len(pts))
 
 	colix=""
 	pix=""
@@ -813,7 +813,7 @@ def start(free=False):
 	ef.mouseWheel=0
 	ef.colorpathcount=0
 	ef.colorA=2
-	print ("start--"
+	print ("start--")
 	iv=App.ActiveDocument.addObject("App::InventorObject","draw_"+str(ef.colorpathcount)+"_")
 	ef.drawname=iv.Name
 
@@ -821,7 +821,7 @@ def start(free=False):
 			sel=Gui.Selection.getSelection()
 			fob=sel[0]
 			s=Gui.Selection.getSelectionEx()
-			print s,s[0].SubObjects
+			print (s,s[0].SubObjects)
 
 			if len(s[0].SubObjects)>0:
 				ef.subobj=s[0].SubObjects[0]
@@ -849,7 +849,7 @@ def start(free=False):
 			sayexc2("no surface selected","Select first a face you want to draw on it")
 			return
 		else:
-			print ("run free----------------------"
+			print ("run free----------------------")
 
 	App.eventfilter=ef
 

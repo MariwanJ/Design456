@@ -127,7 +127,7 @@ class Ufo(nurbswb.pyob.FeaturePython):
 	##\endcond
 
 	def onChanged(proxy,obj,prop):
-		print ("ufo changed"
+		print ("ufo changed")
 		return
 #		'''run myExecute for property prop: "ofin" and "ofout"'''
 #		if prop not in ["ofin","ofout"]: return

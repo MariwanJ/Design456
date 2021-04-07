@@ -28,7 +28,7 @@ class FloatList(nurbswb.pyob.FeaturePython):
 			data=[]
 			for i in range(obj.size):
 				data.append(getattr(obj, "val%03d" % (i)))
-			print data
+			print (data)
 			obj.datalist=data
 
 		if prop=='factor': # scale to the new factor

@@ -5,7 +5,7 @@ import time
 import numpy as np
 import FreeCAD as App
 import FreeCADGui as Gui
-,Part
+import Part
 
 
 

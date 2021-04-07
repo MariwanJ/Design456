@@ -1268,7 +1268,7 @@ class WorkSpace():
 			if s == self.name + '1 : 1[*]':
 				print ("gefundne"
 				return w2
-		print self.name + '1:1[*]'
+		print (self.name + '1:1[*]'
 
 
 
