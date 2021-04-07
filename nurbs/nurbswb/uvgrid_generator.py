@@ -37,603 +37,603 @@ from nurbswb.nurbs_tools import kruemmung
 def uvmap(edges,sf,debug):
 
 
-	try: uvgrp=App.ActiveDocument.UV
-	except: uvgrp=App.ActiveDocument.addObject("App::DocumentObjectGroup","UV")
+    try: uvgrp=App.ActiveDocument.UV
+    except: uvgrp=App.ActiveDocument.addObject("App::DocumentObjectGroup","UV")
 
-	ll=edges
+    ll=edges
 
-	got=[0] * len(ll)
+    got=[0] * len(ll)
 
-	ll2=[ll[0]]
-	got[0]=1
-	found=0
+    ll2=[ll[0]]
+    got[0]=1
+    found=0
 
-	for i in range(len(ll)):
-		e=ll2[found]
-		ps0= e.valueAt(e.FirstParameter)
-		pe0= e.valueAt(e.LastParameter)
-		for j in range(len(ll)):
-			if got[j]: continue
-			e=ll[j]
-			ps1= e.valueAt(e.FirstParameter)
-			pe1= e.valueAt(e.LastParameter)
-			if ps1 in [ps0,pe0] or pe1 in [ps0,pe0]:
-				ll2.append(e)
-				found += 1
-				got[j]=1
-#				print (i,j,len(ll2))
-				break
-	assert(len(ll)==len(ll2))
-	ll=ll2
+    for i in range(len(ll)):
+        e=ll2[found]
+        ps0= e.valueAt(e.FirstParameter)
+        pe0= e.valueAt(e.LastParameter)
+        for j in range(len(ll)):
+            if got[j]: continue
+            e=ll[j]
+            ps1= e.valueAt(e.FirstParameter)
+            pe1= e.valueAt(e.LastParameter)
+            if ps1 in [ps0,pe0] or pe1 in [ps0,pe0]:
+                ll2.append(e)
+                found += 1
+                got[j]=1
+#                print (i,j,len(ll2))
+                break
+    assert(len(ll)==len(ll2))
+    ll=ll2
 
-	psa=None
-	pea=None
+    psa=None
+    pea=None
 
-	# genauigkeit
-	anz=10
-	
-	pts=[]
-	direct=[0] * len(ll)
-	e=ll[0]
-	ps0= e.valueAt(e.FirstParameter)
-	pe0= e.valueAt(e.LastParameter)
-	e=ll[1]
-	ps1= e.valueAt(e.FirstParameter)
-	pe1= e.valueAt(e.LastParameter)
-
-
-	if pe0==pe1:
-		# umdrehen
-		direct[1]=1
-
-	elif ps0==pe1:
-		direct[1]=1
-		direct[0]=1
-
-	elif ps0==ps1:
-		direct[0]=1
-	else:
-		assert(pe0==ps1)
-
-	for i in range(1,len(ll)):
-		e=ll[i-1]
-		ps0= e.valueAt(e.FirstParameter)
-		pe0= e.valueAt(e.LastParameter)
-		e=ll[i]
-		ps1= e.valueAt(e.FirstParameter)
-		pe1= e.valueAt(e.LastParameter)
-		if direct[i-1]:
-			if pe1==ps0:
-				direct[i]=1
-			else:
-				assert(ps0==ps1)
-		else:
-			if pe1==pe0:
-				direct[i]=1
-			else:
-				assert(pe0==ps1)
-
-	umin=1e+10
-	vmin=umin
-	umax=-1e+10
-	vmax=umax
+    # genauigkeit
+    anz=10
+    
+    pts=[]
+    direct=[0] * len(ll)
+    e=ll[0]
+    ps0= e.valueAt(e.FirstParameter)
+    pe0= e.valueAt(e.LastParameter)
+    e=ll[1]
+    ps1= e.valueAt(e.FirstParameter)
+    pe1= e.valueAt(e.LastParameter)
 
 
-	for i,e in enumerate(ll):
-	#		print (i,e.Curve)
-			ps= e.valueAt(e.FirstParameter)
-			pe= e.valueAt(e.LastParameter)
-			#xprint (e.FirstParameter,e.LastParameter)
-			#xprint (ps,pe)
-			#xprint 
-			
-			pl=e.discretize(anz)
-	#		Part.show(e)
-			(u,v)=sf.parameter(e.Vertexes[0].Point)
-			#xprint ("Start",u,v)
-			vmax=max(vmax,v)
-			umax=max(umax,u)
-			vmin=min(vmin,v)
-			umin=min(umin,u)
+    if pe0==pe1:
+        # umdrehen
+        direct[1]=1
+
+    elif ps0==pe1:
+        direct[1]=1
+        direct[0]=1
+
+    elif ps0==ps1:
+        direct[0]=1
+    else:
+        assert(pe0==ps1)
+
+    for i in range(1,len(ll)):
+        e=ll[i-1]
+        ps0= e.valueAt(e.FirstParameter)
+        pe0= e.valueAt(e.LastParameter)
+        e=ll[i]
+        ps1= e.valueAt(e.FirstParameter)
+        pe1= e.valueAt(e.LastParameter)
+        if direct[i-1]:
+            if pe1==ps0:
+                direct[i]=1
+            else:
+                assert(ps0==ps1)
+        else:
+            if pe1==pe0:
+                direct[i]=1
+            else:
+                assert(pe0==ps1)
+
+    umin=1e+10
+    vmin=umin
+    umax=-1e+10
+    vmax=umax
 
 
-			(u,v)=sf.parameter(e.Vertexes[1].Point)
-			#xprint ("Ende",u,v)
-			vmax=max(vmax,v)
-			umax=max(umax,u)
-			vmin=min(vmin,v)
-			umin=min(umin,u)
-
-			ptst=[]
-			kupts=[]
-			kvpts=[]
-			for p in pl:
-				(u,v)=sf.parameter(p)
-				ptst.append(App.Vector(u,v,0))
-##				u=1*round(u,1)
-##				v=1*round(v,1)
-
-			if direct[i]:
-				ptst.reverse()
-			pts += ptst
-			# Draft.makeWire(pts)
+    for i,e in enumerate(ll):
+    #        print (i,e.Curve)
+            ps= e.valueAt(e.FirstParameter)
+            pe= e.valueAt(e.LastParameter)
+            #xprint (e.FirstParameter,e.LastParameter)
+            #xprint (ps,pe)
+            #xprint 
+            
+            pl=e.discretize(anz)
+    #        Part.show(e)
+            (u,v)=sf.parameter(e.Vertexes[0].Point)
+            #xprint ("Start",u,v)
+            vmax=max(vmax,v)
+            umax=max(umax,u)
+            vmin=min(vmin,v)
+            umin=min(umin,u)
 
 
-	poly=Part.Face(Part.makePolygon(pts,True))
+            (u,v)=sf.parameter(e.Vertexes[1].Point)
+            #xprint ("Ende",u,v)
+            vmax=max(vmax,v)
+            umax=max(umax,u)
+            vmin=min(vmin,v)
+            umin=min(umin,u)
 
-	if debug: 
-		Part.show(poly)
-		# uvgrp.addObject(App.ActiveDocument.ActiveObject)
+            ptst=[]
+            kupts=[]
+            kvpts=[]
+            for p in pl:
+                (u,v)=sf.parameter(p)
+                ptst.append(App.Vector(u,v,0))
+##                u=1*round(u,1)
+##                v=1*round(v,1)
 
-	for i,v in enumerate(pts):
-		#xif i%5 == 0: print
-		#xprint v
-		pass
+            if direct[i]:
+                ptst.reverse()
+            pts += ptst
+            # Draft.makeWire(pts)
 
-	return poly,umin,umax,vmin,vmax
+
+    poly=Part.Face(Part.makePolygon(pts,True))
+
+    if debug: 
+        Part.show(poly)
+        # uvgrp.addObject(App.ActiveDocument.ActiveObject)
+
+    for i,v in enumerate(pts):
+        #xif i%5 == 0: print
+        #xprint v
+        pass
+
+    return poly,umin,umax,vmin,vmax
 
 
 
 
 
 def genVgrid(face,sf,gridfac=10,debug=False):
-	poly=face
-	if poly == None: return 
+    poly=face
+    if poly == None: return 
 
-	try: uvgrp=App.ActiveDocument.UV
-	except: uvgrp=App.ActiveDocument.addObject("App::DocumentObjectGroup","UV")
-
-
-	sps=[]
-
-	ust=18
-	start=poly.BoundBox.YMin
-	ende=poly.BoundBox.YMax
-	ust=gridfac*int(round(poly.BoundBox.YMax-poly.BoundBox.YMin))+2
-
-	mind=30
-	if ust <mind: ust=mind 
+    try: uvgrp=App.ActiveDocument.UV
+    except: uvgrp=App.ActiveDocument.addObject("App::DocumentObjectGroup","UV")
 
 
-	yl=[]
-#	yl.append(start+0.001)
-	for i in range(ust):
-		yl.append(start+(ende-start)*i/ust)
+    sps=[]
 
-#	yl.append(ende-0.001)
+    ust=18
+    start=poly.BoundBox.YMin
+    ende=poly.BoundBox.YMax
+    ust=gridfac*int(round(poly.BoundBox.YMax-poly.BoundBox.YMin))+2
 
-	rc=[]
-	kupts=[]
-	kvpts=[]
-
-	vst=19
-
-	anz1=vst
-	
-	kval=[]
-	kual=[]
-	
-	for y in yl:
-		vl=Part.makeLine((poly.BoundBox.XMin-1,y,0),(poly.BoundBox.XMax+1,y,0))
-		if debug: 
-			Part.show(vl)
-			uvgrp.addObject(App.ActiveDocument.ActiveObject)
+    mind=30
+    if ust <mind: ust=mind 
 
 
-		start=poly.BoundBox.XMin
-		ende=poly.BoundBox.XMax
+    yl=[]
+#    yl.append(start+0.001)
+    for i in range(ust):
+        yl.append(start+(ende-start)*i/ust)
+
+#    yl.append(ende-0.001)
+
+    rc=[]
+    kupts=[]
+    kvpts=[]
+
+    vst=19
+
+    anz1=vst
+    
+    kval=[]
+    kual=[]
+    
+    for y in yl:
+        vl=Part.makeLine((poly.BoundBox.XMin-1,y,0),(poly.BoundBox.XMax+1,y,0))
+        if debug: 
+            Part.show(vl)
+            uvgrp.addObject(App.ActiveDocument.ActiveObject)
 
 
-		kul=[]
-		kvl=[]
-		for i in range(vst+1):
-			v=y; u= start +(ende-start)*i/vst
-			ku,kv=kruemmung(sf,u,v)
-			kupts.append(App.Vector(u,v,10*ku))
-			kvpts.append(App.Vector(u,v,10*kv))
-			kul.append(App.Vector(u,v,10*ku))
-			kvl.append(App.Vector(u,v,10*kv))
-		kval.append(kvl)
-		kual.append(kul)
+        start=poly.BoundBox.XMin
+        ende=poly.BoundBox.XMax
 
 
-		a=vl.distToShape(poly)
-		#xprint y,a
-		if a[0]>0.01 or  len(a[1])<2:
-			#yprint ("keine schnittpunkte y ",y,a)
-			pass
-		else:
-			anz1 += 1
-			
-			#xprint a[1]
-			start=a[1][0][0][0]
-			ende=a[1][-1][0][0]
-##			print (start,ende)
-			pts=[]
+        kul=[]
+        kvl=[]
+        for i in range(vst+1):
+            v=y; u= start +(ende-start)*i/vst
+            ku,kv=kruemmung(sf,u,v)
+            kupts.append(App.Vector(u,v,10*ku))
+            kvpts.append(App.Vector(u,v,10*kv))
+            kul.append(App.Vector(u,v,10*ku))
+            kvl.append(App.Vector(u,v,10*kv))
+        kval.append(kvl)
+        kual.append(kul)
 
-			for i in range(vst+1):
-				pts.append(sf.value(start+(ende-start)*i/vst,y))
 
-##			print pts
-			spline = Part.BSplineCurve()
-			spline.interpolate(pts, False)
-			rc.append(spline.toShape())
+        a=vl.distToShape(poly)
+        #xprint y,a
+        if a[0]>0.01 or  len(a[1])<2:
+            #yprint ("keine schnittpunkte y ",y,a)
+            pass
+        else:
+            anz1 += 1
+            
+            #xprint a[1]
+            start=a[1][0][0][0]
+            ende=a[1][-1][0][0]
+##            print (start,ende)
+            pts=[]
 
-	'''
-	p=Points.Points(kupts)
-	Points.show(p)
-	App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,.0,1.0)
-	App.ActiveDocument.ActiveObject.Label="U Curvature Map"
+            for i in range(vst+1):
+                pts.append(sf.value(start+(ende-start)*i/vst,y))
 
-	p=Points.Points(kvpts)
-	Points.show(p)
-	App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,1.0,1.0)
-	App.ActiveDocument.ActiveObject.Label="V Curvature Map"
-	'''
+##            print pts
+            spline = Part.BSplineCurve()
+            spline.interpolate(pts, False)
+            rc.append(spline.toShape())
 
-	if 0:
-		tt=Part.BSplineSurface()
-		tt.interpolate(kual)
-		sha=tt.toShape()
-		Part.show(sha)
-		App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,.0,1.0)
-		App.ActiveDocument.ActiveObject.Label="V Curvature Map"
+    '''
+    p=Points.Points(kupts)
+    Points.show(p)
+    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,.0,1.0)
+    App.ActiveDocument.ActiveObject.Label="U Curvature Map"
 
-		tt=Part.BSplineSurface()
-		tt.interpolate(kval)
-		sha=tt.toShape()
-		Part.show(sha)
-		App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,1.0,1.0)
-		App.ActiveDocument.ActiveObject.Label="U Curvature Map"
+    p=Points.Points(kvpts)
+    Points.show(p)
+    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,1.0,1.0)
+    App.ActiveDocument.ActiveObject.Label="V Curvature Map"
+    '''
 
-	return rc
+    if 0:
+        tt=Part.BSplineSurface()
+        tt.interpolate(kual)
+        sha=tt.toShape()
+        Part.show(sha)
+        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,.0,1.0)
+        App.ActiveDocument.ActiveObject.Label="V Curvature Map"
+
+        tt=Part.BSplineSurface()
+        tt.interpolate(kval)
+        sha=tt.toShape()
+        Part.show(sha)
+        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,1.0,1.0)
+        App.ActiveDocument.ActiveObject.Label="U Curvature Map"
+
+    return rc
 
 
 
 def genUgrid(face,sf,gridfac=10,debug=False):
-	''' create u isolines '''
-	poly=face
-	if poly == None: return 
+    ''' create u isolines '''
+    poly=face
+    if poly == None: return 
 
-	try: uvgrp=App.ActiveDocument.UV
-	except: uvgrp=App.ActiveDocument.addObject("App::DocumentObjectGroup","UV")
+    try: uvgrp=App.ActiveDocument.UV
+    except: uvgrp=App.ActiveDocument.addObject("App::DocumentObjectGroup","UV")
 
-	sps=[]
+    sps=[]
 
-	ust=gridfac*int(round(poly.BoundBox.XMax-poly.BoundBox.XMin))+2
-	mind=30
-	if ust <mind: ust=mind 
-	print ("ust",ust)
-	start=poly.BoundBox.XMin
-	ende=poly.BoundBox.XMax
-	yl=[]
+    ust=gridfac*int(round(poly.BoundBox.XMax-poly.BoundBox.XMin))+2
+    mind=30
+    if ust <mind: ust=mind 
+    print ("ust",ust)
+    start=poly.BoundBox.XMin
+    ende=poly.BoundBox.XMax
+    yl=[]
 
-	for i in range(ust):
-		yl.append(start+(ende-start)*i/ust)
+    for i in range(ust):
+        yl.append(start+(ende-start)*i/ust)
 
-	rc=[]
-	kupts=[]
-	kvpts=[]
+    rc=[]
+    kupts=[]
+    kvpts=[]
 
-	for ix,x in enumerate(yl):
-		vl=Part.makeLine((x,poly.BoundBox.YMin-1,0),(x,poly.BoundBox.YMax+1,0))
+    for ix,x in enumerate(yl):
+        vl=Part.makeLine((x,poly.BoundBox.YMin-1,0),(x,poly.BoundBox.YMax+1,0))
 
-		if debug: 
-			Part.show(vl)
-			uvgrp.addObject(App.ActiveDocument.ActiveObject)
-
-
-		a=vl.distToShape(poly)
-		#xprint x,a
-
-		start=poly.BoundBox.XMin
-		ende=poly.BoundBox.XMax
-		vst=19
-
-		for i in range(vst+1):
-			u=x; v= start +(ende-start)*i/vst
-			ku,kv=kruemmung(sf,u,v)
-	#					if i >-10  :
-	#						if ku!=-1 and kv !=-1: 
-#			print (u,v,ku,kv)
-			if 0: # nicht fast ebenene Flaechen
-				kupts.append(App.Vector(u,v,10*ku))
-				kvpts.append(App.Vector(u,v,10*kv))
-			else:
-				p=sf.value(u,v)
-				kupts.append(App.Vector(p.x,p.y,10000*ku))
-				kvpts.append(App.Vector(p.x,p.y,10000*kv))
-			
+        if debug: 
+            Part.show(vl)
+            uvgrp.addObject(App.ActiveDocument.ActiveObject)
 
 
-		if a[0]>0.01 or  len(a[1])<2:
-			#yprint ("keine/zuviel  schnittpunkte x ",ix,x,len(a[1]),a[0],a)
-			if len(a[1])>2:
-				print 
-				for p in a[1]:
-					print p[0]
-				print
-		else:
-				start=a[1][0][0][1]
-				ende=a[1][-1][0][1]
-				pts=[]
+        a=vl.distToShape(poly)
+        #xprint x,a
 
-				for i in range(vst+1):
-					pts.append(sf.value(x,start+(ende-start)*i/vst))
+        start=poly.BoundBox.XMin
+        ende=poly.BoundBox.XMax
+        vst=19
+
+        for i in range(vst+1):
+            u=x; v= start +(ende-start)*i/vst
+            ku,kv=kruemmung(sf,u,v)
+    #                    if i >-10  :
+    #                        if ku!=-1 and kv !=-1: 
+#            print (u,v,ku,kv)
+            if 0: # nicht fast ebenene Flaechen
+                kupts.append(App.Vector(u,v,10*ku))
+                kvpts.append(App.Vector(u,v,10*kv))
+            else:
+                p=sf.value(u,v)
+                kupts.append(App.Vector(p.x,p.y,10000*ku))
+                kvpts.append(App.Vector(p.x,p.y,10000*kv))
+            
 
 
-				spline = Part.BSplineCurve()
-				spline.interpolate(pts, False)
-				##Part.show(spline.toShape())
-				##App.ActiveDocument.ActiveObject.Label="huhu" + str(x)
-				rc.append(spline.toShape())
+        if a[0]>0.01 or  len(a[1])<2:
+            #yprint ("keine/zuviel  schnittpunkte x ",ix,x,len(a[1]),a[0],a)
+            if len(a[1])>2:
+                print 
+                for p in a[1]:
+                    print p[0]
+                print
+        else:
+                start=a[1][0][0][1]
+                ende=a[1][-1][0][1]
+                pts=[]
+
+                for i in range(vst+1):
+                    pts.append(sf.value(x,start+(ende-start)*i/vst))
 
 
-#	p=Points.Points(kupts)
-#	Points.show(p)
-#	App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,.0,1.0)
+                spline = Part.BSplineCurve()
+                spline.interpolate(pts, False)
+                ##Part.show(spline.toShape())
+                ##App.ActiveDocument.ActiveObject.Label="huhu" + str(x)
+                rc.append(spline.toShape())
 
-	print (len(kupts),len(kupts)/(vst+1))
-	gengrid(kupts,vst+1,1)
-	gengrid(kvpts,vst+1,2)
 
-#	p=Points.Points(kvpts)
-#	Points.show(p)
-#	App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,1.0,1.0)
+#    p=Points.Points(kupts)
+#    Points.show(p)
+#    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,.0,1.0)
 
-	return rc
+    print (len(kupts),len(kupts)/(vst+1))
+    gengrid(kupts,vst+1,1)
+    gengrid(kvpts,vst+1,2)
+
+#    p=Points.Points(kvpts)
+#    Points.show(p)
+#    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,1.0,1.0)
+
+    return rc
 
 def piep(mess=None):
-	if mess == None:
-		mess=time.time()
-	App.Console.PrintWarning(str(mess) +"\n")
-	Gui.updateGui()
+    if mess == None:
+        mess=time.time()
+    App.Console.PrintWarning(str(mess) +"\n")
+    Gui.updateGui()
 
 #----------------------
 def genKgrid(face,umin,umax,vmin,vmax,mode,sf,gridfac=10,obj=None,debug=False):
-	''' create rectangles with curvature '''
+    ''' create rectangles with curvature '''
 
-	ts=time.time()
+    ts=time.time()
 
-	poly=face
-	if poly == None: return 
+    poly=face
+    if poly == None: return 
 
-	gridz=20
+    gridz=20
 
-	sps=[]
+    sps=[]
 
-	ust=gridfac*int(round(poly.BoundBox.XMax-poly.BoundBox.XMin))+2
-	
-	mind=gridz
-	if ust <mind: ust=mind 
+    ust=gridfac*int(round(poly.BoundBox.XMax-poly.BoundBox.XMin))+2
+    
+    mind=gridz
+    if ust <mind: ust=mind 
 
-	ust=gridz
-	vst=gridz
-	print ("ust",ust)
-
-
-#	startx=poly.BoundBox.XMin
-#	endex=poly.BoundBox.XMax
-
-	startx=umin
-	endex=umax
-
-	start=vmin
-	ende=vmax
-
-	yl=[]
-
-	for i in range(ust):
-		yl.append(startx+(endex-startx)*i/ust)
-
-	rc=[]
-	kupts=[]
-	kvpts=[]
-
-	faces=[]
-	colors=[]
-	kvals=[]
-
-	cmap = matplotlib.cm.get_cmap('jet')
-
-	for ix,x in enumerate(yl):
-		piep(("ix,x: ",ix,x))
-
-		for i in range(vst+1):
-			u=x; v= start +(ende-start)*i/vst
-			ku,kv=kruemmung(sf,u,v)
-
-			if mode =='v':
-				kvals.append(10*kv)
-
-			if mode == 'u':
-				kvals.append(10*ku)
-
-			if mode=='gauss':
-				# zeigt gut die lage der pole
-				# gausssche kruemmung
-				kvals.append(10*ku*kv)
-
-			if mode == 'sumabs':
-				# mittlere Krümmung oder ist das ku+kv anstatt der abs ???
-				kvals.append(10*(abs(ku)+abs(kv)))
-
-			if mode == 'mean':
-				kvals.append(10*(ku+kv))
+    ust=gridz
+    vst=gridz
+    print ("ust",ust)
 
 
-			eu=(endex-startx)/ust/2
-			ev=(ende-start)/vst/2
+#    startx=poly.BoundBox.XMin
+#    endex=poly.BoundBox.XMax
+
+    startx=umin
+    endex=umax
+
+    start=vmin
+    ende=vmax
+
+    yl=[]
+
+    for i in range(ust):
+        yl.append(startx+(endex-startx)*i/ust)
+
+    rc=[]
+    kupts=[]
+    kvpts=[]
+
+    faces=[]
+    colors=[]
+    kvals=[]
+
+    cmap = matplotlib.cm.get_cmap('jet')
+
+    for ix,x in enumerate(yl):
+        piep(("ix,x: ",ix,x))
+
+        for i in range(vst+1):
+            u=x; v= start +(ende-start)*i/vst
+            ku,kv=kruemmung(sf,u,v)
+
+            if mode =='v':
+                kvals.append(10*kv)
+
+            if mode == 'u':
+                kvals.append(10*ku)
+
+            if mode=='gauss':
+                # zeigt gut die lage der pole
+                # gausssche kruemmung
+                kvals.append(10*ku*kv)
+
+            if mode == 'sumabs':
+                # mittlere Krümmung oder ist das ku+kv anstatt der abs ???
+                kvals.append(10*(abs(ku)+abs(kv)))
+
+            if mode == 'mean':
+                kvals.append(10*(ku+kv))
 
 
-			p1=sf.value(u-eu,v-ev)
-			p2=sf.value(u-eu,v+ev)
-			p3=sf.value(u+eu,v+ev)
-			p4=sf.value(u+eu,v-ev)
+            eu=(endex-startx)/ust/2
+            ev=(ende-start)/vst/2
 
-			pg2=Part.makePolygon([p1,p2,p3],True)
-			fa=Part.Face(pg2)
-			pg2=Part.makePolygon([p1,p3,p4],True)
-			fa2=Part.Face(pg2)
-			faces += [fa,fa2]
 
-	Part.show(Part.makeSolid(Part.makeShell(faces)))
+            p1=sf.value(u-eu,v-ev)
+            p2=sf.value(u-eu,v+ev)
+            p3=sf.value(u+eu,v+ev)
+            p4=sf.value(u+eu,v-ev)
 
-	kval2= [] + kvals
-	kval2.sort()
+            pg2=Part.makePolygon([p1,p2,p3],True)
+            fa=Part.Face(pg2)
+            pg2=Part.makePolygon([p1,p3,p4],True)
+            fa2=Part.Face(pg2)
+            faces += [fa,fa2]
 
-	for c in kvals:
-		ci=kval2.index(c)
-		t=float(ci)/(len(kval2)-1)
+    Part.show(Part.makeSolid(Part.makeShell(faces)))
 
-		if mode == 'sumabs':
-			t=0.5*(1+t)
+    kval2= [] + kvals
+    kval2.sort()
 
-		(r,g,b,a)=cmap(t)
-		cc=(r,g,b)
-		colors += [cc,cc]
+    for c in kvals:
+        ci=kval2.index(c)
+        t=float(ci)/(len(kval2)-1)
 
-	App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor=colors
-	App.ActiveDocument.ActiveObject.ViewObject.DisplayMode = "Shaded"
+        if mode == 'sumabs':
+            t=0.5*(1+t)
 
-	te=time.time()
-	print ("color time ",round(te-ts,2)
+        (r,g,b,a)=cmap(t)
+        cc=(r,g,b)
+        colors += [cc,cc]
+
+    App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor=colors
+    App.ActiveDocument.ActiveObject.ViewObject.DisplayMode = "Shaded"
+
+    te=time.time()
+    print ("color time ",round(te-ts,2)
 
 
 def gengrid(pts,lena,direct=2):
-	''' creates a polygon grid for a point grid'''
+    ''' creates a polygon grid for a point grid'''
 
-	lenb=len(pts)//lena
-	print ("erzeuge gitter",lena,"x",lenb,"punkte",len(pts)) 
-	assert(lenb*lena==len(pts))
-	pols=[]
+    lenb=len(pts)//lena
+    print ("erzeuge gitter",lena,"x",lenb,"punkte",len(pts)) 
+    assert(lenb*lena==len(pts))
+    pols=[]
 
-	limit=3000
+    limit=3000
 
-	if (direct==2):
-		for u in range(lenb):
-			uline=[]
-			for v in range(lena):
-				if abs(pts[u*lena+v].z) < limit:
-					uline.append(pts[u*lena+v])
-				else:
-					p=pts[u*lena+v]
-					p.z=0
-					uline.append(p)
+    if (direct==2):
+        for u in range(lenb):
+            uline=[]
+            for v in range(lena):
+                if abs(pts[u*lena+v].z) < limit:
+                    uline.append(pts[u*lena+v])
+                else:
+                    p=pts[u*lena+v]
+                    p.z=0
+                    uline.append(p)
 
-	if (direct==1):
-		for v in range(lena):
-			uline=[]
-				# Feler am Rand
-			if abs(pts[u*lena+v].z) < limit:
-					uline.append(pts[u*lena+v])
-			else:
-					p=pts[u*lena+v]
-					p.z=0
-					uline.append(p)
+    if (direct==1):
+        for v in range(lena):
+            uline=[]
+                # Feler am Rand
+            if abs(pts[u*lena+v].z) < limit:
+                    uline.append(pts[u*lena+v])
+            else:
+                    p=pts[u*lena+v]
+                    p.z=0
+                    uline.append(p)
 
-	pol=Part.makePolygon(uline)
-	pols.append(pol)
+    pol=Part.makePolygon(uline)
+    pols.append(pol)
 
-	com=Part.makeCompound(pols)
-	Part.show(com)
+    com=Part.makeCompound(pols)
+    Part.show(com)
 
 
 
 def runobj(obj,fac=5):
-	''' run for one complete object over all of its faces'''
+    ''' run for one complete object over all of its faces'''
 
-	ts=time.time()
-	el=[]
-	debug=1
+    ts=time.time()
+    el=[]
+    debug=1
 
-	for f in obj.Shape.Faces:
-		try:
-			poly,umin,umax,vmin,vmax = uvmap(f.Edges,f.Surface,debug)
-			print ("genkgrid" 
-			mode= 'sumabs' # 'u','v', 'sumabs','gauss', 'mean'
-			genKgrid(poly,umin,umax,vmin,vmax,mode ,f.Surface,fac,obj,debug)
-			print ("DONE stop here - no grid generation"
-			return
-			l1=genVgrid(poly,f.Surface,fac,debug)
-			l2=genUgrid(poly,f.Surface,fac,debug)
-			el += l1 
-			el += l2
-		except:
-			sayexc()
+    for f in obj.Shape.Faces:
+        try:
+            poly,umin,umax,vmin,vmax = uvmap(f.Edges,f.Surface,debug)
+            print ("genkgrid" 
+            mode= 'sumabs' # 'u','v', 'sumabs','gauss', 'mean'
+            genKgrid(poly,umin,umax,vmin,vmax,mode ,f.Surface,fac,obj,debug)
+            print ("DONE stop here - no grid generation"
+            return
+            l1=genVgrid(poly,f.Surface,fac,debug)
+            l2=genUgrid(poly,f.Surface,fac,debug)
+            el += l1 
+            el += l2
+        except:
+            sayexc()
 
-	for e in f.Edges:
-		if e.Curve.__class__.__name__ == "GeomLineSegment":
-			e=e.Curve.toShape()
-		el.append(e)
+    for e in f.Edges:
+        if e.Curve.__class__.__name__ == "GeomLineSegment":
+            e=e.Curve.toShape()
+        el.append(e)
 
 
-	comp=Part.makeCompound(el)
-	te=time.time()
-	print ("Creation time ",round(te-ts,2)
+    comp=Part.makeCompound(el)
+    te=time.time()
+    print ("Creation time ",round(te-ts,2)
 
-	ts=time.time()
-	Part.show(comp)
-	App.ActiveDocument.ActiveObject.ViewObject.LineColor=(random.random(),random.random(),random.random())
-	te=time.time()
-	print ("Part.show time ",round(te-ts,2)
+    ts=time.time()
+    Part.show(comp)
+    App.ActiveDocument.ActiveObject.ViewObject.LineColor=(random.random(),random.random(),random.random())
+    te=time.time()
+    print ("Part.show time ",round(te-ts,2)
 
 
 def runsub(f,fac=5,label="NoLAB"):
 
-	ts=time.time()
+    ts=time.time()
 
-	el=[]
-	debug=1
+    el=[]
+    debug=1
 
-	try:
-		poly=uvmap(f.Edges,f.Surface,debug)
-		l2=[]
-		l1=[]
-		l1=genVgrid(poly,f.Surface,fac,debug)
-		l2=genUgrid(poly,f.Surface,fac,debug)
-		el += l1 
-		el += l2
-	except:
-		sayexc()
+    try:
+        poly=uvmap(f.Edges,f.Surface,debug)
+        l2=[]
+        l1=[]
+        l1=genVgrid(poly,f.Surface,fac,debug)
+        l2=genUgrid(poly,f.Surface,fac,debug)
+        el += l1 
+        el += l2
+    except:
+        sayexc()
 
-	for e in f.Edges:
-		if e.Curve.__class__.__name__ == "GeomLineSegment":
-			e=e.Curve.toShape()
-		el.append(e)
+    for e in f.Edges:
+        if e.Curve.__class__.__name__ == "GeomLineSegment":
+            e=e.Curve.toShape()
+        el.append(e)
 
-	App.ActiveDocument.recompute()
-	
-	comp=Part.makeCompound(el)
-	te=time.time()
-	print ("Creation time ",round(te-ts,2)
+    App.ActiveDocument.recompute()
+    
+    comp=Part.makeCompound(el)
+    te=time.time()
+    print ("Creation time ",round(te-ts,2)
 
-	ts=time.time()
-	Part.show(comp)
-	App.ActiveDocument.ActiveObject.ViewObject.LineColor=(random.random(),random.random(),random.random())
-	App.ActiveDocument.ActiveObject.Label=label
-	te=time.time()
-	print ("Part.show time ",round(te-ts,2)
+    ts=time.time()
+    Part.show(comp)
+    App.ActiveDocument.ActiveObject.ViewObject.LineColor=(random.random(),random.random(),random.random())
+    App.ActiveDocument.ActiveObject.Label=label
+    te=time.time()
+    print ("Part.show time ",round(te-ts,2)
 
 
 
 def runSel(fac=3):
-	''' create the xxx for some selected faces or all faces of a selected part'''
+    ''' create the xxx for some selected faces or all faces of a selected part'''
 
-	if len(Gui.Selection.getSelectionEx())>0:
-		for ss in Gui.Selection.getSelectionEx():
-			subn=ss.SubElementNames
-			if len(subn)>0:
-				for i,obj in enumerate(ss.SubObjects):
-					label=ss.ObjectName + " " + subn[i] + " UVGrid "
-					print ("create  ",label, "for ",obj.Surface)
-					runsub(obj,fac,label)
-					
-			else:
-				print("create for all faces of the object",ss.Object.Label)
-				obj=ss.Object
-				runobj(obj,fac)
+    if len(Gui.Selection.getSelectionEx())>0:
+        for ss in Gui.Selection.getSelectionEx():
+            subn=ss.SubElementNames
+            if len(subn)>0:
+                for i,obj in enumerate(ss.SubObjects):
+                    label=ss.ObjectName + " " + subn[i] + " UVGrid "
+                    print ("create  ",label, "for ",obj.Surface)
+                    runsub(obj,fac,label)
+                    
+            else:
+                print("create for all faces of the object",ss.Object.Label)
+                obj=ss.Object
+                runobj(obj,fac)
 
 
 def run():
-	runSel()
+    runSel()

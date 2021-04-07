@@ -9,48 +9,48 @@ import random
 
 def test5():
 
-	uc=8
-	vc=8
+    uc=8
+    vc=8
 
-	a=nurbswb.nurbs.makeNurbs(uc,vc)
-	a.grid=False
-	a.degree_u=2
-	a.degree_v=2
-
-
-	# punkte holen
-	ps=a.Proxy.getPoints()
-
-	# daten in gitter
-	a.Proxy.togrid(ps)
+    a=nurbswb.nurbs.makeNurbs(uc,vc)
+    a.grid=False
+    a.degree_u=2
+    a.degree_v=2
 
 
-	a.Proxy.addVline(3)
-	a.Proxy.elevateVline(3,100)
+    # punkte holen
+    ps=a.Proxy.getPoints()
 
-	a.Proxy.addUline(3)
-	a.Proxy.elevateUline(3,100)
-
-
-	Gui.activeDocument().activeView().viewAxonometric()
-	Gui.SendMsgToActiveView("ViewFit")
+    # daten in gitter
+    a.Proxy.togrid(ps)
 
 
-	if 10:
-		a.Proxy.addVline(3,0.7)
-		a.Proxy.addVline(3,0.2)
+    a.Proxy.addVline(3)
+    a.Proxy.elevateVline(3,100)
 
-		a.Proxy.addS(4)
-		a.Proxy.addVline(2,1)
-		a.Proxy.elevateVline(2,0)
+    a.Proxy.addUline(3)
+    a.Proxy.elevateUline(3,100)
 
-		a.Proxy.addVline(8,0)
-		a.Proxy.elevateVline(8,0)
 
-	if 10:
-		a.Proxy.movePoint(1,1,0,0,40)
-		a.Proxy.movePoint(2,4,0,0,60)
-		a.Proxy.movePoint(2,5,0,0,60)
+    Gui.activeDocument().activeView().viewAxonometric()
+    Gui.SendMsgToActiveView("ViewFit")
+
+
+    if 10:
+        a.Proxy.addVline(3,0.7)
+        a.Proxy.addVline(3,0.2)
+
+        a.Proxy.addS(4)
+        a.Proxy.addVline(2,1)
+        a.Proxy.elevateVline(2,0)
+
+        a.Proxy.addVline(8,0)
+        a.Proxy.elevateVline(8,0)
+
+    if 10:
+        a.Proxy.movePoint(1,1,0,0,40)
+        a.Proxy.movePoint(2,4,0,0,60)
+        a.Proxy.movePoint(2,5,0,0,60)
 
 
 test5()

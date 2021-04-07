@@ -3,10 +3,10 @@ import nurbswb.nurbs
 
 
 if  App.ActiveDocument==None:
-	App.newDocument("Unnamed")
-	App.setActiveDocument("Unnamed")
-	App.ActiveDocument=App.getDocument("Unnamed")
-	Gui.ActiveDocument=Gui.getDocument("Unnamed")
+    App.newDocument("Unnamed")
+    App.setActiveDocument("Unnamed")
+    App.ActiveDocument=App.getDocument("Unnamed")
+    Gui.ActiveDocument=Gui.getDocument("Unnamed")
 
 
 
@@ -18,25 +18,25 @@ if  App.ActiveDocument==None:
 
 def createWater():
 
-	a=nurbswb.nurbs.makeNurbs()
-	App.ActiveDocument.Nurbs.ViewObject.ShapeColor=(0.00,0.30,1.00)
-	App.ActiveDocument.Nurbs.ViewObject.Transparency = 70
+    a=nurbswb.nurbs.makeNurbs()
+    App.ActiveDocument.Nurbs.ViewObject.ShapeColor=(0.00,0.30,1.00)
+    App.ActiveDocument.Nurbs.ViewObject.Transparency = 70
 
-	# a  20 x 20  grid for the waves
-	a.nNodes_u=20
-	a.nNodes_v=20
+    # a  20 x 20  grid for the waves
+    a.nNodes_u=20
+    a.nNodes_v=20
 
-	# generic data generator
-	ps=a.Proxy.getPoints()
-	g=a.Proxy.togrid(ps)
+    # generic data generator
+    ps=a.Proxy.getPoints()
+    g=a.Proxy.togrid(ps)
 
-	#---------- apply Nurbs Tool  createWaves
-	a.Proxy.createWaves()
+    #---------- apply Nurbs Tool  createWaves
+    a.Proxy.createWaves()
 
-	a.Label="Water"
+    a.Label="Water"
 
-	Gui.activeDocument().activeView().viewAxonometric()
-	Gui.SendMsgToActiveView("ViewFit")
+    Gui.activeDocument().activeView().viewAxonometric()
+    Gui.SendMsgToActiveView("ViewFit")
 
 
 

@@ -1,17 +1,17 @@
 App=FreeCAD
 
 try:
-		App.closeDocument("Unnamed")
+        App.closeDocument("Unnamed")
 except:
-		pass
+        pass
 
 try:
-		App.newDocument("Unnamed")
-		App.setActiveDocument("Unnamed")
-		App.ActiveDocument=App.getDocument("Unnamed")
-		Gui.ActiveDocument=Gui.getDocument("Unnamed")
+        App.newDocument("Unnamed")
+        App.setActiveDocument("Unnamed")
+        App.ActiveDocument=App.getDocument("Unnamed")
+        Gui.ActiveDocument=Gui.getDocument("Unnamed")
 except:
-		pass
+        pass
 
 
 import nurbswb.helper
