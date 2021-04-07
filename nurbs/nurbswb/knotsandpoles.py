@@ -22,7 +22,7 @@ def run():
 
 			bc=e.Curve
 			pts=e.Curve.getPoles()
-			print "Poles", len(pts)
+			print ("Poles", len(pts)
 			_t=Draft.makeWire(pts,closed=True,face=False)
 			App.ActiveDocument.ActiveObject.Label="Poles of "+s.Object.Label + " " + name
 			App.ActiveDocument.ActiveObject.ViewObject.PointSize=5
@@ -30,7 +30,7 @@ def run():
 			App.ActiveDocument.ActiveObject.ViewObject.LineColor=(1.,0.,1.)
 
 			pts2=[bc.value(k) for k in bc.getKnots()]
-			print "Knots:",len(pts2)
+			print ("Knots:",len(pts2)
 			_t=Draft.makeWire(pts2,closed=True,face=False)
 			App.ActiveDocument.ActiveObject.Label="Knotes of "+s.Object.Label +   " " + name
 			App.ActiveDocument.ActiveObject.ViewObject.PointSize=10

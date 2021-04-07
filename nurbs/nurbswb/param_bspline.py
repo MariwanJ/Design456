@@ -11,11 +11,11 @@
 import FreeCAD, Part, FreeCADGui
 
 def printinfo(sp):
-		print "\n" *2
-		print "degree ",sp.Degree, " continuity ", sp.Continuity
-		print "count poles ", len(sp.getPoles())
-		print "knots ", sp.KnotSequence
-		print "weights ",sp.getWeights()
+		print ("\n" *2
+		print ("degree ",sp.Degree, " continuity ", sp.Continuity
+		print ("count poles ", len(sp.getPoles())
+		print ("knots ", sp.KnotSequence
+		print ("weights ",sp.getWeights()
 
 
 class PartFeature:
@@ -52,7 +52,7 @@ class MyBSpline(PartFeature):
 		if fp.mode=="poles":
 			sp.buildFromPoles(pts)
 		elif fp.mode=="interpolate":
-			if fp.InitialTangent.Length<>0 and fp.FinalTangent.Length<>0: 
+			if fp.InitialTangent.Length!=0 and fp.FinalTangent.Length!=0: 
 				sp.interpolate(pts,InitialTangent=fp.InitialTangent,FinalTangent=fp.FinalTangent)
 			elif 1:
 				# tangenten an einzelne Punkte
@@ -66,13 +66,13 @@ class MyBSpline(PartFeature):
 						j=','.join(str(tt[i]).split())
 				#		print j
 				#		print str(fp.TangentFlags[i])
-						v=eval("FreeCAD.Vector(" +  j +")")
+						v=eval("App.Vector(" +  j +")")
 						v.normalize()
 						Tangents.append(v)
 						Tangentflags.append(str(fp.TangentFlags[i]) == '1')
 					except:
-						print "Fehler Tangenten Vektor ", i+1
-						Tangents.append(FreeCAD.Vector(1,0,0))
+						print ("Fehler Tangenten Vektor ", i+1
+						Tangents.append(App.Vector(1,0,0))
 						Tangentflags.append(0)
 				try:
 					sp.interpolate(pts,Tangents=Tangents,TangentFlags=Tangentflags)
@@ -83,7 +83,7 @@ class MyBSpline(PartFeature):
 
 		elif fp.mode=="approximate":
 			paramtype=fp.paramtype
-			if paramtype<>'Default':
+			if paramtype!='Default':
 				sp.approximate(Points=pts,ParamType=paramtype,DegMax=3)
 			else:
 				sp.approximate(pts)
@@ -92,12 +92,12 @@ class MyBSpline(PartFeature):
 
 
 	def onChanged(self, fp, prop):
-		if prop=="wire" and fp.wire <> None:
+		if prop=="wire" and fp.wire != None:
 			sp=self.recompute(fp)
 			fp.Shape=sp.toShape()
 
 	def execute(self, fp):
-		if  fp.wire <> None:
+		if  fp.wire != None:
 			sp=self.recompute(fp)
 			fp.Shape=sp.toShape()
 
@@ -110,7 +110,7 @@ class ViewProviderMyBSpline:
 
 def makeMySpline():
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","MySpline")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","MySpline")
 	MyBSpline(a)
 	ViewProviderMyBSpline(a.ViewObject)
 	a.ViewObject.LineColor=(1.00,.00,.00)
@@ -123,13 +123,13 @@ def runtest():
 
 	import Draft
 
-	if FreeCAD.ActiveDocument == None:
-		FreeCAD.newDocument("Unbenannt")
-		FreeCAD.setActiveDocument("Unbenannt")
-		FreeCAD.ActiveDocument=FreeCAD.getDocument("Unbenannt")
+	if App.ActiveDocument == None:
+		App.newDocument("Unbenannt")
+		App.setActiveDocument("Unbenannt")
+		App.ActiveDocument=App.getDocument("Unbenannt")
 	
-	points=[FreeCAD.Vector(-30,0.0,0.0),FreeCAD.Vector(-20,30,0.0),FreeCAD.Vector(20,40,0.0),
-		FreeCAD.Vector(40,-20,0.0),FreeCAD.Vector(150,-20,0.0),FreeCAD.Vector(190,80,0.0)]
+	points=[App.Vector(-30,0.0,0.0),App.Vector(-20,30,0.0),App.Vector(20,40,0.0),
+		App.Vector(40,-20,0.0),App.Vector(150,-20,0.0),App.Vector(190,80,0.0)]
 
 
 	a=makeMySpline()
@@ -138,11 +138,11 @@ def runtest():
 	a.Tangents='1 0 0,1 0 0,1 1 0,1 0 0,1 0 0,-1 0 0'.split(',')
 	a.TangentFlags=['0','1','1','0','0','1']
 
-	FreeCAD.activeDocument().recompute()
+	App.activeDocument().recompute()
 	FreeCADGui.SendMsgToActiveView("ViewFit")
 
 	
-print "bspline 2 loaded"
+print ("bspline 2 loaded"
 
 if __name__=='__main__':
 

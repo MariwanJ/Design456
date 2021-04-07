@@ -71,17 +71,17 @@ class Morpher(FeaturePython):
 			pb=pb[::-1] 
 			print pa.shape
 			print pb.shape
-			print "Ecken 0 0"
+			print ("Ecken 0 0"
 			print pa[0,0]
 			print pb[0,0]
-			print "Eckebn -1 -1 "
+			print ("Eckebn -1 -1 "
 			print pa[-1,-1]
 			print pb[-1,-1]
 
-			print "Eckebn 0 1"
+			print ("Eckebn 0 1"
 			print pa[0,-1]
 			print pb[0,-1]
-			print "Eckebn 1 0"
+			print ("Eckebn 1 0"
 			print pa[-1,0]
 			print pb[-1,0]
 
@@ -134,7 +134,7 @@ class CurveMorpher(FeaturePython):
 		obj.addProperty("App::PropertyBool","_showborders","borders")
 		obj.addProperty("App::PropertyFloat","factorForce","config").factorForce=0
 		obj.addProperty("App::PropertyFloat","factor2Force","config").factor2Force=0
-		obj.addProperty("App::PropertyVector","pull","config").pull=FreeCAD.Vector(0,0,0)  
+		obj.addProperty("App::PropertyVector","pull","config").pull=App.Vector(0,0,0)  
 		obj.addProperty("App::PropertyInteger","count","config").count=9
 		obj.addProperty("App::PropertyInteger","degree","config").degree=3
 		obj.addProperty("App::PropertyBool","curvesNS")
@@ -216,8 +216,8 @@ class CurveMorpher(FeaturePython):
 				if tt==None:
 					tt=App.ActiveDocument.addObject('Part::Spline',tname)
 				compsa=[]
-				compsa +=[Part.makePolygon([FreeCAD.Vector(p) for p in pts])]
-				compsa +=[Part.makePolygon([FreeCAD.Vector(AA),FreeCAD.Vector(BB)])]
+				compsa +=[Part.makePolygon([App.Vector(p) for p in pts])]
+				compsa +=[Part.makePolygon([App.Vector(AA),App.Vector(BB)])]
 
 			h=(obj.factorForce+10)*0.1
 			h2=-(obj.factor2Force)*0.1*h2faktor
@@ -234,7 +234,7 @@ class CurveMorpher(FeaturePython):
 					pts[il] += up * il*(l-il-1)/l**2 * h2faktor
 
 			if helper:
-				compsa +=[Part.makePolygon([FreeCAD.Vector(p) for p in pts])]
+				compsa +=[Part.makePolygon([App.Vector(p) for p in pts])]
 				tt.Shape=Part.Compound(compsa)
 
 			# glaetten
@@ -401,12 +401,12 @@ class CurveMorpher(FeaturePython):
 
 		if 0:
 			for ps in ptsarr:
-				Part.show(Part.makePolygon([FreeCAD.Vector(p) for p in ps]))
+				Part.show(Part.makePolygon([App.Vector(p) for p in ps]))
 
 			ptsarr=ptsarr.swapaxes(0,1)
 
 			for ps in ptsarr:
-				Part.show(Part.makePolygon([FreeCAD.Vector(p) for p in ps]))
+				Part.show(Part.makePolygon([App.Vector(p) for p in ps]))
 
 		ptsarr[1:3,1:3] += obj.pull
 

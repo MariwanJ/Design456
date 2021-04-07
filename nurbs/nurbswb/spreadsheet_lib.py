@@ -227,7 +227,7 @@ def table2Nurbs(ss,label="MyNurbs"):
 		psl=[]
 		for u in range(NbUPoles):
 			p=(x[u],y[v],z[v*NbUPoles+u])
-			psl.append(FreeCAD.Vector(p))
+			psl.append(App.Vector(p))
 		ps.append(psl)
 #- end hack
 
@@ -282,7 +282,7 @@ def array2Nurbs(arr,a,b,c,d,label="MyArrayNurbs",borderPoles=False):
 
 
 #	bs.insertVKnot(0.51,1,0.0)
-#	print "B4xxx5"
+#	print ("B4xxx5"
 # fehler,wenn tolerance kleiner #+# warum bei u=0.2 ??
 #	bs.insertUKnot(0.2,1,0.0)
 #	bs.insertVKnot(0.2,1,0.0)
@@ -319,7 +319,7 @@ def npa2ssa(arr,spreadsheet,c1,r1,color=None):
 		cla=0
 	c2=c1+cla
 	r2=r1+rla
-#	print "update ss -------------  xxx"
+#	print ("update ss -------------  xxx"
 #	print arr
 #	print (c1,r1,cla)
 
@@ -327,7 +327,7 @@ def npa2ssa(arr,spreadsheet,c1,r1,color=None):
 		for r in range(r1,r2):
 			cn=cellname(c1,r)
 			ss.set(cn,str(arr[r-r1]))
-			if color<>None: ss.setBackground(cn,color)
+			if color!=None: ss.setBackground(cn,color)
 	else:
 		for r in range(r1,r2):
 			for c in range(c1,c2):
@@ -335,7 +335,7 @@ def npa2ssa(arr,spreadsheet,c1,r1,color=None):
 				#print (cn,c,r,arr[r-r1,c-c1])
 				ss.set(cn,str(arr[r-r1,c-c1]))
 				#print ("!!",cn,c,r,arr[r-r1,c-c1],ss.get(cn))
-				if color<>None: ss.setBackground(cn,color)
+				if color!=None: ss.setBackground(cn,color)
 
 
 

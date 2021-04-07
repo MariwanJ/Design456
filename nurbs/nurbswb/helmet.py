@@ -8,7 +8,9 @@
 #-------------------------------------------------
 
 
-import FreeCAD,FreeCADGui,Sketcher,Part
+import FreeCAD as App
+import FreeCADGui as Gui
+,Sketcher,Part
 from say import *
 
 
@@ -49,18 +51,18 @@ class _VPH(ViewProvider):
 		
 
 	def methodA(self,obj):
-		print "my Method A"
-		FreeCAD.activeDocument().recompute()
+		print ("my Method A"
+		App.activeDocument().recompute()
 
 	def methodB(self,obj):
-		print "my method B"
-		FreeCAD.activeDocument().recompute()
+		print ("my method B"
+		App.activeDocument().recompute()
 
 	def methodC(self,obj):
-		print "my method C !!"
+		print ("my method C !!"
 		print obj
 
-		FreeCAD.activeDocument().recompute()
+		App.activeDocument().recompute()
 		run(obj)
 		obj.Placement=self.pm
 
@@ -70,10 +72,10 @@ class _VPH(ViewProvider):
 
 
 	def doubleClicked(self,vobj):
-		print "double clicked"
+		print ("double clicked"
 		self.myedit(vobj.Object)
 		
-		print "Ende double clicked"
+		print ("Ende double clicked"
 
 #-------------------------------
 
@@ -108,28 +110,28 @@ class Helmet(FeaturePython):
 		obj.addProperty("App::PropertyFloat","height").height=100
 		obj.addProperty("App::PropertyFloat","border").border=100
 		obj.addProperty("App::PropertyVector","offset")
-		obj.offset=FreeCAD.Vector(500,300,0)
+		obj.offset=App.Vector(500,300,0)
 #		try:
 #			obj.equator=App.ActiveDocument.Sketch
 #			obj.meridian=App.ActiveDocument.Sketch001
 #		except:
 			
-#			print "keine Hilfskurven verfuegbar"
+#			print ("keine Hilfskurven verfuegbar"
 
 
 	def attach(self,vobj):
-		print "attach -------------------------------------"
+		print ("attach -------------------------------------"
 		self.Object = vobj.Object
 		self.obj2 = vobj.Object
 
 	def onChanged(self, fp, prop):
 		#if not hasattr(fp,'onchange') or not fp.onchange : return
-		print "########################## changed ",prop
+		print ("########################## changed ",prop
 		if prop =="height":
-			print "change XXXX"
+			print ("change XXXX"
 			print fp.height
-			fp.equator.movePoint(1,2,FreeCAD.Vector(0,fp.height))
-			fp.meridian.movePoint(1,2,FreeCAD.Vector(0,fp.height))
+			fp.equator.movePoint(1,2,App.Vector(0,fp.height))
+			fp.meridian.movePoint(1,2,App.Vector(0,fp.height))
 			fp.equator.solve()
 			fp.meridian.solve()
 			fp.equator.recompute()
@@ -150,8 +152,8 @@ class Helmet(FeaturePython):
 		if not self.Lock:
 			self.Lock=True
 			try:
-				fp.equator.Placement.Rotation=FreeCAD.Rotation(FreeCAD.Vector(1,0,0),90)
-				fp.meridian.Placement.Rotation=FreeCAD.Rotation(FreeCAD.Vector(1,1,1),120)
+				fp.equator.Placement.Rotation=App.Rotation(App.Vector(1,0,0),90)
+				fp.meridian.Placement.Rotation=App.Rotation(App.Vector(1,1,1),120)
 				run(fp)
 			except:
 				sayexc('update error')
@@ -176,7 +178,7 @@ def createSketch(sk):
 
 	import Draft
 
-	pts=[FreeCAD.Vector(p) for p in pts2]
+	pts=[App.Vector(p) for p in pts2]
 	#Draft.makeWire(pts)
 
 
@@ -191,14 +193,14 @@ def createSketch(sk):
 	# innenring
 
 	pts2=[(-50,-30,0),(50,-30,0),(50,30,0),(-50,30,0)]
-	pts=[FreeCAD.Vector(p) for p in pts2]
+	pts=[App.Vector(p) for p in pts2]
 	#Draft.makeWire(pts)
 
 	for i in range(4):
 		sk.addGeometry(Part.LineSegment(pts[i-1],pts[i]),False)
 
 	for i in range(3):
-		print "aa",i
+		print ("aa",i
 		sk.addConstraint(Sketcher.Constraint('Coincident',16+i,2,16+i+1,1)) 
 
 	sk.addConstraint(Sketcher.Constraint('Coincident',19,2,16,1)) 
@@ -230,7 +232,7 @@ def createHelperSketch(role):
 		sk.addGeometry(Part.LineSegment(App.Vector(i*100,0,0),App.Vector((i+1)*100.,0,0)))
 	for i in range(3):
 		sk.addConstraint(Sketcher.Constraint('Coincident',i,2,i+1,1)) 
-	sk.movePoint(1,2,FreeCAD.Vector(200,100))
+	sk.movePoint(1,2,App.Vector(200,100))
 	return sk
 
 
@@ -240,7 +242,7 @@ def createHelperSketch(role):
 
 def createHelmet(obj=None):
 
-	#a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","helmet")
+	#a=App.ActiveDocument.addObject("Part::FeaturePython","helmet")
 	a=App.activeDocument().addObject('Sketcher::SketchObjectPython',"helmet")
 
 	Helmet(a)
@@ -252,7 +254,7 @@ def createHelmet(obj=None):
 	_VPH(a.ViewObject,'freecad-nurbs/icons/createHelmet.svg')
 	# a.ViewObject.Transparency=60
 	a.ViewObject.ShapeColor=(0.3,0.6,0.3)
-	if obj<>None:
+	if obj!=None:
 		a.Label="Helmet for "+obj.Label
 
 
@@ -285,7 +287,7 @@ def run(fp):
 	ptsall[3,1:4,0]=pts2[3].x
 	ptsall[1,1:4,0]=pts2[1].x
 	
-	print "arquator"
+	print ("arquator"
 	pa=fp.equator.getPoint(1,1)
 	pb=fp.equator.getPoint(2,2)
 
@@ -293,7 +295,7 @@ def run(fp):
 	ptsall[1,1:4,0]=pa.x
 
 
-	print "meridan"
+	print ("meridan"
 	pa=fp.meridian.getPoint(1,1)
 	pb=fp.meridian.getPoint(2,2)
 	
@@ -307,36 +309,36 @@ def run(fp):
 	if h != fp.height:
 		fp.height=h
 
-	#fp.equator.movePoint(1,2,FreeCAD.Vector(0,fp.height))
+	#fp.equator.movePoint(1,2,App.Vector(0,fp.height))
 	fp.equator.movePoint(0,1,fp.getPoint(0,1))
 	fp.equator.movePoint(3,2,fp.getPoint(7,2))
 	fp.equator.solve()
 	fp.equator.purgeTouched()
 
-	fp.meridian.movePoint(1,2,FreeCAD.Vector(0,fp.height))
+	fp.meridian.movePoint(1,2,App.Vector(0,fp.height))
 	t=fp.getPoint(4,1)
 	t2=fp.getPoint(12,1)
-	fp.meridian.movePoint(0,1,FreeCAD.Vector(t.y,0,0))
-	fp.meridian.movePoint(3,2,FreeCAD.Vector(t2.y,0,0))
+	fp.meridian.movePoint(0,1,App.Vector(t.y,0,0))
+	fp.meridian.movePoint(3,2,App.Vector(t2.y,0,0))
 
 
 	fp.meridian.solve()
 	fp.meridian.purgeTouched()
 
 
-	ptse =[ fp.equator.getPoint(0,1)+FreeCAD.Vector(0,-fp.border,0)]
+	ptse =[ fp.equator.getPoint(0,1)+App.Vector(0,-fp.border,0)]
 	ptse +=[fp.equator.getPoint(i,1) for i in range(4)]
 	ptse += [fp.equator.getPoint(3,2) ]
-	ptse += [fp.equator.getPoint(3,2)+FreeCAD.Vector(0,-fp.border,0) ]
+	ptse += [fp.equator.getPoint(3,2)+App.Vector(0,-fp.border,0) ]
 
-	ptsf =[ fp.meridian.getPoint(0,1)+FreeCAD.Vector(0,-fp.border,0)]
+	ptsf =[ fp.meridian.getPoint(0,1)+App.Vector(0,-fp.border,0)]
 	ptsf +=[fp.meridian.getPoint(i,1) for i in range(4)]
 	ptsf += [fp.meridian.getPoint(3,2) ]
-	ptsf += [fp.meridian.getPoint(3,2)+FreeCAD.Vector(0,-fp.border,0) ]
+	ptsf += [fp.meridian.getPoint(3,2)+App.Vector(0,-fp.border,0) ]
 
 
-	ptse2=[FreeCAD.Vector(p.x,0,p.y) for p in ptse]
-	ptsf2=[FreeCAD.Vector(0,p.x,p.y) for p in ptsf]
+	ptse2=[App.Vector(p.x,0,p.y) for p in ptse]
+	ptsf2=[App.Vector(0,p.x,p.y) for p in ptsf]
 
 
 
@@ -358,7 +360,7 @@ def run(fp):
 	yy2a=np.array(yy2)
 	yy3a=yy2a.swapaxes(0,1)
 
-	print "!!",Gui.ActiveDocument.getInEdit(),"!!"
+	print ("!!",Gui.ActiveDocument.getInEdit(),"!!"
 
 	vp=Gui.ActiveDocument.getInEdit()
 	if vp != None and vp.Object==fp:
@@ -394,7 +396,7 @@ def run(fp):
 				False,3)
 			comps += [bc.toShape()]
 
-#	print "ptse23,",ptse2
+#	print ("ptse23,",ptse2
 
 	if 0:
 		for yy in [yy2a,yy3a]:	

@@ -1,6 +1,7 @@
-import FreeCAD,FreeCADGui, Part
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+, Part
+
 
 
 

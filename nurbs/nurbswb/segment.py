@@ -70,7 +70,7 @@ def createSegment(name="MySegment"):
 	umin, ... vmax: Eingabe der Knotennummer
 	'''
 
-	ffobj = FreeCAD.activeDocument().addObject(
+	ffobj = App.activeDocument().addObject(
 		"Part::FeaturePython", name)
 	Segment(ffobj)
 	return ffobj
@@ -115,7 +115,7 @@ class NurbsTrafo(nurbswb.pyob.FeaturePython):
 
 			k=obj.start
 #			if not bs.isVPeriodic():
-#				print "nicht vperiodic - kann nichts tun - Abbruch"
+#				print ("nicht vperiodic - kann nichts tun - Abbruch"
 #				return
 
 			if obj.swapaxes:
@@ -127,7 +127,7 @@ class NurbsTrafo(nurbswb.pyob.FeaturePython):
 				poles2=np.concatenate([y[k:],y[:k]])
 
 			print poles2
-			FreeCAD.poles2=poles
+			App.poles2=poles
 			print ku
 			print kv
 
@@ -158,7 +158,7 @@ class NurbsTrafo(nurbswb.pyob.FeaturePython):
 def createNurbsTrafo(name="MyNurbsTafo"):
 	''' erzeugt ein NurbsTrafo Objekt '''
 
-	ffobj = FreeCAD.activeDocument().addObject(
+	ffobj = App.activeDocument().addObject(
 		"Part::FeaturePython", name)
 	NurbsTrafo(ffobj)
 	return ffobj
@@ -266,7 +266,7 @@ class FineSegment(nurbswb.pyob.FeaturePython):
 def createFineSegment(name="MyFineSegment"):
 	''' erzeugt ein FineSegment Objekt '''
 
-	ffobj = FreeCAD.activeDocument().addObject("Part::FeaturePython", name)
+	ffobj = App.activeDocument().addObject("Part::FeaturePython", name)
 	FineSegment(ffobj)
 	return ffobj
 
@@ -276,7 +276,7 @@ def runsegment():
 	'''Anwendungsfall fuer die Gui.Selection wird ein Segment erzeugt'''
 
 	source=None
-	if len( Gui.Selection.getSelection())<>0:
+	if len( Gui.Selection.getSelection())!=0:
 		source=Gui.Selection.getSelection()[0]
 	s=createSegment()
 	s.source=source
@@ -287,7 +287,7 @@ def runfinesegment():
 	'''Anwendungsfall fuer die Gui.Selection wird ein FineSegement erzeugt'''
 
 	source=None
-	if len( Gui.Selection.getSelection())<>0:
+	if len( Gui.Selection.getSelection())!=0:
 		source=Gui.Selection.getSelection()[0]
 	s=createFineSegment()
 	s.source=source
@@ -296,7 +296,7 @@ def runnurbstrafo():
 	'''Anwendungsfall fuer die Gui.Selection wird ein NurbsTrafo erzeugt'''
 
 	source=None
-	if len( Gui.Selection.getSelection())<>0:
+	if len( Gui.Selection.getSelection())!=0:
 		source=Gui.Selection.getSelection()[0]
 	s=createNurbsTrafo()
 	s.source=source

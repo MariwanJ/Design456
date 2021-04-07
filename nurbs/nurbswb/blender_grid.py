@@ -1,7 +1,7 @@
 # source https://forum.freecadweb.org/viewtopic.php?f=22&t=22296&start=30#p173766
 
-import FreeCAD
-import FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
 import math
 from pivy import coin
 
@@ -293,7 +293,7 @@ class gridObject:
         return()
     def onChanged(self, fp, prop):
         if prop == 'Placement':
-            FreeCAD.Console.PrintMessage('Placement update\n')
+            App.Console.PrintMessage('Placement update\n')
             tr = fp.Placement.Base
             ro = fp.Placement.Rotation.Q
             fp.ViewObject.Proxy.trans.translation = coin.SbVec3f(tr.x,tr.y,tr.z)
@@ -451,7 +451,7 @@ class gridVP:
             self.xz.gridcolor = vp.GridColor
             self.yz.gridcolor = vp.GridColor
         if prop == 'Placement':
-            FreeCAD.Console.PrintMessage('Placement update\n')
+            App.Console.PrintMessage('Placement update\n')
             tr = vp.Object.Placement.Base
             ro = vp.Object.Placement.Rotation.Q
             self.trans.translation = coin.SbVec3f(tr.x,tr.y,tr.z)
@@ -468,7 +468,7 @@ class gridVP:
 def run():
     '''erzeugnt ein parametrisches Grid Objekt, das nachtraeglich konfiguriert werden kann'''
 
-    obj=FreeCAD.ActiveDocument.addObject("App::FeaturePython","Grid")
+    obj=App.ActiveDocument.addObject("App::FeaturePython","Grid")
     gridObject(obj)
     gridVP(obj.ViewObject)
 

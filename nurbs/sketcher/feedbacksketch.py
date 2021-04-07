@@ -11,7 +11,9 @@
 # from say import *
 # import nurbswb.pyob
 #------------------------------
-import FreeCAD,FreeCADGui,Sketcher,Part
+import FreeCAD as App
+import FreeCADGui as Gui
+,Sketcher,Part
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -44,20 +46,21 @@ class FeaturePython:
 
 #------------
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 import PySide
 from PySide import  QtGui,QtCore
 
 
 def run(w):
-	print "I'm run"
+	print ("I'm run"
 	print w
 	print w.obj
-	print "-------------"
-	FreeCAD.oo=w.obj
+	print ("-------------"
+	App.oo=w.obj
 	sk=w.obj.Object.Object
 	print sk.Label
 	print sk.Name
@@ -116,30 +119,30 @@ class ViewProvider:
 		self.methodA(None)
 
 	def methodA(self,obj):
-		print "my Method A Finisher"
+		print ("my Method A Finisher"
 		Gui.activateWorkbench("DraftWorkbench")
-		FreeCAD.activeDocument().recompute()
+		App.activeDocument().recompute()
 
 	def methodB(self,obj):
-		print "my method B Starter"
+		print ("my method B Starter"
 		# test starting an extra dialog
-		FreeCAD.d=dialog(self)
-		FreeCAD.d.show()
-		FreeCAD.activeDocument().recompute()
+		App.d=dialog(self)
+		App.d.show()
+		App.activeDocument().recompute()
 
 	def methodC(self,obj):
-		print "my method C After Edit finished"
+		print ("my method C After Edit finished"
 		Gui.activateWorkbench("NurbsWorkbench")
-		FreeCAD.activeDocument().recompute()
+		App.activeDocument().recompute()
 
 	def unsetEdit(self,vobj,mode=0):
 		self.methodC(None)
 
 
 	def doubleClicked(self,vobj):
-		print "double clicked"
+		print ("double clicked"
 		self.myedit(vobj.Object)
-		print "Ende double clicked"
+		print ("Ende double clicked"
 
 
 
@@ -233,8 +236,8 @@ class FeedbackSketch(FeaturePython):
 
 #	def onChanged(proxy,obj,prop):
 #		print ("onChanged:",obj.Label,prop)
-#		print "Sketch",App.ActiveDocument.Sketch.State
-#		print "Sketch001",App.ActiveDocument.Sketch001.State
+#		print ("Sketch",App.ActiveDocument.Sketch.State
+#		print ("Sketch001",App.ActiveDocument.Sketch001.State
 
 #		'''run myExecute for property prop: relativePosition and vertexNumber'''
 #
@@ -261,7 +264,7 @@ class FeedbackSketch(FeaturePython):
 
 		if  not proxy.exflag: 
 			proxy.exflag=True
-			if debug: print "no execute"
+			if debug: print ("no execute"
 			return
 
 		proxy.exflag=False
@@ -270,7 +273,7 @@ class FeedbackSketch(FeaturePython):
 		changed={}
 
 		for subs in obj.bases:
-			if debug: print "Section ",subs
+			if debug: print ("Section ",subs
 			g=getattr(obj,"base"+subs)
 			if g == None: continue
 			if debug: print g.Label
@@ -288,32 +291,32 @@ class FeedbackSketch(FeaturePython):
 					valwar=obj.Constraints[ci].Value
 					if debug: print ("old value was",gets,valwar)
 					if valwar == val_cgi:
-						if debug: print "nix zu aendern"
+						if debug: print ("nix zu aendern"
 						continue
 					try:
 						changed[gets]
 						#if valwar == val_cgi:
-						if debug: print "stop change"
+						if debug: print ("stop change"
 						changed[gets]=2
 					except:
 						changed[gets]=0
-						if valwar <> val_cgi: 
+						if valwar != val_cgi: 
 							changed[gets]=1
 
 					if changed[gets]==2: 
-						if debug: print "already changed",gets
+						if debug: print ("already changed",gets
 						continue
 					else:
 						try:
 							obj.setDatum(ci,val_cgi)
 						except:
-							FreeCAD.Console.PrintError("cannot set datum\n")
-							if debug: print "old value ",valwar
+							App.Console.PrintError("cannot set datum\n")
+							if debug: print ("old value ",valwar
 							obj.setDriving(ci,False)
 							rc=obj.solve()
 							valneu=obj.Constraints[ci].Value
 							if debug:
-								print "possible value",valneu
+								print ("possible value",valneu
 								print(obj.Label, "solved with possible value",rc) 
 							obj.setDriving(ci,True)
 							#hier abbrechen
@@ -349,16 +352,16 @@ class FeedbackSketch(FeaturePython):
 					try:
 						g.setDatum(ci,val_cgi)
 					except:
-						print "debug --- "
+						print ("debug --- "
 						for cii,c in enumerate(g.Constraints):
 							print (cii,c,  g.Constraints[cii].Value)
 
 						print ("try to set ",ci,g.Constraints[ci].Value)
 						
 						g.setDatum(ci,App.Units.Quantity(str(g.Constraints[ci].Value) +' mm'))
-						print "still okay?"
+						print ("still okay?"
 						g.setDatum(ci,g.Constraints[ci].Value)
-						print "!!",g.Constraints[ci].Value
+						print ("!!",g.Constraints[ci].Value
 						g.setDatum(ci,App.Units.Quantity(str(val_cgi) +' mm'))
 
 					rc=g.solve()
@@ -379,7 +382,7 @@ class FeedbackSketch(FeaturePython):
 			if debug: print(obj.Label, "AA final solve",rc) 
 
 		for subs in obj.bases:
-			if debug: print "Section ",subs
+			if debug: print ("Section ",subs
 			g=getattr(obj,"base"+subs)
 			if g == None: continue
 
@@ -393,7 +396,7 @@ class FeedbackSketch(FeaturePython):
 					try:
 						ci=getNamedConstraint(g,sets)
 					except:
-						print "getNamedConstraint ERROR"
+						print ("getNamedConstraint ERROR"
 						ci=9999
 						raise Exception("getNamedConstraint")
 
@@ -433,13 +436,13 @@ class FeedbackSketch(FeaturePython):
 	def someOtherFunction(self):
 		try: self.Object.Label
 		except: 
-			print "someOtherFunction not ready"
+			print ("someOtherFunction not ready"
 			if hasattr(self,"myTimer"):
 				self.myTimer.stop()
 			return
 
 		print ("run auto update")
-		FreeCAD.ActiveDocument.recompute()
+		App.ActiveDocument.recompute()
 
 
 	def runTimer(self,obj):
@@ -468,47 +471,47 @@ class FeedbackSketch(FeaturePython):
 			self.Lock=True
 			dats=[]
 			for subs in obj.bases:
-#				print "erstelle Sicherung ",subs
+#				print ("erstelle Sicherung ",subs
 				g=getattr(obj,"base"+subs)
-				if g <>None:
+				if g !=None:
 					gs,cs,cons=storeSketch(g)
 				else: gs,cs,cons=[],[],[]
 				dats.append((gs,cs,cons))
 
 			try:
-				#print "run myexecute"
+				#print ("run myexecute"
 				self.myExecute(obj)
-				FreeCAD.Console.PrintMessage("myexecute success\n")
-				#print "myexecute done"
+				App.Console.PrintMessage("myexecute success\n")
+				#print ("myexecute done"
 			except Exception as ex:
 				print(ex)
 				print('myExecute error')
 #				sayexc("myExecute Error")
-				print "RESTORE ..."
-				FreeCAD.Console.PrintWarning("RESTORE after sketch solve failure\n")
+				print ("RESTORE ..."
+				App.Console.PrintWarning("RESTORE after sketch solve failure\n")
 				if hasattr(self,'dats'):
-#					print "vereende self sicherung daten "
+#					print ("vereende self sicherung daten "
 					dats=self.dats
 				for i,subs in enumerate(obj.bases):
 #					print ("hole Section ",i,subs)
 					g=getattr(obj,"base"+subs)
-					if g<>None:
+					if g!=None:
 						gs,cs,cons=dats[i]
 						resetSketch(g)
 						fillSketch(g,gs,cs,cons)
 
 				self.Lock=False
 				#raise Exception("myExecute Error AA")
-				print "ReSTORED"
+				print ("ReSTORED"
 				
 			self.Lock=False
 
-#			print "ERSTELLE SICHERUNG-------------# sichern"
+#			print ("ERSTELLE SICHERUNG-------------# sichern"
 			dats=[]
 			for subs in obj.bases:
-#				print "Section ",subs
+#				print ("Section ",subs
 				g=getattr(obj,"base"+subs)
-				if g <>None:
+				if g !=None:
 					gs,cs,cons=storeSketch(g)
 				else: gs,cs,cons=[],[],[]
 				dats.append((gs,cs,cons))
@@ -521,7 +524,7 @@ class FeedbackSketch(FeaturePython):
 		reload(sketcher.demoshapes)
 		
 		sh=sketcher.demoshapes.myShape(obj,obj.shapeBuilder)
-		if sh<>None: obj.Shape=sh
+		if sh!=None: obj.Shape=sh
 
 
 ##\cond
@@ -539,7 +542,7 @@ def createFeedbackSketch(name="MyFeedbackSketch"):
 		creates a Demo Feedbacksketch
 	'''
 
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	FeedbackSketch(obj)
 	return obj
 
@@ -604,7 +607,7 @@ def run_test_two_clients():
 	try: App.closeDocument("beuger")
 	except: pass
 
-	FreeCAD.open(u"/home/thomas/freecad_buch/b248_stassenbau/beuger.fcstd")
+	App.open(u"/home/thomas/freecad_buch/b248_stassenbau/beuger.fcstd")
 	App.setActiveDocument("beuger")
 	App.ActiveDocument=App.getDocument("beuger")
 	Gui.ActiveDocument=Gui.getDocument("beuger")
@@ -644,8 +647,8 @@ def run_test_reverse_Constraints():
 	cx=[]
 	cxi=[]
 	for i,c in  enumerate(csts):
-		print "!",c.Name,"!"
-		if c.Name<>'':
+		print ("!",c.Name,"!"
+		if c.Name!='':
 			cx.append(c)
 			cxi.append(i)
 	cxi.reverse()
@@ -679,8 +682,8 @@ def runB():
 def run_copySketch():
 	'''copy Sketch'''
 	ss=Gui.Selection.getSelection()
-	if len(ss)<>2:
-		print "select source and target sketch!"
+	if len(ss)!=2:
+		print ("select source and target sketch!"
 		return
 	copySketch(ss[0],ss[1])
 
@@ -789,8 +792,8 @@ def connectLine(yy=False):
 	tab=getNamedConstraint(ts,'tangent_AB')
 	ts.setDriving(tab,False) 
 
-#	tp=FreeCAD.Vector(-100,-200,0)
-#	tp2=FreeCAD.Vector(600,800,0)
+#	tp=App.Vector(-100,-200,0)
+#	tp2=App.Vector(600,800,0)
 
 	print tp
 	cx0=getNamedConstraint(ts,'p_0_x')
@@ -855,7 +858,7 @@ def connectLine(yy=False):
 		ts.setDriving(tab,True) 
 		ts.setDriving(tab2,True) 
 		ts.setDriving(tab3,True) 
-		FreeCAD.ts=ts
+		App.ts=ts
 
 		ts.solve()
 		l=(tp-tp2).Length*1.1

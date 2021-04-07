@@ -26,19 +26,19 @@ reload(nurbswb.isodraw)
 
 '''
 # parameter
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
 
 '''
 
 
-#FreeCAD.pts=App.ActiveDocument.Points.Points.Points
+#App.pts=App.ActiveDocument.Points.Points.Points
 import Mesh,Points
 import time
 
 def check(pp,mode,updateNurbs=False,widget=None):
-	print "check B ",mode
+	print ("check B ",mode
 	if mode=='marker':
 		createMarker(pp)
 		return
@@ -60,8 +60,8 @@ def check(pp,mode,updateNurbs=False,widget=None):
 	faces=mm.Mesh.Topology[1]
 
 	if not updateNurbs:
-#		print "modify"
-		FreeCAD.ptsk=ptsk
+#		print ("modify"
+		App.ptsk=ptsk
 #		print len(ptsk)
 		ff=-1
 		for i,p in enumerate(ptsk):
@@ -78,7 +78,7 @@ def check(pp,mode,updateNurbs=False,widget=None):
 
 		if mode=='reset':
 			ptskarr[:,:,2] = 0
-			ptsk=[FreeCAD.Vector(p) for p in ptskarr.reshape((uc+1)*(vc+1),3)]
+			ptsk=[App.Vector(p) for p in ptskarr.reshape((uc+1)*(vc+1),3)]
 
 		else:
 
@@ -97,7 +97,7 @@ def check(pp,mode,updateNurbs=False,widget=None):
 				if mode=='zero':
 					ptskarr[vi-r:vi+r+1,ui-r:ui+r+1,2] = 0
 
-				ptsk=[FreeCAD.Vector(p) for p in ptskarr.reshape((uc+1)*(vc+1),3)]
+				ptsk=[App.Vector(p) for p in ptskarr.reshape((uc+1)*(vc+1),3)]
 				print ptskarr[:,:,2].max()
 
 			else:
@@ -112,11 +112,11 @@ def check(pp,mode,updateNurbs=False,widget=None):
 		mm.Mesh=Mesh.Mesh((ptsk,faces))
 
 	b=time.time()
-	print "update time ",b-a
+	print ("update time ",b-a
 
 
 	if updateNurbs:
-			print "upd Nurbs"
+			print ("upd Nurbs"
 #			nu=App.ActiveDocument.getObject("Nurbs")
 			nu.ViewObject.show()
 #			mm=App.ActiveDocument.getObject("Mesh")
@@ -142,10 +142,10 @@ def check(pp,mode,updateNurbs=False,widget=None):
 			nu.Shape=bs.toShape()
 
 			c=time.time()
-			print "nurbs time",c-b
+			print ("nurbs time",c-b
 
 def createMarker(self):
-	print "create Marker"
+	print ("create Marker"
 	import nurbswb
 	import nurbswb.geodesic_lines
 	reload(nurbswb.geodesic_lines)
@@ -277,31 +277,31 @@ class EventFilter(QtCore.QObject):
 #						self.update()
 
 					elif e.key() == QtCore.Qt.Key_Right :
-						print "Go right"
+						print ("Go right"
 						return True
 					elif e.key() == QtCore.Qt.Key_Left :
-						print "Go Left"
+						print ("Go Left"
 						return True
 					elif e.key() == QtCore.Qt.Key_Up :
-#						self.mouseWheel += FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
-						print "go up"
+#						self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
+						print ("go up"
 						return True
 					elif e.key() == QtCore.Qt.Key_Down :
-						print "Go Down"
+						print ("Go Down"
 						return True
 					elif e.key() == QtCore.Qt.Key_PageUp :
-						self.mouseWheel += FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+						self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
 						self.dialog.ef_action("up!",self,self.mouseWheel)
 						return True
 					elif e.key() == QtCore.Qt.Key_PageDown :
-						self.mouseWheel -= FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+						self.mouseWheel -= App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
 						self.dialog.ef_action("down!",self,self.mouseWheel)
 						return True
 
 					if e.key()== QtCore.Qt.Key_Enter or e.key()== QtCore.Qt.Key_Return:
-						print "Enter Action-----------------------------"
+						print ("Enter Action-----------------------------"
 						# enter creates a new point ...
-						# vf=FreeCAD.Vector(self.x,self.y,self.z)
+						# vf=App.Vector(self.x,self.y,self.z)
 						print self.pos
 						if self.mode=='marker':
 							createMarker(self)
@@ -352,16 +352,16 @@ class EventFilter(QtCore.QObject):
 				cursor=QtGui.QCursor()
 				p = cursor.pos()
 #				if p.x()<100 or p.y()<100: 
-#					print "jump cursor facedraw 92"
+#					print ("jump cursor facedraw 92"
 #					cursor.setPos(p.x()+100, p.y()+100)
 				#-----------------------------------
 
-				if t<>None: # if objects are under the mouse
+				if t!=None: # if objects are under the mouse
 					#pts=App.ActiveDocument.shoe_last_scanned.Points.Points
-#					print "-----!"
+#					print ("-----!"
 					for tt in t:
 						if tt['Object']=="MyGrid_N": 
-							pp=FreeCAD.Vector(tt['x'],tt['y'],tt['z'])
+							pp=App.Vector(tt['x'],tt['y'],tt['z'])
 							
 							sp=App.ActiveDocument.getObject("Sphere")
 							if sp==None:
@@ -370,11 +370,11 @@ class EventFilter(QtCore.QObject):
 							
 							
 							sf=self.nu.Shape.Face1.Surface
-							print "Position on nurbs:",sf.parameter(pp)
+							print ("Position on nurbs:",sf.parameter(pp)
 							self.pos=pp
 							sf.parameter(pp)
 							if event.buttons()==QtCore.Qt.LeftButton:
-#								print "LEFT BUTTON drawing"
+#								print ("LEFT BUTTON drawing"
 								check(pp,self.mode,False,self)
 							break
 					for tt in t:
@@ -383,7 +383,7 @@ class EventFilter(QtCore.QObject):
 #							print (tt['x'])
 #							print (tt['y'])
 #							print (tt['z'])
-							pp=FreeCAD.Vector(tt['x'],tt['y'],tt['z'])
+							pp=App.Vector(tt['x'],tt['y'],tt['z'])
 
 							sp=App.ActiveDocument.getObject("Sphere")
 							if sp==None:
@@ -394,10 +394,10 @@ class EventFilter(QtCore.QObject):
 
 							# sf=App.ActiveDocument.Nurbs.Shape.Face1.Surface
 							sf=self.nu.Shape.Face1.Surface
-#							print "Position on nurbs:",sf.parameter(pp)
+#							print ("Position on nurbs:",sf.parameter(pp)
 							sf.parameter(pp)
 							if event.buttons()==QtCore.Qt.LeftButton:
-#								print "LEFT BUTTON drawing"
+#								print ("LEFT BUTTON drawing"
 								check(pp,self.mode,False,self)
 							break
 					return False
@@ -429,16 +429,16 @@ class EventFilter(QtCore.QObject):
 
 ## draw a curve on a face and create the two subfaces defined by the curve
 
-def drawcurve(wire,face,facepos=FreeCAD.Vector()):
+def drawcurve(wire,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
-	print "drawcurve"
+	print ("drawcurve"
 
 	#startposition
 	wplace=wire.Placement
 #	print wplace
 	wpos=wplace.Base
-#	print "facepos ",facepos
+#	print ("facepos ",facepos
 
 
 	w=wire.Shape
@@ -451,14 +451,14 @@ def drawcurve(wire,face,facepos=FreeCAD.Vector()):
 
 	bs=sf
 
-	print "hacks SSetze uv, sv auf 1"
+	print ("hacks SSetze uv, sv auf 1"
 	su=face.ParameterRange[1]
 	sv=face.ParameterRange[3]
 
 
 	if 0:
 		pts2da=[sf.parameter(p) for p in pts[1:]]
-		pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+		pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 
 		bs2d = Part.Geom2d.BSplineCurve2d()
 		bs2d.setPeriodic()
@@ -471,7 +471,7 @@ def drawcurve(wire,face,facepos=FreeCAD.Vector()):
 
 	bs2d = Part.Geom2d.BSplineCurve2d()
 	pts2da=[sf.parameter(p) for p in pts]
-	pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+	pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 	bs2d.buildFromPolesMultsKnots(pts2d,[1]*(len(pts2d)+1),range(len(pts2d)+1),True,1)
 	e1 = bs2d.toShape(t)
 
@@ -511,16 +511,16 @@ def drawcurve(wire,face,facepos=FreeCAD.Vector()):
 
 			#wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
 			#wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-			print "HHHHHHHHHHHHHHHHH"
+			print ("HHHHHHHHHHHHHHHHH"
 
 ## 	new wire for next drawing
 
 #-------------------- ring
 
-def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
+def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
-	print "drawring"
+	print ("drawring"
 
 	es=[]
 	for wireA in wires:
@@ -528,7 +528,7 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 		wplace=wireA.Placement
 	#	print wplace
 		wpos=wplace.Base
-	#	print "facepos ",facepos
+	#	print ("facepos ",facepos
 		wire=wireA
 
 
@@ -547,7 +547,7 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 		sv=face.ParameterRange[3]
 
 		pts2da=[sf.parameter(p) for p in pts[1:]]
-		pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+		pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 		
 
 		bs2d = Part.Geom2d.BSplineCurve2d()
@@ -559,7 +559,7 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 		e1_1 = bs2d.toShape(t)
 
 
-		print "huhuhu22"
+		print ("huhuhu22"
 
 		sp=App.ActiveDocument.getObject(wireA.Label+"_ASpline")
 		print  sp
@@ -587,20 +587,20 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 			su=bs.UPeriod()
 			sv=bs.VPeriod()
 
-			print "hacks etze uv, sv auf 1"
+			print ("hacks etze uv, sv auf 1"
 			su=face.ParameterRange[1]
 			sv=face.ParameterRange[3]
 
-		#	print "debug map"
-		#	print "su ",su
-		#	print "sv ",sv
-		#	print "param range ", face.ParameterRange
+		#	print ("debug map"
+		#	print ("su ",su
+		#	print ("sv ",sv
+		#	print ("param range ", face.ParameterRange
 
 			if su>1000: su=face.ParameterRange[1]
 			if sv>1000: sv=face.ParameterRange[3]
 
 			pts2da=[sf.parameter(p) for p in pts[1:]]
-			pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+			pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 
 			bs2d = Part.Geom2d.BSplineCurve2d()
 			bs2d.setPeriodic()
@@ -652,11 +652,11 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 
 				#wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
 				#wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-				print "RRRRRRRRRRRRRRRRR"
+				print ("RRRRRRRRRRRRRRRRR"
 
 
 
-def drawring(name,wires,dirs,faceobj,facepos=FreeCAD.Vector()):
+def drawring(name,wires,dirs,faceobj,facepos=App.Vector()):
 		_drawring(name,wires,dirs,faceobj.Shape.Face1,facepos)
 
 
@@ -737,7 +737,7 @@ def dialog(source=None):
 #	w.mode='n'
 
 
-	editorkey=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("editorKey","h")
+	editorkey=App.ParamGet('User parameter:Plugins/nurbs').GetString("editorKey","h")
 #	lab=QtGui.QLabel("Direction: " + editorkey)
 	w.key=editorkey
 #	w.modelab=lab
@@ -836,7 +836,7 @@ def start():
 		return
 	'''
 
-	FreeCAD.eventfilter=ef
+	App.eventfilter=ef
 
 	mw=QtGui.qApp
 	mw.installEventFilter(ef)
@@ -859,7 +859,7 @@ def stop():
 	''' stop eventserver'''
 
 	mw=QtGui.qApp
-	ef=FreeCAD.eventfilter
+	ef=App.eventfilter
 	mw.removeEventFilter(ef)
 	ef.keyPressed2=False
 	ef.dialog.app.resetEdit()
@@ -1184,7 +1184,7 @@ class MyApp(object):
 			print self.obj
 			print self.obj.Object.Label
 
-			print "shape .."
+			print ("shape .."
 			print self.obj.Object.Proxy.g.shape
 
 
@@ -1210,13 +1210,13 @@ class MyApp(object):
 
 
 	def reset(self):
-		check(FreeCAD.Vector(),'reset',False)
+		check(App.Vector(),'reset',False)
 
 	def updateNurbs(self):
-		check(FreeCAD.Vector(),'no',updateNurbs=True)
+		check(App.Vector(),'no',updateNurbs=True)
 
 	def update(self):
-		print "update"
+		print ("update"
 		print self.dialog.ef.mode
 		print self.dialog.ef.h
 		print self.dialog.ef.r

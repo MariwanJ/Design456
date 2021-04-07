@@ -69,7 +69,7 @@ class FloatList(nurbswb.pyob.FeaturePython):
 def createFloatlist(name="Floatlist"):
 	'''create a FloatList node'''
 
-	obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
+	obj = App.ActiveDocument.addObject("Part::FeaturePython",name)
 
 	obj.addProperty("App::PropertyInteger", "factor", "Base").factor=10
 	obj.addProperty("App::PropertyInteger", "size", "Base").size=12

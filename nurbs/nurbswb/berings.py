@@ -20,11 +20,11 @@ import time
 
 def AA():
 	'''dummy method for testing'''
-	print "AA-nip"
+	print ("AA-nip"
 
 def BB():
 	'''dummy method for testing'''
-	print "BB-nip"
+	print ("BB-nip"
 
 
 
@@ -139,9 +139,9 @@ class Bering(FeaturePython):
 		obj.addProperty("App::PropertyVector","vScale","Geometry","scaling factor in percent for the source point data")
 
 
-		obj.preScale=FreeCAD.Vector(100,100,100)
-		obj.postScale=FreeCAD.Vector(100,100,100)
-		obj.vScale=FreeCAD.Vector(100,100,100)
+		obj.preScale=App.Vector(100,100,100)
+		obj.postScale=App.Vector(100,100,100)
+		obj.vScale=App.Vector(100,100,100)
 		obj.prePlacement.Base.z=-10
 		obj.postPlacement.Base.z=20
 
@@ -157,7 +157,7 @@ class Bering(FeaturePython):
 		self.showprops(fp,prop)
 
 		if prop=='detach' and fp.detach:
-			print "muss sketch erzeugen"
+			print ("muss sketch erzeugen"
 			# nix machen, ist schon da
 			return
 
@@ -260,7 +260,7 @@ class Bering(FeaturePython):
 		if fp.stripmode:
 			ptsq=[]
 			for p in pts[:-1]:
-				pp=FreeCAD.Placement()
+				pp=App.Placement()
 				p.x *= 0.01*fp.vScale.x
 				p.y *= 0.01*fp.vScale.y
 				p.z *= 0.01*fp.vScale.z
@@ -269,14 +269,14 @@ class Bering(FeaturePython):
 #				pts=ptsq+[ptsq[0]]
 
 		bc.buildFromPolesMultsKnots(pts, ms, range(len(ms)), False,3)
-#		ass=FreeCAD.ActiveDocument.addObject("Part::Feature","name")
+#		ass=App.ActiveDocument.addObject("Part::Feature","name")
 #		ass.Shape=Part.makePolygon(pts)#.toShape()
 
 		if fp.stripmode:
 			bcpre=Part.BSplineCurve()
 			ptspre=[]
 			for p in pts:
-				pp=FreeCAD.Placement()
+				pp=App.Placement()
 				pp.Base=p
 				ppa=fp.source.Placement.inverse().multiply(pp)
 				ppa.Base.x *= 0.01*fp.preScale.x
@@ -289,7 +289,7 @@ class Bering(FeaturePython):
 			bcpost=Part.BSplineCurve()
 			ptspost=[]
 			for p in pts:
-				pp=FreeCAD.Placement()
+				pp=App.Placement()
 				pp.Base=p
 				ppa=fp.source.Placement.inverse().multiply(pp)
 				ppa.Base.x *= 0.01*fp.postScale.x
@@ -300,11 +300,11 @@ class Bering(FeaturePython):
 
 			# offset mode
 
-			if fp.preHeight<>0:
+			if fp.preHeight!=0:
 				bcpre=Part.BSplineCurve()
 				ptspre=[]
 				for p in pts:
-					pp=FreeCAD.Placement()
+					pp=App.Placement()
 					pp.Base=p
 					u=bc.parameter(p)
 					t1=bc.tangent(u-0.01)[0]
@@ -313,7 +313,7 @@ class Bering(FeaturePython):
 #					t=(t1+t2)*0.5
 					if (t1-t2).Length>0.5:
 						t=t1+t2
-					bb=FreeCAD.Vector(0,0,1).cross(t)
+					bb=App.Vector(0,0,1).cross(t)
 					ppa=fp.source.Placement.inverse().multiply(pp)
 					ppa.Base += bb*fp.preHeight
 					ppa.Base.x *= 0.01*fp.preScale.x
@@ -323,11 +323,11 @@ class Bering(FeaturePython):
 					pp2=fp.source.Placement.multiply(fp.prePlacement.multiply(ppa))
 					ptspre += [pp2.Base]
 
-			if fp.postHeight<>0:
+			if fp.postHeight!=0:
 				bcpost=Part.BSplineCurve()
 				ptspost=[]
 				for p in pts:
-					pp=FreeCAD.Placement()
+					pp=App.Placement()
 					pp.Base=p
 					u=bc.parameter(p)
 					t1=bc.tangent(u-0.01)[0]
@@ -337,7 +337,7 @@ class Bering(FeaturePython):
 					if (t1-t2).Length>0.5:
 						t=t1+t2
 
-					bb=FreeCAD.Vector(0,0,1).cross(t)
+					bb=App.Vector(0,0,1).cross(t)
 					ppa=fp.source.Placement.inverse().multiply(pp)
 					ppa.Base += bb*fp.postHeight
 					ppa.Base.x *= 0.01*fp.postScale.x
@@ -383,7 +383,7 @@ class Bering(FeaturePython):
 
 		if 1 or not fp.detach:
 			for i in fp.extraKnots:
-				print "knot ",i
+				print ("knot ",i
 				bc.insertKnot(i,3)
 
 			bc2=Part.BSplineCurve()
@@ -394,7 +394,7 @@ class Bering(FeaturePython):
 		if fp.mode == 'compound':
 
 			comp=[Part.makePolygon(bc.getPoles()),bc.toShape()]
-			comp += [Part.Point(FreeCAD.Vector()).toShape()]
+			comp += [Part.Point(App.Vector()).toShape()]
 			fp.Shape=Part.Compound(comp)
 			return
 
@@ -407,9 +407,9 @@ class Bering(FeaturePython):
 		#fp.Shape=Part.Wire(bc.toShape())
 
 		if fp.stripmode:
-#			print "stripmode Shape ..."
+#			print ("stripmode Shape ..."
 			comp =[bcpre.toShape(),bc.toShape(),bcpost.toShape()]
-			comp += [Part.Point(FreeCAD.Vector()).toShape()]
+			comp += [Part.Point(App.Vector()).toShape()]
 
 			af=Part.BSplineSurface()
 			spoles=np.array([ptspre,pts,ptspost])
@@ -422,8 +422,8 @@ class Bering(FeaturePython):
 			comp +=[af.toShape()]
 			fp.Shape=Part.Compound(comp)
 
-#		print "---------- create the inner geometry"
-#		print " ignoriert -fehler m"
+#		print ("---------- create the inner geometry"
+#		print (" ignoriert -fehler m"
 #		return
 		#try:
 		if 1:
@@ -438,7 +438,7 @@ class Bering(FeaturePython):
 				for  i in range(len(pts)-2):
 					fp.addConstraint(Sketcher.Constraint('Coincident',i,2,i+1,1))
 		#except:
-		#	print "probleme bei der sketch erstellung"
+		#	print ("probleme bei der sketch erstellung"
 
 		fp.Placement=pm
 
@@ -447,7 +447,7 @@ class Bering(FeaturePython):
 
 	def executeHACK(self,fp):
 		
-		print "HACK for DEmo continuity curvature"
+		print ("HACK for DEmo continuity curvature"
 
 		pms=fp.source.Placement
 		pm=fp.Placement
@@ -549,13 +549,13 @@ class Beface(FeaturePython):
 				stripmode=True
 				for rr in r.Shape.Edges[0:3]:
 					pps=rr.Curve.getPoles()
-					FreeCAD.r=r
+					App.r=r
 					if ll==-1:ll=len(pps)
 					assert ll == len(pps)
 					ptsa += [pps]
 			else:
 				pps=r.Shape.Edge1.Curve.getPoles()
-				FreeCAD.r=r
+				App.r=r
 				if ll==-1:ll=len(pps)
 				assert ll == len(pps)
 				ptsa += [pps]
@@ -636,9 +636,9 @@ class Beface(FeaturePython):
 				#normalize and scale the tangents
 				ppy=[]
 				for (pa,pb,pc) in pp.swapaxes(0,1):
-					pa=FreeCAD.Vector(pa)
-					pb=FreeCAD.Vector(pb)
-					pc=FreeCAD.Vector(pc)
+					pa=App.Vector(pa)
+					pb=App.Vector(pb)
+					pc=App.Vector(pc)
 					ppy += [[pb+(pa-pb).normalize()*wist,pb,pb+(pc-pb).normalize()*wist]]
 
 				pp=np.array(ppy).swapaxes(0,1)
@@ -666,8 +666,8 @@ class Beface(FeaturePython):
 				ppz=pp.swapaxes(0,1)
 
 				for ipz,(pa,pb) in enumerate(ppz):
-					pa=FreeCAD.Vector(pa)
-					pb=FreeCAD.Vector(pb)
+					pa=App.Vector(pa)
+					pb=App.Vector(pb)
 					#if ipz==0:
 					#	ppy += [[pa,pa+(pb-pa).normalize()*wist]]
 					#else:
@@ -697,8 +697,8 @@ class Beface(FeaturePython):
 
 				ppz=pp.swapaxes(0,1)
 				for ipz,(pa,pb) in enumerate(ppz):
-					pa=FreeCAD.Vector(pa)
-					pb=FreeCAD.Vector(pb)
+					pa=App.Vector(pa)
+					pb=App.Vector(pb)
 					#if ipz==0:
 					#	ppy += [[pb+(pa-pb).normalize()*wist,pb]]
 					#else:
@@ -732,9 +732,9 @@ class Beface(FeaturePython):
 				pp=poles2[j:j+3]
 				ppy=[]
 				for (pa,pb,pc) in pp.swapaxes(0,1):
-					pa=FreeCAD.Vector(pa)
-					pb=FreeCAD.Vector(pb)
-					pc=FreeCAD.Vector(pc)
+					pa=App.Vector(pa)
+					pb=App.Vector(pb)
+					pc=App.Vector(pc)
 					ppy += [[pb+(pa-pb).normalize()*wist,pb,pb+(pc-pb).normalize()*wist]]
 
 				pp=np.array(ppy).swapaxes(0,1)
@@ -758,8 +758,8 @@ class Beface(FeaturePython):
 
 				ppy=[]
 				for (pa,pb) in pp.swapaxes(0,1):
-					pa=FreeCAD.Vector(pa)
-					pb=FreeCAD.Vector(pb)
+					pa=App.Vector(pa)
+					pb=App.Vector(pb)
 					ppy += [[pb+(pa-pb).normalize()*2*wist,pb]]
 
 				pp=np.array(ppy).swapaxes(0,1)
@@ -782,8 +782,8 @@ class Beface(FeaturePython):
 
 				ppy=[]
 				for (pa,pb) in pp.swapaxes(0,1):
-					pa=FreeCAD.Vector(pa)
-					pb=FreeCAD.Vector(pb)
+					pa=App.Vector(pa)
+					pb=App.Vector(pb)
 					ppy += [[pa,pa+(pb-pa).normalize()*2*wist]]
 
 				pp=np.array(ppy).swapaxes(0,1)
@@ -811,7 +811,7 @@ class Beface(FeaturePython):
 		ll=-1
 		for r in fp.berings:
 			pps=r.Shape.Edge1.Curve.getPoles()
-			FreeCAD.r=r
+			App.r=r
 			if ll==-1:ll=len(pps)
 			assert ll == len(pps)
 			ptsa += [pps]
@@ -825,13 +825,13 @@ class Beface(FeaturePython):
 				stripmode=True
 				for rr in r.Shape.Edges[0:3]:
 					pps=rr.Curve.getPoles()
-					FreeCAD.r=r
+					App.r=r
 					if ll==-1:ll=len(pps)
 					assert ll == len(pps)
 					ptsa += [pps]
 			else:
 				pps=r.Shape.Edge1.Curve.getPoles()
-				FreeCAD.r=r
+				App.r=r
 				if ll==-1:ll=len(pps)
 				assert ll == len(pps)
 				ptsa += [pps]
@@ -854,7 +854,7 @@ class Beface(FeaturePython):
 
 
 		if fp.cutend:
-			print "kante ..."
+			print ("kante ..."
 			pa=poles[-4].copy()
 			pe=poles[-1].copy()
 			poles[-3]=pa+(pe-pa)*0.2
@@ -933,7 +933,7 @@ class Beface(FeaturePython):
 				af.insertUKnot(i,3,0)
 
 		# hier feinteilung flaeche
-		if fp.endu>0 and fp.endv<>0:
+		if fp.endu>0 and fp.endv!=0:
 			af.segment(fp.startu,fp.endu,fp.startv,fp.endv)
 		# af.segment(0,5,1.5,2.5)
 
@@ -967,7 +967,7 @@ class Beface(FeaturePython):
 			fp.Shape=Part.Solid(Part.Shell([sh.Face1]))
 			fp.Shape=Part.Solid(Part.Shell(comp2))
 		except:
-			print "Problem beim Erzeugen Solid"
+			print ("Problem beim Erzeugen Solid"
 			fp.Shape=af.toShape()
 
 #		fp.Shape=Part.Solid(Part.Shell([sh.Face1]))
@@ -992,7 +992,7 @@ class Beface(FeaturePython):
 def genk(start,ende,scale,pos,source,name="BeringSketch",show=True):
 	'''create a bering from a source object'''
 
-	if name<>"BeringSketch":
+	if name!="BeringSketch":
 		name=name+'gg'
 		sk=App.ActiveDocument.getObject(name)
 	else: sk=None
@@ -1021,9 +1021,9 @@ def genA():
 
 	sks=[]
 
-	sks += [genk(start,end,1,FreeCAD.Vector(),source)]
-	sks += [genk(start,end,1.9,FreeCAD.Vector(200,0,0),source)]
-	sks += [genk(start,end,0.9,FreeCAD.Vector(400,0,100),source)]
+	sks += [genk(start,end,1,App.Vector(),source)]
+	sks += [genk(start,end,1.9,App.Vector(200,0,0),source)]
+	sks += [genk(start,end,0.9,App.Vector(400,0,100),source)]
 
 
 	sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
@@ -1043,23 +1043,23 @@ def genB():
 
 	sks=[]
 
-	sks += [genk(start,end,1,FreeCAD.Vector(),source)]
-	sks += [genk(start,end,0.9,FreeCAD.Vector(0,0,80),source)]
+	sks += [genk(start,end,1,App.Vector(),source)]
+	sks += [genk(start,end,0.9,App.Vector(0,0,80),source)]
 
-	sks += [genk(start,end,0.5,FreeCAD.Vector(0,0,200),source)]
-	sks += [genk(start,end,0.5,FreeCAD.Vector(0,0,240),source)]
-	sks += [genk(start,end,0.5,FreeCAD.Vector(0,0,280),source)]
+	sks += [genk(start,end,0.5,App.Vector(0,0,200),source)]
+	sks += [genk(start,end,0.5,App.Vector(0,0,240),source)]
+	sks += [genk(start,end,0.5,App.Vector(0,0,280),source)]
 
-	sks += [genk(start,end,0.6,FreeCAD.Vector(0,0,600),source)]
-	sks += [genk(start,end,0.6,FreeCAD.Vector(0,0,650),source)]
-	sks += [genk(start,end,0.6,FreeCAD.Vector(0,0,690),source)]
+	sks += [genk(start,end,0.6,App.Vector(0,0,600),source)]
+	sks += [genk(start,end,0.6,App.Vector(0,0,650),source)]
+	sks += [genk(start,end,0.6,App.Vector(0,0,690),source)]
 
-	sks += [genk(start,end,0.64,FreeCAD.Vector(0,0,800),source)]
-	sks += [genk(start,end,0.64,FreeCAD.Vector(0,0,850),source)]
-	sks += [genk(start,end,0.64,FreeCAD.Vector(0,0,890),source)]
+	sks += [genk(start,end,0.64,App.Vector(0,0,800),source)]
+	sks += [genk(start,end,0.64,App.Vector(0,0,850),source)]
+	sks += [genk(start,end,0.64,App.Vector(0,0,890),source)]
 
-	sks += [genk(start,end,1.1,FreeCAD.Vector(0,0,1340),source)]
-	sks += [genk(start,end,1.0,FreeCAD.Vector(0,0,1440),source)]
+	sks += [genk(start,end,1.1,App.Vector(0,0,1340),source)]
+	sks += [genk(start,end,1.0,App.Vector(0,0,1440),source)]
 
 	sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
 	Beface(sf)
@@ -1075,7 +1075,7 @@ def createBering():
 
 	rc=[]
 	for source in Gui.Selection.getSelection():
-		rc +=  [genk(0,0,1,FreeCAD.Vector(),source)]
+		rc +=  [genk(0,0,1,App.Vector(),source)]
 
 	return rc
 
@@ -1133,10 +1133,10 @@ def createBeringTest():
 	except:
 		pass
 
-	appdat=FreeCAD.ConfigGet('UserAppData')
+	appdat=App.ConfigGet('UserAppData')
 	fn=appdat+'/FreeCAD_testfiles/bering_testdaten.fcstd'
 
-	FreeCAD.open(fn)
+	App.open(fn)
 	App.setActiveDocument("bering_testdaten")
 	App.ActiveDocument=App.getDocument("bering_testdaten")
 	Gui.ActiveDocument=Gui.getDocument("bering_testdaten")
@@ -1148,9 +1148,9 @@ def createBeringTest():
 
 	sks=[]
 
-	sks += [genk(start,end,1,FreeCAD.Vector(),source)]
-	sks += [genk(start,end,1.9,FreeCAD.Vector(200,0,0),source)]
-	sks += [genk(start,end,0.9,FreeCAD.Vector(400,0,100),source)]
+	sks += [genk(start,end,1,App.Vector(),source)]
+	sks += [genk(start,end,1.9,App.Vector(200,0,0),source)]
+	sks += [genk(start,end,0.9,App.Vector(400,0,100),source)]
 
 	sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
 	Beface(sf)
@@ -1314,7 +1314,7 @@ class Product(FeaturePython):
 ##\cond
 	def execute(self,fp):
 
-		if fp.uSource2<>None and fp.vSource2<>None:
+		if fp.uSource2!=None and fp.vSource2!=None:
 
 			ptsu= np.array(fp.uSource.Shape.Edges[fp.uEdge].Curve.getPoles())
 			ptsu2= np.array(fp.uSource2.Shape.Edges[fp.uEdge2].Curve.getPoles())
@@ -1400,7 +1400,7 @@ class Product(FeaturePython):
 
 			if sb == 2:
 				# assume curve
-				print "curve V"
+				print ("curve V"
 				ptsb= sourceB.Shape.Edge1.Curve.getPoles()
 
 			sb=len(ptsb)
@@ -1421,7 +1421,7 @@ class Product(FeaturePython):
 			ptsb2=ptsb.reshape(1,sb,3)
 
 
-			if fp.uSource2<>None:
+			if fp.uSource2!=None:
 
 				ptsa=np.array(ptsa).reshape(sa,3)
 
@@ -1452,7 +1452,7 @@ class Product(FeaturePython):
 					ptsa *= 0.5
 					#ptsb[:,:,0:1] *= 0.5
 
-			if fp.uSource2<>None:
+			if fp.uSource2!=None:
 				poles=np.array(ptsaa)
 			else:
 				poles=ptsa+ptsb2
@@ -1516,14 +1516,14 @@ def createProduct():
 def debugP(pts,label):
 	'''a method to display points *pts* as wire in a object with name *label*'''
 
-#	print "debugP deaktiviert";return
+#	print ("debugP deaktiviert";return
 
-	pts=[FreeCAD.Vector(p) for p in pts]
+	pts=[App.Vector(p) for p in pts]
 	obj=App.ActiveDocument.getObject(label)
 	if obj == None:
 		obj=App.ActiveDocument.addObject('Part::Feature',label)
 
-	obj.Shape=Part.makePolygon([FreeCAD.Vector()]+pts)
+	obj.Shape=Part.makePolygon([App.Vector()]+pts)
 
 
 ## a connection between two faces
@@ -1578,7 +1578,7 @@ class FaceConnection(FeaturePython):
 		sfb=b.Shape.Face1.Surface
 		pb0=sfb.getPoles()
 
-		print "shapes ..."
+		print ("shapes ..."
 		print np.array(pa0).shape
 		print np.array(pb0).shape
 
@@ -1629,7 +1629,7 @@ class FaceConnection(FeaturePython):
 		fp.Shape=af.toShape()
 
 		poles=np.concatenate([pa[::-1],[pa[0]+fp.tangfacA*(pa[0]-pa[1]),pb[0]+fp.tangfacB*(pb[0]-pb[1])],pb]).swapaxes(0,1)
-		print "Concatt shape ",poles.shape
+		print ("Concatt shape ",poles.shape
 		(_a,_b,_c)=poles.shape
 
 		if fp.displayConnect:
@@ -1660,7 +1660,7 @@ class FaceConnection(FeaturePython):
 
 	def connect(self,fp):
 
-		print "in connect ...."
+		print ("in connect ...."
 		try:
 			a=fp.aSource
 			b=fp.bSource
@@ -1680,7 +1680,7 @@ class FaceConnection(FeaturePython):
 			pa0=pa0[::-1]
 
 
-		print "shapes ..."
+		print ("shapes ..."
 		print np.array(pa0).shape
 		print np.array(pb0).shape
 
@@ -1887,36 +1887,36 @@ def begrid(bs,showTangents=True,showKnotCurves=True):
 			for u in range(nu):
 				for v in range(nv):
 					try:
-						comps += [Part.makePolygon([FreeCAD.Vector(poles[3*u,3*v]),FreeCAD.Vector(poles[3*u,3*v+1])])]
-						comps += [Part.makePolygon([FreeCAD.Vector(poles[3*u,3*v]),FreeCAD.Vector(poles[3*u+1,3*v])])]
+						comps += [Part.makePolygon([App.Vector(poles[3*u,3*v]),App.Vector(poles[3*u,3*v+1])])]
+						comps += [Part.makePolygon([App.Vector(poles[3*u,3*v]),App.Vector(poles[3*u+1,3*v])])]
 						if u>0:
-							comps += [Part.makePolygon([FreeCAD.Vector(poles[3*u-1,3*v]),FreeCAD.Vector(poles[3*u,3*v])])]
+							comps += [Part.makePolygon([App.Vector(poles[3*u-1,3*v]),App.Vector(poles[3*u,3*v])])]
 						if v>0:
-							comps += [Part.makePolygon([FreeCAD.Vector(poles[3*u,3*v-1]),FreeCAD.Vector(poles[3*u,3*v])])]
+							comps += [Part.makePolygon([App.Vector(poles[3*u,3*v-1]),App.Vector(poles[3*u,3*v])])]
 					except: pass
 			for u in range(nu):
 				try:
 					v=vc-1
-					comps += [Part.makePolygon([FreeCAD.Vector(poles[3*u,v]),FreeCAD.Vector(poles[3*u+1,v])])]
-					comps += [Part.makePolygon([FreeCAD.Vector(poles[3*u,v-1]),FreeCAD.Vector(poles[3*u,v])])]
+					comps += [Part.makePolygon([App.Vector(poles[3*u,v]),App.Vector(poles[3*u+1,v])])]
+					comps += [Part.makePolygon([App.Vector(poles[3*u,v-1]),App.Vector(poles[3*u,v])])]
 					if u>0:
-						comps += [Part.makePolygon([FreeCAD.Vector(poles[3*u-1,v]),FreeCAD.Vector(poles[3*u,v])])]
+						comps += [Part.makePolygon([App.Vector(poles[3*u-1,v]),App.Vector(poles[3*u,v])])]
 				except:
 					pass
 			for v in range(nv):
 				try:
 					u=uc-1
-					comps += [Part.makePolygon([FreeCAD.Vector(poles[u,3*v]),FreeCAD.Vector(poles[u,3*v+1])])]
-					comps += [Part.makePolygon([FreeCAD.Vector(poles[u,3*v]),FreeCAD.Vector(poles[u-1,3*v])])]
+					comps += [Part.makePolygon([App.Vector(poles[u,3*v]),App.Vector(poles[u,3*v+1])])]
+					comps += [Part.makePolygon([App.Vector(poles[u,3*v]),App.Vector(poles[u-1,3*v])])]
 					if v>0:
-						comps += [Part.makePolygon([FreeCAD.Vector(poles[u,3*v]),FreeCAD.Vector(poles[u,3*v-1])])]
+						comps += [Part.makePolygon([App.Vector(poles[u,3*v]),App.Vector(poles[u,3*v-1])])]
 				except:
 					pass
 			try:
 				u=uc-1
 				v=vc-1
-				comps += [Part.makePolygon([FreeCAD.Vector(poles[u,v]),FreeCAD.Vector(poles[u,v-1])])]
-				comps += [Part.makePolygon([FreeCAD.Vector(poles[u,v]),FreeCAD.Vector(poles[u-1,v])])]
+				comps += [Part.makePolygon([App.Vector(poles[u,v]),App.Vector(poles[u,v-1])])]
+				comps += [Part.makePolygon([App.Vector(poles[u,v]),App.Vector(poles[u-1,v])])]
 			except:
 				pass
 
@@ -2005,7 +2005,7 @@ def BSplineToBezierCurve():
 		poles=[]
 		for i,e in enumerate(obj.Shape.Edges):
 			print e
-			FreeCAD.e=e
+			App.e=e
 			if len(e.Vertexes)==1:
 				continue
 			bc=e.Curve
@@ -2024,17 +2024,17 @@ def BSplineToBezierCurve():
 			if i == 0:
 				poles = bc.getPoles()
 			if i == 1:
-				print "in 1"
+				print ("in 1"
 				if (poles[0]-pp[0]).Length<0.1 or (poles[0]-pp[-1]).Length<0.1:
-					print "drehen"
+					print ("drehen"
 					poles=poles[::-1]
 				if (poles[-1]-pp[-1]).Length <0.1:
-					print "drehen 2"
+					print ("drehen 2"
 					pp=pp[::-1]
 				poles += pp[1:]
 			if i>1:
 				if (poles[-1]-pp[-1]).Length <0.1:
-					print "drehen 2"
+					print ("drehen 2"
 					pp=pp[::-1]
 				poles += pp[1:]
 
@@ -2051,7 +2051,7 @@ def BSplineToBezierCurve():
 		print len(poles)
 		mults=[4]+[3]*((len(poles)-1)/3-1)+[4]
 		knots=range(len(mults))
-		print "huhu"
+		print ("huhu"
 		print mults
 		print knots
 
@@ -2294,7 +2294,7 @@ def SurfaceEditor():
 
 		def resetDialog(self):
 			for idx in  'udial','vdial','ndial','scale','xdial','ydial','zdial','xrot','yrot','zrot':
-				if self.root.ids[idx].value()<>0:
+				if self.root.ids[idx].value()!=0:
 					self.root.ids[idx].setValue(0)
 
 		def connectSelection(self):
@@ -2382,7 +2382,7 @@ def SurfaceEditor():
 				pass
 
 			obj2.Shape=Part.Compound(comps+[s] + [bs3.toShape()])
-			print "KUGELLLLLLLLLLLLLLLLL"
+			print ("KUGELLLLLLLLLLLLLLLLL"
 			print s
 
 
@@ -2401,25 +2401,25 @@ def SurfaceEditor():
 					App.ActiveDocument.removeObject(self.NameObj)
 				except:
 					pass
-#			print "savet ",time.time()-tt
+#			print ("savet ",time.time()-tt
 
 			tt=time.time()
 			obj.ViewObject.hide()
 			obj.Shape=self.Shape
-			print "savetime hidden ",time.time()-tt
+			print ("savetime hidden ",time.time()-tt
 			tt=time.time()
 			obj.ViewObject.show()
 			obj.Shape=self.Shape
-			print "savetime show ",time.time()-tt
+			print ("savetime show ",time.time()-tt
 
 			tt=time.time()
 			z=self.Shape
 			z=self.Shape
-			print "savetime intern ",time.time()-tt
+			print ("savetime intern ",time.time()-tt
 
 			self.obj=obj
 			self.resultobj=obj
-#			print "savetb ",time.time()-tt
+#			print ("savetb ",time.time()-tt
 
 		def applyandclose(self):
 			fp=self.obj
@@ -2446,7 +2446,7 @@ def SurfaceEditor():
 
 
 		def run(self):
-			print "run"
+			print ("run"
 			edit(
 				self.root.ids['udial'].value(),
 				self.root.ids['vdial'].value(),
@@ -2454,11 +2454,11 @@ def SurfaceEditor():
 			)
 
 		def relativeMode(self):
-#			print "relative mode called"
+#			print ("relative mode called"
 			self.apply(False)
 
 		def apply(self,save=True):
-#			print "apply  implemented"
+#			print ("apply  implemented"
 			st=time.time()
 			try:
 				fp=self.obj
@@ -2471,7 +2471,7 @@ def SurfaceEditor():
 			if obj == None:
 				obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
 			bs=fp.Shape.Face1.Surface
-			vec=FreeCAD.Vector(
+			vec=App.Vector(
 						self.root.ids['xdial'].value()*self.root.ids['scale'].value(),
 						self.root.ids['ydial'].value()*self.root.ids['scale'].value(),
 						self.root.ids['zdial'].value()*self.root.ids['scale'].value()
@@ -2481,13 +2481,13 @@ def SurfaceEditor():
 				upn=int(self.root.ids['ux'].text())
 				vpn=int(self.root.ids['vx'].text())
 			except:
-				print "invalid input ux,vx"
+				print ("invalid input ux,vx"
 				return
 
 			poles=bs.getPoles()
 
 
-			print "shape ",np.array(poles).shape
+			print ("shape ",np.array(poles).shape
 			uct,vct,_=np.array(poles).shape
 			print ("vec",vec)
 			print(upn,vpn)
@@ -2506,11 +2506,11 @@ def SurfaceEditor():
 
 #			if 0:
 #				ttp=poles[upn*3-1:upn*3+2,vpn*3-1:vpn*3+2] - center
-#				r#ot=FreeCAD.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
+#				r#ot=App.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
 
 #				for u in 0,1,2:
 #					for v in 0,1,2:
-#						ttp[u,v]=rot.multVec(FreeCAD.Vector(ttp[u,v]))
+#						ttp[u,v]=rot.multVec(App.Vector(ttp[u,v]))
 
 #				(t1,t2)=bs.tangent(upn,vpn)
 #				n=bs.normal(upn,vpn)
@@ -2524,11 +2524,11 @@ def SurfaceEditor():
 
 			if 1 :
 				ttp=poles[startu:endu,startv:endv] - center
-				rot=FreeCAD.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
+				rot=App.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
 
 				for u in range(0,endu-startu):
 					for v in range(0,endv-startv):
-						ttp[u,v]=rot.multVec(FreeCAD.Vector(ttp[u,v]))
+						ttp[u,v]=rot.multVec(App.Vector(ttp[u,v]))
 
 				(t1,t2)=bs.tangent(upn,vpn)
 				n=bs.normal(upn,vpn)
@@ -2548,7 +2548,7 @@ def SurfaceEditor():
 			s=ss.toShape()
 			s.Placement.Base=poles[upn*3][vpn*3]
 
-			print "Time A",time.time()-st
+			print ("Time A",time.time()-st
 
 			bs2=Part.BSplineSurface()
 			bs2.buildFromPolesMultsKnots(poles,
@@ -2564,18 +2564,18 @@ def SurfaceEditor():
 				)
 
 
-			print "Time B1 ",time.time()-st
+			print ("Time B1 ",time.time()-st
 			if self.root.ids['showface'].isChecked():
 				comps += [bs2.toShape()]
 
 
 			self.Shape=bs2.toShape()
 			if not save:
-				print "Time B2 ",time.time()-st
+				print ("Time B2 ",time.time()-st
 				#comps += [s]
 				obj.Shape=Part.Compound(comps)
 				#obj.Shape=Part.Compound(comps+ [s])
-				print "Time B2a ",time.time()-st
+				print ("Time B2a ",time.time()-st
 				#obj=App.ActiveDocument.addObject('Part::Spline','YY_'+fp.Name)
 	#			obj.Shape=bs.toShape()
 
@@ -2589,36 +2589,36 @@ def SurfaceEditor():
 
 				self.NameObj2=obj2.Name
 
-				print "Time B3 ",time.time()-st
+				print ("Time B3 ",time.time()-st
 				comps=begrid(bs2,False,True)
 				bs3=bs2.copy()
-				print "frames"
+				print ("frames"
 				print (startu,endu-1,startv,endv-1)
 				print bs3.getUKnots()
 				print bs3.getVKnots()
 				try:
 					bs3.segment(startu,endu-1,startv,endv-1)
-					print "Time B4 ",time.time()-st
+					print ("Time B4 ",time.time()-st
 					obj2.Shape=Part.Compound(comps+[s] + [bs3.toShape()])
-					print "Time B ",time.time()-st
+					print ("Time B ",time.time()-st
 				except:
 					obj2.Shape=Part.Compound(comps+[s])
 					pass
 
 			if save:
-				print "SAVE"
+				print ("SAVE"
 				sts=time.time()
 				self.save()
-				print "Time SCA ",time.time()-sts
+				print ("Time SCA ",time.time()-sts
 				sts=time.time()
 				self.apply(False)
-				print "Time SCB ",time.time()-sts
+				print ("Time SCB ",time.time()-sts
 				sts=time.time()
 				self.resetDialog()
-				print "Time SCC ",time.time()-sts
+				print ("Time SCC ",time.time()-sts
 
 			App.activeDocument().recompute()
-			print "Time C ",time.time()-st
+			print ("Time C ",time.time()-st
 
 
 
@@ -2698,7 +2698,7 @@ def addKnot():
 	class BeKnotApp(MikiApp):
 
 		def run(self):
-			print "run"
+			print ("run"
 			insertKnot(
 				self.root.ids['pos'].text(),
 				self.root.ids['mode'].currentText(),
@@ -3386,11 +3386,11 @@ class BeTriangle(FeaturePython):
 			try:
 				spa=edge.Curve.getPoles()
 			except:
-				print "no Vertexes"
+				print ("no Vertexes"
 				try:
 					spa=[v.Point for v in edge.Vertexes]
 				except:
-					print "no poles"
+					print ("no poles"
 					return
 
 #		spb=[v.Point for v in fp.curveB.Shape.Vertexes]
@@ -3402,11 +3402,11 @@ class BeTriangle(FeaturePython):
 			try:
 				spb=edge.Curve.getPoles()
 			except:
-				print "no Vertexes"
+				print ("no Vertexes"
 				try:
 					spb=[v.Point for v in edge.Vertexes]
 				except:
-					print "no poles"
+					print ("no poles"
 					return
 
 		if fp.edgeC=='':
@@ -3416,13 +3416,13 @@ class BeTriangle(FeaturePython):
 			try:
 				spc=edge.Curve.getPoles()
 			except:
-				print "no Vertexes"
+				print ("no Vertexes"
 				try:
 					spc=[v.Point for v in edge.Vertexes]
 				except:
-					print "no poles"
+					print ("no poles"
 					return
-		print "ha----------------------------ha"
+		print ("ha----------------------------ha"
 
 
 
@@ -3439,11 +3439,11 @@ class BeTriangle(FeaturePython):
 			spc=spc[::-1]
 
 
-		print "--spa--"
+		print ("--spa--"
 		print spa
-		print "--spb-----"
+		print ("--spb-----"
 		print spb
-		print "--spc-----"
+		print ("--spc-----"
 		print spc
 		assert len(spa) == 4
 		assert len(spb) == 4
@@ -3510,9 +3510,9 @@ class BeTriangle(FeaturePython):
 
 		rcc2=rrs[0][::-1]
 
-		ptsa=[FreeCAD.Vector(p) for  p in rcc[:-1]]
-		ptsa += [FreeCAD.Vector(p) for  p in rcc2]
-		ptsb=[p+ FreeCAD.Vector(0,-30,0) for p in ptsa]
+		ptsa=[App.Vector(p) for  p in rcc[:-1]]
+		ptsa += [App.Vector(p) for  p in rcc2]
+		ptsb=[p+ App.Vector(0,-30,0) for p in ptsa]
 		# Draft.makeWire(ptsa)
 		for p in ptsa:
 			print p
@@ -3800,7 +3800,7 @@ def createYankee():
 			allp[4,i]=allp[3,i]
 			allp[5,i]=allp[3,i]
 
-	print "lu.",lu
+	print ("lu.",lu
 	umults=[4,3,3,4]
 	uknots=range(len(umults))
 
@@ -3860,13 +3860,13 @@ class QuadPm(FeaturePython):
 	def execute(self,fp):
 
 		comps=[]
-		if fp.sourceA <> None:
+		if fp.sourceA != None:
 			fp.pointA=fp.sourceA.Placement
-		if fp.sourceB <> None:
+		if fp.sourceB != None:
 			fp.pointB=fp.sourceB.Placement
-		if fp.sourceC <> None:
+		if fp.sourceC != None:
 			fp.pointC=fp.sourceC.Placement
-		if fp.sourceD <> None:
+		if fp.sourceD != None:
 			fp.pointD=fp.sourceD.Placement
 
 
@@ -4011,8 +4011,8 @@ def stretchandbend():
 	if pass2:
 		return
 
-	xd=FreeCAD.Vector(1,0,0)*4000
-	yd=FreeCAD.Vector(0,1,0)*4000
+	xd=App.Vector(1,0,0)*4000
+	yd=App.Vector(0,1,0)*4000
 
 	puA=a.pointA.Rotation.multVec(xd)
 	pvA=a.pointA.Rotation.multVec(yd)
@@ -4143,10 +4143,10 @@ def AA():
 	print basel
 
 
-def genbase(fp,pts,center=FreeCAD.Vector(),offset=2):
+def genbase(fp,pts,center=App.Vector(),offset=2):
 	# Basiszelle
 
-	ptsa=[FreeCAD.Vector(p[0],p[1],p[2]) +center for p in pts]
+	ptsa=[App.Vector(p[0],p[1],p[2]) +center for p in pts]
 	ptsb=ptsa[offset:]+ptsa[:offset]
 	ptsb=ptsa
 
@@ -4156,7 +4156,7 @@ def genbase(fp,pts,center=FreeCAD.Vector(),offset=2):
 		sf.ViewObject.hide()
 
 	sf.Shape=Part.makePolygon(ptsb)
-	aa=genk(0,0,1,FreeCAD.Vector(),sf,name=sf.Name,show=False)
+	aa=genk(0,0,1,App.Vector(),sf,name=sf.Name,show=False)
 	aa.ViewObject.hide()
 	return aa,ptsa
 
@@ -4194,10 +4194,10 @@ def gencircle(fp,n,h=300,radius=400,center=None):
 	pts2=ptsa[fp.offset:]+ptsa[:fp.offset]
 
 
-	ptsa=[FreeCAD.Vector(p[0],p[1],h)+center for p in pts2]
+	ptsa=[App.Vector(p[0],p[1],h)+center for p in pts2]
 	rot=fp.location.Rotation
 
-	ptsa=[rot.multVec(FreeCAD.Vector(p[0],p[1],h))+center for p in pts2]
+	ptsa=[rot.multVec(App.Vector(p[0],p[1],h))+center for p in pts2]
 
 	ptsb=ptsa[1:]+ptsa[:1]
 	ptsb=ptsa
@@ -4208,18 +4208,18 @@ def gencircle(fp,n,h=300,radius=400,center=None):
 		#sk.ViewObject.hide()
 
 	sk.ViewObject.hide()
-#	print "habe:",sk.Name
-#	print "-#-#-#"
+#	print ("habe:",sk.Name
+#	print ("-#-#-#"
 #	for p in ptsb:
 #		print p
-#	print "--------------"
+#	print ("--------------"
 	sk.Shape=Part.makePolygon(ptsb)
 
 	source=App.ActiveDocument.ActiveObject
-	bb=genk(0,0,1,FreeCAD.Vector(),sk,sk.Name)
+	bb=genk(0,0,1,App.Vector(),sk,sk.Name)
 	bb.ViewObject.hide()
 
-	print " Ergebnis ",bb.Name
+	print (" Ergebnis ",bb.Name
 
 	return bb,ptsb
 
@@ -4252,7 +4252,7 @@ def createSketchCircle():
 #	for i in range(11):
 #		sk.addGeometry(Part.LineSegment(App.Vector(ptsa[i][0],ptsa[i][1],0),App.Vector(ptsa[i+1][0],ptsa[i+1][1],0)),False)
 
-	rr=FreeCAD.Rotation(FreeCAD.Vector(0,0,1),-45)
+	rr=App.Rotation(App.Vector(0,0,1),-45)
 	for i in range(11):
 		sk.addGeometry(Part.LineSegment(rr.multVec(App.Vector(ptsa[i][0],ptsa[i][1],0)),
 				rr.multVec(App.Vector(ptsa[i+1][0],ptsa[i+1][1],0))),False)
@@ -4324,8 +4324,8 @@ class HoleFace(FeaturePython):
 		obj.addProperty("App::PropertyBool","solid")#.solid=True
 
 		obj.location.Base.z=3
-		obj.location.Base= FreeCAD.Vector(6,12,3)
-		obj.location.Rotation=FreeCAD.Rotation(175,85,-180)
+		obj.location.Base= App.Vector(6,12,3)
+		obj.location.Rotation=App.Rotation(175,85,-180)
 
 
 
@@ -4340,7 +4340,7 @@ def createHole(fp,height=100):
 
 	obj=fp.source
 
-	print "Location"
+	print ("Location"
 	print fp.location
 	endfaces=False
 	radius=4
@@ -4363,26 +4363,26 @@ def createHole(fp,height=100):
 	]
 
 
-	print "get bool mikidebug:",getcb("mikidebug")
+	print ("get bool mikidebug:",getcb("mikidebug")
 	#return
 
 	poles=np.array(obj.Shape.Face1.Surface.getPoles())
 
-	center=FreeCAD.Vector((poles[0,0]+poles[-1,-1])*0.5)+FreeCAD.Vector(2,-10,5)
+	center=App.Vector((poles[0,0]+poles[-1,-1])*0.5)+App.Vector(2,-10,5)
 	center += fp.location.Base
 
 
 
 #	Draft.makePoint(center)
 
-	print "-----------------"
+	print ("-----------------"
 
 	pts=[poles[-1,-2],
 		poles[-1,-1],poles[-2,-1],poles[1,-1],poles[0,-1],
 		poles[0,2],poles[0,1],poles[0,0],
 		poles[1,0],poles[2,0],poles[3,0],poles[3,1]]
 
-#	Draft.makeWire([FreeCAD.Vector(p) for p in pts])
+#	Draft.makeWire([App.Vector(p) for p in pts])
 
 
 	ta=time.time()
@@ -4420,7 +4420,7 @@ def createHole(fp,height=100):
 #	#sf.ViewObject.hide()
 #	_=Beface(sf)
 
-	print "!!!",[aa,bb,cc,dd]
+	print ("!!!",[aa,bb,cc,dd]
 #	sf.berings=[aa,bb,cc,dd]
 	sf.berings=[aa,bb,bb1,bb2,bb3,cc,dd]
 	#sf.berings=[bb,cc,dd]
@@ -4529,7 +4529,7 @@ class GordonFace(FeaturePython):
 
 	def execute(self,fp):
 
-		print "EXECute GORDON"
+		print ("EXECute GORDON"
 		createGordon(fp,scale=5.0)
 
 
@@ -4543,14 +4543,14 @@ def createGordon(obj,scale=5.0):
 
 
 
-	if obj.ribs<>None:
+	if obj.ribs!=None:
 		polsu=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.ribs])
 		suc=len(obj.ribs)-1
-	if obj.meridians<>None:
+	if obj.meridians!=None:
 		polsv=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.meridians])
 		svc=len(obj.meridians)-1
 
-	if obj.grid<>None:
+	if obj.grid!=None:
 
 		suc=obj.uCount-1
 		svc=obj.vCount-1
@@ -4562,7 +4562,7 @@ def createGordon(obj,scale=5.0):
 			polsv=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.grid.Links[suc+1:suc+svc+2]])
 
 		except:
-			print "Berechne selbst die dimensionen des Feldes"
+			print ("Berechne selbst die dimensionen des Feldes"
 			a=obj.grid
 			lenedges=[len(e.Curve.getPoles()) for e in a.Shape.Edges]
 			print ("Length edges",lenedges)
@@ -4578,32 +4578,32 @@ def createGordon(obj,scale=5.0):
 
 			polsu=np.array([a.Shape.Edges[i].Curve.getPoles() for i in range(0,suc+1)])
 			polsv=np.array([a.Shape.Edges[i].Curve.getPoles() for i in range(suc+1,suc+svc+2)])
-			print "snapes"
+			print ("snapes"
 			print polsu.shape
 			print polsv.shape
 
 			#diagnose lage der kurven zueinander
 			print
-			print FreeCAD.Vector(polsu[-1,0])
-			print FreeCAD.Vector(polsu[0,0])
-			print FreeCAD.Vector(polsv[-1,0])
-			print FreeCAD.Vector(polsv[0,0])
+			print App.Vector(polsu[-1,0])
+			print App.Vector(polsu[0,0])
+			print App.Vector(polsv[-1,0])
+			print App.Vector(polsv[0,0])
 
 			dista=1.
-			if (FreeCAD.Vector(polsu[0,0])-FreeCAD.Vector(polsv[0,0])).Length<dista:
-				print "flip u"
+			if (App.Vector(polsu[0,0])-App.Vector(polsv[0,0])).Length<dista:
+				print ("flip u"
 				polsu=polsu[::-1]
 
-			if (FreeCAD.Vector(polsu[-1,0])-FreeCAD.Vector(polsv[-1,0])).Length<dista:
-				print "flip v"
+			if (App.Vector(polsu[-1,0])-App.Vector(polsv[-1,0])).Length<dista:
+				print ("flip v"
 				polsv=polsv[::-1]
 
-			if (FreeCAD.Vector(polsu[0,0])-FreeCAD.Vector(polsv[-1,0])).Length<dista:
-				print "flip both"
+			if (App.Vector(polsu[0,0])-App.Vector(polsv[-1,0])).Length<dista:
+				print ("flip both"
 				polsv=polsv[::-1]
 				polsu=polsu[::-1]
 
-			assert (FreeCAD.Vector(polsu[-1,0]) - FreeCAD.Vector(polsv[0,0])).Length<dista
+			assert (App.Vector(polsu[-1,0]) - App.Vector(polsv[0,0])).Length<dista
 			assert polsu.shape==(ucc,lenedges[0],3)
 			assert polsv.shape==(vcc,lenedges[-1],3)
 
@@ -4674,7 +4674,7 @@ def createGordon(obj,scale=5.0):
 		pts=np.zeros((3*svc+1)*3).reshape(1,3*svc+1,3)
 		for i in range(suc+1):
 			pts += [polsu[i]*blender(i,u)/blender(i,i)]
-		ptsa=[FreeCAD.Vector(p) for p in pts[0]]
+		ptsa=[App.Vector(p) for p in pts[0]]
 		ptsarr += [ptsa]
 
 	ag=Part.BSplineSurface()
@@ -4710,7 +4710,7 @@ def createGordon(obj,scale=5.0):
 		pts=np.zeros((3*suc+1)*3).reshape(1,3*suc+1,3)
 		for i in range(svc+1):
 			pts += [polsv[i]*(blender(i,v)/blender(i,i))]
-		ptsa=[FreeCAD.Vector(p) for p in pts[0]]
+		ptsa=[App.Vector(p) for p in pts[0]]
 		ptsarr2 += [ptsa]
 
 	ag=Part.BSplineSurface()
@@ -4910,21 +4910,21 @@ def  polishG1GUI():
 
 	#	print te,tw
 
-		te=FreeCAD.Vector(te)
-		tw=FreeCAD.Vector(tw)
+		te=App.Vector(te)
+		tw=App.Vector(tw)
 		fe=te.Length/(te.Length+tw.Length)
 		fw=tw.Length/(te.Length+tw.Length)
 
 
-		tn=FreeCAD.Vector(tn)
-		ts=FreeCAD.Vector(ts)
+		tn=App.Vector(tn)
+		ts=App.Vector(ts)
 		fn=tn.Length/(tn.Length+ts.Length)
 		fs=ts.Length/(tn.Length+ts.Length)
 
 		# parallel ?
 		if te.cross(tw).Length >10**-5:
 			print ("run",u,v)
-			print "ost west nicht parallel"
+			print ("ost west nicht parallel"
 			print te.cross(tw).Length
 
 
@@ -4941,7 +4941,7 @@ def  polishG1GUI():
 		# parallel ?
 		if tn.cross(ts).Length >10**-5:
 			print ("run",u,v)
-			print "nord sued nicht parallel"
+			print ("nord sued nicht parallel"
 			print tn.cross(ts).Length
 			tu=(tn+ts)
 
@@ -5048,7 +5048,7 @@ class Border(FeaturePython):
 			poles2[0][::-1][:-1],
 		])
 
-		pts=[FreeCAD.Vector(p) for p in pts]
+		pts=[App.Vector(p) for p in pts]
 		pts2=pts[fp.offset:]+pts[:fp.offset]
 
 
@@ -5128,20 +5128,20 @@ class Approx(FeaturePython):
 		if not self.Lock:
 			self.Lock=True
 			try:
-				print "run myexecute"
+				print ("run myexecute"
 				self.myexecute(fp)
 				pass
 			except:
-				print "problems with myexecute"
+				print ("problems with myexecute"
 			self.Lock=False
 		else:
-			print "no myexecute"
+			print ("no myexecute"
 
 
 	def onChanged(self,fp,prop):
 		if prop not in ['tangentFactor', 'segmentCount']: return
 		self.myupdate(fp)
-		print "change done"
+		print ("change done"
 
 
 	def myupdate(self,fp):
@@ -5262,7 +5262,7 @@ def AA ():
 	selectionToNurbs()
 
 
-def drawcurveA(pts,face,facepos=FreeCAD.Vector()):
+def drawcurveA(pts,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
 	sf=face.Surface
@@ -5270,14 +5270,14 @@ def drawcurveA(pts,face,facepos=FreeCAD.Vector()):
 
 	if interpolate:
 		pts2da=[sf.parameter(p) for p in pts[1:]]
-		pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+		pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 		bs2d = Part.Geom2d.BSplineCurve2d()
 		bs2d.interpolate(pts2d)
 		e1 = bs2d.toShape(face)
 	else:
 		bs2d = Part.Geom2d.BSplineCurve2d()
 		pts2da=[sf.parameter(p) for p in pts]
-		pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+		pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 		bs2d.buildFromPolesMultsKnots(pts2d,[1]*(len(pts2d)+1),range(len(pts2d)+1),True,1)
 		e1 = bs2d.toShape(face)
 
@@ -5308,14 +5308,14 @@ def drawcurveA(pts,face,facepos=FreeCAD.Vector()):
 
 def AA():
 	'''draw a curve onto surface  create border and split face '''
-	FreeCAD.open(u"/home/thomas/Downloads/tangent_gap_problem2.fcstd")
+	App.open(u"/home/thomas/Downloads/tangent_gap_problem2.fcstd")
 	App.setActiveDocument("tangent_gap_problem2")
 	App.ActiveDocument=App.getDocument("tangent_gap_problem2")
 	Gui.ActiveDocument=Gui.getDocument("tangent_gap_problem2")
 	face=App.ActiveDocument.getObject("Top_Cover_fcstd").Shape.Face47
 	wire=App.ActiveDocument.Drawing_on_Shape020__Face1.Shape
 	pts3=[v.Point for v in wire.Vertexes]
-	drawcurveA(pts3,face,facepos=FreeCAD.Vector())
+	drawcurveA(pts3,face,facepos=App.Vector())
 
 
 
@@ -5491,7 +5491,7 @@ def glaetten():
 				pall[0:4,3:8]=pa
 
 			else:
-				print "nix zu tun"
+				print ("nix zu tun"
 				return
 
 			if modus in ['all','vertical']:
@@ -5500,13 +5500,13 @@ def glaetten():
 
 				k1=(pall[2]-pall[3])
 				k2=(pall[4]-pall[3])
-				kk=[FreeCAD.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
+				kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
 				kka=[]
 				for k in kk:
 					try:
 						kka += [k.normalize()]
 					except:
-						kka += [FreeCAD.Vector()]
+						kka += [App.Vector()]
 				kka=np.array(kka)
 
 
@@ -5523,14 +5523,14 @@ def glaetten():
 
 				k1=(pall[2]-pall[3])
 				k2=(pall[4]-pall[3])
-				kk=[FreeCAD.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
+				kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
 
 				kka=[]
 				for k in kk:
 					try:
 						kka += [k.normalize()]
 					except:
-						kka += [FreeCAD.Vector()]
+						kka += [App.Vector()]
 				kka=np.array(kka)
 
 				fa2=2.0*ta/20
@@ -5575,9 +5575,9 @@ def glaetten():
 					srs[i].Shape=af.toShape()
 
 		def runT(self):
-			FreeCAD.ActiveDocument.openTransaction("tatata")
+			App.ActiveDocument.openTransaction("tatata")
 			self.run()
-			FreeCAD.ActiveDocument.commitTransaction()
+			App.ActiveDocument.commitTransaction()
 
 
 
@@ -5610,7 +5610,7 @@ def AA ():
 def flattenthewire():
 	'''flatten a curve to prepare for sketcher work'''
 
-	print "curve/wire to planar wire"
+	print ("curve/wire to planar wire"
 	obj=App.ActiveDocument.CurveMorpher
 	for e in obj.Shape.Edges:#[1:2]:
 		#e=App.ActiveDocument.CurveMorpher.Shape.Edge7
@@ -5620,7 +5620,7 @@ def flattenthewire():
 		b=poles[-1]
 		da=(b-a).normalize()
 		nms=[(p-a).cross(da).normalize() for p in poles[1:-1]]
-		nm=FreeCAD.Vector()
+		nm=App.Vector()
 		for n in nms:
 			nm += n
 		db=nm.normalize()
@@ -5638,7 +5638,7 @@ def flattenthewire():
 			p1 = p-a
 #			print (p1.dot(da),p1.dot(dc),p1.dot(db))
 			p2= da*p1.dot(da)+dc*p1.dot(dc) + a
-			p3= FreeCAD.Vector(p1.dot(da),p1.dot(dc))
+			p3= App.Vector(p1.dot(da),p1.dot(dc))
 			pts2 += [p2]
 			pts3 += [p3]
 
@@ -5651,18 +5651,18 @@ def flattenthewire():
 		tt.Shape=pol
 
 		db=da.cross(dc)
-#		print "vectoren"
+#		print ("vectoren"
 #		print (da.x,da.y,da.z)
 #		print (db.x,db.y,db.z)
 #		print (dc.x,dc.y,dc.z)
 #		Draft.makeWire([a,b,a,a+100*db,a,a+50*dc])
 #		db=-db
-		m=FreeCAD.Matrix(da.x,da.y,da.z,0.,
+		m=App.Matrix(da.x,da.y,da.z,0.,
 			db.x,db.z,db.y,0.,
 			dc.x,dc.z,dc.y,0.,
 			0.,0.,0.,1.)
 
-		m=FreeCAD.Matrix(
+		m=App.Matrix(
 			da.x,da.y,da.z,0.,
 			db.x,db.y,db.z,0.,
 			dc.x,dc.y,dc.z,0.,
@@ -5670,17 +5670,17 @@ def flattenthewire():
 
 		#db=-db
 		db,dc=dc,db
-		m=FreeCAD.Matrix(
+		m=App.Matrix(
 			da.x,db.x,dc.x,0.,
 			da.y,db.y,dc.y,0.,
 			da.z,db.z,dc.z,0.,
 			0.,0.,0.,1.)
 
 
-		pl = FreeCAD.Placement(m)
+		pl = App.Placement(m)
 
 		m.move((a.x,a.y,a.z))
-		pl = FreeCAD.Placement(m)
+		pl = App.Placement(m)
 #		print pl.Rotation.toEuler()
 		tt.Placement=pl
 

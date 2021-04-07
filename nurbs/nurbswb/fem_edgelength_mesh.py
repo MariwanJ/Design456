@@ -8,9 +8,10 @@
 #-------------------------------------------------
 
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 import Part,Points
 
@@ -23,7 +24,7 @@ import nurbswb
 if 0:
 	# load a testfile
 	try:
-		FreeCAD.open(u"/home/thomas/Schreibtisch/netz_test_data.fcstd")
+		App.open(u"/home/thomas/Schreibtisch/netz_test_data.fcstd")
 		App.setActiveDocument("netz_test_data")
 		App.ActiveDocument=App.getDocument("netz_test_data")
 		Gui.ActiveDocument=Gui.getDocument("netz_test_data")
@@ -75,7 +76,7 @@ def findnode(conix,n):
 	for k in conix:
 		if n in conix[k]:
 			return k
-	print "findnode fehler bei ",n
+	print ("findnode fehler bei ",n
 	print 
 	return -1
 
@@ -89,7 +90,7 @@ def getGraph(sk):
 
 	for i,geo in enumerate(sk.Geometry):
 #		print geo.__class__.__name__
-		if geo.__class__.__name__ <>  'LineSegment': continue
+		if geo.__class__.__name__ !=  'LineSegment': continue
 #		print (i,geo.StartPoint,geo.EndPoint)
 		g.add_node((i,1))
 		g.add_node((i,2))
@@ -97,7 +98,7 @@ def getGraph(sk):
 	for c in sk.Constraints:
 	#	print c.Content
 		tt=c.Content.split(' ')
-		if  tt[2]<>'Type="1"': continue
+		if  tt[2]!='Type="1"': continue
 
 		First=get_sval(tt[4])
 		FirstPos=get_sval(tt[5])
@@ -135,7 +136,7 @@ def getGraph(sk):
 				continue
 
 			# process only lines 
-			if geo.__class__.__name__ <>  'LineSegment': continue
+			if geo.__class__.__name__ !=  'LineSegment': continue
 
 			n1=findnode(conix,(i,1))
 			g2.node[n1]['vector']= sk.getPoint(i,1)
@@ -170,7 +171,7 @@ def calculateForce(g2,n):
 
 	nbs=g2.neighbors(n)
 	v0=g2.node[n]['vector']
-	r=FreeCAD.Vector()
+	r=App.Vector()
 
 	for nb in nbs:
 
@@ -182,7 +183,7 @@ def calculateForce(g2,n):
 				fac= 1.0*(tf.Length-mk)/mk
 				tf=tf * fac
 			else:
-				tf= FreeCAD.Vector()
+				tf= App.Vector()
 
 		#model B
 		if 0:
@@ -232,7 +233,7 @@ def run(animate=True,itercount=101):
 					g2.node[n]['vector2'].z=newpos.z
 
 				# if a height is given by a circle preserve this value
-				if g2.node[n]['radius']<>0:
+				if g2.node[n]['radius']!=0:
 					g2.node[n]['vector2'].z=g2.node[n]['radius']
 
 				if force.Length> 0.1:
@@ -242,17 +243,17 @@ def run(animate=True,itercount=101):
 			#create the 3D model
 			col=[]
 			for (a,b) in g2.edges():
-				h=FreeCAD.Vector(0,0,random.random()*20)
+				h=App.Vector(0,0,random.random()*20)
 				col += [Part.LineSegment(g2.node[a]['vector2'],g2.node[b]['vector2']).toShape()]
 
 			color=(random.random(),random.random(),random.random())
 
 			if animate: # update grid
-				n3=FreeCAD.ActiveDocument.getObject("grid")
+				n3=App.ActiveDocument.getObject("grid")
 				if n3==None:
-					n3=FreeCAD.ActiveDocument.addObject("Part::Feature","grid")
+					n3=App.ActiveDocument.addObject("Part::Feature","grid")
 			else: # create new grif each time
-				n3=FreeCAD.ActiveDocument.addObject("Part::Feature","grid")
+				n3=App.ActiveDocument.addObject("Part::Feature","grid")
 				n3.ViewObject.Transparency=70
 			n3.ViewObject.LineColor=color
 			n3.Shape=Part.Compound(col)
@@ -281,7 +282,7 @@ def run(animate=True,itercount=101):
 			bs=Part.BSplineSurface()
 			bs.interpolate(pts)
 
-			n3=FreeCAD.ActiveDocument.addObject("Part::Spline","face")
+			n3=App.ActiveDocument.addObject("Part::Spline","face")
 			n3.Shape=bs.toShape()
 			n3.ViewObject.Transparency=70
 			n3.ViewObject.ShapeColor=color

@@ -66,7 +66,7 @@ class Tripod(PartFeature):
 		''' recompute the shape, compute and print the curvature '''
 		if prop=="Shape": return
 		if prop=="Placement": return
-		#print "on change ",prop
+		#print ("on change ",prop
 
 		try: fp.u, fp.v, fp.directionNormal,fp.Shape,fp.source,fp.faceNumber
 		except: return
@@ -74,7 +74,7 @@ class Tripod(PartFeature):
 		if prop in ['u','v'] and fp.mode in ["RefPoint","RefPointSketch","Circles1","Circles2"]: return
 		if prop in "Geometry": return
 		
-#		print "change",prop
+#		print ("change",prop
 
 		u=fp.u/12*3.14
 		v=fp.v/12*3.14
@@ -110,8 +110,8 @@ class Tripod(PartFeature):
 			try:
 				t2=nn.normalAt(u)
 			except:
-				print "Problem Erstellung Normale"
-				t2=FreeCAD.Vector(t1.y,t1.z,t1.x)
+				print ("Problem Erstellung Normale"
+				t2=App.Vector(t1.y,t1.z,t1.x)
 				t2=t1.cross(t2)
 			if fp.binormalMode:
 				t2=t1.cross(t2)
@@ -149,20 +149,20 @@ class Tripod(PartFeature):
 			n=t2.cross(t1).normalize()
 
 		n=n.normalize()
-		r=FreeCAD.Rotation(t1,t2,n)
+		r=App.Rotation(t1,t2,n)
 
 		if wiremode:
-#			print "Wiremode"
-			r=FreeCAD.Rotation(n,t1,t2)
-			r=FreeCAD.Rotation(t2,n,t1)
+#			print ("Wiremode"
+			r=App.Rotation(n,t1,t2)
+			r=App.Rotation(t2,n,t1)
 			#hack binormal
-			r=FreeCAD.Rotation(n,t1,t2)
+			r=App.Rotation(n,t1,t2)
 		else:
-			r=FreeCAD.Rotation(t1,t2,n)
+			r=App.Rotation(t1,t2,n)
 		
-		#print "Rotation",r.toEuler()
-		pm=FreeCAD.Placement(vf,r)
-		#pm=FreeCAD.Placement()
+		#print ("Rotation",r.toEuler()
+		pm=App.Placement(vf,r)
+		#pm=App.Placement()
 		#pm.Rotation=r
 		if fp.mode=='Sketch' or fp.mode=="RefPointSketch":
 			if len(fp.Geometry)==0:
@@ -220,9 +220,9 @@ class Tripod(PartFeature):
 				
 				self.pts += [vf]
 				#pts=self.w.Points + [vf]
-				print "++++",self.pts
+				print ("++++",self.pts
 			except:
-				self.pts = [FreeCAD.Vector(),vf]
+				self.pts = [App.Vector(),vf]
 			self.w.Shape=Part.makePolygon(self.pts)
 			#self.w.Closed=False
 			#App.ActiveDocument.recompute()
@@ -254,12 +254,12 @@ class Tripod(PartFeature):
 		cmax=sf.curvature(u,v,"Max")
 		cmin=sf.curvature(u,v,"Min")
 
-		if cmax <>0:
+		if cmax !=0:
 			rmax=1.0/cmax
 		else:
 			rmax=0 
 
-		if cmin <>0:
+		if cmin !=0:
 			rmin=1.0/cmin
 		else:
 			rmin=0
@@ -313,7 +313,7 @@ class Tripod(PartFeature):
 
 		comp += [c]
 
-		print "done"
+		print ("done")
 		fp.Shape=Part.Compound(comp)
 		# fp.Shape=Part.Compound(comp[:1])
 
@@ -372,7 +372,7 @@ class Tripod(PartFeature):
 				aa.Height=10000
 				aa.Radius=0.2*i*100
 				aa.Placement.Base=p
-				aa.Placement.Rotation=FreeCAD.Rotation(FreeCAD.Vector(0,0,1),p2-p)
+				aa.Placement.Rotation=App.Rotation(App.Vector(0,0,1),p2-p)
 				fc=aa.Shape.Face1
 				a3=fn.section(fc)
 				col += [a3]
@@ -409,9 +409,9 @@ class Tripod(PartFeature):
 def createTripod():
 
 	if len(Gui.Selection.getSelectionEx())==2:
-		a=FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodRefPoint")
+		a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodRefPoint")
 	else:
-		a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Tripod")
+		a=App.ActiveDocument.addObject("Part::FeaturePython","Tripod")
 
 	Tripod(a)
 	a.ViewObject.LineWidth = 2
@@ -441,7 +441,7 @@ def createTripodSketch(): #sketcher
 				if sub.startswith('Edge'):
 					nr=sub[4:]
 					print( s.Object.Name, sub, int(nr))
-					a=FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
+					a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
 					#Tripod(a,mode='Sketch')
 					Tripod(a)
 					a.mode="Sketch"
@@ -454,7 +454,7 @@ def createTripodSketch(): #sketcher
 				if sub.startswith('Face'):
 					nr=sub[4:]
 					print( s.Object.Name, sub, int(nr))
-					a=FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
+					a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
 					#Tripod(a,mode='Sketch')
 					Tripod(a)
 					a.mode="Sketch"
@@ -466,8 +466,8 @@ def createTripodSketch(): #sketcher
 
 
 	else:
-		#a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","Tripod")
-		a=FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
+		#a=App.ActiveDocument.addObject("Part::FeaturePython","Tripod")
+		a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
 		#Tripod(a,mode='Sketch')
 		Tripod(a)
 		a.mode="Sketch"
@@ -480,19 +480,19 @@ def createTripodSketch(): #sketcher
 
 
 def createSweep():
-	sw=FreeCAD.ActiveDocument.addObject('Part::Sweep','Sweep')
+	sw=App.ActiveDocument.addObject('Part::Sweep','Sweep')
 	sw.Spine=(Gui.Selection.getSelection()[-1],["Edge1"])
 	sw.Sections=Gui.Selection.getSelection()[0:-1]
 	App.activeDocument().recompute()
 
 
 def createLoft():
-	sw=FreeCAD.ActiveDocument.addObject('Part::Loft','Loft')
+	sw=App.ActiveDocument.addObject('Part::Loft','Loft')
 	sw.Sections=Gui.Selection.getSelection()
 	App.activeDocument().recompute()
 
 def createCompound():
-	sw=FreeCAD.ActiveDocument.addObject("Part::Compound","Compound001")
+	sw=App.ActiveDocument.addObject("Part::Compound","Compound001")
 	sw.Links=Gui.Selection.getSelection()
 	App.activeDocument().recompute()
 

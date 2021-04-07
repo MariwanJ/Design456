@@ -45,12 +45,12 @@ def ComboViewShowWidget(widget,tabMode=False):
 	tab.addTab(widget,"Nurbs WB")
 	tab.setCurrentIndex(2)
 
-	print "ComboViewShowWidget done"
+	print ("ComboViewShowWidget done"
 
 
 def creatorFunction(name):
 
-#	print "creator Function :", name
+#	print ("creator Function :", name
 	if name.startswith('Part.'):
 		[a,c]=name.split('.')
 		return "App.activeDocument().addObject('Part::"+c+"','test')"
@@ -89,15 +89,15 @@ def  fv2(name="vertical",title=''):
 #	w=MyDockWidget(t,"Reconstruction WB")
 	w=MyWidget(t,"Reconstruction WB")
 
-	if title <>'': w.setWindowTitle(title)
+	if title !='': w.setWindowTitle(title)
 
 
 	w.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 	ComboViewShowWidget(w,True)
 
 	# store it to FC.w5
-	try: FreeCAD.w5.append(w)
-	except: FreeCAD.w5=[w]
+	try: App.w5.append(w)
+	except: App.w5=[w]
 
 	return w
 
@@ -110,7 +110,7 @@ def  fv(name="vertical",title=''):
 	
 ###	w.setStyleSheet("QWidget { font: bold 18px;color:brown;border-style: outset;border-width: 3px;border-radius: 10px;border-color: blue;}")
 
-	if title <>'': w.setWindowTitle(title)
+	if title !='': w.setWindowTitle(title)
 	
 	layout = QtGui.QVBoxLayout()
 	layout.setAlignment(QtCore.Qt.AlignTop)
@@ -121,9 +121,9 @@ def  fv(name="vertical",title=''):
 	w.show()
 	# ComboViewShowWidget(w,True)
 	try:
-		FreeCAD.w5.append(w)
+		App.w5.append(w)
 	except:
-		FreeCAD.w5=[w]
+		App.w5=[w]
 
 	return w
 
@@ -133,7 +133,7 @@ def  fv3(name="vertical",title=''):
 	w=QtGui.QWidget()
 #	w.setStyleSheet("QWidget { font: bold 18px;color:brown;border-style: outset;border-width: 3px;border-radius: 10px;border-color: blue;}")
 
-	if title <>'': w.setWindowTitle(title)
+	if title !='': w.setWindowTitle(title)
 
 	layout = QtGui.QVBoxLayout()
 	layout.setAlignment(QtCore.Qt.AlignTop)
@@ -143,8 +143,8 @@ def  fv3(name="vertical",title=''):
 #	w.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 #	w.show()
 
-	try: FreeCAD.w5.append(w)
-	except: FreeCAD.w5=[w]
+	try: App.w5.append(w)
+	except: App.w5=[w]
 	return w
 
 
@@ -162,7 +162,7 @@ def  fh(name="horizontal",title=''):
 	#pB.setStyleSheet("QWidget { font: bold 18px;color:red;border-style: outset;border-width: 3px;border-radius: 10px;border-color: blue;}")
 	#layout.addWidget(pB)
 
-	if title <>'': w.setWindowTitle(title)
+	if title !='': w.setWindowTitle(title)
 	#w.show()
 	#ComboViewShowWidget(w,False)
 	w.layout=layout
@@ -180,7 +180,7 @@ def  fh2(name="vertik horizontal",title=''):
 	#pB= QtGui.QLabel("name")
 	#pB.setStyleSheet("QWidget { font: bold 18px;color:red;border-style: outset;border-width: 3px;border-radius: 10px;border-color: blue;}")
 	#layout.addWidget(pB)
-	if title <>'': w.setWindowTitle(title)
+	if title !='': w.setWindowTitle(title)
 	#w.show()
 	#ComboViewShowWidget(w,False)
 	w.layout=layout
@@ -316,7 +316,7 @@ class Miki():
 				try:
 					d[depth]=l
 				except:
-					print "error "
+					print ("error "
 					print [l, ltxt]
 					pass
 				#ln[depth]=line
@@ -352,7 +352,7 @@ class Miki():
 #					print app
 					r=[l,line,parent,"att val",res.group(1),eval(res.group(2))]
 					if res.group(1) =='Name':
-#						print "setze Namen von parent"
+#						print ("setze Namen von parent"
 #						print parent
 #						print rs[parent]
 						rs[parent].append(res.group(2))
@@ -364,14 +364,14 @@ class Miki():
 					print app
 					r=[l,line,parent,"att val",res.group(1),eval(res.group(2))]
 					if res.group(1) =='Name':
-#						print "setze Namen von parent"
+#						print ("setze Namen von parent"
 #						print parent
 #						print rs[parent]
 						rs[parent].append(res.group(2))
 #						print rs[parent]
 					continue
 				else:
-#					print "tttt"
+#					print ("tttt"
 #					print st
 					res=re.search("(\S+):",st)
 					if res:    
@@ -385,12 +385,12 @@ class Miki():
 		debug = 0
 		if debug:
 			print
-			print "lines parsed ..."
+			print ("lines parsed ..."
 			for r in rs:
 					print r
 			if  len(self.anchors.keys()) >0:
 				print 
-				print "Anchors ...."
+				print ("Anchors ...."
 				print
 				print self.anchors
 				print
@@ -410,7 +410,7 @@ class Miki():
 					name=l[4]
 #					print name
 					try: 
-#						print "class check ..."
+#						print ("class check ..."
 #						print self.classes
 						self.classes[name]
 						f=name+"()"
@@ -420,7 +420,7 @@ class Miki():
 
 					if len(l)<7: # no name for object
 						l.append('')
-#					print "**", f
+#					print ("**", f
 
 
 
@@ -434,7 +434,7 @@ class Miki():
 						l.append(None)
 					l.append(h)
 					self.objects.append(h)
-			if  l[2] <> 0:
+			if  l[2] != 0:
 				if l[4]=='Name': continue
 				if l[3]=='obj' or  l[3]=='anchor':
 					parent=self.lines[l[2]][7]
@@ -453,13 +453,13 @@ class Miki():
 				#----------------------------------
 						method=l[4]
 						v=self.lines[l[6]][6]
-#						print "check atts"
+#						print ("check atts"
 						kk=eval("parent."+l[4])
 						cnkk=kk.__class__.__name__
 #						print ["vor function ", cnkk]
 						
 						if cnkk.startswith('So'):
-#							print "So ..."
+#							print ("So ..."
 #							print v
 #							print v.__class__
 							ex="parent."+method+".setValue(" +str(v) + ")"
@@ -467,11 +467,11 @@ class Miki():
 							continue
 						if cnkk =='builtin_function_or_method':
 							# qt 2...
-#							print "mche was"
+#							print ("mche was"
 #							print v
-#							print "parent."+l[4]
+#							print ("parent."+l[4]
 							kk(v)
-#							print "okay"
+#							print ("okay"
 							continue
 						cn=v.__class__.__name__
 #						print [v,cn]
@@ -480,9 +480,9 @@ class Miki():
 						elif cn=='str':
 							ex="parent."+l[4]+"='"+v+"'"
 						else:
-							print "nicht implementierter typ"
+							print ("nicht implementierter typ"
 							ex=''
-#						print "!!! *!!** "+ex
+#						print ("!!! *!!** "+ex
 						exec(ex)
 #						print parent
 						
@@ -498,7 +498,7 @@ class Miki():
 					if l[3]=='att val':
 						v=l[5]
 					else:
-#						print "anchor val"
+#						print ("anchor val"
 						v=l[6]
 					if method=='id':
 						self.ids[v]=parent
@@ -514,19 +514,19 @@ class Miki():
 						elif cn=='str':
 							ex="parent."+l[4]+"='"+v+"'"
 						else:
-							print "nicht implementierter typ"
+							print ("nicht implementierter typ"
 							ex=''
 #						ex="parent."+l[4]+"="+str(v)
-#						print "*** "+ex
+#						print ("*** "+ex
 						exec(ex)
 						continue
 
 
 					kk=eval("parent."+l[4])
 					cnkk=kk.__class__.__name__
-#					print "vor function ", cnkk
+#					print ("vor function ", cnkk
 					if cnkk.startswith('So'):
-#						print "So ..."
+#						print ("So ..."
 #						print v
 #						print v.__class__
 						ex="parent."+method+".setValue(" +str(v) + ")"
@@ -535,11 +535,11 @@ class Miki():
 					
 					if cnkk =='builtin_function_or_method':
 							# qt 3...
-#							print "mche was"
+#							print ("mche was"
 #							print v
-#							print "parent."+l[4]
+#							print ("parent."+l[4]
 							kk(v)
-#							print "okay"
+#							print ("okay"
 							continue
 
 					cn=v.__class__.__name__
@@ -549,17 +549,17 @@ class Miki():
 					elif cn=='str':
 						ex="parent."+l[4]+"='"+v+"'"
 					else:
-						print "nicht implementierter typ"
+						print ("nicht implementierter typ"
 						ex=''
-#					print "//*** "+ex
+#					print ("//*** "+ex
 					exec(ex)
 #					print parent
-		print "Ende build"
+		print ("Ende build"
 
 
 	def showSo(self):
 		for l in self.lines:
-			if  l[2] == 0 and l[0] <>-1:
+			if  l[2] == 0 and l[0] !=-1:
 #					print l
 					if len(l)<7:
 						continue
@@ -574,7 +574,7 @@ class Miki():
 
 	def showSo2(self,dokname):
 		for l in self.lines:
-			if  l[2] == 0 and l[0] <>-1:
+			if  l[2] == 0 and l[0] !=-1:
 #					print l
 					r=l[7]
 #					print r
@@ -597,7 +597,7 @@ class Miki():
 #		
 
 		if str(c.__class__).startswith("<type 'PySide.QtGui."):
-#			print "pyside"
+#			print ("pyside"
 #			print p
 #			dir(p)
 #			print p.layout
@@ -609,7 +609,7 @@ class Miki():
 			return
 
 		if p.__class__.__name__=='object' or str(p.__class__).startswith("<class 'geodat.miki."):
-#			print "Add children to object"
+#			print ("Add children to object"
 			try:
 				p.children.append(c)
 			except:
@@ -629,27 +629,27 @@ class Miki():
 				try: 
 					p.addObject(c)
 				except: 
-					FreeCAD.Console.PrintError("\naddObject funktioniert nicht")
-					FreeCAD.Console.PrintError([p,c])
+					App.Console.PrintError("\naddObject funktioniert nicht")
+					App.Console.PrintError([p,c])
 		except:
 				try: 
 					p.addObject(c)
 				except: 
-					FreeCAD.Console.PrintError("\naddObject funktioniert nicht")
-					FreeCAD.Console.PrintError([p,c])
+					App.Console.PrintError("\naddObject funktioniert nicht")
+					App.Console.PrintError([p,c])
 		
 
 	def run(self,string,cmd=None):
 		debug=False
-		if debug: print "parse2 ...."
+		if debug: print ("parse2 ...."
 		self.parse2(string)
-		if debug: print "build ...#"
+		if debug: print ("build ...#"
 		self.build()
 
-		if debug:  print "showSo ..."
+		if debug:  print ("showSo ..."
 		self.showSo()
-		if cmd<>None:
-			print "CMD ..."
+		if cmd!=None:
+			print ("CMD ..."
 			print cmd 
 			cmd()
 
@@ -662,14 +662,14 @@ class Miki():
 		return rl
 
 	def report(results=[]):
-		print "Results ..."
+		print ("Results ..."
 		for r in results:
 			print r
 			if r.__class__.__name__.startswith('So'):
 				sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
 				sg.addChild(r)
 
-		print "Data ..."
+		print ("Data ..."
 		for ob in self.objects:
 			print ob
 
@@ -743,11 +743,11 @@ class MyDockWidget(QtGui.QDockWidget):
 
 		# optionaler Top button
 		if 0:
-			self.pushButton00 = QtGui.QPushButton(QtGui.QIcon('icons:freecad.svg'),objectname)
+			self.pushButton00 = QtGui.QPushButton(QtGui.QIcon('icons:App.svg'),objectname)
 			layout.addWidget(self.pushButton00)
 
 		self.pushButton01 = QtGui.QPushButton(
-			QtGui.QIcon(FreeCAD.ConfigGet('UserAppData')+'/Mod/mylib/icons/mars.png'),"Mars" )
+			QtGui.QIcon(App.ConfigGet('UserAppData')+'/Mod/mylib/icons/mars.png'),"Mars" )
 		#self.pushButton01.clicked.connect(self.start)
 
 #		layout.addWidget(self.liste)
@@ -771,7 +771,7 @@ class MyDockWidget(QtGui.QDockWidget):
 		#dwl.addWidget(b)
 		self.add_top(b)
 		
-		b=QtGui.QPushButton(QtGui.QIcon('icons:freecad.svg'),'Icon+Button')
+		b=QtGui.QPushButton(QtGui.QIcon('icons:App.svg'),'Icon+Button')
 		#dwl.addWidget(b)
 		self.add_top(b)
 
@@ -809,7 +809,7 @@ def getMainWindowByName(name):
 		
 	r=QtGui.QMainWindow()
 	
-	FreeCAD.r=r
+	App.r=r
 	r.setWindowTitle(name)
 	r.show()
 	return r
@@ -828,7 +828,7 @@ def getdockwindowMgr2():
 		w.addDockWidget(QtCore.Qt.LeftDockWidgetArea, d2)
 		w.tabifyDockWidget(d2, d);
 		w.show()
-		FreeCAD.dockwindowMgr=w
+		App.dockwindowMgr=w
 		return w
 
 

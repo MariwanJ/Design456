@@ -6,7 +6,9 @@ from PySide.QtGui import *
 import numpy as np
 import time
  
-import FreeCAD,FreeCADGui,Part,Draft
+import FreeCAD as App
+import FreeCADGui as Gui
+,Part,Draft
 
 
 
@@ -16,8 +18,8 @@ def getArr(obj,scale=1):
 	return np.array(arr)/scale
 
 def setArr(arr,obj,scale=1):
-	obj.Points=[FreeCAD.Vector(tuple(p)) for p in arr*scale]
-	FreeCAD.ActiveDocument.recompute()
+	obj.Points=[App.Vector(tuple(p)) for p in arr*scale]
+	App.ActiveDocument.recompute()
 
 
 
@@ -78,13 +80,13 @@ def rowcol(w,*args):
 	pts=[]
 	for i in w.table.selectedItems():
 		print (i.row(),i.column())
-		pts.append(FreeCAD.Vector(w.data[i.row()]))
+		pts.append(App.Vector(w.data[i.row()]))
 
-	print "huhuhuhsfsdfdf u"
+	print ("huhuhuhsfsdfdf u"
 	print pts
-	print "selection changed ---------------",w.scale
+	print ("selection changed ---------------",w.scale
 	w.selection.update(pts,scale=w.scale)
-	print "-----------------"
+	print ("-----------------"
 
 def rowcol2(w,*args):
 	print ("2-------------------selection row/column changed")
@@ -97,12 +99,12 @@ def rowcol2(w,*args):
 	pts=[]
 	for i in w.table.selectedItems():
 		print (i.row(),i.column())
-		pts.append(FreeCAD.Vector(w.data[i.row()]))
-	print "huhuhuhu"
+		pts.append(App.Vector(w.data[i.row()]))
+	print ("huhuhuhu"
 	print pts
-	print "selection changed ---------------",w.scale
+	print ("selection changed ---------------",w.scale
 	w.selection.update(pts,scale=w.scale)
-	print "-----------------"
+	print ("-----------------"
 
 def posfromsel(w):
 	t=FreeCADGui.Selection.getSelectionEx()[0]
@@ -134,13 +136,13 @@ class MyTarget():
 	''' visualization of the dialog data'''
 
 	def __init__(self):
-		self.obj=FreeCAD.ActiveDocument.addObject("Part::Feature","__tmp" +str(time.time()))
+		self.obj=App.ActiveDocument.addObject("Part::Feature","__tmp" +str(time.time()))
 		self.obj.ViewObject.PointSize=10
 		self.obj.ViewObject.PointColor=(0.,0.,1.)
 		self.obj.ViewObject.LineColor=(0.,0.,1.)
 
 	def update(self,coor=[0,0,0],scale=1):
-		pts=[FreeCAD.Vector(tuple(c)) for c in np.array(coor)*scale]
+		pts=[App.Vector(tuple(c)) for c in np.array(coor)*scale]
 		try: 
 			pol=Part.makePolygon(pts)
 			self.obj.Shape=pol
@@ -152,7 +154,7 @@ class MyTarget():
 				self.obj.Shape=Part.Vertex(pts[0]) 
 
 	def die(self):
-		try: FreeCAD.ActiveDocument.removeObject(self.obj.Name)
+		try: App.ActiveDocument.removeObject(self.obj.Name)
 		except: pass
 
 
@@ -227,7 +229,7 @@ def pointEditor(obj,scale=1):
 
 
 def run(scale=1):
-	print "RUN ---",scale
+	print ("RUN ---",scale
 	obj=FreeCADGui.Selection.getSelection()[0]
 	print obj
 	return pointEditor(obj,scale=scale)
@@ -235,15 +237,15 @@ def run(scale=1):
 
 def run2():
 	#create the Bspline
-	p1 = FreeCAD.Vector(0,0,0)
-	p2 = FreeCAD.Vector(1,1,0)
-	p3 = FreeCAD.Vector(0,2,0)
-	p4 = FreeCAD.Vector(-1,1,0)
-	p5 = FreeCAD.Vector(-1,1,3)
+	p1 = App.Vector(0,0,0)
+	p2 = App.Vector(1,1,0)
+	p3 = App.Vector(0,2,0)
+	p4 = App.Vector(-1,1,0)
+	p5 = App.Vector(-1,1,3)
 	
 	import Draft
 	Draft.makeBSpline([p1,p2,p3,p4,p5],closed=True)
-	obj=FreeCAD.ActiveDocument.ActiveObject
+	obj=App.ActiveDocument.ActiveObject
 	w=pointEditor(obj)
 	w.show()
 	return w

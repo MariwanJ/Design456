@@ -92,9 +92,9 @@ def runA(model=None):
 	try: 
 		try:
 			[ss]=FreeCADGui.Selection.getSelection()
-			print "Selection",ss.Label
-			if ss.__class__.__name__ <>'Sheet':
-				print "not a spreadsheet"
+			print ("Selection",ss.Label
+			if ss.__class__.__name__ !='Sheet':
+				print ("not a spreadsheet"
 				raise Exception("selection is not a spreadsheet")
 		except:
 			ss=App.ActiveDocument.Spreadsheet
@@ -109,7 +109,7 @@ def runA(model=None):
 		model=nurbswb.sole_models.model()
 
 	if 0: # "punktelisten anzeigen"
-		p=Draft.makeWire([FreeCAD.Vector(p[0],-p[1],p[2]) for p in points_list])
+		p=Draft.makeWire([App.Vector(p[0],-p[1],p[2]) for p in points_list])
 		p.Placement.Rotation.Angle=np.pi/2
 
 
@@ -134,20 +134,20 @@ def runA(model=None):
 	highd=[0]*13
 	highe=[0]*7
 
-	if model<>None:
-		print "load model -------------------------"
+	if model!=None:
+		print ("load model -------------------------"
 		print model
 		LL=model.LL
 		LS=model.LS
 		div12=model.div12
 		tt=np.array(model.tt)
 
-		print "Fehler dubug ..."
-		FreeCAD._debug_LL=LL
-		FreeCAD._debug_tt=tt
+		print ("Fehler dubug ..."
+		App._debug_LL=LL
+		App._debug_tt=tt
 		print LL
 		print tt[0,:,0]
-		print "End debug"
+		print ("End debug"
 
 		tt[0,:,0] += LL
 
@@ -173,7 +173,7 @@ def runA(model=None):
 		npa2ssa(np.array(div12).reshape(1,12),ss,2,10)
 
 	else:
-		print " load from spreadsheet---------------------"
+		print (" load from spreadsheet---------------------"
 		LL=244.0
 		LS=LL+30
 		div12=[round(LL/11*i,1) for i in range(12)]
@@ -188,7 +188,7 @@ def runA(model=None):
 		
 		print ("tt,LL",tt,LL)
 		# tt[0,:,0] += LL
-		# print "LL,",LL
+		# print ("LL,",LL
 
 		higha=ssa2npa(ss,2,9,2+12,9,default=None)[0]
 		weia=ssa2npa(ss,2,14,2+12,14,default=None)[0]
@@ -231,23 +231,23 @@ def runA(model=None):
 
 	if drawwires:
 		import Draft
-		wa=Draft.makeWire([FreeCAD.Vector(tuple(p)) for p in la])
+		wa=Draft.makeWire([App.Vector(tuple(p)) for p in la])
 		wa.ViewObject.LineColor=(.0,1.,.0)
 
-		wb=Draft.makeWire([FreeCAD.Vector(tuple(p)) for p in lb])
+		wb=Draft.makeWire([App.Vector(tuple(p)) for p in lb])
 		wb.ViewObject.LineColor=(1.,0.,.0)
 
-		wc=Draft.makeWire([FreeCAD.Vector(tuple(p)) for p in lc])
+		wc=Draft.makeWire([App.Vector(tuple(p)) for p in lc])
 		wc.ViewObject.LineColor=(1.,1.,.0)
 
 	# siehe auch https://forum.freecadweb.org/viewtopic.php?f=3&t=20525&start=70#p165214
 
 
 	pts2=[]
-#	print "Koordianten ..."
+#	print ("Koordianten ..."
 #	print highd
 	for i in range(13):
-		if i<>12:
+		if i!=12:
 			x=div12[i]
 			h=higha[i]
 			hc=highc[i]
@@ -266,7 +266,7 @@ def runA(model=None):
 #			print ("XX",i,tt)
 		else:
 			# mit innengewoelbe
-			# pts2 += [[[x,weib[i]+1.0*(weia[i]-weib[i])*j/6,h if j<>0 else hc] for j in range(7)]]
+			# pts2 += [[[x,weib[i]+1.0*(weia[i]-weib[i])*j/6,h if j!=0 else hc] for j in range(7)]]
 			
 			pts2 += [[[x,weib[i]+1.0*(weia[i]-weib[i])*j/6,h ] for j in range(7)]]
 			
@@ -280,7 +280,7 @@ def runA(model=None):
 
 
 	pts2=np.array(pts2)
-#	print "--------------", pts2.shape
+#	print ("--------------", pts2.shape
 
 	cv=len(pts2)
 	cu=len(pts2[0])
@@ -397,12 +397,12 @@ def runA(model=None):
 
 	coll=[]
 	for pts in pts2:
-		coll += [Part.makePolygon([FreeCAD.Vector(p) for p in pts])]
+		coll += [Part.makePolygon([App.Vector(p) for p in pts])]
 
 	Part.show(Part.Compound(coll))
 	
 	
-#	print "ABBRUCH HIER"
+#	print ("ABBRUCH HIER"
 #	return
 
 
@@ -468,8 +468,8 @@ def runA(model=None):
 
 def createheel():
 
-		points=[FreeCAD.Vector(30.0, 11.0, 0.0), FreeCAD.Vector (65., 5., 0.0), 
-			FreeCAD.Vector (60., -10., 0.0), FreeCAD.Vector (19., -13., 0.0)]
+		points=[App.Vector(30.0, 11.0, 0.0), App.Vector (65., 5., 0.0), 
+			App.Vector (60., -10., 0.0), App.Vector (19., -13., 0.0)]
 		spline = Draft.makeBSpline(points,closed=True,face=True,support=None)
 
 
@@ -489,7 +489,7 @@ def createheel():
 		loft.Sections=[proj,clone]
 
 
-		points = [FreeCAD.Vector(165.,-7.,-00.0),FreeCAD.Vector(208.,-25.,-00.0),FreeCAD.Vector(233.,20.,-00.0)]
+		points = [App.Vector(165.,-7.,-00.0),App.Vector(208.,-25.,-00.0),App.Vector(233.,20.,-00.0)]
 		spline = Draft.makeBSpline(points,closed=True,face=True,support=None)
 
 
@@ -512,7 +512,7 @@ def createheel():
 		Gui.SendMsgToActiveView("ViewFit")
 
 
-		print "okay"
+		print ("okay"
 
 
 ## create sole and infrastructure models

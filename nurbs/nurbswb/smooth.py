@@ -8,9 +8,10 @@
 #-- GNU Lesser General Public License (LGPL)
 #-------------------------------------------------
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 
 from PySide import QtCore,QtGui
@@ -50,11 +51,11 @@ class ViewProvider:
 		self.Object=obj
 
 	def onDelete(self, obj, subelements):
-		print "on Delete "
+		print ("on Delete "
 		return True
 
 	def onChanged(self, obj, prop):
-			print "onchange",prop
+			print ("onchange",prop
 
 
 
@@ -99,7 +100,7 @@ def runtaubin(obj):
 			qts[i] += f*(pts[i-1]+pts[i+1]-2*pts[i])
 
 		#pts=np.array(qts)
-		pp=[FreeCAD.Vector(p) for p in qts]
+		pp=[App.Vector(p) for p in qts]
 
 
 	drawtracks(pts,pp,"Diff_for_"+str(obj.Name))
@@ -136,9 +137,9 @@ class Taub(PartFeature):
 		
 	
 	def onChanged(self, obj, prop):
-			print "onchange--",prop
+			print ("onchange--",prop
 			if prop in ["pf","pf2",'count','discretizeCount','start','end','createBSpline']:
-				print "Aktualisierebn"
+				print ("Aktualisierebn"
 				runtaubin(obj)
 
 
@@ -146,10 +147,10 @@ class Taub(PartFeature):
 def smoothWire(sel=None,name=None):
 	if name == None:
 		name= "smooth"
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
+	a=App.ActiveDocument.addObject("Part::FeaturePython",name)
 	Taub(a,"Smooth")
 	#a.Wire=App.ActiveDocument.DWire
-	if sel <>None:
+	if sel !=None:
 		a.Wire=sel
 	else:
 		try: a.Wire=Gui.Selection.getSelection()[0]
@@ -188,15 +189,15 @@ def run3D(self,mobj):
 
 	if 1:
 		i=mobj.Iterations
-		print "iterations ",i
+		print ("iterations ",i
 		print mobj.Lambda
-		print "------------------"
+		print ("------------------"
 		
 		m.smooth(Method="Taubin",Iteration=i,Lambda=mobj.Lambda*0.01,Micro=mobj.Micro*0.01)
 #		import Mesh
 		#	App.ActiveDocument.ActiveObject.ViewObject.hide()
 		#Mesh.show(m)
-		#App.ActiveDocument.ActiveObject.Placement.Base=FreeCAD.Vector(15*i,10,-10*i)
+		#App.ActiveDocument.ActiveObject.Placement.Base=App.Vector(15*i,10,-10*i)
 		mobj.Mesh=m
 		Gui.updateGui()
 		#time.sleep(0.1)
@@ -219,14 +220,14 @@ class TaubM(PartFeature):
 
 
 	def onChanged(self, obj, prop):
-			print "onchange",prop
+			print ("onchange",prop
 			if prop in ['Iterations','Lambda','Micro']:
 				run3D(self,obj)
 
 
 	
 def smoothMesh():
-	a=FreeCAD.ActiveDocument.addObject("Mesh::FeaturePython","Meshsmooth")
+	a=App.ActiveDocument.addObject("Mesh::FeaturePython","Meshsmooth")
 	TaubM(a,"Smooth")
 	# a.Mesh=App.ActiveDocument.DWire
 	# a.Source=App.ActiveDocument.K147909
@@ -281,8 +282,8 @@ def splitMesh():
 		if pos>s.Mesh.BoundBox.YMax:
 			App.ActiveDocument.removeObject(plane.Name)
 			return
-		pm=FreeCAD.Placement(FreeCAD.Vector(0,pos,0.000),
-			FreeCAD.Rotation(FreeCAD.Vector(1.000,0.000,0.000),90.000))
+		pm=App.Placement(App.Vector(0,pos,0.000),
+			App.Rotation(App.Vector(1.000,0.000,0.000),90.000))
 		plane.Placement=pm
 
 
@@ -295,10 +296,10 @@ def splitMesh():
 
 
 		'''
-		plane.Placement.FreeCAD.z =   s.Mesh.BoundBox.ZMax
+		plane.Placement.App.z =   s.Mesh.BoundBox.ZMax
 
 		for i in range(80):
-			plane.Placement.FreeCAD.z -=  2
+			plane.Placement.App.z -=  2
 			FreeCADGui.runCommand('MeshPart_SectionByPlane')
 
 		'''
@@ -363,13 +364,13 @@ def splitMesh():
 		'''
 		ptsb=[]
 
-		p0=FreeCAD.Vector()
+		p0=App.Vector()
 		p1=p0
 		import Draft
 		for pts in ptsa:
 			ij=0
 			mj=10**10
-			pps=[FreeCAD.Vector(p) for p in pts]
+			pps=[App.Vector(p) for p in pts]
 			for i,p in enumerate(pps):
 				if (p-p0).Length<mj:
 					mj=(p-p0).Length
@@ -389,16 +390,16 @@ def splitMesh():
 		ptsb=[]
 		ribs=[]
 
-		p0=FreeCAD.Vector()
+		p0=App.Vector()
 		p1=p0
 		zmax=0
 		import Draft
-		print "umsortieren"
+		print ("umsortieren"
 		for pts in ptsa:
 			ij=0
 			mj=10**10
 			xmi=10**10
-			pps=[FreeCAD.Vector(p) for p in pts]
+			pps=[App.Vector(p) for p in pts]
 			for i,p in enumerate(pps):
 				if p.x<xmi:
 					ij=i
@@ -408,7 +409,7 @@ def splitMesh():
 
 
 			if (pps2[1].z-pps2[0].z)<=0:
-				print "!!"
+				print ("!!"
 				pps2.reverse()
 
 			p1=pps2[1]
@@ -417,8 +418,8 @@ def splitMesh():
 			rcc=Draft.makeWire(pps2)
 
 			pos=pts[0][1]
-			pm=FreeCAD.Placement(FreeCAD.Vector(0,pos,0.000),
-				FreeCAD.Rotation(FreeCAD.Vector(1.000,0.000,0.000),90.000))
+			pm=App.Placement(App.Vector(0,pos,0.000),
+				App.Rotation(App.Vector(1.000,0.000,0.000),90.000))
 			plane.Placement=pm
 
 
@@ -442,7 +443,7 @@ def splitMesh():
 				pts=ptsb[pix*10]
 				ij=0
 				mj=10**10
-				pps=[FreeCAD.Vector(p) for p in pts]
+				pps=[App.Vector(p) for p in pts]
 				_=Draft.makeWire(pps)
 				ribs2 += [_]
 
@@ -481,12 +482,12 @@ def sliceMeshbySketch():
 	import Draft
 
 	pma=DatumPlane.Placement.copy()
-	ddB=pma.Rotation.multVec(FreeCAD.Vector(0,0,50))
+	ddB=pma.Rotation.multVec(App.Vector(0,0,50))
 	ddA=pma.Base
 	mesh=s.Mesh
 
 	cs = mesh.crossSections([(ddA,ddB)],0.01)
-	ptsW=[FreeCAD.Vector(p) for p in cs[0][0]]
+	ptsW=[App.Vector(p) for p in cs[0][0]]
 	print len(ptsW)
 	import Draft
 	pol=Part.makePolygon(ptsW)
@@ -594,7 +595,7 @@ def drawtracks(ptsa,ptsb,name='ColorPath'):
 	if iv==None:iv=App.ActiveDocument.addObject("App::InventorObject",name)
 
 	ls=[]
-	n=FreeCAD.Vector()
+	n=App.Vector()
 	for p,q in zip(ptsa,ptsb):
 #		print q-p
 		ls += [p,p+(q-p)*20,p]

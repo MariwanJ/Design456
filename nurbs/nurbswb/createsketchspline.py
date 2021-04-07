@@ -26,7 +26,7 @@ def createSketchSpline(pts=None,label="BSpline Sketch",periodic=True):
 	App.activeDocument().recompute()
 
 	if pts==None: # some test data
-		pts=[FreeCAD.Vector(a) for a in [(10,20,30), (30,60,30), (20,50,40),(50,80,90)]]
+		pts=[App.Vector(a) for a in [(10,20,30), (30,60,30), (20,50,40),(50,80,90)]]
 
 	for i,p in enumerate(pts):
 		sk.addGeometry(Part.Circle(App.Vector(int(round(p.x)),int(round(p.y)),0),App.Vector(0,0,1),10),True)
@@ -76,7 +76,7 @@ def mergeSketchSpline(pts=None,label="BSpline Sketch",periodic=True,name="Sketch
 	App.activeDocument().recompute()
 
 	if pts==None: # some test data
-		pts=[FreeCAD.Vector(a) for a in [(10,20,30), (30,60,30), (20,50,40),(50,80,90)]]
+		pts=[App.Vector(a) for a in [(10,20,30), (30,60,30), (20,50,40),(50,80,90)]]
 
 	js=[]
 	for i,p in enumerate(pts):
@@ -94,7 +94,7 @@ def mergeSketchSpline(pts=None,label="BSpline Sketch",periodic=True,name="Sketch
 
 		radius=2.0
 		cj=sk.addConstraint(Sketcher.Constraint('Radius',j,radius)) 
-		print "Constraint ",cj
+		print ("Constraint ",cj
 		sk.renameConstraint(cj, 'Weight ' +str(cj+1))
 
 		#i=5; App.ActiveDocument.Sketch016.setDatum(i,40))
@@ -115,7 +115,7 @@ def mergeSketchSpline(pts=None,label="BSpline Sketch",periodic=True,name="Sketch
 	for i,j in enumerate(js):
 
 		conList.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',j,3,k,i))
-		print "okay"
+		print ("okay"
 
 	sk.addConstraint(conList)
 
@@ -135,7 +135,7 @@ def runobj(obj,label=None):
 	''' erzeugt fuer ein objekt den SketchSpline'''
 
 	sk=createSketchSpline(obj.Shape.Edge1.Curve.getPoles(),str(obj.Label) + " Sketch" )
-	if label <>None: sk.Label=label
+	if label !=None: sk.Label=label
 	return sk
 
 def runsubs():

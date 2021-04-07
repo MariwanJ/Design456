@@ -26,9 +26,9 @@ reload(nurbswb.isodraw)
 
 '''
 # parameter
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
-FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveWheelStep",1)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
 
 '''
 
@@ -91,14 +91,14 @@ class EventFilter(QtCore.QObject):
 				p = cursor.pos()
 
 #				if p.x()<100 or p.y()<100: 
-#					print "jump cursor facedraw 92"
+#					print ("jump cursor facedraw 92"
 #					cursor.setPos(p.x()+100, p.y()+100)
 				#-----------------------------------
 
-				if t<>None: # if objects are under the mouse
+				if t!=None: # if objects are under the mouse
 					for tt in t:
 						if not  hasattr(self,'objname'):
-#							print "*",tt
+#							print ("*",tt
 							self.x,self.y,self.z=tt['x'],tt['y'],tt['z']
 							break
 
@@ -107,7 +107,7 @@ class EventFilter(QtCore.QObject):
 							break
 
 					if not  hasattr(self,'objname') and event.buttons()==QtCore.Qt.LeftButton:
-						vf=FreeCAD.Vector(self.x,self.y,self.z)
+						vf=App.Vector(self.x,self.y,self.z)
 						self.pts += [vf]
 						if self.colorA not in self.colors:
 							self.colors += [self.colorA]
@@ -115,8 +115,8 @@ class EventFilter(QtCore.QObject):
 
 					else:
 						if event.buttons()==QtCore.Qt.LeftButton:
-							#print "LEFT BUTTON drawing"
-							vf=FreeCAD.Vector(self.x,self.y,self.z)
+							#print ("LEFT BUTTON drawing"
+							vf=App.Vector(self.x,self.y,self.z)
 							bs=self.subobj.Surface
 
 							(u,v)=bs.parameter(vf)
@@ -132,8 +132,8 @@ class EventFilter(QtCore.QObject):
 							kx=bbc.length(lu,u)
 							if u<0.5: kx =-kx
 
-							mf=FreeCAD.Vector(self.x,self.y,0)
-							mf=FreeCAD.Vector(-1*ky,-1*kx,0)
+							mf=App.Vector(self.x,self.y,0)
+							mf=App.Vector(-1*ky,-1*kx,0)
 
 							self.pts += [vf]
 							self.ptsm += [mf]
@@ -218,25 +218,25 @@ class EventFilter(QtCore.QObject):
 						self.dialog.dial.setValue(val)
 						return True
 					elif e.key() == QtCore.Qt.Key_Up :
-						self.mouseWheel += FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
+						self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
 						self.dialog.ef_action("up",self,self.mouseWheel) 
 						return True
 					elif e.key() == QtCore.Qt.Key_Down :
-						self.mouseWheel -= FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10) 
+						self.mouseWheel -= App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10) 
 						self.dialog.ef_action("down",self,self.mouseWheel)
 						return True
 					elif e.key() == QtCore.Qt.Key_PageUp :
-						self.mouseWheel += FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+						self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
 						self.dialog.ef_action("up!",self,self.mouseWheel)
 						return True
 					elif e.key() == QtCore.Qt.Key_PageDown :
-						self.mouseWheel -= FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
+						self.mouseWheel -= App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
 						self.dialog.ef_action("down!",self,self.mouseWheel)
 						return True
 
 					if e.key()== QtCore.Qt.Key_Enter or e.key()== QtCore.Qt.Key_Return:
 						# enter creates a new point ...
-						vf=FreeCAD.Vector(self.x,self.y,self.z)
+						vf=App.Vector(self.x,self.y,self.z)
 						self.colors += [self.colorA]
 						self.pts += [vf]
 
@@ -253,7 +253,7 @@ class EventFilter(QtCore.QObject):
 						self.lastkey=e.text()
 
 						#color select for drawing
-						print "SET Color--------------",r
+						print ("SET Color--------------",r
 						if 0:
 							if r=='h':
 								self.colorA=0
@@ -329,16 +329,16 @@ class EventFilter(QtCore.QObject):
 
 ## draw a curve on a face and create the two subfaces defined by the curve
 
-def drawcurve(wire,face,facepos=FreeCAD.Vector()):
+def drawcurve(wire,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
-	print "drawcurve"
+	print ("drawcurve"
 
 	#startposition
 	wplace=wire.Placement
 #	print wplace
 	wpos=wplace.Base
-#	print "facepos ",facepos
+#	print ("facepos ",facepos
 
 
 	w=wire.Shape
@@ -355,14 +355,14 @@ def drawcurve(wire,face,facepos=FreeCAD.Vector()):
 
 	bs=sf
 
-	print "hacks SSetze uv, sv auf 1"
+	print ("hacks SSetze uv, sv auf 1"
 	su=face.ParameterRange[1]
 	sv=face.ParameterRange[3]
 
 
 	if 0:
 		pts2da=[sf.parameter(p) for p in pts[1:]]
-		pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+		pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 
 		bs2d = Part.Geom2d.BSplineCurve2d()
 		bs2d.setPeriodic()
@@ -375,7 +375,7 @@ def drawcurve(wire,face,facepos=FreeCAD.Vector()):
 
 	bs2d = Part.Geom2d.BSplineCurve2d()
 	pts2da=[sf.parameter(p) for p in pts]
-	pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+	pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 	bs2d.buildFromPolesMultsKnots(pts2d,[1]*(len(pts2d)+1),range(len(pts2d)+1),True,1)
 	e1 = bs2d.toShape(t)
 
@@ -415,16 +415,16 @@ def drawcurve(wire,face,facepos=FreeCAD.Vector()):
 
 			#wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
 			#wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-			print "HHHHHHHHHHHHHHHHH"
+			print ("HHHHHHHHHHHHHHHHH"
 
 ## 	new wire for next drawing
 
 #-------------------- ring
 
-def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
+def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 	'''draw a curve on a face and create the two subfaces defined by the curve'''
 
-	print "drawring"
+	print ("drawring"
 
 	es=[]
 	for wireA in wires:
@@ -432,7 +432,7 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 		wplace=wireA.Placement
 	#	print wplace
 		wpos=wplace.Base
-	#	print "facepos ",facepos
+	#	print ("facepos ",facepos
 		wire=wireA
 
 
@@ -451,7 +451,7 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 		sv=face.ParameterRange[3]
 
 		pts2da=[sf.parameter(p) for p in pts[1:]]
-		pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+		pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 		
 
 		bs2d = Part.Geom2d.BSplineCurve2d()
@@ -490,20 +490,20 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 			su=bs.UPeriod()
 			sv=bs.VPeriod()
 
-			print "hacks etze uv, sv auf 1"
+			print ("hacks etze uv, sv auf 1"
 			su=face.ParameterRange[1]
 			sv=face.ParameterRange[3]
 
-		#	print "debug mapp"
-		#	print "su ",su
-		#	print "sv ",sv
-		#	print "param range ", face.ParameterRange
+		#	print ("debug mapp"
+		#	print ("su ",su
+		#	print ("sv ",sv
+		#	print ("param range ", face.ParameterRange
 
 			if su>1000: su=face.ParameterRange[1]
 			if sv>1000: sv=face.ParameterRange[3]
 
 			pts2da=[sf.parameter(p) for p in pts[1:]]
-			pts2d=[FreeCAD.Base.Vector2d(p[0],p[1]) for p in pts2da]
+			pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
 
 			bs2d = Part.Geom2d.BSplineCurve2d()
 			bs2d.setPeriodic()
@@ -555,11 +555,11 @@ def _drawring(name,wires,dirs,face,facepos=FreeCAD.Vector()):
 
 				#wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
 				#wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-				print "RRRRRRRRRRRRRRRRR"
+				print ("RRRRRRRRRRRRRRRRR"
 
 
 
-def drawring(name,wires,dirs,faceobj,facepos=FreeCAD.Vector()):
+def drawring(name,wires,dirs,faceobj,facepos=App.Vector()):
 		_drawring(name,wires,dirs,faceobj.Shape.Face1,facepos)
 
 
@@ -654,7 +654,7 @@ def dialog(source=None):
 #
 	w.mode='n'
 #
-	editorkey=FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetString("editorKey","h")
+	editorkey=App.ParamGet('User parameter:Plugins/nurbs').GetString("editorKey","h")
 #	lab=QtGui.QLabel("Direction: " + editorkey)
 	w.key=editorkey
 #	w.modelab=lab
@@ -675,7 +675,7 @@ def dialog(source=None):
 #	dial=QtGui.QDial() 
 #	dial.setMaximum(10)
 #	dial.setNotchesVisible(True)
-#	dial.setValue(FreeCAD.ParamGet('User parameter:Plugins/nurbs').GetInt("Cursor",0))
+#	dial.setValue(App.ParamGet('User parameter:Plugins/nurbs').GetInt("Cursor",0))
 #	dial.valueChanged.connect(w.setcursor2)
 #	w.dial=dial
 
@@ -726,7 +726,7 @@ def genbuffer(pts,color=5):
 	pts - list of points
 	colors - list of color indexes
 	'''
-	print "genbuffer",len(pts)
+	print ("genbuffer",len(pts)
 
 	colix=""
 	pix=""
@@ -734,7 +734,7 @@ def genbuffer(pts,color=5):
 	
 	j=-1
 	for i,p in enumerate(pts):
-		if p <>None: 
+		if p !=None: 
 			j +=1
 
 #		if i>0:
@@ -745,8 +745,8 @@ def genbuffer(pts,color=5):
 			colix += " " +str(color)
 
 			pix += str(p.x)+" "+str(p.y) +" " +str(p.z)+"\n"
-#			if i>0 and pts[i-1]<>None:cordix +=  str(i-1)+" "+str(i)+" -1\n" 
-			if i>0 and pts[i-1]<>None:cordix +=  str(j-1)+" "+str(j)+" -1\n" 
+#			if i>0 and pts[i-1]!=None:cordix +=  str(i-1)+" "+str(i)+" -1\n" 
+			if i>0 and pts[i-1]!=None:cordix +=  str(j-1)+" "+str(j)+" -1\n" 
 			# if i%2==1:cordix +=  str(i-1)+" "+str(i)+" -1\n" 
 #		else:
 #			i=-1
@@ -813,7 +813,7 @@ def start(free=False):
 	ef.mouseWheel=0
 	ef.colorpathcount=0
 	ef.colorA=2
-	print "start--"
+	print ("start--"
 	iv=App.ActiveDocument.addObject("App::InventorObject","draw_"+str(ef.colorpathcount)+"_")
 	ef.drawname=iv.Name
 
@@ -849,9 +849,9 @@ def start(free=False):
 			sayexc2("no surface selected","Select first a face you want to draw on it")
 			return
 		else:
-			print "run free----------------------"
+			print ("run free----------------------"
 
-	FreeCAD.eventfilter=ef
+	App.eventfilter=ef
 
 	mw=QtGui.qApp
 	mw.installEventFilter(ef)
@@ -891,7 +891,7 @@ def createGrid(name="MyGrid"):
 	sel=Gui.Selection.getSelection()
 	fob=sel[0]
 
-	b=FreeCAD.activeDocument().addObject("Part::FeaturePython",name)
+	b=App.activeDocument().addObject("Part::FeaturePython",name)
 
 	name=b.Name
 	nurbswb.isodraw.Drawgrid(b)
@@ -900,7 +900,7 @@ def createGrid(name="MyGrid"):
 	b.ViewObject.Transparency=60
 	App.activeDocument().recompute()
 
-	b2=FreeCAD.activeDocument().addObject("Part::FeaturePython",name+"_2_")
+	b2=App.activeDocument().addObject("Part::FeaturePython",name+"_2_")
 	b2.Label=name+"_3D_"
 	nurbswb.isodraw.Draw3Dgrid(b2)
 	b2.drawgrid=b
@@ -928,7 +928,7 @@ def stop():
 	''' stop eventserver'''
 
 	mw=QtGui.qApp
-	ef=FreeCAD.eventfilter
+	ef=App.eventfilter
 	mw.removeEventFilter(ef)
 	ef.keyPressed2=False
 
@@ -966,4 +966,4 @@ if 0:
 	wire2=App.ActiveDocument.IsoDrawFace003
 	faceobj=App.ActiveDocument.faceObject
 
-	drawring(wire1,wire2,faceobj,facepos=FreeCAD.Vector())
+	drawring(wire1,wire2,faceobj,facepos=App.Vector())

@@ -11,9 +11,10 @@
 
 
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 import numpy as np
 
@@ -145,7 +146,7 @@ class Monitor(PartFeature):
 		ViewProvider(obj.ViewObject)
 
 	def onDocumentRestored(self, fp):
-		print "onDocumentRestored "
+		print ("onDocumentRestored "
 		print fp.Label
 
 
@@ -180,7 +181,7 @@ class Monitor(PartFeature):
 #			print (pts[i]-pts[i-1]).normalize().dot((pts[i+1]-pts[i]).normalize())
 #			print ll
 #			
-			print "!! ",np.arctan2(ll,ls)*180./np.pi
+			print ("!! ",np.arctan2(ll,ls)*180./np.pi
 			su += np.arctan2(ll,ls)*180./np.pi
 
 
@@ -226,7 +227,7 @@ class Monitor(PartFeature):
 		proxy.dialog.maxa.setText("MAX: " +str(obj.maxVal))
 		proxy.dialog.show()
 		mm=20
-		if obj.source <> None:
+		if obj.source != None:
 #			try:
 				print obj.source.Label
 				print ("Value and interval:", round(obj.source.Shape.Edge1.Length,1),obj.minVal,obj.maxVal)
@@ -246,14 +247,14 @@ class Monitor(PartFeature):
 				elif obj.source.Shape.Edge1.Length>obj.maxVal:
 					obj.source.ViewObject.LineColor=(1.0,0.0,.0)
 				obj.val=obj.source.Shape.Edge1.Length
-				print "huhu"
+				print ("huhu"
 				proxy.dialog.anz.setText("VALUE: " + str(obj.val))
 #			except:
-				print "kann nichts machen"
+				print ("kann nichts machen"
 
 
 def run():
-	a=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyMonitor")
+	a=App.activeDocument().addObject("Part::FeaturePython","MyMonitor")
 
 	m=Monitor(a)
 	a.source=Gui.Selection.getSelection()[0]
@@ -263,7 +264,7 @@ def run():
 #--------------------------
 # monitor forces
 def runforce():
-	a=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyMonitor")
+	a=App.activeDocument().addObject("Part::FeaturePython","MyMonitor")
 	m=Monitor(a)
 	a.mode='force'
 	a.source=Gui.Selection.getSelection()[0]
@@ -278,19 +279,19 @@ if __name__ == '__main__':
 	import Draft
 
 	points = [
-		FreeCAD.Vector(41.6618804932,-29.8381633759,0.0),FreeCAD.Vector(42.888874054,27.8303642273,0.0),
-		FreeCAD.Vector(-20.4684200287,39.654083252,0.0),FreeCAD.Vector(-18.1259880066,-19.6876106262,0.0),
-		FreeCAD.Vector(-230.109481812,-79.8339004517,0.0),FreeCAD.Vector(-201.932830811,105.248153687,0.0),
-		FreeCAD.Vector(77.6240005493,163.258956909,0.0),FreeCAD.Vector(-91.4360580444,60.4969787598,0.0),
-		FreeCAD.Vector(63.25938797,88.1211624146,0.0),FreeCAD.Vector(220.717285156,27.9004211426,0.0),
-		FreeCAD.Vector(203.590301514,-89.7786178589,0.0),FreeCAD.Vector(153.866744995,14.088344574,0.0),
-		FreeCAD.Vector(112.982902527,-46.1323928833,0.0)
+		App.Vector(41.6618804932,-29.8381633759,0.0),App.Vector(42.888874054,27.8303642273,0.0),
+		App.Vector(-20.4684200287,39.654083252,0.0),App.Vector(-18.1259880066,-19.6876106262,0.0),
+		App.Vector(-230.109481812,-79.8339004517,0.0),App.Vector(-201.932830811,105.248153687,0.0),
+		App.Vector(77.6240005493,163.258956909,0.0),App.Vector(-91.4360580444,60.4969787598,0.0),
+		App.Vector(63.25938797,88.1211624146,0.0),App.Vector(220.717285156,27.9004211426,0.0),
+		App.Vector(203.590301514,-89.7786178589,0.0),App.Vector(153.866744995,14.088344574,0.0),
+		App.Vector(112.982902527,-46.1323928833,0.0)
 	]
 
 	spline = Draft.makeBSpline(points,closed=False,face=True,support=None)
 
 
-	a=FreeCAD.activeDocument().addObject("Part::FeaturePython","MyMonitor")
+	a=App.activeDocument().addObject("Part::FeaturePython","MyMonitor")
 	m=Monitor(a)
 
 	try:

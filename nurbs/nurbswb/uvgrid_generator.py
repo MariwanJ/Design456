@@ -22,7 +22,7 @@ import Points
 
 '''
 import FreeCAD
-FreeCAD.open(u"/home/thomas/Dokumente/freecad_buch/b149_unfold/m09_uvgrid_generator.fcstd")
+App.open(u"/home/thomas/Dokumente/freecad_buch/b149_unfold/m09_uvgrid_generator.fcstd")
 App.setActiveDocument("m09_uvgrid_generator")
 App.ActiveDocument=App.getDocument("m09_uvgrid_generator")
 Gui.ActiveDocument=Gui.getDocument("m09_uvgrid_generator")
@@ -149,7 +149,7 @@ def uvmap(edges,sf,debug):
 			kvpts=[]
 			for p in pl:
 				(u,v)=sf.parameter(p)
-				ptst.append(FreeCAD.Vector(u,v,0))
+				ptst.append(App.Vector(u,v,0))
 ##				u=1*round(u,1)
 ##				v=1*round(v,1)
 
@@ -229,10 +229,10 @@ def genVgrid(face,sf,gridfac=10,debug=False):
 		for i in range(vst+1):
 			v=y; u= start +(ende-start)*i/vst
 			ku,kv=kruemmung(sf,u,v)
-			kupts.append(FreeCAD.Vector(u,v,10*ku))
-			kvpts.append(FreeCAD.Vector(u,v,10*kv))
-			kul.append(FreeCAD.Vector(u,v,10*ku))
-			kvl.append(FreeCAD.Vector(u,v,10*kv))
+			kupts.append(App.Vector(u,v,10*ku))
+			kvpts.append(App.Vector(u,v,10*kv))
+			kul.append(App.Vector(u,v,10*ku))
+			kvl.append(App.Vector(u,v,10*kv))
 		kval.append(kvl)
 		kual.append(kul)
 
@@ -334,15 +334,15 @@ def genUgrid(face,sf,gridfac=10,debug=False):
 			u=x; v= start +(ende-start)*i/vst
 			ku,kv=kruemmung(sf,u,v)
 	#					if i >-10  :
-	#						if ku<>-1 and kv <>-1: 
+	#						if ku!=-1 and kv !=-1: 
 #			print (u,v,ku,kv)
 			if 0: # nicht fast ebenene Flaechen
-				kupts.append(FreeCAD.Vector(u,v,10*ku))
-				kvpts.append(FreeCAD.Vector(u,v,10*kv))
+				kupts.append(App.Vector(u,v,10*ku))
+				kvpts.append(App.Vector(u,v,10*kv))
 			else:
 				p=sf.value(u,v)
-				kupts.append(FreeCAD.Vector(p.x,p.y,10000*ku))
-				kvpts.append(FreeCAD.Vector(p.x,p.y,10000*kv))
+				kupts.append(App.Vector(p.x,p.y,10000*ku))
+				kvpts.append(App.Vector(p.x,p.y,10000*kv))
 			
 
 
@@ -497,7 +497,7 @@ def genKgrid(face,umin,umax,vmin,vmax,mode,sf,gridfac=10,obj=None,debug=False):
 	App.ActiveDocument.ActiveObject.ViewObject.DisplayMode = "Shaded"
 
 	te=time.time()
-	print "color time ",round(te-ts,2)
+	print ("color time ",round(te-ts,2)
 
 
 def gengrid(pts,lena,direct=2):
@@ -550,10 +550,10 @@ def runobj(obj,fac=5):
 	for f in obj.Shape.Faces:
 		try:
 			poly,umin,umax,vmin,vmax = uvmap(f.Edges,f.Surface,debug)
-			print "genkgrid" 
+			print ("genkgrid" 
 			mode= 'sumabs' # 'u','v', 'sumabs','gauss', 'mean'
 			genKgrid(poly,umin,umax,vmin,vmax,mode ,f.Surface,fac,obj,debug)
-			print "DONE stop here - no grid generation"
+			print ("DONE stop here - no grid generation"
 			return
 			l1=genVgrid(poly,f.Surface,fac,debug)
 			l2=genUgrid(poly,f.Surface,fac,debug)
@@ -570,13 +570,13 @@ def runobj(obj,fac=5):
 
 	comp=Part.makeCompound(el)
 	te=time.time()
-	print "Creation time ",round(te-ts,2)
+	print ("Creation time ",round(te-ts,2)
 
 	ts=time.time()
 	Part.show(comp)
 	App.ActiveDocument.ActiveObject.ViewObject.LineColor=(random.random(),random.random(),random.random())
 	te=time.time()
-	print "Part.show time ",round(te-ts,2)
+	print ("Part.show time ",round(te-ts,2)
 
 
 def runsub(f,fac=5,label="NoLAB"):
@@ -606,14 +606,14 @@ def runsub(f,fac=5,label="NoLAB"):
 	
 	comp=Part.makeCompound(el)
 	te=time.time()
-	print "Creation time ",round(te-ts,2)
+	print ("Creation time ",round(te-ts,2)
 
 	ts=time.time()
 	Part.show(comp)
 	App.ActiveDocument.ActiveObject.ViewObject.LineColor=(random.random(),random.random(),random.random())
 	App.ActiveDocument.ActiveObject.Label=label
 	te=time.time()
-	print "Part.show time ",round(te-ts,2)
+	print ("Part.show time ",round(te-ts,2)
 
 
 

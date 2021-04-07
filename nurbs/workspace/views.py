@@ -7,9 +7,10 @@
 #-- GNU Lesser General Public License (LGPL)
 #-------------------------------------------------
 
-import FreeCAD,FreeCADGui
-App=FreeCAD
-Gui=FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
+
+
 
 
 from PySide import QtCore,QtGui
@@ -26,7 +27,7 @@ rm=view.getSoRenderManager()
 c=rm.getCamera()
 
 c.orientation
-c.orientation=FreeCAD.Rotation(FreeCAD.Vector(1,1,1),15).Q
+c.orientation=App.Rotation(App.Vector(1,1,1),15).Q
 
 c.pointAt(coin.SbVec3f(10,10,10))
 c.scaleHeight(3)
@@ -63,14 +64,14 @@ class ViewProvider:
 		self.Object=obj
 
 	def onDelete(self, obj, subelements):
-		print "on Delete Quadview"
+		print ("on Delete Quadview"
 		print obj
 		print subelements
 		obj.Object.Proxy.v.close()
 		return True
 
 	def onChanged(self, obj, prop):
-			print "onchange",prop
+			print ("onchange",prop
 			if prop=="Visibility" and not obj.Visibility:
 				obj.Object.Proxy.v.close()
 			if prop=="Visibility" and obj.Visibility:
@@ -89,7 +90,7 @@ class ViewProviderH2:
 		self.Object=obj
 
 	def onDelete(self, obj, subelements):
-		print "on Delete Quadview"
+		print ("on Delete Quadview"
 		print obj
 		print subelements
 		obj.Object.Proxy.v.close()
@@ -97,9 +98,9 @@ class ViewProviderH2:
 
 	def onChanged(self, obj, prop):
 			if obj==None: return
-			print "onchange H2",prop
+			print ("onchange H2",prop
 			if prop=="Visibility" and not obj.Visibility:
-				print "close it"
+				print ("close it"
 				try: 
 					_=obj.Object.Proxy.v  
 					obj.Object.Proxy.v.close()
@@ -127,7 +128,7 @@ class QuadView(PartFeature):
 		obj.addProperty("App::PropertyInteger","A DisplayMode","V00")
 		obj.addProperty("App::PropertyInteger","A OrientationMode","V00")
 
-		obj.A_Axis=FreeCAD.Vector(1,0,0)
+		obj.A_Axis=App.Vector(1,0,0)
 		obj.A_Angle=90
 
 		obj.addProperty("App::PropertyVector","B Axis","V01")
@@ -135,7 +136,7 @@ class QuadView(PartFeature):
 		obj.addProperty("App::PropertyInteger","B DisplayMode","V01")
 		obj.addProperty("App::PropertyInteger","B OrientationMode","V01")
 
-		obj.B_Axis=FreeCAD.Vector(1,1,1)
+		obj.B_Axis=App.Vector(1,1,1)
 		obj.B_Angle=120
 
 		obj.addProperty("App::PropertyVector","C Axis","V10")
@@ -149,7 +150,7 @@ class QuadView(PartFeature):
 		obj.addProperty("App::PropertyInteger","D DisplayMode","V11")
 		obj.addProperty("App::PropertyInteger","D OrientationMode","V11")
 
-		obj.D_Axis=FreeCAD.Vector(1,0,1)
+		obj.D_Axis=App.Vector(1,0,1)
 		obj.D_Angle=45
 
 
@@ -157,7 +158,7 @@ class QuadView(PartFeature):
 		obj.addProperty("App::PropertyBool","fitAll","Render")
 		obj.addProperty("App::PropertyLinkList","objs","Render")
 
-		if label <> None:
+		if label != None:
 			obj.Label = label
 
 
@@ -170,18 +171,18 @@ class QuadView(PartFeature):
 		except: return
 
 		AxisAngle=[
-				(FreeCAD.Vector(1,1,1),120),
-				(FreeCAD.Vector(1,1,1),-120),
+				(App.Vector(1,1,1),120),
+				(App.Vector(1,1,1),-120),
 				
-				(FreeCAD.Vector(1,0,1),45),
-				(FreeCAD.Vector(1,0,1),60),
-				(FreeCAD.Vector(1,0,1),30),
+				(App.Vector(1,0,1),45),
+				(App.Vector(1,0,1),60),
+				(App.Vector(1,0,1),30),
 				
-				(FreeCAD.Vector(1,0,0),90),
-				(FreeCAD.Vector(1,0,0),-90),
+				(App.Vector(1,0,0),90),
+				(App.Vector(1,0,0),-90),
 				
-				(FreeCAD.Vector(-1,0,0),90),
-				(FreeCAD.Vector(-1,0,0),-90),
+				(App.Vector(-1,0,0),90),
+				(App.Vector(-1,0,0),-90),
 				
 			]
 
@@ -196,7 +197,7 @@ class QuadView(PartFeature):
 				val=vals[ix]
 				marker = coin.SoSeparator()
 				for objx in objs:
-					print "run ",objx.Label
+					print ("run ",objx.Label
 					node= objx.ViewObject.RootNode
 
 					if fp.DisplayMode:
@@ -218,8 +219,8 @@ class QuadView(PartFeature):
 					marker.addChild(nodeA)
 
 				c=view.getSoRenderManager().getCamera()
-				if val <>0:
-					c.orientation=FreeCAD.Rotation(	AxisAngle[val-1][0],AxisAngle[val-1][1]).Q
+				if val !=0:
+					c.orientation=App.Rotation(	AxisAngle[val-1][0],AxisAngle[val-1][1]).Q
 
 				#replace the objects
 				sg=view.getSceneGraph()
@@ -240,7 +241,7 @@ class QuadView(PartFeature):
 			val=getattr(fp,prop)
 			if val>=len(AxisAngle)or val<0: setattr(fp,prop,val%len(AxisAngle))
 			val=getattr(fp,prop)
-			if val<>0:
+			if val!=0:
 				if prop=="A_OrientationMode":
 					fp.A_Axis=AxisAngle[val-1][0]
 					fp.A_Angle=AxisAngle[val-1][1]
@@ -258,7 +259,7 @@ class QuadView(PartFeature):
 
 		if prop.startswith("A_"):
 			c=self.v.getViewer(0).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.A_Axis,fp.A_Angle).Q
+			c.orientation=App.Rotation(fp.A_Axis,fp.A_Angle).Q
 
 			view=self.v.getViewer(0)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -267,7 +268,7 @@ class QuadView(PartFeature):
 
 		if prop.startswith("B_"):
 			c=self.v.getViewer(1).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.B_Axis,fp.B_Angle).Q
+			c.orientation=App.Rotation(fp.B_Axis,fp.B_Angle).Q
 
 			view=self.v.getViewer(1)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -276,7 +277,7 @@ class QuadView(PartFeature):
 
 		if prop.startswith("C_"):
 			c=self.v.getViewer(2).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.C_Axis,fp.C_Angle).Q
+			c.orientation=App.Rotation(fp.C_Axis,fp.C_Angle).Q
 
 			view=self.v.getViewer(2)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -285,7 +286,7 @@ class QuadView(PartFeature):
 
 		if prop.startswith("D_"):
 			c=self.v.getViewer(3).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.D_Axis,fp.D_Angle).Q
+			c.orientation=App.Rotation(fp.D_Axis,fp.D_Angle).Q
 
 			view=self.v.getViewer(3)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -325,7 +326,7 @@ def createquadview():
 		v.getViewer(i).setEnabledNaviCube(False)
 
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","MyQuadView")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","MyQuadView")
 	QuadView(a,"QuadView for "+ title )
 	ViewProvider(a.ViewObject)
 
@@ -352,7 +353,7 @@ def updatencontent(viewer,objs,fp,clearSel=True,fit=True):
 	v=viewer
 	view=v.getViewer(0)
 	rm=view.getSoRenderManager()
-	print "######################"
+	print ("######################"
 	rm.setCamera( coin.SoOrthographicCamera())
 
 	marker = coin.SoSeparator()
@@ -361,7 +362,7 @@ def updatencontent(viewer,objs,fp,clearSel=True,fit=True):
 		try: objgx=objx.Group
 		except: objgx=[objx]
 		for objx in objgx:
-			print "run ",objx.Label
+			print ("run ",objx.Label
 			node= objx.ViewObject.RootNode
 
 			if fp.A_DisplayMode==0:
@@ -377,7 +378,7 @@ def updatencontent(viewer,objs,fp,clearSel=True,fit=True):
 	view.setSceneGraph(marker)
 
 	c=view.getSoRenderManager().getCamera()
-	c.orientation=FreeCAD.Rotation(fp.A_Axis,fp.A_Angle).Q
+	c.orientation=App.Rotation(fp.A_Axis,fp.A_Angle).Q
 
 	reg=view.getSoRenderManager().getViewportRegion()
 	marker=view.getSoRenderManager().getSceneGraph()
@@ -406,7 +407,7 @@ def updatencontent(viewer,objs,fp,clearSel=True,fit=True):
 	view.setSceneGraph(marker)
 
 	c=view.getSoRenderManager().getCamera()
-	c.orientation=FreeCAD.Rotation(fp.B_Axis,fp.B_Angle).Q
+	c.orientation=App.Rotation(fp.B_Axis,fp.B_Angle).Q
 
 	#------------------------------------
 
@@ -431,7 +432,7 @@ def updatencontent(viewer,objs,fp,clearSel=True,fit=True):
 	view.setSceneGraph(marker)
 
 	c=view.getSoRenderManager().getCamera()
-	c.orientation=FreeCAD.Rotation(fp.C_Axis,fp.C_Angle).Q
+	c.orientation=App.Rotation(fp.C_Axis,fp.C_Angle).Q
 
 	#------------------------------------
 
@@ -457,7 +458,7 @@ def updatencontent(viewer,objs,fp,clearSel=True,fit=True):
 	view.setSceneGraph(marker)
 
 	c=view.getSoRenderManager().getCamera()
-	c.orientation=FreeCAD.Rotation(fp.D_Axis,fp.D_Angle).Q
+	c.orientation=App.Rotation(fp.D_Axis,fp.D_Angle).Q
 
 	#------------------------------------
 
@@ -527,13 +528,13 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
 	v=viewer
 	view=v.getViewer(0)
 	rm=view.getSoRenderManager()
-	print "######################"
+	print ("######################"
 	rm.setCamera( coin.SoOrthographicCamera())
 
 	marker = coin.SoSeparator()
 
 	for objx in objs+[obja]:
-		print "run 0",objx.Label
+		print ("run 0",objx.Label
 		node= objx.ViewObject.RootNode
 
 		if fp.A_DisplayMode==0:
@@ -549,7 +550,7 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
 	view.setSceneGraph(marker)
 
 	c=view.getSoRenderManager().getCamera()
-	c.orientation=FreeCAD.Rotation(fp.A_Axis,fp.A_Angle).Q
+	c.orientation=App.Rotation(fp.A_Axis,fp.A_Angle).Q
 
 	reg=view.getSoRenderManager().getViewportRegion()
 	marker=view.getSoRenderManager().getSceneGraph()
@@ -560,7 +561,7 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
 	view=v.getViewer(1)
 	marker = coin.SoSeparator()
 	for objx in objs +[objb]:
-		print "run 1",objx.Label
+		print ("run 1",objx.Label
 		node= objx.ViewObject.RootNode
 
 		if fp.B_DisplayMode==0:
@@ -576,14 +577,14 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
 	view.setSceneGraph(marker)
 
 	c=view.getSoRenderManager().getCamera()
-	c.orientation=FreeCAD.Rotation(fp.B_Axis,fp.B_Angle).Q
+	c.orientation=App.Rotation(fp.B_Axis,fp.B_Angle).Q
 
 	#------------------------------------
 
 	view=v.getViewer(2)
 	marker = coin.SoSeparator()
 	for objx in objs + [objb]:
-		print "run 2",objx.Label
+		print ("run 2",objx.Label
 		node= objx.ViewObject.RootNode
 
 		if fp.C_DisplayMode==0:
@@ -599,14 +600,14 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
 	view.setSceneGraph(marker)
 
 	c=view.getSoRenderManager().getCamera()
-	c.orientation=FreeCAD.Rotation(fp.C_Axis,fp.C_Angle).Q
+	c.orientation=App.Rotation(fp.C_Axis,fp.C_Angle).Q
 
 	#------------------------------------
 
 	view=v.getViewer(3)
 	marker = coin.SoSeparator()
 	for objx in objs +[obja]:
-		print "run 3",objx.Label
+		print ("run 3",objx.Label
 		node= objx.ViewObject.RootNode
 
 		if fp.D_DisplayMode==0:
@@ -622,7 +623,7 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
 	view.setSceneGraph(marker)
 
 	c=view.getSoRenderManager().getCamera()
-	c.orientation=FreeCAD.Rotation(fp.D_Axis,fp.D_Angle).Q
+	c.orientation=App.Rotation(fp.D_Axis,fp.D_Angle).Q
 
 	#------------------------------------
 
@@ -644,7 +645,7 @@ class ViewH2(PartFeature):
 		obj.addProperty("App::PropertyInteger","A DisplayMode","V00")
 		obj.addProperty("App::PropertyInteger","A OrientationMode","V00")
 
-		obj.A_Axis=FreeCAD.Vector(1,0,0)
+		obj.A_Axis=App.Vector(1,0,0)
 		obj.A_Angle=90
 
 		obj.addProperty("App::PropertyVector","B Axis","V01")
@@ -652,7 +653,7 @@ class ViewH2(PartFeature):
 		obj.addProperty("App::PropertyInteger","B DisplayMode","V01")
 		obj.addProperty("App::PropertyInteger","B OrientationMode","V01")
 
-		obj.B_Axis=FreeCAD.Vector(1,1,1)
+		obj.B_Axis=App.Vector(1,1,1)
 		obj.B_Angle=120
 
 		obj.addProperty("App::PropertyVector","C Axis","V10")
@@ -666,7 +667,7 @@ class ViewH2(PartFeature):
 		obj.addProperty("App::PropertyInteger","D DisplayMode","V11")
 		obj.addProperty("App::PropertyInteger","D OrientationMode","V11")
 
-		obj.D_Axis=FreeCAD.Vector(1,0,1)
+		obj.D_Axis=App.Vector(1,0,1)
 		obj.D_Angle=45
 
 
@@ -677,14 +678,14 @@ class ViewH2(PartFeature):
 		obj.addProperty("App::PropertyLink","obja","Render")
 		obj.addProperty("App::PropertyLink","objb","Render")
 
-		if label <> None:
+		if label != None:
 			obj.Label = label
 
 
 	def onChanged(self, fp, prop):
 
 		print ("on changed .....",fp.Label,prop)
-#		print "deanctivated"
+#		print ("deanctivated"
 #		return
 
 		if not fp.ViewObject.Visibility: return
@@ -693,18 +694,18 @@ class ViewH2(PartFeature):
 		except: return
 
 		AxisAngle=[
-				(FreeCAD.Vector(1,1,1),120),
-				(FreeCAD.Vector(1,1,1),-120),
+				(App.Vector(1,1,1),120),
+				(App.Vector(1,1,1),-120),
 				
-				(FreeCAD.Vector(1,0,1),45),
-				(FreeCAD.Vector(1,0,1),60),
-				(FreeCAD.Vector(1,0,1),30),
+				(App.Vector(1,0,1),45),
+				(App.Vector(1,0,1),60),
+				(App.Vector(1,0,1),30),
 				
-				(FreeCAD.Vector(1,0,0),90),
-				(FreeCAD.Vector(1,0,0),-90),
+				(App.Vector(1,0,0),90),
+				(App.Vector(1,0,0),-90),
 				
-				(FreeCAD.Vector(-1,0,0),90),
-				(FreeCAD.Vector(-1,0,0),-90),
+				(App.Vector(-1,0,0),90),
+				(App.Vector(-1,0,0),-90),
 				
 			]
 
@@ -719,7 +720,7 @@ class ViewH2(PartFeature):
 				val=vals[ix]
 				marker = coin.SoSeparator()
 				for objx in objs:
-					print "run ",objx.Label
+					print ("run ",objx.Label
 					node= objx.ViewObject.RootNode
 
 					if fp.DisplayMode:
@@ -741,8 +742,8 @@ class ViewH2(PartFeature):
 					marker.addChild(nodeA)
 
 				c=view.getSoRenderManager().getCamera()
-				if val <>0:
-					c.orientation=FreeCAD.Rotation(	AxisAngle[val-1][0],AxisAngle[val-1][1]).Q
+				if val !=0:
+					c.orientation=App.Rotation(	AxisAngle[val-1][0],AxisAngle[val-1][1]).Q
 
 				#replace the objects
 				sg=view.getSceneGraph()
@@ -763,7 +764,7 @@ class ViewH2(PartFeature):
 			val=getattr(fp,prop)
 			if val>=len(AxisAngle)or val<0: setattr(fp,prop,val%len(AxisAngle))
 			val=getattr(fp,prop)
-			if val<>0:
+			if val!=0:
 				if prop=="A_OrientationMode":
 					fp.A_Axis=AxisAngle[val-1][0]
 					fp.A_Angle=AxisAngle[val-1][1]
@@ -781,7 +782,7 @@ class ViewH2(PartFeature):
 
 		if prop.startswith("A_"):
 			c=self.v.getViewer(0).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.A_Axis,fp.A_Angle).Q
+			c.orientation=App.Rotation(fp.A_Axis,fp.A_Angle).Q
 
 			view=self.v.getViewer(0)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -790,7 +791,7 @@ class ViewH2(PartFeature):
 
 		if prop.startswith("B_"):
 			c=self.v.getViewer(1).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.B_Axis,fp.B_Angle).Q
+			c.orientation=App.Rotation(fp.B_Axis,fp.B_Angle).Q
 
 			view=self.v.getViewer(1)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -799,7 +800,7 @@ class ViewH2(PartFeature):
 
 		if prop.startswith("C_"):
 			c=self.v.getViewer(2).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.C_Axis,fp.C_Angle).Q
+			c.orientation=App.Rotation(fp.C_Axis,fp.C_Angle).Q
 
 			view=self.v.getViewer(2)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -808,7 +809,7 @@ class ViewH2(PartFeature):
 
 		if prop.startswith("D_"):
 			c=self.v.getViewer(3).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.D_Axis,fp.D_Angle).Q
+			c.orientation=App.Rotation(fp.D_Axis,fp.D_Angle).Q
 
 			view=self.v.getViewer(3)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -836,12 +837,12 @@ def resizeWindows(v,a):
 	sws=mdiarea.subWindowList()
 
 	print title
-	print "windows ..."
+	print ("windows ..."
 	for i,w2 in enumerate(sws):
-		print "XX--!"+str(w2.windowTitle())
+		print ("XX--!"+str(w2.windowTitle())
 
 	for i,w2 in enumerate(sws):
-		print "!!"+str(w2.windowTitle())
+		print ("!!"+str(w2.windowTitle())
 		if  w2.windowTitle()==title:
 
 
@@ -857,9 +858,9 @@ def resizeWindows(v,a):
 			spa=sp.children()[1]
 			spa.setSizes([10,0])
 
-			print "update content h2 -- start "
+			print ("update content h2 -- start "
 			updatencontenth2(v,a.obja,a.objb,a.objs,a,False)
-			print "update content h2 -- done"
+			print ("update content h2 -- done"
 			#return
 
 
@@ -874,7 +875,7 @@ def createh2():
 
 #	v=Gui.createViewer(4,title)
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython","MyViewH2")
+	a=App.ActiveDocument.addObject("Part::FeaturePython","MyViewH2")
 	ViewH2(a,title )
 	ViewProviderH2(a.ViewObject)
 
@@ -889,7 +890,7 @@ def createh2():
 #------------------------------------------------------
 def mkshadow(sgg,lis):
 
-	rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+	rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 	atr="HeadlightIntensity"
 	v=rGrp.GetInt(atr)
 
@@ -963,7 +964,7 @@ def mkshadow(sgg,lis):
 	Gui.SendMsgToActiveView("ViewFit")
 
 
-	print "children von sg"
+	print ("children von sg"
 	ssc=sg.getChildren()
 	for c in ssc:
 		print c
@@ -984,7 +985,7 @@ class DarkRoom(PartFeature):
 		obj.addProperty("App::PropertyInteger","A DisplayMode","V00")
 		obj.addProperty("App::PropertyInteger","A OrientationMode","V00")
 
-		obj.A_Axis=FreeCAD.Vector(1,0,1)
+		obj.A_Axis=App.Vector(1,0,1)
 		obj.A_Angle=60
 
 		obj.addProperty("App::PropertyVector","B Axis","V01")
@@ -992,7 +993,7 @@ class DarkRoom(PartFeature):
 		obj.addProperty("App::PropertyInteger","B DisplayMode","V01")
 		obj.addProperty("App::PropertyInteger","B OrientationMode","V01")
 
-		obj.B_Axis=FreeCAD.Vector(1,1,1)
+		obj.B_Axis=App.Vector(1,1,1)
 		obj.B_Angle=120
 
 		obj.addProperty("App::PropertyVector","C Axis","V10")
@@ -1006,7 +1007,7 @@ class DarkRoom(PartFeature):
 		obj.addProperty("App::PropertyInteger","D DisplayMode","V11")
 		obj.addProperty("App::PropertyInteger","D OrientationMode","V11")
 
-		obj.D_Axis=FreeCAD.Vector(1,0,1)
+		obj.D_Axis=App.Vector(1,0,1)
 		obj.D_Angle=45
 
 
@@ -1019,7 +1020,7 @@ class DarkRoom(PartFeature):
 		
 		
 
-		if label <> None:
+		if label != None:
 			obj.Label = label
 
 
@@ -1035,18 +1036,18 @@ class DarkRoom(PartFeature):
 		except: return
 
 		AxisAngle=[
-				(FreeCAD.Vector(1,1,1),120),
-				(FreeCAD.Vector(1,1,1),-120),
+				(App.Vector(1,1,1),120),
+				(App.Vector(1,1,1),-120),
 				
-				(FreeCAD.Vector(1,0,1),45),
-				(FreeCAD.Vector(1,0,1),60),
-				(FreeCAD.Vector(1,0,1),30),
+				(App.Vector(1,0,1),45),
+				(App.Vector(1,0,1),60),
+				(App.Vector(1,0,1),30),
 				
-				(FreeCAD.Vector(1,0,0),90),
-				(FreeCAD.Vector(1,0,0),-90),
+				(App.Vector(1,0,0),90),
+				(App.Vector(1,0,0),-90),
 				
-				(FreeCAD.Vector(-1,0,0),90),
-				(FreeCAD.Vector(-1,0,0),-90),
+				(App.Vector(-1,0,0),90),
+				(App.Vector(-1,0,0),-90),
 				
 			]
 
@@ -1060,7 +1061,7 @@ class DarkRoom(PartFeature):
 				val=vals[ix]
 				marker = coin.SoSeparator()
 				for objx in objs+[fp.obja]:
-					print "run ",objx.Label
+					print ("run ",objx.Label
 					node= objx.ViewObject.RootNode
 
 					if fp.DisplayMode:
@@ -1082,10 +1083,10 @@ class DarkRoom(PartFeature):
 					marker.addChild(nodeA)
 
 				c=view.getSoRenderManager().getCamera()
-				if val <> 0:
-					c.orientation=FreeCAD.Rotation(	AxisAngle[val-1][0],AxisAngle[val-1][1]).Q
+				if val != 0:
+					c.orientation=App.Rotation(	AxisAngle[val-1][0],AxisAngle[val-1][1]).Q
 				else:
-					c.orientation=FreeCAD.Rotation(	fp.A_Axis,fp.A_Angle).Q
+					c.orientation=App.Rotation(	fp.A_Axis,fp.A_Angle).Q
 					
 				sg=view.getSceneGraph()
 				sg.removeChild(1)
@@ -1127,9 +1128,9 @@ class DarkRoom(PartFeature):
 
 
 				sg.addChild(marker)
-				print "makeshadow ..........!"
+				print ("makeshadow ..........!"
 				mkshadow(marker,lis)
-				print "------------------done-----------------"
+				print ("------------------done-----------------"
 
 
 				for ob in fp.Group:
@@ -1171,7 +1172,7 @@ class DarkRoom(PartFeature):
 			val=getattr(fp,prop)
 			if val>=len(AxisAngle)or val<0: setattr(fp,prop,val%len(AxisAngle))
 			val=getattr(fp,prop)
-			if val<>0:
+			if val!=0:
 				if prop=="A_OrientationMode":
 					fp.A_Axis=AxisAngle[val-1][0]
 					fp.A_Angle=AxisAngle[val-1][1]
@@ -1189,7 +1190,7 @@ class DarkRoom(PartFeature):
 
 		if prop.startswith("A_"):
 			c=self.v.getViewer(0).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.A_Axis,fp.A_Angle).Q
+			c.orientation=App.Rotation(fp.A_Axis,fp.A_Angle).Q
 
 			view=self.v.getViewer(0)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -1198,7 +1199,7 @@ class DarkRoom(PartFeature):
 
 		if prop.startswith("B_"):
 			c=self.v.getViewer(1).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.B_Axis,fp.B_Angle).Q
+			c.orientation=App.Rotation(fp.B_Axis,fp.B_Angle).Q
 
 			view=self.v.getViewer(1)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -1207,7 +1208,7 @@ class DarkRoom(PartFeature):
 
 		if prop.startswith("C_"):
 			c=self.v.getViewer(2).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.C_Axis,fp.C_Angle).Q
+			c.orientation=App.Rotation(fp.C_Axis,fp.C_Angle).Q
 
 			view=self.v.getViewer(2)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -1216,7 +1217,7 @@ class DarkRoom(PartFeature):
 
 		if prop.startswith("D_"):
 			c=self.v.getViewer(3).getSoRenderManager().getCamera()
-			c.orientation=FreeCAD.Rotation(fp.D_Axis,fp.D_Angle).Q
+			c.orientation=App.Rotation(fp.D_Axis,fp.D_Angle).Q
 
 			view=self.v.getViewer(3)
 			reg=view.getSoRenderManager().getViewportRegion()
@@ -1248,14 +1249,14 @@ class ViewProviderDR:
 		self.Object=obj
 
 	def onDelete(self, obj, subelements):
-		print "on Delete Quadview"
+		print ("on Delete Quadview"
 		print obj
 		print subelements
 		obj.Object.Proxy.v.close()
-		rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+		rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 		atr="HeadlightIntensity"
 		rGrp.SetInt(atr,100)
-		rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+		rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 		atr="BackgroundColor"
 		rGrp.SetUnsigned(atr,1437270015)
 
@@ -1263,19 +1264,19 @@ class ViewProviderDR:
 
 	def onChanged(self, obj, prop):
 			if obj==None: return
-			print "onchange H2",prop
+			print ("onchange H2",prop
 			if prop=="Visibility" and not obj.Visibility:
-				rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+				rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 				atr="HeadlightIntensity"
 				rGrp.SetInt(atr,100)
-				rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+				rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 				atr="BackgroundColor"
 				rGrp.SetUnsigned(atr,1437270015)
 
 
-				print "close it"
+				print ("close it"
 				print obj.Object.Proxy.v 
-				FreeCAD.v=obj.Object.Proxy.v 
+				App.v=obj.Object.Proxy.v 
 				obj.Object.Proxy.v.close()
 				try: 
 					_=obj.Object.Proxy.v  
@@ -1294,10 +1295,10 @@ class ViewProviderDR:
 				fp.Proxy.v=v
 				fp.Proxy.onChanged(fp,"Shape")
 
-				rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+				rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 				atr="HeadlightIntensity"
 				rGrp.SetInt(atr,0)
-				rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+				rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 				atr="BackgroundColor"
 				rGrp.SetUnsigned(atr,0)
 				v.fitAll()
@@ -1336,7 +1337,7 @@ def createdarkroom():
 	setsizeDR(title)
 
 
-	a=FreeCAD.ActiveDocument.addObject("App::DocumentObjectGroupPython","MyDarkRoom")
+	a=App.ActiveDocument.addObject("App::DocumentObjectGroupPython","MyDarkRoom")
 	DarkRoom(a,title )
 	ViewProviderDR(a.ViewObject)
 
@@ -1350,13 +1351,13 @@ def createdarkroom():
 	# with shadows dir-lights do not work inside the shadow group
 	if 1:
 		la=createlight('DirectionalLight')
-		la.location=FreeCAD.Vector(-100,-100,0)
+		la.location=App.Vector(-100,-100,0)
 		la.direction=la.location*(-1) 
 		a.addObject(la)
 
 	if 1:
 		la=createlight('DirectionalLight')
-		la.location=FreeCAD.Vector(200,-100,0)
+		la.location=App.Vector(200,-100,0)
 		la.direction=la.location*(-1) 
 		la.color=(0.3,0.,0.)
 		a.addObject(la)
@@ -1364,16 +1365,16 @@ def createdarkroom():
 	if 1:
 		la=createlight("SpotLight")
 		la.mode="SpotLight"
-		la.location=FreeCAD.Vector(10,-20,400)
-		la.direction=FreeCAD.Vector(0,0,-1) 
+		la.location=App.Vector(10,-20,400)
+		la.direction=App.Vector(0,0,-1) 
 		la.color=(0.3,0.,1.)
 		a.addObject(la)
 
 	if 1:
 		la=createlight("PointLight")
 		la.mode="PointLight"
-		la.location=FreeCAD.Vector(10,-20,400)
-		la.direction=FreeCAD.Vector(0,0,-1) 
+		la.location=App.Vector(10,-20,400)
+		la.direction=App.Vector(0,0,-1) 
 		la.color=(0.3,0.,1.)
 		a.addObject(la)
 
@@ -1385,24 +1386,24 @@ def createdarkroom():
 		ff=0.1
 		la=createlight("SpotLight")
 		la.mode="SpotLight"
-		la.location=FreeCAD.Vector(0,0,300)
-		la.direction=FreeCAD.Vector(-20,10,-300) 
+		la.location=App.Vector(0,0,300)
+		la.direction=App.Vector(-20,10,-300) 
 		la.color=(0.3,0.,1.)
 		la.color=(0.9+ff*random.random(),ff*random.random(),ff*random.random())
 		a.addObject(la)
 
 		la=createlight("SpotLight")
 		la.mode="SpotLight"
-		la.location=FreeCAD.Vector(0,0,300)
-		la.direction=FreeCAD.Vector(0,0,-300) 
+		la.location=App.Vector(0,0,300)
+		la.direction=App.Vector(0,0,-300) 
 		la.color=(0.3,0.,1.)
 		la.color=(ff*random.random(),0.9+ff*random.random(),ff*random.random())
 		a.addObject(la)
 
 		la=createlight("SpotLight")
 		la.mode="SpotLight"
-		la.location=FreeCAD.Vector(50,10,300)
-		la.direction=FreeCAD.Vector(10,20,-300) 
+		la.location=App.Vector(50,10,300)
+		la.direction=App.Vector(10,20,-300) 
 		la.color=(0.3,0.,1.)
 		la.color=(ff*random.random(),ff*random.random(),0.9+ff*random.random())
 		a.addObject(la)
@@ -1415,10 +1416,10 @@ def createdarkroom():
 	# dark the environment
 	a.On=True
 	a.Proxy.onChanged(a,"Shape")
-	rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+	rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 	atr="HeadlightIntensity"
 	rGrp.SetInt(atr,0)
-	rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+	rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 	atr="BackgroundColor"
 	rGrp.SetUnsigned(atr,0)
 
@@ -1433,12 +1434,12 @@ class ViewProviderL:
 		self.Object=obj
 
 	def onDelete(self, obj, subelements):
-		print "on Delete "
+		print ("on Delete "
 		print obj
 		return True
 
 	def onChanged(self, obj, prop):
-			print "onchange",prop
+			print ("onchange",prop
 			obj.Object.touch()
 			App.ActiveDocument.recompute()
 
@@ -1449,19 +1450,19 @@ class Light(PartFeature):
 	def __init__(self, obj,label=None):
 		PartFeature.__init__(self, obj)
 
-		obj.addProperty("App::PropertyVector","direction",).direction=FreeCAD.Vector(-1,-1,-1)
-		obj.addProperty("App::PropertyVector","location",).location=FreeCAD.Vector(100,100,100)
+		obj.addProperty("App::PropertyVector","direction",).direction=App.Vector(-1,-1,-1)
+		obj.addProperty("App::PropertyVector","location",).location=App.Vector(100,100,100)
 		obj.addProperty("App::PropertyColor","color",).color=(0.2,0.2,0.)
 		obj.addProperty("App::PropertyEnumeration","mode",).mode=['DirectionalLight','SpotLight','PointLight']
 		obj.addProperty("App::PropertyBool","on",).on=True
 
 	def execute(self,fp):
-		print "execute done"
+		print ("execute done"
 
 
 def createlight(name="SpotLight"):
 
-	a=FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
+	a=App.ActiveDocument.addObject("Part::FeaturePython",name)
 	Light(a)
 	a.mode=name
 	ViewProviderL(a.ViewObject)	
@@ -1470,17 +1471,17 @@ def createlight(name="SpotLight"):
 
 
 def lightOn():
-	rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+	rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 	atr="HeadlightIntensity"
 	rGrp.SetInt(atr,100)
-	rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+	rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 	atr="BackgroundColor"
 	rGrp.SetUnsigned(atr,1437270015)
 
 def lightOff():
-	rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+	rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 	atr="HeadlightIntensity"
 	rGrp.SetInt(atr,0)
-	rGrp=FreeCAD.ParamGet('User parameter:BaseApp/Preferences/View')
+	rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
 	atr="BackgroundColor"
 	rGrp.SetUnsigned(atr,0)

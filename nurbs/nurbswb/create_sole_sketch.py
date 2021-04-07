@@ -54,7 +54,7 @@ def createsole(sk):
 	for p in range(11):
 		print p
 		p=10-p
-		#	if p<>12:
+		#	if p!=12:
 		#ll=sk.addGeometry(Part.LineSegment(App.Vector(10*p,-40.,0),App.Vector(10*p+10,-40.,0)),False)
 		ll=sk.addGeometry(Part.LineSegment(App.Vector(10*p+10,-40.,0),App.Vector(10*p+0,-40.,0)),False)
 		sk.addConstraint(Sketcher.Constraint('Coincident',23+p,2,ll,1)) 
@@ -124,7 +124,7 @@ class Sole(nurbswb.curves.OffsetSpline):
 
 def runSole(name="meineSohle",LL=260):
 	'''create a default sole object'''
-	obj = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+	obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
 	obj.addProperty("App::PropertyInteger", "ofin", "Base", "end").ofin=10
 	obj.addProperty("App::PropertyInteger", "ofout", "Base", "end").ofout=10
 	obj.addProperty("App::PropertyInteger", "LL", "Base", "end").LL=LL

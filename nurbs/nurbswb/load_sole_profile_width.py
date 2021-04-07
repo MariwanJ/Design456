@@ -31,17 +31,17 @@ def runa():
 	'''
 
 #	raise Exception("test fehler")
-	aktiv = FreeCAD.ActiveDocument
+	aktiv = App.ActiveDocument
 
-	fna = FreeCAD.ParamGet(
+	fna = App.ParamGet(
 		'User parameter:Plugins/shoe').GetString("width profile")
 	if fna == '':
 		__dir__ = os.path.dirname(nurbswb.__file__)
 		fna = __dir__ + "/../testdata/breitev3.fcstd"
-		FreeCAD.ParamGet('User parameter:Plugins/shoe').SetString(
+		App.ParamGet('User parameter:Plugins/shoe').SetString(
 			"width profile", fna)
 
-	dok = FreeCAD.open(fna)
+	dok = App.open(fna)
 	sss = dok.findObjects("Sketcher::SketchObject")
 	s = sss[0]
 
@@ -52,11 +52,11 @@ def runa():
 		rs += [s.getDatum('r' + str(i)).Value]
 		ls += [s.getDatum('l' + str(i)).Value]
 
-	FreeCAD.closeDocument(dok.Name)
+	App.closeDocument(dok.Name)
 
 	# eigentliche Arbeitsdatei
 	dok2 = aktiv
-	FreeCAD.setActiveDocument(dok2.Name)
+	App.setActiveDocument(dok2.Name)
 
 	sss = dok2.findObjects("Sketcher::SketchObject")
 #	print sss,dok2.Name

@@ -26,7 +26,7 @@ def test4():
 					h=100 
 				if u==2 and v==2:
 					h=105
-				ps.append(FreeCAD.Vector(u*100,v*100,h))
+				ps.append(App.Vector(u*100,v*100,h))
 	k=3.7
 
 
