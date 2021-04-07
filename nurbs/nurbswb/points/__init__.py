@@ -1,6 +1,6 @@
 import FreeCAD as App
 import FreeCADGui as Gui
-,Sketcher,Part
+import Sketcher,Part
 
 
 
@@ -29,7 +29,7 @@ import time
 
 
 def toUVMesh(bs, uf=5, vf=5):
-        print ("los"
+        print ("los"))
         uc=uf*bs.NbUPoles
         vc=vf*bs.NbVPoles
         ss=[]
@@ -80,7 +80,7 @@ def toUVMesh(bs, uf=5, vf=5):
                     faces.append(((vc+1)*x+y,(vc+1)*x+y+1,(vc+1)*(x+1)+y))
                     faces.append(((vc+1)*x+y+1,(vc+1)*(x+1)+y+1,(vc+1)*(x+1)+y))
 
-        print ("hu"
+        print ("hu")
         # print ss
         # print faces
         App.Console.PrintMessage(str(("size of the mesh:",uc,vc))+"\n")
@@ -101,7 +101,7 @@ def toUVMesh(bs, uf=5, vf=5):
 
 
 def PointarrayToMesh(par, uf=5, vf=5,h=1100):
-        print ("los"
+        print ("los")
         uc,vc,_=par.shape
         uc -= 1 
         vc -= 1
@@ -157,7 +157,7 @@ def PointarrayToMesh(par, uf=5, vf=5,h=1100):
                     faces.append(((vc+1)*x+y,(vc+1)*x+y+1,(vc+1)*(x+1)+y))
                     faces.append(((vc+1)*x+y+1,(vc+1)*(x+1)+y+1,(vc+1)*(x+1)+y))
 
-        print ("hu"
+        print ("hu")
         # print ss
         # print faces
         App.Console.PrintMessage(str(("size of the mesh:",uc,vc))+"\n")
@@ -180,13 +180,13 @@ if 0:
 
     # bs=App.ActiveDocument.Shape.Shape.Face1.Surface
 
-    print bs
+    print (bs)
 
     t=toUVMesh(bs, uf=10, vf=10)
 
 
-    print ("dine"
-    print t
+    print ("dine")
+    print (t)
 
 
 
@@ -211,8 +211,8 @@ def machFlaeche(psta,ku=None,objName="XXd",degree=3):
         mv=[degree+1] +[1]*(NbVPoles-degree-1) +[degree+1]
         mu=[degree+1] +[1]*(NbUPoles-degree-1) +[degree+1]
 
-#        print len(ku)
-#        print len(mu)
+#        print  (len(ku)
+#        print  (len(mu)
 #        print mu
 
 
@@ -242,7 +242,7 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
 
 
 #    obj=App.ActiveDocument.Points
-    print obj.Points.BoundBox.Center
+    print (obj.Points.BoundBox.Center)
     # center=False
 
     if center:
@@ -304,9 +304,9 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
     
     if 0: # auswertung der anderen baender
         pmin=np.array(pmin)
-        print pmin.shape
+        print (pmin.shape)
         pmax=np.array(pmax)
-        print pmax.shape
+        print (pmax.shape)
         comp=[]
         for i in range(124):
             for j in range(500):
@@ -319,7 +319,7 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
                     comp += [ Part.makePolygon([a,a+(b-a)*10])]
                     
 
-        print len(comp)
+        print (len(comp))
         Part.show(Part.Compound(comp))
 
 
@@ -350,7 +350,7 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
             ss=PointarrayToMesh(pa4,h=zmin)
 
         tb=time.time()
-        print ("create meshes all", tb-ta
+        print ("create meshes all", tb-ta)
 
         ta=time.time()
         #ss=PointarrayToMesh(pa4)
@@ -360,7 +360,7 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
             ss=PointarrayToMesh(pa4[ua:ua+sizeU,va:va+2*sizeV],h=zmin-socketheight)
 
         tb=time.time()
-        print ("create meshes sub ", tb-ta
+        print ("create meshes sub ", tb-ta)
         #return
 
 
@@ -372,7 +372,7 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
         tb=time.time()
         bs=machFlaeche(pa4[ua:ua+sizeU,va:va+2*sizeV])
         tc=time.time()
-        print ("create surf 200 x 200 ", tc-tb
+        print ("create surf 200 x 200 ", tc-tb)
 
         if 0:
             tb=time.time()
@@ -382,7 +382,8 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
 
 
 #    if not createpart: return
-    if not mode=='part': return
+    if not mode=='part': 
+        return
 
 
     #create side faces
@@ -390,7 +391,7 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
     be=[]
     faces=[ff.Shape.Face1]
     for i,e in enumerate(ff.Shape.Face1.Edges):
-        print e
+        print (e)
         pa=e.Vertexes[0].Point
         pe=e.Vertexes[-1].Point
 
@@ -633,10 +634,6 @@ class MyApp(object):
     def createNurbs(self):
         self.run('nurbs')
 
-
-
-
-
     def close(self):
         for w in App.w5: w.hide()
         App.w5=[]
@@ -663,8 +660,6 @@ def mydialog(obj):
 
     return miki
 
-
-
 def runA():
     try:
         obj=Gui.Selection.getSelection()[0]
@@ -673,11 +668,7 @@ def runA():
     mydialog(obj)
 
 
-
-
 #-------------------------glaetten 
-
-
 
 
 import random
@@ -733,7 +724,7 @@ def run(pts,loop,d,dd,outliner=True):
     pts3=[]
     anzp =pts2.shape[0]
 
-    for xp in range(120): # gesamtpunktzahl
+    for xp in range(120): # total score
         yv=0
         wv=0
         for i in range(anzp):
@@ -815,7 +806,7 @@ def  results(ptsa,ptsb):
     cwk.ViewObject.LineWidth=7
 
 
-    print ("Poles:",bc.NbPoles
+    print ("Poles:",bc.NbPoles)
 
 def runC():
     d=5

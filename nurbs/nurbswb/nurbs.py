@@ -602,8 +602,8 @@ class Nurbs(PartFeature):
             
             print ku
             print kv
-            print len(ku)
-            print len(kv)
+            print  (len(ku)
+            print  (len(kv)
             print nNodes_u
             print nNodes_v
 

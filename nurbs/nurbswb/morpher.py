@@ -367,7 +367,7 @@ class CurveMorpher(FeaturePython):
 
         w=sh.Wires[0]
         pts=[v.Point for v in w.Vertexes]
-#        print len(pts)
+#        print  (len(pts)
 
 
         # pts[0]=pts[-1]=(pts[0]+pts[-1])*0.5
