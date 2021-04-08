@@ -32,7 +32,7 @@ import pivy.coin as coin
 import Design456Init
 
 
-def draw_label(labelcolor=(0.0, 0.0, 0.0), labelfont='sans', size=14, trans=(0, 0, 0), text=''):
+def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14, trans=(0, 0, 0), text=''):
     global textNode
     _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
     font = coin.SoFont()
@@ -48,6 +48,9 @@ def draw_label(labelcolor=(0.0, 0.0, 0.0), labelfont='sans', size=14, trans=(0, 
     _textNode.addChild(font)
     _textNode.addChild(_text)
     _textNode.addChild(transNode)
+    _textNode.addChild(coinColor)
+    _textNode.addChild(binding)
+    
     return _textNode  # Return the created SoSeparator that contains the text
 
     """@property
