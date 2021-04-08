@@ -13,9 +13,7 @@
 #------------------------------
 import FreeCAD as App
 import FreeCADGui as Gui
-,Sketcher,Part
-
-
+import Sketcher,Part
 
 import numpy as np
 import time
@@ -64,7 +62,7 @@ def creategrid(uc=3,vc=5,sk=None):
 
 # sketche grid generator
 
-    print ("create grid ..."
+    print ("create grid ...")
     gct=sk.GeometryCount
     for i in range(gct):
         sk.delGeometry(gct-i-1)

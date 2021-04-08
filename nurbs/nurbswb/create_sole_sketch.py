@@ -29,7 +29,7 @@ from __future__ import unicode_literals
 
 from say import *
 import Sketcher
-
+import Design456Init
 
 def createsole(sk):
     '''create the basic geometry sketch for a sole with 12 segments'''
@@ -169,8 +169,15 @@ def runSole(name="meineSohle",LL=260):
     img.Placement = App.Placement(App.Vector(-6,133,0),App.Rotation(App.Vector(0,0,-1),90))
     img.ViewObject.Selectable = False
 
-    return obj
+    #return obj
 
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + '/shoe.svg',
+            'MenuText': 'shoe sole object',
+                        'ToolTip':  'Nurbs shoe sole object'
+        }
 
-if __name__== '__main__':
-    obj=runSole("Schuhsohle")
+Gui.addCommand('runSole', runSole())
+Design456_Magnet.__doc__ = """To be added later
+                            """

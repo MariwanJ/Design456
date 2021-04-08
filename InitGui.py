@@ -51,7 +51,7 @@ class Design456_Workbench (Workbench):
         import Design456_2Ddrawing as TwoDDraw
         import Design456_Part_Tools as _tools
         import Design456_SelectionGate as SelGate
-        
+        import Design456_NurbsTools as _nurbs
         # from Part import CommandShapes     #Tube  not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
@@ -63,6 +63,8 @@ class Design456_Workbench (Workbench):
         self.appendMenu("Design456_Part",designPart.Design456_Part.list)
         self.appendMenu("Design456_2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
         self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
+
+        self.self.appendMenu("Design456 Nurbs", _nurbs.Design456_NURBSGroup.list)
 
         # Design456_Part
         #self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
