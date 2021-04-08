@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 # *                                                                         *
 # *  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # ***************************************************************************
-import os
+import os,sys
 import FreeCAD as App
 #Design456 
 __dir__ = os.path.dirname(__file__)
@@ -38,11 +38,11 @@ PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons')
 WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets')
 
 #Nurbs
-NURBS_ICON_PATH=os.path.join(__dir__,'/nurbs/Resources/icons')
 NURBS_PATH=os.path.join(__dir__,'/nurbs/')
 NURBS_WB_PATH=os.path.join(__dir__,'/nurbs/nurbswb')
-NURBS_WB_PATH=os.path.join(__dir__,'/nurbs/plot2')
-
+NURBS_PLOT_PATH=os.path.join(__dir__,'/nurbs/plot2')
+NURBS_SKETCHER_PATH=os.path.join(__dir__,'/nurbs/sketcher')
+NURBS_ICON_PATH=os.path.join(__dir__,'/nurbs/Resources/icons')
 
 
 

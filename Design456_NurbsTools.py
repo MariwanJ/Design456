@@ -25,11 +25,19 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-import sys
+import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
+sys.path.append(Design456Init.NURBS_PATH)
+sys.path.append(Design456Init.NURBS_WB_PATH)
+sys.path.append(Design456Init.NURBS_POINT_PATH)
+
+import Nurbs_3DToolsGroup
+import Nurbs_2DToolsGroup
+import Nurbs_3DDrawingGroup
+import Nurbs_2DDrawingGroup
+import Nurbs_Miscellaneous
 
 
 class Design456_Nurbs_3DToolsGroup:

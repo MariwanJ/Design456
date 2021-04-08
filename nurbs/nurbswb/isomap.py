@@ -266,7 +266,7 @@ def run_test_2(obj,bs,xy2u,xy2v,fx,fy,refpos):
                 else:
                     col += [Part.makePolygon([ze,zn,zw,zs,ze])]
             except:
-                print ("error polxygon"
+                print ("error polxygon")
 
 
 #            print(m-10,n-13,"!", np.round(d,1))
@@ -310,11 +310,11 @@ def run_test_circle(bs,xy2u,xy2v,RM=15,uc=10,vc=10):
                     l=(pa-pm).Length
                     pss.append(pa)
                 except:
-                    print ("error circle2 line near 408"
+                    print ("error circle2 line near 408")
             try:
                 col +=[Part.makePolygon(pss+[pm])]
             except:
-                print ("error 412"
+                print ("error 412")
 
     Part.show(Part.Compound(col))
     App.ActiveDocument.ActiveObject.ViewObject.LineColor=(1.,1.,0.)
