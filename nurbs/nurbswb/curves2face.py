@@ -8,7 +8,7 @@ the curves are expected in the clones group
 
 import FreeCAD as App
 import FreeCADGui as Gui
-,Part
+import Part
 
 
 

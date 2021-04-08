@@ -74,8 +74,8 @@ def createShape(obj,force=False):
 
         if obj.westSeam:
             seam=obj.westSeam
-            print ("Seam.....WEST........."
-            print seam
+            print ("Seam.....WEST.........")
+            print (seam)
             tvs=[]
             for i in range(30):
                 n="t"+str(i)
@@ -84,23 +84,23 @@ def createShape(obj,force=False):
             tvs=np.array(tvs)
             tvs *= obj.tangentFactor
             for i in range(l.shape[0]):
-                print l[i]
+                print (l[i])
                 l[i,2] += tvs[i,2]
                 l[i,0] += tvs[i,0]
                 l[i,1] += tvs[i,1]
                 l2[i,2] -= tvs[i,2]
                 l2[i,0] -= tvs[i,0]
                 l2[i,1] -= tvs[i,1]
-                print l[i]
+                print (l[i])
 
         r=pts[-1].copy()
         r2=pts[-1].copy()
 
         if obj.eastSeam:
             seam=obj.eastSeam
-            print ("Seam.......EAST......."
+            print ("Seam.......EAST.......")
             tvs=[]
-            print l.shape
+            print (l.shape)
             for i in range(30):
                 n="t"+str(i)
                 tvs.append(getattr(seam,n))
@@ -133,17 +133,17 @@ def createShape(obj,force=False):
 
         if obj.nordSeam:
             seam=obj.nordSeam
-            print ("Seam......NORD........"
-            print seam
+            print ("Seam......NORD........")
+            print (seam)
             tvs=[]
             for i in range(30):
                 n="t"+str(i)
                 tvs.append(getattr(seam,n))
-            print tvs
+            print (tvs)
             tvs=np.array(tvs)
             tvs *= obj.tangentFactor
             for i in range(l.shape[0]-8):
-                print l[i+2]
+                print( l[i+2])
                 l[i+4,2] += tvs[i,2]
                 l[i+4,0] += tvs[i,0]
                 l[i+4,1] += tvs[i,1]
@@ -158,7 +158,7 @@ def createShape(obj,force=False):
 
         if obj.southSeam:
             seam=obj.southSeam
-            print ("Seam.......South......."
+            print ("Seam.......South.......")
             tvs=[]
             for i in range(30):
                 n="t"+str(i)
@@ -185,15 +185,15 @@ def createShape(obj,force=False):
     kvs=[1.0/(cv-dv)*i for i in range(cv-dv+1)]
     kus=[1.0/(cu-du)*i for i in range(cu-du+1)]
 
-    print  (len(kvs)
+    print  (len(kvs))
 #    print  (len(kus)
 #    kvs=[-1,-0.6,-0.4,-0.2]+ obj.source.Shape.Face1.Surface.getVKnots() +[1.2,1.4,1.6,1.8]
 # knotenvektor stimmt nicht .#+#
     kvs=obj.source.Shape.Face1.Surface.getVKnots()
 #    kus=[-1]+ obj.source.Shape.Face1.Surface.getUKnots() +[1.5]
 
-    print  (len(kvs)
-    print obj.source.Shape.Face1.Surface.getVKnots()
+    print  (len(kvs))
+    print (obj.source.Shape.Face1.Surface.getVKnots())
 
 
     mv=[dv+1]+[1]*(cv-dv-1)+[dv+1]
@@ -225,22 +225,22 @@ def createShape(obj,force=False):
 
 
     if 0:
-        print ("tangenten links"
-        print pts[0]-l
+        print ("tangenten links")
+        print (pts[0]-l)
 
-        print ("kurve links"
-        print pts[0]
+        print ("kurve links")
+        print (pts[0])
 
 
-        print ("tangenten rechts"
-        print pts[-1]-r
-        print ("kurve rechts"
-        print pts[-1]
+        print ("tangenten rechts")
+        print (pts[-1]-r)
+        print ("kurve rechts")
+        print (pts[-1])
 
 
 
     if 0 and App.tangentsleft == [] and obj.tangentsleft==[] and force:
-        print ("create tangents"
+        print ("create tangents")
         for i in range(cu):
             t=Draft.makeWire([App.Vector(pts[0,i]),App.Vector(l[i])])
             t.ViewObject.LineColor=(1.0,1.,0.)
@@ -253,7 +253,7 @@ def createShape(obj,force=False):
             t.Label="Tangent right " + str(i+1)
     else:
         if obj.tangentsleft != []:
-            print ("setze tvektoren neu"
+            print ("setze tvektoren neu")
             for i in range(cu):
                 obj.tangentsleft[i].Start=App.Vector(pts[0,i])
                 obj.tangentsleft[i].End=App.Vector(l[i])
@@ -261,15 +261,15 @@ def createShape(obj,force=False):
 
 
     obj.Shape=bs.toShape()
-    print ("tangenten linksAA"
-    print obj.tangentsleft
+    print ("tangenten linksAA")
+    print (obj.tangentsleft)
     hp=App.ActiveDocument.getObject(obj.Name+"BS")
-    print hp
+    print (hp)
     if hp == None:
         hp=App.ActiveDocument.addObject('Part::Spline',obj.Name+"BS")
 
     hp.Shape=bs.toShape()
-    print ("2kkoay"
+    print ("2kkoay")
 
 
 
@@ -314,11 +314,11 @@ class TangentFace(PartFeature):
 
 
     def execute(proxy,obj):
-        print ("myexecute tanface"
+        print ("myexecute tanface")
         if hasattr(obj,"westSeam"):
-            print ("run proxy seam"
+            print ("run proxy seam")
             createShapeV2(obj)
-        print ("done myex"
+        print ("done myex")
 
     def onChanged(self, obj, prop):
         if prop in ['factorA','factorB','displayShape','flipEast','flipWest']:
@@ -364,7 +364,7 @@ class Seam(PartFeature):
                 sf=obj.source.Shape.Face1.Surface
                 sf.getPoles
             except:
-                print ("konvertiere zu nurbs"
+                print ("konvertiere zu nurbs")
                 ff=obj.source.Shape.Face1.toNurbs()
                 sf=ff.Face1.Surface
 
@@ -782,12 +782,12 @@ def machFlaeche(psta,ku=None,closed=False,bs=None,swap=False):
 
         if 0:
             print ("bs-dump: v"
-            print bs.VDegree
-            print bs.getVMultiplicities()
-            print bs.getVKnots()
-            print bs.getWeights()[0:4][0:4]
-            print bs.getPoles()[0:2][0:2]
-            print np.array(bs.getPoles()).shape
+            print (bs.VDegree)
+            print (bs.getVMultiplicities())
+            print (bs.getVKnots())
+            print (bs.getWeights()[0:4][0:4])
+            print (bs.getPoles()[0:2][0:2])
+            print (np.array(bs.getPoles()).shape)
 
         ps=[[App.Vector(psta[v,u,0],psta[v,u,1],psta[v,u,2]) for u in range(NbUPoles)] for v in range(NbVPoles)]
 
@@ -843,23 +843,23 @@ def machFlaeche(psta,ku=None,closed=False,bs=None,swap=False):
 
 import numpy as np
 
-print ("temp module"
+print ("temp module")
 
 def createShapeV2(obj):
     if not obj.swap:
         if obj.westSeam!=None and obj.eastSeam != None:
-            print obj.westSeam.Label
+            print (obj.westSeam.Label)
             sfw=obj.westSeam.Shape.Face1.Surface
-            print sfw.NbVPoles
-            print sfw.NbUPoles
+            print (sfw.NbVPoles)
+            print (sfw.NbUPoles)
             
-            ptsw=sfw.getPoles()
+            ptsw=sfw.(getPoles())
 
 
-            print obj.eastSeam.Label
+            print (obj.eastSeam.Label)
             sfe=obj.eastSeam.Shape.Face1.Surface
-            print sfe.NbVPoles
-            print sfe.NbUPoles
+            print (sfe.NbVPoles)
+            print (sfe.NbUPoles)
             ptse=sfe.getPoles()
             
             if obj.flipWest:
@@ -871,22 +871,22 @@ def createShapeV2(obj):
             
             closed=sfw.isUClosed()
 #            closed=True
-            print ("-------------------------"
+            print ("-------------------------")
             bs=machFlaeche(poles,closed=closed)
             obj.Shape=bs.toShape()
 
     else:
         if obj.nordSeam!=None and obj.southSeam != None:
             sfw=obj.nordSeam.Shape.Face1.Surface
-            print sfw.NbVPoles
-            print sfw.NbUPoles
+            print (sfw.NbVPoles)
+            print (sfw.NbUPoles)
 
             ptsw=sfw.getPoles()
 
 
             sfe=obj.southSeam.Shape.Face1.Surface
-            print sfe.NbVPoles
-            print sfe.NbUPoles
+            print (sfe.NbVPoles)
+            print (sfe.NbUPoles)
             ptse=sfe.getPoles()
             
             if obj.flipNorth:
@@ -906,7 +906,7 @@ def createShapeV2(obj):
 #        closed=True
         bs=machFlaeche(poles,closed=closed)
         obj.Shape=bs.toShape()
-    print ("fertig"
+    print ("fertig")
 
 
 '''

@@ -5,13 +5,13 @@ import numpy as np
 
 
 def srun(w):
-    print w.m.currentIndex()
+    print (w.m.currentIndex())
     a=w.target
     model='modelS'
     import nurbswb.needle_models
     reload(nurbswb.needle_models)
     lm=nurbswb.needle_models.listModels(silent=True)
-    print lm[w.m.currentIndex()]
+    print (lm[w.m.currentIndex()])
     model=lm[w.m.currentIndex()][0]
 
     print ("a.Proxy.getExampleModel(nurbswb.needle_models."+ model+")")

@@ -233,11 +233,11 @@ def run_conepnppp(name,trafo,displaynumber,displayFaces,p_1,p_2,p_3,p_4):
             pts=[apex,p_1,apex,p_2,apex,p_3,apex,p_4]
 
             if 0:
-                print ("Laengen"
-                print axis.dot((apex-p_1).normalize())
-                print axis.dot((apex-p_2).normalize())
-                print axis.dot((apex-p_3).normalize())
-                print axis.dot((apex-p_4).normalize())
+                print ("Laengen")
+                print (axis.dot((apex-p_1).normalize()))
+                print (axis.dot((apex-p_2).normalize()))
+                print (axis.dot((apex-p_3).normalize()))
+                print (axis.dot((apex-p_4).normalize()))
 
             h=500
 
@@ -319,7 +319,7 @@ class PointFace(FeaturePython):
                 for a in 'N2','P5','P6','N3','N4':
                     obj.setEditorMode(a,2)
 
-        print ("---------prop          changed       ",prop
+        print ("---------prop          changed       ",prop)
         if prop not in ["_init_","number",'N1','N2','P1','P2','P3','P4','P5','P6']: return
 
         # generic testdata
@@ -410,7 +410,7 @@ class PointFace(FeaturePython):
             else: 
                 sp += [ obj.P4]
 
-        print dirs
+        print (dirs)
         dirsa=[App.Vector(p).normalize() for p in dirs]
         dirs=dirsa
 
@@ -596,9 +596,9 @@ def    run_conepnpn(p_1,n_1,p_2,n_2,name='PNPN_Test',trafo=None,displaynumber=0,
         print ("axis",axis)
 
         if 0:
-            print ("Laengen"
-            print axis.dot((apex-p_1).normalize())
-            print axis.dot((apex-p_2).normalize())
+            print ("Laengen")
+            print (axis.dot((apex-p_1).normalize()))
+            print (axis.dot((apex-p_2).normalize()))
 
         sin_angle = (p_1-apex).dot(axis)/((p_1-apex).Length*axis.Length);
         cos_angle = ((p_1-apex).cross(axis)).Length/((p_1-apex).Length*axis.Length);
@@ -642,9 +642,9 @@ def    run_conepnpn(p_1,n_1,p_2,n_2,name='PNPN_Test',trafo=None,displaynumber=0,
         print ("axis",axis)
         
         if 0:
-            print ("Laengen"
-            print axis.dot((apex-p_1).normalize())
-            print axis.dot((apex-p_2).normalize())
+            print ("Laengen")
+            print (axis.dot((apex-p_1).normalize()))
+            print (axis.dot((apex-p_2).normalize()))
 
         
         sin_angle = (p_1-apex).dot(axis)/((p_1-apex).Length*axis.Length);
@@ -876,7 +876,7 @@ def run_cylinderpnpp():
                 # this->list.push_back(Cylinder(p1+sign(p_2[2])*r*n1,Rotation*v,r,l1,l2));
                 cyls += [(p1+sign(p_2[2])*r*n1,v,r,l1,l2)]
     for cyl in  cyls:
-        print ("center",cyl[0],"axsi",cyl[1],"radius",cyl[3]
+        print ("center",cyl[0],"axsi",cyl[1],"radius",cyl[3])
         Part.show(Part.makeCylinder(cyl[2],200,cyl[0],cyl[1]))
         App.ActiveDocument.ActiveObject.ViewObject.Transparency=60
         Part.show(Part.makeCylinder(cyl[2],200,cyl[0],-cyl[1]))
@@ -971,15 +971,15 @@ def run_sphere4p(pts=None,display=0):
 def run_plane3p(pts,display=0):
     
     [p1,p2,p3]=pts
-    print ("run plan 3p"
+    print ("run plan 3p")
     n=(p1-p2).cross(p1-p3).normalize()
     c=p1.dot(n)
     c2=p2.dot(n)
     center=c*n
     aux=Part.makeCircle(10,p1,n)
     print (c,c2) 
-    print center
-    print n
+    print (center)
+    print (n)
     return (center,n,aux)
 
 
@@ -1262,8 +1262,8 @@ def run_cylinder5p(pts=None,display=True,pointsize=10,maxradius=100000):
                     print ("center ",cyl[0])
                     print ("axis",cyl[1])
                     print ("radius",cyl[2])
-                    print cyl[3]
-                    print cyl[4]
+                    print (cyl[3])
+                    print (cyl[4])
                     print
                 comps=[]
                 comps += [Part.makeCylinder(cyl[2],200,cyl[0],cyl[1])]
@@ -1362,8 +1362,8 @@ def run_cone6p():
     # vr2=vr.reshape(N*N)
     vr2=vr.swapaxes(0,1).reshape(N*N)
 
-    print ("VR"
-    print np.round(vr,5)
+    print ("VR")
+    print (np.round(vr,5))
 
     myList=[]
     cols=[]
@@ -1385,15 +1385,15 @@ def run_cone6p():
             _ty=alphar[i]/beta[i]
             _t=vr2[N-2+i*N]/vr2[N-1+i*N]
 
-            print ("Vektor komponenten"
-            print _t
-            print alphar[i]/beta[i]
+            print ("Vektor komponenten")
+            print(_t)
+            print (alphar[i]/beta[i])
 
             if beta[i]==0:
                 _ty=100000
 
             if np.isnan(_t) or np.isinf(_t):
-                print ("_t is nan------------------"
+                print ("_t is nan------------------")
                 _t=100000
 
             axis = App.Vector(_t,_ty,1).normalize();
@@ -1416,11 +1416,11 @@ def run_cone6p():
 
 
             center_bar = App.Vector(la*la*sa,lb*lb*sb,lc*lc*sc);
-            print ("center bar"
-            print center_bar
+            print ("center bar")
+            print (center_bar)
 
             center_bar = center_bar / (center_bar[0]+center_bar[1]+center_bar[2]);
-            print center_bar
+            print (center_bar)
             center = center_bar[0]*a + center_bar[1]*b + center_bar[2]*c;
 
             r0 = ((la*la*lb*lb*lc*lc)/ (4*power((crossProduct(b-a,c-a).Length),2)))**0.5;
@@ -1440,7 +1440,7 @@ def run_cone6p():
             print ("r0",r0)
             print (l1,l2)
             if r0> 10000:
-                print ("Fehler radius zu gross"
+                print ("Fehler radius zu gross")
                 continue
             #cylsrc += [[trafo.multVec(center)+p1,trafo.multVec(axis),r0,l1,l2,i]]
             cyls += [[center,axis,r0,l1,l2,i]]
@@ -1449,7 +1449,7 @@ def run_cone6p():
 #------------------------------------------------------------------
 
             for c in cyls:
-                print np.round(center,2),np.round(axis,2)
+                print (np.round(center,2),np.round(axis,2))
 
 
 
@@ -1478,10 +1478,10 @@ def discoverSpheres():
     res=np.array(res).swapaxes(0,1)
 
 
-    print np.sum(res[0])/loops
-    print np.mean(res[1])
-    print np.std(res[1])
-    print time.time()-a
+    print (np.sum(res[0])/loops)
+    print (np.mean(res[1]))
+    print (np.std(res[1]))
+    print (time.time()-a)
 
 # findSphere()
 
@@ -1577,9 +1577,9 @@ class ReconstructFace(FeaturePython):
 
 
     def myExecute(self,obj):
-        print ("start onchange init"
+        print ("start onchange init")
         self.onChanged(obj,"_init_")
-        print obj.Label," executed"
+        print (obj.Label," executed")
 
 def splitShapeCylinder(shape,center,axis,r0,tol=0.01):
 #    print ("splitshape --------------------------------------------"
@@ -1639,7 +1639,7 @@ def splitShapeCylinder(shape,center,axis,r0,tol=0.01):
                 if edges[tuple(tt)]!=1:
                     fok=True
             except:
-                print ("--------------------------------outside A"
+                print ("--------------------------------outside A")
                 pass
         if fok:
             syes2+=[f]
@@ -1711,7 +1711,7 @@ def splitShapePlane(shape,center,normal,tol=0.01):
 
     return (syes,sno)
 
-print ("HUHU"
+print ("HUHU")
 
 def borderPlane(shape,center,normal,tol=0.01):
 
@@ -1748,11 +1748,11 @@ def borderPlane(shape,center,normal,tol=0.01):
                     except:
                         edges[tuple(tt)] =1 
     if debug: 
-        print ("border"
+        print ("border")
         anz=0
         for e in edges:
             if edges[e]==1:
-                print np.round(e,1)
+                print (np.round(e,1))
                 anz += 1
         print (len(edges),anz)
 
@@ -1807,11 +1807,11 @@ def borderSphere(shape,center,radius,tol=0.01):
                     except:
                         edges[tuple(tt)] =1 
     if debug: 
-        print ("border"
+        print ("border")
         anz=0
         for e in edges:
             if edges[e]==1:
-                print np.round(e,1)
+                print (np.round(e,1))
                 anz += 1
         print (len(edges),anz)
 
@@ -1867,11 +1867,11 @@ def borderCylinder(shape,center,axis,r0,tol=0.01):
                     except:
                         edges[tuple(tt)] =1 
     if debug: 
-        print ("border"
+        print ("border")
         anz=0
         for e in edges:
             if edges[e]==1:
-                print np.round(e,1)
+                print (np.round(e,1))
                 anz += 1
         print (len(edges),anz)
 
@@ -1921,7 +1921,7 @@ def borderCylinderV2(shyes):
 
 def findCylinder(obj):
         '''find faces which belong to a cylider by selected faces'''
-        print ("START FINDCYLINDER-----------------------"
+        print("START FINDCYLINDER-----------------------")
         aaat=time.time()
 
         debug=False
@@ -1949,7 +1949,7 @@ def findCylinder(obj):
             pts5=pts[i:i+5]
             (rc,aux)=nurbswb.points_to_face.run_cylinder5p(pts5,display=display,pointsize=0,maxradius=maxradius)
             res += rc
-#            print rc
+#            print (rc)
 #            print ("!!",rc[2]
 #            if rc[2]<5000:
 #            print aux
@@ -2009,9 +2009,9 @@ def findCylinder(obj):
 
             if 1 or anz>10:
                 if debug:
-                    print ("centre",np.round(center,2)
-                    print ("radius",round(r0,2)
-                    print ("axis",np.round(axis,2)
+                    print ("centre",np.round(center,2))
+                    print ("radius",round(r0,2))
+                    print ("axis",np.round(axis,2))
                 aata=time.time()
                 (shyes,shno)=splitShapeCylinder(obj.Source.Shape,center,axis,r0,obj.tol)
                 
@@ -2026,7 +2026,7 @@ def findCylinder(obj):
                     aata=time.time()
                     #borders=borderCylinder(obj.Source.Shape,center,axis,r0,obj.tol)
                     borders=borderCylinderV2(shyes)
-                    print ("TimeXXAATA border",time.time()-aata
+                    print ("TimeXXAATA border",time.time()-aata)
 
                 sols +=[[shyes,shno,borders]]
 
@@ -2108,7 +2108,7 @@ def ReconstructCylinder():
     assert(len(s.SubElementNames)>1)
 
     yy=App.ActiveDocument.addObject("Part::FeaturePython","ReconstructFace")
-    print yy
+    print (yy)
     ReconstructFace(yy)
     yy._noExecute=True
     yy.mode='Cylinder'
@@ -2126,7 +2126,7 @@ def ReconstructCylinder():
     yy.ViewObject.LineColor=(.9,.9,0.0)
 
     yy._noExecute=False
-    print ("########################################"
+    print ("########################################")
     # findCylinder(yy)
     return yy
 
@@ -2186,8 +2186,8 @@ def findSphere(obj):
     res=np.array(res).swapaxes(0,1)
 
     if obj._debug:
-        print ("Radius: ",np.round(np.mean(res[1]),2)
-        print ("Center: ",np.round(np.sum(res[0])/(l-4),2)
+        print ("Radius: ",np.round(np.mean(res[1]),2))
+        print ("Center: ",np.round(np.sum(res[0])/(l-4),2))
 
     radius = np.mean(res[1])
     center = np.sum(res[0])/(l-4)
@@ -2272,10 +2272,10 @@ def findPlane(obj):
     normal=res[0][1]
 
     if obj._debug:
-        print ("Center: ",np.round(center,2)
-        print ("Normal: ",np.round(normal,2)
+        print ("Center: ",np.round(center,2))
+        print ("Normal: ",np.round(normal,2))
 
-    print auxs
+    print( auxs)
 
     shyes=shno=[]
     borders=auxs
@@ -2427,8 +2427,8 @@ def findCluster():
         if cluster[i] not in cluster2 :
             cluster2 += [cluster[i]]
 
-    print ("cluster2"
-    print cluster2
+    print ("cluster2")
+    print (cluster2)
     # Berechne Mittelwerte
     for cl in cluster2:
         ces=App.Vector()

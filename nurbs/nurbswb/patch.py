@@ -196,7 +196,7 @@ def runB():
     ''' testcase for a expression baes mountain profile '''
 
     import numpy as np
-    print ("WARNING:this is a testcase only"
+    print ("WARNING:this is a testcase only")
     # hard coded test data
     kl=App.ActiveDocument.subedge
     kr=App.ActiveDocument.subedge001

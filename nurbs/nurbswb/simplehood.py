@@ -147,8 +147,8 @@ def createShape(obj):
     obj.ViewObject.LineColor=(1.0,1.0,0.0)
     obj.ViewObject.ShapeColor=color
     
-    print ("Weights .."
-    print bs.getWeights()
+    print ("Weights ..")
+    print (bs.getWeights())
 
 
 

@@ -42,15 +42,15 @@ class _VP(ViewProvider):
         self.methodA(None)
 
     def methodA(self,obj):
-        print ("my Method A"
+        print ("my Method A")
         App.activeDocument().recompute()
 
     def methodB(self,obj):
-        print ("my method B"
+        print ("my method B")
         App.activeDocument().recompute()
 
     def methodC(self,obj):
-        print ("my method C"
+        print ("my method C")
         App.activeDocument().recompute()
 
     def unsetEdit(self,vobj,mode=0):
@@ -58,10 +58,10 @@ class _VP(ViewProvider):
 
 
     def doubleClicked(self,vobj):
-        print ("double clicked"
+        print ("double clicked")
         self.myedit(vobj.Object)
 
-        print ("Ende double clicked"
+        print ("Ende double clicked")
 
 
 def getNamedConstraint(sketch,name):
@@ -281,23 +281,23 @@ class FollowerSketch(FeaturePython):
 
 
         if prop=='Geometry' or prop=="force":
-            print ("Anpassen"
+            print ("Anpassen")
             try:
-                print obj.getPoint(0,1)
+                print (obj.getPoint(0,1))
             except:
-                print ("noch nix da"
+                print ("noch nix da")
 
                 return
             p=obj.getPoint(0,1)
             c=App.ActiveDocument.BSpline.Shape.Curve
             u=c.parameter(p)
-            print ("versuche zu setzen"
+            print ("versuche zu setzen")
 
             p2=c.value(u)
 
-            print p
-            print p2
-            print ("##"
+            print (p)
+            print (p2)
+            print ("##")
             obj.movePoint(0,1,p2)
             # constraints einschalten hier haRD CODED
             ax=getNamedConstraint(obj,"ax")
@@ -311,7 +311,7 @@ class FollowerSketch(FeaturePython):
             App.ActiveDocument.Sketch.setDriving(ax,False)
             App.ActiveDocument.Sketch.setDriving(ay,False)
             # auschcalten
-            print ("fertig"
+            print ("fertig")
 
 
 
@@ -386,13 +386,13 @@ class ArcSketch(FeaturePython):
                 p0=sk.getPoint(bg,2)
                 ps=sk.getPoint(ag,2)
             except:
-                print ("points not found"
+                print ("points not found")
                 return
 
             alpha=np.arccos((p2-ps).normalize().dot((p0-ps).normalize()))
             radius=(p2-ps).Length*np.tan(alpha*0.5)
 
-            print ("Richtung ", (p2-ps).normalize().dot((p0-ps).normalize())
+            print ("Richtung ", (p2-ps).normalize().dot((p0-ps).normalize()))
 
             vv=(p2-ps).normalize().cross((p0-ps).normalize())
 
@@ -460,7 +460,7 @@ def createLabel(obj,ref,ctext):
 
     l.CustomText = ctext
     l.Label=l.CustomText[0]
-    print l.Target[1][0]
+    print (l.Target[1][0])
 
     ##-----------------------
     #com=l.Target[0].Shape.CenterOfMass
@@ -470,14 +470,14 @@ def createLabel(obj,ref,ctext):
 
     l.CustomText = ctext
     l.Label=l.CustomText[0]
-    print l.Target[1][0]
+    print (l.Target[1][0])
 
     if l.Target[1][0].startswith("Edge") or l.Target[1][0].startswith("Fac") :
-        print ("a"
+        print ("a")
         pp=getattr(l.Target[0].Shape,l.Target[1][0]).CenterOfMass
         l.TargetPoint=getattr(l.Target[0].Shape,l.Target[1][0]).CenterOfMass
     else:
-        print ("b"
+        print ("b")
         pp=getattr(l.Target[0].Shape,l.Target[1][0]).Point
         l.TargetPoint=getattr(l.Target[0].Shape,l.Target[1][0]).Point
 

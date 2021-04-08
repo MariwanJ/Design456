@@ -21,7 +21,7 @@ def toggleShoeSketch():
     print ("toggle sketch constraints for " + sk.Label
     for i,c in enumerate(sk.Constraints):
         if c.Name.startswith('p') or c.Name.startswith('tang') or c.Name.startswith('Width'):
-            print c.Name
+            print (c.Name)
             try:
                 sk.toggleDriving(i)
         #        sk.setDriving(i,False)

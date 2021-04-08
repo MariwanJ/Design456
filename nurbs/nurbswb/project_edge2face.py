@@ -51,27 +51,27 @@ def OLDrunAll():
         for i,w  in enumerate(wires):
             if i==0: continue
             w2=wsort[-1]
-            print min(
+            print (min(
                 (w.Vertexes[0].Point-w2.Vertexes[0].Point).Length,
                 (w.Vertexes[1].Point-w2.Vertexes[0].Point).Length,
                 (w.Vertexes[0].Point-w2.Vertexes[1].Point).Length,
                 (w.Vertexes[1].Point-w2.Vertexes[1].Point).Length,
-                )
+                ))
             if (w.Vertexes[0].Point-w2.Vertexes[1].Point).Length< 0.1:
                 wsort += [w]
             elif (w.Vertexes[0].Point-w2.Vertexes[0].Point).Length< 0.1:
                 wsort += [w]
             elif (w.Vertexes[1].Point-w2.Vertexes[1].Point).Length< 0.1:
-                print ("gedreht"
+                print ("gedreht")
                 w.reverse()
                 wsort += [w]
             elif (w.Vertexes[1].Point-w2.Vertexes[0].Point).Length< 0.1:
-                print ("gedreht"
+                print ("gedreht")
                 w.reverse()
                 wsort += [w]
 
             else:
-                print ("Fehler"
+                print ("Fehler")
                 raise Exception("Gehrte")
 
 
@@ -109,7 +109,7 @@ def runAll():
 #                print p.Vertexes[0].Point
 #                print p.Vertexes[1].Point
 ##                Part.show(p)
-                print ("Diskret"
+                print ("Diskret")
                 pgs += p.Wires[0].discretize(200)
 #                Draft.makeWire(p.Wires[0].discretize(200))
 
@@ -130,27 +130,27 @@ def runAll():
         for i,w  in enumerate(wires):
             if i==0: continue
             w2=wsort[-1]
-            print min(
+            print (min(
                 (w.Vertexes[0].Point-w2.Vertexes[0].Point).Length,
                 (w.Vertexes[1].Point-w2.Vertexes[0].Point).Length,
                 (w.Vertexes[0].Point-w2.Vertexes[1].Point).Length,
                 (w.Vertexes[1].Point-w2.Vertexes[1].Point).Length,
-                )
+                ))
             if (w.Vertexes[0].Point-w2.Vertexes[1].Point).Length< 0.1:
                 wsort += [w]
             elif (w.Vertexes[0].Point-w2.Vertexes[0].Point).Length< 0.1:
                 wsort += [w]
             elif (w.Vertexes[1].Point-w2.Vertexes[1].Point).Length< 0.1:
-                print ("gedreht"
+                print ("gedreht")
                 w.reverse()
                 wsort += [w]
             elif (w.Vertexes[1].Point-w2.Vertexes[0].Point).Length< 0.1:
-                print ("gedreht"
+                print ("gedreht")
                 w.reverse()
                 wsort += [w]
 
             else:
-                print ("Fehler"
+                print ("Fehler")
                 raise Exception("Gehrte")
 
             w=Part.Wire(wsort)
@@ -184,8 +184,8 @@ def concatenateBSplines():
     wires=[]
     for s in Gui.Selection.getSelection():
         wires += [s.Points]
-        print wires
-        print s.Label
+        print (wires)
+        print (s.Label)
 
     concatenateWires(wires)
 
@@ -207,7 +207,7 @@ def concatenateWires(wires):
 
 
     if dista == (wires[0][0]-wires[1][0]).Length or  dista == (wires[0][0]-wires[1][-1]).Length:
-        print ("Drehe Start"
+        print ("Drehe Start")
         pts.reverse()
 
     wa=pts
@@ -219,19 +219,19 @@ def concatenateWires(wires):
                 )
         wb=w
         if dista == (wa[-1]-w[-1]).Length:
-            print ("Drehe"
+            print ("Drehe")
             wb.reverse()
 
         pts += wb
         wa = wb
 
-    print  (len(pts)
+    print  (len(pts))
 
     pts2=[]
     for i,p in enumerate(pts):
         if  (p-pts[i-1]).Length<0.001:
-            print ("Doppel",i
-            print (p-pts[i-1]).Length
+            print ("Doppel",i)
+            print ((p-pts[i-1]).Length)
         else:
             pts2 += [p]
 
@@ -261,7 +261,7 @@ def splitCurve():
     pxy=[App.Vector(p.x,p.y,0) for p in pts]
 
     for i in range(anz):
-        print (pts[i]-pts[i-1]).Length
+        print ((pts[i]-pts[i-1]).Length)
 
     len=round(w.Curve.length()+1)/anz
 

@@ -565,9 +565,9 @@ class Miki(object):
                             print ("nicht implementierter typ  Ax")
                             print ([v,cn])
                             print (l)
-                            print parent
+                            print (parent)
                             ex="parent."+l[4]+"(App."+str(v)+")"
-                            print ("*** "+ex
+                            print ("*** "+ex)
                         elif l[4]=='setValue':
                             parent.setValue(v)
                             continue
@@ -926,8 +926,8 @@ class _MyTabWidget(QtGui.QTabWidget):
         self.setMinimumSize(500, 800)
 
     def addWidget(self,w):
-        print ("addWidget----------------"
-        print ("count ",self.count()
+        print ("addWidget----------------")
+        print ("count ",self.count())
         self.addTab(w,self.tabname)
         self.show()
 

@@ -261,7 +261,7 @@ class EventFilter(QtCore.QObject):
                             return True
 
 
-                         if r in ['a','b','c']:
+                        if r in ['a','b','c']:
 
                                 print ("KEY pressed ----------------------",r)
 
@@ -761,9 +761,9 @@ def start():
             Gui.Selection.clearSelection()
 
             import nurbswb.isodraw
-            print fob,fob.Label
+            print (fob,fob.Label)
             [uv2x,uv2y,xy2u,xy2v]=nurbswb.isodraw.getmap(fob,fob.faceObject)
-            print [uv2x,uv2y,xy2u,xy2v]
+            print ([uv2x,uv2y,xy2u,xy2v])
             ef.uv2x=uv2x
             ef.uv2y=uv2y
             ef.xy2u=xy2u

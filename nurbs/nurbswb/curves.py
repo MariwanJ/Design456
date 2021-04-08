@@ -212,7 +212,7 @@ def dirs(obj,vn):
 #obj=App.ActiveDocument.MyStar
 #rc=dirs(obj,2)
 
-#print rc
+#print (rc)
 import time
 
 ## A (topological) 2D tree with special connecting methods to combine trees to larger tree
