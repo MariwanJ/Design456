@@ -1,4 +1,31 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
+# ***************************************************************************
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# * Modified and adapter to Desing456 by:                                  *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
+# **************************************************************************
+
+# -*- coding: utf-8 -*-
 #-------------------------------------------------
 #-- geodesics and patches
 #--
@@ -722,7 +749,7 @@ def updateGeodesic(fp):
             if v>vmax:v=vmax
 
             if u<umin or v<vmin or u>umax or v>vmax:
-                print ("qcancellation!"
+                print ("qcancellation!")
                 break
 
 
@@ -875,7 +902,7 @@ def updateGeodesic(fp):
 
 
 def updatePatch_old(fp):
-        print ("run update Patch"
+        print ("run update Patch")
 
         gridon=True
 
@@ -1103,7 +1130,7 @@ def updateCurvaturePath(fp,redirect,flip):
             if v>vmax:v=vmax
 
             if u<umin or v<vmin or u>umax or v>vmax:
-                print ("qcancellation!"
+                print ("qcancellation!")
                 break
             p=sf.value(u,v)
             
@@ -1235,7 +1262,7 @@ def updatePatch(fp):
     sf=gd.obj.Shape.Face1.Surface
 
     # bound box fuer rahmen
-    print fp.wire.Shape.BoundBox
+    print(fp.wire.Shape.BoundBox)
     bb=fp.wire.Shape.BoundBox
     l3=-bb.XMin
     if l3<0: l3=0
@@ -1263,7 +1290,7 @@ def updatePatch(fp):
     else: ws2=[fp.wire.Shape]
 
     print (ws)
-    print (ws)2
+    print (ws2)
     ress=[]
     for w in ws2:
         print ("loop",w,ress)
@@ -1301,8 +1328,8 @@ def updatePatch(fp):
 
         # berechne 3D Kurve ..
         pts=[]
-        print usvarr.shape
-        print ("A"
+        print (usvarr.shape)
+        print ("A")
         
         for up,vp in uvs:
             print (up,vp)
@@ -1336,7 +1363,7 @@ def updatePatch(fp):
 
 
             e1 = bs2d.toShape(t)
-            print  (len(pts2d)
+            print  (len(pts2d))
             print ("huhwu")
             return e1
         #----------------------
