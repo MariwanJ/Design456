@@ -1,4 +1,31 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
+# ***************************************************************************
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# * Modified and adapter to Desing456 by:                                  *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
+# **************************************************************************
+
+# -*- coding: utf-8 -*-
 '''
 #-------------------------------------------------
 #-- methods for drawing on faces 
@@ -87,7 +114,7 @@ def createShape(obj):
     [uv2x,uv2y,xy2u,xy2v]=[obj.mapobject.Proxy.uv2x,obj.mapobject.Proxy.uv2y,obj.mapobject.Proxy.xy2u,obj.mapobject.Proxy.xy2v]
 
     if xy2v==None:
-        print ("Kann umkehrung nicht berechnen xy2v nicht vorhanden"
+        print ("Kann umkehrung nicht berechnen xy2v nicht vorhanden")
         return
 
     # diese daten vom mapobjekt lesen #+#
@@ -554,7 +581,7 @@ def createGrid(mapobj,upmode=False):
     except: return Part.Shape()
     
     print ("createGrid for special faces")
-    print face
+    print (face)
     import numpy as np
 
     sf=face.Surface
@@ -615,7 +642,7 @@ def createGrid(mapobj,upmode=False):
     #su=bs.UPeriod()
     #sv=bs.VPeriod()
     
-    print ("hack DD suu asv"
+    print ("hack DD suu asv")
     su=face.ParameterRange[1]
     sv=face.ParameterRange[3]
 
@@ -663,10 +690,10 @@ def createGrid(mapobj,upmode=False):
     vc=obj.uCount
     uc=obj.vCount
 
-    print ("isodraw #ll"
+    print ("isodraw #ll")
     print (su,sv)
     print (uc,vc)
-    print face.ParameterRange
+    print (face.ParameterRange)
 
 
     ptsa=[]
@@ -713,7 +740,7 @@ def createGrid(mapobj,upmode=False):
 
     [uv2x,uv2y,xy2u,xy2v]=getmap(mapobj,obj.faceObject)
 
-    print ("hier 3D Methode  ccc..oo.............."
+    print ("hier 3D Methode  ccc..oo..............")
     if obj.mode=='curvature':
         [uv2x,uv2y,uv2z,xy2u,xy2v]=getmap3(mapobj,obj.faceObject)
     ptsa=[]
@@ -795,10 +822,8 @@ def createGrid(mapobj,upmode=False):
 
 
     if upmode:
-
-
         print ("Rahmen 3D",obj.uMin,obj.uMax,obj.vMin,obj.vMax)
-        print obj.faceObject.TypeId
+        print ( obj.faceObject.TypeId)
 
 #        try: sweep=obj.faceObject.TypeId=='Part::Sweep'
 #        except: sweep=True
@@ -1046,7 +1071,7 @@ class Drawgrid(PartFeature):
 
 
     def execute(proxy,obj):
-        print ("exe",obj
+        print ("exe",obj)
         if obj.faceObject != None:
             obj.Shape=createGrid(obj)
         if obj.backref !=None:
@@ -1074,7 +1099,7 @@ class Draw3Dgrid(PartFeature):
 
 
     def execute(proxy,obj):
-        print ("exe",obj
+        print ("exe",obj)
         if obj.drawgrid != None:
             obj.Shape=createGrid(obj.drawgrid,True)
         if obj.backref !=None:
@@ -1095,7 +1120,7 @@ class ViewProviderSL(ViewProvider):
             ws.hide()
 
     def onDelete(self, obj, subelements):
-        print ("on Delete Sahpelink"
+        print ("on Delete Sahpelink")
         print ("from", obj.Object.workspace,obj.Object.Label,obj.Object.Name)
         ws=WorkSpace(obj.Object.workspace)
         objs=ws.dok.findObjects()
@@ -1105,7 +1130,7 @@ class ViewProviderSL(ViewProvider):
             print (s,obj.Object.Name)
             if obj.Object.Label.startswith(s):
                 ws.dok.removeObject(jj.Name)
-                print ("gguutt"
+                print ("gguutt")
                 return True
 #        return False
         return(True)
@@ -1118,7 +1143,7 @@ class ViewProviderSL(ViewProvider):
 class ShapeLink(PartFeature):
 
     def __init__(self,obj,sobj,dokname):
-        print ("create shape link"
+        print ("create shape link")
         PartFeature.__init__(self,obj)
         obj.addProperty("App::PropertyLink","source","Base")
         obj.addProperty("App::PropertyBool","nurbs","Base")
@@ -1141,13 +1166,13 @@ class ShapeLink(PartFeature):
         print ("update shape",obj.source.Name,obj.workspace,obj.gridcount)
 
         tw=WorkSpace(obj.workspace)
-        print ("!!",tw
-        print tw.dok
+        print ("!!",tw)
+        print (tw.dok)
         target=tw.dok.getObject(obj.source.Name)
-        print target
+        print (target)
         if target==None:
             tw.addObject2(obj.source,obj.gridcount)
-        print target
+        print (target)
         if 1 or obj.nurbs:
             target.Shape=obj.source.Shape.toNurbs()
 
@@ -1184,7 +1209,7 @@ class ViewProviderWSL(ViewProvider):
             ws.hide()
 
     def onDelete(self, obj, subelements):
-        print ("on Delete"
+        print ("on Delete")
         App.closeDocument(obj.Object.workspace)
         #return False
         return(True)
@@ -1261,14 +1286,14 @@ class WorkSpace():
         mdiarea=mw.findChild(QtGui.QMdiArea)
 
         sws=mdiarea.subWindowList()
-        print ("windows ..."
+        print ("windows ...")
         for w2 in sws:
-            print str(w2.windowTitle())
+            print( str(w2.windowTitle()))
             s=str(w2.windowTitle())
             if s == self.name + '1 : 1[*]':
-                print ("gefundne"
+                print ("gefundne")
                 return w2
-        print (self.name + '1:1[*]'
+        print (self.name + '1:1[*]')
 
 
 
@@ -1278,7 +1303,7 @@ class WorkSpace():
 
 def createLink(obj,dokname="Linkdok"):
     ad=App.ActiveDocument
-    print ad.Name
+    print (ad.Name)
 
     lidok= WorkSpace(dokname)
     link=lidok.addObject2(obj)
@@ -1305,12 +1330,12 @@ def testF():
     try:obj.backref=link
     except: pass
 
-    print lidok.Name
+    print (lidok.Name)
     gad=Gui.getDocument(lidok.Name)
     lidok.recompute()
     Gui.SendMsgToActiveView("ViewSelection")
     Gui.SendMsgToActiveView("ViewFit")
-    print ad.Name
+    print (ad.Name)
     App.setActiveDocument(ad.Name)
     Gui.ActiveDocument=Gui.getDocument(ad.Name)
     return  link
@@ -1438,11 +1463,11 @@ def map3Dto2D():
         s=s0
         mapobj=base.mapobject
         face=mapobj.faceObject
-    print face.Label
-    print ("Run 3D to 2D"
+    print (face.Label)
+    print ("Run 3D to 2D")
 
     for wire in s:
-        print ("Wire ",wire
+        print ("Wire ",wire)
         [uv2x,uv2y,xy2u,xy2v]=getmap(mapobj,face)
 
 #        bs=face.Shape.Face1.Surface
@@ -1450,7 +1475,7 @@ def map3Dto2D():
         pts2=[]
         firstEdge=True
         for e in wire.Shape.Edges:
-            print ("Edge",e
+            print ("Edge",e)
             
             # auf 5 millimeter genau
             if mapobj!=None:
@@ -1473,13 +1498,13 @@ def map3Dto2D():
 #            
 #            
             App.ffg=face
-            print face
-            print face.Shape
-            print face.Shape.Faces
-            print face.Shape.Faces[0]
+            print (face)
+            print (face.Shape)
+            print (face.Shape.Faces)
+            print (face.Shape.Faces[0])
             face1=face.Shape.Faces[0]
-            print face1
-            print ("!!",face1.ParameterRange
+            print (face1)
+            print ("!!",face1.ParameterRange)
 
             sua=face1.ParameterRange[0]
             sva=face1.ParameterRange[2]
@@ -1527,7 +1552,7 @@ def map3Dto2D():
                 
                 
                 if bs.__class__.__name__=='Cylinder':
-                    print ("hack fuer zylinder schnell zeile 1413"
+                    print ("hack fuer zylinder schnell zeile 1413")
                     bs.Radius
                     #x *= 0.01 *0.2
                     x /= bs.Radius
@@ -1545,7 +1570,7 @@ def map3Dto2D():
                 # hack richgtung beim Schuh
                 p2=App.Vector(y,x,0)
 #                p2=App.Vector(y,x,0)
-                print ("p2",p2
+                print ("p2",p2)
                 pts2.append(p2)
         App.ptsa=pts2
         a=Draft.makeWire(pts2,closed=True)
@@ -1570,14 +1595,14 @@ def map2Dto3D():
     for w in s:
         f=createIsodrawFace()
         f.mapobject=moa
-        print moa.Label
+        print (moa.Label)
         f.face=moa.faceObject
         f.wire=w
         f.Label="map3D_for_"+w.Label+"_on_"+f.face.Label + "_by_" + moa.Label
         #color=(random.random(),random.random(),random.random())
         color=w.ViewObject.ShapeColor
-        print ("color",color
-        print w.Label
+        print ("color",color)
+        print (w.Label)
         w.ViewObject.ShapeColor=color
         w.ViewObject.LineColor=color
         App.activeDocument().recompute()
@@ -1604,11 +1629,11 @@ def map3Dgridto2Dgrid():
     if len(s0)==1:
         s=s0
 
-    print s0
+    print (s0)
 
     polcol=[]
     for wire in s:
-        print wire.Label
+        print (wire.Label)
         [uv2x,uv2y,xy2u,xy2v]=getmap(mapobj,face)
 
         # bs=face.Shape.Face1.Surface
@@ -1675,8 +1700,8 @@ def map3Dgridto2Dgrid():
                 try:
                     polcol += [Part.makePolygon(ptsb)]
                 except:
-                    print ("kann kein polygon bauen"
-                    print ptsb
+                    print ("kann kein polygon bauen")
+                    print( ptsb)
 
         #Draft.makeWire(pts2)
     Part.show(Part.Compound(polcol))
@@ -1707,15 +1732,15 @@ def getmap(mapobj,obj):
 #    sv=bs.VPeriod()
 
 
-    print ("hack B-BB su sv aa bb"
-    print face
-    print obj.Label
+    print ("hack B-BB su sv aa bb")
+    print (face)
+    print (obj.Label)
     print ("get map parameter Range ",face.ParameterRange)
-    print ("BS CLASS_______!!_______________",bs.__class__.__name__
-    print ("isodraw.py zele  1705"
+    print ("BS CLASS_______!!_______________",bs.__class__.__name__)
+    print ("isodraw.py zele  1705")
     
     if bs.__class__.__name__=='Cylinder':
-        print ("CYLINDER MODE!!"
+        print ("CYLINDER MODE!!")
 
         def m_uv2x(u,v):
             return bs.Radius*u
@@ -1735,7 +1760,7 @@ def getmap(mapobj,obj):
         return [m_uv2x,m_uv2y,m_xy2u,m_xy2v]
 
     if bs.__class__.__name__=='Cone':
-        print ("CONE MODE!!"
+        print ("CONE MODE!!")
 
         alpha,beta,hmin,hmax = face.ParameterRange
 
@@ -1909,7 +1934,7 @@ def getmap(mapobj,obj):
         print('Handling  error:', err)
         xy2v=None
         xy2u=None
-        print ("FEHLER BERECHNUNG bUMKEHRfunktionen"
+        print ("FEHLER BERECHNUNG bUMKEHRfunktionen")
 
 
     return [uv2x,uv2y,xy2u,xy2v]
@@ -1932,9 +1957,9 @@ def getmap(mapobj,obj):
 def getmap3(mapobj,obj,calcZ=None):
     ''' berechnet einen dritten wert für z'''
     
-    print ("berechne curvature gauss"
-    print mapobj.Label
-    print obj.Label
+    print ("berechne curvature gauss")
+    print (mapobj.Label)
+    print (obj.Label)
     
     def calcZ(face,u,v):
         bs=face.Surface
@@ -2007,7 +2032,7 @@ def getmap3(mapobj,obj,calcZ=None):
     #su=bs.UPeriod()
     #sv=bs.VPeriod()
 
-    print ("hack BB su sv aa bb XX"
+    print ("hack BB su sv aa bb XX")
 
     su=face.ParameterRange[1]
     sv=face.ParameterRange[3]
@@ -2154,7 +2179,7 @@ def getmap3(mapobj,obj,calcZ=None):
         print('Handling  error:', err)
         xy2v=None
         xy2u=None
-        print ("FEHLER BERECHNUNG bUMKEHRfunktionen"
+        print ("FEHLER BERECHNUNG bUMKEHRfunktionen")
 
 
     return [uv2x,uv2y,uv2z,xy2u,xy2v]
@@ -2186,7 +2211,7 @@ def testC():
     #wire=App.ActiveDocument.Shape001
     p=wire.Shape.Vertex1.Point
     p
-    print ("huu"
+    print ("huu")
     [uv2x,uv2y,xy2u,xy2v]=getmap(face)
 
     (u,v)=bs.parameter(p)
@@ -2202,7 +2227,7 @@ def testC():
     pt=bs.value(u,v)
 #    print pt
 #    print p
-    print p-pt
+    print (p-pt)
 
 def testD():
 #    kku2=np.array(App.kku).reshape(31,31,3)
@@ -2234,7 +2259,7 @@ def testE():
         pt=bs.value(u,v)
     #    print pt
     #    print p
-        print p-pt
+        print (p-pt)
         ptbb.append(pt)
 
     Draft.makeWire(ptbb)

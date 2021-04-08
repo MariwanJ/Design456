@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 # * You should have received a copy of the GNU Lesser General Public       *
 # * License along with this library; if not, If not, see                   *
 # * <http://www.gnu.org/licenses/>.                                        *
-# *                                                                        *
+# * Modified and adapter to Desing456 by:                                  *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
@@ -125,7 +125,7 @@ Gui.addCommand("Design456_Nurbs_2DDrawingGroup", Design456_Nurbs_2DDrawingGroup(
 class Design456_NURBSGroup:
     list = ["Design456_Nurbs_3DToolsGroup",
             "Design456_Nurbs_2DToolsGroup",
-            "Design456_Nurbs_3DDrawingGroup"
+            "Design456_Nurbs_3DDrawingGroup",
             "Design456_Nurbs_2DDrawingGroup",
             "Design456_Nurbs_Miscellaneous",
                        

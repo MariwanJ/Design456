@@ -1,4 +1,31 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
+# ***************************************************************************
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# * Modified and adapter to Desing456 by:                                  *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
+# **************************************************************************
+
+# -*- coding: utf-8 -*-
 #-------------------------------------------------
 #-- helmlet with bezier border
 #--
@@ -10,7 +37,7 @@
 
 import FreeCAD as App
 import FreeCADGui as Gui
-,Sketcher,Part
+import Sketcher,Part
 from say import *
 
 
@@ -59,7 +86,7 @@ class _VPH(ViewProvider):
 
     def methodC(self,obj):
         print ("my method C !!")
-        print obj
+        print (obj)
 
         App.activeDocument().recompute()
         run(obj)
@@ -119,7 +146,7 @@ class Helmet(FeaturePython):
 
 
     def attach(self,vobj):
-        print ("attach -------------------------------------"
+        print ("attach -------------------------------------")
         self.Object = vobj.Object
         self.obj2 = vobj.Object
 
@@ -359,7 +386,7 @@ def run(fp):
     yy2a=np.array(yy2)
     yy3a=yy2a.swapaxes(0,1)
 
-    print ("!!",Gui.ActiveDocument.getInEdit(),"!!"
+    print ("!!",Gui.ActiveDocument.getInEdit(),"!!")
 
     vp=Gui.ActiveDocument.getInEdit()
     if vp != None and vp.Object==fp:
