@@ -135,7 +135,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             self.addSeneNodes(linedraw)  # Add SoSeparator
             # Add SoSeparator as child to Switch
             self.addSoNodeToSoSwitch(self._widgetCoinNode)
-            self.addSoSwitch(lbl)
+            self._parent.addSoSwitch(lbl)
             # Add the switch to the SeneGraph
             self._parent.addSoSwitch(self._wdgsoSwitch)
 
