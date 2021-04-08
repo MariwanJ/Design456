@@ -538,7 +538,7 @@ def createPatternV3(obj=None,target=None,createPlanarPattern=False):
 def patternV3():
     '''call from WB Gui'''
     s=Gui.Selection.getSelection()
-    print s
+    print( s)
     obj=s[0]
 #    if len(s)>1:
 #        target=s[1]
