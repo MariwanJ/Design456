@@ -34,23 +34,20 @@ import Design456Init
 
 def draw_label(labelcolor=(0.0, 0.0, 0.0), labelfont='sans', size=14, trans=(0, 0, 0), text=''):
     global textNode
-    _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
-    _textNode.coinColor = coin.SoMaterial()
-    _textNode.binding = coin.SoMaterialBinding()
-    _textNode.binding.value = coin.SoMaterialBinding.PER_PART
-    _textNode.addChild(_textNode.binding)
-    _textNode.addChild(_textNode.coinColor)
-    _textNode.coinColor.rgb = labelcolor
-    _textNode.fontNode = coin.SoFont()
-    _textNode.transNode = coin.SoTransform()
-    _textNode.textNode = coin.SoText2()
-    _textNode.addChild(_textNode.fontNode)
-    _textNode.addChild(_textNode.transNode)
-    _textNode.addChild(_textNode.textNode)
-    _textNode.font = labelfont
-    _textNode.size = size
-    _textNode.trans = trans
-    _textNode.text = text
+    _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
+    font = coin.SoFont()
+    _text = coin.SoText2()
+    _text.string.setValue(text)
+    font.Name=labelfont
+    font.size=size
+    coinColor = coin.SoMaterial()
+    binding = coin.SoMaterialBinding()
+    binding.value = coin.SoMaterialBinding.PER_PART 
+    coinColor.rgb = labelcolor
+    transNode = coin.SoTransform()
+    _textNode.addChild(font)
+    _textNode.addChild(_text)
+    _textNode.addChild(transNode)
     return _textNode  # Return the created SoSeparator that contains the text
 
     """@property
