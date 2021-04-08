@@ -1141,7 +1141,7 @@ def main_test():
     Gui.SendMsgToActiveView("ViewFit")
 
 
-    print a
+    print (a)
     for r in a.Ribs:
         print( r.Label)
 
