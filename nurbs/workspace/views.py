@@ -64,14 +64,14 @@ class ViewProvider:
         self.Object=obj
 
     def onDelete(self, obj, subelements):
-        print ("on Delete Quadview"
-        print obj
-        print subelements
+        print ("on Delete Quadview")
+        print (obj)
+        print (subelements)
         obj.Object.Proxy.v.close()
         return True
 
     def onChanged(self, obj, prop):
-            print ("onchange",prop
+            print ("onchange",prop)
             if prop=="Visibility" and not obj.Visibility:
                 obj.Object.Proxy.v.close()
             if prop=="Visibility" and obj.Visibility:
@@ -90,17 +90,17 @@ class ViewProviderH2:
         self.Object=obj
 
     def onDelete(self, obj, subelements):
-        print ("on Delete Quadview"
-        print obj
-        print subelements
+        print ("on Delete Quadview")
+        print (obj)
+        print (subelements)
         obj.Object.Proxy.v.close()
         return True
 
     def onChanged(self, obj, prop):
             if obj==None: return
-            print ("onchange H2",prop
+            print ("onchange H2",prop)
             if prop=="Visibility" and not obj.Visibility:
-                print ("close it"
+                print ("close it")
                 try: 
                     _=obj.Object.Proxy.v  
                     obj.Object.Proxy.v.close()
@@ -197,7 +197,7 @@ class QuadView(PartFeature):
                 val=vals[ix]
                 marker = coin.SoSeparator()
                 for objx in objs:
-                    print ("run ",objx.Label
+                    print ("run ",objx.Label)
                     node= objx.ViewObject.RootNode
 
                     if fp.DisplayMode:
@@ -353,7 +353,7 @@ def updatencontent(viewer,objs,fp,clearSel=True,fit=True):
     v=viewer
     view=v.getViewer(0)
     rm=view.getSoRenderManager()
-    print ("######################"
+    print ("######################")
     rm.setCamera( coin.SoOrthographicCamera())
 
     marker = coin.SoSeparator()
@@ -362,7 +362,7 @@ def updatencontent(viewer,objs,fp,clearSel=True,fit=True):
         try: objgx=objx.Group
         except: objgx=[objx]
         for objx in objgx:
-            print ("run ",objx.Label
+            print ("run ",objx.Label)
             node= objx.ViewObject.RootNode
 
             if fp.A_DisplayMode==0:
@@ -528,13 +528,13 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
     v=viewer
     view=v.getViewer(0)
     rm=view.getSoRenderManager()
-    print ("######################"
+    print ("######################")
     rm.setCamera( coin.SoOrthographicCamera())
 
     marker = coin.SoSeparator()
 
     for objx in objs+[obja]:
-        print ("run 0",objx.Label
+        print ("run 0",objx.Label)
         node= objx.ViewObject.RootNode
 
         if fp.A_DisplayMode==0:
@@ -561,7 +561,7 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
     view=v.getViewer(1)
     marker = coin.SoSeparator()
     for objx in objs +[objb]:
-        print ("run 1",objx.Label
+        print ("run 1",objx.Label)
         node= objx.ViewObject.RootNode
 
         if fp.B_DisplayMode==0:
@@ -584,7 +584,7 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
     view=v.getViewer(2)
     marker = coin.SoSeparator()
     for objx in objs + [objb]:
-        print ("run 2",objx.Label
+        print ("run 2",objx.Label)
         node= objx.ViewObject.RootNode
 
         if fp.C_DisplayMode==0:
@@ -607,7 +607,7 @@ def updatencontenth2(viewer,obja,objb,objs,fp,clearSel=True,fit=True):
     view=v.getViewer(3)
     marker = coin.SoSeparator()
     for objx in objs +[obja]:
-        print ("run 3",objx.Label
+        print ("run 3",objx.Label)
         node= objx.ViewObject.RootNode
 
         if fp.D_DisplayMode==0:
@@ -720,7 +720,7 @@ class ViewH2(PartFeature):
                 val=vals[ix]
                 marker = coin.SoSeparator()
                 for objx in objs:
-                    print ("run ",objx.Label
+                    print ("run ",objx.Label)
                     node= objx.ViewObject.RootNode
 
                     if fp.DisplayMode:
@@ -836,13 +836,13 @@ def resizeWindows(v,a):
 
     sws=mdiarea.subWindowList()
 
-    print title
-    print ("windows ..."
+    print( title)
+    print ("windows ...")
     for i,w2 in enumerate(sws):
-        print ("XX--!"+str(w2.windowTitle())
+        print ("XX--!"+str(w2.windowTitle()))
 
     for i,w2 in enumerate(sws):
-        print ("!!"+str(w2.windowTitle())
+        print ("!!"+str(w2.windowTitle()))
         if  w2.windowTitle()==title:
 
 
@@ -858,9 +858,9 @@ def resizeWindows(v,a):
             spa=sp.children()[1]
             spa.setSizes([10,0])
 
-            print ("update content h2 -- start "
+            print ("update content h2 -- start ")
             updatencontenth2(v,a.obja,a.objb,a.objs,a,False)
-            print ("update content h2 -- done"
+            print ("update content h2 -- done")
             #return
 
 
@@ -955,7 +955,7 @@ def mkshadow(sgg,lis):
     for i in range(len(cs)):
         sotype=coin.SoType.fromName("SoShadowStyle")
         inst=sotype.createInstance()
-        print inst.getTypeId().getName() # => ShadowStyle
+        print (inst.getTypeId().getName() )# => ShadowStyle)
         inst.style=3
         ss.insertChild(inst,0)
         ss.addChild(cs[ll-1-i])
@@ -964,10 +964,10 @@ def mkshadow(sgg,lis):
     Gui.SendMsgToActiveView("ViewFit")
 
 
-    print ("children von sg"
+    print ("children von sg")
     ssc=sg.getChildren()
     for c in ssc:
-        print c
+        print (c)
 
 
 
@@ -1061,7 +1061,7 @@ class DarkRoom(PartFeature):
                 val=vals[ix]
                 marker = coin.SoSeparator()
                 for objx in objs+[fp.obja]:
-                    print ("run ",objx.Label
+                    print ("run ",objx.Label)
                     node= objx.ViewObject.RootNode
 
                     if fp.DisplayMode:
@@ -1128,9 +1128,9 @@ class DarkRoom(PartFeature):
 
 
                 sg.addChild(marker)
-                print ("makeshadow ..........!"
+                print ("makeshadow ..........!")
                 mkshadow(marker,lis)
-                print ("------------------done-----------------"
+                print ("------------------done-----------------")
 
 
                 for ob in fp.Group:
@@ -1249,9 +1249,9 @@ class ViewProviderDR:
         self.Object=obj
 
     def onDelete(self, obj, subelements):
-        print ("on Delete Quadview"
-        print obj
-        print subelements
+        print ("on Delete Quadview")
+        print (obj)
+        print (subelements)
         obj.Object.Proxy.v.close()
         rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
         atr="HeadlightIntensity"
@@ -1264,7 +1264,7 @@ class ViewProviderDR:
 
     def onChanged(self, obj, prop):
             if obj==None: return
-            print ("onchange H2",prop
+            print ("onchange H2",prop)
             if prop=="Visibility" and not obj.Visibility:
                 rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
                 atr="HeadlightIntensity"
@@ -1274,8 +1274,8 @@ class ViewProviderDR:
                 rGrp.SetUnsigned(atr,1437270015)
 
 
-                print ("close it"
-                print obj.Object.Proxy.v 
+                print ("close it")
+                print (obj.Object.Proxy.v )
                 App.v=obj.Object.Proxy.v 
                 obj.Object.Proxy.v.close()
                 try: 
@@ -1434,12 +1434,12 @@ class ViewProviderL:
         self.Object=obj
 
     def onDelete(self, obj, subelements):
-        print ("on Delete "
-        print obj
+        print ("on Delete ")
+        print (obj)
         return True
 
     def onChanged(self, obj, prop):
-            print ("onchange",prop
+            print ("onchange",prop)
             obj.Object.touch()
             App.ActiveDocument.recompute()
 
@@ -1457,7 +1457,7 @@ class Light(PartFeature):
         obj.addProperty("App::PropertyBool","on",).on=True
 
     def execute(self,fp):
-        print ("execute done"
+        print ("execute done")
 
 
 def createlight(name="SpotLight"):

@@ -8,7 +8,7 @@
 #-------------------------------------------------
 
 import Part
-import FreeCAD AS App
+import FreeCAD as App
 
 import numpy as np
 import random
