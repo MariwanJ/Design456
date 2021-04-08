@@ -84,11 +84,11 @@ def setEndpoints(w,show=None):
 def lockEndpoints(w,mode=0):
     sk=w.obj.Object
     if mode==1:
-        print ("toggle 1"
+        print ("toggle 1")
         sk.toggleDriving(13)
         sk.toggleDriving(14)
     if mode==2:
-        print ("toggle 2"
+        print ("toggle 2")
         sk.toggleDriving(15)
         sk.toggleDriving(16)
     sk.solve()
@@ -112,7 +112,7 @@ def runSelection(w,mode=None):
                 c=sk.addConstraint(Sketcher.Constraint('Block',el-1)) 
                 sk.renameConstraint(c, u'block edge ' + str(el) )
                 if sk.solve()!=0:
-                    print ("kann block nicht ausfuehren"
+                    print ("kann block nicht ausfuehren")
                     sk.delConstraint(c)
                     sk.solve()
 
@@ -229,7 +229,7 @@ def ComboViewShowWidget(widget, tabMode=True):
     tab.addTab(widget, widget.tabname)
     tab.setCurrentIndex(2)
 
-    print ("ComboViewShowWidget done."
+    print ("ComboViewShowWidget done.")
     widget.tab = tab
     return widget
 

@@ -287,7 +287,7 @@ class MyApp(object):
 
     def setFocusMode(self):
         rc=self.root.ids['focusmode'].currentText()
-        print ("set Focus Mode is ", rc
+        print ("set Focus Mode is ", rc)
 
 
     def setPole1(self):
@@ -311,9 +311,9 @@ class MyApp(object):
         self.obj.Object.Proxy.showSelection(self.pole1,self.pole2)
 
     def setActionMode(self):
-        print ("set Action Mode"
+        print ("set Action Mode")
         rc=self.root.ids['actionmode'].currentText()
-        print rc
+        print (rc)
         if rc=="change Height relative":
             if not self.root.ids['relativemode'].isChecked():
                 self.root.ids['relativemode'].click()
@@ -336,7 +336,7 @@ class MyApp(object):
 
     def run(self):
         rc=self.root.ids['actionmode'].currentText()
-        print rc
+        print (rc)
         if rc=='Add ULine':
             v=self.root.ids['vd'].value()
             self.obj.Object.Proxy.addUline(v,0.5)
@@ -401,7 +401,7 @@ class MyApp(object):
             return
 
 
-        print ("not implemented"
+        print ("not implemented")
 
 
 
@@ -409,7 +409,7 @@ class MyApp(object):
     def getselectionPoint(self):
         ''' get pole from gui pole number selection '''
         s=Gui.Selection.getSelection()
-        print s[0].Label
+        print (s[0].Label)
         se=Gui.Selection.getSelectionEx()
         ss=se[0]
 
@@ -430,7 +430,7 @@ class MyApp(object):
     def getselection(self):
         ''' get pole from gui pole grid selection '''
         s=Gui.Selection.getSelection()
-        print s[0].Label
+        print (s[0].Label)
         se=Gui.Selection.getSelectionEx()
         ss=se[0]
 
@@ -468,7 +468,7 @@ class MyApp(object):
             self.setPole1()
         else:
             self.setPole2()
-        print ("okay"
+        print ("okay")
         try:
             polnr=int(sn[2][4:])
             print ("edge number 3 ", polnr)
@@ -508,15 +508,15 @@ class MyApp(object):
 
     def relativeMode(self):
         print("RELATVE MODE")
-        print (self.root.ids['relativemode'].isChecked()
+        print (self.root.ids['relativemode'].isChecked())
         if self.root.ids['relativemode'].isChecked():
             self.obj.Object.Proxy.gBase =  self.obj.Object.Proxy.g.copy()
 #            try: self.root.ids['updateRelative'].show()
 #            except: pass
 #        else:
 #            self.root.ids['updateRelative'].hide()
-        print (self.obj.Object.Proxy.gBase.shape
-        print ("set  relative"
+        print (self.obj.Object.Proxy.gBase.shape)
+        print ("set  relative")
 
     def calculatePoleGrid(self):
         self.obj.Object.Proxy.calculatePoleGrid=self.root.ids['polegrid'].isChecked()
@@ -568,9 +568,9 @@ class MyApp(object):
                 # don't setDataToNurbs during a locked transaction
                 if self.lock: return
             except: pass
-        print ("setDataToNurbs2"
+        print ("setDataToNurbs2")
         if not self.root.ids['setmode'].isChecked():
-            print ("setze setmode"
+            print ("setze setmode")
             self.root.ids['setmode'].click()
             self.setDataToNurbs()
             self.obj.Object.Proxy.showSelection(self.pole1,self.pole2)
@@ -583,9 +583,9 @@ class MyApp(object):
             # don't setDataToNurbs during a locked transaction
             if self.lock: return
         except: pass
-        print ("setDataToNurbs2"
+        print ("setDataToNurbs2")
         if not self.root.ids['setmode'].isChecked():
-            print ("setze setmode"
+            print ("setze setmode")
             self.root.ids['setmode'].click()
             self.setDataToNurbs(True)
 
@@ -639,7 +639,7 @@ class MyApp(object):
                 if  self.root.ids['setmode'].isChecked():
                     print ("AKTUALISIERE",u,v)
                     if  self.root.ids['relativemode'].isChecked():
-                        print ("!! set relative values ..."
+                        print ("!! set relative values ...")
                         self.obj.Object.Proxy.setpointRelativeZ(u,v,h,w)
                         if updateRelative:
                             self.obj.Object.Proxy.setpointRelativeZ(u,v,h,w,updateRelative)
@@ -650,7 +650,7 @@ class MyApp(object):
                         #    self.obj.Object.Proxy.setpointRelativeZ(u,v,h,w)
 
                     else:
-                        print ("set absolute "
+                        print ("set absolute ")
                         self.obj.Object.Proxy.setpointZ(u,v,h,w)
                 else:
                     self.getInfo()
@@ -662,7 +662,7 @@ class MyApp(object):
                     self.root.ids['hd'].setValue(h)
 
                     self.root.ids['h'].setText(str(h))
-                    print ("hole weight von ",((v)*uc+u,"uc,vc",uc,vc)
+                    print ("hole weight von ",((v)*uc+u,"uc,vc",uc,vc))
         #            print (self.obj.Object.weights
                     w=self.obj.Object.weights[(v)*uc+u]
                     self.root.ids['wd'].setValue(w)
@@ -677,7 +677,7 @@ class MyApp(object):
 
 
     def getDataFromNurbs(self):
-        print ("start getDataFromNurbs"
+        print ("start getDataFromNurbs")
         self.lock=True
 
         g=self.obj.Object.Proxy.g
@@ -733,7 +733,7 @@ class MyApp(object):
 
         self.root.ids['setmode'].setChecked(False)
         self.lock=False
-        print ("getDataFromNurbs fertig"
+        print ("getDataFromNurbs fertig")
 
 
     def modHeight(self):
@@ -756,25 +756,25 @@ class MyApp(object):
     def getInfo(self):
         return
 
-        print ("get obj"
-        print (self.root
-        print (self.obj
-        print (self.obj.Object.Label
+        print ("get obj")
+        print (self.root)
+        print (self.obj)
+        print (self.obj.Object.Label)
 
-        print ("shape .."
-        print (self.obj.Object.Proxy.g.shape
+        print ("shape ..")
+        print (self.obj.Object.Proxy.g.shape)
 
 
     def vFinished(self):
         self.lock=False
-        print ("vFinished"
+        print ("vFinished")
 
     def processVcombo(self):
         if self.lock: return
         self.lock=True
         vc=self.root.ids['vcombo']
         rc=self.root.ids['vcombo'].currentText()
-        print ("set vcombo Mode is ", rc
+        print ("set vcombo Mode is ", rc)
         vc.clear()
         start=2
         ende=self.obj.Object.nNodes_v
@@ -790,7 +790,7 @@ class MyApp(object):
         self.lock=True
         uc=self.root.ids['ucombo']
         rc=self.root.ids['ucombo'].currentText()
-        print ("set ucombo Mode is ", rc
+        print ("set ucombo Mode is ", rc)
         uc.clear()
         start=2
         ende=self.obj.Object.nNodes_u
@@ -807,7 +807,7 @@ class MyApp(object):
         uc=self.root.ids['hcombo']
         rc=self.root.ids['hcombo'].currentText()
         if rc=='': rc='0'
-        print ("set hcombo Mode is ", rc
+        print ("set hcombo Mode is ", rc)
         uc.clear()
         start=2
         ende=self.obj.Object.nNodes_u
@@ -818,7 +818,7 @@ class MyApp(object):
         uc.setCurrentIndex(int(rc)-start)
         self.root.ids['h'].setText(rc)
         self.root.ids['hd'].setValue(int(rc))
-        print ("rufe modHeight"
+        print ("rufe modHeight")
         self.modHeight()
         self.update(True)
         print ("done")
@@ -830,7 +830,7 @@ class MyApp(object):
         self.lock=True
         uc=self.root.ids['wcombo']
         rc=self.root.ids['wcombo'].currentText()
-        print ("set wcombo Mode is ", rc
+        print ("set wcombo Mode is ", rc)
         uc.clear()
         start=1
         ende=20+1

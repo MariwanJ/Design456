@@ -38,7 +38,7 @@ import Mesh,Points
 import time
 
 def check(pp,mode,updateNurbs=False,widget=None):
-    print ("check B ",mode
+    print ("check B ",mode)
     if mode=='marker':
         createMarker(pp)
         return
@@ -98,7 +98,7 @@ def check(pp,mode,updateNurbs=False,widget=None):
                     ptskarr[vi-r:vi+r+1,ui-r:ui+r+1,2] = 0
 
                 ptsk=[App.Vector(p) for p in ptskarr.reshape((uc+1)*(vc+1),3)]
-                print ptskarr[:,:,2].max()
+                print (ptskarr[:,:,2].max())
 
             else:
                 if mode=='up':
@@ -112,11 +112,11 @@ def check(pp,mode,updateNurbs=False,widget=None):
         mm.Mesh=Mesh.Mesh((ptsk,faces))
 
     b=time.time()
-    print ("update time ",b-a
+    print ("update time ",b-a)
 
 
     if updateNurbs:
-            print ("upd Nurbs"
+            print ("upd Nurbs")
 #            nu=App.ActiveDocument.getObject("Nurbs")
             nu.ViewObject.show()
 #            mm=App.ActiveDocument.getObject("Mesh")
@@ -142,10 +142,10 @@ def check(pp,mode,updateNurbs=False,widget=None):
             nu.Shape=bs.toShape()
 
             c=time.time()
-            print ("nurbs time",c-b
+            print ("nurbs time",c-b)
 
 def createMarker(self):
-    print ("create Marker"
+    print ("create Marker")
     import nurbswb
     import nurbswb.geodesic_lines
     reload(nurbswb.geodesic_lines)
@@ -277,17 +277,17 @@ class EventFilter(QtCore.QObject):
 #                        self.update()
 
                     elif e.key() == QtCore.Qt.Key_Right :
-                        print ("Go right"
+                        print ("Go right")
                         return True
                     elif e.key() == QtCore.Qt.Key_Left :
-                        print ("Go Left"
+                        print ("Go Left")
                         return True
                     elif e.key() == QtCore.Qt.Key_Up :
 #                        self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
-                        print ("go up"
+                        print ("go up")
                         return True
                     elif e.key() == QtCore.Qt.Key_Down :
-                        print ("Go Down"
+                        print ("Go Down")
                         return True
                     elif e.key() == QtCore.Qt.Key_PageUp :
                         self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
@@ -302,7 +302,7 @@ class EventFilter(QtCore.QObject):
                         print ("Enter Action-----------------------------"
                         # enter creates a new point ...
                         # vf=App.Vector(self.x,self.y,self.z)
-                        print (self.pos
+                        print (self.pos)
                         if self.mode=='marker':
                             createMarker(self)
                         return True
@@ -451,7 +451,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 
     bs=sf
 
-    print ("hacks SSetze uv, sv auf 1"
+    print ("hacks SSetze uv, sv auf 1")
     su=face.ParameterRange[1]
     sv=face.ParameterRange[3]
 
@@ -511,7 +511,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 
             #wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
             #wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-            print ("HHHHHHHHHHHHHHHHH"
+            print ("HHHHHHHHHHHHHHHHH")
 
 ##     new wire for next drawing
 
@@ -520,7 +520,7 @@ def drawcurve(wire,face,facepos=App.Vector()):
 def _drawring(name,wires,dirs,face,facepos=App.Vector()):
     '''draw a curve on a face and create the two subfaces defined by the curve'''
 
-    print ("drawring"
+    print ("drawring")
 
     es=[]
     for wireA in wires:
@@ -559,11 +559,11 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
         e1_1 = bs2d.toShape(t)
 
 
-        print ("huhuhu22"
+        print ("huhuhu22")
 
         sp=App.ActiveDocument.getObject(wireA.Label+"_ASpline")
-        print  sp
-        print wireA.Label
+        print  (sp)
+        print(wireA.Label)
         if sp==None:
             sp=App.ActiveDocument.addObject("Part::Spline",wireA.Label+"_Spline")
         sp.Shape=e1_1
@@ -587,7 +587,7 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
             su=bs.UPeriod()
             sv=bs.VPeriod()
 
-            print ("hacks etze uv, sv auf 1"
+            print ("hacks etze uv, sv auf 1")
             su=face.ParameterRange[1]
             sv=face.ParameterRange[3]
 
@@ -652,7 +652,7 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
 
                 #wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
                 #wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-                print ("RRRRRRRRRRRRRRRRR"
+                print ("RRRRRRRRRRRRRRRRR")
 
 
 
@@ -1216,10 +1216,10 @@ class MyApp(object):
         check(App.Vector(),'no',updateNurbs=True)
 
     def update(self):
-        print ("update"
-        print (self.dialog.ef.mode
-        print (self.dialog.ef.h
-        print (self.dialog.ef.r
+        print ("update")
+        print (self.dialog.ef.mode)
+        print (self.dialog.ef.h)
+        print (self.dialog.ef.r)
 
 
 

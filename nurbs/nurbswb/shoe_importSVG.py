@@ -404,7 +404,7 @@ class svgHandler(xml.sax.ContentHandler):
                 self.symbols = {}
                 self.currentsymbol = None
                 self.obj=obj
-                print ("svgHandler",obj
+                print ("svgHandler",obj)
 
                 global Part
                 import Part
@@ -544,8 +544,8 @@ class svgHandler(xml.sax.ContentHandler):
                         App.Console.PrintMessage('name: %s\n'%pathname)
 
                 # processing paths
-                print ("filter spezielle pfade ......................"
-                print (self.obj.ignore
+                print ("filter spezielle pfade ......................")
+                print (self.obj.ignore)
                 if pathname!=None:
                     for s in self.obj.ignore:
                         print (pathname,name,s)
@@ -902,7 +902,7 @@ class svgHandler(xml.sax.ContentHandler):
                 # processing lines
 
                 if name == "line":
-                        print ("####################################"
+                        print ("####################################")
                         if not pathname: pathname = 'Line'
                         p1 = Vector(data['x1'],-data['y1'],0)
                         p2 = Vector(data['x2'],-data['y2'],0)
@@ -1400,7 +1400,7 @@ class ViewProvider:
 from PySide import QtCore
 
 def someOtherFunction():
-    print ("AAAA someother function"
+    print ("AAAA someother function")
 
 
 class SVGLink(PartFeature):
@@ -1430,7 +1430,7 @@ class SVGLink(PartFeature):
     def someOtherFunction(self):
         try: self.Object.Label
         except: 
-            print ("someOtherFunction not ready"
+            print ("someOtherFunction not ready")
             return
 
         print ("observe",self.Object.Label,self.Object.filename)
@@ -1468,7 +1468,7 @@ class SVGLink(PartFeature):
 
 
 def create_svglink():
-    print ("erzeuge svg datei link"
+    print ("erzeuge svg datei link")
     b=App.ActiveDocument.addObject("Part::FeaturePython","My_SVG_Link")
     SVGLink(b)
     b.prefix="A_"
@@ -1492,9 +1492,9 @@ def export_svg():
     fn="/tmp/export.svg"
     import time
     fn='/tmp/export_'+str(time.time())+".svg"
-    print fn
+    print( fn)
 
-    print __objs__
+    print( __objs__)
     importSVG.export(__objs__,fn)
 
     del __objs__

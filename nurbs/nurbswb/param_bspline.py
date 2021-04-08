@@ -59,7 +59,7 @@ class MyBSpline(PartFeature):
                 Tangents=[]
                 Tangentflags=[]
                 tt=fp.Tangents
-                print tt
+                print (tt)
                 for i,p in enumerate(pts):
                     try:
                 #        print  str(tt[i])
@@ -71,7 +71,7 @@ class MyBSpline(PartFeature):
                         Tangents.append(v)
                         Tangentflags.append(str(fp.TangentFlags[i]) == '1')
                     except:
-                        print ("Fehler Tangenten Vektor ", i+1
+                        print ("Fehler Tangenten Vektor ", i+1)
                         Tangents.append(App.Vector(1,0,0))
                         Tangentflags.append(0)
                 try:
@@ -142,7 +142,7 @@ def runtest():
     FreeCADGui.SendMsgToActiveView("ViewFit")
 
     
-print ("bspline 2 loaded"
+print ("bspline 2 loaded")
 
 if __name__=='__main__':
 

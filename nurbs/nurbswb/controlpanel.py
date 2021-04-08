@@ -39,7 +39,7 @@ def createListWidget(obj=None, propname=None):
         listWidget.addItem(item)
 
     def f(*arg):
-        print("itemsele cahgned"
+        print("itemsele cahgned")
         print(arg, listWidget)
         print (listWidget.selectedItems())
         for item in listWidget.selectedItems():
@@ -403,7 +403,7 @@ class ControlPanel(PartFeature):
             # ref holen
             pp=obj.getPropertyByName(propname)
             ref=obj.getPropertyByName(propname+"Source")
-            print("Source", ref.Label
+            print("Source", ref.Label)
             aa=ref.getPropertyByName(propname)
             print("value", aa)
             setattr(obj, propname, aa)
@@ -488,7 +488,7 @@ class ControlPanel(PartFeature):
         try: self.dialog.hide()
         except: print("no dialog to hide")
         try: self.dialog=dialog(obj); print("dialog created")
-        except: print("cannot create dialog"
+        except: print("cannot create dialog")
 
 # create generic panel without data,
 #

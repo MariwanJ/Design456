@@ -48,7 +48,7 @@ class ViewProvider:
         self.Object=obj
 
     def onDelete(self, obj, subelements):
-        print ("on Delete "
+        print ("on Delete ")
         return True
 
     def onChanged(self, obj, prop):

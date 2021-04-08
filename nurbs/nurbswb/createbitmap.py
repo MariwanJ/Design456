@@ -76,7 +76,7 @@ def qrcodeFace(message='qr',degree=2,showPoints=False,window=None):
 
     if du==2 or du==3:
         cu=int(len(pts)**0.5)
-        print cu
+        print (cu)
 
         pts=np.array(pts)
         pts1=pts.reshape(cu,cu,3)

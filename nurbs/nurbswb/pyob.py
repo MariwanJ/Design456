@@ -130,7 +130,7 @@ class ViewProvider:
 
     def recompute(self):
         obj=self.Object
-        print ("Recompute ",obj.Label
+        print ("Recompute ",obj.Label)
         obj.Proxy.myOnChanged(obj,"_recompute_")
 
     def setupContextMenu(self, obj, menu):
@@ -145,7 +145,7 @@ class ViewProvider:
 
     def setEdit(self,vobj,mode=0):
         #self.createDialog()
-        print ("huhu"
+        print ("huhu")
         try:
             self.edit()
 #            print ("ha 2"
@@ -187,12 +187,12 @@ class ViewProvider:
 def _Sketch(FeaturePython):
 
     def __init__(self,obj):
-        print ("huhu"
+        print ("huhu")
         FeaturePython.__init__(self, obj)
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
-        print ("!!",obj.Label
+        print ("!!",obj.Label)
 
 def _Sheet(FeaturePython):
 

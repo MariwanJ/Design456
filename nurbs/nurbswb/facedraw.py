@@ -292,7 +292,7 @@ class EventFilter(QtCore.QObject):
                             return True
 
 
-                         if r in ['a','b','c']:
+                        if r in ['a','b','c']:
 
                                 print ("KEY pressed ----------------------",r)
 

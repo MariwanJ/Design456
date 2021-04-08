@@ -101,18 +101,19 @@ def sayexc(mess=''):
     l = len(inspect.stack())
     print(inspect.stack()[1][3], " @ ", inspect.stack()
           [1][1], " line: ", inspect.stack()[1][2])
-    if l > 3: () print inspect.stack()[2][3], " @ ", inspect.stack()[2][1], " line: ", inspect.stack()[2][2])
+    if l > 3:
+        print(inspect.stack()[2][3], " @ ", inspect.stack()
+              [2][1], " line: ", inspect.stack()[2][2])
     if l > 3 and inspect.stack()[3][3] != '<module>':
         print(inspect.stack()[3][1], " line ", inspect.stack()[3][2])
         print(inspect.stack()[3][3])
 
 
-
-def showdialog(title = "Fehler",
-               text = "Schau in den ReportView fuer mehr Details", detail = None):
+def showdialog(title="Fehler",
+               text="Schau in den ReportView fuer mehr Details", detail=None):
     '''display a window with: title,text and detail'''
 
-    msg=QtGui.QMessageBox()
+    msg = QtGui.QMessageBox()
     msg.setIcon(QtGui.QMessageBox.Warning)
     msg.setText(text)
     msg.setWindowTitle(title)
@@ -121,22 +122,23 @@ def showdialog(title = "Fehler",
     msg.exec_()
 
 
-def sayexc2(title = 'Fehler', mess = ''):
+def sayexc2(title='Fehler', mess=''):
     '''display exception trace in Console
     and pop up a window with title, message'''
 
-    exc_type, exc_value, exc_traceback=sys.exc_info()
-    ttt=repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
-    lls=eval(ttt)
-    laa=len(lls)
-    la2=lls[(laa - 3):]
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    ttt = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
+    lls = eval(ttt)
+    laa = len(lls)
+    la2 = lls[(laa - 3):]
     App.Console.PrintError(mess + "\n" + "-->  ".join(la2))
-    showdialog(title, text = mess, detail = "--> ".join(la2))
+    showdialog(title, text=mess, detail="--> ".join(la2))
 
-    l=len(inspect.stack())
+    l = len(inspect.stack())
     print(inspect.stack()[1][3], " @ ", inspect.stack()
           [1][1], " line: ", inspect.stack()[1][2])
-    if l > 3: ( print inspect.stack()[2][3], " @ ", inspect.stack()[2][1], " line: ",inspect.stack()[2][2])
+    if l > 3:
+        print (inspect.stack()[2][3], " @ ", inspect.stack()[2][1], " line: ", inspect.stack()[2][2])
     if l > 4 and inspect.stack()[3][3] != '<module>':
         print(inspect.stack()[3][1], " line ", inspect.stack()[2][2])
         print(inspect.stack()[3][3])

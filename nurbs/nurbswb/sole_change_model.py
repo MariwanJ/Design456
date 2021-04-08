@@ -11,7 +11,7 @@ def srun(w):
     import nurbswb.sole_models
     reload(nurbswb.sole_models)
     lm=nurbswb.sole_models.listModels(silent=True)
-    print lm[w.m.currentIndex()]
+    print (lm[w.m.currentIndex()])
     model=lm[w.m.currentIndex()][0]
 
     reload(nurbswb.sole)
