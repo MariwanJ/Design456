@@ -1,3 +1,6 @@
 {
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "cSpell.words": [
+        "NURBS"
+    ]
 }

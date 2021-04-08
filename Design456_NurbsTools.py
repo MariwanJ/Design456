@@ -1,0 +1,151 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
+# ***************************************************************************
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# *                                                                        *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
+# **************************************************************************
+
+import os
+import sys
+import FreeCAD as App
+import FreeCADGui as Gui
+import Design456Init
+
+
+class Design456_Nurbs_3DToolsGroup:
+        
+    """Design456 Nurbs 3D Tools"""
+
+    def GetCommands(self):
+        """3D Modifying Tools."""
+        return ("",
+                
+
+                )
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap':  NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Design456_Nurbs_3DToolsGroup", Design456_Nurbs_3DToolsGroup())
+
+class Design456_Nurbs_2DToolsGroup:
+
+    """Design456 Nurbs 2D Tools"""
+
+    def GetCommands(self):
+        """3D Modifying Tools."""
+        return ("",
+                
+
+                )
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap':  NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Design456_Nurbs_2DToolsGroup", Design456_Nurbs_2DToolsGroup())
+
+
+class Design456_Nurbs_3DDrawingGroup:
+        
+    """Design456 Nurbs 3D Drawing"""
+
+    def GetCommands(self):
+        """3D Modifying Tools."""
+        return ("",
+                
+
+                )
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap':  NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Design456_Nurbs_3DDrawingGroup", Design456_Nurbs_3DDrawingGroup())
+
+class Design456_Nurbs_2DDrawingGroup:
+
+    """Design456 Part 2D Drawing"""
+
+    def GetCommands(self):
+        """3D Modifying Tools."""
+        return ("",
+                
+
+                )
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap':  NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Design456_Nurbs_2DDrawingGroup", Design456_Nurbs_2DDrawingGroup())
+
+
+class Design456_NURBSGroup:
+    list = ["Design456_Nurbs_3DToolsGroup",
+            "Design456_Nurbs_2DToolsGroup",
+            "Design456_Nurbs_3DDrawingGroup"
+            "Design456_Nurbs_2DDrawingGroup",
+            "Design456_Nurbs_Miscellaneous",
+                       
+            ]
+
+    """Design456 Nurbs Toolbar"""
+
+    def GetResources(self):
+        return{
+            'Pixmap':    NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+            'MenuText': 'Nurbs',
+            'ToolTip':  'Nurbs'
+        }
+
+    def IsActive(self):
+        """Return True when this command should be available."""
+        if Gui.activeDocument():
+            return True
+        else:
+            return False
+        
+    def Activated(self):
+        self.appendToolbar("Design456_Nurbs", self.list)
