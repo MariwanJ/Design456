@@ -47,7 +47,7 @@ StepSize
 
 
 faces=Gui.Selection.getSelection()
-print faces
+print (faces)
 
  
 import nurbswb.say
@@ -64,9 +64,9 @@ class Point(object):
         self.fs += [f]
 
     def printFaces(self):
-        print (self.point
+        print (self.point)
         for f in self.fs:
-            print f.Label," ",
+            print (f.Label," ",)
         print
 
 def editcross(poles,u,v):
@@ -112,7 +112,7 @@ def editcross(poles,u,v):
                         v0=App.Vector(poles[uu,vv])
                         comps += [Part.makePolygon([v0+10*ve,v0+50*ve])]
                     except:
-                        print ("problem editcross polygon"
+                        print ("problem editcross polygon")
 
     return comps
 
@@ -160,12 +160,12 @@ class Multiface(object):
             obj.ViewObject.Transparency=70
             obj.ViewObject.ShapeColor=(1.0,0.3,0.2)
             for ff in self.faces:
-                print ff.Label
+                print (ff.Label)
                 ff.ViewObject.hide()
                 comp += ff.Shape.Faces
             obj.Shape=Part.Compound(comp)
         else:
-            print ("!!!!!!!!!!!!###" #,obj.Shape.Faces
+            print ("!!!!!!!!!!!!###") #,obj.Shape.Faces
 #            print App.ActiveDocument.tmp_multiFace.Shape.Faces
             for ff in obj.Shape.Faces:
                 comp += [ff]
@@ -173,7 +173,7 @@ class Multiface(object):
         self.faceobj=obj
         self.comp=comp
 #        print comp
-        print ("helper created"
+        print ("helper created")
 
 
     def getPoints(self):
@@ -191,17 +191,17 @@ class Multiface(object):
         self.points=points
 
     def findPoint(self,vec):
-        print ("findpoint ",vec
+        print ("findpoint ",vec)
         try: 
             t=tuple(vec)
             pp=self.points[t]
             pp.printFaces()
         except:
-            print ("nicht gefunden"
+            print ("nicht gefunden")
         for i,p in enumerate(self.points):
             print (i,(vec-App.Vector(p)).Length)
             if (vec-App.Vector(p)).Length<0.1 :
-                print ("gefunden ",i
+                print ("gefunden ",i)
                 return App.Vector(p)
 
     def movePoint(self,vec,mov,scanonly=False,params=None):
@@ -288,7 +288,7 @@ class Multiface(object):
     #                    print ("nachbarn ",pps
                         # nachbaren mitnehmen
                         
-                        print ("tangent rotations !!!"
+                        print ("tangent rotations !!!")
                         turot=params.root.ids['turot'].value()
                         tvrot=params.root.ids['tvrot'].value()
                         
@@ -328,7 +328,7 @@ class Multiface(object):
 #                    print ("Time step ",time.time()-ta
                 except:
                 #else:
-                    print ("Problem bei ",sfi
+                    print ("Problem bei ",sfi)
                     nurbswb.say.sayexc("sfi-problem")
                     comp += [self.comp[sfi]]
 
@@ -363,23 +363,23 @@ class Multiface(object):
             self.comp=comp
 
 
-            print ("Time compB  ",time.time()-ta
+            print ("Time compB  ",time.time()-ta)
 
             if 0:
                 ta=time.time()
                 obj=App.ActiveDocument.getObject(self.nameF)
                 for c in comp:
                     Part.show(c)
-                print ("Time compC  ",time.time()-ta
+                print ("Time compC  ",time.time()-ta)
 
 
     # neue version ohne suchen
     def XmovePoint(self,vec,mov,scanonly=False,params=None,useselections=False):
             points=self.points
-            print ("Move points...XXX....."
+            print ("Move points...XXX.....")
 #            print ("suche ", vec
 
-            print ("useselections ",useselections
+            print ("useselections ",useselections)
             
             arc=50-random.random()*100
             arc=0
@@ -489,7 +489,7 @@ class Multiface(object):
     #                    print ("Time step ",time.time()-ta
                     except:
                     #else:
-                        print ("Problem bei ",sfi
+                        print ("Problem bei ",sfi)
                         nurbswb.say.sayexc("sfi-problem")
                         comp += [self.comp[sfi]]
 
@@ -500,8 +500,8 @@ class Multiface(object):
                     pts += [App.Vector(p) for p in ptsa]
 
             else:
-                print ("useselections"
-                print (self.selection
+                print ("useselections")
+                print (self.selection)
             #--------------------------------------------
                 for (sfi,ui,vi,p) in self.selection:
                         sf=self.comp[sfi].Surface
@@ -590,14 +590,14 @@ class Multiface(object):
 #            self.comp=comp
 
 
-            print ("Time compB  ",time.time()-ta
+            print ("Time compB  ",time.time()-ta)
 
             if 0:
                 ta=time.time()
                 obj=App.ActiveDocument.getObject(self.nameF)
                 for c in comp:
                     Part.show(c)
-                print ("Time compC  ",time.time()-ta
+                print ("Time compC  ",time.time()-ta)
 
 
     def update(self,params,force):
@@ -623,7 +623,7 @@ class Multiface(object):
 
             ps=App.Vector()
             for s in self.selection:
-                print s
+                print (s)
                 [ci,ui,vi]=s[0:3]
                 pp=comp[ci].Surface.getPoles()
                 p=pp[ui][vi]
@@ -634,22 +634,22 @@ class Multiface(object):
 
 
 
-        print ("SELECTION LOOP"
+        print ("SELECTION LOOP")
         for sel in self.selection:
             si,ui,vi,p=sel
-            print si
-            print comp[si]
+            print( si)
+            print (comp[si])
             poles=np.array(comp[si].Surface.getPoles())
-            print poles[ui,vi]
+            print (poles[ui,vi])
             base=App.Vector(poles[ui,vi])
-            print p
-            print ("------------------"
+            print (p)
+            print ("------------------")
         
             sf=comp[si].Surface
             print ("position",ui,vi)
 
-            print sf.getUKnots()
-            print sf.getVKnots()
+            print (sf.getUKnots())
+            print (sf.getVKnots())
             
 
             pps=[]
@@ -669,7 +669,7 @@ class Multiface(object):
                 vectn=t1*params.root.ids['udial'].value()*params.root.ids['scale'].value()+\
                                 t2*params.root.ids['vdial'].value()*params.root.ids['scale'].value()+\
                                 n*params.root.ids['ndial'].value()*params.root.ids['scale'].value()
-                print ("NORMAL/TAN", vectn
+                print ("NORMAL/TAN", vectn)
             except:
                 vectn=App.Vector()
 
@@ -694,10 +694,10 @@ class Multiface(object):
                 vrot=App.Rotation(n,-tvrot)
 
             except:
-                print ("KEINE NORMALE"
+                print ("KEINE NORMALE")
                 n=None
 
-            print ("center of mass", params.root.ids['centerofmass'].isChecked()
+            print ("center of mass", params.root.ids['centerofmass'].isChecked())
 
             if params.root.ids['centerofmass'].isChecked():
 
@@ -705,8 +705,8 @@ class Multiface(object):
                 for (u,v) in pps:
                     vv=App.Vector(poles[u,v]-base)
                     vv=rot.multVec(vv)
-                    print ("scalfactor val", params.root.ids['scale'].value()
-                    print ("scalfactor", params.root.ids['scale'].value()*0.1
+                    print ("scalfactor val", params.root.ids['scale'].value())
+                    print ("scalfactor", params.root.ids['scale'].value()*0.1)
                     vv *= params.root.ids['scale'].value()*0.1
                     poles[u,v] =base+vv+mov
 
@@ -752,10 +752,10 @@ class Multiface(object):
         obj=App.ActiveDocument.getObject(self.nameF)
         obj.Shape=Part.Compound(comp)
         if force:
-            print ("force"
+            print ("force")
             self.comp=comp
         else:
-            print ("no force"
+            print ("no force")
 
         # alle poles ausrechnen
         pts=[]
@@ -849,7 +849,7 @@ def flattenRegion(selections):
         App.ActiveDocument.BeGrid002.Source=App.ActiveDocument.ActiveObject
 
         poles2=np.array(bs2.getPoles())
-        print poles2.shape
+        print (poles2.shape)
         
         #return bs2
         poles[ua:ub+1,va:vb+1]=poles2
@@ -879,7 +879,7 @@ def flattenRegion(selections):
 
 
     bs=App.ActiveDocument.BePlane.Shape.Face1.Surface
-    print selections
+    print (selections)
 
     ua=selections[0][1]
     va=selections[0][2]
@@ -1255,10 +1255,10 @@ def SurfaceEditor():
 
 
         def centerofmass(self):
-            print ("display and use center of mass"
+            print ("display and use center of mass")
             ps=App.Vector()
             for s in self.multiface.selection:
-                print s
+                print (s)
                 [ci,ui,vi]=s[0:3]
                 pp=self.multiface.comp[ci].Surface.getPoles()
                 p=pp[ui][vi]
@@ -1288,8 +1288,8 @@ def SurfaceEditor():
 
 
         def textprocessor(self):
-            print ("TEXTPROZESSOR"
-            print ("ux:",self.root.ids['ux'].text()
+            print ("TEXTPROZESSOR")
+            print ("ux:",self.root.ids['ux'].text())
 
 #        def textprocessor2(self):
 #            print ("TEXTPROZESSOR 2"
@@ -1297,8 +1297,8 @@ def SurfaceEditor():
 
         def textprocessor3(self):
             '''command line execution after pressing enter in the command line '''
-            print ("TEXTPROZESSOR 3"
-            print ("ux:",self.root.ids['ux'].text()
+            print ("TEXTPROZESSOR 3")
+            print ("ux:",self.root.ids['ux'].text())
             # anylize the text
             w=self.root.ids['ux'].text()
             # print w.split()
@@ -1331,24 +1331,24 @@ def SurfaceEditor():
                     }
 
             mode=self.root.ids['mode'].currentText()
-            print ("mode ",mode
+            print ("mode ",mode)
             for c in cmds:
-                print c.split()
+                print (c.split())
                 sp=c.split()
                 if len(sp)==3:
                     [cmd,val1,val2]=sp
                     if cmd=='seladd':
-                        print ("select add ring"
+                        print ("select add ring")
                         val1=int(val1)
                         val2=int(val2)
                         self.multiface.selection += [[0,3*val1,3*val2,None]]
-                        print (self.multiface.selection
+                        print (self.multiface.selection)
                         self.update()
 
                 if len(sp)==2:
                     [cmd,val]=sp
                     val=float(val)
-                    print val
+                    print (val)
                     try:
                         if cmd=='s':val *= 10.
                         print ("scale command ------------",cmd,val)
@@ -1356,20 +1356,20 @@ def SurfaceEditor():
                         self.update()
 
                     except:
-                        print ("kann kommndo nicht ausfuehren"
+                        print ("kann kommndo nicht ausfuehren")
                     
                     if cmd=='selu':
-                        print ("select u ring"
+                        print ("select u ring")
                         self.multiface.selection=[]
                         val=int(val)
                         pp=self.multiface.comp[0].Surface.NbVPoles/3
                         
                         for v in range(pp+1):
                             self.multiface.selection += [[0,3*val,3*v,None]]
-                        print (self.multiface.selection
+                        print (self.multiface.selection)
                         self.update()
                     if cmd=='selv':
-                        print ("select v ring"
+                        print ("select v ring")
                         self.multiface.selection=[]
                         val=int(val)
                         pp=self.multiface.comp[0].Surface.NbUPoles/3
@@ -1378,8 +1378,8 @@ def SurfaceEditor():
                         self.update()
 
                 if len(sp)==0:
-                    print ("Hide mode .........."
-                    print (self.last
+                    print ("Hide mode ..........")
+                    print (self.last)
                     if self.last !='hide':
                         App.ActiveDocument.BeGrid.ViewObject.Visibility= not App.ActiveDocument.BeGrid.ViewObject.Visibility
                         self.last='hide'
@@ -1427,18 +1427,18 @@ def SurfaceEditor():
 
 
         def showbegrid(self):
-            print ("showgrid"
+            print ("showgrid")
             App.ActiveDocument.BeGrid.ViewObject.Visibility= not App.ActiveDocument.BeGrid.ViewObject.Visibility
 
 
         def showmap(self):
-            print ("showmap"
+            print ("showmap")
             App.ActiveDocument.MAP.ViewObject.Visibility= not App.ActiveDocument.MAP.ViewObject.Visibility
 
 
         def flattenregion(self):
             for s in self.multiface.selection:
-                print s
+                print (s)
 
             flattenRegion(self.multiface.selection)
 
@@ -1497,7 +1497,7 @@ def SurfaceEditor():
             self.close()
 
         def run(self):
-            print ("run"
+            print ("run")
             edit(
                 self.root.ids['udial'].value(),
                 self.root.ids['vdial'].value(),
@@ -1508,7 +1508,7 @@ def SurfaceEditor():
 
 
         def relativeMode(self):
-            print ("relative mode called"
+            print ("relative mode called")
             self.update()
 
         def xyz_apply(self,save=True):
@@ -1521,10 +1521,10 @@ def SurfaceEditor():
                         self.root.ids['zdial'].value()*self.root.ids['scale'].value()
                         )
             App.activeDocument().recompute()
-            print ("Time C ",time.time()-st
+            print ("Time C ",time.time()-st)
 
         def initData(self):
-            print ("init data a"
+            print ("init data a")
             m=Multiface()
             m.getPoints()
             self.multiface=m
@@ -1547,12 +1547,12 @@ def SurfaceEditor():
             self.multiface.compe=[]
             self.multiface.selection=[]
             for vt in selps:
-                print vt 
+                print (vt) 
                 vt -= App.ActiveDocument.tmp_poles.Placement.Base
                 self.multiface.movePoint(vt,App.Vector(0,0,2000),True,params=self)
-            print ("SELECTIONS"
+            print ("SELECTIONS")
             for s in self.multiface.selection:
-                print s
+                print (s)
             App.activeDocument().recompute()
             App.ActiveDocument.getObject(self.multiface.nameE).ViewObject.show()
 
@@ -1564,15 +1564,15 @@ def SurfaceEditor():
             if hasattr(self,'multiface'):
                 self.multiface.update(params=self,force=False)
                 App.activeDocument().recompute()
-                print  (len(self.multiface.selection)
-                print ("update ",time.time()-ta
+                print  (len(self.multiface.selection))
+                print ("update ",time.time()-ta)
 
         def apply(self):
             ta=time.time()
             self.multiface.update(params=self,force=True)
             App.activeDocument().recompute()
-            print  (len(self.multiface.selection)
-            print ("update ",time.time()-ta
+            print  (len(self.multiface.selection))
+            print ("update ",time.time()-ta)
             App.ActiveDocument.getObject(self.multiface.nameE).ViewObject.hide()
             App.activeDocument().recompute()
 
@@ -1581,17 +1581,17 @@ def SurfaceEditor():
         def xyz_update(self):
             ta=time.time()
             
-            print  (len(self.multiface.selection)
+            print  (len(self.multiface.selection))
             selps=[App.Vector(p[3]) for p in self.multiface.selection]
             sels=self.multiface.selection
             self.multiface.selection=[]
             self.multiface.compe=[]
             for vt in selps:
-                print ("X"
+                print ("X")
                 self.multiface.movePoint(vt,App.Vector(0,0,2000),True,params=self,useselections=True)
             App.activeDocument().recompute()
-            print  (len(self.multiface.selection)
-            print ("update ",time.time()-ta
+            print  (len(self.multiface.selection))
+            print ("update ",time.time()-ta)
 
 
         def addSelection(self):
@@ -1600,13 +1600,13 @@ def SurfaceEditor():
             #self.multiface.compe=[]
             pres=self.multiface.selection
             for vt in selps:
-                print vt 
+                print (vt) 
                 vt -= App.ActiveDocument.tmp_poles.Placement.Base
                 self.multiface.movePoint(vt,App.Vector(0,0,2000),True)
             # self.multiface.selection += pres
-            print ("SELECTIONS"
+            print ("SELECTIONS")
             for s in self.multiface.selection:
-                print s
+                print( s)
             
             self.update()
             App.activeDocument().recompute()
@@ -1617,9 +1617,9 @@ def SurfaceEditor():
 
 
         def xyz_apply(self):
-            print ("SELECTIONS pre"    
+            print ("SELECTIONS pre")    
             for s in self.multiface.selection:
-                print s
+                print (s)
             selps=[App.Vector(p[3]) for p in self.multiface.selection]
 #            for (s,u,v,p) in self.multiface.selection:
 #                pp=self.multiface.comp[s].Surface.getPoles()
@@ -1631,19 +1631,19 @@ def SurfaceEditor():
         #        vt -= App.ActiveDocument.tmp_poles.Placement.Base
                 self.multiface.movePoint(vt,App.Vector(0,0,1500),False,params=self)
 
-            print ("SELECTIONS post"    
+            print ("SELECTIONS post")    
             for s in self.multiface.selection:
-                print s
+                print (s)
 
             App.ActiveDocument.getObject(self.multiface.nameE).ViewObject.hide()
             App.activeDocument().recompute()
 
 
         def merge(self):
-            print ("SELECTIONS"
+            print ("SELECTIONS")
 
             for s in self.multiface.selection:
-                print s
+                print (s)
 
             comp=[c for c in self.multiface.comp]
             compe=self.multiface.compe
@@ -1656,12 +1656,12 @@ def SurfaceEditor():
 
                 sia,uia,via,p=sa
                 polesa=np.array(comp[sia].Surface.getPoles())
-                print polesa[uia,via]
+                print (polesa[uia,via])
                 ma=polesa[uia,via]
 
                 sib,uib,vib,p=sb
                 polesb=np.array(comp[sib].Surface.getPoles())
-                print polesb[uib,vib]
+                print (polesb[uib,vib])
                 mb=polesb[uib,vib]
 
                 #merge point
@@ -1684,7 +1684,7 @@ def SurfaceEditor():
                 vmab=min(sf.NbVPoles-1,vib+1)
 
                 movb= mm-mb
-                print ("move b",movb
+                print ("move b",movb)
 
                 print ("Bereich a",umia,umaa,vmia,vmaa)
                 pps=[]
@@ -1695,7 +1695,7 @@ def SurfaceEditor():
 #                            vv=rot.multVec(vv)
                     polesa[u,v] +=  mova 
                     print (u,v)
-                print ("result a",polesa[uia,via]
+                print ("result a",polesa[uia,via])
 
                 sf=comp[sib].Surface
                 bs=Part.BSplineSurface()
@@ -1712,30 +1712,30 @@ def SurfaceEditor():
                     ptsa = np.array(ptsa).reshape((sf.NbUPoles/3+1)*(sf.NbVPoles/3+1),3)
                     pts += [App.Vector(p) for p in ptsa]
 
-                print ("Xresult a",polesa[uia,via]
+                print ("Xresult a",polesa[uia,via])
                 if sib==sia:
                     polesb=polesa
                 else:
                     polesb=np.array(comp[sib].Surface.getPoles())
-                print ("result ab",polesb[uia,via]
+                print ("result ab",polesb[uia,via])
 
                 print ("Bereich b" ,umib,umab,vmib,vmab)
                 pps=[]
                 pps += [(uk,vk) for uk in range(umib,umab+1) for vk in range(vmib,vmab+1)]
-                print ("ha----------"
+                print ("ha----------")
                 for (u,v) in pps:
 #                            rot=App.Rotation(arc,0,0)
 #                            vv=App.Vector(poles[u,v]-base)
 #                            vv=rot.multVec(vv)
                     polesb[u,v] +=  movb 
                     print (u,v)
-                    print ("result abb",polesb[uia,via]
-                print ("hu-------------------"
+                    print ("result abb",polesb[uia,via])
+                print ("hu-------------------")
 
-                print ("result _b",polesb[uib,vib]
+                print ("result _b",polesb[uib,vib])
                 print (uib,vib)
-                print ("result aa",polesa[uia,via]
-                print ("result a(b)",polesb[uia,via]
+                print ("result aa",polesa[uia,via])
+                print ("result a(b)",polesb[uia,via])
                 print (uia,via)
                 print 
                 
@@ -1746,7 +1746,7 @@ def SurfaceEditor():
                         mm=polesb[uia,via]
                         if via>vib: via,vib=vib,via
                         for v in range(via,vib+1):
-                                print ("XX"
+                                print ("XX")
                                 polesb[uia,v]=mm 
                                 polesb[uia-1,v]=polesb[uia-1,via]
                                 polesb[uia+1,v]=polesb[uia+1,via]
@@ -1755,7 +1755,7 @@ def SurfaceEditor():
                         mm=polesb[uia,via]
                         if uia>uib: uia,uib=uib,uia
                         for u in range(uia,uib+1):
-                                print ("YYY"
+                                print ("YYY")
                                 polesb[u,via]=mm 
                                 polesb[u,via-1]=polesb[uia,via-1]
                                 polesb[u,via+1]=polesb[uia,via+1]
@@ -1797,8 +1797,8 @@ def SurfaceEditor():
 
             obj2=App.ActiveDocument.getObject(self.multiface.nameP)
             pm=obj2.Placement
-            print ("Poles placement -------"
-            print pm
+            print ("Poles placement -------")
+            print (pm)
             
             comp2=[Part.Vertex(App.Vector(p)) for p in pts]
             obj2.Shape=Part.Compound(comp2)

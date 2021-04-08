@@ -92,9 +92,9 @@ def runA(model=None):
     try: 
         try:
             [ss]=FreeCADGui.Selection.getSelection()
-            print ("Selection",ss.Label
+            print ("Selection",ss.Label)
             if ss.__class__.__name__ !='Sheet':
-                print ("not a spreadsheet"
+                print ("not a spreadsheet")
                 raise Exception("selection is not a spreadsheet")
         except:
             ss=App.ActiveDocument.Spreadsheet
@@ -135,19 +135,19 @@ def runA(model=None):
     highe=[0]*7
 
     if model!=None:
-        print ("load model -------------------------"
-        print model
+        print ("load model -------------------------")
+        print (model)
         LL=model.LL
         LS=model.LS
         div12=model.div12
         tt=np.array(model.tt)
 
-        print ("Fehler dubug ..."
+        print ("Fehler dubug ...")
         App._debug_LL=LL
         App._debug_tt=tt
-        print LL
-        print tt[0,:,0]
-        print ("End debug"
+        print (LL)
+        print (tt[0,:,0])
+        print ("End debug")
 
         tt[0,:,0] += LL
 
@@ -166,14 +166,14 @@ def runA(model=None):
         npa2ssa(np.array(tt[0]).swapaxes(0,1),ss,2,19)
         npa2ssa(np.array(tf[0]).swapaxes(0,1),ss,2,24)
         npa2ssa(np.array(higha).reshape(1,13),ss,2,9)
-        print np.array(weia).shape
-        print np.array(weib).shape
+        print (np.array(weia).shape)
+        print (np.array(weib).shape)
         npa2ssa(np.array(weia).reshape(1,13),ss,2,14)
         npa2ssa(np.array(weib).reshape(1,13),ss,2,15)
         npa2ssa(np.array(div12).reshape(1,12),ss,2,10)
 
     else:
-        print (" load from spreadsheet---------------------"
+        print (" load from spreadsheet---------------------")
         LL=244.0
         LS=LL+30
         div12=[round(LL/11*i,1) for i in range(12)]
@@ -512,7 +512,7 @@ def createheel():
         Gui.SendMsgToActiveView("ViewFit")
 
 
-        print ("okay"
+        print ("okay")
 
 
 ## create sole and infrastructure models

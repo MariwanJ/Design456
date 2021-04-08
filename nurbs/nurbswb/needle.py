@@ -41,7 +41,7 @@ def Myarray2NurbsD3(arr,label="MyWall",degree=3,obj=None):
         mv=[2] +[1]*(NbVPoles-2) +[2]
 
     if  NbVPoles == 2:
-        print ("KKKK"
+        print ("KKKK")
         kv=[0,1]
         mv=[2,2]
         vdegree=1
@@ -54,8 +54,8 @@ def Myarray2NurbsD3(arr,label="MyWall",degree=3,obj=None):
         # bug 
         ku=[1.0/(NbUPoles)*i for i in range(NbUPoles+1)]
         mu=[1]*(NbUPoles+1)
-        print  (len(ps)
-        print sum(mu)
+        print  (len(ps))
+        print (sum(mu))
 
 
 
@@ -209,7 +209,7 @@ def myrot(v,twister):
     p.Base=v
     rc=p2.multiply(p)
 #    print v
-#    print rc.Base
+#    print (rc).Base
     return rc.Base
 
 
@@ -457,8 +457,8 @@ class Needle(PartFeature):
         ViewProvider(obj.ViewObject)
 
     def onDocumentRestored(self, fp):
-        print ("onDocumentRestored "
-        print fp.Label
+        print ("onDocumentRestored ")
+        print (fp.Label)
         self.Object=fp
 
 
@@ -496,7 +496,7 @@ class Needle(PartFeature):
             curve=cs.getPoles()
             cl=len(curve)
             npa2ssa(curve,ss,2,3)
-            print ("update curve",curve
+            print ("update curve",curve)
         else:
             cl=int(ss.get('B1'))
             curve=ssa2npa(ss,2,3,4,3+cl-1)
@@ -510,7 +510,7 @@ class Needle(PartFeature):
             bb=cs.getPoles()
             bl=len(bb)
             npa2ssa(bb,ss,7,3)
-            print ("update backbone",bb
+            print ("update backbone",bb)
 
         else:
             bl=int(ss.get('G1'))
@@ -530,15 +530,15 @@ class Needle(PartFeature):
         pa=bbc.LastParameter
         ps=bbc.FirstParameter
 
-        print ("-----------------------------------------------"
+        print ("-----------------------------------------------")
         for n in range(len(bb)):
             v=ps +(pa-ps)*n/(len(bb)-1)
             print ("!!",n,v)
-            print bbc.tangent(v)
+            print (bbc.tangent(v))
             t=bbc.tangent(v)[0]
             p=bbc.value(v)
             
-            print t
+            print (t)
             zarc=np.arctan2(t.y,t.x)
             zarc *=180.0/np.pi
             zarc=0
@@ -546,14 +546,14 @@ class Needle(PartFeature):
             harc=np.arcsin(t.z)
             harc *=180.0/np.pi
 
-            print twister[n]
+            print (twister[n])
             # twister[n]=[0,0,harc]
             
-            print twister[n]
-        print ("---------------------------------------ccccccccc--------"
-        print  (len(twister)
-        print twister
-        print ("huhu"
+            print (twister[n])
+        print ("---------------------------------------ccccccccc--------")
+        print  (len(twister))
+        print (twister)
+        print ("huhu")
         #'''
 
 
@@ -672,16 +672,16 @@ class Needle(PartFeature):
             try:
                 App.activeDocument()().recompute()
             except:
-                print ("recompute jack "
+                print ("recompute jack ")
                 dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
                 App.getDocument(dokname).recompute()
                 pass
 
     def getExampleModel(self,model):
-        print ("getExampleModel"
-        print model
+        print ("getExampleModel")
+        print( model)
         m=model()
-        print model().curve
+        print (model().curve)
         self.updateSS(m.curve,m.bb,m.sc,m.twister)
 
     def Model(self):
@@ -719,22 +719,22 @@ class Needle(PartFeature):
         self.table=table
 
     def clicked(self,index):
-        print ("Clicked",index
+        print ("Clicked",index)
         self.dumpix(index)
         print (getdata(index))
 
     def entered(self,index):
-        print ("Entered"
+        print ("Entered")
         self.dumpix(index)
 
     def pressed(self,index):
         import nurbswb.needle_cmds
         reload(nurbswb.needle_cmds)
         nurbswb.needle_cmds.pressed(index,App.activeDocument().MyNeedle)
-        print ("Pressed"
+        print ("Pressed")
 
     def changed(self,index):
-        print ("Changed"
+        print ("Changed")
         self.dumpix(index)
 
     def dumpix(self,index): 
@@ -768,13 +768,13 @@ class Needle(PartFeature):
 
 def importCurves(obj):
     ss=obj.Spreadsheet
-    print ss.Label
+    print(ss.Label)
     if obj.ribtemplateSource != None and not obj.externSourcesOff:
         cs=obj.ribtemplateSource.Shape.Edge1.Curve
         curve=cs.getPoles()
         cl=len(curve)
         npa2ssa(curve,ss,2,3)
-        print ("update curve",curve
+        print ("update curve",curve)
 
 
     if obj.backboneSource != None and not obj.externSourcesOff:
@@ -782,7 +782,7 @@ def importCurves(obj):
         bb=cs.getPoles()
         bl=len(bb)
         npa2ssa(bb,ss,7,3)
-        print ("update backbone",bb
+        print ("update backbone",bb)
 
 def createNeedle(label="MyNeedle"):
     a=App.activeDocument().addObject("Part::FeaturePython",label)
@@ -1032,7 +1032,7 @@ if  __name__=='__main__':
 
 
         Gui.SendMsgToActiveView("ViewFit")
-        print ("fertig"
+        print ("fertig")
          
 
 

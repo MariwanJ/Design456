@@ -126,10 +126,10 @@ class NurbsTrafo(nurbswb.pyob.FeaturePython):
                 y=np.array(poles)
                 poles2=np.concatenate([y[k:],y[:k]])
 
-            print poles2
+            print (poles2)
             App.poles2=poles
-            print ku
-            print kv
+            print (ku)
+            print (kv)
 
             bs2=Part.BSplineSurface()
             bs2.buildFromPolesMultsKnots(poles2,

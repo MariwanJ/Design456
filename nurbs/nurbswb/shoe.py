@@ -30,14 +30,14 @@ print ( __dir__)
 ##\cond
 def Myarray2Poly(arr,bb):
 
-    print ("Polygon Variante"
+    print ("Polygon Variante")
 
     pst=np.array(arr)
     try: NbVPoles,NbUPoles,_t1 =pst.shape
     except: return (Part.Shape(),Part.Shape())
 
     comp=[]
-    print pst.shape
+    print (pst.shape)
     for i,pps in enumerate(pst):
         if i == 0: continue 
 
@@ -106,7 +106,7 @@ def createBS(arr):
 
 
     if  NbVPoles == 2:
-        print ("KKKK"
+        print ("KKKK")
         kv=[0,1]
         mv=[2,2]
         vdegree=1
@@ -119,8 +119,8 @@ def createBS(arr):
         # bug 
         ku=[1.0/(NbUPoles)*i for i in range(NbUPoles+1)]
         mu=[1]*(NbUPoles+1)
-        print  (len(ps)
-        print sum(mu)
+        print  (len(ps))
+        print (sum(mu))
 
     else:
         ku=[1.0/(NbUPoles-3)*i for i in range(NbUPoles-2)]
@@ -563,8 +563,8 @@ class Needle(PartFeature):
         ViewProvider(obj.ViewObject)
 
     def onDocumentRestored(self, fp):
-        print ("onDocumentRestored "
-        print fp.Label
+        print ("onDocumentRestored ")
+        print (fp.Label)
         self.Object=fp
     ##endcond
 
@@ -667,7 +667,7 @@ class Needle(PartFeature):
 #-----------------------------
 
         if len(curves) <len(scaler):
-                print ("zu wenig rippen"
+                print ("zu wenig rippen")
                 return
 
         poles= scale2(curves,scaler)
@@ -803,16 +803,16 @@ class Needle(PartFeature):
             try:
                 App.activeDocument().recompute()
             except:
-                print ("recompute jack "
+                print ("recompute jack ")
                 dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
                 App.getDocument(dokname).recompute()
                 pass
 
     def getExampleModel(self,model):
-        print ("getExampleModel"
-        print model
+        print ("getExampleModel")
+        print (model)
         m=model()
-        print model().curve
+        print (model().curve)
         self.updateSS(m.curve,m.bb,m.sc,m.twister)
 
     def Model(self):
@@ -851,22 +851,22 @@ class Needle(PartFeature):
         self.table=table
 
     def clicked(self,index):
-        print ("Clicked",index
+        print ("Clicked",index)
         self.dumpix(index)
         print (getdata(index))
 
     def entered(self,index):
-        print ("Entered"
+        print ("Entered")
         self.dumpix(index)
 
     def pressed(self,index):
         import nurbswb.needle_cmds
         reload(nurbswb.needle_cmds)
         nurbswb.needle_cmds.pressed(index,App.activeDocument().MyNeedle)
-        print ("Pressed"
+        print ("Pressed")
 
     def changed(self,index):
-        print ("Changed"
+        print ("Changed")
         self.dumpix(index)
 
     def dumpix(self,index): 
@@ -900,13 +900,13 @@ class Needle(PartFeature):
 
 def importCurves(obj):
     ss=obj.Spreadsheet
-    print ss.Label
+    print (ss.Label)
     if obj.ribtemplateSource != None and not obj.externSourcesOff:
         cs=obj.ribtemplateSource.Shape.Edge1.Curve
         curve=cs.getPoles()
         cl=len(curve)
         npa2ssa(curve,ss,2,3)
-        print ("update curve",curve
+        print ("update curve",curve)
 
 
     if obj.backboneSource != None and not obj.externSourcesOff:
@@ -914,7 +914,7 @@ def importCurves(obj):
         bb=cs.getPoles()
         bl=len(bb)
         npa2ssa(bb,ss,7,3)
-        print ("update backbone",bb
+        print ("update backbone",bb)
 
 def createShoeNeedle(label="MyShoe"):
     a=App.activeDocument().addObject("Part::FeaturePython",label)
@@ -1129,7 +1129,7 @@ def main_test():
 
 
         Gui.SendMsgToActiveView("ViewFit")
-        print ("fertig"
+        print ("fertig")
          
 
 
@@ -1143,7 +1143,7 @@ def main_test():
 
     print a
     for r in a.Ribs:
-        print r.Label
+        print( r.Label)
 
 def genss(sk):
         ''' ribs aus daten'''
@@ -1159,7 +1159,7 @@ def genss(sk):
 #        ps=[App.Vector(0,p.y-5,p.z),App.Vector(0,p.y-10,p.z)]+points+[App.Vector(0,p.y+10,p.z),App.Vector(0,p.y+5,p.z)] 
 #        points=ps
 
-        print  (len(points)
+        print  (len(points))
         return sk
 
 
@@ -1210,7 +1210,7 @@ def run():
 
 
 
-    print ("import ............"
+    print ("import ............")
     # import the configuration from shoedata 
     import nurbswb.shoedata
     reload(nurbswb.shoedata)

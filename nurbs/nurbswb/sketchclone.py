@@ -31,7 +31,7 @@ class SketchClone(nurbswb.pyob.FeaturePython):
         '''run myExecute for some properties'''
 
         if prop == 'base':
-            print ("Changed Base"
+            print ("Changed Base")
             if obj.base == None:
                 return
 
@@ -94,7 +94,7 @@ class SketchClone(nurbswb.pyob.FeaturePython):
         if obj == None: return
         obj.recompute() 
         tsum=0
-        print (""
+        print ("")
         for i in range(10):
             rc=self.myExecute(obj,i)
             tsum += rc

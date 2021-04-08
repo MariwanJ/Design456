@@ -1368,11 +1368,11 @@ class ConstantCurvatureBezier(FeaturePython):
 #
 #
 #            rc=abs(cc2.max()-cc2.min())*(1+cc2.mean())**np.pi#*bc.length()
-#            print rc
+#            print (rc)
 
             rc = abs(cc2.max()-cc2.min())*(1+cc2.mean())**np.pi*bc.length()
 
-#            print rc
+#            print (rc)
 #            if fp.Proxy.loops>3000:
 #                print ("loops ende"
 #                return 0
