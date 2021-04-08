@@ -26,12 +26,25 @@ from __future__ import unicode_literals
 # ***************************************************************************
 import os
 import FreeCAD as App
+#Design456 
 __dir__ = os.path.dirname(__file__)
 ICON_PATH = os.path.join(__dir__, 'Resources/icons')
 IMAGE_PATH = os.path.join(__dir__, 'Resources/images')
+#Pyramid shapes 
 PYRAMID_PATH = os.path.join(__dir__, 'PyramidMo')
 PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons')
+
+#Coin3D New widget system 
 WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets')
+
+#Nurbs
+NURBS_ICON_PATH=os.path.join(__dir__,'/nurbs/Resources/icons')
+NURBS_PATH=os.path.join(__dir__,'/nurbs/')
+NURBS_WB_PATH=os.path.join(__dir__,'/nurbs/nurbswb')
+NURBS_WB_PATH=os.path.join(__dir__,'/nurbs/plot2')
+
+
+
 
 # PART
 App.addImportType("BREP format (*.brep *.brp)", "Part")
