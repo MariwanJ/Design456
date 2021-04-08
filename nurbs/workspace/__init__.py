@@ -27,7 +27,7 @@ import nurbswb
 
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)
-print (__dir__)
+print(__dir__)
 
 
 class PartFeature:
@@ -86,7 +86,7 @@ class ViewProviderSL(ViewProvider):
         print("done")
 
     def onDelete(self, obj, subelements):
-        print ("on Delete Sahpelink")
+        print("on Delete Sahpelink")
         print("from", obj.Object.workspace, obj.Object.Label, obj.Object.Name)
         try:
             _ = App.getDocument(obj.Object.workspace)
@@ -100,14 +100,14 @@ class ViewProviderSL(ViewProvider):
             print(s, obj.Object.Name)
             if obj.Object.Label.startswith(s):
                 ws.dok.removeObject(jj.Name)
-                print ("gguutt")
+                print("gguutt")
                 return True
 
 
 class ShapeLink(PartFeature):
 
     def __init__(self, obj, sobj, dokname):
-        print ("create shape link")
+        print("create shape link")
         PartFeature.__init__(self, obj)
         obj.addProperty("App::PropertyLink", "source", "Base")
         obj.addProperty("App::PropertyBool", "nurbs", "Base")
@@ -131,16 +131,16 @@ class ShapeLink(PartFeature):
         print("update shape", obj.source.Name, obj.workspace, obj.gridcount)
 
         tw = WorkSpace(obj.workspace)
-        print ("!!")
+        print("!!")
         print(tw)
-        print (tw.dok)
+        print(tw.dok)
         target = tw.dok.getObject(obj.source.Name)
-        print (target)
+        print(target)
         if target == None:
             tw.addObject2(obj.source, obj.gridcount)
-        print (target)
+        print(target)
         if obj.nurbs:
-            print ("nurbs surface")
+            print("nurbs surface")
             target.Shape = obj.source.Shape.toNurbs()
 
             cs = []
@@ -149,7 +149,7 @@ class ShapeLink(PartFeature):
             # f=f.Face1.Surface
 
             for ff in obj.source.Shape.Faces:
-                print ("Face")
+                print("Face")
                 print(ff)
                 f2 = ff.toNurbs()
                 cs.append(f2)
@@ -162,11 +162,11 @@ class ShapeLink(PartFeature):
             target.Shape = Part.Compound(cs)
             App.cs = cs
         else:
-            print ("no nurbs")
+            print("no nurbs")
             target.Shape = obj.source.Shape
         tw.recompute()
-        print ("act dok ")
-        print( App.ActiveDocument.Label)
+        print("act dok ")
+        print(App.ActiveDocument.Label)
 
 
 class ViewProviderWSL(ViewProvider):
@@ -181,7 +181,7 @@ class ViewProviderWSL(ViewProvider):
             ws.hide()
 
     def onDelete(self, obj, subelements):
-        print ("on Delete")
+        print("on Delete")
         App.closeDocument(obj.Object.workspace)
         # return False
         return(True)
@@ -248,14 +248,14 @@ class WorkSpace():
         mdiarea = mw.findChild(QtGui.QMdiArea)
 
         sws = mdiarea.subWindowList()
-        print ("windows ...")
+        print("windows ...")
         for w2 in sws:
-            print (str(w2.windowTitle()))
+            print(str(w2.windowTitle()))
             s = str(w2.windowTitle())
             if s == self.name + '1 : 1[*]':
-                print ("gefundne")
+                print("gefundne")
                 return w2
-        print (self.name + '1:1[*]')
+        print(self.name + '1:1[*]')
 
     def _haha(self):
         pass
@@ -263,7 +263,7 @@ class WorkSpace():
 
 def createLink(obj, dokname="Linkdok"):
     ad = App.ActiveDocument
-    print (ad.Name)
+    print(ad.Name)
 
     lidok = WorkSpace(dokname)
     link = lidok.addObject2(obj)

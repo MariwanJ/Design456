@@ -2,28 +2,28 @@
 #
 #
 #
-#***************************************************************************
-#*                                                                         *
-#*   Copyright (c) 2011, 2012                                              *
-#*   Jose Luis Cercos Pita <jlcercos@gmail.com>                            *
-#*                                                                         *
-#*   This program is free software; you can redistribute it and/or modify  *
-#*   it under the terms of the GNU Lesser General Public License (LGPL)    *
-#*   as published by the Free Software Foundation; either version 2 of     *
-#*   the License, or (at your option) any later version.                   *
-#*   for detail see the LICENCE text file.                                 *
-#*                                                                         *
-#*   This program is distributed in the hope that it will be useful,       *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-#*   GNU Library General Public License for more details.                  *
-#*                                                                         *
-#*   You should have received a copy of the GNU Library General Public     *
-#*   License along with this program; if not, write to the Free Software   *
-#*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
-#*   USA                                                                   *
-#*                                                                         *
-#***************************************************************************
+# ***************************************************************************
+# *                                                                         *
+# *   Copyright (c) 2011, 2012                                              *
+# *   Jose Luis Cercos Pita <jlcercos@gmail.com>                            *
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU Lesser General Public License (LGPL)    *
+# *   as published by the Free Software Foundation; either version 2 of     *
+# *   the License, or (at your option) any later version.                   *
+# *   for detail see the LICENCE text file.                                 *
+# *                                                                         *
+# *   This program is distributed in the hope that it will be useful,       *
+# *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+# *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+# *   GNU Library General Public License for more details.                  *
+# *                                                                         *
+# *   You should have received a copy of the GNU Library General Public     *
+# *   License along with this program; if not, write to the Free Software   *
+# *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+# *   USA                                                                   *
+# *                                                                         *
+# ***************************************************************************
 
 import FreeCAD
 
@@ -34,13 +34,13 @@ from distutils.version import StrictVersion as V
 try:
     import matplotlib
     matplotlib.use('Qt4Agg')
-    matplotlib.rcParams['backend.qt4']='PySide'
+    matplotlib.rcParams['backend.qt4'] = 'PySide'
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
     if V(matplotlib.__version__) < V("1.4.0"):
-       from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
+        from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
     else:
-       from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
+        from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
     from matplotlib.figure import Figure
 except ImportError:
@@ -89,10 +89,14 @@ def getPlot():
             return i
     return None
 
-pp=None
+
+pp = None
+
+
 def getPlot():
     global pp
     return pp
+
 
 def closePlot():
     """ closePlot(): Close the active plot window. """
@@ -107,7 +111,8 @@ def closePlot():
     for i in sub.children():
         if i.metaObject().className() == "Plot":
             sub.close()
-    
+
+
 def figure(winTitle="plot"):
     """Create a new plot subwindow/tab.
 
@@ -124,6 +129,8 @@ def figure(winTitle="plot"):
 
 #
 #
+
+
 def figureWindow(winTitle="plot"):
     """Create a new plot window
 
@@ -134,9 +141,8 @@ def figureWindow(winTitle="plot"):
     win = Plot(winTitle)
     win.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
     win.show()
-    pp=win
+    pp = win
     return win
-
 
 
 def plot(x, y, name=None):
@@ -447,8 +453,7 @@ class Plot(PySide.QtGui.QWidget):
         self.fig = Figure()
         self.canvas = FigureCanvas(self.fig)
         self.canvas.setParent(self)
-        
-        
+
         # Get axes
         self.axes = self.fig.add_subplot(111)
         self.axesList = [self.axes]
@@ -510,7 +515,6 @@ class Plot(PySide.QtGui.QWidget):
         """
         self.axes = self.axesList[index]
         self.fig.sca(self.axes)
-
 
 
 def show():
