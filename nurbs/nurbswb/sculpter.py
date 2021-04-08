@@ -1,27 +1,29 @@
 # -*- coding: utf-8 -*-
 '''interactive drawing of a curve onto a face'''
-#-------------------------------------------------
-#-- interctive draw on face
-#--
-#-- microelly 2017  0.2
-#--
-#-- GNU Lesser General Public License (LGPL)
-#-------------------------------------------------
+# -------------------------------------------------
+# -- interctive draw on face
+# --
+# -- microelly 2017  0.2
+# --
+# -- GNU Lesser General Public License (LGPL)
+# -------------------------------------------------
 
 
-##\cond
-from PySide import QtGui,QtCore
+# \cond
+import Points
+import Mesh
+import time
+from PySide import QtGui, QtCore
 from nurbswb.say import *
 
 import FreeCAD as App
-import sys,time
+import sys
+import time
 import random
-
 
 
 import nurbswb.isodraw
 reload(nurbswb.isodraw)
-
 
 
 '''
@@ -33,194 +35,189 @@ App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
 '''
 
 
-#App.pts=App.ActiveDocument.Points.Points.Points
-import Mesh,Points
-import time
+# App.pts=App.ActiveDocument.Points.Points.Points
 
-def check(pp,mode,updateNurbs=False,widget=None):
-    print ("check B ",mode)
-    if mode=='marker':
+def check(pp, mode, updateNurbs=False, widget=None):
+    print("check B ", mode)
+    if mode == 'marker':
         createMarker(pp)
         return
-        
-    a=time.time()
 
-    pc=App.ActiveDocument.getObject("MyGrid")
-    nu=App.ActiveDocument.getObject(pc.Name+'_N')
-    mm=App.ActiveDocument.getObject(pc.Name+'_M')
+    a = time.time()
+
+    pc = App.ActiveDocument.getObject("MyGrid")
+    nu = App.ActiveDocument.getObject(pc.Name+'_N')
+    mm = App.ActiveDocument.getObject(pc.Name+'_M')
 
     nu.ViewObject.hide()
     mm.ViewObject.show()
 
-    uc=pc.uc
-    vc=pc.vc
+    uc = pc.uc
+    vc = pc.vc
 
-
-    ptsk=mm.Mesh.Topology[0]
-    faces=mm.Mesh.Topology[1]
+    ptsk = mm.Mesh.Topology[0]
+    faces = mm.Mesh.Topology[1]
 
     if not updateNurbs:
 #        print ("modify"
-        App.ptsk=ptsk
+        App.ptsk = ptsk
 #        print  (len(ptsk)
-        ff=-1
-        for i,p in enumerate(ptsk):
-            #if i <2: print (i,(p-pp).Length)
-            if (p-pp).Length <10 : 
+        ff = -1
+        for i, p in enumerate(ptsk):
+            # if i <2: print (i,(p-pp).Length)
+            if (p-pp).Length < 10:
 #                print ("found ",i,(p-pp).Length)
-                ff=i
+                ff = i
                 break
 
-        ui=ff % (vc+1)
-        vi=ff/(vc+1)
+        ui = ff % (vc+1)
+        vi = ff/(vc+1)
 #        print (ui,vi)
-        ptskarr=np.array(ptsk).reshape(uc+1,vc+1,3)
+        ptskarr = np.array(ptsk).reshape(uc+1, vc+1, 3)
 
-        if mode=='reset':
-            ptskarr[:,:,2] = 0
-            ptsk=[App.Vector(p) for p in ptskarr.reshape((uc+1)*(vc+1),3)]
+        if mode == 'reset':
+            ptskarr[:, :, 2] = 0
+            ptsk = [App.Vector(p) for p in ptskarr.reshape((uc+1)*(vc+1), 3)]
 
         else:
 
-            #r=int(widget.area.value())+1
-            r=widget.r
-            #h=(int(widget.height.value())+1)*0.1
-            h=widget.h
-            #h *= 100
-            print(r,h,mode,'##',uc,vc,ui,vi)
+            # r=int(widget.area.value())+1
+            r = widget.r
+            # h=(int(widget.height.value())+1)*0.1
+            h = widget.h
+            # h *= 100
+            print(r, h, mode, '##', uc, vc, ui, vi)
 
-            if r>0:
-                if mode=='up':
-                    ptskarr[vi-r:vi+r+1,ui-r:ui+r+1,2] += h
-                if mode=='down':
-                    ptskarr[vi-r:vi+r+1,ui-r:ui+r+1,2] -= h
-                if mode=='zero':
-                    ptskarr[vi-r:vi+r+1,ui-r:ui+r+1,2] = 0
+            if r > 0:
+                if mode == 'up':
+                    ptskarr[vi-r:vi+r+1, ui-r:ui+r+1, 2] += h
+                if mode == 'down':
+                    ptskarr[vi-r:vi+r+1, ui-r:ui+r+1, 2] -= h
+                if mode == 'zero':
+                    ptskarr[vi-r:vi+r+1, ui-r:ui+r+1, 2] = 0
 
-                ptsk=[App.Vector(p) for p in ptskarr.reshape((uc+1)*(vc+1),3)]
-                print (ptskarr[:,:,2].max())
+                ptsk = [App.Vector(p)
+                                   for p in ptskarr.reshape((uc+1)*(vc+1), 3)]
+                print(ptskarr[:, :, 2].max())
 
             else:
-                if mode=='up':
+                if mode == 'up':
                     ptsk[ff].z += h
-                if mode=='down':
+                if mode == 'down':
                     ptsk[ff].z -= h
-                if mode=='zero':
-                    ptsk[ff].z =0
+                if mode == 'zero':
+                    ptsk[ff].z = 0
 
-        pc.Points=Points.Points(ptsk)
-        mm.Mesh=Mesh.Mesh((ptsk,faces))
+        pc.Points = Points.Points(ptsk)
+        mm.Mesh = Mesh.Mesh((ptsk, faces))
 
-    b=time.time()
-    print ("update time ",b-a)
-
+    b = time.time()
+    print("update time ", b-a)
 
     if updateNurbs:
-            print ("upd Nurbs")
+            print("upd Nurbs")
 #            nu=App.ActiveDocument.getObject("Nurbs")
             nu.ViewObject.show()
 #            mm=App.ActiveDocument.getObject("Mesh")
             mm.ViewObject.hide()
 #            uc=60
 #            vc=40
-            bs=Part.BSplineSurface()
+            bs = Part.BSplineSurface()
 
             if 0:
-                bs.interpolate(np.array(ptsk).reshape(uc+1,vc+1,3))
+                bs.interpolate(np.array(ptsk).reshape(uc+1, vc+1, 3))
             else:
-                kv=[1.0/(uc-3+1)*i for i in range(uc-2+1)]
-                mv=[4]+[1]*(uc-4+1)+[4]
+                kv = [1.0/(uc-3+1)*i for i in range(uc-2+1)]
+                mv = [4]+[1]*(uc-4+1)+[4]
 
-                ku=[1.0/(vc-3+1)*i for i in range(vc-2+1)]
-                mu=[4]+[1]*(vc-4+1)+[4]
+                ku = [1.0/(vc-3+1)*i for i in range(vc-2+1)]
+                mu = [4]+[1]*(vc-4+1)+[4]
 
-                ptskarr=np.array(ptsk).reshape(uc+1,vc+1,3)
-                bs.buildFromPolesMultsKnots(ptskarr, mv, mu, kv, ku, False, False ,3,3)
-                
-                
-                
-            nu.Shape=bs.toShape()
+                ptskarr = np.array(ptsk).reshape(uc+1, vc+1, 3)
+                bs.buildFromPolesMultsKnots(
+                    ptskarr, mv, mu, kv, ku, False, False, 3, 3)
 
-            c=time.time()
-            print ("nurbs time",c-b)
+            nu.Shape = bs.toShape()
+
+            c = time.time()
+            print("nurbs time", c-b)
+
 
 def createMarker(self):
-    print ("create Marker")
+    print("create Marker")
     import nurbswb
     import nurbswb.geodesic_lines
     reload(nurbswb.geodesic_lines)
-    
-    
-    l = nurbswb.geodesic_lines.makeLabel(direction='Horizontal',labeltype='Position')
-    l.obj=self.nu #Gui.Selection.getSelection()[0]
+
+    l = nurbswb.geodesic_lines.makeLabel(
+        direction='Horizontal', labeltype='Position')
+    l.obj = self.nu  # Gui.Selection.getSelection()[0]
     l.LabelType = u"Custom"
-    l.Label="MyMarker"
+    l.Label = "MyMarker"
     l.ViewObject.DisplayMode = u"2D text"
     l.ViewObject.TextSize = '15 mm'
     App.activeDocument().recompute()
 #    l.TargetPoint=l.obj.Shape.Faces[0].Surface.value(l.u*0.01,l.v*0.01)
-    nurbswb.geodesic_lines.hideAllProps(l,pns=['Text','CustomText','LabelType'])
+    nurbswb.geodesic_lines.hideAllProps(
+        l, pns=['Text', 'CustomText', 'LabelType'])
 #    return l
-    sf=l.obj.Shape.Face1.Surface
-    (u,v)=sf.parameter(self.pos)
-    l.u=u*100
-    l.v=v*100
-    l.TargetPoint=self.pos
-    l.Label=str((round(self.pos.x,1),round(self.pos.y,1),round(self.pos.z,1)))
-    
+    sf = l.obj.Shape.Face1.Surface
+    (u, v) = sf.parameter(self.pos)
+    l.u = u*100
+    l.v = v*100
+    l.TargetPoint = self.pos
+    l.Label = str((round(self.pos.x, 1), round(
+        self.pos.y, 1), round(self.pos.z, 1)))
 
 
-##\endcond
+# \endcond
 
-## Eventfilter for facedrawing
+# Eventfilter for facedrawing
 
 class EventFilter(QtCore.QObject):
     '''Eventfilter for facedrawing'''
 
-##\cond
+# \cond
 
     def __init__(self):
         QtCore.QObject.__init__(self)
-        self.mouseWheel=0
-        self.enterleave=False
-        self.enterleave=True
-        self.keyPressed2=False
-        self.editmode=False
-        self.key='x'
-        self.posx=-1
-        self.posy=-1
-        self.lasttime=time.time()
-        self.lastkey='#'
-        self.colorA=0
-        self.colors=[]
-        self.pts=[]
-        self.ptsm=[]
-        self.mode='n'
+        self.mouseWheel = 0
+        self.enterleave = False
+        self.enterleave = True
+        self.keyPressed2 = False
+        self.editmode = False
+        self.key = 'x'
+        self.posx = -1
+        self.posy = -1
+        self.lasttime = time.time()
+        self.lastkey = '#'
+        self.colorA = 0
+        self.colors = []
+        self.pts = []
+        self.ptsm = []
+        self.mode = 'n'
 
     def eventFilter(self, o, e):
         ''' the eventfilter for the facedraw server'''
 
-        z=str(e.type())
+        z = str(e.type())
 
-        event=e
+        event = e
 
-        if event.type() == QtCore.QEvent.ContextMenu : return True
+        if event.type() == QtCore.QEvent.ContextMenu: return True
 
         # not used events
         if z == 'PySide.QtCore.QEvent.Type.ChildAdded' or \
-                z == 'PySide.QtCore.QEvent.Type.ChildRemoved'or \
-                z == 'PySide.QtCore.QEvent.Type.User'  or \
+                z == 'PySide.QtCore.QEvent.Type.ChildRemoved' or \
+                z == 'PySide.QtCore.QEvent.Type.User' or \
                 z == 'PySide.QtCore.QEvent.Type.Paint' or \
                 z == 'PySide.QtCore.QEvent.Type.LayoutRequest' or\
-                z == 'PySide.QtCore.QEvent.Type.UpdateRequest'  : 
+                z == 'PySide.QtCore.QEvent.Type.UpdateRequest':
             return QtGui.QWidget.eventFilter(self, o, e)
-
-
-
 
         if z == 'PySide.QtCore.QEvent.Type.KeyPress':
             # http://doc.qt.io/qt-4.8/qkeyevent.html
-            print ("key",e.key())
+            print("key", e.key())
 
             # ignore editors
             try:
@@ -230,44 +227,44 @@ class EventFilter(QtCore.QObject):
 
             # only first time key pressed
             if not self.keyPressed2:
-                self.keyPressed2=True
-                time2=time.time()
-                ee=e.text()
+                self.keyPressed2 = True
+                time2 = time.time()
+                ee = e.text()
 
-                if time2-self.lasttime<0.01 and len(ee)>0 and ee[0]==self.lastkey:
-                    self.lasttime=time2
+                if time2-self.lasttime < 0.01 and len(ee) > 0 and ee[0] == self.lastkey:
+                    self.lasttime = time2
                     return False
 
                 try:
                     # only two function keys implemented, no modifieres
-                    if e.key()== QtCore.Qt.Key_F2:
+                    if e.key() == QtCore.Qt.Key_F2:
                         say("------------F2-- show mode and moddata---------------")
                         return False
 
-                    elif e.key()== QtCore.Qt.Key_Escape:
+                    elif e.key() == QtCore.Qt.Key_Escape:
                         say("------------Escape = Stop-----------------")
                         stop()
 
-                    elif e.key()== QtCore.Qt.Key_F3 :
+                    elif e.key() == QtCore.Qt.Key_F3:
                         say("------------F3 up x-----------------")
                         self.dialog.modl.setText("Mode: add")
-                        self.mode='up'
+                        self.mode = 'up'
                         return False
-                    elif e.key()== QtCore.Qt.Key_F4 :
+                    elif e.key() == QtCore.Qt.Key_F4:
                         say("------------D down y-----------------")
                         self.dialog.modl.setText("Mode: subtract")
-                        self.mode='down'
+                        self.mode = 'down'
                         return False
-                    elif e.key()== QtCore.Qt.Key_F5 :
+                    elif e.key() == QtCore.Qt.Key_F5:
                         say("------------F3 zero-----------------")
                         self.dialog.modl.setText("Mode: reset to null")
-                        self.mode='zero'
+                        self.mode = 'zero'
                         return False
-                    elif e.key()== QtCore.Qt.Key_F6 :
-                        
+                    elif e.key() == QtCore.Qt.Key_F6:
+
                         say("------------F6 none-----------------")
                         self.dialog.modl.setText("Mode: none")
-                        self.mode='none'
+                        self.mode = 'none'
                         return False
 
 
@@ -276,34 +273,36 @@ class EventFilter(QtCore.QObject):
 #                        say("------------Enter-----------------")
 #                        self.update()
 
-                    elif e.key() == QtCore.Qt.Key_Right :
-                        print ("Go right")
+                    elif e.key() == QtCore.Qt.Key_Right:
+                        print("Go right")
                         return True
-                    elif e.key() == QtCore.Qt.Key_Left :
-                        print ("Go Left")
+                    elif e.key() == QtCore.Qt.Key_Left:
+                        print("Go Left")
                         return True
-                    elif e.key() == QtCore.Qt.Key_Up :
+                    elif e.key() == QtCore.Qt.Key_Up:
 #                        self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MoveCursorStep",10)
-                        print ("go up")
+                        print("go up")
                         return True
-                    elif e.key() == QtCore.Qt.Key_Down :
-                        print ("Go Down")
+                    elif e.key() == QtCore.Qt.Key_Down:
+                        print("Go Down")
                         return True
-                    elif e.key() == QtCore.Qt.Key_PageUp :
-                        self.mouseWheel += App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
-                        self.dialog.ef_action("up!",self,self.mouseWheel)
+                    elif e.key() == QtCore.Qt.Key_PageUp:
+                        self.mouseWheel += App.ParamGet(
+                            'User parameter:Plugins/nurbs').GetFloat("MovePageStep", 50)
+                        self.dialog.ef_action("up!", self, self.mouseWheel)
                         return True
-                    elif e.key() == QtCore.Qt.Key_PageDown :
-                        self.mouseWheel -= App.ParamGet('User parameter:Plugins/nurbs').GetFloat("MovePageStep",50)
-                        self.dialog.ef_action("down!",self,self.mouseWheel)
+                    elif e.key() == QtCore.Qt.Key_PageDown:
+                        self.mouseWheel -= App.ParamGet(
+                            'User parameter:Plugins/nurbs').GetFloat("MovePageStep", 50)
+                        self.dialog.ef_action("down!", self, self.mouseWheel)
                         return True
 
-                    if e.key()== QtCore.Qt.Key_Enter or e.key()== QtCore.Qt.Key_Return:
-                        print ("Enter Action-----------------------------"
+                    if e.key() == QtCore.Qt.Key_Enter or e.key() == QtCore.Qt.Key_Return:
+                        print("Enter Action-----------------------------")
                         # enter creates a new point ...
                         # vf=App.Vector(self.x,self.y,self.z)
-                        print (self.pos)
-                        if self.mode=='marker':
+                        print(self.pos)
+                        if self.mode == 'marker':
                             createMarker(self)
                         return True
 #                        self.colors += [self.colorA]
@@ -313,27 +312,27 @@ class EventFilter(QtCore.QObject):
 #                            self.wire.Shape=Part.makePolygon(self.pts)
 #                            drawColorpath(self.pts,self.colors,self.colorA)
 
-                    else: # letter key pressed
+                    else:  # letter key pressed
                         ee=e.text()
-                        if len(ee)>0: r=ee[0]
-                        else: r="key:"+ str(e.key())
+                        if len(ee) > 0: r=ee[0]
+                        else: r="key:" + str(e.key())
 
                         self.lastkey=e.text()
 
                         # zooming +-*
-                        if r=='+':
+                        if r == '+':
                             Gui.activeDocument().ActiveView.zoomIn()
                             return True
-                        if r=='-':
+                        if r == '-':
                             Gui.activeDocument().ActiveView.zoomOut()
                             return True
-                        if r=='*':
+                        if r == '*':
                             Gui.activeDocument().ActiveView.fitAll()
                             return True
 
-                         if r in ['a','b','c']:
+                        if r in ['a', 'b', 'c']:
 
-                                print ("KEY pressed ----------------------",r)
+                                print("KEY pressed ----------------------", r)
 
 
 
@@ -344,50 +343,52 @@ class EventFilter(QtCore.QObject):
 
 
         if event.type() == QtCore.QEvent.MouseMove:
-                (x,y)=Gui.ActiveDocument.ActiveView.getCursorPos()
-                t=Gui.ActiveDocument.ActiveView.getObjectsInfo((x,y))
-                
-                #---------------------
+                (x, y)=Gui.ActiveDocument.ActiveView.getCursorPos()
+                t=Gui.ActiveDocument.ActiveView.getObjectsInfo((x, y))
+
+                # ---------------------
 
                 cursor=QtGui.QCursor()
-                p = cursor.pos()
-#                if p.x()<100 or p.y()<100: 
+                p=cursor.pos()
+#                if p.x()<100 or p.y()<100:
 #                    print ("jump cursor facedraw 92"
 #                    cursor.setPos(p.x()+100, p.y()+100)
-                #-----------------------------------
+                # -----------------------------------
 
-                if t!=None: # if objects are under the mouse
-                    #pts=App.ActiveDocument.shoe_last_scanned.Points.Points
+                if t != None:  # if objects are under the mouse
+                    # pts=App.ActiveDocument.shoe_last_scanned.Points.Points
 #                    print ("-----!"
                     for tt in t:
-                        if tt['Object']=="MyGrid_N": 
-                            pp=App.Vector(tt['x'],tt['y'],tt['z'])
-                            
+                        if tt['Object'] == "MyGrid_N":
+                            pp=App.Vector(tt['x'], tt['y'], tt['z'])
+
                             sp=App.ActiveDocument.getObject("Sphere")
-                            if sp==None:
-                                sp=App.ActiveDocument.addObject("Part::Sphere","Sphere")
+                            if sp == None:
+                                sp=App.ActiveDocument.addObject(
+                                    "Part::Sphere", "Sphere")
                             sp.Placement.Base=pp
-                            
-                            
+
+
                             sf=self.nu.Shape.Face1.Surface
-                            print ("Position on nurbs:",sf.parameter(pp)
+                            print("Position on nurbs:", sf.parameter(pp))
                             self.pos=pp
                             sf.parameter(pp)
-                            if event.buttons()==QtCore.Qt.LeftButton:
+                            if event.buttons() == QtCore.Qt.LeftButton:
 #                                print ("LEFT BUTTON drawing"
-                                check(pp,self.mode,False,self)
+                                check(pp, self.mode, False, self)
                             break
                     for tt in t:
-                        if tt['Object']=="MyGrid_M": 
+                        if tt['Object'] == "MyGrid_M":
 #                            print (tt['Object'],tt['Component'])
 #                            print (tt['x'])
 #                            print (tt['y'])
 #                            print (tt['z'])
-                            pp=App.Vector(tt['x'],tt['y'],tt['z'])
+                            pp=App.Vector(tt['x'], tt['y'], tt['z'])
 
                             sp=App.ActiveDocument.getObject("Sphere")
-                            if sp==None:
-                                sp=App.ActiveDocument.addObject("Part::Sphere","Sphere")
+                            if sp == None:
+                                sp=App.ActiveDocument.addObject(
+                                    "Part::Sphere", "Sphere")
                             sp.Placement.Base=pp
 
 
@@ -396,9 +397,9 @@ class EventFilter(QtCore.QObject):
                             sf=self.nu.Shape.Face1.Surface
 #                            print ("Position on nurbs:",sf.parameter(pp)
                             sf.parameter(pp)
-                            if event.buttons()==QtCore.Qt.LeftButton:
+                            if event.buttons() == QtCore.Qt.LeftButton:
 #                                print ("LEFT BUTTON drawing"
-                                check(pp,self.mode,False,self)
+                                check(pp, self.mode, False, self)
                             break
                     return False
 
@@ -420,21 +421,21 @@ class EventFilter(QtCore.QObject):
             self.editmode=False
 
         # mouse movement only leaves and enters
-        if z == 'PySide.QtCore.QEvent.Type.HoverMove' :
+        if z == 'PySide.QtCore.QEvent.Type.HoverMove':
             pass
 
         return QtGui.QWidget.eventFilter(self, o, e)
 
-##\endcond
+# \endcond
 
-## draw a curve on a face and create the two subfaces defined by the curve
+# draw a curve on a face and create the two subfaces defined by the curve
 
-def drawcurve(wire,face,facepos=App.Vector()):
+def drawcurve(wire, face, facepos=App.Vector()):
     '''draw a curve on a face and create the two subfaces defined by the curve'''
 
-    print ("drawcurve"
+    print("drawcurve")
 
-    #startposition
+    # startposition
     wplace=wire.Placement
 #    print wplace
     wpos=wplace.Base
@@ -444,87 +445,89 @@ def drawcurve(wire,face,facepos=App.Vector()):
     w=wire.Shape
     t=face
 
-    #pts=[p.Point for p in w.Vertexes]
-    pts=[p.Point- wpos for p in w.Vertexes]
-    
+    # pts=[p.Point for p in w.Vertexes]
+    pts=[p.Point - wpos for p in w.Vertexes]
+
     sf=t.Surface
 
     bs=sf
 
-    print ("hacks SSetze uv, sv auf 1")
+    print("hacks SSetze uv, sv auf 1")
     su=face.ParameterRange[1]
     sv=face.ParameterRange[3]
 
 
     if 0:
         pts2da=[sf.parameter(p) for p in pts[1:]]
-        pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
+        pts2d=[App.Base.Vector2d(p[0], p[1]) for p in pts2da]
 
-        bs2d = Part.Geom2d.BSplineCurve2d()
+        bs2d=Part.Geom2d.BSplineCurve2d()
         bs2d.setPeriodic()
 
         bs2d.interpolate(pts2d)
         bs2d.setPeriodic()
 
-        e1 = bs2d.toShape(t)
+        e1=bs2d.toShape(t)
 
 
-    bs2d = Part.Geom2d.BSplineCurve2d()
+    bs2d=Part.Geom2d.BSplineCurve2d()
     pts2da=[sf.parameter(p) for p in pts]
-    pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
-    bs2d.buildFromPolesMultsKnots(pts2d,[1]*(len(pts2d)+1),range(len(pts2d)+1),True,1)
-    e1 = bs2d.toShape(t)
+    pts2d=[App.Base.Vector2d(p[0], p[1]) for p in pts2da]
+    bs2d.buildFromPolesMultsKnots(
+        pts2d, [1]*(len(pts2d)+1), range(len(pts2d)+1), True, 1)
+    e1=bs2d.toShape(t)
 
     sp=App.ActiveDocument.getObject(wire.Label+"_Spline")
-    if sp==None:
-        sp=App.ActiveDocument.addObject("Part::Spline",wire.Label+"_Spline")
+    if sp == None:
+        sp=App.ActiveDocument.addObject("Part::Spline", wire.Label+"_Spline")
     sp.Shape=e1
     sp.ViewObject.LineColor=wire.ViewObject.ShapeColor
     sp.ViewObject.ShapeColor=wire.ViewObject.ShapeColor
 
     edges=e1.Edges
     ee=edges[0]
-    splita=[(ee,face)]
+    splita=[(ee, face)]
     r=Part.makeSplitShape(face, splita)
 
     ee.reverse()
-    splitb=[(ee,face)]
+    splitb=[(ee, face)]
     r2=Part.makeSplitShape(face, splitb)
-    
-    if hasattr(wire,"drawFace"):
 
-            try: 
+    if hasattr(wire, "drawFace"):
+
+            try:
                 rc=r2[0][0]
                 rc=r[0][0]
             except: return
 
             sp=App.ActiveDocument.getObject(wire.Label+"_SplineFaceA")
-            if sp==None:
-                sp=App.ActiveDocument.addObject("Part::Spline",wire.Label+"_SplineFaceA")
+            if sp == None:
+                sp=App.ActiveDocument.addObject(
+                    "Part::Spline", wire.Label+"_SplineFaceA")
 
             if wire.reverseFace: sp.Shape=r2[0][0]
             else: sp.Shape=r[0][0]
 
-            #sp.ViewObject.ShapeColor=(random.random(),random.random(),random.random())
+            # sp.ViewObject.ShapeColor=(random.random(),random.random(),random.random())
             sp.ViewObject.ShapeColor=wire.ViewObject.ShapeColor
-            #sp.ViewObject.LineColor=sp.ViewObject.ShapeColor
+            # sp.ViewObject.LineColor=sp.ViewObject.ShapeColor
 
-            #wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
-            #wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-            print ("HHHHHHHHHHHHHHHHH")
+            # wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
+            # wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
+            print("HHHHHHHHHHHHHHHHH")
 
-##     new wire for next drawing
+# new wire for next drawing
 
-#-------------------- ring
+# -------------------- ring
 
-def _drawring(name,wires,dirs,face,facepos=App.Vector()):
+def _drawring(name, wires, dirs, face, facepos=App.Vector()):
     '''draw a curve on a face and create the two subfaces defined by the curve'''
 
-    print ("drawring")
+    print("drawring")
 
     es=[]
     for wireA in wires:
-        #startposition
+        # startposition
         wplace=wireA.Placement
     #    print wplace
         wpos=wplace.Base
@@ -532,13 +535,13 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
         wire=wireA
 
 
-        #--------------- teil 1
+        # --------------- teil 1
         w=wireA.Shape
         t=face
 
-        #pts=[p.Point for p in w.Vertexes]
-        pts=[p.Point- wpos for p in w.Vertexes]
-        
+        # pts=[p.Point for p in w.Vertexes]
+        pts=[p.Point - wpos for p in w.Vertexes]
+
         sf=t.Surface
 
         bs=sf
@@ -547,47 +550,48 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
         sv=face.ParameterRange[3]
 
         pts2da=[sf.parameter(p) for p in pts[1:]]
-        pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
-        
+        pts2d=[App.Base.Vector2d(p[0], p[1]) for p in pts2da]
 
-        bs2d = Part.Geom2d.BSplineCurve2d()
+
+        bs2d=Part.Geom2d.BSplineCurve2d()
         bs2d.setPeriodic()
 
         bs2d.interpolate(pts2d)
         bs2d.setPeriodic()
 
-        e1_1 = bs2d.toShape(t)
+        e1_1=bs2d.toShape(t)
 
 
-        print ("huhuhu22")
+        print("huhuhu22")
 
         sp=App.ActiveDocument.getObject(wireA.Label+"_ASpline")
-        print  (sp)
+        print(sp)
         print(wireA.Label)
-        if sp==None:
-            sp=App.ActiveDocument.addObject("Part::Spline",wireA.Label+"_Spline")
+        if sp == None:
+            sp=App.ActiveDocument.addObject(
+                "Part::Spline", wireA.Label+"_Spline")
         sp.Shape=e1_1
         sp.ViewObject.LineColor=wireA.ViewObject.ShapeColor
         sp.ViewObject.ShapeColor=wireA.ViewObject.ShapeColor
 
         es.append(e1_1)
-    #-------------------- teoil 2
+    # -------------------- teoil 2
 
         if 0:
-            #--------------- teil 1
+            # --------------- teil 1
             w=wire2.Shape
             t=face
 
-            #pts=[p.Point for p in w.Vertexes]
-            pts=[p.Point- wpos for p in w.Vertexes]
-            
+            # pts=[p.Point for p in w.Vertexes]
+            pts=[p.Point - wpos for p in w.Vertexes]
+
             sf=t.Surface
 
             bs=sf
             su=bs.UPeriod()
             sv=bs.VPeriod()
 
-            print ("hacks etze uv, sv auf 1")
+            print("hacks etze uv, sv auf 1")
             su=face.ParameterRange[1]
             sv=face.ParameterRange[3]
 
@@ -596,39 +600,40 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
         #    print ("sv ",sv
         #    print ("param range ", face.ParameterRange
 
-            if su>1000: su=face.ParameterRange[1]
-            if sv>1000: sv=face.ParameterRange[3]
+            if su > 1000: su=face.ParameterRange[1]
+            if sv > 1000: sv=face.ParameterRange[3]
 
             pts2da=[sf.parameter(p) for p in pts[1:]]
-            pts2d=[App.Base.Vector2d(p[0],p[1]) for p in pts2da]
+            pts2d=[App.Base.Vector2d(p[0], p[1]) for p in pts2da]
 
-            bs2d = Part.Geom2d.BSplineCurve2d()
+            bs2d=Part.Geom2d.BSplineCurve2d()
             bs2d.setPeriodic()
 
             bs2d.interpolate(pts2d)
             bs2d.setPeriodic()
 
-            e1_2 = bs2d.toShape(t)
+            e1_2=bs2d.toShape(t)
 
             sp=App.ActiveDocument.getObject(wire2.Label+"_Spline")
-            if sp==None:
-                sp=App.ActiveDocument.addObject("Part::Spline",wire2.Label+"_Spline")
+            if sp == None:
+                sp=App.ActiveDocument.addObject(
+                    "Part::Spline", wire2.Label+"_Spline")
             sp.Shape=e1_2
             sp.ViewObject.LineColor=wire.ViewObject.ShapeColor
             sp.ViewObject.ShapeColor=wire.ViewObject.ShapeColor
 
-        #--------------------------------------
+        # --------------------------------------
 
 
 
         splita=[]
-        for i,e in enumerate(es):
+        for i, e in enumerate(es):
 
             edges=e.Edges
             ee=edges[0]
             if dirs[i]: ee.reverse()
 
-            splita += [(ee,face)]
+            splita += [(ee, face)]
 
         r=Part.makeSplitShape(face, splita)
 
@@ -638,26 +643,26 @@ def _drawring(name,wires,dirs,face,facepos=App.Vector()):
         if 1:
 
                 sp=App.ActiveDocument.getObject(name)
-                if sp==None:
-                    sp=App.ActiveDocument.addObject("Part::Spline",name)
+                if sp == None:
+                    sp=App.ActiveDocument.addObject("Part::Spline", name)
 
-                #if wire.reverseFace: sp.Shape=r2[0][0]
-                #else: 
+                # if wire.reverseFace: sp.Shape=r2[0][0]
+                # else:
 
                 sp.Shape=r[0][0]
 
-                #sp.ViewObject.ShapeColor=(random.random(),random.random(),random.random())
+                # sp.ViewObject.ShapeColor=(random.random(),random.random(),random.random())
                 sp.ViewObject.ShapeColor=wire.ViewObject.ShapeColor
-                #sp.ViewObject.LineColor=sp.ViewObject.ShapeColor
+                # sp.ViewObject.LineColor=sp.ViewObject.ShapeColor
 
-                #wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
-                #wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
-                print ("RRRRRRRRRRRRRRRRR")
+                # wire.ViewObject.LineColor=sp.ViewObject.ShapeColor
+                # wire.ViewObject.ShapeColor=sp.ViewObject.ShapeColor
+                print("RRRRRRRRRRRRRRRRR")
 
 
 
-def drawring(name,wires,dirs,faceobj,facepos=App.Vector()):
-        _drawring(name,wires,dirs,faceobj.Shape.Face1,facepos)
+def drawring(name, wires, dirs, faceobj, facepos=App.Vector()):
+        _drawring(name, wires, dirs, faceobj.Shape.Face1, facepos)
 
 
 def createnewwire(widget):
@@ -665,17 +670,23 @@ def createnewwire(widget):
 
     ef=widget.ef
 
-    w=App.ActiveDocument.addObject("Part::Feature","A Drawing on " + ef.objname + ": "+ ef.subelement +"#")
+    w=App.ActiveDocument.addObject(
+        "Part::Feature", "A Drawing on " + ef.objname + ": " + ef.subelement + "#")
     w.Shape=Part.Shape()
-    wam=App.ActiveDocument.addObject("Part::Feature","YY Drawing on " + ef.objname + ": "+ ef.subelement +"#")
+    wam=App.ActiveDocument.addObject(
+        "Part::Feature", "YY Drawing on " + ef.objname + ": " + ef.subelement + "#")
     wam.Shape=Part.Shape()
 
     if 10:
-        c=PySide.QtGui.QColorDialog.getColor(QtGui.QColor(random.randint(10,255),random.randint(10,255),random.randint(10,255)))
-        w.ViewObject.LineColor=(1.0/255*c.red(),1.0/255*c.green(),1.0/255*c.blue())
-        w.ViewObject.PointColor=(1.0/255*c.red(),1.0/255*c.green(),1.0/255*c.blue())
+        c=PySide.QtGui.QColorDialog.getColor(QtGui.QColor(random.randint(
+            10, 255), random.randint(10, 255), random.randint(10, 255)))
+        w.ViewObject.LineColor=(1.0/255*c.red(), 1.0 / \
+                                255*c.green(), 1.0/255*c.blue())
+        w.ViewObject.PointColor=(
+            1.0/255*c.red(), 1.0/255*c.green(), 1.0/255*c.blue())
     else:
-        w.ViewObject.LineColor=(random.random(),random.random(),random.random())
+        w.ViewObject.LineColor=(
+            random.random(), random.random(), random.random())
 
     ef.wire=w
     ef.wirem=wam
@@ -683,7 +694,7 @@ def createnewwire(widget):
 
 
 
-## dialog for facedrawing options
+# dialog for facedrawing options
 
 class MyWidget(QtGui.QWidget):
     '''dialog for facedrawing '''
@@ -704,16 +715,16 @@ class MyWidget(QtGui.QWidget):
     def update(self):
         ''' dummy method'''
         sp=App.ActiveDocument.getObject("Sphere")
-        if sp==None:
-            sp=App.ActiveDocument.addObject("Part::Sphere","Sphere")
+        if sp == None:
+            sp=App.ActiveDocument.addObject("Part::Sphere", "Sphere")
 
         r=int(self.area.value())
         h=int(self.height.value())
         sp.Radius=(1+r)*10
         App.activeDocument().recompute()
-        return 
+        return
 
-    def ef_action(self,*args):
+    def ef_action(self, *args):
         ''' dummy method'''
         return
 
@@ -737,7 +748,8 @@ def dialog(source=None):
 #    w.mode='n'
 
 
-    editorkey=App.ParamGet('User parameter:Plugins/nurbs').GetString("editorKey","h")
+    editorkey=App.ParamGet(
+        'User parameter:Plugins/nurbs').GetString("editorKey", "h")
 #    lab=QtGui.QLabel("Direction: " + editorkey)
     w.key=editorkey
 #    w.modelab=lab
@@ -747,7 +759,7 @@ def dialog(source=None):
 
     btn2=QtGui.QPushButton("Update Nurbs")
     btn2.clicked.connect(w.updateNurbs)
-    
+
 
     btn=QtGui.QPushButton("Apply and close")
     btn.clicked.connect(w.apply)
@@ -760,7 +772,7 @@ def dialog(source=None):
 
     poll=QtGui.QLabel("Area:")
 
-    ar=QtGui.QDial() 
+    ar=QtGui.QDial()
     ar.setMaximum(10)
     ar.setNotchesVisible(True)
     ar.valueChanged.connect(w.update)
@@ -768,17 +780,17 @@ def dialog(source=None):
 
     poll2=QtGui.QLabel("height:")
 
-    he=QtGui.QDial() 
+    he=QtGui.QDial()
     he.setMaximum(10)
     he.setNotchesVisible(True)
 #    he.valueChanged.connect(w.setcursor2)
     w.height=he
 
 
-    box = QtGui.QVBoxLayout()
+    box=QtGui.QVBoxLayout()
     w.setLayout(box)
-    
-    for ww in [modl,btn2,btn,cobtn,poll,ar,poll2,he] :
+
+    for ww in [modl, btn2, btn, cobtn, poll, ar, poll2, he]:
         box.addWidget(ww)
 
     return w
@@ -788,14 +800,14 @@ def dialog(source=None):
 
 
 
-## create and initialize the event filter
+# create and initialize the event filter
 
 def start():
     '''create and initialize the event filter'''
 
     ef=EventFilter()
     ef.mouseWheel=0
-    
+
     ef.subelement='SUBELE'
     ef.mode='up'
     ef.pc=App.ActiveDocument.MyGrid
@@ -832,7 +844,8 @@ def start():
             Gui.Selection.clearSelection()
 
     except:
-        sayexc2("no surface selected","Select first a face you want to draw on it")
+        sayexc2("no surface selected",
+                "Select first a face you want to draw on it")
         return
     '''
 
@@ -853,7 +866,7 @@ def start():
 
 
 
-## stop the eventserver
+# stop the eventserver
 
 def stop():
     ''' stop eventserver'''
@@ -863,11 +876,11 @@ def stop():
     mw.removeEventFilter(ef)
     ef.keyPressed2=False
     ef.dialog.app.resetEdit()
-    #ef.dialog.hide()
+    # ef.dialog.hide()
 
 
 
-## start the eventserver
+# start the eventserver
 
 def run():
     '''start the facedraw dialog and eventmanager'''
@@ -885,7 +898,7 @@ from say import *
 
 layout='''
 VerticalLayoutTab:
-#VerticalLayout:
+# VerticalLayout:
     id:'main'
 
     VerticalLayout:
@@ -912,11 +925,11 @@ VerticalLayoutTab:
 
 
 #    VerticalLayout:
-        setVerticalStrech:  10    
+        setVerticalStrech:  10
 
         QtGui.QLabel:
             setText: "    C O N F I G U R E"
-            
+
 
         HorizontalLayout:
             addSpacing: 0
@@ -980,7 +993,7 @@ VerticalLayoutTab:
 
 layoutAAAAAAAAA='''
 VerticalLayoutTab:
-#VerticalLayout:
+# VerticalLayout:
     id:'main'
 
     VerticalLayout:
@@ -992,18 +1005,18 @@ VerticalLayoutTab:
         HorizontalLayout:
 
             QtGui.QCheckBox:
-                id: 'polegrid' 
+                id: 'polegrid'
                 setText: 'calculate PoleGrid'
 #                stateChanged.connect: app.calculatePoleGrid
                 visibility: False
 
             QtGui.QCheckBox:
-                id: 'setmode' 
+                id: 'setmode'
                 setText: 'Pole only'
                 setVisible: False
 
             QtGui.QCheckBox:
-                id: 'relativemode' 
+                id: 'relativemode'
                 setText: 'Height relative'
 #                stateChanged.connect: app.relativeMode
                 setChecked: True
@@ -1049,7 +1062,7 @@ VerticalLayoutTab:
 
             QtGui.QLabel:
                 setText: "u"
-                
+
 
             QtGui.QLineEdit:
                 setText: "1"
@@ -1129,13 +1142,13 @@ VerticalLayoutTab:
 #                clicked.connect: app.setPole2
 
         QtGui.QCheckBox:
-            id: 'pole1active' 
+            id: 'pole1active'
             setText: 'Pole 1 in change'
 #            stateChanged.connect: app.relativeMode
             setChecked: True
 
         QtGui.QCheckBox:
-            id: 'singlepole' 
+            id: 'singlepole'
             setText: 'Single Pole mode'
 #            stateChanged.connect: app.relativeMode
             setChecked: True
@@ -1153,7 +1166,7 @@ VerticalLayoutTab:
 
 
 class MyApp(object):
-    
+
     def __init__(self):
         self.lock=False
 
@@ -1161,11 +1174,11 @@ class MyApp(object):
     def resetEdit(self):
         Gui.ActiveDocument.resetEdit()
         import nurbswb.miki as miki
-        #reload(miki)
+        # reload(miki)
         mw=miki.getMainWindow()
         miki.getComboView(mw).removeTab(2)
         miki.getComboView(mw).setCurrentIndex(0)
-        #stop()
+        # stop()
 
 
     '''
@@ -1175,7 +1188,7 @@ class MyApp(object):
             rc=self.root.ids['focusmode'].currentText()
             v=self.root.ids['vd'].value()
             self.root.ids['pole1'].setText("Pole 1:" + str([u+1,v+1]))
-            if self.root.ids['singlepole'].isChecked(): 
+            if self.root.ids['singlepole'].isChecked():
             self.root.ids['runbutton'].hide()
             self.root.ids['runbutton'].show()
 
@@ -1210,16 +1223,16 @@ class MyApp(object):
 
 
     def reset(self):
-        check(App.Vector(),'reset',False)
+        check(App.Vector(), 'reset', False)
 
     def updateNurbs(self):
-        check(App.Vector(),'no',updateNurbs=True)
+        check(App.Vector(), 'no', updateNurbs=True)
 
     def update(self):
-        print ("update")
-        print (self.dialog.ef.mode)
-        print (self.dialog.ef.h)
-        print (self.dialog.ef.r)
+        print("update")
+        print(self.dialog.ef.mode)
+        print(self.dialog.ef.h)
+        print(self.dialog.ef.r)
 
 
 
@@ -1239,15 +1252,15 @@ def mydialog(obj):
 #    miki.parse2(layout)
     miki.run(layout)
 
-    miki.ids['areac'].addItems([str(n) for n in range(1,11)])
+    miki.ids['areac'].addItems([str(n) for n in range(1, 11)])
     miki.ids['areac'].setCurrentIndex(1)
 
-    miki.ids['heightc'].addItems([str(n) for n in range(1,11)])
+    miki.ids['heightc'].addItems([str(n) for n in range(1, 11)])
     miki.ids['heightc'].setCurrentIndex(1)
-    
+
     return miki
 
 
 
 
-#------------------
+# ------------------

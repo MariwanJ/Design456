@@ -316,7 +316,7 @@ class FollowerSketch(FeaturePython):
 
 
     def execute(proxy,obj):
-        print ("execute"
+        print ("execute")
         obj.recompute()
 
 

@@ -250,7 +250,7 @@ class WorkSpace():
         sws = mdiarea.subWindowList()
         print ("windows ...")
         for w2 in sws:
-            print str(w2.windowTitle())
+            print (str(w2.windowTitle()))
             s = str(w2.windowTitle())
             if s == self.name + '1 : 1[*]':
                 print ("gefundne")

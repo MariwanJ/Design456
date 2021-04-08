@@ -1366,7 +1366,7 @@ class ViewProvider:
 
     def onDelete(self, obj, subelements):
         # https://forum.freecadweb.org/viewtopic.php?f=10&t=11818
-        print ("delete"
+        print ("delete")
         self.stoptimer(obj.Object)
         return True
 

@@ -52,7 +52,7 @@ class ViewProvider:
         return True
 
     def onChanged(self, obj, prop):
-            print ("onchange",prop
+            print ("onchange",prop)
 
 
 
@@ -134,9 +134,9 @@ class Taub(PartFeature):
         
     
     def onChanged(self, obj, prop):
-            print ("onchange--",prop
+            print ("onchange--",prop)
             if prop in ["pf","pf2",'count','discretizeCount','start','end','createBSpline']:
-                print ("Aktualisierebn"
+                print ("Aktualisierebn")
                 runtaubin(obj)
 
 
@@ -186,9 +186,9 @@ def run3D(self,mobj):
 
     if 1:
         i=mobj.Iterations
-        print ("iterations ",i
-        print mobj.Lambda
-        print ("------------------"
+        print ("iterations ",i)
+        print (mobj.Lambda)
+        print ("------------------")
         
         m.smooth(Method="Taubin",Iteration=i,Lambda=mobj.Lambda*0.01,Micro=mobj.Micro*0.01)
 #        import Mesh
@@ -217,7 +217,7 @@ class TaubM(PartFeature):
 
 
     def onChanged(self, obj, prop):
-            print ("onchange",prop
+            print ("onchange",prop)
             if prop in ['Iterations','Lambda','Micro']:
                 run3D(self,obj)
 
@@ -391,7 +391,7 @@ def splitMesh():
         p1=p0
         zmax=0
         import Draft
-        print ("umsortieren"
+        print ("umsortieren")
         for pts in ptsa:
             ij=0
             mj=10**10
@@ -406,12 +406,12 @@ def splitMesh():
 
 
             if (pps2[1].z-pps2[0].z)<=0:
-                print ("!!"
+                print ("!!")
                 pps2.reverse()
 
             p1=pps2[1]
             ptsb += [pps2]
-            print ij
+            print (ij)
             rcc=Draft.makeWire(pps2)
 
             pos=pts[0][1]
@@ -436,7 +436,7 @@ def splitMesh():
             ptsb=np.array(ptsb).swapaxes(0,1)
 
             for pix in pixl:
-                print pix
+                print (pix)
                 pts=ptsb[pix*10]
                 ij=0
                 mj=10**10
@@ -485,7 +485,7 @@ def sliceMeshbySketch():
 
     cs = mesh.crossSections([(ddA,ddB)],0.01)
     ptsW=[App.Vector(p) for p in cs[0][0]]
-    print  (len(ptsW)
+    print  (len(ptsW))
     import Draft
     pol=Part.makePolygon(ptsW)
     ptsW=pol.discretize(20)

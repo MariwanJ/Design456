@@ -293,16 +293,16 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
     def methodC(self,obj):
         print ("my method C After Edit finished")
         Gui.activateWorkbench("NurbsWorkbench")
-        print ("kl"
+        print ("kl")
 #        App.d.hide()
 #        App.d.deleteLater()
-        print ("ha"
+        print ("ha")
         App.activeDocument().recompute()
-        print ("hu"
+        print ("hu")
         mw = getMainWindow()
         tab = getComboView(mw)
         c = tab.count()
-        print ("count ",c
+        print ("count ",c)
         c = tab.count()
 
         # clear the combo  window
@@ -313,7 +313,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
 
         tab.setCurrentIndex(0)
         tab.setCurrentIndex(0)
-        print ("set tab domne"
+        print ("set tab domne")
 
 
 
@@ -546,12 +546,12 @@ def setDatum(sk,datname,datvalue):
     #c=
     cc=sk.Constraints[c]
     print ("---------",c,cc.Value)
-    print cc.Driving
+    print (cc.Driving)
     cd=cc.Driving
     sk.setDriving(c,True)
     sk.setDatum(c,datvalue)
     sk.setDriving(c,cd)
-    print ("rc solve",sk.solve()
+    print ("rc solve",sk.solve())
     
 
 def reportSketch(sk):
@@ -565,7 +565,7 @@ def reportSketch(sk):
         if c.Type in datumtypes:
             print (ci,c.Name,c.Type,c.Value,c.Driving,c.InVirtualSpace,[c.First,c.FirstPos])
 
-    print ("nameless datum ------------------"
+    print ("nameless datum ------------------")
     for ci,c in enumerate(cs):
         # only datums
         if c.Type in datumtypes and c.Name=='':
@@ -576,7 +576,7 @@ def reportSketch(sk):
         try:
             setDatum(sk,'line_A',v)
         except:
-            print ("kann nicht ",v 
+            print ("kann nicht ",v )
 
 def createConstraint(sk,line,name,value,blue=False):
         rc=sk.addConstraint(Sketcher.Constraint('Distance',line,value)) 
@@ -647,9 +647,9 @@ def genQuadrangle():
             sk.setDatum(length_c,1200)
             App.ActiveDocument.commitTransaction()
         except:
-            print ("Fehler gemacht"
+            print ("Fehler gemacht")
             reportSketch(sk)
-            print ("roll back"
+            print ("roll back")
             #App.ActiveDocument.abortTransaction()
         reportSketch(sk)
         App.activeDocument().recompute()
