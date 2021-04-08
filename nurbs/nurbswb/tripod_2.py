@@ -135,7 +135,7 @@ class Tripod(PartFeature):
             try:
                 t2=nn.normalAt(u)
             except:
-                print ("Problem Erstellung Normale"
+                print ("Problem Erstellung Normale")
                 t2=App.Vector(t1.y,t1.z,t1.x)
                 t2=t1.cross(t2)
             if fp.binormalMode:
@@ -245,7 +245,7 @@ class Tripod(PartFeature):
                 
                 self.pts += [vf]
                 #pts=self.w.Points + [vf]
-                print ("++++",self.pts
+                print ("++++",self.pts)
             except:
                 self.pts = [App.Vector(),vf]
             self.w.Shape=Part.makePolygon(self.pts)
