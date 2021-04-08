@@ -1,68 +1,89 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+#
+# ***************************************************************************
+# *                                                                        *
+# * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
+# *                                                                        *
+# * Copyright (C) 2021                                                     *
+# *                                                                        *
+# *                                                                        *
+# * This library is free software; you can redistribute it and/or          *
+# * modify it under the terms of the GNU Lesser General Public             *
+# * License as published by the Free Software Foundation; either           *
+# * version 2 of the License, or (at your option) any later version.       *
+# *                                                                        *
+# * This library is distributed in the hope that it will be useful,        *
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
+# * Lesser General Public License for more details.                        *
+# *                                                                        *
+# * You should have received a copy of the GNU Lesser General Public       *
+# * License along with this library; if not, If not, see                   *
+# * <http://www.gnu.org/licenses/>.                                        *
+# * Modified and adapter to Desing456 by:                                  *
+# * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
+# **************************************************************************
+
 import FreeCAD as App
 import FreeCADGui as Gui
-, Part
-
-
-
-
+import Part
 
 import random
 
-def run():
-    sel=Gui.Selection.getSelection()
 
-    face=sel[0].Shape.Face1.Surface.toShape()
+def run():
+    sel = Gui.Selection.getSelection()
+
+    face = sel[0].Shape.Face1.Surface.toShape()
     # Part.show(face)
 
-    #face=sel[0].Shape.Face1
+    # face=sel[0].Shape.Face1
 
-    wireobs=sel[1:]
+    wireobs = sel[1:]
 
-    print (face)
-    wires=[]
+    print(face)
+    wires = []
     for w in wireobs:
-        print w.Shape.Wires
+        print (w.Shape.Wires)
         wires += [w.Shape.Wires[0]]
 
+    es = wires
+    if len(es) > 0:
+        splita = []
+        for i, e in enumerate(es):
 
-    es=wires
-    if len(es)>0:
-            splita=[]
-            for i,e in enumerate(es):
+            edges = e.Edges
+            ee = edges[0]
+            # if dirs[i]: ee.reverse()
 
-                edges=e.Edges
-                ee=edges[0]
-                # if dirs[i]: ee.reverse()
+            e.reverse()
+            splita += [(e, face)]
 
-                e.reverse()
-                splita += [(e,face)]
-
-            r=Part.makeSplitShape(face, splita)
-            print r
-            for fs in r:
-                for f in fs:
-                    Part.show(f)
-                    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
-                            random.random(),random.random(),random.random(),)
-
+        r = Part.makeSplitShape(face, splita)
+        print(r)
+        for fs in r:
+            for f in fs:
+                Part.show(f)
+                App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
+                    random.random(), random.random(), random.random(),)
 
     else:
         Part.show(face)
-        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
-                            random.random(),random.random(),random.random(),)
-
-
+        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
+            random.random(), random.random(), random.random(),)
 
 
 def extractWires():
     '''extract the wires'''
-    sel=Gui.Selection.getSelection()
-    w=sel[0]
-    print w.Shape.Wires
-    for i,wire in  enumerate(w.Shape.Wires):
+    sel = Gui.Selection.getSelection()
+    w = sel[0]
+    print(w.Shape.Wires)
+    for i, wire in enumerate(w.Shape.Wires):
         Part.show(wire)
-        App.ActiveDocument.ActiveObject.Label="wire " + str(i+1) +" for "+  w.Label +" "
+        App.ActiveDocument.ActiveObject.Label = "wire " + \
+            str(i+1) + " for " + w.Label + " "
         wire.reverse()
         Part.show(wire)
-        App.ActiveDocument.ActiveObject.Label="wire " + str(i+1) +" for " +  w.Label +" reverse "
-        
+        App.ActiveDocument.ActiveObject.Label = "wire " + \
+            str(i+1) + " for " + w.Label + " reverse "
