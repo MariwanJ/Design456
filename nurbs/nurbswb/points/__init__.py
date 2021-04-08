@@ -56,7 +56,7 @@ import time
 
 
 def toUVMesh(bs, uf=5, vf=5):
-        print ("los"))
+        print ("los")
         uc=uf*bs.NbUPoles
         vc=vf*bs.NbVPoles
         ss=[]
@@ -405,7 +405,7 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
             tb=time.time()
             bs=machFlaeche(pa4,degree=3)
             tc=time.time()
-            print ("create surf all ", tc-tb
+            print ("create surf all ", tc-tb)
 
 
 #    if not createpart: return
