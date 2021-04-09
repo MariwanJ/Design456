@@ -56,31 +56,3 @@ class Design456_Nurbs_2DDrawingGroup:
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 Gui.addCommand("Design456_Nurbs_2DDrawingGroup", Design456_Nurbs_2DDrawingGroup())
-
-
-
-# Move an object to the location of the mouse click on another surface
-class Design456_Nurbs_DrawOnFace:
-    """ Draw on any face.
-    """
-    def Activated(self):
-        try:
-            pass
-        except Exception as err:
-            App.Console.PrintError("'Nurbs DrawOnFace' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + '/draw.svg',
-            'MenuText': 'Nurbs Draw',
-                        'ToolTip':  'Nurbs Draw'
-        }
-
-
-Gui.addCommand('Design456_Nurbs_DrawOnFace', Design456_Nurbs_DrawOnFace())
-Design456_Nurbs_DrawOnFace.__doc__ = """To be added later
-                            """
