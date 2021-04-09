@@ -38,11 +38,11 @@ PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons')
 WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets')
 
 #Nurbs
-NURBS_PATH=os.path.join(__dir__,'/nurbs/')
-NURBS_WB_PATH=os.path.join(__dir__,'/nurbs/nurbswb/')
+#NURBS_PATH=os.path.join(__dir__,'/nurbs/')
+NURBS_WB_PATH=os.path.join(__dir__,'nurbs/nurbswb')
 #NURBS_PLOT_PATH=os.path.join(__dir__,'/nurbs/plot2/')
-NURBS_SKETCHER_PATH=os.path.join(__dir__,'/nurbs/sketcher/')
-NURBS_ICON_PATH=os.path.join(__dir__,'/nurbs/Resources/icons/')
+NURBS_SKETCHER_PATH=os.path.join(__dir__,'nurbs/sketcher')
+NURBS_ICON_PATH=os.path.join(__dir__,'nurbs/Resources/icons')
 
 
 

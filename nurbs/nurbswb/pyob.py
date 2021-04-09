@@ -192,7 +192,7 @@ class ViewProvider:
         self.ViewObject.show()
 
     def setEdit(self, vobj, mode=0):
-        # self.createDialog()
+        #self.createDialog()
         PySide.QtCore.QTimer.singleShot(100, self.run_later)
         raise Exception("Exception-Hack to start Editor")
 #        return False

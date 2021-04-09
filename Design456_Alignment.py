@@ -253,7 +253,9 @@ class Design456_AlignmentGroup:
 
     """Design456 Part Alignment Tools"""
     #Separator = QtGui.QSpacerItem(5, 237, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-
+    def __init__(self):
+        return
+    
     def GetCommands(self):
         """3D Alignments Tools."""
         return ("Design456_MoveObject",

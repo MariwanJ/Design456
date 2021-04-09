@@ -82,9 +82,9 @@ def unroll(mode):
 
     for p in pts:
         t=c.parameter(p)
-        print c.tangent(t)
+        print(c.tangent(t))
         (u,v)=sf.parameter(p)
-        print sf.normal(u,v)
+        print (sf.normal(u,v))
 
 
     tgs=[c.tangent(c.parameter(p))[0] for p in pts]
@@ -98,7 +98,7 @@ def unroll(mode):
 
     if mode=='yaw':
         pp=c.value(0)
-        print  "Startpunkt",pp
+        print ( "Startpunkt",pp)
         #bp=nos[0]
         #bp=App.Vector(0,1,0)
 
@@ -109,9 +109,9 @@ def unroll(mode):
     tp=App.Vector(1,0,0)
 #    tp=App.Vector(1,0,0.3).normalize()
     tp=c.tangent(0)[0]
-    print ("-------------------"
-    print ("Startpunk",pp
-    print ("Tangente",tp
+    print ("-------------------")
+    print ("Startpunk",pp)
+    print ("Tangente",tp)
 
     if 1:
         pp=App.Vector()
@@ -195,7 +195,7 @@ def combineCT():
     p=App.Vector()
     start=App.Vector()
     start=kc.value(0)
-    print ("start",start
+    print ("start",start)
     
     
     
@@ -222,7 +222,7 @@ def combineCT():
 
     nn=App.Vector(0,0,1)
     b=t.cross(nn)
-    print nn
+    print (nn)
 
     if 0:
         a=App.ActiveDocument.Drawing_on_Face__Face1_Spline.Shape.Edge1.Curve
@@ -291,7 +291,7 @@ def combineCT():
         b=t.cross(nn).normalize()
         p=p+t
     #    print ("t ",t
-        print ("n ",nn
+        print ("n ",nn)
     #    print ("b ",b
     #    print 
         tpts += [p]
