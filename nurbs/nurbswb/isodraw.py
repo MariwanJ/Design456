@@ -1574,7 +1574,7 @@ def map2Dto3D():
 
 #    moa=createMap()
 #    moa.face=face
-
+    f=None
     for w in s:
         f = createIsodrawFace()
         f.mapobject = moa
@@ -1689,9 +1689,9 @@ def map3Dgridto2Dgrid():
 
 
 def getmap(mapobj, obj):
-    '''berechnet vier interpolatoren zum umrechnen von xy(isomap) in uv(nurbs) und zurueck 
-    mapobj liefert die parameter
-    obj ist das Part mit der benutzten Face
+    '''calculates four interpolators to convert xy (isomap) into uv (nurbs) and back
+     mapobj supplies the parameters
+     obj is the part with the used face 
     '''
 
     # default values
