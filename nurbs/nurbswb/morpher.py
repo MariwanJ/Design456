@@ -86,8 +86,8 @@ class Morpher(FeaturePython):
         pa=np.array(sfa.getPoles())
         pb=np.array(sfb.getPoles())
 
-        print pa.shape
-        print pb.shape
+        print (pa.shape)
+        print (pb.shape)
         pb2=npb.copy()
         a,b=pb.shape[0:1]
 
@@ -96,21 +96,21 @@ class Morpher(FeaturePython):
             ppa=ppa[::-1]
             pa=ppa.swapaxes(0,1)
             pb=pb[::-1] 
-            print pa.shape
-            print pb.shape
-            print ("Ecken 0 0"
-            print pa[0,0]
-            print pb[0,0]
-            print ("Eckebn -1 -1 "
-            print pa[-1,-1]
-            print pb[-1,-1]
+            print (pa.shape)
+            print (pb.shape)
+            print ("Ecken 0 0")
+            print (pa[0,0])
+            print (pb[0,0])
+            print ("Eckebn -1 -1 ")
+            print (pa[-1,-1])
+            print (pb[-1,-1])
 
-            print ("Eckebn 0 1"
-            print pa[0,-1]
-            print pb[0,-1]
-            print ("Eckebn 1 0"
-            print pa[-1,0]
-            print pb[-1,0]
+            print ("Eckebn 0 1")
+            print (pa[0,-1])
+            print (pb[0,-1])
+            print ("Eckebn 1 0")
+            print (pa[-1,0])
+            print (pb[-1,0])
 
 
         # pole morphen
@@ -132,7 +132,7 @@ class Morpher(FeaturePython):
         obj.Shape=bs.toShape()
 
     def myExecute(self,obj):
-        print obj.Label," executed"
+        print (obj.Label," executed")
 
 
 def createMorpher():
