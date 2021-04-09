@@ -31,10 +31,10 @@ import FreeCADGui as Gui
 import Design456Init
 sys.path.append(Design456Init.NURBS_PATH)
 sys.path.append(Design456Init.NURBS_WB_PATH)
-sys.path.append(Design456Init.NURBS_PLOT_PATH)
+#sys.path.append(Design456Init.NURBS_PLOT_PATH)
 
 import create_sole_sketch
-
+import Design456ini.NURBS_PLOT_PATH+'create_sole_sketch'
 class Design456_Nurbs_2DDrawingGroup:
 
     """Design456 Part 2D Drawing"""

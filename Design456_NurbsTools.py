@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 # * You should have received a copy of the GNU Lesser General Public       *
 # * License along with this library; if not, If not, see                   *
 # * <http://www.gnu.org/licenses/>.                                        *
-# * Modified and adapter to Desing456 by:                                  *
+# * Modified and adapted to Desing456 by:                                  *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
@@ -31,7 +31,7 @@ import FreeCADGui as Gui
 import Design456Init
 sys.path.append(Design456Init.NURBS_PATH)
 sys.path.append(Design456Init.NURBS_WB_PATH)
-sys.path.append(Design456Init.NURBS_PLOT_PATH)
+#sys.path.append(Design456Init.NURBS_PLOT_PATH)
 
 import Nurbs_3DToolsGroup
 import Nurbs_2DToolsGroup
