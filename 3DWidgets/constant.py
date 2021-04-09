@@ -107,8 +107,9 @@ class FR_EVENTS:
     FR_MOUSE_LEFT_RELEASE=     40
     FR_MOUSE_RIGHT_RELEASE=    50
     FR_MOUSE_MIDDLE_RELEASE=   60
-    FR_MOUSE_DRAG=             70
-    FR_MOUSE_MOVE=             80
+    FR_MOUSE_LEFT_DOUBLECLICK  70
+    FR_MOUSE_DRAG=             80
+    FR_MOUSE_MOVE=             90
     
 class FR_WHEN:
     FR_WHEN_NEVER	 	       = 0    # Never call the callback
