@@ -146,7 +146,7 @@ class Sole(curves.OffsetSpline):
     def onChanged(proxy, obj, prop):
         '''change on lastlength, inner and outer offset'''
         if prop == 'LL':
-            obj.setDatum(79, obj.LL)
+            obj.setDatum(79, obj.LL)              # This is causing a problem .. I don't know what is index 79 Mariwan
         if prop not in ["ofin", "ofout"]:
             return
         curves.OffsetSpline.myExecute(obj)
@@ -157,19 +157,21 @@ class Sole(curves.OffsetSpline):
 #
 #
 
-class runSole:
+class runSole():
+    def __init__(self, LL=260,name="mySole"):
+        self.LL=LL
+        self.name=name
+        
     '''create a default sole object'''
     def Activated(self):
-        name = "mySole"
-        LL = 260
         try:
             obj = App.ActiveDocument.addObject(
-                "Sketcher::SketchObjectPython", name)
+                "Sketcher::SketchObjectPython", self.name)
             obj.addProperty("App::PropertyInteger", "ofin",
                             "Base", "end").ofin = 10
             obj.addProperty("App::PropertyInteger", "ofout",
                             "Base", "end").ofout = 10
-            obj.addProperty("App::PropertyInteger", "LL", "Base", "end").LL = LL
+            obj.addProperty("App::PropertyInteger", "LL", "Base", "end").LL = self.LL
 
             Sole(obj)
             createsole(obj)
@@ -179,7 +181,7 @@ class runSole:
             import Draft
             img = Draft.makeRectangle(
                 length=265., height=265., face=True, support=None)
-            img.ViewObject.TextureImage = "/home/thomas/Dokumente/freecad_buch/b235_shoe/Foot_bg.png"
+            img.ViewObject.TextureImage = Design456Init.NURBS_ICON_PATH+"Foot_bg.png"
             img.Placement = App.Placement(
                 App.Vector(-6, 133, 0), App.Rotation(App.Vector(0, 0, -1), 90))
             img.ViewObject.Selectable = False

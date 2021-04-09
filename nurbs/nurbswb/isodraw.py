@@ -1751,7 +1751,7 @@ def getmap(mapobj,obj):
 
         def m_xy2u(x,y):
             return x/bs.Radius
-            return x*001
+            return (x*1)
 
         def m_xy2v(x,y):
             return y
