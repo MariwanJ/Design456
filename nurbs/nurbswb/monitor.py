@@ -54,9 +54,9 @@ from PySide import  QtGui,QtCore
 def run(window):
 
     anz=int(window.anz.text())
-    print anz
+    print (anz)
 
-    print window.r.isChecked()
+    print (window.r.isChecked())
 
     window.r.hide()
     window.hide()
@@ -173,8 +173,8 @@ class Monitor(PartFeature):
         ViewProvider(obj.ViewObject)
 
     def onDocumentRestored(self, fp):
-        print ("onDocumentRestored "
-        print fp.Label
+        print ("onDocumentRestored ")
+        print (fp.Label)
 
 
     def onChanged(self, fp, prop):
@@ -208,7 +208,7 @@ class Monitor(PartFeature):
 #            print (pts[i]-pts[i-1]).normalize().dot((pts[i+1]-pts[i]).normalize())
 #            print ll
 #            
-            print ("!! ",np.arctan2(ll,ls)*180./np.pi
+            print ("!! ",np.arctan2(ll,ls)*180./np.pi)
             su += np.arctan2(ll,ls)*180./np.pi
 
 
@@ -256,28 +256,28 @@ class Monitor(PartFeature):
         mm=20
         if obj.source != None:
 #            try:
-                print obj.source.Label
+                print (obj.source.Label)
                 print ("Value and interval:", round(obj.source.Shape.Edge1.Length,1),obj.minVal,obj.maxVal)
                 obj.source.ViewObject.LineColor=(1.0,1.0,1.0)
                 if obj.source.Shape.Edge1.Length<obj.minVal:
                     obj.source.ViewObject.LineColor=(0.0,.0,1.0)
                 elif obj.source.Shape.Edge1.Length>obj.minVal and obj.source.Shape.Edge1.Length<obj.minVal+mm:
                     j=1-(obj.minVal+mm-obj.source.Shape.Edge1.Length)/mm
-                    print j
+                    print (j)
                     j=j*0.5
                     obj.source.ViewObject.LineColor=(0.,1.0,.0)
                 elif obj.source.Shape.Edge1.Length<obj.maxVal and obj.source.Shape.Edge1.Length>obj.maxVal-mm:
                     j=(obj.maxVal-obj.source.Shape.Edge1.Length)/mm
-                    print j
+                    print (j)
                     j=j*0.5
                     obj.source.ViewObject.LineColor=(.0,1.0,0.)
                 elif obj.source.Shape.Edge1.Length>obj.maxVal:
                     obj.source.ViewObject.LineColor=(1.0,0.0,.0)
                 obj.val=obj.source.Shape.Edge1.Length
-                print ("huhu"
+                print ("huhu")
                 proxy.dialog.anz.setText("VALUE: " + str(obj.val))
 #            except:
-                print ("kann nichts machen"
+                print ("kann nichts machen")
 
 
 def run():

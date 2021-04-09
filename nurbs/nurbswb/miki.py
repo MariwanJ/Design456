@@ -343,8 +343,8 @@ class Miki():
                 try:
                     d[depth]=l
                 except:
-                    print ("error "
-                    print [l, ltxt]
+                    print ("error ")
+                    print ([l, ltxt])
                     pass
                 #ln[depth]=line
                 #parent=ln[depth-1]
@@ -388,7 +388,7 @@ class Miki():
 
                 res=re.search("\s*(\S):\s*([^:]\S.*)",st)
                 if res:
-                    print app
+                    print (app)
                     r=[l,line,parent,"att val",res.group(1),eval(res.group(2))]
                     if res.group(1) =='Name':
 #                        print ("setze Namen von parent"
@@ -412,14 +412,14 @@ class Miki():
         debug = 0
         if debug:
             print
-            print ("lines parsed ..."
+            print ("lines parsed ...")
             for r in rs:
-                    print r
+                    print (r)
             if  len(self.anchors.keys()) >0:
                 print 
-                print ("Anchors ...."
+                print ("Anchors ....")
                 print
-                print (self.anchors
+                print (self.anchors)
                 print
 
 
@@ -507,7 +507,7 @@ class Miki():
                         elif cn=='str':
                             ex="parent."+l[4]+"='"+v+"'"
                         else:
-                            print ("nicht implementierter typ"
+                            print ("nicht implementierter typ")
                             ex=''
 #                        print ("!!! *!!** "+ex
                         exec(ex)
@@ -541,7 +541,7 @@ class Miki():
                         elif cn=='str':
                             ex="parent."+l[4]+"='"+v+"'"
                         else:
-                            print ("nicht implementierter typ"
+                            print ("nicht implementierter typ")
                             ex=''
 #                        ex="parent."+l[4]+"="+str(v)
 #                        print ("*** "+ex
@@ -576,12 +576,12 @@ class Miki():
                     elif cn=='str':
                         ex="parent."+l[4]+"='"+v+"'"
                     else:
-                        print ("nicht implementierter typ"
+                        print ("nicht implementierter typ")
                         ex=''
 #                    print ("//*** "+ex
                     exec(ex)
 #                    print parent
-        print ("Ende build"
+        print ("Ende build")
 
 
     def showSo(self):
@@ -642,7 +642,7 @@ class Miki():
             except:
                 p.children=[c]
             return
-        print p
+        print (p)
         try:
             if str(p.TypeId)=='Part::MultiFuse':
                 z=p.Shapes
@@ -668,16 +668,16 @@ class Miki():
 
     def run(self,string,cmd=None):
         debug=False
-        if debug: print ("parse2 ...."
+        if debug: print ("parse2 ....")
         self.parse2(string)
-        if debug: print ("build ...#"
+        if debug: print ("build ...#")
         self.build()
 
-        if debug:  print ("showSo ..."
+        if debug:  print ("showSo ...")
         self.showSo()
         if cmd!=None:
-            print ("CMD ..."
-            print cmd 
+            print ("CMD ...")
+            print (cmd )
             cmd()
 
 
@@ -689,21 +689,21 @@ class Miki():
         return rl
 
     def report(results=[]):
-        print ("Results ..."
+        print ("Results ...")
         for r in results:
-            print r
+            print (r)
             if r.__class__.__name__.startswith('So'):
                 sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
                 sg.addChild(r)
 
-        print ("Data ..."
+        print ("Data ...")
         for ob in self.objects:
-            print ob
+            print (ob)
 
-        print (self.anchors
+        print (self.anchors)
 
         for r in self.roots():
-            print r
+            print (r)
 
 ################
 
