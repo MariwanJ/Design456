@@ -378,7 +378,7 @@ def genUgrid(face,sf,gridfac=10,debug=False):
             if len(a[1])>2:
                 print 
                 for p in a[1]:
-                    print p[0]
+                    print (p[0])
                 print
         else:
                 start=a[1][0][0][1]
@@ -524,7 +524,7 @@ def genKgrid(face,umin,umax,vmin,vmax,mode,sf,gridfac=10,obj=None,debug=False):
     App.ActiveDocument.ActiveObject.ViewObject.DisplayMode = "Shaded"
 
     te=time.time()
-    print ("color time ",round(te-ts,2)
+    print ("color time ",round(te-ts,2))
 
 
 def gengrid(pts,lena,direct=2):
@@ -577,10 +577,10 @@ def runobj(obj,fac=5):
     for f in obj.Shape.Faces:
         try:
             poly,umin,umax,vmin,vmax = uvmap(f.Edges,f.Surface,debug)
-            print ("genkgrid" 
+            print ("genkgrid" )
             mode= 'sumabs' # 'u','v', 'sumabs','gauss', 'mean'
             genKgrid(poly,umin,umax,vmin,vmax,mode ,f.Surface,fac,obj,debug)
-            print ("DONE stop here - no grid generation"
+            print ("DONE stop here - no grid generation")
             return
             l1=genVgrid(poly,f.Surface,fac,debug)
             l2=genUgrid(poly,f.Surface,fac,debug)
@@ -597,13 +597,13 @@ def runobj(obj,fac=5):
 
     comp=Part.makeCompound(el)
     te=time.time()
-    print ("Creation time ",round(te-ts,2)
+    print ("Creation time ",round(te-ts,2))
 
     ts=time.time()
     Part.show(comp)
     App.ActiveDocument.ActiveObject.ViewObject.LineColor=(random.random(),random.random(),random.random())
     te=time.time()
-    print ("Part.show time ",round(te-ts,2)
+    print ("Part.show time ",round(te-ts,2))
 
 
 def runsub(f,fac=5,label="NoLAB"):
@@ -633,14 +633,14 @@ def runsub(f,fac=5,label="NoLAB"):
     
     comp=Part.makeCompound(el)
     te=time.time()
-    print ("Creation time ",round(te-ts,2)
+    print ("Creation time ",round(te-ts,2))
 
     ts=time.time()
     Part.show(comp)
     App.ActiveDocument.ActiveObject.ViewObject.LineColor=(random.random(),random.random(),random.random())
     App.ActiveDocument.ActiveObject.Label=label
     te=time.time()
-    print ("Part.show time ",round(te-ts,2)
+    print ("Part.show time ",round(te-ts,2))
 
 
 

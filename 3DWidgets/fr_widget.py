@@ -227,7 +227,7 @@ class Fr_Widget (object):
     def handle(self, events):
         raise NotImplementedError()
         
-    def callack_lableChanged(self,data)
+    def callack_lableChanged(self,data):
         """ This callback will be used 
             to run code that will be 
             related to the label change.
@@ -237,6 +237,7 @@ class Fr_Widget (object):
             time you need a callback
             mechanism. This is for that.
             """
+        pass
 
 
     # Callbacks

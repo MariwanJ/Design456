@@ -277,8 +277,8 @@ def run():
 
     model=Gui.Selection.getSelection()[0]
     if model.Shape.Edge1.Curve.__class__.__name__ !='BSplineCurve':
-        print model.Label
-        print model.Shape.Edge1.Curve.__class__.__name__
+        print (model.Label)
+        print (model.Shape.Edge1.Curve.__class__.__name__)
         showdialog('Error','edge of the selected curve is not a BSpline','method is only implemented for BSpline Curves')
         raise Exception("not implemented for this curve type")
     
@@ -287,8 +287,8 @@ def run():
         points2=source.Points
         # todo: rectangle as source frame
     except:
-        print ("use bound box as source frame"
-        print model.Shape.BoundBox
+        print ("use bound box as source frame")
+        print (model.Shape.BoundBox)
         points2=[model.Shape.BoundBox.getPoint(i) for i in range(4)]
         source=None
 

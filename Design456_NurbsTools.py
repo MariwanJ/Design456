@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import Nurbs_Miscellaneous
+import Nurbs_2DDrawingGroup
+import Nurbs_3DDrawingGroup
+import Nurbs_2DToolsGroup
+import Nurbs_3DToolsGroup
 #
 # ***************************************************************************
 # *                                                                        *
@@ -25,41 +30,31 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os, sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-sys.path.append(Design456Init.NURBS_PATH)
+# sys.path.append(Design456Init.NURBS_PATH)
 sys.path.append(Design456Init.NURBS_WB_PATH)
-#sys.path.append(Design456Init.NURBS_PLOT_PATH)
+# sys.path.append(Design456Init.NURBS_PLOT_PATH)
 
-import Nurbs_3DToolsGroup
-import Nurbs_2DToolsGroup
-import Nurbs_3DDrawingGroup
-import Nurbs_2DDrawingGroup
-import Nurbs_Miscellaneous
-
-
-class Design456_NurbsMain:        
-    """Design456 Nurbs"""
 
 class Design456_NURBSGroup:
+    """Design456 Nurbs Toolbar"""
     list = ["Design456_Nurbs_3DToolsGroup",
             "Design456_Nurbs_2DToolsGroup",
             "Design456_Nurbs_3DDrawingGroup",
             "Design456_Nurbs_2DDrawingGroup",
+            # "Separator",
             "Design456_Nurbs_Miscellaneous",
-                       
+
             ]
 
-    """Design456 Nurbs Toolbar"""
-
     def GetResources(self):
-        return{
-            'Pixmap':    NURBS_ICON_PATH + '/Design456_Nurbs.svg',
-            'MenuText': 'Nurbs',
-            'ToolTip':  'Nurbs'
-        }
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
     def IsActive(self):
         """Return True when this command should be available."""
@@ -67,43 +62,24 @@ class Design456_NURBSGroup:
             return True
         else:
             return False
-        
+
     def Activated(self):
-        self.appendToolbar("Design456_Nurbs", self.list)
+        self.appendToolbar("Design456_Part_Tools", self.list)
 
-Gui.addCommand("Design456_NURBSGroup", Design456_NURBSGroup())
+#Gui.addCommand("Design456_NURBSGroup", Design456_NURBSGroup())
 
-
-class Design456_Nurbs_3DToolsGroup:
-        
-    """Design456 Nurbs 3D Tools"""
-
-    def GetCommands(self):
-        """3D Modifying Tools."""
-        return ("",
-                
-
-                )
-
-    def GetResources(self):
-        import Design456Init
-        from PySide.QtCore import QT_TRANSLATE_NOOP
-        """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  NURBS_ICON_PATH + '/Design456_Nurbs.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
-                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
-
-Gui.addCommand("Design456_Nurbs_3DToolsGroup", Design456_Nurbs_3DToolsGroup())
 
 class Design456_Nurbs_2DToolsGroup:
 
     """Design456 Nurbs 2D Tools"""
 
+    def __init__(self):
+        return
+
     def GetCommands(self):
         """3D Modifying Tools."""
         return ("",
-                
+
 
                 )
 
@@ -112,21 +88,22 @@ class Design456_Nurbs_2DToolsGroup:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + '/Design456_Nurbs.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
 
 Gui.addCommand("Design456_Nurbs_2DToolsGroup", Design456_Nurbs_2DToolsGroup())
 
 
 class Design456_Nurbs_3DDrawingGroup:
-        
+
     """Design456 Nurbs 3D Drawing"""
 
     def GetCommands(self):
         """3D Modifying Tools."""
         return ("",
-                
+
 
                 )
 
@@ -135,9 +112,10 @@ class Design456_Nurbs_3DDrawingGroup:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + '/Design456_Nurbs.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-Gui.addCommand("Design456_Nurbs_3DDrawingGroup", Design456_Nurbs_3DDrawingGroup())
 
+Gui.addCommand("Design456_Nurbs_3DDrawingGroup",
+               Design456_Nurbs_3DDrawingGroup())

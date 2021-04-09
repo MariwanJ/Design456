@@ -118,7 +118,7 @@ class EventFilter(QtCore.QObject):
                     # only two function keys implemented, no modifieres
                     if e.key()== QtCore.Qt.Key_F2:
                         say("------------F2-- show mode and moddata---------------")
-                        print (self.mode
+                        print (self.mode)
                         return False
                     elif e.key()== QtCore.Qt.Key_Escape:
                         say("------------Escape-----------------")
@@ -175,7 +175,7 @@ class EventFilter(QtCore.QObject):
                         if r=='*':
                             Gui.activeDocument().ActiveView.fitAll()
                             return True
-                         if r in ['l','r','h','x','y','z','n','t','b']:
+                        if r in ['l','r','h','x','y','z','n','t','b']:
                             self.key=str(r)
                             self.mode=str(r)
                             App.ParamGet('User parameter:Plugins/nurbs').SetString("editorKey",self.key)
@@ -284,7 +284,7 @@ def focus():
         needle.Label
 
         for sen in s.SubElementNames:
-            print sen[4:]
+            print (sen[4:])
             if s.Object.Name[0:4]=='Ribs':
                 return (needle,"rib",int(sen[4:]))
             if s.Object.Name[0:9]=='Meridians':
@@ -391,7 +391,7 @@ class MyWidget(QtGui.QWidget):
                 points=pp2
 
             except:
-                print ("ExCEPT - need to create helper BSpline"
+                print ("ExCEPT - need to create helper BSpline")
                 src=self.getsource()
                 points=src.Shape.Edge1.Curve.getPoles()
                 mybsc=App.activeDocument().addObject('Part::Feature','BSpline')
@@ -495,7 +495,7 @@ class MyWidget(QtGui.QWidget):
             points=pp2
 
         elif mode==4:
-            print ("rotate NEIOGHJHGJH"
+            print ("rotate NEIOGHJHGJH")
             
 #-----------------------
         elif mode==3:
@@ -563,7 +563,7 @@ class MyWidget(QtGui.QWidget):
 
 
         else:
-            print ("!!!!!!!!!!!!!! no imp for this mode!!"
+            print ("!!!!!!!!!!!!!! no imp for this mode!!")
 
 
 
@@ -648,7 +648,7 @@ class MyWidget(QtGui.QWidget):
 
     def setsharp(self,v):
         if self.imode==3:
-            print ("mode 3"
+            print ("mode 3")
             self.setsharp3(v)
             return
         
@@ -771,7 +771,7 @@ class MyWidget(QtGui.QWidget):
     def settarget(self):
         '''set the target depending on the mouse wheel roll and mode key'''
         if self.imode==3:
-            print ("SET IMODE 3"
+            print ("SET IMODE 3")
             ef=self.ef
 
 
@@ -780,7 +780,7 @@ class MyWidget(QtGui.QWidget):
             #return
 
         if self.imode==4:
-            print ("SET IMODE 4"
+            print ("SET IMODE 4")
             self.settarget4()
             return
 
@@ -890,7 +890,7 @@ class MyWidget(QtGui.QWidget):
         ppax=[]
 
         if self.source=='Backbone':
-            print ("recompute Backbone #########################################"
+            print ("recompute Backbone #########################################")
             xV=App.Vector(100,0,0)
             yV=App.Vector(0,100,0)
             zV=App.Vector(0,0,141)
@@ -968,7 +968,7 @@ class MyWidget(QtGui.QWidget):
     def settarget4(self):
         '''rotate neighbors'''
 
-        print ("settarget 4"
+        print ("settarget 4")
 
         dok=self.helperDok()
         pl=len(self.points)
@@ -1009,7 +1009,7 @@ class MyWidget(QtGui.QWidget):
         t2=t+drt2
 
         print (t1,t2)
-        print ("kilo"
+        print ("kilo")
         self.target(dok,coordlist=[t1,t,t2]) 
 
 #        try: dok.Sphere
@@ -1055,7 +1055,7 @@ class MyWidget(QtGui.QWidget):
         pp3=[]
         ppax=[]
         
-        print ("wwww"
+        print ("wwww")
 
         if self.source=='Backbone':
             xV=App.Vector(100,0,0)
@@ -1138,7 +1138,7 @@ class MyWidget(QtGui.QWidget):
     def setmode(self,index):
         '''callback from list'''
         self.imode=index
-        print (self.mode.currentText()
+        print (self.mode.currentText())
         App.ParamGet('User parameter:Plugins/nurbs').SetString("editorMode",str(self.mode.currentText()))
         if index not in [2,3]:
             self.rotsl.hide()
@@ -1294,7 +1294,7 @@ class SelObserver:
             nr=sel[6:]
             App.eventfilter.dialog.dial.setValue(int(nr)-1)
         else:
-            print ("no vertext"
+            print ("no vertext")
             return
 
 
@@ -1392,15 +1392,15 @@ def undock(label='Spreadsheet'):
         a=App.activeDocument().MyNeedle
         a.Proxy.startssevents()
     except:
-        print ("cannot active eventmanager"
+        print ("cannot active eventmanager")
 
     mw=FreeCADGui.getMainWindow()
     mdiarea=mw.findChild(QtGui.QMdiArea)
 
     sws=mdiarea.subWindowList()
-    print ("windows ..."
+    print ("windows ...")
     for w2 in sws:
-        print str(w2.windowTitle())
+        print (str(w2.windowTitle()))
         if str(w2.windowTitle()).startswith(label):
             sw=w2
             bl=w2.children()[3]

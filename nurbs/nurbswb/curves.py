@@ -50,12 +50,12 @@ for Offset curve generation
 #pylint: disable=W0312,W0232,R0903
 
 from say import *
-import nurbswb.pyob
+import pyob
 
 ##\cond
 
 
-class _ViewProvider(nurbswb.pyob.ViewProvider):
+class _ViewProvider(pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj, icon='/icons/mover.png'):
@@ -70,7 +70,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
 
 ## Two Offset curves for a Bspline defined by a Sketcher interpolation polygon
 
-class OffsetSpline(nurbswb.pyob.FeaturePython):
+class OffsetSpline(pyob.FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
@@ -140,7 +140,7 @@ class OffsetSpline(nurbswb.pyob.FeaturePython):
 
 
 #---------------------
-class Ufo(nurbswb.pyob.FeaturePython):
+class Ufo(pyob.FeaturePython):
     '''a mirgrationtest class''' 
 
     ##\cond
@@ -244,7 +244,7 @@ import time
 
 ## A (topological) 2D tree with special connecting methods to combine trees to larger tree
 
-class Star(nurbswb.pyob.FeaturePython):
+class Star(pyob.FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
