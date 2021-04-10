@@ -32,3 +32,26 @@ import Design456Init
 #sys.path.append(Design456Init.NURBS_PATH)
 sys.path.append(Design456Init.NURBS_WB_PATH)
 #sys.path.append(Design456Init.NURBS_PLOT_PATH)
+
+
+class Design456_Nurbs_2DToolsGroup:
+    
+    """Design456 Part 2D Drawing"""
+
+    def GetCommands(self):
+        """3D Modifying Tools."""
+        return (""
+
+
+                )
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Nurbs2.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Design456_Nurbs_2DToolsGroup", Design456_Nurbs_2DToolsGroup())

@@ -29,12 +29,9 @@ __vers__="V???"
 import FreeCAD, FreeCADGui
 import sys
 import nurbswb
-import nurbswb.configuration
+import configuration
 import os
 import re
-global __dir__
-__dir__ = os.path.dirname(nurbswb.__file__)
-
 
 ##-
 
@@ -139,7 +136,7 @@ class MyTestCmd2:
         return {'MenuText': 'Test-test...', 'ToolTip': 'Runs the self-test for the workbench'}
 
 
-FreeCADGui.addCommand('My_Test2'        ,MyTestCmd2())
+Gui.addCommand('My_Test2'        ,MyTestCmd2())
 # FreeCADGui.runCommand('My_Test2')
 
 
@@ -921,7 +918,7 @@ static char * nurbs_xpm[] = {
 "................",
 "................",
 "................"};'''
-
+"""
     def GetClassName(self):
         return "Gui::PythonWorkbench"
 
@@ -931,8 +928,8 @@ static char * nurbs_xpm[] = {
         self.toolbars = toolbars
         self.version = version
 
-
-
+"""
+"""
     def Initialize(self):
 
         Gui.activateWorkbench("DraftWorkbench")
@@ -1010,5 +1007,6 @@ static char * nurbs_xpm[] = {
 
 
 
-FreeCADGui.addWorkbench(NurbsWorkbench(toolbars, __vers__))
+#Gui.addWorkbench(NurbsWorkbench(toolbars, __vers__))
 
+"""
