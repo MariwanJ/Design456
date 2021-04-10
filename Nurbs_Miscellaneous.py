@@ -40,7 +40,10 @@ class Design456_Nurbs_Miscellaneous:
 
     def GetCommands(self):
         """3D Drawing"""
-        return ("",
+        return (                #from cmd3 defined in his wb as "Workspaces and Views"
+                 'Nurbs_CreateWorkspace','Nurbs_CreateWSLink','Nurbs_ViewsQV','Nurbs_Views2H','Nurbs_DarkRoom','Nurbs_LightOn','Nurbs_LightOff',
+                 
+
                 
 
                 )
@@ -50,7 +53,7 @@ class Design456_Nurbs_Miscellaneous:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Design456_Nurbs.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Nurbs5.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

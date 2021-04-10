@@ -51,7 +51,7 @@ class Design456_Nurbs_3DDrawingGroup:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Design456_Nurbs.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Nurbs3.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
