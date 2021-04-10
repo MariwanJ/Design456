@@ -26,13 +26,22 @@ from __future__ import unicode_literals
 # ***************************************************************************
 import os,sys
 import FreeCAD as App
+"""
+This file will add all pathes needed for the Design456.
+It makes life easier. By doing that you can import any file
+in any of the subdirectories. Adding more subdirectories
+needs be added here. 
+ICON path should be always added as bellow 
+'Resources/icons/' 
+
+"""
 #Design456 
 __dir__ = os.path.dirname(__file__)
-ICON_PATH = os.path.join(__dir__, 'Resources/icons')
-IMAGE_PATH = os.path.join(__dir__, 'Resources/images')
+ICON_PATH = os.path.join(__dir__, 'Resources/icons/')
+IMAGE_PATH = os.path.join(__dir__, 'Resources/images/')
 #Pyramid shapes 
 PYRAMID_PATH = os.path.join(__dir__, 'PyramidMo')
-PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons')
+PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons/')
 
 #Coin3D New widget system 
 WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets')

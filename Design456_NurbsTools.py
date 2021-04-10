@@ -67,32 +67,3 @@ class Design456_NURBSGroup:
         self.appendToolbar("Design456_Part_Tools", self.list)
 
 #Gui.addCommand("Design456_NURBSGroup", Design456_NURBSGroup())
-
-''' 
-class Design456_Nurbs_2DToolsGroup:
-
-    """Design456 Nurbs 2D Tools"""
-
-    def __init__(self):
-        return
-
-    def GetCommands(self):
-        """3D Modifying Tools."""
-        return ("",
-
-
-                )
-
-    def GetResources(self):
-        import Design456Init
-        from PySide.QtCore import QT_TRANSLATE_NOOP
-        """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + "/Design456_Nurbs.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
-                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
-
-
-Gui.addCommand("Design456_Nurbs_2DToolsGroup", Design456_Nurbs_2DToolsGroup())
-
- '''
