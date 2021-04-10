@@ -120,7 +120,7 @@ class Design456_Extrude:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Extrude.svg',
+            'Pixmap': Design456Init.ICON_PATH +'Extrude.svg',
             'MenuText': 'Extrude',
                         'ToolTip':  'Extrude'
         }

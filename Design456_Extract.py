@@ -76,7 +76,7 @@ class Design456_Extract:
 
     def GetResources(self):
         return{
-            'Pixmap':   Design456Init.ICON_PATH + '/Extract.svg',
+            'Pixmap':   Design456Init.ICON_PATH +'Extract.svg',
             'MenuText': 'Extract',
             'ToolTip': 'Extract selected subshapes from objects'
         }

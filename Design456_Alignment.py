@@ -63,7 +63,7 @@ class Design456_AlignFlatToPlane:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/AlignToPlane.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'AlignToPlane.svg',
             'MenuText': 'Align To Plane',
             'ToolTip':  'Align to Plane'
         }
@@ -86,7 +86,7 @@ class Design456_TopSideView:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/TopSideView.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'TopSideView.svg',
             'MenuText': 'Top Side View',
             'ToolTip':  'Top Side View'
             }
@@ -107,7 +107,7 @@ class Design456_BottomView:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/BottomSideView.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'BottomSideView.svg',
             'MenuText': 'Bottom Side View',
             'ToolTip':  'Bottom Side View'
             }
@@ -128,7 +128,7 @@ class Design456_LeftSideView:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/LeftSideView.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'LeftSideView.svg',
             'MenuText': 'Left Side View',
             'ToolTip':  'Left Side View'
             }
@@ -149,7 +149,7 @@ class Design456_RightSideView:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/RightSideView.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'RightSideView.svg',
             'MenuText': 'Right Side View',
             'ToolTip':  'Right Side View'
             }
@@ -170,7 +170,7 @@ class Design456_FrontSideView:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/FrontSideView.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'FrontSideView.svg',
             'MenuText': 'Front Side View',
             'ToolTip':  'Front Side View'
             }
@@ -191,7 +191,7 @@ class Design456_BackSideView:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/BackSideView.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'BackSideView.svg',
             'MenuText': 'Backside View',
             'ToolTip':  'BackSide View'
             }
@@ -218,7 +218,7 @@ class Design456_MoveObject:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/Design456_Move.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'Design456_Move.svg',
             'MenuText': 'Design456 Move',
             'ToolTip':  'Design456 Move'
             }
@@ -242,7 +242,7 @@ class Design456_MoveObjectDetailed:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/Design456_MoveD.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'Design456_MoveD.svg',
             'MenuText': 'Design456 Move-Detailed',
             'ToolTip':  'Design456 Move Detailed'
             }
@@ -270,7 +270,7 @@ class Design456_AlignmentGroup:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools for Aligning 3D/2D Shapes")
-        return {'Pixmap':  Design456Init.ICON_PATH +'/Design456_Alignment.svg',
+        return {'Pixmap':  Design456Init.ICON_PATH+ 'Design456_Alignment.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Alignment"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
