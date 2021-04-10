@@ -516,7 +516,7 @@ if App.GuiUp:
     c3bI(["Bezier","Assembly"], always, 'berings', 'create Helmet Tube Connector')
     
     beztools += [c3bI(["Bezier","Assembly"], always, 'berings', 'create Bering')]
-    c3bG(["Bezier","Assembly"], always, 'berings', 'create Tangent Helpers',"/../icons/alpha.svg")
+    c3bG(["Bezier","Assembly"], always, 'berings', 'create Tangent Helpers',Design456Init.NURBS_ICON_PATH + "alpha.svg")
     beztools += [c3bI(["Bezier","Assembly"], always, 'berings', 'create Beface')]
 #    c3bG(["Bezier"], always, 'parameters', 'run')
     c3bI(["Bezier","Assembly"], always, 'berings', 'create Product')
@@ -527,7 +527,7 @@ if App.GuiUp:
     c3b(["Bezier","Convert"], always, 'berings', 'BSpline To Bezier Curve')
     c3b(["Bezier","Convert"], always, 'berings', 'BSpline To Bezier Surface')
     c3b(["Bezier","Convert"], always, 'berings', 'Face To Bezier Surface')
-    c3bG(["Bezier","Convert"], always, 'berings', 'create Approx',"/../icons/alpha.svg")
+    c3bG(["Bezier","Convert"], always, 'berings', 'create Approx',Design456Init.NURBS_ICON_PATH + "alpha.svg")
 
 
     current += [c3bI(["Bezier"], always, 'points_to_wires', 'AA',tooltip="Eine Testfunktion")]
@@ -590,11 +590,11 @@ if App.GuiUp:
     c3bI(["Bezier","Segments"], always, 'berings', 'Split Into Cells')
     c3bI(["Bezier","Segments"], always, 'berings', 'create Cell')
     c3bI(["Bezier","Segments"], always, 'berings', 'create Hole')
-    c3bG(["Bezier","Segments"], always, 'berings', 'create Border',"/../icons/alpha.svg")
+    c3bG(["Bezier","Segments"], always, 'berings', 'create Border',Design456Init.NURBS_ICON_PATH + "alpha.svg")
 
-    c3bI(["Bezier","Convert"], always, 'berings', 'create QuadPlacement',"/../icons/alpha.svg")
+    c3bI(["Bezier","Convert"], always, 'berings', 'create QuadPlacement',Design456Init.NURBS_ICON_PATH + "alpha.svg")
     c3bI(["Bezier","Convert"], always, 'berings', 'stretch and bend')
-    c3bG(["Bezier","Convert"], always, 'berings', 'polish G1',"/../icons/alpha.svg")
+    c3bG(["Bezier","Convert"], always, 'berings', 'polish G1',Design456Init.NURBS_ICON_PATH + "alpha.svg")
 
     c3bI(["Bezier","Diagnostics"],ondocument,'monitor','create a force monitor','/../icons/nurbs.svg',"runforce()")
 
@@ -618,7 +618,7 @@ if App.GuiUp:
 #-------------------------------------------
     mt="Transportation V0"
     c2a([mt],ondocument,'LoadSketch','sketchmanager','load sketch from a sketchlib','/../icons/sketchlibload.svg',"runLoadSketch()")
-    c2a([mt],onselection2,'Status155','feedbacksketch','connect road to line ',"/../icons/alpha.svg","connectLine()","sketcher")
+    c2a([mt],onselection2,'Status155','feedbacksketch','connect road to line ',Design456Init.NURBS_ICON_PATH + "alpha.svg","connectLine()","sketcher")
     c2b([mt],ondocument,0,'sketch_to_bezier','create Arc Sketch','/../icons/draw.svg')
     c2b([mt],onselection1,0,'sketch_to_bezier','create Labels','/../icons/draw.svg')
     c2b([mt],onselection1,0,'sketch_to_bezier','create Stations','/../icons/draw.svg')
@@ -834,38 +834,38 @@ if App.GuiUp:
 
 
 
-    c2a(["Nurbs"],always,'Grid','blender_grid','Create Grid',"/../icons/Draft_Grid.svg","run()")
+    c2a(["Nurbs"],always,'Grid','blender_grid','Create Grid',Design456Init.NURBS_ICON_PATH + "Draft_Grid.svg","run()")
 
 
-    c2a(["Points"],always,'pta','points','points to volums',"/../icons/points.png","runA()",)
-    c2a(["Points"],always,'ptb','points','test B',"/../icons/points.png","runB()",)
-    c2a(["Points"],always,'ptc','points','create point cloud y = 0.5*x with noise',"/../icons/points.png","runC()",)
-    c2a(["Points"],always,'ptd','points','approx points with outliner detection',"/../icons/points.png","runD()",)
-    c2a(["Points"],always,'pte','points','approx point simple',"/../icons/points.png","runE()",)
+    c2a(["Points"],always,'pta','points','points to volums',Design456Init.NURBS_ICON_PATH + "points.svg","runA()",)
+    c2a(["Points"],always,'ptb','points','test B',Design456Init.NURBS_ICON_PATH + "points.svg","runB()",)
+    c2a(["Points"],always,'ptc','points','create point cloud y = 0.5*x with noise',Design456Init.NURBS_ICON_PATH + "points.svg","runC()",)
+    c2a(["Points"],always,'ptd','points','approx points with outliner detection',Design456Init.NURBS_ICON_PATH + "points.svg","runD()",)
+    c2a(["Points"],always,'pte','points','approx point simple',Design456Init.NURBS_ICON_PATH + "points.svg","runE()",)
 
 
-    c2a(["Neo4j"],always,'Start','neodb','start db',"/../icons/neo4j.png","start()","graphdb")
-    c2a(["Neo4j"],always,'Stop','neodb','stop db',"/../icons/neo4j_stop.png","stop()","graphdb")
-    c2a(["Neo4j"],always,'Status','neodb','status db',"/../icons/neo4j_status.png","status()","graphdb")
+    c2a(["Neo4j"],always,'Start','neodb','start db',Design456Init.NURBS_ICON_PATH + "neo4j.png","start()","graphdb")
+    c2a(["Neo4j"],always,'Stop','neodb','stop db',Design456Init.NURBS_ICON_PATH + "neo4j_stop.png","stop()","graphdb")
+    c2a(["Neo4j"],always,'Status','neodb','status db',Design456Init.NURBS_ICON_PATH + "neo4j_status.png","status()","graphdb")
 
-    c2a(["Neo4j"],always,'Start_OF','openflights','import_Open Flights',"/../icons/openflights-import.png","load()","graphdb")
-    c2a(["Neo4j"],always,'Reset_OG','openflights','reset_Open Flights',"/../icons/openflights.png","reset()","graphdb")
+    c2a(["Neo4j"],always,'Start_OF','openflights','import_Open Flights',Design456Init.NURBS_ICON_PATH + "openflights-import.png","load()","graphdb")
+    c2a(["Neo4j"],always,'Reset_OG','openflights','reset_Open Flights',Design456Init.NURBS_ICON_PATH + "openflights.png","reset()","graphdb")
 
-    c2a(["Sketchertools"],always,'Status1','feedbacksketch','fb sketch',"/../icons/alpha.svg","run_test_two_clients()","sketcher")
-    c2a(["Sketchertools"],always,'Status2','feedbacksketch','revers order of constraints A',"/../icons/alpha.svg","run_test_reverse_Constraints()","sketcher")
-    c2a(["Sketchertools"],always,'Status3','feedbacksketch','create Example B',"/../icons/alpha.svg","runB()","sketcher")
-    c2a(["Sketchertools"],always,'Status4','feedbacksketch','Copy 1.Sketch into 2nd Sketch',"/../icons/sketchcopy.svg","run_copySketch()","sketcher")
-    c2a(["Sketchertools"],always,'Status51','feedbacksketch','Create FeedBack with 1 client',"/../icons/feedback-1.svg","run_createFBS_with_one_Client()","sketcher")
-    c2a(["Sketchertools"],always,'Status52','feedbacksketch','Create FeedBack with 2 clients',"/../icons/feedback-2.svg","run_createFBS_with_two_Clients()","sketcher")
-    c2a(["Sketchertools"],always,'Status53','feedbacksketch','Create FeedBack with 3 clients',"/../icons/feedback-3.svg","run_createFBS_with_three_Clients()","sketcher")
+    c2a(["Sketchertools"],always,'Status1','feedbacksketch','fb sketch',Design456Init.NURBS_ICON_PATH + "alpha.svg","run_test_two_clients()","sketcher")
+    c2a(["Sketchertools"],always,'Status2','feedbacksketch','revers order of constraints A',Design456Init.NURBS_ICON_PATH + "alpha.svg","run_test_reverse_Constraints()","sketcher")
+    c2a(["Sketchertools"],always,'Status3','feedbacksketch','create Example B',Design456Init.NURBS_ICON_PATH + "alpha.svg","runB()","sketcher")
+    c2a(["Sketchertools"],always,'Status4','feedbacksketch','Copy 1.Sketch into 2nd Sketch',Design456Init.NURBS_ICON_PATH + "sketchcopy.svg","run_copySketch()","sketcher")
+    c2a(["Sketchertools"],always,'Status51','feedbacksketch','Create FeedBack with 1 client',Design456Init.NURBS_ICON_PATH + "feedback-1.svg","run_createFBS_with_one_Client()","sketcher")
+    c2a(["Sketchertools"],always,'Status52','feedbacksketch','Create FeedBack with 2 clients',Design456Init.NURBS_ICON_PATH + "feedback-2.svg","run_createFBS_with_two_Clients()","sketcher")
+    c2a(["Sketchertools"],always,'Status53','feedbacksketch','Create FeedBack with 3 clients',Design456Init.NURBS_ICON_PATH + "feedback-3.svg","run_createFBS_with_three_Clients()","sketcher")
 
-    c2a(["Sketchertools"],always,'Status56','sketcher_grids','Create Sketcher Grid',"/../icons/sketchgrid.svg","createGridSketch()","sketcher")
+    c2a(["Sketchertools"],always,'Status56','sketcher_grids','Create Sketcher Grid',Design456Init.NURBS_ICON_PATH + "sketchgrid.svg","createGridSketch()","sketcher")
 
 
 
 
 # hier ist ein fehler
-#    c2a(["Sketchertools"],always,'Status155','feedbacksketch','connect road to line ',"/../icons/alpha.svg","connectLine()","sketcher")
+#    c2a(["Sketchertools"],always,'Status155','feedbacksketch','connect road to line ',Design456Init.NURBS_ICON_PATH + "alpha.svg","connectLine()","sketcher")
 
 
 
