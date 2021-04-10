@@ -52,7 +52,7 @@ class Design456_NURBSGroup:
             ]
 
     def GetResources(self):
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Design456_Nurbs.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -88,7 +88,7 @@ class Design456_Nurbs_2DToolsGroup:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + '/Design456_Nurbs.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + "/Design456_Nurbs.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

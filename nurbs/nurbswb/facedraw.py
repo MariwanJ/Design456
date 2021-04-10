@@ -94,7 +94,8 @@ class EventFilter(QtCore.QObject):
 
         event=e
 
-        if event.type() == QtCore.QEvent.ContextMenu : return True
+        if event.type() == QtCore.QEvent.ContextMenu : 
+            return True
 
         # not used events
         if z == 'PySide.QtCore.QEvent.Type.ChildAdded' or \
