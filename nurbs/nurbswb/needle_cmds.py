@@ -35,8 +35,8 @@ from PySide import QtGui
 import FreeCAD as App
 import FreeCADGui as Gui
 
-import nurbswb.needle
-import nurbswb.needle_models
+needle
+needle_models
 reload(nurbswb.needle_models)
 
 

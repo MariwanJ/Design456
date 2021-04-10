@@ -33,8 +33,8 @@ import Design456Init
 sys.path.append(Design456Init.NURBS_WB_PATH)
 #sys.path.append(Design456Init.NURBS_PLOT_PATH)
 
-import create_sole_sketch
-
+#import create_sole_sketch
+import InitGuiWBDefinitions
 class Design456_Nurbs_2DDrawingGroup:
 
     """Design456 Part 2D Drawing"""
@@ -48,9 +48,7 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_Create Shoe','Nurbs_Create Sole','Nurbs_Sole Change Model',
                 'Nurbs_scanbackbonecut','Nurbs_createsketchspline','Nurbs_Curves to Face', 'Nurbs_facedraw',
 
-                'Draft_Rotate','My_Test2','Sketcher_NewSketch',
-                'Nurbs_facedraws','Nurbs_patcha','Nurbs_patchb','Nurbs_folda',# WAS COMMENTED
-                
+                'Draft_Rotate','My_Test2','Sketcher_NewSketch',                
                 #from cmd2
                 'Nurbs_facedraw','Nurbs_patcha','Nurbs_patchb','Nurbs_folda',
                 #from cmd4  defined in his WB as "Points Workspaces and Views"

@@ -27,8 +27,8 @@ from __future__ import unicode_literals
 
 ''' save sketches into a sketch lib, load sketches into models ''' 
 from say import *
-import nurbswb
-import nurbswb.pyob
+#import nurbswb
+pyob
 
 import time
 import glob
@@ -285,7 +285,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
         vobj.Proxy = self
 
     def getIcon(self):
-        return App.ConfigGet("UserAppData") +'/Mod/freecad-nurbs/icons/sketchdriver.svg'
+        return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
 
     def setupContextMenu(self, obj, menu):
         menu.clear()
@@ -478,7 +478,7 @@ def srun(w):
 
     model=lm[w.m.currentIndex()]
 
-    import nurbswb.sketchmanager
+    sketchmanager
     reload(nurbswb.sketchmanager)
 
     target='ufo'

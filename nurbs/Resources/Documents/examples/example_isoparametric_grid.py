@@ -1,4 +1,4 @@
-import nurbswb
+#import nurbswb
 
 reload(nurbswb.nurbs_tools)
 from nurbswb.nurbs_tools import *

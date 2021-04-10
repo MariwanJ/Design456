@@ -1741,7 +1741,7 @@ def runtest2():
 
 '''
 
-import nurbswb.nurbs
+nurbs
 
 nurbswb.nurbs.testRandomB()
 nurbswb.nurbs.testRandomCylinder()

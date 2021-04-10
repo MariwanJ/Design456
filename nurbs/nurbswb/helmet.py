@@ -46,7 +46,7 @@ from say import *
 import numpy as np
 import time
 
-import nurbswb.pyob
+pyob
 from nurbswb.pyob import  FeaturePython,ViewProvider
 reload (nurbswb.pyob)
 
@@ -277,7 +277,7 @@ def createHelmet(obj=None):
     createSketch(a)
     a.recompute()
 
-    _VPH(a.ViewObject,'freecad-nurbs/icons/createHelmet.svg')
+    _VPH(a.ViewObject,Design456Init.NURBS_ICON_PATH+'createHelmet.svg')
     # a.ViewObject.Transparency=60
     a.ViewObject.ShapeColor=(0.3,0.6,0.3)
     if obj!=None:

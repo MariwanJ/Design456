@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 
 
 from say import *
-import nurbswb.pyob
+pyob
 import Sketcher
 
 
@@ -39,7 +39,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
         vobj.Proxy = self
 
     def getIcon(self):
-        return '/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/sketchdriver.svg'
+        return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
 
 
 class SketchClone(nurbswb.pyob.FeaturePython):

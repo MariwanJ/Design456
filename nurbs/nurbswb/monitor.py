@@ -322,8 +322,8 @@ if __name__ == '__main__':
     m=Monitor(a)
 
     try:
-        import nurbswb
-        import nurbswb.createsketchspline
+        #import nurbswb
+        createsketchspline
         reload(nurbswb.createsketchspline)
         nurbswb.createsketchspline.run()
         spline=App.ActiveDocument.ActiveObject

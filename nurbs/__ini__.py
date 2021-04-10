@@ -23,7 +23,7 @@ import numpy as np
 import random
 
 import os
-import nurbswb
+#import nurbswb
 
 class PartFeature:
     def __init__(self, obj):

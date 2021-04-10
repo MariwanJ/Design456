@@ -58,7 +58,7 @@ import re
 import pivy
 from pivy import coin
 
-import nurbswb.configuration
+configuration
 reload (nurbswb.configuration)
 from nurbswb.configuration import getcb
 
@@ -863,7 +863,7 @@ class MikiDockWidget(QtGui.QDockWidget):
             layout.addWidget(self.pushButton00)
 
         self.pushButton01 = QtGui.QPushButton(
-            QtGui.QIcon(App.ConfigGet('UserAppData') + '/Mod/mylib/icons/mars.png'),
+            QtGui.QIcon(Design456Init.NURBS_IMAGES_PATH+'mars.png'),
             "Mars")
         # self.pushButton01.clicked.connect(self.start)
 
@@ -901,11 +901,11 @@ class MikiDockWidget(QtGui.QDockWidget):
         self.add_top(b)
 
         b = QtGui.QPushButton(QtGui.QIcon(
-        '/home/microelly2/.FreeCAD/Mod/reconstruction/icons/std_viewscreenshot.svg'), 'Foto Image')
+        Design456Init.NURBS_ICON_PATH+'std_viewscreenshot.svg'), 'Foto Image')
         self.add_top(b)
 
         b = QtGui.QPushButton(QtGui.QIcon(
-        '/home/microelly2/.FreeCAD/Mod/reconstruction/icons/web-home.svg'), 'Foto 3D')
+        Design456Init.NURBS_ICON_PATH+'web-home.svg'), 'Foto 3D')
         self.add_top(b)
 
         self.layout.setSpacing(0)

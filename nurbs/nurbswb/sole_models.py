@@ -118,7 +118,7 @@ class modelC(model):
 
 def listModels(silent=False):
     ''' erzeugt liste aller modelle mit modell und modell.info '''
-    import nurbswb.sole_models
+    sole_models
     reload(nurbswb.sole_models)
     l=[]
     for m in dir(nurbswb.sole_models):
@@ -138,7 +138,7 @@ def test():
     class modelY(modelA):
         pass
 
-    import nurbswb.sole
+    sole
     reload(nurbswb.sole)
     nurbswb.sole.runA(model=modelY)
 

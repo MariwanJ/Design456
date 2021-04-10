@@ -888,7 +888,7 @@ class Needle(PartFeature):
         self.dumpix(index)
 
     def pressed(self,index):
-        import nurbswb.needle_cmds
+        needle_cmds
         reload(nurbswb.needle_cmds)
         nurbswb.needle_cmds.pressed(index,App.activeDocument().MyNeedle)
         print ("Pressed")
@@ -969,7 +969,7 @@ table.entered.disconnect(entered)
 def commitData(editor):
 #    print ("commit data",editor)
 
-    import nurbswb.needle_cmds
+    needle_cmds
     reload(nurbswb.needle_cmds)
     global globdat
 #    print globdat
@@ -1064,7 +1064,7 @@ def getdata(index):
 
 def main_test():
     # test aus parametern
-    import nurbswb.shoe as shoe
+    import shoe as shoe
     reload( nurbswb.shoe)
 
     dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
@@ -1240,7 +1240,7 @@ def run():
 
     print ("import ............")
     # import the configuration from shoedata 
-    import nurbswb.shoedata
+    shoedata
     reload(nurbswb.shoedata)
 
     bbps=nurbswb.shoedata.shoeAdam.bbps
@@ -1250,7 +1250,7 @@ def run():
 
 
     # create the shoe ribs
-    import nurbswb.createshoerib
+    createshoerib
     reload(nurbswb.createshoerib)
 
     ribs=[nurbswb.createshoerib.run("rib_"+str(i),[[8,0,0]],boxes[i],zoff=0) for i in range(1,15)]
@@ -1370,7 +1370,7 @@ def run():
 
 
     # ein paar hilfssegmente exemplarisch
-    import nurbswb.segment
+    segment
 
     a=nurbswb.segment.createSegment()
     a.source=fa

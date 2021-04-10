@@ -36,7 +36,7 @@ from __future__ import unicode_literals
 # \cond
 
 from say import *
-import nurbswb.pyob
+pyob
 
 
 # \endcond

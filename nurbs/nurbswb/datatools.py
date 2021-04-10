@@ -34,7 +34,7 @@ an example is the dynamic offset node which controls the offset by a floatlist
 
 
 from say import *
-import nurbswb.pyob
+pyob
 
 ## A list for Floats
 

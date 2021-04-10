@@ -1,4 +1,4 @@
-import nurbswb.nurbs
+import nurbs
 import numpy as np
 import random
 
@@ -19,7 +19,7 @@ def testRandomCylinder():
     na=7
     b=5
 
-    a=nurbswb.nurbs.makeNurbs(b,na)
+    a=nurbs.makeNurbs(b,na)
     a.model="NurbsCylinder"
 
     a.solid=False
@@ -28,7 +28,7 @@ def testRandomCylinder():
     a.gridCount=20
     
     ps=a.Proxy.getPoints()
-    print ("points ps",len(ps)
+    print ("points ps",len(ps))
 
     if 0:
         print ("random ..")

@@ -46,7 +46,7 @@ import time
 import random
 
 
-import nurbswb.isodraw
+isodraw
 reload(nurbswb.isodraw)
 
 
@@ -816,7 +816,7 @@ def start():
 
         Gui.Selection.clearSelection()
 
-        import nurbswb.isodraw
+        isodraw
         print(fob, fob.Label)
         [uv2x, uv2y, xy2u, xy2v] = nurbswb.isodraw.getmap(fob, fob.faceObject)
         print([uv2x, uv2y, xy2u, xy2v])

@@ -1,4 +1,4 @@
-import nurbswb.nurbs
+import nurbs
 import numpy as np
 import random
 

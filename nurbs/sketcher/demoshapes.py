@@ -9,7 +9,7 @@
 
 
 # from say import *
-# import nurbswb.pyob
+# pyob
 #------------------------------
 import FreeCAD as App
 import FreeCADGui as Gui

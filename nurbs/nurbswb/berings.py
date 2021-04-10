@@ -39,7 +39,7 @@ from __future__ import unicode_literals
 
 import numpy as np
 import Draft,Points,Part,Sketcher
-import nurbswb.say
+say
 from nurbswb.say import *
 import random
 import time
@@ -61,7 +61,7 @@ reload (nurbswb.say)
 from nurbswb.miki_g import createMikiGui2, MikiApp
 reload( nurbswb.miki_g)
 
-import nurbswb.configuration
+configuration
 reload (nurbswb.configuration)
 from nurbswb.configuration import getcf,getcb,getcs
 
@@ -88,7 +88,7 @@ def checkcurve(curve):
 
 ##\cond
 
-import nurbswb.pyob
+pyob
 reload (nurbswb.pyob)
 from nurbswb.pyob import  FeaturePython,ViewProvider
 
@@ -1531,7 +1531,7 @@ def createProduct():
 
     sf=App.ActiveDocument.addObject('Part::FeaturePython','ProductFace')
     Product(sf)
-    _VPProduct(sf.ViewObject,'/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/createProduct.svg')
+    _VPProduct(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createProduct.svg')
     sel=Gui.Selection.getSelection()
     sf.uSource=sel[0]
     sf.vSource=sel[1]
@@ -1989,7 +1989,7 @@ def createBeGrid():
         sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
         BeGrid(sf)
 
-        ViewProvider(sf.ViewObject,'freecad-nurbs/icons/createBeGrid.svg')
+        ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createBeGrid.svg')
         sf.Source=fa
 
         App.activeDocument().recompute()
@@ -3019,7 +3019,7 @@ def createBePlane():
     sf=App.ActiveDocument.addObject('Part::FeaturePython','BePlane')
     sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
     BePlane(sf)
-    ViewProvider(sf.ViewObject,'freecad-nurbs/icons/createBePlane.svg')
+    ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createBePlane.svg')
     return sf
 
 
@@ -3355,7 +3355,7 @@ class HelmetTubeConnector(FeaturePython):
 
 
 def createHelmet():
-    import nurbswb.helmet
+    helmet
     reload(nurbswb.helmet)
     nurbswb.helmet.createHelmet()
 
@@ -3598,7 +3598,7 @@ def createTriangle():
     sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
     BeTriangle(sf)
     (sf.curveA,sf.curveB,sf.curveC)=Gui.Selection.getSelection()
-    ViewProvider(sf.ViewObject,'freecad-nurbs/icons/createTriangle.svg')
+    ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createTriangle.svg')
 
 
 def SplitIntoCells():
@@ -5257,7 +5257,7 @@ def createApprox(sels=None):
 
         sf.Source=fa
         sf.Label="Approx for " + fa.Label
-        _VPApprox(sf.ViewObject,'freecad-nurbs/icons/AA.svg')
+        _VPApprox(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'AA.svg')
 
         App.activeDocument().recompute()
         sf.Proxy.execute(sf)

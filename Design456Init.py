@@ -53,6 +53,8 @@ NURBS_WB_PATH=os.path.join(__dir__,'nurbs/nurbswb')
 NURBS_SKETCHER_PATH=os.path.join(__dir__,'nurbs/sketcher')
 NURBS_ICON_PATH=os.path.join(__dir__,'nurbs/Resources/icons/')
 
+NURBS_IMAGES_PATH=os.path.join(__dir__,'nurbs/Resources/images/')
+
 
 
 # PART

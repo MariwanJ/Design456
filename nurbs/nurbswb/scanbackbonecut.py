@@ -45,7 +45,7 @@ from PySide import QtGui
 import sys,traceback,random,os
 
 import Points
-import nurbswb
+#import nurbswb
 
 
 global __dir__
@@ -220,7 +220,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 
 
     # load the shoedata
-    import nurbswb.shoedata
+    shoedata
     reload(nurbswb.shoedata)
 
     bbps=nurbswb.shoedata.shoeAdam.bbps
@@ -244,7 +244,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
         trafos.append(trafo)
 
     # create the sketches
-    import nurbswb.createsketchspline
+    createsketchspline
     reload(nurbswb.createsketchspline)
 
     scp=App.ActiveDocument.Scanpoints

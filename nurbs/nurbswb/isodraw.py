@@ -54,10 +54,10 @@ import numpy as np
 import random
 
 import os
-import scipy
-import scipy.interpolate
+#import scipy
+#import scipy.interpolate
 
-import nurbswb
+##import nurbswb
 import Design456Init
 #
 #global __dir__
@@ -245,7 +245,7 @@ class Isodraw(PartFeature):
             obj.backref.touch()
             obj.backref.Document.recompute()
         face = obj.face.Shape.Face1
-        import nurbswb.facedraw
+        facedraw
         reload(nurbswb.facedraw)
         try:
             obj.ViewObject.ShapeColor = obj.wire.ViewObject.ShapeColor
@@ -301,7 +301,7 @@ class Brezel(PartFeature):
             obj.backref.Document.recompute()
         # face=obj.face.Shape.Face1
 
-        import nurbswb.facedraw
+        facedraw
         # reload(nurbswb.facedraw)
         try:
             obj.ViewObject.ShapeColor = obj.wire.ViewObject.ShapeColor

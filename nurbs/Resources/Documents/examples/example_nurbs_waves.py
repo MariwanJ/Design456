@@ -1,4 +1,4 @@
-import nurbswb.nurbs
+import nurbs
 
 
 
