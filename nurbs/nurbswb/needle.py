@@ -755,7 +755,7 @@ class Needle(PartFeature):
         self.dumpix(index)
 
     def pressed(self,index):
-        import nurbswb.needle_cmds
+        needle_cmds
         reload(nurbswb.needle_cmds)
         nurbswb.needle_cmds.pressed(index,App.activeDocument().MyNeedle)
         print ("Pressed")
@@ -833,7 +833,7 @@ table.entered.disconnect(entered)
 def commitData(editor):
 #    print ("commit data",editor)
 
-    import nurbswb.needle_cmds
+    needle_cmds
     reload(nurbswb.needle_cmds)
     global globdat
 #    print globdat
@@ -917,8 +917,8 @@ def getdata(index):
 
 
 def run():
-#            import nurbswb.nurbs
-#        import nurbswb.needle as needle
+#            nurbs
+#        import needle as needle
 #        reload( nurbswb.needle)
 
         dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
@@ -938,7 +938,7 @@ def run():
         a.useRibCage=True
         #a.useMesh=True
         a.RibCount=0
-        import nurbswb.needle_models
+        needle_models
         reload (nurbswb.needle_models)
         # a.Proxy.getExampleModel(nurbswb.needle_models.modelBanana)
         model=App.ParamGet('User parameter:Plugins/nurbs').GetString("NeedleModel","modelSimple")
@@ -973,12 +973,12 @@ def run():
 # TEST CASE
 #-----------------------------------------
 
-if  __name__=='__main__':
+class testmain:
 
     # test aus parametern
     import Draft
-    import nurbswb
-    import nurbswb.needle as needle
+    #import nurbswb
+    import needle as needle
     reload( nurbswb.needle)
 
     dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
@@ -1009,8 +1009,8 @@ if  __name__=='__main__':
         # Bspline003
 
 
-    import nurbswb
-    import nurbswb.needle as needle
+    #import nurbswb
+    import needle as needle
 
     a=needle.createNeedle()
 

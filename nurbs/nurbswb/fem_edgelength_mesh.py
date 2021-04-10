@@ -44,7 +44,7 @@ import Points
 import networkx as nx
 import random
 import os
-import nurbswb
+#import nurbswb
 
 
 if 0:

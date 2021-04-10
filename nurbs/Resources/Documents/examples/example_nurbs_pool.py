@@ -1,4 +1,4 @@
-import nurbswb.nurbs
+import nurbs
 
 if  App.ActiveDocument==None:
     App.newDocument("Unnamed")
@@ -8,7 +8,7 @@ if  App.ActiveDocument==None:
 
 def createPool():
 
-    a=nurbswb.nurbs.makeNurbs(32,32)
+    a=nurbs.makeNurbs(32,32)
 
     Gui.activeDocument().activeView().viewAxonometric()
     Gui.SendMsgToActiveView("ViewFit")

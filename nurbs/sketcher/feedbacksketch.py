@@ -9,7 +9,7 @@
 
 
 # from say import *
-# import nurbswb.pyob
+# pyob
 #------------------------------
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -220,7 +220,7 @@ class FeedbackSketch(FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
-    def __init__(self, obj, icon='/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/draw.svg'):
+    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj

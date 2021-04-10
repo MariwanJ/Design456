@@ -158,7 +158,7 @@ if __name__ == '__main__':
     pts=[App.Vector(p) for p in [(0,0,0),(100,200,0),(300,200,100)]]
     w2=Draft.makeBSpline(pts)
 
-    import nurbswb.filledface
+    filledface
     from nurbswb.filledface import createFilledFace
 
     ff=createFilledFace()

@@ -1,5 +1,5 @@
 
-import nurbswb.nurbs
+import nurbs
 
 if  App.ActiveDocument==None:
     App.newDocument("Unnamed")

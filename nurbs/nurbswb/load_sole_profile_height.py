@@ -44,7 +44,7 @@ import os, nurbswb
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)
 
-import nurbswb.spreadsheet_lib
+spreadsheet_lib
 reload (nurbswb.spreadsheet_lib)
 from nurbswb.spreadsheet_lib import ssa2npa, npa2ssa, cellname
 
@@ -108,7 +108,7 @@ def run():
 
 
         dok2.recompute()
-        import nurbswb.sole
+        sole
         reload(nurbswb.sole)
         nurbswb.sole.run()
         dok2.recompute()

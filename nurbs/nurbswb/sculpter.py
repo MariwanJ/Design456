@@ -42,7 +42,7 @@ import Points
 import Mesh
 import time
 from PySide import QtGui, QtCore
-from nurbswb.say import *
+from say import *
 
 import FreeCAD as App
 import sys
@@ -50,8 +50,8 @@ import time
 import random
 
 
-import nurbswb.isodraw
-reload(nurbswb.isodraw)
+isodraw
+reload(isodraw)
 
 
 '''
@@ -173,8 +173,8 @@ def check(pp, mode, updateNurbs=False, widget=None):
 
 def createMarker(self):
     print("create Marker")
-    import nurbswb
-    import nurbswb.geodesic_lines
+    #import nurbswb
+    geodesic_lines
     reload(nurbswb.geodesic_lines)
 
     l = nurbswb.geodesic_lines.makeLabel(
@@ -1201,7 +1201,7 @@ class MyApp(object):
 
     def resetEdit(self):
         Gui.ActiveDocument.resetEdit()
-        import nurbswb.miki as miki
+        import miki as miki
         # reload(miki)
         mw=miki.getMainWindow()
         miki.getComboView(mw).removeTab(2)
@@ -1266,7 +1266,7 @@ class MyApp(object):
 
 def mydialog(obj):
 
-    import nurbswb.miki as miki
+    import miki as miki
     reload(miki)
 
     app=MyApp()

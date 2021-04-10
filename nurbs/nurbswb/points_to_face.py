@@ -33,7 +33,7 @@ from numpy.linalg import inv
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 
-import nurbswb
+#import nurbswb
 from nurbswb.pyob import  FeaturePython,ViewProvider
 from nurbswb.say import *
 reload (nurbswb.pyob)

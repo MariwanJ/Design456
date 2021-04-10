@@ -121,7 +121,7 @@ class ViewProvider:
         self.ViewObject = obj
         self.icon = icon
         if icon == None:
-            icon = 'freecad-nurbs/icons/BB.svg'
+            icon = Design456Init.NURBS_ICON_PATH+'BB.svg'
         if icon.startswith('/'):
             ic = self.icon
         else:
@@ -230,7 +230,7 @@ def Sketch(name='MySketch'):
     obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython", name)
     obj.addProperty("App::PropertyBool", "off", "Base",)
     _Sketch(obj)
-    ViewProvider(obj.ViewObject, 'freecad-nurbs/icons/sketchdriver.svg')
+    ViewProvider(obj.ViewObject, Design456Init.NURBS_ICON_PATH+'sketchdriver.svg')
     return obj
 
 

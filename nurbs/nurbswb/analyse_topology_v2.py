@@ -46,7 +46,7 @@ import Points
 import networkx as nx
 import random
 import os
-import nurbswb
+#import nurbswb
 
 # modul variables
 g = nx.Graph()
@@ -849,7 +849,7 @@ def Test4():
 
 
 def Test3():
-    import nurbswb.fem_edgelength_mesh
+    fem_edgelength_mesh
     for i in range(1):
         reload(nurbswb.fem_edgelength_mesh)
         nurbswb.fem_edgelength_mesh.run()

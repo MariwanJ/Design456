@@ -1,10 +1,9 @@
 def test1():
-
-# test aus parametern
+# test of parameters
     import Draft
-    import nurbswb
-    import nurbswb.needle as needle
-    reload( nurbswb.needle)
+    #import nurbswb
+    import needels
+    reload( needle)
 
     try: App.closeDocument("Unnamed")
     except: pass
@@ -100,8 +99,8 @@ def test1():
 if 1:
 
     import Draft
-    import nurbswb
-    import nurbswb.needle as needle
+    #import nurbswb
+    import needle as needle
     reload( nurbswb.needle)
 
     try: App.closeDocument("Unnamed")
