@@ -41,7 +41,7 @@ import numpy as np
 import time
 import random
 
-import nurbswb.pyob
+pyob
 from nurbswb.pyob import  FeaturePython,ViewProvider
 reload (nurbswb.pyob)
 
@@ -115,7 +115,7 @@ class BezierSketch(FeaturePython):
     '''Sketch Object with Python for Bezier Curve'''
 
     ##\cond
-    def __init__(self, obj, icon='/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/draw.svg'):
+    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -286,7 +286,7 @@ class FollowerSketch(FeaturePython):
     '''Sketch Object with Python which puts one point (by named constraints) onto a wire'''
 
     ##\cond
-    def __init__(self, obj, icon='/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/draw.svg'):
+    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -373,7 +373,7 @@ class ArcSketch(FeaturePython):
     '''Sketch Object with Python to create two smoothing arcs''' 
 
     ##\cond
-    def __init__(self, obj, icon='/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/draw.svg'):
+    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj

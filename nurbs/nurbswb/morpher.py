@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import numpy as np
 import random
 
-import nurbswb
+#import nurbswb
 from nurbswb.pyob import  FeaturePython,ViewProvider
 from nurbswb.say import *
 reload (nurbswb.pyob)

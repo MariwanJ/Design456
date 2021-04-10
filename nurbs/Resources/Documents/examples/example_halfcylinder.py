@@ -1,11 +1,11 @@
-import nurbswb.nurbs
+nurbs
 import numpy as np
 import random
 
 
 def test3():
 
-    a= nurbswb.nurbs.makeNurbs(5,9)
+    a= nurbs.makeNurbs(5,9)
     a.model="NurbsCylinder"
     a.solid=False
     a.base=False

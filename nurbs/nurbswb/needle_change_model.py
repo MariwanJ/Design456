@@ -36,7 +36,7 @@ def srun(w):
     print(w.m.currentIndex())
     a = w.target
     model = 'modelS'
-    import nurbswb.needle_models
+    needle_models
     reload(nurbswb.needle_models)
     lm = nurbswb.needle_models.listModels(silent=True)
     print(lm[w.m.currentIndex()])
@@ -49,7 +49,7 @@ def srun(w):
 
 def MyDialog(target):
 
-    import nurbswb.needle_models
+    needle_models
     reload(nurbswb.needle_models)
     lm = nurbswb.needle_models.listModels()
 

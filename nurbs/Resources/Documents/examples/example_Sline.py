@@ -1,4 +1,4 @@
-import nurbswb.nurbs
+import nurbs
 import numpy as np
 import random
 
@@ -10,7 +10,7 @@ def test2():
     uc=8
     vc=8
 
-    a=nurbswb.nurbs.makeNurbs(uc,vc)
+    a=nurbs.makeNurbs(uc,vc)
     a.degree_u=1
 
     a.degree_u=2

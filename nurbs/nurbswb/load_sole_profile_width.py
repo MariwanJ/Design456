@@ -37,11 +37,11 @@ import FreeCAD
 import FreeCADGui
 
 import os
-import nurbswb
+#import nurbswb
 
-import nurbswb.spreadsheet_lib
+spreadsheet_lib
 reload(nurbswb.spreadsheet_lib)
-import nurbswb.sole
+sole
 reload(nurbswb.sole)
 
 

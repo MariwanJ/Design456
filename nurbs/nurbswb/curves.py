@@ -51,20 +51,20 @@ for Offset curve generation
 
 from say import *
 import pyob
-
+import Design456Init
 ##\cond
 
 
 class _ViewProvider(pyob.ViewProvider):
     ''' base class view provider '''
 
-    def __init__(self, vobj, icon='/icons/mover.png'):
+    def __init__(self, vobj, icon= (Design456Init.NURBS_ICON_PATH+"mover.svg")):
         self.Object = vobj.Object
         self.iconpath =  icon
         vobj.Proxy = self
 
     def getIcon(self):
-        return '/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/draw.svg'
+        return (Design456Init.NURBS_ICON_PATH+'draw.svg')
 
 ##\endcond
 
@@ -74,7 +74,7 @@ class OffsetSpline(pyob.FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
-    def __init__(self, obj, icon='/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/draw.svg'):
+    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -144,7 +144,7 @@ class Ufo(pyob.FeaturePython):
     '''a mirgrationtest class''' 
 
     ##\cond
-    def __init__(self, obj, icon='/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/draw.svg'):
+    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -248,7 +248,7 @@ class Star(pyob.FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
-    def __init__(self, obj, icon='/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/draw.svg'):
+    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj

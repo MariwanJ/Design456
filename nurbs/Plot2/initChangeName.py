@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-# anpassungen fuer nurbswb belange
+# adjustments for nurbswb matters
 #
 #
 #
@@ -52,7 +52,7 @@ from __future__ import unicode_literals
 # *                                                                         *
 # ***************************************************************************
 
-import FreeCAD
+import FreeCAD as App
 
 import PySide
 from PySide import QtCore, QtGui
@@ -134,7 +134,7 @@ def closePlot():
     sub = mdi.activeSubWindow()
     if not sub:
         return None
-    # Explore childrens looking for Plot class
+    # Explore children looking for Plot class
     for i in sub.children():
         if i.metaObject().className() == "Plot":
             sub.close()

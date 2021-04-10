@@ -8,8 +8,8 @@
 #-------------------------------------------------
 
 
-from nurbswb.spreadsheet_lib import *
-import nurbswb
+from spreadsheet_lib import *
+#import nurbswb
 reload (spreadsheet_lib)
 
 

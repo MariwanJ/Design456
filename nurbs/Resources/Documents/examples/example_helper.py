@@ -1,4 +1,4 @@
-App=FreeCAD
+import FreeCAD as App
 
 try:
         App.closeDocument("Unnamed")
@@ -14,14 +14,14 @@ except:
         pass
 
 
-import nurbswb.helper
-reload(nurbswb.helper)
+helper
+reload(helper)
 
-import nurbswb.nurbs
-reload(nurbswb.nurbs)
+nurbs
+reload(nurbs)
 
-nurbswb.nurbs.testRandomB()
-hp=nurbswb.helper.makeHelper()
+nurbs.testRandomB()
+hp=helper.makeHelper()
 
 hp.source=App.ActiveDocument.Nurbs
 

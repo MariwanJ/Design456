@@ -32,7 +32,7 @@ modes are ["poleGrid","isoGrid","Surface"]
 
 
 from say import *
-import nurbswb.pyob
+pyob
 
 
 ## The Helper can display a Poles Grid, iso-Curve Grid or single isocurves as parametric Part::FeaturePython objects
@@ -268,7 +268,7 @@ def runtest():
     except:
         pass
 
-    import nurbswb.nurbs
+    nurbs
     nurbswb.nurbs.testRandomB()
 
     hp=makeHelper()

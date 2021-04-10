@@ -50,7 +50,7 @@ import numpy as np
 import random
 
 import os
-import nurbswb
+#import nurbswb
 
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)
@@ -636,7 +636,7 @@ if __name__ == '__main__':
 
 if __name__ == '__main__':
     # create the segment for tangents
-    import nurbswb.segment
+    segment
     ke = nurbswb.segment.createFineSegment()
     ke.source = App.ActiveDocument.source
     ke.Label = "SeamBase E"
@@ -917,7 +917,7 @@ def createShapeV2(obj):
 def createShapeV2(obj):
     print obj.westSeam
     print obj.eastSeam
-    import nurbswb.temp as ttt
+    temp as ttt
     reload (nurbswb.temp)
     nurbswb.temp.run(obj)
 '''

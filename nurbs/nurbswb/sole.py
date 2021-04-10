@@ -42,7 +42,7 @@ shoe sole creation
 # \cond
 
 from nurbswb.spreadsheet_lib import ssa2npa, npa2ssa, cellname
-import nurbswb.spreadsheet_lib
+spreadsheet_lib
 import numpy as np
 __version__ = '0.12'
 
@@ -57,7 +57,7 @@ import Points
 import random
 
 import os
-import nurbswb
+#import nurbswb
 
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)
@@ -131,7 +131,7 @@ def runA(model=None):
 
         App.activeDocument().recompute()
 
-        import nurbswb.sole_models
+        sole_models
         reload(nurbswb.sole_models)
         model = nurbswb.sole_models.model()
 

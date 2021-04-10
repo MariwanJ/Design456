@@ -24,7 +24,7 @@
 import re
 import os
 import configuration
-import nurbswb
+#import nurbswb
 import sys
 __title__ = "FreeCAD Nurbs Library"
 
@@ -33,7 +33,7 @@ __vers__ = "V???"
 
 import FreeCAD
 import FreeCADGui
-
+import Design456Init
 # -
 
 # from workfeature macro
@@ -130,9 +130,9 @@ class MyTestCmd2:
 
     def Activated(self):
         import QtUnitGui
-        import nurbswb.TestNurbsGui
+        TestNurbsGui
         reload(nurbswb.TestNurbsGui)
-        import nurbswb.TestNurbs
+        TestNurbs
         reload(nurbswb.TestNurbs)
         QtUnitGui.addTest("nurbswb.TestNurbsGui")
         QtUnitGui.addTest("nurbswb.TestNurbs")

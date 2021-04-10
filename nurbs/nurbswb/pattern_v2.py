@@ -44,10 +44,10 @@ import numpy as np
 import random
 
 from nurbswb.say import *
-import nurbswb.pyob
+pyob
 from nurbswb.pyob import  FeaturePython,ViewProvider
 reload (nurbswb.pyob)
-import nurbswb.lib as nl
+lib as nl
 reload(nurbswb.lib)
 
 

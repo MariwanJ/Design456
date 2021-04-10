@@ -34,7 +34,7 @@ from __future__ import unicode_literals
 
 from say import * 
 import Sketcher
-import nurbswb.pyob
+pyob
 
 '''
 multiplizitaet erhoehen
@@ -51,7 +51,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
         vobj.Proxy = self
 
     def getIcon(self):
-        return '/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/sketchrib.svg'
+        return Design456Init.NURBS_ICON_PATH+'sketchrib.svg'
 
 
 ## create a special ful constrainted Sketcher Bspline

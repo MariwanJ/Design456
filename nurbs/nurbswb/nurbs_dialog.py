@@ -302,7 +302,7 @@ class MyApp(object):
     def resetEdit(self):
         Gui.ActiveDocument.resetEdit()
 #        self.root.ids['main'].hide()
-        import nurbswb.miki as miki
+        miki as miki
         reload(miki)
         mw=miki.getMainWindow()
         miki.getComboView(mw).removeTab(2)
@@ -872,7 +872,7 @@ class MyApp(object):
 
 def mydialog(obj):
 
-    import nurbswb.miki as miki
+    miki as miki
     reload(miki)
 
     app=MyApp()

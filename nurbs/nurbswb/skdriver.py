@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 '''create a driversketch for a sketch'''
 
 from say import *
-import nurbswb.pyob
+pyob
 import Sketcher
 
 
@@ -51,7 +51,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
         vobj.Proxy = self
 
     def getIcon(self):
-        return '/home/thomas/.FreeCAD/Mod/freecad-nurbs/icons/sketchdriver.svg'
+        return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
 
 
 class Driver(nurbswb.pyob.FeaturePython):
@@ -263,8 +263,8 @@ def runribtest():
     App.ActiveDocument = App.getDocument("Unnamed")
     Gui.ActiveDocument = Gui.getDocument("Unnamed")
 
-    import nurbswb
-    import nurbswb.createshoerib
+    #import nurbswb
+    createshoerib
     reload(nurbswb.createshoerib)
     nurbswb.createshoerib.run()
     rib = App.ActiveDocument.ribbow

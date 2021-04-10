@@ -40,7 +40,7 @@ if 0:
     except:
         pass
 
-import nurbswb.datatools
+datatools
 reload (nurbswb.datatools)
 
 import scipy.interpolate
@@ -128,7 +128,7 @@ def myupdate(obj):
 
 
 from say import *
-import nurbswb.pyob
+pyob
 
 ## A configurable offset curve
 #
@@ -154,7 +154,7 @@ import nurbswb.pyob
 # Example
 # -------
 #\code 
-#import nurbswb.datatools
+#datatools
 #fl=nurbswb.datatools.createFloatlist("ParameterList")
 #fl.val007=10
 #

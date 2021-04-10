@@ -36,7 +36,7 @@ import Sketcher,Part
 import numpy as np
 import time
 
-import nurbswb.pyob
+pyob
 from nurbswb.pyob import  FeaturePython,ViewProvider
 reload (nurbswb.pyob)
 

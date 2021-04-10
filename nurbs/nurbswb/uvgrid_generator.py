@@ -55,7 +55,7 @@ App.ActiveDocument=App.getDocument("m09_uvgrid_generator")
 Gui.ActiveDocument=Gui.getDocument("m09_uvgrid_generator")
 '''
 
-import nurbswb.nurbs_tools
+nurbs_tools
 reload (nurbswb.nurbs_tools)
 from nurbswb.nurbs_tools import kruemmung
 

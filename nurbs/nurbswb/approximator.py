@@ -41,7 +41,7 @@ from scipy import misc
 from scipy import signal
 from scipy.optimize import minimize
 import scipy
-import nurbswb.pyob
+pyob
 from pyob import *
 from nurbswb.miki_g import createMikiGui2, MikiApp
 import numpy as np
@@ -49,7 +49,7 @@ import Draft
 import Points
 import Part
 import Sketcher
-import nurbswb.say
+say
 from nurbswb.say import *
 import random
 import time
@@ -211,7 +211,7 @@ class PointCloudApprox(FeaturePython):
             hop = getPart(name+"_Wire")
             hop.Shape = Part.makePolygon(pts4)
 
-            import nurbswb.smooth
+            smooth
             reload(nurbswb.smooth)
             smooth = App.ActiveDocument.getObject("smooth"+"_"+name)
             if smooth == None:
@@ -730,16 +730,14 @@ def _loadCylinderfacefromImageGUI():
     yy = App.ActiveDocument.addObject("Part::FeaturePython", "ImageSurface")
     ImagePoints2(yy)
     yy.mode = 'cylinder'
-    fn = '/home/thomas/.FreeCAD/Mod/freecad-nurbs/testdata/2364.png'
+    fn = Design456Init.NURBS_IMAGES_PATH+'2364.png'
     yy.image = fn
     ViewProvider(yy.ViewObject)
 
 
 def _BumpFacefromImageGUI():
 
-    dirlib = os.path.dirname(nurbswb.__file__)
-    fn = dirlib + "/../testdata/profil_for_bump.png"
-    fn = "/home/thomas/Schreibtisch/profil_for_bump.png"
+    fn = Design456Init.NURBS_IMAGES_PATH+"profil_for_bump.png"
 
     yy = App.ActiveDocument.addObject("Part::FeaturePython", "ImageSurface")
     ImagePoints2(yy, mode='face')
@@ -1906,7 +1904,7 @@ def curvestoFace(polsarr=None, mode="Bezier Face"):
 
 
 def A():
-    import nurbswb.berings
+    berings
     reload(nurbswb.berings)
     rc = nurbswb.berings.createBering()
     for obj in rc:

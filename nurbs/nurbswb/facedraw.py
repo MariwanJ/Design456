@@ -46,7 +46,7 @@ import random
 
 
 
-import nurbswb.isodraw
+isodraw
 reload(nurbswb.isodraw)
 
 

@@ -54,7 +54,7 @@ import numpy as np
 import time,random
 App=FreeCAD
 
-import nurbswb.configuration
+configuration
 reload (nurbswb.configuration)
 from nurbswb.configuration import getcf,getcb,getcs,setcb,setcf,setcs
 
@@ -77,7 +77,7 @@ faces=Gui.Selection.getSelection()
 print (faces)
 
  
-import nurbswb.say
+say
 
 
 class Point(object):
@@ -1848,11 +1848,11 @@ def multiEdit():
 
 def AA():
 
-    import nurbswb
-    import nurbswb.berings
+    #import nurbswb
+    berings
     reload(nurbswb.berings)
     nurbswb.berings.createBeGrid()
-    import nurbswb.facedraw
+    facedraw
     reload(nurbswb.facedraw)
     nurbswb.facedraw.createMap()
 

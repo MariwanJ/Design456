@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 
 '''
 
-import nurbswb.needle_models
+needle_models
 reload(nurbswb.needle_models)
 nurbswb.needle_models.listModels()
 
@@ -932,7 +932,7 @@ class modelS(model):
 
 
 def listModels(silent=False):
-    import nurbswb.needle_models
+    needle_models
     reload(nurbswb.needle_models)
     l=[]
     for m in dir(nurbswb.needle_models):
