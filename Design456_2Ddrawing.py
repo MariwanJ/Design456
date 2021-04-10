@@ -578,7 +578,7 @@ class Design456_Star:
             return
             
     def GetResources(self):
-        return {'Pixmap': Design456Init.ICON_PATH+ '/Design456_Star.svg',
+        return {'Pixmap': Design456Init.ICON_PATH+ 'Design456_Star.svg',
                 'MenuText': "Star",
                 'ToolTip': "Draw a Star"}
 
@@ -663,7 +663,7 @@ class Design456_joinTwoLines:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Join two lines")
-        return {'Pixmap':  Design456Init.ICON_PATH +'/Design456_JoinLines.svg',
+        return {'Pixmap':  Design456Init.ICON_PATH+ 'Design456_JoinLines.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "joinTwoLines"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

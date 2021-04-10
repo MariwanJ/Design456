@@ -313,7 +313,7 @@ class Design456_loftOnDirection():
 
     def GetResources(self):
         return{
-            'Pixmap':   Design456Init.ICON_PATH + '/loftOnDirection.svg',
+            'Pixmap':   Design456Init.ICON_PATH +'loftOnDirection.svg',
             'MenuText': 'loftOnDirection',
             'ToolTip':  'Loft On Direction'
         }

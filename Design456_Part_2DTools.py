@@ -290,7 +290,7 @@ class Design456_Part_2DToolsGroup:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools for modifying 2D Shapes")
-        return {'Pixmap':  Design456Init.ICON_PATH +'/Design456_2DTools.svg',
+        return {'Pixmap':  Design456Init.ICON_PATH+ 'Design456_2DTools.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "2Dtools"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
