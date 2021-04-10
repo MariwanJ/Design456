@@ -25,11 +25,6 @@ import random
 import os
 import nurbswb
 
-global __dir__
-__dir__ = os.path.dirname(nurbswb.__file__)
-print(__dir__)
-
-
 class PartFeature:
     def __init__(self, obj):
         obj.Proxy = self
