@@ -290,16 +290,16 @@ def _smoothPointcloudGUI():
             id: 'image'
             sizeX: 400
             sizeY: 200
-            run_display: "/home/thomas/Bilder/bp_841.png"
+            run_display: Design456Init.NURBS_ICON_PATH+"bp_841.png"
         '''
 
     class myApp(MikiApp):
 
         # temp. testdaten fuer den image widget
         index = 0
-        images = ["/home/thomas/Bilder/bp_842.png",
-        "/home/thomas/Bilder/bp_843.png",
-        "/home/thomas/Bilder/bp_844.png"
+        images = [Design456Init.NURBS_ICON_PATH+"bp_842.png",
+        Design456Init.NURBS_ICON_PATH+"bp_843.png",
+        Design456Init.NURBS_ICON_PATH+"bp_844.png"
         ]
 
         def myclose(self):

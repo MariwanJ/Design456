@@ -44,12 +44,11 @@ class Design456_Nurbs_2DDrawingGroup:
         return ("runSole",
                 #These are from the WB definition of Nurbs.
                 #From cmds --> i.e. cmd1  : defined in his wb as Nurbs toolbar
-                'ZebraTool','ParametricComb','GeomInfo','Nurbs_DraftBSpline Editor',
+                'ParametricComb','GeomInfo','Nurbs_DraftBSpline Editor',
                 'Nurbs_Create Shoe','Nurbs_Create Sole','Nurbs_Sole Change Model',
                 'Nurbs_scanbackbonecut','Nurbs_createsketchspline','Nurbs_Curves to Face', 'Nurbs_facedraw',
 
-                'Part_Cone', 'Part_Cylinder','Draft_Move','Draft_Rotate','Draft_Point','Draft_ToggleGrid',
-                'My_Test2','Sketcher_NewSketch',
+                'Draft_Rotate','My_Test2','Sketcher_NewSketch',
                 'Nurbs_facedraws','Nurbs_patcha','Nurbs_patchb','Nurbs_folda',# WAS COMMENTED
                 
                 #from cmd2

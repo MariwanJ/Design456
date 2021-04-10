@@ -1418,6 +1418,7 @@ def createdarkroom():
     a.Proxy.onChanged(a,"Shape")
     rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
     atr="HeadlightIntensity"
+    
     rGrp.SetInt(atr,0)
     rGrp=App.ParamGet('User parameter:BaseApp/Preferences/View')
     atr="BackgroundColor"
