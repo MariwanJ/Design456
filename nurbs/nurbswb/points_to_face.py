@@ -26,14 +26,21 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import random,time
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import scipy.linalg.lapack as sp
 from numpy.linalg import inv
 
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 
-#import nurbswb
+import nurbswb
+
 from nurbswb.pyob import  FeaturePython,ViewProvider
 from nurbswb.say import *
 reload (nurbswb.pyob)

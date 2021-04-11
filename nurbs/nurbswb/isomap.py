@@ -48,7 +48,13 @@ import FreeCADGui as Gui
 
 import Part,Mesh,Draft,Points
 
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import scipy
 from scipy import interpolate
 

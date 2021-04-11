@@ -263,7 +263,9 @@ def runribtest():
     App.ActiveDocument = App.getDocument("Unnamed")
     Gui.ActiveDocument = Gui.getDocument("Unnamed")
 
-    #import nurbswb
+    import nurbswb
+
+    os.system('python -m pip3 install numpy')
     createshoerib
     reload(nurbswb.createshoerib)
     nurbswb.createshoerib.run()

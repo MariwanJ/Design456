@@ -36,7 +36,13 @@ from __future__ import unicode_literals
 import FreeCAD as App
 import FreeCADGui as Gui
 import Points,Part,Draft
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import random
 import scipy as sp
 from scipy import signal
@@ -45,16 +51,12 @@ from PySide import QtGui
 import sys,traceback,random,os
 
 import Points
-#import nurbswb
-
+import nurbswb
 
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)
 print ( __dir__)
 
-App=FreeCAD
-
-FreeCADGui.runCommand("Draft_ToggleGrid")
 
 ##\endcond
 

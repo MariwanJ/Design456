@@ -43,7 +43,13 @@ shoe sole creation
 
 from nurbswb.spreadsheet_lib import ssa2npa, npa2ssa, cellname
 spreadsheet_lib
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 __version__ = '0.12'
 
 from say import *
@@ -57,7 +63,7 @@ import Points
 import random
 
 import os
-#import nurbswb
+import nurbswb
 
 global __dir__
 __dir__ = os.path.dirname(nurbswb.__file__)

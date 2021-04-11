@@ -29,7 +29,13 @@ import FreeCAD as App
 import Points
 import Part
 import Draft
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import random
 import scipy as sp
 from scipy import signal
@@ -40,7 +46,7 @@ import traceback
 import random
 
 import FreeCADGui as Gui
-import numpy as np
+import os
 import Draft
 
 if 0:
