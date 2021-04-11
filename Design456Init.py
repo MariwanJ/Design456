@@ -46,14 +46,9 @@ PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons/')
 #Coin3D New widget system 
 WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets')
 
-#Nurbs
-NURBS_PATH=os.path.join(__dir__,'/nurbs')
-NURBS_WB_PATH=os.path.join(__dir__,'nurbs/nurbswb')
-NURBS_PLOT_PATH=os.path.join(__dir__,'/nurbs/plot2')
-NURBS_SKETCHER_PATH=os.path.join(__dir__,'nurbs/sketcher')
-
+#Nurbs  -Nurbs
+NURBS_PATH=os.path.join(__dir__,'nurbs')
 NURBS_ICON_PATH=os.path.join(__dir__,'nurbs/Resources/icons/')
-
 NURBS_IMAGES_PATH=os.path.join(__dir__,'nurbs/Resources/images/')
 
 
@@ -66,7 +61,7 @@ App.addExportType("IGES format (*.iges *.igs)", "Part")
 App.addImportType("STEP with colors (*.step *.stp)", "Import")
 App.addExportType("STEP with colors (*.step *.stp)", "Import")
 
-#WB Default  view 
+#Desing456 WB Default  view 
 #Default Extrusion direction, i.e. 2D/3D objects are placed on XY plane by default.
 DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the plane should be saved here.
 
