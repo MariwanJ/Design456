@@ -98,85 +98,6 @@ def createFaceMidPointmodel(a):
     return App.ActiveDocument.ActiveObject
 
 
-def loadModel(s):
-    ''' map the Part <s> to a networx graph <g> with points set <points>'''
-
-    sp = s.Shape
-
-    for i, v in enumerate(sp.Vertexes):
-
-        pp = (round(v.Point.x, 2), round(v.Point.y, 2), round(v.Point.z, 2))
-
-        try:
-            points[pp]
-        except:
-            points[pp] = i
-            g.add_node(i, pos=(v.Point.x, v.Point.y), keys=[],
-                       quality=0, vector=ptokey(v.Point))
-
-    for e in sp.Edges:
-
-        p1 = e.Vertexes[0].Point
-        i1 = ptokey(p1)
-
-        p2 = e.Vertexes[1].Point
-        i2 = ptokey(p2)
-
-        print("addedge", points[i1], points[i2])
-        ge = g.add_edge(points[i1], points[i2],
-                        weight=round(e.Length, 2),
-                        vector=p2-p1,
-                        fcedge=e  # the real edge
-                        )
-
-    # calculate some topological/metrical information for the vertexes
-
-    for n in g.nodes():
-        es = g.edge[n]
-        sl = 0  # sum of vector length
-        vs = App.Vector()  # sum of vectors
-        vds = 0
-        edirs = []
-
-        if len(es) > 0:
-            esl = []
-            for i, e in enumerate(es):
-                esl.append(e)
-                sl += g.edge[n][e]['vector'].Length
-                vs += g.edge[n][e]['vector']
-                edirs += [g.edge[n][e]['vector']]
-
-            vsn = App.Vector(vs)
-
-            # some trouble ist the sum of all vectors is zero
-            if 0:  # still look for a better solution
-                if vsn.Length < 1:
-                    vsn = g.edge[n][esl[0]]['vector'].cross(
-                        g.edge[n][esl[2]]['vector'])
-
-                if vsn.Length < 1:
-                    vsn = g.edge[n][esl[0]]['vector'].cross(
-                        g.edge[n][esl[1]]['vector'])
-
-            if vsn.Length > 1:
-                vsn.normalize()
-            else:
-                vsn = 0
-
-            for e in es:
-                v = App.Vector(g.edge[n][e]['vector'])
-                v.normalize()
-                vd = v.dot(vs)
-                vds += vd
-
-        g.node[n]['ec'] = len(es)
-        g.node[n]['vs'] = vs
-        g.node[n]['sl'] = sl
-        g.node[n]['vds'] = vds
-        g.node[n]['vs'] = vs
-        g.node[n]['edirs'] = edirs
-        # g.node[n]['fdirs']=[]
-
 
 # def displayMatplot():
 #    # display in matplotlib
@@ -316,412 +237,636 @@ def getNeighborEdges(n):
 # ----------------------------------------------------
 
 
-def displayNB(nodes):
-    ''' diasplay neighbor edges as Part'''
-    col = []
-    for n in nodes:
-        col += getNeighborEdges(n)
-    Part.show(Part.Compound(col))
-
-
-def berechneKeyLevel(i=1):
-    '''key for level i is the i-th neighbor sum of the keys'''
-
-    for n in g.nodes():
-        nbs = g.neighbors(n)
-        kka = {}
-        aas = 0
-        bbs = 0
-        ccs = 0
-        for nb in nbs:
-            (a, b, c) = g.node[nb]['keys'][i-1]
-            aas += a
-            bbs += b
-            ccs += c
-
+class TopologicalAnalyse:
+    """
+    TopologicalAnalyse 
+    """
+    def Activated(self):
         try:
-            g.node[n]['keys'][i] = (aas, bbs, ccs)
-        except:
-            g.node[n]['keys'].append((aas, bbs, ccs))
+            '''run analysis for one selected object'''
+            s = Gui.Selection.getSelection()
+            self.runAna(s[0])
+        
+        except Exception as err:
+            App.Console.PrintError("'TopologicalAnalyse' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def runAna(self,model, silent=False):
+        '''main analysis method'''
 
+        print("NodesA", g.nodes())
+        mp = createFaceMidPointmodel(model)
+        print("NodesB", g.nodes())
+        self.loadModel(mp)
 
-def werteausLevel(i=1):
-    ''' which points have unique keys at level i'''
+        print("Model ", mp.Label)
+        print("NodesC", g.nodes())
 
-    # count the key occurrences
-    kp = {}
-    for n in g.nodes():
-        if g.node[n]['quality'] == 0:
-            key = g.node[n]['keys'][i]
+        # link labels and geometry from freecad to networkx
+        bm = model
+        sp = bm.Shape
+
+        for i, v in enumerate(sp.Vertexes):
+            pp = (round(v.Point.x, 2), round(v.Point.y, 2), round(v.Point.z, 2))
             try:
-                kp[key] += 1
+                #            print (pp,i)
+                #            print ("found ",points[pp])
+                gi = points[pp]
+
+                g.node[gi]["label"] = bm.Label+":Vertex"+str(i+1)
+                g.node[gi]["Vertex"] = v
+#                print (g.node[gi])
             except:
-                kp[key] = 1
+                print("NOT FOUND")
+                pass
 
-    # which points have unique keys
-    anz = 0
-    anzg = 0
+        for i, f in enumerate(sp.Faces):
+            print("Face ", i, len(f.Vertexes))
+            for v in f.Vertexes:
+                #            print (v,ptokey(v.Point),points[ptokey(v.Point)])
+                pix = points[ptokey(v.Point)]
+#                print (g.node[pix])
 
-    # count the unique points
-    for k in kp:
-        if kp[k] == 1:
-            anz += 1
+                # flaechennormale anfuegen
+                (u, v) = f.Surface.parameter(v.Point)
+#                print( pix,"Addiere Flaechennoirmalw",(u,v),f.normalAt(u,v))
+                try:
+                    g.node[pix]['fdirs'].append(f.normalAt(u, v))
+                except:
+                    g.node[pix]['fdirs'] = [(f.normalAt(u, v))]
+                print("len fdirs", len(g.node[pix]['fdirs']))
 
-    # set the quality of the unique points
-    for n in g.nodes():
-        if g.node[n]['quality'] == 0:
-            key = g.node[n]['keys'][i]
-            if kp[key] == 1:
-                g.node[n]['quality'] = i+1
+            c = f.CenterOfMass
+            pp = (round(c.x, 2), round(c.y, 2), round(c.z, 2))
+            try:
+                #            print (pp,i)
+                #            print ("found ",points[pp])
+                gi = points[pp]
+
+                g.node[gi]["label"] = bm.Label+":Face"+str(i+1)
+                g.node[gi]["Face"] = f
+#                print (g.node[gi])
+            except:
+                print("NOT FOUND")
+                pass
+
+        kp = createKeys()
+        print(g.nodes())
+
+        setQuality(g.nodes(), kp)
+
+        # hack
+        # return
+
+        # calculate and display top quality nodes
+        if 1:
+            ns = []
+            for n in g.nodes():
+                if g.node[n]['quality'] == 1:
+                    ns.append(n)
+            # print ns
+            if not silent:
+                self.displayNB(ns)
+                App.ActiveDocument.ActiveObject.Label = "Top Quality"
+                App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
+                    random.random(), random.random(), random.random())
+
+        # calculate all levels
+        for i in range(1, 10):
+            self.berechneKeyLevel(i)
+            rc = self.werteausLevel(i)
+            if rc == 0:
+                break
+
+        last = i
+        # zeige alle indentifizierten Punkte im Verbund
+        if not silent:
+            for i in range(1, last):
+                self.zeigeQ(i)
+
+        # hold the data for postprocessing in a global variable
+        App.g = g
+        App.a = model
+
+#        print  (len(sp.Vertexes)
+        self.addToVertexStore()
+
+    
+    def werteausLevel(i=1):
+        ''' which points have unique keys at level i'''
+    
+        # count the key occurrences
+        kp = {}
+        for n in g.nodes():
+            if g.node[n]['quality'] == 0:
+                key = g.node[n]['keys'][i]
+                try:
+                    kp[key] += 1
+                except:
+                    kp[key] = 1
+    
+        # which points have unique keys
+        anz = 0
+        anzg = 0
+    
+        # count the unique points
+        for k in kp:
+            if kp[k] == 1:
+                anz += 1
+    
+        # set the quality of the unique points
+        for n in g.nodes():
+            if g.node[n]['quality'] == 0:
+                key = g.node[n]['keys'][i]
+                if kp[key] == 1:
+                    g.node[n]['quality'] = i+1
+                    anzg += 1
+            else:
                 anzg += 1
-        else:
-            anzg += 1
+    
+        print("level", i, "found", anz, "found overall", anzg,"not identified till now", len(g.nodes())-anzg)
+        return anz
 
-    print("level", i, "found", anz, "found overall", anzg,
-          "not identified till now", len(g.nodes())-anzg)
-    return anz
-
-
-def zeigeQ(i):
-    ''' display the indetification quality level as Sub Grid '''
-
-    ns = []
-    for n in g.nodes():
-        if g.node[n]['quality'] == i:
-            ns.append(n)
-
-    # print ns
-    displayNB(ns)
-    App.ActiveDocument.ActiveObject.Label = "Quality" + str(i)
-    App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
-        random.random(), random.random(), random.random())
+    def displayNB(nodes):
+        ''' diasplay neighbor edges as Part'''
+        col = []
+        for n in nodes:
+            col += getNeighborEdges(n)
+        Part.show(Part.Compound(col))
 
 
-def run():
-    '''run analysis for one selected object'''
-    s = Gui.Selection.getSelection()
-    model = s[0]
-    runAna(model)
-
-
-def runAna(model, silent=False):
-    '''main analysis method'''
-
-    print("NodesA", g.nodes())
-    mp = createFaceMidPointmodel(model)
-    print("NodesB", g.nodes())
-    loadModel(mp)
-
-    print("Model ", mp.Label)
-    print("NodesC", g.nodes())
-
-    # link labels and geometry from freecad to networkx
-    bm = model
-    sp = bm.Shape
-
-    for i, v in enumerate(sp.Vertexes):
-        pp = (round(v.Point.x, 2), round(v.Point.y, 2), round(v.Point.z, 2))
-        try:
-            #            print (pp,i)
-            #            print ("found ",points[pp])
-            gi = points[pp]
-
-            g.node[gi]["label"] = bm.Label+":Vertex"+str(i+1)
-            g.node[gi]["Vertex"] = v
-#            print g.node[gi]
-        except:
-            print("NOT FOUND")
-            pass
-
-    for i, f in enumerate(sp.Faces):
-        print("Face ", i, len(f.Vertexes))
-        for v in f.Vertexes:
-            #            print (v,ptokey(v.Point),points[ptokey(v.Point)])
-            pix = points[ptokey(v.Point)]
-#            print g.node[pix]
-
-            # flaechennormale anfuegen
-            (u, v) = f.Surface.parameter(v.Point)
-#            print( pix,"Addiere Flaechennoirmalw",(u,v),f.normalAt(u,v))
-            try:
-                g.node[pix]['fdirs'].append(f.normalAt(u, v))
-            except:
-                g.node[pix]['fdirs'] = [(f.normalAt(u, v))]
-            print("len fdirs", len(g.node[pix]['fdirs']))
-
-        c = f.CenterOfMass
-        pp = (round(c.x, 2), round(c.y, 2), round(c.z, 2))
-        try:
-            #            print (pp,i)
-            #            print ("found ",points[pp])
-            gi = points[pp]
-
-            g.node[gi]["label"] = bm.Label+":Face"+str(i+1)
-            g.node[gi]["Face"] = f
-#            print g.node[gi]
-        except:
-            print("NOT FOUND")
-            pass
-
-    kp = createKeys()
-    print(g.nodes())
-
-    setQuality(g.nodes(), kp)
-
-    # hack
-    # return
-
-    # calculate and display top quality nodes
-    if 1:
+    def zeigeQ(i):
+        ''' display the identification quality level as Sub Grid '''
+    
         ns = []
         for n in g.nodes():
-            if g.node[n]['quality'] == 1:
+            if g.node[n]['quality'] == i:
                 ns.append(n)
+    
         # print ns
-        if not silent:
-            displayNB(ns)
-            App.ActiveDocument.ActiveObject.Label = "Top Quality"
-            App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
-                random.random(), random.random(), random.random())
-
-    # calculate all levels
-    for i in range(1, 10):
-        berechneKeyLevel(i=i)
-        rc = werteausLevel(i=i)
-        if rc == 0:
-            break
-
-    last = i
-    # zeige alle indentifizierten Punkte im Verbund
-    if not silent:
-        for i in range(1, last):
-            zeigeQ(i)
-
-    # hold the data for postprocessing in a global variable
-    App.g = g
-    App.a = model
-
-#    print  (len(sp.Vertexes)
-    addToVertexStore()
-
-
-def runCompare():
-    '''run analysis for more parts and display the results'''
-    resetVertexStore()
-    s = Gui.Selection.getSelection()
-    for model in s:
-        #        g=nx.Graph()
-        #        App.g=g
-        print("Startrnstand")
-        for v in g.nodes():
-            print(g.node[v]['fdirs'])
-            print(g.node[v]['edirs'])
-            g.node[v]['fdirs'] = []
-            g.node[v]['edirs'] = []
-        print("--------------")
-        print("NodesA", g.nodes())
-        runAna(model, silent=True)
-    displayVertexStore()
-
-
-def displayQualityPoints():
-    '''display the quality points as point clouds'''
-    g = App.g
-    for q in range(1, 7):
-        pts = []
-        for v in g.nodes():
-            # print g.node[v]['quality']
-            if g.node[v]['quality'] == q:
-                pts.append(g.node[v]['vector'])
-
-#        print pts
-        if pts != []:
-            Points.show(Points.Points(pts))
-            App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
-                random.random(), random.random(), random.random())
-            App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
-
-            App.ActiveDocument.ActiveObject.Label = "Points Quality " + str(q)
-
-
-def printData():
-    '''print some diagnostic data'''
-    g = App.g
-    for v in g.nodes():
-        print(v)
-        print(g.node[v]['quality'])
-        print(g.node[v]['keys'])
-        print(g.node[v]['vector'])
-        print(g.node[v]['keys'][g.node[v]['quality']-1])
-
-
-def addToVertexStore():
-    '''add the keys to the global vertex store'''
-
-    try:
-        App.PT
-    except:
-        App.PT = {}
-
-    print("add to Vertex-Store")
-    g = App.g
-    a = App.a
-    for v in g.nodes():
-
-        try:
-            g.node[v]['label']
-        except:
-            g.node[v]['label'] = '----'
-
-        print("kkkk")
-        print(g.node[v]['label'])
-        print(g.node[v]['quality']-1)
-        print(g.node[v]['keys'])
-#        print g.node[v]['keys'][g.node[v]['quality']-1]
-        print("ha")
-
-#        key=(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],"!>",
-#            g.node[v]['quality'],"<!",g.node[v]['keys'])
-
-        key = (a.Label, g.node[v]['label'], v, g.node[v]['keys'][0], "!>",
-               g.node[v]['quality'], "<!", g.node[v]['keys'])
-
-        try:
-            if key not in App.PT[g.node[v]['vector']]:
-                App.PT[g.node[v]['vector']] += [key]
-                # print ("added"
-        except:
-            # App.PT[g.node[v]['vector']] =[(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],g.node[v]['quality'])]
-            App.PT[g.node[v]['vector']] = [key]
-
-
-def resetVertexStore():
-    '''clear the vertex store for next analysis'''
-    App.PT = {}
-    print(App.PT)
-
-
-def printVertexStore():
-    '''print the vertex store'''
-    print("The vertex Store")
-    for j in App.PT:
-        print
-        print(j)
-        vs = App.PT[j]
-        for v in vs:
-            if str(v[1]) != '----':
-                print (v[1:-1])
-#                print ("    ",v[-1]
-
-
-def displayVertexStore():
-    '''print the vertex store'''
-    print("The vertex Store compare")
-    found = 0
-    count = 0
-    keys = {}
-    keyd = {}
-
-    for j in App.PT:
-        # print
-        # print j
-        vs = App.PT[j]
-        for v in vs:
-            if str(v[1]) == '----':
-                continue
-            k = v[3]
-            count += 1
-            try:
-                keys[k] += 1
-                keyd[k] += [(j, v[:-2])]
-                # print v
-            except:
-                keys[k] = 1
-                keyd[k] = [(j, v[:-2])]
-    pts = []
-    for k in keys:
-        if keys[k] > 1:
-            found += 1
-            # print k,keys[k]
-            # print keyd[k]
-            pts.append(keyd[k][0][0])
-            pts.append(keyd[k][1][0])
-            # moeglich sortieren auf koerper einzeln
-            # print keyd[k][0][1]
-            # print keyd[k][1][1]
-
-#    if pts!=[]:
-#        #print pts
-#        Points.show(Points.Points(pts))
-#        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
-#            random.random(),random.random(),random.random())
-#        App.ActiveDocument.ActiveObject.ViewObject.PointSize= 10
-#
-#        App.ActiveDocument.ActiveObject.Label="Common Points "
-
-
-#    print ("no found -----------------------------"
-    pts = []
-    for k in keys:
-        if keys[k] == 1:
-            #            print k,keys[k]
-            #            print keyd[k]
-            #            print ("!!",keyd[k][0][0]
-            pts.append(keyd[k][0][0])
-
-    print
-    print("after keys issued")
-    for k in keys:
-        if k[0] % 100 != 0:  # ignore reine flaechen
-            print
-            print(k)
-            for p in keyd[k]:
-                print(p[1])
-
-    anz = 0
-    gps = []
-    print
-    print("after keys issued only pairs -------------------------------")
-    for k in keys:
-        first=True
-        if k[0] % 100 != 0:  # ignore reine flaechen
-            if len(keyd[k]) == 2:
-                [p, q]=keyd[k]
-                if p[1][0] != q[1][0]:
-                    if p[1][1].startswith(p[1][0]):
-                        if first:
-                            print
-                            print (k)
-                            first=False
-                        print (p[1])
-#                        print p
-                        print (q[1])
-                        anz += 1
-                        gps += [App.Vector(p[0]), App.Vector(q[0])]
-
-    print("found pairs  ")
-    print(anz)
-
-    if gps != []:
-        Points.show(Points.Points(gps))
-        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
+        self.displayNB(ns)
+        App.ActiveDocument.ActiveObject.Label = "Quality" + str(i)
+        App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
             random.random(), random.random(), random.random())
-        App.ActiveDocument.ActiveObject.ViewObject.PointSize=10
-
-        App.ActiveDocument.ActiveObject.Label="Gefundene unique keys -- bestes ergebnis"
 
 
-#    if pts!=[]:
-#        #print pts
-#        Points.show(Points.Points(pts))
-#        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
-#            random.random(),random.random(),random.random())
-#        App.ActiveDocument.ActiveObject.ViewObject.PointSize= 10
-#
-#        App.ActiveDocument.ActiveObject.Label="No common Points "
-#
-#    print ("common found:",found
-#    print count
+    def berechneKeyLevel(i=1):
+        '''key for level i is the i-th neighbor sum of the keys'''
+
+        for n in g.nodes():
+            nbs = g.neighbors(n)
+            kka = {}
+            aas = 0
+            bbs = 0
+            ccs = 0
+            for nb in nbs:
+                (a, b, c) = g.node[nb]['keys'][i-1]
+                aas += a
+                bbs += b
+                ccs += c
+
+            try:
+                g.node[n]['keys'][i] = (aas, bbs, ccs)
+            except:
+                g.node[n]['keys'].append((aas, bbs, ccs))
+
+
+
+    def loadModel(s):
+        ''' map the Part <s> to a networx graph <g> with points set <points>'''
+
+        sp = s.Shape
+
+        for i, v in enumerate(sp.Vertexes):
+
+            pp = (round(v.Point.x, 2), round(v.Point.y, 2), round(v.Point.z, 2))
+
+            try:
+                points[pp]
+            except:
+                points[pp] = i
+                g.add_node(i, pos=(v.Point.x, v.Point.y), keys=[],
+                           quality=0, vector=ptokey(v.Point))
+
+        for e in sp.Edges:
+
+            p1 = e.Vertexes[0].Point
+            i1 = ptokey(p1)
+
+            p2 = e.Vertexes[1].Point
+            i2 = ptokey(p2)
+
+            print("addedge", points[i1], points[i2])
+            ge = g.add_edge(points[i1], points[i2],
+                            weight=round(e.Length, 2),
+                            vector=p2-p1,
+                            fcedge=e  # the real edge
+                            )
+
+        # calculate some topological/metrical information for the vertexes
+
+        for n in g.nodes():
+            es = g.edge[n]
+            sl = 0  # sum of vector length
+            vs = App.Vector()  # sum of vectors
+            vds = 0
+            edirs = []
+
+            if len(es) > 0:
+                esl = []
+                for i, e in enumerate(es):
+                    esl.append(e)
+                    sl += g.edge[n][e]['vector'].Length
+                    vs += g.edge[n][e]['vector']
+                    edirs += [g.edge[n][e]['vector']]
+
+                vsn = App.Vector(vs)
+
+                # some trouble ist the sum of all vectors is zero
+                if 0:  # still look for a better solution
+                    if vsn.Length < 1:
+                        vsn = g.edge[n][esl[0]]['vector'].cross(
+                            g.edge[n][esl[2]]['vector'])
+
+                    if vsn.Length < 1:
+                        vsn = g.edge[n][esl[0]]['vector'].cross(
+                            g.edge[n][esl[1]]['vector'])
+
+                if vsn.Length > 1:
+                    vsn.normalize()
+                else:
+                    vsn = 0
+
+                for e in es:
+                    v = App.Vector(g.edge[n][e]['vector'])
+                    v.normalize()
+                    vd = v.dot(vs)
+                    vds += vd
+
+            g.node[n]['ec'] = len(es)
+            g.node[n]['vs'] = vs
+            g.node[n]['sl'] = sl
+            g.node[n]['vds'] = vds
+            g.node[n]['vs'] = vs
+            g.node[n]['edirs'] = edirs
+            # g.node[n]['fdirs']=[]
+
+
+    def addToVertexStore():
+        '''add the keys to the global vertex store'''
+
+        try:
+            App.PT
+        except:
+            App.PT = {}
+
+        print("add to Vertex-Store")
+        g = App.g
+        a = App.a
+        for v in g.nodes():
+
+            try:
+                g.node[v]['label']
+            except:
+                g.node[v]['label'] = '----'
+
+            print("kkkk")
+            print(g.node[v]['label'])
+            print(g.node[v]['quality']-1)
+            print(g.node[v]['keys'])
+    #        print g.node[v]['keys'][g.node[v]['quality']-1]
+            print("ha")
+
+    #        key=(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],"!>",
+    #            g.node[v]['quality'],"<!",g.node[v]['keys'])
+
+            key = (a.Label, g.node[v]['label'], v, g.node[v]['keys'][0], "!>",
+                   g.node[v]['quality'], "<!", g.node[v]['keys'])
+
+            try:
+                if key not in App.PT[g.node[v]['vector']]:
+                    App.PT[g.node[v]['vector']] += [key]
+                    # print ("added"
+            except:
+                # App.PT[g.node[v]['vector']] =[(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],g.node[v]['quality'])]
+                App.PT[g.node[v]['vector']] = [key]
+
+
+    def GetResources(self):
+        return {
+            'Pixmap':Design456Init.NURBS_ICON_PATH+'nurbs.svg',
+            'MenuText': 'TopologicalAnalyse',
+                        'ToolTip':  'TopologicalAnalyse'
+        }
+Gui.addCommand('runAna',runAna())
+Gui.addCommand ('addtoVertexStore',runAna().addToVertexStore())
+
+
+#TopologicalCompare'
+class TopologicalCompare:
+    """ 
+    TopologicalCompare
+    """
+    def Activated(self):
+        try:
+            self.runCompare()       
+        except Exception as err:
+            App.Console.PrintError("'Magnet' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def runCompare():
+        '''run analysis for more parts and display the results'''
+        resetVertexStore()
+        s = Gui.Selection.getSelection()
+        for model in s:
+            #        g=nx.Graph()
+            #        App.g=g
+            print("Startrnstand")
+            for v in g.nodes():
+                print(g.node[v]['fdirs'])
+                print(g.node[v]['edirs'])
+                g.node[v]['fdirs'] = []
+                g.node[v]['edirs'] = []
+            print("--------------")
+            print("NodesA", g.nodes())
+            runAna(model, silent=True)
+        self.displayVertexStore()
+
+    def displayVertexStore():
+        '''print the vertex store'''
+        print("The vertex Store compare")
+        found = 0
+        count = 0
+        keys = {}
+        keyd = {}
+
+        for j in App.PT:
+            # print
+            # print j
+            vs = App.PT[j]
+            for v in vs:
+                if str(v[1]) == '----':
+                    continue
+                k = v[3]
+                count += 1
+                try:
+                    keys[k] += 1
+                    keyd[k] += [(j, v[:-2])]
+                    # print v
+                except:
+                    keys[k] = 1
+                    keyd[k] = [(j, v[:-2])]
+        pts = []
+        for k in keys:
+            if keys[k] > 1:
+                found += 1
+                # print k,keys[k]
+                # print keyd[k]
+                pts.append(keyd[k][0][0])
+                pts.append(keyd[k][1][0])
+                # moeglich sortieren auf koerper einzeln
+                # print keyd[k][0][1]
+                # print keyd[k][1][1]
+
+    #    if pts!=[]:
+    #        #print pts
+    #        Points.show(Points.Points(pts))
+    #        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
+    #            random.random(),random.random(),random.random())
+    #        App.ActiveDocument.ActiveObject.ViewObject.PointSize= 10
+    #
+    #        App.ActiveDocument.ActiveObject.Label="Common Points "
+
+
+    #    print ("no found -----------------------------"
+        pts = []
+        for k in keys:
+            if keys[k] == 1:
+                #            print k,keys[k]
+                #            print keyd[k]
+                #            print ("!!",keyd[k][0][0]
+                pts.append(keyd[k][0][0])
+
+        print
+        print("after keys issued")
+        for k in keys:
+            if k[0] % 100 != 0:  # ignore reine flaechen
+                print
+                print(k)
+                for p in keyd[k]:
+                    print(p[1])
+
+        anz = 0
+        gps = []
+        print
+        print("after keys issued only pairs -------------------------------")
+        for k in keys:
+            first=True
+            if k[0] % 100 != 0:  # ignore reine flaechen
+                if len(keyd[k]) == 2:
+                    [p, q]=keyd[k]
+                    if p[1][0] != q[1][0]:
+                        if p[1][1].startswith(p[1][0]):
+                            if first:
+                                print
+                                print (k)
+                                first=False
+                            print (p[1])
+    #                        print p
+                            print (q[1])
+                            anz += 1
+                            gps += [App.Vector(p[0]), App.Vector(q[0])]
+
+        print("found pairs  ")
+        print(anz)
+
+        if gps != []:
+            Points.show(Points.Points(gps))
+            App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
+                random.random(), random.random(), random.random())
+            App.ActiveDocument.ActiveObject.ViewObject.PointSize=10
+
+            App.ActiveDocument.ActiveObject.Label="Gefundene unique keys -- bestes ergebnis"
+
+
+    #    if pts!=[]:
+    #        #print pts
+    #        Points.show(Points.Points(pts))
+    #        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(
+    #            random.random(),random.random(),random.random())
+    #        App.ActiveDocument.ActiveObject.ViewObject.PointSize= 10
+    #
+    #        App.ActiveDocument.ActiveObject.Label="No common Points "
+    #
+    #    print ("common found:",found
+    #    print count
+
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH +'Nurbs.svg',
+            'MenuText': 'TopologicalCompare',
+                        'ToolTip':  'TopologicalCompare'
+        }
+Gui.addCommand('TopologicalCompare', TopologicalCompare())
+Gui.addCommand('displayVertexStoreCommonPoints',TopologicalCompare().displayVertexStore()
+
+
+class displayQualityPoints:
+    """ 
+    displayQualityPoints TOPO 8
+    """
+    def Activated(self):
+        try:
+            self.displayQualityPoints()    
+        except Exception as err:
+            App.Console.PrintError("'Magnet' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def displayQualityPoints():
+        '''display the quality points as point clouds'''
+        g = App.g
+        for q in range(1, 7):
+            pts = []
+            for v in g.nodes():
+                # print g.node[v]['quality']
+                if g.node[v]['quality'] == q:
+                    pts.append(g.node[v]['vector'])
+    #        print pts
+            if pts != []:
+                Points.show(Points.Points(pts))
+                App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
+                    random.random(), random.random(), random.random())
+                App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
+                App.ActiveDocument.ActiveObject.Label = "Points Quality " + str(q)
+                
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH +'Nurbs.svg',
+            'MenuText': 'displayQualityPoints',
+                        'ToolTip':  'displayQualityPoints'
+        }
+
+Gui.addCommand('displayQualityPoints',displayQualityPoints() )
+
+
+#printGraphData TOPO 5
+
+class printGraphData:
+    """ 
+    printGraphData
+    """
+    def Activated(self):
+        try:
+            self.printData()
+            
+        except Exception as err:
+            App.Console.PrintError("'Magnet' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+    def printData():
+        '''print some diagnostic data'''
+        g = App.g
+        for v in g.nodes():
+            print(v)
+            print(g.node[v]['quality'])
+            print(g.node[v]['keys'])
+            print(g.node[v]['vector'])
+            print(g.node[v]['keys'][g.node[v]['quality']-1])
+
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH +'.svg',
+            'MenuText': '',
+                        'ToolTip':  ''
+        }
+
+Gui.addCommand('printGraphData',printGraphData() )
+Gui.addCommand('printDATA',printGraphData().printData())
+
+
+
+
+#resetVertexStore
+class resetVertexStore:
+    """ 
+    resetVertexStore
+    """
+    def Activated(self):
+        try:
+            self.resetVertexStore()
+        except Exception as err:
+            App.Console.PrintError("'Magnet' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def resetVertexStore():
+        '''clear the vertex store for next analysis'''
+        App.PT = {}
+        print(App.PT)
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH +'Nurbs.svg',
+            'MenuText': '',
+                        'ToolTip':  ''
+        }
+
+Gui.addCommand('resetVertexStore',resetVertexStore() )
+
+
+
+#print vertextstore 
+class printVertexStore:
+    """ 
+    printVertexStoreDump'
+    """
+    def Activated(self):
+        try:
+            self.printVertexStore()
+        except Exception as err:
+            App.Console.PrintError("'Magnet' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+            
+    def printVertexStore():
+        '''print the vertex store'''
+        print("The vertex Store")
+        for j in App.PT:
+            print
+            print(j)
+            vs = App.PT[j]
+            for v in vs:
+                if str(v[1]) != '----':
+                    print (v[1:-1])
+#                print ("    ",v[-1]            
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH +'Nurbs.svg',
+            'MenuText': 'printVertexStoreDump',
+                        'ToolTip':  'printVertexStoreDump'
+        }
+
+Gui.addCommand('printVertexStore',printVertexStore() )
 
 
 def loadTest1():

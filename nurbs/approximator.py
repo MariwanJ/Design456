@@ -218,11 +218,11 @@ class PointCloudApprox(FeaturePython):
             hop = getPart(name+"_Wire")
             hop.Shape = Part.makePolygon(pts4)
 
-            smooth
-            reload(.smooth)
+            import smooth
+            reload(smooth)
             smooth = App.ActiveDocument.getObject("smooth"+"_"+name)
             if smooth == None:
-                .smooth.smoothWire(hop, "smooth"+"_"+name)
+                smooth.smoothWire(hop, "smooth"+"_"+name)
             else:
                 print("setze smooth count ", dd)
                 smooth.Wire = hop
