@@ -44,7 +44,7 @@ import Points
 import networkx as nx
 import random
 import os
-#import nurbswb
+import nurbswb
 
 
 if 0:
@@ -303,7 +303,7 @@ def run(animate=True, itercount=101):
 
     # erzuegen einer flaeche
     if 0:
-        import numpy as np
+        import os
 
         pts = []
 

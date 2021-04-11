@@ -173,7 +173,8 @@ def check(pp, mode, updateNurbs=False, widget=None):
 
 def createMarker(self):
     print("create Marker")
-    #import nurbswb
+    import nurbswb
+    os.system('python -m pip3 install numpy')
     geodesic_lines
     reload(nurbswb.geodesic_lines)
 

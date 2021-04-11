@@ -41,7 +41,13 @@ myNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelSpoon)
 
 '''
 
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 
 
 
@@ -731,10 +737,6 @@ class modelColadose(model):
 
 
 #---------------------------------------------
-
-
-import numpy as np
-
 
 class modelK(model): 
 

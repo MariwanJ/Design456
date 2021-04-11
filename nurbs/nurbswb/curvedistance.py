@@ -28,7 +28,13 @@ from __future__ import unicode_literals
 # distance between the target curve 1st, and some other curves
 
 import FreeCADGui as Gui
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: nump")
+    os.system('python -m pip3 install numpy')
 import Draft
 
 def  dist(a,b):

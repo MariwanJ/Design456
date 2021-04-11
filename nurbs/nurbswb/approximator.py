@@ -44,7 +44,14 @@ import scipy
 pyob
 from pyob import *
 from nurbswb.miki_g import createMikiGui2, MikiApp
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
+    
 import Draft
 import Points
 import Part
@@ -1591,8 +1598,6 @@ def runMyMinA(fp, pts):
         label = s.Label+"_curve"
 
         debug = 0
-
-        import numpy as np
 
         def schnittpunkt(pts):
 

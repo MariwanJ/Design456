@@ -21,11 +21,14 @@
 # *                                                                        *
 # ************************************************************************
 
-import re
+
 import os
-import configuration
-#import nurbswb
 import sys
+sys.path.insert(0, './nurbs/nurbswb')
+import configuration
+import nurbswb
+
+import re
 __title__ = "FreeCAD Nurbs Library"
 
 __vers__ = "V???"

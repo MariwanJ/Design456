@@ -40,10 +40,16 @@ import FreeCADGui as Gui
 
 from PySide import QtCore,QtGui
 from pivy import coin
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import random
 import Draft
-import numpy as np
+import os
 
 
 Gui=FreeCADGui
@@ -380,7 +386,8 @@ def splitMesh():
 
     if 1: # speater
 
-        import numpy as np
+        import os
+
         ribs2=[]
 
         ptsa=np.array(ptsa)

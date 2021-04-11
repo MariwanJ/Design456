@@ -35,7 +35,13 @@ from __future__ import unicode_literals
 # -------------------------------------------------
 from pivy import coin
 from say import *
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 __version__ = '0.3'
 
 # idea from  FreeCAD TemplatePyMod module by (c) 2013 Werner Mayer LGPL

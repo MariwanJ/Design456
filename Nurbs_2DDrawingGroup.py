@@ -29,18 +29,20 @@ import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-#sys.path.append(Design456Init.NURBS_PATH)
-sys.path.append(Design456Init.NURBS_WB_PATH)
-#sys.path.append(Design456Init.NURBS_PLOT_PATH)
 
-#import create_sole_sketch
-import InitGuiWBDefinitions
+#include the subdirectories for import
+sys.path.insert(0, './nurbs')
+sys.path.insert(0, './nurbs/nurbswb')
+sys.path.insert(0, './nurbs/Plot2')
+
+
 class Design456_Nurbs_2DDrawingGroup:
 
     """Design456 Part 2D Drawing"""
 
     def GetCommands(self):
         """3D Modifying Tools."""
+        
         return ("runSole",
                 #These are from the WB definition of Nurbs.
                 #From cmds --> i.e. cmd1  : defined in his wb as Nurbs toolbar

@@ -41,7 +41,13 @@ import FreeCADGui as Gui
 from PySide import QtGui
 import Part,Mesh,Draft
 
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 
 def Myarray2NurbsD3(arr,label="MyWall",degree=3,obj=None):
 
@@ -977,7 +983,7 @@ class testmain:
 
     # test aus parametern
     import Draft
-    #import nurbswb
+    import nurbswb
     import needle as needle
     reload( nurbswb.needle)
 
@@ -1009,7 +1015,7 @@ class testmain:
         # Bspline003
 
 
-    #import nurbswb
+    import nurbswb
     import needle as needle
 
     a=needle.createNeedle()

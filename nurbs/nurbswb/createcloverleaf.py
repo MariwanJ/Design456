@@ -31,7 +31,13 @@ import FreeCAD,Part,Sketcher
 App=FreeCAD
 
 import Draft
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 
 from PySide import QtGui
 import sys,traceback,random
@@ -56,12 +62,12 @@ def sayexc(title='Fehler',mess=''):
     showdialog(title,text=mess,detail="--> ".join(l2))
 
 
-import numpy as np
-
 def run():
     label="cloverleaf"
-    try: body=App.activeDocument().Body
-    except:    body=App.activeDocument().addObject('PartDesign::Body','Body')
+    try: 
+        body=App.activeDocument().Body
+    except:    
+        body=App.activeDocument().addObject('PartDesign::Body','Body')
 
     sk=App.activeDocument().addObject('Sketcher::SketchObject','cloverleaf')
     sk.Label=label
