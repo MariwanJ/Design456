@@ -2045,7 +2045,7 @@ def BSplineToBezierCurve():
             bc=e.Curve
 
             if bc.Degree>3:
-                .say.showdialog("curves with degree >3 are not supported")
+                say.showdialog("curves with degree >3 are not supported")
             bc.increaseDegree(3)
 
             for k in bc.getKnots():

@@ -30,7 +30,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 
-import nurbs
+from nurbs import *
 
 
 
@@ -39,8 +39,18 @@ class Design456_Nurbs_2DToolsGroup:
     """Design456 Part 2D Drawing"""
 
     def GetCommands(self):
+        import nurbs
         """3D Modifying Tools."""
-        return (""
+        return ("TopologicalAnalyse",
+                "addToVertexStore",
+                "TopologicalCompare",
+                "displayVertexStoreCommonPoints",
+                "displayQualityPoints",
+                "printGraphData",
+                "printDATA",
+                "resetVertexStore",
+                "printVertexStore",
+                
 
 
                 )
