@@ -51,10 +51,10 @@ from PySide import QtGui
 import sys,traceback,random,os
 
 import Points
-import nurbswb
+import 
 
 global __dir__
-__dir__ = os.path.dirname(nurbswb.__file__)
+__dir__ = os.path.dirname(.__file__)
 print ( __dir__)
 
 
@@ -223,12 +223,12 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 
     # load the shoedata
     shoedata
-    reload(nurbswb.shoedata)
+    reload(.shoedata)
 
-    bbps=nurbswb.shoedata.shoeAdam.bbps
-    boxes=nurbswb.shoedata.shoeAdam.boxes
-    twister=nurbswb.shoedata.shoeAdam.twister
-    sc=nurbswb.shoedata.shoeAdam.sc
+    bbps=.shoedata.shoeAdam.bbps
+    boxes=.shoedata.shoeAdam.boxes
+    twister=.shoedata.shoeAdam.twister
+    sc=.shoedata.shoeAdam.sc
 
 
     trafos=[]
@@ -247,7 +247,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 
     # create the sketches
     createsketchspline
-    reload(nurbswb.createsketchspline)
+    reload(.createsketchspline)
 
     scp=App.ActiveDocument.Scanpoints
     jj=scp.OutList

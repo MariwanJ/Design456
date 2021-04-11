@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-# adjustments for nurbswb matters
+# adjustments for  matters
 #
 #
 #

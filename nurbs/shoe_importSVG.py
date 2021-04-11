@@ -1352,7 +1352,7 @@ def import_test():
 #-------------------------------
 
 #global __dir__
-#__dir__ = os.path.dirname(nurbswb.__file__)
+#__dir__ = os.path.dirname(.__file__)
 #print ( __dir__)
 
 

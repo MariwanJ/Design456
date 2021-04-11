@@ -28,7 +28,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 
-sys.path.insert(0, './nurbs/nurbswb')
+sys.path.insert(0, './nurbs')
 import configuration
 import nurbs
 
@@ -135,18 +135,18 @@ class MyTestCmd2:
     def Activated(self):
         import QtUnitGui
         TestNurbsGui
-        reload(nurbswb.TestNurbsGui)
+        reload(.TestNurbsGui)
         TestNurbs
-        reload(nurbswb.TestNurbs)
-        QtUnitGui.addTest("nurbswb.TestNurbsGui")
-        QtUnitGui.addTest("nurbswb.TestNurbs")
+        reload(.TestNurbs)
+        QtUnitGui.addTest(".TestNurbsGui")
+        QtUnitGui.addTest(".TestNurbs")
 
     def GetResources(self):
         return {'MenuText': 'Test-test...', 'ToolTip': 'Runs the self-test for the workbench'}
 
 
 Gui.addCommand('My_Test2', MyTestCmd2())
-# FreeCADGui.runCommand('My_Test2')
+# Gui.runCommand('My_Test2')
 
 
 # ------------------------------------------
@@ -157,7 +157,7 @@ global _Command2
 
 class _Command2():
 
-    def __init__(self, lib=None, name=None, icon=None, command=None, modul='nurbswb', tooltip='No Tooltip'):
+    def __init__(self, lib=None, name=None, icon=Design456Init.NURBS_ICON_PATH+'nurbs.svg', command=None, modul='', tooltip='No Tooltip'):
 
         # print ("!! command 2:",icon,modul,lib,command,tooltip)
 
@@ -174,7 +174,7 @@ class _Command2():
         self.command = command
         self.modul = modul
         if icon != None:
-            self.icon = __dir__ + icon
+            self.icon =icon
         else:
             self.icon = None
 
@@ -234,7 +234,7 @@ global _Command
 
 class _Command():
 
-    def __init__(self, lib=None, name=None, icon=Design456Init.NURBS_ICON_PATH+'nurbs.svg', command=None, modul='nurbswb'):
+    def __init__(self, lib=None, name=None, icon=Design456Init.NURBS_ICON_PATH+'nurbs.svg', command=None, modul='nurbs'):
 
         # print ("!! command:",icon,modul,lib,command)
         if lib == None:
@@ -250,7 +250,7 @@ class _Command():
         self.command = command
         self.modul = modul
         try:
-            self.icon = __dir__ + icon
+            self.icon = icon
         except:
             pass
         if name == None:
@@ -265,7 +265,7 @@ class _Command():
                 }
 
     def IsActive(self):
-        if FreeCADGui.ActiveDocument:
+        if Gui.ActiveDocument:
             return True
         else:
             return False
@@ -277,10 +277,10 @@ class _Command():
                 modul = self.modul
             else:
                 modul = self.name
-            FreeCADGui.doCommand("import " + modul)
-            FreeCADGui.doCommand("import "+self.lmod)
-            FreeCADGui.doCommand("reload("+self.lmod+")")
-            FreeCADGui.doCommand(self.command)
+            Gui.doCommand("import " + modul)
+            Gui.doCommand("import "+self.lmod)
+            Gui.doCommand("reload("+self.lmod+")")
+            Gui.doCommand(self.command)
         # App.ActiveDocument.commitTransaction()
         if App.ActiveDocument is not None:
             App.ActiveDocument.recompute()
@@ -301,37 +301,37 @@ def always():
 
 def ondocument():
     '''if a document is active'''
-    return FreeCADGui.ActiveDocument is not None
+    return Gui.ActiveDocument is not None
 
 
 def onselection():
     '''if at least one object is selected'''
-    return len(FreeCADGui.Selection.getSelection()) > 0
+    return len(Gui.Selection.getSelection()) > 0
 
 
 def onselection1():
     '''if exactly one object is selected'''
-    return len(FreeCADGui.Selection.getSelection()) == 1
+    return len(Gui.Selection.getSelection()) == 1
 
 
 def onselection2():
     '''if exactly two objects are selected'''
-    return len(FreeCADGui.Selection.getSelection()) == 2
+    return len(Gui.Selection.getSelection()) == 2
 
 
 def onselection3():
     '''if exactly three objects are selected'''
-    return len(FreeCADGui.Selection.getSelection()) == 3
+    return len(Gui.Selection.getSelection()) == 3
 
 
 def onselex():
     '''if at least one subobject is selected'''
-    return len(FreeCADGui.Selection.getSelectionEx()) != 0
+    return len(Gui.Selection.getSelectionEx()) != 0
 
 
 def onselex1():
     '''if exactly one subobject is selected'''
-    return len(FreeCADGui.Selection.getSelectionEx()) == 1
+    return len(Gui.Selection.getSelectionEx()) == 1
 
 
 # the menu entry list
@@ -343,7 +343,7 @@ def c1(menu,name,*info):
     global _Command
     name1="Nurbs_"+name
     t=_Command(name,*info)
-    FreeCADGui.addCommand(name1,t)
+    Gui.addCommand(name1,t)
     App.tcmds5.append([menu,name1,name,'always',info])
 '''
 
@@ -353,7 +353,7 @@ def c1a(menu, isactive, name, *info):
     name1 = "Nurbs_"+name
     t = _Command(name, *info)
     t.IsActive = isactive
-    FreeCADGui.addCommand(name1, t)
+    Gui.addCommand(name1, t)
     App.tcmds5.append([menu, name1, name, isactive, info])
 
 
@@ -362,7 +362,7 @@ def c2(menu,title,name,*info):
     #print info
     global _Command
     title1="Nurbs_"+title
-    FreeCADGui.addCommand(title1,_Command(name,*info))
+    Gui.addCommand(title1,_Command(name,*info))
     App.tcmds5.append([menu,title1,name,'always',info])
 '''
 
@@ -372,7 +372,7 @@ def c2a(menu, isactive, title, name, *info):
     t = _Command(name, *info)
     title1 = "Nurbs_"+title
     t.IsActive = isactive
-    FreeCADGui.addCommand(title1, t)
+    Gui.addCommand(title1, t)
     App.tcmds5.append([menu, title1, name, isactive, info])
 
 
@@ -389,7 +389,7 @@ def c2b(menu, isactive, title, name, text, icon, cmd=None, *info):
         title = "TT"+re.sub(r' ', '', text)
     name1 = "Nurbs_"+title
     t.IsActive = isactive
-    FreeCADGui.addCommand(name1, t)
+    Gui.addCommand(name1, t)
     App.tcmds5.append([menu, name1])
 
 # -----------------------------
@@ -782,7 +782,7 @@ c2a(["Sketchertools"], always, 'Status56', 'sketcher_grids', 'Create Sketcher Gr
 #    c2a(["Sketchertools"],always,'Status155','feedbacksketch','connect road to line ',Design456Init.NURBS_ICON_PATH + "alpha.svg","connectLine()","sketcher")
 
 
-#    for cmd in FreeCADGui.listCommands():
+#    for cmd in Gui.listCommands():
 #        if cmd.startswith("Nurbs_"):
 #            print cmd
 toolbars=[]
@@ -790,136 +790,3 @@ toolbars = [
         ['Bezier Tools', beztools],
         ['My current Work', current]
     ]
-
-
-'''
-
-nd=App.newDocument("Unnamed")
-App.setActiveDocument(nd.Name)
-App.ActiveDocument=App.getDocument(nd.Name)
-Gui.ActiveDocument=Gui.getDocument(nd.Name)
-'''
-
-
-class NurbsWorkbench(Workbench):
-    '''Nurbs'''
-
-    MenuText = "Nurbs"
-    ToolTip = "Nurbs Editor"
-
-    Icon = '''
-/* XPM */
-static char * nurbs_xpm[] = {
-"16 16 2 1",
-".    c #E12DEC",
-"+    c #FFFFFF",
-"................",
-"................",
-"................",
-"................",
-".........+++++..",
-".........+++++..",
-".........+++++..",
-".........+++++..",
-".........+++++..",
-".........+++++..",
-"................",
-"................",
-"................",
-"................",
-"................",
-"................"};'''
-
-
-"""
-    def GetClassName(self):
-        return "Gui::PythonWorkbench"
-
-
-    def __init__(self, toolbars, version):
-
-        self.toolbars = toolbars
-        self.version = version
-
-"""
-"""
-    def Initialize(self):
-
-        Gui.activateWorkbench("DraftWorkbench")
-        Gui.activateWorkbench("SketcherWorkbench")
-
-        try: # some methods from curve wb
-            import ZebraTool
-            import ParametricComb
-            import GeomInfo
-        except: pass
-
-        cmds= ['ZebraTool','ParametricComb','GeomInfo','Nurbs_DraftBSpline Editor',
-        'Nurbs_Create Shoe','Nurbs_Create Sole','Nurbs_Sole Change Model',
-        'Nurbs_scanbackbonecut','Nurbs_createsketchspline','Nurbs_Curves to Face', 'Nurbs_facedraw',
-
-        'Part_Cone', 'Part_Cylinder','Draft_Move','Draft_Rotate','Draft_Point','Draft_ToggleGrid',
-        'My_Test2','Sketcher_NewSketch',
-        #'Nurbs_facedraws','Nurbs_patcha','Nurbs_patchb','Nurbs_folda'
-        ]
-
-        cmds2=['Nurbs_facedraw','Nurbs_patcha','Nurbs_patchb','Nurbs_folda']
-        
-        cmds3=['Nurbs_CreateWorkspace','Nurbs_CreateWSLink','Nurbs_ViewsQV','Nurbs_Views2H','Nurbs_DarkRoom','Nurbs_LightOn','Nurbs_LightOff']
-        cmds4=['Nurbs_pta','Nurbs_ptb','Nurbs_ptc','Nurbs_ptd','Nurbs_pte']
-        cmds5=['Nurbs_geodesic'+str(a+1) for a in range(6)]
-        cmds5 += ['Nurbs_multiEdit', 'Nurbs_AA','Nurbs_BB']
-
-
-
-        if 1:
-            self.appendMenu("Nurbs", cmds)
-#            self.appendToolbar("TTT", cmds2 )
-            self.appendToolbar("Nurbs", cmds )
-            self.appendToolbar("Workspaces and Views", cmds3 )
-            self.appendToolbar("Points Workspaces and Views", cmds4 )
-            self.appendToolbar("Geodesic Patch Tests", cmds5 )
-
-#            print ("create toolbars-------------------------")
-            for t in self.toolbars:
-#                print (t)
-                self.appendToolbar(t[0], t[1])
-
-
-        menues={}
-        ml=[]
-        for _t in App.tcmds5:
-            c=_t[0]
-            a=_t[1]
-            try:menues[tuple(c)].append(a)
-
-            except: 
-                menues[tuple(c)]=[a]
-                ml.append(tuple(c))
-
-        for m in ml:
-            self.appendMenu(list(m),menues[m])
-
-        # create menues
-        menues = {}
-        ml = []
-        for _t in App.tcmdsNurbs:
-            c = _t[0]
-            a = _t[1]
-            try:
-                menues[tuple(c)].append(a)
-
-            except:
-                menues[tuple(c)] = [a]
-                ml.append(tuple(c))
-
-        for m in ml:
-            self.appendMenu(list(m), menues[m])
-
-
-
-
-
-#Gui.addWorkbench(NurbsWorkbench(toolbars, __vers__))
-
-"""

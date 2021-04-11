@@ -43,7 +43,7 @@ import FreeCADGui as Gui
 
 needle
 needle_models
-reload(nurbswb.needle_models)
+reload(.needle_models)
 
 
 def getdata(index):
@@ -74,9 +74,9 @@ def getdata(index):
 
 def initmodel():
     App.activeDocument().MyNeedle.Proxy.lock = False
-    App.activeDocument().MyNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelS)
-    # App.activeDocument().MyNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelBanana)
-    # App.activeDocument().MyNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelEd4)
+    App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelS)
+    # App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelBanana)
+    # App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelEd4)
 
 
 def addRib(dialog):

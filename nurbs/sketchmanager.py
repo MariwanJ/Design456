@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 
 ''' save sketches into a sketch lib, load sketches into models ''' 
 from say import *
-import nurbswb
+import 
 
 try:
     import numpy as np 
@@ -283,7 +283,7 @@ def ComboViewShowWidget(widget, tabMode=True):
 
 
 #\cond
-class _ViewProvider(nurbswb.pyob.ViewProvider):
+class _ViewProvider(.pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj):
@@ -485,7 +485,7 @@ def srun(w):
     model=lm[w.m.currentIndex()]
 
     sketchmanager
-    reload(nurbswb.sketchmanager)
+    reload(.sketchmanager)
 
     target='ufo'
 
@@ -494,7 +494,7 @@ def srun(w):
         target=s[0].Name
     print ("target is: ",target)
 
-    cmd="nurbswb.sketchmanager.loadSketch('" + model +"','Sketch',target)"
+    cmd=".sketchmanager.loadSketch('" + model +"','Sketch',target)"
     print ("Run command:",cmd)
     eval(cmd)
     Gui.SendMsgToActiveView("ViewFit")

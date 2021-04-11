@@ -40,18 +40,18 @@ import FreeCADGui as Gui
 
 
 
-import os, nurbswb
+import os, 
 global __dir__
-__dir__ = os.path.dirname(nurbswb.__file__)
+__dir__ = os.path.dirname(.__file__)
 
 spreadsheet_lib
-reload (nurbswb.spreadsheet_lib)
-from nurbswb.spreadsheet_lib import ssa2npa, npa2ssa, cellname
+reload (.spreadsheet_lib)
+from .spreadsheet_lib import ssa2npa, npa2ssa, cellname
 
 #\endcond
-# from nurbswb.errors import showdialog 
+# from .errors import showdialog 
 
-from nurbswb.say import *
+from .say import *
 
 ## load height profile from file
 #
@@ -109,8 +109,8 @@ def run():
 
         dok2.recompute()
         sole
-        reload(nurbswb.sole)
-        nurbswb.sole.run()
+        reload(.sole)
+        .sole.run()
         dok2.recompute()
 
     except : showdialog() 

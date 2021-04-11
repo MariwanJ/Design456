@@ -34,18 +34,18 @@ an example is the dynamic offset node which controls the offset by a floatlist
 
 
 from say import *
-pyob
+import pyob
 
 ## A list for Floats
 
-class FloatList(nurbswb.pyob.FeaturePython):
+class FloatList(pyob.FeaturePython):
     '''a list of floats'''
 
     ##\cond
     def __init__(self, obj):
         obj.Proxy = self
         self.Type = self.__class__.__name__
-        nurbswb.pyob.ViewProvider(obj.ViewObject) 
+        pyob.ViewProvider(obj.ViewObject) 
 
 
     def onChanged(proxy,obj,prop):

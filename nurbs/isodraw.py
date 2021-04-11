@@ -63,12 +63,12 @@ import os
 #import scipy
 #import scipy.interpolate
 
-#import nurbswb
+#import 
 
 import Design456Init
 #
 #global __dir__
-#__dir__ = os.path.dirname(nurbswb.__file__)
+#__dir__ = os.path.dirname(.__file__)
 #print(__dir__)
 
 
@@ -253,13 +253,13 @@ class Isodraw(PartFeature):
             obj.backref.Document.recompute()
         face = obj.face.Shape.Face1
         facedraw
-        reload(nurbswb.facedraw)
+        reload(.facedraw)
         try:
             obj.ViewObject.ShapeColor = obj.wire.ViewObject.ShapeColor
         except:
             obj.ViewObject.ShapeColor = (1., 0., 0.)
 
-        nurbswb.facedraw.drawcurve(obj, face)
+        .facedraw.drawcurve(obj, face)
 
 
 def createIsodrawFace():
@@ -309,7 +309,7 @@ class Brezel(PartFeature):
         # face=obj.face.Shape.Face1
 
         facedraw
-        # reload(nurbswb.facedraw)
+        # reload(.facedraw)
         try:
             obj.ViewObject.ShapeColor = obj.wire.ViewObject.ShapeColor
         except:
@@ -331,7 +331,7 @@ class Brezel(PartFeature):
 #        dirs=[False,True,True]
         dirs = [obj.reverseWire1, obj.reverseWire2,
                 obj.reverseWire3, obj.reverseWire4, ]
-        nurbswb.facedraw.drawring(
+        .facedraw.drawring(
             obj.Label, wires, dirs, faceobj, facepos=App.Vector())
 
 

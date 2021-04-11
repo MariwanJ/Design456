@@ -52,9 +52,9 @@ import random
 from say import *
 import pyob
 from pyob import  FeaturePython,ViewProvider
-reload (nurbswb.pyob)
+reload (.pyob)
 import lib as nl
-reload(nurbswb.lib)
+reload(.lib)
 
 
 def vkey(vec):

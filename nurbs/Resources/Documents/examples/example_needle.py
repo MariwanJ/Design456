@@ -1,7 +1,7 @@
 def test1():
 # test of parameters
     import Draft
-    import nurbswb
+    import 
 
 try:
     import numpy as np 
@@ -105,10 +105,10 @@ except ImportError:
 if 1:
 
     import Draft
-    import nurbswb
+    import 
 
     import needle as needle
-    reload( nurbswb.needle)
+    reload( .needle)
 
     try: App.closeDocument("Unnamed")
     except: pass

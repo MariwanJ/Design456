@@ -40,7 +40,7 @@ def showIsoparametricVCurve(bsplinesurface,v=0.5):
     bc=bsplinesurface.vIso(v)
     Part.show(bc.toShape())
 
-# nurbswb lib
+#  lib
 # sammlung von funktionen
 
 

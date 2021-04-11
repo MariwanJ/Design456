@@ -53,8 +53,8 @@ except ImportError:
 import time
 
 pyob
-from nurbswb.pyob import  FeaturePython,ViewProvider
-reload (nurbswb.pyob)
+from .pyob import  FeaturePython,ViewProvider
+reload (.pyob)
 
 
 

@@ -37,7 +37,7 @@ from __future__ import unicode_literals
 
 ##\cond
 from PySide import QtGui,QtCore
-from nurbswb.say import *
+from .say import *
 
 import FreeCAD
 import sys,time

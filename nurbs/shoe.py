@@ -52,10 +52,10 @@ except ImportError:
     print ("Trying to Install required module: numpy")
     os.system('python -m pip3 install numpy')
 import random
-import os, nurbswb
+import os, 
 
 global __dir__
-__dir__ = os.path.dirname(nurbswb.__file__)
+__dir__ = os.path.dirname(.__file__)
 print ( __dir__)
 
 ##\endcond
@@ -893,8 +893,8 @@ class Needle(PartFeature):
 
     def pressed(self,index):
         needle_cmds
-        reload(nurbswb.needle_cmds)
-        nurbswb.needle_cmds.pressed(index,App.activeDocument().MyNeedle)
+        reload(.needle_cmds)
+        .needle_cmds.pressed(index,App.activeDocument().MyNeedle)
         print ("Pressed")
 
     def changed(self,index):
@@ -974,13 +974,13 @@ def commitData(editor):
 #    print ("commit data",editor)
 
     needle_cmds
-    reload(nurbswb.needle_cmds)
+    reload(.needle_cmds)
     global globdat
 #    print globdat
     if globdat[0]=='ccmd':
         cn=cellname(int(globdat[1])+1,int(globdat[2])+3)
         old=globdat[3]
-        nurbswb.needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
+        .needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
 
 
 def startssevents2():
@@ -1069,7 +1069,7 @@ def getdata(index):
 def main_test():
     # test aus parametern
     import shoe as shoe
-    reload( nurbswb.shoe)
+    reload( .shoe)
 
     dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
     try: App.closeDocument(dokname)
@@ -1245,19 +1245,19 @@ def run():
     print ("import ............")
     # import the configuration from shoedata 
     shoedata
-    reload(nurbswb.shoedata)
+    reload(.shoedata)
 
-    bbps=nurbswb.shoedata.shoeAdam.bbps
-    boxes=nurbswb.shoedata.shoeAdam.boxes
-    twister=nurbswb.shoedata.shoeAdam.twister
-    sc=nurbswb.shoedata.shoeAdam.sc
+    bbps=.shoedata.shoeAdam.bbps
+    boxes=.shoedata.shoeAdam.boxes
+    twister=.shoedata.shoeAdam.twister
+    sc=.shoedata.shoeAdam.sc
 
 
     # create the shoe ribs
     createshoerib
-    reload(nurbswb.createshoerib)
+    reload(.createshoerib)
 
-    ribs=[nurbswb.createshoerib.run("rib_"+str(i),[[8,0,0]],boxes[i],zoff=0) for i in range(1,15)]
+    ribs=[.createshoerib.run("rib_"+str(i),[[8,0,0]],boxes[i],zoff=0) for i in range(1,15)]
 
     # for debugging 
     App.ribs=ribs
@@ -1308,7 +1308,7 @@ def run():
         pass
 
     # create lofts from the creates curves
-    if nurbswb.shoedata.showlofts:
+    if .shoedata.showlofts:
         # flaechen erzeugen
         try: loft=App.ActiveDocument.MeridiansLoft
         except:loft=App.ActiveDocument.addObject('Part::Loft','MeridiansLoft')
@@ -1334,21 +1334,21 @@ def run():
     fa.ViewObject.Transparency=60
 
     # create inner and outer scale of the last to compare
-    if nurbswb.shoedata.showscales:
+    if .shoedata.showscales:
 
         pc=Draft.clone(fa)
-        pc.Scale.x=nurbswb.shoedata.scaleIn
-        pc.Scale.y=nurbswb.shoedata.scaleIn
-        pc.Scale.z=nurbswb.shoedata.scaleIn
+        pc.Scale.x=.shoedata.scaleIn
+        pc.Scale.y=.shoedata.scaleIn
+        pc.Scale.z=.shoedata.scaleIn
         App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,1.0,.0)
-        App.ActiveDocument.ActiveObject.Label="shoe " +str(nurbswb.shoedata.scaleIn)
+        App.ActiveDocument.ActiveObject.Label="shoe " +str(.shoedata.scaleIn)
 
         pc=Draft.clone(fa)
-        pc.Scale.x=nurbswb.shoedata.scaleOut
-        pc.Scale.y=nurbswb.shoedata.scaleOut
-        pc.Scale.z=nurbswb.shoedata.scaleOut
+        pc.Scale.x=.shoedata.scaleOut
+        pc.Scale.y=.shoedata.scaleOut
+        pc.Scale.z=.shoedata.scaleOut
         App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,.0,1.0)
-        App.ActiveDocument.ActiveObject.Label="shoe " +str(nurbswb.shoedata.scaleOut)
+        App.ActiveDocument.ActiveObject.Label="shoe " +str(.shoedata.scaleOut)
 
 
     App.getDocument(dokname).saveAs(u"/tmp/shoe_v0.fcstd")
@@ -1376,7 +1376,7 @@ def run():
     # ein paar hilfssegmente exemplarisch
     segment
 
-    a=nurbswb.segment.createSegment()
+    a=.segment.createSegment()
     a.source=fa
     a.umax=-2
     a.umin=1
@@ -1384,7 +1384,7 @@ def run():
     a.vmin=1
     a.Label="Segment gesamt"
 
-    a=nurbswb.segment.createFineSegment()
+    a=.segment.createFineSegment()
     a.source=fa
     a.umax=95
     a.umin=0
@@ -1393,6 +1393,6 @@ def run():
     a.Label="Fein Segment gesamt"
 
     # transform the poles array 
-    s=nurbswb.segment.createNurbsTrafo()
+    s=.segment.createNurbsTrafo()
     s.source=App.ActiveDocument.Poles
 

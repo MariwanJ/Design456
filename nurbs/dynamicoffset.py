@@ -40,8 +40,8 @@ if 0:
     except:
         pass
 
-datatools
-reload (nurbswb.datatools)
+import datatools
+reload (datatools)
 
 import scipy.interpolate
 
@@ -149,13 +149,13 @@ pyob
 #
 #  - [Usage](http://freecadbuch.de/doku.php?id=nurbs:dynaoffset)
 #  - [Video](https://youtu.be/7wKXfh2fifY) (25.06.2017)<br>
-#  - [Git source](https://github.com/microelly2/freecad-nurbs/blob/master/nurbswb/dynamicoffset.py)
+#  - [Git source](https://github.com/microelly2/freecad-nurbs/blob/master//dynamicoffset.py)
 #
 # Example
 # -------
 #\code 
 #datatools
-#fl=nurbswb.datatools.createFloatlist("ParameterList")
+#fl=.datatools.createFloatlist("ParameterList")
 #fl.val007=10
 #
 #dof=createDynaoffset()
@@ -173,13 +173,13 @@ pyob
 
 
 
-class DynaOffset(nurbswb.pyob.FeaturePython):
+class DynaOffset(.pyob.FeaturePython):
 
     ##\cond
     def __init__(self, obj):
         obj.Proxy = self
         self.Type = self.__class__.__name__
-        nurbswb.pyob.ViewProvider(obj.ViewObject) 
+        .pyob.ViewProvider(obj.ViewObject) 
 
 
     def XonChanged(proxy,obj,prop):
@@ -226,7 +226,7 @@ if __name__=='__main__':
 
     fl2=App.ActiveDocument.getObject("ParmeterList")
     if fl2 == None: 
-        fl2=nurbswb.datatools.createFloatlist("ParameterList")
+        fl2=.datatools.createFloatlist("ParameterList")
         fl2.val007=10
 
     dof=createDynaoffset()

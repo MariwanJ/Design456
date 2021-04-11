@@ -43,21 +43,21 @@ def srun(w):
     a = w.target
     model = 'modelS'
     needle_models
-    reload(nurbswb.needle_models)
-    lm = nurbswb.needle_models.listModels(silent=True)
+    reload(.needle_models)
+    lm = .needle_models.listModels(silent=True)
     print(lm[w.m.currentIndex()])
     model = lm[w.m.currentIndex()][0]
 
-    print("a.Proxy.getExampleModel(nurbswb.needle_models." + model+")")
-    eval("a.Proxy.getExampleModel(nurbswb.needle_models." + model+")")
+    print("a.Proxy.getExampleModel(.needle_models." + model+")")
+    eval("a.Proxy.getExampleModel(.needle_models." + model+")")
     w.hide()
 
 
 def MyDialog(target):
 
     needle_models
-    reload(nurbswb.needle_models)
-    lm = nurbswb.needle_models.listModels()
+    reload(.needle_models)
+    lm = .needle_models.listModels()
 
     w = QtGui.QWidget()
     w.target = target

@@ -11,7 +11,7 @@ import random
 
 def testA():
 
-    a=nurbswb.nurbs.makeNurbs(4,4)
+    a=.nurbs.makeNurbs(4,4)
 
     a.solid=False
     a.base=False

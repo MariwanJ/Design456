@@ -45,8 +45,8 @@ except ImportError:
     print ("Trying to Install required module: numpy")
     os.system('python -m pip3 install numpy')
 import Draft,Points,Part,Sketcher
-say
-from nurbswb.say import *
+import say
+from .say import *
 import random
 import time
 
@@ -62,14 +62,14 @@ def BB():
 
 
 import inspect
-reload (nurbswb.say)
+reload (.say)
 
-from nurbswb.miki_g import createMikiGui2, MikiApp
-reload( nurbswb.miki_g)
+from .miki_g import createMikiGui2, MikiApp
+reload( .miki_g)
 
 configuration
-reload (nurbswb.configuration)
-from nurbswb.configuration import getcf,getcb,getcs
+reload (.configuration)
+from .configuration import getcf,getcb,getcs
 
 
 
@@ -95,8 +95,8 @@ def checkcurve(curve):
 ##\cond
 
 pyob
-reload (nurbswb.pyob)
-from nurbswb.pyob import  FeaturePython,ViewProvider
+reload (.pyob)
+from .pyob import  FeaturePython,ViewProvider
 
 ##\endcond
 
@@ -2011,7 +2011,7 @@ def BSplineToBezierCurve():
     bc=obj.Shape.Edge1.Curve
 
     if bc.Degree>3:
-        nurbswb.say.showdialog("curves with degree >3 are not supported")
+        .say.showdialog("curves with degree >3 are not supported")
     bc.increaseDegree(3)
 
     mults=bc.getMultiplicities()
@@ -2045,7 +2045,7 @@ def BSplineToBezierCurve():
             bc=e.Curve
 
             if bc.Degree>3:
-                nurbswb.say.showdialog("curves with degree >3 are not supported")
+                .say.showdialog("curves with degree >3 are not supported")
             bc.increaseDegree(3)
 
             for k in bc.getKnots():
@@ -3362,8 +3362,8 @@ class HelmetTubeConnector(FeaturePython):
 
 def createHelmet():
     helmet
-    reload(nurbswb.helmet)
-    nurbswb.helmet.createHelmet()
+    reload(.helmet)
+    .helmet.createHelmet()
 
 
 

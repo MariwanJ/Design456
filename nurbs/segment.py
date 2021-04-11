@@ -44,7 +44,7 @@ pyob
 # Segment eines BSpline als parametrisches Part::FeaturePython
 
 
-class Segment(nurbswb.pyob.FeaturePython):
+class Segment(.pyob.FeaturePython):
     '''Segment einer bspline Flaeche oder Kurve
     Einschraenkung:
     es wird die erste Flaeche Face1 bzw. die erste Kante Edge1 verarbeitet
@@ -52,7 +52,7 @@ class Segment(nurbswb.pyob.FeaturePython):
 
     # \cond
     def __init__(self, obj):
-        nurbswb.pyob.FeaturePython.__init__(self, obj)
+        .pyob.FeaturePython.__init__(self, obj)
 
         obj.addProperty("App::PropertyLink", "source", "Base")
         obj.addProperty("App::PropertyInteger", "umin", "Base")
@@ -65,7 +65,7 @@ class Segment(nurbswb.pyob.FeaturePython):
         obj.vmax = -1
 
         self.obj2 = obj
-        nurbswb.pyob.ViewProvider(obj.ViewObject)
+        .pyob.ViewProvider(obj.ViewObject)
     # \endcond
 
     # Die Properties umin, umax, vmin, vmax werden als Nummern der begrenzenden Knoten interpretiert
@@ -106,12 +106,12 @@ def createSegment(name="MySegment"):
 
 # Modifikation eines BSpline als parametrisches Part::FeaturePython
 
-class NurbsTrafo(nurbswb.pyob.FeaturePython):
+class NurbsTrafo(.pyob.FeaturePython):
     '''Rotieren des Pole-array, um die Naht zu verschieben'''
 
     # \cond
     def __init__(self, obj):
-        nurbswb.pyob.FeaturePython.__init__(self, obj)
+        .pyob.FeaturePython.__init__(self, obj)
 
         obj.addProperty("App::PropertyLink", "source", "Base")
         obj.addProperty("App::PropertyInteger", "start", "Base")
@@ -124,7 +124,7 @@ class NurbsTrafo(nurbswb.pyob.FeaturePython):
         obj.umax = -1
         obj.vmax = -1
         self.obj2 = obj
-        nurbswb.pyob.ViewProvider(obj.ViewObject)
+        .pyob.ViewProvider(obj.ViewObject)
     # \endcond
 
     def execute(proxy, obj):
@@ -193,7 +193,7 @@ def createNurbsTrafo(name="MyNurbsTafo"):
 # Feines Segment eines BSpline als parametrisches Part::FeaturePython
 
 
-class FineSegment(nurbswb.pyob.FeaturePython):
+class FineSegment(.pyob.FeaturePython):
     ''' erzeugt ein feines Segment, dass feienr ist als die normale Segmentierung des nurbs
     factor gibt die Anzahl der Abstufungen an
     die Zahlen umin, ... vmax sind ganzzahlige Anteile von factor
@@ -201,7 +201,7 @@ class FineSegment(nurbswb.pyob.FeaturePython):
 
     # \cond
     def __init__(self, obj):
-        nurbswb.pyob.FeaturePython.__init__(self, obj)
+        .pyob.FeaturePython.__init__(self, obj)
 
         obj.addProperty("App::PropertyLink", "source", "Base")
         obj.addProperty("App::PropertyInteger", "factor", "Base")
@@ -218,7 +218,7 @@ class FineSegment(nurbswb.pyob.FeaturePython):
         obj.vmax = obj.factor
 
         self.obj2 = obj
-        nurbswb.pyob.ViewProvider(obj.ViewObject)
+        .pyob.ViewProvider(obj.ViewObject)
     # \endcond
 
 #    def execute(proxy, obj):
