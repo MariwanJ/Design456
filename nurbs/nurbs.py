@@ -1749,10 +1749,10 @@ def runtest2():
 
 nurbs
 
-nurbswb.nurbs.testRandomB()
-nurbswb.nurbs.testRandomCylinder()
-nurbswb.nurbs.testRandomSphere()
-nurbswb.nurbs.testRandomTorus()
+.nurbs.testRandomB()
+.nurbs.testRandomCylinder()
+.nurbs.testRandomSphere()
+.nurbs.testRandomTorus()
 
 
 '''

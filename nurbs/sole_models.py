@@ -125,11 +125,11 @@ class modelC(model):
 def listModels(silent=False):
     ''' erzeugt liste aller modelle mit modell und modell.info '''
     sole_models
-    reload(nurbswb.sole_models)
+    reload(.sole_models)
     l=[]
-    for m in dir(nurbswb.sole_models):
+    for m in dir(.sole_models):
         if m.startswith('model'):
-            mm=eval("nurbswb.sole_models."+m+"()")
+            mm=eval(".sole_models."+m+"()")
             if not silent:
                 print (m,mm.info)
             l.append([m,mm.info])
@@ -145,8 +145,8 @@ def test():
         pass
 
     sole
-    reload(nurbswb.sole)
-    nurbswb.sole.runA(model=modelY)
+    reload(.sole)
+    .sole.runA(model=modelY)
 
 
 if __name__=='__main__':

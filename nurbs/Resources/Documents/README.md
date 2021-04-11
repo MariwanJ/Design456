@@ -20,7 +20,7 @@ Videos
  - [Motorhaube mit Scheinwerfereinsatz] (https://youtu.be/lQDyemO4iFM)(26.07.2018)<br>
  Die Motorhaube wird aus vier Sketches erzeugt. Mit zwei weiteren Sketchen  werden Kotflügel und Frontfläche angeschlossen.
  In die Motorhaube werden zwei Aufnahmen für Scheinwerfer eingelassen.<br> 
- Verwendendet: nurbswb.berings.Product,  nurbswb.berings.Bering,  nurbswb.berings.Beface
+ Verwendendet: .berings.Product,  .berings.Bering,  .berings.Beface
 
 
 

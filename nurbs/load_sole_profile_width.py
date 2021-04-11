@@ -37,7 +37,7 @@ import FreeCAD
 import FreeCADGui
 
 import os
-import nurbswb
+import 
 
 try:
     import numpy as np 
@@ -46,15 +46,15 @@ except ImportError:
     os.system('python -m pip3 install numpy')
 
 spreadsheet_lib
-reload(nurbswb.spreadsheet_lib)
+reload(.spreadsheet_lib)
 sole
-reload(nurbswb.sole)
+reload(.sole)
 
 
-from nurbswb.spreadsheet_lib import cellname
+from .spreadsheet_lib import cellname
 
-# from nurbswb.errors import sayexc
-from nurbswb.say import *
+# from .errors import sayexc
+from .say import *
 
 
 def runa():
@@ -69,7 +69,7 @@ def runa():
     fna = App.ParamGet(
         'User parameter:Plugins/shoe').GetString("width profile")
     if fna == '':
-        __dir__ = os.path.dirname(nurbswb.__file__)
+        __dir__ = os.path.dirname(.__file__)
         fna = __dir__ + "/../testdata/breitev3.fcstd"
         App.ParamGet('User parameter:Plugins/shoe').SetString(
             "width profile", fna)
@@ -104,7 +104,7 @@ def runa():
 
     # aktualisieren
     dok2.recompute()
-    nurbswb.sole.run()
+    .sole.run()
     dok2.recompute()
 
 

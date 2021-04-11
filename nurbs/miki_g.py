@@ -49,8 +49,8 @@ import FreeCADGui
 #from transportationwb.say import sayexc, say
 #from transportationwb.say import  *
 
-from nurbswb.say import sayexc, say
-from nurbswb.say import  *
+from .say import sayexc, say
+from .say import  *
 
 from PySide import QtGui, QtCore
 
@@ -59,8 +59,8 @@ import pivy
 from pivy import coin
 
 configuration
-reload (nurbswb.configuration)
-from nurbswb.configuration import getcb
+reload (.configuration)
+from .configuration import getcb
 
 
 def getMainWindow():
@@ -682,7 +682,7 @@ class Miki(object):
             print (cc)
 
 
-        if str(c.__class__).startswith("<type 'PySide.QtGui.") or  str(c.__class__).startswith("<class 'nurbswb.miki"):
+        if str(c.__class__).startswith("<type 'PySide.QtGui.") or  str(c.__class__).startswith("<class '.miki"):
 #            print ("!!",c
 #            print ("!!",p," -- ",p.__class__.__name__
             if p.__class__.__name__ ==  '_MyTabWidget':

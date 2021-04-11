@@ -43,13 +43,13 @@ def srun(w):
     a = w.target
     model = 'modelS'
     sole_models
-    reload(nurbswb.sole_models)
-    lm = nurbswb.sole_models.listModels(silent=True)
+    reload(.sole_models)
+    lm = .sole_models.listModels(silent=True)
     print(lm[w.m.currentIndex()])
     model = lm[w.m.currentIndex()][0]
 
-    reload(nurbswb.sole)
-    cmd = "nurbswb.sole.runA(model=nurbswb.sole_models." + model + "())"
+    reload(.sole)
+    cmd = ".sole.runA(model=.sole_models." + model + "())"
     print(cmd)
     eval(cmd)
     # w.hide()
@@ -58,8 +58,8 @@ def srun(w):
 def MyDialog(target=None):
 
     sole_models
-    reload(nurbswb.sole_models)
-    lm = nurbswb.sole_models.listModels()
+    reload(.sole_models)
+    lm = .sole_models.listModels()
 
     w = QtGui.QWidget()
     w.target = target

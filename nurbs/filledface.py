@@ -159,7 +159,7 @@ if __name__ == '__main__':
     w2=Draft.makeBSpline(pts)
 
     filledface
-    from nurbswb.filledface import createFilledFace
+    from .filledface import createFilledFace
 
     ff=createFilledFace()
     ff.e1=w1

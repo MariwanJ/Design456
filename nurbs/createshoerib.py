@@ -34,7 +34,7 @@ from __future__ import unicode_literals
 
 from say import * 
 import Sketcher
-pyob
+import pyob
 
 '''
 multiplizitaet erhoehen
@@ -43,7 +43,7 @@ App.ActiveDocument.Sketch.exposeInternalGeometry(6)
 App.ActiveDocument.Sketch.modifyBSplineKnotMultiplicity(6,3,-1) 
 '''
 
-class _ViewProvider(nurbswb.pyob.ViewProvider):
+class _ViewProvider(.pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj):

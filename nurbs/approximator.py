@@ -36,14 +36,14 @@ from __future__ import unicode_literals
 # -------------------------------------------------
 '''
 
-from nurbswb.pyob import FeaturePython, ViewProvider
+from .pyob import FeaturePython, ViewProvider
 from scipy import misc
 from scipy import signal
 from scipy.optimize import minimize
 import scipy
 pyob
 from pyob import *
-from nurbswb.miki_g import createMikiGui2, MikiApp
+from .miki_g import createMikiGui2, MikiApp
 import os
 
 try:
@@ -56,15 +56,15 @@ import Draft
 import Points
 import Part
 import Sketcher
-say
-from nurbswb.say import *
+import say
+from say import *
 import random
 import time
 
 import inspect
-reload(nurbswb.say)
+reload(say)
 
-reload(nurbswb.miki_g)
+reload(miki_g)
 
 
 def getPart(name="hugo"):
@@ -219,10 +219,10 @@ class PointCloudApprox(FeaturePython):
             hop.Shape = Part.makePolygon(pts4)
 
             smooth
-            reload(nurbswb.smooth)
+            reload(.smooth)
             smooth = App.ActiveDocument.getObject("smooth"+"_"+name)
             if smooth == None:
-                nurbswb.smooth.smoothWire(hop, "smooth"+"_"+name)
+                .smooth.smoothWire(hop, "smooth"+"_"+name)
             else:
                 print("setze smooth count ", dd)
                 smooth.Wire = hop
@@ -1910,8 +1910,8 @@ def curvestoFace(polsarr=None, mode="Bezier Face"):
 
 def A():
     berings
-    reload(nurbswb.berings)
-    rc = nurbswb.berings.createBering()
+    reload(.berings)
+    rc = .berings.createBering()
     for obj in rc:
         obj.stripmode = True
 

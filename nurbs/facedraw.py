@@ -38,7 +38,7 @@ from __future__ import unicode_literals
 
 ##\cond
 from PySide import QtGui,QtCore
-from nurbswb.say import *
+from .say import *
 
 import FreeCAD
 import sys,time
@@ -47,7 +47,7 @@ import random
 
 
 isodraw
-reload(nurbswb.isodraw)
+reload(.isodraw)
 
 
 
@@ -922,7 +922,7 @@ def createGrid(name="MyGrid"):
     b=App.activeDocument().addObject("Part::FeaturePython",name)
 
     name=b.Name
-    nurbswb.isodraw.Drawgrid(b)
+    .isodraw.Drawgrid(b)
     b.faceObject=fob
 
     b.ViewObject.Transparency=60
@@ -930,7 +930,7 @@ def createGrid(name="MyGrid"):
 
     b2=App.activeDocument().addObject("Part::FeaturePython",name+"_2_")
     b2.Label=name+"_3D_"
-    nurbswb.isodraw.Draw3Dgrid(b2)
+    .isodraw.Draw3Dgrid(b2)
     b2.drawgrid=b
 
 ## create a map control for the first face of the selected object
@@ -944,7 +944,7 @@ def createMap(mode=''):
     for face in Gui.Selection.getSelection():
         #face=s0[-1]
 
-        moa=nurbswb.isodraw.createMap(mode)
+        moa=.isodraw.createMap(mode)
         moa.faceObject=face
     
     return moa

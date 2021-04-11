@@ -46,7 +46,6 @@ import Points
 import networkx as nx
 import random
 import os
-import nurbswb
 
 try:
     import numpy as np 
@@ -735,7 +734,6 @@ def loadTest1():
 
 
 def loadTest2():
-    __dir__=os.path.dirname(nurbswb.__file__)
 
     App.open(__dir__+"/../testdata/zwei_gleiche_fenster.fcstd")
     App.setActiveDocument("zwei_gleiche_fenster")
@@ -857,8 +855,8 @@ def Test4():
 def Test3():
     fem_edgelength_mesh
     for i in range(1):
-        reload(nurbswb.fem_edgelength_mesh)
-        nurbswb.fem_edgelength_mesh.run()
+        reload(fem_edgelength_mesh)
+        fem_edgelength_mesh.run()
         Gui.updateGui()
         print("i ")
         print(i)
