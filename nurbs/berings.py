@@ -46,7 +46,7 @@ except ImportError:
     os.system('python -m pip3 install numpy')
 import Draft,Points,Part,Sketcher
 import say
-from .say import *
+from say import *
 import random
 import time
 
@@ -62,13 +62,13 @@ def BB():
 
 
 import inspect
-reload (.say)
+reload (say)
 
-from .miki_g import createMikiGui2, MikiApp
-reload( .miki_g)
+from miki_g import createMikiGui2, MikiApp
+reload( miki_g)
 
 configuration
-reload (.configuration)
+reload (configuration)
 from .configuration import getcf,getcb,getcs
 
 
@@ -94,9 +94,9 @@ def checkcurve(curve):
 
 ##\cond
 
-pyob
-reload (.pyob)
-from .pyob import  FeaturePython,ViewProvider
+import pyob
+reload (pyob)
+from pyob import  FeaturePython,ViewProvider
 
 ##\endcond
 
@@ -2011,7 +2011,7 @@ def BSplineToBezierCurve():
     bc=obj.Shape.Edge1.Curve
 
     if bc.Degree>3:
-        .say.showdialog("curves with degree >3 are not supported")
+        say.showdialog("curves with degree >3 are not supported")
     bc.increaseDegree(3)
 
     mults=bc.getMultiplicities()
@@ -3362,8 +3362,8 @@ class HelmetTubeConnector(FeaturePython):
 
 def createHelmet():
     helmet
-    reload(.helmet)
-    .helmet.createHelmet()
+    reload(helmet)
+    helmet.createHelmet()
 
 
 

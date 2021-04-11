@@ -29,7 +29,7 @@ except ImportError:
 import random
 
 import os
-import nurbs.
+import nurbs
 
 class PartFeature:
     def __init__(self, obj):
@@ -205,7 +205,7 @@ class WSLink(PartFeature):
             ws.hide()
 
 
-class WorkSpace():
+class initGUI():
 
     def __init__(self, name):
         try:
