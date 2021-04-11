@@ -1910,8 +1910,8 @@ def curvestoFace(polsarr=None, mode="Bezier Face"):
 
 def A():
     berings
-    reload(.berings)
-    rc = .berings.createBering()
+    reload(berings)
+    rc = berings.createBering()
     for obj in rc:
         obj.stripmode = True
 

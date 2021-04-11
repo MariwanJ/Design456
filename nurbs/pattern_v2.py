@@ -39,8 +39,15 @@ from __future__ import unicode_literals
 
 ##\cond
 
-import networkx as nx
-import os
+
+import os as os
+import sys as sys
+try:
+    import networkx as nx
+except ImportError:
+    print ("Trying to Install required module: networkx")
+    os.system('python -m pip3 install networkx')
+
 
 try:
     import numpy as np 

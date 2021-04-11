@@ -1,4 +1,4 @@
-import glob
+"""import glob
 
 # Get file paths of all modules.
 modules = glob.glob('./*.py')
@@ -96,4 +96,3 @@ __all__=["analyse_topology_v2",
             "weighteditor",
             "whatisThisFile",
             "wheel_event",]
-"""

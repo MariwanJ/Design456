@@ -33,12 +33,11 @@ import Design456Init
 #include the subdirectories for import
 import GuiWBDef
 
-
+"""
 
 
 class :
-    """ 
-    """
+    """    """
     def Activated(self):
         try:
             
@@ -58,27 +57,4 @@ class :
 
 Gui.addCommand('', )
 
-
-class Nurbs_upgradeobjects :
-    """ 
-    """
-    def Activated(self):
-        import 
-        try:
-            upgradeObject()
-        except Exception as err:
-            App.Console.PrintError("'Nurbs Upgrade Objects' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH +'.svg',
-            'MenuText': 'Upgradeobjects',
-                        'ToolTip':  'Nurbs upgrade objects'
-        }
-
-
-Gui.addCommand('Nurbs upgradeobjects', Nurbs_upgradeobjects())
+"""
