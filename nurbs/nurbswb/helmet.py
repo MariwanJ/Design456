@@ -43,7 +43,13 @@ from say import *
 
 
 
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import time
 
 pyob
@@ -457,7 +463,7 @@ def run(fp):
 
 
 def createTriangle():
-    import numpy as np
+    import numpy as np 
 
     k=10
     rings=[

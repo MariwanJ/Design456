@@ -50,14 +50,21 @@ import Draft
 import Points
 
 
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import random
 
 import os
 #import scipy
 #import scipy.interpolate
 
-##import nurbswb
+#import nurbswb
+
 import Design456Init
 #
 #global __dir__
@@ -597,7 +604,7 @@ def createGrid(mapobj, upmode=False):
 
     print("createGrid for special faces")
     print(face)
-    import numpy as np
+    import os
 
     sf = face.Surface
 

@@ -50,7 +50,13 @@ multiple bspline faces editor
 
 import FreeCAD,Part
 import FreeCADGui as Gui
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import time,random
 App=FreeCAD
 
@@ -1848,7 +1854,7 @@ def multiEdit():
 
 def AA():
 
-    #import nurbswb
+    import nurbswb
     berings
     reload(nurbswb.berings)
     nurbswb.berings.createBeGrid()

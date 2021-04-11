@@ -39,7 +39,13 @@ import FreeCADGui as Gui
 
 from PySide import QtCore
 from pivy import coin
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 
 import Part,Draft
 
@@ -72,7 +78,13 @@ def unroll(mode):
 
     c=e.Curve
 
-    import numpy as np
+    import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 
     lenp=100
     
@@ -187,7 +199,7 @@ def combineCT():
     ec=objc.Shape.Edge1
     kc=ec.Curve
 
-    import numpy as np
+ 
     #et=App.ActiveDocument.BSpline002.Shape.Edge1
     et=objt.Shape.Edge1
     kt=et.Curve

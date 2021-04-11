@@ -37,7 +37,13 @@ import FreeCAD
 import FreeCADGui
 
 import os
-#import nurbswb
+import nurbswb
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 
 spreadsheet_lib
 reload(nurbswb.spreadsheet_lib)

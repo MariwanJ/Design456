@@ -44,7 +44,13 @@ import FreeCADGui as Gui
 from PySide import QtGui
 import Part,Mesh,Draft,Points
 
-import numpy as np
+import os
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
 import random
 import os, nurbswb
 
@@ -104,8 +110,6 @@ nachverarbeitung shoe
 testskript zum abloesen der methoden in shoe.py fuer die
 generierung des nurbs shoe last
 '''
-
-import numpy as np
 
 
 def createBS(arr):

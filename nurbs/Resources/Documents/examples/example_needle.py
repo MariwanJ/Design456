@@ -1,7 +1,13 @@
 def test1():
 # test of parameters
     import Draft
-    #import nurbswb
+    import nurbswb
+
+try:
+    import numpy as np 
+except ImportError:
+    print ("Trying to Install required module: numpy")
+    os.system('python -m pip3 install numpy')
     import needels
     reload( needle)
 
@@ -99,7 +105,8 @@ def test1():
 if 1:
 
     import Draft
-    #import nurbswb
+    import nurbswb
+
     import needle as needle
     reload( nurbswb.needle)
 
