@@ -30,10 +30,8 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 
-#include the subdirectories for import
-sys.path.insert(0, './nurbs')
-sys.path.insert(0, './nurbs/nurbswb')
-sys.path.insert(0, './nurbs/Plot2')
+import nurbs
+
 
 
 class Design456_Nurbs_3DDrawingGroup:
