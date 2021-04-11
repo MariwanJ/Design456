@@ -38,8 +38,6 @@ c.scaleHeight(3)
 
 '''
 
-
-Gui=FreeCADGui
 import Part
 
 class PartFeature:

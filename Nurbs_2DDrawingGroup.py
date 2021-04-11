@@ -31,10 +31,7 @@ import FreeCADGui as Gui
 import Design456Init
 
 #include the subdirectories for import
-sys.path.insert(0, './nurbs')
-sys.path.insert(0, './nurbs/nurbswb')
-sys.path.insert(0, './nurbs/Plot2')
-
+import GuiWBDef
 
 class Design456_Nurbs_2DDrawingGroup:
 
@@ -42,11 +39,13 @@ class Design456_Nurbs_2DDrawingGroup:
 
     def GetCommands(self):
         """3D Modifying Tools."""
+        import GuiWBDef as gwbdef
+        """
         
+
         return ("runSole",
                 #These are from the WB definition of Nurbs.
                 #From cmds --> i.e. cmd1  : defined in his wb as Nurbs toolbar
-                'ParametricComb','GeomInfo','Nurbs_DraftBSpline Editor',
                 'Nurbs_Create Shoe','Nurbs_Create Sole','Nurbs_Sole Change Model',
                 'Nurbs_scanbackbonecut','Nurbs_createsketchspline','Nurbs_Curves to Face', 'Nurbs_facedraw',
 
@@ -61,8 +60,12 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_multiEdit', 'Nurbs_AA','Nurbs_BB' 
 
 
+                )   
+        """
+        return (
+                gwbdef.current ,
+                gwbdef.beztools,
                 )
-
     def GetResources(self):
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP

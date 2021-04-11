@@ -1,20 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import os, sys
-import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
-
-#include the subdirectories for import
-sys.path.insert(0, './nurbs')
-sys.path.insert(0, './nurbs/nurbswb')
-sys.path.insert(0, './nurbs/Plot2')
-
-import Nurbs_Miscellaneous
-import Nurbs_2DDrawingGroup
-import Nurbs_3DDrawingGroup
-import Nurbs_2DToolsGroup
-import Nurbs_3DToolsGroup
 #
 # ***************************************************************************
 # *                                                                        *
@@ -45,9 +30,13 @@ import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-# sys.path.append(Design456Init.NURBS_PATH)
-sys.path.append(Design456Init.NURBS_WB_PATH)
-# sys.path.append(Design456Init.NURBS_PLOT_PATH)
+sys.path.append(Design456Init.NURBS_PATH)
+import nurbs
+import Nurbs_Miscellaneous
+import Nurbs_2DDrawingGroup
+import Nurbs_3DDrawingGroup
+import Nurbs_2DToolsGroup
+import Nurbs_3DToolsGroup
 
 
 class Design456_NURBSGroup:

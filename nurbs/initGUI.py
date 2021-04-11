@@ -28,10 +28,8 @@ except ImportError:
     os.system('python -m pip3 install numpy')
 import random
 
-global __dir__
-__dir__ = os.path.dirname(nurbswb.__file__)
 import os
-import nurbswb
+import nurbs.nurbswb
 
 class PartFeature:
     def __init__(self, obj):

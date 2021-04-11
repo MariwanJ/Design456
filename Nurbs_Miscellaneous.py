@@ -29,11 +29,8 @@ import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
+import nurbs
 
-#include the subdirectories for import
-sys.path.insert(0, './nurbs')
-sys.path.insert(0, './nurbs/nurbswb')
-sys.path.insert(0, './nurbs/Plot2')
 
 
 class Design456_Nurbs_Miscellaneous:
