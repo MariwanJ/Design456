@@ -61,8 +61,8 @@ import time,random
 App=FreeCAD
 
 configuration
-reload (nurbswb.configuration)
-from nurbswb.configuration import getcf,getcb,getcs,setcb,setcf,setcs
+reload (.configuration)
+from .configuration import getcf,getcb,getcs,setcb,setcf,setcs
 
 
 
@@ -362,7 +362,7 @@ class Multiface(object):
                 except:
                 #else:
                     print ("Problem bei ",sfi)
-                    nurbswb.say.sayexc("sfi-problem")
+                    .say.sayexc("sfi-problem")
                     comp += [self.comp[sfi]]
 
                 poles=np.array(sf.getPoles())
@@ -523,7 +523,7 @@ class Multiface(object):
                     except:
                     #else:
                         print ("Problem bei ",sfi)
-                        nurbswb.say.sayexc("sfi-problem")
+                        .say.sayexc("sfi-problem")
                         comp += [self.comp[sfi]]
 
                     poles=np.array(sf.getPoles())
@@ -942,8 +942,8 @@ def flattenRegion(selections):
 def SurfaceEditor():
     '''gui for the surface editor'''
 
-    from nurbswb.miki_g import createMikiGui2, MikiApp
-    reload( nurbswb.miki_g)
+    from .miki_g import createMikiGui2, MikiApp
+    reload( .miki_g)
 
     layout = '''
 #MainWindow:
@@ -1854,13 +1854,13 @@ def multiEdit():
 
 def AA():
 
-    import nurbswb
+    import 
     berings
-    reload(nurbswb.berings)
-    nurbswb.berings.createBeGrid()
+    reload(.berings)
+    .berings.createBeGrid()
     facedraw
-    reload(nurbswb.facedraw)
-    nurbswb.facedraw.createMap()
+    reload(.facedraw)
+    .facedraw.createMap()
 
 
 

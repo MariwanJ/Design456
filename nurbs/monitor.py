@@ -328,11 +328,11 @@ if __name__ == '__main__':
     m=Monitor(a)
 
     try:
-        import nurbswb
+        import 
 
         createsketchspline
-        reload(nurbswb.createsketchspline)
-        nurbswb.createsketchspline.run()
+        reload(.createsketchspline)
+        .createsketchspline.run()
         spline=App.ActiveDocument.ActiveObject
     except:
         spline = Draft.makeBSpline(points,closed=False,face=True,support=None)

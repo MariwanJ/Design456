@@ -173,12 +173,12 @@ def check(pp, mode, updateNurbs=False, widget=None):
 
 def createMarker(self):
     print("create Marker")
-    import nurbswb
+    import 
     os.system('python -m pip3 install numpy')
     geodesic_lines
-    reload(nurbswb.geodesic_lines)
+    reload(.geodesic_lines)
 
-    l = nurbswb.geodesic_lines.makeLabel(
+    l = .geodesic_lines.makeLabel(
         direction='Horizontal', labeltype='Position')
     l.obj = self.nu  # Gui.Selection.getSelection()[0]
     l.LabelType = u"Custom"
@@ -187,7 +187,7 @@ def createMarker(self):
     l.ViewObject.TextSize = '15 mm'
     App.activeDocument().recompute()
 #    l.TargetPoint=l.obj.Shape.Faces[0].Surface.value(l.u*0.01,l.v*0.01)
-    nurbswb.geodesic_lines.hideAllProps(
+    .geodesic_lines.hideAllProps(
         l, pns=['Text', 'CustomText', 'LabelType'])
 #    return l
     sf = l.obj.Shape.Face1.Surface

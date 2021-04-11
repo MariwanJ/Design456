@@ -29,7 +29,7 @@ except ImportError:
 import random
 
 import os
-import nurbs.nurbswb
+import nurbs.
 
 class PartFeature:
     def __init__(self, obj):

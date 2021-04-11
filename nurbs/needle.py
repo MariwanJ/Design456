@@ -762,8 +762,8 @@ class Needle(PartFeature):
 
     def pressed(self,index):
         needle_cmds
-        reload(nurbswb.needle_cmds)
-        nurbswb.needle_cmds.pressed(index,App.activeDocument().MyNeedle)
+        reload(.needle_cmds)
+        .needle_cmds.pressed(index,App.activeDocument().MyNeedle)
         print ("Pressed")
 
     def changed(self,index):
@@ -840,13 +840,13 @@ def commitData(editor):
 #    print ("commit data",editor)
 
     needle_cmds
-    reload(nurbswb.needle_cmds)
+    reload(.needle_cmds)
     global globdat
 #    print globdat
     if globdat[0]=='ccmd':
         cn=cellname(int(globdat[1])+1,int(globdat[2])+3)
         old=globdat[3]
-        nurbswb.needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
+        .needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
 
 
 def startssevents2():
@@ -925,7 +925,7 @@ def getdata(index):
 def run():
 #            nurbs
 #        import needle as needle
-#        reload( nurbswb.needle)
+#        reload( .needle)
 
         dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
         try: App.closeDocument(dokname)
@@ -945,12 +945,12 @@ def run():
         #a.useMesh=True
         a.RibCount=0
         needle_models
-        reload (nurbswb.needle_models)
-        # a.Proxy.getExampleModel(nurbswb.needle_models.modelBanana)
+        reload (.needle_models)
+        # a.Proxy.getExampleModel(.needle_models.modelBanana)
         model=App.ParamGet('User parameter:Plugins/nurbs').GetString("NeedleModel","modelSimple")
 
-        print ("a.Proxy.getExampleModel(nurbswb.needle_models."+ model+")")
-        eval("a.Proxy.getExampleModel(nurbswb.needle_models."+ model+")")
+        print ("a.Proxy.getExampleModel(.needle_models."+ model+")")
+        eval("a.Proxy.getExampleModel(.needle_models."+ model+")")
 
 
 #        import Draft
@@ -983,9 +983,9 @@ class testmain:
 
     # test aus parametern
     import Draft
-    import nurbswb
+    import 
     import needle as needle
-    reload( nurbswb.needle)
+    reload( .needle)
 
     dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
     try: App.closeDocument(dokname)
@@ -1015,7 +1015,7 @@ class testmain:
         # Bspline003
 
 
-    import nurbswb
+    import 
     import needle as needle
 
     a=needle.createNeedle()

@@ -18,7 +18,7 @@ def test5():
     uc=8
     vc=8
 
-    a=nurbswb.nurbs.makeNurbs(uc,vc)
+    a=.nurbs.makeNurbs(uc,vc)
     a.grid=False
     a.degree_u=2
     a.degree_v=2

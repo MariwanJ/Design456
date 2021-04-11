@@ -28,16 +28,16 @@ from __future__ import unicode_literals
 '''
 
 needle_models
-reload(nurbswb.needle_models)
-nurbswb.needle_models.listModels()
+reload(.needle_models)
+.needle_models.listModels()
 
 
-#App.activeDocument().MyNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelSpoon)
+#App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelSpoon)
 myNeedle=App.activeDocument().MyNeedle
 
-#myNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelEd4)
+#myNeedle.Proxy.getExampleModel(.needle_models.modelEd4)
 
-myNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelSpoon)
+myNeedle.Proxy.getExampleModel(.needle_models.modelSpoon)
 
 '''
 
@@ -375,8 +375,8 @@ class modelSpoon(model):
 
 if 0:
 
-    App.activeDocument().MyNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelSpoon)
-    App.activeDocument().MyNeedle.Proxy.getExampleModel(nurbswb.needle_models.modelEd4)
+    App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelSpoon)
+    App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelEd4)
 
 '''
     modelA(ss)
@@ -935,11 +935,11 @@ class modelS(model):
 
 def listModels(silent=False):
     needle_models
-    reload(nurbswb.needle_models)
+    reload(.needle_models)
     l=[]
-    for m in dir(nurbswb.needle_models):
+    for m in dir(.needle_models):
         if m.startswith('model'):
-            mm=eval("nurbswb.needle_models."+m+"()")
+            mm=eval(".needle_models."+m+"()")
             if not silent:
                 print (m,mm.info)
             l.append([m,mm.info])

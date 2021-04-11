@@ -43,7 +43,7 @@ def setSketchDatum(sk, name, wert):
     raise Exception("Constraint " + name + " nicht gefunden")
 
 
-class _ViewProvider(nurbswb.pyob.ViewProvider):
+class _ViewProvider(.pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj):
@@ -54,7 +54,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
         return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
 
 
-class Driver(nurbswb.pyob.FeaturePython):
+class Driver(.pyob.FeaturePython):
     '''Sketch Object with Python'''
 
     # \cond
@@ -263,12 +263,12 @@ def runribtest():
     App.ActiveDocument = App.getDocument("Unnamed")
     Gui.ActiveDocument = Gui.getDocument("Unnamed")
 
-    import nurbswb
+    import 
 
     os.system('python -m pip3 install numpy')
     createshoerib
-    reload(nurbswb.createshoerib)
-    nurbswb.createshoerib.run()
+    reload(.createshoerib)
+    .createshoerib.run()
     rib = App.ActiveDocument.ribbow
     rib.ViewObject.LineColor = (1.000, 0.667, 0.000)
 

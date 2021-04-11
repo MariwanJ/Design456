@@ -56,11 +56,6 @@ except ImportError:
 import random
 
 import os
-import nurbswb
-
-global __dir__
-__dir__ = os.path.dirname(nurbswb.__file__)
-print(__dir__)
 
 
 class PartFeature:
@@ -643,25 +638,25 @@ if __name__ == '__main__':
 if __name__ == '__main__':
     # create the segment for tangents
     segment
-    ke = nurbswb.segment.createFineSegment()
+    ke = .segment.createFineSegment()
     ke.source = App.ActiveDocument.source
     ke.Label = "SeamBase E"
     ke.umax = 100
     ke.umin = 99
 
-    kw = nurbswb.segment.createFineSegment()
+    kw = .segment.createFineSegment()
     kw.source = App.ActiveDocument.source
     kw.Label = "SeamBase W"
     kw.umax = 1
     kw.umin = 0
 
-    kn = nurbswb.segment.createFineSegment()
+    kn = .segment.createFineSegment()
     kn.source = App.ActiveDocument.source
     kn.Label = "SeamBase N"
     kn.vmax = 100
     kn.vmin = 99
 
-    ks = nurbswb.segment.createFineSegment()
+    ks = .segment.createFineSegment()
     ks.source = App.ActiveDocument.source
     ks.Label = "SeamBase S"
     ks.vmax = 1
@@ -924,8 +919,8 @@ def createShapeV2(obj):
     print obj.westSeam
     print obj.eastSeam
     temp as ttt
-    reload (nurbswb.temp)
-    nurbswb.temp.run(obj)
+    reload (.temp)
+    .temp.run(obj)
 '''
 
 

@@ -37,7 +37,7 @@ from __future__ import unicode_literals
 '''
 
 # \cond
-from nurbswb.say import *
+from .say import *
 
 import FreeCAD as App
 import FreeCADGui as Gui

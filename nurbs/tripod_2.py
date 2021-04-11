@@ -38,7 +38,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Part
 
-from nurbswb.say import say
+from .say import say
 
 class PartFeature:
     ''' base class for part feature '''

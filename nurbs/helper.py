@@ -38,7 +38,7 @@ pyob
 ## The Helper can display a Poles Grid, iso-Curve Grid or single isocurves as parametric Part::FeaturePython objects
  
 
-class Helper(nurbswb.pyob.FeaturePython):
+class Helper(.pyob.FeaturePython):
 
     ##\cond
     def __init__(self, obj,uc=5,vc=5):
@@ -74,7 +74,7 @@ class Helper(nurbswb.pyob.FeaturePython):
 #        print ("obj2",self.obj2)
         bs=self.obj2.source.Shape.Face1.Surface
 #        print ("bs",bs)
-#        #shape=nurbswb.helper.create_knotes_shape(None,bs)
+#        #shape=.helper.create_knotes_shape(None,bs)
 
         uk=bs.getUKnots()
         vk=bs.getVKnots()
@@ -137,7 +137,7 @@ class Helper(nurbswb.pyob.FeaturePython):
 ## The ViewProviderHelper uses updateData to recreate the shape 
 
 
-class ViewProviderHelper(nurbswb.pyob.ViewProvider):
+class ViewProviderHelper(.pyob.ViewProvider):
 
     ##\cond
 
@@ -269,7 +269,7 @@ def runtest():
         pass
 
     nurbs
-    nurbswb.nurbs.testRandomB()
+    .nurbs.testRandomB()
 
     hp=makeHelper()
     hp.source=App.ActiveDocument.Nurbs

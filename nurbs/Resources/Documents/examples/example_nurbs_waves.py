@@ -18,7 +18,7 @@ if  App.ActiveDocument==None:
 
 def createWater():
 
-    a=nurbswb.nurbs.makeNurbs()
+    a=.nurbs.makeNurbs()
     App.ActiveDocument.Nurbs.ViewObject.ShapeColor=(0.00,0.30,1.00)
     App.ActiveDocument.Nurbs.ViewObject.Transparency = 70
 

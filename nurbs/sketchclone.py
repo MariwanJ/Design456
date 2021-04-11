@@ -31,7 +31,7 @@ pyob
 import Sketcher
 
 
-class _ViewProvider(nurbswb.pyob.ViewProvider):
+class _ViewProvider(.pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj):
@@ -42,7 +42,7 @@ class _ViewProvider(nurbswb.pyob.ViewProvider):
         return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
 
 
-class SketchClone(nurbswb.pyob.FeaturePython):
+class SketchClone(.pyob.FeaturePython):
     '''Sketch Object with Python'''
 
     # \cond

@@ -1,4 +1,4 @@
-import nurbswb
+import 
 
 try:
     import numpy as np 
@@ -6,8 +6,8 @@ except ImportError:
     print ("Trying to Install required module: numpy")
     os.system('python -m pip3 install numpy')
 
-reload(nurbswb.nurbs_tools)
-from nurbswb.nurbs_tools import *
+reload(.nurbs_tools)
+from .nurbs_tools import *
 
 
 bs=App.ActiveDocument.Nurbs.Shape.Surface
