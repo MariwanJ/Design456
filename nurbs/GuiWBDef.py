@@ -31,7 +31,7 @@ import Design456Init
 sys.path.insert(0, './nurbs')
 import configuration
 import nurbs
-
+import views
 import re
 __title__ = "FreeCAD Nurbs Library"
 
@@ -135,11 +135,11 @@ class MyTestCmd2:
     def Activated(self):
         import QtUnitGui
         TestNurbsGui
-        reload(.TestNurbsGui)
+        reload(TestNurbsGui)
         TestNurbs
-        reload(.TestNurbs)
-        QtUnitGui.addTest(".TestNurbsGui")
-        QtUnitGui.addTest(".TestNurbs")
+        reload(TestNurbs)
+        QtUnitGui.addTest("TestNurbsGui")
+        QtUnitGui.addTest("TestNurbs")
 
     def GetResources(self):
         return {'MenuText': 'Test-test...', 'ToolTip': 'Runs the self-test for the workbench'}
@@ -277,9 +277,10 @@ class _Command():
                 modul = self.modul
             else:
                 modul = self.name
-            Gui.doCommand("import " + modul)
-            Gui.doCommand("import "+self.lmod)
-            Gui.doCommand("reload("+self.lmod+")")
+            #Gui.doCommand("import " + modul)
+            #Gui.doCommand("import "+self.lmod)
+            #Gui.doCommand("reload("+self.lmod+")")
+            print(self.command)
             Gui.doCommand(self.command)
         # App.ActiveDocument.commitTransaction()
         if App.ActiveDocument is not None:
@@ -519,7 +520,7 @@ beztools += [c3bI(["Faces"], always, 'tripod_2', 'create Loft',                 
 beztools += [c3bI(["Faces"], always, 'tripod_2', 'create Compound',                  tooltip='create a compound of the selection')]
 [c3bG(["Points"], always, 'approximator', 'load Pointcloud from Image')]
 [c3bG(["Points"], always, 'approximator', 'load Cylinderface from Image')]
-beztools += [c3bG(["Points"], always, 'approximator',                  'Bump Face from Image', icon=None)]
+beztools += [c3bG(["Points"], always, 'approximator',                  'Bump Face from Image', icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
 [c3bG(["Points"], always, 'approximator', 'smooth Pointcloud')]
 [c3bI(["Bezier"], always, 'berings', 'create Sketch Circle')]
 beztools += [c3bI(["Bezier", "Create"], always,                  'berings', 'create BePlane')]
@@ -542,38 +543,38 @@ c3b(["Bezier", "Convert"], always, 'berings', 'BSpline To Bezier Curve')
 c3b(["Bezier", "Convert"], always, 'berings', 'BSpline To Bezier Surface')
 c3b(["Bezier", "Convert"], always, 'berings', 'Face To Bezier Surface')
 c3bG(["Bezier", "Convert"], always, 'berings', 'create Approx',     Design456Init.NURBS_ICON_PATH + "alpha.svg")
-current += [c3bI(["Bezier"], always, 'points_to_wires',                 'AA', tooltip="Eine Testfunktion")]
-current += [c3bI(["Bezier"], always, 'points_to_face',                 'Reconstruct Sphere', tooltip="Subselection to Sphere", icon=None)]
-current += [c3bI(["Bezier"], always, 'points_to_face',                 'Reconstruct Cylinder', tooltip="Subselection to Cylinder", icon=None)]
-current += [c3bI(["Bezier"], always, 'points_to_face',                 'optimize Cylinder', icon=None)]
-current += [c3bI(["Bezier"], always, 'points_to_face',                 'Reconstruct Plane', tooltip="Subselection to Plane", icon=None)]
-current += [c3bI(["Bezier"], onselection1, 'points_to_face',                 'noisy mesh', tooltip="add noise to a mesh", icon=None)]
-current += [c3bI(["Bezier"], onselection, 'merge_faces',                 'merge 2 Faces', icon=None)]
-current += [c3bI(["Bezier"], onselection, 'merge_faces',                 'merge 2 Faces B', icon=None)]
-current += [c3bI(["Bezier"], always, 'minimumsurface',                 'test minimal surface', icon=None)]
+#current += [c3bI(["Bezier"], always, 'points_to_wires','AA', tooltip="Eine Testfunktion")]
+#current += [c3bI(["Bezier"], always, 'points_to_face','Reconstruct Sphere', tooltip="Subselection to Sphere", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Bezier"], always, 'points_to_face','Reconstruct Cylinder', tooltip="Subselection to Cylinder", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Bezier"], always, 'points_to_face','optimize Cylinder', icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Bezier"], always, 'points_to_face','Reconstruct Plane', tooltip="Subselection to Plane", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Bezier"], onselection1, 'points_to_face','noisy mesh', tooltip="add noise to a mesh", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Bezier"], onselection, 'merge_faces','merge 2 Faces', icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Bezier"], onselection, 'merge_faces','merge 2 Faces B', icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Bezier"], always, 'minimumsurface','test minimal surface', icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
 
-#    current += [c3bI(["Pattern"], onselection, 'pattern_v2', 'create Array',icon=None)]
-#    current += [c3bI(["Pattern"], onselection, 'pattern_v2', 'split Edges',icon=None)]
-current += [c3bI(["Pattern"], onselection, 'pattern_v2',                 'remove Edges', icon=None)]
-#    current += [c3bI(["Pattern"], onselection, 'pattern_v2', 'create Single Pattern',icon=None)]
-#    current += [c3bI(["Pattern"], onselection, 'pattern_v2', 'create Pattern',icon=None)]
-current += [c3bI(["Pattern"], onselection,                 'pattern_v2', 'pattern V3', icon=None)]
-current += [c3bI(["Pattern"], always, 'pattern_v2',                 'pattern all tests', icon=None)]
+#    current += [c3bI(["Pattern"], onselection, 'pattern_v2', 'create Array',icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#    current += [c3bI(["Pattern"], onselection, 'pattern_v2', 'split Edges',icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Pattern"], onselection, 'pattern_v2','remove Edges', icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#    current += [c3bI(["Pattern"], onselection, 'pattern_v2', 'create Single Pattern',icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#    current += [c3bI(["Pattern"], onselection, 'pattern_v2', 'create Pattern',icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Pattern"], onselection,                 'pattern_v2', 'pattern V3', icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+#current += [c3bI(["Pattern"], always, 'pattern_v2',                 'pattern all tests', icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
 
 
-#    beztools += [c3bI(["Points"], always, 'points_to_face', 'Points to Cone',tooltip="P1,N1,P2,P3,P4",icon=None)]
+#    beztools += [c3bI(["Points"], always, 'points_to_face', 'Points to Cone',tooltip="P1,N1,P2,P3,P4",icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
 beztools += [c3bI(["Bezier"], always, 'geodesic2', 'BB',tooltip="Eine andere Testfunktion")]
-#    beztools += [c3bI(["Points"], always, 'points_to_face', 'Points to Cone',tooltip="P1,N1,P2,P3,P4",icon=None)]
-_beztools += [c3bI(["Points"], always, 'points_to_face',                   'Points to Cone PN P P P', tooltip="P1,N1,P2,P3,P4", icon=None)]
-_beztools += [c3bI(["Points"], always, 'points_to_face',                   'Points to Cone PN PN ', tooltip="P1,N1,P2,N2", icon=None)]
-_beztools += [c3bI(["Points"], always, 'points_to_face',                   'Points to Cylinder PN P P', tooltip="P1,N1,P2,P3", icon=None)]
-beztools += [c3bI(["Points"], always, 'points_to_face',                  'Points to Cylinder 5P', tooltip="P1,P2,P3,p4,p%", icon=None)]
-_beztools += [c3bI(["Points"], always, 'points_to_face',                   'Points to Sphere 4P', tooltip="P1,P2,P3,p4", icon=None)]
-_beztools += [c3bI(["Points"], always, 'points_to_face',                   'Points to Sphere PN P', tooltip="P1,N1,P2", icon=None)]
-_beztools += [c3bI(["Points"], always, 'perspective_trafos', 'createPerspectiveTrafo',                   tooltip="perspektiische Tranformation 3D einer Flaeche", icon=None)]
-_beztools += [c3bI(["Points"], always, 'concave_hull', 'create concave hull 2D',                   tooltip="alpha shape fuer eine point cloud", icon=None)]
-beztools += [c3bI(["Curves", "Geodesic"], always, 'geodesic2', 'create a Path',                  tooltip="create a connection between two points of a Face", icon=None)]
-beztools += [c3bI(["Curves", "Geodesic"], always, 'geodesic2', 'optimize Path',                  tooltip="apporximate geodesic curve between two points starting form a given path", icon=None)]
+#    beztools += [c3bI(["Points"], always, 'points_to_face', 'Points to Cone',tooltip="P1,N1,P2,P3,P4",icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+_beztools += [c3bI(["Points"], always, 'points_to_face',   'Points to Cone PN P P P', tooltip="P1,N1,P2,P3,P4", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+_beztools += [c3bI(["Points"], always, 'points_to_face',   'Points to Cone PN PN ', tooltip="P1,N1,P2,N2", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+_beztools += [c3bI(["Points"], always, 'points_to_face',   'Points to Cylinder PN P P', tooltip="P1,N1,P2,P3", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+beztools += [c3bI(["Points"], always, 'points_to_face',  'Points to Cylinder 5P', tooltip="P1,P2,P3,p4,p%", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+_beztools += [c3bI(["Points"], always, 'points_to_face',   'Points to Sphere 4P', tooltip="P1,P2,P3,p4", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+_beztools += [c3bI(["Points"], always, 'points_to_face',   'Points to Sphere PN P', tooltip="P1,N1,P2", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+_beztools += [c3bI(["Points"], always, 'perspective_trafos', 'createPerspectiveTrafo',                   tooltip="perspektiische Tranformation 3D einer Flaeche", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+_beztools += [c3bI(["Points"], always, 'concave_hull', 'create concave hull 2D',                   tooltip="alpha shape fuer eine point cloud", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+beztools += [c3bI(["Curves", "Geodesic"], always, 'geodesic2', 'create a Path',                  tooltip="create a connection between two points of a Face", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
+beztools += [c3bI(["Curves", "Geodesic"], always, 'geodesic2', 'optimize Path',                  tooltip="apporximate geodesic curve between two points starting form a given path", icon=Design456Init.NURBS_ICON_PATH + "noIcon.svg")]
 
 c3bI(["Bezier"], always, 'berings', 'add Knot')
 [c3bI(["Bezier"], always, 'multiedit', 'multiEdit')]
@@ -731,14 +732,14 @@ c2a(["Topology"], always, 'Topo10', 'fem_edgelength_mesh',    'Grid Tension Simu
 c2a(["Topology"], always, 'Topo9', 'analyse_topology_v2',    'Identify Vertexes in a Shape', Design456Init.NURBS_ICON_PATH+'nurbs.svg', "Test4()")
 c2a(["Topology"], always, 'Topo11', 'fem_edgelength_mesh',    'Grid Tension Animation', Design456Init.NURBS_ICON_PATH+'nurbs.svg', "run(False)")
 c2a(["Topology"], always, 'Topo12', 'analyse_topology_v2',    'Test 4', Design456Init.NURBS_ICON_PATH+'nurbs.svg', "Test4()")
-c2a(["Workspace"], ondocument, 'CreateWorkspace', None, "Create workspace",    Design456Init.NURBS_ICON_PATH+'workspace.svg', "createws()", "workspace")
-c2a(["Workspace"], ondocument, 'CreateWSLink', None, "Create workspace link",    Design456Init.NURBS_ICON_PATH+'workspacelink.svg', "createlink()", "workspace")
-c2a(["Workspace"], ondocument, 'ViewsQV', 'views', "Create QuadView",    Design456Init.NURBS_ICON_PATH+'workspacequad.svg', "createquadview()", "workspace")
-c2a(["Workspace"], ondocument, 'Views2H', 'views', "Create 2 horizontal views",    Design456Init.NURBS_ICON_PATH+'workspace2h.svg', "createh2()", "workspace")
-c2a(["Workspace"], ondocument, 'DarkRoom', 'views', "Create Dark Room",    Design456Init.NURBS_ICON_PATH+'darkroom.svg', "createdarkroom()", "workspace")
-c2a(["Workspace"], ondocument, 'Light', 'views', "Create Light",    Design456Init.NURBS_ICON_PATH+'light.svg', "createlight()", "workspace")
-c2a(["Workspace"], ondocument, 'LightOn', 'views', "Light on",    Design456Init.NURBS_ICON_PATH+'light_on.svg', "lightOn()", "workspace")
-c2a(["Workspace"], ondocument, 'LightOff', 'views', "Light off",    Design456Init.NURBS_ICON_PATH+'light_off.svg', "lightOff()", "workspace")
+c2a(["Workspace"], ondocument, 'CreateWorkspace', None, "Create workspace",    Design456Init.NURBS_ICON_PATH+'workspace.svg', "createws()", "initGUI")
+c2a(["Workspace"], ondocument, 'CreateWSLink', None, "Create workspace link",    Design456Init.NURBS_ICON_PATH+'workspacelink.svg', "createlink()", "initGUI")
+c2a(["Workspace"], ondocument, 'ViewsQV', 'views', "Create QuadView",    Design456Init.NURBS_ICON_PATH+'workspacequad.svg', "createquadview()", "initGUI")
+c2a(["Workspace"], ondocument, 'Views2H', 'views', "Create 2 horizontal views",    Design456Init.NURBS_ICON_PATH+'workspace2h.svg', "createh2()", "initGUI")
+c2a(["Workspace"], ondocument, 'DarkRoom', 'views', "Create Dark Room",    Design456Init.NURBS_ICON_PATH+'darkroom.svg', "createdarkroom()", "initGUI")
+c2a(["Workspace"], ondocument, 'Light', 'views', "Create Light",    Design456Init.NURBS_ICON_PATH+'light.svg', "createlight()", "initGUI")
+c2a(["Workspace"], ondocument, 'LightOn', 'views', "Light on",    Design456Init.NURBS_ICON_PATH+'light_on.svg', "lightOn()", "initGUI")
+c2a(["Workspace"], ondocument, 'LightOff', 'views', "Light off",    Design456Init.NURBS_ICON_PATH+'light_off.svg', "lightOff()", "initGUI")
 c2a(["Needle"], ondocument, 'Needle', 'needle', 'create a needle',    Design456Init.NURBS_ICON_PATH+'shoe.svg', "run()")
 c2a(["Needle"], onneedle, 'needle Change Model', 'needle_change_model',    'needle Change Model', Design456Init.NURBS_ICON_PATH+'shoe.svg', "run()")
 c2a(["Needle"], onselex1, 'addULine', 'needle_cmds', 'add Meridian/Rib',    Design456Init.NURBS_ICON_PATH+'add_edge.svg', "cmdAdd()")
