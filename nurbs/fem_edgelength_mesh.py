@@ -41,7 +41,13 @@ import FreeCADGui as Gui
 import Part
 import Points
 
-import networkx as nx
+
+try:
+    import networkx as nx
+except ImportError:
+    print ("Trying to Install required module: networkx")
+    os.system('python -m pip3 install networkx')
+
 import random
 import os
 import 

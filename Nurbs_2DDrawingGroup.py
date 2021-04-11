@@ -34,29 +34,6 @@ import Design456Init
 import GuiWBDef
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Design456_Nurbs_2DDrawingGroup:
 
     """Design456 Part 2D Drawing"""
@@ -86,9 +63,7 @@ class Design456_Nurbs_2DDrawingGroup:
 
                 )   
         """
-        return (
-                gwbdef.current ,
-                gwbdef.beztools,
+        return ("runSole",
                 )
     def GetResources(self):
         import Design456Init
