@@ -50,6 +50,10 @@ class Design456_Nurbs_2DToolsGroup:
                 "printDATA",
                 "resetVertexStore",
                 "printVertexStore",
+                "map3Dto2D",
+                "map2Dto3D",
+                "map3Dgridto2Dgrid",
+                "'createBrezel"
                 
 
 

@@ -27,13 +27,13 @@ from __future__ import unicode_literals
 
 # -*- coding: utf-8 -*-
 '''
-#-------------------------------------------------
-#-- methods for drawing on faces 
-#--
-#-- microelly 2017 v 0.3
-#--
-#-- GNU Lesser General Public License (LGPL)
-#-------------------------------------------------
+# -------------------------------------------------
+# -- methods for drawing on faces
+# --
+# -- microelly 2017 v 0.3
+# --
+# -- GNU Lesser General Public License (LGPL)
+# -------------------------------------------------
 '''
 
 # \cond
@@ -53,23 +53,23 @@ import Points
 import os
 
 try:
-    import numpy as np 
+    import numpy as np
 except ImportError:
-    print ("Trying to Install required module: numpy")
+    print("Trying to Install required module: numpy")
     os.system('python -m pip3 install numpy')
 import random
 
 import os
-#import scipy
-#import scipy.interpolate
+# import scipy
+# import scipy.interpolate
 
-#import 
+# import
 
 import Design456Init
 #
-#global __dir__
-#__dir__ = os.path.dirname(.__file__)
-#print(__dir__)
+# global __dir__
+# __dir__ = os.path.dirname(.__file__)
+# print(__dir__)
 
 
 class PartFeature:
@@ -104,117 +104,125 @@ class ViewProvider:
         return None
 
     def onChanged(self, fp, prop):
-        #print ("onChanged",prop)
+        # print ("onChanged",prop)
         pass
 
 
 # \endcond
 
-def createShape(obj):
-    '''create the 2D or 3D mapping Shape for a wire and a base face
-    the data are parameters of the obj
-     '''
+class createShape:
+    def Activated(self,obj):
+        '''create the 2D or 3D mapping Shape for a wire and a base face
+        the data are parameters of the obj '''
 
-#    print ("CreateShape for obj:",obj.Label
+    #    print ("CreateShape for obj:",obj.Label
 
-    # pointCount=obj.pointcount
-    # pointCount=50
+        # pointCount=obj.pointcount
+        # pointCount=50
 
-    [uv2x, uv2y, xy2u, xy2v] = [obj.mapobject.Proxy.uv2x,
-                                obj.mapobject.Proxy.uv2y, obj.mapobject.Proxy.xy2u, obj.mapobject.Proxy.xy2v]
+        [uv2x, uv2y, xy2u, xy2v] = [obj.mapobject.Proxy.uv2x,
+                                    obj.mapobject.Proxy.uv2y, obj.mapobject.Proxy.xy2u, obj.mapobject.Proxy.xy2v]
 
-    if xy2v == None:
-        print("Kann umkehrung nicht berechnen xy2v nicht vorhanden")
-        return
+        if xy2v == None:
+            print("Kann umkehrung nicht berechnen xy2v nicht vorhanden")
+            return
 
-    # diese daten vom mapobjekt lesen #+#
+        # diese daten vom mapobjekt lesen #+#
 
-    mpv = 0.5
-    mpu = 0.5
+        mpv = 0.5
+        mpu = 0.5
 
-    u0 = 0
-    v0 = 0
+        u0 = 0
+        v0 = 0
 
-    fy = 1.
-    fx = 1.
+        fy = 1.
+        fx = 1.
 
-    # +# facenumer aus obj param holen
-    face = obj.face.Shape.Face1
-    bs = face.Surface
-#    w=obj.wire.Shape.Wires[0]
-    wires = obj.wire.Shape.Wires
-    if len(wires) == 0:
-        wires = obj.wire.Shape.Edges
+        # +# facenumer aus obj param holen
+        face = obj.face.Shape.Face1
+        bs = face.Surface
+    #    w=obj.wire.Shape.Wires[0]
+        wires = obj.wire.Shape.Wires
+        if len(wires) == 0:
+            wires = obj.wire.Shape.Edges
 
-    ppall = []
+        ppall = []
 
-    pos = App.Vector(obj.mapobject.Placement.Base.x,
-                     obj.mapobject.Placement.Base.y, 0)
+        pos = App.Vector(obj.mapobject.Placement.Base.x,obj.mapobject.Placement.Base.y, 0)
 
-    for i, w in enumerate(wires):
-        # print ("Wire ...",i,pointCount)
-        App.w = w
-        for i, ee in enumerate(w.Edges):
-            ct = max(int(round(ee.Length/obj.pointdist)), 2)
-            if i == 0:
-                ptsaa = ee.discretize(ct)
-            else:
-                pts = ee.discretize(ct)
-                if pts[-1] == ptsaa[-1]:
-                    pts = pts[::-1]
-                ptsaa += pts[1:]
+        for i, w in enumerate(wires):
+            # print ("Wire ...",i,pointCount)
+            App.w = w
+            for i, ee in enumerate(w.Edges):
+                ct = max(int(round(ee.Length/obj.pointdist)), 2)
+                if i == 0:
+                    ptsaa = ee.discretize(ct)
+                else:
+                    pts = ee.discretize(ct)
+                    if pts[-1] == ptsaa[-1]:
+                        pts = pts[::-1]
+                    ptsaa += pts[1:]
 
-        pts = [p-pos for p in ptsaa]
+            pts = [p-pos for p in ptsaa]
 
-        pts2 = []
+            pts2 = []
 
-        # refpos geht noch nicht
-        mpv = 0.
-        mpu = 0.
+            # refpos geht noch nicht
+            mpv = 0.
+            mpu = 0.
 
-#        refpos=bs.value(mpu,mpv)
-#        print ("refpos",mpu,mpv)
-#        print refpos
+    #        refpos=bs.value(mpu,mpv)
+    #        print ("refpos",mpu,mpv)
+    #        print refpos
 
-        refpos = App.Vector(0, 0, 0)
+            refpos = App.Vector(0, 0, 0)
 
-        for p in pts:
+            for p in pts:
 
-            y = fx*(p.x-refpos.x)
-            x = fy*(p.y-refpos.y)
+                y = fx*(p.x-refpos.x)
+                x = fy*(p.y-refpos.y)
 
-            # fuer ruled surface !!
-            x = fx*p.y
-            y = fy*p.x
+                # fuer ruled surface !!
+                x = fx*p.y
+                y = fy*p.x
 
-            u = xy2u(x, y)
-            v = xy2v(x, y)
+                u = xy2u(x, y)
+                v = xy2v(x, y)
 
-# su=face.ParameterRange[1]
-# sv=face.ParameterRange[3]
+    # su=face.ParameterRange[1]
+    # sv=face.ParameterRange[3]
 
-            sua = face.ParameterRange[0]
-            sva = face.ParameterRange[2]
-            sue = face.ParameterRange[1]
-            sve = face.ParameterRange[3]
-            sul = sue-sua
-            svl = sve-sva
+                sua = face.ParameterRange[0]
+                sva = face.ParameterRange[2]
+                sue = face.ParameterRange[1]
+                sve = face.ParameterRange[3]
+                sul = sue-sua
+                svl = sve-sva
 
-            # sua + svl*
-            # sva + svl*
+                # sua + svl*
+                # sva + svl*
 
-            # try: sweep=obj.face.TypeId=='Part::Sweep'
-            # except: sweep=True
+                # try: sweep=obj.face.TypeId=='Part::Sweep'
+                # except: sweep=True
 
-            if obj.mapobject.flipuv23:
-                p2 = bs.value(u, v)
-            else:
-                p2 = bs.value(sva+u*svl, aua+v*sul)
+                if obj.mapobject.flipuv23:
+                    p2 = bs.value(u, v)
+                else:
+                    p2 = bs.value(sva+u*svl, aua+v*sul)
 
-            pts2.append(p2)
+                pts2.append(p2)
 
-        App.pts2a = pts2
-        obj.Shape = Part.makePolygon(pts2)
+            App.pts2a = pts2
+            obj.Shape = Part.makePolygon(pts2)
+            
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'testD',
+            'ToolTip':  'testD'
+        }
+Gui.addCommand('createShape', createShape())
+createShape.__doc__ = """createShape: Tobe added later     """
 
 
 class Isodraw(PartFeature):
@@ -253,20 +261,29 @@ class Isodraw(PartFeature):
             obj.backref.Document.recompute()
         face = obj.face.Shape.Face1
         facedraw
-        reload(.facedraw)
+        reload(facedraw)
         try:
             obj.ViewObject.ShapeColor = obj.wire.ViewObject.ShapeColor
         except:
             obj.ViewObject.ShapeColor = (1., 0., 0.)
 
-        .facedraw.drawcurve(obj, face)
+        facedraw.drawcurve(obj, face)
 
-
-def createIsodrawFace():
-    '''creates a IsoDrawFace object'''
-    b = App.activeDocument().addObject("Part::FeaturePython", "IsoDrawFace")
-    Isodraw(b)
-    return b
+class createIsodrawFace:
+    def Activate(self):
+        '''creates a IsoDrawFace object'''
+        b = App.activeDocument().addObject("Part::FeaturePython", "IsoDrawFace")
+        Isodraw(b)
+        return b
+    
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'testD',
+            'ToolTip':  'testD'
+        }
+Gui.addCommand('createIsodrawFace', createIsodrawFace())
+createIsodrawFace.__doc__ = """createIsodrawFace: Tobe added later     """
 
 # ------------------------------------------------------
 
@@ -286,10 +303,10 @@ class Brezel(PartFeature):
         obj.addProperty("App::PropertyBool", "reverseWire2", "Source")
         obj.addProperty("App::PropertyBool", "reverseWire3", "Source")
         obj.addProperty("App::PropertyBool", "reverseWire4", "Source")
-        #obj.addProperty("App::PropertyLink","mapobject","Details","configuration object for mapping")
-        #obj.addProperty("App::PropertyBool","drawFace","Output","display subface cut by the wire projection")
-        #obj.addProperty("App::PropertyBool","reverseFace","Output","display inner or outer subface")
-        #obj.addProperty("App::PropertyInteger","pointcount","Details","count of points to discretize source wire")
+        # obj.addProperty("App::PropertyLink","mapobject","Details","configuration object for mapping")
+        # obj.addProperty("App::PropertyBool","drawFace","Output","display subface cut by the wire projection")
+        # obj.addProperty("App::PropertyBool","reverseFace","Output","display inner or outer subface")
+        # obj.addProperty("App::PropertyInteger","pointcount","Details","count of points to discretize source wire")
         # obj.pointcount=100
         obj.reverseWire2 = True
 
@@ -331,7 +348,7 @@ class Brezel(PartFeature):
 #        dirs=[False,True,True]
         dirs = [obj.reverseWire1, obj.reverseWire2,
                 obj.reverseWire3, obj.reverseWire4, ]
-        .facedraw.drawring(
+        facedraw.drawring(
             obj.Label, wires, dirs, faceobj, facepos=App.Vector())
 
 
@@ -625,7 +642,7 @@ def createGrid(mapobj, upmode=False):
         comp = []
         for u in range(su):
             for v in range(sv):
-                #print (beta-alpha)*u/2
+                # print (beta-alpha)*u/2
                 p = App.Vector((r1+hmax*v/sv)*np.cos((alpha)*u/su),
                                (r1+hmax*v/sv)*np.sin((alpha)*u/su))
                 pts[u, v] = p
@@ -747,7 +764,7 @@ def createGrid(mapobj, upmode=False):
             ptsk.append(bs.value(uv, vm))
 
             pts.append([kx, ky, 0])
-            #print ("isodraw nknk",uv,vm,bs.value(uv,vm))
+            # print ("isodraw nknk",uv,vm,bs.value(uv,vm))
 
         ptsa.append(pts)
         ptska.append(ptsk)
@@ -1119,7 +1136,7 @@ class Draw3Dgrid(PartFeature):
 class ViewProviderSL(ViewProvider):
 
     def onChanged(self, obj, prop):
-        #print ("onChanged",prop)
+        # print ("onChanged",prop)
         if obj.Visibility:
             ws = WorkSpace(obj.Object.workspace)
             ws.show()
@@ -1385,7 +1402,7 @@ def testA():
     # cc=App.ActiveDocument.orig
     cc = App.ActiveDocument.Cylinder
 
-    #lidok= WorkSpace("A3D")
+    # lidok= WorkSpace("A3D")
     # try: lidok.delete()
     # except: pass
 
@@ -1500,7 +1517,7 @@ class map3Dto2D:
                         (u, v) = bs.parameter(p)
                         (v, u) = bs.parameter(p)
                         print(u, v)
-                        # calculate back 
+                        # calculate back
 #                        su=bs.UPeriod()
 #                        sv=bs.VPeriod()
 
@@ -1531,10 +1548,10 @@ class map3Dto2D:
                         if bs.__class__.__name__ == 'Cylinder':
                             print("hack for cylinder quickly line 1413 ")
                             bs.Radius
-                            #x *= 0.01 *0.2
+                            # x *= 0.01 *0.2
                             x /= bs.Radius
-                            #x *= 100
-                            #y *= bs.Radius*0.5
+                            # x *= 100
+                            # y *= bs.Radius*0.5
                             y *= 100 * bs.Radius/100
                             x, y = y, x
 
@@ -1558,388 +1575,428 @@ class map3Dto2D:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+
     def GetResources(self):
         return {
-        'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-        'MenuText': 'map 3d to 2D',
-                    'ToolTip':  'Map 3D drawing to 2D'
-    }
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'map 3d to 2D',
+            'ToolTip':  'Map 3D drawing to 2D'
+        }
+
 
 Gui.addCommand('map3Dto2D', map3Dto2D())
 map3Dto2D.__doc__ = """map3Dto2D: Tobe added later     """
 
 
-def map2Dto3D():
-    ''' 2D Kante(Sketch) auf  3D Flaeche Poles '''
+class map2Dto3D():
 
-    # last selection == face
-    # other sels: wires to project
+    def Activated(self):
+        ''' 2D Kante(Sketch) auf  3D Flaeche Poles '''
 
-    s0 = Gui.Selection.getSelection()
-    moa = s0[-1]
-    s = s0[:-1]
+        # last selection == face
+        # other sels: wires to project
 
-#    moa=createMap()
-#    moa.face=face
-    f=None
-    for w in s:
-        f = createIsodrawFace()
-        f.mapobject = moa
-        print(moa.Label)
-        f.face = moa.faceObject
-        f.wire = w
-        f.Label = "map3D_for_"+w.Label+"_on_"+f.face.Label + "_by_" + moa.Label
-        # color=(random.random(),random.random(),random.random())
-        color = w.ViewObject.ShapeColor
-        print("color", color)
-        print(w.Label)
-        w.ViewObject.ShapeColor = color
-        w.ViewObject.LineColor = color
-        App.activeDocument().recompute()
+        s0 = Gui.Selection.getSelection()
+        moa = s0[-1]
+        s = s0[:-1]
 
-    return f
+        #        moa=createMap()
+        #        moa.face=face
+        f = None
+        for w in s:
+            f = createIsodrawFace()
+            f.mapobject = moa
+            print(moa.Label)
+            f.face = moa.faceObject
+            f.wire = w
+            f.Label = "map3D_for_"+w.Label+"_on_"+f.face.Label + "_by_" + moa.Label
+            # color=(random.random(),random.random(),random.random())
+            color = w.ViewObject.ShapeColor
+            print("color", color)
+            print(w.Label)
+            w.ViewObject.ShapeColor = color
+            w.ViewObject.LineColor = color
+            App.activeDocument().recompute()
+        return f
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'map 3d to 2D',
+            'ToolTip':  'Map 3D drawing to 2D'
+        }
+
+
+Gui.addCommand('map2Dto3D', map2Dto3D())
+map2Dto3D.__doc__ = """map2Dto3D: Tobe added later     """
+
 
 # ------------------------
 
 
 def map3Dgridto2Dgrid():
-    # 3D Edges auf 2D Edges
 
-    s0 = Gui.Selection.getSelection()
-    base = s0[-1]
+    def Activated(self):
+        # 3D Edges auf 2D Edges
 
-    if hasattr(base, "faceObject"):
-        face = base.faceObject
-        mapobj = base
-    else:
-        face = base
-        mapobj = None
+        s0 = Gui.Selection.getSelection()
+        base = s0[-1]
 
-    s = s0[:-1]
-    if len(s0) == 1:
-        s = s0
-
-    print(s0)
-
-    polcol = []
-    for wire in s:
-        print(wire.Label)
-        [uv2x, uv2y, xy2u, xy2v] = getmap(mapobj, face)
-
-        # bs=face.Shape.Face1.Surface
-        bs = face.Shape.Faces[base.faceNumber].Surface
-        pts2 = []
-        firstEdge = True
-        n = 0
-        for e in wire.Shape.Edges:
-            # print e
-            n += 1
-            # if n>6: break
-            # auf 5 millimeter genau
-            if mapobj != None:
-                dd = mapobj.pointsPerEdge
-            else:
-                dd = int(round(e.Length/5))
-                dd = 30
-            dd = 3
-            ptsa = e.discretize(dd)
-            # if not firstEdge:
-            #    pts=ptsa[1:]
-            # else:
-            pts = ptsa
-            firstEdge = False
-
-            App.ptsaa = pts
-
-            ptsb = []
-            for p in pts:
-                #                (u,v)=bs.parameter(p)
-                (v, u) = bs.parameter(p)
-
-#                print ("hack A su sv aa bb"
-#                su=face.Shape.Face1.ParameterRange[1]
-#                sv=face.Shape.Face1.ParameterRange[3]
-#
-#                if su>1000: su=face.ParameterRange[1]
-#                if sv>1000: sv=face.ParameterRange[3]
-
-                sua = face.ParameterRange[0]
-                sva = face.ParameterRange[2]
-                sue = face.ParameterRange[1]
-                sve = face.ParameterRange[3]
-                sul = sue-sua
-                svl = sve-sva
-
-                v = (v-sva)/svl
-                u = (u-sua)/sul
-
-                x = uv2x(u, v)
-                y = uv2y(u, v)
-                if mapobj != None and mapobj.flipxy:
-                    p2 = App.Vector(y, x, 0)
-                else:
-                    p2 = App.Vector(-y, -x, 0)
-                # hack richgtung beim Schuh
-                p2 = App.Vector(y, x, 0)
-
-                ptsb.append(p2)
-
-            if len(ptsb) > 1:
-                try:
-                    polcol += [Part.makePolygon(ptsb)]
-                except:
-                    print("kann kein polygon bauen")
-                    print(ptsb)
-
-        # Draft.makeWire(pts2)
-    Part.show(Part.Compound(polcol))
-
-
-def getmap(mapobj, obj):
-    '''calculates four interpolators to convert xy (isomap) into uv (nurbs) and back
-     mapobj supplies the parameters
-     obj is the part with the used face 
-    '''
-
-    # default values
-    mpv = 0.5
-    mpu = 0.5
-    fx = -1
-    fy = -1
-    vc = 30
-    uc = 30
-    modeA = 'cubic'
-    modeB = 'thin_plate'
-
-    bs = obj.Shape.Face1.Surface
-    face = obj.Shape.Face1
-
-#    su=bs.UPeriod()
-#    sv=bs.VPeriod()
-
-    print("hack B-BB su sv aa bb")
-    print(face)
-    print(obj.Label)
-    print("get map parameter Range ", face.ParameterRange)
-    print("BS CLASS_______!!_______________", bs.__class__.__name__)
-    print("isodraw.py zele  1705")
-
-    if bs.__class__.__name__ == 'Cylinder':
-        print("CYLINDER MODE!!")
-
-        def m_uv2x(u, v):
-            return bs.Radius*u
-            return 100*u
-
-        def m_uv2y(u, v):
-            return v*1
-
-        def m_xy2u(x, y):
-            return x/bs.Radius
-            return (x*1)
-
-        def m_xy2v(x, y):
-            return y
-
-        return [m_uv2x, m_uv2y, m_xy2u, m_xy2v]
-
-    if bs.__class__.__name__ == 'Cone':
-        print("CONE MODE!!")
-
-        alpha, beta, hmin, hmax = face.ParameterRange
-
-        r2 = bs.Radius
-        r1 = (bs.Apex-bs.Center).Length
-
-        alpha = r2*np.pi/r1
-
-        su = 21
-        sv = 21
-
-        def m_uv2y(u, v):
-            u, v = v, u
-            return (r1+hmax*v/sv/1000)*np.cos((alpha)*u/su*np.pi)
-            return (r1+hmax*v/sv)*np.cos((alpha)*u/su*np.pi)/1000
-
-        def m_uv2x(u, v):
-            u, v = v, u
-            return (r1+hmax*v/sv/1000)*np.sin((alpha)*u/su*np.pi)
-            return (r1+hmax*v/sv)*np.sin((alpha)*u/su*np.pi)/1000
-
-        def m_xy2u(x, y):
-            return np.arctan2(x, y)/alpha*su/np.pi
-
-        def m_xy2v(x, y):
-            v = (App.Vector(x, y, 0).Length-r1) / hmax*1000*sv
-            return v
-
-        return [m_uv2x, m_uv2y, m_xy2u, m_xy2v]
-
-
-#    su=face.ParameterRange[1]
-#    sv=face.ParameterRange[3]
-#
-#    if su>1000: su=face.ParameterRange[1]
-#    if sv>1000: sv=face.ParameterRange[3]
-
-    sua = face.ParameterRange[0]
-    sva = face.ParameterRange[2]
-    sue = face.ParameterRange[1]
-    sve = face.ParameterRange[3]
-    sul = sue-sua
-    svl = sve-sva
-
-    if mapobj != None:
-        if hasattr(mapobj, 'faceObject'):
-
-            mpv = mapobj.uMapCenter/100
-            mpu = mapobj.vMapCenter/100
-
-            fx = mapobj.fx
-            fy = mapobj.fy
-            vc = mapobj.vCount
-            uc = mapobj.uCount
-
+        if hasattr(base, "faceObject"):
+            face = base.faceObject
+            mapobj = base
         else:
+            face = base
+            mapobj = None
 
-            mpv = mapobj.uMapCenter/100
-            mpu = mapobj.vMapCenter/100
+        s = s0[:-1]
+        if len(s0) == 1:
+            s = s0
 
-            vc = mapobj.vCount
-            uc = mapobj.uCount
+        print(s0)
 
-            fx = mapobj.fx
-            fy = mapobj.fy
-            modeA = mapobj.modeA
-            modeB = mapobj.modeB
+        polcol = []
+        for wire in s:
+            print(wire.Label)
+            [uv2x, uv2y, xy2u, xy2v] = getmap(mapobj, face)
 
-            vc = mapobj.vc
-            uc = mapobj.uc
+            # bs=face.Shape.Face1.Surface
+            bs = face.Shape.Faces[base.faceNumber].Surface
+            pts2 = []
+            firstEdge = True
+            n = 0
+            for e in wire.Shape.Edges:
+                # print e
+                n += 1
+                # if n>6: break
+                # auf 5 millimeter genau
+                if mapobj != None:
+                    dd = mapobj.pointsPerEdge
+                else:
+                    dd = int(round(e.Length/5))
+                    dd = 30
+                dd = 3
+                ptsa = e.discretize(dd)
+                # if not firstEdge:
+                #    pts=ptsa[1:]
+                # else:
+                pts = ptsa
+                firstEdge = False
 
-    # print ("isomap YYparameter",su,sv,uc,vc)
+                App.ptsaa = pts
 
-    refpos = bs.value(mpv, mpu)
-    ptsa = []  # abbildung des uv-iso-gitter auf die xy-Ebene
+                ptsb = []
+                for p in pts:
+                    #                (u,v)=bs.parameter(p)
+                    (v, u) = bs.parameter(p)
 
-    mpv = svl * mpv + sva
-    mpu = sul * mpu + sua
+#                    print ("hack A su sv aa bb"
+#                    su=face.Shape.Face1.ParameterRange[1]
+#                    sv=face.Shape.Face1.ParameterRange[3]
+#
+#                    if su>1000: su=face.ParameterRange[1]
+#                    if sv>1000: sv=face.ParameterRange[3]
 
-    for v in range(vc+1):
-        pts = []
-        vaa = sva+1.0/vc*v*svl
+                    sua = face.ParameterRange[0]
+                    sva = face.ParameterRange[2]
+                    sue = face.ParameterRange[1]
+                    sve = face.ParameterRange[3]
+                    sul = sue-sua
+                    svl = sve-sva
 
-        bbc = bs.vIso(vaa)
+                    v = (v-sva)/svl
+                    u = (u-sua)/sul
 
-        for u in range(uc+1):
-            uaa = sua+1.0/uc*u*sul
-            ba = bs.uIso(uaa)
+                    x = uv2x(u, v)
+                    y = uv2y(u, v)
+                    if mapobj != None and mapobj.flipxy:
+                        p2 = App.Vector(y, x, 0)
+                    else:
+                        p2 = App.Vector(-y, -x, 0)
+                    # hack richgtung beim Schuh
+                    p2 = App.Vector(y, x, 0)
 
-            ky = ba.length(vaa, mpv)
-            if vaa < mpv:
-                ky = -ky
+                    ptsb.append(p2)
 
-            kx = bbc.length(mpu, uaa)
-            if uaa < mpu:
-                kx = -kx
+                if len(ptsb) > 1:
+                    try:
+                        polcol += [Part.makePolygon(ptsb)]
+                    except:
+                        print("kann kein polygon bauen")
+                        print(ptsb)
 
-            pts.append([kx, ky, 0])
+            # Draft.makeWire(pts2)
+        Part.show(Part.Compound(polcol))
 
-        ptsa.append(pts)
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'map 3d to 2D',
+            'ToolTip':  'Map 3D drawing to 2D'
+        }
 
-    ptsa = np.array(ptsa).swapaxes(0, 1)
 
-#    vs=[1.0/vc*v for v in range(vc+1)]
-#    us=[1.0/uc*u for u in range(uc+1)]
+Gui.addCommand('map3Dgridto2Dgrid', map3Dgridto2Dgrid())
+map3Dgridto2Dgrid.__doc__ = """map3Dgridto2Dgrid: Tobe added later     """
 
-    vs = [sva+1.0/vc*v*svl for v in range(vc+1)]
-    us = [sua+1.0/uc*u*sul for u in range(uc+1)]
 
-    uv2x = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 0], kind=modeA)
-    uv2y = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 1], kind=modeA)
+class getmap(mapobj, obj):
 
-    # if only 3D to 2D is needed, exit here
-    if mapobj == None:
-        xy2v = None
-        xy2u = None
+    def Activated(self):
+        '''calculates four interpolators to convert xy (isomap) into uv (nurbs) and back
+         mapobj supplies the parameters
+         obj is the part with the used face
+        '''
+
+        # default values
+        mpv = 0.5
+        mpu = 0.5
+        fx = -1
+        fy = -1
+        vc = 30
+        uc = 30
+        modeA = 'cubic'
+        modeB = 'thin_plate'
+
+        bs = obj.Shape.Face1.Surface
+        face = obj.Shape.Face1
+
+#        su=bs.UPeriod()
+#        sv=bs.VPeriod()
+
+        print("hack B-BB su sv aa bb")
+        print(face)
+        print(obj.Label)
+        print("get map parameter Range ", face.ParameterRange)
+        print("BS CLASS_______!!_______________", bs.__class__.__name__)
+        print("isodraw.py zele  1705")
+
+        if bs.__class__.__name__ == 'Cylinder':
+            print("CYLINDER MODE!!")
+
+            def m_uv2x(u, v):
+                return bs.Radius*u
+                return 100*u
+
+            def m_uv2y(u, v):
+                return v*1
+
+            def m_xy2u(x, y):
+                return x/bs.Radius
+                return (x*1)
+
+            def m_xy2v(x, y):
+                return y
+
+            return [m_uv2x, m_uv2y, m_xy2u, m_xy2v]
+
+        if bs.__class__.__name__ == 'Cone':
+            print("CONE MODE!!")
+
+            alpha, beta, hmin, hmax = face.ParameterRange
+
+            r2 = bs.Radius
+            r1 = (bs.Apex-bs.Center).Length
+
+            alpha = r2*np.pi/r1
+
+            su = 21
+            sv = 21
+
+            def m_uv2y(u, v):
+                u, v = v, u
+                return (r1+hmax*v/sv/1000)*np.cos((alpha)*u/su*np.pi)
+                return (r1+hmax*v/sv)*np.cos((alpha)*u/su*np.pi)/1000
+
+            def m_uv2x(u, v):
+                u, v = v, u
+                return (r1+hmax*v/sv/1000)*np.sin((alpha)*u/su*np.pi)
+                return (r1+hmax*v/sv)*np.sin((alpha)*u/su*np.pi)/1000
+
+            def m_xy2u(x, y):
+                return np.arctan2(x, y)/alpha*su/np.pi
+
+            def m_xy2v(x, y):
+                v = (App.Vector(x, y, 0).Length-r1) / hmax*1000*sv
+                return v
+
+            return [m_uv2x, m_uv2y, m_xy2u, m_xy2v]
+
+    #    su=face.ParameterRange[1]
+    #    sv=face.ParameterRange[3]
+    #
+    #    if su>1000: su=face.ParameterRange[1]
+    #    if sv>1000: sv=face.ParameterRange[3]
+
+        sua = face.ParameterRange[0]
+        sva = face.ParameterRange[2]
+        sue = face.ParameterRange[1]
+        sve = face.ParameterRange[3]
+        sul = sue-sua
+        svl = sve-sva
+
+        if mapobj != None:
+            if hasattr(mapobj, 'faceObject'):
+
+                mpv = mapobj.uMapCenter/100
+                mpu = mapobj.vMapCenter/100
+
+                fx = mapobj.fx
+                fy = mapobj.fy
+                vc = mapobj.vCount
+                uc = mapobj.uCount
+
+            else:
+
+                mpv = mapobj.uMapCenter/100
+                mpu = mapobj.vMapCenter/100
+
+                vc = mapobj.vCount
+                uc = mapobj.uCount
+
+                fx = mapobj.fx
+                fy = mapobj.fy
+                modeA = mapobj.modeA
+                modeB = mapobj.modeB
+
+                vc = mapobj.vc
+                uc = mapobj.uc
+
+        # print ("isomap YYparameter",su,sv,uc,vc)
+
+        refpos = bs.value(mpv, mpu)
+        ptsa = []  # abbildung des uv-iso-gitter auf die xy-Ebene
+
+        mpv = svl * mpv + sva
+        mpu = sul * mpu + sua
+
+        for v in range(vc+1):
+            pts = []
+            vaa = sva+1.0/vc*v*svl
+
+            bbc = bs.vIso(vaa)
+
+            for u in range(uc+1):
+                uaa = sua+1.0/uc*u*sul
+                ba = bs.uIso(uaa)
+
+                ky = ba.length(vaa, mpv)
+                if vaa < mpv:
+                    ky = -ky
+
+                kx = bbc.length(mpu, uaa)
+                if uaa < mpu:
+                    kx = -kx
+
+                pts.append([kx, ky, 0])
+
+            ptsa.append(pts)
+
+        ptsa = np.array(ptsa).swapaxes(0, 1)
+
+    #    vs=[1.0/vc*v for v in range(vc+1)]
+    #    us=[1.0/uc*u for u in range(uc+1)]
+
+        vs = [sva+1.0/vc*v*svl for v in range(vc+1)]
+        us = [sua+1.0/uc*u*sul for u in range(uc+1)]
+
+        uv2x = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 0], kind=modeA)
+        uv2y = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 1], kind=modeA)
+
+        # if only 3D to 2D is needed, exit here
+        if mapobj == None:
+            xy2v = None
+            xy2u = None
+            return [uv2x, uv2y, xy2u, xy2v]
+
+    # ------------------------------------------------------
+
+        # d=mapobj.border
+        d = 0
+
+        kku = []
+
+        for ui in range(d, uc+1-d):
+            for vi in range(d, vc+1-d):
+                kku.append([ptsa[ui, vi, 0], ptsa[ui, vi, 1], us[ui]])
+        kku = np.array(kku)
+
+        kkv = []
+        for ui in range(d, uc+1-d):
+            for vi in range(d, vc+1-d):
+                kkv.append([ptsa[ui, vi, 0], ptsa[ui, vi, 1], vs[vi]])
+        kkv = np.array(kkv)
+
+        try:
+            dx = mapobj.ue
+            dy = mapobj.ve
+            sx = mapobj.ub
+            sy = mapobj.vb
+
+            # print ("Shape",uc+1,vc+1,(uc+1)*(vc+1),np.array(kku).shape)
+            kku2 = np.array(kku).reshape(uc+1, vc+1, 3)
+            # print(dx,dy,sx,sy)
+            # print ("Shape aa",dx,dy,dx*dy,np.array(kku2[sx:sx+dx,sy:sy+dy]).shape)
+            kkua = kku2[sx:sx+dx, sy:sy+dy].reshape((dx)*(dy), 3)
+
+            kkv2 = np.array(kkv).reshape(uc+1, vc+1, 3)
+            kkva = kkv2[sx:sx+dx, sy:sy+dy].reshape(dx*dy, 3)
+
+            xy2u = scipy.interpolate.Rbf(
+                kkua[:, 0], kkua[:, 1], kkua[:, 2], function=modeB)
+            xy2v = scipy.interpolate.Rbf(
+                kkva[:, 0], kkva[:, 1], kkva[:, 2], function=modeB)
+
+    #        xy2v = scipy.interpolate.interp2d(kkv[:,0],kkv[:,1],kkv[:,2], kind=mode)
+    # ideas for error
+    # https://stackoverflow.com/questions/34820612/scipy-interp2d-warning-and-different-result-than-expected
+
+        except Exception as err:
+            sayexc()
+            print('Handling  error:', err)
+            xy2v = None
+            xy2u = None
+            print("FEHLER BERECHNUNG bUMKEHRfunktionen")
+
         return [uv2x, uv2y, xy2u, xy2v]
 
-# ------------------------------------------------------
+        if 0:  # testrechnung sollte auf gleiche stelle zurueck kommen
+            u0 = 0.2
+            v0 = 0.6
 
-    # d=mapobj.border
-    d = 0
+            y = uv2y(u0, v0)
+            x = uv2x(u0, v0)
+            u = xy2v(x, y)
+            v = xy2u(x, y)
 
-    kku = []
+            print(u0, v0, x, y, u, v)
 
-    for ui in range(d, uc+1-d):
-        for vi in range(d, vc+1-d):
-            kku.append([ptsa[ui, vi, 0], ptsa[ui, vi, 1], us[ui]])
-    kku = np.array(kku)
+        return [uv2x, uv2y, xy2u, xy2v]
 
-    kkv = []
-    for ui in range(d, uc+1-d):
-        for vi in range(d, vc+1-d):
-            kkv.append([ptsa[ui, vi, 0], ptsa[ui, vi, 1], vs[vi]])
-    kkv = np.array(kkv)
-
-    try:
-        dx = mapobj.ue
-        dy = mapobj.ve
-        sx = mapobj.ub
-        sy = mapobj.vb
-
-        #print ("Shape",uc+1,vc+1,(uc+1)*(vc+1),np.array(kku).shape)
-        kku2 = np.array(kku).reshape(uc+1, vc+1, 3)
-        # print(dx,dy,sx,sy)
-        #print ("Shape aa",dx,dy,dx*dy,np.array(kku2[sx:sx+dx,sy:sy+dy]).shape)
-        kkua = kku2[sx:sx+dx, sy:sy+dy].reshape((dx)*(dy), 3)
-
-        kkv2 = np.array(kkv).reshape(uc+1, vc+1, 3)
-        kkva = kkv2[sx:sx+dx, sy:sy+dy].reshape(dx*dy, 3)
-
-        xy2u = scipy.interpolate.Rbf(
-            kkua[:, 0], kkua[:, 1], kkua[:, 2], function=modeB)
-        xy2v = scipy.interpolate.Rbf(
-            kkva[:, 0], kkva[:, 1], kkva[:, 2], function=modeB)
-
-#        xy2v = scipy.interpolate.interp2d(kkv[:,0],kkv[:,1],kkv[:,2], kind=mode)
-# ideas for error
-# https://stackoverflow.com/questions/34820612/scipy-interp2d-warning-and-different-result-than-expected
-
-    except Exception as err:
-        sayexc()
-        print('Handling  error:', err)
-        xy2v = None
-        xy2u = None
-        print("FEHLER BERECHNUNG bUMKEHRfunktionen")
-
-    return [uv2x, uv2y, xy2u, xy2v]
-
-    if 0:  # testrechnung sollte auf gleiche stelle zurueck kommen
-        u0 = 0.2
-        v0 = 0.6
-
-        y = uv2y(u0, v0)
-        x = uv2x(u0, v0)
-        u = xy2v(x, y)
-        v = xy2u(x, y)
-
-        print(u0, v0, x, y, u, v)
-
-    return [uv2x, uv2y, xy2u, xy2v]
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'map 3d to 2D',
+            'ToolTip':  'Map 3D drawing to 2D'
+        }
 
 
-def getmap3(mapobj, obj, calcZ=None):
-    ''' berechnet einen dritten wert für z'''
+Gui.addCommand('getmap', getmap())
+getmap.__doc__ = """getmap: Tobe added later     """
 
-    print("berechne curvature gauss")
-    print(mapobj.Label)
-    print(obj.Label)
+
+class getmap3(mapobj, obj, calcZ=None):
+    def Activated(self):
+        ''' berechnet einen dritten wert für z'''
+        print("berechne curvature gauss")
+        print(mapobj.Label)
+        print(obj.Label)
 
     def calcZ(face, u, v):
         bs = face.Surface
         ur = 1.0*(u)/30  # mapobj.uCount
         vr = 1.0*(v)/30  # mapobj.vCount
-
+        
         # umrechnung auf parametrrangen
         su = face.ParameterRange[1]
         sv = face.ParameterRange[3]
@@ -1959,7 +2016,7 @@ def getmap3(mapobj, obj, calcZ=None):
 
         try:
             cc = bs.curvature(ur, vr, tt)
-        # kewgelhack
+            # kewgelhack
             cc = bs.curvature(vr, ur, tt)
         except:
             cc = 0
@@ -1972,8 +2029,8 @@ def getmap3(mapobj, obj, calcZ=None):
         else:
             z = cc * 1000
             # beschraenken nach oben
-            #if z>30: z=30
-            #if z<-30: z=-30
+            # if z>30: z=30
+            # if z<-30: z=-30
 #        if z!=0: print ("!curvature ur,vr,z", round(ur),round(vr),z)
 
         if tt == "Mean":
@@ -1987,241 +2044,283 @@ def getmap3(mapobj, obj, calcZ=None):
 
         return z
 
-    # default values
-    mpv = 0.5
-    mpu = 0.5
-    fx = -1
-    fy = -1
-    vc = 30
-    uc = 30
+        # default values
+        mpv = 0.5
+        mpu = 0.5
+        fx = -1
+        fy = -1
+        vc = 30
+        uc = 30
 
-    modeA = 'cubic'
-    modeB = 'thin_plate'
+        modeA = 'cubic'
+        modeB = 'thin_plate'
 
-    bs = obj.Shape.Face1.Surface
-    face = obj.Shape.Face1
+        bs = obj.Shape.Face1.Surface
+        face = obj.Shape.Face1
 
-    # su=bs.UPeriod()
-    # sv=bs.VPeriod()
+        # su=bs.UPeriod()
+        # sv=bs.VPeriod()
 
-    print("hack BB su sv aa bb XX")
+        print("hack BB su sv aa bb XX")
 
-    su = face.ParameterRange[1]
-    sv = face.ParameterRange[3]
-
-    if su > 1000:
         su = face.ParameterRange[1]
-    if sv > 1000:
         sv = face.ParameterRange[3]
 
-    sua = face.ParameterRange[0]
-    sva = face.ParameterRange[2]
-    sue = face.ParameterRange[1]
-    sve = face.ParameterRange[3]
-    sul = sue-sua
-    svl = sve-sva
+        if su > 1000:
+            su = face.ParameterRange[1]
+        if sv > 1000:
+            sv = face.ParameterRange[3]
 
-    if mapobj != None:
-        if hasattr(mapobj, 'faceObject'):
+        sua = face.ParameterRange[0]
+        sva = face.ParameterRange[2]
+        sue = face.ParameterRange[1]
+        sve = face.ParameterRange[3]
+        sul = sue-sua
+        svl = sve-sva
 
-            mpv = mapobj.uMapCenter/100
-            mpu = mapobj.vMapCenter/100
+        if mapobj != None:
+            if hasattr(mapobj, 'faceObject'):
 
-            fx = mapobj.fx
-            fy = mapobj.fy
-            vc = mapobj.vCount
-            uc = mapobj.uCount
+                mpv = mapobj.uMapCenter/100
+                mpu = mapobj.vMapCenter/100
 
-        else:
+                fx = mapobj.fx
+                fy = mapobj.fy
+                vc = mapobj.vCount
+                uc = mapobj.uCount
 
-            mpv = mapobj.uMapCenter/100
-            mpu = mapobj.vMapCenter/100
+            else:
 
-            vc = mapobj.vCount
-            uc = mapobj.uCount
+                mpv = mapobj.uMapCenter/100
+                mpu = mapobj.vMapCenter/100
 
-            fx = mapobj.fx
-            fy = mapobj.fy
-            modeA = mapobj.modeA
-            modeB = mapobj.modeB
+                vc = mapobj.vCount
+                uc = mapobj.uCount
 
-    vc = mapobj.vc
-    uc = mapobj.uc
+                fx = mapobj.fx
+                fy = mapobj.fy
+                modeA = mapobj.modeA
+                modeB = mapobj.modeB
 
-    refpos = bs.value(mpv, mpu)
-    ptsa = []  # abbildung des uv-iso-gitter auf die xy-Ebene
+        vc = mapobj.vc
+        uc = mapobj.uc
 
-    mpv = svl*mpv + sva
-    mpu = sul*mpu + sua
+        refpos = bs.value(mpv, mpu)
+        ptsa = []  # abbildung des uv-iso-gitter auf die xy-Ebene
 
-    for v in range(vc+1):
-        pts = []
-        vaa = sva+1.0/vc*v*svl
+        mpv = svl*mpv + sva
+        mpu = sul*mpu + sua
 
-        bbc = bs.vIso(vaa)
+        for v in range(vc+1):
+            pts = []
+            vaa = sva+1.0/vc*v*svl
 
-        for u in range(uc+1):
-            uaa = sua+1.0/uc*u*sul
-            ba = bs.uIso(uaa)
+            bbc = bs.vIso(vaa)
 
-            ky = ba.length(vaa, mpv)
-            if vaa < mpv:
-                ky = -ky
+            for u in range(uc+1):
+                uaa = sua+1.0/uc*u*sul
+                ba = bs.uIso(uaa)
 
-            kx = bbc.length(mpu, uaa)
-            if uaa < mpu:
-                kx = -kx
+                ky = ba.length(vaa, mpv)
+                if vaa < mpv:
+                    ky = -ky
 
-            kz = calcZ(face, u, v)
-            pts.append([kx, ky, kz])
+                kx = bbc.length(mpu, uaa)
+                if uaa < mpu:
+                    kx = -kx
 
-        ptsa.append(pts)
+                kz = calcZ(face, u, v)
+                pts.append([kx, ky, kz])
 
-    ptsa = np.array(ptsa).swapaxes(0, 1)
+            ptsa.append(pts)
 
-    vs = [1.0/vc*v for v in range(vc+1)]
-    us = [1.0/uc*u for u in range(uc+1)]
+        ptsa = np.array(ptsa).swapaxes(0, 1)
 
-    vs = [sva+1.0/vc*v*svl for v in range(vc+1)]
-    us = [sua+1.0/uc*u*sul for u in range(uc+1)]
+        vs = [1.0/vc*v for v in range(vc+1)]
+        us = [1.0/uc*u for u in range(uc+1)]
 
-    uv2x = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 0], kind=modeA)
-    uv2y = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 1], kind=modeA)
-    uv2z = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 2], kind=modeA)
+        vs = [sva+1.0/vc*v*svl for v in range(vc+1)]
+        us = [sua+1.0/uc*u*sul for u in range(uc+1)]
 
-    # if only 3D to 2D is needed, exit here
-    if mapobj == None:
-        xy2v = None
-        xy2u = None
+        uv2x = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 0], kind=modeA)
+        uv2y = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 1], kind=modeA)
+        uv2z = scipy.interpolate.interp2d(us, vs, ptsa[:, :, 2], kind=modeA)
+
+        # if only 3D to 2D is needed, exit here
+        if mapobj == None:
+            xy2v = None
+            xy2u = None
+
+            return [uv2x, uv2y, uv2z, xy2u, xy2v]
+
+# --    ----------------------------------------------------
+
+        # d=mapobj.border
+        d = 0
+
+        kku = []
+
+        for ui in range(d, uc+1-d):
+            for vi in range(d, vc+1-d):
+                kku.append([ptsa[ui, vi, 0], ptsa[ui, vi, 1], us[ui]])
+        kku = np.array(kku)
+
+        kkv = []
+        for ui in range(d, uc+1-d):
+            for vi in range(d, vc+1-d):
+                kkv.append([ptsa[ui, vi, 0], ptsa[ui, vi, 1], vs[vi]])
+        kkv = np.array(kkv)
+
+        try:
+            dx = mapobj.ue
+            dy = mapobj.ve
+            sx = mapobj.ub
+            sy = mapobj.vb
+
+            # print ("Shape",uc+1,vc+1,(uc+1)*(vc+1),np.array(kku).shape)
+            kku2 = np.array(kku).reshape(uc+1, vc+1, 3)
+            # print(dx,dy,sx,sy)
+            # print ("Shape aa",dx,dy,dx*dy,np.array(kku2[sx:sx+dx,sy:sy+dy]).shape)
+            kkua = kku2[sx:sx+dx, sy:sy+dy].reshape((dx)*(dy), 3)
+
+            kkv2 = np.array(kkv).reshape(uc+1, vc+1, 3)
+            kkva = kkv2[sx:sx+dx, sy:sy+dy].reshape(dx*dy, 3)
+
+            xy2u = scipy.interpolate.Rbf(
+                kkua[:, 0], kkua[:, 1], kkua[:, 2], function=modeB)
+            xy2v = scipy.interpolate.Rbf(
+                kkva[:, 0], kkva[:, 1], kkva[:, 2], function=modeB)
+
+#            xy2v = scipy.interpolate.interp2d(kkv[:,0],kkv[:,1],kkv[:,2], kind=mode)
+# id    eas for error
+# ht    tps://stackoverflow.com/questions/34820612/scipy-interp2d-warning-and-different-result-than-expected
+
+        except Exception as err:
+            sayexc()
+            print('Handling  error:', err)
+            xy2v = None
+            xy2u = None
+            print("FEHLER BERECHNUNG bUMKEHRfunktionen")
 
         return [uv2x, uv2y, uv2z, xy2u, xy2v]
 
+        if 0:  # testrechnung sollte auf gleiche stelle zurueck kommen
+            u0 = 0.2
+            v0 = 0.6
 
-# ------------------------------------------------------
+            y = uv2y(u0, v0)
+            x = uv2x(u0, v0)
+            u = xy2v(x, y)
+            v = xy2u(x, y)
 
-    # d=mapobj.border
-    d = 0
+            print(u0, v0, x, y, u, v)
 
-    kku = []
+        return [uv2x, uv2y, xy2u, xy2v]
 
-    for ui in range(d, uc+1-d):
-        for vi in range(d, vc+1-d):
-            kku.append([ptsa[ui, vi, 0], ptsa[ui, vi, 1], us[ui]])
-    kku = np.array(kku)
-
-    kkv = []
-    for ui in range(d, uc+1-d):
-        for vi in range(d, vc+1-d):
-            kkv.append([ptsa[ui, vi, 0], ptsa[ui, vi, 1], vs[vi]])
-    kkv = np.array(kkv)
-
-    try:
-        dx = mapobj.ue
-        dy = mapobj.ve
-        sx = mapobj.ub
-        sy = mapobj.vb
-
-        #print ("Shape",uc+1,vc+1,(uc+1)*(vc+1),np.array(kku).shape)
-        kku2 = np.array(kku).reshape(uc+1, vc+1, 3)
-        # print(dx,dy,sx,sy)
-        #print ("Shape aa",dx,dy,dx*dy,np.array(kku2[sx:sx+dx,sy:sy+dy]).shape)
-        kkua = kku2[sx:sx+dx, sy:sy+dy].reshape((dx)*(dy), 3)
-
-        kkv2 = np.array(kkv).reshape(uc+1, vc+1, 3)
-        kkva = kkv2[sx:sx+dx, sy:sy+dy].reshape(dx*dy, 3)
-
-        xy2u = scipy.interpolate.Rbf(
-            kkua[:, 0], kkua[:, 1], kkua[:, 2], function=modeB)
-        xy2v = scipy.interpolate.Rbf(
-            kkva[:, 0], kkva[:, 1], kkva[:, 2], function=modeB)
-
-#        xy2v = scipy.interpolate.interp2d(kkv[:,0],kkv[:,1],kkv[:,2], kind=mode)
-# ideas for error
-# https://stackoverflow.com/questions/34820612/scipy-interp2d-warning-and-different-result-than-expected
-
-    except Exception as err:
-        sayexc()
-        print('Handling  error:', err)
-        xy2v = None
-        xy2u = None
-        print("FEHLER BERECHNUNG bUMKEHRfunktionen")
-
-    return [uv2x, uv2y, uv2z, xy2u, xy2v]
-
-    if 0:  # testrechnung sollte auf gleiche stelle zurueck kommen
-        u0 = 0.2
-        v0 = 0.6
-
-        y = uv2y(u0, v0)
-        x = uv2x(u0, v0)
-        u = xy2v(x, y)
-        v = xy2u(x, y)
-
-        print(u0, v0, x, y, u, v)
-
-    return [uv2x, uv2y, xy2u, xy2v]
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'map 3d to 2D',
+            'ToolTip':  'Map 3D drawing to 2D'
+        }
+Gui.addCommand('getmap3', getmap3())
+getmap3.__doc__ = """getmap3: Tobe added later     """
 
 
 # pruefe qualitaet der umrechnung
-def testC():
-    face = App.ActiveDocument.Poles
-    # face=App.ActiveDocument.MySegment
-    bs = face.Shape.Face1.Surface
-    # wire=App.ActiveDocument.UUUU_Drawing_on_Poles__Face1002_Spline
-    wire = App.ActiveDocument.UUUU_Drawing_on_Poles__Face1001_Spline
-    # wire=App.ActiveDocument.Shape001
-    p = wire.Shape.Vertex1.Point
-    p
-    print("huu")
-    [uv2x, uv2y, xy2u, xy2v] = getmap(face)
+class testC():
+    def Activated(self):
+        face = App.ActiveDocument.Poles
+        # face=App.ActiveDocument.MySegment
+        bs = face.Shape.Face1.Surface
+        # wire=App.ActiveDocument.UUUU_Drawing_on_Poles__Face1002_Spline
+        wire = App.ActiveDocument.UUUU_Drawing_on_Poles__Face1001_Spline
+        # wire=App.ActiveDocument.Shape001
+        p = wire.Shape.Vertex1.Point
+        p
+        print("huu")
+        [uv2x, uv2y, xy2u, xy2v] = getmap(face)
 
-    (u, v) = bs.parameter(p)
-    (u, v) = bs.parameter(p)
-    pt0 = bs.value(u, v)
-    print(u, v)
-    x = uv2x(u, v)
-    y = uv2y(u, v)
-    print(x, y)
-    u = xy2v(x, y)
-    v = xy2u(x, y)
-    print(u, v)
-    pt = bs.value(u, v)
-#    print pt
-#    print p
-    print(p-pt)
-
-
-def testD():
-    #    kku2=np.array(App.kku).reshape(31,31,3)
-    #    kku=kku2[10:25,10:20].reshape(150,3)
-
-    ptsu = [App.Vector(tuple(i)) for i in kku]
-    Draft.makeWire(ptsu)
-    Points.show(Points.Points(ptsu))
-
-    mode = 'thin_plate'
-    xy2u = scipy.interpolate.Rbf(
-        kku[:, 0], kku[:, 1], kku[:, 2], function=mode)
-
-
-def testE():
-    [uv2x, uv2y, xy2u, xy2v] = getmap(face)
-    ptbb = []
-    for p in App.ptsaa:
         (u, v) = bs.parameter(p)
         (u, v) = bs.parameter(p)
         pt0 = bs.value(u, v)
-#        print (u,v)
+        print(u, v)
         x = uv2x(u, v)
         y = uv2y(u, v)
-#        print (x,y)
+        print(x, y)
         u = xy2v(x, y)
         v = xy2u(x, y)
-#        print(u,v)
+        print(u, v)
         pt = bs.value(u, v)
-    #    print pt
-    #    print p
+#        print pt
+#        print p
         print(p-pt)
-        ptbb.append(pt)
 
-    Draft.makeWire(ptbb)
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'testC',
+            'ToolTip':  'testC'
+        }
+Gui.addCommand('testC', testC())
+testC.__doc__ = """testC: Tobe added later     """
+
+
+class testD():
+    def Activated(self):
+        #    kku2=np.array(App.kku).reshape(31,31,3)
+        #    kku=kku2[10:25,10:20].reshape(150,3)
+
+        ptsu = [App.Vector(tuple(i)) for i in kku]
+        Draft.makeWire(ptsu)
+        Points.show(Points.Points(ptsu))
+
+        mode = 'thin_plate'
+        xy2u = scipy.interpolate.Rbf(
+            kku[:, 0], kku[:, 1], kku[:, 2], function=mode)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'testD',
+            'ToolTip':  'testD'
+        }
+
+
+Gui.addCommand('testD', testD())
+testD.__doc__ = """testD: Tobe added later     """
+
+
+class testE():
+    def Activated(Self):
+        [uv2x, uv2y, xy2u, xy2v] = getmap(face)
+        ptbb = []
+        for p in App.ptsaa:
+            (u, v) = bs.parameter(p)
+            (u, v) = bs.parameter(p)
+            pt0 = bs.value(u, v)
+#            print (u,v)
+            x = uv2x(u, v)
+            y = uv2y(u, v)
+#            print (x,y)
+            u = xy2v(x, y)
+            v = xy2u(x, y)
+#            print(u,v)
+            pt = bs.value(u, v)
+        #    print pt
+        #    print p
+            print(p-pt)
+            ptbb.append(pt)
+
+        Draft.makeWire(ptbb)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'testD',
+            'ToolTip':  'testD'
+        }
+
+
+Gui.addCommand('testE', testE())
+testE.__doc__ = """testE: Tobe added later     """
