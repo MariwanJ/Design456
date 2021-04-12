@@ -111,7 +111,7 @@ class ViewProvider:
 # \endcond
 
 class createShape:
-    def Activated(self,obj):
+    def Activated(self, obj):
         '''create the 2D or 3D mapping Shape for a wire and a base face
         the data are parameters of the obj '''
 
@@ -148,7 +148,8 @@ class createShape:
 
         ppall = []
 
-        pos = App.Vector(obj.mapobject.Placement.Base.x,obj.mapobject.Placement.Base.y, 0)
+        pos = App.Vector(obj.mapobject.Placement.Base.x,
+                         obj.mapobject.Placement.Base.y, 0)
 
         for i, w in enumerate(wires):
             # print ("Wire ...",i,pointCount)
@@ -214,13 +215,15 @@ class createShape:
 
             App.pts2a = pts2
             obj.Shape = Part.makePolygon(pts2)
-            
+
     def GetResources(self):
         return {
             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
             'MenuText': 'testD',
             'ToolTip':  'testD'
         }
+
+
 Gui.addCommand('createShape', createShape())
 createShape.__doc__ = """createShape: Tobe added later     """
 
@@ -269,19 +272,22 @@ class Isodraw(PartFeature):
 
         facedraw.drawcurve(obj, face)
 
+
 class createIsodrawFace:
     def Activate(self):
         '''creates a IsoDrawFace object'''
         b = App.activeDocument().addObject("Part::FeaturePython", "IsoDrawFace")
         Isodraw(b)
         return b
-    
+
     def GetResources(self):
         return {
             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
             'MenuText': 'testD',
             'ToolTip':  'testD'
         }
+
+
 Gui.addCommand('createIsodrawFace', createIsodrawFace())
 createIsodrawFace.__doc__ = """createIsodrawFace: Tobe added later     """
 
@@ -352,17 +358,29 @@ class Brezel(PartFeature):
             obj.Label, wires, dirs, faceobj, facepos=App.Vector())
 
 
-def createBrezel():
-    '''creates a IsoDrawFace object'''
-    b = App.activeDocument().addObject("Part::FeaturePython", "Brezel")
-    Brezel(b)
-    if 1:
-        b.face = App.ActiveDocument.face
-        b.wire1 = App.ActiveDocument.IsoDrawFace002
-        b.wire2 = App.ActiveDocument.IsoDrawFace003
-        b.wire3 = App.ActiveDocument.IsoDrawFace
-        b.wire4 = App.ActiveDocument.IsoDrawFace004
-    return b
+class createBrezel:
+    def Activate(self):
+        '''creates a IsoDrawFace object'''
+        b = App.activeDocument().addObject("Part::FeaturePython", "Brezel")
+        Brezel(b)
+        if 1:
+            b.face = App.ActiveDocument.face
+            b.wire1 = App.ActiveDocument.IsoDrawFace002
+            b.wire2 = App.ActiveDocument.IsoDrawFace003
+            b.wire3 = App.ActiveDocument.IsoDrawFace
+            b.wire4 = App.ActiveDocument.IsoDrawFace004
+        return b
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'testD',
+            'ToolTip':  'testD'
+        }
+
+
+Gui.addCommand('createBrezel', createBrezel())
+createBrezel.__doc__ = """createBrezel: Tobe added later     """
 
 # -------------------------------------------------------------
 
@@ -588,169 +606,400 @@ class Map(PartFeature):
         print("getmap done")
 
 
-def createMap(mode=''):
-    '''create a Map object'''
-    b = App.activeDocument().addObject("Part::FeaturePython", "MAP")
-    Map(b, mode=mode)
+class createMap:
+    def Activated(self, mode=''):
+        '''create a Map object'''
+        b = App.activeDocument().addObject("Part::FeaturePython", "MAP")
+        Map(b, mode=mode)
 
-    # hack
-    b.display2d = False
-    b.displayCircles = True
-    b.uMin = 0
-    b.vMin = 0
-
-    if 0:
-        b.modeCurvature = "Gauss"
-        b.uMin = 20
+        # hack
+        b.display2d = False
+        b.displayCircles = True
+        b.uMin = 0
         b.vMin = 0
-        b.uMax = 50
-        b.vMax = 101
-    return b
+
+        if 0:
+            b.modeCurvature = "Gauss"
+            b.uMin = 20
+            b.vMin = 0
+            b.uMax = 50
+            b.vMax = 101
+        return b
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'MenuText': 'testD',
+            'ToolTip':  'testD'
+        }
 
 
-def createGrid(mapobj, upmode=False):
-    '''create a 2D grid  or 3D grid (if upmode) for the map obj'''
-
-    obj = mapobj
-
-    try:
-        face = obj.faceObject.Shape.Faces[obj.faceNumber]
-        bs = face.Surface
-    except:
-        return Part.Shape()
-
-    print("createGrid for special faces")
-    print(face)
-    import os
-
-    sf = face.Surface
-
-    if sf.__class__.__name__ == 'Cone':
-
-        alpha, beta, hmin, hmax = face.ParameterRange
-
-        r2 = sf.Radius
-        r1 = (sf.Apex-sf.Center).Length
-
-        alpha = r2*np.pi/r1
-
-        su = 21
-        sv = 21
-
-        pts = np.zeros(su*sv*3).reshape(su, sv, 3)
-
-        comp = []
-        for u in range(su):
-            for v in range(sv):
-                # print (beta-alpha)*u/2
-                p = App.Vector((r1+hmax*v/sv)*np.cos((alpha)*u/su),
-                               (r1+hmax*v/sv)*np.sin((alpha)*u/su))
-                pts[u, v] = p
-
-        for z in pts:
-            comp += [Part.makePolygon([App.Vector(p) for p in z])]
-
-        pts = pts.swapaxes(0, 1)
-        for z in pts:
-            comp += [Part.makePolygon([App.Vector(p) for p in z])]
-
-        # Part.show(Part.Compound(comp))
-
-        return Part.Compound(comp)
+Gui.addCommand('createMap', createMap())
+createMap.__doc__ = """createMap: Tobe added later     """
 
 
-#    face=obj.faceObject.Shape.Face1
+class createGrid:
+    def Activated(mapobj, upmode=False)
+     '''create a 2D grid  or 3D grid (if upmode) for the map obj'''
 
-#    mpu=obj.uMapCenter/100
-#    mpv=obj.vMapCenter/100
+       obj = mapobj
 
-    mpv = obj.uMapCenter/100
-    mpu = obj.vMapCenter/100
+        try:
+            face = obj.faceObject.Shape.Faces[obj.faceNumber]
+            bs = face.Surface
+        except:
+            return Part.Shape()
 
-    # skalierung/lage
-    fx = obj.fx
-    fy = obj.fy
+        print("createGrid for special faces")
+        print(face)
+        import os
 
-    fz = 1.0
+        sf = face.Surface
 
-    comps = []
+        if sf.__class__.__name__ == 'Cone':
 
-    refpos = bs.value(mpv, mpu)
+            alpha, beta, hmin, hmax = face.ParameterRange
 
-    # su=bs.UPeriod()
-    # sv=bs.VPeriod()
+            r2 = sf.Radius
+            r1 = (sf.Apex-sf.Center).Length
 
-    print("hack DD suu asv")
-    su = face.ParameterRange[1]
-    sv = face.ParameterRange[3]
+            alpha = r2*np.pi/r1
 
-    if su > 1000:
+            su = 21
+            sv = 21
+
+            pts = np.zeros(su*sv*3).reshape(su, sv, 3)
+
+            comp = []
+            for u in range(su):
+                for v in range(sv):
+                    # print (beta-alpha)*u/2
+                    p = App.Vector((r1+hmax*v/sv)*np.cos((alpha)*u/su),
+                                   (r1+hmax*v/sv)*np.sin((alpha)*u/su))
+                    pts[u, v] = p
+
+            for z in pts:
+                comp += [Part.makePolygon([App.Vector(p) for p in z])]
+
+            pts = pts.swapaxes(0, 1)
+            for z in pts:
+                comp += [Part.makePolygon([App.Vector(p) for p in z])]
+
+            # Part.show(Part.Compound(comp))
+
+            return Part.Compound(comp)
+
+
+#       face=obj.faceObject.Shape.Face1
+
+#       mpu=obj.uMapCenter/100
+#       mpv=obj.vMapCenter/100
+
+        mpv = obj.uMapCenter/100
+        mpu = obj.vMapCenter/100
+
+        # skalierung/lage
+        fx = obj.fx
+        fy = obj.fy
+
+        fz = 1.0
+
+        comps = []
+
+        refpos = bs.value(mpv, mpu)
+
+        # su=bs.UPeriod()
+        # sv=bs.VPeriod()
+
+        print("hack DD suu asv")
         su = face.ParameterRange[1]
-    if sv > 1000:
         sv = face.ParameterRange[3]
 
-    # mittelpunkt
+        if su > 1000:
+            su = face.ParameterRange[1]
+        if sv > 1000:
+            sv = face.ParameterRange[3]
 
-#    try: sweep=obj.Faceobject.TypeId=='Part::Sweep'
-#    except: sweep=True
+        # mittelpunkt
 
-    sua = face.ParameterRange[0]
-    sva = face.ParameterRange[2]
-    sue = face.ParameterRange[1]
-    sve = face.ParameterRange[3]
-    sul = sue-sua
-    svl = sve-sva
+#       try: sweep=obj.Faceobject.TypeId=='Part::Sweep'
+#       except: sweep=True
 
-    # sua + svl*
-    # sva + svl*
+        sua = face.ParameterRange[0]
+        sva = face.ParameterRange[2]
+        sue = face.ParameterRange[1]
+        sve = face.ParameterRange[3]
+        sul = sue-sua
+        svl = sve-sva
 
-    if not obj.flipuv23:
+        # sua + svl*
+        # sva + svl*
 
-        mpu2 = sva+mpu*svl
-        mpv2 = aza+mpv*sul
+        if not obj.flipuv23:
 
-    else:
-        if upmode:
-            mpu2 = sua+mpu*sul
-            mpv2 = sva+mpv*svl
-        else:
             mpu2 = sva+mpu*svl
-            mpv2 = sua+mpv*sul
+            mpv2 = aza+mpv*sul
 
-    mpu = mpv2
-    mpv = mpu2
+        else:
+            if upmode:
+                mpu2 = sua+mpu*sul
+                mpv2 = sva+mpv*svl
+            else:
+                mpu2 = sva+mpu*svl
+                mpv2 = sua+mpv*sul
 
-    vc = obj.uCount
-    uc = obj.vCount
+        mpu = mpv2
+        mpv = mpu2
 
-    print("isodraw #ll")
-    print(su, sv)
-    print(uc, vc)
-    print(face.ParameterRange)
+        vc = obj.uCount
+        uc = obj.vCount
 
-    ptsa = []
-    ptska = []
+        print("isodraw #ll")
+        print(su, sv)
+        print(uc, vc)
+        print(face.ParameterRange)
 
-    ba = bs.uIso(mpu)
-    comps += [ba.toShape()]
+        ptsa = []
+        ptska = []
 
-    for v in range(vc+1):
-        pts = []
-        vm = sva+1.0/vc*v*svl
+        ba = bs.uIso(mpu)
+        comps += [ba.toShape()]
 
-        ky = ba.length(vm, mpv)
+        for v in range(vc+1):
+            pts = []
+            vm = sva+1.0/vc*v*svl
 
-        if vm < mpv:
-            ky = -ky
-        bbc = bs.vIso(vm)
+            ky = ba.length(vm, mpv)
 
-        comps += [bbc.toShape()]
+            if vm < mpv:
+                ky = -ky
+            bbc = bs.vIso(vm)
 
-        ptsk = []
-        for u in range(uc+1):
-            uv = sua+1.0/uc*u*sul
+            comps += [bbc.toShape()]
 
-            ba = bs.uIso(uv)
+            ptsk = []
+            for u in range(uc+1):
+                uv = sua+1.0/uc*u*sul
+
+                ba = bs.uIso(uv)
+
+                ky = ba.length(vm, mpv)
+                if vm < mpv:
+                    ky = -ky
+
+                kx = bbc.length(mpu, uv)
+                if uv < mpu:
+                    kx = -kx
+
+                # ptsk.append(bs.value(vm,uv))
+                ptsk.append(bs.value(uv, vm))
+
+                pts.append([kx, ky, 0])
+                # print ("isodraw nknk",uv,vm,bs.value(uv,vm))
+
+            ptsa.append(pts)
+            ptska.append(ptsk)
+
+#    -----------------------------------------------
+
+        [uv2x, uv2y, xy2u, xy2v] = getmap(mapobj, obj.faceObject)
+
+        print("hier 3D Methode  ccc..oo..............")
+        if obj.mode == 'curvature':
+            [uv2x, uv2y, uv2z, xy2u, xy2v] = getmap3(mapobj, obj.faceObject)
+        ptsa = []
+
+        for v in range(vc+1):
+            pts = []
+            z2 = 0
+            z = 0
+            for u in range(uc+1):
+
+                if mapobj.flipuv:
+                    uv = sua+1.0/uc*u*sul
+                    vv = sva+1.0/vc*v*svl
+                    vv2 = sva+1.0/uc*u*svl
+                    uv2 = sua+1.0/vc*v*sul
+                else:
+                    vv = sua+1.0/uc*u*sul
+                    uv = sva+1.0/vc*v*svl
+                    uv2 = sva+1.0/uc*u*svl
+                    vv2 = sua+1.0/vc*v*sul
+
+
+#                   try: sweep=face.TypeId=='Part::Sweep'
+#                   except: sweep=True
+#
+#                   sweep=True
+
+                if 1 or (mapobj.flipuv23 and upmode):
+                    #                    print ("---------------------------RRRRRRRRRRRRRRRRRRR"
+                    #                    x=uv2x(vv,uv)
+                    #                    y=uv2y(vv,uv)
+                    # uv=sua+1.0/uc*(uc-u)*sul
+                    uv = sua+1.0/uc*(u)*sul
+#    vv=sva+1.0/vc*(vc-v)*svl
+                    vv = sva+1.0/vc*(v)*svl
+
+                    x = uv2x(uv, vv)
+                    y = uv2y(uv, vv)
+#                       x=uv2x(vv,uv)
+#                       y=uv2y(vv,uv)
+
+                else:
+                    x = uv2x(uv, vv)
+                    y = uv2y(uv, vv)
+
+                if obj.mode == 'curvature':
+                    # z=uv2z(uv,vv)
+                    # drekt nutzen statt interpolator
+                    # z=bs.curvature(vv,uv,"Mean")
+                    try:
+                        z2 = bs.curvature(uv2, vv2, obj.modeCurvature)
+                    except:
+                        z2 = 0
+
+                    if z2 != 0:
+                        r = round(1.0/z2)
+                    else:
+                        r = 'planar'
+                    if u >= mapobj.vMin-1 and u <= mapobj.vMax+1 and v >= mapobj.uMin-1 and v <= mapobj.uMax+1:
+                        print("u,v, curvature,radius ", u, v, round(z2, 6), r)
+
+                        if abs(z2) > 0.001:
+                            print("********** HIGH", u, v, z2, r)
+
+                    z = obj.factorCurvature*z2
+
+                else:
+                    z = 0
+                # print z
+#                   print (x,y,z)
+                pts.append(App.Vector(x, y, z))
+
+#                   if u==5:
+#                       print ("aadfdbbw--",uv,vv,z)
+#                       print (x,y)
+
+            ptsa.append(pts)
+
+        if upmode:
+            print("Rahmen 3D", obj.uMin, obj.uMax, obj.vMin, obj.vMax)
+            print(obj.faceObject.TypeId)
+
+#           try: sweep=obj.faceObject.TypeId=='Part::Sweep'
+#           except: sweep=True
+
+#           sweep=True
+            if not obj.flipuv23:
+                uMin, uMax, vMin, vMax = obj.uMin, obj.uMax, obj.vMin, obj.vMax
+            else:
+                vMin, vMax, uMin, uMax = obj.uMin, obj.uMax, obj.vMin, obj.vMax
+
+            relpos = obj.Placement.Base*(-1)
+
+            comps = []
+
+            for pts in ptska[uMin:uMax]:
+
+                ll = []
+                for p in pts[vMin:vMax]:
+                    pmh = obj.Placement.inverse()
+                    vh = App.Vector(tuple(p))
+                    th = App.Placement()
+                    th.Base = vh
+                    t2 = pmh.multiply(th)
+                    vh2 = t2.Base
+                    ll += [vh2]
+                try:
+                    comps += [Part.makePolygon(ll)]
+                except:
+                    pass
+
+            '''
+            comps=[]
+
+            for pts in ptska[obj.vMin:obj.vMax]:
+
+                ll=[]
+                for p in pts[obj.uMin:obj.uMax]:
+                    pmh=obj.Placement.inverse()
+                    vh=App.Vector(tuple(p))
+                    th=App.Placement()
+                    th.Base=vh
+                    t2=pmh.multiply(th)
+                    vh2=t2.Base
+                    ll += [vh2]
+
+                comps += [ Part.makePolygon(ll) ]
+
+            '''
+
+            ptska = np.array(ptska).swapaxes(0, 1)
+
+            for pts in ptska[vMin:vMax]:
+
+                ll = []
+                for p in pts[uMin:uMax]:
+                    pmh = obj.Placement.inverse()
+                    vh = App.Vector(tuple(p))
+                    th = App.Placement()
+                    th.Base = vh
+                    t2 = pmh.multiply(th)
+                    vh2 = t2.Base
+                    ll += [vh2]
+
+                comps += [Part.makePolygon(ll)]
+
+            # markiere zentrum der karte
+            z = bs.value(sua+0.5*sul, sva+0.5*svl)
+            circ = Part.Circle()
+            circ.Radius = 10
+
+            th = App.Placement()
+            th.Base = z
+            t2 = pmh.multiply(th)
+            circ.Location = t2.Base
+
+            th = App.Placement()
+            th.Base = bs.normal(sua+0.5*sul, sva+0.5*svl)
+            t2 = pmh.multiply(th)
+
+            circ.Axis = t2.Base
+            if obj.displayCircles:
+                comps += [circ.toShape()]
+
+            # mapcenter
+
+            z = bs.value(mpu, mpv)
+            z = bs.value(mpv, mpu)
+
+            circ = Part.Circle()
+            circ.Radius = 20
+
+            th = App.Placement()
+            th.Base = z
+            t2 = pmh.multiply(th)
+            circ.Location = t2.Base
+
+            th = App.Placement()
+            th.Base = bs.normal(mpv, mpu)
+            t2 = th.multiply(pmh)
+#           t2=pmh.multiply(th)
+
+            # diese richtung stimmt noch nicht, deaktivert
+#    circ.Axis=t2.Base
+
+            if obj.displayCircles:
+                comps += [circ.toShape()]
+            return Part.Compound(comps)
+
+        else:  # 2d mode
+            comps = []
+
+            # markiere zentrum der karte
+            uv = sua+0.5*sul
+            vm = sva+0.5*svl
 
             ky = ba.length(vm, mpv)
             if vm < mpv:
@@ -760,285 +1009,65 @@ def createGrid(mapobj, upmode=False):
             if uv < mpu:
                 kx = -kx
 
-            # ptsk.append(bs.value(vm,uv))
-            ptsk.append(bs.value(uv, vm))
-
-            pts.append([kx, ky, 0])
-            # print ("isodraw nknk",uv,vm,bs.value(uv,vm))
-
-        ptsa.append(pts)
-        ptska.append(ptsk)
-
-# -----------------------------------------------
-
-    [uv2x, uv2y, xy2u, xy2v] = getmap(mapobj, obj.faceObject)
-
-    print("hier 3D Methode  ccc..oo..............")
-    if obj.mode == 'curvature':
-        [uv2x, uv2y, uv2z, xy2u, xy2v] = getmap3(mapobj, obj.faceObject)
-    ptsa = []
-
-    for v in range(vc+1):
-        pts = []
-        z2 = 0
-        z = 0
-        for u in range(uc+1):
-
-            if mapobj.flipuv:
-                uv = sua+1.0/uc*u*sul
-                vv = sva+1.0/vc*v*svl
-                vv2 = sva+1.0/uc*u*svl
-                uv2 = sua+1.0/vc*v*sul
+            if not obj.flipxy:
+                z = App.Vector(fy*ky, fx*kx, 0)
             else:
-                vv = sua+1.0/uc*u*sul
-                uv = sva+1.0/vc*v*svl
-                uv2 = sva+1.0/uc*u*svl
-                vv2 = sua+1.0/vc*v*sul
+                z = App.Vector(fx*kx, fy*ky, 0)
 
+            circ = Part.Circle()
+            circ.Radius = 10
+            circ.Location = z
+            if obj.displayCircles:
+                comps += [circ.toShape()]
 
-#                try: sweep=face.TypeId=='Part::Sweep'
-#                except: sweep=True
-#
-#                sweep=True
+            z = App.Vector(0, 0, 0)
+            circ = Part.Circle()
+            circ.Radius = 20
+            circ.Location = z
+            if obj.displayCircles:
+                comps += [circ.toShape()]
 
-            if 1 or (mapobj.flipuv23 and upmode):
-                #                    print ("---------------------------RRRRRRRRRRRRRRRRRRR"
-                #                    x=uv2x(vv,uv)
-                #                    y=uv2y(vv,uv)
-                # uv=sua+1.0/uc*(uc-u)*sul
-                uv = sua+1.0/uc*(u)*sul
-# vv=sva+1.0/vc*(vc-v)*svl
-                vv = sva+1.0/vc*(v)*svl
+            print("Rahmen 2D", obj.uMin, obj.uMax, obj.vMin, obj.vMax)
 
-                x = uv2x(uv, vv)
-                y = uv2y(uv, vv)
-#                    x=uv2x(vv,uv)
-#                    y=uv2y(vv,uv)
+            if obj.flipxy:
+                if 1:
+                    for pts in ptsa[obj.uMin:obj.uMax]:
+                        try:
+                            comps += [Part.makePolygon([App.Vector(fx*p[1], fy*p[0], fz*p[2])
+                                                        for p in pts[obj.vMin:obj.vMax]])]
+                        except:
+                            pass
+
+                    ptsa = np.array(ptsa).swapaxes(0, 1)
+                    for pts in ptsa[obj.vMin:obj.vMax]:
+                        try:
+                            comps += [Part.makePolygon([App.Vector(fx*p[1], fy*p[0], fz*p[2])
+                                                        for p in pts[obj.uMin:obj.uMax]])]
+                        except:
+                            pass
 
             else:
-                x = uv2x(uv, vv)
-                y = uv2y(uv, vv)
-
-            if obj.mode == 'curvature':
-                # z=uv2z(uv,vv)
-                # drekt nutzen statt interpolator
-                # z=bs.curvature(vv,uv,"Mean")
-                try:
-                    z2 = bs.curvature(uv2, vv2, obj.modeCurvature)
-                except:
-                    z2 = 0
-
-                if z2 != 0:
-                    r = round(1.0/z2)
-                else:
-                    r = 'planar'
-                if u >= mapobj.vMin-1 and u <= mapobj.vMax+1 and v >= mapobj.uMin-1 and v <= mapobj.uMax+1:
-                    print("u,v, curvature,radius ", u, v, round(z2, 6), r)
-
-                    if abs(z2) > 0.001:
-                        print("********** HIGH", u, v, z2, r)
-
-                z = obj.factorCurvature*z2
-
-            else:
-                z = 0
-            # print z
-#                print (x,y,z)
-            pts.append(App.Vector(x, y, z))
-
-#                if u==5:
-#                    print ("aadfdbbw--",uv,vv,z)
-#                    print (x,y)
-
-        ptsa.append(pts)
-
-    if upmode:
-        print("Rahmen 3D", obj.uMin, obj.uMax, obj.vMin, obj.vMax)
-        print(obj.faceObject.TypeId)
-
-#        try: sweep=obj.faceObject.TypeId=='Part::Sweep'
-#        except: sweep=True
-
-#        sweep=True
-        if not obj.flipuv23:
-            uMin, uMax, vMin, vMax = obj.uMin, obj.uMax, obj.vMin, obj.vMax
-        else:
-            vMin, vMax, uMin, uMax = obj.uMin, obj.uMax, obj.vMin, obj.vMax
-
-        relpos = obj.Placement.Base*(-1)
-
-        comps = []
-
-        for pts in ptska[uMin:uMax]:
-
-            ll = []
-            for p in pts[vMin:vMax]:
-                pmh = obj.Placement.inverse()
-                vh = App.Vector(tuple(p))
-                th = App.Placement()
-                th.Base = vh
-                t2 = pmh.multiply(th)
-                vh2 = t2.Base
-                ll += [vh2]
-            try:
-                comps += [Part.makePolygon(ll)]
-            except:
-                pass
-
-        '''
-        comps=[]
-
-        for pts in ptska[obj.vMin:obj.vMax]:
-
-            ll=[]
-            for p in pts[obj.uMin:obj.uMax]:
-                pmh=obj.Placement.inverse()
-                vh=App.Vector(tuple(p))
-                th=App.Placement()
-                th.Base=vh
-                t2=pmh.multiply(th)
-                vh2=t2.Base
-                ll += [vh2]
-
-            comps += [ Part.makePolygon(ll) ]
-
-        '''
-
-        ptska = np.array(ptska).swapaxes(0, 1)
-
-        for pts in ptska[vMin:vMax]:
-
-            ll = []
-            for p in pts[uMin:uMax]:
-                pmh = obj.Placement.inverse()
-                vh = App.Vector(tuple(p))
-                th = App.Placement()
-                th.Base = vh
-                t2 = pmh.multiply(th)
-                vh2 = t2.Base
-                ll += [vh2]
-
-            comps += [Part.makePolygon(ll)]
-
-        # markiere zentrum der karte
-        z = bs.value(sua+0.5*sul, sva+0.5*svl)
-        circ = Part.Circle()
-        circ.Radius = 10
-
-        th = App.Placement()
-        th.Base = z
-        t2 = pmh.multiply(th)
-        circ.Location = t2.Base
-
-        th = App.Placement()
-        th.Base = bs.normal(sua+0.5*sul, sva+0.5*svl)
-        t2 = pmh.multiply(th)
-
-        circ.Axis = t2.Base
-        if obj.displayCircles:
-            comps += [circ.toShape()]
-
-        # mapcenter
-
-        z = bs.value(mpu, mpv)
-        z = bs.value(mpv, mpu)
-
-        circ = Part.Circle()
-        circ.Radius = 20
-
-        th = App.Placement()
-        th.Base = z
-        t2 = pmh.multiply(th)
-        circ.Location = t2.Base
-
-        th = App.Placement()
-        th.Base = bs.normal(mpv, mpu)
-        t2 = th.multiply(pmh)
-#        t2=pmh.multiply(th)
-
-        # diese richtung stimmt noch nicht, deaktivert
-# circ.Axis=t2.Base
-
-        if obj.displayCircles:
-            comps += [circ.toShape()]
-
-        return Part.Compound(comps)
-
-    else:  # 2d mode
-        comps = []
-
-        # markiere zentrum der karte
-        uv = sua+0.5*sul
-        vm = sva+0.5*svl
-
-        ky = ba.length(vm, mpv)
-        if vm < mpv:
-            ky = -ky
-
-        kx = bbc.length(mpu, uv)
-        if uv < mpu:
-            kx = -kx
-
-        if not obj.flipxy:
-            z = App.Vector(fy*ky, fx*kx, 0)
-        else:
-            z = App.Vector(fx*kx, fy*ky, 0)
-
-        circ = Part.Circle()
-        circ.Radius = 10
-        circ.Location = z
-        if obj.displayCircles:
-            comps += [circ.toShape()]
-
-        z = App.Vector(0, 0, 0)
-        circ = Part.Circle()
-        circ.Radius = 20
-        circ.Location = z
-        if obj.displayCircles:
-            comps += [circ.toShape()]
-
-        print("Rahmen 2D", obj.uMin, obj.uMax, obj.vMin, obj.vMax)
-
-        if obj.flipxy:
-            if 1:
-                for pts in ptsa[obj.uMin:obj.uMax]:
-                    try:
-                        comps += [Part.makePolygon([App.Vector(fx*p[1], fy*p[0], fz*p[2])
+                if 1:
+                    for pts in ptsa[obj.uMin:obj.uMax]:
+                        comps += [Part.makePolygon([App.Vector(fx*p[0], fy*p[1], fz*p[2])
                                                     for p in pts[obj.vMin:obj.vMax]])]
-                    except:
-                        pass
 
-                ptsa = np.array(ptsa).swapaxes(0, 1)
-                for pts in ptsa[obj.vMin:obj.vMax]:
-                    try:
-                        comps += [Part.makePolygon([App.Vector(fx*p[1], fy*p[0], fz*p[2])
+                    ptsa = np.array(ptsa).swapaxes(0, 1)
+                    for pts in ptsa[obj.vMin:obj.vMax]:
+                        comps += [Part.makePolygon([App.Vector(fx*p[0], fy*p[1], fz*p[2])
                                                     for p in pts[obj.uMin:obj.uMax]])]
-                    except:
-                        pass
 
-        else:
-            if 1:
-                for pts in ptsa[obj.uMin:obj.uMax]:
-                    comps += [Part.makePolygon([App.Vector(fx*p[0], fy*p[1], fz*p[2])
-                                                for p in pts[obj.vMin:obj.vMax]])]
+                else:
+                    for pts in ptsa[obj.vMin:obj.vMax]:
+                        comps += [Part.makePolygon([App.Vector(fx*p[0], fy*p[1], fz*p[2])
+                                                    for p in pts[obj.vMin:obj.vMax]])]
 
-                ptsa = np.array(ptsa).swapaxes(0, 1)
-                for pts in ptsa[obj.vMin:obj.vMax]:
-                    comps += [Part.makePolygon([App.Vector(fx*p[0], fy*p[1], fz*p[2])
-                                                for p in pts[obj.uMin:obj.uMax]])]
+                    ptsa = np.array(ptsa).swapaxes(0, 1)
 
-            else:
-                for pts in ptsa[obj.vMin:obj.vMax]:
-                    comps += [Part.makePolygon([App.Vector(fx*p[0], fy*p[1], fz*p[2])
-                                                for p in pts[obj.vMin:obj.vMax]])]
-
-                ptsa = np.array(ptsa).swapaxes(0, 1)
-
-                for pts in ptsa[obj.uMin:obj.uMax]:
-                    comps += [Part.makePolygon([App.Vector(fx*p[0], fy*p[1], fz*p[2])
-                                                for p in pts[obj.uMin:obj.uMax]])]
-
-        return Part.Compound(comps)
+                    for pts in ptsa[obj.uMin:obj.uMax]:
+                        comps += [Part.makePolygon([App.Vector(fx*p[0], fy*p[1], fz*p[2])
+                                                    for p in pts[obj.uMin:obj.uMax]])]
+            return Part.Compound(comps)
 
 
 # ------------
@@ -1996,7 +2025,7 @@ class getmap3(mapobj, obj, calcZ=None):
         bs = face.Surface
         ur = 1.0*(u)/30  # mapobj.uCount
         vr = 1.0*(v)/30  # mapobj.vCount
-        
+
         # umrechnung auf parametrrangen
         su = face.ParameterRange[1]
         sv = face.ParameterRange[3]
@@ -2223,6 +2252,8 @@ class getmap3(mapobj, obj, calcZ=None):
             'MenuText': 'map 3d to 2D',
             'ToolTip':  'Map 3D drawing to 2D'
         }
+
+
 Gui.addCommand('getmap3', getmap3())
 getmap3.__doc__ = """getmap3: Tobe added later     """
 
@@ -2262,6 +2293,8 @@ class testC():
             'MenuText': 'testC',
             'ToolTip':  'testC'
         }
+
+
 Gui.addCommand('testC', testC())
 testC.__doc__ = """testC: Tobe added later     """
 
