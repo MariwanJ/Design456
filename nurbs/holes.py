@@ -32,58 +32,86 @@ import Part
 import random
 
 
-def run():
-    sel = Gui.Selection.getSelection()
+class holes:
+    """ holes """
+    def Activated(self):
+        self.run()
 
-    face = sel[0].Shape.Face1.Surface.toShape()
-    # Part.show(face)
+    def run(self):
+        sel = Gui.Selection.getSelection()
 
-    # face=sel[0].Shape.Face1
+        face = sel[0].Shape.Face1.Surface.toShape()
+        # Part.show(face)
 
-    wireobs = sel[1:]
+        # face=sel[0].Shape.Face1
 
-    print(face)
-    wires = []
-    for w in wireobs:
-        print (w.Shape.Wires)
-        wires += [w.Shape.Wires[0]]
+        wireobs = sel[1:]
 
-    es = wires
-    if len(es) > 0:
-        splita = []
-        for i, e in enumerate(es):
+        print(face)
+        wires = []
+        for w in wireobs:
+            print(w.Shape.Wires)
+            wires += [w.Shape.Wires[0]]
 
-            edges = e.Edges
-            ee = edges[0]
-            # if dirs[i]: ee.reverse()
+        es = wires
+        if len(es) > 0:
+            splita = []
+            for i, e in enumerate(es):
 
-            e.reverse()
-            splita += [(e, face)]
+                edges = e.Edges
+                ee = edges[0]
+                # if dirs[i]: ee.reverse()
 
-        r = Part.makeSplitShape(face, splita)
-        print(r)
-        for fs in r:
-            for f in fs:
-                Part.show(f)
-                App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
-                    random.random(), random.random(), random.random(),)
+                e.reverse()
+                splita += [(e, face)]
 
-    else:
-        Part.show(face)
-        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
-            random.random(), random.random(), random.random(),)
+            r = Part.makeSplitShape(face, splita)
+            print(r)
+            for fs in r:
+                for f in fs:
+                    Part.show(f)
+                    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
+                        random.random(), random.random(), random.random(),)
+
+        else:
+            Part.show(face)
+            App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
+                random.random(), random.random(), random.random(),)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'holes.svg',
+            'MenuText': 'hole',
+            'ToolTip':  'hole'
+        }
 
 
-def extractWires():
-    '''extract the wires'''
-    sel = Gui.Selection.getSelection()
-    w = sel[0]
-    print(w.Shape.Wires)
-    for i, wire in enumerate(w.Shape.Wires):
-        Part.show(wire)
-        App.ActiveDocument.ActiveObject.Label = "wire " + \
-            str(i+1) + " for " + w.Label + " "
-        wire.reverse()
-        Part.show(wire)
-        App.ActiveDocument.ActiveObject.Label = "wire " + \
-            str(i+1) + " for " + w.Label + " reverse "
+Gui.addCommand('hole', hole())
+hole.__doc__ = """hole: Tobe added later     """
+
+
+class extractWires:
+    def Activated(self):
+        '''extract the wires'''
+        sel = Gui.Selection.getSelection()
+        w = sel[0]
+        print(w.Shape.Wires)
+        for i, wire in enumerate(w.Shape.Wires):
+            Part.show(wire)
+            App.ActiveDocument.ActiveObject.Label = "wire " + \
+                str(i+1) + " for " + w.Label + " "
+            wire.reverse()
+            Part.show(wire)
+            App.ActiveDocument.ActiveObject.Label = "wire " + \
+                str(i+1) + " for " + w.Label + " reverse "
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'extractWires.svg',
+            'MenuText': 'extractWires',
+            'ToolTip':  'extractWires'
+        }
+
+
+Gui.addCommand('extractWires', extractWires())
+extractWires.__doc__ = """extractWires: Tobe added later     """
