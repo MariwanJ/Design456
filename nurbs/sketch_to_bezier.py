@@ -47,9 +47,9 @@ except ImportError:
 import time
 import random
 
-pyob
-from .pyob import  FeaturePython,ViewProvider
-reload (.pyob)
+import pyob
+from pyob import  FeaturePython,ViewProvider
+#reload (.pyob)
 
 
 
@@ -362,7 +362,7 @@ def createFollowerSketch(name="Follower",source=None):
     FollowerSketch(obj)
     import sketcher
     import sketcher.feedbacksketch
-    reload(sketcher.feedbacksketch)
+    #reload(sketcher.feedbacksketch)
     sketcher.feedbacksketch.copySketch(App.ActiveDocument.Sketch,obj)
 
     obj.init=True

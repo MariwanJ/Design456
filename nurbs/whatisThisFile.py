@@ -480,7 +480,7 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
 
 if 1:
         miki
-        reload(nurbs.miki)
+        #reload(nurbs.miki)
         rc=nurbs.miki.runtest()
         
 
@@ -667,7 +667,7 @@ def mydialog(obj):
 
 
     import nurbs.miki as miki
-    reload (miki)
+    #reload (miki)
 
     app=MyApp()
     miki=miki.Miki()

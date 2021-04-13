@@ -44,7 +44,7 @@ import time
 
 pyob
 from .pyob import  FeaturePython,ViewProvider
-reload (.pyob)
+#reload (.pyob)
 
 
 #-------------------------------

@@ -59,7 +59,7 @@ from pivy import coin
 
 pyob
 from .pyob import  FeaturePython,ViewProvider
-reload (.pyob)
+#reload (.pyob)
 
 
 #-------------------------------

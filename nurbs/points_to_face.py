@@ -43,13 +43,13 @@ import
 
 from .pyob import  FeaturePython,ViewProvider
 from .say import *
-reload (.pyob)
+#reload (.pyob)
 
 from FreeCAD import Vector
 import Draft
 
 from .tools import power,crossProduct,dotProduct,sign,sqrt,groupit
-reload(.tools)
+#reload(.tools)
 
 
 def drawConeA(name,i,bounds,apex,axis,alpha,trafo,pts):

@@ -526,7 +526,7 @@ class FeedbackSketch(FeaturePython):
 
         # eigene Figur berechnen
         import sketcher.demoshapes
-        reload(sketcher.demoshapes)
+        #reload(sketcher.demoshapes)
         
         sh=sketcher.demoshapes.myShape(obj,obj.shapeBuilder)
         if sh!=None: obj.Shape=sh

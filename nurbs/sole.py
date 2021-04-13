@@ -41,7 +41,7 @@ shoe sole creation
 # -------------------------------------------------
 # \cond
 
-from .spreadsheet_lib import ssa2npa, npa2ssa, cellname
+from spreadsheet_lib import ssa2npa, npa2ssa, cellname
 spreadsheet_lib
 import os
 
@@ -72,7 +72,7 @@ print(__dir__)
 
 # 12 divisions
 
-reload(.spreadsheet_lib)
+#reload(.spreadsheet_lib)
 
 
 def runA(model=None):
@@ -138,7 +138,7 @@ def runA(model=None):
         App.activeDocument().recompute()
 
         sole_models
-        reload(.sole_models)
+        #reload(.sole_models)
         model = .sole_models.model()
 
     if 0:  # "punktelisten anzeigen"

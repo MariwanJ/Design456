@@ -125,7 +125,7 @@ class modelC(model):
 def listModels(silent=False):
     ''' erzeugt liste aller modelle mit modell und modell.info '''
     sole_models
-    reload(.sole_models)
+    #reload(.sole_models)
     l=[]
     for m in dir(.sole_models):
         if m.startswith('model'):
@@ -145,7 +145,7 @@ def test():
         pass
 
     sole
-    reload(.sole)
+    #reload(.sole)
     .sole.runA(model=modelY)
 
 

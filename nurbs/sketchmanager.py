@@ -34,7 +34,7 @@ try:
 except ImportError:
     print ("Trying to Install required module: numpy")
     os.system('python -m pip3 install numpy')
-pyob
+import pyob
 
 import time
 import glob
@@ -485,7 +485,7 @@ def srun(w):
     model=lm[w.m.currentIndex()]
 
     sketchmanager
-    reload(.sketchmanager)
+    #reload(.sketchmanager)
 
     target='ufo'
 

@@ -43,8 +43,8 @@ def srun(w):
     a = w.target
     model = 'modelS'
     needle_models
-    reload(.needle_models)
-    lm = .needle_models.listModels(silent=True)
+    #reload(.needle_models)
+    lm = needle_models.listModels(silent=True)
     print(lm[w.m.currentIndex()])
     model = lm[w.m.currentIndex()][0]
 
@@ -56,7 +56,7 @@ def srun(w):
 def MyDialog(target):
 
     needle_models
-    reload(.needle_models)
+    #reload(.needle_models)
     lm = .needle_models.listModels()
 
     w = QtGui.QWidget()

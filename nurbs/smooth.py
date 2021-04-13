@@ -365,7 +365,7 @@ def splitMesh():
             sk.Placement=pm
 
 #        import sketch_to_bezier
-#        reload (sketch_to_bezier)
+#        #reload (sketch_to_bezier)
 #        sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rc)
 #        sk.Placement=pm
 #        ribs +=[sk]
@@ -455,7 +455,7 @@ def splitMesh():
 
 
             import sketch_to_bezier
-            reload (sketch_to_bezier)
+            #reload (sketch_to_bezier)
             sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rcc)
             sk.Placement=pm
             ribs +=[sk]
@@ -528,7 +528,7 @@ def sliceMeshbySketch():
 
     if 0:
         import sketch_to_bezier
-        reload (sketch_to_bezier)
+        #reload (sketch_to_bezier)
         sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rcc)
 
     s.ViewObject.hide()

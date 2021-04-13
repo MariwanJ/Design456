@@ -43,12 +43,12 @@ def srun(w):
     a = w.target
     model = 'modelS'
     sole_models
-    reload(.sole_models)
+    #reload(.sole_models)
     lm = .sole_models.listModels(silent=True)
     print(lm[w.m.currentIndex()])
     model = lm[w.m.currentIndex()][0]
 
-    reload(.sole)
+    #reload(.sole)
     cmd = ".sole.runA(model=.sole_models." + model + "())"
     print(cmd)
     eval(cmd)
@@ -58,7 +58,7 @@ def srun(w):
 def MyDialog(target=None):
 
     sole_models
-    reload(.sole_models)
+    #reload(.sole_models)
     lm = .sole_models.listModels()
 
     w = QtGui.QWidget()

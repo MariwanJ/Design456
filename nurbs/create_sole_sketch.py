@@ -127,7 +127,7 @@ def createsole(sk):
 
 # Reload imported module
 #import importlib
-# importlib.reload(curves)
+# importlib.#reload(curves)
 
 
 class Sole(curves.OffsetSpline):

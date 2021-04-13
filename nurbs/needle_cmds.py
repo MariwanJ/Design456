@@ -43,7 +43,7 @@ import FreeCADGui as Gui
 
 needle
 needle_models
-reload(.needle_models)
+#reload(.needle_models)
 
 
 def getdata(index):

@@ -61,7 +61,7 @@ import time,random
 App=FreeCAD
 
 configuration
-reload (.configuration)
+#reload (.configuration)
 from .configuration import getcf,getcb,getcs,setcb,setcf,setcs
 
 
@@ -943,7 +943,7 @@ def SurfaceEditor():
     '''gui for the surface editor'''
 
     from .miki_g import createMikiGui2, MikiApp
-    reload( .miki_g)
+    #reload( .miki_g)
 
     layout = '''
 #MainWindow:
@@ -1856,10 +1856,10 @@ def AA():
 
     import 
     berings
-    reload(.berings)
+    #reload(.berings)
     .berings.createBeGrid()
     facedraw
-    reload(.facedraw)
+    #reload(.facedraw)
     .facedraw.createMap()
 
 

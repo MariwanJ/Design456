@@ -61,9 +61,9 @@ import random
 import time
 
 import inspect
-reload(say)
+#reload(say)
 
-reload(miki_g)
+#reload(miki_g)
 
 
 def getPart(name="hugo"):
@@ -218,7 +218,7 @@ class PointCloudApprox(FeaturePython):
             hop.Shape = Part.makePolygon(pts4)
 
             import smooth
-            reload(smooth)
+            #reload(smooth)
             smooth = App.ActiveDocument.getObject("smooth"+"_"+name)
             if smooth == None:
                 smooth.smoothWire(hop, "smooth"+"_"+name)
@@ -1909,7 +1909,7 @@ def curvestoFace(polsarr=None, mode="Bezier Face"):
 
 def A():
     berings
-    reload(berings)
+    #reload(berings)
     rc = berings.createBering()
     for obj in rc:
         obj.stripmode = True

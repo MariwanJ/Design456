@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 '''create a driversketch for a sketch'''
 
 from say import *
-pyob
+import pyob
 import Sketcher
 
 
@@ -267,7 +267,7 @@ def runribtest():
 
     os.system('python -m pip3 install numpy')
     createshoerib
-    reload(.createshoerib)
+    #reload(.createshoerib)
     .createshoerib.run()
     rib = App.ActiveDocument.ribbow
     rib.ViewObject.LineColor = (1.000, 0.667, 0.000)

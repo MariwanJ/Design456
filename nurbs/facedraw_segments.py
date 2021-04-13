@@ -47,7 +47,7 @@ import random
 
 
 isodraw
-reload(.isodraw)
+#reload(.isodraw)
 
 
 '''

@@ -313,7 +313,7 @@ def createlink():
 '''
 
 import workspace
-reload(workspace)
+#reload(workspace)
 
 def testme():
     ad=App.ActiveDocument.Name

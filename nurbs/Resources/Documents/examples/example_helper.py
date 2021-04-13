@@ -15,10 +15,10 @@ except:
 
 
 helper
-reload(helper)
+#reload(helper)
 
 nurbs
-reload(nurbs)
+#reload(nurbs)
 
 nurbs.testRandomB()
 hp=helper.makeHelper()
