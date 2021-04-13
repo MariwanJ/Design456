@@ -37,7 +37,7 @@ import FreeCADGui as Gui
 import Part
 
 import Design456Init
-def run():
+def ThousandsOfRunWhatShouldIdo():
     allpts = []
     # for obj in Gui.Selection.getSelection():
 

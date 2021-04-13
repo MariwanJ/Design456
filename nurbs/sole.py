@@ -523,10 +523,10 @@ def createheel():
 
 
 # create sole and infrastructure models
-def run():
+def ThousandsOfRunWhatShouldIdo():
     runA()
 #    createheel()
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
     run()

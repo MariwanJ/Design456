@@ -139,7 +139,7 @@ def MyDialog(path,target):
 # 1. animated object,
 # 2. path to follow 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     [target,path]=FreeCADGui.Selection.getSelection()
     MyDialog(path,target)
 

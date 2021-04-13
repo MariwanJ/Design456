@@ -59,7 +59,7 @@ def runOnEdges():
     Part.show(l)
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     ribs=Gui.Selection.getSelection()
 
     l=App.ActiveDocument.addObject('Part::Loft','Loft')

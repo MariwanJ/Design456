@@ -487,7 +487,7 @@ def curvemorphedFace():
     return yy
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
     #createMorpher()
     curvemorphedFace()
 

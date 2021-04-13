@@ -458,7 +458,7 @@ class ViewProvider:
 
 
 class Needle(PartFeature):
-    def __init__(self, obj,uc=5,vc=5):
+    def __init__(self, obj,uc=5,vc=5,proxy=None):
         PartFeature.__init__(self, obj)
 
         self.Type="Needle"
@@ -507,7 +507,7 @@ class Needle(PartFeature):
 #        print ("onChanged",prop)
 
 
-    def execute(proxy,obj):
+    def Wasexecute(self,proxy,obj):
 #        print("execute ")
         if obj.noExecute: return
         try: 
@@ -516,8 +516,8 @@ class Needle(PartFeature):
             print("except proxy lock")
         proxy.lock=True
 #        print("myexecute")
-        proxy.myexecute(obj)
-        proxy.lock=False
+        self.proxy.myexecute(obj)
+        self.proxy.lock=False
 
     def myexecute(proxy,obj):
 
@@ -607,7 +607,7 @@ class Needle(PartFeature):
         if obj.useRibCage: proxy.createRibCage(obj,bs)
         if obj.useMesh: proxy.createMesh(obj,bs)
 
-    def createBackbone(proxy,obj,bb):
+    def createBackbone(self,proxy,obj,bb):
         if obj.Backbone == None:
             obj.Backbone=App.ActiveDocument.addObject('Part::Feature','Backbone')
         
@@ -620,7 +620,7 @@ class Needle(PartFeature):
         vob.LineColor=(0.,1.,1.)
         vob.LineWidth = 5.00
 
-    def createRibTemplate(proxy,obj,curve):
+    def createRibTemplate(self,proxy,obj,curve):
         if obj.RibTemplate == None:
             obj.RibTemplate=App.ActiveDocument.addObject('Part::Feature','Rib template')
         #obj.RibTemplate.Shape=Part.makePolygon([App.Vector(c) for c in curve])
@@ -636,7 +636,7 @@ class Needle(PartFeature):
         vob.LineColor=(1.,0.6,.0)
         vob.LineWidth = 5.00
 
-    def createMesh(proxy,obj,bs):
+    def createMesh(self,proxy,obj,bs):
             vb=True
             if obj.Mesh != None:
                 vb=obj.Mesh.ViewObject.Visibility
@@ -644,7 +644,7 @@ class Needle(PartFeature):
             obj.Mesh=toUVMesh(bs,obj.MeshUCount,obj.MeshVCount)
             obj.Mesh.ViewObject.Visibility=vb
 
-    def createRibCage(proxy,obj,bs):
+    def createRibCage(self,proxy,obj,bs):
         rc=obj.RibCount
 
 
@@ -919,7 +919,7 @@ def getdata(index):
     return sel,ci,ri,index.data()
 
 
-def run():
+def Wasrun():
 #            nurbs
 #        import needle as needle
 #        #reload( .needle)

@@ -269,7 +269,7 @@ class Trafo(pyob.FeaturePython):
 
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     ''' create a transform object for a selected  curve'''
 
     if len( Gui.Selection.getSelection())==0:

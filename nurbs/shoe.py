@@ -1206,7 +1206,7 @@ def genss(sk):
 #
 
  
-def run():
+def ThousandsOfRunWhatShouldIdo():
     ''' shoe.run() '''
 
     # get the name for the documente from FC config

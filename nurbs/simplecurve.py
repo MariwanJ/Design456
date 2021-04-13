@@ -252,7 +252,7 @@ def simplecurve(wire,ct=20,plotit=False,offset=0,debug=False):
 
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
     if len( Gui.Selection.getSelection())==0:
         showdialog('Oops','nothing selected - nothing to do for me','Plese select a Draft Wire or a Draft BSpline')

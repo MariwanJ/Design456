@@ -83,7 +83,7 @@ def MyDialog(target):
     return w
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     [target] = FreeCADGui.Selection.getSelection()
     MyDialog(target)
 

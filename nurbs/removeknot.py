@@ -68,7 +68,7 @@ if 0:
     App.ActiveDocument.ActiveObject.ViewObject.PointColor = (1., 0., 0.)
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
     [a] = Gui.Selection.getSelectionEx()
     bc0 = a.Object.Shape.Edge1.Curve

@@ -907,7 +907,7 @@ def connectLine(yy=False):
 
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
 
     fbs=createFeedbackSketch(name="SingleClientFeedback")
     fbs.addProperty("App::PropertyBool",'active', 'Base', )

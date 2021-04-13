@@ -1325,7 +1325,7 @@ DockWidget:
     return mikigui
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
     say("miki transport ...")
     testme()
 

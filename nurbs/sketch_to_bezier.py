@@ -592,7 +592,7 @@ def updateLabels():
 
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
 
 #    createBezierRingSketch()
 #    obj=createFollowerSketch()
