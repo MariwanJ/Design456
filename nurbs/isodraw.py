@@ -67,11 +67,6 @@ import os
 # import
 
 import Design456Init
-#
-# global __dir__
-# __dir__ = os.path.dirname(.__file__)
-# print(__dir__)
-
 
 class PartFeature:
     def __init__(self, obj):

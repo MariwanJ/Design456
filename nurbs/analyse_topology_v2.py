@@ -879,7 +879,7 @@ def loadTest1():
 
 def loadTest2():
 
-    App.open(__dir__+"/../testdata/zwei_gleiche_fenster.fcstd")
+    App.open(Design456Init.NURBS_DATA_PATH+"zwei_gleiche_fenster.fcstd")
     App.setActiveDocument("zwei_gleiche_fenster")
     App.ActiveDocument = App.getDocument("zwei_gleiche_fenster")
     Gui.ActiveDocument = Gui.getDocument("zwei_gleiche_fenster")

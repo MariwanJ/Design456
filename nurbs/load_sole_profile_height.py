@@ -41,17 +41,15 @@ import Design456Init
 
 
 import os, sys
-global __dir__
-__dir__ = os.path.dirname(.__file__)
 
-spreadsheet_lib
-#reload (.spreadsheet_lib)
-from .spreadsheet_lib import ssa2npa, npa2ssa, cellname
+import spreadsheet_lib
+#reload (spreadsheet_lib)
+from spreadsheet_lib import ssa2npa, npa2ssa, cellname
 
 #\endcond
 # from .errors import showdialog 
 
-from .say import *
+from say import *
 
 ## load height profile from file
 #
@@ -65,7 +63,8 @@ def run():
 
         fn=App.ParamGet('User parameter:Plugins/shoe').GetString("height profile")
         if fn=='':
-            fn= __dir__+"/../testdata/heelsv3.fcstd"
+            fn= Design456Init.NURBS_DATA_PATH+"heelsv3.fcstd"
+
             App.ParamGet('User parameter:Plugins/shoe').SetString("height profile",fn)
 
         dok=App.open(fn)
@@ -109,8 +108,8 @@ def run():
 
         dok2.recompute()
         sole
-        #reload(.sole)
-        .sole.run()
+        #reload(sole)
+        sole.run()
         dok2.recompute()
 
     except : showdialog() 

@@ -39,7 +39,7 @@ import FreeCADGui as Gui
 import Part
 import Design456Init
 
-from .say import say
+from say import say
 
 class PartFeature:
     ''' base class for part feature '''

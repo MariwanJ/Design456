@@ -48,6 +48,7 @@ WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets')
 
 #Nurbs  -Nurbs
 NURBS_PATH=os.path.join(__dir__,'nurbs')
+NURBS_DATA_PATH=os.path.join(__dir__,'burbs/Resources/Documents/testdata/')
 NURBS_ICON_PATH=os.path.join(__dir__,'nurbs/Resources/icons/')
 NURBS_IMAGES_PATH=os.path.join(__dir__,'nurbs/Resources/images/')
 

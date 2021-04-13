@@ -46,8 +46,8 @@ from __future__ import unicode_literals
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-#from transportationwb.say import sayexc, say
-#from transportationwb.say import  *
+#from transportationwbsay import sayexc, say
+#from transportationwbsay import  *
 
 #from say import sayexc, say
 from say import  *
