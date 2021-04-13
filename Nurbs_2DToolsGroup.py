@@ -44,7 +44,7 @@ class Design456_Nurbs_2DToolsGroup:
         return ("TopologicalAnalyse",
                 "addToVertexStore",
                 "TopologicalCompare",
-                "displayVertexStoreCommonPoints",
+               # "displayVertexStoreCommonPoints",
                 "displayQualityPoints",
                 "printGraphData",
                 "printDATA",

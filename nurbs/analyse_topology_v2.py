@@ -245,114 +245,126 @@ def getNeighborEdges(n):
 
 # ----------------------------------------------------
 
-def runAna(self, model, silent=False):
-    '''main analysis method'''
+class MainAnalysisMethodRunAna:
+    def __init__(self, model, silent=False):
+        self.model=model
+        self.silent=silent
+        
+    def Activate(self):
+        runAna(self.model,self.silent)
 
-    print("NodesA", g.nodes())
-    mp = createFaceMidPointmodel(model)
-    print("NodesB", g.nodes())
-    self.loadModel(mp)
+    def runAna(self, model, silent=False):
+        '''main analysis method'''
 
-    print("Model ", mp.Label)
-    print("NodesC", g.nodes())
+        print("NodesA", g.nodes())
+        mp = createFaceMidPointmodel(model)
+        print("NodesB", g.nodes())
+        self.loadModel(mp)
 
-    # link labels and geometry from freecad to networkx
-    bm = model
-    sp = bm.Shape
+        print("Model ", mp.Label)
+        print("NodesC", g.nodes())
 
-    for i, v in enumerate(sp.Vertexes):
-        pp = (round(v.Point.x, 2), round(
-            v.Point.y, 2), round(v.Point.z, 2))
-        try:
-            #            print (pp,i)
-            #            print ("found ",points[pp])
-            gi = points[pp]
+        # link labels and geometry from freecad to networkx
+        bm = model
+        sp = bm.Shape
 
-            g.node[gi]["label"] = bm.Label+":Vertex"+str(i+1)
-            g.node[gi]["Vertex"] = v
-#            print (g.node[gi])
-        except:
-            print("NOT FOUND")
-            pass
-
-    for i, f in enumerate(sp.Faces):
-        print("Face ", i, len(f.Vertexes))
-        for v in f.Vertexes:
-            #            print (v,ptokey(v.Point),points[ptokey(v.Point)])
-            pix = points[ptokey(v.Point)]
-#            print (g.node[pix])
-
-            # flaechennormale anfuegen
-            (u, v) = f.Surface.parameter(v.Point)
-#            print( pix,"Addiere Flaechennoirmalw",(u,v),f.normalAt(u,v))
+        for i, v in enumerate(sp.Vertexes):
+            pp = (round(v.Point.x, 2), round(
+                v.Point.y, 2), round(v.Point.z, 2))
             try:
-                g.node[pix]['fdirs'].append(f.normalAt(u, v))
+                #            print (pp,i)
+                #            print ("found ",points[pp])
+                gi = points[pp]
+
+                g.node[gi]["label"] = bm.Label+":Vertex"+str(i+1)
+                g.node[gi]["Vertex"] = v
+    #            print (g.node[gi])
             except:
-                g.node[pix]['fdirs'] = [(f.normalAt(u, v))]
-            print("len fdirs", len(g.node[pix]['fdirs']))
+                print("NOT FOUND")
+                pass
 
-        c = f.CenterOfMass
-        pp = (round(c.x, 2), round(c.y, 2), round(c.z, 2))
-        try:
-            #            print (pp,i)
-            #            print ("found ",points[pp])
-            gi = points[pp]
+        for i, f in enumerate(sp.Faces):
+            print("Face ", i, len(f.Vertexes))
+            for v in f.Vertexes:
+                #            print (v,ptokey(v.Point),points[ptokey(v.Point)])
+                pix = points[ptokey(v.Point)]
+    #            print (g.node[pix])
 
-            g.node[gi]["label"] = bm.Label+":Face"+str(i+1)
-            g.node[gi]["Face"] = f
-#            print (g.node[gi])
-        except:
-            print("NOT FOUND")
-            pass
+                # flaechennormale anfuegen
+                (u, v) = f.Surface.parameter(v.Point)
+    #            print( pix,"Addiere Flaechennoirmalw",(u,v),f.normalAt(u,v))
+                try:
+                    g.node[pix]['fdirs'].append(f.normalAt(u, v))
+                except:
+                    g.node[pix]['fdirs'] = [(f.normalAt(u, v))]
+                print("len fdirs", len(g.node[pix]['fdirs']))
 
-    kp = createKeys()
-    print(g.nodes())
+            c = f.CenterOfMass
+            pp = (round(c.x, 2), round(c.y, 2), round(c.z, 2))
+            try:
+                #            print (pp,i)
+                #            print ("found ",points[pp])
+                gi = points[pp]
 
-    setQuality(g.nodes(), kp)
+                g.node[gi]["label"] = bm.Label+":Face"+str(i+1)
+                g.node[gi]["Face"] = f
+    #            print (g.node[gi])
+            except:
+                print("NOT FOUND")
+                pass
 
-    # hack
-    # return
+        kp = createKeys()
+        print(g.nodes())
 
-    # calculate and display top quality nodes
-    if 1:
-        ns = []
-        for n in g.nodes():
-            if g.node[n]['quality'] == 1:
-                ns.append(n)
-        # print ns
+        setQuality(g.nodes(), kp)
+
+        # hack
+        # return
+
+        # calculate and display top quality nodes
+        if 1:
+            ns = []
+            for n in g.nodes():
+                if g.node[n]['quality'] == 1:
+                    ns.append(n)
+            # print ns
+            if not silent:
+                self.displayNB(ns)
+                App.ActiveDocument.ActiveObject.Label = "Top Quality"
+                App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
+                    random.random(), random.random(), random.random())
+
+        # calculate all levels
+        for i in range(1, 10):
+            self.berechneKeyLevel(i)
+            rc = self.werteausLevel(i)
+            if rc == 0:
+                break
+
+        last = i
+        # zeige alle indentifizierten Punkte im Verbund
         if not silent:
-            self.displayNB(ns)
-            App.ActiveDocument.ActiveObject.Label = "Top Quality"
-            App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
-                random.random(), random.random(), random.random())
+            for i in range(1, last):
+                self.zeigeQ(i)
 
-    # calculate all levels
-    for i in range(1, 10):
-        self.berechneKeyLevel(i)
-        rc = self.werteausLevel(i)
-        if rc == 0:
-            break
+        # hold the data for postprocessing in a global variable
+        App.g = g
+        App.a = model
 
-    last = i
-    # zeige alle indentifizierten Punkte im Verbund
-    if not silent:
-        for i in range(1, last):
-            self.zeigeQ(i)
-
-    # hold the data for postprocessing in a global variable
-    App.g = g
-    App.a = model
-
-#    print  (len(sp.Vertexes)
-    self.addToVertexStore()
+    #    print  (len(sp.Vertexes)
+        self.addToVertexStore()
 
 
-class TopologicalAnalyse:
-    """
-    TopologicalAnalyse 
-    """
+    def TopologicalAnalyse(self):
+        """
+         TopologicalAnalyse
+        """
 
-    def Activated(self):
+        try:
+            App.PT
+        except:
+            App.PT = {}
+            
         import networkx as nx
         g = nx.Graph()
         try:
@@ -367,7 +379,7 @@ class TopologicalAnalyse:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def werteausLevel(i=1):
+    def werteausLevel(self,i=1):
         ''' which points have unique keys at level i'''
 
         # count the key occurrences
@@ -403,7 +415,7 @@ class TopologicalAnalyse:
               "not identified till now", len(g.nodes())-anzg)
         return anz
 
-    def displayNB(nodes):
+    def displayNB(self,nodes):
         ''' diasplay neighbor edges as Part'''
         col = []
         for n in nodes:
@@ -424,7 +436,7 @@ class TopologicalAnalyse:
         App.ActiveDocument.ActiveObject.ViewObject.LineColor = (
             random.random(), random.random(), random.random())
 
-    def berechneKeyLevel(i=1):
+    def berechneKeyLevel(self,i=1):
         '''key for level i is the i-th neighbor sum of the keys'''
 
         for n in g.nodes():
@@ -444,7 +456,7 @@ class TopologicalAnalyse:
             except:
                 g.node[n]['keys'].append((aas, bbs, ccs))
 
-    def loadModel(s):
+    def loadModel(self,s):
         ''' map the Part <s> to a networx graph <g> with points set <points>'''
 
         sp = s.Shape
@@ -524,65 +536,54 @@ class TopologicalAnalyse:
             g.node[n]['edirs'] = edirs
             # g.node[n]['fdirs']=[]
 
-    def addToVertexStore():
-        '''add the keys to the global vertex store'''
-
-        try:
-            App.PT
-        except:
-            App.PT = {}
-
-        print("add to Vertex-Store")
-        g = App.g
-        a = App.a
-        for v in g.nodes():
-
+    def addToVertexStore(self):
+            '''add the keys to the global vertex store'''
             try:
-                g.node[v]['label']
+                App.PT
             except:
-                g.node[v]['label'] = '----'
+                App.PT = {}
 
-            print("kkkk")
-            print(g.node[v]['label'])
-            print(g.node[v]['quality']-1)
-            print(g.node[v]['keys'])
-    #        print g.node[v]['keys'][g.node[v]['quality']-1]
-            print("ha")
+            print("add to Vertex-Store")
+            g = App.g
+            a = App.a
+            for v in g.nodes():
+    
+                try:
+                    g.node[v]['label']
+                except:
+                    g.node[v]['label'] = '----'
+    
+                print("kkkk")
+                print(g.node[v]['label'])
+                print(g.node[v]['quality']-1)
+                print(g.node[v]['keys'])
+    #            print g.node[v]['keys'][g.node[v]['quality']-1]
+                print("ha")
+    
+        #        key=(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],"!>",
+        #            g.node[v]['quality'],"<!",g.node[v]['keys'])
+    
+                key = (a.Label, g.node[v]['label'], v, g.node[v]['keys'][0], "!>",
+                       g.node[v]['quality'], "<!", g.node[v]['keys'])
+    
+                try:
+                    if key not in App.PT[g.node[v]['vector']]:
+                        App.PT[g.node[v]['vector']] += [key]
+                        # print ("added"
+                except:
+                    # App.PT[g.node[v]['vector']] =[(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],g.node[v]['quality'])]
+                    App.PT[g.node[v]['vector']] = [key]
 
-    #        key=(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],"!>",
-    #            g.node[v]['quality'],"<!",g.node[v]['keys'])
-
-            key = (a.Label, g.node[v]['label'], v, g.node[v]['keys'][0], "!>",
-                   g.node[v]['quality'], "<!", g.node[v]['keys'])
-
-            try:
-                if key not in App.PT[g.node[v]['vector']]:
-                    App.PT[g.node[v]['vector']] += [key]
-                    # print ("added"
-            except:
-                # App.PT[g.node[v]['vector']] =[(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],g.node[v]['quality'])]
-                App.PT[g.node[v]['vector']] = [key]
-
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH+'nurbs.svg',
-            'MenuText': 'TopologicalAnalyse',
-                        'ToolTip':  'TopologicalAnalyse'
-        }
 
 
-Gui.addCommand('TopologicalAnalyse', TopologicalAnalyse())
+    # TopologicalCompare'
+    def TopologicalCompare(self):
+        """ 
+        TopologicalCompare
+        """
+        import networkx as nx
+        g = nx.Graph()
 
-
-# TopologicalCompare'
-class TopologicalCompare:
-    """ 
-    TopologicalCompare
-    """
-    import networkx as nx
-    g = nx.Graph()
-
-    def Activated(self):
         try:
             self.runCompare()
         except Exception as err:
@@ -592,7 +593,7 @@ class TopologicalCompare:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def runCompare():
+    def runCompare(self):
         '''run analysis for more parts and display the results'''
         resetVertexStore()
         s = Gui.Selection.getSelection()
@@ -610,7 +611,7 @@ class TopologicalCompare:
             runAna(model, silent=True)
         self.displayVertexStore()
 
-    def displayVertexStore():
+    def displayVertexStore(self):
         '''print the vertex store'''
         print("The vertex Store compare")
         found = 0
@@ -719,15 +720,13 @@ class TopologicalCompare:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'Nurbs.svg',
-            'MenuText': 'TopologicalCompare',
-                        'ToolTip':  'TopologicalCompare'
+            'Pixmap': Design456Init.NURBS_ICON_PATH+'nurbs.svg',
+            'MenuText': 'MainAnalysisMethodRunAna',
+                        'ToolTip':  'MainAnalysisMethodRunAna'
         }
-
-
-Gui.addCommand('TopologicalCompare', TopologicalCompare())
-Gui.addCommand('displayVertexStoreCommonPoints',
-               TopologicalCompare().displayVertexStore())
+Gui.addCommand('MainAnalysisMethodRunAna', MainAnalysisMethodRunAna())
+#TODO : FIX ME .. YOU CANNOT HAVE IT LIKE THAT SEPARATE THEM. Mariwan
+#Gui.addCommand('displayVertexStoreCommonPoints',               TopologicalCompare.displayVertexStore(TopologicalCompare()))
 
 
 class displayQualityPoints:
@@ -747,7 +746,7 @@ class displayQualityPoints:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def displayQualityPoints():
+    def displayQualityPoints(self):
         '''display the quality points as point clouds'''
         g = App.g
         for q in range(1, 7):
@@ -771,8 +770,6 @@ class displayQualityPoints:
             'MenuText': 'displayQualityPoints',
                         'ToolTip':  'displayQualityPoints'
         }
-
-
 Gui.addCommand('displayQualityPoints', displayQualityPoints())
 
 
@@ -796,7 +793,7 @@ class printGraphData:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def printData():
+    def printData(self):
         '''print some diagnostic data'''
         g = App.g
         for v in g.nodes():
@@ -834,7 +831,7 @@ class resetVertexStore:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def resetVertexStore():
+    def resetVertexStore(self):
         '''clear the vertex store for next analysis'''
         App.PT = {}
         print(App.PT)
