@@ -369,7 +369,7 @@ def runStar(name="MyStar"):
 
 
 ## \cond
-if __name__=='__main__':
+def WsDefinedAsMAIN1():
     star=runStar()
     star2=runStar()
     star2.parent=star

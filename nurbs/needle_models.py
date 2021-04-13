@@ -937,7 +937,7 @@ def listModels(silent=False):
     needle_models
     #reload(.needle_models)
     l=[]
-    for m in dir(.needle_models):
+    for m in dir(needle_models):
         if m.startswith('model'):
             mm=eval(".needle_models."+m+"()")
             if not silent:
@@ -952,9 +952,7 @@ def listModels(silent=False):
 
 
 
-if __name__=='__main__':
-
-
+def THISCALLEDMAIN():
     listModels()
 
     # testcase

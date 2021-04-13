@@ -284,5 +284,5 @@ def run2():
     w.show()
     return w
 
-if __name__=='__main__':
+def whyItWasDefinedASmain():
     run()

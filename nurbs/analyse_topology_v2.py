@@ -40,8 +40,7 @@ from __future__ import unicode_literals
 import FreeCAD as App
 import FreeCADGui as Gui
 import random
-import os
-import sys
+import os, sys
 import Part
 import Points
 import time
@@ -49,8 +48,8 @@ import Design456Init
 try:
     import networkx as nx
 except ImportError:
-    print("Trying to Install required module: networkx")
-    os.system('python -m pip3 install networkx')
+    print("Please install the required library networkx")
+    
 
 try:
     import numpy as np
