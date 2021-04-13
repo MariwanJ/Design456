@@ -35,7 +35,7 @@ import FreeCAD as App
 
 if 0:
     try:
-        App.open(u"/home/thomas/Schreibtisch/tt_offset_example.fcstd")
+        App.open(Design456Init.NURBS_DATA_PATH+"tt_offset_example.fcstd")
         App.setActiveDocument("tt_offset_example")
         App.ActiveDocument=App.getDocument("tt_offset_example")
         Gui.ActiveDocument=Gui.getDocument("tt_offset_example")

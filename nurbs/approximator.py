@@ -1335,7 +1335,7 @@ class ConstantCurvatureBezier(FeaturePython):
 #        obj.addProperty("App::PropertyFloat","_c")._c=10
 #        obj.addProperty("App::PropertyFloat","_d")._d=3
 
-#        obj.addProperty("App::PropertyInteger","segment").segment=0
+#        obj.addProperty("App::PropertyInteger","segment")segment=0
 #        obj.tangentModel=['all equal','1/3 distance','circle']
         # obj.tangentModel='1/3 distance'
         obj.method = ['Default',

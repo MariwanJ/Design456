@@ -383,7 +383,7 @@ def gendata(ss):
     ss.set('B2','Rib x')
     ss.set('C2','y')
     ss.set('D2','z')
-    App.activeDocument()().recompute()
+    App.ActiveDocument.recompute()
 
 
 def ssa2npa(spreadsheet,c1,r1,c2,r2,default=None):
@@ -411,12 +411,12 @@ def ssa2npa(spreadsheet,c1,r1,c2,r2,default=None):
     return ps
 
 
-if 0 and __name__=='__main__':
+def wasMainFunction():
 
     App.ActiveDocument=None
     Gui.ActiveDocument=None
-    App.open(u"/home/thomas/Schreibtisch/nadel_daten.fcstd")
-    App.setactiveDocument()("nadel_daten")
+    App.open(Design456Init.NURBS_DATA_PATH+"nadel_daten.fcstd")
+    App.setActiveDocument("nadel_daten")
     App.ActiveDocument=App.getDocument("nadel_daten")
     Gui.ActiveDocument=Gui.getDocument("nadel_daten")
 
@@ -703,7 +703,7 @@ class Needle(PartFeature):
             ss.set('C2','y')
             ss.set('D2','z')
             try:
-                App.activeDocument()().recompute()
+                  App.ActiveDocument.recompute()
             except:
                 print ("recompute jack ")
                 dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
@@ -763,7 +763,7 @@ class Needle(PartFeature):
     def pressed(self,index):
         needle_cmds
         #reload(.needle_cmds)
-        .needle_cmds.pressed(index,App.activeDocument().MyNeedle)
+        needle_cmds.pressed(index,App.activeDocument().MyNeedle)
         print ("Pressed")
 
     def changed(self,index):
@@ -794,9 +794,6 @@ class Needle(PartFeature):
         if sel=="bb" or sel=="bcmd": self.showRib(ri)
         elif sel=="rib" or sel=="ccmd": self.showMeridian(ri)
         else: Gui.Selection.clearSelection()
-
-
-
 
 
 def importCurves(obj):
@@ -846,7 +843,7 @@ def commitData(editor):
     if globdat[0]=='ccmd':
         cn=cellname(int(globdat[1])+1,int(globdat[2])+3)
         old=globdat[3]
-        .needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
+        needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
 
 
 def startssevents2():
@@ -982,8 +979,7 @@ def run():
 class testmain:
 
     # test aus parametern
-    import Draft
-    import 
+    import Draft 
     import needle as needle
     #reload( .needle)
 
@@ -992,7 +988,7 @@ class testmain:
     except: pass
 
     App.newDocument(dokname)
-    App.setactiveDocument()(dokname)
+    App.setActiveDocument(dokname)
     App.ActiveDocument=App.getDocument(dokname)
     Gui.ActiveDocument=Gui.getDocument(dokname)
 
@@ -1014,8 +1010,6 @@ class testmain:
         Draft.makeBSpline(points,closed=False,face=True,support=None)
         # Bspline003
 
-
-    import 
     import needle as needle
 
     a=needle.createNeedle()
@@ -1030,10 +1024,10 @@ class testmain:
 #    a.ribtemplateSource=App.activeDocument().BSpline
 #    a.backboneSource=App.activeDocument().BSpline001
 
-    App.activeDocument()().recompute()
+    App.ActiveDocument.recompute()
 
 #    vp=needle.ViewProvider(a.ViewObject)
-    App.activeDocument()().recompute()
+    App.ActiveDocument.recompute()
 
     if 0:
 
@@ -1052,13 +1046,13 @@ class testmain:
         b.useSpreadsheet=True
 
 
-        # b.Spreeadsheet=App.activeDocument()().addObject('Spreadsheet::Sheet','huhu')
+        # b.Spreeadsheet= App.ActiveDocument.recompute().addObject('Spreadsheet::Sheet','huhu')
         bss=b.Spreadsheet
         needle.gendata(bss)
 
         b.ribtemplateSource=App.activeDocument().BSpline002
         b.backboneSource=App.activeDocument().BSpline003
-        App.activeDocument()().recompute()
+        App.ActiveDocument.recompute()
 
 
         vp=needle.ViewProvider(b.ViewObject)
@@ -1066,13 +1060,9 @@ class testmain:
 
         Gui.SendMsgToActiveView("ViewFit")
         print ("fertig")
-         
-
 
         needle.importCurves(a)
         needle.importCurves(b)
         
-    App.activeDocument()().recompute()
-    App.activeDocument()().recompute()
+    App.ActiveDocument.recompute()
     Gui.SendMsgToActiveView("ViewFit")
-

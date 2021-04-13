@@ -1476,7 +1476,7 @@ class SVGLink(PartFeature):
         if mtime>obj.filemtime:
             insertA(obj,App.ActiveDocument.Name)
             obj.filemtime =mtime
-#            importSVG.insert(u"/home/thomas/Schreibtisch/aaa.svg", App.ActiveDocument.Name)
+#            importSVG.insert(Design456Init.NURBS_DATA_PATH+"aaa.svg", App.ActiveDocument.Name)
 #            importSVG.insert(obj.filename, App.ActiveDocument.Name)
 #            FreeCADGui.SendMsgToActiveView("ViewFit")
 
@@ -1529,10 +1529,10 @@ def import_svg():
 
     import importSVG
     App=FreeCAD
-    importSVG.insert(u"/home/thomas/Schreibtisch/aaa.svg", App.ActiveDocument.Name)
+    importSVG.insert(Design456Init.NURBS_DATA_PATH+"aaa.svg", App.ActiveDocument.Name)
 #    b=App.ActiveDocument.addObject("Part::FeaturePython","My_SVG_Link")
 #    SVGLink(b)
-#    insertA(u"/home/thomas/Schreibtisch/xx.svg", App.ActiveDocument.Name)
+#    insertA(Design456Init.NURBS_DATA_PATH+"xx.svg", App.ActiveDocument.Name)
     FreeCADGui.SendMsgToActiveView("ViewFit")
     for obj in  App.ActiveDocument.Objects:
         if obj.Name.startswith("MAP_w"):

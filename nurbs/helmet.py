@@ -538,19 +538,19 @@ def createTriangle():
     if 0:    
         comps=[]    
         bsa=bs.copy()
-        bsa.segment(0,1,0,1)
+        bsasegment(0,1,0,1)
         comps +=[bsa.toShape()]
 
         bsa=bs.copy()
-        bsa.segment(0,1,1,2)
+        bsasegment(0,1,1,2)
         comps +=[bsa.toShape()]
 
         bsa=bs.copy()
-        bsa.segment(1,2,0,1)
+        bsasegment(1,2,0,1)
         comps +=[bsa.toShape()]
 
         bsa=bs.copy()
-        bsa.segment(1,2,1,2)
+        bsasegment(1,2,1,2)
         comps +=[bsa.toShape()]
 
         sk=App.ActiveDocument.addObject('Part::Spline','split')

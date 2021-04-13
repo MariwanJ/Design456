@@ -43,14 +43,13 @@ import Design456Init
 # \cond
 
 from spreadsheet_lib import ssa2npa, npa2ssa, cellname
-spreadsheet_lib
+import spreadsheet_lib
 import os
 
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print("Numpy library is missing, please install it before using the library")
 __version__ = '0.12'
 
 from say import *

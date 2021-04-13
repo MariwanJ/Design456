@@ -37,7 +37,7 @@ from __future__ import unicode_literals
 
 import FreeCAD as App
 import Part
-import FreeCADGui AS Gui
+import FreeCADGui as Gui
 import Design456Init
 
 def printinfo(sp):

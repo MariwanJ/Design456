@@ -78,13 +78,13 @@ class Segment(pyob.FeaturePython):
             bs = face.Surface.copy()
             uks = bs.getUKnots()
             vks = bs.getVKnots()
-            bs.segment(uks[obj.umin], uks[obj.umax],
+            bssegment(uks[obj.umin], uks[obj.umax],
                        vks[obj.vmin], vks[obj.vmax])
         else:
             edge = obj.source.Shape.Edge1
             bs = edge.Curve.copy()
             ks = bs.getKnots()
-            bs.segment(ks[obj.umin], ks[obj.umax])
+            bssegment(ks[obj.umin], ks[obj.umax])
 
         if obj.closeV:
             bs.setVPeriodic()
@@ -291,7 +291,7 @@ class FineSegment(pyob.FeaturePython):
                 umin = uks[0]
 
 #            print ("interval",umin,umax,vmin,vmax)
-            bs.segment(umin, umax, vmin, vmax)
+            bssegment(umin, umax, vmin, vmax)
             obj.Shape = bs.toShape()
 
 

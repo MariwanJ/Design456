@@ -51,7 +51,7 @@ Part.show(comp)
 # zerlegen in 5 teilflaechen 
 def segment(bs,iu,lu,iv,lv):
     bs2=bs.copy()
-    bs2.segment(uknots[iu],uknots[iu+lu],vknots[iv],vknots[iv+lv])
+    bs2segment(uknots[iu],uknots[iu+lu],vknots[iv],vknots[iv+lv])
     Part.show(bs2.toShape())
     return bs2
 

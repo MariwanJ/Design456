@@ -536,7 +536,7 @@ for s in Gui.Selection.getSelectionEx():
         print nn.Edge1.ParameterRange
         [ui,ua]=nn.Edge1.ParameterRange
         c=nn.Edge1.Curve
-        c.segment(ui,ua)
+        csegment(ui,ua)
         Part.show(c.toShape())
         App.ActiveDocument.ActiveObject.Shape.Vertexes[1].Tolerance = 1e-5
         App.ActiveDocument.ActiveObject.Shape.Vertexes[0].Tolerance = 1e-5

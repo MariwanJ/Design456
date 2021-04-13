@@ -568,7 +568,7 @@ class Beface(FeaturePython):
         ##\cond
         ptsa=[]
         ll=-1
-        for r in fp.berings:
+        for r in fpberings:
             pps=r.Shape.Edge1.Curve.getPoles()
             if ll==-1:ll=len(pps)
             assert ll == len(pps)
@@ -578,7 +578,7 @@ class Beface(FeaturePython):
         ptsa=[]
         ll=-1
         stripmode=False
-        for r in fp.berings:
+        for r in fpberings:
             if r.stripmode:
                 stripmode=True
                 for rr in r.Shape.Edges[0:3]:
@@ -624,7 +624,7 @@ class Beface(FeaturePython):
             print ("poles.shape a,b",a,b)
 
             # die bezier variante
-            yb=fp.berings[0].Shape.Edge1.Curve.getMultiplicities()
+            yb=fpberings[0].Shape.Edge1.Curve.getMultiplicities()
 
             db=min(3,a-1)
             if db==3:
@@ -636,7 +636,7 @@ class Beface(FeaturePython):
 
         else:
             ya=[4]+[1]*(a-4)+[4]
-            yb=fp.berings[0].Shape.Edge1.Curve.getMultiplicities()
+            yb=fpberings[0].Shape.Edge1.Curve.getMultiplicities()
             db=3
 
         af.buildFromPolesMultsKnots(poles,
@@ -843,7 +843,7 @@ class Beface(FeaturePython):
 
         ptsa=[]
         ll=-1
-        for r in fp.berings:
+        for r in fpberings:
             pps=r.Shape.Edge1.Curve.getPoles()
             App.r=r
             if ll==-1:ll=len(pps)
@@ -854,7 +854,7 @@ class Beface(FeaturePython):
         ptsa=[]
         ll=-1
         stripmode=False
-        for r in fp.berings:
+        for r in fpberings:
             if r.stripmode:
                 stripmode=True
                 for rr in r.Shape.Edges[0:3]:
@@ -911,7 +911,7 @@ class Beface(FeaturePython):
             (a,b,c)=poles.shape
 
             # die bezier variante
-            yb=fp.berings[0].Shape.Edge1.Curve.getMultiplicities()
+            yb=fpberings[0].Shape.Edge1.Curve.getMultiplicities()
 
             db=min(3,a-1)
             if db==3:
@@ -923,7 +923,7 @@ class Beface(FeaturePython):
 
         else:
             ya=[4]+[1]*(a-4)+[4]
-            yb=fp.berings[0].Shape.Edge1.Curve.getMultiplicities()
+            yb=fpberings[0].Shape.Edge1.Curve.getMultiplicities()
             db=3
 
         af.buildFromPolesMultsKnots(poles,
@@ -968,8 +968,8 @@ class Beface(FeaturePython):
 
         # hier feinteilung flaeche
         if fp.endu>0 and fp.endv!=0:
-            af.segment(fp.startu,fp.endu,fp.startv,fp.endv)
-        # af.segment(0,5,1.5,2.5)
+            afsegment(fp.startu,fp.endu,fp.startv,fp.endv)
+        # afsegment(0,5,1.5,2.5)
 
         sh=af.toShape()
 
@@ -979,8 +979,8 @@ class Beface(FeaturePython):
         if fp.endPlanes:
             face=Part.Plane().toShape()
             for ei in [0,-1]:
-                e=fp.berings[ei].Shape.Edge2
-                face.Placement=fp.berings[ei].Placement
+                e=fpberings[ei].Shape.Edge2
+                face.Placement=fpberings[ei].Placement
 
                 #e.reverse()
                 splita = [(e,face)]
@@ -1062,7 +1062,7 @@ def genA():
 
     sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
     Beface(sf)
-    sf.berings=sks
+    sfberings=sks
     ViewProvider(sf.ViewObject)
 
     App.activeDocument().recompute()
@@ -1097,7 +1097,7 @@ def genB():
 
     sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
     Beface(sf)
-    sf.berings=sks
+    sfberings=sks
     ViewProvider(sf.ViewObject)
 
     App.activeDocument().recompute()
@@ -1152,7 +1152,7 @@ def createBeface():
     #sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
     sf=App.ActiveDocument.addObject('Part::FeaturePython','BeringFace')
     Beface(sf)
-    sf.berings=sks
+    sfberings=sks
     _VPBeface(sf.ViewObject)
 
 
@@ -1188,7 +1188,7 @@ def createBeringTest():
 
     sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
     Beface(sf)
-    sf.berings=sks
+    sfberings=sks
     ViewProvider(sf.ViewObject)
 
     App.activeDocument().recompute()
@@ -2411,7 +2411,7 @@ def SurfaceEditor():
             comps=begrid(bs2,False,True)
             try:
                 bs3=bs2.copy()
-                bs3.segment(upn-1,upn+1,vpn-1,vpn+1)
+                bs3segment(upn-1,upn+1,vpn-1,vpn+1)
             except:
                 pass
 
@@ -2631,7 +2631,7 @@ def SurfaceEditor():
                 print (bs3.getUKnots())
                 print (bs3.getVKnots())
                 try:
-                    bs3.segment(startu,endu-1,startv,endv-1)
+                    bs3segment(startu,endu-1,startv,endv-1)
                     print ("Time B4 ",time.time()-st)
                     obj2.Shape=Part.Compound(comps+[s] + [bs3.toShape()])
                     print ("Time B ",time.time()-st)
@@ -3623,7 +3623,7 @@ def SplitIntoCells():
     for ui in range(0,luks-1):
         for vi in range(0,lvks-1):
             bsa=bs.copy()
-            bsa.segment(uks[ui],uks[ui+1],vks[vi],vks[vi+1])
+            bsasegment(uks[ui],uks[ui+1],vks[vi],vks[vi+1])
             comps +=[bsa.toShape()]
 
 
@@ -3739,7 +3739,7 @@ class Cell(FeaturePython):
     #        bs2.buildFromPolesMultsKnots(bs.getPoles(),
     #            um,vm,range(len(um)),range(len(vm)),
     #            False,False,3,3)
-            bs2.segment(uks[fp.uBegin],uks[fp.uEnd],vks[fp.vBegin],vks[fp.vEnd])
+            bs2segment(uks[fp.uBegin],uks[fp.uEnd],vks[fp.vBegin],vks[fp.vEnd])
 
             fp.Shape=bs2.toShape()
 
@@ -3751,7 +3751,7 @@ class Cell(FeaturePython):
 
                 try:
                     bs2=bs.copy()
-                    bs2.segment(uks[a],uks[b],vks[c],vks[d])
+                    bs2segment(uks[a],uks[b],vks[c],vks[d])
                     comps += [bs2.toShape()]
                 except:
                     print ("cannot create segment ",a,b,c,d)
@@ -3847,7 +3847,7 @@ def createYankee():
                 vknots,
                 False,False,3,3
             )
-    sf.segment(1,2,0,1)
+    sfsegment(1,2,0,1)
     Part.show(sf.toShape())
 
 ## create a quadrangle by 4 points
@@ -4455,9 +4455,9 @@ def createHole(fp,height=100):
 #    _=Beface(sf)
 
     print ("!!!",[aa,bb,cc,dd])
-#    sf.berings=[aa,bb,cc,dd]
-    sf.berings=[aa,bb,bb1,bb2,bb3,cc,dd]
-    #sf.berings=[bb,cc,dd]
+#    sfberings=[aa,bb,cc,dd]
+    sfberings=[aa,bb,bb1,bb2,bb3,cc,dd]
+    #sfberings=[bb,cc,dd]
     ViewProvider(sf.ViewObject)
 
 #    bg=App.ActiveDocument.addObject('Part::FeaturePython','BeGrid')
@@ -5190,7 +5190,7 @@ class Approx(FeaturePython):
             c=a.Curve
         except: return
 
-        poles=c.discretize(fp.segmentCount)
+        poles=c.discretize(fpsegmentCount)
 
         if fp.closed:
             ptsa=poles[:-1]
