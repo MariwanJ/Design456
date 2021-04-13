@@ -834,7 +834,7 @@ def resizeWindows(v,a):
 
     title="Horizontal views for "+a.obja.Label+" and "+a.objb.Label
 
-    mw=FreeCADGui.getMainWindow()
+    mw=Gui.getMainWindow()
     mdiarea=mw.findChild(QtGui.QMdiArea)
 
     sws=mdiarea.subWindowList()
@@ -1311,7 +1311,7 @@ class ViewProviderDR:
 
 def setsizeDR(title):
 
-    mw=FreeCADGui.getMainWindow()
+    mw=Gui.getMainWindow()
     mdiarea=mw.findChild(QtGui.QMdiArea)
     sws=mdiarea.subWindowList()
 

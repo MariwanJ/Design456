@@ -170,7 +170,7 @@ def runtest():
     a.TangentFlags = ['0', '1', '1', '0', '0', '1']
 
     App.ActiveDocument.recompute()
-    FreeCADGui.SendMsgToActiveView("ViewFit")
+    Gui.SendMsgToActiveView("ViewFit")
 
 
 print("bspline 2 loaded")

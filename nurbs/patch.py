@@ -155,7 +155,7 @@ def ThousandsOfRunWhatShouldIdo():
     # p1a=App.ActiveDocument.Point001.Shape.Vertex1
     # p2a=App.ActiveDocument.Point003.Shape.Vertex1
 
-    s = FreeCADGui.Selection.getSelectionEx()
+    s = Gui.Selection.getSelectionEx()
 
     if len(s) == 6:
         ed = s[0].SubObjects[0]

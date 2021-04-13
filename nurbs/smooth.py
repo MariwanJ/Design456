@@ -51,9 +51,6 @@ except ImportError:
 import random
 import Draft
 import os
-
-
-Gui=FreeCADGui
 import Part
 
 class PartFeature:
@@ -292,7 +289,7 @@ def splitMesh():
 
     Gui.activateWorkbench("MeshWorkbench")
     import MeshPartGui, FreeCADGui
-#    FreeCADGui.runCommand('MeshPart_TrimByPlane')
+#    Gui.runCommand('MeshPart_TrimByPlane')
     Gui.activateWorkbench("NurbsWorkbench")
 
     plane=App.ActiveDocument.addObject("Part::Plane","Plane")
@@ -331,13 +328,13 @@ def splitMesh():
 
         for i in range(80):
             plane.Placement.App.z -=  2
-            FreeCADGui.runCommand('MeshPart_SectionByPlane')
+            Gui.runCommand('MeshPart_SectionByPlane')
 
         '''
 
 
-        FreeCADGui.runCommand('MeshPart_SectionByPlane')
-        # FreeCADGui.runCommand('MeshPart_SectionByPlane')
+        Gui.runCommand('MeshPart_SectionByPlane')
+        # Gui.runCommand('MeshPart_SectionByPlane')
 
         pp=plane.Placement.inverse()
 
