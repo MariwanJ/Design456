@@ -42,8 +42,8 @@ except ImportError:
     os.system('python -m pip3 install numpy')
 import time
 
-pyob
-from .pyob import  FeaturePython,ViewProvider
+import pyob
+from pyob import  FeaturePython,ViewProvider
 #reload (.pyob)
 
 
