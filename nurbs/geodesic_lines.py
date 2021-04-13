@@ -58,7 +58,7 @@ import time
 from pivy import coin
 
 pyob
-from .pyob import  FeaturePython,ViewProvider
+from  pyob import  FeaturePython,ViewProvider
 #reload (.pyob)
 
 
