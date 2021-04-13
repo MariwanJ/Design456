@@ -43,7 +43,7 @@ App.ActiveDocument.Sketch.exposeInternalGeometry(6)
 App.ActiveDocument.Sketch.modifyBSplineKnotMultiplicity(6,3,-1) 
 '''
 
-class _ViewProvider(.pyob.ViewProvider):
+class _ViewProvider(pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj):
@@ -272,8 +272,3 @@ def test():
     sk1=run("rib1",[[8,0,0],[0,0,120],[4,120,-10],[12,-130,0]])
     sk2=run("rib2",[[8,0,0],[0,0,150],[4,70,10],[12,-90,100]])
     target=run("rib3",[],[40,-10,-40,30])
-
-
-
-if  __name__ == '__main__':
-    test()
