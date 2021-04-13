@@ -600,7 +600,7 @@ class Miki():
 #                    print r
                     if r.__class__.__name__.startswith('So'):
 #                        print r
-                        sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+                        sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
                         sg.addChild(r)
 
 
@@ -613,7 +613,7 @@ class Miki():
 #                    print r
                     if r.__class__.__name__.startswith('So'):
 #                        print r
-                        dok = FreeCADGui.getDocument(dokname)
+                        dok = Gui.getDocument(dokname)
                         sg=dok.ActiveView.getSceneGraph()
                         sg.addChild(r)
 
@@ -699,7 +699,7 @@ class Miki():
         for r in results:
             print (r)
             if r.__class__.__name__.startswith('So'):
-                sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+                sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
                 sg.addChild(r)
 
         print ("Data ...")

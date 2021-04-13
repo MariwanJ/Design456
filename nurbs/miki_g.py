@@ -645,7 +645,7 @@ class Miki(object):
         return self.widget
 
     def showSo(self):
-        ''' add the item as openinventor objects to FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()'''
+        ''' add the item as openinventor objects to Gui.ActiveDocument.ActiveView.getSceneGraph()'''
 
         for l in self.lines:
             if l[2] == 0 and l[0] != -1:
@@ -653,7 +653,7 @@ class Miki(object):
                         continue
                     r = l[7]
                     if r.__class__.__name__.startswith('So'):
-                        sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+                        sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
                         sg.addChild(r)
 
     def showSo2(self, dokname):
@@ -663,7 +663,7 @@ class Miki(object):
             if l[2] == 0 and l[0] != -1:
                     r = l[7]
                     if r.__class__.__name__.startswith('So'):
-                        dok = FreeCADGui.getDocument(dokname)
+                        dok = Gui.getDocument(dokname)
                         sg = dok.ActiveView.getSceneGraph()
                         sg.addChild(r)
 
@@ -771,7 +771,7 @@ class Miki(object):
         for r in results:
             print (r)
             if r.__class__.__name__.startswith('So'):
-                sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+                sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
                 sg.addChild(r)
 
         print ("Data ...")
@@ -929,7 +929,7 @@ def getMainWindowByName(name):
     if there is no such main window an new main window is created'''
 
     if name == 'FreeCAD':
-        return FreeCADGui.getMainWindow()
+        return Gui.getMainWindow()
 
     toplevel2 = QtGui.qApp.topLevelWidgets()
     for i in toplevel2:

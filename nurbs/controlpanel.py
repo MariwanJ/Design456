@@ -144,7 +144,7 @@ def clear(window):
 
 
 def hu():
-    mw = FreeCADGui.getMainWindow()
+    mw = Gui.getMainWindow()
     mdiarea = mw.findChild(QtGui.QMdiArea)
 
     label = "Spreadsheet"

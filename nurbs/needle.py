@@ -733,7 +733,7 @@ class Needle(PartFeature):
     def startssevents(self):
 #        global table
 
-        mw=FreeCADGui.getMainWindow()
+        mw=Gui.getMainWindow()
         mdiarea=mw.findChild(QtGui.QMdiArea)
 
 
@@ -849,7 +849,7 @@ def commitData(editor):
 def startssevents2():
     global table
 
-    mw=FreeCADGui.getMainWindow()
+    mw=Gui.getMainWindow()
     mdiarea=mw.findChild(QtGui.QMdiArea)
 
     App.ActiveDocument.Spreadsheet.ViewObject.startEditing(0)

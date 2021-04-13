@@ -245,7 +245,7 @@ class initGUI():
         self.getWidget().hide()
 
     def getWidget(self):
-        mw = FreeCADGui.getMainWindow()
+        mw = Gui.getMainWindow()
         mdiarea = mw.findChild(QtGui.QMdiArea)
 
         sws = mdiarea.subWindowList()
@@ -409,7 +409,7 @@ class WorkSpace():
     	self.getWidget().hide()
 
     def getWidget(self):
-    	mw=FreeCADGui.getMainWindow()
+    	mw=Gui.getMainWindow()
     	mdiarea=mw.findChild(QtGui.QMdiArea)
 
     	sws=mdiarea.subWindowList()

@@ -32,7 +32,11 @@ try:
     import numpy as np 
 except ImportError:
     print ("Please install the required module : numpy")
-    
+
+try: 
+    import tools
+except ImportError:
+    print("Please install tools for python")    
 import scipy.linalg.lapack as sp
 from numpy.linalg import inv
 
@@ -46,8 +50,8 @@ from say import *
 from FreeCAD import Vector
 import Draft
 
-from .tools import power,crossProduct,dotProduct,sign,sqrt,groupit
-#reload(.tools)
+#from tools import power,crossProduct,dotProduct,sign,sqrt,groupit
+#reload(tools)
 
 
 def drawConeA(name,i,bounds,apex,axis,alpha,trafo,pts):

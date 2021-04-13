@@ -860,7 +860,7 @@ class Needle(PartFeature):
 
     def startssevents(self):
 
-        mw=FreeCADGui.getMainWindow()
+        mw=Gui.getMainWindow()
         mdiarea=mw.findChild(QtGui.QMdiArea)
 
         App.ActiveDocument.Spreadsheet.ViewObject.startEditing(0)
@@ -982,7 +982,7 @@ def startssevents2():
     ''' start events for spreadsheet gui '''
     global table
 
-    mw=FreeCADGui.getMainWindow()
+    mw=Gui.getMainWindow()
     mdiarea=mw.findChild(QtGui.QMdiArea)
 
     App.ActiveDocument.Spreadsheet.ViewObject.startEditing(0)
@@ -1292,7 +1292,7 @@ def ThousandsOfRunWhatShouldIdo():
     Gui.activeDocument().activeView().viewFront()
 
     Gui.SendMsgToActiveView("ViewFit")
-    FreeCADGui.runCommand("Draft_ToggleGrid")
+    Gui.runCommand("Draft_ToggleGrid")
 
     # load a scanned last to compare if available
     try: 
