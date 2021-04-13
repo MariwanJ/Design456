@@ -705,7 +705,7 @@ def createRibCage(bs, rc=100):
         ribs.append(f.toShape())
 
     comp = Part.Compound(ribs)
-    RibCage = App.activeDocument().addObject('Part::Feature', 'Ribs')
+    RibCage = App.ActiveDocument.addObject('Part::Feature', 'Ribs')
     RibCage.Shape = comp
     RibCage.ViewObject.LineWidth = 1
     RibCage.ViewObject.Visibility = False
@@ -715,7 +715,7 @@ def createRibCage(bs, rc=100):
         f = bs.vIso(1.0/rc*i)
         mers.append(f.toShape())
     comp = Part.Compound(mers)
-    Meridians = App.activeDocument().addObject('Part::Feature', 'Meridians')
+    Meridians = App.ActiveDocument.addObject('Part::Feature', 'Meridians')
     Meridians.Shape = comp
     Meridians.ViewObject.LineWidth = 1
     Meridians.ViewObject.Visibility = False
@@ -867,16 +867,16 @@ def createGrid(name="MyGrid"):
     sel = Gui.Selection.getSelection()
     fob = sel[0]
 
-    b = App.activeDocument().addObject("Part::FeaturePython", name)
+    b = App.ActiveDocument.addObject("Part::FeaturePython", name)
 
     name = b.Name
     isodraw.Drawgrid(b)
     b.faceObject = fob
 
     b.ViewObject.Transparency = 60
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
-    b2 = App.activeDocument().addObject("Part::FeaturePython", name+"_2_")
+    b2 = App.ActiveDocument.addObject("Part::FeaturePython", name+"_2_")
     b2.Label = name+"_3D_"
     isodraw.Draw3Dgrid(b2)
     b2.drawgrid = b

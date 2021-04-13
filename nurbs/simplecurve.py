@@ -46,8 +46,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 #import matplotlib.pyplot as plt
 
 from PySide import QtGui
@@ -187,8 +187,8 @@ def simplecurve(wire,ct=20,plotit=False,offset=0,debug=False):
     #    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(random.random(),random.random(),random.random())
     #    App.ActiveDocument.ActiveObject.ViewObject.LineColor=(1.0,1.0,0.0)
     #    App.ActiveDocument.ActiveObject.ViewObject.LineWidth=6
-    #    App.activeDocument().recompute()
-    #    App.activeDocument().recompute()
+    #    App.ActiveDocument.recompute()
+    #    App.ActiveDocument.recompute()
 
     #    if debug:
     #        sh=App.ActiveDocument.ActiveObject.Shape.Edge1.Curve.toShape()
@@ -228,8 +228,8 @@ def simplecurve(wire,ct=20,plotit=False,offset=0,debug=False):
     #    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(random.random(),random.random(),random.random())
     #    App.ActiveDocument.ActiveObject.ViewObject.LineColor=(1.0,1.0,0.0)
     #    App.ActiveDocument.ActiveObject.ViewObject.LineWidth=6
-    #    App.activeDocument().recompute()
-    #    App.activeDocument().recompute()
+    #    App.ActiveDocument.recompute()
+    #    App.ActiveDocument.recompute()
     #
 
 

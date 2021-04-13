@@ -165,7 +165,7 @@ class Multiface(object):
 
         obj2=App.ActiveDocument.getObject(self.nameP)
         if obj2==None:
-            #obj2=App.activeDocument().addObject("Part::Compound","Compound")
+            #obj2=App.ActiveDocument.addObject("Part::Compound","Compound")
             obj2=App.ActiveDocument.addObject('Part::Feature',self.nameP)
 
             obj2.Placement.Base=App.Vector(1,1,1)
@@ -176,7 +176,7 @@ class Multiface(object):
 
         obj3=App.ActiveDocument.getObject(self.nameE)
         if obj3==None:
-            #obj2=App.activeDocument().addObject("Part::Compound","Compound")
+            #obj2=App.ActiveDocument.addObject("Part::Compound","Compound")
             obj3=App.ActiveDocument.addObject('Part::Feature',self.nameE)
             obj3.ViewObject.LineColor=(1.0,0.,0.)
             obj3.ViewObject.ShapeColor=(1.0,1.,0.)
@@ -186,7 +186,7 @@ class Multiface(object):
 
         obj=App.ActiveDocument.getObject(self.nameF)
         if obj==None:
-            #obj=App.activeDocument().addObject("Part::Compound","Compound")
+            #obj=App.ActiveDocument.addObject("Part::Compound","Compound")
             #obj=App.ActiveDocument.addObject('Part::Feature',self.nameF)
             obj=App.ActiveDocument.addObject('Part::Spline',self.nameF)
             obj.ViewObject.Selectable=False
@@ -1261,7 +1261,7 @@ def SurfaceEditor():
         print ("u,v,scale",u,v,s)
         #fp=App.ActiveDocument.Seam_ProductFace001
         
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
 
 
@@ -1275,7 +1275,7 @@ def SurfaceEditor():
                     self.root.ids[idx].setValue(0)
 
             self.root.ids['scale'].setValue(10)
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
 
         def setselection1(self):
             u=1
@@ -1553,7 +1553,7 @@ def SurfaceEditor():
                         self.root.ids['ydial'].value()*self.root.ids['scale'].value(),
                         self.root.ids['zdial'].value()*self.root.ids['scale'].value()
                         )
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             print ("Time C ",time.time()-st)
 
         def initData(self):
@@ -1586,7 +1586,7 @@ def SurfaceEditor():
             print ("SELECTIONS")
             for s in self.multiface.selection:
                 print (s)
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             App.ActiveDocument.getObject(self.multiface.nameE).ViewObject.show()
 
             self.root.ids['ux'].setFocus()
@@ -1596,18 +1596,18 @@ def SurfaceEditor():
             ta=time.time()
             if hasattr(self,'multiface'):
                 self.multiface.update(params=self,force=False)
-                App.activeDocument().recompute()
+                App.ActiveDocument.recompute()
                 print  (len(self.multiface.selection))
                 print ("update ",time.time()-ta)
 
         def apply(self):
             ta=time.time()
             self.multiface.update(params=self,force=True)
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             print  (len(self.multiface.selection))
             print ("update ",time.time()-ta)
             App.ActiveDocument.getObject(self.multiface.nameE).ViewObject.hide()
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
 
 
 
@@ -1622,7 +1622,7 @@ def SurfaceEditor():
             for vt in selps:
                 print ("X")
                 self.multiface.movePoint(vt,App.Vector(0,0,2000),True,params=self,useselections=True)
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             print  (len(self.multiface.selection))
             print ("update ",time.time()-ta)
 
@@ -1642,7 +1642,7 @@ def SurfaceEditor():
                 print( s)
             
             self.update()
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             App.ActiveDocument.getObject(self.multiface.nameE).ViewObject.show()
 
             self.root.ids['ux'].setFocus()
@@ -1669,7 +1669,7 @@ def SurfaceEditor():
                 print (s)
 
             App.ActiveDocument.getObject(self.multiface.nameE).ViewObject.hide()
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
 
 
         def merge(self):
@@ -1865,8 +1865,8 @@ def AA():
 
     if App.ActiveDocument.BeGrid.Source == None:
         App.ActiveDocument.BeGrid.Source=App.ActiveDocument.tmp_multiFace
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     if App.ActiveDocument.MAP.faceObject == None:
         App.ActiveDocument.MAP.faceObject=App.ActiveDocument.tmp_multiFace
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()

@@ -32,8 +32,8 @@ needle_models
 .needle_models.listModels()
 
 
-#App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelSpoon)
-myNeedle=App.activeDocument().MyNeedle
+#App.ActiveDocument.MyNeedle.Proxy.getExampleModel(.needle_models.modelSpoon)
+myNeedle=App.ActiveDocument.MyNeedle
 
 #myNeedle.Proxy.getExampleModel(.needle_models.modelEd4)
 
@@ -46,8 +46,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 
 
 
@@ -375,8 +375,8 @@ class modelSpoon(model):
 
 if 0:
 
-    App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelSpoon)
-    App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelEd4)
+    App.ActiveDocument.MyNeedle.Proxy.getExampleModel(needle_models.modelSpoon)
+    App.ActiveDocument.MyNeedle.Proxy.getExampleModel(needle_models.modelEd4)
 
 '''
     modelA(ss)
@@ -827,8 +827,8 @@ class modelMiniBanana(modelBanana):
         self.curve *= 0.1
         self.bb *= 0.1
 
-#App.activeDocument().MyNeedle.Proxy.getExampleModel(modelMiniBanana)
-#App.activeDocument().MyNeedle.Shape.BoundBox.DiagonalLength
+#App.ActiveDocument.MyNeedle.Proxy.getExampleModel(modelMiniBanana)
+#App.ActiveDocument.MyNeedle.Shape.BoundBox.DiagonalLength
 
 class modelPicoBanana(modelBanana):
     def __init__(self):
@@ -837,8 +837,8 @@ class modelPicoBanana(modelBanana):
         self.curve *= 0.02
         self.bb *= 0.02
 
-#App.activeDocument().MyNeedle.Proxy.getExampleModel(modelMiniBanana)
-#App.activeDocument().MyNeedle.Shape.BoundBox.DiagonalLength
+#App.ActiveDocument.MyNeedle.Proxy.getExampleModel(modelMiniBanana)
+#App.ActiveDocument.MyNeedle.Shape.BoundBox.DiagonalLength
 
 
 
@@ -962,7 +962,7 @@ if __name__=='__main__':
     class modelY(modelBanana):
         pass
 
-    App.activeDocument().MyNeedle.Proxy.lock=False
-    App.activeDocument().MyNeedle.Proxy.getExampleModel(modelK)
+    App.ActiveDocument.MyNeedle.Proxy.lock=False
+    App.ActiveDocument.MyNeedle.Proxy.getExampleModel(modelK)
 
 

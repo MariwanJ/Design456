@@ -4,8 +4,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import random
 
 
@@ -40,7 +40,7 @@ def testA():
     a.Proxy.updatePoles()
     a.Proxy.showGriduv()
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     Gui.updateGui()
 
     Gui.activeDocument().activeView().viewAxonometric()

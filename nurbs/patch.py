@@ -53,8 +53,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import random
 
 
@@ -221,7 +221,7 @@ def run():
 def runB():
     ''' testcase for a expression baes mountain profile '''
 
-    os.system('python -m pip3 install numpy')
+    
     print("WARNING:this is a testcase only")
     # hard coded test data
     kl = App.ActiveDocument.subedge

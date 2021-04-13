@@ -45,8 +45,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 
 import Part,Draft
 
@@ -84,8 +84,8 @@ def unroll(mode):
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 
     lenp=100
     
@@ -166,7 +166,7 @@ except ImportError:
     if 1:
         res=Draft.makeBSpline(ptsn)
     else:
-        res=App.activeDocument().addObject('Part::Feature','unroll')
+        res=App.ActiveDocument.addObject('Part::Feature','unroll')
         res.Shape=Part.makePolygon(ptsn)
 
     res.Label=mode + " for " + edge.Label + " on " + face.Label

@@ -176,7 +176,7 @@ class runSole():
             Sole(obj)
             createsole(obj)
             obj.ViewObject.hide()
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
 
             import Draft
             img = Draft.makeRectangle(

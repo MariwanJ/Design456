@@ -291,7 +291,7 @@ class PartMover:
                 else:
                     # This can be asked by a timer in a calling func...
                     self.objectToDelete = self.obj
-                App.activeDocument().removeObject(self.obj.Name)
+                App.ActiveDocument.removeObject(self.obj.Name)
                 self.obj = None
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "

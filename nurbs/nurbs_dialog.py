@@ -761,7 +761,7 @@ class MyApp(object):
 
         self.root.ids['setmode'].setChecked(False)
         self.lock=False
-        print ("getDataFromNurbs fertig")
+        print ("getDataFromNurbs finished")
 
 
     def modHeight(self):

@@ -192,7 +192,7 @@ class Trafo(pyob.FeaturePython):
         bc.buildFromPolesMultsKnots(c,ms,ks,True,2)
 
         try: bb=App.ActiveDocument.cc
-        except: bb=App.activeDocument().addObject("Part::Spline","cc")
+        except: bb=App.ActiveDocument.addObject("Part::Spline","cc")
 
         bb.ViewObject.ControlPoints=True
         bb.Label="Source Poles"
@@ -260,7 +260,7 @@ class Trafo(pyob.FeaturePython):
         #create the target poles helper
 
         try: ee=App.ActiveDocument.ee
-        except: ee=App.activeDocument().addObject("Part::Spline","ee")
+        except: ee=App.ActiveDocument.addObject("Part::Spline","ee")
 
         ee.Shape=bc.toShape()
         ee.ViewObject.hide()
@@ -300,7 +300,7 @@ def run():
     line2.ViewObject.LineColor = (1.00,0.00,1.00)
     line2.Label="Target Frame"
 
-    b=App.activeDocument().addObject("Part::FeaturePython","MyTransform")
+    b=App.ActiveDocument.addObject("Part::FeaturePython","MyTransform")
     tt=Trafo(b)
 
     b.source=source
@@ -309,7 +309,7 @@ def run():
     b.center=center
     b.useCenter= center != None
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 # run()

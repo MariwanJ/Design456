@@ -56,7 +56,7 @@ def wrun(w):
     for q in w.box:
         print (w.sk.Label,q.i,q.value(),q.c.Name)
         w.sk.setDatum(q.i,1+q.value())
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     pk(w.sk,w)
 
 #---------------

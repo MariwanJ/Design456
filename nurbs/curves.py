@@ -199,7 +199,7 @@ def runOffsetSpline(name="MyOffSp"):
     obj.ofin=10
     obj.ofout=10
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     return obj
 
 
@@ -214,8 +214,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 
 # finde Kanten
 
@@ -360,7 +360,7 @@ def runStar(name="MyStar"):
     obj.addConstraint(Sketcher.Constraint('Coincident',5,3,-1,1)) 
     App.ActiveDocument.recompute()
     App.ActiveDocument.recompute()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     
     obj.VertexNumber=3
     #obj.parent=App.ActiveDocument.getObject('MyStar')
@@ -375,7 +375,7 @@ if __name__=='__main__':
     star2.parent=star
     star2.VertexNumber=2
     star2.relativePosition.Rotation.Angle=-1.2
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 #\endcond

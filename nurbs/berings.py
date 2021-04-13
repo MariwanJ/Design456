@@ -42,8 +42,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import Draft,Points,Part,Sketcher
 import say
 from say import *
@@ -118,7 +118,7 @@ def copySketch(sketch,target):
 
     sk.solve()
     sk.recompute()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 ## Eine spezielle Bezier-Kurve, auf der alles aus dem Bering-Modul aufbaut
 
@@ -1065,7 +1065,7 @@ def genA():
     sfberings=sks
     ViewProvider(sf.ViewObject)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 
@@ -1100,7 +1100,7 @@ def genB():
     sfberings=sks
     ViewProvider(sf.ViewObject)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 ## create a Bering from selected Wires
 
@@ -1191,9 +1191,9 @@ def createBeringTest():
     sfberings=sks
     ViewProvider(sf.ViewObject)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     connectFaces()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 
@@ -1886,16 +1886,16 @@ def createSeam():
     sf.bSource=fb
     sf.mode='Seam'
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 def createDatumPlane():
     '''create a PD DatumPlane'''
-    return App.activeDocument().addObject('PartDesign::Plane','DatumPlane')
+    return App.ActiveDocument.addObject('PartDesign::Plane','DatumPlane')
 
 def createDatumLine():
     '''create a PD DatumLine'''
-    return App.activeDocument().addObject('PartDesign::Line','DatumLine')
+    return App.ActiveDocument.addObject('PartDesign::Line','DatumLine')
 
 ##create the begrid curves return the result as a compound
 
@@ -1998,7 +1998,7 @@ def createBeGrid():
         ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createBeGrid.svg')
         sf.Source=fa
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     return sf
 
@@ -2174,7 +2174,7 @@ def BSplineToBezierSurface():
     BezierSurface(sf)
     ViewProvider(sf.ViewObject)
     sf.source=s
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 
@@ -2320,7 +2320,7 @@ def SurfaceEditor():
         print ("u,v,scale",u,v,s)
         #fp=App.ActiveDocument.Seam_ProductFace001
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
 
 
@@ -2420,7 +2420,7 @@ def SurfaceEditor():
             print (s)
 
 
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
 
         def save(self):
             tt=time.time()
@@ -2651,7 +2651,7 @@ def SurfaceEditor():
                 self.resetDialog()
                 print ("Time SCC ",time.time()-sts)
 
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             print ("Time C ",time.time()-st)
 
 
@@ -2823,7 +2823,7 @@ def addKnot():
 
 
             obj.Shape=bs2.toShape()
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
 
             App.ActiveDocument.removeObject(self.NameObj)
 
@@ -2879,7 +2879,7 @@ def connectFaces():
         sf.mergeEdge=True
 
     ViewProvider(sf.ViewObject)
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 
@@ -2891,7 +2891,7 @@ def fixCorner():
 
     (a,b,c)=Gui.Selection.getSelection()
     _fixCorner(a,b,c)
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 ## a planer Bezier Face
@@ -4471,7 +4471,7 @@ def createHole(fp,height=100):
 
     print()
     print (time.time()-ta)
-#    App.activeDocument().recompute()
+#    App.ActiveDocument.recompute()
 #    Gui.updateGui()
 
     if fp.endfaces:
@@ -4490,7 +4490,7 @@ def _createHoleGUI():
 
         def run(self):
             createHole(height=self.root.ids['height'].value())
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
 
     layout = '''
 MainWindow:
@@ -4536,7 +4536,7 @@ def createHoleGUI():
 
 
     ViewProvider(bg.ViewObject)
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 
@@ -4827,7 +4827,7 @@ def aGUI():
             createGordon(tt,self.root.ids['scale'].value())
             #tt.Shape=shape
             ViewProvider(tt.ViewObject)
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
 
 
     layout = '''
@@ -4898,7 +4898,7 @@ def _createGordonGUI():
     #createGordon(tt)
     #tt.Shape=shape
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 
@@ -5134,7 +5134,7 @@ def createBorder(objs):
         tt.source=obj
         tt.Label="Border for " + obj.Label
         ViewProvider(tt.ViewObject)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
 
 def _createBorderGUI():
@@ -5265,7 +5265,7 @@ def createApprox(sels=None):
         sf.Label="Approx for " + fa.Label
         _VPApprox(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'AA.svg')
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         sf.Proxy.execute(sf)
 
 

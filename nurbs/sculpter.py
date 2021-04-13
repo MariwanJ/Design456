@@ -50,7 +50,7 @@ import time
 import random
 import Design456Init
 
-isodraw
+import isodraw
 #reload(isodraw)
 
 
@@ -173,21 +173,19 @@ def check(pp, mode, updateNurbs=False, widget=None):
 
 def createMarker(self):
     print("create Marker")
-    import 
-    os.system('python -m pip3 install numpy')
-    geodesic_lines
+    import geodesic_lines
     #reload(.geodesic_lines)
 
-    l = .geodesic_lines.makeLabel(
+    l = geodesic_lines.makeLabel(
         direction='Horizontal', labeltype='Position')
     l.obj = self.nu  # Gui.Selection.getSelection()[0]
     l.LabelType = u"Custom"
     l.Label = "MyMarker"
     l.ViewObject.DisplayMode = u"2D text"
     l.ViewObject.TextSize = '15 mm'
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 #    l.TargetPoint=l.obj.Shape.Faces[0].Surface.value(l.u*0.01,l.v*0.01)
-    .geodesic_lines.hideAllProps(
+    geodesic_lines.hideAllProps(
         l, pns=['Text', 'CustomText', 'LabelType'])
 #    return l
     sf = l.obj.Shape.Face1.Surface
@@ -750,7 +748,7 @@ class MyWidget(QtGui.QWidget):
         r=int(self.area.value())
         h=int(self.height.value())
         sp.Radius=(1+r)*10
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         return
 
     def ef_action(self, *args):

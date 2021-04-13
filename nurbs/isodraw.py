@@ -56,8 +56,8 @@ import os
 try:
     import numpy as np
 except ImportError:
-    print("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print("Please install the required module : numpy")
+    
 import random
 
 import os
@@ -272,7 +272,7 @@ class Isodraw(PartFeature):
 class createIsodrawFace:
     def Activate(self):
         '''creates a IsoDrawFace object'''
-        b = App.activeDocument().addObject("Part::FeaturePython", "IsoDrawFace")
+        b = App.ActiveDocument.addObject("Part::FeaturePython", "IsoDrawFace")
         Isodraw(b)
         return b
 
@@ -357,7 +357,7 @@ class Brezel(PartFeature):
 class createBrezel:
     def Activate(self):
         '''creates a IsoDrawFace object'''
-        b = App.activeDocument().addObject("Part::FeaturePython", "Brezel")
+        b = App.ActiveDocument.addObject("Part::FeaturePython", "Brezel")
         Brezel(b)
         if 1:
             b.face = App.ActiveDocument.face
@@ -393,12 +393,12 @@ class MapVP(ViewProvider):
     def display2DGrid(self, obj):
         obj.display2d = not obj.display2d
         obj.Proxy.execute(obj)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def display3DGrid(self, obj):
         obj.display3d = not obj.display3d
         obj.Proxy.execute(obj)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
 
 class Map(PartFeature):
@@ -605,7 +605,7 @@ class Map(PartFeature):
 class createMap:
     def Activated(self, mode=''):
         '''create a Map object'''
-        b = App.activeDocument().addObject("Part::FeaturePython", "MAP")
+        b = App.ActiveDocument.addObject("Part::FeaturePython", "MAP")
         Map(b, mode=mode)
 
         # hack
@@ -1374,33 +1374,33 @@ def testF():
 if __name__=='__main__':
 
     for w in [App.ActiveDocument.Sketch]:
-        b=App.activeDocument().addObject("Part::FeaturePython","MyIsodraw")
+        b=App.ActiveDocument.addObject("Part::FeaturePython","MyIsodraw")
         bn=Isodraw(b)
         b.face=App.ActiveDocument.Poles
         b.wire=w
         createShape(b)
         b.ViewObject.Transparency=60
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         createLink(b,"A3D")
 
 
 if __name__=='__main__':
 
-        b=App.activeDocument().addObject("Part::FeaturePython","MyDrawGrid")
+        b=App.ActiveDocument.addObject("Part::FeaturePython","MyDrawGrid")
 
         Drawgrid(b)
         b.faceObject=App.ActiveDocument.Poles
 
 
         b.ViewObject.Transparency=60
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         createLink(b,"A2D")
 
 
 
 if __name__=='__main__':
 
-        b=App.activeDocument().addObject("Part::FeaturePython","MyGrid")
+        b=App.ActiveDocument.addObject("Part::FeaturePython","MyGrid")
 
         Draw3Dgrid(b)
         b.drawgrid=App.ActiveDocument.MyDrawGrid
@@ -1641,7 +1641,7 @@ class map2Dto3D():
             print(w.Label)
             w.ViewObject.ShapeColor = color
             w.ViewObject.LineColor = color
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
         return f
 
     def GetResources(self):
