@@ -1767,8 +1767,7 @@ class map3Dgridto2Dgrid:
 
 
 class getmap:
-
-    __init__(mapobj, obj):
+    def __init__(self,mapobj, obj):
         self.mapobj=mapobj
         self.obj=obj
 
@@ -2015,7 +2014,12 @@ class getmap:
 # getmap.__doc__ = """getmap: Tobe added later     """
 
 
-class getmap3(mapobj, obj, calcZ=None):
+class getmap3:
+    def __ini__(self, mapobj, obj, calcZ=None):
+        self.mapobj=mapobj
+        self.obj=obj
+        self.calcZ=calcZ
+        
     def Activated(self):
         ''' berechnet einen dritten wert für z'''
         print("berechne curvature gauss")
