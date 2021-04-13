@@ -65,7 +65,7 @@ def  dist(a,b):
 
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     sel=Gui.Selection.getSelection()
     b=sel[0]
     for a in sel[1:]:

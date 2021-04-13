@@ -336,7 +336,7 @@ def runnurbstrafo():
 
 
 # \cond
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
 
     sm = createSegment()
     sm.source = App.ActiveDocument.Poles

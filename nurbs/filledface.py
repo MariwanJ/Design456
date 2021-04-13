@@ -131,7 +131,7 @@ def createFilledFace(name="MyFilledFace"):
     return ffobj
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
 
     b = App.ActiveDocument.addObject(
         "Part::FeaturePython", "MyFilledFace")

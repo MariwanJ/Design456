@@ -189,7 +189,7 @@ def fold(obj):
 
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
     ss=Gui.Selection.getSelection()
 

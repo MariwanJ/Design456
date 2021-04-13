@@ -44,7 +44,7 @@ import Draft
 import Points
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
     try:
         [sourcex, targetx] = Gui.Selection.getSelectionEx()

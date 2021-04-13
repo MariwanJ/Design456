@@ -308,7 +308,7 @@ def runtest():
 
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     ''' main call - its still the runtest() '''
     runtest()
 

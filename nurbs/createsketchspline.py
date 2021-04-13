@@ -225,7 +225,7 @@ def runall():
     closecurve(rc)
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     ''' erzeugt fuer jedes selektierte Objekte aus Edge1 einen Sketch'''
 
     if len(Gui.Selection.getSelection()) == 0:

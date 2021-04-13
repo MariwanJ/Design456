@@ -86,11 +86,11 @@ def MyDialog(target=None):
     return w
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     # [target]=FreeCADGui.Selection.getSelection()
     target = None
     return MyDialog(target)
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
     run()

@@ -663,5 +663,5 @@ def runSel(fac=3):
                 runobj(obj,fac)
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     runSel()

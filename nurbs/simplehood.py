@@ -283,6 +283,6 @@ class SimpleHood(PartFeature):
             createShape(fp)
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     b = App.ActiveDocument.addObject("Part::FeaturePython", "MySimpleHood")
     bn = SimpleHood(b)

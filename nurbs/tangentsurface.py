@@ -541,7 +541,7 @@ def createTangentFace():
     bn = FilledFace(b)
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
 
     # create the test faces
 
@@ -636,7 +636,7 @@ if __name__ == '__main__':
     '''
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
     # create the segment for tangents
     segment
     ke = segment.createFineSegment()

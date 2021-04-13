@@ -283,6 +283,6 @@ def dialog():
     return w
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     print("run it")
     rc = dialog()

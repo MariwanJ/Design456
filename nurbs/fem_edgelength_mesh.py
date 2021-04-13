@@ -332,5 +332,5 @@ def run(animate=True, itercount=101):
     rc = App.ActiveDocument.recompute()
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
     run()

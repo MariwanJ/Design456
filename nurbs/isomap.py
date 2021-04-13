@@ -321,7 +321,7 @@ def run_test_circle(bs,xy2u,xy2v,RM=15,uc=10,vc=10):
     App.ActiveDocument.ActiveObject.ViewObject.LineColor=(1.,1.,0.)
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     ''' main test'''
 
 

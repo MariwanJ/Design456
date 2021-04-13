@@ -175,10 +175,10 @@ def runtest():
 
 print("bspline 2 loaded")
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
 
     runtest()
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     runtest()

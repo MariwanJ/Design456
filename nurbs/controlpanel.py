@@ -524,7 +524,7 @@ class ControlPanel(PartFeature):
 # this is still not a useful method
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     '''create a generic panel without data'''
 
     a = App.ActiveDocument.addObject("Part::FeaturePython", "MyMonitor")
@@ -532,7 +532,7 @@ def run():
 
 
 # \cond
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
 
     # -- create test infrastructure
     b = App.ActiveDocument.addObject("Part::Box", "Box")

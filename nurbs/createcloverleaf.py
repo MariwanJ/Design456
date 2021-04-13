@@ -63,7 +63,7 @@ def sayexc(title='Fehler',mess=''):
     showdialog(title,text=mess,detail="--> ".join(l2))
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     label="cloverleaf"
     try: 
         body=App.ActiveDocument.Body
