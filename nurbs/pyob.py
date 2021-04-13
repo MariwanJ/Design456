@@ -37,7 +37,7 @@ from __future__ import unicode_literals
 import FreeCAD as App
 import FreeCADGui as Gui
 import PySide
-
+import Design456Init
 import Part
 import os
 

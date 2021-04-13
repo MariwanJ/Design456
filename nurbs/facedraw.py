@@ -40,10 +40,11 @@ from __future__ import unicode_literals
 from PySide import QtGui,QtCore
 from say import *
 
-import FreeCAD
+import FreeCAD as App
+import FreeCADGui as Gui
 import sys,time
 import random
-
+import Design456Init
 
 
 import isodraw

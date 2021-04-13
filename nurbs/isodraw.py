@@ -41,6 +41,7 @@ from say import *
 
 import FreeCAD as App
 import FreeCADGui as Gui
+import Design456Init
 
 
 from PySide import QtGui
@@ -1221,7 +1222,7 @@ class ShapeLink(PartFeature):
         if target == None:
             tw.addObject2(obj.source, obj.gridcount)
         print(target)
-        if 1 or obj.nurbs:
+        if 1 or objnurbs:
             target.Shape = obj.source.Shape.toNurbs()
 
             cs = []

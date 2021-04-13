@@ -36,6 +36,7 @@ from __future__ import unicode_literals
 import FreeCAD as App
 import FreeCADGui as Gui
 #import matplotlib.colors as colors
+import Design456Init
 
 import PySide
 from PySide import  QtGui,QtCore

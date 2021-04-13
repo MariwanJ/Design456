@@ -35,7 +35,7 @@ there must be one sketch in it with constraints  l1-l12, r1-r12
 
 import FreeCAD
 import FreeCADGui
-
+import Design456Init
 import os
 
 try:

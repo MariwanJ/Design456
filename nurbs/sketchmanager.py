@@ -27,7 +27,8 @@ from __future__ import unicode_literals
 
 ''' save sketches into a sketch lib, load sketches into models ''' 
 from say import *
-import 
+
+import Design456Init
 
 try:
     import numpy as np 
@@ -283,7 +284,7 @@ def ComboViewShowWidget(widget, tabMode=True):
 
 
 #\cond
-class _ViewProvider(.pyob.ViewProvider):
+class _ViewProvider(pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj):

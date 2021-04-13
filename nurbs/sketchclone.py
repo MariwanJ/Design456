@@ -29,9 +29,9 @@ from __future__ import unicode_literals
 from say import *
 import pyob
 import Sketcher
+import Design456Init
 
-
-class _ViewProvider(.pyob.ViewProvider):
+class _ViewProvider(pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj):
@@ -42,7 +42,7 @@ class _ViewProvider(.pyob.ViewProvider):
         return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
 
 
-class SketchClone(.pyob.FeaturePython):
+class SketchClone(pyob.FeaturePython):
     '''Sketch Object with Python'''
 
     # \cond

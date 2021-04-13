@@ -43,7 +43,7 @@ import FreeCADGui as Gui
 
 from PySide import QtGui
 import Part,Mesh,Draft,Points
-
+import Design456Init
 import os
 
 try:

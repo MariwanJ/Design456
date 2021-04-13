@@ -48,7 +48,7 @@ import FreeCAD as App
 import sys
 import time
 import random
-
+import Design456Init
 
 isodraw
 #reload(isodraw)

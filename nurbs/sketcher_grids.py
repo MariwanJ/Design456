@@ -16,7 +16,7 @@ import FreeCADGui as Gui
 import Sketcher,Part
 
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:

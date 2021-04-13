@@ -17,7 +17,7 @@ import Part
 import Mesh
 import Draft
 import Points
-
+import Design456Init
 
 import os
 
@@ -140,7 +140,7 @@ class ShapeLink(PartFeature):
         if target == None:
             tw.addObject2(obj.source, obj.gridcount)
         print(target)
-        if obj.nurbs:
+        if objnurbs:
             print("nurbs surface")
             target.Shape = obj.source.Shape.toNurbs()
 

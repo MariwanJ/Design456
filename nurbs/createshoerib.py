@@ -35,6 +35,9 @@ from __future__ import unicode_literals
 from say import * 
 import Sketcher
 import pyob
+import Design456Init
+import FreeCAD as App
+import FreeCADGui as Gui
 
 '''
 multiplizitaet erhoehen

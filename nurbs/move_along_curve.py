@@ -30,7 +30,7 @@ from __future__ import unicode_literals
 
 import FreeCAD 
 import FreeCADGui
-
+import Design456Init
 import os
 
 try:

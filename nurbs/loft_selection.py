@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 
 import FreeCAD
 import FreeCADGui as Gui
-
+import Design456Init
 
 from FreeCAD import Base
 import Part

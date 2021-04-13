@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 
 import random,time
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:
@@ -41,9 +41,9 @@ import matplotlib.pyplot as plt
 
 import 
 
-from .pyob import  FeaturePython,ViewProvider
+from pyob import  FeaturePython,ViewProvider
 from .say import *
-#reload (.pyob)
+#reload (pyob)
 
 from FreeCAD import Vector
 import Draft

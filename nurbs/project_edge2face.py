@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 
 
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:

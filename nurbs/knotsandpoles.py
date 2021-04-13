@@ -31,7 +31,7 @@ display knots and poles of a selected curve
 
 import FreeCAD as App
 import FreeCADGui as Gui
-
+import Design456Init
 import Draft
 
 def run():

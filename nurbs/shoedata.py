@@ -40,7 +40,7 @@ print ("shoedata version 0.92")
 # Backbone, Twister und Scaler werden wie bei Needle verwendet.
 #
   
-
+import Design456Init
 class shoeAdam():
     ''' the first shoe model a
     use shoeAdam.bbps, shoeAdam.boxes, shoeAdam.twister, shoeAdam.sc '''

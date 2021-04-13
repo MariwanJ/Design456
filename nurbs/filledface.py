@@ -39,9 +39,9 @@ the numbers n1, n2, n3 defines the edge number of the underlying shape
 '''
 
 
-import FreeCAD
-import FreeCADGui
-
+import FreeCAD as App
+import FreeCADGui as Gui
+import Design456Init
 
 import Part
 

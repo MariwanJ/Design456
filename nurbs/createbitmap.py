@@ -30,7 +30,7 @@ from __future__ import unicode_literals
 from PySide import QtGui, QtCore
 import PySide
 import time
-
+import Design456Init
 import os
 
 try:

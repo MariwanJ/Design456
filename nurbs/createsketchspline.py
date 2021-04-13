@@ -35,7 +35,7 @@ from __future__ import unicode_literals
 from say import *
 from scipy.signal import argrelextrema
 import Sketcher
-
+import Design456Init
 # creates a BSpline Curve approximation Sketch for a list of points
 #
 

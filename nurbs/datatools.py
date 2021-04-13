@@ -35,7 +35,7 @@ an example is the dynamic offset node which controls the offset by a floatlist
 
 from say import *
 import pyob
-
+import Design456Init
 ## A list for Floats
 
 class FloatList(pyob.FeaturePython):

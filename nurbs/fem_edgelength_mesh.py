@@ -40,7 +40,7 @@ import FreeCADGui as Gui
 
 import Part
 import Points
-
+import Design456Init
 
 try:
     import networkx as nx
