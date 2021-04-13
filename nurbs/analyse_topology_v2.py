@@ -871,7 +871,7 @@ Gui.addCommand('printVertexStore', printVertexStore())
 def loadTest1():
     print(__file__)
     # hier relativen pfad reintun
-    App.open(u"/home/thomas/Schreibtisch/zwei_gleiche_fenster.fcstd")
+    App.open(Design456Init.NURBS_DATA_PATH+"zwei_gleiche_fenster.fcstd")
     App.setActiveDocument("zwei_gleiche_fenster")
     App.ActiveDocument = App.getDocument("zwei_gleiche_fenster")
     Gui.ActiveDocument = Gui.getDocument("zwei_gleiche_fenster")

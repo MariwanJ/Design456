@@ -48,8 +48,7 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print("Numpy library is missing, please install it before using the library")
 
 
 
@@ -305,10 +304,8 @@ def runforce():
 
 
 
-
-if __name__ == '__main__':
-
-
+#this was a main function mariwan
+def main_me():
     import Draft
 
     points = [
@@ -328,11 +325,9 @@ if __name__ == '__main__':
     m=Monitor(a)
 
     try:
-        import 
-
-        createsketchspline
+        import   createsketchspline
         #reload(.createsketchspline)
-        .createsketchspline.run()
+        createsketchspline.run()
         spline=App.ActiveDocument.ActiveObject
     except:
         spline = Draft.makeBSpline(points,closed=False,face=True,support=None)

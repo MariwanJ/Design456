@@ -143,7 +143,7 @@ def drawConeA(name,i,bounds,apex,axis,alpha,trafo,pts):
 
     if 0:
         try:
-            sf.segment(umi,uma,vmi,vma)
+            sfsegment(umi,uma,vmi,vma)
             yy.Shape= sf.toShape()
         except:
             yy.Shape=Part.Compound(pss)
@@ -1505,7 +1505,7 @@ def discoverSpheres():
     for i in range(loops):
 #        print i
         sel=[pts[random.randint(0,l-1)]+App.Vector(0.5-random.random(),10*(0.5-random.random()),0.5-random.random()) for j in range(4)]
-        res += [.points_to_face.run_sphere4p(sel,display=False) ]
+        res += [points_to_face.run_sphere4p(sel,display=False) ]
 
 
 
@@ -1981,7 +1981,7 @@ def findCylinder(obj):
         display=1
         for i in range(l-5):
             pts5=pts[i:i+5]
-            (rc,aux)=.points_to_face.run_cylinder5p(pts5,display=display,pointsize=0,maxradius=maxradius)
+            (rc,aux)=points_to_face.run_cylinder5p(pts5,display=display,pointsize=0,maxradius=maxradius)
             res += rc
 #            print (rc)
 #            print ("!!",rc[2]
@@ -2214,7 +2214,7 @@ def findSphere(obj):
     else: 
         display=0
     for i in range(l-4):
-        (pp,ra,aux)=.points_to_face.run_sphere4p(pts[i:i+4],display=display)
+        (pp,ra,aux)=points_to_face.run_sphere4p(pts[i:i+4],display=display)
         res += [(pp,ra)]
 
     res=np.array(res).swapaxes(0,1)
@@ -2292,7 +2292,7 @@ def findPlane(obj):
 
     auxs=[]
     for i in range(l-2):
-        (center,normal,aux)=.points_to_face.run_plane3p(pts[i:i+3],display=display)
+        (center,normal,aux)=points_to_face.run_plane3p(pts[i:i+3],display=display)
         res += [(center,normal)]
         auxs += [aux]
 
@@ -2669,7 +2669,7 @@ def AA():
 
     setSelection(App.ActiveDocument.M2,['Face560','Face628','Face623'])
     setSelection(App.ActiveDocument.M2,['Face560','Face628'])
-    # cProfile.run(".points_to_face.ReconstructCylinder()")
+    # cProfile.run("points_to_face.ReconstructCylinder()")
     ReconstructCylinder()
 
 

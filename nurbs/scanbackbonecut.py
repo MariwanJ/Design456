@@ -217,12 +217,12 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 
     # load the shoedata
     shoedata
-    #reload(.shoedata)
+    #reload(shoedata)
 
-    bbps=.shoedata.shoeAdam.bbps
-    boxes=.shoedata.shoeAdam.boxes
-    twister=.shoedata.shoeAdam.twister
-    sc=.shoedata.shoeAdam.sc
+    bbps=shoedata.shoeAdam.bbps
+    boxes=shoedata.shoeAdam.boxes
+    twister=shoedata.shoeAdam.twister
+    sc=shoedata.shoeAdam.sc
 
 
     trafos=[]

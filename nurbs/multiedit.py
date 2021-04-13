@@ -55,12 +55,12 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print("Numpy library is missing, please install it before using the library")
+    
 import time,random
 App=FreeCAD
 
-configuration
+import configuration
 #reload (.configuration)
 from .configuration import getcf,getcb,getcs,setcb,setcf,setcs
 
@@ -83,7 +83,7 @@ faces=Gui.Selection.getSelection()
 print (faces)
 
  
-say
+import say
 
 
 class Point(object):
@@ -1854,13 +1854,12 @@ def multiEdit():
 
 def AA():
 
-    import 
-    berings
-    #reload(.berings)
-    .berings.createBeGrid()
+    import berings
+    #reload(berings)
+    berings.createBeGrid()
     facedraw
     #reload(.facedraw)
-    .facedraw.createMap()
+    facedraw.createMap()
 
 
 
