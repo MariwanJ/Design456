@@ -36,8 +36,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import FreeCAD as App
 import FreeCADGui as Gui
 import Part
@@ -176,7 +176,7 @@ def qrcodeFace(message='qr', degree=2, showPoints=False, window=None):
         for a in range(0, bv):
             sps.append(bs.uIso(kvs[a]).toShape())
 
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             Gui.updateGui()
             fg.Shape = Part.Compound(sps)
 
@@ -186,7 +186,7 @@ def qrcodeFace(message='qr', degree=2, showPoints=False, window=None):
         for b in range(0, bu):
             sps.append(bs.vIso(kus[b]).toShape())
 
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             Gui.updateGui()
             fg.Shape = Part.Compound(sps)
 
@@ -218,7 +218,7 @@ def qrcodeFace(message='qr', degree=2, showPoints=False, window=None):
                     sps.append(sh)
                 except:
                     pass
-                App.activeDocument().recompute()
+                App.ActiveDocument.recompute()
                 Gui.updateGui()
                 fa.Shape = Part.Compound(sps)
 
@@ -249,7 +249,7 @@ def qrcodeFace(message='qr', degree=2, showPoints=False, window=None):
 def _run(window):
     qrcodeFace(message=window.anz.text(), degree=int(
         window.degree.text()), showPoints=False, window=window)
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 def dialog():

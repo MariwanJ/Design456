@@ -44,15 +44,14 @@ import FreeCADGui as Gui
 from PySide import QtGui
 import Part,Mesh,Draft,Points
 import Design456Init
-import os
+import os,sys
 
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import random
-import os, 
 
 ##\endcond
 
@@ -324,7 +323,7 @@ def toUVMesh(bs, uf=5, vf=5):
 
         #t=Mesh.Mesh((ss,topfaces))
         #Mesh.show(t)
-        #App.activeDocument().ActiveObject.ViewObject.Lighting="Two side"
+        #App.ActiveDocument.ActiveObject.ViewObject.Lighting="Two side"
 
 
         faces=[]
@@ -343,10 +342,10 @@ def toUVMesh(bs, uf=5, vf=5):
         if len(faces)<100000:
             t=Mesh.Mesh((ss,faces))
             Mesh.show(t)
-            App.activeDocument().ActiveObject.ViewObject.Lighting="Two side"
-            App.activeDocument().ActiveObject.ViewObject.DisplayMode = u"Wireframe"
-            App.activeDocument().ActiveObject.ViewObject.LineColor = (.0,.00,0.70)
-            return App.activeDocument().ActiveObject
+            App.ActiveDocument.ActiveObject.ViewObject.Lighting="Two side"
+            App.ActiveDocument.ActiveObject.ViewObject.DisplayMode = u"Wireframe"
+            App.ActiveDocument.ActiveObject.ViewObject.LineColor = (.0,.00,0.70)
+            return App.ActiveDocument.ActiveObject
         else:
             raise Exception("big mesh not implemented")
 
@@ -354,9 +353,9 @@ def toUVMesh(bs, uf=5, vf=5):
             for i in range(ks+1):
                 t=Mesh.Mesh((ss,faces[i*100000:(i+1)*100000]))
                 Mesh.show(t)
-                App.activeDocument().ActiveObject.ViewObject.Lighting="Two side"
-                App.activeDocument().ActiveObject.ViewObject.DisplayMode = u"Wireframe"
-                App.activeDocument().ActiveObject.ViewObject.LineColor = (.70,.00,0.00)
+                App.ActiveDocument.ActiveObject.ViewObject.Lighting="Two side"
+                App.ActiveDocument.ActiveObject.ViewObject.DisplayMode = u"Wireframe"
+                App.ActiveDocument.ActiveObject.ViewObject.LineColor = (.70,.00,0.00)
                 App.Console.PrintMessage(str(t))
 
         return t
@@ -484,7 +483,7 @@ def gendata(ss,twister,sc):
 #    ss.set('C2','y')
 #    ss.set('D2','z')
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 ## spreadsheat to numpy array 
@@ -601,7 +600,7 @@ class Needle(PartFeature):
         if prop == 'useSpreadsheet':
             if fp.useSpreadsheet:
                 if fp.Spreadsheet == None:
-                    fp.Spreadsheet = App.activeDocument().addObject('Spreadsheet::Sheet','Spreadsheet')
+                    fp.Spreadsheet = App.ActiveDocument.addObject('Spreadsheet::Sheet','Spreadsheet')
                     ##gendata(fp.Spreadsheet)
             return
         if prop in ["Shape", 'Spreadsheet']: return
@@ -710,7 +709,7 @@ class Needle(PartFeature):
 #
 #            try: poly=App.ActiveDocument.Poly
 #            except: 
-#                poly=App.activeDocument().addObject("Part::Compound",'Poly')
+#                poly=App.ActiveDocument.addObject("Part::Compound",'Poly')
 #                poly.ViewObject.PointSize = 10.00
 #
 #            poly.Shape=nn
@@ -731,7 +730,7 @@ class Needle(PartFeature):
         # deaktivert
 
         if obj.Backbone == None:
-            obj.Backbone=App.activeDocument().addObject('Part::Feature','Backbone')
+            obj.Backbone=App.ActiveDocument.addObject('Part::Feature','Backbone')
         
         #obj.Backbone.Shape=Part.makePolygon([App.Vector(b) for b in bb])
         bs=Part.BSplineCurve()
@@ -745,7 +744,7 @@ class Needle(PartFeature):
 
     def createRibTemplate(proxy,obj,curve):
         if obj.RibTemplate == None:
-            obj.RibTemplate=App.activeDocument().addObject('Part::Feature','Rib template')
+            obj.RibTemplate=App.ActiveDocument.addObject('Part::Feature','Rib template')
         #obj.RibTemplate.Shape=Part.makePolygon([App.Vector(c) for c in curve])
 
         bs=Part.BSplineCurve()
@@ -763,7 +762,7 @@ class Needle(PartFeature):
             vb=True
             if obj.Mesh != None:
                 vb=obj.Mesh.ViewObject.Visibility
-                App.activeDocument().removeObject(obj.Mesh.Name)
+                App.ActiveDocument.removeObject(obj.Mesh.Name)
             obj.Mesh=toUVMesh(bs,obj.MeshUCount,obj.MeshVCount)
             obj.Mesh.ViewObject.Visibility=vb
 
@@ -788,9 +787,9 @@ class Needle(PartFeature):
 
         comp=Part.Compound(ribs)
         if obj.RibCage == None:
-            obj.RibCage=App.activeDocument().addObject('Part::Feature','Ribs')
+            obj.RibCage=App.ActiveDocument.addObject('Part::Feature','Ribs')
         obj.RibCage.Shape=comp
-        vob=App.activeDocument().ActiveObject.ViewObject
+        vob=App.ActiveDocument.ActiveObject.ViewObject
         vob.LineColor=(1.,1.,0.)
         vob.LineWidth = 5.00
 
@@ -800,9 +799,9 @@ class Needle(PartFeature):
             mers.append(f.toShape())
         comp=Part.Compound(mers)
         if obj.Meridians == None:
-            obj.Meridians=App.activeDocument().addObject('Part::Feature','Meridians')
+            obj.Meridians=App.ActiveDocument.addObject('Part::Feature','Meridians')
         obj.Meridians.Shape=comp
-        vob=App.activeDocument().ActiveObject.ViewObject
+        vob=App.ActiveDocument.ActiveObject.ViewObject
         vob.LineColor=(1.,0.,0.4)
         vob.LineWidth = 5.00
 
@@ -829,7 +828,7 @@ class Needle(PartFeature):
             ss.set('C2','y')
             ss.set('D2','z')
             try:
-                App.activeDocument().recompute()
+                App.ActiveDocument.recompute()
             except:
                 print ("recompute jack ")
                 dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
@@ -864,7 +863,7 @@ class Needle(PartFeature):
         mw=FreeCADGui.getMainWindow()
         mdiarea=mw.findChild(QtGui.QMdiArea)
 
-        App.activeDocument().Spreadsheet.ViewObject.startEditing(0)
+        App.ActiveDocument.Spreadsheet.ViewObject.startEditing(0)
         subw=mdiarea.subWindowList()
     #    print  (len(subw)
         for i in subw:
@@ -890,7 +889,7 @@ class Needle(PartFeature):
     def pressed(self,index):
         needle_cmds
         #reload(.needle_cmds)
-        needle_cmds.pressed(index,App.activeDocument().MyNeedle)
+        needle_cmds.pressed(index,App.ActiveDocument.MyNeedle)
         print ("Pressed")
 
     def changed(self,index):
@@ -945,7 +944,7 @@ def importCurves(obj):
         print ("update backbone",bb)
 
 def createShoeNeedle(label="MyShoe"):
-    a=App.activeDocument().addObject("Part::FeaturePython",label)
+    a=App.ActiveDocument.addObject("Part::FeaturePython",label)
 
     n=Needle(a)
     a.useSpreadsheet=True
@@ -976,7 +975,7 @@ def commitData(editor):
     if globdat[0]=='ccmd':
         cn=cellname(int(globdat[1])+1,int(globdat[2])+3)
         old=globdat[3]
-        needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
+        needle_cmds.runCmd(old,cn,globdat[2],App.ActiveDocument.Spreadsheet)
 
 
 def startssevents2():
@@ -986,7 +985,7 @@ def startssevents2():
     mw=FreeCADGui.getMainWindow()
     mdiarea=mw.findChild(QtGui.QMdiArea)
 
-    App.activeDocument().Spreadsheet.ViewObject.startEditing(0)
+    App.ActiveDocument.Spreadsheet.ViewObject.startEditing(0)
     subw=mdiarea.subWindowList()
 #    print  (len(subw)
     for i in subw:
@@ -1089,7 +1088,7 @@ def main_test():
         #points=[App.Vector(-73.5499812578,-192.458589192,0.0),App.Vector(-35.2118430692,-245.401746512,0.0),App.Vector(-148.400562353,-232.622317741,0.0),App.Vector(-115.539281652,-172.376687886,0.0)]
         points=[App.Vector(592.694291746,-169.634476444,0.0),App.Vector(130.429397583,-0.657173752785,0.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-295.801071167,-294.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
 
-        Draft.makeBSpline(points,closed=True,face=True,support=App.activeDocument().getObject("BSpline"))
+        Draft.makeBSpline(points,closed=True,face=True,support=App.ActiveDocument.getObject("BSpline"))
         # Bspline002
 
         points=[App.Vector(-37.2293014526,1.68375661825e-08,-10),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,1200)]
@@ -1102,11 +1101,11 @@ def main_test():
 
     gendata(a.Spreadsheet)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
-    a.Ribs=[App.activeDocument().BSpline,App.activeDocument().BSpline002,App.activeDocument().BSpline,App.activeDocument().BSpline002,
-        App.activeDocument().BSpline,App.activeDocument().BSpline002,App.activeDocument().BSpline,App.activeDocument().BSpline002,
-        App.activeDocument().BSpline,App.activeDocument().BSpline002,App.activeDocument().BSpline,App.activeDocument().BSpline002,
+    a.Ribs=[App.ActiveDocument.BSpline,App.ActiveDocument.BSpline002,App.ActiveDocument.BSpline,App.ActiveDocument.BSpline002,
+        App.ActiveDocument.BSpline,App.ActiveDocument.BSpline002,App.ActiveDocument.BSpline,App.ActiveDocument.BSpline002,
+        App.ActiveDocument.BSpline,App.ActiveDocument.BSpline002,App.ActiveDocument.BSpline,App.ActiveDocument.BSpline002,
     ]
 
 
@@ -1117,21 +1116,21 @@ def main_test():
 
 
 
-    a.ribtemplateSource=App.activeDocument().BSpline
-    a.backboneSource=App.activeDocument().BSpline001
+    a.ribtemplateSource=App.ActiveDocument.BSpline
+    a.backboneSource=App.ActiveDocument.BSpline001
 
 
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 #    vp=needle.ViewProvider(a.ViewObject)
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     if 0:
 
         # zweiter koerper
 
-        b=App.activeDocument().addObject("Part::FeaturePython","MyShoe")
+        b=App.ActiveDocument.addObject("Part::FeaturePython","MyShoe")
         bn=needle.Needle(b)
 
 
@@ -1144,28 +1143,28 @@ def main_test():
         b.useSpreadsheet=True
 
 
-        # b.Spreeadsheet=App.activeDocument().addObject('Spreadsheet::Sheet','huhu')
+        # b.Spreeadsheet=App.ActiveDocument.addObject('Spreadsheet::Sheet','huhu')
         bss=b.Spreadsheet
         needle.gendata(bss)
 
-        b.ribtemplateSource=App.activeDocument().BSpline002
-        b.backboneSource=App.activeDocument().BSpline003
-        App.activeDocument().recompute()
+        b.ribtemplateSource=App.ActiveDocument.BSpline002
+        b.backboneSource=App.ActiveDocument.BSpline003
+        App.ActiveDocument.recompute()
 
 
         vp=needle.ViewProvider(b.ViewObject)
 
 
         Gui.SendMsgToActiveView("ViewFit")
-        print ("fertig")
+        print ("finished")
          
 
 
         needle.importCurves(a)
         needle.importCurves(b)
         
-    App.activeDocument().recompute()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
+    App.ActiveDocument.recompute()
     Gui.SendMsgToActiveView("ViewFit")
 
 
@@ -1224,13 +1223,13 @@ def run():
 
 
 #- kann weg
-#    g=App.activeDocument().addObject("App::DocumentObjectGroup","Ribs")
-#    m=App.activeDocument().addObject("App::DocumentObjectGroup","Meridians")
-#    gp=App.activeDocument().addObject("App::DocumentObjectGroup","RibsPoly")
-#    mp=App.activeDocument().addObject("App::DocumentObjectGroup","MeridiansPoly")
+#    g=App.ActiveDocument.addObject("App::DocumentObjectGroup","Ribs")
+#    m=App.ActiveDocument.addObject("App::DocumentObjectGroup","Meridians")
+#    gp=App.ActiveDocument.addObject("App::DocumentObjectGroup","RibsPoly")
+#    mp=App.ActiveDocument.addObject("App::DocumentObjectGroup","MeridiansPoly")
 
     #create a container for the rib sketches
-    profiles=App.activeDocument().addObject("App::DocumentObjectGroup","Profiles")
+    profiles=App.ActiveDocument.addObject("App::DocumentObjectGroup","Profiles")
 
     # load an example skethc for the xz-silouette
     App.Gui.activeDocument().mergeProject( Design456Init.NURBS_DATA_PATH+"last_sketch_sagittal.fcstd")
@@ -1272,7 +1271,7 @@ def run():
     a=createShoeNeedle()
 
     gendata(a.Spreadsheet,twister,sc)
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     #connect the shoeNeedle with the existing parts
     a.Ribs=ribs
@@ -1288,8 +1287,8 @@ def run():
     a.Proxy.myexecute(a)
 
 
-    App.activeDocument().recompute()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
+    App.ActiveDocument.recompute()
     Gui.activeDocument().activeView().viewFront()
 
     Gui.SendMsgToActiveView("ViewFit")
@@ -1316,7 +1315,7 @@ def run():
 
         loft.Sections=App.ActiveDocument.Ribs.OutList
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
     # hide all but some specials

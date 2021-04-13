@@ -48,8 +48,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import time
 
 from pyob import  FeaturePython,ViewProvider
@@ -83,17 +83,17 @@ class _VPH(ViewProvider):
 
     def methodA(self,obj):
         print ("my Method A")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def methodB(self,obj):
         print ("my method B")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def methodC(self,obj):
         print ("my method C !!")
         print (obj)
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         run(obj)
         obj.Placement=self.pm
 
@@ -274,7 +274,7 @@ def createHelperSketch(role):
 def createHelmet(obj=None):
 
     #a=App.ActiveDocument.addObject("Part::FeaturePython","helmet")
-    a=App.activeDocument().addObject('Sketcher::SketchObjectPython',"helmet")
+    a=App.ActiveDocument.addObject('Sketcher::SketchObjectPython',"helmet")
 
     Helmet(a)
     a.onlyFace=True
@@ -457,7 +457,7 @@ def run(fp):
 
 
 #createHelmet()
-#App.activeDocument().recompute()
+#App.ActiveDocument.recompute()
 
 
 

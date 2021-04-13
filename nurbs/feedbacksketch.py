@@ -25,8 +25,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import time
 
 
@@ -126,19 +126,19 @@ class ViewProvider:
     def methodA(self,obj):
         print ("my Method A Finisher")
         Gui.activateWorkbench("DraftWorkbench")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def methodB(self,obj):
         print ("my method B Starter")
         # test starting an extra dialog
         App.d=dialog(self)
         App.d.show()
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def methodC(self,obj):
         print ("my method C After Edit finished")
         Gui.activateWorkbench("NurbsWorkbench")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def unsetEdit(self,vobj,mode=0):
         self.methodC(None)
@@ -756,7 +756,7 @@ def connectPoints(pos):
     ts.setDriving(cx1,False) 
 
     ts.solve()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 def lockPoints(unlock=False):
@@ -780,7 +780,7 @@ def lockPoints(unlock=False):
         ts.setDriving(cx1,False) 
 
     ts.solve()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 def connectLine(yy=False):
     [base,ts]=Gui.Selection.getSelection()
@@ -900,7 +900,7 @@ def connectLine(yy=False):
         ts.setDriving(tab3,False) 
 
     ts.solve()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     
 
 
@@ -914,7 +914,7 @@ if __name__ == '__main__':
     fbs.addProperty("App::PropertyStringList",'bases', 'Base', )
     fbs.active=True
     fbs.bases=['Client']
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     for b in fbs.bases: 
         addgrp(fbs,b)
 

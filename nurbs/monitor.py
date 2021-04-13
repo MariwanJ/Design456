@@ -286,7 +286,7 @@ class Monitor(PartFeature):
 
 
 def run():
-    a=App.activeDocument().addObject("Part::FeaturePython","MyMonitor")
+    a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
 
     m=Monitor(a)
     a.source=Gui.Selection.getSelection()[0]
@@ -296,7 +296,7 @@ def run():
 #--------------------------
 # monitor forces
 def runforce():
-    a=App.activeDocument().addObject("Part::FeaturePython","MyMonitor")
+    a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
     m=Monitor(a)
     a.mode='force'
     a.source=Gui.Selection.getSelection()[0]
@@ -321,7 +321,7 @@ def main_me():
     spline = Draft.makeBSpline(points,closed=False,face=True,support=None)
 
 
-    a=App.activeDocument().addObject("Part::FeaturePython","MyMonitor")
+    a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
     m=Monitor(a)
 
     try:

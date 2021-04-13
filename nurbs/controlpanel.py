@@ -100,7 +100,7 @@ def createListWidget(obj=None, propname=None):
         obj.Proxy.dialog.hide()
         obj.Proxy.dialog = dialog(obj)
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def add():
         '''add gui selected objects to list'''
@@ -123,7 +123,7 @@ def createListWidget(obj=None, propname=None):
         obj.Proxy.dialog.hide()
         obj.Proxy.dialog = dialog(obj)
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     w.r = QtGui.QPushButton("remove selected items")
     box.addWidget(w.r)
@@ -140,7 +140,7 @@ def clear(window):
     ''' delete the window widget '''
     # window.deleteLater()
     # App.ActiveDocument.Spreadsheet.ViewObject.update()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 def hu():
@@ -241,7 +241,7 @@ def createPropWidget(obj, propname):
         else:
             setattr(ref, propname, val)
         setattr(obj, propname, val)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         Gui.updateGui()
 
     w.d.valueChanged.connect(valueChangedA)
@@ -527,7 +527,7 @@ class ControlPanel(PartFeature):
 def run():
     '''create a generic panel without data'''
 
-    a = App.activeDocument().addObject("Part::FeaturePython", "MyMonitor")
+    a = App.ActiveDocument.addObject("Part::FeaturePython", "MyMonitor")
     ControlPanel(a)
 
 
@@ -539,18 +539,18 @@ if __name__ == '__main__':
     c = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
     co = App.ActiveDocument.addObject("Part::Cone", "Cone")
 
-    ss = App.activeDocument().addObject('Spreadsheet::Sheet', 'Spreadsheet')
+    ss = App.ActiveDocument.addObject('Spreadsheet::Sheet', 'Spreadsheet')
     ss.set('A1', '45')
     ss.set('B4', '123')
     # ss.setAlias('A1','ali')
 
-    cp = App.activeDocument().addObject("Part::Compound", "Compound")
+    cp = App.ActiveDocument.addObject("Part::Compound", "Compound")
     cp.Links = [c, co]
 
-#    fu=App.activeDocument().addObject("Part::MultiFuse","Fusion")
+#    fu=App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
 #    fu.Shapes = [b,co]
 
-    cm = App.activeDocument().addObject("Part::MultiCommon", "Common")
+    cm = App.ActiveDocument.addObject("Part::MultiCommon", "Common")
     cm.Shapes = [b, co]
 
     for k in [b, c, co, cp]:
@@ -559,7 +559,7 @@ if __name__ == '__main__':
     App.ActiveDocument.recompute()
 
     # -------------------------------
-    a = App.activeDocument().addObject("Part::FeaturePython", "MyControlPanel")
+    a = App.ActiveDocument.addObject("Part::FeaturePython", "MyControlPanel")
     m = ControlPanel(a)
     # -----------------------------
 
@@ -581,7 +581,7 @@ if __name__ == '__main__':
 
         m.Object.Radius2Slider = True
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     # start the dialog
     m.Object.ViewObject.Proxy.edit()

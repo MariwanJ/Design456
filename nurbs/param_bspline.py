@@ -169,7 +169,7 @@ def runtest():
     a.Tangents = '1 0 0,1 0 0,1 1 0,1 0 0,1 0 0,-1 0 0'.split(',')
     a.TangentFlags = ['0', '1', '1', '0', '0', '1']
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     FreeCADGui.SendMsgToActiveView("ViewFit")
 
 

@@ -46,8 +46,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import random
 import Draft
 import os
@@ -145,7 +145,7 @@ def runtaubin(obj):
     else:
         obj.Shape=Part.makePolygon(pp)        
 
-#    App.activeDocument().recompute()
+#    App.ActiveDocument.recompute()
 
 
 
@@ -361,7 +361,7 @@ def splitMesh():
         ptsa += [pts]
 
         if 0: # spaeter
-            sk=App.activeDocument().addObject('Sketcher::SketchObject','Sketch')
+            sk=App.ActiveDocument.addObject('Sketcher::SketchObject','Sketch')
             sk.addGeometry(Part.Circle(App.Vector(0.,0.,0),App.Vector(0,0,1),50),False)
             sk.Placement=pm
 

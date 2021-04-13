@@ -52,8 +52,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import time
 from pivy import coin
 
@@ -1214,8 +1214,8 @@ def geodesicMapPatchToFace():
     '''pfad(e) $2 auf geodesic $1 auflegen'''
     a=createPatch(obj=Gui.Selection.getSelection()[0],
     wire=Gui.Selection.getSelection()[1])
-    App.activeDocument().recompute()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
+    App.ActiveDocument.recompute()
 
 
 def appendGeodesic():
@@ -1441,7 +1441,7 @@ def approx_step():
 
     ds=a.dist
     a.direction += 1
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     dsa=a.dist
 
     better=True
@@ -1449,17 +1449,17 @@ def approx_step():
     if ds<dsa:
         print ("wird nicht besser A"
         a.direction -= 1
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         ds=a.dist
         a.direction -= 1
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         dsa=a.dist
 
         print (ds,dsa)
         if ds<dsa:
             print ("wird nicht besser B"
             a.direction += 1
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             better=False
 
     if better: return better
@@ -1468,25 +1468,25 @@ def approx_step():
 
     ds=a.dist
     a.lang -= 1
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     dsa=a.dist
 
     print (ds,dsa)
     if ds<=dsa:
         print ("wird nicht besser C"
         a.lang += 1
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
         ds=a.dist
         a.lang += 1
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         dsa=a.dist
 
         print (ds,dsa)
         if ds<=dsa:
             print ("wird nicht besser D"
             a.lang -= 1
-            App.activeDocument().recompute()
+            App.ActiveDocument.recompute()
             better=False
     print ("a lang ",a.lang
     print ("hah ", better
@@ -2201,7 +2201,7 @@ def createMarker(u=20,v=50):
     l.Label="MyMarker"
     l.ViewObject.DisplayMode = u"2D text"
     l.ViewObject.TextSize = '15 mm'
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     l.u=u
     l.v=v
     try:
@@ -2389,12 +2389,12 @@ def createShoeMarkers():
         l.ViewObject.DisplayMode = u"2D text"
         l.ViewObject.TextSize = '15 mm'
         l.u,l.v=float(m[1]),float(m[2])
-        App.activeDocument().recompute()
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
         l.Placement.Base=App.Vector(l.TargetPoint.x,l.TargetPoint.y*3,l.TargetPoint.z+30)
         l.ViewObject.LineColor=(1.0,.6,0.)
         l.ViewObject.LineWidth=4.
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
 
 
@@ -2419,4 +2419,4 @@ def connectMarkers():
         if a=='HF2' and b=='KF2':connectMarkers(aob,bob,d=190)
         elif a=='H2' and b=='HF2':connectMarkers(aob,bob,d=190)
         else:connectMarkers(aob,bob)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()

@@ -125,7 +125,7 @@ class FilledFace(PartFeature):
 def createFilledFace(name="MyFilledFace"):
     '''create a FilledFace object'''
 
-    ffobj = App.activeDocument().addObject(
+    ffobj = App.ActiveDocument.addObject(
         "Part::FeaturePython", name)
     FilledFace(ffobj)
     return ffobj
@@ -133,7 +133,7 @@ def createFilledFace(name="MyFilledFace"):
 
 if __name__ == '__main__':
 
-    b = App.activeDocument().addObject(
+    b = App.ActiveDocument.addObject(
         "Part::FeaturePython", "MyFilledFace")
     FilledFace(b)
     '''
@@ -164,4 +164,4 @@ if __name__ == '__main__':
     ff=createFilledFace()
     ff.e1=w1
     ff.e2=w2
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()

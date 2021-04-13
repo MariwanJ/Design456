@@ -59,7 +59,7 @@ class Design456_Part_Merge:
             for o in s:
                 allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
 
-            newObj = App.activeDocument().addObject("Part::MultiFuse", "MergedTemp")
+            newObj = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
             newObj.Shapes = allObjects
             newObj.Refine = True
             App.ActiveDocument.recompute()
@@ -112,7 +112,7 @@ class Design456_Part_Subtract:
                 errMessage = "Select two or more objects to Subtract"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
-            newObj = App.activeDocument().addObject("Part::Cut", "tempSubtract")
+            newObj = App.ActiveDocument.addObject("Part::Cut", "tempSubtract")
             newObj.Base = App.ActiveDocument.getObject(
                 s[0].ObjectName)  # Target
             newObj.Tool = App.ActiveDocument.getObject(
@@ -173,7 +173,7 @@ class Design456_Part_Intersect:
                 errMessage = "Select two or more objects to Intersect"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
-            newObj = App.activeDocument().addObject("Part::MultiCommon", "tempIntersect")
+            newObj = App.ActiveDocument.addObject("Part::MultiCommon", "tempIntersect")
             newObj.Shapes = [App.ActiveDocument.getObject(
                 s[0].ObjectName), App.ActiveDocument.getObject(s[1].ObjectName)]
             App.ActiveDocument.recompute()
@@ -231,7 +231,7 @@ class Design456_Part_Group:
                 faced.getInfo(s).errorDialog(errMessage)
                 return
 
-            newObj = App.activeDocument().Tip = App.activeDocument().addObject('App::Part', 'Group')
+            newObj = App.ActiveDocument.Tip = App.ActiveDocument.addObject('App::Part', 'Group')
             newObj.Label = 'Group'
             for obj_ in s:
                 obj = App.ActiveDocument.getObject(obj_.ObjectName)

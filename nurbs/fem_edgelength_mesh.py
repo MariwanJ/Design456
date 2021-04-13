@@ -183,7 +183,7 @@ def getGraph(sk):
             g2.add_edge(n1, n2)
 
         rc = sk.solve()
-        rc = App.activeDocument().recompute()
+        rc = App.ActiveDocument.recompute()
 
     return conix, g2
 
@@ -300,7 +300,7 @@ def run(animate=True, itercount=101):
         n3.ViewObject.LineColor = color
         n3.Shape = Part.Compound(col)
 
-        rc = App.activeDocument().recompute()
+        rc = App.ActiveDocument.recompute()
         print("SUM FORCES", lp, sumforces)
         Gui.updateGui()
 
@@ -329,7 +329,7 @@ def run(animate=True, itercount=101):
         n3.ViewObject.Transparency = 70
         n3.ViewObject.ShapeColor = color
 
-    rc = App.activeDocument().recompute()
+    rc = App.ActiveDocument.recompute()
 
 
 if __name__ == '__main__':

@@ -1,13 +1,13 @@
 def test1():
 # test of parameters
     import Draft
-    import 
+
 
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
     import needels
     #reload( needle)
 
@@ -54,10 +54,10 @@ except ImportError:
     a.ribtemplateSource=App.ActiveDocument.BSpline
     a.backboneSource=App.ActiveDocument.BSpline001
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     vp=needle.ViewProvider(a.ViewObject)
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 
@@ -76,28 +76,27 @@ except ImportError:
     b.useSpreadsheet=True
 
 
-    # b.Spreeadsheet=App.activeDocument().addObject('Spreadsheet::Sheet','huhu')
+    # b.Spreeadsheet=App.ActiveDocument.addObject('Spreadsheet::Sheet','huhu')
     bss=b.Spreadsheet
     needle.gendata(bss)
 
     b.ribtemplateSource=App.ActiveDocument.BSpline002
     b.backboneSource=App.ActiveDocument.BSpline003
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
     vp=needle.ViewProvider(b.ViewObject)
 
 
     Gui.SendMsgToActiveView("ViewFit")
-    print ("fertig")
-     
+    print ("finished")
 
 
     needle.importCurves(a)
     needle.importCurves(b)
 
-    App.activeDocument().recompute()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
+    App.ActiveDocument.recompute()
 
 
 
@@ -105,7 +104,6 @@ except ImportError:
 if 1:
 
     import Draft
-    import 
 
     import needle as needle
     #reload( .needle)
@@ -125,7 +123,7 @@ if 1:
     a.useRibCage=True
     a.useMesh=True
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     Gui.SendMsgToActiveView("ViewFit")
 
 

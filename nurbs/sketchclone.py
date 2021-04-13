@@ -158,4 +158,4 @@ def runtest():
     obj.relation = [1, 3, 5, 6, 7]
     obj.base = App.ActiveDocument.Sketch
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()

@@ -42,8 +42,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import random
 
 # -------------------------
@@ -284,5 +284,5 @@ class SimpleHood(PartFeature):
 
 
 def run():
-    b = App.activeDocument().addObject("Part::FeaturePython", "MySimpleHood")
+    b = App.ActiveDocument.addObject("Part::FeaturePython", "MySimpleHood")
     bn = SimpleHood(b)

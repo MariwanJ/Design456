@@ -49,8 +49,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import random
 
 
@@ -134,7 +134,7 @@ def gendata(spreadsheet, spheremode=False):
             cn = cellname(u+2, 10+v+1)
             ss.set(cn, str(z[u, v]))
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 def table2array(spreadsheet):
@@ -226,7 +226,7 @@ def setSpreadsheet(ss, x, y, z):
             cn = cellname(u+2, 10+v+1)
             ss.set(cn, str(z[u, v]))
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 def table2Nurbs(ss, label="MyNurbs"):
@@ -411,7 +411,7 @@ if 0 and __name__ == '__main__':
 
     ss1 = getSpreadsheet('MySpreadsheet')
     ss1.set("E15", "-4000")
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     table2Nurbs(ss1, "E15")
 
     # --------------------------------------------

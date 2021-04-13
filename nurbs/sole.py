@@ -130,9 +130,9 @@ def runA(model=None):
         except:
             ss = App.ActiveDocument.Spreadsheet
     except:
-        ss = App.activeDocument().addObject('Spreadsheet::Sheet', 'Spreadsheet')
+        ss = App.ActiveDocument.addObject('Spreadsheet::Sheet', 'Spreadsheet')
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
         sole_models
         #reload(sole_models)
@@ -210,7 +210,7 @@ def runA(model=None):
         highb = [17, 17, 16, 15, 11, 10, 8, 4, 2, 1, 2, 5, 9, 14]
         highc = [17, 17, 16, 15, 25, 35, 35, 15, 5, 1, 2, 5, 9, 14]
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
         tf = [ssa2npa(ss, 2, 24, 8, 26, default=None).swapaxes(0, 1)]
         tt = np.array([ssa2npa(ss, 2, 19, 8, 21, default=None).swapaxes(0, 1)])
@@ -223,7 +223,7 @@ def runA(model=None):
         weia = ssa2npa(ss, 2, 14, 2+12, 14, default=None)[0]
         weib = ssa2npa(ss, 2, 15, 2+12, 15, default=None)[0]
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     rand = True
     bh = 0  # randhoehe
@@ -469,7 +469,7 @@ def runA(model=None):
         loft.Sections = [fa, fb]
         loft.Solid = True
         loft.ViewObject.ShapeColor = (.0, 1., .0)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
         for f in loft.Sections:
             f.ViewObject.hide()
@@ -515,7 +515,7 @@ def createheel():
     loft = App.ActiveDocument.addObject('Part::Loft', 'Loft')
     loft.Sections = [proj, clone]
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     Gui.activeDocument().activeView().viewAxonometric()
     Gui.SendMsgToActiveView("ViewFit")
 
