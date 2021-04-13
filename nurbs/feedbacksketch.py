@@ -15,7 +15,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Sketcher,Part
 
-
+import Design456Init
 
 from PySide import QtCore
 
