@@ -33,6 +33,12 @@ from __future__ import unicode_literals
 #--
 #-- GNU Lesser General Public License (LGPL)
 #-------------------------------------------------
+import os,sys
+import FreeCAD as App
+import FreeCADGui as Gui
+
+from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
+
 
 from say import *
  

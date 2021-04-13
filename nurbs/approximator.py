@@ -36,14 +36,13 @@ from __future__ import unicode_literals
 # -------------------------------------------------
 '''
 
-from .pyob import FeaturePython, ViewProvider
+from pyob import FeaturePython, ViewProvider
 from scipy import misc
 from scipy import signal
 from scipy.optimize import minimize
 import scipy
-pyob
 from pyob import *
-from .miki_g import createMikiGui2, MikiApp
+from miki_g import createMikiGui2, MikiApp
 import os
 
 try:

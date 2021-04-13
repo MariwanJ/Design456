@@ -246,12 +246,12 @@ def getNeighborEdges(n):
 # ----------------------------------------------------
 
 class MainAnalysisMethodRunAna:
-    def __init__(self, model, silent=False):
+    def __init__(self, model=None, silent=False):
         self.model=model
         self.silent=silent
         
     def Activate(self):
-        runAna(self.model,self.silent)
+        self.runCompare()
 
     def runAna(self, model, silent=False):
         '''main analysis method'''
@@ -359,13 +359,11 @@ class MainAnalysisMethodRunAna:
         """
          TopologicalAnalyse
         """
-
+        import networkx as nx
         try:
             App.PT
         except:
             App.PT = {}
-            
-        import networkx as nx
         g = nx.Graph()
         try:
             '''run analysis for one selected object'''
@@ -422,7 +420,7 @@ class MainAnalysisMethodRunAna:
             col += getNeighborEdges(n)
         Part.show(Part.Compound(col))
 
-    def zeigeQ(i):
+    def zeigeQ(self,i):
         ''' display the identification quality level as Sub Grid '''
 
         ns = []
@@ -718,6 +716,77 @@ class MainAnalysisMethodRunAna:
     #    print ("common found:",found
     #    print count
 
+    def displayQualityPoints(self):
+        """ 
+        displayQualityPoints TOPO 8
+        """
+        import networkx as nx
+        g = nx.Graph()
+
+        def Activated(self):
+            try:
+                self.displayQualityPoints()
+            except Exception as err:
+                App.Console.PrintError("'Magnet' Failed. "
+                                       "{err}\n".format(err=str(err)))
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+
+        def displayQualityPoints(self):
+            '''display the quality points as point clouds'''
+            g = App.g
+            for q in range(1, 7):
+                pts = []
+                for v in g.nodes():
+                    # print g.node[v]['quality']
+                    if g.node[v]['quality'] == q:
+                        pts.append(g.node[v]['vector'])
+        #        print pts
+                if pts != []:
+                    Points.show(Points.Points(pts))
+                    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
+                        random.random(), random.random(), random.random())
+                    App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
+                    App.ActiveDocument.ActiveObject.Label = "Points Quality " + str(q)
+
+# printGraphData TOPO 5
+
+    def printGraphData(self):
+        """ 
+        printGraphData
+        """
+        import networkx as nx
+        g = nx.Graph()
+
+        def Activated(self):
+            try:
+                self.printData()
+
+            except Exception as err:
+                App.Console.PrintError("'Magnet' Failed. "
+                                       "{err}\n".format(err=str(err)))
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, fname, exc_tb.tb_lineno)
+
+        def printData(self):
+            '''print some diagnostic data'''
+            g = App.g
+            for v in g.nodes():
+                print(v)
+                print(g.node[v]['quality'])
+                print(g.node[v]['keys'])
+                print(g.node[v]['vector'])
+                print(g.node[v]['keys'][g.node[v]['quality']-1])
+
+        def GetResources(self):
+            return {
+                'Pixmap': Design456Init.NURBS_ICON_PATH + '.svg',
+                'MenuText': '',
+                            'ToolTip':  ''
+            }
+
     def GetResources(self):
         return {
             'Pixmap': Design456Init.NURBS_ICON_PATH+'nurbs.svg',
@@ -728,91 +797,6 @@ Gui.addCommand('MainAnalysisMethodRunAna', MainAnalysisMethodRunAna())
 #TODO : FIX ME .. YOU CANNOT HAVE IT LIKE THAT SEPARATE THEM. Mariwan
 #Gui.addCommand('displayVertexStoreCommonPoints',               TopologicalCompare.displayVertexStore(TopologicalCompare()))
 
-
-class displayQualityPoints:
-    """ 
-    displayQualityPoints TOPO 8
-    """
-    import networkx as nx
-    g = nx.Graph()
-
-    def Activated(self):
-        try:
-            self.displayQualityPoints()
-        except Exception as err:
-            App.Console.PrintError("'Magnet' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def displayQualityPoints(self):
-        '''display the quality points as point clouds'''
-        g = App.g
-        for q in range(1, 7):
-            pts = []
-            for v in g.nodes():
-                # print g.node[v]['quality']
-                if g.node[v]['quality'] == q:
-                    pts.append(g.node[v]['vector'])
-    #        print pts
-            if pts != []:
-                Points.show(Points.Points(pts))
-                App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
-                    random.random(), random.random(), random.random())
-                App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
-                App.ActiveDocument.ActiveObject.Label = "Points Quality " + \
-                    str(q)
-
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'Nurbs.svg',
-            'MenuText': 'displayQualityPoints',
-                        'ToolTip':  'displayQualityPoints'
-        }
-Gui.addCommand('displayQualityPoints', displayQualityPoints())
-
-
-# printGraphData TOPO 5
-
-class printGraphData:
-    """ 
-    printGraphData
-    """
-    import networkx as nx
-    g = nx.Graph()
-
-    def Activated(self):
-        try:
-            self.printData()
-
-        except Exception as err:
-            App.Console.PrintError("'Magnet' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def printData(self):
-        '''print some diagnostic data'''
-        g = App.g
-        for v in g.nodes():
-            print(v)
-            print(g.node[v]['quality'])
-            print(g.node[v]['keys'])
-            print(g.node[v]['vector'])
-            print(g.node[v]['keys'][g.node[v]['quality']-1])
-
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + '.svg',
-            'MenuText': '',
-                        'ToolTip':  ''
-        }
-
-
-Gui.addCommand('printGraphData', printGraphData())
-Gui.addCommand('printDATA', printGraphData().printData())
 
 
 # resetVertexStore
@@ -842,8 +826,6 @@ class resetVertexStore:
             'MenuText': '',
                         'ToolTip':  ''
         }
-
-
 Gui.addCommand('resetVertexStore', resetVertexStore())
 
 
@@ -1025,11 +1007,3 @@ def Test3():
         print("i ")
         print(i)
         time.sleep(0.01)
-
-
-'''
-
-s=Gui.Selection.getSelection()
-len(s[0].Shape.Vertexes)
-
-'''
