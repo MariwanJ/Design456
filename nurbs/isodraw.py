@@ -1371,7 +1371,7 @@ def testF():
 
 '''
 
-if __name__=='__main__':
+def StrangeSoManyMain():
 
     for w in [App.ActiveDocument.Sketch]:
         b=App.ActiveDocument.addObject("Part::FeaturePython","MyIsodraw")
@@ -1384,7 +1384,7 @@ if __name__=='__main__':
         createLink(b,"A3D")
 
 
-if __name__=='__main__':
+def WhyNewMain():
 
         b=App.ActiveDocument.addObject("Part::FeaturePython","MyDrawGrid")
 
@@ -1398,7 +1398,7 @@ if __name__=='__main__':
 
 
 
-if __name__=='__main__':
+def OhSomanyMain():
 
         b=App.ActiveDocument.addObject("Part::FeaturePython","MyGrid")
 

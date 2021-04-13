@@ -696,9 +696,8 @@ def genQuadrangle():
 
 
 
-
-if __name__=='__main__':
-    #     runLoadSketch()
+def hahahaMainAgain():
+         runLoadSketch()
     pass
 
 

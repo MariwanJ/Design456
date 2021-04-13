@@ -45,8 +45,8 @@ import Design456Init
 try:
     import networkx as nx
 except ImportError:
-    print ("Trying to Install required module: networkx")
-    os.system('python -m pip3 install networkx')
+    print ("Please install the required library networkx")
+    
 
 import random
 import os
