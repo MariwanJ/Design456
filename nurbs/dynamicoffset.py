@@ -197,7 +197,7 @@ class DynaOffset(pyob.FeaturePython):
     ##\endcond
 
 
-    def execute(proxy,obj):
+    def execute(self,proxy,obj):
         ''' update curve'''
         myupdate(obj)
 
@@ -218,7 +218,7 @@ def createDynaoffset(name="DynamicOffset"):
 
 ## method for workbench menu entry
 
-def run():
+def WereWasrun():
     '''create a DynaOffset'''
     createDynaoffset()
 

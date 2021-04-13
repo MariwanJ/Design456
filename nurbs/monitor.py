@@ -285,7 +285,7 @@ class Monitor(PartFeature):
                 print ("kann nichts machen")
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
 
     m=Monitor(a)

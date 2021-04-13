@@ -52,7 +52,7 @@ except ImportError:
     
 #import matplotlib.pyplot as plt
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
     #default parameters
     p={

@@ -34,7 +34,7 @@ import FreeCADGui as Gui
 import Design456Init
 import Draft
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     ''' for all selected curves two wires are created
     one displays all poles and the other all knotes
     the created objects are not parametric
@@ -63,4 +63,5 @@ def run():
             App.ActiveDocument.ActiveObject.ViewObject.PointSize=10
             App.ActiveDocument.ActiveObject.ViewObject.PointColor=(0.,1.,1.)
             App.ActiveDocument.ActiveObject.ViewObject.LineColor=(0.,1.,1.)
-run()
+#dont run make a class
+#ThousandsOfRunWhatShouldIdo()

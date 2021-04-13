@@ -210,7 +210,7 @@ def orderdata(obj, inner=False, plotit=False, medianfil=0, cf=True):
     Draft.makeWire(goods, closed=True, face=False)
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
     # default parameters
     p = {

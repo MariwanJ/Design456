@@ -924,7 +924,7 @@ def stop():
 
 # start the facedraw eventserver
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     '''start the facedraw dialog and eventmanager'''
 
     try:

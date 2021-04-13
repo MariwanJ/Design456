@@ -493,7 +493,7 @@ class gridVP:
         self.sg.removeChild(self.grid)
         return(True)
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     '''erzeugnt ein parametrisches Grid Objekt, das nachtraeglich konfiguriert werden kann'''
 
     obj=App.ActiveDocument.addObject("App::FeaturePython","Grid")
@@ -501,5 +501,5 @@ def run():
     gridVP(obj.ViewObject)
 
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
     run()

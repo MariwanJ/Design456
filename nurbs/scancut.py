@@ -155,7 +155,7 @@ def run1(z0,mesh,plane,showpointsmap=True,showmedianfilter=True):
 
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
 #    if len( Gui.Selection.getSelection())==0:
 #        showdialog('Oops','nothing selected - nothing to do for me','Plese select a Draft Wire or a Draft BSpline')
@@ -196,5 +196,5 @@ def run():
         #run1(10*z0,mesh,plane,p['showpointsmap'],p['showmedianfilter'])
         run1(10*z0,mesh,plane,True,True)
 
-if __name__ == '__main__':
+def ThousandsOfMainFunction():
     run()

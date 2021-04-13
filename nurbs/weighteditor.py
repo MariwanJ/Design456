@@ -191,6 +191,6 @@ def dialog(sk=None):
 
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     for sk in  Gui.Selection.getSelection():
         w=dialog(sk)

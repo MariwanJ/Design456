@@ -103,7 +103,7 @@ def runa():
     dok2.recompute()
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
     ''' run with error handling'''
     try:
         runa()

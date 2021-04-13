@@ -54,7 +54,7 @@ from say import *
 ## load height profile from file
 #
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
     try:
         aktiv=App.ActiveDocument

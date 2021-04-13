@@ -144,7 +144,7 @@ def machFlaeche(psta, ku=None, objName="XXd"):
     return bs
 
 
-def run():
+def ThousandsOfRunWhatShouldIdo():
 
     # edge and 2 points
     # ed=App.ActiveDocument.Sketch.Shape.Edge1
