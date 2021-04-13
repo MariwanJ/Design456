@@ -35,10 +35,10 @@ from __future__ import unicode_literals
 # -------------------------------------------------
 # bspline von poles erzeugen
 
-import FreeCAD
+import FreeCAD as App
 import Part
-import FreeCADGui
-
+import FreeCADGui AS Gui
+import Design456Init
 
 def printinfo(sp):
     print("\n" * 2)

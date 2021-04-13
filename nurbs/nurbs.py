@@ -36,7 +36,7 @@ from __future__ import unicode_literals
 from pivy import coin
 from say import *
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:
@@ -1749,10 +1749,10 @@ def runtest2():
 
 nurbs
 
-.nurbs.testRandomB()
-.nurbs.testRandomCylinder()
-.nurbs.testRandomSphere()
-.nurbs.testRandomTorus()
+nurbs.testRandomB()
+nurbs.testRandomCylinder()
+nurbs.testRandomSphere()
+nurbs.testRandomTorus()
 
 
 '''

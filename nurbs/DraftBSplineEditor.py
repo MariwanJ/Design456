@@ -29,6 +29,7 @@ from PySide import QtGui, QtCore
 
 from PySide.QtCore import *
 from PySide.QtGui import *
+import Design456Init
 
 import os
 

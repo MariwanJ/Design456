@@ -28,6 +28,7 @@ from __future__ import unicode_literals
 '''make a perspective transformation of a bspline curve'''
 from say import *
 import pyob
+import Design456Init
 
 '''
 def showdialog(title="Fehler",text="Schau in den ReportView fuer mehr Details",detail=None):
@@ -146,9 +147,9 @@ def trafo(x,y,coeffs):
 # verzerren kann
 
 
-class Trafo(.pyob.FeaturePython):
+class Trafo(pyob.FeaturePython):
     def __init__(self,obj ):
-        .pyob.FeaturePython.__init__(self,obj)
+        pyob.FeaturePython.__init__(self,obj)
 
         self.Type="Transformation"
         self.TypeId="Transformation"
@@ -158,7 +159,7 @@ class Trafo(.pyob.FeaturePython):
         obj.addProperty("App::PropertyLink","target","A","target frame for perspective")#.target=line2
         obj.addProperty("App::PropertyLink","model","A","curve which should be transformed")#.model=App.ActiveDocument.Sketch
         obj.addProperty("App::PropertyLink","center","A","needed if useCenter is on")#.center=App.ActiveDocument.Point
-        .pyob.ViewProvider(obj.ViewObject)
+        pyob.ViewProvider(obj.ViewObject)
         obj.ViewObject.LineColor=(0.5,1.0,0.5)
 
 

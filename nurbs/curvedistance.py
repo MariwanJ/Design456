@@ -28,8 +28,10 @@ from __future__ import unicode_literals
 # distance between the target curve 1st, and some other curves
 
 import FreeCADGui as Gui
-import os
+import FreeCAD as App
 
+import os
+import Design456Init
 try:
     import numpy as np 
 except ImportError:

@@ -43,7 +43,7 @@ from say import *
 import FreeCAD as App
 import FreeCADGui as Gui
 
-
+import Design456Init
 
 
 import Part,Mesh,Draft,Points

@@ -31,6 +31,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import math
 from pivy import coin
+import Design456Init
 
 class gridNode(coin.SoSeparator):
     ''' coin Node fuer das grid'''

@@ -41,7 +41,7 @@ from say import *
 
 import FreeCAD as App
 import FreeCADGui as Gui
-
+import Design456Init
 from PySide import QtGui
 import Part
 import Mesh

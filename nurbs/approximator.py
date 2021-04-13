@@ -44,7 +44,7 @@ import scipy
 from pyob import *
 from miki_g import createMikiGui2, MikiApp
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:

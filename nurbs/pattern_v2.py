@@ -42,6 +42,8 @@ from __future__ import unicode_literals
 
 import os as os
 import sys as sys
+import Design456Init
+
 try:
     import networkx as nx
 except ImportError:

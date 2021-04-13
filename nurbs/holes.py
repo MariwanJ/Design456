@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import FreeCAD as App
 import FreeCADGui as Gui
 import Part
-
+import Design456Init
 import random
 
 
@@ -81,13 +81,13 @@ class holes:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.NURBS_ICON_PATH + 'holes.svg',
-            'MenuText': 'hole',
-            'ToolTip':  'hole'
+            'MenuText': 'holes',
+            'ToolTip':  'holes'
         }
 
 
-Gui.addCommand('hole', hole())
-hole.__doc__ = """hole: Tobe added later     """
+Gui.addCommand('holes', holes())
+holes.__doc__ = """holes: Tobe added later     """
 
 
 class extractWires:

@@ -16,7 +16,7 @@ def testRandomB():
     na=20
     b=10
 
-    a=.nurbs.makeNurbs(b,na)
+    a=nurbs.makeNurbs(b,na)
 
     a.solid=False
     a.base=False

@@ -31,7 +31,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Sketcher,Part
 
-
+import Design456Init
 
 import os
 
@@ -44,7 +44,7 @@ import time
 
 import pyob
 from pyob import  FeaturePython,ViewProvider
-#reload (.pyob)
+#reload (pyob)
 
 
 #-------------------------------

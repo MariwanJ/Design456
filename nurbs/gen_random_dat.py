@@ -40,6 +40,7 @@ import Draft,Part,Points
 
 import FreeCAD as App
 import FreeCADGui as Gui
+import Design456Init
 
 from scipy.signal import argrelextrema
 import os

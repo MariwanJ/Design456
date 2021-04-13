@@ -41,6 +41,7 @@ import FreeCADGui as Gui
 from PySide import QtCore,QtGui
 from pivy import coin
 import os
+import Design456Init
 
 try:
     import numpy as np 

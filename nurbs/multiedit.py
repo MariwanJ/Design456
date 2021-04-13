@@ -51,7 +51,7 @@ multiple bspline faces editor
 import FreeCAD,Part
 import FreeCADGui as Gui
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:
