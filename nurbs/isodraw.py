@@ -639,10 +639,10 @@ createMap.__doc__ = """createMap: Tobe added later     """
 
 
 class createGrid:
-    def Activated(mapobj, upmode=False)
-     '''create a 2D grid  or 3D grid (if upmode) for the map obj'''
+    def Activated(mapobj, upmode=False):
+        '''create a 2D grid  or 3D grid (if upmode) for the map obj'''
 
-       obj = mapobj
+        obj = mapobj
 
         try:
             face = obj.faceObject.Shape.Faces[obj.faceNumber]
@@ -1654,8 +1654,6 @@ class map2Dto3D():
             'MenuText': 'map 3d to 2D',
             'ToolTip':  'Map 3D drawing to 2D'
         }
-
-
 Gui.addCommand('map2Dto3D', map2Dto3D())
 map2Dto3D.__doc__ = """map2Dto3D: Tobe added later     """
 
@@ -1663,7 +1661,7 @@ map2Dto3D.__doc__ = """map2Dto3D: Tobe added later     """
 # ------------------------
 
 
-def map3Dgridto2Dgrid():
+class map3Dgridto2Dgrid:
 
     def Activated(self):
         # 3D Edges auf 2D Edges
@@ -1757,19 +1755,22 @@ def map3Dgridto2Dgrid():
             # Draft.makeWire(pts2)
         Part.show(Part.Compound(polcol))
 
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'map 3d to 2D',
-            'ToolTip':  'Map 3D drawing to 2D'
-        }
+#     def GetResources(self):
+#         return {
+#             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+#             'MenuText': 'map3Dgridto2Dgrid',
+#             'ToolTip':  'map3Dgridto2Dgrid'
+#         }
+# Gui.addCommand('map3Dgridto2Dgrid', map3Dgridto2Dgrid())
+# map3Dgridto2Dgrid.__doc__ = """map3Dgridto2Dgrid: Tobe added later     """
 
 
-Gui.addCommand('map3Dgridto2Dgrid', map3Dgridto2Dgrid())
-map3Dgridto2Dgrid.__doc__ = """map3Dgridto2Dgrid: Tobe added later     """
 
+class getmap:
 
-class getmap(mapobj, obj):
+    __init__(mapobj, obj):
+        self.mapobj=mapobj
+        self.obj=obj
 
     def Activated(self):
         '''calculates four interpolators to convert xy (isomap) into uv (nurbs) and back
@@ -2002,16 +2003,16 @@ class getmap(mapobj, obj):
 
         return [uv2x, uv2y, xy2u, xy2v]
 
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'map 3d to 2D',
-            'ToolTip':  'Map 3D drawing to 2D'
-        }
+#     def GetResources(self):
+#         return {
+#             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+#             'MenuText': 'map 3d to 2D',
+#             'ToolTip':  'Map 3D drawing to 2D'
+#         }
 
 
-Gui.addCommand('getmap', getmap())
-getmap.__doc__ = """getmap: Tobe added later     """
+# Gui.addCommand('getmap', getmap())
+# getmap.__doc__ = """getmap: Tobe added later     """
 
 
 class getmap3(mapobj, obj, calcZ=None):
@@ -2246,16 +2247,16 @@ class getmap3(mapobj, obj, calcZ=None):
 
         return [uv2x, uv2y, xy2u, xy2v]
 
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'map 3d to 2D',
-            'ToolTip':  'Map 3D drawing to 2D'
-        }
+#     def GetResources(self):
+#         return {
+#             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+#             'MenuText': 'map 3d to 2D',
+#             'ToolTip':  'Map 3D drawing to 2D'
+#         }
 
 
-Gui.addCommand('getmap3', getmap3())
-getmap3.__doc__ = """getmap3: Tobe added later     """
+# Gui.addCommand('getmap3', getmap3())
+# getmap3.__doc__ = """getmap3: Tobe added later     """
 
 
 # pruefe qualitaet der umrechnung
@@ -2293,8 +2294,6 @@ class testC():
             'MenuText': 'testC',
             'ToolTip':  'testC'
         }
-
-
 Gui.addCommand('testC', testC())
 testC.__doc__ = """testC: Tobe added later     """
 
@@ -2318,8 +2317,6 @@ class testD():
             'MenuText': 'testD',
             'ToolTip':  'testD'
         }
-
-
 Gui.addCommand('testD', testD())
 testD.__doc__ = """testD: Tobe added later     """
 
