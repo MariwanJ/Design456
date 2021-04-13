@@ -155,7 +155,7 @@ def button(widget):
     widget.setArr(arr,widget.obj,scale=widget.scale)
     widget.target.update(arr,scale=widget.scale)
 
-def #reload(widget):
+def reload(widget):
     arr=getArr(widget.obj,scale=widget.scale)
     np2tab(arr,widget.table)
 
@@ -246,7 +246,7 @@ def pointEditor(obj,scale=1):
 
 
     b=QtGui.QPushButton("Reload")
-    b.pressed.connect(lambda:#reload(w))
+    b.pressed.connect(lambda:reload(w))
     box.addWidget(b)
 
     b=QtGui.QPushButton("Apply Table")
@@ -263,7 +263,7 @@ def pointEditor(obj,scale=1):
 
 def run(scale=1):
     print ("RUN ---",scale)
-    obj=FreeCADGui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelection()[0]
     print (obj)
     return pointEditor(obj,scale=scale)
 
