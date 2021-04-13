@@ -224,8 +224,7 @@ def run():
 
 
 #\cond
-if __name__=='__main__':
-
+def AgainDefinedasMain():
     fl2=App.ActiveDocument.getObject("ParmeterList")
     if fl2 == None: 
         fl2=datatools.createFloatlist("ParameterList")

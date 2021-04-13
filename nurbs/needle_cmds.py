@@ -41,8 +41,8 @@ from PySide import QtGui
 import FreeCAD as App
 import FreeCADGui as Gui
 
-needle
-needle_models
+import needle
+import needle_models
 #reload(.needle_models)
 
 

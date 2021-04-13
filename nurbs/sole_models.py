@@ -150,6 +150,6 @@ def test():
     sole.runA(model=modelY)
 
 
-if __name__=='__main__':
+def IDontUnderstandAlltheseMains():
     test()
 

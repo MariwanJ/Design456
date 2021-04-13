@@ -147,5 +147,5 @@ def run():
 # 1. pfad spline
 # 2. zu platzierendes objekt
 
-if __name__=='__main__':
+def EndlessMains():
     run()
