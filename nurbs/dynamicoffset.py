@@ -173,13 +173,13 @@ pyob
 
 
 
-class DynaOffset(.pyob.FeaturePython):
+class DynaOffset(pyob.FeaturePython):
 
     ##\cond
     def __init__(self, obj):
         obj.Proxy = self
         self.Type = self.__class__.__name__
-        .pyob.ViewProvider(obj.ViewObject) 
+        pyob.ViewProvider(obj.ViewObject) 
 
 
     def XonChanged(proxy,obj,prop):
