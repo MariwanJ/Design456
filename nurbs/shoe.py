@@ -54,10 +54,6 @@ except ImportError:
 import random
 import os, 
 
-global __dir__
-__dir__ = os.path.dirname(.__file__)
-print ( __dir__)
-
 ##\endcond
 
 
@@ -1237,7 +1233,7 @@ def run():
     profiles=App.activeDocument().addObject("App::DocumentObjectGroup","Profiles")
 
     # load an example skethc for the xz-silouette
-    App.Gui.activeDocument().mergeProject( __dir__+"/../testdata/last_sketch_sagittal.fcstd")
+    App.Gui.activeDocument().mergeProject( Design456Init.NURBS_DATA_PATH+"last_sketch_sagittal.fcstd")
     App.ActiveDocument.Sketch.Placement=App.Placement(App.Vector(0,0,0), App.Rotation(App.Vector(0,0.707107,0.707107),180), App.Vector(0,0,0))
 
 
@@ -1301,7 +1297,7 @@ def run():
 
     # load a scanned last to compare if available
     try: 
-        Points.insert(__dir__+"/../testdata/shoe_last_scanned.asc","Shoe")
+        Points.insert(Design456Init.NURBS_DATA_PATH+"shoe_last_scanned.asc","Shoe")
         App.ActiveDocument.shoe_last_scanned.ViewObject.ShapeColor=(1.0,.0,.0)
         App.ActiveDocument.shoe_last_scanned.ViewObject.PointSize=1
     except: 

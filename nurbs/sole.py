@@ -64,16 +64,13 @@ import Points
 import random
 
 import os
-import 
 
-global __dir__
-__dir__ = os.path.dirname(.__file__)
-print(__dir__)
+
 # \endcond
 
 # 12 divisions
 
-#reload(.spreadsheet_lib)
+#reload(spreadsheet_lib)
 
 
 def runA(model=None):
@@ -139,8 +136,8 @@ def runA(model=None):
         App.activeDocument().recompute()
 
         sole_models
-        #reload(.sole_models)
-        model = .sole_models.model()
+        #reload(sole_models)
+        model = sole_models.model()
 
     if 0:  # "punktelisten anzeigen"
         p = Draft.makeWire([App.Vector(p[0], -p[1], p[2])
@@ -466,7 +463,7 @@ def runA(model=None):
         # fb.ViewObject.ControlPoints=True
 
         try:
-            loft = App.ActiveDocument.sole
+            loft = App.ActiveDocumentsole
         except:
             loft = App.ActiveDocument.addObject('Part::Loft', 'sole')
 
