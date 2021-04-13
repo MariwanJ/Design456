@@ -42,7 +42,7 @@ import matplotlib.pyplot as plt
 import 
 
 from pyob import  FeaturePython,ViewProvider
-from .say import *
+from say import *
 #reload (pyob)
 
 from FreeCAD import Vector

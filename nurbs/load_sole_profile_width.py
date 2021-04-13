@@ -40,16 +40,16 @@ import os
 
 import numpy as np 
 
-spreadsheet_lib
-#reload(.spreadsheet_lib)
-sole
-#reload(.sole)
+import spreadsheet_lib
+#reload(spreadsheet_lib)
+import sole
+#reload(sole)
 
 
-from .spreadsheet_lib import cellname
+from spreadsheet_lib import cellname
 
 # from .errors import sayexc
-from .say import *
+from say import *
 
 
 def runa():
@@ -64,8 +64,8 @@ def runa():
     fna = App.ParamGet(
         'User parameter:Plugins/shoe').GetString("width profile")
     if fna == '':
-        __dir__ = os.path.dirname(.__file__)
-        fna = __dir__ + "/../testdata/breitev3.fcstd"
+        
+        fna = Design456Init.NURBS_DATA_PATH+"breitev3.fcstd"
         App.ParamGet('User parameter:Plugins/shoe').SetString(
             "width profile", fna)
 
@@ -99,7 +99,7 @@ def runa():
 
     # aktualisieren
     dok2.recompute()
-    .sole.run()
+    sole.run()
     dok2.recompute()
 
 

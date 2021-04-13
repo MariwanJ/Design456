@@ -362,7 +362,7 @@ class Multiface(object):
                 except:
                 #else:
                     print ("Problem bei ",sfi)
-                    .say.sayexc("sfi-problem")
+                    saysayexc("sfi-problem")
                     comp += [self.comp[sfi]]
 
                 poles=np.array(sf.getPoles())
@@ -523,7 +523,7 @@ class Multiface(object):
                     except:
                     #else:
                         print ("Problem bei ",sfi)
-                        .say.sayexc("sfi-problem")
+                        saysayexc("sfi-problem")
                         comp += [self.comp[sfi]]
 
                     poles=np.array(sf.getPoles())

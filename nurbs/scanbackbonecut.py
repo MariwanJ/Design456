@@ -52,11 +52,6 @@ import sys,traceback,random,os
 
 import Points
 
-global __dir__
-__dir__ = os.path.dirname(.__file__)
-print ( __dir__)
-
-
 ##\endcond
 
 ## calculate the aprroximated cut of a point set by a plane
@@ -217,7 +212,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
     try: 
         App.ActiveDocument.getObject(point_cloud)
     except: 
-        Points.insert(__dir__+"/../testdata/"+point_cloud+".asc","Shoe")
+        Points.insert(Design456Init.NURBS_DATA_PATH+point_cloud+".asc","Shoe")
 
 
     # load the shoedata
