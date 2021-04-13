@@ -34,11 +34,10 @@ except ImportError:
     os.system('python -m pip3 install numpy')
 import random
 
-import 
 
-from .pyob import  FeaturePython,ViewProvider
-from .say import *
-reload (.pyob)
+from pyob import  FeaturePython,ViewProvider
+from say import *
+#reload (.pyob)
 
 class Morpher(FeaturePython):
 

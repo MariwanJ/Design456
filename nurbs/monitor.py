@@ -331,7 +331,7 @@ if __name__ == '__main__':
         import 
 
         createsketchspline
-        reload(.createsketchspline)
+        #reload(.createsketchspline)
         .createsketchspline.run()
         spline=App.ActiveDocument.ActiveObject
     except:

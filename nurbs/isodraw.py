@@ -264,7 +264,7 @@ class Isodraw(PartFeature):
             obj.backref.Document.recompute()
         face = obj.face.Shape.Face1
         facedraw
-        reload(facedraw)
+        #reload(facedraw)
         try:
             obj.ViewObject.ShapeColor = obj.wire.ViewObject.ShapeColor
         except:
@@ -332,7 +332,7 @@ class Brezel(PartFeature):
         # face=obj.face.Shape.Face1
 
         facedraw
-        # reload(.facedraw)
+        # #reload(.facedraw)
         try:
             obj.ViewObject.ShapeColor = obj.wire.ViewObject.ShapeColor
         except:

@@ -37,7 +37,6 @@ import FreeCAD
 import FreeCADGui
 
 import os
-import 
 
 try:
     import numpy as np 
@@ -46,9 +45,9 @@ except ImportError:
     os.system('python -m pip3 install numpy')
 
 spreadsheet_lib
-reload(.spreadsheet_lib)
+#reload(.spreadsheet_lib)
 sole
-reload(.sole)
+#reload(.sole)
 
 
 from .spreadsheet_lib import cellname

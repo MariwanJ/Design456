@@ -762,7 +762,7 @@ class Needle(PartFeature):
 
     def pressed(self,index):
         needle_cmds
-        reload(.needle_cmds)
+        #reload(.needle_cmds)
         .needle_cmds.pressed(index,App.activeDocument().MyNeedle)
         print ("Pressed")
 
@@ -840,7 +840,7 @@ def commitData(editor):
 #    print ("commit data",editor)
 
     needle_cmds
-    reload(.needle_cmds)
+    #reload(.needle_cmds)
     global globdat
 #    print globdat
     if globdat[0]=='ccmd':
@@ -925,7 +925,7 @@ def getdata(index):
 def run():
 #            nurbs
 #        import needle as needle
-#        reload( .needle)
+#        #reload( .needle)
 
         dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
         try: App.closeDocument(dokname)
@@ -945,7 +945,7 @@ def run():
         #a.useMesh=True
         a.RibCount=0
         needle_models
-        reload (.needle_models)
+        #reload (.needle_models)
         # a.Proxy.getExampleModel(.needle_models.modelBanana)
         model=App.ParamGet('User parameter:Plugins/nurbs').GetString("NeedleModel","modelSimple")
 
@@ -985,7 +985,7 @@ class testmain:
     import Draft
     import 
     import needle as needle
-    reload( .needle)
+    #reload( .needle)
 
     dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
     try: App.closeDocument(dokname)

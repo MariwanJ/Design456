@@ -135,9 +135,9 @@ class MyTestCmd2:
     def Activated(self):
         import QtUnitGui
         TestNurbsGui
-        reload(TestNurbsGui)
+        #reload(TestNurbsGui)
         TestNurbs
-        reload(TestNurbs)
+        #reload(TestNurbs)
         QtUnitGui.addTest("TestNurbsGui")
         QtUnitGui.addTest("TestNurbs")
 
@@ -217,7 +217,7 @@ class _Command2():
                 modul = self.name
             Gui.doCommand("import " + modul)
             Gui.doCommand("import " + self.lmod)
-            Gui.doCommand("reload(" + self.lmod + ")")
+            Gui.doCommand("#reload(" + self.lmod + ")")
             docstring = "print;print (" + \
                 re.sub(r'\(.*\)', '.__doc__', self.command)
 
@@ -279,7 +279,7 @@ class _Command():
                 modul = self.name
             #Gui.doCommand("import " + modul)
             #Gui.doCommand("import "+self.lmod)
-            #Gui.doCommand("reload("+self.lmod+")")
+            #Gui.doCommand("#reload("+self.lmod+")")
             print(self.command)
             Gui.doCommand(self.command)
         # App.ActiveDocument.commitTransaction()

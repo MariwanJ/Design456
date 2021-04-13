@@ -51,7 +51,7 @@ import random
 
 
 isodraw
-reload(isodraw)
+#reload(isodraw)
 
 
 '''
@@ -176,7 +176,7 @@ def createMarker(self):
     import 
     os.system('python -m pip3 install numpy')
     geodesic_lines
-    reload(.geodesic_lines)
+    #reload(.geodesic_lines)
 
     l = .geodesic_lines.makeLabel(
         direction='Horizontal', labeltype='Position')
@@ -1203,7 +1203,7 @@ class MyApp(object):
     def resetEdit(self):
         Gui.ActiveDocument.resetEdit()
         import miki as miki
-        # reload(miki)
+        # #reload(miki)
         mw=miki.getMainWindow()
         miki.getComboView(mw).removeTab(2)
         miki.getComboView(mw).setCurrentIndex(0)
@@ -1268,7 +1268,7 @@ class MyApp(object):
 def mydialog(obj):
 
     import miki as miki
-    reload(miki)
+    #reload(miki)
 
     app=MyApp()
     miki=miki.Miki()

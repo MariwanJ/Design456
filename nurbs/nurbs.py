@@ -1291,7 +1291,7 @@ class ViewProviderNurbs:
 
     def edit(self):
         import nurbs_dialog
-        reload(nurbs_dialog)
+        #reload(nurbs_dialog)
         App.tt = self
         self.Object.Object.generatePoles = False
         self.Object.Object.Label = "Nurbs individual"

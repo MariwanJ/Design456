@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 
 
 from say import *
-pyob
+import pyob
 import Sketcher
 
 

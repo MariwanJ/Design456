@@ -59,7 +59,7 @@ import pivy
 from pivy import coin
 
 import configuration
-#reload (configuration)
+##reload (configuration)
 from configuration import getcb
 
 

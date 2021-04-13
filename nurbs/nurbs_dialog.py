@@ -303,7 +303,7 @@ class MyApp(object):
         Gui.ActiveDocument.resetEdit()
 #        self.root.ids['main'].hide()
         import miki as miki
-        reload(miki)
+        #reload(miki)
         mw=miki.getMainWindow()
         miki.getComboView(mw).removeTab(2)
         miki.getComboView(mw).setCurrentIndex(0)
@@ -873,7 +873,7 @@ class MyApp(object):
 def mydialog(obj):
 
     import miki as miki
-    reload(miki)
+    #reload(miki)
 
     app=MyApp()
     miki=miki.Miki()

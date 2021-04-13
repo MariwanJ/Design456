@@ -51,7 +51,6 @@ from PySide import QtGui
 import sys,traceback,random,os
 
 import Points
-import 
 
 global __dir__
 __dir__ = os.path.dirname(.__file__)
@@ -223,7 +222,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 
     # load the shoedata
     shoedata
-    reload(.shoedata)
+    #reload(.shoedata)
 
     bbps=.shoedata.shoeAdam.bbps
     boxes=.shoedata.shoeAdam.boxes
@@ -247,7 +246,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 
     # create the sketches
     createsketchspline
-    reload(.createsketchspline)
+    #reload(.createsketchspline)
 
     scp=App.ActiveDocument.Scanpoints
     jj=scp.OutList

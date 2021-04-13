@@ -919,7 +919,7 @@ def createShapeV2(obj):
     print obj.westSeam
     print obj.eastSeam
     temp as ttt
-    reload (.temp)
+    #reload (.temp)
     .temp.run(obj)
 '''
 
