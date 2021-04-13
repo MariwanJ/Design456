@@ -128,7 +128,7 @@ def myupdate(obj):
 
 
 from say import *
-pyob
+import pyob
 
 ## A configurable offset curve
 #
@@ -226,7 +226,7 @@ if __name__=='__main__':
 
     fl2=App.ActiveDocument.getObject("ParmeterList")
     if fl2 == None: 
-        fl2=.datatools.createFloatlist("ParameterList")
+        fl2=datatools.createFloatlist("ParameterList")
         fl2.val007=10
 
     dof=createDynaoffset()
