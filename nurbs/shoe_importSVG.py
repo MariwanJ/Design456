@@ -1408,7 +1408,7 @@ class ViewProvider:
     def updatesvg(self,obj):
         obj.filemtime=0
         obj.Proxy.execute(obj)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def runtimer(self,obj):
         obj.Proxy.runTimer(obj)

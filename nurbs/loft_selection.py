@@ -65,6 +65,6 @@ def run():
     l=App.ActiveDocument.addObject('Part::Loft','Loft')
     l.Ruled = True
     l.Sections=ribs
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 

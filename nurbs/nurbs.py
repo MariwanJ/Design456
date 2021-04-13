@@ -40,8 +40,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 __version__ = '0.3'
 
 # idea from  FreeCAD TemplatePyMod module by (c) 2013 Werner Mayer LGPL
@@ -890,7 +890,7 @@ class Nurbs(PartFeature):
             self.grid = App.ActiveDocument.ActiveObject
             self.grid.Label = "Pole Grid"
 
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         Gui.updateGui()
         endtime = time.time()
         print("create PoleGrid time", endtime-starttime)
@@ -1355,7 +1355,7 @@ def createnurbs():
     a.Proxy.updatePoles()
     a.Proxy.showGriduv()
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     Gui.updateGui()
 
     Gui.activeDocument().activeView().viewAxonometric()

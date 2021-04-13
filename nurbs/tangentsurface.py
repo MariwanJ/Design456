@@ -52,8 +52,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import random
 
 import os
@@ -537,7 +537,7 @@ class Seam(PartFeature):
 
 
 def createTangentFace():
-    b = App.activeDocument().addObject("Part::FeaturePython", "MyTangentFace")
+    b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentFace")
     bn = FilledFace(b)
 
 
@@ -664,16 +664,16 @@ if __name__ == '__main__':
     ks.vmin = 0
 
     # create the seam
-    wseam = App.activeDocument().addObject("Part::FeaturePython", "SeamW")
+    wseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamW")
     Seam(wseam)
 
-    eseam = App.activeDocument().addObject("Part::FeaturePython", "SeamE")
+    eseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamE")
     Seam(eseam)
 
-    nseam = App.activeDocument().addObject("Part::FeaturePython", "SeamN")
+    nseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamN")
     Seam(nseam)
 
-    sseam = App.activeDocument().addObject("Part::FeaturePython", "SeamS")
+    sseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamS")
     Seam(sseam)
 
     # seams aus streifen berechnen
@@ -705,7 +705,7 @@ if __name__ == '__main__':
     sseam.sourceSwap = True
     wseam.source = kw
 
-    b = App.activeDocument().addObject("Part::FeaturePython", "MyTangentialFace")
+    b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentialFace")
     bn = TangentFace(b)
     b.westSeam = wseam
     b.eastSeam = eseam
@@ -743,7 +743,7 @@ if __name__ == '__main__':
         ss.Placement.Base.x = -50
         ss.Placement.Base.y = -50
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     # quality check
     c1 = App.ActiveDocument.source.Shape.Edge3.Curve
@@ -761,7 +761,7 @@ def runseam():
     source = None
     if len(Gui.Selection.getSelection()) != 0:
         source = Gui.Selection.getSelection()[0]
-    s = App.activeDocument().addObject("Part::FeaturePython", "SeamW")
+    s = App.ActiveDocument.addObject("Part::FeaturePython", "SeamW")
     Seam(s)
     s.source = source
     try:
@@ -775,7 +775,7 @@ def runtangentsurface():
     source = None
     if len(Gui.Selection.getSelection()) != 0:
         source = Gui.Selection.getSelection()[0]
-    b = App.activeDocument().addObject("Part::FeaturePython", "MyTangentialFace")
+    b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentialFace")
     TangentFace(b)
 #    b.westSeam=App.ActiveDocument.SeamW007
 #    b.eastSeam=App.ActiveDocument.SeamW006
@@ -912,7 +912,7 @@ def createShapeV2(obj):
 #        closed=True
         bs = machFlaeche(poles, closed=closed)
         obj.Shape = bs.toShape()
-    print("fertig")
+    print("finished")
 
 
 '''

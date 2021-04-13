@@ -343,7 +343,7 @@ def runrib(rib, name, nr=None):
 
     Driver(obj)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     Gui.activeDocument().activeView().viewTop()
     Gui.SendMsgToActiveView("ViewFit")
     Gui.activeDocument().activeView().viewTop()
@@ -450,7 +450,7 @@ def create_rib_driverALT(nr):
 
     Driver(obj)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     Gui.activeDocument().activeView().viewTop()
     Gui.SendMsgToActiveView("ViewFit")
     Gui.activeDocument().activeView().viewTop()
@@ -480,7 +480,7 @@ def recomputeAll():
         if dob != None:
             dob.off = True
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     for i in range(2, 15):
         dob = App.ActiveDocument.getObject('ribdriver_'+str(i))

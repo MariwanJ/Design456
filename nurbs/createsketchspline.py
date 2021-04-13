@@ -44,15 +44,15 @@ def createSketchSpline(pts=None, label="BSpline Sketch", periodic=True):
     '''createSketchSpline(pts=None,label="BSpline Sketch",periodic=True)'''
 
     try:
-        body = App.activeDocument().Body
+        body = App.ActiveDocument.Body
     except:
-        body = App.activeDocument().addObject('PartDesign::Body', 'Body')
+        body = App.ActiveDocument.addObject('PartDesign::Body', 'Body')
 
-    sk = App.activeDocument().addObject('Sketcher::SketchObject', 'Sketch')
+    sk = App.ActiveDocument.addObject('Sketcher::SketchObject', 'Sketch')
     sk.Label = label
     sk.MapMode = 'FlatFace'
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     if pts == None:  # some test data
         pts = [App.Vector(a) for a in [(10, 20, 30),
@@ -86,13 +86,13 @@ def createSketchSpline(pts=None, label="BSpline Sketch", periodic=True):
             'InternalAlignment:Sketcher::BSplineControlPoint', i, 3, k, i))
     sk.addConstraint(conList)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     sk.Placement = App.Placement(App.Vector(
         0, 0, p.z), App.Rotation(App.Vector(1, 0, 0), 0))
     sk.ViewObject.LineColor = (
         random.random(), random.random(), random.random())
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     return sk
 
 
@@ -100,18 +100,18 @@ def mergeSketchSpline(pts=None, label="BSpline Sketch", periodic=True, name="Ske
     '''createSketchSpline(pts=None,label="BSpline Sketch",periodic=True)'''
 
     try:
-        body = App.activeDocument().Body
+        body = App.ActiveDocument.Body
     except:
-        body = App.activeDocument().addObject('PartDesign::Body', 'Body')
+        body = App.ActiveDocument.addObject('PartDesign::Body', 'Body')
 
-    sk = App.activeDocument().getObject(name)
+    sk = App.ActiveDocument.getObject(name)
     if sk == None:
-        sk = App.activeDocument().addObject('Sketcher::SketchObject', name)
+        sk = App.ActiveDocument.addObject('Sketcher::SketchObject', name)
 
     sk.Label = label
     sk.MapMode = 'FlatFace'
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     if pts == None:  # some test data
         pts = [App.Vector(a) for a in [(10, 20, 30),
@@ -160,13 +160,13 @@ def mergeSketchSpline(pts=None, label="BSpline Sketch", periodic=True, name="Ske
 
     sk.addConstraint(conList)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     sk.Placement = App.Placement(App.Vector(
         0, 0, p.z), App.Rotation(App.Vector(1, 0, 0), 0))
     sk.ViewObject.LineColor = (
         random.random(), random.random(), random.random())
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     return sk
 
 

@@ -36,7 +36,7 @@ try:
     import numpy as np 
 except ImportError:
     print ("Trying to Install required module: nump")
-    os.system('python -m pip3 install numpy')
+    
 import Draft
 
 def  dist(a,b):

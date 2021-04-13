@@ -98,7 +98,7 @@ def createSegment(name="MySegment"):
     umin, ... vmax: Eingabe der Knotennummer
     '''
 
-    ffobj = App.activeDocument().addObject(
+    ffobj = App.ActiveDocument.addObject(
         "Part::FeaturePython", name)
     Segment(ffobj)
     return ffobj
@@ -185,7 +185,7 @@ class NurbsTrafo(pyob.FeaturePython):
 def createNurbsTrafo(name="MyNurbsTafo"):
     ''' erzeugt ein NurbsTrafo Objekt '''
 
-    ffobj = App.activeDocument().addObject(
+    ffobj = App.ActiveDocument.addObject(
         "Part::FeaturePython", name)
     NurbsTrafo(ffobj)
     return ffobj
@@ -298,7 +298,7 @@ class FineSegment(pyob.FeaturePython):
 def createFineSegment(name="MyFineSegment"):
     ''' erzeugt ein FineSegment Objekt '''
 
-    ffobj = App.activeDocument().addObject("Part::FeaturePython", name)
+    ffobj = App.ActiveDocument.addObject("Part::FeaturePython", name)
     FineSegment(ffobj)
     return ffobj
 

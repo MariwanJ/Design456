@@ -35,8 +35,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import time
 import Mesh
 import random
@@ -431,26 +431,26 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
     #    Part.show(e2)
     #    Part.show(e3)
         Part.show(e4)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         eA=App.ActiveDocument.ActiveObject
         if i%2==0:
             be += [eA]
 
         Part.show(e)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         eB=App.ActiveDocument.ActiveObject
         
         rf=App.ActiveDocument.addObject('Part::RuledSurface', 'Ruled Surface')
         rf.Curve1=(eA,['Edge1'])
         rf.Curve2=(eB,['Edge1'])
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         faces += [rf.Shape.Face1]
 
     # create bottom face
     rf=App.ActiveDocument.addObject('Part::RuledSurface', 'Ruled Surface')
     rf.Curve1=(be[0],['Edge1'])
     rf.Curve2=(be[1],['Edge1'])
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     faces += [rf.Shape.Face1]
 
 
@@ -459,14 +459,14 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
     sh=App.ActiveDocument.addObject('Part::Feature','Shell2')
     sh.Shape=_.removeSplitter()
     del _
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     shell=sh.Shape
     _=Part.Solid(shell)
     App.ActiveDocument.addObject('Part::Feature','Solid').Shape=_.removeSplitter()
     del _
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     tc=time.time()
 
@@ -823,7 +823,7 @@ def  results(ptsa,ptsb):
     cwk.Shape=bc.toShape()
 
 
-    _=App.activeDocument().recompute()
+    _=App.ActiveDocument.recompute()
     cww.ViewObject.LineColor=(1.,1.,0.)
     cww.ViewObject.LineWidth=7
 

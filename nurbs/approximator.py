@@ -48,8 +48,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
     
 import Draft
 import Points
@@ -2085,7 +2085,7 @@ def RibstoFace():
 
 def findrib():
     # finde punkt auf kurve mit gegebenem x und mache dorhin einen pol
-    a = App.activeDocument().BeringSketch.Shape.Edge1.Curve
+    a = App.ActiveDocument.BeringSketch.Shape.Edge1.Curve
 
     x = 3
     v = App.Vector(x, 0)
@@ -2238,7 +2238,7 @@ man auf eine Freiformfläche aufkleben ann.
             App.ActiveDocument.removeObject(grp.Name)
 
         # break
-    print("FERTIG")
+    print("finished")
 
 
 def AA():

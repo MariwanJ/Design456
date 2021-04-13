@@ -112,7 +112,7 @@ def creatorFunction(name):
 
     if name.startswith('Part.'):
         [_, c] = name.split('.')
-        return "App.activeDocument().addObject('Part::" + c + "','test')"
+        return "App.ActiveDocument.addObject('Part::" + c + "','test')"
 
     if name.startswith('So'):
         return "coin." + name + '()'

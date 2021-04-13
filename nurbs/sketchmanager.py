@@ -33,8 +33,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import pyob
 
 import time
@@ -315,14 +315,14 @@ class _ViewProvider(pyob.ViewProvider):
     def methodA(self,obj):
 #        print ("my Method A Finisher")
 #        Gui.activateWorkbench("DraftWorkbench")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def methodB(self,obj):
         print ("my method B Starter")
         # test starting an extra dialog
         App.d=dialog(self)
         App.d.show()
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def methodC(self,obj):
         print ("my method C After Edit finished")
@@ -331,7 +331,7 @@ class _ViewProvider(pyob.ViewProvider):
 #        App.d.hide()
 #        App.d.deleteLater()
         print ("ha")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         print ("hu")
         mw = getMainWindow()
         tab = getComboView(mw)
@@ -371,7 +371,7 @@ def copySketch(sketch,name):
     gs=sb.Geometry
     cs=sb.Constraints
 
-    sk=App.activeDocument().addObject('Sketcher::SketchObjectPython',name)
+    sk=App.ActiveDocument.addObject('Sketcher::SketchObjectPython',name)
     _ViewProvider(sk.ViewObject)
 
     for g in gs:
@@ -385,7 +385,7 @@ def copySketch(sketch,name):
 
     sk.solve()
     sk.recompute()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 def replaceSketch(sketch,name):
@@ -394,9 +394,9 @@ def replaceSketch(sketch,name):
     gs=sb.Geometry
     cs=sb.Constraints
 
-    sk=App.activeDocument().getObject(name)
+    sk=App.ActiveDocument.getObject(name)
     if sk == None or name=='ufo':
-        sk=App.activeDocument().addObject('Sketcher::SketchObjectPython',name)
+        sk=App.ActiveDocument.addObject('Sketcher::SketchObjectPython',name)
         _ViewProvider(sk.ViewObject)
     rr=range(len(sk.Geometry))
     rr.reverse()
@@ -415,7 +415,7 @@ def replaceSketch(sketch,name):
 
     sk.solve()
     sk.recompute()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     return sk
 
 
@@ -636,7 +636,7 @@ def connectAll(sk):
 
 def genQuadrangle():
         name="Viereck"
-        sk=App.activeDocument().addObject('Sketcher::SketchObjectPython',name)
+        sk=App.ActiveDocument.addObject('Sketcher::SketchObjectPython',name)
         _ViewProvider(sk.ViewObject)
         A=App.Vector(-100,-50,0)
         B=App.Vector(100,-50,0)
@@ -666,7 +666,7 @@ def genQuadrangle():
             
 
         sk.solve()
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         print ("done")
         reportSketch(sk)
 
@@ -686,7 +686,7 @@ def genQuadrangle():
             print ("roll back")
             #App.ActiveDocument.abortTransaction()
         reportSketch(sk)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
         
         
 

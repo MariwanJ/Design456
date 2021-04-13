@@ -32,8 +32,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 
 
 from PySide import QtGui
@@ -73,15 +73,15 @@ def getdata(index):
 
 
 def initmodel():
-    App.activeDocument().MyNeedle.Proxy.lock = False
-    App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelS)
-    # App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelBanana)
-    # App.activeDocument().MyNeedle.Proxy.getExampleModel(.needle_models.modelEd4)
+    App.ActiveDocument.MyNeedle.Proxy.lock = False
+    App.ActiveDocument.MyNeedle.Proxy.getExampleModel(needle_models.modelS)
+    # App.ActiveDocument.MyNeedle.Proxy.getExampleModel(needle_models.modelBanana)
+    # App.ActiveDocument.MyNeedle.Proxy.getExampleModel(needle_models.modelEd4)
 
 
 def addRib(dialog):
     # read
-    (curve, bb, scaler, twister) = App.activeDocument().MyNeedle.Proxy.Model()
+    (curve, bb, scaler, twister) = App.ActiveDocument.MyNeedle.Proxy.Model()
 
     # modifications
     i = dialog.pos
@@ -100,8 +100,8 @@ def addRib(dialog):
     twister = b
 
     # write back
-    App.activeDocument().MyNeedle.Proxy.lock = False
-    App.activeDocument().MyNeedle.Proxy.setModel(curve, bb, scaler, twister)
+    App.ActiveDocument.MyNeedle.Proxy.lock = False
+    App.ActiveDocument.MyNeedle.Proxy.setModel(curve, bb, scaler, twister)
     dialog.obj.Proxy.showRib(i)
     dialog.close()
 
@@ -128,7 +128,7 @@ def CaddRib(obj, i):
 
 def addMeridian(dialog):
     # read
-    (curve, bb, scaler, twister) = App.activeDocument().MyNeedle.Proxy.Model()
+    (curve, bb, scaler, twister) = App.ActiveDocument.MyNeedle.Proxy.Model()
 
     # modifications
     i = dialog.pos
@@ -137,8 +137,8 @@ def addMeridian(dialog):
     curve = c
 
     # write back
-    App.activeDocument().MyNeedle.Proxy.lock = False
-    App.activeDocument().MyNeedle.Proxy.setModel(curve, bb, scaler, twister)
+    App.ActiveDocument.MyNeedle.Proxy.lock = False
+    App.ActiveDocument.MyNeedle.Proxy.setModel(curve, bb, scaler, twister)
     dialog.obj.Proxy.showMeridian(i)
     dialog.close()
 
@@ -267,7 +267,7 @@ def CaddNeighborMeridians(obj, i):
 
 def delMeridian(dialog):
     # read
-    (curve, bb, scaler, twister) = App.activeDocument().MyNeedle.Proxy.Model()
+    (curve, bb, scaler, twister) = App.ActiveDocument.MyNeedle.Proxy.Model()
 
     if curve.shape[0] < 5:
         print("zu wenig Punkte "())
@@ -279,8 +279,8 @@ def delMeridian(dialog):
     curve = c
 
     # write back
-    App.activeDocument().MyNeedle.Proxy.lock = False
-    App.activeDocument().MyNeedle.Proxy.setModel(curve, bb, scaler, twister)
+    App.ActiveDocument.MyNeedle.Proxy.lock = False
+    App.ActiveDocument.MyNeedle.Proxy.setModel(curve, bb, scaler, twister)
     dialog.obj.Proxy.showMeridian(i)
     dialog.close()
 

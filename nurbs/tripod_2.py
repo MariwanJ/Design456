@@ -509,18 +509,18 @@ def createSweep():
     sw=App.ActiveDocument.addObject('Part::Sweep','Sweep')
     sw.Spine=(Gui.Selection.getSelection()[-1],["Edge1"])
     sw.Sections=Gui.Selection.getSelection()[0:-1]
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
 def createLoft():
     sw=App.ActiveDocument.addObject('Part::Loft','Loft')
     sw.Sections=Gui.Selection.getSelection()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 def createCompound():
     sw=App.ActiveDocument.addObject("Part::Compound","Compound001")
     sw.Links=Gui.Selection.getSelection()
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 # createSweep()
 

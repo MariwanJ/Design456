@@ -20,8 +20,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import time
 
 
@@ -64,7 +64,7 @@ class ViewProvider:
 
 def creategrid(uc=3,vc=5,sk=None):
     if sk==None:
-        sk=App.activeDocument().addObject('Sketcher::SketchObject','Sketch')
+        sk=App.ActiveDocument.addObject('Sketcher::SketchObject','Sketch')
 
 # sketche grid generator
 
@@ -85,7 +85,7 @@ def creategrid(uc=3,vc=5,sk=None):
 
 
 
-#    App.activeDocument().recompute()
+#    App.ActiveDocument.recompute()
 
 
     def getedges(a,b):
@@ -112,7 +112,7 @@ def creategrid(uc=3,vc=5,sk=None):
             _=sk.addConstraint(Sketcher.Constraint('Coincident',l[2],2,l[1],1)) 
             _=sk.addConstraint(Sketcher.Constraint('Coincident',l[3],2,l[1],2)) 
 
-        #App.activeDocument().recompute()
+        #App.ActiveDocument.recompute()
 
 
 

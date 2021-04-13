@@ -31,15 +31,13 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import scipy.linalg.lapack as sp
 from numpy.linalg import inv
 
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
-
-import 
 
 from pyob import  FeaturePython,ViewProvider
 from say import *

@@ -37,8 +37,8 @@ import os
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 
 from PySide import QtGui
 import sys,traceback,random
@@ -66,15 +66,15 @@ def sayexc(title='Fehler',mess=''):
 def run():
     label="cloverleaf"
     try: 
-        body=App.activeDocument().Body
+        body=App.ActiveDocument.Body
     except:    
-        body=App.activeDocument().addObject('PartDesign::Body','Body')
+        body=App.ActiveDocument.addObject('PartDesign::Body','Body')
 
-    sk=App.activeDocument().addObject('Sketcher::SketchObject','cloverleaf')
+    sk=App.ActiveDocument.addObject('Sketcher::SketchObject','cloverleaf')
     sk.Label=label
     sk.MapMode = 'FlatFace'
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     pts=None
 
@@ -111,25 +111,25 @@ def run():
         conList.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',i,3,k,i))
     sk.addConstraint(conList)
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     
     sk.addConstraint(Sketcher.Constraint('Symmetric',0,3,2,3,1,3)) 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
     sk.addConstraint(Sketcher.Constraint('Symmetric',4,3,6,3,5,3)) 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
     sk.addConstraint(Sketcher.Constraint('Symmetric',8,3,10,3,9,3)) 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
     sk.addConstraint(Sketcher.Constraint('Symmetric',12,3,14,3,13,3)) 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
     la=sk.addGeometry(Part.LineSegment(App.Vector(-100,-100,0),App.Vector(100,-100,0)),False)

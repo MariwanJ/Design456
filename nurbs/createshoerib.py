@@ -80,10 +80,10 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
     print ("-------------------------")
 
     label=name
-    try: body=App.activeDocument().Body
-    except:    body=App.activeDocument().addObject('PartDesign::Body','Body')
+    try: body=App.ActiveDocument.Body
+    except:    body=App.ActiveDocument.addObject('PartDesign::Body','Body')
 
-    #sk=App.activeDocument().addObject('Sketcher::SketchObject',name)
+    #sk=App.ActiveDocument.addObject('Sketcher::SketchObject',name)
     sk = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
     _ViewProvider(sk.ViewObject) 
 
@@ -92,7 +92,7 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
     sk.Label=label
 #    sk.MapMode = 'FlatFace'
 
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     #create a regular naz-gon
     anz=16
@@ -121,7 +121,7 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
     for i,p in enumerate(pts):
         conList.append(Sketcher.Constraint('InternalAlignment:Sketcher::BSplineControlPoint',i,3,k,i))
     sk.addConstraint(conList)
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     # connect the points for easier access in edit mode drag/drop for lines
     for p in range (0,anz):
@@ -176,7 +176,7 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
     sk.renameConstraint(d, u'symmetryRight')
     d=sk.addConstraint(Sketcher.Constraint('Symmetric',11,3,13,3,12,3))
     sk.renameConstraint(d, u'symmetryLeft')
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
 
     dd=5
@@ -218,42 +218,42 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
     sk.renameConstraint(d, u'p0X')
     d=sk.addConstraint(Sketcher.Constraint('DistanceY',0,3,t)) 
     sk.renameConstraint(d, u'p0Y')
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     sk.movePoint(2,0,App.Vector(r,t,0),0)
     d=sk.addConstraint(Sketcher.Constraint('DistanceX',2,3,r)) 
     sk.renameConstraint(d, u'p2X')
     d=sk.addConstraint(Sketcher.Constraint('DistanceY',2,3,t)) 
     sk.renameConstraint(d, u'p2Y')
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     sk.movePoint(14,0,App.Vector(l,t,0),0)
     d=sk.addConstraint(Sketcher.Constraint('DistanceX',14,3,l)) 
     sk.renameConstraint(d, u'p14X')
     d=sk.addConstraint(Sketcher.Constraint('DistanceY',14,3,t)) 
     sk.renameConstraint(d, u'p14Y')
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     sk.movePoint(4,0,App.Vector(r,b+dd,0),0)
     d=sk.addConstraint(Sketcher.Constraint('DistanceX',4,3,r)) 
     sk.renameConstraint(d, u'p4X')
     d=sk.addConstraint(Sketcher.Constraint('DistanceY',4,3,b+dd)) 
     sk.renameConstraint(d, u'p4Y')
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     sk.movePoint(12,0,App.Vector(l,b+dd,0),0)
     d=sk.addConstraint(Sketcher.Constraint('DistanceX',12,3,l)) 
     sk.renameConstraint(d, u'p12X')
     d=sk.addConstraint(Sketcher.Constraint('DistanceY',12,3,b+dd)) 
     sk.renameConstraint(d, u'p12Y')
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     sk.movePoint(8,0,App.Vector(0,b,0),0)
     d=sk.addConstraint(Sketcher.Constraint('DistanceX',8,3,0)) 
     sk.renameConstraint(d, u'p8X')
     d=sk.addConstraint(Sketcher.Constraint('DistanceY',8,3,b)) 
     sk.renameConstraint(d, u'p8Y')
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
 
     # kein verschieben
     return sk
@@ -263,7 +263,7 @@ def run(name='ribbow',moves=[],box=[40,0,-40,30],zoff=0):
     for [k,x,y] in moves:
         print (k,x,y)
         sk.movePoint(k,3,App.Vector(x,y,0),0)
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     return sk
 

@@ -42,8 +42,8 @@ import Design456Init
 try:
     import numpy as np 
 except ImportError:
-    print ("Trying to Install required module: numpy")
-    os.system('python -m pip3 install numpy')
+    print ("Please install the required module : numpy")
+    
 import time
 import random
 
@@ -76,15 +76,15 @@ class _VP(ViewProvider):
 
     def methodA(self,obj):
         print ("my Method A")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def methodB(self,obj):
         print ("my method B")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def methodC(self,obj):
         print ("my method C")
-        App.activeDocument().recompute()
+        App.ActiveDocument.recompute()
 
     def unsetEdit(self,vobj,mode=0):
         self.methodC(None)
@@ -344,7 +344,7 @@ class FollowerSketch(FeaturePython):
             App.ActiveDocument.Sketch.setDriving(ax,False)
             App.ActiveDocument.Sketch.setDriving(ay,False)
             # auschcalten
-            print ("fertig")
+            print ("finished")
 
 
 
@@ -368,7 +368,7 @@ def createFollowerSketch(name="Follower",source=None):
     obj.init=True
     time.sleep(0.2)
     obj.Proxy.onChanged(obj,"Geometry")
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     return obj
 
 
@@ -477,7 +477,7 @@ def createArcSketch(name="TwoArc",source=None):
     time.sleep(0.2)
 
     obj.Proxy.onChanged(obj,"Geometry")
-    App.activeDocument().recompute()
+    App.ActiveDocument.recompute()
     return obj
 
 #-----------------------

@@ -371,7 +371,7 @@ class MyWidget(QtGui.QWidget):
         # move-mode
         if mode==0 or mode==-1:
             try: 
-                bb=App.activeDocument().BSpline
+                bb=App.ActiveDocument.BSpline
                 pos=self.dial.value()
 
                 try:
@@ -395,13 +395,13 @@ class MyWidget(QtGui.QWidget):
                 print ("ExCEPT - need to create helper BSpline")
                 src=self.getsource()
                 points=src.Shape.Edge1.Curve.getPoles()
-                mybsc=App.activeDocument().addObject('Part::Feature','BSpline')
+                mybsc=App.ActiveDocument.addObject('Part::Feature','BSpline')
                 mybsc.Shape=src.Shape
                 mybsc.ViewObject.Selectable=False
 
                 Gui.activeDocument().activeView().viewAxonometric()
                 Gui.SendMsgToActiveView("ViewFit")
-                bb=App.activeDocument().ActiveObject
+                bb=App.ActiveDocument.ActiveObject
 
             Gui.Selection.addSelection(bb)
 
@@ -413,7 +413,7 @@ class MyWidget(QtGui.QWidget):
             return
 
         if mode==1:
-            bb=App.activeDocument().BSpline
+            bb=App.ActiveDocument.BSpline
             pos=self.dial.value()
 
 #            try:
@@ -1362,8 +1362,8 @@ def start(source):
 def delo(label):
     ''' delete object by given label'''
     try:
-        c=App.activeDocument().getObjectsByLabel(label)[0]
-        App.activeDocument().removeObject(c.Name)
+        c=App.ActiveDocument.getObjectsByLabel(label)[0]
+        App.ActiveDocument.removeObject(c.Name)
     except: pass
 
 def stop():
@@ -1390,7 +1390,7 @@ def undock(label='Spreadsheet'):
 
     try:
         #activate eventmanager for ss
-        a=App.activeDocument().MyNeedle
+        a=App.ActiveDocument.MyNeedle
         a.Proxy.startssevents()
     except:
         print ("cannot active eventmanager")
