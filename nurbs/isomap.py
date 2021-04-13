@@ -39,15 +39,10 @@ from __future__ import unicode_literals
 ##\cond
 
 from say import *
-
 import FreeCAD as App
 import FreeCADGui as Gui
-
 import Design456Init
-
-
 import Part,Mesh,Draft,Points
-
 import os
 
 try:
@@ -64,7 +59,7 @@ from scipy import interpolate
 
 ##\endcond
 
-raise Exception("getmap, get,map3 moverd to isodraw")
+#                                                                      raise Exception("getmap, get,map3 moverd to isodraw")                    what is this?????? mariwan
 
 
 
