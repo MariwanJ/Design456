@@ -43,14 +43,14 @@ from __future__ import unicode_literals
 # xpylint: disable=bare-except
 # xpylint: disable=exec-used
 
-import FreeCAD
-import FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
 
 #from transportationwb.say import sayexc, say
 #from transportationwb.say import  *
 
-from .say import sayexc, say
-from .say import  *
+#from say import sayexc, say
+from say import  *
 
 from PySide import QtGui, QtCore
 
@@ -58,9 +58,9 @@ import re
 import pivy
 from pivy import coin
 
-configuration
-reload (.configuration)
-from .configuration import getcb
+import configuration
+#reload (configuration)
+from configuration import getcb
 
 
 def getMainWindow():
