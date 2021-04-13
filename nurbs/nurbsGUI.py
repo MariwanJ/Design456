@@ -31,6 +31,62 @@ import random
 import os
 import nurbs
 
+class WorkSpace():
+
+    def __init__(self, name):
+    	try:lidok= App.getDocument(name)
+    	except:	lidok=App.newDocument(name)
+    	self.dok=lidok
+    	self.name=name
+
+    def delete(self):
+    	App.closeDocument(self.name)
+
+
+    def addObject2(self,obj,count=10):
+    	if 0:
+    		res=self.dok.addObject("Part::FeaturePython",obj.Name)
+    		ViewProvider(res.ViewObject)
+    	#return
+    	res=self.dok.addObject("Part::Spline",obj.Name)
+    	res.Shape=obj.Shape.toNurbs()
+    	#return
+    	f=obj.Shape.Face1.Surface
+    	cs=[]
+
+    	for ui in range(count+1):
+    			cs.append(f.uIso(1.0/count*ui).toShape())
+    	for vi in range(count+1):
+    			cs.append(f.vIso(1./count*vi).toShape())
+    	res.Shape=Part.Compound(cs)
+
+    def recompute(self):
+    	self.dok.recompute()
+
+    def show(self):
+    	self.getWidget().show()
+
+    def hide(self):
+    	self.getWidget().hide()
+
+    def getWidget(self):
+    	mw=Gui.getMainWindow()
+    	mdiarea=mw.findChild(QtGui.QMdiArea)
+
+    	sws=mdiarea.subWindowList()
+    	print ("windows ...")
+    	for w2 in sws:
+    		print (str(w2.windowTitle()))
+    		s=str(w2.windowTitle())
+    		if s == self.name + '1 : 1[*]':
+    			print ("gefundne")
+    			return w2
+    	print (self.name + '1:1[*]')
+
+
+    def _haha(self):
+    	pass
+
 class PartFeature:
     def __init__(self, obj):
         obj.Proxy = self
@@ -128,7 +184,7 @@ class ShapeLink(PartFeature):
     def execute(proxy, obj):
         if not obj.ViewObject.Visibility:
             return
-
+        objnurbs=None # Added by mariwan .. dont know what this do
         print("update shape", obj.source.Name, obj.workspace, obj.gridcount)
 
         tw = WorkSpace(obj.workspace)
@@ -369,65 +425,3 @@ class main:
 
     c.umax = 6
     c.vmax = 6
-
-class WorkSpace():
-
-    def __init__(self, name):
-    	try:lidok= App.getDocument(name)
-    	except:	lidok=App.newDocument(name)
-    	self.dok=lidok
-    	self.name=name
-
-    def delete(self):
-    	App.closeDocument(self.name)
-
-
-    def addObject2(self,obj,count=10):
-    	if 0:
-    		res=self.dok.addObject("Part::FeaturePython",obj.Name)
-    		ViewProvider(res.ViewObject)
-    	#return
-    	res=self.dok.addObject("Part::Spline",obj.Name)
-    	res.Shape=obj.Shape.toNurbs()
-    	#return
-    	f=obj.Shape.Face1.Surface
-    	cs=[]
-
-    	for ui in range(count+1):
-    			cs.append(f.uIso(1.0/count*ui).toShape())
-    	for vi in range(count+1):
-    			cs.append(f.vIso(1./count*vi).toShape())
-    	res.Shape=Part.Compound(cs)
-
-    def recompute(self):
-    	self.dok.recompute()
-
-    def show(self):
-    	self.getWidget().show()
-
-    def hide(self):
-    	self.getWidget().hide()
-
-    def getWidget(self):
-    	mw=Gui.getMainWindow()
-    	mdiarea=mw.findChild(QtGui.QMdiArea)
-
-    	sws=mdiarea.subWindowList()
-    	print ("windows ...")
-    	for w2 in sws:
-    		print (str(w2.windowTitle()))
-    		s=str(w2.windowTitle())
-    		if s == self.name + '1 : 1[*]':
-    			print ("gefundne")
-    			return w2
-    	print (self.name + '1:1[*]')
-
-
-    def _haha(self):
-    	pass
-
-
-
-
-
-

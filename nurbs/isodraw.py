@@ -1206,7 +1206,7 @@ class ShapeLink(PartFeature):
     def execute(proxy, obj):
         if not obj.ViewObject.Visibility:
             return
-
+        objnurbs=None # don't know what this do. added by mariwan
         print("update shape", obj.source.Name, obj.workspace, obj.gridcount)
 
         tw = WorkSpace(obj.workspace)
