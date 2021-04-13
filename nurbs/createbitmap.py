@@ -213,7 +213,7 @@ def qrcodeFace(message='qr', degree=2, showPoints=False, window=None):
                     ku = d*b+d
 
                 try:
-                    bs2.segment(kvs[d*a], kvs[kv], kus[d*b], kus[ku])
+                    bs2segment(kvs[d*a], kvs[kv], kus[d*b], kus[ku])
                     sh = bs2.toShape()
                     sps.append(sh)
                 except:
@@ -230,7 +230,7 @@ def qrcodeFace(message='qr', degree=2, showPoints=False, window=None):
         for d in range(3, 3):
             tss = time.time()
             bs2 = bs.copy()
-            bs2.segment(kvs[d*a], kvs[d*a+d], kus[d*b], kvs[d*b+d])
+            bs2segment(kvs[d*a], kvs[d*a+d], kus[d*b], kvs[d*b+d])
             Part.show(bs2.toShape())
             print(d, len(kvs)**2*(time.time()-tss)/d**2)
 

@@ -56,7 +56,7 @@ import os
 if 0:
     # load a testfile
     try:
-        App.open(u"/home/thomas/Schreibtisch/netz_test_data.fcstd")
+        App.open(Design456Init.NURBS_DATA_PATH+"netz_test_data.fcstd")
         App.setActiveDocument("netz_test_data")
         App.ActiveDocument = App.getDocument("netz_test_data")
         Gui.ActiveDocument = Gui.getDocument("netz_test_data")

@@ -174,9 +174,9 @@ def splitEdges(obj=None,show=True):
             for i in range(len(cus)-1):
                 c=e.Curve.copy()
                 try:
-                    c.segment(cus[i],cus[i+1])
+                    csegment(cus[i],cus[i+1])
                 except:
-                    print(("fehler c.segment(cus[i],cus[i+1])",i))
+                    print(("fehler csegment(cus[i],cus[i+1])",i))
                     continue
                 #display the segment
                 if displayEdges:

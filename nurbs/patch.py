@@ -104,7 +104,7 @@ def createSubcurve(k1, v1, v2):
     if kka > kkb:
         kka, kkb = kkb, kka
 
-    k1c.segment(kka, kkb)
+    k1csegment(kka, kkb)
     k1cn = normalizek(k1c)
 
     b3 = App.ActiveDocument.addObject("Part::Spline", "subedge")

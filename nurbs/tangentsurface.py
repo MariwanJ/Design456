@@ -238,14 +238,14 @@ def createShape(obj, force=False):
                                 )
 
 
-#    bs.segment(kvs[1],kvs[-2],kus[1],kus[-2])
+#    bssegment(kvs[1],kvs[-2],kus[1],kus[-2])
 
-#    bs.segment(kvs[1],kvs[-2],kus[2],kus[-2])
+#    bssegment(kvs[1],kvs[-2],kus[2],kus[-2])
 
-# ok    bs.segment(kvs[6],kvs[-7],kus[1],kus[-2])
-#    bs.segment(kvs[4],kvs[-5],kus[1],kus[-2])
+# ok    bssegment(kvs[6],kvs[-7],kus[1],kus[-2])
+#    bssegment(kvs[4],kvs[-5],kus[1],kus[-2])
 
-    bs.segment(0, 1, kus[1], kus[-2])
+    bssegment(0, 1, kus[1], kus[-2])
 
 #    try: fa=App.ActiveDocument.orig
 #    except: fa=App.ActiveDocument.addObject('Part::Spline','orig')
@@ -484,11 +484,11 @@ class Seam(PartFeature):
                 if obj.displayShape == "OutSeam":
                     uks = bs.getUKnots()
                     vks = bs.getVKnots()
-                    bs.segment(uks[0], uks[1], vks[0], vks[-1])
+                    bssegment(uks[0], uks[1], vks[0], vks[-1])
                 if obj.displayShape == "InSeam":
                     uks = bs.getUKnots()
                     vks = bs.getVKnots()
-                    bs.segment(uks[-2], uks[-1], vks[0], vks[-1])
+                    bssegment(uks[-2], uks[-1], vks[0], vks[-1])
 
                 if obj.displayShape == "Curve":
                     bs = bs.uIso(0.5)
@@ -497,11 +497,11 @@ class Seam(PartFeature):
                 if obj.displayShape == "OutSeam":
                     if not obj.linear:
                         uks = bs.getUKnots()
-                        bs.segment(uks[0], uks[1], 0, 1)
+                        bssegment(uks[0], uks[1], 0, 1)
                 if obj.displayShape == "InSeam":
                     if not obj.linear:
                         uks = bs.getUKnots()
-                        bs.segment(uks[-2], uks[-1], 0, 1)
+                        bssegment(uks[-2], uks[-1], 0, 1)
                 if obj.displayShape == "Curve":
                     if not obj.linear:
                         bs = bs.uIso(0.5)
@@ -639,25 +639,25 @@ if __name__ == '__main__':
 if __name__ == '__main__':
     # create the segment for tangents
     segment
-    ke = .segment.createFineSegment()
+    ke = segment.createFineSegment()
     ke.source = App.ActiveDocument.source
     ke.Label = "SeamBase E"
     ke.umax = 100
     ke.umin = 99
 
-    kw = .segment.createFineSegment()
+    kw = segment.createFineSegment()
     kw.source = App.ActiveDocument.source
     kw.Label = "SeamBase W"
     kw.umax = 1
     kw.umin = 0
 
-    kn = .segment.createFineSegment()
+    kn = segment.createFineSegment()
     kn.source = App.ActiveDocument.source
     kn.Label = "SeamBase N"
     kn.vmax = 100
     kn.vmin = 99
 
-    ks = .segment.createFineSegment()
+    ks = segment.createFineSegment()
     ks.source = App.ActiveDocument.source
     ks.Label = "SeamBase S"
     ks.vmax = 1

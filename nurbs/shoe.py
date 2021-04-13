@@ -263,11 +263,11 @@ def Myarray2NurbsD3(arr,label="MyWall",degree=3):
         sf2=bs.copy()
         sf2.setVPeriodic()
         uks=sf2.getUKnots()
-        sf2.segment(uks[1],1,0,1)
+        sf2segment(uks[1],1,0,1)
         sh2=sf2.toShape()
 
     uks=bs.getUKnots()
-    bs.segment(uks[1],1,0,1)
+    bssegment(uks[1],1,0,1)
     sh=bs.toShape()
 
     vcp=False
@@ -513,12 +513,12 @@ def ssa2npa(spreadsheet,c1,r1,c2,r2,default=None):
     return ps
 
 
-if 0 and __name__=='__main__':
+def WasDefinedAsmain():
 
     App.ActiveDocument=None
     Gui.ActiveDocument=None
-    App.open(u"/home/thomas/Schreibtisch/nadel_daten.fcstd")
-    App.setactiveDocument()("nadel_daten")
+    App.open(Design456Init.NURBS_DATA_PATH+ "nadel_daten.fcstd")
+    App.setActiveDocument("nadel_daten")
     App.ActiveDocument=App.getDocument("nadel_daten")
     Gui.ActiveDocument=Gui.getDocument("nadel_daten")
 
@@ -890,7 +890,7 @@ class Needle(PartFeature):
     def pressed(self,index):
         needle_cmds
         #reload(.needle_cmds)
-        .needle_cmds.pressed(index,App.activeDocument().MyNeedle)
+        needle_cmds.pressed(index,App.activeDocument().MyNeedle)
         print ("Pressed")
 
     def changed(self,index):
@@ -976,7 +976,7 @@ def commitData(editor):
     if globdat[0]=='ccmd':
         cn=cellname(int(globdat[1])+1,int(globdat[2])+3)
         old=globdat[3]
-        .needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
+        needle_cmds.runCmd(old,cn,globdat[2],App.activeDocument().Spreadsheet)
 
 
 def startssevents2():
@@ -1241,19 +1241,19 @@ def run():
     print ("import ............")
     # import the configuration from shoedata 
     shoedata
-    #reload(.shoedata)
+    #reload(shoedata)
 
-    bbps=.shoedata.shoeAdam.bbps
-    boxes=.shoedata.shoeAdam.boxes
-    twister=.shoedata.shoeAdam.twister
-    sc=.shoedata.shoeAdam.sc
+    bbps=shoedata.shoeAdam.bbps
+    boxes=shoedata.shoeAdam.boxes
+    twister=shoedata.shoeAdam.twister
+    sc=shoedata.shoeAdam.sc
 
 
     # create the shoe ribs
     createshoerib
     #reload(.createshoerib)
 
-    ribs=[.createshoerib.run("rib_"+str(i),[[8,0,0]],boxes[i],zoff=0) for i in range(1,15)]
+    ribs=[createshoerib.run("rib_"+str(i),[[8,0,0]],boxes[i],zoff=0) for i in range(1,15)]
 
     # for debugging 
     App.ribs=ribs
@@ -1304,7 +1304,7 @@ def run():
         pass
 
     # create lofts from the creates curves
-    if .shoedata.showlofts:
+    if shoedata.showlofts:
         # flaechen erzeugen
         try: loft=App.ActiveDocument.MeridiansLoft
         except:loft=App.ActiveDocument.addObject('Part::Loft','MeridiansLoft')
@@ -1330,21 +1330,21 @@ def run():
     fa.ViewObject.Transparency=60
 
     # create inner and outer scale of the last to compare
-    if .shoedata.showscales:
+    if shoedata.showscales:
 
         pc=Draft.clone(fa)
-        pc.Scale.x=.shoedata.scaleIn
-        pc.Scale.y=.shoedata.scaleIn
-        pc.Scale.z=.shoedata.scaleIn
+        pc.Scale.x=shoedata.scaleIn
+        pc.Scale.y=shoedata.scaleIn
+        pc.Scale.z=shoedata.scaleIn
         App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,1.0,.0)
-        App.ActiveDocument.ActiveObject.Label="shoe " +str(.shoedata.scaleIn)
+        App.ActiveDocument.ActiveObject.Label="shoe " +str(shoedata.scaleIn)
 
         pc=Draft.clone(fa)
-        pc.Scale.x=.shoedata.scaleOut
-        pc.Scale.y=.shoedata.scaleOut
-        pc.Scale.z=.shoedata.scaleOut
+        pc.Scale.x=shoedata.scaleOut
+        pc.Scale.y=shoedata.scaleOut
+        pc.Scale.z=shoedata.scaleOut
         App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(.0,.0,1.0)
-        App.ActiveDocument.ActiveObject.Label="shoe " +str(.shoedata.scaleOut)
+        App.ActiveDocument.ActiveObject.Label="shoe " +str(shoedata.scaleOut)
 
 
     App.getDocument(dokname).saveAs(u"/tmp/shoe_v0.fcstd")
@@ -1372,7 +1372,7 @@ def run():
     # ein paar hilfssegmente exemplarisch
     segment
 
-    a=.segment.createSegment()
+    a=segment.createSegment()
     a.source=fa
     a.umax=-2
     a.umin=1
@@ -1380,7 +1380,7 @@ def run():
     a.vmin=1
     a.Label="Segment gesamt"
 
-    a=.segment.createFineSegment()
+    a=segment.createFineSegment()
     a.source=fa
     a.umax=95
     a.umin=0
@@ -1389,6 +1389,6 @@ def run():
     a.Label="Fein Segment gesamt"
 
     # transform the poles array 
-    s=.segment.createNurbsTrafo()
+    s=segment.createNurbsTrafo()
     s.source=App.ActiveDocument.Poles
 

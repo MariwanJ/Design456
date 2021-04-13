@@ -1365,7 +1365,7 @@ def updatePatch(fp):
 
 #            bs2d.approximate(pts2d[30:-2]+pts2d[:30],DegMax=3,Tolerance=fp.tolerance)
 #            bs2d.setPeriodic()
-            bs2d.segment(0.01*fp.sega,0.01*fp.segb)
+            bs2dsegment(0.01*fp.sega,0.01*fp.segb)
 
 
             e1 = bs2d.toShape(t)

@@ -263,12 +263,10 @@ def runribtest():
     App.ActiveDocument = App.getDocument("Unnamed")
     Gui.ActiveDocument = Gui.getDocument("Unnamed")
 
-    import 
-
-    os.system('python -m pip3 install numpy')
-    createshoerib
+    import  numpy
+    import createshoerib
     #reload(.createshoerib)
-    .createshoerib.run()
+    createshoerib.run()
     rib = App.ActiveDocument.ribbow
     rib.ViewObject.LineColor = (1.000, 0.667, 0.000)
 
