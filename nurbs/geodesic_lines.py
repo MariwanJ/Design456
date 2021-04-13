@@ -57,7 +57,7 @@ except ImportError:
 import time
 from pivy import coin
 
-pyob
+import pyob
 from  pyob import  FeaturePython,ViewProvider
 #reload (.pyob)
 
