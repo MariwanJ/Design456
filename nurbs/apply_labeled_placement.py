@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 
 import FreeCAD as App
 import FreeCADGui as Gui
-
+import Design456Init
 
 def run():
     ''' auxiliary method applies placement from the label,

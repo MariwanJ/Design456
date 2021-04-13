@@ -30,7 +30,7 @@ import Points
 import Part
 import Draft
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:

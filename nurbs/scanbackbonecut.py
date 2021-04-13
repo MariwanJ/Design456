@@ -37,7 +37,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Points,Part,Draft
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:

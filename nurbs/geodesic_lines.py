@@ -46,7 +46,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Sketcher,Part
 import Draft
-
+import Design456Init
 import os
 
 try:
@@ -59,7 +59,7 @@ from pivy import coin
 
 import pyob
 from  pyob import  FeaturePython,ViewProvider
-#reload (.pyob)
+#reload (pyob)
 
 
 #-------------------------------

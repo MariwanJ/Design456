@@ -31,6 +31,7 @@ the model can be selected by the listModels method
 '''
 
 import os
+import Design456Init
 
 try:
     import numpy as np 

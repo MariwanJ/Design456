@@ -33,7 +33,7 @@ modes are ["poleGrid","isoGrid","Surface"]
 
 from say import *
 import pyob
-
+import Design456Init
 
 ## The Helper can display a Poles Grid, iso-Curve Grid or single isocurves as parametric Part::FeaturePython objects
  
@@ -137,7 +137,7 @@ class Helper(pyob.FeaturePython):
 ## The ViewProviderHelper uses updateData to recreate the shape 
 
 
-class ViewProviderHelper(.pyob.ViewProvider):
+class ViewProviderHelper(pyob.ViewProvider):
 
     ##\cond
 
@@ -268,8 +268,8 @@ def runtest():
     except:
         pass
 
-    nurbs
-    .nurbs.testRandomB()
+    import nurbs
+    nurbs.testRandomB()
 
     hp=makeHelper()
     hp.source=App.ActiveDocument.Nurbs
@@ -312,5 +312,3 @@ def run():
     ''' main call - its still the runtest() '''
     runtest()
 
-if __name__ == '__main__':
-    run()

@@ -30,7 +30,7 @@ from __future__ import unicode_literals
 from say import *
 import pyob
 import Sketcher
-
+import Design456Init
 
 def setSketchDatum(sk, name, wert):
     '''set the value of a constraint by constraint name'''
@@ -43,7 +43,7 @@ def setSketchDatum(sk, name, wert):
     raise Exception("Constraint " + name + " nicht gefunden")
 
 
-class _ViewProvider(.pyob.ViewProvider):
+class _ViewProvider(pyob.ViewProvider):
     ''' base class view provider '''
 
     def __init__(self, vobj):
@@ -54,7 +54,7 @@ class _ViewProvider(.pyob.ViewProvider):
         return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
 
 
-class Driver(.pyob.FeaturePython):
+class Driver(pyob.FeaturePython):
     '''Sketch Object with Python'''
 
     # \cond

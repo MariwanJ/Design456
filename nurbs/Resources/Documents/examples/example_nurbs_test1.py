@@ -13,7 +13,7 @@ def createNurbs():
     uc=6
     vc=10
 
-    a=.nurbs.makeNurbs()
+    a=nurbs.makeNurbs()
 
     App.ActiveDocument.Nurbs.ViewObject.ShapeColor=(0.00,1.00,1.00)
     App.ActiveDocument.Nurbs.ViewObject.Transparency = 70

@@ -45,6 +45,7 @@ import Part
 import Mesh
 import Draft
 import Points
+import Design456Init
 
 import os
 

@@ -27,9 +27,10 @@ from __future__ import unicode_literals
 
 
 import FreeCADGui as Gui
-import FreeCAD,Part,Sketcher
-App=FreeCAD
-
+import FreeCAD as App
+import Part,Sketcher
+ 
+import Design456Init
 import Draft
 import os
 

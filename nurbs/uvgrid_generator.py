@@ -42,6 +42,7 @@ from __future__ import unicode_literals
 
 from say import *
 import Points
+import Design456Init
 
 
 # test data

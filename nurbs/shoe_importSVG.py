@@ -75,6 +75,7 @@ currently unsupported: use, image
 
 import xml.sax, string, FreeCAD, os, math, re, Draft, DraftVecUtils
 from FreeCAD import Vector
+import Design456Init
 
 try: import FreeCADGui
 except ImportError: gui = False

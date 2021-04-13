@@ -39,7 +39,7 @@ import Draft,Part
 
 import FreeCAD as App
 import FreeCADGui as Gui
-
+import Design456Init
 from scipy.signal import argrelextrema
 import os
 

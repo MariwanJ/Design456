@@ -39,6 +39,7 @@ c.scaleHeight(3)
 '''
 
 import Part
+import Design456Init
 
 class PartFeature:
     ''' base class for part feature '''

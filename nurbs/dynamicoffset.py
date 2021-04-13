@@ -28,9 +28,11 @@ from __future__ import unicode_literals
 '''dynamic offset node'''
 
 from say import *
-
+import Design456Init
+import FreeCADGui as Gui
 Gui.ActiveDocument=None
-import FreeCAD
+import FreeCAD as App. 
+
 if 0:
     try:
         App.open(u"/home/thomas/Schreibtisch/tt_offset_example.fcstd")

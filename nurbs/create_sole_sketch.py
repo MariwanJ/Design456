@@ -32,7 +32,7 @@ from say import *
 import Sketcher
 import Design456Init
 
-
+import Design456Init
 def createsole(sk):
     '''create the basic geometry sketch for a sole with 12 segments'''
     LL = sk.LL

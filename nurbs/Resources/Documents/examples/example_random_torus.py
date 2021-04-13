@@ -15,7 +15,7 @@ def testRandomTorus():
     b=4
 
 
-    a=.nurbs.makeNurbs(b,na)
+    a=nurbs.makeNurbs(b,na)
     a.model="NurbsTorus"
 
     a.solid=False

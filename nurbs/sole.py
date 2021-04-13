@@ -29,6 +29,7 @@ from __future__ import unicode_literals
 shoe sole creation
 
 '''
+import Design456Init
 
 
 # -*- coding: utf-8 -*-

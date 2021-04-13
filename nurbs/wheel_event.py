@@ -43,6 +43,7 @@ from say import *
 
 import FreeCAD as App
 import sys,time
+import Design456Init
 
 '''
 # parameter

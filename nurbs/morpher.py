@@ -26,7 +26,7 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:
@@ -37,7 +37,7 @@ import random
 
 from pyob import  FeaturePython,ViewProvider
 from say import *
-#reload (.pyob)
+#reload (pyob)
 
 class Morpher(FeaturePython):
 

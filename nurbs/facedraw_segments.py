@@ -44,6 +44,7 @@ import FreeCAD
 import sys
 import time
 import random
+import Design456Init
 
 
 import isodraw

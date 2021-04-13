@@ -38,7 +38,7 @@ from __future__ import unicode_literals
 ##\cond
 from PySide import QtGui,QtCore
 from .say import *
-
+import Design456Init
 import FreeCAD
 import sys,time
 import random

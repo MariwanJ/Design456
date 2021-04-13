@@ -42,7 +42,7 @@ myNeedle.Proxy.getExampleModel(.needle_models.modelSpoon)
 '''
 
 import os
-
+import Design456Init
 try:
     import numpy as np 
 except ImportError:

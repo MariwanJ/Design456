@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 from PySide import QtGui, QtCore
 import FreeCAD
 import FreeCADGui
-
+import Design456Init
 import os
 
 try:
