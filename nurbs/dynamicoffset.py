@@ -31,7 +31,7 @@ from say import *
 import Design456Init
 import FreeCADGui as Gui
 Gui.ActiveDocument=None
-import FreeCAD as App. 
+import FreeCAD as App
 
 if 0:
     try:
