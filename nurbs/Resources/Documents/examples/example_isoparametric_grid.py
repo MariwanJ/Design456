@@ -6,7 +6,7 @@ except ImportError:
     print ("Trying to Install required module: numpy")
     os.system('python -m pip3 install numpy')
 
-reload(.nurbs_tools)
+#reload(.nurbs_tools)
 from .nurbs_tools import *
 
 

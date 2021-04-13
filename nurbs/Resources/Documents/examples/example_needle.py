@@ -9,7 +9,7 @@ except ImportError:
     print ("Trying to Install required module: numpy")
     os.system('python -m pip3 install numpy')
     import needels
-    reload( needle)
+    #reload( needle)
 
     try: App.closeDocument("Unnamed")
     except: pass
@@ -108,7 +108,7 @@ if 1:
     import 
 
     import needle as needle
-    reload( .needle)
+    #reload( .needle)
 
     try: App.closeDocument("Unnamed")
     except: pass

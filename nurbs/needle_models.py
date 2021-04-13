@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 '''
 
 needle_models
-reload(.needle_models)
+#reload(.needle_models)
 .needle_models.listModels()
 
 
@@ -935,7 +935,7 @@ class modelS(model):
 
 def listModels(silent=False):
     needle_models
-    reload(.needle_models)
+    #reload(.needle_models)
     l=[]
     for m in dir(.needle_models):
         if m.startswith('model'):

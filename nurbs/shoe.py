@@ -893,7 +893,7 @@ class Needle(PartFeature):
 
     def pressed(self,index):
         needle_cmds
-        reload(.needle_cmds)
+        #reload(.needle_cmds)
         .needle_cmds.pressed(index,App.activeDocument().MyNeedle)
         print ("Pressed")
 
@@ -974,7 +974,7 @@ def commitData(editor):
 #    print ("commit data",editor)
 
     needle_cmds
-    reload(.needle_cmds)
+    #reload(.needle_cmds)
     global globdat
 #    print globdat
     if globdat[0]=='ccmd':
@@ -1069,7 +1069,7 @@ def getdata(index):
 def main_test():
     # test aus parametern
     import shoe as shoe
-    reload( .shoe)
+    #reload( .shoe)
 
     dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
     try: App.closeDocument(dokname)
@@ -1245,7 +1245,7 @@ def run():
     print ("import ............")
     # import the configuration from shoedata 
     shoedata
-    reload(.shoedata)
+    #reload(.shoedata)
 
     bbps=.shoedata.shoeAdam.bbps
     boxes=.shoedata.shoeAdam.boxes
@@ -1255,7 +1255,7 @@ def run():
 
     # create the shoe ribs
     createshoerib
-    reload(.createshoerib)
+    #reload(.createshoerib)
 
     ribs=[.createshoerib.run("rib_"+str(i),[[8,0,0]],boxes[i],zoff=0) for i in range(1,15)]
 

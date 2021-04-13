@@ -62,14 +62,14 @@ def BB():
 
 
 import inspect
-reload (say)
+#reload (say)
 
 from miki_g import createMikiGui2, MikiApp
-reload( miki_g)
+#reload( miki_g)
 
-configuration
-reload (configuration)
-from .configuration import getcf,getcb,getcs
+import configuration
+#reload (configuration)
+#from configuration import getcf,getcb,getcs
 
 
 
@@ -95,7 +95,7 @@ def checkcurve(curve):
 ##\cond
 
 import pyob
-reload (pyob)
+#reload (pyob)
 from pyob import  FeaturePython,ViewProvider
 
 ##\endcond
@@ -3362,7 +3362,7 @@ class HelmetTubeConnector(FeaturePython):
 
 def createHelmet():
     helmet
-    reload(helmet)
+    #reload(helmet)
     helmet.createHelmet()
 
 

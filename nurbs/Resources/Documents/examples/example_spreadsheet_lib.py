@@ -16,7 +16,7 @@ try:
 except ImportError:
     print ("Trying to Install required module: numpy")
     os.system('python -m pip3 install numpy')
-reload (spreadsheet_lib)
+#reload (spreadsheet_lib)
 
 
 ss1=createSpreadsheet(label='MySpreadsheet')

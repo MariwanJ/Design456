@@ -38,7 +38,7 @@ from __future__ import unicode_literals
 
 ##\cond
 from PySide import QtGui,QtCore
-from .say import *
+from say import *
 
 import FreeCAD
 import sys,time
@@ -47,7 +47,7 @@ import random
 
 
 isodraw
-reload(.isodraw)
+#reload(.isodraw)
 
 
 

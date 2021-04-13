@@ -56,7 +56,7 @@ Gui.ActiveDocument=Gui.getDocument("m09_uvgrid_generator")
 '''
 
 import nurbs_tools
-reload (nurbs_tools)
+#reload (nurbs_tools)
 from .nurbs_tools import kruemmung
 
 

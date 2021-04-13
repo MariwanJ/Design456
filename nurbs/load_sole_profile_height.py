@@ -40,12 +40,12 @@ import FreeCADGui as Gui
 
 
 
-import os, 
+import os, sys
 global __dir__
 __dir__ = os.path.dirname(.__file__)
 
 spreadsheet_lib
-reload (.spreadsheet_lib)
+#reload (.spreadsheet_lib)
 from .spreadsheet_lib import ssa2npa, npa2ssa, cellname
 
 #\endcond
@@ -109,7 +109,7 @@ def run():
 
         dok2.recompute()
         sole
-        reload(.sole)
+        #reload(.sole)
         .sole.run()
         dok2.recompute()
 

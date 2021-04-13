@@ -32,13 +32,13 @@ modes are ["poleGrid","isoGrid","Surface"]
 
 
 from say import *
-pyob
+import pyob
 
 
 ## The Helper can display a Poles Grid, iso-Curve Grid or single isocurves as parametric Part::FeaturePython objects
  
 
-class Helper(.pyob.FeaturePython):
+class Helper(pyob.FeaturePython):
 
     ##\cond
     def __init__(self, obj,uc=5,vc=5):
