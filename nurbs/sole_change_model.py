@@ -87,7 +87,7 @@ def MyDialog(target=None):
 
 
 def ThousandsOfRunWhatShouldIdo():
-    # [target]=FreeCADGui.Selection.getSelection()
+    # [target]=Gui.Selection.getSelection()
     target = None
     return MyDialog(target)
 

@@ -122,7 +122,7 @@ def runA(model=None):
 
     try:
         try:
-            [ss] = FreeCADGui.Selection.getSelection()
+            [ss] = Gui.Selection.getSelection()
             print("Selection", ss.Label)
             if ss.__class__.__name__ != 'Sheet':
                 print("not a spreadsheet")

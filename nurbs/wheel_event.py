@@ -274,7 +274,7 @@ def focus():
     '''get preselected pole sets'''
 
     try:
-        s=FreeCADGui.Selection.getSelectionEx()[0]
+        s=Gui.Selection.getSelectionEx()[0]
 
         s.Object.Label
     #    print s.Object.Name
@@ -1322,7 +1322,7 @@ def start(source):
     ef.mode='r'
 
     s =SelObserver()
-    FreeCADGui.Selection.addObserver(s)                       # install the function mode resident
+    Gui.Selection.addObserver(s)                       # install the function mode resident
     ef.selObserver=s
 
     App.eventfilter=ef
@@ -1353,7 +1353,7 @@ def start(source):
     tt=Gui.activeDocument().activeView()
     tt.stopAnimating()
 
-    mw=FreeCADGui.getMainWindow()
+    mw=Gui.getMainWindow()
     mdiarea=mw.findChild(QtGui.QMdiArea)
     mdiarea.tileSubWindows()
 
@@ -1376,7 +1376,7 @@ def stop():
     ef.dialog.hide()
     
     s=ef.selObserver
-    FreeCADGui.Selection.removeObserver(s)   
+    Gui.Selection.removeObserver(s)   
 
 #    for l in ("Cursor","Target","TargetCurve"):
 #        delo(l)
@@ -1395,7 +1395,7 @@ def undock(label='Spreadsheet'):
     except:
         print ("cannot active eventmanager")
 
-    mw=FreeCADGui.getMainWindow()
+    mw=Gui.getMainWindow()
     mdiarea=mw.findChild(QtGui.QMdiArea)
 
     sws=mdiarea.subWindowList()

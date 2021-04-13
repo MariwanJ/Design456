@@ -73,19 +73,24 @@ currently unsupported: use, image
 # implement inherting fill style from group
 # handle relative units
 
-import xml.sax, string, FreeCAD, os, math, re, Draft, DraftVecUtils
+import xml.sax
+import string
+import FreeCAD as App
+import os,sys
+import math
+import re
+import Draft
+import DraftVecUtils
 from FreeCAD import Vector
 import Design456Init
+import FreeCADGui as Gui
+gui = True
 
-try: import FreeCADGui
-except ImportError: gui = False
-else: gui = True
-
-try: draftui = FreeCADGui.draftToolBar
+try: draftui = Gui.draftToolBar
 except AttributeError: draftui = None
 
 if open.__module__ in ['__builtin__','io']:
-  pythonopen = open
+        pythonopen = open
 
 svgcolors = {
           'Pink': (255, 192, 203),
@@ -1478,7 +1483,7 @@ class SVGLink(PartFeature):
             obj.filemtime =mtime
 #            importSVG.insert(Design456Init.NURBS_DATA_PATH+"aaa.svg", App.ActiveDocument.Name)
 #            importSVG.insert(obj.filename, App.ActiveDocument.Name)
-#            FreeCADGui.SendMsgToActiveView("ViewFit")
+#            Gui.SendMsgToActiveView("ViewFit")
 
 #            if hasattr(obj,"prefix"):
 #                for obj2 in  App.ActiveDocument.Objects:
@@ -1511,7 +1516,7 @@ def export_svg():
     __objs__=[]
     # __objs__.append(App.getDocument("tt4").getObject("MAP"))
     __objs__= [App.ActiveDocument.Line,App.ActiveDocument.Circle]
-    __objs__= FreeCADGui.Selection.getSelection()
+    __objs__= Gui.Selection.getSelection()
     import importSVG
     fn="/tmp/export.svg"
     import time
@@ -1533,7 +1538,7 @@ def import_svg():
 #    b=App.ActiveDocument.addObject("Part::FeaturePython","My_SVG_Link")
 #    SVGLink(b)
 #    insertA(Design456Init.NURBS_DATA_PATH+"xx.svg", App.ActiveDocument.Name)
-    FreeCADGui.SendMsgToActiveView("ViewFit")
+    Gui.SendMsgToActiveView("ViewFit")
     for obj in  App.ActiveDocument.Objects:
         if obj.Name.startswith("MAP_w"):
             App.ActiveDocument.removeObject(obj.Name)

@@ -558,13 +558,13 @@ def MySaveDialog(target=None):
 
 def runLoadSketch():
     '''method called from Gui menu'''
-    #[target]=FreeCADGui.Selection.getSelection()
+    #[target]=Gui.Selection.getSelection()
     target=None
     return MyLoadDialog(target)
 
 def runSaveSketch():
     '''method saveSketch called from Gui menu'''
-    #[target]=FreeCADGui.Selection.getSelection()
+    #[target]=Gui.Selection.getSelection()
 #    target=None
 #    return MySaveDialog(target)
     saveSketch()

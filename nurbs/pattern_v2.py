@@ -62,7 +62,7 @@ from say import *
 import pyob
 from pyob import  FeaturePython,ViewProvider
 #reload (pyob)
-import lib as nl
+#import lib as nl         #Don't konw what lib is
 #reload(lib)
 
 

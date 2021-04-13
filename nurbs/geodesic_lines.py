@@ -2079,7 +2079,7 @@ class MyViewProviderDraftLabel:
             text = self.text3d
         else:
             text = self.text2d
-        v = FreeCADGui.ActiveDocument.ActiveView.getViewer().getSoRenderManager().getViewportRegion()
+        v = Gui.ActiveDocument.ActiveView.getViewer().getSoRenderManager().getViewportRegion()
         b = coin.SoGetBoundingBoxAction(v)
         text.getBoundingBox(b)
         return b.getBoundingBox().getSize().getValue()

@@ -218,7 +218,7 @@ if (type.isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
                 
 class ButtonTest:
     def __init__(self):
-        self.view = FreeCADGui.ActiveDocument.ActiveView
+        self.view = Gui.ActiveDocument.ActiveView
         self.callback = self.view.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), self.getMouseClick) 
 
     def getMouseClick(self, event_cb):

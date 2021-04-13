@@ -141,7 +141,7 @@ def rowcol2(w,*args):
     print ("-----------------")
 
 def posfromsel(w):
-    t=FreeCADGui.Selection.getSelectionEx()[0]
+    t=Gui.Selection.getSelectionEx()[0]
     v=t.PickedPoints[0]
 
     for i in w.table.selectedItems():

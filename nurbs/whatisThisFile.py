@@ -478,11 +478,12 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
 # createAll()
 
 
-
-if 1:
-        miki
-        #reload(nurbs.miki)
-        rc=nurbs.miki.runtest()
+#I commented this .. don't know what is doing mariwan
+# if 1:
+#         import miki
+#         import nurbs
+#         #reload(nurbs.miki)
+#         rc=nurbs.miki.runtest
         
 
 
