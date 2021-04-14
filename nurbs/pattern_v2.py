@@ -76,7 +76,7 @@ def splitEdges(obj=None,show=True):
     '''split edges on intersection points'''
 
     if obj==None:
-        obj=Gui.Selection.getSelection()[0]
+        obj=Gui.Selection.getSelectionEx()[0]
         shape=obj.Shape
     else:
         shape=obj
@@ -212,7 +212,7 @@ def createPattern(obj=None,rx=3,ry=2,sx=200,sy=100,all_faces=None):
     '''create pattern subobjects'''
 
     if obj==None:
-        obj=Gui.Selection.getSelection()[0]
+        obj=Gui.Selection.getSelectionEx()[0]
         comp=obj.Shape
     else:
         comp=obj
@@ -414,7 +414,7 @@ def _createArray(show=True,obj=None):
 
 
     if obj==None:
-        for obj in Gui.Selection.getSelection():
+        for obj in Gui.Selection.getSelectionEx():
             edges += obj.Shape.Edges
     else:
             edges = obj.obj.Shape.Edges
@@ -580,7 +580,7 @@ def createPatternV3(obj=None,target=None,createPlanarPattern=False):
 
 def patternV3():
     '''call from WB Gui'''
-    s=Gui.Selection.getSelection()
+    s=Gui.Selection.getSelectionEx()
     print( s)
     obj=s[0]
 #    if len(s)>1:

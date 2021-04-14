@@ -240,7 +240,7 @@ class PointCloudApprox(FeaturePython):
 def createPointCloudApprox():
     '''methode wird vom Dialog smoothPointcloud aufgerufen'''
 
-    [points, start] = Gui.Selection.getSelection()
+    [points, start] = Gui.Selection.getSelectionEx()
     name = points.Name+"_from_"+start.Name
 
     a = App.ActiveDocument.addObject("Part::FeaturePython", name)
@@ -747,7 +747,7 @@ def _BumpFacefromImageGUI():
 
     yy = App.ActiveDocument.addObject("Part::FeaturePython", "ImageSurface")
     ImagePoints2(yy, mode='face')
-    yy.source = Gui.Selection.getSelection()[0]
+    yy.source = Gui.Selection.getSelectionEx()[0]
     yy.image = fn
     ViewProvider(yy.ViewObject)
 
@@ -1240,7 +1240,7 @@ class MinLengthBezier(FeaturePython):
 def _minimumLengthBezierGUI():
     ''' optimale kurve mit zwei Segmenten durch einen Punkt finden'''
 
-    for s in Gui.Selection.getSelection():
+    for s in Gui.Selection.getSelectionEx():
         yy = App.ActiveDocument.addObject(
             "Part::FeaturePython", "MinLenBezier")
         MinLengthBezier(yy, mode='minimal Lenght')
@@ -1260,7 +1260,7 @@ def _minimumLengthBezierGUI():
 def _createMyMinAGUI():
     ''' myMinA-Object erzeugen'''
 
-    ss = Gui.Selection.getSelection()
+    ss = Gui.Selection.getSelectionEx()
     if len(ss) == 0:
         s = App.ActiveDocument.addObject(
             'Sketcher::SketchObject', 'Sketch_forMyMinA')
@@ -1286,7 +1286,7 @@ def _createMyMinAGUI():
 def _createMyMinSoftGUI():
     ''' myMinSoft-Object erzeugen'''
 
-    for s in Gui.Selection.getSelection():
+    for s in Gui.Selection.getSelectionEx():
         yy = App.ActiveDocument.addObject("Part::FeaturePython", "MyMinSoft")
         MinLengthBezier(yy, mode='myMinSoft', method='Nelder-Mead')
         ViewProvider(yy.ViewObject)
@@ -1491,7 +1491,7 @@ class ConstantCurvatureBezier(FeaturePython):
 def _nearconstantCurvatureBezierGUI():
     ''' optimale kurve mit minimaler kruemmungs aenderung'''
 
-    for s in Gui.Selection.getSelection():
+    for s in Gui.Selection.getSelectionEx():
         yy = App.ActiveDocument.addObject(
             "Part::FeaturePython", "nearConstantCurvatureBezier")
         ConstantCurvatureBezier(yy)
@@ -1506,7 +1506,7 @@ def _nearconstantCurvatureBezierGUI():
 
 def deactivateExecution():
     ''' the execute method for the selection is deactivated'''
-    for s in Gui.Selection.getSelection():
+    for s in Gui.Selection.getSelectionEx():
         try:
             s._noExecute = True
         except:
@@ -1515,7 +1515,7 @@ def deactivateExecution():
 
 def activateExecution():
     ''' the execute method for the selection is activated'''
-    for s in Gui.Selection.getSelection():
+    for s in Gui.Selection.getSelectionEx():
         try:
             s._noExecute = False
         except:
@@ -1584,7 +1584,7 @@ def myMinA(pts):
 def runMyMinA(fp, pts):
 
 
-#    for s in Gui.Selection.getSelection():
+#    for s in Gui.Selection.getSelectionEx():
 #        pts=[v.Point for v in s.Shape.Wires[0].Vertexes]
         s = fp
 
@@ -1821,7 +1821,7 @@ def _createBezierPolesFramefromribsGUI():
     yy = App.ActiveDocument.addObject("Part::FeaturePython", "PolesFrame")
     ViewProvider(yy.ViewObject)
     PolesFrame(yy)
-    yy.ribs = Gui.Selection.getSelection()
+    yy.ribs = Gui.Selection.getSelectionEx()
 
 
 # ---------------------
@@ -1830,7 +1830,7 @@ def swapCurves(sel=None, mode='polygons', extraknots=None):
     ''' polefeld in andrere richtung aufziehen'''
 
     if sel == None:
-        sel = Gui.Selection.getSelection()
+        sel = Gui.Selection.getSelectionEx()
     polar = []
     xtras = []
     print("Control points ...")
@@ -1866,13 +1866,13 @@ def curvestoFace(polsarr=None, mode="Bezier Face"):
 
     if polsarr == None:
         polsarr = []
-        cc = Gui.Selection.getSelection()[0]
+        cc = Gui.Selection.getSelectionEx()[0]
         try:
             for l in cc.Links:
                 pols = l.Shape.Edge1.Curve.getPoles()
                 polsarr += [pols]
         except:
-            for l in Gui.Selection.getSelection():
+            for l in Gui.Selection.getSelectionEx():
                 pols = l.Shape.Edge1.Curve.getPoles()
                 polsarr += [pols]
 
@@ -1916,7 +1916,7 @@ def A():
 
 
 def B():
-    for l in Gui.Selection.getSelection():
+    for l in Gui.Selection.getSelectionEx():
     #    pols=l.Shape.Edge1.Curve.getPoles()
         pols = [v.Point for v in l.Shape.Wires[0].Vertexes]
 
@@ -2074,7 +2074,7 @@ def RibstoFace():
 
     yy = App.ActiveDocument.addObject("Part::FeaturePython", "RibFace")
     Ribface(yy)
-    yy.ribs = Gui.Selection.getSelection()
+    yy.ribs = Gui.Selection.getSelectionEx()
     ViewProvider(yy.ViewObject)
     yy.ViewObject.ShapeColor = (.6, .6, 1.)
 

@@ -39,7 +39,7 @@ import Part
 import Design456Init
 def ThousandsOfRunWhatShouldIdo():
     allpts = []
-    # for obj in Gui.Selection.getSelection():
+    # for obj in Gui.Selection.getSelectionEx():
 
     for obj in App.ActiveDocument.clones.OutList:
         if obj.Label.startswith('t='):

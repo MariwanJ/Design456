@@ -686,7 +686,7 @@ def runB():
 
 def run_copySketch():
     '''copy Sketch'''
-    ss=Gui.Selection.getSelection()
+    ss=Gui.Selection.getSelectionEx()
     if len(ss)!=2:
         print ("select source and target sketch!")
         return
@@ -729,7 +729,7 @@ def run_createFBS_with_three_Clients():
 
 
 def connectPoints(pos):
-    [basesk,ts]=Gui.Selection.getSelection()
+    [basesk,ts]=Gui.Selection.getSelectionEx()
     tp=Gui.Selection.getSelectionEx()[0].PickedPoints[0]
 
     print (tp)
@@ -760,7 +760,7 @@ def connectPoints(pos):
 
 
 def lockPoints(unlock=False):
-    [ts]=Gui.Selection.getSelection()
+    [ts]=Gui.Selection.getSelectionEx()
 
     cx0=getNamedConstraint(ts,'p_0_x')
     c0=getNamedConstraint(ts,'p_0_y')
@@ -783,7 +783,7 @@ def lockPoints(unlock=False):
     App.ActiveDocument.recompute()
 
 def connectLine(yy=False):
-    [base,ts]=Gui.Selection.getSelection()
+    [base,ts]=Gui.Selection.getSelectionEx()
     try:
         edge=Gui.Selection.getSelectionEx()[0].SubObjects[0]
         tp=edge.Vertexes[0].Point

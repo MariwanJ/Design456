@@ -803,7 +803,7 @@ class Nurbs_EventFilter:
         ef = EventFilter()
         ef.mouseWheel = 0
         try:
-            sel = Gui.Selection.getSelection()
+            sel = Gui.Selection.getSelectionEx()
             if (len(sel) < 1):
                 # An object must be selected
                 errMessage = "Select a face"
@@ -867,7 +867,7 @@ class Nurbs_EventFilter:
 # create the 2D or 3D grid for the first face of a selected object
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + '/maps.svg',
+            'Pixmap': Design456Init.NURBS_ICON_PATH + '/filter.svg',
             'MenuText': 'Nurbs_EventFilter',
                         'ToolTip':  'Nurbs_EventFilter'
         }
@@ -926,7 +926,7 @@ class Nurbs_CreateMapToFace:
         ''' create a mpa control for the first face of the selected object '''
         # last selection == face
         # other sels: wires to project
-        s0 = Gui.Selection.getSelection()
+        s0 = Gui.Selection.getSelectionEx()
         face = s0[-1]
         moa = isodraw.createMap(self.mode)
         moa.faceObject = face
@@ -1001,7 +1001,7 @@ class madeByMeDontKnowWhatItDo:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/draw.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'draw.svg',
             'MenuText': 'madeByMeDontKnowWhatItDo',
                         'ToolTip':  'madeByMeDontKnowWhatItDo'
         }

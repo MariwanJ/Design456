@@ -272,11 +272,11 @@ class Trafo(pyob.FeaturePython):
 def ThousandsOfRunWhatShouldIdo():
     ''' create a transform object for a selected  curve'''
 
-    if len( Gui.Selection.getSelection())==0:
+    if len( Gui.Selection.getSelectionEx())==0:
         showdialog('Oops','nothing selected - nothing to do for me','Please select a Bspline Curve')
         raise Exception("nothing selected")
 
-    model=Gui.Selection.getSelection()[0]
+    model=Gui.Selection.getSelectionEx()[0]
     if model.Shape.Edge1.Curve.__class__.__name__ !='BSplineCurve':
         print (model.Label)
         print (model.Shape.Edge1.Curve.__class__.__name__)
@@ -284,7 +284,7 @@ def ThousandsOfRunWhatShouldIdo():
         raise Exception("not implemented for this curve type")
     
     try: 
-        source=Gui.Selection.getSelection()[1]
+        source=Gui.Selection.getSelectionEx()[1]
         points2=source.Points
         # todo: rectangle as source frame
     except:
@@ -293,7 +293,7 @@ def ThousandsOfRunWhatShouldIdo():
         points2=[model.Shape.BoundBox.getPoint(i) for i in range(4)]
         source=None
 
-    try: center=Gui.Selection.getSelection()[2]
+    try: center=Gui.Selection.getSelectionEx()[2]
     except: center=None
 
     line2 = Draft.makeWire(points2,closed=True,face=False,support=None)

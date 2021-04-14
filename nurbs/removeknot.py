@@ -53,7 +53,7 @@ if 0:
     pass
 
     # Hilfswire machen
-    [a] = Gui.Selection.getSelection()
+    [a] = Gui.Selection.getSelectionEx()
     bc = a.Shape.Edge1.Curve
     pts = a.Shape.Edge1.Curve.getPoles()
     # print  (len(pts)

@@ -400,8 +400,8 @@ Gui.addCommand("Nurbs_CreateWorkspace", Nurbs_CreateWorkspace())
 def createlink():
     '''called from the menu '''
     ad = App.ActiveDocument.Name
-    cc = Gui.Selection.getSelection()[0]
-    ws = Gui.Selection.getSelection()[-1]
+    cc = Gui.Selection.getSelectionEx()[0]
+    ws = Gui.Selection.getSelectionEx()[-1]
     createLink(cc, ws.workspace)
     App.setActiveDocument(ad)
     App.ActiveDocument = App.getDocument(ad)
@@ -417,7 +417,7 @@ import workspace
 
 def testme():
     ad=App.ActiveDocument.Name
-    cc=Gui.Selection.getSelection()[0]
+    cc=Gui.Selection.getSelectionEx()[0]
     workspace.createWsLink("TestMeWorkspace")
     workspace.createLink(cc,"TestMeWorkspace")
     App.setActiveDocument(ad)

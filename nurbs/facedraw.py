@@ -849,7 +849,7 @@ def start(free=False):
     ef.drawname=iv.Name
 
     try:
-            sel=Gui.Selection.getSelection()
+            sel=Gui.Selection.getSelectionEx()
             fob=sel[0]
             s=Gui.Selection.getSelectionEx()
             print (s,s[0].SubObjects)
@@ -919,7 +919,7 @@ def start(free=False):
 def createGrid(name="MyGrid"):
     '''create the 2D or 3D grid for the first face of a selected object'''
 
-    sel=Gui.Selection.getSelection()
+    sel=Gui.Selection.getSelectionEx()
     fob=sel[0]
 
     b=App.ActiveDocument.addObject("Part::FeaturePython",name)
@@ -944,7 +944,7 @@ def createMap(mode=''):
     # last selection == face
     # other sels: wires to project
 
-    for face in Gui.Selection.getSelection():
+    for face in Gui.Selection.getSelectionEx():
         #face=s0[-1]
 
         moa=isodraw.createMap(mode)

@@ -178,7 +178,7 @@ def createMarker(self):
 
     l = geodesic_lines.makeLabel(
         direction='Horizontal', labeltype='Position')
-    l.obj = self.nu  # Gui.Selection.getSelection()[0]
+    l.obj = self.nu  # Gui.Selection.getSelectionEx()[0]
     l.LabelType = u"Custom"
     l.Label = "MyMarker"
     l.ViewObject.DisplayMode = u"2D text"
@@ -844,7 +844,7 @@ def start():
 
     '''
     try:
-            sel=Gui.Selection.getSelection()
+            sel=Gui.Selection.getSelectionEx()
             fob=sel[0]
             s=Gui.Selection.getSelectionEx()
             print s,s[0].SubObjects

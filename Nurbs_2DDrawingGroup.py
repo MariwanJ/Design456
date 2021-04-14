@@ -40,7 +40,7 @@ class Design456_Nurbs_2DDrawingGroup:
 
     def GetCommands(self):
         """3D Modifying Tools."""
-        return ('runSole',
+        return ('Nurbs_Soel',
                 'Nurbs_FaceDraw',
                 'NurbsDrawIsoFace',
                 'CreateMapToFace',

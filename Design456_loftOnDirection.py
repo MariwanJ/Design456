@@ -185,7 +185,7 @@ class Design456_loftOnDirection_ui(object):
 
     def runClass(self):
         try:
-            sel = Gui.Selection.getSelection()
+            sel = Gui.Selection.getSelectionEx()
             if(len(sel) <1 or len(sel)>1 or 
                len(Gui.Selection.getSelectionEx()[0].SubElementNames)==0):
                 # Two object must be selected
