@@ -47,10 +47,9 @@ class Design456_Nurbs_Miscellaneous:
                  'Nurbs_CreateDarkRoom',
                  'Nurbs_LightON',
                  'Nurbs_LightOFF',
-                 'Nurbs_FaceDraw',
-                 'NurbsDrawIsoFace',
-                 '',
-                 
+                 'madeByMeDontKnowWhatItDo',
+                 'Nurbs_EventFilter'
+                 'Nurbs_CreateGridToFace'
 
                 
 
