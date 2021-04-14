@@ -152,7 +152,7 @@ class Fr_Widget (object):
         else than the widget itself
         """
         raise NotImplementedError()
-    # Activate, deactivate, get status of widget
+    # Activated, deactivate, get status of widget
 
     def is_visible(self):
         """ 

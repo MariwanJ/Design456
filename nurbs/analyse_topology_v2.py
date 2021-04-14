@@ -249,7 +249,7 @@ class MainAnalysisMethodRunAna:
         self.model=model
         self.silent=silent
         
-    def Activate(self):
+    def Activated(self):
         self.runCompare()
 
     def runAna(self, model, silent=False):
@@ -336,7 +336,7 @@ class MainAnalysisMethodRunAna:
         # calculate all levels
         for i in range(1, 10):
             self.berechneKeyLevel(i)
-            rc = self.werteausLevel(i)
+            rc = self.valuesFromLevel (i)
             if rc == 0:
                 break
 
@@ -376,7 +376,7 @@ class MainAnalysisMethodRunAna:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def werteausLevel(self,i=1):
+    def valuesFromLevel (self,i=1):
         ''' which points have unique keys at level i'''
 
         # count the key occurrences
