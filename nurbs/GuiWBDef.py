@@ -470,10 +470,10 @@ def c3bG(menu, isactive, name, text, icon='None', cmd=None, *info):
 # special conditions for actions
 def onneedle():
     '''open the needle file'''
-    dokname = App.ParamGet(
+    docname = App.ParamGet(
         'User parameter:Plugins/nurbs').GetString("Document", "Needle")
     try:
-        App.getDocument(dokname)
+        App.getDocument(docname)
         return True
     except:
         return False
