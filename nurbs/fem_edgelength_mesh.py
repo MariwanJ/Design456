@@ -94,7 +94,7 @@ def getForceSketch():
 
 
 def getBaseSketch():
-    sks = Gui.Selection.getSelection()[0]
+    sks = Gui.Selection.getSelectionEx()[0]
     sk = App.ActiveDocument.addObject(
         'Sketcher::SketchObject', "CopySim_" + sks.Name)
     sk.Label = 'Copy of ' + sks.Label

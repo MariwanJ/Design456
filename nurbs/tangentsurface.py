@@ -759,13 +759,13 @@ def ThousandsOfMainFunction():
 def runseam():
 
     source = None
-    if len(Gui.Selection.getSelection()) != 0:
-        source = Gui.Selection.getSelection()[0]
+    if len(Gui.Selection.getSelectionEx()) != 0:
+        source = Gui.Selection.getSelectionEx()[0]
     s = App.ActiveDocument.addObject("Part::FeaturePython", "SeamW")
     Seam(s)
     s.source = source
     try:
-        s.endPlane = Gui.Selection.getSelection()[1]
+        s.endPlane = Gui.Selection.getSelectionEx()[1]
     except:
         pass
 
@@ -773,8 +773,8 @@ def runseam():
 def runtangentsurface():
 
     source = None
-    if len(Gui.Selection.getSelection()) != 0:
-        source = Gui.Selection.getSelection()[0]
+    if len(Gui.Selection.getSelectionEx()) != 0:
+        source = Gui.Selection.getSelectionEx()[0]
     b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentialFace")
     TangentFace(b)
 #    b.westSeam=App.ActiveDocument.SeamW007

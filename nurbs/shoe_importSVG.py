@@ -1516,7 +1516,7 @@ def export_svg():
     __objs__=[]
     # __objs__.append(App.getDocument("tt4").getObject("MAP"))
     __objs__= [App.ActiveDocument.Line,App.ActiveDocument.Circle]
-    __objs__= Gui.Selection.getSelection()
+    __objs__= Gui.Selection.getSelectionEx()
     import importSVG
     fn="/tmp/export.svg"
     import time

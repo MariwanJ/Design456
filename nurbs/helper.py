@@ -248,7 +248,7 @@ def makeHelper():
 
 def makeHelperSel():
     ''' creates a helper of mode "isoGrid" for the Gui-selected objects'''
-    for obj in Gui.Selection.getSelection():
+    for obj in Gui.Selection.getSelectionEx():
         h=makeHelper()
         h.source=obj
         h.mode="isoGrid"

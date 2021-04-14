@@ -688,7 +688,7 @@ def mydialog(obj):
 
 def runA():
     try:
-        obj=Gui.Selection.getSelection()[0]
+        obj=Gui.Selection.getSelectionEx()[0]
     except:
         obj=App.ActiveDocument.Points
     mydialog(obj)

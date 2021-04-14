@@ -54,8 +54,8 @@ import Part,Draft
 def unroll(mode):
 
 
-    edge=Gui.Selection.getSelection()[0]
-    face=Gui.Selection.getSelection()[1]
+    edge=Gui.Selection.getSelectionEx()[0]
+    face=Gui.Selection.getSelectionEx()[1]
 
 
     # referenzflaeche
@@ -192,8 +192,8 @@ import Draft
 
 def combineCT():
 
-    objc=Gui.Selection.getSelection()[0]
-    objt=Gui.Selection.getSelection()[1]
+    objc=Gui.Selection.getSelectionEx()[0]
+    objt=Gui.Selection.getSelectionEx()[1]
 
 
     #ec=App.ActiveDocument.BSpline001.Shape.Edge1

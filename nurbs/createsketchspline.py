@@ -203,7 +203,7 @@ def runsubs():
 
 def runall():
     ''' erzeugt sketche fuer mehrere subkanten'''
-    sx = Gui.Selection.getSelection()
+    sx = Gui.Selection.getSelectionEx()
     s = sx[0]
     name = "mergeS_"+s.Name
     for so in s.Shape.Edges:
@@ -228,11 +228,11 @@ def runall():
 def ThousandsOfRunWhatShouldIdo():
     ''' erzeugt fuer jedes selektierte Objekte aus Edge1 einen Sketch'''
 
-    if len(Gui.Selection.getSelection()) == 0:
+    if len(Gui.Selection.getSelectionEx()) == 0:
         showdialog('Oops', 'nothing selected - nothing to do for me',
                    'Plese select a Draft Bspline or Draft Wire')
 
-    for obj in Gui.Selection.getSelection():
+    for obj in Gui.Selection.getSelectionEx():
         try:
             bc = obj.Shape.Edge1.Curve
             pts = bc.getPoles()

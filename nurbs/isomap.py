@@ -325,7 +325,7 @@ def ThousandsOfRunWhatShouldIdo():
     ''' main test'''
 
 
-    [source]=Gui.Selection.getSelection()
+    [source]=Gui.Selection.getSelectionEx()
 
     mapa=App.ActiveDocument.MAP
     [uv2x,uv2y,xy2u,xy2v]=getmap(mapa,source)

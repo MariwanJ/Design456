@@ -140,7 +140,7 @@ def MyDialog(path,target):
 # 2. path to follow 
 
 def ThousandsOfRunWhatShouldIdo():
-    [target,path]=Gui.Selection.getSelection()
+    [target,path]=Gui.Selection.getSelectionEx()
     MyDialog(path,target)
 
 # selektion:

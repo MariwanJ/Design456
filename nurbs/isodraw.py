@@ -1473,7 +1473,7 @@ class map3Dto2D:
             # face=App.ActiveDocument.Poles
             # wire=App.ActiveDocument.UUUU_Drawing_on_Poles__Face1002_Spline
 
-            s0 = Gui.Selection.getSelection()
+            s0 = Gui.Selection.getSelectionEx()
             base = s0[-1]
 
             if hasattr(base, "faceObject"):
@@ -1621,7 +1621,7 @@ class map2Dto3D():
         # last selection == face
         # other sels: wires to project
 
-        s0 = Gui.Selection.getSelection()
+        s0 = Gui.Selection.getSelectionEx()
         moa = s0[-1]
         s = s0[:-1]
 
@@ -1662,7 +1662,7 @@ class map3Dgridto2Dgrid:
     def Activated(self):
         # 3D Edges auf 2D Edges
 
-        s0 = Gui.Selection.getSelection()
+        s0 = Gui.Selection.getSelectionEx()
         base = s0[-1]
 
         if hasattr(base, "faceObject"):

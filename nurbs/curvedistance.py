@@ -66,7 +66,7 @@ def  dist(a,b):
 
 
 def ThousandsOfRunWhatShouldIdo():
-    sel=Gui.Selection.getSelection()
+    sel=Gui.Selection.getSelectionEx()
     b=sel[0]
     for a in sel[1:]:
         print (str(a.Label),round(dist(a,b),3))

@@ -329,7 +329,7 @@ class Nurbs_CreateQuadview:
 
     def Activated(self):
 
-        objs = Gui.Selection.getSelection()
+        objs = Gui.Selection.getSelectionEx()
 
         labels = [obj.Label for obj in objs]
         title = ', '.join(labels)
@@ -903,9 +903,9 @@ class Nurbs_CreateH2():
             errMessage = "Select 3 objects to use Extrude Face"
             faced.getInfo(s).errorDialog(errMessage)
             return
-        obja = Gui.Selection.getSelection()[0]
-        objb = Gui.Selection.getSelection()[1]
-        objs = Gui.Selection.getSelection()[2:]
+        obja = Gui.Selection.getSelectionEx()[0]
+        objb = Gui.Selection.getSelectionEx()[1]
+        objs = Gui.Selection.getSelectionEx()[2:]
 
         title = "Horizontal views for "+obja.Label+" and "+objb.Label
 
@@ -1369,9 +1369,9 @@ class Nurbs_CreateDarkRoom:
     def Activated(self, configureVal={1, 1, 1, 1, 1, }):
 
         # the superstar
-        obja = Gui.Selection.getSelection()[0]
+        obja = Gui.Selection.getSelectionEx()[0]
         # and the set
-        objs = Gui.Selection.getSelection()[1:]
+        objs = Gui.Selection.getSelectionEx()[1:]
 
         title = "Darkroom for "+obja.Label
 

@@ -56,7 +56,7 @@ class Design456_unifySplitFuse1:
             #### Config End ####
 
             selectedEdge     = Gui.Selection.getSelectionEx()
-            sel = selObjects = Gui.Selection.getSelection()
+            sel = selObjects = Gui.Selection.getSelectionEx()
             try:
                 subElementName = Gui.Selection.getSelectionEx()[0].SubElementNames[0] # for color first face selected
             except: 
@@ -154,7 +154,7 @@ Gui.addCommand('Design456_unifySplitFuse1', Design456_unifySplitFuse1())
 class Design456_unifySplitFuse2:
     def Activated(self):
         try:
-            sel = Gui.Selection.getSelection()
+            sel = Gui.Selection.getSelectionEx()
             if (len(sel) != 2):
                 # Two object must be selected
                 errMessage = "Select two objects to use the Tool"

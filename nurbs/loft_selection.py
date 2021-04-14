@@ -60,7 +60,7 @@ def runOnEdges():
 
 
 def ThousandsOfRunWhatShouldIdo():
-    ribs=Gui.Selection.getSelection()
+    ribs=Gui.Selection.getSelectionEx()
 
     l=App.ActiveDocument.addObject('Part::Loft','Loft')
     l.Ruled = True

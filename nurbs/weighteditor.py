@@ -84,7 +84,7 @@ def pk(obj=None,w=None):
         if obj!=None:
             a=obj
         else:
-            [a]=Gui.Selection.getSelection()
+            [a]=Gui.Selection.getSelectionEx()
         bc=a.Shape.Edge1.Curve
         pts=a.Shape.Edge1.Curve.getPoles()
         print ("Poles", len(pts))
@@ -137,7 +137,7 @@ def pk(obj=None,w=None):
 def dialog(sk=None):
 
     if sk==None:
-        [sk]=Gui.Selection.getSelection()
+        [sk]=Gui.Selection.getSelectionEx()
     if 1:
 
         w=QtGui.QWidget()
@@ -192,5 +192,5 @@ def dialog(sk=None):
 
 
 def ThousandsOfRunWhatShouldIdo():
-    for sk in  Gui.Selection.getSelection():
+    for sk in  Gui.Selection.getSelectionEx():
         w=dialog(sk)

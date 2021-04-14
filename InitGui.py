@@ -251,7 +251,7 @@ class Design456_Workbench (Workbench):
             from DraftGui import translate
             if recipient == "View":
                 if App.activeDraftCommand is None:
-                    if Gui.Selection.getSelection():
+                    if Gui.Selection.getSelectionEx():
                         self.appendContextMenu(
                             "Draft", self.drawing_commands + self.modification_commands)
                         self.appendContextMenu(
@@ -271,7 +271,7 @@ class Design456_Workbench (Workbench):
                             translate("draft", "CubicBezCurve")):
                         self.appendContextMenu("", self.line_commands)
             else:
-                if Gui.Selection.getSelection():
+                if Gui.Selection.getSelectionEx():
                     self.appendContextMenu("Utilities", self.context_commands)
             # END DRAFT
         except Exception as exc:

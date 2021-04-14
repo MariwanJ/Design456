@@ -1207,13 +1207,13 @@ def runtest1():
 
 def createGeodesic():
     '''geodesic auf koerper erzeugen'''
-    a=createGeodesicA(obj=Gui.Selection.getSelection()[0])
+    a=createGeodesicA(obj=Gui.Selection.getSelectionEx()[0])
 
 
 def geodesicMapPatchToFace():
     '''pfad(e) $2 auf geodesic $1 auflegen'''
-    a=createPatch(obj=Gui.Selection.getSelection()[0],
-    wire=Gui.Selection.getSelection()[1])
+    a=createPatch(obj=Gui.Selection.getSelectionEx()[0],
+    wire=Gui.Selection.getSelectionEx()[1])
     App.ActiveDocument.recompute()
     App.ActiveDocument.recompute()
 
@@ -1221,16 +1221,16 @@ def geodesicMapPatchToFace():
 def appendGeodesic():
     '''geodesic erzeugen, die an eine geodesic andockt'''
     a=createGeodesicA()
-    a.pre=Gui.Selection.getSelection()[0]
+    a.pre=Gui.Selection.getSelectionEx()[0]
 
 
 def createCurvatureStar():
-    a=createCurvature(obj=Gui.Selection.getSelection()[0])
+    a=createCurvature(obj=Gui.Selection.getSelectionEx()[0])
 
 
 def    creategeodesicbunch():
     for j in range(36):
-        a=createGeodesicA(obj=Gui.Selection.getSelection()[0])
+        a=createGeodesicA(obj=Gui.Selection.getSelectionEx()[0])
         a.direction=j*10
 
 
@@ -1790,7 +1790,7 @@ def updateDistance(fp):
 
 def geodesicDistance():
 
-    obj=Gui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelectionEx()[0]
 
     a=App.ActiveDocument.addObject("Part::FeaturePython","distance")
 
@@ -2196,7 +2196,7 @@ def createMarker(u=20,v=50):
     '''create Label'''
 
     l = makeLabel(direction='Horizontal',labeltype='Position')
-    l.obj=Gui.Selection.getSelection()[0]
+    l.obj=Gui.Selection.getSelectionEx()[0]
     l.LabelType = u"Custom"
     l.Label="MyMarker"
     l.ViewObject.DisplayMode = u"2D text"
@@ -2224,9 +2224,9 @@ def findGeodesicToTarget(start=None,target=None,d=10):
     print ("step")
 
     if start==None:
-        start=Gui.Selection.getSelection()[0]
+        start=Gui.Selection.getSelectionEx()[0]
     if target==None:
-        target=Gui.Selection.getSelection()[1]
+        target=Gui.Selection.getSelectionEx()[1]
 
     assert start.obj == target.obj
     assert start.facenumber == target.facenumber
