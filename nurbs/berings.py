@@ -1108,7 +1108,7 @@ def createBering():
     '''create Bering Sketches for selected objects'''
 
     rc=[]
-    for source in Gui.Selection.getSelection():
+    for source in Gui.Selection.getSelectionEx():
         rc +=  [genk(0,0,1,App.Vector(),source)]
 
     return rc
@@ -1148,7 +1148,7 @@ def AA():
 def createBeface():
     '''create a Bering Surface for a selected list of berings as ribs'''
 
-    sks=Gui.Selection.getSelection()
+    sks=Gui.Selection.getSelectionEx()
     #sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
     sf=App.ActiveDocument.addObject('Part::FeaturePython','BeringFace')
     Beface(sf)
@@ -1538,7 +1538,7 @@ def createProduct():
     sf=App.ActiveDocument.addObject('Part::FeaturePython','ProductFace')
     Product(sf)
     _VPProduct(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createProduct.svg')
-    sel=Gui.Selection.getSelection()
+    sel=Gui.Selection.getSelectionEx()
     sf.uSource=sel[0]
     sf.vSource=sel[1]
     if len(sel)>=3:
@@ -1875,13 +1875,13 @@ class FaceConnection(FeaturePython):
 
 
 def createSeam():
-    (fa,fb)=Gui.Selection.getSelection()
+    (fa,fb)=Gui.Selection.getSelectionEx()
 
     sf=App.ActiveDocument.addObject('Part::FeaturePython','Seam')
     sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
     FaceConnection(sf)
     ViewProvider(sf.ViewObject)
-    (us,vs)=Gui.Selection.getSelection()
+    (us,vs)=Gui.Selection.getSelectionEx()
     sf.aSource=fa
     sf.bSource=fb
     sf.mode='Seam'
@@ -1989,7 +1989,7 @@ class BeGrid(FeaturePython):
 def createBeGrid():
     '''create BeGrids for the selected objects'''
 
-    for  fa in Gui.Selection.getSelection():
+    for  fa in Gui.Selection.getSelectionEx():
 
         sf=App.ActiveDocument.addObject('Part::FeaturePython','BeGrid')
         sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
@@ -2007,7 +2007,7 @@ def createBeGrid():
 def BSplineToBezierCurve():
     '''create a degree 3 curve with multiplicities always 3'''
 
-    obj=Gui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelectionEx()[0]
     bc=obj.Shape.Edge1.Curve
 
     if bc.Degree>3:
@@ -2035,7 +2035,7 @@ def BSplineToBezierCurve():
     '''create a degree 3 curve with multiplicities always 3'''
 
 
-    for obj in Gui.Selection.getSelection():
+    for obj in Gui.Selection.getSelectionEx():
         poles=[]
         for i,e in enumerate(obj.Shape.Edges):
             print( e)
@@ -2167,7 +2167,7 @@ class BezierSurface(FeaturePython):
 
 def BSplineToBezierSurface():
 
-    s=Gui.Selection.getSelection()[0]
+    s=Gui.Selection.getSelectionEx()[0]
     sf=App.ActiveDocument.addObject('Part::FeaturePython','BezierSurface')
 
     sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
@@ -2656,7 +2656,7 @@ def SurfaceEditor():
 
 
 
-    fp=Gui.Selection.getSelection()[0]
+    fp=Gui.Selection.getSelectionEx()[0]
 
     obj=App.ActiveDocument.getObject('YY_'+fp.Name)
     if obj == None:
@@ -2752,7 +2752,7 @@ def addKnot():
             uval=self.root.ids['udial'].value()
             vval=self.root.ids['vdial'].value()
 
-            fp=Gui.Selection.getSelection()[0]
+            fp=Gui.Selection.getSelectionEx()[0]
             bs=fp.Shape.Face1.Surface
 #            print ("Mode",mode)
             if mode=='u':
@@ -2784,7 +2784,7 @@ def addKnot():
 
         def _addKnot(self,mode,uvals,vvals):
 
-            fp=Gui.Selection.getSelection()[0]
+            fp=Gui.Selection.getSelectionEx()[0]
             bs=fp.Shape.Face1.Surface
 
             uknots=bs.getUKnots()
@@ -2865,7 +2865,7 @@ def connectFaces():
     FaceConnection(sf)
 
     if 1:
-        (fa,fb)=Gui.Selection.getSelection()
+        (fa,fb)=Gui.Selection.getSelectionEx()
         sf.aSource=fa
         sf.bSource=fb
 
@@ -2889,7 +2889,7 @@ def connectFaces():
 def fixCorner():
 
 
-    (a,b,c)=Gui.Selection.getSelection()
+    (a,b,c)=Gui.Selection.getSelectionEx()
     _fixCorner(a,b,c)
     App.ActiveDocument.recompute()
 
@@ -3260,7 +3260,7 @@ def createPlaneTubeConnector():
     sf=App.ActiveDocument.addObject('Part::FeaturePython','BeConnector')
     sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
     BePlaneTubeConnector(sf)
-    (sf.plane,sf.tube)=Gui.Selection.getSelection()
+    (sf.plane,sf.tube)=Gui.Selection.getSelectionEx()
     ViewProvider(sf.ViewObject)
 
 
@@ -3373,7 +3373,7 @@ def createHelmetTubeConnector():
     sf=App.ActiveDocument.addObject('Part::FeaturePython','BeConnector')
     sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
     HelmetTubeConnector(sf)
-    (sf.helmet,sf.tube)=Gui.Selection.getSelection()
+    (sf.helmet,sf.tube)=Gui.Selection.getSelectionEx()
     ViewProvider(sf.ViewObject)
 
 ## a Bezier face which connects 3 faces by a triangle layout
@@ -3603,14 +3603,14 @@ def createTriangle():
     sf=App.ActiveDocument.addObject('Part::FeaturePython','BeTriangle')
     sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
     BeTriangle(sf)
-    (sf.curveA,sf.curveB,sf.curveC)=Gui.Selection.getSelection()
+    (sf.curveA,sf.curveB,sf.curveC)=Gui.Selection.getSelectionEx()
     ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createTriangle.svg')
 
 
 def SplitIntoCells():
     '''split a BSpline Face into segment cells'''
 
-    obj=Gui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelectionEx()[0]
     f=obj.Shape.Face1
     bs=f.Surface
     luks=len(bs.getUKnots())
@@ -3644,7 +3644,7 @@ def SplitIntoCells():
 
 def createTangentStripes():
 
-    obj=Gui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelectionEx()[0]
     f=obj.Shape.Face1
     bs=f.Surface
     luks=len(bs.getUKnots())
@@ -3774,7 +3774,7 @@ def selectionToNurbs():
 
     '''convert selection to a nurbs face and all edges tos nurbs curvse'''
     if 0:
-        obj=Gui.Selection.getSelection()[0]
+        obj=Gui.Selection.getSelectionEx()[0]
 
         #eine Flaeche oder alle
         if len(obj.Shape.Faces) == 0:
@@ -3922,7 +3922,7 @@ def createCell():
     sf=App.ActiveDocument.addObject('Part::FeaturePython','Cell')
     sf.ViewObject.ShapeColor=(random.random(),0.5+random.random(),random.random(),)
     Cell(sf)
-    sf.source=Gui.Selection.getSelection()[0]
+    sf.source=Gui.Selection.getSelectionEx()[0]
     ViewProvider(sf.ViewObject)
 
 
@@ -3935,21 +3935,21 @@ def createQuadPlacement():
     QuadPm(sf)
     ViewProvider(sf.ViewObject)
 
-    sf.pointA=Gui.Selection.getSelection()[0].Placement
-    sf.pointB=Gui.Selection.getSelection()[1].Placement
-    sf.pointC=Gui.Selection.getSelection()[2].Placement
-    sf.pointD=Gui.Selection.getSelection()[3].Placement
+    sf.pointA=Gui.Selection.getSelectionEx()[0].Placement
+    sf.pointB=Gui.Selection.getSelectionEx()[1].Placement
+    sf.pointC=Gui.Selection.getSelectionEx()[2].Placement
+    sf.pointD=Gui.Selection.getSelectionEx()[3].Placement
 
-    sf.sourceA=Gui.Selection.getSelection()[0]
-    sf.sourceB=Gui.Selection.getSelection()[1]
-    sf.sourceC=Gui.Selection.getSelection()[2]
-    sf.sourceD=Gui.Selection.getSelection()[3]
+    sf.sourceA=Gui.Selection.getSelectionEx()[0]
+    sf.sourceB=Gui.Selection.getSelectionEx()[1]
+    sf.sourceC=Gui.Selection.getSelectionEx()[2]
+    sf.sourceD=Gui.Selection.getSelectionEx()[3]
 
 
 
 def _checkCurveGUI():
     ''' testcase checkcurve'''
-    obj=Gui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelectionEx()[0]
     curve=obj.Shape.Edge1.Curve
     checkcurve(curve)
     pass
@@ -3957,7 +3957,7 @@ def _checkCurveGUI():
 #
 def FaceToBezierSurface():
     '''selektierte flaeche in bspline surface umwandeln'''
-    obj=Gui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelectionEx()[0]
     a=Gui.Selection.getSelectionEx()[0]
     for s in a.SubObjects:
         print (s)
@@ -4532,7 +4532,7 @@ def createHoleGUI():
     bg=App.ActiveDocument.addObject('Part::FeaturePython','HoleFace')
     bg.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
     HoleFace(bg)
-    bg.source=Gui.Selection.getSelection()[0]
+    bg.source=Gui.Selection.getSelectionEx()[0]
 
 
     ViewProvider(bg.ViewObject)
@@ -4886,7 +4886,7 @@ def _createGordonGUI():
             #tt.grid=App.ActiveDocument.Compound
             # grid anorndung von begrid
 #            tt.grid=App.ActiveDocument.BeGrid
-            tt.grid=Gui.Selection.getSelection()[0]
+            tt.grid=Gui.Selection.getSelectionEx()[0]
             try:
                 tt.uCount=tt.grid.Source.uSegments+1
                 tt.vCount=tt.grid.Source.vSegments+1
@@ -4906,7 +4906,7 @@ def _createGordonGUI():
 
 def compareMaps():
     '''vergleich zwei Maps '''
-    (ma,mb)=Gui.Selection.getSelection()
+    (ma,mb)=Gui.Selection.getSelectionEx()
     comp=[]
     for p,q in zip(ma.Shape.Vertexes,mb.Shape.Vertexes):
         if (p.Point-q.Point).Length >0:
@@ -4926,7 +4926,7 @@ def BB():
 def  polishG1GUI():
     ''' make surface G1 continues'''
 
-    obj=Gui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelectionEx()[0]
     sf=obj.Shape.Face1.Surface
     poles=np.array(sf.getPoles())
 
@@ -5039,7 +5039,7 @@ def AA():
     print (pm/min(pm))
 
 def createTangentHelpersGUI():
-    for obj in Gui.Selection.getSelection():
+    for obj in Gui.Selection.getSelectionEx():
         axis2= obj.Shape.PrincipalProperties['FirstAxisOfInertia']
         print (axis2)
         axis2 *=80
@@ -5138,7 +5138,7 @@ def createBorder(objs):
 
 
 def _createBorderGUI():
-    createBorder(Gui.Selection.getSelection())
+    createBorder(Gui.Selection.getSelectionEx())
 
 ##  the approximation of a curve by a bezier curve
 # with parametric number of (equidistant) controlpoints
@@ -5253,7 +5253,7 @@ def createApprox(sels=None):
     '''create an approximation of the curves by bezier curves'''
 
     if sels==None:
-        sels=Gui.Selection.getSelection()
+        sels=Gui.Selection.getSelectionEx()
 
     for  fa in sels:
 
@@ -5270,7 +5270,7 @@ def createApprox(sels=None):
 
 
 def _createApproxGUI():
-    createApprox(Gui.Selection.getSelection())
+    createApprox(Gui.Selection.getSelectionEx())
 
 ## start the createHole Dialog
 def AA():
@@ -5495,7 +5495,7 @@ def glaetten():
                 return
             print ("ff",fu,fv,ta,tb)
 
-            srs=Gui.Selection.getSelection()
+            srs=Gui.Selection.getSelectionEx()
             sfs=[s.Shape.Face1.Surface for s in srs]
             pall=np.zeros(7*7*3).reshape(7,7,3)
 
@@ -5627,7 +5627,7 @@ def glaetten():
 def solid():
     '''create a shell and a solid for a selection'''
 
-    sls=[a.Shape for a in Gui.Selection.getSelection()]
+    sls=[a.Shape for a in Gui.Selection.getSelectionEx()]
 
     sh=Part.makeShell(sls)
     ssh=App.ActiveDocument.addObject('Part::Feature',"shell")
@@ -5721,7 +5721,7 @@ def flattenthewire():
 
 def BB():
 
-    a=Gui.Selection.getSelection()[0]
+    a=Gui.Selection.getSelectionEx()[0]
     for v in a.Shape.Vertexes:
         print (v.Point)
 

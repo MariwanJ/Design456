@@ -441,7 +441,7 @@ def createTripod():
 
     Tripod(a)
     a.ViewObject.LineWidth = 2
-    a.source=Gui.Selection.getSelection()[0]
+    a.source=Gui.Selection.getSelectionEx()[0]
     ViewProvider(a.ViewObject)
     if len(Gui.Selection.getSelectionEx())==2:
         a.source=Gui.Selection.getSelectionEx()[0].Object
@@ -498,7 +498,7 @@ def createTripodSketch(): #sketcher
         Tripod(a)
         a.mode="Sketch"
         a.ViewObject.LineWidth = 2
-        a.source=Gui.Selection.getSelection()[0]
+        a.source=Gui.Selection.getSelectionEx()[0]
         ViewProvider(a.ViewObject)
 
 
@@ -507,19 +507,19 @@ def createTripodSketch(): #sketcher
 
 def createSweep():
     sw=App.ActiveDocument.addObject('Part::Sweep','Sweep')
-    sw.Spine=(Gui.Selection.getSelection()[-1],["Edge1"])
-    sw.Sections=Gui.Selection.getSelection()[0:-1]
+    sw.Spine=(Gui.Selection.getSelectionEx()[-1],["Edge1"])
+    sw.Sections=Gui.Selection.getSelectionEx()[0:-1]
     App.ActiveDocument.recompute()
 
 
 def createLoft():
     sw=App.ActiveDocument.addObject('Part::Loft','Loft')
-    sw.Sections=Gui.Selection.getSelection()
+    sw.Sections=Gui.Selection.getSelectionEx()
     App.ActiveDocument.recompute()
 
 def createCompound():
     sw=App.ActiveDocument.addObject("Part::Compound","Compound001")
-    sw.Links=Gui.Selection.getSelection()
+    sw.Links=Gui.Selection.getSelectionEx()
     App.ActiveDocument.recompute()
 
 # createSweep()

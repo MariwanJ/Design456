@@ -52,7 +52,7 @@ def ThousandsOfRunWhatShouldIdo():
         f = targetx.SubObjects[0]
 
     except:
-        [source, target] = Gui.Selection.getSelection()
+        [source, target] = Gui.Selection.getSelectionEx()
 
         s = source.Shape.Edge1
         f = target.Shape.Face1
@@ -64,7 +64,7 @@ def ThousandsOfRunWhatShouldIdo():
 def OLDrunAll():
 
     wires = []
-    alls = Gui.Selection.getSelection()
+    alls = Gui.Selection.getSelectionEx()
     target = alls[-1]
     for source in alls[:-1]:
         for s in source.Shape.Edges:
@@ -130,7 +130,7 @@ def runAll():
 
     pointgrps = []
     wires = []
-    alls = Gui.Selection.getSelection()
+    alls = Gui.Selection.getSelectionEx()
     target = alls[-1]
     for source in alls[:-1]:
 
@@ -215,7 +215,7 @@ def concatenateBSplines():
     import Draft
 
     wires = []
-    for s in Gui.Selection.getSelection():
+    for s in Gui.Selection.getSelectionEx():
         wires += [s.Points]
         print(wires)
         print(s.Label)
@@ -274,7 +274,7 @@ def concatenateWires(wires):
 
 def splitCurve():
     # split an recombine curve
-    sw = Gui.Selection.getSelection()[0]
+    sw = Gui.Selection.getSelectionEx()[0]
 
     w = sw.Shape.Edges[0]
     # App.ActiveDocument.BSpline001.Shape
@@ -300,7 +300,7 @@ def splitCurve():
 
 def combineCurve():
     # recombine
-    [wsz, wxy] = Gui.Selection.getSelection()
+    [wsz, wxy] = Gui.Selection.getSelectionEx()
     pts = [App.Vector(b.x, b.y, a.z) for a, b in zip(wsz.Points, wxy.Points)]
     aa = Draft.makeWire(pts)
     ptsb = aa.Shape.discretize(40)

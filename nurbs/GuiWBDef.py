@@ -307,22 +307,22 @@ def ondocument():
 
 def onselection():
     '''if at least one object is selected'''
-    return len(Gui.Selection.getSelection()) > 0
+    return len(Gui.Selection.getSelectionEx()) > 0
 
 
 def onselection1():
     '''if exactly one object is selected'''
-    return len(Gui.Selection.getSelection()) == 1
+    return len(Gui.Selection.getSelectionEx()) == 1
 
 
 def onselection2():
     '''if exactly two objects are selected'''
-    return len(Gui.Selection.getSelection()) == 2
+    return len(Gui.Selection.getSelectionEx()) == 2
 
 
 def onselection3():
     '''if exactly three objects are selected'''
-    return len(Gui.Selection.getSelection()) == 3
+    return len(Gui.Selection.getSelectionEx()) == 3
 
 
 def onselex():

@@ -264,7 +264,7 @@ def pointEditor(obj,scale=1):
 
 def run(scale=1):
     print ("RUN ---",scale)
-    obj=Gui.Selection.getSelection()[0]
+    obj=Gui.Selection.getSelectionEx()[0]
     print (obj)
     return pointEditor(obj,scale=scale)
 

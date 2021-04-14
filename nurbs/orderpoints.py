@@ -252,7 +252,7 @@ def ThousandsOfRunWhatShouldIdo():
     debug = p['debug']
     cf = p['DrawCircles']
 
-    if len(Gui.Selection.getSelection()) == 0:
+    if len(Gui.Selection.getSelectionEx()) == 0:
         showdialog('Oops', 'nothing selected - nothing to do for me',
                    'Plese select a point cloud')
 
@@ -261,7 +261,7 @@ def ThousandsOfRunWhatShouldIdo():
     inner = True
     outer = True
 
-    for obj in Gui.Selection.getSelection():
+    for obj in Gui.Selection.getSelectionEx():
         if median:
             orderdata(obj, medianfil=mf, plotit=True, cf=cf)
             App.ActiveDocument.ActiveObject.Label = obj.Label + \

@@ -87,7 +87,7 @@ def MyDialog(target=None):
 
 
 def ThousandsOfRunWhatShouldIdo():
-    # [target]=Gui.Selection.getSelection()
+    # [target]=Gui.Selection.getSelectionEx()
     target = None
     return MyDialog(target)
 

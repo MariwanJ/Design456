@@ -181,7 +181,7 @@ def smoothWire(sel=None,name=None):
     if sel !=None:
         a.Wire=sel
     else:
-        try: a.Wire=Gui.Selection.getSelection()[0]
+        try: a.Wire=Gui.Selection.getSelectionEx()[0]
         except: pass
 
     ViewProvider(a.ViewObject)
@@ -259,7 +259,7 @@ def smoothMesh():
     TaubM(a,"Smooth")
     # a.Mesh=App.ActiveDocument.DWire
     # a.Source=App.ActiveDocument.K147909
-    a.Source=Gui.Selection.getSelection()[0]
+    a.Source=Gui.Selection.getSelectionEx()[0]
     ViewProvider(a.ViewObject)
     run3D(None,a)
 
@@ -299,7 +299,7 @@ def splitMesh():
     ptsa=[]
 
     #s=App.ActiveDocument.K147908
-    s=Gui.Selection.getSelection()[0]
+    s=Gui.Selection.getSelectionEx()[0]
 
     ribs=[]
     #ribc
@@ -496,7 +496,7 @@ def splitMesh():
 def sliceMeshbySketch():
 
 
-    [s,sk]=Gui.Selection.getSelection()
+    [s,sk]=Gui.Selection.getSelectionEx()
     if s.TypeId != 'Mesh::Feature':
         s,sk=sk,s
 
@@ -539,7 +539,7 @@ def sliceMeshbySketch():
 def distanceCurves():
     pass
 
-    [a,b]=Gui.Selection.getSelection()
+    [a,b]=Gui.Selection.getSelectionEx()
     #a.Shape.Wires
     #b.Shape.Wires
 

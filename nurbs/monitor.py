@@ -289,8 +289,8 @@ def ThousandsOfRunWhatShouldIdo():
     a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
 
     m=Monitor(a)
-    a.source=Gui.Selection.getSelection()[0]
-    a.source2=Gui.Selection.getSelection()[1]
+    a.source=Gui.Selection.getSelectionEx()[0]
+    a.source2=Gui.Selection.getSelectionEx()[1]
 
 
 #--------------------------
@@ -299,8 +299,8 @@ def runforce():
     a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
     m=Monitor(a)
     a.mode='force'
-    a.source=Gui.Selection.getSelection()[0]
-    a.source2=Gui.Selection.getSelection()[1]
+    a.source=Gui.Selection.getSelectionEx()[0]
+    a.source2=Gui.Selection.getSelectionEx()[1]
 
 
 

@@ -106,7 +106,7 @@ def createListWidget(obj=None, propname=None):
     def add():
         '''add gui selected objects to list'''
 
-        sels = Gui.Selection.getSelection()
+        sels = Gui.Selection.getSelectionEx()
         ref = obj.getPropertyByName(propname+"Source")
         aa = ref.getPropertyByName(propname)
 

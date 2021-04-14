@@ -33,7 +33,7 @@ def ThousandsOfRunWhatShouldIdo():
     ''' auxiliary method applies placement from the label,
     to move objects (sketch) to the desired place in the room'''
 
-    for y in Gui.Selection.getSelection():
+    for y in Gui.Selection.getSelectionEx():
         if y.Label.startswith('t='):
             exec(y.Label)
             print (t)

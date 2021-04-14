@@ -191,7 +191,7 @@ def fold(obj):
 
 def ThousandsOfRunWhatShouldIdo():
 
-    ss=Gui.Selection.getSelection()
+    ss=Gui.Selection.getSelectionEx()
 
     folder=createFolding(obj=None)
     folder.faceobj=ss[0]

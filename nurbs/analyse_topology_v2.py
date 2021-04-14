@@ -366,7 +366,7 @@ class MainAnalysisMethodRunAna:
         g = nx.Graph()
         try:
             '''run analysis for one selected object'''
-            s = Gui.Selection.getSelection()
+            s = Gui.Selection.getSelectionEx()
             self.runAna(s[0])
 
         except Exception as err:
@@ -593,7 +593,7 @@ class MainAnalysisMethodRunAna:
     def runCompare(self):
         '''run analysis for more parts and display the results'''
         resetVertexStore()
-        s = Gui.Selection.getSelection()
+        s = Gui.Selection.getSelectionEx()
         for model in s:
             #        g=nx.Graph()
             #        App.g=g

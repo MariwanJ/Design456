@@ -38,7 +38,7 @@ class holes:
         self.run()
 
     def run(self):
-        sel = Gui.Selection.getSelection()
+        sel = Gui.Selection.getSelectionEx()
 
         face = sel[0].Shape.Face1.Surface.toShape()
         # Part.show(face)
@@ -93,7 +93,7 @@ holes.__doc__ = """holes: Tobe added later     """
 class extractWires:
     def Activated(self):
         '''extract the wires'''
-        sel = Gui.Selection.getSelection()
+        sel = Gui.Selection.getSelectionEx()
         w = sel[0]
         print(w.Shape.Wires)
         for i, wire in enumerate(w.Shape.Wires):

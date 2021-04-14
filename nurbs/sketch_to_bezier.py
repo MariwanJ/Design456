@@ -463,7 +463,7 @@ def createArcSketch(name="TwoArc",source=None):
 
     try:
         if source == None:
-            source=Gui.Selection.getSelection()[0]
+            source=Gui.Selection.getSelectionEx()[0]
     except:
         pass
 
@@ -563,7 +563,7 @@ def createLabels():
 def createLabels():
 
 #    obj=App.ActiveDocument.Sketch
-    for obj in Gui.Selection.getSelection():
+    for obj in Gui.Selection.getSelectionEx():
         dat=[]
         for i,e in enumerate(obj.Shape.Vertexes):
             dat += [[ "Vertex"+str(i+1), ["V "+str(i+1) + " @ " + obj.Label]]]
@@ -582,7 +582,7 @@ def createLabels():
 
 def updateLabels():
 
-    for l in Gui.Selection.getSelection():
+    for l in Gui.Selection.getSelectionEx():
         if l.Target[1][0].startswith("Edge"):
             l.TargetPoint=getattr(l.Target[0].Shape,l.Target[1][0]).CenterOfMass
         else:

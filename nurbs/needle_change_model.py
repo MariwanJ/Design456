@@ -84,7 +84,7 @@ def MyDialog(target):
 
 
 def ThousandsOfRunWhatShouldIdo():
-    [target] = Gui.Selection.getSelection()
+    [target] = Gui.Selection.getSelectionEx()
     MyDialog(target)
 
 

@@ -79,7 +79,7 @@ StepSize
 '''
 
 
-faces=Gui.Selection.getSelection()
+faces=Gui.Selection.getSelectionEx()
 print (faces)
 
  
