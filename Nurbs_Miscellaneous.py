@@ -40,7 +40,16 @@ class Design456_Nurbs_Miscellaneous:
     def GetCommands(self):
         """3D Drawing"""
         return (                #from cmd3 defined in his wb as "Workspaces and Views"
-                 'Nurbs_CreateWorkspace','Nurbs_CreateWSLink','Nurbs_ViewsQV','Nurbs_Views2H','Nurbs_DarkRoom','Nurbs_LightON','Nurbs_LightOff',
+                 'Nurbs_CreateWorkspace',
+                 'Nurbs_CreateWSLink',
+                 'Nurbs_CreateQuadview',
+                 'Nurbs_CreateH2',
+                 'Nurbs_CreateDarkRoom',
+                 'Nurbs_LightON',
+                 'Nurbs_LightOFF',
+                 'Nurbs_FaceDraw',
+                 'NurbsDrawIsoFace',
+                 '',
                  
 
                 

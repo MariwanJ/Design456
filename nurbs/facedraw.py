@@ -435,8 +435,10 @@ def drawcurve(wire,face,facepos=App.Vector()):
             if sp==None:
                 sp=App.ActiveDocument.addObject("Part::Spline",wire.Label+"_SplineFaceA")
 
-            if wire.reverseFace: sp.Shape=r2[0][0]
-            else: sp.Shape=r[0][0]
+            if wire.reverseFace: 
+                sp.Shape=r2[0][0]
+            else: 
+                sp.Shape=r[0][0]
 
             #sp.ViewObject.ShapeColor=(random.random(),random.random(),random.random())
             sp.ViewObject.ShapeColor=wire.ViewObject.ShapeColor
@@ -979,20 +981,56 @@ def stop():
 
 ## start the facedraw eventserver
 
-def ThousandsOfRunWhatShouldIdo():
-    '''start the facedraw dialog and eventmanager'''
+class Nurbs_FaceDraw:
+    def Activated(self):
+        try:
+            '''start the facedraw dialog and eventmanager'''
+            try: stop()
+            except: pass
+            start()
+        except Exception as err:
+            App.Console.PrintError("'Nurbs_FaceDraw' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
-    try: stop()
-    except: pass
-    start()
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+            'MenuText': 'Nurbs_FaceDraw',
+                        'ToolTip':  'Nurbs FaceDraw'
+        }
 
 
-if 0:
+Gui.addCommand('Nurbs_FaceDraw', Nurbs_FaceDraw())
+Nurbs_FaceDraw.__doc__ = """FaceDraw: Tobe written later
+                            """
 
-    # aussen rand
-    wire1=App.ActiveDocument.IsoDrawFace002
-    # innenrand fuer erstes loch
-    wire2=App.ActiveDocument.IsoDrawFace003
-    faceobj=App.ActiveDocument.faceObject
+class NurbsDrawIsoFace:
+    def Activated(self):
+        try: 
+                # outside edge 
+                wire1=App.ActiveDocument.IsoDrawFace002
+                # inner edge for first hole 
+                wire2=App.ActiveDocument.IsoDrawFace003
+                faceobj=App.ActiveDocument.faceObject
 
-    drawring(wire1,wire2,faceobj,facepos=App.Vector())
+                drawring(wire1,wire2,faceobj,facepos=App.Vector())
+        except Exception as err:
+            App.Console.PrintError("'Nurbs_FaceDraw' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+            'MenuText': 'Nurbs_DrawIsoFace',
+                        'ToolTip':  'Nurbs DrawIsoFace'
+        }
+
+Gui.addCommand('NurbsDrawIsoFace', NurbsDrawIsoFace())
+NurbsDrawIsoFace.__doc__ = """NurbsDrawIsoFace: Tobe written later
+                            """

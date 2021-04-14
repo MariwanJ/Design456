@@ -270,7 +270,7 @@ class Isodraw(PartFeature):
 
 
 class createIsodrawFace:
-    def Activate(self):
+    def Activated(self):
         '''creates a IsoDrawFace object'''
         b = App.ActiveDocument.addObject("Part::FeaturePython", "IsoDrawFace")
         Isodraw(b)
@@ -279,8 +279,8 @@ class createIsodrawFace:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'testD',
-            'ToolTip':  'testD'
+            'MenuText': 'createIsodrawFace',
+            'ToolTip':  'createIsodrawFace'
         }
 
 
@@ -334,7 +334,7 @@ class Brezel(PartFeature):
         except:
             obj.ViewObject.ShapeColor = (1., 0., 0.)
 
-        # aussen rand
+        # outside edge 
         wire1 = obj.wire1
         # innenrand fuer erstes loch
         wire2 = obj.wire2
@@ -355,7 +355,7 @@ class Brezel(PartFeature):
 
 
 class createBrezel:
-    def Activate(self):
+    def Activated(self):
         '''creates a IsoDrawFace object'''
         b = App.ActiveDocument.addObject("Part::FeaturePython", "Brezel")
         Brezel(b)

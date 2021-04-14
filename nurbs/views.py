@@ -15,7 +15,7 @@ from PySide import QtCore, QtGui
 from pivy import coin
 import Part
 import os
-
+import FACE_D as faced
 try:
     import numpy as np
 except ImportError:
@@ -322,7 +322,7 @@ class Nurbs_QuadView(PartFeature):
 
 # ---------------------------
 
-class Nurbs_createquadview:
+class Nurbs_CreateQuadview:
     """
     Todo : What is the usage of this class?
     """
@@ -353,10 +353,10 @@ class Nurbs_createquadview:
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspacequad.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createquadview"),
-                'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_createquadview", _tooltip)}
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateQuadview"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_CreateQuadview", _tooltip)}
 
-Gui.addCommand("Nurbs_createquadview", Nurbs_createquadview())
+Gui.addCommand("Nurbs_CreateQuadview", Nurbs_CreateQuadview())
 
 
 def updatencontent(viewer, objs, fp, clearSel=True, fit=True):
@@ -894,10 +894,15 @@ def resizeWindows(v, a):
             # return
 
 
-class Nurbs_createH2():
+class Nurbs_CreateH2():
 
     def Activated(self):
-
+        s=Gui.Selection.getSelectionEx()
+        if (len(s) < 3):
+            # An object must be selected
+            errMessage = "Select 3 objects to use Extrude Face"
+            faced.getInfo(s).errorDialog(errMessage)
+            return
         obja = Gui.Selection.getSelection()[0]
         objb = Gui.Selection.getSelection()[1]
         objs = Gui.Selection.getSelection()[2:]
@@ -907,8 +912,8 @@ class Nurbs_createH2():
 #        v=Gui.createViewer(4,title)
 
         a = App.ActiveDocument.addObject("Part::FeaturePython", "MyViewH2")
-        ViewH2(a, title)
-        ViewProviderH2(a.ViewObject)
+        Nurbs_ViewH2(a, title)
+        Nurbs_ViewProviderH2(a.ViewObject)
 
 #        a.Proxy.v=v
         a.obja = obja
@@ -921,13 +926,11 @@ class Nurbs_createH2():
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools - Nurbs")
+        _tooltip = ("Nurbs_CreateH2")
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbscreateH2"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateH2"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs createH2", _tooltip)}
-
-
-Gui.addCommand("Nurbs_createH2", Nurbs_createH2())
+Gui.addCommand("Nurbs_CreateH2", Nurbs_CreateH2())
 
 # ------------------------------------------------------
 
@@ -1468,7 +1471,7 @@ class Nurbs_CreateDarkRoom:
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools - Nurbs")
+        _tooltip = ("NurbsCreateDarkRoom")
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateDarkRoom"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateDarkRoom", _tooltip)}
@@ -1526,7 +1529,7 @@ class Nurbs_createlight:
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools - Nurbs")
+        _tooltip = ("Nurbscreatelight")
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace2h.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbscreatelight"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs createlight", _tooltip)}
@@ -1570,10 +1573,9 @@ class Nurbs_LightOFF():
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools - Nurbs")
+        _tooltip = ("Nurbs_LightOFF")
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'light_off.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbslightON"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LightOFF"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs LightOFF", _tooltip)}
-
 
 Gui.addCommand("Nurbs_LightOFF", Nurbs_LightOFF())
