@@ -605,7 +605,7 @@ class Miki():
 
 
 
-    def showSo2(self,dokname):
+    def showSo2(self,docname):
         for l in self.lines:
             if  l[2] == 0 and l[0] !=-1:
 #                    print l
@@ -613,7 +613,7 @@ class Miki():
 #                    print r
                     if r.__class__.__name__.startswith('So'):
 #                        print r
-                        dok = Gui.getDocument(dokname)
+                        dok = Gui.getDocument(docname)
                         sg=dok.ActiveView.getSceneGraph()
                         sg.addChild(r)
 

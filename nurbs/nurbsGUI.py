@@ -22,70 +22,72 @@ import Design456Init
 import os
 
 try:
-    import numpy as np 
+    import numpy as np
 except ImportError:
-    print ("Please install the required module : numpy")
-    
+    print("Please install the required module : numpy")
+
 import random
 
 import os
 import nurbs
 
+
 class WorkSpace():
 
     def __init__(self, name):
-    	try:lidok= App.getDocument(name)
-    	except:	lidok=App.newDocument(name)
-    	self.dok=lidok
-    	self.name=name
+        try:
+            lidok = App.getDocument(name)
+        except:
+            lidok = App.newDocument(name)
+        self.dok = lidok
+        self.name = name
 
     def delete(self):
-    	App.closeDocument(self.name)
+        App.closeDocument(self.name)
 
+    def addObject2(self, obj, count=10):
+        if 0:
+            res = self.dok.addObject("Part::FeaturePython", obj.Name)
+            ViewProvider(res.ViewObject)
+        # return
+        res = self.dok.addObject("Part::Spline", obj.Name)
+        res.Shape = obj.Shape.toNurbs()
+        # return
+        f = obj.Shape.Face1.Surface
+        cs = []
 
-    def addObject2(self,obj,count=10):
-    	if 0:
-    		res=self.dok.addObject("Part::FeaturePython",obj.Name)
-    		ViewProvider(res.ViewObject)
-    	#return
-    	res=self.dok.addObject("Part::Spline",obj.Name)
-    	res.Shape=obj.Shape.toNurbs()
-    	#return
-    	f=obj.Shape.Face1.Surface
-    	cs=[]
-
-    	for ui in range(count+1):
-    			cs.append(f.uIso(1.0/count*ui).toShape())
-    	for vi in range(count+1):
-    			cs.append(f.vIso(1./count*vi).toShape())
-    	res.Shape=Part.Compound(cs)
+        for ui in range(count+1):
+            cs.append(f.uIso(1.0/count*ui).toShape())
+        for vi in range(count+1):
+            cs.append(f.vIso(1./count*vi).toShape())
+        res.Shape = Part.Compound(cs)
 
     def recompute(self):
-    	self.dok.recompute()
+        self.dok.recompute()
 
     def show(self):
-    	self.getWidget().show()
+        self.getWidget().show()
 
     def hide(self):
-    	self.getWidget().hide()
+        self.getWidget().hide()
 
     def getWidget(self):
-    	mw=Gui.getMainWindow()
-    	mdiarea=mw.findChild(QtGui.QMdiArea)
+        mw = Gui.getMainWindow()
+        mdiarea = mw.findChild(QtGui.QMdiArea)
 
-    	sws=mdiarea.subWindowList()
-    	print ("windows ...")
-    	for w2 in sws:
-    		print (str(w2.windowTitle()))
-    		s=str(w2.windowTitle())
-    		if s == self.name + '1 : 1[*]':
-    			print ("gefundne")
-    			return w2
-    	print (self.name + '1:1[*]')
-
+        sws = mdiarea.subWindowList()
+        print("windows ...")
+        for w2 in sws:
+            print(str(w2.windowTitle()))
+            s = str(w2.windowTitle())
+            if s == self.name + '1 : 1[*]':
+                print("gefundne")
+                return w2
+        print(self.name + '1:1[*]')
 
     def _haha(self):
-    	pass
+        pass
+
 
 class PartFeature:
     def __init__(self, obj):
@@ -122,7 +124,7 @@ class ViewProvider:
         print("onChanged", prop)
 
 
-class ViewProviderSL(ViewProvider):
+class Nurbs_ViewProviderSL(ViewProvider):
 
     def onChanged(self, obj, prop):
         print("onChanged X", prop)
@@ -161,9 +163,9 @@ class ViewProviderSL(ViewProvider):
                 return True
 
 
-class ShapeLink(PartFeature):
+class Nurbs_ShapeLink(PartFeature):
 
-    def __init__(self, obj, sobj, dokname):
+    def __init__(self, obj, sobj, docname):
         print("create shape link")
         PartFeature.__init__(self, obj)
         obj.addProperty("App::PropertyLink", "source", "Base")
@@ -176,7 +178,7 @@ class ShapeLink(PartFeature):
         obj.umax = 1.0
         obj.vmax = 1.0
         obj.source = sobj
-        obj.workspace = dokname
+        obj.workspace = docname
         obj.gridcount = 20
 
         ViewProviderSL(obj.ViewObject)
@@ -184,7 +186,7 @@ class ShapeLink(PartFeature):
     def execute(proxy, obj):
         if not obj.ViewObject.Visibility:
             return
-        objnurbs=None # Added by mariwan .. dont know what this do
+        objnurbs = None  # Added by mariwan .. dont know what this do
         print("update shape", obj.source.Name, obj.workspace, obj.gridcount)
 
         tw = WorkSpace(obj.workspace)
@@ -246,10 +248,10 @@ class ViewProviderWSL(ViewProvider):
 
 class WSLink(PartFeature):
 
-    def __init__(self, obj, dokname):
+    def __init__(self, obj, docname):
         PartFeature.__init__(self, obj)
         obj.addProperty("App::PropertyString", "workspace", "Base")
-        obj.workspace = dokname
+        obj.workspace = docname
         ViewProviderWSL(obj.ViewObject)
 
     def execute(proxy, obj):
@@ -261,7 +263,7 @@ class WSLink(PartFeature):
             ws.hide()
 
 
-class initGUI():
+class Nurbs_initGUI():
 
     def __init__(self, name):
         try:
@@ -310,7 +312,7 @@ class initGUI():
             print(str(w2.windowTitle()))
             s = str(w2.windowTitle())
             if s == self.name + '1 : 1[*]':
-                print("gefundne")
+                print("found")
                 return w2
         print(self.name + '1:1[*]')
 
@@ -318,39 +320,81 @@ class initGUI():
         pass
 
 
-def createLink(obj, dokname="Linkdok"):
-    ad = App.ActiveDocument
-    print(ad.Name)
+class Nurbs_createLink:
+    """ 
+    create link 
+    TODO: When do you use this? Write comments Mariwan
+    """
+    def Activated(self, obj, docname="Linkdoc"):
+        ad = App.ActiveDocument
+        print(ad.Name)
 
-    lidok = WorkSpace(dokname)
-    link = lidok.addObject2(obj)
-    lidok.recompute()
+        lidok = WorkSpace(docname)
+        link = lidok.addObject2(obj)
+        lidok.recompute()
 
-    bares = obj.Document.addObject(
-        "Part::FeaturePython", "Base Link "+obj.Label)
-    bares.Label = obj.Label+"@"+dokname
+        bares = obj.Document.addObject(
+            "Part::FeaturePython", "Base Link "+obj.Label)
+        bares.Label = obj.Label+"@"+docname
 
-    ShapeLink(bares, obj, dokname)
-    bares.Proxy.execute(bares)
+        ShapeLink(bares, obj, docname)
+        bares.Proxy.execute(bares)
 
-    return bares
-
-
-def createWsLink(dokname="Linkdok"):
-    ad = App.ActiveDocument
-    bares = ad.addObject("Part::FeaturePython", "WS "+dokname+"")
-    WSLink(bares, dokname)
-    return bares
+        return bares
 
 
-def createws():
-    '''called from the menu '''
-    ad = App.ActiveDocument.Name
-    createWsLink("TestMeWorkspace")
-    App.setActiveDocument(ad)
-    App.ActiveDocument = App.getDocument(ad)
-    Gui.ActiveDocument = Gui.getDocument(ad)
-    App.ActiveDocument.recompute()
+class Nurbs_CreateWSLink:
+    """ 
+    create new workspace
+    TODO: When do you use this? Write comments Mariwan
+    """
+
+    def Activated(self, docname="Linkdoc"):
+        ad = App.ActiveDocument
+        bares = ad.addObject("Part::FeaturePython", "WS "+docname+"")
+        WSLink(bares, docname)
+        return bares
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspacelink.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateWSLink"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateWSLink", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateWSLink", Nurbs_CreateWSLink())
+
+
+class Nurbs_CreateWorkspace:
+    """ 
+    create new workspace
+    TODO: When do you use this? Write comments Mariwan
+    """
+
+    def Activated(self):
+        '''called from the menu '''
+        ad = App.ActiveDocument.Name
+
+        ad = App.ActiveDocument
+        bares = ad.addObject("Part::FeaturePython", "WS "+docname+"")
+        WSLink(bares, "TestMeWorkspace")
+        App.setActiveDocument(ad)
+        App.ActiveDocument = App.getDocument(ad)
+        Gui.ActiveDocument = Gui.getDocument(ad)
+        App.ActiveDocument.recompute()
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateWorkspace"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateWorkspace", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateWorkspace", Nurbs_CreateWorkspace())
 
 
 def createlink():
@@ -397,31 +441,31 @@ def __haha():
     pass
 
 
-class main:
-    def Activated(self): 
+class Nurbs_main:
+    def Activated(self):
         if App.ActiveDocument == None:
             App.newDocument("Unnamed")
             App.setActiveDocument("Unnamed")
             App.ActiveDocument = App.getDocument("Unnamed")
             Gui.ActiveDocument = Gui.getDocument("Unnamed")
-    
+
         ad = App.ActiveDocument
-    
+
         aa = App.ActiveDocument.addObject("Part::Box", "Box")
         bb = App.ActiveDocument.addObject("Part::Torus", "Torus")
         cc = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
-    
+
         App.ActiveDocument.recompute()
-    
+
         wl = createWsLink("Shoe")
         App.ActiveDocument = ad
-    
+
         c = createLink(cc, "Shoe")
         b = createLink(bb, "Shoe")
         a = createLink(aa, "Shoe")
-    
+
         b.umax = 6
         b.vmax = 6
-    
+
         c.umax = 6
         c.vmax = 6

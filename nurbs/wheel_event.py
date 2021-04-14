@@ -338,9 +338,9 @@ class MyWidget(QtGui.QWidget):
 #        App.getDocument("Unnamed").Spreadsheet.touch()
 #        App.getDocument("Unnamed").recompute()
 
-        dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
-        App.ActiveDocument=App.getDocument(dokname)
-        Gui.ActiveDocument=Gui.getDocument(dokname)
+        docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+        App.ActiveDocument=App.getDocument(docname)
+        Gui.ActiveDocument=Gui.getDocument(docname)
         App.ActiveDocument.Spreadsheet.touch()
         App.ActiveDocument.recompute()
         self.setSelection(pos)
@@ -356,8 +356,8 @@ class MyWidget(QtGui.QWidget):
         stop()
 
     def getsource(self):
-        dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
-        return App.getDocument(dokname).getObject(self.source)
+        docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+        return App.getDocument(docname).getObject(self.source)
 
     def update(self):
         mode=self.imode

@@ -41,6 +41,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 
+
 import PySide
 from PySide import QtGui, QtCore
 # \endcond

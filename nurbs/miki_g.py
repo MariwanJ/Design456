@@ -656,14 +656,14 @@ class Miki(object):
                         sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
                         sg.addChild(r)
 
-    def showSo2(self, dokname):
+    def showSo2(self, docname):
         ''' add the item as openinventor objects to ActiveView.getSceneGraph() for a given document '''
 
         for l in self.lines:
             if l[2] == 0 and l[0] != -1:
                     r = l[7]
                     if r.__class__.__name__.startswith('So'):
-                        dok = Gui.getDocument(dokname)
+                        dok = Gui.getDocument(docname)
                         sg = dok.ActiveView.getSceneGraph()
                         sg.addChild(r)
 
