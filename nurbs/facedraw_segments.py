@@ -936,7 +936,7 @@ def ThousandsOfRunWhatShouldIdo():
 
 if 0:
 
-    # aussen rand
+    # outside edge 
     wire1 = App.ActiveDocument.IsoDrawFace002
     # innenrand fuer erstes loch
     wire2 = App.ActiveDocument.IsoDrawFace003
