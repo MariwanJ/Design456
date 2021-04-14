@@ -270,7 +270,7 @@ def delMeridian(dialog):
     (curve, bb, scaler, twister) = App.ActiveDocument.MyNeedle.Proxy.Model()
 
     if curve.shape[0] < 5:
-        print("zu wenig Punkte "())
+        print("zu wenig Punkte ")
         return
 
     # modifications

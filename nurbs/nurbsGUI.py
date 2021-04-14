@@ -344,7 +344,7 @@ def createWsLink(dokname="Linkdok"):
 
 
 def createws():
-    ''' aus dem menue aufgerufen '''
+    '''called from the menu '''
     ad = App.ActiveDocument.Name
     createWsLink("TestMeWorkspace")
     App.setActiveDocument(ad)
@@ -354,7 +354,7 @@ def createws():
 
 
 def createlink():
-    ''' aus dem menue aufgerufen '''
+    '''called from the menu '''
     ad = App.ActiveDocument.Name
     cc = Gui.Selection.getSelection()[0]
     ws = Gui.Selection.getSelection()[-1]
@@ -398,30 +398,30 @@ def __haha():
 
 
 class main:
-
-    if App.ActiveDocument == None:
-        App.newDocument("Unnamed")
-        App.setActiveDocument("Unnamed")
-        App.ActiveDocument = App.getDocument("Unnamed")
-        Gui.ActiveDocument = Gui.getDocument("Unnamed")
-
-    ad = App.ActiveDocument
-
-    aa = App.ActiveDocument.addObject("Part::Box", "Box")
-    bb = App.ActiveDocument.addObject("Part::Torus", "Torus")
-    cc = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
-
-    App.ActiveDocument.recompute()
-
-    wl = createWsLink("Shoe")
-    App.ActiveDocument = ad
-
-    c = createLink(cc, "Shoe")
-    b = createLink(bb, "Shoe")
-    a = createLink(aa, "Shoe")
-
-    b.umax = 6
-    b.vmax = 6
-
-    c.umax = 6
-    c.vmax = 6
+    def Activated(self): 
+        if App.ActiveDocument == None:
+            App.newDocument("Unnamed")
+            App.setActiveDocument("Unnamed")
+            App.ActiveDocument = App.getDocument("Unnamed")
+            Gui.ActiveDocument = Gui.getDocument("Unnamed")
+    
+        ad = App.ActiveDocument
+    
+        aa = App.ActiveDocument.addObject("Part::Box", "Box")
+        bb = App.ActiveDocument.addObject("Part::Torus", "Torus")
+        cc = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
+    
+        App.ActiveDocument.recompute()
+    
+        wl = createWsLink("Shoe")
+        App.ActiveDocument = ad
+    
+        c = createLink(cc, "Shoe")
+        b = createLink(bb, "Shoe")
+        a = createLink(aa, "Shoe")
+    
+        b.umax = 6
+        b.vmax = 6
+    
+        c.umax = 6
+        c.vmax = 6
