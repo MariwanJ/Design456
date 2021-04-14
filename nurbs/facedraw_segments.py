@@ -40,15 +40,15 @@ from __future__ import unicode_literals
 from PySide import QtGui, QtCore
 from say import *
 
-import FreeCAD
-import sys
+import FreeCAD as App
+import os,sys
 import time
 import random
 import Design456Init
-
+import FACE_D as faced
 
 import isodraw
-#reload(.isodraw)
+# reload(.isodraw)
 
 
 '''
@@ -796,108 +796,153 @@ def drawColorpath(pts, colors, colorB=None, name='ColorPath'):
 
 # create and initialize the event filter
 
+class Nurbs_EventFilter:
+    def Activated(self):
+        '''create and initialize the event filter'''
 
-def start():
-    '''create and initialize the event filter'''
+        ef = EventFilter()
+        ef.mouseWheel = 0
+        try:
+            sel = Gui.Selection.getSelection()
+            if (len(sel) < 1):
+                # An object must be selected
+                errMessage = "Select a face"
+                faced.getInfo(selection).errorDialog(errMessage)
+                return
 
-    ef = EventFilter()
-    ef.mouseWheel = 0
-    try:
-        sel = Gui.Selection.getSelection()
-        fob = sel[0]
+            fob = sel[0]
 
-        ef.stack = [fob.ViewObject.Visibility,
-                    fob.ViewObject.Transparency, fob.ViewObject.Selectable]
+            ef.stack = [fob.ViewObject.Visibility,
+                        fob.ViewObject.Transparency, fob.ViewObject.Selectable]
 
-        ef.fob = fob
+            ef.fob = fob
 
-        fob.ViewObject.Visibility = True
-        fob.ViewObject.Transparency = 70
-        fob.ViewObject.Selectable = False
+            fob.ViewObject.Visibility = True
+            fob.ViewObject.Transparency = 70
+            fob.ViewObject.Selectable = False
 
-        Gui.Selection.clearSelection()
+            Gui.Selection.clearSelection()
 
-        isodraw
-        print(fob, fob.Label)
-        [uv2x, uv2y, xy2u, xy2v] = isodraw.getmap(fob, fob.faceObject)
-        print([uv2x, uv2y, xy2u, xy2v])
-        ef.uv2x = uv2x
-        ef.uv2y = uv2y
-        ef.xy2u = xy2u
-        ef.xy2v = xy2v
+            isodraw
+            print(fob, fob.Label)
+            [uv2x, uv2y, xy2u, xy2v] = isodraw.getmap(fob, fob.faceObject)
+            print([uv2x, uv2y, xy2u, xy2v])
+            ef.uv2x = uv2x
+            ef.uv2y = uv2y
+            ef.xy2u = xy2u
+            ef.xy2v = xy2v
 
-    except:
-        sayexc2("no surface selected",
-                "Select first a face you want to draw on it")
-        return
+        except:
+            sayexc2("no surface selected",
+                    "Select first a face you want to draw on it")
+            return
 
-    App.eventfilter = ef
+        App.eventfilter = ef
 
-    mw = QtGui.qApp
-    mw.installEventFilter(ef)
-    ef.keyPressed2 = False
+        mw = QtGui.qApp
+        mw.installEventFilter(ef)
+        ef.keyPressed2 = False
 
-    # the result wire
-    w = App.ActiveDocument.addObject("Part::Feature", "Drawing on ")
-    w.Shape = Part.Shape()
-    w.ViewObject.Visibility = False
-    w.ViewObject.LineColor = (1.0, 0.0, 0.0)
-    w.ViewObject.LineWidth = 10
+        # the result wire
+        w = App.ActiveDocument.addObject("Part::Feature", "Drawing on ")
+        w.Shape = Part.Shape()
+        w.ViewObject.Visibility = False
+        w.ViewObject.LineColor = (1.0, 0.0, 0.0)
+        w.ViewObject.LineWidth = 10
 
-    # the helper wire
-    wam = App.ActiveDocument.addObject("Part::Feature", "M_Drawing on ")
-    wam.Shape = Part.Shape()
-    wam.ViewObject.Visibility = False
-    wam.ViewObject.LineColor = (1.0, 0.0, 1.0)
-    wam.ViewObject.LineWidth = 10
+        # the helper wire
+        wam = App.ActiveDocument.addObject("Part::Feature", "M_Drawing on ")
+        wam.Shape = Part.Shape()
+        wam.ViewObject.Visibility = False
+        wam.ViewObject.LineColor = (1.0, 0.0, 1.0)
+        wam.ViewObject.LineWidth = 10
 
-    ef.wire = w
-    ef.wirem = wam
+        ef.wire = w
+        ef.wirem = wam
 
-    ef.dialog = dialog()
-    ef.dialog.ef = ef
-    ef.dialog.show()
+        ef.dialog = dialog()
+        ef.dialog.ef = ef
+        ef.dialog.show()
 
 # create the 2D or 3D grid for the first face of a selected object
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + '/maps.svg',
+            'MenuText': 'Nurbs_EventFilter',
+                        'ToolTip':  'Nurbs_EventFilter'
+        }
 
+Gui.addCommand('Nurbs_EventFilter', Nurbs_EventFilter())
 
-def createGrid(name="MyGrid"):
+class Nurbs_CreateGridToFace:
     '''create the 2D or 3D grid for the first face of a selected object'''
 
-    sel = Gui.Selection.getSelection()
-    fob = sel[0]
+    def __init__(self, ):
+        self.name = "Design456Grid"
 
-    b = App.ActiveDocument.addObject("Part::FeaturePython", name)
+    def Activated(self):
+        sel = Gui.Selection.getSelectionEx()
+        if (len(sel) < 1):
+            # An object must be selected
+            errMessage = "Select a face"
+            faced.getInfo(selection).errorDialog(errMessage)
+            return
+        
+        fob = sel[0]
 
-    name = b.Name
-    isodraw.Drawgrid(b)
-    b.faceObject = fob
+        b = App.ActiveDocument.addObject("Part::FeaturePython", self.name)
 
-    b.ViewObject.Transparency = 60
-    App.ActiveDocument.recompute()
+        name = b.Name
+        isodraw.Drawgrid(b)
+        b.faceObject = fob
 
-    b2 = App.ActiveDocument.addObject("Part::FeaturePython", name+"_2_")
-    b2.Label = name+"_3D_"
-    isodraw.Draw3Dgrid(b2)
-    b2.drawgrid = b
+        b.ViewObject.Transparency = 60
+        App.ActiveDocument.recompute()
+
+        b2 = App.ActiveDocument.addObject(
+            "Part::FeaturePython", self.name+"_2_")
+        b2.Label = name+"_3D_"
+        isodraw.Draw3Dgrid(b2)
+        b2.drawgrid = b
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + '/maps.svg',
+            'MenuText': 'Nurbs_CreateGridToFace',
+                        'ToolTip':  'Nurbs_CreateGridToFace'
+        }
+
+
+Gui.addCommand('Nurbs_CreateGridToFace', Nurbs_CreateGridToFace())
 
 # create a map control for the first face of the selected object
 
 
-def createMap(mode=''):
-    ''' create a mpa control for the first face of the selected object '''
+class Nurbs_CreateMapToFace:
+    def __init__(self):
+        self.mode = ''
 
-    # last selection == face
-    # other sels: wires to project
+    def Activated(self):
+        ''' create a mpa control for the first face of the selected object '''
+        # last selection == face
+        # other sels: wires to project
+        s0 = Gui.Selection.getSelection()
+        face = s0[-1]
+        moa = isodraw.createMap(self.mode)
+        moa.faceObject = face
 
-    s0 = Gui.Selection.getSelection()
-    face = s0[-1]
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + '/maps.svg',
+            'MenuText': 'Nurbs_CreateMapToFace',
+                        'ToolTip':  'Nurbs_CreateMapToFace'
+        }
 
-    moa = isodraw.createMap(mode)
-    moa.faceObject = face
 
+Gui.addCommand('Nurbs_CreateMapToFace', Nurbs_CreateMapToFace())
 
 # stop the facecdraw eventserver
+
 
 def stop():
     ''' stop eventserver'''
@@ -923,23 +968,43 @@ def stop():
 
 
 # start the facedraw eventserver
-
-def ThousandsOfRunWhatShouldIdo():
+class Nurbs_Drawoversegments:
     '''start the facedraw dialog and eventmanager'''
 
-    try:
-        stop()
-    except:
-        pass
-    start()
+    def Activated(self):
+        try:
+            stop()
+        except:
+            pass
+        start()
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.NURBS_ICON_PATH + '/draw.svg',
+            'MenuText': 'Drawoversegments',
+                        'ToolTip':  'Drawoversegments'
+        }
 
 
-if 0:
+Gui.addCommand('Nurbs_Drawoversegments', Nurbs_Drawoversegments())
 
-    # outside edge 
-    wire1 = App.ActiveDocument.IsoDrawFace002
-    # innenrand fuer erstes loch
-    wire2 = App.ActiveDocument.IsoDrawFace003
-    faceobj = App.ActiveDocument.faceObject
 
-    drawring(wire1, wire2, faceobj, facepos=App.Vector())
+class madeByMeDontKnowWhatItDo:
+    def Activated(self):
+        # outside edge
+        wire1 = App.ActiveDocument.IsoDrawFace002
+        # inner edge for first hole
+        wire2 = App.ActiveDocument.IsoDrawFace003
+        faceobj = App.ActiveDocument.faceObject
+
+        drawring(wire1, wire2, faceobj, facepos=App.Vector())
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + '/draw.svg',
+            'MenuText': 'madeByMeDontKnowWhatItDo',
+                        'ToolTip':  'madeByMeDontKnowWhatItDo'
+        }
+
+
+Gui.addCommand('madeByMeDontKnowWhatItDo', madeByMeDontKnowWhatItDo())
