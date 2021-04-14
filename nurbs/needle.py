@@ -706,8 +706,8 @@ class Needle(PartFeature):
                   App.ActiveDocument.recompute()
             except:
                 print ("recompute jack ")
-                dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
-                App.getDocument(dokname).recompute()
+                docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+                App.getDocument(docname).recompute()
                 pass
 
     def getExampleModel(self,model):
@@ -777,14 +777,14 @@ class Needle(PartFeature):
 
     def showRib(self,ri):
         Gui.Selection.clearSelection()
-        dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
-        d=App.getDocument(dokname)
+        docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+        d=App.getDocument(docname)
         Gui.Selection.addSelection(d.getObject('Ribs'),"Edge" +str(ri))
 
     def showMeridian(self,ri):
         Gui.Selection.clearSelection()
-        dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
-        d=App.getDocument(dokname)
+        docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+        d=App.getDocument(docname)
         Gui.Selection.addSelection(d.getObject('Meridians'),"Edge" +str(ri))
 
 
@@ -924,14 +924,14 @@ def Wasrun():
 #        import needle as needle
 #        #reload( .needle)
 
-        dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
-        try: App.closeDocument(dokname)
+        docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+        try: App.closeDocument(docname)
         except: pass
 
-        App.newDocument(dokname)
-        App.setActiveDocument(dokname)
-        App.ActiveDocument=App.getDocument(dokname)
-        Gui.ActiveDocument=Gui.getDocument(dokname)
+        App.newDocument(docname)
+        App.setActiveDocument(docname)
+        App.ActiveDocument=App.getDocument(docname)
+        Gui.ActiveDocument=Gui.getDocument(docname)
 
         a=createNeedle()
 
@@ -983,14 +983,14 @@ class testmain:
     import needle as needle
     #reload( .needle)
 
-    dokname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
-    try: App.closeDocument(dokname)
+    docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+    try: App.closeDocument(docname)
     except: pass
 
-    App.newDocument(dokname)
-    App.setActiveDocument(dokname)
-    App.ActiveDocument=App.getDocument(dokname)
-    Gui.ActiveDocument=Gui.getDocument(dokname)
+    App.newDocument(docname)
+    App.setActiveDocument(docname)
+    App.ActiveDocument=App.getDocument(docname)
+    Gui.ActiveDocument=Gui.getDocument(docname)
 
     if 0:
         points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,0.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]

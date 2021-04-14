@@ -831,8 +831,8 @@ class Needle(PartFeature):
                 App.ActiveDocument.recompute()
             except:
                 print ("recompute jack ")
-                dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
-                App.getDocument(dokname).recompute()
+                docname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+                App.getDocument(docname).recompute()
                 pass
 
     def getExampleModel(self,model):
@@ -903,14 +903,14 @@ class Needle(PartFeature):
 
     def showRib(self,ri):
         Gui.Selection.clearSelection()
-        dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
-        d=App.getDocument(dokname)
+        docname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+        d=App.getDocument(docname)
         Gui.Selection.addSelection(d.getObject('Ribs'),"Edge" +str(ri))
 
     def showMeridian(self,ri):
         Gui.Selection.clearSelection()
-        dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
-        d=App.getDocument(dokname)
+        docname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+        d=App.getDocument(docname)
         Gui.Selection.addSelection(d.getObject('Meridians'),"Edge" +str(ri))
 
 
@@ -1066,14 +1066,14 @@ def main_test():
     import shoe as shoe
     #reload( .shoe)
 
-    dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
-    try: App.closeDocument(dokname)
+    docname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+    try: App.closeDocument(docname)
     except: pass
 
-    App.newDocument(dokname)
-    App.setActiveDocument(dokname)
-    App.ActiveDocument=App.getDocument(dokname)
-    Gui.ActiveDocument=Gui.getDocument(dokname)
+    App.newDocument(docname)
+    App.setActiveDocument(docname)
+    App.ActiveDocument=App.getDocument(docname)
+    Gui.ActiveDocument=Gui.getDocument(docname)
 
     if 1:
         points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,0.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
@@ -1210,16 +1210,16 @@ def ThousandsOfRunWhatShouldIdo():
     ''' shoe.run() '''
 
     # get the name for the documente from FC config
-    dokname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
+    docname=App.ParamGet('User parameter:Plugins/shoe').GetString("Document","Shoe")
 
     # start with a new document
-    try: App.closeDocument(dokname)
+    try: App.closeDocument(docname)
     except: pass
 
-    App.newDocument(dokname)
-    App.setActiveDocument(dokname)
-    App.ActiveDocument=App.getDocument(dokname)
-    Gui.ActiveDocument=Gui.getDocument(dokname)
+    App.newDocument(docname)
+    App.setActiveDocument(docname)
+    App.ActiveDocument=App.getDocument(docname)
+    Gui.ActiveDocument=Gui.getDocument(docname)
 
 
 #- kann weg
@@ -1346,7 +1346,7 @@ def ThousandsOfRunWhatShouldIdo():
         App.ActiveDocument.ActiveObject.Label="shoe " +str(shoedata.scaleOut)
 
 
-    App.getDocument(dokname).saveAs(u"/tmp/shoe_v0.fcstd")
+    App.getDocument(docname).saveAs(u"/tmp/shoe_v0.fcstd")
 
     # ein paar hilfslinien
     pts=np.array(fa.Shape.Face1.Surface.getPoles())

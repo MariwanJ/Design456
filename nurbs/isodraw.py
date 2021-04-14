@@ -1188,7 +1188,7 @@ class ViewProviderSL(ViewProvider):
 
 class ShapeLink(PartFeature):
 
-    def __init__(self, obj, sobj, dokname):
+    def __init__(self, obj, sobj, docname):
         print("create shape link")
         PartFeature.__init__(self, obj)
         obj.addProperty("App::PropertyLink", "source", "Base")
@@ -1197,7 +1197,7 @@ class ShapeLink(PartFeature):
         obj.addProperty("App::PropertyString", "workspace", "Base")
 
         obj.source = sobj
-        obj.workspace = dokname
+        obj.workspace = docname
         obj.gridcount = 20
         obj.gridcount = 3
 
@@ -1256,10 +1256,10 @@ class ViewProviderWSL(ViewProvider):
 
 class WSLink(PartFeature):
 
-    def __init__(self, obj, dokname):
+    def __init__(self, obj, docname):
         PartFeature.__init__(self, obj)
         obj.addProperty("App::PropertyString", "workspace", "Base")
-        obj.workspace = dokname
+        obj.workspace = docname
         ViewProviderWSL(obj.ViewObject)
 
     def execute(proxy, obj):
@@ -1325,27 +1325,27 @@ class WorkSpace():
         print(self.name + '1:1[*]')
 
 
-def createLink(obj, dokname="Linkdok"):
+def createLink(obj, docname="Linkdok"):
     ad = App.ActiveDocument
     print(ad.Name)
 
-    lidok = WorkSpace(dokname)
+    lidok = WorkSpace(docname)
     link = lidok.addObject2(obj)
     lidok.recompute()
 
     bares = obj.Document.addObject(
         "Part::FeaturePython", "Base Link "+obj.Label)
-    bares.Label = obj.Label+"@"+dokname
+    bares.Label = obj.Label+"@"+docname
 
-    ShapeLink(bares, obj, dokname)
+    ShapeLink(bares, obj, docname)
 
     return link
 
 
-def createWsLink(dokname="Linkdok"):
+def createWsLink(docname="Linkdok"):
     ad = App.ActiveDocument
-    bares = ad.addObject("Part::FeaturePython", "WS "+dokname+"")
-    WSLink(bares, dokname)
+    bares = ad.addObject("Part::FeaturePython", "WS "+docname+"")
+    WSLink(bares, docname)
     return bares
 
 
