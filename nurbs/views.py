@@ -1373,7 +1373,7 @@ class Nurbs_CreateDarkRoom:
         # and the set
         objs = Gui.Selection.getSelectionEx()[1:]
 
-        title = "Darkroom for "+obja.Label
+        title = "Darkroom for "+obja.ObjectName
 
         v = Gui.createViewer(2, title)
         for i in range(2):
