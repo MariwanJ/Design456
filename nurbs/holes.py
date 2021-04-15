@@ -90,10 +90,10 @@ Gui.addCommand('holes', holes())
 holes.__doc__ = """holes: Tobe added later     """
 
 
-class extractWires:
+class Nurbs_extractWires:
     def Activated(self):
         '''extract the wires'''
-        sel = Gui.Selection.getSelectionEx()
+        sel = Gui.Selection.getSelection()
         w = sel[0]
         print(w.Shape.Wires)
         for i, wire in enumerate(w.Shape.Wires):
@@ -107,11 +107,11 @@ class extractWires:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'extractWires.svg',
-            'MenuText': 'extractWires',
-            'ToolTip':  'extractWires'
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'extractwire.svg',
+            'MenuText': 'Nurbs_extractWires',
+            'ToolTip':  'Nurbs_extractWires'
         }
 
 
-Gui.addCommand('extractWires', extractWires())
-extractWires.__doc__ = """extractWires: Tobe added later     """
+Gui.addCommand('Nurbs_extractWires', Nurbs_extractWires())
+Nurbs_extractWires.__doc__ = """Nurbs_extractWires: Tobe added later     """
