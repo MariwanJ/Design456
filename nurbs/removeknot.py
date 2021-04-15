@@ -67,39 +67,49 @@ if 0:
     App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
     App.ActiveDocument.ActiveObject.ViewObject.PointColor = (1., 0., 0.)
 
+class Nurbs_RemoveKnots:
+    def Activated(self):
+        [a] = Gui.Selection.getSelectionEx()
+        bc0 = a.Object.Shape.Edge1.Curve
+        kc = len(bc0.getKnots())
+        
+        for pos in range(1, kc):
+            print(pos)
+            # for t in (30000,40000,10000,5000,2000,1000,500,200,100,50,20,10,5,3,2,1):
+            # 1.5 und 1 gehen nicht
+            for t in (20, 16, 14, 12, 6, 2, 1.5, 1):
+                bc = bc0.copy()
+                print("huhu")
+                rc = bc.removeKnot(pos, 0, t)
+                print(t, rc)
+                if rc:
+                    sp = App.ActiveDocument.addObject(
+                        "Part::Spline", "approx Spline")
+                    sp.Shape = bc.toShape()
+                    App.ActiveDocument.ActiveObject.Label = "BC-" + \
+                        str(pos)+" "+str(t)+" " + a.Object.Label
+        
+                #    pts=bc.getPoles()
+                #    print  (len(pts)
+                #    Draft.makeWire(pts)
+                #    App.ActiveDocument.ActiveObject.Label="W-"+str(pos)+" "+a.Object.Label
+                    if 0:
+                        pts = [bc.value(k) for k in bc.getKnots()]
+                #        print  (len(pts)
+                        Draft.makeWire(pts)
+                        App.ActiveDocument.ActiveObject.Label = "Kn " + \
+                            str(t)+a.Object.Label
+                        App.ActiveDocument.ActiveObject.ViewObject.PointSize = 12
+                        App.ActiveDocument.ActiveObject.ViewObject.PointColor = (
+                            0., 1., 0.)
 
-def ThousandsOfRunWhatShouldIdo():
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_RemoveKnots")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'removeKnots.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_RemoveKnots"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+Gui.addCommand("Nurbs_RemoveKnots", Nurbs_RemoveKnots())
 
-    [a] = Gui.Selection.getSelectionEx()
-    bc0 = a.Object.Shape.Edge1.Curve
-    kc = len(bc0.getKnots())
-
-    for pos in range(1, kc):
-        print(pos)
-        # for t in (30000,40000,10000,5000,2000,1000,500,200,100,50,20,10,5,3,2,1):
-        # 1.5 und 1 gehen nicht
-        for t in (20, 16, 14, 12, 6, 2, 1.5, 1):
-            bc = bc0.copy()
-            print("huhu")
-            rc = bc.removeKnot(pos, 0, t)
-            print(t, rc)
-            if rc:
-                sp = App.ActiveDocument.addObject(
-                    "Part::Spline", "approx Spline")
-                sp.Shape = bc.toShape()
-                App.ActiveDocument.ActiveObject.Label = "BC-" + \
-                    str(pos)+" "+str(t)+" " + a.Object.Label
-
-            #    pts=bc.getPoles()
-            #    print  (len(pts)
-            #    Draft.makeWire(pts)
-            #    App.ActiveDocument.ActiveObject.Label="W-"+str(pos)+" "+a.Object.Label
-                if 0:
-                    pts = [bc.value(k) for k in bc.getKnots()]
-            #        print  (len(pts)
-                    Draft.makeWire(pts)
-                    App.ActiveDocument.ActiveObject.Label = "Kn " + \
-                        str(t)+a.Object.Label
-                    App.ActiveDocument.ActiveObject.ViewObject.PointSize = 12
-                    App.ActiveDocument.ActiveObject.ViewObject.PointColor = (
-                        0., 1., 0.)

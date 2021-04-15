@@ -1428,10 +1428,6 @@ class ViewProvider:
 
 from PySide import QtCore
 
-def someOtherFunction():
-    print ("AAAA someother function")
-
-
 class SVGLink(PartFeature):
     ''' draw the grid onto to 3d face obj'''
     def __init__(self, obj):
