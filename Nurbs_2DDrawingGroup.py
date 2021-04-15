@@ -42,8 +42,13 @@ class Design456_Nurbs_2DDrawingGroup:
         """3D Modifying Tools."""
         return ('Nurbs_Soel',
                 'Nurbs_FaceDraw',
-                'NurbsDrawIsoFace',
-                'CreateMapToFace',
+                'Nurbs_CreateMapToFace',
+                'Nurbs_createIsodrawFace',
+                'Nurbs_CreateCloverLeaf',
+                'testD',
+                'testE',
+                'Nurbs_CreateGridToFace'
+                
 
                 )
     def GetResources(self):

@@ -106,7 +106,10 @@ class ViewProvider:
 
 # \endcond
 
-class createShape:
+class Nurbs_createShape:
+    def __init__(self,obj):
+        self.obj=obj
+          
     def Activated(self, obj):
         '''create the 2D or 3D mapping Shape for a wire and a base face
         the data are parameters of the obj '''
@@ -116,8 +119,8 @@ class createShape:
         # pointCount=obj.pointcount
         # pointCount=50
 
-        [uv2x, uv2y, xy2u, xy2v] = [obj.mapobject.Proxy.uv2x,
-                                    obj.mapobject.Proxy.uv2y, obj.mapobject.Proxy.xy2u, obj.mapobject.Proxy.xy2v]
+        [uv2x, uv2y, xy2u, xy2v] = [self.obj.mapobject.Proxy.uv2x,
+                                    self.obj.mapobject.Proxy.uv2y, self.obj.mapobject.Proxy.xy2u, self.obj.mapobject.Proxy.xy2v]
 
         if xy2v == None:
             print("Kann umkehrung nicht berechnen xy2v nicht vorhanden")
@@ -135,7 +138,7 @@ class createShape:
         fx = 1.
 
         # +# facenumer aus obj param holen
-        face = obj.face.Shape.Face1
+        face = self.obj.face.Shape.Face1
         bs = face.Surface
     #    w=obj.wire.Shape.Wires[0]
         wires = obj.wire.Shape.Wires
@@ -144,8 +147,8 @@ class createShape:
 
         ppall = []
 
-        pos = App.Vector(obj.mapobject.Placement.Base.x,
-                         obj.mapobject.Placement.Base.y, 0)
+        pos = App.Vector(self.obj.mapobject.Placement.Base.x,
+                         self.obj.mapobject.Placement.Base.y, 0)
 
         for i, w in enumerate(wires):
             # print ("Wire ...",i,pointCount)
@@ -210,18 +213,8 @@ class createShape:
                 pts2.append(p2)
 
             App.pts2a = pts2
-            obj.Shape = Part.makePolygon(pts2)
+            self.obj.Shape = Part.makePolygon(pts2)
 
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'testD',
-            'ToolTip':  'testD'
-        }
-
-
-Gui.addCommand('createShape', createShape())
-createShape.__doc__ = """createShape: Tobe added later     """
 
 
 class Isodraw(PartFeature):
@@ -254,8 +247,8 @@ class Isodraw(PartFeature):
 #        print ("onChanged",prop)
 
     def execute(proxy, obj):
-        createShape(obj)
-        if obj.backref != None:
+        Nurbs_createShape(obj)
+        if  obj.backref != None:
             obj.backref.touch()
             obj.backref.Document.recompute()
         face = obj.face.Shape.Face1
@@ -269,7 +262,7 @@ class Isodraw(PartFeature):
         facedraw.drawcurve(obj, face)
 
 
-class createIsodrawFace:
+class Nurbs_createIsodrawFace:
     def Activated(self):
         '''creates a IsoDrawFace object'''
         b = App.ActiveDocument.addObject("Part::FeaturePython", "IsoDrawFace")
@@ -279,13 +272,13 @@ class createIsodrawFace:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'createIsodrawFace',
-            'ToolTip':  'createIsodrawFace'
+            'MenuText': 'Nurbs_createIsodrawFace',
+            'ToolTip':  'Nurbs_createIsodrawFace'
         }
 
 
-Gui.addCommand('createIsodrawFace', createIsodrawFace())
-createIsodrawFace.__doc__ = """createIsodrawFace: Tobe added later     """
+Gui.addCommand('Nurbs_createIsodrawFace', Nurbs_createIsodrawFace())
+Nurbs_createIsodrawFace.__doc__ = """createIsodrawFace: Tobe added later     """
 
 # ------------------------------------------------------
 
@@ -1342,10 +1335,11 @@ def createLink(obj, docname="Linkdok"):
     return link
 
 
-def createWsLink(docname="Linkdok"):
+def createWsLink(docname = "Linkdok"):
+    self.docname=docname
     ad = App.ActiveDocument
-    bares = ad.addObject("Part::FeaturePython", "WS "+docname+"")
-    WSLink(bares, docname)
+    bares = ad.addObject("Part::FeaturePython", "WS "+self.docname + "")
+    WSLink(bares, self.docname)
     return bares
 
 
@@ -2347,8 +2341,8 @@ class testE():
     def GetResources(self):
         return {
             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'testD',
-            'ToolTip':  'testD'
+            'MenuText': 'testE',
+            'ToolTip':  'testE'
         }
 
 
