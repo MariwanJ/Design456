@@ -533,58 +533,73 @@ def ThousandsOfRunWhatShouldIdo():
 
 
 # \cond
-def ThousandsOfMainFunction():
+class Nurbs_ControlPanelCreateFunction:
+    def Activated(self):
 
-    # -- create test infrastructure
-    b = App.ActiveDocument.addObject("Part::Box", "Box")
-    c = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
-    co = App.ActiveDocument.addObject("Part::Cone", "Cone")
+        # -- create test infrastructure
+        b = App.ActiveDocument.addObject("Part::Box", "Box")
+        c = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
+        co = App.ActiveDocument.addObject("Part::Cone", "Cone")
 
-    ss = App.ActiveDocument.addObject('Spreadsheet::Sheet', 'Spreadsheet')
-    ss.set('A1', '45')
-    ss.set('B4', '123')
-    # ss.setAlias('A1','ali')
+        ss = App.ActiveDocument.addObject('Spreadsheet::Sheet', 'Spreadsheet')
+        ss.set('A1', '45')
+        ss.set('B4', '123')
+        # ss.setAlias('A1','ali')
 
-    cp = App.ActiveDocument.addObject("Part::Compound", "Compound")
-    cp.Links = [c, co]
+        cp = App.ActiveDocument.addObject("Part::Compound", "Compound")
+        cp.Links = [c, co]
 
-#    fu=App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
-#    fu.Shapes = [b,co]
+    #    fu=App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
+    #    fu.Shapes = [b,co]
 
-    cm = App.ActiveDocument.addObject("Part::MultiCommon", "Common")
-    cm.Shapes = [b, co]
+        cm = App.ActiveDocument.addObject("Part::MultiCommon", "Common")
+        cm.Shapes = [b, co]
 
-    for k in [b, c, co, cp]:
-        k.ViewObject.Transparency = 70
+        for k in [b, c, co, cp]:
+            k.ViewObject.Transparency = 70
 
-    App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
 
-    # -------------------------------
-    a = App.ActiveDocument.addObject("Part::FeaturePython", "MyControlPanel")
-    m = ControlPanel(a)
-    # -----------------------------
+        # -------------------------------
+        a = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "MyControlPanel")
+        m = ControlPanel(a)
+        # -----------------------------
 
-    # -- add some parameters to control
-    m.addTarget(c, "Angle", maxV=360, minV=0)
-    m.addTarget(ss, "A1", maxV=360, minV=0)
-#    m.addTarget(ss,"B4",maxV=360,minV=0)
+        # -- add some parameters to control
+        m.addTarget(c, "Angle", maxV=360, minV=0)
+        m.addTarget(ss, "A1", maxV=360, minV=0)
+    #    m.addTarget(ss,"B4",maxV=360,minV=0)
 
-    if 10:
-        m.addTarget(c, "Radius")
-#        m.addTarget(co,"Radius1")
-        m.addTarget(co, "Radius2")
+        if 10:
+            m.addTarget(c, "Radius")
+    #        m.addTarget(co,"Radius1")
+            m.addTarget(co, "Radius2")
 
-        m.addTarget(co, "Height")
-        m.addTarget(b, 'Length')
+            m.addTarget(co, "Height")
+            m.addTarget(b, 'Length')
 
-        m.addTarget(cp, 'Links')
-        m.addTarget(cm, 'Shapes')
+            m.addTarget(cp, 'Links')
+            m.addTarget(cm, 'Shapes')
 
-        m.Object.Radius2Slider = True
+            m.Object.Radius2Slider = True
 
-    App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
 
-    # start the dialog
-    m.Object.ViewObject.Proxy.edit()
+        # start the dialog
+        m.Object.ViewObject.Proxy.edit()
 
-# \endcond
+    # \endcond
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ControlPanelCreateFunction"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+
+Gui.addCommand("Nurbs_ControlPanelCreateFunction",
+               Nurbs_ControlPanelCreateFunction())
