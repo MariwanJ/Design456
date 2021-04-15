@@ -29,13 +29,28 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 
-def ThousandsOfRunWhatShouldIdo():
-    ''' auxiliary method applies placement from the label,
-    to move objects (sketch) to the desired place in the room'''
 
-    for y in Gui.Selection.getSelectionEx():
-        if y.Label.startswith('t='):
-            exec(y.Label)
-            print (t)
-            print (y.Placement)
-            y.Placement=t #.inverse()
+class Nurbs_ApplyLabeledPlacement:
+    
+    def Activated(self):
+        ''' auxiliary method applies placement from the label,
+        to move objects (sketch) to the desired place in the room'''
+
+        for y in Gui.Selection.getSelectionEx():
+            if y.Label.startswith('t='):
+                exec(y.Label)
+                print(t)
+                print(y.Placement)
+                y.Placement = t  # .inverse()       #t is undefined .. what is this? Mariwan
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs Apply Labeled Placement")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ApplyLabeledPlacement"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_ApplyLabeledPlacement", _tooltip)}
+
+
+Gui.addCommand("ApplyLabeledPlacement", ApplyLabeledPlacement())

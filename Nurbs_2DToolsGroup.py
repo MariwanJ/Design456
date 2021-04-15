@@ -41,20 +41,12 @@ class Design456_Nurbs_2DToolsGroup:
     def GetCommands(self):
         import nurbs
         """3D Modifying Tools."""
-        return ("MainAnalysisMethodRunAna",
-                #"addToVertexStore",
-                #"TopologicalCompare",
-               ## "displayVertexStoreCommonPoints",
-                #"displayQualityPoints",
-                #"printGraphData",
-                #"printDATA",
-                #"resetVertexStore",
-                #"printVertexStore",
-                #"map3Dto2D",
-                #"map2Dto3D",
-                #"map3Dgridto2Dgrid",
-                #"'createBrezel"
+        return ('MainAnalysisMethodRunAna',
+                'ApplyLabeledPlacement',
+                'Nurbs_ParametricGridModifiable',
+                'Nurbs_ControlPanelCreateFunction',
                 
+
 
 
                 )

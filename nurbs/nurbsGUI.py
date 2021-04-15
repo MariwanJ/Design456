@@ -325,6 +325,7 @@ class Nurbs_createLink:
     create link 
     TODO: When do you use this? Write comments Mariwan
     """
+
     def Activated(self, obj, docname="Linkdoc"):
         ad = App.ActiveDocument
         print(ad.Name)
@@ -364,6 +365,7 @@ class Nurbs_CreateWSLink:
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateWSLink"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateWSLink", _tooltip)}
 
+
 Gui.addCommand("Nurbs_CreateWSLink", Nurbs_CreateWSLink())
 
 
@@ -393,6 +395,7 @@ class Nurbs_CreateWorkspace:
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateWorkspace"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateWorkspace", _tooltip)}
+
 
 Gui.addCommand("Nurbs_CreateWorkspace", Nurbs_CreateWorkspace())
 
@@ -440,6 +443,8 @@ def huhu():
 def __haha():
     pass
 
+# TODO : FIXME .. WHAT SHOULD THIS CLASS NAME BE? MARIWAN
+
 
 class Nurbs_main:
     def Activated(self):
@@ -469,3 +474,15 @@ class Nurbs_main:
 
         c.umax = 6
         c.vmax = 6
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_main")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_main"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_main", _tooltip)}
+
+
+Gui.addCommand("Nurbs_main", Nurbs_main())
