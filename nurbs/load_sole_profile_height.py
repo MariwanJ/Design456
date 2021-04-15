@@ -33,83 +33,95 @@ the skeche contains exactly one bspline curve
 '''
 
 
-
-#\cond
+# \cond
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 
 
-import os, sys
+import os
+import sys
 
 import spreadsheet_lib
 #reload (spreadsheet_lib)
 from spreadsheet_lib import ssa2npa, npa2ssa, cellname
 
-#\endcond
-# from .errors import showdialog 
+# \endcond
+# from .errors import showdialog
 
 from say import *
 
-## load height profile from file
+# load height profile from file
 #
 
-def ThousandsOfRunWhatShouldIdo():
 
-    try:
-        aktiv=App.ActiveDocument
-        if aktiv==None:
-            showdialog("Fehler","no Sole Document","first open or create a sole document")
-
-        fn=App.ParamGet('User parameter:Plugins/shoe').GetString("height profile")
-        if fn=='':
-            fn= Design456Init.NURBS_DATA_PATH+"heelsv3.fcstd"
-
-            App.ParamGet('User parameter:Plugins/shoe').SetString("height profile",fn)
-
-        dok=App.open(fn)
-
-        sss=dok.findObjects("Sketcher::SketchObject")
-
+class Nurbs_LoadHeightProfileFromFile:
+    def Activated(self):
         try:
-            s=sss[0]
-            c=s.Shape.Edge1.Curve
-        except: 
-            showdialog("Error","Height profile document has no sketch")
+            aktiv = App.ActiveDocument
+            if aktiv == None:
+                showdialog("Fehler", "no Sole Document",
+                           "first open or create a sole document")
+
+            fn = App.ParamGet(
+                'User parameter:Plugins/shoe').GetString("height profile")
+            if fn == '':
+                fn = Design456Init.NURBS_DATA_PATH+"heelsv3.fcstd"
+
+                App.ParamGet(
+                    'User parameter:Plugins/shoe').SetString("height profile", fn)
+
+            dok = App.open(fn)
+
+            sss = dok.findObjects("Sketcher::SketchObject")
+
+            try:
+                s = sss[0]
+                c = s.Shape.Edge1.Curve
+            except:
+                showdialog("Error", "Height profile document has no sketch")
+
+            pts = c.discretize(86)
+
+            mpts = []
+            for i in [0, 15, 25, 35, 45, 55, 65, 75, 85]:
+                mpts.append(pts[i])
+
+            App.closeDocument(dok.Name)
+
+            dok2 = aktiv
+            App.setActiveDocument(dok2.Name)
+
+            ss = dok2.Spreadsheet
+
+            # daten ins spreadsheet schreiben
+            for s in range(8):
+                cn = cellname(s+3, 9)
+                ss.set(cn, str(mpts[-s-1].y))
+
+            # ferse hochlegen
+            for j in range(7):
+                cn = cellname(j+2, 26)
+                ss.set(cn, str((mpts[-1].y)))
+
+            dok2.recompute()
+            import sole
+            # reload(sole)
+            sole.run()
+            dok2.recompute()
+
+        except:
+            showdialog()
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs Load Height Profile From File")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LoadHeightProfileFromFile"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_LoadHeightProfileFromFile", _tooltip)}
 
 
-        pts=c.discretize(86)
-
-        mpts=[]
-        for i in [0,15,25,35,45,55,65,75,85]:
-            mpts.append(pts[i])
-
-
-        App.closeDocument(dok.Name)
-
-        dok2=aktiv
-        App.setActiveDocument(dok2.Name)
-
-        ss=dok2.Spreadsheet
-
-
-
-
-        # daten ins spreadsheet schreiben
-        for s in range(8):
-            cn=cellname(s+3,9)
-            ss.set(cn,str(mpts[-s-1].y))
-
-        # ferse hochlegen
-        for j in range(7):
-            cn=cellname(j+2,26)
-            ss.set(cn,str((mpts[-1].y)))
-
-
-        dok2.recompute()
-        sole
-        #reload(sole)
-        sole.run()
-        dok2.recompute()
-
-    except : showdialog() 
+Gui.addCommand("Nurbs_LoadHeightProfileFromFile",
+               Nurbs_LoadHeightProfileFromFile())

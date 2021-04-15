@@ -47,7 +47,11 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_CreateCloverLeaf',
                 'testD',
                 'testE',
-                'Nurbs_CreateGridToFace'
+                'Nurbs_CreateGridToFace',
+                'Nurbs_LoadSoleProfile',
+                'Nurbs_CreateOrUpdateSoleEnvironmentSheet'
+                'Nurbs_PrototypeCreateHELL'
+
                 
 
                 )
