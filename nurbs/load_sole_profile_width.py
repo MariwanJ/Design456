@@ -36,14 +36,14 @@ there must be one sketch in it with constraints  l1-l12, r1-r12
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-import os
+import os,sys
 
-import numpy as np 
+import numpy as np
 
 import spreadsheet_lib
-#reload(spreadsheet_lib)
+# reload(spreadsheet_lib)
 import sole
-#reload(sole)
+# reload(sole)
 
 
 from spreadsheet_lib import cellname
@@ -52,60 +52,74 @@ from spreadsheet_lib import cellname
 from say import *
 
 
-def runa():
-    ''' load the data from the first sketch in file fn
-    writes the data into the spreadsheet 
-    and recomputes the sole
-    '''
+class Nurbs_LoadSoleProfile:
+    def Activated(self):
+        ''' run with error handling'''
+        try:
 
-#    raise Exception("test fehler")
-    aktiv = App.ActiveDocument
+            ''' load the data from the first sketch in file fn
+            writes the data into the spreadsheet 
+            and recomputes the sole
+            '''
 
-    fna = App.ParamGet(
-        'User parameter:Plugins/shoe').GetString("width profile")
-    if fna == '':
-        
-        fna = Design456Init.NURBS_DATA_PATH+"breitev3.fcstd"
-        App.ParamGet('User parameter:Plugins/shoe').SetString(
-            "width profile", fna)
+    #        raise Exception("test fehler")
+            aktiv = App.ActiveDocument
 
-    dok = App.open(fna)
-    sss = dok.findObjects("Sketcher::SketchObject")
-    s = sss[0]
+            fna = App.ParamGet(
+                'User parameter:Plugins/shoe').GetString("width profile")
+            if fna == '':
 
-    # werte aus sketch holen
-    rs = []
-    ls = []
-    for i in range(1, 12):
-        rs += [s.getDatum('r' + str(i)).Value]
-        ls += [s.getDatum('l' + str(i)).Value]
+                fna = Design456Init.NURBS_DATA_PATH+"breitev3.fcstd"
+                App.ParamGet('User parameter:Plugins/shoe').SetString(
+                    "width profile", fna)
 
-    App.closeDocument(dok.Name)
+            dok = App.open(fna)
+            sss = dok.findObjects("Sketcher::SketchObject")
+            s = sss[0]
 
-    # eigentliche Arbeitsdatei
-    dok2 = aktiv
-    App.setActiveDocument(dok2.Name)
+            # werte aus sketch holen
+            rs = []
+            ls = []
+            for i in range(1, 12):
+                rs += [s.getDatum('r' + str(i)).Value]
+                ls += [s.getDatum('l' + str(i)).Value]
 
-    sss = dok2.findObjects("Sketcher::SketchObject")
-#    print sss,dok2.Name
-    ss = dok2.Spreadsheet
+            App.closeDocument(dok.Name)
 
-    # daten ins spreadsheet
-    for s in range(1, 12):
-        cn = cellname(s + 1, 14)
-        ss.set(cn, str(rs[s - 1]))
-        cn = cellname(s + 1, 15)
-        ss.set(cn, str(ls[s - 1]))
+            # eigentliche Arbeitsdatei
+            dok2 = aktiv
+            App.setActiveDocument(dok2.Name)
 
-    # aktualisieren
-    dok2.recompute()
-    sole.run()
-    dok2.recompute()
+            sss = dok2.findObjects("Sketcher::SketchObject")
+    #        print sss,dok2.Name
+            ss = dok2.Spreadsheet
+
+            # daten ins spreadsheet
+            for s in range(1, 12):
+                cn = cellname(s + 1, 14)
+                ss.set(cn, str(rs[s - 1]))
+                cn = cellname(s + 1, 15)
+                ss.set(cn, str(ls[s - 1]))
+
+            # aktualisieren
+            dok2.recompute()
+            sole.run()
+            dok2.recompute()
+        except Exception as err:
+            App.Console.PrintError("'Part::Merge' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LoadSoleProfile"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_LoadSoleProfile", _tooltip)}
 
 
-def ThousandsOfRunWhatShouldIdo():
-    ''' run with error handling'''
-    try:
-        runa()
-    except:
-        sayexc2(__name__, "was ist los--------------------------------------------------------------------")
+Gui.addCommand("Nurbs_LoadSoleProfile", Nurbs_LoadSoleProfile())
