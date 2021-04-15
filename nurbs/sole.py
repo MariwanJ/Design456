@@ -44,25 +44,24 @@ import Design456Init
 
 from spreadsheet_lib import ssa2npa, npa2ssa, cellname
 import spreadsheet_lib
-import os
-
-try:
-    import numpy as np
-except ImportError:
-    print("Numpy library is missing, please install it before using the library")
-__version__ = '0.12'
-
+import os,sys
 from say import *
 
 import Part
 import Mesh
 import Draft
 import Points
-
-
 import random
 
-import os
+__version__ = '0.12'
+
+
+try:
+    import numpy as np
+except ImportError:
+    print("Numpy library is missing, please install it before using the library")
+
+
 
 
 # \endcond
@@ -73,9 +72,9 @@ import os
 
 class Nurbs_CreateOrUpdateSoleEnvironmentSheet:
 
-    def __init__(self)
-    self.model = None
-    '''
+    def __init__(self):
+        self.model = None
+        '''
         create or update a sole environment:
         spreadsheet, 
 

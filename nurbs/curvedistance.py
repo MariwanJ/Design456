@@ -64,9 +64,22 @@ def  dist(a,b):
     return ls.mean()
 
 
+#TODO FIND A WAY TO MAKE THIS CLASS MORE USEFUL    MARIWAN
+class Nurbs_CurveDistance:
+    def Activated(self):
 
-def ThousandsOfRunWhatShouldIdo():
-    sel=Gui.Selection.getSelectionEx()
-    b=sel[0]
-    for a in sel[1:]:
-        print (str(a.Label),round(dist(a,b),3))
+        sel=Gui.Selection.getSelectionEx()
+        b=sel[0]
+        for a in sel[1:]:
+            print (str(a.Label),round(dist(a,b),3))
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CurveDistance")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Nurbs2.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CurveDistance"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Nurbs_CurveDistance", Nurbs_CurveDistance())
