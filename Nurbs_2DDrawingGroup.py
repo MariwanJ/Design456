@@ -51,7 +51,8 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_LoadSoleProfile',
                 'Nurbs_CreateOrUpdateSoleEnvironmentSheet'
                 'Nurbs_PrototypeCreateHELL',
-                'Nurbs_main'
+                'Nurbs_main',
+                'createSketchSpline'
 
                 
 

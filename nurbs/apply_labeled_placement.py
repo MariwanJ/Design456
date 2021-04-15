@@ -38,7 +38,7 @@ class Nurbs_ApplyLabeledPlacement:
 
         for y in Gui.Selection.getSelectionEx():
             if y.Label.startswith('t='):
-                exec(y.Label)
+                exec(y.ObjectName)
                 print(t)
                 print(y.Placement)
                 y.Placement = t  # .inverse()       #t is undefined .. what is this? Mariwan
@@ -53,4 +53,4 @@ class Nurbs_ApplyLabeledPlacement:
                 'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_ApplyLabeledPlacement", _tooltip)}
 
 
-Gui.addCommand("ApplyLabeledPlacement", ApplyLabeledPlacement())
+Gui.addCommand("Nurbs_ApplyLabeledPlacement", Nurbs_ApplyLabeledPlacement())

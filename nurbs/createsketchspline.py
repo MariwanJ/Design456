@@ -187,23 +187,23 @@ def runobj(obj, label=None):
 
 def runsubs():
     ''' erzeugt sketche fuer mehrere subkanten'''
-    sx = Gui.Selection.getSelectionEx()
+    sx = Gui.Selection.getSelection()
     s = sx[0]
     for so in s.SubObjects:
         try:
             bc = so.Curve
             pts = bc.getPoles()
-            l = s.Object.Label
+            l = s.ObjectName
             print(l, len(pts))
             periodic = bc.isPeriodic()
             createSketchSpline(pts, str(l) + " Sketch", periodic)
         except:
-            sayexc2(title='Error', mess='somethinq wrong with ' + obj.Label)
+            sayexc2(title='Error', mess='something wrong with ' + obj.Label)
 
 
 def runall():
     ''' erzeugt sketche fuer mehrere subkanten'''
-    sx = Gui.Selection.getSelectionEx()
+    sx = Gui.Selection.getSelection()
     s = sx[0]
     name = "mergeS_"+s.Name
     for so in s.Shape.Edges:
@@ -221,24 +221,39 @@ def runall():
             rc = mergeSketchSpline(pts, str(l) + " Sketch", periodic, name)
             name = rc.Name
         except:
-            sayexc2(title='Error', mess='somethinq wrong with ' + s.Label)
+            sayexc2(title='Error', mess='something wrong with ' + s.Label)
     closecurve(rc)
 
 
-def ThousandsOfRunWhatShouldIdo():
-    ''' erzeugt fuer jedes selektierte Objekte aus Edge1 einen Sketch'''
+class createSketchSpline:
+    '''convert a draft bspline to a sketcher bspline'''
+    def Activated(self):
+        '''erzeugt fuer jedes selektierte Objekte aus Edge1 einen Sketch'''
 
-    if len(Gui.Selection.getSelectionEx()) == 0:
-        showdialog('Oops', 'nothing selected - nothing to do for me',
-                   'Plese select a Draft Bspline or Draft Wire')
+        if len(Gui.Selection.getSelection()) == 0:
+            showdialog('Oops', 'nothing selected - nothing to do for me',
+                       'Please select a Draft Bspline or Draft Wire')
 
-    for obj in Gui.Selection.getSelectionEx():
-        try:
-            bc = obj.Shape.Edge1.Curve
-            pts = bc.getPoles()
-            l = obj.Label
-            print(l, len(pts))
-            periodic = bc.isPeriodic()
-            createSketchSpline(pts, str(l) + " Sketch", periodic)
-        except:
-            sayexc2(title='Error', mess='somethinq wrong with ' + obj.Label)
+        for obj in Gui.Selection.getSelection():
+            try:
+                bc = obj.Shape.Edge1.Curve
+                pts = bc.getPoles()
+                l = obj.Label
+                print(l, len(pts))
+                periodic = bc.isPeriodic()
+                createSketchSpline(pts, str(l) + " Sketch", periodic)
+            except:
+                sayexc2(title='Error', mess='something wrong with ' + obj.Label)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("createSketchSpline")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "createSketchSpline"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+
+Gui.addCommand("createSketchSpline", createSketchSpline())
+

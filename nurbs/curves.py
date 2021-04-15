@@ -52,6 +52,9 @@ for Offset curve generation
 from say import *
 import pyob
 import Design456Init
+import FreeCAD as App
+import FreeCADGui as Gui
+import Part
 ##\cond
 
 
@@ -310,72 +313,87 @@ class Star(pyob.FeaturePython):
 
 import Sketcher
 
-def runStar(name="MyStar"):
-    '''runStar(name="Sole with borders"): 
-        creates a Star/Tree with 5 lines (3 leafs)
-    '''
+class SoleWithBorders:
+    def Activated(self):
+        name ="MyStar"  
+
+        '''runStar(name="Sole with borders"): 
+            creates a Star/Tree with 5 lines (3 leafs)
+        '''
 
 
-    obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
-    obj.addProperty("App::PropertyInteger", "VertexNumber", "Parent", ).VertexNumber=0
-    obj.addProperty("App::PropertyInteger", "tangentCond", "Parent", )
-    obj.addProperty("App::PropertyBool", "tangentInverse", "Parent", )
-    obj.addProperty("App::PropertyLink", "parent", "Parent", )
-    obj.addProperty("App::PropertyPlacement", "relativePosition", "Parent", )
+        obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
+        obj.addProperty("App::PropertyInteger", "VertexNumber", "Parent", ).VertexNumber=0
+        obj.addProperty("App::PropertyInteger", "tangentCond", "Parent", )
+        obj.addProperty("App::PropertyBool", "tangentInverse", "Parent", )
+        obj.addProperty("App::PropertyLink", "parent", "Parent", )
+        obj.addProperty("App::PropertyPlacement", "relativePosition", "Parent", )
 
-    # add some data
-    obj.addGeometry(Part.LineSegment(App.Vector(0.000000,0.000000,0),App.Vector(100.,0.,0)),False)
-    obj.addConstraint(Sketcher.Constraint('Coincident',-1,1,0,1)) 
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
+        # add some data
+        obj.addGeometry(Part.LineSegment(App.Vector(0.000000,0.000000,0),App.Vector(100.,0.,0)),False)
+        obj.addConstraint(Sketcher.Constraint('Coincident',-1,1,0,1)) 
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
 
-    obj.addGeometry(Part.LineSegment(App.Vector(100.,0,0),App.Vector(200.,100.,0)),False)
-    obj.addConstraint(Sketcher.Constraint('Coincident',0,2,1,1)) 
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
+        obj.addGeometry(Part.LineSegment(App.Vector(100.,0,0),App.Vector(200.,100.,0)),False)
+        obj.addConstraint(Sketcher.Constraint('Coincident',0,2,1,1)) 
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
 
-    obj.addGeometry(Part.LineSegment(App.Vector(200.,100.,0),App.Vector(200.,200.,0)),False)
-    obj.addConstraint(Sketcher.Constraint('Coincident',1,2,2,1)) 
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
+        obj.addGeometry(Part.LineSegment(App.Vector(200.,100.,0),App.Vector(200.,200.,0)),False)
+        obj.addConstraint(Sketcher.Constraint('Coincident',1,2,2,1)) 
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
 
 
-    obj.addGeometry(Part.LineSegment(App.Vector(100.,0,0),App.Vector(200.,-200.,0)),False)
-    obj.addConstraint(Sketcher.Constraint('Coincident',0,2,3,1)) 
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
+        obj.addGeometry(Part.LineSegment(App.Vector(100.,0,0),App.Vector(200.,-200.,0)),False)
+        obj.addConstraint(Sketcher.Constraint('Coincident',0,2,3,1)) 
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
 
-    obj.addGeometry(Part.LineSegment(App.Vector(200.,-200.,0),App.Vector(40.,-300.,0)),False)
-    obj.addConstraint(Sketcher.Constraint('Coincident',3,2,4,1)) 
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
+        obj.addGeometry(Part.LineSegment(App.Vector(200.,-200.,0),App.Vector(40.,-300.,0)),False)
+        obj.addConstraint(Sketcher.Constraint('Coincident',3,2,4,1)) 
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
 
-    Star(obj)
-    obj.ViewObject.LineColor=(0.5*random.random(),0.5*random.random(),0.5*random.random())
-    obj.ViewObject.PointColor=(1.0,0.,0.)
-    obj.ViewObject.PointSize=8
-    obj.ViewObject.LineWidth=4
-    
-    obj.addGeometry(Part.Circle(App.Vector(0.0,0.00,0),App.Vector(0,0,1),20),False)
-    obj.addConstraint(Sketcher.Constraint('Coincident',5,3,-1,1)) 
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
-    
-    obj.VertexNumber=3
-    #obj.parent=App.ActiveDocument.getObject('MyStar')
+        Star(obj)
+        obj.ViewObject.LineColor=(0.5*random.random(),0.5*random.random(),0.5*random.random())
+        obj.ViewObject.PointColor=(1.0,0.,0.)
+        obj.ViewObject.PointSize=8
+        obj.ViewObject.LineWidth=4
+        
+        obj.addGeometry(Part.Circle(App.Vector(0.0,0.00,0),App.Vector(0,0,1),20),False)
+        obj.addConstraint(Sketcher.Constraint('Coincident',5,3,-1,1)) 
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
+        
+        obj.VertexNumber=3
+        #obj.parent=App.ActiveDocument.getObject('MyStar')
 
-    return obj
+        return obj
 
 
 ## \cond
-def WsDefinedAsMAIN1():
-    star=runStar()
-    star2=runStar()
-    star2.parent=star
-    star2.VertexNumber=2
-    star2.relativePosition.Rotation.Angle=-1.2
-    App.ActiveDocument.recompute()
+class Nurbs_SoleWithBorder:
+    
+    def Activated(self):
+        star=SoleWithBorders()
+        star2=SoleWithBorders()
+        star2.parent=star
+        star2.VertexNumber=2
+        star2.relativePosition.Rotation.Angle=-1.2
+        App.ActiveDocument.recompute()
 
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs Sole With Border")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Nurbs2.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_SoleWithBorder"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Nurbs_SoleWithBorder", Nurbs_SoleWithBorder())
 
 #\endcond
