@@ -50,7 +50,8 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_CreateGridToFace',
                 'Nurbs_LoadSoleProfile',
                 'Nurbs_CreateOrUpdateSoleEnvironmentSheet'
-                'Nurbs_PrototypeCreateHELL'
+                'Nurbs_PrototypeCreateHELL',
+                'Nurbs_main'
 
                 
 

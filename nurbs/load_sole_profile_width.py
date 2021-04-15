@@ -51,7 +51,7 @@ from spreadsheet_lib import cellname
 # from .errors import sayexc
 from say import *
 
-
+#FIX THIS CLASS .. IT LOADS A FILE .. THIS IS A TEST NOT A REAL COMMAND ?? MARIWAN
 class Nurbs_LoadSoleProfile:
     def Activated(self):
         ''' run with error handling'''
