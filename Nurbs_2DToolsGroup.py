@@ -35,18 +35,17 @@ from nurbs import *
 
 
 class Design456_Nurbs_2DToolsGroup:
-    
     """Design456 Part 2D Drawing"""
 
     def GetCommands(self):
         import nurbs
         """3D Modifying Tools."""
         return ('MainAnalysisMethodRunAna',
-                'ApplyLabeledPlacement',
+                'Nurbs_ApplyLabeledPlacement',
                 'Nurbs_ParametricGridModifiable',
                 'Nurbs_ControlPanelCreateFunction',
-                
-
+                'Nurbs_CurveDistance',
+                'Nurbs_SoleWithBorder',
 
 
                 )

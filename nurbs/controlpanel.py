@@ -103,29 +103,24 @@ def createListWidget(obj=None, propname=None):
 
         App.ActiveDocument.recompute()
 
-    def add():
-        '''add gui selected objects to list'''
 
-        sels = Gui.Selection.getSelectionEx()
-        ref = obj.getPropertyByName(propname+"Source")
-        aa = ref.getPropertyByName(propname)
-
-        # add selected objects if not already on list
-        for s in sels:
-            if s not in aa:
-                print(a.Label + "not in aa")
-                aa.append(s)
-
-        # write list back to objects
-        setattr(ref, propname, aa)
-        setattr(obj, propname, aa)
-
-        # refresh dialog
-        obj.Proxy.dialog.hide()
-        obj.Proxy.dialog = dialog(obj)
-
-        App.ActiveDocument.recompute()
-
+def add():
+    '''add gui selected objects to list'''
+    sels = Gui.Selection.getSelectionEx()
+    ref = obj.getPropertyByName(propname+"Source")
+    aa = ref.getPropertyByName(propname)
+    # add selected objects if not already on list
+    for s in sels:
+        if s not in aa:
+            print(a.Label + "not in aa")
+            aa.append(s)
+    # write list back to objects
+    setattr(ref, propname, aa)
+    setattr(obj, propname, aa)
+    # refresh dialog
+    obj.Proxy.dialog.hide()
+    obj.Proxy.dialog = dialog(obj)
+    App.ActiveDocument.recompute()
     w.r = QtGui.QPushButton("remove selected items")
     box.addWidget(w.r)
     w.r.pressed.connect(remove)
@@ -133,7 +128,6 @@ def createListWidget(obj=None, propname=None):
     w.r = QtGui.QPushButton("add Gui selection")
     box.addWidget(w.r)
     w.r.pressed.connect(add)
-
     return w
 
 
