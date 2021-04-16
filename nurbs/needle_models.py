@@ -824,7 +824,7 @@ class modelMiniBanana(modelBanana):
     def __init__(self):
         modelBanana.__init__(self)
         self.info='downscaled banana with factor 1/10'
-        self.curve *= 0.1
+        self.curve *= 0.1                        #<<<             todo: CAUSES ERROR 
         self.bb *= 0.1
 
 #App.ActiveDocument.MyNeedle.Proxy.getExampleModel(modelMiniBanana)
@@ -934,12 +934,12 @@ class modelS(model):
 
 
 def listModels(silent=False):
-    needle_models
+    import needle_models
     #reload(.needle_models)
     l=[]
     for m in dir(needle_models):
         if m.startswith('model'):
-            mm=eval(".needle_models."+m+"()")
+            mm=eval("needle_models."+m+"()")
             if not silent:
                 print (m,mm.info)
             l.append([m,mm.info])

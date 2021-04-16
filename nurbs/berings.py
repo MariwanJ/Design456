@@ -4397,7 +4397,7 @@ def createHole(fp,height=100):
     ]
 
 
-    print ("get bool mikidebug:",getcb("mikidebug"))
+    ##print ("get bool mikidebug:",getcb("mikidebug"))    #TODO THIS CAUSES ERROR !! MARIWAN
     #return
 
     poles=np.array(obj.Shape.Face1.Surface.getPoles())
@@ -4532,7 +4532,7 @@ def createHoleGUI():
     bg=App.ActiveDocument.addObject('Part::FeaturePython','HoleFace')
     bg.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
     HoleFace(bg)
-    bg.source=Gui.Selection.getSelectionEx()[0]
+    bg.source=Gui.Selection.getSelection()[0]
 
 
     ViewProvider(bg.ViewObject)
@@ -4559,10 +4559,7 @@ class GordonFace(FeaturePython):
         obj.addProperty("App::PropertyInteger","uWeight").uWeight=10
         obj.addProperty("App::PropertyInteger","vWeight").vWeight=10
 
-
-
     def execute(self,fp):
-
         print ("EXECute GORDON")
         createGordon(fp,scale=5.0)
 
@@ -4573,9 +4570,6 @@ class GordonFace(FeaturePython):
 
 
 def createGordon(obj,scale=5.0):
-
-
-
 
     if obj.ribs!=None:
         polsu=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.ribs])
@@ -4886,7 +4880,7 @@ def _createGordonGUI():
             #tt.grid=App.ActiveDocument.Compound
             # grid anorndung von begrid
 #            tt.grid=App.ActiveDocument.BeGrid
-            tt.grid=Gui.Selection.getSelectionEx()[0]
+            tt.grid=Gui.Selection.getSelection()[0]
             try:
                 tt.uCount=tt.grid.Source.uSegments+1
                 tt.vCount=tt.grid.Source.vSegments+1
@@ -4906,7 +4900,7 @@ def _createGordonGUI():
 
 def compareMaps():
     '''vergleich zwei Maps '''
-    (ma,mb)=Gui.Selection.getSelectionEx()
+    (ma,mb)=Gui.Selection.getSelection()
     comp=[]
     for p,q in zip(ma.Shape.Vertexes,mb.Shape.Vertexes):
         if (p.Point-q.Point).Length >0:
@@ -4926,7 +4920,7 @@ def BB():
 def  polishG1GUI():
     ''' make surface G1 continues'''
 
-    obj=Gui.Selection.getSelectionEx()[0]
+    obj=Gui.Selection.getSelection()[0]
     sf=obj.Shape.Face1.Surface
     poles=np.array(sf.getPoles())
 
