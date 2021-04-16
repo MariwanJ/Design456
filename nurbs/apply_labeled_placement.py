@@ -36,7 +36,7 @@ class Nurbs_ApplyLabeledPlacement:
         ''' auxiliary method applies placement from the label,
         to move objects (sketch) to the desired place in the room'''
 
-        for y in Gui.Selection.getSelectionEx():
+        for y in Gui.Selection.getSelection():
             if y.Label.startswith('t='):
                 exec(y.ObjectName)
                 print(t)

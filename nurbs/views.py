@@ -329,7 +329,7 @@ class Nurbs_CreateQuadview:
 
     def Activated(self):
 
-        objs = Gui.Selection.getSelectionEx()
+        objs = Gui.Selection.getSelection()
 
         labels = [obj.Label for obj in objs]
         title = ', '.join(labels)
@@ -339,7 +339,7 @@ class Nurbs_CreateQuadview:
             v.getViewer(i).setEnabledNaviCube(False)
 
         a = App.ActiveDocument.addObject("Part::FeaturePython", "MyQuadView")
-        QuadView(a, "QuadView for " + title)
+        Nurbs_QuadView(a, "QuadView for " + title)
         ViewProvider(a.ViewObject)
 
         updatencontent(v, objs, a)
@@ -897,15 +897,15 @@ def resizeWindows(v, a):
 class Nurbs_CreateH2():
 
     def Activated(self):
-        s=Gui.Selection.getSelectionEx()
-        if (len(s) < 3):
-            # An object must be selected
+        s=Gui.Selection.getSelection()
+        if (len(s) <3):
+            # An object must be sele()
             errMessage = "Select 3 objects to use Extrude Face"
             faced.getInfo(s).errorDialog(errMessage)
             return
-        obja = Gui.Selection.getSelectionEx()[0]
-        objb = Gui.Selection.getSelectionEx()[1]
-        objs = Gui.Selection.getSelectionEx()[2:]
+        obja = Gui.Selection.getSelection()[0]
+        objb = Gui.Selection.getSelection()[1]
+        objs = Gui.Selection.getSelection()[2:]
 
         title = "Horizontal views for "+obja.Label+" and "+objb.Label
 
