@@ -288,150 +288,135 @@ def createHelmet(obj=None):
     if obj!=None:
         a.Label="Helmet for "+obj.Label
 
+class commandCreateHelment:
+    def Activated(self):
+        pts=[fp.getPoint(i,1) for i in range(16)]
+        pts2=[fp.getPoint(i,1) for i in range(16,20)]
+        ptsall=np.zeros(25*3).reshape(5,5,3)
+        ptsall[0,2]=pts[0]
+        ptsall[0,3]=pts[1]
+        ptsall[0,4]=pts[2]
+        ptsall[1,4]=pts[3]
+        ptsall[2,4]=pts[4]
+        ptsall[3,4]=pts[5]
+        ptsall[4,4]=pts[6]
+        ptsall[4,3]=pts[7]
+        ptsall[4,2]=pts[8]
+        ptsall[4,1]=pts[9]
+        ptsall[4,0]=pts[10]
+        ptsall[3,0]=pts[11]
+        ptsall[2,0]=pts[12]
+        ptsall[1,0]=pts[13]
+        ptsall[0,0]=pts[14]
+        ptsall[0,1]=pts[15]
 
-def run(fp):
+        ptsall[1:4,3,1]=pts2[1].y
+        ptsall[1:4,1,1]=pts2[3].y
+        ptsall[3,1:4,0]=pts2[3].x
+        ptsall[1,1:4,0]=pts2[1].x
 
-    pts=[fp.getPoint(i,1) for i in range(16)]
-    pts2=[fp.getPoint(i,1) for i in range(16,20)]
+        print ("arquator")
+        pa=fp.equator.getPoint(1,1)
+        pb=fp.equator.getPoint(2,2)
 
-    ptsall=np.zeros(25*3).reshape(5,5,3)
-
-    ptsall[0,2]=pts[0]
-    ptsall[0,3]=pts[1]
-    ptsall[0,4]=pts[2]
-    ptsall[1,4]=pts[3]
-    ptsall[2,4]=pts[4]
-    ptsall[3,4]=pts[5]
-    ptsall[4,4]=pts[6]
-    ptsall[4,3]=pts[7]
-    ptsall[4,2]=pts[8]
-    ptsall[4,1]=pts[9]
-    ptsall[4,0]=pts[10]
-    ptsall[3,0]=pts[11]
-    ptsall[2,0]=pts[12]
-    ptsall[1,0]=pts[13]
-    ptsall[0,0]=pts[14]
-    ptsall[0,1]=pts[15]
-
-    ptsall[1:4,3,1]=pts2[1].y
-    ptsall[1:4,1,1]=pts2[3].y
-    ptsall[3,1:4,0]=pts2[3].x
-    ptsall[1,1:4,0]=pts2[1].x
-    
-    print ("arquator")
-    pa=fp.equator.getPoint(1,1)
-    pb=fp.equator.getPoint(2,2)
-
-    ptsall[3,1:4,0]=pb.x
-    ptsall[1,1:4,0]=pa.x
+        ptsall[3,1:4,0]=pb.x
+        ptsall[1,1:4,0]=pa.x
 
 
-    print ("meridan")
-    pa=fp.meridian.getPoint(1,1)
-    pb=fp.meridian.getPoint(2,2)
-    
-    
-    ptsall[1:4,3,1]=pa.x
-    ptsall[1:4,1,1]=pb.x
+        print ("meridan")
+        pa=fp.meridian.getPoint(1,1)
+        pb=fp.meridian.getPoint(2,2)
 
 
-    h=fp.equator.getPoint(1,2).y
-    print ("HEights",h,fp.height)
-    if h != fp.height:
-        fp.height=h
-
-    #fp.equator.movePoint(1,2,App.Vector(0,fp.height))
-    fp.equator.movePoint(0,1,fp.getPoint(0,1))
-    fp.equator.movePoint(3,2,fp.getPoint(7,2))
-    fp.equator.solve()
-    fp.equator.purgeTouched()
-
-    fp.meridian.movePoint(1,2,App.Vector(0,fp.height))
-    t=fp.getPoint(4,1)
-    t2=fp.getPoint(12,1)
-    fp.meridian.movePoint(0,1,App.Vector(t.y,0,0))
-    fp.meridian.movePoint(3,2,App.Vector(t2.y,0,0))
+        ptsall[1:4,3,1]=pa.x
+        ptsall[1:4,1,1]=pb.x
 
 
-    fp.meridian.solve()
-    fp.meridian.purgeTouched()
+        h=fp.equator.getPoint(1,2).y
+        print ("HEights",h,fp.height)
+        if h != fp.height:
+            fp.height=h
+
+        #fp.equator.movePoint(1,2,App.Vector(0,fp.height))
+        fp.equator.movePoint(0,1,fp.getPoint(0,1))
+        fp.equator.movePoint(3,2,fp.getPoint(7,2))
+        fp.equator.solve()
+        fp.equator.purgeTouched()
+
+        fp.meridian.movePoint(1,2,App.Vector(0,fp.height))
+        t=fp.getPoint(4,1)
+        t2=fp.getPoint(12,1)
+        fp.meridian.movePoint(0,1,App.Vector(t.y,0,0))
+        fp.meridian.movePoint(3,2,App.Vector(t2.y,0,0))
 
 
-    ptse =[ fp.equator.getPoint(0,1)+App.Vector(0,-fp.border,0)]
-    ptse +=[fp.equator.getPoint(i,1) for i in range(4)]
-    ptse += [fp.equator.getPoint(3,2) ]
-    ptse += [fp.equator.getPoint(3,2)+App.Vector(0,-fp.border,0) ]
-
-    ptsf =[ fp.meridian.getPoint(0,1)+App.Vector(0,-fp.border,0)]
-    ptsf +=[fp.meridian.getPoint(i,1) for i in range(4)]
-    ptsf += [fp.meridian.getPoint(3,2) ]
-    ptsf += [fp.meridian.getPoint(3,2)+App.Vector(0,-fp.border,0) ]
+        fp.meridian.solve()
+        fp.meridian.purgeTouched()
 
 
-    ptse2=[App.Vector(p.x,0,p.y) for p in ptse]
-    ptsf2=[App.Vector(0,p.x,p.y) for p in ptsf]
+        ptse =[ fp.equator.getPoint(0,1)+App.Vector(0,-fp.border,0)]
+        ptse +=[fp.equator.getPoint(i,1) for i in range(4)]
+        ptse += [fp.equator.getPoint(3,2) ]
+        ptse += [fp.equator.getPoint(3,2)+App.Vector(0,-fp.border,0) ]
+
+        ptsf =[ fp.meridian.getPoint(0,1)+App.Vector(0,-fp.border,0)]
+        ptsf +=[fp.meridian.getPoint(i,1) for i in range(4)]
+        ptsf += [fp.meridian.getPoint(3,2) ]
+        ptsf += [fp.meridian.getPoint(3,2)+App.Vector(0,-fp.border,0) ]
+
+
+        ptse2=[App.Vector(p.x,0,p.y) for p in ptse]
+        ptsf2=[App.Vector(0,p.x,p.y) for p in ptsf]
 
 
 
-    ptsall[1:4,1:4,2]=fp.height
+        ptsall[1:4,1:4,2]=fp.height
 
-    yy=np.array(ptsall)
-    yy2=np.array([yy[0],yy[0],yy[1],yy[2],yy[3],yy[4],yy[4]])
+        yy=np.array(ptsall)
+        yy2=np.array([yy[0],yy[0],yy[1],yy[2],yy[3],yy[4],yy[4]])
 
-    yy2[0,:,2]=-fp.border
-    yy2[-1,:,2]=-fp.border
+        yy2[0,:,2]=-fp.border
+        yy2[-1,:,2]=-fp.border
 
-    yy=yy2.swapaxes(0,1)
-    yy2=np.array([yy[0],yy[0],yy[1],yy[2],yy[3],yy[4],yy[4]])
-    yy2[0,1:-1,2]=-fp.border
-    yy2[-1,1:-1,2]=-fp.border
+        yy=yy2.swapaxes(0,1)
+        yy2=np.array([yy[0],yy[0],yy[1],yy[2],yy[3],yy[4],yy[4]])
+        yy2[0,1:-1,2]=-fp.border
+        yy2[-1,1:-1,2]=-fp.border
 
-    af=Part.BSplineSurface()
+        af=Part.BSplineSurface()
 
-    yy2a=np.array(yy2)
-    yy3a=yy2a.swapaxes(0,1)
+        yy2a=np.array(yy2)
+        yy3a=yy2a.swapaxes(0,1)
 
-    print ("!!",Gui.ActiveDocument.getInEdit(),"!!")
+        print ("!!",Gui.ActiveDocument.getInEdit(),"!!")
 
-    vp=Gui.ActiveDocument.getInEdit()
-    if vp != None and vp.Object==fp:
-        yy2 +=fp.offset
+        vp=Gui.ActiveDocument.getInEdit()
+        if vp != None and vp.Object==fp:
+            yy2 +=fp.offset
 
-#    af.buildFromPolesMultsKnots(yy2, 
-#        [4,1,1,1,4],[4,1,1,1,4],
-#        [0,1,2,3,4],[0,1,2,3,4],
-#        False,False,3,3)
+#        af.buildFromPolesMultsKnots(yy2, 
+#            [4,1,1,1,4],[4,1,1,1,4],
+#            [0,1,2,3,4],[0,1,2,3,4],
+#            False,False,3,3)
 
-    af.buildFromPolesMultsKnots(yy2, 
-        [4,3,4],[4,3,4],
-        [0,1,2,],[0,1,2,],
-        False,False,3,3)
+        af.buildFromPolesMultsKnots(yy2, 
+            [4,3,4],[4,3,4],
+            [0,1,2,],[0,1,2,],
+            False,False,3,3)
 
 
 
-    if fp.onlyFace:
-        fp.Shape=af.toShape()
-        return
+        if fp.onlyFace:
+            fp.Shape=af.toShape()
+            return
 
-    comps=[]
-    comps += [af.toShape()]
+        comps=[]
+        comps += [af.toShape()]
 
-    yy3=yy2.swapaxes(0,1)
+        yy3=yy2.swapaxes(0,1)
 
-    for yy in [yy2,yy3]:    
-        for r in [0,3,6]:
-            bc=Part.BSplineCurve()
-            bc.buildFromPolesMultsKnots(yy[r], 
-                [4,1,1,1,4],
-                [0,1,2,3,4],
-                False,3)
-            comps += [bc.toShape()]
-
-#    print ("ptse23,",ptse2)
-
-    if 0:
-        for yy in [yy2a,yy3a]:    
-            for r in [0,6]:
+        for yy in [yy2,yy3]:    
+            for r in [0,3,6]:
                 bc=Part.BSplineCurve()
                 bc.buildFromPolesMultsKnots(yy[r], 
                     [4,1,1,1,4],
@@ -439,17 +424,40 @@ def run(fp):
                     False,3)
                 comps += [bc.toShape()]
 
-    for yy in [ptse2,ptsf2]:
-            bc=Part.BSplineCurve()
-            bc.buildFromPolesMultsKnots(yy, 
-                [4,1,1,1,4],
-                [0,1,2,3,4],
-                False,3)
-            comps += [bc.toShape()]
+#        print ("ptse23,",ptse2)
 
-    # comps += [Part.makePolygon(ptse)]
+        if 0:
+            for yy in [yy2a,yy3a]:    
+                for r in [0,6]:
+                    bc=Part.BSplineCurve()
+                    bc.buildFromPolesMultsKnots(yy[r], 
+                        [4,1,1,1,4],
+                        [0,1,2,3,4],
+                        False,3)
+                    comps += [bc.toShape()]
 
-    fp.Shape=Part.Compound(comps)
+        for yy in [ptse2,ptsf2]:
+                bc=Part.BSplineCurve()
+                bc.buildFromPolesMultsKnots(yy, 
+                    [4,1,1,1,4],
+                    [0,1,2,3,4],
+                    False,3)
+                comps += [bc.toShape()]
+
+        # comps += [Part.makePolygon(ptse)]
+
+        fp.Shape=Part.Compound(comps)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("commandCreateHelment")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "commandCreateHelment"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs commandCreateHelment", _tooltip)}
+
+Gui.addCommand("commandCreateHelment", commandCreateHelment())
 
 
 

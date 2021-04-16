@@ -50,7 +50,7 @@ class Design456_Nurbs_Miscellaneous:
                  'madeByMeDontKnowWhatItDo',
                  'Nurbs_EventFilter',
                  'Nurbs_CreateGridToFace',
-                  'Nurbs_MainScanCut'
+                  'Nurbs_MainScanCut',
                 
 
                 )
