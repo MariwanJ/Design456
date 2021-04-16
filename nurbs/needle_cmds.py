@@ -473,7 +473,7 @@ def pressed(index, obj):
 def cmdAdd():
     ''' add some curves to selections '''
 
-    s = Gui.Selection.getSelectionEx()[0]
+    s = Gui.Selection.getSelection()[0]
 
     s.Object.Label
     print(s.Object.Name)
@@ -495,7 +495,7 @@ def cmdAdd():
 def cmdDel():
     ''' add some curves to selections '''
 
-    s = Gui.Selection.getSelectionEx()[0]
+    s = Gui.Selection.getSelection()[0]
 
     s.Object.Label
     print(s.Object.Name)
