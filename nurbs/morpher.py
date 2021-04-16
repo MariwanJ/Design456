@@ -476,7 +476,7 @@ class Nurbs_createMorpher:
     def Activated(self):
         self.curvemorphedFace()
         
-    def curvemorphedFace():
+    def curvemorphedFace(self):
         '''create a face by morphing boder curves'''
         yy=App.ActiveDocument.addObject("Part::FeaturePython","CurveMorpher")
         CurveMorpher(yy)
