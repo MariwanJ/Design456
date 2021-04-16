@@ -1428,10 +1428,6 @@ class ViewProvider:
 
 from PySide import QtCore
 
-def someOtherFunction():
-    print ("AAAA someother function")
-
-
 class SVGLink(PartFeature):
     ''' draw the grid onto to 3d face obj'''
     def __init__(self, obj):
@@ -1494,18 +1490,29 @@ class SVGLink(PartFeature):
 
 
 
+class Nurbs_CreateLinkToSvg:
+    def Activated(self):
+        """create_svglink():"""
+        print ("erzeuge svg datei link")
+        b=App.ActiveDocument.addObject("Part::FeaturePython","Design456_SVG_Link")
+        SVGLink(b)
+        b.prefix="A_"
+        b.ignore=["MAP","circle"]
+        b.filename="/home/thomas/Schreibtisch/farbentest.svg"
+        b.filename="/home/thomas/Schreibtisch/aaa.svg"
+        #b.Proxy.runTimer()
+        return b
 
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs Create Link To Svg")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'linktosvg.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateLinkToSvg"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-def create_svglink():
-    print ("erzeuge svg datei link")
-    b=App.ActiveDocument.addObject("Part::FeaturePython","My_SVG_Link")
-    SVGLink(b)
-    b.prefix="A_"
-    b.ignore=["MAP","circle"]
-    b.filename="/home/thomas/Schreibtisch/farbentest.svg"
-    b.filename="/home/thomas/Schreibtisch/aaa.svg"
-    #b.Proxy.runTimer()
-    return b
+Gui.addCommand("Nurbs_CreateLinkToSvg", Nurbs_CreateLinkToSvg())
 
 
 

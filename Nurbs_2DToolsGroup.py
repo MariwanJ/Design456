@@ -46,6 +46,7 @@ class Design456_Nurbs_2DToolsGroup:
                 'Nurbs_ControlPanelCreateFunction',
                 'Nurbs_CurveDistance',
                 'Nurbs_SoleWithBorder',
+                'Nurbs_RemoveKnots',
 
 
                 )

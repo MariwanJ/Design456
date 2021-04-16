@@ -68,7 +68,7 @@ def  dist(a,b):
 class Nurbs_CurveDistance:
     def Activated(self):
 
-        sel=Gui.Selection.getSelectionEx()
+        sel=Gui.Selection.getSelection()
         b=sel[0]
         for a in sel[1:]:
             print (str(a.Label),round(dist(a,b),3))
