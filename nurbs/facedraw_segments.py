@@ -933,7 +933,7 @@ class Nurbs_CreateMapToFace:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + '/maps.svg',
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'maps.svg',
             'MenuText': 'Nurbs_CreateMapToFace',
                         'ToolTip':  'Nurbs_CreateMapToFace'
         }
