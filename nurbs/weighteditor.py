@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import Part
+import Draft
 #
 # ***************************************************************************
 # *                                                                        *
@@ -26,24 +28,25 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 # -*- coding: utf-8 -*-
-#-------------------------------------------------
-#-- change sketcher constrains from a separate dialog
-#--
-#-- microelly 2017 v 0.1
-#--
-#-- GNU Lesser General Public License (LGPL)
-#-------------------------------------------------
+# -------------------------------------------------
+# -- change sketcher constrains from a separate dialog
+# --
+# -- microelly 2017 v 0.1
+# --
+# -- GNU Lesser General Public License (LGPL)
+# -------------------------------------------------
 import FreeCAD as App
 import FreeCADGui as Gui
 #import matplotlib.colors as colors
 import Design456Init
 
 import PySide
-from PySide import  QtGui,QtCore
+from PySide import QtGui, QtCore
+
 
 def runex(window):
     window.hide()
-    for k in 'pk','pn','kn':
+    for k in 'pk', 'pn', 'kn':
         try:
             App.ActiveDocument.removeObject(k)
         except:
@@ -54,101 +57,97 @@ def runex(window):
 
 def wrun(w):
     for q in w.box:
-        print (w.sk.Label,q.i,q.value(),q.c.Name)
-        w.sk.setDatum(q.i,1+q.value())
+        print(w.sk.Label, q.i, q.value(), q.c.Name)
+        w.sk.setDatum(q.i, 1+q.value())
     App.ActiveDocument.recompute()
-    pk(w.sk,w)
+    pk(w.sk, w)
 
-#---------------
+# ---------------
 
 
-import Draft,Part
-
-def pk(obj=None,w=None):
-    try: pk=App.ActiveDocument.pk
+def pk(obj=None, w=None):
+    try:
+        pk = App.ActiveDocument.pk
     except:
-        pk=App.ActiveDocument.addObject("Part::Spline","pk")
-    try: kn=App.ActiveDocument.kn
+        pk = App.ActiveDocument.addObject("Part::Spline", "pk")
+    try:
+        kn = App.ActiveDocument.kn
     except:
-        kn=App.ActiveDocument.addObject("Part::Spline","kn")
-    try: pn=App.ActiveDocument.pn
+        kn = App.ActiveDocument.addObject("Part::Spline", "kn")
+    try:
+        pn = App.ActiveDocument.pn
     except:
-        pn=App.ActiveDocument.addObject("Part::Spline","pn")
-    
-
+        pn = App.ActiveDocument.addObject("Part::Spline", "pn")
 
     if 1:
         pass
 
         # Hilfswire machen
-        if obj!=None:
-            a=obj
+        if obj != None:
+            a = obj
         else:
-            [a]=Gui.Selection.getSelectionEx()
-        bc=a.Shape.Edge1.Curve
-        pts=a.Shape.Edge1.Curve.getPoles()
-        print ("Poles", len(pts))
-        if len(w.texts)==0:
-            for i,p in enumerate(pts):
-                t=Draft.makeText([str(i+1),'','','',''],p,True)
-                t.ViewObject.FontSize=20
+            [a] = Gui.Selection.getSelectionEx()
+        bc = a.Shape.Edge1.Curve
+        pts = a.Shape.Edge1.Curve.getPoles()
+        print("Poles", len(pts))
+        if len(w.texts) == 0:
+            for i, p in enumerate(pts):
+                t = Draft.makeText([str(i+1), '', '', '', ''], p, True)
+                t.ViewObject.FontSize = 20
                 w.texts.append(t)
 
-        #_t=Draft.makeWire(pts,closed=True,face=False)
-        p1=Part.makePolygon(pts)
-        pn.Shape=p1
+        # _t=Draft.makeWire(pts,closed=True,face=False)
+        p1 = Part.makePolygon(pts)
+        pn.Shape = p1
 
         #pn.Label="Poles "+a.Label
         # pn.ViewObject.PointSize=10
-        pn.ViewObject.PointColor=(1.,0.,1.)
-        pn.ViewObject.LineColor=(1.,0.,1.)
+        pn.ViewObject.PointColor = (1., 0., 1.)
+        pn.ViewObject.LineColor = (1., 0., 1.)
 
-        pts2=[bc.value(k) for k in bc.getKnots()]
-        print ("Knots:",len(pts2))
+        pts2 = [bc.value(k) for k in bc.getKnots()]
+        print("Knots:", len(pts2))
         # _t=Draft.makeWire(pts,closed=True,face=False)
-        p2=Part.makePolygon(pts2)
-        kn.Shape=p2
+        p2 = Part.makePolygon(pts2)
+        kn.Shape = p2
         #kn.Label="Knotes "+a.Label
-        kn.ViewObject.PointSize=10
-        kn.ViewObject.PointColor=(0.,1.,1.)
-        kn.ViewObject.LineColor=(0.,1.,1.)
+        kn.ViewObject.PointSize = 10
+        kn.ViewObject.PointColor = (0., 1., 1.)
+        kn.ViewObject.LineColor = (0., 1., 1.)
 
-        polys=[]
-        print (pts)
-        print (pts2)
-        for i in range(1,len(pts)):
-            print (i,[pts[i],pts2[i-1]])
+        polys = []
+        print(pts)
+        print(pts2)
+        for i in range(1, len(pts)):
+            print(i, [pts[i], pts2[i-1]])
             try:
-                polyg=Part.makePolygon([pts[i],pts2[i-1]])
+                polyg = Part.makePolygon([pts[i], pts2[i-1]])
                 polys.append(polyg)
-            except: pass
+            except:
+                pass
 
-        comp=Part.makeCompound(polys)
-        pk.Shape=comp
-
-
-
+        comp = Part.makeCompound(polys)
+        pk.Shape = comp
 
 
-#-----------------
-
+# -----------------
 
 
 def dialog(sk=None):
 
-    if sk==None:
-        [sk]=Gui.Selection.getSelectionEx()
+    if sk == None:
+        [sk] = Gui.Selection.getSelectionEx()
     if 1:
 
-        w=QtGui.QWidget()
-        w.sk=sk
-        w.texts=[]
+        w = QtGui.QWidget()
+        w.sk = sk
+        w.texts = []
 
-        tc=sk.ViewObject.LineColor
-        color=colors.rgb2hex(sk.ViewObject.LineColor)    
-        invers=(1.0-tc[0],1.0-tc[1],1.0-tc[2])
-        icolor=colors.rgb2hex(invers) 
-        mcolor='#808080'   
+        tc = sk.ViewObject.LineColor
+        color = colors.rgb2hex(sk.ViewObject.LineColor)
+        invers = (1.0-tc[0], 1.0-tc[1], 1.0-tc[2])
+        icolor = colors.rgb2hex(invers)
+        mcolor = '#808080'
         w.setStyleSheet("QWidget { background-color:"+color+"}\
             QPushButton { margin-right:0px;margin-left:0px;margin:0 px;padding:0px;;\
             background-color:#ccc;text-align:left;;padding:6px;padding-left:4px;color:#333; }")
@@ -157,40 +156,51 @@ def dialog(sk=None):
         w.setLayout(box)
         w.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
-        l=QtGui.QLabel(sk.Label)
-        l.setText( '<font color='+icolor+'>'+sk.Label+'</font>' ) 
+        l = QtGui.QLabel(sk.Label)
+        l.setText('<font color='+icolor+'>'+sk.Label+'</font>')
         box.addWidget(l)
 
-        w.box=[]
-        for i,c in enumerate(sk.Constraints):
-            print (c.Name,c.Value)
+        w.box = []
+        for i, c in enumerate(sk.Constraints):
+            print(c.Name, c.Value)
             if c.Name.startswith("Weight"):
-                l=QtGui.QLabel(c.Name)
-                l.setText( '<font color='+icolor+'>'+c.Name+'</font>' ) 
+                l = QtGui.QLabel(c.Name)
+                l.setText('<font color='+icolor+'>'+c.Name+'</font>')
                 box.addWidget(l)
 
-                d=QtGui.QSlider(QtCore.Qt.Horizontal)
-                d.c=c
-                d.i=i
+                d = QtGui.QSlider(QtCore.Qt.Horizontal)
+                d.c = c
+                d.i = i
 
                 box.addWidget(d)
                 d.setValue(c.Value-1)
                 d.setMaximum(100)
                 d.setMinimum(0)
-                d.valueChanged.connect(lambda:wrun(w))
+                d.valueChanged.connect(lambda: wrun(w))
                 w.box.append(d)
 
-        w.r=QtGui.QPushButton("close")
+        w.r = QtGui.QPushButton("close")
         box.addWidget(w.r)
-        w.r.pressed.connect(lambda :runex(w))
+        w.r.pressed.connect(lambda: runex(w))
         wrun(w)
         w.show()
 
     return w
 
 
+class Nurbs_WeightEditor:
+    def Activated(self):
+        for sk in Gui.Selection.getSelectionEx():
+            w = dialog(sk)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_WeightEditor")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'WeightEditor.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_WeightEditor"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 
-def ThousandsOfRunWhatShouldIdo():
-    for sk in  Gui.Selection.getSelectionEx():
-        w=dialog(sk)
+Gui.addCommand("Nurbs_WeightEditor", Nurbs_WeightEditor())
