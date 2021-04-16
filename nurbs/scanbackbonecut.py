@@ -216,7 +216,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
 
 
     # load the shoedata
-    shoedata
+    import shoedata
     #reload(shoedata)
 
     bbps=shoedata.shoeAdam.bbps

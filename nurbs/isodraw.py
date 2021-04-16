@@ -628,10 +628,14 @@ createMap.__doc__ = """createMap: Tobe added later     """
 
 
 class createGrid:
-    def Activated(mapobj, upmode=False):
+    def __init_(self, mapobj,upmode=False):
+        self.mapobj=mapobj
+        self.upmode= upmode
+
+    def Activated():
         '''create a 2D grid  or 3D grid (if upmode) for the map obj'''
 
-        obj = mapobj
+        obj = self.mapobj
 
         try:
             face = obj.faceObject.Shape.Faces[obj.faceNumber]
@@ -730,7 +734,7 @@ class createGrid:
             mpv2 = aza+mpv*sul
 
         else:
-            if upmode:
+            if self.upmode:
                 mpu2 = sua+mpu*sul
                 mpv2 = sva+mpv*svl
             else:
