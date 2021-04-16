@@ -471,25 +471,38 @@ class CurveMorpher(FeaturePython):
             self.onChanged(obj,"__execute__")
         #print obj.Label," executed"
 
-def curvemorphedFace():
-    '''create a face by morphing boder curves'''
-    yy=App.ActiveDocument.addObject("Part::FeaturePython","CurveMorpher")
-    CurveMorpher(yy)
 
-    curves=Gui.Selection.getSelectionEx()
-    if len(curves)==4:
-        [yy.N,yy.S,yy.W,yy.E]=curves
-    else:
-        yy.border=curves[0]
-    ViewProvider(yy.ViewObject)
-    yy.ViewObject.ShapeColor=(.6,.6,1.)
-    yy.ViewObject.LineColor=(.0,.6,0.)
-    return yy
+class Nurbs_createMorpher:
+    def Activated(self):
+        self.curvemorphedFace()
+        
+    def curvemorphedFace():
+        '''create a face by morphing boder curves'''
+        yy=App.ActiveDocument.addObject("Part::FeaturePython","CurveMorpher")
+        CurveMorpher(yy)
+
+        curves=Gui.Selection.getSelectionEx()
+        if len(curves)==4:
+            [yy.N,yy.S,yy.W,yy.E]=curves
+        else:
+            yy.border=curves[0]
+        ViewProvider(yy.ViewObject)
+        yy.ViewObject.ShapeColor=(.6,.6,1.)
+        yy.ViewObject.LineColor=(.0,.6,0.)
+        return yy
 
 
-def ThousandsOfMainFunction():
-    #createMorpher()
-    curvemorphedFace()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createMorpher")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createMorpher"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_createMorpher", _tooltip)}
+
+
+Gui.addCommand("Nurbs_createMorpher", Nurbs_createMorpher())
 
 
 

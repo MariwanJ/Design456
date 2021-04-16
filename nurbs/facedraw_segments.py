@@ -803,7 +803,7 @@ class Nurbs_EventFilter:
         ef = EventFilter()
         ef.mouseWheel = 0
         try:
-            sel = Gui.Selection.getSelectionEx()
+            sel = Gui.Selection.getSelection()
             if (len(sel) < 1):
                 # An object must be selected
                 errMessage = "Select a face"
@@ -926,7 +926,7 @@ class Nurbs_CreateMapToFace:
         ''' create a mpa control for the first face of the selected object '''
         # last selection == face
         # other sels: wires to project
-        s0 = Gui.Selection.getSelectionEx()
+        s0 = Gui.Selection.getSelection()
         face = s0[-1]
         moa = isodraw.createMap(self.mode)
         moa.faceObject = face

@@ -56,8 +56,8 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_createSketchSpline',
                 'Nurbs_CreateLinkToSvg',
                 'Nurbs_WeightEditor',
-                'commandCreateHelment',
-                
+                'commandCreateHelmet',
+                'Nurbs_createMorpher',
 
                 )
     def GetResources(self):
