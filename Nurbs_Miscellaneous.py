@@ -48,9 +48,9 @@ class Design456_Nurbs_Miscellaneous:
                  'Nurbs_LightON',
                  'Nurbs_LightOFF',
                  'madeByMeDontKnowWhatItDo',
-                 'Nurbs_EventFilter'
-                 'Nurbs_CreateGridToFace'
-
+                 'Nurbs_EventFilter',
+                 'Nurbs_CreateGridToFace',
+                  'Nurbs_MainScanCut'
                 
 
                 )

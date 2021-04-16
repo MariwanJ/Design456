@@ -154,47 +154,55 @@ def run1(z0,mesh,plane,showpointsmap=True,showmedianfilter=True):
         App.ActiveDocument.ActiveObject.Label="Points " +plst
 
 
+class Nurbs_MainScanCut:
+    def Activated(self):
+            
+    #    if len( Gui.Selection.getSelectionEx())==0:
+    #        showdialog('Oops','nothing selected - nothing to do for me','Plese select a Draft Wire or a Draft BSpline')
+    
+        #default parameters
+        p={
+            "showmedianfilter":[False,'Boolean'],
+            "showpointsmap":[False,'Boolean'],
+        }
+    
+        # parameter -----------------
+        t=App.ParamGet('User parameter:Plugins/nurbs/'+'scancut')
+        l=t.GetContents()
+        if l==None: l=[]
+        for k in l: p[k[1]]=k[2]
+        for k in p:
+            if p[k].__class__.__name__=='list':
+                typ=p[k][1]
+                if typ=='Integer':t.SetInt(k,p[k][0]);
+                if typ=='Boolean':t.SetBool(k,p[k][0])
+                if typ=='String':t.SetString(k,p[k][0])
+                if typ=='Float':t.SetFloat(k,p[k][0])
+                p[k]=p[k][0]
+        #--------------------
+        try:
+            plane=App.ActiveDocument.Plane
+            mesh=App.ActiveDocument.LastDIA.Mesh
+        except:
+            sayexc(title='Error',mess='something wrong with the mesh and the helper plane ' )
+            return
 
-def ThousandsOfRunWhatShouldIdo():
+        for z0 in range(0,3):
+            pass
 
-#    if len( Gui.Selection.getSelectionEx())==0:
-#        showdialog('Oops','nothing selected - nothing to do for me','Plese select a Draft Wire or a Draft BSpline')
+        for z0 in range(-15,10):
+            #run1(10*z0,mesh,plane,p['showpointsmap'],p['showmedianfilter'])
+            run1(10*z0,mesh,plane,True,True)
 
-    #default parameters
-    p={
-        "showmedianfilter":[False,'Boolean'],
-        "showpointsmap":[False,'Boolean'],
-    }
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MainScanCut")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'darw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MainScanCut"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-    # parameter -----------------
-    t=App.ParamGet('User parameter:Plugins/nurbs/'+'scancut')
-    l=t.GetContents()
-    if l==None: l=[]
-    for k in l: p[k[1]]=k[2]
-    for k in p:
-        if p[k].__class__.__name__=='list':
-            typ=p[k][1]
-            if typ=='Integer':t.SetInt(k,p[k][0]);
-            if typ=='Boolean':t.SetBool(k,p[k][0])
-            if typ=='String':t.SetString(k,p[k][0])
-            if typ=='Float':t.SetFloat(k,p[k][0])
-            p[k]=p[k][0]
-    #--------------------
+Gui.addCommand("Nurbs_MainScanCut", Nurbs_MainScanCut())
 
-
-    try:
-        plane=App.ActiveDocument.Plane
-        mesh=App.ActiveDocument.LastDIA.Mesh
-    except:
-        sayexc(title='Error',mess='something wrong with the mesh and the helper plane ' )
-        return
-
-    for z0 in range(0,3):
-        pass
-
-    for z0 in range(-15,10):
-        #run1(10*z0,mesh,plane,p['showpointsmap'],p['showmedianfilter'])
-        run1(10*z0,mesh,plane,True,True)
-
-def ThousandsOfMainFunction():
-    run()
+#\endcond

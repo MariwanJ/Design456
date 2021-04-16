@@ -881,7 +881,7 @@ class Nurbs_CreateGridToFace:
         self.name = "Design456Grid"
 
     def Activated(self):
-        sel = Gui.Selection.getSelectionEx()
+        sel = Gui.Selection.getSelection()
         if (len(sel) < 1):
             # An object must be selected
             errMessage = "Select a face"

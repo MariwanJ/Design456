@@ -37,22 +37,37 @@ import FreeCADGui as Gui
 import Part
 
 import Design456Init
-def ThousandsOfRunWhatShouldIdo():
-    allpts = []
-    # for obj in Gui.Selection.getSelectionEx():
 
-    for obj in App.ActiveDocument.clones.OutList:
-        if obj.Label.startswith('t='):
-            exec(obj.Label)
-            # print t
-            # print y.Placement
-            obj.Placement = t  # .inverse()
+class Nurbs_DrawCurves2Face:
+    def Activated(self):
+        allpts = []
+        # for obj in Gui.Selection.getSelectionEx():
+        t=""
+        for obj in App.ActiveDocument.clones.OutList:
+            if obj.Label.startswith('t='):
+                exec(obj.Label)
+                # print (t)
+                # print (y.Placement)
+                obj.Placement = t  # .inverse()
+    
+            print(len(obj.Shape.Edge1.Curve.getPoles()))
+            pts = obj.Shape.Edge1.Curve.discretize(30)
+            allpts.append(pts)
+    
+        bs = Part.BSplineSurface()
+        bs.interpolate(allpts)
+        sp = App.ActiveDocument.addObject("Part::Spline", "Spline")
+        sp.Shape = bs.toShape()
 
-        print(len(obj.Shape.Edge1.Curve.getPoles()))
-        pts = obj.Shape.Edge1.Curve.discretize(30)
-        allpts.append(pts)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_DrawCurves2Face")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'DrawCurves2Face.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DrawCurves2Face"),
+                'ToolTip': QT_TRANSLATE_NOOP("Nurbs_DrawCurves2Face", _tooltip)}
 
-    bs = Part.BSplineSurface()
-    bs.interpolate(allpts)
-    sp = App.ActiveDocument.addObject("Part::Spline", "Spline")
-    sp.Shape = bs.toShape()
+Gui.addCommand("Nurbs_DrawCurves2Face", Nurbs_DrawCurves2Face())
+Nurbs_DrawCurves2Face.__doc__ = """Nurbs Draw Curves to Face: Tobe written later
+                            """
