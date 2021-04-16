@@ -72,6 +72,7 @@ class Design456_unifySplitFuse1:
                 colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] # color face selected
                 ##App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] = colorFace# give color on face
             except Exception:
+                #TODO: This will fail if the object doesn't have .Name  -Mariwan
                 colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[0] # color face selected [0] 
 
             ### Begin command Part_ElementCopy First selection

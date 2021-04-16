@@ -73,17 +73,17 @@ class ViewProvider:
 
     def onDelete(self, obj, subelements):
         print("on Delete Quadview")
-        print(obj)
+        print(self.obj)
         print(subelements)
-        obj.Object.Proxy.v.close()
+        self.obj.Object.Proxy.v.close()
         return True
 
     def onChanged(self, obj, prop):
         print("onchange", prop)
-        if prop == "Visibility" and not obj.Visibility:
+        if prop == "Visibility" and not self.obj.Visibility:
             obj.Object.Proxy.v.close()
-        if prop == "Visibility" and obj.Visibility:
-            fp = obj.Object
+        if prop == "Visibility" and self.obj.Visibility:
+            fp = self.obj.Object
             title = fp.Label
             v = Gui.createViewer(4, title)
             for i in range(4):
@@ -1020,58 +1020,62 @@ def mkshadow(sgg, lis):
 
 class Nurbs_DarkRoom(PartFeature):
     def __init__(self, obj, label=None):
+        self.obj=obj
+        self.label=label
+        self.fp=None
         PartFeature.__init__(self, obj)
 
-        obj.addProperty("App::PropertyBool", "On", "Render")
+        self.obj.addProperty("App::PropertyBool", "On", "Render")
 
-        obj.addProperty("App::PropertyVector", "A Axis", "V00")
-        obj.addProperty("App::PropertyFloat", "A Angle", "V00")
-        obj.addProperty("App::PropertyInteger", "A DisplayMode", "V00")
-        obj.addProperty("App::PropertyInteger", "A OrientationMode", "V00")
+        self.obj.addProperty("App::PropertyVector", "A Axis", "V00")
+        self.obj.addProperty("App::PropertyFloat", "A Angle", "V00")
+        self.obj.addProperty("App::PropertyInteger", "A DisplayMode", "V00")
+        self.obj.addProperty("App::PropertyInteger", "A OrientationMode", "V00")
 
-        obj.A_Axis = App.Vector(1, 0, 1)
-        obj.A_Angle = 60
+        self.obj.A_Axis = App.Vector(1, 0, 1)
+        self.obj.A_Angle = 60
 
-        obj.addProperty("App::PropertyVector", "B Axis", "V01")
-        obj.addProperty("App::PropertyFloat", "B Angle", "V01")
-        obj.addProperty("App::PropertyInteger", "B DisplayMode", "V01")
-        obj.addProperty("App::PropertyInteger", "B OrientationMode", "V01")
+        self.obj.addProperty("App::PropertyVector", "B Axis", "V01")
+        self.obj.addProperty("App::PropertyFloat", "B Angle", "V01")
+        self.obj.addProperty("App::PropertyInteger", "B DisplayMode", "V01")
+        self.obj.addProperty("App::PropertyInteger", "B OrientationMode", "V01")
 
-        obj.B_Axis = App.Vector(1, 1, 1)
-        obj.B_Angle = 120
+        self.obj.B_Axis = App.Vector(1, 1, 1)
+        self.obj.B_Angle = 120
 
-        obj.addProperty("App::PropertyVector", "C Axis", "V10")
-        obj.addProperty("App::PropertyFloat", "C Angle", "V10")
-        obj.addProperty("App::PropertyInteger", "C DisplayMode", "V10")
-        obj.addProperty("App::PropertyInteger", "C OrientationMode", "V10")
+        self.obj.addProperty("App::PropertyVector", "C Axis", "V10")
+        self.obj.addProperty("App::PropertyFloat", "C Angle", "V10")
+        self.obj.addProperty("App::PropertyInteger", "C DisplayMode", "V10")
+        self.obj.addProperty("App::PropertyInteger", "C OrientationMode", "V10")
 
-        obj.addProperty("App::PropertyVector", "D Axis", "V11")
-        obj.addProperty("App::PropertyFloat", "D Angle", "V11")
-        obj.addProperty("App::PropertyInteger", "D DisplayMode", "V11")
-        obj.addProperty("App::PropertyInteger", "D OrientationMode", "V11")
+        self.obj.addProperty("App::PropertyVector", "D Axis", "V11")
+        self.obj.addProperty("App::PropertyFloat", "D Angle", "V11")
+        self.obj.addProperty("App::PropertyInteger", "D DisplayMode", "V11")
+        self.obj.addProperty("App::PropertyInteger", "D OrientationMode", "V11")
 
-        obj.D_Axis = App.Vector(1, 0, 1)
-        obj.D_Angle = 45
+        self.obj.D_Axis = App.Vector(1, 0, 1)
+        self.obj.D_Angle = 45
 
-        obj.addProperty("App::PropertyBool", "DisplayMode", "Render")
-        obj.addProperty("App::PropertyBool", "fitAll", "Render")
-        obj.addProperty("App::PropertyLinkList", "objs", "Render")
+        self.obj.addProperty("App::PropertyBool", "DisplayMode", "Render")
+        self.obj.addProperty("App::PropertyBool", "fitAll", "Render")
+        self.obj.addProperty("App::PropertyLinkList", "objs", "Render")
 
-        obj.addProperty("App::PropertyLink", "obja", "Render")
-        obj.addProperty("App::PropertyLink", "objb", "Render")
+        self.obj.addProperty("App::PropertyLink", "obja", "Render")
+        self.obj.addProperty("App::PropertyLink", "objb", "Render")
 
         if label != None:
-            obj.Label = label
+            self.obj.Label = label
 
     def onChanged(self, fp, prop):
-        if not fp.On:
+        self.fp=fp
+        if not self.fp.On:
             return
 
         print("on changed .....", fp.Label, prop)
 
-        if fp == None:
+        if self.fp == None:
             return
-        if not fp.ViewObject.Visibility:
+        if not self.fp.ViewObject.Visibility:
             return
 
         try:
@@ -1096,20 +1100,20 @@ class Nurbs_DarkRoom(PartFeature):
         ]
 
         if prop == "Shape" or prop == "Group":
-            dpms = [fp.A_DisplayMode, fp.B_DisplayMode,
-                    fp.C_DisplayMode, fp.D_DisplayMode]
-            vals = [fp.A_OrientationMode, fp.B_OrientationMode,
-                    fp.C_OrientationMode, fp.D_OrientationMode]
+            dpms = [self.fp.A_DisplayMode,     self.fp.B_DisplayMode,
+                    self.fp.C_DisplayMode,     self.fp.D_DisplayMode]
+            vals = [self.fp.A_OrientationMode, self.fp.B_OrientationMode,
+                    self.fp.C_OrientationMode, self.fp.D_OrientationMode]
             for ix in [0]:
-                objs = fp.objs
+                objs = slef.fp.objs
                 view = self.v.getViewer(ix)
                 val = vals[ix]
                 marker = coin.SoSeparator()
-                for objx in objs+[fp.obja]:
+                for objx in objs+[self.fp.obja]:
                     print("run ", objx.Label)
                     node = objx.ViewObject.RootNode
 
-                    if fp.DisplayMode:
+                    if self.fp.DisplayMode:
                         nodeA = node.copy()
                         clds = nodeA.getChildren()
                         s2 = clds[2]
@@ -1117,7 +1121,7 @@ class Nurbs_DarkRoom(PartFeature):
                     else:
                         nodeA = node
 
-                    if fp.A_DisplayMode == 0:
+                    if self.fp.A_DisplayMode == 0:
                         nodeA = node
                     else:
                         nodeA = node.copy()
@@ -1140,7 +1144,7 @@ class Nurbs_DarkRoom(PartFeature):
 
                 # hier die lichter einfuegen
                 lis = []
-                for ob in fp.Group:
+                for ob in self.fp.Group:
                     # break
 
                     print("!!", ob, ob.Label, ob.on)
@@ -1180,7 +1184,7 @@ class Nurbs_DarkRoom(PartFeature):
                 mkshadow(marker, lis)
                 print("------------------done-----------------")
 
-                for ob in fp.Group:
+                for ob in self.fp.Group:
 
                     try:
                         ob.mode
@@ -1213,37 +1217,37 @@ class Nurbs_DarkRoom(PartFeature):
             return
 
         if prop.endswith("DisplayMode"):
-            w = getattr(fp, prop)
+            w = getattr(self.fp, prop)
             if w < 0:
-                setattr(fp, prop, 0)
+                setattr(self.fp, prop, 0)
             if w > 3:
-                setattr(fp, prop, 3)
+                setattr(self.fp, prop, 3)
             # updatencontenth2(self.v,fp.obja,fp.objb,fp.objs,fp,False)
             return
 
         if prop.endswith("OrientationMode"):
-            val = getattr(fp, prop)
+            val = getattr(self.fp, prop)
             if val >= len(AxisAngle) or val < 0:
-                setattr(fp, prop, val % len(AxisAngle))
-            val = getattr(fp, prop)
+                setattr(self.fp, prop, val % len(AxisAngle))
+            val = getattr(self.fp, prop)
             if val != 0:
                 if prop == "A_OrientationMode":
-                    fp.A_Axis = AxisAngle[val-1][0]
-                    fp.A_Angle = AxisAngle[val-1][1]
+                    self.fp.A_Axis = AxisAngle[val-1][0]
+                    self.fp.A_Angle = AxisAngle[val-1][1]
                 if prop == "B_OrientationMode":
-                    fp.B_Axis = AxisAngle[val-1][0]
-                    fp.B_Angle = AxisAngle[val-1][1]
+                    self.fp.B_Axis = AxisAngle[val-1][0]
+                    self.fp.B_Angle = AxisAngle[val-1][1]
                 if prop == "C_OrientationMode":
-                    fp.C_Axis = AxisAngle[val-1][0]
-                    fp.C_Angle = AxisAngle[val-1][1]
+                    self.fp.C_Axis = AxisAngle[val-1][0]
+                    self.fp.C_Angle = AxisAngle[val-1][1]
                 if prop == "D_OrientationMode":
-                    fp.D_Axis = AxisAngle[val-1][0]
-                    fp.D_Angle = AxisAngle[val-1][1]
+                    self.fp.D_Axis = AxisAngle[val-1][0]
+                    self.fp.D_Angle = AxisAngle[val-1][1]
             return
 
         if prop.startswith("A_"):
             c = self.v.getViewer(0).getSoRenderManager().getCamera()
-            c.orientation = App.Rotation(fp.A_Axis, fp.A_Angle).Q
+            c.orientation = App.Rotation(self.fp.A_Axis, self.fp.A_Angle).Q
 
             view = self.v.getViewer(0)
             reg = view.getSoRenderManager().getViewportRegion()
@@ -1252,7 +1256,7 @@ class Nurbs_DarkRoom(PartFeature):
 
         if prop.startswith("B_"):
             c = self.v.getViewer(1).getSoRenderManager().getCamera()
-            c.orientation = App.Rotation(fp.B_Axis, fp.B_Angle).Q
+            c.orientation = App.Rotation(self.fp.B_Axis, self.fp.B_Angle).Q
 
             view = self.v.getViewer(1)
             reg = view.getSoRenderManager().getViewportRegion()
@@ -1277,13 +1281,14 @@ class Nurbs_DarkRoom(PartFeature):
             marker = view.getSoRenderManager().getSceneGraph()
             c.viewAll(marker, reg)
 
-        if fp.fitAll:
+        if self.fp.fitAll:
             self.v.fitAll()
 
     def onDocumentRestored(self, fp):
+        self.fp=fp
         print(["onDocumentRestored", str(fp.Label) +
-              ": "+str(fp.Proxy.__class__.__name__)])
-        fp.ViewObject.Visibility = False
+              ": "+str(self.fp.Proxy.__class__.__name__)])
+        self.fp.ViewObject.Visibility = False
 
     def execute(self, fp):
         self.onChanged(fp, "Shape")
@@ -1295,6 +1300,7 @@ class Nurbs_ViewProviderDR:
     def __init__(self, obj):
         obj.Proxy = self
         self.Object = obj
+        self.fp=obj.Object
 
     def onDelete(self, obj, subelements):
         print("on Delete Quadview")
@@ -1307,7 +1313,6 @@ class Nurbs_ViewProviderDR:
         rGrp = App.ParamGet('User parameter:BaseApp/Preferences/View')
         atr = "BackgroundColor"
         rGrp.SetUnsigned(atr, 1437270015)
-
         return True
 
     def onChanged(self, obj, prop):
@@ -1332,16 +1337,16 @@ class Nurbs_ViewProviderDR:
             except:
                 pass
         if prop == "Visibility" and obj.Visibility:
-            fp = obj.Object
-            title = fp.Label
+            self.fp = obj.Object
+            title = self.fp.Label
             v = Gui.createViewer(2, title)
             for i in range(2):
                 v.getViewer(i).setEnabledNaviCube(False)
 
             setsizeDR(title)
 
-            fp.Proxy.v = v
-            fp.Proxy.onChanged(fp, "Shape")
+            self.fp.Proxy.v = v
+            self.fp.Proxy.onChanged(self.fp, "Shape")
 
             rGrp = App.ParamGet('User parameter:BaseApp/Preferences/View')
             atr = "HeadlightIntensity"
@@ -1351,29 +1356,42 @@ class Nurbs_ViewProviderDR:
             rGrp.SetUnsigned(atr, 0)
             v.fitAll()
 
-
+#TODO:This is not correct .. I don't understand the code
 def setsizeDR(title):
 
     mw = Gui.getMainWindow()
     mdiarea = mw.findChild(QtGui.QMdiArea)
     sws = mdiarea.subWindowList()
+    print(sws)
 
     for i, w2 in enumerate(sws):
+        print(w2.windowTitle())
         if w2.windowTitle() == title:
-            va = w2.children()[3]
-            spa = va.children()[2]
-            spa.setSizes([10, 0])
+            print (len(w2.children()))
+            child_=w2.children()
+            print("...........")
+            print (child_)
+            va=child_[3]
+            print((va.children()))
+           # spa = va.children()[2]
+           # spa.setSizes([10, 0])
+            #va = w2.children()[3]        #->>>>>>FIXME
+            #spa = va.children()[2]       #->>>>>>FIXME
+            #spa.setSizes([10, 0])
 
 
 class Nurbs_CreateDarkRoom:
-    def Activated(self, configureVal={1, 1, 1, 1, 1, }):
+    def __init(self, configureVal={1, 1, 1, 1, 1, }):
+        self.configureVal=configureVal
+        
+    def Activated(self):
 
         # the superstar
-        obja = Gui.Selection.getSelectionEx()[0]
+        obja = Gui.Selection.getSelection()[0]
         # and the set
-        objs = Gui.Selection.getSelectionEx()[1:]
+        objs = Gui.Selection.getSelection()[1:]
 
-        title = "Darkroom for "+obja.ObjectName
+        title = "Darkroom for "+obja.Label
 
         v = Gui.createViewer(2, title)
         for i in range(2):
@@ -1383,8 +1401,8 @@ class Nurbs_CreateDarkRoom:
 
         a = App.ActiveDocument.addObject(
             "App::DocumentObjectGroupPython", "MyDarkRoom")
-        DarkRoom(a, title)
-        ViewProviderDR(a.ViewObject)
+        Nurbs_DarkRoom(a, title)
+        Nurbs_ViewProviderDR(a.ViewObject)
 
         a.Proxy.v = v
 
@@ -1394,20 +1412,20 @@ class Nurbs_CreateDarkRoom:
         # add some lights to start the party ...
 
         # with shadows dir-lights do not work inside the shadow group
-        if configureVal[0]:
+        if self.configureVal[0]:
             la = createlight('DirectionalLight')
             la.location = App.Vector(-100, -100, 0)
             la.direction = la.location*(-1)
             a.addObject(la)
 
-        if configureVal[1]:
+        if self.configureVal[1]:
             la = createlight('DirectionalLight')
             la.location = App.Vector(200, -100, 0)
             la.direction = la.location*(-1)
             la.color = (0.3, 0., 0.)
             a.addObject(la)
 
-        if configureVal[2]:
+        if self.configureVal[2]:
             la = createlight("SpotLight")
             la.mode = "SpotLight"
             la.location = App.Vector(10, -20, 400)
@@ -1415,7 +1433,7 @@ class Nurbs_CreateDarkRoom:
             la.color = (0.3, 0., 1.)
             a.addObject(la)
 
-        if configureVal[3]:
+        if self.configureVal[3]:
             la = createlight("PointLight")
             la.mode = "PointLight"
             la.location = App.Vector(10, -20, 400)
@@ -1425,7 +1443,7 @@ class Nurbs_CreateDarkRoom:
 
         # the shadow light test env
 
-        if configureVal[4]:
+        if self.configureVal[4]:
 
             ff = 0.1
             la = createlight("SpotLight")
@@ -1475,7 +1493,6 @@ class Nurbs_CreateDarkRoom:
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateDarkRoom"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateDarkRoom", _tooltip)}
-
 
 Gui.addCommand("Nurbs_CreateDarkRoom", Nurbs_CreateDarkRoom())
 

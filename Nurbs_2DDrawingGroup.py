@@ -49,17 +49,14 @@ class Design456_Nurbs_2DDrawingGroup:
                 'testE',
                 'Nurbs_CreateGridToFace',
                 'Nurbs_LoadSoleProfile',
-                'Nurbs_CreateOrUpdateSoleEnvironmentSheet'
+                'Nurbs_CreateOrUpdateSoleEnvironmentSheet',
                 'Nurbs_PrototypeCreateHELL',
                 'Nurbs_main',
-<<<<<<< HEAD
-                'createSketchSpline',
                 'Nurbs_DrawCurves2Face',
-
-=======
                 'Nurbs_createSketchSpline',
                 'Nurbs_CreateLinkToSvg',
->>>>>>> 5b9c233f06051a7faf5968db2860b2ee3013f7fc
+                'Nurbs_WeightEditor',
+                'commandCreateHelment',
                 
 
                 )
