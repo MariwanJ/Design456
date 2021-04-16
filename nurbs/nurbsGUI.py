@@ -377,14 +377,14 @@ class Nurbs_CreateWorkspace:
 
     def Activated(self):
         '''called from the menu '''
-        ad = App.ActiveDocument.Name
+        adname = App.ActiveDocument.Name
 
         ad = App.ActiveDocument
-        bares = ad.addObject("Part::FeaturePython", "WS "+docname+"")
+        bares = ad.addObject("Part::FeaturePython", "WS "+adname+"")
         WSLink(bares, "TestMeWorkspace")
-        App.setActiveDocument(ad)
-        App.ActiveDocument = App.getDocument(ad)
-        Gui.ActiveDocument = Gui.getDocument(ad)
+        App.setActiveDocument(adname)
+        App.ActiveDocument = App.getDocument(adname)
+        Gui.ActiveDocument = Gui.getDocument(adname)
         App.ActiveDocument.recompute()
 
     def GetResources(self):

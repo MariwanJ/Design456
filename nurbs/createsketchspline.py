@@ -225,7 +225,7 @@ def runall():
     closecurve(rc)
 
 
-class createSketchSpline:
+class Nurbs_createSketchSpline:
     '''convert a draft bspline to a sketcher bspline'''
     def Activated(self):
         '''erzeugt fuer jedes selektierte Objekte aus Edge1 einen Sketch'''
@@ -249,11 +249,11 @@ class createSketchSpline:
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("createSketchSpline")
+        _tooltip = ("Nurbs_createSketchSpline")
         return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "createSketchSpline"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createSketchSpline"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 
-Gui.addCommand("createSketchSpline", createSketchSpline())
+Gui.addCommand("Nurbs_createSketchSpline", Nurbs_createSketchSpline())
 
