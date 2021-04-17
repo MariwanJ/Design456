@@ -1102,22 +1102,22 @@ def genB():
 
     App.ActiveDocument.recompute()
 
-Class CreateBering:
+
+class CreateBering:
     def Activated(self):
-    ## create a Bering from selected Wires
-    '''create Bering Sketches for selected objects'''
-    sel= Gui.Selection.getSelection()
-    if (len(sel) < 1):
-        # An object must be selected
-        errMessage = "Select a face from an objects to use Extract"
-        faced.getInfo(s).errorDialog(errMessage)
-        return
+        ## create a Bering from selected Wires
+        '''create Bering Sketches for selected objects'''
+        sel= Gui.Selection.getSelection()
+        if (len(sel) < 1):
+            # An object must be selected
+            errMessage = "Select a face from an objects to use Extract"
+            faced.getInfo(s).errorDialog(errMessage)
+            return
 
-        rc=[]
-        for source in sel:
-            rc +=  [genk(0,0,1,App.Vector(),source)]
-
-        return rc
+            rc=[]
+            for source in sel:
+                rc +=  [genk(0,0,1,App.Vector(),source)]
+            return rc
 
 def AA():
     obj=App.ActiveDocument.jj2
@@ -1151,8 +1151,8 @@ def AA():
 
 ## create a beface from  selected berings
 class Nurbs_CreateBeFaceFromSelBering:
-    def Activated:
-        self.createBeface(self)
+    def Activated(self):
+        self.createBeface()
             
     def createBeface(self):
         '''create a Bering Surface for a selected list of berings as ribs'''
@@ -1169,7 +1169,7 @@ class Nurbs_CreateBeFaceFromSelBering:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Create Be Face From Selelected Bering")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBeFaceFromSelBering"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_CreateBeFaceFromSelBering", _tooltip)}
 
@@ -1180,43 +1180,51 @@ Gui.addCommand("Nurbs_CreateBeFaceFromSelBering", Nurbs_CreateBeFaceFromSelBerin
 
 ## a testcase for bering and beface
 # this test uses the /FreeCAD_testfiles/bering_testdaten.fcstd
+class Nurbs_TestCaseBeringTest:
+    def Activated(self):
+        self.createBeringTest()
+    def createBeringTest(self):
+    
+        try:
+            App.closeDocument("bering_testdaten")
+        except:
+            pass
+        
+        appdat=App.ConfigGet('UserAppData')
+        fn=appdat+'/FreeCAD_testfiles/bering_testdaten.fcstd'
+    
+        App.open(fn)
+        App.setActiveDocument("bering_testdaten")
+        App.ActiveDocument=App.getDocument("bering_testdaten")
+        Gui.ActiveDocument=Gui.getDocument("bering_testdaten")
+        genA()
+        #genB()
+        source=App.ActiveDocument.Sketch004;end=5;start=0
+    
+        sks=[]
+        sks += [genk(start,end,1,App.Vector(),source)]
+        sks += [genk(start,end,1.9,App.Vector(200,0,0),source)]
+        sks += [genk(start,end,0.9,App.Vector(400,0,100),source)]
+        sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
+        Beface(sf)
+        sfberings=sks
+        ViewProvider(sf.ViewObject)
+        App.ActiveDocument.recompute()
+        connectFaces()
+        App.ActiveDocument.recompute()
 
-def createBeringTest():
-
-    try:
-        App.closeDocument("bering_testdaten")
-    except:
-        pass
-
-    appdat=App.ConfigGet('UserAppData')
-    fn=appdat+'/FreeCAD_testfiles/bering_testdaten.fcstd'
-
-    App.open(fn)
-    App.setActiveDocument("bering_testdaten")
-    App.ActiveDocument=App.getDocument("bering_testdaten")
-    Gui.ActiveDocument=Gui.getDocument("bering_testdaten")
-
-    genA()
-    #genB()
-
-    source=App.ActiveDocument.Sketch004;end=5;start=0
-
-    sks=[]
-
-    sks += [genk(start,end,1,App.Vector(),source)]
-    sks += [genk(start,end,1.9,App.Vector(200,0,0),source)]
-    sks += [genk(start,end,0.9,App.Vector(400,0,100),source)]
-
-    sf=App.ActiveDocument.addObject('Sketcher::SketchObjectPython','BeringFace')
-    Beface(sf)
-    sfberings=sks
-    ViewProvider(sf.ViewObject)
-
-    App.ActiveDocument.recompute()
-    connectFaces()
-    App.ActiveDocument.recompute()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_TestCaseBeringTest")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_TestCaseBeringTest"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+Gui.addCommand("Nurbs_TestCaseBeringTest", Nurbs_TestCaseBeringTest())
 
 
+    
 
 
 ## connection of 3 faces
@@ -1547,25 +1555,38 @@ class _VPProduct(ViewProvider):
 
 
 
+class Nurbs_createProduct:
+    def Activated(self):
+        self.createProduct()
+    def createProduct(self):
+        '''create the procuct face of some curves
+        2 curves u,v
+        3 curves u,v,u2
+        4 curves u,v,u2,v2
+        this is a special case of a gordon face calculation
+        '''
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','ProductFace')
+        Product(sf)
+        _VPProduct(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createProduct.svg')
+        sel=Gui.Selection.getSelection()
+        sf.uSource=sel[0]
+        sf.vSource=sel[1]
+        if len(sel)>=3:
+            sf.uSource2=sel[2]
+        if len(sel)>=4:
+            sf.vSource2=sel[3]
 
-def createProduct():
-    '''create the procuct face of some curves
-    2 curves u,v
-    3 curves u,v,u2
-    4 curves u,v,u2,v2
-    this is a special case of a gordon face calculation
-    '''
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createProduct")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createProduct"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','ProductFace')
-    Product(sf)
-    _VPProduct(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createProduct.svg')
-    sel=Gui.Selection.getSelection()
-    sf.uSource=sel[0]
-    sf.vSource=sel[1]
-    if len(sel)>=3:
-        sf.uSource2=sel[2]
-    if len(sel)>=4:
-        sf.vSource2=sel[3]
+Gui.addCommand("Nurbs_createProduct", Nurbs_createProduct())
+
 
 
 def debugP(pts,label):
@@ -1895,28 +1916,77 @@ class FaceConnection(FeaturePython):
         fp.Shape=Part.Compound(shapes)
 
 
-def createSeam():
-    (fa,fb)=Gui.Selection.getSelection()
+class Nurbs_CreateSeam()
+    def Activated(self):
+        self.createSeam()
+        
+    def createSeam(self):
+        (fa,fb)=Gui.Selection.getSelection()
 
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','Seam')
-    sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    FaceConnection(sf)
-    ViewProvider(sf.ViewObject)
-    (us,vs)=Gui.Selection.getSelection()
-    sf.aSource=fa
-    sf.bSource=fb
-    sf.mode='Seam'
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','Seam')
+        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        FaceConnection(sf)
+        ViewProvider(sf.ViewObject)
+        (us,vs)=Gui.Selection.getSelection()
+        sf.aSource=fa
+        sf.bSource=fb
+        sf.mode='Seam'
+        App.ActiveDocument.recompute()
 
-    App.ActiveDocument.recompute()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateSeam")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSeam"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateSeam", Nurbs_CreateSeam())
 
 
-def createDatumPlane():
-    '''create a PD DatumPlane'''
-    return App.ActiveDocument.addObject('PartDesign::Plane','DatumPlane')
 
-def createDatumLine():
-    '''create a PD DatumLine'''
-    return App.ActiveDocument.addObject('PartDesign::Line','DatumLine')
+
+class Nurbs_createDatumPlane:
+    def Activated(self):
+        self.createDatumPlane()
+    
+    def createDatumPlane(self):
+        '''create a PD DatumPlane'''
+        return App.ActiveDocument.addObject('PartDesign::Plane','DatumPlane')
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createDatumPlane")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createDatumPlane"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createDatumPlane", Nurbs_createDatumPlane())
+
+
+
+class Nurbs_createDatumLine:
+    def Activated(self):
+        self.createDatumLine()
+    def createDatumLine(self):
+        '''create a PD DatumLine'''
+        return App.ActiveDocument.addObject('PartDesign::Line','DatumLine')
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createDatumLine")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createDatumLine"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createDatumLine", Nurbs_createDatumLine())
+
+
 
 ##create the begrid curves return the result as a compound
 
@@ -2008,10 +2078,11 @@ class BeGrid(FeaturePython):
 class Nurbs_CreateBeGrid:
 ## create a BeGrid object for the selected objects'''
     def Activated(self):
-        self.createBeGrid()        
-    def createBeGrid():
+        self.createBeGrid()
+                
+    def createBeGrid(self):
         '''create BeGrids for the selected objects'''
-
+        sf=None
         for  fa in Gui.Selection.getSelection():
 
             sf=App.ActiveDocument.addObject('Part::FeaturePython','BeGrid')
@@ -2037,32 +2108,47 @@ Gui.addCommand("Nurbs_CreateBeGrid", Nurbs_CreateBeGrid())
 
 
 
+class Nurbs_BSplineToBezierCurve1:
+    def Activated(self):
+        self.BSplineToBezierCurve()
+        
+    def BSplineToBezierCurve(self):
+        '''create a degree 3 curve with multiplicities always 3'''
 
-def BSplineToBezierCurve():
-    '''create a degree 3 curve with multiplicities always 3'''
+        obj=Gui.Selection.getSelection()[0]
+        bc=obj.Shape.Edge1.Curve
 
-    obj=Gui.Selection.getSelection()[0]
-    bc=obj.Shape.Edge1.Curve
+        if bc.Degree>3:
+            say.showdialog("curves with degree >3 are not supported")
+        bc.increaseDegree(3)
 
-    if bc.Degree>3:
-        say.showdialog("curves with degree >3 are not supported")
-    bc.increaseDegree(3)
+        mults=bc.getMultiplicities()
+        knots=range(len(mults))
 
-    mults=bc.getMultiplicities()
-    knots=range(len(mults))
+        bc2=Part.BSplineCurve()
+        bc2.buildFromPolesMultsKnots(bc.getPoles(),    mults,knots,False,3)
 
-    bc2=Part.BSplineCurve()
-    bc2.buildFromPolesMultsKnots(bc.getPoles(),    mults,knots,False,3)
+        for i in range(1,len(mults)-1):
+            print (i,mults[i])
+            if mults[i]<3:
+                bc2.insertKnot(i,3)
 
-    for i in range(1,len(mults)-1):
-        print (i,mults[i])
-        if mults[i]<3:
-            bc2.insertKnot(i,3)
+        t=App.ActiveDocument.addObject('Part::Spline',obj.Name)
+        t.Label=obj.Label+" Bezier"
+        t.Shape=bc2.toShape()
+        t.ViewObject.ControlPoints=True
 
-    t=App.ActiveDocument.addObject('Part::Spline',obj.Name)
-    t.Label=obj.Label+" Bezier"
-    t.Shape=bc2.toShape()
-    t.ViewObject.ControlPoints=True
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_BSplineToBezierCurve1")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_BSplineToBezierCurve1"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_BSplineToBezierCurve1", Nurbs_BSplineToBezierCurve1())
+
 
 
 def BSplineToBezierCurve():
@@ -2212,154 +2298,153 @@ def BSplineToBezierSurface():
 
 
 
-#TODO: This was commented .. see if it works!! Mariwan
-calss Nurbs_SurfaceEditor:
-    def Activated(self):
-        self.SufaceEditor()
+# #TODO: This was commented .. dosent work! cleanup required.
+# class Nurbs_SurfaceEditor:
+#     def Activated(self):
+#         self.SufaceEditor()
         
-    def SurfaceEditor():
-        '''alter editor fuer surface'''
+#     def SurfaceEditor():
+#         '''alter editor fuer surface'''
 
-    ##\cond
-        layout = 
-        MainWindow:
-            QtGui.QLabel:
-                setText:"***   Poles Editor   D E M O   ***"
-            HorizontalGroup:
-                setTitle: "Pole u v"
-                QtGui.QLineEdit:
-                    id: 'ux'
-                    setText:"1"
-                    textChanged.connect: app.relativeMode
-                QtGui.QLineEdit:
-                    id: 'vx'
-                    setText:"1"
-                    textChanged.connect: app.relativeMode
+#         ##\cond
+#         layout = None
+#         MainWindow:
+#             QtGui.QLabel:
+#                 setText:"***   Poles Editor   D E M O   ***"
+#             HorizontalGroup:
+#                 setTitle: "Pole u v"
+#                 QtGui.QLineEdit:
+#                     id: 'ux'
+#                     setText:"1"
+#                     textChanged.connect: app.relativeMode
+#                 QtGui.QLineEdit:
+#                     id: 'vx'
+#                     setText:"1"
+#                     textChanged.connect: app.relativeMode
 
-            HorizontalGroup:
-                setTitle: "Position UV-tangential Normal"
-                QtGui.QDial:
-                    id: 'udial'
-                    setFocusPolicy: QtCore.Qt.StrongFocus
-                    valueChanged.connect: app.relativeMode
-                    setMinimum: -100
-                    setMaximum: 100
-                QtGui.QDial:
-                    id: 'vdial'
-                    setMinimum: -100
-                    setMaximum: 100
-                    valueChanged.connect: app.relativeMode
-                QtGui.QDial:
-                    id: 'ndial'
-                    setMinimum: -100
-                    setMaximum: 100
-                    valueChanged.connect: app.relativeMode
+#             HorizontalGroup:
+#                 setTitle: "Position UV-tangential Normal"
+#                 QtGui.QDial:
+#                     id: 'udial'
+#                     setFocusPolicy: QtCore.Qt.StrongFocus
+#                     valueChanged.connect: app.relativeMode
+#                     setMinimum: -100
+#                     setMaximum: 100
+#                 QtGui.QDial:
+#                     id: 'vdial'
+#                     setMinimum: -100
+#                     setMaximum: 100
+#                     valueChanged.connect: app.relativeMode
+#                 QtGui.QDial:
+#                     id: 'ndial'
+#                     setMinimum: -100
+#                     setMaximum: 100
+#                     valueChanged.connect: app.relativeMode
 
-            HorizontalGroup:
-                setTitle: "Position XYZ"
-                QtGui.QDial:
-                    id: 'xdial'
-                    setMinimum: -100
-                    setMaximum: 100
-                    setFocusPolicy: QtCore.Qt.StrongFocus
-                    valueChanged.connect: app.relativeMode
-                QtGui.QDial:
-                    id: 'ydial'
-                    setMinimum: -100
-                    setMaximum: 100
-                    valueChanged.connect: app.relativeMode
-                QtGui.QDial:
-                    id: 'zdial'
-                    setMinimum: -100.
-                    setMaximum: 100.
-                    valueChanged.connect: app.relativeMode
+#             HorizontalGroup:
+#                 setTitle: "Position XYZ"
+#                 QtGui.QDial:
+#                     id: 'xdial'
+#                     setMinimum: -100
+#                     setMaximum: 100
+#                     setFocusPolicy: QtCore.Qt.StrongFocus
+#                     valueChanged.connect: app.relativeMode
+#                 QtGui.QDial:
+#                     id: 'ydial'
+#                     setMinimum: -100
+#                     setMaximum: 100
+#                     valueChanged.connect: app.relativeMode
+#                 QtGui.QDial:
+#                     id: 'zdial'
+#                     setMinimum: -100.
+#                     setMaximum: 100.
+#                     valueChanged.connect: app.relativeMode
 
-            HorizontalGroup:
-                setTitle: "Rotation Euler"
-                QtGui.QDial:
-                    id: 'xrot'
-                    setMinimum: -100
-                    setMaximum: 100
-                    setFocusPolicy: QtCore.Qt.StrongFocus
-                    valueChanged.connect: app.relativeMode
-                QtGui.QDial:
-                    id: 'yrot'
-                    setMinimum: -100
-                    setMaximum: 100
-                    valueChanged.connect: app.relativeMode
-                QtGui.QDial:
-                    id: 'zrot'
-                    setMinimum: -100.
-                    setMaximum: 100.
-                    valueChanged.connect: app.relativeMode
+#             HorizontalGroup:
+#                 setTitle: "Rotation Euler"
+#                 QtGui.QDial:
+#                     id: 'xrot'
+#                     setMinimum: -100
+#                     setMaximum: 100
+#                     setFocusPolicy: QtCore.Qt.StrongFocus
+#                     valueChanged.connect: app.relativeMode
+#                 QtGui.QDial:
+#                     id: 'yrot'
+#                     setMinimum: -100
+#                     setMaximum: 100
+#                     valueChanged.connect: app.relativeMode
+#                 QtGui.QDial:
+#                     id: 'zrot'
+#                     setMinimum: -100.
+#                     setMaximum: 100.
+#                     valueChanged.connect: app.relativeMode
 
-            HorizontalGroup:
-                setTitle: "scale"
-                QtGui.QSlider:
-                    id: 'scale'
-                    setValue: 10.0
-                    setOrientation: PySide.QtCore.Qt.Orientation.Horizontal
-                    valueChanged.connect: app.relativeMode
+#             HorizontalGroup:
+#                 setTitle: "scale"
+#                 QtGui.QSlider:
+#                     id: 'scale'
+#                     setValue: 10.0
+#                     setOrientation: PySide.QtCore.Qt.Orientation.Horizontal
+#                     valueChanged.connect: app.relativeMode
 
-            QtGui.QCheckBox:
-                id: 'showface'
-                setText: 'Show Face'
-                stateChanged.connect: app.relativeMode
-                setChecked: True
+#             QtGui.QCheckBox:
+#                 id: 'showface'
+#                 setText: 'Show Face'
+#                 stateChanged.connect: app.relativeMode
+#                 setChecked: True
 
-            QtGui.QCheckBox:
-                id: 'showtangents'
-                setText: 'Show Tangents'
-                stateChanged.connect: app.relativeMode
-                setChecked: True
+#             QtGui.QCheckBox:
+#                 id: 'showtangents'
+#                 setText: 'Show Tangents'
+#                 stateChanged.connect: app.relativeMode
+#                 setChecked: True
 
-            QtGui.QCheckBox:
-                id: 'showcurves'
-                setText: 'Show Curves'
-                stateChanged.connect: app.relativeMode
-                setChecked: True
-
-
-
-            HorizontalGroup:
-                setTitle: "Mode"
-                QtGui.QComboBox:
-                    id: 'mode'
-                    addItem: "u"
-                    addItem: "v"
-    #        QtGui.QPushButton:
-    #            setText: "Run Action"
-    #            clicked.connect: app.run
-
-            QtGui.QPushButton:
-                setText: "connect to selected point"
-                clicked.connect: app.connectSelection
+#             QtGui.QCheckBox:
+#                 id: 'showcurves'
+#                 setText: 'Show Curves'
+#                 stateChanged.connect: app.relativeMode
+#                 setChecked: True
 
 
-            QtGui.QPushButton:
-                setText: "apply"
-                clicked.connect: app.apply
 
-            QtGui.QPushButton:
-                setText: "apply and close"
-                clicked.connect: app.applyandclose
+#             HorizontalGroup:
+#                 setTitle: "Mode"
+#                 QtGui.QComboBox:
+#                     id: 'mode'
+#                     addItem: "u"
+#                     addItem: "v"
+#     #        QtGui.QPushButton:
+#     #            setText: "Run Action"
+#     #            clicked.connect: app.run
 
-            QtGui.QPushButton:
-                setText: "cancel and close"
-                clicked.connect: app.myclose
+#             QtGui.QPushButton:
+#                 setText: "connect to selected point"
+#                 clicked.connect: app.connectSelection
 
-            setSpacer:
 
-    def GetResources(self):
-        import Design456Init
-        from PySide.QtCore import QT_TRANSLATE_NOOP
-        """Set icon, menu and tooltip."""
-        _tooltip = ("Nurbs_SurfaceEditor")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_SurfaceEditor"),
-                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+#             QtGui.QPushButton:
+#                 setText: "apply"
+#                 clicked.connect: app.apply
 
-Gui.addCommand("Nurbs_SurfaceEditor", Nurbs_SurfaceEditor())
+#             QtGui.QPushButton:
+#                 setText: "apply and close"
+#                 clicked.connect: app.applyandclose
+
+#             QtGui.QPushButton:
+#                 setText: "cancel and close"
+#                 clicked.connect: app.myclose
+
+#             setSpacer:
+
+#     def GetResources(self):
+#         import Design456Init
+#         from PySide.QtCore import QT_TRANSLATE_NOOP
+#         """Set icon, menu and tooltip."""
+#         _tooltip = ("Nurbs_SurfaceEditor")
+#         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+#                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_SurfaceEditor"),
+#                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+# Gui.addCommand("Nurbs_SurfaceEditor", Nurbs_SurfaceEditor())
 
 
 
@@ -2901,33 +2986,46 @@ def addKnot():
 
 ##\endcond
 
+class Nurbs_connectFaces:
+    def Activated(self):
+        self.connectFaces()
+    ## create connection objects for two given faces
+    # two faces must be selected
 
-## create connection objects for two given faces
-# two faces must be selected
+    def connectFaces(self):
+        '''create connection objects for two given faces'''
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','FaceConnection')
+        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        FaceConnection(sf)
 
-def connectFaces():
-    '''create connection objects for two given faces'''
+        if 1:
+            (fa,fb)=Gui.Selection.getSelection()
+            sf.aSource=fa
+            sf.bSource=fb
 
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','FaceConnection')
-    sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    FaceConnection(sf)
+        else:
+            sf.aSource=App.ActiveDocument.result001
+            sf.bSource=App.ActiveDocument.result002
 
-    if 1:
-        (fa,fb)=Gui.Selection.getSelection()
-        sf.aSource=fa
-        sf.bSource=fb
+            sf.reverseB=True
+            sf.swapA=True
+            sf.swapB=True
+            sf.mergeEdge=True
 
-    else:
-        sf.aSource=App.ActiveDocument.result001
-        sf.bSource=App.ActiveDocument.result002
+        ViewProvider(sf.ViewObject)
+        App.ActiveDocument.recompute()
 
-        sf.reverseB=True
-        sf.swapA=True
-        sf.swapB=True
-        sf.mergeEdge=True
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_connectFaces")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_connectFaces"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    ViewProvider(sf.ViewObject)
-    App.ActiveDocument.recompute()
+Gui.addCommand("Nurbs_connectFaces", Nurbs_connectFaces())
+
 
 
 
@@ -3067,14 +3165,28 @@ class BePlane(FeaturePython):
 
 
 
+class Nurbs_CreateBEplane:
+    def Activated(self):
+        self.createBePlane()
 
+    def createBePlane(self):
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','BePlane')
+        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        BePlane(sf)
+        ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createBePlane.svg')
+        return sf
 
-def createBePlane():
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','BePlane')
-    sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    BePlane(sf)
-    ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createBePlane.svg')
-    return sf
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBEplane"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateBEplane", Nurbs_CreateBEplane())
+
 
 
 ## a cylindric Bezier Face
@@ -3231,14 +3343,28 @@ class BeTube(FeaturePython):
 
 
 
+class Nurbs_CreateBETube:
+    def activated(self):
+        self.createBeTube()
+    def createBeTube(self):
+        '''creates a cylinder like  parametric bezier face'''
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','BeTube')
+        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        BeTube(sf)
+        ViewProvider(sf.ViewObject)
+        return sf
 
-def createBeTube():
-    '''creates a cylinder like  parametric bezier face'''
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','BeTube')
-    sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    BeTube(sf)
-    ViewProvider(sf.ViewObject)
-    return sf
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateBETube")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBETube"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateBETube", Nurbs_CreateBETube())
+
 
 
 ## connects an edge of a BePlane with a BeTube
@@ -3303,13 +3429,27 @@ class BePlaneTubeConnector(FeaturePython):
         fp.Shape=bs.toShape()
 
 
+class Nurbs_createPlaneTubeConnector:
+    def Activated(self):
+        self.createPlaneTubeConnector()
+    def createPlaneTubeConnector(self):
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','BeConnector')
+        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        BePlaneTubeConnector(sf)
+        (sf.plane,sf.tube)=Gui.Selection.getSelection()
+        ViewProvider(sf.ViewObject)
 
-def createPlaneTubeConnector():
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','BeConnector')
-    sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    BePlaneTubeConnector(sf)
-    (sf.plane,sf.tube)=Gui.Selection.getSelection()
-    ViewProvider(sf.ViewObject)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createPlaneTubeConnector"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createPlaneTubeConnector", Nurbs_createPlaneTubeConnector())
+
 
 
 
@@ -3406,23 +3546,28 @@ class HelmetTubeConnector(FeaturePython):
         fp.Shape=bs.toShape()
 
 
+class Nurbs_createHelmetTubeConnector:
+    def Activate(self):
+        self.createHelmetTubeConnector()
+    def createHelmetTubeConnector():
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','BeConnector')
+        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        HelmetTubeConnector(sf)
+        (sf.helmet,sf.tube)=Gui.Selection.getSelection()
+        ViewProvider(sf.ViewObject)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createHelmetTubeConnector")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createHelmetTubeConnector"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createHelmetTubeConnector", Nurbs_createHelmetTubeConnector())
 
 
-def createHelmet():
-    helmet
-    #reload(helmet)
-    helmet.createHelmet()
-
-
-
-
-
-def createHelmetTubeConnector():
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','BeConnector')
-    sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    HelmetTubeConnector(sf)
-    (sf.helmet,sf.tube)=Gui.Selection.getSelection()
-    ViewProvider(sf.ViewObject)
 
 ## a Bezier face which connects 3 faces by a triangle layout
 #
@@ -3641,23 +3786,39 @@ class BeTriangle(FeaturePython):
 
 ##\endcond
 
+class Nurbs_createTriangle:
+    def Activated(self):
+        self.createTriangle()
+        
+    def createTriangle(self):
+        '''createTriangle: creates a BSpline Surface for an area of 3 selected and connected curves
+        at the moment the curves must have 4,4,7 poles
+        the long side should have multiplicities 4,3,4
 
-def createTriangle():
-    '''createTriangle: creates a BSpline Surface for an area of 3 selected and connected curves
-    at the moment the curves must have 4,4,7 poles
-    the long side should have multiplicities 4,3,4
+        '''
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','BeTriangle')
+        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        BeTriangle(sf)
+        (sf.curveA,sf.curveB,sf.curveC)=Gui.Selection.getSelection()
+        ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createTriangle.svg')
 
-    '''
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','BeTriangle')
-    sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    BeTriangle(sf)
-    (sf.curveA,sf.curveB,sf.curveC)=Gui.Selection.getSelection()
-    ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createTriangle.svg')
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createTriangle"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createTriangle", Nurbs_createTriangle())
+
+
 
 class Nurbs_SplitInToCells:
     def Activated(self):
         self.SplitIntoCells()
-    def SplitIntoCells():
+    def SplitIntoCells(self):
         '''split a BSpline Face into segment cells'''
 
         obj=Gui.Selection.getSelection()[0]
@@ -3979,9 +4140,10 @@ class QuadPm(FeaturePython):
 
 
 class Nurbs_CreateCELL:
-    Activated(self):
-        self. createCell()
-    def createCell():
+    def Activated(self):
+        self.createCell()
+        
+    def createCell(self):
     
         sf=App.ActiveDocument.addObject('Part::FeaturePython','Cell')
         sf.ViewObject.ShapeColor=(random.random(),0.5+random.random(),random.random(),)
@@ -4350,9 +4512,9 @@ def gencircle(fp,n,h=300,radius=400,center=None):
 
 class Nurbs_CreateSketchCircle:
     def Activated(self):
-    self.createSketchCircle()
+        self.createSketchCircle()
         
-    def createSketchCircle():
+    def createSketchCircle(self):
         '''create a circle bspline curve for sketcher'''
 
         # kreis 100 mm
@@ -4635,7 +4797,7 @@ class Nurbs_CreateHOLEGUI:
     def Activated(self):
         self.createHoleGUI()
 
-    def createHoleGUI():
+    def createHoleGUI(self):
     #    createHole(
     #        height=10,
     #    )
@@ -4687,94 +4849,78 @@ class GordonFace(FeaturePython):
 
 
 
+#TODO Index of this code was wrong. Might fails -Mariwan
+class Nurbs_createGordon:
+    def Activated(self):
+        self.createGordon()
+    def createGordon(self,obj,scale=5.0):
 
+        if obj.ribs!=None:
+            polsu=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.ribs])
+            suc=len(obj.ribs)-1
+        if obj.meridians!=None:
+            polsv=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.meridians])
+            svc=len(obj.meridians)-1
 
-def createGordon(obj,scale=5.0):
-
-    if obj.ribs!=None:
-        polsu=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.ribs])
-        suc=len(obj.ribs)-1
-    if obj.meridians!=None:
-        polsv=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.meridians])
-        svc=len(obj.meridians)-1
-
-    if obj.grid!=None:
-
-        suc=obj.uCount-1
-        svc=obj.vCount-1
-        try:
-            for l in obj.grid.Links:
-                print (l.Label)
-            1/0
-            polsu=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.grid.Links[0:suc+1]])
-            polsv=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.grid.Links[suc+1:suc+svc+2]])
-
-        except:
-            print ("Berechne selbst die dimensionen des Feldes")
-            a=obj.grid
-            lenedges=[len(e.Curve.getPoles()) for e in a.Shape.Edges]
-            print ("Length edges",lenedges)
-            vcc=(lenedges[0]+2)/3
-            ucc=(lenedges[-1]+2)/3
-            print ("dimension array",ucc,vcc,len(lenedges))
-            assert ucc+vcc==len(lenedges)
-
-            obj.uCount=ucc
-            obj.vCount=vcc
+        if obj.grid!=None:
+        
             suc=obj.uCount-1
             svc=obj.vCount-1
+            try:
+                for l in obj.grid.Links:
+                    print (l.Label)
+                1/0
+                polsu=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.grid.Links[0:suc+1]])
+                polsv=np.array([a.Shape.Edge1.Curve.getPoles() for a in obj.grid.Links[suc+1:suc+svc+2]])
 
-            polsu=np.array([a.Shape.Edges[i].Curve.getPoles() for i in range(0,suc+1)])
-            polsv=np.array([a.Shape.Edges[i].Curve.getPoles() for i in range(suc+1,suc+svc+2)])
-            print ("snapes")
-            print (polsu.shape)
-            print (polsv.shape)
+            except:
+                print ("Berechne selbst die dimensionen des Feldes")
+                a=obj.grid
+                lenedges=[len(e.Curve.getPoles()) for e in a.Shape.Edges]
+                print ("Length edges",lenedges)
+                vcc=(lenedges[0]+2)/3
+                ucc=(lenedges[-1]+2)/3
+                print ("dimension array",ucc,vcc,len(lenedges))
+                assert ucc+vcc==len(lenedges)
 
-            #diagnose lage der kurven zueinander
-            print()
-            print( App.Vector(polsu[-1,0]))
-            print( App.Vector(polsu[0,0]))
-            print( App.Vector(polsv[-1,0]))
-            print( App.Vector(polsv[0,0]))
+                obj.uCount=ucc
+                obj.vCount=vcc
+                suc=obj.uCount-1
+                svc=obj.vCount-1
 
-            dista=1.
-            if (App.Vector(polsu[0,0])-App.Vector(polsv[0,0])).Length<dista:
-                print ("flip u")
-                polsu=polsu[::-1]
+                polsu=np.array([a.Shape.Edges[i].Curve.getPoles() for i in range(0,suc+1)])
+                polsv=np.array([a.Shape.Edges[i].Curve.getPoles() for i in range(suc+1,suc+svc+2)])
+                print ("snapes")
+                print (polsu.shape)
+                print (polsv.shape)
 
-            if (App.Vector(polsu[-1,0])-App.Vector(polsv[-1,0])).Length<dista:
-                print ("flip v")
-                polsv=polsv[::-1]
+                #diagnose lage der kurven zueinander
+                print()
+                print( App.Vector(polsu[-1,0]))
+                print( App.Vector(polsu[0,0]))
+                print( App.Vector(polsv[-1,0]))
+                print( App.Vector(polsv[0,0]))
 
-            if (App.Vector(polsu[0,0])-App.Vector(polsv[-1,0])).Length<dista:
-                print ("flip both")
-                polsv=polsv[::-1]
-                polsu=polsu[::-1]
+                dista=1.
+                if (App.Vector(polsu[0,0])-App.Vector(polsv[0,0])).Length<dista:
+                    print ("flip u")
+                    polsu=polsu[::-1]
 
-            assert (App.Vector(polsu[-1,0]) - App.Vector(polsv[0,0])).Length<dista
-            assert polsu.shape==(ucc,lenedges[0],3)
-            assert polsv.shape==(vcc,lenedges[-1],3)
+                if (App.Vector(polsu[-1,0])-App.Vector(polsv[-1,0])).Length<dista:
+                    print ("flip v")
+                    polsv=polsv[::-1]
 
-    print ("shapes polsu polsv ",polsu.shape,polsv.shape)
+                if (App.Vector(polsu[0,0])-App.Vector(polsv[-1,0])).Length<dista:
+                    print ("flip both")
+                    polsv=polsv[::-1]
+                    polsu=polsu[::-1]
 
+                assert (App.Vector(polsu[-1,0]) - App.Vector(polsv[0,0])).Length<dista
+                assert polsu.shape==(ucc,lenedges[0],3)
+                assert polsv.shape==(vcc,lenedges[-1],3)
 
-    def blender(c,t):
-        if abs(c-t)>=1.: rc=0
-        else:
-            rc=(1-min(abs(c-t),1))**0.7
-            rc=(1-min(abs(c-t),1))
-#            rc=abs((t-c-1)*(t-c+1))
-#            rc=abs((t-c-1)*(t-c+1))**0.7
-#        print ("blender c,t",c,t,rc)
-        return rc
+        print ("shapes polsu polsv ",polsu.shape,polsv.shape)
 
-
-    def Xblender(c,t):
-        if abs(c-t)>=1.: rc=0
-        else:
-            rc=  (c+1-t)*(c-1-t)*(-1)
-        print ("blender c,t",c,t,rc)
-        return rc
 
 
     s3tt=np.zeros((3*suc+1)*(3*svc+1)*3).reshape(3*suc+1,3*svc+1,3)
@@ -4796,11 +4942,11 @@ def createGordon(obj,scale=5.0):
 #                print ("ui,vi",ui,vi)
                 for i in range(suc+1):
                     for j in range(svc+1):
-#                        print ("i,j,blender",i,j,blender(j,v),blender(i,u))
-    #                    s3tt[ui,vi] += (polsu[i][3*j]*obj.uWeight+polsv[j][3*i]*obj.vWeight)*blender(i,u)/blender(i,i)*blender(j,v)/blender(j,j)/(obj.uWeight+obj.vWeight)
+#                        print ("i,j,self.blender",i,j,self.blender(j,v),self.blender(i,u))
+    #                    s3tt[ui,vi] += (polsu[i][3*j]*obj.uWeight+polsv[j][3*i]*obj.vWeight)*self.blender(i,u)/self.blender(i,i)*self.blender(j,v)/self.blender(j,j)/(obj.uWeight+obj.vWeight)
     #                    print s3tt[ui,vi]
     #                    print polsu[i][3*j]
-                        s3tt[ui,vi] += (polsu[i][3*j])*blender(i,u)/blender(i,i)*blender(j,v)/blender(j,j)
+                        s3tt[ui,vi] += (polsu[i][3*j])*self.blender(i,u)/self.blender(i,i)*self.blender(j,v)/self.blender(j,j)
 
 
 
@@ -4817,66 +4963,88 @@ def createGordon(obj,scale=5.0):
             tt=App.ActiveDocument.addObject('Part::Spline',name)
         tt.Shape=ag.toShape()
 
-    ptsarr=[]
-    for ui,u in enumerate(uli):
-        pts=np.zeros((3*svc+1)*3).reshape(1,3*svc+1,3)
-        for i in range(suc+1):
-            pts += [polsu[i]*blender(i,u)/blender(i,i)]
-        ptsa=[App.Vector(p) for p in pts[0]]
-        ptsarr += [ptsa]
+        ptsarr=[]
+        for ui,u in enumerate(uli):
+            pts=np.zeros((3*svc+1)*3).reshape(1,3*svc+1,3)
+            for i in range(suc+1):
+                pts += [polsu[i]*self.blender(i,u)/self.blender(i,i)]
+            ptsa=[App.Vector(p) for p in pts[0]]
+            ptsarr += [ptsa]
 
-    ag=Part.BSplineSurface()
-    ag.buildFromPolesMultsKnots(np.array(ptsarr),
-            mu,mv,range(suc+1),range(svc+1),
-            False,False,3,3)
+        ag=Part.BSplineSurface()
+        ag.buildFromPolesMultsKnots(np.array(ptsarr),
+                mu,mv,range(suc+1),range(svc+1),
+                False,False,3,3)
 
-    # swap
-    ag.buildFromPolesMultsKnots(np.array(ptsarr[::-1]).swapaxes(0,1),
-            mv,mu,range(svc+1),range(suc+1),
-            False,False,3,3)
+        # swap
+        ag.buildFromPolesMultsKnots(np.array(ptsarr[::-1]).swapaxes(0,1),
+                mv,mu,range(svc+1),range(suc+1),
+                False,False,3,3)
 
-#    ag.buildFromPolesMultsKnots(np.array(ptsarr[::-1][::-1]),
-#            mu,mv,range(suc+1),range(svc+1),
-#            False,False,3,3)
-
-
-
-#    ag.buildFromPolesMultsKnots(np.array(ptsarr),
-#            mu,mv,range(suc+1),range(svc+1),
-#            False,False,3,3)
+#        ag.buildFromPolesMultsKnots(np.array(ptsarr[::-1][::-1]),
+#                mu,mv,range(suc+1),range(svc+1),
+#                False,False,3,3)
 
 
-    name="gordonU"
-    tt=App.ActiveDocument.getObject(name)
-    if tt==None:
-        tt=App.ActiveDocument.addObject('Part::Spline',name)
-    tt.Shape=ag.toShape()
 
-    ptsarr2=[]
-
-    for vi,v in enumerate(vli):
-        pts=np.zeros((3*suc+1)*3).reshape(1,3*suc+1,3)
-        for i in range(svc+1):
-            pts += [polsv[i]*(blender(i,v)/blender(i,i))]
-        ptsa=[App.Vector(p) for p in pts[0]]
-        ptsarr2 += [ptsa]
-
-    ag=Part.BSplineSurface()
-    ag.buildFromPolesMultsKnots(np.array(ptsarr2),
-            mv,mu,range(svc+1),range(suc+1),
-            False,False,3,3)
-
-    name="gordonV"
-    tt=App.ActiveDocument.getObject(name)
-    if tt==None:
-        tt=App.ActiveDocument.addObject('Part::Spline',name)
-    tt.Shape=ag.toShape()
+#        ag.buildFromPolesMultsKnots(np.array(ptsarr),
+#                mu,mv,range(suc+1),range(svc+1),
+#                False,False,3,3)
 
 
-    if 0:
-        ptsarr3=(np.array(ptsarr) +np.array(ptsarr2).swapaxes(0,1)-s3tt)
+        name="gordonU"
+        tt=App.ActiveDocument.getObject(name)
+        if tt==None:
+            tt=App.ActiveDocument.addObject('Part::Spline',name)
+        tt.Shape=ag.toShape()
 
-    #    ptsarr3=(np.array(ptsarr) +np.array(ptsarr2).swapaxes(0,1))*0.5
+        ptsarr2=[]
+
+        for vi,v in enumerate(vli):
+            pts=np.zeros((3*suc+1)*3).reshape(1,3*suc+1,3)
+            for i in range(svc+1):
+                pts += [polsv[i]*(self.blender(i,v)/self.blender(i,i))]
+            ptsa=[App.Vector(p) for p in pts[0]]
+            ptsarr2 += [ptsa]
+
+        ag=Part.BSplineSurface()
+        ag.buildFromPolesMultsKnots(np.array(ptsarr2),
+                mv,mu,range(svc+1),range(suc+1),
+                False,False,3,3)
+
+        name="gordonV"
+        tt=App.ActiveDocument.getObject(name)
+        if tt==None:
+            tt=App.ActiveDocument.addObject('Part::Spline',name)
+        tt.Shape=ag.toShape()
+
+
+        if 0:
+            ptsarr3=(np.array(ptsarr) +np.array(ptsarr2).swapaxes(0,1)-s3tt)
+
+        #    ptsarr3=(np.array(ptsarr) +np.array(ptsarr2).swapaxes(0,1))*0.5
+
+
+
+            ag=Part.BSplineSurface()
+            ag.buildFromPolesMultsKnots(ptsarr3,
+                    mu,mv,range(suc+1),range(svc+1),
+                    False,False,3,3)
+
+            name="gordon"
+            tt=App.ActiveDocument.getObject(name)
+            if tt==None:
+                tt=App.ActiveDocument.addObject('Part::Spline',name)
+            tt.Shape=ag.toShape()
+
+        ptsarr3=(np.array(ptsarr)*2*obj.uWeight/(obj.uWeight+obj.vWeight) +np.array(ptsarr2).swapaxes(0,1)*2*obj.vWeight/(obj.uWeight+obj.vWeight)-s3tt)
+
+#        ptsarr3=(np.array(ptsarr)*2*obj.uWeight/(obj.uWeight+obj.vWeight) +np.array(ptsarr2).swapaxes(0,1)*2*obj.vWeight/(obj.uWeight+obj.vWeight))
+
+
+        # RANDER ..
+        ptsarr3[0]=polsu[-1]
+        ptsarr3[-1]=polsu[0]
 
 
 
@@ -4885,29 +5053,25 @@ def createGordon(obj,scale=5.0):
                 mu,mv,range(suc+1),range(svc+1),
                 False,False,3,3)
 
-        name="gordon"
-        tt=App.ActiveDocument.getObject(name)
-        if tt==None:
-            tt=App.ActiveDocument.addObject('Part::Spline',name)
-        tt.Shape=ag.toShape()
+        obj.Shape=ag.toShape()
 
-    ptsarr3=(np.array(ptsarr)*2*obj.uWeight/(obj.uWeight+obj.vWeight) +np.array(ptsarr2).swapaxes(0,1)*2*obj.vWeight/(obj.uWeight+obj.vWeight)-s3tt)
-
-#    ptsarr3=(np.array(ptsarr)*2*obj.uWeight/(obj.uWeight+obj.vWeight) +np.array(ptsarr2).swapaxes(0,1)*2*obj.vWeight/(obj.uWeight+obj.vWeight))
-
-
-    # RANDER ..
-    ptsarr3[0]=polsu[-1]
-    ptsarr3[-1]=polsu[0]
+    def blender(self,c,t):
+        if abs(c-t)>=1.: rc=0
+        else:
+            rc=(1-min(abs(c-t),1))**0.7
+            rc=(1-min(abs(c-t),1))
+#            rc=abs((t-c-1)*(t-c+1))
+#            rc=abs((t-c-1)*(t-c+1))**0.7
+#        print ("blender c,t",c,t,rc)
+        return rc
 
 
-
-    ag=Part.BSplineSurface()
-    ag.buildFromPolesMultsKnots(ptsarr3,
-            mu,mv,range(suc+1),range(svc+1),
-            False,False,3,3)
-
-    obj.Shape=ag.toShape()
+    def Xblender(self,c,t):
+        if abs(c-t)>=1.: rc=0
+        else:
+            rc=  (c+1-t)*(c-1-t)*(-1)
+        print ("blender c,t",c,t,rc)
+        return rc
 
 ##\cond
 def aGUI():
@@ -5152,17 +5316,34 @@ def AA():
     pm=np.array(pp['Moments'])
     print (pm/min(pm))
 
-def createTangentHelpersGUI():
-    for obj in Gui.Selection.getSelection():
-        axis2= obj.Shape.PrincipalProperties['FirstAxisOfInertia']
-        print (axis2)
-        axis2 *=80
+class Nurbs_createTangentHelpers:
+    def Activated(self):
+        self.createTangentHelpers()
+        
+    def createTangentHelpersGUI(self):
+        for obj in Gui.Selection.getSelection():
+            axis2= obj.Shape.PrincipalProperties['FirstAxisOfInertia']
+            print (axis2)
+            axis2 *=80
 
-        cp=App.ActiveDocument.copyObject(obj)
-        cp.Placement.Base = -axis2
+            cp=App.ActiveDocument.copyObject(obj)
+            cp.Placement.Base = -axis2
 
-        cp=App.ActiveDocument.copyObject(obj)
-        cp.Placement.Base += axis2
+            cp=App.ActiveDocument.copyObject(obj)
+            cp.Placement.Base += axis2
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createTangentHelpers")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+"alpha.svg",
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createTangentHelpers"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createTangentHelpers", Nurbs_createTangentHelpers())
+
+
 
 ## the polygon of poles, which describe the border of a face
 #
@@ -5240,11 +5421,11 @@ class _VPApprox(ViewProvider):
         except: return [self.Object.Object.Source]
 
 class Nurbs_CreateBorderGUI:
-    def Activated():
+    def Activated(self):
         sel=Gui.Selection.getSelection()
         self.createBorder(sel)
         
-    def createBorder(objs):
+    def createBorder(self,objs):
         for obj in objs:
             tt=App.ActiveDocument.addObject('Part::FeaturePython',"Border")
             Border(tt)

@@ -43,6 +43,8 @@ class Design456_Nurbs_3DDrawingGroup:
         return ('map3Dto2D',
                 'Nurbs_CreateHOLEGUI',
                 'Nurbs_CreateBorderGUI',
+                'Nurbs_createHelmetTubeConnector',
+                'Nurbs_createTangentHelpers',
                 '',
                 '',
                 

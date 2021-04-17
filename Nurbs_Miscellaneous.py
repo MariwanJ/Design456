@@ -51,6 +51,12 @@ class Design456_Nurbs_Miscellaneous:
                  'Nurbs_EventFilter',
                  'Nurbs_CreateGridToFace',
                   'Nurbs_MainScanCut',
+                  'Nurbs_TestCaseBeringTest',
+                  '',
+                  '',
+                  '',
+                  '',
+                  
                 
 
                 )

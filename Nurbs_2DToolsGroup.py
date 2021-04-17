@@ -47,7 +47,18 @@ class Design456_Nurbs_2DToolsGroup:
                 'Nurbs_CurveDistance',
                 'Nurbs_SoleWithBorder',
                 'Nurbs_RemoveKnots',
-
+                'Nurbs_CreateBEplane',
+                'Nurbs_CreateBETube',
+                'Nurbs_createDatumPlane',
+                'Nurbs_createTriangle',
+                'Nurbs_createPlaneTubeConnector',
+                '',
+                '',
+                '',
+                
+                
+                
+                
 
                 )
 
