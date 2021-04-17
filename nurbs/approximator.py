@@ -240,7 +240,7 @@ class PointCloudApprox(FeaturePython):
 def createPointCloudApprox():
     '''methode wird vom Dialog smoothPointcloud aufgerufen'''
 
-    [points, start] = Gui.Selection.getSelectionEx()
+    [points, start] = Gui.Selection.getSelection()
     name = points.Name+"_from_"+start.Name
 
     a = App.ActiveDocument.addObject("Part::FeaturePython", name)
@@ -741,15 +741,32 @@ def _loadCylinderfacefromImageGUI():
     ViewProvider(yy.ViewObject)
 
 
-def _BumpFacefromImageGUI():
+class Nurbs_BumpFacefromImageGUI:
+    def Actiavted(self):
+        self._BumpFacefromImageGUI()
+        
+    def _BumpFacefromImageGUI():
 
-    fn = Design456Init.NURBS_IMAGES_PATH+"profil_for_bump.png"
+        fn = Design456Init.NURBS_IMAGES_PATH+"profil_for_bump.png"
 
-    yy = App.ActiveDocument.addObject("Part::FeaturePython", "ImageSurface")
-    ImagePoints2(yy, mode='face')
-    yy.source = Gui.Selection.getSelectionEx()[0]
-    yy.image = fn
-    ViewProvider(yy.ViewObject)
+        yy = App.ActiveDocument.addObject("Part::FeaturePython", "ImageSurface")
+        ImagePoints2(yy, mode='face')
+        yy.source = Gui.Selection.getSelection()[0]
+        yy.image = fn
+        ViewProvider(yy.ViewObject)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_BumpFacefromImageGUI")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_BumpFacefromImageGUI"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_BumpFacefromImageGUI", Nurbs_BumpFacefromImageGUI())
+
+
 
 
 # -----------------------------------------
@@ -1237,30 +1254,46 @@ class MinLengthBezier(FeaturePython):
         self.executed = False
 
 
-def _minimumLengthBezierGUI():
-    ''' optimale kurve mit zwei Segmenten durch einen Punkt finden'''
+class Nurbs_minimumLengthBezier:
+    def Activated(self):
+        self._minimumLengthBezier()
+    def _minimumLengthBezierGUI(self):
+        ''' optimale kurve mit zwei Segmenten durch einen Punkt finden'''
 
-    for s in Gui.Selection.getSelectionEx():
-        yy = App.ActiveDocument.addObject(
-            "Part::FeaturePython", "MinLenBezier")
-        MinLengthBezier(yy, mode='minimal Lenght')
-        ViewProvider(yy.ViewObject)
+        for s in Gui.Selection.getSelection():
+            yy = App.ActiveDocument.addObject(
+                "Part::FeaturePython", "MinLenBezier")
+            MinLengthBezier(yy, mode='minimal Lenght')
+            ViewProvider(yy.ViewObject)
 
-        yy.path = s
-        # yy._noExecute=True
-        yy._debug = False
-        yy.alphaStart = 15
-        yy.alphaEnd = 14
-        yy.factor = 50
+            yy.path = s
+            # yy._noExecute=True
+            yy._debug = False
+            yy.alphaStart = 15
+            yy.alphaEnd = 14
+            yy.factor = 50
 
-        yy.ViewObject.LineColor = (.3, 1., 0.0)
-        yy.ViewObject.ShapeColor = (1., 0., 0.)
+            yy.ViewObject.LineColor = (.3, 1., 0.0)
+            yy.ViewObject.ShapeColor = (1., 0., 0.)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_minimumLengthBezier")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_minimumLengthBezier"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_minimumLengthBezier", Nurbs_minimumLengthBezier())
+
+
 
 
 def _createMyMinAGUI():
     ''' myMinA-Object erzeugen'''
 
-    ss = Gui.Selection.getSelectionEx()
+    ss = Gui.Selection.getSelection()
     if len(ss) == 0:
         s = App.ActiveDocument.addObject(
             'Sketcher::SketchObject', 'Sketch_forMyMinA')
@@ -1286,7 +1319,7 @@ def _createMyMinAGUI():
 def _createMyMinSoftGUI():
     ''' myMinSoft-Object erzeugen'''
 
-    for s in Gui.Selection.getSelectionEx():
+    for s in Gui.Selection.getSelection():
         yy = App.ActiveDocument.addObject("Part::FeaturePython", "MyMinSoft")
         MinLengthBezier(yy, mode='myMinSoft', method='Nelder-Mead')
         ViewProvider(yy.ViewObject)
@@ -1487,26 +1520,42 @@ class ConstantCurvatureBezier(FeaturePython):
         if fp._noExecute: return
         self.onChanged(fp, "_execute")
 
+class Nurbs_nearconstantCurvatureBezier:
+    def Activated(self):
+        self._nearconstantCurvatureBezier()
+    def _nearconstantCurvatureBezierGUI(self):
+        ''' optimale kurve mit minimaler kruemmungs aenderung'''
 
-def _nearconstantCurvatureBezierGUI():
-    ''' optimale kurve mit minimaler kruemmungs aenderung'''
+        for s in Gui.Selection.getSelection():
+            yy = App.ActiveDocument.addObject(
+                "Part::FeaturePython", "nearConstantCurvatureBezier")
+            ConstantCurvatureBezier(yy)
+            ViewProvider(yy.ViewObject)
+            yy
+        #    yy.start=3
+        #    yy.end=4
+            yy._debug = False
+            yy.path = s
+            yy.ViewObject.LineColor = (1.0, 0.3, 1.0)
 
-    for s in Gui.Selection.getSelectionEx():
-        yy = App.ActiveDocument.addObject(
-            "Part::FeaturePython", "nearConstantCurvatureBezier")
-        ConstantCurvatureBezier(yy)
-        ViewProvider(yy.ViewObject)
-        yy
-    #    yy.start=3
-    #    yy.end=4
-        yy._debug = False
-        yy.path = s
-        yy.ViewObject.LineColor = (1.0, 0.3, 1.0)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_nearconstantCurvatureBezier")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_nearconstantCurvatureBezier"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_nearconstantCurvatureBezier", Nurbs_nearconstantCurvatureBezier())
+
+
+
 
 
 def deactivateExecution():
     ''' the execute method for the selection is deactivated'''
-    for s in Gui.Selection.getSelectionEx():
+    for s in Gui.Selection.getSelection():
         try:
             s._noExecute = True
         except:
@@ -1515,7 +1564,7 @@ def deactivateExecution():
 
 def activateExecution():
     ''' the execute method for the selection is activated'''
-    for s in Gui.Selection.getSelectionEx():
+    for s in Gui.Selection.getSelection():
         try:
             s._noExecute = False
         except:
@@ -1584,7 +1633,7 @@ def myMinA(pts):
 def runMyMinA(fp, pts):
 
 
-#    for s in Gui.Selection.getSelectionEx():
+#    for s in Gui.Selection.getSelection():
 #        pts=[v.Point for v in s.Shape.Wires[0].Vertexes]
         s = fp
 
@@ -1814,14 +1863,27 @@ class PolesFrame(FeaturePython):
         self.onChanged(obj, "ribs")
         pass
 
+class Nurbs_createBezierPolesFramefromribsGUI:
+    def Actiavated(self):
+        self._createBezierPolesFramefromribsGUI()
+    def _createBezierPolesFramefromribsGUI(slef):
+        '''create a poles grid for a list of bezier curves'''
+        yy = App.ActiveDocument.addObject("Part::FeaturePython", "PolesFrame")
+        ViewProvider(yy.ViewObject)
+        PolesFrame(yy)
+        yy.ribs = Gui.Selection.getSelection()
 
-def _createBezierPolesFramefromribsGUI():
-    '''create a poles grid for a list of bezier curves'''
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createBezierPolesFramefromribsGUI")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createBezierPolesFramefromribsGUI"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    yy = App.ActiveDocument.addObject("Part::FeaturePython", "PolesFrame")
-    ViewProvider(yy.ViewObject)
-    PolesFrame(yy)
-    yy.ribs = Gui.Selection.getSelectionEx()
+Gui.addCommand("Nurbs_createBezierPolesFramefromribsGUI", Nurbs_createBezierPolesFramefromribsGUI())
+
 
 
 # ---------------------
@@ -1830,7 +1892,7 @@ def swapCurves(sel=None, mode='polygons', extraknots=None):
     ''' polefeld in andrere richtung aufziehen'''
 
     if sel == None:
-        sel = Gui.Selection.getSelectionEx()
+        sel = Gui.Selection.getSelection()
     polar = []
     xtras = []
     print("Control points ...")
@@ -1866,13 +1928,13 @@ def curvestoFace(polsarr=None, mode="Bezier Face"):
 
     if polsarr == None:
         polsarr = []
-        cc = Gui.Selection.getSelectionEx()[0]
+        cc = Gui.Selection.getSelection()[0]
         try:
             for l in cc.Links:
                 pols = l.Shape.Edge1.Curve.getPoles()
                 polsarr += [pols]
         except:
-            for l in Gui.Selection.getSelectionEx():
+            for l in Gui.Selection.getSelection():
                 pols = l.Shape.Edge1.Curve.getPoles()
                 polsarr += [pols]
 
@@ -1914,30 +1976,44 @@ def A():
     for obj in rc:
         obj.stripmode = True
 
+class Nurbs_DontKnowWhatThisDo_B:
+    def Activated(self):
+        self.B()
+    def B(self):
+        for l in Gui.Selection.getSelection():
+        #    pols=l.Shape.Edge1.Curve.getPoles()
+            pols = [v.Point for v in l.Shape.Wires[0].Vertexes]
 
-def B():
-    for l in Gui.Selection.getSelectionEx():
-    #    pols=l.Shape.Edge1.Curve.getPoles()
-        pols = [v.Point for v in l.Shape.Wires[0].Vertexes]
+            polsn = [pols[0]]
+            kf = 30
+            for i, p in enumerate(pols[1:-1]):
+                t = (pols[i+2]-pols[i]).normalize()*kf
+                if i == 0:
+                    polsn += [p-t]
+                polsn += [p-t, p, p+t]
 
-        polsn = [pols[0]]
-        kf = 30
-        for i, p in enumerate(pols[1:-1]):
-            t = (pols[i+2]-pols[i]).normalize()*kf
-            if i == 0:
-                polsn += [p-t]
-            polsn += [p-t, p, p+t]
+            polsn += [p+t, pols[-1]]
+    #        Part.show(Part.makePolygon(polsn))
+    #        print polsn
 
-        polsn += [p+t, pols[-1]]
-#        Part.show(Part.makePolygon(polsn))
-#        print polsn
+            bc = Part.BSplineCurve()
+            n = (len(polsn)-4)/3
+            ms = [4]+[3]*n+[4]
 
-        bc = Part.BSplineCurve()
-        n = (len(polsn)-4)/3
-        ms = [4]+[3]*n+[4]
+            bc.buildFromPolesMultsKnots(polsn, ms, range(len(ms)), False, 3)
+            Part.show(bc.toShape())
 
-        bc.buildFromPolesMultsKnots(polsn, ms, range(len(ms)), False, 3)
-        Part.show(bc.toShape())
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_DontKnowWhatThisDo_B")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DontKnowWhatThisDo_B"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_DontKnowWhatThisDo_B", Nurbs_DontKnowWhatThisDo_B())
+
 
 
 #
@@ -2074,7 +2150,7 @@ def RibstoFace():
 
     yy = App.ActiveDocument.addObject("Part::FeaturePython", "RibFace")
     Ribface(yy)
-    yy.ribs = Gui.Selection.getSelectionEx()
+    yy.ribs = Gui.Selection.getSelection()
     ViewProvider(yy.ViewObject)
     yy.ViewObject.ShapeColor = (.6, .6, 1.)
 

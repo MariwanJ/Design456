@@ -52,9 +52,9 @@ class Design456_Nurbs_2DToolsGroup:
                 'Nurbs_createDatumPlane',
                 'Nurbs_createTriangle',
                 'Nurbs_createPlaneTubeConnector',
-                '',
-                '',
-                '',
+                'Nurbs_createGordon',
+                'Nurbs_BSplineToBezierCurve1',
+                'Nurbs_BSplineToBezierCurve2',
                 
                 
                 
