@@ -519,11 +519,23 @@ class ControlPanel(PartFeature):
 # this is still not a useful method
 
 
-def ThousandsOfRunWhatShouldIdo():
+class Nurbs_CreateGenericPanel:
     '''create a generic panel without data'''
+    def Activated(self):
+        a = App.ActiveDocument.addObject("Part::FeaturePython", "MyMonitor")
+        ControlPanel(a)
 
-    a = App.ActiveDocument.addObject("Part::FeaturePython", "MyMonitor")
-    ControlPanel(a)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateGenericPanel")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateGenericPanel"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateGenericPanel", Nurbs_CreateGenericPanel())
+
 
 
 # \cond

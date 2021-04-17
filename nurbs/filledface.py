@@ -26,13 +26,13 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 # -*- coding: utf-8 -*-
-#-------------------------------------------------
-#-- create a parametric filled face
-#--
-#-- microelly 2017 v 0.2
-#--
-#-- GNU Lesser General Public License (LGPL)
-#-------------------------------------------------
+# -------------------------------------------------
+# -- create a parametric filled face
+# --
+# -- microelly 2017 v 0.2
+# --
+# -- GNU Lesser General Public License (LGPL)
+# -------------------------------------------------
 '''a parametric filled face object based on 3 edges
 the edges can be separate object but edges of complex shapes too
 the numbers n1, n2, n3 defines the edge number of the underlying shape
@@ -42,7 +42,7 @@ the numbers n1, n2, n3 defines the edge number of the underlying shape
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-
+import Draft
 import Part
 
 
@@ -122,46 +122,51 @@ class FilledFace(PartFeature):
         createShape(obj)
 
 
-def createFilledFace(name="MyFilledFace"):
-    '''create a FilledFace object'''
-
-    ffobj = App.ActiveDocument.addObject(
-        "Part::FeaturePython", name)
-    FilledFace(ffobj)
-    return ffobj
-
-
-def ThousandsOfMainFunction():
-
-    b = App.ActiveDocument.addObject(
-        "Part::FeaturePython", "MyFilledFace")
-    FilledFace(b)
-    '''
-    b.e1 = App.ActiveDocument.Sketch
-    b.e2 = App.ActiveDocument.Sketch001
-    b.e3 = App.ActiveDocument.Sketch002
-    b.n1 = 1
-    b.n2 = 1
-    b.n3 = 1
-    createShape(b)
-    b.ViewObject.Transparency = 60
-    '''
+class Nurbs_CreateFiledFace:
+    def Activated(self):
+        b = App.ActiveDocument.addObject("Part::FeaturePython", "MyFilledFace")
+        FilledFace(b)
+        '''
+        b.e1 = App.ActiveDocument.Sketch
+        b.e2 = App.ActiveDocument.Sketch001
+        b.e3 = App.ActiveDocument.Sketch002
+        b.n1 = 1
+        b.n2 = 1
+        b.n3 = 1
+        createShape(b)
+        b.ViewObject.Transparency = 60
+        '''
 
 
-#if 1:
+        pts = [App.Vector(p)
+               for p in [(0, 0, 0), (100, 0, 0), (300, 200, 100)]]
+        w1 = Draft.makeBSpline(pts)
 
-    import Draft
+        pts = [App.Vector(p)
+               for p in [(0, 0, 0), (100, 200, 0), (300, 200, 100)]]
+        w2 = Draft.makeBSpline(pts)
 
-    pts=[App.Vector(p) for p in [(0,0,0),(100,0,0),(300,200,100)]]
-    w1=Draft.makeBSpline(pts)
+        ff = self.createFilledFace()
+        ff.e1 = w1
+        ff.e2 = w2
+        App.ActiveDocument.recompute()
 
-    pts=[App.Vector(p) for p in [(0,0,0),(100,200,0),(300,200,100)]]
-    w2=Draft.makeBSpline(pts)
+    def createFilledFace(self, name="MyFilledFace"):
+        '''create a FilledFace object'''
 
-    filledface
-    from .filledface import createFilledFace
+        ffobj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", name)
+        FilledFace(ffobj)
+        return ffobj
 
-    ff=createFilledFace()
-    ff.e1=w1
-    ff.e2=w2
-    App.ActiveDocument.recompute()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateFiledFace")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateFiledFace"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+
+Gui.addCommand("Nurbs_CreateFiledFace", Nurbs_CreateFiledFace())

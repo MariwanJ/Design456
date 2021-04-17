@@ -1286,7 +1286,7 @@ class Nurbs_FixCorner:
         if len(sel)!=3:
             # 3 edges must be selected
             errMessage = "Select 3 edges to use the tool"
-            faced.getInfo(s).errorDialog(errMessage)
+            faced.getInfo(sel).errorDialog(errMessage)
             return
         (a,b,c)=Gui.Selection.getSelection()
         _fixCorner(a,b,c)
@@ -2112,14 +2112,11 @@ class Nurbs_CreateBeGrid:
         '''create BeGrids for the selected objects'''
         sf=None
         for  fa in Gui.Selection.getSelection():
-
             sf=App.ActiveDocument.addObject('Part::FeaturePython','BeGrid')
             sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
             BeGrid(sf)
-
             ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createBeGrid.svg')
             sf.Source=fa
-
             App.ActiveDocument.recompute()
         return sf
 
@@ -4324,7 +4321,6 @@ class Nurbs_Stretchandbend:
         
     def stretchandbend(self):
         #  transformation berechnen
-
 
         pass2=False
         pass2=0

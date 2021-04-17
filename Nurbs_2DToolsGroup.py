@@ -59,8 +59,8 @@ class Design456_Nurbs_2DToolsGroup:
                 'Nurbs_creategeodesicbunch',
                 'Nurbs_CreateShoeMarkers',
                 'Nurbs_runPatternV3',
-                '',
-                '',
+                'Nurbs_CreateGenericPanel',
+                'Nurbs_CreateFiledFace',
                 
                 
                 

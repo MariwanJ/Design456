@@ -472,7 +472,6 @@ class Nurbs_CreateTripodSketch:
         self.createTripodSketch()
     def createTripodSketch(self): #sketcher
         '''creae a tripod sketch'''
-
         ss=Gui.Selection.getSelection()
         if len(ss) != 0:
             for s in ss:
