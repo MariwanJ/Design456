@@ -76,7 +76,11 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_CreateSinglePattern',
                 'Nurbs_CreateSweep',
                 'Nurbs_CreatePatternV2',
+                'Nurbs_CreateTripod',
+                'Nurbs_CreateTripodSketch',
                 '',
+                '',
+                
                 
                 
                 

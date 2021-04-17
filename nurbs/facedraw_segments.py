@@ -781,6 +781,7 @@ def genbuffer(pts, colors=None):
     return buff
 
 
+
 # create a vrml indexed color path as an inventor object
 
 def drawColorpath(pts, colors, colorB=None, name='ColorPath'):
@@ -823,7 +824,7 @@ class Nurbs_EventFilter:
 
             Gui.Selection.clearSelection()
 
-            isodraw
+            import isodraw
             print(fob, fob.Label)
             [uv2x, uv2y, xy2u, xy2v] = isodraw.getmap(fob, fob.faceObject)
             print([uv2x, uv2y, xy2u, xy2v])
@@ -877,7 +878,7 @@ Gui.addCommand('Nurbs_EventFilter', Nurbs_EventFilter())
 class Nurbs_CreateGridToFace:
     '''create the 2D or 3D grid for the first face of a selected object'''
 
-    def __init__(self, ):
+    def __init__(self, name):
         self.name = "Design456Grid"
 
     def Activated(self):
