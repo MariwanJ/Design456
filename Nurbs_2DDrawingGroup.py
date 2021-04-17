@@ -71,11 +71,11 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_BSplineToBezierSurface',
                 'Nurbs_FaceToBezierSurface',
                 'Nurbs_createApprox',
-                '',
-                '',
-                '',
-                '',
-                '',
+                'Nurbs_CreateBtimap',
+                'Nurbs_CreateShoeRib',
+                'Nurbs_CreateSinglePattern',
+                'Nurbs_CreateSweep',
+                'Nurbs_CreatePatternV2',
                 '',
                 
                 
