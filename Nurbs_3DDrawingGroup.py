@@ -40,7 +40,14 @@ class Design456_Nurbs_3DDrawingGroup:
 
     def GetCommands(self):
         """3D Drawing"""
-        return ("map3Dto2D",
+        return ('map3Dto2D',
+                'Nurbs_CreateHOLEGUI',
+                'Nurbs_CreateBorderGUI',
+                '',
+                '',
+                
+                
+                
                 
 
                 )

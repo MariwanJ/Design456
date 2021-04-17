@@ -39,7 +39,11 @@ class Design456_Nurbs_3DToolsGroup:
 
     def GetCommands(self):
         """3D Drawing"""
-        return ("Nurbs_extractWires",
+        return ('Nurbs_extractWires',
+                'Nurbs_CreateQuadPlacement',
+                '',
+                '',
+                
                 
 
                 )

@@ -58,7 +58,30 @@ class Design456_Nurbs_2DDrawingGroup:
                 'Nurbs_WeightEditor',
                 'commandCreateHelmet',
                 'Nurbs_createMorpher',
-
+                'Nurbs_CreateBeFaceFromSelBering',
+                'Nurbs_FlattenTheWire',
+                'Nurbs_CreateSketchCircle',
+                'Nurbs_SurfaceEditor',
+                'Nurbs_CreateBeGrid',
+                'Nurbs_SplitInToCells',
+                'Nurbs_CreateCELL',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                
+                
+                
+                
+                
                 )
     def GetResources(self):
         import Design456Init
