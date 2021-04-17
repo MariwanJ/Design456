@@ -41,8 +41,8 @@ class Design456_Nurbs_3DToolsGroup:
         """3D Drawing"""
         return ('Nurbs_extractWires',
                 'Nurbs_CreateQuadPlacement',
-                '',
-                '',
+                'Nurbs_Stretchandbend',
+                'Nurbs_FixCorner',
                 
                 
 

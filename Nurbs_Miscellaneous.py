@@ -40,24 +40,30 @@ class Design456_Nurbs_Miscellaneous:
     def GetCommands(self):
         """3D Drawing"""
         return (                #from cmd3 defined in his wb as "Workspaces and Views"
-                 'Nurbs_CreateWorkspace',
-                 'Nurbs_CreateWSLink',
-                 'Nurbs_CreateQuadview',
-                 'Nurbs_CreateH2',
-                 'Nurbs_CreateDarkRoom',
-                 'Nurbs_LightON',
-                 'Nurbs_LightOFF',
-                 'madeByMeDontKnowWhatItDo',
-                 'Nurbs_EventFilter',
-                 'Nurbs_CreateGridToFace',
-                  'Nurbs_MainScanCut',
-                  'Nurbs_TestCaseBeringTest',
-                  '',
-                  '',
-                  '',
-                  '',
-                  
-                
+                'Nurbs_CreateWorkspace',
+                'Nurbs_CreateWSLink',
+                'Nurbs_CreateQuadview',
+                'Nurbs_CreateH2',
+                'Nurbs_CreateDarkRoom',
+                'Nurbs_LightON',
+                'Nurbs_LightOFF',
+                'madeByMeDontKnowWhatItDo',
+                'Nurbs_EventFilter',
+                'Nurbs_CreateGridToFace',
+                'Nurbs_MainScanCut',
+                'Nurbs_TestCaseBeringTest',
+                'Nurbs_polishG1GUI',
+                'Nurbs_FixCorner',
+                'Nurbs_createTangentStripes',
+                'Nurbs_CreateSheelANDsolid',
+                'Nurbs_minimumLengthBezier',
+                'Nurbs_nearconstantCurvatureBezier',
+                'Nurbs_DontKnowWhatThisDo_B',
+                'Nurbs_BumpFacefromImageGUI',
+                'Nurbs_createBezierPolesFramefromribsGUI',
+                '',
+                '',
+                '',
 
                 )
 
