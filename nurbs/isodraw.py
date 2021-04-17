@@ -630,7 +630,7 @@ createMap.__doc__ = """createMap: Tobe added later     """
 
 
 class createGrid:
-    def __init_(self, mapobj,upmode=False):
+    def __init__(self, mapobj,upmode=False):
         self.mapobj=mapobj
         self.upmode= upmode
 

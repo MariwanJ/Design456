@@ -56,6 +56,11 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Part
 ##\cond
+try:
+    import numpy as np 
+except ImportError:
+    print ("Please install the required module : numpy")
+import time
 
 
 class _ViewProvider(pyob.ViewProvider):
@@ -90,10 +95,6 @@ class OffsetSpline(pyob.FeaturePython):
         '''run myExecute for property prop: "ofin" and "ofout"'''
         if prop not in ["ofin","ofout"]: return 
         proxy.myExecute(obj)
-
-
-
-
 
     def myExecute(proxy,obj):
         ''' creates a closed BSpline that interpolates the vertexes chain of the sketch
@@ -132,7 +133,6 @@ class OffsetSpline(pyob.FeaturePython):
             ofsi.ViewObject.LineColor=(1.0,0.0,.0)
             ofsi.Value = -obj.ofin
             ofsi.recompute()
-
 
 ##\cond
     def execute(self, obj):
@@ -179,10 +179,7 @@ class Ufo(pyob.FeaturePython):
 
 
 
-
-
 #----------------------
-
 
 def runOffsetSpline(name="MyOffSp"):
     '''run(name="Sole with borders"): a demo skript
@@ -190,9 +187,6 @@ def runOffsetSpline(name="MyOffSp"):
         the border distances for the offset curves to 10
         @ Author anton
     '''
-
-
-
     obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
     obj.addProperty("App::PropertyInteger", "ofin", "Base", "end").ofin=10
     obj.addProperty("App::PropertyInteger", "ofout", "Base", "end").ofout=10
@@ -212,13 +206,6 @@ def runOffsetSpline(name="MyOffSp"):
 #
 
 
-import os
-
-try:
-    import numpy as np 
-except ImportError:
-    print ("Please install the required module : numpy")
-    
 
 # finde Kanten
 
@@ -249,7 +236,6 @@ def dirs(obj,vn):
 #rc=dirs(obj,2)
 
 #print (rc)
-import time
 
 ## A (topological) 2D tree with special connecting methods to combine trees to larger tree
 
@@ -301,8 +287,6 @@ class Star(pyob.FeaturePython):
             pos=App.Placement(obj.parent.Shape.Vertexes[obj.VertexNumber-1].Point,App.Rotation())
 
         obj.Placement=pos.multiply(relpos)
-
-
 ##\cond
     def execute(self, obj):
         ''' recompute sketch and than run postprocess: myExecute'''
@@ -320,8 +304,6 @@ class SoleWithBorders:
         '''runStar(name="Sole with borders"): 
             creates a Star/Tree with 5 lines (3 leafs)
         '''
-
-
         obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython",name)
         obj.addProperty("App::PropertyInteger", "VertexNumber", "Parent", ).VertexNumber=0
         obj.addProperty("App::PropertyInteger", "tangentCond", "Parent", )
@@ -370,7 +352,6 @@ class SoleWithBorders:
         
         obj.VertexNumber=3
         #obj.parent=App.ActiveDocument.getObject('MyStar')
-
         return obj
 
 

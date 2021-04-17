@@ -825,96 +825,98 @@ def dialog(source=None):
 
 
 
+# start the eventserver
+class Nurbs_CulpterEventStarter:
+    def Activated(self):
+        try: 
+            self.stop()
+        except: pass
+        self.start()
+# stop the eventserver
 
+    def stop(self):
+        ''' stop eventserver'''
+        mw=QtGui.qApp
+        ef=App.eventfilter
+        mw.removeEventFilter(ef)
+        ef.keyPressed2=False
+        ef.dialog.app.resetEdit()
+        # ef.dialog.hide()
 
 # create and initialize the event filter
 
-def start():
-    '''create and initialize the event filter'''
+    def start(self):
+        '''create and initialize the event filter'''
 
-    ef=EventFilter()
-    ef.mouseWheel=0
+        ef=EventFilter()
+        ef.mouseWheel=0
 
-    ef.subelement='SUBELE'
-    ef.mode='up'
-    ef.pc=App.ActiveDocument.MyGrid
-    ef.mm=App.ActiveDocument.MyGrid_M
-    ef.nu=App.ActiveDocument.MyGrid_N
-    ef.objname=ef.pc.Name
+        ef.subelement='SUBELE'
+        ef.mode='up'
+        ef.pc=App.ActiveDocument.MyGrid
+        ef.mm=App.ActiveDocument.MyGrid_M
+        ef.nu=App.ActiveDocument.MyGrid_N
+        ef.objname=ef.pc.Name
+        '''
+        try:
+                sel=Gui.Selection.getSelectionEx()
+                fob=sel[0]
+                s=Gui.Selection.getSelectionEx()
+                print s,s[0].SubObjects
 
-    '''
-    try:
-            sel=Gui.Selection.getSelectionEx()
-            fob=sel[0]
-            s=Gui.Selection.getSelectionEx()
-            print s,s[0].SubObjects
+                if len(s[0].SubObjects)>0:
+                    ef.subobj=s[0].SubObjects[0]
+                    ef.objname=s[0].Object.Name
+                    ef.subelement=s[0].SubElementNames[0]
+                else:
+                    ef.subobj=fob.Shape.Face1
+                    ef.objname=fob.Name
+                    ef.subelement="Face1"
 
-            if len(s[0].SubObjects)>0:
-                ef.subobj=s[0].SubObjects[0]
-                ef.objname=s[0].Object.Name
-                ef.subelement=s[0].SubElementNames[0]
-            else:
-                ef.subobj=fob.Shape.Face1
-                ef.objname=fob.Name
-                ef.subelement="Face1"
+                if ef.subobj.Surface.__class__.__name__ == 'BSplineSurface':
+                    ef.rc=createRibCage(ef.subobj.Surface)
 
-            if ef.subobj.Surface.__class__.__name__ == 'BSplineSurface':
-                ef.rc=createRibCage(ef.subobj.Surface)
+                ef.stack=[fob.ViewObject.Visibility,fob.ViewObject.Transparency,fob.ViewObject.Selectable]
+                ef.fob=fob
 
-            ef.stack=[fob.ViewObject.Visibility,fob.ViewObject.Transparency,fob.ViewObject.Selectable]
-            ef.fob=fob
+                fob.ViewObject.Visibility=True
+                fob.ViewObject.Transparency=70
+                fob.ViewObject.Selectable=False
 
-            fob.ViewObject.Visibility=True
-            fob.ViewObject.Transparency=70
-            fob.ViewObject.Selectable=False
+                Gui.Selection.clearSelection()
 
-            Gui.Selection.clearSelection()
+        except:
+            sayexc2("no surface selected",
+                    "Select first a face you want to draw on it")
+            return
+        '''
 
-    except:
-        sayexc2("no surface selected",
-                "Select first a face you want to draw on it")
-        return
-    '''
+        App.eventfilter=ef
 
-    App.eventfilter=ef
+        mw=QtGui.qApp
+        mw.installEventFilter(ef)
+        ef.keyPressed2=False
 
-    mw=QtGui.qApp
-    mw.installEventFilter(ef)
-    ef.keyPressed2=False
-
-    # ef.dialog=dialog()
-    ef.dialog=mydialog(None)
-
-
-    ef.dialog.ef=ef
-    ef.r=2
-    ef.h=2
-#    ef.dialog.show()
+        # ef.dialog=dialog()
+        ef.dialog=mydialog(None)
 
 
+        ef.dialog.ef=ef
+        ef.r=2
+        ef.h=2
+    #    ef.dialog.show()
 
-# stop the eventserver
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CulpterEventStarter"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-def stop():
-    ''' stop eventserver'''
+Gui.addCommand("Nurbs_CulpterEventStarter", Nurbs_CulpterEventStarter())
 
-    mw=QtGui.qApp
-    ef=App.eventfilter
-    mw.removeEventFilter(ef)
-    ef.keyPressed2=False
-    ef.dialog.app.resetEdit()
-    # ef.dialog.hide()
-
-
-
-# start the eventserver
-
-def ThousandsOfRunWhatShouldIdo():
-    '''start the facedraw dialog and eventmanager'''
-
-    try: stop()
-    except: pass
-    start()
 
 
 

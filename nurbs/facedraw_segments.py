@@ -1001,10 +1001,9 @@ class madeByMeDontKnowWhatItDo:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'draw.svg',
+            'Pixmap': Design456Init.NURBS_ICON_PATH + 'draw.svg',
             'MenuText': 'madeByMeDontKnowWhatItDo',
                         'ToolTip':  'madeByMeDontKnowWhatItDo'
         }
-
 
 Gui.addCommand('madeByMeDontKnowWhatItDo', madeByMeDontKnowWhatItDo())
