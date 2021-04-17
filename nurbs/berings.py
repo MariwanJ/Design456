@@ -1283,7 +1283,7 @@ class Nurbs_FixCorner:
 #
     def fixCorner(self):
         sel=Gui.Selection.getSelection()
-        if(len(sel!=3))
+        if len(sel)!=3:
             # 3 edges must be selected
             errMessage = "Select 3 edges to use the tool"
             faced.getInfo(s).errorDialog(errMessage)
@@ -1944,7 +1944,7 @@ class FaceConnection(FeaturePython):
         fp.Shape=Part.Compound(shapes)
 
 
-class Nurbs_CreateSeam()
+class Nurbs_CreateSeam:
     def Activated(self):
         self.createSeam()
         
@@ -2501,544 +2501,544 @@ Gui.addCommand("Nurbs_BSplineToBezierSurface", Nurbs_BSplineToBezierSurface())
 # Gui.addCommand("Nurbs_SurfaceEditor", Nurbs_SurfaceEditor())
 
 
+#TODO: THIS FILE CONTAIN MANY LINES THAT ARE NOT UNDERSTANDABLE. CANNOT RUN.
 
+#     def edit(u,v,s=10):
 
-    def edit(u,v,s=10):
+#         print ("u,v,scale",u,v,s)
+#         #fp=App.ActiveDocument.Seam_ProductFace001
+#         App.ActiveDocument.recompute()
 
-        print ("u,v,scale",u,v,s)
-        #fp=App.ActiveDocument.Seam_ProductFace001
-        App.ActiveDocument.recompute()
 
 
+#     class EditorApp(MikiApp):
 
-    class EditorApp(MikiApp):
+#         def resetDialog(self):
+#             for idx in  'udial','vdial','ndial','scale','xdial','ydial','zdial','xrot','yrot','zrot':
+#                 if self.root.ids[idx].value()!=0:
+#                     self.root.ids[idx].setValue(0)
 
-        def resetDialog(self):
-            for idx in  'udial','vdial','ndial','scale','xdial','ydial','zdial','xrot','yrot','zrot':
-                if self.root.ids[idx].value()!=0:
-                    self.root.ids[idx].setValue(0)
+#         def connectSelection(self):
 
-        def connectSelection(self):
+#             fp=self.obj
+#             obj=App.ActiveDocument.getObject('temp_YY1')
+#             if obj == None:
+#                 obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
+#             bs=fp.Shape.Face1.Surface
+#             vec=Gui.Selection.getSelection()[0].PickedPoints[0]
 
-            fp=self.obj
-            obj=App.ActiveDocument.getObject('temp_YY1')
-            if obj == None:
-                obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
-            bs=fp.Shape.Face1.Surface
-            vec=Gui.Selection.getSelection()[0].PickedPoints[0]
+#             upn=int(self.root.ids['ux'].text())
+#             vpn=int(self.root.ids['vx'].text())
+#             poles=bs.getPoles()
 
-            upn=int(self.root.ids['ux'].text())
-            vpn=int(self.root.ids['vx'].text())
-            poles=bs.getPoles()
+#             uct,vct,_=np.array(poles).shape
+#             print ("XXXXXXXXXXXXXXXXXXXXXX   vec",vec)
+#             print(upn,vpn)
 
-            uct,vct,_=np.array(poles).shape
-            print ("XXXXXXXXXXXXXXXXXXXXXX   vec",vec)
-            print(upn,vpn)
+#             center=poles[upn*3][vpn*3]
+#             poles=np.array(poles)
 
-            center=poles[upn*3][vpn*3]
-            poles=np.array(poles)
+#             center=poles[upn*3][vpn*3]
+#             poles=np.array(poles)
 
-            center=poles[upn*3][vpn*3]
-            poles=np.array(poles)
+#             startu=max(0,upn*3-1)
+#             endu=min(upn*3+2,uct)
 
-            startu=max(0,upn*3-1)
-            endu=min(upn*3+2,uct)
-
-            startv=max(0,vpn*3-1)
-            endv=min(vpn*3+2,vct)
-            print ("startu,endu",startu,endu)
-            print ("startv,endv",startv,endv)
-
-
-            ttp=poles[startu:endu,startv:endv] - center
-            ttp += vec
-
-            poles[startu:endu,startv:endv]=ttp
-
-            ss=Part.Sphere()
-            ss.Radius=10
-            s=ss.toShape()
-            s.Placement.Base=poles[upn*3][vpn*3]
-
-            bs2=Part.BSplineSurface()
-            bs2.buildFromPolesMultsKnots(poles,
-                bs.getUMultiplicities(),
-                bs.getVMultiplicities(),
-                bs.getUKnots(),
-                bs.getVKnots(),
-                False,False,3,3)
-
-            comps=begrid(bs2,
-                self.root.ids['showcurves'].isChecked(),
-                self.root.ids['showtangents'].isChecked()
-                )
-
-
-
-            if self.root.ids['showface'].isChecked():
-                comps += [bs2.toShape()]
-            self.Shape=bs2.toShape()
-            # comps += [s]
-            obj.Shape=Part.Compound(comps)
-            #obj.Shape=Part.Compound(comps+ [s])
-
-            #obj=App.ActiveDocument.addObject('Part::Spline','YY_'+fp.Name)
-#            obj.Shape=bs.toShape()
-
-            obj2=App.ActiveDocument.getObject('temp_YY2')
-
-            if obj2 == None:
-                obj2=App.ActiveDocument.addObject('Part::Spline','temp_YY2')
-                obj2.ViewObject.ShapeColor=(1.0,0.,0.)
-                obj2.ViewObject.LineColor=(0.3,0.3,1.)
-                obj2.ViewObject.LineWidth=10
-
-            self.NameObj2=obj2.Name
-
-            comps=begrid(bs2,False,True)
-            try:
-                bs3=bs2.copy()
-                bs3segment(upn-1,upn+1,vpn-1,vpn+1)
-            except:
-                pass
-
-            obj2.Shape=Part.Compound(comps+[s] + [bs3.toShape()])
-            print ("KUGELLLLLLLLLLLLLLLLL")
-            print (s)
-
-
-            App.ActiveDocument.recompute()
-
-        def save(self):
-            tt=time.time()
-            try: obj=self.resultobj
-            except:
-                obj=App.ActiveDocument.addObject('Part::Spline','result')
-                try:
-                    App.ActiveDocument.removeObject(self.NameObj2)
-                except:
-                    pass
-                try:
-                    App.ActiveDocument.removeObject(self.NameObj)
-                except:
-                    pass
-#            print ("savet ",time.time()-tt
-
-            tt=time.time()
-            obj.ViewObject.hide()
-            obj.Shape=self.Shape
-            print ("savetime hidden ",time.time()-tt)
-            tt=time.time()
-            obj.ViewObject.show()
-            obj.Shape=self.Shape
-            print ("savetime show ",time.time()-tt)
-
-            tt=time.time()
-            z=self.Shape
-            z=self.Shape
-            print ("savetime intern ",time.time()-tt)
-
-            self.obj=obj
-            self.resultobj=obj
-#            print ("savetb ",time.time()-tt
-
-        def applyandclose(self):
-            fp=self.obj
-            self.save()
-    #        obj=App.ActiveDocument.getObject('YY_'+fp.Name)
-            try:
-                App.ActiveDocument.removeObject(self.NameObj2)
-                App.ActiveDocument.removeObject(self.NameObj)
-            except:
-                pass
-            self.close()
-
-
-        def myclose(self):
-            fp=self.obj
-    #        self.save()
-    #        obj=App.ActiveDocument.getObject('YY_'+fp.Name)
-            try:
-                App.ActiveDocument.removeObject(self.NameObj2)
-                App.ActiveDocument.removeObject(self.NameObj)
-            except:
-                pass
-            self.close()
-
-
-        def run(self):
-            print ("run")
-            edit(
-                self.root.ids['udial'].value(),
-                self.root.ids['vdial'].value(),
-                self.root.ids['scale'].value(),
-            )
-
-        def relativeMode(self):
-#            print ("relative mode called"
-            self.apply(False)
-
-        def apply(self,save=True):
-#            print ("apply  implemented"
-            st=time.time()
-            try:
-                fp=self.obj
-            except: # not yet ready
-                return
-            print ("apply auf ",fp.Label)
-
-
-            obj=App.ActiveDocument.getObject('temp_YY1')
-            if obj == None:
-                obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
-            bs=fp.Shape.Face1.Surface
-            vec=App.Vector(
-                        self.root.ids['xdial'].value()*self.root.ids['scale'].value(),
-                        self.root.ids['ydial'].value()*self.root.ids['scale'].value(),
-                        self.root.ids['zdial'].value()*self.root.ids['scale'].value()
-                        )
-
-            try:
-                upn=int(self.root.ids['ux'].text())
-                vpn=int(self.root.ids['vx'].text())
-            except:
-                print ("invalid input ux,vx")
-                return
-
-            poles=bs.getPoles()
-
-
-            print ("shape ",np.array(poles).shape)
-            uct,vct,_=np.array(poles).shape
-            print ("vec",vec)
-            print(upn,vpn)
-
-
-            center=poles[upn*3][vpn*3]
-            poles=np.array(poles)
-
-            startu=max(0,upn*3-1)
-            endu=min(upn*3+2,uct)
-
-            startv=max(0,vpn*3-1)
-            endv=min(vpn*3+2,vct)
-            print ("startu,endu",startu,endu)
-            print ("startv,endv",startv,endv)
-
-#            if 0:
-#                ttp=poles[upn*3-1:upn*3+2,vpn*3-1:vpn*3+2] - center
-#                r#ot=App.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
-
-#                for u in 0,1,2:
-#                    for v in 0,1,2:
-#                        ttp[u,v]=rot.multVec(App.Vector(ttp[u,v]))
-
-#                (t1,t2)=bs.tangent(upn,vpn)
-#                n=bs.normal(upn,vpn)
-#                vectn=t1*self.root.ids['udial'].value()*self.root.ids['scale'].value()+\
-#                            t2*self.root.ids['vdial'].value()*self.root.ids['scale'].value()+\
-#                            n*self.root.ids['ndial'].value()*self.root.ids['scale'].value()
-
-
-#                ttp += vec + center +vectn
-#                poles[upn*3-1:upn*3+2,vpn*3-1:vpn*3+2]=ttp
-
-            if 1 :
-                ttp=poles[startu:endu,startv:endv] - center
-                rot=App.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
-
-                for u in range(0,endu-startu):
-                    for v in range(0,endv-startv):
-                        ttp[u,v]=rot.multVec(App.Vector(ttp[u,v]))
-
-                (t1,t2)=bs.tangent(upn,vpn)
-                n=bs.normal(upn,vpn)
-                vectn=t1*self.root.ids['udial'].value()*self.root.ids['scale'].value()+\
-                            t2*self.root.ids['vdial'].value()*self.root.ids['scale'].value()+\
-                            n*self.root.ids['ndial'].value()*self.root.ids['scale'].value()
-
-
-                ttp += vec + center +vectn
-                poles[startu:endu,startv:endv]=ttp
-
-
-
-
-            ss=Part.Sphere()
-            ss.Radius=10
-            s=ss.toShape()
-            s.Placement.Base=poles[upn*3][vpn*3]
-
-            print ("Time A",time.time()-st)
-
-            bs2=Part.BSplineSurface()
-            bs2.buildFromPolesMultsKnots(poles,
-                bs.getUMultiplicities(),
-                bs.getVMultiplicities(),
-                bs.getUKnots(),
-                bs.getVKnots(),
-                False,False,3,3)
-
-            comps=begrid(bs2,
-                self.root.ids['showcurves'].isChecked(),
-                self.root.ids['showtangents'].isChecked()
-                )
-
-
-            print ("Time B1 ",time.time()-st)
-            if self.root.ids['showface'].isChecked():
-                comps += [bs2.toShape()]
-
-
-            self.Shape=bs2.toShape()
-            if not save:
-                print ("Time B2 ",time.time()-st)
-                #comps += [s]
-                obj.Shape=Part.Compound(comps)
-                #obj.Shape=Part.Compound(comps+ [s])
-                print ("Time B2a ",time.time()-st)
-                #obj=App.ActiveDocument.addObject('Part::Spline','YY_'+fp.Name)
-    #            obj.Shape=bs.toShape()
-
-                obj2=App.ActiveDocument.getObject('temp_YY2')
-
-                if obj2 == None:
-                    obj2=App.ActiveDocument.addObject('Part::Spline','temp_YY2')
-                    obj2.ViewObject.ShapeColor=(1.0,0.,0.)
-                    obj2.ViewObject.LineColor=(0.3,0.3,1.)
-                    obj2.ViewObject.LineWidth=10
-
-                self.NameObj2=obj2.Name
-
-                print ("Time B3 ",time.time()-st)
-                comps=begrid(bs2,False,True)
-                bs3=bs2.copy()
-                print ("frames")
-                print (startu,endu-1,startv,endv-1)
-                print (bs3.getUKnots())
-                print (bs3.getVKnots())
-                try:
-                    bs3segment(startu,endu-1,startv,endv-1)
-                    print ("Time B4 ",time.time()-st)
-                    obj2.Shape=Part.Compound(comps+[s] + [bs3.toShape()])
-                    print ("Time B ",time.time()-st)
-                except:
-                    obj2.Shape=Part.Compound(comps+[s])
-                    pass
-
-            if save:
-                print ("SAVE")
-                sts=time.time()
-                self.save()
-                print ("Time SCA ",time.time()-sts)
-                sts=time.time()
-                self.apply(False)
-                print ("Time SCB ",time.time()-sts)
-                sts=time.time()
-                self.resetDialog()
-                print ("Time SCC ",time.time()-sts)
-
-            App.ActiveDocument.recompute()
-            print ("Time C ",time.time()-st)
-
-
-
-    fp=Gui.Selection.getSelection()[0]
-
-    obj=App.ActiveDocument.getObject('YY_'+fp.Name)
-    if obj == None:
-        obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
-    obj.Shape=fp.Shape
-
-    mikigui = createMikiGui2(layout, EditorApp)
-    print (mikigui)
-    mikigui.obj=fp
-    mikigui.NameObj=obj.Name
-    mikigui.relativeMode()
-
-##\endcond
-
-## interactive add knots to a surface
-
-def addKnot():
-    '''interactive add knots to a surface'''
-
-##\cond
-    layout = '''
-    MainWindow:
-        QtGui.QLabel:
-            setText:"***   Dock Widget    D E M O   ***"
-
-        HorizontalGroup:
-            setTitle: "Position UV-tangential Normal"
-            QtGui.QDial:
-                id: 'udial'
-                setFocusPolicy: QtCore.Qt.StrongFocus
-                valueChanged.connect: app.displayKnot
-                setMinimum: -100
-                setMaximum: 100
-            QtGui.QDial:
-                id: 'vdial'
-                setMinimum: -100
-                setMaximum: 100
-                valueChanged.connect: app.displayKnot
-
-        HorizontalGroup:
-            setTitle: "Direction"
-            QtGui.QComboBox:
-                id: 'mode'
-                addItem: "u"
-                addItem: "v"
-                addItem: "uv"
-#        QtGui.QPushButton:
-#            setText: "Run Action"
-#            clicked.connect: app.run
-        QtGui.QPushButton:
-            setText: "add Knot"
-            clicked.connect: app.addKnot
-
-        QtGui.QPushButton:
-            setText: "add Border 5"
-            clicked.connect: app.addBorder5
-
-        QtGui.QPushButton:
-            setText: "add Border 10"
-            clicked.connect: app.addBorder10
-
-
-        QtGui.QPushButton:
-            setText: "close"
-            clicked.connect: app.myclose
-        setSpacer:
-        '''
-
-
-
-
-
-    class BeKnotApp(MikiApp):
-
-        def run(self):
-            print ("run")
-            insertKnot(
-                self.root.ids['pos'].text(),
-                self.root.ids['mode'].currentText(),
-            )
-
-        def myclose(self):
-            try:
-                App.ActiveDocument.removeObject(self.NameObj)
-            except:
-                pass
-            self.close()
-
-
-
-        def displayKnot(self):
-            mode=str(self.root.ids['mode'].currentText())
-            uval=self.root.ids['udial'].value()
-            vval=self.root.ids['vdial'].value()
-
-            fp=Gui.Selection.getSelection()[0]
-            bs=fp.Shape.Face1.Surface
-#            print ("Mode",mode)
-            if mode=='u':
-                knots=bs.getUKnots()
-#                print knots
-                c1=bs.uIso((knots[-1]-knots[0])*((uval-0.5)+100.)/200.)
-                c2=bs.uIso((knots[-1]-knots[0])*((uval+0.5)+100.)/200.)
-            if mode=='v':
-                knots=bs.getVKnots()
-#                print knots
-                c1=bs.vIso((knots[-1]-knots[0])*((vval-0.5)+100.)/200.)
-                c2=bs.vIso((knots[-1]-knots[0])*((vval+0.5)+100.)/200.)
-
-
-            comps=begrid(bs,True,False)
-
-            self.NameObj='Kp_'+fp.Name
-            obj=App.ActiveDocument.getObject(self.NameObj)
-            if obj == None:
-                obj=App.ActiveDocument.addObject('Part::Spline',self.NameObj)
-
-            obj.Shape=Part.Compound(comps+[c1.toShape(),c2.toShape()])
-
-        def addKnot(self):
-            mode=str(self.root.ids['mode'].currentText())
-            uval=self.root.ids['udial'].value()
-            vval=self.root.ids['vdial'].value()
-            self._addKnot(mode,[uval],[vval])
-
-        def _addKnot(self,mode,uvals,vvals):
-
-            fp=Gui.Selection.getSelection()[0]
-            bs=fp.Shape.Face1.Surface
-
-            uknots=bs.getUKnots()
-            vknots=bs.getVKnots()
-
-            for uval in uvals:
-                if mode=='u' or mode=='uv':
-                    pos=(uknots[-1]-uknots[0])*(uval+100.)/200.
-                    bs.insertUKnot(pos,3,0)
-
-            for vval in vvals:
-                if mode=='v' or mode=='uv':
-                    pos=(vknots[-1]-vknots[0])*(vval+100.)/200.
-                    bs.insertVKnot(pos,3,0)
-
-            obj=App.ActiveDocument.addObject('Part::Spline','result')
-
-            umults=bs.getUMultiplicities()
-            uknots=range(len(umults))
-
-            vmults=bs.getVMultiplicities()
-            vknots=range(len(vmults))
-
-            bs2=Part.BSplineSurface()
-            bs2.buildFromPolesMultsKnots(
-
-                bs.getPoles(),
-                umults,
-                vmults,
-                uknots,
-                vknots,
-                False,False,3,3
-            )
-
-
-
-
-            obj.Shape=bs2.toShape()
-            App.ActiveDocument.recompute()
-
-            App.ActiveDocument.removeObject(self.NameObj)
-
-            fp.ViewObject.hide()
-            Gui.Selection.clearSelection()
-            Gui.Selection.addSelection(obj)
-
-            self.displayKnot()
-#            obj=App.ActiveDocument.getObject('Kp_'+fp.Name)
-#            if obj == None:
-#                obj=App.ActiveDocument.addObject('Part::Spline','Kp_'+fp.Name)
-#            obj.Shape=c.toShape()
-
-        def addBorder5(self):
-            self._addKnot("uv",[-90,90],[-90,90])
-
-        def addBorder10(self):
-            self._addKnot("uv",[-80,80],[-80,80])
-
-
-
-
-
-
-    mikigui = createMikiGui2(layout, BeKnotApp)
-    mikigui.displayKnot()
-
-##\endcond
+#             startv=max(0,vpn*3-1)
+#             endv=min(vpn*3+2,vct)
+#             print ("startu,endu",startu,endu)
+#             print ("startv,endv",startv,endv)
+
+
+#             ttp=poles[startu:endu,startv:endv] - center
+#             ttp += vec
+
+#             poles[startu:endu,startv:endv]=ttp
+
+#             ss=Part.Sphere()
+#             ss.Radius=10
+#             s=ss.toShape()
+#             s.Placement.Base=poles[upn*3][vpn*3]
+
+#             bs2=Part.BSplineSurface()
+#             bs2.buildFromPolesMultsKnots(poles,
+#                 bs.getUMultiplicities(),
+#                 bs.getVMultiplicities(),
+#                 bs.getUKnots(),
+#                 bs.getVKnots(),
+#                 False,False,3,3)
+
+#             comps=begrid(bs2,
+#                 self.root.ids['showcurves'].isChecked(),
+#                 self.root.ids['showtangents'].isChecked()
+#                 )
+
+
+
+#             if self.root.ids['showface'].isChecked():
+#                 comps += [bs2.toShape()]
+#             self.Shape=bs2.toShape()
+#             # comps += [s]
+#             obj.Shape=Part.Compound(comps)
+#             #obj.Shape=Part.Compound(comps+ [s])
+
+#             #obj=App.ActiveDocument.addObject('Part::Spline','YY_'+fp.Name)
+# #            obj.Shape=bs.toShape()
+
+#             obj2=App.ActiveDocument.getObject('temp_YY2')
+
+#             if obj2 == None:
+#                 obj2=App.ActiveDocument.addObject('Part::Spline','temp_YY2')
+#                 obj2.ViewObject.ShapeColor=(1.0,0.,0.)
+#                 obj2.ViewObject.LineColor=(0.3,0.3,1.)
+#                 obj2.ViewObject.LineWidth=10
+
+#             self.NameObj2=obj2.Name
+
+#             comps=begrid(bs2,False,True)
+#             try:
+#                 bs3=bs2.copy()
+#                 bs3segment(upn-1,upn+1,vpn-1,vpn+1)
+#             except:
+#                 pass
+
+#             obj2.Shape=Part.Compound(comps+[s] + [bs3.toShape()])
+#             print ("KUGELLLLLLLLLLLLLLLLL")
+#             print (s)
+
+
+#             App.ActiveDocument.recompute()
+
+#         def save(self):
+#             tt=time.time()
+#             try: obj=self.resultobj
+#             except:
+#                 obj=App.ActiveDocument.addObject('Part::Spline','result')
+#                 try:
+#                     App.ActiveDocument.removeObject(self.NameObj2)
+#                 except:
+#                     pass
+#                 try:
+#                     App.ActiveDocument.removeObject(self.NameObj)
+#                 except:
+#                     pass
+# #            print ("savet ",time.time()-tt
+
+#             tt=time.time()
+#             obj.ViewObject.hide()
+#             obj.Shape=self.Shape
+#             print ("savetime hidden ",time.time()-tt)
+#             tt=time.time()
+#             obj.ViewObject.show()
+#             obj.Shape=self.Shape
+#             print ("savetime show ",time.time()-tt)
+
+#             tt=time.time()
+#             z=self.Shape
+#             z=self.Shape
+#             print ("savetime intern ",time.time()-tt)
+
+#             self.obj=obj
+#             self.resultobj=obj
+# #            print ("savetb ",time.time()-tt
+
+#         def applyandclose(self):
+#             fp=self.obj
+#             self.save()
+#     #        obj=App.ActiveDocument.getObject('YY_'+fp.Name)
+#             try:
+#                 App.ActiveDocument.removeObject(self.NameObj2)
+#                 App.ActiveDocument.removeObject(self.NameObj)
+#             except:
+#                 pass
+#             self.close()
+
+
+#         def myclose(self):
+#             fp=self.obj
+#     #        self.save()
+#     #        obj=App.ActiveDocument.getObject('YY_'+fp.Name)
+#             try:
+#                 App.ActiveDocument.removeObject(self.NameObj2)
+#                 App.ActiveDocument.removeObject(self.NameObj)
+#             except:
+#                 pass
+#             self.close()
+
+
+#         def run(self):
+#             print ("run")
+#             edit(
+#                 self.root.ids['udial'].value(),
+#                 self.root.ids['vdial'].value(),
+#                 self.root.ids['scale'].value(),
+#             )
+
+#         def relativeMode(self):
+# #            print ("relative mode called"
+#             self.apply(False)
+
+#         def apply(self,save=True):
+# #            print ("apply  implemented"
+#             st=time.time()
+#             try:
+#                 fp=self.obj
+#             except: # not yet ready
+#                 return
+#             print ("apply auf ",fp.Label)
+
+
+#             obj=App.ActiveDocument.getObject('temp_YY1')
+#             if obj == None:
+#                 obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
+#             bs=fp.Shape.Face1.Surface
+#             vec=App.Vector(
+#                         self.root.ids['xdial'].value()*self.root.ids['scale'].value(),
+#                         self.root.ids['ydial'].value()*self.root.ids['scale'].value(),
+#                         self.root.ids['zdial'].value()*self.root.ids['scale'].value()
+#                         )
+
+#             try:
+#                 upn=int(self.root.ids['ux'].text())
+#                 vpn=int(self.root.ids['vx'].text())
+#             except:
+#                 print ("invalid input ux,vx")
+#                 return
+
+#             poles=bs.getPoles()
+
+
+#             print ("shape ",np.array(poles).shape)
+#             uct,vct,_=np.array(poles).shape
+#             print ("vec",vec)
+#             print(upn,vpn)
+
+
+#             center=poles[upn*3][vpn*3]
+#             poles=np.array(poles)
+
+#             startu=max(0,upn*3-1)
+#             endu=min(upn*3+2,uct)
+
+#             startv=max(0,vpn*3-1)
+#             endv=min(vpn*3+2,vct)
+#             print ("startu,endu",startu,endu)
+#             print ("startv,endv",startv,endv)
+
+# #            if 0:
+# #                ttp=poles[upn*3-1:upn*3+2,vpn*3-1:vpn*3+2] - center
+# #                r#ot=App.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
+
+# #                for u in 0,1,2:
+# #                    for v in 0,1,2:
+# #                        ttp[u,v]=rot.multVec(App.Vector(ttp[u,v]))
+
+# #                (t1,t2)=bs.tangent(upn,vpn)
+# #                n=bs.normal(upn,vpn)
+# #                vectn=t1*self.root.ids['udial'].value()*self.root.ids['scale'].value()+\
+# #                            t2*self.root.ids['vdial'].value()*self.root.ids['scale'].value()+\
+# #                            n*self.root.ids['ndial'].value()*self.root.ids['scale'].value()
+
+
+# #                ttp += vec + center +vectn
+# #                poles[upn*3-1:upn*3+2,vpn*3-1:vpn*3+2]=ttp
+
+#             if 1 :
+#                 ttp=poles[startu:endu,startv:endv] - center
+#                 rot=App.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
+
+#                 for u in range(0,endu-startu):
+#                     for v in range(0,endv-startv):
+#                         ttp[u,v]=rot.multVec(App.Vector(ttp[u,v]))
+
+#                 (t1,t2)=bs.tangent(upn,vpn)
+#                 n=bs.normal(upn,vpn)
+#                 vectn=t1*self.root.ids['udial'].value()*self.root.ids['scale'].value()+\
+#                             t2*self.root.ids['vdial'].value()*self.root.ids['scale'].value()+\
+#                             n*self.root.ids['ndial'].value()*self.root.ids['scale'].value()
+
+
+#                 ttp += vec + center +vectn
+#                 poles[startu:endu,startv:endv]=ttp
+
+
+
+
+#             ss=Part.Sphere()
+#             ss.Radius=10
+#             s=ss.toShape()
+#             s.Placement.Base=poles[upn*3][vpn*3]
+
+#             print ("Time A",time.time()-st)
+
+#             bs2=Part.BSplineSurface()
+#             bs2.buildFromPolesMultsKnots(poles,
+#                 bs.getUMultiplicities(),
+#                 bs.getVMultiplicities(),
+#                 bs.getUKnots(),
+#                 bs.getVKnots(),
+#                 False,False,3,3)
+
+#             comps=begrid(bs2,
+#                 self.root.ids['showcurves'].isChecked(),
+#                 self.root.ids['showtangents'].isChecked()
+#                 )
+
+
+#             print ("Time B1 ",time.time()-st)
+#             if self.root.ids['showface'].isChecked():
+#                 comps += [bs2.toShape()]
+
+
+#             self.Shape=bs2.toShape()
+#             if not save:
+#                 print ("Time B2 ",time.time()-st)
+#                 #comps += [s]
+#                 obj.Shape=Part.Compound(comps)
+#                 #obj.Shape=Part.Compound(comps+ [s])
+#                 print ("Time B2a ",time.time()-st)
+#                 #obj=App.ActiveDocument.addObject('Part::Spline','YY_'+fp.Name)
+#     #            obj.Shape=bs.toShape()
+
+#                 obj2=App.ActiveDocument.getObject('temp_YY2')
+
+#                 if obj2 == None:
+#                     obj2=App.ActiveDocument.addObject('Part::Spline','temp_YY2')
+#                     obj2.ViewObject.ShapeColor=(1.0,0.,0.)
+#                     obj2.ViewObject.LineColor=(0.3,0.3,1.)
+#                     obj2.ViewObject.LineWidth=10
+
+#                 self.NameObj2=obj2.Name
+
+#                 print ("Time B3 ",time.time()-st)
+#                 comps=begrid(bs2,False,True)
+#                 bs3=bs2.copy()
+#                 print ("frames")
+#                 print (startu,endu-1,startv,endv-1)
+#                 print (bs3.getUKnots())
+#                 print (bs3.getVKnots())
+#                 try:
+#                     bs3segment(startu,endu-1,startv,endv-1)
+#                     print ("Time B4 ",time.time()-st)
+#                     obj2.Shape=Part.Compound(comps+[s] + [bs3.toShape()])
+#                     print ("Time B ",time.time()-st)
+#                 except:
+#                     obj2.Shape=Part.Compound(comps+[s])
+#                     pass
+
+#             if save:
+#                 print ("SAVE")
+#                 sts=time.time()
+#                 self.save()
+#                 print ("Time SCA ",time.time()-sts)
+#                 sts=time.time()
+#                 self.apply(False)
+#                 print ("Time SCB ",time.time()-sts)
+#                 sts=time.time()
+#                 self.resetDialog()
+#                 print ("Time SCC ",time.time()-sts)
+
+#             App.ActiveDocument.recompute()
+#             print ("Time C ",time.time()-st)
+
+
+
+#     fp=Gui.Selection.getSelection()[0]
+
+#     obj=App.ActiveDocument.getObject('YY_'+fp.Name)
+#     if obj == None:
+#         obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
+#     obj.Shape=fp.Shape
+
+#     mikigui = createMikiGui2(layout, EditorApp)
+#     print (mikigui)
+#     mikigui.obj=fp
+#     mikigui.NameObj=obj.Name
+#     mikigui.relativeMode()
+
+# ##\endcond
+
+# ## interactive add knots to a surface
+
+# def addKnot():
+#     '''interactive add knots to a surface'''
+
+# ##\cond
+#     layout = '''
+#     MainWindow:
+#         QtGui.QLabel:
+#             setText:"***   Dock Widget    D E M O   ***"
+
+#         HorizontalGroup:
+#             setTitle: "Position UV-tangential Normal"
+#             QtGui.QDial:
+#                 id: 'udial'
+#                 setFocusPolicy: QtCore.Qt.StrongFocus
+#                 valueChanged.connect: app.displayKnot
+#                 setMinimum: -100
+#                 setMaximum: 100
+#             QtGui.QDial:
+#                 id: 'vdial'
+#                 setMinimum: -100
+#                 setMaximum: 100
+#                 valueChanged.connect: app.displayKnot
+
+#         HorizontalGroup:
+#             setTitle: "Direction"
+#             QtGui.QComboBox:
+#                 id: 'mode'
+#                 addItem: "u"
+#                 addItem: "v"
+#                 addItem: "uv"
+# #        QtGui.QPushButton:
+# #            setText: "Run Action"
+# #            clicked.connect: app.run
+#         QtGui.QPushButton:
+#             setText: "add Knot"
+#             clicked.connect: app.addKnot
+
+#         QtGui.QPushButton:
+#             setText: "add Border 5"
+#             clicked.connect: app.addBorder5
+
+#         QtGui.QPushButton:
+#             setText: "add Border 10"
+#             clicked.connect: app.addBorder10
+
+
+#         QtGui.QPushButton:
+#             setText: "close"
+#             clicked.connect: app.myclose
+#         setSpacer:
+#         '''
+
+
+
+
+
+#     class BeKnotApp(MikiApp):
+
+#         def run(self):
+#             print ("run")
+#             insertKnot(
+#                 self.root.ids['pos'].text(),
+#                 self.root.ids['mode'].currentText(),
+#             )
+
+#         def myclose(self):
+#             try:
+#                 App.ActiveDocument.removeObject(self.NameObj)
+#             except:
+#                 pass
+#             self.close()
+
+
+
+#         def displayKnot(self):
+#             mode=str(self.root.ids['mode'].currentText())
+#             uval=self.root.ids['udial'].value()
+#             vval=self.root.ids['vdial'].value()
+
+#             fp=Gui.Selection.getSelection()[0]
+#             bs=fp.Shape.Face1.Surface
+# #            print ("Mode",mode)
+#             if mode=='u':
+#                 knots=bs.getUKnots()
+# #                print knots
+#                 c1=bs.uIso((knots[-1]-knots[0])*((uval-0.5)+100.)/200.)
+#                 c2=bs.uIso((knots[-1]-knots[0])*((uval+0.5)+100.)/200.)
+#             if mode=='v':
+#                 knots=bs.getVKnots()
+# #                print knots
+#                 c1=bs.vIso((knots[-1]-knots[0])*((vval-0.5)+100.)/200.)
+#                 c2=bs.vIso((knots[-1]-knots[0])*((vval+0.5)+100.)/200.)
+
+
+#             comps=begrid(bs,True,False)
+
+#             self.NameObj='Kp_'+fp.Name
+#             obj=App.ActiveDocument.getObject(self.NameObj)
+#             if obj == None:
+#                 obj=App.ActiveDocument.addObject('Part::Spline',self.NameObj)
+
+#             obj.Shape=Part.Compound(comps+[c1.toShape(),c2.toShape()])
+
+#         def addKnot(self):
+#             mode=str(self.root.ids['mode'].currentText())
+#             uval=self.root.ids['udial'].value()
+#             vval=self.root.ids['vdial'].value()
+#             self._addKnot(mode,[uval],[vval])
+
+#         def _addKnot(self,mode,uvals,vvals):
+
+#             fp=Gui.Selection.getSelection()[0]
+#             bs=fp.Shape.Face1.Surface
+
+#             uknots=bs.getUKnots()
+#             vknots=bs.getVKnots()
+
+#             for uval in uvals:
+#                 if mode=='u' or mode=='uv':
+#                     pos=(uknots[-1]-uknots[0])*(uval+100.)/200.
+#                     bs.insertUKnot(pos,3,0)
+
+#             for vval in vvals:
+#                 if mode=='v' or mode=='uv':
+#                     pos=(vknots[-1]-vknots[0])*(vval+100.)/200.
+#                     bs.insertVKnot(pos,3,0)
+
+#             obj=App.ActiveDocument.addObject('Part::Spline','result')
+
+#             umults=bs.getUMultiplicities()
+#             uknots=range(len(umults))
+
+#             vmults=bs.getVMultiplicities()
+#             vknots=range(len(vmults))
+
+#             bs2=Part.BSplineSurface()
+#             bs2.buildFromPolesMultsKnots(
+
+#                 bs.getPoles(),
+#                 umults,
+#                 vmults,
+#                 uknots,
+#                 vknots,
+#                 False,False,3,3
+#             )
+
+
+
+
+#             obj.Shape=bs2.toShape()
+#             App.ActiveDocument.recompute()
+
+#             App.ActiveDocument.removeObject(self.NameObj)
+
+#             fp.ViewObject.hide()
+#             Gui.Selection.clearSelection()
+#             Gui.Selection.addSelection(obj)
+
+#             self.displayKnot()
+# #            obj=App.ActiveDocument.getObject('Kp_'+fp.Name)
+# #            if obj == None:
+# #                obj=App.ActiveDocument.addObject('Part::Spline','Kp_'+fp.Name)
+# #            obj.Shape=c.toShape()
+
+#         def addBorder5(self):
+#             self._addKnot("uv",[-90,90],[-90,90])
+
+#         def addBorder10(self):
+#             self._addKnot("uv",[-80,80],[-80,80])
+
+
+
+
+
+
+#     mikigui = createMikiGui2(layout, BeKnotApp)
+#     mikigui.displayKnot()
+
+# ##\endcond
 
 class Nurbs_connectFaces:
     def Activated(self):
@@ -5009,30 +5009,30 @@ class Nurbs_createGordon:
 
 
 
-    s3tt=np.zeros((3*suc+1)*(3*svc+1)*3).reshape(3*suc+1,3*svc+1,3)
+        s3tt=np.zeros((3*suc+1)*(3*svc+1)*3).reshape(3*suc+1,3*svc+1,3)
 
-    dd=scale*0.01
-    uli=[0,dd]
-    for i in range(1,suc):
-        uli += [i-dd,i,i+dd]
-    uli += [suc-dd,suc]
-    vli=[0,dd]
-    for i in range(1,svc):
-        vli += [i-dd,i,i+dd]
-    vli += [svc-dd,svc]
+        dd=scale*0.01
+        uli=[0,dd]
+        for i in range(1,suc):
+            uli += [i-dd,i,i+dd]
+        uli += [suc-dd,suc]
+        vli=[0,dd]
+        for i in range(1,svc):
+            vli += [i-dd,i,i+dd]
+        vli += [svc-dd,svc]
 
 
-    if 10:
-        for ui,u in enumerate(uli):
-            for vi,v in enumerate(vli):
-#                print ("ui,vi",ui,vi)
-                for i in range(suc+1):
-                    for j in range(svc+1):
-#                        print ("i,j,self.blender",i,j,self.blender(j,v),self.blender(i,u))
-    #                    s3tt[ui,vi] += (polsu[i][3*j]*obj.uWeight+polsv[j][3*i]*obj.vWeight)*self.blender(i,u)/self.blender(i,i)*self.blender(j,v)/self.blender(j,j)/(obj.uWeight+obj.vWeight)
-    #                    print s3tt[ui,vi]
-    #                    print polsu[i][3*j]
-                        s3tt[ui,vi] += (polsu[i][3*j])*self.blender(i,u)/self.blender(i,i)*self.blender(j,v)/self.blender(j,j)
+        if 10:
+            for ui,u in enumerate(uli):
+                for vi,v in enumerate(vli):
+#                    print ("ui,vi",ui,vi)
+                    for i in range(suc+1):
+                        for j in range(svc+1):
+#                            print ("i,j,self.blender",i,j,self.blender(j,v),self.blender(i,u))
+        #                    s3tt[ui,vi] += (polsu[i][3*j]*obj.uWeight+polsv[j][3*i]*obj.vWeight)*self.blender(i,u)/self.blender(i,i)*self.blender(j,v)/self.blender(j,j)/(obj.uWeight+obj.vWeight)
+        #                    print s3tt[ui,vi]
+        #                    print polsu[i][3*j]
+                            s3tt[ui,vi] += (polsu[i][3*j])*self.blender(i,u)/self.blender(i,i)*self.blender(j,v)/self.blender(j,j)
 
 
 
@@ -5286,8 +5286,8 @@ def BB():
 
 
 class Nurbs_polishG1GUI:
-    def Activated(self)
-    self.polishG1GUI()
+    def Activated(self):
+        self.polishG1GUI()
 
     def  polishG1GUI(self):
         ''' make surface G1 continues'''
@@ -5355,35 +5355,35 @@ class Nurbs_polishG1GUI:
 
         poles[3*u-1:3*u+3,3*v-1:3*v+3]=seg
 
-    for u in [1,2,3,4,5,6]:
-        for v in [1,2,3,4,5,6]:
-            try:
-                mod(u,v)
-                mod(u,v)
-            except: pass
-
-    bs=Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(poles,
-                sf.getUMultiplicities(),sf.getVMultiplicities(),
-                sf.getUKnots(),sf.getVKnots(),
-                False,False,3,3)
-    Part.show(bs.toShape())
-
-    if 0: #erzeuge unstete flaeche
-
-        sf=App.ActiveDocument.ProductFace001.Shape.Face1.Surface
-        poles2=np.array(sf.getPoles())
-        a,b,c=poles2.shape
-        poles2=poles2.reshape(a*b*c) + (15-np.random.random(a*b*c)*30)
-        poles2=poles2.reshape(a,b,c)
+        for u in [1,2,3,4,5,6]:
+            for v in [1,2,3,4,5,6]:
+                try:
+                    mod(u,v)
+                    mod(u,v)
+                except: pass
 
         bs=Part.BSplineSurface()
-        bs.buildFromPolesMultsKnots(poles2,
-                                sf.getUMultiplicities(),sf.getVMultiplicities(),
-                                sf.getUKnots(),sf.getVKnots(),
-                                False,False,3,3)
-
+        bs.buildFromPolesMultsKnots(poles,
+                    sf.getUMultiplicities(),sf.getVMultiplicities(),
+                    sf.getUKnots(),sf.getVKnots(),
+                    False,False,3,3)
         Part.show(bs.toShape())
+
+        if 0: #erzeuge unstete flaeche
+
+            sf=App.ActiveDocument.ProductFace001.Shape.Face1.Surface
+            poles2=np.array(sf.getPoles())
+            a,b,c=poles2.shape
+            poles2=poles2.reshape(a*b*c) + (15-np.random.random(a*b*c)*30)
+            poles2=poles2.reshape(a,b,c)
+
+            bs=Part.BSplineSurface()
+            bs.buildFromPolesMultsKnots(poles2,
+                                    sf.getUMultiplicities(),sf.getVMultiplicities(),
+                                    sf.getUKnots(),sf.getVKnots(),
+                                    False,False,3,3)
+
+            Part.show(bs.toShape())
 
     def GetResources(self):
         import Design456Init
@@ -5798,226 +5798,226 @@ def AA():
 
 
 
+#TODO : THIS PART CANNOT RUN - MUST BE REWRITTEN MARIWAN
+
+
+# #---------------------------
+
+# def glaetten():
+#     '''interactive add knots to a surface'''
+
+# ##\cond
+#     layout = '''
+#     MainWindow:
+#         QtGui.QLabel:
+#             setText:"***   Glaetten    D E M O   ***"
+
+#         HorizontalGroup:
+#             setTitle: "Mode"
+#             QtGui.QComboBox:
+#                 id: 'mode'
+#                 addItem: "all"
+#                 #addItem: "none"
+#                 addItem: "vertical"
+#                 addItem: "horizontal"
+
+
+#         HorizontalGroup:
+#             setTitle: "Tangent Force v"
+#             QtGui.QDial:
+#                 id: 'tbb'
+#                 setFocusPolicy: QtCore.Qt.StrongFocus
+#                 valueChanged.connect: app.run
+#                 setMinimum: 0
+#                 setValue: 10
+#                 setMaximum: 20
+
+#             QtGui.QDial:
+#                 id: 'taa'
+#                 setFocusPolicy: QtCore.Qt.StrongFocus
+#                 valueChanged.connect: app.run
+#                 setMinimum: 0
+#                 setValue: 10
+#                 setMaximum: 20
+
+
+#         HorizontalGroup:
+#             setTitle: "Parameter v/h"
+#             QtGui.QDial:
+#                 id: 'udial'
+#                 setFocusPolicy: QtCore.Qt.StrongFocus
+#                 valueChanged.connect: app.run
+#                 setMinimum: -400
+#                 setMaximum: -10
+
+#             QtGui.QDial:
+#                 id: 'vdial'
+#                 setFocusPolicy: QtCore.Qt.StrongFocus
+#                 valueChanged.connect: app.run
+#                 setMinimum: -400
+#                 setMaximum: -10
+
+
+#         QtGui.QPushButton:
+#             setText: "Run Action"
+#             clicked.connect: app.runT
+
+#         QtGui.QPushButton:
+#             setText: "close"
+#             clicked.connect: app.myclose
+#         setSpacer:
+#         '''
 
 
 
-#---------------------------
-
-def glaetten():
-    '''interactive add knots to a surface'''
-
-##\cond
-    layout = '''
-    MainWindow:
-        QtGui.QLabel:
-            setText:"***   Glaetten    D E M O   ***"
-
-        HorizontalGroup:
-            setTitle: "Mode"
-            QtGui.QComboBox:
-                id: 'mode'
-                addItem: "all"
-                #addItem: "none"
-                addItem: "vertical"
-                addItem: "horizontal"
 
 
-        HorizontalGroup:
-            setTitle: "Tangent Force v"
-            QtGui.QDial:
-                id: 'tbb'
-                setFocusPolicy: QtCore.Qt.StrongFocus
-                valueChanged.connect: app.run
-                setMinimum: 0
-                setValue: 10
-                setMaximum: 20
+#     class myApp(MikiApp):
 
-            QtGui.QDial:
-                id: 'taa'
-                setFocusPolicy: QtCore.Qt.StrongFocus
-                valueChanged.connect: app.run
-                setMinimum: 0
-                setValue: 10
-                setMaximum: 20
+#         def myclose(self):
+#             self.close()
 
+#         def run(self):
 
-        HorizontalGroup:
-            setTitle: "Parameter v/h"
-            QtGui.QDial:
-                id: 'udial'
-                setFocusPolicy: QtCore.Qt.StrongFocus
-                valueChanged.connect: app.run
-                setMinimum: -400
-                setMaximum: -10
+#             #modus='all'
+#             modus='horizontal'
+#             modus='vertical'
+#             modus=self.root.ids['mode'].currentText()
 
-            QtGui.QDial:
-                id: 'vdial'
-                setFocusPolicy: QtCore.Qt.StrongFocus
-                valueChanged.connect: app.run
-                setMinimum: -400
-                setMaximum: -10
+#             print  (self.root.ids)
+#             try:
+#                 fu=self.root.ids['udial'].value()
+#                 fv=self.root.ids['vdial'].value()
+
+#                 ta=self.root.ids['taa'].value()
+#                 tb=self.root.ids['tbb'].value()
 
 
-        QtGui.QPushButton:
-            setText: "Run Action"
-            clicked.connect: app.runT
+#             except:
+#                 return
+#             print ("ff",fu,fv,ta,tb)
 
-        QtGui.QPushButton:
-            setText: "close"
-            clicked.connect: app.myclose
-        setSpacer:
-        '''
+#             srs=Gui.Selection.getSelection()
+#             sfs=[s.Shape.Face1.Surface for s in srs]
+#             pall=np.zeros(7*7*3).reshape(7,7,3)
 
+#             if modus in ['all']:
+#                 [sfb,sfd,sfc,sfa]=sfs
+#                 pa=np.array(sfa.getPoles())
+#                 pb=np.array(sfb.getPoles())
+#                 pc=np.array(sfc.getPoles())
+#                 pd=np.array(sfd.getPoles())
+#                 pall[0:4,0:4]=pb
+#                 pall[3:8,0:4]=pd
+#                 pall[0:4,3:8]=pa
+#                 pall[3:8,3:8]=pc
 
+#             elif modus in ['horizontal']:
+#                 [sfb,sfd]=sfs
+#                 pb=np.array(sfb.getPoles())
+#                 pd=np.array(sfd.getPoles())
+#                 pall[0:4,0:4]=pb
+#                 pall[3:8,0:4]=pd
 
+#             elif modus in ['vertical']:
+#                 [sfb,sfa]=sfs
+#                 pa=np.array(sfa.getPoles())
+#                 pb=np.array(sfb.getPoles())
+#                 pall[0:4,0:4]=pb
+#                 pall[0:4,3:8]=pa
 
+#             else:
+#                 print ("nix zu tun")
+#                 return
 
-    class myApp(MikiApp):
+#             if modus in ['all','vertical']:
+#                 pall=pall.swapaxes(0,1)
+#                 ff=fu
 
-        def myclose(self):
-            self.close()
-
-        def run(self):
-
-            #modus='all'
-            modus='horizontal'
-            modus='vertical'
-            modus=self.root.ids['mode'].currentText()
-
-            print  (self.root.ids)
-            try:
-                fu=self.root.ids['udial'].value()
-                fv=self.root.ids['vdial'].value()
-
-                ta=self.root.ids['taa'].value()
-                tb=self.root.ids['tbb'].value()
-
-
-            except:
-                return
-            print ("ff",fu,fv,ta,tb)
-
-            srs=Gui.Selection.getSelection()
-            sfs=[s.Shape.Face1.Surface for s in srs]
-            pall=np.zeros(7*7*3).reshape(7,7,3)
-
-            if modus in ['all']:
-                [sfb,sfd,sfc,sfa]=sfs
-                pa=np.array(sfa.getPoles())
-                pb=np.array(sfb.getPoles())
-                pc=np.array(sfc.getPoles())
-                pd=np.array(sfd.getPoles())
-                pall[0:4,0:4]=pb
-                pall[3:8,0:4]=pd
-                pall[0:4,3:8]=pa
-                pall[3:8,3:8]=pc
-
-            elif modus in ['horizontal']:
-                [sfb,sfd]=sfs
-                pb=np.array(sfb.getPoles())
-                pd=np.array(sfd.getPoles())
-                pall[0:4,0:4]=pb
-                pall[3:8,0:4]=pd
-
-            elif modus in ['vertical']:
-                [sfb,sfa]=sfs
-                pa=np.array(sfa.getPoles())
-                pb=np.array(sfb.getPoles())
-                pall[0:4,0:4]=pb
-                pall[0:4,3:8]=pa
-
-            else:
-                print ("nix zu tun")
-                return
-
-            if modus in ['all','vertical']:
-                pall=pall.swapaxes(0,1)
-                ff=fu
-
-                k1=(pall[2]-pall[3])
-                k2=(pall[4]-pall[3])
-                kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
-                kka=[]
-                for k in kk:
-                    try:
-                        kka += [k.normalize()]
-                    except:
-                        kka += [App.Vector()]
-                kka=np.array(kka)
+#                 k1=(pall[2]-pall[3])
+#                 k2=(pall[4]-pall[3])
+#                 kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
+#                 kka=[]
+#                 for k in kk:
+#                     try:
+#                         kka += [k.normalize()]
+#                     except:
+#                         kka += [App.Vector()]
+#                 kka=np.array(kka)
 
 
-                fa=2.0*tb/20
-                fb=2.0*(20-tb)/20
-                print ("ta tb",ta,tb,fa,fb)
+#                 fa=2.0*tb/20
+#                 fb=2.0*(20-tb)/20
+#                 print ("ta tb",ta,tb,fa,fb)
 
-                pall[2]=pall[3]-ff*kka*fa
-                pall[4]=pall[3]+ff*kka*fb
-                pall=pall.swapaxes(0,1)
+#                 pall[2]=pall[3]-ff*kka*fa
+#                 pall[4]=pall[3]+ff*kka*fb
+#                 pall=pall.swapaxes(0,1)
 
-            if modus in ['all','horizontal']:
-                #pall=pall.swapaxes(0,1)
+#             if modus in ['all','horizontal']:
+#                 #pall=pall.swapaxes(0,1)
 
-                k1=(pall[2]-pall[3])
-                k2=(pall[4]-pall[3])
-                kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
+#                 k1=(pall[2]-pall[3])
+#                 k2=(pall[4]-pall[3])
+#                 kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
 
-                kka=[]
-                for k in kk:
-                    try:
-                        kka += [k.normalize()]
-                    except:
-                        kka += [App.Vector()]
-                kka=np.array(kka)
+#                 kka=[]
+#                 for k in kk:
+#                     try:
+#                         kka += [k.normalize()]
+#                     except:
+#                         kka += [App.Vector()]
+#                 kka=np.array(kka)
 
-                fa2=2.0*ta/20
-                fb2=2.0*(20-ta)/20
-
-
-                ff=fv
-                pall[2]=pall[3]-ff*kka*fa2
-                pall[4]=pall[3]+ff*kka*fb2
-
-                #pall=pall.swapaxes(0,1)
+#                 fa2=2.0*ta/20
+#                 fb2=2.0*(20-ta)/20
 
 
-            if 0: # zeige gesamte flaeche
-                poles=pall
-                ya=[4,3,4]
-                yb=[4,3,4]
-                af=Part.BSplineSurface()
-                af.buildFromPolesMultsKnots(poles,
-                    ya,yb,
-                    range(len(ya)),range(len(yb)),
-                    False,False,3,3)
-                Part.show(af.toShape())
+#                 ff=fv
+#                 pall[2]=pall[3]-ff*kka*fa2
+#                 pall[4]=pall[3]+ff*kka*fb2
 
-            if modus =='all':
-                liste=[pall[0:4,0:4],pall[3:8,0:4],pall[3:8,3:8],pall[0:4,3:8]]
-            if modus =='vertical':
-                liste=[pall[0:4,0:4],pall[0:4,3:8]]
-            if modus =='horizontal':
-                liste=[pall[0:4,0:4],pall[3:8,0:4]]
+#                 #pall=pall.swapaxes(0,1)
 
-            for i,poles in  enumerate(liste):
 
-                    ya=[4,4]
-                    yb=[4,4]
-                    af=Part.BSplineSurface()
-                    af.buildFromPolesMultsKnots(poles,
-                        ya,yb,
-                        range(len(ya)),range(len(yb)),
-                        False,False,3,3)
-                    #Part.show(af.toShape())
-                    srs[i].Shape=af.toShape()
+#             if 0: # zeige gesamte flaeche
+#                 poles=pall
+#                 ya=[4,3,4]
+#                 yb=[4,3,4]
+#                 af=Part.BSplineSurface()
+#                 af.buildFromPolesMultsKnots(poles,
+#                     ya,yb,
+#                     range(len(ya)),range(len(yb)),
+#                     False,False,3,3)
+#                 Part.show(af.toShape())
 
-        def runT(self):
-            App.ActiveDocument.openTransaction("tatata")
-            self.run()
-            App.ActiveDocument.commitTransaction()
+#             if modus =='all':
+#                 liste=[pall[0:4,0:4],pall[3:8,0:4],pall[3:8,3:8],pall[0:4,3:8]]
+#             if modus =='vertical':
+#                 liste=[pall[0:4,0:4],pall[0:4,3:8]]
+#             if modus =='horizontal':
+#                 liste=[pall[0:4,0:4],pall[3:8,0:4]]
 
-    mikigui = createMikiGui2(layout, myApp)
+#             for i,poles in  enumerate(liste):
 
-##\endcond
+#                     ya=[4,4]
+#                     yb=[4,4]
+#                     af=Part.BSplineSurface()
+#                     af.buildFromPolesMultsKnots(poles,
+#                         ya,yb,
+#                         range(len(ya)),range(len(yb)),
+#                         False,False,3,3)
+#                     #Part.show(af.toShape())
+#                     srs[i].Shape=af.toShape()
+
+#         def runT(self):
+#             App.ActiveDocument.openTransaction("tatata")
+#             self.run()
+#             App.ActiveDocument.commitTransaction()
+
+#     mikigui = createMikiGui2(layout, myApp)
+
+# ##\endcond
 
 
 
@@ -6051,8 +6051,6 @@ Gui.addCommand("Nurbs_CreateSheelANDsolid", Nurbs_CreateSheelANDsolid())
 
 
 
-def AA ():
-    pass
 class Nurbs_FlattenTheWire:
     def Activated(self):
         self.flattenthewire()
@@ -6144,15 +6142,3 @@ class Nurbs_FlattenTheWire:
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_FlattenTheWire", _tooltip)}
 
 Gui.addCommand("Nurbs_FlattenTheWire", Nurbs_FlattenTheWire())
-
-
-
-def BB():
-
-    a=Gui.Selection.getSelection()[0]
-    for v in a.Shape.Vertexes:
-        print (v.Point)
-
-    print()
-    print( a.Placement.Base)
-    print( a.Placement.Rotation.toEuler())

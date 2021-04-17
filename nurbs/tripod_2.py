@@ -434,22 +434,22 @@ class Tripod(PartFeature):
 
 def createTripod():
 
-    if len(Gui.Selection.getSelectionEx())==2:
+    if len(Gui.Selection.getSelection())==2:
         a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodRefPoint")
     else:
         a=App.ActiveDocument.addObject("Part::FeaturePython","Tripod")
 
     Tripod(a)
     a.ViewObject.LineWidth = 2
-    a.source=Gui.Selection.getSelectionEx()[0]
+    a.source=Gui.Selection.getSelection()[0]
     ViewProvider(a.ViewObject)
-    if len(Gui.Selection.getSelectionEx())==2:
-        a.source=Gui.Selection.getSelectionEx()[0].Object
+    if len(Gui.Selection.getSelection())==2:
+        a.source=Gui.Selection.getSelection()[0].Object
         try:
-            ss=Gui.Selection.getSelectionEx()[1].SubElementNames[0]
+            ss=Gui.Selection.getSelection()[1].SubElementNames[0]
         except:
             ss=[]
-        a.ref=(Gui.Selection.getSelectionEx()[1].Object,ss)
+        a.ref=(Gui.Selection.getSelection()[1].Object,ss)
         a.mode="RefPoint"
         a.modeRef="vertical"
 
@@ -457,7 +457,7 @@ def createTripod():
 def createTripodSketch(): #sketcher
     '''creae a tripod sketch'''
 
-    ss=Gui.Selection.getSelectionEx()
+    ss=Gui.Selection.getSelection()
     if len(ss) != 0:
         for s in ss:
             s.Object
@@ -498,7 +498,7 @@ def createTripodSketch(): #sketcher
         Tripod(a)
         a.mode="Sketch"
         a.ViewObject.LineWidth = 2
-        a.source=Gui.Selection.getSelectionEx()[0]
+        a.source=Gui.Selection.getSelection()[0]
         ViewProvider(a.ViewObject)
 
 
@@ -509,8 +509,8 @@ class Nurbs_CreateSweep:
         self.createSweep()
     def createSweep(self):
         sw=App.ActiveDocument.addObject('Part::Sweep','Sweep')
-        sw.Spine=(Gui.Selection.getSelectionEx()[-1],["Edge1"])
-        sw.Sections=Gui.Selection.getSelectionEx()[0:-1]
+        sw.Spine=(Gui.Selection.getSelection()[-1],["Edge1"])
+        sw.Sections=Gui.Selection.getSelection()[0:-1]
         App.ActiveDocument.recompute()
 
     def GetResources(self):
@@ -531,7 +531,7 @@ class Nurbs_CreateLoft:
         self.createLoft
     def createLoft():
         sw=App.ActiveDocument.addObject('Part::Loft','Loft')
-        sw.Sections=Gui.Selection.getSelectionEx()
+        sw.Sections=Gui.Selection.getSelection()
         App.ActiveDocument.recompute()
     def GetResources(self):
         import Design456Init
@@ -549,7 +549,7 @@ class Nurbs_CreateCompound:
 
     def createCompound(self):
         sw=App.ActiveDocument.addObject("Part::Compound","Compound001")
-        sw.Links=Gui.Selection.getSelectionEx()
+        sw.Links=Gui.Selection.getSelection()
         App.ActiveDocument.recompute()
 
     def GetResources(self):
@@ -571,7 +571,7 @@ Gui.addCommand("Nurbs_CreateCompound", Nurbs_CreateCompound())
 '''
 # Analyse Raender eines lochs
 pts=[]
-for s in Gui.Selection.getSelectionEx():
+for s in Gui.Selection.getSelection():
 
     for so in s.SubObjects:
         nn=so.toNurbs()
