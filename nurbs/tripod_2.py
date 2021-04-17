@@ -431,77 +431,101 @@ class Tripod(PartFeature):
 
 
 
+class Nurbs_CreateTripod:
+    def Activated(self):
+        self.createTripod()
+        
+    def createTripod(self):
 
-def createTripod():
+        if len(Gui.Selection.getSelection())==2:
+            a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodRefPoint")
+        else:
+            a=App.ActiveDocument.addObject("Part::FeaturePython","Tripod")
 
-    if len(Gui.Selection.getSelection())==2:
-        a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodRefPoint")
-    else:
-        a=App.ActiveDocument.addObject("Part::FeaturePython","Tripod")
-
-    Tripod(a)
-    a.ViewObject.LineWidth = 2
-    a.source=Gui.Selection.getSelection()[0]
-    ViewProvider(a.ViewObject)
-    if len(Gui.Selection.getSelection())==2:
-        a.source=Gui.Selection.getSelection()[0].Object
-        try:
-            ss=Gui.Selection.getSelection()[1].SubElementNames[0]
-        except:
-            ss=[]
-        a.ref=(Gui.Selection.getSelection()[1].Object,ss)
-        a.mode="RefPoint"
-        a.modeRef="vertical"
-
-
-def createTripodSketch(): #sketcher
-    '''creae a tripod sketch'''
-
-    ss=Gui.Selection.getSelection()
-    if len(ss) != 0:
-        for s in ss:
-            s.Object
-            subs=s.SubElementNames
-            for sub in subs:
-
-                if sub.startswith('Edge'):
-                    nr=sub[4:]
-                    print( s.Object.Name, sub, int(nr))
-                    a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
-                    #Tripod(a,mode='Sketch')
-                    Tripod(a)
-                    a.mode="Sketch"
-                    a.ViewObject.LineWidth = 1
-                    a.faceNumber=int(nr)
-                    a.wireMode=True
-                    a.source=s.Object
-                    ViewProvider(a.ViewObject)
-
-                if sub.startswith('Face'):
-                    nr=sub[4:]
-                    print( s.Object.Name, sub, int(nr))
-                    a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
-                    #Tripod(a,mode='Sketch')
-                    Tripod(a)
-                    a.mode="Sketch"
-                    a.ViewObject.LineWidth = 1
-                    a.faceNumber=int(nr)
-                    # a.wireMode=True
-                    a.source=s.Object
-                    ViewProvider(a.ViewObject)
-
-
-    else:
-        #a=App.ActiveDocument.addObject("Part::FeaturePython","Tripod")
-        a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
-        #Tripod(a,mode='Sketch')
         Tripod(a)
-        a.mode="Sketch"
         a.ViewObject.LineWidth = 2
         a.source=Gui.Selection.getSelection()[0]
         ViewProvider(a.ViewObject)
+        if len(Gui.Selection.getSelection())==2:
+            a.source=Gui.Selection.getSelection()[0].Object
+            try:
+                ss=Gui.Selection.getSelection()[1].SubElementNames[0]
+            except:
+                ss=[]
+            a.ref=(Gui.Selection.getSelection()[1].Object,ss)
+            a.mode="RefPoint"
+            a.modeRef="vertical"
 
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateTripod")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateTripod"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
+Gui.addCommand("Nurbs_CreateTripod", Nurbs_CreateTripod())
+
+class Nurbs_CreateTripodSketch:
+    def Activated(self):
+        self.createTripodSketch()
+    def createTripodSketch(self): #sketcher
+        '''creae a tripod sketch'''
+
+        ss=Gui.Selection.getSelection()
+        if len(ss) != 0:
+            for s in ss:
+                s.Object
+                subs=s.SubElementNames
+                for sub in subs:
+
+                    if sub.startswith('Edge'):
+                        nr=sub[4:]
+                        print( s.Object.Name, sub, int(nr))
+                        a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
+                        #Tripod(a,mode='Sketch')
+                        Tripod(a)
+                        a.mode="Sketch"
+                        a.ViewObject.LineWidth = 1
+                        a.faceNumber=int(nr)
+                        a.wireMode=True
+                        a.source=s.Object
+                        ViewProvider(a.ViewObject)
+
+                    if sub.startswith('Face'):
+                        nr=sub[4:]
+                        print( s.Object.Name, sub, int(nr))
+                        a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
+                        #Tripod(a,mode='Sketch')
+                        Tripod(a)
+                        a.mode="Sketch"
+                        a.ViewObject.LineWidth = 1
+                        a.faceNumber=int(nr)
+                        # a.wireMode=True
+                        a.source=s.Object
+                        ViewProvider(a.ViewObject)
+
+        else:
+            #a=App.ActiveDocument.addObject("Part::FeaturePython","Tripod")
+            a=App.ActiveDocument.addObject("Sketcher::SketchObjectPython","TripodSketch")
+            #Tripod(a,mode='Sketch')
+            Tripod(a)
+            a.mode="Sketch"
+            a.ViewObject.LineWidth = 2
+            a.source=Gui.Selection.getSelection()[0]
+            ViewProvider(a.ViewObject)
+            
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateTripodSketch")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateTripodSketch"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateTripodSketch", Nurbs_CreateTripodSketch())
 
 
 class Nurbs_CreateSweep:
@@ -561,42 +585,3 @@ class Nurbs_CreateCompound:
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateCompound"),
                 'ToolTip': QT_TRANSLATE_NOOP("Nurbs_CreateCompound ", _tooltip)}
 Gui.addCommand("Nurbs_CreateCompound", Nurbs_CreateCompound())
-
-
-
-    # createSweep()
-
-
-
-'''
-# Analyse Raender eines lochs
-pts=[]
-for s in Gui.Selection.getSelection():
-
-    for so in s.SubObjects:
-        nn=so.toNurbs()
-        print nn.Edge1.ParameterRange
-        [ui,ua]=nn.Edge1.ParameterRange
-        c=nn.Edge1.Curve
-        csegment(ui,ua)
-        Part.show(c.toShape())
-        App.ActiveDocument.ActiveObject.Shape.Vertexes[1].Tolerance = 1e-5
-        App.ActiveDocument.ActiveObject.Shape.Vertexes[0].Tolerance = 1e-5
-
-        for v in nn.Vertexes:
-            print v.Point
-            pts +=[v.Point]
-        print
-
-'''
-
-
-'''
-
-fs=App.ActiveDocument.Thickness.Shape.Faces
-print  (len(fs)
-fs += App.ActiveDocument.Surface001.Shape.Faces
-print  (len(fs)
-Part.show(Part.makeShell(fs))
-
-'''
