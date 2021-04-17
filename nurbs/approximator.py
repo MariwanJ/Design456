@@ -1329,9 +1329,9 @@ Gui.addCommand("Nurbs_minimumLengthBezier", Nurbs_minimumLengthBezier())
 
 
 
-class Nurbs_CreateMyMinA:
+class Nurbs_CreateMyMinAGUI:
     def Activated(self):
-        self._createMyMinA()
+        self._createMyMinAGUI()
     def _createMyMinAGUI(self):
         ''' myMinA-Object erzeugen'''
 
@@ -1361,12 +1361,12 @@ class Nurbs_CreateMyMinA:
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Nurbs_CreateMyMinA")
+        _tooltip = ("Nurbs_CreateMyMinAGUI")
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateMyMinA"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateMyMinAGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-Gui.addCommand("Nurbs_CreateMyMinA", Nurbs_CreateMyMinA())
+Gui.addCommand("Nurbs_CreateMyMinAGUI", Nurbs_CreateMyMinAGUI())
 
 
 class Nurbs_createMyMinSoft:

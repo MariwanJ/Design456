@@ -878,7 +878,7 @@ Gui.addCommand('Nurbs_EventFilter', Nurbs_EventFilter())
 class Nurbs_CreateGridToFace:
     '''create the 2D or 3D grid for the first face of a selected object'''
 
-    def __init__(self, name):
+    def __init__(self):
         self.name = "Design456Grid"
 
     def Activated(self):
@@ -912,7 +912,6 @@ class Nurbs_CreateGridToFace:
             'MenuText': 'Nurbs_CreateGridToFace',
                         'ToolTip':  'Nurbs_CreateGridToFace'
         }
-
 
 Gui.addCommand('Nurbs_CreateGridToFace', Nurbs_CreateGridToFace())
 
