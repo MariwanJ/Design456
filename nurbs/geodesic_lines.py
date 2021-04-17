@@ -1207,32 +1207,108 @@ def runtest1():
 
 def createGeodesic():
     '''geodesic auf koerper erzeugen'''
-    a=createGeodesicA(obj=Gui.Selection.getSelectionEx()[0])
+    a=createGeodesicA(obj=Gui.Selection.getSelection()[0])
+
+class Nurbs_geodesicMapPatchToFace:
+    def Activated(self):
+        self.geodesicMapPatchToFace()
+
+    def geodesicMapPatchToFace(self):
+        '''pfad(e) $2 auf geodesic $1 auflegen'''
+        a=createPatch(obj=Gui.Selection.getSelection()[0],
+        wire=Gui.Selection.getSelection()[1])
+        App.ActiveDocument.recompute()
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_geodesicMapPatchToFace")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_geodesicMapPatchToFace"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_geodesicMapPatchToFace", Nurbs_geodesicMapPatchToFace())
 
 
-def geodesicMapPatchToFace():
-    '''pfad(e) $2 auf geodesic $1 auflegen'''
-    a=createPatch(obj=Gui.Selection.getSelectionEx()[0],
-    wire=Gui.Selection.getSelectionEx()[1])
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
+
+class Nurbs_AppendGeodesic:
+    def Activated(self):
+        self.appendGeodesic()
+    
+    def appendGeodesic():
+        '''geodesic erzeugen, die an eine geodesic andockt'''
+        a=createGeodesicA()
+        a.pre=Gui.Selection.getSelection()[0]
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_AppendGeodesic")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_AppendGeodesic"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_AppendGeodesic", Nurbs_AppendGeodesic())
 
 
-def appendGeodesic():
-    '''geodesic erzeugen, die an eine geodesic andockt'''
-    a=createGeodesicA()
-    a.pre=Gui.Selection.getSelectionEx()[0]
+
+class Nurbs_createCurvatureStar:
+    
+    def Activated(self):
+        self.createCurvatureStar()
+        
+    def createCurvatureStar(self):
+        a=createCurvature(obj=Gui.Selection.getSelection()[0])
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createCurvatureStar")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createCurvatureStar"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createCurvatureStar", Nurbs_createCurvatureStar())
 
 
-def createCurvatureStar():
-    a=createCurvature(obj=Gui.Selection.getSelectionEx()[0])
+class Nurbs_createGeodesic:
+    def Activated(self):
+        self.createGeodesic()
+        
 
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createGeodesic")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-def    creategeodesicbunch():
-    for j in range(36):
-        a=createGeodesicA(obj=Gui.Selection.getSelectionEx()[0])
-        a.direction=j*10
+Gui.addCommand("Nurbs_createGeodesic", Nurbs_createGeodesic())
 
+class Nurbs_creategeodesicbunch:
+    def Activated(self):
+        self.creategeodesicbunch()
+        
+    def  creategeodesicbunch(self):
+        for j in range(36):
+            a=createGeodesicA(obj=Gui.Selection.getSelection()[0])
+            a.direction=j*10
+            
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createGeodesic")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_creategeodesicbunch", Nurbs_creategeodesicbunch())
 
 
 # http://cyberware.com/wb-vrml/index.html
@@ -1788,43 +1864,60 @@ def updateDistance(fp):
 
     return Part.Compound(comp)
 
-def geodesicDistance():
+# Todo : This command doesn't show the results in the GUI. What to do?
+class Nurbs_geodesicDistance:
+    def Activated(self):
+        self.geodesicDistance
 
-    obj=Gui.Selection.getSelectionEx()[0]
+    def geodesicDistance(self):
 
-    a=App.ActiveDocument.addObject("Part::FeaturePython","distance")
+        obj=Gui.Selection.getSelection()[0]
 
-    Geodesic(a,False)
-    a.obj=obj
+        a=App.ActiveDocument.addObject("Part::FeaturePython","distance")
 
-    # werte fuer random cylinder
-    a.u=48
-    a.v=45
-    a.gridsize=200
+        Geodesic(a,False)
+        a.obj=obj
+
+        # werte fuer random cylinder
+        a.u=48
+        a.v=45
+        a.gridsize=200
+
+        a.u=50
+        a.v=50
+        a.lang=100
+        a.gridsize=20
+        a.forcesize=10
+
+        a.flipNormals=True
+
+        ViewProvider(a.ViewObject)
+        if obj!=None:
+            a.Label="Distance for "+obj.Label
+        a.mode="distance"
+        print(a)
+        return a
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_geodesicDistance")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_geodesicDistance"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_geodesicDistance", Nurbs_geodesicDistance())
 
 
-    a.u=50
-    a.v=50
-    a.lang=100
-    a.gridsize=20
-    a.forcesize=10
-
-    a.flipNormals=True
-
-    ViewProvider(a.ViewObject)
-    if obj!=None:
-        a.Label="Distance for "+obj.Label
-    a.mode="distance"
-    
-    return a
 
 #-------------------------------
 # aus Draft.py
-
-if App.GuiUp:
-    from PySide import QtCore
-    from PySide.QtCore import QT_TRANSLATE_NOOP
-    gui = True
+# todo: I commentd this as it shouldn't be run automatically - Mariwan
+# if App.GuiUp:
+#     from PySide import QtCore
+#     from PySide.QtCore import QT_TRANSLATE_NOOP
+#     gui = True
 
 class MyDraftLabel:
     
@@ -2190,233 +2283,279 @@ def makeLabel(targetpoint=None,target=None,direction=None,distance=None,labeltyp
 
 
 
+class Nurbs_CreateMarker:
+    def Activated(self):
+        self.createMarker()
 
-# fuer messpunkte zum andocken
-def createMarker(u=20,v=50):
-    '''create Label'''
+    # fuer messpunkte zum andocken
+    def createMarker(self,u=20,v=50):
+        '''create Label'''
 
-    l = makeLabel(direction='Horizontal',labeltype='Position')
-    l.obj=Gui.Selection.getSelectionEx()[0]
-    l.LabelType = u"Custom"
-    l.Label="MyMarker"
-    l.ViewObject.DisplayMode = u"2D text"
-    l.ViewObject.TextSize = '15 mm'
-    App.ActiveDocument.recompute()
-    l.u=u
-    l.v=v
-    try:
-        l.TargetPoint=l.obj.Shape.Faces[0].Surface.value(l.u*0.01,l.v*0.01)
-    except:
-        l.TargetPoint=l.obj.Shape.Edges[0].Curve.value(l.u*0.01)
-    hideAllProps(l,pns=['Text','CustomText','LabelType'])
-    return l
-
-
-
-
-
-
-
-
-def findGeodesicToTarget(start=None,target=None,d=10):
-
-    print 
-    print ("step")
-
-    if start==None:
-        start=Gui.Selection.getSelectionEx()[0]
-    if target==None:
-        target=Gui.Selection.getSelectionEx()[1]
-
-    assert start.obj == target.obj
-    assert start.facenumber == target.facenumber
-
-    f=start.obj.Shape.Faces[start.facenumber]
-
-    pt=target.TargetPoint
-    u=start.u
-    v=start.v
-
-    sf=f.Surface
-
-    print ("Start:",start.TargetPoint)
-    print ("Ziel:",target.TargetPoint)
-    print ("----------",u,v)
- 
-    lang=30
-    minl=10**10
-
-    def runfak(lang,d,fak,anz,minl):
-        for i in range(anz):
-            if i==0: minp=[lang,d]
-            print ("------------",i,minp, minl)
-            print 
-            ta=time.time()
-            found=False
-            faktor=fak
-            for dd in [-1,0,1]:
-                for dl in [-1,0,1]:
-                        if lang+faktor*dl <=0: continue
-                        pts,norms,tans=genRibForUpdateDistance(f,u=u,v=v,d=d+faktor*dd,lang=lang+faktor*dl,gridsize=10)
-                        ptsa=[App.Vector(tuple(p)) for p in pts]
-                        la=(pt-ptsa[-1]).Length
-                        if la<minl:
-                            minl=la
-                            minp=[lang+faktor*dl,d+faktor*dd]
-                            print ("wechsel ",minp)
-                            found=True
-
-                        cp=colorPath(ptsa,color='0 1 0',name=None)
-                        name="A_"+str(lang+faktor*dl)+"_"+str(d+faktor*dd)
-                        name="A_"
-                        drawColorLines(start.obj,name,cp)
-
-            [lang,d]=minp
-            [lange,de]=minp
-            Gui.updateGui()
-            dti=time.time()-ta
-            print ("Loop time ",dti,len(pts),dti/len(pts))
-            if not found: 
-                print ("nichts mehr gefunden")
-                break
-
-        print (lange,de)
-
-        pts,norms,tans=genRibForUpdateDistance(f,u=u,v=v,d=de,lang=lange,gridsize=10)
-
-        #display the current path
-        ptsa=[App.Vector(tuple(p)) for p in pts]
-        cp2=colorPath(ptsa,color='1 0 0',name=None)
-        name="A_"
-        drawColorLines(start.obj,name,cp2)
-
-        return [lange,de,minl]
-
-    if 10:
-        anz=20
-        fak=10
-        [lang,d,minl]=runfak(lang,d,fak,anz,minl)
-        print (lang,d,"distance",minl)
-
-    if 10:
-        anz=14
-        fak=1
-        [lang,d,minl]=runfak(lang,d,fak,anz,minl)
-        print
-        print ("lang,direction:",lang,d,"distance:",minl)
-
-
-
-
-
-
-    a=App.ActiveDocument.addObject("Part::FeaturePython","Geodesic")
-
-    Geodesic(a)
-    a.obj=start.obj
-    ViewProvider(a.ViewObject)
-
-    a.Label="Geodesic on " + a.obj.Label + " from "+start.Label +  " to " + target.Label
-    a.mode="geodesic"
-
-    a.lang=lang
-    a.lang2=0
-    a.lang3=0
-    a.direction=d
-    a.ut=target.u
-    a.vt=target.v
-    a.u=start.u
-    a.v=start.v
-    
-
-
-
-
-
-def createShoeMarkers():
-
-    markers=[
-
-    'A2',4,76,
-    'A',4,50.5,
-    'A1',4,26,
-    
-    'J',20,50.4,
-    'J1',22,26,
-    'J2',20,76,
-
-    'I1',30.9,26,
-    'I2',30.9,76,
-
-    'E',51.54,50.6,
-    'G',30.9,50.6,
-
-    # Ferse
-    'HF1',98.,29.,
-    'HF2',98.,70.,
-
-    'H1',98.,40.,
-    'H2',98.,60.,
-
-
-    # Knoechel
-    'K2', 70.,60.,
-    'K1', 70.,40.,
-
-
-    'KF2', 70.,70.,
-    'KF1', 70.,30.,
-
-    
-    
-    ]
-    da=3
-    db=len(markers)/da
-    markers=np.array(markers).reshape(db,da)# [:3]
-
-
-    for m in markers:
-        print ("!",m)
-
-        l = makeLabel(
-            targetpoint=App.Vector (0.0, -18.226360321044922, 53.260826110839844),
-            direction='Horizontal',
-            labeltype='Position',
-        )
-        l.obj=App.ActiveDocument.Poles
+        l = makeLabel(direction='Horizontal',labeltype='Position')
+        l.obj=Gui.Selection.getSelection()[0]
         l.LabelType = u"Custom"
-        l.Label=m[0]
+        l.Label="MyMarker"
         l.ViewObject.DisplayMode = u"2D text"
         l.ViewObject.TextSize = '15 mm'
-        l.u,l.v=float(m[1]),float(m[2])
         App.ActiveDocument.recompute()
-        App.ActiveDocument.recompute()
-        l.Placement.Base=App.Vector(l.TargetPoint.x,l.TargetPoint.y*3,l.TargetPoint.z+30)
-        l.ViewObject.LineColor=(1.0,.6,0.)
-        l.ViewObject.LineWidth=4.
-        App.ActiveDocument.recompute()
+        l.u=u
+        l.v=v
+        try:
+            l.TargetPoint=l.obj.Shape.Faces[0].Surface.value(l.u*0.01,l.v*0.01)
+        except:
+            l.TargetPoint=l.obj.Shape.Edges[0].Curve.value(l.u*0.01)
+        hideAllProps(l,pns=['Text','CustomText','LabelType'])
+        return l
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateMarker")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateMarker"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateMarker", Nurbs_CreateMarker())
 
 
 
-def connectMarkers():
 
-    connList=[
-                ('A2','A'),    ('J2','J'),    ('I2','G'),
-                ('A','J'), ('J','G'),
-                ('J2','A2'),('I2','J2'),
-                ('G','E'),('E','K2'),('KF2','K2'),('KF2','I2'),
-                ('HF2','KF2'),
-                ('H2','HF2'),
-                ('K2','H2'),
-            ]
 
-    for a,b in connList:
 
-        al=App.ActiveDocument.getObjectsByLabel(a)
-        aob=al[0]
-        bl=App.ActiveDocument.getObjectsByLabel(b)
-        bob=bl[0]
-        if a=='HF2' and b=='KF2':connectMarkers(aob,bob,d=190)
-        elif a=='H2' and b=='HF2':connectMarkers(aob,bob,d=190)
-        else:connectMarkers(aob,bob)
-        App.ActiveDocument.recompute()
+
+class Nurbs_FindGeodesicToTarget:
+    def Activated(self):
+        self.findGeodesicToTarget()
+        
+    def findGeodesicToTarget(self,start=None,target=None,d=10):
+
+        print 
+        print ("step")
+
+        if start==None:
+            start=Gui.Selection.getSelection()[0]
+        if target==None:
+            target=Gui.Selection.getSelection()[1]
+
+        assert start.obj == target.obj
+        assert start.facenumber == target.facenumber
+
+        f=start.obj.Shape.Faces[start.facenumber]
+
+        pt=target.TargetPoint
+        u=start.u
+        v=start.v
+
+        sf=f.Surface
+
+        print ("Start:",start.TargetPoint)
+        print ("Ziel:",target.TargetPoint)
+        print ("----------",u,v)
+    
+        lang=30
+        minl=10**10
+
+        def runfak(lang,d,fak,anz,minl):
+            for i in range(anz):
+                if i==0: minp=[lang,d]
+                print ("------------",i,minp, minl)
+                print 
+                ta=time.time()
+                found=False
+                faktor=fak
+                for dd in [-1,0,1]:
+                    for dl in [-1,0,1]:
+                            if lang+faktor*dl <=0: continue
+                            pts,norms,tans=genRibForUpdateDistance(f,u=u,v=v,d=d+faktor*dd,lang=lang+faktor*dl,gridsize=10)
+                            ptsa=[App.Vector(tuple(p)) for p in pts]
+                            la=(pt-ptsa[-1]).Length
+                            if la<minl:
+                                minl=la
+                                minp=[lang+faktor*dl,d+faktor*dd]
+                                print ("wechsel ",minp)
+                                found=True
+
+                            cp=colorPath(ptsa,color='0 1 0',name=None)
+                            name="A_"+str(lang+faktor*dl)+"_"+str(d+faktor*dd)
+                            name="A_"
+                            drawColorLines(start.obj,name,cp)
+
+                [lang,d]=minp
+                [lange,de]=minp
+                Gui.updateGui()
+                dti=time.time()-ta
+                print ("Loop time ",dti,len(pts),dti/len(pts))
+                if not found: 
+                    print ("nichts mehr gefunden")
+                    break
+
+            print (lange,de)
+
+            pts,norms,tans=genRibForUpdateDistance(f,u=u,v=v,d=de,lang=lange,gridsize=10)
+
+            #display the current path
+            ptsa=[App.Vector(tuple(p)) for p in pts]
+            cp2=colorPath(ptsa,color='1 0 0',name=None)
+            name="A_"
+            drawColorLines(start.obj,name,cp2)
+
+            return [lange,de,minl]
+
+        if 10:
+            anz=20
+            fak=10
+            [lang,d,minl]=runfak(lang,d,fak,anz,minl)
+            print (lang,d,"distance",minl)
+
+        if 10:
+            anz=14
+            fak=1
+            [lang,d,minl]=runfak(lang,d,fak,anz,minl)
+            print
+            print ("lang,direction:",lang,d,"distance:",minl)
+
+        a=App.ActiveDocument.addObject("Part::FeaturePython","Geodesic")
+
+        Geodesic(a)
+        a.obj=start.obj
+        ViewProvider(a.ViewObject)
+
+        a.Label="Geodesic on " + a.obj.Label + " from "+start.Label +  " to " + target.Label
+        a.mode="geodesic"
+
+        a.lang=lang
+        a.lang2=0
+        a.lang3=0
+        a.direction=d
+        a.ut=target.u
+        a.vt=target.v
+        a.u=start.u
+        a.v=start.v
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_FindGeodesicToTarget")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FindGeodesicToTarget"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_FindGeodesicToTarget", Nurbs_FindGeodesicToTarget())
+
+
+
+
+class Nurbs_CreateShoeMarkers:
+    def Activated(self):
+        self.createShoeMarkers
+
+    def createShoeMarkers(self):
+
+        markers=[
+
+        'A2',4,76,
+        'A',4,50.5,
+        'A1',4,26,
+
+        'J',20,50.4,
+        'J1',22,26,
+        'J2',20,76,
+
+        'I1',30.9,26,
+        'I2',30.9,76,
+
+        'E',51.54,50.6,
+        'G',30.9,50.6,
+
+        # Ferse
+        'HF1',98.,29.,
+        'HF2',98.,70.,
+
+        'H1',98.,40.,
+        'H2',98.,60.,
+
+
+        # Knoechel
+        'K2', 70.,60.,
+        'K1', 70.,40.,
+
+
+        'KF2', 70.,70.,
+        'KF1', 70.,30.,
+
+        ]
+        da=3
+        db=len(markers)/da
+        markers=np.array(markers).reshape(db,da)# [:3]
+
+
+        for m in markers:
+            print ("!",m)
+
+            l = makeLabel(
+                targetpoint=App.Vector (0.0, -18.226360321044922, 53.260826110839844),
+                direction='Horizontal',
+                labeltype='Position',
+            )
+            l.obj=App.ActiveDocument.Poles
+            l.LabelType = u"Custom"
+            l.Label=m[0]
+            l.ViewObject.DisplayMode = u"2D text"
+            l.ViewObject.TextSize = '15 mm'
+            l.u,l.v=float(m[1]),float(m[2])
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.recompute()
+            l.Placement.Base=App.Vector(l.TargetPoint.x,l.TargetPoint.y*3,l.TargetPoint.z+30)
+            l.ViewObject.LineColor=(1.0,.6,0.)
+            l.ViewObject.LineWidth=4.
+            App.ActiveDocument.recompute()
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateShoeMarkers")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateShoeMarkers"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateShoeMarkers", Nurbs_CreateShoeMarkers())
+
+
+
+class Nurbs_ConnectMarkers:
+    def Activated(self):
+        self.connectMarkers()
+    def connectMarkers(self):
+        connList=[
+                    ('A2','A'),    ('J2','J'),    ('I2','G'),
+                    ('A','J'), ('J','G'),
+                    ('J2','A2'),('I2','J2'),
+                    ('G','E'),('E','K2'),('KF2','K2'),('KF2','I2'),
+                    ('HF2','KF2'),
+                    ('H2','HF2'),
+                    ('K2','H2'),
+                ]
+
+        for a,b in connList:
+
+            al=App.ActiveDocument.getObjectsByLabel(a)
+            aob=al[0]
+            bl=App.ActiveDocument.getObjectsByLabel(b)
+            bob=bl[0]
+            if a=='HF2' and b=='KF2':connectMarkers(aob,bob,d=190)
+            elif a=='H2' and b=='HF2':connectMarkers(aob,bob,d=190)
+            else:connectMarkers(aob,bob)
+            App.ActiveDocument.recompute()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateShoeMarkers")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateShoeMarkers"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateShoeMarkers", Nurbs_CreateShoeMarkers())

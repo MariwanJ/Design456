@@ -55,6 +55,13 @@ class Design456_Nurbs_2DToolsGroup:
                 'Nurbs_createGordon',
                 'Nurbs_BSplineToBezierCurve1',
                 'Nurbs_BSplineToBezierCurve2',
+                'Nurbs_geodesicMapPatchToFace',
+                'Nurbs_creategeodesicbunch',
+                'Nurbs_CreateShoeMarkers',
+                '',
+                '',
+                '',
+                
                 
                 
                 

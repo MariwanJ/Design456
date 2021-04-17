@@ -61,9 +61,16 @@ class Design456_Nurbs_Miscellaneous:
                 'Nurbs_DontKnowWhatThisDo_B',
                 'Nurbs_BumpFacefromImageGUI',
                 'Nurbs_createBezierPolesFramefromribsGUI',
+                'Nurbs_CreateMyMinA',
+                'Nurbs_createMyMinSoft',
+                'Nurbs_smoothPointcloudGUI',
+                'Nurbs_createCurvatureStar',
+                'Nurbs_createGeodesic',
+                'Nurbs_CreateMarker',
+                'Nurbs_FindGeodesicToTarget',
+                'Nurbs_AppendGeodesic',
                 '',
-                '',
-                '',
+                
 
                 )
 
