@@ -248,10 +248,30 @@ def createPointCloudApprox():
     ViewProvider(a.ViewObject)
     return a
 
+class Nurbs_smoothPointcloudGUI:
+    def Activated(self):
+        self._smoothPointcloudGUI()
+    
+    def _smoothPointcloudGUI(self):
+        '''smooth the point cloud to a bspline curve'''
+        mikigui = createMikiGui2(layout, myApp)
+        mikigui.part = createPointCloudApprox()
+        mikigui.run()
+        return mikigui
 
-def _smoothPointcloudGUI():
-    '''smooth the point cloud to a bspline curve'''
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_smoothPointcloudGUI")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_smoothPointcloudGUI"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
+Gui.addCommand("Nurbs_smoothPointcloudGUI", Nurbs_smoothPointcloudGUI())
+
+
+    
 # \cond
     layout = '''
     MainWindow:
@@ -299,45 +319,32 @@ def _smoothPointcloudGUI():
             run_display: Design456Init.NURBS_ICON_PATH+"bp_841.png"
         '''
 
-    class myApp(MikiApp):
-
-        # temp. testdaten fuer den image widget
-        index = 0
-        images = [Design456Init.NURBS_ICON_PATH+"bp_842.png",
-        Design456Init.NURBS_ICON_PATH+"bp_843.png",
-        Design456Init.NURBS_ICON_PATH+"bp_844.png"
-        ]
-
-        def myclose(self):
-            self.close()
-
-        def changeImage(self):
-            '''test method for image widget '''
-
-            self.root.ids['image'].run_display(self.images[self.index])
-            self.index += 1
-            if self.index >= len(self.images): self.index = 0
-
-        def run(self):
-            modus = self.root.ids['mode'].currentText()
-
-            try:
-                print("part is ..", self.part)
-            except:
-                print("no object assigned yet")
-                return
-
-            try:
-                tb = self.root.ids['tbb'].value()
-                self.part.count = int(round(tb))
-
-            except:
-                return
-
-    mikigui = createMikiGui2(layout, myApp)
-    mikigui.part = createPointCloudApprox()
-    mikigui.run()
-    return mikigui
+class myApp(MikiApp):
+    # temp. testdaten fuer den image widget
+    index = 0
+    images = [Design456Init.NURBS_ICON_PATH+"bp_842.png",
+    Design456Init.NURBS_ICON_PATH+"bp_843.png",
+    Design456Init.NURBS_ICON_PATH+"bp_844.png"
+    ]
+    def myclose(self):
+        self.close()
+    def changeImage(self):
+        '''test method for image widget '''
+        self.root.ids['image'].run_display(self.images[self.index])
+        self.index += 1
+        if self.index >= len(self.images): self.index = 0
+    def run(self):
+        modus = self.root.ids['mode'].currentText()
+        try:
+            print("part is ..", self.part)
+        except:
+            print("no object assigned yet")
+            return
+        try:
+            tb = self.root.ids['tbb'].value()
+            self.part.count = int(round(tb))
+        except:
+            return
 
 # \ endcond
 
@@ -371,15 +378,29 @@ class ImagePoints(FeaturePython):
 
         obj.Points = Points.Points(pts)
 
+class Nurbs_loadPointcloudfromImageGUI:
+    def Activated(self):
+        self._loadPointcloudfromImage()
+    def _loadPointcloudfromImageGUI(self):
+        ''' Load image file'''
 
-def _loadPointcloudfromImageGUI():
-    ''' Load image file'''
+        fn = '/home/thomas/Downloads/Profil-Punktewolke3D.png'
+        yy = App.ActiveDocument.addObject("Points::FeaturePython", "ImagePoints")
+        ImagePoints(yy)
+        yy.image = fn
+        ViewProvider(yy.ViewObject)
 
-    fn = '/home/thomas/Downloads/Profil-Punktewolke3D.png'
-    yy = App.ActiveDocument.addObject("Points::FeaturePython", "ImagePoints")
-    ImagePoints(yy)
-    yy.image = fn
-    ViewProvider(yy.ViewObject)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_loadPointcloudfromImageGUI")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_loadPointcloudfromImageGUI"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_loadPointcloudfromImageGUI", Nurbs_loadPointcloudfromImageGUI())
+
 
 
 # ------------------------ Show image on nurbs
@@ -730,15 +751,30 @@ class ImagePoints2(FeaturePython):
 
             obj.Shape = bc.toShape()
 
+#Attach an image to a cylinder 
+class Nurbs_LoadCylinderfacefromImageGUI:
+    def Activated(self):
+        self._loadCylinderfacefromImageGUI()
+    
+    def _loadCylinderfacefromImageGUI():
+        yy = App.ActiveDocument.addObject("Part::FeaturePython", "ImageSurface")
+        ImagePoints2(yy)
+        yy.mode = 'cylinder'
+        fn = Design456Init.NURBS_IMAGES_PATH+'2364.png'
+        yy.image = fn
+        ViewProvider(yy.ViewObject)
 
-def _loadCylinderfacefromImageGUI():
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_LoadCylinderfacefromImageGUI")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LoadCylinderfacefromImageGUI"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    yy = App.ActiveDocument.addObject("Part::FeaturePython", "ImageSurface")
-    ImagePoints2(yy)
-    yy.mode = 'cylinder'
-    fn = Design456Init.NURBS_IMAGES_PATH+'2364.png'
-    yy.image = fn
-    ViewProvider(yy.ViewObject)
+Gui.addCommand("Nurbs_LoadCylinderfacefromImageGUI", Nurbs_LoadCylinderfacefromImageGUI())
+
 
 
 class Nurbs_BumpFacefromImageGUI:
@@ -1289,55 +1325,82 @@ Gui.addCommand("Nurbs_minimumLengthBezier", Nurbs_minimumLengthBezier())
 
 
 
+class Nurbs_CreateMyMinA:
+    def Activated(self):
+        self._createMyMinA()
+    def _createMyMinAGUI(self):
+        ''' myMinA-Object erzeugen'''
 
-def _createMyMinAGUI():
-    ''' myMinA-Object erzeugen'''
+        ss = Gui.Selection.getSelection()
+        if len(ss) == 0:
+            s = App.ActiveDocument.addObject(
+                'Sketcher::SketchObject', 'Sketch_forMyMinA')
+            s.addGeometry(Part.LineSegment(
+                App.Vector(-20, 0, 0), App.Vector(-10, 10, 0)), False)
+            s.addGeometry(Part.LineSegment(
+                App.Vector(-10, 10, 0), App.Vector(10, 10, 0)), False)
+            s.addConstraint(Sketcher.Constraint('Coincident', 0, 2, 1, 1))
+            s.addGeometry(Part.LineSegment(App.Vector(
+                10, 10, 0), App.Vector(20, -10, 0)), False)
+            s.addConstraint(Sketcher.Constraint('Coincident', 1, 2, 2, 1))
+            App.ActiveDocument.recompute()
+            ss = [s]
 
-    ss = Gui.Selection.getSelection()
-    if len(ss) == 0:
-        s = App.ActiveDocument.addObject(
-            'Sketcher::SketchObject', 'Sketch_forMyMinA')
-        s.addGeometry(Part.LineSegment(
-            App.Vector(-20, 0, 0), App.Vector(-10, 10, 0)), False)
-        s.addGeometry(Part.LineSegment(
-            App.Vector(-10, 10, 0), App.Vector(10, 10, 0)), False)
-        s.addConstraint(Sketcher.Constraint('Coincident', 0, 2, 1, 1))
-        s.addGeometry(Part.LineSegment(App.Vector(
-            10, 10, 0), App.Vector(20, -10, 0)), False)
-        s.addConstraint(Sketcher.Constraint('Coincident', 1, 2, 2, 1))
-        App.ActiveDocument.recompute()
-        ss = [s]
+        for s in ss:
+            yy = App.ActiveDocument.addObject("Part::FeaturePython", "MyMinA")
+            MinLengthBezier(yy, mode='myMinA', method='Nelder-Mead')
+            ViewProvider(yy.ViewObject)
+            yy.path = s
+            yy.ViewObject.LineColor = (.3, 1., 0.0)
 
-    for s in ss:
-        yy = App.ActiveDocument.addObject("Part::FeaturePython", "MyMinA")
-        MinLengthBezier(yy, mode='myMinA', method='Nelder-Mead')
-        ViewProvider(yy.ViewObject)
-        yy.path = s
-        yy.ViewObject.LineColor = (.3, 1., 0.0)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateMyMinA")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateMyMinA"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-
-def _createMyMinSoftGUI():
-    ''' myMinSoft-Object erzeugen'''
-
-    for s in Gui.Selection.getSelection():
-        yy = App.ActiveDocument.addObject("Part::FeaturePython", "MyMinSoft")
-        MinLengthBezier(yy, mode='myMinSoft', method='Nelder-Mead')
-        ViewProvider(yy.ViewObject)
-        yy.path = s
-        yy.ViewObject.LineColor = (.3, 1., 0.0)
+Gui.addCommand("Nurbs_CreateMyMinA", Nurbs_CreateMyMinA())
 
 
-'''
-if 1:
-    pts=[App.Vector(0,0,0),
-            App.Vector(300,0,0),
-            App.Vector(500,200,300),
-            App.Vector(500,400,500),
-            App.Vector(500,400,800),
-            ]
-    import Draft
-    Draft.makeWire(pts)
-'''
+class Nurbs_createMyMinSoft:
+    def Activated(self):
+        self._createMyMinSoft()
+    def _createMyMinSoftGUI(self):
+        ''' myMinSoft-Object erzeugen'''
+
+        for s in Gui.Selection.getSelection():
+            yy = App.ActiveDocument.addObject("Part::FeaturePython", "MyMinSoft")
+            MinLengthBezier(yy, mode='myMinSoft', method='Nelder-Mead')
+            ViewProvider(yy.ViewObject)
+            yy.path = s
+            yy.ViewObject.LineColor = (.3, 1., 0.0)
+
+        '''
+        if 1:
+            pts=[App.Vector(0,0,0),
+                    App.Vector(300,0,0),
+                    App.Vector(500,200,300),
+                    App.Vector(500,400,500),
+                    App.Vector(500,400,800),
+                    ]
+            import Draft
+            Draft.makeWire(pts)
+        '''
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createMyMinSoft")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createMyMinSoft"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createMyMinSoft", Nurbs_createMyMinSoft())
+
 
 
 class ConstantCurvatureBezier(FeaturePython):
@@ -1885,7 +1948,6 @@ class Nurbs_createBezierPolesFramefromribsGUI:
 Gui.addCommand("Nurbs_createBezierPolesFramefromribsGUI", Nurbs_createBezierPolesFramefromribsGUI())
 
 
-
 # ---------------------
 
 def swapCurves(sel=None, mode='polygons', extraknots=None):
@@ -2144,15 +2206,29 @@ class Ribface(FeaturePython):
         if obj.shapeMode == "PolesFrame" or obj.shapeMode == "Both":
             obj.Shape = Part.Compound(cols)
 
+class Nurbs_RibstoFace:
+    def Activated(self):
+        self.RibstoFace()
+    def RibstoFace(self):
+        ''' swap, umformen in bezier,m flaeche machen'''
 
-def RibstoFace():
-    ''' swap, umformen in bezier,m flaeche machen'''
+        yy = App.ActiveDocument.addObject("Part::FeaturePython", "RibFace")
+        Ribface(yy)
+        yy.ribs = Gui.Selection.getSelection()
+        ViewProvider(yy.ViewObject)
+        yy.ViewObject.ShapeColor = (.6, .6, 1.)
 
-    yy = App.ActiveDocument.addObject("Part::FeaturePython", "RibFace")
-    Ribface(yy)
-    yy.ribs = Gui.Selection.getSelection()
-    ViewProvider(yy.ViewObject)
-    yy.ViewObject.ShapeColor = (.6, .6, 1.)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_RibstoFace")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_RibstoFace"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_RibstoFace", Nurbs_RibstoFace())
+
 
 
 #
