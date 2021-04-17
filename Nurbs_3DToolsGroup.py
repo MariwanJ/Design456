@@ -43,6 +43,14 @@ class Design456_Nurbs_3DToolsGroup:
                 'Nurbs_CreateQuadPlacement',
                 'Nurbs_Stretchandbend',
                 'Nurbs_FixCorner',
+                'Nurbs_LoadCylinderfacefromImageGUI',
+                'Nurbs_loadPointcloudfromImageGUI',
+                'Nurbs_RibstoFace',
+                '',
+                '',
+                '',
+                
+                
                 
                 
 

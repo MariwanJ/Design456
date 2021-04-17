@@ -78,7 +78,7 @@ class Nurbs_CurveDistance:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CurveDistance")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Nurbs2.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CurveDistance"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
