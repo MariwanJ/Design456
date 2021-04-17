@@ -500,8 +500,6 @@ class Nurbs_createMorpher:
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createMorpher"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_createMorpher", _tooltip)}
-
-
 Gui.addCommand("Nurbs_createMorpher", Nurbs_createMorpher())
 
 
