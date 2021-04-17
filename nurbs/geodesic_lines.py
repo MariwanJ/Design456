@@ -1236,7 +1236,7 @@ class Nurbs_AppendGeodesic:
     def Activated(self):
         self.appendGeodesic()
     
-    def appendGeodesic():
+    def appendGeodesic(self):
         '''geodesic erzeugen, die an eine geodesic andockt'''
         a=createGeodesicA()
         a.pre=Gui.Selection.getSelection()[0]
@@ -1274,21 +1274,25 @@ class Nurbs_createCurvatureStar:
 Gui.addCommand("Nurbs_createCurvatureStar", Nurbs_createCurvatureStar())
 
 
-class Nurbs_createGeodesic:
+class Nurbs_createGeodesicA:
     def Activated(self):
-        self.createGeodesic()
+        self.createGeodesicA()
         
+    def createGeodesicA(self):
+        '''geodesic erzeugen, die an eine geodesic andockt'''
+        a=createGeodesicA()
+        a.pre=Gui.Selection.getSelection()[0]
 
     def GetResources(self):
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Nurbs_createGeodesic")
+        _tooltip = ("Nurbs_createGeodesicA")
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createGeodesicA"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-Gui.addCommand("Nurbs_createGeodesic", Nurbs_createGeodesic())
+Gui.addCommand("Nurbs_createGeodesicA", Nurbs_createGeodesicA())
 
 class Nurbs_creategeodesicbunch:
     def Activated(self):

@@ -596,7 +596,7 @@ class Map(PartFeature):
 
 
 class createMap:
-    def __init_(self,mode=''):
+    def __init__(self,mode=''):
         self.mode=mode
          
     def Activated(self):
