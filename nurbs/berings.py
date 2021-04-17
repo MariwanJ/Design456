@@ -1276,17 +1276,45 @@ class Corner(FeaturePython):
 
 
 
+class Nurbs_FixCorner:
+    def Activated(self):
+        self.fixCorner()
+# find  a common corner for three faces
+#
+    def fixCorner(self):
+        sel=Gui.Selection.getSelection()
+        if(len(sel!=3))
+            # 3 edges must be selected
+            errMessage = "Select 3 edges to use the tool"
+            faced.getInfo(s).errorDialog(errMessage)
+            return
+        (a,b,c)=Gui.Selection.getSelection()
+        _fixCorner(a,b,c)
+        App.ActiveDocument.recompute()
 
-def _fixCorner(a,b,c):
+    def _fixCorner(self,a,b,c):
 
-    res=App.ActiveDocument.addObject("Part::FeaturePython","Corner")
-    res.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    res.ViewObject.Visibility=False
-    Corner(res)
+        res=App.ActiveDocument.addObject("Part::FeaturePython","Corner")
+        res.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        res.ViewObject.Visibility=False
+        Corner(res)
 
-    res.sourceA=a
-    res.sourceB=b
-    res.sourceC=c
+        res.sourceA=a
+        res.sourceB=b
+        res.sourceC=c
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_FixCorner")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FixCorner"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_FixCorner", Nurbs_FixCorner())
+
+
 
 
 def _moveCorner(res,onlypos=False):
@@ -2149,78 +2177,91 @@ class Nurbs_BSplineToBezierCurve1:
 
 Gui.addCommand("Nurbs_BSplineToBezierCurve1", Nurbs_BSplineToBezierCurve1())
 
+#TODO: Idon't know what is the difference between these commands. They had the same name- Mariwan
+class Nurbs_BSplineToBezierCurve2:
+    def Activated(self):
+        self.BSplineToBezierCurve()
+        
+    def BSplineToBezierCurve(self):
+        '''create a degree 3 curve with multiplicities always 3'''
+        for obj in Gui.Selection.getSelection():
+            poles=[]
+            for i,e in enumerate(obj.Shape.Edges):
+                print( e)
+                App.e=e
+                if len(e.Vertexes)==1:
+                    continue
+                bc=e.Curve
+
+                if bc.Degree>3:
+                    say.showdialog("curves with degree >3 are not supported")
+                bc.increaseDegree(3)
+
+                for k in bc.getKnots():
+                    bc.insertKnot(k,3)
 
 
-def BSplineToBezierCurve():
-    '''create a degree 3 curve with multiplicities always 3'''
+                mults=bc.getMultiplicities()
+                print (mults)
+                pp=bc.getPoles()
+                if i == 0:
+                    poles = bc.getPoles()
+                if i == 1:
+                    print ("in 1")
+                    if (poles[0]-pp[0]).Length<0.1 or (poles[0]-pp[-1]).Length<0.1:
+                        print ("drehen")
+                        poles=poles[::-1]
+                    if (poles[-1]-pp[-1]).Length <0.1:
+                        print ("drehen 2")
+                        pp=pp[::-1]
+                    poles += pp[1:]
+                if i>1:
+                    if (poles[-1]-pp[-1]).Length <0.1:
+                        print ("drehen 2")
+                        pp=pp[::-1]
+                    poles += pp[1:]
 
 
-    for obj in Gui.Selection.getSelection():
-        poles=[]
-        for i,e in enumerate(obj.Shape.Edges):
-            print( e)
-            App.e=e
-            if len(e.Vertexes)==1:
-                continue
-            bc=e.Curve
+                pp=bc.getPoles()
+    #                print p
+                print  (len(bc.getPoles()))
+                print (pp[0])
+                print (pp[-1])
 
-            if bc.Degree>3:
-                say.showdialog("curves with degree >3 are not supported")
-            bc.increaseDegree(3)
+            Draft.makeWire(poles)
+        #    return
 
-            for k in bc.getKnots():
-                bc.insertKnot(k,3)
-
-
-            mults=bc.getMultiplicities()
+            print  (len(poles))
+            mults=[4]+[3]*((len(poles)-1)/3-1)+[4]
+            knots=range(len(mults))
+            print ("huhu")
             print (mults)
-            pp=bc.getPoles()
-            if i == 0:
-                poles = bc.getPoles()
-            if i == 1:
-                print ("in 1")
-                if (poles[0]-pp[0]).Length<0.1 or (poles[0]-pp[-1]).Length<0.1:
-                    print ("drehen")
-                    poles=poles[::-1]
-                if (poles[-1]-pp[-1]).Length <0.1:
-                    print ("drehen 2")
-                    pp=pp[::-1]
-                poles += pp[1:]
-            if i>1:
-                if (poles[-1]-pp[-1]).Length <0.1:
-                    print ("drehen 2")
-                    pp=pp[::-1]
-                poles += pp[1:]
+            print (knots)
 
+            bc2=Part.BSplineCurve()
+            bc2.buildFromPolesMultsKnots(poles,    mults,knots,False,3)
 
-            pp=bc.getPoles()
-#                print p
-            print  (len(bc.getPoles()))
-            print (pp[0])
-            print (pp[-1])
+            for i in range(1,len(mults)-1):
+                print (i,mults[i])
+                if mults[i]<3:
+                    bc2.insertKnot(i,3)
 
-        Draft.makeWire(poles)
-    #    return
+            t=App.ActiveDocument.addObject('Part::Spline',obj.Name)
+            t.Label=obj.Label+" Bezier"
+            t.Shape=bc2.toShape()
+            t.ViewObject.ControlPoints=True
+            
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_BSplineToBezierCurve2")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_BSplineToBezierCurve2"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-        print  (len(poles))
-        mults=[4]+[3]*((len(poles)-1)/3-1)+[4]
-        knots=range(len(mults))
-        print ("huhu")
-        print (mults)
-        print (knots)
+Gui.addCommand("Nurbs_BSplineToBezierCurve2", Nurbs_BSplineToBezierCurve2())
 
-        bc2=Part.BSplineCurve()
-        bc2.buildFromPolesMultsKnots(poles,    mults,knots,False,3)
-
-        for i in range(1,len(mults)-1):
-            print (i,mults[i])
-            if mults[i]<3:
-                bc2.insertKnot(i,3)
-
-        t=App.ActiveDocument.addObject('Part::Spline',obj.Name)
-        t.Label=obj.Label+" Bezier"
-        t.Shape=bc2.toShape()
-        t.ViewObject.ControlPoints=True
 #---------------
 
 ## a Bezier Surface on base of a given BSpline Surface
@@ -2282,19 +2323,32 @@ class BezierSurface(FeaturePython):
 
 #---------------
 
-
+class Nurbs_BSplineToBezierSurface:
+    def Activated(self):
+        self.BSplineToBezierSurface()
 ## create a Bezier Surface for a selectde BSpline Surface
 
-def BSplineToBezierSurface():
+    def BSplineToBezierSurface(self):
+        s=Gui.Selection.getSelection()[0]
+        sf=App.ActiveDocument.addObject('Part::FeaturePython','BezierSurface')
 
-    s=Gui.Selection.getSelection()[0]
-    sf=App.ActiveDocument.addObject('Part::FeaturePython','BezierSurface')
+        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+        BezierSurface(sf)
+        ViewProvider(sf.ViewObject)
+        sf.source=s
+        App.ActiveDocument.recompute()
 
-    sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-    BezierSurface(sf)
-    ViewProvider(sf.ViewObject)
-    sf.source=s
-    App.ActiveDocument.recompute()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_BSplineToBezierSurface")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_BSplineToBezierSurface"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_BSplineToBezierSurface", Nurbs_BSplineToBezierSurface())
+
 
 
 
@@ -3029,15 +3083,6 @@ Gui.addCommand("Nurbs_connectFaces", Nurbs_connectFaces())
 
 
 
-# find  a common corner for three faces
-#
-
-def fixCorner():
-
-
-    (a,b,c)=Gui.Selection.getSelection()
-    _fixCorner(a,b,c)
-    App.ActiveDocument.recompute()
 
 
 ## a planer Bezier Face
@@ -3864,47 +3909,62 @@ Gui.addCommand("Nurbs_SplitInToCells", Nurbs_SplitInToCells())
 
 
 
+class Nurbs_createTangentStripes:
+    def Activated(self):
+        self.createTangentStripes()
+    
+    def createTangentStripes(self):
 
-def createTangentStripes():
+        obj=Gui.Selection.getSelection()[0]
+        f=obj.Shape.Face1
+        bs=f.Surface
+        luks=len(bs.getUKnots())
+        lvks=len(bs.getVKnots())
 
-    obj=Gui.Selection.getSelection()[0]
-    f=obj.Shape.Face1
-    bs=f.Surface
-    luks=len(bs.getUKnots())
-    lvks=len(bs.getVKnots())
+        uks=bs.getUKnots()
+        vks=bs.getVKnots()
 
-    uks=bs.getUKnots()
-    vks=bs.getVKnots()
+        comps=[]
+        stripes=[
+            [0,1],
+            [-2,-1]
+        ]
+        poles=np.array(bs.getPoles())
+        for a,b in stripes:
+            rb=[poles[a],poles[b]]
+            bs2=Part.BSplineSurface()
+            bs2.buildFromPolesMultsKnots(rb,
+                [2,2],bs.getVMultiplicities(),
+                [0,2],bs.getVKnots(),
+                False,False,1,3)
 
-    comps=[]
-    stripes=[
-        [0,1],
-        [-2,-1]
-    ]
-    poles=np.array(bs.getPoles())
-    for a,b in stripes:
-        rb=[poles[a],poles[b]]
-        bs2=Part.BSplineSurface()
-        bs2.buildFromPolesMultsKnots(rb,
-            [2,2],bs.getVMultiplicities(),
-            [0,2],bs.getVKnots(),
-            False,False,1,3)
+            sk=App.ActiveDocument.addObject('Part::Spline','split')
+            sk.Shape=bs2.toShape()
 
-        sk=App.ActiveDocument.addObject('Part::Spline','split')
-        sk.Shape=bs2.toShape()
+        poles=np.array(poles).swapaxes(0,1)
 
-    poles=np.array(poles).swapaxes(0,1)
+        for a,b in stripes:
+            rb=[poles[a],poles[b]]
+            bs2=Part.BSplineSurface()
+            bs2.buildFromPolesMultsKnots(rb,
+                [2,2],bs.getUMultiplicities(),
+                [0,2],bs.getUKnots(),
+                False,False,1,3)
 
-    for a,b in stripes:
-        rb=[poles[a],poles[b]]
-        bs2=Part.BSplineSurface()
-        bs2.buildFromPolesMultsKnots(rb,
-            [2,2],bs.getUMultiplicities(),
-            [0,2],bs.getUKnots(),
-            False,False,1,3)
+            sk=App.ActiveDocument.addObject('Part::Spline','split')
+            sk.Shape=bs2.toShape()
 
-        sk=App.ActiveDocument.addObject('Part::Spline','split')
-        sk.Shape=bs2.toShape()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createTangentStripes")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createTangentStripes"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createTangentStripes", Nurbs_createTangentStripes())
+
 
 #-----------------
 
@@ -4198,8 +4258,6 @@ class Nurbs_CreateQuadPlacement:
 Gui.addCommand("Nurbs_CreateQuadPlacement", Nurbs_CreateQuadPlacement())
 
 
-
-
 def _checkCurveGUI():
     ''' testcase checkcurve'''
     obj=Gui.Selection.getSelection()[0]
@@ -4208,199 +4266,227 @@ def _checkCurveGUI():
     pass
 
 #
-def FaceToBezierSurface():
-    '''selektierte flaeche in bspline surface umwandeln'''
-    obj=Gui.Selection.getSelection()[0]
-    a=Gui.Selection.getSelection()[0]
-    for s in a.SubObjects:
-        print (s)
-        n=s.toNurbs()
-        sf=n.Face1.Surface
+class Nurbs_FaceToBezierSurface:
+    def Activated(self):
+        self.FaceToBezierSurface()
         
-        #sf.increaseDegree(3,3)
-        
-        
-        umd=max(sf.UDegree,3)
-        vmd=max(sf.VDegree,3)
-        sf.increaseDegree(umd,vmd)
-        print ("Degree ist jetzt",sf.UDegree,sf.VDegree)
+    def FaceToBezierSurface(self):
+        '''selektierte flaeche in bspline surface umwandeln'''
+        obj=Gui.Selection.getSelection()[0]
+        a=Gui.Selection.getSelection()[0]
+        for s in a.SubObjects:
+            print (s)
+            n=s.toNurbs()
+            sf=n.Face1.Surface
 
-        print (sf.getUKnots()          )
-        print (sf.getVKnots())
-        print (sf.getUMultiplicities())
-        print (sf.getVMultiplicities())
+            #sf.increaseDegree(3,3)
+
+            umd=max(sf.UDegree,3)
+            vmd=max(sf.VDegree,3)
+            sf.increaseDegree(umd,vmd)
+            print ("Degree ist jetzt",sf.UDegree,sf.VDegree)
+
+            print (sf.getUKnots()          )
+            print (sf.getVKnots())
+            print (sf.getUMultiplicities())
+            print (sf.getVMultiplicities())
+
+            bs=Part.BSplineSurface()
+            bs.buildFromPolesMultsKnots(sf.getPoles(),
+                sf.getUMultiplicities(),sf.getVMultiplicities(),
+                range(sf.NbUKnots),range(sf.NbVKnots),
+                False,False,sf.UDegree,sf.VDegree,sf.getWeights())
+
+            bs.insertUKnot(0.5,3,0)
+            bs.insertVKnot(0.5,3,0)
+
+            tt=App.ActiveDocument.addObject('Part::Spline',obj.Label +"_toNurbs")
+            tt.Shape=bs.toShape()
+            # tt.ViewObject.ControlPoints = True
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_FaceToBezierSurface")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FaceToBezierSurface"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_FaceToBezierSurface", Nurbs_FaceToBezierSurface())
+
+
+
+#TODO:What is doing this class?
+class Nurbs_Stretchandbend:
+    def Activated(self):
+        self.stretchandbend()
+        
+    def stretchandbend(self):
+        #  transformation berechnen
+
+
+        pass2=False
+        pass2=0
+
+        b=App.ActiveDocument.BePlane
+
+        if pass2:
+            b=App.ActiveDocument.Shape012
+
+        sf=b.Shape.Face1.Surface
+        poles=np.array(sf.getPoles())
+
+        a=App.ActiveDocument.QuadPM
+        vaa2=np.array([a.pointA.Base,a.pointB.Base,a.pointC.Base,a.pointD.Base])
+
+        vaa2[0] -= poles[0,0]
+        vaa2[1] -= poles[-1,0]
+        vaa2[2] -= poles[0,-1]
+        vaa2[3] -= poles[-1,-1]
+
+
+        uc,vc,c=poles.shape
+        poles2=poles.copy()
+        for ui in range(uc):
+            for vi in range(vc):
+                poles2[ui,vi] +=  vaa2[3]*ui*vi/(uc-1)/(vc-1)
+                poles2[ui,vi] +=  vaa2[2]*(uc-1-ui)*(vi)/(uc-1)/(vc-1)
+                poles2[ui,vi] +=  vaa2[0]*(uc-1-ui)*(vc-1-vi)/(uc-1)/(vc-1)
+                poles2[ui,vi] +=  vaa2[1]*(ui)*(vc-1-vi)/(uc-1)/(vc-1)
+
+
+
+
+    #    poles=poles2.reshape(a,b,3)
 
         bs=Part.BSplineSurface()
-        bs.buildFromPolesMultsKnots(sf.getPoles(),
-            sf.getUMultiplicities(),sf.getVMultiplicities(),
-            range(sf.NbUKnots),range(sf.NbVKnots),
-            False,False,sf.UDegree,sf.VDegree,sf.getWeights())
+        bs.buildFromPolesMultsKnots(poles2,
+                sf.getUMultiplicities(),sf.getVMultiplicities(),
+                sf.getUKnots(),sf.getVKnots(),
+                False,False,sf.UDegree,sf.VDegree)
 
-        bs.insertUKnot(0.5,3,0)
-        bs.insertVKnot(0.5,3,0)
-
-        tt=App.ActiveDocument.addObject('Part::Spline',obj.Label +"_toNurbs")
-        tt.Shape=bs.toShape()
-        # tt.ViewObject.ControlPoints = True
+        Part.show(bs.toShape())
 
 
+        App.ActiveDocument.ActiveObject.Label="stretch "
+
+        if pass2:
+            return
+
+        xd=App.Vector(1,0,0)*4000
+        yd=App.Vector(0,1,0)*4000
+
+        puA=a.pointA.Rotation.multVec(xd)
+        pvA=a.pointA.Rotation.multVec(yd)
+
+        puB=a.pointB.Rotation.multVec(xd)
+        pvB=a.pointB.Rotation.multVec(yd)
+
+        puC=a.pointC.Rotation.multVec(xd)
+        pvC=a.pointC.Rotation.multVec(yd)
+
+        puD=a.pointD.Rotation.multVec(xd)
+        pvD=a.pointD.Rotation.multVec(yd)
 
 
-def stretchandbend():
-    #  transformation berechnen
+        poles3=np.array([
+        a.pointA.Base,a.pointA.Base+puA,a.pointB.Base-puB,a.pointB.Base,
+        a.pointA.Base+pvA,a.pointA.Base+puA+pvA,a.pointB.Base-puB+pvB,a.pointB.Base+pvB,
+
+        a.pointC.Base-pvC,a.pointC.Base+puC-pvC,a.pointD.Base-puD-pvD,a.pointD.Base-pvD,
+        a.pointC.Base,a.pointC.Base+puC,a.pointD.Base-puD,a.pointD.Base]
+        ).reshape(4,4,3).swapaxes(0,1)
+
+        bs3=Part.BSplineSurface()
+        bs3.buildFromPolesMultsKnots(poles3,[4,4],[4,4],[0,1],[0,1],
+                False,False,3,3,)
 
 
-    pass2=False
-    pass2=0
+        # da s muss parametric werden
+        bs3.insertUKnot(0.25,3,0)
+        bs3.insertUKnot(0.5,3,0)
+        bs3.insertUKnot(0.75,3,0)
 
-    b=App.ActiveDocument.BePlane
+        bs3.insertVKnot(0.33,3,0)
+        bs3.insertVKnot(0.67,3,0)
 
-    if pass2:
-        b=App.ActiveDocument.Shape012
+        poles3=np.array(bs3.getPoles())
 
-    sf=b.Shape.Face1.Surface
-    poles=np.array(sf.getPoles())
+        bs=Part.BSplineSurface()
+        bs.buildFromPolesMultsKnots(poles3,
+                sf.getUMultiplicities(),sf.getVMultiplicities(),
+                sf.getUKnots(),sf.getVKnots(),
+                False,False,sf.UDegree,sf.VDegree)
 
-    a=App.ActiveDocument.QuadPM
-    vaa2=np.array([a.pointA.Base,a.pointB.Base,a.pointC.Base,a.pointD.Base])
-
-    vaa2[0] -= poles[0,0]
-    vaa2[1] -= poles[-1,0]
-    vaa2[2] -= poles[0,-1]
-    vaa2[3] -= poles[-1,-1]
-
-
-    uc,vc,c=poles.shape
-    poles2=poles.copy()
-    for ui in range(uc):
-        for vi in range(vc):
-            poles2[ui,vi] +=  vaa2[3]*ui*vi/(uc-1)/(vc-1)
-            poles2[ui,vi] +=  vaa2[2]*(uc-1-ui)*(vi)/(uc-1)/(vc-1)
-            poles2[ui,vi] +=  vaa2[0]*(uc-1-ui)*(vc-1-vi)/(uc-1)/(vc-1)
-            poles2[ui,vi] +=  vaa2[1]*(ui)*(vc-1-vi)/(uc-1)/(vc-1)
-
-
-
-
-#    poles=poles2.reshape(a,b,3)
-
-    bs=Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(poles2,
-            sf.getUMultiplicities(),sf.getVMultiplicities(),
-            sf.getUKnots(),sf.getVKnots(),
-            False,False,sf.UDegree,sf.VDegree)
-
-    Part.show(bs.toShape())
-
-
-    App.ActiveDocument.ActiveObject.Label="stretch "
-
-    if pass2:
-        return
-
-    xd=App.Vector(1,0,0)*4000
-    yd=App.Vector(0,1,0)*4000
-
-    puA=a.pointA.Rotation.multVec(xd)
-    pvA=a.pointA.Rotation.multVec(yd)
-
-    puB=a.pointB.Rotation.multVec(xd)
-    pvB=a.pointB.Rotation.multVec(yd)
-
-    puC=a.pointC.Rotation.multVec(xd)
-    pvC=a.pointC.Rotation.multVec(yd)
-
-    puD=a.pointD.Rotation.multVec(xd)
-    pvD=a.pointD.Rotation.multVec(yd)
-
-
-    poles3=np.array([
-    a.pointA.Base,a.pointA.Base+puA,a.pointB.Base-puB,a.pointB.Base,
-    a.pointA.Base+pvA,a.pointA.Base+puA+pvA,a.pointB.Base-puB+pvB,a.pointB.Base+pvB,
-
-    a.pointC.Base-pvC,a.pointC.Base+puC-pvC,a.pointD.Base-puD-pvD,a.pointD.Base-pvD,
-    a.pointC.Base,a.pointC.Base+puC,a.pointD.Base-puD,a.pointD.Base]
-    ).reshape(4,4,3).swapaxes(0,1)
-
-    bs3=Part.BSplineSurface()
-    bs3.buildFromPolesMultsKnots(poles3,[4,4],[4,4],[0,1],[0,1],
-            False,False,3,3,)
-
-
-    # da s muss parametric werden
-    bs3.insertUKnot(0.25,3,0)
-    bs3.insertUKnot(0.5,3,0)
-    bs3.insertUKnot(0.75,3,0)
-
-    bs3.insertVKnot(0.33,3,0)
-    bs3.insertVKnot(0.67,3,0)
-
-    poles3=np.array(bs3.getPoles())
-
-    bs=Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(poles3,
-            sf.getUMultiplicities(),sf.getVMultiplicities(),
-            sf.getUKnots(),sf.getVKnots(),
-            False,False,sf.UDegree,sf.VDegree)
-
-    Part.show(bs.toShape())
-    App.ActiveDocument.ActiveObject.Label="base"
+        Part.show(bs.toShape())
+        App.ActiveDocument.ActiveObject.Label="base"
 
 
 
-#    bs=Part.BSplineSurface()
-#    bs.buildFromPolesMultsKnots((poles2+poles3)*0.5,
-#            sf.getUMultiplicities(),sf.getVMultiplicities(),
-#            sf.getUKnots(),sf.getVKnots(),
-#            False,False,sf.UDegree,sf.VDegree)
-#    Part.show(bs.toShape())
-#    App.ActiveDocument.ActiveObject.Label="stretch and morph"
+    #    bs=Part.BSplineSurface()
+    #    bs.buildFromPolesMultsKnots((poles2+poles3)*0.5,
+    #            sf.getUMultiplicities(),sf.getVMultiplicities(),
+    #            sf.getUKnots(),sf.getVKnots(),
+    #            False,False,sf.UDegree,sf.VDegree)
+    #    Part.show(bs.toShape())
+    #    App.ActiveDocument.ActiveObject.Label="stretch and morph"
 
 
-#    bs=Part.BSplineSurface()
-#    bs.buildFromPolesMultsKnots((poles2+poles3),
-#            sf.getUMultiplicities(),sf.getVMultiplicities(),
-#            sf.getUKnots(),sf.getVKnots(),
-#            False,False,sf.UDegree,sf.VDegree)
-#    Part.show(bs.toShape())
-#    App.ActiveDocument.ActiveObject.Label="moprh only"
+    #    bs=Part.BSplineSurface()
+    #    bs.buildFromPolesMultsKnots((poles2+poles3),
+    #            sf.getUMultiplicities(),sf.getVMultiplicities(),
+    #            sf.getUKnots(),sf.getVKnots(),
+    #            False,False,sf.UDegree,sf.VDegree)
+    #    Part.show(bs.toShape())
+    #    App.ActiveDocument.ActiveObject.Label="moprh only"
 
 
-    poles=poles2+poles3
+        poles=poles2+poles3
 
-    a=App.ActiveDocument.QuadPM
-    vaa2=np.array([a.pointA.Base,a.pointB.Base,a.pointC.Base,a.pointD.Base])
+        a=App.ActiveDocument.QuadPM
+        vaa2=np.array([a.pointA.Base,a.pointB.Base,a.pointC.Base,a.pointD.Base])
 
-    vaa2[0] -= poles[0,0]
-    vaa2[1] -= poles[-1,0]
-    vaa2[2] -= poles[0,-1]
-    vaa2[3] -= poles[-1,-1]
-
-
-    uc,vc,c=poles.shape
-    poles2=poles.copy()
-    for ui in range(uc):
-        for vi in range(vc):
-            poles2[ui,vi] +=  vaa2[3]*ui*vi/(uc-1)/(vc-1)
-            poles2[ui,vi] +=  vaa2[2]*(uc-1-ui)*(vi)/(uc-1)/(vc-1)
-            poles2[ui,vi] +=  vaa2[0]*(uc-1-ui)*(vc-1-vi)/(uc-1)/(vc-1)
-            poles2[ui,vi] +=  vaa2[1]*(ui)*(vc-1-vi)/(uc-1)/(vc-1)
+        vaa2[0] -= poles[0,0]
+        vaa2[1] -= poles[-1,0]
+        vaa2[2] -= poles[0,-1]
+        vaa2[3] -= poles[-1,-1]
 
 
+        uc,vc,c=poles.shape
+        poles2=poles.copy()
+        for ui in range(uc):
+            for vi in range(vc):
+                poles2[ui,vi] +=  vaa2[3]*ui*vi/(uc-1)/(vc-1)
+                poles2[ui,vi] +=  vaa2[2]*(uc-1-ui)*(vi)/(uc-1)/(vc-1)
+                poles2[ui,vi] +=  vaa2[0]*(uc-1-ui)*(vc-1-vi)/(uc-1)/(vc-1)
+                poles2[ui,vi] +=  vaa2[1]*(ui)*(vc-1-vi)/(uc-1)/(vc-1)
+
+
+    #    poles=poles2.reshape(a,b,3)
+
+        bs=Part.BSplineSurface()
+        bs.buildFromPolesMultsKnots(poles2,
+                sf.getUMultiplicities(),sf.getVMultiplicities(),
+                sf.getUKnots(),sf.getVKnots(),
+                False,False,sf.UDegree,sf.VDegree)
+
+        Part.show(bs.toShape())
+        App.ActiveDocument.ActiveObject.Label="stretch and morph v2 "
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_Stretchandbend")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_Stretchandbend"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_Stretchandbend", Nurbs_Stretchandbend())
 
 
 
-
-#    poles=poles2.reshape(a,b,3)
-
-    bs=Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(poles2,
-            sf.getUMultiplicities(),sf.getVMultiplicities(),
-            sf.getUKnots(),sf.getVKnots(),
-            False,False,sf.UDegree,sf.VDegree)
-
-    Part.show(bs.toShape())
-    App.ActiveDocument.ActiveObject.Label="stretch and morph v2 "
 
 
 
@@ -5199,17 +5285,17 @@ def BB():
 
 
 
+class Nurbs_polishG1GUI:
+    def Activated(self)
+    self.polishG1GUI()
 
-
-def  polishG1GUI():
-    ''' make surface G1 continues'''
-
-    obj=Gui.Selection.getSelection()[0]
-    sf=obj.Shape.Face1.Surface
-    poles=np.array(sf.getPoles())
-
-
-    def mod(u,v):
+    def  polishG1GUI(self):
+        ''' make surface G1 continues'''
+        obj=Gui.Selection.getSelection()[0]
+        sf=obj.Shape.Face1.Surface
+        poles=np.array(sf.getPoles())
+    
+    def mod(self,u,v):
         seg=poles[3*u-1:3*u+3,3*v-1:3*v+3]
         # print seg.shape
 
@@ -5239,7 +5325,6 @@ def  polishG1GUI():
             print ("ost west nicht parallel")
             print (te.cross(tw).Length)
 
-
             tu=(te+tw)
 
     #        print tu
@@ -5248,7 +5333,6 @@ def  polishG1GUI():
 
             seg[2,1] -= fe*tu
             seg[0,1] -= fw*tu
-
 
         # parallel ?
         if tn.cross(ts).Length >10**-5:
@@ -5285,8 +5369,6 @@ def  polishG1GUI():
                 False,False,3,3)
     Part.show(bs.toShape())
 
-
-
     if 0: #erzeuge unstete flaeche
 
         sf=App.ActiveDocument.ProductFace001.Shape.Face1.Surface
@@ -5302,6 +5384,18 @@ def  polishG1GUI():
                                 False,False,3,3)
 
         Part.show(bs.toShape())
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_polishG1GUI")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_polishG1GUI"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_polishG1GUI", Nurbs_polishG1GUI())
+
 
 
     #+#
@@ -5552,30 +5646,6 @@ class Approx(FeaturePython):
 
 
 
-## create an approximation of a cure by a bezier curve
-# use equidistant points on the source curve as controlpoints
-# number of segments and force of the tangents is parametric
-# \param sels selected curve objects
-
-def createApprox(sels=None):
-    '''create an approximation of the curves by bezier curves'''
-
-    if sels==None:
-        sels=Gui.Selection.getSelection()
-
-    for  fa in sels:
-
-        sf=App.ActiveDocument.addObject('Part::FeaturePython','Approx')
-        sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
-        Approx(sf)
-
-        sf.Source=fa
-        sf.Label="Approx for " + fa.Label
-        _VPApprox(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'AA.svg')
-
-        App.ActiveDocument.recompute()
-        sf.Proxy.execute(sf)
-
 
 def _createApproxGUI():
     createApprox(Gui.Selection.getSelection())
@@ -5585,23 +5655,51 @@ def AA():
     createHoleGUI()
 
 
-## create a solid for all selected faces
-#
-# two objects are added:
-# a shell and a solid
+class Nurbs_createApprox:
+    ''' create a solid for all selected faces
+    two objects are added:
+    a shell and a solid
+    '''
+    def Activated(self):
+        self.createApprox()
+    
+    ## create an approximation of a cure by a bezier curve
+    # use equidistant points on the source curve as controlpoints
+    # number of segments and force of the tangents is parametric
+    # \param sels selected curve objects
+
+    def createApprox(self,sels=None):
+        '''create an approximation of the curves by bezier curves'''
+
+        if sels==None:
+            sels=Gui.Selection.getSelection()
+
+        for  fa in sels:
+
+            sf=App.ActiveDocument.addObject('Part::FeaturePython','Approx')
+            sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
+            Approx(sf)
+
+            sf.Source=fa
+            sf.Label="Approx for " + fa.Label
+            _VPApprox(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'AA.svg')
+
+            App.ActiveDocument.recompute()
+            sf.Proxy.execute(sf)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_createApprox")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'alpha.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createApprox"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_createApprox", Nurbs_createApprox())
 
 
 
-
-def BB():
-    # selectionToNurbs()
-    createApprox()
-
-
-
-
-def AA ():
-    selectionToNurbs()
 
 
 def drawcurveA(pts,face,facepos=App.Vector()):
@@ -5923,19 +6021,34 @@ def glaetten():
 
 
 
+class Nurbs_CreateSheelANDsolid:
+    def Activated(self):
+        self.solid()
+    def solid(self):
+        '''create a shell and a solid for a selection'''
 
-def solid():
-    '''create a shell and a solid for a selection'''
+        sls=[a.Shape for a in Gui.Selection.getSelection()]
 
-    sls=[a.Shape for a in Gui.Selection.getSelection()]
+        sh=Part.makeShell(sls)
+        ssh=App.ActiveDocument.addObject('Part::Feature',"shell")
+        ssh.Shape=sh
 
-    sh=Part.makeShell(sls)
-    ssh=App.ActiveDocument.addObject('Part::Feature',"shell")
-    ssh.Shape=sh
+        sol=Part.makeSolid(sh)
+        ssh=App.ActiveDocument.addObject('Part::Feature',"solid")
+        ssh.Shape=sol
 
-    sol=Part.makeSolid(sh)
-    ssh=App.ActiveDocument.addObject('Part::Feature',"solid")
-    ssh.Shape=sol
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateSheelANDsolid")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSheelANDsolid"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateSheelANDsolid", Nurbs_CreateSheelANDsolid())
+
+
 
 
 def AA ():
