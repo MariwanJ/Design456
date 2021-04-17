@@ -47,7 +47,7 @@ class Design456_Nurbs_3DDrawingGroup:
                 'Nurbs_createTangentHelpers',
                 'Nurbs_CreateLoft',
                 'Nurbs_CreateCompound',
-                '',
+                'Nurbs_CulpterEventStarter',
                 '',
                 '',
                 '',
