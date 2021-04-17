@@ -271,7 +271,7 @@ def createHelperSketch(role):
     return sk
 
 
-class commandCreateHelmet:
+class Nurbs_commandCreateHelmet:
 
     def Activated(self):
         # a=App.ActiveDocument.addObject("Part::FeaturePython","helmet")
@@ -449,19 +449,14 @@ class commandCreateHelmet:
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("commandCreateHelmet")
+        _tooltip = ("Nurbs_commandCreateHelmet")
         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "commandCreateHelmet"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_commandCreateHelmet"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs commandCreateHelmet", _tooltip)}
         
-Gui.addCommand("commandCreateHelmet", commandCreateHelmet())
+Gui.addCommand("Nurbs_commandCreateHelmet", Nurbs_commandCreateHelmet())
 
 
-# sp=App.ActiveDocument.Sketch
-
-
-# createHelmet()
-# App.ActiveDocument.recompute()
 
 
 def createTriangle():

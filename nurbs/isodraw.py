@@ -632,9 +632,8 @@ class createGrid:
         self.mapobj=mapobj
         self.upmode= upmode
 
-    def Activated():
+    def Activated(self, mapobj,upmode=False):
         '''create a 2D grid  or 3D grid (if upmode) for the map obj'''
-
         obj = self.mapobj
 
         try:
@@ -2295,7 +2294,7 @@ class testC():
 Gui.addCommand('testC', testC())
 testC.__doc__ = """testC: Tobe added later     """
 
-
+#TODO WRONG CODE .. KKU IS NOT DEFIEND 
 class testD():
     def Activated(self):
         #    kku2=np.array(App.kku).reshape(31,31,3)
