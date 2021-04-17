@@ -83,7 +83,7 @@ class Nurbs_CreateBtimap:
 
     def qrcodeFace(self,message='qr', degree=2, showPoints=False, window=None):
         # bitmuster as string
-
+        pts2=None 
         ts = time.time()
 
         import pyqrcode

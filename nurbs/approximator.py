@@ -50,7 +50,12 @@ try:
 except ImportError:
     print ("Please install the required module : numpy")
     
-    
+try:
+
+    import imageio
+except ImportError:
+    print ("Please install the required module :imageio")
+
 import Draft
 import Points
 import Part
@@ -273,7 +278,7 @@ Gui.addCommand("Nurbs_smoothPointcloudGUI", Nurbs_smoothPointcloudGUI())
 
     
 # \cond
-    layout = '''
+'''    layout = 
     MainWindow:
         QtGui.QLabel:
             setText:"***   D E M O 1  ***"
@@ -363,8 +368,8 @@ class ImagePoints(FeaturePython):
                         "params").params = [1, 1, 1, 1]
 
     def execute(self, obj):
-
-        face = misc.imread(obj.image)
+        import imageio
+        face = imageio.imread(obj.image)#misc.imread(obj.image)
 
         face2 = obj.params[0]*face[:, :, 0]+obj.params[1] * \
             face[:, :, 1]+obj.params[2]*face[:, :, 2]
@@ -380,7 +385,8 @@ class ImagePoints(FeaturePython):
 
 class Nurbs_loadPointcloudfromImageGUI:
     def Activated(self):
-        self._loadPointcloudfromImage()
+        self._loadPointcloudfromImageGUI()
+        
     def _loadPointcloudfromImageGUI(self):
         ''' Load image file'''
 
@@ -426,15 +432,13 @@ class ImagePoints2(FeaturePython):
             obj.addProperty("App::PropertyInteger", "faceNumber")
 
     def execute(self, obj):
-
+        face=None
         if obj.image != '':
-            import PIL
-            img = PIL.Image.open(obj.image)
+            img = imageio.imread(obj.image)
             im_arr = np.fromstring(img.tobytes(), dtype=np.uint8)
-            print(im_arr.shape)
-            print(img.size)
-            zd = im_arr.shape[0]/img.size[0]/img.size[1]
-            im_arr = im_arr.reshape(img.size[1], img.size[0], zd)
+            zd = im_arr.shape[0]/img.shape[0]/img.shape[1]
+            print(zd)
+            im_arr = im_arr.reshape(img.shape[1], img.shape[0], int(zd))
             face = im_arr
         else:
             face = np.ones(20*20*3).reshape(20, 20, 3)
@@ -756,7 +760,7 @@ class Nurbs_LoadCylinderfacefromImageGUI:
     def Activated(self):
         self._loadCylinderfacefromImageGUI()
     
-    def _loadCylinderfacefromImageGUI():
+    def _loadCylinderfacefromImageGUI(self):
         yy = App.ActiveDocument.addObject("Part::FeaturePython", "ImageSurface")
         ImagePoints2(yy)
         yy.mode = 'cylinder'
