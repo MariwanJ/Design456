@@ -588,10 +588,11 @@ class Pattern(FeaturePython):
                 )
 
 class CreatePatternV3:
-    def __init__(self,obj=None,target=None,createPlanarPattern=False)
+    def __init__(self,obj=None,target=None,createPlanarPattern=False):
         self.obj=obj
         self.target=target
         self.createPlanarPattern=createPlanarPattern
+        
     def Activated(self):    
         '''create a pattern object'''
         a=App.ActiveDocument.addObject("Part::FeaturePython","Pattern")
