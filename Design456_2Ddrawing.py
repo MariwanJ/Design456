@@ -496,11 +496,11 @@ class ViewProviderBox:
 
 # ===========================================================================
 
-"""
-Create a 2D Star based on the Inner radius outer radius, corners and the angle.
-"""
+#Create 2D Star
 class Star:
-
+    """
+    Create a 2D Star based on the Inner radius outer radius, corners and the angle.
+    """
     def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=2*_math.pi, _Corners=40):
         _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
         obj.addProperty("App::PropertyAngle", "Angle",

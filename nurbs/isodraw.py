@@ -596,7 +596,10 @@ class Map(PartFeature):
 
 
 class createMap:
-    def Activated(self, mode=''):
+    def __init_(self,mode=''):
+        self.mode=mode
+         
+    def Activated(self):
         '''create a Map object'''
         b = App.ActiveDocument.addObject("Part::FeaturePython", "MAP")
         Map(b, mode=mode)
@@ -621,7 +624,6 @@ class createMap:
             'MenuText': 'testD',
             'ToolTip':  'testD'
         }
-
 
 Gui.addCommand('createMap', createMap())
 createMap.__doc__ = """createMap: Tobe added later     """
