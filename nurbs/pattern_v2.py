@@ -76,7 +76,7 @@ def splitEdges(obj=None,show=True):
     '''split edges on intersection points'''
 
     if obj==None:
-        obj=Gui.Selection.getSelectionEx()[0]
+        obj=Gui.Selection.getSelection()[0]
         shape=obj.Shape
     else:
         shape=obj
@@ -207,166 +207,197 @@ def splitEdges(obj=None,show=True):
     return newedges+oldedges
 
 
+class Nurbs_CreatePatternV2:
+    def Activated(self):
+        self.createPattern()
+        
+    def createPattern(self,obj=None,rx=3,ry=2,sx=200,sy=100,all_faces=None):
+        '''create pattern subobjects'''
 
-def createPattern(obj=None,rx=3,ry=2,sx=200,sy=100,all_faces=None):
-    '''create pattern subobjects'''
+        if obj==None:
+            obj=Gui.Selection.getSelection()[0]
+            comp=obj.Shape
+        else:
+            comp=obj
 
-    if obj==None:
-        obj=Gui.Selection.getSelectionEx()[0]
-        comp=obj.Shape
-    else:
-        comp=obj
+        # size of the pattern:
+        sizex,sizey=3000,2000
+        sizex,sizey=sx,sy
+        # repeats of the pattern rx,ry
 
-    # size of the pattern:
-    sizex,sizey=3000,2000
-    sizex,sizey=sx,sy
-    # repeats of the pattern rx,ry
+        es=comp.Edges
+        points={}
+        vecs=[]
+        g=nx.Graph()
 
-    es=comp.Edges
-    points={}
-    vecs=[]
-    g=nx.Graph()
+        for vi,v in enumerate(comp.Vertexes):
+            p=vkey(v.Point)
+            points[tuple(p)]=vi
+            vecs +=  [p]
 
-    for vi,v in enumerate(comp.Vertexes):
-        p=vkey(v.Point)
-        points[tuple(p)]=vi
-        vecs +=  [p]
+        for e in es:
+            [p,q]=e.Vertexes
+            kp=vkey(p.Point)
+            kq=vkey(q.Point)
+            g.add_edge(points[kp],points[kq],edge=e)
 
-    for e in es:
-        [p,q]=e.Vertexes
-        kp=vkey(p.Point)
-        kq=vkey(q.Point)
-        g.add_edge(points[kp],points[kq],edge=e)
-
-
-    for n in g.nodes():
-        arcl={}
-        for e in g.edges(n):
-            fe=g.get_edge_data(*e)['edge']
-            if (fe.valueAt(fe.FirstParameter)-App.Vector(vecs[n])).Length<0.001:
-                arc=np.arctan2(*fe.tangentAt(fe.FirstParameter)[0:2])
-            else:
-                vv=fe.tangentAt(fe.LastParameter)*(-1)
-                arc=np.arctan2(*vv[0:2])
-
-            arcl[arc]=e
-
-        sk=np.sort(list(arcl.keys()))
-        arcl2=[(arcl[k],k) for k in sk]
-        g.node[n]['sortedEdges']=arcl2
-
-
-
-    def find_segment_step(n,alt,*a):
-        '''find the next edge/vertex of a area segment'''
-        se=g.node[n]['sortedEdges']
-        pol=[n,alt]+ list(a)
-
-
-        for i,(e,arc) in enumerate(se):
-            (n1,n2)=e
-            if n2==alt:
-                (e,arc)=se[i-1]
-                (n1,n2)=e
-                pol =[n2] + pol
-                if n1==n:
-                    return n2
-
-        return None
-
-
-
-    def show(pol):
-        '''display the segment pattern'''
-
-        print(("display figure",pol))
-        tz=App.ActiveDocument.addObject("Part::Feature","tracks")
-        tz.ViewObject.LineColor=(random.random(),random.random(),random.random())
-        tz.ViewObject.ShapeColor=tz.ViewObject.LineColor
-        tz.ViewObject.LineWidth=3
-
-        if 0: # display simplified polygon only
-            pts=[App.Vector(vecs[p]) for p in pol]
-            tz.Shape=Part.makePolygon(pts)
-
-        comps=[]
-        for j in range(len(pol)-1):
-            comps += [ g.get_edge_data(pol[j],pol[j+1])['edge']]
-
-        if 10: # display curves compound
-            tz.Shape=Part.Compound(comps)
-
-        # display faces
-        s1=Part.makeFilledFace(Part.__sortEdges__(comps))
-        if s1.isNull(): raise RuntimeError('Failed to create face')
-        col=[]
-
-        for xc in range(rx):
-            for yc in range(ry):
-                sn=s1.copy()
-                sn.Placement.Base.x=sizex*xc
-                sn.Placement.Base.y=sizey*yc
-                col +=[sn]
-
-        tz.Shape=Part.Compound(col+comps)
-        tz.Placement.Base.z=random.random()-tz.Shape.Area*0.00001
-
-        return tz
-
-
-    def find_all_segments():
-        '''find all closed areas'''
-
-        tracks=[]
-        lg=max(g.nodes())+1
-        used=np.zeros(lg*lg).reshape(lg,lg)
 
         for n in g.nodes():
-            for n2 in g.nodes():
-                liste=[n,n2]
-                start=liste[0]
-                liste2=liste
-                rc=-1
+            arcl={}
+            for e in g.edges(n):
+                fe=g.get_edge_data(*e)['edge']
+                if (fe.valueAt(fe.FirstParameter)-App.Vector(vecs[n])).Length<0.001:
+                    arc=np.arctan2(*fe.tangentAt(fe.FirstParameter)[0:2])
+                else:
+                    vv=fe.tangentAt(fe.LastParameter)*(-1)
+                    arc=np.arctan2(*vv[0:2])
 
-                while rc!=None and rc not in liste:
+                arcl[arc]=e
 
-                    liste=liste2
-                    rc=find_segment_step(*liste)
-                    try:
-                        [rc1,rc2]=rc
-                        liste2 = [rc1,rc2]+liste
-                        rc=rc1
-                    except:
-                        liste2 = [rc]+liste
+            sk=np.sort(list(arcl.keys()))
+            arcl2=[(arcl[k],k) for k in sk]
+            g.node[n]['sortedEdges']=arcl2
 
-                if (liste2[0]==liste2[-1] or liste2[1]==liste2[-1]) and len(liste2)>3 :
 
-                    if liste2[1]==liste2[-1]:
-                        liste2=liste2[1:]
-                    if not used[liste2[0],liste2[1]] and not used[liste2[1],liste2[2]] :
-                        rc=show(liste2)
-                        tracks += [rc]
-                    for i in range(len(liste2)):
-                        used[liste2[i-1],liste2[i]]=1
 
-                Gui.updateGui()
+        def find_segment_step(self,n,alt,*a):
+            '''find the next edge/vertex of a area segment'''
+            se=g.node[n]['sortedEdges']
+            pol=[n,alt]+ list(a)
 
-        return tracks
 
-    tracks=find_all_segments()
-    sw=all_faces
+            for i,(e,arc) in enumerate(se):
+                (n1,n2)=e
+                if n2==alt:
+                    (e,arc)=se[i-1]
+                    (n1,n2)=e
+                    pol =[n2] + pol
+                    if n1==n:
+                        return n2
 
-    sw.Links=tracks
-    for t in tracks:
-        t.purgeTouched()
-    sw.recompute()
-    sw.purgeTouched()
+            return None
+
+
+
+        def show(self,pol):
+            '''display the segment pattern'''
+
+            print(("display figure",pol))
+            tz=App.ActiveDocument.addObject("Part::Feature","tracks")
+            tz.ViewObject.LineColor=(random.random(),random.random(),random.random())
+            tz.ViewObject.ShapeColor=tz.ViewObject.LineColor
+            tz.ViewObject.LineWidth=3
+
+            if 0: # display simplified polygon only
+                pts=[App.Vector(vecs[p]) for p in pol]
+                tz.Shape=Part.makePolygon(pts)
+
+            comps=[]
+            for j in range(len(pol)-1):
+                comps += [ g.get_edge_data(pol[j],pol[j+1])['edge']]
+
+            if 10: # display curves compound
+                tz.Shape=Part.Compound(comps)
+
+            # display faces
+            s1=Part.makeFilledFace(Part.__sortEdges__(comps))
+            if s1.isNull(): raise RuntimeError('Failed to create face')
+            col=[]
+
+            for xc in range(rx):
+                for yc in range(ry):
+                    sn=s1.copy()
+                    sn.Placement.Base.x=sizex*xc
+                    sn.Placement.Base.y=sizey*yc
+                    col +=[sn]
+
+            tz.Shape=Part.Compound(col+comps)
+            tz.Placement.Base.z=random.random()-tz.Shape.Area*0.00001
+
+            return tz
+
+        def find_all_segments(self):
+            '''find all closed areas'''
+
+            tracks=[]
+            lg=max(g.nodes())+1
+            used=np.zeros(lg*lg).reshape(lg,lg)
+
+            for n in g.nodes():
+                for n2 in g.nodes():
+                    liste=[n,n2]
+                    start=liste[0]
+                    liste2=liste
+                    rc=-1
+
+                    while rc!=None and rc not in liste:
+
+                        liste=liste2
+                        rc=find_segment_step(*liste)
+                        try:
+                            [rc1,rc2]=rc
+                            liste2 = [rc1,rc2]+liste
+                            rc=rc1
+                        except:
+                            liste2 = [rc]+liste
+
+                    if (liste2[0]==liste2[-1] or liste2[1]==liste2[-1]) and len(liste2)>3 :
+
+                        if liste2[1]==liste2[-1]:
+                            liste2=liste2[1:]
+                        if not used[liste2[0],liste2[1]] and not used[liste2[1],liste2[2]] :
+                            rc=show(liste2)
+                            tracks += [rc]
+                        for i in range(len(liste2)):
+                            used[liste2[i-1],liste2[i]]=1
+
+                    Gui.updateGui()
+
+            return tracks
+
+        tracks=find_all_segments()
+        sw=all_faces
+
+        sw.Links=tracks
+        for t in tracks:
+            t.purgeTouched()
+        sw.recompute()
+        sw.purgeTouched()
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreatePatternV2")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreatePatternV2"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreatePatternV2", Nurbs_CreatePatternV2())
+
+
+
 
 #erzeugt einzelnes Muster bestehend aus Flächen
 
-def createSinglePattern():
-    '''create a simple pattern with faces without repetitions'''
-    createPattern(obj=None,rx=1,ry=1)
+class Nurbs_CreateSinglePattern:
+    def Activated(self):
+        self.createSinglePattern()
+    def createSinglePattern(self):
+        '''create a simple pattern with faces without repetitions'''
+        createPattern(obj=None,rx=1,ry=1)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateSinglePattern")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSinglePattern"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateSinglePattern", Nurbs_CreateSinglePattern())
+
 
 
 
@@ -414,7 +445,7 @@ def _createArray(show=True,obj=None):
 
 
     if obj==None:
-        for obj in Gui.Selection.getSelectionEx():
+        for obj in Gui.Selection.getSelection():
             edges += obj.Shape.Edges
     else:
             edges = obj.obj.Shape.Edges
@@ -458,7 +489,7 @@ def _createArray(show=True,obj=None):
 def removeEdges():
     '''remove selected edges from collection'''
 
-    sel=Gui.Selection.getSelectionEx()[0]
+    sel=Gui.Selection.getSelection()[0]
 
     todelete=[]
     for sun in sel.SubElementNames:
@@ -556,49 +587,67 @@ class Pattern(FeaturePython):
                 all_faces=self.all_faces,
                 )
 
+class CreatePatternV3:
+    def __init__(self,obj=None,target=None,createPlanarPattern=False)
+        self.obj=obj
+        self.target=target
+        self.createPlanarPattern=createPlanarPattern
+    def Activated(self):    
+        '''create a pattern object'''
+        a=App.ActiveDocument.addObject("Part::FeaturePython","Pattern")
+        Pattern(a)
+        ViewProvider(a.ViewObject)
+        a.createPlanarPattern=self.createPlanarPattern
+    #    a.modeY='mirror'
+    #    a.modeX='rotate'
+        a.createPlanarPattern=True
 
-def createPatternV3(obj=None,target=None,createPlanarPattern=False):
-    '''create a pattern object'''
+        a.repeatX=5
+        a.repeatY=5
+        a.obj=self.obj
+        a.target=self.target
+        a.Label="Pre Pattern for "+self.obj.Label
+        return a
 
 
-    a=App.ActiveDocument.addObject("Part::FeaturePython","Pattern")
-    Pattern(a)
-    ViewProvider(a.ViewObject)
-    a.createPlanarPattern=createPlanarPattern
-#    a.modeY='mirror'
-#    a.modeX='rotate'
-    a.createPlanarPattern=True
+class Nurbs_runPatternV3:
+    def Activated(self):
+        self.patternV3()
 
-    a.repeatX=5
-    a.repeatY=5
-    a.obj=obj
-    a.target=target
-    a.Label="Pre Pattern for "+obj.Label
-    return a
+    def patternV3():
+        '''call from WB Gui'''
+        s=Gui.Selection.getSelection()
+        print( s)
+        obj=s[0]
+    #    if len(s)>1:
+    #        target=s[1]
+    #    else:
+    #        target=None
+    #    print obj.Label,target.Label
+
+        createPatternV3(obj)
+
+    ## bildet eine Folge von Punkten **points** auf die Fläche1 des Objektes
+    # **target**.
+    # Die Größe wird angepasst und das Muster **repeatX** / **repeatY** mal wiederholt.
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_runPatternV3")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_runPatternV3"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_runPatternV3", Nurbs_runPatternV3())
 
 
 
-def patternV3():
-    '''call from WB Gui'''
-    s=Gui.Selection.getSelectionEx()
-    print( s)
-    obj=s[0]
-#    if len(s)>1:
-#        target=s[1]
-#    else:
-#        target=None
-#    print obj.Label,target.Label
-
-    createPatternV3(obj)
-
-## bildet eine Folge von Punkten **points** auf die Fläche1 des Objektes
-# **target**.
-# Die Größe wird angepasst und das Muster **repeatX** / **repeatY** mal wiederholt.
 
 
 import matplotlib.pyplot as plt
 from scipy import interpolate
-
 
 
 def mapv(vvals,face):

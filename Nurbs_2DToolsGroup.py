@@ -58,7 +58,7 @@ class Design456_Nurbs_2DToolsGroup:
                 'Nurbs_geodesicMapPatchToFace',
                 'Nurbs_creategeodesicbunch',
                 'Nurbs_CreateShoeMarkers',
-                '',
+                'Nurbs_runPatternV3',
                 '',
                 '',
                 

@@ -288,10 +288,9 @@ class Nurbs_CreateBtimap:
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Nurbs2.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTools"),
+        _tooltip = ("Nurbs_CreateBtimap")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBtimap"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
-
 
 Gui.addCommand("Nurbs_CreateBtimap", Nurbs_CreateBtimap())

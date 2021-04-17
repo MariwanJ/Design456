@@ -504,25 +504,67 @@ def createTripodSketch(): #sketcher
 
 
 
+class Nurbs_CreateSweep:
+    def Activated(self):
+        self.createSweep()
+    def createSweep(self):
+        sw=App.ActiveDocument.addObject('Part::Sweep','Sweep')
+        sw.Spine=(Gui.Selection.getSelectionEx()[-1],["Edge1"])
+        sw.Sections=Gui.Selection.getSelectionEx()[0:-1]
+        App.ActiveDocument.recompute()
 
-def createSweep():
-    sw=App.ActiveDocument.addObject('Part::Sweep','Sweep')
-    sw.Spine=(Gui.Selection.getSelectionEx()[-1],["Edge1"])
-    sw.Sections=Gui.Selection.getSelectionEx()[0:-1]
-    App.ActiveDocument.recompute()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSweep"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateSweep",Nurbs_CreateSweep())
 
 
-def createLoft():
-    sw=App.ActiveDocument.addObject('Part::Loft','Loft')
-    sw.Sections=Gui.Selection.getSelectionEx()
-    App.ActiveDocument.recompute()
 
-def createCompound():
-    sw=App.ActiveDocument.addObject("Part::Compound","Compound001")
-    sw.Links=Gui.Selection.getSelectionEx()
-    App.ActiveDocument.recompute()
+class Nurbs_CreateLoft:
+    def Activated(self):
+        self.createLoft
+    def createLoft():
+        sw=App.ActiveDocument.addObject('Part::Loft','Loft')
+        sw.Sections=Gui.Selection.getSelectionEx()
+        App.ActiveDocument.recompute()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateLoft")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateLoft"),
+                'ToolTip': QT_TRANSLATE_NOOP("Nurbs_CreateLoft ", _tooltip)}
+Gui.addCommand("Nurbs_CreateLoft", Nurbs_CreateLoft())
 
-# createSweep()
+class Nurbs_CreateCompound:
+    def Activated(self):
+        self.createCompound()
+
+    def createCompound(self):
+        sw=App.ActiveDocument.addObject("Part::Compound","Compound001")
+        sw.Links=Gui.Selection.getSelectionEx()
+        App.ActiveDocument.recompute()
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateCompound")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateCompound"),
+                'ToolTip': QT_TRANSLATE_NOOP("Nurbs_CreateCompound ", _tooltip)}
+Gui.addCommand("Nurbs_CreateCompound", Nurbs_CreateCompound())
+
+
+
+    # createSweep()
 
 
 
