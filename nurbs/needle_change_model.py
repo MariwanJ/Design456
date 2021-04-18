@@ -26,10 +26,10 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 from PySide import QtGui, QtCore
-import FreeCAD
-import FreeCADGui
+import FreeCAD as App
+import FreeCADGui as Gui
 import Design456Init
-import os
+import os,sys
 
 try:
     import numpy as np 
@@ -82,10 +82,21 @@ def MyDialog(target):
     w.show()
     return w
 
+class Nurbs_NeedleChangeModel:
+    def Activated(self):
+        self.runNeedleChangeModel()
+    def runNeedleChangeModel(self):
+        [target] = Gui.Selection.getSelection()
+        MyDialog(target)
 
-def ThousandsOfRunWhatShouldIdo():
-    [target] = Gui.Selection.getSelectionEx()
-    MyDialog(target)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_NeedleChangeModel")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_NeedleChangeModel"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
+Gui.addCommand("Nurbs_NeedleChangeModel", Nurbs_NeedleChangeModel())
 
-# run()

@@ -94,6 +94,6 @@ __all__=["analyse_topology_v2",
             "uvgrid_generator",
             "views",
             "weighteditor",
-            "whatisThisFile",
+            "points",
             "wheel_event",
             ]
