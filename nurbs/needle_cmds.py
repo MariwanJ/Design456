@@ -468,47 +468,72 @@ def pressed(index, obj):
         App.t = BackboneEditor(obj, "Backbone Editor", ri)
     else:
         pass
+    
+    
+class Nurbs_NeedlecmdAdd:
+    def Activated(self):
+        self.cmdAdd()
+    def cmdAdd(self):
+        ''' add some curves to selections '''
+        s = Gui.Selection.getSelection()[0]
+        s.Object.Label
+        print(s.Object.Name)
+        print(s.SubElementNames)
 
+        needle = s.Object.InList[0]
+        needle.Label
 
-def cmdAdd():
-    ''' add some curves to selections '''
+        for sen in s.SubElementNames:
+            print(sen[4:])
+            if s.Object.Name[0:4] == 'Ribs':
+                print("ribs ...")
+                CaddRib(needle, int(sen[4:]))
+            if s.Object.Name[0:9] == 'Meridians':
+                print("meridians ...")
+                CaddMeridian(needle, int(sen[4:]))
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_NeedlecmdAdd")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_NeedlecmdAdd"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    s = Gui.Selection.getSelection()[0]
+Gui.addCommand("Nurbs_NeedlecmdAdd", Nurbs_NeedlecmdAdd())
 
-    s.Object.Label
-    print(s.Object.Name)
-    print(s.SubElementNames)
+class Nurbs_NeedlecmdDel:
+    def Activated(self):
+        self.cmdDel()
+    def cmdDel(self):
+        ''' add some curves to selections '''
 
-    needle = s.Object.InList[0]
-    needle.Label
+        s = Gui.Selection.getSelection()[0]
 
-    for sen in s.SubElementNames:
-        print(sen[4:])
-        if s.Object.Name[0:4] == 'Ribs':
-            print("ribs ...")
-            CaddRib(needle, int(sen[4:]))
-        if s.Object.Name[0:9] == 'Meridians':
-            print("meridians ...")
-            CaddMeridian(needle, int(sen[4:]))
+        s.Object.Label
+        print(s.Object.Name)
+        print(s.SubElementNames)
 
+        needle = s.Object.InList[0]
+        needle.Label
 
-def cmdDel():
-    ''' add some curves to selections '''
+        for sen in s.SubElementNames:
+            print(sen[4:])
+            if s.Object.Name[0:4] == 'Ribs':
+                print("ribs ...")
+                CdelRib(needle, int(sen[4:]))
+            if s.Object.Name[0:9] == 'Meridians':
+                print("meridians ...")
+                CdelMeridian(needle, int(sen[4:]))
 
-    s = Gui.Selection.getSelection()[0]
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_NeedlecmdDel")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_NeedlecmdDel"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    s.Object.Label
-    print(s.Object.Name)
-    print(s.SubElementNames)
+Gui.addCommand("Nurbs_NeedlecmdDel", Nurbs_NeedlecmdDel())
 
-    needle = s.Object.InList[0]
-    needle.Label
-
-    for sen in s.SubElementNames:
-        print(sen[4:])
-        if s.Object.Name[0:4] == 'Ribs':
-            print("ribs ...")
-            CdelRib(needle, int(sen[4:]))
-        if s.Object.Name[0:9] == 'Meridians':
-            print("meridians ...")
-            CdelMeridian(needle, int(sen[4:]))

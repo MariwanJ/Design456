@@ -61,6 +61,16 @@ class Design456_Nurbs_2DToolsGroup:
                 'Nurbs_runPatternV3',
                 'Nurbs_CreateGenericPanel',
                 'Nurbs_CreateFiledFace',
+                'Nurbs_NeedleMain',
+                'anotherNeedleCommandcalledRun',
+                'newTestNeedleFunctionWasMain',
+                'Nurbs_Needle_ListModels',
+                'Nurbs_NeedlecmdDel',
+                'Nurbs_NeedlecmdAdd',
+                'Nurbs_NeedleChangeModel',
+                '',
+                
+                
                 
                 
                 

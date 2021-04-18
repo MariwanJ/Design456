@@ -47,8 +47,8 @@ try:
     import numpy as np 
 except ImportError:
     print ("Please install the required module : numpy")
-    
-
+import FreeCAD as App
+import FreeCADGui as Gui
 
 
 class model():
@@ -931,36 +931,38 @@ class modelS(model):
 #----------------
 
 
+class Nurbs_Needle_ListModels:
+    def Activated(self):
+        self.runMAIN
+    def runMAIN(self):
+        self.listModels()
+        # testcase
+        class modelY(modelBanana):
+            pass
+        App.ActiveDocument.MyNeedle.Proxy.lock=False
+        App.ActiveDocument.MyNeedle.Proxy.getExampleModel(modelK)
+    def listModels(self,silent=False):
+        import needle_models
+        #reload(.needle_models)
+        l=[]
+        for m in dir(needle_models):
+            if m.startswith('model'):
+                mm=eval("needle_models."+m+"()")
+                if not silent:
+                    print (m,mm.info)
+                l.append([m,mm.info])
+        return l
 
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_Needle_ListModels")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_Needle_ListModels"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-def listModels(silent=False):
-    import needle_models
-    #reload(.needle_models)
-    l=[]
-    for m in dir(needle_models):
-        if m.startswith('model'):
-            mm=eval("needle_models."+m+"()")
-            if not silent:
-                print (m,mm.info)
-            l.append([m,mm.info])
-    return l
+Gui.addCommand("Nurbs_Needle_ListModels", Nurbs_Needle_ListModels())
 
-
-
-
-
-
-
-
-def THISCALLEDMAIN():
-    listModels()
-
-    # testcase
-
-    class modelY(modelBanana):
-        pass
-
-    App.ActiveDocument.MyNeedle.Proxy.lock=False
-    App.ActiveDocument.MyNeedle.Proxy.getExampleModel(modelK)
 
 
