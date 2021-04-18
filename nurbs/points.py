@@ -686,12 +686,25 @@ def mydialog(obj):
 
     return miki
 
-def runA():
-    try:
-        obj=Gui.Selection.getSelectionEx()[0]
-    except:
-        obj=App.ActiveDocument.Points
-    mydialog(obj)
+class Nurbs_PointsRUNA:
+    def Activated(self):
+        self.runA()
+    def runA():
+        try:
+            obj=Gui.Selection.getSelectionEx()[0]
+        except:
+            obj=App.ActiveDocument.Points
+        mydialog(obj)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_PointsRUNA")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PointsRUNA"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_PointsRUNA", Nurbs_PointsRUNA())
 
 
 #-------------------------glaetten 
@@ -834,35 +847,80 @@ def  results(ptsa,ptsb):
 
     print ("Poles:",bc.NbPoles)
 
-def runC():
-    d=5
-    pts=init(d)
-    App.pts=pts
+class Nurbs_PointsRUNC:
+    def Activated(self):
+        self.runC
+    def runC():
+        d=5
+        pts=init(d)
+        App.pts=pts
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_PointsRUNC")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PointsRUNC"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_PointsRUNC", Nurbs_PointsRUNC())
 
 
-def runD():
-    d=5
-    pts=App.pts
-    ptsa=pts
 
-    for i in range(5):
-        timea=time.time()
-        ptsa,ptsb=run(ptsa,i,d,1*d)
-        print ("loop",i,(time.time()-timea)/len(ptsa)*1000)
+class Nurbs_PointsRUND:
+    def Activated(self):
+        self.runD
+    def runD(self):
+        d=5
+        pts=App.pts
+        ptsa=pts
 
-    results(ptsa,ptsb)
+        for i in range(5):
+            timea=time.time()
+            ptsa,ptsb=run(ptsa,i,d,1*d)
+            print ("loop",i,(time.time()-timea)/len(ptsa)*1000)
+
+        results(ptsa,ptsb)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_PointsRUND")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PointsRUND"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_PointsRUND", Nurbs_PointsRUND())
 
 
-def runE():
-    import time
-    d=5
-    pts=App.pts
-    ptsa=pts
 
-    for i in range(5):
-        timea=time.time()
-        ptsa,ptsb=run(ptsa,i,d,2*d,False)
-        print ("loop",i,(time.time()-timea)/len(ptsa)*1000)
 
-    results(ptsa,ptsb)
+
+class Nurbs_PointsRUNE:
+    def Activated(self):
+        self.runE
+    def runE(self):
+        import time
+        d=5
+        pts=App.pts
+        ptsa=pts
+
+        for i in range(5):
+            timea=time.time()
+            ptsa,ptsb=run(ptsa,i,d,2*d,False)
+            print ("loop",i,(time.time()-timea)/len(ptsa)*1000)
+
+        results(ptsa,ptsb)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_PointsRUNE")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PointsRUNE"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_PointsRUNE", Nurbs_PointsRUNE())
+
 

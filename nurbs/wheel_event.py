@@ -274,7 +274,7 @@ def focus():
     '''get preselected pole sets'''
 
     try:
-        s=Gui.Selection.getSelectionEx()[0]
+        s=Gui.Selection.getSelection()[0]
 
         s.Object.Label
     #    print s.Object.Name

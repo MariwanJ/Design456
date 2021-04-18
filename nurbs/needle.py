@@ -364,8 +364,6 @@ def gendata(ss):
     sc=[[1,0],[1,0],[1,0],[1,0],[1,0],[1.3,0],[1.3,0],[1.3,0],[1.5,0]]
 
 
-
-
     npa2ssa(curve,ss,2,3,(1.0,1.0,0.5))
     npa2ssa(bb,ss,7,3,(1.0,.5,1.0))
     npa2ssa(sc,ss,10,3,(0.5,1.0,1.0))
@@ -410,15 +408,29 @@ def ssa2npa(spreadsheet,c1,r1,c2,r2,default=None):
     ps=np.array(z).reshape(r2-r1,c2-c1)
     return ps
 
+class newTestNeedleFunctionWasMain:
+    def Activated(self):
+        self.wasMainFunction()
+    def wasMainFunction(self):
 
-def wasMainFunction():
+        App.ActiveDocument=None
+        Gui.ActiveDocument=None
+        App.open(Design456Init.NURBS_DATA_PATH+"nadel_daten.fcstd")
+        App.setActiveDocument("nadel_daten")
+        App.ActiveDocument=App.getDocument("nadel_daten")
+        Gui.ActiveDocument=Gui.getDocument("nadel_daten")
 
-    App.ActiveDocument=None
-    Gui.ActiveDocument=None
-    App.open(Design456Init.NURBS_DATA_PATH+"nadel_daten.fcstd")
-    App.setActiveDocument("nadel_daten")
-    App.ActiveDocument=App.getDocument("nadel_daten")
-    Gui.ActiveDocument=Gui.getDocument("nadel_daten")
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("newTestNeedleFunctionWasMain")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "newTestNeedleFunctionWasMain"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("newTestNeedleFunctionWasMain", newTestNeedleFunctionWasMain())
+
 
 
 
@@ -846,6 +858,7 @@ def commitData(editor):
         needle_cmds.runCmd(old,cn,globdat[2],App.ActiveDocument.Spreadsheet)
 
 
+
 def startssevents2():
     global table
 
@@ -918,11 +931,13 @@ def getdata(index):
 
     return sel,ci,ri,index.data()
 
-
-def Wasrun():
-#            nurbs
-#        import needle as needle
-#        #reload( .needle)
+class anotherNeedleCommandcalledRun:
+    def Activated(self):
+        self.Wasrun()
+    def Wasrun(self):
+    #           nurbs
+    #       import needle as needle
+    #       #reload( .needle)
 
         docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
         try: App.closeDocument(docname)
@@ -935,13 +950,12 @@ def Wasrun():
 
         a=createNeedle()
 
-
         a.useBackbone=True
         a.useRibTemplate=True
         a.useRibCage=True
         #a.useMesh=True
         a.RibCount=0
-        needle_models
+        import needle_models
         #reload (.needle_models)
         # a.Proxy.getExampleModel(.needle_models.modelBanana)
         model=App.ParamGet('User parameter:Plugins/nurbs').GetString("NeedleModel","modelSimple")
@@ -950,16 +964,16 @@ def Wasrun():
         eval("a.Proxy.getExampleModel(.needle_models."+ model+")")
 
 
-#        import Draft
-#        points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,40.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
-#        # Draft BSpline
-#        Draft.makeBSpline(points,closed=True,face=True,support=None)
-#        import Part
-#        bs=Part.BSplineCurve()
-#        bs.interpolate(points)
-#        bs.setPeriodic()
-#        mybsc=App.ActiveDocument.addObject('Part::Feature','MyBSC')
-#        mybsc.Shape=bs.toShape()
+    #       import Draft
+    #       points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,40.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
+    #       # Draft BSpline
+    #       Draft.makeBSpline(points,closed=True,face=True,support=None)
+    #       import Part
+    #       bs=Part.BSplineCurve()
+    #       bs.interpolate(points)
+    #       bs.setPeriodic()
+    #       mybsc=App.ActiveDocument.addObject('Part::Feature','MyBSC')
+    #       mybsc.Shape=bs.toShape()
 
         App.ActiveDocument.recompute()
         Gui.SendMsgToActiveView("ViewFit")
@@ -968,101 +982,119 @@ def Wasrun():
 
         a.Proxy.startssevents()
         a.ViewObject.Selectable=False
+        
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("anotherNeedleCommandcalledRun")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "anotherNeedleCommandcalledRun"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
+Gui.addCommand("anotherNeedleCommandcalledRun", anotherNeedleCommandcalledRun())
 
 
 
 #-----------------------------------------
 # TEST CASE
 #-----------------------------------------
+class Nurbs_NeedleMain:
+    def Activated(self):
+        self.testmain()
+    def testmain(self):
 
-class testmain:
+        # test aus parametern
+        import Draft 
+        import needle as needle
+        #reload( .needle)
 
-    # test aus parametern
-    import Draft 
-    import needle as needle
-    #reload( .needle)
+        docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
+        try: App.closeDocument(docname)
+        except: pass
 
-    docname=App.ParamGet('User parameter:Plugins/nurbs').GetString("Document","Needle")
-    try: App.closeDocument(docname)
-    except: pass
+        App.newDocument(docname)
+        App.setActiveDocument(docname)
+        App.ActiveDocument=App.getDocument(docname)
+        Gui.ActiveDocument=Gui.getDocument(docname)
 
-    App.newDocument(docname)
-    App.setActiveDocument(docname)
-    App.ActiveDocument=App.getDocument(docname)
-    Gui.ActiveDocument=Gui.getDocument(docname)
+        if 0:
+            points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,0.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
+            Draft.makeBSpline(points,closed=True,face=True,support=None)
+            # BSpline
 
-    if 0:
-        points=[App.Vector(192.694291746,-129.634476444,0.0),App.Vector(130.429397583,-0.657173752785,0.0),App.Vector(-52.807308197,-112.73400116,0.0),App.Vector(-127.525184631,-71.8170700073,0.0),App.Vector(-205.801071167,-274.622741699,0.0),App.Vector(28.1370697021,-262.169769287,0.0),App.Vector(125.981895447,-187.451873779,0.0)]
-        Draft.makeBSpline(points,closed=True,face=True,support=None)
-        # BSpline
-
-        points=[App.Vector(-37.2293014526,1.68375661825e-08,0.28248746792),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,951.294546262)]
-        Draft.makeBSpline(points,closed=False,face=True,support=None)
-        # Bspline001
-
-
-        points=[App.Vector(-73.5499812578,-192.458589192,0.0),App.Vector(-35.2118430692,-245.401746512,0.0),App.Vector(-148.400562353,-232.622317741,0.0),App.Vector(-115.539281652,-172.376687886,0.0)]
-        Draft.makeBSpline(points,closed=True,face=True,support=App.ActiveDocument.getObject("BSpline"))
-        # Bspline002
-
-        points=[App.Vector(-37.2293014526,1.68375661825e-08,-10),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,1200)]
-        Draft.makeBSpline(points,closed=False,face=True,support=None)
-        # Bspline003
-
-    import needle as needle
-
-    a=needle.createNeedle()
-
-    #a.useBackbone=True
-    #a.useRibTemplate=True
-    a.useRibCage=True
-    a.useMesh=True
+            points=[App.Vector(-37.2293014526,1.68375661825e-08,0.28248746792),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,951.294546262)]
+            Draft.makeBSpline(points,closed=False,face=True,support=None)
+            # Bspline001
 
 
+            points=[App.Vector(-73.5499812578,-192.458589192,0.0),App.Vector(-35.2118430692,-245.401746512,0.0),App.Vector(-148.400562353,-232.622317741,0.0),App.Vector(-115.539281652,-172.376687886,0.0)]
+            Draft.makeBSpline(points,closed=True,face=True,support=App.ActiveDocument.getObject("BSpline"))
+            # Bspline002
 
-#    a.ribtemplateSource=App.ActiveDocument.BSpline
-#    a.backboneSource=App.ActiveDocument.BSpline001
+            points=[App.Vector(-37.2293014526,1.68375661825e-08,-10),App.Vector(132.959136963,6.57217134591e-06,110.262731687),App.Vector(149.817367554,1.45151301104e-05,243.523458616),App.Vector(-69.3403015137,2.18838984602e-05,367.150869505),App.Vector(-182.531646729,2.7960740423e-05,469.103353635),App.Vector(-256.549041748,5.67015768864e-05,1200)]
+            Draft.makeBSpline(points,closed=False,face=True,support=None)
+            # Bspline003
 
-    App.ActiveDocument.recompute()
+        import needle as needle
 
-#    vp=needle.ViewProvider(a.ViewObject)
-    App.ActiveDocument.recompute()
+        a=needle.createNeedle()
 
-    if 0:
+        #a.useBackbone=True
+        #a.useRibTemplate=True
+        a.useRibCage=True
+        a.useMesh=True
 
-        # zweiter koerper
+    #    a.ribtemplateSource=App.ActiveDocument.BSpline
+    #    a.backboneSource=App.ActiveDocument.BSpline001
 
-        b=App.ActiveDocument.addObject("Part::FeaturePython","MyNeedle")
-        bn=needle.Needle(b)
-
-
-        '''
-        b.useBackbone=True
-        b.useRibTemplate=True
-        b.useRibCage=True
-        b.useMesh=True
-        '''
-        b.useSpreadsheet=True
-
-
-        # b.Spreeadsheet= App.ActiveDocument.recompute().addObject('Spreadsheet::Sheet','huhu')
-        bss=b.Spreadsheet
-        needle.gendata(bss)
-
-        b.ribtemplateSource=App.ActiveDocument.BSpline002
-        b.backboneSource=App.ActiveDocument.BSpline003
         App.ActiveDocument.recompute()
 
+    #    vp=needle.ViewProvider(a.ViewObject)
+        App.ActiveDocument.recompute()
 
-        vp=needle.ViewProvider(b.ViewObject)
+        if 0:
 
+            # zweiter koerper
 
+            b=App.ActiveDocument.addObject("Part::FeaturePython","MyNeedle")
+            bn=needle.Needle(b)
+
+            '''
+            b.useBackbone=True
+            b.useRibTemplate=True
+            b.useRibCage=True
+            b.useMesh=True
+            '''
+            b.useSpreadsheet=True
+
+            # b.Spreeadsheet= App.ActiveDocument.recompute().addObject('Spreadsheet::Sheet','huhu')
+            bss=b.Spreadsheet
+            needle.gendata(bss)
+
+            b.ribtemplateSource=App.ActiveDocument.BSpline002
+            b.backboneSource=App.ActiveDocument.BSpline003
+            App.ActiveDocument.recompute()
+
+            vp=needle.ViewProvider(b.ViewObject)
+
+            Gui.SendMsgToActiveView("ViewFit")
+            print ("finished")
+
+            needle.importCurves(a)
+            needle.importCurves(b)
+
+        App.ActiveDocument.recompute()
         Gui.SendMsgToActiveView("ViewFit")
-        print ("finished")
 
-        needle.importCurves(a)
-        needle.importCurves(b)
-        
-    App.ActiveDocument.recompute()
-    Gui.SendMsgToActiveView("ViewFit")
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_NeedleMain")
+        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_NeedleMain"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_NeedleMain", Nurbs_NeedleMain())
+

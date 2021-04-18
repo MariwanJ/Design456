@@ -46,9 +46,10 @@ class Design456_Nurbs_3DToolsGroup:
                 'Nurbs_LoadCylinderfacefromImageGUI',
                 'Nurbs_loadPointcloudfromImageGUI',
                 'Nurbs_RibstoFace',
-                '',
-                '',
-                '',
+                'Nurbs_PointsRUNE',
+                'Nurbs_PointsRUND',
+                'Nurbs_PointsRUNC',
+                'Nurbs_PointsRUNA',
                 
                 
                 
