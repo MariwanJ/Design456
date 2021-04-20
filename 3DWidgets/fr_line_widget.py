@@ -156,7 +156,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         #                )
         #
 
-        lbl=fr_label_draw.draw_label(self._lblColor,'sans',14,self_vector[0],self._label)
+        lbl=fr_label_draw.draw_label(self._lblColor,'sans',14,self._vector[0],self._label)
         return lbl
         
     
