@@ -1289,7 +1289,7 @@ class Nurbs_FixCorner:
             faced.getInfo(sel).errorDialog(errMessage)
             return
         (a,b,c)=Gui.Selection.getSelection()
-        _fixCorner(a,b,c)
+        self._fixCorner(a,b,c)
         App.ActiveDocument.recompute()
 
     def _fixCorner(self,a,b,c):
