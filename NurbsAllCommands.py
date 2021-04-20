@@ -924,23 +924,10 @@ class Design456_Nurbs_Smooth:
 
     def GetCommands(self):
         return (
-            "",
+            ""
+            "Nurbs_smoothSliceMeshBySketch",
+            "Nurbs_smothDistanceCurves"
 
         )
 
 Gui.addCommand("Design456_Nurbs_Smooth", Design456_Nurbs_Smooth())
-
-
-class Design456_Nurbs_Say:
-
-    """Nurbs Say"""
-
-    def GetCommands(self):
-        return (
-            ""
-
-
-        )
-
-Gui.addCommand("Design456_Nurbs_Say", Design456_Nurbs_Say())
-
