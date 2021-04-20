@@ -105,11 +105,11 @@ class Fr_Widget (object):
     def draw_box(self):
         raise NotImplementedError()
 
-    def draw():
+    def draw(self):
         """ main draw function. This is responsible for all draw on screen"""
         raise NotImplementedError()
 
-    def draw_label():
+    def draw_label(self):
         """ draw label for the widget 
         for coin3d Class SoText2 should be used 
         """
@@ -185,7 +185,7 @@ class Fr_Widget (object):
     def show(self):
         self.draw()
 
-    def parent(self):
+    def getparent(self):
         return self._parent
 
     def parent(self, parent):
@@ -288,7 +288,7 @@ class Fr_Widget (object):
         """
         self._when = value
 
-    def When(self):
+    def getWhen(self):
         """"
         Internal value of when. This will decide when the widget-callback will happen.
         """
