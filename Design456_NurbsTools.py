@@ -32,7 +32,7 @@ import FreeCADGui as Gui
 import Design456Init
 sys.path.append(Design456Init.NURBS_PATH)
 
-#from nurbs import *
+from nurbs import *
 import nurbs.NURBSinit
 import Design456_ALLNURBS
 
