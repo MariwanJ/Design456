@@ -35,9 +35,11 @@ from __future__ import unicode_literals
 #-------------------------------------------------
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Part
-import Design456Init
+
 
 from say import say
 
@@ -457,11 +459,11 @@ class Nurbs_CreateTripod:
             a.modeRef="vertical"
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateTripod")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateTripod"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -516,11 +518,11 @@ class Nurbs_CreateTripodSketch:
             ViewProvider(a.ViewObject)
             
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateTripodSketch")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateTripodSketch"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -537,11 +539,11 @@ class Nurbs_CreateSweep:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSweep"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -557,11 +559,11 @@ class Nurbs_CreateLoft:
         sw.Sections=Gui.Selection.getSelection()
         App.ActiveDocument.recompute()
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateLoft")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateLoft"),
                 'ToolTip': QT_TRANSLATE_NOOP("Nurbs_CreateLoft ", _tooltip)}
 Gui.addCommand("Nurbs_CreateLoft", Nurbs_CreateLoft())
@@ -576,11 +578,11 @@ class Nurbs_CreateCompound:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateCompound")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateCompound"),
                 'ToolTip': QT_TRANSLATE_NOOP("Nurbs_CreateCompound ", _tooltip)}
 Gui.addCommand("Nurbs_CreateCompound", Nurbs_CreateCompound())

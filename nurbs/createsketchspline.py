@@ -35,7 +35,9 @@ from __future__ import unicode_literals
 from say import *
 from scipy.signal import argrelextrema
 import Sketcher
-import Design456Init
+
+import NURBSinit
+
 # creates a BSpline Curve approximation Sketch for a list of points
 #
 
@@ -184,45 +186,63 @@ def runobj(obj, label=None):
         sk.Label = label
     return sk
 
+class Nurbs_CreateSketchSpline_runsubs:
+    def Activated(self):
+        self.runsubs()
+    def runsubs(self):
+        ''' erzeugt sketche fuer mehrere subkanten'''
+        sx = Gui.Selection.getSelection()
+        s = sx[0]
+        for so in s.SubObjects:
+            try:
+                bc = so.Curve
+                pts = bc.getPoles()
+                l = s.ObjectName
+                print(l, len(pts))
+                periodic = bc.isPeriodic()
+                createSketchSpline(pts, str(l) + " Sketch", periodic)
+            except:
+                sayexc2(title='Error', mess='something wrong with ' + obj.Label)
 
-def runsubs():
-    ''' erzeugt sketche fuer mehrere subkanten'''
-    sx = Gui.Selection.getSelection()
-    s = sx[0]
-    for so in s.SubObjects:
-        try:
-            bc = so.Curve
-            pts = bc.getPoles()
-            l = s.ObjectName
-            print(l, len(pts))
-            periodic = bc.isPeriodic()
-            createSketchSpline(pts, str(l) + " Sketch", periodic)
-        except:
-            sayexc2(title='Error', mess='something wrong with ' + obj.Label)
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateSketchSpline_runsubs")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSketchSpline_runsubs"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateSketchSpline_runsubs", Nurbs_CreateSketchSpline_runsubs())
 
 
-def runall():
-    ''' erzeugt sketche fuer mehrere subkanten'''
-    sx = Gui.Selection.getSelection()
-    s = sx[0]
-    name = "mergeS_"+s.Name
-    for so in s.Shape.Edges:
-        print(so)
-        try:
-            bc = so.Curve
-            print(bc)
-            pts = bc.getPoles()
-            print(pts)
-            l = s.Label
-            print(l)
-            print(l, len(pts))
-            periodic = bc.isPeriodic()
-            # createSketchSpline(pts,str(l) + " Sketch" ,periodic)
-            rc = mergeSketchSpline(pts, str(l) + " Sketch", periodic, name)
-            name = rc.Name
-        except:
-            sayexc2(title='Error', mess='something wrong with ' + s.Label)
-    closecurve(rc)
+
+
+class Nurbs_CreateSketchSpline_Runall:
+    def Activated(self):
+        self.runall()
+    def runall(self):
+        ''' erzeugt sketche fuer mehrere subkanten'''
+        sx = Gui.Selection.getSelection()
+        s = sx[0]
+        name = "mergeS_"+s.Name
+        for so in s.Shape.Edges:
+            print(so)
+            try:
+                bc = so.Curve
+                print(bc)
+                pts = bc.getPoles()
+                print(pts)
+                l = s.Label
+                print(l)
+                print(l, len(pts))
+                periodic = bc.isPeriodic()
+                # createSketchSpline(pts,str(l) + " Sketch" ,periodic)
+                rc = mergeSketchSpline(pts, str(l) + " Sketch", periodic, name)
+                name = rc.Name
+            except:
+                sayexc2(title='Error', mess='something wrong with ' + s.Label)
+        closecurve(rc)
 
 
 class Nurbs_createSketchSpline:
@@ -246,11 +266,11 @@ class Nurbs_createSketchSpline:
                 sayexc2(title='Error', mess='something wrong with ' + obj.Label)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createSketchSpline")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createSketchSpline"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

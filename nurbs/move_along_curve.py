@@ -28,10 +28,11 @@ from __future__ import unicode_literals
 '''objekt auf curve positionieren und ausrichten'''
 
 
-import FreeCAD 
-import FreeCADGui
-import Design456Init
-import os
+import FreeCAD as App
+import FreeCADGui as Gui
+
+import NURBSinit
+import os,sys
 
 try:
     import numpy as np 
@@ -139,13 +140,26 @@ def MyDialog(path,target):
 # 1. animated object,
 # 2. path to follow 
 
-def ThousandsOfRunWhatShouldIdo():
-    [target,path]=Gui.Selection.getSelectionEx()
-    MyDialog(path,target)
-
 # selektion:
 # 1. pfad spline
 # 2. zu platzierendes objekt
 
-def EndlessMains():
-    run()
+class Nurbs_MoveAlongCurve:
+    def Activated(self):
+        self.runme()
+    def runme(self):
+        [target,path]=Gui.Selection.getSelectionEx()
+        MyDialog(path,target)
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MoveAlongCurve")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MoveAlongCurve"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_MoveAlongCurve", Nurbs_MoveAlongCurve())
+
+

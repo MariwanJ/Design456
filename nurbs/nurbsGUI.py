@@ -9,7 +9,9 @@
 
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 
 from PySide import QtGui
@@ -17,7 +19,7 @@ import Part
 import Mesh
 import Draft
 import Points
-import Design456Init
+
 
 import os
 
@@ -357,11 +359,11 @@ class Nurbs_CreateWSLink:
         return bares
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspacelink.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'workspacelink.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateWSLink"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateWSLink", _tooltip)}
 
@@ -388,11 +390,11 @@ class Nurbs_CreateWorkspace:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'workspace.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateWorkspace"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateWorkspace", _tooltip)}
 
@@ -476,11 +478,11 @@ class Nurbs_main:
         c.vmax = 6
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_main")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_main"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_main", _tooltip)}
 

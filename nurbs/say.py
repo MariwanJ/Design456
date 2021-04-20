@@ -36,18 +36,22 @@ from __future__ import unicode_literals
 
 # \cond
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
+import os,sys 
 
 # \endcond
 
 import PySide
 from PySide import QtCore, QtGui
-
 import Draft
 import Part
-
-import os
+import random
+import time
+import traceback
+import inspect
 
 try:
     import numpy as np 
@@ -58,14 +62,6 @@ except ImportError:
 # import matplotlib
 # import matplotlib.pyplot as plt
 # from matplotlib.pyplot import cm
-
-import os
-import random
-import time
-import sys
-import traceback
-import inspect
-
 
 ##
 #

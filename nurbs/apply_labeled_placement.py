@@ -26,8 +26,10 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 
 
 class Nurbs_ApplyLabeledPlacement:
@@ -44,11 +46,11 @@ class Nurbs_ApplyLabeledPlacement:
                 y.Placement = t  # .inverse()       #t is undefined .. what is this? Mariwan
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Apply Labeled Placement")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ApplyLabeledPlacement"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_ApplyLabeledPlacement", _tooltip)}
 

@@ -35,8 +35,10 @@ the skeche contains exactly one bspline curve
 
 # \cond
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 
 
 import os
@@ -66,7 +68,7 @@ class Nurbs_LoadHeightProfileFromFile:
             fn = App.ParamGet(
                 'User parameter:Plugins/shoe').GetString("height profile")
             if fn == '':
-                fn = Design456Init.NURBS_DATA_PATH+"heelsv3.fcstd"
+                fn = NURBSinit.DATA_PATH+"heelsv3.fcstd"
 
                 App.ParamGet(
                     'User parameter:Plugins/shoe').SetString("height profile", fn)
@@ -114,14 +116,13 @@ class Nurbs_LoadHeightProfileFromFile:
             showdialog()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Load Height Profile From File")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LoadHeightProfileFromFile"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_LoadHeightProfileFromFile", _tooltip)}
-
 
 Gui.addCommand("Nurbs_LoadHeightProfileFromFile",
                Nurbs_LoadHeightProfileFromFile())

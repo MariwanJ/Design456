@@ -44,12 +44,13 @@ import FreeCAD as App
 import os,sys
 import time
 import random
-import Design456Init
+
 import FACE_D as faced
 
 import isodraw
 # reload(.isodraw)
 
+import NURBSinit
 
 '''
 # parameter
@@ -868,9 +869,9 @@ class Nurbs_EventFilter:
 # create the 2D or 3D grid for the first face of a selected object
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + '/filter.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'filter.svg',
             'MenuText': 'Nurbs_EventFilter',
-                        'ToolTip':  'Nurbs_EventFilter'
+            'ToolTip':  'Nurbs_EventFilter'
         }
 
 Gui.addCommand('Nurbs_EventFilter', Nurbs_EventFilter())
@@ -908,7 +909,7 @@ class Nurbs_CreateGridToFace:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + '/maps.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + '/maps.svg',
             'MenuText': 'Nurbs_CreateGridToFace',
                         'ToolTip':  'Nurbs_CreateGridToFace'
         }
@@ -933,11 +934,10 @@ class Nurbs_CreateMapToFace:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'maps.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'maps.svg',
             'MenuText': 'Nurbs_CreateMapToFace',
                         'ToolTip':  'Nurbs_CreateMapToFace'
         }
-
 
 Gui.addCommand('Nurbs_CreateMapToFace', Nurbs_CreateMapToFace())
 
@@ -980,16 +980,14 @@ class Nurbs_Drawoversegments:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + '/draw.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + '/draw.svg',
             'MenuText': 'Drawoversegments',
                         'ToolTip':  'Drawoversegments'
         }
-
-
 Gui.addCommand('Nurbs_Drawoversegments', Nurbs_Drawoversegments())
 
-
-class madeByMeDontKnowWhatItDo:
+#TODO: DON'T KNOW WHAT THIS DO. Mariwan
+class Nurbs_FaceDrawSegments:
     def Activated(self):
         # outside edge
         wire1 = App.ActiveDocument.IsoDrawFace002
@@ -1001,9 +999,9 @@ class madeByMeDontKnowWhatItDo:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'draw.svg',
-            'MenuText': 'madeByMeDontKnowWhatItDo',
-                        'ToolTip':  'madeByMeDontKnowWhatItDo'
+            'Pixmap': NURBSinit.ICONS_PATH + 'draw.svg',
+            'MenuText': 'Nurbs_FaceDrawSegments',
+                        'ToolTip':  'Nurbs_FaceDrawSegments'
         }
 
-Gui.addCommand('madeByMeDontKnowWhatItDo', madeByMeDontKnowWhatItDo())
+Gui.addCommand('Nurbs_FaceDrawSegments', Nurbs_FaceDrawSegments())

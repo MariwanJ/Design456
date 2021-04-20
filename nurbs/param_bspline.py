@@ -37,8 +37,10 @@ from __future__ import unicode_literals
 
 import FreeCAD as App
 import Part
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 
 def printinfo(sp):
     print("\n" * 2)

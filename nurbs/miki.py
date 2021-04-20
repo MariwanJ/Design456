@@ -35,8 +35,10 @@ from __future__ import unicode_literals
 #-------------------------------------------------
 import os,sys
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 
 
@@ -880,45 +882,59 @@ class Miki2(Miki):
         obj.ViewObject.Proxy.edit= lambda:self.run(layoutstring)
 
 
+class Nurbs_MikiTestMe:
+    def Activated(self):
+        self.testme()
+    def testme(self):
 
-def testme():
-
-    layout='''
-    VerticalLayoutTab:
-    #    id:'main'
-        QtGui.QLabel:
-            setText:"***   N U R B S     E D I T O R   ***"
-        VerticalLayout:
-            HorizontalLayout:
-                QtGui.QLabel:
-                    setText: "huhuwas 1 3"
-                QtGui.QLabel:
-                    setText: "huhuwas 2 3"
-                QtGui.QLabel:
-                    setText: "huhuwas 3 3"
-            HorizontalLayout:
-                QtGui.QLabel:
-                    setText:"Action "
-                QtGui.QPushButton:
-                    setText: "Run Action"
-                VerticalLayout:
+        layout='''
+        VerticalLayoutTab:
+        #    id:'main'
+            QtGui.QLabel:
+                setText:"***   N U R B S     E D I T O R   ***"
+            VerticalLayout:
+                HorizontalLayout:
+                    QtGui.QLabel:
+                        setText: "huhuwas 1 3"
+                    QtGui.QLabel:
+                        setText: "huhuwas 2 3"
+                    QtGui.QLabel:
+                        setText: "huhuwas 3 3"
+                HorizontalLayout:
+                    QtGui.QLabel:
+                        setText:"Action "
+                    QtGui.QPushButton:
+                        setText: "Run Action"
+                    VerticalLayout:
+                        QtGui.QLineEdit:
+                            setText:"edit Axample"
+                        QtGui.QLineEdit:
+                            setText:"edit B"
                     QtGui.QLineEdit:
-                        setText:"edit Axample"
-                    QtGui.QLineEdit:
-                        setText:"edit B"
+                        setText:"horizel "
+            HorizontalLayout:
                 QtGui.QLineEdit:
-                    setText:"horizel "
-        HorizontalLayout:
-            QtGui.QLineEdit:
-                setText:"AA"
-            QtGui.QLineEdit:
-                setText:"BB"
+                    setText:"AA"
+                QtGui.QLineEdit:
+                    setText:"BB"
 
-    '''
+        '''
 
 
-    miki=Miki()
-    app.root=miki
+        miki=Miki()
+        #app=miki.app
+        #app.root=miki
+        miki.parse2(layout)
+        miki.run(layout)
 
-    miki.parse2(layout)
-    miki.run(layout)
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MikiTestMe")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MikiTestMe"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_MikiTestMe", Nurbs_MikiTestMe())
+

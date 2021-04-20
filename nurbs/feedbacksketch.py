@@ -12,10 +12,12 @@
 # pyob
 #------------------------------
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Sketcher,Part
 
-import Design456Init
+
 
 from PySide import QtCore
 
@@ -52,7 +54,9 @@ class FeaturePython:
 #------------
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 
 
@@ -60,16 +64,6 @@ import PySide
 from PySide import  QtGui,QtCore
 
 
-def run(w):
-    print ("I'm run")
-    print (w)
-    print (w.obj)
-    print ("-------------")
-    App.oo=w.obj
-    sk=w.obj.Object.Object
-    print (sk.Label)
-    print (sk.Name)
-    
 def dialog(obj):
 
     w=QtGui.QWidget()
@@ -86,8 +80,6 @@ def dialog(obj):
     w.r=QtGui.QPushButton("run")
     box.addWidget(w.r)
     w.r.pressed.connect(lambda :run(w))
-
-
     return w
 
 
@@ -226,7 +218,7 @@ class FeedbackSketch(FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
-    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
+    def __init__(self, obj, icon=NURBSinit.ICONS_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -605,82 +597,126 @@ def addgrp(fbs,grpname):
     fbs.addProperty("App::PropertyStringList",'set'+grpname, grpname, )
     fbs.addProperty("App::PropertyStringList",'seton'+grpname, grpname, )
     fbs.addProperty("App::PropertyStringList",'setoff'+grpname, grpname, )
+    
+#TODO: This will fail, WE Dont have the example file
+class FeedBackSketchTest2Clients:
+    def Activated(self):
+        self.run_test_two_clients()
+    def run_test_two_clients(self):
+        '''example with two sketches both 1 in and 1 out parameter'''
 
-def run_test_two_clients():
-    '''example with two sketches both 1 in and 1 out parameter'''
+        try: App.closeDocument("beuger")
+        except: pass
 
-    try: App.closeDocument("beuger")
-    except: pass
+        App.open(u"/home/thomas/freecad_buch/b248_stassenbau/beuger.fcstd")
+        App.setActiveDocument("beuger")
+        App.ActiveDocument=App.getDocument("beuger")
+        Gui.ActiveDocument=Gui.getDocument("beuger")
 
-    App.open(u"/home/thomas/freecad_buch/b248_stassenbau/beuger.fcstd")
-    App.setActiveDocument("beuger")
-    App.ActiveDocument=App.getDocument("beuger")
-    Gui.ActiveDocument=Gui.getDocument("beuger")
+        fbs=createFeedbackSketch(name="MultiFB")
+        fbs.clearReportview=True
+        copySketch(App.ActiveDocument.Sketch002,fbs)
 
-    fbs=createFeedbackSketch(name="MultiFB")
-    fbs.clearReportview=True
-    copySketch(App.ActiveDocument.Sketch002,fbs)
+        fbs.addProperty("App::PropertyBool",'active', 'Base', )
+        fbs.addProperty("App::PropertyStringList",'bases', 'Base', )
+        fbs.active=True
+        fbs.bases=['TAA','TBB']
 
-    fbs.addProperty("App::PropertyBool",'active', 'Base', )
-    fbs.addProperty("App::PropertyStringList",'bases', 'Base', )
-    fbs.active=True
-    fbs.bases=['TAA','TBB']
+        addgrp(fbs,"TAA")
+        fbs.baseTAA=App.ActiveDocument.Sketch
+        fbs.getTAA=['in_p']
+        fbs.setTAA=['result_p']
+        fbs.activeTAA=True
 
-    addgrp(fbs,"TAA")
-    fbs.baseTAA=App.ActiveDocument.Sketch
-    fbs.getTAA=['in_p']
-    fbs.setTAA=['result_p']
-    fbs.activeTAA=True
+        addgrp(fbs,"TBB")
+        fbs.activeTBB=True
+        fbs.baseTBB=App.ActiveDocument.Sketch001
+        fbs.getTBB=['in_g']
+        fbs.setTBB=['result_g']
 
-    addgrp(fbs,"TBB")
-    fbs.activeTBB=True
-    fbs.baseTBB=App.ActiveDocument.Sketch001
-    fbs.getTBB=['in_g']
-    fbs.setTBB=['result_g']
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("FeedBackSketchTest2Clients")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "FeedBackSketchTest2Clients"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-
-def run_test_reverse_Constraints():
-    '''testcase reorder the constraints'''
-    targ=App.ActiveDocument.Sketch002
-    csts=targ.Constraints
-    yy=targ.ConstraintCount
-    for i in range(targ.ConstraintCount):
-        targ.delConstraint(yy-1-i)
-
-    copySketch(App.ActiveDocument.Sketch,App.ActiveDocument.Sketch002)
-    csts=targ.Constraints
-    cx=[]
-    cxi=[]
-    for i,c in  enumerate(csts):
-        print ("!",c.Name,"!")
-        if c.Name!='':
-            cx.append(c)
-            cxi.append(i)
-    cxi.reverse()
-    for i in cxi:
-        targ.delConstraint(i)
-    cx.reverse()
-    for c in cx:
-        targ.addConstraint(c)
+Gui.addCommand("FeedBackSketchTest2Clients", FeedBackSketchTest2Clients())
 
 
+class Nurbs_FeedBAckSketch_RevConstrain:
+    def Activated(self):
+        self.run_test_reverse_Constraints()
+    def run_test_reverse_Constraints(self):
+        '''testcase reorder the constraints'''
+        targ=App.ActiveDocument.Sketch002
+        csts=targ.Constraints
+        yy=targ.ConstraintCount
+        for i in range(targ.ConstraintCount):
+            targ.delConstraint(yy-1-i)
 
-def runB():
-    # testcase example
+        copySketch(App.ActiveDocument.Sketch,App.ActiveDocument.Sketch002)
+        csts=targ.Constraints
+        cx=[]
+        cxi=[]
+        for i,c in  enumerate(csts):
+            print ("!",c.Name,"!")
+            if c.Name!='':
+                cx.append(c)
+                cxi.append(i)
+        cxi.reverse()
+        for i in cxi:
+            targ.delConstraint(i)
+        cx.reverse()
+        for c in cx:
+            targ.addConstraint(c)
 
-    fbs=createFeedbackSketch(name="MultiFB")
-    copySketch(App.ActiveDocument.Sketch,fbs)
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_FeedBAckSketch_RevConstrain")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FeedBAckSketch_RevConstrain"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_FeedBAckSketch_RevConstrain", Nurbs_FeedBAckSketch_RevConstrain())
 
 
-    fbs.addProperty("App::PropertyBool",'active', 'Base', )
-    fbs.addProperty("App::PropertyStringList",'bases', 'Base', )
-    fbs.active=True
-    fbs.bases=['ClientA','ClientB']
-    for b in fbs.bases: addgrp(fbs,b)
-    fbs.baseClientA=App.ActiveDocument.Sketch001
-    fbs.getClientA=['a','b']
-    fbs.setClientA=['c','bm']
-    fbs.activeClientA=True
+
+class Nurbs_FeedBackSketchTestB:
+    def Activated(self):
+        self.runB()
+    def runB(self):
+        # testcase example
+
+        fbs=createFeedbackSketch(name="MultiFB")
+        copySketch(App.ActiveDocument.Sketch,fbs)
+
+
+        fbs.addProperty("App::PropertyBool",'active', 'Base', )
+        fbs.addProperty("App::PropertyStringList",'bases', 'Base', )
+        fbs.active=True
+        fbs.bases=['ClientA','ClientB']
+        for b in fbs.bases: addgrp(fbs,b)
+        fbs.baseClientA=App.ActiveDocument.Sketch001
+        fbs.getClientA=['a','b']
+        fbs.setClientA=['c','bm']
+        fbs.activeClientA=True
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FeedBackSketchTestB"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_FeedBackSketchTestB", Nurbs_FeedBackSketchTestB())
+
 
 
 
@@ -905,18 +941,30 @@ def connectLine(yy=False):
 
 
 
+class Nurbs_FeedBackSketch:
+    def Activated(self):
+        self.runMain()
+    def rnMain(self):
+        fbs=createFeedbackSketch(name="SingleClientFeedback")
+        fbs.addProperty("App::PropertyBool",'active', 'Base', )
+        fbs.addProperty("App::PropertyStringList",'bases', 'Base', )
+        fbs.active=True
+        fbs.bases=['Client']
+        App.ActiveDocument.recompute()
+        for b in fbs.bases: 
+            addgrp(fbs,b)
 
+        fbs.activeClient=True
+        Gui.ActiveDocument.setEdit(fbs.Name)
 
-def ThousandsOfMainFunction():
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_FeedBackSketch")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FeedBackSketch"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    fbs=createFeedbackSketch(name="SingleClientFeedback")
-    fbs.addProperty("App::PropertyBool",'active', 'Base', )
-    fbs.addProperty("App::PropertyStringList",'bases', 'Base', )
-    fbs.active=True
-    fbs.bases=['Client']
-    App.ActiveDocument.recompute()
-    for b in fbs.bases: 
-        addgrp(fbs,b)
+Gui.addCommand("Nurbs_FeedBackSketch", Nurbs_FeedBackSketch())
 
-    fbs.activeClient=True
-    Gui.ActiveDocument.setEdit(fbs.Name)

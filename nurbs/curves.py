@@ -51,9 +51,11 @@ for Offset curve generation
 
 from say import *
 import pyob
-import Design456Init
+
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Part
 ##\cond
 try:
@@ -66,13 +68,13 @@ import time
 class _ViewProvider(pyob.ViewProvider):
     ''' base class view provider '''
 
-    def __init__(self, vobj, icon= (Design456Init.NURBS_ICON_PATH+"mover.svg")):
+    def __init__(self, vobj, icon= (NURBSinit.ICONS_PATH+"mover.svg")):
         self.Object = vobj.Object
         self.iconpath =  icon
         vobj.Proxy = self
 
     def getIcon(self):
-        return (Design456Init.NURBS_ICON_PATH+'draw.svg')
+        return (NURBSinit.ICONS_PATH+'draw.svg')
 
 ##\endcond
 
@@ -82,7 +84,7 @@ class OffsetSpline(pyob.FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
-    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
+    def __init__(self, obj, icon=NURBSinit.ICONS_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -147,7 +149,7 @@ class Ufo(pyob.FeaturePython):
     '''a mirgrationtest class''' 
 
     ##\cond
-    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
+    def __init__(self, obj, icon=NURBSinit.ICONS_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -243,7 +245,7 @@ class Star(pyob.FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
-    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
+    def __init__(self, obj, icon=NURBSinit.ICONS_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -367,11 +369,11 @@ class Nurbs_SoleWithBorder:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Sole With Border")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'Nurbs2.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'Nurbs2.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_SoleWithBorder"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

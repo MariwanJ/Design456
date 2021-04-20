@@ -34,10 +34,12 @@ from __future__ import unicode_literals
 ##\cond
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Points,Part,Draft
 import os
-import Design456Init
+
 try:
     import numpy as np 
 except ImportError:
@@ -212,7 +214,7 @@ def run(model='shoeAdam', point_cloud='shoe_last_scanned',showpoints=True,showxy
     try: 
         App.ActiveDocument.getObject(point_cloud)
     except: 
-        Points.insert(Design456Init.NURBS_DATA_PATH+point_cloud+".asc","Shoe")
+        Points.insert(NURBSinit.DATA_PATH+point_cloud+".asc","Shoe")
 
 
     # load the shoedata

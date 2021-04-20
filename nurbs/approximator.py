@@ -26,7 +26,7 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 # -*- coding: utf-8 -*-
-'''approximate  a point cloud by a bezier curve
+#approximate  a point cloud by a bezier curve
 # -------------------------------------------------
 # --
 # --
@@ -34,38 +34,35 @@ from __future__ import unicode_literals
 # --
 # -- GNU Lesser General Public License (LGPL)
 # -------------------------------------------------
-'''
 
-from pyob import FeaturePython, ViewProvider
-from scipy import misc
-from scipy import signal
-from scipy.optimize import minimize
-import scipy
-from pyob import *
-from miki_g import createMikiGui2, MikiApp
-import os
-import Design456Init
+
+import Draft
+import Points
+import Part
+import Sketcher
+import os,sys
+import random
+import time
+import FreeCAD as App
+import FreeCADGui as Gui
+import NURBSinit
+import inspect
+from  pyob import FeaturePython, ViewProvider
+from  scipy import misc
+from  scipy import signal
+from  scipy.optimize import minimize
+from  miki_g import createMikiGui2, MikiApp
 try:
     import numpy as np 
 except ImportError:
     print ("Please install the required module : numpy")
     
 try:
-
     import imageio
 except ImportError:
     print ("Please install the required module :imageio")
-
-import Draft
-import Points
-import Part
-import Sketcher
 import say
-from say import *
-import random
-import time
 
-import inspect
 #reload(say)
 
 #reload(miki_g)
@@ -265,71 +262,74 @@ class Nurbs_smoothPointcloudGUI:
         return mikigui
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_smoothPointcloudGUI")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_smoothPointcloudGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_smoothPointcloudGUI", Nurbs_smoothPointcloudGUI())
 
 
-    
-# \cond
-'''    layout = 
-    MainWindow:
-        QtGui.QLabel:
-            setText:"***   D E M O 1  ***"
+def _smoothPointcloudGUI():
+	'''smooth the point cloud to a bspline curve'''
 
-        HorizontalGroup:
-            setTitle: "Mode"
-            QtGui.QComboBox:
-                id: 'mode'
-                addItem: "all"
-                # addItem: "none"
-                addItem: "vertical"
-                addItem: "horizontal"
+##\cond
+	layout = '''
+	MainWindow:
+		QtGui.QLabel:
+			setText:"***   D E M O 1  ***"
 
-        HorizontalGroup:
-            setTitle: "Tangent Force v"
+		HorizontalGroup:
+			setTitle: "Mode"
+			QtGui.QComboBox:
+				id: 'mode'
+				addItem: "all"
+				#addItem: "none"
+				addItem: "vertical"
+				addItem: "horizontal"
 
-            QtGui.QDial:
-                id: 'tbb'
-                setFocusPolicy: QtCore.Qt.StrongFocus
-                valueChanged.connect: app.run
-                setMinimum: 5
-                setValue: 10
-                setMaximum: 50
+		HorizontalGroup:
+			setTitle: "Tangent Force v"
 
-        QtGui.QPushButton:
-            setText: "Run Action"
-            clicked.connect: app.run
+			QtGui.QDial:
+				id: 'tbb'
+				setFocusPolicy: QtCore.Qt.StrongFocus
+				valueChanged.connect: app.run
+				setMinimum: 5
+				setValue: 10
+				setMaximum: 50
 
-        QtGui.QPushButton:
-            setText: "change Image"
-            clicked.connect: app.changeImage
+		QtGui.QPushButton:
+			setText: "Run Action"
+			clicked.connect: app.run
 
-        QtGui.QPushButton:
-            setText: "close"
-            clicked.connect: app.myclose
+		QtGui.QPushButton:
+			setText: "change Image"
+			clicked.connect: app.changeImage
 
-        setSpacer:
-        # temp image widget prototype
-        PicWidget:
-            id: 'image'
-            sizeX: 400
-            sizeY: 200
-            run_display: Design456Init.NURBS_ICON_PATH+"bp_841.png"
-        '''
+		QtGui.QPushButton:
+			setText: "close"
+			clicked.connect: app.myclose
+
+		setSpacer:
+		# temp image widget prototype
+		PicWidget:
+			id: 'image'
+			sizeX: 400
+			sizeY: 200
+			run_display: "/home/thomas/Bilder/bp_841.png"
+		'''
+
 
 class myApp(MikiApp):
     # temp. testdaten fuer den image widget
     index = 0
-    images = [Design456Init.NURBS_ICON_PATH+"bp_842.png",
-    Design456Init.NURBS_ICON_PATH+"bp_843.png",
-    Design456Init.NURBS_ICON_PATH+"bp_844.png"
+    images = [NURBSinit.ICONS_PATH+"bp_842.png",
+    NURBSinit.ICONS_PATH+"bp_843.png",
+    NURBSinit.ICONS_PATH+"bp_844.png"
     ]
     def myclose(self):
         self.close()
@@ -397,11 +397,11 @@ class Nurbs_loadPointcloudfromImageGUI:
         ViewProvider(yy.ViewObject)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_loadPointcloudfromImageGUI")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_loadPointcloudfromImageGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -769,11 +769,11 @@ class Nurbs_LoadCylinderfacefromImageGUI:
         ViewProvider(yy.ViewObject)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_LoadCylinderfacefromImageGUI")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LoadCylinderfacefromImageGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -782,7 +782,7 @@ Gui.addCommand("Nurbs_LoadCylinderfacefromImageGUI", Nurbs_LoadCylinderfacefromI
 
 
 class Nurbs_BumpFacefromImageGUI:
-    def Actiavted(self):
+    def Activated(self):
         self._BumpFacefromImageGUI()
         
     def _BumpFacefromImageGUI():
@@ -796,11 +796,11 @@ class Nurbs_BumpFacefromImageGUI:
         ViewProvider(yy.ViewObject)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_BumpFacefromImageGUI")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_BumpFacefromImageGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1317,11 +1317,11 @@ class Nurbs_minimumLengthBezier:
             yy.ViewObject.ShapeColor = (1., 0., 0.)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_minimumLengthBezier")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_minimumLengthBezier"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1358,20 +1358,20 @@ class Nurbs_CreateMyMinAGUI:
             yy.ViewObject.LineColor = (.3, 1., 0.0)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateMyMinAGUI")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateMyMinAGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_CreateMyMinAGUI", Nurbs_CreateMyMinAGUI())
 
 
-class Nurbs_createMyMinSoft:
+class Nurbs_createMyMinSoftGUI:
     def Activated(self):
-        self._createMyMinSoft()
+        self._createMyMinSoftGUI()
     def _createMyMinSoftGUI(self):
         ''' myMinSoft-Object erzeugen'''
 
@@ -1395,15 +1395,15 @@ class Nurbs_createMyMinSoft:
         '''
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Nurbs_createMyMinSoft")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createMyMinSoft"),
+        _tooltip = ("Nurbs_createMyMinSoftGUI")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createMyMinSoftGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-Gui.addCommand("Nurbs_createMyMinSoft", Nurbs_createMyMinSoft())
+Gui.addCommand("Nurbs_createMyMinSoftGUI", Nurbs_createMyMinSoftGUI())
 
 
 
@@ -1606,11 +1606,11 @@ class Nurbs_nearconstantCurvatureBezier:
             yy.ViewObject.LineColor = (1.0, 0.3, 1.0)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_nearconstantCurvatureBezier")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_nearconstantCurvatureBezier"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1941,11 +1941,11 @@ class Nurbs_createBezierPolesFramefromribsGUI:
         yy.ribs = Gui.Selection.getSelection()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createBezierPolesFramefromribsGUI")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createBezierPolesFramefromribsGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2070,11 +2070,11 @@ class Nurbs_DontKnowWhatThisDo_B:
             Part.show(bc.toShape())
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_DontKnowWhatThisDo_B")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DontKnowWhatThisDo_B"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2223,11 +2223,11 @@ class Nurbs_RibstoFace:
         yy.ViewObject.ShapeColor = (.6, .6, 1.)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_RibstoFace")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_RibstoFace"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 

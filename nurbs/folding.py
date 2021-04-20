@@ -28,10 +28,12 @@ from __future__ import unicode_literals
 
 # from say import *
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Sketcher,Part
 
-import Design456Init
+
 
 import os
 
@@ -188,14 +190,25 @@ def fold(obj):
     return ll
 
 
+class Nurbs_FoldingRun:
+    def Activated(Self):
+        self.runMe()
+    def runMe(self):
+        ss=Gui.Selection.getSelection()
+        folder=createFolding(obj=None)
+        folder.faceobj=ss[0]
+        folder.trackobj=ss[1]
+        folder.arcobj=ss[2]
+        App.ActiveDocument.recompute()
 
-def ThousandsOfRunWhatShouldIdo():
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_FoldingRun")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FoldingRun"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    ss=Gui.Selection.getSelectionEx()
+Gui.addCommand("Nurbs_FoldingRun", Nurbs_FoldingRun())
 
-    folder=createFolding(obj=None)
-    folder.faceobj=ss[0]
-    folder.trackobj=ss[1]
-    folder.arcobj=ss[2]
-
-    App.ActiveDocument.recompute()

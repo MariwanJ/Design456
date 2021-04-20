@@ -28,8 +28,9 @@ from __future__ import unicode_literals
 '''
 shoe sole creation
 
-'''
-import Design456Init
+
+import NURBSinit'''
+
 
 
 # -*- coding: utf-8 -*-
@@ -477,11 +478,11 @@ class Nurbs_CreateOrUpdateSoleEnvironmentSheet:
                 f.ViewObject.hide()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Create Or Update Sole Environment Sheet")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateOrUpdateSoleEnvironmentSheet"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_CreateOrUpdateSoleEnvironmentSheet", _tooltip)}
 
@@ -536,11 +537,11 @@ class Nurbs_PrototypeCreateHELL:
         print("okay")
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Prototype Create HELL")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PrototypeCreateHELL"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_PrototypeCreateHELL", _tooltip)}
 

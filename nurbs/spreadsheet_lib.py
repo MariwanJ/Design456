@@ -42,7 +42,8 @@ from __future__ import unicode_literals
 import FreeCAD as App
 import Part
 import Draft
-import Design456Init
+
+import NURBSinit
 
 import os
 

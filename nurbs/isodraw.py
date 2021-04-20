@@ -40,8 +40,10 @@ from __future__ import unicode_literals
 from say import *
 
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 
 
 from PySide import QtGui
@@ -66,7 +68,7 @@ import os
 
 # import
 
-import Design456Init
+
 
 class PartFeature:
     def __init__(self, obj):
@@ -271,7 +273,7 @@ class Nurbs_createIsodrawFace:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
             'MenuText': 'Nurbs_createIsodrawFace',
             'ToolTip':  'Nurbs_createIsodrawFace'
         }
@@ -362,7 +364,7 @@ class createBrezel:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
             'MenuText': 'testD',
             'ToolTip':  'testD'
         }
@@ -620,7 +622,7 @@ class createMap:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
             'MenuText': 'testD',
             'ToolTip':  'testD'
         }
@@ -1347,25 +1349,40 @@ def createWsLink(docname = "Linkdok"):
     WSLink(bares, self.docname)
     return bares
 
+#TODO: THIS IS NOT CORRECT . LINK IS NOT DEFINED
+class Nurbs_IsodrawTestF:
+    def Activated(self):
+        self.testF()
+        
+    def testF(self):
 
-def testF():
+        link.source = obj
 
-    link.source = obj
+        try:
+            obj.backref = link
+        except:
+            pass
+        print(lidok.Name)
+        gad = Gui.getDocument(lidok.Name)
+        lidok.recompute()
+        Gui.SendMsgToActiveView("ViewSelection")
+        Gui.SendMsgToActiveView("ViewFit")
+        print(ad.Name)
+        App.setActiveDocument(ad.Name)
+        Gui.ActiveDocument = Gui.getDocument(ad.Name)
+        return link
 
-    try:
-        obj.backref = link
-    except:
-        pass
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_IsodrawTestF")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_IsodrawTestF"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    print(lidok.Name)
-    gad = Gui.getDocument(lidok.Name)
-    lidok.recompute()
-    Gui.SendMsgToActiveView("ViewSelection")
-    Gui.SendMsgToActiveView("ViewFit")
-    print(ad.Name)
-    App.setActiveDocument(ad.Name)
-    Gui.ActiveDocument = Gui.getDocument(ad.Name)
-    return link
+Gui.addCommand("Nurbs_IsodrawTestF", Nurbs_IsodrawTestF())
+
 
 
 '''
@@ -1417,62 +1434,94 @@ def OhSomanyMain():
 
 '''
 
+class Nurbs_ISOdrawTestA:
+    def Activated(self):
+        self.testA()
+        
+    def testA(self):
+        ad = App.ActiveDocument
+        App.ActiveDocument = ad
+    
+        # bb=App.ActiveDocument.Poles
+        # cc=App.ActiveDocument.orig
+        cc = App.ActiveDocument.Cylinder
+    
+        # lidok= WorkSpace("A3D")
+        # try: lidok.delete()
+        # except: pass
+    
+        wl = createWsLink("Shoe")
+        App.ActiveDocument = ad
+    
+        a = createLink(cc, "Shoe")
 
-def testA():
-    ad = App.ActiveDocument
-    App.ActiveDocument = ad
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_ISOdrawTestA")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ISOdrawTestA"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    # bb=App.ActiveDocument.Poles
-    # cc=App.ActiveDocument.orig
-    cc = App.ActiveDocument.Cylinder
-
-    # lidok= WorkSpace("A3D")
-    # try: lidok.delete()
-    # except: pass
-
-    wl = createWsLink("Shoe")
-    App.ActiveDocument = ad
-
-    a = createLink(cc, "Shoe")
-
-
-def testB():
-    wl = createWsLink("Sole")
-    App.ActiveDocument = ad
-    ad.recompute()
-
-    wl = createWsLink("Both")
-    App.ActiveDocument = ad
-    ad.recompute()
-
-    a = createLink(bb, "Shoe")
-    a = createLink(cc, "Sole")
-
-    App.ActiveDocument = ad
-    a = createLink(bb, "Both")
-    a = createLink(cc, "Both")
-    App.ActiveDocument = ad
-
-    App.ActiveDocument = ad
-    '''
-    b=createLink(cc,"DD")
-    b2=createLink(bb,"AA")
-
-    a=createLink(bb,"DD")
-
-    WorkSpace("AA").show()
-    WorkSpace("DD").hide()
-    '''
+Gui.addCommand("Nurbs_ISOdrawTestA", Nurbs_ISOdrawTestA())
 
 
-class map3Dto2D:
+
+
+
+class Nurbs_ISOdrawTestB:
+    def Activated(self):
+        self.testB()
+    def testB(self):
+        wl = createWsLink("Sole")
+        App.ActiveDocument = ad
+        ad.recompute()
+
+        wl = createWsLink("Both")
+        App.ActiveDocument = ad
+        ad.recompute()
+
+        a = createLink(bb, "Shoe")
+        a = createLink(cc, "Sole")
+
+        App.ActiveDocument = ad
+        a = createLink(bb, "Both")
+        a = createLink(cc, "Both")
+        App.ActiveDocument = ad
+
+        App.ActiveDocument = ad
+        '''
+        b=createLink(cc,"DD")
+        b2=createLink(bb,"AA")
+
+        a=createLink(bb,"DD")
+
+        WorkSpace("AA").show()
+        WorkSpace("DD").hide()
+        '''
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_ISOdrawTestB")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ISOdrawTestB"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_ISOdrawTestB", Nurbs_ISOdrawTestB())
+
+
+
+class Nurbs_ISOmap3Dto2D:
     def Activated(self):
         try:
             # 3D edge to 2D edge
             # face=App.ActiveDocument.Poles
             # wire=App.ActiveDocument.UUUU_Drawing_on_Poles__Face1002_Spline
 
-            s0 = Gui.Selection.getSelectionEx()
+            s0 = Gui.Selection.getSelection()
             base = s0[-1]
 
             if hasattr(base, "faceObject"):
@@ -1594,7 +1643,7 @@ class map3Dto2D:
                 a.Label = "map2D_for_"+wire.Label
                 a.ViewObject.ShapeColor = wire.ViewObject.LineColor
         except Exception as err:
-            App.Console.PrintError("'map3Dto2D' Failed. "
+            App.Console.PrintError("'Nurbs_ISOmap3Dto2D' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -1602,17 +1651,17 @@ class map3Dto2D:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
             'MenuText': 'map 3d to 2D',
             'ToolTip':  'Map 3D drawing to 2D'
         }
 
 
-Gui.addCommand('map3Dto2D', map3Dto2D())
-map3Dto2D.__doc__ = """map3Dto2D: Tobe added later     """
+Gui.addCommand('Nurbs_ISOmap3Dto2D', Nurbs_ISOmap3Dto2D())
+Nurbs_ISOmap3Dto2D.__doc__ = """Nurbs_ISOmap3Dto2D: Tobe added later     """
 
 
-class map2Dto3D():
+class Nurbs_ISOmap2Dto3D():
 
     def Activated(self):
         ''' 2D Kante(Sketch) auf  3D Flaeche Poles '''
@@ -1620,7 +1669,7 @@ class map2Dto3D():
         # last selection == face
         # other sels: wires to project
 
-        s0 = Gui.Selection.getSelectionEx()
+        s0 = Gui.Selection.getSelection()
         moa = s0[-1]
         s = s0[:-1]
 
@@ -1645,12 +1694,12 @@ class map2Dto3D():
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
             'MenuText': 'map 3d to 2D',
             'ToolTip':  'Map 3D drawing to 2D'
         }
-Gui.addCommand('map2Dto3D', map2Dto3D())
-map2Dto3D.__doc__ = """map2Dto3D: Tobe added later     """
+Gui.addCommand('Nurbs_ISOmap2Dto3D', Nurbs_ISOmap2Dto3D())
+Nurbs_ISOmap2Dto3D.__doc__ = """Nurbs_ISOmap2Dto3D: Tobe added later     """
 
 
 # ------------------------
@@ -1661,7 +1710,7 @@ class map3Dgridto2Dgrid:
     def Activated(self):
         # 3D Edges auf 2D Edges
 
-        s0 = Gui.Selection.getSelectionEx()
+        s0 = Gui.Selection.getSelection()
         base = s0[-1]
 
         if hasattr(base, "faceObject"):
@@ -1752,7 +1801,7 @@ class map3Dgridto2Dgrid:
 
 #     def GetResources(self):
 #         return {
-#             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+#             'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
 #             'MenuText': 'map3Dgridto2Dgrid',
 #             'ToolTip':  'map3Dgridto2Dgrid'
 #         }
@@ -1999,7 +2048,7 @@ class getmap:
 
 #     def GetResources(self):
 #         return {
-#             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+#             'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
 #             'MenuText': 'map 3d to 2D',
 #             'ToolTip':  'Map 3D drawing to 2D'
 #         }
@@ -2248,7 +2297,7 @@ class getmap3:
 
 #     def GetResources(self):
 #         return {
-#             'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+#             'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
 #             'MenuText': 'map 3d to 2D',
 #             'ToolTip':  'Map 3D drawing to 2D'
 #         }
@@ -2259,7 +2308,7 @@ class getmap3:
 
 
 # pruefe qualitaet der umrechnung
-class testC():
+class Nurbs_IsoDrawtestC():
     def Activated(self):
         face = App.ActiveDocument.Poles
         # face=App.ActiveDocument.MySegment
@@ -2289,15 +2338,15 @@ class testC():
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'testC',
-            'ToolTip':  'testC'
+            'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
+            'MenuText': 'Nurbs_IsoDrawtestC',
+            'ToolTip':  'Nurbs_IsoDrawtestC'
         }
-Gui.addCommand('testC', testC())
-testC.__doc__ = """testC: Tobe added later     """
+Gui.addCommand('Nurbs_IsoDrawtestC', Nurbs_IsoDrawtestC())
+Nurbs_IsoDrawtestC.__doc__ = """Nurbs_IsoDrawtestC: Tobe added later     """
 
 #TODO WRONG CODE .. KKU IS NOT DEFIEND 
-class testD():
+class Nurbs_IsoDrawtestD():
     def Activated(self):
         #    kku2=np.array(App.kku).reshape(31,31,3)
         #    kku=kku2[10:25,10:20].reshape(150,3)
@@ -2312,15 +2361,15 @@ class testD():
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'testD',
-            'ToolTip':  'testD'
+            'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
+            'MenuText': 'Nurbs_IsoDrawtestD',
+            'ToolTip':  'Nurbs_IsoDrawtestD'
         }
-Gui.addCommand('testD', testD())
-testD.__doc__ = """testD: Tobe added later     """
+Gui.addCommand('Nurbs_IsoDrawtestD', Nurbs_IsoDrawtestD())
+Nurbs_IsoDrawtestD.__doc__ = """testD: Tobe added later     """
 
 
-class testE():
+class Nurbs_IsoDrawtestE():
     def Activated(Self):
         [uv2x, uv2y, xy2u, xy2v] = getmap(face)
         ptbb = []
@@ -2345,11 +2394,11 @@ class testE():
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'drawing.svg',
-            'MenuText': 'testE',
-            'ToolTip':  'testE'
+            'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
+            'MenuText': 'Nurbs_IsoDrawtestE',
+            'ToolTip':  'Nurbs_IsoDrawtestE'
         }
 
 
-Gui.addCommand('testE', testE())
-testE.__doc__ = """testE: Tobe added later     """
+Gui.addCommand('Nurbs_IsoDrawtestE', Nurbs_IsoDrawtestE())
+Nurbs_IsoDrawtestE.__doc__ = """Nurbs_IsoDrawtestE: Tobe added later     """

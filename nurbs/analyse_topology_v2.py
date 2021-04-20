@@ -41,10 +41,11 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import random
 import os, sys
+import NURBSinit
 import Part
 import Points
 import time
-import Design456Init
+
 try:
     import networkx as nx
 except ImportError:
@@ -571,8 +572,6 @@ class MainAnalysisMethodRunAna:
                     # App.PT[g.node[v]['vector']] =[(a.Label,g.node[v]['label'],v,g.node[v]['keys'][g.node[v]['quality']-1],g.node[v]['quality'])]
                     App.PT[g.node[v]['vector']] = [key]
 
-
-
     # TopologicalCompare'
     def TopologicalCompare(self):
         """ 
@@ -781,14 +780,14 @@ class MainAnalysisMethodRunAna:
 
         def GetResources(self):
             return {
-                'Pixmap': Design456Init.NURBS_ICON_PATH + '.svg',
+                'Pixmap': NURBSinit.ICONS_PATH + '.svg',
                 'MenuText': '',
                             'ToolTip':  ''
             }
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH+'nurbs.svg',
+            'Pixmap': NURBSinit.ICONS_PATH+'nurbs.svg',
             'MenuText': 'MainAnalysisMethodRunAna',
                         'ToolTip':  'MainAnalysisMethodRunAna'
         }
@@ -821,7 +820,7 @@ class resetVertexStore:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'Nurbs.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'Nurbs.svg',
             'MenuText': '',
                         'ToolTip':  ''
         }
@@ -858,7 +857,7 @@ class printVertexStore:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'Nurbs.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'Nurbs.svg',
             'MenuText': 'printVertexStoreDump',
                         'ToolTip':  'printVertexStoreDump'
         }
@@ -866,22 +865,51 @@ class printVertexStore:
 
 Gui.addCommand('printVertexStore', printVertexStore())
 
+class Nurbs_AnalyseLoadTest1:
+    def Activate(self):
+        self.loadTest1()
+    def loadTest1():
+        print(__file__)
+        # hier relativen pfad reintun
+        App.open(NURBSinit.DATA_PATH+"zwei_gleiche_fenster.fcstd")
+        App.setActiveDocument("zwei_gleiche_fenster")
+        App.ActiveDocument = App.getDocument("zwei_gleiche_fenster")
+        Gui.ActiveDocument = Gui.getDocument("zwei_gleiche_fenster")
 
-def loadTest1():
-    print(__file__)
-    # hier relativen pfad reintun
-    App.open(Design456Init.NURBS_DATA_PATH+"zwei_gleiche_fenster.fcstd")
-    App.setActiveDocument("zwei_gleiche_fenster")
-    App.ActiveDocument = App.getDocument("zwei_gleiche_fenster")
-    Gui.ActiveDocument = Gui.getDocument("zwei_gleiche_fenster")
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_AnalyseLoadTest1")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_AnalyseLoadTest1"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_AnalyseLoadTest1", Nurbs_AnalyseLoadTest1())
 
 
-def loadTest2():
+class Nurbs_AnalyseLoadTest2:
+    def Activated(self):
+        self.loadTest2()
+    def loadTest2():
+    
+        App.open(NURBSinit.DATA_PATH+"zwei_gleiche_fenster.fcstd")
+        App.setActiveDocument("zwei_gleiche_fenster")
+        App.ActiveDocument = App.getDocument("zwei_gleiche_fenster")
+        Gui.ActiveDocument = Gui.getDocument("zwei_gleiche_fenster")
 
-    App.open(Design456Init.NURBS_DATA_PATH+"zwei_gleiche_fenster.fcstd")
-    App.setActiveDocument("zwei_gleiche_fenster")
-    App.ActiveDocument = App.getDocument("zwei_gleiche_fenster")
-    Gui.ActiveDocument = Gui.getDocument("zwei_gleiche_fenster")
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_AnalyseLoadTest2")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_AnalyseLoadTest2"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_AnalyseLoadTest2", Nurbs_AnalyseLoadTest2())
+
+
 
 
 def getkeytab(g, nodes):
@@ -904,105 +932,135 @@ def getUniques(keys):
             us += keys[k]
     return us
 
+class Nurbs_AnalyseTest4:
+    def Activated(self):
+        self.Test4()
+        
+    def Test4(self):
+        import networkx as nx
+        g = nx.Graph()
+        g = App.g
+        print("Test 4")
+    #    print g.nodes()
 
-def Test4():
-    import networkx as nx
-    g = nx.Graph()
-    g = App.g
-    print("Test 4")
-#    print g.nodes()
+        keys = getkeytab(g, g.nodes())
 
-    keys = getkeytab(g, g.nodes())
+        print("keytab all results ...")
+        for k in keys:
+            print(k, keys[k])
 
-    print("keytab all results ...")
-    for k in keys:
-        print(k, keys[k])
+        uniqs = getUniques(keys)
+        print("uniques start ")
+        print(uniqs)
 
-    uniqs = getUniques(keys)
-    print("uniques start ")
-    print(uniqs)
-
-    for n in uniqs:
-        g.node[n]['upath'] = [n]
-
-    found = True
-    for i in range(8):
-        if not found:
-            break
-
-        found = False
-        print("loop i= ")
-        print(i)
         for n in uniqs:
-            nbs = g.neighbors(n)
-            nbs2 = []
-            for na in nbs:
-                if na not in uniqs:
-                    nbs2.append(na)
+            g.node[n]['upath'] = [n]
 
-            keys = getkeytab(g, nbs2)
+        found = True
+        for i in range(8):
+            if not found:
+                break
 
-#            print
-#            print ("node ",n,getkeyg(g,n),nbs2)
-#            print nbs
+            found = False
+            print("loop i= ")
+            print(i)
+            for n in uniqs:
+                nbs = g.neighbors(n)
+                nbs2 = []
+                for na in nbs:
+                    if na not in uniqs:
+                        nbs2.append(na)
 
-            for k in keys:
-                print(k, keys[k])
+                keys = getkeytab(g, nbs2)
 
-            uniqs2 = getUniques(keys)
-            if uniqs2 != []:
-                print("----------------------------------uniques2: ")
-                print(uniqs2)
-                for u in uniqs2:
-                    if u not in uniqs:
-                        #                print ("-add--------------------",u
-                        found = True
-                        uniqs += [u]
-                        g.node[u]['upath'] = g.node[n]['upath']+[u]
+    #            print
+    #            print ("node ",n,getkeyg(g,n),nbs2)
+    #            print nbs
 
-    print("all uniqs ")
-    print(uniqs)
+                for k in keys:
+                    print(k, keys[k])
 
-    for n in uniqs:
-        print(k, n, g.node[n]['label'], g.node[n]['upath'])
+                uniqs2 = getUniques(keys)
+                if uniqs2 != []:
+                    print("----------------------------------uniques2: ")
+                    print(uniqs2)
+                    for u in uniqs2:
+                        if u not in uniqs:
+                            #                print ("-add--------------------",u
+                            found = True
+                            uniqs += [u]
+                            g.node[u]['upath'] = g.node[n]['upath']+[u]
 
-    ups = []
-    for n in uniqs:
-        ups.append(App.Vector(g.node[n]['vector']))
+        print("all uniqs ")
+        print(uniqs)
 
-    Points.show(Points.Points(ups))
-    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
-        random.random(), random.random(), random.random())
-    App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
+        for n in uniqs:
+            print(k, n, g.node[n]['label'], g.node[n]['upath'])
 
-    App.ActiveDocument.ActiveObject.Label = "Eindeutige Punkte"
+        ups = []
+        for n in uniqs:
+            ups.append(App.Vector(g.node[n]['vector']))
 
-    print
-    print("nicht zuordenbar ...")
-    noups = []
-    for n in g.nodes():
-        if n not in uniqs:
-            k = getkeyg(g, n)
-            print(k, n, g.node[n]['label'], g.node[n]['vector'])
-#            print (n,g.node[n]['label'])
-#            print g.node[n]['edirs']
-#            print g.node[n]['fdirs']
-            noups.append(App.Vector(g.node[n]['vector']))
+        Points.show(Points.Points(ups))
+        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
+            random.random(), random.random(), random.random())
+        App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
 
-    Points.show(Points.Points(noups))
-    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
-        random.random(), random.random(), random.random())
-    App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
+        App.ActiveDocument.ActiveObject.Label = "Eindeutige Punkte"
 
-    App.ActiveDocument.ActiveObject.Label = "Nich eindeutige Punkte"
+        print
+        print("nicht zuordenbar ...")
+        noups = []
+        for n in g.nodes():
+            if n not in uniqs:
+                k = getkeyg(g, n)
+                print(k, n, g.node[n]['label'], g.node[n]['vector'])
+    #            print (n,g.node[n]['label'])
+    #            print g.node[n]['edirs']
+    #            print g.node[n]['fdirs']
+                noups.append(App.Vector(g.node[n]['vector']))
+
+        Points.show(Points.Points(noups))
+        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor = (
+            random.random(), random.random(), random.random())
+        App.ActiveDocument.ActiveObject.ViewObject.PointSize = 10
+
+        App.ActiveDocument.ActiveObject.Label = "Nich eindeutige Punkte"
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_AnalyseTest4", Nurbs_AnalyseTest4())
 
 
-def Test3():
-    fem_edgelength_mesh
-    for i in range(1):
-        #reload(fem_edgelength_mesh)
-        fem_edgelength_mesh.run()
-        Gui.updateGui()
-        print("i ")
-        print(i)
-        time.sleep(0.01)
+
+class Nurbs_AnalyseTest3:
+    def Activate(self):
+        self.Test3()
+    def Test3(self):
+        import fem_edgelength_mesh
+        for i in range(1):
+            #reload(fem_edgelength_mesh)
+            fem_edgelength_mesh.run()
+            Gui.updateGui()
+            print("i ")
+            print(i)
+            time.sleep(0.01)
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_AnalyseTest3")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_AnalyseTest3"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_AnalyseTest3", Nurbs_AnalyseTest3())
+

@@ -30,9 +30,11 @@ import curves
 
 from say import *
 import Sketcher
-import Design456Init
+
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 
 
@@ -147,7 +149,7 @@ class Sole(curves.OffsetSpline):
     # \cond
     def __init__(self):
         self.obj = None
-        self.icon = Design456Init.NURBS_ICON_PATH+'draw.svg'
+        self.icon = NURBSinit.ICONS_PATH+'draw.svg'
 
     def Activated(self):
         curves.OffsetSpline.__init__(self, self.obj, self.icon)
@@ -196,7 +198,7 @@ class Nurbs_Soel:
             import Draft
             img = Draft.makeRectangle(
                 length=265., height=265., face=True, support=None)
-            img.ViewObject.TextureImage = Design456Init.NURBS_ICON_PATH+"Foot_bg.png"
+            img.ViewObject.TextureImage = NURBSinit.ICONS_PATH+"Foot_bg.png"
             img.Placement = App.Placement(
                 App.Vector(-6, 133, 0), App.Rotation(App.Vector(0, 0, -1), 90))
             img.ViewObject.Selectable = False
@@ -212,11 +214,10 @@ class Nurbs_Soel:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'shoe.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'shoe.svg',
             'MenuText': 'Nurbs_Soel object',
                         'ToolTip':  'Nurbs shoe sole object'
         }
-
 
 Gui.addCommand('Nurbs_Soel', Nurbs_Soel())
 Nurbs_Soel.__doc__ = """To be added later

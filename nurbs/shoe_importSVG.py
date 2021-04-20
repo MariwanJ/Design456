@@ -82,8 +82,10 @@ import re
 import Draft
 import DraftVecUtils
 from FreeCAD import Vector
-import Design456Init
-import FreeCADGui as Gui
+
+import FreeCADGui as Gui 
+
+import NURBSinit
 gui = True
 
 try: draftui = Gui.draftToolBar
@@ -1477,7 +1479,7 @@ class SVGLink(PartFeature):
         if mtime>obj.filemtime:
             insertA(obj,App.ActiveDocument.Name)
             obj.filemtime =mtime
-#            importSVG.insert(Design456Init.NURBS_DATA_PATH+"aaa.svg", App.ActiveDocument.Name)
+#            importSVG.insert(NURBSinit.DATA_PATH+"aaa.svg", App.ActiveDocument.Name)
 #            importSVG.insert(obj.filename, App.ActiveDocument.Name)
 #            Gui.SendMsgToActiveView("ViewFit")
 
@@ -1504,11 +1506,11 @@ class Nurbs_CreateLinkToSvg:
         return b
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Create Link To Svg")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'linktosvg.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'linktosvg.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateLinkToSvg"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -1541,10 +1543,10 @@ def import_svg():
 
     import importSVG
     App=FreeCAD
-    importSVG.insert(Design456Init.NURBS_DATA_PATH+"aaa.svg", App.ActiveDocument.Name)
+    importSVG.insert(NURBSinit.DATA_PATH+"aaa.svg", App.ActiveDocument.Name)
 #    b=App.ActiveDocument.addObject("Part::FeaturePython","My_SVG_Link")
 #    SVGLink(b)
-#    insertA(Design456Init.NURBS_DATA_PATH+"xx.svg", App.ActiveDocument.Name)
+#    insertA(NURBSinit.DATA_PATH+"xx.svg", App.ActiveDocument.Name)
     Gui.SendMsgToActiveView("ViewFit")
     for obj in  App.ActiveDocument.Objects:
         if obj.Name.startswith("MAP_w"):

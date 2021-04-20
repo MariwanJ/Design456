@@ -44,8 +44,10 @@ from __future__ import unicode_literals
 # xpylint: disable=exec-used
 
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 #from transportationwbsay import sayexc, say
 #from transportationwbsay import  *
 
@@ -901,11 +903,11 @@ class MikiDockWidget(QtGui.QDockWidget):
         self.add_top(b)
 
         b = QtGui.QPushButton(QtGui.QIcon(
-        Design456Init.NURBS_ICON_PATH+'std_viewscreenshot.svg'), 'Foto Image')
+        NURBSinit.ICONS_PATH+'std_viewscreenshot.svg'), 'Foto Image')
         self.add_top(b)
 
         b = QtGui.QPushButton(QtGui.QIcon(
-        Design456Init.NURBS_ICON_PATH+'web-home.svg'), 'Foto 3D')
+        NURBSinit.ICONS_PATH+'web-home.svg'), 'Foto 3D')
         self.add_top(b)
 
         self.layout.setSpacing(0)
@@ -1329,16 +1331,34 @@ def ThousandsOfMainFunction():
     say("miki transport ...")
     testme()
 
-def testDialogMainWindow():
-    return testme("MainWindow")
 
-def testDialogTab():
-    return testme('VerticalLayoutTab')
 
-def testDialogDockWidget():
-    return testme("DockWidget")
+class Nurbs_miki_gTestDialog:
 
-def testDialog():
-    rc = testme()
-    print (rc)
-    return rc
+    def testDialog(self):
+        rc = testme()
+        print (rc)
+        return rc
+    def testDialogMainWindow():
+        return testme("MainWindow")
+
+    def testDialogTab():
+        return testme('VerticalLayoutTab')
+
+    def testDialogDockWidget():
+        return testme("DockWidget")
+
+    def GetResources(self):
+        
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_miki_gTestDialog")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_miki_gTestDialog"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+#Gui.addCommand("Nurbs_miki_gTestDialog_1", Nurbs_miki_gTestDialog().testDialog())
+#Gui.addCommand("Nurbs_miki_gTestDialog_2", Nurbs_miki_gTestDialog().testDialogMainWindow())
+#Gui.addCommand("Nurbs_miki_gTestDialog_3", Nurbs_miki_gTestDialog().testDialogTab())
+#Gui.addCommand("Nurbs_miki_gTestDialog_4", Nurbs_miki_gTestDialog().testDialogDockWidget())
