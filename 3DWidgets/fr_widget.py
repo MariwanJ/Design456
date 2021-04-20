@@ -227,16 +227,17 @@ class Fr_Widget (object):
     def handle(self, events):
         raise NotImplementedError()
         
-    def callack_lableChanged(self,data)
+    def callack_labelChanged(self,data):
         """ This callback will be used 
             to run code that will be 
             related to the label change.
-            Often it is not necessry,
+            Often it is not necessary,
             but if the object is 
             type Input_box. At that
             time you need a callback
             mechanism. This is for that.
             """
+        pass
 
 
     # Callbacks
