@@ -30,7 +30,9 @@ import Points
 import Part
 import Draft
 import os
-import Design456Init
+
+import NURBSinit
+
 try:
     import numpy as np 
 except ImportError:
@@ -45,7 +47,9 @@ import sys
 import traceback
 import random
 
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import os
 import Draft
 
@@ -104,11 +108,11 @@ class Nurbs_RemoveKnots:
                             0., 1., 0.)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_RemoveKnots")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'removeKnots.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'removeKnots.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_RemoveKnots"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 Gui.addCommand("Nurbs_RemoveKnots", Nurbs_RemoveKnots())

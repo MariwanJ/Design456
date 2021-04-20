@@ -38,14 +38,16 @@ from __future__ import unicode_literals
 import Part
 import FreeCAD
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 from PySide import QtGui
 import Part
 import Mesh
 import Draft
 import Points
-import Design456Init
+
 
 import os
 
@@ -540,248 +542,305 @@ def createTangentFace():
     b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentFace")
     bn = FilledFace(b)
 
+class Nurbs_TangentSurfaceAnotherMain:
+    def Activated(self):
+        self.runanothermain()
+        
+    def runanothermain(slef):
 
-def ThousandsOfMainFunction():
+        # create the test faces
 
-    # create the test faces
+        cu = 6
+        cv = 6
+        du = 3
+        dv = 3
 
-    cu = 6
-    cv = 6
-    du = 3
-    dv = 3
+        pts = np.zeros(cu*cv*3).reshape(cu, cv, 3)
+        for u in range(cu):
+            pts[u, :, 0] = 10*u
+        for v in range(cv):
+            pts[:, v, 1] = 10*v
 
-    pts = np.zeros(cu*cv*3).reshape(cu, cv, 3)
-    for u in range(cu):
-        pts[u, :, 0] = 10*u
-    for v in range(cv):
-        pts[:, v, 1] = 10*v
+        pts[4, 4, 2] = 40
+        pts[1, 2, 2] = -80
+        pts[1, 3, 2] = -80
+        pts[1, 4, 2] = -80
+        pts[3, 1, 2] = 180
 
-    pts[4, 4, 2] = 40
-    pts[1, 2, 2] = -80
-    pts[1, 3, 2] = -80
-    pts[1, 4, 2] = -80
-    pts[3, 1, 2] = 180
+        kvs = [1.0/(cv-dv)*i for i in range(cv-dv+1)]
+        kus = [1.0/(cu-du)*i for i in range(cu-du+1)]
 
-    kvs = [1.0/(cv-dv)*i for i in range(cv-dv+1)]
-    kus = [1.0/(cu-du)*i for i in range(cu-du+1)]
+        mv = [dv+1]+[1]*(cv-dv-1)+[dv+1]
+        mu = [du+1]+[1]*(cu-du-1)+[du+1]
 
-    mv = [dv+1]+[1]*(cv-dv-1)+[dv+1]
-    mu = [du+1]+[1]*(cu-du-1)+[du+1]
+        try:
+            fa = App.ActiveDocument.source
+        except:
+            fa = App.ActiveDocument.addObject('Part::Spline', 'source')
 
-    try:
-        fa = App.ActiveDocument.source
-    except:
-        fa = App.ActiveDocument.addObject('Part::Spline', 'source')
+        bs = Part.BSplineSurface()
+        bs.buildFromPolesMultsKnots(pts, mv, mu, kvs, kus,
+                                    False, False,
+                                    dv, du,
+                                    )
 
-    bs = Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(pts, mv, mu, kvs, kus,
-                                False, False,
-                                dv, du,
-                                )
+        fa.Shape = bs.toShape()
+        fa.ViewObject.ControlPoints = True
+        fa.ViewObject.ShapeColor = (1.0, 1.0, 0.6)
+        source = fa
 
-    fa.Shape = bs.toShape()
-    fa.ViewObject.ControlPoints = True
-    fa.ViewObject.ShapeColor = (1.0, 1.0, 0.6)
-    source = fa
+        try:
+            fa2 = App.ActiveDocument.targetE
+        except:
+            fa2 = App.ActiveDocument.addObject('Part::Spline', 'targetE')
 
-    try:
-        fa2 = App.ActiveDocument.targetE
-    except:
-        fa2 = App.ActiveDocument.addObject('Part::Spline', 'targetE')
+        pts = np.zeros(cu*cv*3).reshape(cu, cv, 3)
+        for u in range(cu):
+            pts[u, :, 0] = 10*u + 50
+        for v in range(cv):
+            pts[:, v, 1] = 10*v
+        bs.buildFromPolesMultsKnots(pts, mv, mu, kvs, kus,
+                                    False, False,
+                                    dv, du,
+                                    )
 
-    pts = np.zeros(cu*cv*3).reshape(cu, cv, 3)
-    for u in range(cu):
-        pts[u, :, 0] = 10*u + 50
-    for v in range(cv):
-        pts[:, v, 1] = 10*v
-    bs.buildFromPolesMultsKnots(pts, mv, mu, kvs, kus,
-                                False, False,
-                                dv, du,
-                                )
+        fa2.Shape = bs.toShape()
+        fa2.ViewObject.ControlPoints = True
+        fa2.ViewObject.ShapeColor = (1.0, .6, 1.0)
 
-    fa2.Shape = bs.toShape()
-    fa2.ViewObject.ControlPoints = True
-    fa2.ViewObject.ShapeColor = (1.0, .6, 1.0)
+        '''
+        # some more testfaces
+        try: fa3=App.ActiveDocument.targetN
+        except: fa3=App.ActiveDocument.addObject('Part::Spline','targetN')
 
-    '''
-    # some more testfaces
-    try: fa3=App.ActiveDocument.targetN
-    except: fa3=App.ActiveDocument.addObject('Part::Spline','targetN')
+        pts=np.zeros(cu*cv*3).reshape(cu,cv,3)
+        for u in range(cu): pts[u,:,0]=10*u
+        for v in range(cv): pts[:,v,1]=10*v +50
+        bs.buildFromPolesMultsKnots(pts,mv,mu,kvs,kus,
+                    False,False,
+                    dv,du,
+                )
 
-    pts=np.zeros(cu*cv*3).reshape(cu,cv,3)
-    for u in range(cu): pts[u,:,0]=10*u
-    for v in range(cv): pts[:,v,1]=10*v +50
-    bs.buildFromPolesMultsKnots(pts,mv,mu,kvs,kus,
-                False,False,
-                dv,du,
-            )
+        fa3.Shape=bs.toShape()
+        fa3.ViewObject.ControlPoints=True
+        fa3.ViewObject.ShapeColor=(1.0,.6,1.0)
 
-    fa3.Shape=bs.toShape()
-    fa3.ViewObject.ControlPoints=True
-    fa3.ViewObject.ShapeColor=(1.0,.6,1.0)
+        try: fa4=App.ActiveDocument.targetW
+        except: fa4=App.ActiveDocument.addObject('Part::Spline','targetW')
+        pts=np.zeros(cu*cv*3).reshape(cu,cv,3)
+        for u in range(cu): pts[u,:,0]=10*u -50
+        for v in range(cv): pts[:,v,1]=10*v
+        bs.buildFromPolesMultsKnots(pts,mv,mu,kvs,kus,
+                    False,False,
+                    dv,du,
+                )
 
-    try: fa4=App.ActiveDocument.targetW
-    except: fa4=App.ActiveDocument.addObject('Part::Spline','targetW')
-    pts=np.zeros(cu*cv*3).reshape(cu,cv,3)
-    for u in range(cu): pts[u,:,0]=10*u -50
-    for v in range(cv): pts[:,v,1]=10*v
-    bs.buildFromPolesMultsKnots(pts,mv,mu,kvs,kus,
-                False,False,
-                dv,du,
-            )
+        fa4.Shape=bs.toShape()
+        fa4.ViewObject.ControlPoints=True
+        fa4.ViewObject.ShapeColor=(1.0,.6,1.0)
+        '''
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_TangentSurfaceAnotherMain")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_TangentSurfaceAnotherMain"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-    fa4.Shape=bs.toShape()
-    fa4.ViewObject.ControlPoints=True
-    fa4.ViewObject.ShapeColor=(1.0,.6,1.0)
-    '''
-
-
-def ThousandsOfMainFunction():
-    # create the segment for tangents
-    segment
-    ke = segment.createFineSegment()
-    ke.source = App.ActiveDocument.source
-    ke.Label = "SeamBase E"
-    ke.umax = 100
-    ke.umin = 99
-
-    kw = segment.createFineSegment()
-    kw.source = App.ActiveDocument.source
-    kw.Label = "SeamBase W"
-    kw.umax = 1
-    kw.umin = 0
-
-    kn = segment.createFineSegment()
-    kn.source = App.ActiveDocument.source
-    kn.Label = "SeamBase N"
-    kn.vmax = 100
-    kn.vmin = 99
-
-    ks = segment.createFineSegment()
-    ks.source = App.ActiveDocument.source
-    ks.Label = "SeamBase S"
-    ks.vmax = 1
-    ks.vmin = 0
-
-    # create the seam
-    wseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamW")
-    Seam(wseam)
-
-    eseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamE")
-    Seam(eseam)
-
-    nseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamN")
-    Seam(nseam)
-
-    sseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamS")
-    Seam(sseam)
-
-    # seams aus streifen berechnen
-    poles = ke.Shape.Face1.Surface.getPoles()
-    for i, p in enumerate(poles[0]):
-        v = poles[0][i]-poles[1][i]
-        setattr(wseam, "t"+str(i), v*5)
-
-    poles = kw.Shape.Face1.Surface.getPoles()
-    for i, p in enumerate(poles[0]):
-        v = poles[0][i]-poles[1][i]
-        setattr(eseam, "t"+str(i), v*5)
-
-    poles = np.array(kn.Shape.Face1.Surface.getPoles()).swapaxes(0, 1)
-    for i, p in enumerate(poles[0]):
-        v = poles[0][i]-poles[1][i]
-        setattr(nseam, "t"+str(i), App.Vector(v)*5)
-
-    poles = np.array(ks.Shape.Face1.Surface.getPoles()).swapaxes(0, 1)
-    for i, p in enumerate(poles[0]):
-        v = poles[0][i]-poles[1][i]
-        setattr(sseam, "t"+str(i), App.Vector(v)*5)
-
-    # seams von segmenten abhaengig machen
-    eseam.source = ke
-    nseam.source = kn
-    nseam.sourceSwap = True
-    sseam.source = ks
-    sseam.sourceSwap = True
-    wseam.source = kw
-
-    b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentialFace")
-    bn = TangentFace(b)
-    b.westSeam = wseam
-    b.eastSeam = eseam
-    b.nordSeam = nseam
-    b.southSeam = sseam
-    b.source = fa2
-    createShape(b, force=True)
-
-    # some placements to see the tangent effect
-    if 0:
-        b2 = Draft.clone(b)
-        b2.Placement.Base.x = -100
-
-        b3 = Draft.clone(b)
-        b3.Placement.Base.x = -50
-        b3.Placement.Base.y = 50
-
-        b3 = Draft.clone(b)
-        b3.Placement.Base.x = -50
-        b3.Placement.Base.y = -50
-
-        ss = Draft.clone(source)
-        ss.Placement.Base.x = 50
-        ss.Placement.Base.y = 50
-
-        ss = Draft.clone(source)
-        ss.Placement.Base.x = -50
-        ss.Placement.Base.y = 50
-
-        ss = Draft.clone(source)
-        ss.Placement.Base.x = 50
-        ss.Placement.Base.y = -50
-
-        ss = Draft.clone(source)
-        ss.Placement.Base.x = -50
-        ss.Placement.Base.y = -50
-
-    App.ActiveDocument.recompute()
-
-    # quality check
-    c1 = App.ActiveDocument.source.Shape.Edge3.Curve
-    c2 = App.ActiveDocument.MyTangentialFace.Shape.Edge2.Curve
-
-    a1 = c1.discretize(100)
-    a2 = c2.discretize(100)
-
-    for i, p in enumerate(a1):
-        assert (p-a2[i]).Length < 1e-9
+Gui.addCommand("Nurbs_TangentSurfaceAnotherMain", Nurbs_TangentSurfaceAnotherMain())
 
 
-def runseam():
-
-    source = None
-    if len(Gui.Selection.getSelectionEx()) != 0:
-        source = Gui.Selection.getSelectionEx()[0]
-    s = App.ActiveDocument.addObject("Part::FeaturePython", "SeamW")
-    Seam(s)
-    s.source = source
-    try:
-        s.endPlane = Gui.Selection.getSelectionEx()[1]
-    except:
-        pass
 
 
-def runtangentsurface():
+class Nurbs_TangentMainFunction:
+    def Activated(self):
+        self.runMAIN()
+        
+    def runMAIN(self):
+        # create the segment for tangents
+        import segment
+        ke = segment.createFineSegment()
+        ke.source = App.ActiveDocument.source
+        ke.Label = "SeamBase E"
+        ke.umax = 100
+        ke.umin = 99
 
-    source = None
-    if len(Gui.Selection.getSelectionEx()) != 0:
-        source = Gui.Selection.getSelectionEx()[0]
-    b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentialFace")
-    TangentFace(b)
-#    b.westSeam=App.ActiveDocument.SeamW007
-#    b.eastSeam=App.ActiveDocument.SeamW006
-#    b.nordSeam=App.ActiveDocument.SeamW005
-#    b.southSeam=App.ActiveDocument.SeamW008
-    b.source = source
+        kw = segment.createFineSegment()
+        kw.source = App.ActiveDocument.source
+        kw.Label = "SeamBase W"
+        kw.umax = 1
+        kw.umin = 0
+
+        kn = segment.createFineSegment()
+        kn.source = App.ActiveDocument.source
+        kn.Label = "SeamBase N"
+        kn.vmax = 100
+        kn.vmin = 99
+
+        ks = segment.createFineSegment()
+        ks.source = App.ActiveDocument.source
+        ks.Label = "SeamBase S"
+        ks.vmax = 1
+        ks.vmin = 0
+
+        # create the seam
+        wseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamW")
+        Seam(wseam)
+
+        eseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamE")
+        Seam(eseam)
+
+        nseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamN")
+        Seam(nseam)
+
+        sseam = App.ActiveDocument.addObject("Part::FeaturePython", "SeamS")
+        Seam(sseam)
+
+        # seams aus streifen berechnen
+        poles = ke.Shape.Face1.Surface.getPoles()
+        for i, p in enumerate(poles[0]):
+            v = poles[0][i]-poles[1][i]
+            setattr(wseam, "t"+str(i), v*5)
+
+        poles = kw.Shape.Face1.Surface.getPoles()
+        for i, p in enumerate(poles[0]):
+            v = poles[0][i]-poles[1][i]
+            setattr(eseam, "t"+str(i), v*5)
+
+        poles = np.array(kn.Shape.Face1.Surface.getPoles()).swapaxes(0, 1)
+        for i, p in enumerate(poles[0]):
+            v = poles[0][i]-poles[1][i]
+            setattr(nseam, "t"+str(i), App.Vector(v)*5)
+
+        poles = np.array(ks.Shape.Face1.Surface.getPoles()).swapaxes(0, 1)
+        for i, p in enumerate(poles[0]):
+            v = poles[0][i]-poles[1][i]
+            setattr(sseam, "t"+str(i), App.Vector(v)*5)
+
+        # seams von segmenten abhaengig machen
+        eseam.source = ke
+        nseam.source = kn
+        nseam.sourceSwap = True
+        sseam.source = ks
+        sseam.sourceSwap = True
+        wseam.source = kw
+
+        b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentialFace")
+        bn = TangentFace(b)
+        b.westSeam = wseam
+        b.eastSeam = eseam
+        b.nordSeam = nseam
+        b.southSeam = sseam
+        b.source = fa2
+        createShape(b, force=True)
+
+        # some placements to see the tangent effect
+        if 0:
+            b2 = Draft.clone(b)
+            b2.Placement.Base.x = -100
+
+            b3 = Draft.clone(b)
+            b3.Placement.Base.x = -50
+            b3.Placement.Base.y = 50
+
+            b3 = Draft.clone(b)
+            b3.Placement.Base.x = -50
+            b3.Placement.Base.y = -50
+
+            ss = Draft.clone(source)
+            ss.Placement.Base.x = 50
+            ss.Placement.Base.y = 50
+
+            ss = Draft.clone(source)
+            ss.Placement.Base.x = -50
+            ss.Placement.Base.y = 50
+
+            ss = Draft.clone(source)
+            ss.Placement.Base.x = 50
+            ss.Placement.Base.y = -50
+
+            ss = Draft.clone(source)
+            ss.Placement.Base.x = -50
+            ss.Placement.Base.y = -50
+
+        App.ActiveDocument.recompute()
+
+        # quality check
+        c1 = App.ActiveDocument.source.Shape.Edge3.Curve
+        c2 = App.ActiveDocument.MyTangentialFace.Shape.Edge2.Curve
+
+        a1 = c1.discretize(100)
+        a2 = c2.discretize(100)
+
+        for i, p in enumerate(a1):
+            assert (p-a2[i]).Length < 1e-9
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_TangentMainFunction")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_TangentMainFunction"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Nurbs_TangentMainFunction", Nurbs_TangentMainFunction())
+
+class NurbsTangentSurfaceRUNSEAM:
+    def Activated(self):
+        self.runseam()
+    def runseam(self):
+
+        source = None
+        if len(Gui.Selection.getSelection()) != 0:
+            source = Gui.Selection.getSelection()[0]
+        s = App.ActiveDocument.addObject("Part::FeaturePython", "SeamW")
+        Seam(s)
+        s.source = source
+        try:
+            s.endPlane = Gui.Selection.getSelection()[1]
+        except:
+            pass
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("NurbsTangentSurfaceRUNSEAM")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTangentSurfaceRUNSEAM"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("NurbsTangentSurfaceRUNSEAM", NurbsTangentSurfaceRUNSEAM())
+
+
+class NurbsTangentSurfaceRUN:
+    def Activated(self):
+        self.runme()
+        
+    def runme(self):
+
+        source = None
+        if len(Gui.Selection.getSelection()) != 0:
+            source = Gui.Selection.getSelection()[0]
+        b = App.ActiveDocument.addObject("Part::FeaturePython", "MyTangentialFace")
+        TangentFace(b)
+    #    b.westSeam=App.ActiveDocument.SeamW007
+    #    b.eastSeam=App.ActiveDocument.SeamW006
+    #    b.nordSeam=App.ActiveDocument.SeamW005
+    #    b.southSeam=App.ActiveDocument.SeamW008
+        b.source = source
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("NurbsTangentSurfaceRUN")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTangentSurfaceRUN"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("NurbsTangentSurfaceRUN", NurbsTangentSurfaceRUN())
+
 
 
 def machFlaeche(psta, ku=None, closed=False, bs=None, swap=False):

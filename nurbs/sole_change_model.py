@@ -27,8 +27,10 @@ from __future__ import unicode_literals
 
 from PySide import QtGui, QtCore
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 
 import os
 

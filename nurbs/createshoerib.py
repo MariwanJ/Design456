@@ -35,9 +35,11 @@ from __future__ import unicode_literals
 from say import * 
 import Sketcher
 import pyob
-import Design456Init
+
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 '''
 multiplizitaet erhoehen
@@ -54,7 +56,7 @@ class _ViewProvider(pyob.ViewProvider):
         vobj.Proxy = self
 
     def getIcon(self):
-        return Design456Init.NURBS_ICON_PATH+'sketchrib.svg'
+        return NURBSinit.ICONS_PATH+'sketchrib.svg'
 
 
 ## create a special ful constrainted Sketcher Bspline
@@ -271,11 +273,11 @@ class Nurbs_CreateShoeRib:
         return sk
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateShoeRib")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateShoeRib"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -283,10 +285,25 @@ Gui.addCommand("Nurbs_CreateShoeRib", Nurbs_CreateShoeRib())
 
 
 
+class Nurbs_CreateShoeribTest:
+    def Activated(self):
+        self.test()
+    def test(self):
+        '''create some ribs'''
 
-def test():
-    '''create some ribs'''
+        sk1=run("rib1",[[8,0,0],[0,0,120],[4,120,-10],[12,-130,0]])
+        sk2=run("rib2",[[8,0,0],[0,0,150],[4,70,10],[12,-90,100]])
+        target=run("rib3",[],[40,-10,-40,30])
 
-    sk1=run("rib1",[[8,0,0],[0,0,120],[4,120,-10],[12,-130,0]])
-    sk2=run("rib2",[[8,0,0],[0,0,150],[4,70,10],[12,-90,100]])
-    target=run("rib3",[],[40,-10,-40,30])
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateShoeribTest")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateShoeribTest", Nurbs_CreateShoeribTest())
+
+

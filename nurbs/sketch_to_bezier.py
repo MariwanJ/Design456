@@ -35,10 +35,12 @@ from __future__ import unicode_literals
 #-------------------------------------------------
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Sketcher,Part
 import os
-import Design456Init
+
 try:
     import numpy as np 
 except ImportError:
@@ -121,7 +123,7 @@ class BezierSketch(FeaturePython):
     '''Sketch Object with Python for Bezier Curve'''
 
     ##\cond
-    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
+    def __init__(self, obj, icon=NURBSinit.ICONS_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -292,7 +294,7 @@ class FollowerSketch(FeaturePython):
     '''Sketch Object with Python which puts one point (by named constraints) onto a wire'''
 
     ##\cond
-    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
+    def __init__(self, obj, icon=NURBSinit.ICONS_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj
@@ -379,7 +381,7 @@ class ArcSketch(FeaturePython):
     '''Sketch Object with Python to create two smoothing arcs''' 
 
     ##\cond
-    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
+    def __init__(self, obj, icon=NURBSinit.ICONS_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj

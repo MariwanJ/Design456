@@ -30,7 +30,8 @@ from __future__ import unicode_literals
 from say import *
 import pyob
 import Sketcher
-import Design456Init
+
+import NURBSinit
 
 def setSketchDatum(sk, name, wert):
     '''set the value of a constraint by constraint name'''
@@ -51,7 +52,7 @@ class _ViewProvider(pyob.ViewProvider):
         vobj.Proxy = self
 
     def getIcon(self):
-        return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
+        return NURBSinit.ICONS_PATH+'sketchdriver.svg'
 
 
 class Driver(pyob.FeaturePython):

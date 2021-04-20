@@ -36,11 +36,13 @@ from __future__ import unicode_literals
 
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 from PySide import QtGui
 import Part,Mesh,Draft
-import Design456Init
+
 import os
 
 try:
@@ -415,17 +417,17 @@ class newTestNeedleFunctionWasMain:
 
         App.ActiveDocument=None
         Gui.ActiveDocument=None
-        App.open(Design456Init.NURBS_DATA_PATH+"nadel_daten.fcstd")
+        App.open(NURBSinit.DATA_PATH+"nadel_daten.fcstd")
         App.setActiveDocument("nadel_daten")
         App.ActiveDocument=App.getDocument("nadel_daten")
         Gui.ActiveDocument=Gui.getDocument("nadel_daten")
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("newTestNeedleFunctionWasMain")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "newTestNeedleFunctionWasMain"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -984,11 +986,11 @@ class anotherNeedleCommandcalledRun:
         a.ViewObject.Selectable=False
         
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("anotherNeedleCommandcalledRun")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "anotherNeedleCommandcalledRun"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1088,11 +1090,11 @@ class Nurbs_NeedleMain:
         Gui.SendMsgToActiveView("ViewFit")
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_NeedleMain")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_NeedleMain"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 

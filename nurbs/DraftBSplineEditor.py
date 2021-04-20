@@ -29,7 +29,8 @@ from PySide import QtGui, QtCore
 
 from PySide.QtCore import *
 from PySide.QtGui import *
-import Design456Init
+
+import NURBSinit
 
 import os
 
@@ -41,7 +42,9 @@ except ImportError:
 import time
  
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Part,Draft
 
 
@@ -261,28 +264,55 @@ def pointEditor(obj,scale=1):
     w.show()
     return w
 
+class Nurbs_DraftBSplineEditorR1:
+    """  This is the run part"""
+    def Activated(self):
+        scale=1
+        print ("RUN ---",scale)
+        obj=Gui.Selection.getSelectionEx()[0]
+        print (obj)
+        return pointEditor(obj,scale=scale)
 
-def run(scale=1):
-    print ("RUN ---",scale)
-    obj=Gui.Selection.getSelectionEx()[0]
-    print (obj)
-    return pointEditor(obj,scale=scale)
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_DraftBSplineEditorR1")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DraftBSplineEditorR1"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_DraftBSplineEditorR1", Nurbs_DraftBSplineEditorR1())
 
 
-def run2():
-    #create the Bspline
-    p1 = App.Vector(0,0,0)
-    p2 = App.Vector(1,1,0)
-    p3 = App.Vector(0,2,0)
-    p4 = App.Vector(-1,1,0)
-    p5 = App.Vector(-1,1,3)
-    
-    import Draft
-    Draft.makeBSpline([p1,p2,p3,p4,p5],closed=True)
-    obj=App.ActiveDocument.ActiveObject
-    w=pointEditor(obj)
-    w.show()
-    return w
 
-def whyItWasDefinedASmain():
-    run()
+class Nurbs_DraftBSplineEditorR2:
+    """  This is the run2 part"""
+    def Activated(self):
+        self.run2()
+    def run2(self):
+        #create the Bspline
+        p1 = App.Vector(0,0,0)
+        p2 = App.Vector(1,1,0)
+        p3 = App.Vector(0,2,0)
+        p4 = App.Vector(-1,1,0)
+        p5 = App.Vector(-1,1,3)
+
+        import Draft
+        Draft.makeBSpline([p1,p2,p3,p4,p5],closed=True)
+        obj=App.ActiveDocument.ActiveObject
+        w=pointEditor(obj)
+        w.show()
+        return w
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_DraftBSplineEditorR1")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DraftBSplineEditorR1"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_DraftBSplineEditorR2", Nurbs_DraftBSplineEditorR2())
+

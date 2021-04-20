@@ -40,8 +40,10 @@ the numbers n1, n2, n3 defines the edge number of the underlying shape
 
 
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 import Draft
 import Part
 
@@ -160,11 +162,11 @@ class Nurbs_CreateFiledFace:
         return ffobj
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateFiledFace")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateFiledFace"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 

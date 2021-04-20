@@ -38,7 +38,7 @@ from __future__ import unicode_literals
 ##\cond
 from PySide import QtGui,QtCore
 from say import *
-import Design456Init
+
 import FreeCAD
 import sys,time
 import random
@@ -47,6 +47,7 @@ import random
 import Mesh,Points
 import os
 
+import NURBSinit
 try:
     import numpy as np 
 except ImportError:
@@ -208,85 +209,112 @@ def createNurbs(pts,parentName,parent=None,uc=0,vc=0):
 
 
 
+class Nurbs_MeshGenModTest:
+    def Activated(self):
+        self.modtest()
+    def modtest(self):
+        '''update the points and the mesh example'''
+        mm=App.ActiveDocument.getObject(pc.Name+'_M')
+        pc=App.ActiveDocument.getObject(pc.Name)
+        ptsk=mm.Mesh.Topology[0]
+        faces=mm.Mesh.Topology[1]
+        ptsk[128].z +=30
+        pc.Points=Points.Points(ptsk)
 
-def modtest():
-    '''update the points and the mesh example'''
-    
-    mm=App.ActiveDocument.getObject(pc.Name+'_M')
-    pc=App.ActiveDocument.getObject(pc.Name)
-    ptsk=mm.Mesh.Topology[0]
-    faces=mm.Mesh.Topology[1]
-    ptsk[128].z +=30
-    pc.Points=Points.Points(ptsk)
+        mm.Mesh=Mesh.Mesh((ptsk,faces))
 
-    mm.Mesh=Mesh.Mesh((ptsk,faces))
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MeshGenModTest")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MeshGenModTest"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_MeshGenModTest", Nurbs_MeshGenModTest())
 
 
 
-def gentest():
+class Nurbs_MeshGenTest:
+    def Activated(self):
+        self.gentest(self)
+    def gentest():
 
-    #create the testdata
-    uc=200
-    vc=100
+        #create the testdata
+        uc=200
+        vc=100
 
-    uc=80
-    vc=60
+        uc=80
+        vc=60
 
-    print ("uc,vc,size",uc,vc,uc*vc)
-    z=time.time()
-    pts=[]
-    for u in range(uc+1):
-        for v in range(vc+1):
-            pts += [App.Vector(10*u,10*v,0)]
+        print ("uc,vc,size",uc,vc,uc*vc)
+        z=time.time()
+        pts=[]
+        for u in range(uc+1):
+            for v in range(vc+1):
+                pts += [App.Vector(10*u,10*v,0)]
 
-    ptsa=np.array(pts).reshape(uc+1,vc+1,3)
+        ptsa=np.array(pts).reshape(uc+1,vc+1,3)
 
-    hills=[
-            [100,20,3,40,5,1.0,5],
-            [2000,40,5,60,20,0.3,9],
-            [2000,32,15,70,20,0.5,5],
-            [2000,10,15,50,10,0.2,2],
-            [3000,50,10,30,10,0.3,3],
-            [2000,40,10,20,10,0.2,2],
-        ]
+        hills=[
+                [100,20,3,40,5,1.0,5],
+                [2000,40,5,60,20,0.3,9],
+                [2000,32,15,70,20,0.5,5],
+                [2000,10,15,50,10,0.2,2],
+                [3000,50,10,30,10,0.3,3],
+                [2000,40,10,20,10,0.2,2],
+            ]
 
-#    hills=[]
+    #    hills=[]
 
-    for h in hills:
-        [s,y,dy,x,dx,dh,dd]=h
-        sample_y = np.random.normal(y, dy, s)
-        sample_x = np.random.normal(x, dx, s)
-        for i in range(s):
-            u=int(round(sample_x[i]))
-            v=int(round(sample_y[i]))
-            try: ptsa[u-dd:u+dd+1,v-dd:v+dd+1,2] += dh
-            except:pass
+        for h in hills:
+            [s,y,dy,x,dx,dh,dd]=h
+            sample_y = np.random.normal(y, dy, s)
+            sample_x = np.random.normal(x, dx, s)
+            for i in range(s):
+                u=int(round(sample_x[i]))
+                v=int(round(sample_y[i]))
+                try: ptsa[u-dd:u+dd+1,v-dd:v+dd+1,2] += dh
+                except:pass
 
-    pts=[App.Vector(p) for p in np.array(ptsa).reshape((uc+1)*(vc+1),3)]
-    a=time.time()
-    print ("create data",a-z)
-    Gui.updateGui()
-    pcl=createPointGrid(pts,objname="MyGrid",uc=uc,vc=vc)
-    b=time.time()
-    print ("create grid",b-a)
-    Gui.updateGui()
-    mm=createMesh(pts,pcl.Name,parent=pcl,uc=uc,vc=vc)
-    c=time.time()
-    print ("create mesh",c-b)
-    Gui.updateGui()
-    nu=createNurbs(pts,pcl.Name,parent=pcl,uc=uc,vc=vc)
-    d=time.time()
-    print ("create nurbs",d-c)
-    Gui.updateGui()
+        pts=[App.Vector(p) for p in np.array(ptsa).reshape((uc+1)*(vc+1),3)]
+        a=time.time()
+        print ("create data",a-z)
+        Gui.updateGui()
+        pcl=createPointGrid(pts,objname="MyGrid",uc=uc,vc=vc)
+        b=time.time()
+        print ("create grid",b-a)
+        Gui.updateGui()
+        mm=createMesh(pts,pcl.Name,parent=pcl,uc=uc,vc=vc)
+        c=time.time()
+        print ("create mesh",c-b)
+        Gui.updateGui()
+        nu=createNurbs(pts,pcl.Name,parent=pcl,uc=uc,vc=vc)
+        d=time.time()
+        print ("create nurbs",d-c)
+        Gui.updateGui()
 
-    import Draft
-    points = [App.Vector(58.8695373535,57.1275939941,0.0),
-        App.Vector(96.9049606323,188.666870117,0.0),App.Vector(209.426513672,218.778274536,0.0),
-        App.Vector(358.398712158,192.62890625,0.0),App.Vector(499.446899414,143.499771118,0.0),
-        App.Vector(624.646850586,206.09979248,0.0),App.Vector(680.11529541,388.352996826,0.0),
-        App.Vector(581.064575195,518.307495117,0.0),App.Vector(383.755706787,529.401123047,0.0),
-        App.Vector(285.497436523,488.196105957,0.0),App.Vector(76.302444458,466.801116943,0.0)]
-    spline = Draft.makeBSpline(points,closed=False,face=True,support=None)
+        import Draft
+        points = [App.Vector(58.8695373535,57.1275939941,0.0),
+            App.Vector(96.9049606323,188.666870117,0.0),App.Vector(209.426513672,218.778274536,0.0),
+            App.Vector(358.398712158,192.62890625,0.0),App.Vector(499.446899414,143.499771118,0.0),
+            App.Vector(624.646850586,206.09979248,0.0),App.Vector(680.11529541,388.352996826,0.0),
+            App.Vector(581.064575195,518.307495117,0.0),App.Vector(383.755706787,529.401123047,0.0),
+            App.Vector(285.497436523,488.196105957,0.0),App.Vector(76.302444458,466.801116943,0.0)]
+        spline = Draft.makeBSpline(points,closed=False,face=True,support=None)
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MeshGenTest")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MeshGenTest"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_MeshGenTest", Nurbs_MeshGenTest())
+
 
 
 

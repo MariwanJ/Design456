@@ -37,9 +37,11 @@ from __future__ import unicode_literals
 import random
 import Draft
 import Part
-import Design456Init
+
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 import scipy as sp
 from scipy.signal import argrelextrema

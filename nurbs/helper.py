@@ -33,7 +33,8 @@ modes are ["poleGrid","isoGrid","Surface"]
 
 from say import *
 import pyob
-import Design456Init
+
+import NURBSinit
 
 ## The Helper can display a Poles Grid, iso-Curve Grid or single isocurves as parametric Part::FeaturePython objects
  
@@ -245,70 +246,92 @@ def makeHelper():
     a.ViewObject.Transparency = 70
     return a
 
+class Nurbs_MakeHelperSel:
+    def Activated(self):
+        self.makeHelperSel()
+    def makeHelperSel(self):
+        ''' creates a helper of mode "isoGrid" for the Gui-selected objects'''
+        for obj in Gui.Selection.getSelectionEx():
+            h=makeHelper()
+            h.source=obj
+            h.mode="isoGrid"
+            h.Placement.Base.x=2400
 
-def makeHelperSel():
-    ''' creates a helper of mode "isoGrid" for the Gui-selected objects'''
-    for obj in Gui.Selection.getSelectionEx():
-        h=makeHelper()
-        h.source=obj
-        h.mode="isoGrid"
-        h.Placement.Base.x=2400
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MakeHelperSel")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MakeHelperSel"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-
-
-def runtest():
-    '''testcase creates a nurbs and 3 helpers'''
-
-    try:
-        App.closeDocument("Unnamed")
-        App.newDocument("Unnamed")
-        App.setActiveDocument("Unnamed")
-        App.ActiveDocument=App.getDocument("Unnamed")
-        Gui.ActiveDocument=Gui.getDocument("Unnamed")
-    except:
-        pass
-
-    import nurbs
-    nurbs.testRandomB()
-
-    hp=makeHelper()
-    hp.source=App.ActiveDocument.Nurbs
-    hp.Label="Helper Surface"
-    hp.mode="Surface"
-    hp.Placement.Base.x=1200
-
-    hp2=makeHelper()
-    hp2.source=App.ActiveDocument.Nurbs
-    hp2.mode="isoGrid"
-    hp2.Placement.Base.x=2400
-    hp2.Label="Helper isoGrid"
-
-    hp3=makeHelper()
-    hp3.source=App.ActiveDocument.Nurbs
-    hp3.mode="poleGrid"
-    hp3.Placement.Base.x=3600
-    hp3.Label="Helper poleGrid"
-
-    Gui.activeDocument().activeView().viewAxonometric()
-    Gui.SendMsgToActiveView("ViewFit")
-
-    hp4=makeHelper()
-    hp4.source=App.ActiveDocument.Nurbs
-    hp4.Label="Helper isoCurve U"
-    hp4.factor=0
-    hp4.mode="uIso"
-    hp4.param=3
-
-    hp5=makeHelper()
-    hp5.source=App.ActiveDocument.Nurbs
-    hp5.Label="Helper isoCurve V"
-    hp5.factor=0
-    hp5.mode="vIso"
-    hp5.param=3
+Gui.addCommand("Nurbs_MakeHelperSel", Nurbs_MakeHelperSel())
 
 
 
-def ThousandsOfRunWhatShouldIdo():
-    ''' main call - its still the runtest() '''
-    runtest()
+class Nurbs_HelperTest:
+    def Activated(self):
+        self.RunTest()
+    def RunTest(self):
+        '''testcase creates a nurbs and 3 helpers'''
+
+        try:
+            App.closeDocument("Unnamed")
+            App.newDocument("Unnamed")
+            App.setActiveDocument("Unnamed")
+            App.ActiveDocument=App.getDocument("Unnamed")
+            Gui.ActiveDocument=Gui.getDocument("Unnamed")
+        except:
+            pass
+
+        import nurbs
+        nurbs.testRandomB()
+
+        hp=makeHelper()
+        hp.source=App.ActiveDocument.Nurbs
+        hp.Label="Helper Surface"
+        hp.mode="Surface"
+        hp.Placement.Base.x=1200
+
+        hp2=makeHelper()
+        hp2.source=App.ActiveDocument.Nurbs
+        hp2.mode="isoGrid"
+        hp2.Placement.Base.x=2400
+        hp2.Label="Helper isoGrid"
+
+        hp3=makeHelper()
+        hp3.source=App.ActiveDocument.Nurbs
+        hp3.mode="poleGrid"
+        hp3.Placement.Base.x=3600
+        hp3.Label="Helper poleGrid"
+
+        Gui.activeDocument().activeView().viewAxonometric()
+        Gui.SendMsgToActiveView("ViewFit")
+
+        hp4=makeHelper()
+        hp4.source=App.ActiveDocument.Nurbs
+        hp4.Label="Helper isoCurve U"
+        hp4.factor=0
+        hp4.mode="uIso"
+        hp4.param=3
+
+        hp5=makeHelper()
+        hp5.source=App.ActiveDocument.Nurbs
+        hp5.Label="Helper isoCurve V"
+        hp5.factor=0
+        hp5.mode="vIso"
+        hp5.param=3
+
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_HelperTest")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_HelperTest"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_HelperTest", Nurbs_HelperTest())
 

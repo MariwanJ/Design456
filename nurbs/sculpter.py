@@ -48,7 +48,8 @@ import FreeCAD as App
 import sys
 import time
 import random
-import Design456Init
+
+import NURBSinit
 
 import isodraw
 #reload(isodraw)
@@ -907,11 +908,11 @@ class Nurbs_CulpterEventStarter:
     #    ef.dialog.show()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CulpterEventStarter"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 

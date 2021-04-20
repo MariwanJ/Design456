@@ -36,12 +36,14 @@ from __future__ import unicode_literals
 #-------------------------------------------------
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 from PySide import QtCore,QtGui
 from pivy import coin
 import os
-import Design456Init
+
 
 try:
     import numpy as np 

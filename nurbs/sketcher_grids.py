@@ -12,11 +12,13 @@
 # pyob
 #------------------------------
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Sketcher,Part
 
 import os
-import Design456Init
+
 try:
     import numpy as np 
 except ImportError:
@@ -130,7 +132,7 @@ class GridSketch(FeaturePython):
     '''Sketch Object with Python''' 
 
     ##\cond
-    def __init__(self, obj, icon=Design456Init.NURBS_ICON_PATH+'draw.svg'):
+    def __init__(self, obj, icon=NURBSinit.ICONS_PATH+'draw.svg'):
         obj.Proxy = self
         self.Type = self.__class__.__name__
         self.obj2 = obj

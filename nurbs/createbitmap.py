@@ -30,7 +30,7 @@ from __future__ import unicode_literals
 from PySide import QtGui, QtCore
 import PySide
 import time
-import Design456Init
+
 import os
 
 try:
@@ -39,7 +39,9 @@ except ImportError:
     print("Please install the required module : numpy")
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Part
 
 
@@ -285,11 +287,11 @@ class Nurbs_CreateBtimap:
             App.ActiveDocument.ActiveObject.ViewObject.PointSize = 4
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateBtimap")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBtimap"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

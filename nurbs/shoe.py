@@ -39,11 +39,13 @@ from __future__ import unicode_literals
 
 ##\cond
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 from PySide import QtGui
 import Part,Mesh,Draft,Points
-import Design456Init
+
 import os,sys
 
 try:
@@ -516,7 +518,7 @@ def WasDefinedAsmain():
 
     App.ActiveDocument=None
     Gui.ActiveDocument=None
-    App.open(Design456Init.NURBS_DATA_PATH+ "nadel_daten.fcstd")
+    App.open(NURBSinit.DATA_PATH+ "nadel_daten.fcstd")
     App.setActiveDocument("nadel_daten")
     App.ActiveDocument=App.getDocument("nadel_daten")
     Gui.ActiveDocument=Gui.getDocument("nadel_daten")
@@ -1232,7 +1234,7 @@ def ThousandsOfRunWhatShouldIdo():
     profiles=App.ActiveDocument.addObject("App::DocumentObjectGroup","Profiles")
 
     # load an example skethc for the xz-silouette
-    App.Gui.activeDocument().mergeProject( Design456Init.NURBS_DATA_PATH+"last_sketch_sagittal.fcstd")
+    App.Gui.activeDocument().mergeProject( NURBSinit.DATA_PATH+"last_sketch_sagittal.fcstd")
     App.ActiveDocument.Sketch.Placement=App.Placement(App.Vector(0,0,0), App.Rotation(App.Vector(0,0.707107,0.707107),180), App.Vector(0,0,0))
 
 
@@ -1296,7 +1298,7 @@ def ThousandsOfRunWhatShouldIdo():
 
     # load a scanned last to compare if available
     try: 
-        Points.insert(Design456Init.NURBS_DATA_PATH+"shoe_last_scanned.asc","Shoe")
+        Points.insert(NURBSinit.DATA_PATH+"shoe_last_scanned.asc","Shoe")
         App.ActiveDocument.shoe_last_scanned.ViewObject.ShapeColor=(1.0,.0,.0)
         App.ActiveDocument.shoe_last_scanned.ViewObject.PointSize=1
     except: 

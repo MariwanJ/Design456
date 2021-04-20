@@ -40,8 +40,10 @@ from __future__ import unicode_literals
 
 from say import *
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 import Part,Mesh,Draft,Points
 import os
 
@@ -320,20 +322,27 @@ def run_test_circle(bs,xy2u,xy2v,RM=15,uc=10,vc=10):
     Part.show(Part.Compound(col))
     App.ActiveDocument.ActiveObject.ViewObject.LineColor=(1.,1.,0.)
 
+class Nurbs_IsoMapMain:
+    def Activated(self):
+        self.runmain()
+        ''' main test'''      
+    def runmain(self):
+        [source]=Gui.Selection.getSelection()
+        mapa=App.ActiveDocument.MAP
+        [uv2x,uv2y,xy2u,xy2v]=getmap(mapa,source)
+        bs=source.Shape.Face1.Surface
+        run_test_circle(bs,xy2u,xy2v,RM=5,uc=10,vc=10)
 
-def ThousandsOfRunWhatShouldIdo():
-    ''' main test'''
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_IsoMapMain")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_IsoMapMain"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-
-    [source]=Gui.Selection.getSelectionEx()
-
-    mapa=App.ActiveDocument.MAP
-    [uv2x,uv2y,xy2u,xy2v]=getmap(mapa,source)
-    
-    bs=source.Shape.Face1.Surface
-
-    run_test_circle(bs,xy2u,xy2v,RM=5,uc=10,vc=10)
-
+Gui.addCommand("Nurbs_IsoMapMain", Nurbs_IsoMapMain())
 
 
 #run()

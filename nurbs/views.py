@@ -8,7 +8,9 @@
 # -------------------------------------------------
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import controlpanel
 
 from PySide import QtCore, QtGui
@@ -40,7 +42,7 @@ c.scaleHeight(3)
 '''
 
 import Part
-import Design456Init
+
 
 
 class PartFeature:
@@ -348,11 +350,11 @@ class Nurbs_CreateQuadview:
         a.objs = objs
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspacequad.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'workspacequad.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateQuadview"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_CreateQuadview", _tooltip)}
 
@@ -923,11 +925,11 @@ class Nurbs_CreateH2():
         a.ViewObject.Visibility = False
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateH2")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'workspace.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateH2"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs createH2", _tooltip)}
 Gui.addCommand("Nurbs_CreateH2", Nurbs_CreateH2())
@@ -1486,11 +1488,11 @@ class Nurbs_CreateDarkRoom:
         v.fitAll()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("NurbsCreateDarkRoom")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'workspace.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsCreateDarkRoom"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateDarkRoom", _tooltip)}
 
@@ -1543,11 +1545,11 @@ class Nurbs_createlight:
         return a
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbscreatelight")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace2h.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'workspace2h.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbscreatelight"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs createlight", _tooltip)}
 
@@ -1565,11 +1567,11 @@ class Nurbs_LightON:
         rGrp.SetUnsigned(atr, 1437270015)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'light_on.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'light_on.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbslightON"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs lightON", _tooltip)}
 
@@ -1587,11 +1589,11 @@ class Nurbs_LightOFF():
         rGrp.SetUnsigned(atr, 0)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_LightOFF")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'light_off.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'light_off.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LightOFF"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs LightOFF", _tooltip)}
 

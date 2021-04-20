@@ -33,10 +33,12 @@ the curves are expected in the clones group
 
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Part
 
-import Design456Init
+
 
 class Nurbs_DrawCurves2Face:
     def Activated(self):
@@ -60,11 +62,11 @@ class Nurbs_DrawCurves2Face:
         sp.Shape = bs.toShape()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_DrawCurves2Face")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'DrawCurves2Face.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'DrawCurves2Face.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DrawCurves2Face"),
                 'ToolTip': QT_TRANSLATE_NOOP("Nurbs_DrawCurves2Face", _tooltip)}
 

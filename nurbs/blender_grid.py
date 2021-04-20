@@ -28,10 +28,12 @@ from __future__ import unicode_literals
 # source https://forum.freecadweb.org/viewtopic.php?f=22&t=22296&start=30#p173766
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import math
 from pivy import coin
-import Design456Init
+
 
 
 class gridNode(coin.SoSeparator):
@@ -521,11 +523,11 @@ class Nurbs_ParametricGridModifiable:
         gridVP(obj.ViewObject)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_ParametricGridModifiable")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ParametricGridModifiable"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

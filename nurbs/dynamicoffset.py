@@ -28,14 +28,16 @@ from __future__ import unicode_literals
 '''dynamic offset node'''
 
 from say import *
-import Design456Init
-import FreeCADGui as Gui
+
+import FreeCADGui as Gui 
+
+import NURBSinit
 Gui.ActiveDocument=None
 import FreeCAD as App
 
 if 0:
     try:
-        App.open(Design456Init.NURBS_DATA_PATH+"tt_offset_example.fcstd")
+        App.open(NURBSinit.DATA_PATH+"tt_offset_example.fcstd")
         App.setActiveDocument("tt_offset_example")
         App.ActiveDocument=App.getDocument("tt_offset_example")
         Gui.ActiveDocument=Gui.getDocument("tt_offset_example")
@@ -217,19 +219,48 @@ def createDynaoffset(name="DynamicOffset"):
     return obj
 
 ## method for workbench menu entry
+class Nurbs_DynamicOffsetRun:
+    def Activated(self):
+        '''create a DynaOffset'''
+        createDynaoffset()
 
-def WereWasrun():
-    '''create a DynaOffset'''
-    createDynaoffset()
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_DynamicOffsetRun")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DynamicOffsetRun"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_DynamicOffsetRun", Nurbs_DynamicOffsetRun())
+
 
 
 #\cond
-def AgainDefinedasMain():
-    fl2=App.ActiveDocument.getObject("ParmeterList")
-    if fl2 == None: 
-        fl2=datatools.createFloatlist("ParameterList")
-        fl2.val007=10
+class Nurbs_DynamicOffsetMain:
+    def Activated(self):
+        self.runmain()
+    def runmain(self):
+        fl2=App.ActiveDocument.getObject("ParmeterList")
+        if fl2 == None: 
+            fl2=datatools.createFloatlist("ParameterList")
+            fl2.val007=10
+        dof=createDynaoffset()
+        dof.data=fl2
 
-    dof=createDynaoffset()
-    dof.data=fl2
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_DynamicOffsetMain", Nurbs_DynamicOffsetMain())
+
+
+
+
 #\endcond

@@ -27,11 +27,13 @@ from __future__ import unicode_literals
 
 # distance between the target curve 1st, and some other curves
 
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import FreeCAD as App
 
 import os
-import Design456Init
+
 try:
     import numpy as np 
 except ImportError:
@@ -74,11 +76,11 @@ class Nurbs_CurveDistance:
             print (str(a.Label),round(dist(a,b),3))
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CurveDistance")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CurveDistance"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

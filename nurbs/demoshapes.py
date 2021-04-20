@@ -12,11 +12,13 @@
 # pyob
 #------------------------------
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Sketcher
 import Part
 import os
-import Design456Init
+
 try:
     import numpy as np 
 except ImportError:

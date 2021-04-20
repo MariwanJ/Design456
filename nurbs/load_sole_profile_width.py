@@ -34,8 +34,10 @@ there must be one sketch in it with constraints  l1-l12, r1-r12
 
 
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 import os,sys
 
 import numpy as np
@@ -69,7 +71,7 @@ class Nurbs_LoadSoleProfile:
                 'User parameter:Plugins/shoe').GetString("width profile")
             if fna == '':
 
-                fna = Design456Init.NURBS_DATA_PATH+"breitev3.fcstd"
+                fna = NURBSinit.DATA_PATH+"breitev3.fcstd"
                 App.ParamGet('User parameter:Plugins/shoe').SetString(
                     "width profile", fna)
 
@@ -113,11 +115,11 @@ class Nurbs_LoadSoleProfile:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LoadSoleProfile"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456  Nurbs_LoadSoleProfile", _tooltip)}
 

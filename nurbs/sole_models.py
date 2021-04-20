@@ -31,7 +31,8 @@ the model can be selected by the listModels method
 '''
 
 import os
-import Design456Init
+
+import NURBSinit
 
 try:
     import numpy as np 
