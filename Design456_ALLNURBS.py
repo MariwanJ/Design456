@@ -66,7 +66,7 @@ class Design456_Nurbs_List0Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List0.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List0.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List0Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -104,7 +104,7 @@ class Design456_Nurbs_List1Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List1.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List1.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List1Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -147,7 +147,7 @@ class Design456_Nurbs_List2Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List2.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List2.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List2Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -185,7 +185,7 @@ class Design456_Nurbs_List3Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List3.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List3.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List3Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -222,7 +222,7 @@ class Design456_Nurbs_List4Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List4.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List4.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List4Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -258,7 +258,7 @@ class Design456_Nurbs_List5Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List5.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List5.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List5Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -297,7 +297,7 @@ class Design456_Nurbs_List6Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List6.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List6.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List6Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -336,7 +336,7 @@ class Design456_Nurbs_List7Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List7.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List7.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List7Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -376,7 +376,7 @@ class Design456_Nurbs_List8Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List8.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List8.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List8Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -415,7 +415,7 @@ class Design456_Nurbs_List9Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List9.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List9.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List9Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -455,7 +455,7 @@ class Design456_Nurbs_List10Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List10.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List10.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List10Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -495,7 +495,7 @@ class Design456_Nurbs_List11Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List11.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List11.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List11Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -536,7 +536,7 @@ class Design456_Nurbs_List12Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List12.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List12.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List12Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -565,7 +565,7 @@ class Design456_Nurbs_List13Group:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Nurbs_List13.svg',
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List13.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List13Group"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
