@@ -35,10 +35,12 @@ from __future__ import unicode_literals
 #-- GNU Lesser General Public License (LGPL)
 #-------------------------------------------------
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Points,Part,Draft
 import os
-import Design456Init
+
 try:
     import numpy as np 
 except ImportError:
@@ -195,11 +197,11 @@ class Nurbs_MainScanCut:
             run1(10*z0,mesh,plane,True,True)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_MainScanCut")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MainScanCut"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

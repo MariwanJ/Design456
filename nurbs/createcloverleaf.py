@@ -26,11 +26,13 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import FreeCAD as App
 import Part,Sketcher
  
-import Design456Init
+
 import Draft
 import os
 
@@ -181,11 +183,11 @@ class Nurbs_CreateCloverLeaf:
         sk.toggleConstruction(24) 
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Create Clover Leaf")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'workspace.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'workspace.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateCloverLeaf"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs CreateCloverLeaf", _tooltip)}
 

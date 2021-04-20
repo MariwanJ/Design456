@@ -38,19 +38,19 @@ from __future__ import unicode_literals
 
 
 import os
-import Design456Init
+
 try:
     import numpy as np 
 except ImportError:
     print ("Please install the required module : numpy")
     
 import Draft,Points,Part,Sketcher
-import say
 from say import *
 import random
 import time
 import FACE_D as faced
 
+import NURBSinit
 def AA():
     '''dummy method for testing'''
     print ("AA-nip")
@@ -1165,11 +1165,11 @@ class Nurbs_CreateBeFaceFromSelBering:
         _VPBeface(sf.ViewObject)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Create Be Face From Selelected Bering")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'drawing.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBeFaceFromSelBering"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_CreateBeFaceFromSelBering", _tooltip)}
 
@@ -1214,11 +1214,11 @@ class Nurbs_TestCaseBeringTest:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_TestCaseBeringTest")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_TestCaseBeringTest"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 Gui.addCommand("Nurbs_TestCaseBeringTest", Nurbs_TestCaseBeringTest())
@@ -1304,11 +1304,11 @@ class Nurbs_FixCorner:
         res.sourceC=c
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_FixCorner")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FixCorner"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1595,7 +1595,7 @@ class Nurbs_createProduct:
         '''
         sf=App.ActiveDocument.addObject('Part::FeaturePython','ProductFace')
         Product(sf)
-        _VPProduct(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createProduct.svg')
+        _VPProduct(sf.ViewObject,NURBSinit.ICONS_PATH+'createProduct.svg')
         sel=Gui.Selection.getSelection()
         sf.uSource=sel[0]
         sf.vSource=sel[1]
@@ -1605,11 +1605,11 @@ class Nurbs_createProduct:
             sf.vSource2=sel[3]
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createProduct")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createProduct"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1962,11 +1962,11 @@ class Nurbs_CreateSeam:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateSeam")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSeam"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1984,11 +1984,11 @@ class Nurbs_createDatumPlane:
         return App.ActiveDocument.addObject('PartDesign::Plane','DatumPlane')
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createDatumPlane")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createDatumPlane"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2004,11 +2004,11 @@ class Nurbs_createDatumLine:
         return App.ActiveDocument.addObject('PartDesign::Line','DatumLine')
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createDatumLine")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createDatumLine"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2115,17 +2115,17 @@ class Nurbs_CreateBeGrid:
             sf=App.ActiveDocument.addObject('Part::FeaturePython','BeGrid')
             sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
             BeGrid(sf)
-            ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createBeGrid.svg')
+            ViewProvider(sf.ViewObject,NURBSinit.ICONS_PATH+'createBeGrid.svg')
             sf.Source=fa
             App.ActiveDocument.recompute()
         return sf
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateBeGrid")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBeGrid"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2164,11 +2164,11 @@ class Nurbs_BSplineToBezierCurve1:
         t.ViewObject.ControlPoints=True
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_BSplineToBezierCurve1")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_BSplineToBezierCurve1"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2249,11 +2249,11 @@ class Nurbs_BSplineToBezierCurve2:
             t.ViewObject.ControlPoints=True
             
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_BSplineToBezierCurve2")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_BSplineToBezierCurve2"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2336,11 +2336,11 @@ class Nurbs_BSplineToBezierSurface:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_BSplineToBezierSurface")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_BSplineToBezierSurface"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2488,11 +2488,11 @@ Gui.addCommand("Nurbs_BSplineToBezierSurface", Nurbs_BSplineToBezierSurface())
 #             setSpacer:
 
 #     def GetResources(self):
-#         import Design456Init
+#         
 #         from PySide.QtCore import QT_TRANSLATE_NOOP
 #         """Set icon, menu and tooltip."""
 #         _tooltip = ("Nurbs_SurfaceEditor")
-#         return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+#         return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
 #                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_SurfaceEditor"),
 #                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 # Gui.addCommand("Nurbs_SurfaceEditor", Nurbs_SurfaceEditor())
@@ -3067,11 +3067,11 @@ class Nurbs_connectFaces:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_connectFaces")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_connectFaces"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -3215,15 +3215,15 @@ class Nurbs_CreateBEplane:
         sf=App.ActiveDocument.addObject('Part::FeaturePython','BePlane')
         sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
         BePlane(sf)
-        ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createBePlane.svg')
+        ViewProvider(sf.ViewObject,NURBSinit.ICONS_PATH+'createBePlane.svg')
         return sf
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBEplane"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -3397,11 +3397,11 @@ class Nurbs_CreateBETube:
         return sf
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateBETube")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBETube"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -3482,11 +3482,11 @@ class Nurbs_createPlaneTubeConnector:
         ViewProvider(sf.ViewObject)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createPlaneTubeConnector"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -3599,11 +3599,11 @@ class Nurbs_createHelmetTubeConnector:
         ViewProvider(sf.ViewObject)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createHelmetTubeConnector")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createHelmetTubeConnector"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -3842,14 +3842,14 @@ class Nurbs_createTriangle:
         sf.ViewObject.ShapeColor=(0.5+random.random(),random.random(),random.random(),)
         BeTriangle(sf)
         (sf.curveA,sf.curveB,sf.curveC)=Gui.Selection.getSelection()
-        ViewProvider(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'createTriangle.svg')
+        ViewProvider(sf.ViewObject,NURBSinit.ICONS_PATH+'createTriangle.svg')
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createTriangle"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -3893,11 +3893,11 @@ class Nurbs_SplitInToCells:
             ofs.Fill = True
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_SplitInToCells")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_SplitInToCells"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -3952,11 +3952,11 @@ class Nurbs_createTangentStripes:
             sk.Shape=bs2.toShape()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createTangentStripes")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createTangentStripes"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -4209,11 +4209,11 @@ class Nurbs_CreateCELL:
         ViewProvider(sf.ViewObject)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateCELL")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateCELL"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -4244,11 +4244,11 @@ class Nurbs_CreateQuadPlacement:
         sf.sourceD=Gui.Selection.getSelection()[3]
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateQuadPlacement")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+"alpha.svg",
+        return {'Pixmap': NURBSinit.ICONS_PATH+"alpha.svg",
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateQuadPlacement"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -4302,11 +4302,11 @@ class Nurbs_FaceToBezierSurface:
             # tt.ViewObject.ControlPoints = True
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_FaceToBezierSurface")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FaceToBezierSurface"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -4471,11 +4471,11 @@ class Nurbs_Stretchandbend:
         App.ActiveDocument.ActiveObject.Label="stretch and morph v2 "
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_Stretchandbend")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_Stretchandbend"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -4645,11 +4645,11 @@ class Nurbs_CreateSketchCircle:
         sk.addConstraint(Sketcher.Constraint('Equal',1,10))
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateSketchCircle")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSketchCircle"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_CreateSketchCircle", _tooltip)}
 
@@ -4891,11 +4891,11 @@ class Nurbs_CreateHOLEGUI:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateHOLEGUI")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateHOLEGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -5382,11 +5382,11 @@ class Nurbs_polishG1GUI:
             Part.show(bs.toShape())
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_polishG1GUI")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_polishG1GUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -5423,11 +5423,11 @@ class Nurbs_createTangentHelpers:
             cp.Placement.Base += axis2
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createTangentHelpers")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+"alpha.svg",
+        return {'Pixmap': NURBSinit.ICONS_PATH+"alpha.svg",
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createTangentHelpers"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -5525,11 +5525,11 @@ class Nurbs_CreateBorderGUI:
             App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+"alpha.svg",
+        return {'Pixmap': NURBSinit.ICONS_PATH+"alpha.svg",
                 'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -5678,17 +5678,17 @@ class Nurbs_createApprox:
 
             sf.Source=fa
             sf.Label="Approx for " + fa.Label
-            _VPApprox(sf.ViewObject,Design456Init.NURBS_ICON_PATH+'AA.svg')
+            _VPApprox(sf.ViewObject,NURBSinit.ICONS_PATH+'AA.svg')
 
             App.ActiveDocument.recompute()
             sf.Proxy.execute(sf)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createApprox")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'alpha.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'alpha.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createApprox"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -6034,11 +6034,11 @@ class Nurbs_CreateSheelANDsolid:
         ssh.Shape=sol
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateSheelANDsolid")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSheelANDsolid"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -6129,11 +6129,11 @@ class Nurbs_FlattenTheWire:
             tt.Placement=pl
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_FlattenTheWire")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FlattenTheWire"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs_FlattenTheWire", _tooltip)}
 

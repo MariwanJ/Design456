@@ -33,7 +33,8 @@ from __future__ import unicode_literals
 from PySide import QtGui
 import FreeCAD as App
 modes = {}
-import Design456Init
+
+import NURBSinit
 
 class MyWidget(QtGui.QLineEdit):
 

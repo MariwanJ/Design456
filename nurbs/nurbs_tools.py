@@ -29,7 +29,8 @@ from __future__ import unicode_literals
 
 
 import Part
-import Design456Init
+
+import NURBSinit
 def showIsoparametricUCurve(bsplinesurface,u=0.5):
     ''' create a curve in 3D space '''
     bc=bsplinesurface.uIso(u)

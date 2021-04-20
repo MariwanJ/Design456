@@ -38,8 +38,10 @@ from __future__ import unicode_literals
 
 # \cond
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 
 
 import PySide
@@ -103,32 +105,47 @@ def createListWidget(obj=None, propname=None):
 
         App.ActiveDocument.recompute()
 
+class Nurbs_ControlPanelAdd:
+    def Activated(self):
+        self.add()
+        
+    def add(self):
+        '''add gui selected objects to list'''
+        sels = Gui.Selection.getSelection()
+        ref = obj.getPropertyByName(propname+"Source")
+        aa = ref.getPropertyByName(propname)
+        # add selected objects if not already on list
+        for s in sels:
+            if s not in aa:
+                print(a.Label + "not in aa")
+                aa.append(s)
+        # write list back to objects
+        setattr(ref, propname, aa)
+        setattr(obj, propname, aa)
+        # refresh dialog
+        obj.Proxy.dialog.hide()
+        obj.Proxy.dialog = dialog(obj)
+        App.ActiveDocument.recompute()
+        w.r = QtGui.QPushButton("remove selected items")
+        box.addWidget(w.r)
+        w.r.pressed.connect(remove)
 
-def add():
-    '''add gui selected objects to list'''
-    sels = Gui.Selection.getSelectionEx()
-    ref = obj.getPropertyByName(propname+"Source")
-    aa = ref.getPropertyByName(propname)
-    # add selected objects if not already on list
-    for s in sels:
-        if s not in aa:
-            print(a.Label + "not in aa")
-            aa.append(s)
-    # write list back to objects
-    setattr(ref, propname, aa)
-    setattr(obj, propname, aa)
-    # refresh dialog
-    obj.Proxy.dialog.hide()
-    obj.Proxy.dialog = dialog(obj)
-    App.ActiveDocument.recompute()
-    w.r = QtGui.QPushButton("remove selected items")
-    box.addWidget(w.r)
-    w.r.pressed.connect(remove)
+        w.r = QtGui.QPushButton("add Gui selection")
+        box.addWidget(w.r)
+        w.r.pressed.connect(add)
+        return w
 
-    w.r = QtGui.QPushButton("add Gui selection")
-    box.addWidget(w.r)
-    w.r.pressed.connect(add)
-    return w
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_ControlPanelAdd")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ControlPanelAdd"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_ControlPanelAdd", Nurbs_ControlPanelAdd())
+
 
 
 def clear(window):
@@ -137,37 +154,50 @@ def clear(window):
     # App.ActiveDocument.Spreadsheet.ViewObject.update()
     App.ActiveDocument.recompute()
 
+class Nurbs_ControlPanelHU:
+    def Activated(self):
+        self.hu()
+    def hu(self):
+        mw = Gui.getMainWindow()
+        mdiarea = mw.findChild(QtGui.QMdiArea)
 
-def hu():
-    mw = Gui.getMainWindow()
-    mdiarea = mw.findChild(QtGui.QMdiArea)
+        label = "Spreadsheet"
+        sws = mdiarea.subWindowList()
+        print("windows ...")
+        for w2 in sws:
+            print(str(w2.windowTitle()))
+            if str(w2.windowTitle()).startswith(label):
+                sw = w2
+                bl = w2.children()[3]
+                blcc = bl.children()[2].children()
 
-    label = "Spreadsheet"
-    sws = mdiarea.subWindowList()
-    print("windows ...")
-    for w2 in sws:
-        print(str(w2.windowTitle()))
-        if str(w2.windowTitle()).startswith(label):
-            sw = w2
-            bl = w2.children()[3]
-            blcc = bl.children()[2].children()
+                w = QtGui.QWidget()
+                w.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
 
-            w = QtGui.QWidget()
-            w.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+                box = QtGui.QVBoxLayout()
+                w.setLayout(box)
+                ss = blcc[3]
+                box.addWidget(ss)
+                # ss.setParent(w)
+                w.setGeometry(50, 30, 1650, 350)
+                w.show()
+                sw.close()
+                App.ss = w
+                return w
+        App.ss.hide()
+        App.ss.show()
 
-            box = QtGui.QVBoxLayout()
-            w.setLayout(box)
-            ss = blcc[3]
-            box.addWidget(ss)
-            # ss.setParent(w)
-            w.setGeometry(50, 30, 1650, 350)
-            w.show()
-            sw.close()
-            App.ss = w
-            return w
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_ControlPanelHU")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ControlPanelHU"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    App.ss.hide()
-    App.ss.show()
+Gui.addCommand("Nurbs_ControlPanelHU", Nurbs_ControlPanelHU())
+
 
 
 # create a Controller Widget for a property
@@ -526,11 +556,11 @@ class Nurbs_CreateGenericPanel:
         ControlPanel(a)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateGenericPanel")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateGenericPanel"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -598,11 +628,11 @@ class Nurbs_ControlPanelCreateFunction:
     # \endcond
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools - Nurbs")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'drawing.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'drawing.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ControlPanelCreateFunction"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

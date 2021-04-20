@@ -35,7 +35,8 @@ an example is the dynamic offset node which controls the offset by a floatlist
 
 from say import *
 import pyob
-import Design456Init
+
+import NURBSinit
 ## A list for Floats
 
 class FloatList(pyob.FeaturePython):
@@ -92,31 +93,38 @@ class FloatList(pyob.FeaturePython):
 
 
 
+class Nurbs_DataTools:
+    def Activated(self):
+        self.createFloatlist()
+    def createFloatlist(self,name="Floatlist"):
+        '''create a FloatList node'''
 
-def createFloatlist(name="Floatlist"):
-    '''create a FloatList node'''
+        obj = App.ActiveDocument.addObject("Part::FeaturePython",name)
 
-    obj = App.ActiveDocument.addObject("Part::FeaturePython",name)
+        obj.addProperty("App::PropertyInteger", "factor", "Base").factor=10
+        obj.addProperty("App::PropertyInteger", "size", "Base").size=12
+        obj.addProperty("App::PropertyFloatList", "datalist", "Values")
 
-    obj.addProperty("App::PropertyInteger", "factor", "Base").factor=10
-    obj.addProperty("App::PropertyInteger", "size", "Base").size=12
-    obj.addProperty("App::PropertyFloatList", "datalist", "Values")
+        for i in range(obj.size):
+            obj.addProperty("App::PropertyFloat", "val%03d" % (i), "Values")
+            setattr(obj, "val%03d" % (i),obj.factor/2)
 
-    for i in range(obj.size):
-        obj.addProperty("App::PropertyFloat", "val%03d" % (i), "Values")
-        setattr(obj, "val%03d" % (i),obj.factor/2)
-    
-    obj.setEditorMode("datalist", 2) 
-    obj.setEditorMode("size", 2) 
-    obj.setEditorMode("Placement", 2) 
+        obj.setEditorMode("datalist", 2) 
+        obj.setEditorMode("size", 2) 
+        obj.setEditorMode("Placement", 2) 
 
-    FloatList(obj)
-    obj.Proxy.onChanged(obj,"val")
-    return obj
+        FloatList(obj)
+        obj.Proxy.onChanged(obj,"val")
+        return obj
 
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_DataTools")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DataTools"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-##  method for workbench menu entry
+Gui.addCommand("Nurbs_DataTools", Nurbs_DataTools())
 
-def runFloatlist():
-    ''' create the default FloatList'''
-    createFloatlist()

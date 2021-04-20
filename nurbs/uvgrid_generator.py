@@ -42,7 +42,8 @@ from __future__ import unicode_literals
 
 from say import *
 import Points
-import Design456Init
+
+import NURBSinit
 
 
 # test data

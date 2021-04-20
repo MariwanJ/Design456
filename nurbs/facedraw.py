@@ -41,10 +41,12 @@ from PySide import QtGui,QtCore
 from say import *
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import sys,time
 import random
-import Design456Init
+
 
 
 import isodraw
@@ -997,17 +999,16 @@ class Nurbs_FaceDraw:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+            'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
             'MenuText': 'Nurbs_FaceDraw',
                         'ToolTip':  'Nurbs FaceDraw'
         }
-
 
 Gui.addCommand('Nurbs_FaceDraw', Nurbs_FaceDraw())
 Nurbs_FaceDraw.__doc__ = """FaceDraw: Tobe written later
                             """
 
-class NurbsDrawIsoFace:
+class Nurbs_DrawIsoFace:
     def Activated(self):
         try: 
                 # outside edge 
@@ -1026,11 +1027,11 @@ class NurbsDrawIsoFace:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+            'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
             'MenuText': 'Nurbs_DrawIsoFace',
                         'ToolTip':  'Nurbs DrawIsoFace'
         }
 
-Gui.addCommand('NurbsDrawIsoFace', NurbsDrawIsoFace())
-NurbsDrawIsoFace.__doc__ = """NurbsDrawIsoFace: Tobe written later
+Gui.addCommand('Nurbs_DrawIsoFace', Nurbs_DrawIsoFace())
+Nurbs_DrawIsoFace.__doc__ = """Nurbs_DrawIsoFace: Tobe written later
                             """

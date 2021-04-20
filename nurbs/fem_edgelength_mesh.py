@@ -36,11 +36,13 @@ from __future__ import unicode_literals
 
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 import Part
 import Points
-import Design456Init
+
 
 try:
     import networkx as nx
@@ -49,19 +51,32 @@ except ImportError:
     
 
 import random
-import os
+import os,sys
 
-
-
-if 0:
+#todo : This will fail . we don't have the files.
+class Nurbs_FEM_EdgeLengthMeshExample:
+    def Activated(self):
     # load a testfile
-    try:
-        App.open(Design456Init.NURBS_DATA_PATH+"netz_test_data.fcstd")
-        App.setActiveDocument("netz_test_data")
-        App.ActiveDocument = App.getDocument("netz_test_data")
-        Gui.ActiveDocument = Gui.getDocument("netz_test_data")
-    except:
-        pass
+        try:
+            App.open(NURBSinit.DATA_PATH+"netz_test_data.fcstd")
+            App.setActiveDocument("netz_test_data")
+            App.ActiveDocument = App.getDocument("netz_test_data")
+            Gui.ActiveDocument = Gui.getDocument("netz_test_data")
+        except:
+            pass
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_FEM_EdgeLengthMeshExample")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FEM_EdgeLengthMeshExample"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+Gui.addCommand("Nurbs_FEM_EdgeLengthMeshExample", Nurbs_FEM_EdgeLengthMeshExample())
+
+
+
 
 
 def copySketch(source, target):
@@ -235,102 +250,112 @@ def calculateForce(g2, n):
     newpos = v0+force
     return (newpos, force)
 
+class Nurbs_FemEdgeLengthMesh:
+    def Activated(self):
+        self.run()
+    def run(self,animate=True, itercount=101):
 
-def run(animate=True, itercount=101):
+        ska = getForceSketch()
+        sk = getBaseSketch()
 
-    ska = getForceSketch()
-    sk = getBaseSketch()
+        conix, g2 = getGraph(sk)
+        add_zdim(g2)
 
-    conix, g2 = getGraph(sk)
-    add_zdim(g2)
+        for lp in range(itercount):
 
-    for lp in range(itercount):
+            # cleasr the force sketch
+            gct = ska.GeometryCount
+            for i in range(gct):
+                ska.delGeometry(gct-i-1)
+            ska.solve()
 
-        # cleasr the force sketch
-        gct = ska.GeometryCount
-        for i in range(gct):
-            ska.delGeometry(gct-i-1)
-        ska.solve()
+            sumforces = 0
 
-        sumforces = 0
+            for n in g2.nodes():
+                # calculate the force in node n
+                (newpos, force) = calculateForce(g2, n)
 
-        for n in g2.nodes():
-            # calculate the force in node n
-            (newpos, force) = calculateForce(g2, n)
+                # apply the force
+                sumforces += force.Length
+                g2.node[n]['vector2'] = newpos
 
-            # apply the force
-            sumforces += force.Length
-            g2.node[n]['vector2'] = newpos
+                (a, b) = list(conix[n])[0]
+                rc = sk.movePoint(a, b, newpos, 0)
 
-            (a, b) = list(conix[n])[0]
-            rc = sk.movePoint(a, b, newpos, 0)
+                rc = sk.solve()
+                v1 = sk.getPoint(a, b)
 
-            rc = sk.solve()
-            v1 = sk.getPoint(a, b)
+                g2.node[n]['vector2'] = v1
+                if newpos.z > 0:
+                    g2.node[n]['vector2'].z = newpos.z
 
-            g2.node[n]['vector2'] = v1
-            if newpos.z > 0:
-                g2.node[n]['vector2'].z = newpos.z
+                # if a height is given by a circle preserve this value
+                if g2.node[n]['radius'] != 0:
+                    g2.node[n]['vector2'].z = g2.node[n]['radius']
 
-            # if a height is given by a circle preserve this value
-            if g2.node[n]['radius'] != 0:
-                g2.node[n]['vector2'].z = g2.node[n]['radius']
+                if force.Length > 0.1:
+                    ska.addGeometry(Part.Circle(
+                        v1, App.Vector(0, 0, 1), force.Length), False)
+                    ska.addGeometry(Part.LineSegment(v1, v1+force), False)
 
-            if force.Length > 0.1:
-                ska.addGeometry(Part.Circle(
-                    v1, App.Vector(0, 0, 1), force.Length), False)
-                ska.addGeometry(Part.LineSegment(v1, v1+force), False)
+            # create the 3D model
+            col = []
+            for (a, b) in g2.edges():
+                h = App.Vector(0, 0, random.random()*20)
+                col += [Part.LineSegment(g2.node[a]['vector2'],
+                                         g2.node[b]['vector2']).toShape()]
 
-        # create the 3D model
-        col = []
-        for (a, b) in g2.edges():
-            h = App.Vector(0, 0, random.random()*20)
-            col += [Part.LineSegment(g2.node[a]['vector2'],
-                                     g2.node[b]['vector2']).toShape()]
+            color = (random.random(), random.random(), random.random())
 
-        color = (random.random(), random.random(), random.random())
-
-        if animate:  # update grid
-            n3 = App.ActiveDocument.getObject("grid")
-            if n3 == None:
+            if animate:  # update grid
+                n3 = App.ActiveDocument.getObject("grid")
+                if n3 == None:
+                    n3 = App.ActiveDocument.addObject("Part::Feature", "grid")
+            else:  # create new grif each time
                 n3 = App.ActiveDocument.addObject("Part::Feature", "grid")
-        else:  # create new grif each time
-            n3 = App.ActiveDocument.addObject("Part::Feature", "grid")
+                n3.ViewObject.Transparency = 70
+            n3.ViewObject.LineColor = color
+            n3.Shape = Part.Compound(col)
+
+            rc = App.ActiveDocument.recompute()
+            print("SUM FORCES", lp, sumforces)
+            Gui.updateGui()
+
+            for n in g2.nodes():
+                g2.node[n]['vector'] = g2.node[n]['vector2']
+
+        # erzuegen einer flaeche
+        if 0:
+            import os
+
+            pts = []
+
+            for b in range(4):
+                for a in range(5):
+                    n = findnode(conix, (a+b*5, 1))
+                    pts.append(g2.node[n]['vector2'])
+                n = findnode(conix, (a+b*5, 2))
+                pts.append(g2.node[n]['vector2'])
+
+            pts = np.array(pts).reshape(4, 6, 3)
+            bs = Part.BSplineSurface()
+            bs.interpolate(pts)
+
+            n3 = App.ActiveDocument.addObject("Part::Spline", "face")
+            n3.Shape = bs.toShape()
             n3.ViewObject.Transparency = 70
-        n3.ViewObject.LineColor = color
-        n3.Shape = Part.Compound(col)
+            n3.ViewObject.ShapeColor = color
 
         rc = App.ActiveDocument.recompute()
-        print("SUM FORCES", lp, sumforces)
-        Gui.updateGui()
 
-        for n in g2.nodes():
-            g2.node[n]['vector'] = g2.node[n]['vector2']
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_FemEdgeLengthMesh")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FemEdgeLengthMesh"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    # erzuegen einer flaeche
-    if 0:
-        import os
+Gui.addCommand("Nurbs_FemEdgeLengthMesh", Nurbs_FemEdgeLengthMesh())
 
-        pts = []
-
-        for b in range(4):
-            for a in range(5):
-                n = findnode(conix, (a+b*5, 1))
-                pts.append(g2.node[n]['vector2'])
-            n = findnode(conix, (a+b*5, 2))
-            pts.append(g2.node[n]['vector2'])
-
-        pts = np.array(pts).reshape(4, 6, 3)
-        bs = Part.BSplineSurface()
-        bs.interpolate(pts)
-
-        n3 = App.ActiveDocument.addObject("Part::Spline", "face")
-        n3.Shape = bs.toShape()
-        n3.ViewObject.Transparency = 70
-        n3.ViewObject.ShapeColor = color
-
-    rc = App.ActiveDocument.recompute()
-
-
-def ThousandsOfMainFunction():
-    run()

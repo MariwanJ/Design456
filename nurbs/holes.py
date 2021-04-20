@@ -26,18 +26,20 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Part
-import Design456Init
+
 import random
 
 
-class holes:
+class Nurbs_Holes:
     """ holes """
     def Activated(self):
-        self.run()
+        self.runme()
 
-    def run(self):
+    def runme(self):
         sel = Gui.Selection.getSelectionEx()
 
         face = sel[0].Shape.Face1.Surface.toShape()
@@ -80,14 +82,14 @@ class holes:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'holes.svg',
-            'MenuText': 'holes',
-            'ToolTip':  'holes'
+            'Pixmap': NURBSinit.ICONS_PATH + 'holes.svg',
+            'MenuText': 'Nurbs_Holes',
+            'ToolTip':  'Nurbs_Holes'
         }
 
 
-Gui.addCommand('holes', holes())
-holes.__doc__ = """holes: Tobe added later     """
+Gui.addCommand('Nurbs_Holes', Nurbs_Holes())
+Nurbs_Holes.__doc__ = """holes: Tobe added later     """
 
 
 class Nurbs_extractWires:
@@ -107,7 +109,7 @@ class Nurbs_extractWires:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.NURBS_ICON_PATH + 'extractwire.svg',
+            'Pixmap': NURBSinit.ICONS_PATH + 'extractwire.svg',
             'MenuText': 'Nurbs_extractWires',
             'ToolTip':  'Nurbs_extractWires'
         }

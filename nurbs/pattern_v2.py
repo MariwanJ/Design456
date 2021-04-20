@@ -42,7 +42,8 @@ from __future__ import unicode_literals
 
 import os as os
 import sys as sys
-import Design456Init
+
+import NURBSinit
 
 try:
     import networkx as nx
@@ -365,11 +366,11 @@ class Nurbs_CreatePatternV2:
         sw.purgeTouched()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreatePatternV2")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreatePatternV2"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -388,11 +389,11 @@ class Nurbs_CreateSinglePattern:
         createPattern(obj=None,rx=1,ry=1)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateSinglePattern")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSinglePattern"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -633,11 +634,11 @@ class Nurbs_runPatternV3:
     # Die Größe wird angepasst und das Muster **repeatX** / **repeatY** mal wiederholt.
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_runPatternV3")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_runPatternV3"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 

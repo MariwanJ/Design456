@@ -26,11 +26,13 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Sketcher,Part
 import Draft
 import os
-import Design456Init
+
 
 try:
     import numpy as np 
@@ -354,7 +356,6 @@ def createAll(mode="all",obj=None,dimU=500,dimV=500,
     if 0:
         ta=time.time()
         ss=PointarrayToMesh(pa4[60:70,60:70])
-
         siz=10
         tb=time.time()
         bc=Part.BSplineSurface()
@@ -689,18 +690,18 @@ def mydialog(obj):
 class Nurbs_PointsRUNA:
     def Activated(self):
         self.runA()
-    def runA():
+    def runA(self):
         try:
             obj=Gui.Selection.getSelectionEx()[0]
         except:
             obj=App.ActiveDocument.Points
         mydialog(obj)
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_PointsRUNA")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+"points.svg",
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PointsRUNA"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -850,16 +851,17 @@ def  results(ptsa,ptsb):
 class Nurbs_PointsRUNC:
     def Activated(self):
         self.runC
-    def runC():
+    def runC(self):
         d=5
         pts=init(d)
         App.pts=pts
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_PointsRUNC")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+"points.svg"
+,
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PointsRUNC"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -882,11 +884,11 @@ class Nurbs_PointsRUND:
 
         results(ptsa,ptsb)
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_PointsRUND")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+"points.svg",
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PointsRUND"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -913,11 +915,11 @@ class Nurbs_PointsRUNE:
         results(ptsa,ptsb)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_PointsRUNE")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+"points.svg",
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_PointsRUNE"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 

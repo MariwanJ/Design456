@@ -40,8 +40,10 @@ from __future__ import unicode_literals
 from say import *
 
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 from PySide import QtGui
 import Part
 import Mesh

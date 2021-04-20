@@ -26,8 +26,9 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import FreeCAD
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+import NURBSinit
+
 
 from FreeCAD import Base
 import Part
@@ -38,33 +39,58 @@ App=FreeCAD
 # todo: parametric source
 # flags 
 
-def runOnEdges():
-    '''version bei selektierten geschlossenen Kanten'''
+class Nurbs_LoftSelectionEdge:
+    def Activated(self):
+        self.runOnEdges()
 
-    import FreeCADGui as Gui
-    import Part
-    wx=Gui.Selection.getSelectionEx()
-    
-    sls=[]
-    for w in wx:
-        sob=w.SubObjects[0]
-        if  sob.__class__.__name__ == 'Face':
-            sls += [w.SubObjects[0].Wires[0]]
-        else:
-            sls += [w.SubObjects[0]]
+    def runOnEdges(self):
+        '''version bei selektierten geschlossenen Kanten'''
+        import FreeCADGui as Gui 
+        import Part
+        wx=Gui.Selection.getSelection()
 
+        sls=[]
+        for w in wx:
+            sob=w.SubObjects[0]
+            if  sob.__class__.__name__ == 'Face':
+                sls += [w.SubObjects[0].Wires[0]]
+            else:
+                sls += [w.SubObjects[0]]
 
-    l=Part.makeLoft(sls,True,True,False)
+        l=Part.makeLoft(sls,True,True,False)
+        Part.show(l)
 
-    Part.show(l)
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_LoftSelectionEdge")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_LoftSelectionEdge"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
+Gui.addCommand("Nurbs_LoftSelectionEdge", Nurbs_LoftSelectionEdge())
 
-def ThousandsOfRunWhatShouldIdo():
-    ribs=Gui.Selection.getSelectionEx()
+class Nurb_LoftSelection:
+    def Activated(self):
+        self.runme()
+        
+    def runme(self):
+        ribs=Gui.Selection.getSelection()
+        l=App.ActiveDocument.addObject('Part::Loft','Loft')
+        l.Ruled = True
+        l.Sections=ribs
+        App.ActiveDocument.recompute()
 
-    l=App.ActiveDocument.addObject('Part::Loft','Loft')
-    l.Ruled = True
-    l.Sections=ribs
-    App.ActiveDocument.recompute()
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurb_LoftSelection")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurb_LoftSelection"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurb_LoftSelection", Nurb_LoftSelection())
 
 

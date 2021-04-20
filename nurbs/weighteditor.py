@@ -36,9 +36,11 @@ import Draft
 # -- GNU Lesser General Public License (LGPL)
 # -------------------------------------------------
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 #import matplotlib.colors as colors
-import Design456Init
+
 
 import PySide
 from PySide import QtGui, QtCore
@@ -194,11 +196,11 @@ class Nurbs_WeightEditor:
             w = dialog(sk)
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_WeightEditor")
-        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'WeightEditor.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'WeightEditor.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_WeightEditor"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

@@ -36,7 +36,8 @@ from __future__ import unicode_literals
 from pivy import coin
 from say import *
 import os
-import Design456Init
+
+import NURBSinit
 try:
     import numpy as np 
 except ImportError:
@@ -1630,119 +1631,164 @@ def testRandomSphere():
     Gui.activeDocument().activeView().viewAxonometric()
     Gui.SendMsgToActiveView("ViewFit")
 
+class Nurbs_NurbsRandomTours:
+    def Activated(self):
+        self.testRandomTorus()
+        
+    def testRandomTorus(self):
 
-def testRandomTorus():
+        na = 7
+        b = 4
 
-    na = 7
-    b = 4
+        nd = App.newDocument("Unnamed")
+        App.setActiveDocument(nd.Name)
+        App.ActiveDocument = App.getDocument(nd.Name)
+        Gui.ActiveDocument = Gui.getDocument(nd.Name)
 
-    nd = App.newDocument("Unnamed")
-    App.setActiveDocument(nd.Name)
-    App.ActiveDocument = App.getDocument(nd.Name)
-    Gui.ActiveDocument = Gui.getDocument(nd.Name)
+        a = makeNurbs(b, na)
+        a.model = "NurbsTorus"
 
-    a = makeNurbs(b, na)
-    a.model = "NurbsTorus"
+        a.solid = False
+        a.base = False
+        # a.grid=False
+        a.gridCount = 20
 
-    a.solid = False
-    a.base = False
-    # a.grid=False
-    a.gridCount = 20
+        ps = a.Proxy.getPoints()
+        print("points ps", len(ps))
 
-    ps = a.Proxy.getPoints()
-    print("points ps", len(ps))
+        ps = a.Proxy.getPoints()
+        print("A")
+        a.Proxy.togrid(ps)
+        print("B")
+        a.Proxy.updatePoles()
+        print("C")
+        a.Proxy.showGriduv()
 
-    ps = a.Proxy.getPoints()
-    print("A")
-    a.Proxy.togrid(ps)
-    print("B")
-    a.Proxy.updatePoles()
-    print("C")
-    a.Proxy.showGriduv()
+        '''
+        if 0:
+            print ("random .."
+            ps=np.array(App.ps).swapaxes(0,1)
+            temp,ct=ps.shape
+            ps[2] += 100*np.random.random(ct)
+            ps=ps.swapaxes(0,1)
+        #    ps[0:3]
 
-    '''
-    if 0:
-        print ("random .."
-        ps=np.array(App.ps).swapaxes(0,1)
-        temp,ct=ps.shape
-        ps[2] += 100*np.random.random(ct)
-        ps=ps.swapaxes(0,1)
-    #    ps[0:3]
-
-    ps=np.array(ps)
-    ps.resize(na,b,3)
-
-
-    for k0 in range(15):
-        k=random.randint(2,na-3)
-        l=random.randint(1,b-1)
-        for j in range(1):
-            ps[k+j][l][2] += 100*random.random()
-        rj=random.randint(0,1)
-        print (k,rj)
-        for j in range(rj):
-            ps[k+j][l][2] += 100*random.random()
-
-    for k0 in range(10):
-        k=random.randint(2,na-3)
-        l=random.randint(1,b-1)
-
-        for j in range(1):
-            ps[k+j][l][2] += 200*random.random()
-        rj=random.randint(0,1)
-        print (k,rj)
-        for j in range(rj):
-            ps[k+j][l][2] += 200*random.random()
+        ps=np.array(ps)
+        ps.resize(na,b,3)
 
 
-    ps.resize(na*b,3)
+        for k0 in range(15):
+            k=random.randint(2,na-3)
+            l=random.randint(1,b-1)
+            for j in range(1):
+                ps[k+j][l][2] += 100*random.random()
+            rj=random.randint(0,1)
+            print (k,rj)
+            for j in range(rj):
+                ps[k+j][l][2] += 100*random.random()
+
+        for k0 in range(10):
+            k=random.randint(2,na-3)
+            l=random.randint(1,b-1)
+
+            for j in range(1):
+                ps[k+j][l][2] += 200*random.random()
+            rj=random.randint(0,1)
+            print (k,rj)
+            for j in range(rj):
+                ps[k+j][l][2] += 200*random.random()
 
 
-    a.Proxy.togrid(ps)
-#    a.Proxy.elevateVline(2,0)
-
-    '''
-
-    App.a = a
-    App.ps = ps
-
-    Gui.activeDocument().activeView().viewAxonometric()
-    Gui.SendMsgToActiveView("ViewFit")
+        ps.resize(na*b,3)
 
 
-def runtest():
-    global createnurbs
-    try:
-        App.closeDocument("Unnamed")
-    except:
-        pass
+        a.Proxy.togrid(ps)
+    #    a.Proxy.elevateVline(2,0)
 
-    if App.ActiveDocument == None:
-        App.newDocument("Unnamed")
-        App.setActiveDocument("Unnamed")
-        App.ActiveDocument = App.getDocument("Unnamed")
-        Gui.ActiveDocument = Gui.getDocument("Unnamed")
+        '''
 
-#    createnurbs()
+        App.a = a
+        App.ps = ps
 
-    na = 10
-    b = 10
+        Gui.activeDocument().activeView().viewAxonometric()
+        Gui.SendMsgToActiveView("ViewFit")
 
-    a = makeNurbs(b, na)
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_NurbsRandomTours")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_NurbsRandomTours"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    a.solid = False
-    a.base = False
-    ps = a.Proxy.getPoints()
-    a.Proxy.togrid(ps)
-    a.Proxy.updatePoles()
-    a.Proxy.showGriduv()
+Gui.addCommand("Nurbs_NurbsRandomTours", Nurbs_NurbsRandomTours())
 
 
-def runtest2():
-    # testRandomB()
-    testRandomCylinder()
-    # testRandomSphere()
-    # testRandomTorus()
+
+class Nurbs_NurbsTest:
+    def Activated(self):
+        self.runtest() 
+    def runtest(self):
+        global createnurbs
+        try:
+            App.closeDocument("Unnamed")
+        except:
+            pass
+
+        if App.ActiveDocument == None:
+            App.newDocument("Unnamed")
+            App.setActiveDocument("Unnamed")
+            App.ActiveDocument = App.getDocument("Unnamed")
+            Gui.ActiveDocument = Gui.getDocument("Unnamed")
+
+    #    createnurbs()
+
+        na = 10
+        b = 10
+
+        a = makeNurbs(b, na)
+
+        a.solid = False
+        a.base = False
+        ps = a.Proxy.getPoints()
+        a.Proxy.togrid(ps)
+        a.Proxy.updatePoles()
+        a.Proxy.showGriduv()
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_NurbsTest")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_NurbsTest"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_NurbsTest", Nurbs_NurbsTest())
+
+
+
+class Nurbs_NurbsTest2:
+    def Activated(self):
+        self.runtest2()    
+    def runtest2(self):
+        # testRandomB()
+        testRandomCylinder()
+        # testRandomSphere()
+        # testRandomTorus()
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_NurbsTest2")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_NurbsTest2"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_NurbsTest2", Nurbs_NurbsTest2())
+
 
 
 '''

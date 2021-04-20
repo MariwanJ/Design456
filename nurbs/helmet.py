@@ -36,11 +36,13 @@ from __future__ import unicode_literals
 
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Sketcher
 import Part
 from say import *
-import Design456Init
+
 
 
 import os
@@ -284,7 +286,7 @@ class Nurbs_commandCreateHelmet:
         createSketch(a)
         a.recompute()
 
-        _VPH(a.ViewObject, Design456Init.NURBS_ICON_PATH+'createHelmet.svg')
+        _VPH(a.ViewObject, NURBSinit.ICONS_PATH+'createHelmet.svg')
         # a.ViewObject.Transparency=60
         a.ViewObject.ShapeColor = (0.3, 0.6, 0.3)
         if obj != None:
@@ -446,11 +448,11 @@ class Nurbs_commandCreateHelmet:
         
         
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_commandCreateHelmet")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_commandCreateHelmet"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 Nurbs commandCreateHelmet", _tooltip)}
         
@@ -458,92 +460,106 @@ Gui.addCommand("Nurbs_commandCreateHelmet", Nurbs_commandCreateHelmet())
 
 
 
+class Nurbs_HelmetCreateTriangel:
+    def Activated(self):
+        self.createTriangle()
 
-def createTriangle():
-    import numpy as np
+    def createTriangle(self):
+        import numpy as np
+        k = 10
+        rings = [
+            [[-100, 0, 0], [-80, 20, 0], [-20, 80, 0], [0, 100, 0]],
+            [[-80, 0, 0], [-50, 20, 40], [0, 50, 40], [20, 80, 0]],
+            [[-20, 0, -20+k], [0, 20, 20], [50, 30, 40], [80, 20, 0]],
+            [[0, 0, -20+k], [20, 0, -20+k], [80, 0, 0], [100, 0, 0]],
+        ]
+        rr = np.array(rings)
 
-    k = 10
-    rings = [
-        [[-100, 0, 0], [-80, 20, 0], [-20, 80, 0], [0, 100, 0]],
-        [[-80, 0, 0], [-50, 20, 40], [0, 50, 40], [20, 80, 0]],
-        [[-20, 0, -20+k], [0, 20, 20], [50, 30, 40], [80, 20, 0]],
-        [[0, 0, -20+k], [20, 0, -20+k], [80, 0, 0], [100, 0, 0]],
-    ]
-    rr = np.array(rings)
+        bs = Part.BSplineSurface()
+        bs.buildFromPolesMultsKnots(rr,
+                                    [4, 4], [4, 4],
+                                    [0, 2], [0, 2],
+                                    False, False, 3, 3)
+        if 0:
+            bs.insertUKnot(1, 3, 0)
+            bs.insertVKnot(1, 3, 0)
 
-    bs = Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(rr,
-                                [4, 4], [4, 4],
-                                [0, 2], [0, 2],
-                                False, False, 3, 3)
-    if 0:
-        bs.insertUKnot(1, 3, 0)
-        bs.insertVKnot(1, 3, 0)
+            bs.insertUKnot(1.5, 3, 0)
 
-        bs.insertUKnot(1.5, 3, 0)
+        sk = App.ActiveDocument.addObject('Part::Spline', 'adapter')
+        sk.Shape = bs.toShape()
 
-    sk = App.ActiveDocument.addObject('Part::Spline', 'adapter')
-    sk.Shape = bs.toShape()
+        rA = np.array([rr[0], rr[0]+[-30, 30, 30]])
+        bs = Part.BSplineSurface()
+        bs.buildFromPolesMultsKnots(rA,
+                                    [2, 2], [4, 4],
+                                    [0, 2], [0, 2],
+                                    False, False, 1, 3)
+        sk = App.ActiveDocument.addObject('Part::Spline', 'rA')
+        sk.Shape = bs.toShape()
 
-    rA = np.array([rr[0], rr[0]+[-30, 30, 30]])
-    bs = Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(rA,
-                                [2, 2], [4, 4],
-                                [0, 2], [0, 2],
-                                False, False, 1, 3)
-    sk = App.ActiveDocument.addObject('Part::Spline', 'rA')
-    sk.Shape = bs.toShape()
+        rr[1] = rr[0]+rA[0]-rA[1]
 
-    rr[1] = rr[0]+rA[0]-rA[1]
+        rrs = rr.swapaxes(0, 1)
+        rB = np.array([rrs[-1], rrs[-1]+[30, 30, 20]])
+        bs = Part.BSplineSurface()
+        bs.buildFromPolesMultsKnots(rB,
+                                    [2, 2], [4, 4],
+                                    [0, 2], [0, 2],
+                                    False, False, 1, 3)
+        sk = App.ActiveDocument.addObject('Part::Spline', 'rB')
+        sk.Shape = bs.toShape()
 
-    rrs = rr.swapaxes(0, 1)
-    rB = np.array([rrs[-1], rrs[-1]+[30, 30, 20]])
-    bs = Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(rB,
-                                [2, 2], [4, 4],
-                                [0, 2], [0, 2],
-                                False, False, 1, 3)
-    sk = App.ActiveDocument.addObject('Part::Spline', 'rB')
-    sk.Shape = bs.toShape()
+        # rrs[-2][2:]=rrs[-1][2:]+rB[0][2:]-rB[1][2:]
+        rrs[-2][1:] = rrs[-1][1:]+rB[0][1:]-rB[1][1:]
 
-    # rrs[-2][2:]=rrs[-1][2:]+rB[0][2:]-rB[1][2:]
-    rrs[-2][1:] = rrs[-1][1:]+rB[0][1:]-rB[1][1:]
+        rru = rrs.swapaxes(0, 1)
+        # rru=rings
+        # rru=rr
 
-    rru = rrs.swapaxes(0, 1)
-    # rru=rings
-    # rru=rr
+        bs = Part.BSplineSurface()
+        bs.buildFromPolesMultsKnots(rru,
+                                    [4, 4], [4, 4],
+                                    [0, 2], [0, 2],
+                                    False, False, 3, 3)
+        if 0:
+            bs.insertUKnot(1, 3, 0)
+            bs.insertVKnot(1, 3, 0)
 
-    bs = Part.BSplineSurface()
-    bs.buildFromPolesMultsKnots(rru,
-                                [4, 4], [4, 4],
-                                [0, 2], [0, 2],
-                                False, False, 3, 3)
-    if 0:
-        bs.insertUKnot(1, 3, 0)
-        bs.insertVKnot(1, 3, 0)
+            bs.insertUKnot(1.5, 3, 0)
 
-        bs.insertUKnot(1.5, 3, 0)
+        sk = App.ActiveDocument.addObject('Part::Spline', 'adapter')
+        sk.Shape = bs.toShape()
 
-    sk = App.ActiveDocument.addObject('Part::Spline', 'adapter')
-    sk.Shape = bs.toShape()
+        if 0:
+            comps = []
+            bsa = bs.copy()
+            bsasegment(0, 1, 0, 1)
+            comps += [bsa.toShape()]
 
-    if 0:
-        comps = []
-        bsa = bs.copy()
-        bsasegment(0, 1, 0, 1)
-        comps += [bsa.toShape()]
+            bsa = bs.copy()
+            bsasegment(0, 1, 1, 2)
+            comps += [bsa.toShape()]
 
-        bsa = bs.copy()
-        bsasegment(0, 1, 1, 2)
-        comps += [bsa.toShape()]
+            bsa = bs.copy()
+            bsasegment(1, 2, 0, 1)
+            comps += [bsa.toShape()]
 
-        bsa = bs.copy()
-        bsasegment(1, 2, 0, 1)
-        comps += [bsa.toShape()]
+            bsa = bs.copy()
+            bsasegment(1, 2, 1, 2)
+            comps += [bsa.toShape()]
 
-        bsa = bs.copy()
-        bsasegment(1, 2, 1, 2)
-        comps += [bsa.toShape()]
+            sk = App.ActiveDocument.addObject('Part::Spline', 'split')
+            sk.Shape = Part.Compound(comps)
 
-        sk = App.ActiveDocument.addObject('Part::Spline', 'split')
-        sk.Shape = Part.Compound(comps)
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_HelmetCreateTriangel")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_HelmetCreateTriangel", Nurbs_HelmetCreateTriangel())
+

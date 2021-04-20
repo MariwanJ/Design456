@@ -27,7 +27,8 @@ from __future__ import unicode_literals
 
 import random,time
 import os
-import Design456Init
+
+import NURBSinit
 try:
     import numpy as np 
 except ImportError:

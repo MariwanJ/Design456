@@ -28,7 +28,8 @@ from __future__ import unicode_literals
 '''make a perspective transformation of a bspline curve'''
 from say import *
 import pyob
-import Design456Init
+
+import NURBSinit
 
 '''
 def showdialog(title="Fehler",text="Schau in den ReportView fuer mehr Details",detail=None):

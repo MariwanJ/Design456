@@ -39,8 +39,10 @@ import random
 import Draft,Part,Points
 
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 
 from scipy.signal import argrelextrema
 import os
@@ -51,48 +53,62 @@ except ImportError:
     print ("Please install the required module : numpy")
     
 #import matplotlib.pyplot as plt
+class Nurbs_GenRandomDat:
+    def Activated(self):
+        self.runme()
+        
+    def runme(self):
+        #default parameters
+        p={
+            "count":[1000,'Integer'],
+            "radius":[400,'Float'],
+            "wave":[100,'Float'],
+            "debug":[False,'Boolean'],
+        }
 
-def ThousandsOfRunWhatShouldIdo():
+        # parameter -----------------
+        t=App.ParamGet('User parameter:Plugins/nurbs/'+'genrandomdat')
+        l=t.GetContents()
+        if l==None: l=[]
+        for k in l: p[k[1]]=k[2]
+        for k in p:
+            if p[k].__class__.__name__=='list':
+                typ=p[k][1]
+                if typ=='Integer':t.SetInt(k,p[k][0]);
+                if typ=='Boolean':t.SetBool(k,p[k][0])
+                if typ=='String':t.SetString(k,p[k][0])
+                if typ=='Float':t.SetFloat(k,p[k][0])
+                p[k]=p[k][0]
+        #--------------------
 
-    #default parameters
-    p={
-        "count":[1000,'Integer'],
-        "radius":[400,'Float'],
-        "wave":[100,'Float'],
-        "debug":[False,'Boolean'],
-    }
+        count=p["count"]
+        ri=p["wave"]
+        rm=p["radius"]
 
-    # parameter -----------------
-    t=App.ParamGet('User parameter:Plugins/nurbs/'+'genrandomdat')
-    l=t.GetContents()
-    if l==None: l=[]
-    for k in l: p[k[1]]=k[2]
-    for k in p:
-        if p[k].__class__.__name__=='list':
-            typ=p[k][1]
-            if typ=='Integer':t.SetInt(k,p[k][0]);
-            if typ=='Boolean':t.SetBool(k,p[k][0])
-            if typ=='String':t.SetString(k,p[k][0])
-            if typ=='Float':t.SetFloat(k,p[k][0])
-            p[k]=p[k][0]
-    #--------------------
+        kaps=np.random.random(count)*2*np.pi
+        mmaa=np.random.random(count)*ri*np.cos(kaps*5)*np.cos(kaps*1.3) + rm
 
-    count=p["count"]
-    ri=p["wave"]
-    rm=p["radius"]
+        y= np.cos(kaps) * mmaa
+        x=np.sin(kaps) * mmaa
+        z=np.zeros(count)
 
-    kaps=np.random.random(count)*2*np.pi
-    mmaa=np.random.random(count)*ri*np.cos(kaps*5)*np.cos(kaps*1.3) + rm
+        pps=np.array([x,y,z]).swapaxes(0,1)
+        goods=[App.Vector(tuple(p)) for p in pps]
 
-    y= np.cos(kaps) * mmaa
-    x=np.sin(kaps) * mmaa
-    z=np.zeros(count)
+        Points.show(Points.Points(goods))
+        App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,0.0,0.0)
+        App.ActiveDocument.ActiveObject.ViewObject.PointSize=10
 
-    pps=np.array([x,y,z]).swapaxes(0,1)
-    goods=[App.Vector(tuple(p)) for p in pps]
+    #    Draft.makeWire(goods,closed=True)
 
-    Points.show(Points.Points(goods))
-    App.ActiveDocument.ActiveObject.ViewObject.ShapeColor=(1.0,0.0,0.0)
-    App.ActiveDocument.ActiveObject.ViewObject.PointSize=10
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-#    Draft.makeWire(goods,closed=True)
+Gui.addCommand("Nurbs_GenRandomDat", Nurbs_GenRandomDat())
+

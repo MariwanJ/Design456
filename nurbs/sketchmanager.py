@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 ''' save sketches into a sketch lib, load sketches into models ''' 
 from say import *
 
-import Design456Init
+
 
 try:
     import numpy as np 
@@ -41,7 +41,9 @@ import time
 import glob
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import PySide
 from PySide import  QtGui,QtCore
 
@@ -292,7 +294,7 @@ class _ViewProvider(pyob.ViewProvider):
         vobj.Proxy = self
 
     def getIcon(self):
-        return Design456Init.NURBS_ICON_PATH+'sketchdriver.svg'
+        return NURBSinit.ICONS_PATH+'sketchdriver.svg'
 
     def setupContextMenu(self, obj, menu):
         menu.clear()

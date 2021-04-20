@@ -43,11 +43,16 @@ from __future__ import unicode_literals
 # chinese whispers
 
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import Sketcher,Part
 import Draft
-import Design456Init
+
 import os
+
+from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
+
 
 try:
     import numpy as np 
@@ -1220,11 +1225,11 @@ class Nurbs_geodesicMapPatchToFace:
         App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_geodesicMapPatchToFace")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_geodesicMapPatchToFace"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1242,11 +1247,11 @@ class Nurbs_AppendGeodesic:
         a.pre=Gui.Selection.getSelection()[0]
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_AppendGeodesic")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_AppendGeodesic"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1263,11 +1268,11 @@ class Nurbs_createCurvatureStar:
         a=createCurvature(obj=Gui.Selection.getSelection()[0])
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createCurvatureStar")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createCurvatureStar"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1284,11 +1289,11 @@ class Nurbs_createGeodesicA:
         a.pre=Gui.Selection.getSelection()[0]
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createGeodesicA")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createGeodesicA"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1304,11 +1309,11 @@ class Nurbs_creategeodesicbunch:
             a.direction=j*10
             
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_createGeodesic")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1903,11 +1908,11 @@ class Nurbs_geodesicDistance:
         return a
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_geodesicDistance")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_geodesicDistance"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -1918,16 +1923,17 @@ Gui.addCommand("Nurbs_geodesicDistance", Nurbs_geodesicDistance())
 #-------------------------------
 # aus Draft.py
 # todo: I commentd this as it shouldn't be run automatically - Mariwan
-# if App.GuiUp:
-#     from PySide import QtCore
-#     from PySide.QtCore import QT_TRANSLATE_NOOP
-#     gui = True
 
 class MyDraftLabel:
     
     "The Draft Label object"
     
     def __init__(self,obj):
+        if App.GuiUp:
+            from PySide import QtCore
+            from PySide.QtCore import QT_TRANSLATE_NOOP
+            gui = True
+
         obj.Proxy = self
         obj.addProperty("App::PropertyPlacement","Placement","Base",QT_TRANSLATE_NOOP("App::Property","The placement of this object"))
         obj.addProperty("App::PropertyDistance","StraightDistance","Base",QT_TRANSLATE_NOOP("App::Property","The length of the straight segment"))
@@ -2312,11 +2318,11 @@ class Nurbs_CreateMarker:
         return l
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateMarker")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateMarker"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2438,11 +2444,11 @@ class Nurbs_FindGeodesicToTarget:
         a.v=start.v
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_FindGeodesicToTarget")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_FindGeodesicToTarget"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2517,11 +2523,11 @@ class Nurbs_CreateShoeMarkers:
             App.ActiveDocument.recompute()
 
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateShoeMarkers")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateShoeMarkers"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
@@ -2554,11 +2560,11 @@ class Nurbs_ConnectMarkers:
             else:connectMarkers(aob,bob)
             App.ActiveDocument.recompute()
     def GetResources(self):
-        import Design456Init
+        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateShoeMarkers")
-        return {'Pixmap': Design456Init.NURBS_ICON_PATH+'draw.svg',
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateShoeMarkers"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 

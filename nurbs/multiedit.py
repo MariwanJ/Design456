@@ -49,9 +49,11 @@ multiple bspline faces editor
 '''
 
 import FreeCAD,Part
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import os
-import Design456Init
+
 try:
     import numpy as np 
 except ImportError:
@@ -812,7 +814,9 @@ class Multiface(object):
 
 
 
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 
 
 
@@ -1847,26 +1851,53 @@ def SurfaceEditor():
     mikigui.light=False
 
 
+class Nurbs_MultiEdit:
+    def activated(self):
+        self.mmultiEdit()
+    def multiEdit(self):
+       SurfaceEditor()
+        
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MultiEdit")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MultiEdit"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-def multiEdit():
-    SurfaceEditor()
-
-
-def AA():
-
-    import berings
-    #reload(berings)
-    berings.createBeGrid()
-    facedraw
-    #reload(.facedraw)
-    facedraw.createMap()
+Gui.addCommand("Nurbs_MultiEdit", Nurbs_MultiEdit())
 
 
 
-    if App.ActiveDocument.BeGrid.Source == None:
-        App.ActiveDocument.BeGrid.Source=App.ActiveDocument.tmp_multiFace
-        App.ActiveDocument.recompute()
+class Nurbs_MultiEditAA:
+    def Activated(self):
+        self.AA()
+    def AA(self):
 
-    if App.ActiveDocument.MAP.faceObject == None:
-        App.ActiveDocument.MAP.faceObject=App.ActiveDocument.tmp_multiFace
-        App.ActiveDocument.recompute()
+        import berings
+        #reload(berings)
+        berings.createBeGrid()
+        facedraw
+        #reload(.facedraw)
+        facedraw.createMap()
+        
+        if App.ActiveDocument.BeGrid.Source == None:
+            App.ActiveDocument.BeGrid.Source=App.ActiveDocument.tmp_multiFace
+            App.ActiveDocument.recompute()
+
+        if App.ActiveDocument.MAP.faceObject == None:
+            App.ActiveDocument.MAP.faceObject=App.ActiveDocument.tmp_multiFace
+            App.ActiveDocument.recompute()
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MultiEditAA")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MultiEditAA"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_MultiEditAA", Nurbs_MultiEditAA())
+

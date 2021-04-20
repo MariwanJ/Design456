@@ -28,7 +28,8 @@ from __future__ import unicode_literals
 '''tools for shoe editor'''
 
 from say import *
-import Design456Init
+
+import NURBSinit
 
 # toggle all position constraints of a gui selected shoe rib
 #

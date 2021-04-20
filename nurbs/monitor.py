@@ -39,8 +39,10 @@ from __future__ import unicode_literals
 
 
 import FreeCAD as App
-import FreeCADGui as Gui
-import Design456Init
+import FreeCADGui as Gui 
+
+import NURBSinit
+
 
 
 import os
@@ -284,59 +286,89 @@ class Monitor(PartFeature):
 #            except:
                 print ("kann nichts machen")
 
+class Nurbs_Monitor_Mymonitor:
+    def Activated(self):
+        self.mymon()
+    def mymon(self):
+        a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
+        m=Monitor(a)
+        a.source=Gui.Selection.getSelection()[0]
+        a.source2=Gui.Selection.getSelection()[1]
 
-def ThousandsOfRunWhatShouldIdo():
-    a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_Monitor_Mymonitor")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_Monitor_Mymonitor"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-    m=Monitor(a)
-    a.source=Gui.Selection.getSelectionEx()[0]
-    a.source2=Gui.Selection.getSelectionEx()[1]
+Gui.addCommand("Nurbs_Monitor_Mymonitor", Nurbs_Monitor_Mymonitor())
+
 
 
 #--------------------------
-# monitor forces
-def runforce():
-    a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
-    m=Monitor(a)
-    a.mode='force'
-    a.source=Gui.Selection.getSelectionEx()[0]
-    a.source2=Gui.Selection.getSelectionEx()[1]
+class Nurbs_MoinitorForce:
+    def Activated(self):
+        self.runforce()
+    # monitor forces
+    def runforce(self):
+        a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
+        m=Monitor(a)
+        a.mode='force'
+        a.source=Gui.Selection.getSelection()[0]
+        a.source2=Gui.Selection.getSelection()[1]
+
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MoinitorForce")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MoinitorForce"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_MoinitorForce", Nurbs_MoinitorForce())
+
 
 
 
 #this was a main function mariwan
-def main_me():
-    import Draft
+class Nurbs_MonitorMain:
+    def Activated(self):
+        self.main_me()
+    def main_me():
+        import Draft
+        
+        points = [
+            App.Vector(41.6618804932,-29.8381633759,0.0),App.Vector(42.888874054,27.8303642273,0.0),
+            App.Vector(-20.4684200287,39.654083252,0.0),App.Vector(-18.1259880066,-19.6876106262,0.0),
+            App.Vector(-230.109481812,-79.8339004517,0.0),App.Vector(-201.932830811,105.248153687,0.0),
+            App.Vector(77.6240005493,163.258956909,0.0),App.Vector(-91.4360580444,60.4969787598,0.0),
+            App.Vector(63.25938797,88.1211624146,0.0),App.Vector(220.717285156,27.9004211426,0.0),
+            App.Vector(203.590301514,-89.7786178589,0.0),App.Vector(153.866744995,14.088344574,0.0),
+            App.Vector(112.982902527,-46.1323928833,0.0)
+        ]
 
-    points = [
-        App.Vector(41.6618804932,-29.8381633759,0.0),App.Vector(42.888874054,27.8303642273,0.0),
-        App.Vector(-20.4684200287,39.654083252,0.0),App.Vector(-18.1259880066,-19.6876106262,0.0),
-        App.Vector(-230.109481812,-79.8339004517,0.0),App.Vector(-201.932830811,105.248153687,0.0),
-        App.Vector(77.6240005493,163.258956909,0.0),App.Vector(-91.4360580444,60.4969787598,0.0),
-        App.Vector(63.25938797,88.1211624146,0.0),App.Vector(220.717285156,27.9004211426,0.0),
-        App.Vector(203.590301514,-89.7786178589,0.0),App.Vector(153.866744995,14.088344574,0.0),
-        App.Vector(112.982902527,-46.1323928833,0.0)
-    ]
-
-    spline = Draft.makeBSpline(points,closed=False,face=True,support=None)
-
-
-    a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
-    m=Monitor(a)
-
-    try:
-        import   createsketchspline
-        #reload(.createsketchspline)
-        createsketchspline.run()
-        spline=App.ActiveDocument.ActiveObject
-    except:
         spline = Draft.makeBSpline(points,closed=False,face=True,support=None)
 
-    spline.ViewObject.LineWidth = 9.00
+        a=App.ActiveDocument.addObject("Part::FeaturePython","MyMonitor")
+        m=Monitor(a)
 
-    a.source=spline
-    a.minVal= spline.Shape.Length*0.95
-    a.maxVal= spline.Shape.Length*1.05
+        try:
+            import   createsketchspline
+            #reload(.createsketchspline)
+            createsketchspline.run()
+            spline=App.ActiveDocument.ActiveObject
+        except:
+            spline = Draft.makeBSpline(points,closed=False,face=True,support=None)
+
+        spline.ViewObject.LineWidth = 9.00
+
+        a.source=spline
+        a.minVal= spline.Shape.Length*0.95
+        a.maxVal= spline.Shape.Length*1.05
 
 
 

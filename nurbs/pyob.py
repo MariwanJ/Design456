@@ -35,17 +35,18 @@ from __future__ import unicode_literals
 
 # \cond
 import FreeCAD as App
-import FreeCADGui as Gui
+import FreeCADGui as Gui 
+
+import NURBSinit
 import PySide
-import Design456Init
+
 import Part
-import os
+import os,sys
 
 try:
     import numpy as np 
 except ImportError:
     print ("Please install the required module : numpy")
-    
 
 
 class FeaturePython:
@@ -127,7 +128,7 @@ class ViewProvider:
         self.ViewObject = obj
         self.icon = icon
         if icon == None:
-            icon = Design456Init.NURBS_ICON_PATH+'BB.svg'
+            icon = NURBSinit.ICONS_PATH+'BB.svg'
         if icon.startswith('/'):
             ic = self.icon
         else:
@@ -236,7 +237,7 @@ def Sketch(name='MySketch'):
     obj = App.ActiveDocument.addObject("Sketcher::SketchObjectPython", name)
     obj.addProperty("App::PropertyBool", "off", "Base",)
     _Sketch(obj)
-    ViewProvider(obj.ViewObject, Design456Init.NURBS_ICON_PATH+'sketchdriver.svg')
+    ViewProvider(obj.ViewObject, NURBSinit.ICONS_PATH+'sketchdriver.svg')
     return obj
 
 
