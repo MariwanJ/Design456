@@ -1343,10 +1343,10 @@ def createLink(obj, docname="Linkdok"):
 
 
 def createWsLink(docname = "Linkdok"):
-    self.docname=docname
+    docname=docname
     ad = App.ActiveDocument
-    bares = ad.addObject("Part::FeaturePython", "WS "+self.docname + "")
-    WSLink(bares, self.docname)
+    bares = ad.addObject("Part::FeaturePython", "WS "+docname + "")
+    WSLink(bares, docname)
     return bares
 
 #TODO: THIS IS NOT CORRECT . LINK IS NOT DEFINED

@@ -91,8 +91,6 @@ class ViewProvider:
 
 
 #---------------------
-
-
 def runtaubin(obj):
     try:
         obj.Wire
@@ -183,7 +181,7 @@ def smoothWire(sel=None,name=None):
     if sel !=None:
         a.Wire=sel
     else:
-        try: a.Wire=Gui.Selection.getSelectionEx()[0]
+        try: a.Wire=Gui.Selection.getSelection()[0]
         except: pass
 
     ViewProvider(a.ViewObject)
@@ -254,307 +252,338 @@ class TaubM(PartFeature):
             if prop in ['Iterations','Lambda','Micro']:
                 run3D(self,obj)
 
-
-    
-def smoothMesh():
-    a=App.ActiveDocument.addObject("Mesh::FeaturePython","Meshsmooth")
-    TaubM(a,"Smooth")
-    # a.Mesh=App.ActiveDocument.DWire
-    # a.Source=App.ActiveDocument.K147909
-    a.Source=Gui.Selection.getSelectionEx()[0]
-    ViewProvider(a.ViewObject)
-    run3D(None,a)
-
+class Nurbs_smoothSMOOTHMESH:
+    def Activated(self):
+        self.smoothMesh()    
+    def smoothMesh(self):
+        a=App.ActiveDocument.addObject("Mesh::FeaturePython","Meshsmooth")
+        TaubM(a,"Smooth")
+        # a.Mesh=App.ActiveDocument.DWire
+        # a.Source=App.ActiveDocument.K147909
+        a.Source=Gui.Selection.getSelection()[0]
+        ViewProvider(a.ViewObject)
+        run3D(None,a)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_smoothSMOOTHMESH")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_smoothSMOOTHMESH"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+Gui.addCommand("Nurbs_smoothSMOOTHMESH", Nurbs_smoothSMOOTHMESH())
 
 #---------------
 
 
 
+class Nurbs_smoothSplitMESH:
+    def Activated(self):
+        self.splitMesh()
+    def splitMesh():
+        ribc=40
+        merc=601
 
-def splitMesh():
-    ribc=40
-    merc=601
+        pixl=[0,10,20,30,31,50,60]
 
-    pixl=[0,10,20,30,31,50,60]
+        rstep=10
+        rstep=10
+        ribrange=range(ribc)
+        ribrange=range(1,25)
 
-    rstep=10
-    rstep=10
-    ribrange=range(ribc)
-    ribrange=range(1,25)
-    
-    #ribrange=[13,14,15,16,17]
+        #ribrange=[13,14,15,16,17]
 
-    #ribrange=[10]
+        #ribrange=[10]
 
-    import Mesh
-    #Gui.activateWorkbench("MeshWorkbench")
+        import Mesh
+        #Gui.activateWorkbench("MeshWorkbench")
 
-    Gui.activateWorkbench("MeshWorkbench")
-    import MeshPartGui, FreeCADGui
-#    Gui.runCommand('MeshPart_TrimByPlane')
-    Gui.activateWorkbench("NurbsWorkbench")
+        Gui.activateWorkbench("MeshWorkbench")
+        import MeshPartGui, FreeCADGui
+    #    Gui.runCommand('MeshPart_TrimByPlane')
+        Gui.activateWorkbench("NurbsWorkbench")
 
-    plane=App.ActiveDocument.addObject("Part::Plane","Plane")
-    #>>> App.ActiveDocument.Plane.Length=10.000
-    #>>> App.ActiveDocument.Plane.Width=10.000
+        plane=App.ActiveDocument.addObject("Part::Plane","Plane")
+        #>>> App.ActiveDocument.Plane.Length=10.000
+        #>>> App.ActiveDocument.Plane.Width=10.000
 
-    ptsa=[]
+        ptsa=[]
 
-    #s=App.ActiveDocument.K147908
-    s=Gui.Selection.getSelectionEx()[0]
+        #s=App.ActiveDocument.K147908
+        s=Gui.Selection.getSelection()[0]
 
-    ribs=[]
-    #ribc
-    for i  in ribrange:
-
-        start=round(s.Mesh.BoundBox.YMin)+5
-        pos=int(start+i*rstep)
-        if pos>s.Mesh.BoundBox.YMax:
-            App.ActiveDocument.removeObject(plane.Name)
-            return
-        pm=App.Placement(App.Vector(0,pos,0.000),
-            App.Rotation(App.Vector(1.000,0.000,0.000),90.000))
-        plane.Placement=pm
-
-
-
-        Gui.Selection.clearSelection()
-        Gui.Selection.addSelection(plane)
-        Gui.Selection.addSelection(s)
-
-
-
-
-        '''
-        plane.Placement.App.z =   s.Mesh.BoundBox.ZMax
-
-        for i in range(80):
-            plane.Placement.App.z -=  2
-            Gui.runCommand('MeshPart_SectionByPlane')
-
-        '''
-
-
-        Gui.runCommand('MeshPart_SectionByPlane')
-        # Gui.runCommand('MeshPart_SectionByPlane')
-
-        pp=plane.Placement.inverse()
-
-        if 0:
-            rc=App.ActiveDocument.ActiveObject
-            rc.Placement=pp
-            rc.Shape.Edges
-
-            import Draft
-            ptsw=[v.Point for v in rc.Shape.Wires[0].Vertexes]
-            # Draft.MakeBSpline(ptsw)
-
-
-
-        rc=App.ActiveDocument.ActiveObject
-        rc.Label="Section y="+ str(pos)
-        rc.ViewObject.LineColor=(0.3,0.3,1.0)
-        rc.ViewObject.LineWidth=6
-        Gui.updateGui()
-        pts=rc.Shape.Wires[0].discretize(merc)
-        ptsa += [pts]
-
-        if 0: # spaeter
-            sk=App.ActiveDocument.addObject('Sketcher::SketchObject','Sketch')
-            sk.addGeometry(Part.Circle(App.Vector(0.,0.,0),App.Vector(0,0,1),50),False)
-            sk.Placement=pm
-
-#        import sketch_to_bezier
-#        #reload (sketch_to_bezier)
-#        sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rc)
-#        sk.Placement=pm
-#        ribs +=[sk]
-
-
-
-
-
-    if 0:
-        if len(ribrange)>1:
-            loft=App.ActiveDocument.addObject('Part::Loft','Loft')
-            loft.Sections=ribs
-            loft.ViewObject.Transparency=70
-            loft.ViewObject.DisplayMode = u"Shaded"
-            for r in ribs:
-                r.ViewObject.hide()
-
-
-    if 1: # speater
-
-        import os
-
-        ribs2=[]
-
-        ptsa=np.array(ptsa)
-
-        '''
-        ptsb=[]
-
-        p0=App.Vector()
-        p1=p0
-        import Draft
-        for pts in ptsa:
-            ij=0
-            mj=10**10
-            pps=[App.Vector(p) for p in pts]
-            for i,p in enumerate(pps):
-                if (p-p0).Length<mj:
-                    mj=(p-p0).Length
-                    ij=i
-            pps2=pps[ij:] +pps[:ij]
-            
-
-            p0=pps[ij]
-            if (pps2[1]-p1).Length>(pps2[-1]-p1).Length:
-                pps2.reverse()
-
-            p1=pps2[1]
-            ptsb += [pps2]    
-            print ij
-        '''
-
-        ptsb=[]
         ribs=[]
+        #ribc
+        for i  in ribrange:
 
-        p0=App.Vector()
-        p1=p0
-        zmax=0
-        import Draft
-        print ("umsortieren")
-        for pts in ptsa:
-            ij=0
-            mj=10**10
-            xmi=10**10
-            pps=[App.Vector(p) for p in pts]
-            for i,p in enumerate(pps):
-                if p.x<xmi:
-                    ij=i
-                    xmi=p.x
-                    p1=p
-            pps2=pps[ij:] +pps[:ij]
-
-
-            if (pps2[1].z-pps2[0].z)<=0:
-                print ("!!")
-                pps2.reverse()
-
-            p1=pps2[1]
-            ptsb += [pps2]
-            print (ij)
-            rcc=Draft.makeWire(pps2)
-
-            pos=pts[0][1]
+            start=round(s.Mesh.BoundBox.YMin)+5
+            pos=int(start+i*rstep)
+            if pos>s.Mesh.BoundBox.YMax:
+                App.ActiveDocument.removeObject(plane.Name)
+                return
             pm=App.Placement(App.Vector(0,pos,0.000),
                 App.Rotation(App.Vector(1.000,0.000,0.000),90.000))
             plane.Placement=pm
 
 
-            import sketch_to_bezier
-            #reload (sketch_to_bezier)
-            sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rcc)
-            sk.Placement=pm
-            ribs +=[sk]
+
+            Gui.Selection.clearSelection()
+            Gui.Selection.addSelection(plane)
+            Gui.Selection.addSelection(s)
+
+            '''
+            plane.Placement.App.z =   s.Mesh.BoundBox.ZMax
+
+            for i in range(80):
+                plane.Placement.App.z -=  2
+                Gui.runCommand('MeshPart_SectionByPlane')
+
+            '''
+
+
+            Gui.runCommand('MeshPart_SectionByPlane')
+            # Gui.runCommand('MeshPart_SectionByPlane')
+
+            pp=plane.Placement.inverse()
+
+            if 0:
+                rc=App.ActiveDocument.ActiveObject
+                rc.Placement=pp
+                rc.Shape.Edges
+
+                import Draft
+                ptsw=[v.Point for v in rc.Shape.Wires[0].Vertexes]
+                # Draft.MakeBSpline(ptsw)
 
 
 
+            rc=App.ActiveDocument.ActiveObject
+            rc.Label="Section y="+ str(pos)
+            rc.ViewObject.LineColor=(0.3,0.3,1.0)
+            rc.ViewObject.LineWidth=6
+            Gui.updateGui()
+            pts=rc.Shape.Wires[0].discretize(merc)
+            ptsa += [pts]
 
+            if 0: # spaeter
+                sk=App.ActiveDocument.addObject('Sketcher::SketchObject','Sketch')
+                sk.addGeometry(Part.Circle(App.Vector(0.,0.,0),App.Vector(0,0,1),50),False)
+                sk.Placement=pm
 
+    #        import sketch_to_bezier
+    #        #reload (sketch_to_bezier)
+    #        sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rc)
+    #        sk.Placement=pm
+    #        ribs +=[sk]
 
         if 0:
+            if len(ribrange)>1:
+                loft=App.ActiveDocument.addObject('Part::Loft','Loft')
+                loft.Sections=ribs
+                loft.ViewObject.Transparency=70
+                loft.ViewObject.DisplayMode = u"Shaded"
+                for r in ribs:
+                    r.ViewObject.hide()
 
-            ptsb=np.array(ptsb).swapaxes(0,1)
 
-            for pix in pixl:
-                print (pix)
-                pts=ptsb[pix*10]
+        if 1: # speater
+
+            import os
+
+            ribs2=[]
+
+            ptsa=np.array(ptsa)
+
+            '''
+            ptsb=[]
+
+            p0=App.Vector()
+            p1=p0
+            import Draft
+            for pts in ptsa:
                 ij=0
                 mj=10**10
                 pps=[App.Vector(p) for p in pts]
-                _=Draft.makeWire(pps)
-                ribs2 += [_]
+                for i,p in enumerate(pps):
+                    if (p-p0).Length<mj:
+                        mj=(p-p0).Length
+                        ij=i
+                pps2=pps[ij:] +pps[:ij]
 
 
-    if 0:
-        if len(ribrange)>1:
-            loft=App.ActiveDocument.addObject('Part::Loft','LoftYY')
-            loft.Sections=ribs
-            loft.ViewObject.Transparency=70
-            loft.ViewObject.DisplayMode = u"Shaded"
-            for r in ribs:
-                r.ViewObject.hide()
+                p0=pps[ij]
+                if (pps2[1]-p1).Length>(pps2[-1]-p1).Length:
+                    pps2.reverse()
 
-    App.ActiveDocument.removeObject(plane.Name)
+                p1=pps2[1]
+                ptsb += [pps2]    
+                print ij
+            '''
+
+            ptsb=[]
+            ribs=[]
+
+            p0=App.Vector()
+            p1=p0
+            zmax=0
+            import Draft
+            print ("umsortieren")
+            for pts in ptsa:
+                ij=0
+                mj=10**10
+                xmi=10**10
+                pps=[App.Vector(p) for p in pts]
+                for i,p in enumerate(pps):
+                    if p.x<xmi:
+                        ij=i
+                        xmi=p.x
+                        p1=p
+                pps2=pps[ij:] +pps[:ij]
+
+
+                if (pps2[1].z-pps2[0].z)<=0:
+                    print ("!!")
+                    pps2.reverse()
+
+                p1=pps2[1]
+                ptsb += [pps2]
+                print (ij)
+                rcc=Draft.makeWire(pps2)
+
+                pos=pts[0][1]
+                pm=App.Placement(App.Vector(0,pos,0.000),
+                    App.Rotation(App.Vector(1.000,0.000,0.000),90.000))
+                plane.Placement=pm
+
+
+                import sketch_to_bezier
+                #reload (sketch_to_bezier)
+                sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rcc)
+                sk.Placement=pm
+                ribs +=[sk]
+
+            if 0:
+
+                ptsb=np.array(ptsb).swapaxes(0,1)
+
+                for pix in pixl:
+                    print (pix)
+                    pts=ptsb[pix*10]
+                    ij=0
+                    mj=10**10
+                    pps=[App.Vector(p) for p in pts]
+                    _=Draft.makeWire(pps)
+                    ribs2 += [_]
+
+
+        if 0:
+            if len(ribrange)>1:
+                loft=App.ActiveDocument.addObject('Part::Loft','LoftYY')
+                loft.Sections=ribs
+                loft.ViewObject.Transparency=70
+                loft.ViewObject.DisplayMode = u"Shaded"
+                for r in ribs:
+                    r.ViewObject.hide()
+
+        App.ActiveDocument.removeObject(plane.Name)
+        
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_smoothSplitMESH")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_smoothSplitMESH"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+Gui.addCommand("Nurbs_smoothSplitMESH", Nurbs_smoothSplitMESH())
+
 
 #--------------------------------
 # schicht aus mesh schneiden - von splitmesh vereinfacht
 
 # https://autrimncpa.wordpress.com/bhairavi/
 
-def sliceMeshbySketch():
+
+class Nurbs_smoothSliceMeshBySketch:
+    def Activated(self):
+        self.sliceMeshbySketch()
+    def sliceMeshbySketch():
 
 
-    [s,sk]=Gui.Selection.getSelectionEx()
-    if s.TypeId != 'Mesh::Feature':
-        s,sk=sk,s
+        [s,sk]=Gui.Selection.getSelection()
+        if s.TypeId != 'Mesh::Feature':
+            s,sk=sk,s
 
-    try:
-        DatumPlane=sk.Support[0][0]
-    except:
-        DatumPlane=sk
+        try:
+            DatumPlane=sk.Support[0][0]
+        except:
+            DatumPlane=sk
 
+        import Mesh
+        import Draft
 
+        pma=DatumPlane.Placement.copy()
+        ddB=pma.Rotation.multVec(App.Vector(0,0,50))
+        ddA=pma.Base
+        mesh=s.Mesh
 
-    import Mesh
-    import Draft
+        cs = mesh.crossSections([(ddA,ddB)],0.01)
+        ptsW=[App.Vector(p) for p in cs[0][0]]
+        print  (len(ptsW))
+        import Draft
+        pol=Part.makePolygon(ptsW)
+        ptsW=pol.discretize(20)
 
-    pma=DatumPlane.Placement.copy()
-    ddB=pma.Rotation.multVec(App.Vector(0,0,50))
-    ddA=pma.Base
-    mesh=s.Mesh
+        rcc=Draft.makeWire(ptsW)
 
-    cs = mesh.crossSections([(ddA,ddB)],0.01)
-    ptsW=[App.Vector(p) for p in cs[0][0]]
-    print  (len(ptsW))
-    import Draft
-    pol=Part.makePolygon(ptsW)
-    ptsW=pol.discretize(20)
-    
-    rcc=Draft.makeWire(ptsW)
+        if 0:
+            import sketch_to_bezier
+            #reload (sketch_to_bezier)
+            sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rcc)
 
-    if 0:
-        import sketch_to_bezier
-        #reload (sketch_to_bezier)
-        sk=sketch_to_bezier.createBezierSketch(name="Arc",source=rcc)
+        s.ViewObject.hide()
+        DatumPlane.ViewObject.hide()
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_smoothSliceMeshBySketch")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_smoothSliceMeshBySketch"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-    s.ViewObject.hide()
-    DatumPlane.ViewObject.hide()
-
+Gui.addCommand("Nurbs_smoothSliceMeshBySketch", Nurbs_smoothSliceMeshBySketch())
 
 
 #--------------------------------
+class Nurbs_smothDistanceCurves:
+    def Activated(self):
+        self.distanceCurves()
+    def distanceCurves(self):
+        pass
 
-def distanceCurves():
-    pass
+        [a,b]=Gui.Selection.getSelection()
+        #a.Shape.Wires
+        #b.Shape.Wires
 
-    [a,b]=Gui.Selection.getSelectionEx()
-    #a.Shape.Wires
-    #b.Shape.Wires
+        anz=200
+        ptsa=a.Shape.Wires[0].discretize(anz)
+        ptsb=b.Shape.Wires[0].discretize(anz)
+        ls=0
+        for p,q in zip(ptsa,ptsb):
+            ls += (p-q).Length
+        print ("Distance ",a.Label,b.Label,ls/anz)
 
-    anz=200
-    ptsa=a.Shape.Wires[0].discretize(anz)
-    ptsb=b.Shape.Wires[0].discretize(anz)
-    ls=0
-    for p,q in zip(ptsa,ptsb):
-        ls += (p-q).Length
-    
-    print ("Distance ",a.Label,b.Label,ls/anz)
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_smothDistanceCurves")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_smothDistanceCurves"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-
+Gui.addCommand("Nurbs_smothDistanceCurves", Nurbs_smothDistanceCurves())
 
 #---------------------
 
