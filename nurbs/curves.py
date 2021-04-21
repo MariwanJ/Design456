@@ -373,7 +373,7 @@ class Nurbs_SoleWithBorder:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs Sole With Border")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'Nurbs2.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'upgrade.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_SoleWithBorder"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

@@ -644,7 +644,7 @@ class Nurbs_TangentSurfaceAnotherMain:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_TangentSurfaceAnotherMain")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'alpha.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_TangentSurfaceAnotherMain"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -780,7 +780,7 @@ class Nurbs_TangentMainFunction:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_TangentMainFunction")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'alpha.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_TangentMainFunction"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -806,7 +806,7 @@ class NurbsTangentSurfaceRUNSEAM:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("NurbsTangentSurfaceRUNSEAM")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'alpha.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTangentSurfaceRUNSEAM"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
@@ -835,7 +835,7 @@ class NurbsTangentSurfaceRUN:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("NurbsTangentSurfaceRUN")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'alpha.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "NurbsTangentSurfaceRUN"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
