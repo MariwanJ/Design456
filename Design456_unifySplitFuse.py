@@ -35,7 +35,6 @@ from draftobjects.base import DraftObject
 # **************************************************************************
 import os
 import sys
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
@@ -50,14 +49,15 @@ import math as _math
 class Design456_unifySplitFuse1:
     
     def Activated(self):
-         
+        selName1=selName2=None
+
         try: 
             #### Config Begin ####
             switchRemoveConstructionObject = self.askQuestion()    # if 0= (NO) not removed creation objects 1= (YES) remove objects
             #### Config End ####
 
             selectedEdge     = Gui.Selection.getSelectionEx()
-            sel = selObjects = Gui.Selection.getSelection()
+            sel = selObjects = Gui.Selection.getSelectionEx()
             try:
                 subElementName = Gui.Selection.getSelectionEx()[0].SubElementNames[0] # for color first face selected
             except: 
@@ -68,25 +68,34 @@ class Design456_unifySplitFuse1:
                 errMessage = "Select two objects to use the Tool"
                 faced.getInfo(sel).errorDialog(errMessage)
                 return
+            if hasattr(sel[0],"Name"):
+                selName1 = sel[0].Name 
+            elif hasattr(sel[0],"ObjectName"):
+                selName1 = sel[0].ObjectName
+            if hasattr(sel[1],"Name"):
+                selName2 = sel[1].Name 
+            elif hasattr(sel[1],"ObjectName"):
+                selName2 = sel[1].ObjectName
 
+            print(selName1)
+            print(selName2)
             try:
-                colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] # color face selected
+                colorFace = App.ActiveDocument.getObject(selName1).ViewObject.DiffuseColor[int(SubElementName[4:])-1] # color face selected
                 ##App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] = colorFace# give color on face
             except Exception:
-                colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[0] # color face selected [0] 
-
+                #TODO: This will fail if the object doesn't have .Name  -Mariwan
+                colorFace = App.ActiveDocument.getObject(selName1).ViewObject.DiffuseColor[0] # color face selected [0] 
             ### Begin command Part_ElementCopy First selection
-            newFace1 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
+            newFace1 = _part.getShape(App.ActiveDocument.getObject(selName1),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
             App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
             shapeFace1 = App.ActiveDocument.ActiveObject
             ####
-
             ### Begin command Part_ElementCopy Second selection
             try:# independent object 
-                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[1].Name),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
+                newFace2 = _part.getShape(App.ActiveDocument.getObject(selName2),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
             except Exception:
                 # same object other face  TODO: This will fail if you have a sphere shape or a ball Mariwan 2021-03-18
-                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedEdge[0].SubElementNames[1],needSubElement=True,refine=False).copy()
+                newFace2 = _part.getShape(App.ActiveDocument.getObject(selName1),selectedEdge[0].SubElementNames[1],needSubElement=True,refine=False).copy()
 
             App.ActiveDocument.addObject('Part::Feature','Face2').Shape = newFace2
             shapeFace2 = App.ActiveDocument.ActiveObject
@@ -104,22 +113,22 @@ class Design456_unifySplitFuse1:
             ### Begin command Part_Fuse
             fusion = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
             try:                # multiple objects
-                App.ActiveDocument.Fusion.Shapes = [App.ActiveDocument.getObject(selObjects[0].Name),App.ActiveDocument.Attached,App.ActiveDocument.getObject(selObjects[1].Name),]
+                App.ActiveDocument.Fusion.Shapes = [App.ActiveDocument.getObject(selName1),App.ActiveDocument.Attached,App.ActiveDocument.getObject(selName2),]
             except Exception:   # single object
-                App.ActiveDocument.Fusion.Shapes = [App.ActiveDocument.getObject(selObjects[0].Name),App.ActiveDocument.Attached,App.ActiveDocument.getObject(selObjects[0].Name),]
+                App.ActiveDocument.Fusion.Shapes = [App.ActiveDocument.getObject(selName1),App.ActiveDocument.Attached,App.ActiveDocument.getObject(selName2),]
             App.ActiveDocument.recompute()
             ### End command Part_Fuse
 
             # create single object
             _part.show(fusion.Shape.copy())
             App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-            App.ActiveDocument.ActiveObject.Label = sel[0].Label + "_" + subElementName
+            App.ActiveDocument.ActiveObject.Label =sel1Name + "_" + subElementName
 
             ##### removeObject work
             if switchRemoveConstructionObject == 1:
-                App.ActiveDocument.removeObject(selObjects[0].Name)
+                App.ActiveDocument.removeObject(selName1)
                 try:                # multiple objects
-                    App.ActiveDocument.removeObject(selObjects[1].Name)
+                    App.ActiveDocument.removeObject(selName2)
                 except Exception:   # single object
                     None
                 App.ActiveDocument.removeObject(attached.Name)
@@ -155,7 +164,7 @@ Gui.addCommand('Design456_unifySplitFuse1', Design456_unifySplitFuse1())
 class Design456_unifySplitFuse2:
     def Activated(self):
         try:
-            sel = Gui.Selection.getSelection()
+            sel = Gui.Selection.getSelectionEx()
             if (len(sel) != 2):
                 # Two object must be selected
                 errMessage = "Select two objects to use the Tool"
