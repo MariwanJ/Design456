@@ -203,6 +203,4 @@ class Nurbs_WeightEditor:
         return {'Pixmap':  NURBSinit.ICONS_PATH + 'WeightEditor.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_WeightEditor"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
-
-
 Gui.addCommand("Nurbs_WeightEditor", Nurbs_WeightEditor())

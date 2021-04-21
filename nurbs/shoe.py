@@ -1290,11 +1290,11 @@ def ThousandsOfRunWhatShouldIdo():
 
 
     App.ActiveDocument.recompute()
-    App.ActiveDocument.recompute()
+    #App.ActiveDocument.recompute()
     Gui.activeDocument().activeView().viewFront()
 
     Gui.SendMsgToActiveView("ViewFit")
-    Gui.runCommand("Draft_ToggleGrid")
+    #Gui.runCommand("Draft_ToggleGrid")
 
     # load a scanned last to compare if available
     try: 

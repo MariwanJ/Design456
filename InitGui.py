@@ -202,6 +202,8 @@ class Design456_Workbench (Workbench):
                 self.runOnce=False
             App.Console.PrintLog(
                 "Draft workbench activated Inside Design456.\n")
+            #Turn OFF grid          #TODO:Make This permanent
+            Gui.Snapper.grid.off()
             App.Console.PrintMessage('Design456 workbench loaded\n')
             return
         except Exception as exc:

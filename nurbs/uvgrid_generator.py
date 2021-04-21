@@ -59,7 +59,7 @@ Gui.ActiveDocument=Gui.getDocument("m09_uvgrid_generator")
 
 import nurbs_tools
 #reload (nurbs_tools)
-from .nurbs_tools import kruemmung
+from nurbs_tools import kruemmung
 
 
 
@@ -607,7 +607,6 @@ def runobj(obj,fac=5):
     te=time.time()
     print ("Part.show time ",round(te-ts,2))
 
-
 def runsub(f,fac=5,label="NoLAB"):
 
     ts=time.time()
@@ -645,24 +644,32 @@ def runsub(f,fac=5,label="NoLAB"):
     print ("Part.show time ",round(te-ts,2))
 
 
+class Nurbs_UVGRIDgenRunSel:
+    def Activated(self):
+        self.runSel()
+    def runSel(self,fac=3):
+        ''' create the xxx for some selected faces or all faces of a selected part'''
 
-def runSel(fac=3):
-    ''' create the xxx for some selected faces or all faces of a selected part'''
+        if len(Gui.Selection.getSelectionEx())>0:
+            for ss in Gui.Selection.getSelectionEx():
+                subn=ss.SubElementNames
+                if len(subn)>0:
+                    for i,obj in enumerate(ss.SubObjects):
+                        label=ss.ObjectName + " " + subn[i] + " UVGrid "
+                        print ("create  ",label, "for ",obj.Surface)
+                        runsub(obj,fac,label)
 
-    if len(Gui.Selection.getSelectionEx())>0:
-        for ss in Gui.Selection.getSelectionEx():
-            subn=ss.SubElementNames
-            if len(subn)>0:
-                for i,obj in enumerate(ss.SubObjects):
-                    label=ss.ObjectName + " " + subn[i] + " UVGrid "
-                    print ("create  ",label, "for ",obj.Surface)
-                    runsub(obj,fac,label)
-                    
-            else:
-                print("create for all faces of the object",ss.Object.Label)
-                obj=ss.Object
-                runobj(obj,fac)
+                else:
+                    print("create for all faces of the object",ss.Object.Label)
+                    obj=ss.Object
+                    runobj(obj,fac)
 
+    def GetResources(self):
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_UVGRIDgenRunSe")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_UVGRIDgenRunSe"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+Gui.addCommand("Nurbs_UVGRIDgenRunSel", Nurbs_UVGRIDgenRunSel())
 
-def ThousandsOfRunWhatShouldIdo():
-    runSel()

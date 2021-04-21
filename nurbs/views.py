@@ -1021,6 +1021,7 @@ def mkshadow(sgg, lis):
 # -------------------------------------
 
 class Nurbs_DarkRoom(PartFeature):
+    obj=label=None
     def __init__(self, obj, label=None):
         self.obj=obj
         self.label=label
@@ -1041,7 +1042,7 @@ class Nurbs_DarkRoom(PartFeature):
         self.obj.addProperty("App::PropertyFloat", "B Angle", "V01")
         self.obj.addProperty("App::PropertyInteger", "B DisplayMode", "V01")
         self.obj.addProperty("App::PropertyInteger", "B OrientationMode", "V01")
-
+        
         self.obj.B_Axis = App.Vector(1, 1, 1)
         self.obj.B_Angle = 120
 
@@ -1107,7 +1108,7 @@ class Nurbs_DarkRoom(PartFeature):
             vals = [self.fp.A_OrientationMode, self.fp.B_OrientationMode,
                     self.fp.C_OrientationMode, self.fp.D_OrientationMode]
             for ix in [0]:
-                objs = slef.fp.objs
+                objs = self.fp.objs
                 view = self.v.getViewer(ix)
                 val = vals[ix]
                 marker = coin.SoSeparator()
@@ -1298,7 +1299,7 @@ class Nurbs_DarkRoom(PartFeature):
 
 class Nurbs_ViewProviderDR:
     ''' view provider class Nurbs_for dark room'''
-
+    fp=Object=None
     def __init__(self, obj):
         obj.Proxy = self
         self.Object = obj
@@ -1383,7 +1384,8 @@ def setsizeDR(title):
 
 
 class Nurbs_CreateDarkRoom:
-    def __init(self, configureVal={1, 1, 1, 1, 1, }):
+    configureVal=[]
+    def __init__(self, configureVal=[1, 1, 1, 1, 1, ]):
         self.configureVal=configureVal
         
     def Activated(self):
@@ -1415,20 +1417,20 @@ class Nurbs_CreateDarkRoom:
 
         # with shadows dir-lights do not work inside the shadow group
         if self.configureVal[0]:
-            la = createlight('DirectionalLight')
+            la = Nurbs_createlight("DirectionalLight").Activated()
             la.location = App.Vector(-100, -100, 0)
             la.direction = la.location*(-1)
             a.addObject(la)
 
         if self.configureVal[1]:
-            la = createlight('DirectionalLight')
+            la = Nurbs_createlight('DirectionalLight').Activated()
             la.location = App.Vector(200, -100, 0)
             la.direction = la.location*(-1)
             la.color = (0.3, 0., 0.)
             a.addObject(la)
 
         if self.configureVal[2]:
-            la = createlight("SpotLight")
+            la = Nurbs_createlight("SpotLight").Activated()
             la.mode = "SpotLight"
             la.location = App.Vector(10, -20, 400)
             la.direction = App.Vector(0, 0, -1)
@@ -1436,7 +1438,7 @@ class Nurbs_CreateDarkRoom:
             a.addObject(la)
 
         if self.configureVal[3]:
-            la = createlight("PointLight")
+            la = Nurbs_createlight("PointLight").Activated()
             la.mode = "PointLight"
             la.location = App.Vector(10, -20, 400)
             la.direction = App.Vector(0, 0, -1)
@@ -1448,7 +1450,7 @@ class Nurbs_CreateDarkRoom:
         if self.configureVal[4]:
 
             ff = 0.1
-            la = createlight("SpotLight")
+            la = Nurbs_createlight("SpotLight").Activated()
             la.mode = "SpotLight"
             la.location = App.Vector(0, 0, 300)
             la.direction = App.Vector(-20, 10, -300)
@@ -1457,7 +1459,7 @@ class Nurbs_CreateDarkRoom:
                         random.random(), ff*random.random())
             a.addObject(la)
 
-            la = createlight("SpotLight")
+            la = Nurbs_createlight("SpotLight").Activated()
             la.mode = "SpotLight"
             la.location = App.Vector(0, 0, 300)
             la.direction = App.Vector(0, 0, -300)
@@ -1466,7 +1468,7 @@ class Nurbs_CreateDarkRoom:
                         random.random(), ff*random.random())
             a.addObject(la)
 
-            la = createlight("SpotLight")
+            la = Nurbs_createlight("SpotLight").Activated()
             la.mode = "SpotLight"
             la.location = App.Vector(50, 10, 300)
             la.direction = App.Vector(10, 20, -300)
@@ -1537,11 +1539,13 @@ class Nurbs_Light(PartFeature):
 
 
 class Nurbs_createlight:
-    def Activated(self, name="SpotLight"):
-        a = App.ActiveDocument.addObject("Part::FeaturePython", name)
+    def __init__(self, name='SpotLight'):
+        self.name=name
+    def Activated(self):
+        a = App.ActiveDocument.addObject("Part::FeaturePython", self.name)
         Nurbs_Light(a)
-        a.mode = name
-        ViewProviderL(a.ViewObject)
+        a.mode = self.name
+        Nurbs_ViewProviderL(a.ViewObject)
         return a
 
     def GetResources(self):

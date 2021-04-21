@@ -268,49 +268,59 @@ class Trafo(pyob.FeaturePython):
         ee.Label="Target Poles"
         ee.ViewObject.ControlPoints=True
 
+class Nurbs_TransformSplinRun:
+    def Activated(self):
+        self.runme()
 
+    def runme():
+        ''' create a transform object for a selected  curve'''
 
-def ThousandsOfRunWhatShouldIdo():
-    ''' create a transform object for a selected  curve'''
+        if len( Gui.Selection.getSelectionEx())==0:
+            showdialog('Oops','nothing selected - nothing to do for me','Please select a Bspline Curve')
+            raise Exception("nothing selected")
 
-    if len( Gui.Selection.getSelectionEx())==0:
-        showdialog('Oops','nothing selected - nothing to do for me','Please select a Bspline Curve')
-        raise Exception("nothing selected")
+        model=Gui.Selection.getSelectionEx()[0]
+        if model.Shape.Edge1.Curve.__class__.__name__ !='BSplineCurve':
+            print (model.Label)
+            print (model.Shape.Edge1.Curve.__class__.__name__)
+            showdialog('Error','edge of the selected curve is not a BSpline','method is only implemented for BSpline Curves')
+            raise Exception("not implemented for this curve type")
 
-    model=Gui.Selection.getSelectionEx()[0]
-    if model.Shape.Edge1.Curve.__class__.__name__ !='BSplineCurve':
-        print (model.Label)
-        print (model.Shape.Edge1.Curve.__class__.__name__)
-        showdialog('Error','edge of the selected curve is not a BSpline','method is only implemented for BSpline Curves')
-        raise Exception("not implemented for this curve type")
-    
-    try: 
-        source=Gui.Selection.getSelectionEx()[1]
-        points2=source.Points
-        # todo: rectangle as source frame
-    except:
-        print ("use bound box as source frame")
-        print (model.Shape.BoundBox)
-        points2=[model.Shape.BoundBox.getPoint(i) for i in range(4)]
-        source=None
+        try: 
+            source=Gui.Selection.getSelectionEx()[1]
+            points2=source.Points
+            # todo: rectangle as source frame
+        except:
+            print ("use bound box as source frame")
+            print (model.Shape.BoundBox)
+            points2=[model.Shape.BoundBox.getPoint(i) for i in range(4)]
+            source=None
 
-    try: center=Gui.Selection.getSelectionEx()[2]
-    except: center=None
+        try: center=Gui.Selection.getSelectionEx()[2]
+        except: center=None
 
-    line2 = Draft.makeWire(points2,closed=True,face=False,support=None)
-    line2.ViewObject.LineColor = (1.00,0.00,1.00)
-    line2.Label="Target Frame"
+        line2 = Draft.makeWire(points2,closed=True,face=False,support=None)
+        line2.ViewObject.LineColor = (1.00,0.00,1.00)
+        line2.Label="Target Frame"
 
-    b=App.ActiveDocument.addObject("Part::FeaturePython","MyTransform")
-    tt=Trafo(b)
+        b=App.ActiveDocument.addObject("Part::FeaturePython","MyTransform")
+        tt=Trafo(b)
 
-    b.source=source
-    b.target=line2
-    b.model=model
-    b.center=center
-    b.useCenter= center != None
+        b.source=source
+        b.target=line2
+        b.model=model
+        b.center=center
+        b.useCenter= center != None
 
-    App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
+        
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_TransformSplinRun")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_TransformSplinRun"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-
-# run()
+Gui.addCommand("Nurbs_TransformSplinRun", Nurbs_TransformSplinRun())
