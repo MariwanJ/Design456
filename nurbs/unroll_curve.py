@@ -56,8 +56,8 @@ import Part,Draft
 def unroll(mode):
 
 
-    edge=Gui.Selection.getSelectionEx()[0]
-    face=Gui.Selection.getSelectionEx()[1]
+    edge=Gui.Selection.getSelection()[0]
+    face=Gui.Selection.getSelection()[1]
 
 
     # referenzflaeche
@@ -175,149 +175,181 @@ except ImportError:
     App.ActiveDocument.removeObject(bb.Name)
 
 
-
-
-
-
-
-def unroll_yaw():
+class Nurbs_UnrollCurve_yaw:
+    def Activated(self):
+        self.unroll_yaw()
+    def unroll_yaw(self):
         unroll(mode='yaw')
+    def GetResources(self):
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_UnrollCurve_yaw")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_UnrollCurve_yaw"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+Gui.addCommand("Nurbs_UnrollCurve_yaw", Nurbs_UnrollCurve_yaw())
 
 
-def unroll_pitch():
+class Nurbs_UnrollCurve_pitch:
+    def Activated(self):
+        self.unroll()
+    def unroll_pitch():
         unroll(mode='pitch')
+    def GetResources(self):
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_UnrollCurve_pitch")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_UnrollCurve_pitch"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+Gui.addCommand("Nurbs_UnrollCurve_pitch", Nurbs_UnrollCurve_pitch())
+
 
 
 
 import Draft
 
-
-def combineCT():
-
-    objc=Gui.Selection.getSelectionEx()[0]
-    objt=Gui.Selection.getSelectionEx()[1]
-
-
-    #ec=App.ActiveDocument.BSpline001.Shape.Edge1
-    ec=objc.Shape.Edge1
-    kc=ec.Curve
-
- 
-    #et=App.ActiveDocument.BSpline002.Shape.Edge1
-    et=objt.Shape.Edge1
-    kt=et.Curve
-
-    p=App.Vector()
-    start=App.Vector()
-    start=kc.value(0)
-    print ("start",start)
+class Nurbs_UnrollCurve:
+    def Activated(self):
+        self.combineCT()
     
-    
-    
-    
+    def combineCT(self):
+        objc=Gui.Selection.getSelection()[0]
+        objt=Gui.Selection.getSelection()[1]
 
-    t=App.Vector(1,0,0)
-    t=App.Vector(1,0,0.8).normalize()
+        #ec=App.ActiveDocument.BSpline001.Shape.Edge1
+        ec=objc.Shape.Edge1
+        kc=ec.Curve
+
     
-    t=kc.tangent(0)[0]
+        #et=App.ActiveDocument.BSpline002.Shape.Edge1
+        et=objt.Shape.Edge1
+        kt=et.Curve
 
-    #-------------------
-    start=App.Vector (1000.0000000000025, -6.585502339306361e-13, -5.684341886080802e-14)
-    t=App.Vector (0.12085567006180127, 0.9814887436862094, -0.14857238313757795)
-#    t=App.Vector ( 0.9814887436862094, 0.12085567006180127,0.14857238313757795)
-    
-    #-------------------
-
-
-
-    if 0:
         p=App.Vector()
         start=App.Vector()
+        start=kc.value(0)
+        print ("start",start)
+
         t=App.Vector(1,0,0)
+        t=App.Vector(1,0,0.8).normalize()
 
-    nn=App.Vector(0,0,1)
-    b=t.cross(nn)
-    print (nn)
+        t=kc.tangent(0)[0]
 
-    if 0:
-        a=App.ActiveDocument.Drawing_on_Face__Face1_Spline.Shape.Edge1.Curve
-        # p0=a.value(0)
-        t=a.tangent(0)[0]
-        nn=a.normal(0)
+        #-------------------
+        start=App.Vector (1000.0000000000025, -6.585502339306361e-13, -5.684341886080802e-14)
+        t=App.Vector (0.12085567006180127, 0.9814887436862094, -0.14857238313757795)
+    #    t=App.Vector ( 0.9814887436862094, 0.12085567006180127,0.14857238313757795)
+
+        #-------------------
+
+        if 0:
+            p=App.Vector()
+            start=App.Vector()
+            t=App.Vector(1,0,0)
+
+        nn=App.Vector(0,0,1)
         b=t.cross(nn)
-        start=a.value(0)
+        print (nn)
 
-    ptt=App.Placement(t,App.Rotation())
-    ptn=App.Placement(nn,App.Rotation())
+        if 0:
+            a=App.ActiveDocument.Drawing_on_Face__Face1_Spline.Shape.Edge1.Curve
+            # p0=a.value(0)
+            t=a.tangent(0)[0]
+            nn=a.normal(0)
+            b=t.cross(nn)
+            start=a.value(0)
 
-    tpts=[p]
+        ptt=App.Placement(t,App.Rotation())
+        ptn=App.Placement(nn,App.Rotation())
 
-    n=200
-    ptsc=kc.discretize(n)
+        tpts=[p]
 
-    for i in range(0,n):
-        r=App.Rotation(kc.tangent(ec.FirstParameter+1.0*i/n*(ec.LastParameter-ec.FirstParameter))[0],
-        kc.tangent(ec.FirstParameter+1.0*(i-1)/n*(ec.LastParameter-ec.FirstParameter))[0])
+        n=200
+        ptsc=kc.discretize(n)
 
-        if r.Axis.y>0:
+        for i in range(0,n):
+            r=App.Rotation(kc.tangent(ec.FirstParameter+1.0*i/n*(ec.LastParameter-ec.FirstParameter))[0],
+            kc.tangent(ec.FirstParameter+1.0*(i-1)/n*(ec.LastParameter-ec.FirstParameter))[0])
+
+            if r.Axis.y>0:
+                rc=r.Angle
+            else:
+                rc=-r.Angle
             rc=r.Angle
-        else:
-            rc=-r.Angle
-        rc=r.Angle
 
-        r2=App.Rotation(kt.tangent(et.FirstParameter+1.0*i/n*(et.LastParameter-et.FirstParameter))[0],
-        kt.tangent(et.FirstParameter+1.0*(i-1)/n*(et.LastParameter-et.FirstParameter))[0])
+            r2=App.Rotation(kt.tangent(et.FirstParameter+1.0*i/n*(et.LastParameter-et.FirstParameter))[0],
+            kt.tangent(et.FirstParameter+1.0*(i-1)/n*(et.LastParameter-et.FirstParameter))[0])
 
-        if r2.Axis.z>0:
-            rt=r2.Angle
-        else:
-            rt=-r2.Angle
-        #rt=r2.Angle
+            if r2.Axis.z>0:
+                rt=r2.Angle
+            else:
+                rt=-r2.Angle
+            #rt=r2.Angle
 
-#        rt *= 1.3
+    #        rt *= 1.3
 
-#        rt *= 0.4
-#        rt *= 0.1
+    #        rt *= 0.4
+    #        rt *= 0.1
 
-    #    r3=App.Rotation(App.Vector(0,0,1),rc)
+        #    r3=App.Rotation(App.Vector(0,0,1),rc)
 
-        rX=App.Rotation(b,rc*180/np.pi)
-    #    rX=App.Rotation(b,0)
-        rY=App.Rotation(nn,rt*180/np.pi)
+            rX=App.Rotation(b,rc*180/np.pi)
+        #    rX=App.Rotation(b,0)
+            rY=App.Rotation(nn,rt*180/np.pi)
 
-        #print (rc,rt)
+            #print (rc,rt)
 
-        pc=App.Placement(App.Vector(),rX)
-        pt=App.Placement(App.Vector(),rY)
-    #    pc=App.Placement()
+            pc=App.Placement(App.Vector(),rX)
+            pt=App.Placement(App.Vector(),rY)
+        #    pc=App.Placement()
 
 
-        t9=pt.multiply(pc).multiply(ptt)
-        t9=pc.multiply(pt).multiply(ptt)
-        #t9=ptt.multiply(pc).multiply(pt)
-        ptt=t9
-        t=t9.Base
-        #ptn=App.Placement(nn,App.Rotation())
+            t9=pt.multiply(pc).multiply(ptt)
+            t9=pc.multiply(pt).multiply(ptt)
+            #t9=ptt.multiply(pc).multiply(pt)
+            ptt=t9
+            t=t9.Base
+            #ptn=App.Placement(nn,App.Rotation())
+
+            t8=pc.multiply(ptn)
+            nn=t8.Base.normalize()
+            ptn=t8
+
+            b=t.cross(nn).normalize()
+            p=p+t
+        #    print ("t ",t
+            print ("n ",nn)
+        #    print ("b ",b
+        #    print 
+            tpts += [p]
+
+        tpts2=[p*(1*ec.Length/n ) +start  for p in tpts]
+
+        Draft.makeWire(tpts2)
         
-        t8=pc.multiply(ptn)
-        nn=t8.Base.normalize()
-        ptn=t8
+    def GetResources(self):
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_UnrollCurve")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_UnrollCurve"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+Gui.addCommand("Nurbs_UnrollCurve", Nurbs_UnrollCurve())
+
+
+
+class Nurbs_unrollCurveMain:
+    def Activated(self):
+        unroll_yaw()
+        unroll_pitch()
         
-        b=t.cross(nn).normalize()
-        p=p+t
-    #    print ("t ",t
-        print ("n ",nn)
-    #    print ("b ",b
-    #    print 
-        tpts += [p]
+    def GetResources(self):
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_unrollCurveMain")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_unrollCurveMain"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+Gui.addCommand("Nurbs_unrollCurveMain", Nurbs_unrollCurveMain())
 
-    tpts2=[p*(1*ec.Length/n ) +start  for p in tpts]
-
-    Draft.makeWire(tpts2)
-
-
-
-
-if __name__ =='__main__':
-    unroll_yaw()
-    unroll_pitch()
