@@ -123,7 +123,7 @@ class Design456_unifySplitFuse1:
             # create single object
             _part.show(fusion.Shape.copy())
             App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-            App.ActiveDocument.ActiveObject.Label =sel1Name + "_" + subElementName
+            App.ActiveDocument.ActiveObject.Label =selName1 + "_" + subElementName
 
             ##### removeObject work
             if switchRemoveConstructionObject == 1:
