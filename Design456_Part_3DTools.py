@@ -26,7 +26,6 @@ from __future__ import unicode_literals
 # ***************************************************************************
 import sys
 import os
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide

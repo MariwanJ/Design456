@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 #
 # ***************************************************************************
@@ -29,34 +28,60 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
+import pivy.coin as coin
 import Design456Init
 
-import  Design456_Part_3DTools
-import  Design456_Part_2DTools
-import  Design456_Alignment   
 
-class Design456_Part_Tools:
-    list = ["Design456_Part_3DToolsGroup",
-            "Design456_Part_2DToolsGroup",
-            "Design456_AlignmentGroup",
-            
-            ]
+def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14, trans=(0, 0, 0), text=''):
+    global textNode
+    _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
+    font = coin.SoFont()
+    _text = coin.SoText2()
+    _text.string.setValue(text)
+    font.Name=labelfont
+    font.size=size
+    coinColor = coin.SoMaterial()
+    binding = coin.SoMaterialBinding()
+    binding.value = coin.SoMaterialBinding.PER_PART 
+    coinColor.rgb = labelcolor
+    transNode = coin.SoTransform()
+    _textNode.addChild(font)
+    _textNode.addChild(_text)
+    _textNode.addChild(transNode)
+    _textNode.addChild(coinColor)
+    _textNode.addChild(binding)
+    
+    return _textNode  # Return the created SoSeparator that contains the text
 
-    """Design456 Part Tools Toolbar"""
+    """@property
+    def font(self):
+        return self.fontNode.name.getValue()
 
-    def GetResources(self):
-        return{
-            'Pixmap':    Design456Init.ICON_PATH + '/Part_Tools.svg',
-            'MenuText': 'Tools',
-            'ToolTip':  'Tools'
-        }
+    @font.setter
+    def font(self, name):
+        self.fontNode.name = name
 
-    def IsActive(self):
-        """Return True when this command should be available."""
-        if Gui.activeDocument():
-            return True
-        else:
-            return False
-        
-    def Activated(self):
-        self.appendToolbar("Design456_Part_Tools", self.list)
+    @property
+    def size(self):
+        return self.fontNode.size.getValue()
+
+    @size.setter
+    def size(self, size):
+        self.fontNode.size.setValue(size)
+
+    @property
+    def trans(self):
+        return self.transNode.translation.getValue().getValue()
+
+    @trans.setter
+    def trans(self, trans):
+        self.transNode.translation.setValue([trans[0],trans[1],trans[2]])
+
+    @property
+    def text(self):
+        return self.textNode.string.getValues()[0]
+
+    @text.setter
+    def text(self, text):
+        self.textNode.string = text
+    """

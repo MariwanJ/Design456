@@ -29,34 +29,32 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
+import pivy.coin as coin
+import fr_widget
 import Design456Init
+import fr_draw
+import constant
+from typing import List
 
-import  Design456_Part_3DTools
-import  Design456_Part_2DTools
-import  Design456_Alignment   
+#
 
-class Design456_Part_Tools:
-    list = ["Design456_Part_3DToolsGroup",
-            "Design456_Part_2DToolsGroup",
-            "Design456_AlignmentGroup",
-            
-            ]
 
-    """Design456 Part Tools Toolbar"""
+class Fr_Polygon(fr_widget.Fr_Widget):
+    # def __init__(self, args:fr_widget.VECTOR=[],l=""):
+    def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
+        if args == None:
+            args = []
+        self.WidgetType = constant.FR_WidgetType.FR_EDGE
+        self._lineWidth = lineWidth  # default line width
+        super().__init__(args, l)
 
-    def GetResources(self):
-        return{
-            'Pixmap':    Design456Init.ICON_PATH + '/Part_Tools.svg',
-            'MenuText': 'Tools',
-            'ToolTip':  'Tools'
-        }
+    def Activate(self):
+        raise NotImplementedError()
 
-    def IsActive(self):
-        """Return True when this command should be available."""
-        if Gui.activeDocument():
-            return True
-        else:
-            return False
-        
-    def Activated(self):
-        self.appendToolbar("Design456_Part_Tools", self.list)
+    def Deactivate(self):
+        raise NotImplementedError()
+
+    def draw(self, vectors):
+        mynormal = coin.SoNormal
+        mynormal.vector.set1Values(0, 8, norms)
+        obelisk
