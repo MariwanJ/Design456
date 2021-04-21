@@ -27,7 +27,6 @@ from __future__ import unicode_literals
 
 # This will be used to avoid user select wrong object, Body, Face, Edges or Vertices
 import os
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
