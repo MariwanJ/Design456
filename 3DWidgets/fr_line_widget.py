@@ -143,6 +143,19 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             return  # We draw nothing .. This is here just for clarifying the code
         
     def draw_label(self):
+        #todo: There must be away to align the text .. this is just kinda a tes
+        #try to test this didn't work for me 
+        #p1=self._vector[0]
+        #p2=self._vector[1]
+        #print (p1)
+        #print(p2)
+        #print(p1.x)
+        #middelOfTheLine=( (p1.x+p2.x/2), 
+        #                  (p1.y+p2.y/2),
+        #                  (p1.z+p2.z/2)
+        #                )
+        #
+
         lbl=fr_label_draw.draw_label(self._lblColor,'sans',14,self._vector[0],self._label)
         return lbl
         
@@ -153,7 +166,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         left-top corner of the object. Or the start of the line
         if it is a line.
         """
-        self.resize(newVecPos[0], newVecPos[1])
+        self.resize(self,newVecPos[0], newVecPos[1])
 
     def getVertexStart(self):
         """Return the vertex of the start point"""

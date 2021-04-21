@@ -558,6 +558,12 @@ class Design456_Nurbs_List13Group:
                 'Nurbs_CreateDarkRoom',
                 'Nurbs_LightON',
                 'Nurbs_LightOFF',
+                "Separator",                
+                "Nurbs_UVGRIDgenRunSel",
+                "Nurbs_unrollCurveMain",
+                "Nurbs_UnrollCurve"
+                
+                
                 )
 
     def GetResources(self):
@@ -570,3 +576,38 @@ class Design456_Nurbs_List13Group:
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 Gui.addCommand("Design456_Nurbs_List13Group", Design456_Nurbs_List13Group())
+
+
+
+
+class Design456_Nurbs_List14Group:
+    def __init__(self):
+        return
+
+    """Nurbs commands"""
+
+    def GetCommands(self):
+        """Nurbs commands."""
+        import nurbs
+        return (              
+                "Nurbs_UVGRIDgenRunSel",
+                "Nurbs_unrollCurveMain",
+                "Nurbs_UnrollCurve",
+                "Nurbs_UnrollCurve_yaw",
+                "Nurbs_UnrollCurve_pitch",
+                "Nurbs_TransformSplinRun",
+                "",
+                
+                
+                )
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Different Tools - Nurbs")
+        return {'Pixmap':  Design456Init.NURBS_ICON_PATH+ 'Nurbs_List14.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_List14Group"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Design456_Nurbs_List14Group", Design456_Nurbs_List14Group())

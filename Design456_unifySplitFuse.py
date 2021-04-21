@@ -35,6 +35,7 @@ from draftobjects.base import DraftObject
 # **************************************************************************
 import os
 import sys
+import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
@@ -90,6 +91,7 @@ class Design456_unifySplitFuse1:
             App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
             shapeFace1 = App.ActiveDocument.ActiveObject
             ####
+
             ### Begin command Part_ElementCopy Second selection
             try:# independent object 
                 newFace2 = _part.getShape(App.ActiveDocument.getObject(selName2),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
@@ -122,7 +124,7 @@ class Design456_unifySplitFuse1:
             # create single object
             _part.show(fusion.Shape.copy())
             App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-            App.ActiveDocument.ActiveObject.Label =sel1Name + "_" + subElementName
+            App.ActiveDocument.ActiveObject.Label =selName1 + "_" + subElementName
 
             ##### removeObject work
             if switchRemoveConstructionObject == 1:

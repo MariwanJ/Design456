@@ -50,6 +50,7 @@ class Design456_NurbsTools:
             "Design456_Nurbs_List11Group",
             "Design456_Nurbs_List12Group",
             "Design456_Nurbs_List13Group",
+            "Design456_Nurbs_List14Group",
             ]
 
     """Design456 Part Tools Toolbar"""
