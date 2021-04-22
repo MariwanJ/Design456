@@ -45,8 +45,6 @@ class Design456_Nurbs_List0Group:
                 "Nurbs_AnalyseTest3",
                 "Nurbs_AnalyseTest4",
                 "Nurbs_AnalyseLoadTest1",
-                "Nurbs_AnalyseLoadTest2",
-                #"Separator",
                 "Nurbs_smoothPointcloudGUI",
                 "Nurbs_loadPointcloudfromImageGUI",
                 "Nurbs_LoadCylinderfacefromImageGUI",
@@ -307,7 +305,7 @@ class Design456_Nurbs_List7Group:
         import nurbs
         return (
                 "Nurbs_extractWires",
-                "Nurbs_Hole",
+                "Nurbs_Holes",
                 "Nurbs_IsoDrawtestE",
                 "Nurbs_IsoDrawtestD",
                 "Nurbs_IsoDrawtestC",
@@ -344,7 +342,7 @@ class Design456_Nurbs_List8Group:
         """Nurbs commands."""
         import nurbs
         return (
-                "Nurb_LoftSelection",
+                "Nurbs_LoftSelection",
                 "Nurbs_MeshGenModTest",
                 "Nurbs_MeshGenTest",
                 "Nurbs_MikiTestMe",
@@ -423,7 +421,6 @@ class Design456_Nurbs_List10Group:
                 "Nurbs_PointsRUNC",
                 "Nurbs_PointsRUND",
                 "Nurbs_PointsRUNE",
-                #TODO:THEREAREMORECOMMAND
                 "Nurbs_PointsRUNE",
                 "Nurbs_PointsRUND",
                 "Nurbs_PointsRUNC",
@@ -488,17 +485,14 @@ class Design456_Nurbs_List12Group:
         return (
                 "Nurbs_CreateOrUpdateSoleEnvironmentSheet",
                 "Nurbs_PrototypeCreateHELL",
-                #"Separator",
                 "Nurbs_CreateTripod",
                 "Nurbs_CreateTripodSketch",
                 "Nurbs_CreateSweep",
                 "Nurbs_CreateLoft",
                 "Nurbs_CreateCompound",
-                #"Separator",
                 "Nurbs_CreatePatternV2",
                 "Nurbs_CreateSinglePattern",
                 "Nurbs_runPatternV3",
-                #"Separator",
                 "Nurbs_WeightEditor"
                 )
 
@@ -528,8 +522,7 @@ class Design456_Nurbs_List13Group:
                 'Nurbs_CreateH2',
                 'Nurbs_CreateDarkRoom',
                 'Nurbs_LightON',
-                'Nurbs_LightOFF',
-                ##"Separator",                
+                'Nurbs_LightOFF',           
                 "Nurbs_UVGRIDgenRunSel",
                 "Nurbs_unrollCurveMain",
                 "Nurbs_UnrollCurve"

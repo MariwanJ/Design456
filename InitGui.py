@@ -65,7 +65,8 @@ class Design456_Workbench (Workbench):
         self.appendMenu("Design456_Part",designPart.Design456_Part.list)
         self.appendMenu("Design456_2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
         self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
-
+        self.appendMenu("Design456 Nurbs",_NURBS.Design456_NurbsTools.list)
+ 
         
 
         # Design456_Part
