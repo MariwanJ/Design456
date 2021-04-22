@@ -307,7 +307,7 @@ class PartMover:
 """ This class will return back info about the selected
     face. Many options are available but
     I will put only what I need at the moment. 
-    See the note bellow for available info
+    See the note below for available info
     Give the class object Gui.Selection()[No] where No is the face you want to get info
 
 """
