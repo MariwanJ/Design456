@@ -87,7 +87,6 @@ class Nurbs_Holes:
             'ToolTip':  'Nurbs_Holes'
         }
 
-
 Gui.addCommand('Nurbs_Holes', Nurbs_Holes())
 Nurbs_Holes.__doc__ = """holes: Tobe added later     """
 

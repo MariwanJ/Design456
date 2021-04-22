@@ -76,6 +76,7 @@ currently unsupported: use, image
 import xml.sax
 import string
 import FreeCAD as App
+import FreeCADGui as Gui
 import os,sys
 import math
 import re
@@ -1493,21 +1494,21 @@ class SVGLink(PartFeature):
 
 
 class Nurbs_CreateLinkToSvg:
-        
+    
     def Activated(self):
-        """create_svglink():"""
-        print ("erzeuge svg datei link")
-        b=App.ActiveDocument.addObject("Part::FeaturePython","Design456_SVG_Link")
-        SVGLink(b)
-        b.prefix="A_"
-        b.ignore=["MAP","circle"]
-        try:
-                b.filename="/home/thomas/Schreibtisch/farbentest.svg"
-                b.filename="/home/thomas/Schreibtisch/aaa.svg"
-        except:
-                pass
-        #b.Proxy.runTimer()
-        return b
+            """create_svglink():"""
+            print ("erzeuge svg datei link")
+            b=App.ActiveDocument.addObject("Part::FeaturePython","Design456_SVG_Link")
+            SVGLink(b)
+            b.prefix="A_"
+            b.ignore=["MAP","circle"]
+            try:
+                    b.filename="/home/thomas/Schreibtisch/farbentest.svg"
+                    b.filename="/home/thomas/Schreibtisch/aaa.svg"
+            except:
+                    pass
+            #b.Proxy.runTimer()
+            return b
 
     def GetResources(self):
         
