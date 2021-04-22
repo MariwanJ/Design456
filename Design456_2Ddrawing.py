@@ -226,7 +226,7 @@ Gui.addCommand('Design456_MultiPointsToWireClose',
 
 
 # Trim all selected lines, vertices and leave the object open
-# Warning: This command destroy the 2D shape and will loose the face.
+# Warning: This command destroys the 2D shape and will loose the face.
 
 class Design456_2DTrim:
     def Activated(self):
@@ -338,7 +338,7 @@ class Design456_2DTrim:
 
                     elif position1 == 0 and position2 != totalPoints-1:
                         # First Points, remove  'closed' and start = pos+1
-                        print("in the begining")
+                        print("in the beginning")
                         StartPoint = WireOrEdgeMadeOfPoints[position2]
                         WireOrEdgeMadeOfPoints.pop(position1)
                         EndPoint = WireOrEdgeMadeOfPoints[len(
