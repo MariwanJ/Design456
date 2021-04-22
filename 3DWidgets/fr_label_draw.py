@@ -36,8 +36,10 @@ def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14, trans=(0, 
     global textNode
     _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
     font = coin.SoFont()
+    _transform=coin.SoTransform()    #determine location
     _text = coin.SoText2()
     _text.string.setValue(text)
+    _text.justification = coin.SoText2.LEFT  #This must be as value not fixed #TODO FIXME
     font.Name=labelfont
     font.size=size
     coinColor = coin.SoMaterial()
@@ -46,11 +48,11 @@ def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14, trans=(0, 
     coinColor.rgb = labelcolor
     transNode = coin.SoTransform()
     _textNode.addChild(font)
-    _textNode.addChild(_text)
+    _textNode.addChild(_transform)
     _textNode.addChild(transNode)
     _textNode.addChild(coinColor)
     _textNode.addChild(binding)
-    
+    _textNode.addChild(_text)
     return _textNode  # Return the created SoSeparator that contains the text
 
     """@property
