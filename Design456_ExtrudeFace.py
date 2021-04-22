@@ -68,10 +68,10 @@ class Design456_ExtrudeFace:
             # Select the face extracted before
             Gui.Selection.addSelection(selection)
             App.ActiveDocument.recompute()
-            m = App.activeDocument().getObject(fullname)
-            f = App.activeDocument().addObject(
+            m = App.ActiveDocument.getObject(fullname)
+            f = App.ActiveDocument.addObject(
                 'Part::Extrusion', 'ExtrudeFace')     # Add extrusion
-            f.Base = newobj             # App.activeDocument().getObject(fullname)
+            f.Base = newobj             # App.ActiveDocument.getObject(fullname)
             f.DirMode = "Normal"
             f.DirLink = None
             f.LengthFwd = lengthForward
@@ -119,7 +119,7 @@ class Design456_ExtrudeFace:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/ExtrudeFace.svg',
+            'Pixmap': Design456Init.ICON_PATH +'ExtrudeFace.svg',
             'MenuText': 'ExtrudeFace',
                         'ToolTip':  'ExtrudeFace'
         }

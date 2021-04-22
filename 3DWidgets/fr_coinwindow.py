@@ -71,7 +71,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.link_to_root_handle = fr_coin3d.root_handle()
         self.link_to_root_handle._wind = self
         self.link_to_root_handle.addCallbacks()
-        # Activate callbacks
+        # Activated callbacks
         super().__init__(args, label)
 
     def exitFr_Window(self):

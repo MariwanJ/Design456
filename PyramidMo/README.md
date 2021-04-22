@@ -17,8 +17,8 @@ All these parts are fully scalable and can be adjusted at all time.
 
 
 # How to use:
-- Activate the shape you want by clicking on the icon in the workbench.
-- Activate it by clicking on the label in the Model.
+- Activated the shape you want by clicking on the icon in the workbench.
+- Activated it by clicking on the label in the Model.
 - Then adjust the sizes, as with classic Parts.
 
 # Tutorials on YouTube:

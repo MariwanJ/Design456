@@ -269,7 +269,6 @@ Gui.addCommand('Design456_Part_Surface', Design456_Part_Surface())
 
 """Design456 Part 2D Tools"""
 
-
 class Design456_Part_2DToolsGroup:
     def __init__(self):
         return
@@ -293,6 +292,5 @@ class Design456_Part_2DToolsGroup:
         return {'Pixmap':  Design456Init.ICON_PATH +'/Design456_2DTools.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "2Dtools"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
-
 
 Gui.addCommand("Design456_Part_2DToolsGroup", Design456_Part_2DToolsGroup())

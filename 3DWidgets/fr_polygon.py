@@ -48,7 +48,7 @@ class Fr_Polygon(fr_widget.Fr_Widget):
         self._lineWidth = lineWidth  # default line width
         super().__init__(args, l)
 
-    def Activate(self):
+    def Activated(self):
         raise NotImplementedError()
 
     def Deactivate(self):
