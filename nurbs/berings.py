@@ -5528,9 +5528,9 @@ class Nurbs_CreateBorderGUI:
         
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("")
+        _tooltip = ("Nurbs_CreateBorderGUI")
         return {'Pixmap': NURBSinit.ICONS_PATH+"alpha.svg",
-                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateBorderGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_CreateBorderGUI", Nurbs_CreateBorderGUI())

@@ -290,10 +290,11 @@ class Nurbs_CreateShoeribTest:
         self.test()
     def test(self):
         '''create some ribs'''
-
-        sk1=run("rib1",[[8,0,0],[0,0,120],[4,120,-10],[12,-130,0]])
-        sk2=run("rib2",[[8,0,0],[0,0,150],[4,70,10],[12,-90,100]])
-        target=run("rib3",[],[40,-10,-40,30])
+        test=Nurbs_CreateShoeRib()
+        test.run
+        sk1=test.run("rib1",[[8,0,0],[0,0,120],[4,120,-10],[12,-130,0]])
+        sk2=test.run("rib2",[[8,0,0],[0,0,150],[4,70,10],[12,-90,100]])
+        target=test.run("rib3",[],[40,-10,-40,30])
 
     def GetResources(self):
         
@@ -301,7 +302,7 @@ class Nurbs_CreateShoeribTest:
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_CreateShoeribTest")
         return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateShoeribTest"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_CreateShoeribTest", Nurbs_CreateShoeribTest())

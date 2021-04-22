@@ -253,9 +253,9 @@ class Nurbs_DynamicOffsetMain:
         
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("")
+        _tooltip = ("Nurbs_DynamicOffsetMain")
         return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_DynamicOffsetMain"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_DynamicOffsetMain", Nurbs_DynamicOffsetMain())

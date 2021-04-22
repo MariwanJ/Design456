@@ -558,7 +558,7 @@ class Nurbs_HelmetCreateTriangel:
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_HelmetCreateTriangel")
         return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_HelmetCreateTriangel"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_HelmetCreateTriangel", Nurbs_HelmetCreateTriangel())

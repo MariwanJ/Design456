@@ -42,22 +42,22 @@ class Design456_Nurbs_List0Group:
         """Nurbs commands."""
         import nurbs
         return (
-                "Nurbs_AnalyseTest3,",
-                "Nurbs_AnalyseTest4,",
-                "Nurbs_AnalyseLoadTest1,",
+                "Nurbs_AnalyseTest3",
+                "Nurbs_AnalyseTest4",
+                "Nurbs_AnalyseLoadTest1",
                 "Nurbs_AnalyseLoadTest2",
                 #"Separator",
-                "Nurbs_smoothPointcloudGUI,",
-                "Nurbs_loadPointcloudfromImageGUI,",
-                "Nurbs_LoadCylinderfacefromImageGUI,",
-                "Nurbs_BumpFacefromImageGUI,",
-                "Nurbs_minimumLengthBezier,",
-                "Nurbs_CreateMyMinAGUI,",
-                "Nurbs_createMyMinSoftGUI,",
-                "Nurbs_nearconstantCurvatureBezier,",
-                "Nurbs_createBezierPolesFramefromribsGUI,",
-                "Nurbs_DontKnowWhatThisDo_B,",
-                "Nurbs_RibstoFace,"
+                "Nurbs_smoothPointcloudGUI",
+                "Nurbs_loadPointcloudfromImageGUI",
+                "Nurbs_LoadCylinderfacefromImageGUI",
+                "Nurbs_BumpFacefromImageGUI",
+                "Nurbs_minimumLengthBezier",
+                "Nurbs_CreateMyMinAGUI",
+                "Nurbs_createMyMinSoftGUI",
+                "Nurbs_nearconstantCurvatureBezier",
+                "Nurbs_createBezierPolesFramefromribsGUI",
+                "Nurbs_DontKnowWhatThisDo_B",
+                "Nurbs_RibstoFace"
 
                 )
 
@@ -139,7 +139,7 @@ class Design456_Nurbs_List2Group:
                 "Nurbs_TangentMainFunction",
                 "Nurbs_TangentSurfaceAnotherMain",
                 "NurbsTangentSurfaceRUNSEAM",
-                "Nurbs_CreateBorderGUI",
+                "Nurbs_CreateBorderGUI"
                 )
 
     def GetResources(self):
@@ -172,12 +172,11 @@ class Design456_Nurbs_List3Group:
                 "Nurbs_ControlPanelCreateFunction",
                 "Nurbs_ControlPanelHU",
                 "Nurbs_ControlPanelAdd",
-                #"Separator",
                 "Nurbs_CreateBtimap",
                 "Nurbs_CreateCloverLeaf",
                 "Nurbs_CurveDistance",
                 "Nurbs_SoleWithBorder",
-                "Nurbs_DrawCurves2Face",
+                "Nurbs_DrawCurves2Face"
                 )
 
     def GetResources(self):
@@ -207,12 +206,9 @@ class Design456_Nurbs_List4Group:
                 "Nurbs_DraftBSplineEditorR1",
                 "Nurbs_DraftBSplineEditorR2",
                 "Nurbs_createSketchSpline",
-                #"Separator",
                 "Nurbs_DynamicOffsetMain",
                 "Nurbs_DynamicOffsetRu",
-                #"Separator",
                 "Nurbs_FeedBackSketch",
-                #"Separator",
                 "Nurbs_FaceDrawSegments",
                 "Nurbs_Drawoversegments"
                 )
@@ -244,7 +240,6 @@ class Design456_Nurbs_List5Group:
                 "Nurbs_EventFilter",
                 "Nurbs_DrawIsoFace",
                 "Nurbs_FaceDraw",
-                #"Separator",
                 "Nurbs_FemEdgeLengthMesh",
                 "Nurbs_FEM_EdgeLengthMeshExampl",
                 "Nurbs_CreateFiledFace",
@@ -284,12 +279,10 @@ class Design456_Nurbs_List6Group:
                 "Nurbs_FindGeodesicToTarget",
                 "Nurbs_CreateShoeMarkers",
                 "Nurbs_CreateShoeMarkers",
-                #"Separator",
                 "Nurbs_commandCreateHelmet",
                 "Nurbs_HelmetCreateTriange",
-                #"Separator",
                 "Nurbs_MakeHelperSel",
-                "Nurbs_HelperTes",
+                "Nurbs_HelperTes"
                 )
 
     def GetResources(self):
@@ -315,7 +308,6 @@ class Design456_Nurbs_List7Group:
         return (
                 "Nurbs_extractWires",
                 "Nurbs_Hole",
-                #"Separator",
                 "Nurbs_IsoDrawtestE",
                 "Nurbs_IsoDrawtestD",
                 "Nurbs_IsoDrawtestC",
@@ -325,9 +317,7 @@ class Design456_Nurbs_List7Group:
                 "Nurbs_ISOdrawTestA",
                 "Nurbs_IsodrawTestF",
                 "Nurbs_IsoMapMai",
-                #"Separator",
                 "Nurbs_DisplayKontsandPolseForCurv",
-                #"Separator",
                 "Nurbs_LoftSelectionEdge"
                 )
 
@@ -354,21 +344,18 @@ class Design456_Nurbs_List8Group:
         """Nurbs commands."""
         import nurbs
         return (
-                "Nurb_LoftSelectio",
-                #"Separator",
+                "Nurb_LoftSelection",
                 "Nurbs_MeshGenModTest",
-                "Nurbs_MeshGenTes",
-                #"Separator",
+                "Nurbs_MeshGenTest",
                 "Nurbs_MikiTestMe",
                 "Nurbs_miki_gTestDialog",
                 "Nurbs_miki_gTestDialog_1",
                 "Nurbs_miki_gTestDialog_2",
                 "Nurbs_miki_gTestDialog_3",
                 "Nurbs_miki_gTestDialog_4",
-                #"Separator",
                 "Nurbs_MonitorMain",
                 "Nurbs_MoinitorForce",
-                "Nurbs_Monitor_Mymonito",
+                "Nurbs_Monitor_Mymonito"
                 )
 
     def GetResources(self):
@@ -393,19 +380,15 @@ class Design456_Nurbs_List9Group:
         import nurbs
         return (
                 "Nurbs_createMorpher",
-                #"Separator",
                 "Nurbs_MoveAlongCurv",
-                #"Separator",
                 "Nurbs_MultiEditAA",
                 "Nurbs_MultiEdi",
-                #"Separator",
                 "Nurbs_NeedleMain",
                 "Nurbs_NeedleChangeModel",
                 "Nurbs_NeedlecmdAdd",
                 "Nurbs_NeedlecmdDel",
                 "Nurbs_Needle_ListModels",
                 "newTestNeedleFunctionWasMain",
-                #"Separator",
                 "Nurbs_CreateWSLink",
                 "Nurbs_CreateWorkspace"
                 )
@@ -436,18 +419,14 @@ class Design456_Nurbs_List10Group:
                 "Nurbs_NurbsTest2",
                 "Nurbs_NurbsTest",
                 "Nurbs_NurbsRandomTours",
-                #"Separator",
                 "Nurbs_PointsRUNA",
                 "Nurbs_PointsRUNC",
                 "Nurbs_PointsRUND",
                 "Nurbs_PointsRUNE",
                 #TODO:THEREAREMORECOMMAND
-                #"Separator",
                 "Nurbs_PointsRUNE",
                 "Nurbs_PointsRUND",
                 "Nurbs_PointsRUNC",
-                "Nurbs_PointsRUN",
-
                 )
 
     def GetResources(self):
@@ -472,22 +451,16 @@ class Design456_Nurbs_List11Group:
         import nurbs
         return (
                 "Nurbs_RemoveKnots",
-                #"Separator",
                 "Nurbs_MainScanCut",
-                #"Separator",
                 "Nurbs_CulpterEventStarter",
-                #"Separator",
                 "Nurbs_CreateShoeRib",
                 "Nurbs_CreateShoeribTest",
                 "Nurbs_CreateLinkToSvg",
-                #"Separator",
                 "Nurbs_FeedBackSketchTestB",
                 "Nurbs_FeedBAckSketch_RevConstrain",
                 "FeedBackSketchTest2Clients",
-                #"Separator",
                 "Nurbs_LoadHeightProfileFromFile",
                 "Nurbs_LoadSoleProfile"
-
                 )
 
     def GetResources(self):
@@ -515,7 +488,6 @@ class Design456_Nurbs_List12Group:
         return (
                 "Nurbs_CreateOrUpdateSoleEnvironmentSheet",
                 "Nurbs_PrototypeCreateHELL",
-                "Design456_Nurbs_Soel",
                 #"Separator",
                 "Nurbs_CreateTripod",
                 "Nurbs_CreateTripodSketch",
