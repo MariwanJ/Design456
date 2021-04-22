@@ -46,7 +46,7 @@ class Design456_Nurbs_List0Group:
                 "Nurbs_AnalyseTest4,",
                 "Nurbs_AnalyseLoadTest1,",
                 "Nurbs_AnalyseLoadTest2",
-                "Separator",
+                #"Separator",
                 "Nurbs_smoothPointcloudGUI,",
                 "Nurbs_loadPointcloudfromImageGUI,",
                 "Nurbs_LoadCylinderfacefromImageGUI,",
@@ -172,7 +172,7 @@ class Design456_Nurbs_List3Group:
                 "Nurbs_ControlPanelCreateFunction",
                 "Nurbs_ControlPanelHU",
                 "Nurbs_ControlPanelAdd",
-                "Separator",
+                #"Separator",
                 "Nurbs_CreateBtimap",
                 "Nurbs_CreateCloverLeaf",
                 "Nurbs_CurveDistance",
@@ -207,12 +207,12 @@ class Design456_Nurbs_List4Group:
                 "Nurbs_DraftBSplineEditorR1",
                 "Nurbs_DraftBSplineEditorR2",
                 "Nurbs_createSketchSpline",
-                "Separator",
+                #"Separator",
                 "Nurbs_DynamicOffsetMain",
                 "Nurbs_DynamicOffsetRu",
-                "Separator",
+                #"Separator",
                 "Nurbs_FeedBackSketch",
-                "Separator",
+                #"Separator",
                 "Nurbs_FaceDrawSegments",
                 "Nurbs_Drawoversegments"
                 )
@@ -244,7 +244,7 @@ class Design456_Nurbs_List5Group:
                 "Nurbs_EventFilter",
                 "Nurbs_DrawIsoFace",
                 "Nurbs_FaceDraw",
-                "Separator",
+                #"Separator",
                 "Nurbs_FemEdgeLengthMesh",
                 "Nurbs_FEM_EdgeLengthMeshExampl",
                 "Nurbs_CreateFiledFace",
@@ -284,10 +284,10 @@ class Design456_Nurbs_List6Group:
                 "Nurbs_FindGeodesicToTarget",
                 "Nurbs_CreateShoeMarkers",
                 "Nurbs_CreateShoeMarkers",
-                "Separator",
+                #"Separator",
                 "Nurbs_commandCreateHelmet",
                 "Nurbs_HelmetCreateTriange",
-                "Separator",
+                #"Separator",
                 "Nurbs_MakeHelperSel",
                 "Nurbs_HelperTes",
                 )
@@ -315,7 +315,7 @@ class Design456_Nurbs_List7Group:
         return (
                 "Nurbs_extractWires",
                 "Nurbs_Hole",
-                "Separator",
+                #"Separator",
                 "Nurbs_IsoDrawtestE",
                 "Nurbs_IsoDrawtestD",
                 "Nurbs_IsoDrawtestC",
@@ -325,9 +325,9 @@ class Design456_Nurbs_List7Group:
                 "Nurbs_ISOdrawTestA",
                 "Nurbs_IsodrawTestF",
                 "Nurbs_IsoMapMai",
-                "Separator",
+                #"Separator",
                 "Nurbs_DisplayKontsandPolseForCurv",
-                "Separator",
+                #"Separator",
                 "Nurbs_LoftSelectionEdge"
                 )
 
@@ -355,17 +355,17 @@ class Design456_Nurbs_List8Group:
         import nurbs
         return (
                 "Nurb_LoftSelectio",
-                "Separator",
+                #"Separator",
                 "Nurbs_MeshGenModTest",
                 "Nurbs_MeshGenTes",
-                "Separator",
+                #"Separator",
                 "Nurbs_MikiTestMe",
                 "Nurbs_miki_gTestDialog",
                 "Nurbs_miki_gTestDialog_1",
                 "Nurbs_miki_gTestDialog_2",
                 "Nurbs_miki_gTestDialog_3",
                 "Nurbs_miki_gTestDialog_4",
-                "Separator",
+                #"Separator",
                 "Nurbs_MonitorMain",
                 "Nurbs_MoinitorForce",
                 "Nurbs_Monitor_Mymonito",
@@ -393,19 +393,19 @@ class Design456_Nurbs_List9Group:
         import nurbs
         return (
                 "Nurbs_createMorpher",
-                "Separator",
+                #"Separator",
                 "Nurbs_MoveAlongCurv",
-                "Separator",
+                #"Separator",
                 "Nurbs_MultiEditAA",
                 "Nurbs_MultiEdi",
-                "Separator",
+                #"Separator",
                 "Nurbs_NeedleMain",
                 "Nurbs_NeedleChangeModel",
                 "Nurbs_NeedlecmdAdd",
                 "Nurbs_NeedlecmdDel",
                 "Nurbs_Needle_ListModels",
                 "newTestNeedleFunctionWasMain",
-                "Separator",
+                #"Separator",
                 "Nurbs_CreateWSLink",
                 "Nurbs_CreateWorkspace"
                 )
@@ -436,13 +436,13 @@ class Design456_Nurbs_List10Group:
                 "Nurbs_NurbsTest2",
                 "Nurbs_NurbsTest",
                 "Nurbs_NurbsRandomTours",
-                "Separator",
+                #"Separator",
                 "Nurbs_PointsRUNA",
                 "Nurbs_PointsRUNC",
                 "Nurbs_PointsRUND",
                 "Nurbs_PointsRUNE",
                 #TODO:THEREAREMORECOMMAND
-                "Separator",
+                #"Separator",
                 "Nurbs_PointsRUNE",
                 "Nurbs_PointsRUND",
                 "Nurbs_PointsRUNC",
@@ -472,19 +472,19 @@ class Design456_Nurbs_List11Group:
         import nurbs
         return (
                 "Nurbs_RemoveKnots",
-                "Separator",
+                #"Separator",
                 "Nurbs_MainScanCut",
-                "Separator",
+                #"Separator",
                 "Nurbs_CulpterEventStarter",
-                "Separator",
+                #"Separator",
                 "Nurbs_CreateShoeRib",
                 "Nurbs_CreateShoeribTest",
                 "Nurbs_CreateLinkToSvg",
-                "Separator",
+                #"Separator",
                 "Nurbs_FeedBackSketchTestB",
                 "Nurbs_FeedBAckSketch_RevConstrain",
                 "FeedBackSketchTest2Clients",
-                "Separator",
+                #"Separator",
                 "Nurbs_LoadHeightProfileFromFile",
                 "Nurbs_LoadSoleProfile"
 
@@ -516,19 +516,18 @@ class Design456_Nurbs_List12Group:
                 "Nurbs_CreateOrUpdateSoleEnvironmentSheet",
                 "Nurbs_PrototypeCreateHELL",
                 "Design456_Nurbs_Soel",
-                "Separator",
+                #"Separator",
                 "Nurbs_CreateTripod",
                 "Nurbs_CreateTripodSketch",
                 "Nurbs_CreateSweep",
                 "Nurbs_CreateLoft",
                 "Nurbs_CreateCompound",
-                "Separator",
+                #"Separator",
                 "Nurbs_CreatePatternV2",
                 "Nurbs_CreateSinglePattern",
                 "Nurbs_runPatternV3",
-                "Separator",
-                "Nurbs_WeightEditor",
-                "Separator"
+                #"Separator",
+                "Nurbs_WeightEditor"
                 )
 
     def GetResources(self):
@@ -558,7 +557,7 @@ class Design456_Nurbs_List13Group:
                 'Nurbs_CreateDarkRoom',
                 'Nurbs_LightON',
                 'Nurbs_LightOFF',
-                "Separator",                
+                ##"Separator",                
                 "Nurbs_UVGRIDgenRunSel",
                 "Nurbs_unrollCurveMain",
                 "Nurbs_UnrollCurve"
@@ -595,10 +594,8 @@ class Design456_Nurbs_List14Group:
                 "Nurbs_UnrollCurve",
                 "Nurbs_UnrollCurve_yaw",
                 "Nurbs_UnrollCurve_pitch",
-                "Nurbs_TransformSplinRun",
-                "",
-                
-                
+                "Nurbs_TransformSplinRun"
+
                 )
 
     def GetResources(self):
