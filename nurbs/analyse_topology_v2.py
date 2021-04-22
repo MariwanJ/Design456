@@ -1031,9 +1031,9 @@ class Nurbs_AnalyseTest4:
         
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("")
+        _tooltip = ("Nurbs_AnalyseTest4")
         return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_AnalyseTest4"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_AnalyseTest4", Nurbs_AnalyseTest4())

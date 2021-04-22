@@ -748,7 +748,7 @@ class Design456_Nurbs_Sole:
             "Nurbs_LoadSoleProfile",
             "Nurbs_CreateOrUpdateSoleEnvironmentSheet",
             "Nurbs_PrototypeCreateHELL",
-            "Design456_Nurbs_Soel",
+            "Nurbs_Soel",
 
 
 

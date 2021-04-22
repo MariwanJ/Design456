@@ -1312,9 +1312,9 @@ class Nurbs_creategeodesicbunch:
         
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Nurbs_createGeodesic")
+        _tooltip = ("Nurbs_creategeodesicbunch")
         return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_creategeodesicbunch"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_creategeodesicbunch", Nurbs_creategeodesicbunch())
