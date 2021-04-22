@@ -1339,18 +1339,16 @@ class Nurbs_miki_gTestDialog:
         rc = testme()
         print (rc)
         return rc
-    def testDialogMainWindow():
+    def testDialogMainWindow(self):
         return testme("MainWindow")
 
-    def testDialogTab():
+    def testDialogTab(self):
         return testme('VerticalLayoutTab')
 
     def testDialogDockWidget():
         return testme("DockWidget")
 
     def GetResources(self):
-        
-        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_miki_gTestDialog")
@@ -1358,7 +1356,8 @@ class Nurbs_miki_gTestDialog:
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_miki_gTestDialog"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
+# All these commands cuases error in the Design456WB
 #Gui.addCommand("Nurbs_miki_gTestDialog_1", Nurbs_miki_gTestDialog().testDialog())
 #Gui.addCommand("Nurbs_miki_gTestDialog_2", Nurbs_miki_gTestDialog().testDialogMainWindow())
 #Gui.addCommand("Nurbs_miki_gTestDialog_3", Nurbs_miki_gTestDialog().testDialogTab())
-#Gui.addCommand("Nurbs_miki_gTestDialog_4", Nurbs_miki_gTestDialog().testDialogDockWidget())
+##Gui.addCommand("Nurbs_miki_gTestDialog_4", Nurbs_miki_gTestDialog().testDialogDockWidget())
