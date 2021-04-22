@@ -48,10 +48,10 @@ class Design456_Extrude:
                 faced.getInfo(selection).errorDialog(errMessage)
                 return
             m = selection[0].Object
-            f = App.activeDocument().addObject('Part::Extrusion', 'ExtrudeOriginal')
+            f = App.ActiveDocument.addObject('Part::Extrusion', 'ExtrudeOriginal')
             faceSelected = faced.getInfo(selection[0]).getFaceName()
             f.Base = m
-            #f.Base = App.activeDocument().getObject(m.Name)
+            #f.Base = App.ActiveDocument.getObject(m.Name)
             # F.DirMode causes too many failure. Some faces needs custom, other needs Normal. 
             #Difficult to know when you use each of them.
             f.DirMode = "Normal"            #Don't use Custom as it leads to PROBLEM!
@@ -120,7 +120,7 @@ class Design456_Extrude:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Extrude.svg',
+            'Pixmap': Design456Init.ICON_PATH +'Extrude.svg',
             'MenuText': 'Extrude',
                         'ToolTip':  'Extrude'
         }

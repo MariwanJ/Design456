@@ -69,7 +69,7 @@ class Design456_Magnet:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Magnet.svg',
+            'Pixmap': Design456Init.ICON_PATH +'Part_Magnet.svg',
             'MenuText': 'Part_Magnet',
                         'ToolTip':  'Part Magnet'
         }

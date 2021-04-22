@@ -31,22 +31,58 @@ import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 
+from constant import FR_ALIGN
 
-def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14, trans=(0, 0, 0), text=''):
+#todo continue fixing this code 2021-04-22 Mariwan
+def calculateAlignment(vectors,align):
+    if len(vectors)==2:
+        return (0,0,0)  #We don't have any vectors, return zero 
+    p1=vectors[0]
+    p2=vectors[1]
+    if align==FR_ALIGN_LEFT or align==FR_ALIGN_LEFT_BOTTOM:
+        #WE HAVE LEFT ALIGNMENT
+        pass
+        
+    elif align==FR_ALIGN_RIGHT or align==FR_ALIGN_RIGHT_BOTTOM:
+        #WE HAVE RIGHT ALIGNMENT
+        pass
+    elif align==FR_ALIGN_CENTER or align==FR_ALIGN_CENTER_BOTTOM:
+        #WE HAVE CENTER-BOTTOM ALIGNMENT
+        pass
+    elif align==FR_ALIGN_LEFT_TOP:
+        #Align LEFT-TOP
+        pass
+    elif align==FR_ALIGN_RIGHT_TOP:
+        #Align RIGHT-TOP
+        pass
+    elif align==FR_ALIGN_CENTER_TOP:
+        #Align CENTER-TOP
+        pass
+    elif align==FR_ALIGN_CENTER_CENTER:
+        #Align LEFT-TOP
+        pass
+        
+def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=FR_NO_ALIGN, trans=(0, 0, 0), text=''):
     global textNode
+
     _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
     font = coin.SoFont()
     _transform=coin.SoTransform()    #determine location
-    _text = coin.SoText2()
-    _text.string.setValue(text)
+    _text = coin.SoText2()              #Draw text in the 2D world #TODO: Should be 3D world?
+    _text.string.setValue(text)         #Actual text
     _text.justification = coin.SoText2.LEFT  #This must be as value not fixed #TODO FIXME
-    font.Name=labelfont
-    font.size=size
-    coinColor = coin.SoMaterial()
+    font.Name=labelfont                 #Font used
+    font.size=size                      #Font size
+    coinColor = coin.SoMaterial()       #Font color
     binding = coin.SoMaterialBinding()
     binding.value = coin.SoMaterialBinding.PER_PART 
     coinColor.rgb = labelcolor
     transNode = coin.SoTransform()
+    if align= FR_NO_ALIGN:    #If there is no alignment, 
+                                     #we use the transNode. trans will not have effect if there is an alignment
+        transNode.trans.translation.setValue(trans)
+    else:
+        
     _textNode.addChild(font)
     _textNode.addChild(_transform)
     _textNode.addChild(transNode)

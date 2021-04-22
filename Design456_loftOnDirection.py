@@ -185,7 +185,7 @@ class Design456_loftOnDirection_ui(object):
 
     def runClass(self):
         try:
-            sel = Gui.Selection.getSelection()
+            sel = Gui.Selection.getSelectionEx()
             if(len(sel) <1 or len(sel)>1 or 
                len(Gui.Selection.getSelectionEx()[0].SubElementNames)==0):
                 # Two object must be selected
@@ -270,9 +270,9 @@ class Design456_loftOnDirection_ui(object):
                     
                     
                     # section loft
-                    newObj = App.activeDocument().addObject('Part::Loft', 'Loft')
-                    App.ActiveDocument.ActiveObject.Sections = [App.activeDocument().getObject(
-                        firstFace.Name), App.activeDocument().getObject(objClone.Name), ]
+                    newObj = App.ActiveDocument.addObject('Part::Loft', 'Loft')
+                    App.ActiveDocument.ActiveObject.Sections = [App.ActiveDocument.getObject(
+                        firstFace.Name), App.ActiveDocument.getObject(objClone.Name), ]
                     App.ActiveDocument.ActiveObject.Solid = True
                     newObj = App.ActiveDocument.ActiveObject
                     App.ActiveDocument.recompute()
@@ -313,7 +313,7 @@ class Design456_loftOnDirection():
 
     def GetResources(self):
         return{
-            'Pixmap':   Design456Init.ICON_PATH + '/loftOnDirection.svg',
+            'Pixmap':   Design456Init.ICON_PATH +'loftOnDirection.svg',
             'MenuText': 'loftOnDirection',
             'ToolTip':  'Loft On Direction'
         }

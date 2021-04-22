@@ -152,7 +152,7 @@ class Fr_Widget (object):
         else than the widget itself
         """
         raise NotImplementedError()
-    # Activate, deactivate, get status of widget
+    # Activated, deactivate, get status of widget
 
     def is_visible(self):
         """ 
@@ -227,7 +227,7 @@ class Fr_Widget (object):
     def handle(self, events):
         raise NotImplementedError()
         
-    def callack_labelChanged(self,data):
+    def callback_labelChanged(self,data):
         """ This callback will be used 
             to run code that will be 
             related to the label change.

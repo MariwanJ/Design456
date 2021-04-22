@@ -496,11 +496,11 @@ class ViewProviderBox:
 
 # ===========================================================================
 
-"""
-Create a 2D Star based on the Inner radius outer radius, corners and the angle.
-"""
+#Create 2D Star
 class Star:
-
+    """
+    Create a 2D Star based on the Inner radius outer radius, corners and the angle.
+    """
     def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=2*_math.pi, _Corners=40):
         _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
         obj.addProperty("App::PropertyAngle", "Angle",
@@ -578,7 +578,7 @@ class Design456_Star:
             return
             
     def GetResources(self):
-        return {'Pixmap': Design456Init.ICON_PATH+ '/Design456_Star.svg',
+        return {'Pixmap': Design456Init.ICON_PATH+ 'Design456_Star.svg',
                 'MenuText': "Star",
                 'ToolTip': "Draw a Star"}
 
@@ -663,7 +663,7 @@ class Design456_joinTwoLines:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Join two lines")
-        return {'Pixmap':  Design456Init.ICON_PATH +'/Design456_JoinLines.svg',
+        return {'Pixmap':  Design456Init.ICON_PATH+ 'Design456_JoinLines.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "joinTwoLines"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
