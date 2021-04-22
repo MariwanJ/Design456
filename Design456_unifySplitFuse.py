@@ -50,311 +50,87 @@ import math as _math
 class Design456_unifySplitFuse1:
     
     def Activated(self):
-         
- 
-        #### Config Begin ####
-        switchRemoveConstructionObject = switchRemoveConstructionObject = self.askQuestion()    # if 0= (NO) not removed creation objects 1= (YES) remove objects
-        switchFuseObjects              = 0    # if 0 not fuse
-        switchHideObjectsSelected      = 0    # if 0 not fuse
-        #### Config End ####
+        try: 
+            #### Config Begin ####
+            switchRemoveConstructionObject = self.askQuestion()    # if 0= (NO) not removed creation objects 1= (YES) remove objects
+            #### Config End ####
 
-        try:
-            selectedEdge     = FreeCADGui.Selection.getSelectionEx()
-            sel = selObjects = FreeCADGui.Selection.getSelection()
-            subElementName = FreeCADGui.Selection.getSelectionEx()[0].SubElementNames[0] # for color first face selected
-            
+            selectedEdge     = Gui.Selection.getSelectionEx()
+            sel = selObjects = Gui.Selection.getSelection()
+            try:
+                subElementName = Gui.Selection.getSelectionEx()[0].SubElementNames[0] # for color first face selected
+            except: 
+                subElementName = Gui.Selection.getSelectionEx()[0].SubObjects[0]
+                
+            if (len(sel) != 2):
+                # Two object must be selected
+                errMessage = "Select two objects to use the Tool"
+                faced.getInfo(sel).errorDialog(errMessage)
+                return
+
             try:
                 colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] # color face selected
                 ##App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] = colorFace# give color on face
             except Exception:
                 colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[0] # color face selected [0] 
 
-            if (str(sel[0].Shape.ShapeType) != "Face") and (str(sel[1].Shape.ShapeType) != "Face"):
-                print("1 ShapeFace ShapeFace")
-                sel00 = sel[0]
-                sel01 = sel[1]
-                ### Begin command Part_ElementCopy First selection
-                newFace1 = Part.getShape(App.ActiveDocument.getObject(sel00.Name),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
-                App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
-                shapeFace1 = App.ActiveDocument.ActiveObject
-                ####
-                ### Begin command Part_ElementCopy Second selection
-                newFace2 = Part.getShape(App.ActiveDocument.getObject(sel01.Name),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
-                App.ActiveDocument.recompute()
-                App.ActiveDocument.addObject('Part::Feature','Face2').Shape = newFace2
-                shapeFace2 = App.ActiveDocument.ActiveObject
-                App.ActiveDocument.recompute()
-                ### End command Part_ElementCopy
+            ### Begin command Part_ElementCopy First selection
+            newFace1 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
+            App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
+            shapeFace1 = App.ActiveDocument.ActiveObject
+            ####
 
-                ### Begin command Part_Loft
-                attached = App.ActiveDocument.addObject('Part::Loft','Attached')
-                attached.Sections = [App.ActiveDocument.getObject(shapeFace1.Name), App.ActiveDocument.getObject(shapeFace2.Name), ]
-                attached.Solid=True
-                attached.Ruled=False
-                attached.Closed=False
-                App.ActiveDocument.recompute()
-                ### End command Part_Loft
+            ### Begin command Part_ElementCopy Second selection
+            try:# independent object 
+                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[1].Name),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
+            except Exception:
+                # same object other face  TODO: This will fail if you have a sphere shape or a ball Mariwan 2021-03-18
+                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedEdge[0].SubElementNames[1],needSubElement=True,refine=False).copy()
 
-                ### Begin command Part_Fuse
-                if switchFuseObjects == 1:
-                    fusionEnsemble = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
-                    try:                # multiple objects
-                        App.ActiveDocument.getObject(fusionEnsemble.Name).Shapes = [App.ActiveDocument.getObject(sel00.Name),App.ActiveDocument.getObject(attached.Name),App.ActiveDocument.getObject(sel01.Name),]
-                        fusionShapes = App.ActiveDocument.ActiveObject
-                    except Exception:   # single object
-                        try:
-                            App.ActiveDocument.getObject(fusionEnsemble.Name).Shapes = [App.ActiveDocument.getObject(sel[0].Name),App.ActiveDocument.Attached,] #App.ActiveDocument.getObject(sel00.Name),]
-                            fusionShapes = App.ActiveDocument.ActiveObject
-                        except Exception:
-                            None
-                    App.ActiveDocument.recompute()
-                    ### End command Part_Fuse
-                    
-                    # create single object
-                    Part.show(fusionShapes.Shape.copy())
-                    App.ActiveDocument.recompute()
-            
-                # hidde construction faces
-                App.ActiveDocument.getObject(shapeFace1.Name).ViewObject.Visibility = False
-                App.ActiveDocument.getObject(shapeFace2.Name).ViewObject.Visibility = False
-                if switchHideObjectsSelected == 1:
-                    App.ActiveDocument.getObject(sel00.Name).ViewObject.Visibility = False
-                    App.ActiveDocument.getObject(sel01.Name).ViewObject.Visibility = False
+            App.ActiveDocument.addObject('Part::Feature','Face2').Shape = newFace2
+            shapeFace2 = App.ActiveDocument.ActiveObject
+            App.ActiveDocument.recompute()
+            ### End command Part_ElementCopy
 
-                if switchRemoveConstructionObject == 1:
-                    App.ActiveDocument.removeObject(attached.Name)
-                    try:
-                        App.ActiveDocument.removeObject(fusionShapes.Name)
-                    except Exception:
-                        None
-                    App.ActiveDocument.removeObject(shapeFace1.Name)
-                    App.ActiveDocument.removeObject(shapeFace2.Name)
+            ### Begin command Part_Loft
+            attached = App.ActiveDocument.addObject('Part::Loft','Attached')
+            attached.Sections = [App.ActiveDocument.Face1, App.ActiveDocument.Face2, ]
+            attached.Solid=True
+            attached.Ruled=False
+            attached.Closed=False
+            ### End command Part_Loft
 
-                App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-                App.ActiveDocument.ActiveObject.Label = sel[0].Label + "_" + subElementName
+            ### Begin command Part_Fuse
+            fusion = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
+            try:                # multiple objects
+                App.ActiveDocument.Fusion.Shapes = [App.ActiveDocument.getObject(selObjects[0].Name),App.ActiveDocument.Attached,App.ActiveDocument.getObject(selObjects[1].Name),]
+            except Exception:   # single object
+                App.ActiveDocument.Fusion.Shapes = [App.ActiveDocument.getObject(selObjects[0].Name),App.ActiveDocument.Attached,App.ActiveDocument.getObject(selObjects[0].Name),]
+            App.ActiveDocument.recompute()
+            ### End command Part_Fuse
 
-            elif (str(sel[0].Shape.ShapeType) != "Face") and (str(sel[1].Shape.ShapeType) == "Face"):
-                print("2 ShapeFace Face")
-                sel00 = sel[0]
-                sel01 = sel[1]
-                ### Begin command Part_ElementCopy First selection
-                newFace1 = Part.getShape(App.ActiveDocument.getObject(sel00.Name),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
-                App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
-                shapeFace1 = App.ActiveDocument.ActiveObject
-                ### End command Part_ElementCopy
+            # create single object
+            _part.show(fusion.Shape.copy())
+            App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
+            App.ActiveDocument.ActiveObject.Label = sel[0].Label + "_" + subElementName
 
-                ### Begin command Part_ElementCopy Second selection
-                newFace2 = Part.getShape(App.ActiveDocument.getObject(sel01.Name),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
-                App.ActiveDocument.addObject('Part::Feature','Face2').Shape = newFace2
-                shapeFace2 = App.ActiveDocument.ActiveObject
-                App.ActiveDocument.recompute()
-                ### End command Part_ElementCopy
-
-                ### Begin command Part_Loft
-                attached = App.ActiveDocument.addObject('Part::Loft','Attached')
-                attached.Sections = [App.ActiveDocument.getObject(shapeFace1.Name), App.ActiveDocument.getObject(shapeFace2.Name), ]
-                attached.Solid=True
-                attached.Ruled=False
-                attached.Closed=False
-                App.ActiveDocument.recompute()
-                ### End command Part_Loft
-
-                ### Begin command Part_Fuse
-                if switchFuseObjects == 1:
-                    fusionEnsemble = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
-                    App.ActiveDocument.getObject(fusionEnsemble.Name).Shapes = [App.ActiveDocument.getObject(sel00.Name),App.ActiveDocument.getObject(attached.Name),] #App.ActiveDocument.getObject(sel01.Name),]
-                    fusionShapes = App.ActiveDocument.ActiveObject
-                    App.ActiveDocument.recompute()
-                ### End command Part_Fuse
-                
-                ### create single object
-                    Part.show(fusionShapes.Shape.copy())
-                    App.ActiveDocument.recompute()
-
-                # hidde construction faces
-                App.ActiveDocument.getObject(shapeFace1.Name).ViewObject.Visibility = False
-                App.ActiveDocument.getObject(shapeFace2.Name).ViewObject.Visibility = False
-                if switchHideObjectsSelected == 1:
-                    App.ActiveDocument.getObject(sel00.Name).ViewObject.Visibility = False
-                    App.ActiveDocument.getObject(sel01.Name).ViewObject.Visibility = False
-
-                if switchRemoveConstructionObject == 1:
-                    App.ActiveDocument.removeObject(attached.Name)
-                    try:
-                        App.ActiveDocument.removeObject(fusionShapes.Name)
-                    except Exception:
-                        None
-                    App.ActiveDocument.removeObject(shapeFace1.Name)
-                    App.ActiveDocument.removeObject(shapeFace2.Name)
-
-                App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-                App.ActiveDocument.ActiveObject.Label = sel[0].Label + "_" + subElementName
-
-            elif (str(sel[0].Shape.ShapeType) == "Face") and (str(sel[1].Shape.ShapeType) != "Face"):
-                print("3 Face ShapeFace")
-                sel00 = sel[0]
-                sel01 = sel[1]
-                ### Begin command Part_ElementCopy First selection
-                newFace1 = Part.getShape(App.ActiveDocument.getObject(sel00.Name),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
-                App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
-                shapeFace1 = App.ActiveDocument.ActiveObject
-                ### End command Part_ElementCopy
-
-                ### Begin command Part_ElementCopy Second selection
-                newFace2 = Part.getShape(App.ActiveDocument.getObject(sel01.Name),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
-                App.ActiveDocument.addObject('Part::Feature','Face2').Shape = newFace2
-                shapeFace2 = App.ActiveDocument.ActiveObject
-                App.ActiveDocument.recompute()
-                ### End command Part_ElementCopy
-
-                ### Begin command Part_Loft
-                attached = App.ActiveDocument.addObject('Part::Loft','Attached')
-                attached.Sections = [App.ActiveDocument.getObject(shapeFace1.Name), App.ActiveDocument.getObject(shapeFace2.Name), ]
-                attached.Solid=True
-                attached.Ruled=False
-                attached.Closed=False
-                App.ActiveDocument.recompute()
-                ### End command Part_Loft
-
-                ### Begin command Part_Fuse
-                if switchFuseObjects == 1:
-                    fusionEnsemble = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
-                    App.ActiveDocument.getObject(fusionEnsemble.Name).Shapes = [App.ActiveDocument.getObject(sel01.Name),App.ActiveDocument.getObject(attached.Name),] #App.ActiveDocument.getObject(sel01.Name),]
-                    fusionShapes = App.ActiveDocument.ActiveObject
-                    App.ActiveDocument.recompute()
-                ### End command Part_Fuse
-                
-                ### create single object
-                    Part.show(fusionShapes.Shape.copy())
-                    App.ActiveDocument.recompute()
-
-                # hidde construction faces
-                App.ActiveDocument.getObject(shapeFace1.Name).ViewObject.Visibility = False
-                App.ActiveDocument.getObject(shapeFace2.Name).ViewObject.Visibility = False
-                if switchHideObjectsSelected == 1:
-                    App.ActiveDocument.getObject(sel00.Name).ViewObject.Visibility = False
-                    App.ActiveDocument.getObject(sel01.Name).ViewObject.Visibility = False
-
-                if switchRemoveConstructionObject == 1:
-                    App.ActiveDocument.removeObject(attached.Name)
-                    try:
-                        App.ActiveDocument.removeObject(fusionShapes.Name)
-                    except Exception:
-                        None
-                    App.ActiveDocument.removeObject(shapeFace1.Name)
-                    App.ActiveDocument.removeObject(shapeFace2.Name)
-
-                App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-                App.ActiveDocument.ActiveObject.Label = sel[0].Label + "_" + subElementName
-
-            elif (str(sel[0].Shape.ShapeType) == "Face") and (str(sel[1].Shape.ShapeType) == "Face"):
-                print("4 Face Face")
-                sel00 = sel[0]
-                sel01 = sel[1]
-                ### Begin command Part_ElementCopy First selection
-                newFace1 = Part.getShape(App.ActiveDocument.getObject(sel00.Name),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
-                App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
-                shapeFace1 = App.ActiveDocument.ActiveObject
-                ####
-                ### Begin command Part_ElementCopy Second selection
-                try:# independent object 
-                    newFace2 = Part.getShape(App.ActiveDocument.getObject(sel01.Name),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
-                except Exception:
-                    # same object other face
-                    newFace2 = Part.getShape(App.ActiveDocument.getObject(sel00.Name),selectedEdge[0].SubElementNames[1],needSubElement=True,refine=False).copy()
-                App.ActiveDocument.addObject('Part::Feature','Face2').Shape = newFace2
-                shapeFace2 = App.ActiveDocument.ActiveObject
-                App.ActiveDocument.recompute()
-                ### End command Part_ElementCopy
-
-                ### Begin command Part_Loft
-                attached = App.ActiveDocument.addObject('Part::Loft','Attached')
-                attached.Sections = [App.ActiveDocument.getObject(shapeFace1.Name), App.ActiveDocument.getObject(shapeFace2.Name), ]
-                attached.Solid=True
-                attached.Ruled=False
-                attached.Closed=False
-                App.ActiveDocument.recompute()
-                ### End command Part_Loft
-
-                # create single object
-                Part.show(attached.Shape.copy())
-                App.ActiveDocument.recompute()
-
-                # hidde construction faces
-                App.ActiveDocument.getObject(shapeFace1.Name).ViewObject.Visibility = False
-                App.ActiveDocument.getObject(shapeFace2.Name).ViewObject.Visibility = False
-                if switchHideObjectsSelected == 1:
-                    App.ActiveDocument.getObject(sel00.Name).ViewObject.Visibility = False
-                    App.ActiveDocument.getObject(sel01.Name).ViewObject.Visibility = False
-
-                if switchRemoveConstructionObject == 1:
-                    App.ActiveDocument.removeObject(attached.Name)
-                    App.ActiveDocument.removeObject(shapeFace1.Name)
-                    App.ActiveDocument.removeObject(shapeFace2.Name)
-
-                App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-                App.ActiveDocument.ActiveObject.Label = sel[0].Label + "_" + subElementName
-
-        except Exception:
-                try:
-                    sel00 = sel[0]
-                    print("5 ShapeFace ShapeFace same object")
-                    ### Begin command Part_ElementCopy First selection
-                    newFace1 = Part.getShape(App.ActiveDocument.getObject(sel00.Name),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
-                    App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
-                    shapeFace1 = App.ActiveDocument.ActiveObject
-                    ####
-            
-                    ### Begin command Part_ElementCopy Second selection
-                    newFace2 = Part.getShape(App.ActiveDocument.getObject(sel00.Name),selectedEdge[0].SubElementNames[1],needSubElement=True,refine=False).copy()
-                    App.ActiveDocument.recompute()
-                    App.ActiveDocument.addObject('Part::Feature','Face2').Shape = newFace2
-                    shapeFace2 = App.ActiveDocument.ActiveObject
-                    App.ActiveDocument.recompute()
-                    ### End command Part_ElementCopy
-            
-                    ### Begin command Part_Loft
-                    attached = App.ActiveDocument.addObject('Part::Loft','Attached')
-                    attached.Sections = [App.ActiveDocument.getObject(shapeFace1.Name), App.ActiveDocument.getObject(shapeFace2.Name), ]
-                    attached.Solid=True
-                    attached.Ruled=False
-                    attached.Closed=False
-                    App.ActiveDocument.recompute()
-                    ### End command Part_Loft
-            
-                    ### Begin command Part_Fuse
-                    if switchFuseObjects == 1:
-                        fusionEnsemble = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
-                        App.ActiveDocument.getObject(fusionEnsemble.Name).Shapes = [App.ActiveDocument.getObject(sel[0].Name),App.ActiveDocument.Attached,] #App.ActiveDocument.getObject(sel00.Name),]
-                        fusionShapes = App.ActiveDocument.ActiveObject
-                        App.ActiveDocument.recompute()
-                        ### End command Part_Fuse
-                        
-                        # create single object
-                        Part.show(fusionShapes.Shape.copy())
-                        App.ActiveDocument.recompute()
-                
-                    # hidde construction faces
-                    App.ActiveDocument.getObject(shapeFace1.Name).ViewObject.Visibility = False
-                    App.ActiveDocument.getObject(shapeFace2.Name).ViewObject.Visibility = False
-                    if switchHideObjectsSelected == 1:
-                        App.ActiveDocument.getObject(sel00.Name).ViewObject.Visibility = False
-            
-                    if switchRemoveConstructionObject == 1:
-                        App.ActiveDocument.removeObject(attached.Name)
-                        try: 
-                            App.ActiveDocument.removeObject(fusionShapes.Name)
-                        except Exceptions:
-                            None
-                        App.ActiveDocument.removeObject(shapeFace1.Name)
-                        App.ActiveDocument.removeObject(shapeFace2.Name)
-            
-                    App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-                    App.ActiveDocument.ActiveObject.Label = sel[0].Label + "_" + subElementName
-                except Exception:
-                    print("Oups")
+            ##### removeObject work
+            if switchRemoveConstructionObject == 1:
+                App.ActiveDocument.removeObject(selObjects[0].Name)
+                try:                # multiple objects
+                    App.ActiveDocument.removeObject(selObjects[1].Name)
+                except Exception:   # single object
                     None
-        #################################################################################################
+                App.ActiveDocument.removeObject(attached.Name)
+                App.ActiveDocument.removeObject(fusion.Name)
+                App.ActiveDocument.removeObject(shapeFace1.Name)
+                App.ActiveDocument.removeObject(shapeFace2.Name)
+        except Exception as err:
+            App.Console.PrintError("'UnifySplitFuse1' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
     def askQuestion(self):
         msgBox = QtGui.QMessageBox()
         msgBox.setStandardButtons(QtGui.QMessageBox.Yes |QtGui.QMessageBox.No)
@@ -364,9 +140,6 @@ class Design456_unifySplitFuse1:
             return 1
         else: 
             return 0
-
-        #################################################################################################
-
     def GetResources(self):
             return{
             'Pixmap':    Design456Init.ICON_PATH + '/unifySplitFuse1.svg',

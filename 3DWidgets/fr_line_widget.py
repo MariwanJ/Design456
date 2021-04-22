@@ -37,6 +37,8 @@ import constant
 import fr_coin3d
 from typing import List
 import fr_label_draw
+import from constant import FR_ALIGN
+
 """
 Example how to use this widget. 
 

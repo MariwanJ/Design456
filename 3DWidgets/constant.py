@@ -85,14 +85,14 @@ class FR_COLOR:
 class FR_BoxType: #There will not be any boundary box or bkg box
     FR_NoBox=                 0
     FR_FLAT_BOX=             10
-    FR_UP_BOX=               20
-    FR_DOWN_BOX=             30
+    FR_TOP_BOX=               20
+    FR_BOTTOM_BOX=             30
     FR_BORDER_FRAME=         40      
     FR_ROUNDED_BOX=          50
     FR_ROUNDED_FRAME=        60
     FR_ROUND_FLAT_BOX=       70
-    FR_ROUND_UP_BOX=         80
-    FR_ROUND_DOWN_BOX=       90
+    FR_ROUND_TOP_BOX=         80
+    FR_ROUND_BOTTOM_BOX=       90
     FR_OVAL_BOX=            100
     FR_OVAL_FRAME=          110
     FR_TRIANGLE_BOX=        120
@@ -120,6 +120,37 @@ class FR_WHEN:
     FR_WHEN_ENTER_KEY	       = 8    # Do the callback when the user presses the ENTER key and the value changes
     FR_WHEN_ENTER_KEY_ALWAYS   =10    # Do the callback when the user presses the ENTER key, even if the value doesn't change
 
+class FR_ALIGN:
+    '''
+    Alignment constants: 
+    If TOP/BOTTOM not specified, always default is BOTTOM
+    '''
+    FR_NO_ALIGN             = 0
+    FR_ALIGN_LEFT           =10
+    FR_ALIGN_RIGHT          =20
+    FR_ALIGN_TOP            =30
+    FR_ALIGN_BOTTOM         =40
+    FR_ALIGN_H_CENTER       =50
+    FR_ALIGN_V_CENTER       =60
+    FR_ALIGN_CENTER         =FR_ALIGN_H_CENTER
+        
+    FR_ALIGN_LEFT_BOTTOM    =FR_ALIGN_LEFT+FR_ALIGN_BOTTOM
+    FR_ALIGN_LEFT_TOP       =FR_ALIGN_LEFT+FR_ALIGN_TOP
+    
+    FR_ALIGN_RIGHT_TOP      =FR_ALIGN_RIGHT+FR_ALIGN_TOP
+    FR_ALIGN_RIGHT_BOTTOM   =FR_ALIGN_RIGHT+FR_ALIGN_BOTTOM
+
+    FR_ALIGN_CENTER_TOP     =FR_ALIGN_H_CENTER+FR_ALIGN_TOP
+    FR_ALIGN_CENTER_BOTTOM  =FR_ALIGN_H_CENTER+FR_ALIGN_BOTTOM
+
+    FR_ALIGN_CENTER_TOP     =FR_ALIGN_V_CENTER+FR_ALIGN_TOP
+    FR_ALIGN_CENTER_BOTTOM  =FR_ALIGN_V_CENTER+FR_ALIGN_BOTTOM
+
+    FR_ALIGN_CENTER_TOP     =FR_ALIGN_CENTER+FR_ALIGN_TOP
+    FR_ALIGN_CENTER_BOTTOM  =FR_ALIGN_CENTER+FR_ALIGN_BOTTOM
+
+    FR_ALIGN_CENTER_CENTER  =FR_ALIGN_CENTER+FR_ALIGN_TOP
+    
     #The enum key definition in COIN3D. We don't want to redefine them. 
     # to find them use coin.SoKeyboardEvent.(Key name here without brackets)
     '''
@@ -137,7 +168,7 @@ class FR_WHEN:
          U, V, W, X, Y, Z,
     
          HOME = 0xff50, LEFT_ARROW, UP_ARROW, RIGHT_ARROW, DOWN_ARROW,
-         PAGE_UP, PAGE_DOWN, END,
+         PAGE_TOP, PAGE_BOTTOM, END,
          PRIOR = 0xff55, NEXT,
     
          PAD_ENTER = 0xff8d,

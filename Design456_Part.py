@@ -344,7 +344,7 @@ class Design456_Part_Pyramid:
             Gui.Selection.clearSelection()
             Gui.Selection.addSelection(
                 App.ActiveDocument.Name, newObj.Name, 'Face1', 0, 0, 0)
-            selectedEdge = Gui.Selection.getSelectionEx(
+            selectedEdge = Gui.Selection.getSelection(
             )[0].SubObjects[0]    # select one element
 
             # loft
@@ -361,7 +361,7 @@ class Design456_Part_Pyramid:
             firstFace = newObj
             point = _draft.makePoint(0, 0.0, 10.0)
 
-            newObj1 = App.activeDocument().addObject('Part::Loft', 'tempPyramid')
+            newObj1 = App.ActiveDocument.addObject('Part::Loft', 'tempPyramid')
             App.ActiveDocument.ActiveObject.Sections = [firstFace, point, ]
             App.ActiveDocument.ActiveObject.Solid = True
             newObj1 = App.ActiveDocument.ActiveObject
