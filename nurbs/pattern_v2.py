@@ -588,28 +588,27 @@ class Pattern(FeaturePython):
                 all_faces=self.all_faces,
                 )
 
-class CreatePatternV3:
-    def __init__(self,obj=None,target=None,createPlanarPattern=False):
-        self.obj=obj
-        self.target=target
-        self.createPlanarPattern=createPlanarPattern
-        
-    def Activated(self):    
-        '''create a pattern object'''
-        a=App.ActiveDocument.addObject("Part::FeaturePython","Pattern")
-        Pattern(a)
-        ViewProvider(a.ViewObject)
-        a.createPlanarPattern=self.createPlanarPattern
+def CreatePatternV3(obj=None,target=None,createPlanarPattern=False):
+    self.obj=obj
+    self.target=target
+    self.createPlanarPattern=createPlanarPattern
+    
+    '''create a pattern object'''
+    a=App.ActiveDocument.addObject("Part::FeaturePython","Pattern")
+    Pattern(a)
+    ViewProvider(a.ViewObject)
+    a.createPlanarPattern=self.createPlanarPattern
+    
     #    a.modeY='mirror'
     #    a.modeX='rotate'
-        a.createPlanarPattern=True
-
-        a.repeatX=5
-        a.repeatY=5
-        a.obj=self.obj
-        a.target=self.target
-        a.Label="Pre Pattern for "+self.obj.Label
-        return a
+    
+    a.createPlanarPattern=True
+    a.repeatX=5
+    a.repeatY=5
+    a.obj=self.obj
+    a.target=self.target
+    a.Label="Pre Pattern for "+self.obj.Label
+    return a
 
 
 class Nurbs_runPatternV3:

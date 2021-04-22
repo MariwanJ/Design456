@@ -1493,6 +1493,7 @@ class SVGLink(PartFeature):
 
 
 class Nurbs_CreateLinkToSvg:
+        
     def Activated(self):
         """create_svglink():"""
         print ("erzeuge svg datei link")
@@ -1500,8 +1501,11 @@ class Nurbs_CreateLinkToSvg:
         SVGLink(b)
         b.prefix="A_"
         b.ignore=["MAP","circle"]
-        b.filename="/home/thomas/Schreibtisch/farbentest.svg"
-        b.filename="/home/thomas/Schreibtisch/aaa.svg"
+        try:
+                b.filename="/home/thomas/Schreibtisch/farbentest.svg"
+                b.filename="/home/thomas/Schreibtisch/aaa.svg"
+        except:
+                pass
         #b.Proxy.runTimer()
         return b
 

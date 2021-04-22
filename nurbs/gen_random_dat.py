@@ -105,9 +105,9 @@ class Nurbs_GenRandomDat:
         
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("")
+        _tooltip = ("Nurbs_GenRandomDat")
         return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", ""),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_GenRandomDat"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
 Gui.addCommand("Nurbs_GenRandomDat", Nurbs_GenRandomDat())
