@@ -69,13 +69,13 @@ class Design456_2Ddrawing:
         self.appendToolbar("Design456_2Ddrawing", self.list)
 
 # ***************************************************************************
-# * Author : __title__   = "Macro_Make_Arc_3_points"                       *
-# *__author__  = "Mario52"                                                 *
-# *__url__     = "http://www.freecadweb.org/index-fr.html"                 *
-# *__version__ = "00.01"                                                   *
-# *__date__    = "14/07/2016"                                              *
-#                                                                          *
-# * Modfied by: Mariwan Jalal    mariwan.jalal@gmail.com    04/03/2021     *
+# * Modified by: Mariwan Jalal    mariwan.jalal@gmail.com    04/03/2021     *
+#                                                                           *
+# *__title__   = "Macro_Make_Arc_3_points"                                  *
+# *__author__  = "Mario52"                                                  *
+# *__url__     = "https://www.freecadweb.org/index-fr.html"                  *
+# *__version__ = "00.01"                                                    *
+# *__date__    = "14/07/2016"                                               *
 # ***************************************************************************
 
 
@@ -225,8 +225,8 @@ Gui.addCommand('Design456_MultiPointsToWireClose',
                Design456_MultiPointsToWireClose())
 
 
-# Trim all selected lines, vertices and leave the object open
-# Warning: This command destroy the 2D shape and will loose the face.
+# Trim all selected lines/vertices, and leave the object open
+# Warning: This command destroys the 2D shape and will loose the face.
 
 class Design456_2DTrim:
     def Activated(self):
@@ -338,7 +338,7 @@ class Design456_2DTrim:
 
                     elif position1 == 0 and position2 != totalPoints-1:
                         # First Points, remove  'closed' and start = pos+1
-                        print("in the begining")
+                        print("in the beginning")
                         StartPoint = WireOrEdgeMadeOfPoints[position2]
                         WireOrEdgeMadeOfPoints.pop(position1)
                         EndPoint = WireOrEdgeMadeOfPoints[len(

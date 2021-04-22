@@ -62,7 +62,7 @@ class Design456_ExtrudeFace:
             fullname = objName+"_"+name  # Name of the face extracted
             newobj = s[0].Document.addObject("Part::Feature", fullname)
             newobj.Shape = sh.getElement(name)
-            selection = newobj  # The face extraced
+            selection = newobj  # The face extracted
             activeSel = Gui.Selection.getSelection(App.ActiveDocument.Name)
             Gui.Selection.removeSelection(activeSel[0])
             # Select the face extracted before
