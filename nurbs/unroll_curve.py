@@ -184,7 +184,7 @@ class Nurbs_UnrollCurve_yaw:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_UnrollCurve_yaw")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'YAW4.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_UnrollCurve_yaw"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 Gui.addCommand("Nurbs_UnrollCurve_yaw", Nurbs_UnrollCurve_yaw())
@@ -199,7 +199,7 @@ class Nurbs_UnrollCurve_pitch:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_UnrollCurve_pitch")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'YAW3.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_UnrollCurve_pitch"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 Gui.addCommand("Nurbs_UnrollCurve_pitch", Nurbs_UnrollCurve_pitch())
@@ -332,7 +332,7 @@ class Nurbs_UnrollCurve:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_UnrollCurve")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'YAW2.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_UnrollCurve"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 Gui.addCommand("Nurbs_UnrollCurve", Nurbs_UnrollCurve())
@@ -340,15 +340,21 @@ Gui.addCommand("Nurbs_UnrollCurve", Nurbs_UnrollCurve())
 
 
 class Nurbs_unrollCurveMain:
+    '''unroll curve Yaw from a face'''
     def Activated(self):
-        unroll_yaw()
-        unroll_pitch()
-        
+        self.unroll_yaw()
+        self.unroll_pitch()
+    
+    def unroll_pitch():
+        unroll(mode='pitch')
+    
+    def unroll_yaw(self):
+            unroll(mode='yaw')
     def GetResources(self):
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_unrollCurveMain")
-        return {'Pixmap':  NURBSinit.ICONS_PATH + 'draw.svg',
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'YAW1.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_unrollCurveMain"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 Gui.addCommand("Nurbs_unrollCurveMain", Nurbs_unrollCurveMain())

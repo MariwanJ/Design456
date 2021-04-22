@@ -30,7 +30,9 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import constant
+
+import from constant import FR_ALIGN
+
 #todo continue fixing this code 2021-04-22 Mariwan
 def calculateAlignment(vectors,align):
     if len(vectors)==2:
@@ -39,25 +41,28 @@ def calculateAlignment(vectors,align):
     p2=vectors[1]
     if align==FR_ALIGN_LEFT or align==FR_ALIGN_LEFT_BOTTOM:
         #WE HAVE LEFT ALIGNMENT
+        pass
         
-    elif  align==FR_ALIGN_RIGHT or align==FR_ALIGN_RIGHT_BOTTOM:
+    elif align==FR_ALIGN_RIGHT or align==FR_ALIGN_RIGHT_BOTTOM:
         #WE HAVE RIGHT ALIGNMENT
+        pass
     elif align==FR_ALIGN_CENTER or align==FR_ALIGN_CENTER_BOTTOM:
         #WE HAVE CENTER-BOTTOM ALIGNMENT
-
+        pass
     elif align==FR_ALIGN_LEFT_TOP:
         #Align LEFT-TOP
-        
+        pass
     elif align==FR_ALIGN_RIGHT_TOP:
         #Align RIGHT-TOP
-
+        pass
     elif align==FR_ALIGN_CENTER_TOP:
         #Align CENTER-TOP
+        pass
     elif align==FR_ALIGN_CENTER_CENTER:
         #Align LEFT-TOP
-
+        pass
         
-def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=constant.FR_NO_ALIGN, trans=(0, 0, 0), text=''):
+def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=FR_NO_ALIGN, trans=(0, 0, 0), text=''):
     global textNode
     _textNode =coin.SoSeparator()       # A Separator to separate the text from the drawing
     font = coin.SoFont()    
@@ -70,7 +75,7 @@ def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=const
     binding.value = coin.SoMaterialBinding.PER_PART 
     coinColor.rgb = labelcolor
     transNode = coin.SoTransform()
-    if align= const.FR_NO_ALIGN:    #If there is no alignment, 
+    if align= FR_NO_ALIGN:    #If there is no alignment, 
                                      #we use the transNode. trans will not have effect if there is an alignment
         transNode.trans.translation.setValue(trans)
     else:

@@ -125,7 +125,7 @@ class Nurbs_CreateOrUpdateSoleEnvironmentSheet:
 
         try:
             try:
-                [ss] = Gui.Selection.getSelectionEx()
+                [ss] = Gui.Selection.getSelection()
                 print("Selection", ss.Label)
                 if ss.__class__.__name__ != 'Sheet':
                     print("not a spreadsheet")

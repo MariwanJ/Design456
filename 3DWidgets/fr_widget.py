@@ -227,7 +227,7 @@ class Fr_Widget (object):
     def handle(self, events):
         raise NotImplementedError()
         
-    def callback_lableChanged(self,data):
+    def callback_labelChanged(self,data):
         """ This callback will be used 
             to run code that will be 
             related to the label change.

@@ -616,7 +616,7 @@ class Nurbs_runPatternV3:
     def Activated(self):
         self.patternV3()
 
-    def patternV3():
+    def patternV3(self):
         '''call from WB Gui'''
         s=Gui.Selection.getSelection()
         print( s)
