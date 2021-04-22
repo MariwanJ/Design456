@@ -48,7 +48,7 @@ import FreeCAD as App
 g=[]
 p1=(0,0,0)     # first point in the line and for the windows
 g=[]
-p2=(400,400,0) # width and hight of the window .. z is not a matter (generally this has no effect)
+p2=(400,400,0) # width and height of the window .. z is not a matter (generally this has no effect)
 p3=(20,20,0)   # Second point in the line 
 g.append(p1)
 g.append(p2)
@@ -238,7 +238,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def remove_focus(self):
         """
         Remove the focus from the widget. 
-        This happend by clicking anything 
+        This happens by clicking anything 
         else than the widget itself
         """
         if self._hasFocus == False:
