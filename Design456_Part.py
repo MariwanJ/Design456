@@ -179,7 +179,7 @@ class Design456_Part_Tube:
 Gui.addCommand('Design456_Part_Tube', Design456_Part_Tube())
 
 
-# Shpere
+# Sphere
 class Design456_Part_Sphere:
 
     def Activated(self):
@@ -493,7 +493,7 @@ class Design_ColorizeObject:
     def Activated(self): 
         import random
         try:
-            aa = Gui.Selection.getSelection()[0]  # selection objet
+            aa = Gui.Selection.getSelection()[0]  # selection object
             colors = []
             for ii in range(len(aa.Shape.Faces)):
                 colors.append((random.uniform(0.25, 1), random.uniform(0.25, 1), random.uniform(0.25, 1), 0.0)) #red, green, blue, transparence
