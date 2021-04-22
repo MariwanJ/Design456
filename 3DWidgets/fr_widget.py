@@ -76,7 +76,7 @@ class Fr_Widget (object):
 
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         """ 
-        Default values which is shared wit all objects.
+        Default values which is shared with all objects.
 
         """
         if args == None:
@@ -148,7 +148,7 @@ class Fr_Widget (object):
     def remove_focus(self):
         """
         Remove the focus from the widget. 
-        This happend by clicking anything 
+        This happens by clicking anything 
         else than the widget itself
         """
         raise NotImplementedError()

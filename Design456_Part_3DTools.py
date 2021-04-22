@@ -256,7 +256,7 @@ class Design456_Part_Group:
 Gui.addCommand('Design456_Part_Group', Design456_Part_Group())
 
 
-# Compund
+# Compound
 class Design456_Part_Compound:
     def Activated(self):
         try:

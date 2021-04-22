@@ -172,7 +172,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     def remove_focus(self):
         """
         Remove the focus from the widget. 
-        This happend by clicking anything 
+        This happens by clicking anything 
         else than the widget itself
         """
         if self._hasFocus == False:

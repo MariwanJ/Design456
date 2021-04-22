@@ -248,7 +248,7 @@ class root_handle():
             key = ""
             try:
                 key = self._get_event.getKey()
-                # Take care of CTRL,SHIFT,ALT Ony when it is down.
+                # Take care of CTRL,SHIFT,ALT Only when it is down.
                 # We don't send the shift key ..
                 test = (key == coin.SoKeyboardEvent.LEFT_CONTROL and self._get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
@@ -273,7 +273,7 @@ class root_handle():
                 # there is no character for this value
                 key = ""
 
-        # THE Bellow events will not be treated by our widget system, at least for now 2020-04-02 Mariwan
+        # THE Below events will not be treated by our widget system, at least for now 2020-04-02 Mariwan
         # elif(_typeofevent==coin.SoSpaceballButtonEvent)     :
         #
         # elif(_typeofevent==coin.SoHandleEventAction)        :

@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 import FACE_D as faced
 
 class Design456_SplitObject:
-    """Devide object in to two parts"""
+    """Divide object in to two parts"""
 
     def Activated(self):
         try:
