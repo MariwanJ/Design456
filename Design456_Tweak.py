@@ -23,7 +23,7 @@ from __future__ import unicode_literals
 # *  <http://www.gnu.org/licenses/>.                                        *
 # *                                                                         *
 # * Author :carlopav                                                        *
-# *This is pulled to the main github at the link bellow                     *
+# *This is pulled to the main github at the link below                      *
 # *github.com/MariwanJ/Design456/commits/5911dd3817aba28df6f5b215d39ef8851b974d5f
 # *  See the forum :                                                       *
 # *Modified by     Mariwan Jalal     mariwan.jalal@gmail.com               *
@@ -41,7 +41,7 @@ from draftutils.messages import _msg, _err
 from draftutils.translate import translate
 
 
-# This part is higly experimental and used for moveSubElements function
+# This part is highly experimental and used for moveSubElements function
 # it's and experiment by carlopav initially aimed at Draft WB, but not completed.
 # We need to make this work better, for specific usage. More works must be done-Mariwan
 
