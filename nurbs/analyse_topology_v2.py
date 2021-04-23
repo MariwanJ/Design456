@@ -41,11 +41,11 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import random
 import os, sys
-import NURBSinit
 import Part
 import Points
 import time
-
+import Design456Init
+import NURBSinit
 try:
     import networkx as nx
 except ImportError:
@@ -529,7 +529,7 @@ class MainAnalysisMethodRunAna:
 
         try:
             '''run analysis for one selected object'''
-            s = Gui.Selection.getSelectionEx()
+            s = Gui.Selection.getSelection()
             runAna(s[0])
 
         except Exception as err:
@@ -543,7 +543,7 @@ class MainAnalysisMethodRunAna:
     def runCompare(self):
         '''run analysis for more parts and display the results'''
         resetVertexStore()
-        s = Gui.Selection.getSelectionEx()
+        s = Gui.Selection.getSelection()
         for model in s:
             #        g=nx.Graph()
             #        App.g=g
@@ -884,7 +884,6 @@ class Nurbs_AnalyseTest4:
         
     def Test4(self):
         import networkx as nx
-        g = App.g
         print("Test 4")
     #    print g.nodes()
 

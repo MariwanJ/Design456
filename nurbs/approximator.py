@@ -52,6 +52,8 @@ from  scipy import misc
 from  scipy import signal
 from  scipy.optimize import minimize
 from  miki_g import createMikiGui2, MikiApp
+import Design456Init
+
 try:
     import numpy as np 
 except ImportError:
@@ -785,7 +787,7 @@ class Nurbs_BumpFacefromImageGUI:
     def Activated(self):
         self._BumpFacefromImageGUI()
         
-    def _BumpFacefromImageGUI():
+    def _BumpFacefromImageGUI(self):
 
         fn = Design456Init.NURBS_IMAGES_PATH+"profil_for_bump.png"
 
@@ -2397,7 +2399,7 @@ man auf eine Freiformfläche aufkleben ann.
     print("finished")
 
 
-def AA():
+def AAA():
     '''find cones by points '''
 
     pts = [v.Point for v in App.ActiveDocument.Wedge001.Shape.Vertexes]
