@@ -292,11 +292,11 @@ class root_handle():
         '''
         Remove all callbacks registered for Fr_Window widget
         '''
-        self.view.removeEventCallbackPivy(
+        self._view.removeEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-        self.view.removeEventCallbackPivy(
+        self._view.removeEventCallbackPivy(
             coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
-        self.view.removeEventCallbackPivy(
+        self._view.removeEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
 
     def addCallbacks(self):
