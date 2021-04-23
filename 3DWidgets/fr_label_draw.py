@@ -78,6 +78,7 @@ def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=FR_AL
     binding = coin.SoMaterialBinding()
     binding.value = coin.SoMaterialBinding.PER_PART 
     coinColor.rgb = labelcolor
+    ''' TODO :FIXME
     if align== FR_ALIGN.FR_NO_ALIGN:    #If there is no alignment, 
                                #we use the transNode. trans will not have effect if there is an alignment
         #TODO: Don't know how to do this. Must read, and experiment with this.
@@ -85,7 +86,7 @@ def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=FR_AL
         _text.justification = coin.SoText2.LEFT  #This must be as value not fixed #TODO FIXME
     else:
         _transNode.translation.setValue(calculateAlignment)
-        
+        '''
     _textNode.addChild(font)
     _textNode.addChild(_transform)
     _textNode.addChild(_transNode)
