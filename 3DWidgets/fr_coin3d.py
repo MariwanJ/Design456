@@ -225,8 +225,8 @@ class root_handle():
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
-            if eventState== coin.isButtonDoubleClickEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self._lastEvent= constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
+           # if eventState== coin.isButtonDoubleClickEvent and getButton == coin.SoMouseButtonEvent.BUTTON1:        #todo this is wrong!
+           #     self._lastEvent= constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
             self._wind.handle(self._lastEvent)
 
         # Take care of Keyboard events
@@ -292,11 +292,11 @@ class root_handle():
         '''
         Remove all callbacks registered for Fr_Window widget
         '''
-        self.view.removeEventCallbackPivy(
+        self._view.removeEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-        self.view.removeEventCallbackPivy(
+        self._view.removeEventCallbackPivy(
             coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
-        self.view.removeEventCallbackPivy(
+        self._view.removeEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
 
     def addCallbacks(self):

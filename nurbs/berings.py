@@ -3589,7 +3589,7 @@ class HelmetTubeConnector(FeaturePython):
 
 
 class Nurbs_createHelmetTubeConnector:
-    def Activate(self):
+    def Activated(self):
         self.createHelmetTubeConnector()
     def createHelmetTubeConnector():
         sf=App.ActiveDocument.addObject('Part::FeaturePython','BeConnector')
