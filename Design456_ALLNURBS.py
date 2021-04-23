@@ -42,9 +42,10 @@ class Design456_Nurbs_List0Group:
         """Nurbs commands."""
         import nurbs
         return (
-                "Nurbs_AnalyseTest3",
-                "Nurbs_AnalyseTest4",
                 "Nurbs_AnalyseLoadTest1",
+                "Nurbs_AnalyseLoadTest2",
+                "Nurbs_AnalyseTest3"    ,
+                "Nurbs_AnalyseTest4"    ,
                 "Nurbs_smoothPointcloudGUI",
                 "Nurbs_loadPointcloudfromImageGUI",
                 "Nurbs_LoadCylinderfacefromImageGUI",
