@@ -225,8 +225,8 @@ class root_handle():
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
-            if eventState== coin.isButtonDoubleClickEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self._lastEvent= constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
+           # if eventState== coin.isButtonDoubleClickEvent and getButton == coin.SoMouseButtonEvent.BUTTON1:        #todo this is wrong!
+           #     self._lastEvent= constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
             self._wind.handle(self._lastEvent)
 
         # Take care of Keyboard events
