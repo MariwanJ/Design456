@@ -7,12 +7,48 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64px"
    height="64px"
    id="svg3074"
-   version="1.1">
+   version="1.1"
+   sodipodi:docname="linktosvg.svg"
+   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     id="namedview1060"
+     showgrid="false"
+     inkscape:zoom="12.96875"
+     inkscape:cx="32"
+     inkscape:cy="32"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3074" />
   <defs
      id="defs3076">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1627">
+      <stop
+         style="stop-color:#00a100;stop-opacity:1;"
+         offset="0"
+         id="stop1623" />
+      <stop
+         style="stop-color:#00a100;stop-opacity:0;"
+         offset="1"
+         id="stop1625" />
+    </linearGradient>
     <linearGradient
        id="linearGradient887"
        osb:paint="solid">
@@ -140,6 +176,44 @@
        width="758.97266"
        height="290.50333"
        id="rect905" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1627"
+       id="linearGradient1629"
+       x1="-1585.5791"
+       y1="43.277744"
+       x2="-606.34936"
+       y2="43.277744"
+       gradientUnits="userSpaceOnUse" />
+    <meshgradient
+       inkscape:collect="always"
+       id="meshgradient2617"
+       gradientUnits="userSpaceOnUse"
+       x="-1290.5468"
+       y="13.642938">
+      <meshrow
+         id="meshrow2619">
+        <meshpatch
+           id="meshpatch2621">
+          <stop
+             path="c 298.559,0  597.119,0  895.678,0"
+             style="stop-color:#ffffff;stop-opacity:1"
+             id="stop2623" />
+          <stop
+             path="c 0,47.488  0,94.976  0,142.464"
+             style="stop-color:#800080;stop-opacity:1"
+             id="stop2625" />
+          <stop
+             path="c -298.559,0  -597.119,0  -895.678,0"
+             style="stop-color:#ffffff;stop-opacity:1"
+             id="stop2627" />
+          <stop
+             path="c 0,-47.488  0,-94.976  0,-142.464"
+             style="stop-color:#800080;stop-opacity:1"
+             id="stop2629" />
+        </meshpatch>
+      </meshrow>
+    </meshgradient>
   </defs>
   <metadata
      id="metadata5801">
@@ -192,19 +266,20 @@
      transform="matrix(1.3164659,0,0,1.3036145,1.2702253,0.22873158)" />
   <g
      id="g7177"
-     transform="matrix(0.06453068,0,0,0.06390568,102.83899,29.504186)">
+     transform="matrix(0.06453068,0,0,0.06390568,102.83899,29.504186)"
+     style="fill:url(#linearGradient1629);fill-opacity:1">
     <path
-       style="fill:url(#meshgradient7179);fill-opacity:1"
+       style="fill:#00a100;fill-opacity:1"
        d="m -1366.0939,532.59582 c -1.925,-0.22773 -7.775,-0.88046 -13,-1.4505 -38.454,-4.19528 -78.3833,-20.23675 -111.2423,-44.69122 -12.2364,-9.10659 -34.3633,-30.51825 -44.3179,-42.88523 -26.176,-32.51948 -42.5251,-70.26963 -49.1061,-113.38596 -2.429,-15.91348 -2.4248,-49.13431 0.01,-65 6.1857,-40.33855 20.8947,-75.39051 45.5134,-108.46013 5.6128,-7.53949 27.0388,-29.65214 86.0329,-88.789871 43.2072,-43.3125 78.9081,-78.75 79.3352,-78.75 0.4272,0 0.7766,5.5773202 0.7766,12.3940502 0,30.6625098 7.1457,69.8354098 18.352,100.6059508 l 4.5524,12.5 -50.3319,50.5 c -31.0019,31.10548 -52.5969,53.58641 -56.2296,58.53649 -10.4902,14.29414 -17.9898,31.19163 -21.9535,49.46351 -2.5577,11.79016 -2.5877,37.11881 -0.058,49 5.7653,27.07923 15.9769,45.52522 36.5714,66.06185 25.6245,25.55247 51.2158,37.16528 85.1938,38.65925 27.1839,1.19523 53.8359,-6.40025 76.6462,-21.84316 5.9441,-4.02421 33.6645,-31.09505 118.5939,-115.81486 60.9601,-60.80969 113.6449,-114.16308 117.0772,-118.56308 18.2199,-23.35659 26.6829,-47.93738 26.6829,-77.500001 0,-26.21318 -6.753,-48.5885 -21.2773,-70.5 -6.7783,-10.22578 -26.08,-29.6496998 -35.9561,-36.18385 l -7.6367,-5.05249 38.1783,-38.16861 38.1782,-38.168596 9.45844,7.91475 c 10.98816,9.19484 27.04755,25.534146 35.25424,35.868726 26.93071,33.91347 44.33147,77.34663 48.77819,121.75278 1.60781,16.05594 0.67197,44.498441 -1.97539,60.037291 -6.73433,39.52766 -21.88764,73.95181 -46.88069,106.5 -7.70842,10.0386 -225.83339,229.04735 -240.21799,241.19123 -32.6556,27.56887 -74.0733,46.08015 -117.0636,52.32052 -10.2641,1.48992 -41.0813,2.71213 -47.9364,1.90116 z m 169.8182,-359.27823 c -18.2645,-15.41671 -34.9051,-34.03081 -47.1527,-52.74482 -25.0377,-38.256781 -37.6655,-80.965821 -37.6655,-127.3898608 0,-26.1318802 3.5284,-48.3682202 11.5635,-72.8738262 4.7339,-14.43782 14.9733,-36.615893 22.4646,-48.657353 14.0513,-22.5859 16.0845,-24.75471 133.8796,-142.80621 61.9258,-62.06056 116.86733,-116.44563 122.09233,-120.85571 32.52184,-27.44955 73.48516,-45.82036 117,-52.47095 15.80233,-2.41515 49.07478,-2.42587 65,-0.0209 40.68441,6.1439 75.67074,20.71179 108,44.9699 11.37917,8.5383 33.72612,30.10737 42.7015,41.21509 68.63607,84.94236 69.46263,204.97967 2.00381,290.999999 -6.22938,7.94341 -161.15556,164.5 -162.78687,164.5 -0.34294,0 -0.89043,-8.4375 -1.21664,-18.75 -1.04494,-33.03323 -8.39945,-69.9591098 -19.76458,-99.23492 l -2.90571,-7.48491 50.80819,-51.015086 c 27.9445,-28.058293 53.09475,-54.122913 55.88945,-57.921383 16.46383,-22.3771 25.01928,-50.43663 23.9635,-78.5937 -1.26419,-33.71532 -12.60373,-59.76003 -36.79959,-84.52147 -20.69029,-21.17393 -40.53032,-32.32149 -67.89306,-38.14724 -11.77818,-2.50766 -37.21796,-2.49898 -48.79607,0.0167 -17.06964,3.70882 -30.67433,9.46739 -45.6443,19.32025 -9.22076,6.06888 -19.45215,16.01114 -122.69356,119.2264 -80.9845,80.96397 -114.0976,114.712813 -117.8427,120.105363 -15.442,22.234656 -23.0234,46.272986 -23.0234,72.9999962 0,20.9589998 3.9256,37.8895798 13.1079,56.5332898 8.9773,18.22728 25.6379,37.23637 43.7747,49.9452 l 8.3078,5.821371 -37.8403,37.85007 c -20.8121,20.81754 -38.1492,37.85007 -38.5269,37.85007 -0.3777,0 -4.88,-3.53939 -10.005,-7.86532 z"
        id="path7136" />
     <text
        xml:space="preserve"
        id="text7168"
-       style="font-style:normal;font-weight:normal;font-size:53.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect7170);fill:#f73900;fill-opacity:1;stroke:none;"
+       style="font-style:normal;font-weight:normal;font-size:53.3333px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect7170);fill:url(#meshgradient2617);fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:9.2652749;stroke-miterlimit:4;stroke-dasharray:none;"
        transform="matrix(0.95455049,-0.91044277,0.90427332,0.96106293,-370.43051,-818.5086)"><tspan
          x="-1300.7227"
          y="148.81094"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:192px;font-family:STHupo;-inkscape-font-specification:STHupo;fill:#f73900;fill-opacity:1;stroke:#009e00;stroke-opacity:1">Link to SVG</tspan></tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:192px;font-family:STHupo;-inkscape-font-specification:STHupo;fill:url(#meshgradient2617);fill-opacity:1;stroke:#000000;stroke-width:9.26528;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">Link to SVG</tspan></tspan></text>
   </g>
   <script
      id="mesh_polyfill"
