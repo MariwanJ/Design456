@@ -37,7 +37,8 @@ import nurbs.NURBSinit
 import Design456_ALLNURBS
 
 class Design456_NurbsTools:
-    list = ["Design456_Nurbs_List1Group",
+    list = ["Design456_Nurbs_List0Group",
+            "Design456_Nurbs_List1Group",
             "Design456_Nurbs_List2Group",        
             "Design456_Nurbs_List3Group",
             "Design456_Nurbs_List4Group",
@@ -56,7 +57,7 @@ class Design456_NurbsTools:
     """Design456 Part Tools Toolbar"""
     def GetResources(self):
         return{
-            'Pixmap':    Design456Init.ICON_NURBS_PATH + 'NURBS.svg',
+            'Pixmap':    Design456Init.NURBS_ICON_PATH + 'NURBS.svg',
             'MenuText': 'Nurbs Tools',
             'ToolTip':  'Nurbs Tools'
         }
@@ -67,6 +68,3 @@ class Design456_NurbsTools:
             return True
         else:
             return False
-        
-    def Activated(self):
-        self.appendToolbar("Design456_NurbsTools", self.list)
