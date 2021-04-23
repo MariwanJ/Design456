@@ -51,7 +51,6 @@ try:
 except ImportError:
     print("Please install the required library networkx")
     
-
 try:
     import numpy as np
 except ImportError:
@@ -59,6 +58,8 @@ except ImportError:
     
 
 # modul variables
+g=nx.Graph()
+points={}
 
 
 def ptokey(v):
@@ -108,21 +109,20 @@ def createFaceMidPointmodel(a):
 #    #p-l-t.show()
 #    # p-l-t.savefig("/tmp/path.png")
 
+#TODO: This function is defined twice. Which one is correct. 
+# def getkey(n):
+#     import networkx as nx
+#     g = nx.Graph()
+#     l = g.node[n]['vs'].Length
+#     if l < 1:
+#         l = 100000
+
+#     return (g.node[n]['ec'], round(g.node[n]['sl']/l, 4), round(g.node[n]['vds']/l, 4))
+#     # return (g.node[n]['ec'],round(g.node[n]['sl']/l,16),round(g.node[n]['vds']/l,14))
+
 
 def getkey(n):
     import networkx as nx
-    g = nx.Graph()
-    l = g.node[n]['vs'].Length
-    if l < 1:
-        l = 100000
-
-    return (g.node[n]['ec'], round(g.node[n]['sl']/l, 4), round(g.node[n]['vds']/l, 4))
-    # return (g.node[n]['ec'],round(g.node[n]['sl']/l,16),round(g.node[n]['vds']/l,14))
-
-
-def getkey(n):
-    import networkx as nx
-    g = nx.Graph()
     v2es = App.Vector()
     for v in g.node[n]['edirs']:
         v2 = App.Vector(v).normalize()
@@ -197,7 +197,6 @@ def getkeyg(g, n):
 
 def createKeys():
     import networkx as nx
-    g = nx.Graph()
     kp = {}
 
     for n in g.nodes():
@@ -235,7 +234,6 @@ def setQuality(nodes, kp):
 
 def getNeighborEdges(n):
     import networkx as nx
-    g = nx.Graph()
     ''' freecad edges from a point n '''
     col = []
     nbs = g.neighbors(n)
@@ -364,7 +362,7 @@ class MainAnalysisMethodRunAna:
             App.PT
         except:
             App.PT = {}
-        g = nx.Graph()
+
         try:
             '''run analysis for one selected object'''
             s = Gui.Selection.getSelectionEx()
@@ -578,7 +576,8 @@ class MainAnalysisMethodRunAna:
         TopologicalCompare
         """
         import networkx as nx
-        g = nx.Graph()
+
+
 
         try:
             self.runCompare()
@@ -719,7 +718,6 @@ class MainAnalysisMethodRunAna:
         displayQualityPoints TOPO 8
         """
         import networkx as nx
-        g = nx.Graph()
 
         def Activated(self):
             try:
@@ -755,7 +753,6 @@ class MainAnalysisMethodRunAna:
         printGraphData
         """
         import networkx as nx
-        g = nx.Graph()
 
         def Activated(self):
             try:
@@ -938,7 +935,6 @@ class Nurbs_AnalyseTest4:
         
     def Test4(self):
         import networkx as nx
-        g = nx.Graph()
         g = App.g
         print("Test 4")
     #    print g.nodes()
