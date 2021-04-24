@@ -30,7 +30,8 @@ display knots and poles of a selected curve
 '''
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 

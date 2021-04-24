@@ -35,9 +35,10 @@ from __future__ import unicode_literals
 # -------------------------------------------------
 # bspline von poles erzeugen
 
-import FreeCAD as App
 import Part
-import FreeCADGui as Gui 
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 

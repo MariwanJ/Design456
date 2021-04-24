@@ -27,12 +27,11 @@ from __future__ import unicode_literals
 
 from PySide import QtGui, QtCore
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 
-
-import os
 
 try:
     import numpy as np 

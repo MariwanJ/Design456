@@ -34,11 +34,11 @@ from __future__ import unicode_literals
 ##\cond
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 import Points,Part,Draft
-import os
 
 try:
     import numpy as np 

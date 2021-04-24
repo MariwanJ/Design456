@@ -34,6 +34,9 @@ from __future__ import unicode_literals
 
 
 # \cond
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 from say import *
 import pyob

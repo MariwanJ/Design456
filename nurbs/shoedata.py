@@ -39,7 +39,10 @@ print ("shoedata version 0.92")
 #
 # Backbone, Twister und Scaler werden wie bei Needle verwendet.
 #
-  
+
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 class shoeAdam():

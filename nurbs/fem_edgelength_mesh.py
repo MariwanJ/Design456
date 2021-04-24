@@ -34,9 +34,9 @@ from __future__ import unicode_literals
 # -- GNU Lesser General Public License (LGPL)
 # -------------------------------------------------
 
-
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 

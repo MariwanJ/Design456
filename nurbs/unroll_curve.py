@@ -35,13 +35,14 @@ from __future__ import unicode_literals
 #-------------------------------------------------
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 
 from PySide import QtCore
 from pivy import coin
-import os
+
 
 
 try:

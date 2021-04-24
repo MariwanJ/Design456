@@ -28,6 +28,9 @@ from __future__ import unicode_literals
 '''make a perspective transformation of a bspline curve'''
 from say import *
 import pyob
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 

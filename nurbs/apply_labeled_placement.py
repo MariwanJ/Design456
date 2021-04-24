@@ -24,9 +24,9 @@ from __future__ import unicode_literals
 # * Modified and adapted to Desing456 by:                                  *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 

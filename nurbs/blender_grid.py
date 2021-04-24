@@ -28,7 +28,8 @@ from __future__ import unicode_literals
 # source https://forum.freecadweb.org/viewtopic.php?f=22&t=22296&start=30#p173766
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 import math

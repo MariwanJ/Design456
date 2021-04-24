@@ -29,7 +29,9 @@ from __future__ import unicode_literals
 for nurbs surfaces
 modes are ["poleGrid","isoGrid","Surface"]
 '''
-
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 from say import *
 import pyob

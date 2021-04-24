@@ -9,7 +9,8 @@
 
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 
@@ -21,7 +22,6 @@ import Draft
 import Points
 
 
-import os
 
 try:
     import numpy as np
@@ -29,8 +29,6 @@ except ImportError:
     print("Please install the required module : numpy")
 
 import random
-
-import os
 import nurbs
 
 

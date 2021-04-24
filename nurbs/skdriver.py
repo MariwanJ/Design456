@@ -26,6 +26,9 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 '''create a driversketch for a sketch'''
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 from say import *
 import pyob
