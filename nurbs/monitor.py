@@ -372,5 +372,17 @@ class Nurbs_MonitorMain:
         a.minVal= spline.Shape.Length*0.95
         a.maxVal= spline.Shape.Length*1.05
 
+    def GetResources(self):
+        
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_MonitorMain")
+        return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_MonitorMain"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
+
+Gui.addCommand("Nurbs_MonitorMain", Nurbs_MonitorMain())
+
+
 
 
