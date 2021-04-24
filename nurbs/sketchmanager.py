@@ -137,7 +137,7 @@ def lockEndpoints(w,mode=0):
 import Sketcher
 def runSelection(w,mode=None):
         sk=w.obj.Object
-        s=Gui.Selection.getSelectionEx()[0]
+        s=Gui.Selection.getSelection()[0]
         for el in s.SubElementNames:
             el=int(el.replace("Edge",""))
             try:
@@ -468,7 +468,7 @@ def getfiles():
 def saveSketch(w=None):
     '''save Gui.Selection  sketch into a file inside the sketch lib directory'''
 
-    sel=Gui.Selection.getSelectionEx()[0]
+    sel=Gui.Selection.getSelection()[0]
     fn=App.ConfigGet("UserAppData") +'sketchlib/'+sel.Name+"_"+str(int(round(time.time())))+"_sk.fcstd"
     nd=App.newDocument("XYZ")
     App.ActiveDocument=nd
@@ -491,7 +491,7 @@ def srun(w):
 
     target='ufo'
 
-    s=Gui.Selection.getSelectionEx()
+    s=Gui.Selection.getSelection()
     if s != []: 
         target=s[0].Name
     print ("target is: ",target)
@@ -559,13 +559,13 @@ def MySaveDialog(target=None):
 
 def runLoadSketch():
     '''method called from Gui menu'''
-    #[target]=Gui.Selection.getSelectionEx()
+    #[target]=Gui.Selection.getSelection()
     target=None
     return MyLoadDialog(target)
 
 def runSaveSketch():
     '''method saveSketch called from Gui menu'''
-    #[target]=Gui.Selection.getSelectionEx()
+    #[target]=Gui.Selection.getSelection()
 #    target=None
 #    return MySaveDialog(target)
     saveSketch()

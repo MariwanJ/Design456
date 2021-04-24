@@ -89,7 +89,7 @@ def pk(obj=None, w=None):
         if obj != None:
             a = obj
         else:
-            [a] = Gui.Selection.getSelectionEx()
+            [a] = Gui.Selection.getSelection()
         bc = a.Shape.Edge1.Curve
         pts = a.Shape.Edge1.Curve.getPoles()
         print("Poles", len(pts))
@@ -139,7 +139,7 @@ def pk(obj=None, w=None):
 def dialog(sk=None):
 
     if sk == None:
-        [sk] = Gui.Selection.getSelectionEx()
+        [sk] = Gui.Selection.getSelection()
     if 1:
 
         w = QtGui.QWidget()
@@ -193,7 +193,7 @@ def dialog(sk=None):
 
 class Nurbs_WeightEditor:
     def Activated(self):
-        for sk in Gui.Selection.getSelectionEx():
+        for sk in Gui.Selection.getSelection():
             w = dialog(sk)
 
     def GetResources(self):

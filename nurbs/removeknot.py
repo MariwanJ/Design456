@@ -60,7 +60,7 @@ if 0:
     pass
 
     # Hilfswire machen
-    [a] = Gui.Selection.getSelectionEx()
+    [a] = Gui.Selection.getSelection()
     bc = a.Shape.Edge1.Curve
     pts = a.Shape.Edge1.Curve.getPoles()
     # print  (len(pts)
@@ -76,7 +76,7 @@ if 0:
 
 class Nurbs_RemoveKnots:
     def Activated(self):
-        [a] = Gui.Selection.getSelectionEx()
+        [a] = Gui.Selection.getSelection()
         bc0 = a.Object.Shape.Edge1.Curve
         kc = len(bc0.getKnots())
         

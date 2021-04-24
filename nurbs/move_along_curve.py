@@ -148,7 +148,7 @@ class Nurbs_MoveAlongCurve:
     def Activated(self):
         self.runme()
     def runme(self):
-        [target,path]=Gui.Selection.getSelectionEx()
+        [target,path]=Gui.Selection.getSelection()
         MyDialog(path,target)
 
     def GetResources(self):
