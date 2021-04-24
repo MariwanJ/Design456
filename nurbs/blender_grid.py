@@ -517,13 +517,11 @@ class gridVP:
 class Nurbs_ParametricGridModifiable:
     def Activated(self):
         '''creates a parametric grid object that can be configured later '''
-
         obj = App.ActiveDocument.addObject("App::FeaturePython", "Grid")
         gridObject(obj)
         gridVP(obj.ViewObject)
 
     def GetResources(self):
-        
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_ParametricGridModifiable")
@@ -531,6 +529,4 @@ class Nurbs_ParametricGridModifiable:
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_ParametricGridModifiable"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-
-Gui.addCommand("Nurbs_ParametricGridModifiable",
-               Nurbs_ParametricGridModifiable())
+Gui.addCommand("Nurbs_ParametricGridModifiable", Nurbs_ParametricGridModifiable())
