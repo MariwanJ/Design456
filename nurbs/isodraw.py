@@ -1649,11 +1649,9 @@ class Nurbs_ISOmap3Dto2D:
     def GetResources(self):
         return {
             'Pixmap': NURBSinit.ICONS_PATH + 'drawing.svg',
-            'MenuText': 'map 3d to 2D',
-            'ToolTip':  'Map 3D drawing to 2D'
+            'MenuText': 'Nurbs_ISOmap3Dto2D',
+            'ToolTip':  'Nurbs_ISOmap3Dto2D'
         }
-
-
 Gui.addCommand('Nurbs_ISOmap3Dto2D', Nurbs_ISOmap3Dto2D())
 Nurbs_ISOmap3Dto2D.__doc__ = """Nurbs_ISOmap3Dto2D: Tobe added later     """
 

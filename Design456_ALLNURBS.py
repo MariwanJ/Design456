@@ -278,9 +278,9 @@ class Design456_Nurbs_List6Group:
                 "Nurbs_CreateShoeMarkers",
                 "Nurbs_CreateShoeMarkers",
                 "Nurbs_commandCreateHelmet",
-                "Nurbs_HelmetCreateTriange",
+                "Nurbs_HelmetCreateTriangle",
                 "Nurbs_MakeHelperSel",
-                "Nurbs_HelperTes"
+                "Nurbs_HelperTest"
                 )
 
     def GetResources(self):
@@ -314,8 +314,8 @@ class Design456_Nurbs_List7Group:
                 "Nurbs_ISOdrawTestB",
                 "Nurbs_ISOdrawTestA",
                 "Nurbs_IsodrawTestF",
-                "Nurbs_IsoMapMai",
-                "Nurbs_DisplayKontsandPolseForCurv",
+                "Nurbs_IsoMapMain",
+                "Nurbs_DisplayKontsandPolseForCurve",
                 "Nurbs_LoftSelectionEdge"
                 )
 
@@ -342,18 +342,18 @@ class Design456_Nurbs_List8Group:
         """Nurbs commands."""
         import nurbs
         return (
-                "Nurbs_LoftSelection",
                 "Nurbs_MeshGenModTest",
                 "Nurbs_MeshGenTest",
                 "Nurbs_MikiTestMe",
-                "Nurbs_miki_gTestDialog",
-                "Nurbs_miki_gTestDialog_1",
-                "Nurbs_miki_gTestDialog_2",
-                "Nurbs_miki_gTestDialog_3",
-                "Nurbs_miki_gTestDialog_4",
+                #TODO: These causes FreeCAD to fail load WB why?
+            #    "Nurbs_miki_gTestDialog",
+            #    "Nurbs_miki_gTestDialog_1",
+            #    "Nurbs_miki_gTestDialog_2",
+            #    "Nurbs_miki_gTestDialog_3",
+            #    "Nurbs_miki_gTestDialog_4",
                 "Nurbs_MonitorMain",
                 "Nurbs_MoinitorForce",
-                "Nurbs_Monitor_Mymonito"
+                "Nurbs_Monitor_Mymonitor"
                 )
 
     def GetResources(self):
