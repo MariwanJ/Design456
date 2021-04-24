@@ -31,10 +31,8 @@ import os, sys
 
 import NURBSinit
 
-
 from FreeCAD import Base
 import Part
-App=FreeCAD
 
 
 

@@ -2657,7 +2657,7 @@ def SurfaceEditor():
 			if obj == None:
 				obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
 			bs=fp.Shape.Face1.Surface
-			vec=FreeCAD.Vector(
+			vec=App.Vector(
 						self.root.ids['xdial'].value()*self.root.ids['scale'].value(),
 						self.root.ids['ydial'].value()*self.root.ids['scale'].value(),
 						self.root.ids['zdial'].value()*self.root.ids['scale'].value()
@@ -2692,11 +2692,11 @@ def SurfaceEditor():
 
 #			if 0:
 #				ttp=poles[upn*3-1:upn*3+2,vpn*3-1:vpn*3+2] - center
-#				r#ot=FreeCAD.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
+#				r#ot=App.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
 
 #				for u in 0,1,2:
 #					for v in 0,1,2:
-#						ttp[u,v]=rot.multVec(FreeCAD.Vector(ttp[u,v]))
+#						ttp[u,v]=rot.multVec(App.Vector(ttp[u,v]))
 
 #				(t1,t2)=bs.tangent(upn,vpn)
 #				n=bs.normal(upn,vpn)
@@ -2710,11 +2710,11 @@ def SurfaceEditor():
 
 			if 1 :
 				ttp=poles[startu:endu,startv:endv] - center
-				rot=FreeCAD.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
+				rot=App.Rotation(self.root.ids['xrot'].value(),self.root.ids['yrot'].value(),self.root.ids['zrot'].value())
 
 				for u in range(0,endu-startu):
 					for v in range(0,endv-startv):
-						ttp[u,v]=rot.multVec(FreeCAD.Vector(ttp[u,v]))
+						ttp[u,v]=rot.multVec(App.Vector(ttp[u,v]))
 
 				(t1,t2)=bs.tangent(upn,vpn)
 				n=bs.normal(upn,vpn)
@@ -5885,13 +5885,13 @@ def glaetten():
 
                 k1=(pall[2]-pall[3])
                 k2=(pall[4]-pall[3])
-                kk=[FreeCAD.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
+                kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
                 kka=[]
                 for k in kk:
                     try:
                         kka += [k.normalize()]
                     except:
-                        kka += [FreeCAD.Vector()]
+                        kka += [App.Vector()]
                 kka=np.array(kka)
 
 
@@ -5908,14 +5908,14 @@ def glaetten():
 
                 k1=(pall[2]-pall[3])
                 k2=(pall[4]-pall[3])
-                kk=[FreeCAD.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
+                kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
 
                 kka=[]
                 for k in kk:
                     try:
                         kka += [k.normalize()]
                     except:
-                        kka += [FreeCAD.Vector()]
+                        kka += [App.Vector()]
                 kka=np.array(kka)
 
                 fa2=2.0*ta/20
@@ -5960,9 +5960,9 @@ def glaetten():
                     srs[i].Shape=af.toShape()
 
         def runT(self):
-            FreeCAD.ActiveDocument.openTransaction("tatata")
+            App.ActiveDocument.openTransaction("tatata")
             self.run()
-            FreeCAD.ActiveDocument.commitTransaction()
+            App.ActiveDocument.commitTransaction()
 
     mikigui = createMikiGui2(layout, myApp)
 
