@@ -379,7 +379,7 @@ class Design456_Nurbs_List9Group:
         return (
                 "Nurbs_createMorpher",
                 "Nurbs_MultiEditAA",
-                "Nurbs_MultiEdi",
+                "Nurbs_MultiEdit",
                 "Nurbs_NeedleMain",
                 "Nurbs_NeedleChangeModel",
                 "Nurbs_NeedlecmdAdd",
