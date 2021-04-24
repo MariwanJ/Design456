@@ -37,16 +37,16 @@ from __future__ import unicode_literals
 
 
 # \cond
+import os,sys
+import FreeCAD as App
+import FreeCADGui as Gui
+import Design456Init
+
 from PySide import QtGui, QtCore
 from say import *
-
-import FreeCAD as App
-import os,sys
 import time
 import random
-
 import FACE_D as faced
-
 import isodraw
 # reload(.isodraw)
 
@@ -976,7 +976,7 @@ class Nurbs_Drawoversegments:
             stop()
         except:
             pass
-        start()
+        Nurbs_EventFilter.Activated()
 
     def GetResources(self):
         return {

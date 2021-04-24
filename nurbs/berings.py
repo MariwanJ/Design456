@@ -4338,9 +4338,6 @@ class Nurbs_Stretchandbend:
                 poles2[ui,vi] +=  vaa2[0]*(uc-1-ui)*(vc-1-vi)/(uc-1)/(vc-1)
                 poles2[ui,vi] +=  vaa2[1]*(ui)*(vc-1-vi)/(uc-1)/(vc-1)
 
-
-
-
     #    poles=poles2.reshape(a,b,3)
 
         bs=Part.BSplineSurface()
@@ -4630,6 +4627,7 @@ class Nurbs_CreateSketchCircle:
         sk.addConstraint(Sketcher.Constraint('Equal',1,4))
         sk.addConstraint(Sketcher.Constraint('Equal',4,7))
         sk.addConstraint(Sketcher.Constraint('Equal',1,10))
+        App.ActiveDocument.recompute()
 
     def GetResources(self):
         

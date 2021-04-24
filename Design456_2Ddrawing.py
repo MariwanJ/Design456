@@ -26,8 +26,7 @@ from draftobjects.base import DraftObject
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-import os
-import sys
+import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Draft as _draft
