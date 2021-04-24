@@ -72,6 +72,7 @@ class Design456_Nurbs_List0Group:
 Gui.addCommand("Design456_Nurbs_List0Group", Design456_Nurbs_List0Group())
 
 class Design456_Nurbs_List1Group:
+    """Design456 Nurbs list 1 toolbars"""
     def __init__(self):
         return
 
@@ -89,7 +90,7 @@ class Design456_Nurbs_List1Group:
                 "Nurbs_createDatumPlane",
                 "Nurbs_createDatumLine",
                 "Nurbs_CreateBeGrid",
-                "Nurbs_CreateSketchSpline_Runal",
+                "Nurbs_CreateSketchSpline_Runall",
                 "Nurbs_CreateSketchSpline_runsub",
                 "Nurbs_BSplineToBezierCurve1",
                 "Nurbs_BSplineToBezierCurve2",
@@ -379,7 +380,6 @@ class Design456_Nurbs_List9Group:
         import nurbs
         return (
                 "Nurbs_createMorpher",
-                "Nurbs_MoveAlongCurv",
                 "Nurbs_MultiEditAA",
                 "Nurbs_MultiEdi",
                 "Nurbs_NeedleMain",
