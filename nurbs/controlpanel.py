@@ -158,6 +158,7 @@ class Nurbs_ControlPanelHU:
     def Activated(self):
         self.hu()
     def hu(self):
+        ss=None
         mw = Gui.getMainWindow()
         mdiarea = mw.findChild(QtGui.QMdiArea)
 
@@ -184,8 +185,11 @@ class Nurbs_ControlPanelHU:
                 sw.close()
                 App.ss = w
                 return w
-        App.ss.hide()
-        App.ss.show()
+        try:
+            ss.hide()
+            ss.show()
+        except: 
+            pass
 
     def GetResources(self):
         
