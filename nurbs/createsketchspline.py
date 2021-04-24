@@ -231,6 +231,7 @@ class Nurbs_CreateSketchSpline_Runall:
         
     def runall(self):
         ''' erzeugt sketche fuer mehrere subkanten'''
+        rc=None
         sx = Gui.Selection.getSelection()
         s = sx[0]
         name = "mergeS_"+s.Name
