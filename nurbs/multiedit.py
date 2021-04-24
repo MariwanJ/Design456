@@ -82,7 +82,7 @@ StepSize
 '''
 
 
-faces=Gui.Selection.getSelectionEx()
+faces=Gui.Selection.getSelection()
 print (faces)
 
  
@@ -1581,7 +1581,7 @@ def SurfaceEditor():
 
         def setSelection(self):
             print 
-            selps=Gui.Selection.getSelectionEx()[0].PickedPoints
+            selps=Gui.Selection.getSelection()[0].PickedPoints
             self.multiface.compe=[]
             self.multiface.selection=[]
             for vt in selps:
@@ -1634,7 +1634,7 @@ def SurfaceEditor():
 
         def addSelection(self):
             print 
-            selps=Gui.Selection.getSelectionEx()[0].PickedPoints
+            selps=Gui.Selection.getSelection()[0].PickedPoints
             #self.multiface.compe=[]
             pres=self.multiface.selection
             for vt in selps:

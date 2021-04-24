@@ -440,9 +440,9 @@ class MyApp(object):
 
     def getselectionPoint(self):
         ''' get pole from gui pole number selection '''
-        s=Gui.Selection.getSelectionEx()
+        s=Gui.Selection.getSelection()
         print (s[0].Label)
-        se=Gui.Selection.getSelectionEx()
+        se=Gui.Selection.getSelection()
         ss=se[0]
 
         sn=ss.SubElementNames
@@ -461,9 +461,9 @@ class MyApp(object):
 
     def getselection(self):
         ''' get pole from gui pole grid selection '''
-        s=Gui.Selection.getSelectionEx()
+        s=Gui.Selection.getSelection()
         print (s[0].Label)
-        se=Gui.Selection.getSelectionEx()
+        se=Gui.Selection.getSelection()
         ss=se[0]
 
         sn=ss.SubElementNames

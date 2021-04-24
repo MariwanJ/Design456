@@ -41,7 +41,7 @@ class Nurbs_Holes:
         self.runme()
 
     def runme(self):
-        sel = Gui.Selection.getSelectionEx()
+        sel = Gui.Selection.getSelection()
 
         face = sel[0].Shape.Face1.Surface.toShape()
         # Part.show(face)

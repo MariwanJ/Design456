@@ -653,8 +653,8 @@ class Nurbs_UVGRIDgenRunSel:
     def runSel(self,fac=3):
         ''' create the xxx for some selected faces or all faces of a selected part'''
 
-        if len(Gui.Selection.getSelectionEx())>0:
-            for ss in Gui.Selection.getSelectionEx():
+        if len(Gui.Selection.getSelection())>0:
+            for ss in Gui.Selection.getSelection():
                 subn=ss.SubElementNames
                 if len(subn)>0:
                     for i,obj in enumerate(ss.SubObjects):

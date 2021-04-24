@@ -501,7 +501,7 @@ class PointFace(FeaturePython):
 def PointstoConePNPPP():
     '''create a cone by point,normal and 3 points'''  
 
-    sel=Gui.Selection.getSelectionEx()
+    sel=Gui.Selection.getSelection()
 #    if len(sel) != 4:
 #        print ("selection reicht nicht 4 "
 #        return
@@ -531,7 +531,7 @@ def PointstoConePNPPP():
 def PointstoConePNPN():
     '''create a cone by point,normal, point2.normal2'''
 
-    sel=Gui.Selection.getSelectionEx()
+    sel=Gui.Selection.getSelection()
 #    if len(sel) != 2:
 #        print ("selection reicht nicht 4 "
 #        return
@@ -567,7 +567,7 @@ def PointstoConePNPN():
 def PointstoBezierPNPNPNPN():
     '''create a cone by 4 point,normal,'''
 
-    sel=Gui.Selection.getSelectionEx()
+    sel=Gui.Selection.getSelection()
 #    if len(sel) != 2:
 #        print ("selection reicht nicht 4 "
 #        return
@@ -935,7 +935,7 @@ def PointstoCylinderPNPP():
     raise Exception("muss noch eingebettet werden")
 
 
-    sel=Gui.Selection.getSelectionEx()
+    sel=Gui.Selection.getSelection()
 #    if len(sel) != 2:
 #        print ("selection reicht nicht 4 "
 #        return
@@ -2143,8 +2143,8 @@ def findCylinder(obj):
 def ReconstructCylinder():
     '''ReconstructrFace Cylinder'''
 
-    sel=Gui.Selection.getSelectionEx()
-    s=Gui.Selection.getSelectionEx()[0]
+    sel=Gui.Selection.getSelection()
+    s=Gui.Selection.getSelection()[0]
     assert(len(s.SubElementNames)>1)
 
     yy=App.ActiveDocument.addObject("Part::FeaturePython","ReconstructFace")
@@ -2173,8 +2173,8 @@ def ReconstructCylinder():
 def ReconstructPlane():
     '''ReconstructrFace Plane'''
 
-    sel=Gui.Selection.getSelectionEx()
-    s=Gui.Selection.getSelectionEx()[0]
+    sel=Gui.Selection.getSelection()
+    s=Gui.Selection.getSelection()[0]
     assert(len(s.SubElementNames)>0)
 
     yy=App.ActiveDocument.addObject("Part::FeaturePython","ReconstructFace")
@@ -2369,8 +2369,8 @@ def findPlane(obj):
 def ReconstructSphere():
     '''Reconstruct Face Sphere select 2 faces/triangles '''
 
-    sel=Gui.Selection.getSelectionEx()
-    s=Gui.Selection.getSelectionEx()[0]
+    sel=Gui.Selection.getSelection()
+    s=Gui.Selection.getSelection()[0]
     assert (len(s.SubElementNames)>1)
 
     yy=App.ActiveDocument.addObject("Part::FeaturePython","ReconstructFace")
@@ -2400,7 +2400,7 @@ def noisymesh():
     '''add some noise to a mesh and create a part of it'''
 
     import Mesh
-    mesh=Gui.Selection.getSelectionEx()[0]
+    mesh=Gui.Selection.getSelection()[0]
     k=1.0 # noise factor in mm
 
     m=mesh.Mesh

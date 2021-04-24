@@ -43,7 +43,7 @@ import Part
 class Nurbs_DrawCurves2Face:
     def Activated(self):
         allpts = []
-        # for obj in Gui.Selection.getSelectionEx():
+        # for obj in Gui.Selection.getSelection():
         t=""
         for obj in App.ActiveDocument.clones.OutList:
             if obj.Label.startswith('t='):

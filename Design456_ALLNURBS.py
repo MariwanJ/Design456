@@ -239,10 +239,10 @@ class Design456_Nurbs_List5Group:
                 "Nurbs_DrawIsoFace",
                 "Nurbs_FaceDraw",
                 "Nurbs_FemEdgeLengthMesh",
-                "Nurbs_FEM_EdgeLengthMeshExampl",
+                "Nurbs_FEM_EdgeLengthMeshExample",
                 "Nurbs_CreateFiledFace",
-                "Nurbs_FoldingRu",
-                "Nurbs_GenRandomDa",
+                "Nurbs_FoldingRun",
+                "Nurbs_GenRandomDat",
                 "Nurbs_geodesicMapPatchToFace",
                 )
 

@@ -157,7 +157,7 @@ def ThousandsOfRunWhatShouldIdo():
     # p1a=App.ActiveDocument.Point001.Shape.Vertex1
     # p2a=App.ActiveDocument.Point003.Shape.Vertex1
 
-    s = Gui.Selection.getSelectionEx()
+    s = Gui.Selection.getSelection()
 
     if len(s) == 6:
         ed = s[0].SubObjects[0]
