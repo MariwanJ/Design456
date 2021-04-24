@@ -1852,7 +1852,7 @@ def SurfaceEditor():
 
 
 class Nurbs_MultiEdit:
-    def activated(self):
+    def Activated(self):
         self.mmultiEdit()
     def multiEdit(self):
        SurfaceEditor()

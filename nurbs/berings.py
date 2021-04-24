@@ -1167,9 +1167,9 @@ Gui.addCommand("Nurbs_CreateBeFaceFromSelBering", Nurbs_CreateBeFaceFromSelBerin
 
 
 
-
+#todo : The file (bering_testdaten.fcstd) is missing I cannot find it anywhere.
 ## a testcase for bering and beface
-# this test uses the /FreeCAD_testfiles/bering_testdaten.fcstd
+# this test uses the NURBSinit.DATA_PATH+bering_testdaten.fcstd
 class Nurbs_TestCaseBeringTest:
     def Activated(self):
         self.createBeringTest()
@@ -1180,8 +1180,7 @@ class Nurbs_TestCaseBeringTest:
         except:
             pass
         
-        appdat=App.ConfigGet('UserAppData')
-        fn=appdat+'/FreeCAD_testfiles/bering_testdaten.fcstd'
+        fn=NURBSinit.DATA_PATH+'bering_testdaten.fcstd'
     
         App.open(fn)
         App.setActiveDocument("bering_testdaten")
@@ -2147,7 +2146,6 @@ class Nurbs_BSplineToBezierCurve1:
             print (i,mults[i])
             if mults[i]<3:
                 bc2.insertKnot(i,3)
-
         t=App.ActiveDocument.addObject('Part::Spline',obj.Name)
         t.Label=obj.Label+" Bezier"
         t.Shape=bc2.toShape()
@@ -2164,7 +2162,7 @@ class Nurbs_BSplineToBezierCurve1:
 
 Gui.addCommand("Nurbs_BSplineToBezierCurve1", Nurbs_BSplineToBezierCurve1())
 
-#TODO: Idon't know what is the difference between these commands. They had the same name- Mariwan
+#TODO: Idon't know what is the differences between these commands. They had the same name- Mariwan
 class Nurbs_BSplineToBezierCurve2:
     def Activated(self):
         self.BSplineToBezierCurve()
@@ -2186,7 +2184,6 @@ class Nurbs_BSplineToBezierCurve2:
 
                 for k in bc.getKnots():
                     bc.insertKnot(k,3)
-
 
                 mults=bc.getMultiplicities()
                 print (mults)
@@ -2238,8 +2235,7 @@ class Nurbs_BSplineToBezierCurve2:
             t.Shape=bc2.toShape()
             t.ViewObject.ControlPoints=True
             
-    def GetResources(self):
-        
+    def GetResources(self):    
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Nurbs_BSplineToBezierCurve2")
@@ -3376,8 +3372,9 @@ class BeTube(FeaturePython):
 
 
 class Nurbs_CreateBETube:
-    def activated(self):
+    def Activated(self):
         self.createBeTube()
+        
     def createBeTube(self):
         '''creates a cylinder like  parametric bezier face'''
         sf=App.ActiveDocument.addObject('Part::FeaturePython','BeTube')
@@ -5393,9 +5390,9 @@ def AA():
     pm=np.array(pp['Moments'])
     print (pm/min(pm))
 
-class Nurbs_createTangentHelpers:
+class Nurbs_createTangentHelpersGUI:
     def Activated(self):
-        self.createTangentHelpers()
+        self.createTangentHelpersGUI()
         
     def createTangentHelpersGUI(self):
         for obj in Gui.Selection.getSelection():
@@ -5413,12 +5410,12 @@ class Nurbs_createTangentHelpers:
         
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Nurbs_createTangentHelpers")
+        _tooltip = ("Nurbs_createTangentHelpersGUI")
         return {'Pixmap': NURBSinit.ICONS_PATH+"alpha.svg",
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createTangentHelpers"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createTangentHelpersGUI"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-Gui.addCommand("Nurbs_createTangentHelpers", Nurbs_createTangentHelpers())
+Gui.addCommand("Nurbs_createTangentHelpersGUI", Nurbs_createTangentHelpersGUI())
 
 
 
