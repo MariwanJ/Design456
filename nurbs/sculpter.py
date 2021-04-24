@@ -181,7 +181,7 @@ def createMarker(self):
 
     l = geodesic_lines.makeLabel(
         direction='Horizontal', labeltype='Position')
-    l.obj = self.nu  # Gui.Selection.getSelectionEx()[0]
+    l.obj = self.nu  # Gui.Selection.getSelection()[0]
     l.LabelType = u"Custom"
     l.Label = "MyMarker"
     l.ViewObject.DisplayMode = u"2D text"
@@ -862,9 +862,9 @@ class Nurbs_CulpterEventStarter:
         ef.objname=ef.pc.Name
         '''
         try:
-                sel=Gui.Selection.getSelectionEx()
+                sel=Gui.Selection.getSelection()
                 fob=sel[0]
-                s=Gui.Selection.getSelectionEx()
+                s=Gui.Selection.getSelection()
                 print s,s[0].SubObjects
 
                 if len(s[0].SubObjects)>0:

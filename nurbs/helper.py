@@ -253,7 +253,7 @@ class Nurbs_MakeHelperSel:
         self.makeHelperSel()
     def makeHelperSel(self):
         ''' creates a helper of mode "isoGrid" for the Gui-selected objects'''
-        for obj in Gui.Selection.getSelectionEx():
+        for obj in Gui.Selection.getSelection():
             h=makeHelper()
             h.source=obj
             h.mode="isoGrid"

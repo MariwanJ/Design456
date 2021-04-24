@@ -146,7 +146,7 @@ def rowcol2(w,*args):
     print ("-----------------")
 
 def posfromsel(w):
-    t=Gui.Selection.getSelectionEx()[0]
+    t=Gui.Selection.getSelection()[0]
     v=t.PickedPoints[0]
 
     for i in w.table.selectedItems():
@@ -271,7 +271,7 @@ class Nurbs_DraftBSplineEditorR1:
     def Activated(self):
         scale=1
         print ("RUN ---",scale)
-        obj=Gui.Selection.getSelectionEx()[0]
+        obj=Gui.Selection.getSelection()[0]
         print (obj)
         return pointEditor(obj,scale=scale)
 

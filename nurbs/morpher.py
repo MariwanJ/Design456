@@ -151,7 +151,7 @@ def createMorpher():
 
     yy=App.ActiveDocument.addObject("Part::FeaturePython","Morpher")
     Morpher(yy)
-    [yy.A,yy.B]=Gui.Selection.getSelectionEx()
+    [yy.A,yy.B]=Gui.Selection.getSelection()
     ViewProvider(yy.ViewObject)
     yy.ViewObject.ShapeColor=(.6,.6,1.)
     yy.factorA=10
@@ -485,7 +485,7 @@ class Nurbs_createMorpher:
         yy=App.ActiveDocument.addObject("Part::FeaturePython","CurveMorpher")
         CurveMorpher(yy)
 
-        curves=Gui.Selection.getSelectionEx()
+        curves=Gui.Selection.getSelection()
         if len(curves)==4:
             [yy.N,yy.S,yy.W,yy.E]=curves
         else:

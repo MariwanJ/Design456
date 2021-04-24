@@ -160,7 +160,7 @@ def run1(z0,mesh,plane,showpointsmap=True,showmedianfilter=True):
 class Nurbs_MainScanCut:
     def Activated(self):
             
-    #    if len( Gui.Selection.getSelectionEx())==0:
+    #    if len( Gui.Selection.getSelection())==0:
     #        showdialog('Oops','nothing selected - nothing to do for me','Plese select a Draft Wire or a Draft BSpline')
     
         #default parameters

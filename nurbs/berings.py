@@ -2490,7 +2490,7 @@ def SurfaceEditor():
 			if obj == None:
 				obj=App.ActiveDocument.addObject('Part::Spline','temp_YY1')
 			bs=fp.Shape.Face1.Surface
-			vec=Gui.Selection.getSelectionEx()[0].PickedPoints[0]
+			vec=Gui.Selection.getSelection()[0].PickedPoints[0]
 
 			upn=int(self.root.ids['ux'].text())
 			vpn=int(self.root.ids['vx'].text())

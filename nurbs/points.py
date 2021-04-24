@@ -693,7 +693,7 @@ class Nurbs_PointsRUNA:
         self.runA()
     def runA(self):
         try:
-            obj=Gui.Selection.getSelectionEx()[0]
+            obj=Gui.Selection.getSelection()[0]
         except:
             obj=App.ActiveDocument.Points
         mydialog(obj)

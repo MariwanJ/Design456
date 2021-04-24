@@ -66,8 +66,8 @@ def get_SelectedObjects(info=0, printError=True):
 
     if m_actDoc.Name:
         # Return a list of SelectionObjects for a given document name.
-        # "getSelectionEx" Used for selecting subobjects
-        m_selEx = Gui.Selection.getSelectionEx(m_actDoc.Name)
+        # "getSelection" Used for selecting subobjects
+        m_selEx = Gui.Selection.getSelection(m_actDoc.Name)
 
         m_num = len(m_selEx)
         if info != 0:
@@ -308,32 +308,32 @@ def ondocument():
 
 def onselection():
     '''if at least one object is selected'''
-    return len(Gui.Selection.getSelectionEx()) > 0
+    return len(Gui.Selection.getSelection()) > 0
 
 
 def onselection1():
     '''if exactly one object is selected'''
-    return len(Gui.Selection.getSelectionEx()) == 1
+    return len(Gui.Selection.getSelection()) == 1
 
 
 def onselection2():
     '''if exactly two objects are selected'''
-    return len(Gui.Selection.getSelectionEx()) == 2
+    return len(Gui.Selection.getSelection()) == 2
 
 
 def onselection3():
     '''if exactly three objects are selected'''
-    return len(Gui.Selection.getSelectionEx()) == 3
+    return len(Gui.Selection.getSelection()) == 3
 
 
 def onselex():
     '''if at least one subobject is selected'''
-    return len(Gui.Selection.getSelectionEx()) != 0
+    return len(Gui.Selection.getSelection()) != 0
 
 
 def onselex1():
     '''if exactly one subobject is selected'''
-    return len(Gui.Selection.getSelectionEx()) == 1
+    return len(Gui.Selection.getSelection()) == 1
 
 
 # the menu entry list
