@@ -458,7 +458,7 @@ Gui.addCommand("Nurbs_commandCreateHelmet", Nurbs_commandCreateHelmet())
 
 
 
-class Nurbs_HelmetCreateTriangel:
+class Nurbs_HelmetCreateTriangle:
     def Activated(self):
         self.createTriangle()
 
@@ -554,10 +554,10 @@ class Nurbs_HelmetCreateTriangel:
         
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Nurbs_HelmetCreateTriangel")
+        _tooltip = ("Nurbs_HelmetCreateTriangle")
         return {'Pixmap': NURBSinit.ICONS_PATH+'draw.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_HelmetCreateTriangel"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_HelmetCreateTriangle"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456 ", _tooltip)}
 
-Gui.addCommand("Nurbs_HelmetCreateTriangel", Nurbs_HelmetCreateTriangel())
+Gui.addCommand("Nurbs_HelmetCreateTriangle", Nurbs_HelmetCreateTriangle())
 

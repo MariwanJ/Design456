@@ -1328,14 +1328,9 @@ DockWidget:
     return mikigui
 
 
-def ThousandsOfMainFunction():
-    say("miki transport ...")
-    testme()
-
-
-
 class Nurbs_miki_gTestDialog:
-
+    def Activated(self):
+        self.testDialog()
     def testDialog(self):
         rc = testme()
         print (rc)
@@ -1346,7 +1341,7 @@ class Nurbs_miki_gTestDialog:
     def testDialogTab(self):
         return testme('VerticalLayoutTab')
 
-    def testDialogDockWidget():
+    def testDialogDockWidget(self):
         return testme("DockWidget")
 
     def GetResources(self):
@@ -1361,4 +1356,4 @@ class Nurbs_miki_gTestDialog:
 #Gui.addCommand("Nurbs_miki_gTestDialog_1", Nurbs_miki_gTestDialog().testDialog())
 #Gui.addCommand("Nurbs_miki_gTestDialog_2", Nurbs_miki_gTestDialog().testDialogMainWindow())
 #Gui.addCommand("Nurbs_miki_gTestDialog_3", Nurbs_miki_gTestDialog().testDialogTab())
-##Gui.addCommand("Nurbs_miki_gTestDialog_4", Nurbs_miki_gTestDialog().testDialogDockWidget())
+#Gui.addCommand("Nurbs_miki_gTestDialog_4", Nurbs_miki_gTestDialog().testDialogDockWidget())

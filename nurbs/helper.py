@@ -37,7 +37,7 @@ from say import *
 import pyob
 
 import NURBSinit
-
+import nurbs
 ## The Helper can display a Poles Grid, iso-Curve Grid or single isocurves as parametric Part::FeaturePython objects
  
 
@@ -45,7 +45,7 @@ class Helper(pyob.FeaturePython):
 
     ##\cond
     def __init__(self, obj,uc=5,vc=5):
-        FeaturePython.__init__(self, obj)
+        pyob.FeaturePython.__init__(self, obj)
 
         self.TypeId="NurbsHelper"
         obj.addProperty("App::PropertyLink","source","XYZ","Length of the Nurbs")
