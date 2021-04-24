@@ -944,7 +944,8 @@ def connectLine(yy=False):
 class Nurbs_FeedBackSketch:
     def Activated(self):
         self.runMain()
-    def rnMain(self):
+        
+    def runMain(self):
         fbs=createFeedbackSketch(name="SingleClientFeedback")
         fbs.addProperty("App::PropertyBool",'active', 'Base', )
         fbs.addProperty("App::PropertyStringList",'bases', 'Base', )
