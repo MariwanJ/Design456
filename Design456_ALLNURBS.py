@@ -168,7 +168,7 @@ class Design456_Nurbs_List3Group:
                 "Nurbs_CreateSheelANDsolid",
                 "Nurbs_FlattenTheWire",
                 "Nurbs_ParametricGridModifiable",
-                "Nurbs_CreateGenericPane",
+                "Nurbs_CreateGenericPanel",
                 "Nurbs_ControlPanelCreateFunction",
                 "Nurbs_ControlPanelHU",
                 "Nurbs_ControlPanelAdd",
