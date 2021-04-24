@@ -66,7 +66,7 @@ class Design456_Part_Merge:
             if newObj.isValid() == False:
                 App.ActiveDocument.removeObject(newObj.Name)
                 # Shape is not OK
-                errMessage = "Failed create shell"
+                errMessage = "Failed Merge"
                 faced.getInfo(s).errorDialog(errMessage)
             else:
 
