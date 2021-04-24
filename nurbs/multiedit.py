@@ -61,7 +61,7 @@ except ImportError:
     print("Numpy library is missing, please install it before using the library")
     
 import time,random
-App=FreeCAD
+
 
 import configuration
 #reload (.configuration)
