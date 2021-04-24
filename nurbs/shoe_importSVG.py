@@ -1547,7 +1547,7 @@ def export_svg():
 def import_svg():
 
     import importSVG
-    App=FreeCAD
+    
     importSVG.insert(NURBSinit.DATA_PATH+"aaa.svg", App.ActiveDocument.Name)
 #    b=App.ActiveDocument.addObject("Part::FeaturePython","My_SVG_Link")
 #    SVGLink(b)
