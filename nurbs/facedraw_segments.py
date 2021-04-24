@@ -809,7 +809,7 @@ class Nurbs_EventFilter:
             if (len(sel) < 1):
                 # An object must be selected
                 errMessage = "Select a face"
-                faced.getInfo(selection).errorDialog(errMessage)
+                faced.getInfo(sel).errorDialog(errMessage)
                 return
 
             fob = sel[0]
@@ -966,25 +966,6 @@ def stop():
 
     App.ActiveDocument.removeObject(ef.wirem.Name)
 
-
-# start the facedraw eventserver
-class Nurbs_Drawoversegments:
-    '''start the facedraw dialog and eventmanager'''
-
-    def Activated(self):
-        try:
-            stop()
-        except:
-            pass
-        Nurbs_EventFilter.Activated()
-
-    def GetResources(self):
-        return {
-            'Pixmap': NURBSinit.ICONS_PATH + '/draw.svg',
-            'MenuText': 'Drawoversegments',
-                        'ToolTip':  'Drawoversegments'
-        }
-Gui.addCommand('Nurbs_Drawoversegments', Nurbs_Drawoversegments())
 
 #TODO: DON'T KNOW WHAT THIS DO. Mariwan
 class Nurbs_FaceDrawSegments:

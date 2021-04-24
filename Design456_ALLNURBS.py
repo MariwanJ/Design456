@@ -91,11 +91,11 @@ class Design456_Nurbs_List1Group:
                 "Nurbs_createDatumLine",
                 "Nurbs_CreateBeGrid",
                 "Nurbs_CreateSketchSpline_Runall",
-                "Nurbs_CreateSketchSpline_runsub",
+                "Nurbs_CreateSketchSpline_runsubs",
                 "Nurbs_BSplineToBezierCurve1",
                 "Nurbs_BSplineToBezierCurve2",
                 "Nurbs_BSplineToBezierSurface",
-                "Nurbs_SurfaceEditor",
+                "Nurbs_SurfaceEDITOR",
                 "Nurbs_connectFaces"
                 )
 
@@ -202,15 +202,13 @@ class Design456_Nurbs_List4Group:
         """Nurbs commands."""
         import nurbs
         return (
-                "Nurbs_DataTool",
+                "Nurbs_DataTools",
                 "Nurbs_DraftBSplineEditorR1",
                 "Nurbs_DraftBSplineEditorR2",
                 "Nurbs_createSketchSpline",
                 "Nurbs_DynamicOffsetMain",
-                "Nurbs_DynamicOffsetRu",
                 "Nurbs_FeedBackSketch",
-                "Nurbs_FaceDrawSegments",
-                "Nurbs_Drawoversegments"
+                "Nurbs_FaceDrawSegments"
                 )
 
     def GetResources(self):
