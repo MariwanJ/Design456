@@ -1933,9 +1933,8 @@ class PolesFrame(FeaturePython):
         pass
 
 class Nurbs_createBezierPolesFramefromribsGUI:
-    def Actiavated(self):
-        self._createBezierPolesFramefromribsGUI()
-    def _createBezierPolesFramefromribsGUI(slef):
+    #_createBezierPolesFramefromribsGUI
+    def Activated(self):
         '''create a poles grid for a list of bezier curves'''
         yy = App.ActiveDocument.addObject("Part::FeaturePython", "PolesFrame")
         ViewProvider(yy.ViewObject)

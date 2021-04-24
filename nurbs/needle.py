@@ -43,7 +43,7 @@ import NURBSinit
 from PySide import QtGui
 import Part,Mesh,Draft
 
-import os
+import os,sys
 
 try:
     import numpy as np 
@@ -1038,7 +1038,6 @@ class Nurbs_NeedleMain:
             Draft.makeBSpline(points,closed=False,face=True,support=None)
             # Bspline003
 
-        import needle as needle
 
         a=needle.createNeedle()
 

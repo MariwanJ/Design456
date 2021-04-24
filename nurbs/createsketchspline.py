@@ -31,6 +31,13 @@ from __future__ import unicode_literals
 # -- microelly 2017 v 0.1
 # -- GNU Lesser General Public License (LGPL)
 # -------------------------------------------------
+import NURBSinit
+import FreeCAD as App
+import FreeCADGui as Gui 
+import os,sys
+
+import Part 
+import random
 
 from say import *
 from scipy.signal import argrelextrema
@@ -221,6 +228,7 @@ Gui.addCommand("Nurbs_CreateSketchSpline_runsubs", Nurbs_CreateSketchSpline_runs
 class Nurbs_CreateSketchSpline_Runall:
     def Activated(self):
         self.runall()
+        
     def runall(self):
         ''' erzeugt sketche fuer mehrere subkanten'''
         sx = Gui.Selection.getSelection()
@@ -243,6 +251,17 @@ class Nurbs_CreateSketchSpline_Runall:
             except:
                 sayexc2(title='Error', mess='something wrong with ' + s.Label)
         closecurve(rc)
+
+    def GetResources(self):      
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Nurbs_CreateSketchSpline_Runall")
+        return {'Pixmap':  NURBSinit.ICONS_PATH + 'drawing.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_CreateSketchSpline_Runall"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand("Nurbs_CreateSketchSpline_Runall", Nurbs_CreateSketchSpline_Runall())
+
 
 
 class Nurbs_createSketchSpline:
@@ -274,6 +293,4 @@ class Nurbs_createSketchSpline:
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Nurbs_createSketchSpline"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-
 Gui.addCommand("Nurbs_createSketchSpline", Nurbs_createSketchSpline())
-
