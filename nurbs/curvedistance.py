@@ -27,12 +27,12 @@ from __future__ import unicode_literals
 
 # distance between the target curve 1st, and some other curves
 
-import FreeCADGui as Gui 
+
 
 import NURBSinit
 import FreeCAD as App
-
-import os
+import FreeCADGui as Gui 
+import os,sys
 
 try:
     import numpy as np 

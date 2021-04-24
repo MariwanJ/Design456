@@ -37,30 +37,22 @@ from __future__ import unicode_literals
 '''
 
 
-import os
+import os, sys
+import FreeCAD as App
+import FreeCADGui as Gui
+import Design456Init
+import FACE_D as faced
+import NURBSinit
+import Draft,Points,Part,Sketcher
 
 try:
     import numpy as np 
 except ImportError:
     print ("Please install the required module : numpy")
     
-import Draft,Points,Part,Sketcher
 from say import *
 import random
 import time
-import FACE_D as faced
-
-import NURBSinit
-def AA():
-    '''dummy method for testing'''
-    print ("AA-nip")
-
-def BB():
-    '''dummy method for testing'''
-    print ("BB-nip")
-
-
-
 import inspect
 #reload (say)
 
@@ -70,8 +62,6 @@ from miki_g import createMikiGui2, MikiApp
 import configuration
 #reload (configuration)
 #from configuration import getcf,getcb,getcs
-
-
 
 def checkcurve(curve):
     '''check the curve to be a supported bezier curve'''
@@ -5261,9 +5251,6 @@ def _createGordonGUI():
     App.ActiveDocument.recompute()
 
 
-
-
-
 def compareMaps():
     '''vergleich zwei Maps '''
     (ma,mb)=Gui.Selection.getSelection()
@@ -5795,225 +5782,219 @@ def AA():
 
 
 #TODO : THIS PART CANNOT RUN - MUST BE REWRITTEN MARIWAN
+#---------------------------
+def glaetten():
+    '''interactive add knots to a surface'''
+##\cond
+    layout = '''
+    MainWindow:
+        QtGui.QLabel:
+            setText:"***   Glaetten    D E M O   ***"
+
+        HorizontalGroup:
+            setTitle: "Mode"
+            QtGui.QComboBox:
+                id: 'mode'
+                addItem: "all"
+                #addItem: "none"
+                addItem: "vertical"
+                addItem: "horizontal"
+
+        HorizontalGroup:
+            setTitle: "Tangent Force v"
+            QtGui.QDial:
+                id: 'tbb'
+                setFocusPolicy: QtCore.Qt.StrongFocus
+                valueChanged.connect: app.run
+                setMinimum: 0
+                setValue: 10
+                setMaximum: 20
+
+            QtGui.QDial:
+                id: 'taa'
+                setFocusPolicy: QtCore.Qt.StrongFocus
+                valueChanged.connect: app.run
+                setMinimum: 0
+                setValue: 10
+                setMaximum: 20
 
 
-# #---------------------------
+        HorizontalGroup:
+            setTitle: "Parameter v/h"
+            QtGui.QDial:
+                id: 'udial'
+                setFocusPolicy: QtCore.Qt.StrongFocus
+                valueChanged.connect: app.run
+                setMinimum: -400
+                setMaximum: -10
 
-# def glaetten():
-#     '''interactive add knots to a surface'''
-
-# ##\cond
-#     layout = '''
-#     MainWindow:
-#         QtGui.QLabel:
-#             setText:"***   Glaetten    D E M O   ***"
-
-#         HorizontalGroup:
-#             setTitle: "Mode"
-#             QtGui.QComboBox:
-#                 id: 'mode'
-#                 addItem: "all"
-#                 #addItem: "none"
-#                 addItem: "vertical"
-#                 addItem: "horizontal"
+            QtGui.QDial:
+                id: 'vdial'
+                setFocusPolicy: QtCore.Qt.StrongFocus
+                valueChanged.connect: app.run
+                setMinimum: -400
+                setMaximum: -10
 
 
-#         HorizontalGroup:
-#             setTitle: "Tangent Force v"
-#             QtGui.QDial:
-#                 id: 'tbb'
-#                 setFocusPolicy: QtCore.Qt.StrongFocus
-#                 valueChanged.connect: app.run
-#                 setMinimum: 0
-#                 setValue: 10
-#                 setMaximum: 20
+        QtGui.QPushButton:
+            setText: "Run Action"
+            clicked.connect: app.runT
 
-#             QtGui.QDial:
-#                 id: 'taa'
-#                 setFocusPolicy: QtCore.Qt.StrongFocus
-#                 valueChanged.connect: app.run
-#                 setMinimum: 0
-#                 setValue: 10
-#                 setMaximum: 20
+        QtGui.QPushButton:
+            setText: "close"
+            clicked.connect: app.myclose
+        setSpacer:
+        '''
 
+    class myApp(MikiApp):
 
-#         HorizontalGroup:
-#             setTitle: "Parameter v/h"
-#             QtGui.QDial:
-#                 id: 'udial'
-#                 setFocusPolicy: QtCore.Qt.StrongFocus
-#                 valueChanged.connect: app.run
-#                 setMinimum: -400
-#                 setMaximum: -10
+        def myclose(self):
+            self.close()
 
-#             QtGui.QDial:
-#                 id: 'vdial'
-#                 setFocusPolicy: QtCore.Qt.StrongFocus
-#                 valueChanged.connect: app.run
-#                 setMinimum: -400
-#                 setMaximum: -10
+        def run(self):
+
+            #modus='all'
+            modus='horizontal'
+            modus='vertical'
+            modus=self.root.ids['mode'].currentText()
+
+            print ( self.root.ids)
+            try:
+                fu=self.root.ids['udial'].value()
+                fv=self.root.ids['vdial'].value()
+
+                ta=self.root.ids['taa'].value()
+                tb=self.root.ids['tbb'].value()
 
 
-#         QtGui.QPushButton:
-#             setText: "Run Action"
-#             clicked.connect: app.runT
+            except:
+                return
+            print ("ff",fu,fv,ta,tb)
 
-#         QtGui.QPushButton:
-#             setText: "close"
-#             clicked.connect: app.myclose
-#         setSpacer:
-#         '''
+            srs=Gui.Selection.getSelection()
+            sfs=[s.Shape.Face1.Surface for s in srs]
+            pall=np.zeros(7*7*3).reshape(7,7,3)
 
+            if modus in ['all']:
+                [sfb,sfd,sfc,sfa]=sfs
+                pa=np.array(sfa.getPoles())
+                pb=np.array(sfb.getPoles())
+                pc=np.array(sfc.getPoles())
+                pd=np.array(sfd.getPoles())
+                pall[0:4,0:4]=pb
+                pall[3:8,0:4]=pd
+                pall[0:4,3:8]=pa
+                pall[3:8,3:8]=pc
 
+            elif modus in ['horizontal']:
+                [sfb,sfd]=sfs
+                pb=np.array(sfb.getPoles())
+                pd=np.array(sfd.getPoles())
+                pall[0:4,0:4]=pb
+                pall[3:8,0:4]=pd
 
+            elif modus in ['vertical']:
+                [sfb,sfa]=sfs
+                pa=np.array(sfa.getPoles())
+                pb=np.array(sfb.getPoles())
+                pall[0:4,0:4]=pb
+                pall[0:4,3:8]=pa
 
+            else:
+                print ("nix zu tun")
+                return
 
-#     class myApp(MikiApp):
+            if modus in ['all','vertical']:
+                pall=pall.swapaxes(0,1)
+                ff=fu
 
-#         def myclose(self):
-#             self.close()
-
-#         def run(self):
-
-#             #modus='all'
-#             modus='horizontal'
-#             modus='vertical'
-#             modus=self.root.ids['mode'].currentText()
-
-#             print  (self.root.ids)
-#             try:
-#                 fu=self.root.ids['udial'].value()
-#                 fv=self.root.ids['vdial'].value()
-
-#                 ta=self.root.ids['taa'].value()
-#                 tb=self.root.ids['tbb'].value()
-
-
-#             except:
-#                 return
-#             print ("ff",fu,fv,ta,tb)
-
-#             srs=Gui.Selection.getSelection()
-#             sfs=[s.Shape.Face1.Surface for s in srs]
-#             pall=np.zeros(7*7*3).reshape(7,7,3)
-
-#             if modus in ['all']:
-#                 [sfb,sfd,sfc,sfa]=sfs
-#                 pa=np.array(sfa.getPoles())
-#                 pb=np.array(sfb.getPoles())
-#                 pc=np.array(sfc.getPoles())
-#                 pd=np.array(sfd.getPoles())
-#                 pall[0:4,0:4]=pb
-#                 pall[3:8,0:4]=pd
-#                 pall[0:4,3:8]=pa
-#                 pall[3:8,3:8]=pc
-
-#             elif modus in ['horizontal']:
-#                 [sfb,sfd]=sfs
-#                 pb=np.array(sfb.getPoles())
-#                 pd=np.array(sfd.getPoles())
-#                 pall[0:4,0:4]=pb
-#                 pall[3:8,0:4]=pd
-
-#             elif modus in ['vertical']:
-#                 [sfb,sfa]=sfs
-#                 pa=np.array(sfa.getPoles())
-#                 pb=np.array(sfb.getPoles())
-#                 pall[0:4,0:4]=pb
-#                 pall[0:4,3:8]=pa
-
-#             else:
-#                 print ("nix zu tun")
-#                 return
-
-#             if modus in ['all','vertical']:
-#                 pall=pall.swapaxes(0,1)
-#                 ff=fu
-
-#                 k1=(pall[2]-pall[3])
-#                 k2=(pall[4]-pall[3])
-#                 kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
-#                 kka=[]
-#                 for k in kk:
-#                     try:
-#                         kka += [k.normalize()]
-#                     except:
-#                         kka += [App.Vector()]
-#                 kka=np.array(kka)
+                k1=(pall[2]-pall[3])
+                k2=(pall[4]-pall[3])
+                kk=[FreeCAD.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
+                kka=[]
+                for k in kk:
+                    try:
+                        kka += [k.normalize()]
+                    except:
+                        kka += [FreeCAD.Vector()]
+                kka=np.array(kka)
 
 
-#                 fa=2.0*tb/20
-#                 fb=2.0*(20-tb)/20
-#                 print ("ta tb",ta,tb,fa,fb)
+                fa=2.0*tb/20
+                fb=2.0*(20-tb)/20
+                print ("ta tb",ta,tb,fa,fb)
 
-#                 pall[2]=pall[3]-ff*kka*fa
-#                 pall[4]=pall[3]+ff*kka*fb
-#                 pall=pall.swapaxes(0,1)
+                pall[2]=pall[3]-ff*kka*fa
+                pall[4]=pall[3]+ff*kka*fb
+                pall=pall.swapaxes(0,1)
 
-#             if modus in ['all','horizontal']:
-#                 #pall=pall.swapaxes(0,1)
+            if modus in ['all','horizontal']:
+                #pall=pall.swapaxes(0,1)
 
-#                 k1=(pall[2]-pall[3])
-#                 k2=(pall[4]-pall[3])
-#                 kk=[App.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
+                k1=(pall[2]-pall[3])
+                k2=(pall[4]-pall[3])
+                kk=[FreeCAD.Vector(tuple(kv-kv2)) for kv,kv2 in zip(k1,k2)]
 
-#                 kka=[]
-#                 for k in kk:
-#                     try:
-#                         kka += [k.normalize()]
-#                     except:
-#                         kka += [App.Vector()]
-#                 kka=np.array(kka)
+                kka=[]
+                for k in kk:
+                    try:
+                        kka += [k.normalize()]
+                    except:
+                        kka += [FreeCAD.Vector()]
+                kka=np.array(kka)
 
-#                 fa2=2.0*ta/20
-#                 fb2=2.0*(20-ta)/20
-
-
-#                 ff=fv
-#                 pall[2]=pall[3]-ff*kka*fa2
-#                 pall[4]=pall[3]+ff*kka*fb2
-
-#                 #pall=pall.swapaxes(0,1)
+                fa2=2.0*ta/20
+                fb2=2.0*(20-ta)/20
 
 
-#             if 0: # zeige gesamte flaeche
-#                 poles=pall
-#                 ya=[4,3,4]
-#                 yb=[4,3,4]
-#                 af=Part.BSplineSurface()
-#                 af.buildFromPolesMultsKnots(poles,
-#                     ya,yb,
-#                     range(len(ya)),range(len(yb)),
-#                     False,False,3,3)
-#                 Part.show(af.toShape())
+                ff=fv
+                pall[2]=pall[3]-ff*kka*fa2
+                pall[4]=pall[3]+ff*kka*fb2
 
-#             if modus =='all':
-#                 liste=[pall[0:4,0:4],pall[3:8,0:4],pall[3:8,3:8],pall[0:4,3:8]]
-#             if modus =='vertical':
-#                 liste=[pall[0:4,0:4],pall[0:4,3:8]]
-#             if modus =='horizontal':
-#                 liste=[pall[0:4,0:4],pall[3:8,0:4]]
+                #pall=pall.swapaxes(0,1)
 
-#             for i,poles in  enumerate(liste):
 
-#                     ya=[4,4]
-#                     yb=[4,4]
-#                     af=Part.BSplineSurface()
-#                     af.buildFromPolesMultsKnots(poles,
-#                         ya,yb,
-#                         range(len(ya)),range(len(yb)),
-#                         False,False,3,3)
-#                     #Part.show(af.toShape())
-#                     srs[i].Shape=af.toShape()
+            if 0: # zeige gesamte flaeche
+                poles=pall
+                ya=[4,3,4]
+                yb=[4,3,4]
+                af=Part.BSplineSurface()
+                af.buildFromPolesMultsKnots(poles,
+                    ya,yb,
+                    range(len(ya)),range(len(yb)),
+                    False,False,3,3)
+                Part.show(af.toShape())
 
-#         def runT(self):
-#             App.ActiveDocument.openTransaction("tatata")
-#             self.run()
-#             App.ActiveDocument.commitTransaction()
+            if modus =='all':
+                liste=[pall[0:4,0:4],pall[3:8,0:4],pall[3:8,3:8],pall[0:4,3:8]]
+            if modus =='vertical':
+                liste=[pall[0:4,0:4],pall[0:4,3:8]]
+            if modus =='horizontal':
+                liste=[pall[0:4,0:4],pall[3:8,0:4]]
 
-#     mikigui = createMikiGui2(layout, myApp)
+            for i,poles in  enumerate(liste):
 
-# ##\endcond
+                    ya=[4,4]
+                    yb=[4,4]
+                    af=Part.BSplineSurface()
+                    af.buildFromPolesMultsKnots(poles,
+                        ya,yb,
+                        range(len(ya)),range(len(yb)),
+                        False,False,3,3)
+                    #Part.show(af.toShape())
+                    srs[i].Shape=af.toShape()
+
+        def runT(self):
+            FreeCAD.ActiveDocument.openTransaction("tatata")
+            self.run()
+            FreeCAD.ActiveDocument.commitTransaction()
+
+    mikigui = createMikiGui2(layout, myApp)
+
+##\endcond
+
+
+
 
 
 

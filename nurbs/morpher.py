@@ -25,9 +25,12 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-
+import os,sys
+import Design456Init
 import NURBSinit
+import Part
+import FreeCAD as App
+import FreeCADGui as Gui
 try:
     import numpy as np 
 except ImportError:
