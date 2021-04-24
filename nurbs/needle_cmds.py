@@ -26,8 +26,9 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 
-import sys
-import os
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 try:
     import numpy as np 

@@ -40,12 +40,13 @@ from __future__ import unicode_literals
 
 
 import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
+
 import Part
 import Draft
 
 import NURBSinit
-
-import os
 
 try:
     import numpy as np 

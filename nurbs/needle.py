@@ -37,13 +37,14 @@ from __future__ import unicode_literals
 
 import FreeCAD as App
 import FreeCADGui as Gui 
+import os,sys
 
 import NURBSinit
 
 from PySide import QtGui
 import Part,Mesh,Draft
 
-import os,sys
+
 
 try:
     import numpy as np 

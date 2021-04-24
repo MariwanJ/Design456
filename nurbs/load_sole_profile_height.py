@@ -35,7 +35,8 @@ the skeche contains exactly one bspline curve
 
 # \cond
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 

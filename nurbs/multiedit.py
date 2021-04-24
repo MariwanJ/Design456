@@ -48,11 +48,12 @@ multiple bspline faces editor
 multiple bspline faces editor
 '''
 
-import FreeCAD,Part
-import FreeCADGui as Gui 
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
-import os
+
 
 try:
     import numpy as np 

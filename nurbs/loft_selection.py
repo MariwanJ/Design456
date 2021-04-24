@@ -25,8 +25,10 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import FreeCAD
-import FreeCADGui as Gui 
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
+
 import NURBSinit
 
 

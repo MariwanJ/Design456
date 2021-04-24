@@ -39,13 +39,16 @@ from __future__ import unicode_literals
 from PySide import QtGui,QtCore
 from say import *
 
-import FreeCAD
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
+
 import sys,time
 import random
 
 # create a mesh
 import Mesh,Points
-import os
+
 
 import NURBSinit
 try:

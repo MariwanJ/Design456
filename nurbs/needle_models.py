@@ -41,7 +41,9 @@ myNeedle.Proxy.getExampleModel(.needle_models.modelSpoon)
 
 '''
 
-import os
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 try:
     import numpy as np 

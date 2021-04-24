@@ -27,6 +27,9 @@ from __future__ import unicode_literals
 
 # nurbs tools
 
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 import Part
 

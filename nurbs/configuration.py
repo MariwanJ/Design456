@@ -32,6 +32,8 @@ from __future__ import unicode_literals
 # meta data for the actions
 from PySide import QtGui
 import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 modes = {}
 
 import NURBSinit

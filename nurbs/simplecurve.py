@@ -38,12 +38,13 @@ import random
 import Draft,Part
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 
 from scipy.signal import argrelextrema
-import os
+
 
 try:
     import numpy as np 

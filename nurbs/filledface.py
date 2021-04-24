@@ -38,9 +38,10 @@ the edges can be separate object but edges of complex shapes too
 the numbers n1, n2, n3 defines the edge number of the underlying shape
 '''
 
-
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
+
 
 import NURBSinit
 

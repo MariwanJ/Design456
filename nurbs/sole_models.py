@@ -29,8 +29,9 @@ from __future__ import unicode_literals
 sole model collection 
 the model can be selected by the listModels method
 '''
-
-import os
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 

@@ -35,7 +35,9 @@ an example is the dynamic offset node which controls the offset by a floatlist
 
 from say import *
 import pyob
-
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 import NURBSinit
 ## A list for Floats
 
