@@ -31,8 +31,10 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 
 import NURBSinit
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
-import os
 
 try:
     import numpy as np 

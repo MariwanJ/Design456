@@ -45,7 +45,9 @@ from PySide import QtGui, QtCore
 from say import *
 
 import FreeCAD as App
-import sys
+import FreeCADGui as Gui
+import os, sys
+
 import time
 import random
 

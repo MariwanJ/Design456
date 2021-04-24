@@ -36,7 +36,8 @@ import Draft
 # -- GNU Lesser General Public License (LGPL)
 # -------------------------------------------------
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 #import matplotlib.colors as colors

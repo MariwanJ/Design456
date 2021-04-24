@@ -35,7 +35,10 @@ from __future__ import unicode_literals
 # -------------------------------------------------
 from pivy import coin
 from say import *
-import os
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
+
 
 import NURBSinit
 try:

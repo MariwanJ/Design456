@@ -26,16 +26,14 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 
-
-import os
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 try:
     import numpy as np 
 except ImportError:
     print ("Please install the required module : numpy")
-    
-import FreeCAD as App
-import FreeCADGui as Gui 
 
 import NURBSinit
 

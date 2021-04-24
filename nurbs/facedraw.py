@@ -41,7 +41,8 @@ from PySide import QtGui,QtCore
 from say import *
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 import sys,time

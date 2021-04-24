@@ -45,7 +45,10 @@ import NURBSinit'''
 
 from spreadsheet_lib import ssa2npa, npa2ssa, cellname
 import spreadsheet_lib
-import os,sys
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
+
 from say import *
 
 import Part

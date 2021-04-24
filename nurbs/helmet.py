@@ -36,16 +36,14 @@ from __future__ import unicode_literals
 
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 import Sketcher
 import Part
 from say import *
 
-
-
-import os
 
 try:
     import numpy as np

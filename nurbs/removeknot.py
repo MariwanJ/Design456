@@ -26,10 +26,13 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
+
 import Points
 import Part
 import Draft
-import os
+
 
 import NURBSinit
 

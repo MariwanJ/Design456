@@ -44,6 +44,9 @@ from say import *
 import Points
 
 import NURBSinit
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 
 # test data

@@ -28,7 +28,9 @@ from __future__ import unicode_literals
 ''' save sketches into a sketch lib, load sketches into models ''' 
 from say import *
 
-
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
 
 try:
     import numpy as np 
@@ -39,9 +41,6 @@ import pyob
 
 import time
 import glob
-
-import FreeCAD as App
-import FreeCADGui as Gui 
 
 import NURBSinit
 import PySide

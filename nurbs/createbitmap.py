@@ -31,7 +31,10 @@ from PySide import QtGui, QtCore
 import PySide
 import time
 
-import os
+import FreeCAD as App
+import FreeCADGui as Gui
+import os, sys
+
 
 try:
     import numpy as np

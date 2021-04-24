@@ -6,9 +6,11 @@
 # --
 # -- GNU Lesser General Public License (LGPL)
 # -------------------------------------------------
-
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
+
+
 
 import NURBSinit
 import controlpanel
@@ -16,7 +18,7 @@ import controlpanel
 from PySide import QtCore, QtGui
 from pivy import coin
 import Part
-import os
+
 import FACE_D as faced
 try:
     import numpy as np

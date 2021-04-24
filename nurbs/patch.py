@@ -40,7 +40,8 @@ from __future__ import unicode_literals
 from say import *
 
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 
@@ -50,7 +51,6 @@ import Mesh
 import Draft
 import Points
 
-import os
 
 try:
     import numpy as np 

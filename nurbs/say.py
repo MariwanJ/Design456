@@ -36,11 +36,11 @@ from __future__ import unicode_literals
 
 # \cond
 import FreeCAD as App
-import FreeCADGui as Gui 
+import FreeCADGui as Gui
+import os, sys
 
 import NURBSinit
 
-import os,sys 
 
 # \endcond
 

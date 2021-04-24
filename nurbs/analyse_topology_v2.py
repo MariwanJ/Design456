@@ -39,8 +39,8 @@ from __future__ import unicode_literals
 
 import FreeCAD as App
 import FreeCADGui as Gui
-import random
 import os, sys
+import random
 import Part
 import Points
 import time
