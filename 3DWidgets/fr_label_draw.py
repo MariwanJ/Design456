@@ -66,7 +66,7 @@ def calculateAlignment(vectors,align):
 
     if len(vectors)<2:
         return (0,0,0)  #We don't have any vectors, return zero 
-      '''
+        '''
         The shape is like this
                                 p1___________________ p2  
                                 |                    |
@@ -100,37 +100,43 @@ def calculateAlignment(vectors,align):
         #Align LEFT-TOP
         pass
         
-def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=FR_ALIGN.FR_NO_ALIGN, trans=(0, 0, 0), text=''):
-    global textNode
+def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=FR_ALIGN.FR_NO_ALIGN, trans=App.Vector(0.0, 0.0, 0.0), text=''):
+    try:
+        global _textNode
 
-    _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
-    font = coin.SoFont()
-    _transform=coin.SoTransform()    #determine location
-    _text = coin.SoText2()              #Draw text in the 2D world #TODO: Should be 3D world?
-    _text.string.setValue(text)         #Actual text
-    _transNode = coin.SoTransform()
-    font.Name=labelfont                 #Font used
-    font.size=size                      #Font size
-    coinColor = coin.SoMaterial()       #Font color
-    binding = coin.SoMaterialBinding()
-    binding.value = coin.SoMaterialBinding.PER_PART 
-    coinColor.rgb = labelcolor
-    ''' TODO :FIXME
-    if align== FR_ALIGN.FR_NO_ALIGN:    #If there is no alignment, 
-                               #we use the transNode. trans will not have effect if there is an alignment
-        #TODO: Don't know how to do this. Must read, and experiment with this.
-        _transNode.translation.setValue(trans)
-        _text.justification = coin.SoText2.LEFT  #This must be as value not fixed #TODO FIXME
-    else:
-        _transNode.translation.setValue(calculateAlignment)
-        '''
-    _textNode.addChild(font)
-    _textNode.addChild(_transform)
-    _textNode.addChild(_transNode)
-    _textNode.addChild(coinColor)
-    _textNode.addChild(binding)
-    _textNode.addChild(_text)
-    return _textNode  # Return the created SoSeparator that contains the text
+        _transPosition = coin.SoTransform()
+        pos=[]
+       #_transPosition.translation.setValue(trans)
+        font = coin.SoFont()
+        font.size=size                      #Font size   
+        #font.Name=labelfont                 #Font used
+        _text3D = coin.SoAsciiText()           #Draw text in the 3D world 
+        _text3D.string.setValue(text)         #Actual text
+
+        coinColor = coin.SoMaterial()       #Font color
+        coinColor.diffuseColor.set1Value(0, coin.SbColor(*labelcolor))
+        _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
+        ''' TODO :FIXME
+        if align== FR_ALIGN.FR_NO_ALIGN:    #If there is no alignment, 
+                                   #we use the transNode. trans will not have effect if there is an alignment
+            #TODO: Don't know how to do this. Must read, and experiment with this.
+            _transNode.translation.setValue(trans)
+            _text.justification = coin.SoText2.LEFT  #This must be as value not fixed #TODO FIXME
+        else:
+            _transNode.translation.setValue(calculateAlignment)
+            '''
+        #_textNode.addChild(_transPosition)
+        _textNode.addChild(coinColor)
+        _textNode.addChild(font)
+        _textNode.addChild(_text3D)
+        return _textNode  # Return the created SoSeparator that contains the text
+    except Exception as err:
+        App.Console.PrintError("'Design456_Extract' Failed. "
+                                   "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
 
     """@property
     def font(self):

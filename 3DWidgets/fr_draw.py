@@ -45,7 +45,6 @@ def draw_Point(p1, color):
         line = coin.SoLineSet()
         line.vertexProperty = v
         style = coin.SoDrawStyle()
-        style.lineWidth = LineWidth
         dash.addChild(style)
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = color
