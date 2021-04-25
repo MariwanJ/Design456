@@ -46,7 +46,7 @@ class Design456_Part_Tools:
 
     def GetResources(self):
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/Part_Tools.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'Part_Tools.svg',
             'MenuText': 'Tools',
             'ToolTip':  'Tools'
         }

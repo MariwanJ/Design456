@@ -310,7 +310,7 @@ class Design456_Tweak(gui_move.Move):
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Design456_Tweak.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_Tweak.svg',
             'MenuText': 'Tweak',
             'ToolTip':  'Tweak Object'
         }

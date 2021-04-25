@@ -39,7 +39,7 @@ class Design456_Workbench (Workbench):
     runOnce =None 
     def __init__(self):
         import Design456Init
-        self.__class__.Icon = Design456Init.ICON_PATH + '/WorkbenchIcon.svg'
+        self.__class__.Icon = Design456Init.ICON_PATH + 'WorkbenchIcon.svg'
         self.__class__.MenuText = "Design456"
         self.__class__.ToolTip = "A workbench easy designing objects"
         self.runOnce=True

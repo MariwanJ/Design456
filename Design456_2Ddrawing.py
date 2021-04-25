@@ -53,7 +53,7 @@ class Design456_2Ddrawing:
 
     def GetResources(self):
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/2D_Drawing.svg',
+            'Pixmap':    Design456Init.ICON_PATH + '2D_Drawing.svg',
             'MenuText': '2Ddrawing',
             'ToolTip':  '2Ddrawing'
         }
@@ -131,7 +131,7 @@ class Design456_Arc3Points:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Arc3Points.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Arc3Points.svg',
             'MenuText': 'Arc3Points',
                         'ToolTip':  'Arc 3Points'
         }
@@ -194,7 +194,7 @@ class Design456_MultiPointsToWireClose:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireClosed.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'MultiPointsToWireClosed.svg',
             'MenuText': 'Multi-Points To Wire Closed',
                         'ToolTip':  'Multi-Points To Wire Closed'
         }
@@ -212,7 +212,7 @@ class Design456_MultiPointsToWireOpen:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/MultiPointsToWireOpen.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'MultiPointsToWireOpen.svg',
             'MenuText': 'Multi-Points To Wire Open',
                         'ToolTip':  'Multi-Points To Wire Open'
         }
@@ -381,7 +381,7 @@ class Design456_2DTrim:
     def GetResources(self):
         import Design456Init
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/2D_TrimLine.svg',
+            'Pixmap': Design456Init.ICON_PATH + '2D_TrimLine.svg',
             'MenuText': 'Trim Line',
                         'ToolTip':  'Trim Line or edge in a 2D shape'
         }
@@ -448,7 +448,7 @@ class Design456_2DExtend:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/2D_ExtendLine.svg',
+            'Pixmap': Design456Init.ICON_PATH + '2D_ExtendLine.svg',
             'MenuText': 'Extend Line',
                         'ToolTip':  'Extend Existing Line'
         }
@@ -484,8 +484,8 @@ class ViewProviderBox:
         pass
 
     def getIcon(self):
-        # return str(App.getUserAppDataDir()) + 'Mod' + '/Pyramids-and-Polyhedrons/Resources/Icons/' + (self.obj_name).lower() + '.svg'
-        return (Design456Init.ICON_PATH + '/Design456_Star.svg')
+        # return str(App.getUserAppDataDir()) + 'Mod' + 'Pyramids-and-Polyhedrons/Resources/Icons/' + (self.obj_name).lower() + '.svg'
+        return (Design456Init.ICON_PATH + 'Design456_Star.svg')
 
     def __getstate__(self):
         return None

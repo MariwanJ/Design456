@@ -40,19 +40,11 @@ __dir__ = os.path.dirname(__file__)
 ICON_PATH = os.path.join(__dir__, 'Resources/icons/')
 IMAGE_PATH = os.path.join(__dir__, 'Resources/images/')
 #Pyramid shapes 
-PYRAMID_PATH = os.path.join(__dir__, 'PyramidMo')
+PYRAMID_PATH = os.path.join(__dir__, 'PyramidMo/')
 PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons/')
 
 #Coin3D New widget system 
-WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets')
-
-#Nurbs  -Nurbs
-NURBS_PATH=os.path.join(__dir__,'nurbs')
-NURBS_DATA_PATH=os.path.join(__dir__,'nurbs/Resources/Documents/testdata/')
-NURBS_ICON_PATH=os.path.join(__dir__,'nurbs/Resources/icons/')
-NURBS_IMAGES_PATH=os.path.join(__dir__,'nurbs/Resources/images/')
-
-
+WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets/')
 
 # PART
 App.addImportType("BREP format (*.brep *.brp)", "Part")

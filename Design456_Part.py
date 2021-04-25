@@ -75,7 +75,7 @@ class Design456_Part:
 
     def GetResources(self):
         return{
-            'Pixmap':   Design456Init.ICON_PATH + '/Part_Box.svg',
+            'Pixmap':   Design456Init.ICON_PATH + 'Part_Box.svg',
             'MenuText': 'Box',
                         'ToolTip': 'Box'
         }
@@ -111,7 +111,7 @@ class Design456_Part_Box:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Box.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Box.svg',
             'MenuText': 'Part_Box',
                         'ToolTip':  'Part Box'
         }
@@ -141,7 +141,7 @@ class Design456_Part_Cylinder:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Cylinder.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Cylinder.svg',
             'MenuText': 'Part_Cylinder',
                         'ToolTip':  'Part Cylinder'
         }
@@ -170,7 +170,7 @@ class Design456_Part_Tube:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Tube.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Tube.svg',
             'MenuText': 'Part_Tube',
                         'ToolTip':  'Part Tube'
         }
@@ -199,7 +199,7 @@ class Design456_Part_Sphere:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Sphere.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Sphere.svg',
             'MenuText': 'Part_Sphere',
                         'ToolTip':  'Part Sphere'
         }
@@ -228,7 +228,7 @@ class Design456_Part_Cone:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Cone.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Cone.svg',
             'MenuText': 'Part_Cone',
                         'ToolTip':  'Part Cone'
         }
@@ -257,7 +257,7 @@ class Design456_Part_Torus:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Torus.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Torus.svg',
             'MenuText': 'Part_Torus',
                         'ToolTip':  'Part Torus'
         }
@@ -287,7 +287,7 @@ class Design456_Part_Wedge:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Wedge.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Wedge.svg',
             'MenuText': 'Part_Wedge',
                         'ToolTip':  'Part Wedge'
         }
@@ -316,7 +316,7 @@ class Design456_Part_Prism:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Prism.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Prism.svg',
             'MenuText': 'Part_Prism',
                         'ToolTip':  'Part Prism'
         }
@@ -391,7 +391,7 @@ class Design456_Part_Pyramid:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Pyramid.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Pyramid.svg',
             'MenuText': 'Part_Pyramid',
                         'ToolTip':  'Part Pyramid'
         }
@@ -441,7 +441,7 @@ class Design456_Part_Hemisphere:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Hemisphere.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Hemisphere.svg',
             'MenuText': 'Part_Hemisphere',
                         'ToolTip':  'Part Hemisphere'
         }
@@ -472,7 +472,7 @@ class Design456_Part_Ellipsoid:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Ellipsoid.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Ellipsoid.svg',
             'MenuText': 'Part_Ellipsoid',
                         'ToolTip':  'Part Ellipsoid'
         }
@@ -509,7 +509,7 @@ class Design_ColorizeObject:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Design456_Colorize.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_Colorize.svg',
             'MenuText': 'Colorize object',
                         'ToolTip':  'Colorize object randomly'
         }
