@@ -35,13 +35,43 @@ from constant import FR_ALIGN
 
 #todo continue fixing this code 2021-04-23 Mariwan
 def calculateAlignment(vectors,align):
-    if len(vectors)==2:
+    p1=p2=p3=p4=None
+    #These variables will keep the min value of each coordinations
+        #WE HAVE LEFT ALIGNMENT
+        minX=minY=minZ=maxX=minY=minZ=None
+    if FourVector:
+        minX=min([p1.x,p2.x,p3.x,p4.x])
+        minY=min([p1.y,p2.y,p3.y,p4.y])
+        minZ=min([p1.z,p2.z,p3.z,p4.z])
+    else:
+        minX=min([p1.x,p2.x:])
+        minY=min([p1.y,p2.y:])
+        minZ=min([p1.z,p2.z])
+    if FourVector:
+        maxX=max([p1.x,p2.x,p3.x,p4.x])
+        maxY=max([p1.y,p2.y,p3.y,p4.y])
+        maxZ=max([p1.z,p2.z,p3.z,p4.z])
+    else:
+        maxX=max([p1.x,p2.x:])
+        maxY=max([p1.y,p2.y:])
+        maxZ=max([p1.z,p2.z])
+
+    
+    FourVector=False
+    if len(vectors)<2:
         return (0,0,0)  #We don't have any vectors, return zero 
+    
     p1=vectors[0]
     p2=vectors[1]
+    if len(vectors==4):
+        FourVector=True
+        p3=vectors[0]
+        p4=vectors[1]
+        
     if align==FR_ALIGN.FR_ALIGN_LEFT or align==FR_ALIGN.FR_ALIGN_LEFT_BOTTOM:
-        #WE HAVE LEFT ALIGNMENT
-        pass
+
+        
+        
         return (p1)
         
     elif align==FR_ALIGN.FR_ALIGN_RIGHT or align==FR_ALIGN.FR_ALIGN_RIGHT_BOTTOM:
