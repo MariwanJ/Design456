@@ -173,7 +173,7 @@ class Design456_loftOnDirection_ui(object):
     def checkIfShapeIsValid(self):
         geTobject = Gui.Selection.getSelectionEx()[0]
         selectedEdge = geTobject.SubObjects[0]      # select one element
-        """This must be fix it. I don't know how to distinguish between 2s and 3d objects.
+        """This must be fixed. I don't know how to distinguish between 2s and 3d objects.
         I will return for now always 0 but this MUST BE FIXED.2021-02-03 Mariwan
         if(selectedEdge.Volume ==0):
                 #We have a 2D shape .. 
