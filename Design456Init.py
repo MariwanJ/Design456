@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 import os,sys
 import FreeCAD as App
 """
-This file will add all pathes needed for the Design456.
+This file will add all paths needed for the Design456.
 It makes life easier. By doing that you can import any file
 in any of the subdirectories. Adding more subdirectories
 needs be added here. 
@@ -48,7 +48,7 @@ WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets')
 
 #Nurbs  -Nurbs
 NURBS_PATH=os.path.join(__dir__,'nurbs')
-NURBS_DATA_PATH=os.path.join(__dir__,'burbs/Resources/Documents/testdata/')
+NURBS_DATA_PATH=os.path.join(__dir__,'nurbs/Resources/Documents/testdata/')
 NURBS_ICON_PATH=os.path.join(__dir__,'nurbs/Resources/icons/')
 NURBS_IMAGES_PATH=os.path.join(__dir__,'nurbs/Resources/images/')
 
