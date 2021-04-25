@@ -107,7 +107,7 @@ class Design456_SplitObject:
             
     def GetResources(self):
         return{
-            'Pixmap':   Design456Init.ICON_PATH + '/SplitObject.svg',
+            'Pixmap':   Design456Init.ICON_PATH + 'SplitObject.svg',
             'MenuText': 'Split Object',
             'ToolTip': 'Divide object in to two parts'
         }

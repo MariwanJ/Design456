@@ -142,7 +142,7 @@ class Design456_unifySplitFuse1:
             return 0
     def GetResources(self):
             return{
-            'Pixmap':    Design456Init.ICON_PATH + '/unifySplitFuse1.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'unifySplitFuse1.svg',
             'MenuText': 'unify-Split & Fuse',
             'ToolTip':  'unify Split and Fuse'
         }
@@ -288,7 +288,7 @@ class Design456_unifySplitFuse2:
             return 0
     def GetResources(self):
             return{
-            'Pixmap':    Design456Init.ICON_PATH + '/UnifySplitFuse2.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'UnifySplitFuse2.svg',
             'MenuText': 'unify-Split & Fuse 2',
             'ToolTip':  'unify Split and Fuse2'
         }

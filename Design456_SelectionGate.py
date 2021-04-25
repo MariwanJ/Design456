@@ -52,7 +52,7 @@ class Design456_SelectionGate:
     def GetResources(self):
         import Design456Init
         return{
-            'Pixmap':    Design456Init.ICON_PATH + '/2D_Drawing.svg',
+            'Pixmap':    Design456Init.ICON_PATH + '2D_Drawing.svg',
             'MenuText': '2Ddrawing',
             'ToolTip':  '2Ddrawing'
         }
@@ -73,7 +73,7 @@ class GateSelect0:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/SelectionModeBody.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'SelectionModeBody.svg',
             'MenuText': 'Body Selection Mode',
             'ToolTip':  'Body Selection Mode'
         }
@@ -93,7 +93,7 @@ class GateSelect1:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/SelectionModeFace.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'SelectionModeFace.svg',
             'MenuText': 'Body Selection Mode',
             'ToolTip':  'Body Selection Mode'
         }
@@ -113,7 +113,7 @@ class GateSelect2:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/SelectionModeEdges.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'SelectionModeEdges.svg',
             'MenuText': 'Body Selection Mode',
             'ToolTip':  'Body Selection Mode'
         }
@@ -138,7 +138,7 @@ class GateSelect3:
             
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/SelectionModeVertex.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'SelectionModeVertex.svg',
             'MenuText': 'Body Selection Mode',
             'ToolTip':  'Body Selection Mode'
         }

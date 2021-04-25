@@ -168,7 +168,7 @@ class ViewProviderBox:
         pass
 
     def getIcon(self):
-        # return str(App.getUserAppDataDir()) + 'Mod' + '/Pyramids-and-Polyhedrons/Resources/Icons/' + (self.obj_name).lower() + '.svg'
+        # return str(App.getUserAppDataDir()) + 'Mod' + 'Pyramids-and-Polyhedrons/Resources/Icons/' + (self.obj_name).lower() + '.svg'
         return getWorkbenchFolder() + "/Resources/Icons/' + (self.obj_name).lower() + '.svg'"
 
     def __getstate__(self):
@@ -288,7 +288,7 @@ class Pyramid:
 class PyramidCommand:
 
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + '/Resources/Icons/pyramid.svg',
+        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/pyramid.svg',
                 'Accel': "Shift+P",
                 'MenuText': "Pyramid",
                 'ToolTip': "Generate a Pyramid with any number of sides"}
@@ -375,7 +375,7 @@ class Tetrahedron:
 class TetrahedronCommand:
 
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + '/Resources/Icons/tetrahedron.svg',
+        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/tetrahedron.svg',
                 'Accel': "Shift+T",
                 'MenuText': "Tetrahedron",
                 'ToolTip': "Generate a Tetrahedron"}
@@ -461,7 +461,7 @@ class Hexahedron:
 class HexahedronCommand:
 
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + '/Resources/Icons/hexahedron.svg',
+        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/hexahedron.svg',
                 'Accel': "Shift+T",
                 'MenuText': "Hexahedron",
                 'ToolTip': "Generate a Hexahedron"}
@@ -536,7 +536,7 @@ class Octahedron:
 class OctahedronCommand:
 
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + '/Resources/Icons/octahedron.svg',
+        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/octahedron.svg',
                 'Accel': "Shift+O",
                 'MenuText': "Octahedron",
                 'ToolTip': "Generate a Octahedron"}
@@ -651,7 +651,7 @@ class Dodecahedron:
 
 class DodecahedronCommand:
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + '/Resources/Icons/dodecahedron.svg',
+        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/dodecahedron.svg',
                 'Accel': "Shift+D",
                 'MenuText': "Dodecahedron",
                 'ToolTip': "Generate a Dodecahedron"}
@@ -752,7 +752,7 @@ class Icosahedron:
 
 class IcosahedronCommand:
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + '/Resources/Icons/icosahedron.svg',
+        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/icosahedron.svg',
                 'Accel': "Shift+I",
                 'MenuText': "Icosahedron",
                 'ToolTip': "Generate a Icosahedron"}
@@ -941,7 +941,7 @@ class Icosahedron_truncated:
 
 class IcosahedronTrCommand:
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + '/Resources/Icons/icosahedron_trunc.svg',
+        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/icosahedron_trunc.svg',
                 'Accel': "Shift+F",
                 'MenuText': "Icosahedron truncated",
                 'ToolTip': "Generate a Truncated Icosahedron (football)"}
@@ -1132,7 +1132,7 @@ class Geodesic_sphere:
 
 class GeodesicSphereCommand:
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + '/Resources/Icons/geodesic_sphere.svg',
+        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/geodesic_sphere.svg',
                 'Accel': "Shift+G",
                 'MenuText': "Geodesic sphere",
                 'ToolTip': "Generate Geodesic Spheres"}

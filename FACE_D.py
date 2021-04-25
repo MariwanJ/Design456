@@ -314,7 +314,7 @@ class PartMover:
 
 
 class getInfo:
-    def __init__(self, object):
+    def __init__(self, object=None):
         self.obj = object
 
     def getFaceName(self):

@@ -91,7 +91,7 @@ class Design456_Part_Merge:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Merge.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Merge.svg',
             'MenuText': 'Part_Merge',
             'ToolTip':  'Part Merge'
         }
@@ -151,7 +151,7 @@ class Design456_Part_Subtract:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Subtract.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Subtract.svg',
             'MenuText': 'Part_Subtract',
             'ToolTip':  'Part Subtract'
         }
@@ -201,7 +201,7 @@ class Design456_Part_Intersect:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Intersect.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Intersect.svg',
             'MenuText': 'Part_Intersect',
             'ToolTip':  'Part Intersect'
         }
@@ -247,7 +247,7 @@ class Design456_Part_Group:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Group.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Group.svg',
             'MenuText': 'Part_Group',
             'ToolTip':  'Part Group'
         }
@@ -296,7 +296,7 @@ class Design456_Part_Compound:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Design456_Part_Compound.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_Part_Compound.svg',
             'MenuText': 'Part Compound',
             'ToolTip':  'Part Compound'
         }
@@ -361,7 +361,7 @@ class Design456_Part_Shell:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/PartDesign_Shell.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Shell.svg',
             'MenuText': 'Part_Shell',
             'ToolTip':  'Part Shell'
         }
@@ -437,7 +437,7 @@ class Design456_Part_Fillet:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Fillet.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Fillet.svg',
             'MenuText': 'Part_Fillet',
             'ToolTip':  'Part Fillet'
         }
@@ -505,7 +505,7 @@ class Design456_Part_Chamfer:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + '/Part_Chamfer.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Part_Chamfer.svg',
             'MenuText': 'Part_Chamfer',
             'ToolTip':  'Part Chamfer'
         }
