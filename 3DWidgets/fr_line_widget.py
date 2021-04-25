@@ -132,33 +132,20 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             usedColor = self._inactiveColor
         if self.is_visible():
             linedraw =fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
-            lbl=self.draw_label()  
+            _lbl=self.draw_label()  
+            self._parent.addSoNodeToSoSwitch(_lbl)
             # put the node inside the switch
             self.addSeneNodes(linedraw)  # Add SoSeparator
             # Add SoSeparator as child to Switch
             self.addSoNodeToSoSwitch(self._widgetCoinNode)
-            self._parent.addSoSwitch(lbl)
-            # Add the switch to the SeneGraph
-            self._parent.addSoSwitch(self._wdgsoSwitch)
-
+            # Add the switch to the SeneGrap
+            self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
         else:
             return  # We draw nothing .. This is here just for clarifying the code
         
     def draw_label(self):
         #todo: There must be away to align the text .. this is just kinda a tes
-        #try to test this didn't work for me 
-        #p1=self._vector[0]
-        #p2=self._vector[1]
-        #print (p1)
-        #print(p2)
-        #print(p1.x)
-        #middelOfTheLine=( (p1.x+p2.x/2), 
-        #                  (p1.y+p2.y/2),
-        #                  (p1.z+p2.z/2)
-        #                )
-        #
-
-        lbl=fr_label_draw.draw_label(self._lblColor,'sans',14,self._vector[0],self._label)
+        lbl=fr_label_draw.draw_label(self._lblColor,'sans',14,self._vector,self._label)
         return lbl
         
     

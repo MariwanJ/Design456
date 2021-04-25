@@ -106,7 +106,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
                 self.addSeneNodes(list)                         #Add SoSeparator
                 for i in list: 
                     self.addSoNodeToSoSwitch(i)  #Add SoSeparator as child to Switch
-                self._parent.addSoSwitch(self._wdgsoSwitch)     #Add the switch to the SeneGraph
+                self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)     #Add the switch to the SeneGraph
             else:
                 raise ValueError("Couldn't draw the Fr_SquareFrame_Widget")
         else:

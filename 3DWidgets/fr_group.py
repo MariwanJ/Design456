@@ -83,18 +83,23 @@ class Fr_Group(fr_widget.Fr_Widget):
         Before deactivating the group, we have to remove all children.
         Think about, you might have several groups inside the Fr_CoinWindow
         """
-        for widget in self._children:
-            # Remove objects in the Root_SeneGraph
-            self.removeSeneNode(widget._wdgsoSwitch)
-            self.removeSeneNode(widget._widgetCoinNode)
-            # Remove the widget itself from the group
-            children.remove(_children)
-            del widget
-        del self.children
+        try:
+            for widget in self._children:
+                # Remove objects in the Root_SeneGraph
+                self.removeSeneNode(widget._wdgsoSwitch)
+                self.removeSeneNode(widget._widgetCoinNode)
+                # Remove the widget itself from the group
+                del widget
+            del self._children
+        except Exception:
+            pass   # just go out
 
-    def addSoSwitch(self, _soSwitch):
+    def addSoSwitchToSeneGraph(self, _soSwitch):
         """ Add new switch tree to the SeneGraph"""
+        print("--------------")
+        print(_soSwitch)
         self.Root_SeneGraph.addChild(_soSwitch)  # add sen to the root
+        print("--------------")
 
     # Remove the switches and their children.
     def removeSoSwitch(self, _soSwitch):
