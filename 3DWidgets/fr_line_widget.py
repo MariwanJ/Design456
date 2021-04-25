@@ -132,10 +132,11 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             usedColor = self._inactiveColor
         if self.is_visible():
             linedraw =fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
-            _lbl=self.draw_label()  
-            self._parent.addSoNodeToSoSwitch(_lbl)
-            # put the node inside the switch
-            self.addSeneNodes(linedraw)  # Add SoSeparator
+            _lbl=self.draw_label() 
+            listofSeneNodes=[] 
+            listofSeneNodes.append(_lbl)
+            listofSeneNodes.append(linedraw)
+            self.addSeneNodes(listofSeneNodes)  # Add SoSeparator
             # Add SoSeparator as child to Switch
             self.addSoNodeToSoSwitch(self._widgetCoinNode)
             # Add the switch to the SeneGrap

@@ -83,7 +83,6 @@ class Fr_Widget (object):
             args = []
         self._vector = args       # This should be like App.vectors
         self._label = label
-        self._widgetCoinNode = coin.SoSeparator()
         self._visible = True
         self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
         self._activeColor = constant.FR_COLOR.FR_BLUE3
@@ -95,7 +94,8 @@ class Fr_Widget (object):
         self._parent = None
         self._widgetType = constant.FR_WidgetType.FR_WIDGET
         self._hasFocus = False
-        # each node is a child of the switch, Add drawings a children for this switch
+        self._widgetCoinNode = None     #Should be defined in the widget either one or a list
+        # each node is a child of one switch, Add drawings a children for this switch
         self._wdgsoSwitch = coin.SoSwitch()
         self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
