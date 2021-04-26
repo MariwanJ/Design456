@@ -94,13 +94,21 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         self.draw()
 
-
     def deactivate(self):
         """
         Like exit in normal window. This will end the windows
         """
         self.exitFr_Window()
+        
+    def addSoSwitchToSeneGraph(self, _soSwitch):
+        """ Add new switch tree to the SeneGraph"""
+        self.Root_SeneGraph.addChild(_soSwitch)  # add sen to the root
 
+    # Remove the switches and their children.
+    def removeSoSwitch(self, _soSwitch):
+        """ remove switch tree from the SeneGraph"""
+        self.Root_SeneGraph.removeChild(_soSwitch)
+        
     def callback(self, data):
         # not sure what I should do here yet.
         pass
