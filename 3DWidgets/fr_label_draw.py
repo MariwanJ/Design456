@@ -100,7 +100,7 @@ def calculateAlignment(vectors,align):
         #Align LEFT-TOP
         pass
         
-def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=20,align=FR_ALIGN.FR_NO_ALIGN, trans=App.Vector(0.0, 0.0, 0.0), text=''):
+def draw_label(labelcolor=(1, 0, 1), labelfont='sans', size=20,align=FR_ALIGN.FR_NO_ALIGN, trans=App.Vector(0.0, 0.0, 0.0), text=''):
     try:
         global _textNode
 
@@ -112,14 +112,17 @@ def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=20,align=FR_AL
         #font.Name=labelfont                 #Font used
         _text3D = coin.SoAsciiText()           #Draw text in the 3D world 
         _text3D.string.setValue(text)         #Actual text
-
+        print(labelcolor)
+        color=(1,0,0)
         coinColor = coin.SoMaterial()       #Font color
-        coinColor.diffuseColor.set1Value(0, coin.SbColor(*labelcolor))
+        coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
         _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
         _textNode.addChild(_transPosition)
         _textNode.addChild(coinColor)
         _textNode.addChild(font)
         _textNode.addChild(_text3D)
+        root=Gui.ActiveDocument.ActiveView.getSceneGraph()
+        root.addChild(_textNode)
         return _textNode  # Return the created SoSeparator that contains the text
     except Exception as err:
         App.Console.PrintError("'Design456_Extract' Failed. "
