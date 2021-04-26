@@ -100,7 +100,7 @@ def calculateAlignment(vectors,align):
         #Align LEFT-TOP
         pass
         
-def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=FR_ALIGN.FR_NO_ALIGN, trans=App.Vector(0.0, 0.0, 0.0), text=''):
+def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=20,align=FR_ALIGN.FR_NO_ALIGN, trans=App.Vector(0.0, 0.0, 0.0), text=''):
     try:
         global _textNode
 
@@ -116,16 +116,7 @@ def draw_label(labelcolor=(1.0, 0.0, 1.0), labelfont='sans', size=14,align=FR_AL
         coinColor = coin.SoMaterial()       #Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*labelcolor))
         _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
-        ''' TODO :FIXME
-        if align== FR_ALIGN.FR_NO_ALIGN:    #If there is no alignment, 
-                                   #we use the transNode. trans will not have effect if there is an alignment
-            #TODO: Don't know how to do this. Must read, and experiment with this.
-            _transNode.translation.setValue(trans)
-            _text.justification = coin.SoText2.LEFT  #This must be as value not fixed #TODO FIXME
-        else:
-            _transNode.translation.setValue(calculateAlignment)
-            '''
-        #_textNode.addChild(_transPosition)
+        _textNode.addChild(_transPosition)
         _textNode.addChild(coinColor)
         _textNode.addChild(font)
         _textNode.addChild(_text3D)
