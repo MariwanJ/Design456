@@ -44,8 +44,8 @@ class Fr_Group(fr_widget.Fr_Widget):
     global _mainfrCoinWindow
     global _mainfrQtWindow
     global _children
-    # def __init__(self, args:fr_widget.VECTOR=None,l=""):
-
+   
+    
     def __init__(self, args: List[App.Vector] = [], l: str = ""):
         if args == None:
             args = []
@@ -93,18 +93,6 @@ class Fr_Group(fr_widget.Fr_Widget):
             del self._children
         except Exception:
             pass   # just go out
-
-    def addSoSwitchToSeneGraph(self, _soSwitch):
-        """ Add new switch tree to the SeneGraph"""
-        print("--------------")
-        print(_soSwitch)
-        self.Root_SeneGraph.addChild(_soSwitch)  # add sen to the root
-        print("--------------")
-
-    # Remove the switches and their children.
-    def removeSoSwitch(self, _soSwitch):
-        """ remove switch tree from the SeneGraph"""
-        self.Root_SeneGraph.removeChild(_soSwitch)
 
     # All events distributed by this function. We classify the event to be processed by each widget later.
     def handle(self, events):

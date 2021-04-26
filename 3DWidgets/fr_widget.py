@@ -61,8 +61,9 @@ class Fr_Widget (object):
     global _wdgsoSwitch     # Keeps the link to the SoSwitch used in the widgets. (important)
     global _visible
     global _bkgColor  # Background color
-    global _activeColor  # When widget not selected (normal)
+    global _color  # When widget not selected (normal)
     global _selColor  # When widget is selected
+    global _lblColor
     global _inactiveColor  # Inactive widget.
     global _box
     global _active  # If widget is active
@@ -72,7 +73,7 @@ class Fr_Widget (object):
     global _pick_radius     # Used to make clicking objects on 3DCOIN easier
     global _when            # Decide when the callback is called.
     global _userData        # UserData for widgets callback
-   # def __init__(self, args: VECTOR = None, l=""):
+    # def __init__(self, args: VECTOR = None, l=""):
 
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         """ 
@@ -85,7 +86,7 @@ class Fr_Widget (object):
         self._label = label
         self._visible = True
         self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-        self._activeColor = constant.FR_COLOR.FR_BLUE3
+        self._color = constant.FR_COLOR.FR_BLUE3
         self._inactiveColor = constant.FR_COLOR.FR_GRAY2
         self._selColor = constant.FR_COLOR.FR_YELLOW
         self._lblColor= constant.FR_COLOR.FR_BLACK
@@ -94,10 +95,11 @@ class Fr_Widget (object):
         self._parent = None
         self._widgetType = constant.FR_WidgetType.FR_WIDGET
         self._hasFocus = False
+        
+        self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
         self._widgetCoinNode = None     #Should be defined in the widget either one or a list
         # each node is a child of one switch, Add drawings a children for this switch
-        self._wdgsoSwitch = coin.SoSwitch()
-        self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
+        self._wdgsoSwitch = coin.SoSwitch()        
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
         self._when = constant.FR_WHEN.FR_WHEN_NEVER
         self._userData = None
@@ -265,9 +267,9 @@ class Fr_Widget (object):
         """
         self.callback(data)
 
-    def ActiveColor(self, color):
+    def Color(self, color):
         """ Foreground color at normal status"""
-        self.activeCol = color
+        self._color = color
 
     def SelectionColor(self, color):
         """ Foreground color when widget selected i.e. has focus"""
