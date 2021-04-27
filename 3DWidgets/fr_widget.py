@@ -128,7 +128,12 @@ class Fr_Widget (object):
         Set focus to the widget. Which should redraw it also.
         """
         raise NotImplementedError()
-
+    
+    def label_move(self,newPos):
+        """ Move the label to a new location"""    
+        
+        raise NotImplementedError()
+    
     def move(self, x, y, z):
         """ Move the widget to a new location.
         The new location is reference to the 

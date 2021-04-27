@@ -153,7 +153,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         
     def draw_label(self):
         #todo: There must be away to align the text .. this is just kinda a tes
-        lbl=fr_label_draw.draw_label(self._label,self._lblColor,'sans',8,self._vector)
+        
+        lbl=fr_label_draw.draw_label(self._label,self._lblColor,'sans',0,8,self._vector,3)
         return lbl
         
     
@@ -250,3 +251,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def size(self, args: List[App.Vector]):
         """Resize the widget by using the new vectors"""
         self.resize(args)
+        
+    def label_move(self,newPos):
+        pass
