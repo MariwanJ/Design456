@@ -51,7 +51,7 @@ class Fr_Group(fr_widget.Fr_Widget):
             args = []
         self._widgetType = constant.FR_WidgetType.FR_GROUP
         # Root of the children (coin)
-        self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+
         self._children = []
         # Initialize them as None.
         self._mainfrCoinWindow = self._mainfrQtWindow = None
