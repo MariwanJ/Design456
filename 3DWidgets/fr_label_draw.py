@@ -102,16 +102,18 @@ def calculateAlignment(vectors, align):
         pass
 
 
-def draw_label(text='', labelcolor=(1, 1, 1), labelfont='sans', size=8, align=FR_ALIGN.FR_NO_ALIGN, trans=App.Vector(0.0, 0.0, 0.0)):
+def draw_label(text='', labelcolor=(1, 1, 1), labelfont='sans', size=8, align=FR_ALIGN.FR_NO_ALIGN, pos=None,axis=App.Vector(10,10,0),angle=2.5):
     try:
         global _textNode
         _transPosition = coin.SoTransform()
-        _transPosition.translation.setValue(trans)
+        _transPosition.translation.setValue(pos[0])
+        _transPosition.rotation.setValue(coin.SbVec3f(pos), angle)
         font = coin.SoFont()
         font.size = size  # Font size
         font.Name = labelfont  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
+        _text3D.justification = coin.SoAsciiText.LEFT
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
