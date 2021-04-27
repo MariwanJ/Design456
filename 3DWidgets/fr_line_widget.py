@@ -133,20 +133,19 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 usedColor = self._inactiveColor
             if self.is_visible():
                 linedraw =fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
-                _lbl=self.draw_label()  
-               # self._parent.Root_SeneGraph.addChild(_lbl)
-                #self._parent.addSoSwitchToSeneGraph(_lbl)
+                _lbl=self.draw_label()
+                #self._parent.addSoNodeToSoSwitch(_lbl)
                 # put the node inside the switch
                 self.addSeneNodes(linedraw)  # Add SoSeparator
                 # Add SoSeparator as child to Switch
                 self.addSoNodeToSoSwitch(self._widgetCoinNode)
                 # Add the switch to the SeneGrap
-                #self._parent.addSoSwitchToSeneGraph(_lbl)
                 self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
+                self._parent.addSoSwitchToSeneGraph(_lbl)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
         except Exception as err:
-            App.Console.PrintError("'Design456_Extract' Failed. "
+            App.Console.PrintError("'Fr_Line_Widget' Failed. "
                                        "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -154,7 +153,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         
     def draw_label(self):
         #todo: There must be away to align the text .. this is just kinda a tes
-        lbl=fr_label_draw.draw_label(self._lblColor,'sans',14,self._vector,self._label)
+        lbl=fr_label_draw.draw_label(self._label,self._lblColor,'sans',8,self._vector)
         return lbl
         
     
@@ -164,7 +163,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         left-top corner of the object. Or the start of the line
         if it is a line.
         """
-        self.resize(self,newVecPos[0], newVecPos[1])
+        self.resize([newVecPos[0], newVecPos[1]])
 
     def getVertexStart(self):
         """Return the vertex of the start point"""
