@@ -118,31 +118,39 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
-        self._widgetType = constant.FR_WidgetType.FR_EDGE
-        if len(self._vector) < 2:
-            raise ValueError('Must be 2 Vectors')
-        p1 = self._vector[0]
-        p2 = self._vector[1]
+        try:
+            self._widgetType = constant.FR_WidgetType.FR_EDGE
+            if len(self._vector) < 2:
+                raise ValueError('Must be 2 Vectors')
+            p1 = self._vector[0]
+            p2 = self._vector[1]
 
-        if self.is_active() and self.has_focus():
-            usedColor = self._selColor
-        elif self.is_active() and (self.has_focus() != 1):
-            usedColor = self._color
-        elif self.is_active() != 1:
-            usedColor = self._inactiveColor
-        if self.is_visible():
-            linedraw =fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
-            _lbl=self.draw_label()  
-            self._parent.Root_SeneGraph.addChild(_lbl)
-            #self._parent.addSoSwitchToSeneGraph(_lbl)
-            # put the node inside the switch
-            self.addSeneNodes(linedraw)  # Add SoSeparator
-            # Add SoSeparator as child to Switch
-            self.addSoNodeToSoSwitch(self._widgetCoinNode)
-            # Add the switch to the SeneGrap
-            self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
-        else:
-            return  # We draw nothing .. This is here just for clarifying the code
+            if self.is_active() and self.has_focus():
+                usedColor = self._selColor
+            elif self.is_active() and (self.has_focus() != 1):
+                usedColor = self._color
+            elif self.is_active() != 1:
+                usedColor = self._inactiveColor
+            if self.is_visible():
+                linedraw =fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
+                _lbl=self.draw_label()  
+                self._parent.Root_SeneGraph.addChild(_lbl)
+                #self._parent.addSoSwitchToSeneGraph(_lbl)
+                # put the node inside the switch
+                self.addSeneNodes(linedraw)  # Add SoSeparator
+                # Add SoSeparator as child to Switch
+                self.addSoNodeToSoSwitch(self._widgetCoinNode)
+                # Add the switch to the SeneGrap
+                #self._parent.addSoSwitchToSeneGraph(_lbl)
+                self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
+            else:
+                return  # We draw nothing .. This is here just for clarifying the code
+        except Exception as err:
+            App.Console.PrintError("'Design456_Extract' Failed. "
+                                       "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
         
     def draw_label(self):
         #todo: There must be away to align the text .. this is just kinda a tes
