@@ -101,36 +101,36 @@ def calculateAlignment(vectors,align):
         #Align LEFT-TOP
         pass
         
-def draw_label(labelcolor=FR_COLOR.FR_BLACK, labelfont='sans', size=14,align=FR_ALIGN.FR_NO_ALIGN, trans=App.Vector(0.0, 0.0, 0.0), text=''):
-    
+def draw_label(labelcolor=(1, 0, 1), labelfont='sans', size=20,align=FR_ALIGN.FR_NO_ALIGN, trans=App.Vector(0.0, 0.0, 0.0), text=''):
+    # try:
     global _textNode
     _transPosition = coin.SoTransform()
     pos=[]
-    _transPosition.translation.setValue(trans)
+    #   _transPosition.translation.setValue(trans)
     font = coin.SoFont()
     font.size=size                      #Font size   
     #font.Name=labelfont                 #Font used
     _text3D = coin.SoAsciiText()           #Draw text in the 3D world 
     _text3D.string.setValue(text)         #Actual text
-    coinColor = coin.SoBaseColor()       #Font color
     print(labelcolor)
-    coinColor.rgb=(1, 0, 0)
-    #coinColor.diffuseColor.set1Value(0, coin.SbColor(labelcolor))
+    color=(1,0,0)
+    coinColor = coin.SoMaterial()       #Font color
+    coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
     _textNode =coin.SoSeparator()   # A Separator to separate the text from the drawing
-    ''' TODO :FIXME
-    if align== FR_ALIGN.FR_NO_ALIGN:    #If there is no alignment, 
-                               #we use the transNode. trans will not have effect if there is an alignment
-        #TODO: Don't know how to do this. Must read, and experiment with this.
-        _transNode.translation.setValue(trans)
-        _text.justification = coin.SoText2.LEFT  #This must be as value not fixed #TODO FIXME
-    else:
-        _transNode.translation.setValue(calculateAlignment)
-        '''
-    #_textNode.addChild(_transPosition)
+    _textNode.addChild(_transPosition)
     _textNode.addChild(coinColor)
     _textNode.addChild(font)
     _textNode.addChild(_text3D)
+    root=Gui.ActiveDocument.ActiveView.getSceneGraph()
+    root.addChild(_textNode)
     return _textNode  # Return the created SoSeparator that contains the text
+    # except Exception as err:
+    #     App.Console.PrintError("'Design456_Extract' Failed. "
+    #                                "{err}\n".format(err=str(err)))
+    #     exc_type, exc_obj, exc_tb = sys.exc_info()
+    #     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    #     print(exc_type, fname, exc_tb.tb_lineno)
+
 
     """@property
     def font(self):
