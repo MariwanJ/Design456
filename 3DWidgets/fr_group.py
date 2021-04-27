@@ -77,12 +77,12 @@ class Fr_Group(fr_widget.Fr_Widget):
     def redraw(self):
         for i in self._children:
             i.redraw()
-
+    """     TODO: THIS SHOULD BE DONE IN ANOTHER WAY.
     def deactivate(self):
-        """
-        Before deactivating the group, we have to remove all children.
-        Think about, you might have several groups inside the Fr_CoinWindow
-        """
+    
+    #Before deactivating the group, we have to remove all children.
+    #Think about, you might have several groups inside the Fr_CoinWindow
+    
         try:
             for widget in self._children:
                 # Remove objects in the Root_SeneGraph
@@ -93,7 +93,7 @@ class Fr_Group(fr_widget.Fr_Widget):
             del self._children
         except Exception:
             pass   # just go out
-
+    """
     # All events distributed by this function. We classify the event to be processed by each widget later.
     def handle(self, events):
         """send events to all widgets
