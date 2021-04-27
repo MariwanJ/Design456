@@ -133,13 +133,13 @@ def draw_polygon(vertices, color, LineWidth):
     i = 0   
     for vr in vertices:
         data.point.set1Value(i, vr[0], vr[1], vr[2])
-    i += 1;
+    i += 1
     polygons = [0, 1, 2, 3, -1] # -1 means that the n-gon is terminated and a new one can be created with the next points
 
     i = 0
     for p in polygons:
         face.coordIndex.set1Value(i, p)
-    i += 1;
+    i += 1
     return _polygon
 
 
