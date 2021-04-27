@@ -307,7 +307,7 @@ class Fr_Widget (object):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
         to the switch. The switch should be able to hide/visible them by a command
         """
-        if len(listOfSoSeparator)>1:
+        if type(listOfSoSeparator)==list:
             for i in listOfSoSeparator:
                 self._wdgsoSwitch.addChild(i)
         else:

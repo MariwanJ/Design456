@@ -61,10 +61,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     callbackClick = None
     callbackKey = None
 
-    def __init__(self, args: List[App.Vector] = [], label: str = ""):
-        if args == None:
-            args = [App.Vector(0, 0, 0), App.Vector(
-                400, 400, 0)]  # Default vector
+    def __init__(self, args: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
+                400, 400, 0)], label: str = ""):
         self._view = Gui.ActiveDocument.ActiveView
         self._parent = self  # No parent and this is the main window
         self._widgetType = constant.FR_WidgetType.FR_COINWINDOW
