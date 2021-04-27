@@ -105,13 +105,16 @@ def draw_label(labelcolor=(1, 0, 1), labelfont='sans', size=20,align=FR_ALIGN.FR
     # try:
     global _textNode
     _transPosition = coin.SoTransform()
-    pos=[]
-    #   _transPosition.translation.setValue(trans)
+    pos=App.Vector(30,30,0)
+    p=pos
+    _transPosition.translation.setValue(p.x+10,p.y+10,p.z+10)
+    #_transPosition.translation.setValue(trans)
     font = coin.SoFont()
     font.size=size                      #Font size   
     #font.Name=labelfont                 #Font used
     _text3D = coin.SoAsciiText()           #Draw text in the 3D world 
-    _text3D.string.setValue(text)         #Actual text
+    #_text3D.string.setValues(text)         #Actual text
+    _text3D.string.setValues([l.encode("utf8") for l in text if l])
     print(labelcolor)
     color=(1,0,0)
     coinColor = coin.SoMaterial()       #Font color
@@ -122,8 +125,10 @@ def draw_label(labelcolor=(1, 0, 1), labelfont='sans', size=20,align=FR_ALIGN.FR
     _textNode.addChild(font)
     _textNode.addChild(_text3D)
     root=Gui.ActiveDocument.ActiveView.getSceneGraph()
-    root.addChild(_textNode)
-    return _textNode  # Return the created SoSeparator that contains the text
+    newNode=coin.SoSeparator()
+    newNode.addChild(_textNode)
+    root.addChild(newNode)
+    return newNode  # Return the created SoSeparator that contains the text
     # except Exception as err:
     #     App.Console.PrintError("'Design456_Extract' Failed. "
     #                                "{err}\n".format(err=str(err)))
