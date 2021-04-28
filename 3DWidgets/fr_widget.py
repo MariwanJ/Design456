@@ -57,6 +57,7 @@ class Fr_Widget (object):
     import FreeCAD as App
     global _vector  # Drawing vertices
     global _label               # label
+    global _lblPosition         # _lblPosition
     global _widgetCoinNode  # Keeps link to the drawing. CoinNodes are children of SoSwitch
     global _wdgsoSwitch     # Keeps the link to the SoSwitch used in the widgets. (important)
     global _visible
@@ -73,6 +74,7 @@ class Fr_Widget (object):
     global _pick_radius     # Used to make clicking objects on 3DCOIN easier
     global _when            # Decide when the callback is called.
     global _userData        # UserData for widgets callback
+    
     # def __init__(self, args: VECTOR = None, l=""):
 
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
@@ -84,6 +86,7 @@ class Fr_Widget (object):
             args = []
         self._vector = args       # This should be like App.vectors
         self._label = label
+        self._lblPosition=None     # Should be defined when lbl is created. 
         self._visible = True
         self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
         self._color = constant.FR_COLOR.FR_BLUE3
