@@ -56,7 +56,7 @@ wny=wn.Fr_CoinWindow(g,"MyWindow")  # Create the window, label has no effect at 
 g.clear()
 g.append(p1)
 g.append(p3)
-ln =line.Fr_Line_Widget(g,"",5)   # draw the line - nothing will be visible yet
+ln =line.Fr_Line_Widget(g,"testme",5)   # draw the line - nothing will be visible yet
 wny.addWidget(ln)              # Add it to the window as a child 
 wny.show()                    # show the window and it's widgets. 
 
