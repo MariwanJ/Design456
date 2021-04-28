@@ -36,8 +36,9 @@ from constant import FR_COLOR
 
 # todo continue fixing this code 2021-04-23 Mariwan
 
-
+# this should return the lblPosition calculate based on the Vector position.
 def calculateAlignment(vectors, align):
+    lblPos =coin.SoTransform()    # Use this to put all data needed for the lblPosition
     p1 = p2 = p3 = p4 = None
     # These variables will keep the min value of each coordinations
         # WE HAVE LEFT ALIGNMENT
@@ -113,7 +114,7 @@ def draw_label(text='', labelcolor=(1, 1, 1), labelfont='sans', size=8, align=FR
         font.Name = labelfont  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
-        _text3D.justification = coin.SoAsciiText.LEFT
+        _text3D.justification = coin.SoAsciiText.RIGHT
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
