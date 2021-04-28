@@ -131,8 +131,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 self.addSoNodeToSoSwitch(self._widgetCoinNode)
                 # Add the switch to the SeneGrap
                 self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
-                self.addSoNodeToSoSwitch(_lbl)
-                #self._parent.addSoSwitchToSeneGraph(_lbl)
+                self._parent.addSoSwitchToSeneGraph(_lbl)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
         except Exception as err:
@@ -143,18 +142,14 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
         
     def draw_label(self):
-        lblprop=fr_widget.propertyValues()
-        lblprop.linewidth=_lineWidth
-        lblprop.labelfont=self._font
-        lblprop.fontsize=self._fontsiz
-        lblprop.labelcolor=self._lblColor
-        lblprop.vectors=self._vectors
-        lblprop.alignment=ALIGNMENT.FR_ALIGN_LEFT_BOTTOM
-
-
-        
-        
-        lbl=fr_label_draw.draw_label(self._label,properities)
+        LabelData=fr_widget.propertyValues()
+        LabelData.linewidth=self._lineWidth
+        LabelData.labelfont=self._font
+        LabelData.fontsize=self._fontsiz
+        LabelData.labelcolor=self._lblColor
+        LabelData.vectors=self._vectors
+        LabelData.alignment=FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        lbl=fr_label_draw.draw_label(self._label,lblprop)
         return lbl
         
     
