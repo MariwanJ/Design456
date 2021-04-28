@@ -103,21 +103,20 @@ def calculateAlignment(vectors, align):
         # Align LEFT-TOP
         pass
 
-
-def draw_label(text='', properities=propertyValues()):
+def draw_label(text='', properities=None):
     try:
-        global _textNode
+        delta=properities.vectors[0]- properities.vectors[1]
         _transPosition = coin.SoTransform()
-        _transPosition.translation.setValue(pos[0])
-        _transPosition.rotation.setValue(coin.SbVec3f(pos), angle)
+        _transPosition.translation.setValue(delta)
+        #_transPosition.rotation.setValue(coin.SbVec3f(), angle)
         font = coin.SoFont()
-        font.size = size  # Font size
-        font.Name = labelfont  # Font used
+        font.size = properities.fontsize  # Font size
+        font.Name = properities.font  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
         _text3D.justification = coin.SoAsciiText.RIGHT
         coinColor = coin.SoMaterial()  # Font color
-        coinColor.diffuseColor.set1Value(0, coin.SbColor(*labelcolor))
+        coinColor.diffuseColor.set1Value(0, coin.SbColor(*properities.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
         _textNode.addChild(_transPosition)
         _textNode.addChild(coinColor)
