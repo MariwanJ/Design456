@@ -339,20 +339,20 @@ class Fr_Widget (object):
     
 #********************************************************************************************************
 
-class propertyValues:
+class propertyValues():
     '''
-    Properity holder class for drawing labels
+    Property-holder  class for drawing labels
     ''' 
-    def __init__(self,linewidth,
+    def __init__(self,vectors,
+                      linewidth,
                       labelfont,
                       fontsize,
                       labelcolor,
-                      vectors,
                       alignment,                     
                 ):
-        self.linewidth =None
-        self.labelfont =None
-        self.fontsize  =None
-        self.labelcolor=None
-        self.vectors   =None
-        self.alignment =None
+        self.vectors   =vectors
+        self.vectors   =linewidth
+        self.labelfont =labelfont
+        self.fontsize  =fontsize
+        self.labelcolor=labelcolor
+        self.alignment =alignment
