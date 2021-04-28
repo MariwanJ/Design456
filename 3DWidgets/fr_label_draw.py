@@ -33,6 +33,7 @@ import Design456Init
 
 from constant import FR_ALIGN
 from constant import FR_COLOR
+from fr_widget import propertyValues 
 
 # todo continue fixing this code 2021-04-23 Mariwan
 
@@ -103,7 +104,7 @@ def calculateAlignment(vectors, align):
         pass
 
 
-def draw_label(text='', labelcolor=(1, 1, 1), labelfont='sans', size=8, align=FR_ALIGN.FR_NO_ALIGN, pos=None,axis=App.Vector(10,10,0),angle=2.5):
+def draw_label(text='', properities=propertyValues()):
     try:
         global _textNode
         _transPosition = coin.SoTransform()

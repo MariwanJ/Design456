@@ -71,12 +71,11 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     """
     global _lineWidth
 
-    # def __init__(self, args: fr_widget.VECTOR = None, l=""):
-    def __init__(self, args: List[App.Vector] = [], label: str = "", lineWidth=1):
-        if args == None:
-            args = []
+    def __init__(self, _vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
+        if _vectors == None:
+            _vectors = []
         self._lineWidth = lineWidth  # Default line width
-        super().__init__(args, label)
+        super().__init__(_vectors, label)
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -94,19 +93,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             clickedNode = fr_coin3d.objectMouseClick_Coin3d(
                 self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
-            found = False
+
             if self._wdgsoSwitch.findChild(clickedNode) != -1:
-                found = True
-            # for i in self._widgetCoinNode:
-            #    if i == None or clickedNode == None:
-            #        break
-            #    if i.getClassTypeId() == clickedNode.getClassTypeId() and i == clickedNode:
-            #        find = True
-            #        break  # We don't need to search more
-            if found == True:
                 self.take_focus()
                 self.do_callback(self._userData)
-                found = False
                 return 1
             else:
                 self.remove_focus()
@@ -141,7 +131,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 self.addSoNodeToSoSwitch(self._widgetCoinNode)
                 # Add the switch to the SeneGrap
                 self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
-                self._parent.addSoSwitchToSeneGraph(_lbl)
+                self.addSoNodeToSoSwitch(_lbl)
+                #self._parent.addSoSwitchToSeneGraph(_lbl)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
         except Exception as err:
@@ -152,8 +143,18 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
         
     def draw_label(self):
-        #todo: There must be away to align the text .. this is just kinda a tes
-        lbl=fr_label_draw.draw_label(self._label,self._lblColor,'sans',0,8,self._vector,3)
+        lblprop=fr_widget.propertyValues()
+        lblprop.linewidth=_lineWidth
+        lblprop.labelfont=self._font
+        lblprop.fontsize=self._fontsiz
+        lblprop.labelcolor=self._lblColor
+        lblprop.vectors=self._vectors
+        lblprop.alignment=ALIGNMENT.FR_ALIGN_LEFT_BOTTOM
+
+
+        
+        
+        lbl=fr_label_draw.draw_label(self._label,properities)
         return lbl
         
     
@@ -242,14 +243,15 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             self._hasFocus = False
             self.redraw()
 
-    def resize(self, args: List[App.Vector]):  # Width, height, thickness
+    def resize(self, vectors: List[App.Vector]):  # Width, height, thickness
         """Resize the widget by using the new vectors"""
-        self._vector = args
+        self._vector = vectors
         self.redraw()
 
-    def size(self, args: List[App.Vector]):
+    def size(self, vectors: List[App.Vector]):
         """Resize the widget by using the new vectors"""
-        self.resize(args)
+        self.resize(vectors)
         
     def label_move(self,newPos):
         pass
+ 
