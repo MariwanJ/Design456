@@ -58,6 +58,8 @@ class Fr_Widget (object):
     global _vector  # Drawing vertices
     global _label               # label
     global _lblPosition         # _lblPosition
+    global _font
+    global _fontsize
     global _widgetCoinNode  # Keeps link to the drawing. CoinNodes are children of SoSwitch
     global _wdgsoSwitch     # Keeps the link to the SoSwitch used in the widgets. (important)
     global _visible
@@ -98,7 +100,8 @@ class Fr_Widget (object):
         self._parent = None
         self._widgetType = constant.FR_WidgetType.FR_WIDGET
         self._hasFocus = False
-        
+        self._font='sans'
+        self._fontsize=8
         self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
         self._widgetCoinNode = None     #Should be defined in the widget either one or a list
         # each node is a child of one switch, Add drawings a children for this switch
@@ -119,7 +122,13 @@ class Fr_Widget (object):
         for coin3d Class SoText2 should be used 
         """
         raise NotImplementedError()
-
+    
+    def Font(self, newFont):
+        self._font=newFont
+        
+    def FontSize(self,newSize):
+        self._fontsize=newSize
+        
     def redraw(self):
         """
         After the widgets damages, this function should be called.        
@@ -328,3 +337,22 @@ class Fr_Widget (object):
         """
         self._wdgsoSwitch.removeAllChildren()
     
+#********************************************************************************************************
+
+class propertyValues:
+    '''
+    Properity holder class for drawing labels
+    ''' 
+    def __init__(self,linewidth,
+                      labelfont,
+                      fontsize,
+                      labelcolor,
+                      vectors,
+                      alignment,                     
+                ):
+        self.linewidth =None
+        self.labelfont =None
+        self.fontsize  =None
+        self.labelcolor=None
+        self.vectors   =None
+        self.alignment =None
