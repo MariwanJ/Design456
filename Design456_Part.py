@@ -344,7 +344,7 @@ class Design456_Part_Pyramid:
             Gui.Selection.clearSelection()
             Gui.Selection.addSelection(
                 App.ActiveDocument.Name, newObj.Name, 'Face1', 0, 0, 0)
-            selectedEdge = Gui.Selection.getSelection(
+            selectedEdge = Gui.Selection.getSelectionEx(
             )[0].SubObjects[0]    # select one element
 
             # loft
@@ -493,7 +493,7 @@ class Design_ColorizeObject:
     def Activated(self): 
         import random
         try:
-            aa = Gui.Selection.getSelection()[0]  # selection object
+            aa = Gui.Selection.getSelectionEx()[0]  # selection object
             colors = []
             for ii in range(len(aa.Shape.Faces)):
                 colors.append((random.uniform(0.25, 1), random.uniform(0.25, 1), random.uniform(0.25, 1), 0.0)) #red, green, blue, transparence
