@@ -103,26 +103,38 @@ def calculateAlignment(vectors, align):
         # Align LEFT-TOP
         pass
 
-def draw_label(text='', properities=None):
+def draw_label(text='', prop: propertyValues=None):
+    ''' Draw widgets label relative to the position with alignment'''
+    if text=='' or prop ==None: 
+        return     # Nothing to do here 
     try:
-        delta=properities.vectors[0]- properities.vectors[1]
+        delta=App.Vector(0,0,0)
+        print (prop.vectors)
+
+        p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
+        p2=App.Vector(prop.vectors[1])
+        delta.x=p1.x- p2.x
+        delta.y=p1.y- p2.y
+        delta.z=p1.z- p2.z
+        angle=90
         _transPosition = coin.SoTransform()
-        _transPosition.translation.setValue(delta)
-        #_transPosition.rotation.setValue(coin.SbVec3f(), angle)
+        _transPosition.translation.setValue(p1)
+        _transPosition.rotation.setValue(coin.SbVec3f(0,0,1), 1.5707963)
+        #_transPosition.rotation.setValue(coin.SbVec3f(delta), angle)
         font = coin.SoFont()
-        font.size = properities.fontsize  # Font size
-        font.Name = properities.font  # Font used
+        font.size = prop.fontsize  # Font size
+        font.Name = prop.labelfont  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
-        _text3D.justification = coin.SoAsciiText.RIGHT
+        # _text3D.justification = coin.SoAsciiText.RIGHT
         coinColor = coin.SoMaterial()  # Font color
-        coinColor.diffuseColor.set1Value(0, coin.SbColor(*properities.labelcolor))
+        coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
         _textNode.addChild(_transPosition)
         _textNode.addChild(coinColor)
         _textNode.addChild(font)
         _textNode.addChild(_text3D)
-        return _text3D  # Return the created SoSeparator that contains the text
+        return _textNode  # Return the created SoSeparator that contains the text
     except Exception as err:
         App.Console.PrintError("'draw_label' Failed. "
                                    "{err}\n".format(err=str(err)))

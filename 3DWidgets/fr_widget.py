@@ -77,15 +77,11 @@ class Fr_Widget (object):
     global _when            # Decide when the callback is called.
     global _userData        # UserData for widgets callback
     
-    # def __init__(self, args: VECTOR = None, l=""):
-
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         """ 
         Default values which is shared with all objects.
 
         """
-        if args == None:
-            args = []
         self._vector = args       # This should be like App.vectors
         self._label = label
         self._lblPosition=None     # Should be defined when lbl is created. 
@@ -339,16 +335,29 @@ class Fr_Widget (object):
     
 #********************************************************************************************************
 from dataclasses import dataclass
-class propertyValues():
+
+@dataclass
+class point:
+    def __init__(self):
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
+
+
+#List of points which should be used everywhere 
+VECTOR = List[point]
+
+class propertyValues:
     '''
     Property-holder  class for drawing labels
     ''' 
-    global vectors
-    global linewidth
-    global labelfont
-    global fontsize
-    global labelcolor
-    global alignment                     
+    __slots__ = ['vectors','linewidth','labelfont','fontsize','labelcolor','alignment']
+    vectors   : VECTOR        #List[App.Vector]
+    linewidth : int 
+    labelfont : str
+    fontsize  : int
+    labelcolor: tuple
+    alignment : int                   
     '''
     from dataclasses import dataclass
 
