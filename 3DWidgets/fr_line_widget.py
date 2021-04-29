@@ -72,8 +72,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     global _lineWidth
 
     def __init__(self, _vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
-        if _vectors == None:
-            _vectors = []
         self._lineWidth = lineWidth  # Default line width
         super().__init__(_vectors, label)
 
@@ -128,10 +126,11 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 # put the node inside the switch
                 self.addSeneNodes(linedraw)  # Add SoSeparator
                 # Add SoSeparator as child to Switch
+                self.addSoNodeToSoSwitch(_lbl)
                 self.addSoNodeToSoSwitch(self._widgetCoinNode)
                 # Add the switch to the SeneGrap
                 self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
-                self._parent.addSoSwitchToSeneGraph(_lbl)
+                #self._parent.addSoSwitchToSeneGraph(_lbl)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
         except Exception as err:
@@ -145,11 +144,11 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         LabelData=fr_widget.propertyValues()
         LabelData.linewidth=self._lineWidth
         LabelData.labelfont=self._font
-        LabelData.fontsize=self._fontsiz
+        LabelData.fontsize=self._fontsize
         LabelData.labelcolor=self._lblColor
-        LabelData.vectors=self._vectors
+        LabelData.vectors=self._vector
         LabelData.alignment=FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        lbl=fr_label_draw.draw_label(self._label,lblprop)
+        lbl=fr_label_draw.draw_label(self._label,LabelData)
         return lbl
         
     
