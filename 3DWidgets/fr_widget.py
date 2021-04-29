@@ -338,21 +338,24 @@ class Fr_Widget (object):
         self._wdgsoSwitch.removeAllChildren()
     
 #********************************************************************************************************
-
+from dataclasses import dataclass
 class propertyValues():
     '''
     Property-holder  class for drawing labels
     ''' 
-    def __init__(self,vectors,
-                      linewidth,
-                      labelfont,
-                      fontsize,
-                      labelcolor,
-                      alignment,                     
-                ):
-        self.vectors   =vectors
-        self.vectors   =linewidth
-        self.labelfont =labelfont
-        self.fontsize  =fontsize
-        self.labelcolor=labelcolor
-        self.alignment =alignment
+    global vectors
+    global linewidth
+    global labelfont
+    global fontsize
+    global labelcolor
+    global alignment                     
+    '''
+    from dataclasses import dataclass
+
+
+    @dataclass
+    class Point:
+    x: float
+    y: float
+    z: float = 0.0
+    '''
