@@ -49,7 +49,6 @@ class Design456_Part_Merge:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
-            temp = None
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Merge"
