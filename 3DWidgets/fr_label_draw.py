@@ -140,8 +140,8 @@ def draw_label(text=[], prop: propertyValues=None):
         print(angle[1])
         print(angle[2])
         _transPosition = coin.SoTransform()
-        _transPosition.translation.setValue(delta)
-        _transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[2])
+        _transPosition.translation.setValue(0,0,0)
+        _transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[0])
         #_transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[0])
         #_transPosition.rotation.setValue(coin.SbVec3f(1,0,0), angle[1])
         
