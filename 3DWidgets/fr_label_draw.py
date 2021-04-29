@@ -34,15 +34,30 @@ import Design456Init
 from constant import FR_ALIGN
 from constant import FR_COLOR
 from fr_widget import propertyValues 
-
+import math
 
 def calculateLineAngels(vectors):
+    # Calculate the three angles we have ref to xyz axis
     p1 = vectors[0]
     p2 = vectors[1]
+    print("angle points")
+    print(p1)
+    print(p2)
+    px2_px1=p2.x-p1.x
+    py2_py1=p2.y-p1.y
+    pz2_pz1=p2.z-p1.z
+    _g=_b=_a=0
+    if pz2_pz1!=0:
+        _g= math.atan(math.sqrt( ( math.pow((px2_px1),2)+math.pow((py2_py1),2))/(pz2_pz1)))
+    if py2_py1!=0:
+        _b= math.atan(math.sqrt( ( math.pow((px2_px1),2)+math.pow((pz2_pz1),2))/(py2_py1)))
+    if px2_px1!=0:
+        _a= math.atan(math.sqrt( ( math.pow((pz2_pz1),2)+math.pow((py2_py1),2))/(px2_px1)))
     
+    return(_a,_b,_g)
 
 
-# todo continue fixing this code 2021-04-23 Mariwan
+# todo FIXME
 
 # this should return the lblPosition calculate based on the Vector position.
 def calculateAlignment(vectors, align):
@@ -123,10 +138,13 @@ def draw_label(text=[], prop: propertyValues=None):
         delta.x=p1.x- p2.x
         delta.y=p1.y- p2.y
         delta.z=p1.z- p2.z
-        angle=90
+        angle=calculateLineAngels(prop.vectors)
         _transPosition = coin.SoTransform()
         _transPosition.translation.setValue(p1)
-        _transPosition.rotation.setValue(coin.SbVec3f(delta), 0)
+        #_transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[0])
+        _transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[1])
+        #_transPosition.rotation.setValue(coin.SbVec3f(1,0,0), angle[0])
+        
         #_transPosition.rotation.setValue(coin.SbVec3f(delta), angle)
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
