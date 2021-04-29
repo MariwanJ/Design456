@@ -35,6 +35,13 @@ from constant import FR_ALIGN
 from constant import FR_COLOR
 from fr_widget import propertyValues 
 
+
+def calculateLineAngels(vectors):
+    p1 = vectors[0]
+    p2 = vectors[1]
+    
+
+
 # todo continue fixing this code 2021-04-23 Mariwan
 
 # this should return the lblPosition calculate based on the Vector position.
