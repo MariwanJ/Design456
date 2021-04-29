@@ -40,9 +40,6 @@ def calculateLineAngels(vectors):
     # Calculate the three angles we have ref to xyz axis
     p1 = vectors[0]
     p2 = vectors[1]
-    print("angle points")
-    print(p1)
-    print(p2)
     px2_px1=p2.x-p1.x
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
@@ -135,15 +132,18 @@ def draw_label(text=[], prop: propertyValues=None):
 
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
-        delta.x=p1.x- p2.x
-        delta.y=p1.y- p2.y
-        delta.z=p1.z- p2.z
+        delta.x=(p2.x+ p1.x)/2
+        delta.y=(p2.y+ p1.y)/2
+        delta.z=(p2.z+ p1.z)/2
         angle=calculateLineAngels(prop.vectors)
+        print(angle[0])
+        print(angle[1])
+        print(angle[2])
         _transPosition = coin.SoTransform()
-        _transPosition.translation.setValue(p1)
+        _transPosition.translation.setValue(delta)
+        _transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[2])
         #_transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[0])
-        _transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[1])
-        #_transPosition.rotation.setValue(coin.SbVec3f(1,0,0), angle[0])
+        #_transPosition.rotation.setValue(coin.SbVec3f(1,0,0), angle[1])
         
         #_transPosition.rotation.setValue(coin.SbVec3f(delta), angle)
         font = coin.SoFont()
@@ -151,7 +151,7 @@ def draw_label(text=[], prop: propertyValues=None):
         font.Name = prop.labelfont  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
-        # _text3D.justification = coin.SoAsciiText.RIGHT
+        #_text3D.justification = coin.SoAsciiText.LEFT
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
