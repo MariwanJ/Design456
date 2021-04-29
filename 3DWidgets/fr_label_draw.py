@@ -103,7 +103,7 @@ def calculateAlignment(vectors, align):
         # Align LEFT-TOP
         pass
 
-def draw_label(text='', prop: propertyValues=None):
+def draw_label(text=[], prop: propertyValues=None):
     ''' Draw widgets label relative to the position with alignment'''
     if text=='' or prop ==None: 
         return     # Nothing to do here 
@@ -119,7 +119,7 @@ def draw_label(text='', prop: propertyValues=None):
         angle=90
         _transPosition = coin.SoTransform()
         _transPosition.translation.setValue(p1)
-        _transPosition.rotation.setValue(coin.SbVec3f(0,0,1), 1.5707963)
+        _transPosition.rotation.setValue(coin.SbVec3f(delta), 0)
         #_transPosition.rotation.setValue(coin.SbVec3f(delta), angle)
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size

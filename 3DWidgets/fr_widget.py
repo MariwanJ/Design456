@@ -82,8 +82,8 @@ class Fr_Widget (object):
         Default values which is shared with all objects.
 
         """
-        self._vector = args       # This should be like App.vectors
-        self._label = label
+        self._vector = args        # This should be like App.vectors
+        self._label = [label]      # This must be a list, to have several raw, append str
         self._lblPosition=None     # Should be defined when lbl is created. 
         self._visible = True
         self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
