@@ -46,17 +46,12 @@ import fr_coinwindow as wn
 import fr_line_widget as line
 import FreeCAD as App
 g=[]
-p1=(0,0,0)     # first point in the line and for the windows
-g=[]
-p2=(400,400,0) # width and height of the window .. z is not a matter (generally this has no effect)
-p3=(20,20,0)   # Second point in the line 
+p1=App.Vector(10,1,0)     # first point in the line and for the windows
+p2=App.Vector(20,20,0)   # Second point in the line 
+wny=wn.Fr_CoinWindow()  # Create the window, label has no effect at the moment
 g.append(p1)
 g.append(p2)
-wny=wn.Fr_CoinWindow(g,"MyWindow")  # Create the window, label has no effect at the moment
-g.clear()
-g.append(p1)
-g.append(p3)
-ln =line.Fr_Line_Widget(g,"testme",5)   # draw the line - nothing will be visible yet
+ln =line.Fr_Line_Widget(g,"My label",7)   # draw the line - nothing will be visible yet
 wny.addWidget(ln)              # Add it to the window as a child 
 wny.show()                    # show the window and it's widgets. 
 
