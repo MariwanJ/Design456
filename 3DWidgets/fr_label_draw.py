@@ -53,10 +53,10 @@ def calculateLineAngels(vectors):
     
 
     len=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))
-    _A=mat.acos(p2.x/len)
-    _B=mat.acos(p2.y/len)
-    _G=mat.acos(p2.z/len)
-
+    _A=math.acos(p2.x/len)
+    _B=math.acos(p2.y/len)
+    _G=math.acos(p2.z/len)
+    print (_A,_B,_G)
 
     #return(_a,_b,_g)
     return (_A,_B,_G)
@@ -147,13 +147,24 @@ def draw_label(text=[], prop: propertyValues=None):
         print(angle[0])
         print(angle[1])
         print(angle[2])
-        _transPosition = coin.SoTransform()
-        _transPosition.translation.setValue(delta)
+        _transPosition0 = coin.SoTransform()
+        _transPosition1= coin.SoTransform()
+        _transPosition2= coin.SoTransform()
+        delta=(0,0,0)
+        _transPosition0.translation.setValue(delta)
+        _transPosition1.translation.setValue(delta)
+        _transPosition2.translation.setValue(delta)
         
         rot = coin.SoRotationXYZ()
         rot.axis = 0
+        rot.angle = angle[0]
+        _transPosition0.rotation.setValue(rot.getRotation())
+        rot.axis = 1
         rot.angle = angle[1]
-        _transPosition.rotation.setValue(rot.getRotation())
+        _transPosition1.rotation.setValue(rot.getRotation())
+        rot.axis = 2
+        rot.angle = angle[2]
+        _transPosition2.rotation.setValue(rot.getRotation())
 
         #rot.axis = 1
         #rot.angle = angle[1] * 22/7
@@ -179,7 +190,9 @@ def draw_label(text=[], prop: propertyValues=None):
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
-        _textNode.addChild(_transPosition)
+        _textNode.addChild(_transPosition0)
+        _textNode.addChild(_transPosition1)
+        _textNode.addChild(_transPosition2)
         _textNode.addChild(coinColor)
         _textNode.addChild(font)
         _textNode.addChild(_text3D)
