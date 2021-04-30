@@ -51,7 +51,15 @@ def calculateLineAngels(vectors):
     if px2_px1!=0:
         _a= math.atan(math.sqrt( ( math.pow((pz2_pz1),2)+math.pow((py2_py1),2))/(px2_px1)))
     
-    return(_a,_b,_g)
+
+    len=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))
+    _A=mat.acos(p2.x/len)
+    _B=mat.acos(p2.y/len)
+    _G=mat.acos(p2.z/len)
+
+
+    #return(_a,_b,_g)
+    return (_A,_B,_G)
 
 
 # todo FIXME
@@ -132,19 +140,35 @@ def draw_label(text=[], prop: propertyValues=None):
 
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
-        delta.x=(p2.x+ p1.x)/2
-        delta.y=(p2.y+ p1.y)/2
-        delta.z=(p2.z+ p1.z)/2
+        delta.x=p1.x+(p2.x+ p1.x)/2
+        delta.y=p1.y+(p2.y+ p1.y)/2
+        delta.z=p1.z+(p2.z+ p1.z)/2
         angle=calculateLineAngels(prop.vectors)
         print(angle[0])
         print(angle[1])
         print(angle[2])
         _transPosition = coin.SoTransform()
-        _transPosition.translation.setValue(0,0,0)
-        _transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[0])
-        #_transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[0])
-        #_transPosition.rotation.setValue(coin.SbVec3f(1,0,0), angle[1])
+        _transPosition.translation.setValue(delta)
         
+        rot = coin.SoRotationXYZ()
+        rot.axis = 0
+        rot.angle = angle[1]
+        _transPosition.rotation.setValue(rot.getRotation())
+
+        #rot.axis = 1
+        #rot.angle = angle[1] * 22/7
+        #_transPosition.rotation.setValue(rot.getRotation())
+
+        #rot.axis = 2  # rotate around Y
+        #rot.angle = angle[2] * 22/7
+        #_transPosition.rotation.setValue(rot.getRotation())
+
+
+        
+        #_transPosition.rotation.setValue(coin.SbVec3f(0,1,0), angle[1])
+        #_transPosition.rotation.setValue(coin.SbVec3f(1,0,0), angle[0])
+        #_transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[2])
+
         #_transPosition.rotation.setValue(coin.SbVec3f(delta), angle)
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
