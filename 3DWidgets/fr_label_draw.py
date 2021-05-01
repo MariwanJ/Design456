@@ -43,22 +43,11 @@ def calculateLineAngels(vectors):
     px2_px1=p2.x-p1.x
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
-    _g=_b=_a=0
-    if pz2_pz1!=0:
-        _g= math.atan(math.sqrt( ( math.pow((px2_px1),2)+math.pow((py2_py1),2))/(pz2_pz1)))
-    if py2_py1!=0:
-        _b= math.atan(math.sqrt( ( math.pow((px2_px1),2)+math.pow((pz2_pz1),2))/(py2_py1)))
-    if px2_px1!=0:
-        _a= math.atan(math.sqrt( ( math.pow((pz2_pz1),2)+math.pow((py2_py1),2))/(px2_px1)))
-    
-
-    len=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))
-    _A=math.acos(p2.x/len)
-    _B=math.acos(p2.y/len)
-    _G=math.acos(p2.z/len)
+    length=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
+    _A=1.5707963267948966-math.acos(px2_px1/length)
+    _B=1.5707963267948966-math.acos(py2_py1/length)
+    _G=1.5707963267948966-math.acos(pz2_pz1/length)
     print (_A,_B,_G)
-
-    #return(_a,_b,_g)
     return (_A,_B,_G)
 
 
@@ -138,49 +127,25 @@ def draw_label(text=[], prop: propertyValues=None):
         delta=App.Vector(0,0,0)
         print (prop.vectors)
 
+        
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
-        delta.x=p1.x+(p2.x+ p1.x)/2
-        delta.y=p1.y+(p2.y+ p1.y)/2
-        delta.z=p1.z+(p2.z+ p1.z)/2
+        #delta.x=((p2.x-p1.x)/4)
+        #delta.y=((p2.y-p1.y)/4)
+        #delta.z=((p2.z-p1.z)/4)
         angle=calculateLineAngels(prop.vectors)
-        print(angle[0])
-        print(angle[1])
-        print(angle[2])
         _transPosition0 = coin.SoTransform()
-        _transPosition1= coin.SoTransform()
-        _transPosition2= coin.SoTransform()
-        delta=(0,0,0)
+        _transPosition1 = coin.SoTransform()
+        _transPosition2 = coin.SoTransform()
+        
         _transPosition0.translation.setValue(delta)
-        _transPosition1.translation.setValue(delta)
-        _transPosition2.translation.setValue(delta)
-        
-        rot = coin.SoRotationXYZ()
-        rot.axis = 0
-        rot.angle = angle[0]
-        _transPosition0.rotation.setValue(rot.getRotation())
-        rot.axis = 1
-        rot.angle = angle[1]
-        _transPosition1.rotation.setValue(rot.getRotation())
-        rot.axis = 2
-        rot.angle = angle[2]
-        _transPosition2.rotation.setValue(rot.getRotation())
+        _transPosition1.translation.setValue(App.Vector(0,0,0))
+        _transPosition2.translation.setValue(App.Vector(0,0,0))
 
-        #rot.axis = 1
-        #rot.angle = angle[1] * 22/7
-        #_transPosition.rotation.setValue(rot.getRotation())
+        _transPosition0.rotation.setValue(coin.SbVec3f(1, 0, 0),0)
+        _transPosition1.rotation.setValue(coin.SbVec3f(0, 1, 0),-angle[2])
+        _transPosition2.rotation.setValue(coin.SbVec3f(0, 0, 1),angle[1])
 
-        #rot.axis = 2  # rotate around Y
-        #rot.angle = angle[2] * 22/7
-        #_transPosition.rotation.setValue(rot.getRotation())
-
-
-        
-        #_transPosition.rotation.setValue(coin.SbVec3f(0,1,0), angle[1])
-        #_transPosition.rotation.setValue(coin.SbVec3f(1,0,0), angle[0])
-        #_transPosition.rotation.setValue(coin.SbVec3f(0,0,1), angle[2])
-
-        #_transPosition.rotation.setValue(coin.SbVec3f(delta), angle)
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.labelfont  # Font used
@@ -203,37 +168,3 @@ def draw_label(text=[], prop: propertyValues=None):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
-
-
-    """@property
-    def font(self):
-        return self.fontNode.name.getValue()
-
-    @font.setter
-    def font(self, name):
-        self.fontNode.name = name
-
-    @property
-    def size(self):
-        return self.fontNode.size.getValue()
-
-    @size.setter
-    def size(self, size):
-        self.fontNode.size.setValue(size)
-
-    @property
-    def trans(self):
-        return self.transNode.translation.getValue().getValue()
-
-    @trans.setter
-    def trans(self, trans):
-        self.transNode.translation.setValue([trans[0],trans[1],trans[2]])
-
-    @property
-    def text(self):
-        return self.textNode.string.getValues()[0]
-
-    @text.setter
-    def text(self, text):
-        self.textNode.string = text
-    """
