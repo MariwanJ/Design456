@@ -114,7 +114,6 @@ class Grid:
         col3.rgb= FR_COLOR.FR_BLUE    # BLUE
         
         LengthOfGrid = 1000  # mm
-        counter = LengthOfGrid
         try:
             line = []
             line.append(dim_dash((-LengthOfGrid,0.0,0.0),(+LengthOfGrid,0.0 , 0.0),col1,5))  # x
@@ -131,7 +130,6 @@ class Grid:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno) 
-
         
     def removeGarbage(self):
         for i in (self.collectGarbage):
@@ -163,8 +161,8 @@ class Grid:
                     lineSize=4
                 else:
                     lineSize=1
-                #don't draw the line on 0,±y and ±x,0
-                #TODO: Draw x, y in the correct color 
+                #don't draw line at 0,±y and ±x,0
+                #TODO: Draw x, y using correct color 
                 if  P1y != 0:    
                     line.append(dim_dash((P1x,P1y,0.0),(-P1x,P1y , 0.0),col,lineSize))  # x
                 
@@ -184,10 +182,3 @@ class Grid:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno) 
-
-        except Exception as err:
-            App.Console.PrintError("'Plane' Failed. "
-                                       "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
