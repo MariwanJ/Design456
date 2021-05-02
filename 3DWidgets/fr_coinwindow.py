@@ -70,6 +70,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.link_to_root_handle._wind = self
         self.link_to_root_handle.addCallbacks()
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        self._mainfrCoinWindow=self
         # Activated callbacks
         super().__init__(args, label)
 
