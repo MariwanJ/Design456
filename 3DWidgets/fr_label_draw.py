@@ -44,11 +44,12 @@ def calculateLineAngels(vectors):
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
     length=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
-    _A=1.5707963267948966-math.acos(px2_px1/length)
-    _B=1.5707963267948966-math.acos(py2_py1/length)
-    _G=1.5707963267948966-math.acos(pz2_pz1/length)
-    print (_A,_B,_G)
-    return (_A,_B,_G)
+    print(length)
+    y_Direction=-math.acos(px2_px1/length)
+    z_Direction=math.acos(py2_py1/length)
+    x_Direction=-math.acos(pz2_pz1/length)
+    #print (_A,_B,_G)
+    return (x_Direction,y_Direction,z_Direction)
 
 
 # todo FIXME
@@ -130,22 +131,24 @@ def draw_label(text=[], prop: propertyValues=None):
         
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
-        #delta.x=((p2.x-p1.x)/4)
-        #delta.y=((p2.y-p1.y)/4)
-        #delta.z=((p2.z-p1.z)/4)
+        delta.x=(0)
+        delta.y=(0)
+        delta.z=(0)
         angle=calculateLineAngels(prop.vectors)
-        _transPosition0 = coin.SoTransform()
-        _transPosition1 = coin.SoTransform()
-        _transPosition2 = coin.SoTransform()
+        _transPositionPOS=coin.SoTransform()
+        _transPositionX = coin.SoTransform()
+        _transPositionY = coin.SoTransform()
+        _transPositionZ = coin.SoTransform()
+        _transPositionPOS.translation.setValue(delta)
+        _transPositionX.translation.setValue(App.Vector(0,0,0))
+        _transPositionY.translation.setValue(App.Vector(0,0,0))
+        _transPositionZ.translation.setValue(App.Vector(0,0,0))
+
+        _transPositionX.rotation.setValue(coin.SbVec3f(1, 0, 0),angle[0])
+        _transPositionY.rotation.setValue(coin.SbVec3f(0, 1, 0),angle[1])
+        _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),angle[2])
         
-        _transPosition0.translation.setValue(delta)
-        _transPosition1.translation.setValue(App.Vector(0,0,0))
-        _transPosition2.translation.setValue(App.Vector(0,0,0))
-
-        _transPosition0.rotation.setValue(coin.SbVec3f(1, 0, 0),0)
-        _transPosition1.rotation.setValue(coin.SbVec3f(0, 1, 0),-angle[2])
-        _transPosition2.rotation.setValue(coin.SbVec3f(0, 0, 1),angle[1])
-
+        print(angle)
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.labelfont  # Font used
@@ -155,9 +158,14 @@ def draw_label(text=[], prop: propertyValues=None):
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
-        _textNode.addChild(_transPosition0)
-        _textNode.addChild(_transPosition1)
-        _textNode.addChild(_transPosition2)
+        #if angle[0]!=0:
+        #    _textNode.addChild(_transPositionX)
+        #if angle[2]!=0:
+        #    _textNode.addChild(_transPositionY)
+        if angle[1]!=0:
+            _textNode.addChild(_transPositionZ)
+        
+        _textNode.addChild(_transPositionPOS)
         _textNode.addChild(coinColor)
         _textNode.addChild(font)
         _textNode.addChild(_text3D)

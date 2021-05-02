@@ -313,6 +313,8 @@ class Fr_Widget (object):
             
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
+        if len(self._widgetCoinNode)==0:
+            return
         for i in self._widgetCoinNode: 
             del i 
 

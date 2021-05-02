@@ -58,7 +58,9 @@ class Fr_Group(fr_widget.Fr_Widget):
         super().__init__(args, l)
 
     def addWidget(self, widg):
+        widg._parent=self._mainfrCoinWindow
         self._children.append(widg)
+        
 
     def removeWidget(self, widg):
         try:

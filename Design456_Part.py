@@ -493,7 +493,7 @@ class Design_ColorizeObject:
     def Activated(self): 
         import random
         try:
-            aa = Gui.Selection.getSelectionEx()[0]  # selection object
+            aa = Gui.Selection.getSelection()[0]  # selection object
             colors = []
             for ii in range(len(aa.Shape.Faces)):
                 colors.append((random.uniform(0.25, 1), random.uniform(0.25, 1), random.uniform(0.25, 1), 0.0)) #red, green, blue, transparence
