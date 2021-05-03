@@ -45,11 +45,11 @@ def calculateLineAngels(vectors):
     pz2_pz1=p2.z-p1.z
     length=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
     print(length)
-    y_Direction=-math.acos(px2_px1/length)
-    z_Direction=math.acos(py2_py1/length)
-    x_Direction=-math.acos(pz2_pz1/length)
+    xyPlaneRotationAng= math.acos(px2_px1/length)        #_A
+    xzPlaneRotationAng=math.radians(90)-math.acos(py2_py1/length)          #_B
+    yzPlaneRotationAn =math.radians(90)-math.acos(pz2_pz1/length)               #_G
     #print (_A,_B,_G)
-    return (x_Direction,y_Direction,z_Direction)
+    return (xyPlaneRotationAng,xzPlaneRotationAng,yzPlaneRotationAn)
 
 
 # todo FIXME
@@ -144,9 +144,9 @@ def draw_label(text=[], prop: propertyValues=None):
         _transPositionY.translation.setValue(App.Vector(0,0,0))
         _transPositionZ.translation.setValue(App.Vector(0,0,0))
 
-        _transPositionX.rotation.setValue(coin.SbVec3f(1, 0, 0),angle[0])
-        _transPositionY.rotation.setValue(coin.SbVec3f(0, 1, 0),angle[1])
-        _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),angle[2])
+        #_transPositionX.rotation.setValue(coin.SbVec3f(1, 0, 0),angle[2])
+        #_transPositionY.rotation.setValue(coin.SbVec3f(0, 1, 0),angle[0])
+        _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),angle[0])
         
         print(angle)
         font = coin.SoFont()
@@ -158,12 +158,12 @@ def draw_label(text=[], prop: propertyValues=None):
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
-        #if angle[0]!=0:
-        #    _textNode.addChild(_transPositionX)
-        #if angle[2]!=0:
-        #    _textNode.addChild(_transPositionY)
-        if angle[1]!=0:
+        if angle[0]!=0:
             _textNode.addChild(_transPositionZ)
+        #if angle[2]!=0:
+        #    _textNode.addChild(_transPositionX) 
+        #if angle[1]!=0:
+        #    _textNode.addChild(_transPositionY)
         
         _textNode.addChild(_transPositionPOS)
         _textNode.addChild(coinColor)
