@@ -46,15 +46,18 @@ def calculateLineSpherical(vectors):
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
     r=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
+    factor=1
+    if py2_py1<0 and px2_px1<0:
+        factor=-math.radians(180)
     if(px2_px1==0):
         thi=math.radians(90)
-        if()
     else: 
         thi=math.atan(py2_py1/px2_px1)
     if(p2.z==0):
         phi=math.radians(0)    
     else: 
         phi=math.radians(90)-math.atan(math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2))/p2.z)
+    thi=thi - factor
     print (r,thi,phi)
     return (r,thi,phi)
 
@@ -146,14 +149,7 @@ def draw_label(text=[], prop: propertyValues=None):
         _transPositionPOS.translation.setValue(delta)
         _transPositionX.translation.setValue(App.Vector(0,0,0))
         _transPositionZ.translation.setValue(App.Vector(0,0,0))
-<<<<<<< HEAD
 
-        #_transPositionX.rotation.setValue(coin.SbVec3f(1, 0, 0),angle[2])
-        #_transPositionY.rotation.setValue(coin.SbVec3f(0, 1, 0),angle[0])
-        _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),angle[0])
-=======
->>>>>>> f5b9ddf75649803c3fb815b8a5ae9cd5753c0f6e
-        
         _transPositionX.rotation.setValue(coin.SbVec3f(1, 0, 0),phi)
         _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),thi)
 
@@ -166,19 +162,10 @@ def draw_label(text=[], prop: propertyValues=None):
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
-<<<<<<< HEAD
-        if angle[0]!=0:
-            _textNode.addChild(_transPositionZ)
-        #if angle[2]!=0:
-        #    _textNode.addChild(_transPositionX) 
-        #if angle[1]!=0:
-        #    _textNode.addChild(_transPositionY)
-=======
         if phi!=0:
             _textNode.addChild(_transPositionX)
         if thi!=0:
             _textNode.addChild(_transPositionZ)
->>>>>>> f5b9ddf75649803c3fb815b8a5ae9cd5753c0f6e
         
         _textNode.addChild(_transPositionPOS)
         _textNode.addChild(coinColor)
