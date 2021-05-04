@@ -118,11 +118,11 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 # put the node inside the switch
                 self.addSeneNodes(linedraw)  # Add SoSeparator
                 # Add SoSeparator as child to Switch
-                self.addSoNodeToSoSwitch(_lbl)
+                #self.addSoNodeToSoSwitch(_lbl)
                 self.addSoNodeToSoSwitch(self._widgetCoinNode)
                 # Add the switch to the SeneGrap
                 self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
-                #self._parent.addSoSwitchToSeneGraph(_lbl)
+                self._parent.addSoSwitchToSeneGraph(_lbl)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
         except Exception as err:
