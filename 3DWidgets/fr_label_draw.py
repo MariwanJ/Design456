@@ -36,24 +36,29 @@ from constant import FR_COLOR
 from fr_widget import propertyValues 
 import math
 
-def calculateLineAngels(vectors):
+def calculateLineSpherical(vectors):
     # Calculate the three angles we have ref to xyz axis
     p1 = vectors[0]
     p2 = vectors[1]
+    print(p1)
+    print(p2)
     px2_px1=p2.x-p1.x
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
-    length=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
-    print(length)
-    xyPlaneRotationAng= math.acos(px2_px1/length)        #_A
-    xzPlaneRotationAng=math.radians(90)-math.acos(py2_py1/length)          #_B
-    yzPlaneRotationAn =math.radians(90)-math.acos(pz2_pz1/length)               #_G
-    #print (_A,_B,_G)
-    return (xyPlaneRotationAng,xzPlaneRotationAng,yzPlaneRotationAn)
-
+    r=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
+    if(px2_px1==0):
+        thi=math.radians(90)
+        if()
+    else: 
+        thi=math.atan(py2_py1/px2_px1)
+    if(p2.z==0):
+        phi=math.radians(0)    
+    else: 
+        phi=math.radians(90)-math.atan(math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2))/p2.z)
+    print (r,thi,phi)
+    return (r,thi,phi)
 
 # todo FIXME
-
 # this should return the lblPosition calculate based on the Vector position.
 def calculateAlignment(vectors, align):
     lblPos =coin.SoTransform()    # Use this to put all data needed for the lblPosition
@@ -128,27 +133,30 @@ def draw_label(text=[], prop: propertyValues=None):
         delta=App.Vector(0,0,0)
         print (prop.vectors)
 
-        
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
         delta.x=(0)
         delta.y=(0)
         delta.z=(0)
-        angle=calculateLineAngels(prop.vectors)
+        (r,thi,phi)=calculateLineSpherical(prop.vectors)
         _transPositionPOS=coin.SoTransform()
         _transPositionX = coin.SoTransform()
         _transPositionY = coin.SoTransform()
         _transPositionZ = coin.SoTransform()
         _transPositionPOS.translation.setValue(delta)
         _transPositionX.translation.setValue(App.Vector(0,0,0))
-        _transPositionY.translation.setValue(App.Vector(0,0,0))
         _transPositionZ.translation.setValue(App.Vector(0,0,0))
+<<<<<<< HEAD
 
         #_transPositionX.rotation.setValue(coin.SbVec3f(1, 0, 0),angle[2])
         #_transPositionY.rotation.setValue(coin.SbVec3f(0, 1, 0),angle[0])
         _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),angle[0])
+=======
+>>>>>>> f5b9ddf75649803c3fb815b8a5ae9cd5753c0f6e
         
-        print(angle)
+        _transPositionX.rotation.setValue(coin.SbVec3f(1, 0, 0),phi)
+        _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),thi)
+
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.labelfont  # Font used
@@ -158,12 +166,19 @@ def draw_label(text=[], prop: propertyValues=None):
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
+<<<<<<< HEAD
         if angle[0]!=0:
             _textNode.addChild(_transPositionZ)
         #if angle[2]!=0:
         #    _textNode.addChild(_transPositionX) 
         #if angle[1]!=0:
         #    _textNode.addChild(_transPositionY)
+=======
+        if phi!=0:
+            _textNode.addChild(_transPositionX)
+        if thi!=0:
+            _textNode.addChild(_transPositionZ)
+>>>>>>> f5b9ddf75649803c3fb815b8a5ae9cd5753c0f6e
         
         _textNode.addChild(_transPositionPOS)
         _textNode.addChild(coinColor)
