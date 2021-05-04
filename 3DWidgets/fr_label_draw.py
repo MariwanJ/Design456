@@ -46,18 +46,24 @@ def calculateLineSpherical(vectors):
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
     r=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
-    factor=1
-    if py2_py1<0 and px2_px1<0:
-        factor=-math.radians(180)
+    if p2.x>0 and p2.y>0:
+        factor=0
+    elif p2.x>0 and p2.y<0:
+        factor=math.radians(270)
+    elif p2.x<0 and p2.y<0 :
+        factor=math.radians(180)
+    else: 
+        factor=math.radians(90)
+
     if(px2_px1==0):
         thi=math.radians(90)
     else: 
-        thi=math.atan(py2_py1/px2_px1)
-    if(p2.z==0):
+        thi=abs(math.atan(py2_py1/px2_px1))
+    if(pz2_pz1==0):
         phi=math.radians(0)    
     else: 
-        phi=math.radians(90)-math.atan(math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2))/p2.z)
-    thi=thi - factor
+        phi=-math.radians(90)+math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)
+    thi=thi + factor
     print (r,thi,phi)
     return (r,thi,phi)
 
@@ -138,9 +144,9 @@ def draw_label(text=[], prop: propertyValues=None):
 
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
-        delta.x=(0)
-        delta.y=(0)
-        delta.z=(0)
+        delta.x=p1.x
+        delta.y=p1.y
+        delta.z=p1.z
         (r,thi,phi)=calculateLineSpherical(prop.vectors)
         _transPositionPOS=coin.SoTransform()
         _transPositionX = coin.SoTransform()
