@@ -56,15 +56,17 @@ def calculateLineSpherical(vectors):
         factor=math.radians(90)
 
     if(px2_px1==0):
-        thi=math.radians(90)
+        thi=math.radians(0)
+        factor=0
     else: 
         thi=abs(math.atan(py2_py1/px2_px1))
     if(pz2_pz1==0):
-        phi=math.radians(0)    
+        phi=math.radians(0)
+        factor=0
     else: 
         phi=-math.radians(90)+math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)
     thi=thi + factor
-    print (r,thi,phi)
+    print  (r,thi,phi)
     return (r,thi,phi)
 
 # todo FIXME

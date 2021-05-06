@@ -69,10 +69,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """
 
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            clickedNode = fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
-            found = False
-            if self._wdgsoSwitch.findChild(clickedNode) != -1:
-                found = True
+            found = fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius, self._widgetCoinNode)
             if found == True:
                 self.take_focus()
                 self.do_callback(self._userData)

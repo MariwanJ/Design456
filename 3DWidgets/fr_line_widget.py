@@ -83,8 +83,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         event. Window object is responsible for distributing the events.
         """
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            clickedNode = fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius)
-            if self._wdgsoSwitch.findChild(clickedNode) != -1:
+            clickedNode = fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius,self._widgetCoinNode)
+            if clickedNode!=None:
                 self.take_focus()
                 self.do_callback(self._userData)
                 return 1
