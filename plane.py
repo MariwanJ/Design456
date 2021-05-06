@@ -43,7 +43,11 @@ def dim_dash(p1, p2,color,LineWidth):
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth
     # sg.addChild(style)
+    my_transparency = coin.SoMaterial()
+    my_transparency.transparency.setValue(0.5)
+    
     dash.addChild(style)
+    dash.addChild(my_transparency)
     dash.addChild(color)
     dash.addChild(line)
     return dash
@@ -79,7 +83,7 @@ class Grid:
        
     def drawZAxis(self):
         col= coin.SoBaseColor()
-        col.rgb= (237, 225, 0) # Yellow 
+        col.rgb= FR_COLOR.FR_YELLOW #(237, 225, 0) # Yellow 
         LengthOfGrid = 500  # mm
         bothSideLength = LengthOfGrid/2
         GridSize = 5
@@ -139,10 +143,10 @@ class Grid:
         
     def drawXYPlane(self):
         col= coin.SoBaseColor()
-        col.rgb=FR_COLOR.FR_GRAY0 
+        col.rgb=FR_COLOR.FR_BLUEG 
         LengthOfGrid = 1000  # mm
         bothSideLength = LengthOfGrid/2
-        GridSize = 3
+        GridSize = 2
         counter = LengthOfGrid
         try:
             line = []
