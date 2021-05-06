@@ -35,7 +35,15 @@ from constant import FR_ALIGN
 from constant import FR_COLOR
 from fr_widget import propertyValues 
 import math
-
+'''
+                         Y
+                         |
+                -X +Y    |   +X +Y
+              ___________|_______________X
+                         |
+                 -X-Y    |    +X -Y
+                         |
+'''
 def calculateLineSpherical(vectors):
     # Calculate the three angles we have ref to xyz axis
     p1 = vectors[0]
@@ -46,23 +54,30 @@ def calculateLineSpherical(vectors):
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
     r=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
-    if p2.x>0 and p2.y>0:
+    factor=0
+    if p2.x>0 and p2.y>0:          #+X+Y
         factor=0
-    elif p2.x>0 and p2.y<0:
+    elif p2.x>0 and p2.y<0:        #+X-Y
         factor=math.radians(270)
-    elif p2.x<0 and p2.y<0 :
+    elif p2.x<0 and p2.y<0 :       #-X -Y
         factor=math.radians(180)
-    else: 
+    elif p2.x<0 and p2.y>0 :       #-X +Y
         factor=math.radians(90)
 
     if(px2_px1==0):
-        thi=math.radians(90)
+        if(p2.y <0):
+            thi=math.radians(180)    
+        else:
+            thi=math.radians(90)
     else: 
         thi=abs(math.atan(py2_py1/px2_px1))
     if(pz2_pz1==0):
         phi=math.radians(0)    
     else: 
-        phi=-math.radians(90)+math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)
+        phi=(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)) -math.radians(90) 
+        #phi=-math.radians(90)+math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)
+    print (thi)
+    print (factor)
     thi=thi + factor
     print (r,thi,phi)
     return (r,thi,phi)
@@ -153,10 +168,10 @@ def draw_label(text=[], prop: propertyValues=None):
         _transPositionY = coin.SoTransform()
         _transPositionZ = coin.SoTransform()
         _transPositionPOS.translation.setValue(delta)
-        _transPositionX.translation.setValue(App.Vector(0,0,0))
+        _transPositionY.translation.setValue(delta)
         _transPositionZ.translation.setValue(App.Vector(0,0,0))
-
-        _transPositionX.rotation.setValue(coin.SbVec3f(1, 0, 0),phi)
+        print (delta)
+        _transPositionY.rotation.setValue(coin.SbVec3f(0, 1, 0),phi)
         _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),thi)
 
         font = coin.SoFont()
@@ -169,7 +184,7 @@ def draw_label(text=[], prop: propertyValues=None):
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
         if phi!=0:
-            _textNode.addChild(_transPositionX)
+            _textNode.addChild(_transPositionY)
         if thi!=0:
             _textNode.addChild(_transPositionZ)
         
