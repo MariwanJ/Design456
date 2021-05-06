@@ -66,7 +66,7 @@ def objectUnderMouse_Coin3d(self, win):
 # get Object clicked in COIN3D
 
 
-def objectMouseClick_Coin3d(mouse_pos, pick_radius):
+def objectMouseClick_Coin3d(mouse_pos, pick_radius,TargetNode):
     # This section is from DRAFT
     # It must help in finding the correct node
     # which represent the widget.
@@ -81,10 +81,10 @@ def objectMouseClick_Coin3d(mouse_pos, pick_radius):
     picked_point = ray_pick.getPickedPoint()
     if picked_point != None and picked_point != 0:
         path = picked_point.getPath()
-        pickedNode = path.getTail()
-        return pickedNode
+        if path.containsNode(TargetNode):
+            return (path.getNode(path.findNode(TargetNode)))  #Not sure if we need it #TODO should we return only true?
     else:
-        None
+        return None
 
 
 class root_handle():
