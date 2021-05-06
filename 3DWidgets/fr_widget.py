@@ -98,8 +98,9 @@ class Fr_Widget (object):
         self._hasFocus = False
         self._font='sans'
         self._fontsize=8
-        self._pick_radius = 3  # See if this must be a parameter in the GUI /Mariwan
+        self._pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
         self._widgetCoinNode = None     #Should be defined in the widget either one or a list
+        self._widgetlblCoinNode = None  #Should be defined in the widget either one or a list
         # each node is a child of one switch, Add drawings a children for this switch
         self._wdgsoSwitch = coin.SoSwitch()        
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
@@ -313,10 +314,13 @@ class Fr_Widget (object):
             
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
-        if len(self._widgetCoinNode)==0:
-            return
-        for i in self._widgetCoinNode: 
-            del i 
+        if len(self._widgetCoinNode)!=0:
+            for i in self._widgetCoinNode: 
+                del i 
+        if len(self._widgetlblCoinNode)!=0:
+            for i in self._widgetlblCoinNode: 
+                del i 
+        
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
