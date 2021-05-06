@@ -91,7 +91,7 @@ class root_handle():
     """
         The most critical part of the widgets. This will take care of 
         translating the events from COIN3D to our system.
-        Bot QT and COIN3D windows will call this function.
+        Both QT and COIN3D windows will call this function.
         But they will be treated differently as they are different.
     """
     # Save last mouse event
@@ -174,7 +174,7 @@ class root_handle():
             self._lastEventXYZ.Qt_x = pos[0]
             self._lastEventXYZ.Qt_y = pos[1]
 
-        # Doesn't work don't know why
+        # Doesn't work, don't know why
         # elif(_typeofevent == coin.SoMouseWheelEvent):
         #   """  Mouse wheel events. SoMouseWheelEvent represents a change in
         #    mouse wheel rotation event in the Open Inventor event model.
@@ -206,7 +206,7 @@ class root_handle():
             - setButton(SoMouseButtonEvent.Buttons b)
             """
             
-            eventState = self._get_event.getState()  # pressed down , or it is release
+            eventState = self._get_event.getState()  # pressed down , or it is released
             getButton = self._get_event.getButton()
            
             self._lastEvent = constant.FR_EVENTS.FR_NO_EVENT
@@ -273,7 +273,7 @@ class root_handle():
                 # there is no character for this value
                 key = ""
 
-        # THE Below events will not be treated by our widget system, at least for now 2020-04-02 Mariwan
+        # THE Below events will not be treated by our widget system, at least not for now 2020-04-02 Mariwan
         # elif(_typeofevent==coin.SoSpaceballButtonEvent)     :
         #
         # elif(_typeofevent==coin.SoHandleEventAction)        :

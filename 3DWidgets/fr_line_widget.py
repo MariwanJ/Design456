@@ -83,8 +83,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         event. Window object is responsible for distributing the events.
         """
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            clickedNode = fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius,self._widgetCoinNode)
-            if clickedNode!=None:
+            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius,self._widgetCoinNode)
+            clickwdglblNode= fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius,self._widgetlblCoinNode)
+            
+            if clickwdgdNode!=None or clickwdglblNode!=None:
                 self.take_focus()
                 self.do_callback(self._userData)
                 return 1
@@ -114,6 +116,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             if self.is_visible():
                 linedraw =fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
                 _lbl=self.draw_label()
+                self._widgetlblCoinNode=_lbl
                 #self._parent.addSoNodeToSoSwitch(_lbl)
                 # put the node inside the switch
                 self.addSeneNodes(linedraw)  # Add SoSeparator
@@ -141,6 +144,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         LabelData.vectors=self._vector
         LabelData.alignment=FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl=fr_label_draw.draw_label(self._label,LabelData)
+        self._widgetlblCoinNode=lbl
         return lbl
         
     
