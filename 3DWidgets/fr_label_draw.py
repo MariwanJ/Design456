@@ -74,8 +74,7 @@ def calculateLineSpherical(vectors):
     if(pz2_pz1==0):
         phi=math.radians(0)    
     else: 
-        phi=(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)) -math.radians(90) 
-        #phi=-math.radians(90)+math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)
+        phi=(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1))
     print (thi)
     print (factor)
     thi=thi + factor
@@ -171,7 +170,7 @@ def draw_label(text=[], prop: propertyValues=None):
         _transPositionY.translation.setValue(delta)
         _transPositionZ.translation.setValue(App.Vector(0,0,0))
         print (delta)
-        _transPositionY.rotation.setValue(coin.SbVec3f(0, 1, 0),phi)
+        _transPositionY.rotation.setValue(coin.SbVec3f(1,0, 0),phi)
         _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),thi)
 
         font = coin.SoFont()
