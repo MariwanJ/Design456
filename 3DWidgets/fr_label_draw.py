@@ -74,7 +74,7 @@ def calculateLineSpherical(vectors):
     if(pz2_pz1==0):
         phi=math.radians(0)    
     else: 
-        phi=(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1))
+        phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)))
     print (thi)
     print (factor)
     thi=thi + factor
@@ -167,7 +167,7 @@ def draw_label(text=[], prop: propertyValues=None):
         _transPositionY = coin.SoTransform()
         _transPositionZ = coin.SoTransform()
         _transPositionPOS.translation.setValue(delta)
-        _transPositionY.translation.setValue(delta)
+        _transPositionY.translation.setValue(App.Vector(0,0,0))
         _transPositionZ.translation.setValue(App.Vector(0,0,0))
         print (delta)
         _transPositionY.rotation.setValue(coin.SbVec3f(1,0, 0),phi)
@@ -182,12 +182,13 @@ def draw_label(text=[], prop: propertyValues=None):
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
+        _textNode.addChild(_transPositionPOS)
         if phi!=0:
             _textNode.addChild(_transPositionY)
         if thi!=0:
             _textNode.addChild(_transPositionZ)
         
-        _textNode.addChild(_transPositionPOS)
+        
         _textNode.addChild(coinColor)
         _textNode.addChild(font)
         _textNode.addChild(_text3D)
