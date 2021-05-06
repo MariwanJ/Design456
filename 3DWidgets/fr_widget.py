@@ -87,7 +87,7 @@ class Fr_Widget (object):
         self._lblPosition=None     # Should be defined when lbl is created. 
         self._visible = True
         self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-        self._color = constant.FR_COLOR.FR_BLUE3
+        self._color = constant.FR_COLOR.FR_BLACK
         self._inactiveColor = constant.FR_COLOR.FR_GRAY2
         self._selColor = constant.FR_COLOR.FR_YELLOW
         self._lblColor= constant.FR_COLOR.FR_BLACK
