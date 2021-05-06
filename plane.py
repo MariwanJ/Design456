@@ -139,10 +139,10 @@ class Grid:
         
     def drawXYPlane(self):
         col= coin.SoBaseColor()
-        col.rgb=FR_COLOR.FR_BLUE4 
+        col.rgb=FR_COLOR.FR_GRAY0 
         LengthOfGrid = 1000  # mm
         bothSideLength = LengthOfGrid/2
-        GridSize = 5
+        GridSize = 3
         counter = LengthOfGrid
         try:
             line = []
