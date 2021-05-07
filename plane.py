@@ -37,8 +37,8 @@ import FreeCADGui as Gui
 import pivy.coin as coin
 
 from constant import FR_COLOR
-#import Design456_SelectionGate as gate
 from PySide import QtGui, QtCore
+import Design456_SelectionGate as gate
 
 
 
@@ -206,31 +206,42 @@ class Grid:
 
 # Adding selection icons to the 3D view
 
-"""
+def findInChildren(obj, searched):
+    for child in obj.children():
+        if isinstance(child, searched):
+            return child
+        else:
+            res = findInChildren(child, searched)
+            if res:
+                return res
+    return None
+
 class SetupSelectionIcons:
-    #Add Body Selection, Edge Selection, Vertex selection to the scene view
+    """
+        Add Body Selection, Edge Selection, Vertex selection to the scene view
+    """
     def Activated(self):
         try:
-            _view = self.findInChildren(Gui.getMainWindow(), QtWidgets.QGraphicsView)
-
+            _view = findInChildren(Gui.getMainWindow(), QtGui.QGraphicsView)
+            if _view==None:
+                return  #Failed #TODO: WHAT SHOULD WE DO?
             proxy = _view.scene()        
             self.btnSelectBody   = QtGui.QPushButton()
             self.btnSelectFace   = QtGui.QPushButton()
             self.btnSelectEdge   = QtGui.QPushButton()
             self.btnSelectVertex = QtGui.QPushButton()
 
-            middleOfScreen = _view.size()
-
+            middleOfScreen = _view.size().width()/2
 
             self.btnSelectBody.setGeometry(QtCore.QRect(middleOfScreen-4*80, 0, 80, 25))
             self.btnSelectFace.setGeometry(QtCore.QRect(middleOfScreen-3*80, 0, 80, 25))  
             self.btnSelectEdge.setGeometry(QtCore.QRect(middleOfScreen-2*80, 0, 80, 25))  
             self.btnSelectVertex.setGeometry(QtCore.QRect(middleOfScreen-1*80, 0, 80, 25))
 
-            proxy.addWidget(btnSelectBody  )
-            proxy.addWidget(btnSelectFace  )
-            proxy.addWidget(btnSelectEdge  )
-            proxy.addWidget(btnSelectVertex)
+            proxy.addWidget(self.btnSelectBody  )
+            proxy.addWidget(self.btnSelectFace  )
+            proxy.addWidget(self.btnSelectEdge  )
+            proxy.addWidget(self.btnSelectVertex)
 
             QtCore.QObject.connect(self.btnSelectBody, QtCore.SIGNAL("accepted()"), gate.GateSelect0.Activated())
             QtCore.QObject.connect(self.btnSelectBody, QtCore.SIGNAL("pressed()"), gate.GateSelect0.Activated())
@@ -250,14 +261,5 @@ class SetupSelectionIcons:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
-    def findInChildren(obj, searched):
-        for child in obj.children():
-            if isinstance(child, searched):
-                return child
-            else:
-                res = findInChildren(child, searched)
-                if res:
-                    return res
-        return None
-"""
+            
+ 
