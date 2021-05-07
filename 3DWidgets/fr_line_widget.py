@@ -83,16 +83,23 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         event. Window object is responsible for distributing the events.
         """
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius,self._widgetCoinNode)
-            clickwdglblNode= fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius,self._widgetlblCoinNode)
-            
-            if clickwdgdNode!=None or clickwdglblNode!=None:
+            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(
+                self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius, self._widgetCoinNode)
+            clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
+                self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius, self._widgetlblCoinNode)
+
+            if clickwdgdNode != None or clickwdglblNode != None:
                 self.take_focus()
                 self.do_callback(self._userData)
                 return 1
             else:
                 self.remove_focus()
                 return event  # We couldn't use the event .. so return the event itself
+
+        if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+            # Double click event.
+            # TODO Fixme - Here we should be able to do different things.
+            print("Double click detected")
 
     def draw(self):
         """
@@ -114,14 +121,15 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self._inactiveColor
             if self.is_visible():
-                linedraw =fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
-                _lbl=self.draw_label()
-                self._widgetlblCoinNode=_lbl
-                #self._parent.addSoNodeToSoSwitch(_lbl)
+                linedraw = fr_draw.draw_line(
+                    p1, p2, usedColor, self._lineWidth)
+                _lbl = self.draw_label()
+                self._widgetlblCoinNode = _lbl
+                # self._parent.addSoNodeToSoSwitch(_lbl)
                 # put the node inside the switch
                 self.addSeneNodes(linedraw)  # Add SoSeparator
                 # Add SoSeparator as child to Switch
-                #self.addSoNodeToSoSwitch(_lbl)
+                # self.addSoNodeToSoSwitch(_lbl)
                 self.addSoNodeToSoSwitch(self._widgetCoinNode)
                 # Add the switch to the SeneGrap
                 self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
@@ -130,24 +138,23 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 return  # We draw nothing .. This is here just for clarifying the code
         except Exception as err:
             App.Console.PrintError("'Fr_Line_Widget' Failed. "
-                                       "{err}\n".format(err=str(err)))
+                                   "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-        
+
     def draw_label(self):
-        LabelData=fr_widget.propertyValues()
-        LabelData.linewidth=self._lineWidth
-        LabelData.labelfont=self._font
-        LabelData.fontsize=self._fontsize
-        LabelData.labelcolor=self._lblColor
-        LabelData.vectors=self._vector
-        LabelData.alignment=FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        lbl=fr_label_draw.draw_label(self._label,LabelData)
-        self._widgetlblCoinNode=lbl
+        LabelData = fr_widget.propertyValues()
+        LabelData.linewidth = self._lineWidth
+        LabelData.labelfont = self._font
+        LabelData.fontsize = self._fontsize
+        LabelData.labelcolor = self._lblColor
+        LabelData.vectors = self._vector
+        LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        lbl = fr_label_draw.draw_label(self._label, LabelData)
+        self._widgetlblCoinNode = lbl
         return lbl
-        
-    
+
     def move(self, newVecPos):
         """
         Move the object to the new location referenced by the 
@@ -241,7 +248,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def size(self, vectors: List[App.Vector]):
         """Resize the widget by using the new vectors"""
         self.resize(vectors)
-        
-    def label_move(self,newPos):
+
+    def label_move(self, newPos):
         pass
- 

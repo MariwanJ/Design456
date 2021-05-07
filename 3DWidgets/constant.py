@@ -86,14 +86,14 @@ class FR_COLOR:
 class FR_BoxType: #There will not be any boundary box or bkg box
     FR_NoBox=                 0
     FR_FLAT_BOX=             10
-    FR_TOP_BOX=               20
-    FR_BOTTOM_BOX=             30
+    FR_TOP_BOX=              20
+    FR_BOTTOM_BOX=           30
     FR_BORDER_FRAME=         40      
     FR_ROUNDED_BOX=          50
     FR_ROUNDED_FRAME=        60
     FR_ROUND_FLAT_BOX=       70
-    FR_ROUND_TOP_BOX=         80
-    FR_ROUND_BOTTOM_BOX=       90
+    FR_ROUND_TOP_BOX=        80
+    FR_ROUND_BOTTOM_BOX=     90
     FR_OVAL_BOX=            100
     FR_OVAL_FRAME=          110
     FR_TRIANGLE_BOX=        120

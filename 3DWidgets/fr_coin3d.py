@@ -220,13 +220,6 @@ class root_handle():
             """
             Mouse button press and release events.
             SoMouseButtonEvent represents mouse button press and release
-            events in the Open Inventor event model. 
-            functions used with this: 
-            - getButton()
-            - isButtonDoubleClickEvent(SoEvent e, SoMouseButtonEvent.Buttons whichButton)
-            - isButtonPressEvent(SoEvent e, SoMouseButtonEvent.Buttons whichButton)
-            - isButtonReleaseEvent(SoEvent e, SoMouseButtonEvent.Buttons whichButton)
-            - setButton(SoMouseButtonEvent.Buttons b)
             """
             
             eventState = self._get_event.getState()  # pressed down , or it is released
