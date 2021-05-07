@@ -24,18 +24,23 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-
 import os
 import sys
+import Design456Init
+sys.path.append(Design456Init.WIDGETS3D_PATH)
+"""Notice that if you don't put these imports in order
+    Loading the workbench might fail
+    Don't change their positions.
+"""
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-from PySide import QtGui, QtCore
-import Design456Init
-from constant import FR_COLOR
-import Design456_SelectionGate as gate
 
-sys.path.append(Design456Init.WIDGETS3D_PATH)
+from constant import FR_COLOR
+#import Design456_SelectionGate as gate
+from PySide import QtGui, QtCore
+
+
 
 
 def dim_dash(p1, p2, color, LineWidth):
