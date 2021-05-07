@@ -60,7 +60,7 @@ class Grid:
         self.sg =None
         self.collectGarbage=[]  #Keep the nodes for removing
         self.sg=None
-        
+
     def removeAllAxis(self):
         self.removeGarbage()
     

@@ -47,7 +47,7 @@ import pivy.coin as coin
 import Design456Init
 import constant
 from dataclasses import dataclass
-
+import time # For double click detection
 
 @dataclass
 class mouseDimension:
@@ -58,8 +58,28 @@ class mouseDimension:
     global Qt_y
     global pos
 
-# get Object under mouse
 
+#Implementation of double click detection
+import time
+import threading
+
+countCLICK=0
+DoubleClick=False
+def Detect_DblClick():
+    t = time.time()
+    if t - self._click_time < 0.25:
+        self._click_count += 1
+    else:
+        self._click_count = 1
+        self._click_time = time.time()
+
+
+
+# END double click detection
+
+
+
+# get Object under mouse
 
 def objectUnderMouse_Coin3d(self, win):
     pass
@@ -107,6 +127,9 @@ class root_handle():
     global _events 
     global _get_event
     global _typeofevent
+    #these two variable are used for double click detection
+    global _click_count
+    global _click_time
 
     # This should keep the mouse pointer position on the 3D view
     global _lastEventXYZ
@@ -214,7 +237,15 @@ class root_handle():
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
+                #detect double click here. COIN3D has no function for that
+                t = time.time()
+                if t - self._click_time < 0.25:
+                    self._click_count += 1
+                    self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
+                else:
+                    self._click_count = 1
+                    self._click_time = time.time()
+                    self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_RIGHT_PUSH
@@ -225,8 +256,6 @@ class root_handle():
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
-           # if eventState== coin.isButtonDoubleClickEvent and getButton == coin.SoMouseButtonEvent.BUTTON1:        #todo this is wrong!
-           #     self._lastEvent= constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
             self._wind.handle(self._lastEvent)
 
         # Take care of Keyboard events
