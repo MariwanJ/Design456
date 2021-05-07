@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import Design456_SelectionGate as gate
+from PySide import QtGui, QtCore
+from constant import FR_COLOR
+import pivy.coin as coin
+import FreeCADGui as Gui
+import FreeCAD as App
 #
 # ***************************************************************************
 # *                                                                        *
@@ -32,15 +38,6 @@ sys.path.append(Design456Init.WIDGETS3D_PATH)
     Loading the workbench might fail
     Don't change their positions.
 """
-import FreeCAD as App
-import FreeCADGui as Gui
-import pivy.coin as coin
-
-from constant import FR_COLOR
-from PySide import QtGui, QtCore
-import Design456_SelectionGate as gate
-
-
 
 
 def dim_dash(p1, p2, color, LineWidth):
@@ -206,6 +203,7 @@ class Grid:
 
 # Adding selection icons to the 3D view
 
+
 def findInChildren(obj, searched):
     for child in obj.children():
         if isinstance(child, searched):
@@ -216,44 +214,43 @@ def findInChildren(obj, searched):
                 return res
     return None
 
+
 class SetupSelectionIcons:
     """
         Add Body Selection, Edge Selection, Vertex selection to the scene view
     """
+
     def Activated(self):
         try:
             _view = findInChildren(Gui.getMainWindow(), QtGui.QGraphicsView)
-            if _view==None:
-                return  #Failed #TODO: WHAT SHOULD WE DO?
-            proxy = _view.scene()        
-            self.btnSelectBody   = QtGui.QPushButton()
-            self.btnSelectFace   = QtGui.QPushButton()
-            self.btnSelectEdge   = QtGui.QPushButton()
+            if _view == None:
+                return  # Failed #TODO: WHAT SHOULD WE DO?
+            proxy = _view.scene()
+            self.btnSelectBody = QtGui.QPushButton()
+            self.btnSelectFace = QtGui.QPushButton()
+            self.btnSelectEdge = QtGui.QPushButton()
             self.btnSelectVertex = QtGui.QPushButton()
 
             middleOfScreen = _view.size().width()/2
 
-            self.btnSelectBody.setGeometry(QtCore.QRect(middleOfScreen-4*80, 0, 80, 25))
-            self.btnSelectFace.setGeometry(QtCore.QRect(middleOfScreen-3*80, 0, 80, 25))  
-            self.btnSelectEdge.setGeometry(QtCore.QRect(middleOfScreen-2*80, 0, 80, 25))  
-            self.btnSelectVertex.setGeometry(QtCore.QRect(middleOfScreen-1*80, 0, 80, 25))
+            self.btnSelectBody.setGeometry(
+                QtCore.QRect(middleOfScreen-4*80, 0, 80, 80))
+            self.btnSelectFace.setGeometry(
+                QtCore.QRect(middleOfScreen-3*80, 0, 80, 80))
+            self.btnSelectEdge.setGeometry(
+                QtCore.QRect(middleOfScreen-2*80, 0, 80, 80))
+            self.btnSelectVertex.setGeometry(
+                QtCore.QRect(middleOfScreen-1*80, 0, 80, 80))
 
-            proxy.addWidget(self.btnSelectBody  )
-            proxy.addWidget(self.btnSelectFace  )
-            proxy.addWidget(self.btnSelectEdge  )
+            proxy.addWidget(self.btnSelectBody)
+            proxy.addWidget(self.btnSelectFace)
+            proxy.addWidget(self.btnSelectEdge)
             proxy.addWidget(self.btnSelectVertex)
-
-            QtCore.QObject.connect(self.btnSelectBody, QtCore.SIGNAL("accepted()"), gate.GateSelect0.Activated())
-            QtCore.QObject.connect(self.btnSelectBody, QtCore.SIGNAL("pressed()"), gate.GateSelect0.Activated())
-
-            QtCore.QObject.connect(self.btnSelectFace, QtCore.SIGNAL("accepted()"), gate.GateSelect1.Activated())
-            QtCore.QObject.connect(self.btnSelectFace, QtCore.SIGNAL("pressed()"), gate.GateSelect1.Activated())
-
-            QtCore.QObject.connect(self.btnSelectEdge, QtCore.SIGNAL("accepted()"), gate.GateSelect2.Activated())
-            QtCore.QObject.connect(self.btnSelectEdge, QtCore.SIGNAL("pressed()"), gate.GateSelect2.Activated())
-
-            QtCore.QObject.connect(self.btnSelectVertex, QtCore.SIGNAL("accepted()"), gate.GateSelect3.Activated())
-            QtCore.QObject.connect(self.btnSelectVertex, QtCore.SIGNAL("pressed()"), gate.GateSelect3.Activated())
+            
+            QtCore.QObject.connect(self.btnSelectBody, QtCore.SIGNAL("clicked()"), gate.GateSelect0.Activated)
+            QtCore.QObject.connect(self.btnSelectFace, QtCore.SIGNAL("clicked()"), gate.GateSelect1.Activated)
+            QtCore.QObject.connect(self.btnSelectEdge, QtCore.SIGNAL("clicked()"), gate.GateSelect2.Activated)
+            QtCore.QObject.connect(self.btnSelectVertex, QtCore.SIGNAL("clicked()"), gate.GateSelect3.Activated)
 
         except Exception as err:
             App.Console.PrintError("'Design456_SetupSelectionIcons' Failed. "
@@ -261,5 +258,3 @@ class SetupSelectionIcons:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
- 
