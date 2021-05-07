@@ -94,8 +94,8 @@ class GateSelect1:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'SelectionModeFace.svg',
-            'MenuText': 'Body Selection Mode',
-            'ToolTip':  'Body Selection Mode'
+            'MenuText': 'FaceSelection Mode',
+            'ToolTip':  'FaceSelection Mode'
         }
 
 
@@ -114,8 +114,8 @@ class GateSelect2:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'SelectionModeEdges.svg',
-            'MenuText': 'Body Selection Mode',
-            'ToolTip':  'Body Selection Mode'
+            'MenuText': 'EdgeSelection Mode',
+            'ToolTip':  'EdgeSelection Mode'
         }
 
 # Only Vertices are allowed
@@ -139,8 +139,8 @@ class GateSelect3:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'SelectionModeVertex.svg',
-            'MenuText': 'Body Selection Mode',
-            'ToolTip':  'Body Selection Mode'
+            'MenuText': 'VertexSelection Mode',
+            'ToolTip':  'VertexSelection Mode'
         }
 
 
