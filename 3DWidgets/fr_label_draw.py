@@ -159,8 +159,8 @@ def draw_label(text=[], prop: propertyValues=None):
 
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
-        delta.x=p1.x
-        delta.y=p1.y
+        delta.x=p1.x+2
+        delta.y=p1.y+2
         delta.z=p1.z
         (r,thi,phi)=calculateLineSpherical(prop.vectors)
         _transPositionPOS=coin.SoTransform()
