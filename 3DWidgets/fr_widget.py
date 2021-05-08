@@ -55,28 +55,7 @@ class Fr_Widget (object):
     you can implement draw function
     """
     import FreeCAD as App
-    global _vector  # Drawing vertices
-    global _label               # label
-    global _lblPosition         # _lblPosition
-    global _font
-    global _fontsize
-    global _widgetCoinNode  # Keeps link to the drawing. CoinNodes are children of SoSwitch
-    global _wdgsoSwitch     # Keeps the link to the SoSwitch used in the widgets. (important)
-    global _visible
-    global _bkgColor  # Background color
-    global _color  # When widget not selected (normal)
-    global _selColor  # When widget is selected
-    global _lblColor
-    global _inactiveColor  # Inactive widget.
-    global _box
-    global _active  # If widget is active
-    global _parent  # Parent windows
-    global _widgetType  # Widgets type . Look at the constants
-    global _hasFocus  # If the widget is clicked - has focus
-    global _pick_radius     # Used to make clicking objects on 3DCOIN easier
-    global _when            # Decide when the callback is called.
-    global _userData        # UserData for widgets callback
-    
+
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         """ 
         Default values which is shared with all objects.
@@ -101,9 +80,11 @@ class Fr_Widget (object):
         self._pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
         self._widgetCoinNode = None     #Should be defined in the widget either one or a list
         self._widgetlblCoinNode = None  #Should be defined in the widget either one or a list
+        self._wdgsolblSwitch=coin.SoSwitch()
         # each node is a child of one switch, Add drawings a children for this switch
         self._wdgsoSwitch = coin.SoSwitch()        
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+        self._wdgsolblSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
         self._when = constant.FR_WHEN.FR_WHEN_NEVER
         self._userData = None
 
@@ -140,7 +121,6 @@ class Fr_Widget (object):
     
     def label_move(self,newPos):
         """ Move the label to a new location"""    
-        
         raise NotImplementedError()
     
     def move(self, x, y, z):
@@ -255,7 +235,6 @@ class Fr_Widget (object):
             """
         pass
 
-
     # Callbacks
     def callback(self, data):
         """ Each widget has a single callback.
@@ -309,9 +288,25 @@ class Fr_Widget (object):
         Internal value of when. This will decide when the widget-callback will happen.
         """
         return self._when
-    def addSeneNodes(self,list):
+    
+    def addSenelblNodes(self,_list):
+        if type(_list)==list:
+            for i in _list:
+                self._wdgsolblSwitch.addChild(i)
+        else:
+            self._wdgsolblSwitch.addChild(_list)
         self._widgetCoinNode=list
-            
+        self.addSoNodeToSoSwitch(list)
+    
+    def addSeneNodes(self,_list):
+        if type(_list)==list:
+            for i in _list:
+                self._wdgsoSwitch.addChild(i)
+        else:
+            self._wdgsoSwitch.addChild(_list)
+        self._widgetCoinNode=list
+        self.addSoNodeToSoSwitch(list)
+        
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
         if len(self._widgetCoinNode)!=0:
@@ -320,7 +315,6 @@ class Fr_Widget (object):
         if len(self._widgetlblCoinNode)!=0:
             for i in self._widgetlblCoinNode: 
                 del i 
-        
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
@@ -331,6 +325,9 @@ class Fr_Widget (object):
                 self._wdgsoSwitch.addChild(i)
         else:
             self._wdgsoSwitch.addChild(listOfSoSeparator)
+            
+        # Add the switch to the SeneGrap
+        self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
 
     def removeSoNodeFromSoSwitch(self):
         """
@@ -338,6 +335,25 @@ class Fr_Widget (object):
             i.e. all drawing, color ..etc for the widget 
         """
         self._wdgsoSwitch.removeAllChildren()
+        
+    def addSoNodelblToSoSwitch(self,listOfSoSeparator):
+        """ add all small sosseparator which holds widgets lable, color,  ..etc
+        to the switch. The switch should be able to hide/visible them by a command
+        """
+        if type(listOfSoSeparator)==list:
+            for i in listOfSoSeparator:
+                self._wdgsolblSwitch.addChild(i)
+        else:
+            self._wdgsolblSwitch.addChild(listOfSoSeparator)
+        self._parent.addSoSwitchToSeneGraph(self._wdgsolblSwitch)
+
+    def removeSolblNodeFromSoSwitch(self):
+        """
+            Remove the children from the widgetCOINnode which is the soseparators
+            i.e. all drawing, color ..etc for the widget 
+        """
+        self._wdgsolblSwitch.removeAllChildren()
+        
     
 #********************************************************************************************************
 from dataclasses import dataclass
