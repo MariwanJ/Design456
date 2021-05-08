@@ -223,10 +223,8 @@ class root_handle():
             Mouse button press and release events.
             SoMouseButtonEvent represents mouse button press and release
             """
-            
             eventState = self._get_event.getState()  # pressed down , or it is released
             getButton = self._get_event.getButton()
-           
             self._lastEvent = constant.FR_EVENTS.FR_NO_EVENT
 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
@@ -234,17 +232,15 @@ class root_handle():
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 #detect double click here. COIN3D has no function for that
                 t = time.time()
-                print("0000000000000")
-                print(self._click_count)
-                print (t)
-                print(self._click_time)
-                print(t - self._click_time)
-                print("41444444444444")
-                if (t - self._click_time) <= 0.25:
-                    self._click_count += 1
+                if (t - self._click_time) < 0.25:
+                    self._click_count =self._click_count+ 1
                     if self._click_count==2:
                         self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
+                        print(self._click_count)
+                        self._click_count=0
                 else:
+                    print("11")
+                    print(self._click_count)
                     self._click_count = 1
                     self._click_time = time.time()
                     self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
