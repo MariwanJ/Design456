@@ -58,7 +58,6 @@ wny.show()                    # show the window and it's widgets.
 
 """
 
-
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     """
@@ -121,21 +120,14 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self._inactiveColor
             if self.is_visible():
-                linedraw = fr_draw.draw_line(
-                    p1, p2, usedColor, self._lineWidth)
+                linedraw = fr_draw.draw_line(p1, p2, usedColor, self._lineWidth)
                 _lbl = self.draw_label()
-                self._widgetlblCoinNode = _lbl
-                # self._parent.addSoNodeToSoSwitch(_lbl)
-                # put the node inside the switch
-                self.addSeneNodes(linedraw)  # Add SoSeparator
-                # Add SoSeparator as child to Switch
-                # self.addSoNodeToSoSwitch(_lbl)
-                self.addSoNodeToSoSwitch(self._widgetCoinNode)
-                # Add the switch to the SeneGrap
-                self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
-                self._parent.addSoSwitchToSeneGraph(_lbl)
+
+                self.addSenelblNodes(_lbl)
+                self.addSeneNodes(linedraw)  # Add SoSeparator. Will be added to switch automatically                            
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
+
         except Exception as err:
             App.Console.PrintError("'Fr_Line_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))

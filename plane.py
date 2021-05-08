@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import Design456_SelectionGate as gate
-from PySide import QtGui, QtCore
-from constant import FR_COLOR
-import pivy.coin as coin
-import FreeCADGui as Gui
-import FreeCAD as App
+
+
 #
 # ***************************************************************************
 # *                                                                        *
@@ -38,7 +34,10 @@ sys.path.append(Design456Init.WIDGETS3D_PATH)
     Loading the workbench might fail
     Don't change their positions.
 """
-
+from constant import FR_COLOR
+import pivy.coin as coin
+import FreeCADGui as Gui
+import FreeCAD as App
 
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
@@ -49,10 +48,8 @@ def dim_dash(p1, p2, color, LineWidth):
     line.vertexProperty = v
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth
-    # sg.addChild(style)
     my_transparency = coin.SoMaterial()
     my_transparency.transparency.setValue(0.5)
-
     dash.addChild(style)
     dash.addChild(my_transparency)
     dash.addChild(color)
@@ -174,7 +171,7 @@ class Grid:
                 P3y = -bothSideLength
 
                 if count5Cells == 0:
-                    lineSize = 4
+                    lineSize = 2
                 else:
                     lineSize = 1
                 # don't draw line at 0,±y and ±x,0
@@ -196,64 +193,6 @@ class Grid:
 
         except Exception as err:
             App.Console.PrintError("'Plane' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-# Adding selection icons to the 3D view
-
-
-def findInChildren(obj, searched):
-    for child in obj.children():
-        if isinstance(child, searched):
-            return child
-        else:
-            res = findInChildren(child, searched)
-            if res:
-                return res
-    return None
-
-
-class SetupSelectionIcons:
-    """
-        Add Body Selection, Edge Selection, Vertex selection to the scene view
-    """
-
-    def Activated(self):
-        try:
-            _view = findInChildren(Gui.getMainWindow(), QtGui.QGraphicsView)
-            if _view == None:
-                return  # Failed #TODO: WHAT SHOULD WE DO?
-            proxy = _view.scene()
-            self.btnSelectBody = QtGui.QPushButton()
-            self.btnSelectFace = QtGui.QPushButton()
-            self.btnSelectEdge = QtGui.QPushButton()
-            self.btnSelectVertex = QtGui.QPushButton()
-
-            middleOfScreen = _view.size().width()/2
-
-            self.btnSelectBody.setGeometry(
-                QtCore.QRect(middleOfScreen-4*80, 0, 80, 80))
-            self.btnSelectFace.setGeometry(
-                QtCore.QRect(middleOfScreen-3*80, 0, 80, 80))
-            self.btnSelectEdge.setGeometry(
-                QtCore.QRect(middleOfScreen-2*80, 0, 80, 80))
-            self.btnSelectVertex.setGeometry(
-                QtCore.QRect(middleOfScreen-1*80, 0, 80, 80))
-
-            proxy.addWidget(self.btnSelectBody)
-            proxy.addWidget(self.btnSelectFace)
-            proxy.addWidget(self.btnSelectEdge)
-            proxy.addWidget(self.btnSelectVertex)
-            
-            QtCore.QObject.connect(self.btnSelectBody, QtCore.SIGNAL("clicked()"), gate.GateSelect0.Activated)
-            QtCore.QObject.connect(self.btnSelectFace, QtCore.SIGNAL("clicked()"), gate.GateSelect1.Activated)
-            QtCore.QObject.connect(self.btnSelectEdge, QtCore.SIGNAL("clicked()"), gate.GateSelect2.Activated)
-            QtCore.QObject.connect(self.btnSelectVertex, QtCore.SIGNAL("clicked()"), gate.GateSelect3.Activated)
-
-        except Exception as err:
-            App.Console.PrintError("'Design456_SetupSelectionIcons' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
