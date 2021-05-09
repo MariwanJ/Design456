@@ -162,9 +162,9 @@ def draw_label(text=[], prop: propertyValues=None):
         delta.x=p1.x+2
         delta.y=p1.y+2
         delta.z=p1.z
-        (r,thi,phi)=calculateLineSpherical(prop.vectors)
+        (r,thi,phi)=calculateLineSpherical(prop.vectors)        #get spherical representation of the point(p2)
         _transPositionPOS=coin.SoTransform()
-        _transPositionX = coin.SoTransform()
+        #_transPositionX = coin.SoTransform()
         _transPositionY = coin.SoTransform()
         _transPositionZ = coin.SoTransform()
         _transPositionPOS.translation.setValue(delta)
