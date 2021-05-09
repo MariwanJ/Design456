@@ -76,15 +76,13 @@ class Fr_Widget (object):
         self._widgetType = constant.FR_WidgetType.FR_WIDGET
         self._hasFocus = False
         self._font='sans'
-        self._fontsize=8
+        self._fontsize=4
         self._pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
         self._widgetCoinNode = None     #Should be defined in the widget either one or a list
         self._widgetlblCoinNode = None  #Should be defined in the widget either one or a list
-        self._wdgsolblSwitch=coin.SoSwitch()
         # each node is a child of one switch, Add drawings a children for this switch
         self._wdgsoSwitch = coin.SoSwitch()        
         self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-        self._wdgsolblSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
         self._when = constant.FR_WHEN.FR_WHEN_NEVER
         self._userData = None
 
@@ -288,25 +286,26 @@ class Fr_Widget (object):
         Internal value of when. This will decide when the widget-callback will happen.
         """
         return self._when
-    
-    def addSenelblNodes(self,_list):
-        if type(_list)==list:
-            for i in _list:
-                self._wdgsolblSwitch.addChild(i)
-        else:
-            self._wdgsolblSwitch.addChild(_list)
-        self._widgetCoinNode=list
-        self.addSoNodeToSoSwitch(list)
-    
-    def addSeneNodes(self,_list):
-        if type(_list)==list:
-            for i in _list:
+
+    def addSeneNodes(self,_Value):
+        if type(_Value)==list:
+            for i in _Value:
                 self._wdgsoSwitch.addChild(i)
         else:
-            self._wdgsoSwitch.addChild(_list)
-        self._widgetCoinNode=list
-        self.addSoNodeToSoSwitch(list)
-        
+            self._wdgsoSwitch.addChild(_Value)
+        self._widgetCoinNode=_Value
+        self.addSoNodeToSoSwitch(_Value)
+
+
+    def addSeneNodeslbl(self,_list):
+        """ Switch didn't work for label. We will added to senegraph directly""" 
+        self._widgetlblCoinNode=_list
+        if type(_list)==list:
+            for i in _list:
+                self._parent.addSoSwitchToSeneGraph(i)
+        else:
+            self._parent.addSoSwitchToSeneGraph(_list)
+
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
         if len(self._widgetCoinNode)!=0:
@@ -328,7 +327,8 @@ class Fr_Widget (object):
             
         # Add the switch to the SeneGrap
         self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
-
+        
+        
     def removeSoNodeFromSoSwitch(self):
         """
             Remove the children from the widgetCOINnode which is the soseparators
@@ -336,23 +336,6 @@ class Fr_Widget (object):
         """
         self._wdgsoSwitch.removeAllChildren()
         
-    def addSoNodelblToSoSwitch(self,listOfSoSeparator):
-        """ add all small sosseparator which holds widgets lable, color,  ..etc
-        to the switch. The switch should be able to hide/visible them by a command
-        """
-        if type(listOfSoSeparator)==list:
-            for i in listOfSoSeparator:
-                self._wdgsolblSwitch.addChild(i)
-        else:
-            self._wdgsolblSwitch.addChild(listOfSoSeparator)
-        self._parent.addSoSwitchToSeneGraph(self._wdgsolblSwitch)
-
-    def removeSolblNodeFromSoSwitch(self):
-        """
-            Remove the children from the widgetCOINnode which is the soseparators
-            i.e. all drawing, color ..etc for the widget 
-        """
-        self._wdgsolblSwitch.removeAllChildren()
         
     
 #********************************************************************************************************
