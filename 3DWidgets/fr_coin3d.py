@@ -63,22 +63,6 @@ class mouseDimension:
 import time
 import threading
 
-countCLICK=0
-DoubleClick=False
-def Detect_DblClick():
-    t = time.time()
-    if t - self._click_time < 0.25:
-        self._click_count += 1
-    else:
-        self._click_count = 1
-        self._click_time = time.time()
-
-
-
-# END double click detection
-
-
-
 # get Object under mouse
 
 def objectUnderMouse_Coin3d(self, win):
@@ -128,8 +112,8 @@ class root_handle():
     global _get_event
     global _typeofevent
     #these two variable are used for double click detection
-    global _click_count
-    global _click_time
+    global _countMouseCLICK
+    global _clicked_time 
 
     # This should keep the mouse pointer position on the 3D view
     global _lastEventXYZ
@@ -140,8 +124,8 @@ class root_handle():
         self._view = Gui.ActiveDocument.ActiveView
         self._wind = None
         self.addCallbacks()
-        self._click_count=0
-        self._click_time=0
+        self._countMouseCLICK=0
+        self._clicked_time=0
     # COIN3D related functions - START
 
     def shiftwasclicked(self):
@@ -231,18 +215,9 @@ class root_handle():
                 self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 #detect double click here. COIN3D has no function for that
-                t = time.time()
-                if (t - self._click_time) < 0.25:
-                    self._click_count =self._click_count+ 1
-                    if self._click_count==2:
-                        self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
-                        print(self._click_count)
-                        self._click_count=0
+                if self.Detect_DblClick()==True:
+                    self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
                 else:
-                    print("11")
-                    print(self._click_count)
-                    self._click_count = 1
-                    self._click_time = time.time()
                     self._lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
 
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
@@ -314,7 +289,18 @@ class root_handle():
         # elif(_typeofevent == coin.SoGestureEvent):
         # elif(_typeofevent) == coin.SoTouchEvent:
         # elif(_typeofevent) == coin.SoTrackerEvent:
-
+    def Detect_DblClick(self):
+        t = time.time()
+        if t - self._clicked_time <= 0.25:
+            self._countMouseCLICK += 1
+        else:
+            self._countMouseCLICK = 0
+            self._clicked_time = time.time()
+        if  self._countMouseCLICK==2:
+            return True
+        else:
+            return False
+        
     def removeCallbacks(self):
         '''
         Remove all callbacks registered for Fr_Window widget

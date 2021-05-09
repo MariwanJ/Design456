@@ -493,3 +493,13 @@ class SelectTopFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return self.obj.SubObjects[0].CenterOfMass
+
+#TODO: FIXME
+class GetInputValue():
+    """
+    get Input value from user.
+    """
+    def Activated(self):
+        text, ok = QtGui.QInputDialog.getText(self, 'input dialog', 'Is this ok?')
+        if ok:
+            return str(text)
