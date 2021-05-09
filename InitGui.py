@@ -51,7 +51,6 @@ class Design456_Workbench (Workbench):
         import Design456_2Ddrawing as TwoDDraw
         import Design456_Part_Tools as _tools
         import Design456_SelectionGate as SelGate
-
         
         # from Part import CommandShapes     #Tube  not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
@@ -92,7 +91,7 @@ class Design456_Workbench (Workbench):
                                      "behavior.\n")
         except Exception:
             App.Console.PrintWarning("Error: Pivy not found, "
-                                     "Draft Workbench will be disabled.\n")
+                                     "Design456 Workbench will be disabled.\n")
         except Exception:
             App.Console.PrintWarning("Error: Unknown error "
                                      "while trying to load Pivy.\n")
@@ -166,7 +165,7 @@ class Design456_Workbench (Workbench):
             App.Console.PrintError(exc)
             App.Console.PrintError("Error: Initializing one or more "
                                    "of the Draft modules failed, "
-                                   "Draft will not work as expected.\n")
+                                   "Design456 will not work as expected.\n")
 
     def Activated(self):
         try:
@@ -282,7 +281,7 @@ class Design456_Workbench (Workbench):
             App.Console.PrintError(exc)
             App.Console.PrintError("Error: Draft ContexMenu "
                                    "failed, "
-                                   "Draft will not work as expected.\n")
+                                   "Design456 will not work as expected.\n")
 
     def GetClassName(self):
         return "Gui::PythonWorkbench"
