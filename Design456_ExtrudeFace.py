@@ -34,6 +34,8 @@ import Part
 import FACE_D as faced
 import Design456_Extract as face_extract
 import Design456_Part_Tools as tools
+from draftutils.translate import translate   #for translate
+
 
 class Design456_ExtrudeFace:
     def __init__(self):
@@ -54,6 +56,7 @@ class Design456_ExtrudeFace:
                 return  # nothing to do here
 
             objName = s[0].ObjectName
+            App.ActiveDocument.openTransaction(translate("Design456","Extrude a face"))
             sh = s[0].Object.Shape.copy()
             if hasattr(s[0].Object, "getGlobalPlacement"):
                 gpl = s[0].Object.getGlobalPlacement()
@@ -106,6 +109,7 @@ class Design456_ExtrudeFace:
                     Gui.Selection.addSelection(obj1)
                     Gui.Selection.addSelection(obj2)
                     Gui.runCommand('Design456_Part_Merge', 0)
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
 
             return
