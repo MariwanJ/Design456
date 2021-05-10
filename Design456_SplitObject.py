@@ -35,6 +35,7 @@ import BOPTools.SplitFeatures as SPLIT
 from FreeCAD import Base
 from time import time as _time, sleep as _sleep
 import FACE_D as faced
+from draftutils.translate import translate   #for translate
 
 class Design456_SplitObject:
     """Divide object in to two parts"""
@@ -48,6 +49,7 @@ class Design456_SplitObject:
                 errMessage = "Select an object to use Split Tool"
                 faced.getInfo(selection).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Split Object"))
             shape = selection[0].Object.Shape
             bb = shape.BoundBox
             length = max(bb.XLength, bb.YLength, bb.ZLength)
@@ -96,7 +98,7 @@ class Design456_SplitObject:
                     App.ActiveDocument.removeObject(obj.Name)
                 App.ActiveDocument.removeObject(totalName)
                 App.ActiveDocument.removeObject(j.Name)
-
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'SplitObject' Failed. "

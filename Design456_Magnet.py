@@ -32,6 +32,7 @@ import Draft
 import Part
 import Design456Init
 import FACE_D as faced
+from draftutils.translate import translate   #for translate
 
 # Move an object to the location of the mouse click on another surface
 class Design456_Magnet:
@@ -43,12 +44,14 @@ class Design456_Magnet:
     """
     def Activated(self):
         try:
+            
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to use Magnet Tool"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Magnet"))
             sub1 = Gui.Selection.getSelectionEx()[0]
             sub2 = Gui.Selection.getSelectionEx()[1]
             face1 = faced.getInfo(sub1).getObjectFromFaceName(
@@ -59,6 +62,7 @@ class Design456_Magnet:
             sub2.Object.Placement.Base = face1.CenterOfMass
             sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
             sub2.Object.Placement.Rotation.Q = face1.Faces[0].Surface.Rotation.Q
+            App.ActiveDocument.commitTransaction() #undo
             App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Magnet' Failed. "

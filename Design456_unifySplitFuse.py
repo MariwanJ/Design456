@@ -45,7 +45,7 @@ import Design456Init
 from pivy import coin
 import FACE_D as faced
 import math as _math
-
+from draftutils.translate import translate   #for translate
 
 class Design456_unifySplitFuse1:
     
@@ -54,7 +54,7 @@ class Design456_unifySplitFuse1:
             #### Config Begin ####
             switchRemoveConstructionObject = self.askQuestion()    # if 0= (NO) not removed creation objects 1= (YES) remove objects
             #### Config End ####
-
+            App.ActiveDocument.openTransaction(translate("Design456","UnifySplitFuse1"))
             selectedEdge     = Gui.Selection.getSelectionEx()
             sel = selObjects = Gui.Selection.getSelection()
             try:
@@ -125,6 +125,7 @@ class Design456_unifySplitFuse1:
                 App.ActiveDocument.removeObject(fusion.Name)
                 App.ActiveDocument.removeObject(shapeFace1.Name)
                 App.ActiveDocument.removeObject(shapeFace2.Name)
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'UnifySplitFuse1' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -161,6 +162,7 @@ class Design456_unifySplitFuse2:
                 faced.getInfo(sel).errorDialog(errMessage)
                 return
             reply = self.askQuestion()
+            App.ActiveDocument.openTransaction(translate("Design456","UnifySplitFuse1"))
             Gui.ActiveDocument.getObject(sel[0].Name).Visibility=False
             Gui.ActiveDocument.getObject(sel[1].Name).Visibility=False
 
@@ -270,7 +272,7 @@ class Design456_unifySplitFuse2:
                 App.ActiveDocument.removeObject(newObjectFuse1.Name)
                 App.ActiveDocument.removeObject(newObjectFuse2.Name)
             #### End command Part_Fuse
-
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'makeIt' Failed. "
                                    "{err}\n".format(err=str(err)))

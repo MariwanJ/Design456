@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 # ***************************************************************************
 import os,sys
 import FreeCAD as App
+from draftutils.translate import translate   #for translate
 """
 This file will add all paths needed for the Design456.
 It makes life easier. By doing that you can import any file
