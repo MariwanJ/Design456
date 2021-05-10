@@ -98,6 +98,10 @@ def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
     dash = coin.SoSeparator()
     v = coin.SoVertexProperty()
     coords = coin.SoTransform()
+    p1=vertices[0]
+    p2=vertices[1]
+    p3=vertices[2]
+    p4=vertices[3]
     square = coin.SbBox3f(p1, p2, p3, p4)
     square.vertexProperty = v
     style = coin.SoDrawStyle()

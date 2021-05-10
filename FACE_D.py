@@ -28,10 +28,11 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft  as _draft
 import Part  as _part
 from pivy import coin
+
+from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 
 class  getDirectionAxis():
     def Activated(self):
@@ -312,7 +313,6 @@ class PartMover:
 
 """
 
-
 class getInfo:
     def __init__(self, object=None):
         self.obj = object
@@ -494,12 +494,27 @@ class SelectTopFace:
             print(exc_type, fname, exc_tb.tb_lineno)
             return self.obj.SubObjects[0].CenterOfMass
 
-#TODO: FIXME
-class GetInputValue():
+#TODO: Transparent dialog? how to? 
+class GetInputValue:
     """
-    get Input value from user.
+    get Input value from user. Either Text, INT or Float
     """
+    def getIntValue(self):
+        valueDouble,ok= (QtGui.QInputDialog.getInt(None, "Input new Value", "Change size:", 0, -10000, 10000))
+        if ok:
+            return float(valueDouble)
+
+    def getTextValue(self):
+        text, ok = QtGui.QInputDialog.getText(None,'Input new Value', 'Change size:')
+        if ok:
+            return str(text)
+    
+    def getDoubleValue(self):
+        valueDouble,ok= (QtGui.QInputDialog.getDouble(None, 'Input new Value', 'Change size:', 0, -10000.0, 10000.0, 2))
+        if ok:
+            return float(valueDouble)
+    
     def Activated(self):
-        text, ok = QtGui.QInputDialog.getText(self, 'input dialog', 'Is this ok?')
+        text, ok = QtGui.QInputDialog.getText(None,'Input new Value', 'Change size')
         if ok:
             return str(text)
