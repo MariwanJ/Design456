@@ -211,7 +211,7 @@ class Design456_loftOnDirection_ui(object):
             createAxis = self.chkAxis.isChecked()          # 0 = not Axis, other = Axis
             createLoft = self.chkLoft.isChecked()          # 0 = not loft, other = loft
             #### configuration ####
-
+            App.ActiveDocument.openTransaction(translate("Design456","LoftOnDirection"))
             if hasattr(selectedEdge, 'Surface'):
                 plr = plDirection = App.Placement()
 
@@ -289,8 +289,8 @@ class Design456_loftOnDirection_ui(object):
                     for obj in newObj.Sections:
                         App.ActiveDocument.removeObject(obj.Name)
                     App.ActiveDocument.removeObject(newObj.Name)
+                    App.ActiveDocument.commitTransaction()
                     App.ActiveDocument.recompute()
-                    
                     # section hidden faces work
             self.window.hide()
         except Exception as err:

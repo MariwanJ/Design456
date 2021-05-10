@@ -64,7 +64,6 @@ def moveSubElements(obj, sub_objects_names, vector):
     """
     if not isinstance(sub_objects_names, list):
         sub_objects_names = [sub_objects_names]
-
     shape = obj.Shape
     new_shape = None
     if not shape.isValid():
@@ -252,7 +251,9 @@ class Design456_Tweak(gui_move.Move):
         super(Design456_Tweak, self).__init__()
 
     def Activated(self):
+        App.ActiveDocument.openTransaction(translate("Design456","Tweak"))
         super(Design456_Tweak, self).Activated()
+        App.ActiveDocument.commitTransaction() #undo reg.
         return
 
 

@@ -41,7 +41,7 @@ import Design456_Magnet
 import Design456_Tweak
 import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
-
+from draftutils.translate import translate   #for translate
 
 # Merge
 class Design456_Part_Merge:
@@ -54,6 +54,7 @@ class Design456_Part_Merge:
                 errMessage = "Select two or more objects to Merge"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Part Merge"))
             allObjects = []
             for o in s:
                 allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
@@ -79,6 +80,7 @@ class Design456_Part_Merge:
                 for obj in allObjects:
                    App.ActiveDocument.removeObject(obj.Name)
                 App.ActiveDocument.removeObject(newObj.Name)
+                App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
             del allObjects[:]
         except Exception as err:
@@ -105,12 +107,12 @@ class Design456_Part_Subtract:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
-            temp = None
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Subtract"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Part Subtract"))
             newObj = App.ActiveDocument.addObject("Part::Cut", "tempSubtract")
             newObj.Base = App.ActiveDocument.getObject(
                 s[0].ObjectName)  # Target
@@ -139,6 +141,7 @@ class Design456_Part_Subtract:
                 for obj in allObjects:
                     App.ActiveDocument.removeObject(obj.Name)
                 App.ActiveDocument.removeObject(newObj.Name)
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
             del allObjects[:]
         except Exception as err:
@@ -166,7 +169,7 @@ class Design456_Part_Intersect:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
-            temp = None
+            App.ActiveDocument.openTransaction(translate("Design456","Part Intersect"))
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Intersect"
@@ -189,6 +192,7 @@ class Design456_Part_Intersect:
             for obj in allObjects:
                 App.ActiveDocument.removeObject(obj.Name)
             App.ActiveDocument.removeObject(newObj.Name)
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
             del allObjects[:]
         except Exception as err:
@@ -223,9 +227,9 @@ class Design456_Part_Group:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
-            temp = None
             if (len(s) < 2):
                 # Two object must be selected
+                #App.ActiveDocument.openTransaction(translate("Design456","Part Group")) TODO: Doesn't work
                 errMessage = "Select two or more objects to create a group"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
@@ -235,7 +239,7 @@ class Design456_Part_Group:
             for obj_ in s:
                 obj = App.ActiveDocument.getObject(obj_.ObjectName)
                 newObj.addObject(obj)
-
+            #App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Part::Part' Failed. "
@@ -260,12 +264,13 @@ class Design456_Part_Compound:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
-            temp = None
+            
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Merge"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Part Compound"))
             allObjects = []
             for o in s:
                 allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
@@ -283,7 +288,7 @@ class Design456_Part_Compound:
             for obj in allObjects:
                 App.ActiveDocument.removeObject(obj.Name)
             App.ActiveDocument.removeObject(newObj.Name)
-
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
             del allObjects[:]
         except Exception as err:
@@ -310,12 +315,12 @@ class Design456_Part_Shell:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
-            temp = None
             if (len(s) < 1):
                 # Two object must be selected
                 errMessage = "Select two or more objects to use Shell Tool"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Part Shell"))
             thickness = QtGui.QInputDialog.getDouble(
                 None, "Thickness", "Value:", 0, -1000.0, 1000.0, 2)[0]
             if(thickness == 0):
@@ -348,7 +353,7 @@ class Design456_Part_Shell:
                 for obj in allObjects:
                     App.ActiveDocument.removeObject(obj.Name)
                 App.ActiveDocument.removeObject(thickObj.Name)
-
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
             del allObjects[:]
         except Exception as err:
@@ -380,6 +385,7 @@ class Design456_Part_Fillet:
                 errMessage = "Select a face or an edge use Fillet"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Part Fillet"))
             Radius = QtGui.QInputDialog.getDouble(
                 None, "Fillet Radius", "Radius:", 0, 1.0, 20.0, 2)[0]
             if (Radius == 0):
@@ -392,7 +398,6 @@ class Design456_Part_Fillet:
             print(names)
             EdgesToBeChanged = []
             if (len(names) != 0):
-                counter = 1
                 """ we need to take the rest of the string
                             i.e. 'Edge15' --> take out 'Edge'-->4 bytes
                             len('Edge')] -->4
@@ -415,17 +420,17 @@ class Design456_Part_Fillet:
             else:
                 # Make a simple copy of the object
                 App.ActiveDocument.recompute()
-                newShape = Part.getShape(
-                    tempNewObj, '', needSubElement=False, refine=False)
-                newObj = App.ActiveDocument.addObject(
-                    'Part::Feature', 'Fillet').Shape = newShape
+                newShape = Part.getShape(tempNewObj, '', needSubElement=False, refine=False)
+                newObj = App.ActiveDocument.addObject('Part::Feature', 'Fillet').Shape = newShape
                 App.ActiveDocument.recompute()
                 App.ActiveDocument.ActiveObject.Label = 'Fillet'
 
                 App.ActiveDocument.removeObject(sub1.Object.Name)
                 App.ActiveDocument.removeObject(tempNewObj.Name)
-            App.ActiveDocument.recompute()
+            App.ActiveDocument.commitTransaction() #undo reg.
             del EdgesToBeChanged[:]
+            App.ActiveDocument.recompute()
+            
 
         except Exception as err:
             App.Console.PrintError("'Fillet' Failed. "
@@ -456,6 +461,7 @@ class Design456_Part_Chamfer:
                 errMessage = "Select a face or an edge use Chamfer"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Part Chamfer"))
             Radius = QtGui.QInputDialog.getDouble(
                 None, "Radius", "Radius:", 0, -10000.0, 10000.0, 2)[0]
             if (Radius == 0):
@@ -467,7 +473,6 @@ class Design456_Part_Chamfer:
             names = sub1.SubElementNames
             EdgesToBeChanged = []
             if (len(names) != 0):
-                counter = 1
                 for name in names:
                     edgeNumbor = int(name[4:len(name)])
                     EdgesToBeChanged.append((edgeNumbor, Radius, Radius))
@@ -493,8 +498,10 @@ class Design456_Part_Chamfer:
 
                 App.ActiveDocument.removeObject(sub1.Object.Name)
                 App.ActiveDocument.removeObject(tempNewObj.Name)
-            App.ActiveDocument.recompute()
             del EdgesToBeChanged[:]
+            App.ActiveDocument.commitTransaction() #undo reg.
+            App.ActiveDocument.recompute()
+
         except Exception as err:
             App.Console.PrintError("'Chamfer' Failed. "
                                    "{err}\n".format(err=str(err)))
