@@ -49,6 +49,8 @@ import Draft as _draft
 import Part as _part
 import BOPTools.SplitFeatures as SPLIT
 import FACE_D as faced
+from draftutils.translate import translate   #for translate
+
 
 class Design456_loftOnDirection_ui(object):
     def __init__(self, loftOnDirection):

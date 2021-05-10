@@ -32,7 +32,7 @@ from PySide import QtGui, QtCore
 import Draft
 import Part
 import FACE_D as faced
-
+from draftutils.translate import translate   #for translate 
 
 class Design456_Extract:
     """Extract the selected face from objects"""
@@ -47,6 +47,7 @@ class Design456_Extract:
                 errMessage = "Select a face from an objects to use Extract"
                 faced.getInfo(s).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Extract Face"))
             for o in s:
                 objName = o.ObjectName
                 sh = o.Object.Shape.copy()
@@ -58,7 +59,7 @@ class Design456_Extract:
                     newobj = o.Document.addObject("Part::Feature", fullname)
                     newobj.Shape = sh.getElement(name)
                     objectCreate=True
-            
+            App.ActiveDocument.commitTransaction()
             App.ActiveDocument.recompute()
             if  newobj.isValid()==False:
                 if objectCreate==True:
