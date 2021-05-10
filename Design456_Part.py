@@ -33,6 +33,8 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft as _draft
 import Part as _part
 import FACE_D as faced
+from draftutils.translate import translate   #for translate
+
 
 #import PartGui
 import BasicShapes.CommandShapes
@@ -86,8 +88,8 @@ class Design456_Part:
         else:
             return True
 
-    def Activated(self):
-        self.appendToolbar("Design456_Part", self.list)
+#    def Activated(self):
+#        self.appendToolbar("Design456_Part", self.list)
 
 # BOX
 
@@ -96,12 +98,13 @@ class Design456_Part_Box:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Part Box"))
             newObj = App.ActiveDocument.addObject("Part::Box", "Box")
             newObj.Label = "Cube"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,newObj,deleteOnEscape = True)
-            # Gui.SendMsgToActiveView("ViewFit")
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'Part::Box' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -125,13 +128,14 @@ Gui.addCommand('Design456_Part_Box', Design456_Part_Box())
 class Design456_Part_Cylinder:
 
     def Activated(self):
-        try:
+        try: 
+            App.ActiveDocument.openTransaction(translate("Design456","Part Cylinder"))
             newObj = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
             App.ActiveDocument.ActiveObject.Label = "Cylinder"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,newObj,deleteOnEscape = True)
-            # Gui.SendMsgToActiveView("ViewFit")
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'Part::Cylinder' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -146,7 +150,6 @@ class Design456_Part_Cylinder:
                         'ToolTip':  'Part Cylinder'
         }
 
-
 Gui.addCommand('Design456_Part_Cylinder', Design456_Part_Cylinder())
 
 
@@ -155,11 +158,13 @@ class Design456_Part_Tube:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Part Tube"))
             Gui.runCommand('Part_Tube', 0)
             newObj =App.ActiveDocument.ActiveObject
             v = Gui.ActiveDocument.ActiveView
             App.ActiveDocument.recompute()
             faced.PartMover(v,newObj,deleteOnEscape = True)
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Part::Tube' Failed. "
@@ -184,12 +189,14 @@ class Design456_Part_Sphere:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Part Sphere"))
             newObj = App.ActiveDocument.addObject("Part::Sphere", "Sphere")
             App.ActiveDocument.ActiveObject.Label = "Sphere"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,newObj,deleteOnEscape = True)
-            # Gui.SendMsgToActiveView("ViewFit")
+            App.ActiveDocument.commitTransaction() #undo reg.
+            
         except Exception as err:
             App.Console.PrintError("'Part::Sphere' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -213,12 +220,13 @@ class Design456_Part_Cone:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Part Cone"))
             newObj = App.ActiveDocument.addObject("Part::Cone", "Cone")
             App.ActiveDocument.ActiveObject.Label = "Cone"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,newObj,deleteOnEscape = True)
-            # Gui.SendMsgToActiveView("ViewFit")
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'Part::Cone' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -242,12 +250,13 @@ class Design456_Part_Torus:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Part Torus"))
             newObj = App.ActiveDocument.addObject("Part::Torus", "Torus")
             App.ActiveDocument.ActiveObject.Label = "Torus"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,newObj,deleteOnEscape = True)
-            # Gui.SendMsgToActiveView("ViewFit")
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'Part::Torus' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -262,7 +271,6 @@ class Design456_Part_Torus:
                         'ToolTip':  'Part Torus'
         }
 
-
 Gui.addCommand('Design456_Part_Torus', Design456_Part_Torus())
 
 # Wedge
@@ -272,12 +280,13 @@ class Design456_Part_Wedge:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Part Wedge"))
             newObj = App.ActiveDocument.addObject("Part::Wedge", "Wedge")
             App.ActiveDocument.ActiveObject.Label = "Wedge"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,newObj,deleteOnEscape = True)
-            # Gui.SendMsgToActiveView("ViewFit")
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'Part::Wedge' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -292,7 +301,6 @@ class Design456_Part_Wedge:
                         'ToolTip':  'Part Wedge'
         }
 
-
 Gui.addCommand('Design456_Part_Wedge', Design456_Part_Wedge())
 
 
@@ -301,12 +309,13 @@ class Design456_Part_Prism:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Part Prism"))
             newObj = App.ActiveDocument.addObject("Part::Prism", "Prism")
             App.ActiveDocument.ActiveObject.Label = "Prism"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,newObj,deleteOnEscape = True)
-            # Gui.SendMsgToActiveView("ViewFit")
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'Part::Prism' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -321,7 +330,6 @@ class Design456_Part_Prism:
                         'ToolTip':  'Part Prism'
         }
 
-
 Gui.addCommand('Design456_Part_Prism', Design456_Part_Prism())
 
 
@@ -330,7 +338,7 @@ class Design456_Part_Pyramid:
 
     def Activated(self):
         try:
-
+            App.ActiveDocument.openTransaction(translate("Design456","Part Pyramid"))
             obj = App.Placement()
             Faces = QtGui.QInputDialog.getInt(None, "Faces", "Faces:")[0]
             if(Faces==0):
@@ -378,6 +386,7 @@ class Design456_Part_Pyramid:
             # Gui.SendMsgToActiveView("ViewFit")
             App.ActiveDocument.removeObject(newObj1.Name)
             # App.ActiveDocument.removeObject(point)
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
@@ -396,7 +405,6 @@ class Design456_Part_Pyramid:
                         'ToolTip':  'Part Pyramid'
         }
 
-
 Gui.addCommand('Design456_Part_Pyramid', Design456_Part_Pyramid())
 
 
@@ -405,10 +413,10 @@ class Design456_Part_Hemisphere:
 
     def Activated(self):
         try:
-
             neRaduis= QtGui.QInputDialog.getDouble(None, "Radius", "Radius:",0,1.0,10000.0,2)[0]
             if(neRaduis==0):
                 return #Nothing to do here.
+            App.ActiveDocument.openTransaction(translate("Design456","Part Hemisphere"))
             neObj = App.ActiveDocument.addObject("Part::Sphere", "tempHemisphere")
             neObj.Radius=neRaduis 
             neObj.Placement = App.Placement(App.Vector(
@@ -417,10 +425,10 @@ class Design456_Part_Hemisphere:
             neObj.Angle2 = '90.00 deg'
             neObj.Angle3 = '180.00 deg'
             App.ActiveDocument.recompute()
-            # Gui.SendMsgToActiveView("ViewFit")
+
             sh = neObj.Shape
             nsh = sh.defeaturing([sh.Face2, ])
-            defat=None
+            
             if not sh.isPartner(nsh):
                 defeat = App.ActiveDocument.addObject(
                     'Part::Feature', 'Hemisphere').Shape = nsh
@@ -428,6 +436,7 @@ class Design456_Part_Hemisphere:
             else:
                 App.Console.PrintError('Defeaturing failed\n')
             App.ActiveDocument.recompute()
+            App.ActiveDocument.commitTransaction() #undo reg.
             newObj= App.ActiveDocument.ActiveObject
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
@@ -446,7 +455,6 @@ class Design456_Part_Hemisphere:
                         'ToolTip':  'Part Hemisphere'
         }
 
-
 Gui.addCommand('Design456_Part_Hemisphere', Design456_Part_Hemisphere())
 
 # Ellipsoid
@@ -456,13 +464,15 @@ class Design456_Part_Ellipsoid:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Part Ellipsoid"))
+
             newObj = App.ActiveDocument.addObject(
                 "Part::Ellipsoid", "Ellipsoid")
             App.ActiveDocument.ActiveObject.Label = "Ellipsoid"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v,newObj,deleteOnEscape = True)
-            # Gui.SendMsgToActiveView("ViewFit")
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'Part::Ellipsoid' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -476,7 +486,6 @@ class Design456_Part_Ellipsoid:
             'MenuText': 'Part_Ellipsoid',
                         'ToolTip':  'Part Ellipsoid'
         }
-
 
 Gui.addCommand('Design456_Part_Ellipsoid', Design456_Part_Ellipsoid())
 
@@ -493,13 +502,14 @@ class Design_ColorizeObject:
     def Activated(self): 
         import random
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Colorize"))
             aa = Gui.Selection.getSelection()[0]  # selection object
             colors = []
             for ii in range(len(aa.Shape.Faces)):
                 colors.append((random.uniform(0.25, 1), random.uniform(0.25, 1), random.uniform(0.25, 1), 0.0)) #red, green, blue, transparence
        
             aa.ViewObject.DiffuseColor = colors 
-        
+            App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
             App.Console.PrintError("'Part::Hemisphere' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -513,4 +523,5 @@ class Design_ColorizeObject:
             'MenuText': 'Colorize object',
                         'ToolTip':  'Colorize object randomly'
         }
+
 Gui.addCommand('Design_ColorizeObject', Design_ColorizeObject())

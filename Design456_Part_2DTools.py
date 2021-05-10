@@ -32,6 +32,7 @@ import Draft as _draft
 import Part  as _part
 import Design456Init
 import FACE_D as faced
+from draftutils.translate import translate   #for translate
 
 
 
@@ -146,10 +147,11 @@ class GenCommandForPartUtils:
 class Design456_CommonFace:
 
     def Activated(self):
+        App.ActiveDocument.openTransaction(translate("Design456","CommonFace"))
         cmp = GenCommandForPartUtils()
         cmp.makeIt(1)
+        App.ActiveDocument.commitTransaction() #undo reg.de here
         App.ActiveDocument.recompute()
-        # extract code here
 
     def GetResources(self):
         return{
@@ -167,8 +169,10 @@ Gui.addCommand('Design456_CommonFace', Design456_CommonFace())
 
 class Design456_SubtractFaces:
     def Activated(self):
+        App.ActiveDocument.openTransaction(translate("Design456","CommonFace"))
         cmp = GenCommandForPartUtils()
         cmp.makeIt(2)
+        App.ActiveDocument.commitTransaction() #undo reg.de here
         App.ActiveDocument.recompute()
 
     def GetResources(self):
@@ -186,8 +190,10 @@ Gui.addCommand('Design456_SubtractFaces', Design456_SubtractFaces())
 
 class Design456_CombineFaces:
     def Activated(self):
+        App.ActiveDocument.openTransaction(translate("Design456","Combine Faces"))
         cmp = GenCommandForPartUtils()
         cmp.makeIt(3)
+        App.ActiveDocument.commitTransaction() #undo reg.de here
         App.ActiveDocument.recompute()
 
     def GetResources(self):
@@ -206,6 +212,7 @@ class Design456_Part_Surface:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Surface"))
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 2 or len(s) > 2):
                 # Two object must be selected
@@ -247,7 +254,7 @@ class Design456_Part_Surface:
                 # App.ActiveDocument.removeObject(s[1].Object.Name)
                 s[0].Object.ViewObject.Visibility = False
                 s[1].Object.ViewObject.Visibility = False
-
+                App.ActiveDocument.commitTransaction() #undo reg.de here
                 App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Part Surface' Failed. "

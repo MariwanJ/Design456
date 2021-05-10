@@ -34,6 +34,7 @@ import Draft as _draft
 import Part as _part
 import FACE_D as faced
 import Design456Init
+from draftutils.translate import translate   #for translate
 # Toolbar class
 """Design456_Alignment"""
 
@@ -43,7 +44,7 @@ class Design456_AlignFlatToPlane:
         try:
             Selectedobjects = Gui.Selection.getSelectionEx()
             #This must be modified          
-            
+            newobj=App.ActiveDocument.ActiveObject  #Dummy code.
             for eachObj in Selectedobjects:
                 if Design456Init.DefaultDirectionOfExtrusion=='z':
                     eachObj.Object.Placement.Base.z = 0.0
@@ -52,7 +53,7 @@ class Design456_AlignFlatToPlane:
                 elif Design456Init.DefaultDirectionOfExtrusion=='x':
                     eachObj.Object.Placement.Base.x = 0.0
 
-                
+            App.ActiveDocument.commitTransaction() #undo reg.     
         except Exception as err:
             App.Console.PrintError("'Align to Plain' Failed. "
                                    "{err}\n".format(err=str(err)))
