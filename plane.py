@@ -39,6 +39,8 @@ import pivy.coin as coin
 import FreeCADGui as Gui
 import FreeCAD as App
 
+
+
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
     v = coin.SoVertexProperty()
