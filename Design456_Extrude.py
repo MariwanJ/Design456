@@ -33,7 +33,7 @@ import Draft
 import Part
 import FACE_D as faced
 from time import time as _time, sleep as _sleep
-
+from draftutils.translate import translate   #for translate 
 
 class Design456_Extrude:
     def __init__(self):
@@ -47,6 +47,7 @@ class Design456_Extrude:
                 errMessage = "Select a face to use Extrude"
                 faced.getInfo(selection).errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(translate("Design456","Extrude"))
             m = selection[0].Object
             f = App.ActiveDocument.addObject('Part::Extrusion', 'ExtrudeOriginal')
             faceSelected = faced.getInfo(selection[0]).getFaceName()
@@ -59,7 +60,7 @@ class Design456_Extrude:
             degreeAngle = m.Placement.Rotation.Angle*180*22/7  # Convert to Radians
             print(degreeAngle)
             """
-            YOU SHOULD NOT SPECIFY THIS .. OTHERWISE WOULD BE WRONG!!
+            YOU SHOULD NOT SPECIFY THIS .. OTHERWISE IT COULD BE WRONG!!
             if degreeAngle == 0:
                 f.Dir = m.Placement.Rotation.Axis
             elif ((degreeAngle== 90) or (degreeAngle== -90)):
@@ -96,11 +97,12 @@ class Design456_Extrude:
                 faced.getInfo(m).errorDialog(errMessage)
             else:
                 # Remove old objects
-                App.ActiveDocument.clearUndos()
+                #App.ActiveDocument.clearUndos()
                 App.ActiveDocument.recompute()
                 App.ActiveDocument.removeObject(f.Name)
                 App.ActiveDocument.removeObject(m.Name)
                 return
+            App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "
