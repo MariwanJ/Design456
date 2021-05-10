@@ -29,7 +29,7 @@ Initial inspiration came from exploring the a template workbench named D3D-Print
 
 ### Notes
 
-- Caution: at this stage, Undo-Redo is not functioning at all. Please be aware of this. It's recommended to work on a copy of your object. If you find out it works on your test object, then apply it to your original object.  
+- Caution: It's recommended to work on a copy of your object even if Undo is functional now. If you find out it works on your test object, then apply it to your original object.  
 - There might be other issues, as I am the sole developer on this project, it is difficult to do all the work quickly. I have in my plan to test all these functions in quite depth. But at the moment, I wish to implement them and learn how I can do them. I am still in the beginning of the learning process.  
 - Use Face to extract a face from a side.  
 - You cannot use `Extrude` to Extrude a side. Instead use the other function `Copy-Face-Extrude` or `loft-on-direction` 
