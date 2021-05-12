@@ -43,11 +43,11 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     global _lineWidth
 
     # def __init__(self, args:fr_widget.VECTOR=[],l=""):
-    def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
+    def __init__(self, args: List[App.Vector] = [], label:List[str]=[] ,lineWidth=1):
         if args == None:
             args = []
         self._lineWidth = lineWidth # default line width
-        self._label=label
+        self._label==label          # Here we have a list (4 labels)
         self._vector=args
         super().__init__(args, label)
 
@@ -70,10 +70,10 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
 
         if self._parent.link_to_root_handle._lastEvent == constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             found = fr_coin3d.objectMouseClick_Coin3d(self._parent.link_to_root_handle._lastEventXYZ.pos, self._pick_radius, self._widgetCoinNode)
-            if found == True:
+            if found !=None:
                 self.take_focus()
                 self.do_callback(self._userData)
-                found=False
+                found=None
                 return 1
             else:
                 self.remove_focus()
@@ -92,7 +92,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         if self.is_active() and self.has_focus():
             usedColor = self._selColor
         elif self.is_active() and (self.has_focus() != 1):
-            usedColor = self._activeColor
+            usedColor = self._color
         elif self.is_active() != 1:
             usedColor = self._inactiveColor
         if self.is_visible():
