@@ -113,7 +113,7 @@ def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
     return draw_square
 
 
-def draw_polygon(vertices, color, LineWidth):
+def draw_polygon(vertices, color=(0.0,0.0,0.0), LineWidth=1.0):
     """
         Draw any polygon. This will be the base of all multi-point drawing.
         Curves, and arc is not here.

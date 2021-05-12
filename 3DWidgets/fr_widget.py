@@ -309,11 +309,15 @@ class Fr_Widget (object):
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
         if len(self._widgetCoinNode)!=0:
-            for i in self._widgetCoinNode: 
-                del i 
-        if len(self._widgetlblCoinNode)!=0:
-            for i in self._widgetlblCoinNode: 
-                del i 
+            if(self._widgetCoinNode==list):
+                for i in self._widgetCoinNode: 
+                    del (i)
+            else:
+                del ( self._widgetCoinNode)
+        if self._widgetlblCoinNode!=None:
+            if len(self._widgetlblCoinNode)!=0:
+                for i in self._widgetlblCoinNode: 
+                    del i 
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
