@@ -61,30 +61,30 @@ class Fr_Widget (object):
         Default values which is shared with all objects.
 
         """
-        self._vector = args        # This should be like App.vectors
-        self._label = [label]      # This must be a list, to have several raw, append str
-        self._lblPosition=None     # Should be defined when lbl is created. 
-        self._visible = True
-        self._bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-        self._color = constant.FR_COLOR.FR_BLACK
-        self._inactiveColor = constant.FR_COLOR.FR_GRAY2
-        self._selColor = constant.FR_COLOR.FR_YELLOW
-        self._lblColor= constant.FR_COLOR.FR_BLACK
-        self._box = None
-        self._active = True
-        self._parent = None
-        self._widgetType = constant.FR_WidgetType.FR_WIDGET
-        self._hasFocus = False
-        self._font='sans'
-        self._fontsize=4
-        self._pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
-        self._widgetCoinNode = None     #Should be defined in the widget either one or a list
-        self._widgetlblCoinNode = None  #Should be defined in the widget either one or a list
+        self.w_vector = args        # This should be like App.vectors
+        self.w_label = [label]      # This must be a list, to have several raw, append str
+        self.w_lblPosition=None     # Should be defined when lbl is created. 
+        self.w_visible = True
+        self.w_bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
+        self.w_color = constant.FR_COLOR.FR_BLACK
+        self.w_inactiveColor = constant.FR_COLOR.FR_GRAY2
+        self.w_selColor = constant.FR_COLOR.FR_YELLOW
+        self.w_lblColor= constant.FR_COLOR.FR_BLACK
+        self.w_box = None
+        self.w_active = True
+        self.w_parent = None
+        self.w_widgetType = constant.FR_WidgetType.FR_WIDGET
+        self.w_hasFocus = False
+        self.w_font='sans'
+        self.w_fontsize=4
+        self.w_pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
+        self.w_widgetCoinNode = None     #Should be defined in the widget either one or a list
+        self.w_widgetlblCoinNode = None  #Should be defined in the widget either one or a list
         # each node is a child of one switch, Add drawings a children for this switch
-        self._wdgsoSwitch = coin.SoSwitch()        
-        self._wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-        self._when = constant.FR_WHEN.FR_WHEN_NEVER
-        self._userData = None
+        self.w_wdgsoSwitch = coin.SoSwitch()        
+        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+        self.w_when = constant.FR_WHEN.FR_WHEN_NEVER
+        self.w_userData = None
 
     def draw_box(self):
         raise NotImplementedError()
@@ -100,10 +100,10 @@ class Fr_Widget (object):
         raise NotImplementedError()
     
     def Font(self, newFont):
-        self._font=newFont
+        self.w_font=newFont
         
     def FontSize(self,newSize):
-        self._fontsize=newSize
+        self.w_fontsize=newSize
         
     def redraw(self):
         """
@@ -137,7 +137,7 @@ class Fr_Widget (object):
         """
         Check if the widget has focus
         """
-        return self._hasFocus
+        return self.w_hasFocus
 
     def remove_focus(self):
         """
@@ -153,7 +153,7 @@ class Fr_Widget (object):
         return the internal variable which keep 
         the status of the widgets visibility
         """
-        return self._visible
+        return self.w_visible
 
     def activate(self):
         raise NotImplementedError()
@@ -171,7 +171,7 @@ class Fr_Widget (object):
         self.removeSeneNodes()
 
     def is_active(self):
-        return self._active
+        return self.w_active
 
     def hide(self):
         raise NotImplementedError()
@@ -180,21 +180,21 @@ class Fr_Widget (object):
         self.draw()
 
     def getparent(self):
-        return self._parent
+        return self.w_parent
 
     def parent(self, parent):
-        self._parent = parent
+        self.w_parent = parent
 
     def type(self):
-        return self._widgetType
+        return self.w_widgetType
 
     def getPosition(self):
         """
         If args is defined, return the first point
         which is the first point in the widget
         """
-        if len(self._vector) > 0:
-            return (self._vector[0])
+        if len(self.w_vector) > 0:
+            return (self.w_vector[0])
         return None
 
     def getPositionAsVertex(self):
@@ -203,7 +203,7 @@ class Fr_Widget (object):
         first point in the widget
         """
         if(self.getPosition()):
-            return App.Vertex(self._vector[0])
+            return App.Vertex(self.w_vector[0])
         else:
             return None
 
@@ -260,63 +260,63 @@ class Fr_Widget (object):
 
     def Color(self, color):
         """ Foreground color at normal status"""
-        self._color = color
+        self.w_color = color
 
     def SelectionColor(self, color):
         """ Foreground color when widget selected i.e. has focus"""
-        self._selCol = color
+        self.w_selCol = color
 
     def InActiveColor(self, color):
         """ Foreground color when widget is disabled - not active """
-        self._inactiveCol = color
+        self.w_inactiveCol = color
 
     def BkgColor(self, color):
         """ Background color . To disable background color use FR_COLOR.FR_TRANSPARENCY which is the default """
-        self._bkgColor = color
+        self.w_bkgColor = color
 
     def When(self, value):
         """
         When do the callback should be run?
         values are in constant.Fr_When
         """
-        self._when = value
+        self.w_when = value
 
     def getWhen(self):
         """"
         Internal value of when. This will decide when the widget-callback will happen.
         """
-        return self._when
+        return self.w_when
 
     def addSeneNodes(self,_Value):
         if type(_Value)==list:
             for i in _Value:
-                self._wdgsoSwitch.addChild(i)
+                self.w_wdgsoSwitch.addChild(i)
         else:
-            self._wdgsoSwitch.addChild(_Value)
-        self._widgetCoinNode=_Value
+            self.w_wdgsoSwitch.addChild(_Value)
+        self.w_widgetCoinNode=_Value
         self.addSoNodeToSoSwitch(_Value)
 
 
     def addSeneNodeslbl(self,_list):
         """ Switch didn't work for label. We will added to senegraph directly""" 
-        self._widgetlblCoinNode=_list
+        self.w_widgetlblCoinNode=_list
         if type(_list)==list:
             for i in _list:
-                self._parent.addSoSwitchToSeneGraph(i)
+                self.w_parent.addSoSwitchToSeneGraph(i)
         else:
-            self._parent.addSoSwitchToSeneGraph(_list)
+            self.w_parent.addSoSwitchToSeneGraph(_list)
 
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
-        if len(self._widgetCoinNode)!=0:
-            if(self._widgetCoinNode==list):
-                for i in self._widgetCoinNode: 
+        if len(self.w_widgetCoinNode)!=0:
+            if(self.w_widgetCoinNode==list):
+                for i in self.w_widgetCoinNode: 
                     del (i)
             else:
-                del ( self._widgetCoinNode)
-        if self._widgetlblCoinNode!=None:
-            if len(self._widgetlblCoinNode)!=0:
-                for i in self._widgetlblCoinNode: 
+                del ( self.w_widgetCoinNode)
+        if self.w_widgetlblCoinNode!=None:
+            if len(self.w_widgetlblCoinNode)!=0:
+                for i in self.w_widgetlblCoinNode: 
                     del i 
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
@@ -325,12 +325,12 @@ class Fr_Widget (object):
         """
         if type(listOfSoSeparator)==list:
             for i in listOfSoSeparator:
-                self._wdgsoSwitch.addChild(i)
+                self.w_wdgsoSwitch.addChild(i)
         else:
-            self._wdgsoSwitch.addChild(listOfSoSeparator)
+            self.w_wdgsoSwitch.addChild(listOfSoSeparator)
             
         # Add the switch to the SeneGrap
-        self._parent.addSoSwitchToSeneGraph(self._wdgsoSwitch)
+        self.w_parent.addSoSwitchToSeneGraph(self.w_wdgsoSwitch)
         
         
     def removeSoNodeFromSoSwitch(self):
@@ -338,7 +338,7 @@ class Fr_Widget (object):
             Remove the children from the widgetCOINnode which is the soseparators
             i.e. all drawing, color ..etc for the widget 
         """
-        self._wdgsoSwitch.removeAllChildren()
+        self.w_wdgsoSwitch.removeAllChildren()
         
         
     

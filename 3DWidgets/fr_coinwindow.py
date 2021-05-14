@@ -37,6 +37,7 @@ import fr_widget
 import constant
 import fr_coin3d
 from typing import List
+from constant import FR_WidgetType
 
 '''
 This is a class for coin3D Window
@@ -65,7 +66,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
                 400, 400, 0)], label: str = ""):
         self._view = Gui.ActiveDocument.ActiveView
         self._parent = self  # No parent and this is the main window
-        self._widgetType = constant.FR_WidgetType.FR_COINWINDOW
+        self._widgetType = FR_WidgetType.FR_COINWINDOW
         self.link_to_root_handle = fr_coin3d.root_handle()
         self.link_to_root_handle._wind = self
         self.link_to_root_handle.addCallbacks()
@@ -121,5 +122,12 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         to the list and keep the link to the window inside
         the widget itself.
         """
-        self._children.append(widg)
-        widg._parent=self           #Save a link to parent in the widget
+        if widg.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
+            # For line widgets are included.
+            sqrWidg=fr_square_widget.Fr_SquareFrame_Widget(widg)
+            for i in range (0,3):
+                self.w_children.append(sqrWidg.w_EdgeSection[i])
+                sqrWidg.w_parent=self
+        elif widg.w_widgetType ==FR_WidgetType.FR_EDGE:
+            self.w_children.append(widg)
+            widg.w_parent=self           #Save a link to parent in the widget
