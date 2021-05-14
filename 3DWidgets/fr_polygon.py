@@ -45,8 +45,8 @@ class Fr_Polygon(fr_widget.Fr_Widget):
         if args == None:
             args = []
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
-        self._lineWidth = lineWidth  # default line width
-        super().__init__(args, l)
+        self.w_lineWidth = lineWidth  # default line width
+        super().__init__(args, label)
 
     def Activated(self):
         raise NotImplementedError()
