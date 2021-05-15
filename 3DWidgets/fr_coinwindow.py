@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from fr_group import Fr_Group
 #
 # ***************************************************************************
 # *                                                                        *
@@ -38,7 +37,6 @@ import constant
 import fr_coin3d
 from typing import List
 from constant import FR_WidgetType
-
 '''
 This is a class for coin3D Window
 '''
@@ -64,17 +62,41 @@ class Fr_CoinWindow(fr_group.Fr_Group):
 
     def __init__(self, args: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
                 400, 400, 0)], label: str = ""):
-        self._view = Gui.ActiveDocument.ActiveView
-        self._parent = self  # No parent and this is the main window
-        self._widgetType = FR_WidgetType.FR_COINWINDOW
+        self.view = Gui.ActiveDocument.ActiveView
+        self.parent = self  # No parent and this is the main window
+        self.widgetType = FR_WidgetType.FR_COINWINDOW
         self.link_to_root_handle = fr_coin3d.root_handle()
-        self.link_to_root_handle._wind = self
+        self.link_to_root_handle.w_wind = self
         self.link_to_root_handle.addCallbacks()
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self._mainfrCoinWindow=self
         # Activated callbacks
         super().__init__(args, label)
 
+    @property
+    def view(self):
+        return self.view
+    
+    @view.setter 
+    def view(self,v):
+        self.view=v
+        
+    @property
+    def Root_SeneGraph(self):
+        return self.Root_SeneGraph
+
+    @Root_SeneGraph.setter
+    def Root_SeneGraph(self,sene):
+        self.Root_SeneGraph=sene
+        
+    @property
+    def  link_to_root_handle(self):
+        return self. link_to_root_handle
+    
+    @ link_to_root_handle.setter
+    def  link_to_root_handle(self, handle):
+        self.link_to_root_handle=handle
+    
     def exitFr_Window(self):
         fr_coin3d.root_handle.removeCallbacks()
         # Call Fr_Groups deactivate to remove all widgets.
@@ -122,12 +144,12 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         to the list and keep the link to the window inside
         the widget itself.
         """
-        if widg.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
+        if widg.widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
             # For line widgets are included.
             sqrWidg=fr_square_widget.Fr_SquareFrame_Widget(widg)
             for i in range (0,3):
                 self.w_children.append(sqrWidg.w_EdgeSection[i])
-                sqrWidg.w_parent=self
-        elif widg.w_widgetType ==FR_WidgetType.FR_EDGE:
+                sqrWidg.parent=self
+        elif widg.widgetType ==FR_WidgetType.FR_EDGE:
             self.w_children.append(widg)
-            widg.w_parent=self           #Save a link to parent in the widget
+            widg.parent=self           #Save a link to parent in the widget

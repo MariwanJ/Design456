@@ -65,14 +65,21 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     """
 
     def __init__(self, _vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
-        self.w_lineWidth = lineWidth  # Default line width
-        self.w_widgetType = constant.FR_WidgetType.FR_EDGE
-        super().__init__(_vectors, label)
-
+        self.lineWidth = lineWidth  # Default line width
+        self.widgetType = constant.FR_WidgetType.FR_EDGE
+        super(Fr_Line_Widget,self).__init__(_vectors, label)
+    
+    #Getter method for lineWidth
+    @property
+    def lineWidth(self):
+        return self.lineWidth
+    
+    #Setter method for lineWidth
+    @lineWidth.setter 
     def lineWidth(self, width):
         """ Set the line width"""
-        self.w_lineWidth = width
-
+        self.lineWidth = width
+    
     def handle(self, event):
         """
         This function is responsbile of taking events and processing 
@@ -82,21 +89,21 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
+        if self.parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetCoinNode)
+                self.parent.link_to_root_handle.w_lastEventXYZ.pos, self.pick_radius, self.widgetCoinNode)
             clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblCoinNode)
+                self.parent.link_to_root_handle.w_lastEventXYZ.pos, self.pick_radius, self.widgetlblCoinNode)
 
             if clickwdgdNode != None or clickwdglblNode != None:
                 self.take_focus()
-                self.do_callback(self.w_userData)
+                self.do_callback(self.userData)
                 return 1
             else:
                 self.remove_focus()
                 return event  # We couldn't use the event .. so return the event itself
 
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+        if self.parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             print("Double click detected")
             
@@ -109,19 +116,19 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         try:
             
-            if len(self.w_vector) < 2:
+            if len(self.vectors) < 2:
                 raise ValueError('Must be 2 Vectors')
-            p1 = self.w_vector[0]
-            p2 = self.w_vector[1]
+            p1 = self.vectors[0]
+            p2 = self.vectors[1]
 
-            if self.is_active() and self.has_focus():
+            if self.has_focus:
                 usedColor = self.w_selColor
-            elif self.is_active() and (self.has_focus() != 1):
+            elif self.is_active and (self.has_focus != 1):
                 usedColor = self.w_color
-            elif self.is_active() != 1:
+            elif self.is_active != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                linedraw = fr_draw.draw_line(p1, p2, usedColor, self.w_lineWidth)
+                linedraw = fr_draw.draw_line(p1, p2, usedColor, self.lineWidth)
                 _lbl = self.draw_label()
 
                 self.addSeneNodeslbl(_lbl)
@@ -138,14 +145,14 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     def draw_label(self):
         LabelData = fr_widget.propertyValues()
-        LabelData.linewidth = self.w_lineWidth
-        LabelData.labelfont = self.w_font
-        LabelData.fontsize = self.w_fontsize
+        LabelData.linewidth = self.lineWidth
+        LabelData.labelfont = self.font
+        LabelData.fontsize = self.fontsize
         LabelData.labelcolor = self.w_lblColor
-        LabelData.vectors = self.w_vector
+        LabelData.vectors = self.vectors
         LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        lbl = fr_label_draw.draw_label(self.w_label, LabelData)
-        self.w_widgetlblCoinNode = lbl
+        lbl = fr_label_draw.draw_label(self.label, LabelData)
+        self.widgetlblCoinNode = lbl
         return lbl
 
     def move(self, newVecPos):
@@ -156,17 +163,19 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         self.resize([newVecPos[0], newVecPos[1]])
 
+    @property
     def getVertexStart(self):
         """Return the vertex of the start point"""
-        return App.Vertex(self.w_vector[0])
-
+        return App.Vertex(self.vectors[0])
+    
+    @property
     def getVertexEnd(self):
         """Return the vertex of the end point"""
-        return App.Vertex(self.w_vector[1])
+        return App.Vertex(self.vectors[1])
 
     def show(self):
-        self.w_visible = True
-        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
+        self.is_visible = True
+        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
         self.redraw()
 
     def redraw(self):
@@ -179,46 +188,47 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitch(self.w_wdgsoSwitch)
+            self.parent.removeSoSwitch(self.wdgsoSwitch)
             self.draw()
 
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
         """
-        if self.w_hasFocus == True:
+        if self.has_focus == True:
             return  # nothing to do here
-        self.w_hasFocus = True
+        self.has_focus = True
         self.redraw()
 
     def activate(self):
-        if self.w_active:
+        if self.is_active:
             return  # nothing to do
-        self.w_active = True
+        self.is_active = True
         self.redraw()
 
     def deactivate(self):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active == False:
+        if self.is_active == False:
             return  # Nothing to do
-        self.w_active = False
+        self.is_active = False
 
     def destructor(self):
         """
         This will remove the widget totally. 
         """
         self.removeSeneNodes()
-
+        
+    @property
     def is_active(self):
-        return self.w_active
+        return self.is_active
 
     def hide(self):
-        if self.w_visible == False:
+        if self.is_visible == False:
             return  # nothing to do
-        self.w_visible = False
-        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
+        self.is_visible = False
+        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
         self.redraw()
 
     def remove_focus(self):
@@ -227,15 +237,15 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus == False:
+        if self.has_focus == False:
             return  # nothing to do
         else:
-            self.w_hasFocus = False
+            self.has_focus = False
             self.redraw()
 
     def resize(self, vectors: List[App.Vector]):  # Width, height, thickness
         """Resize the widget by using the new vectors"""
-        self.w_vector = vectors
+        self.vectors = vectors
         self.redraw()
 
     def size(self, vectors: List[App.Vector]):
