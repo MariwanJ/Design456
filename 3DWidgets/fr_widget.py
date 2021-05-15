@@ -54,37 +54,38 @@ class Fr_Widget (object):
     fr_group doesn't need to be drawn, but 
     you can implement draw function
     """
-    vectors = None        # This should be like App.vectors
-    label = ""      # This must be a list, to have several raw, append str
-    lblPosition=None     # Should be defined when lbl is created. 
-    is_visible = True
-    bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-    color = constant.FR_COLOR.FR_BLACK
-    inactiveColor = constant.FR_COLOR.FR_GRAY2
-    selColor = constant.FR_COLOR.FR_YELLOW
-    lblColor= constant.FR_COLOR.FR_BLACK
-    box = None
-    is_active = True
-    parent = None
-    widgetType = constant.FR_WidgetType.FR_WIDGET
-    has_focus = False
-    font='sans'
-    fontsize=4
-    pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
-    widgetCoinNode = None     #Should be defined in the widget either one or a list
-    widgetlblCoinNode = None  #Should be defined in the widget either one or a list
-    # each node is a child of one switch, Add drawings a children for this switch
-    wdgsoSwitch = coin.SoSwitch()        
-    wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-    when = constant.FR_WHEN.FR_WHEN_NEVER
-    userData = None
-    lineWidth=1
 
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         """ 
         Default values which is shared with all objects.
 
         """
+        self.vectors = None        # This should be like App.vectors
+        self.label = ""      # This must be a list, to have several raw, append str
+        self.lblPosition=None     # Should be defined when lbl is created. 
+        self.is_visible = True
+        self.bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
+        self.color = constant.FR_COLOR.FR_BLACK
+        self.inactiveColor = constant.FR_COLOR.FR_GRAY2
+        self.selColor = constant.FR_COLOR.FR_YELLOW
+        self.lblColor= constant.FR_COLOR.FR_BLACK
+        self.box = None
+        self.is_active = True
+        self.parent = None
+        self.widgetType = constant.FR_WidgetType.FR_WIDGET
+        self.has_focus = False
+        self.TextFont="sans"
+        self.fontsize=4
+        self.pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
+        self.widgetCoinNode = None     #Should be defined in the widget either one or a list
+        self.widgetlblCoinNode = None  #Should be defined in the widget either one or a list
+            # each node is a child of one switch, Add drawings a children for this switch
+        self.wdgsoSwitch = coin.SoSwitch()        
+        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+        self.when = constant.FR_WHEN.FR_WHEN_NEVER
+        self.userData = None
+        self.lineWidth=1
+
         self.vectors = args        # This should be like App.vectors
         self.label = [label]      # This must be a list, to have several raw, append str
 
@@ -100,7 +101,9 @@ class Fr_Widget (object):
         for coin3d Class SoText2 should be used 
         """
         raise NotImplementedError()
-
+    #Create attribute for all private variables
+    #Keep in minde @property must come before .setter or it will fails
+    
     @property
     def vectors(self):
         return self.vectors
@@ -164,6 +167,7 @@ class Fr_Widget (object):
     @selColor.setter 
     def selColor(self,clr):
         self.selColor=clr
+        
     @property
     def lblColor(self):
         return self.lblColor
@@ -196,25 +200,24 @@ class Fr_Widget (object):
     def widgetType(self, type):
         self.widgetType=type
 
-    @has_focus.setter
-    def has_focus(self,has_focus):
-        self.has_focus=has_focus
-        
     @property
     def has_focus(self):
         """
         Check if the widget has focus
         """
-        return self.has_focus
+        return self.hasfocus
+    @has_focus.setter
+    def has_focus(self,focus):
+        self.has_focus=focus
+
+    @property
+    def TextFont(self):
+        return self.TextFont
     
-    @font.setter
-    def font(self, newFont):
-        self.font=newFont
+    @TextFont.setter
+    def TextFont(self, newFont):
+        self.TextFont=newFont
         
-    @font
-    def font(self):
-        return self.font
-    
     @property
     def fontsize(self):
         return self.fontsize
@@ -271,6 +274,14 @@ class Fr_Widget (object):
     def userData(self,data):
         self.userData=data
     
+    @property
+    def is_active(self):
+        return self.is_active
+    
+    @is_active.setter
+    def is_active(self,act):
+        self.is_active=act
+        
     def redraw(self):
         """
         After the widgets damages, this function should be called.        
@@ -320,10 +331,6 @@ class Fr_Widget (object):
         """
         self.removeSeneNodes()
         
-    @property
-    def is_active(self):
-        return self.is_active
-
     def activate(self):
         raise NotImplementedError()
 
