@@ -40,13 +40,15 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
     """
     This class is for drawing a line in  coin3D
     """
+    # def __init__(self, args:fr_widget.VECTOR=[],l=""):
+    global w_EdgeSection
     
     def __init__(self, vectors: List[App.Vector] = [], labels:List[str]=[] ,lineWidth=1):
         if vectors == None:
-            args = []
-        
-        self.lineWidth = lineWidth # default line width        # Here we have a list (4 labels)
-        self.EdgeSection:List[fr_line_widget.Fr_Line_Widget]=[]
+            self.vectors = []
+
+        self.w_lineWidth = lineWidth # default line width        # Here we have a list (4 labels)
+        self.w_EdgeSection: List[fr_line_widget.Fr_Line_Widget]=[]
         if type(labels)!=List:
             templabel=labels
             label=[]
@@ -58,9 +60,9 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
             #We have four sections.
             if(i==3):
                 nextI=0 
-            self.EdgeSection.append(fr_line_widget.Fr_Line_Widget([vectors[i],vectors[nextI]], labels[i],lineWidth))
-        self.widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
-        super(Fr_SquareFrame_Widget,self).__init__(vectors,labels,lineWidth)     
+            self.w_EdgeSection.append(fr_line_widget.Fr_Line_Widget([vectors[i],vectors[nextI]], labels[i],lineWidth))
+        self.w_widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
+        super().__init__(vectors,labels,lineWidth)     
         
     # def addVertices(self, vertices):
     #     if(len(vertices)!=4):
@@ -68,8 +70,8 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
     #             errMessage = "Four Vertices are required"
     #             faced.getInfo(None).errorDialog(errMessage)
     #             return
-    #     self.vectors.clear()
-    #     self.vectors = vertices
+    #     self.w_vector.clear()
+    #     self.w_vector = vertices
 
     def LineWidth(self, width):
         self.w_linewidth = width
@@ -84,7 +86,8 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         event. fr_coinwindow object is responsible for distributing the events.
         """
         for i in range(0,3):
-            self.EdgeSection[0].handle(event)
+            self.w_EdgeSection[0].handle(event)
+
 
     def draw(self):
         """
@@ -92,15 +95,15 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
-        print(self.label)
-        print(self.vectors)
+        print(self.w_label)
+        print(self.w_vector)
         for i in range(0,3):
-            self.EdgeSection[i].draw()
+            self.w_EdgeSection[i].draw()
 
     def show(self):
-        self.is_visible = True
+        self.w_visible = True
         for i in range(0,3):
-            self.EdgeSection[i].wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
+            self.w_EdgeSection[i].w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
         self.redraw()
 
     def redraw(self):
@@ -108,33 +111,33 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         After the widgets damages, this function should be called.        
         """
         for i in range(0,3):
-            self.EdgeSection[i].redraw()
+            self.w_EdgeSection[i].redraw()
 
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
         """
-        if self.has_focus == True:
+        if self.w_hasFocus == True:
             return  # nothing to do here
         for i in range(0,3):
-            self.EdgeSection[i].take_focus()
+            self.w_EdgeSection[i].take_focus()
         self.redraw()
-
+            
     def activate(self):
-        if self.is_active:
+        if self.w_active:
             return  # nothing to do
         for i in range(0,3):
-            self.EdgeSection[i].is_active = True
+            self.w_EdgeSection[i].w_active = True
         self.redraw()
 
     def deactivate(self):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.is_active == False:
+        if self.w_active == False:
             return  # Nothing to do
         for i in range(0,3):
-            self.EdgeSection[i].is_active = False
+            self.w_EdgeSection[i].w_active = False
         self.redraw()
 
     def destructor(self):
@@ -142,17 +145,17 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         This will remove the widget totally. 
         """
         for i in range(0,3):
-           self.EdgeSection[i].removeSeneNodes()
+           self.w_EdgeSection[i].removeSeneNodes()
 
     def is_active(self):
-        return self.is_active
+        return self.w_active
 
     def hide(self):
-        if self.is_visible == False:
+        if self.w_visible == False:
             return  # nothing to do
         for i in range(0,3):
-            self.EdgeSection[i].is_visible = False
-            self.EdgeSection[i].wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
+            self.w_EdgeSection[i].w_visible = False
+            self.w_EdgeSection[i].w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
         self.redraw()
 
     def remove_focus(self):
@@ -161,11 +164,11 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.has_focus == False:
+        if self.w_hasFocus == False:
             return  # nothing to do
         else:
             for i in range(0,3):
-                self.EdgeSection[i].has_focus = False
+                self.w_EdgeSection[i].w_hasFocus = False
             self.redraw()
 
     def resize(self, args: List[App.Vector]):  # Width, height, thickness
@@ -176,7 +179,7 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
             faced.getInfo(None).errorDialog(errMessage)
             return
         for i in range (0,3):
-            self.EdgeSection[i].vectors = args
+            self.w_EdgeSection[i].w_vector = args
         self.redraw()
 
     def size(self, args: List[App.Vector]):
@@ -187,7 +190,7 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
             faced.getInfo(None).errorDialog(errMessage)
             return
         for i in range(0,3):
-            self.EdgeSection[i].resize(args)
+            self.w_EdgeSection[i].resize(args)
         
     def move(self, newVecPos):
         """
@@ -201,13 +204,4 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
             faced.getInfo(None).errorDialog(errMessage)
             return
         for i in range(0,3):
-            self.EdgeSection[i].resize(newVecPos)
-
-    @property
-    def EdgeSection(self):
-        return self.EdgeSection
-
-    @EdgeSection.setter
-    def EdgeSection(self,Edgsec):
-        self.EdgeSection=Edgsec
-    
+            self.w_EdgeSection[i].resize(newVecPos)
