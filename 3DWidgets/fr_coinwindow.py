@@ -49,13 +49,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     the SeneGraph. Switches keep track of nodes and their 
     drawing. So the tree is like that SeneGraph-->Switches->Node->drawings
     """
-    global view
-
-    # This is the holder of all objects.It should be here not inside the Fr_Group
-    # this is the root senegraph. It keeps all switch. Switches will keep drawing
-    global Root_SeneGraph
-    global link_to_root_handle
-
     callbackMove = None
     callbackClick = None
     callbackKey = None
@@ -65,18 +58,22 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.view = Gui.ActiveDocument.ActiveView
         self.parent = self  # No parent and this is the main window
         self.widgetType = FR_WidgetType.FR_COINWINDOW
+
+        # This is the holder of all objects.It should be here not inside the Fr_Group
+        # this is the root senegraph. It keeps all switch. Switches will keep drawing
         self.link_to_root_handle = fr_coin3d.root_handle()
         self.link_to_root_handle.w_wind = self
         self.link_to_root_handle.addCallbacks()
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self._mainfrCoinWindow=self
+
         # Activated callbacks
         super().__init__(args, label)
 
     @property
     def view(self):
         return self.view
-    
+
     @view.setter 
     def view(self,v):
         self.view=v
@@ -93,7 +90,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def  link_to_root_handle(self):
         return self. link_to_root_handle
     
-    @ link_to_root_handle.setter
+    @link_to_root_handle.setter
     def  link_to_root_handle(self, handle):
         self.link_to_root_handle=handle
     
