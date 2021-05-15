@@ -41,20 +41,17 @@ from typing import List
 class Fr_Group(fr_widget.Fr_Widget):
     # Any drawign/Every thing should be added to this later
     # This will keep the link to the main window.
-    global mainfrCoinWindow
-    global mainfrQtWindow
-    global children
 
     def __init__(self, args: List[App.Vector] = [], l: str = ""):
         if args == None:
             args = []
         self.widgetType = constant.FR_WidgetType.FR_GROUP
         # Root of the children (coin)
-
         self.children = []
         # Initialize them as None.
         self.mainfrCoinWindow = self.mainfrQtWindow = None
         super().__init__(args, l)
+
     @property
     def mainfrCoinWindow(self):
         return self.mainfrCoinWindow
@@ -73,7 +70,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         
     @property
     def children(self):
-        return children
+        return self.children
     
     @children.setter
     def children(self, values):
@@ -100,6 +97,7 @@ class Fr_Group(fr_widget.Fr_Widget):
     def redraw(self):
         for i in self.children:
             i.redraw()
+            
     """     TODO: THIS SHOULD BE DONE IN ANOTHER WAY.
     def deactivate(self):
     
