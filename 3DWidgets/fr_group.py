@@ -41,43 +41,64 @@ from typing import List
 class Fr_Group(fr_widget.Fr_Widget):
     # Any drawign/Every thing should be added to this later
     # This will keep the link to the main window.
-    global _mainfrCoinWindow
-    global _mainfrQtWindow
-    global _children
-   
-    
+    global mainfrCoinWindow
+    global mainfrQtWindow
+    global children
+
     def __init__(self, args: List[App.Vector] = [], l: str = ""):
         if args == None:
             args = []
-        self.w_widgetType = constant.FR_WidgetType.FR_GROUP
+        self.widgetType = constant.FR_WidgetType.FR_GROUP
         # Root of the children (coin)
 
-        self.w_children = []
+        self.children = []
         # Initialize them as None.
-        self.w_mainfrCoinWindow = self.w_mainfrQtWindow = None
+        self.mainfrCoinWindow = self.mainfrQtWindow = None
         super().__init__(args, l)
+    @property
+    def mainfrCoinWindow(self):
+        return self.mainfrCoinWindow
+    
+    @mainfrCoinWindow.setter
+    def mainfrCoinWindow(self, win):
+        self.mainfrCoinWindow=win
+    
+    @property
+    def mainfrQtWindow(self):
+        return self.mainfrQtWindow
+    
+    @mainfrQtWindow.setter
+    def mainfrQtWindow(self, win):
+        self.mainfrQtWindow=win
+        
+    @property
+    def children(self):
+        return children
+    
+    @children.setter
+    def children(self, values):
+        self.children=values
 
     def addWidget(self, widg):
-        widg.w_parent=self.w_mainfrCoinWindow
-        self.w_children.append(widg)
+        widg.parent=self.mainfrCoinWindow
+        self.children.append(widg)
         
-
     def removeWidget(self, widg):
         try:
-            self.w_children.remove(widg)
+            self.children.remove(widg)
         except:
             print("not found")
 
     def draw(self):
-        for i in self.w_children:
+        for i in self.children:
             i.draw()
 
     def draw_label(self):
-        for i in self.w_children:
+        for i in self.children:
             i.draw_label()
 
     def redraw(self):
-        for i in self.w_children:
+        for i in self.children:
             i.redraw()
     """     TODO: THIS SHOULD BE DONE IN ANOTHER WAY.
     def deactivate(self):
@@ -86,13 +107,13 @@ class Fr_Group(fr_widget.Fr_Widget):
     #Think about, you might have several groups inside the Fr_CoinWindow
     
         try:
-            for widget in self.w_children:
+            for widget in self.children:
                 # Remove objects in the Root_SeneGraph
-                self.removeSeneNode(widget.w_wdgsoSwitch)
-                self.removeSeneNode(widget.w_widgetCoinNode)
+                self.removeSeneNode(widget.wdgsoSwitch)
+                self.removeSeneNode(widget.widgetCoinNode)
                 # Remove the widget itself from the group
                 del widget
-            del self.w_children
+            del self.children
         except Exception:
             pass   # just go out
     """
@@ -106,7 +127,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         calculate find  the clicked object related to the mouse position.
         Widgets shouldn't get the event if they are not targeted.
         """
-        for wdg in self.w_children:
-            if (wdg.is_active() and wdg.is_visible() and wdg.w_widgetType != constant.FR_WidgetType.FR_WIDGET):
+        for wdg in self.children:
+            if (wdg.is_active and wdg.is_visible and wdg.widgetType != constant.FR_WidgetType.FR_WIDGET):
                 if wdg.handle(events) == 1:
-                    break
+                    return 1
