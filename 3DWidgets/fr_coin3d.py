@@ -117,7 +117,6 @@ class root_handle():
     callbackKey = None
     
     global w_events 
-    global w_wind
     global w_get_event
     global w_typeofevent
     #these two variable are used for double click detection
@@ -126,7 +125,7 @@ class root_handle():
 
     # This should keep the mouse pointer position on the 3D view
     global w_lastEventXYZ
-    global w_lastEvent
+    global w_wind
     
     def __init__(self):
         self.w_lastEvent = constant.FR_EVENTS.FR_NO_EVENT
@@ -138,14 +137,6 @@ class root_handle():
         self.w_clicked_time=0
     # COIN3D related functions - START
 
-    @property
-    def w_wind(self):
-        return (self.w_wind)
-    
-    @w_wind.setter
-    def w_wind(self,w_wind):
-        self.w_wind=w_wind
-    
     def shiftwasclicked(self):
         """
         if shift was pushed but not released this function will return TRUE
