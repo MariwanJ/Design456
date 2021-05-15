@@ -54,40 +54,38 @@ class Fr_Widget (object):
     fr_group doesn't need to be drawn, but 
     you can implement draw function
     """
-
+    
+    #Default values which is shared with all objects.
+    
+    w_lblPosition=None     # Should be defined when lbl is created. 
+    w_visible = True
+    w_bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
+    w_color = constant.FR_COLOR.FR_BLACK
+    w_inactiveColor = constant.FR_COLOR.FR_GRAY2
+    w_selColor = constant.FR_COLOR.FR_YELLOW
+    w_lblColor= constant.FR_COLOR.FR_BLACK
+    w_box = None
+    w_active = True
+    w_parent = None
+    w_widgetType = constant.FR_WidgetType.FR_WIDGET
+    w_hasFocus = False
+    w_font='sans'
+    w_fontsize=4
+    w_pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
+    w_widgetCoinNode = None     #Should be defined in the widget either one or a list
+    w_widgetlblCoinNode = None  #Should be defined in the widget either one or a list
+    # each node is a child of one switch, Add drawings a children for this switch
+    w_wdgsoSwitch = coin.SoSwitch()        
+    w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+    w_when = constant.FR_WHEN.FR_WHEN_NEVER
+    w_userData = None
+    w_vector=None
+    w_label=None
+    w_lineWidth=1
+    
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
-        """ 
-        Default values which is shared with all objects.
-
-        """
-        self.vectors = None        # This should be like App.vectors
-        self.label = ""      # This must be a list, to have several raw, append str
-        self.lblPosition=None     # Should be defined when lbl is created. 
-        self.is_visible = True
-        self.bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-        self.color = constant.FR_COLOR.FR_BLACK
-        self.inactiveColor = constant.FR_COLOR.FR_GRAY2
-        self.selColor = constant.FR_COLOR.FR_YELLOW
-        self.lblColor= constant.FR_COLOR.FR_BLACK
-        self.box = None
-        self.is_active = True
-        self.parent = None
-        self.widgetType = constant.FR_WidgetType.FR_WIDGET
-        self.has_focus = False
-        self.TextFont="sans"
-        self.fontsize=4
-        self.pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
-        self.widgetCoinNode = None     #Should be defined in the widget either one or a list
-        self.widgetlblCoinNode = None  #Should be defined in the widget either one or a list
-            # each node is a child of one switch, Add drawings a children for this switch
-        self.wdgsoSwitch = coin.SoSwitch()        
-        self.wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-        self.when = constant.FR_WHEN.FR_WHEN_NEVER
-        self.userData = None
-        self.lineWidth=1
-
-        self.vectors = args        # This should be like App.vectors
-        self.label = [label]      # This must be a list, to have several raw, append str
+        self.w_vector = args        # This should be like App.vectors
+        self.w_label = [label]      # This must be a list, to have several raw, append str
 
     def draw_box(self):
         raise NotImplementedError()
@@ -101,186 +99,12 @@ class Fr_Widget (object):
         for coin3d Class SoText2 should be used 
         """
         raise NotImplementedError()
-    #Create attribute for all private variables
-    #Keep in minde @property must come before .setter or it will fails
     
-    @property
-    def vectors(self):
-        return self.vectors
-    
-    @vectors.setter
-    def vectors(self, vectors):
-        self.vectors=vectors
-    
-    @property
-    def label(self):
-        return self.label
-    
-    @label.setter
-    def label(self, lbl):
-        self.label=lbl
+    def Font(self, newFont):
+        self.w_font=newFont
         
-    @property
-    def lblPosition(self):
-        return self.lblPosition
-    
-    @lblPosition.setter
-    def lblPostion(self,lblPos):
-        self.lblPosition=lblPos
-    
-    @property
-    def is_visible(self):
-        """ 
-        return the internal variable which keep 
-        the status of the widgets visibility
-        """
-        return self.is_visible
-    
-    @property
-    def bkgColor(self):
-        return self.bkgColor
-    
-    @bkgColor.setter
-    def bkgColor(self,bkgcolor):
-        self.bkgColor=bkgcolor
-    
-    @property
-    def color(self):
-        return self.color
-    
-    @color.setter
-    def color(self,clr):
-        self.color=clr
-    
-    @property
-    def inactiveColor(self):
-        return self.inactiveColor
-
-    @inactiveColor.setter
-    def inactiveColor(self,clr):
-        self.inactiveColor=clr
-    
-    @property
-    def selColor(self):
-        return self.selColor
-    
-    @selColor.setter 
-    def selColor(self,clr):
-        self.selColor=clr
-        
-    @property
-    def lblColor(self):
-        return self.lblColor
-    
-    @lblColor.setter
-    def lblColor(self,clr):
-        self.lblColor=clr
-    
-    @property
-    def box(self):
-        self.box
-        
-    @box.setter
-    def box(self,box):
-        self.box=box
-    
-    @property
-    def parent(self):
-        return self.parent
-    
-    @parent.setter 
-    def parent(self, parent):
-        self.parent = parent
-    
-    @property
-    def widgetType(self):
-        return self.widgetType
-    
-    @widgetType.setter 
-    def widgetType(self, type):
-        self.widgetType=type
-
-    @property
-    def has_focus(self):
-        """
-        Check if the widget has focus
-        """
-        return self.hasfocus
-    @has_focus.setter
-    def has_focus(self,focus):
-        self.has_focus=focus
-
-    @property
-    def TextFont(self):
-        return self.TextFont
-    
-    @TextFont.setter
-    def TextFont(self, newFont):
-        self.TextFont=newFont
-        
-    @property
-    def fontsize(self):
-        return self.fontsize
-    
-    @fontsize.setter
-    def fontsize(self,newSize):
-        self.fontsize=newSize
-        
-    @property
-    def pick_radius(self):
-        return self.pick_radius 
-    
-    @pick_radius.setter
-    def pick_radius(self,radius):
-        self.pick_radius=radius
-        
-    @property
-    def widgetCoinNode(self):
-        return self.widgetCoinNode
-    
-    @widgetCoinNode.setter
-    def widgetCoinNode(self,node):
-        self.widgetCoinNode=node
-    
-    @property
-    def widgetlblCoinNode(self):
-        return self.widgetlblCoinNode
-    
-    @widgetlblCoinNode.setter
-    def widgetCoinNode(self,node):
-        self.widgetlblCoinNode=node
-    
-    @property
-    def wdgsoSwitch(self):
-        return self.wdgsoSwitch
-    
-    @wdgsoSwitch.setter
-    def wdgsoSwitch(self,sw):
-        self.wdgsoSwitch=sw
-    
-    @property
-    def when(self):
-        return self.when
-    
-    @when.setter 
-    def when(self,when):
-        self.when=when
-        
-    @property
-    def userData(self):
-        return self.userDatat
-    
-    @userData.setter
-    def userData(self,data):
-        self.userData=data
-    
-    @property
-    def is_active(self):
-        return self.is_active
-    
-    @is_active.setter
-    def is_active(self,act):
-        self.is_active=act
+    def FontSize(self,newSize):
+        self.w_fontsize=newSize
         
     def redraw(self):
         """
@@ -310,6 +134,12 @@ class Fr_Widget (object):
         center of mass"""
         raise NotImplementedError()
 
+    def has_focus(self):
+        """
+        Check if the widget has focus
+        """
+        return self.w_hasFocus
+
     def remove_focus(self):
         """
         Remove the focus from the widget. 
@@ -318,6 +148,16 @@ class Fr_Widget (object):
         """
         raise NotImplementedError()
     # Activated, deactivate, get status of widget
+
+    def is_visible(self):
+        """ 
+        return the internal variable which keep 
+        the status of the widgets visibility
+        """
+        return self.w_visible
+
+    def activate(self):
+        raise NotImplementedError()
 
     def deactivate(self):
         """
@@ -330,23 +170,32 @@ class Fr_Widget (object):
         This will remove the widget totally. 
         """
         self.removeSeneNodes()
-        
-    def activate(self):
-        raise NotImplementedError()
+
+    def is_active(self):
+        return self.w_active
 
     def hide(self):
         raise NotImplementedError()
 
     def show(self):
         self.draw()
-        
+
+    def getparent(self):
+        return self.w_parent
+
+    def parent(self, parent):
+        self.w_parent = parent
+
+    def type(self):
+        return self.w_widgetType
+
     def getPosition(self):
         """
         If args is defined, return the first point
         which is the first point in the widget
         """
-        if len(self.vectors) > 0:
-            return (self.vectors[0])
+        if len(self.w_vector) > 0:
+            return (self.w_vector[0])
         return None
 
     def getPositionAsVertex(self):
@@ -355,7 +204,7 @@ class Fr_Widget (object):
         first point in the widget
         """
         if(self.getPosition()):
-            return App.Vertex(self.vectors[0])
+            return App.Vertex(self.w_vector[0])
         else:
             return None
 
@@ -431,44 +280,44 @@ class Fr_Widget (object):
         When do the callback should be run?
         values are in constant.Fr_When
         """
-        self.when = value
+        self.w_when = value
 
     def getWhen(self):
         """"
         Internal value of when. This will decide when the widget-callback will happen.
         """
-        return self.when
+        return self.w_when
 
     def addSeneNodes(self,_Value):
         if type(_Value)==list:
             for i in _Value:
-                self.wdgsoSwitch.addChild(i)
+                self.w_wdgsoSwitch.addChild(i)
         else:
-            self.wdgsoSwitch.addChild(_Value)
-        self.widgetCoinNode=_Value
+            self.w_wdgsoSwitch.addChild(_Value)
+        self.w_widgetCoinNode=_Value
         self.addSoNodeToSoSwitch(_Value)
 
 
     def addSeneNodeslbl(self,_list):
         """ Switch didn't work for label. We will added to senegraph directly""" 
-        self.widgetlblCoinNode=_list
+        self.w_widgetlblCoinNode=_list
         if type(_list)==list:
             for i in _list:
-                self.parent.addSoSwitchToSeneGraph(i)
+                self.w_parent.addSoSwitchToSeneGraph(i)
         else:
-            self.parent.addSoSwitchToSeneGraph(_list)
+            self.w_parent.addSoSwitchToSeneGraph(_list)
 
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
-        if len(self.widgetCoinNode)!=0:
-            if(self.widgetCoinNode==list):
-                for i in self.widgetCoinNode: 
+        if len(self.w_widgetCoinNode)!=0:
+            if(self.w_widgetCoinNode==list):
+                for i in self.w_widgetCoinNode: 
                     del (i)
             else:
-                del ( self.widgetCoinNode)
-        if self.widgetlblCoinNode!=None:
-            if len(self.widgetlblCoinNode)!=0:
-                for i in self.widgetlblCoinNode: 
+                del ( self.w_widgetCoinNode)
+        if self.w_widgetlblCoinNode!=None:
+            if len(self.w_widgetlblCoinNode)!=0:
+                for i in self.w_widgetlblCoinNode: 
                     del i 
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
@@ -477,12 +326,12 @@ class Fr_Widget (object):
         """
         if type(listOfSoSeparator)==list:
             for i in listOfSoSeparator:
-                self.wdgsoSwitch.addChild(i)
+                self.w_wdgsoSwitch.addChild(i)
         else:
-            self.wdgsoSwitch.addChild(listOfSoSeparator)
+            self.w_wdgsoSwitch.addChild(listOfSoSeparator)
             
         # Add the switch to the SeneGrap
-        self.parent.addSoSwitchToSeneGraph(self.wdgsoSwitch)
+        self.w_parent.addSoSwitchToSeneGraph(self.w_wdgsoSwitch)
         
         
     def removeSoNodeFromSoSwitch(self):
@@ -490,7 +339,7 @@ class Fr_Widget (object):
             Remove the children from the widgetCOINnode which is the soseparators
             i.e. all drawing, color ..etc for the widget 
         """
-        self.wdgsoSwitch.removeAllChildren()
+        self.w_wdgsoSwitch.removeAllChildren()
         
         
     
