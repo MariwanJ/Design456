@@ -85,7 +85,8 @@ class Fr_Widget (object):
     
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
-        self.w_label = label      # This must be a list, to have several raw, append str
+        self.w_label = [label] 
+        #self.w_label = label      # This must be a list, to have several raw, append str
 
     def draw_box(self):
         raise NotImplementedError()
