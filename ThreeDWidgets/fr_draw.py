@@ -132,6 +132,7 @@ def draw_line(p1, p2, color, LineWidth):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
+#draw a box
 def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
     """
         Draw any box. This will be the base of all multi-point drawing.
@@ -146,7 +147,9 @@ def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
     p2=vertices[1]
     p3=vertices[2]
     p4=vertices[3]
-    square = coin.SbBox3f(p1, p2, p3, p4)
+    p5=vertices[4]
+    p6=vertices[5]
+    square = coin.SbBox3f(p1, p2, p3, p4, p5, p6)
     square.vertexProperty = v
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth
@@ -156,54 +159,50 @@ def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
     so_separator.addChild(coords)
     return draw_square
 
-
-def draw_polygon(vertices, color=(0.0,0.0,0.0), LineWidth=1.0):
-    """
-        Draw any polygon. This will be the base of all multi-point drawing.
-        Curves, and arc is not here.
-    """
-    if len(vertices) < 4:
-        raise ValueError('Vertices must be 4')
-    _polygon = coin.SoSeparator()
+# Draw a polygon face in the 3D Coin
+def draw_polygon(vector,color=(0.0,0.0,0.0), LineWidth=1.0):
+    """ Draw a square and return the SoSeparator"""
+    node = coin.SoSeparator()
+    coords = coin.SoCoordinate3()
+    length=len(vector)
+    for i in range(0,length+1):
+        coords.point.set1Value(i,vector[i])
+    
     col=coin.SoBaseColor()
     col.rgb= color
-    coords = coin.SoTransform()
-    data=coin.SoCoordinate3()
-    face=coin.SoIndexedFaceSet()
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth
-    _polygon.addChild(style)
-    _polygon.addChild(col)
-    _polygon.addChild(coords)
-    _polygon.addChild(data)
-    _polygon.addChild(face)
- 
-    i = 0   
-    for vr in vertices:
-        data.point.set1Value(i, vr[0], vr[1], vr[2])
-    i += 1
-    polygons = [0, 1, 2, 3, -1] # -1 means that the n-gon is terminated and a new one can be created with the next points
+    faceset = coin.SoFaceSet()
+    faceset.numVertices.set1Value(0, 4)
+    node.addChild(col)
+    node.addChild(style)
+    node.addChild(coords)
+    node.addChild(faceset)
+    return node
 
-    i = 0
-    for p in polygons:
-        face.coordIndex.set1Value(i, p)
-    i += 1
-    return _polygon
-
-
-# Draw a square 3D World
-def draw_square(vector, color, LineWidth):
-    """ Draw a square and return the SoSeparator"""
-    return draw_polygon([p1, p2, p3, p4], color, LineWidth)
-
-
-def draw_square_frame(vertices, color, LineWidth):
-    if len(vertices) < 3:
+#Draw a square face in the 3D Coin
+def draw_square(vertices, color=(0.0,0.0,0.0), LineWidth=1.0):
+    if len(vertices) != 4:
         raise ValueError('Vertices must be more than 2')
-    result = []
+    return draw_polygon(vertices,color,LineWidth)
 
-    result.append(draw_line(vertices[0], vertices[1], color, LineWidth))
-    result.append(draw_line(vertices[1], vertices[2], color, LineWidth))
-    result.append(draw_line(vertices[2], vertices[3], color, LineWidth))
-    result.append(draw_line(vertices[3], vertices[0], color, LineWidth))
-    return result
+
+#this function is just an example showing how you can affect the drawing
+def createFrameShape():
+    from pivy import coin
+    sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+    root=coin.SoSeparator()
+    drawStyele=coin.SoDrawStyle()
+    drawStyele.style=coin.SoDrawStyle.LINES
+    root.addChild(drawStyele)
+    shapeHints=coin.SoShapeHints()
+    shapeHints.vertexOrdering=coin.SoShapeHints.COUNTERCLOCKWISE
+    shapeHints.shapeType=coin.SoShapeHints.SOLID
+    root.addChild(shapeHints)
+    lightModel=coin.SoLightModel()
+    lightModel.model=coin.SoLightModel.BASE_COLOR
+    root.addChild(lightModel)
+
+    cone=coin.SoCube ()
+    root.addChild(cone)
+    sg.addChild(root)

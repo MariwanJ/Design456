@@ -518,3 +518,26 @@ class GetInputValue:
         text, ok = QtGui.QInputDialog.getText(None,'Input new Value', 'Change size')
         if ok:
             return str(text)
+
+
+class Ui_WaitForOK:
+    def setupUi(self, WaitForOK):
+        WaitForOK.setObjectName("WaitForOK")
+        WaitForOK.resize(77, 49)
+        WaitForOK.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
+        self.checkBox = QtWidgets.QCheckBox(WaitForOK)
+        self.checkBox.setGeometry(QtCore.QRect(10, 10, 61, 31))
+        self.checkBox.setObjectName("checkBox")
+
+        self.retranslateUi(WaitForOK)
+        QtCore.QMetaObject.connectSlotsByName(WaitForOK)
+
+    def retranslateUi(self, WaitForOK):
+        _translate = QtCore.QCoreApplication.translate
+        WaitForOK.setWindowTitle(_translate("WaitForOK", "Dialog"))
+        WaitForOK.setToolTip(_translate("WaitForOK", "Exit Mode"))
+        self.checkBox.setToolTip(_translate("WaitForOK", "<html><head/><body><p>Exit Mode</p></body></html>"))
+        self.checkBox.setText(_translate("WaitForOK", "OK"))
+
+    def Activated(self):
+        self.setupUi()
