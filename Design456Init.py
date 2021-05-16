@@ -40,6 +40,7 @@ ICON path should be always added as bellow
 __dir__ = os.path.dirname(__file__)
 ICON_PATH = os.path.join(__dir__, 'Resources/icons/')
 IMAGE_PATH = os.path.join(__dir__, 'Resources/images/')
+
 #Pyramid shapes 
 PYRAMID_PATH = os.path.join(__dir__, 'PyramidMo/')
 PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons/')
@@ -48,7 +49,7 @@ PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons/')
 WIDGETS3D_PATH=os.path.join(__dir__,'ThreeDWidgets/')
 
 #Direct Modeling implementation 
-WIDGETS3D_PATH=os.path.join(__dir__,'DirectModeling/')
+DIRECTMODELING_PATH=os.path.join(__dir__,'DirectModeling/')
 
 # PART
 App.addImportType("BREP format (*.brep *.brp)", "Part")

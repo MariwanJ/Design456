@@ -208,9 +208,9 @@ class Design456_Workbench (Workbench):
             return
         except Exception as exc:
             App.Console.PrintError(exc)
-            App.Console.PrintError("Error: Draft activation "
+            App.Console.PrintError("Error: Design456 activation "
                                    "failed, "
-                                   "Draft will not work as expected.\n")
+                                   "Design456 will not work as expected.\n")
 
     def Deactivated(self):
         from plane import Grid as gr
