@@ -54,12 +54,56 @@ def draw_Point(p1, color):
         return dash
 
     except Exception as err:
-        App.Console.PrintError("'makeIt' Failed. "
+        App.Console.PrintError("'draw_point' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+def draw_square_frame(vectors,color,lineWidth):
+    try:
+        if len(vectors !=4):
+            ValueError ("4 Vertices must be given to the function")
+        v=[]
+        v.append( coin.SoVertexProperty())
+        v[0].vertex.set1Value(0, vectors[0])
+        v[0].vertex.set1Value(1, vectors[1])
+
+        v.append( coin.SoVertexProperty())
+        v[1].vertex.set1Value(0, vectors[1])
+        v[1].vertex.set1Value(1, vectors[2])
+
+        v.append( coin.SoVertexProperty())        
+        v[2].vertex.set1Value(0, vectors[2])
+        v[2].vertex.set1Value(1, vectors[3])
+        
+        v.append( coin.SoVertexProperty())        
+        v[3].vertex.set1Value(0, vectors[3])
+        v[3].vertex.set1Value(1, vectors[0])
+        
+        coords = coin.SoTransform()
+        Totallines=[]
+        for i in range(0,4):
+            newSo = coin.SoSeparator()
+            line  = coin.SoLineSet()
+            line.vertexProperty = v[i]
+            style = coin.SoDrawStyle()
+            style.lineWidth = lineWidth
+            newSo.addChild(style)
+            col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+            col1.rgb = color
+            newSo.addChild(col1)
+            newSo.addChild(line)
+            newSo.addChild(coords)
+            Totallines.append(newSo)
+        return Totallines
+
+    except Exception as err:
+        App.Console.PrintError("'draw_square1' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 def draw_line(p1, p2, color, LineWidth):
     try:

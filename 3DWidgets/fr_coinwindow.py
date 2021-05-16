@@ -124,10 +124,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         if widg.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
             # For line widgets are included.
-            sqrWidg=fr_square_widget.Fr_SquareFrame_Widget(widg)
-            for i in range (0,3):
-                self.w_children.append(sqrWidg.w_EdgeSection[i])
-                sqrWidg.w_parent=self
+            self.w_children.append(widg)
+            widg.parent(self)           #Save a link to parent in the widget
+
         elif widg.w_widgetType ==FR_WidgetType.FR_EDGE:
             self.w_children.append(widg)
-            widg.w_parent=self           #Save a link to parent in the widget
+            widg.parent(self)           #Save a link to parent in the widget
