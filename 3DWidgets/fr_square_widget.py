@@ -33,36 +33,53 @@ import pivy.coin as coin
 import constant
 import fr_coin3d
 from typing import List
-import fr_line_widget
 import FACE_D as faced
+import fr_draw
+import fr_widget
+from constant import FR_ALIGN
+from constant import FR_EVENTS
+import fr_label_draw
+"""
+#Example how to use the widget: 
+#Notice that you should activate Design456 WB before you can use this widget.
+import fr_coinwindow as wn
+import fr_square_widget as square
+import FreeCAD as App
+g=[]
+p1=App.Vector(2,2,5)
+p2=App.Vector(22,2,5)
+p3=App.Vector(22,22,5)
+p4=App.Vector(2,22,5)
+g.append(p1)
+g.append(p2)
+wny=wn.Fr_CoinWindow("MyWindow")
+g.clear()
 
-class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
+g.append(p1)
+g.append(p2)
+g.append(p3)
+g.append(p4)
+col=(0,0,0)
+
+square_ =square.Fr_SquareFrame_Widget(g,'square',10)
+wny.addWidget(square_)
+wny.show()
+"""
+
+
+
+class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     """
     This class is for drawing a line in  coin3D
     """
     # def __init__(self, args:fr_widget.VECTOR=[],l=""):
-    global w_EdgeSection
-    
-    def __init__(self, vectors: List[App.Vector] = [], labels:List[str]=[] ,lineWidth=1):
-        if vectors == None:
-            self.vectors = []
 
+    def __init__(self, vectors: List[App.Vector] = [], labels: str = "" ,lineWidth=1):
+        self.w_vector=vectors
         self.w_lineWidth = lineWidth # default line width        # Here we have a list (4 labels)
-        self.w_EdgeSection: List[fr_line_widget.Fr_Line_Widget]=[]
-        if type(labels)!=List:
-            templabel=labels
-            label=[]
-            for i in range(0,3):
-                label.append(templabel)
-                    
-        for i in range(0,3):
-            nextI=i+1
-            #We have four sections.
-            if(i==3):
-                nextI=0 
-            self.w_EdgeSection.append(fr_line_widget.Fr_Line_Widget([vectors[i],vectors[nextI]], labels[i],lineWidth))
+        self.w_label= labels
         self.w_widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
-        super().__init__(vectors,labels,lineWidth)     
+        super().__init__(vectors,labels)     
         
     # def addVertices(self, vertices):
     #     if(len(vertices)!=4):
@@ -85,9 +102,23 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         processed the event and no other widgets needs to get the 
         event. fr_coinwindow object is responsible for distributing the events.
         """
-        for i in range(0,3):
-            self.w_EdgeSection[0].handle(event)
+        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
+            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(
+                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetCoinNode)
+            clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
+                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblCoinNode)
 
+            if clickwdgdNode != None or clickwdglblNode != None:
+                self.take_focus()
+                self.do_callback(self.w_userData)
+                return 1
+            else:
+                self.remove_focus()
+                return event  # We couldn't use the event .. so return the event itself
+
+        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+            # Double click event.
+            print("Double click detected")
 
     def draw(self):
         """
@@ -95,23 +126,82 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
-        print(self.w_label)
-        print(self.w_vector)
-        for i in range(0,3):
-            self.w_EdgeSection[i].draw()
+        try:
+            
+            if len(self.w_vector) != 4:
+                raise ValueError('Must be 4 Vectors')
+            if self.is_active() and self.has_focus():
+                usedColor = self.w_selColor
+            elif self.is_active() and (self.has_focus() != 1):
+                usedColor = self.w_color
+            elif self.is_active() != 1:
+                usedColor = self.w_inactiveColor
+            if self.is_visible():
+                square = fr_draw.draw_square_frame(self.w_vector, usedColor, self.w_lineWidth)
+                _lbl = self.draw_label()
+
+                self.addSeneNodeslbl(_lbl)
+            for i in range(0,4):
+                self.addSeneNodes(square[i])  # Add SoSeparator. Will be added to switch automatically                            
+            else:
+                return  # We draw nothing .. This is here just for clarifying the code
+        except Exception as err:
+            App.Console.PrintError("'Fr_SquareFrame_Widget' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def draw_label(self):
+        LabelData = fr_widget.propertyValues()
+        LabelData.linewidth = self.w_lineWidth
+        LabelData.labelfont = self.w_font
+        LabelData.fontsize = self.w_fontsize
+        LabelData.labelcolor = self.w_lblColor
+        firstTwoVerticies: List[App.Vector] = []
+
+        firstTwoVerticies.append(self.w_vector[0])
+        firstTwoVerticies.append(self.w_vector[1])
+
+        LabelData.vectors = firstTwoVerticies
+        LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        lbl = fr_label_draw.draw_label(self.w_label, LabelData)
+        self.w_widgetlblCoinNode = lbl
+        return lbl
+    
+    def move(self, newVecPos):
+        """
+        Move the object to the new location referenced by the 
+        left-top corner of the object. Or the start of the line
+        if it is a line.
+        """
+        self.resize(newVecPos)
+
+    def getVertexStart(self):
+        """Return the vertex of the start point"""
+        return App.Vertex(self.w_vector[0])
+
+    def getVertexEnd(self):
+        """Return the vertex of the end point"""
+        return App.Vertex(self.w_vector[3])
 
     def show(self):
         self.w_visible = True
-        for i in range(0,3):
-            self.w_EdgeSection[i].w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
+        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
         self.redraw()
 
     def redraw(self):
         """
         After the widgets damages, this function should be called.        
         """
-        for i in range(0,3):
-            self.w_EdgeSection[i].redraw()
+        if self.is_visible():
+            # Remove the seneNodes from the widget
+            self.removeSeneNodes()
+            # Remove the node from the switch as a child
+            self.removeSoNodeFromSoSwitch()
+            # Remove the SoSwitch from fr_coinwindo
+            self.w_parent.removeSoSwitch(self.w_wdgsoSwitch)
+            self.draw()
 
     def take_focus(self):
         """
@@ -119,15 +209,13 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         """
         if self.w_hasFocus == True:
             return  # nothing to do here
-        for i in range(0,3):
-            self.w_EdgeSection[i].take_focus()
+        self.w_hasFocus = True
         self.redraw()
-            
+
     def activate(self):
         if self.w_active:
             return  # nothing to do
-        for i in range(0,3):
-            self.w_EdgeSection[i].w_active = True
+        self.w_active = True
         self.redraw()
 
     def deactivate(self):
@@ -136,16 +224,13 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         """
         if self.w_active == False:
             return  # Nothing to do
-        for i in range(0,3):
-            self.w_EdgeSection[i].w_active = False
-        self.redraw()
+        self.w_active = False
 
     def destructor(self):
         """
         This will remove the widget totally. 
         """
-        for i in range(0,3):
-           self.w_EdgeSection[i].removeSeneNodes()
+        self.removeSeneNodes()
 
     def is_active(self):
         return self.w_active
@@ -153,9 +238,8 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
     def hide(self):
         if self.w_visible == False:
             return  # nothing to do
-        for i in range(0,3):
-            self.w_EdgeSection[i].w_visible = False
-            self.w_EdgeSection[i].w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
+        self.w_visible = False
+        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
         self.redraw()
 
     def remove_focus(self):
@@ -167,41 +251,17 @@ class Fr_SquareFrame_Widget(fr_line_widget.Fr_Line_Widget):
         if self.w_hasFocus == False:
             return  # nothing to do
         else:
-            for i in range(0,3):
-                self.w_EdgeSection[i].w_hasFocus = False
+            self.w_hasFocus = False
             self.redraw()
 
-    def resize(self, args: List[App.Vector]):  # Width, height, thickness
+    def resize(self, vectors: List[App.Vector]):  # Width, height, thickness
         """Resize the widget by using the new vectors"""
-        if(len(args)!=4):
-            # must be four vertices
-            errMessage = "Four Vertices are required"
-            faced.getInfo(None).errorDialog(errMessage)
-            return
-        for i in range (0,3):
-            self.w_EdgeSection[i].w_vector = args
+        self.w_vector = vectors
         self.redraw()
 
-    def size(self, args: List[App.Vector]):
+    def size(self, vectors: List[App.Vector]):
         """Resize the widget by using the new vectors"""
-        if(len(args)!=4):
-            # must be four vertices
-            errMessage = "Four Vertices are required"
-            faced.getInfo(None).errorDialog(errMessage)
-            return
-        for i in range(0,3):
-            self.w_EdgeSection[i].resize(args)
-        
-    def move(self, newVecPos):
-        """
-        Move the object to the new location referenced by the 
-        left-top corner of the object. Or the start of the line
-        if it is a line.
-        """
-        if(len(newVecPos)!=4):
-            # must be four vertices
-            errMessage = "Four Vertices are required"
-            faced.getInfo(None).errorDialog(errMessage)
-            return
-        for i in range(0,3):
-            self.w_EdgeSection[i].resize(newVecPos)
+        self.resize(vectors)
+
+    def label_move(self, newPos):
+        pass

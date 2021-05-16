@@ -46,6 +46,9 @@ import math
 '''
 def calculateLineSpherical(vectors):
     # Calculate the three angles we have ref to xyz axis
+    print("calculate - vectors")
+    print(vectors)
+    print("calculate - vectors")
     p1 = vectors[0]
     p2 = vectors[1]
     print(p1)
@@ -149,7 +152,7 @@ def calculateAlignment(vectors, align):
         # Align LEFT-TOP
         pass
 
-def draw_label(text=[], prop: propertyValues=None):
+def draw_label(text, prop: propertyValues=None):
     ''' Draw widgets label relative to the position with alignment'''
     if text=='' or prop ==None: 
         return     # Nothing to do here 
@@ -189,11 +192,11 @@ def draw_label(text=[], prop: propertyValues=None):
         if thi!=0:
             _textNode.addChild(_transPositionZ)
         
-        
         _textNode.addChild(coinColor)
         _textNode.addChild(font)
         _textNode.addChild(_text3D)
         return _textNode  # Return the created SoSeparator that contains the text
+    
     except Exception as err:
         App.Console.PrintError("'draw_label' Failed. "
                                    "{err}\n".format(err=str(err)))

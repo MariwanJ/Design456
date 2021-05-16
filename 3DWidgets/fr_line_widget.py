@@ -64,10 +64,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     This class is for drawing a line in coin3D world
     """
 
-    def __init__(self, _vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
+    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
         self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_EDGE
-        super().__init__(_vectors, label)
+        super().__init__(vectors, label)
 
     def lineWidth(self, width):
         """ Set the line width"""
