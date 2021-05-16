@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from PySide.QtCore import QT_TRANSLATE_NOOP
-from draftobjects.base import DraftObject
 #
 # ***************************************************************************
 # *                                                                        *
@@ -35,6 +33,8 @@ import Design456Init
 from pivy import coin
 import FACE_D as faced
 import math as _math
+from PySide.QtCore import QT_TRANSLATE_NOOP
+from draftobjects.base import DraftObject
 # Move an object to the location of the mouse click on another surface
 
 

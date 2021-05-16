@@ -45,7 +45,10 @@ PYRAMID_PATH = os.path.join(__dir__, 'PyramidMo/')
 PYRAMID_ICON_PATH = os.path.join(__dir__, 'PyramidMo/Resources/icons/')
 
 #Coin3D New widget system 
-WIDGETS3D_PATH=os.path.join(__dir__,'3DWidgets/')
+WIDGETS3D_PATH=os.path.join(__dir__,'ThreeDWidgets/')
+
+#Direct Modeling implementation 
+WIDGETS3D_PATH=os.path.join(__dir__,'DirectModeling/')
 
 # PART
 App.addImportType("BREP format (*.brep *.brp)", "Part")
