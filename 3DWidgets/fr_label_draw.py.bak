@@ -152,7 +152,7 @@ def calculateAlignment(vectors, align):
         # Align LEFT-TOP
         pass
 
-def draw_label(text=[], prop: propertyValues=None):
+def draw_label(text, prop: propertyValues=None):
     ''' Draw widgets label relative to the position with alignment'''
     if text=='' or prop ==None: 
         return     # Nothing to do here 
