@@ -37,7 +37,7 @@ import Design456Init
 
 def draw_Point(p1, color):
     try:
-        dash = coin.SoSeparator()
+        so_separator = coin.SoSeparator()
         v = coin.SoVertexProperty()
         v.vertex.set1Value(0, p1)
 
@@ -45,13 +45,13 @@ def draw_Point(p1, color):
         line = coin.SoLineSet()
         line.vertexProperty = v
         style = coin.SoDrawStyle()
-        dash.addChild(style)
+        so_separator.addChild(style)
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = color
-        dash.addChild(col1)
-        dash.addChild(line)
-        dash.addChild(coords)
-        return dash
+        so_separator.addChild(col1)
+        so_separator.addChild(line)
+        so_separator.addChild(coords)
+        return so_separator
 
     except Exception as err:
         App.Console.PrintError("'draw_point' Failed. "
@@ -107,7 +107,7 @@ def draw_square_frame(vectors,color,lineWidth):
 
 def draw_line(p1, p2, color, LineWidth):
     try:
-        dash = coin.SoSeparator()
+        so_separator = coin.SoSeparator()
         v = coin.SoVertexProperty()
         v.vertex.set1Value(0, p1)
         v.vertex.set1Value(1, p2)
@@ -116,13 +116,13 @@ def draw_line(p1, p2, color, LineWidth):
         line.vertexProperty = v
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
-        dash.addChild(style)
+        so_separator.addChild(style)
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = color
-        dash.addChild(col1)
-        dash.addChild(line)
-        dash.addChild(coords)
-        return dash
+        so_separator.addChild(col1)
+        so_separator.addChild(line)
+        so_separator.addChild(coords)
+        return so_separator
 
     except Exception as err:
         App.Console.PrintError("'makeIt' Failed. "
@@ -139,7 +139,7 @@ def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
     """
     if len(vertices) < 4:
         raise ValueError('Vertices must be 4')
-    dash = coin.SoSeparator()
+    so_separator = coin.SoSeparator()
     v = coin.SoVertexProperty()
     coords = coin.SoTransform()
     p1=vertices[0]
@@ -150,10 +150,10 @@ def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
     square.vertexProperty = v
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth
-    dash.addChild(style)
-    dash.addChild(color)
-    dash.addChild(square)
-    dash.addChild(coords)
+    so_separator.addChild(style)
+    so_separator.addChild(color)
+    so_separator.addChild(square)
+    so_separator.addChild(coords)
     return draw_square
 
 

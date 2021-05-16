@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from PySide.QtCore import QT_TRANSLATE_NOOP
-from draftobjects.base import DraftObject
 #
 # ***************************************************************************
 # *                                                                        *
@@ -46,6 +44,9 @@ from pivy import coin
 import FACE_D as faced
 import math as _math
 from draftutils.translate import translate   #for translate
+from PySide.QtCore import QT_TRANSLATE_NOOP
+from draftobjects.base import DraftObject
+#
 
 class Design456_unifySplitFuse1:
     
