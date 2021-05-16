@@ -85,7 +85,7 @@ class Fr_Widget (object):
     
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
-        self.w_label = [label]      # This must be a list, to have several raw, append str
+        self.w_label = label      # This must be a list, to have several raw, append str
 
     def draw_box(self):
         raise NotImplementedError()
@@ -310,7 +310,7 @@ class Fr_Widget (object):
     def removeSeneNodes(self):
         """ Remove SeneNodes children and itself"""
         if len(self.w_widgetCoinNode)!=0:
-            if(self.w_widgetCoinNode==list):
+            if(type(self.w_widgetCoinNode)==list):
                 for i in self.w_widgetCoinNode: 
                     del (i)
             else:
