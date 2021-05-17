@@ -63,7 +63,7 @@ def draw_Point(p1, color):
 
 def draw_square_frame(vectors: List[App.Vector] = [],color=(0,0,0),lineWidth=1):
     try:
-        if len(vectors !=4):
+        if len(vectors) !=4:
             ValueError ("4 Vertices must be given to the function")
         v=[]
         v.append( coin.SoVertexProperty())
