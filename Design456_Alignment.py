@@ -51,19 +51,20 @@ class Design456_ViewInsideObjects:
             Gui.ActiveDocument.ActiveView.getSceneGraph().insertChild(clip_plane, 1)
             Gui.ActiveDocument.ActiveView.viewAxonometric()
             Gui.ActiveDocument.ActiveView.fitAll()
+            
         except Exception as err:
-            App.Console.PrintError("'Align to Plain' Failed. "
+            App.Console.PrintError("'View Inside objects' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-        def GetResources(self):
-            import Design456Init
-            return{
-                'Pixmap':    Design456Init.ICON_PATH + 'AlignToPlane.svg',
-                'MenuText': 'Align To Plane',
-                'ToolTip':  'Align to Plane'
+    def GetResources(self):
+        import Design456Init
+        return{
+                'Pixmap':    Design456Init.ICON_PATH + 'ViewInsideObjects.svg',
+                'MenuText': 'View Inside objects',
+                'ToolTip':  'View Inside objects'
             }
 
 Gui.addCommand('Design456_ViewInsideObjects',Design456_ViewInsideObjects())
