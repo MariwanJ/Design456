@@ -521,23 +521,38 @@ class GetInputValue:
 
 
 class Ui_WaitForOK:
-    def setupUi(self, WaitForOK):
-        WaitForOK.setObjectName("WaitForOK")
-        WaitForOK.resize(77, 49)
-        WaitForOK.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
-        self.checkBox = QtWidgets.QCheckBox(WaitForOK)
+    global WaitForOK
+    global checkBox
+    def setupUi(self, _WaitForOK):
+        self.WaitForOK=_WaitForOK
+        self.WaitForOK.setObjectName("WaitForOK")
+        self.WaitForOK.resize(300, 50)
+        self.WaitForOK.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
+        self.checkBox = QtGui.QCheckBox(self.WaitForOK)
         self.checkBox.setGeometry(QtCore.QRect(10, 10, 61, 31))
         self.checkBox.setObjectName("checkBox")
 
-        self.retranslateUi(WaitForOK)
-        QtCore.QMetaObject.connectSlotsByName(WaitForOK)
-
+        self.retranslateUi(self.WaitForOK)
+        QtCore.QMetaObject.connectSlotsByName(self.WaitForOK)
+        return self.WaitForOK
+    
+    def runOK(self):
+        if  self.checkBox.isChecked():
+            print("true")
+        else:
+            print("false")
+        self.WaitForOK.hide()
+        
     def retranslateUi(self, WaitForOK):
+        
         _translate = QtCore.QCoreApplication.translate
         WaitForOK.setWindowTitle(_translate("WaitForOK", "Dialog"))
         WaitForOK.setToolTip(_translate("WaitForOK", "Exit Mode"))
         self.checkBox.setToolTip(_translate("WaitForOK", "<html><head/><body><p>Exit Mode</p></body></html>"))
         self.checkBox.setText(_translate("WaitForOK", "OK"))
+        self.checkBox.stateChanged.connect(self.runOK)
 
     def Activated(self):
-        self.setupUi()
+        self.d = QtGui.QWidget()
+        self.ui =self.setupUi(self.d)
+        self.d.show()

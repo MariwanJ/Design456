@@ -285,7 +285,7 @@ class Design456_loftOnDirection_ui(object):
                     App.ActiveDocument.recompute()
 
                     # Remove Old objects. I don't like to keep so many objects without any necessity.
-                    
+
                     for obj in newObj.Sections:
                         App.ActiveDocument.removeObject(obj.Name)
                     App.ActiveDocument.removeObject(newObj.Name)
@@ -319,6 +319,5 @@ class Design456_loftOnDirection():
             'MenuText': 'loftOnDirection',
             'ToolTip':  'Loft On Direction'
         }
-
 
 Gui.addCommand('Design456_loftOnDirection', Design456_loftOnDirection())
