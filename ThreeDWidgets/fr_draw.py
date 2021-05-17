@@ -31,6 +31,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
+from typing import List
 
 # draw a line in 3D world
 
@@ -60,7 +61,7 @@ def draw_Point(p1, color):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-def draw_square_frame(vectors,color,lineWidth):
+def draw_square_frame(vectors: List[App.Vector] = [],color,lineWidth):
     try:
         if len(vectors !=4):
             ValueError ("4 Vertices must be given to the function")
