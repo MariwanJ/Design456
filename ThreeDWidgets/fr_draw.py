@@ -61,7 +61,7 @@ def draw_Point(p1, color):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-def draw_square_frame(vectors: List[App.Vector] = [],color,lineWidth):
+def draw_square_frame(vectors: List[App.Vector] = [],color=(0,0,0),lineWidth=1):
     try:
         if len(vectors !=4):
             ValueError ("4 Vertices must be given to the function")
