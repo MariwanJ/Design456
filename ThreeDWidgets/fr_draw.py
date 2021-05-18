@@ -184,7 +184,7 @@ def draw_polygon(vector,color=(0.0,0.0,0.0), LineWidth=1.0):
 #Draw a square face in the 3D Coin
 def draw_square(vertices, color=(0.0,0.0,0.0), LineWidth=1.0):
     if len(vertices) != 4:
-        raise ValueError('Vertices must be more than 2')
+        raise ValueError('Vertices must be 4')
     return draw_polygon(vertices,color,LineWidth)
 
 
@@ -207,3 +207,37 @@ def createFrameShape():
     cone=coin.SoCube ()
     root.addChild(cone)
     sg.addChild(root)
+
+#Load a SVG image to the coin3D
+def loadImageTo3D(filename,Bsize, location):
+    svg = coin.SoTexture2()
+    svg.filename = filename
+    box = coin.SoVRMLBox()
+    box.size = Bsize    #(2,2,0)
+    imagePos = coin.SoTransform()
+    imagePos.translation.setValue(location) #([10,0,0])
+    imagePos.rotation = coin.SbRotation(0,0,0,0)
+    image = coin.SoSeparator()
+    image.addChild(imagePos)
+    image.addChild(svg)
+    image.addChild(box)
+    return image        # Add this to the senegraph to show the picture.
+#todo fixme
+def drawCurve(knots, data):
+    array = {[0. , 0. , 0.01, 0.07, 0.18, 0.36, 0.5 , 0.71, 1. ],
+             [0. , 0.02, 0.05, 0.09, 0.1 , 0.08, 0.06, 0.04, 0. ],
+             [0. , 0. , 0. , 0. , 0. , 0. , 0. , 0. , 0. ],
+             [1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. ]
+             }
+
+    """The knot vector    """"
+    knots = ([0] * 5 + [1] * 2 + [2] *2 + [3] * 5)
+
+    curveSep = coin.SoSeparator()
+    complexity = coin.SoComplexity()
+    controlPts = coin.SoCoordinate4()
+    curve = coin.SoNurbsCurve()
+    controlPts.point.setValues(0, array.shape[1], array.T.tolist())
+    curve.numControlPoints = array.shape[1]
+    curve.knotVector.setValues(0, len(knots), knots)
+    curveSep += [complexity, controlPts, curve]
