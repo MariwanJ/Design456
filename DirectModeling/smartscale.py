@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from Design456_2Ddrawing import Design456_2Ddrawing
 from __future__ import unicode_literals
 #
 # ***************************************************************************
@@ -29,21 +28,23 @@ from __future__ import unicode_literals
 import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft as _draft
-import Part as _part
-import Design456Init
+
 from pivy import coin
 import FACE_D as faced
 import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
+import ThreeDWidgets.fr_line_widget as wlin
+import ThreeDWidgets.fr_coinwindow   as win
+from typing import List
 
 class Design456_SmartScale:
 
     def getXYZdimOfSelectedObject(self,selected):
         #Max object length in all directions
+        smartInd=[]
         lengthX = selected.Shape.BoundBox.XLength
         lengthY =selected.Shape.BoundBox.YLength
-        lengthY =selected.Shape.BoundBox.ZLength
+        lengthZ =selected.Shape.BoundBox.ZLength
         
         #Make the end 10 mm longer/after the object
         NewX= selected.Shape.BoundBox.XMax+10
@@ -54,7 +55,26 @@ class Design456_SmartScale:
         startX= selected.Shape.BoundBox.XMin-10
         startY= selected.Shape.BoundBox.YMin-10
         startZ= selected.Shape.BoundBox.ZMin-10
+        mywin=win.Fr_CoinWindow()
+        Xvectors: List[App.Vector] = []
+        Yvectors: List[App.Vector] = []
+        Zvectors: List[App.Vector] = []
+ 
+        Xvectors.append(startX,NewY,0)
+        Xvectors.append(NewX,NewY,0)
+ 
+        Yvectors.append(NewX,startY,0)
+        Yvectors.append(NewX,NewY,0)
+        
+        Zvectors.append(NewX,NewY,startZ)
+        Zvectors.append(NewX,NewY,NewZ)
+        
+        
+        smartInd.append(wlin.Fr_Line_Widget(Xvectors,str(lengthX),1))
+        smartInd.append(wlin.Fr_Line_Widget(Yvectors,str(lengthY),1))
+        smartInd.append(wlin.Fr_Line_Widget(Zvectors,str(lengthZ),1))
 
+                        
         
     def Activated(self):
         try:
@@ -64,6 +84,7 @@ class Design456_SmartScale:
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
                 return 
+            self.getXYZdimOfSelectedObject(sel)
         
         # we have a selected object. Try to show the dimentions. 
         except Exception as err:
