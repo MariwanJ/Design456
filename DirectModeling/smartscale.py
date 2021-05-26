@@ -59,22 +59,22 @@ class Design456_SmartScale:
         Xvectors: List[App.Vector] = []
         Yvectors: List[App.Vector] = []
         Zvectors: List[App.Vector] = []
- 
-        Xvectors.append(startX,NewY,0)
-        Xvectors.append(NewX,NewY,0)
- 
-        Yvectors.append(NewX,startY,0)
+
+        Yvectors.append(startX,NewY,0)
         Yvectors.append(NewX,NewY,0)
+ 
+        Xvectors.append(NewX,startY,0)
+        Xvectors.append(NewX,NewY,0)
         
         Zvectors.append(NewX,NewY,startZ)
         Zvectors.append(NewX,NewY,NewZ)
         
-        
+        #Create the lines
         smartInd.append(wlin.Fr_Line_Widget(Xvectors,str(lengthX),1))
         smartInd.append(wlin.Fr_Line_Widget(Yvectors,str(lengthY),1))
         smartInd.append(wlin.Fr_Line_Widget(Zvectors,str(lengthZ),1))
-
-                        
+        mywin.addWidget(smartInd)
+        mywin.show()                
         
     def Activated(self):
         try:

@@ -230,7 +230,7 @@ def drawCurve(knots, data):
              [1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. ]
              }
 
-    """The knot vector    """"
+    """The knot vector    """
     knots = ([0] * 5 + [1] * 2 + [2] *2 + [3] * 5)
 
     curveSep = coin.SoSeparator()

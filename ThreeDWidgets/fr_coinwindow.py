@@ -116,17 +116,17 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     # We need to have it here to give parent to the widget
     def addWidget(self, widg):
         """ 
-        Add the new created widget to the list.
+        Add the new created widget(s) to the list.
         Base class of this window, which is a fr_group,
         has the list. This function will add the new widget
         to the list and keep the link to the window inside
         the widget itself.
         """
-        if widg.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
-            # For line widgets are included.
-            self.w_children.append(widg)
-            widg.parent(self)           #Save a link to parent in the widget
-
-        elif widg.w_widgetType ==FR_WidgetType.FR_EDGE:
-            self.w_children.append(widg)
-            widg.parent(self)           #Save a link to parent in the widget
+        for widgets in widg:
+            if widg.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
+                # For line widgets are included.
+                self.w_children.append(widgets)
+                widgets.parent(self)           #Save a link to parent in the widget
+            elif widgets.w_widgetType ==FR_WidgetType.FR_EDGE:
+                self.w_children.append(widgets)
+                widgets.parent(self)           #Save a link to parent in the widget
