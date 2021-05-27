@@ -100,8 +100,7 @@ class Design456_SmartScale:
             wait.Activated()
             while wait.isVisible:
                 time.sleep(0.1)
-                
-        
+
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
@@ -112,7 +111,7 @@ class Design456_SmartScale:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH +'SmartScale.svg',
+            'Pixmap': Design456Init.ICON_PATH +'smartscale.svg',
             'MenuText': 'SmartScale',
                         'ToolTip':  'Smart Scale'
         }
@@ -121,7 +120,7 @@ Gui.addCommand('Design456_SmartScale', Design456_SmartScale())
 
 
 class Design456_DirectScale:
-        
+
     def Activated(self):
         try:
             sel = Gui.Selection.getSelection()
@@ -131,7 +130,6 @@ class Design456_DirectScale:
                 faced.getInfo().errorDialog(errMessage)
                 return 
                 
-        
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_DirectScale' Failed. "
