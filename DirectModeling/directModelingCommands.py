@@ -28,8 +28,8 @@ from __future__ import unicode_literals
 from DirectModeling import *
 
 class Design456_DirectModeling:
-    list = ["Design456_smartscale",
-
+    list = ["Design456_SmartScale",
+            "Design456_DirectScale",
 
             ]
     """Design456 Direct Modeling """
