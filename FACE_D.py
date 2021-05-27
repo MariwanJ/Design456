@@ -496,11 +496,14 @@ class SelectTopFace:
 
 #TODO: Transparent dialog? how to? 
 class GetInputValue:
+    def __init__(self,defaultValue):
+        self.value=defaultValue
+        pass
     """
     get Input value from user. Either Text, INT or Float
     """
     def getIntValue(self):
-        valueDouble,ok= (QtGui.QInputDialog.getInt(None, "Input new Value", "Change size:", 0, -10000, 10000))
+        valueDouble,ok= (QtGui.QInputDialog.getInt(None, "Input new Value", "Change size:", self.value, -10000, 10000))
         if ok:
             return float(valueDouble)
 
@@ -510,7 +513,7 @@ class GetInputValue:
             return str(text)
     
     def getDoubleValue(self):
-        valueDouble,ok= (QtGui.QInputDialog.getDouble(None, 'Input new Value', 'Change size:', 0, -10000.0, 10000.0, 2))
+        valueDouble,ok= (QtGui.QInputDialog.getDouble(None, 'Input new Value', 'Change size:', self.value, -10000.0, 10000.0, 2))
         if ok:
             return float(valueDouble)
     

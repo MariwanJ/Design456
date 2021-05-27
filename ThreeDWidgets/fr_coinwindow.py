@@ -123,7 +123,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         the widget itself.
         """
         for widgets in widg:
-            if widg.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
+            if widgets.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
                 # For line widgets are included.
                 self.w_children.append(widgets)
                 widgets.parent(self)           #Save a link to parent in the widget
