@@ -57,4 +57,4 @@ class Fr_Polygon(fr_widget.Fr_Widget):
     def draw(self, vectors):
         mynormal = coin.SoNormal
         mynormal.vector.set1Values(0, 8, norms)
-        obelisk
+        
