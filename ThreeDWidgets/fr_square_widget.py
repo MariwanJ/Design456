@@ -34,11 +34,11 @@ import constant
 import fr_coin3d
 from typing import List
 import FACE_D as faced
-import fr_draw
-import fr_widget
-from constant import FR_ALIGN
-from constant import FR_EVENTS
-import fr_label_draw
+import ThreeDWidgets.fr_draw
+import ThreeDWidgets.fr_widget
+from ThreeDWidgets.constant import FR_ALIGN
+from ThreeDWidgets.constant import FR_EVENTS
+import ThreeDWidgets.fr_label_draw
 """
 #Example how to use the widget: 
 #Notice that you should activate Design456 WB before you can use this widget.

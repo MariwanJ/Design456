@@ -24,15 +24,14 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-import os
-import sys
+import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 import Draft as _draft
-import fr_widget
-import constant
+import ThreeDWidgets.fr_widget
+import ThreeDWidgets.constant
 from typing import List
 
 # Group class. Use this to collect several widgets.

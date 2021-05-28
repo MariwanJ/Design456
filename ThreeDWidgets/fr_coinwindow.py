@@ -26,18 +26,17 @@ from fr_group import Fr_Group
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-import sys
+import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import fr_group
-import fr_widget
-import constant
-import fr_coin3d
+import ThreeDWidgets.fr_group
+import ThreeDWidgets.fr_widget
+import ThreeDWidgets.constant
+import ThreeDWidgets.fr_coin3d
 from typing import List
-from constant import FR_WidgetType
+from ThreeDWidgets.constant import FR_WidgetType
 
 '''
 This is a class for coin3D Window

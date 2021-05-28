@@ -39,13 +39,12 @@ This is only for coin3D.
 """
 # Struct to keep the mouse position in both world
 
-import os
-import sys
+import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import constant
+import ThreeDWidgets.constant
 from dataclasses import dataclass
 import time # For double click detection
 
