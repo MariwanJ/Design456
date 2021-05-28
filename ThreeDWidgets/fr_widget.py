@@ -29,14 +29,13 @@ from __future__ import unicode_literals
 This class is the base class for all widgets created in coin3D
 
 """
-import os
-import sys
+import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import fr_draw
-import constant
+import ThreeDWidgets.fr_draw
+from  ThreeDWidgets import constant
 from dataclasses import dataclass
 from typing import List
 

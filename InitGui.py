@@ -59,15 +59,11 @@ class Design456_Workbench (Workbench):
         self.appendToolbar("Design456 2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
         self.appendToolbar("Design456 Tools", _tools.Design456_Part_Tools.list)
         self.appendToolbar("Selection Mode",SelGate.Design456_SelectionGate.list)
-        self.appendToolbar("Selection Mode",dModeling.Design456_DirectModeling.list)
-
+        self.appendToolbar("Direct Modeling",dModeling.Design456_DirectModeling.list)
 
         self.appendMenu("Design456_Part",designPart.Design456_Part.list)
         self.appendMenu("Design456_2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
-        self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
-
-
-        
+        self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)   
 
         # Design456_Part
         #self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)

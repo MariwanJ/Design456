@@ -24,16 +24,15 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-import sys
+import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 
-from constant import FR_ALIGN
-from constant import FR_COLOR
-from fr_widget import propertyValues 
+from ThreeDWidgets.constant import FR_ALIGN
+from ThreeDWidgets.constant import FR_COLOR
+from ThreeDWidgets.fr_widget import propertyValues 
 import math
 '''
                          Y
