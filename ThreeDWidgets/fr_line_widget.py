@@ -25,20 +25,19 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-import sys
+import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import fr_draw
-import fr_widget
-import constant
-import fr_coin3d
+from ThreeDWidgets import fr_draw
+from ThreeDWidgets import fr_widget
+from ThreeDWidgets import constant
+from ThreeDWidgets import fr_coin3d
 from typing import List
-import fr_label_draw
-from constant import FR_ALIGN
-from constant import FR_EVENTS
+from ThreeDWidgets import fr_label_draw
+from ThreeDWidgets.constant import FR_ALIGN
+from ThreeDWidgets.constant import FR_EVENTS
 """
 Example how to use this widget. 
 

@@ -25,8 +25,7 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os
-import sys
+import os,sys
 
 #Widgets type. QT widget will get QT in their names.
 class FR_WidgetType:
