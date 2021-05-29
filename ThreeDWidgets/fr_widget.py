@@ -221,8 +221,15 @@ class Fr_Widget (object):
     # Take care of all events
     def handle(self, events):
         raise NotImplementedError()
-        
-    def callback_labelChanged(self,data):
+    
+    def do_lblcallback(self):
+        """
+            This function will run the label-changed 
+            event callback. 
+        """
+        self.lbl_calback()
+    
+    def lbl_callback(self,data=None):
         """ This callback will be used 
             to run code that will be 
             related to the label change.
