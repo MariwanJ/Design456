@@ -37,7 +37,8 @@ import ThreeDWidgets.fr_line_widget as wlin
 import ThreeDWidgets.fr_coinwindow   as win
 from typing import List
 import time 
-class smartLines(ThreeDWidgets.fr_line_widget):
+import Design456Init
+class smartLines(wlin.Fr_Line_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
         super().__init__(vectors, label)
         
@@ -95,7 +96,7 @@ class Design456_SmartScale:
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
                 return 
-            self.getXYZdimOfSelectedObject(sel)
+            self.getXYZdimOfSelectedObject(sel[0])
             wait=faced.Ui_WaitForOK()
             wait.Activated()
             while wait.isVisible:

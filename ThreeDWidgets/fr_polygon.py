@@ -29,10 +29,10 @@ import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import ThreeDWidgets.fr_widget
+from ThreeDWidgets import fr_widget
 import Design456Init
 import ThreeDWidgets.fr_draw
-import ThreeDWidgets.constant
+from ThreeDWidgets import constant
 from typing import List
 
 #

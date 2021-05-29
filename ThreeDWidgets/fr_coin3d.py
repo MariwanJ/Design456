@@ -44,7 +44,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import ThreeDWidgets.constant
+from ThreeDWidgets import constant
 from dataclasses import dataclass
 import time # For double click detection
 
