@@ -34,7 +34,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import ThreeDWidgets.fr_draw
+from ThreeDWidgets import fr_draw
 from  ThreeDWidgets import constant
 from dataclasses import dataclass
 from typing import List

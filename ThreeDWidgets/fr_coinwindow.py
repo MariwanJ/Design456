@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from fr_group import Fr_Group
 #
 # ***************************************************************************
 # *                                                                        *
@@ -31,10 +30,10 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-import ThreeDWidgets.fr_group
-import ThreeDWidgets.fr_widget
-import ThreeDWidgets.constant
-import ThreeDWidgets.fr_coin3d
+from  ThreeDWidgets import fr_group
+from  ThreeDWidgets import fr_widget
+from  ThreeDWidgets import constant
+from  ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets.constant import FR_WidgetType
 
