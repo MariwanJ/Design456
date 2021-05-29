@@ -42,7 +42,8 @@ class smartLines(wlin.Fr_Line_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
         super().__init__(vectors, label)
         
-    def callback(self, data):
+    def lbl_calback(self, data=None):
+        print("smartline lbl callback")
         newValue=0
         newValue=faced.GetInputValue().getDoubleValue()
         if newValue==0:

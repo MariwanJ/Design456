@@ -98,6 +98,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             print("Double click detected")
+            self.do_lblcallback()
             
 
     def draw(self):
@@ -243,3 +244,13 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     def label_move(self, newPos):
         pass
+    
+    def do_lblcallback(self):
+        """
+            This function will run the label-changed 
+            event callback. 
+        """
+        #TODO : Subclass this and impalement the callback 
+        #          to get the desired effect
+        pass
+        
