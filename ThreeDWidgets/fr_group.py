@@ -30,8 +30,8 @@ import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 import Draft as _draft
-import ThreeDWidgets.fr_widget
-import ThreeDWidgets.constant
+from  ThreeDWidgets import fr_widget
+from  ThreeDWidgets import constant
 from typing import List
 
 # Group class. Use this to collect several widgets.

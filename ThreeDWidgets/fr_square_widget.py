@@ -24,8 +24,7 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-import os
-import sys
+import os, sys
 import Design456Init
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -34,11 +33,11 @@ import constant
 import fr_coin3d
 from typing import List
 import FACE_D as faced
-import ThreeDWidgets.fr_draw
-import ThreeDWidgets.fr_widget
+from ThreeDWidgets import fr_draw
+from ThreeDWidgets import fr_widget
 from ThreeDWidgets.constant import FR_ALIGN
 from ThreeDWidgets.constant import FR_EVENTS
-import ThreeDWidgets.fr_label_draw
+from ThreeDWidgets import fr_label_draw
 """
 #Example how to use the widget: 
 #Notice that you should activate Design456 WB before you can use this widget.
