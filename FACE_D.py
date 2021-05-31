@@ -559,3 +559,4 @@ class Ui_WaitForOK:
         self.d = QtGui.QWidget()
         self.ui =self.setupUi(self.d)
         self.d.show()
+        return self.d

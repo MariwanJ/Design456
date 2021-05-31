@@ -38,6 +38,7 @@ from typing import List
 from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_ALIGN
 from ThreeDWidgets.constant import FR_EVENTS
+from ThreeDWidgets.constant import FR_DAMAGE
 """
 Example how to use this widget. 
 
@@ -99,7 +100,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             # Double click event.
             print("Double click detected")
             self.do_lblcallback()
-            
 
     def draw(self):
         """
@@ -122,7 +122,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
             if self.is_visible():
                 linedraw = fr_draw.draw_line(p1, p2, usedColor, self.w_lineWidth)
-                _lbl = self.draw_label()
+                _lbl = self.draw_label(usedColor)
 
                 self.addSeneNodeslbl(_lbl)
                 self.addSeneNodes(linedraw)  # Add SoSeparator. Will be added to switch automatically                            
@@ -136,12 +136,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def draw_label(self):
+    def draw_label(self,usedColor):
         LabelData = fr_widget.propertyValues()
         LabelData.linewidth = self.w_lineWidth
         LabelData.labelfont = self.w_font
         LabelData.fontsize = self.w_fontsize
-        LabelData.labelcolor = self.w_lblColor
+        LabelData.labelcolor = usedColor
         LabelData.vectors = self.w_vector
         LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label(self.w_label, LabelData)
@@ -244,13 +244,14 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     def label_move(self, newPos):
         pass
+  
     
-    def do_lblcallback(self):
-        """
-            This function will run the label-changed 
-            event callback. 
-        """
-        #TODO : Subclass this and impalement the callback 
-        #          to get the desired effect
-        pass
+    # def do_lblcallback(self):
+    #     """
+    #         This function will run the label-changed 
+    #         event callback. 
+    #     """
+    #     #TODO : Subclass this and impalement the callback 
+    #     #          to get the desired effect
+    #     pass
         

@@ -26,7 +26,6 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import os,sys
-
 #Widgets type. QT widget will get QT in their names.
 class FR_WidgetType:
     """ Internal names of the widgets. QT widget will get 'qt' in their names """
@@ -97,7 +96,14 @@ class FR_BoxType: #There will not be any boundary box or bkg box
     FR_OVAL_FRAME=          110
     FR_TRIANGLE_BOX=        120
     FR_TRIANGLE_FRAME=      130
-        
+
+#This constant should determine the type of redraw required 
+class FR_DAMAGE:
+    FR_ALL_DAMAGE=     0
+    FR_LBL_DAMAGE=    10
+    FR_DRAW_DAMAGE=   20
+     
+           
 #No constant for keyboard as it is defined already in coin.
 class FR_EVENTS:    
     FR_NO_EVENT=                0
