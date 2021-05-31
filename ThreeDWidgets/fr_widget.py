@@ -216,12 +216,14 @@ class Fr_Widget (object):
         raise NotImplementedError()
 
     def size(self, args: List[App.Vector]):
-        NotImplementedError()
+        raise NotImplementedError()
+
 
     # Take care of all events
     def handle(self, events):
         raise NotImplementedError()
     
+    #callback related to t
     def do_lblcallback(self):
         """
             This function will run the label-changed 
@@ -239,7 +241,8 @@ class Fr_Widget (object):
             time you need a callback
             mechanism. This is for that.
             """
-        pass
+        raise NotImplementedError()
+
 
     # Callbacks
     def callback(self, data):
@@ -252,8 +255,8 @@ class Fr_Widget (object):
             be used there. run do_callback 
             to activate this.
         """
-        pass  # Subclassed widget must create callback function. Abstract class has no callback
-        #raise NotImplementedError()
+        #Subclassed widget must create callback function. Abstract class has no callback
+        raise NotImplementedError()
 
     # call the main callback for the widget
     def do_callback(self, data):
