@@ -99,9 +99,9 @@ class Design456_SmartScale:
                 return 
             self.getXYZdimOfSelectedObject(sel[0])
             wait=faced.Ui_WaitForOK()
-            wait.Activated()
-            while wait.isVisible:
-                time.sleep(0.1)
+            resu=wait.Activated()
+            #while resu.isVisible:
+            #    time.sleep(0.1)
 
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
