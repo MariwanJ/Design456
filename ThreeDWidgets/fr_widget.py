@@ -39,6 +39,11 @@ from  ThreeDWidgets import constant
 from dataclasses import dataclass
 from typing import List
 
+def defaultCallback(Userdata):
+    """
+    Dummy callback. This should be overdriven to call the real callback
+    """
+    raise NotImplementedError()
 
 class Fr_Widget (object):
     """
@@ -81,6 +86,15 @@ class Fr_Widget (object):
     w_vector=None
     w_label=None
     w_lineWidth=1
+    ########################################################################
+    #  {w_callback_, w_lbl_calback_}  is a pointer to a function.          #
+    #  It should be used only like that.                                   #
+    #  Each widget has a single callback, 'handle' will call them.         #
+    #  Depending on what kind of widget you create, the callback can do    #
+    #  different tasks. run do_callback, do_lblcallback activates them.    #
+    # ######################################################################
+    w_callback_= defaultCallback     #Subclassed widget must create callback function. 
+    w_lbl_calback_=defaultCallback   #Abstract class has no callback.
     
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
@@ -224,42 +238,23 @@ class Fr_Widget (object):
         raise NotImplementedError()
     
     #callback related to t
-    def do_lblcallback(self):
+    def do_lblcallback(self,data=None):
         """
             This function will run the label-changed 
             event callback. 
         """
-        self.lbl_calback()
-    
-    def lbl_callback(self,data=None):
-        """ This callback will be used 
-            to run code that will be 
-            related to the label change.
-            Often it is not necessary,
-            but if the object is 
-            type Input_box. At that
-            time you need a callback
-            mechanism. This is for that.
-            """
-        raise NotImplementedError()
-
-
-    # Callbacks
-    def callback(self, data):
-        """ Each widget has a single callback.
-            But you can add as many call back as you 
-            want if you sub class any widget
-            and at the handle you call them.
-            Depending on what kind of widget
-            you make, this callback could 
-            be used there. run do_callback 
-            to activate this.
-        """
-        #Subclassed widget must create callback function. Abstract class has no callback
-        raise NotImplementedError()
+        try:
+            self.w_lbl_calback_(data)
+            
+        except Exception as err:
+            App.Console.PrintError("'lblcallback' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     # call the main callback for the widget
-    def do_callback(self, data):
+    def do_callback(self, data=None):
         """
         This will activate the callback call. 
         Use this function to run the callback.
@@ -267,7 +262,15 @@ class Fr_Widget (object):
         This is implemented here but the callback
         should be implemented by the widget you create
         """
-        self.callback(data)
+        try:
+            self.w_callback_(data)
+
+        except Exception as err:
+            App.Console.PrintError("'callback' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def Color(self, color):
         """ Foreground color at normal status"""
