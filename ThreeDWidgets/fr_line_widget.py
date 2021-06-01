@@ -177,10 +177,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         self.resize([newVecPos[0], newVecPos[1]])
 
+    @property
     def getVertexStart(self):
         """Return the vertex of the start point"""
         return App.Vertex(self.w_vector[0])
 
+    @property
     def getVertexEnd(self):
         """Return the vertex of the end point"""
         return App.Vertex(self.w_vector[1])
@@ -225,13 +227,14 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self.w_active == False:
             return  # Nothing to do
         self.w_active = False
-
+    
     def destructor(self):
         """
         This will remove the widget totally. 
         """
         self.removeSeneNodes()
-
+    
+    @property
     def is_active(self):
         return self.w_active
 
