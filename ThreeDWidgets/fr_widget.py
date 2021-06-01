@@ -118,10 +118,9 @@ class Fr_Widget (object):
         """
         raise NotImplementedError()
 
-    @w_font.setter
     def Font(self, newFont):
         self.w_font=newFont
-        
+       
     def FontSize(self,newSize):
         self.w_fontsize=newSize
 
@@ -226,7 +225,7 @@ class Fr_Widget (object):
             Get parent windows
         """
         return self.w_parent
-    @w_parent.setter
+ 
     def parent(self, parent):
         """ 
             Set the parrent to the widget
@@ -308,27 +307,22 @@ class Fr_Widget (object):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    @w_color.setter
     def Color(self, color):
         """ Foreground color at normal status"""
         self.w_color = color
         
-    @w_selColor.setter
     def SelectionColor(self, color):
         """ Foreground color when widget selected i.e. has focus"""
         self.w_selColor = color
 
-    @w_inactiveColor.setter
     def InActiveColor(self, color):
         """ Foreground color when widget is disabled - not active """
         self.w_inactiveColor = color
 
-    @w_bkgColor.setter
     def BkgColor(self, color):
         """ Background color . To disable background color use FR_COLOR.FR_TRANSPARENCY which is the default """
         self.w_bkgColor = color
 
-    @w_when.setter
     def When(self, value):
         """
         When do the callback should be run?
@@ -343,7 +337,7 @@ class Fr_Widget (object):
         """
         return self.w_when
     
-    @w_widgetCoinNode.setter
+
     def addSeneNodes(self,_Value):
         if type(_Value)==list:
             for i in _Value:
@@ -353,7 +347,6 @@ class Fr_Widget (object):
         self.w_widgetCoinNode=_Value
         self.addSoNodeToSoSwitch(_Value)
 
-    @w_widgetlblCoinNode.setter
     def addSeneNodeslbl(self,_list):
         """ Switch didn't work for label. We will added to senegraph directly""" 
         self.w_widgetlblCoinNode=_list
@@ -375,7 +368,7 @@ class Fr_Widget (object):
             if len(self.w_widgetlblCoinNode)!=0:
                 for i in self.w_widgetlblCoinNode: 
                     del i 
-    @w_wdgsoSwitch.setter
+
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
         to the switch. The switch should be able to hide/visible them by a command
