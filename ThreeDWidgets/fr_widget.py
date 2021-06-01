@@ -38,6 +38,7 @@ from ThreeDWidgets import fr_draw
 from  ThreeDWidgets import constant
 from dataclasses import dataclass
 from typing import List
+from abc import abstractmethod
 
 def defaultCallback(Userdata):
     """
@@ -75,7 +76,7 @@ class Fr_Widget (object):
     w_hasFocus = False
     w_font='sans'
     w_fontsize=4
-    w_pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
+    w_pick_radius = 25  # See if this must be a parameter in the GUI /Mariwan
     w_widgetCoinNode = None     #Should be defined in the widget either one or a list
     w_widgetlblCoinNode = None  #Should be defined in the widget either one or a list
     # each node is a child of one switch, Add drawings a children for this switch
@@ -101,13 +102,16 @@ class Fr_Widget (object):
         self.w_label = [label] 
         #self.w_label = label      # This must be a list, to have several raw, append str
 
+    @abstractmethod      
     def draw_box(self):
         raise NotImplementedError()
-
+    
+    @abstractmethod      
     def draw(self):
         """ main draw function. This is responsible for all draw on screen"""
         raise NotImplementedError()
-
+    
+    @abstractmethod  
     def draw_label(self):
         """ draw label for the widget 
         for coin3d Class SoText2 should be used 
@@ -119,29 +123,35 @@ class Fr_Widget (object):
         
     def FontSize(self,newSize):
         self.w_fontsize=newSize
-        
+
+    @abstractmethod         
     def redraw(self):
         """
         After the widgets damages, this function should be called.        
         """
         raise NotImplementedError()
 
+    @abstractmethod  
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
         """
         raise NotImplementedError()
-    
+
+    @abstractmethod  
     def label_move(self,newPos):
-        """ Move the label to a new location"""    
+        """ Move the label to a new location"""
         raise NotImplementedError()
     
+
+    @abstractmethod  
     def move(self, x, y, z):
         """ Move the widget to a new location.
         The new location is reference to the 
         left-upper corner"""
         raise NotImplementedError()
 
+    @abstractmethod
     def move_centerOfMass(self, x, y, z):
         """ Move the widget to a new location.
         The new location is reference to the 
@@ -154,6 +164,7 @@ class Fr_Widget (object):
         """
         return self.w_hasFocus
 
+    @abstractmethod
     def remove_focus(self):
         """
         Remove the focus from the widget. 
@@ -162,7 +173,7 @@ class Fr_Widget (object):
         """
         raise NotImplementedError()
     # Activated, deactivate, get status of widget
-
+    
     def is_visible(self):
         """ 
         return the internal variable which keep 
@@ -170,34 +181,51 @@ class Fr_Widget (object):
         """
         return self.w_visible
 
+    @abstractmethod
     def activate(self):
         raise NotImplementedError()
 
+    @abstractmethod
     def deactivate(self):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
         raise NotImplementedError()
 
+    @abstractmethod
     def destructor(self):
         """
         This will remove the widget totally. 
         """
         self.removeSeneNodes()
-
+    
     def is_active(self):
         return self.w_active
-
+    
+    @abstractmethod    
     def hide(self):
+        """
+            Hide the widget and it's children
+        """
         raise NotImplementedError()
 
     def show(self):
+        """
+            Show the widget and it's children.
+        """
+        self.w_visible=True
         self.draw()
 
     def getparent(self):
+        """
+            Get parent windows
+        """
         return self.w_parent
 
     def parent(self, parent):
+        """ 
+            Set the parrent to the widget
+        """
         self.w_parent = parent
 
     def type(self):
@@ -221,11 +249,12 @@ class Fr_Widget (object):
             return App.Vertex(self.w_vector[0])
         else:
             return None
-
+    @abstractmethod
     def position(self, x, y, z):
         """put the position of the object, Reference to the first vector """
         raise NotImplementedError()
 
+    @abstractmethod   
     def resize(self, args: List[App.Vector]):  # Width, height, thickness
         raise NotImplementedError()
 
@@ -372,7 +401,7 @@ VECTOR = List[point]
 
 class propertyValues:
     '''
-    Property-holder  class for drawing labels
+    Property-holder class for drawing labels
     ''' 
     __slots__ = ['vectors','linewidth','labelfont','fontsize','labelcolor','alignment']
     vectors   : VECTOR        #List[App.Vector]
@@ -381,13 +410,3 @@ class propertyValues:
     fontsize  : int
     labelcolor: tuple
     alignment : int                   
-    '''
-    from dataclasses import dataclass
-
-
-    @dataclass
-    class Point:
-    x: float
-    y: float
-    z: float = 0.0
-    '''

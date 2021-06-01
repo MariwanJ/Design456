@@ -506,22 +506,29 @@ class GetInputValue:
         valueDouble,ok= (QtGui.QInputDialog.getInt(None, "Input new Value", "Change size:", self.value, -10000, 10000))
         if ok:
             return float(valueDouble)
-
+        else:
+            return None
+        
     def getTextValue(self):
         text, ok = QtGui.QInputDialog.getText(None,'Input new Value', 'Change size:')
         if ok:
             return str(text)
-    
+        else:
+            return None
+            
     def getDoubleValue(self):
         valueDouble,ok= (QtGui.QInputDialog.getDouble(None, 'Input new Value', 'Change size:', self.value, -10000.0, 10000.0, 2))
         if ok:
             return float(valueDouble)
+        else:
+            return None
     
     def Activated(self):
         text, ok = QtGui.QInputDialog.getText(None,'Input new Value', 'Change size')
         if ok:
             return str(text)
-
+        else:
+            return None
 
 class Ui_WaitForOK:
     global WaitForOK
@@ -560,3 +567,35 @@ class Ui_WaitForOK:
         self.ui =self.setupUi(self.d)
         self.d.show()
         return self.d
+    
+#Visual progress indicator     
+class StatusBarProgress:
+    """
+    Visual progress indicator. 
+    Use this class to visually show the progress 
+    of a process you are implementing. 
+    Or it could be used also with Wizard widget
+    as step indicator
+    Use stop to stop the progress. 
+    Use stepUp   to step Up   the progress indicator
+    Use stepDown to step down the progress indicator
+    """
+    progress_bar=None
+    def __init__(self,title="",Steps=10):
+        self.ProgressTitle=title
+        self.NoOfsteps=Steps
+            
+    def Activated(self):
+        progress_bar = App.Base.ProgressIndicator()
+         
+    def start(self):
+        self.progress_bar.start(self.ProgressTitle,9) 
+    
+    def stepUp(self):
+        self.progress_bar.next()
+    
+    def stepDown(self):
+        self.progress_bar.prev()
+    def stopProgress(self):   
+        self.progress_bar.stop() 
+    

@@ -38,24 +38,41 @@ import ThreeDWidgets.fr_coinwindow   as win
 from typing import List
 import time 
 import Design456Init
+
+def callback(userData):
+    """
+        Calback when line is clicked
+    """
+    print("callback")
+    
+
+def lbl_callback(userData=None):
+    """
+        callback when label is double clicked
+    """
+    print("smartline lbl callback")
+    newValue=0
+    newValue=faced.GetInputValue().getDoubleValue()
+    if newValue==0:
+    #User canceled the value
+        pass
+
+        
+    
+    
 class smartLines(wlin.Fr_Line_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
-        super().__init__(vectors, label)
+        super().w_lbl_calback_=lbl_callback
+        super().w_callback_=callback
+        super().__init__(vectors, label,lineWidth)
         
-    def lbl_calback(self, data=None):
-        print("smartline lbl callback")
-        newValue=0
-        newValue=faced.GetInputValue().getDoubleValue()
-        if newValue==0:
-            #User canceled the value
-            pass
 
 class Design456_SmartScale:
 
     def getXYZdimOfSelectedObject(self,selected):
         #Max object length in all directions
         smartInd=[]
-        lengthX = selected.Shape.BoundBox.XLength
+        lengthX =selected.Shape.BoundBox.XLength
         lengthY =selected.Shape.BoundBox.YLength
         lengthZ =selected.Shape.BoundBox.ZLength
         
@@ -83,9 +100,9 @@ class Design456_SmartScale:
         Zvectors.append(App.Vector(NewX,NewY,NewZ))
         
         #Create the lines
-        smartInd.append(wlin.Fr_Line_Widget(Xvectors,str(lengthX),1))
-        smartInd.append(wlin.Fr_Line_Widget(Yvectors,str(lengthY),1))
-        smartInd.append(wlin.Fr_Line_Widget(Zvectors,str(lengthZ),1))
+        smartInd.append(smartLines(Xvectors,str(lengthX),9))
+        #smartInd.append(smartLines(Yvectors,str(lengthY),5))
+        #smartInd.append(smartLines(Zvectors,str(lengthZ),5))
         mywin.addWidget(smartInd)
         mywin.show()                
         
