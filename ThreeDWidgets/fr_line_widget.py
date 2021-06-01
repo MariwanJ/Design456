@@ -58,6 +58,25 @@ wny.show()                    # show the window and it's widgets.
 
 """
 
+def lblcallback(self,userData=None):
+    """
+            This function will run the label-changed 
+            event callback. 
+    """
+        #TODO : Subclass this and impalement the callback 
+        #          to get the desired effect
+    print("dummy widget-label callback" )
+             
+def callback(self,userData=None):
+    """
+            This function will run the when the line is clicked 
+            event callback. 
+    """
+        #TODO : Subclass this and impalement the callback 
+        #          to get the desired effect
+    print("dummy widget callback" )
+
+        
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     """
@@ -67,6 +86,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
         self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_EDGE
+        self.w_callback_=callback        #External function
+        self.w_lbl_calback_=lblcallback  #External function
         super().__init__(vectors, label)
 
     def lineWidth(self, width):
@@ -174,12 +195,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         After the widgets damages, this function should be called.        
         """
         if self.is_visible():
+            # Remove the SoSwitch from fr_coinwindo
+            self.w_parent.removeSoSwitch(self.w_wdgsoSwitch)
             # Remove the seneNodes from the widget
             self.removeSeneNodes()
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
-            # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitch(self.w_wdgsoSwitch)
             self.draw()
 
     def take_focus(self):
@@ -244,14 +265,3 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     def label_move(self, newPos):
         pass
-  
-    
-    # def do_lblcallback(self):
-    #     """
-    #         This function will run the label-changed 
-    #         event callback. 
-    #     """
-    #     #TODO : Subclass this and impalement the callback 
-    #     #          to get the desired effect
-    #     pass
-        
