@@ -62,8 +62,8 @@ def lbl_callback(userData=None):
     
 class smartLines(wlin.Fr_Line_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
-        super().w_lbl_calback_=lbl_callback
-        super().w_callback_=callback
+        self.w_lbl_calback_=lbl_callback
+        self.w_callback_=callback
         super().__init__(vectors, label,lineWidth)
         
 
