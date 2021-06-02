@@ -176,7 +176,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if it is a line.
         """
         self.resize([newVecPos[0], newVecPos[1]])
-
+        
     @property
     def getVertexStart(self):
         """Return the vertex of the start point"""
@@ -188,7 +188,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         return App.Vertex(self.w_vector[1])
 
     def show(self):
-        self.w_visible = True
+        self.w_visible = 1
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
         self.redraw()
 
@@ -209,39 +209,35 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         Set focus to the widget. Which should redraw it also.
         """
-        if self.w_hasFocus == True:
+        if self.w_hasFocus == 1:
             return  # nothing to do here
-        self.w_hasFocus = True
+        self.w_hasFocus = 1
         self.redraw()
 
     def activate(self):
         if self.w_active:
             return  # nothing to do
-        self.w_active = True
+        self.w_active = 1
         self.redraw()
 
     def deactivate(self):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active == False:
+        if self.w_active == 0:
             return  # Nothing to do
-        self.w_active = False
+        self.w_active = 0
     
     def destructor(self):
         """
         This will remove the widget totally. 
         """
         self.removeSeneNodes()
-    
-    @property
-    def is_active(self):
-        return self.w_active
 
     def hide(self):
-        if self.w_visible == False:
+        if self.w_visible == 0:
             return  # nothing to do
-        self.w_visible = False
+        self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
         self.redraw()
 
@@ -251,10 +247,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus == False:
+        if self.w_hasFocus == 0:
             return  # nothing to do
         else:
-            self.w_hasFocus = False
+            self.w_hasFocus = 0
             self.redraw()
 
     def resize(self, vectors: List[App.Vector]):  # Width, height, thickness
