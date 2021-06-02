@@ -50,7 +50,7 @@ class Fr_Widget (object):
     """
     Abstract Base class used to create all Widgets
     You need to subclass this object 
-    to be able to create other objects,
+    to be able to create any widget,
     and you should always have a Fr_Group 
     widget which acts like a container for the widgets.
     fr_window widget will take care of that,
@@ -63,17 +63,17 @@ class Fr_Widget (object):
     #Default values which is shared with all objects.
     
     w_lblPosition=None     # Should be defined when lbl is created. 
-    w_visible = True
+    w_visible = 1      # 1 active, 0 inactive
     w_bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
     w_color = constant.FR_COLOR.FR_BLACK
     w_inactiveColor = constant.FR_COLOR.FR_GRAY2
     w_selColor = constant.FR_COLOR.FR_YELLOW
     w_lblColor= constant.FR_COLOR.FR_BLACK
     w_box = None
-    w_active = True
+    w_active = 1  # 1 active , 0 inactive 
     w_parent = None
     w_widgetType = constant.FR_WidgetType.FR_WIDGET
-    w_hasFocus = False
+    w_hasFocus = 0           # 0 No focus , 1 Focus
     w_font='sans'
     w_fontsize=4
     w_pick_radius = 25  # See if this must be a parameter in the GUI /Mariwan
@@ -158,7 +158,7 @@ class Fr_Widget (object):
         center of mass"""
         raise NotImplementedError()
     
-    @property 
+    #@property 
     def has_focus(self):
         """
         Check if the widget has focus
@@ -175,10 +175,10 @@ class Fr_Widget (object):
         raise NotImplementedError()
     # Activated, deactivate, get status of widget
     
-    @property 
+    #@property 
     def is_visible(self):
         """ 
-        return the internal variable which keep 
+        return the internal variable which keeps
         the status of the widgets visibility
         """
         return self.w_visible
@@ -201,7 +201,7 @@ class Fr_Widget (object):
         """
         self.removeSeneNodes()
     
-    @property 
+    #@property 
     def is_active(self):
         return self.w_active
     
@@ -216,7 +216,7 @@ class Fr_Widget (object):
         """
             Show the widget and it's children.
         """
-        self.w_visible=True
+        self.w_visible=1
         self.draw()
     
     @property 

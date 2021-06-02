@@ -84,19 +84,17 @@ def objectMouseClick_Coin3d(mouse_pos, pick_radius,TargetNode):
     picked_point = ray_pick.getPickedPoint()
     
     if picked_point != None and picked_point != 0:
+        path=picked_point.getPath()
         if type(TargetNode)==list:
             for nodeInList in TargetNode:
-                path=picked_point.getPath()
                 if path.containsNode(nodeInList):
                     return (path.getNode(path.findNode(nodeInList)))  #Not sure if we need it #TODO should we return only true?
-            return None # Not found
+            return None #Not found
         else:        
-            path = picked_point.getPath()
             if path.containsNode(TargetNode):
                 return (path.getNode(path.findNode(TargetNode)))  #Not sure if we need it #TODO should we return only true?
     else:
         return None
-
 
 class root_handle():
     """
