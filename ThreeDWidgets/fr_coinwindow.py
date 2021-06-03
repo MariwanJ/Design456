@@ -101,12 +101,23 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         
     def addSoSwitchToSeneGraph(self, _soSwitch):
         """ Add new switch tree to the SeneGraph"""
-        self.Root_SeneGraph.addChild(_soSwitch)  # add sen to the root
+        print(type(_soSwitch))
+        print(_soSwitch)
+        if type(_soSwitch)==list:
+            for i in _soSwitch:
+                self.Root_SeneGraph.addChild(i)  # add sen to the root
+        else:
+            self.Root_SeneGraph.addChild(_soSwitch)
+        
 
     # Remove the switches and their children.
     def removeSoSwitch(self, _soSwitch):
         """ remove switch tree from the SeneGraph"""
-        self.Root_SeneGraph.removeChild(_soSwitch)
+        if type(_soSwitch)==list:
+            for i in _soSwitch:
+                self.Root_SeneGraph.removeChild(i)
+        else:
+            self.Root_SeneGraph.removeChild(_soSwitch)
         
     def callback(self, data):
         # not sure what I should do here yet.
