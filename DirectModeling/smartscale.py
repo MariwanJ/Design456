@@ -55,9 +55,7 @@ def lbl_callback(userData=None):
     newValue=faced.GetInputValue().getDoubleValue()
     if newValue==0:
     #User canceled the value
-        pass
-
-        
+        pass  
     
     
 class smartLines(wlin.Fr_Line_Widget):
@@ -65,7 +63,7 @@ class smartLines(wlin.Fr_Line_Widget):
         self.w_lbl_calback_=lbl_callback
         self.w_callback_=callback
         super().__init__(vectors, label,lineWidth)
-        
+
 
 class Design456_SmartScale:
 
@@ -100,7 +98,7 @@ class Design456_SmartScale:
         Zvectors.append(App.Vector(NewX,NewY,NewZ))
         
         #Create the lines
-        smartInd.append(smartLines(Xvectors,str(lengthX),9))
+        smartInd.append(smartLines(Xvectors,str(lengthX),5))
         smartInd.append(smartLines(Yvectors,str(lengthY),5))
         smartInd.append(smartLines(Zvectors,str(lengthZ),5))
         mywin.addWidget(smartInd)

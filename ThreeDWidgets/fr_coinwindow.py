@@ -56,10 +56,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     global Root_SeneGraph
     global link_to_root_handle
 
-    callbackMove = None
-    callbackClick = None
-    callbackKey = None
-
     def __init__(self, args: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
                 400, 400, 0)], label: str = ""):
         self._view = Gui.ActiveDocument.ActiveView
@@ -131,11 +127,20 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         to the list and keep the link to the window inside
         the widget itself.
         """
-        for widgets in widg:
-            if widgets.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
-                # For line widgets are included.
-                self.w_children.append(widgets)
-                widgets.parent(self)           #Save a link to parent in the widget
-            elif widgets.w_widgetType ==FR_WidgetType.FR_EDGE:
-                self.w_children.append(widgets)
-                widgets.parent(self)           #Save a link to parent in the widget
+        if type(widg)==list:
+            for widgets in widg:
+                if widgets.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
+                    # For line widgets are included.
+                    self.w_children.append(widgets)
+                    widgets.parent(self)           #Save a link to parent in the widget
+                elif widgets.w_widgetType ==FR_WidgetType.FR_EDGE:
+                    self.w_children.append(widgets)
+                    widgets.parent(self)           #Save a link to parent in the widget
+        else:
+                if widg.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
+                    # For line widgets are included.
+                    self.w_children.append(widg)
+                    widg.parent(self)           #Save a link to parent in the widget
+                elif widg.w_widgetType ==FR_WidgetType.FR_EDGE:
+                    self.w_children.append(widg)
+                    widg.parent(self)           #Save a link to parent in the widget

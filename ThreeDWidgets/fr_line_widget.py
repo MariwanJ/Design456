@@ -57,15 +57,32 @@ wny.show()                    # show the window and it's widgets.
 
 
 """
+def movecallback(userData=None):
+    """
+            This function will run the drag-move 
+            event callback. 
+    """
+        #TODO : Subclass this and impalement the callback 
+        #          to get the desired effect
+    print("dummy line-widget move callback" )
 
-def lblcallback(self,userData=None):
+def KBcallback(userData=None):
+    """
+            This function will run the KB 
+            event callback. 
+    """
+        #TODO : Subclass this and impalement the callback 
+        #          to get the desired effect
+    print("dummy line-widget KB callback" )
+    
+def lblcallback(userData=None):
     """
             This function will run the label-changed 
             event callback. 
     """
         #TODO : Subclass this and impalement the callback 
         #          to get the desired effect
-    print("dummy widget-label callback" )
+    print("dummy line-widget-label callback" )
              
 def callback(self,userData=None):
     """
@@ -74,7 +91,7 @@ def callback(self,userData=None):
     """
         #TODO : Subclass this and impalement the callback 
         #          to get the desired effect
-    print("dummy widget callback" )
+    print("dummy line-widget callback" )
 
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
@@ -85,8 +102,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
         self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_EDGE
-        self.w_callback_=callback        #External function
-        self.w_lbl_calback_=lblcallback  #External function
+        
+        self.w_callback_=callback           #External function
+        self.w_lbl_calback_=lblcallback     #External function
+        self.w_KB_callback_=KBcallback      #External function
+        self.w_move_callback_=movecallback  #External function
+        
         super().__init__(vectors, label)
 
     def lineWidth(self, width):
@@ -209,7 +230,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             self.removeSoNodeFromSoSwitch()
             self.draw()
     
-    def lblredraw(self):
+    def lblRedraw(self):
         self.w_widgetlblCoinNode.removeAllChildren()
         
     
