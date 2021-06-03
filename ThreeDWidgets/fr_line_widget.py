@@ -76,7 +76,6 @@ def callback(self,userData=None):
         #          to get the desired effect
     print("dummy widget callback" )
 
-        
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     """
@@ -110,6 +109,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblCoinNode)
 
             if clickwdgdNode != None or clickwdglblNode != None:
+                print("Found node")
                 self.take_focus()
                 self.do_callback(self.w_userData)
                 return 1
@@ -158,6 +158,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_label(self,usedColor):
+        print("usedcoolor")
+        print(usedColor)
         LabelData = fr_widget.propertyValues()
         LabelData.linewidth = self.w_lineWidth
         LabelData.labelfont = self.w_font
@@ -199,12 +201,18 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self.is_visible():
             # Remove the SoSwitch from fr_coinwindo
             self.w_parent.removeSoSwitch(self.w_wdgsoSwitch)
+            #Redraw label
+            self.lblRedraw()
             # Remove the seneNodes from the widget
             self.removeSeneNodes()
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
             self.draw()
-
+    
+    def lblredraw(self):
+        self.w_widgetlblCoinNode.removeAllChildren()
+        
+    
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
