@@ -94,8 +94,10 @@ class Fr_Widget (object):
     #  Depending on what kind of widget you create, the callback can do    #
     #  different tasks. run do_callback, do_lblcallback activates them.    #
     # ######################################################################
-    w_callback_= defaultCallback     #Subclassed widget must create callback function. 
-    w_lbl_calback_=defaultCallback   #Abstract class has no callback.
+    w_callback_= defaultCallback      #Subclassed widget must create callback function. 
+    w_lbl_calback_=defaultCallback    #Abstract class has no callback.
+    w_move_callback_= defaultCallback #Abstract class has no callback.
+    w_KB_callback_= defaultCallback   #Abstract class has no callback.
     
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
@@ -132,7 +134,7 @@ class Fr_Widget (object):
         raise NotImplementedError()
 
     @abstractmethod         
-    def lblredraw(self):
+    def lblRedraw(self):
         """
         After the lbl damage/change, this function should be called.        
         """
