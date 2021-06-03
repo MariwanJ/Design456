@@ -101,8 +101,8 @@ class Design456_SmartScale:
         
         #Create the lines
         smartInd.append(smartLines(Xvectors,str(lengthX),9))
-        #smartInd.append(smartLines(Yvectors,str(lengthY),5))
-        #smartInd.append(smartLines(Zvectors,str(lengthZ),5))
+        smartInd.append(smartLines(Yvectors,str(lengthY),5))
+        smartInd.append(smartLines(Zvectors,str(lengthZ),5))
         mywin.addWidget(smartInd)
         mywin.show()                
         

@@ -157,8 +157,13 @@ def draw_label(text=[], prop: propertyValues=None):
         return     # Nothing to do here 
     try:
         delta=App.Vector(0,0,0)
+        print("prop is : ")
+        print (prop.alignment)
         print (prop.vectors)
-
+        print (prop.fontsize)
+        print (prop.labelfont)
+        print (prop.labelcolor)
+        
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
         delta.x=p1.x+2
@@ -172,7 +177,6 @@ def draw_label(text=[], prop: propertyValues=None):
         _transPositionPOS.translation.setValue(delta)
         _transPositionY.translation.setValue(App.Vector(0,0,0))
         _transPositionZ.translation.setValue(App.Vector(0,0,0))
-        print (delta)
         _transPositionY.rotation.setValue(coin.SbVec3f(1,0, 0),phi)
         _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),thi)
 
@@ -183,7 +187,10 @@ def draw_label(text=[], prop: propertyValues=None):
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
         #_text3D.justification = coin.SoAsciiText.LEFT
         coinColor = coin.SoMaterial()  # Font color
-        coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
+        color=prop.labelcolor
+        print(color)
+        coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
+        #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
         _textNode.addChild(_transPositionPOS)
         if phi!=0:
@@ -191,8 +198,8 @@ def draw_label(text=[], prop: propertyValues=None):
         if thi!=0:
             _textNode.addChild(_transPositionZ)
         
-        _textNode.addChild(coinColor)
         _textNode.addChild(font)
+        _textNode.addChild(coinColor)
         _textNode.addChild(_text3D)
         return _textNode  # Return the created SoSeparator that contains the text
     

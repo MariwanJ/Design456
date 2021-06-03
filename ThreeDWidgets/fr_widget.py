@@ -131,6 +131,13 @@ class Fr_Widget (object):
         """
         raise NotImplementedError()
 
+    @abstractmethod         
+    def lblredraw(self):
+        """
+        After the lbl damage/change, this function should be called.        
+        """
+        raise NotImplementedError()
+
     @abstractmethod  
     def take_focus(self):
         """
