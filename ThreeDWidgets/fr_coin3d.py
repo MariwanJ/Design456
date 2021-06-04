@@ -217,15 +217,16 @@ class root_handle():
             getButton = self.w_get_event.getButton()
             self.w_lastEvent = constant.FR_EVENTS.FR_NO_EVENT
 
-            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 #detect double click here. COIN3D has no function for that
                 if self.Detect_DblClick()==True:
                     self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
-                else:
-                    self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
-
+                #else:
+                #    self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
+            
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH
+                            
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
                 self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_RIGHT_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON2:

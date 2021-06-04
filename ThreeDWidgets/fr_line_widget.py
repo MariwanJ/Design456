@@ -78,13 +78,13 @@ def KBcallback(userData=None):
 def lblcallback(userData=None):
     """
             This function will run the label-changed 
-            event callback. 
+            event callback.
     """
         #TODO : Subclass this and impalement the callback 
         #          to get the desired effect
-    print("dummy line-widget-label callback" )
+    print("dummy line-widget-label callback")
              
-def callback(self,userData=None):
+def callback(userData=None):
     """
             This function will run the when the line is clicked 
             event callback. 
@@ -107,7 +107,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_lbl_calback_=lblcallback     #External function
         self.w_KB_callback_=KBcallback      #External function
         self.w_move_callback_=movecallback  #External function
-        
         super().__init__(vectors, label)
 
     def lineWidth(self, width):
@@ -123,25 +122,31 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetCoinNode)
-            clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblCoinNode)
-
-            if clickwdgdNode != None or clickwdglblNode != None:
-                print("Found node")
-                self.take_focus()
-                self.do_callback(self.w_userData)
-                return 1
-            else:
-                self.remove_focus()
-                return event  # We couldn't use the event .. so return the event itself
-
+        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                          self.w_pick_radius, self.w_widgetCoinNode)
+        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                            self.w_pick_radius, self.w_widgetlblCoinNode)
+            
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             print("Double click detected")
+            self.take_focus()
             self.do_lblcallback()
+            print("lbl callback activated")
+        elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+            self.take_focus()
+            print("callback activated")
+            self.do_callback()
+        
+        if clickwdgdNode != None :
+            print("Found wdgNode")
+            return 1
+        elif clickwdglblNode != None:
+            print("Found wdglblNode")
+            return 1            
+        else:
+            self.remove_focus()
+            return event  # We couldn't use the event .. so return the event itself
 
     def draw(self):
         """
