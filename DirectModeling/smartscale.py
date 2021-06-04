@@ -34,7 +34,7 @@ import FACE_D as faced
 import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 import ThreeDWidgets.fr_line_widget as wlin
-import ThreeDWidgets.fr_coinwindow   as win
+import ThreeDWidgets.fr_coinwindow  as win
 from typing import List
 import time 
 import Design456Init
@@ -45,7 +45,6 @@ def callback(userData):
     """
     print("callback")
     
-
 def lbl_callback(userData=None):
     """
         callback when label is double clicked
@@ -55,15 +54,15 @@ def lbl_callback(userData=None):
     newValue=faced.GetInputValue().getDoubleValue()
     if newValue==0:
     #User canceled the value
-        pass  
-    
-    
+        pass
+
 class smartLines(wlin.Fr_Line_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
+        self.w_lbl_calback_=None
+        self.w_callback_=None
         self.w_lbl_calback_=lbl_callback
         self.w_callback_=callback
         super().__init__(vectors, label,lineWidth)
-
 
 class Design456_SmartScale:
 
@@ -134,7 +133,6 @@ class Design456_SmartScale:
         }
 
 Gui.addCommand('Design456_SmartScale', Design456_SmartScale())
-
 
 class Design456_DirectScale:
 
