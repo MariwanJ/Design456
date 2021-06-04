@@ -143,7 +143,7 @@ class Fr_Widget (object):
     @abstractmethod  
     def take_focus(self):
         """
-        Set focus to the widget. Which should redraw it also.
+        Set focus to the widget. Which should be redrawn also.
         """
         raise NotImplementedError()
 
@@ -257,7 +257,7 @@ class Fr_Widget (object):
     @property 
     def getPositionAsVertex(self):
         """
-        if args is defined, return the vertex of the 
+        if args is defined, it returns the vertex of the 
         first point in the widget
         """
         if(self.getPosition()):
@@ -266,7 +266,7 @@ class Fr_Widget (object):
             return None
     @abstractmethod
     def position(self, x, y, z):
-        """put the position of the object, Reference to the first vector """
+        """put the position of the object, which is reference to the first vector """
         raise NotImplementedError()
 
     @abstractmethod   
