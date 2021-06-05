@@ -45,13 +45,8 @@ import math
 '''
 def calculateLineSpherical(vectors):
     # Calculate the three angles we have ref to xyz axis
-    print("calculate - vectors")
-    print(vectors)
-    print("calculate - vectors")
     p1 = vectors[0]
     p2 = vectors[1]
-    print(p1)
-    print(p2)
     px2_px1=p2.x-p1.x
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
@@ -78,10 +73,7 @@ def calculateLineSpherical(vectors):
         factor=0
     else: 
         phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)))
-    print (thi)
-    print (factor)
     thi=thi + factor
-    print  (r,thi,phi)
     return (r,thi,phi)
 
 # todo FIXME
@@ -156,14 +148,7 @@ def draw_label(text=[], prop: propertyValues=None):
     if text=='' or prop ==None: 
         return     # Nothing to do here 
     try:
-        delta=App.Vector(0,0,0)
-        print("prop is : ")
-        print (prop.alignment)
-        print (prop.vectors)
-        print (prop.fontsize)
-        print (prop.labelfont)
-        print (prop.labelcolor)
-        
+        delta=App.Vector(0,0,0)        
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
         delta.x=p1.x+2
@@ -188,7 +173,7 @@ def draw_label(text=[], prop: propertyValues=None):
         #_text3D.justification = coin.SoAsciiText.LEFT
         coinColor = coin.SoMaterial()  # Font color
         color=prop.labelcolor
-        print(color)
+
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
         #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing

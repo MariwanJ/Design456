@@ -225,13 +225,15 @@ class root_handle():
                 #    self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
             
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH
-                            
+                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH                        
+            if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
+        
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
                 self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_RIGHT_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON2:
                 self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
-
+        
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON3:
                 self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
             if eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
@@ -323,7 +325,6 @@ class root_handle():
         '''
         add all callbacks registered for Fr_Window widget
         '''
-        print("callback activated")
         self.callbackMove = self.w_view.addEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.eventProcessor)
         self.callbackClick = self.w_view.addEventCallbackPivy(
