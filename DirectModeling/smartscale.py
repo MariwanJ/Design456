@@ -74,14 +74,14 @@ class Design456_SmartScale:
         lengthZ =selected.Shape.BoundBox.ZLength
         
         #Make the end 10 mm longer/after the object
-        NewX= selected.Shape.BoundBox.XMax+10
-        NewY= selected.Shape.BoundBox.YMax+10
-        NewZ= selected.Shape.BoundBox.ZMax+10
+        NewX= selected.Shape.BoundBox.XMax+2
+        NewY= selected.Shape.BoundBox.YMax+2
+        NewZ= selected.Shape.BoundBox.ZMax+4
         
         #Make the start 10 mm before the object is placed
-        startX= selected.Shape.BoundBox.XMin-10
-        startY= selected.Shape.BoundBox.YMin-10
-        startZ= selected.Shape.BoundBox.ZMin-10
+        startX= selected.Shape.BoundBox.XMin-2
+        startY= selected.Shape.BoundBox.YMin-2
+        startZ= selected.Shape.BoundBox.ZMin
         mywin=win.Fr_CoinWindow()
         Xvectors: List[App.Vector] = []
         Yvectors: List[App.Vector] = []
