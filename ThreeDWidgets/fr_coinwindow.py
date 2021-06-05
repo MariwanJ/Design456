@@ -97,8 +97,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         
     def addSoSwitchToSeneGraph(self, _soSwitch):
         """ Add new switch tree to the SeneGraph"""
-        print(type(_soSwitch))
-        print(_soSwitch)
+        #print(type(_soSwitch))
+        #print(_soSwitch)
         if type(_soSwitch)==list:
             for i in _soSwitch:
                 self.Root_SeneGraph.addChild(i)  # add sen to the root

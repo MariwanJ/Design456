@@ -122,31 +122,33 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
+        if event==FR_EVENTS.FR_NO_EVENT:
+            return
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                           self.w_pick_radius, self.w_widgetCoinNode)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                            self.w_pick_radius, self.w_widgetlblCoinNode)
-            
+                                                            self.w_pick_radius, self.w_widgetlblCoinNode) 
+        
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             print("Double click detected")
             self.take_focus()
             self.do_lblcallback()
             print("lbl callback activated")
+            if clickwdglblNode != None:
+                print("Found wdglblNode")
+                return 1            
+
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
             self.take_focus()
             print("callback activated")
             self.do_callback()
-        
-        if clickwdgdNode != None :
-            print("Found wdgNode")
-            return 1
-        elif clickwdglblNode != None:
-            print("Found wdglblNode")
-            return 1            
-        else:
-            self.remove_focus()
-            return event  # We couldn't use the event .. so return the event itself
+            if clickwdgdNode != None or clickwdglblNode != None:
+                print("Found wdglblNode")
+                return 1            
+        #Don't care events, return the event to other widgets
+        self.remove_focus()
+        return event  # We couldn't use the event .. so return the event itself
 
     def draw(self):
         """
