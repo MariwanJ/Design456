@@ -131,20 +131,20 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
-            print("Double click detected")
-            self.take_focus()
-            self.do_lblcallback()
-            print("lbl callback activated")
             if clickwdglblNode != None:
-                print("Found wdglblNode")
+                print("Double click detected")
+                if not self.has_focus():
+                    self.take_focus()
+                self.do_lblcallback()
+                print("lbl callback activated")
                 return 1            
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            self.take_focus()
-            print("callback activated")
-            self.do_callback()
             if clickwdgdNode != None or clickwdglblNode != None:
-                print("Found wdglblNode")
+                if not self.has_focus():
+                    self.take_focus()
+                print("callback activated")
+                self.do_callback()
                 return 1            
         #Don't care events, return the event to other widgets
         self.remove_focus()
