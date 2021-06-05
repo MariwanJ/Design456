@@ -127,8 +127,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                           self.w_pick_radius, self.w_widgetCoinNode)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                            self.w_pick_radius, self.w_widgetlblCoinNode) 
-        
+                                                           self.w_pick_radius, self.w_widgetlblCoinNode) 
+        print("-.-.-") 
+        print(self.w_parent.link_to_root_handle.w_lastEvent)
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             if clickwdglblNode != None:
