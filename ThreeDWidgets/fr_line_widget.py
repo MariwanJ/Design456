@@ -128,20 +128,24 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                                                           self.w_pick_radius, self.w_widgetCoinNode)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                            self.w_pick_radius, self.w_widgetlblCoinNode) 
-        print("-.-.-") 
+
         print(self.w_parent.link_to_root_handle.w_lastEvent)
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
+            print(".....") 
+
             if clickwdglblNode != None:
                 print("Double click detected")
-                if not self.has_focus():
-                    self.take_focus()
+                #if not self.has_focus():
+                #    self.take_focus()
                 self.do_lblcallback()
                 print("lbl callback activated")
-                return 1            
+                return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+
             if clickwdgdNode != None or clickwdglblNode != None:
+                print("-.-.-") 
                 if not self.has_focus():
                     self.take_focus()
                 print("callback activated")

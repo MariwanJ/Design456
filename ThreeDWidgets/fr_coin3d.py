@@ -68,7 +68,6 @@ def objectUnderMouse_Coin3d(self, win):
     pass
 # get Object clicked in COIN3D
 
-
 def objectMouseClick_Coin3d(mouse_pos, pick_radius,TargetNode):
     # This section is from DRAFT
     # It must help in finding the correct node
@@ -176,7 +175,7 @@ class root_handle():
                 setTranslation(SbVec3f t) # Sets the relative change in translation since the last translation event.
                 SbRotation getRotation()  #Gets the relative change in rotation since the last rotation event.
             """
-            raise NotImplementedError()  # will not be uses at least now 2021-04-02
+            raise NotImplementedError()  # will not be uses  2021-04-02
 
         elif(self.w_typeofevent == coin.SoLocation2Event):
             """ 2D location events. SoLocation2Event represents 2D location events, for example, mouse move events """
@@ -216,17 +215,14 @@ class root_handle():
             eventState = self.w_get_event.getState()  # pressed down , or it is released
             getButton = self.w_get_event.getButton()
             self.w_lastEvent = constant.FR_EVENTS.FR_NO_EVENT
-
+            print("mouse button event")
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 #detect double click here. COIN3D has no function for that
                 if self.Detect_DblClick()==True:
                     self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
-                #else:
-                #    self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
-            
-            elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH  
-                                  
+                else:
+                    self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH
+
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
         
@@ -299,9 +295,10 @@ class root_handle():
         # elif(_typeofevent == coin.SoGestureEvent):
         # elif(_typeofevent) == coin.SoTouchEvent:
         # elif(_typeofevent) == coin.SoTrackerEvent:
-    def Detect_DblClick(self):      
+    
+    def Detect_DblClick(self):
         t = time.time()
-        if t - self.w_clicked_time <= 0.45:   # suitable value must be found
+        if t - self.w_clicked_time <= 0.500:   # suitable value must be found 500msec is windows default
             self.w_countMouseCLICK += 1
         else:
             self.w_countMouseCLICK = 0
