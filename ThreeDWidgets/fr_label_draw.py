@@ -53,27 +53,23 @@ def calculateLineSpherical(vectors):
     r=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
     factor=0
     if p2.x>0 and p2.y>0:          #+X+Y
-        factor=0
-    elif p2.x>0 and p2.y<0:        #+X-Y
-        factor=math.radians(270)
-    elif p2.x<0 and p2.y<0 :       #-X -Y
-        factor=math.radians(180)
-    elif p2.x<0 and p2.y>0 :       #-X +Y
-        factor=math.radians(90)
+        if px2_px1==0:
+            thi=math.radians(270)
+        elif py2_py1==0:
+            pass
+        elif px2_px1<0:             #px1 is grater than px2
+            pass
+        elif py2_py1<0:             #py1 is grater than py2 
+            pass
+        else:   
+            thi=(math.atan(py2_py1/px2_px1))
 
-    if(px2_px1==0):
-        if(p2.y <0):
-            thi=math.radians(180)    
-        else:
-            thi=math.radians(90)
-    else: 
-        thi=abs(math.atan(py2_py1/px2_px1))
+
     if(pz2_pz1==0):
         phi=math.radians(0)
         factor=0
     else: 
         phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)))
-    thi=thi + factor
     return (r,thi,phi)
 
 # todo FIXME
