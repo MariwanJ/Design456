@@ -40,12 +40,14 @@ from typing import List
 
 class Fr_Polygon(fr_widget.Fr_Widget):
     # def __init__(self, args:fr_widget.VECTOR=[],l=""):
+    
     def __init__(self, args: List[App.Vector] = [], label: str = "",lineWidth=1):
         if args == None:
             args = []
+        super().__init__(args, label)
         self.WidgetType = constant.FR_WidgetType.FR_EDGE
         self.w_lineWidth = lineWidth  # default line width
-        super().__init__(args, label)
+
 
     def Activated(self):
         raise NotImplementedError()
