@@ -39,13 +39,13 @@ from typing import List
 import time 
 import Design456Init
 
-def callback(userData):
+def smartLinecallback(userData):
     """
         Calback when line is clicked
     """
     print("callback")
     
-def lbl_callback(userData=None):
+def smartlbl_callback(userData=None):
     """
         callback when label is double clicked
     """
@@ -59,10 +59,8 @@ def lbl_callback(userData=None):
 class smartLines(wlin.Fr_Line_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
         super().__init__(vectors, label,lineWidth)     #Must be done first as described in fr_line_widget
-        self.w_lbl_calback_=None
-        self.w_callback_=None
-        self.w_lbl_calback_=lbl_callback
-        self.w_callback_=callback
+        self.w_lbl_calback_=smartlbl_callback
+        self.w_callback_=smartLinecallback
        
 class Design456_SmartScale:
 
