@@ -48,7 +48,7 @@ def defaultCallback(Userdata):
 
 class Fr_Widget (object):
     """
-    Abstract Base class used to create all Widgets
+    Abstract Base class used to create all Widget.
     You need to subclass this object 
     to be able to create any widget,
     and you should always have a Fr_Group 
