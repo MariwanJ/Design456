@@ -346,61 +346,55 @@ class Fr_Widget (object):
         """
         return self.w_when
     
-
     def addSeneNodes(self,_Value):
-        if type(_Value)==list:
-            for i in _Value:
-                self.w_wdgsoSwitch.addChild(i)
-        else:
-            self.w_wdgsoSwitch.addChild(_Value)
+        """ Keep seneNodes in the fr_xxx object in the w_widgetCoinNode variable """
         self.w_widgetCoinNode=_Value
-        self.addSoNodeToSoSwitch(_Value)
 
     def addSeneNodeslbl(self,_list):
-        """ Switch didn't work for label. We will added to senegraph directly""" 
+        """ Keep the Label seneNodes in the fr_xxx object in the w_widgetlblCoinNode variable""" 
         self.w_widgetlblCoinNode=_list
-        if type(_list)==list:
-            for i in _list:
-                self.w_parent.addSoSwitchToSeneGraph(i)
-        else:
-            self.w_parent.addSoSwitchToSeneGraph(_list)
-
-    def removeSeneNodes(self):
-        """ Remove SeneNodes children and itself"""
-        if len(self.w_widgetCoinNode)!=0:
-            if(type(self.w_widgetCoinNode)==list):
-                for i in self.w_widgetCoinNode: 
-                    del (i)
-            else:
-                del ( self.w_widgetCoinNode)
-        if self.w_widgetlblCoinNode!=None:
-            if len(self.w_widgetlblCoinNode)!=0:
-                for i in self.w_widgetlblCoinNode: 
-                    del i 
 
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
-        to the switch. The switch should be able to hide/visible them by a command
+        to the switch. The switch should be able to show/hide them by a command
         """
+        if self.w_wdgsoSwitch==None :
+            self.w_wdgsoSwitch=coin. coin.SoSwitch()
+            self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+
         if type(listOfSoSeparator)==list:
             for i in listOfSoSeparator:
                 self.w_wdgsoSwitch.addChild(i)
         else:
             self.w_wdgsoSwitch.addChild(listOfSoSeparator)
-            
+
         # Add the switch to the SeneGrap
         self.w_parent.addSoSwitchToSeneGraph(self.w_wdgsoSwitch)
-        
-        
+  
+    def removeSeneNodes(self):
+        """ Remove SeneNodes and their children """
+        try:
+            self.w_widgetCoinNode.removeAllChildren()
+            self.w_widgetlblCoinNode.removeAllChildren()
+            del self.w_widgetCoinNode
+            del self.w_widgetlblCoinNode
+            self.w_widgetCoinNode=None
+            self.w_widgetlblCoinNode=None
+        except Exception as err:
+            App.Console.PrintError("'Remove SeneNodes' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+              
     def removeSoNodeFromSoSwitch(self):
         """
-            Remove the children from the widgetCOINnode which is the soseparators
+            Remove the children from the widget COIN3D node which is the soseparators
             i.e. all drawing, color ..etc for the widget 
         """
         self.w_wdgsoSwitch.removeAllChildren()
-        
-        
-    
+
+
 #********************************************************************************************************
 from dataclasses import dataclass
 

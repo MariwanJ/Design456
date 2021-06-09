@@ -56,11 +56,11 @@ def calculateLineSpherical(vectors):
         if px2_px1==0:
             thi=math.radians(270)
         elif py2_py1==0:
-            thi=math.radians(0)
+            thi=math.radians(180)
         elif px2_px1<0:             #px1 is grater than px2
-            thi=math.radians(0)
+            thi=math.radians(180)
         elif py2_py1<0:             #py1 is grater than py2 
-            thi=math.radians(0)
+            thi=math.radians(180)
         else:   
             thi=(math.atan(py2_py1/px2_px1))
 

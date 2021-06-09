@@ -496,7 +496,7 @@ class SelectTopFace:
 
 #TODO: Transparent dialog? how to? 
 class GetInputValue:
-    def __init__(self,defaultValue):
+    def __init__(self,defaultValue=0.0):
         self.value=defaultValue
         pass
     """
