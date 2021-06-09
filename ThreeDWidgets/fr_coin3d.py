@@ -45,7 +45,9 @@ import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 from ThreeDWidgets import constant
+from ThreeDWidgets.constant import FR_EVENTS
 from dataclasses import dataclass
+
 import time # For double click detection
 
 @dataclass
@@ -94,11 +96,12 @@ def objectMouseClick_Coin3d(mouse_pos, pick_radius,TargetNode):
                 return (path.getNode(path.findNode(TargetNode)))  #Not sure if we need it #TODO should we return only true?
     else:
         return None
-
-class root_handle():
+    
+#TODO: At the moment, we implement only root_handle for COIN3D, the rest must be implemented later
+class root_handle(): 
     """
-        The most critical part of the widgets. This will take care of 
-        translating the events from COIN3D to our system.
+        The most critical part of the widgets system. 
+        This will take care of translating the events from COIN3D to our system.
         Both QT and COIN3D windows will call this function.
         But they will be treated differently as they are different.
     """
@@ -124,15 +127,15 @@ class root_handle():
     global w_wind
     
     def __init__(self):
-        self.w_lastEvent = constant.FR_EVENTS.FR_NO_EVENT
+        self.w_lastEvent = FR_EVENTS.FR_NO_EVENT
         self.w_lastEventXYZ = mouseDimension()
         self.w_view = Gui.ActiveDocument.ActiveView
         self.w_wind = None
         self.addCallbacks()
         self.w_countMouseCLICK=0
         self.w_clicked_time=0
+    
     # COIN3D related functions - START
-
     def shiftwasclicked(self):
         """
         if shift was pushed but not released this function will return TRUE
@@ -187,7 +190,13 @@ class root_handle():
             self.w_lastEventXYZ.Coin_z = pnt.z
             self.w_lastEventXYZ.Qt_x = pos[0]
             self.w_lastEventXYZ.Qt_y = pos[1]
-
+            if(self.w_lastEvent==FR_EVENTS.FR_MOUSE_LEFT_PUSH or self.w_lastEvent==FR_EVENTS.FR_MOUSE_DRAG):
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
+            else:
+                self.w_lastEvent=FR_EVENTS.FR_MOUSE_MOVE
+                
+            
+            
         # Doesn't work, don't know why
         # elif(_typeofevent == coin.SoMouseWheelEvent):
         #   """  Mouse wheel events. SoMouseWheelEvent represents a change in
@@ -214,28 +223,27 @@ class root_handle():
             """
             eventState = self.w_get_event.getState()  # pressed down , or it is released
             getButton = self.w_get_event.getButton()
-            self.w_lastEvent = constant.FR_EVENTS.FR_NO_EVENT
+            self.w_lastEvent = FR_EVENTS.FR_NO_EVENT
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 #detect double click here. COIN3D has no function for that
                 if self.Detect_DblClick()==True:
-                    self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
+                    self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
                 else:
-                    self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_PUSH
+                    self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_PUSH
 
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_LEFT_RELEASE
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_RELEASE
         
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
-                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_RIGHT_PUSH
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_PUSH
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON2:
-                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
         
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON3:
-                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
-                self.w_lastEvent = constant.FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
-            self.w_wind.handle(self.w_lastEvent)
-
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
+           
         # Take care of Keyboard events
         elif (self.w_typeofevent == coin.SoKeyboardEvent):
             """
@@ -294,7 +302,11 @@ class root_handle():
         # elif(_typeofevent == coin.SoGestureEvent):
         # elif(_typeofevent) == coin.SoTouchEvent:
         # elif(_typeofevent) == coin.SoTrackerEvent:
-    
+        
+        
+        #Now send the event to th window widget to ditribute it over the children widgets
+        self.w_wind.handle(self.w_lastEvent)
+
     def Detect_DblClick(self):
         t = time.time()
         if t - self.w_clicked_time <= 0.500:   # suitable value must be found 500msec is windows default
