@@ -95,19 +95,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         self.exitFr_Window()
         
-    def addSoSwitchToSeneGraph(self, _soSwitch):
-        """ Add new switch tree to the SeneGraph"""
-        #print(type(_soSwitch))
-        #print(_soSwitch)
-        if type(_soSwitch)==list:
-            for i in _soSwitch:
-                self.Root_SeneGraph.addChild(i)  # add sen to the root
-        else:
-            self.Root_SeneGraph.addChild(_soSwitch)
-        
-
     # Remove the switches and their children.
-    def removeSoSwitch(self, _soSwitch):
+    def removeSoSwitchFromSeneGraph(self, _soSwitch):
         """ remove switch tree from the SeneGraph"""
         if type(_soSwitch)==list:
             for i in _soSwitch:
@@ -144,3 +133,14 @@ class Fr_CoinWindow(fr_group.Fr_Group):
                 elif widg.w_widgetType ==FR_WidgetType.FR_EDGE:
                     self.w_children.append(widg)
                     widg.parent(self)           #Save a link to parent in the widget
+
+    def addSoSwitchToSeneGraph(self, _soSwitch):
+        """ Add new switch tree to the SeneGraph"""
+        #print(type(_soSwitch))
+        #print(_soSwitch)
+        if type(_soSwitch)==list:
+            for i in _soSwitch:
+                self.Root_SeneGraph.addChild(i)  # add sen to the root
+        else:
+            self.Root_SeneGraph.addChild(_soSwitch)
+        

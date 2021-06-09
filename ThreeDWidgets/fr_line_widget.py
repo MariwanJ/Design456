@@ -133,7 +133,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                            self.w_pick_radius, self.w_widgetlblCoinNode) 
 
-        print(self.w_parent.link_to_root_handle.w_lastEvent)
+        #print(self.w_parent.link_to_root_handle.w_lastEvent)
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             print(".....") 
@@ -153,8 +153,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                     self.take_focus()
                 self.do_callback(self.w_userData)
                 return 1            
-        #Don't care events, return the event to other widgets
-        self.remove_focus()
+            else:
+                self.remove_focus()
+        #Don't care events, return the event to other widgets    
         return event  # We couldn't use the event .. so return the event itself
 
     def draw(self):
@@ -181,7 +182,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 _lbl = self.draw_label(usedColor)
 
                 self.addSeneNodeslbl(_lbl)
-                self.addSeneNodes(linedraw)  # Add SoSeparator. Will be added to switch automatically                            
+                self.addSeneNodes(linedraw)
+                
+                #add both to the same switch. and add them to the senegraph automatically
+                self.addSoNodeToSoSwitch(linedraw)
+                self.addSoNodeToSoSwitch(_lbl)
+                
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 
@@ -193,8 +199,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_label(self,usedColor):
-        print("usedcoolor")
-        print(usedColor)
         LabelData = fr_widget.propertyValues()
         LabelData.linewidth = self.w_lineWidth
         LabelData.labelfont = self.w_font
@@ -235,13 +239,18 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         if self.is_visible():
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitch(self.w_wdgsoSwitch)
+            self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+            
+            # Remove the seneNodes from the widget
+            
+            #self.removeSeneNodes()
+            
+            # Remove the node from the switch as a child
+            
+            #self.removeSoNodeFromSoSwitch()
+            
             #Redraw label
             self.lblRedraw()
-            # Remove the seneNodes from the widget
-            self.removeSeneNodes()
-            # Remove the node from the switch as a child
-            self.removeSoNodeFromSoSwitch()
             self.draw()
     
     def lblRedraw(self):

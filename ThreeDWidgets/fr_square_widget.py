@@ -195,7 +195,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitch(self.w_wdgsoSwitch)
+            self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
             self.draw()
 
     def take_focus(self):
