@@ -53,20 +53,48 @@ def smartlbl_callback(userData=None):
     newValue=0
     newValue=faced.GetInputValue().getDoubleValue()
     if newValue==0:
-    #User canceled the value
-        pass
-class smartLines(wlin.Fr_Line_Widget):
+        #User canceled the value
+        return
     
+    #clone the object
+    if userData==None:
+        # Only one object must be selected
+        errMessage = "Select an object to scale"
+        faced.getInfo().errorDialog(errMessage)
+    return
+    #TODO : FIXME - CONTINUE DEVELOPING THIS
+    cloneObj = Draft.clone([userData], forcedraft=True)
+    #scaled_list = scale(objectslist, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
+    scaleX=1
+    scaleY=10
+    scaleZ=1
+    scaled_list = scale(userData, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
+    userData.visible=True
+
+
+class smartLines(wlin.Fr_Line_Widget):
+    """
+        A subclass of fr_line_widget used to show 
+        the length,width and height of the selected
+        object for scaling. 
+    """
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
         super().__init__(vectors, label,lineWidth)     #Must be done first as described in fr_line_widget
         self.w_lbl_calback_=smartlbl_callback
         self.w_callback_=smartLinecallback
+        self.targetObject=None
+            
+    def do_callback(self ):
+        """ Do widget callback"""
+        self.w_callback_(self.targetObject)
         
-    def do_callback(self, data):
-        self.w_callback_(data)
-        
-    def do_lblcallback(self, data):
-        self.w_lbl_calback_(data)
+    def do_lblcallback(self):
+        """ Do label callaback"""
+        self.w_lbl_calback_(self.targetObject)
+
+    def set_target(self,target):
+        """ Set target object"""
+        self.targetObject=target
 
 class Design456_SmartScale:
 
@@ -104,6 +132,11 @@ class Design456_SmartScale:
         smartInd.append(smartLines(Xvectors,str(lengthX),5))
         smartInd.append(smartLines(Yvectors,str(lengthY),5))
         smartInd.append(smartLines(Zvectors,str(lengthZ),5))
+        
+        #set selected object to each smartline 
+        for smartline in smartInd:
+            smartline.set_target(selected)
+            
         mywin.addWidget(smartInd)
         mywin.show()                
         
