@@ -127,7 +127,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         event. Window object is responsible for distributing the events.
         """
         if event==FR_EVENTS.FR_NO_EVENT:
-            return
+            return 1    # we treat this event. Nonthing to do 
+        
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                           self.w_pick_radius, self.w_widgetCoinNode)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
@@ -156,7 +157,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             else:
                 self.remove_focus()
         #Don't care events, return the event to other widgets    
-        return event  # We couldn't use the event .. so return the event itself
+        return 0  # We couldn't use the event .. so return 0 
 
     def draw(self):
         """
@@ -181,12 +182,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 linedraw = fr_draw.draw_line(p1, p2, usedColor, self.w_lineWidth)
                 _lbl = self.draw_label(usedColor)
 
-                self.addSeneNodeslbl(_lbl)
                 self.addSeneNodes(linedraw)
+                self.addSeneNodeslbl(_lbl)
                 
                 #add both to the same switch. and add them to the senegraph automatically
-                self.addSoNodeToSoSwitch(linedraw)
-                self.addSoNodeToSoSwitch(_lbl)
+                self.addSoNodeToSoSwitch(self.w_widgetCoinNode)
+                self.addSoNodeToSoSwitch(self.w_widgetlblCoinNode)
                 
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
@@ -264,6 +265,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self.w_hasFocus == 1:
             return  # nothing to do here
         self.w_hasFocus = 1
+        print("take focus")
         self.redraw()
 
     def activate(self):

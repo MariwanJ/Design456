@@ -107,5 +107,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         """
         for wdg in self.w_children:
             if (wdg.is_active() and wdg.is_visible() and wdg.w_widgetType != constant.FR_WidgetType.FR_WIDGET):
-                if wdg.handle(events) == 1:
-                    break
+                results= wdg.handle(events)
+                if type(results)== int:
+                    if results== 1:
+                        break
