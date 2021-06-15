@@ -40,7 +40,7 @@ from dataclasses import dataclass
 from typing import List
 from abc import abstractmethod
 
-def defaultCallback(Userdata):
+def defaultCallback(selfObj,Userdata):
     """
     Dummy callback. This should be overdriven to call the real callback
     """
@@ -76,7 +76,7 @@ class Fr_Widget (object):
     w_hasFocus = 0           # 0 No focus , 1 Focus
     w_font='sans'
     w_fontsize=4
-    w_pick_radius = 25  # See if this must be a parameter in the GUI /Mariwan
+    w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
     w_widgetCoinNode = None     #Should be defined in the widget either one or a list
     w_widgetlblCoinNode = None  #Should be defined in the widget either one or a list
     # each node is a child of one switch, Add drawings a children for this switch
@@ -307,7 +307,7 @@ class Fr_Widget (object):
         should be implemented by the widget you create
         """
         try:
-            self.w_callback_(data)
+            self.w_callback_(self,data)
 
         except Exception as err:
             App.Console.PrintError("'callback' Failed. "
@@ -353,7 +353,8 @@ class Fr_Widget (object):
     def addSeneNodeslbl(self,_list):
         """ Keep the Label seneNodes in the fr_xxx object in the w_widgetlblCoinNode variable""" 
         self.w_widgetlblCoinNode=_list
-
+        
+    #todo: Do we need an argument here? as we should add w_widgetCoinNode and w_widgetlblCoinNode
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
         to the switch. The switch should be able to show/hide them by a command

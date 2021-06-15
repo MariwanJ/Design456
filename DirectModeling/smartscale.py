@@ -28,7 +28,8 @@ from __future__ import unicode_literals
 import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
-
+import Draft
+import Part
 from pivy import coin
 import FACE_D as faced
 import math as _math
@@ -39,13 +40,13 @@ from typing import List
 import time 
 import Design456Init
 
-def smartLinecallback(userData=None):
+def smartLinecallback(smartLine,obj):
     """
         Calback when line is clicked
     """
-    print("callback")
+    print("callback")   
     
-def smartlbl_callback(userData=None):
+def smartlbl_callback(smartLine,obj):
     """
         callback when label is double clicked
     """
@@ -57,20 +58,42 @@ def smartlbl_callback(userData=None):
         return
     
     #clone the object
-    if userData==None:
+    print(obj.Name)
+    if obj==None:
         # Only one object must be selected
         errMessage = "Select an object to scale"
         faced.getInfo().errorDialog(errMessage)
-    return
+        return
     #TODO : FIXME - CONTINUE DEVELOPING THIS
-    cloneObj = Draft.clone([userData], forcedraft=True)
+    cloneObj = Draft.clone([obj], forcedraft=True)
     #scaled_list = scale(objectslist, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
     scaleX=1
-    scaleY=10
-    scaleZ=1
-    scaled_list = scale(userData, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
-    userData.visible=True
-
+    scaleY=1
+    scaleZ=1    
+    p1=smartLine.w_vector[0]
+    p2=smartLine.w_vector[1]
+    deltaX=p2.x-p1.x
+    deltaY= p2.y-p1.y
+    deltaZ=p2.z-p1.z
+    print(p1)
+    print(p2)
+    if deltaX==0 and deltaZ==0:
+        scaleY=newValue
+    elif deltaY==0.0 and deltaZ==0.0:
+        scaleX=newValue
+    elif deltaY==0.0 and deltaZ==0.0 and deltaZ!=0.0:
+        scaleZ=newValue
+    cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
+    cloneObj.Placement=obj.Placement
+    
+    obj.Visibility=False
+    App.ActiveDocument.recompute()
+    _name=obj.Label
+    obj.Label=obj.Label+"old"
+    __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
+    App.ActiveDocument.addObject('Part::Feature',_name).Shape=__shape
+    App.ActiveDocument.removeObject(obj.Name)
+    App.ActiveDocument.removeObject(cloneObj.Name)
 
 class smartLines(wlin.Fr_Line_Widget):
     """
@@ -84,16 +107,18 @@ class smartLines(wlin.Fr_Line_Widget):
         self.w_callback_=smartLinecallback
         self.targetObject=None
             
-    def do_callback(self ):
+    def do_callback(self,userdata=None ):
         """ Do widget callback"""
-        self.w_callback_(self.targetObject)
+        self.w_callback_(self,self.targetObject)
         
-    def do_lblcallback(self):
+    def do_lblcallback(self,userdat=None):
         """ Do label callaback"""
-        self.w_lbl_calback_(self.targetObject)
+        self.w_lbl_calback_(self,self.targetObject)
 
     def set_target(self,target):
         """ Set target object"""
+        print("target")
+        print(target.Name)
         self.targetObject=target
 
 class Design456_SmartScale:
