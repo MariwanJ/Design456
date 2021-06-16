@@ -126,8 +126,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        if event==FR_EVENTS.FR_NO_EVENT:
-            return 1    # we treat this event. Nonthing to do 
+        if type(event)==int:
+            if event==FR_EVENTS.FR_NO_EVENT:
+                return 1    # we treat this event. Nonthing to do 
         
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                           self.w_pick_radius, self.w_widgetCoinNode)
