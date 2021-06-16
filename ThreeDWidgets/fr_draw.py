@@ -116,6 +116,7 @@ def draw_line(p1, p2, color, LineWidth):
         line.vertexProperty = v
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
+        style.drawstyle=coin.SoDrawStyle.FILLED       #Drawing style could be FILLED,LINE, POINTS
         so_separator.addChild(style)
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = color

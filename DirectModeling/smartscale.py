@@ -40,13 +40,13 @@ from typing import List
 import time 
 import Design456Init
 
-def smartLinecallback(smartLine,obj):
+def smartLinecallback(smartLine,obj,parent):
     """
         Calback when line is clicked
     """
     print("callback")   
     
-def smartlbl_callback(smartLine,obj):
+def smartlbl_callback(smartLine,obj,parent):
     """
         callback when label is double clicked
     """
@@ -58,14 +58,15 @@ def smartlbl_callback(smartLine,obj):
         return
     
     #clone the object
-    print(obj.Name)
     if obj==None:
         # Only one object must be selected
         errMessage = "Select an object to scale"
         faced.getInfo().errorDialog(errMessage)
+        print(obj.Name)
         return
+    
     #TODO : FIXME - CONTINUE DEVELOPING THIS
-    cloneObj = Draft.clone([obj], forcedraft=True)
+    cloneObj = Draft.clone(obj, forcedraft=True)
     #scaled_list = scale(objectslist, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
     scaleX=1
     scaleY=1
@@ -91,9 +92,14 @@ def smartlbl_callback(smartLine,obj):
     _name=obj.Label
     obj.Label=obj.Label+"old"
     __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
-    App.ActiveDocument.addObject('Part::Feature',_name).Shape=__shape
+    _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
+    _simpleCopy.Shape=__shape
     App.ActiveDocument.removeObject(obj.Name)
     App.ActiveDocument.removeObject(cloneObj.Name)
+    Gui.Selection.clearSelection()
+    Gui.Selection.addSelection(_simpleCopy.Name)
+    if parent!=None:
+        parent.reCreateThisObject()   # Rerun the original command with new dimensions
 
 class smartLines(wlin.Fr_Line_Widget):
     """
@@ -101,19 +107,20 @@ class smartLines(wlin.Fr_Line_Widget):
         the length,width and height of the selected
         object for scaling. 
     """
-    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
+    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1,linkToParent=None):
         super().__init__(vectors, label,lineWidth)     #Must be done first as described in fr_line_widget
         self.w_lbl_calback_=smartlbl_callback
         self.w_callback_=smartLinecallback
         self.targetObject=None
+        self._parentLink=linkToParent  #this hold the command class. used to reproduce the whole object.
             
     def do_callback(self,userdata=None ):
         """ Do widget callback"""
-        self.w_callback_(self,self.targetObject)
+        self.w_callback_(self,self.targetObject,self._parentLink)
         
     def do_lblcallback(self,userdat=None):
         """ Do label callaback"""
-        self.w_lbl_calback_(self,self.targetObject)
+        self.w_lbl_calback_(self,self.targetObject,self._parentLink)
 
     def set_target(self,target):
         """ Set target object"""
@@ -122,7 +129,7 @@ class smartLines(wlin.Fr_Line_Widget):
         self.targetObject=target
 
 class Design456_SmartScale:
-
+    mywin=None
     def getXYZdimOfSelectedObject(self,selected):
         #Max object length in all directions
         smartInd=[]
@@ -139,7 +146,14 @@ class Design456_SmartScale:
         startX= selected.Shape.BoundBox.XMin-2
         startY= selected.Shape.BoundBox.YMin-2
         startZ= selected.Shape.BoundBox.ZMin
-        mywin=win.Fr_CoinWindow()
+        if self.mywin!=None :
+            try: 
+                del self.mywin
+                self.mywin=None
+            except:
+                self.mywin=None
+        
+        self.mywin=win.Fr_CoinWindow()
         Xvectors: List[App.Vector] = []
         Yvectors: List[App.Vector] = []
         Zvectors: List[App.Vector] = []
@@ -162,8 +176,8 @@ class Design456_SmartScale:
         for smartline in smartInd:
             smartline.set_target(selected)
             
-        mywin.addWidget(smartInd)
-        mywin.show()                
+        self.mywin.addWidget(smartInd)
+        self.mywin.show()                
         
     def Activated(self):
         try:
@@ -178,7 +192,6 @@ class Design456_SmartScale:
             resu=wait.Activated()
             #while resu.isVisible:
             #    time.sleep(0.1)
-
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
@@ -186,6 +199,15 @@ class Design456_SmartScale:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+
+    def reCreateThisObject(self,selObj=None):
+        for i in self.smartInd:
+            i.destructor()
+            del i
+        Gui.Selection.clearSelection()
+        if selObj!=None:
+            Gui.Selection.addSelection(selObj.Name)
+            self.Activated()
 
     def GetResources(self):
         return {
