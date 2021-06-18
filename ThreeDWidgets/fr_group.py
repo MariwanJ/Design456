@@ -88,7 +88,7 @@ class Fr_Group(fr_widget.Fr_Widget):
             for widget in self.w_children:
                 # Remove objects in the Root_SeneGraph
                 self.removeSeneNode(widget.w_wdgsoSwitch)
-                self.removeSeneNode(widget.w_widgetCoinNode)
+                self.removeSeneNode(widget.w_widgetSoNodes)
                 # Remove the widget itself from the group
                 del widget
             del self.w_children

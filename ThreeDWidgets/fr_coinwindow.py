@@ -89,7 +89,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         self.draw()
 
-    def deactivate(self):
+    def Deactivate(self):
         """
         Like exit in normal window. This will end the windows
         """
