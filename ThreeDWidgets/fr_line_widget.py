@@ -285,11 +285,14 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def destructor(self):
         """
         This will remove the widget totally. 
-        """
+        """        
+        if self.parent!=None:
+            self.parent.removeWidget(self)  # Parent should be the windows widget.
         self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
         self.removeSoNodeFromSoSwitch()
         self.removeSoNodes()
-        self.removeSoSwitch()
+        self.removeSoSwitch()        
+
 
     def hide(self):
         if self.w_visible == 0:
