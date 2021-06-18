@@ -131,15 +131,13 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 return 1    # we treat this event. Nonthing to do 
         
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                          self.w_pick_radius, self.w_widgetCoinNode)
+                                                          self.w_pick_radius, self.w_widgetSoNodes)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                           self.w_pick_radius, self.w_widgetlblCoinNode) 
+                                                           self.w_pick_radius, self.w_widgetlblSoNodes) 
 
         #print(self.w_parent.link_to_root_handle.w_lastEvent)
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
-            print(".....") 
-
             if clickwdglblNode != None:
                 print("Double click detected")
                 #if not self.has_focus():
@@ -183,12 +181,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 linedraw = fr_draw.draw_line(p1, p2, usedColor, self.w_lineWidth)
                 _lbl = self.draw_label(usedColor)
 
-                self.addSeneNodes(linedraw)
-                self.addSeneNodeslbl(_lbl)
+                self.saveSoNodesToWidget(linedraw)
+                self.saveSoNodeslblToWidget(_lbl)
                 
                 #add both to the same switch. and add them to the senegraph automatically
-                self.addSoNodeToSoSwitch(self.w_widgetCoinNode)
-                self.addSoNodeToSoSwitch(self.w_widgetlblCoinNode)
+                self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
+                self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
                 
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
@@ -209,7 +207,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         LabelData.vectors = self.w_vector
         LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label(self.w_label, LabelData)
-        self.w_widgetlblCoinNode = lbl
+        self.w_widgetlblSoNodes = lbl
         return lbl
 
     def move(self, newVecPos):
@@ -245,7 +243,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             
             # Remove the seneNodes from the widget
             
-            #self.removeSeneNodes()
+            #self.removeSoNodes()
             
             # Remove the node from the switch as a child
             
@@ -256,7 +254,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             self.draw()
     
     def lblRedraw(self):
-        self.w_widgetlblCoinNode.removeAllChildren()
+        if(self.w_widgetlblSoNodes!=None):
+            self.w_widgetlblSoNodes.removeAllChildren()
         
     
     def take_focus(self):
@@ -287,7 +286,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         This will remove the widget totally. 
         """
-        self.removeSeneNodes()
+        self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+        self.removeSoNodeFromSoSwitch()
+        self.removeSoNodes()
+        self.removeSoSwitch()
 
     def hide(self):
         if self.w_visible == 0:

@@ -77,8 +77,8 @@ class Fr_Widget (object):
     w_font='sans'
     w_fontsize=4
     w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
-    w_widgetCoinNode = None     #Should be defined in the widget either one or a list
-    w_widgetlblCoinNode = None  #Should be defined in the widget either one or a list
+    w_widgetSoNodes = None     #Should be defined in the widget either one or a list
+    w_widgetlblSoNodes = None  #Should be defined in the widget either one or a list
     # each node is a child of one switch, Add drawings a children for this switch
     w_wdgsoSwitch = coin.SoSwitch()        
     w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
@@ -208,7 +208,7 @@ class Fr_Widget (object):
         """
         This will remove the widget totally. 
         """
-        self.removeSeneNodes()
+        self.removeSoNodes()
     
     #@property 
     def is_active(self):
@@ -346,21 +346,21 @@ class Fr_Widget (object):
         """
         return self.w_when
     
-    def addSeneNodes(self,_Value):
-        """ Keep seneNodes in the fr_xxx object in the w_widgetCoinNode variable """
-        self.w_widgetCoinNode=_Value
+    def saveSoNodesToWidget(self,_Value):
+        """ Keep seneNodes in the fr_xxx object in the w_widgetSoNodes variable """
+        self.w_widgetSoNodes=_Value
 
-    def addSeneNodeslbl(self,_list):
-        """ Keep the Label seneNodes in the fr_xxx object in the w_widgetlblCoinNode variable""" 
-        self.w_widgetlblCoinNode=_list
+    def saveSoNodeslblToWidget(self,_list):
+        """ Keep the Label seneNodes in the fr_xxx object in the w_widgetlblSoNodes variable""" 
+        self.w_widgetlblSoNodes=_list
         
-    #todo: Do we need an argument here? as we should add w_widgetCoinNode and w_widgetlblCoinNode
+    #todo: Do we need an argument here? as we should add w_widgetSoNodes and w_widgetlblSoNodes
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
         to the switch. The switch should be able to show/hide them by a command
         """
         if self.w_wdgsoSwitch==None :
-            self.w_wdgsoSwitch=coin. coin.SoSwitch()
+            self.w_wdgsoSwitch=coin.SoSwitch()
             self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
 
         if type(listOfSoSeparator)==list:
@@ -372,15 +372,16 @@ class Fr_Widget (object):
         # Add the switch to the SeneGrap
         self.w_parent.addSoSwitchToSeneGraph(self.w_wdgsoSwitch)
   
-    def removeSeneNodes(self):
-        """ Remove SeneNodes and their children """
+    def removeSoNodes(self):
+        """ Remove CoinNodes and their children """
         try:
-            self.w_widgetCoinNode.removeAllChildren()
-            self.w_widgetlblCoinNode.removeAllChildren()
-            del self.w_widgetCoinNode
-            del self.w_widgetlblCoinNode
-            self.w_widgetCoinNode=None
-            self.w_widgetlblCoinNode=None
+            self.w_widgetSoNodes.removeAllChildren()
+            self.w_widgetlblSoNodes.removeAllChildren()
+            del self.w_widgetSoNodes
+            del self.w_widgetlblSoNodes
+            self.w_widgetSoNodes=None
+            self.w_widgetlblSoNodes=None
+
         except Exception as err:
             App.Console.PrintError("'Remove SeneNodes' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -395,7 +396,10 @@ class Fr_Widget (object):
         """
         self.w_wdgsoSwitch.removeAllChildren()
 
-
+    def removeSoSwitch(Self):
+        del Self.w_wdgsoSwitch
+        Self.w_wdgsoSwitch=None
+        
 #********************************************************************************************************
 from dataclasses import dataclass
 

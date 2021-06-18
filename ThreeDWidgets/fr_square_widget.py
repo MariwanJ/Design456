@@ -99,9 +99,9 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetCoinNode)
+                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetSoNodes)
             clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblCoinNode)
+                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblSoNodes)
 
             if clickwdgdNode != None or clickwdglblNode != None:
                 self.take_focus()
@@ -135,9 +135,9 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
                 square = fr_draw.draw_square_frame(self.w_vector, usedColor, self.w_lineWidth)
                 _lbl = self.draw_label()
 
-                self.addSeneNodeslbl(_lbl)
+                self.saveSoNodeslblToWidget(_lbl)
             for i in range(0,4):
-                self.addSeneNodes(square[i])  # Add SoSeparator. Will be added to switch automatically                            
+                self.saveSoNodesToWidget(square[i])  # Add SoSeparator. Will be added to switch automatically                            
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
         except Exception as err:
@@ -161,7 +161,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         LabelData.vectors = firstTwoVerticies
         LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label(self.w_label, LabelData)
-        self.w_widgetlblCoinNode = lbl
+        self.w_widgetlblSoNodes = lbl
         return lbl
     
     def move(self, newVecPos):
@@ -191,7 +191,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """
         if self.is_visible():
             # Remove the seneNodes from the widget
-            self.removeSeneNodes()
+            self.removeSoNodes()
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
             # Remove the SoSwitch from fr_coinwindo
@@ -225,7 +225,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """
         This will remove the widget totally. 
         """
-        self.removeSeneNodes()
+        self.removeSoNodes()
 
     def is_active(self):
         return self.w_active
