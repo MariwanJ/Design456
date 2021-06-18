@@ -244,7 +244,7 @@ class Design456_SmartScale:
             if selObj!=None:
                 print("Creating the smart_scale object")
                 Gui.Selection.addSelection(selObj)
-                self.Activated()
+                # self.Activated()
 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
