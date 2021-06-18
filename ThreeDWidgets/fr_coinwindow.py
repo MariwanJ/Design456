@@ -118,22 +118,27 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         if type(widg)==list:
             for widgets in widg:
-                if widgets.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
-                    # For line widgets are included.
-                    self.w_children.append(widgets)
-                    widgets.parent(self)           #Save a link to parent in the widget
-                elif widgets.w_widgetType ==FR_WidgetType.FR_EDGE:
-                    self.w_children.append(widgets)
-                    widgets.parent(self)           #Save a link to parent in the widget
+                # For line widgets are included.
+                self.w_children.append(widgets)
+                widgets.parent(self)      #Save a link to parent in the widget
         else:
-                if widg.w_widgetType ==FR_WidgetType.FR_SQUARE_FRAME:
-                    # For line widgets are included.
-                    self.w_children.append(widg)
-                    widg.parent(self)           #Save a link to parent in the widget
-                elif widg.w_widgetType ==FR_WidgetType.FR_EDGE:
-                    self.w_children.append(widg)
-                    widg.parent(self)           #Save a link to parent in the widget
+            #Save a link to parent in the widget
+            self.w_children.append(widg)
+            widg.parent(self)             #Save a link to parent in the widget
 
+    def removeWidget(self,widg):
+        """ 
+        Remove the widget from the group. This will eleminates 
+        the widget from getting events.        
+        """
+        if type(widg)==list:
+            for widgets in widg:
+                # For line widgets are included.
+                self.w_children.remove(widgets)
+        else:
+            # For line widgets are included.
+                self.w_children.remove(widg)
+        
     def addSoSwitchToSeneGraph(self, _soSwitch):
         """ Add new switch tree to the SeneGraph"""
         #print(type(_soSwitch))

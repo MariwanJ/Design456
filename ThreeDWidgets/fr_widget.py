@@ -209,7 +209,9 @@ class Fr_Widget (object):
         This will remove the widget totally. 
         """
         self.removeSoNodes()
-    
+        if self.parent!=None:
+            self.parent.removeWidget(self)  # Parent should be the windows widget. 
+
     #@property 
     def is_active(self):
         return self.w_active
@@ -289,7 +291,7 @@ class Fr_Widget (object):
         """
         try:
             self.w_lbl_calback_(data)
-            
+
         except Exception as err:
             App.Console.PrintError("'lblcallback' Failed. "
                                    "{err}\n".format(err=str(err)))
