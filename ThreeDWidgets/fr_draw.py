@@ -134,22 +134,22 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 #draw a box
-def draw_box(vertices=[], color=(0.0,0.0,0.0), LineWidth=1):
+def draw_box(Points=[], color=(0.0,0.0,0.0), LineWidth=1):
     """
         Draw any box. This will be the base of all multi-point drawing.
         Curves, and arc is not here.
     """
-    if len(vertices) < 4:
-        raise ValueError('Vertices must be 4')
+    if len(Points) != 6:
+        raise ValueError('Vertices must be 6')
     so_separator = coin.SoSeparator()
     v = coin.SoVertexProperty()
     coords = coin.SoTransform()
-    p1=vertices[0]
-    p2=vertices[1]
-    p3=vertices[2]
-    p4=vertices[3]
-    p5=vertices[4]
-    p6=vertices[5]
+    p1=Points[0]
+    p2=Points[1]
+    p3=Points[2]
+    p4=Points[3]
+    p5=Points[4]
+    p6=Points[5]
     square = coin.SbBox3f(p1, p2, p3, p4, p5, p6)
     square.vertexProperty = v
     style = coin.SoDrawStyle()

@@ -51,55 +51,89 @@ def smartlbl_callback(smartLine,obj,parent):
         callback when label is double clicked
     """
     print("smartline lbl callback")
-    newValue=0
-    newValue=faced.GetInputValue().getDoubleValue()
-    if newValue==0:
-        #User canceled the value
-        return
-    
+ 
+    print(obj)  
+    print(parent)
     #clone the object
-    if obj==None:
-        # Only one object must be selected
-        errMessage = "Select an object to scale"
-        faced.getInfo().errorDialog(errMessage)
-        print(obj.Name)
-        return
-    
-    #TODO : FIXME - CONTINUE DEVELOPING THIS
-    cloneObj = Draft.clone(obj, forcedraft=True)
-    #scaled_list = scale(objectslist, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
-    scaleX=1
-    scaleY=1
-    scaleZ=1    
     p1=smartLine.w_vector[0]
     p2=smartLine.w_vector[1]
     deltaX=p2.x-p1.x
     deltaY= p2.y-p1.y
     deltaZ=p2.z-p1.z
-    print(p1)
-    print(p2)
+    side=None
+    oldv=0.0
     if deltaX==0 and deltaZ==0:
-        scaleY=newValue
+        side= 'y'
+        oldv=deltaY
+        print("scale y axis")
     elif deltaY==0.0 and deltaZ==0.0:
-        scaleX=newValue
-    elif deltaY==0.0 and deltaZ==0.0 and deltaZ!=0.0:
-        scaleZ=newValue
-    cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
-    cloneObj.Placement=obj.Placement
+        side='x'
+        oldv=deltaX
+        print("scale x axis")
+    elif deltaY==0.0 and deltaX==0.0 and deltaZ!=0.0:
+        side='z'
+        oldv=deltaZ
+        print("scale z axis")
+
+    newValue=0
+    newValue=faced.GetInputValue(oldv).getDoubleValue()
+    if newValue==0:
+        #User canceled the value
+        return
     
-    obj.Visibility=False
-    App.ActiveDocument.recompute()
-    _name=obj.Label
-    obj.Label=obj.Label+"old"
-    __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
-    _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
-    _simpleCopy.Shape=__shape
-    App.ActiveDocument.removeObject(obj.Name)
-    App.ActiveDocument.removeObject(cloneObj.Name)
-    Gui.Selection.clearSelection()
-    Gui.Selection.addSelection(_simpleCopy.Name)
-    if parent!=None:
-        parent.reCreateThisObject()   # Rerun the original command with new dimensions
+    if obj==None:
+        # Only one object must be selected
+        errMessage = "Select an object to scale"
+        faced.getInfo().errorDialog(errMessage)
+        return
+    
+    print(obj.Label)
+    cloneObj = Draft.clone(obj, forcedraft=True)
+    #scaled_list = scale(objectslist, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
+    scaleX=1
+    scaleY=1
+    scaleZ=1    
+
+    if side=='y':
+        scaleY=newValue/deltaY
+    elif side=='x':
+        scaleX=newValue/deltaX
+    elif side=='z':
+        scaleZ=newValue/deltaZ
+    else : 
+        print("error")
+    try:
+        cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
+        cloneObj.Placement=obj.Placement
+
+        obj.Visibility=False
+        App.ActiveDocument.recompute()
+        _name=obj.Label
+        obj.Label=obj.Label+"old"
+        __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
+        _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
+        _simpleCopy.Shape=__shape
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.removeObject(obj.Name)
+        App.ActiveDocument.removeObject(cloneObj.Name)
+        Gui.Selection.clearSelection()
+        Gui.Selection.addSelection(_simpleCopy)
+        print("parent")
+        print(parent)
+        App.ActiveDocument.recompute()
+        if parent!=None:
+            print("Re create this object")
+            print(_simpleCopy)
+            parent.reCreateThisObject(_simpleCopy)   # Rerun the original command with new dimensions
+            
+            
+    except Exception as err:
+        App.Console.PrintError("'Design456_SmartScale' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
 
 class smartLines(wlin.Fr_Line_Widget):
     """
@@ -113,7 +147,7 @@ class smartLines(wlin.Fr_Line_Widget):
         self.w_callback_=smartLinecallback
         self.targetObject=None
         self._parentLink=linkToParent  #this hold the command class. used to reproduce the whole object.
-            
+ 
     def do_callback(self,userdata=None ):
         """ Do widget callback"""
         self.w_callback_(self,self.targetObject,self._parentLink)
@@ -130,9 +164,10 @@ class smartLines(wlin.Fr_Line_Widget):
 
 class Design456_SmartScale:
     mywin=None
+    smartInd=[]
     def getXYZdimOfSelectedObject(self,selected):
         #Max object length in all directions
-        smartInd=[]
+        self.smartInd=[]
         lengthX =selected.Shape.BoundBox.XLength
         lengthY =selected.Shape.BoundBox.YLength
         lengthZ =selected.Shape.BoundBox.ZLength
@@ -168,15 +203,16 @@ class Design456_SmartScale:
         Zvectors.append(App.Vector(NewX,NewY,NewZ))
         
         #Create the lines
-        smartInd.append(smartLines(Xvectors,str(lengthX),5))
-        smartInd.append(smartLines(Yvectors,str(lengthY),5))
-        smartInd.append(smartLines(Zvectors,str(lengthZ),5))
-        
-        #set selected object to each smartline 
-        for smartline in smartInd:
-            smartline.set_target(selected)
+        self.smartInd.append(smartLines(Xvectors,str(lengthX),5,self))
+        self.smartInd.append(smartLines(Yvectors,str(lengthY),5,self))
+        self.smartInd.append(smartLines(Zvectors,str(lengthZ),5,self))
+        for i in self.smartInd:
+            i.set_target(selected)
             
-        self.mywin.addWidget(smartInd)
+        #set selected object to each smartline 
+        print( "Selected object is ")
+        print(selected.Name)
+        self.mywin.addWidget(self.smartInd)
         self.mywin.show()                
         
     def Activated(self):
@@ -201,14 +237,40 @@ class Design456_SmartScale:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def reCreateThisObject(self,selObj=None):
-        for i in self.smartInd:
-            i.destructor()
-            del i
-        Gui.Selection.clearSelection()
-        if selObj!=None:
-            Gui.Selection.addSelection(selObj.Name)
-            self.Activated()
+        try:
+            self.Deactivate()
+            Gui.Selection.clearSelection()
+        
+            if selObj!=None:
+                print("Creating the smart_scale object")
+                Gui.Selection.addSelection(selObj)
+                self.Activated()
 
+        except Exception as err:
+            App.Console.PrintError("'Design456_SmartScale' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)            
+    
+    def Deactivate(self):
+        """ 
+                Remove all objects from memory even fr_coinwindow
+        """
+        try:
+            for i in self.smartInd:
+                i.destructor()
+                del i
+                self.mywin.Deactivate()
+            del self.mywin
+            self.mywin=None
+            
+        except Exception as err:
+            App.Console.PrintError("'Design456_SmartScale' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)               
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH +'smartscale.svg',
