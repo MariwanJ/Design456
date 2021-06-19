@@ -61,11 +61,18 @@ class Fr_Group(fr_widget.Fr_Widget):
         self.w_children.append(widg)
         
 
-    def removeWidget(self, widg):
-        try:
-            self.w_children.remove(widg)
-        except:
-            print("not found")
+    def removeWidget(self,widg):
+        """ 
+        Remove the widget from the group. This will eleminates 
+        the widget from getting events.        
+        """
+        if type(widg)==list:
+            for widgets in widg:
+                # For line widgets are included.
+                self.w_children.remove(widgets)
+        else:
+            # For line widgets are included.
+                self.w_children.remove(widg)
 
     def draw(self):
         for i in self.w_children:
@@ -111,3 +118,11 @@ class Fr_Group(fr_widget.Fr_Widget):
                 if type(results)== int:
                     if results== 1:
                         break
+    def __del__(self):
+        ''' 
+        Class destructor
+        Remove all children
+        '''
+        for i in self.w_children:
+            del i
+        

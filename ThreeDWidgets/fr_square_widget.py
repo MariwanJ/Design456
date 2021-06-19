@@ -213,15 +213,16 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         self.w_active = 1
         self.redraw()
 
-    def deactivate(self):
+    def __del__(self):
         """
+        Class destructor
         Deactivate the widget. which causes that no handle comes to the widget
         """
         if self.w_active == 0:
             return  # Nothing to do
         self.w_active = 0
 
-    def destructor(self):
+    def __del__(self):
         """
         This will remove the widget totally. 
         """

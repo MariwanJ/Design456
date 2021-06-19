@@ -340,3 +340,10 @@ class root_handle():
             coin.SoMouseButtonEvent.getClassTypeId(), self.eventProcessor)
         self.callbackKey = self.w_view.addEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.eventProcessor)
+        
+    def __del__(self):
+        ''' 
+        class destructor. 
+        Remove all callbacks. 
+        '''
+        self.removeCallbacks()
