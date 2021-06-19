@@ -71,6 +71,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
 
     def exitFr_Window(self):
         fr_coin3d.root_handle.removeCallbacks()
+        super().__del__()   #call group destructor 
         # Call Fr_Groups deactivate to remove all widgets.
 
     def hide(self):
@@ -89,8 +90,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         self.draw()
 
-    def Deactivate(self):
+    def __del__(self):
         """
+        Class destructor 
         Like exit in normal window. This will end the windows
         """
         self.exitFr_Window()
@@ -120,24 +122,12 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             for widgets in widg:
                 # For line widgets are included.
                 self.w_children.append(widgets)
-                widgets.parent(self)      #Save a link to parent in the widget
+                widgets.parent(self._mainfrCoinWindow)      #Save a link to parent in the widget
         else:
             #Save a link to parent in the widget
             self.w_children.append(widg)
-            widg.parent(self)             #Save a link to parent in the widget
+            widg.parent(self._mainfrCoinWindow)             #Save a link to parent in the widget
 
-    def removeWidget(self,widg):
-        """ 
-        Remove the widget from the group. This will eleminates 
-        the widget from getting events.        
-        """
-        if type(widg)==list:
-            for widgets in widg:
-                # For line widgets are included.
-                self.w_children.remove(widgets)
-        else:
-            # For line widgets are included.
-                self.w_children.remove(widg)
         
     def addSoSwitchToSeneGraph(self, _soSwitch):
         """ Add new switch tree to the SeneGraph"""
