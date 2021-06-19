@@ -204,7 +204,7 @@ class Fr_Widget (object):
         raise NotImplementedError()
 
     @abstractmethod
-    def destructor(self):
+    def __del__(self):
         """
         This will remove the widget totally. 
         """

@@ -46,14 +46,14 @@ def smartLinecallback(smartLine,obj,parent):
     """
     print("callback")   
     
-def smartlbl_callback(smartLine,obj,parent):
+def smartlbl_callback(smartLine,obj,parentlink):
     """
         callback when label is double clicked
     """
     print("smartline lbl callback")
  
     print(obj)  
-    print(parent)
+    print(parentlink)
     #clone the object
     p1=smartLine.w_vector[0]
     p2=smartLine.w_vector[1]
@@ -118,14 +118,13 @@ def smartlbl_callback(smartLine,obj,parent):
         App.ActiveDocument.removeObject(cloneObj.Name)
         Gui.Selection.clearSelection()
         Gui.Selection.addSelection(_simpleCopy)
-        print("parent")
-        print(parent)
+        print("parentlink")
+        print(parentlink)
         App.ActiveDocument.recompute()
-        if parent!=None:
+        if parentlink!=None:
             print("Re create this object")
             print(_simpleCopy)
-            parent.reCreateThisObject(_simpleCopy)   # Rerun the original command with new dimensions
-            
+            parentlink.reCreateThisObject(_simpleCopy)   # Rerun the original command with new dimensions
             
     except Exception as err:
         App.Console.PrintError("'Design456_SmartScale' Failed. "
@@ -163,67 +162,78 @@ class smartLines(wlin.Fr_Line_Widget):
         self.targetObject=target
 
 class Design456_SmartScale:
-    mywin=None
+    _mywin=None
     smartInd=[]
+    
     def getXYZdimOfSelectedObject(self,selected):
-        #Max object length in all directions
-        self.smartInd=[]
-        lengthX =selected.Shape.BoundBox.XLength
-        lengthY =selected.Shape.BoundBox.YLength
-        lengthZ =selected.Shape.BoundBox.ZLength
-        
-        #Make the end 10 mm longer/after the object
-        NewX= selected.Shape.BoundBox.XMax+2
-        NewY= selected.Shape.BoundBox.YMax+2
-        NewZ= selected.Shape.BoundBox.ZMax+4
-        
-        #Make the start 10 mm before the object is placed
-        startX= selected.Shape.BoundBox.XMin-2
-        startY= selected.Shape.BoundBox.YMin-2
-        startZ= selected.Shape.BoundBox.ZMin
-        if self.mywin!=None :
-            try: 
-                del self.mywin
-                self.mywin=None
-            except:
-                self.mywin=None
-        
-        self.mywin=win.Fr_CoinWindow()
-        Xvectors: List[App.Vector] = []
-        Yvectors: List[App.Vector] = []
-        Zvectors: List[App.Vector] = []
+        try:
+            #Max object length in all directions        
+            lengthX =selected.Shape.BoundBox.XLength
+            lengthY =selected.Shape.BoundBox.YLength
+            lengthZ =selected.Shape.BoundBox.ZLength
 
-        Yvectors.append(App.Vector(startX,NewY,0))
-        Yvectors.append(App.Vector(NewX,NewY,0))
- 
-        Xvectors.append(App.Vector(NewX,startY,0))
-        Xvectors.append(App.Vector(NewX,NewY,0))
-        
-        Zvectors.append(App.Vector(NewX,NewY,startZ))
-        Zvectors.append(App.Vector(NewX,NewY,NewZ))
-        
-        #Create the lines
-        self.smartInd.append(smartLines(Xvectors,str(lengthX),5,self))
-        self.smartInd.append(smartLines(Yvectors,str(lengthY),5,self))
-        self.smartInd.append(smartLines(Zvectors,str(lengthZ),5,self))
-        for i in self.smartInd:
-            i.set_target(selected)
-            
-        #set selected object to each smartline 
-        print( "Selected object is ")
-        print(selected.Name)
-        self.mywin.addWidget(self.smartInd)
-        self.mywin.show()                
-        
+            #Make the end 10 mm longer/after the object
+            NewX= selected.Shape.BoundBox.XMax+2
+            NewY= selected.Shape.BoundBox.YMax+2
+            NewZ= selected.Shape.BoundBox.ZMax+4
+
+            #Make the start 10 mm before the object is placed
+            startX= selected.Shape.BoundBox.XMin-2
+            startY= selected.Shape.BoundBox.YMin-2
+            startZ= selected.Shape.BoundBox.ZMin
+
+            if self._mywin!=None :
+                try: 
+                    del self._mywin
+                    self._mywin=None
+                except:
+                    self._mywin=None
+
+            self._mywin=win.Fr_CoinWindow()
+            Xvectors: List[App.Vector] = []
+            Yvectors: List[App.Vector] = []
+            Zvectors: List[App.Vector] = []
+
+            Yvectors.append(App.Vector(startX,NewY,0))
+            Yvectors.append(App.Vector(NewX,NewY,0))
+    
+            Xvectors.append(App.Vector(NewX,startY,0))
+            Xvectors.append(App.Vector(NewX,NewY,0))
+
+            Zvectors.append(App.Vector(NewX,NewY,startZ))
+            Zvectors.append(App.Vector(NewX,NewY,NewZ))
+
+            #Create the lines
+            self.smartInd.append(smartLines(Xvectors,str(lengthX),5,self))
+            self.smartInd.append(smartLines(Yvectors,str(lengthY),5,self))
+            self.smartInd.append(smartLines(Zvectors,str(lengthZ),5,self))
+
+            for i in self.smartInd:
+                i.set_target(selected)
+
+            #set selected object to each smartline 
+            print( "Selected object is ")
+            print(selected.Name)
+
+            self._mywin.addWidget(self.smartInd)
+            self._mywin.show()     
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_SmartScale' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
     def Activated(self):
         try:
-            sel = Gui.Selection.getSelection()
-            if len(sel) != 1:
+            select = Gui.Selection.getSelection()
+            if len(select) != 1:
                 # Only one object must be selected
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
-                return 
-            self.getXYZdimOfSelectedObject(sel[0])
+                return
+            self.getXYZdimOfSelectedObject(select[0])
             wait=faced.Ui_WaitForOK()
             resu=wait.Activated()
             #while resu.isVisible:
@@ -253,24 +263,25 @@ class Design456_SmartScale:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)            
     
-    def Deactivate(self):
+    def __del__(self):
         """ 
-                Remove all objects from memory even fr_coinwindow
+            class destructor
+            Remove all objects from memory even fr_coinwindow
         """
         try:
             for i in self.smartInd:
-                i.destructor()
-                del i
-                self.mywin.Deactivate()
-            del self.mywin
-            self.mywin=None
+                del i  # call destructor 
+                self._mywin.Deactivate()
+            del self._mywin
+            self._mywin=None
             
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)               
+            print(exc_type, fname, exc_tb.tb_lineno)    
+                       
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH +'smartscale.svg',
