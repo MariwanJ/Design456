@@ -124,8 +124,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             for widgets in widg:
                 # For line widgets are included.
                 self.w_children.append(widgets)
-                print("Parent is ")
-                print(self)
                 widgets.parent(self)      #Save a link to parent in the widget
         else:
             #Save a link to parent in the widget
