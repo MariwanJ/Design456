@@ -67,6 +67,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         Remove the widget from the group. This will eleminates 
         the widget from getting events.        
         """
+        print("removed widget",widg)
         if type(widg)==list:
             for widgets in widg:
                 # For line widgets are included.
