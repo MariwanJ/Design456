@@ -40,7 +40,7 @@ from dataclasses import dataclass
 from typing import List
 from abc import abstractmethod
 
-def defaultCallback(selfObj,Userdata):
+def defaultCallback(**kwargs):
     """
     Dummy callback. This should be overdriven to call the real callback
     """
@@ -266,6 +266,7 @@ class Fr_Widget (object):
             return App.Vertex(self.w_vector[0])
         else:
             return None
+        
     @abstractmethod
     def position(self, x, y, z):
         """put the position of the object, which is reference to the first vector """
@@ -284,13 +285,13 @@ class Fr_Widget (object):
         raise NotImplementedError()
     
     #callback related to t
-    def do_lblcallback(self,data=None):
+    def do_lblcallback(self):
         """
             This function will run the label-changed 
             event callback. 
         """
         try:
-            self.w_lbl_calback_(data)
+            self.w_lbl_calback_()
 
         except Exception as err:
             App.Console.PrintError("'lblcallback' Failed. "
@@ -300,7 +301,7 @@ class Fr_Widget (object):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     # call the main callback for the widget
-    def do_callback(self, data=None):
+    def do_callback(self):
         """
         This will activate the callback call. 
         Use this function to run the callback.
@@ -309,7 +310,7 @@ class Fr_Widget (object):
         should be implemented by the widget you create
         """
         try:
-            self.w_callback_(self,data)
+            self.w_callback_()
 
         except Exception as err:
             App.Console.PrintError("'callback' Failed. "

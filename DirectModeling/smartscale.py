@@ -40,16 +40,39 @@ from typing import List
 import time 
 import Design456Init
 
-def smartLinecallback(smartLine,obj,parent):
+def smartLinecallback(**kwargs):
     """
         Calback when line is clicked
     """
+    smartLine=None
+    obj=None
+    parentlink=None
+    #Note the best way but I want to make it readable. 
+    # 3 arguments are acceptable in callback
+    if len(kwargs) ==1:
+        smartLine=kwargs[0]
+    if len(kwargs) ==2:
+        obj=kwargs[1]
+    if len(kwargs) ==3:
+        parentlink=kwargs[2]
+    
     print("callback")   
     
-def smartlbl_callback(smartLine,obj,parentlink):
+def smartlbl_callback(**kwargs):
     """
         callback when label is double clicked
     """
+    smartLine=None
+    obj=None
+    parentlink=None
+    #Note the best way but I want to make it readable. 
+    # 3 arguments are acceptable in callback
+    if len(kwargs) ==1:
+        smartLine=kwargs[0]
+    if len(kwargs) ==2:
+        obj=kwargs[1]
+    if len(kwargs) ==3:
+        parentlink=kwargs[2]
     print("smartline lbl callback")
  
     print(obj)  
@@ -80,14 +103,13 @@ def smartlbl_callback(smartLine,obj,parentlink):
     if newValue==0:
         #User canceled the value
         return
-    
+
     if obj==None:
         # Only one object must be selected
         errMessage = "Select an object to scale"
         faced.getInfo().errorDialog(errMessage)
         return
-    
-    print(obj.Label)
+
     cloneObj = Draft.clone(obj, forcedraft=True)
     #scaled_list = scale(objectslist, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
     scaleX=1
@@ -157,8 +179,8 @@ class smartLines(wlin.Fr_Line_Widget):
 
     def set_target(self,target):
         """ Set target object"""
-        print("target")
-        print(target.Name)
+        #print("target")
+        #print(target.Name)
         self.targetObject=target
 
 class Design456_SmartScale:
@@ -248,13 +270,12 @@ class Design456_SmartScale:
 
     def reCreateThisObject(self,selObj=None):
         try:
-            self.Deactivate()
-            Gui.Selection.clearSelection()
+            self.__del__()
         
             if selObj!=None:
                 print("Creating the smart_scale object")
                 Gui.Selection.addSelection(selObj)
-                # self.Activated()
+                self.Activated()
 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
@@ -270,8 +291,9 @@ class Design456_SmartScale:
         """
         try:
             for i in self.smartInd:
+                i.hide()
                 del i  # call destructor 
-                self._mywin.Deactivate()
+            self._mywin.hide()
             del self._mywin
             self._mywin=None
             

@@ -57,7 +57,7 @@ wny.show()                    # show the window and it's widgets.
 
 
 """
-def movecallback(userData=None):
+def movecallback(**kwargs):
     """
             This function will run the drag-move 
             event callback. 
@@ -66,7 +66,7 @@ def movecallback(userData=None):
         #          to get the desired effect
     print("dummy line-widget move callback" )
 
-def KBcallback(userData=None):
+def KBcallback(**kwargs):
     """
             This function will run the KB 
             event callback. 
@@ -75,7 +75,7 @@ def KBcallback(userData=None):
         #          to get the desired effect
     print("dummy line-widget KB callback" )
     
-def lblcallback(userData=None):
+def lblcallback(**kwargs):
     """
             This function will run the label-changed 
             event callback.
@@ -84,7 +84,7 @@ def lblcallback(userData=None):
         #          to get the desired effect
     print("dummy line-widget-label callback")
              
-def callback(userData=None):
+def callback(**kwargs):
     """
             This function will run the when the line is clicked 
             event callback. 
@@ -129,6 +129,11 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if type(event)==int:
             if event==FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nonthing to do 
+        # print("error here")
+        # print(self.w_parent)
+        # print(self.w_parent.link_to_root_handle)
+        # print(self.w_parent.link_to_root_handle.w_lastEventXYZ)
+        # print(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos)
         
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                           self.w_pick_radius, self.w_widgetSoNodes)
@@ -142,7 +147,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 print("Double click detected")
                 #if not self.has_focus():
                 #    self.take_focus()
-                self.do_lblcallback(self.w_userData)
+                self.do_lblcallback()
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
@@ -151,7 +156,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 print("-.-.-") 
                 if not self.has_focus():
                     self.take_focus()
-                self.do_callback(self.w_userData)
+                self.do_callback()
                 return 1            
             else:
                 self.remove_focus()
