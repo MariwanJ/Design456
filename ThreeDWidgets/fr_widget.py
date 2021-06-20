@@ -311,7 +311,7 @@ class Fr_Widget (object):
         should be implemented by the widget you create
         """
         try:
-            self.w_callback_()
+            self.w_callback_(self.w_userData)
 
         except Exception as err:
             App.Console.PrintError("'callback' Failed. "
@@ -373,15 +373,16 @@ class Fr_Widget (object):
         else:
             self.w_wdgsoSwitch.addChild(listOfSoSeparator)
 
-        # Add the switch to the SeneGrap
+        # Add the switch to the SeneGraph
         self.w_parent.addSoSwitchToSeneGraph(self.w_wdgsoSwitch)
-  
+
     def removeSoNodes(self):
         """ Remove CoinNodes and their children """
         try:
             if self.w_widgetSoNodes!=None:
                 self.w_widgetSoNodes.removeAllChildren()
                 del self.w_widgetSoNodes
+                
             if self.w_widgetlblSoNodes!=None:
                 self.w_widgetlblSoNodes.removeAllChildren()
                 del self.w_widgetlblSoNodes
@@ -405,12 +406,19 @@ class Fr_Widget (object):
             self.w_wdgsoSwitch.removeAllChildren()
 
     def removeSoSwitch(Self):
-        try:
-            del Self.w_wdgsoSwitch
-        except:
-            pass     #must be already removed .. don't care
+        if Self.w_wdgsoSwitch!=None:
+            try:
+                del Self.w_wdgsoSwitch
+            except:
+                pass     #must be already removed .. don't care
         Self.w_wdgsoSwitch=None
-        
+    
+    def changeLabelstr(self,newlabel: str = ""):
+        self.w_label=[newlabel]
+
+    def changeLabelfloat(self,newlabel: float = 0.0):
+        self.w_label=["{:.2f}".format(newlabel)]
+
 #********************************************************************************************************
 from dataclasses import dataclass
 
