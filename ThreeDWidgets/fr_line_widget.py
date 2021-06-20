@@ -59,7 +59,7 @@ wny.show()                    # show the window and it's widgets.
 
 
 """
-def movecallback(**kwargs):
+def movecallback(userData):
     """
             This function will run the drag-move 
             event callback. 
@@ -68,7 +68,7 @@ def movecallback(**kwargs):
         #          to get the desired effect
     print("dummy line-widget move callback" )
 
-def KBcallback(**kwargs):
+def KBcallback(userData):
     """
             This function will run the KB 
             event callback. 
@@ -77,7 +77,7 @@ def KBcallback(**kwargs):
         #          to get the desired effect
     print("dummy line-widget KB callback" )
     
-def lblcallback(**kwargs):
+def lblcallback(userData):
     """
             This function will run the label-changed 
             event callback.
@@ -86,7 +86,7 @@ def lblcallback(**kwargs):
         #          to get the desired effect
     print("dummy line-widget-label callback")
              
-def callback(**kwargs):
+def callback(userData):
     """
             This function will run the when the line is clicked 
             event callback. 
@@ -246,15 +246,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self.is_visible():
             # Remove the SoSwitch from fr_coinwindo
             self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
-            
-            # Remove the seneNodes from the widget
-            
-            #self.removeSoNodes()
-            
+
             # Remove the node from the switch as a child
-            
-            #self.removeSoNodeFromSoSwitch()
-            
+            self.removeSoNodeFromSoSwitch()
+           
+            # Remove the seneNodes from the widget
+            self.removeSoNodes()
             #Redraw label
             self.lblRedraw()
             self.draw()

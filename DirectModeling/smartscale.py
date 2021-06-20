@@ -40,41 +40,17 @@ from typing import List
 import time 
 import Design456Init
 
-def smartLinecallback(**kwargs):
+def smartLinecallback(smartLine,obj,parentlink):
     """
         Calback when line is clicked
-    """
-    smartLine=None
-    obj=None
-    parentlink=None
-    #Note the best way but I want to make it readable. 
-    # 3 arguments are acceptable in callback
-    if len(kwargs) ==1:
-        smartLine=kwargs[0]
-    if len(kwargs) ==2:
-        obj=kwargs[1]
-    if len(kwargs) ==3:
-        parentlink=kwargs[2]
-    
+    """    
     print("callback")   
     
-def smartlbl_callback(**kwargs):
+def smartlbl_callback(smartLine,obj,parentlink):
     """
         callback when label is double clicked
     """
-    smartLine=None
-    obj=None
-    parentlink=None
-    #Note the best way but I want to make it readable. 
-    # 3 arguments are acceptable in callback
-    if len(kwargs) ==1:
-        smartLine=kwargs[0]
-    if len(kwargs) ==2:
-        obj=kwargs[1]
-    if len(kwargs) ==3:
-        parentlink=kwargs[2]
-    print("smartline lbl callback")
- 
+    print("smartline lbl callback") 
     print(obj)  
     print(parentlink)
     #clone the object
@@ -99,7 +75,9 @@ def smartlbl_callback(**kwargs):
         print("scale z axis")
 
     newValue=0
-    newValue=faced.GetInputValue(oldv).getDoubleValue()
+    
+    #all lines has a 4 mm more size due to the way we calculate them. Remove that
+    newValue=faced.GetInputValue(oldv-4).getDoubleValue()
     if newValue==0:
         #User canceled the value
         return
@@ -118,12 +96,16 @@ def smartlbl_callback(**kwargs):
 
     if side=='y':
         scaleY=newValue/deltaY
+        smartLine.w_vector[1].y=smartLine.w_vector[1].y+(newValue-deltaY)
     elif side=='x':
         scaleX=newValue/deltaX
+        smartLine.w_vector[1]=smartLine.w_vector[1].x+(newValue-deltaX)
     elif side=='z':
         scaleZ=newValue/deltaZ
+        smartLine.w_vector[1]=smartLine.w_vector[1].z+(newValue-deltaZ)
     else : 
         print("error")
+    smartLine.changeLabelfloat(newValue)
     try:
         cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
         cloneObj.Placement=obj.Placement
@@ -143,11 +125,9 @@ def smartlbl_callback(**kwargs):
         print("parentlink")
         print(parentlink)
         App.ActiveDocument.recompute()
-        if parentlink!=None:
-            print("Re create this object")
-            print(_simpleCopy)
-            parentlink.reCreateThisObject(_simpleCopy)   # Rerun the original command with new dimensions
-            
+        smartLine.redraw()        #Update the vertices here 
+        
+           
     except Exception as err:
         App.Console.PrintError("'Design456_SmartScale' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -169,11 +149,11 @@ class smartLines(wlin.Fr_Line_Widget):
         self.targetObject=None
         self._parentLink=linkToParent  #this hold the command class. used to reproduce the whole object.
  
-    def do_callback(self,userdata=None ):
+    def do_callback(self):
         """ Do widget callback"""
         self.w_callback_(self,self.targetObject,self._parentLink)
         
-    def do_lblcallback(self,userdat=None):
+    def do_lblcallback(self):
         """ Do label callaback"""
         self.w_lbl_calback_(self,self.targetObject,self._parentLink)
 
@@ -188,6 +168,7 @@ class Design456_SmartScale:
     smartInd=[]
     
     def getXYZdimOfSelectedObject(self,selected):
+        print("create smart lines with xyz calculation")
         try:
             #Max object length in all directions        
             lengthX =selected.Shape.BoundBox.XLength
@@ -226,9 +207,9 @@ class Design456_SmartScale:
             Zvectors.append(App.Vector(NewX,NewY,NewZ))
 
             #Create the lines
-            self.smartInd.append(smartLines(Xvectors,str(lengthX),5,self))
-            self.smartInd.append(smartLines(Yvectors,str(lengthY),5,self))
-            self.smartInd.append(smartLines(Zvectors,str(lengthZ),5,self))
+            self.smartInd.append(smartLines(Xvectors,"{0:.2f}".format(lengthX),5,self))
+            self.smartInd.append(smartLines(Yvectors,"{0:.2f}".format(lengthY),5,self))
+            self.smartInd.append(smartLines(Zvectors,"{0:.2f}".format(lengthZ),5,self))
 
             for i in self.smartInd:
                 i.set_target(selected)
@@ -268,22 +249,6 @@ class Design456_SmartScale:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def reCreateThisObject(self,selObj=None):
-        try:
-            self.__del__()
-        
-            if selObj!=None:
-                print("Creating the smart_scale object")
-                Gui.Selection.addSelection(selObj)
-                self.Activated()
-
-        except Exception as err:
-            App.Console.PrintError("'Design456_SmartScale' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)            
-    
     def __del__(self):
         """ 
             class destructor
@@ -292,6 +257,7 @@ class Design456_SmartScale:
         try:
             for i in self.smartInd:
                 i.hide()
+                i.__del__()
                 del i  # call destructor 
             self._mywin.hide()
             del self._mywin
