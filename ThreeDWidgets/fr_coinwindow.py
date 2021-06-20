@@ -58,6 +58,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
 
     def __init__(self, args: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
                 400, 400, 0)], label: str = ""):
+        super().__init__(args, label)
         self._view = Gui.ActiveDocument.ActiveView
         self._parent = self  # No parent and this is the main window
         self._widgetType = FR_WidgetType.FR_COINWINDOW
@@ -67,15 +68,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self._mainfrCoinWindow=self
         # Activated callbacks
-        super().__init__(args, label)
-
-    def exitFr_Window(self):
-        fr_coin3d.root_handle.removeCallbacks()
-        super().__del__()   #call group destructor 
-        # Call Fr_Groups deactivate to remove all widgets.
-
-    def hide(self):
-        self.deactivate()
 
     def show(self):
         """
@@ -95,7 +87,10 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         Class destructor 
         Like exit in normal window. This will end the windows
         """
-        self.exitFr_Window()
+
+        del self.link_to_root_handle
+        super().__del__()   #call group destructor 
+        # Call Fr_Groups deactivate to remove all widgets.
         
     # Remove the switches and their children.
     def removeSoSwitchFromSeneGraph(self, _soSwitch):
