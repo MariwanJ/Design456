@@ -45,7 +45,8 @@ class Fr_Group(fr_widget.Fr_Widget):
     global _children
    
     
-    def __init__(self, args: List[App.Vector] = [], l: str = ""):
+    def __init__(self, args: List[App.Vector] = [], l: str = ""): 
+        super().__init__(args, l)
         if args == None:
             args = []
         self.w_widgetType = constant.FR_WidgetType.FR_GROUP
@@ -54,7 +55,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         self.w_children = []
         # Initialize them as None.
         self.w_mainfrCoinWindow = self.w_mainfrQtWindow = None
-        super().__init__(args, l)
+
 
     def addWidget(self, widg):
         widg.w_parent=self.w_mainfrCoinWindow
@@ -78,6 +79,10 @@ class Fr_Group(fr_widget.Fr_Widget):
         for i in self.w_children:
             i.draw()
 
+    def hide(self):
+        for i in self.w_children:
+            i.hide()
+        
     def draw_label(self):
         for i in self.w_children:
             i.draw_label()
@@ -117,7 +122,8 @@ class Fr_Group(fr_widget.Fr_Widget):
                 results= wdg.handle(events)
                 if type(results)== int:
                     if results== 1:
-                        break
+                        return results
+
     def __del__(self):
         ''' 
         Class destructor
