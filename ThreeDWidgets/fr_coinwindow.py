@@ -69,7 +69,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.link_to_root_handle.addCallbacks()
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self._mainfrCoinWindow=self
-        atexit.register(self.destructor)
        
         # Activated 
         print(self)
@@ -94,9 +93,10 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         Class destructor 
         Like exit in normal window. This will end the windows
         """
-
+        self.hide()
         del self.link_to_root_handle
-        super().destructor   #call group destructor 
+        self.link_to_root_handle=None
+        super().__del__()   #call group destructor 
         # Call Fr_Groups deactivate to remove all widgets.
         
     # Remove the switches and their children.
