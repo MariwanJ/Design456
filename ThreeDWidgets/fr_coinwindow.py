@@ -37,6 +37,8 @@ from  ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets.constant import FR_WidgetType
 
+
+
 '''
 This is a class for coin3D Window
 '''
@@ -67,7 +69,11 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.link_to_root_handle.addCallbacks()
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self._mainfrCoinWindow=self
-        # Activated callbacks
+        atexit.register(self.destructor)
+       
+        # Activated 
+        print(self)
+        print(self._mainfrCoinWindow)
 
     def show(self):
         """
@@ -81,7 +87,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         later to this class.
         """
         self.draw()
-
+        super().show() #Show all children also
+        
     def __del__(self):
         """
         Class destructor 
@@ -89,7 +96,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
 
         del self.link_to_root_handle
-        super().__del__()   #call group destructor 
+        super().destructor   #call group destructor 
         # Call Fr_Groups deactivate to remove all widgets.
         
     # Remove the switches and their children.
@@ -117,7 +124,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             for widgets in widg:
                 # For line widgets are included.
                 self.w_children.append(widgets)
-                widgets.parent(self._mainfrCoinWindow)      #Save a link to parent in the widget
+                print("Parent is ")
+                print(self)
+                widgets.parent(self)      #Save a link to parent in the widget
         else:
             #Save a link to parent in the widget
             self.w_children.append(widg)

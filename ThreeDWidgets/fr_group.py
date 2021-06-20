@@ -83,6 +83,10 @@ class Fr_Group(fr_widget.Fr_Widget):
         for i in self.w_children:
             i.hide()
         
+    def show(self):
+        for i in self.w_children:
+            i.show()
+            
     def draw_label(self):
         for i in self.w_children:
             i.draw_label()
@@ -130,5 +134,6 @@ class Fr_Group(fr_widget.Fr_Widget):
         Remove all children
         '''
         for i in self.w_children:
-            del i
-        
+            i.__del__()
+            del i 
+        self.redraw()  # We have to update the widgets drawing
