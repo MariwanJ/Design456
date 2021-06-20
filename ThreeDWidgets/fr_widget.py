@@ -40,6 +40,7 @@ from dataclasses import dataclass
 from typing import List
 from abc import abstractmethod
 
+
 def defaultCallback(**kwargs):
     """
     Dummy callback. This should be overdriven to call the real callback
@@ -102,7 +103,7 @@ class Fr_Widget (object):
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
         self.w_label = [label] 
-        #self.w_label = label      # This must be a list, to have several raw, append str
+        #self.w_label = label      # This must be a list, to have several raw, append st
 
     @abstractmethod      
     def draw_box(self):
@@ -203,14 +204,14 @@ class Fr_Widget (object):
         """
         raise NotImplementedError()
 
-    @abstractmethod
-    def __del__(self):
+    def __del__ (self):
         """
         This will remove the widget totally. 
         """
+        print("fr_widget Destructor")
         self.removeSoNodes()
-        if self.parent!=None:
-            self.parent.removeWidget(self)  # Parent should be the windows widget. 
+        if self.w_parent!=None:
+            self.w_parent.removeWidget(self)  # Parent should be the windows widget. 
 
     #@property 
     def is_active(self):
@@ -230,7 +231,6 @@ class Fr_Widget (object):
         self.w_visible=1
         self.draw()
     
-    @property 
     def getparent(self):
         """
             Get parent windows
@@ -266,7 +266,7 @@ class Fr_Widget (object):
             return App.Vertex(self.w_vector[0])
         else:
             return None
-        
+
     @abstractmethod
     def position(self, x, y, z):
         """put the position of the object, which is reference to the first vector """

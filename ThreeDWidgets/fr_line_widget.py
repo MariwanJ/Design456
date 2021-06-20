@@ -39,6 +39,8 @@ from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_ALIGN
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_DAMAGE
+
+
 """
 Example how to use this widget. 
 
@@ -111,7 +113,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_lbl_calback_=lblcallback     #External function
         self.w_KB_callback_=KBcallback      #External function
         self.w_move_callback_=movecallback  #External function
-        
+                
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -293,14 +295,13 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This will remove the widget totally. 
         """  
         print("line destructor") 
-        print(self.parent)     
-        if self.parent!=None:
-            self.parent.removeWidget(self)  # Parent should be the windows widget.
+        print(self.w_parent)     
+        if self.w_parent!=None:
+            self.w_parent.removeWidget(self)  # Parent should be the windows widget.
         self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
         self.removeSoNodeFromSoSwitch()
         self.removeSoNodes()
         self.removeSoSwitch()        
-
 
     def hide(self):
         if self.w_visible == 0:
