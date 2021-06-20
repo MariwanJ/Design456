@@ -209,6 +209,7 @@ class Fr_Widget (object):
         This will remove the widget totally. 
         """
         print("fr_widget Destructor")
+        self.hide()
         self.removeSoNodes()
         if self.w_parent!=None:
             self.w_parent.removeWidget(self)  # Parent should be the windows widget. 
@@ -378,10 +379,13 @@ class Fr_Widget (object):
     def removeSoNodes(self):
         """ Remove CoinNodes and their children """
         try:
-            self.w_widgetSoNodes.removeAllChildren()
-            self.w_widgetlblSoNodes.removeAllChildren()
-            del self.w_widgetSoNodes
-            del self.w_widgetlblSoNodes
+            if self.w_widgetSoNodes!=None:
+                self.w_widgetSoNodes.removeAllChildren()
+                del self.w_widgetSoNodes
+            if self.w_widgetlblSoNodes!=None:
+                self.w_widgetlblSoNodes.removeAllChildren()
+                del self.w_widgetlblSoNodes
+            
             self.w_widgetSoNodes=None
             self.w_widgetlblSoNodes=None
 
@@ -397,10 +401,14 @@ class Fr_Widget (object):
             Remove the children from the widget COIN3D node which is the soseparators
             i.e. all drawing, color ..etc for the widget 
         """
-        self.w_wdgsoSwitch.removeAllChildren()
+        if self.w_wdgsoSwitch!=None:
+            self.w_wdgsoSwitch.removeAllChildren()
 
     def removeSoSwitch(Self):
-        del Self.w_wdgsoSwitch
+        try:
+            del Self.w_wdgsoSwitch
+        except:
+            pass     #must be already removed .. don't care
         Self.w_wdgsoSwitch=None
         
 #********************************************************************************************************
@@ -412,7 +420,6 @@ class point:
         self.x = 0.0
         self.y = 0.0
         self.z = 0.0
-
 
 #List of points which should be used everywhere 
 VECTOR = List[point]

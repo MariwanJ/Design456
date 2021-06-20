@@ -113,7 +113,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_lbl_calback_=lblcallback     #External function
         self.w_KB_callback_=KBcallback      #External function
         self.w_move_callback_=movecallback  #External function
-                
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -296,12 +295,22 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """  
         print("line destructor") 
         print(self.w_parent)     
-        if self.w_parent!=None:
-            self.w_parent.removeWidget(self)  # Parent should be the windows widget.
-        self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
-        self.removeSoNodeFromSoSwitch()
-        self.removeSoNodes()
-        self.removeSoSwitch()        
+        self.hide()
+        try:
+            if self.w_parent!=None:
+                self.w_parent.removeWidget(self)  # Parent should be the windows widget.
+            if self.w_parent!=None:
+                self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+            self.removeSoNodeFromSoSwitch()
+            self.removeSoNodes()
+            self.removeSoSwitch()   
+                 
+        except Exception as err:
+            App.Console.PrintError("'Fr_Line_Widget' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
         if self.w_visible == 0:
