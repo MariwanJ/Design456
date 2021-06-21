@@ -59,7 +59,7 @@ wny.show()                    # show the window and it's widgets.
 
 
 """
-def movecallback(userData):
+def movecallback(userData=None):
     """
             This function will run the drag-move 
             event callback. 
@@ -68,7 +68,7 @@ def movecallback(userData):
         #          to get the desired effect
     print("dummy line-widget move callback" )
 
-def KBcallback(userData):
+def KBcallback(userData=None):
     """
             This function will run the KB 
             event callback. 
@@ -77,7 +77,7 @@ def KBcallback(userData):
         #          to get the desired effect
     print("dummy line-widget KB callback" )
     
-def lblcallback(userData):
+def lblcallback(userData=None):
     """
             This function will run the label-changed 
             event callback.
@@ -86,7 +86,7 @@ def lblcallback(userData):
         #          to get the desired effect
     print("dummy line-widget-label callback")
              
-def callback(userData):
+def callback(userData=None):
     """
             This function will run the when the line is clicked 
             event callback. 
