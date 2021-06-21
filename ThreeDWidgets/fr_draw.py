@@ -193,9 +193,9 @@ def createFrameShape():
     from pivy import coin
     sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
     root=coin.SoSeparator()
-    drawStyele=coin.SoDrawStyle()
-    drawStyele.style=coin.SoDrawStyle.LINES
-    root.addChild(drawStyele)
+    drawStyle=coin.SoDrawStyle()
+    drawStyle.style=coin.SoDrawStyle.LINES
+    root.addChild(drawStyle)
     shapeHints=coin.SoShapeHints()
     shapeHints.vertexOrdering=coin.SoShapeHints.COUNTERCLOCKWISE
     shapeHints.shapeType=coin.SoShapeHints.SOLID
