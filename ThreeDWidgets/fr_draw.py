@@ -109,6 +109,8 @@ def draw_line(p1, p2, color, LineWidth):
     try:
         so_separator = coin.SoSeparator()
         v = coin.SoVertexProperty()
+        print("linedraw p1",p1)
+        print("linedraw p2",p2)
         v.vertex.set1Value(0, p1)
         v.vertex.set1Value(1, p2)
         coords = coin.SoTransform()
@@ -126,7 +128,7 @@ def draw_line(p1, p2, color, LineWidth):
         return so_separator
 
     except Exception as err:
-        App.Console.PrintError("'makeIt' Failed. "
+        App.Console.PrintError("'draw_line' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
