@@ -219,6 +219,7 @@ class Design456_SmartScale:
             print(selected.Name)
 
             self._mywin.addWidget(self.smartInd)
+            
             self._mywin.show()     
 
         except Exception as err:

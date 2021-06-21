@@ -113,6 +113,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_lbl_calback_=lblcallback     #External function
         self.w_KB_callback_=KBcallback      #External function
         self.w_move_callback_=movecallback  #External function
+        w_wdgsoSwitch = coin.SoSwitch()        
+        w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -184,16 +187,13 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                linedraw = fr_draw.draw_line(p1, p2, usedColor, self.w_lineWidth)
-                _lbl = self.draw_label(usedColor)
-
-                self.saveSoNodesToWidget(linedraw)
-                self.saveSoNodeslblToWidget(_lbl)
-                
+                self.saveSoNodesToWidget(fr_draw.draw_line(p1, p2, usedColor, self.w_lineWidth))
+                self.saveSoNodeslblToWidget(self.draw_label(usedColor))
                 #add both to the same switch. and add them to the senegraph automatically
-                self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
-                self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
-                
+                allSwitch=[]
+                allSwitch.append(self.w_widgetSoNodes)
+                allSwitch.append(self.w_widgetlblSoNodes)
+                self.addSoNodeToSoSwitch(allSwitch)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 
@@ -237,7 +237,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def show(self):
         self.w_visible = 1
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
-        self.redraw()
 
     def redraw(self):
         """
@@ -253,6 +252,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             # Remove the seneNodes from the widget
             self.removeSoNodes()
             #Redraw label
+            
             self.lblRedraw()
             self.draw()
     
@@ -322,6 +322,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
+        print("remove focus")
         if self.w_hasFocus == 0:
             return  # nothing to do
         else:
