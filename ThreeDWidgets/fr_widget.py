@@ -81,8 +81,7 @@ class Fr_Widget (object):
     w_widgetSoNodes = None     #Should be defined in the widget either one or a list
     w_widgetlblSoNodes = None  #Should be defined in the widget either one or a list
     # each node is a child of one switch, Add drawings a children for this switch
-    w_wdgsoSwitch = coin.SoSwitch()        
-    w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+    w_wdgsoSwitch = None         
     w_when = constant.FR_WHEN.FR_WHEN_NEVER
     w_userData = None
     w_vector=None

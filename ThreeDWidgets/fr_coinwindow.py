@@ -102,6 +102,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     # Remove the switches and their children.
     def removeSoSwitchFromSeneGraph(self, _soSwitch):
         """ remove switch tree from the SeneGraph"""
+        print("remove Switch", _soSwitch)
         if type(_soSwitch)==list:
             for i in _soSwitch:
                 self.Root_SeneGraph.removeChild(i)
