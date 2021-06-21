@@ -50,6 +50,9 @@ def calculateLineSpherical(vectors):
     px2_px1=p2.x-p1.x
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
+    thi=0.0
+    r=0.0
+    phi=0.0
     r=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
     factor=0
     if p2.x>0 and p2.y>0:          #+X+Y
@@ -141,6 +144,9 @@ def calculateAlignment(vectors, align):
 
 def draw_label(text=[], prop: propertyValues=None):
     ''' Draw widgets label relative to the position with alignment'''
+    thi=0.0
+    phi=0.0
+    r=0.0
     if text=='' or prop ==None: 
         return     # Nothing to do here 
     try:

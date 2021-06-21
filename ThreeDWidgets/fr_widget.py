@@ -41,7 +41,7 @@ from typing import List
 from abc import abstractmethod
 
 
-def defaultCallback(**kwargs):
+def defaultCallback(userData=None):
     """
     Dummy callback. This should be overdriven to call the real callback
     """
