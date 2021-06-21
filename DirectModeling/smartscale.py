@@ -77,7 +77,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
     newValue=0
     
     #all lines has a 4 mm more size due to the way we calculate them. Remove that
-    newValue=faced.GetInputValue(oldv-4).getDoubleValue()
+    newValue=faced.GetInputValue(oldv).getDoubleValue()
     if newValue==0:
         #User canceled the value
         return
@@ -87,7 +87,8 @@ def smartlbl_callback(smartLine,obj,parentlink):
         errMessage = "Select an object to scale"
         faced.getInfo().errorDialog(errMessage)
         return
-
+    print("object=",obj)
+    print("objectname=",obj.Name)
     cloneObj = Draft.clone(obj, forcedraft=True)
     #scaled_list = scale(objectslist, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
     scaleX=1
@@ -99,10 +100,10 @@ def smartlbl_callback(smartLine,obj,parentlink):
         smartLine.w_vector[1].y=smartLine.w_vector[1].y+(newValue-deltaY)
     elif side=='x':
         scaleX=newValue/deltaX
-        smartLine.w_vector[1]=smartLine.w_vector[1].x+(newValue-deltaX)
+        smartLine.w_vector[1].x=smartLine.w_vector[1].x+(newValue-deltaX)
     elif side=='z':
         scaleZ=newValue/deltaZ
-        smartLine.w_vector[1]=smartLine.w_vector[1].z+(newValue-deltaZ)
+        smartLine.w_vector[1].z=smartLine.w_vector[1].z+(newValue-deltaZ)
     else : 
         print("error")
     smartLine.changeLabelfloat(newValue)
@@ -122,8 +123,9 @@ def smartlbl_callback(smartLine,obj,parentlink):
         App.ActiveDocument.removeObject(cloneObj.Name)
         Gui.Selection.clearSelection()
         Gui.Selection.addSelection(_simpleCopy)
-        print("parentlink")
-        print(parentlink)
+        #All objects must get link to the new targeted object
+        for i in parentlink.smartInd:
+            i.set_target(_simpleCopy)
         App.ActiveDocument.recompute()
         smartLine.redraw()        #Update the vertices here 
         
@@ -159,8 +161,6 @@ class smartLines(wlin.Fr_Line_Widget):
 
     def set_target(self,target):
         """ Set target object"""
-        #print("target")
-        #print(target.Name)
         self.targetObject=target
 
 class Design456_SmartScale:
