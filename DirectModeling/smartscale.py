@@ -73,6 +73,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
         side='z'
         oldv=deltaZ
         print("scale z axis")
+
     newValue=0
     
     #all lines has a 4 mm more size due to the way we calculate them. Remove that
@@ -90,9 +91,9 @@ def smartlbl_callback(smartLine,obj,parentlink):
     print("objectname=",obj.Name)
     cloneObj = Draft.clone(obj, forcedraft=True)
     #scaled_list = scale(objectslist, scale=Vector(1,1,1), center=Vector(0,0,0), copy=False)
-    # scaleX=1
-    # scaleY=1
-    # scaleZ=1    
+    scaleX=1
+    scaleY=1
+    scaleZ=1    
 
     if side=='y':
         scaleY=newValue/deltaY
@@ -105,12 +106,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
         smartLine.w_vector[1].z=smartLine.w_vector[1].z+(newValue-deltaZ)
     else : 
         print("error")
-    
-    #smartLine.changeLabelfloat(newValue)
-    for wdg in parentlink.smartInd:
-            wdg.__del__()
-    parentlink.smartInd.clear()
-
+    smartLine.changeLabelfloat(newValue)
     try:
         cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
         cloneObj.Placement=obj.Placement
@@ -128,10 +124,11 @@ def smartlbl_callback(smartLine,obj,parentlink):
         Gui.Selection.clearSelection()
         Gui.Selection.addSelection(_simpleCopy)
         #All objects must get link to the new targeted object
-        
-        parentlink.getXYZdimOfSelectedObject(_simpleCopy)
+        for i in parentlink.smartInd:
+            i.set_target(_simpleCopy)
         App.ActiveDocument.recompute()
-
+        smartLine.redraw()        #Update the vertices here 
+        
            
     except Exception as err:
         App.Console.PrintError("'Design456_SmartScale' Failed. "
@@ -220,8 +217,11 @@ class Design456_SmartScale:
             #set selected object to each smartline 
             print( "Selected object is ")
             print(selected.Name)
+
             self._mywin.addWidget(self.smartInd)
             
+            self._mywin.show()     
+
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -238,9 +238,6 @@ class Design456_SmartScale:
                 faced.getInfo().errorDialog(errMessage)
                 return
             self.getXYZdimOfSelectedObject(select[0])
-
-            self._mywin.show()    
-
             wait=faced.Ui_WaitForOK()
             resu=wait.Activated()
             #while resu.isVisible:
