@@ -37,6 +37,7 @@ __url__ = "https://www.freecadweb.org"
 class Design456_Workbench (Workbench):
     "Design456 Workbench object"
     runOnce =None 
+    
     def __init__(self):
         import Design456Init
         self.__class__.Icon = Design456Init.ICON_PATH + 'WorkbenchIcon.svg'

@@ -43,7 +43,6 @@ from ThreeDWidgets.constant import FR_WidgetType
 This is a class for coin3D Window
 '''
 
-
 class Fr_CoinWindow(fr_group.Fr_Group):
     """
     Main window which acts like a server for the children. 
@@ -69,7 +68,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.link_to_root_handle.addCallbacks()
         self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self._mainfrCoinWindow=self
-       
+        
         # Activated 
         print(self)
         print(self._mainfrCoinWindow)
