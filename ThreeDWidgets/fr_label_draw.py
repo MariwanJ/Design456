@@ -57,7 +57,7 @@ def calculateLineSpherical(vectors):
     factor=0
     if p2.x>0 and p2.y>0:          #+X+Y
         if px2_px1==0:
-            thi=math.radians(270)
+            thi=math.radians(90)
         elif py2_py1==0:
             thi=math.radians(180)
         elif px2_px1<0:             #px1 is grater than px2
@@ -153,8 +153,8 @@ def draw_label(text=[], prop: propertyValues=None):
         delta=App.Vector(0,0,0)        
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
-        delta.x=p1.x
-        delta.y=p1.y
+        delta.x=p1.x+2
+        delta.y=p1.y+2
         delta.z=p1.z
         (r,thi,phi)=calculateLineSpherical(prop.vectors)        #get spherical representation of the point(p2)
         _transPositionPOS=coin.SoTransform()
