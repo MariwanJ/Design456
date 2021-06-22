@@ -36,7 +36,7 @@ import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 import ThreeDWidgets.fr_line_widget as wlin
 import ThreeDWidgets.fr_coinwindow  as win
-from typing import List
+from typing import ItemsView, List
 import time 
 import Design456Init
 
@@ -73,9 +73,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
         side='z'
         oldv=deltaZ
         print("scale z axis")
-
     newValue=0
-    
     #all lines has a 4 mm more size due to the way we calculate them. Remove that
     newValue=faced.GetInputValue(oldv).getDoubleValue()
     if newValue==0:
@@ -106,7 +104,6 @@ def smartlbl_callback(smartLine,obj,parentlink):
         smartLine.w_vector[1].z=smartLine.w_vector[1].z+(newValue-deltaZ)
     else : 
         print("error")
-    smartLine.changeLabelfloat(newValue)
     try:
         cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
         cloneObj.Placement=obj.Placement
@@ -123,13 +120,20 @@ def smartlbl_callback(smartLine,obj,parentlink):
         App.ActiveDocument.removeObject(cloneObj.Name)
         Gui.Selection.clearSelection()
         Gui.Selection.addSelection(_simpleCopy)
-        #All objects must get link to the new targeted object
-        for i in parentlink.smartInd:
-            i.set_target(_simpleCopy)
         App.ActiveDocument.recompute()
-        smartLine.redraw()        #Update the vertices here 
-        
-           
+        #All objects must get link to the new targeted object
+        (_vectors,_lengths)=parentlink.returnVectorsFromBoundaryBox(_simpleCopy)
+        x=0
+        for wid in parentlink.smartInd:
+            wid.set_target(_simpleCopy)
+            print("Before=",wid.w_vector)
+            wid.w_vector=_vectors[x]
+            print("After=",wid.w_vector)
+            wid.changeLabelfloat(_lengths[x])
+            x+=1
+            wid.redraw()        #Update the vertices here
+        App.ActiveDocument.recompute()
+
     except Exception as err:
         App.Console.PrintError("'Design456_SmartScale' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -166,60 +170,64 @@ class smartLines(wlin.Fr_Line_Widget):
 class Design456_SmartScale:
     _mywin=None
     smartInd=[]
+    def returnVectorsFromBoundaryBox(self,selected):
+        #Max object length in all directions        
+        lengthX =selected.Shape.BoundBox.XLength
+        lengthY =selected.Shape.BoundBox.YLength
+        lengthZ =selected.Shape.BoundBox.ZLength
+
+        #Make the end 2 mm longer/after the object
+        NewX= selected.Shape.BoundBox.XMax+2
+        NewY= selected.Shape.BoundBox.YMax+2
+        NewZ= selected.Shape.BoundBox.ZMax
+
+        #Make the start 2 mm before the object is placed
+        startX= selected.Shape.BoundBox.XMin-2
+        startY= selected.Shape.BoundBox.YMin-2
+        startZ= selected.Shape.BoundBox.ZMin
+
+        Xvectors: List[App.Vector] = []
+        Yvectors: List[App.Vector] = []
+        Zvectors: List[App.Vector] = []
+
+        Yvectors.append(App.Vector(startX,NewY,0))
+        Yvectors.append(App.Vector(NewX,NewY,0))
     
+        Xvectors.append(App.Vector(NewX,startY,0))
+        Xvectors.append(App.Vector(NewX,NewY,0))
+
+        Zvectors.append(App.Vector(NewX,NewY,startZ))
+        Zvectors.append(App.Vector(NewX,NewY,NewZ))
+        
+        vectors=[]
+        vectors.append(Xvectors)
+        vectors.append(Yvectors)
+        vectors.append(Zvectors)
+        leng=[]
+        leng.append(lengthX)
+        leng.append(lengthY)
+        leng.append(lengthZ)
+
+        return (vectors,leng)
+
     def getXYZdimOfSelectedObject(self,selected):
         print("create smart lines with xyz calculation")
-        try:
-            #Max object length in all directions        
-            lengthX =selected.Shape.BoundBox.XLength
-            lengthY =selected.Shape.BoundBox.YLength
-            lengthZ =selected.Shape.BoundBox.ZLength
+        try:    
 
-            #Make the end 10 mm longer/after the object
-            NewX= selected.Shape.BoundBox.XMax+2
-            NewY= selected.Shape.BoundBox.YMax+2
-            NewZ= selected.Shape.BoundBox.ZMax+4
-
-            #Make the start 10 mm before the object is placed
-            startX= selected.Shape.BoundBox.XMin-2
-            startY= selected.Shape.BoundBox.YMin-2
-            startZ= selected.Shape.BoundBox.ZMin
-
-            if self._mywin!=None :
-                try: 
-                    del self._mywin
-                    self._mywin=None
-                except:
-                    self._mywin=None
-
-            self._mywin=win.Fr_CoinWindow()
-            Xvectors: List[App.Vector] = []
-            Yvectors: List[App.Vector] = []
-            Zvectors: List[App.Vector] = []
-
-            Yvectors.append(App.Vector(startX,NewY,0))
-            Yvectors.append(App.Vector(NewX,NewY,0))
-    
-            Xvectors.append(App.Vector(NewX,startY,0))
-            Xvectors.append(App.Vector(NewX,NewY,0))
-
-            Zvectors.append(App.Vector(NewX,NewY,startZ))
-            Zvectors.append(App.Vector(NewX,NewY,NewZ))
+            (vectors,lengths)=self.returnVectorsFromBoundaryBox(selected)
+            print("LENGTH=",lengths)
 
             #Create the lines
-            self.smartInd.append(smartLines(Xvectors,"{0:.2f}".format(lengthX),5,self))
-            self.smartInd.append(smartLines(Yvectors,"{0:.2f}".format(lengthY),5,self))
-            self.smartInd.append(smartLines(Zvectors,"{0:.2f}".format(lengthZ),5,self))
-
+            print(lengths)
+            self.smartInd.append(smartLines(vectors[0],"{0:.2f}".format(lengths[0]),5,self))
+            self.smartInd.append(smartLines(vectors[1],"{0:.2f}".format(lengths[1]),5,self))
+            self.smartInd.append(smartLines(vectors[2],"{0:.2f}".format(lengths[2]),5,self))
             for i in self.smartInd:
                 i.set_target(selected)
-
             #set selected object to each smartline 
-            print( "Selected object is ")
-            print(selected.Name)
-
+            if self._mywin==None :
+                self._mywin=win.Fr_CoinWindow()
             self._mywin.addWidget(self.smartInd)
-            
             self._mywin.show()     
 
         except Exception as err:
@@ -238,6 +246,7 @@ class Design456_SmartScale:
                 faced.getInfo().errorDialog(errMessage)
                 return
             self.getXYZdimOfSelectedObject(select[0])
+            #TODO FIXME - THIS SHOULD BE VISIBLE UNTIL IT IS CLICKED
             wait=faced.Ui_WaitForOK()
             resu=wait.Activated()
             #while resu.isVisible:
