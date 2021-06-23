@@ -268,7 +268,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self.w_hasFocus == 1:
             return  # nothing to do here
         self.w_hasFocus = 1
-        print("take focus")
+        # print("take focus")
         self.redraw()
 
     def activate(self):
@@ -322,7 +322,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        print("remove focus")
+        #print("remove focus")
         if self.w_hasFocus == 0:
             return  # nothing to do
         else:

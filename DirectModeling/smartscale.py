@@ -39,12 +39,15 @@ import ThreeDWidgets.fr_coinwindow  as win
 from typing import ItemsView, List
 import time 
 import Design456Init
+from ThreeDWidgets.constant import FR_COLOR
+SeperateLinesFromObject=4
 
 def smartLinecallback(smartLine,obj,parentlink):
     """
         Calback when line is clicked
     """    
-    print("callback")   
+    pass 
+    #print("callback")   
     
 def smartlbl_callback(smartLine,obj,parentlink):
     """
@@ -54,30 +57,23 @@ def smartlbl_callback(smartLine,obj,parentlink):
     #clone the object
     p1=smartLine.w_vector[0]
     p2=smartLine.w_vector[1]
-    deltaX=p2.x-p1.x
+    deltaX= p2.x-p1.x
     deltaY= p2.y-p1.y
-    deltaZ=p2.z-p1.z
+    deltaZ= p2.z-p1.z
     side=None
-    oldv=0.0
+    oldv=float(smartLine.w_label[0])
     if deltaX==0 and deltaZ==0:
         side= 'y'
-        oldv=deltaY
-        print("scale y axis")
     elif deltaY==0.0 and deltaZ==0.0:
         side='x'
-        oldv=deltaX
-        print("scale x axis")
     elif deltaY==0.0 and deltaX==0.0 and deltaZ!=0.0:
         side='z'
-        oldv=deltaZ
-        print("scale z axis")
     newValue=0
     #all lines has a 4 mm more size due to the way we calculate them. Remove that
     newValue=faced.GetInputValue(oldv).getDoubleValue()
-    if newValue==0:
+    if newValue==0 or newValue==None:
         #User canceled the value
-        #TODO THIS COULD CAUSE A PROBLEM. WE NEED TO RETURN -1 AND CHECK FOR THAT
-        return
+        return -1
 
     if obj==None:
         # Only one object must be selected
@@ -86,25 +82,21 @@ def smartlbl_callback(smartLine,obj,parentlink):
         return
     
     cloneObj = Draft.clone(obj, forcedraft=True)
-
     scaleX=1
     scaleY=1
     scaleZ=1    
 
     if side=='y':
-        scaleY=newValue/deltaY
-        #smartLine.w_vector[1].y=smartLine.w_vector[1].y+(newValue-deltaY)
+        scaleY=newValue/(deltaY-SeperateLinesFromObject)
     elif side=='x':
-        scaleX=newValue/deltaX
-        #smartLine.w_vector[1].x=smartLine.w_vector[1].x+(newValue-deltaX)
+        scaleX=newValue/(deltaX-SeperateLinesFromObject)
     elif side=='z':
         scaleZ=newValue/deltaZ
-        #smartLine.w_vector[1].z=smartLine.w_vector[1].z+(newValue-deltaZ)
     else : 
         print("error")
     try:
+        
         cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
-        cloneObj.Placement=obj.Placement
 
         obj.Visibility=False
         App.ActiveDocument.recompute()
@@ -121,13 +113,12 @@ def smartlbl_callback(smartLine,obj,parentlink):
         App.ActiveDocument.recompute()
         #All objects must get link to the new targeted object
         (_vectors,_lengths)=parentlink.returnVectorsFromBoundaryBox(_simpleCopy)
-        x=0
-        for wid in parentlink.smartInd:
-            wid.set_target(_simpleCopy)
-            wid.w_vector=_vectors[x]
-            wid.changeLabelfloat(_lengths[x])
-            x+=1
-            wid.redraw()        #Update the vertices here
+        tt=0
+        for i in range (0,3):
+            parentlink.smartInd[i].set_target(_simpleCopy)
+            parentlink.smartInd[i].w_vector=_vectors[i]
+            parentlink.smartInd[i].changeLabelfloat(_lengths[i])
+            parentlink.smartInd[i].redraw()        #Update the vertices here
         App.ActiveDocument.recompute()
 
     except Exception as err:
@@ -149,6 +140,8 @@ class smartLines(wlin.Fr_Line_Widget):
         self.w_lbl_calback_=smartlbl_callback
         self.w_callback_=smartLinecallback
         self.targetObject=None
+        #Todo: Which color? black is good?
+        #self.w_color=FR_COLOR.FR_GREEN
         self._parentLink=linkToParent  #this hold the command class. used to reproduce the whole object.
  
     def do_callback(self):
@@ -173,48 +166,47 @@ class Design456_SmartScale:
         lengthZ =selected.Shape.BoundBox.ZLength
 
         #Make the end 2 mm longer/after the object
-        NewX= selected.Shape.BoundBox.XMax+2
-        NewY= selected.Shape.BoundBox.YMax+2
+        NewX= selected.Shape.BoundBox.XMax+SeperateLinesFromObject/2
+        NewY= selected.Shape.BoundBox.YMax+SeperateLinesFromObject/2
         NewZ= selected.Shape.BoundBox.ZMax
 
         #Make the start 2 mm before the object is placed
-        startX= selected.Shape.BoundBox.XMin-2
-        startY= selected.Shape.BoundBox.YMin-2
+        startX= selected.Shape.BoundBox.XMin-SeperateLinesFromObject/2
+        startY= selected.Shape.BoundBox.YMin-SeperateLinesFromObject/2
         startZ= selected.Shape.BoundBox.ZMin
 
         Xvectors: List[App.Vector] = []
         Yvectors: List[App.Vector] = []
         Zvectors: List[App.Vector] = []
 
-        Yvectors.append(App.Vector(startX,NewY,0))
-        Yvectors.append(App.Vector(NewX,NewY,0))
-    
+
         Xvectors.append(App.Vector(NewX,startY,0))
         Xvectors.append(App.Vector(NewX,NewY,0))
+
+        Yvectors.append(App.Vector(startX,NewY,0))
+        Yvectors.append(App.Vector(NewX,NewY,0))
 
         Zvectors.append(App.Vector(NewX,NewY,startZ))
         Zvectors.append(App.Vector(NewX,NewY,NewZ))
         
-        vectors=[]
-        vectors.append(Xvectors)
-        vectors.append(Yvectors)
-        vectors.append(Zvectors)
-        leng=[]
-        leng.append(lengthX)
-        leng.append(lengthY)
-        leng.append(lengthZ)
+        _vectors=[]
+        _vectors.append(Xvectors)
+        _vectors.append(Yvectors)
+        _vectors.append(Zvectors)
 
-        return (vectors,leng)
+        #TODO: I don't know why I should return the length in this order
+        leng=[]
+        leng.append(lengthY)
+        leng.append(lengthX)
+        leng.append(lengthZ)
+        return (_vectors,leng)
 
     def getXYZdimOfSelectedObject(self,selected):
         print("create smart lines with xyz calculation")
         try:    
-
             (vectors,lengths)=self.returnVectorsFromBoundaryBox(selected)
-            print("LENGTH=",lengths)
-
             #Create the lines
-            print(lengths)
+            self.smartInd.clear()
             self.smartInd.append(smartLines(vectors[0],"{0:.2f}".format(lengths[0]),5,self))
             self.smartInd.append(smartLines(vectors[1],"{0:.2f}".format(lengths[1]),5,self))
             self.smartInd.append(smartLines(vectors[2],"{0:.2f}".format(lengths[2]),5,self))
@@ -295,7 +287,8 @@ class Design456_DirectScale:
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
                 return 
-                
+            print("Not implemented yet")
+            
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_DirectScale' Failed. "
