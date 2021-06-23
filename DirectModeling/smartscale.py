@@ -41,6 +41,9 @@ import time
 import Design456Init
 from ThreeDWidgets.constant import FR_COLOR
 SeperateLinesFromObject=4
+from PySide import QtGui,QtCore
+
+
 
 def smartLinecallback(smartLine,obj,parentlink):
     """
@@ -157,8 +160,14 @@ class smartLines(wlin.Fr_Line_Widget):
         self.targetObject=target
 
 class Design456_SmartScale:
+    """
+        Resize any 3D object by resizing each sides (x,y,z)
+        Simple and interactive way to resize precisely any shape.
+    """
     _mywin=None
     smartInd=[]
+    dialog=None
+    mw=None
     def returnVectorsFromBoundaryBox(self,selected):
         #Max object length in all directions        
         lengthX =selected.Shape.BoundBox.XLength
@@ -234,11 +243,11 @@ class Design456_SmartScale:
                 faced.getInfo().errorDialog(errMessage)
                 return
             self.getXYZdimOfSelectedObject(select[0])
-            #TODO FIXME - THIS SHOULD BE VISIBLE UNTIL IT IS CLICKED
-            wait=faced.Ui_WaitForOK()
-            resu=wait.Activated()
-            #while resu.isVisible:
-            #    time.sleep(0.1)
+            #Create a tab and show it 
+            #TODO : I don't know how to give focus to the tab
+            mw = self.getMainWindow()
+            mw.show()
+
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
@@ -256,18 +265,74 @@ class Design456_SmartScale:
             for i in self.smartInd:
                 i.hide()
                 i.__del__()
-                del i  # call destructor 
-            self._mywin.hide()
-            del self._mywin
-            self._mywin=None
-            
+                del i  # call destructor
+            if self._mywin!=None:
+                self._mywin.hide()
+                del self._mywin
+                self._mywin=None
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)    
-                       
+    
+    def getMainWindow(self):
+        try:
+            toplevel = QtGui.QApplication.topLevelWidgets()
+            self.mw=None
+            for i in toplevel:
+                if i.metaObject().className() == "Gui::MainWindow":
+                    self.mw=i    
+            if self.mw==None:
+                raise Exception("No main window found")
+            dw=self.mw.findChildren(QtGui.QDockWidget)
+            for i in dw:
+                if str(i.objectName()) == "Combo View":
+                    tab= i.findChild(QtGui.QTabWidget)
+                elif str(i.objectName()) == "Python Console":
+                    tab= i.findChild(QtGui.QTabWidget)
+            if tab==None:
+                    raise Exception ("No tab widget found")
+                
+            self.dialog=QtGui.QDialog()
+            tab.addTab(self.dialog,"Smart Scale")
+            self.dialog.resize(200,450)
+            self.dialog.setWindowTitle("Smart Scale")
+            la = QtGui.QVBoxLayout(self.dialog)
+            e1 = QtGui.QLabel("(Smart Scale)\nFor quicker\nresizing any\n3D Objects")
+            commentFont=QtGui.QFont("Times",12,True)
+            e1.setFont(commentFont)
+            la.addWidget(e1)
+            okbox = QtGui.QDialogButtonBox(self.dialog)
+            okbox.setOrientation(QtCore.Qt.Horizontal)
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            la.addWidget(okbox)
+            QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(okbox, QtCore.SIGNAL("rejected()"), self.hide)
+            QtCore.QMetaObject.connectSlotsByName(self.dialog)
+            return self.dialog
+        except Exception as err:
+            App.Console.PrintError("'Design456_SmartScale' Failed. "
+                               "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def hide(self):
+        #Todo : This is not working
+        self.dialog.hide()
+        del self.dialog
+        dw=self.mw.findChildren(QtGui.QDockWidget)
+        rem=None
+        for i in dw:
+            if str(i.objectName()) == "Smart Scale":
+                rem=i.findChild(QtGui.QTabWidget)
+
+        if rem!=None: 
+            self.tab.removeTab(rem)
+        self.__del__()  # Remove all smart scale 3dCOIN widgets
+
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH +'smartscale.svg',
@@ -276,6 +341,17 @@ class Design456_SmartScale:
         }
 
 Gui.addCommand('Design456_SmartScale', Design456_SmartScale())
+
+
+
+
+
+
+
+
+
+
+
 
 class Design456_DirectScale:
 
