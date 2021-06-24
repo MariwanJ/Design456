@@ -70,9 +70,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self._mainfrCoinWindow=self
         
         # Activated 
-        print(self)
-        print(self._mainfrCoinWindow)
-
     def show(self):
         """
         Show the window on the 3D World
@@ -101,7 +98,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     # Remove the switches and their children.
     def removeSoSwitchFromSeneGraph(self, _soSwitch):
         """ remove switch tree from the SeneGraph"""
-        print("remove Switch", _soSwitch)
         if type(_soSwitch)==list:
             for i in _soSwitch:
                 self.Root_SeneGraph.removeChild(i)
@@ -133,8 +129,6 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         
     def addSoSwitchToSeneGraph(self, _soSwitch):
         """ Add new switch tree to the SeneGraph"""
-        #print(type(_soSwitch))
-        #print(_soSwitch)
         if type(_soSwitch)==list:
             for i in _soSwitch:
                 self.Root_SeneGraph.addChild(i)  # add sen to the root

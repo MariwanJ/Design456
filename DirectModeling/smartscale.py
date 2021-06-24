@@ -50,7 +50,6 @@ def smartLinecallback(smartLine,obj,parentlink):
         Calback when line is clicked
     """    
     pass 
-    #print("callback")   
     
 def smartlbl_callback(smartLine,obj,parentlink):
     """
@@ -113,6 +112,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
         App.ActiveDocument.removeObject(cloneObj.Name)
         Gui.Selection.clearSelection()
         Gui.Selection.addSelection(_simpleCopy)
+        _simpleCopy.Label = _name        
         App.ActiveDocument.recompute()
         #All objects must get link to the new targeted object
         (_vectors,_lengths)=parentlink.returnVectorsFromBoundaryBox(_simpleCopy)
@@ -167,6 +167,7 @@ class Design456_SmartScale:
     _mywin=None
     smartInd=[]
     dialog=None
+    tab=None
     mw=None
     def returnVectorsFromBoundaryBox(self,selected):
         #Max object length in all directions        
@@ -211,7 +212,6 @@ class Design456_SmartScale:
         return (_vectors,leng)
 
     def getXYZdimOfSelectedObject(self,selected):
-        print("create smart lines with xyz calculation")
         try:    
             (vectors,lengths)=self.returnVectorsFromBoundaryBox(selected)
             #Create the lines
@@ -289,14 +289,17 @@ class Design456_SmartScale:
             dw=self.mw.findChildren(QtGui.QDockWidget)
             for i in dw:
                 if str(i.objectName()) == "Combo View":
-                    tab= i.findChild(QtGui.QTabWidget)
+                    self.tab= i.findChild(QtGui.QTabWidget)
                 elif str(i.objectName()) == "Python Console":
-                    tab= i.findChild(QtGui.QTabWidget)
-            if tab==None:
+                    self.tab= i.findChild(QtGui.QTabWidget)
+            if self.tab==None:
                     raise Exception ("No tab widget found")
-                
+
             self.dialog=QtGui.QDialog()
-            tab.addTab(self.dialog,"Smart Scale")
+            oldsize=self.tab.count()
+            print("oldsize",oldsize)
+            self.tab.addTab(self.dialog,"Smart Scale")
+            self.tab.setCurrentWidget(self.dialog)
             self.dialog.resize(200,450)
             self.dialog.setWindowTitle("Smart Scale")
             la = QtGui.QVBoxLayout(self.dialog)
@@ -320,12 +323,12 @@ class Design456_SmartScale:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
-        #Todo : This is not working
         self.dialog.hide()
         del self.dialog
         dw=self.mw.findChildren(QtGui.QDockWidget)
-
-        self.tab.removeTab(self.tab.count()-1)
+        newsize=self.tab.count()
+        self.tab.removeTab(newsize-1) # it is 0,1,2,3 ..etc    
+        self.tab.setCurrentWidget(self.tab.children()[1]) 
         self.__del__()  # Remove all smart scale 3dCOIN widgets
 
     def GetResources(self):

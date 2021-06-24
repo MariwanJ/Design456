@@ -133,18 +133,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if type(event)==int:
             if event==FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nonthing to do 
-        # print("error here")
-        # print(self.w_parent)
-        # print(self.w_parent.link_to_root_handle)
-        # print(self.w_parent.link_to_root_handle.w_lastEventXYZ)
-        # print(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos)
         
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                           self.w_pick_radius, self.w_widgetSoNodes)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                            self.w_pick_radius, self.w_widgetlblSoNodes) 
 
-        #print(self.w_parent.link_to_root_handle.w_lastEvent)
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             if clickwdglblNode != None:
@@ -157,7 +151,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
 
             if clickwdgdNode != None or clickwdglblNode != None:
-                print("-.-.-") 
                 if not self.has_focus():
                     self.take_focus()
                 self.do_callback()
@@ -268,7 +261,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if self.w_hasFocus == 1:
             return  # nothing to do here
         self.w_hasFocus = 1
-        # print("take focus")
         self.redraw()
 
     def activate(self):
@@ -290,8 +282,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         Class Destructor. 
         This will remove the widget totally. 
         """  
-        print("line destructor") 
-        print(self.w_parent)     
         self.hide()
         try:
             if self.w_parent!=None:
@@ -322,7 +312,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        #print("remove focus")
         if self.w_hasFocus == 0:
             return  # nothing to do
         else:
