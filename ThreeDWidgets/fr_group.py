@@ -67,14 +67,16 @@ class Fr_Group(fr_widget.Fr_Widget):
         Remove the widget from the group. This will eleminates 
         the widget from getting events.        
         """
-        print("removed widget",widg)
-        if type(widg)==list:
-            for widgets in widg:
+        try:
+            if type(widg)==list:
+                for widgets in widg:
+                    # For line widgets are included.
+                    self.w_children.remove(widgets)
+            else:
                 # For line widgets are included.
-                self.w_children.remove(widgets)
-        else:
-            # For line widgets are included.
                 self.w_children.remove(widg)
+        except:
+            pass  # Just ignore the error #Todo is this correct?
 
     def draw(self):
         for i in self.w_children:
