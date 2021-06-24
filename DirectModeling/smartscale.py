@@ -328,7 +328,6 @@ class Design456_SmartScale:
         dw=self.mw.findChildren(QtGui.QDockWidget)
         newsize=self.tab.count()
         self.tab.removeTab(newsize-1) # it is 0,1,2,3 ..etc    
-        self.tab.setCurrentWidget(self.tab.children()[1]) 
         self.__del__()  # Remove all smart scale 3dCOIN widgets
 
     def GetResources(self):
