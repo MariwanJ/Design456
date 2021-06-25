@@ -494,7 +494,7 @@ class SelectTopFace:
             print(exc_type, fname, exc_tb.tb_lineno)
             return self.obj.SubObjects[0].CenterOfMass
 
-#TODO: Transparent dialog? how to? 
+#TODO: Transparent dialog? how to? i.e. border less, only input widgets should be shown?
 class GetInputValue:
     def __init__(self,defaultValue=0.0):
         self.value=defaultValue
@@ -530,44 +530,6 @@ class GetInputValue:
         else:
             return None
 
-class Ui_WaitForOK:
-    global WaitForOK
-    global checkBox
-    def setupUi(self, _WaitForOK):
-        self.WaitForOK=_WaitForOK
-        self.WaitForOK.setObjectName("WaitForOK")
-        self.WaitForOK.resize(300, 50)
-        self.WaitForOK.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
-        self.checkBox = QtGui.QCheckBox(self.WaitForOK)
-        self.checkBox.setGeometry(QtCore.QRect(10, 10, 61, 31))
-        self.checkBox.setObjectName("checkBox")
-
-        self.retranslateUi(self.WaitForOK)
-        QtCore.QMetaObject.connectSlotsByName(self.WaitForOK)
-        return self.WaitForOK
-    
-    def runOK(self):
-        if  self.checkBox.isChecked():
-            print("true")
-        else:
-            print("false")
-        self.WaitForOK.hide()
-        
-    def retranslateUi(self, WaitForOK):
-        
-        _translate = QtCore.QCoreApplication.translate
-        WaitForOK.setWindowTitle(_translate("WaitForOK", "Dialog"))
-        WaitForOK.setToolTip(_translate("WaitForOK", "Exit Mode"))
-        self.checkBox.setToolTip(_translate("WaitForOK", "<html><head/><body><p>Exit Mode</p></body></html>"))
-        self.checkBox.setText(_translate("WaitForOK", "OK"))
-        self.checkBox.stateChanged.connect(self.runOK)
-
-    def Activated(self):
-        self.d = QtGui.QWidget()
-        self.ui =self.setupUi(self.d)
-        self.d.show()
-        return self.d
-    
 #Visual progress indicator     
 class StatusBarProgress:
     """
@@ -599,3 +561,30 @@ class StatusBarProgress:
     def stopProgress(self):   
         self.progress_bar.stop() 
     
+class createActionTab:
+    def __init__(self,Title):
+        self.title=Title
+        self.mw=None
+        self.dw=None
+        self.dialog=None
+    def Activated(self):
+        toplevel = QtGui.QApplication.topLevelWidgets()
+        for i in toplevel:
+            if i.metaObject().className() == "Gui::MainWindow":
+                self.mw=i    
+        if self.mw==None:
+            raise Exception("No main window found")
+        dw=self.mw.findChildren(QtGui.QDockWidget)
+        for i in dw:
+            if str(i.objectName()) == "Combo View":
+                self.tab= i.findChild(QtGui.QTabWidget)
+            elif str(i.objectName()) == "Python Console":
+                self.tab= i.findChild(QtGui.QTabWidget)
+        if self.tab==None:
+                raise Exception ("No tab widget found")
+        self.dialog=QtGui.QDialog()
+        oldsize=self.tab.count()
+        self.tab.addTab(self.dialog,self.title)
+        self.tab.setCurrentWidget(self.dialog)
+        self.dialog.setWindowTitle(self.title)
+        return (self.mw,self.dialog,self.tab)

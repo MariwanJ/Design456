@@ -42,8 +42,7 @@ import Design456Init
 from ThreeDWidgets.constant import FR_COLOR
 SeperateLinesFromObject=4
 from PySide import QtGui,QtCore
-
-
+from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 
 def smartLinecallback(smartLine,obj,parentlink):
     """
@@ -322,6 +321,7 @@ class Design456_SmartScale:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+
     def hide(self):
         self.dialog.hide()
         del self.dialog
@@ -344,14 +344,52 @@ Gui.addCommand('Design456_SmartScale', Design456_SmartScale())
 
 
 
-
-
-
-
-
-
 class Design456_DirectScale:
+    """
+    Direct scaling of any 3D Object by draging either uniform arrow or
+    un-uniform arrows.
+    
+    """
+    mw=None
+    dialog=None
+    tab=None
+    smartInd=[]
+    _mywin=None
+    
+    def returnVectorsFromBoundaryBox(self,selected):
+        try:
+            #Max object length in all directions        
+            lengthX =selected.Shape.BoundBox.XLength
+            lengthY =selected.Shape.BoundBox.YLength
+            lengthZ =selected.Shape.BoundBox.ZLength
 
+            #Make the start 2 mm before the object is placed
+            startX= selected.Shape.BoundBox.XMax+SeperateLinesFromObject/2
+            startY= selected.Shape.BoundBox.YMax+SeperateLinesFromObject/2
+            startZ= selected.Shape.BoundBox.ZMax+SeperateLinesFromObject/2
+
+            p1: App.Vector=None
+            p2: App.Vector=None
+            _vectors: List[App.Vector] = []
+
+            leng=[]
+            leng.append(lengthX)
+            leng.append(lengthY)
+            leng.append(lengthZ)
+
+            p1=App.Vector(startX,startY,startZ)
+            p2=App.Vector(startX+20,startY+20,startZ)
+            _vectors.append(p1)
+            _vectors.append(p2)
+            return (_vectors,leng)
+        # we have a selected object. Try to show the dimensions. 
+        except Exception as err:
+            App.Console.PrintError("'Design456_DirectScale' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+                
     def Activated(self):
         try:
             sel = Gui.Selection.getSelection()
@@ -360,8 +398,35 @@ class Design456_DirectScale:
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
                 return 
-            print("Not implemented yet")
+            (self.mw,self.dialog, self.tab)=faced.createActionTab("Direct Scale").Activated()
+            la = QtGui.QVBoxLayout(self.dialog)
+            e1 = QtGui.QLabel("(Direct Scale)\nFor quicker\nresizing any\n3D Objects")
+            commentFont=QtGui.QFont("Times",12,True)
+            self.b1 = QtGui.QPushButton("Uniform")
+            self.b1.setCheckable(True)
+            self.b1.toggle()
+            self.b1.clicked.connect(lambda:self.whichbtn(self.b1))
+            self.b1.clicked.connect(self.btnState)
+            la.addWidget(self.b1)
+            e1.setFont(commentFont)
+            la.addWidget(e1)
+            okbox = QtGui.QDialogButtonBox(self.dialog)
+            okbox.setOrientation(QtCore.Qt.Horizontal)
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            la.addWidget(okbox)
+            QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(okbox, QtCore.SIGNAL("rejected()"), self.hide)
+            QtCore.QMetaObject.connectSlotsByName(self.dialog)
+            (_vec, length)=self.returnVectorsFromBoundaryBox(sel[0])
+            self.smartInd.clear()
+            self.smartInd.append(Fr_Arrow_Widget(_vec))
             
+            #set selected object to each smarArrow 
+            if self._mywin==None :
+                self._mywin=win.Fr_CoinWindow()
+            self._mywin.addWidget(self.smartInd)
+            self._mywin.show()     
+
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_DirectScale' Failed. "
@@ -369,7 +434,30 @@ class Design456_DirectScale:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
 
+    def hide(self):
+        self.dialog.hide()
+        del self.dialog
+        dw=self.mw.findChildren(QtGui.QDockWidget)
+        newsize=self.tab.count()
+        self.tab.removeTab(newsize-1) # it is 0,1,2,3 ..etc    
+        self.__del__()  # Remove all smart scale 3dCOIN widgets
+
+    def  btnState(self):
+        if self.b1.isChecked():
+            self.b1.setText("Uniform")
+            print ("button pressed")
+        else:
+            self.b1.setText("None Uniform")
+            print ("button released")
+            
+    def whichbtn(self,b):
+          print ("clicked button is "+b.text())
+    
+    def __del__():
+        pass
+    
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH +'DirectScale.svg',
