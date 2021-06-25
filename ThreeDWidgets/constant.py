@@ -39,7 +39,7 @@ class FR_WidgetType:
     FR_SQUARE_FRAME=   "Square frame"
     FR_TRIANGLE=       "Triangle frame"
     FR_POLYGON=        "Polygon Widget"
-    
+    FR_ARROW=          "Arrow Widget"
     FR_BOX=            "Box Widget"    
     FR_WHEEL=          "Wheel Widget"
     
