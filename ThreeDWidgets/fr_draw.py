@@ -136,7 +136,7 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 #draw arrow 
-def draw_arrow(_Points=[], _color=(0.0 ,0.8 ,0.0), _ArrSize=1):
+def draw_arrow(_Points=[], _color=(0.0 ,0.8 ,0.0), _ArrSize=1.0,_rotation=(0.0,0.0,1.0,0.0) ):
     if len (_Points)!=2:
         raise ValueError('Vertices must be 2')
     try:
@@ -152,12 +152,21 @@ def draw_arrow(_Points=[], _color=(0.0 ,0.8 ,0.0), _ArrSize=1):
         p1=_Points[0]
         p2=_Points[1]
 
-        coordsHead.scaleFactor.setValue([_ArrSize,_ArrSize+1])
+        coordsHead.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
         coordsHead.translation.setValue(HeadLocation)
-
-        coordsTail.scaleFactor.setValue([_ArrSize,_ArrSize+1])
+        coordsHead.rotation.Q=_rotation #  SbRotation (const SbVec3f &axis, const float radians)
+        coordsTail.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
         coordsTail.translation.setValue(TailLocation)
-
+        coordsTail.rotation.Q=_rotation #  SbRotation (const SbVec3f &axis, const float radians)
+        
+        cone=coin.SoCone()
+        cone.bottomRadius= 10
+        cone.height= 5
+        
+        cylinder=coin.SoCylinder()
+        cylinder.height = 10
+        cylinder.radius = 1
+        
         color=coin.SoBaseColor(); 
         color.rgb=_color
 
@@ -166,11 +175,14 @@ def draw_arrow(_Points=[], _color=(0.0 ,0.8 ,0.0), _ArrSize=1):
 
         so_separatorHead.addChild(color)
         so_separatorTail.addChild(color)
-
-        mainSwitch=coin.SoSwitch()
-        mainSwitch.addChild(so_separatorHead)
-        mainSwitch.addChild(so_separatorTail)
-        return mainSwitch
+        
+        so_separatorHead.addChild(cone)
+        so_separatorTail.addChild(cylinder)
+        
+        totalNodes=[]
+        totalNodes.append(so_separatorHead)
+        totalNodes.append(so_separatorTail)
+        return totalNodes
         # we have a selected object. Try to show the dimensions. 
         
     except Exception as err:

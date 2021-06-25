@@ -136,13 +136,11 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
+        self.w_widgetSoNodes=coin.SoSeparator()
         try:
             
             if len(self.w_vector) != 2:
                 raise ValueError('Must be 2 Vectors')
-            p1 = self.w_vector[0]
-            p2 = self.w_vector[1]
-
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
             elif self.is_active() and (self.has_focus() != 1):
@@ -150,11 +148,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                self.w_wdgsoSwitch=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth)
-                self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-                for i in range(0,self.w_wdgsoSwitch.getNumChildren()):
-                    self.w_widgetSoNodes.append(self.w_wdgsoSwitch.child[i])
-                self.w_parent.addSoSwitchToSeneGraph(self.w_wdgsoSwitch)
+                self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,((1.0,1.0,1.0,0.0)))
+                self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 
