@@ -135,6 +135,52 @@ def draw_line(p1, p2, color, LineWidth):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
+#draw arrow 
+def draw_arrow(_Points=[], _color=(0.0 ,0.8 ,0.0), _ArrSize=1):
+    if len (_Points)!=2:
+        raise ValueError('Vertices must be 2')
+    try:
+        so_separatorHead = coin.SoSeparator()
+        so_separatorTail = coin.SoSeparator()
+        v = coin.SoVertexProperty()
+        coordsHead = coin.SoTransform()
+        coordsTail = coin.SoTransform()
+
+        HeadLocation=_Points[0]
+        TailLocation=_Points[1]
+
+        p1=_Points[0]
+        p2=_Points[1]
+
+        coordsHead.scaleFactor.setValue([_ArrSize,_ArrSize+1])
+        coordsHead.translation.setValue(HeadLocation)
+
+        coordsTail.scaleFactor.setValue([_ArrSize,_ArrSize+1])
+        coordsTail.translation.setValue(TailLocation)
+
+        color=coin.SoBaseColor(); 
+        color.rgb=_color
+
+        so_separatorHead.addChild(coordsHead)
+        so_separatorTail.addChild(coordsTail)
+
+        so_separatorHead.addChild(color)
+        so_separatorTail.addChild(color)
+
+        mainSwitch=coin.SoSwitch()
+        mainSwitch.addChild(so_separatorHead)
+        mainSwitch.addChild(so_separatorTail)
+        return mainSwitch
+        # we have a selected object. Try to show the dimensions. 
+        
+    except Exception as err:
+        App.Console.PrintError("'Design456_DirectScale' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+                
+
 #draw a box
 def draw_box(Points=[], color=(0.0,0.0,0.0), LineWidth=1):
     """
@@ -193,7 +239,7 @@ def draw_square(vertices, color=(0.0,0.0,0.0), LineWidth=1.0):
 #this function is just an example showing how you can affect the drawing
 def createFrameShape():
     from pivy import coin
-    sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+    sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
     root=coin.SoSeparator()
     drawStyle=coin.SoDrawStyle()
     drawStyle.style=coin.SoDrawStyle.LINES
