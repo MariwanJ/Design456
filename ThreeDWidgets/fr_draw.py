@@ -136,7 +136,7 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 #draw arrow 
-def draw_arrow(_Points=[], _color=(0.0 ,0.8 ,0.0), _ArrSize=1.0,_rotation=(0.0,0.0,1.0,0.0) ):
+def draw_arrow(_Points=[], _color=(0.0 ,0.90 ,0.0), _ArrSize=1.0,_rotation=(0.0,0.0,1.0,0.0) ):
     if len (_Points)!=2:
         raise ValueError('Vertices must be 2')
     try:
@@ -160,12 +160,12 @@ def draw_arrow(_Points=[], _color=(0.0 ,0.8 ,0.0), _ArrSize=1.0,_rotation=(0.0,0
         coordsTail.rotation.Q=_rotation #  SbRotation (const SbVec3f &axis, const float radians)
         
         cone=coin.SoCone()
-        cone.bottomRadius= 10
-        cone.height= 5
+        cone.bottomRadius= 2
+        cone.height= 4
         
         cylinder=coin.SoCylinder()
-        cylinder.height = 10
-        cylinder.radius = 1
+        cylinder.height = 3
+        cylinder.radius = 0.5
         
         color=coin.SoBaseColor(); 
         color.rgb=_color
