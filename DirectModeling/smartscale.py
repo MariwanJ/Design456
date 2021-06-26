@@ -419,7 +419,9 @@ class Design456_DirectScale:
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             (_vec, length)=self.returnVectorsFromBoundaryBox(sel[0])
             self.smartInd.clear()
-            self.smartInd.append(Fr_Arrow_Widget(_vec))
+            self.smartInd=Fr_Arrow_Widget(_vec,"X-Axis",1)
+            self.smartInd.w_color=FR_COLOR.FR_AQUAMARINE
+            #self.smartInd.append(Fr_Arrow_Widget(_vec))
             
             #set selected object to each smarArrow 
             if self._mywin==None :
@@ -457,10 +459,16 @@ class Design456_DirectScale:
     
     def __del__(self):
         try:
-            for i in self.smartInd:
-                i.hide()
-                i.__del__()
-                del i  # call destructor
+            if type(self.smartInd)==list:
+                for i in self.smartInd:
+                    i.hide()
+                    i.__del__()
+                    del i  # call destructor
+            else:
+                self.smartInd.hide()
+                self.smartInd.__del__()
+                del self.smartInd
+                
             if self._mywin!=None:
                 self._mywin.hide()
                 del self._mywin

@@ -67,7 +67,7 @@ class Fr_Widget (object):
     w_visible = 1      # 1 active, 0 inactive
     w_bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
     w_color = constant.FR_COLOR.FR_BLACK
-    w_inactiveColor = constant.FR_COLOR.FR_GRAY2
+    w_inactiveColor = constant.FR_COLOR.FR_DIMGRAY
     w_selColor = constant.FR_COLOR.FR_YELLOW
     w_lblColor= constant.FR_COLOR.FR_BLACK
     w_box = None
@@ -379,12 +379,21 @@ class Fr_Widget (object):
         """ Remove CoinNodes and their children """
         try:
             if self.w_widgetSoNodes!=None:
-                self.w_widgetSoNodes.removeAllChildren()
-                del self.w_widgetSoNodes
-                
+                if type(self.w_widgetSoNodes)==list:
+                    for so in self.w_widgetSoNodes:
+                        so.removeAllChildren()
+                        del so
+                else:
+                    self.w_widgetSoNodes.removeAllChildren()
+                    del self.w_widgetSoNodes
             if self.w_widgetlblSoNodes!=None:
-                self.w_widgetlblSoNodes.removeAllChildren()
-                del self.w_widgetlblSoNodes
+                if type(self.w_widgetlblSoNodes)==list:
+                    for so in self.w_widgetlblSoNodes:
+                        so.removeAllChildren()
+                        del so
+                else:
+                    self.w_widgetlblSoNodes.removeAllChildren()
+                    del self.w_widgetlblSoNodes
             
             self.w_widgetSoNodes=None
             self.w_widgetlblSoNodes=None
