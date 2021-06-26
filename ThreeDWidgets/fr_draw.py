@@ -31,7 +31,7 @@ import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 from typing import List
-
+from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 
 
@@ -136,53 +136,67 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 #draw arrow 
-def draw_arrow(_Points=[], _color=(0.0 ,0.90 ,0.0), _ArrSize=1.0,_rotation=(0.0,0.0,1.0,0.0) ):
+def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(0.0,0.0,1.0,0.0) ):
     if len (_Points)!=2:
         raise ValueError('Vertices must be 2')
     try:
+        so_separatorRoot=coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
         so_separatorTail = coin.SoSeparator()
-        v = coin.SoVertexProperty()
-        coordsHead = coin.SoTransform()
-        coordsTail = coin.SoTransform()
-
-        HeadLocation=_Points[0]
-        TailLocation=_Points[1]
-
-        p1=_Points[0]
-        p2=_Points[1]
-
-        coordsHead.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
-        coordsHead.translation.setValue(HeadLocation)
-        coordsHead.rotation.Q=_rotation #  SbRotation (const SbVec3f &axis, const float radians)
-        coordsTail.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
-        coordsTail.translation.setValue(TailLocation)
-        coordsTail.rotation.Q=_rotation #  SbRotation (const SbVec3f &axis, const float radians)
+        
+        transHead = coin.SoTranslation()   # decide at which position the object will be placed
+        transTail = coin.SoTranslation()   # decide at which position the object will be placed
+        transRoot= coin.SoTranslation()    # decide at which position the whole objects will be placed
+        
+        coordsRoot = coin.SoTransform()
         
         cone=coin.SoCone()
-        cone.bottomRadius= 2
-        cone.height= 4
+        cone.bottomRadius= 3
+        cone.height= 3
         
         cylinder=coin.SoCylinder()
-        cylinder.height = 3
+        cylinder.height = 10
         cylinder.radius = 0.5
+        p1=_Points[0]
+        p2=App.Vector(p1.x,p1.y-5,p1.z)
+
+        styleHead = coin.SoDrawStyle()
+        styleTail = coin.SoDrawStyle()
         
+        styleHead.style = coin.SoDrawStyle.LINES     #draw only frame not filled
+        styleHead.lineWidth = 3
+
+        styleTail.style = coin.SoDrawStyle.LINES     #draw only frame not filled
+        styleTail.lineWidth = 2
+        
+        coordsRoot.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
+        coordsRoot.rotation.Q=_rotation #  SbRotation (const SbVec3f &axis, const float radians)
+
+        transHead.translation.setValue(p1)
+        transTail.translation.setValue(p2)
+
         color=coin.SoBaseColor(); 
         color.rgb=_color
-
-        so_separatorHead.addChild(coordsHead)
-        so_separatorTail.addChild(coordsTail)
-
+        
         so_separatorHead.addChild(color)
         so_separatorTail.addChild(color)
         
+        so_separatorHead.addChild(transHead)
+        so_separatorTail.addChild(transTail)
+
+        so_separatorHead.addChild(styleHead)
         so_separatorHead.addChild(cone)
+        
+        so_separatorTail.addChild(styleTail)
         so_separatorTail.addChild(cylinder)
         
-        totalNodes=[]
-        totalNodes.append(so_separatorHead)
-        totalNodes.append(so_separatorTail)
-        return totalNodes
+        so_separatorRoot.addChild(transRoot)
+        so_separatorRoot.addChild(color)
+        so_separatorRoot.addChild(coordsRoot)
+        so_separatorRoot.addChild(so_separatorHead)
+        so_separatorRoot.addChild(so_separatorTail)
+        
+        return so_separatorRoot
         # we have a selected object. Try to show the dimensions. 
         
     except Exception as err:
@@ -221,7 +235,7 @@ def draw_box(Points=[], color=(0.0,0.0,0.0), LineWidth=1):
     return draw_square
 
 # Draw a polygon face in the 3D Coin
-def draw_polygon(vector,color=(0.0,0.0,0.0), LineWidth=1.0):
+def draw_polygon(vector,color=FR_COLOR.FR_BLUEG, LineWidth=1.0):
     """ Draw a square and return the SoSeparator"""
     node = coin.SoSeparator()
     coords = coin.SoCoordinate3()
