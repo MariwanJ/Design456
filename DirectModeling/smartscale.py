@@ -364,10 +364,12 @@ class Design456_DirectScale:
             lengthZ =selected.Shape.BoundBox.ZLength
 
             #Make the start 2 mm before the object is placed
-            startX= selected.Shape.BoundBox.XMax+SeperateLinesFromObject/2
-            startY= selected.Shape.BoundBox.YMax+SeperateLinesFromObject/2
-            startZ= selected.Shape.BoundBox.ZMax+SeperateLinesFromObject/2
-
+            startX= selected.Shape.BoundBox.XMin
+            startY= selected.Shape.BoundBox.YMin
+            startZ= selected.Shape.BoundBox.ZMin
+            EndX=selected.Shape.BoundBox.XMax+SeperateLinesFromObject/2
+            EndY=selected.Shape.BoundBox.YMax+SeperateLinesFromObject/2
+            EndZ=selected.Shape.BoundBox.ZMax+SeperateLinesFromObject/2
             p1: App.Vector=None
             p2: App.Vector=None
             _vectors: List[App.Vector] = []
@@ -377,11 +379,14 @@ class Design456_DirectScale:
             leng.append(lengthY)
             leng.append(lengthZ)
 
-            p1=App.Vector(startX,startY,startZ)
-            p2=App.Vector(startX+20,startY+20,startZ)
+            p1=App.Vector(startX+lengthX/2,EndY+lengthY/2,startZ+lengthZ/2)
+            p2=App.Vector(startX+lengthX/2,EndY+lengthY/2,startZ+lengthZ/2)
+            p3=App.Vector(startX+lengthX/2,EndY+lengthY/2,startZ+lengthZ/2)
+            
             _vectors.append(p1)
             _vectors.append(p2)
             return (_vectors,leng)
+        
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_DirectScale' Failed. "
@@ -418,16 +423,25 @@ class Design456_DirectScale:
             QtCore.QObject.connect(okbox, QtCore.SIGNAL("rejected()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             (_vec, length)=self.returnVectorsFromBoundaryBox(sel[0])
+
             self.smartInd.clear()
-            self.smartInd=Fr_Arrow_Widget(_vec,"X-Axis",1)
-            self.smartInd.w_color=FR_COLOR.FR_AQUAMARINE
-            #self.smartInd.append(Fr_Arrow_Widget(_vec))
+            rotation=(App.Vector(1.0,1.0,1.0),0.0)
+            self.smartInd.append(Fr_Arrow_Widget(_vec,"X-Axis",1,rotation))
             
+            rotation=(App.Vector(1.0,1.0,1.0),90.0)
+            self.smartInd.append(Fr_Arrow_Widget(_vec,"Y-Axis",1,rotation))
+            self.smartInd[1].w_color=FR_COLOR.FR_RED
+            
+            rotation=(App.Vector(1.0,1.0,1.0),270.0)
+            self.smartInd.append(Fr_Arrow_Widget(_vec,"Z-Axis",1,rotation))
+
+            self.smartInd[2].w_color=FR_COLOR.FR_BLUE
+
             #set selected object to each smarArrow 
             if self._mywin==None :
                 self._mywin=win.Fr_CoinWindow()
             self._mywin.addWidget(self.smartInd)
-            self._mywin.show()     
+            self._mywin.show()
 
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
@@ -436,7 +450,7 @@ class Design456_DirectScale:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
 
     def hide(self):
         self.dialog.hide()

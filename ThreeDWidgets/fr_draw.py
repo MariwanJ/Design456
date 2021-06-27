@@ -33,6 +33,7 @@ import Design456Init
 from typing import List
 from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
+import math
 
 
 def draw_Point(p1, color):
@@ -136,7 +137,12 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 #draw arrow 
-def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(0.0,0.0,1.0,0.0) ):
+def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation):
+    '''
+    Draw a 3D arrow at the position given by the _Points and the color given by _color. 
+    Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
+    An angle in radians. 
+    '''
     if len (_Points)!=2:
         raise ValueError('Vertices must be 2')
     try:
@@ -170,11 +176,14 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(0.0
         styleTail.lineWidth = 2
         
         coordsRoot.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
+        coordsRoot.translation.setValue(App.Vector(0,0,0))
+        _rotation=_rotation
         coordsRoot.rotation.Q=_rotation #  SbRotation (const SbVec3f &axis, const float radians)
 
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
-
+        transRoot.translation.setValue(App.Vector(0.0,0.0,0.0))
+        
         color=coin.SoBaseColor(); 
         color.rgb=_color
         
@@ -264,7 +273,6 @@ def draw_square(vertices, color=(0.0,0.0,0.0), LineWidth=1.0):
 
 #this function is just an example showing how you can affect the drawing
 def createFrameShape():
-    from pivy import coin
     sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
     root=coin.SoSeparator()
     drawStyle=coin.SoDrawStyle()
