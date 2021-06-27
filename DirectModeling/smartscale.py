@@ -32,17 +32,17 @@ import Draft
 import Part
 from pivy import coin
 import FACE_D as faced
-import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 import ThreeDWidgets.fr_line_widget as wlin
 import ThreeDWidgets.fr_coinwindow  as win
 from typing import ItemsView, List
-import time 
 import Design456Init
 from ThreeDWidgets.constant import FR_COLOR
-SeperateLinesFromObject=4
 from PySide import QtGui,QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
+import math
+
+SeperateLinesFromObject=4
 
 def smartLinecallback(smartLine,obj,parentlink):
     """
@@ -428,11 +428,11 @@ class Design456_DirectScale:
             rotation=(App.Vector(1.0,1.0,1.0),0.0)
             self.smartInd.append(Fr_Arrow_Widget(_vec,"X-Axis",1,rotation))
             
-            rotation=(App.Vector(1.0,1.0,1.0),90.0)
+            rotation=(App.Vector(1.0,1.0,1.0),math.radians(90.0))
             self.smartInd.append(Fr_Arrow_Widget(_vec,"Y-Axis",1,rotation))
             self.smartInd[1].w_color=FR_COLOR.FR_RED
             
-            rotation=(App.Vector(1.0,1.0,1.0),270.0)
+            rotation=(App.Vector(1.0,1.0,1.0),math.radians(270.0))
             self.smartInd.append(Fr_Arrow_Widget(_vec,"Z-Axis",1,rotation))
 
             self.smartInd[2].w_color=FR_COLOR.FR_BLUE
