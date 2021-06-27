@@ -28,6 +28,7 @@ from __future__ import unicode_literals
 import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
+import ThreeDWidgets
 import pivy.coin as coin
 import Design456Init
 from ThreeDWidgets import fr_draw
@@ -38,6 +39,7 @@ from typing import List
 from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_ALIGN
 from ThreeDWidgets.constant import FR_EVENTS
+from ThreeDWidgets.constant import FR_COLOR
 
 """
 Example how to use this widget. 
@@ -72,7 +74,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     This class is for drawing a line in coin3D world
     """
 
-    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
+    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1,_rotation=((1.0,1.0,1.0),0.0)):
         super().__init__(vectors, label)        
         #Must be initialized first as per the following discussion. 
         #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
@@ -85,7 +87,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_KB_callback_=callback      #External function
         self.w_move_callback_=callback  #External function
         w_wdgsoSwitch = None        
-
+        self.w_color=FR_COLOR.FR_OLIVE   #Default color is green 
+        self.w_rotation=_rotation    # Axis (x,y,z), Angle
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -148,7 +151,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,((1.0,1.0,1.0,0.0)))
+                self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
@@ -292,3 +295,11 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
 
     def label_move(self, newPos):
         pass
+
+    def setRotationAngle(self, axis_angle):
+        ''' 
+        Set the rotation axis and the angle
+        Axis is App.Vector(x,y,z)
+        angle=float number
+        '''
+        self.w_rotation=axis_angle
