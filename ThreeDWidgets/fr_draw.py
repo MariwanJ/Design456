@@ -137,7 +137,7 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 #draw arrow 
-def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation):
+def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0,1.0,1.0,0.0)):
     '''
     Draw a 3D arrow at the position given by the _Points and the color given by _color. 
     Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
@@ -198,12 +198,13 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation):
         
         so_separatorTail.addChild(styleTail)
         so_separatorTail.addChild(cylinder)
-        
+
+        print("rotatin",_rotation)
+        so_separatorRoot.addChild(coordsRoot)       
         so_separatorRoot.addChild(transRoot)
-        so_separatorRoot.addChild(color)
-        so_separatorRoot.addChild(coordsRoot)
         so_separatorRoot.addChild(so_separatorHead)
         so_separatorRoot.addChild(so_separatorTail)
+
         
         return so_separatorRoot
         # we have a selected object. Try to show the dimensions. 
