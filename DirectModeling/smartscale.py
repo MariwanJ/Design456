@@ -425,14 +425,14 @@ class Design456_DirectScale:
             (_vec, length)=self.returnVectorsFromBoundaryBox(sel[0])
 
             self.smartInd.clear()
-            rotation=(App.Vector(1.0,1.0,1.0),0.0)
+            rotation=(1.0,1.0,1.0,0.0)
             self.smartInd.append(Fr_Arrow_Widget(_vec,"X-Axis",1,rotation))
             
-            rotation=(App.Vector(1.0,1.0,1.0),math.radians(90.0))
+            rotation=(1.0,1.0,1.0 ,math.radians(90.0))
             self.smartInd.append(Fr_Arrow_Widget(_vec,"Y-Axis",1,rotation))
             self.smartInd[1].w_color=FR_COLOR.FR_RED
             
-            rotation=(App.Vector(1.0,1.0,1.0),math.radians(270.0))
+            rotation=(1.0,1.0,1.0,math.radians(270.0))
             self.smartInd.append(Fr_Arrow_Widget(_vec,"Z-Axis",1,rotation))
 
             self.smartInd[2].w_color=FR_COLOR.FR_BLUE
