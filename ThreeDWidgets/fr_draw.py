@@ -177,8 +177,9 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         
         coordsRoot.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
         coordsRoot.translation.setValue(App.Vector(0,0,0))
-        _rotation=_rotation
-        coordsRoot.rotation.Q=_rotation #  SbRotation (const SbVec3f &axis, const float radians)
+        coordsRoot.rotation.setValue(_rotation) #  SbRotation (const SbVec3f &axis, const float radians)
+        
+        print(coordsRoot.rotation)
 
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
