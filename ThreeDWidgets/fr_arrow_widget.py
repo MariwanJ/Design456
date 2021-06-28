@@ -142,8 +142,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_widgetSoNodes=coin.SoSeparator()
         try:
             
-            if len(self.w_vector) != 2:
-                raise ValueError('Must be 2 Vectors')
+            if len(self.w_vector) != 1:
+                raise ValueError('Must be 1 Vector')
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
             elif self.is_active() and (self.has_focus() != 1):

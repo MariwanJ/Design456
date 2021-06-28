@@ -379,12 +379,13 @@ class Design456_DirectScale:
             leng.append(lengthY)
             leng.append(lengthZ)
 
-            p1=App.Vector(startX+lengthX/2,EndY+lengthY/2,startZ+lengthZ/2)
-            p2=App.Vector(startX+lengthX/2,EndY+lengthY/2,startZ+lengthZ/2)
-            p3=App.Vector(startX+lengthX/2,EndY+lengthY/2,startZ+lengthZ/2)
+            p1=App.Vector(startX+lengthX/2,EndY,startZ+lengthZ/2)
+            p2=App.Vector(startX+lengthX/2,EndY,startZ+lengthZ/2)
+            p3=App.Vector(startX+lengthX/2,EndY,startZ+lengthZ/2)
             
             _vectors.append(p1)
             _vectors.append(p2)
+            _vectors.append(p3)
             return (_vectors,leng)
         
         # we have a selected object. Try to show the dimensions. 
@@ -426,15 +427,14 @@ class Design456_DirectScale:
 
             self.smartInd.clear()
             rotation=(0.0,0.0,0.0,0.0)
-            self.smartInd.append(Fr_Arrow_Widget(_vec,"X-Axis",1,rotation))
+            self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,rotation))
             
-            rotation=(0,_vec[0].x, 0 ,math.radians(90.0))
-            self.smartInd.append(Fr_Arrow_Widget(_vec,"Y-Axis",1,rotation))
+            rotation=(0,0,-1,math.radians(62))
+            self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,rotation))
             self.smartInd[1].w_color=FR_COLOR.FR_RED
             
-            rotation=( _vec[0].y,0 ,0,math.radians(90.0))
-            self.smartInd.append(Fr_Arrow_Widget(_vec,"Z-Axis",1,rotation))
-
+            rotation=(1,0 ,0,math.radians(62))
+            self.smartInd.append(Fr_Arrow_Widget(_vec[2],"Z-Axis",1,rotation))
             self.smartInd[2].w_color=FR_COLOR.FR_BLUE
 
             #set selected object to each smartArrow 
