@@ -143,8 +143,8 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
     Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
     An angle in radians. 
     '''
-    if len (_Points)!=2:
-        raise ValueError('Vertices must be 2')
+    if len (_Points)!=1:
+        raise ValueError('Vertices must be 1')
     try:
         so_separatorRoot=coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
@@ -163,7 +163,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         cylinder=coin.SoCylinder()
         cylinder.height = 10
         cylinder.radius = 0.5
-        p1=_Points[0]
+        p1=App.Vector(0,0,0)  #_Points[0]
         p2=App.Vector(p1.x,p1.y-5,p1.z)
 
         styleHead = coin.SoDrawStyle()
@@ -178,12 +178,10 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         coordsRoot.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
         coordsRoot.translation.setValue(App.Vector(0,0,0))
         coordsRoot.rotation.setValue(_rotation) #  SbRotation (const SbVec3f &axis, const float radians)
-        
-        print(coordsRoot.rotation)
 
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
-        transRoot.translation.setValue(App.Vector(0.0,0.0,0.0))
+        transRoot.translation.setValue(_Points[0])
         
         color=coin.SoBaseColor(); 
         color.rgb=_color
