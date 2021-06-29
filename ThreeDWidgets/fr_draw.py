@@ -161,7 +161,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         cylinder=coin.SoCylinder()
         cylinder.height = 10
         cylinder.radius = 0.5
-        p1=App.Vector(0,0,0)  #_Points[0]
+        p1=App.Vector(_Points[0])
         p2=App.Vector(p1.x,p1.y-5,p1.z)
 
         styleHead = coin.SoDrawStyle()
@@ -190,20 +190,18 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         so_separatorHead.addChild(transHead)
         so_separatorTail.addChild(transTail)
 
+      
+        
         so_separatorHead.addChild(styleHead)
         so_separatorHead.addChild(cone)
         
         so_separatorTail.addChild(styleTail)
         so_separatorTail.addChild(cylinder)
-
-        print("rotatin",_rotation)
-        so_separatorRoot.addChild(coordsRoot)       
-        so_separatorRoot.addChild(transRoot)
-        so_separatorRoot.addChild(so_separatorHead)
-        so_separatorRoot.addChild(so_separatorTail)
-
-        return so_separatorRoot
-        # we have a selected object. Try to show the dimensions. 
+        group= coin.SoGroup()
+        group.addChild(so_separatorHead)
+        group.addChild(so_separatorTail)
+        group.addChild(coordsRoot)
+        return group
         
     except Exception as err:
         App.Console.PrintError("'Design456_DirectScale' Failed. "

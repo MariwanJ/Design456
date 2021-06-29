@@ -367,9 +367,9 @@ class Design456_DirectScale:
             startX= selected.Shape.BoundBox.XMin
             startY= selected.Shape.BoundBox.YMin
             startZ= selected.Shape.BoundBox.ZMin
-            EndX=selected.Shape.BoundBox.XMax+SeperateLinesFromObject/2
-            EndY=selected.Shape.BoundBox.YMax+SeperateLinesFromObject/2
-            EndZ=selected.Shape.BoundBox.ZMax+SeperateLinesFromObject/2
+            EndX=selected.Shape.BoundBox.XMax
+            EndY=selected.Shape.BoundBox.YMax
+            EndZ=selected.Shape.BoundBox.ZMax
             p1: App.Vector=None
             p2: App.Vector=None
             _vectors: List[App.Vector] = []
@@ -378,16 +378,19 @@ class Design456_DirectScale:
             leng.append(lengthX)
             leng.append(lengthY)
             leng.append(lengthZ)
-
-            p1=App.Vector(startX+EndX,startY+EndY+lengthY/2,startZ+lengthZ/2)
-            p2=App.Vector(startX+EndX,startY+EndY+lengthY/2,startZ+lengthZ/2)
-            p3=App.Vector(startX+EndX,startY+EndY+lengthY/2,startZ+lengthZ/2)
+            print("start",startX,startY,startZ)
+            print("end ",EndX,EndY,EndZ)
+            
+            p1=App.Vector(startX+lengthX/2,startY+lengthY,startZ+lengthZ/2)
+            p2=App.Vector(startX,startY,startZ)
+            p3=App.Vector(startX,startY,startZ)
             
             _vectors.append(p1)
             _vectors.append(p2)
             _vectors.append(p3)
+            print(_vectors)
             return (_vectors,leng)
-        
+
         # we have a selected object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_DirectScale' Failed. "
@@ -428,12 +431,13 @@ class Design456_DirectScale:
             self.smartInd.clear()
             rotation=(0.0,0.0,0.0,0.0)
             self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,rotation))
+            self.smartInd[0].w_color=FR_COLOR.FR_OLIVEDRAB          
             
-            rotation=(0,0,-1,math.radians(63))
+            rotation=(0.0,0.0,1.0,math.radians(57))
             self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,rotation))
             self.smartInd[1].w_color=FR_COLOR.FR_RED
             
-            rotation=(1,0 ,0,math.radians(63))
+            rotation=(1.0,0.0 ,0.0,math.radians(57))
             self.smartInd.append(Fr_Arrow_Widget(_vec[2],"Z-Axis",1,rotation))
             self.smartInd[2].w_color=FR_COLOR.FR_BLUE
 
