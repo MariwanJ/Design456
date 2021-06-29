@@ -143,8 +143,6 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
     Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
     An angle in radians. 
     '''
-    if len (_Points)!=1:
-        raise ValueError('Vertices must be 1')
     try:
         so_separatorRoot=coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
@@ -181,7 +179,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
 
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
-        transRoot.translation.setValue(_Points[0])
+        transRoot.translation.setValue(_Points)
         
         color=coin.SoBaseColor(); 
         color.rgb=_color
@@ -204,7 +202,6 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         so_separatorRoot.addChild(so_separatorHead)
         so_separatorRoot.addChild(so_separatorTail)
 
-        
         return so_separatorRoot
         # we have a selected object. Try to show the dimensions. 
         
