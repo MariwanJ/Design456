@@ -319,6 +319,27 @@ class Fr_Widget (object):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    # call the main callback for the widget
+    def do_move_callback(self):
+        """
+        This will activate the move-callback call. 
+        Use this function to run the callback.
+        This will be controlled by _when value
+        This is implemented here but the callback
+        should be implemented by the widget you subclass
+        """
+        try:
+            self.w_move_callback_(self.w_userData)
+
+        except Exception as err:
+            App.Console.PrintError("'move callback' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+
     def Color(self, color):
         """ Foreground color at normal status"""
         self.w_color = color
