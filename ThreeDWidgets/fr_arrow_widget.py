@@ -122,7 +122,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-
             if clickwdgdNode != None or clickwdglblNode != None:
                 if not self.has_focus():
                     self.take_focus()
@@ -130,7 +129,15 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 return 1            
             else:
                 self.remove_focus()
+        if self.w_parent.link_to_root_handle.w_lastEvent==FR_EVENTS.FR_MOUSE_DRAG:
+            self.take_focus()
+            self.do_move_callback()        # We use the same callback, 
+                                      #but user must tell the callback what was
+                                      # the event. TODO: Do we want to change this?
+            return 1
+            
         #Don't care events, return the event to other widgets    
+        self.remove_focus()
         return 0  # We couldn't use the event .. so return 0 
 
     def draw(self):

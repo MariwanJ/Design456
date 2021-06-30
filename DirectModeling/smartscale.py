@@ -41,6 +41,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from PySide import QtGui,QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 import math
+import ThreeDWidgets
 
 SeperateLinesFromObject=4
 
@@ -341,8 +342,23 @@ Gui.addCommand('Design456_SmartScale', Design456_SmartScale())
 
 
 
+def directScale_DRAGcallback(btnUniform:str=None,targetObj=None,smartArrow=None ):
+    pass
 
+def callback(obj=None):
+    print("Dummy callback.")
 
+class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
+    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1,_rotation=((1.0,1.0,1.0),0.0))-> None:
+        super().__init__(vectors,label,lineWidth,_rotation)
+        self.w_callback_= directScale_DRAGcallback           #External function
+        self.w_lbl_calback_=callback                         #External function
+        self.w_KB_callback_=callback                         #External function
+        self.w_move_callback_=callback                       #External function
+        self.selection=None
+            
+    def do_move_callback(self):
+        self.w_move_callback_(self.b1.text(),self.selection,self)    
 
 class Design456_DirectScale:
     """
@@ -409,6 +425,7 @@ class Design456_DirectScale:
             e1 = QtGui.QLabel("(Direct Scale)\nFor quicker\nresizing any\n3D Objects")
             commentFont=QtGui.QFont("Times",12,True)
             self.b1 = QtGui.QPushButton("Uniform")
+            self.b1.setStyleSheet("background: orange;");
             self.b1.setCheckable(True)
             self.b1.toggle()
             self.b1.clicked.connect(lambda:self.whichbtn(self.b1))
@@ -416,12 +433,13 @@ class Design456_DirectScale:
             la.addWidget(self.b1)
             e1.setFont(commentFont)
             la.addWidget(e1)
-            okbox = QtGui.QDialogButtonBox(self.dialog)
-            okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-            la.addWidget(okbox)
-            QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
-            QtCore.QObject.connect(okbox, QtCore.SIGNAL("rejected()"), self.hide)
+            self.okbox = QtGui.QDialogButtonBox(self.dialog)
+            self.okbox.setOrientation(QtCore.Qt.Horizontal)
+            self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            la.addWidget(self.okbox)
+            QtCore.QObject.connect(self.okbox, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(self.okbox, QtCore.SIGNAL("rejected()"), self.hide)
+                        
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             (_vec, length)=self.returnVectorsFromBoundaryBox(sel[0])
 
@@ -429,7 +447,7 @@ class Design456_DirectScale:
             rotation=(0.0,0.0,0.0,0.0)
             self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,rotation))
             self.smartInd[0].w_color=FR_COLOR.FR_OLIVEDRAB          
-            
+
             rotation=(0.0,0.0,-1.0,math.radians(57))
             self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,rotation))
             self.smartInd[1].w_color=FR_COLOR.FR_RED
@@ -438,6 +456,7 @@ class Design456_DirectScale:
             self.smartInd.append(Fr_Arrow_Widget(_vec[2],"Z-Axis",1,rotation))
             self.smartInd[2].w_color=FR_COLOR.FR_BLUE
 
+            
             #set selected object to each smartArrow 
             if self._mywin==None :
                 self._mywin=win.Fr_CoinWindow()
@@ -469,8 +488,11 @@ class Design456_DirectScale:
             self.b1.setText("None Uniform")
             print ("button released")
             
-    def whichbtn(self,b):
-          print ("clicked button is "+b.text())
+    def whichbtn(self,b1):
+        if b1.text()=='Uniform':
+            b1.setStyleSheet("background: yellow;");
+        else: 
+            b1.setStyleSheet("background: orange;");
     
     def __del__(self):
         try:
