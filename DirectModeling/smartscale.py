@@ -382,8 +382,8 @@ class Design456_DirectScale:
             print("end ",EndX,EndY,EndZ)
             
             p1=App.Vector(startX+lengthX/2,startY+lengthY,startZ+lengthZ/2)
-            p2=App.Vector(startX,startY,startZ)
-            p3=App.Vector(startX,startY,startZ)
+            p2=App.Vector(EndX-lengthX/2,EndY-lengthY/2,EndZ)
+            p3=App.Vector(startX,startY,startZ+lengthZ/2)
             
             _vectors.append(p1)
             _vectors.append(p2)

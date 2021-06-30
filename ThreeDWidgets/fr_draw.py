@@ -190,17 +190,16 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         so_separatorHead.addChild(transHead)
         so_separatorTail.addChild(transTail)
 
-      
-        
         so_separatorHead.addChild(styleHead)
         so_separatorHead.addChild(cone)
         
         so_separatorTail.addChild(styleTail)
         so_separatorTail.addChild(cylinder)
-        group= coin.SoGroup()
+        
+        group= coin.SoSeparator()        
+        group.addChild(coordsRoot)
         group.addChild(so_separatorHead)
         group.addChild(so_separatorTail)
-        group.addChild(coordsRoot)
         return group
         
     except Exception as err:
