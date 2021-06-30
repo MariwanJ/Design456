@@ -379,9 +379,9 @@ class Design456_DirectScale:
             leng.append(lengthY)
             leng.append(lengthZ)
             
-            p1=App.Vector(startX+lengthX/2,startY+lengthY,startZ+lengthZ/2)
-            p2=App.Vector(EndX-lengthX/2,EndY-lengthY/2,EndZ)
-            p3=App.Vector(startX,startY,startZ+lengthZ/2)
+            p1=App.Vector(startX+lengthX/2,EndY+lengthY,startZ+lengthZ/2)
+            p2=App.Vector(EndX+lengthX,startY+lengthY/2,startZ+lengthZ/2)
+            p3=App.Vector(startX++lengthX/2,startY+lengthY/2,EndZ+lengthZ)
             
             _vectors.append(p1)
             _vectors.append(p2)
@@ -430,7 +430,7 @@ class Design456_DirectScale:
             self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,rotation))
             self.smartInd[0].w_color=FR_COLOR.FR_OLIVEDRAB          
             
-            rotation=(0.0,0.0,1.0,math.radians(57))
+            rotation=(0.0,0.0,-1.0,math.radians(57))
             self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,rotation))
             self.smartInd[1].w_color=FR_COLOR.FR_RED
             

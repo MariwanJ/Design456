@@ -161,7 +161,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         cylinder=coin.SoCylinder()
         cylinder.height = 10
         cylinder.radius = 0.5
-        p1=App.Vector(_Points[0])
+        p1=App.Vector(0.0,0.0,0.0)#(_Points[0])
         p2=App.Vector(p1.x,p1.y-5,p1.z)
 
         styleHead = coin.SoDrawStyle()
@@ -197,6 +197,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         so_separatorTail.addChild(cylinder)
         
         group= coin.SoSeparator()        
+        group.addChild(transRoot)
         group.addChild(coordsRoot)
         group.addChild(so_separatorHead)
         group.addChild(so_separatorTail)
