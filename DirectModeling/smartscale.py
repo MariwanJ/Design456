@@ -378,8 +378,6 @@ class Design456_DirectScale:
             leng.append(lengthX)
             leng.append(lengthY)
             leng.append(lengthZ)
-            print("start",startX,startY,startZ)
-            print("end ",EndX,EndY,EndZ)
             
             p1=App.Vector(startX+lengthX/2,startY+lengthY,startZ+lengthZ/2)
             p2=App.Vector(EndX-lengthX/2,EndY-lengthY/2,EndZ)
@@ -388,7 +386,6 @@ class Design456_DirectScale:
             _vectors.append(p1)
             _vectors.append(p2)
             _vectors.append(p3)
-            print(_vectors)
             return (_vectors,leng)
 
         # we have a selected object. Try to show the dimensions. 
