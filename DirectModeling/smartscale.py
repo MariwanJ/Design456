@@ -343,18 +343,20 @@ Gui.addCommand('Design456_SmartScale', Design456_SmartScale())
 
 
 def directScale_DRAGcallback(btnUniform:str=None,targetObj=None,smartArrow=None ):
+    print("Drag detected")
     pass
 
 def callback(obj=None):
-    print("Dummy callback.")
+    pass
 
 class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
+    b1=None
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1,_rotation=((1.0,1.0,1.0),0.0))-> None:
         super().__init__(vectors,label,lineWidth,_rotation)
-        self.w_callback_= directScale_DRAGcallback           #External function
-        self.w_lbl_calback_=callback                         #External function
-        self.w_KB_callback_=callback                         #External function
-        self.w_move_callback_=callback                       #External function
+        self.w_callback_= callback                                           #External function
+        self.w_lbl_calback_=callback                                         #External function
+        self.w_KB_callback_=callback                                         #External function
+        self.w_move_callback_=directScale_DRAGcallback                       #External function
         self.selection=None
             
     def do_move_callback(self):
@@ -371,6 +373,7 @@ class Design456_DirectScale:
     tab=None
     smartInd=[]
     _mywin=None
+    b1=None
     
     def returnVectorsFromBoundaryBox(self,selected):
         try:
@@ -397,7 +400,7 @@ class Design456_DirectScale:
             
             p1=App.Vector(startX+lengthX/2,EndY+lengthY,startZ+lengthZ/2)
             p2=App.Vector(EndX+lengthX,startY+lengthY/2,startZ+lengthZ/2)
-            p3=App.Vector(startX++lengthX/2,startY+lengthY/2,EndZ+lengthZ)
+            p3=App.Vector(startX+lengthX/2,startY+lengthY/2,EndZ+lengthZ)
             
             _vectors.append(p1)
             _vectors.append(p2)
@@ -445,18 +448,20 @@ class Design456_DirectScale:
 
             self.smartInd.clear()
             rotation=(0.0,0.0,0.0,0.0)
-            self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,rotation))
+            self.smartInd.append(directScaleFrArrow(_vec[0],"X-Axis",1,rotation))
             self.smartInd[0].w_color=FR_COLOR.FR_OLIVEDRAB          
 
             rotation=(0.0,0.0,-1.0,math.radians(57))
-            self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,rotation))
+            self.smartInd.append(directScaleFrArrow(_vec[1],"Y-Axis",1,rotation))
             self.smartInd[1].w_color=FR_COLOR.FR_RED
             
             rotation=(1.0,0.0 ,0.0,math.radians(57))
-            self.smartInd.append(Fr_Arrow_Widget(_vec[2],"Z-Axis",1,rotation))
+            self.smartInd.append(directScaleFrArrow(_vec[2],"Z-Axis",1,rotation))
             self.smartInd[2].w_color=FR_COLOR.FR_BLUE
 
-            
+            #Give pointer to the button for checking uniform/nonuniform
+            for wdg in self.smartInd:
+                wdg.b1=self.b1            
             #set selected object to each smartArrow 
             if self._mywin==None :
                 self._mywin=win.Fr_CoinWindow()
