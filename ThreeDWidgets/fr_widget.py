@@ -291,7 +291,8 @@ class Fr_Widget (object):
             event callback. 
         """
         try:
-            self.w_lbl_calback_()
+            if (self.w_lbl_calback_!=None):
+                self.w_lbl_calback_()
 
         except Exception as err:
             App.Console.PrintError("'lblcallback' Failed. "
@@ -310,7 +311,8 @@ class Fr_Widget (object):
         should be implemented by the widget you create
         """
         try:
-            self.w_callback_(self.w_userData)
+            if(self.w_callback_!=None):
+                self.w_callback_(self.w_userData)
 
         except Exception as err:
             App.Console.PrintError("'callback' Failed. "
@@ -329,7 +331,8 @@ class Fr_Widget (object):
         should be implemented by the widget you subclass
         """
         try:
-            self.w_move_callback_(self.w_userData)
+            if(self.w_move_callback_!=None):
+                self.w_move_callback_(self.w_userData)
 
         except Exception as err:
             App.Console.PrintError("'move callback' Failed. "
