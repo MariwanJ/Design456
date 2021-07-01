@@ -363,36 +363,44 @@ class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
         self.w_KB_callback_=callback                                         #External function
         self.w_move_callback_=None                       #External function
         
-    def handle(self,event):
-        if type(event)==int:
-            if event==FR_EVENTS.FR_NO_EVENT:
+    def handle(self,events):
+        if type(events)==int:
+            if events==FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nonthing to do 
         
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                           self.w_pick_radius, self.w_widgetSoNodes)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                            self.w_pick_radius, self.w_widgetlblSoNodes) 
-        simple=oldVertex=App.Vector(self.w_parent.link_to_root_handlew_lastEventXYZ.Coin_x,
-                              self.w_parent.link_to_root_handlew_lastEventXYZ.Coin_y,
-                              self.w_parent.link_to_root_handlew_lastEventXYZ.Coin_z)
-        
-        if (event==FR_EVENTS.FR_MOUSE_DRAG):
+        simple=App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                              self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                              self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        print(self.w_color)
+        if (events==FR_EVENTS.FR_MOUSE_DRAG):
             print("drag  smart direct scale ")
             if self.run_Once!=True:
                 self.run_Once=True
                 self.oldVertex=simple
-            self.w_vector.clear()
-            self.w_vector=simple
+
+            if self.w_color==FR_COLOR.FR_OLIVEDRAB:
+                #x direction only
+                self.w_vector.y=simple.y
+            elif self.w_color==FR_COLOR.FR_RED:
+                self.w_vector.x=simple.x
+            elif self.w_color==FR_COLOR.FR_BLUE:
+                self.w_vector.z=simple.z
             self.redraw()
             return 1 #we eat the event no more widgets should get it
                 
-        elif(event==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
+        elif(events==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
+            print("mouse release")
             self.run_Once=False 
             self.ResizeObject(self.oldVertex,simple)
             return 1  #we eat the event no more widgets should get it  
-        return 0
+        super().handle(events)
     
     def ResizeObject(self,startVector,EndVector):
+        print("resize")
         scaleX=EndVector.x-startVector.x
         scaleY=EndVector.y-startVector.y
         scaleZ=EndVector.z-startVector.z
@@ -406,12 +414,12 @@ class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
             if scaleZ==0.0:
                 scaleZ=1.0
         else:
-            if self.w_userColor==FR_COLOR.FR_OLIVEDRAB:
+            if self.w_color==FR_COLOR.FR_OLIVEDRAB:
                 #x direction moved
                 scaleY=scaleZ=1.0
-            elif self.w_userColor==FR_COLOR.FR_RED:
+            elif self.w_color==FR_COLOR.FR_RED:
                 scaleX=scaleZ=1.0
-            elif self.w_userColor==FR_COLOR.FR_BLUE:
+            elif self.w_color==FR_COLOR.FR_BLUE:
                 scaleX=scaleY=1.0
             
             #Clone the object
@@ -442,9 +450,6 @@ class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
             #    self.parentlink.smartInd[i].changeLabelfloat(_lengths[i])
             #    self.parentlink.smartInd[i].redraw()        #Update the vertices here
             App.ActiveDocument.recompute()
-
-
-
 
 class Design456_DirectScale:
     """
