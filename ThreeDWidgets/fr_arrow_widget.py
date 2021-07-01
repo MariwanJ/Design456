@@ -30,7 +30,6 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import ThreeDWidgets
 import pivy.coin as coin
-import Design456Init
 from ThreeDWidgets import fr_draw
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant

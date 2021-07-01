@@ -35,13 +35,15 @@ import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
 import ThreeDWidgets.fr_line_widget as wlin
 import ThreeDWidgets.fr_coinwindow  as win
+from ThreeDWidgets import fr_coin3d
 from typing import ItemsView, List
 import Design456Init
-from ThreeDWidgets.constant import FR_COLOR
 from PySide import QtGui,QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 import math
 import ThreeDWidgets
+from ThreeDWidgets.constant import FR_EVENTS
+from ThreeDWidgets.constant import FR_COLOR
 
 SeperateLinesFromObject=4
 
@@ -315,6 +317,7 @@ class Design456_SmartScale:
             QtCore.QObject.connect(okbox, QtCore.SIGNAL("rejected()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             return self.dialog
+        
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -337,30 +340,111 @@ class Design456_SmartScale:
             'MenuText': 'SmartScale',
                         'ToolTip':  'Smart Scale'
         }
+        
 
 Gui.addCommand('Design456_SmartScale', Design456_SmartScale())
 
 
-
-def directScale_DRAGcallback(btnUniform:str=None,targetObj=None,smartArrow=None ):
-    print("Drag detected")
-    pass
-
 def callback(obj=None):
+    #We don't need to do anything yet
     pass
 
 class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
     b1=None
+    parentlink=None
+    selection=None
+    run_Once=False 
+    oldVertex=App.Vector(0,0,0)   #keep the old position when DRAG started
+    
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1,_rotation=((1.0,1.0,1.0),0.0))-> None:
         super().__init__(vectors,label,lineWidth,_rotation)
         self.w_callback_= callback                                           #External function
         self.w_lbl_calback_=callback                                         #External function
         self.w_KB_callback_=callback                                         #External function
-        self.w_move_callback_=directScale_DRAGcallback                       #External function
-        self.selection=None
+        self.w_move_callback_=None                       #External function
+        
+    def handle(self,event):
+        if type(event)==int:
+            if event==FR_EVENTS.FR_NO_EVENT:
+                return 1    # we treat this event. Nonthing to do 
+        
+        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                          self.w_pick_radius, self.w_widgetSoNodes)
+        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                           self.w_pick_radius, self.w_widgetlblSoNodes) 
+        simple=oldVertex=App.Vector(self.w_parent.link_to_root_handlew_lastEventXYZ.Coin_x,
+                              self.w_parent.link_to_root_handlew_lastEventXYZ.Coin_y,
+                              self.w_parent.link_to_root_handlew_lastEventXYZ.Coin_z)
+        
+        if (event==FR_EVENTS.FR_MOUSE_DRAG):
+            print("drag  smart direct scale ")
+            if self.run_Once!=True:
+                self.run_Once=True
+                self.oldVertex=simple
+            self.w_vector.clear()
+            self.w_vector=simple
+            self.redraw()
+            return 1 #we eat the event no more widgets should get it
+                
+        elif(event==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
+            self.run_Once=False 
+            self.ResizeObject(self.oldVertex,simple)
+            return 1  #we eat the event no more widgets should get it  
+        return 0
+    
+    def ResizeObject(self,startVector,EndVector):
+        scaleX=EndVector.x-startVector.x
+        scaleY=EndVector.y-startVector.y
+        scaleZ=EndVector.z-startVector.z
+
+        if (self.b1.text()=='Uniform'):
+            #We maximize all of them regardles the change in which axis made
+            if scaleX==0.0:
+                scaleX= 1.0
+            if scaleY==0.0:
+                scaleY=1.0
+            if scaleZ==0.0:
+                scaleZ=1.0
+        else:
+            if self.w_userColor==FR_COLOR.FR_OLIVEDRAB:
+                #x direction moved
+                scaleY=scaleZ=1.0
+            elif self.w_userColor==FR_COLOR.FR_RED:
+                scaleX=scaleZ=1.0
+            elif self.w_userColor==FR_COLOR.FR_BLUE:
+                scaleX=scaleY=1.0
             
-    def do_move_callback(self):
-        self.w_move_callback_(self.b1.text(),self.selection,self)    
+            #Clone the object
+            cloneObj = Draft.clone(self.selection, forcedraft=True)
+            #Scale the object
+            cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
+        
+            self.selection.Visibility=False
+            App.ActiveDocument.recompute()
+            _name=self.selection.Label
+            self.selection.Label=self.selection.Label+"old"
+            __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
+            _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
+            _simpleCopy.Shape=__shape
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(self.selection.Name)
+            App.ActiveDocument.removeObject(cloneObj.Name)
+            Gui.Selection.clearSelection()
+            Gui.Selection.addSelection(_simpleCopy)
+            _simpleCopy.Label = _name        
+            App.ActiveDocument.recompute()
+            #All objects must get link to the new targeted object
+            (_vectors,_lengths)=self.parentlink.returnVectorsFromBoundaryBox(_simpleCopy)
+            tt=0
+            #for i in range (0,3):
+            #    self.parentlink.smartInd[i].set_target(_simpleCopy)
+            #    self.parentlink.smartInd[i].w_vector=_vectors[i]
+            #    self.parentlink.smartInd[i].changeLabelfloat(_lengths[i])
+            #    self.parentlink.smartInd[i].redraw()        #Update the vertices here
+            App.ActiveDocument.recompute()
+
+
+
 
 class Design456_DirectScale:
     """
@@ -428,7 +512,7 @@ class Design456_DirectScale:
             e1 = QtGui.QLabel("(Direct Scale)\nFor quicker\nresizing any\n3D Objects")
             commentFont=QtGui.QFont("Times",12,True)
             self.b1 = QtGui.QPushButton("Uniform")
-            BUTTON_SIZE = QtGui.QSize(40, 40)
+            BUTTON_SIZE = QtCore.QSize(100, 100)
             self.b1.setMinimumSize(BUTTON_SIZE)
             self.b1.setStyleSheet("background: orange;")
             self.b1.setCheckable(True)
@@ -463,7 +547,9 @@ class Design456_DirectScale:
 
             #Give pointer to the button for checking uniform/nonuniform
             for wdg in self.smartInd:
-                wdg.b1=self.b1            
+                wdg.b1=self.b1
+                wdg.parentObject=self
+
             #set selected object to each smartArrow 
             if self._mywin==None :
                 self._mywin=win.Fr_CoinWindow()
