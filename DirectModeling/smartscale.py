@@ -428,7 +428,9 @@ class Design456_DirectScale:
             e1 = QtGui.QLabel("(Direct Scale)\nFor quicker\nresizing any\n3D Objects")
             commentFont=QtGui.QFont("Times",12,True)
             self.b1 = QtGui.QPushButton("Uniform")
-            self.b1.setStyleSheet("background: orange;");
+            BUTTON_SIZE = QtGui.QSize(40, 40)
+            self.b1.setMinimumSize(BUTTON_SIZE)
+            self.b1.setStyleSheet("background: orange;")
             self.b1.setCheckable(True)
             self.b1.toggle()
             self.b1.clicked.connect(lambda:self.whichbtn(self.b1))
