@@ -356,49 +356,49 @@ class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
     run_Once=False 
     oldVertex=App.Vector(0,0,0)   #keep the old position when DRAG started
     
-    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1,_rotation=((1.0,1.0,1.0),0.0))-> None:
+    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1,_rotation=((1.0,1.0,1.0),0.0)):
         super().__init__(vectors,label,lineWidth,_rotation)
         self.w_callback_= callback                                           #External function
         self.w_lbl_calback_=callback                                         #External function
         self.w_KB_callback_=callback                                         #External function
-        self.w_move_callback_=None                       #External function
-        
-    def handle(self,events):
-        if type(events)==int:
-            if events==FR_EVENTS.FR_NO_EVENT:
-                return 1    # we treat this event. Nonthing to do 
-        
-        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                          self.w_pick_radius, self.w_widgetSoNodes)
-        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                           self.w_pick_radius, self.w_widgetlblSoNodes) 
-        simple=App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                              self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                              self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-        print(self.w_color)
-        if (events==FR_EVENTS.FR_MOUSE_DRAG):
-            print("drag  smart direct scale ")
-            if self.run_Once!=True:
-                self.run_Once=True
-                self.oldVertex=simple
-
-            if self.w_color==FR_COLOR.FR_OLIVEDRAB:
-                #x direction only
-                self.w_vector.y=simple.y
-            elif self.w_color==FR_COLOR.FR_RED:
-                self.w_vector.x=simple.x
-            elif self.w_color==FR_COLOR.FR_BLUE:
-                self.w_vector.z=simple.z
-            self.redraw()
-            return 1 #we eat the event no more widgets should get it
-                
-        elif(events==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
-            print("mouse release")
-            self.run_Once=False 
-            self.ResizeObject(self.oldVertex,simple)
-            return 1  #we eat the event no more widgets should get it  
-        super().handle(events)
+        self.w_move_callback_=None                                           #External function
     
+    #def handle(self,events):
+    #    if type(events)==int:
+    #        if events==FR_EVENTS.FR_NO_EVENT:
+    #            return 1    # we treat this event. Nonthing to do 
+    #    
+    #    clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+    #                                                      self.w_pick_radius, self.w_widgetSoNodes)
+    #    clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+    #                                                       self.w_pick_radius, self.w_widgetlblSoNodes) 
+    #    simple=App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+    #                          self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+    #                          self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    #    print(self.w_color)
+    #    if (events==FR_EVENTS.FR_MOUSE_DRAG):
+    #        print("drag  smart direct scale ")
+    #        if self.run_Once!=True:
+    #            self.run_Once=True
+    #            self.oldVertex=simple
+    #
+    #        if self.w_color==FR_COLOR.FR_OLIVEDRAB:
+    #            #x direction only
+    #            self.w_vector.y=simple.y
+    #        elif self.w_color==FR_COLOR.FR_RED:
+    #            self.w_vector.x=simple.x
+    #        elif self.w_color==FR_COLOR.FR_BLUE:
+    #            self.w_vector.z=simple.z
+    #        self.redraw()
+    #        return 1 #we eat the event no more widgets should get it
+    #            
+    #    elif(events==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
+    #        print("mouse release")
+    #        self.run_Once=False 
+    #        self.ResizeObject(self.oldVertex,simple)
+    #        return 1  #we eat the event no more widgets should get it  
+    #    super().handle(events)
+        
     def ResizeObject(self,startVector,EndVector):
         print("resize")
         scaleX=EndVector.x-startVector.x
