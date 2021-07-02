@@ -363,41 +363,39 @@ class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
         self.w_KB_callback_=callback                                         #External function
         self.w_move_callback_=None                                           #External function
     
-    #def handle(self,events):
-    #    if type(events)==int:
-    #        if events==FR_EVENTS.FR_NO_EVENT:
-    #            return 1    # we treat this event. Nonthing to do 
-    #    
-    #    clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-    #                                                      self.w_pick_radius, self.w_widgetSoNodes)
-    #    clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-    #                                                       self.w_pick_radius, self.w_widgetlblSoNodes) 
-    #    simple=App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-    #                          self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-    #                          self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-    #    print(self.w_color)
-    #    if (events==FR_EVENTS.FR_MOUSE_DRAG):
-    #        print("drag  smart direct scale ")
-    #        if self.run_Once!=True:
-    #            self.run_Once=True
-    #            self.oldVertex=simple
-    #
-    #        if self.w_color==FR_COLOR.FR_OLIVEDRAB:
-    #            #x direction only
-    #            self.w_vector.y=simple.y
-    #        elif self.w_color==FR_COLOR.FR_RED:
-    #            self.w_vector.x=simple.x
-    #        elif self.w_color==FR_COLOR.FR_BLUE:
-    #            self.w_vector.z=simple.z
-    #        self.redraw()
-    #        return 1 #we eat the event no more widgets should get it
-    #            
-    #    elif(events==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
-    #        print("mouse release")
-    #        self.run_Once=False 
-    #        self.ResizeObject(self.oldVertex,simple)
-    #        return 1  #we eat the event no more widgets should get it  
-    #    super().handle(events)
+    def handle(self,events):
+        if type(events)==int:
+            if events==FR_EVENTS.FR_NO_EVENT:
+                return 1    # we treat this event. Nonthing to do 
+        
+        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                          self.w_pick_radius, self.w_widgetSoNodes)
+        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                           self.w_pick_radius, self.w_widgetlblSoNodes) 
+        simple=App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                              self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                              self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        if (events==FR_EVENTS.FR_MOUSE_DRAG):
+            if self.run_Once!=True:
+                self.run_Once=True
+                self.oldVertex=simple
+    
+            if self.w_color==FR_COLOR.FR_OLIVEDRAB:
+                #x direction only
+                self.w_vector.y=simple.y
+            elif self.w_color==FR_COLOR.FR_RED:
+                self.w_vector.x=simple.x
+            elif self.w_color==FR_COLOR.FR_BLUE:
+                self.w_vector.z=simple.z
+            self.redraw()
+            return 1 #we eat the event no more widgets should get it
+                
+        elif(events==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
+            print("mouse release")
+            self.run_Once=False 
+            self.ResizeObject(self.oldVertex,simple)
+            return 1  #we eat the event no more widgets should get it  
+        super().handle(events)
         
     def ResizeObject(self,startVector,EndVector):
         print("resize")
@@ -422,34 +420,35 @@ class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
             elif self.w_color==FR_COLOR.FR_BLUE:
                 scaleX=scaleY=1.0
             
-            #Clone the object
-            cloneObj = Draft.clone(self.selection, forcedraft=True)
-            #Scale the object
-            cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
-        
-            self.selection.Visibility=False
-            App.ActiveDocument.recompute()
-            _name=self.selection.Label
-            self.selection.Label=self.selection.Label+"old"
-            __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
-            _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
-            _simpleCopy.Shape=__shape
-            App.ActiveDocument.recompute()
-            App.ActiveDocument.removeObject(self.selection.Name)
-            App.ActiveDocument.removeObject(cloneObj.Name)
-            Gui.Selection.clearSelection()
-            Gui.Selection.addSelection(_simpleCopy)
-            _simpleCopy.Label = _name        
-            App.ActiveDocument.recompute()
-            #All objects must get link to the new targeted object
-            (_vectors,_lengths)=self.parentlink.returnVectorsFromBoundaryBox(_simpleCopy)
-            tt=0
-            #for i in range (0,3):
-            #    self.parentlink.smartInd[i].set_target(_simpleCopy)
-            #    self.parentlink.smartInd[i].w_vector=_vectors[i]
-            #    self.parentlink.smartInd[i].changeLabelfloat(_lengths[i])
-            #    self.parentlink.smartInd[i].redraw()        #Update the vertices here
-            App.ActiveDocument.recompute()
+        #Clone the object
+        cloneObj = Draft.clone(self.selection, forcedraft=True)
+        #Scale the object
+        print("scaleX,scaleY,scaleZ",scaleX,scaleY,scaleZ)
+        cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
+    
+        self.selection.Visibility=False
+        App.ActiveDocument.recompute()
+        _name=self.selection.Label
+        self.selection.Label=self.selection.Label+"old"
+        __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
+        _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
+        _simpleCopy.Shape=__shape
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.removeObject(self.selection.Name)
+        App.ActiveDocument.removeObject(cloneObj.Name)
+        Gui.Selection.clearSelection()
+        Gui.Selection.addSelection(_simpleCopy)
+        _simpleCopy.Label = _name        
+        App.ActiveDocument.recompute()
+        #All objects must get link to the new targeted object
+        (_vectors,_lengths)=self.parentlink.returnVectorsFromBoundaryBox(_simpleCopy)
+        tt=0
+        #for i in range (0,3):
+        #    self.parentlink.smartInd[i].set_target(_simpleCopy)
+        #    self.parentlink.smartInd[i].w_vector=_vectors[i]
+        #    self.parentlink.smartInd[i].changeLabelfloat(_lengths[i])
+        #    self.parentlink.smartInd[i].redraw()        #Update the vertices here
+        App.ActiveDocument.recompute()
 
 class Design456_DirectScale:
     """
@@ -554,6 +553,7 @@ class Design456_DirectScale:
             for wdg in self.smartInd:
                 wdg.b1=self.b1
                 wdg.parentObject=self
+                wdg.selection=sel[0]
 
             #set selected object to each smartArrow 
             if self._mywin==None :
