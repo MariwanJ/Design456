@@ -89,8 +89,9 @@ def objectMouseClick_Coin3d(mouse_pos, pick_radius,TargetNode):
         if type(TargetNode)==list:
             for nodeInList in TargetNode:
                 if path.containsNode(nodeInList):
+                    print("found",nodeInList)
                     return (path.getNode(path.findNode(nodeInList)))  #Not sure if we need it #TODO should we return only true?
-            return None #Not found
+            return None #Not found 
         else:        
             if path.containsNode(TargetNode):
                 return (path.getNode(path.findNode(TargetNode)))  #Not sure if we need it #TODO should we return only true?
