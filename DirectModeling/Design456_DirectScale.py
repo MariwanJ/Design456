@@ -30,6 +30,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Draft
 import Part
+from ThreeDWidgets import fr_arrow_widget
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
@@ -41,162 +42,142 @@ import Design456Init
 from PySide import QtGui,QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 import math
-import ThreeDWidgets
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 
-def callback(obj=None):
-    #We don't need to do anything yet
-    pass
+SCALE_FACTOR=20.0 # This will be used to convert mouse movement to scale factor.
 
-class directScaleFrArrow(ThreeDWidgets.fr_arrow_widget.Fr_Arrow_Widget):
-    parentlink=None
-    selection=None
-    run_Once=False 
-    oldVertex=App.Vector(0,0,0)   #keep the old position when DRAG started
-    
-    SCALE_FACTOR=20.0 # This will be used to convert mouse movement to scale factor. 
-    #TODO: This might be property for Design456
-    
-    def __init__(self, vectors: List[App.Vector] = [], 
-                 label: str = "", lineWidth=1,
-                 _color=FR_COLOR.FR_BLACK,
-                 _rotation=((1.0,1.0,1.0),0.0)):
-
-        super().__init__(vectors, label,lineWidth,_color,_rotation)
-        self.w_callback_= callback                                           #External function
-        self.w_lbl_calback_=callback                                         #External function
-        self.w_KB_callback_=callback                                         #External function
-        self.w_move_callback_=None                                           #External function
-
-    def handle(self,events):
-        if type(events)!=int:
-            # We don't tread other events : i.e keyboard, ..etc
-            return super().handle(events)
-        
-        if events==FR_EVENTS.FR_NO_EVENT:
-            return 1    # we treat this event. Nonthing to do 
-        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                          self.w_pick_radius, self.w_widgetSoNodes)
-        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                           self.w_pick_radius, self.w_widgetlblSoNodes) 
-        simple=App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                              self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                              self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-        if clickwdgdNode == None and clickwdglblNode==None:
-            return super().handle(events) # nothing to do 
-        
-        if (events==FR_EVENTS.FR_MOUSE_DRAG):
-            if not self.has_focus():
-                self.take_focus()
-                
-            if self.run_Once!=True:
-                self.run_Once=True
-                self.oldVertex=simple # Keep the old value only first time when drag start
-            scale=1.0
-            if self.w_color==FR_COLOR.FR_OLIVEDRAB:
-                #x direction only
-                self.w_vector.y=simple.y
-                scale=(self.oldVertex.y-simple.y)
-            elif self.w_color==FR_COLOR.FR_RED:
-                self.w_vector.x=simple.x
-                scale=self.oldVertex.x-simple.x
-            elif self.w_color==FR_COLOR.FR_BLUE:
-                self.w_vector.z=simple.z
-                scale=self.oldVertex.z-simple.z
-
-            print("simple,self.oldVertex",simple,self.oldVertex)
-            self.redraw()
-            self.parentlink.scaleLBL.setText("scale= "+str((scale)/self.SCALE_FACTOR))
-            return 1 #we eat the event no more widgets should get it
-                
-        elif(events==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
-            print("mouse release")
-            self.remove_focus()
-            self.run_Once=False 
-            self.ResizeObject(self.oldVertex,simple)
-            return 1  #we eat the event no more widgets should get it  
-        
-        self.remove_focus()
-        return super().handle(events)
-        
-    def ResizeObject(self,startVector,EndVector):
-        try:
-            print("resize")
-            scaleX=scaleY=scaleZ=1.0
-            deltaX=EndVector.x-startVector.x
-            deltaY=EndVector.y-startVector.y
-            deltaZ=EndVector.z-startVector.z
-            (lengthX,lengthY,lengthZ)= self.parentlink.getObjectLength(self.selection)
-
-            uniformValue=1.0
-            oldLength=0.0
-            if (self.parentlink.b1.text()=='Uniform'):
-                #We maximize all of them regardles the change in which axis made
-                if self.w_color==FR_COLOR.FR_OLIVEDRAB:
-                    uniformValue=deltaY
-                    oldLength=lengthY
-                elif self.w_color==FR_COLOR.FR_RED:
-                    uniformValue=deltaX
-                    oldLength=lengthX
-                elif self.w_color==FR_COLOR.FR_BLUE:
-                    uniformValue=deltaZ
-                    oldLength=lengthZ
-                else:
-                    # This shouldn't happen
-                    errMessage = "Unknown error occurred. Arrow's Color not find"
-                    faced.getInfo().errorDialog(errMessage)
-                    return 
-        
-                scaleX=scaleY=scaleZ=(uniformValue)/self.SCALE_FACTOR
+def ResizeObject(ArrowObject,startVector,EndVector):
+    try:
+        print("resize")
+        scaleX=scaleY=scaleZ=1.0
+        deltaX=EndVector.x-startVector.x
+        deltaY=EndVector.y-startVector.y
+        deltaZ=EndVector.z-startVector.z
+        (lengthX,lengthY,lengthZ)= ArrowObject.parentlink.getObjectLength(ArrowObject.selection)
+        uniformValue=1.0
+        oldLength=0.0
+        if (object.parentlink.b1.text()=='Uniform'):
+            #We maximize all of them regardles the change in which axis made
+            if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
+                uniformValue=deltaY
+                oldLength=lengthY
+            elif ArrowObject.w_color==FR_COLOR.FR_RED:
+                uniformValue=deltaX
+                oldLength=lengthX
+            elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
+                uniformValue=deltaZ
+                oldLength=lengthZ
             else:
-                scaleX=1
-                scaleY=1
-                scaleZ=1
-                if self.w_color==FR_COLOR.FR_OLIVEDRAB:
-                    #y-direction moved
-                    scaleY=deltaY
-                    self.parentlink.scaleLBL.setText("scale= "+str(scaleY))
-                elif self.w_color==FR_COLOR.FR_RED:
-                    #x-direction moved
-                    scaleX=deltaX
-                    self.parentlink.scaleLBL.setText("scale= "+str(scaleX))
-                elif self.w_color==FR_COLOR.FR_BLUE:
-                    #z-direction moved
-                    scaleZ=deltaZ
-                    self.parentlink.scaleLBL.setText("scale= "+str(scaleZ))
-            #Clone the object
-            cloneObj = Draft.clone(self.selection, forcedraft=True)
-            #Scale the object
-            cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
+                # This shouldn't happen
+                errMessage = "Unknown error occurred. Arrow's Color not find"
+                faced.getInfo().errorDialog(errMessage)
+                return 
+    
+            scaleX=scaleY=scaleZ=(uniformValue)/ArrowObject.SCALE_FACTOR
+        else:
+            scaleX=1
+            scaleY=1
+            scaleZ=1
+            if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
+                #y-direction moved
+                scaleY=deltaY
+                ArrowObject.parentlink.scaleLBL.setText("scale= "+str(scaleY))
+            elif ArrowObject.w_color==FR_COLOR.FR_RED:
+                #x-direction moved
+                scaleX=deltaX
+                ArrowObject.parentlink.scaleLBL.setText("scale= "+str(scaleX))
+            elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
+                #z-direction moved
+                scaleZ=deltaZ
+                ArrowObject.parentlink.scaleLBL.setText("scale= "+str(scaleZ))
+        #Clone the object
+        cloneObj = Draft.clone(ArrowObject.selection, forcedraft=True)
+        #Scale the object
+        cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
 
-            self.selection.Visibility=False
-            App.ActiveDocument.recompute()
-            _name=self.selection.Label
-            self.selection.Label=self.selection.Label+"old"
-            __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
-            _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
-            _simpleCopy.Shape=__shape
-            App.ActiveDocument.recompute()
-            App.ActiveDocument.removeObject(self.selection.Name)
-            App.ActiveDocument.removeObject(cloneObj.Name)
-            Gui.Selection.clearSelection()
-            Gui.Selection.addSelection(_simpleCopy)
-            _simpleCopy.Label = _name        
-            App.ActiveDocument.recompute()
-            #All objects must get link to the new targeted object
-            (_vectors,_lengths)=self.parentlink.returnVectorsFromBoundaryBox(_simpleCopy)
-            tt=0
-            for wdg in self.parentlink.smartInd:
-                wdg.selection=_simpleCopy
-            App.ActiveDocument.recompute()
+        ArrowObject.selection.Visibility=False
+        App.ActiveDocument.recompute()
+        _name=ArrowObject.selection.Label
+        ArrowObject.selection.Label=ArrowObject.selection.Label+"old"
+        __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
+        _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
+        _simpleCopy.Shape=__shape
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.removeObject(ArrowObject.selection.Name)
+        App.ActiveDocument.removeObject(cloneObj.Name)
+        Gui.Selection.clearSelection()
+        Gui.Selection.addSelection(_simpleCopy)
+        _simpleCopy.Label = _name        
+        App.ActiveDocument.recompute()
+        #All objects must get link to the new targeted object
+        (_vectors,_lengths)=ArrowObject.parentlink.returnVectorsFromBoundaryBox(_simpleCopy)
+        tt=0
+        for wdg in ArrowObject.parentlink.smartInd:
+            wdg.selection=_simpleCopy
+        App.ActiveDocument.recompute()
 
-        except Exception as err:
-            App.Console.PrintError("'Direct Scale' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+    except Exception as err:
+        App.Console.PrintError("'Direct Scale' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
+
+def callback(userData:fr_arrow_widget.userDataObject=None):
+    if userData==None : 
+        return # Nothing to do here - shouldn't be None 
+    
+    ArrowObject= userData.ArrowObj
+    events=userData.events
+    
+    if type(events)!=int:
+        return    
+    
+    if events==FR_EVENTS.FR_NO_EVENT:
+        return 1    # we treat this event. Nonthing to do 
+    clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                      ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
+    clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                       ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes) 
+    simple=App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                          ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                          ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    if clickwdgdNode == None and clickwdglblNode==None:
+        return 0  # nothing to do 
+    
+    if (events==FR_EVENTS.FR_MOUSE_DRAG):
+        if not ArrowObject.has_focus():
+            ArrowObject.take_focus()
+            
+        if ArrowObject.run_Once!=True:
+            ArrowObject.run_Once=True
+            ArrowObject.oldVertex=simple # Keep the old value only first time when drag start
+        scale=1.0
+        if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
+            #x direction only
+            ArrowObject.w_vector.y=simple.y
+            scale=(ArrowObject.oldVertex.y-simple.y)
+        elif ArrowObject.w_color==FR_COLOR.FR_RED:
+            ArrowObject.w_vector.x=simple.x
+            scale=ArrowObject.oldVertex.x-simple.x
+        elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
+            ArrowObject.w_vector.z=simple.z
+            scale=ArrowObject.oldVertex.z-simple.z
+        print("simple,ArrowObject.oldVertex",simple,ArrowObject.oldVertex)
+        ArrowObject.redraw()
+        ArrowObject.parentlink.scaleLBL.setText("scale= "+str((scale)/SCALE_FACTOR))
+        return 1 #we eat the event no more widgets should get it
+            
+    elif(events==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
+        print("mouse release")
+        ArrowObject.remove_focus()
+        ArrowObject.run_Once=False 
+        ResizeObject(ArrowObject.oldVertex,simple)
+        return 1  #we eat the event no more widgets should get it  
+    
+    ArrowObject.remove_focus()
 
 class Design456_DirectScale:
     """
@@ -300,17 +281,24 @@ class Design456_DirectScale:
 
             self.smartInd.clear()
 
-            rotation=(0.0,0.0,-1.0,math.radians(57))
-            self.smartInd.append(directScaleFrArrow(_vec[1],"Y-Axis",1,FR_COLOR.FR_RED,rotation))
-            self.smartInd[0].parentlink=self
-
-            rotation=(1.0,0.0 ,0.0,math.radians(57))
-            self.smartInd.append(directScaleFrArrow(_vec[2],"Z-Axis",1,FR_COLOR.FR_BLUE,rotation))
-            self.smartInd[1].parentlink=self
-
             rotation=(0.0,0.0,0.0,0.0)
-            self.smartInd.append(directScaleFrArrow(_vec[0],"X-Axis",1,FR_COLOR.FR_OLIVEDRAB,rotation))
+            self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,FR_COLOR.FR_OLIVEDRAB,rotation))
+            self.smartInd[0].parentlink=self
+            self.smartInd[0].w_callback_= callback
+            self.smartInd[0].w_move_callback_=callback      #External function
+            
+
+            rotation=(0.0,0.0,-1.0,math.radians(57))
+            self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,FR_COLOR.FR_RED,rotation))
+            self.smartInd[1].parentlink=self
+            self.smartInd[1].w_callback_=callback
+            self.smartInd[1].w_move_callback_=callback
+            
+            rotation=(1.0,0.0 ,0.0,math.radians(57))
+            self.smartInd.append(Fr_Arrow_Widget(_vec[2],"Z-Axis",1,FR_COLOR.FR_BLUE,rotation))
             self.smartInd[2].parentlink=self
+            self.smartInd[2].w_callback_=callback
+            self.smartInd[2].w_move_callback_=callback
 
             #Give pointer to the button for checking uniform/nonuniform
             for wdg in self.smartInd:
