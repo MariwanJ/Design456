@@ -83,7 +83,8 @@ class Fr_Widget (object):
     # each node is a child of one switch, Add drawings a children for this switch
     w_wdgsoSwitch = None         
     w_when = constant.FR_WHEN.FR_WHEN_NEVER
-    w_userData = None
+    w_userData = None  # Use this to send any object or value to the callback
+    w_lbluserData=None # Use this to send any object or value to the lbl callback 
     w_vector=None
     w_label=None
     w_lineWidth=1
@@ -289,6 +290,7 @@ class Fr_Widget (object):
         """
             This function will run the label-changed 
             event callback. 
+            self.w_lbluserData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
             if (self.w_lbl_calback_!=None):
@@ -308,7 +310,8 @@ class Fr_Widget (object):
         Use this function to run the callback.
         This will be controlled by _when value
         This is implemented here but the callback
-        should be implemented by the widget you create
+        should be implemented by the widget you create.
+        self.w_userData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
             if(self.w_callback_!=None):
@@ -328,7 +331,8 @@ class Fr_Widget (object):
         Use this function to run the callback.
         This will be controlled by _when value
         This is implemented here but the callback
-        should be implemented by the widget you subclass
+        should be implemented by the widget you subclass.
+        self.w_userData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
             if(self.w_move_callback_!=None):
@@ -340,8 +344,6 @@ class Fr_Widget (object):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
-
 
     def Color(self, color):
         """ Foreground color at normal status"""

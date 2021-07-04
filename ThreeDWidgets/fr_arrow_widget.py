@@ -39,12 +39,13 @@ from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_ALIGN
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
+from dataclasses import dataclass
 
 """
 Example how to use this widget. 
 
 import fr_coinwindow as wn
-import fr_line_widget as line
+import fr_arrow_widget as frarrow
 import FreeCAD as App
 g=[]
 p1=App.Vector(10,1,0)     # first point in the line and for the windows
@@ -52,19 +53,27 @@ p2=App.Vector(20,20,0)   # Second point in the line
 wny=wn.Fr_CoinWindow()  # Create the window, label has no effect at the moment
 g.append(p1)
 g.append(p2)
-ln =line.Fr_Arrow(g,"My label",7)   # draw the line - nothing will be visible yet
+ln =frarrow.Fr_Arrow(g,"My label",7)   # draw the arrow - nothing will be visible yet
 wny.addWidget(ln)              # Add it to the window as a child 
 wny.show()                    # show the window and it's widgets. 
 
-
 """
-def callback(userData=None):
+
+
+#class object will be used as object holder between arrow widget and the callback  
+@dataclass
+class userDataObject:
+    def __init__(self):
+        self.ArrowObj = None     # the arrow widget object
+        self.events   = None     # events - save handle events here 
+        self.callerObject=None   # Class uses the fr_arrow_widget
+
+def callback(userData:userDataObject=None):
     """
             This function will run the when the line is clicked 
             event callback. 
     """
-        #TODO : Subclass this and impalement the callback 
-        #          to get the desired effect
+    # Subclass this and impalement the callback or just change the callback function
     print("dummy arrow-widget callback" )
 
 class Fr_Arrow_Widget(fr_widget.Fr_Widget):
@@ -72,27 +81,29 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     """
     This class is for drawing a line in coin3D world
     """
-
     def __init__(self, vectors: List[App.Vector] = [], 
+
                  label: str = "",lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=((1.0,1.0,1.0),0.0)):
-        
-        super().__init__(vectors, label)        
+                 _rotation=((1.0,1.0,1.0),0.0)):        
         #Must be initialized first as per the following discussion. 
         #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
+        super().__init__(vectors,label)
         
         self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_ARROW
         
         self.w_callback_=callback           #External function
-        self.w_lbl_calback_=callback     #External function
-        self.w_KB_callback_=callback      #External function
-        self.w_move_callback_=callback  #External function
+        self.w_lbl_calback_=callback        #External function
+        self.w_KB_callback_=callback        #External function
+        self.w_move_callback_=callback      #External function
         w_wdgsoSwitch = None        
-        self.w_color=_color   #Default color is green 
-        self.w_rotation=_rotation    # Axis (x,y,z), Angle
-
+        self.w_color=_color                 #Default color is green 
+        self.w_rotation=_rotation           # Axis (x,y,z), Angle
+        self.w_userData= userDataObject()   # Keep info about the widget
+        self.w_userData.ArrowObj=self
+        self.w_userData.color=_color
+        
     def lineWidth(self, width):
         """ Set the line width"""
         self.w_lineWidth = width
@@ -106,6 +117,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
+        
+        self.w_userData.events=event   # Keep the event always here 
         if type(event)==int:
             if event==FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nonthing to do 
@@ -308,4 +321,4 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         Axis is App.Vector(x,y,z)
         angle=float number
         '''
-        self.w_rotation=axis_angle
+        self.w_rotation=axis_angle    
