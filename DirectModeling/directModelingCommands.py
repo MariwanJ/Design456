@@ -24,7 +24,9 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-from DirectModeling.smartscale import *
+from DirectModeling.Design456_DirectScale import *
+from DirectModeling.Design456_SmartScale import *
+
 class Design456_DirectModeling:
     list = ["Design456_SmartScale",
             "Design456_DirectScale",

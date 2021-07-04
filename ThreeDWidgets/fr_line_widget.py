@@ -132,7 +132,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         if type(event)==int:
             if event==FR_EVENTS.FR_NO_EVENT:
-                self.take_focus()
                 return 1    # we treat this event. Nonthing to do 
         
             clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
@@ -140,6 +139,11 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetlblSoNodes) 
 
+            if clickwdgdNode == None and clickwdglblNode == None:
+                #SoSwitch not found 
+                self.remove_focus()
+                return 0 
+            
             if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
                 if clickwdglblNode != None:
@@ -150,15 +154,13 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                     return 1
 
             elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-
                 if clickwdgdNode != None or clickwdglblNode != None:
                     if not self.has_focus():
                         self.take_focus()
                     self.do_callback()
                     return 1            
 
-        #Don't care events, return the event to other widgets    
-        self.remove_focus()
+            #Don't care events, return the event to other widgets    
         return 0  # We couldn't use the event .. so return 0 
 
     def draw(self):

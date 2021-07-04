@@ -137,21 +137,22 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 #draw arrow 
-def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0,1.0,1.0,0.0)):
+def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0,_rotation=(1.0,1.0,1.0,0.0)):
     '''
     Draw a 3D arrow at the position given by the _Points and the color given by _color. 
     Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
     An angle in radians. 
     '''
+
     try:
         so_separatorRoot=coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
         so_separatorTail = coin.SoSeparator()
-        
+
         transHead = coin.SoTranslation()   # decide at which position the object will be placed
         transTail = coin.SoTranslation()   # decide at which position the object will be placed
         transRoot= coin.SoTranslation()    # decide at which position the whole objects will be placed
-        
+
         coordsRoot = coin.SoTransform()
         
         cone=coin.SoCone()
@@ -190,10 +191,10 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         so_separatorHead.addChild(transHead)
         so_separatorTail.addChild(transTail)
 
-        so_separatorHead.addChild(styleHead)
+        #so_separatorHead.addChild(styleHead)
         so_separatorHead.addChild(cone)
         
-        so_separatorTail.addChild(styleTail)
+        #so_separatorTail.addChild(styleTail)
         so_separatorTail.addChild(cylinder)
         
         group= coin.SoSeparator()        
@@ -202,7 +203,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_OLIVE, _ArrSize=1.0,_rotation=(1.0
         group.addChild(so_separatorHead)
         group.addChild(so_separatorTail)
         return group
-        
+
     except Exception as err:
         App.Console.PrintError("'Design456_DirectScale' Failed. "
                                "{err}\n".format(err=str(err)))
