@@ -65,7 +65,7 @@ def callback(userData=None):
     """
         #TODO : Subclass this and impalement the callback 
         #          to get the desired effect
-    print("dummy line-widget callback" )
+    print("dummy arrow-widget callback" )
 
 class Fr_Arrow_Widget(fr_widget.Fr_Widget):
 
@@ -73,7 +73,11 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     This class is for drawing a line in coin3D world
     """
 
-    def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1,_rotation=((1.0,1.0,1.0),0.0)):
+    def __init__(self, vectors: List[App.Vector] = [], 
+                 label: str = "",lineWidth=1,
+                 _color=FR_COLOR.FR_BLACK,
+                 _rotation=((1.0,1.0,1.0),0.0)):
+        
         super().__init__(vectors, label)        
         #Must be initialized first as per the following discussion. 
         #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
@@ -86,7 +90,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_KB_callback_=callback      #External function
         self.w_move_callback_=callback  #External function
         w_wdgsoSwitch = None        
-        self.w_color=FR_COLOR.FR_OLIVE   #Default color is green 
+        self.w_color=_color   #Default color is green 
         self.w_rotation=_rotation    # Axis (x,y,z), Angle
 
     def lineWidth(self, width):
@@ -120,10 +124,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.do_lblcallback()
                 return 1
 
-        elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            print("clickwdgdNode",clickwdgdNode)
-            print("clickwdglblNode",clickwdglblNode)
-              
+        elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:              
             if clickwdgdNode != None or clickwdglblNode != None:
                 if not self.has_focus():
                     self.take_focus()
@@ -149,7 +150,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         and draw the line on the screen. It creates a node for 
         the line.
         """
-        self.w_widgetSoNodes=coin.SoSeparator()
         try:
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
@@ -226,7 +226,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         if(self.w_widgetlblSoNodes!=None):
             self.w_widgetlblSoNodes.removeAllChildren()
         
-    
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
