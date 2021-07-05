@@ -54,6 +54,11 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
         deltaX=EndVector.x-startVector.x
         deltaY=EndVector.y-startVector.y
         deltaZ=EndVector.z-startVector.z
+        
+        print("---")
+        print("deltaX,deltaY,deltaZ",deltaX,deltaY,deltaZ)
+        print("---")
+
         (lengthX,lengthY,lengthZ)=linktocaller.getObjectLength(ArrowObject.selection)
         uniformValue=1.0
         oldLength=0.0
@@ -156,19 +161,19 @@ def callback(userData:fr_arrow_widget.userDataObject=None):
                 
             if linktocaller.run_Once==False:
                 linktocaller.run_Once=True
-                linktocaller.oldVertex=linktocaller.simple # Keep the old value only first time when drag start
+                linktocaller.startVector=linktocaller.endVector # Keep the old value only first time when drag start
             scale=1.0
             if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
                 #x direction only
-                ArrowObject.w_vector.y=linktocaller.simple.y
-                scale=(linktocaller.oldVertex.y-linktocaller.simple.y)
+                ArrowObject.w_vector.y=linktocaller.endVector.y
+                scale=(linktocaller.startVector.y-linktocaller.endVector.y)
             elif ArrowObject.w_color==FR_COLOR.FR_RED:
-                ArrowObject.w_vector.x=linktocaller.simple.x
-                scale=linktocaller.oldVertex.x-linktocaller.simple.x
+                ArrowObject.w_vector.x=linktocaller.endVector.x
+                scale=linktocaller.startVector.x-linktocaller.endVector.x
             elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
-                ArrowObject.w_vector.z=linktocaller.simple.z
-                scale=linktocaller.oldVertex.z-linktocaller.simple.z
-            print("linktocaller.simple,linktocaller.oldVertex",linktocaller.simple,linktocaller.oldVertex)
+                ArrowObject.w_vector.z=linktocaller.endVector.z
+                scale=linktocaller.startVector.z-linktocaller.endVector.z
+            print("linktocaller.endVector,linktocaller.startVector",linktocaller.endVector,linktocaller.startVector)
             ArrowObject.redraw()
             linktocaller.scaleLBL.setText("scale= "+str((scale)/SCALE_FACTOR))
             return 1 #we eat the event no more widgets should get it
@@ -177,7 +182,7 @@ def callback(userData:fr_arrow_widget.userDataObject=None):
             print("mouse release")
             ArrowObject.remove_focus()
             linktocaller.run_Once=False 
-            ResizeObject(ArrowObject,linktocaller.oldVertex,linktocaller.simple)
+            ResizeObject(ArrowObject,linktocaller,linktocaller.startVector,linktocaller.endVector)
             return 1  #we eat the event no more widgets should get it  
         
         ArrowObject.remove_focus()
@@ -203,8 +208,8 @@ class Design456_DirectScale:
     b1=None
     scaleLBL=None
     run_Once=False 
-    oldVertex=None
-    simple=None
+    endVector=None
+    startVector=None
     
     def getObjectLength(self,selected):
 
