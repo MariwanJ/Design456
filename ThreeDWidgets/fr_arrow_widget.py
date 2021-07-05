@@ -103,6 +103,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_userData= userDataObject()   # Keep info about the widget
         self.w_userData.ArrowObj=self
         self.w_userData.color=_color
+        self.releaseDrag=False              #Used to avoid running drag code while it is in drag mode
         
     def lineWidth(self, width):
         """ Set the line width"""
@@ -127,7 +128,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                                                           self.w_pick_radius, self.w_widgetSoNodes)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                            self.w_pick_radius, self.w_widgetlblSoNodes) 
-        
+
+        print("clickwdgdNode",clickwdgdNode)
         
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
@@ -138,7 +140,12 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.do_lblcallback()
                 return 1
 
-        elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:              
+        elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+            if self.releaseDrag==True:
+                self.releaseDrag==False
+                self.do_callback()     #Release callback should be activated even if the arrow is not under the mouse 
+                return 1
+            
             if clickwdgdNode != None or clickwdglblNode != None:
                 if not self.has_focus():
                     self.take_focus()
@@ -149,12 +156,17 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 return 0
         
         if self.w_parent.link_to_root_handle.w_lastEvent==FR_EVENTS.FR_MOUSE_DRAG:
-            self.take_focus()
-            self.do_move_callback()        # We use the same callback, 
+            if self.releaseDrag==False:
+                if clickwdgdNode != None or clickwdglblNode != None:
+                    self.releaseDrag=True   
+                    self.take_focus()
+                    self.do_move_callback()        # We use the same callback, 
                                       #but user must tell the callback what was
                                       # the event. TODO: Do we want to change this?
-            return 1
-            
+                    return 1
+            else:
+                self.do_move_callback()       #Continue run the callback as far as it is not releaseDrag=True
+                return 1
         #Don't care events, return the event to other widgets    
         return 0  # We couldn't use the event .. so return 0 
 

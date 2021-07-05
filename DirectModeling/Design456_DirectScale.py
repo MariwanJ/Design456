@@ -45,7 +45,7 @@ import math
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 
-SCALE_FACTOR=10.0 # This will be used to convert mouse movement to scale factor.
+SCALE_FACTOR=17.0 # This will be used to convert mouse movement to scale factor.
 
 def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
     try:
@@ -59,7 +59,7 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
         print("deltaX,deltaY,deltaZ",deltaX,deltaY,deltaZ)
         print("---")
 
-        (lengthX,lengthY,lengthZ)=linktocaller.getObjectLength(ArrowObject.selection)
+        (lengthX,lengthY,lengthZ)=linktocaller.getObjectLength(linktocaller.selectedObj)
         uniformValue=1.0
         oldLength=0.0
         print("SCALE_FACTOR",SCALE_FACTOR)
@@ -67,13 +67,10 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
             #We maximize all of them regardles the change in which axis made
             if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
                 uniformValue=deltaY
-                oldLength=lengthY
             elif ArrowObject.w_color==FR_COLOR.FR_RED:
                 uniformValue=deltaX
-                oldLength=lengthX
             elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
                 uniformValue=deltaZ
-                oldLength=lengthZ
             else:
                 # This shouldn't happen
                 errMessage = "Unknown error occurred. Arrow's Color not find"
@@ -98,19 +95,19 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
                 scaleZ=deltaZ
                 linktocaller.scaleLBL.setText("scale= "+str(scaleZ))
         #Clone the object
-        cloneObj = Draft.clone(ArrowObject.selection, forcedraft=True)
+        cloneObj = Draft.clone(linktocaller.selectedObj, forcedraft=True)
         #Scale the object
         cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
 
-        ArrowObject.selection.Visibility=False
+        linktocaller.selectedObj.Visibility=False
         App.ActiveDocument.recompute()
-        _name=ArrowObject.selection.Label
-        ArrowObject.selection.Label=ArrowObject.selection.Label+"old"
+        _name=linktocaller.selectedObj.Label
+        linktocaller.selectedObj.Label=linktocaller.selectedObj.Label+"old"
         __shape = Part.getShape(cloneObj,'',needSubElement=False,refine=False)
         _simpleCopy=App.ActiveDocument.addObject('Part::Feature',_name)
         _simpleCopy.Shape=__shape
         App.ActiveDocument.recompute()
-        App.ActiveDocument.removeObject(ArrowObject.selection.Name)
+        App.ActiveDocument.removeObject(linktocaller.selectedObj.Name)
         App.ActiveDocument.removeObject(cloneObj.Name)
         Gui.Selection.clearSelection()
         Gui.Selection.addSelection(_simpleCopy)
@@ -118,9 +115,7 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
         App.ActiveDocument.recompute()
         #All objects must get link to the new targeted object
         (_vectors,_lengths)=linktocaller.returnVectorsFromBoundaryBox(_simpleCopy)
-        tt=0
-        for wdg in linktocaller.smartInd:
-            wdg.selection=_simpleCopy
+        linktocaller.selectedObj=_simpleCopy
         App.ActiveDocument.recompute()
 
     except Exception as err:
@@ -185,21 +180,27 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
                 ArrowObject.take_focus()
 
         scale=1.0
-        if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
-            #x direction only
-            ArrowObject.w_vector.y=linktocaller.endVector.y
-            scale=(linktocaller.endVector.y-linktocaller.startVector.y)
-        elif ArrowObject.w_color==FR_COLOR.FR_RED:
-            ArrowObject.w_vector.x=linktocaller.endVector.x
-            scale=linktocaller.endVector.x-linktocaller.startVector.x
-        elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
-            ArrowObject.w_vector.z=linktocaller.endVector.z
-            scale=linktocaller.endVector.z-linktocaller.startVector.z
-        print("linktocaller.endVector,linktocaller.startVector",linktocaller.endVector,linktocaller.startVector)
-        ArrowObject.redraw()
+        newPos=App.Vector(0.0,0.0,0.0)
+        
+        #if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
+        #    #x direction only
+        #    ArrowObject.w_vector.y=linktocaller.endVector.y
+        #    scale=(linktocaller.endVector.y-linktocaller.startVector.y)
+        #elif ArrowObject.w_color==FR_COLOR.FR_RED:
+        #    ArrowObject.w_vector.x=linktocaller.endVector.x
+        #    scale=linktocaller.endVector.x-linktocaller.startVector.x
+        #elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
+        #    ArrowObject.w_vector.z=linktocaller.endVector.z
+        #    scale=linktocaller.endVector.z-linktocaller.startVector.z
+
+        (vect,len)=linktocaller.returnVectorsFromBoundaryBox(linktocaller.selectedObj)
+        linktocaller.smartInd=vect
+
         linktocaller.scaleLBL.setText("scale= "+str((scale)/SCALE_FACTOR))
+        linktocaller.redraw()
+        
         return 1 #we eat the event no more widgets should get it
-                
+
     except Exception as err:
         App.Console.PrintError("'callback' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -211,7 +212,6 @@ class Design456_DirectScale:
     """
     Direct scaling of any 3D Object by draging either uniform arrow or
     un-uniform arrows.
-    
     """
     mw=None
     dialog=None
@@ -223,6 +223,7 @@ class Design456_DirectScale:
     run_Once=False 
     endVector=None
     startVector=None
+    selectedObj=None
     
     def getObjectLength(self,selected):
 
@@ -268,6 +269,13 @@ class Design456_DirectScale:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
                 
+    def redraw(self):
+        """
+            Redraw all widgets 
+        """
+        for wdg in self.smartInd:
+            wdg.redraw()
+            
     def Activated(self):
         try:
             sel = Gui.Selection.getSelection()
@@ -331,10 +339,7 @@ class Design456_DirectScale:
             self.smartInd[2].w_userData.callerObject=self
 
             #Give pointer to the button for checking uniform/nonuniform
-            for wdg in self.smartInd:
-                wdg.b1=self.b1
-                wdg.parentObject=self
-                wdg.selection=sel[0]
+            self.selectedObj=sel[0]
 
             #set selected object to each smartArrow 
             if self._mywin==None :
