@@ -45,7 +45,7 @@ import math
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 
-SCALE_FACTOR=17.0 # This will be used to convert mouse movement to scale factor.
+SCALE_FACTOR=10.0 # This will be used to convert mouse movement to scale factor.
 
 def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
     try:
@@ -54,15 +54,11 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
         deltaX=EndVector.x-startVector.x
         deltaY=EndVector.y-startVector.y
         deltaZ=EndVector.z-startVector.z
-        
-        print("---")
-        print("deltaX,deltaY,deltaZ",deltaX,deltaY,deltaZ)
-        print("---")
 
         (lengthX,lengthY,lengthZ)=linktocaller.getObjectLength(linktocaller.selectedObj)
         uniformValue=1.0
         oldLength=0.0
-        print("SCALE_FACTOR",SCALE_FACTOR)
+        print(linktocaller.b1.text())
         if (linktocaller.b1.text()=='Uniform'):
             #We maximize all of them regardles the change in which axis made
             if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
@@ -77,22 +73,23 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
                 faced.getInfo().errorDialog(errMessage)
                 return 
             
-            scaleX=scaleY=scaleZ=(uniformValue)/SCALE_FACTOR
+            scaleX=scaleY=scaleZ=1+(uniformValue)/SCALE_FACTOR
+            linktocaller.scaleLBL.setText("scale= "+str(scaleX))
         else:
             scaleX=1
             scaleY=1
             scaleZ=1
             if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
                 #y-direction moved
-                scaleY=deltaY
+                scaleY=1+deltaY
                 linktocaller.scaleLBL.setText("scale= "+str(scaleY))
             elif ArrowObject.w_color==FR_COLOR.FR_RED:
                 #x-direction moved
-                scaleX=deltaX
+                scaleX=1+deltaX
                 linktocaller.scaleLBL.setText("scale= "+str(scaleX))
             elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
                 #z-direction moved
-                scaleZ=deltaZ
+                scaleZ=1+deltaZ
                 linktocaller.scaleLBL.setText("scale= "+str(scaleZ))
         #Clone the object
         cloneObj = Draft.clone(linktocaller.selectedObj, forcedraft=True)
@@ -182,23 +179,27 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
         scale=1.0
         newPos=App.Vector(0.0,0.0,0.0)
         
-        #if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
-        #    #x direction only
-        #    ArrowObject.w_vector.y=linktocaller.endVector.y
-        #    scale=(linktocaller.endVector.y-linktocaller.startVector.y)
-        #elif ArrowObject.w_color==FR_COLOR.FR_RED:
-        #    ArrowObject.w_vector.x=linktocaller.endVector.x
-        #    scale=linktocaller.endVector.x-linktocaller.startVector.x
-        #elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
-        #    ArrowObject.w_vector.z=linktocaller.endVector.z
-        #    scale=linktocaller.endVector.z-linktocaller.startVector.z
+        if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
+            #x direction only
+            ArrowObject.w_vector.y=linktocaller.endVector.y
+            scale=(linktocaller.endVector.y-linktocaller.startVector.y)
+        elif ArrowObject.w_color==FR_COLOR.FR_RED:
+            ArrowObject.w_vector.x=linktocaller.endVector.x
+            scale=linktocaller.endVector.x-linktocaller.startVector.x
+        elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
+            ArrowObject.w_vector.z=linktocaller.endVector.z
+            scale=linktocaller.endVector.z-linktocaller.startVector.z
 
         (vect,len)=linktocaller.returnVectorsFromBoundaryBox(linktocaller.selectedObj)
-        linktocaller.smartInd=vect
+        
+        linktocaller.smartInd[0].w_vector=vect[0]
+        linktocaller.smartInd[1].w_vector=vect[1]
+        linktocaller.smartInd[2].w_vector=vect[2]
 
         linktocaller.scaleLBL.setText("scale= "+str((scale)/SCALE_FACTOR))
-        linktocaller.redraw()
-        
+        for wdg in linktocaller.smartInd:
+            wdg.redraw()
+
         return 1 #we eat the event no more widgets should get it
 
     except Exception as err:
@@ -268,13 +269,6 @@ class Design456_DirectScale:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-                
-    def redraw(self):
-        """
-            Redraw all widgets 
-        """
-        for wdg in self.smartInd:
-            wdg.redraw()
             
     def Activated(self):
         try:
