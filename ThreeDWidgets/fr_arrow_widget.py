@@ -128,8 +128,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                                                           self.w_pick_radius, self.w_widgetSoNodes)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                            self.w_pick_radius, self.w_widgetlblSoNodes) 
-
-        print("clickwdgdNode",clickwdgdNode)
         
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
