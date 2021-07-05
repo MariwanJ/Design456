@@ -45,7 +45,7 @@ import math
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 
-SCALE_FACTOR=20.0 # This will be used to convert mouse movement to scale factor.
+SCALE_FACTOR=10.0 # This will be used to convert mouse movement to scale factor.
 
 def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
     try:
@@ -131,7 +131,31 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def callback(userData:fr_arrow_widget.userDataObject=None):
+def callback_release(userData:fr_arrow_widget.userDataObject=None):
+    try:    
+        ArrowObject= userData.ArrowObj
+        events=userData.events
+        linktocaller= userData.callerObject
+        print("mouse release")
+        ArrowObject.remove_focus()
+        linktocaller.run_Once=False 
+        linktocaller.endVector=App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                              ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                              ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        
+        ResizeObject(ArrowObject,linktocaller,linktocaller.startVector,linktocaller.endVector)
+        ArrowObject.remove_focus()
+        # we have a selected object. Try to show the dimensions. 
+        return 1  #we eat the event no more widgets should get it 
+     
+    except Exception as err:
+        App.Console.PrintError("'callback release' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
+def callback_move(userData:fr_arrow_widget.userDataObject=None):
     try:
         if userData==None : 
             return # Nothing to do here - shouldn't be None 
@@ -139,54 +163,43 @@ def callback(userData:fr_arrow_widget.userDataObject=None):
         ArrowObject= userData.ArrowObj
         events=userData.events
         linktocaller= userData.callerObject
-        
+        print("userData.callerObject",userData.callerObject)
         if type(events)!=int:
             return    
         
-        if events==FR_EVENTS.FR_NO_EVENT:
-            return 1    # we treat this event. Nonthing to do 
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                           ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                            ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes) 
-        linktocaller.simple=App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+        linktocaller.endVector=App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                               ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                               ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         if clickwdgdNode == None and clickwdglblNode==None:
-            return 0  # nothing to do 
-        
-        if (events==FR_EVENTS.FR_MOUSE_DRAG):
+            if linktocaller.run_Once==False:
+                return 0  # nothing to do 
+                
+        if linktocaller.run_Once==False:
+            linktocaller.run_Once=True
+            linktocaller.startVector=linktocaller.endVector # Keep the old value only first time when drag start
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
+
+        scale=1.0
+        if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
+            #x direction only
+            ArrowObject.w_vector.y=linktocaller.endVector.y
+            scale=(linktocaller.endVector.y-linktocaller.startVector.y)
+        elif ArrowObject.w_color==FR_COLOR.FR_RED:
+            ArrowObject.w_vector.x=linktocaller.endVector.x
+            scale=linktocaller.endVector.x-linktocaller.startVector.x
+        elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
+            ArrowObject.w_vector.z=linktocaller.endVector.z
+            scale=linktocaller.endVector.z-linktocaller.startVector.z
+        print("linktocaller.endVector,linktocaller.startVector",linktocaller.endVector,linktocaller.startVector)
+        ArrowObject.redraw()
+        linktocaller.scaleLBL.setText("scale= "+str((scale)/SCALE_FACTOR))
+        return 1 #we eat the event no more widgets should get it
                 
-            if linktocaller.run_Once==False:
-                linktocaller.run_Once=True
-                linktocaller.startVector=linktocaller.endVector # Keep the old value only first time when drag start
-            scale=1.0
-            if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
-                #x direction only
-                ArrowObject.w_vector.y=linktocaller.endVector.y
-                scale=(linktocaller.startVector.y-linktocaller.endVector.y)
-            elif ArrowObject.w_color==FR_COLOR.FR_RED:
-                ArrowObject.w_vector.x=linktocaller.endVector.x
-                scale=linktocaller.startVector.x-linktocaller.endVector.x
-            elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
-                ArrowObject.w_vector.z=linktocaller.endVector.z
-                scale=linktocaller.startVector.z-linktocaller.endVector.z
-            print("linktocaller.endVector,linktocaller.startVector",linktocaller.endVector,linktocaller.startVector)
-            ArrowObject.redraw()
-            linktocaller.scaleLBL.setText("scale= "+str((scale)/SCALE_FACTOR))
-            return 1 #we eat the event no more widgets should get it
-                
-        elif(events==FR_EVENTS.FR_MOUSE_LEFT_RELEASE):
-            print("mouse release")
-            ArrowObject.remove_focus()
-            linktocaller.run_Once=False 
-            ResizeObject(ArrowObject,linktocaller,linktocaller.startVector,linktocaller.endVector)
-            return 1  #we eat the event no more widgets should get it  
-        
-        ArrowObject.remove_focus()
-        # we have a selected object. Try to show the dimensions. 
     except Exception as err:
         App.Console.PrintError("'callback' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -301,20 +314,20 @@ class Design456_DirectScale:
 
             rotation=(0.0,0.0,0.0,0.0)
             self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,FR_COLOR.FR_OLIVEDRAB,rotation))
-            self.smartInd[0].w_callback_= callback
-            self.smartInd[0].w_move_callback_=callback      #External function
+            self.smartInd[0].w_callback_= callback_release
+            self.smartInd[0].w_move_callback_=callback_move      #External function
             self.smartInd[0].w_userData.callerObject=self
 
             rotation=(0.0,0.0,-1.0,math.radians(57))
             self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,FR_COLOR.FR_RED,rotation))
-            self.smartInd[1].w_callback_=callback
-            self.smartInd[1].w_move_callback_=callback
+            self.smartInd[1].w_callback_=callback_release
+            self.smartInd[1].w_move_callback_=callback_move
             self.smartInd[1].w_userData.callerObject=self
             
             rotation=(1.0,0.0 ,0.0,math.radians(57))
             self.smartInd.append(Fr_Arrow_Widget(_vec[2],"Z-Axis",1,FR_COLOR.FR_BLUE,rotation))
-            self.smartInd[2].w_callback_=callback
-            self.smartInd[2].w_move_callback_=callback
+            self.smartInd[2].w_callback_=callback_release
+            self.smartInd[2].w_move_callback_=callback_move
             self.smartInd[2].w_userData.callerObject=self
 
             #Give pointer to the button for checking uniform/nonuniform

@@ -172,7 +172,7 @@ class Design456_Workbench (Workbench):
             from plane import Grid as gr
             if not(App.ActiveDocument):
                 App.newDocument()
-
+            
             # FROM DRAFT
             if hasattr(FreeCADGui, "draftToolBar"):
                 Gui.draftToolBar.Activated()
@@ -192,7 +192,7 @@ class Design456_Workbench (Workbench):
             #g.ff()                #draft Grid  --> I will try to remove it in the future Mariwan 2021-03-22
             #Show Top view - Isometric always
             if self.runOnce==True:
-                Gui.activeDocument().activeView().viewTop()
+                Gui.ActiveDocument.activeView().viewTop()
                 Gui.activeDocument().activeView().viewIsometric()
                # Gui.SendMsgToActiveView("ViewFit")
                 for x in range(1, 10):
@@ -204,6 +204,17 @@ class Design456_Workbench (Workbench):
             Gui.Snapper.grid.off()
             App.Console.PrintMessage('Design456 workbench loaded\n')
             return
+        
+        except Exception as err:
+            App.Console.PrintError("'Error: Design456 activation' Failed.\n"
+                                    "Design456 will not work as expected.\n "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+        
+        
         except Exception as exc:
             App.Console.PrintError(exc)
             App.Console.PrintError("Error: Design456 activation "
