@@ -110,8 +110,6 @@ def draw_line(p1, p2, color, LineWidth):
     try:
         so_separator = coin.SoSeparator()
         v = coin.SoVertexProperty()
-        print("linedraw p1",p1)
-        print("linedraw p2",p2)
         v.vertex.set1Value(0, p1)
         v.vertex.set1Value(1, p2)
         coords = coin.SoTransform()

@@ -195,8 +195,8 @@ class root_handle():
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
             else:
                 self.w_lastEvent=FR_EVENTS.FR_MOUSE_MOVE
-                
-            
+
+
             
         # Doesn't work, don't know why
         # elif(_typeofevent == coin.SoMouseWheelEvent):
