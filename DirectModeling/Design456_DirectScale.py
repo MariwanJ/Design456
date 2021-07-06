@@ -49,13 +49,12 @@ SCALE_FACTOR=10.0 # This will be used to convert mouse movement to scale factor.
 
 def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
     try:
-        print("resize")
         scaleX=scaleY=scaleZ=1.0
         deltaX=EndVector.x-startVector.x
         deltaY=EndVector.y-startVector.y
         deltaZ=EndVector.z-startVector.z
 
-        (lengthX,lengthY,lengthZ)=linktocaller.getObjectLength(linktocaller.selectedObj)
+        (lengthX,lengthY,lengthZ)=linktocaller.getObjectLength()
         uniformValue=1.0
         oldLength=0.0
         print(linktocaller.b1.text())
@@ -111,9 +110,7 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
         _simpleCopy.Label = _name        
         App.ActiveDocument.recompute()
         #All objects must get link to the new targeted object
-        (_vectors,_lengths)=linktocaller.returnVectorsFromBoundaryBox(_simpleCopy)
         linktocaller.selectedObj=_simpleCopy
-        App.ActiveDocument.recompute()
 
     except Exception as err:
         App.Console.PrintError("'Resize' Failed. "
@@ -136,8 +133,12 @@ def callback_release(userData:fr_arrow_widget.userDataObject=None):
                               ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         
         ResizeObject(ArrowObject,linktocaller,linktocaller.startVector,linktocaller.endVector)
-        ArrowObject.remove_focus()
-        # we have a selected object. Try to show the dimensions. 
+        userData=None
+        linktocaller.scaleLBL.setText("scale= ")
+        
+        
+        
+        
         return 1  #we eat the event no more widgets should get it 
      
     except Exception as err:
@@ -181,21 +182,31 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
         if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
             #x direction only
             ArrowObject.w_vector.y=linktocaller.endVector.y
-            scale=1+(linktocaller.endVector.y-linktocaller.startVector.y)
+            scale=linktocaller.endVector.y-linktocaller.startVector.y
         elif ArrowObject.w_color==FR_COLOR.FR_RED:
             ArrowObject.w_vector.x=linktocaller.endVector.x
-            scale=1+linktocaller.endVector.x-linktocaller.startVector.x
+            scale=linktocaller.endVector.x-linktocaller.startVector.x
         elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
             ArrowObject.w_vector.z=linktocaller.endVector.z
-            scale=1+linktocaller.endVector.z-linktocaller.startVector.z
-
-        ArrowObject.redraw()
-        (vect,len)=linktocaller.returnVectorsFromBoundaryBox(linktocaller.selectedObj)
+            scale=linktocaller.endVector.z-linktocaller.startVector.z
         
-        linktocaller.smartInd[0].w_vector=vect[0]
-        linktocaller.smartInd[1].w_vector=vect[1]
-        linktocaller.smartInd[2].w_vector=vect[2]
-        linktocaller.scaleLBL.setText("scale= "+str((scale)/SCALE_FACTOR))
+        #if linktocaller.b1.text()=='Uniform':
+        #    for wdg in linktocaller.smartInd:
+        #        if wdg!= ArrowObject and ArrowObject.w_color==FR_COLOR.FR_RED:
+        #            wdg.w_vector.x=(1+scale/SCALE_FACTOR)*wdg.w_vector.x
+        #        elif wdg!= ArrowObject and ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
+        #            wdg.w_vector.y=(1+scale/SCALE_FACTOR)*wdg.w_vector.y
+        #        elif wdg!= ArrowObject and ArrowObject.w_color==FR_COLOR.FR_BLUE:
+        #            wdg.w_vector.z=(1+scale/SCALE_FACTOR)*wdg.w_vector.z      
+        #else:
+        #    if ArrowObject.w_color==FR_COLOR.FR_RED:
+        #        ArrowObject.w_vector.x=(1+scale/SCALE_FACTOR)*ArrowObject.w_vector.x
+        #    elif ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
+        #        ArrowObject.w_vector.y=(1+scale/SCALE_FACTOR)*ArrowObject.w_vector.y
+        #    elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
+        #        ArrowObject.w_vector.z=(1+scale/SCALE_FACTOR)*ArrowObject.w_vector.z
+       
+        linktocaller.scaleLBL.setText("scale= "+str(1+(scale)/SCALE_FACTOR))
 
         linktocaller.smartInd[0].redraw()
         linktocaller.smartInd[1].redraw()
@@ -226,24 +237,23 @@ class Design456_DirectScale:
     startVector=None
     selectedObj=None
     
-    def getObjectLength(self,selected):
-
-        return(selected.Shape.BoundBox.XLength,
-               selected.Shape.BoundBox.YLength,
-               selected.Shape.BoundBox.ZLength)
+    def getObjectLength(self):
+        return(self.selectedObj.Shape.BoundBox.XLength,
+               self.selectedObj.Shape.BoundBox.YLength,
+               self.selectedObj.Shape.BoundBox.ZLength)
         
-    def returnVectorsFromBoundaryBox(self,selected):
+    def returnVectorsFromBoundaryBox(self):
         try:
             #Max object length in all directions        
-            (lengthX,lengthY,lengthZ)= self.getObjectLength(selected)
+            (lengthX,lengthY,lengthZ)= self.getObjectLength()
 
             #Make the start 2 mm before the object is placed
-            startX= selected.Shape.BoundBox.XMin
-            startY= selected.Shape.BoundBox.YMin
-            startZ= selected.Shape.BoundBox.ZMin
-            EndX=selected.Shape.BoundBox.XMax
-            EndY=selected.Shape.BoundBox.YMax
-            EndZ=selected.Shape.BoundBox.ZMax
+            startX= self.selectedObj.Shape.BoundBox.XMin
+            startY= self.selectedObj.Shape.BoundBox.YMin
+            startZ= self.selectedObj.Shape.BoundBox.ZMin
+            EndX=self.selectedObj.Shape.BoundBox.XMax
+            EndY=self.selectedObj.Shape.BoundBox.YMax
+            EndZ=self.selectedObj.Shape.BoundBox.ZMax
             p1: App.Vector=None
             p2: App.Vector=None
             _vectors: List[App.Vector] = []
@@ -262,25 +272,59 @@ class Design456_DirectScale:
             _vectors.append(p3)
             return (_vectors,leng)
 
-        # we have a selected object. Try to show the dimensions. 
+        # we have a self.selectedObj object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_DirectScale' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+
+    def createArrows(self):
+        try:    
+            (_vec, length)=self.returnVectorsFromBoundaryBox()
+
+            self.smartInd.clear()
+
+            rotation=(0.0,0.0,0.0,0.0)
+            self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,FR_COLOR.FR_OLIVEDRAB,rotation))
+            self.smartInd[0].w_callback_= callback_release
+            self.smartInd[0].w_move_callback_=callback_move      #External function
+            self.smartInd[0].w_userData.callerObject=self
+
+            rotation=(0.0,0.0,-1.0,math.radians(57))
+            self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,FR_COLOR.FR_RED,rotation))
+            self.smartInd[1].w_callback_=callback_release
+            self.smartInd[1].w_move_callback_=callback_move
+            self.smartInd[1].w_userData.callerObject=self
             
+            rotation=(1.0,0.0 ,0.0,math.radians(57))
+            self.smartInd.append(Fr_Arrow_Widget(_vec[2],"Z-Axis",1,FR_COLOR.FR_BLUE,rotation))
+            self.smartInd[2].w_callback_=callback_release
+            self.smartInd[2].w_move_callback_=callback_move
+            self.smartInd[2].w_userData.callerObject=self
+
+        # we have a self.selectedObj object. Try to show the dimensions. 
+        except Exception as err:
+            App.Console.PrintError("'Design456_DirectScale' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+                    
     def Activated(self):
         try:
             sel = Gui.Selection.getSelection()
             if len(sel) != 1:
-                # Only one object must be selected
+                # Only one object must be self.selectedObj
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
                 return 
-            if not hasattr(sel[0],'Shape'):
-                # Only one object must be selected
-                errMessage = "Selected object has no Shape,\n please make a simple copy of the object"
+            self.selectedObj=sel[0]
+            if not hasattr(self.selectedObj,'Shape'):
+                # Only one object must be self.selectedObj
+                errMessage = "self.selectedObj object has no Shape,\n please make a simple copy of the object"
                 faced.getInfo().errorDialog(errMessage)
                 return 
             
@@ -310,38 +354,16 @@ class Design456_DirectScale:
             QtCore.QObject.connect(self.okbox, QtCore.SIGNAL("rejected()"), self.hide)
                         
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
-            (_vec, length)=self.returnVectorsFromBoundaryBox(sel[0])
-
-            self.smartInd.clear()
-
-            rotation=(0.0,0.0,0.0,0.0)
-            self.smartInd.append(Fr_Arrow_Widget(_vec[0],"X-Axis",1,FR_COLOR.FR_OLIVEDRAB,rotation))
-            self.smartInd[0].w_callback_= callback_release
-            self.smartInd[0].w_move_callback_=callback_move      #External function
-            self.smartInd[0].w_userData.callerObject=self
-
-            rotation=(0.0,0.0,-1.0,math.radians(57))
-            self.smartInd.append(Fr_Arrow_Widget(_vec[1],"Y-Axis",1,FR_COLOR.FR_RED,rotation))
-            self.smartInd[1].w_callback_=callback_release
-            self.smartInd[1].w_move_callback_=callback_move
-            self.smartInd[1].w_userData.callerObject=self
             
-            rotation=(1.0,0.0 ,0.0,math.radians(57))
-            self.smartInd.append(Fr_Arrow_Widget(_vec[2],"Z-Axis",1,FR_COLOR.FR_BLUE,rotation))
-            self.smartInd[2].w_callback_=callback_release
-            self.smartInd[2].w_move_callback_=callback_move
-            self.smartInd[2].w_userData.callerObject=self
-
-            #Give pointer to the button for checking uniform/nonuniform
-            self.selectedObj=sel[0]
-
-            #set selected object to each smartArrow 
+            self.createArrows()
+            
+            #set self.selectedObj object to each smartArrow 
             if self._mywin==None :
                 self._mywin=win.Fr_CoinWindow()
             self._mywin.addWidget(self.smartInd)
             self._mywin.show()
 
-        # we have a selected object. Try to show the dimensions. 
+        # we have a self.selectedObj object. Try to show the dimensions. 
         except Exception as err:
             App.Console.PrintError("'Design456_DirectScale' Failed. "
                                    "{err}\n".format(err=str(err)))
