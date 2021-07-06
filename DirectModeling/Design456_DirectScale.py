@@ -81,15 +81,15 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
             scaleZ=1
             if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
                 #y-direction moved
-                scaleY=1+deltaY
+                scaleY=1+deltaY/SCALE_FACTOR
                 linktocaller.scaleLBL.setText("scale= "+str(scaleY))
             elif ArrowObject.w_color==FR_COLOR.FR_RED:
                 #x-direction moved
-                scaleX=1+deltaX
+                scaleX=1+deltaX/SCALE_FACTOR
                 linktocaller.scaleLBL.setText("scale= "+str(scaleX))
             elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
                 #z-direction moved
-                scaleZ=1+deltaZ
+                scaleZ=1+deltaZ/SCALE_FACTOR
                 linktocaller.scaleLBL.setText("scale= "+str(scaleZ))
         #Clone the object
         cloneObj = Draft.clone(linktocaller.selectedObj, forcedraft=True)
@@ -182,23 +182,26 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
         if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
             #x direction only
             ArrowObject.w_vector.y=linktocaller.endVector.y
-            scale=(linktocaller.endVector.y-linktocaller.startVector.y)
+            scale=1+(linktocaller.endVector.y-linktocaller.startVector.y)
         elif ArrowObject.w_color==FR_COLOR.FR_RED:
             ArrowObject.w_vector.x=linktocaller.endVector.x
-            scale=linktocaller.endVector.x-linktocaller.startVector.x
+            scale=1+linktocaller.endVector.x-linktocaller.startVector.x
         elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
             ArrowObject.w_vector.z=linktocaller.endVector.z
-            scale=linktocaller.endVector.z-linktocaller.startVector.z
+            scale=1+linktocaller.endVector.z-linktocaller.startVector.z
 
+        ArrowObject.redraw()
         (vect,len)=linktocaller.returnVectorsFromBoundaryBox(linktocaller.selectedObj)
         
         linktocaller.smartInd[0].w_vector=vect[0]
         linktocaller.smartInd[1].w_vector=vect[1]
         linktocaller.smartInd[2].w_vector=vect[2]
-
         linktocaller.scaleLBL.setText("scale= "+str((scale)/SCALE_FACTOR))
-        for wdg in linktocaller.smartInd:
-            wdg.redraw()
+
+        linktocaller.smartInd[0].redraw()
+        linktocaller.smartInd[1].redraw()
+        linktocaller.smartInd[2].redraw()
+
 
         return 1 #we eat the event no more widgets should get it
 
