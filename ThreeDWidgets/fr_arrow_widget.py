@@ -286,7 +286,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
             self.removeSoNodeFromSoSwitch()
             self.removeSoNodes()
-            self.removeSoSwitch()   
+            self.removeSoSwitch()    
                  
         except Exception as err:
             App.Console.PrintError("'Fr_Line_Widget' Failed. "
