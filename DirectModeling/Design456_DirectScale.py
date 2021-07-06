@@ -135,10 +135,9 @@ def callback_release(userData:fr_arrow_widget.userDataObject=None):
         ResizeObject(ArrowObject,linktocaller,linktocaller.startVector,linktocaller.endVector)
         userData=None
         linktocaller.scaleLBL.setText("scale= ")
-        
-        
-        
-        
+        #TODO : We should redraw the arrows here. 
+        linktocaller.resizeArrowWidgets()
+
         return 1  #we eat the event no more widgets should get it 
      
     except Exception as err:
@@ -189,23 +188,7 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
         elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
             ArrowObject.w_vector.z=linktocaller.endVector.z
             scale=linktocaller.endVector.z-linktocaller.startVector.z
-        
-        #if linktocaller.b1.text()=='Uniform':
-        #    for wdg in linktocaller.smartInd:
-        #        if wdg!= ArrowObject and ArrowObject.w_color==FR_COLOR.FR_RED:
-        #            wdg.w_vector.x=(1+scale/SCALE_FACTOR)*wdg.w_vector.x
-        #        elif wdg!= ArrowObject and ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
-        #            wdg.w_vector.y=(1+scale/SCALE_FACTOR)*wdg.w_vector.y
-        #        elif wdg!= ArrowObject and ArrowObject.w_color==FR_COLOR.FR_BLUE:
-        #            wdg.w_vector.z=(1+scale/SCALE_FACTOR)*wdg.w_vector.z      
-        #else:
-        #    if ArrowObject.w_color==FR_COLOR.FR_RED:
-        #        ArrowObject.w_vector.x=(1+scale/SCALE_FACTOR)*ArrowObject.w_vector.x
-        #    elif ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
-        #        ArrowObject.w_vector.y=(1+scale/SCALE_FACTOR)*ArrowObject.w_vector.y
-        #    elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
-        #        ArrowObject.w_vector.z=(1+scale/SCALE_FACTOR)*ArrowObject.w_vector.z
-       
+
         linktocaller.scaleLBL.setText("scale= "+str(1+(scale)/SCALE_FACTOR))
 
         linktocaller.smartInd[0].redraw()
@@ -372,10 +355,13 @@ class Design456_DirectScale:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
+        """
+        Hide the widgets. Remove also the tab.
+        """
         self.dialog.hide()
         del self.dialog
         dw=self.mw.findChildren(QtGui.QDockWidget)
-        newsize=self.tab.count()
+        newsize=self.tab.count()    #Todo : Should we do that?
         self.tab.removeTab(newsize-1) # it is 0,1,2,3 ..etc    
         self.__del__()  # Remove all smart scale 3dCOIN widgets
 
@@ -393,7 +379,22 @@ class Design456_DirectScale:
         else: 
             b1.setStyleSheet("background: orange;");
     
+    def resizeArrowWidgets(self):
+        """
+        Reposition the arrows by recalculating the boundary box
+        and updating the vectors inside each fr_arrow_widget
+        """
+        (_vec, length)=self.returnVectorsFromBoundaryBox()
+        self.smartInd[0].w_vector=_vec[0]
+        self.smartInd[1].w_vector=_vec[1]
+        self.smartInd[0].w_vector=_vec[2]
+        for wdg in self.smartInd:
+            wdg.redraw()
+        return
     def __del__(self):
+        """
+        Remove all widget from Fr_CoinWindow and from the senegraph
+        """
         try:
             if type(self.smartInd)==list:
                 for i in self.smartInd:
