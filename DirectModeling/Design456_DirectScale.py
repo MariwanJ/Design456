@@ -155,7 +155,6 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
         ArrowObject= userData.ArrowObj
         events=userData.events
         linktocaller= userData.callerObject
-        print("userData.callerObject",userData.callerObject)
         if type(events)!=int:
             return    
         
@@ -201,8 +200,6 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
         linktocaller.smartInd[0].redraw()
         linktocaller.smartInd[1].redraw()
         linktocaller.smartInd[2].redraw()
-
-
         return 1 #we eat the event no more widgets should get it
 
     except Exception as err:
