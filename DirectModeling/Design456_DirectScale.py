@@ -44,8 +44,9 @@ from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 import math
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
+from draftutils.translate import translate   #for translate 
 
-SCALE_FACTOR=10.0 # This will be used to convert mouse movement to scale factor.
+SCALE_FACTOR=20.0 # This will be used to convert mouse movement to scale factor.
 
 def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
     """
@@ -146,6 +147,9 @@ def callback_release(userData:fr_arrow_widget.userDataObject=None):
                               ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                               ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         
+        #Undo
+        App.ActiveDocument.openTransaction(translate("Design456","DirectScale"))
+
         ResizeObject(ArrowObject,linktocaller,linktocaller.startVector,linktocaller.endVector)
         linktocaller.startVector=None
         userData=None
@@ -153,7 +157,8 @@ def callback_release(userData:fr_arrow_widget.userDataObject=None):
         linktocaller.scaleLBL.setText("scale= ")
         #TODO : We should redraw the arrows here. 
         linktocaller.resizeArrowWidgets()
-
+        
+        App.ActiveDocument.commitTransaction() #undo reg.
         return 1  #we eat the event no more widgets should get it 
      
     except Exception as err:
@@ -219,11 +224,19 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
             ArrowObject.w_vector.z=linktocaller.endVector.z-linktocaller.mouseToArrowDiff
             scale=linktocaller.endVector.z-linktocaller.startVector.z
 
+        #Avoid having the scale too low
+        if scale<0.005 : 
+            scale =0.005
+            print ("too low")
+        elif scale> 20:
+            scale=1
+            print ("too high")
         linktocaller.scaleLBL.setText("scale= "+str(1+(scale)/SCALE_FACTOR))
 
         linktocaller.smartInd[0].redraw()
         linktocaller.smartInd[1].redraw()
         linktocaller.smartInd[2].redraw()
+       # ResizeObject(ArrowObject,linktocaller,linktocaller.startVector,linktocaller.endVector)
         return 1 #we eat the event no more widgets should get it
 
     except Exception as err:
@@ -251,7 +264,7 @@ class Design456_DirectScale:
     selectedObj=None
     mouseToArrowDiff=0.0
     mmAwayFrom3DObject=10  # Use this to take away the arrow from the object
-    
+
     def getObjectLength(self):
         """ 
             get Max length of the 3D object by taking the 
@@ -263,7 +276,7 @@ class Design456_DirectScale:
         
     def returnVectorsFromBoundaryBox(self):
         """
-        Calculate verticies which will be used to draw the arrows. 
+        Calculate vertices which will be used to draw the arrows. 
 
         """
         try:
@@ -355,6 +368,7 @@ class Design456_DirectScale:
                 faced.getInfo().errorDialog(errMessage)
                 return 
             
+
             (self.mw,self.dialog, self.tab)=faced.createActionTab("Direct Scale").Activated()
             la = QtGui.QVBoxLayout(self.dialog)
             e1 = QtGui.QLabel("(Direct Scale)\nFor quicker\nresizing any\n3D Objects")
@@ -381,7 +395,6 @@ class Design456_DirectScale:
             QtCore.QObject.connect(self.okbox, QtCore.SIGNAL("rejected()"), self.hide)
                         
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
-            
             self.createArrows()
             
             #set self.selectedObj object to each smartArrow 
