@@ -44,6 +44,7 @@ import math
 import ThreeDWidgets
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
+from draftutils.translate import translate   #for translate 
 
 SeperateLinesFromObject=4
 
@@ -125,6 +126,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
             parentlink.smartInd[i].changeLabelfloat(_lengths[i])
             parentlink.smartInd[i].redraw()        #Update the vertices here
         App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction() #undo reg.
 
     except Exception as err:
         App.Console.PrintError("'Design456_SmartScale' Failed. "
@@ -244,7 +246,10 @@ class Design456_SmartScale:
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
                 return
+            #Undo
+            App.ActiveDocument.openTransaction(translate("Design456","Extrude"))
             self.getXYZdimOfSelectedObject(select[0])
+            
             #Create a tab and show it 
             #TODO : I don't know how to give focus to the tab
             mw = self.getMainWindow()
