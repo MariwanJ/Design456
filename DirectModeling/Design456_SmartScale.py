@@ -100,7 +100,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
     else : 
         print("error")
     try:
-        
+        App.ActiveDocument.openTransaction(translate("Design456","SmartScale"))
         cloneObj.Scale=App.Vector(scaleX,scaleY,scaleZ)
 
         obj.Visibility=False
@@ -247,7 +247,6 @@ class Design456_SmartScale:
                 faced.getInfo().errorDialog(errMessage)
                 return
             #Undo
-            App.ActiveDocument.openTransaction(translate("Design456","Extrude"))
             self.getXYZdimOfSelectedObject(select[0])
             
             #Create a tab and show it 
