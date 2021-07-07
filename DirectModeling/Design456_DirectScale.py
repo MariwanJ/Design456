@@ -48,6 +48,10 @@ from ThreeDWidgets.constant import FR_COLOR
 SCALE_FACTOR=10.0 # This will be used to convert mouse movement to scale factor.
 
 def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
+    """
+        This function will resize the 3D object. It clones the old object
+        and make a new simple copy of the 3D object. 
+    """
     try:
         scaleX=scaleY=scaleZ=1.0
         deltaX=EndVector.x-startVector.x
@@ -68,7 +72,7 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
                 uniformValue=deltaZ
             else:
                 # This shouldn't happen
-                errMessage = "Unknown error occurred. Arrow's Color not find"
+                errMessage = "Unknown error occurred, wrong Arrow-Color"
                 faced.getInfo().errorDialog(errMessage)
                 return 
             
@@ -121,7 +125,11 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
 
 
 def callback_release(userData:fr_arrow_widget.userDataObject=None):
- 
+    """
+       Callback after releasing the left mouse button. 
+       This will do the actual job in resizing the 3D object.
+
+    """
     try:    
         ArrowObject= userData.ArrowObj
         events=userData.events
@@ -156,6 +164,12 @@ def callback_release(userData:fr_arrow_widget.userDataObject=None):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 def callback_move(userData:fr_arrow_widget.userDataObject=None):
+    """
+        Mouse DRAG callback. It will update the location of the arrows, 
+        and keep track of mouse-position. 
+        This will continue until a mouse release occure
+        TODO: Try to resize the 3D Object here to get more interactive feeling.
+    """
     try:
         if userData==None : 
             return # Nothing to do here - shouldn't be None 
@@ -239,11 +253,19 @@ class Design456_DirectScale:
     mmAwayFrom3DObject=10  # Use this to take away the arrow from the object
     
     def getObjectLength(self):
+        """ 
+            get Max length of the 3D object by taking the 
+            boundary box length
+        """
         return(self.selectedObj.Shape.BoundBox.XLength,
                self.selectedObj.Shape.BoundBox.YLength,
                self.selectedObj.Shape.BoundBox.ZLength)
         
     def returnVectorsFromBoundaryBox(self):
+        """
+        Calculate verticies which will be used to draw the arrows. 
+
+        """
         try:
             #Max object length in all directions        
             (lengthX,lengthY,lengthZ)= self.getObjectLength()
@@ -282,6 +304,10 @@ class Design456_DirectScale:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def createArrows(self):
+        """ 
+        It creates the arrows and add them to the coin window.
+
+        """
         try:    
             (_vec, length)=self.returnVectorsFromBoundaryBox()
 
@@ -384,6 +410,10 @@ class Design456_DirectScale:
         self.__del__()  # Remove all smart scale 3dCOIN widgets
 
     def  btnState(self):
+        """ 
+        Change button text to represent the direct scale mode (Uniform or None uniform)
+        
+        """
         if self.b1.isChecked():
             self.b1.setText("Uniform")
             print ("button pressed")
