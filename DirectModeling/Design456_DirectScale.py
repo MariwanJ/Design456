@@ -236,6 +236,7 @@ class Design456_DirectScale:
     startVector=None
     selectedObj=None
     mouseToArrowDiff=0.0
+    mmAwayFrom3DObject=10  # Use this to take away the arrow from the object
     
     def getObjectLength(self):
         return(self.selectedObj.Shape.BoundBox.XLength,
@@ -263,9 +264,9 @@ class Design456_DirectScale:
             leng.append(lengthY)
             leng.append(lengthZ)
             
-            p1=App.Vector(startX+lengthX/2,EndY+lengthY,startZ+lengthZ/2)
-            p2=App.Vector(EndX+lengthX,startY+lengthY/2,startZ+lengthZ/2)
-            p3=App.Vector(startX+lengthX/2,startY+lengthY/2,EndZ+lengthZ)
+            p1=App.Vector(startX+lengthX/2,EndY+self.mmAwayFrom3DObject,startZ+lengthZ/2)
+            p2=App.Vector(EndX+self.mmAwayFrom3DObject,startY+lengthY/2,startZ+lengthZ/2)
+            p3=App.Vector(startX+lengthX/2,startY+lengthY/2,EndZ+self.mmAwayFrom3DObject)
             
             _vectors.append(p1)
             _vectors.append(p2)
