@@ -403,9 +403,9 @@ class Design456_DirectScale:
         and updating the vectors inside each fr_arrow_widget
         """
         (_vec, length)=self.returnVectorsFromBoundaryBox()
-        self.smartInd[0].w_vector=_vec[0]
-        self.smartInd[1].w_vector=_vec[1]
-        self.smartInd[0].w_vector=_vec[2]
+        for i in range (0,3):
+            self.smartInd[i].w_vector=_vec[i]
+        
         for wdg in self.smartInd:
             wdg.redraw()
         return
