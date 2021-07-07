@@ -121,10 +121,16 @@ def ResizeObject(ArrowObject,linktocaller,startVector,EndVector):
 
 
 def callback_release(userData:fr_arrow_widget.userDataObject=None):
+ 
     try:    
         ArrowObject= userData.ArrowObj
         events=userData.events
-        linktocaller= userData.callerObject
+        linktocaller= userData.callerObject  
+
+        #Avoid activating this part several times,
+        if (linktocaller.startVector==None): 
+            return
+        
         print("mouse release")
         ArrowObject.remove_focus()
         linktocaller.run_Once=False 
@@ -133,7 +139,9 @@ def callback_release(userData:fr_arrow_widget.userDataObject=None):
                               ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         
         ResizeObject(ArrowObject,linktocaller,linktocaller.startVector,linktocaller.endVector)
+        linktocaller.startVector=None
         userData=None
+        linktocaller.mouseToArrowDiff=0.0
         linktocaller.scaleLBL.setText("scale= ")
         #TODO : We should redraw the arrows here. 
         linktocaller.resizeArrowWidgets()
@@ -171,6 +179,14 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
                 
         if linktocaller.run_Once==False:
             linktocaller.run_Once=True
+            if ArrowObject.w_color== FR_COLOR.FR_OLIVEDRAB:
+                linktocaller.mouseToArrowDiff=ArrowObject.w_vector.y-linktocaller.endVector.y
+            elif ArrowObject.w_color== FR_COLOR.FR_RED:
+                linktocaller.mouseToArrowDiff=ArrowObject.w_vector.y-linktocaller.endVector.x
+            elif ArrowObject.w_color== FR_COLOR.FR_RED:
+                linktocaller.mouseToArrowDiff=ArrowObject.w_vector.z-linktocaller.endVector.z
+            
+            
             linktocaller.startVector=linktocaller.endVector # Keep the old value only first time when drag start
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
@@ -180,13 +196,13 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
         
         if ArrowObject.w_color==FR_COLOR.FR_OLIVEDRAB:
             #x direction only
-            ArrowObject.w_vector.y=linktocaller.endVector.y
+            ArrowObject.w_vector.y=linktocaller.endVector.y-linktocaller.mouseToArrowDiff
             scale=linktocaller.endVector.y-linktocaller.startVector.y
         elif ArrowObject.w_color==FR_COLOR.FR_RED:
-            ArrowObject.w_vector.x=linktocaller.endVector.x
+            ArrowObject.w_vector.x=linktocaller.endVector.x-linktocaller.mouseToArrowDiff
             scale=linktocaller.endVector.x-linktocaller.startVector.x
         elif ArrowObject.w_color==FR_COLOR.FR_BLUE:
-            ArrowObject.w_vector.z=linktocaller.endVector.z
+            ArrowObject.w_vector.z=linktocaller.endVector.z-linktocaller.mouseToArrowDiff
             scale=linktocaller.endVector.z-linktocaller.startVector.z
 
         linktocaller.scaleLBL.setText("scale= "+str(1+(scale)/SCALE_FACTOR))
@@ -219,6 +235,7 @@ class Design456_DirectScale:
     endVector=None
     startVector=None
     selectedObj=None
+    mouseToArrowDiff=0.0
     
     def getObjectLength(self):
         return(self.selectedObj.Shape.BoundBox.XLength,
