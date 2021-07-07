@@ -196,7 +196,7 @@ def callback_move(userData:fr_arrow_widget.userDataObject=None):
             if ArrowObject.w_color== FR_COLOR.FR_OLIVEDRAB:
                 linktocaller.mouseToArrowDiff=ArrowObject.w_vector.y-linktocaller.endVector.y
             elif ArrowObject.w_color== FR_COLOR.FR_RED:
-                linktocaller.mouseToArrowDiff=ArrowObject.w_vector.y-linktocaller.endVector.x
+                linktocaller.mouseToArrowDiff=ArrowObject.w_vector.x-linktocaller.endVector.x
             elif ArrowObject.w_color== FR_COLOR.FR_RED:
                 linktocaller.mouseToArrowDiff=ArrowObject.w_vector.z-linktocaller.endVector.z
             
