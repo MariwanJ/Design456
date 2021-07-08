@@ -48,10 +48,10 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 
 # This will be used to convert mouse movement to scale factor.
-SCALE_FACTOR = 20.0
+SCALE_FACTOR = 50.0
 
 
-def ResizeObject(ArrowObject, linktocaller, startVector, EndVector, whichone):
+def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
     """
         This function will resize the 3D object. It clones the old object
         and make a new simple copy of the 3D object. 
@@ -99,41 +99,11 @@ def ResizeObject(ArrowObject, linktocaller, startVector, EndVector, whichone):
                 # z-direction moved
                 scaleZ = 1+deltaZ/SCALE_FACTOR
                 linktocaller.scaleLBL.setText("scale= "+str(scaleZ))
-        
-        # Clone the object. Always we clone the original object
-        cloneObj = Draft.clone(linktocaller.selectedObj[0], forcedraft=True)
-        # Scale the object
-        cloneObj.Scale = App.Vector(scaleX, scaleY, scaleZ)
-        
-        linktocaller.selectedObj[0].Visibility = False
+    
+        #Apply the scale
+        linktocaller.selectedObj[1].Scale=(scaleX,scaleY,scaleZ)
         App.ActiveDocument.recompute()
-        
-        if(whichone == 0):
-            # remove o letter from the name
-            _name = linktocaller.selectedObj[0].Label[-1]
-        else:
-            # the copy object should have the same name always 
-            _name = linktocaller.selectedObj[0].Label
-        
-        #Create a simple copy of the clone
-        __shape = Part.getShape(cloneObj, '', needSubElement=False, refine=False)
-        _simpleCopy = App.ActiveDocument.addObject('Part::Feature', _name+'temp')
-        _simpleCopy.Shape = __shape
-        App.ActiveDocument.recompute()
-        
-        if whichone==0:
-            App.ActiveDocument.removeObject(linktocaller.selectedObj[0].Name)
-            App.ActiveDocument.removeObject(cloneObj.Name)
-        elif whichone==1:
-            App.ActiveDocument.removeObject(linktocaller.selectedObj[1].Name)
-            App.ActiveDocument.removeObject(cloneObj.Name)
-        
-        Gui.Selection.clearSelection()
-        _simpleCopy.Label = _name
-        Gui.Selection.addSelection(_simpleCopy)
-        # All objects must get link to the new targeted object
-        linktocaller.selectedObj[whichone] = _simpleCopy
-        App.ActiveDocument.recompute()
+        linktocaller.recreateBothOriginalAndCloneObject()
 
     except Exception as err:
         App.Console.PrintError("'Resize' Failed. "
@@ -147,7 +117,6 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
        This will do the actual job in resizing the 3D object.
-
     """
     try:
         ArrowObject = userData.ArrowObj
@@ -167,26 +136,21 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         # Undo
         App.ActiveDocument.openTransaction(translate("Design456", "DirectScale"))
 
-        ResizeObject(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector, 0)
+        ResizeObject(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector)
 
         linktocaller.startVector = None
         userData = None
         linktocaller.mouseToArrowDiff = 0.0
         linktocaller.scaleLBL.setText("scale= ")
 
+        App.ActiveDocument.commitTransaction()  # undo reg.
+        linktocaller.recreateBothOriginalAndCloneObject()
+        # original
+        App.ActiveDocument.recompute()
+        
         # Redraw the arrows
         linktocaller.resizeArrowWidgets()
-        App.ActiveDocument.commitTransaction()  # undo reg.
-        # App.ActiveDocument.removeObject(linktocaller.selectedObj[1].Name)
-        __shape = Part.getShape(
-            linktocaller.selectedObj[0], '', needSubElement=False, refine=False)
-        linktocaller.selectedObj.append(
-            App.ActiveDocument.addObject('Part::Feature', "simpleCopy"))
-        linktocaller.selectedObj[1].Shape = __shape
-        linktocaller.selectedObj[0].Visibility = False
-        # original
-        linktocaller.selectedObj[0].Label = linktocaller.selectedObj[0].Label+'O'
-        App.ActiveDocument.recompute()
+
         return 1  # we eat the event no more widgets should get it
 
     except Exception as err:
@@ -201,8 +165,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
     """
         Mouse DRAG callback. It will update the location of the arrows, 
         and keep track of mouse-position. 
-        This will continue until a mouse release occure
-        TODO: Try to resize the 3D Object here to get more interactive feeling.
+        This will continue until a mouse release occurs
     """
     try:
         if userData == None:
@@ -262,10 +225,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             print("too high")
         linktocaller.scaleLBL.setText("scale= "+str(1+(scale)/SCALE_FACTOR))
 
-        ResizeObject(ArrowObject, linktocaller,linktocaller.startVector, linktocaller.endVector, 1)
         linktocaller.smartInd[0].redraw()
         linktocaller.smartInd[1].redraw()
         linktocaller.smartInd[2].redraw()
+
+        ResizeObject(ArrowObject, linktocaller,linktocaller.startVector, linktocaller.endVector)
         return 1  # we eat the event no more widgets should get it
 
     except Exception as err:
@@ -296,7 +260,6 @@ class Design456_DirectScale:
     # 0 is the original    1 is the fake one (just for interactive effect)
     mouseToArrowDiff = 0.0
     mmAwayFrom3DObject = 10  # Use this to take away the arrow from the object
-    howOften=0               # Use this to minimize redraw events. #TODO: FIX IT
 
     def getObjectLength(self, whichOne=1):
         """ 
@@ -310,7 +273,6 @@ class Design456_DirectScale:
     def returnVectorsFromBoundaryBox(self, whichone=0):
         """
         Calculate vertices which will be used to draw the arrows. 
-
         """
         try:
             # Max object length in all directions
@@ -358,7 +320,7 @@ class Design456_DirectScale:
         Called by Activated function of DirectScale
         """
         try:
-            (_vec, length) = self.returnVectorsFromBoundaryBox(1)
+            (_vec, length) = self.returnVectorsFromBoundaryBox(0)
 
             self.smartInd.clear()
 
@@ -407,12 +369,14 @@ class Design456_DirectScale:
                 faced.getInfo().errorDialog(errMessage)
                 return
 
-            __shape = Part.getShape(self.selectedObj[0], '', needSubElement=False, refine=False)
-            self.selectedObj.append(App.ActiveDocument.addObject('Part::Feature', "simpleCopy"))
-            self.selectedObj[1].Shape = __shape
+            cloneObj = Draft.clone(self.selectedObj[0], forcedraft=True)
+
+            # Scale the object to 1
+            cloneObj.Scale = App.Vector(1, 1, 1)
             self.selectedObj[0].Visibility = False
+            self.selectedObj.append( cloneObj)
+            
             # original
-            #self.selectedObj[0].Label = self.selectedObj[0].Label+'O'
             App.ActiveDocument.recompute()
 
             (self.mw, self.dialog, self.tab) = faced.createActionTab("Direct Scale").Activated()
@@ -456,6 +420,37 @@ class Design456_DirectScale:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+
+    def recreateBothOriginalAndCloneObject(self):
+        try:
+            #Create a simple copy
+            nameOriginal=self.selectedObj[0].Name
+            
+            App.ActiveDocument.removeObject(self.selectedObj[0].Name)
+
+            __shape = Part.getShape(self.selectedObj[1], '', needSubElement=False, refine=False)        
+            newObj=App.ActiveDocument.addObject('Part::Feature', nameOriginal) #Our scaled shape
+            newObj.Shape = __shape
+            App.ActiveDocument.removeObject(self.selectedObj[1].Name)            
+            #Make scaled object to be the original for us now
+            self.selectedObj[0]=newObj
+            #Make a scaled from the new original shape
+            cloneObj = Draft.clone(self.selectedObj[0], forcedraft=True)
+                # Scale the object to 1
+            cloneObj.Scale = App.Vector(1, 1, 1)
+            
+            #Hide again the new Original self.selectedObj[0].Visibility = False
+            self.selectedObj[1]=cloneObj
+            App.ActiveDocument.recompute()
+
+        # we have a self.selectedObj object. Try to show the dimensions.
+        except Exception as err:
+            App.Console.PrintError("'Design456_DirectScale' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
 
     def hide(self):
         """
@@ -520,7 +515,11 @@ class Design456_DirectScale:
                 self._mywin = None
             # remove the temp object, and show the original
             # App.ActiveDocument.removeObject(self.selectedObj[1].Name)
+            self.selectedObj[1].Visibility = False
+            App.ActiveDocument.removeObject(self.selectedObj[1].Name)
             self.selectedObj[0].Visibility = True
+            self.selectedObj.clear()
+            
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
                                    "{err}\n".format(err=str(err)))
