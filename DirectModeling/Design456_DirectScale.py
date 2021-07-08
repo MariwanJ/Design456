@@ -253,18 +253,18 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             scale = linktocaller.endVector.z-linktocaller.startVector.z
 
         # Avoid having the scale too low
-        if scale < 0.005:
+        if (scale)/SCALE_FACTOR < 0.005:
             scale = 0.005
             print("too low")
-        elif scale > 20:
+        elif (scale)/SCALE_FACTOR > 20:
             scale = 1
             print("too high")
         linktocaller.scaleLBL.setText("scale= "+str(1+(scale)/SCALE_FACTOR))
 
+        ResizeObject(ArrowObject, linktocaller,linktocaller.startVector, linktocaller.endVector, 1)
         linktocaller.smartInd[0].redraw()
         linktocaller.smartInd[1].redraw()
         linktocaller.smartInd[2].redraw()
-        ResizeObject(ArrowObject, linktocaller,linktocaller.startVector, linktocaller.endVector, 1)
         return 1  # we eat the event no more widgets should get it
 
     except Exception as err:
