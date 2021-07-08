@@ -168,6 +168,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         App.ActiveDocument.openTransaction(translate("Design456", "DirectScale"))
 
         ResizeObject(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector, 0)
+
         linktocaller.startVector = None
         userData = None
         linktocaller.mouseToArrowDiff = 0.0
@@ -295,6 +296,7 @@ class Design456_DirectScale:
     # 0 is the original    1 is the fake one (just for interactive effect)
     mouseToArrowDiff = 0.0
     mmAwayFrom3DObject = 10  # Use this to take away the arrow from the object
+    howOften=0               # Use this to minimize redraw events. #TODO: FIX IT
 
     def getObjectLength(self, whichOne=1):
         """ 
