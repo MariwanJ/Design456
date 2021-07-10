@@ -48,9 +48,71 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 
 # This will be used to convert mouse movement to scale factor.
-SCALE_FACTOR = 50.0
+SCALE_FACTOR = 40.0
 
+def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
+    """
+        Calculate the scale from the mouse movement. 
+    """
+    
+    try:
+        deltaX = EndVector.x-startVector.x
+        deltaY = EndVector.y-startVector.y
+        deltaZ = EndVector.z-startVector.z
+        print("deltaX,deltaY,deltaZ =",deltaX,deltaY,deltaZ)
+        (lengthX, lengthY, lengthZ) = linktocaller.getObjectLength()
+        uniformValue = 1.0
+        oldLength = 0.0
+        
+        if (linktocaller.b1.text() == 'Uniform'):
+           
+            # We maximize all of them regardles the change in which axis made
+            if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
+                uniformValue = deltaY/SCALE_FACTOR
+                uniformValue= (lengthY+uniformValue)/lengthY
+            elif ArrowObject.w_color == FR_COLOR.FR_RED:
+                uniformValue = deltaX/SCALE_FACTOR
+                uniformValue = (lengthX+uniformValue)/lengthX
+            elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
+                uniformValue = deltaZ/SCALE_FACTOR
+                uniformValue = (lengthZ+uniformValue)/lengthZ
 
+            else:
+                # This shouldn't happen
+                errMessage = "Unknown error occurred, wrong Arrow-Color"
+                faced.getInfo().errorDialog(errMessage)
+                return
+            scaleX = scaleY = scaleZ = uniformValue
+            linktocaller.scaleLBL.setText("scale= "+str(scaleX))
+        else:
+            scaleX = 1
+            scaleY = 1
+            scaleZ = 1
+            if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
+                # y-direction moved
+                scaleY = deltaY/SCALE_FACTOR
+                scaleY= (lengthY+scaleY)/lengthY
+                linktocaller.scaleLBL.setText("scale= "+str(scaleY))
+            elif ArrowObject.w_color == FR_COLOR.FR_RED:
+                # x-direction moved
+                scaleX = deltaX/SCALE_FACTOR
+                scaleX= (lengthX+scaleX)/lengthX
+                linktocaller.scaleLBL.setText("scale= "+str(scaleX))
+            elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
+                # z-direction moved
+                scaleZ = deltaZ/SCALE_FACTOR
+                scaleZ = (lengthZ+deltaZ)/lengthZ
+                linktocaller.scaleLBL.setText("scale= "+str(scaleZ))
+        return(scaleX,scaleY,scaleZ)
+        
+    except Exception as err:
+        App.Console.PrintError("'Resize' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
+              
 def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
     """
         This function will resize the 3D object. It clones the old object
@@ -59,48 +121,30 @@ def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
     # if the whichone = 0 ---> The real object will be resized, fake will be deleted. 
     #        whichone = 1 ---> the fake object will be resized.
     try:
-        scaleX = scaleY = scaleZ = 1.0
-        deltaX = EndVector.x-startVector.x
-        deltaY = EndVector.y-startVector.y
-        deltaZ = EndVector.z-startVector.z
-
-        (lengthX, lengthY, lengthZ) = linktocaller.getObjectLength()
-        uniformValue = 1.0
-        oldLength = 0.0
-        
-        if (linktocaller.b1.text() == 'Uniform'):
-            # We maximize all of them regardles the change in which axis made
-            if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
-                uniformValue = deltaY
-            elif ArrowObject.w_color == FR_COLOR.FR_RED:
-                uniformValue = deltaX
-            elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
-                uniformValue = deltaZ
-            else:
-                # This shouldn't happen
-                errMessage = "Unknown error occurred, wrong Arrow-Color"
-                faced.getInfo().errorDialog(errMessage)
-                return
-            scaleX = scaleY = scaleZ = 1+(uniformValue)/SCALE_FACTOR
-            linktocaller.scaleLBL.setText("scale= "+str(scaleX))
-        else:
-            scaleX = 1
-            scaleY = 1
-            scaleZ = 1
-            if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
-                # y-direction moved
-                scaleY = 1+deltaY/SCALE_FACTOR
-                linktocaller.scaleLBL.setText("scale= "+str(scaleY))
-            elif ArrowObject.w_color == FR_COLOR.FR_RED:
-                # x-direction moved
-                scaleX = 1+deltaX/SCALE_FACTOR
-                linktocaller.scaleLBL.setText("scale= "+str(scaleX))
-            elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
-                # z-direction moved
-                scaleZ = 1+deltaZ/SCALE_FACTOR
-                linktocaller.scaleLBL.setText("scale= "+str(scaleZ))
-    
+        (scaleX,scaleY,scaleZ)=calculateScale(ArrowObject, linktocaller, startVector, EndVector)
         #Apply the scale
+                # Avoid having the scale too low
+        if scaleX < 0.005:
+            scaleX = 0.005
+            print("too low scaleX")
+        elif scaleX > 20:
+            scaleX = 1
+            print("too high scaleX")
+
+        if scaleY < 0.005:
+            scaleY = 0.005
+            print("too low scaleY")
+        elif scaleY > 20:
+            scaleY = 1
+            print("too high scaleY")
+
+        if scaleZ < 0.005:
+            scaleZ = 0.005
+            print("too low scaleZ")
+        elif scaleZ > 20:
+            scaleZ = 1
+            print("too high scaleZ")
+
         linktocaller.selectedObj[1].Scale=(scaleX,scaleY,scaleZ)
         App.ActiveDocument.recompute()
         linktocaller.recreateBothOriginalAndCloneObject()
@@ -184,6 +228,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        
         if clickwdgdNode == None and clickwdglblNode == None:
             if linktocaller.run_Once == False:
                 return 0  # nothing to do
@@ -205,25 +250,20 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         scale = 1.0
         newPos = App.Vector(0.0, 0.0, 0.0)
 
+        (scaleX,scaleY,scaleZ)=calculateScale(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector)
         if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
             # x direction only
+            scale=scaleY
             ArrowObject.w_vector.y = linktocaller.endVector.y+linktocaller.mouseToArrowDiff
-            scale = linktocaller.endVector.y-linktocaller.startVector.y
         elif ArrowObject.w_color == FR_COLOR.FR_RED:
             ArrowObject.w_vector.x = linktocaller.endVector.x+linktocaller.mouseToArrowDiff
-            scale = linktocaller.endVector.x-linktocaller.startVector.x
+            scale=scaleX
         elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
             ArrowObject.w_vector.z = linktocaller.endVector.z+linktocaller.mouseToArrowDiff
-            scale = linktocaller.endVector.z-linktocaller.startVector.z
+            scale=scaleZ
+        
 
-        # Avoid having the scale too low
-        if (scale)/SCALE_FACTOR < 0.005:
-            scale = 0.005
-            print("too low")
-        elif (scale)/SCALE_FACTOR > 20:
-            scale = 1
-            print("too high")
-        linktocaller.scaleLBL.setText("scale= "+str(1+(scale)/SCALE_FACTOR))
+        linktocaller.scaleLBL.setText("scale= "+str(scale))
 
         linktocaller.smartInd[0].redraw()
         linktocaller.smartInd[1].redraw()
@@ -361,7 +401,7 @@ class Design456_DirectScale:
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
                 return
-            
+            self.selectedObj.clear()
             self.selectedObj.append(sel[0])  # original
             if not hasattr(self.selectedObj[0], 'Shape'):
                 # Only one object must be self.selectedObj
@@ -452,6 +492,11 @@ class Design456_DirectScale:
             print(exc_type, fname, exc_tb.tb_lineno)
 
 
+        
+        
+        
+        
+        
     def hide(self):
         """
         Hide the widgets. Remove also the tab.
