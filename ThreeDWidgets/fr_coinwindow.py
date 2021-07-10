@@ -118,11 +118,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         if type(widg)==list:
             for widgets in widg:
-                # For line widgets are included.
                 self.w_children.append(widgets)
                 widgets.parent(self._mainfrCoinWindow)      #Save a link to parent in the widget
         else:
-            #Save a link to parent in the widget
             self.w_children.append(widg)
             widg.parent(self._mainfrCoinWindow)             #Save a link to parent in the widget
 
