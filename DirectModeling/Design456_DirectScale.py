@@ -48,7 +48,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 
 # This will be used to convert mouse movement to scale factor.
-SCALE_FACTOR = 40.0
+SCALE_FACTOR = 20.0
 
 def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
     """
@@ -59,7 +59,6 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
         deltaX = EndVector.x-startVector.x
         deltaY = EndVector.y-startVector.y
         deltaZ = EndVector.z-startVector.z
-        print("deltaX,deltaY,deltaZ =",deltaX,deltaY,deltaZ)
         (lengthX, lengthY, lengthZ) = linktocaller.getObjectLength()
         uniformValue = 1.0
         oldLength = 0.0
@@ -112,7 +111,7 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-              
+
 def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
     """
         This function will resize the 3D object. It clones the old object
@@ -123,31 +122,31 @@ def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
     try:
         (scaleX,scaleY,scaleZ)=calculateScale(ArrowObject, linktocaller, startVector, EndVector)
         #Apply the scale
-                # Avoid having the scale too low
+                # Avoid having the scale too small
         if scaleX < 0.005:
             scaleX = 0.005
-            print("too low scaleX")
+            print("too small scaleX")
         elif scaleX > 20:
             scaleX = 1
             print("too high scaleX")
 
         if scaleY < 0.005:
             scaleY = 0.005
-            print("too low scaleY")
+            print("too small scaleY")
         elif scaleY > 20:
             scaleY = 1
             print("too high scaleY")
 
         if scaleZ < 0.005:
             scaleZ = 0.005
-            print("too low scaleZ")
+            print("too small scaleZ")
         elif scaleZ > 20:
             scaleZ = 1
             print("too high scaleZ")
 
         linktocaller.selectedObj[1].Scale=(scaleX,scaleY,scaleZ)
         App.ActiveDocument.recompute()
-        linktocaller.recreateBothOriginalAndCloneObject()
+        linktocaller.reCreateBothOriginalAndCloneObject()
 
     except Exception as err:
         App.Console.PrintError("'Resize' Failed. "
@@ -186,13 +185,14 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         userData = None
         linktocaller.mouseToArrowDiff = 0.0
         linktocaller.scaleLBL.setText("scale= ")
-
-        App.ActiveDocument.commitTransaction()  # undo reg.
-        linktocaller.recreateBothOriginalAndCloneObject()
+                
+        linktocaller.reCreateBothOriginalAndCloneObject()
         # original
         App.ActiveDocument.recompute()
-        
+
+        App.ActiveDocument.commitTransaction()  # undo reg.
         # Redraw the arrows
+
         linktocaller.resizeArrowWidgets()
 
         return 1  # we eat the event no more widgets should get it
@@ -211,6 +211,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         and keep track of mouse-position. 
         This will continue until a mouse release occurs
     """
+
     try:
         if userData == None:
             return  # Nothing to do here - shouldn't be None
@@ -230,7 +231,10 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         
         if clickwdgdNode == None and clickwdglblNode == None:
+            print("clickwdgdNode",clickwdgdNode)
+            print(" clickwdglblNode",  clickwdglblNode)
             if linktocaller.run_Once == False:
+                print("click move")
                 return 0  # nothing to do
 
         if linktocaller.run_Once == False:
@@ -239,7 +243,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
                 linktocaller.mouseToArrowDiff = ArrowObject.w_vector.y-linktocaller.endVector.y
             elif ArrowObject.w_color == FR_COLOR.FR_RED:
                 linktocaller.mouseToArrowDiff = ArrowObject.w_vector.x-linktocaller.endVector.x
-            elif ArrowObject.w_color == FR_COLOR.FR_RED:
+            elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
                 linktocaller.mouseToArrowDiff = ArrowObject.w_vector.z-linktocaller.endVector.z
 
             # Keep the old value only first time when drag start
@@ -251,18 +255,19 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         newPos = App.Vector(0.0, 0.0, 0.0)
 
         (scaleX,scaleY,scaleZ)=calculateScale(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector)
+        
         if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
-            # x direction only
             scale=scaleY
             ArrowObject.w_vector.y = linktocaller.endVector.y+linktocaller.mouseToArrowDiff
+        
         elif ArrowObject.w_color == FR_COLOR.FR_RED:
             ArrowObject.w_vector.x = linktocaller.endVector.x+linktocaller.mouseToArrowDiff
             scale=scaleX
+
         elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
             ArrowObject.w_vector.z = linktocaller.endVector.z+linktocaller.mouseToArrowDiff
             scale=scaleZ
         
-
         linktocaller.scaleLBL.setText("scale= "+str(scale))
 
         linktocaller.smartInd[0].redraw()
@@ -365,16 +370,14 @@ class Design456_DirectScale:
             self.smartInd.clear()
 
             rotation = (0.0, 0.0, 0.0, 0.0)
-            self.smartInd.append(Fr_Arrow_Widget(
-                _vec[0], "X-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
-            self.smartInd[0].w_callback_ = callback_release
+            self.smartInd.append(Fr_Arrow_Widget(_vec[0], "X-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
             # External function
+            self.smartInd[0].w_callback_ = callback_release
             self.smartInd[0].w_move_callback_ = callback_move
             self.smartInd[0].w_userData.callerObject = self
 
             rotation = (0.0, 0.0, -1.0, math.radians(57))
-            self.smartInd.append(Fr_Arrow_Widget(
-                _vec[1], "Y-Axis", 1, FR_COLOR.FR_RED, rotation))
+            self.smartInd.append(Fr_Arrow_Widget( _vec[1], "Y-Axis", 1, FR_COLOR.FR_RED, rotation))
             self.smartInd[1].w_callback_ = callback_release
             self.smartInd[1].w_move_callback_ = callback_move
             self.smartInd[1].w_userData.callerObject = self
@@ -401,6 +404,7 @@ class Design456_DirectScale:
                 errMessage = "Select one object to scale"
                 faced.getInfo().errorDialog(errMessage)
                 return
+            
             self.selectedObj.clear()
             self.selectedObj.append(sel[0])  # original
             if not hasattr(self.selectedObj[0], 'Shape'):
@@ -415,8 +419,7 @@ class Design456_DirectScale:
             cloneObj.Scale = App.Vector(1, 1, 1)
             self.selectedObj[0].Visibility = False
             self.selectedObj.append( cloneObj)
-            
-            # original
+
             App.ActiveDocument.recompute()
 
             (self.mw, self.dialog, self.tab) = faced.createActionTab("Direct Scale").Activated()
@@ -461,7 +464,7 @@ class Design456_DirectScale:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def recreateBothOriginalAndCloneObject(self):
+    def reCreateBothOriginalAndCloneObject(self):
         try:
             #Create a simple copy
             nameOriginal=self.selectedObj[0].Name
@@ -491,12 +494,6 @@ class Design456_DirectScale:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
-        
-        
-        
-        
-        
     def hide(self):
         """
         Hide the widgets. Remove also the tab.
@@ -522,7 +519,7 @@ class Design456_DirectScale:
 
     def whichbtn(self, b1):
         if b1.text() == 'Uniform':
-            b1.setStyleSheet("background: yellow;")
+            b1.setStyleSheet("background: blue;")
         else:
             b1.setStyleSheet("background: orange;")
 
@@ -531,8 +528,9 @@ class Design456_DirectScale:
         Reposition the arrows by recalculating the boundary box
         and updating the vectors inside each fr_arrow_widget
         """
-        (_vec, length) = self.returnVectorsFromBoundaryBox(0)
+        (_vec, length) = self.returnVectorsFromBoundaryBox(1)
         for i in range(0, 3):
+            print ("i range",i)
             self.smartInd[i].w_vector = _vec[i]
 
         for wdg in self.smartInd:
