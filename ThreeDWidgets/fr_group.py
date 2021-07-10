@@ -38,13 +38,12 @@ from typing import List
 
 
 class Fr_Group(fr_widget.Fr_Widget):
-    # Any drawign/Every thing should be added to this later
+    # Any drawing/Everything should be added to this later
     # This will keep the link to the main window.
     global _mainfrCoinWindow
     global _mainfrQtWindow
     global _children
-   
-    
+
     def __init__(self, args: List[App.Vector] = [], l: str = ""): 
         super().__init__(args, l)
         if args == None:
@@ -58,9 +57,13 @@ class Fr_Group(fr_widget.Fr_Widget):
 
 
     def addWidget(self, widg):
-        widg.w_parent=self.w_mainfrCoinWindow
-        self.w_children.append(widg)
-        
+        if type(widg)==list:
+            for widgets in widg:
+                widgets.w_parent=self.w_mainfrCoinWindow        
+                self.w_children.append(widgets)
+        else:
+            widg.w_parent=self.w_mainfrCoinWindow
+            self.w_children.append(widg)
 
     def removeWidget(self,widg):
         """ 
@@ -70,10 +73,8 @@ class Fr_Group(fr_widget.Fr_Widget):
         try:
             if type(widg)==list:
                 for widgets in widg:
-                    # For line widgets are included.
                     self.w_children.remove(widgets)
             else:
-                # For line widgets are included.
                 self.w_children.remove(widg)
         except:
             pass  # Just ignore the error #Todo is this correct?
