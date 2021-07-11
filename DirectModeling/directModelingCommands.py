@@ -24,12 +24,14 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-from DirectModeling.Design456_DirectScale import *
-from DirectModeling.Design456_SmartScale import *
+import DirectModeling.Design456_SmartScale
+import DirectModeling.Design456_DirectScale
+import DirectModeling.Design456_fillet
 
 class Design456_DirectModeling:
     list = ["Design456_SmartScale",
             "Design456_DirectScale",
+            "Design456_SmartFillet",
 
             ]
     """Design456 Direct Modeling """

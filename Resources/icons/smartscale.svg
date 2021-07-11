@@ -1843,17 +1843,17 @@
       <path
          id="path6243"
          d="m -120.56959,-61.295189 -31.87834,31.888344 v 95.645028 h 95.645032 l 31.878345,-31.88834 v -95.645032 z"
-         style="fill:#d2ffd8;fill-opacity:1;stroke:#000600;stroke-width:1.00596285;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:#ffff6a;fill-opacity:1;stroke:#000600;stroke-width:1.00596285;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          id="path6245"
-         d="m -152.44793,-29.406845 h 95.645032 l 31.878345,-31.888344"
-         style="fill:#d3ffe0;fill-opacity:1;stroke:#000600;stroke-width:1.00596285;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         d="m -56.802898,-29.406845 31.878345,-31.888344"
+         style="fill:#ff7f6a;fill-opacity:1;stroke:#000600;stroke-width:1.00596;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          id="path6247"
          d="M -56.802898,-29.406845 V 66.238183"
          style="fill:#5cff80;fill-opacity:1;stroke:#000600;stroke-width:1.00596285;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <rect
-         style="fill:#e7ffce;fill-opacity:1;fill-rule:nonzero;stroke:#000600;stroke-width:2.07339692;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         style="fill:#fb0a1d;fill-opacity:1;fill-rule:nonzero;stroke:#000600;stroke-width:2.07339692;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
          id="rect6266"
          width="93.381157"
          height="94.710426"
@@ -1862,4 +1862,9 @@
          ry="2.1185601" />
     </g>
   </g>
+  <path
+     id="rect1085"
+     style="fill:#ffb34f;fill-opacity:1;stroke-width:0.785"
+     transform="rotate(26.304374)"
+     d="M 15.986785,-7.4573342 39.891543,-19.274072 36.088859,-6.0594838 12.478921,5.5026541 Z" />
 </svg>

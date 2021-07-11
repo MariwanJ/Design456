@@ -1821,23 +1821,23 @@
         <path
            id="rect1911"
            d="m 19.992004,-106.1161 155.587966,34.781653 48.59468,60.6388 -168.608937,-29.614052 z"
-           style="fill:#61edf5;fill-opacity:1;stroke:#000000;stroke-width:1.10599899;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:#f9ee7b;fill-opacity:1;stroke:#000000;stroke-width:1.10599899;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            transform="matrix(0.16802467,-0.98578279,0.89605194,0.44394924,0,0)" />
         <path
            id="rect1914"
            d="m -43.13784,-118.36874 60.514245,47.815639 -10e-7,56.628587 -57.325039,-46.476793 z"
-           style="fill:#618bf5;fill-opacity:1;stroke:none;stroke-width:10.98249245;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:#f7af01;fill-opacity:1;stroke:none;stroke-width:10.98249245;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            transform="matrix(0.64726981,-0.76226098,0.53903223,0.84228514,0,0)" />
         <path
            id="rect1917"
            d="M 17.376394,-70.553101 152.01079,-130.43557 151.70717,-77.163427 17.376404,-13.924514 Z"
-           style="fill:#938bd5;fill-opacity:1;stroke:#000000;stroke-width:1.10706162;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:#fee498;fill-opacity:1;stroke:#000000;stroke-width:1.10706162;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            transform="matrix(0.64726981,-0.76226098,0.53903222,0.84228515,0,0)" />
       </g>
       <path
          id="path1929"
          d="m -116.52418,22.742517 6.41073,-12.051043 -6.51102,-6.2276729 16.44815,-4.92577197 1.899484,22.47488587 -6.529304,-6.245112 -6.41074,12.051052 z"
-         style="fill:#ffe803;fill-opacity:1;fill-rule:evenodd;stroke:#30267f;stroke-width:1.81207156;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+         style="fill:#ea4803;fill-opacity:1;fill-rule:evenodd;stroke:#30267f;stroke-width:1.81207156;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <path
        style="fill:none;stroke:#3465a4;stroke-width:0.05056914px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
