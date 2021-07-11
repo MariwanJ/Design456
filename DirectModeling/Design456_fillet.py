@@ -39,12 +39,14 @@ from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
+from ThreeDWidgets import fr_arrow_widget
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
+import math
 
 def fillet_callback_move(test):
-    pass
+    print("callback")
 
 
 class Design456_SmartFillet:
@@ -52,12 +54,12 @@ class Design456_SmartFillet:
         Apply fillet to an edge using mouse movement.
         Moving an arrow that will represent radius of the fillet.
     """
-    _vector: App.Vector(0, 0, 0) = []
+    _vector=App.Vector(0.0,0.0,0.0)
     selectedObject=None
     mw = None
     dialog = None
     tab = None
-    smartInd = []
+    smartInd =None
     _mywin = None
     b1 = None
     scaleLBL = None
@@ -71,34 +73,32 @@ class Design456_SmartFillet:
         Find out the vector and rotation of the arrow to be drawn.
         """
         try:
-        
-            vectors=self.selectedObject.Vectors
+            vectors=self.selectedObject.SubObjects[0].Vertexes
             if objType=='Face':
-                self._vector.z=vectors[0].z
+                self._vector.z=vectors[0].Z
                 for i in vectors:
-                    self._vector.x+=i.x
-                    self._vector.y+=i.y
-                    if self._vector<i.z:
-                        self._vector=i.z
+                    self._vector.x+=i.X
+                    self._vector.y+=i.Y
+                    if self._vector.z<i.Z:
+                        self._vector.z=i.Z
                 self._vector.x=self._vector.x/4
                 self._vector.y=self._vector.y/4
-                print (self._vector)
 
             elif objType=='Edge':
                 #An edge is selected
-                self._vector.z=vectors[0].z
+                self._vector.z=vectors[0].Z
                 for i in vectors:
-                    self._vector.x+=i.x
-                    self._vector.y+=i.y
-                    self._vector.z+=i.z
+                    self._vector.x+=i.X
+                    self._vector.y+=i.Y
+                    self._vector.z+=i.Z
                 self._vector.x=self._vector.x/2
                 self._vector.y=self._vector.y/2
                 self._vector.z=self._vector.z/2
-                print (self._vector)
+                
             elif objType=='Shape':
                 #The whole object is selected
-                pass
-    
+                print("shape")
+                
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -106,35 +106,38 @@ class Design456_SmartFillet:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def Activated(self):
-        try:
-            self.selectedObject=Gui.Selection.getSelectionEx()
-            if len(self.selectedObject) != 1:
-                # Only one object must be self.selectedObj
-                errMessage = "Select one object, one face or one edge to fillet"
-                faced.getInfo().errorDialog(errMessage)
-                return
-            
-            self.selectedObject=self.selectedObject[0]
-            if self.selectedObject.HasSubObjects!=True:
-                #we have the whole object. Find all edges that should be fillet.
-                self.getArrowPosition('Shape')
-            subObj=self.selectedObject.SubObjects()[0]
-            if subObj.ShapeType=='Face':
-                #We have a face
-                self.getArrowPosition('Face')
-            elif subObj.ShapeType=='Edge':
-                #Only one edge
-                self.getArrowPosition('Edge')
-            else:
-                errMessage = "Select and object, a face or an edge to fillet"
-                faced.getInfo().errorDialog(errMessage)
-                return
+        self.selectedObject=Gui.Selection.getSelectionEx()
+        if len(self.selectedObject) != 1:
+            # Only one object must be self.selectedObj
+            errMessage = "Select one object, one face or one edge to fillet"
+            faced.getInfo().errorDialog(errMessage)
+            return
+        
+        self.selectedObject=self.selectedObject[0]
+        if self.selectedObject.HasSubObjects!=True:
+            #we have the whole object. Find all edges that should be fillet.
+            self.getArrowPosition('Shape')
+        subObj=self.selectedObject.SubObjects[0]
+        if subObj.ShapeType=='Face':
+            #We have a face
+            self.getArrowPosition('Face')
+        elif subObj.ShapeType=='Edge':
+            #Only one edge
+            self.getArrowPosition('Edge')
+        else:
+            errMessage = "Select and object, a face or an edge to fillet"
+            faced.getInfo().errorDialog(errMessage)
+            return
+        rotation = (-1.0, 0.0, 0.0, math.radians(130.0))
+        #print(self._vector)
+        print()
+        self.smartInd=Fr_Arrow_Widget(self._vector,"Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
 
-        except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        if self._mywin == None:
+            self._mywin = win.Fr_CoinWindow()
+        self._mywin.addWidget(self.smartInd)
+        mw = self.getMainWindow()
+        self._mywin.show()
 
     def __del__(self):
         """ 
@@ -142,10 +145,8 @@ class Design456_SmartFillet:
             Remove all objects from memory even fr_coinwindow
         """
         try:
-            for i in self.smartInd:
-                i.hide()
-                i.__del__()
-                del i  # call destructor
+            self.smartInd.hide()
+            self.smartInd.__del__()  # call destructor
             if self._mywin != None:
                 self._mywin.hide()
                 del self._mywin
