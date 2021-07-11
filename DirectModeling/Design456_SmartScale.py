@@ -303,7 +303,6 @@ class Design456_SmartScale:
 
             self.dialog=QtGui.QDialog()
             oldsize=self.tab.count()
-            print("oldsize",oldsize)
             self.tab.addTab(self.dialog,"Smart Scale")
             self.tab.setCurrentWidget(self.dialog)
             self.dialog.resize(200,450)
