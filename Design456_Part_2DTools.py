@@ -160,7 +160,6 @@ class Design456_CommonFace:
             'ToolTip':  'CommonFace between 2-2D Faces'
         }
 
-
 Gui.addCommand('Design456_CommonFace', Design456_CommonFace())
 
 
