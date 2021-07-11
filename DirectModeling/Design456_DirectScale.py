@@ -35,15 +35,13 @@ from ThreeDWidgets import fr_arrow_widget
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
-import ThreeDWidgets.fr_line_widget as wlin
 import ThreeDWidgets.fr_coinwindow as win
 from ThreeDWidgets import fr_coin3d
-from typing import ItemsView, List
+from typing import  List
 import Design456Init
 from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 import math
-from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 
