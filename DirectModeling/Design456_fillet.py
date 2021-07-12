@@ -44,6 +44,7 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 import math
+from  ThreeDWidgets import fr_label_draw
 
 def fillet_callback_move(test):
     print("callback")
@@ -65,6 +66,7 @@ class Design456_SmartFillet:
     scaleLBL = None
     run_Once = False
 
+
     def getArrowPosition(self,objType:str=''):
         """"
         Args:
@@ -83,6 +85,12 @@ class Design456_SmartFillet:
                         self._vector.z=i.Z
                 self._vector.x=self._vector.x/4
                 self._vector.y=self._vector.y/4
+                
+                
+                rotation= (coin.SbVec3f(self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.x,
+                                       self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.y,
+                                       self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.z),self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Angle)
+                print(rotation)
 
             elif objType=='Edge':
                 #An edge is selected
@@ -91,13 +99,17 @@ class Design456_SmartFillet:
                     self._vector.x+=i.X
                     self._vector.y+=i.Y
                     self._vector.z+=i.Z
-                self._vector.x=self._vector.x/2+0.5*self._vector.x
-                self._vector.y=self._vector.y/2+0.5*self._vector.y
+                self._vector.x=self._vector.x/2
+                self._vector.y=self._vector.y/2
                 self._vector.z=self._vector.z/2+0.5*self._vector.z
                 
+                rotation= ((self.selectedObject.SubObjects[0].Placement.Rotation),math.radians(120))
+
             elif objType=='Shape':
                 #The whole object is selected
                 print("shape")
+                
+                rotation = coin.SbVec3f((-1.0, 0.0,0.0), math.radians(120))
                 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' Failed. "
@@ -128,8 +140,9 @@ class Design456_SmartFillet:
             errMessage = "Select and object, a face or an edge to fillet"
             faced.getInfo().errorDialog(errMessage)
             return
-        rotation = (-1.0, 0.0,0.0, math.radians(120))
+        rotation = (coin.SbVec3f(-1.0, 0.0,0.0), math.radians(120))
         #print(self._vector)
+        rotation=self.selectedObject.Object.Placement.Rotation.Q
         print()
         self.smartInd=Fr_Arrow_Widget(self._vector,"Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
 
