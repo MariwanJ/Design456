@@ -135,80 +135,66 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 #draw arrow 
-def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0,_rotation=(1.0,1.0,1.0,0.0)):
+def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0,_rotation=[(coin.SbVec3f(1.0,1.0,1.0),0.0)]):
     '''
     Draw a 3D arrow at the position given by the _Points and the color given by _color. 
     Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
     An angle in radians. 
     '''
 
-    try:
-        so_separatorRoot=coin.SoSeparator()
-        so_separatorHead = coin.SoSeparator()
-        so_separatorTail = coin.SoSeparator()
-
-        transHead = coin.SoTranslation()   # decide at which position the object will be placed
-        transTail = coin.SoTranslation()   # decide at which position the object will be placed
-        transRoot= coin.SoTranslation()    # decide at which position the whole objects will be placed
-
-        coordsRoot = coin.SoTransform()
-        
-        cone=coin.SoCone()
-        cone.bottomRadius= 3
-        cone.height= 3
-        
-        cylinder=coin.SoCylinder()
-        cylinder.height = 10
-        cylinder.radius = 0.5
-        p1=App.Vector(0.0,0.0,0.0)#(_Points[0])
-        p2=App.Vector(p1.x,p1.y-5,p1.z)
-
-        styleHead = coin.SoDrawStyle()
-        styleTail = coin.SoDrawStyle()
-        
-        styleHead.style = coin.SoDrawStyle.LINES     #draw only frame not filled
-        styleHead.lineWidth = 3
-
-        styleTail.style = coin.SoDrawStyle.LINES     #draw only frame not filled
-        styleTail.lineWidth = 2
-        
-        coordsRoot.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
-        coordsRoot.translation.setValue(App.Vector(0,0,0))
-        coordsRoot.rotation.setValue(_rotation) #  SbRotation (const SbVec3f &axis, const float radians)
-
-        transHead.translation.setValue(p1)
-        transTail.translation.setValue(p2)
-        transRoot.translation.setValue(_Points)
-        
-        color=coin.SoBaseColor(); 
-        color.rgb=_color
-        
-        so_separatorHead.addChild(color)
-        so_separatorTail.addChild(color)
-        
-        so_separatorHead.addChild(transHead)
-        so_separatorTail.addChild(transTail)
-
-        #so_separatorHead.addChild(styleHead)
-        so_separatorHead.addChild(cone)
-        
-        #so_separatorTail.addChild(styleTail)
-        so_separatorTail.addChild(cylinder)
-        
-        group= coin.SoSeparator()        
-        group.addChild(transRoot)
-        group.addChild(coordsRoot)
-        group.addChild(so_separatorHead)
-        group.addChild(so_separatorTail)
-        return group
-
-    except Exception as err:
-        App.Console.PrintError("'Design456_DirectScale' Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
-                
+    so_separatorRoot=coin.SoSeparator()
+    so_separatorHead = coin.SoSeparator()
+    so_separatorTail = coin.SoSeparator()
+    transHead = coin.SoTranslation()   # decide at which position the object will be placed
+    transTail = coin.SoTranslation()   # decide at which position the object will be placed
+    transRoot= coin.SoTranslation()    # decide at which position the whole objects will be placed
+    coordsRoot = coin.SoTransform()
+    
+    cone=coin.SoCone()
+    cone.bottomRadius= 3
+    cone.height= 3
+    
+    cylinder=coin.SoCylinder()
+    cylinder.height = 10
+    cylinder.radius = 0.5
+    p1=App.Vector(0.0,0.0,0.0)#(_Points[0])
+    p2=App.Vector(p1.x,p1.y-5,p1.z)
+    styleHead = coin.SoDrawStyle()
+    styleTail = coin.SoDrawStyle()
+    
+    styleHead.style = coin.SoDrawStyle.LINES     #draw only frame not filled
+    styleHead.lineWidth = 3
+    styleTail.style = coin.SoDrawStyle.LINES     #draw only frame not filled
+    styleTail.lineWidth = 2
+    
+    coordsRoot.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
+    coordsRoot.translation.setValue(App.Vector(0,0,0))
+    
+    coordsRoot.rotation.setValue(_rotation) #  SbRotation (const SbVec3f &axis, const float radians)
+    transHead.translation.setValue(p1)
+    transTail.translation.setValue(p2)
+    transRoot.translation.setValue(_Points)
+    
+    color=coin.SoBaseColor(); 
+    color.rgb=_color
+    
+    so_separatorHead.addChild(color)
+    so_separatorTail.addChild(color)
+    
+    so_separatorHead.addChild(transHead)
+    so_separatorTail.addChild(transTail)
+    #so_separatorHead.addChild(styleHead)
+    so_separatorHead.addChild(cone)
+    
+    #so_separatorTail.addChild(styleTail)
+    so_separatorTail.addChild(cylinder)
+    
+    group= coin.SoSeparator()        
+    group.addChild(transRoot)
+    group.addChild(coordsRoot)
+    group.addChild(so_separatorHead)
+    group.addChild(so_separatorTail)
+    return group
 
 #draw a box
 def draw_box(Points=[], color=(0.0,0.0,0.0), LineWidth=1):

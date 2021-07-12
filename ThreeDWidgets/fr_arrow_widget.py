@@ -81,11 +81,13 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     """
     This class is for drawing a line in coin3D world
     """
+    #Big mistake  regarding the arrows: Read https://grey.colorado.edu/coin3d/classSoTransform.html#a357007d906d1680a72cd73cf974a6869 
+    #Don't do that
     def __init__(self, vectors: List[App.Vector] = [], 
 
                  label: str = "",lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=((1.0,1.0,1.0),0.0)):        
+                 _rotation=(coin.SbVec3f(1.0,1.0,1.0),0.0)):        
         #Must be initialized first as per the following discussion. 
         #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
         super().__init__(vectors,label)
@@ -99,7 +101,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_move_callback_=callback      #External function
         w_wdgsoSwitch = None        
         self.w_color=_color                 #Default color is green 
-        self.w_rotation=_rotation           # Axis (x,y,z), Angle
+        self.w_rotation=_rotation           # coin.SbVec3f (x,y,z), Angle
         self.w_userData= userDataObject()   # Keep info about the widget
         self.w_userData.ArrowObj=self
         self.w_userData.color=_color
@@ -329,7 +331,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     def setRotationAngle(self, axis_angle):
         ''' 
         Set the rotation axis and the angle
-        Axis is App.Vector(x,y,z)
+        Axis is coin.SbVec3f((x,y,z)
         angle=float number
         '''
         self.w_rotation=axis_angle    
