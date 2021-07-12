@@ -26,7 +26,7 @@ from __future__ import unicode_literals
 # **************************************************************************
 import DirectModeling.Design456_SmartScale
 import DirectModeling.Design456_DirectScale
-import DirectModeling.Design456_fillet
+import DirectModeling.Design456_Fillet
 
 class Design456_DirectModeling:
     list = ["Design456_SmartScale",
