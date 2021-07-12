@@ -91,9 +91,9 @@ class Design456_SmartFillet:
                     self._vector.x+=i.X
                     self._vector.y+=i.Y
                     self._vector.z+=i.Z
-                self._vector.x=self._vector.x/2
-                self._vector.y=self._vector.y/2
-                self._vector.z=self._vector.z/2
+                self._vector.x=self._vector.x/2+0.5*self._vector.x
+                self._vector.y=self._vector.y/2+0.5*self._vector.y
+                self._vector.z=self._vector.z/2+0.5*self._vector.z
                 
             elif objType=='Shape':
                 #The whole object is selected
@@ -128,7 +128,7 @@ class Design456_SmartFillet:
             errMessage = "Select and object, a face or an edge to fillet"
             faced.getInfo().errorDialog(errMessage)
             return
-        rotation = (-1.0, 0.0, 0.0, math.radians(130.0))
+        rotation = (-1.0, 0.0,0.0, math.radians(120))
         #print(self._vector)
         print()
         self.smartInd=Fr_Arrow_Widget(self._vector,"Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
