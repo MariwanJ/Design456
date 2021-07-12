@@ -317,82 +317,61 @@ class Design456_DirectScale:
         """
         Calculate vertices which will be used to draw the arrows. 
         """
-        try:
-            # Max object length in all directions
-            (lengthX, lengthY, lengthZ) = self.getObjectLength(1)
-
-            # Make the start 2 mm before the object is placed
-            startX = self.selectedObj[whichone].Shape.BoundBox.XMin
-            startY = self.selectedObj[whichone].Shape.BoundBox.YMin
-            startZ = self.selectedObj[whichone].Shape.BoundBox.ZMin
-            EndX = self.selectedObj[whichone].Shape.BoundBox.XMax
-            EndY = self.selectedObj[whichone].Shape.BoundBox.YMax
-            EndZ = self.selectedObj[whichone].Shape.BoundBox.ZMax
-            p1: App.Vector = None
-            p2: App.Vector = None
-            _vectors: List[App.Vector] = []
-
-            leng = []
-            leng.append(lengthX)
-            leng.append(lengthY)
-            leng.append(lengthZ)
-
-            p1 = App.Vector(startX+lengthX/2, EndY +
-                            self.mmAwayFrom3DObject, startZ+lengthZ/2)
-            p2 = App.Vector(EndX+self.mmAwayFrom3DObject,
-                            startY+lengthY/2, startZ+lengthZ/2)
-            p3 = App.Vector(startX+lengthX/2, startY+lengthY /
-                            2, EndZ+self.mmAwayFrom3DObject)
-
-            _vectors.append(p1)
-            _vectors.append(p2)
-            _vectors.append(p3)
-            return (_vectors, leng)
-
+        # Max object length in all directions
+        (lengthX, lengthY, lengthZ) = self.getObjectLength(1)
+        # Make the start 2 mm before the object is placed
+        startX = self.selectedObj[whichone].Shape.BoundBox.XMin
+        startY = self.selectedObj[whichone].Shape.BoundBox.YMin
+        startZ = self.selectedObj[whichone].Shape.BoundBox.ZMin
+        EndX = self.selectedObj[whichone].Shape.BoundBox.XMax
+        EndY = self.selectedObj[whichone].Shape.BoundBox.YMax
+        EndZ = self.selectedObj[whichone].Shape.BoundBox.ZMax
+        p1: App.Vector = None
+        p2: App.Vector = None
+        _vectors: List[App.Vector] = []
+        leng = []
+        leng.append(lengthX)
+        leng.append(lengthY)
+        leng.append(lengthZ)
+        p1 = App.Vector(startX+lengthX/2, EndY +
+                        self.mmAwayFrom3DObject, startZ+lengthZ/2)
+        p2 = App.Vector(EndX+self.mmAwayFrom3DObject,
+                        startY+lengthY/2, startZ+lengthZ/2)
+        p3 = App.Vector(startX+lengthX/2, startY+lengthY /
+                        2, EndZ+self.mmAwayFrom3DObject)
+        _vectors.append(p1)
+        _vectors.append(p2)
+        _vectors.append(p3)
+        return (_vectors, leng)
         # we have a self.selectedObj object. Try to show the dimensions.
-        except Exception as err:
-            App.Console.PrintError("'Design456_DirectScale' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
 
     def createArrows(self):
         """ 
         It creates the arrows and add them to the coin window.
         Called by Activated function of DirectScale
         """
-        try:
-            (_vec, length) = self.returnVectorsFromBoundaryBox(0)
+        (_vec, length) = self.returnVectorsFromBoundaryBox(0)
 
-            self.smartInd.clear()
+        self.smartInd.clear()
 
-            rotation = (0.0, 0.0, 0.0, 0.0)
-            self.smartInd.append(Fr_Arrow_Widget(_vec[0], "X-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
-            # External function
-            self.smartInd[0].w_callback_ = callback_release
-            self.smartInd[0].w_move_callback_ = callback_move
-            self.smartInd[0].w_userData.callerObject = self
+        rotation = (coin.SbVec3f(0.0, 0.0, 0.0), 0.0)
+        self.smartInd.append(Fr_Arrow_Widget(_vec[0], "X-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
+        # External function
+        self.smartInd[0].w_callback_ = callback_release
+        self.smartInd[0].w_move_callback_ = callback_move
+        self.smartInd[0].w_userData.callerObject = self
 
-            rotation = (0.0, 0.0, -1.0, math.radians(57))
-            self.smartInd.append(Fr_Arrow_Widget( _vec[1], "Y-Axis", 1, FR_COLOR.FR_RED, rotation))
-            self.smartInd[1].w_callback_ = callback_release
-            self.smartInd[1].w_move_callback_ = callback_move
-            self.smartInd[1].w_userData.callerObject = self
+        rotation = (coin.SbVec3f(0.0, 0.0, -1.0), math.radians(57))
+        self.smartInd.append(Fr_Arrow_Widget( _vec[1], "Y-Axis", 1, FR_COLOR.FR_RED, rotation))
+        self.smartInd[1].w_callback_ = callback_release
+        self.smartInd[1].w_move_callback_ = callback_move
+        self.smartInd[1].w_userData.callerObject = self
 
-            rotation = (1.0, 0.0, 0.0, math.radians(57))
-            self.smartInd.append(Fr_Arrow_Widget(_vec[2], "Z-Axis", 1, FR_COLOR.FR_BLUE, rotation))
-            self.smartInd[2].w_callback_ = callback_release
-            self.smartInd[2].w_move_callback_ = callback_move
-            self.smartInd[2].w_userData.callerObject = self
-
-        # we have a self.selectedObj object. Try to show the dimensions.
-        except Exception as err:
-            App.Console.PrintError("'Design456_DirectScale' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+        rotation = (coin.SbVec3f(1.0, 0.0, 0.0), math.radians(57))
+        self.smartInd.append(Fr_Arrow_Widget(_vec[2], "Z-Axis", 1, FR_COLOR.FR_BLUE, rotation))
+        self.smartInd[2].w_callback_ = callback_release
+        self.smartInd[2].w_move_callback_ = callback_move
+        self.smartInd[2].w_userData.callerObject = self
 
     def Activated(self):
         try:
@@ -463,34 +442,27 @@ class Design456_DirectScale:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def reCreateBothOriginalAndCloneObject(self):
-        try:
-            #Create a simple copy
-            nameOriginal=self.selectedObj[0].Name
-            
-            App.ActiveDocument.removeObject(self.selectedObj[0].Name)
+        
+        #Create a simple copy
+        nameOriginal=self.selectedObj[0].Name
+        
+        App.ActiveDocument.removeObject(self.selectedObj[0].Name)
+ 
+        __shape = Part.getShape(self.selectedObj[1], '', needSubElement=False, refine=False)        
+        newObj=App.ActiveDocument.addObject('Part::Feature', nameOriginal) #Our scaled shape
+        newObj.Shape = __shape
+        App.ActiveDocument.removeObject(self.selectedObj[1].Name)            
+        #Make scaled object to be the original for us now
+        self.selectedObj[0]=newObj
+        #Make a scaled from the new original shape
+        cloneObj = Draft.clone(self.selectedObj[0], forcedraft=True)
+            # Scale the object to 1
+        cloneObj.Scale = App.Vector(1, 1, 1)
+        
+        #Hide again the new Original self.selectedObj[0].Visibility = False
+        self.selectedObj[1]=cloneObj
+        App.ActiveDocument.recompute()
 
-            __shape = Part.getShape(self.selectedObj[1], '', needSubElement=False, refine=False)        
-            newObj=App.ActiveDocument.addObject('Part::Feature', nameOriginal) #Our scaled shape
-            newObj.Shape = __shape
-            App.ActiveDocument.removeObject(self.selectedObj[1].Name)            
-            #Make scaled object to be the original for us now
-            self.selectedObj[0]=newObj
-            #Make a scaled from the new original shape
-            cloneObj = Draft.clone(self.selectedObj[0], forcedraft=True)
-                # Scale the object to 1
-            cloneObj.Scale = App.Vector(1, 1, 1)
-            
-            #Hide again the new Original self.selectedObj[0].Visibility = False
-            self.selectedObj[1]=cloneObj
-            App.ActiveDocument.recompute()
-
-        # we have a self.selectedObj object. Try to show the dimensions.
-        except Exception as err:
-            App.Console.PrintError("'Design456_DirectScale' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
         """
