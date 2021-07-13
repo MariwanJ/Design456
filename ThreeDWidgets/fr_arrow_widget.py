@@ -48,12 +48,12 @@ import fr_coinwindow as wn
 import fr_arrow_widget as frarrow
 import FreeCAD as App
 g=[]
-p1=App.Vector(10,1,0)     # first point in the line and for the windows
-p2=App.Vector(20,20,0)   # Second point in the line 
+p1=App.Vector(10,1,0)     # first point in the arrow and for the windows
+p2=App.Vector(20,20,0)   # Second point in the arrow (not used)
 wny=wn.Fr_CoinWindow()  # Create the window, label has no effect at the moment
 g.append(p1)
 g.append(p2)
-ln =frarrow.Fr_Arrow(g,"My label",7)   # draw the arrow - nothing will be visible yet
+ln =frarrow.Fr_Arrow_Widget(g,"My label",7)   # draw the arrow - nothing will be visible yet
 wny.addWidget(ln)              # Add it to the window as a child 
 wny.show()                    # show the window and it's widgets. 
 
@@ -70,7 +70,7 @@ class userDataObject:
 
 def callback(userData:userDataObject=None):
     """
-            This function will run the when the line is clicked 
+            This function will run the when the arrow is clicked 
             event callback. 
     """
     # Subclass this and impalement the callback or just change the callback function
@@ -79,7 +79,7 @@ def callback(userData:userDataObject=None):
 class Fr_Arrow_Widget(fr_widget.Fr_Widget):
 
     """
-    This class is for drawing a line in coin3D world
+    This class is for drawing a arrow in coin3D world
     """
     #Big mistake  regarding the arrows: Read https://grey.colorado.edu/coin3d/classSoTransform.html#a357007d906d1680a72cd73cf974a6869 
     #Don't do that
@@ -87,7 +87,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
 
                  label: str = "",lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=(coin.SbVec3f(1.0,1.0,1.0),0.0)):        
+                 _rotation=[(1.0,1.0,1.0),0.0]):  
         #Must be initialized first as per the following discussion. 
         #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
         super().__init__(vectors,label)
@@ -101,7 +101,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_move_callback_=callback      #External function
         w_wdgsoSwitch = None        
         self.w_color=_color                 #Default color is green 
-        self.w_rotation=_rotation           # coin.SbVec3f (x,y,z), Angle
+        self.w_rotation=_rotation           #  (x,y,z), Angle
         self.w_userData= userDataObject()   # Keep info about the widget
         self.w_userData.ArrowObj=self
         self.w_userData.color=_color
@@ -173,8 +173,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     def draw(self):
         """
         Main draw function. It is responsible to create the node,
-        and draw the line on the screen. It creates a node for 
-        the line.
+        and draw the arrow on the screen. It creates a node for 
+        the arrow.
         """
         try:
             if self.is_active() and self.has_focus():
@@ -190,7 +190,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 return  # We draw nothing .. This is here just for clarifying the code
 
         except Exception as err:
-            App.Console.PrintError("'Fr_Line_Widget' Failed. "
+            App.Console.PrintError("'Fr_Arrow_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -211,8 +211,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     def move(self, newVecPos):
         """
         Move the object to the new location referenced by the 
-        left-top corner of the object. Or the start of the line
-        if it is a line.
+        left-top corner of the object. Or the start of the arrow
+        if it is an arrow.
         """
         self.resize([newVecPos[0], newVecPos[1]])
         
@@ -291,7 +291,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             self.removeSoSwitch()    
                  
         except Exception as err:
-            App.Console.PrintError("'Fr_Line_Widget' Failed. "
+            App.Console.PrintError("'Fr_Arrow_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
