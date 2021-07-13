@@ -66,7 +66,6 @@ class Design456_SmartFillet:
     scaleLBL = None
     run_Once = False
 
-
     def getArrowPosition(self,objType:str=''):
         """"
         Args:
@@ -85,8 +84,7 @@ class Design456_SmartFillet:
                         self._vector.z=i.Z
                 self._vector.x=self._vector.x/4
                 self._vector.y=self._vector.y/4
-                
-                
+
                 rotation= (coin.SbVec3f(self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.x,
                                        self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.y,
                                        self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.z),self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Angle)
