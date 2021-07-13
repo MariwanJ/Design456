@@ -85,9 +85,9 @@ class Design456_SmartFillet:
                 self._vector.x=self._vector.x/4
                 self._vector.y=self._vector.y/4
 
-                rotation= (coin.SbVec3f(self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.x,
-                                       self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.y,
-                                       self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.z),self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Angle)
+                rotation= [self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Axis.x,
+                                       self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Axis.y,
+                                       self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Axis.z,self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Angle]
                 print(rotation)
 
             elif objType=='Edge':
@@ -101,13 +101,15 @@ class Design456_SmartFillet:
                 self._vector.y=self._vector.y/2
                 self._vector.z=self._vector.z/2+0.5*self._vector.z
                 
-                rotation= ((self.selectedObject.SubObjects[0].Placement.Rotation),math.radians(120))
+                rotation= [self.selectedObject.SubObjects[0].Placement.Rotation.Axis.x,
+                                         self.selectedObject.SubObjects[0].Placement.Rotation.Axis.y,
+                                         self.selectedObject.SubObjects[0].Placement.Rotation.Axis.z,math.radians(120)]
 
             elif objType=='Shape':
                 #The whole object is selected
                 print("shape")
                 
-                rotation = coin.SbVec3f((-1.0, 0.0,0.0), math.radians(120))
+                rotation = [-1.0, 0.0,0.0, math.radians(120) ]
                 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' Failed. "
@@ -138,10 +140,9 @@ class Design456_SmartFillet:
             errMessage = "Select and object, a face or an edge to fillet"
             faced.getInfo().errorDialog(errMessage)
             return
-        rotation = (coin.SbVec3f(-1.0, 0.0,0.0), math.radians(120))
+        rotation = [-1.0, 0.0,0.0, math.radians(120)]
         #print(self._vector)
-        rotation=self.selectedObject.Object.Placement.Rotation.Q
-        print()
+        #rotation=self.selectedObject.Object.Placement.Rotation.Axis.QF
         self.smartInd=Fr_Arrow_Widget(self._vector,"Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
 
         if self._mywin == None:
