@@ -75,7 +75,7 @@ class Design456_SmartFillet:
         """
         try: 
             rotation=None 
-            if not hasattr(self.selectedObject,"SubObjects"):
+            if len(self.selectedObject)==0:
               #'Shape'
                 #The whole object is selected
                 print("shape")
