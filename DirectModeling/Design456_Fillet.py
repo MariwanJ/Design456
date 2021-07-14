@@ -129,20 +129,21 @@ class Design456_SmartFillet:
         if self.selectedObject.HasSubObjects!=True:
             #we have the whole object. Find all edges that should be fillet.
             self.getArrowPosition('Shape')
+            rotation = getArrowPosition('Shape')
         subObj=self.selectedObject.SubObjects[0]
         if subObj.ShapeType=='Face':
             #We have a face
+            rotation = getArrowPosition('Face')
             self.getArrowPosition('Face')
         elif subObj.ShapeType=='Edge':
             #Only one edge
             self.getArrowPosition('Edge')
+            rotation = getArrowPosition('Edge')
         else:
             errMessage = "Select and object, a face or an edge to fillet"
             faced.getInfo().errorDialog(errMessage)
             return
-        rotation = [-1.0, 0.0,0.0, math.radians(120)]
-        #print(self._vector)
-        #rotation=self.selectedObject.Object.Placement.Rotation.Axis.QF
+        
         self.smartInd=Fr_Arrow_Widget(self._vector,"Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
 
         if self._mywin == None:
