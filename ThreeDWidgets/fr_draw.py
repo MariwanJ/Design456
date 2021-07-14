@@ -151,7 +151,6 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0,_rotation=[1.0
         coordsRoot = coin.SoTransform()
         tempR= coin.SbVec3f()
         print(_rotation)
-        print(len(_rotation))
         tempR.setValue(_rotation[0],_rotation[1],_rotation[2])
         cone=coin.SoCone()
         cone.bottomRadius= 3
