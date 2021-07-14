@@ -46,8 +46,117 @@ from draftutils.translate import translate  # for translate
 import math
 from  ThreeDWidgets import fr_label_draw
 
-def fillet_callback_move(test):
-    print("callback")
+
+def FilletObject(ArrowObject, linktocaller, startVector, EndVector):
+    """
+        This function will resize the 3D object. It clones the old object
+        and make a new simple copy of the 3D object. 
+    """
+
+    try:
+        #TODO: FIXME
+        App.ActiveDocument.recompute()
+
+    except Exception as err:
+        App.Console.PrintError("'Resize' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
+def  callback_move(userData: fr_arrow_widget.userDataObject = None):
+    try:
+        #TODO: FIXME
+        if userData == None:
+            return  # Nothing to do here - shouldn't be None
+
+        ArrowObject = userData.ArrowObj
+        events = userData.events
+        linktocaller = userData.callerObject
+        if type(events) != int:
+            return
+
+        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                          ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
+        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                            ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
+        linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        
+        if clickwdgdNode == None and clickwdglblNode == None:
+            if linktocaller.run_Once == False:
+                print("click move")
+                return 0  # nothing to do
+
+        if linktocaller.run_Once == False:
+            linktocaller.mouseToArrowDiff = ArrowObject.w_vector.z-linktocaller.endVector.z
+
+            # Keep the old value only first time when drag start
+            linktocaller.startVector = linktocaller.endVector
+            if not ArrowObject.has_focus():
+                ArrowObject.take_focus()
+            
+            linktocaller.filletLBL.setText("scale= "+str(fillet))
+    except Exception as err:
+        App.Console.PrintError("'View Inside objects' Failed. "
+                                   "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
+def calculateFilletcalculateScale(ArrowObject, linktocaller, startVector, EndVector):
+    pass 
+    #TODO FIXME
+    
+def callback_release(userData: fr_arrow_widget.userDataObject = None):
+    """
+       Callback after releasing the left mouse button. 
+       This will do the actual job in resizing the 3D object.
+    """
+    try:
+        #TODO: FIXME
+        ArrowObject = userData.ArrowObj
+        events = userData.events
+        linktocaller = userData.callerObject
+
+        # Avoid activating this part several times,
+        if (linktocaller.startVector == None):
+            return
+
+        print("mouse release")
+        ArrowObject.remove_focus()
+        linktocaller.run_Once = False
+        linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        # Undo
+        App.ActiveDocument.openTransaction(translate("Design456", "DirectScale"))
+
+        FilletObject(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector)
+
+        linktocaller.startVector = None
+        userData = None
+        linktocaller.mouseToArrowDiff = 0.0
+        linktocaller.scaleLBL.setText("scale= ")
+                
+        linktocaller.reCreateBothOriginalAndCloneObject()
+        # original
+        App.ActiveDocument.recompute()
+
+        App.ActiveDocument.commitTransaction()  # undo reg.
+        # Redraw the arrows
+
+        linktocaller.resizeArrowWidgets()
+
+        return 1  # we eat the event no more widgets should get it
+    
+    except Exception as err:
+        App.Console.PrintError("'View Inside objects' Failed. "
+                                   "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 
 class Design456_SmartFillet:
@@ -56,15 +165,21 @@ class Design456_SmartFillet:
         Moving an arrow that will represent radius of the fillet.
     """
     _vector=App.Vector(0.0,0.0,0.0)
-    selectedObject=None
     mw = None
     dialog = None
     tab = None
-    smartInd =None
+    smartInd = []
     _mywin = None
     b1 = None
-    scaleLBL = None
+    filletLBL = None
     run_Once = False
+    endVector = None
+    startVector = None
+    # We will make two object, one for visual effect and the other is the original
+    selectedObj = []
+    # 0 is the original    1 is the fake one (just for interactive effect)
+    mouseToArrowDiff = 0.0
+    mmAwayFrom3DObject = 10  # Use this to take away the arrow from the object
 
     def getArrowPosition(self,objType:str=''):
         """"
@@ -73,14 +188,16 @@ class Design456_SmartFillet:
         
         Find out the vector and rotation of the arrow to be drawn.
         """
+        #TODO: Don't know at the moment how to make this works better i.e. arrow direction and position
+        #      For now the arrow will be at the top  
         try: 
             rotation=None 
-            if len(self.selectedObject)==0:
+            if len(self.selectedObject.SubObjects)==0:
               #'Shape'
                 #The whole object is selected
                 print("shape")
-                rotation = [-1.0, 0.0,0.0, math.radians(120)]
-            return rotation
+                rotation = [-1.0, 0.0,0.0, math.radians(57)]
+                return rotation
 
             vectors=self.selectedObject.SubObjects[0].Vertexes
             if objType=='Face':
@@ -89,30 +206,29 @@ class Design456_SmartFillet:
                     self._vector.x+=i.X
                     self._vector.y+=i.Y
                     if self._vector.z<i.Z:
-                        self._vector.z=i.Z
+                        self._vector.z=i.Z+20
                 self._vector.x=self._vector.x/4
                 self._vector.y=self._vector.y/4
 
-                rotation= [self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Axis.x,
-                                       self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Axis.y,
-                                       self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Axis.z,self.selectedObject.SubObjects[0].Faces[0].Surface.Rotation.Angle]
+                rotation= [-1,
+                                       0,
+                                       0,
+                                       math.radians(57)]
                 print(rotation)
 
             elif objType=='Edge':
                 #An edge is selected
                 self._vector.z=vectors[0].Z
                 for i in vectors:
-                    self._vector.x+=i.X
-                    self._vector.y+=i.Y
-                    self._vector.z+=i.Z
-                self._vector.x=self._vector.x/2
-                self._vector.y=self._vector.y/2
-                self._vector.z=self._vector.z/2+0.5*self._vector.z
-                
-                rotation= [self.selectedObject.SubObjects[0].Placement.Rotation.Axis.x,
-                                         self.selectedObject.SubObjects[0].Placement.Rotation.Axis.y,
-                                         self.selectedObject.SubObjects[0].Placement.Rotation.Axis.z,math.radians(120)]
+                    self._vector.x+=i.X/2
+                    self._vector.y+=i.Y/2
+                    self._vector.z+=i.Z+20
 
+                
+                rotation= [-1,
+                                         0,
+                                         0,
+                                         math.radians(+57)]
 
             return rotation    
         except Exception as err:
@@ -146,6 +262,10 @@ class Design456_SmartFillet:
             return
         
         self.smartInd=Fr_Arrow_Widget(self._vector,"Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
+        self.smartInd.w_callback_ = callback_release
+        self.smartInd.w_move_callback_ = callback_move
+        self.smartInd.w_userData.callerObject = self
+
 
         if self._mywin == None:
             self._mywin = win.Fr_CoinWindow()
@@ -227,13 +347,13 @@ class Design456_SmartFillet:
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize-1)  # it is 0,1,2,3 ..etc
-        self.__del__()  # Remove all smart scale 3dCOIN widgets
+        self.__del__()  # Remove all smart fillet 3dCOIN widgets
 
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Fillet.svg',
-            'MenuText': 'Direct Scale',
-                        'ToolTip':  'Direct Scale'
+            'MenuText': ' Smart Fillet',
+                        'ToolTip':  ' Smart Fillet'
         }
 
 
