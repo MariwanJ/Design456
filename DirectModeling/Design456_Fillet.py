@@ -73,7 +73,15 @@ class Design456_SmartFillet:
         
         Find out the vector and rotation of the arrow to be drawn.
         """
-        try:
+        try: 
+            rotation=None 
+            if not hasattr(self.selectedObject,"SubObjects"):
+              #'Shape'
+                #The whole object is selected
+                print("shape")
+                rotation = [-1.0, 0.0,0.0, math.radians(120)]
+            return rotation
+
             vectors=self.selectedObject.SubObjects[0].Vertexes
             if objType=='Face':
                 self._vector.z=vectors[0].Z
@@ -105,12 +113,8 @@ class Design456_SmartFillet:
                                          self.selectedObject.SubObjects[0].Placement.Rotation.Axis.y,
                                          self.selectedObject.SubObjects[0].Placement.Rotation.Axis.z,math.radians(120)]
 
-            elif objType=='Shape':
-                #The whole object is selected
-                print("shape")
-                
-                rotation = [-1.0, 0.0,0.0, math.radians(120) ]
-            return rotation     
+
+            return rotation    
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' Failed. "
                                    "{err}\n".format(err=str(err)))
