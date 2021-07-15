@@ -58,15 +58,22 @@ def FilletObject(ArrowObject, linktocaller, startVector, EndVector):
         App.ActiveDocument.recompute()
 
     except Exception as err:
-        App.Console.PrintError("'Resize' Failed. "
+        App.Console.PrintError("'Fillet size' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+
+
 def  callback_move(userData: fr_arrow_widget.userDataObject = None):
     try:
         #TODO: FIXME
+        '''
+            We have to recreate the object each time we change the radius. 
+            This means that the redrawing must be optimized : TODO: FIXME
+        
+        '''
         if userData == None:
             return  # Nothing to do here - shouldn't be None
 
@@ -98,6 +105,7 @@ def  callback_move(userData: fr_arrow_widget.userDataObject = None):
                 ArrowObject.take_focus()
             
             linktocaller.filletLBL.setText("scale= "+str(fillet))
+
     except Exception as err:
         App.Console.PrintError("'View Inside objects' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -192,14 +200,14 @@ class Design456_SmartFillet:
         #      For now the arrow will be at the top  
         try: 
             rotation=None 
-            if len(self.selectedObject.SubObjects)==0:
+            if len(self.selectedObject[0].SubObjects)==0:
               #'Shape'
                 #The whole object is selected
                 print("shape")
                 rotation = [-1.0, 0.0,0.0, math.radians(57)]
                 return rotation
 
-            vectors=self.selectedObject.SubObjects[0].Vertexes
+            vectors=self.selectedObject[0].SubObjects[0].Vertexes
             if objType=='Face':
                 self._vector.z=vectors[0].Z
                 for i in vectors:
@@ -238,18 +246,40 @@ class Design456_SmartFillet:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def Activated(self):
-        self.selectedObject=Gui.Selection.getSelectionEx()
-        if len(self.selectedObject) != 1:
+        self.selectedObject.append(Gui.Selection.getSelectionEx())
+        if len(self.selectedObject[0]) != 1:
             # Only one object must be self.selectedObj
             errMessage = "Select one object, one face or one edge to fillet"
             faced.getInfo().errorDialog(errMessage)
             return
         
-        self.selectedObject=self.selectedObject[0]
-        if self.selectedObject.HasSubObjects!=True:
+        #Create the fillet (temp)
+        self.selectedObject.append( App.ActiveDocument.addObject("Part::Fillet", "tempFillet"))
+        
+        #TODO: CHECK IF THIS WORK FOR WHOLE SHPAE? FACE? EDGE?
+        names = self.selectedObject[1].SubElementNames
+        Radius=0.1  #start radius is zero TODO:FIXME
+        if (len(names) != 0):
+                """ we need to take the rest of the string
+                            i.e. 'Edge15' --> take out 'Edge'-->4 bytes
+                            len('Edge')] -->4
+                """
+                EdgesToBeChanged=[]
+                for name in names:
+                    edgeNumbor = int(name[4:len(name)])
+                    EdgesToBeChanged.append((edgeNumbor, Radius, Radius))
+                print(EdgesToBeChanged)
+                self.selectedObject[1].Edges = EdgesToBeChanged  
+            else:
+                errMessage = "Fillet failed. No subelements found"
+                faced.getInfo(s).errorDialog(errMessage)
+                return
+
+        self.selectedObject[0]=self.selectedObject[0][0]
+        if self.selectedObject[0].HasSubObjects!=True:
             #we have the whole object. Find all edges that should be fillet.
             rotation = self.getArrowPosition('Shape')
-        subObj=self.selectedObject.SubObjects[0]
+        subObj=self.selectedObject[0].SubObjects[0]
         if subObj.ShapeType=='Face':
             #We have a face
             rotation = self.getArrowPosition('Face')
