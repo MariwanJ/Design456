@@ -159,7 +159,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         __shape = Part.getShape(
             linktocaller.selectedObj[1], '', needSubElement=False, refine=False)
         newObj = App.ActiveDocument.addObject(
-            'Part::Feature', linktocaller.nameOriginal)  # Our scaled shape
+            'Part::Feature', linktocaller.selectedObj[0].Name)  # Our scaled shape
         newObj.Shape = __shape
         App.ActiveDocument.removeObject(linktocaller.selectedObj[1].Name)
 
@@ -307,7 +307,7 @@ class Design456_SmartFillet:
             nEdges = self.selectedObj[0].Object.Shape.Edges
             EdgesFound = []
             for edg in nEdges:
-                EdgesFound.apeend(edg)
+                EdgesFound.append(edg)
                 EdgesToBeChanged = self.getEdgesNumbersList(EdgesFound)
         else : 
                 print ("Error couldn't find the shape type",self.objectType)
@@ -332,8 +332,7 @@ class Design456_SmartFillet:
 
         # Find Out shapes type.
         self.registerShapeType()
-        
-        print(self.selectedObj)
+        self.selectedObj[0].Visibility=False
         
         tempNewObj = App.ActiveDocument.addObject("Part::Fillet", "tempFillet")
         self.reCreatefilletObject()
@@ -408,8 +407,10 @@ class Design456_SmartFillet:
             la = QtGui.QVBoxLayout(self.dialog)
             e1 = QtGui.QLabel("(Smart Fillet)\nFor quicker\nApplying Fillet")
             commentFont = QtGui.QFont("Times", 12, True)
+            self.FilletLBL = QtGui.QLabel("Fillet Radius=")
             e1.setFont(commentFont)
             la.addWidget(e1)
+            la.addWidget(self.FilletLBL)
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
             okbox.setStandardButtons(
