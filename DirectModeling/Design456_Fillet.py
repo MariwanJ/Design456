@@ -195,6 +195,19 @@ class Design456_SmartFillet:
     FilletRadius=0.0
     objectType=None    #Either shape, Face or Edge.
     Originalname=''
+
+    def registerShapeType(self):
+        '''
+            Find out shape-type and save the name in selectedType
+        '''
+        if len(self.selectedObj[0].SubObjects)==0:
+            #we have the whole object. Find all edges that should be fillet.
+            self.selectedType='Shape'
+        else: 
+            #TODO Check if this is correct always. 
+            subObj=self.selectedObj[0].SubObjects[0]
+            self.selectedType=self.selectedObj[0].SubObjects[0].ShapeType
+
     def getArrowPosition(self):
         """"
         Args:
@@ -250,26 +263,14 @@ class Design456_SmartFillet:
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    
     def getAllEdgesSelected(self):
-        
-    def Activated(self):
-        
-        self.selectedObj.append(Gui.Selection.getSelectionEx())
-        if len(self.selectedObj[0]) != 1:
-            # Only one object must be self.selectedObj
-            errMessage = "Select one object, one face or one edge to fillet"
-            faced.getInfo().errorDialog(errMessage)
-            return
-        
-        #Create the fillet (temp)
-        self.selectedObj.append( App.ActiveDocument.addObject("Part::Fillet", "tempFillet"))
-        
-        #TODO: CHECK IF THIS WORK FOR WHOLE SHPAE? FACE? EDGE?
         EdgesToBeChanged=[]
         if self.objectType=='Face':
             self.Originalname = self.selectedObj[0].SubElementNames
+            #Find out all edges 
             if (len(self.Originalname) != 0):
-                """ we need to take the rest of the string
+                """ we need to take out the rest of the string
                             i.e. 'Edge15' --> take out 'Edge'-->4 bytes
                             len('Edge')] -->4
                 """
@@ -281,35 +282,52 @@ class Design456_SmartFillet:
                 errMessage = "Fillet failed. No subelements found"
                 faced.getInfo().errorDialog(errMessage)
                 return
+
         elif self.objectType=='Edge':
             EdgesToBeChanged=self.selectedObj[0]
         elif self.objectType=='Shape':
-            EdgesToBeChanged=self.selectedObj[0]
-
-        self.selectedObj[1].Edges = EdgesToBeChanged  
-
-        self.selectedObj[0]=self.selectedObj[0][0]
-        if len(self.selectedObj[0].SubObjects)==0:
-            #we have the whole object. Find all edges that should be fillet.
-            self.selectedType='Shape'
-            #Fillet cannot be applied to the shape 
-            #We have to find all edges and put it in the select
-            nEdges= self.selectedObj[0].Object.Shape.Edges
-            self.selectedObj[0].SubObjects=[]
+            nEdges= self.selectedObj[0].Object.Shape.Edges 
             for edg in nEdges:
-                nEdges.apeend(edg)
-            rotation = self.getArrowPosition()
+                EdgesToBeChanged.apeend(edg)
+
+
+    def reCreatefilletObject(self):
         
-        subObj=self.selectedObj[0].SubObjects[0]
-        self.selectedType=self.selectedObj[0].SubObjects[0].ShapeType
-        if self.selectedType=='Face' or self.selectedType=='Edge': 
-            rotation=self.getArrowPosition()
-        else:
-            self.selectedType=None
-            errMessage = "Select and object, a face or an edge to fillet"
+        #Create the fillet (temp)
+        if len(self.selectedObj)==1:
+            self.selectedObj.append( App.ActiveDocument.addObject("Part::Fillet", "tempFillet"))
+        elif len(self.selectedObj)==2:
+            App.ActiveDocument.removeObject(self.selectedObj[1].Name)
+            tempNewObj=( App.ActiveDocument.addObject("Part::Fillet", "tempFillet"))
+            tempNewObj.Base = self.selectedObj[0]
+
+
+            if self.objectType=='Shape':
+                tempNewObj.Base=self.self.selectedObj[0]
+            else:
+                tempNewObj.Base = self.self.selectedObj[0].SubObjects
+            App.ActiveDocument.removeObject(self.selectedObj[1].Name)            
+            #Make scaled object to be the original for us now
+            self.selectedObj[1]=tempNewObj        
+            #Hide again the new Original self.selectedObj[0].Visibility = False
+            App.ActiveDocument.recompute()      
+    
+    def Activated(self):
+        
+        self.selectedObj.append(Gui.Selection.getSelectionEx())
+        if len(self.selectedObj[0]) != 1:
+            # Only one object must be self.selectedObj
+            errMessage = "Select one object, one face or one edge to fillet"
             faced.getInfo().errorDialog(errMessage)
             return
         
+        #Find Out shapes type.
+        self.registerShapeType()
+
+        #get rotation
+        rotation = self.getArrowPosition()
+
+
         self.smartInd=Fr_Arrow_Widget(self._vector,"Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
@@ -321,20 +339,7 @@ class Design456_SmartFillet:
         mw = self.getMainWindow()
         self._mywin.show()
     
-    def reCreatefilletObject(self):
-        #Create a simple copy
-        nameOriginal=self.selectedObj[0].Name
-        App.ActiveDocument.removeObject(self.selectedObj[1].Name)
-        tempNewObj = App.ActiveDocument.addObject("Part::Fillet", "tempFillet")
-        if self.objectType=='Shape':
-            tempNewObj.Base=self.self.selectedObj[0]
-        else:
-            tempNewObj.Base = self.self.selectedObj[0].SubObjects
-        App.ActiveDocument.removeObject(self.selectedObj[1].Name)            
-        #Make scaled object to be the original for us now
-        self.selectedObj[1]=tempNewObj        
-        #Hide again the new Original self.selectedObj[0].Visibility = False
-        App.ActiveDocument.recompute()
+
 
     def __del__(self):
         """ 
