@@ -47,25 +47,7 @@ from draftutils.translate import translate  # for translate
 import math
 from ThreeDWidgets import fr_label_draw
 
-MouseScaleFactor = 2.0
-
-
-def FilletObject(ArrowObject, linktocaller, startVector, EndVector):
-    """
-        This function will resize the 3D object. It clones the old object
-        and make a new simple copy of the 3D object. 
-    """
-
-    try:
-        #TODO: FIXME
-        App.ActiveDocument.recompute()
-
-    except Exception as err:
-        App.Console.PrintError("'Fillet size' Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+MouseScaleFactor = 20.0
 
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
@@ -107,9 +89,12 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
 
+            ArrowObject.w_vector.z = linktocaller.endVector.z+linktocaller.mouseToArrowDiff
+
             linktocaller.FilletLBL.setText("scale= "+str(linktocaller.FilletRadius))
             linktocaller.FilletRadius = mouseToArrowDiff/MouseScaleFactor
             linktocaller.reCreatefilletObject()
+            
 
     except Exception as err:
         App.Console.PrintError("'View Inside objects' Failed. "
@@ -141,30 +126,28 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         # Undo
-        App.ActiveDocument.openTransaction(
-            translate("Design456", "DirectScale"))
-
-        FilletObject(ArrowObject, linktocaller,
-                     linktocaller.startVector, linktocaller.endVector)
+        App.ActiveDocument.openTransaction(translate("Design456", "Fillet"))
 
         linktocaller.startVector = None
         userData = None
         linktocaller.mouseToArrowDiff = 0.0
         linktocaller.FilletLBL.setText("Radius= ")
-
         App.ActiveDocument.commitTransaction()  # undo reg.
         linktocaller.reCreatefilletObject()
         # Make a simple copy
 
-        __shape = Part.getShape(
-            linktocaller.selectedObj[1], '', needSubElement=False, refine=False)
-        newObj = App.ActiveDocument.addObject(
-            'Part::Feature', linktocaller.selectedObj[0].Name)  # Our scaled shape
+        __shape = Part.getShape(linktocaller.selectedObj[1], '', needSubElement=False, refine=False)
+        newObj = App.ActiveDocument.addObject('Part::Feature', linktocaller.selectedObj[0].ObjectName)  # Our scaled shape
         newObj.Shape = __shape
+        App.ActiveDocument.recompute()
         App.ActiveDocument.removeObject(linktocaller.selectedObj[1].Name)
+        App.ActiveDocument.removeObject(linktocaller.selectedObj[0].Name)
+        linktocaller.selectedObj.clear()
+        linktocaller.selectedObj.append(newObj)
+        App.ActiveDocument.recompute()
 
         # Redraw the arrows
-        linktocaller.resizeArrowWidgets()
+        #linktocaller.resizeArrowWidgets()
         return 1  # we eat the event no more widgets should get it
 
     except Exception as err:
@@ -213,12 +196,10 @@ class Design456_SmartFillet:
         else:
             print("Error")
         print ("self.objectType",self.objectType)
+        
     def getArrowPosition(self):
         """"
-        Args:
-            objType (str, optional): [description]. Defaults to ''.
-
-        Find out the vector and rotation of the arrow to be drawn.
+         Find out the vector and rotation of the arrow to be drawn.
         """
         # TODO: Don't know at the moment how to make this works better i.e. arrow direction and position
         #      For now the arrow will be at the top
@@ -244,7 +225,7 @@ class Design456_SmartFillet:
 
                 rotation = [-1,
                             0,
-                            0,
+                            -1,
                             math.radians(57)]
                 print(rotation)
 
@@ -257,8 +238,8 @@ class Design456_SmartFillet:
                     self._vector.z = i.Z+20
 
                 rotation = [-1,
-                            0,
-                            0,
+                             0,
+                            -1,
                             math.radians(+57)]
 
             return rotation
@@ -269,8 +250,8 @@ class Design456_SmartFillet:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def getEdgesNumbersList(self, names=None):
-        """ we need to take out the rest of the string
-            i.e. 'Edge15' --> take out 'Edge'-->4 bytes We need only the number
+        """ we need to take out the remaining of the string
+            i.e. 'Edge15' --> take out 'Edge'-->4 bytes, We need only the number
             len('Edge')] -->4
         """
         result = []
@@ -286,7 +267,7 @@ class Design456_SmartFillet:
         else:
             # only one Edge
             edgeNumbor = int(names[4:len(names)])
-            result.append((edgeNumbor, radius1, radius2))
+            result.append((edgeNumbor, self.FilletRadius,self.FilletRadius))
         return result
 
     def getAllSelectedEdges(self):
@@ -318,30 +299,33 @@ class Design456_SmartFillet:
         # reCreate the fillet. We need only to update the .Edges property and recompute
         if len (self.selectedObj)<2:
             self.selectedObj.append(App.ActiveDocument.addObject("Part::Fillet", "tempFillet"))
-            self.selectedObj[1].Base=self.selectedObj[0].Object    
+        
+        self.selectedObj[1].Base=self.selectedObj[0].Object    
         self.selectedObj[1].Edges = self.getAllSelectedEdges()
+        print("self.selectedObj[1].Edges",self.selectedObj[1].Edges)
+        App.ActiveDocument.recompute()
 
+        
     def Activated(self):
+        self.selectedObj.clear()
+        sel=Gui.Selection.getSelectionEx()
+        if len(sel) == 0:
+            # An object must be selected
+            errMessage = "Select an object, one face or one edge to fillet"
+            faced.getInfo().errorDialog(errMessage)
+            return
 
-        self.selectedObj.append(Gui.Selection.getSelectionEx()[0])
-        #if len(self.selectedObj[0]) != 1:
-        #    # Only one object must be self.selectedObj
-        #    errMessage = "Select one object, one face or one edge to fillet"
-        #    faced.getInfo().errorDialog(errMessage)
-        #    return
-
+        self.selectedObj.append(sel[0])
         # Find Out shapes type.
         self.registerShapeType()
-        self.selectedObj[0].Visibility=False
-        
-        tempNewObj = App.ActiveDocument.addObject("Part::Fillet", "tempFillet")
+        o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
+        o.Transparency=50
         self.reCreatefilletObject()
 
         # get rotation
         rotation = self.getArrowPosition()
 
-        self.smartInd = Fr_Arrow_Widget(
-            self._vector, "Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
+        self.smartInd = Fr_Arrow_Widget(self._vector, "Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
@@ -351,14 +335,45 @@ class Design456_SmartFillet:
         self._mywin.addWidget(self.smartInd)
         mw = self.getMainWindow()
         self._mywin.show()
-
+        
+    def returnVectorsFromBoundaryBox(self):
+        """
+        Calculate vertices which will be used to draw the arrows. 
+        """
+        # Max object length in all directions
+        (lengthX, lengthY, lengthZ) = self.getObjectLength(1)
+        # Make the start 2 mm before the object is placed
+        startX = self.selectedObj[0].Shape.BoundBox.XMin
+        startY = self.selectedObj[0].Shape.BoundBox.YMin
+        startZ = self.selectedObj[0].Shape.BoundBox.ZMin
+        EndX = self.selectedObj[0].Shape.BoundBox.XMax
+        EndY = self.selectedObj[0].Shape.BoundBox.YMax
+        EndZ = self.selectedObj[0].Shape.BoundBox.ZMax
+        p1: App.Vector = None
+        p2: App.Vector = None
+        _vectors: List[App.Vector] = []
+        leng = []
+        leng.append(lengthX)
+        leng.append(lengthY)
+        leng.append(lengthZ)
+        p1 = App.Vector(startX+lengthX/2, EndY +
+                        self.mmAwayFrom3DObject, startZ+lengthZ/2)
+        p2 = App.Vector(EndX+self.mmAwayFrom3DObject,
+                        startY+lengthY/2, startZ+lengthZ/2)
+        p3 = App.Vector(startX+lengthX/2, startY+lengthY /
+                        2, EndZ+self.mmAwayFrom3DObject)
+        _vectors.append(p1)
+        _vectors.append(p2)
+        _vectors.append(p3)
+        return (_vectors, leng)
+    
     def resizeArrowWidgets(self):
         """
         Reposition the arrows by recalculating the boundary box
         and updating the vectors inside each fr_arrow_widget
         """
         (_vec, length) = self.returnVectorsFromBoundaryBox(1)
-        self.smartInd.w_vector = _vec[i]
+        self.smartInd.w_vector = _vec[0]
         self.smartInd.redraw()
         return
 
