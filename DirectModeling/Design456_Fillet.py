@@ -47,7 +47,7 @@ from draftutils.translate import translate  # for translate
 import math
 from ThreeDWidgets import fr_label_draw
 
-MouseScaleFactor = 20.0
+MouseScaleFactor = 1.0
 
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
@@ -80,21 +80,21 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if linktocaller.run_Once == False:
                 print("click move")
                 return 0  # nothing to do
-
+            
         if linktocaller.run_Once == False:
+            linktocaller.run_Once = True
             mouseToArrowDiff = ArrowObject.w_vector.z-linktocaller.endVector.z
-
-            # Keep the old value only first time when drag start
+         # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
+
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
+                
+        linktocaller.FilletRadius = abs((linktocaller.endVector.y+linktocaller.mouseToArrowDiff)/MouseScaleFactor)            
+        linktocaller.resizeArrowWidgets(linktocaller.endVector)
+        linktocaller.FilletLBL.setText("scale= "+str(linktocaller.FilletRadius))
 
-            ArrowObject.w_vector.z = linktocaller.endVector.z+linktocaller.mouseToArrowDiff
-
-            linktocaller.FilletLBL.setText("scale= "+str(linktocaller.FilletRadius))
-            linktocaller.FilletRadius = mouseToArrowDiff/MouseScaleFactor
-            linktocaller.reCreatefilletObject()
-            
+        linktocaller.reCreatefilletObject()
 
     except Exception as err:
         App.Console.PrintError("'View Inside objects' Failed. "
@@ -137,13 +137,15 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         # Make a simple copy
 
         __shape = Part.getShape(linktocaller.selectedObj[1], '', needSubElement=False, refine=False)
-        newObj = App.ActiveDocument.addObject('Part::Feature', linktocaller.selectedObj[0].ObjectName)  # Our scaled shape
+        newObj = App.ActiveDocument.addObject('Part::Feature', "Result")  # Our scaled shape
         newObj.Shape = __shape
         App.ActiveDocument.recompute()
         App.ActiveDocument.removeObject(linktocaller.selectedObj[1].Name)
-        App.ActiveDocument.removeObject(linktocaller.selectedObj[0].Name)
+        App.ActiveDocument.removeObject(linktocaller.selectedObj[0].ObjectName)
         linktocaller.selectedObj.clear()
         linktocaller.selectedObj.append(newObj)
+        linktocaller.selectedObj[0].Name = linktocaller.Originalname
+        linktocaller.selectedObj[0].Label=linktocaller.Originalname
         App.ActiveDocument.recompute()
 
         # Redraw the arrows
@@ -156,7 +158,6 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
-
 
 class Design456_SmartFillet:
     """
@@ -196,7 +197,16 @@ class Design456_SmartFillet:
         else:
             print("Error")
         print ("self.objectType",self.objectType)
-        
+    
+    def resizeArrowWidgets(self,endVec):
+        """
+        Reposition the arrows by recalculating the boundary box
+        and updating the vectors inside each fr_arrow_widget
+        """
+        self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
+        self.smartInd.redraw()
+        return
+            
     def getArrowPosition(self):
         """"
          Find out the vector and rotation of the arrow to be drawn.
@@ -219,13 +229,13 @@ class Design456_SmartFillet:
                     self._vector.x += i.X
                     self._vector.y += i.Y
                     if self._vector.z < i.Z:
-                        self._vector.z = i.Z+20
-                self._vector.x = self._vector.x/4
+                        self._vector.z = i.Z+10
+                        self._vector.x = self._vector.x/4
                 self._vector.y = self._vector.y/4
 
                 rotation = [-1,
                             0,
-                            -1,
+                            0,
                             math.radians(57)]
                 print(rotation)
 
@@ -235,11 +245,11 @@ class Design456_SmartFillet:
                 for i in vectors:
                     self._vector.x += i.X/2
                     self._vector.y += i.Y/2
-                    self._vector.z = i.Z+20
+                    self._vector.z = i.Z+10
 
                 rotation = [-1,
                              0,
-                            -1,
+                             0,
                             math.radians(+57)]
 
             return rotation
@@ -260,10 +270,8 @@ class Design456_SmartFillet:
         if type(names == list):
             # multiple edges
             for name in names:
-                for name in self.Originalname:
-                    edgeNumbor = int(name[4:len(name)])
-                    result.append(
-                        (edgeNumbor, self.FilletRadius, self.FilletRadius))
+                edgeNumbor = int(name[4:len(name)])
+                result.append(edgeNumbor, self.FilletRadius, self.FilletRadius)
         else:
             # only one Edge
             edgeNumbor = int(names[4:len(names)])
@@ -274,7 +282,6 @@ class Design456_SmartFillet:
         # The format must be (Edges Number, Start-radius, End-radius)
         EdgesToBeChanged = []
         if self.objectType == 'Face':
-            self.Originalname = self.selectedObj[0].SubElementNames
             # Find out all edges
             if (len(self.Originalname) != 0):
                 EdgesToBeChanged = self.getEdgesNumbersList(self.Originalname)
@@ -283,7 +290,7 @@ class Design456_SmartFillet:
                 faced.getInfo().errorDialog(errMessage)
                 return
         elif self.objectType == 'Edge':
-             EdgesToBeChanged = self.getEdgesNumbersList(self.selectedObj[0].SubElementNames)
+            EdgesToBeChanged = self.getEdgesNumbersList(self.selectedObj[0].SubElementNames)
         elif self.objectType == 'Shape':
             nEdges = self.selectedObj[0].Object.Shape.Edges
             EdgesFound = []
@@ -316,6 +323,8 @@ class Design456_SmartFillet:
             return
 
         self.selectedObj.append(sel[0])
+        self.Originalname = self.selectedObj[0].Object.Name
+
         # Find Out shapes type.
         self.registerShapeType()
         o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
@@ -336,47 +345,6 @@ class Design456_SmartFillet:
         mw = self.getMainWindow()
         self._mywin.show()
         
-    def returnVectorsFromBoundaryBox(self):
-        """
-        Calculate vertices which will be used to draw the arrows. 
-        """
-        # Max object length in all directions
-        (lengthX, lengthY, lengthZ) = self.getObjectLength(1)
-        # Make the start 2 mm before the object is placed
-        startX = self.selectedObj[0].Shape.BoundBox.XMin
-        startY = self.selectedObj[0].Shape.BoundBox.YMin
-        startZ = self.selectedObj[0].Shape.BoundBox.ZMin
-        EndX = self.selectedObj[0].Shape.BoundBox.XMax
-        EndY = self.selectedObj[0].Shape.BoundBox.YMax
-        EndZ = self.selectedObj[0].Shape.BoundBox.ZMax
-        p1: App.Vector = None
-        p2: App.Vector = None
-        _vectors: List[App.Vector] = []
-        leng = []
-        leng.append(lengthX)
-        leng.append(lengthY)
-        leng.append(lengthZ)
-        p1 = App.Vector(startX+lengthX/2, EndY +
-                        self.mmAwayFrom3DObject, startZ+lengthZ/2)
-        p2 = App.Vector(EndX+self.mmAwayFrom3DObject,
-                        startY+lengthY/2, startZ+lengthZ/2)
-        p3 = App.Vector(startX+lengthX/2, startY+lengthY /
-                        2, EndZ+self.mmAwayFrom3DObject)
-        _vectors.append(p1)
-        _vectors.append(p2)
-        _vectors.append(p3)
-        return (_vectors, leng)
-    
-    def resizeArrowWidgets(self):
-        """
-        Reposition the arrows by recalculating the boundary box
-        and updating the vectors inside each fr_arrow_widget
-        """
-        (_vec, length) = self.returnVectorsFromBoundaryBox(1)
-        self.smartInd.w_vector = _vec[0]
-        self.smartInd.redraw()
-        return
-
     def __del__(self):
         """ 
             class destructor
@@ -431,8 +399,7 @@ class Design456_SmartFillet:
             okbox.setStandardButtons(
                 QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
             la.addWidget(okbox)
-            QtCore.QObject.connect(
-                okbox, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             return self.dialog
