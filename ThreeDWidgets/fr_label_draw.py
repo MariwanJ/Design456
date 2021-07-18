@@ -153,15 +153,16 @@ def draw_label(text=[], prop: propertyValues=None):
         delta=App.Vector(0,0,0)        
         p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
         p2=App.Vector(prop.vectors[1])
-        delta.x=p1.x+2
-        delta.y=p1.y+2
+        delta.x=p1.x+3
+        delta.y=p1.y+3
         delta.z=p1.z
         (r,thi,phi)=calculateLineSpherical(prop.vectors)        #get spherical representation of the point(p2)
-        _transPositionPOS=coin.SoTransform()
+        _transPositionPOS=coin.SoTranslation()  #coin.SoTransform()
         #_transPositionX = coin.SoTransform()
         _transPositionY = coin.SoTransform()
         _transPositionZ = coin.SoTransform()
-        _transPositionPOS.translation.setValue(delta)
+        _transPositionPOS.translation.setValue(coin.SbVec3f(delta))
+
         _transPositionY.translation.setValue(App.Vector(0,0,0))
         _transPositionZ.translation.setValue(App.Vector(0,0,0))
         _transPositionY.rotation.setValue(coin.SbVec3f(1,0, 0),phi)
@@ -184,7 +185,6 @@ def draw_label(text=[], prop: propertyValues=None):
             _textNode.addChild(_transPositionY)
         if thi!=0:
             _textNode.addChild(_transPositionZ)
-        
         _textNode.addChild(font)
         _textNode.addChild(coinColor)
         _textNode.addChild(_text3D)
