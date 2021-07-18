@@ -84,6 +84,8 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         if linktocaller.run_Once == False:
             linktocaller.run_Once = True
             mouseToArrowDiff = ArrowObject.w_vector.z-linktocaller.endVector.z
+            linktocaller.offset=mouseToArrowDiff
+
          # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
 
@@ -131,21 +133,23 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.startVector = None
         userData = None
         linktocaller.mouseToArrowDiff = 0.0
-        linktocaller.FilletLBL.setText("Radius= ")
+        #linktocaller.FilletLBL.setText("Radius= ")
         App.ActiveDocument.commitTransaction()  # undo reg.
         linktocaller.reCreatefilletObject()
         # Make a simple copy
 
-        __shape = Part.getShape(linktocaller.selectedObj[1], '', needSubElement=False, refine=False)
-        newObj = App.ActiveDocument.addObject('Part::Feature', "Result")  # Our scaled shape
-        newObj.Shape = __shape
+        #__shape = Part.getShape(linktocaller.selectedObj[1], '', needSubElement=False, refine=False)
+        #newObj = App.ActiveDocument.addObject('Part::Feature', "Result")  # Our scaled shape
+        #newObj.Shape = __shape
         App.ActiveDocument.recompute()
-        App.ActiveDocument.removeObject(linktocaller.selectedObj[1].Name)
+        #App.ActiveDocument.removeObject(linktocaller.selectedObj[1].ObjectName)
         App.ActiveDocument.removeObject(linktocaller.selectedObj[0].ObjectName)
-        linktocaller.selectedObj.clear()
-        linktocaller.selectedObj.append(newObj)
-        linktocaller.selectedObj[0].Name = linktocaller.Originalname
+        #linktocaller.selectedObj.clear()
+        linktocaller.selectedObj[0]=linktocaller.selectedObj[1]
+        #linktocaller.selectedObj.append(newObj)
+        linktocaller.selectedObj[0].ObjectName = linktocaller.Originalname
         linktocaller.selectedObj[0].Label=linktocaller.Originalname
+        linktocaller.selectedObj.remove(1)
         App.ActiveDocument.recompute()
 
         # Redraw the arrows
@@ -179,8 +183,9 @@ class Design456_SmartFillet:
     selectedObj = []
     # 0 is the original    1 is the fake one (just for interactive effect)
     mouseToArrowDiff = 0.0
+    offset=0.0
     mmAwayFrom3DObject = 10  # Use this to take away the arrow from the object
-    FilletRadius = 0.0
+    FilletRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
 
@@ -196,7 +201,6 @@ class Design456_SmartFillet:
             self.objectType = 'Edge'
         else:
             print("Error")
-        print ("self.objectType",self.objectType)
     
     def resizeArrowWidgets(self,endVec):
         """
@@ -237,7 +241,6 @@ class Design456_SmartFillet:
                             0,
                             0,
                             math.radians(57)]
-                print(rotation)
 
             elif self.objectType == 'Edge':
                 # An edge is selected
@@ -254,7 +257,7 @@ class Design456_SmartFillet:
 
             return rotation
         except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' Failed. "
+            App.Console.PrintError("'Design456_SmartFillet' getArrowPos-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -270,7 +273,8 @@ class Design456_SmartFillet:
         if type(names == list):
             # multiple edges
             for name in names:
-                edgeNumbor = int(name[4:len(name)])
+                for subname in name:
+                    edgeNumbor = int(subname[4:len(subname)])
                 result.append(edgeNumbor, self.FilletRadius, self.FilletRadius)
         else:
             # only one Edge
@@ -282,37 +286,36 @@ class Design456_SmartFillet:
         # The format must be (Edges Number, Start-radius, End-radius)
         EdgesToBeChanged = []
         if self.objectType == 'Face':
-            # Find out all edges
-            if (len(self.Originalname) != 0):
-                EdgesToBeChanged = self.getEdgesNumbersList(self.Originalname)
-            else:
-                errMessage = "Fillet failed. No subelements found"
-                faced.getInfo().errorDialog(errMessage)
-                return
-        elif self.objectType == 'Edge':
-            EdgesToBeChanged = self.getEdgesNumbersList(self.selectedObj[0].SubElementNames)
+            EdgesToBeChanged =self.selectedObj[0].SubObjects[0].Edges
+        elif  self.objectType=='Edge':
+            EdgesToBeChanged =self.selectedObj[0].SubObjects
         elif self.objectType == 'Shape':
-            nEdges = self.selectedObj[0].Object.Shape.Edges
-            EdgesFound = []
-            for edg in nEdges:
-                EdgesFound.append(edg)
-                EdgesToBeChanged = self.getEdgesNumbersList(EdgesFound)
+            EdgesToBeChanged= self.selectedObj[0].Object.Shape.Edges
         else : 
                 print ("Error couldn't find the shape type",self.objectType)
         return EdgesToBeChanged
 
     def reCreatefilletObject(self):
 
-        # reCreate the fillet. We need only to update the .Edges property and recompute
-        if len (self.selectedObj)<2:
-            self.selectedObj.append(App.ActiveDocument.addObject("Part::Fillet", "tempFillet"))
-        
-        self.selectedObj[1].Base=self.selectedObj[0].Object    
-        self.selectedObj[1].Edges = self.getAllSelectedEdges()
-        print("self.selectedObj[1].Edges",self.selectedObj[1].Edges)
-        App.ActiveDocument.recompute()
+        # reCreate the fillet. We cannot avoid recreating the object from scratch
+        # That is how opencascade library works.
+        try:
+            if len (self.selectedObj)==2:
+                if hasattr(self.selectedObj[1],'ObjectName'):
+                    App.ActiveDocument.removeObject(self.selectedObj[1].ObjectName)
+                elif hasattr(self.selectedObj[1],'Name'):
+                    App.ActiveDocument.removeObject(self.selectedObj[1].Name)
+            self.selectedObj.append(self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges()))
+            Part.show(self.selectedObj[1])
+            App.ActiveDocument.recompute()
+            
+        except Exception as err:
+            App.Console.PrintError("'Design456_SmartFillet' recreatefilletObject-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-        
+
     def Activated(self):
         self.selectedObj.clear()
         sel=Gui.Selection.getSelectionEx()
@@ -328,7 +331,7 @@ class Design456_SmartFillet:
         # Find Out shapes type.
         self.registerShapeType()
         o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
-        o.Transparency=50
+        o.Transparency=75
         self.reCreatefilletObject()
 
         # get rotation
@@ -358,7 +361,7 @@ class Design456_SmartFillet:
                 del self._mywin
                 self._mywin = None
         except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' Failed. "
+            App.Console.PrintError("'Design456_SmartFillet' del-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -405,7 +408,7 @@ class Design456_SmartFillet:
             return self.dialog
 
         except Exception as err:
-            App.Console.PrintError("'Design456_Fillet' Failed. "
+            App.Console.PrintError("'Design456_Fillet' getMainWindwo-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
