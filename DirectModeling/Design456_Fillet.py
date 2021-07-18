@@ -47,7 +47,7 @@ from draftutils.translate import translate  # for translate
 import math
 from ThreeDWidgets import fr_label_draw
 
-MouseScaleFactor = 1.0
+MouseScaleFactor = 2.0
 
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
@@ -83,19 +83,19 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             
         if linktocaller.run_Once == False:
             linktocaller.run_Once = True
-            mouseToArrowDiff = ArrowObject.w_vector.z-linktocaller.endVector.z
-            linktocaller.offset=mouseToArrowDiff
+            linktocaller.startVector=linktocaller.endVector
 
          # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
-
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
-                
-        linktocaller.FilletRadius = abs((linktocaller.endVector.y+linktocaller.mouseToArrowDiff)/MouseScaleFactor)            
+        
+        linktocaller.FilletRadius = abs((linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor)   
+        if linktocaller.FilletRadius<=0:
+            linktocaller.FilletRadius=0.0001
+        print("linktocaller.FilletRadius",linktocaller.FilletRadius)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.FilletLBL.setText("scale= "+str(linktocaller.FilletRadius))
-
         linktocaller.reCreatefilletObject()
 
     except Exception as err:
@@ -111,57 +111,34 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
        Callback after releasing the left mouse button. 
        This will do the actual job in resizing the 3D object.
     """
-    try:
-        #TODO: FIXME
-        ArrowObject = userData.ArrowObj
-        events = userData.events
-        linktocaller = userData.callerObject
-
-        # Avoid activating this part several times,
-        if (linktocaller.startVector == None):
-            return
-
-        print("mouse release")
-        ArrowObject.remove_focus()
-        linktocaller.run_Once = False
-        linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-        # Undo
-        App.ActiveDocument.openTransaction(translate("Design456", "Fillet"))
-
-        linktocaller.startVector = None
-        userData = None
-        linktocaller.mouseToArrowDiff = 0.0
-        #linktocaller.FilletLBL.setText("Radius= ")
-        App.ActiveDocument.commitTransaction()  # undo reg.
-        linktocaller.reCreatefilletObject()
-        # Make a simple copy
-
-        #__shape = Part.getShape(linktocaller.selectedObj[1], '', needSubElement=False, refine=False)
-        #newObj = App.ActiveDocument.addObject('Part::Feature', "Result")  # Our scaled shape
-        #newObj.Shape = __shape
-        App.ActiveDocument.recompute()
-        #App.ActiveDocument.removeObject(linktocaller.selectedObj[1].ObjectName)
-        App.ActiveDocument.removeObject(linktocaller.selectedObj[0].ObjectName)
-        #linktocaller.selectedObj.clear()
-        linktocaller.selectedObj[0]=linktocaller.selectedObj[1]
-        #linktocaller.selectedObj.append(newObj)
-        linktocaller.selectedObj[0].ObjectName = linktocaller.Originalname
-        linktocaller.selectedObj[0].Label=linktocaller.Originalname
-        linktocaller.selectedObj.remove(1)
-        App.ActiveDocument.recompute()
-
-        # Redraw the arrows
-        #linktocaller.resizeArrowWidgets()
-        return 1  # we eat the event no more widgets should get it
-
-    except Exception as err:
-        App.Console.PrintError("'View Inside objects' Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+    ArrowObject = userData.ArrowObj
+    events = userData.events
+    linktocaller = userData.callerObject
+    # Avoid activating this part several times,
+    if (linktocaller.startVector == None):
+        return
+    print("mouse release")
+    ArrowObject.remove_focus()
+    linktocaller.run_Once = False
+    linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                        ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                        ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    # Undo
+    App.ActiveDocument.openTransaction(translate("Design456", "Fillet"))
+    linktocaller.startVector = None
+    userData = None
+    linktocaller.mouseToArrowDiff = 0.0
+    App.ActiveDocument.commitTransaction()  # undo reg.
+    linktocaller.selectedObj[0].Object.Visibility=None
+    App.ActiveDocument.removeObject(linktocaller.selectedObj[0].ObjectName)
+    linktocaller.selectedObj[0]=linktocaller.selectedObj[1]
+    
+    if hasattr(linktocaller.selectedObj[0],'Object'):
+        linktocaller.selectedObj[0].Object.Label=linktocaller.Originalname
+    #remove the item.
+    linktocaller.selectedObj.pop(1)
+    App.ActiveDocument.recompute()
+    #return 1  # we eat the event no more widgets should get it
 
 class Design456_SmartFillet:
     """
@@ -184,7 +161,7 @@ class Design456_SmartFillet:
     # 0 is the original    1 is the fake one (just for interactive effect)
     mouseToArrowDiff = 0.0
     offset=0.0
-    mmAwayFrom3DObject = 10  # Use this to take away the arrow from the object
+    AwayFrom3DObject = 10  # Use this to take away the arrow from the object
     FilletRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
@@ -223,6 +200,10 @@ class Design456_SmartFillet:
               # 'Shape'
                 # The whole object is selected
                 print("shape")
+                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
+                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
+                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
+                
                 rotation = [-1.0, 0.0, 0.0, math.radians(57)]
                 return rotation
 
@@ -233,7 +214,7 @@ class Design456_SmartFillet:
                     self._vector.x += i.X
                     self._vector.y += i.Y
                     if self._vector.z < i.Z:
-                        self._vector.z = i.Z+10
+                        self._vector.z = i.Z+self.AwayFrom3DObject
                         self._vector.x = self._vector.x/4
                 self._vector.y = self._vector.y/4
 
@@ -248,7 +229,7 @@ class Design456_SmartFillet:
                 for i in vectors:
                     self._vector.x += i.X/2
                     self._vector.y += i.Y/2
-                    self._vector.z = i.Z+10
+                    self._vector.z = i.Z+self.AwayFrom3DObject
 
                 rotation = [-1,
                              0,
@@ -300,14 +281,27 @@ class Design456_SmartFillet:
         # reCreate the fillet. We cannot avoid recreating the object from scratch
         # That is how opencascade library works.
         try:
-            if len (self.selectedObj)==2:
+            if len (self.selectedObj)>=2:
                 if hasattr(self.selectedObj[1],'ObjectName'):
                     App.ActiveDocument.removeObject(self.selectedObj[1].ObjectName)
                 elif hasattr(self.selectedObj[1],'Name'):
                     App.ActiveDocument.removeObject(self.selectedObj[1].Name)
-            self.selectedObj.append(self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges()))
-            Part.show(self.selectedObj[1])
+                elif hasattr(self.selectedObj[1].Object,'Name'):
+                    App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)
+                else : 
+                    print(type(self.selectedObj[1]))
+                    print(self.selectedObj[1])
+                    print(dir(self.selectedObj[1]))
+                    print("removing failed")
+                self.selectedObj.pop(1)
+            #This create only a shape. We have to make it as a Part::Feature
             App.ActiveDocument.recompute()
+            _shape=self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges())
+            newObj=App.ActiveDocument.addObject('Part::Feature',"temp")
+            newObj.Shape=_shape
+            self.selectedObj.append(newObj)
+            App.ActiveDocument.recompute()
+            print(len(self.selectedObj))
             
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' recreatefilletObject-Failed. "
