@@ -41,7 +41,7 @@ from typing import List
 from abc import abstractmethod
 
 
-def defaultCallback(userData=None):
+def defaultCallback(obj,userData=None):
     """
     Dummy callback. This should be overdriven to call the real callback
     """
@@ -294,7 +294,7 @@ class Fr_Widget (object):
         """
         try:
             if (self.w_lbl_calback_!=None):
-                self.w_lbl_calback_()
+                self.w_lbl_calback_(self.w_lbluserData)
 
         except Exception as err:
             App.Console.PrintError("'lblcallback' Failed. "
@@ -377,19 +377,11 @@ class Fr_Widget (object):
     
     def saveSoNodesToWidget(self,_Value):
         """ Keep seneNodes in the fr_xxx object in the w_widgetSoNodes variable """
-        if type(_Value)==list:
-            for i in _Value:
-                self.w_widgetSoNodes.append(i)         
-        else:
-            self.w_widgetSoNodes=_Value
+        self.w_widgetSoNodes=_Value
 
     def saveSoNodeslblToWidget(self,_list):
         """ Keep the Label seneNodes in the fr_xxx object in the w_widgetlblSoNodes variable""" 
-        if type(_list)==list:
-            for i in _list:
-                self.w_widgetlblSoNodes.append(i)
-        else:    
-            self.w_widgetlblSoNodes=_list
+        self.w_widgetlblSoNodes=_list
         
     #todo: Do we need an argument here? as we should add w_widgetSoNodes and w_widgetlblSoNodes
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
