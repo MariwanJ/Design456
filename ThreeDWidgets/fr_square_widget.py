@@ -49,17 +49,27 @@ p1=App.Vector(2,2,5)
 p2=App.Vector(22,2,5)
 p3=App.Vector(22,22,5)
 p4=App.Vector(2,22,5)
+g.append(p1)
+g.append(p2)
 wny=wn.Fr_CoinWindow("MyWindow")
+g.clear()
+
 g.append(p1)
 g.append(p2)
 g.append(p3)
 g.append(p4)
 col=(0,0,0)
-square_ =square.Fr_SquareFrame_Widget(g,'square',10)
+
+square_ =square.Fr_SquareFrame_Widget(g,'square',2)
 wny.addWidget(square_)
 wny.show()
-"""
 
+"""
+def callback_default(obj,userData=None):
+    print("fr_square widget default callback")
+
+def callback_defaultlbl(obj,userData=None):
+    print("fr_square widget default LBL callback")
 
 
 class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
@@ -74,6 +84,8 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         self.w_lineWidth = lineWidth # default line width        # Here we have a list (4 labels)
         self.w_label= labels
         self.w_widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
+        self.w_callback_=callback_default
+        self.w_lbl_calback_=callback_defaultlbl
              
         
     # def addVertices(self, vertices):
@@ -105,7 +117,8 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
 
             if clickwdgdNode != None or clickwdglblNode != None:
                 self.take_focus()
-                self.do_callback(self.w_userData)
+                self.do_callback()
+                self.do_lblcallback()
                 return 1
             else:
                 self.remove_focus()
@@ -135,11 +148,16 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
                 square = fr_draw.draw_square_frame(self.w_vector, usedColor, self.w_lineWidth)
                 _lbl = self.draw_label()
 
+                self.saveSoNodesToWidget(square)  # Add SoSeparator. Will be added to switch automatically                            
                 self.saveSoNodeslblToWidget(_lbl)
-            for i in range(0,4):
-                self.saveSoNodesToWidget(square[i])  # Add SoSeparator. Will be added to switch automatically                            
+
+                self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
+                self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
+                print(self.w_wdgsoSwitch)
+            
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
+
         except Exception as err:
             App.Console.PrintError("'Fr_SquareFrame_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -155,12 +173,12 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         LabelData.labelcolor = self.w_lblColor
         firstTwoVerticies: List[App.Vector] = []
 
-        firstTwoVerticies.append(self.w_vector[0])
-        firstTwoVerticies.append(self.w_vector[1])
+        firstTwoVerticies.append(self.w_vector[2])
+        firstTwoVerticies.append(self.w_vector[3])
 
         LabelData.vectors = firstTwoVerticies
         LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        lbl = fr_label_draw.draw_label(self.w_label, LabelData)
+        lbl = fr_label_draw.draw_label([self.w_label], LabelData)
         self.w_widgetlblSoNodes = lbl
         return lbl
     
@@ -182,7 +200,6 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
 
     def show(self):
         self.w_visible = 1
-        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
         self.redraw()
 
     def redraw(self):
