@@ -273,7 +273,6 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.smartInd[2].redraw()
 
         ResizeObject(ArrowObject, linktocaller,linktocaller.startVector, linktocaller.endVector)
-        return 1  # we eat the event no more widgets should get it
 
     except Exception as err:
         App.Console.PrintError("'callback' Failed. "
