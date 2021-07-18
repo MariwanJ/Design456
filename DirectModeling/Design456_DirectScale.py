@@ -180,7 +180,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         ResizeObject(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector)
 
         linktocaller.startVector = None
-        userData = None
+        #userData = None   #This cannot be correct
         linktocaller.mouseToArrowDiff = 0.0
         linktocaller.scaleLBL.setText("scale= ")
                 
