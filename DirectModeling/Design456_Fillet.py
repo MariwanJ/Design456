@@ -49,15 +49,21 @@ from ThreeDWidgets import fr_label_draw
 
 MouseScaleFactor = 2.0
 
+'''
+    We have to recreate the object each time we change the radius. 
+    This means that the redrawing must be optimized 
+'''
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
-    try:
-        #TODO: FIXME
-        '''
-            We have to recreate the object each time we change the radius. 
-            This means that the redrawing must be optimized : TODO: FIXME
+    """[summary]
+    Callback for the arrow movement. This will be used to calculate the radius of the fillet operation.
+    Args:
+        userData (fr_arrow_widget.userDataObject, optional): [description]. Defaults to None.
 
-        '''
+    Returns:
+        [type]: [description] None.
+    """
+    try:
         if userData == None:
             return  # Nothing to do here - shouldn't be None
         mouseToArrowDiff = 0.0
@@ -93,9 +99,9 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.FilletRadius = abs((linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor)   
         if linktocaller.FilletRadius<=0:
             linktocaller.FilletRadius=0.0001
-        print("linktocaller.FilletRadius",linktocaller.FilletRadius)         
+        print("FilletRadius",linktocaller.FilletRadius)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
-        linktocaller.FilletLBL.setText("scale= "+str(linktocaller.FilletRadius))
+        linktocaller.FilletLBL.setText("scale= "+ str(round(linktocaller.FilletRadius,4)))
         linktocaller.reCreatefilletObject()
 
     except Exception as err:
@@ -109,7 +115,8 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 def callback_release(userData: fr_arrow_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
-       This will do the actual job in resizing the 3D object.
+       This callback will finalize the fillet operation. 
+       Deleting the original object will be done when the user press 'OK' button
     """
     if (userData==None ):
         print("userData is None")
@@ -140,8 +147,8 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
 
 class Design456_SmartFillet:
     """
-        Apply fillet to an edge using mouse movement.
-        Moving an arrow that will represent radius of the fillet.
+        Apply fillet to any 3D object by selecting the object, a Face or one or multiple edges 
+        Radius of the fillet is counted by dragging the arrow towards the negative Z axis.
     """
     _vector = App.Vector(0.0, 0.0, 0.0)
     mw = None
@@ -241,9 +248,8 @@ class Design456_SmartFillet:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def getEdgesNumbersList(self, names=None):
-        """ we need to take out the remaining of the string
-            i.e. 'Edge15' --> take out 'Edge'-->4 bytes, We need only the number
-            len('Edge')] -->4
+        """ 
+        Find the edges and return it back to the caller function
         """
         result = []
         if names == None:
@@ -274,7 +280,9 @@ class Design456_SmartFillet:
         return EdgesToBeChanged
 
     def reCreatefilletObject(self):
-
+        """
+            Use this function to recreate the target object after applying the fillet radius.
+        """
         # reCreate the fillet. We cannot avoid recreating the object from scratch
         # That is how opencascade library works.
         try:
@@ -291,7 +299,7 @@ class Design456_SmartFillet:
                     print(dir(self.selectedObj[1]))
                     print("removing failed")
                 self.selectedObj.pop(1)
-                
+
             #This create only a shape. We have to make it as a Part::Feature
             App.ActiveDocument.recompute()
             _shape=self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges())
@@ -416,6 +424,7 @@ class Design456_SmartFillet:
         temp=self.selectedObj[0]
         self.selectedObj[0]=self.selectedObj[1]
         self.selectedObj.pop(1)
+        self.FilletRadius=0.005
         App.ActiveDocument.removeObject(temp.ObjectName)
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart fillet 3dCOIN widgets
