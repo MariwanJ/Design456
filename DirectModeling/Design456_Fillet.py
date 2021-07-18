@@ -335,7 +335,7 @@ class Design456_SmartFillet:
         # get rotation
         rotation = self.getArrowPosition()
 
-        self.smartInd = Fr_Arrow_Widget(self._vector, "Fillet", 1, FR_COLOR.FR_OLIVEDRAB, rotation)
+        self.smartInd = Fr_Arrow_Widget(self._vector, "Fillet", 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
