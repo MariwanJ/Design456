@@ -199,7 +199,6 @@ class Design456_SmartFillet:
             if self.objectType == 'Shape':
               # 'Shape'
                 # The whole object is selected
-                print("shape")
                 self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
                 self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
                 self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
@@ -294,6 +293,7 @@ class Design456_SmartFillet:
                     print(dir(self.selectedObj[1]))
                     print("removing failed")
                 self.selectedObj.pop(1)
+                
             #This create only a shape. We have to make it as a Part::Feature
             App.ActiveDocument.recompute()
             _shape=self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges())
@@ -301,7 +301,6 @@ class Design456_SmartFillet:
             newObj.Shape=_shape
             self.selectedObj.append(newObj)
             App.ActiveDocument.recompute()
-            print(len(self.selectedObj))
             
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' recreatefilletObject-Failed. "
