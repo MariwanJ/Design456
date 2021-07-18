@@ -111,6 +111,10 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
        Callback after releasing the left mouse button. 
        This will do the actual job in resizing the 3D object.
     """
+    if (userData==None ):
+        print("userData is None")
+        raise TypeError 
+        
     ArrowObject = userData.ArrowObj
     events = userData.events
     linktocaller = userData.callerObject
@@ -124,21 +128,15 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                                         ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
     # Undo
-    App.ActiveDocument.openTransaction(translate("Design456", "Fillet"))
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartFillet"))
     linktocaller.startVector = None
-    userData = None
     linktocaller.mouseToArrowDiff = 0.0
     App.ActiveDocument.commitTransaction()  # undo reg.
-    linktocaller.selectedObj[0].Object.Visibility=None
-    App.ActiveDocument.removeObject(linktocaller.selectedObj[0].ObjectName)
-    linktocaller.selectedObj[0]=linktocaller.selectedObj[1]
-    
+    linktocaller.selectedObj[0].Object.Visibility=False
     if hasattr(linktocaller.selectedObj[0],'Object'):
         linktocaller.selectedObj[0].Object.Label=linktocaller.Originalname
-    #remove the item.
-    linktocaller.selectedObj.pop(1)
     App.ActiveDocument.recompute()
-    #return 1  # we eat the event no more widgets should get it
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
 class Design456_SmartFillet:
     """
@@ -308,7 +306,6 @@ class Design456_SmartFillet:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
-
     def Activated(self):
         self.selectedObj.clear()
         sel=Gui.Selection.getSelectionEx()
@@ -324,7 +321,7 @@ class Design456_SmartFillet:
         # Find Out shapes type.
         self.registerShapeType()
         o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
-        o.Transparency=75
+        o.Transparency=80
         self.reCreatefilletObject()
 
         # get rotation
@@ -416,6 +413,11 @@ class Design456_SmartFillet:
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize-1)  # it is 0,1,2,3 ..etc
+        temp=self.selectedObj[0]
+        self.selectedObj[0]=self.selectedObj[1]
+        self.selectedObj.pop(1)
+        App.ActiveDocument.removeObject(temp.ObjectName)
+        App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart fillet 3dCOIN widgets
 
     def GetResources(self):
