@@ -173,15 +173,15 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         LabelData.labelcolor = self.w_lblColor
         firstTwoVerticies: List[App.Vector] = []
 
-        firstTwoVerticies.append(self.w_vector[2])
-        firstTwoVerticies.append(self.w_vector[3])
+        firstTwoVerticies.append(self.w_vector[0])
+        firstTwoVerticies.append(self.w_vector[1])
 
         LabelData.vectors = firstTwoVerticies
         LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label([self.w_label], LabelData)
         self.w_widgetlblSoNodes = lbl
         return lbl
-    
+
     def move(self, newVecPos):
         """
         Move the object to the new location referenced by the 
