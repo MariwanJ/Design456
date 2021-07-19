@@ -42,38 +42,70 @@ import math
                          |
                  -X-Y    |    +X -Y
                          |
+
+
+                         Y
+                         |       *p2.thi
+                         |             * p1.thi
+                         |
+              ___________|_______________X
+                         |
+                         |
+                         |
+
 '''
 def calculateLineSpherical(vectors):
     # Calculate the three angles we have ref to xyz axis
+    # phi - angle to the Z axis
+    # thi - angle to the x axis 
+    #refer to https://en.wikipedia.org/wiki/Spherical_coordinate_system
+    #180 Degree must be added to thi when x<0
     p1 = vectors[0]
     p2 = vectors[1]
     px2_px1=p2.x-p1.x
     py2_py1=p2.y-p1.y
     pz2_pz1=p2.z-p1.z
+    # 0 = P1.THI , 1= P2.THI , 2= RESULT THI
+    thiResult=[]
+
     thi=0.0
-    r=0.0
+    r1=0.0
     phi=0.0
-    r=math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2)+math.pow(pz2_pz1,2))
-    factor=0
-    if p2.x>0 and p2.y>0:          #+X+Y
-        if px2_px1==0:
-            thi=math.radians(90)
-        elif py2_py1==0:
-            thi=math.radians(180)
-        elif px2_px1<0:             #px1 is grater than px2
-            thi=math.radians(180)
-        elif py2_py1<0:             #py1 is grater than py2 
-            thi=math.radians(180)
-        else:   
-            thi=(math.atan(py2_py1/px2_px1))
+    r1=math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2)+math.pow(p1.z,2))  #Enough to take p1 as a coordinate
+    r2=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))  #Enough to take p1 as a coordinate
 
+    if p1.x==0:
+       thi=0
+    elif p1.x>=0 :
+        thi=(math.atan(p1.y/p1.x))
+    elif p1.x<0 :
+        thi=(math.atan(p1.y/p1.x))+math.radians(180)
+   
+    thiResult.append(thi)
 
+     if p2.x==0:
+        thi=0
+    elif p2.x>=0 :
+        thi=(math.atan(p2.y/p2.x))
+    elif p2.x<0 :
+        thi=(math.atan(p2.y/p2.x))+math.radians(180)
+   
+    #TODO: FIXME 
+
+    thiResult.append(thi)
+    thiDiff= thiResult[1]-thiResult[0]
+    angle1= math.asin(r2/r1)
+    
+    angle1_otherside= math.radians(180)-angle1
+
+    angle2_otherside= math.radians(180)-thiResult[0]-angle1_otherside
+    angel2=math.radians(180)-angle2_otherside
+    thi=   angel2
     if(pz2_pz1==0):
         phi=math.radians(0)
-        factor=0
     else: 
         phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)))
-    return (r,thi,phi)
+    return (r1,thi,phi)
 
 # todo FIXME
 # this should return the lblPosition calculate based on the Vector position.
