@@ -60,119 +60,116 @@ def calculateLineSpherical(vectors):
     # thi - angle to the x axis 
     #refer to https://en.wikipedia.org/wiki/Spherical_coordinate_system
     #180 Degree must be added to thi when x<0
-    p1 = vectors[0]
-    p2 = vectors[1]
-    px2_px1=p2.x-p1.x
-    py2_py1=p2.y-p1.y
-    pz2_pz1=p2.z-p1.z
-    # 0 = P1.THI , 1= P2.THI , 2= RESULT THI
-    thiResult=[]
-
-    thi=0.0
-    r1=0.0
-    phi=0.0
-    r1=math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2)+math.pow(p1.z,2))  #Enough to take p1 as a coordinate
-    r2=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))  #Enough to take p1 as a coordinate
-
-    if p1.x==0:
-       thi=0
-    elif p1.x>=0 :
-        thi=(math.atan(p1.y/p1.x))
-    elif p1.x<0 :
-        thi=(math.atan(p1.y/p1.x))+math.radians(180)
-   
-    thiResult.append(thi)
-
-     if p2.x==0:
-        thi=0
-    elif p2.x>=0 :
-        thi=(math.atan(p2.y/p2.x))
-    elif p2.x<0 :
-        thi=(math.atan(p2.y/p2.x))+math.radians(180)
-   
-    #TODO: FIXME 
-
-    thiResult.append(thi)
-    thiDiff= thiResult[1]-thiResult[0]
-    angle1= math.asin(r2/r1)
+    try:
+        p1 = vectors[0]
+        p2 = vectors[1]
+        px2_px1=p2.x-p1.x
+        py2_py1=p2.y-p1.y
+        pz2_pz1=p2.z-p1.z
+        # 0 = P1.THI , 1= P2.THI , 2= RESULT THI
+        thiResult=[]
     
-    angle1_otherside= math.radians(180)-angle1
-
-    angle2_otherside= math.radians(180)-thiResult[0]-angle1_otherside
-    angel2=math.radians(180)-angle2_otherside
-    thi=   angel2
-    if(pz2_pz1==0):
-        phi=math.radians(0)
-    else: 
-        phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(px2_px1,2)+math.pow(py2_py1,2))/pz2_pz1)))
-    return (r1,thi,phi)
+        thi=0.0
+        r1=0.0
+        phi=0.0
+        r1=math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2)+math.pow(p1.z,2))  #Enough to take p1 as a coordinate
+        r2=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))  #Enough to take p1 as a coordinate
+        r3=math.sqrt(math.pow((p2.x-p1.x),2)+math.pow((p2.y-p1.y),2))
+        print(r3)
+        if (r3==0):
+            raise os.error
+        
+        thi=math.radians(90)+ math.asin((p2.x-p1.x)/r3)
+        if p1.x<0:
+            thi=thi+math.radians(180)
+    
+        print("thi,r3,r2,r1",thi,r3,r2,r1)
+        if(p1.z==0):
+            phi=math.radians(0)
+        else: 
+            phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2))/p1.z)))
+            print ("r1,thi,phi",r1,thi,phi)
+        return (r1,thi,phi)
+    except Exception as err:
+        App.Console.PrintError("'r1 thi phi ' Failed. "
+                           "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 # todo FIXME
 # this should return the lblPosition calculate based on the Vector position.
 def calculateAlignment(vectors, align):
-    lblPos =coin.SoTransform()    # Use this to put all data needed for the lblPosition
-    p1 = p2 = p3 = p4 = None
-    # These variables will keep the min value of each coordinations
-        # WE HAVE LEFT ALIGNMENT
-    p1 = vectors[0]
-    p2 = vectors[1]
-    FourVector = False
-    if len(vectors == 4):
-        FourVector = True
-        p3 = vectors[0]
-        p4 = vectors[1]
+    try:
+        lblPos =coin.SoTransform()    # Use this to put all data needed for the lblPosition
+        p1 = p2 = p3 = p4 = None
+        # These variables will keep the min value of each coordinations
+            # WE HAVE LEFT ALIGNMENT
+        p1 = vectors[0]
+        p2 = vectors[1]
+        FourVector = False
+        if len(vectors == 4):
+            FourVector = True
+            p3 = vectors[0]
+            p4 = vectors[1]
 
-    minX = minY = minZ = maxX = minY = minZ = None
-    if FourVector == 1:
-        minX = min([p1.x, p2.x, p3.x, p4.x])
-        minY = min([p1.y, p2.y, p3.y, p4.y])
-        minZ = min([p1.z, p2.z, p3.z, p4.z])
-    else:
-        minX = min([p1.x, p2.x])
-        minY = min([p1.y, p2.y])
-        minZ = min([p1.z, p2.z])
-    if FourVector:
-        maxX = max([p1.x, p2.x, p3.x, p4.x])
-        maxY = max([p1.y, p2.y, p3.y, p4.y])
-        maxZ = max([p1.z, p2.z, p3.z, p4.z])
-    else:
-        maxX = max([p1.x, p2.x])
-        maxY = max([p1.y, p2.y])
-        maxZ = max([p1.z, p2.z])
+        minX = minY = minZ = maxX = minY = minZ = None
+        if FourVector == 1:
+            minX = min([p1.x, p2.x, p3.x, p4.x])
+            minY = min([p1.y, p2.y, p3.y, p4.y])
+            minZ = min([p1.z, p2.z, p3.z, p4.z])
+        else:
+            minX = min([p1.x, p2.x])
+            minY = min([p1.y, p2.y])
+            minZ = min([p1.z, p2.z])
+        if FourVector:
+            maxX = max([p1.x, p2.x, p3.x, p4.x])
+            maxY = max([p1.y, p2.y, p3.y, p4.y])
+            maxZ = max([p1.z, p2.z, p3.z, p4.z])
+        else:
+            maxX = max([p1.x, p2.x])
+            maxY = max([p1.y, p2.y])
+            maxZ = max([p1.z, p2.z])
 
-    if len(vectors) < 2:
-        return (0, 0, 0)  # We don't have any vectors, return zero
-        '''
-        The shape is like this
-                                p1___________________ p2
-                                |                    |
-                                |    face            |
-                                |                    |
-                               p3 ___________________ p4
-        not having p3,p4 means it is a line only
-        '''
-    if align == FR_ALIGN.FR_ALIGN_LEFT or align == FR_ALIGN.FR_ALIGN_LEFT_BOTTOM:
+        if len(vectors) < 2:
+            return (0, 0, 0)  # We don't have any vectors, return zero
+            '''
+            The shape is like this
+                                    p1___________________ p2
+                                    |                    |
+                                    |    face            |
+                                    |                    |
+                                   p3 ___________________ p4
+            not having p3,p4 means it is a line only
+            '''
+        if align == FR_ALIGN.FR_ALIGN_LEFT or align == FR_ALIGN.FR_ALIGN_LEFT_BOTTOM:
 
-        return (p1)
+            return (p1)
 
-    elif align == FR_ALIGN.FR_ALIGN_RIGHT or align == FR_ALIGN.FR_ALIGN_RIGHT_BOTTOM:
-        # WE HAVE RIGHT ALIGNMENT
-        pass
-    elif align == FR_ALIGN.FR_ALIGN_CENTER or align == FR_ALIGN.FR_ALIGN_CENTER_BOTTOM:
-        # WE HAVE CENTER-BOTTOM ALIGNMENT
-        pass
-    elif align == FR_ALIGN.FR_ALIGN_LEFT_TOP:
-        # Align LEFT-TOP
-        pass
-    elif align == FR_ALIGN.FR_ALIGN_RIGHT_TOP:
-        # Align RIGHT-TOP
-        pass
-    elif align == FR_ALIGN.FR_ALIGN_CENTER_TOP:
-        # Align CENTER-TOP
-        pass
-    elif align == FR_ALIGN.FR_ALIGN_CENTER_CENTER:
-        # Align LEFT-TOP
-        pass
+        elif align == FR_ALIGN.FR_ALIGN_RIGHT or align == FR_ALIGN.FR_ALIGN_RIGHT_BOTTOM:
+            # WE HAVE RIGHT ALIGNMENT
+            pass
+        elif align == FR_ALIGN.FR_ALIGN_CENTER or align == FR_ALIGN.FR_ALIGN_CENTER_BOTTOM:
+            # WE HAVE CENTER-BOTTOM ALIGNMENT
+            pass
+        elif align == FR_ALIGN.FR_ALIGN_LEFT_TOP:
+            # Align LEFT-TOP
+            pass
+        elif align == FR_ALIGN.FR_ALIGN_RIGHT_TOP:
+            # Align RIGHT-TOP
+            pass
+        elif align == FR_ALIGN.FR_ALIGN_CENTER_TOP:
+            # Align CENTER-TOP
+            pass
+        elif align == FR_ALIGN.FR_ALIGN_CENTER_CENTER:
+            # Align LEFT-TOP
+            pass
+    except Exception as err:
+        App.Console.PrintError("'calculateAlignment' Failed. "
+                           "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 def draw_label(text=[], prop: propertyValues=None):
     ''' Draw widgets label relative to the position with alignment'''
