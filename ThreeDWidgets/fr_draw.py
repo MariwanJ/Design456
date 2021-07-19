@@ -207,7 +207,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0,_rotation=[1.0
 #draw a box
 def draw_box(Points=[], color=(0.0,0.0,0.0), LineWidth=1):
     """
-        Draw any box. This will be the base of all multi-point drawing.
+        Draw any box. This will be the base of all multi-points drawing.
         Curves, and arc is not here.
     """
     if len(Points) != 6:
