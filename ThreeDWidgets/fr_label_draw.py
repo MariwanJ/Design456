@@ -76,19 +76,23 @@ def calculateLineSpherical(vectors):
         r2=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))  #Enough to take p1 as a coordinate
         r3=math.sqrt(math.pow((p2.x-p1.x),2)+math.pow((p2.y-p1.y),2))
         print(r3)
-        if (r3==0):
-            raise os.error
+        if (r3)==0: 
+            phi=math.radians(90)
+            thi=0
+        else:
+            thi=math.radians(90)+ math.asin((p2.x-p1.x)/r3)
         
-        thi=math.radians(90)+ math.asin((p2.x-p1.x)/r3)
         if p1.x<0:
             thi=thi+math.radians(180)
     
-        print("thi,r3,r2,r1",thi,r3,r2,r1)
-        if(p1.z==0):
+        if(pz2_pz1==0):
             phi=math.radians(0)
         else: 
-            phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2))/p1.z)))
-            print ("r1,thi,phi",r1,thi,phi)
+            #TODO: We need to calculate the angle of the line not a point which is wrong. 
+            #phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2))/p1.z)))
+            phi=math.radians(90)
+        
+        print ("r1,thi,phi",r1,thi,phi)
         return (r1,thi,phi)
     except Exception as err:
         App.Console.PrintError("'r1 thi phi ' Failed. "
