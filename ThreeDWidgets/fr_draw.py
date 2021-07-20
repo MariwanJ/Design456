@@ -221,7 +221,7 @@ def draw_box(Points=[], color=(0.0,0.0,0.0), LineWidth=1):
     p4=Points[3]
     p5=Points[4]
     p6=Points[5]
-    square = coin.SbBox3f(p1, p2, p3, p4, p5, p6)
+    square = (coin.SbBox3f(p1), coin.SbBox3f(p2), coin.SbBox3f(p3), coin.SbBox3f(p4), coin.SbBox3f(p5), coin.SbBox3f(p6))
     square.vertexProperty = v
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth

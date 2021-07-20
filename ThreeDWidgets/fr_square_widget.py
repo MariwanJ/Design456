@@ -65,18 +65,17 @@ wny.addWidget(square_)
 wny.show()
 
 """
+
 def callback_default(obj,userData=None):
     print("fr_square widget default callback")
 
 def callback_defaultlbl(obj,userData=None):
     print("fr_square widget default LBL callback")
 
-
 class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     """
     This class is for drawing a line in  coin3D
     """
-    # def __init__(self, args:fr_widget.VECTOR=[],l=""):
 
     def __init__(self, vectors: List[App.Vector] = [], labels: str = "" ,lineWidth=1):
         super().__init__(vectors,labels) # It must be initialized first refere to fr_line_widget for more info
