@@ -66,30 +66,49 @@ def calculateLineSpherical(vectors):
         px2_px1=p2.x-p1.x
         py2_py1=p2.y-p1.y
         pz2_pz1=p2.z-p1.z
+
+        #Bring back the p2 to the reference of origin
+        p1x_p2x=-px2_px1
+        p1y_p2y=-py2_py1
+        p1z_p2z=-pz2_pz1
+        
+        rnewP2=math.sqrt(math.pow(p1x_p2x,2)+math.pow(p1y_p2y,2)+math.pow(p1z_p2z,2))  #Enough to take p1 as a coordinate
+        
+        if p1x_p2x<0:
+            thi= math.radians(90)+math.radians(180)+math.asin((p2.x-p1.x)/rnewP2)
+        else:
+            thi=math.radians(90)+ math.asin((p2.x-p1.x)/rnewP2)
+        
+        if(p1z_p2z==0):
+            phi=math.radians(0)
+        else:
+            phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(p1x_p2x,2)+math.pow(p1y_p2y,2))/p1z_p2z)))
+
         # 0 = P1.THI , 1= P2.THI , 2= RESULT THI
         thiResult=[]
     
-        thi=0.0
-        r1=0.0
-        phi=0.0
-        r1=math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2)+math.pow(p1.z,2))  #Enough to take p1 as a coordinate
-        r2=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))  #Enough to take p1 as a coordinate
-        r3=math.sqrt(math.pow((p2.x-p1.x),2)+math.pow((p2.y-p1.y),2))
-        print(r3)
-        if (r3==0):
-            raise os.error
-        
-        thi=math.radians(90)+ math.asin((p2.x-p1.x)/r3)
-        if p1.x<0:
-            thi=thi+math.radians(180)
-    
-        print("thi,r3,r2,r1",thi,r3,r2,r1)
-        if(p1.z==0):
-            phi=math.radians(0)
-        else: 
-            phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2))/p1.z)))
-            print ("r1,thi,phi",r1,thi,phi)
-        return (r1,thi,phi)
+        #thi=0.0
+        #r1=0.0
+        #phi=0.0
+        #r1=math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2)+math.pow(p1.z,2))  #Enough to take p1 as a coordinate
+        #r2=math.sqrt(math.pow(p2.x,2)+math.pow(p2.y,2)+math.pow(p2.z,2))  #Enough to take p1 as a coordinate
+        #r3=math.sqrt(math.pow((p2.x-p1.x),2)+math.pow((p2.y-p1.y),2))
+        #print(r3)
+        #if (r3==0):
+        #    raise os.error
+        #
+        #thi=math.radians(90)+ math.asin((p2.x-p1.x)/r3)
+        #if p1.x<0:
+        #    thi=thi+math.radians(180)
+        #
+        #print("thi,r3,r2,r1",thi,r3,r2,r1)
+        #if(p1.z==0):
+        #    phi=math.radians(0)
+        #else: 
+        #    phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(p1.x,2)+math.pow(p1.y,2))/p1.z)))
+        #    print ("r1,thi,phi",r1,thi,phi)
+        return (rnewP2,thi,phi)
+        #return (r1,thi,phi)
     except Exception as err:
         App.Console.PrintError("'r1 thi phi ' Failed. "
                            "{err}\n".format(err=str(err)))
