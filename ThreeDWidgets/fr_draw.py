@@ -219,10 +219,10 @@ def draw_box(Points=[], color=(0.0, 0.0, 0.0), use_texture=False, LineWidth=1):
 
 # draw a box
 class draw_fourSidedShape:
-    
+
     def __init__(self, Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
         """ 
-            Draw any box, by drawing 6 faces,
+            Draw any four sided shape,
             This will be the base of all multi-points drawing.
 
         Args:
@@ -237,28 +237,28 @@ class draw_fourSidedShape:
         Returns:
             [coin.SoSeparator]: [created drawing]
         """
-        faces = []  # Keep the 6 faces
-        if len(Points) != 4:
+        self.faces = []  # Keep the 6 faces
+        self.Points=Points
+        self.color=color
+        self.use_texture =use_texture
+        self.lineWidth=LineWidth
+        
+    def Activated(self):
+        if len(self.Points) != 4:
             raise ValueError('Vertices must be 4')
         so_separator = coin.SoSeparator()
         v = coin.SoVertexProperty()
         coords = coin.SoTransform()
-        p1 = Points[0]
-        p2 = Points[1]
-        p3 = Points[2]
-        p4 = Points[3]
 
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = color
+        col1.rgb = self.color
 
         FourSidedShape = coin.SoSeparator()
         coords = coin.SoCoordinate3()
-        coords.point.set1Value(0, p1)
-        coords.point.set1Value(1, p2)
-        coords.point.set1Value(2, p3)
-        coords.point.set1Value(3, p4)
-
-        if use_texture == True:
+        for i in range (0,len(self.Points)):
+            coords.point.set1Value(i, self.Points[i])
+        #TODO fixme
+        if self.use_texture == True:
             textureCoords = coin.SoTextureCoordinate2()
             textureCoords.point.set1Value(0, 0, 0)
             textureCoords.point.set1Value(1, 1, 0)
@@ -267,12 +267,12 @@ class draw_fourSidedShape:
 
         _face = coin.SoFaceSet()
         _face.numVertices.set1Value(0, 4)
-        if use_texture == True:
+        if self.use_texture == True:
             texture = coin.SoTexture2()
             texture.image = self.createTextureImage()
 
         FourSidedShape.addChild(coords)
-        if use_texture == True:
+        if self.use_texture == True:
             FourSidedShape.addChild(textureCoords)
             FourSidedShape.addChild(texture)
         FourSidedShape.addChild(_face)
@@ -294,33 +294,87 @@ class draw_fourSidedShape:
 
 
 # Draw a polygon face in the 3D Coin
-def draw_polygon(vector, color=FR_COLOR.FR_BLUEG, LineWidth=1.0):
-    """ Draw a square and return the SoSeparator"""
-    node = coin.SoSeparator()
-    coords = coin.SoCoordinate3()
-    length = len(vector)
-    for i in range(0, length+1):
-        coords.point.set1Value(i, vector[i])
+class draw_polygon(vector, color=FR_COLOR.FR_BLUEG, LineWidth=1.0):
+    
+    def __init__(self, Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
+        """ 
+            Draw any box, by drawing 6 faces,
+            This will be the base of all multi-points drawing.
 
-    col = coin.SoBaseColor()
-    col.rgb = color
-    style = coin.SoDrawStyle()
-    style.lineWidth = LineWidth
-    faceset = coin.SoFaceSet()
-    faceset.numVertices.set1Value(0, 4)
-    node.addChild(col)
-    node.addChild(style)
-    node.addChild(coords)
-    node.addChild(faceset)
-    return node
+        Args:
+            Points (list, optional): [description]. Defaults to [].
+            color (tuple, optional): [description]. Defaults to (0.0,0.0,0.0).
+            use_texture (bool, optional): [description]. Defaults to False.
+            LineWidth (int, optional): [description]. Defaults to 1.
+
+        Raises:
+            ValueError: [4 vertices must be applied to the class]
+
+        Returns:
+            [coin.SoSeparator]: [created drawing]
+        """
+        faces = []  # Keep the 6 faces
+        self.faces = []  # Keep the 6 faces
+        self.Points=Points
+        self.color=color
+        self.use_texture =use_texture
+        self.lineWidth=LineWidth
+    
+    def Activated(self):
+        if len(self.Points) != 4:
+            raise ValueError('Vertices must be 4')
+        so_separator = coin.SoSeparator()
+        v = coin.SoVertexProperty()
+        coords = coin.SoTransform()
+
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = self.color
+
+        FourSidedShape = coin.SoSeparator()
+        coords = coin.SoCoordinate3()
+        for i in range (0,len(self.Points)):
+            coords.point.set1Value(i, self.Points[i])
+        #TODO fixme
+        if self.use_texture == True:
+            textureCoords = coin.SoTextureCoordinate2()
+            textureCoords.point.set1Value(0, 0, 0)
+            textureCoords.point.set1Value(1, 1, 0)
+            textureCoords.point.set1Value(2, 1, 1)
+            textureCoords.point.set1Value(3, 0, 1)
+
+        _face = coin.SoFaceSet()
+        _face.numVertices.set1Value(0, 4)
+        if self.use_texture == True:
+            texture = coin.SoTexture2()
+            texture.image = self.createTextureImage()
+
+        FourSidedShape.addChild(coords)
+        if self.use_texture == True:
+            FourSidedShape.addChild(textureCoords)
+            FourSidedShape.addChild(texture)
+        FourSidedShape.addChild(_face)
+        return FourSidedShape
+
+    def genTextureImage(self, size=[]):
+        size = coin.SbVec2s(5, 5)
+        
+        width = size[0]
+        height = size[1]
+        imgData = ''
+
+        for i in range(height):
+            for j in range(width):
+                imgData = imgData + chr(134).encode('latin-1')
+        coinSoImage = coin.SoSFImage()
+        coinSoImage.setValue(size, 1, imgData)
+        return coinSoImage
+
 
 # Draw a square face in the 3D Coin
-
-
-def draw_square(vertices, color=(0.0, 0.0, 0.0), LineWidth=1.0):
-    if len(vertices) != 4:
-        raise ValueError('Vertices must be 4')
-    return draw_polygon(vertices, color, LineWidth)
+def draw_square( Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
+    if len(Points) != 4:
+        raise ValueError('Points must be 4')
+    return draw_polygon(Points, color, use_texture, LineWidth)
 
 
 # this function is just an example showing how you can affect the drawing
@@ -338,8 +392,8 @@ def createFrameShape():
     lightModel.model = coin.SoLightModel.BASE_COLOR
     root.addChild(lightModel)
 
-    cone = coin.SoCube()
-    root.addChild(cone)
+    cube = coin.SoCube()
+    root.addChild(cube)
     sg.addChild(root)
 
 # Load a SVG image to the coin3D
