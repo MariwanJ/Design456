@@ -25,7 +25,8 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os,sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
@@ -61,32 +62,33 @@ def draw_Point(p1, color):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-def draw_square_frame(vectors: List[App.Vector] = [],color=(0,0,0),lineWidth=1):
+
+def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), lineWidth=1):
     try:
-        if len(vectors) !=4:
-            ValueError ("4 Vertices must be given to the function")
-        v=[]
-        v.append( coin.SoVertexProperty())
+        if len(vectors) != 4:
+            ValueError("4 Vertices must be given to the function")
+        v = []
+        v.append(coin.SoVertexProperty())
         v[0].vertex.set1Value(0, vectors[0])
         v[0].vertex.set1Value(1, vectors[1])
 
-        v.append( coin.SoVertexProperty())
+        v.append(coin.SoVertexProperty())
         v[1].vertex.set1Value(0, vectors[1])
         v[1].vertex.set1Value(1, vectors[2])
 
-        v.append( coin.SoVertexProperty())        
+        v.append(coin.SoVertexProperty())
         v[2].vertex.set1Value(0, vectors[2])
         v[2].vertex.set1Value(1, vectors[3])
-        
-        v.append( coin.SoVertexProperty())        
+
+        v.append(coin.SoVertexProperty())
         v[3].vertex.set1Value(0, vectors[3])
         v[3].vertex.set1Value(1, vectors[0])
-        
+
         coords = coin.SoTransform()
-        Totallines=[]
-        for i in range(0,4):
+        Totallines = []
+        for i in range(0, 4):
             newSo = coin.SoSeparator()
-            line  = coin.SoLineSet()
+            line = coin.SoLineSet()
             line.vertexProperty = v[i]
             style = coin.SoDrawStyle()
             style.lineWidth = lineWidth
@@ -106,6 +108,7 @@ def draw_square_frame(vectors: List[App.Vector] = [],color=(0,0,0),lineWidth=1):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+
 def draw_line(p1, p2, color, LineWidth):
     try:
         so_separator = coin.SoSeparator()
@@ -117,7 +120,8 @@ def draw_line(p1, p2, color, LineWidth):
         line.vertexProperty = v
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
-        style.drawstyle=coin.SoDrawStyle.FILLED       #Drawing style could be FILLED,LINE, POINTS
+        # Drawing style could be FILLED,LINE, POINTS
+        style.drawstyle = coin.SoDrawStyle.FILLED
         so_separator.addChild(style)
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = color
@@ -134,64 +138,68 @@ def draw_line(p1, p2, color, LineWidth):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-#draw arrow 
-def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0,_rotation=[1.0,1.0,1.0,0.0]):
+# draw arrow
+def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.0, 1.0, 1.0, 0.0]):
     '''
     Draw a 3D arrow at the position given by the _Points and the color given by _color. 
     Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
     An angle in radians. 
     '''
     try:
-        so_separatorRoot=coin.SoSeparator()
+        so_separatorRoot = coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
         so_separatorTail = coin.SoSeparator()
-        transHead = coin.SoTranslation()   # decide at which position the object will be placed
-        transTail = coin.SoTranslation()   # decide at which position the object will be placed
-        transRoot= coin.SoTranslation()    # decide at which position the whole objects will be placed
+        # decide at which position the object will be placed
+        transHead = coin.SoTranslation()
+        # decide at which position the object will be placed
+        transTail = coin.SoTranslation()
+        # decide at which position the whole objects will be placed
+        transRoot = coin.SoTranslation()
         coordsRoot = coin.SoTransform()
-        tempR= coin.SbVec3f()
+        tempR = coin.SbVec3f()
         print(_rotation)
-        tempR.setValue(_rotation[0],_rotation[1],_rotation[2])
-        cone=coin.SoCone()
-        cone.bottomRadius= 3
-        cone.height= 3
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+        cone = coin.SoCone()
+        cone.bottomRadius = 3
+        cone.height = 3
 
-        cylinder=coin.SoCylinder()
+        cylinder = coin.SoCylinder()
         cylinder.height = 10
         cylinder.radius = 0.5
-        p1=App.Vector(0.0,0.0,0.0)#(_Points[0])
-        p2=App.Vector(p1.x,p1.y-5,p1.z)
+        p1 = App.Vector(0.0, 0.0, 0.0)  # (_Points[0])
+        p2 = App.Vector(p1.x, p1.y-5, p1.z)
         styleHead = coin.SoDrawStyle()
         styleTail = coin.SoDrawStyle()
 
-        styleHead.style = coin.SoDrawStyle.LINES     #draw only frame not filled
+        styleHead.style = coin.SoDrawStyle.LINES  # draw only frame not filled
         styleHead.lineWidth = 3
-        styleTail.style = coin.SoDrawStyle.LINES     #draw only frame not filled
+        styleTail.style = coin.SoDrawStyle.LINES  # draw only frame not filled
         styleTail.lineWidth = 2
 
-        coordsRoot.scaleFactor.setValue([_ArrSize,_ArrSize,_ArrSize])
-        coordsRoot.translation.setValue(App.Vector(0,0,0))
+        coordsRoot.scaleFactor.setValue([_ArrSize, _ArrSize, _ArrSize])
+        coordsRoot.translation.setValue(App.Vector(0, 0, 0))
 
-        coordsRoot.rotation.setValue(*tempR,_rotation[3]) #  SbRotation (const SbVec3f &axis, const float radians)
+        # SbRotation (const SbVec3f &axis, const float radians)
+        coordsRoot.rotation.setValue(*tempR, _rotation[3])
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
         transRoot.translation.setValue(_Points)
 
-        color=coin.SoBaseColor(); 
-        color.rgb=_color
+        color = coin.SoBaseColor()
+        color.rgb = _color
 
         so_separatorHead.addChild(color)
         so_separatorTail.addChild(color)
 
         so_separatorHead.addChild(transHead)
         so_separatorTail.addChild(transTail)
-        #so_separatorHead.addChild(styleHead)
+        # so_separatorHead.addChild(styleHead)
         so_separatorHead.addChild(cone)
 
-        #so_separatorTail.addChild(styleTail)
+        # so_separatorTail.addChild(styleTail)
         so_separatorTail.addChild(cylinder)
 
-        group= coin.SoSeparator()        
+        group = coin.SoSeparator()
         group.addChild(transRoot)
         group.addChild(coordsRoot)
         group.addChild(so_separatorHead)
@@ -204,44 +212,98 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0,_rotation=[1.0
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-#draw a box
-def draw_box(Points=[], color=(0.0,0.0,0.0), LineWidth=1):
-    """
-        Draw any box. This will be the base of all multi-points drawing.
-        Curves, and arc is not here.
-    """
-    if len(Points) != 6:
-        raise ValueError('Vertices must be 6')
-    so_separator = coin.SoSeparator()
-    v = coin.SoVertexProperty()
-    coords = coin.SoTransform()
-    p1=Points[0]
-    p2=Points[1]
-    p3=Points[2]
-    p4=Points[3]
-    p5=Points[4]
-    p6=Points[5]
-    square = (coin.SbBox3f(p1), coin.SbBox3f(p2), coin.SbBox3f(p3), coin.SbBox3f(p4), coin.SbBox3f(p5), coin.SbBox3f(p6))
-    square.vertexProperty = v
-    style = coin.SoDrawStyle()
-    style.lineWidth = LineWidth
-    so_separator.addChild(style)
-    so_separator.addChild(color)
-    so_separator.addChild(square)
-    so_separator.addChild(coords)
-    return draw_square
+
+def draw_box(Points=[], color=(0.0, 0.0, 0.0), use_texture=False, LineWidth=1):
+    pass
+
+
+# draw a box
+class draw_fourSidedShape:
+    
+    def __init__(self, Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
+        """ 
+            Draw any box, by drawing 6 faces,
+            This will be the base of all multi-points drawing.
+
+        Args:
+            Points (list, optional): [description]. Defaults to [].
+            color (tuple, optional): [description]. Defaults to (0.0,0.0,0.0).
+            use_texture (bool, optional): [description]. Defaults to False.
+            LineWidth (int, optional): [description]. Defaults to 1.
+
+        Raises:
+            ValueError: [4 vertices must be applied to the class]
+
+        Returns:
+            [coin.SoSeparator]: [created drawing]
+        """
+        faces = []  # Keep the 6 faces
+        if len(Points) != 4:
+            raise ValueError('Vertices must be 4')
+        so_separator = coin.SoSeparator()
+        v = coin.SoVertexProperty()
+        coords = coin.SoTransform()
+        p1 = Points[0]
+        p2 = Points[1]
+        p3 = Points[2]
+        p4 = Points[3]
+
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = color
+
+        FourSidedShape = coin.SoSeparator()
+        coords = coin.SoCoordinate3()
+        coords.point.set1Value(0, p1)
+        coords.point.set1Value(1, p2)
+        coords.point.set1Value(2, p3)
+        coords.point.set1Value(3, p4)
+
+        if use_texture == True:
+            textureCoords = coin.SoTextureCoordinate2()
+            textureCoords.point.set1Value(0, 0, 0)
+            textureCoords.point.set1Value(1, 1, 0)
+            textureCoords.point.set1Value(2, 1, 1)
+            textureCoords.point.set1Value(3, 0, 1)
+
+        _face = coin.SoFaceSet()
+        _face.numVertices.set1Value(0, 4)
+        if use_texture == True:
+            texture = coin.SoTexture2()
+            texture.image = self.createTextureImage()
+
+        FourSidedShape.addChild(coords)
+        if use_texture == True:
+            FourSidedShape.addChild(textureCoords)
+            FourSidedShape.addChild(texture)
+        FourSidedShape.addChild(_face)
+        return FourSidedShape
+
+    def genTextureImage(self, size=[]):
+        size = coin.SbVec2s(5, 5)
+        
+        width = size[0]
+        height = size[1]
+        imgData = ''
+
+        for i in range(height):
+            for j in range(width):
+                imgData = imgData + chr(134).encode('latin-1')
+        coinSoImage = coin.SoSFImage()
+        coinSoImage.setValue(size, 1, imgData)
+        return coinSoImage
+
 
 # Draw a polygon face in the 3D Coin
-def draw_polygon(vector,color=FR_COLOR.FR_BLUEG, LineWidth=1.0):
+def draw_polygon(vector, color=FR_COLOR.FR_BLUEG, LineWidth=1.0):
     """ Draw a square and return the SoSeparator"""
     node = coin.SoSeparator()
     coords = coin.SoCoordinate3()
-    length=len(vector)
-    for i in range(0,length+1):
-        coords.point.set1Value(i,vector[i])
-    
-    col=coin.SoBaseColor()
-    col.rgb= color
+    length = len(vector)
+    for i in range(0, length+1):
+        coords.point.set1Value(i, vector[i])
+
+    col = coin.SoBaseColor()
+    col.rgb = color
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth
     faceset = coin.SoFaceSet()
@@ -252,56 +314,62 @@ def draw_polygon(vector,color=FR_COLOR.FR_BLUEG, LineWidth=1.0):
     node.addChild(faceset)
     return node
 
-#Draw a square face in the 3D Coin
-def draw_square(vertices, color=(0.0,0.0,0.0), LineWidth=1.0):
+# Draw a square face in the 3D Coin
+
+
+def draw_square(vertices, color=(0.0, 0.0, 0.0), LineWidth=1.0):
     if len(vertices) != 4:
         raise ValueError('Vertices must be 4')
-    return draw_polygon(vertices,color,LineWidth)
+    return draw_polygon(vertices, color, LineWidth)
 
 
-#this function is just an example showing how you can affect the drawing
+# this function is just an example showing how you can affect the drawing
 def createFrameShape():
     sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
-    root=coin.SoSeparator()
-    drawStyle=coin.SoDrawStyle()
-    drawStyle.style=coin.SoDrawStyle.LINES
+    root = coin.SoSeparator()
+    drawStyle = coin.SoDrawStyle()
+    drawStyle.style = coin.SoDrawStyle.LINES
     root.addChild(drawStyle)
-    shapeHints=coin.SoShapeHints()
-    shapeHints.vertexOrdering=coin.SoShapeHints.COUNTERCLOCKWISE
-    shapeHints.shapeType=coin.SoShapeHints.SOLID
+    shapeHints = coin.SoShapeHints()
+    shapeHints.vertexOrdering = coin.SoShapeHints.COUNTERCLOCKWISE
+    shapeHints.shapeType = coin.SoShapeHints.SOLID
     root.addChild(shapeHints)
-    lightModel=coin.SoLightModel()
-    lightModel.model=coin.SoLightModel.BASE_COLOR
+    lightModel = coin.SoLightModel()
+    lightModel.model = coin.SoLightModel.BASE_COLOR
     root.addChild(lightModel)
 
-    cone=coin.SoCube ()
+    cone = coin.SoCube()
     root.addChild(cone)
     sg.addChild(root)
 
-#Load a SVG image to the coin3D
-def loadImageTo3D(filename,Bsize, location):
+# Load a SVG image to the coin3D
+
+
+def loadImageTo3D(filename, Bsize, location):
     svg = coin.SoTexture2()
     svg.filename = filename
     box = coin.SoVRMLBox()
-    box.size = Bsize    #(2,2,0)
+    box.size = Bsize  # (2,2,0)
     imagePos = coin.SoTransform()
-    imagePos.translation.setValue(location) #([10,0,0])
-    imagePos.rotation = coin.SbRotation(0,0,0,0)
+    imagePos.translation.setValue(location)  # ([10,0,0])
+    imagePos.rotation = coin.SbRotation(0, 0, 0, 0)
     image = coin.SoSeparator()
     image.addChild(imagePos)
     image.addChild(svg)
     image.addChild(box)
     return image        # Add this to the senegraph to show the picture.
-#todo fixme
+# todo fixme
+
+
 def drawCurve(knots, data):
-    array = {[0. , 0. , 0.01, 0.07, 0.18, 0.36, 0.5 , 0.71, 1. ],
-             [0. , 0.02, 0.05, 0.09, 0.1 , 0.08, 0.06, 0.04, 0. ],
-             [0. , 0. , 0. , 0. , 0. , 0. , 0. , 0. , 0. ],
-             [1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. , 1. ]
+    array = {[0., 0., 0.01, 0.07, 0.18, 0.36, 0.5, 0.71, 1.],
+             [0., 0.02, 0.05, 0.09, 0.1, 0.08, 0.06, 0.04, 0.],
+             [0., 0., 0., 0., 0., 0., 0., 0., 0.],
+             [1., 1., 1., 1., 1., 1., 1., 1., 1.]
              }
 
     """The knot vector    """
-    knots = ([0] * 5 + [1] * 2 + [2] *2 + [3] * 5)
+    knots = ([0] * 5 + [1] * 2 + [2] * 2 + [3] * 5)
 
     curveSep = coin.SoSeparator()
     complexity = coin.SoComplexity()
