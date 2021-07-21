@@ -42,7 +42,7 @@ from ThreeDWidgets import fr_label_draw
 #Example how to use the widget: 
 #Notice that you should activate Design456 WB before you can use this widget.
 import fr_coinwindow as wn
-import fr_square_widget as square
+import fr_polygon_widget as polygon
 import FreeCAD as App
 g=[]
 p1=App.Vector(2,2,5)
@@ -60,19 +60,19 @@ g.append(p3)
 g.append(p4)
 col=(0,0,0)
 
-square_ =square.Fr_SquareFrame_Widget(g,'square',2)
-wny.addWidget(square_)
+_polygon =polygon.Fr_Polygon_Widget(g,'polygon',2).Activated()
+wny.addWidget(_polygon)
 wny.show()
 
 """
 
 def callback_default(obj,userData=None):
-    print("fr_square widget default callback")
+    print("Fr_Polygon widget default callback")
 
 def callback_defaultlbl(obj,userData=None):
-    print("fr_square widget default LBL callback")
+    print("Fr_Polygon widget default LBL callback")
 
-class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
+class Fr_Polygon_Widget(fr_widget.Fr_Widget):
     """
     This class is for drawing a line in  coin3D
     """
@@ -85,8 +85,9 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         self.w_widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
         self.w_callback_=callback_default
         self.w_lbl_calback_=callback_defaultlbl
-             
-        
+        self.shaded =False
+        self.shadedImage=None
+
     # def addVertices(self, vertices):
     #     if(len(vertices)!=4):
     #             # must be four vertices
@@ -144,10 +145,10 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                square = fr_draw.draw_square_frame(self.w_vector, usedColor, self.w_lineWidth)
+                polygon = fr_draw.draw_polygon(self.w_vector, usedColor, self.shaded ,self.w_lineWidth).Activated()
                 _lbl = self.draw_label()
 
-                self.saveSoNodesToWidget(square)  # Add SoSeparator. Will be added to switch automatically                            
+                self.saveSoNodesToWidget(polygon)  # Add SoSeparator. Will be added to switch automatically                            
                 self.saveSoNodeslblToWidget(_lbl)
 
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
@@ -158,7 +159,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
                 return  # We draw nothing .. This is here just for clarifying the code
 
         except Exception as err:
-            App.Console.PrintError("'Fr_SquareFrame_Widget' Failed. "
+            App.Console.PrintError("'Fr_Polygon_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
