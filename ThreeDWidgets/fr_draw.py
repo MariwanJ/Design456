@@ -321,8 +321,8 @@ class draw_polygon:
         self.lineWidth=LineWidth
     
     def Activated(self):
-        if len(self.Points) != 4:
-            raise ValueError('Vertices must be 4')
+        if len(self.Points) <3:
+            raise ValueError('Vertices must be >3')
         so_separator = coin.SoSeparator()
         v = coin.SoVertexProperty()
         coords = coin.SoTransform()
