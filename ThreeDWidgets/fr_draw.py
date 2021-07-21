@@ -293,12 +293,12 @@ class draw_fourSidedShape:
         return coinSoImage
 
 
-# Draw a polygon face in the 3D Coin
-class draw_polygon:
+# Draw a NurbsFace face in the 3D Coin
+class draw_NurbsFace:
     
-    def __init__(self, Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
+    def __init__(self, Points=[], color=FR_COLOR.FR_RED, use_texture=False, LineWidth=1):
         """ 
-            Draw any box, by drawing 6 faces,
+            Draw any four sided shape,
             This will be the base of all multi-points drawing.
 
         Args:
@@ -313,47 +313,44 @@ class draw_polygon:
         Returns:
             [coin.SoSeparator]: [created drawing]
         """
-        faces = []  # Keep the 6 faces
         self.faces = []  # Keep the 6 faces
         self.Points=Points
         self.color=color
         self.use_texture =use_texture
         self.lineWidth=LineWidth
-    
+        
     def Activated(self):
-        if len(self.Points) <3:
-            raise ValueError('Vertices must be >3')
-        so_separator = coin.SoSeparator()
-        v = coin.SoVertexProperty()
-        coords = coin.SoTransform()
+        if len(self.Points) < 4:
+            raise ValueError('Vertices must be 4')
+        material = coin.SoMaterial()
+        material.transparency.setValue(0.0)
+        material.diffuseColor.setValue(coin.SbColor(self.color))
+        material.specularColor.setValue(coin.SbColor(1,1,1))
+        material.shininess.setValue(1.0)
+        
+        sizeOfPointsArray=len(self.Points)
+        sqrtSize=int(math.sqrt(sizeOfPointsArray))
+        controlPts = coin.SoCoordinate3()
+        controlPts.point.setValues(0, sizeOfPointsArray, self.Points)
 
-        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = self.color
+        Uknots = [0.0]*sqrtSize + [1.0]*sqrtSize
+        Vknots = [0.0]*sqrtSize + [1.0]*sqrtSize
 
-        FourSidedShape = coin.SoSeparator()
-        coords = coin.SoCoordinate3()
-        for i in range (0,len(self.Points)):
-            coords.point.set1Value(i, self.Points[i])
-        #TODO fixme
-        if self.use_texture == True:
-            textureCoords = coin.SoTextureCoordinate2()
-            textureCoords.point.set1Value(0, 0, 0)
-            textureCoords.point.set1Value(1, 1, 0)
-            textureCoords.point.set1Value(2, 1, 1)
-            textureCoords.point.set1Value(3, 0, 1)
+        surface    = coin.SoNurbsSurface()
+        surface.numUControlPoints = sqrtSize
+        surface.numVControlPoints = sqrtSize
+        surface.uKnotVector.setValues(0, len(Uknots), Uknots)
+        surface.vKnotVector.setValues(0, len(Vknots), Vknots)
 
-        _face = coin.SoFaceSet()
-        _face.numVertices.set1Value(0, 4)
-        if self.use_texture == True:
-            texture = coin.SoTexture2()
-            texture.image = self.createTextureImage()
+        # prop = coin.SoNurbsProperty() #word censored! Not available in coin3d
 
-        FourSidedShape.addChild(coords)
-        if self.use_texture == True:
-            FourSidedShape.addChild(textureCoords)
-            FourSidedShape.addChild(texture)
-        FourSidedShape.addChild(_face)
-        return FourSidedShape
+        surfaceNode = coin.SoSeparator()
+
+        surfaceNode.addChild(controlPts)
+        surfaceNode.addChild(material)
+        surfaceNode.addChild(surface)
+
+        return surfaceNode
 
     def genTextureImage(self, size=[]):
         size = coin.SbVec2s(5, 5)
@@ -368,13 +365,6 @@ class draw_polygon:
         coinSoImage = coin.SoSFImage()
         coinSoImage.setValue(size, 1, imgData)
         return coinSoImage
-
-
-# Draw a square face in the 3D Coin
-def draw_square( Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
-    if len(Points) != 4:
-        raise ValueError('Points must be 4')
-    return draw_polygon(Points, color, use_texture, LineWidth)
 
 
 # this function is just an example showing how you can affect the drawing
