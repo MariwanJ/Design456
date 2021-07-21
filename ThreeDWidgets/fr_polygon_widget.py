@@ -159,7 +159,7 @@ class Fr_Polygon_Widget(fr_widget.Fr_Widget):
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
                 self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
                 print(self.w_wdgsoSwitch)
-            
+
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 
