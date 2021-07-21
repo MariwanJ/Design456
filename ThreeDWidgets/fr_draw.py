@@ -294,7 +294,7 @@ class draw_fourSidedShape:
 
 
 # Draw a polygon face in the 3D Coin
-class draw_polygon(vector, color=FR_COLOR.FR_BLUEG, LineWidth=1.0):
+class draw_polygon:
     
     def __init__(self, Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
         """ 
