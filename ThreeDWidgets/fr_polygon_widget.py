@@ -48,7 +48,10 @@ g=[]
 p1=App.Vector(2,2,5)
 p2=App.Vector(22,2,5)
 p3=App.Vector(22,22,5)
-p4=App.Vector(2,22,5)
+p3=App.Vector(32,32,5)
+p4=App.Vector(32,32,35)
+p5=App.Vector(2,22,5)
+
 g.append(p1)
 g.append(p2)
 wny=wn.Fr_CoinWindow("MyWindow")
@@ -58,9 +61,11 @@ g.append(p1)
 g.append(p2)
 g.append(p3)
 g.append(p4)
+g.append(p5)
+
 col=(0,0,0)
 
-_polygon =polygon.Fr_Polygon_Widget(g,'polygon',2).Activated()
+_polygon =polygon.Fr_Polygon_Widget(g,'polygon',2)
 wny.addWidget(_polygon)
 wny.show()
 
@@ -136,8 +141,8 @@ class Fr_Polygon_Widget(fr_widget.Fr_Widget):
         """
         try:
             
-            if len(self.w_vector) != 4:
-                raise ValueError('Must be 4 Vectors')
+            if len(self.w_vector) < 3:
+                raise ValueError('Must be more than 3 Vectors')
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
             elif self.is_active() and (self.has_focus() != 1):
