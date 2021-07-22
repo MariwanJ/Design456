@@ -35,7 +35,7 @@ from typing import List
 from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
-
+import dataclasses
 
 def draw_Point(p1, color):
     try:
@@ -423,3 +423,70 @@ def drawCurve(knots, data):
     curve.numControlPoints = array.shape[1]
     curve.knotVector.setValues(0, len(knots), knots)
     curveSep += [complexity, controlPts, curve]
+
+
+
+@dataclasses
+class userDataObject:
+    def __init__(self):
+        self.Vectors: List[App.Vector] = []         # the arrow widget object
+        self.Scale:int    = 1                        # events - save handle events here 
+        self.Radius:float =0.0                      # Class uses the fr_arrow_widget
+        self.Height:float =0.0
+        self.Color: List[float,float,float]=FR_COLOR.FR_GOLD
+        self.LineWidth:float=1.0
+        self.Transparency:float=50.0
+        self.Rotation:List[(float,float,float),float]=((0.0,0.0,0.0),0.0)
+
+class draw_cylinder: 
+    """
+    Create a Cylinder shape with wide configuration possibilities
+    """
+    def __init__ ( self,CylinderData:userDataObject=None):
+            self.CylinderSO       =None
+            self.TransCylinder    =None
+            self.CylinderTransform=None
+            self.TempR            =None
+            self.Cylinder         =None
+            self.CylinderStyle    =None
+            self.Material         =None
+            self.Height           =CylinderData.Height
+            self.Radius           =CylinderData.Radius
+            self.Linewidth        =CylinderData.Linewidth
+            self.Transparency     =CylinderData.Transparency
+            self.Scale            =CylinderData.Scale
+            self.Rotation         =CylinderData.Rotation
+            
+            
+    def  Activated(self):
+
+            cylinderSO = coin.SoSeparator()
+            transCylinder = coin.SoTranslation()
+            cylinderTransform = coin.SoTransform()
+            tempR = coin.SbVec3f()
+            tempR.setValue(rotation[0], rotation[1], rotation[2])
+
+            cylinder = coin.SoCylinder()
+            p1 = App.Vector(0.0, 0.0, 0.0)  # (_Points[0])
+            cylinderStyle = coin.SoDrawStyle()
+
+            cylinderStyle.style = coin.SoDrawStyle.LINES  # draw only frame not filled
+            cylinderStyle.lineWidth = 3
+
+            cylinderTransform.scaleFactor.setValue([Myscale, Myscale, Myscale])
+            cylinderTransform.translation.setValue(App.Vector(0, 0, 0))
+            # SbRotation (const SbVec3f &axis, const float radians)
+            cylinderTransform.rotation.setValue(*tempR, rotation[3])
+            transCylinder.translation.setValue(p1)
+
+            material = coin.SoMaterial()
+            material.transparency.setValue(80)
+            material.diffuseColor.setValue(coin.SbColor(_color))
+            #material.specularColor.setValue(coin.SbColor(1,1,1))
+            material.shininess.setValue(1.0)
+            cylinderSO.addChild(material)
+            cylinderSO.addChild(cylinderTransform)
+            cylinderSO.addChild(transCylinder)
+            cylinderSO.addChild(cylinder)
+            return cylinderSO
+            
