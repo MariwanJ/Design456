@@ -35,7 +35,21 @@ from typing import List
 from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
-import dataclasses
+from dataclasses import dataclass
+
+
+@dataclass
+class userDataObject:
+    def __init__(self):
+        self.Vectors: List[App.Vector] = []         # the arrow widget object
+        self.Scale: int = 1.0                        # events - save handle events here
+        self.Radius: float = 0.0                      # Class uses the fr_arrow_widget
+        self.Height: float = 0.0
+        self.Color: List[float, float, float] = []
+        self.LineWidth: float = 1.0
+        self.Transparency: float = 50.0
+        self.Rotation: List[(float, float, float), float] = []
+
 
 def draw_Point(p1, color):
     try:
@@ -238,11 +252,11 @@ class draw_fourSidedShape:
             [coin.SoSeparator]: [created drawing]
         """
         self.faces = []  # Keep the 6 faces
-        self.Points=Points
-        self.color=color
-        self.use_texture =use_texture
-        self.lineWidth=LineWidth
-        
+        self.Points = Points
+        self.color = color
+        self.use_texture = use_texture
+        self.lineWidth = LineWidth
+
     def Activated(self):
         if len(self.Points) != 4:
             raise ValueError('Vertices must be 4')
@@ -255,9 +269,9 @@ class draw_fourSidedShape:
 
         FourSidedShape = coin.SoSeparator()
         coords = coin.SoCoordinate3()
-        for i in range (0,len(self.Points)):
+        for i in range(0, len(self.Points)):
             coords.point.set1Value(i, self.Points[i])
-        #TODO fixme
+        # TODO fixme
         if self.use_texture == True:
             textureCoords = coin.SoTextureCoordinate2()
             textureCoords.point.set1Value(0, 0, 0)
@@ -280,7 +294,7 @@ class draw_fourSidedShape:
 
     def genTextureImage(self, size=[]):
         size = coin.SbVec2s(5, 5)
-        
+
         width = size[0]
         height = size[1]
         imgData = ''
@@ -295,7 +309,7 @@ class draw_fourSidedShape:
 
 # Draw a NurbsFace face in the 3D Coin
 class draw_NurbsFace:
-    
+
     def __init__(self, Points=[], color=FR_COLOR.FR_RED, use_texture=False, LineWidth=1):
         """ 
             Draw any four sided shape,
@@ -314,29 +328,29 @@ class draw_NurbsFace:
             [coin.SoSeparator]: [created drawing]
         """
         self.faces = []  # Keep the 6 faces
-        self.Points=Points
-        self.color=color
-        self.use_texture =use_texture
-        self.lineWidth=LineWidth
-        
+        self.Points = Points
+        self.color = color
+        self.use_texture = use_texture
+        self.lineWidth = LineWidth
+
     def Activated(self):
         if len(self.Points) < 4:
             raise ValueError('Vertices must be 4')
         material = coin.SoMaterial()
         material.transparency.setValue(0.0)
         material.diffuseColor.setValue(coin.SbColor(self.color))
-        material.specularColor.setValue(coin.SbColor(1,1,1))
+        material.specularColor.setValue(coin.SbColor(1, 1, 1))
         material.shininess.setValue(1.0)
-        
-        sizeOfPointsArray=len(self.Points)
-        sqrtSize=int(math.sqrt(sizeOfPointsArray))
+
+        sizeOfPointsArray = len(self.Points)
+        sqrtSize = int(math.sqrt(sizeOfPointsArray))
         controlPts = coin.SoCoordinate3()
         controlPts.point.setValues(0, sizeOfPointsArray, self.Points)
 
         Uknots = [0.0]*sqrtSize + [1.0]*sqrtSize
         Vknots = [0.0]*sqrtSize + [1.0]*sqrtSize
 
-        surface    = coin.SoNurbsSurface()
+        surface = coin.SoNurbsSurface()
         surface.numUControlPoints = sqrtSize
         surface.numVControlPoints = sqrtSize
         surface.uKnotVector.setValues(0, len(Uknots), Uknots)
@@ -354,7 +368,7 @@ class draw_NurbsFace:
 
     def genTextureImage(self, size=[]):
         size = coin.SbVec2s(5, 5)
-        
+
         width = size[0]
         height = size[1]
         imgData = ''
@@ -425,68 +439,151 @@ def drawCurve(knots, data):
     curveSep += [complexity, controlPts, curve]
 
 
-
-@dataclasses
-class userDataObject:
-    def __init__(self):
-        self.Vectors: List[App.Vector] = []         # the arrow widget object
-        self.Scale:int    = 1                        # events - save handle events here 
-        self.Radius:float =0.0                      # Class uses the fr_arrow_widget
-        self.Height:float =0.0
-        self.Color: List[float,float,float]=FR_COLOR.FR_GOLD
-        self.LineWidth:float=1.0
-        self.Transparency:float=50.0
-        self.Rotation:List[(float,float,float),float]=((0.0,0.0,0.0),0.0)
-
-class draw_cylinder: 
+class draw_cylinder:
     """
     Create a Cylinder shape with wide configuration possibilities
     """
-    def __init__ ( self,CylinderData:userDataObject=None):
-            self.CylinderSO       =None
-            self.TransCylinder    =None
-            self.CylinderTransform=None
-            self.TempR            =None
-            self.Cylinder         =None
-            self.CylinderStyle    =None
-            self.Material         =None
-            self.Height           =CylinderData.Height
-            self.Radius           =CylinderData.Radius
-            self.Linewidth        =CylinderData.Linewidth
-            self.Transparency     =CylinderData.Transparency
-            self.Scale            =CylinderData.Scale
-            self.Rotation         =CylinderData.Rotation
-            
-            
-    def  Activated(self):
 
-            cylinderSO = coin.SoSeparator()
-            transCylinder = coin.SoTranslation()
-            cylinderTransform = coin.SoTransform()
-            tempR = coin.SbVec3f()
-            tempR.setValue(rotation[0], rotation[1], rotation[2])
+    def __init__(self, CylinderData: userDataObject = None):
+        self.CylinderSO = None
+        self.TransCylinder = None
+        self.CylinderTransform = None
+        self.TempR = None
+        self.Cylinder = None
+        self.CylinderStyle = None
+        self.Material = None
+        self.Height = CylinderData.Height
+        self.Radius = CylinderData.Radius
+        self.Linewidth = CylinderData.Linewidth
+        self.Transparency = CylinderData.Transparency
+        self.Scale = CylinderData.Scale
+        self.Rotation = CylinderData.Rotation
 
-            cylinder = coin.SoCylinder()
-            p1 = App.Vector(0.0, 0.0, 0.0)  # (_Points[0])
-            cylinderStyle = coin.SoDrawStyle()
+    def Activated(self):
 
-            cylinderStyle.style = coin.SoDrawStyle.LINES  # draw only frame not filled
-            cylinderStyle.lineWidth = 3
+        cylinderSO = coin.SoSeparator()
+        transCylinder = coin.SoTranslation()
+        cylinderTransform = coin.SoTransform()
+        tempR = coin.SbVec3f()
+        tempR.setValue(rotation[0], rotation[1], rotation[2])
 
-            cylinderTransform.scaleFactor.setValue([Myscale, Myscale, Myscale])
-            cylinderTransform.translation.setValue(App.Vector(0, 0, 0))
-            # SbRotation (const SbVec3f &axis, const float radians)
-            cylinderTransform.rotation.setValue(*tempR, rotation[3])
-            transCylinder.translation.setValue(p1)
+        cylinder = coin.SoCylinder()
+        p1 = App.Vector(0.0, 0.0, 0.0)  # (_Points[0])
+        cylinderStyle = coin.SoDrawStyle()
 
-            material = coin.SoMaterial()
-            material.transparency.setValue(80)
-            material.diffuseColor.setValue(coin.SbColor(_color))
-            #material.specularColor.setValue(coin.SbColor(1,1,1))
-            material.shininess.setValue(1.0)
-            cylinderSO.addChild(material)
-            cylinderSO.addChild(cylinderTransform)
-            cylinderSO.addChild(transCylinder)
-            cylinderSO.addChild(cylinder)
-            return cylinderSO
-            
+        cylinderStyle.style = coin.SoDrawStyle.LINES  # draw only frame not filled
+        cylinderStyle.lineWidth = 3
+
+        cylinderTransform.scaleFactor.setValue([Myscale, Myscale, Myscale])
+        cylinderTransform.translation.setValue(App.Vector(0, 0, 0))
+        # SbRotation (const SbVec3f &axis, const float radians)
+        cylinderTransform.rotation.setValue(*tempR, rotation[3])
+        transCylinder.translation.setValue(p1)
+
+        material = coin.SoMaterial()
+        material.transparency.setValue(80)
+        material.diffuseColor.setValue(coin.SbColor(_color))
+        # material.specularColor.setValue(coin.SbColor(1,1,1))
+        material.shininess.setValue(1.0)
+        cylinderSO.addChild(material)
+        cylinderSO.addChild(cylinderTransform)
+        cylinderSO.addChild(transCylinder)
+        cylinderSO.addChild(cylinder)
+        return cylinderSO
+
+
+def draw_faceIndexed():
+    IV_STRICT = 1
+
+    # Routine to create a scene graph representing a dodecahedron
+    So_END_FACE_INDEX=-1
+    vertexPositions = (
+        (0.0000,  1.2142,  0.7453),  # top
+
+        (0.0000,  1.2142, -0.7453),  # points surrounding top
+        (-1.2142,  0.7453,  0.0000),
+        (-0.7453,  0.0000,  1.2142),
+        (0.7453,  0.0000,  1.2142),
+        (1.2142,  0.7453,  0.0000),
+
+        (0.0000, -1.2142,  0.7453),  # points surrounding bottom
+        (-1.2142, -0.7453,  0.0000),
+        (-0.7453,  0.0000, -1.2142),
+        (0.7453,  0.0000, -1.2142),
+        (1.2142, -0.7453,  0.0000),
+
+        (0.0000, -1.2142, -0.7453),  # bottom
+        )
+
+    #
+    # Connectivity, information 12 faces with 5 vertices each ),
+    # (plus the end-of-face indicator for each face):
+    #
+
+    Indicies = (
+        1,  2,  3,  4, 5, So_END_FACE_INDEX,  # top face
+
+        0,  1,  8,  7, 3, So_END_FACE_INDEX,  # 5 faces about top
+        0,  2,  7,  6, 4, So_END_FACE_INDEX,
+        0,  3,  6, 10, 5, So_END_FACE_INDEX,
+        0,  4, 10,  9, 1, So_END_FACE_INDEX,
+        0,  5,  9,  8, 2, So_END_FACE_INDEX,
+
+        #9,  5, 4, 6, 11, So_END_FACE_INDEX,  # 5 faces about bottom
+        #10,  4, 3, 7, 11, So_END_FACE_INDEX,
+        #6,  3, 2, 8, 11, So_END_FACE_INDEX,
+        #7,  2, 1, 9, 11, So_END_FACE_INDEX,
+        #8,  1, 5, 10, 11, So_END_FACE_INDEX,
+
+        6,  7, 8, 9, 10, So_END_FACE_INDEX,  # bottom face
+        )
+
+    # Colors for the 12 faces
+    colors = (
+        (1.0, .0, 0), (.0,  .0, 1.0), (0, .7,  .7), (.0, 1.0,  0),
+        (.7, .7, 0), (.7,  .0,  .7), (0, .0, 1.0), (.7,  .0, .7),
+        (.7, .7, 0), (.0, 1.0,  .0), (0, .7,  .7), (1.0,  .0,  0)
+        )
+
+    result = coin.SoSeparator()
+
+    if IV_STRICT:
+        # This is the preferred code for Inventor 2.1
+        # Using the new coin.SoVertexProperty node is more efficient
+        myVertexProperty = coin.SoVertexProperty()
+        # Define colors for the faces
+        for i in range(12):
+            myVertexProperty.orderedRGBA.set1Value(
+                i, coin.SbColor(colors[i]).getPackedValue())
+            myVertexProperty.materialBinding = coin.SoMaterialBinding.PER_FACE
+        # Define coordinates for vertices
+        myVertexProperty.vertex.setValues(0, 12, vertexPositions)
+        # Define the IndexedFaceSet, with Indicies into
+        # the vertices:
+        myFaceSet = coin.SoIndexedFaceSet()
+        myFaceSet.coordIndex.setValues(0, 72, Indicies)
+        myFaceSet.vertexProperty = myVertexProperty
+        result.addChild(myFaceSet)
+
+    else:
+        # Define colors for the faces
+        myMaterials = coin.SoMaterial()
+        myMaterials.diffuseColor.setValues(0, 12, colors)
+        result.addChild(myMaterials)
+        myMaterialBinding = coin.SoMaterialBinding()
+        myMaterialBinding.value = coin.SoMaterialBinding.PER_FACE
+        result.addChild(myMaterialBinding)
+        # Define coordinates for vertices
+        myCoords = coin.SoCoordinate3()
+        myCoords.point.setValues(0, 12, vertexPositions)
+        result.addChild(myCoords)
+        # Define the IndexedFaceSet, with Indicies into
+        # the vertices:
+        myFaceSet = coin.SoIndexedFaceSet()
+        myFaceSet.coordIndex.setValues(0, 72, Indicies)
+        result.addChild(myFaceSet)
+    view = Gui.ActiveDocument.ActiveView
+    sg = view.getSceneGraph()
+    sg.addChild(result)
+
+
