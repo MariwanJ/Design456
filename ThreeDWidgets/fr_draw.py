@@ -419,12 +419,11 @@ def loadImageTo3D(filename, Bsize, location):
 # todo fixme
 
 
-def drawCurve(knots, data):
-    array = {[0., 0., 0.01, 0.07, 0.18, 0.36, 0.5, 0.71, 1.],
-             [0., 0.02, 0.05, 0.09, 0.1, 0.08, 0.06, 0.04, 0.],
-             [0., 0., 0., 0., 0., 0., 0., 0., 0.],
-             [1., 1., 1., 1., 1., 1., 1., 1., 1.]
-             }
+def draw_Curve(knots=None, data=None):
+    array = {0., 0., 0.01, 0.07, 0.18, 0.36, 0.5, 0.71, 1.,
+             0., 0.02, 0.05, 0.09, 0.1, 0.08, 0.06, 0.04, 0.,
+             0., 0., 0., 0., 0., 0., 0., 0., 0.,
+             1., 1., 1., 1., 1., 1., 1., 1., 1.}
 
     """The knot vector    """
     knots = ([0] * 5 + [1] * 2 + [2] * 2 + [3] * 5)
@@ -433,7 +432,7 @@ def drawCurve(knots, data):
     complexity = coin.SoComplexity()
     controlPts = coin.SoCoordinate4()
     curve = coin.SoNurbsCurve()
-    controlPts.point.setValues(0, array.shape[1], array.T.tolist())
+    controlPts.point.setValues(0, array.shape[1], array)
     curve.numControlPoints = array.shape[1]
     curve.knotVector.setValues(0, len(knots), knots)
     curveSep += [complexity, controlPts, curve]
@@ -529,11 +528,11 @@ def draw_faceIndexed():
         0,  4, 10,  9, 1, So_END_FACE_INDEX,
         0,  5,  9,  8, 2, So_END_FACE_INDEX,
 
-        #9,  5, 4, 6, 11, So_END_FACE_INDEX,  # 5 faces about bottom
-        #10,  4, 3, 7, 11, So_END_FACE_INDEX,
-        #6,  3, 2, 8, 11, So_END_FACE_INDEX,
-        #7,  2, 1, 9, 11, So_END_FACE_INDEX,
-        #8,  1, 5, 10, 11, So_END_FACE_INDEX,
+        9,  5, 4, 6, 11, So_END_FACE_INDEX,  # 5 faces about bottom
+        10,  4, 3, 7, 11, So_END_FACE_INDEX,
+        6,  3, 2, 8, 11, So_END_FACE_INDEX,
+        7,  2, 1, 9, 11, So_END_FACE_INDEX,
+        8,  1, 5, 10, 11, So_END_FACE_INDEX,
 
         6,  7, 8, 9, 10, So_END_FACE_INDEX,  # bottom face
         )
@@ -541,8 +540,8 @@ def draw_faceIndexed():
     # Colors for the 12 faces
     colors = (
         (1.0, .0, 0), (.0,  .0, 1.0), (0, .7,  .7), (.0, 1.0,  0),
-        (.7, .7, 0), (.7,  .0,  .7), (0, .0, 1.0), (.7,  .0, .7),
-        (.7, .7, 0), (.0, 1.0,  .0), (0, .7,  .7), (1.0,  .0,  0)
+        (1.0, .0, 0), (.0,  .0, 1.0), (0, .7,  .7), (.0, 1.0,  0),
+        (1.0, .0, 0), (.0,  .0, 1.0), (0, .7,  .7), (.0, 1.0,  0),
         )
 
     result = coin.SoSeparator()
@@ -552,7 +551,7 @@ def draw_faceIndexed():
         # Using the new coin.SoVertexProperty node is more efficient
         myVertexProperty = coin.SoVertexProperty()
         # Define colors for the faces
-        for i in range(12):
+        for i in range(4):
             myVertexProperty.orderedRGBA.set1Value(
                 i, coin.SbColor(colors[i]).getPackedValue())
             myVertexProperty.materialBinding = coin.SoMaterialBinding.PER_FACE
