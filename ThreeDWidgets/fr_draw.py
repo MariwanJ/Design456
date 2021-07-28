@@ -491,6 +491,36 @@ class draw_cylinder:
         return cylinderSO
 
 
+
+def  draw_FaceSet( vertices , _color, numvertices):
+
+    rootSo = coin.SoSeparator()
+    # This is the preferred code for Inventor 2.1
+    
+    # Using the new SoVertexProperty node is more efficient
+    myVertexProperty = coin.SoVertexProperty()
+    
+    # Define the normals used:
+    myVertexProperty.normal.setValues(0, 8, norms)
+    myVertexProperty.normalBinding = coin.SoNormalBinding.PER_FACE
+    
+    # Define material for rootSo
+    myVertexProperty.orderedRGBA = coin.SbColor(color).getPackedValue()
+    
+    # Define coordinates for vertices
+    myVertexProperty.vertex.setValues(0, len(vertices), vertices)
+    
+    # Define the FaceSet
+    myFaceSet = coin.SoFaceSet()
+    myFaceSet.numVertices.setValues(0, len(numvertices), numvertices)
+    
+    myFaceSet.vertexProperty = myVertexProperty
+    rootSo.addChild(myFaceSet)
+    return rootSo
+
+
+
+
 def draw_faceIndexed():
     IV_STRICT = 1
 
@@ -551,7 +581,7 @@ def draw_faceIndexed():
         # Using the new coin.SoVertexProperty node is more efficient
         myVertexProperty = coin.SoVertexProperty()
         # Define colors for the faces
-        for i in range(4):
+        for i in range(12):
             myVertexProperty.orderedRGBA.set1Value(
                 i, coin.SbColor(colors[i]).getPackedValue())
             myVertexProperty.materialBinding = coin.SoMaterialBinding.PER_FACE
