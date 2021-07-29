@@ -490,33 +490,76 @@ class draw_cylinder:
         cylinderSO.addChild(cylinder)
         return cylinderSO
 
+        """
+      
+##  Eight polygons. The first four are triangles 
+##  The second four are quadrilaterals for the sides.
+vertices = (
+   ( 0, 30, 0), (-2,27, 2), ( 2,27, 2),            #front tri
+   ( 0, 30, 0), (-2,27,-2), (-2,27, 2),            #left  tri
+   ( 0, 30, 0), ( 2,27,-2), (-2,27,-2),            #rear  tri
+   ( 0, 30, 0), ( 2,27, 2), ( 2,27,-2),            #right tri
+   (-2, 27, 2), (-4,0, 4), ( 4,0, 4), ( 2,27, 2),  #front quad
+   (-2, 27,-2), (-4,0,-4), (-4,0, 4), (-2,27, 2),  #left  quad
+   ( 2, 27,-2), ( 4,0,-4), (-4,0,-4), (-2,27,-2),  #rear  quad
+   ( 2, 27, 2), ( 4,0, 4), ( 4,0,-4), ( 2,27,-2)   #right quad
+)
 
+# Number of vertices in each polygon:
+numvertices = (3, 3, 3, 3, 4, 4, 4, 4)
 
-def  draw_FaceSet( vertices , _color, numvertices):
+# Normals for each polygon:
+norms = ( 
+   (0, .555,  .832), (-.832, .555, 0), #front, left tris
+   (0, .555, -.832), ( .832, .555, 0), #rear,  right tris
+   
+   (0, .0739,  .9973), (-.9972, .0739, 0),#front, left quads
+   (0, .0739, -.9973), ( .9972, .0739, 0),#rear, right quads)
 
-    rootSo = coin.SoSeparator()
-    # This is the preferred code for Inventor 2.1
-    
-    # Using the new SoVertexProperty node is more efficient
-    myVertexProperty = coin.SoVertexProperty()
-    
-    # Define the normals used:
-    myVertexProperty.normal.setValues(0, 8, norms)
-    myVertexProperty.normalBinding = coin.SoNormalBinding.PER_FACE
-    
-    # Define material for rootSo
-    myVertexProperty.orderedRGBA = coin.SbColor(color).getPackedValue()
-    
-    # Define coordinates for vertices
-    myVertexProperty.vertex.setValues(0, len(vertices), vertices)
-    
-    # Define the FaceSet
-    myFaceSet = coin.SoFaceSet()
-    myFaceSet.numVertices.setValues(0, len(numvertices), numvertices)
-    
-    myFaceSet.vertexProperty = myVertexProperty
-    rootSo.addChild(myFaceSet)
-    return rootSo
+"""
+
+def  draw_FaceSet(vertices =None, _color=FR_COLOR.FR_GOLD,NormalForPolygon=None, NumberOfVerticiesPerPolygon=None):
+    """[summary]
+
+    Args:
+        vertices ([type]):            FOUR POLYGONS, IF THREE IT IS A TRIANGLE 
+        _color ([type]):              color 
+        NormalForPolygon :            Normals of each polygon 
+        NumberOfVerticiesPerPolygon : Number of vertices per each polygon 
+
+    Returns:
+        [type]: [description]
+    """
+    try:
+        rootSo = coin.SoSeparator()
+        # This is the preferred code for Inventor 2.1
+
+        # Using the new SoVertexProperty node is more efficient
+        myVertexProperty = coin.SoVertexProperty()
+
+        # Define the normals used:
+        myVertexProperty.normal.setValues(0, len(NumberOfVerticiesPerPolygon), NumberOfVerticiesPerPolygon)
+        myVertexProperty.normalBinding = coin.SoNormalBinding.PER_FACE
+
+        # Define material for rootSo
+        myVertexProperty.orderedRGBA = coin.SbColor(_color).getPackedValue()
+
+        # Define coordinates for vertices
+        myVertexProperty.vertex.setValues(0, len(vertices), vertices)
+
+        # Define the FaceSet
+        myFaceSet = coin.SoFaceSet()
+        myFaceSet.numVertices.setValues(0, len(NumberOfVerticiesPerPolygon), NumberOfVerticiesPerPolygon)
+
+        myFaceSet.vertexProperty = myVertexProperty
+        rootSo.addChild(myFaceSet)
+        return rootSo
+    except Exception as err:
+        App.Console.PrintError("'Draw Face' Failed. "
+                                   "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 
 
