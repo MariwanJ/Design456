@@ -420,23 +420,17 @@ def loadImageTo3D(filename, Bsize, location):
 
 
 def draw_Curve(knots=None, data=None):
-    array = {0., 0., 0.01, 0.07, 0.18, 0.36, 0.5, 0.71, 1.,
-             0., 0.02, 0.05, 0.09, 0.1, 0.08, 0.06, 0.04, 0.,
-             0., 0., 0., 0., 0., 0., 0., 0., 0.,
-             1., 1., 1., 1., 1., 1., 1., 1., 1.}
-
-    """The knot vector    """
-    knots = ([0] * 5 + [1] * 2 + [2] * 2 + [3] * 5)
-
     curveSep = coin.SoSeparator()
     complexity = coin.SoComplexity()
-    controlPts = coin.SoCoordinate4()
+    controlPts = coin.SoCoordinate4()   #controll coordinate with normalization (last bit)
     curve = coin.SoNurbsCurve()
-    controlPts.point.setValues(0, array.shape[1], array)
-    curve.numControlPoints = array.shape[1]
-    curve.knotVector.setValues(0, len(knots), knots)
-    curveSep += [complexity, controlPts, curve]
-
+    controlPts.point.setValues(data)
+    #curve.numControlPoints = array.shape[1]
+    curve.knotVector.setValues(knots)
+    curveSep.addChild(complexity)
+    curveSep.addChild(controlPts)
+    curveSep.addChild( curve)
+    return curveSep
 
 class draw_cylinder:
     """
@@ -490,42 +484,17 @@ class draw_cylinder:
         cylinderSO.addChild(cylinder)
         return cylinderSO
 
-        """
-      
-##  Eight polygons. The first four are triangles 
-##  The second four are quadrilaterals for the sides.
-vertices = (
-   ( 0, 30, 0), (-2,27, 2), ( 2,27, 2),            #front tri
-   ( 0, 30, 0), (-2,27,-2), (-2,27, 2),            #left  tri
-   ( 0, 30, 0), ( 2,27,-2), (-2,27,-2),            #rear  tri
-   ( 0, 30, 0), ( 2,27, 2), ( 2,27,-2),            #right tri
-   (-2, 27, 2), (-4,0, 4), ( 4,0, 4), ( 2,27, 2),  #front quad
-   (-2, 27,-2), (-4,0,-4), (-4,0, 4), (-2,27, 2),  #left  quad
-   ( 2, 27,-2), ( 4,0,-4), (-4,0,-4), (-2,27,-2),  #rear  quad
-   ( 2, 27, 2), ( 4,0, 4), ( 4,0,-4), ( 2,27,-2)   #right quad
-)
 
-# Number of vertices in each polygon:
-numvertices = (3, 3, 3, 3, 4, 4, 4, 4)
 
-# Normals for each polygon:
-norms = ( 
-   (0, .555,  .832), (-.832, .555, 0), #front, left tris
-   (0, .555, -.832), ( .832, .555, 0), #rear,  right tris
-   
-   (0, .0739,  .9973), (-.9972, .0739, 0),#front, left quads
-   (0, .0739, -.9973), ( .9972, .0739, 0),#rear, right quads)
 
-"""
-
-def  draw_FaceSet(vertices =None, _color=FR_COLOR.FR_GOLD,NormalForPolygon=None, NumberOfVerticiesPerPolygon=None):
+def  draw_FaceSet(vertices =None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
     """[summary]
 
     Args:
-        vertices ([type]):            FOUR POLYGONS, IF THREE IT IS A TRIANGLE 
-        _color ([type]):              color 
-        NormalForPolygon :            Normals of each polygon 
-        NumberOfVerticiesPerPolygon : Number of vertices per each polygon 
+        vertices (App.Vector, optional): Vertices will be used to draw the face. 3 will result in a triangle, four and above could draw different shapes. 
+          Defaults to None.
+        numvertices (List of integers, optional): [This will specify how these verticies should be used when the function draw them]. Defaults (3,).
+        _color ([FL_COLOR], optional): [Provides the color for the drawing]. Defaults to FR_COLOR.FR_GOLD.
 
     Returns:
         [type]: [description]
@@ -536,24 +505,23 @@ def  draw_FaceSet(vertices =None, _color=FR_COLOR.FR_GOLD,NormalForPolygon=None,
 
         # Using the new SoVertexProperty node is more efficient
         myVertexProperty = coin.SoVertexProperty()
-
-        # Define the normals used:
-        myVertexProperty.normal.setValues(0, len(NumberOfVerticiesPerPolygon), NumberOfVerticiesPerPolygon)
+        
         myVertexProperty.normalBinding = coin.SoNormalBinding.PER_FACE
 
-        # Define material for rootSo
+        # Define material
         myVertexProperty.orderedRGBA = coin.SbColor(_color).getPackedValue()
 
-        # Define coordinates for vertices
+        # Define coordinates for vertices - how these vertices will be divided per face
         myVertexProperty.vertex.setValues(0, len(vertices), vertices)
 
         # Define the FaceSet
         myFaceSet = coin.SoFaceSet()
-        myFaceSet.numVertices.setValues(0, len(NumberOfVerticiesPerPolygon), NumberOfVerticiesPerPolygon)
+        myFaceSet.numVertices.setValues(0, len(numvertices),numvertices )
 
         myFaceSet.vertexProperty = myVertexProperty
         rootSo.addChild(myFaceSet)
         return rootSo
+    
     except Exception as err:
         App.Console.PrintError("'Draw Face' Failed. "
                                    "{err}\n".format(err=str(err)))
