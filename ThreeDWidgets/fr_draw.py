@@ -219,6 +219,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
         group.addChild(so_separatorHead)
         group.addChild(so_separatorTail)
         return group
+    
     except Exception as err:
         App.Console.PrintError("'draw_arrow' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -233,6 +234,9 @@ def draw_box(Points=[], color=(0.0, 0.0, 0.0), use_texture=False, LineWidth=1):
 
 # draw a box
 class draw_fourSidedShape:
+    '''
+        Create a four sided shape using four vertices.
+    '''
 
     def __init__(self, Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
         """ 
@@ -314,7 +318,6 @@ class draw_NurbsFace:
         """ 
             Draw any four sided shape,
             This will be the base of all multi-points drawing.
-
         Args:
             Points (list, optional): [description]. Defaults to [].
             color (tuple, optional): [description]. Defaults to (0.0,0.0,0.0).
@@ -335,7 +338,7 @@ class draw_NurbsFace:
 
     def Activated(self):
         if len(self.Points) < 4:
-            raise ValueError('Vertices must be 4')
+            raise ValueError('Use the function with 4 vertices')
         material = coin.SoMaterial()
         material.transparency.setValue(0.0)
         material.diffuseColor.setValue(coin.SbColor(self.color))
@@ -359,11 +362,9 @@ class draw_NurbsFace:
         # prop = coin.SoNurbsProperty() #word censored! Not available in coin3d
 
         surfaceNode = coin.SoSeparator()
-
         surfaceNode.addChild(controlPts)
         surfaceNode.addChild(material)
         surfaceNode.addChild(surface)
-
         return surfaceNode
 
     def genTextureImage(self, size=[]):
@@ -422,15 +423,17 @@ def loadImageTo3D(filename, Bsize, location):
 def draw_Curve(knots=None, data=None):
     curveSep = coin.SoSeparator()
     complexity = coin.SoComplexity()
-    controlPts = coin.SoCoordinate4()   #controll coordinate with normalization (last bit)
+    # controll coordinate with normalization (last bit)
+    controlPts = coin.SoCoordinate4()
     curve = coin.SoNurbsCurve()
     controlPts.point.setValues(data)
     #curve.numControlPoints = array.shape[1]
     curve.knotVector.setValues(knots)
     curveSep.addChild(complexity)
     curveSep.addChild(controlPts)
-    curveSep.addChild( curve)
+    curveSep.addChild(curve)
     return curveSep
+
 
 class draw_cylinder:
     """
@@ -483,11 +486,44 @@ class draw_cylinder:
         cylinderSO.addChild(transCylinder)
         cylinderSO.addChild(cylinder)
         return cylinderSO
+'''
+Example how to use draw_FceSet
+from pivy import coin
+import math
+import fr_draw as d 
 
+def regular_polygon_vertexes(sidescount, radius, z, startangle=0):
+    try:
+        vertexes = []
+        if radius != 0:
+            for i in range(0, sidescount+1):
+                angle = 2 * math.pi * i / sidescount + math.pi + startangle
+                vertex = (radius * math.cos(angle),
+                          radius * math.sin(angle), z)
+                vertexes.append(vertex)
+        else:
+            vertex = (0, 0, z)
+            vertexes.append(vertex)
+        return vertexes
+    except Exception as err:
+        App.Console.PrintError("'regular_polygon_vertexes' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        return
 
+Verticies=regular_polygon_vertexes(4,30,0,90)
+n=len(Verticies)
+numvertices = (n, )
+root=d.draw_FaceSet(Verticies,numvertices,(0,1,1))
+view = Gui.ActiveDocument.ActiveView
+sg = view.getSceneGraph()
+sg.addChild(root)
 
+'''
 
-def  draw_FaceSet(vertices =None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
+def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
     """[summary]
 
     Args:
@@ -505,7 +541,6 @@ def  draw_FaceSet(vertices =None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
 
         # Using the new SoVertexProperty node is more efficient
         myVertexProperty = coin.SoVertexProperty()
-        
         myVertexProperty.normalBinding = coin.SoNormalBinding.PER_FACE
 
         # Define material
@@ -516,27 +551,73 @@ def  draw_FaceSet(vertices =None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
 
         # Define the FaceSet
         myFaceSet = coin.SoFaceSet()
-        myFaceSet.numVertices.setValues(0, len(numvertices),numvertices )
+        myFaceSet.numVertices.setValues(0, len(numvertices), numvertices)
 
         myFaceSet.vertexProperty = myVertexProperty
         rootSo.addChild(myFaceSet)
         return rootSo
-    
+
     except Exception as err:
         App.Console.PrintError("'Draw Face' Failed. "
-                                   "{err}\n".format(err=str(err)))
+                               "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+class draw_polygonBase:
+    
+    def __init__(self,sides=3,radius=5, startangel=0,pos=App.Vector(0,0,0), _color=FR_COLOR.FR_GOLD):
+        """[summary]
 
+        Args:
+            sides (int, optional): [description]. Defaults to 3.
+            angel (int, optional): [description]. Defaults to 0.
+            pos ([type], optional): [description]. Defaults to App.Vector(0,0,0).
+            _color ([type], optional): [description]. Defaults to FR_COLOR.FR_GOLD.
+        """
+        self.vertices=None
+        self.noVertices=0
+        self.color=_color
+        self.position=pos
+        self.sides=sides
+        self.startAngel=startangel
+        self.radius=radius
+        
+    def regular_polygon_vertexes(self,sidescount, radius, position=App.Vector(0,0,0),startangle=0):
+        try:
+            z=position.z
+            vertexes = []
+            if radius != 0:
+                for i in range(0, sidescount+1):
+                    angle = 2 * math.pi * i / sidescount + math.pi + startangle
+                    vertex = (position.x +radius * math.cos(angle),
+                              position.y+radius * math.sin(angle), z)
+                    vertexes.append(vertex)
+            else:
+                vertex = (0, 0, z)
+                vertexes.append(vertex)
+            return vertexes
+    
+        except Exception as err:
+            App.Console.PrintError("'regular_polygon_vertexes' Failed. "
+                               "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+    
+    def draw(self):
+        self.vertices=self.regular_polygon_vertexes(self.sides,self.radius,self.position,self.startAngel)
+        numberOfvert=len(self.vertices)
+        soRoot= draw_FaceSet(self.vertices,(numberOfvert,),self.color)
+        return soRoot  # SoSeparator created during the drawing. You need to add this to the senegraph
 
-
+#TODO : FIXME:
 def draw_faceIndexed():
     IV_STRICT = 1
 
     # Routine to create a scene graph representing a dodecahedron
-    So_END_FACE_INDEX=-1
+    So_END_FACE_INDEX = -1
     vertexPositions = (
         (0.0000,  1.2142,  0.7453),  # top
 
@@ -553,7 +634,7 @@ def draw_faceIndexed():
         (1.2142, -0.7453,  0.0000),
 
         (0.0000, -1.2142, -0.7453),  # bottom
-        )
+    )
 
     #
     # Connectivity, information 12 faces with 5 vertices each ),
@@ -576,14 +657,14 @@ def draw_faceIndexed():
         8,  1, 5, 10, 11, So_END_FACE_INDEX,
 
         6,  7, 8, 9, 10, So_END_FACE_INDEX,  # bottom face
-        )
+    )
 
     # Colors for the 12 faces
     colors = (
         (1.0, .0, 0), (.0,  .0, 1.0), (0, .7,  .7), (.0, 1.0,  0),
         (1.0, .0, 0), (.0,  .0, 1.0), (0, .7,  .7), (.0, 1.0,  0),
         (1.0, .0, 0), (.0,  .0, 1.0), (0, .7,  .7), (.0, 1.0,  0),
-        )
+    )
 
     result = coin.SoSeparator()
 
@@ -625,5 +706,3 @@ def draw_faceIndexed():
     view = Gui.ActiveDocument.ActiveView
     sg = view.getSceneGraph()
     sg.addChild(result)
-
-
