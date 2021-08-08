@@ -342,22 +342,23 @@ def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD
 
 
 
-# draw a box
+# draw a Four sided shape
 class draw_fourSidedShape:
     '''
         Create a four sided shape using four vertices.
     '''
 
-    def __init__(self, Points=[], color=FR_COLOR.FR_BLUE, use_texture=False, LineWidth=1):
+    def __init__(self, Points=[], color=FR_COLOR.FR_BLUE, texture="",use_texture=False, LineWidth=1):
         """ 
             Draw any four sided shape,
             This will be the base of all multi-points drawing.
 
         Args:
-            Points (list, optional): [description]. Defaults to [].
-            color (tuple, optional): [description]. Defaults to (0.0,0.0,0.0).
-            use_texture (bool, optional): [description]. Defaults to False.
-            LineWidth (int, optional): [description]. Defaults to 1.
+            Points (list, optional): [Vertices to be used to draw the shape]. Defaults to [].
+            color (tuple, optional): [color value as per FR_COLOR]. Defaults to FR_COLOR.FR_BLUE.
+            use_texture (bool, optional): [drawing should have a texture]. Defaults to False.
+            texture (string, optional): [File name of the texture]. Defaults to False.
+            LineWidth (int, optional): [width of the line]. Defaults to 1.
 
         Raises:
             ValueError: [4 vertices must be applied to the class]
@@ -369,6 +370,7 @@ class draw_fourSidedShape:
         self.Points = Points
         self.color = color
         self.use_texture = use_texture
+        self.texture=texture
         self.lineWidth = LineWidth
 
     def Activated(self):
@@ -385,39 +387,38 @@ class draw_fourSidedShape:
         coords = coin.SoCoordinate3()
         for i in range(0, len(self.Points)):
             coords.point.set1Value(i, self.Points[i])
-        # TODO fixme
-        if self.use_texture == True:
+        if self.use_texture ==True :
             textureCoords = coin.SoTextureCoordinate2()
             textureCoords.point.set1Value(0, 0, 0)
             textureCoords.point.set1Value(1, 1, 0)
             textureCoords.point.set1Value(2, 1, 1)
             textureCoords.point.set1Value(3, 0, 1)
-
+            texture=coin.SoTexture2()
+            if self.texture is not "":
+                texture.filename=self.texture
+            else:
+                texture=self.genTextureImage()
         _face = coin.SoFaceSet()
         _face.numVertices.set1Value(0, 4)
-        if self.use_texture == True:
-            texture = coin.SoTexture2()
-            texture.image = self.createTextureImage()
-
-        FourSidedShape.addChild(coords)
+        FourSidedShape.addChild(coords)      
         if self.use_texture == True:
             FourSidedShape.addChild(textureCoords)
             FourSidedShape.addChild(texture)
         FourSidedShape.addChild(_face)
         return FourSidedShape
 
-    def genTextureImage(self, size=[]):
-        size = coin.SbVec2s(5, 5)
-
-        width = size[0]
-        height = size[1]
+    def genTextureImage(self):
+        imgsize = coin.SbVec2s(5, 5)
+        width = imgsize[0]
+        height = imgsize[1]
         imgData = ''
 
         for i in range(height):
             for j in range(width):
-                imgData = imgData + chr(134).encode('latin-1')
+                #imgData=imgData+((chr(134)).encode('latin-1'))
+                imgData=imgData+chr(180)
         coinSoImage = coin.SoSFImage()
-        coinSoImage.setValue(size, 1, imgData)
+        coinSoImage.setValue(imgsize, 1, imgData)
         return coinSoImage
 
 
@@ -477,18 +478,18 @@ class draw_NurbsFace:
         surfaceNode.addChild(surface)
         return surfaceNode
 
-    def genTextureImage(self, size=[]):
-        size = coin.SbVec2s(5, 5)
-
-        width = size[0]
-        height = size[1]
+    def genTextureImage(self):
+        imgsize = coin.SbVec2s(5, 5)
+        width = imgsize[0]
+        height = imgsize[1]
         imgData = ''
 
         for i in range(height):
             for j in range(width):
-                imgData = imgData + chr(134).encode('latin-1')
+                #imgData=imgData+((chr(134)).encode('latin-1'))
+                imgData=imgData+chr(134)
         coinSoImage = coin.SoSFImage()
-        coinSoImage.setValue(size, 1, imgData)
+        coinSoImage.setValue(imgsize, 1, imgData)
         return coinSoImage
 
 
@@ -618,42 +619,6 @@ class draw_cylinder:
         cylinderSO.addChild(cylinder)
         return cylinderSO
     
-'''
-Example how to use draw_FceSet
-from pivy import coin
-import math
-import fr_draw as d 
-
-def regular_polygon_vertexes(sidescount, radius, z, startangle=0):
-    try:
-        vertexes = []
-        if radius != 0:
-            for i in range(0, sidescount+1):
-                angle = 2 * math.pi * i / sidescount + math.pi + startangle
-                vertex = (radius * math.cos(angle),
-                          radius * math.sin(angle), z)
-                vertexes.append(vertex)
-        else:
-            vertex = (0, 0, z)
-            vertexes.append(vertex)
-        return vertexes
-    except Exception as err:
-        App.Console.PrintError("'regular_polygon_vertexes' Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
-        return
-
-Verticies=regular_polygon_vertexes(4,30,0,90)
-n=len(Verticies)
-numvertices = (n, )
-root=d.draw_FaceSet(Verticies,numvertices,(0,1,1))
-view = Gui.ActiveDocument.ActiveView
-sg = view.getSceneGraph()
-sg.addChild(root)
-
-'''
 
 def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
     """[summary]
@@ -666,6 +631,40 @@ def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
 
     Returns:
         [type]: [description]
+        
+    Example how to use draw_FceSet:
+    from pivy import coin
+    import math
+    import fr_draw as d 
+    
+    def regular_polygon_vertexes(sidescount, radius, z, startangle=0):
+        try:
+            vertexes = []
+            if radius != 0:
+                for i in range(0, sidescount+1):
+                    angle = 2 * math.pi * i / sidescount + math.pi + startangle
+                    vertex = (radius * math.cos(angle),
+                              radius * math.sin(angle), z)
+                    vertexes.append(vertex)
+            else:
+                vertex = (0, 0, z)
+                vertexes.append(vertex)
+            return vertexes
+        except Exception as err:
+            App.Console.PrintError("'regular_polygon_vertexes' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+    
+    Verticies=regular_polygon_vertexes(4,30,0,90)
+    n=len(Verticies)
+    numvertices = (n, )
+    root=d.draw_FaceSet(Verticies,numvertices,(0,1,1))
+    view = Gui.ActiveDocument.ActiveView
+    sg = view.getSceneGraph()
+    sg.addChild(root)
     """
     try:
         rootSo = coin.SoSeparator()
@@ -706,6 +705,36 @@ class draw_polygonBase:
             angel (int, optional): [description]. Defaults to 0.
             pos ([type], optional): [description]. Defaults to App.Vector(0,0,0).
             _color ([type], optional): [description]. Defaults to FR_COLOR.FR_GOLD.
+            
+        Example:
+        from pivy import coin
+        import math
+        import fr_draw as d 
+        import time
+        from PySide import QtCore,QtGui
+        sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+        for i in range( 3, 25):
+            f=d.draw_polygonBase(i,10,0,App.Vector(0,0,0), (0,1,1))
+            root=f.draw()
+            sg.addChild(root)
+            QtGui.QApplication.processEvents()
+            FreeCADGui.updateGui()
+            time.sleep(0.5)
+            sg.removeChild(root)
+            QtGui.QApplication.processEvents()
+
+        arange=range(3,25)
+        revrange=reversed(arange)
+        for i in revrange:
+            f=d.draw_polygonBase(i,10,0,App.Vector(0,0,0), (0,1,1))
+            root=f.draw()
+            sg.addChild(root)
+            QtGui.QApplication.processEvents()
+            FreeCADGui.updateGui()
+            time.sleep(0.5)
+            sg.removeChild(root)
+            QtGui.QApplication.processEvents()    
+        
         """
         self.vertices=None
         self.noVertices=0
