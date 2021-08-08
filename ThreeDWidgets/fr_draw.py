@@ -365,6 +365,25 @@ class draw_fourSidedShape:
 
         Returns:
             [coin.SoSeparator]: [created drawing]
+            
+        Example:
+        
+        from pivy import coin
+        import math
+        import fr_draw as d 
+        import time
+        from PySide import QtCore,QtGui
+        file="E:/TEMP/freecad.png"      #TODO: FIXME:
+        sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+        vert=[]
+        vert.append(App.Vector(0,0,0))
+        vert.append(App.Vector(120,0,30))
+        vert.append(App.Vector(120,120,30))
+        vert.append(App.Vector(0,120,30))
+
+        f=d.draw_fourSidedShape(vert,(0,0,0),file,True,4)
+        root=f.Activated()
+        sg.addChild(root)
         """
         self.faces = []  # Keep the 6 faces
         self.Points = Points
@@ -513,24 +532,24 @@ def createFrameShape():
     sg.addChild(root)
 
 # Load a SVG image to the coin3D
-
-
-def loadImageTo3D(filename, Bsize, location):
+#TODO: NOT WORKING WELL FIXME:
+def loadImageTo3D(filename="", BoxSize=(2,2,0.01), location=App.Vector(0,0,0), rotation=(0.0,0.0,0.0,0.0)):
     svg = coin.SoTexture2()
     svg.filename = filename
     box = coin.SoVRMLBox()
-    box.size = Bsize  # (2,2,0)
+    box.size = BoxSize
     imagePos = coin.SoTransform()
-    imagePos.translation.setValue(location)  # ([10,0,0])
-    imagePos.rotation = coin.SbRotation(0, 0, 0, 0)
+    imagePos.translation.setValue(location)  
+    imagePos.rotation = coin.SbRotation(rotation)
     image = coin.SoSeparator()
     image.addChild(imagePos)
     image.addChild(svg)
     image.addChild(box)
-    return image        # Add this to the senegraph to show the picture.
+    return image                # Add this to the senegraph to show the picture.
+
+
+
 # todo fixme
-
-
 def draw_Curve(knots=None, data=None):
     curveSep = coin.SoSeparator()
     complexity = coin.SoComplexity()
