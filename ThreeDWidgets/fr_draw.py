@@ -41,32 +41,62 @@ from dataclasses import dataclass
 @dataclass
 class userDataObject:
     def __init__(self):
-        self.Vectors: List[App.Vector] = []         # the arrow widget object
-        self.Scale: int = 1.0                        # events - save handle events here
-        self.Radius: float = 0.0                      # Class uses the fr_arrow_widget
-        self.Height: float = 0.0
-        self.Color: List[float, float, float] = []
-        self.LineWidth: float = 1.0
-        self.Transparency: float = 50.0
-        self.Rotation: List[(float, float, float), float] = []
+        """
+            Data object used to simplify sending data to different drawing objects.
+        """
+        self.Vectors: List[App.Vector] = []                     # the vertices 
+        self.Scale: int = 1.0                                   # scale 
+        self.Radius: float = 0.0                                # radius 
+        self.Height: float = 0.0                                # height
+        self.Color: List[float, float, float] = []              # color
+        self.LineWidth: float = 1.0                             # drawing line width
+        self.Transparency: float = 50.0                         # transparency
+        self.Rotation: List[(float, float, float), float] = []  # rotation axis and angle 
+
+"""
+Example using draw_Point(p1,color):
 
 
-def draw_Point(p1, color):
+        
+"""
+def draw_Point(p1,size=0.1, color=FR_COLOR.FR_GOLD, type=0):
+    """[Draw a point. The point could be any of cubic, or sphere shapes. Default is Cubic]
+
+    Args:
+        p1 ([type]): [Position of the point]
+        color ([type], optional): [Color of the point]. Defaults to FR_COLOR.FR_GOLD.
+        type (int, optional): [Point's shape. Either Cubic=0 or Sphere =1 ]. Defaults to 0.
+
+    Returns:
+        [type]: [description]
+        
+    EXAMPLE: 
+        from pivy import coin
+        import fr_draw as d 
+
+        sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+        for i in range( 3, 100):
+            root=d.draw_Point(App.Vector(i,i,i) ,0.09 ,(0.5,0.5,1),1 )
+            sg.addChild(root)
+    """
     try:
         so_separator = coin.SoSeparator()
-        v = coin.SoVertexProperty()
-        v.vertex.set1Value(0, p1)
-
-        coords = coin.SoTransform()
-        line = coin.SoLineSet()
-        line.vertexProperty = v
-        style = coin.SoDrawStyle()
-        so_separator.addChild(style)
+        coords = coin.SoTranslation()
+        coords.translation.setValue(p1)
+        if type==0:
+            point = coin.SoCube()
+            point.width=size
+            point.height=size
+            point.depth=size
+        elif type==1:
+            point = coin.SoSphere()
+            point.radius=size
+        
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = color
         so_separator.addChild(col1)
-        so_separator.addChild(line)
         so_separator.addChild(coords)
+        so_separator.addChild(point)
         return so_separator
 
     except Exception as err:
@@ -228,8 +258,88 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_box(Points=[], color=(0.0, 0.0, 0.0), use_texture=False, LineWidth=1):
-    pass
+def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD, Texture="",style=0, LineWidth=1, LinePattern=0xffff):
+    """[Use this function to draw a box. The box-style could be configured.]
+
+    Args:
+        p1 ([App.Vector]): [Defines the position of the vector ] . Defaults to App.Vector(0,0,0)
+        size ([App.Vector], optional): [Defines the size of the box]. Defaults to App.Vector(1,1,1).
+        color ([tuple], optional): [Box color as defined in FR_COLOR]. Defaults to FR_COLOR.FR_GOLD.
+        texture (None, optional): [File name of the texture image]. Defaults to Null string.
+        style (int, optional): [Box style: Filed=0, Lines ,Points,Invisible]. Defaults to 0.
+        LineWidth (int, optional): [Line width: applicable only when you have line style]. Defaults to 1.
+        LinePattern (hexadecimal, optional): [Defines if you have dashed lines or continuse line]. Defaults to 0xffff.
+
+    Returns:
+        [type]: [description]
+    
+    Example : 
+    from pivy import coin
+    import math
+    import fr_draw as d 
+    import time
+    from PySide import QtCore,QtGui
+
+    sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+
+    a=range(0,35)
+    arev=reversed(a)
+    while(True):
+        for i in a:
+            root=d.draw_box(App.Vector(0,0,0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
+            sg.addChild(root)
+            QtGui.QApplication.processEvents()
+            FreeCADGui.updateGui()
+            time.sleep(0.1)
+            sg.removeChild(root)
+            QtGui.QApplication.processEvents()
+
+        for i in arev:
+            root=d.draw_box(App.Vector(0,0,0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
+            sg.addChild(root)
+            QtGui.QApplication.processEvents()
+            FreeCADGui.updateGui()
+            time.sleep(0.1)
+            sg.removeChild(root)
+            QtGui.QApplication.processEvents()
+
+    """
+    try:
+        root = coin.SoSeparator()
+        coords = coin.SoTranslation()
+        coords.translation.setValue(p1)
+       
+        texture=coin.SoTexture2()
+        texture.filename=Texture
+        
+        boxstyle=coin.SoDrawStyle()
+        boxstyle.style=style
+        boxstyle.lineWidth=LineWidth
+        boxstyle.linePattern=LinePattern
+        
+        box = coin.SoCube()
+        box.width=size.x
+        box.height=size.y
+        box.depth=size.z
+        
+
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = color
+        root.addChild(col1)
+        root.addChild(coords)
+        root.addChild(boxstyle)
+        
+        #root.addChild(texture)
+        root.addChild(box)
+        return root
+    
+    except Exception as err:
+        App.Console.PrintError("'draw_point' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
 
 
 # draw a box
@@ -441,6 +551,26 @@ class draw_cylinder:
     """
 
     def __init__(self, CylinderData: userDataObject = None):
+        """[Draw a cylinder. Parameters determine how the cylinder is drawn]
+
+        Args:
+            CylinderData (userDataObject, optional): [description]. Defaults to None.
+            userDataObject is an object that you will setup and send to this class. 
+            It will contains all information needed to draw the cylinder. 
+            
+            class userDataObject:
+                def __init__(self):
+                self.Vectors: List[App.Vector] = []                     # the vertices 
+                self.Scale: int = 1.0                                   # scale 
+                self.Radius: float = 0.0                                # radius 
+                self.Height: float = 0.0                                # height
+                self.Color: List[float, float, float] = []              # color
+                self.LineWidth: float = 1.0                             # drawing line width
+                self.Transparency: float = 50.0                         # transparency
+                self.Rotation: List[(float, float, float), float] = []  # rotation axis and angle 
+            
+            
+        """
         self.CylinderSO = None
         self.TransCylinder = None
         self.CylinderTransform = None
@@ -450,10 +580,11 @@ class draw_cylinder:
         self.Material = None
         self.Height = CylinderData.Height
         self.Radius = CylinderData.Radius
-        self.Linewidth = CylinderData.Linewidth
+        self.Linewidth = CylinderData.LineWidth
         self.Transparency = CylinderData.Transparency
         self.Scale = CylinderData.Scale
         self.Rotation = CylinderData.Rotation
+        self.color = CylinderData.Color
 
     def Activated(self):
 
@@ -461,7 +592,7 @@ class draw_cylinder:
         transCylinder = coin.SoTranslation()
         cylinderTransform = coin.SoTransform()
         tempR = coin.SbVec3f()
-        tempR.setValue(rotation[0], rotation[1], rotation[2])
+        tempR.setValue(self.rotation[0], self.rotation[1], self.rotation[2])
 
         cylinder = coin.SoCylinder()
         p1 = App.Vector(0.0, 0.0, 0.0)  # (_Points[0])
@@ -470,15 +601,15 @@ class draw_cylinder:
         cylinderStyle.style = coin.SoDrawStyle.LINES  # draw only frame not filled
         cylinderStyle.lineWidth = 3
 
-        cylinderTransform.scaleFactor.setValue([Myscale, Myscale, Myscale])
+        cylinderTransform.scaleFactor.setValue([self.Scale, self.Scale, self.Scale])
         cylinderTransform.translation.setValue(App.Vector(0, 0, 0))
         # SbRotation (const SbVec3f &axis, const float radians)
-        cylinderTransform.rotation.setValue(*tempR, rotation[3])
+        cylinderTransform.rotation.setValue(*tempR, self.rotation[3])
         transCylinder.translation.setValue(p1)
 
         material = coin.SoMaterial()
         material.transparency.setValue(80)
-        material.diffuseColor.setValue(coin.SbColor(_color))
+        material.diffuseColor.setValue(coin.SbColor(self.Color))
         # material.specularColor.setValue(coin.SbColor(1,1,1))
         material.shininess.setValue(1.0)
         cylinderSO.addChild(material)
@@ -486,6 +617,7 @@ class draw_cylinder:
         cylinderSO.addChild(transCylinder)
         cylinderSO.addChild(cylinder)
         return cylinderSO
+    
 '''
 Example how to use draw_FceSet
 from pivy import coin
