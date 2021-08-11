@@ -6,6 +6,7 @@ DEF root Separator {
   ShapeHints {
     vertexOrdering CLOCKWISE
     shapeType SOLID
+    faceType CONVEX
 
   }
   Coordinate3 {
