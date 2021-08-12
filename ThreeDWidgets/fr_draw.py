@@ -413,7 +413,7 @@ class draw_fourSidedShape:
             textureCoords.point.set1Value(2, 1, 1)
             textureCoords.point.set1Value(3, 0, 1)
             texture=coin.SoTexture2()
-            if self.texture is not "":
+            if self.texture !="":
                 texture.filename=self.texture
             else:
                 texture=self.genTextureImage()
@@ -891,7 +891,7 @@ def draw_faceIndexed():
 #New drawings based on conversion of drawing in Inscape --> FreeCAD --> export vrlm 
 # and later convert manually the vrlm file to coin
 #TODO: FIXME:
-def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=1,type=0, rotation=[1.0, 1.0, 1.0, 0.0]):
+def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=1,type=0, rotation=[0.0, 0.0, 1.0, 0.0]):
     root=coin.SoSeparator()
     Shapehint= coin.SoShapeHints()
     transform=coin.SoTransform()
@@ -997,17 +997,18 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=1,type=0, rot
                             2, 3, 50, -1, 1, 2, 50, -1,
                             0, 1, 50, -1 ]
         soIndexFace.coordIndex.setValues(0,27,corind)
-    root.addChild(trans)
-    root.addChild(transform)
+    # root.addChild(trans)
+    # root.addChild(transform)
+    # root.addChild(material)
     root.addChild(sovertex)    
-    #root.addChild(material)
+
     root.addChild(Shapehint)
     root.addChild(soIndexFace)
     return root
 
 
 
-def draw_Twoarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=1,type=0, rotation=[1.0, 1.0, 1.0, 0.0]):
+def draw_Twoarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_RED,scale=1,type=0, rotation=[0.0, 0.0, 0.0, math.radians(0.0)]):
     arrow1_str="""#Inventor V2.1 ascii
         DEF root Separator {
           ShapeHints {
@@ -1107,20 +1108,30 @@ def draw_Twoarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=1,type=0, ro
                 4, 5, 50, -1, 3, 4, 50, -1,
                 2, 3, 50, -1, 1, 2, 50, -1,
                 0, 1, 50, -1 ]
-
           }
         }
         """
-
+    root=coin.SoSeparator()
+    arrow=coin.SoSeparator()
+    transform=coin.SoTransform()
+    trans=coin.SoTranslation()
+    material = coin.SoMaterial()
+    material.transparency.setValue(0)
+    material.diffuseColor.setValue(coin.SbColor(color))
+    transform.scaleFactor.setValue([scale, scale, scale])
+    transform.translation.setValue(App.Vector(0,0,0))
+    transform.rotation.setValue(rotation)
     input = coin.SoInput()
     input.setBuffer(arrow1_str)
     result = coin.SoDB.readAll(input)
+    trans.translation.setValue(p1)
     if result == None:
         print("ERROR ")
         return None
     # Set up the duck transformations
-    resultRotXYZ = coin.SoRotationXYZ()
-    root=coin.SoSeparator()
-    root.addChild(resultRotXYZ )
-    root.addChild(result)
+    root.addChild(material)
+    root.addChild(transform )
+    root.addChild(trans)
+    arrow.addChild(result)
+    root.addChild(arrow)
     return root
