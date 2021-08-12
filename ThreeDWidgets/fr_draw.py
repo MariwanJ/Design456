@@ -1111,3 +1111,16 @@ def draw_Twoarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=1,type=0, ro
           }
         }
         """
+
+    input = coin.SoInput()
+    input.setBuffer(arrow1_str)
+    result = coin.SoDB.readAll(input)
+    if result == None:
+        print("ERROR ")
+        return None
+    # Set up the duck transformations
+    resultRotXYZ = coin.SoRotationXYZ()
+    root=coin.SoSeparator()
+    root.addChild(resultRotXYZ )
+    root.addChild(result)
+    return root
