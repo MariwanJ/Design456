@@ -1,9 +1,9 @@
-#Inventor V2.1 ascii
+#VRML V1.0 ascii
 
 
 DEF root Separator {
 
-  DEF o15 VRMLShape {
+  VRMLShape {
     appearance 
     VRMLAppearance {
       material 
@@ -15,7 +15,7 @@ DEF root Separator {
     geometry 
     VRMLIndexedFaceSet {
       coord 
-      DEF o11 VRMLCoordinate {
+      VRMLCoordinate {
         point [ 104.70005 -67.598953 0,
             104.70005 -75.059814 0,
             78.933617 -75.059814 0,
@@ -43,7 +43,7 @@ DEF root Separator {
     }
 
   }
-  DEF o25 VRMLShape {
+  VRMLShape {
     appearance 
     VRMLAppearance {
       material 
@@ -55,7 +55,7 @@ DEF root Separator {
     geometry 
     VRMLIndexedFaceSet {
       coord 
-      DEF o21 VRMLCoordinate {
+      VRMLCoordinate {
         point [ 71.988663 -75.059814 0,
             71.988663 -82.361931 0,
             73.377655 -82.361931 0,
@@ -75,7 +75,7 @@ DEF root Separator {
     }
 
   }
-  DEF o35 VRMLShape {
+  VRMLShape {
     appearance 
     VRMLAppearance {
       material 
@@ -87,7 +87,7 @@ DEF root Separator {
     geometry 
     VRMLIndexedFaceSet {
       coord 
-      DEF o31 VRMLCoordinate {
+      VRMLCoordinate {
         point [ 74.766647 -75.059814 0,
             74.766647 -82.361931 0,
             77.544624 -82.361931 0,
