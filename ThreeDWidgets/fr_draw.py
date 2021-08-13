@@ -892,22 +892,24 @@ def draw_faceIndexed():
 #New drawings based on conversion of drawing in Inscape --> FreeCAD --> export vrml 
 # and later convert manually the vrml file to coin
 #TODO: FIXME:
-def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=0,opacity=0, rotation=[0.0, 0.0, 1.0, 0.0]):
+def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, rotation=[0.0, 0.0, 1.0, 0.0]):
     root=coin.SoSeparator() #root group holder
-    soSepArrow=coin.SoSeparator()   # drawing holder
-    Shapehint= coin.SoShapeHints()
-    soIndexFace= coin.SoIndexedFaceSet()
-    cordinate= coin.SoCoordinate3()
     transform=coin.SoTransform()
     trans=coin.SoTranslation()
-    soIndexFace= coin.SoIndexedFaceSet()
     trans.translation.setValue(p1)
     transform.rotation.setValue(rotation)
     transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
+    
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
+    
     if type==0:
+        soSepArrow=coin.SoSeparator()   # drawing holder
+       
+        soIndexFace= coin.SoIndexedFaceSet()
+        cordinate= coin.SoCoordinate3()
+        Shapehint= coin.SoShapeHints()
         Shapehint.shapeType=coin.SoShapeHints.SOLID
         Shapehint.vertexOrdering= coin.SoShapeHints.CLOCKWISE
         Shapehint.faceType=coin.SoShapeHints.CONVEX
@@ -998,23 +1000,90 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
                     4, 5, 50, -1, 3, 4, 50, -1,
                     2, 3, 50, -1, 1, 2, 50, -1,
                     0, 1, 50, -1 ]
-        soIndexFace.coordIndex.setValues(0, len(indices), indices) 
+        soIndexFace.coordIndex.setValues(0, len(indices), indices)
+        soSepArrow.addChild(Shapehint)
+        soSepArrow.addChild(cordinate) 
+        soSepArrow.addChild(soIndexFace)
+
+        root.addChild(material)
+        root.addChild(transform)
+        root.addChild(trans)
+        root.addChild(soSepArrow)
         
     elif type==1:
-        pass
-    
-    
-    soSepArrow.addChild(Shapehint)
-    soSepArrow.addChild(cordinate) 
-    soSepArrow.addChild(soIndexFace)
-    
-    
-    
+        soIndexfacesHead =coin.SoIndexedFaceSet()
+        soIndexfacesTail1=coin.SoIndexedFaceSet()
+        soIndexfacesTail2=coin.SoIndexedFaceSet()
+        vertexHead=[(104.70005, -67.598953 ,0),
+                    (104.70005, -75.059814 ,0),
+                    (78.933617, -75.059814 ,0),
+                    (78.933617, -82.361931 ,0),
+                    (104.70005, -82.361931 ,0),
+                    (104.70005, -89.8228   ,0),
+                    (116.43636, -78.710876 ,0),
+                    (104.70005, -67.598953 ,0),
+                    (104.70005, -75.059814 ,0),
+                    (78.933617, -75.059814 ,0),
+                    (78.933617, -82.361931 ,0),
+                    (104.70005, -82.361931 ,0),
+                    (104.70005, -89.8228   ,0),
+                    (116.43636, -78.710876 ,0 )]
+
+        vertexTail1=[( 71.988663, -75.059814, 0),
+                     (71.988663 , -82.361931, 0),
+                     (73.377655 , -82.361931, 0),
+                     (73.377655 , -75.059814, 0),
+                     (71.988663 , -75.059814, 0),
+                     (71.988663 , -82.361931, 0),
+                     (73.377655 , -82.361931, 0),
+                     (73.377655 , -75.059814, 0)]
+        
+        vertexTail2=[(74.766647 ,-75.059814, 0),
+                     (74.766647 ,-82.361931, 0),
+                     (77.544624 ,-82.361931, 0),
+                     (77.544624 ,-75.059814, 0),
+                     (74.766647 ,-75.059814, 0),
+                     (74.766647 ,-82.361931, 0),
+                     (77.544624 ,-82.361931, 0),
+                     (77.544624 ,-75.059814, 0)]
+        
+        indicesHead= [ 1, 2, 3, -1, 1, 3, 4, -1,
+                        6, 0, 1, -1, 6, 4, 5, -1,
+                        6, 1, 4, -1 ]
+        indicesTail1=[ 3, 0, 1, -1, 3, 1, 2, -1 ]
+        indicesTail2=[ 3, 0, 1, -1, 3, 1, 2, -1 ]
+
+        coordinateHead=coin.SoCoordinate3()
+        coordinateTail1=coin.SoCoordinate3()
+        coordinateTail2=coin.SoCoordinate3()
+        
+        coordinateHead.point.setValues(0, 14, vertexHead)
+        coordinateTail1.point.setValues(0, 8, vertexTail1)
+        coordinateTail2.point.setValues(0, 8, vertexTail2)
+        
+        soSepratorHead=coin.SoSeparator()
+        
+        soIndexfacesHead.coordIndex.setValues(0, len(indicesHead), indicesHead)
+        soIndexfacesHead.coordIndex.setValues(0, len(indicesTail1), indicesTail1)
+        soIndexfacesHead.coordIndex.setValues(0, len(indicesTail2), indicesTail2)
+        
+        soSepratorHead.addChild(coordinateTail1)
+        soSepratorHead.addChild(soIndexfacesTail1)
+        
+        soSepratorHead.addChild(coordinateTail2)
+        soSepratorHead.addChild(soIndexfacesTail2)        
+        
+
+        soSepratorHead.addChild(coordinateHead)
+        soSepratorHead.addChild(soIndexfacesHead)
+        
+
+        root.addChild(material)
+        root.addChild(transform)
+        root.addChild(trans)
+        
+        root.addChild(soSepratorHead)
     #Finalize the drawing by adding color, pos, scale , opacity
-    root.addChild(material)
-    root.addChild(transform)
-    root.addChild(transform)
-    root.addChild(soSepArrow)
     return root
 
 
