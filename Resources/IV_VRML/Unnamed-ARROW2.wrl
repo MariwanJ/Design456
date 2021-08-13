@@ -1,0 +1,163 @@
+#VRML V2.0 utf8
+
+
+Group {
+  children 
+    DEF o0 Group {
+      children 
+        DEF o1 Group {
+          children 
+            DEF o2 Transform {
+              translation 0 0 0
+              rotation 0 0 1  0
+              scale 1 1 1
+              scaleOrientation 0 0 1  0
+              center 0 0 0
+              children [ 
+                DEF o3 Group {
+
+                },
+                  
+                DEF o4 Group {
+                  children 
+                    DEF o5 Group {
+                      children [ 
+                        DEF o6 Group {
+                          children 
+                            DEF o7 Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                Coordinate {
+                                  point [ 104.70005 -67.598953 0,
+                                      104.70005 -75.059814 0,
+                                      78.933617 -75.059814 0,
+                                      78.933617 -82.361931 0,
+                                      104.70005 -82.361931 0,
+                                      104.70005 -89.8228 0,
+                                      116.43636 -78.710876 0,
+                                      104.70005 -67.598953 0,
+                                      104.70005 -75.059814 0,
+                                      78.933617 -75.059814 0,
+                                      78.933617 -82.361931 0,
+                                      104.70005 -82.361931 0,
+                                      104.70005 -89.8228 0,
+                                      116.43636 -78.710876 0 ]
+
+                                }
+                                normal 
+                                DEF o8 Normal {
+                                  vector [  ]
+
+                                }
+                                coordIndex [ 1, 2, 3, -1, 1, 3, 4, -1,
+                                    6, 0, 1, -1, 6, 4, 5, -1,
+                                    6, 1, 4, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF o9 Group {
+                          children 
+                            DEF o10 Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                Coordinate {
+                                  point [ 71.988663 -75.059814 0,
+                                      71.988663 -82.361931 0,
+                                      73.377655 -82.361931 0,
+                                      73.377655 -75.059814 0,
+                                      71.988663 -75.059814 0,
+                                      71.988663 -82.361931 0,
+                                      73.377655 -82.361931 0,
+                                      73.377655 -75.059814 0 ]
+
+                                }
+                                normal 
+                                USE o8
+                                coordIndex [ 3, 0, 1, -1, 3, 1, 2, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        },
+                          
+                        DEF o11 Group {
+                          children 
+                            DEF o12 Shape {
+                              appearance 
+                              Appearance {
+                                material 
+                                Material {
+
+                                }
+
+                              }
+                              geometry 
+                              IndexedFaceSet {
+                                coord 
+                                Coordinate {
+                                  point [ 74.766647 -75.059814 0,
+                                      74.766647 -82.361931 0,
+                                      77.544624 -82.361931 0,
+                                      77.544624 -75.059814 0,
+                                      74.766647 -75.059814 0,
+                                      74.766647 -82.361931 0,
+                                      77.544624 -82.361931 0,
+                                      77.544624 -75.059814 0 ]
+
+                                }
+                                normal 
+                                USE o8
+                                coordIndex [ 3, 0, 1, -1, 3, 1, 2, -1 ]
+                                ccw TRUE
+                                solid FALSE
+                                convex TRUE
+                                creaseAngle 0
+
+                              }
+
+                            }
+
+                        } ]
+
+                    }
+
+                } ]
+
+            }
+
+        }
+
+    }
+
+}
