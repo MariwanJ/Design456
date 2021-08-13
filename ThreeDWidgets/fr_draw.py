@@ -906,7 +906,6 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
     
     if type==0:
         soSepArrow=coin.SoSeparator()   # drawing holder
-       
         soIndexFace= coin.SoIndexedFaceSet()
         cordinate= coin.SoCoordinate3()
         Shapehint= coin.SoShapeHints()
@@ -1004,10 +1003,10 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
         soSepArrow.addChild(Shapehint)
         soSepArrow.addChild(cordinate) 
         soSepArrow.addChild(soIndexFace)
-
+        
+        root.addChild(trans)
         root.addChild(material)
         root.addChild(transform)
-        root.addChild(trans)
         root.addChild(soSepArrow)
         
     elif type==1:
@@ -1048,7 +1047,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
                      (77.544624 ,-75.059814, 0)]
         
         indicesHead= [ 1, 2, 3, -1, 1, 3, 4, -1,
-                        6, 0, 1, -1, 6, 4, 5, -1,
+                       6, 0, 1, -1, 6, 4, 5, -1,
                         6, 1, 4, -1 ]
         indicesTail1=[ 3, 0, 1, -1, 3, 1, 2, -1 ]
         indicesTail2=[ 3, 0, 1, -1, 3, 1, 2, -1 ]
@@ -1061,133 +1060,200 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
         coordinateTail1.point.setValues(0, 8, vertexTail1)
         coordinateTail2.point.setValues(0, 8, vertexTail2)
         
-        soSepratorHead=coin.SoSeparator()
+        soSeparatorMain=coin.SoSeparator()
+        Shapehint= coin.SoShapeHints()
+        Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
+        Shapehint.vertexOrdering= coin.SoShapeHints.COUNTERCLOCKWISE
+        Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
         
         soIndexfacesHead.coordIndex.setValues(0, len(indicesHead), indicesHead)
-        soIndexfacesHead.coordIndex.setValues(0, len(indicesTail1), indicesTail1)
-        soIndexfacesHead.coordIndex.setValues(0, len(indicesTail2), indicesTail2)
+        soIndexfacesTail1.coordIndex.setValues(0, len(indicesTail1), indicesTail1)
+        soIndexfacesTail2.coordIndex.setValues(0, len(indicesTail2), indicesTail2)
         
-        soSepratorHead.addChild(coordinateTail1)
-        soSepratorHead.addChild(soIndexfacesTail1)
-        
-        soSepratorHead.addChild(coordinateTail2)
-        soSepratorHead.addChild(soIndexfacesTail2)        
-        
+        soSeparatorMain.addChild(Shapehint)
+        soSeparatorMain.addChild(coordinateHead)
+        soSeparatorMain.addChild(soIndexfacesHead)
 
-        soSepratorHead.addChild(coordinateHead)
-        soSepratorHead.addChild(soIndexfacesHead)
+        soSeparatorMain.addChild(coordinateTail1)
+        soSeparatorMain.addChild(soIndexfacesTail1)
         
-
+        soSeparatorMain.addChild(coordinateTail2)
+        soSeparatorMain.addChild(soIndexfacesTail2)        
+        
+        root.addChild(trans)
         root.addChild(material)
         root.addChild(transform)
-        root.addChild(trans)
-        
-        root.addChild(soSepratorHead)
+
+        root.addChild(soSeparatorMain)
     #Finalize the drawing by adding color, pos, scale , opacity
     return root
 
 
 
-def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_RED,scale=1,type=0, rotation=[0.0, 0.0, 0.0, math.radians(0.0)]):
-    arrow1_str="""#Inventor V2.1 ascii
-        DEF root Separator {
-          ShapeHints {
-            vertexOrdering CLOCKWISE
-            shapeType SOLID
-            faceType CONVEX
-          }
-          VertexProperty {
-            vertex [ 84.044998 -56.896271 0,
-                84.878975 -57.540318 0,
-                85.734688 -58.155235 0,
-                86.703186 -58.804478 0,
-                87.468605 -59.288124 0,
-                88.243706 -59.755527 0,
-                89.26725 -60.339321 0,
-                90.310753 -60.894997 0,
-                91.315041 -61.392021 0,
-                92.308304 -61.846939 0,
-                93.289848 -62.260395 0,
-                94.259178 -62.633118 0,
-                95.215981 -62.965904 0,
-                96.160065 -63.259579 0,
-                97.091377 -63.514984 0,
-                98.009964 -63.732956 0,
-                98.915955 -63.914307 0,
-                99.809555 -64.059807 0,
-                100.69104 -64.170197 0,
-                101.56074 -64.24614 0,
-                102.41901 -64.288269 0,
-                103.26627 -64.297104 0,
-                103.96442 -64.279381 0,
-                104.66389 -64.238457 0,
-                105.07834 -59.98032 0,
-                116.45697 -70.693359 0,
-                105.07834 -81.406395 0,
-                104.66389 -77.15033 0,
-                103.69802 -77.103256 0,
-                102.82792 -77.095093 0,
-                101.95882 -77.119354 0,
-                101.09246 -77.17598 0,
-                100.23052 -77.264824 0,
-                99.374641 -77.385674 0,
-                98.629578 -77.517899 0,
-                97.889114 -77.674843 0,
-                96.785973 -77.958443 0,
-                95.693489 -78.279922 0,
-                94.594559 -78.644653 0,
-                93.499832 -79.049988 0,
-                92.410858 -79.495689 0,
-                91.329269 -79.981453 0,
-                90.256821 -80.506813 0,
-                89.195351 -81.071213 0,
-                88.146782 -81.673943 0,
-                87.113083 -82.314133 0,
-                86.096298 -82.990799 0,
-                85.098495 -83.702782 0,
-                84.568085 -84.101654 0,
-                84.044998 -84.509567 0,
-                84.044998 -70.693359 0,
-                84.044998 -56.896271 0,
-                88.243706 -59.755527 0,
-                104.66389 -64.238457 0,
-                105.07834 -59.98032 0,
-                116.45697 -70.693359 0,
-                105.07834 -81.406395 0,
-                104.66389 -77.15033 0,
-                97.889114 -77.674843 0,
-                84.044998 -84.509567 0,
-                84.044998 -70.693359 0 ]
-            normalBinding PER_FACE_INDEXED
-            materialBinding PER_FACE_INDEXED
+def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_RED,scale=1,type=1, rotation=[0.0, 0.0, 0.0, math.radians(0.0)]):
+    if type==0:
+        arrow1_str="""#Inventor V2.1 ascii
+            DEF root Separator {
+              ShapeHints {
+                vertexOrdering CLOCKWISE
+                shapeType SOLID
+                faceType CONVEX
+              }
+              VertexProperty {
+                vertex [ 84.044998 -56.896271 0,
+                    84.878975 -57.540318 0,
+                    85.734688 -58.155235 0,
+                    86.703186 -58.804478 0,
+                    87.468605 -59.288124 0,
+                    88.243706 -59.755527 0,
+                    89.26725 -60.339321 0,
+                    90.310753 -60.894997 0,
+                    91.315041 -61.392021 0,
+                    92.308304 -61.846939 0,
+                    93.289848 -62.260395 0,
+                    94.259178 -62.633118 0,
+                    95.215981 -62.965904 0,
+                    96.160065 -63.259579 0,
+                    97.091377 -63.514984 0,
+                    98.009964 -63.732956 0,
+                    98.915955 -63.914307 0,
+                    99.809555 -64.059807 0,
+                    100.69104 -64.170197 0,
+                    101.56074 -64.24614 0,
+                    102.41901 -64.288269 0,
+                    103.26627 -64.297104 0,
+                    103.96442 -64.279381 0,
+                    104.66389 -64.238457 0,
+                    105.07834 -59.98032 0,
+                    116.45697 -70.693359 0,
+                    105.07834 -81.406395 0,
+                    104.66389 -77.15033 0,
+                    103.69802 -77.103256 0,
+                    102.82792 -77.095093 0,
+                    101.95882 -77.119354 0,
+                    101.09246 -77.17598 0,
+                    100.23052 -77.264824 0,
+                    99.374641 -77.385674 0,
+                    98.629578 -77.517899 0,
+                    97.889114 -77.674843 0,
+                    96.785973 -77.958443 0,
+                    95.693489 -78.279922 0,
+                    94.594559 -78.644653 0,
+                    93.499832 -79.049988 0,
+                    92.410858 -79.495689 0,
+                    91.329269 -79.981453 0,
+                    90.256821 -80.506813 0,
+                    89.195351 -81.071213 0,
+                    88.146782 -81.673943 0,
+                    87.113083 -82.314133 0,
+                    86.096298 -82.990799 0,
+                    85.098495 -83.702782 0,
+                    84.568085 -84.101654 0,
+                    84.044998 -84.509567 0,
+                    84.044998 -70.693359 0,
+                    84.044998 -56.896271 0,
+                    88.243706 -59.755527 0,
+                    104.66389 -64.238457 0,
+                    105.07834 -59.98032 0,
+                    116.45697 -70.693359 0,
+                    105.07834 -81.406395 0,
+                    104.66389 -77.15033 0,
+                    97.889114 -77.674843 0,
+                    84.044998 -84.509567 0,
+                    84.044998 -70.693359 0 ]
+                normalBinding PER_FACE_INDEXED
+                materialBinding PER_FACE_INDEXED
 
+              }
+              IndexedFaceSet {
+                coordIndex [ 27, 25, 26, -1, 23, 25, 27, -1,
+                    22, 27, 28, -1, 22, 23, 27, -1,
+                    21, 28, 29, -1, 21, 22, 28, -1,
+                    20, 21, 29, -1, 20, 29, 30, -1,
+                    19, 30, 31, -1, 19, 20, 30, -1,
+                    24, 25, 23, -1, 18, 19, 31, -1,
+                    18, 31, 32, -1, 17, 32, 33, -1,
+                    17, 18, 32, -1, 16, 33, 34, -1,
+                    16, 17, 33, -1, 15, 34, 35, -1,
+                    15, 16, 34, -1, 14, 35, 36, -1,
+                    14, 15, 35, -1, 13, 14, 36, -1,
+                    13, 36, 37, -1, 12, 37, 38, -1,
+                    12, 13, 37, -1, 50, 12, 38, -1,
+                    50, 10, 11, -1, 50, 11, 12, -1,
+                    50, 38, 39, -1, 50, 39, 40, -1,
+                    50, 40, 41, -1, 50, 41, 42, -1,
+                    50, 42, 43, -1, 50, 43, 44, -1,
+                    50, 44, 45, -1, 50, 45, 46, -1,
+                    50, 46, 47, -1, 50, 47, 48, -1,
+                    50, 48, 49, -1, 9, 10, 50, -1,
+                    8, 9, 50, -1, 7, 8, 50, -1,
+                    6, 7, 50, -1, 5, 6, 50, -1,
+                    4, 5, 50, -1, 3, 4, 50, -1,
+                    2, 3, 50, -1, 1, 2, 50, -1,
+                    0, 1, 50, -1 ]
+              }
+            }
+            """
+    elif type==1:
+        arrow1_str="""
+        #Inventor V2.1 ascii
+        DEF root Separator {
+          renderCaching OFF
+          boundingBoxCaching OFF
+          renderCulling OFF
+          pickCulling OFF
+          Separator {
+            Coordinate3 {
+              point [ 104.70005 -67.598953 0,
+                  104.70005 -75.059814 0,
+                  78.933617 -75.059814 0,
+                  78.933617 -82.361931 0,
+                  104.70005 -82.361931 0,
+                  104.70005 -89.8228 0,
+                  116.43636 -78.710876 0,
+                  104.70005 -67.598953 0,
+                  104.70005 -75.059814 0,
+                  78.933617 -75.059814 0,
+                  78.933617 -82.361931 0,
+                  104.70005 -82.361931 0,
+                  104.70005 -89.8228 0,
+                  116.43636 -78.710876 0 ]
+            }
+            IndexedFaceSet {
+              coordIndex [ 1, 2, 3, -1, 1, 3, 4, -1,
+                  6, 0, 1, -1, 6, 4, 5, -1,
+                  6, 1, 4, -1 ]
+            }
           }
-          IndexedFaceSet {
-            coordIndex [ 27, 25, 26, -1, 23, 25, 27, -1,
-                22, 27, 28, -1, 22, 23, 27, -1,
-                21, 28, 29, -1, 21, 22, 28, -1,
-                20, 21, 29, -1, 20, 29, 30, -1,
-                19, 30, 31, -1, 19, 20, 30, -1,
-                24, 25, 23, -1, 18, 19, 31, -1,
-                18, 31, 32, -1, 17, 32, 33, -1,
-                17, 18, 32, -1, 16, 33, 34, -1,
-                16, 17, 33, -1, 15, 34, 35, -1,
-                15, 16, 34, -1, 14, 35, 36, -1,
-                14, 15, 35, -1, 13, 14, 36, -1,
-                13, 36, 37, -1, 12, 37, 38, -1,
-                12, 13, 37, -1, 50, 12, 38, -1,
-                50, 10, 11, -1, 50, 11, 12, -1,
-                50, 38, 39, -1, 50, 39, 40, -1,
-                50, 40, 41, -1, 50, 41, 42, -1,
-                50, 42, 43, -1, 50, 43, 44, -1,
-                50, 44, 45, -1, 50, 45, 46, -1,
-                50, 46, 47, -1, 50, 47, 48, -1,
-                50, 48, 49, -1, 9, 10, 50, -1,
-                8, 9, 50, -1, 7, 8, 50, -1,
-                6, 7, 50, -1, 5, 6, 50, -1,
-                4, 5, 50, -1, 3, 4, 50, -1,
-                2, 3, 50, -1, 1, 2, 50, -1,
-                0, 1, 50, -1 ]
+          Separator {
+            Coordinate3 {
+              point [ 71.988663 -75.059814 0,
+                  71.988663 -82.361931 0,
+                  73.377655 -82.361931 0,
+                  73.377655 -75.059814 0,
+                  71.988663 -75.059814 0,
+                  71.988663 -82.361931 0,
+                  73.377655 -82.361931 0,
+                  73.377655 -75.059814 0 ]
+            }
+            IndexedFaceSet {
+              coordIndex [ 3, 0, 1, -1, 3, 1, 2, -1 ]
+            }
+          }
+          Separator {
+            Coordinate3 {
+              point [ 74.766647 -75.059814 0,
+                  74.766647 -82.361931 0,
+                  77.544624 -82.361931 0,
+                  77.544624 -75.059814 0,
+                  74.766647 -75.059814 0,
+                  74.766647 -82.361931 0,
+                  77.544624 -82.361931 0,
+                  77.544624 -75.059814 0 ]
+            }
+            IndexedFaceSet {
+              coordIndex [ 3, 0, 1, -1, 3, 1, 2, -1 ]
+            }
           }
         }
         """
