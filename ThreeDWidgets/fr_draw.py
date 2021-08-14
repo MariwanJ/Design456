@@ -183,7 +183,7 @@ def draw_line(p1, p2, color, LineWidth):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-# draw arrow
+# draw arrow (Angel is in degree)
 def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.0, 1.0, 1.0, 0.0]):
     '''
     Draw a 3D arrow at the position given by the _Points and the color given by _color. 
@@ -202,7 +202,6 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
         transRoot = coin.SoTranslation()
         coordsRoot = coin.SoTransform()
         tempR = coin.SbVec3f()
-        print(_rotation)
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         cone = coin.SoCone()
         cone.bottomRadius = 3
@@ -225,7 +224,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
         coordsRoot.translation.setValue(App.Vector(0, 0, 0))
 
         # SbRotation (const SbVec3f &axis, const float radians)
-        coordsRoot.rotation.setValue(*tempR, _rotation[3])
+        coordsRoot.rotation.setValue(*tempR, math.radians(_rotation[3]))
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
         transRoot.translation.setValue(_Points)
@@ -533,7 +532,7 @@ def createFrameShape():
     sg.addChild(root)
 
 # Load a SVG image to the coin3D
-#TODO: NOT WORKING WELL FIXME:
+#Angle is in degree
 def loadImageTo3D(filename="", BoxSize=(2,2,0.01), location=App.Vector(0,0,0), rotation=(0.0,0.0,0.0,0.0)):
     svg = coin.SoTexture2()
     svg.filename = filename
@@ -541,7 +540,9 @@ def loadImageTo3D(filename="", BoxSize=(2,2,0.01), location=App.Vector(0,0,0), r
     box.size = BoxSize
     imagePos = coin.SoTransform()
     imagePos.translation.setValue(location)  
-    imagePos.rotation = coin.SbRotation(rotation)
+    tempR = coin.SbVec3f()
+    tempR.setValue(rotation[0], rotation[1], rotation[2])
+    imagePos.rotation.setValue(*tempR, math.radians(rotation[3]))
     image = coin.SoSeparator()
     image.addChild(imagePos)
     image.addChild(svg)
@@ -890,16 +891,19 @@ def draw_faceIndexed():
 
 ####################################################
 #New drawings based on conversion of drawing in Inscape --> FreeCAD --> export vrml 
-# and later convert manually the vrml file to coin
+# and later convert manually the VRML file to coin
 #TODO: FIXME:
-def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, rotation=[0.0, 0.0, 1.0, 0.0]):
+def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 90.0]):
     root=coin.SoSeparator() #root group holder
     transform=coin.SoTransform()
     trans=coin.SoTranslation()
     trans.translation.setValue(p1)
-    transform.rotation.setValue(rotation)
+    transform.rotation.setValue(_rotation)
+    transform.translation.setValue(p1)
     transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
-    
+    tempR = coin.SbVec3f()
+    tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
@@ -909,70 +913,71 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
         soIndexFace= coin.SoIndexedFaceSet()
         cordinate= coin.SoCoordinate3()
         Shapehint= coin.SoShapeHints()
-        Shapehint.shapeType=coin.SoShapeHints.SOLID
+        Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
         Shapehint.vertexOrdering= coin.SoShapeHints.CLOCKWISE
-        Shapehint.faceType=coin.SoShapeHints.CONVEX
-        vertexPositions=[(84.044998 ,-56.896271, 0),
-                        (84.878975 ,-57.540318, 0),
-                        (85.734688 ,-58.155235, 0),
-                        (86.703186 ,-58.804478, 0),
-                        (87.468605 ,-59.288124, 0),
-                        (88.243706 ,-59.755527, 0),
-                        (89.26725  ,-60.339321, 0),
-                        (90.310753 ,-60.894997, 0),
-                        (91.315041 ,-61.392021, 0),
-                        (92.308304 ,-61.846939, 0),
-                        (93.289848 ,-62.260395, 0),
-                        (94.259178 ,-62.633118, 0),
-                        (95.215981 ,-62.965904, 0),
-                        (96.160065 ,-63.259579, 0),
-                        (97.091377 ,-63.514984, 0),
-                        (98.009964 ,-63.732956, 0),
-                        (98.915955 ,-63.914307, 0),
-                        (99.809555 ,-64.059807, 0),
-                        (100.69104 ,-64.170197, 0),
-                        (101.56074 ,-64.24614 , 0),
-                        (102.41901 ,-64.288269, 0),
-                        (103.26627 ,-64.297104, 0),
-                        (103.96442 ,-64.279381, 0),
-                        (104.66389 ,-64.238457, 0),
-                        (105.07834 ,-59.98032 , 0),
-                        (116.45697 ,-70.693359, 0),
-                        (105.07834 ,-81.406395, 0),
-                        (104.66389 ,-77.15033 , 0),
-                        (103.69802 ,-77.103256, 0),
-                        (102.82792 ,-77.095093, 0),
-                        (101.95882 ,-77.119354, 0),
-                        (101.09246 ,-77.17598 , 0),
-                        (100.23052 ,-77.264824, 0),
-                        (99.374641 ,-77.385674, 0),
-                        (98.629578 ,-77.517899, 0),
-                        (97.889114 ,-77.674843, 0),
-                        (96.785973 ,-77.958443, 0),
-                        (95.693489 ,-78.279922, 0),
-                        (94.594559 ,-78.644653, 0),
-                        (93.499832 ,-79.049988, 0),
-                        (92.410858 ,-79.495689, 0),
-                        (91.329269 ,-79.981453, 0),
-                        (90.256821 ,-80.506813, 0),
-                        (89.195351 ,-81.071213, 0),
-                        (88.146782 ,-81.673943, 0),
-                        (87.113083 ,-82.314133, 0),
-                        (86.096298 ,-82.990799, 0),
-                        (85.098495 ,-83.702782, 0),
-                        (84.568085 ,-84.101654, 0),
-                        (84.044998 ,-84.509567, 0),
-                        (84.044998 ,-70.693359, 0),
-                        (84.044998 ,-56.896271, 0),
-                        (88.243706 ,-59.755527, 0),
-                        (104.66389 ,-64.238457, 0),
-                        (105.07834 ,-59.98032 , 0),
-                        (116.45697 ,-70.693359, 0),
-                        (105.07834 ,-81.406395, 0),
-                        (104.66389 ,-77.15033 , 0),
-                        (97.889114 ,-77.674843, 0),
-                        (84.044998 ,-84.509567, 0),
-                        (84.044998 ,-70.693359, 0)]
+        Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
+        vertexPositions=[(-16.210 ,   	 13.805   , 	0),
+                         (-15.370 ,   	 13.165   , 	0),
+                         (-14.520 ,   	 12.545   , 	0),
+                         (-13.550 ,   	 11.905   , 	0),
+                         (-12.780 ,   	 11.415   , 	0),
+                         (-12.010 ,   	 10.945   , 	0),
+                         (-10.980 ,   	 10.365   , 	0),
+                         (-9.940  ,  	 9.815    ,	    0),
+                         (-8.930  ,  	 9.315    ,	    0),
+                         (-7.940  ,  	 8.855    ,	    0),
+                         (-6.960  ,  	 8.445    ,	    0),
+                         (-5.990  ,  	 8.075    ,	    0),
+                         (-5.030  ,  	 7.735    ,	    0),
+                         (-4.090  ,  	 7.445    ,	    0),
+                         (-3.160  ,  	 7.195    ,	    0),
+                         (-2.240  ,  	 6.975    ,	    0),
+                         (-1.330  ,  	 6.795    ,	    0),
+                         (-0.440  ,  	 6.645    ,	    0),
+                         ( 0.440  ,  	 6.535    ,	    0),
+                         ( 1.310  ,  	 6.455    ,	    0),
+                         ( 2.170  ,  	 6.415    ,	    0),
+                         ( 3.020  ,  	 6.405    ,	    0),
+                         ( 3.710  ,  	 6.425    ,	    0),
+                         ( 4.410  ,  	 6.465    ,	    0),
+                         ( 4.830  ,  	 10.725   , 	0),
+                         ( 16.210 ,   	 0.015    ,	    0),
+                         ( 4.830  ,  	-10.705   , 	0),
+                         ( 4.410  ,  	-6.445    ,	    0),
+                         ( 3.450  ,  	-6.395    ,	    0),
+                         ( 2.580  ,  	-6.395    ,	    0),
+                         ( 1.710  ,  	-6.415    ,	    0),
+                         ( 0.840  ,  	-6.475    ,	    0),
+                         (-0.020  ,  	-6.555    ,	    0),
+                         (-0.880  ,  	-6.685    ,	    0),
+                         (-1.620  ,  	-6.815    ,	    0),
+                         (-2.360  ,  	-6.965    ,	    0),
+                         (-3.460  ,  	-7.255    ,	    0),
+                         (-4.560  ,  	-7.575    ,	    0),
+                         (-5.660  ,  	-7.935    ,	    0),
+                         (-6.750  ,  	-8.345    ,	    0),
+                         (-7.840  ,  	-8.795    ,	    0),
+                         (-8.920  ,  	-9.275    ,	    0),
+                         (-9.990  ,  	-9.805    ,	    0),
+                         (-11.050 ,   	-10.365   , 	0),
+                         (-12.100 ,   	-10.965   , 	0),
+                         (-13.140 ,   	-11.605   , 	0),
+                         (-14.150 ,   	-12.285   , 	0),
+                         (-15.150 ,   	-12.995   , 	0),
+                         (-15.680 ,   	-13.395   , 	0),
+                         (-16.210 ,   	-13.805   , 	0),
+                         (-16.210 ,   	 0.015    ,	    0),
+                         (-16.210 ,   	 13.805   , 	0),
+                         (-12.010 ,   	 10.945   , 	0),
+                         ( 4.410  ,  	 6.465    ,	    0),
+                         ( 4.830  ,  	 10.725   , 	0),
+                         ( 16.210 ,   	 0.015    ,	    0),
+                         ( 4.830  ,  	-10.705   , 	0),
+                         ( 4.410  ,  	-6.445    ,	    0),
+                         (-2.360  ,  	-6.965    ,	    0),
+                         (-16.210 ,   	-13.805   , 	0),
+                         (-16.210 ,   	 0.015    ,	    0),]
+        
         cordinate.point.setValues(0, 61, vertexPositions)
         indices= [ 27, 25, 26, -1, 23, 25, 27, -1,
                     22, 27, 28, -1, 22, 23, 27, -1,
@@ -1013,38 +1018,40 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
         soIndexfacesHead =coin.SoIndexedFaceSet()
         soIndexfacesTail1=coin.SoIndexedFaceSet()
         soIndexfacesTail2=coin.SoIndexedFaceSet()
-        vertexHead=[(104.70005, -67.598953 ,0),
-                    (104.70005, -75.059814 ,0),
-                    (78.933617, -75.059814 ,0),
-                    (78.933617, -82.361931 ,0),
-                    (104.70005, -82.361931 ,0),
-                    (104.70005, -89.8228   ,0),
-                    (116.43636, -78.710876 ,0),
-                    (104.70005, -67.598953 ,0),
-                    (104.70005, -75.059814 ,0),
-                    (78.933617, -75.059814 ,0),
-                    (78.933617, -82.361931 ,0),
-                    (104.70005, -82.361931 ,0),
-                    (104.70005, -89.8228   ,0),
-                    (116.43636, -78.710876 ,0 )]
+        vertexHead=[(-5.87  ,    11.11 ,  0),
+                    (-5.87  ,    3.65  ,  0),
+                    (-31.64 ,    3.65  ,  0),
+                    (-31.64 ,    -3.65 ,  0),
+                    (-5.87  ,    -3.65 ,  0),
+                    (-5.87  ,    -11.11,  0),
+                    (5.87   ,    0     ,  0),
+                    (-5.87  ,    11.11 ,  0),
+                    (-5.87  ,    3.65  ,  0),
+                    (-31.64 ,    3.65  ,  0),
+                    (-31.64 ,    -3.65 ,  0),
+                    (-5.87  ,    -3.65 ,  0),
+                    (-5.87  ,    -11.11,  0),
+                    (5.87   ,    0     ,  0)
+                    ]
 
-        vertexTail1=[( 71.988663, -75.059814, 0),
-                     (71.988663 , -82.361931, 0),
-                     (73.377655 , -82.361931, 0),
-                     (73.377655 , -75.059814, 0),
-                     (71.988663 , -75.059814, 0),
-                     (71.988663 , -82.361931, 0),
-                     (73.377655 , -82.361931, 0),
-                     (73.377655 , -75.059814, 0)]
+        vertexTail1=[(-38.58 ,    3.65  ,  0),
+                        (-38.58 ,    -3.65 ,  0),
+                        (-37.19 ,    -3.65 ,  0),
+                        (-37.19 ,    3.65  ,  0),
+                        (-38.58 ,    3.65  ,  0),
+                        (-38.58 ,    -3.65 ,  0),
+                        (-37.19 ,    -3.65 ,  0),
+                        (-37.19 ,    3.65  ,  0)]
         
-        vertexTail2=[(74.766647 ,-75.059814, 0),
-                     (74.766647 ,-82.361931, 0),
-                     (77.544624 ,-82.361931, 0),
-                     (77.544624 ,-75.059814, 0),
-                     (74.766647 ,-75.059814, 0),
-                     (74.766647 ,-82.361931, 0),
-                     (77.544624 ,-82.361931, 0),
-                     (77.544624 ,-75.059814, 0)]
+        vertexTail2=[(-35.8  ,    3.65  ,  0),
+                        (-35.8  ,    -3.65 ,  0),
+                        (-33.03 ,    -3.65 ,  0),
+                        (-33.03 ,    3.65  ,  0),
+                        (-35.8  ,    3.65  ,  0),
+                        (-35.8  ,    -3.65 ,  0),
+                        (-33.03 ,    -3.65 ,  0),
+                        (-33.03 ,    3.65  ,  0)
+                        ]
         
         indicesHead= [ 1, 2, 3, -1, 1, 3, 4, -1,
                        6, 0, 1, -1, 6, 4, 5, -1,
