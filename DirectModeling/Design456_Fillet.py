@@ -208,7 +208,7 @@ class Design456_SmartFillet:
                 self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
                 self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
                 
-                rotation = [-1.0, 0.0, 0.0, math.radians(57)]
+                rotation = [-1.0, 0.0, 0.0, 57]
                 return rotation
 
             vectors = self.selectedObj[0].SubObjects[0].Vertexes
@@ -225,7 +225,7 @@ class Design456_SmartFillet:
                 rotation = [-1,
                             0,
                             0,
-                            math.radians(57)]
+                            57]
 
             elif self.objectType == 'Edge':
                 # An edge is selected
@@ -238,7 +238,7 @@ class Design456_SmartFillet:
                 rotation = [-1,
                              0,
                              0,
-                            math.radians(+57)]
+                            +57]
 
             return rotation
         except Exception as err:
