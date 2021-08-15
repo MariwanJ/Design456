@@ -107,7 +107,7 @@ def draw_Point(p1,size=0.1, color=FR_COLOR.FR_GOLD, type=0):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
+#TODO:FIXME : ADD ROTATION
 def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), lineWidth=1):
     try:
         if len(vectors) != 4:
@@ -153,7 +153,7 @@ def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), lineWidth
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
+#TODO: FIXME: ADD ROTATION
 def draw_line(p1, p2, color, LineWidth):
     try:
         so_separator = coin.SoSeparator()
@@ -188,7 +188,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
     '''
     Draw a 3D arrow at the position given by the _Points and the color given by _color. 
     Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
-    An angle in radians. 
+    An angle in degree. 
     '''
     try:
         so_separatorRoot = coin.SoSeparator()
@@ -257,7 +257,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
+#TODO: FIXME: ADD ROTATION
 def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD, Texture="",style=0, LineWidth=1, LinePattern=0xffff):
     """[Use this function to draw a box. The box-style could be configured.]
 
@@ -343,6 +343,7 @@ def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD
 
 
 # draw a Four sided shape
+#TODO FIXME:ADD ROTATION
 class draw_fourSidedShape:
     '''
         Create a four sided shape using four vertices.
@@ -442,6 +443,7 @@ class draw_fourSidedShape:
 
 
 # Draw a NurbsFace face in the 3D Coin
+#TODO: ADD ROTATION
 class draw_NurbsFace:
 
     def __init__(self, Points=[], color=FR_COLOR.FR_RED, use_texture=False, LineWidth=1):
@@ -513,6 +515,7 @@ class draw_NurbsFace:
 
 
 # this function is just an example showing how you can affect the drawing
+#TODO: FIXME: ADD ROTATION
 def createFrameShape():
     sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
     root = coin.SoSeparator()
@@ -533,7 +536,19 @@ def createFrameShape():
 
 # Load a SVG image to the coin3D
 #Angle is in degree
-def loadImageTo3D(filename="", BoxSize=(2,2,0.01), location=App.Vector(0,0,0), rotation=(0.0,0.0,0.0,0.0)):
+def loadImageTo3D(filename, BoxSize=(2,2,0.01), location=App.Vector(0,0,0), rotation=(0.0,0.0,0.0,0.0)):
+    """[Load svg file to the coin3d world. 
+       Place it at the location given by 'location' and you can rotate it by the angle given by rotation]
+
+    Args:
+        filename (str, optional): [File name must be given]. Defaults to "".
+        BoxSize (tuple, optional): [Size of the image]. Defaults to (2,2,0.01).
+        location ([type], optional): [Placing location of the image]. Defaults to App.Vector(0,0,0).
+        rotation (tuple, optional): [Rotation axis and angle ]. Defaults to (0.0,0.0,0.0,0.0).
+
+    Returns:
+        [type]: [SoSeparator of the drawing ]
+    """
     svg = coin.SoTexture2()
     svg.filename = filename
     box = coin.SoVRMLBox()
@@ -570,10 +585,8 @@ def draw_Curve(knots=None, data=None):
 class draw_cylinder:
     """
     Create a Cylinder shape with wide configuration possibilities
-    """
-
-    def __init__(self, CylinderData: userDataObject = None):
-        """[Draw a cylinder. Parameters determine how the cylinder is drawn]
+    
+    [Draw a cylinder. Parameters determine how the cylinder is drawn]
 
         Args:
             CylinderData (userDataObject, optional): [description]. Defaults to None.
@@ -589,10 +602,12 @@ class draw_cylinder:
                 self.Color: List[float, float, float] = []              # color
                 self.LineWidth: float = 1.0                             # drawing line width
                 self.Transparency: float = 50.0                         # transparency
-                self.Rotation: List[(float, float, float), float] = []  # rotation axis and angle 
+                self.Rotation: List[(float, float, float), float] = []  # rotation axis and angle in degree 
             
             
         """
+
+    def __init__(self, CylinderData: userDataObject = None):
         self.CylinderSO = None
         self.TransCylinder = None
         self.CylinderTransform = None
@@ -626,7 +641,7 @@ class draw_cylinder:
         cylinderTransform.scaleFactor.setValue([self.Scale, self.Scale, self.Scale])
         cylinderTransform.translation.setValue(App.Vector(0, 0, 0))
         # SbRotation (const SbVec3f &axis, const float radians)
-        cylinderTransform.rotation.setValue(*tempR, self.rotation[3])
+        cylinderTransform.rotation.setValue(*tempR, math.radians(self.rotation[3]))
         transCylinder.translation.setValue(p1)
 
         material = coin.SoMaterial()
@@ -641,13 +656,15 @@ class draw_cylinder:
         return cylinderSO
     
 
+
+#TODO: FIXME : ADD ROTATION
 def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
     """[summary]
 
     Args:
         vertices (App.Vector, optional): Vertices will be used to draw the face. 3 will result in a triangle, four and above could draw different shapes. 
           Defaults to None.
-        numvertices (List of integers, optional): [This will specify how these verticies should be used when the function draw them]. Defaults (3,).
+        numvertices (List of integers, optional): [This will specify how these vertices should be used when the function draw them]. Defaults (3,).
         _color ([FL_COLOR], optional): [Provides the color for the drawing]. Defaults to FR_COLOR.FR_GOLD.
 
     Returns:
@@ -679,10 +696,10 @@ def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
             print(exc_type, fname, exc_tb.tb_lineno)
             return
     
-    Verticies=regular_polygon_vertexes(4,30,0,90)
-    n=len(Verticies)
+    vertices=regular_polygon_vertexes(4,30,0,90)
+    n=len(vertices)
     numvertices = (n, )
-    root=d.draw_FaceSet(Verticies,numvertices,(0,1,1))
+    root=d.draw_FaceSet(vertices,numvertices,(0,1,1))
     view = Gui.ActiveDocument.ActiveView
     sg = view.getSceneGraph()
     sg.addChild(root)
@@ -716,6 +733,7 @@ def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+#TODO: FIXME : ADD ROTATION
 class draw_polygonBase:
     
     def __init__(self,sides=3,radius=5, startangel=0,pos=App.Vector(0,0,0), _color=FR_COLOR.FR_GOLD):
@@ -794,18 +812,17 @@ class draw_polygonBase:
         soRoot= draw_FaceSet(self.vertices,(numberOfvert,),self.color)
         return soRoot  # SoSeparator created during the drawing. You need to add this to the senegraph
 
-def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[(float,float,float)] = [],indices=[],color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
-    """[summary]
+def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indices=[],color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+    """[Draw any faceIndexed object by providing the vertexpositions and indices.]
 
     Args:
         p1 ([App.Vector], optional): [Position of the drawing]. Defaults to App.Vector(0,0,0).
-        vertexPositions (List[App.Vector], optional): [Vertices that must be given]. Defaults to [].
+        vertexPositions (List[App.Vector], optional): [Vertices of the drawing-must be given]. Defaults to [].
         indices (list, optional): [Indexed faceset's coordIndex must be given]. Defaults to [].
         color ([float,float,float], optional): [Color of the drawing]. Defaults to FR_COLOR.FR_GOLD.
-        scale (tuple, optional): [description]. Defaults to (1,1,1).
-        type (int, optional): [description]. Defaults to 1.
-        opacity (int, optional): [description]. Defaults to 0.
-        _rotation (list, optional): [description]. Defaults to [1.0, 0.0, 0.0, 0.0].
+        scale ((float,float,float), optional): [Scale factor for each axis]. Defaults to (1,1,1).
+        opacity (int, optional): [Opacity percentage of the object. From 0 to 100]. Defaults to 0.
+        _rotation ((float,float,float,float), optional): [Rotation axis and the angle in degree]. Defaults to [1.0, 0.0, 0.0, 0.0].
     """
     root=coin.SoSeparator() #root group holder
     transform=coin.SoTransform()
@@ -821,29 +838,24 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[(float,float,flo
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
     
-    if type==0:
-        soSepArrow=coin.SoSeparator()   # drawing holder
-        soIndexFace= coin.SoIndexedFaceSet()
-        cordinate= coin.SoCoordinate3()
-        Shapehint= coin.SoShapeHints()
-        Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
-        Shapehint.vertexOrdering= coin.SoShapeHints.CLOCKWISE
-        Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
-        
-        cordinate.point.setValues(0, 61, vertexPositions)
-        soIndexFace.coordIndex.setValues(0, len(indices), indices)
-        soSepArrow.addChild(Shapehint)
-        soSepArrow.addChild(cordinate) 
-        soSepArrow.addChild(soIndexFace)
-        
-        root.addChild(trans)
-        root.addChild(material)
-        root.addChild(transform)
-        root.addChild(soSepArrow)
-
-
-
-
+    soSepArrow=coin.SoSeparator()   # drawing holder
+    soIndexFace= coin.SoIndexedFaceSet()
+    cordinate= coin.SoCoordinate3()
+    Shapehint= coin.SoShapeHints()
+    Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
+    Shapehint.vertexOrdering= coin.SoShapeHints.CLOCKWISE
+    Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
+    
+    cordinate.point.setValues(0, 61, vertexPositions)
+    soIndexFace.coordIndex.setValues(0, len(indices), indices)
+    soSepArrow.addChild(Shapehint)
+    soSepArrow.addChild(cordinate) 
+    soSepArrow.addChild(soIndexFace)
+    
+    root.addChild(trans)
+    root.addChild(material)
+    root.addChild(transform)
+    root.addChild(soSepArrow)
 
 
 ####################################################
@@ -865,7 +877,21 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[(float,float,flo
         sg.addChild(root)
 
     """
+
 def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+    """[2D Arrow]
+
+    Args:
+        p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0,0,0).
+        color ((float,float,float)), optional): [RGB Value between 0 to 1]. Defaults to FR_COLOR.FR_GOLD.
+        scale ((float,float,float)), optional): [Scale factor for each axis]. Defaults to (1,1,1).
+        type (int, optional): [Arrow type. At the moment there are 2 types]. Defaults to 1.
+        opacity (int, optional): [Opacity of the drawn arrow]. Defaults to 0.
+        _rotation (list, optional): [Rotation of the arrow provided by three float and an angle (float) in degree]. Defaults to [1.0, 0.0, 0.0, 0.0].
+
+    Returns:
+        [SoSeparator]: [SoSeparator which hold the drawing. Add it to the senegraph to show the arrow]
+    """    
     root=coin.SoSeparator() #root group holder
     transform=coin.SoTransform()
     trans=coin.SoTranslation()
@@ -1067,220 +1093,6 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
     #Finalize the drawing by adding color, pos, scale , opacity
     return root
 
-
-
-"""
-    Example using the drawing: 
-    from pivy import coin
-    import math
-    import fr_draw as d 
-    import time
-    from PySide import QtCore,QtGui
-    sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-    for i in range (0,181): 
-        root=d.draw_TwoDarrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [1.0, 0.0, 0.0, i])
-        sg.addChild(root)
-    for i in range (0,181): 
-        root=d.draw_TwoDarrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [-1.0, 0.0, 0.0, i])
-        sg.addChild(root)
-
-"""
-def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
-    if type==0:
-        arrow1_str="""#Inventor V2.1 ascii
-            DEF root Separator {
-              ShapeHints {
-                vertexOrdering CLOCKWISE
-                shapeType SOLID
-                faceType CONVEX
-              }
-              VertexProperty {
-                vertex [ 84.044998 -56.896271 0,
-                    84.878975 -57.540318 0,
-                    85.734688 -58.155235 0,
-                    86.703186 -58.804478 0,
-                    87.468605 -59.288124 0,
-                    88.243706 -59.755527 0,
-                    89.26725 -60.339321 0,
-                    90.310753 -60.894997 0,
-                    91.315041 -61.392021 0,
-                    92.308304 -61.846939 0,
-                    93.289848 -62.260395 0,
-                    94.259178 -62.633118 0,
-                    95.215981 -62.965904 0,
-                    96.160065 -63.259579 0,
-                    97.091377 -63.514984 0,
-                    98.009964 -63.732956 0,
-                    98.915955 -63.914307 0,
-                    99.809555 -64.059807 0,
-                    100.69104 -64.170197 0,
-                    101.56074 -64.24614 0,
-                    102.41901 -64.288269 0,
-                    103.26627 -64.297104 0,
-                    103.96442 -64.279381 0,
-                    104.66389 -64.238457 0,
-                    105.07834 -59.98032 0,
-                    116.45697 -70.693359 0,
-                    105.07834 -81.406395 0,
-                    104.66389 -77.15033 0,
-                    103.69802 -77.103256 0,
-                    102.82792 -77.095093 0,
-                    101.95882 -77.119354 0,
-                    101.09246 -77.17598 0,
-                    100.23052 -77.264824 0,
-                    99.374641 -77.385674 0,
-                    98.629578 -77.517899 0,
-                    97.889114 -77.674843 0,
-                    96.785973 -77.958443 0,
-                    95.693489 -78.279922 0,
-                    94.594559 -78.644653 0,
-                    93.499832 -79.049988 0,
-                    92.410858 -79.495689 0,
-                    91.329269 -79.981453 0,
-                    90.256821 -80.506813 0,
-                    89.195351 -81.071213 0,
-                    88.146782 -81.673943 0,
-                    87.113083 -82.314133 0,
-                    86.096298 -82.990799 0,
-                    85.098495 -83.702782 0,
-                    84.568085 -84.101654 0,
-                    84.044998 -84.509567 0,
-                    84.044998 -70.693359 0,
-                    84.044998 -56.896271 0,
-                    88.243706 -59.755527 0,
-                    104.66389 -64.238457 0,
-                    105.07834 -59.98032 0,
-                    116.45697 -70.693359 0,
-                    105.07834 -81.406395 0,
-                    104.66389 -77.15033 0,
-                    97.889114 -77.674843 0,
-                    84.044998 -84.509567 0,
-                    84.044998 -70.693359 0 ]
-                normalBinding PER_FACE_INDEXED
-                materialBinding PER_FACE_INDEXED
-
-              }
-              IndexedFaceSet {
-                coordIndex [ 27, 25, 26, -1, 23, 25, 27, -1,
-                    22, 27, 28, -1, 22, 23, 27, -1,
-                    21, 28, 29, -1, 21, 22, 28, -1,
-                    20, 21, 29, -1, 20, 29, 30, -1,
-                    19, 30, 31, -1, 19, 20, 30, -1,
-                    24, 25, 23, -1, 18, 19, 31, -1,
-                    18, 31, 32, -1, 17, 32, 33, -1,
-                    17, 18, 32, -1, 16, 33, 34, -1,
-                    16, 17, 33, -1, 15, 34, 35, -1,
-                    15, 16, 34, -1, 14, 35, 36, -1,
-                    14, 15, 35, -1, 13, 14, 36, -1,
-                    13, 36, 37, -1, 12, 37, 38, -1,
-                    12, 13, 37, -1, 50, 12, 38, -1,
-                    50, 10, 11, -1, 50, 11, 12, -1,
-                    50, 38, 39, -1, 50, 39, 40, -1,
-                    50, 40, 41, -1, 50, 41, 42, -1,
-                    50, 42, 43, -1, 50, 43, 44, -1,
-                    50, 44, 45, -1, 50, 45, 46, -1,
-                    50, 46, 47, -1, 50, 47, 48, -1,
-                    50, 48, 49, -1, 9, 10, 50, -1,
-                    8, 9, 50, -1, 7, 8, 50, -1,
-                    6, 7, 50, -1, 5, 6, 50, -1,
-                    4, 5, 50, -1, 3, 4, 50, -1,
-                    2, 3, 50, -1, 1, 2, 50, -1,
-                    0, 1, 50, -1 ]
-              }
-            }
-            """
-    elif type==1:
-        arrow1_str="""
-        #Inventor V2.1 ascii
-        DEF root Separator {
-          renderCaching OFF
-          boundingBoxCaching OFF
-          renderCulling OFF
-          pickCulling OFF
-          Separator {
-            Coordinate3 {
-              point [ 104.70005 -67.598953 0,
-                  104.70005 -75.059814 0,
-                  78.933617 -75.059814 0,
-                  78.933617 -82.361931 0,
-                  104.70005 -82.361931 0,
-                  104.70005 -89.8228 0,
-                  116.43636 -78.710876 0,
-                  104.70005 -67.598953 0,
-                  104.70005 -75.059814 0,
-                  78.933617 -75.059814 0,
-                  78.933617 -82.361931 0,
-                  104.70005 -82.361931 0,
-                  104.70005 -89.8228 0,
-                  116.43636 -78.710876 0 ]
-            }
-            IndexedFaceSet {
-              coordIndex [ 1, 2, 3, -1, 1, 3, 4, -1,
-                  6, 0, 1, -1, 6, 4, 5, -1,
-                  6, 1, 4, -1 ]
-            }
-          }
-          Separator {
-            Coordinate3 {
-              point [ 71.988663 -75.059814 0,
-                  71.988663 -82.361931 0,
-                  73.377655 -82.361931 0,
-                  73.377655 -75.059814 0,
-                  71.988663 -75.059814 0,
-                  71.988663 -82.361931 0,
-                  73.377655 -82.361931 0,
-                  73.377655 -75.059814 0 ]
-            }
-            IndexedFaceSet {
-              coordIndex [ 3, 0, 1, -1, 3, 1, 2, -1 ]
-            }
-          }
-          Separator {
-            Coordinate3 {
-              point [ 74.766647 -75.059814 0,
-                  74.766647 -82.361931 0,
-                  77.544624 -82.361931 0,
-                  77.544624 -75.059814 0,
-                  74.766647 -75.059814 0,
-                  74.766647 -82.361931 0,
-                  77.544624 -82.361931 0,
-                  77.544624 -75.059814 0 ]
-            }
-            IndexedFaceSet {
-              coordIndex [ 3, 0, 1, -1, 3, 1, 2, -1 ]
-            }
-          }
-        }
-        """
-
-    root=coin.SoSeparator()
-    arrow=coin.SoSeparator()
-    transform=coin.SoTransform()
-    trans=coin.SoTranslation()
-    material = coin.SoMaterial()
-    material.transparency.setValue(opacity)
-    material.diffuseColor.setValue(coin.SbColor(color))
-    transform.scaleFactor.setValue([scale [0], scale[1], scale[2]])
-
-    tempR = coin.SbVec3f()
-    tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
-
-    input = coin.SoInput()
-    input.setBuffer(arrow1_str)
-    result = coin.SoDB.readAll(input)
-    trans.translation.setValue(p1)
-    if result == None:
-        print("ERROR ")
-        return None
-    # Set up the duck transformations
-    root.addChild(material)
-    root.addChild(transform )
-    root.addChild(trans)
-    arrow.addChild(result)
-    root.addChild(arrow)
-    return root
-    
 
 
 """
@@ -1508,3 +1320,557 @@ def draw_circle(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacit
     #Finalize the drawing by adding color, pos, scale , opacity
     return root
 
+
+def draw_washer(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+    root=coin.SoSeparator() 
+    transform=coin.SoTransform()
+    trans=coin.SoTranslation()
+    trans.translation.setValue(p1)
+    transform.rotation.setValue(_rotation)
+    transform.translation.setValue(p1)
+    transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
+    tempR = coin.SbVec3f()
+    tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
+    material = coin.SoMaterial()
+    material.transparency.setValue(opacity)
+    material.diffuseColor.setValue(coin.SbColor(color))
+    
+    soSepArrow=coin.SoSeparator()   # drawing holder
+    soIndexFace= coin.SoIndexedFaceSet()
+    cordinate= coin.SoCoordinate3()
+    vertexPositions=[ (7.11  ,  0.00   , 0.0),
+                        (7.10  ,  0.37   , 0.0),
+                        (7.07  ,  0.73   , 0.0),
+                        (7.03  ,  1.09   , 0.0),
+                        (6.96  ,  1.45   , 0.0),
+                        (6.88  ,  1.81   , 0.0),
+                        (6.77  ,  2.16   , 0.0),
+                        (6.65  ,  2.51   , 0.0),
+                        (6.52  ,  2.85   , 0.0),
+                        (6.36  ,  3.18   , 0.0),
+                        (6.19  ,  3.50   , 0.0),
+                        (6.00  ,  3.82   , 0.0),
+                        (5.80  ,  4.12   , 0.0),
+                        (5.58  ,  4.41   , 0.0),
+                        (5.34  ,  4.69   , 0.0),
+                        (5.09  ,  4.96   , 0.0),
+                        (4.83  ,  5.22   , 0.0),
+                        (4.55  ,  5.46   , 0.0),
+                        (4.27  ,  5.69   , 0.0),
+                        (3.97  ,  5.90   , 0.0),
+                        (3.66  ,  6.10   , 0.0),
+                        (3.34  ,  6.28   , 0.0),
+                        (3.01  ,  6.44   , 0.0),
+                        (2.68  ,  6.59   , 0.0),
+                        (2.34  ,  6.72   , 0.0),
+                        (1.99  ,  6.83   , 0.0),
+                        (1.63  ,  6.92   , 0.0),
+                        (1.27  ,  7.00   , 0.0),
+                        (0.91  ,  7.05   , 0.0),
+                        (0.55  ,  7.09   , 0.0),
+                        (0.18  ,  7.11   , 0.0),
+                        (-0.18 ,  7.11   , 0.0),
+                        (-0.55 ,  7.09   , 0.0),
+                        (-0.91 ,  7.05   , 0.0),
+                        (-1.27 ,  7.00   , 0.0),
+                        (-1.63 ,  6.92   , 0.0),
+                        (-1.99 ,  6.83   , 0.0),
+                        (-2.34 ,  6.72   , 0.0),
+                        (-2.68 ,  6.59   , 0.0),
+                        (-3.01 ,  6.44   , 0.0),
+                        (-3.34 ,  6.28   , 0.0),
+                        (-3.66 ,  6.10   , 0.0),
+                        (-3.97 ,  5.90   , 0.0),
+                        (-4.27 ,  5.69   , 0.0),
+                        (-4.55 ,  5.46   , 0.0),
+                        (-4.83 ,  5.22   , 0.0),
+                        (-5.09 ,  4.96   , 0.0),
+                        (-5.34 ,  4.69   , 0.0),
+                        (-5.58 ,  4.41   , 0.0),
+                        (-5.80 ,  4.12   , 0.0),
+                        (-6.00 ,  3.82   , 0.0),
+                        (-6.19 ,  3.50   , 0.0),
+                        (-6.36 ,  3.18   , 0.0),
+                        (-6.52 ,  2.85   , 0.0),
+                        (-6.65 ,  2.51   , 0.0),
+                        (-6.77 ,  2.16   , 0.0),
+                        (-6.88 ,  1.81   , 0.0),
+                        (-6.96 ,  1.45   , 0.0),
+                        (-7.03 ,  1.09   , 0.0),
+                        (-7.07 ,  0.73   , 0.0),
+                        (-7.10 ,  0.37   , 0.0),
+                        (-7.11 ,  -1.81  , 0.0),
+                        (-7.10 ,  -0.37  , 0.0),
+                        (-7.07 ,  -0.73  , 0.0),
+                        (-7.03 ,  -1.09  , 0.0),
+                        (-6.96 ,  -1.45  , 0.0),
+                        (-6.88 ,  -1.81  , 0.0),
+                        (-6.77 ,  -2.16  , 0.0),
+                        (-6.65 ,  -2.51  , 0.0),
+                        (-6.52 ,  -2.85  , 0.0),
+                        (-6.36 ,  -3.18  , 0.0),
+                        (-6.19 ,  -3.50  , 0.0),
+                        (-6.00 ,  -3.82  , 0.0),
+                        (-5.80 ,  -4.12  , 0.0),
+                        (-5.58 ,  -4.41  , 0.0),
+                        (-5.34 ,  -4.69  , 0.0),
+                        (-5.09 ,  -4.96  , 0.0),
+                        (-4.83 ,  -5.22  , 0.0),
+                        (-4.55 ,  -5.46  , 0.0),
+                        (-4.27 ,  -5.69  , 0.0),
+                        (-3.97 ,  -5.90  , 0.0),
+                        (-3.66 ,  -6.10  , 0.0),
+                        (-3.34 ,  -6.28  , 0.0),
+                        (-3.01 ,  -6.44  , 0.0),
+                        (-2.68 ,  -6.59  , 0.0),
+                        (-2.34 ,  -6.72  , 0.0),
+                        (-1.99 ,  -6.83  , 0.0),
+                        (-1.63 ,  -6.92  , 0.0),
+                        (-1.27 ,  -7.00  , 0.0),
+                        (-0.91 ,  -7.05  , 0.0),
+                        (-0.55 ,  -7.09  , 0.0),
+                        (-0.18 ,  -7.11  , 0.0),
+                        (0.18  ,  -7.11  , 0.0),
+                        (0.55  ,  -7.09  , 0.0),
+                        (0.91  ,  -7.05  , 0.0),
+                        (1.27  ,  -7.00  , 0.0),
+                        (1.63  ,  -6.92  , 0.0),
+                        (1.99  ,  -6.83  , 0.0),
+                        (2.34  ,  -6.72  , 0.0),
+                        (2.68  ,  -6.59  , 0.0),
+                        (3.01  ,  -6.44  , 0.0),
+                        (3.34  ,  -6.28  , 0.0),
+                        (3.66  ,  -6.10  , 0.0),
+                        (3.97  ,  -5.90  , 0.0),
+                        (4.27  ,  -5.69  , 0.0),
+                        (4.55  ,  -5.46  , 0.0),
+                        (4.83  ,  -5.22  , 0.0),
+                        (5.09  ,  -4.96  , 0.0),
+                        (5.34  ,  -4.69  , 0.0),
+                        (5.58  ,  -4.41  , 0.0),
+                        (5.80  ,  -4.12  , 0.0),
+                        (6.00  ,  -3.82  , 0.0),
+                        (6.19  ,  -3.50  , 0.0),
+                        (6.36  ,  -3.18  , 0.0),
+                        (6.52  ,  -2.85  , 0.0),
+                        (6.65  ,  -2.51  , 0.0),
+                        (6.77  ,  -2.16  , 0.0),
+                        (6.88  ,  -1.81  , 0.0),
+                        (6.96  ,  -1.45  , 0.0),
+                        (7.03  ,  -1.09  , 0.0),
+                        (7.07  ,  -0.73  , 0.0),
+                        (7.10  ,  -0.37  , 0.0),
+                        (3.98  ,  0.00   , 0.0),
+                        (3.97  ,  0.27   , 0.0),
+                        (3.95  ,  0.54   , 0.0),
+                        (3.90  ,  0.81   , 0.0),
+                        (3.83  ,  1.07   , 0.0),
+                        (3.75  ,  1.33   , 0.0),
+                        (3.65  ,  1.59   , 0.0),
+                        (3.54  ,  1.83   , 0.0),
+                        (3.40  ,  2.07   , 0.0),
+                        (3.25  ,  2.30   , 0.0),
+                        (3.09  ,  2.51   , 0.0),
+                        (2.91  ,  2.72   , 0.0),
+                        (2.72  ,  2.91   , 0.0),
+                        (2.51  ,  3.09   , 0.0),
+                        (2.30  ,  3.25   , 0.0),
+                        (2.07  ,  3.40   , 0.0),
+                        (1.83  ,  3.54   , 0.0),
+                        (1.59  ,  3.65   , 0.0),
+                        (1.33  ,  3.75   , 0.0),
+                        (1.07  ,  3.83   , 0.0),
+                        (0.81  ,  3.90   , 0.0),
+                        (0.54  ,  3.95   , 0.0),
+                        (0.27  ,  3.97   , 0.0),
+                        (0.00  ,  3.98   , 0.0),
+                        (-0.27 ,  3.97   , 0.0),
+                        (-0.54 ,  3.95   , 0.0),
+                        (-0.81 ,  3.90   , 0.0),
+                        (-1.07 ,  3.83   , 0.0),
+                        (-1.33 ,  3.75   , 0.0),
+                        (-1.59 ,  3.65   , 0.0),
+                        (-1.83 ,  3.54   , 0.0),
+                        (-2.07 ,  3.40   , 0.0),
+                        (-2.30 ,  3.25   , 0.0),
+                        (-2.51 ,  3.09   , 0.0),
+                        (-2.72 ,  2.91   , 0.0),
+                        (-2.91 ,  2.72   , 0.0),
+                        (-3.09 ,  2.51   , 0.0),
+                        (-3.25 ,  2.30   , 0.0),
+                        (-3.40 ,  2.07   , 0.0),
+                        (-3.54 ,  1.83   , 0.0),
+                        (-3.65 ,  1.59   , 0.0),
+                        (-3.75 ,  1.33   , 0.0),
+                        (-3.83 ,  1.07   , 0.0),
+                        (-3.90 ,  0.81   , 0.0),
+                        (-3.95 ,  0.54   , 0.0),
+                        (-3.97 ,  0.27   , 0.0),
+                        (-3.98 ,  -1.01  , 0.0),
+                        (-3.97 ,  -0.27  , 0.0),
+                        (-3.95 ,  -0.54  , 0.0),
+                        (-3.90 ,  -0.81  , 0.0),
+                        (-3.83 ,  -1.07  , 0.0),
+                        (-3.75 ,  -1.33  , 0.0),
+                        (-3.65 ,  -1.59  , 0.0),
+                        (-3.54 ,  -1.83  , 0.0),
+                        (-3.40 ,  -2.07  , 0.0),
+                        (-3.25 ,  -2.30  , 0.0),
+                        (-3.09 ,  -2.51  , 0.0),
+                        (-2.91 ,  -2.72  , 0.0),
+                        (-2.72 ,  -2.91  , 0.0),
+                        (-2.51 ,  -3.09  , 0.0),
+                        (-2.30 ,  -3.25  , 0.0),
+                        (-2.07 ,  -3.40  , 0.0),
+                        (-1.83 ,  -3.54  , 0.0),
+                        (-1.59 ,  -3.65  , 0.0),
+                        (-1.33 ,  -3.75  , 0.0),
+                        (-1.07 ,  -3.83  , 0.0),
+                        (-0.81 ,  -3.90  , 0.0),
+                        (-0.54 ,  -3.95  , 0.0),
+                        (-0.27 ,  -3.97  , 0.0),
+                        (0.00  ,  -3.98  , 0.0),
+                        (0.27  ,  -3.97  , 0.0),
+                        (0.54  ,  -3.95  , 0.0),
+                        (0.81  ,  -3.90  , 0.0),
+                        (1.07  ,  -3.83  , 0.0),
+                        (1.33  ,  -3.75  , 0.0),
+                        (1.59  ,  -3.65  , 0.0),
+                        (1.83  ,  -3.54  , 0.0),
+                        (2.07  ,  -3.40  , 0.0),
+                        (2.30  ,  -3.25  , 0.0),
+                        (2.51  ,  -3.09  , 0.0),
+                        (2.72  ,  -2.91  , 0.0),
+                        (2.91  ,  -2.72  , 0.0),
+                        (3.09  ,  -2.51  , 0.0),
+                        (3.25  ,  -2.30  , 0.0),
+                        (3.40  ,  -2.07  , 0.0),
+                        (3.54  ,  -1.83  , 0.0),
+                        (3.65  ,  -1.59  , 0.0),
+                        (3.75  ,  -1.33  , 0.0),
+                        (3.83  ,  -1.07  , 0.0),
+                        (3.90  ,  -0.81  , 0.0),
+                        (3.95  ,  -0.54  , 0.0),
+                        (3.97  ,  -0.27  , 0.0),
+                        (7.11  ,  0.00   , 0.0),
+                        (3.98  ,  0.00   , 0.0),
+                        ]
+                                        
+    
+    cordinate.point.setValues(0, 123, vertexPositions)
+    indices= [ 74, 75, 76, -1, 79, 76, 77, -1,
+                79, 77, 78, -1, 72, 73, 74, -1,
+                71, 74, 76, -1, 71, 72, 74, -1,
+                82, 76, 79, -1, 82, 71, 76, -1,
+                82, 79, 80, -1, 82, 80, 81, -1,
+                69, 70, 71, -1, 85, 82, 83, -1,
+                85, 83, 84, -1, 87, 82, 85, -1,
+                87, 85, 86, -1, 88, 82, 87, -1,
+                89, 82, 88, -1, 63, 64, 65, -1,
+                63, 65, 66, -1, 63, 66, 67, -1,
+                63, 67, 68, -1, 63, 68, 69, -1,
+                90, 71, 82, -1, 90, 69, 71, -1,
+                90, 82, 89, -1, 61, 62, 63, -1,
+                94, 91, 92, -1, 94, 92, 93, -1,
+                57, 58, 59, -1, 57, 59, 60, -1,
+                57, 60, 61, -1, 57, 61, 63, -1,
+                98, 94, 95, -1, 98, 95, 96, -1,
+                98, 96, 97, -1, 54, 55, 56, -1,
+                54, 56, 57, -1, 54, 63, 69, -1,
+                54, 69, 90, -1, 54, 57, 63, -1,
+                54, 90, 91, -1, 52, 53, 54, -1,
+                102, 100, 101, -1, 102, 94, 98, -1,
+                102, 98, 99, -1, 102, 99, 100, -1,
+                50, 51, 52, -1, 104, 102, 103, -1,
+                47, 48, 49, -1, 47, 49, 50, -1,
+                46, 50, 52, -1, 46, 47, 50, -1,
+                107, 104, 105, -1, 107, 105, 106, -1,
+                107, 94, 102, -1, 107, 102, 104, -1,
+                44, 45, 46, -1, 109, 107, 108, -1,
+                43, 46, 52, -1, 43, 44, 46, -1,
+                110, 107, 109, -1, 112, 110, 111, -1,
+                112, 107, 110, -1, 113, 94, 107, -1,
+                113, 54, 91, -1, 113, 52, 54, -1,
+                113, 107, 112, -1, 113, 91, 94, -1,
+                39, 40, 41, -1, 39, 41, 42, -1,
+                39, 42, 43, -1, 38, 39, 43, -1,
+                115, 113, 114, -1, 36, 37, 38, -1,
+                117, 115, 116, -1, 117, 113, 115, -1,
+                118, 113, 117, -1, 33, 34, 35, -1,
+                31, 32, 33, -1, 31, 33, 35, -1,
+                0, 120, 121, -1, 30, 31, 35, -1,
+                30, 35, 36, -1, 1, 120, 0, -1,
+                1, 118, 119, -1, 1, 119, 120, -1,
+                1, 113, 118, -1, 2, 113, 1, -1,
+                28, 29, 30, -1, 28, 38, 43, -1,
+                28, 36, 38, -1, 28, 30, 36, -1,
+                4, 2, 3, -1, 26, 27, 28, -1,
+                6, 4, 5, -1, 6, 2, 4, -1,
+                24, 25, 26, -1, 7, 2, 6, -1,
+                22, 24, 26, -1, 22, 23, 24, -1,
+                9, 7, 8, -1, 21, 22, 26, -1,
+                20, 21, 26, -1, 11, 9, 10, -1,
+                11, 7, 9, -1, 19, 26, 28, -1,
+                19, 20, 26, -1, 18, 19, 28, -1,
+                17, 18, 28, -1, 14, 11, 12, -1,
+                14, 12, 13, -1, 14, 7, 11, -1,
+                15, 113, 2, -1, 15, 16, 17, -1,
+                15, 2, 7, -1, 15, 7, 14, -1,
+                15, 17, 28, -1, 15, 43, 52, -1,
+                15, 52, 113, -1, 15, 28, 43, -1 ]
+    soIndexFace.coordIndex.setValues(0, len(indices), indices)
+    soSepArrow.addChild(cordinate) 
+    soSepArrow.addChild(soIndexFace)
+
+    root.addChild(trans)
+    root.addChild(material)
+    root.addChild(transform)
+    root.addChild(soSepArrow)
+    #Finalize the drawing by adding color, pos, scale , opacity
+    return root
+
+
+
+
+
+
+
+
+
+#**************************************************************************************************
+#
+#           The below part, is proof of concept. Not mented to be used in widget system.
+#           You see in this example that you can create drawing using coindesigner and bring 
+#           The whole script and put it in a variable and later use that variable to draw
+#           the object. In the example the variable is 'arrow1_str'
+#           It is better to convert the code you have in coindesigner to a real python code
+#           as I did for the above widgets (circle, 2d arrow, ..etc)
+#
+#**************************************************************************************************
+
+"""
+    Example using the drawing: 
+    from pivy import coin
+    import math
+    import fr_draw as d 
+    import time
+    from PySide import QtCore,QtGui
+    sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+    for i in range (0,181): 
+        root=d.draw_TwoDarrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [1.0, 0.0, 0.0, i])
+        sg.addChild(root)
+    for i in range (0,181): 
+        root=d.draw_TwoDarrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [-1.0, 0.0, 0.0, i])
+        sg.addChild(root)
+
+"""
+def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+    """[2D Arrow - This version is more like an example how you can use Inventor 2.x code for drawing. Not attempted to be used in widgets]
+
+    Args:
+        p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0,0,0).
+        color ((float,float,float)), optional): [RGB Value between 0 to 1]. Defaults to FR_COLOR.FR_GOLD.
+        scale ((float,float,float)), optional): [Scale factor for each axis]. Defaults to (1,1,1).
+        type (int, optional): [Arrow type. At the moment there are 2 types]. Defaults to 1.
+        opacity (int, optional): [Opacity of the drawn arrow]. Defaults to 0.
+        _rotation (list, optional): [Rotation of the arrow provided by three float and an angle (float) in degree]. Defaults to [1.0, 0.0, 0.0, 0.0].
+
+    Returns:
+        [SoSeparator]: [SoSeparator which hold the drawing. Add it to the senegraph to show the arrow]
+    """   
+    if type==0:
+        arrow1_str="""#Inventor V2.1 ascii
+            DEF root Separator {
+              ShapeHints {
+                vertexOrdering CLOCKWISE
+                shapeType SOLID
+                faceType CONVEX
+              }
+              VertexProperty {
+                vertex [ 84.044998 -56.896271 0,
+                    84.878975 -57.540318 0,
+                    85.734688 -58.155235 0,
+                    86.703186 -58.804478 0,
+                    87.468605 -59.288124 0,
+                    88.243706 -59.755527 0,
+                    89.26725 -60.339321 0,
+                    90.310753 -60.894997 0,
+                    91.315041 -61.392021 0,
+                    92.308304 -61.846939 0,
+                    93.289848 -62.260395 0,
+                    94.259178 -62.633118 0,
+                    95.215981 -62.965904 0,
+                    96.160065 -63.259579 0,
+                    97.091377 -63.514984 0,
+                    98.009964 -63.732956 0,
+                    98.915955 -63.914307 0,
+                    99.809555 -64.059807 0,
+                    100.69104 -64.170197 0,
+                    101.56074 -64.24614 0,
+                    102.41901 -64.288269 0,
+                    103.26627 -64.297104 0,
+                    103.96442 -64.279381 0,
+                    104.66389 -64.238457 0,
+                    105.07834 -59.98032 0,
+                    116.45697 -70.693359 0,
+                    105.07834 -81.406395 0,
+                    104.66389 -77.15033 0,
+                    103.69802 -77.103256 0,
+                    102.82792 -77.095093 0,
+                    101.95882 -77.119354 0,
+                    101.09246 -77.17598 0,
+                    100.23052 -77.264824 0,
+                    99.374641 -77.385674 0,
+                    98.629578 -77.517899 0,
+                    97.889114 -77.674843 0,
+                    96.785973 -77.958443 0,
+                    95.693489 -78.279922 0,
+                    94.594559 -78.644653 0,
+                    93.499832 -79.049988 0,
+                    92.410858 -79.495689 0,
+                    91.329269 -79.981453 0,
+                    90.256821 -80.506813 0,
+                    89.195351 -81.071213 0,
+                    88.146782 -81.673943 0,
+                    87.113083 -82.314133 0,
+                    86.096298 -82.990799 0,
+                    85.098495 -83.702782 0,
+                    84.568085 -84.101654 0,
+                    84.044998 -84.509567 0,
+                    84.044998 -70.693359 0,
+                    84.044998 -56.896271 0,
+                    88.243706 -59.755527 0,
+                    104.66389 -64.238457 0,
+                    105.07834 -59.98032 0,
+                    116.45697 -70.693359 0,
+                    105.07834 -81.406395 0,
+                    104.66389 -77.15033 0,
+                    97.889114 -77.674843 0,
+                    84.044998 -84.509567 0,
+                    84.044998 -70.693359 0 ]
+                normalBinding PER_FACE_INDEXED
+                materialBinding PER_FACE_INDEXED
+
+              }
+              IndexedFaceSet {
+                coordIndex [ 27, 25, 26, -1, 23, 25, 27, -1,
+                    22, 27, 28, -1, 22, 23, 27, -1,
+                    21, 28, 29, -1, 21, 22, 28, -1,
+                    20, 21, 29, -1, 20, 29, 30, -1,
+                    19, 30, 31, -1, 19, 20, 30, -1,
+                    24, 25, 23, -1, 18, 19, 31, -1,
+                    18, 31, 32, -1, 17, 32, 33, -1,
+                    17, 18, 32, -1, 16, 33, 34, -1,
+                    16, 17, 33, -1, 15, 34, 35, -1,
+                    15, 16, 34, -1, 14, 35, 36, -1,
+                    14, 15, 35, -1, 13, 14, 36, -1,
+                    13, 36, 37, -1, 12, 37, 38, -1,
+                    12, 13, 37, -1, 50, 12, 38, -1,
+                    50, 10, 11, -1, 50, 11, 12, -1,
+                    50, 38, 39, -1, 50, 39, 40, -1,
+                    50, 40, 41, -1, 50, 41, 42, -1,
+                    50, 42, 43, -1, 50, 43, 44, -1,
+                    50, 44, 45, -1, 50, 45, 46, -1,
+                    50, 46, 47, -1, 50, 47, 48, -1,
+                    50, 48, 49, -1, 9, 10, 50, -1,
+                    8, 9, 50, -1, 7, 8, 50, -1,
+                    6, 7, 50, -1, 5, 6, 50, -1,
+                    4, 5, 50, -1, 3, 4, 50, -1,
+                    2, 3, 50, -1, 1, 2, 50, -1,
+                    0, 1, 50, -1 ]
+              }
+            }
+            """
+    elif type==1:
+        arrow1_str="""
+        #Inventor V2.1 ascii
+        DEF root Separator {
+          renderCaching OFF
+          boundingBoxCaching OFF
+          renderCulling OFF
+          pickCulling OFF
+          Separator {
+            Coordinate3 {
+              point [ 104.70005 -67.598953 0,
+                  104.70005 -75.059814 0,
+                  78.933617 -75.059814 0,
+                  78.933617 -82.361931 0,
+                  104.70005 -82.361931 0,
+                  104.70005 -89.8228 0,
+                  116.43636 -78.710876 0,
+                  104.70005 -67.598953 0,
+                  104.70005 -75.059814 0,
+                  78.933617 -75.059814 0,
+                  78.933617 -82.361931 0,
+                  104.70005 -82.361931 0,
+                  104.70005 -89.8228 0,
+                  116.43636 -78.710876 0 ]
+            }
+            IndexedFaceSet {
+              coordIndex [ 1, 2, 3, -1, 1, 3, 4, -1,
+                  6, 0, 1, -1, 6, 4, 5, -1,
+                  6, 1, 4, -1 ]
+            }
+          }
+          Separator {
+            Coordinate3 {
+              point [ 71.988663 -75.059814 0,
+                  71.988663 -82.361931 0,
+                  73.377655 -82.361931 0,
+                  73.377655 -75.059814 0,
+                  71.988663 -75.059814 0,
+                  71.988663 -82.361931 0,
+                  73.377655 -82.361931 0,
+                  73.377655 -75.059814 0 ]
+            }
+            IndexedFaceSet {
+              coordIndex [ 3, 0, 1, -1, 3, 1, 2, -1 ]
+            }
+          }
+          Separator {
+            Coordinate3 {
+              point [ 74.766647 -75.059814 0,
+                  74.766647 -82.361931 0,
+                  77.544624 -82.361931 0,
+                  77.544624 -75.059814 0,
+                  74.766647 -75.059814 0,
+                  74.766647 -82.361931 0,
+                  77.544624 -82.361931 0,
+                  77.544624 -75.059814 0 ]
+            }
+            IndexedFaceSet {
+              coordIndex [ 3, 0, 1, -1, 3, 1, 2, -1 ]
+            }
+          }
+        }
+        """
+
+    root=coin.SoSeparator()
+    arrow=coin.SoSeparator()
+    transform=coin.SoTransform()
+    trans=coin.SoTranslation()
+    material = coin.SoMaterial()
+    material.transparency.setValue(opacity)
+    material.diffuseColor.setValue(coin.SbColor(color))
+    transform.scaleFactor.setValue([scale [0], scale[1], scale[2]])
+
+    tempR = coin.SbVec3f()
+    tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
+
+    input = coin.SoInput()
+    input.setBuffer(arrow1_str)
+    result = coin.SoDB.readAll(input)
+    trans.translation.setValue(p1)
+    if result == None:
+        print("ERROR ")
+        return None
+    # Set up the duck transformations
+    root.addChild(material)
+    root.addChild(transform )
+    root.addChild(trans)
+    arrow.addChild(result)
+    root.addChild(arrow)
+    return root
+    
