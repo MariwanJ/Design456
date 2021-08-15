@@ -176,12 +176,12 @@ class Fr_Polygon_Widget(fr_widget.Fr_Widget):
         LabelData.labelfont = self.w_font
         LabelData.fontsize = self.w_fontsize
         LabelData.labelcolor = self.w_lblColor
-        firstTwoVerticies: List[App.Vector] = []
+        firstTwovertices: List[App.Vector] = []
 
-        firstTwoVerticies.append(self.w_vector[0])
-        firstTwoVerticies.append(self.w_vector[1])
+        firstTwovertices.append(self.w_vector[0])
+        firstTwovertices.append(self.w_vector[1])
 
-        LabelData.vectors = firstTwoVerticies
+        LabelData.vectors = firstTwovertices
         LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label([self.w_label], LabelData)
         self.w_widgetlblSoNodes = lbl
