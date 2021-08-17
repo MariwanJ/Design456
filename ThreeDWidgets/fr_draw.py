@@ -1874,3 +1874,14 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
     root.addChild(arrow)
     return root
     
+#Save coin to HDD
+from pivy import coin
+def saveiv(filename):
+    sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+    wa=coin.SoWriteAction()
+    wa.getOutput().openFile(filename)
+    wa.getOutput().setBinary(False)
+    wa.apply(sg)
+    wa.getOutput().closeFile()
+
+saveiv("c:/temp/trim.iv")
