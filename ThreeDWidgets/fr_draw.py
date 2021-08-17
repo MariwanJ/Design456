@@ -2896,3 +2896,17 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
     root.addChild(arrow)
     return root
 
+#Save senegraph to IV format 2.x
+from pivy import coin
+def saveSeneGraphtoIVfile(filename):
+    """[Save current senegraph to IV format]
+
+    Args:
+        filename ([str]): [pathname and file name ]
+    """
+    sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
+    sowriteAct=coin.SoWriteAction()
+    sowriteAct.getOutput().openFile(filename)
+    sowriteAct.getOutput().setBinary(False)
+    sowriteAct.apply(sg)
+    sowriteAct.getOutput().closeFile()
