@@ -123,8 +123,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     def handle(self, event):
         """
-        This function is responsbile of taking events and processing 
-        the actions required. If the object is not targeted, 
+        This function is responsible of taking events and processing 
+        it. Required action will be executed here. If the object is not targeted, 
         the function will skip the events. But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
         processed the event and no other widgets needs to get the 
@@ -132,7 +132,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         if type(event)==int:
             if event==FR_EVENTS.FR_NO_EVENT:
-                return 1    # we treat this event. Nonthing to do 
+                return 1    # we treat this event. Nothing to do 
         
             clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetSoNodes)
