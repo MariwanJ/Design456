@@ -96,7 +96,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
         
-        linktocaller.ChamferRadius = abs((linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor)   
+        linktocaller.ChamferRadius = linktocaller.ChamferRadiusOld + ((linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor)   
         if linktocaller.ChamferRadius<=0:
             linktocaller.ChamferRadius=0.0001
         print("ChamferRadius",linktocaller.ChamferRadius)         
@@ -131,6 +131,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
     print("mouse release")
     ArrowObject.remove_focus()
     linktocaller.run_Once = False
+    linktocaller.ChamferRadiusOld=linktocaller.ChamferRadius
     linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
@@ -168,6 +169,7 @@ class Design456_SmartChamfer:
     offset=0.0
     AwayFrom3DObject = 10  # Use this to take away the arrow from the object
     ChamferRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
+    ChamferRadiusOld=ChamferRadius
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
 
@@ -189,7 +191,8 @@ class Design456_SmartChamfer:
         Reposition the arrows by recalculating the boundary box
         and updating the vectors inside each fr_arrow_widget
         """
-        self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
+        self.smartInd.w_vector.y = endVec.y
+        #self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
         self.smartInd.redraw()
         return
             
@@ -204,11 +207,16 @@ class Design456_SmartChamfer:
             if self.objectType == 'Shape':
               # 'Shape'
                 # The whole object is selected
-                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
-                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
-                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
+                #self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
+                #self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
+                #self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
+
+                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMin
+                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMin-self.AwayFrom3DObject
+                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax
+
                 
-                rotation = [-1.0, 0.0, 0.0, 57]
+                rotation = [0.0, -1.0, 0.0, 57]
                 return rotation
 
             vectors = self.selectedObj[0].SubObjects[0].Vertexes
@@ -216,9 +224,9 @@ class Design456_SmartChamfer:
                 self._vector.z = vectors[0].Z
                 for i in vectors:
                     self._vector.x += i.X
-                    self._vector.y += i.Y
+                    self._vector.y += i.Y-self.AwayFrom3DObject
                     if self._vector.z < i.Z:
-                        self._vector.z = i.Z+self.AwayFrom3DObject
+                        self._vector.z = i.Z
                         self._vector.x = self._vector.x/4
                 self._vector.y = self._vector.y/4
 
@@ -232,11 +240,11 @@ class Design456_SmartChamfer:
                 self._vector.z = vectors[0].Z
                 for i in vectors:
                     self._vector.x += i.X/2
-                    self._vector.y += i.Y/2
-                    self._vector.z = i.Z+self.AwayFrom3DObject
+                    self._vector.y += i.Y-self.AwayFrom3DObject
+                    self._vector.z = i.Z
 
-                rotation = [-1,
-                             0,
+                rotation = [0,
+                             -1,
                              0,
                             +57]
 
@@ -428,13 +436,14 @@ class Design456_SmartChamfer:
         self.selectedObj[0]=self.selectedObj[1]
         self.selectedObj.pop(1)
         self.ChamferRadius=0.005
+        self.ChamferRadiusOld=0
         App.ActiveDocument.removeObject(temp.ObjectName)
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart chamfer 3dCOIN widgets
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Chamfer.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_Chamfer.svg',
             'MenuText': ' Smart Chamfer',
                         'ToolTip':  ' Smart Chamfer'
         }
