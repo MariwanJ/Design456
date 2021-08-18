@@ -56,7 +56,7 @@ MouseScaleFactor = 2.0
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
     """[summary]
-    Callback for the arrow movement. This will be used to calculate the radius of the fillet operation.
+    Callback for the arrow movement. This will be used to calculate the radius of the chamfer operation.
     Args:
         userData (fr_arrow_widget.userDataObject, optional): [description]. Defaults to None.
 
@@ -96,12 +96,12 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
         
-        linktocaller.FilletRadius = abs((linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor)   
-        if linktocaller.FilletRadius<=0:
-            linktocaller.FilletRadius=0.0001
-        print("FilletRadius",linktocaller.FilletRadius)         
+        linktocaller.ChamferRadius = abs((linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor)   
+        if linktocaller.ChamferRadius<=0:
+            linktocaller.ChamferRadius=0.0001
+        print("ChamferRadius",linktocaller.ChamferRadius)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
-        linktocaller.FilletLBL.setText("scale= "+ str(round(linktocaller.FilletRadius,4)))
+        linktocaller.ChamferLBL.setText("scale= "+ str(round(linktocaller.ChamferRadius,4)))
         linktocaller.reCreatefilletObject()
 
     except Exception as err:
@@ -115,7 +115,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 def callback_release(userData: fr_arrow_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
-       This callback will finalize the fillet operation. 
+       This callback will finalize the chamfer operation. 
        Deleting the original object will be done when the user press 'OK' button
     """
     if (userData==None ):
@@ -145,10 +145,10 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
     App.ActiveDocument.recompute()
     App.ActiveDocument.commitTransaction()  # undo reg.
 
-class Design456_SmartFillet:
+class Design456_SmartChamfer:
     """
-        Apply fillet to any 3D object by selecting the object, a Face or one or multiple edges 
-        Radius of the fillet is counted by dragging the arrow towards the negative Z axis.
+        Apply chamfer to any 3D object by selecting the object, a Face or one or multiple edges 
+        Radius of the chamfer is counted by dragging the arrow towards the negative Z axis.
     """
     _vector = App.Vector(0.0, 0.0, 0.0)
     mw = None
@@ -157,7 +157,7 @@ class Design456_SmartFillet:
     smartInd = None
     _mywin = None
     b1 = None
-    FilletLBL = None
+    ChamferLBL = None
     run_Once = False
     endVector = None
     startVector = None
@@ -167,7 +167,7 @@ class Design456_SmartFillet:
     mouseToArrowDiff = 0.0
     offset=0.0
     AwayFrom3DObject = 10  # Use this to take away the arrow from the object
-    FilletRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
+    ChamferRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
 
@@ -259,11 +259,11 @@ class Design456_SmartFillet:
             for name in names:
                 for subname in name:
                     edgeNumbor = int(subname[4:len(subname)])
-                result.append(edgeNumbor, self.FilletRadius, self.FilletRadius)
+                result.append(edgeNumbor, self.ChamferRadius, self.ChamferRadius)
         else:
             # only one Edge
             edgeNumbor = int(names[4:len(names)])
-            result.append((edgeNumbor, self.FilletRadius,self.FilletRadius))
+            result.append((edgeNumbor, self.ChamferRadius,self.ChamferRadius))
         return result
 
     def getAllSelectedEdges(self):
@@ -279,11 +279,11 @@ class Design456_SmartFillet:
                 print ("Error couldn't find the shape type",self.objectType)
         return EdgesToBeChanged
 
-    def reCreatefilletObject(self):
+    def reCreatechamferObject(self):
         """
-            Use this function to recreate the target object after applying the fillet radius.
+            Use this function to recreate the target object after applying the chamfer radius.
         """
-        # reCreate the fillet. We cannot avoid recreating the object from scratch
+        # reCreate the chamfer. We cannot avoid recreating the object from scratch
         # That is how opencascade library works.
         try:
             if len (self.selectedObj)>=2:
@@ -302,7 +302,10 @@ class Design456_SmartFillet:
 
             #This create only a shape. We have to make it as a Part::Feature
             App.ActiveDocument.recompute()
-            _shape=self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges())
+                  # (edge number, chamfer start length, chamfer end length)
+                  
+                  #TODO: FIXME : 
+            _shape=self.selectedObj[0].Object.Shape.makeChamfer(self.ChamferRadius,self.ChamferRadius,self.getAllSelectedEdges())
             newObj=App.ActiveDocument.addObject('Part::Feature',"temp")
             newObj.Shape=_shape
             self.selectedObj.append(newObj)
@@ -319,7 +322,7 @@ class Design456_SmartFillet:
         sel=Gui.Selection.getSelectionEx()
         if len(sel) == 0:
             # An object must be selected
-            errMessage = "Select an object, one face or one edge to fillet"
+            errMessage = "Select an object, one face or one edge to chamfer"
             faced.getInfo().errorDialog(errMessage)
             return
 
@@ -335,7 +338,7 @@ class Design456_SmartFillet:
         # get rotation
         rotation = self.getArrowPosition()
 
-        self.smartInd = Fr_Arrow_Widget(self._vector, "Fillet", 1, FR_COLOR.FR_RED, rotation)
+        self.smartInd = Fr_Arrow_Widget(self._vector, "Chamfer", 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
@@ -359,7 +362,7 @@ class Design456_SmartFillet:
                 del self._mywin
                 self._mywin = None
         except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' del-Failed. "
+            App.Console.PrintError("'Design456_SmartChamfer' del-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -384,17 +387,17 @@ class Design456_SmartFillet:
 
             self.dialog = QtGui.QDialog()
             oldsize = self.tab.count()
-            self.tab.addTab(self.dialog, "Smart Fillet")
+            self.tab.addTab(self.dialog, "Smart Chamfer")
             self.tab.setCurrentWidget(self.dialog)
             self.dialog.resize(200, 450)
-            self.dialog.setWindowTitle("Smart Fillet")
+            self.dialog.setWindowTitle("Smart Chamfer")
             la = QtGui.QVBoxLayout(self.dialog)
-            e1 = QtGui.QLabel("(Smart Fillet)\nFor quicker\nApplying Fillet")
+            e1 = QtGui.QLabel("(Smart Chamfer)\nFor quicker\nApplying Chamfer")
             commentFont = QtGui.QFont("Times", 12, True)
-            self.FilletLBL = QtGui.QLabel("Fillet Radius=")
+            self.ChamferLBL = QtGui.QLabel("Chamfer Radius=")
             e1.setFont(commentFont)
             la.addWidget(e1)
-            la.addWidget(self.FilletLBL)
+            la.addWidget(self.ChamferLBL)
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
             okbox.setStandardButtons(
@@ -406,7 +409,7 @@ class Design456_SmartFillet:
             return self.dialog
 
         except Exception as err:
-            App.Console.PrintError("'Design456_Fillet' getMainWindwo-Failed. "
+            App.Console.PrintError("'Design456_Chamfer' getMainWindwo-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -424,17 +427,17 @@ class Design456_SmartFillet:
         temp=self.selectedObj[0]
         self.selectedObj[0]=self.selectedObj[1]
         self.selectedObj.pop(1)
-        self.FilletRadius=0.005
+        self.ChamferRadius=0.005
         App.ActiveDocument.removeObject(temp.ObjectName)
         App.ActiveDocument.recompute()
-        self.__del__()  # Remove all smart fillet 3dCOIN widgets
+        self.__del__()  # Remove all smart chamfer 3dCOIN widgets
 
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Fillet.svg',
-            'MenuText': ' Smart Fillet',
-                        'ToolTip':  ' Smart Fillet'
+            'MenuText': ' Smart Chamfer',
+                        'ToolTip':  ' Smart Chamfer'
         }
 
 
-Gui.addCommand('Design456_SmartFillet', Design456_SmartFillet())
+Gui.addCommand('Design456_SmartChamfer', Design456_SmartChamfer())
