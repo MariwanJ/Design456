@@ -102,7 +102,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         print("ChamferRadius",linktocaller.ChamferRadius)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ChamferLBL.setText("scale= "+ str(round(linktocaller.ChamferRadius,4)))
-        linktocaller.reCreatefilletObject()
+        linktocaller.reCreatechamferObject()
 
     except Exception as err:
         App.Console.PrintError("'View Inside objects' Failed. "
@@ -135,7 +135,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                                         ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
     # Undo
-    App.ActiveDocument.openTransaction(translate("Design456", "SmartFillet"))
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartChamfer"))
     linktocaller.startVector = None
     linktocaller.mouseToArrowDiff = 0.0
     App.ActiveDocument.commitTransaction()  # undo reg.
@@ -242,7 +242,7 @@ class Design456_SmartChamfer:
 
             return rotation
         except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' getArrowPos-Failed. "
+            App.Console.PrintError("'Design456_SmartChamfer' getArrowPos-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -312,7 +312,7 @@ class Design456_SmartChamfer:
             App.ActiveDocument.recompute()
             
         except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' recreatefilletObject-Failed. "
+            App.Console.PrintError("'Design456_SmartChamfer' recreatefilletObject-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -434,7 +434,7 @@ class Design456_SmartChamfer:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Fillet.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Chamfer.svg',
             'MenuText': ' Smart Chamfer',
                         'ToolTip':  ' Smart Chamfer'
         }
