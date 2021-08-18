@@ -312,7 +312,7 @@ class Design456_SmartChamfer:
             App.ActiveDocument.recompute()
             
         except Exception as err:
-            App.Console.PrintError("'Design456_SmartChamfer' recreatefilletObject-Failed. "
+            App.Console.PrintError("'Design456_SmartChamfer' recreatechamferObject-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -333,7 +333,7 @@ class Design456_SmartChamfer:
         self.registerShapeType()
         o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
         o.Transparency=80
-        self.reCreatefilletObject()
+        self.reCreatechamferObject()
 
         # get rotation
         rotation = self.getArrowPosition()
