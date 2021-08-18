@@ -27,11 +27,13 @@ from __future__ import unicode_literals
 import DirectModeling.Design456_SmartScale
 import DirectModeling.Design456_DirectScale
 import DirectModeling.Design456_Fillet
+import DirectModeling.Design456_Chamfer
 
 class Design456_DirectModeling:
     list = ["Design456_SmartScale",
             "Design456_DirectScale",
             "Design456_SmartFillet",
+            "Design456_SmartChamfer",
 
             ]
     """Design456 Direct Modeling """
