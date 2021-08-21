@@ -39,7 +39,7 @@ class  getDirectionAxis():
         try:
             s = Gui.Selection.getSelectionEx()
             if len(s)==0:
-                return  #nothing to do we cannot calculate the direction
+                return "" #nothing to do we cannot calculate the direction
             obj = s[0]
             faceSel = obj.SubObjects[0]
             dir = faceSel.normalAt(0, 0)
@@ -144,6 +144,7 @@ class mousePointMove:
                 #self.object.Object.End= point 
                 App.ActiveDocument.recompute()
                 self.remove_callbacks()
+                
         except Exception as err:
             App.Console.PrintError("'converToVector' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -294,6 +295,7 @@ class PartMover:
                     self.objectToDelete = self.obj
                 App.ActiveDocument.removeObject(self.obj.Name)
                 self.obj = None
+                
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -308,7 +310,7 @@ class PartMover:
 """ This class will return back info about the selected
     face. Many options are available but
     I will put only what I need at the moment. 
-    See the note below for available info
+    See the notes below for available info
     Give the class object Gui.Selection()[No] where No is the face you want to get info
 
 """
