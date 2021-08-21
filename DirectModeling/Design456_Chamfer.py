@@ -207,46 +207,44 @@ class Design456_SmartChamfer:
             if self.objectType == 'Shape':
               # 'Shape'
                 # The whole object is selected
-                #self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
-                #self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
-                #self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
-
                 self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMin
                 self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMin-self.AwayFrom3DObject
                 self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax
 
                 
-                rotation = [0.0, -1.0, 0.0, 57]
+                rotation = [0.0, -1.0, 0.0, 90]
                 return rotation
 
             vectors = self.selectedObj[0].SubObjects[0].Vertexes
             if self.objectType == 'Face':
                 self._vector.z = vectors[0].Z
                 for i in vectors:
-                    self._vector.x += i.X
-                    self._vector.y += i.Y-self.AwayFrom3DObject
+                    self._vector.x += i.X/2
+                    self._vector.y += i.Y/2
                     if self._vector.z < i.Z:
                         self._vector.z = i.Z
-                        self._vector.x = self._vector.x/4
+                self._vector.x = self._vector.x/4
                 self._vector.y = self._vector.y/4
 
                 rotation = [-1,
                             0,
                             0,
-                            57]
+                            90]
 
             elif self.objectType == 'Edge':
                 # One edge is selected
                 self._vector.z = vectors[0].Z
                 for i in vectors:
                     self._vector.x += i.X/2
-                    self._vector.y += i.Y-self.AwayFrom3DObject
-                    self._vector.z = i.Z
+                    self._vector.y += i.Y/2
+                    self._vector.z += i.Z/2
+                
+                self._vector.y=self._vector.y
 
                 rotation = [0,
                              -1,
                              0,
-                            +57]
+                            90]
 
             return rotation
         except Exception as err:
