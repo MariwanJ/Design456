@@ -224,7 +224,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
         coordsRoot.translation.setValue(App.Vector(0, 0, 0))
 
         # SbRotation (const SbVec3f &axis, const float radians)
-        coordsRoot.rotation.setValue(*tempR, math.radians(_rotation[3]))
+        coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
         transRoot.translation.setValue(_Points)
@@ -557,7 +557,7 @@ def loadImageTo3D(filename, BoxSize=(2,2,0.01), location=App.Vector(0,0,0), rota
     imagePos.translation.setValue(location)  
     tempR = coin.SbVec3f()
     tempR.setValue(rotation[0], rotation[1], rotation[2])
-    imagePos.rotation.setValue(*tempR, math.radians(rotation[3]))
+    imagePos.rotation.setValue(tempR, math.radians(rotation[3]))
     image = coin.SoSeparator()
     image.addChild(imagePos)
     image.addChild(svg)
@@ -641,7 +641,7 @@ class draw_cylinder:
         cylinderTransform.scaleFactor.setValue([self.Scale, self.Scale, self.Scale])
         cylinderTransform.translation.setValue(App.Vector(0, 0, 0))
         # SbRotation (const SbVec3f &axis, const float radians)
-        cylinderTransform.rotation.setValue(*tempR, math.radians(self.rotation[3]))
+        cylinderTransform.rotation.setValue(tempR, math.radians(self.rotation[3]))
         transCylinder.translation.setValue(p1)
 
         material = coin.SoMaterial()
@@ -833,7 +833,7 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indi
     transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
     tempR = coin.SbVec3f()
     tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
+    transform.rotation.setValue(tempR, math.radians(_rotation[3]))
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
@@ -878,7 +878,7 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indi
 
     """
 
-def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[0.0, 0.0, 1.0, 0.0]):
     """[2D Arrow]
 
     Args:
@@ -896,16 +896,14 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
     transform=coin.SoTransform()
     trans=coin.SoTranslation()
     trans.translation.setValue(p1)
-    transform.rotation.setValue(_rotation)
-    transform.translation.setValue(p1)
     transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
+    
     tempR = coin.SbVec3f()
     tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
+    transform.rotation.setValue(tempR, math.radians(_rotation[3]))
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
-    
     if type==0:
         soSepArrow=coin.SoSeparator()   # drawing holder
         soIndexFace= coin.SoIndexedFaceSet()
@@ -1007,9 +1005,9 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=
         soSepArrow.addChild(cordinate) 
         soSepArrow.addChild(soIndexFace)
         
+        root.addChild(transform)             
         root.addChild(trans)
         root.addChild(material)
-        root.addChild(transform)
         root.addChild(soSepArrow)
         
     elif type==1:
@@ -1116,7 +1114,7 @@ def draw_circle(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacit
     transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
     tempR = coin.SbVec3f()
     tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
+    transform.rotation.setValue(tempR, math.radians(_rotation[3]))
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
@@ -1331,7 +1329,7 @@ def draw_washer(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1
     transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
     tempR = coin.SbVec3f()
     tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
+    transform.rotation.setValue(tempR, math.radians(_rotation[3]))
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
@@ -1643,7 +1641,7 @@ def draw_tube(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,o
     transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
     tempR = coin.SbVec3f()
     tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
+    transform.rotation.setValue(tempR, math.radians(_rotation[3]))
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
@@ -2879,7 +2877,7 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
 
     tempR = coin.SbVec3f()
     tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-    transform.rotation.setValue(*tempR, math.radians(_rotation[3]))
+    transform.rotation.setValue(tempR, math.radians(_rotation[3]))
 
     input = coin.SoInput()
     input.setBuffer(arrow1_str)

@@ -352,7 +352,7 @@ class Design456_DirectScale:
         (_vec, length) = self.returnVectorsFromBoundaryBox(0)
 
         self.smartInd.clear()
-
+        
         rotation = [0.0, 0.0, 0.0, 0.0]
         self.smartInd.append(Fr_Arrow_Widget(_vec[0], "X-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
         # External function
@@ -360,13 +360,13 @@ class Design456_DirectScale:
         self.smartInd[0].w_move_callback_ = callback_move
         self.smartInd[0].w_userData.callerObject = self
 
-        rotation = [0.0, 0.0, -1.0,57]
+        rotation = [0.0, 0.0, -1.0,90]
         self.smartInd.append(Fr_Arrow_Widget( _vec[1], "Y-Axis", 1, FR_COLOR.FR_RED, rotation))
         self.smartInd[1].w_callback_ = callback_release
         self.smartInd[1].w_move_callback_ = callback_move
         self.smartInd[1].w_userData.callerObject = self
 
-        rotation = [1.0, 0.0, 0.0,57]
+        rotation = [1.0, 0.0, 0.0,90]
         self.smartInd.append(Fr_Arrow_Widget(_vec[2], "Z-Axis", 1, FR_COLOR.FR_BLUE, rotation))
         self.smartInd[2].w_callback_ = callback_release
         self.smartInd[2].w_move_callback_ = callback_move
