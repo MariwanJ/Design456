@@ -45,12 +45,12 @@ class Design456_Extrude:
             if (len(selection) < 1):
                 # An object must be selected
                 errMessage = "Select a face to use Extrude"
-                faced.getInfo(selection).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Extrude"))
             m = selection[0].Object
             f = App.ActiveDocument.addObject('Part::Extrusion', 'ExtrudeOriginal')
-            faceSelected = faced.getInfo(selection[0]).getFaceName()
+            faceSelected = faced.getFaceName(selection[0])
             f.Base = m
             #f.Base = App.ActiveDocument.getObject(m.Name)
             # F.DirMode causes too many failure. Some faces needs custom, other needs Normal. 

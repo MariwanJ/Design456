@@ -45,7 +45,7 @@ class Design456_Extract:
             if (len(s) < 1):
                 # An object must be selected
                 errMessage = "Select a face from an objects to use Extract"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Extract Face"))
             for o in s:
@@ -66,7 +66,7 @@ class Design456_Extract:
                     App.ActiveDocument.removeObject(newobj.Name)
                 # Shape is not OK
                 errMessage = "Failed to extract the shape"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
         except Exception as err:
             App.Console.PrintError("'Design456_Extract' Failed. "

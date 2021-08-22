@@ -65,7 +65,7 @@ class GenCommandForPartUtils:
             # Two object must be selected
             if(len(selection) < 2 or len(selection) > 2):
                 errMessage = "Select two objects to use Common 2D Tool"
-                faced.getInfo(selection).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return None
             else:
                 nObjects.clear()
@@ -216,7 +216,7 @@ class Design456_Part_Surface:
             if (len(s) < 2 or len(s) > 2):
                 # Two object must be selected
                 errMessage = "Select two edges or two wire to make a face or "
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             from textwrap import wrap
             for ss in s:
@@ -224,7 +224,7 @@ class Design456_Part_Surface:
                 if(word.find('Vertex') != -1):
                     # Two lines or curves or wires must be selected
                     errMessage = "Select two edges or two wires not Vertex"
-                    faced.getInfo(s).errorDialog(errMessage)
+                    faced.errorDialog(errMessage)
                     return
 
             newObj = App.ActiveDocument.addObject(
@@ -244,7 +244,7 @@ class Design456_Part_Surface:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
                 # Shape is not OK
                 errMessage = "Failed to fillet the objects"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
             else:
                 App.ActiveDocument.removeObject(newObj.Name)
                 # Removing these could cause problem if the line is a part of an object

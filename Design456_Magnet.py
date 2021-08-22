@@ -49,14 +49,14 @@ class Design456_Magnet:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to use Magnet Tool"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Magnet"))
             sub1 = Gui.Selection.getSelectionEx()[0]
             sub2 = Gui.Selection.getSelectionEx()[1]
-            face1 = faced.getInfo(sub1).getObjectFromFaceName(
+            face1 = faced.getObjectFromFaceName(sub1,
                 sub1.SubElementNames[0])
-            face2 = faced.getInfo(sub2).getObjectFromFaceName(
+            face2 = faced.getObjectFromFaceName(sub2,
                 sub2.SubElementNames[0])
 
             sub2.Object.Placement.Base = face1.CenterOfMass

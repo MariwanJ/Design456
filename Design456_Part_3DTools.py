@@ -52,7 +52,7 @@ class Design456_Part_Merge:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Merge"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Part Merge"))
             allObjects = []
@@ -67,7 +67,7 @@ class Design456_Part_Merge:
                 App.ActiveDocument.removeObject(newObj.Name)
                 # Shape is not OK
                 errMessage = "Failed Merge"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
             else:
 
                 # Make a simple copy
@@ -110,7 +110,7 @@ class Design456_Part_Subtract:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Subtract"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Part Subtract"))
             newObj = App.ActiveDocument.addObject("Part::Cut", "tempSubtract")
@@ -131,7 +131,7 @@ class Design456_Part_Subtract:
                 App.ActiveDocument.removeObject(NewJ.Name)
                 # Shape is not OK
                 errMessage = "Failed to subtract objects"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
             else:
                 # Remove Old objects
                 allObjects = []
@@ -173,7 +173,7 @@ class Design456_Part_Intersect:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Intersect"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             newObj = App.ActiveDocument.addObject("Part::MultiCommon", "tempIntersect")
             newObj.Shapes = [App.ActiveDocument.getObject(
@@ -231,7 +231,7 @@ class Design456_Part_Group:
                 # Two object must be selected
                 #App.ActiveDocument.openTransaction(translate("Design456","Part Group")) TODO: Doesn't work
                 errMessage = "Select two or more objects to create a group"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
 
             newObj = App.ActiveDocument.Tip = App.ActiveDocument.addObject('App::Part', 'Group')
@@ -268,7 +268,7 @@ class Design456_Part_Compound:
             if (len(s) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Merge"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Part Compound"))
             allObjects = []
@@ -318,7 +318,7 @@ class Design456_Part_Shell:
             if (len(s) < 1):
                 # Two object must be selected
                 errMessage = "Select two or more objects to use Shell Tool"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Part Shell"))
             thickness = QtGui.QInputDialog.getDouble(
@@ -337,13 +337,13 @@ class Design456_Part_Shell:
             thickObj.Mode = 0
             thickObj.Intersection = False
             thickObj.SelfIntersection = False
-            getfacename = faced.getInfo(s[0]).getFaceName()
+            getfacename = faced.getFaceName(s[0])
             thickObj.Faces = (currentObj, getfacename,)
             if thickObj.isValid() == False:
                 App.ActiveDocument.removeObject(thickObj.Name)
                 # Shape is not OK
                 errMessage = "Failed create shell"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(s,errMessage)
             else:
                 App.ActiveDocument.recompute()
                 NewJ = App.ActiveDocument.addObject(
@@ -383,7 +383,7 @@ class Design456_Part_Fillet:
             if (len(s) < 1):
                 # One object must be selected at least
                 errMessage = "Select a face or an edge use Fillet"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Part Fillet"))
             Radius = QtGui.QInputDialog.getDouble(
@@ -409,14 +409,14 @@ class Design456_Part_Fillet:
                 tempNewObj.Edges = EdgesToBeChanged
             else:
                 errMessage = "Fillet failed. No subelements found"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
 
             if tempNewObj.isValid() == False:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
                 # Shape is not OK
                 errMessage = "Failed to fillet the objects"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
             else:
                 # Make a simple copy of the object
                 App.ActiveDocument.recompute()
@@ -459,7 +459,7 @@ class Design456_Part_Chamfer:
             if (len(s) < 1):
                 # One object must be selected at least
                 errMessage = "Select a face or an edge use Chamfer"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Part Chamfer"))
             Radius = QtGui.QInputDialog.getDouble(
@@ -479,7 +479,7 @@ class Design456_Part_Chamfer:
                 tempNewObj.Edges = EdgesToBeChanged
             else:
                 errMessage = "Chamfer failed. No subelements found"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
@@ -487,7 +487,7 @@ class Design456_Part_Chamfer:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
                 # Shape is not OK
                 errMessage = "Failed to fillet the objects"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
             else:
                 newShape = Part.getShape(
                     tempNewObj, '', needSubElement=False, refine=False)
