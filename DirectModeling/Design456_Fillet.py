@@ -46,8 +46,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 import math
 from ThreeDWidgets import fr_label_draw
-
-MouseScaleFactor = 2.0
+MouseScaleFactor = 1.5 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
 
 '''
     We have to recreate the object each time we change the radius. 
@@ -95,10 +94,23 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
-        
-        linktocaller.FilletRadius = abs((linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor)   
+        if linktocaller.direction=="+x":
+            linktocaller.FilletRadius = (-linktocaller.endVector.x+linktocaller.startVector.x)/MouseScaleFactor   
+        elif linktocaller.direction=="-x":
+            linktocaller.FilletRadius = (linktocaller.endVector.x-linktocaller.startVector.x)/MouseScaleFactor   
+        elif linktocaller.direction=="+y":
+            linktocaller.FilletRadius = (-linktocaller.endVector.y+linktocaller.startVector.y)/MouseScaleFactor   
+        elif linktocaller.direction=="-y":
+            linktocaller.FilletRadius = (linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor   
+        elif linktocaller.direction=="+z":
+            linktocaller.FilletRadius = (-linktocaller.endVector.z+linktocaller.startVector.z)/MouseScaleFactor   
+        elif linktocaller.direction=="-z":
+            linktocaller.FilletRadius = (linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor   
         if linktocaller.FilletRadius<=0:
             linktocaller.FilletRadius=0.0001
+        elif linktocaller.FilletRadius>8:
+            linktocaller.FilletRadius=8
+        
         print("FilletRadius",linktocaller.FilletRadius)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.FilletLBL.setText("scale= "+ str(round(linktocaller.FilletRadius,4)))
@@ -170,7 +182,9 @@ class Design456_SmartFillet:
     FilletRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
+    direction=None
 
+    
     def registerShapeType(self):
         '''
             Find out shape-type and save the name in objectType
@@ -189,7 +203,12 @@ class Design456_SmartFillet:
         Reposition the arrows by recalculating the boundary box
         and updating the vectors inside each fr_arrow_widget
         """
-        self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
+        if(self.direction=="+x" or self.direction=="-x" ):
+            self.smartInd.w_vector.x = endVec.x  #Only X should affect the arrow
+        elif(self.direction=="+y" or self.direction=="-y" ):
+            self.smartInd.w_vector.y = endVec.y  #Only Y should affect the arrow
+        elif(self.direction=="+z" or self.direction=="-z" ):
+            self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
         self.smartInd.redraw()
         return
             
@@ -197,54 +216,87 @@ class Design456_SmartFillet:
         """"
          Find out the vector and rotation of the arrow to be drawn.
         """
-        # TODO: Don't know at the moment how to make this works better i.e. arrow direction and position
         #      For now the arrow will be at the top
-        try:
-            rotation = None
-            if self.objectType == 'Shape':
-              # 'Shape'
-                # The whole object is selected
-                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax
-                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax+self.AwayFrom3DObject
-                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax
-                rotation = [0.0, 0.0, 0.0, .00]
-                return rotation
+        rotation = [0.0,0.0,0.0,0.0]
+        self.direction= faced.getDirectionAxis() #Must be getSelectionEx
 
-            vectors = self.selectedObj[0].SubObjects[0].Vertexes
-            if self.objectType == 'Face':
-                self._vector.z = vectors[0].Z
-                for i in vectors:
-                    self._vector.x += i.X
-                    self._vector.y += i.Y
-                    if self._vector.z < i.Z:
-                        self._vector.z = i.Z+self.AwayFrom3DObject
-                        self._vector.x = self._vector.x/4
-                self._vector.y = self._vector.y/4
+        if (self.direction =="+x"):
+            rotation = [0.0, 0.0, 1.0, 90.0]
+        elif (self.direction =="-x"):
+            rotation = [0.0, 0.0, -1.0,90.0]
+        elif (self.direction =="+y"):                
+            rotation = [0.0, 0.0, 1.0, 180.0]
+        elif (self.direction =="-y"):
+            rotation = [0.0, 0.0, 1.0, 0.0]
+        elif (self.direction =="+z"):
+            rotation = [-1.0, 0.0, 0.0, 90.0]
+        elif (self.direction =="-z"):
+                rotation = [1.0, 0.0, 0.0, 90.0]
 
-                rotation = [-1,
-                            0,
-                            0,
-                            90]
+        if self.objectType == 'Shape':
+        # 'Shape'
+            # The whole object is selected
+            if (self.direction=="+x" or self.direction=="-x"):
+                if(self.direction=="+x"):
+                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax+ self.AwayFrom3DObject
+                else: # (direction=="-x"):
+                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax-self.AwayFrom3DObject
+                
+                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
+                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax/2
 
-            elif self.objectType == 'Edge':
-                # One edge is selected
-                self._vector.z = vectors[0].Z
-                for i in vectors:
-                    self._vector.x += i.X/2
-                    self._vector.y += i.Y/2
-                    self._vector.z = i.Z+self.AwayFrom3DObject
-
-                rotation = [-1,
-                             0,
-                             0,
-                            90]
-
+            elif (self.direction=="+y" or self.direction =="-y"):
+                if(self.direction=="+y"):
+                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax+self.AwayFrom3DObject
+                else: # (direction=="-y"):    
+                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax-self.AwayFrom3DObject
+                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
+                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax/2
+            
+            elif (self.direction=="+z" or self.direction=="-z"):
+                if(self.direction=="+z"):
+                    self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
+                else:   #(direction=="-z"):
+                    self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax-self.AwayFrom3DObject
+                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
+                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
             return rotation
-        except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' getArrowPos-Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        
+        vectors = self.selectedObj[0].SubObjects[0].Vertexes
+        if self.objectType == 'Face':
+            self._vector.z = vectors[0].Z
+            for i in vectors:
+                self._vector.x += i.X
+                self._vector.y += i.Y
+                if self._vector.z < i.Z:
+                    self._vector.z += i.Z
+                    self._vector.x = self._vector.x/4
+            self._vector.x = self._vector.x/4
+            self._vector.y = self._vector.y/4
+            self._vector.z = self._vector.z/4
+    
+        elif self.objectType == 'Edge':
+            # One edge is selected
+            self._vector.z = vectors[0].Z
+            for i in vectors:
+                self._vector.x += i.X/2
+                self._vector.y += i.Y/2
+                self._vector.z += i.Z/2
+        
+        if self.direction=="+x":
+            self._vector.x=self._vector.x+self.AwayFrom3DObject
+        elif self.direction=="-x":
+            self._vector.x=self._vector.x-self.AwayFrom3DObject
+        elif self.direction=="+y":
+            self._vector.y=self._vector.y+self.AwayFrom3DObject
+        elif self.direction=="-y":
+            self._vector.y=self._vector.y-self.AwayFrom3DObject
+        elif self.direction=="+z":
+            self._vector.z=self._vector.z+self.AwayFrom3DObject
+        elif self.direction=="-z":
+            self._vector.z=self._vector.z-self.AwayFrom3DObject
+
+        return rotation
 
     def getEdgesNumbersList(self, names=None):
         """ 
@@ -333,7 +385,7 @@ class Design456_SmartFillet:
 
         # get rotation
         rotation = self.getArrowPosition()
-
+        print("rotation=",rotation)
         self.smartInd = Fr_Arrow_Widget(self._vector, "Fillet", 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
@@ -423,7 +475,7 @@ class Design456_SmartFillet:
         temp=self.selectedObj[0]
         self.selectedObj[0]=self.selectedObj[1]
         self.selectedObj.pop(1)
-        self.FilletRadius=0.005
+        self.FilletRadius=0.0001
         App.ActiveDocument.removeObject(temp.ObjectName)
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart fillet 3dCOIN widgets

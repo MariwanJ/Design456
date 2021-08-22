@@ -34,27 +34,44 @@ from pivy import coin
 
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 
-class  getDirectionAxis():
-    def Activated(self):
-        try:
-            s = Gui.Selection.getSelectionEx()
-            if len(s)==0:
-                return "" #nothing to do we cannot calculate the direction
-            obj = s[0]
-            faceSel = obj.SubObjects[0]
-            dir = faceSel.normalAt(0, 0)
-            if dir.z == 1:
-                return "z"
-            elif dir.y == 1:
-                return "y"
+def getDirectionAxis():
+    try:
+        s = Gui.Selection.getSelectionEx()
+        if len(s)==0:
+            return "" #nothing to do we cannot calculate the direction
+        obj = s[0]
+        if (hasattr(obj,"SubObjects")):
+            if len(obj.SubObjects)!=0:
+                faceSel = obj.SubObjects[0]
             else:
-                return "x"
-        except Exception as err:
-            App.Console.PrintError("'getDirectionAxis' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+                faceSel=obj.Object.Shape.Faces[0] # Take the first face
+        else:
+            raise NotImplementedError
+        try: 
+            dir = faceSel.normalAt(0, 0)  #other faces needs 2 arguments
+        except: 
+            dir= faceSel.normalAt(0) #Circle has not two arguments, only one
+        
+        if dir.z == 1:
+            return "+z"
+        elif dir.z==-1:
+            return "-z"
+        elif dir.y == 1:
+            return "+y"
+        elif dir.y==-1:
+            return "-y"
+        elif dir.x==1:
+            return "+x"
+        elif dir.x==-1:
+            return "-x"
+        else:
+            return None 
+    except Exception as err:
+        App.Console.PrintError("'getDirectionAxis' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 class MousePosition:
     def __init__(self, view):
