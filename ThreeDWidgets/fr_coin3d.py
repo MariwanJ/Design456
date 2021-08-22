@@ -238,11 +238,13 @@ class root_handle():
         
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_PUSH
+                
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON2:
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
         
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON3:
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
+                
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
            

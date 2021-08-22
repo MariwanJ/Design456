@@ -66,7 +66,7 @@ class Design456_unifySplitFuse1:
             if (len(sel) != 2):
                 # Two object must be selected
                 errMessage = "Select two objects to use the Tool"
-                faced.getInfo(sel).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
 
             try:
@@ -160,7 +160,7 @@ class Design456_unifySplitFuse2:
             if (len(sel) != 2):
                 # Two object must be selected
                 errMessage = "Select two objects to use the Tool"
-                faced.getInfo(sel).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             reply = self.askQuestion()
             App.ActiveDocument.openTransaction(translate("Design456","UnifySplitFuse1"))

@@ -48,7 +48,7 @@ class Design456_ExtrudeFace:
             if (len(s) < 1):
                 # An object must be selected
                 errMessage = "Select an object to use Extrude Face"
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             lengthForward = QtGui.QInputDialog.getDouble(
                 None, "Get value", "Input:", 0, -10000.0, 10000.0, 2)[0]

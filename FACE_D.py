@@ -315,154 +315,74 @@ class PartMover:
 
 """
 
-class getInfo:
-    def __init__(self, object=None):
-        self.obj = object
 
-    def getFaceName(self):
-        try:
-            if(hasattr(self.obj,'SubElementNames')):
-                Result = (self.obj.SubElementNames[0])
-                return Result
-            else:
-                return None
-        except Exception as err:
-            App.Console.PrintError("'getFaceName' Failed. "
-                                   "{err}\n".format(err=str(err)))
-
-    def getObjectFromFaceName( self, face_name):
-        try:
-            self.faceName=face_name        
-            if(self.obj.SubElementNames[0].startswith('Face')):
-                faceNumber = int( self.faceName[4:]) -1
-            return self.obj.Object.Shape.Faces[faceNumber]
-        
-        except Exception as err:
-            App.Console.PrintError("'getObjectFromFaceName' Failed. "
-                                   "{err}\n".format(err=str(err)))        
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def getFullFaceName(self):
-        try:
-            Result = (self.obj.FullName)
+def getFaceName(sel):
+    try:
+        if(hasattr(sel,'SubElementNames')):
+            Result = (sel.SubElementNames[0])
             return Result
-        except Exception as err:
-            App.Console.PrintError("'getFullFaceName' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            
+        else:
+            return None
+    except Exception as err:
+        App.Console.PrintError("'getFaceName' Failed. "
+                               "{err}\n".format(err=str(err)))
 
-    def getObjectCenterOfMass(self):
-        try:
-            Result = self.obj.SubObjects[0].CenterOfMass
-            return Result
-        except Exception as err:
-            App.Console.PrintError("'getObjectCenterOfMass' Failed. "
-                                   "{err+}\n".format(err=str(err)))
-
-    def getObjectX(self):
-        try:
-            Result = self.obj.SubObjects[0].CenterOfMass.x
-            return Result
-        except Exception as err:
-            App.Console.PrintError("'getObjectX' Failed. "
-                                   "{err+}\n".format(err=str(err)))
-
-    def getObjectY(self):
-        try:
-            Result = self.obj.SubObjects[0].CenterOfMass.y
-            return Result
-        except Exception as err:
-            App.Console.PrintError("'getObjectY' Failed. "
-                                   "{err+}\n".format(err=str(err)))
-
-    def getObjectZ(self):
-        try:
-            Result = self.obj.SubObjects[0].CenterOfMass.z
-            return Result
-        except Exception as err:
-            App.Console.PrintError("'getObjectZ' Failed. "
-                                   "{err+}\n".format(err=str(err)))
-
-    def getObjectBase(self):
-        try:
-            Result = self.obj.SubObjects[0].Placement.Base()
-            return Result
-        except Exception as err:
-            App.Console.PrintError("'getObjectBase' Failed. "
-                                   "{err+}\n".format(err=str(err)))
-
-    def getObjectPlacement(self):
-        try:
-            Result = self.obj.SubObjects[0].Placement()
-            return Result
-        except Exception as err:
-            App.Console.PrintError("'getObjectPlacement' Failed. "
-                                   "{err+}\n".format(err=str(err)))
-
-    def getObjectRotation(self):
-        try:
-            Result = self.obj.SubObjects[0].Placement.Rotation()
-            return Result
-        except Exception as err:
-            App.Console.PrintError("'getObjectX' Failed. "
-                                   "{err+}\n".format(err=str(err)))
-
-    def getObjectParameterRange(self):
-        try:
-            Result = self.obj.SubObjects[0].ParameterRange()
-            return Result
-        except Exception as err:
-            App.Console.PrintError("'getObjectParameterRange' Failed. "
-                                   "{err+}\n".format(err=str(err)))
-
-    """Message box (error) """
-
-    def selectedObjectType(self):
-        if isinstance(self.obj.Object, _part.Shape):
-            return "Shape"
-        if hasattr(self.obj.Object, 'Proxy'):
-            if hasattr(self.obj.Object.Proxy, "Type"):
-                return self.obj.Object.Proxy.Type
-        if hasattr(self.obj.Object, 'TypeId'):
-            return self.obj.Object.TypeId
-        return "Unknown"
+def getObjectFromFaceName(obj, face_name):
+    try:
+        faceName=face_name        
+        if(obj.SubElementNames[0].startswith('Face')):
+            faceNumber = int(faceName[4:]) -1
+        return obj.Object.Shape.Faces[faceNumber]
     
-    def errorDialog(self, msg):
-        # Create a simple dialog QMessageBox
-        # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
-        diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Error', msg)
-        diag.setWindowModality(QtCore.Qt.ApplicationModal)
-        diag.exec_()
+    except Exception as err:
+        App.Console.PrintError("'getObjectFromFaceName' Failed. "
+                               "{err}\n".format(err=str(err)))        
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 
-    # From Mario Macro_CenterCenterFace at
-    # https://wiki.freecadweb.org/Macro_CenterFace/fr
-    def objectRealPlacement3D(self):    # search the real Placement
-        try:
-            objectPlacement = self.obj.Object.Shape.Placement
-            objectPlacementBase = App.Vector(objectPlacement.Base)
+def getObjectCenterOfMass(obj):
+    try:
+        Result = obj.SubObjects[0].CenterOfMass
+        return Result
+    except Exception as err:
+        App.Console.PrintError("'getObjectCenterOfMass' Failed. "
+                               "{err+}\n".format(err=str(err)))
+
+def errorDialog( msg):
+    # Create a simple dialog QMessageBox
+    # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
+    diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Error', msg)
+    diag.setWindowModality(QtCore.Qt.ApplicationModal)
+    diag.exec_()
+
+# From Mario Macro_CenterCenterFace at
+# https://wiki.freecadweb.org/Macro_CenterFace/fr
+def objectRealPlacement3D(obj):    # search the real Placement
+    try:
+        objectPlacement = obj.Object.Shape.Placement
+        objectPlacementBase = App.Vector(objectPlacement.Base)
+        ####
+        objectWorkCenter = objectPlacementBase
+        ####
+        if hasattr(obj, "getGlobalPlacement"):
+            globalPlacement = obj.Object.getGlobalPlacement()
+            globalPlacementBase = App.Vector(globalPlacement.Base)
             ####
-            objectWorkCenter = objectPlacementBase
+            objectRealPlacement3D = globalPlacementBase.sub(
+                objectWorkCenter)  # mode=0 adapte pour BBox + Centerpoints
             ####
-            if hasattr(self.obj, "getGlobalPlacement"):
-                globalPlacement = self.obj.Object.getGlobalPlacement()
-                globalPlacementBase = App.Vector(globalPlacement.Base)
-                ####
-                objectRealPlacement3D = globalPlacementBase.sub(
-                    objectWorkCenter)  # mode=0 adapte pour BBox + Centerpoints
-                ####
-            else:
-                objectRealPlacement3D = objectWorkCenter
-            return objectRealPlacement3D
-        except Exception as err:
-            App.Console.PrintError("'Magnet' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            return self.getObjectCenterOfMass()
+        else:
+            objectRealPlacement3D = objectWorkCenter
+        return objectRealPlacement3D
+    except Exception as err:
+        App.Console.PrintError("'Magnet' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        return getObjectCenterOfMass(obj)
 
 #send object to this class you get back top-face's name  
 class SelectTopFace: 

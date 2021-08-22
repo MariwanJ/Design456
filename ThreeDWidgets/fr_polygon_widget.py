@@ -97,7 +97,7 @@ class Fr_Polygon_Widget(fr_widget.Fr_Widget):
     #     if(len(vertices)!=4):
     #             # must be four vertices
     #             errMessage = "Four Vertices are required"
-    #             faced.getInfo(None).errorDialog(errMessage)
+    #             faced.errorDialog(errMessage)
     #             return
     #     self.w_vector.clear()
     #     self.w_vector = vertices

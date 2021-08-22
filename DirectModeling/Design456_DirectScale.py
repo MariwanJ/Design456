@@ -77,7 +77,7 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
             else:
                 # This shouldn't happen
                 errMessage = "Unknown error occurred, wrong Arrow-Color"
-                faced.getInfo().errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             scaleX = scaleY = scaleZ = uniformValue
             linktocaller.scaleLBL.setText("scale= "+str(scaleX))
@@ -378,7 +378,7 @@ class Design456_DirectScale:
             if len(sel) != 1:
                 # Only one object must be self.selectedObj
                 errMessage = "Select one object to scale"
-                faced.getInfo().errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             
             self.selectedObj.clear()
@@ -386,7 +386,7 @@ class Design456_DirectScale:
             if not hasattr(self.selectedObj[0], 'Shape'):
                 # Only one object must be self.selectedObj
                 errMessage = "self.selectedObj object has no Shape,\n please make a simple copy of the object"
-                faced.getInfo().errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
 
             cloneObj = Draft.clone(self.selectedObj[0], forcedraft=True)
