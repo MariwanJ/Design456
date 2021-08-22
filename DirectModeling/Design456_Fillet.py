@@ -46,7 +46,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 import math
 from ThreeDWidgets import fr_label_draw
-MouseScaleFactor = 1.5 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
+MouseScaleFactor = 1.5      # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
 
 '''
     We have to recreate the object each time we change the radius. 
@@ -176,9 +176,9 @@ class Design456_SmartFillet:
     # We will make two object, one for visual effect and the other is the original
     selectedObj = []
     # 0 is the original    1 is the fake one (just for interactive effect)
-    mouseToArrowDiff = 0.0
+    mouseToArrowDiff = 0.0 
     offset=0.0
-    AwayFrom3DObject = 10  # Use this to take away the arrow from the object
+    AwayFrom3DObject = 20  # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
     FilletRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
