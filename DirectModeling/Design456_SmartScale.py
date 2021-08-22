@@ -83,7 +83,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
     if obj==None:
         # Only one object must be selected
         errMessage = "Select an object to scale"
-        faced.getInfo().errorDialog(errMessage)
+        faced.errorDialog(errMessage)
         return
     
     cloneObj = Draft.clone(obj, forcedraft=True)
@@ -244,7 +244,7 @@ class Design456_SmartScale:
             if len(select) != 1:
                 # Only one object must be selected
                 errMessage = "Select one object to scale"
-                faced.getInfo().errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             #Undo
             self.getXYZdimOfSelectedObject(select[0])

@@ -329,7 +329,7 @@ class Design456_SmartChamfer:
         if len(sel) == 0:
             # An object must be selected
             errMessage = "Select an object, one face or one edge to chamfer"
-            faced.getInfo().errorDialog(errMessage)
+            faced.errorDialog(errMessage)
             return
 
         self.selectedObj.append(sel[0])

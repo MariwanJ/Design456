@@ -90,7 +90,7 @@ class Design456_Arc3Points:
             if ((len(selected) < 3 or len(selected) > 3) and (selectedOne1.HasSubObjects == False or selectedOne2.HasSubObjects == False or selectedOne3.HasSubObjects == False)):
                 # Two object must be selected
                 errMessage = "Select two or more objects to useArc3Points Tool"
-                faced.getInfo(selected).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             if selectedOne1.HasSubObjects and len(selected) == 1:
                 # We have only one object that we take vertices from
@@ -155,7 +155,7 @@ class Design456_MultiPointsToWire:
             if (len(selected) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to use MultiPointsToLineOpen Tool"
-                faced.getInfo(selected).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             allSelected = []
             for t in selected:
@@ -235,7 +235,7 @@ class Design456_2DTrim:
             if len(sel) < 1:
                 # several selections - Error
                 errMessage = "Select one or more edges to trim"
-                faced.getInfo(sel).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             SelectedPoints = []
             sel1 = sel[0]
@@ -274,7 +274,7 @@ class Design456_2DTrim:
                 # Try to reconstruct the shape/wire
                 TestTwoObjectCreate = False
                 _all_points2 = []
-                objType = faced.getInfo(sel1).selectedObjectType()
+                objType = faced.selectedObjectType(sel1)
                 closedShape = None
                 EndPoint = StartPoint = None
                 if (objType == 'Wire' or objType == 'Line'):
@@ -369,7 +369,7 @@ class Design456_2DTrim:
             else:
                 # No Edges found
                 errMessage = "Select one or more edges to trim"
-                faced.getInfo(sel1).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
         except Exception as err:
             App.Console.PrintError("'Trim 2D' Failed. "
@@ -398,10 +398,10 @@ class Design456_2DExtend:
             if len(s) < 1:
                 # several selections - Error
                 errMessage = "Select a line or a point to extend."
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             sel = s[0]
-            _type = faced.getInfo(sel).selectedObjectType()
+            _type = faced.selectedObjectType(sel)
             if not (_type == 'Wire' or _type == 'Line'):
                 print(_type)
                 print("Wrong object selected")
@@ -593,7 +593,7 @@ class Design456_joinTwoLines:
             if len(s)>2 : 
                 # Two object must be selected
                 errMessage = "Select only two vertices "
-                faced.getInfo(s).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             elif len(s)==1:
                 #We have one line .. end and start will be one.

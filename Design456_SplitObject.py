@@ -47,7 +47,7 @@ class Design456_SplitObject:
             if (len(selection) < 1):
                 # An object must be selected
                 errMessage = "Select an object to use Split Tool"
-                faced.getInfo(selection).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Split Object"))
             shape = selection[0].Object.Shape
@@ -87,7 +87,7 @@ class Design456_SplitObject:
                 App.ActiveDocument.removeObject(j.Name)
                 # Shape is not OK
                 errMessage = "Failed to fillet the objects"
-                faced.getInfo(selection).errorDialog(errMessage)
+                faced.errorDialog(errMessage)
             else:
                 # Make a simple copy
                 newShape = Part.getShape(j, '', needSubElement=False, refine=False)

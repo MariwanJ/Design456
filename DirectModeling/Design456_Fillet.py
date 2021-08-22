@@ -96,7 +96,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
         
-        linktocaller.FilletRadius = abs((linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor)   
+        linktocaller.FilletRadius = abs((linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor)   
         if linktocaller.FilletRadius<=0:
             linktocaller.FilletRadius=0.0001
         print("FilletRadius",linktocaller.FilletRadius)         
@@ -204,11 +204,10 @@ class Design456_SmartFillet:
             if self.objectType == 'Shape':
               # 'Shape'
                 # The whole object is selected
-                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
-                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
-                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
-                
-                rotation = [-1.0, 0.0, 0.0, 90]
+                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax
+                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax+self.AwayFrom3DObject
+                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax
+                rotation = [0.0, 0.0, 0.0, .00]
                 return rotation
 
             vectors = self.selectedObj[0].SubObjects[0].Vertexes
@@ -320,7 +319,7 @@ class Design456_SmartFillet:
         if len(sel) == 0:
             # An object must be selected
             errMessage = "Select an object, one face or one edge to fillet"
-            faced.getInfo().errorDialog(errMessage)
+            faced.errorDialog(errMessage)
             return
 
         self.selectedObj.append(sel[0])
