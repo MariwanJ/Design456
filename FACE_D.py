@@ -50,7 +50,11 @@ def getDirectionAxis():
         try: 
             dir = faceSel.normalAt(0, 0)  #other faces needs 2 arguments
         except: 
-            dir= faceSel.normalAt(0) #Circle has not two arguments, only one
+            try: 
+                dir= faceSel.normalAt(0) #Circle has not two arguments, only one
+            except:
+                f= findFace()
+                dir= f.normalAt(0, 0)
         
         if dir.z == 1:
             return "+z"
@@ -527,3 +531,17 @@ class createActionTab:
         self.tab.setCurrentWidget(self.dialog)
         self.dialog.setWindowTitle(self.title)
         return (self.mw,self.dialog,self.tab)
+
+def findFace():
+    """[Find Face that has the selected edge]
+    Returns:
+        [Face Object]: [Return the face has the selected edge or None if error occur]
+    """
+    edge=Gui.Selection.getSelection()[0].Shape.Edges[0]
+    object=Gui.Selection.getSelection()[0]
+    Faces=object.Shape.Faces
+    for fa in Faces: 
+        for ed in fa.Edges:
+            if edge.isEqual(ed):
+                return fa
+    return None

@@ -95,25 +95,25 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
         if linktocaller.direction=="+x":
-            linktocaller.FilletRadius = (-linktocaller.endVector.x+linktocaller.startVector.x)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (-linktocaller.endVector.x+linktocaller.startVector.x)/MouseScaleFactor   
         elif linktocaller.direction=="-x":
-            linktocaller.FilletRadius = (linktocaller.endVector.x-linktocaller.startVector.x)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (linktocaller.endVector.x-linktocaller.startVector.x)/MouseScaleFactor   
         elif linktocaller.direction=="+y":
-            linktocaller.FilletRadius = (-linktocaller.endVector.y+linktocaller.startVector.y)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (-linktocaller.endVector.y+linktocaller.startVector.y)/MouseScaleFactor   
         elif linktocaller.direction=="-y":
-            linktocaller.FilletRadius = (linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor   
         elif linktocaller.direction=="+z":
-            linktocaller.FilletRadius = (-linktocaller.endVector.z+linktocaller.startVector.z)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (-linktocaller.endVector.z+linktocaller.startVector.z)/MouseScaleFactor   
         elif linktocaller.direction=="-z":
-            linktocaller.FilletRadius = (linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor   
-        if linktocaller.FilletRadius<=0:
-            linktocaller.FilletRadius=0.0001
-        elif linktocaller.FilletRadius>8:
-            linktocaller.FilletRadius=8
+            linktocaller.ChamferRadius = (linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor   
+        if linktocaller.ChamferRadius<=0:
+            linktocaller.ChamferRadius=0.0001
+        elif linktocaller.ChamferRadius>8:
+            linktocaller.ChamferRadius=8
         
-        print("FilletRadius",linktocaller.FilletRadius)         
+        print("ChamferRadius",linktocaller.ChamferRadius)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
-        linktocaller.FilletLBL.setText("scale= "+ str(round(linktocaller.FilletRadius,4)))
+        linktocaller.FilletLBL.setText("scale= "+ str(round(linktocaller.ChamferRadius,4)))
         linktocaller.reCreatefilletObject()
 
     except Exception as err:
@@ -178,8 +178,8 @@ class Design456_SmartFillet:
     # 0 is the original    1 is the fake one (just for interactive effect)
     mouseToArrowDiff = 0.0 
     offset=0.0
-    AwayFrom3DObject = 20  # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
-    FilletRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
+    AwayFrom3DObject = 10  # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
+    ChamferRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
     direction=None
@@ -310,11 +310,11 @@ class Design456_SmartFillet:
             for name in names:
                 for subname in name:
                     edgeNumbor = int(subname[4:len(subname)])
-                result.append(edgeNumbor, self.FilletRadius, self.FilletRadius)
+                result.append(edgeNumbor, self.ChamferRadius, self.ChamferRadius)
         else:
             # only one Edge
             edgeNumbor = int(names[4:len(names)])
-            result.append((edgeNumbor, self.FilletRadius,self.FilletRadius))
+            result.append((edgeNumbor, self.ChamferRadius,self.ChamferRadius))
         return result
 
     def getAllSelectedEdges(self):
@@ -353,7 +353,7 @@ class Design456_SmartFillet:
 
             #This create only a shape. We have to make it as a Part::Feature
             App.ActiveDocument.recompute()
-            _shape=self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges())
+            _shape=self.selectedObj[0].Object.Shape.makeFillet(self.ChamferRadius,self.getAllSelectedEdges())
             newObj=App.ActiveDocument.addObject('Part::Feature',"temp")
             newObj.Shape=_shape
             self.selectedObj.append(newObj)
@@ -475,7 +475,7 @@ class Design456_SmartFillet:
         temp=self.selectedObj[0]
         self.selectedObj[0]=self.selectedObj[1]
         self.selectedObj.pop(1)
-        self.FilletRadius=0.0001
+        self.ChamferRadius=0.0001
         App.ActiveDocument.removeObject(temp.ObjectName)
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart fillet 3dCOIN widgets
