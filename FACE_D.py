@@ -542,6 +542,7 @@ def findFace():
     Faces=object.Shape.Faces
     for fa in Faces: 
         for ed in fa.Edges:
-            if edge.isEqual(ed):
+            #if edge.isEqual(ed):
+            if edge.isPartner(ed):
                 return fa
     return None
