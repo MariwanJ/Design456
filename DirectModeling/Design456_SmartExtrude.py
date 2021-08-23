@@ -342,7 +342,19 @@ class Design456_SmartExtrude:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             self.__del__()
-
+    def extractFace(self):
+            newobj="eFace"
+            sh = self.selectedObj.Object.Shape.copy()
+            if hasattr(self.selectedObj.Object, "getGlobalPlacement"):
+                gpl = self.selectedObj.Object.getGlobalPlacement()
+                sh.Placement = gpl
+            name =self.selectedObj.SubElementNames
+            newobj = App.ActiveDocument.addObject("Part::Feature", newobj)
+            newobj.Shape = sh.getElement(name)
+            objectCreate=True
+            App.ActiveDocument.recompute()
+            return newobj
+        
     def isFaceOf3DObj(self):
         """[Check if the selected object is a face or is a 2D object. 
         A face cannot be extruded directly. We have to extract a Face and them Extrude]
