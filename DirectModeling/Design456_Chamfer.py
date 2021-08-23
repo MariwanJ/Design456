@@ -95,23 +95,23 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
         if linktocaller.direction=="+x":
-            linktocaller.FilletRadius = (-linktocaller.endVector.x+linktocaller.startVector.x)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (-linktocaller.endVector.x+linktocaller.startVector.x)/MouseScaleFactor   
         elif linktocaller.direction=="-x":
-            linktocaller.FilletRadius = (linktocaller.endVector.x-linktocaller.startVector.x)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (linktocaller.endVector.x-linktocaller.startVector.x)/MouseScaleFactor   
         elif linktocaller.direction=="+y":
-            linktocaller.FilletRadius = (-linktocaller.endVector.y+linktocaller.startVector.y)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (-linktocaller.endVector.y+linktocaller.startVector.y)/MouseScaleFactor   
         elif linktocaller.direction=="-y":
-            linktocaller.FilletRadius = (linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor   
         elif linktocaller.direction=="+z":
-            linktocaller.FilletRadius = (-linktocaller.endVector.z+linktocaller.startVector.z)/MouseScaleFactor   
+            linktocaller.ChamferRadius = (-linktocaller.endVector.z+linktocaller.startVector.z)/MouseScaleFactor   
         elif linktocaller.direction=="-z":
-            linktocaller.FilletRadius = (linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor   
-        if linktocaller.FilletRadius<=0:
-            linktocaller.FilletRadius=0.0001
-        elif linktocaller.FilletRadius>8:
-            linktocaller.FilletRadius=8
+            linktocaller.ChamferRadius = (linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor   
+        if linktocaller.ChamferRadius<=0:
+            linktocaller.ChamferRadius=0.00001
+        elif linktocaller.ChamferRadius>8:
+            linktocaller.ChamferRadius=8
         
-        print("FilletRadius",linktocaller.FilletRadius)         
+        print("ChamferRadius",linktocaller.ChamferRadius)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ChamferLBL.setText("scale= "+ str(round(linktocaller.ChamferRadius,4)))
         linktocaller.reCreatechamferObject()
@@ -179,7 +179,7 @@ class Design456_SmartChamfer:
     mouseToArrowDiff = 0.0
     offset=0.0
     AwayFrom3DObject = 10  # Use this to take away the arrow from the object
-    ChamferRadius = 0.05   #We cannot have zero. TODO: What value we should use? FIXME:
+    ChamferRadius = 0.00001   #We cannot have zero. TODO: What value we should use? FIXME:
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
     direction=None
@@ -268,9 +268,7 @@ class Design456_SmartChamfer:
             for i in vectors:
                 self._vector.x += i.X
                 self._vector.y += i.Y
-                if self._vector.z < i.Z:
-                    self._vector.z += i.Z
-                    self._vector.x = self._vector.x/4
+                self._vector.z += i.Z
             self._vector.x = self._vector.x/4
             self._vector.y = self._vector.y/4
             self._vector.z = self._vector.z/4
@@ -279,9 +277,13 @@ class Design456_SmartChamfer:
             # One edge is selected
             self._vector.z = vectors[0].Z
             for i in vectors:
-                self._vector.x += i.X/2
-                self._vector.y += i.Y/2
-                self._vector.z += i.Z/2
+                self._vector.x += i.X
+                self._vector.y += i.Y
+                self._vector.z += i.Z
+            self._vector.x = self._vector.x/2
+            self._vector.y = self._vector.y/2
+            self._vector.z = self._vector.z/2
+
         
         if self.direction=="+x":
             self._vector.x=self._vector.x+self.AwayFrom3DObject
@@ -345,16 +347,11 @@ class Design456_SmartChamfer:
                 elif hasattr(self.selectedObj[1].Object,'Name'):
                     App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)
                 else : 
-                    print(type(self.selectedObj[1]))
-                    print(self.selectedObj[1])
-                    print(dir(self.selectedObj[1]))
                     print("removing failed")
                 self.selectedObj.pop(1)
 
             #This create only a shape. We have to make it as a Part::Feature
             App.ActiveDocument.recompute()
-            _shape=self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges())
-                  #TODO: FIXME : 
             _shape=self.selectedObj[0].Object.Shape.makeChamfer(self.ChamferRadius,self.ChamferRadius,self.getAllSelectedEdges())
             newObj=App.ActiveDocument.addObject('Part::Feature',"temp")
             newObj.Shape=_shape
@@ -366,6 +363,7 @@ class Design456_SmartChamfer:
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            self.__del__()
 
     def Activated(self):
         self.selectedObj.clear()
@@ -382,6 +380,9 @@ class Design456_SmartChamfer:
         # Find Out shapes type.
         self.registerShapeType()
         o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
+        
+        # Undo
+        App.ActiveDocument.openTransaction(translate("Design456", "SmartFillet"))
         o.Transparency=80
         self.reCreatechamferObject()
 
@@ -411,6 +412,8 @@ class Design456_SmartChamfer:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
+            App.ActiveDocument.commitTransaction()  # undo reg.
+
         except Exception as err:
             App.Console.PrintError("'Design456_SmartChamfer' del-Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -459,7 +462,7 @@ class Design456_SmartChamfer:
             return self.dialog
 
         except Exception as err:
-            App.Console.PrintError("'Design456_Fillet' getMainWindwo-Failed. "
+            App.Console.PrintError("'Design456_Chamfer' getMainWindwo-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -475,19 +478,33 @@ class Design456_SmartChamfer:
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize-1)  # it is 0,1,2,3 ..etc
         temp=self.selectedObj[0]
-        self.selectedObj[0]=self.selectedObj[1]
-        self.selectedObj.pop(1)
-        self.FilletRadius=0.0001
-        App.ActiveDocument.removeObject(temp.ObjectName)
+        if(self.ChamferRadius<=0.01):
+            #Chamfer is not applied. return the original object as it was
+            if(len(self.selectedObj)==2):
+                if hasattr(self.selectedObj[1],"Object"):
+                    App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)    
+                else:
+                    App.ActiveDocument.removeObject(self.selectedObj[1].Name)
+            o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
+            o.Transparency=0
+            o.Object.Label=self.Originalname
+        else:
+            self.selectedObj[0]=self.selectedObj[1]
+            self.selectedObj.pop(1)
+            no=App.ActiveDocument.getObject(self.selectedObj[0].Name)
+            no.Label=self.Originalname
+            App.ActiveDocument.removeObject(temp.Object.Name)
+            self.ChamferRadius=0.0001
+        
         App.ActiveDocument.recompute()
-        self.__del__()  # Remove all smart fillet 3dCOIN widgets
+        self.__del__()  # Remove all smart chamfer 3dCOIN widgets
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Fillet.svg',
-            'MenuText': ' Smart Fillet',
-                        'ToolTip':  ' Smart Fillet'
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_Chamfer.svg',
+            'MenuText': ' Smart Chamfer',
+                        'ToolTip':  ' Smart Chamfer'
         }
 
 
-Gui.addCommand('Design456_SmartFillet', Design456_SmartFillet())
+Gui.addCommand('Design456_SmartChamfer', Design456_SmartChamfer())
