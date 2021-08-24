@@ -53,7 +53,9 @@ def getDirectionAxis():
             try: 
                 dir= faceSel.normalAt(0) #Circle has not two arguments, only one
             except:
-                f= findFace()
+                f= findFacehasSelectedEdge()
+                if f==None:
+                    raise Exception ("Face not found")
                 dir= f.normalAt(0, 0)
         
         if dir.z == 1:
@@ -348,6 +350,7 @@ def getFaceName(sel):
         App.Console.PrintError("'getFaceName' Failed. "
                                "{err}\n".format(err=str(err)))
 
+#TODO Remove this.. not necessary. 
 def getObjectFromFaceName(obj, face_name):
     try:
         faceName=face_name        
@@ -532,17 +535,40 @@ class createActionTab:
         self.dialog.setWindowTitle(self.title)
         return (self.mw,self.dialog,self.tab)
 
-def findFace():
+def findFacehasSelectedEdge():
     """[Find Face that has the selected edge]
     Returns:
         [Face Object]: [Return the face has the selected edge or None if error occur]
     """
-    edge=Gui.Selection.getSelection()[0].Shape.Edges[0]
-    object=Gui.Selection.getSelection()[0]
-    Faces=object.Shape.Faces
+    obj=Gui.Selection.getSelectionEx()[0]
+    edge=obj.SubObjects[0]
+    Faces=obj.Object.Shape.Faces
     for fa in Faces: 
         for ed in fa.Edges:
-            #if edge.isEqual(ed):
-            if edge.isPartner(ed):
+            if edge.isEqual(ed):
+            #if edge.isPartner(ed):
                 return fa
     return None
+
+def findFaceSHavingTheSameEdge():
+    """[Find Faces that have the selected edge]
+    Returns:
+        [Face Objects]: [Return the faces have the selected edge or None if error occur]
+    """
+    s = Gui.Selection.getSelectionEx()[0]
+    edge = s.SubObjects[0]
+    shape = s.Object.Shape
+    return shape.ancestorsOfType(edge, Part.Face)
+
+def findnormalAtforEdge():
+    """[Find Directions of an edge]
+
+    Returns:
+        [(float,float,float)]: [Returns the results of normalAt for the faces containing the edge.]
+    """
+    results=[]
+    
+    for f in findFacehasSelectedEdge():
+        u0, u1, v0, v1 = f.ParameterRange
+        results.append(f.normalAt(0.5 * (u0 + u1), 0.5 * (v0 + v1)))
+    return results

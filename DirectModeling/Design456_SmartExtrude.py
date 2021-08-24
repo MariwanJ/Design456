@@ -176,21 +176,7 @@ class Design456_SmartExtrude:
             self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
         self.smartInd.redraw()
         return
-            
-    def resizeArrowWidgets(self,endVec):
-        """
-        Reposition the arrows by recalculating the boundary box
-        and updating the vectors inside each fr_arrow_widget
-        """
-        if(self.direction=="+x" or self.direction=="-x" ):
-            self.smartInd.w_vector.x = endVec.x  #Only X should affect the arrow
-        elif(self.direction=="+y" or self.direction=="-y" ):
-            self.smartInd.w_vector.y = endVec.y  #Only Y should affect the arrow
-        elif(self.direction=="+z" or self.direction=="-z" ):
-            self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
-        self.smartInd.redraw()
-        return
-            
+    
     def getArrowPosition(self):
         """"
          Find out the vector and rotation of the arrow to be drawn.
@@ -198,50 +184,31 @@ class Design456_SmartExtrude:
         #      For now the arrow will be at the top
         rotation = [0.0,0.0,0.0,0.0]
         self.direction= faced.getDirectionAxis() #Must be getSelectionEx
-
+        
         if (self.direction =="+x"):
-            rotation = [0.0, 0.0, 1.0, 90.0]
+            rotation = [0.0, 0.0, -1.0, 90.0]
         elif (self.direction =="-x"):
-            rotation = [0.0, 0.0, -1.0,90.0]
+            rotation = [0.0, 0.0, 1.0,90.0]
         elif (self.direction =="+y"):                
-            rotation = [0.0, 0.0, 1.0, 180.0]
-        elif (self.direction =="-y"):
             rotation = [0.0, 0.0, 1.0, 0.0]
+        elif (self.direction =="-y"):
+            rotation = [0.0, 0.0, 1.0, 180.0]
         elif (self.direction =="+z"):
-            rotation = [-1.0, 0.0, 0.0, 90.0]
+            rotation = [1.0, 0.0, 0.0, 90.0]
         elif (self.direction =="-z"):
-                rotation = [1.0, 0.0, 0.0, 90.0]
-        if(self.isFace()):
+                rotation = [-1.0, 0.0, 0.0, 90.0]
+        face1=None
+        if(self.isFaceOf3DObj()):
             # The whole object is selected
-            if (self.direction=="+x" or self.direction=="-x"):
-                if(self.direction=="+x"):
-                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax+ self.AwayFrom3DObject
-                else: # (direction=="-x"):
-                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax-self.AwayFrom3DObject
-                
-                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
-                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax/2
-
-            elif (self.direction=="+y" or self.direction =="-y"):
-                if(self.direction=="+y"):
-                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax+self.AwayFrom3DObject
-                else: # (direction=="-y"):    
-                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax-self.AwayFrom3DObject
-                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
-                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax/2
-            
-            elif (self.direction=="+z" or self.direction=="-z"):
-                if(self.direction=="+z"):
-                    self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
-                else:   #(direction=="-z"):
-                    self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax-self.AwayFrom3DObject
-                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
-                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
-            return rotation
+            sub1 = self.selectedObj
+            face1=sub1.SubObjects[0]
         else:
-            #We have a 2D ..TODO: fix ME 
-            pass
-  
+            face1=self.selectedObj.Object.Shape.Faces[0]
+        self._vector = face1.CenterOfMass
+        self._vector.z=self.selectedObj.Object.Shape.BoundBox.ZMax/2
+        print(self._vector)
+        return rotation
+
     def isFaceOf3DObj(self):
         """[Check if the selected object is a face or is a 2D object. 
         A face cannot be extruded directly. We have to extract a Face and them Extrude]
@@ -250,7 +217,7 @@ class Design456_SmartExtrude:
         Returns:
             [Boolean]: [Return True if the selected object is a face from 3D object, otherwise False]
         """
-        if len(self.selectedObj.Shape.Faces)>1:
+        if len(self.selectedObj.Object.Shape.Faces)>1:
             return True
         else :
              return False 
@@ -269,7 +236,7 @@ class Design456_SmartExtrude:
         else : 
             pass #TODO: WHAT SHOULD WE DO HERE ? 
 
-        name =self.selectedObj.SubElementNames
+        name =self.selectedObj.SubElementNames[0]
         newobj = App.ActiveDocument.addObject("Part::Feature", newobj)
         newobj.Shape = sh.getElement(name)
         App.ActiveDocument.recompute()
@@ -277,15 +244,14 @@ class Design456_SmartExtrude:
         
 
     def Activated(self):
-        self.selectedObj.clear()
-        sel=Gui.Selection.getSelection()
+        sel=Gui.Selection.getSelectionEx()
         if len(sel) == 0:
             # An object must be selected
             errMessage = "Select an object, one face to Extrude"
             faced.errorDialog(errMessage)
             return
         self.selectedObj=sel[0]
-        if self.isFace():  #We must know if the selection is a 2D face or a face from a 3D object
+        if self.isFaceOf3DObj():  #We must know if the selection is a 2D face or a face from a 3D object
             #We have a 3D Object. Extract a face and start to Extrude
             self.targetFace= self.extractFace()
         else: 
@@ -298,32 +264,8 @@ class Design456_SmartExtrude:
         # 2- Extrusion is either with the same size or to different size (smaller or bigger)
         # 3- User can choose if the new object is merged to the older object or not. 
         # 4-
-
-        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        rotation=self.getArrowPosition()
+        
         self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
@@ -412,24 +354,7 @@ class Design456_SmartExtrude:
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize-1)  # it is 0,1,2,3 ..etc
-        temp=self.selectedObj[0]
-        if(self.ExtrudeRadius<=0.01):
-            #Extrude is not applied. return the original object as it was
-            if(len(self.selectedObj)==2):
-                if hasattr(self.selectedObj[1],"Object"):
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)    
-                else:
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Name)
-            o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
-            o.Transparency=0
-            o.Object.Label=self.Originalname
-        else:
-            self.selectedObj[0]=self.selectedObj[1]
-            self.selectedObj.pop(1)
-            no=App.ActiveDocument.getObject(self.selectedObj[0].Name)
-            no.Label=self.Originalname
-            App.ActiveDocument.removeObject(temp.Object.Name)
-            self.ExtrudeRadius=0.0001
+        temp=self.selectedObj
         
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart Extrude 3dCOIN widgets
