@@ -161,21 +161,22 @@ class Design456_SmartExtrude:
     AwayFrom3DObject = 10  # Use this to take away the arrow from the object
     objectType = None  # Either shape, Face or Edge.
     direction=None
+    targetFace=None # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
 
-    
-    def registerShapeType(self):
-        '''
-            Find out shape-type and save the name in objectType
-        '''
-        if len(self.selectedObj[0].SubElementNames)==0:
-            self.objectType = 'Shape'
-        elif 'Face' in self.selectedObj[0].SubElementNames[0]:
-            self.objectType = 'Face'
-        elif 'Edge' in self.selectedObj[0].SubElementNames[0]:
-            self.objectType = 'Edge'
-        else:
-            print("Error")
-    
+    def resizeArrowWidgets(self,endVec):
+        """
+        Reposition the arrows by recalculating the boundary box
+        and updating the vectors inside each fr_arrow_widget
+        """
+        if(self.direction=="+x" or self.direction=="-x" ):
+            self.smartInd.w_vector.x = endVec.x  #Only X should affect the arrow
+        elif(self.direction=="+y" or self.direction=="-y" ):
+            self.smartInd.w_vector.y = endVec.y  #Only Y should affect the arrow
+        elif(self.direction=="+z" or self.direction=="-z" ):
+            self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
+        self.smartInd.redraw()
+        return
+            
     def resizeArrowWidgets(self,endVec):
         """
         Reposition the arrows by recalculating the boundary box
@@ -210,9 +211,7 @@ class Design456_SmartExtrude:
             rotation = [-1.0, 0.0, 0.0, 90.0]
         elif (self.direction =="-z"):
                 rotation = [1.0, 0.0, 0.0, 90.0]
-
-        if self.objectType == 'Shape':
-        # 'Shape'
+        if(self.isFace()):
             # The whole object is selected
             if (self.direction=="+x" or self.direction=="-x"):
                 if(self.direction=="+x"):
@@ -239,122 +238,10 @@ class Design456_SmartExtrude:
                     self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
                     self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
             return rotation
-        
-        vectors = self.selectedObj[0].SubObjects[0].Vertexes
-        if self.objectType == 'Face':
-            self._vector.z = vectors[0].Z
-            for i in vectors:
-                self._vector.x += i.X
-                self._vector.y += i.Y
-                self._vector.z += i.Z
-            self._vector.x = self._vector.x/4
-            self._vector.y = self._vector.y/4
-            self._vector.z = self._vector.z/4
-    
-        elif self.objectType == 'Edge':
-            # One edge is selected
-            self._vector.z = vectors[0].Z
-            for i in vectors:
-                self._vector.x += i.X
-                self._vector.y += i.Y
-                self._vector.z += i.Z
-            self._vector.x = self._vector.x/2
-            self._vector.y = self._vector.y/2
-            self._vector.z = self._vector.z/2
-
-        
-        if self.direction=="+x":
-            self._vector.x=self._vector.x+self.AwayFrom3DObject
-        elif self.direction=="-x":
-            self._vector.x=self._vector.x-self.AwayFrom3DObject
-        elif self.direction=="+y":
-            self._vector.y=self._vector.y+self.AwayFrom3DObject
-        elif self.direction=="-y":
-            self._vector.y=self._vector.y-self.AwayFrom3DObject
-        elif self.direction=="+z":
-            self._vector.z=self._vector.z+self.AwayFrom3DObject
-        elif self.direction=="-z":
-            self._vector.z=self._vector.z-self.AwayFrom3DObject
-
-        return rotation
-
-    def getEdgesNumbersList(self, names=None):
-        """ 
-        Find the edges and return it back to the caller function
-        """
-        result = []
-        if names == None:
-            return None
-        if type(names == list):
-            # multiple edges
-            for name in names:
-                for subname in name:
-                    edgeNumbor = int(subname[4:len(subname)])
-                result.append(edgeNumbor, self.ExtrudeRadius, self.ExtrudeRadius)
         else:
-            # only one Edge
-            edgeNumbor = int(names[4:len(names)])
-            result.append((edgeNumbor, self.ExtrudeRadius,self.ExtrudeRadius))
-        return result
-
-    def getAllSelectedEdges(self):
-        # The format must be (Edges Number, Start-radius, End-radius)
-        EdgesToBeChanged = []
-        if self.objectType == 'Face':
-            EdgesToBeChanged =self.selectedObj[0].SubObjects[0].Edges
-        elif  self.objectType=='Edge':
-            EdgesToBeChanged =self.selectedObj[0].SubObjects
-        elif self.objectType == 'Shape':
-            EdgesToBeChanged= self.selectedObj[0].Object.Shape.Edges
-        else : 
-                print ("Error couldn't find the shape type",self.objectType)
-        return EdgesToBeChanged
-
-    def reCreateExtrudeObject(self):
-        """
-            Use this function to recreate the target object after applying the Extrude radius.
-        """
-        # reCreate the Extrude. We cannot avoid recreating the object from scratch
-        # That is how opencascade library works.
-        try:
-            if len (self.selectedObj)>=2:
-                if hasattr(self.selectedObj[1],'ObjectName'):
-                    App.ActiveDocument.removeObject(self.selectedObj[1].ObjectName)
-                elif hasattr(self.selectedObj[1],'Name'):
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Name)
-                elif hasattr(self.selectedObj[1].Object,'Name'):
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)
-                else : 
-                    print("removing failed")
-                self.selectedObj.pop(1)
-
-            #This create only a shape. We have to make it as a Part::Feature
-            App.ActiveDocument.recompute()
-            _shape=self.selectedObj[0].Object.Shape.makeExtrude(self.ExtrudeRadius,self.ExtrudeRadius,self.getAllSelectedEdges())
-            newObj=App.ActiveDocument.addObject('Part::Feature',"temp")
-            newObj.Shape=_shape
-            self.selectedObj.append(newObj)
-            App.ActiveDocument.recompute()
-            
-        except Exception as err:
-            App.Console.PrintError("'Design456_SmartExtrude' recreateExtrudeObject-Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            self.__del__()
-    def extractFace(self):
-            newobj="eFace"
-            sh = self.selectedObj.Object.Shape.copy()
-            if hasattr(self.selectedObj.Object, "getGlobalPlacement"):
-                gpl = self.selectedObj.Object.getGlobalPlacement()
-                sh.Placement = gpl
-            name =self.selectedObj.SubElementNames
-            newobj = App.ActiveDocument.addObject("Part::Feature", newobj)
-            newobj.Shape = sh.getElement(name)
-            objectCreate=True
-            App.ActiveDocument.recompute()
-            return newobj
-        
+            #We have a 2D ..TODO: fix ME 
+            pass
+  
     def isFaceOf3DObj(self):
         """[Check if the selected object is a face or is a 2D object. 
         A face cannot be extruded directly. We have to extract a Face and them Extrude]
@@ -368,6 +255,27 @@ class Design456_SmartExtrude:
         else :
              return False 
 
+    def extractFace(self):
+        """[Extract a face from a 3D object as it cannot be extruded otherwise]
+
+        Returns:
+            [Face]: [Face created from the selected face of the 3D object]
+        """
+        newobj="eFace"
+        sh = self.selectedObj.Object.Shape.copy()
+        if hasattr(self.selectedObj.Object, "getGlobalPlacement"):
+            gpl = self.selectedObj.Object.getGlobalPlacement()
+            sh.Placement = gpl
+        else : 
+            pass #TODO: WHAT SHOULD WE DO HERE ? 
+
+        name =self.selectedObj.SubElementNames
+        newobj = App.ActiveDocument.addObject("Part::Feature", newobj)
+        newobj.Shape = sh.getElement(name)
+        App.ActiveDocument.recompute()
+        return newobj
+        
+
     def Activated(self):
         self.selectedObj.clear()
         sel=Gui.Selection.getSelection()
@@ -379,15 +287,19 @@ class Design456_SmartExtrude:
         self.selectedObj=sel[0]
         if self.isFace():  #We must know if the selection is a 2D face or a face from a 3D object
             #We have a 3D Object. Extract a face and start to Extrude
-        
+            self.targetFace= self.extractFace()
         else: 
             #We have a 2D Face - Extract it directly
-            pass
-            TODO: FIXME:
+            self.targetFace=self.selectedObj
+        
+        #We have the face here. Now extrusion should  start here. 
+        #We will make this very smart. 
+        # 1- you can resize the face extraced
+        # 2- Extrusion is either with the same size or to different size (smaller or bigger)
+        # 3- User can choose if the new object is merged to the older object or not. 
+        # 4-
 
-
-
-
+        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation)
 
 
 
