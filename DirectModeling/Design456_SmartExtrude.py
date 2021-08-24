@@ -184,19 +184,29 @@ class Design456_SmartExtrude:
         #      For now the arrow will be at the top
         rotation = [0.0,0.0,0.0,0.0]
         self.direction= faced.getDirectionAxis() #Must be getSelectionEx
-        
+        addFactor=(0,0,0)
+        maxBoundary= (self.selectedObj.Object.Shape.BoundBox.XMax,
+                      self.selectedObj.Object.Shape.BoundBox.YMax,
+                      self.selectedObj.Object.Shape.BoundBox.ZMax)
         if (self.direction =="+x"):
             rotation = [0.0, 0.0, -1.0, 90.0]
+            addFactor=(maxBoundary[0],0,0)
         elif (self.direction =="-x"):
             rotation = [0.0, 0.0, 1.0,90.0]
+            addFactor=(-maxBoundary[0],0,0)
         elif (self.direction =="+y"):                
             rotation = [0.0, 0.0, 1.0, 0.0]
+            addFactor=(0,maxBoundary[1],0)
         elif (self.direction =="-y"):
             rotation = [0.0, 0.0, 1.0, 180.0]
+            addFactor=(0,-maxBoundary[1],0)
         elif (self.direction =="+z"):
             rotation = [1.0, 0.0, 0.0, 90.0]
+            addFactor=(0,0,maxBoundary[2])
         elif (self.direction =="-z"):
-                rotation = [-1.0, 0.0, 0.0, 90.0]
+            rotation = [-1.0, 0.0, 0.0, 90.0]
+            addFactor=(0,0,-maxBoundary[1])
+
         face1=None
         if(self.isFaceOf3DObj()):
             # The whole object is selected
@@ -205,7 +215,15 @@ class Design456_SmartExtrude:
         else:
             face1=self.selectedObj.Object.Shape.Faces[0]
         self._vector = face1.CenterOfMass
+        
+        #rotation=[face1.normalAt(0,0),math.degrees(face1.Placement.Rotation.Angle)]
+        
         self._vector.z=self.selectedObj.Object.Shape.BoundBox.ZMax/2
+        self._vector.x= self._vector.x+addFactor[0]
+        self._vector.y= self._vector.y+addFactor[1]
+        self._vector.z= self._vector.z+addFactor[2]
+        
+        print(rotation)
         print(self._vector)
         return rotation
 
