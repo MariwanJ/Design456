@@ -205,8 +205,7 @@ class Design456_SmartExtrude:
             addFactor=(0,0,maxBoundary[2])
         elif (self.direction =="-z"):
             rotation = [-1.0, 0.0, 0.0, 90.0]
-            addFactor=(0,0,-maxBoundary[1])
-
+            addFactor=(0,0,-maxBoundary[2])
         face1=None
         if(self.isFaceOf3DObj()):
             # The whole object is selected
@@ -215,7 +214,9 @@ class Design456_SmartExtrude:
         else:
             face1=self.selectedObj.Object.Shape.Faces[0]
         self._vector = face1.CenterOfMass
-        
+        #FIXME - WRONG 
+        rotation=[face1.Surface.Rotation,math.degrees(face1.Surface.Rotation.Angle)]
+        print(rotation)
         #rotation=[face1.normalAt(0,0),math.degrees(face1.Placement.Rotation.Angle)]
         
         self._vector.z=self.selectedObj.Object.Shape.BoundBox.ZMax/2
