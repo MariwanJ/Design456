@@ -878,7 +878,7 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indi
 
     """
 
-def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[0.0, 0.0, 1.0, 0.0]):
+def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[1,1,1],type=1,opacity=0, _rotation=[0.0, 0.0, 1.0, 0.0]):
     """[2D Arrow]
 
     Args:
