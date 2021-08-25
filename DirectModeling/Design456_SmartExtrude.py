@@ -185,27 +185,25 @@ class Design456_SmartExtrude:
         rotation = [0.0,0.0,0.0,0.0]
         self.direction= faced.getDirectionAxis() #Must be getSelectionEx
         addFactor=(0,0,0)
-        maxBoundary= (self.selectedObj.Object.Shape.BoundBox.XMax,
-                      self.selectedObj.Object.Shape.BoundBox.YMax,
-                      self.selectedObj.Object.Shape.BoundBox.ZMax)
+        maxBoundary= (self.selectedObj.SubObjects[0].Surface.Axis)
         if (self.direction =="+x"):
             rotation = [0.0, 0.0, -1.0, 90.0]
-            addFactor=(maxBoundary[0],0,0)
+            addFactor=(maxBoundary.x,0,0)
         elif (self.direction =="-x"):
             rotation = [0.0, 0.0, 1.0,90.0]
-            addFactor=(-maxBoundary[0],0,0)
+            addFactor=(-maxBoundary.x,0,0)
         elif (self.direction =="+y"):                
             rotation = [0.0, 0.0, 1.0, 0.0]
-            addFactor=(0,maxBoundary[1],0)
+            addFactor=(0,maxBoundary.y,0)
         elif (self.direction =="-y"):
             rotation = [0.0, 0.0, 1.0, 180.0]
-            addFactor=(0,-maxBoundary[1],0)
+            addFactor=(0,-maxBoundary.y,0)
         elif (self.direction =="+z"):
             rotation = [1.0, 0.0, 0.0, 90.0]
-            addFactor=(0,0,maxBoundary[2])
+            addFactor=(0,0,maxBoundary.z)
         elif (self.direction =="-z"):
             rotation = [-1.0, 0.0, 0.0, 90.0]
-            addFactor=(0,0,-maxBoundary[2])
+            addFactor=(0,0,-maxBoundary.z)
         face1=None
         if(self.isFaceOf3DObj()):
             # The whole object is selected
@@ -215,14 +213,15 @@ class Design456_SmartExtrude:
             face1=self.selectedObj.Object.Shape.Faces[0]
         self._vector = face1.CenterOfMass
         #FIXME - WRONG 
-        rotation=[face1.Surface.Rotation,math.degrees(face1.Surface.Rotation.Angle)]
-        print(rotation)
-        #rotation=[face1.normalAt(0,0),math.degrees(face1.Placement.Rotation.Angle)]
+        rotation=[face1.Surface.Rotation.Axis.x,face1.Surface.Rotation.Axis.y,face1.Surface.Rotation.Axis.z,math.degrees(face1.Surface.Rotation.Angle)]
         
-        self._vector.z=self.selectedObj.Object.Shape.BoundBox.ZMax/2
-        self._vector.x= self._vector.x+addFactor[0]
-        self._vector.y= self._vector.y+addFactor[1]
-        self._vector.z= self._vector.z+addFactor[2]
+        print("rotation", rotation)
+        rotation=[face1.normalAt(0,0),math.degrees(face1.Placement.Rotation.Angle)]
+        
+        self._vector.z=self.selectedObj.Object.Shape.BoundBox.ZLength/2
+        #self._vector.x= self._vector.x+addFactor[0]
+        #self._vector.y= self._vector.y+addFactor[1]
+        #self._vector.z= self._vector.z+addFactor[2]
         
         print(rotation)
         print(self._vector)
@@ -285,7 +284,7 @@ class Design456_SmartExtrude:
         # 4-
         rotation=self.getArrowPosition()
         
-        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation)
+        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 2, FR_COLOR.FR_RED, rotation,1)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self

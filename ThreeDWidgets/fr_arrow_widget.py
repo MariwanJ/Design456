@@ -87,7 +87,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
 
                  label: str = "",lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=[(1.0,1.0,1.0),0.0]):  
+                 _rotation=[(1.0,1.0,1.0),0.0],
+                 _arrowType=0):  
         #Must be initialized first as per the following discussion. 
         #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
         super().__init__(vectors,label)
@@ -99,14 +100,14 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_lbl_calback_=callback        #External function
         self.w_KB_callback_=callback        #External function
         self.w_move_callback_=callback      #External function
-        w_wdgsoSwitch = None        
+        self.w_wdgsoSwitch = coin.SoSwitch()        
         self.w_color=_color                 #Default color is green 
         self.w_rotation=_rotation           #  (x,y,z), Angle
         self.w_userData= userDataObject()   # Keep info about the widget
         self.w_userData.ArrowObj=self
         self.w_userData.color=_color
         self.releaseDrag=False              #Used to avoid running drag code while it is in drag mode
-        
+        self.arrowType=_arrowType        #0 3D Default , 1= 2D, 2=2D
     def lineWidth(self, width):
         """ Set the line width"""
         self.w_lineWidth = width
@@ -184,7 +185,14 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
+                if self.arrowType==0:
+                    self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
+                elif self.arrowType==1:
+                    self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,([1,1,1]),0,0,self.w_rotation)
+                elif self.arrowType==2:
+                    self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,([1,1,1]),1,0,self.w_rotation)
+              #  elif self.arrowType==3:
+              #      self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,(1,1,1),2,0,self.w_rotation)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
