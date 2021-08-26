@@ -213,10 +213,14 @@ class Design456_SmartExtrude:
             face1=self.selectedObj.Object.Shape.Faces[0]
         self._vector = face1.CenterOfMass
         #FIXME - WRONG 
-        rotation=[face1.Surface.Rotation.Axis.x,face1.Surface.Rotation.Axis.y,face1.Surface.Rotation.Axis.z,math.degrees(face1.Surface.Rotation.Angle)]
-        
+        rotation=(face1.Surface.Rotation.Axis.x,
+                  face1.Surface.Rotation.Axis.y,
+                  face1.Surface.Rotation.Axis.z,
+                  math.degrees(face1.Surface.Rotation.Angle))
+       
         print("rotation", rotation)
-        rotation=[face1.normalAt(0,0),math.degrees(face1.Placement.Rotation.Angle)]
+        rt=face1.normalAt(0,0)
+        rotation=[(rt.x,rt.y,rt.z),math.degrees(face1.Placement.Rotation.Angle)]
         
         self._vector.z=self.selectedObj.Object.Shape.BoundBox.ZLength/2
         #self._vector.x= self._vector.x+addFactor[0]

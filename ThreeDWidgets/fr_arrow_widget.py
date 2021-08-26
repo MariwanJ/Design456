@@ -177,6 +177,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         and draw the arrow on the screen. It creates a node for 
         the arrow.
         """
+        scale=[1,1,1]
         try:
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
@@ -188,9 +189,14 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 if self.arrowType==0:
                     self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
                 elif self.arrowType==1:
-                    self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,([1,1,1]),0,0,self.w_rotation)
+                    print("0000000000000000000000000")
+                    print(self.w_vector)
+                    print(usedColor)
+                    print(scale)
+                    print(self.w_rotation)
+                    self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,0,0,self.w_rotation)
                 elif self.arrowType==2:
-                    self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,([1,1,1]),1,0,self.w_rotation)
+                    self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,1,0,self.w_rotation)
               #  elif self.arrowType==3:
               #      self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,(1,1,1),2,0,self.w_rotation)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
@@ -198,7 +204,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 return  # We draw nothing .. This is here just for clarifying the code
 
         except Exception as err:
-            App.Console.PrintError("'Fr_Arrow_Widget' Failed. "
+            App.Console.PrintError("'draw Fr_Arrow_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -299,7 +305,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             self.removeSoSwitch()    
                  
         except Exception as err:
-            App.Console.PrintError("'Fr_Arrow_Widget' Failed. "
+            App.Console.PrintError("'del Fr_Arrow_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
