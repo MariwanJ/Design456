@@ -213,21 +213,16 @@ class Design456_SmartExtrude:
             face1=self.selectedObj.Object.Shape.Faces[0]
         self._vector = face1.CenterOfMass
         #FIXME - WRONG 
-        rotation=(face1.Surface.Rotation.Axis.x,
-                  face1.Surface.Rotation.Axis.y,
-                  face1.Surface.Rotation.Axis.z,
-                  math.degrees(face1.Surface.Rotation.Angle))
-       
-        print("rotation", rotation)
-        rt=face1.normalAt(0,0)
-        rotation=[(rt.x,rt.y,rt.z),math.degrees(face1.Placement.Rotation.Angle)]
-        
+        #rotation=(face1.Surface.Rotation.Axis.x,
+        #          face1.Surface.Rotation.Axis.y,
+        #          face1.Surface.Rotation.Axis.z-0.5,
+        #          180+math.degrees(face1.Surface.Rotation.Angle))
         self._vector.z=self.selectedObj.Object.Shape.BoundBox.ZLength/2
-        #self._vector.x= self._vector.x+addFactor[0]
-        #self._vector.y= self._vector.y+addFactor[1]
-        #self._vector.z= self._vector.z+addFactor[2]
+        self._vector.x= self._vector.x+addFactor[0]
+        self._vector.y= self._vector.y+addFactor[1]
+        self._vector.z= self._vector.z+addFactor[2]
         
-        print(rotation)
+        print("rotation=", rotation)
         print(self._vector)
         return rotation
 
@@ -288,7 +283,7 @@ class Design456_SmartExtrude:
         # 4-
         rotation=self.getArrowPosition()
         
-        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 2, FR_COLOR.FR_RED, rotation,1)
+        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation,0)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self

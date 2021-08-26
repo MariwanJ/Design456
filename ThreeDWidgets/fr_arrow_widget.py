@@ -177,7 +177,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         and draw the arrow on the screen. It creates a node for 
         the arrow.
         """
-        scale=[1,1,1]
+        scale=[0.5,0.5,0.5]
         try:
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
@@ -189,11 +189,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 if self.arrowType==0:
                     self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
                 elif self.arrowType==1:
-                    print("0000000000000000000000000")
-                    print(self.w_vector)
-                    print(usedColor)
-                    print(scale)
-                    print(self.w_rotation)
                     self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,0,0,self.w_rotation)
                 elif self.arrowType==2:
                     self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,1,0,self.w_rotation)
