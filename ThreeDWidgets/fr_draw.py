@@ -892,205 +892,210 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[1,1,1],type=
     Returns:
         [SoSeparator]: [SoSeparator which hold the drawing. Add it to the senegraph to show the arrow]
     """    
-    root=coin.SoSeparator() #root group holder
-    transform=coin.SoTransform()
-    trans=coin.SoTranslation()
-    trans.translation.setValue(p1)
-    transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
-    
-    tempR = coin.SbVec3f()
-    tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-    transform.rotation.setValue(tempR, math.radians(_rotation[3]))
-    material = coin.SoMaterial()
-    material.transparency.setValue(opacity)
-    material.diffuseColor.setValue(coin.SbColor(color))
-    if type==0:
-        soSepArrow=coin.SoSeparator()   # drawing holder
-        soIndexFace= coin.SoIndexedFaceSet()
-        cordinate= coin.SoCoordinate3()
-        Shapehint= coin.SoShapeHints()
-        Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
-        Shapehint.vertexOrdering= coin.SoShapeHints.CLOCKWISE
-        Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
-        vertexPositions=[(-16.210 ,   	 13.805   , 	0),
-                         (-15.370 ,   	 13.165   , 	0),
-                         (-14.520 ,   	 12.545   , 	0),
-                         (-13.550 ,   	 11.905   , 	0),
-                         (-12.780 ,   	 11.415   , 	0),
-                         (-12.010 ,   	 10.945   , 	0),
-                         (-10.980 ,   	 10.365   , 	0),
-                         (-9.940  ,  	 9.815    ,	    0),
-                         (-8.930  ,  	 9.315    ,	    0),
-                         (-7.940  ,  	 8.855    ,	    0),
-                         (-6.960  ,  	 8.445    ,	    0),
-                         (-5.990  ,  	 8.075    ,	    0),
-                         (-5.030  ,  	 7.735    ,	    0),
-                         (-4.090  ,  	 7.445    ,	    0),
-                         (-3.160  ,  	 7.195    ,	    0),
-                         (-2.240  ,  	 6.975    ,	    0),
-                         (-1.330  ,  	 6.795    ,	    0),
-                         (-0.440  ,  	 6.645    ,	    0),
-                         ( 0.440  ,  	 6.535    ,	    0),
-                         ( 1.310  ,  	 6.455    ,	    0),
-                         ( 2.170  ,  	 6.415    ,	    0),
-                         ( 3.020  ,  	 6.405    ,	    0),
-                         ( 3.710  ,  	 6.425    ,	    0),
-                         ( 4.410  ,  	 6.465    ,	    0),
-                         ( 4.830  ,  	 10.725   , 	0),
-                         ( 16.210 ,   	 0.015    ,	    0),
-                         ( 4.830  ,  	-10.705   , 	0),
-                         ( 4.410  ,  	-6.445    ,	    0),
-                         ( 3.450  ,  	-6.395    ,	    0),
-                         ( 2.580  ,  	-6.395    ,	    0),
-                         ( 1.710  ,  	-6.415    ,	    0),
-                         ( 0.840  ,  	-6.475    ,	    0),
-                         (-0.020  ,  	-6.555    ,	    0),
-                         (-0.880  ,  	-6.685    ,	    0),
-                         (-1.620  ,  	-6.815    ,	    0),
-                         (-2.360  ,  	-6.965    ,	    0),
-                         (-3.460  ,  	-7.255    ,	    0),
-                         (-4.560  ,  	-7.575    ,	    0),
-                         (-5.660  ,  	-7.935    ,	    0),
-                         (-6.750  ,  	-8.345    ,	    0),
-                         (-7.840  ,  	-8.795    ,	    0),
-                         (-8.920  ,  	-9.275    ,	    0),
-                         (-9.990  ,  	-9.805    ,	    0),
-                         (-11.050 ,   	-10.365   , 	0),
-                         (-12.100 ,   	-10.965   , 	0),
-                         (-13.140 ,   	-11.605   , 	0),
-                         (-14.150 ,   	-12.285   , 	0),
-                         (-15.150 ,   	-12.995   , 	0),
-                         (-15.680 ,   	-13.395   , 	0),
-                         (-16.210 ,   	-13.805   , 	0),
-                         (-16.210 ,   	 0.015    ,	    0),
-                         (-16.210 ,   	 13.805   , 	0),
-                         (-12.010 ,   	 10.945   , 	0),
-                         ( 4.410  ,  	 6.465    ,	    0),
-                         ( 4.830  ,  	 10.725   , 	0),
-                         ( 16.210 ,   	 0.015    ,	    0),
-                         ( 4.830  ,  	-10.705   , 	0),
-                         ( 4.410  ,  	-6.445    ,	    0),
-                         (-2.360  ,  	-6.965    ,	    0),
-                         (-16.210 ,   	-13.805   , 	0),
-                         (-16.210 ,   	 0.015    ,	    0),]
-        
-        cordinate.point.setValues(0, 61, vertexPositions)
-        indices= [ 27, 25, 26, -1, 23, 25, 27, -1,
-                    22, 27, 28, -1, 22, 23, 27, -1,
-                    21, 28, 29, -1, 21, 22, 28, -1,
-                    20, 21, 29, -1, 20, 29, 30, -1,
-                    19, 30, 31, -1, 19, 20, 30, -1,
-                    24, 25, 23, -1, 18, 19, 31, -1,
-                    18, 31, 32, -1, 17, 32, 33, -1,
-                    17, 18, 32, -1, 16, 33, 34, -1,
-                    16, 17, 33, -1, 15, 34, 35, -1,
-                    15, 16, 34, -1, 14, 35, 36, -1,
-                    14, 15, 35, -1, 13, 14, 36, -1,
-                    13, 36, 37, -1, 12, 37, 38, -1,
-                    12, 13, 37, -1, 50, 12, 38, -1,
-                    50, 10, 11, -1, 50, 11, 12, -1,
-                    50, 38, 39, -1, 50, 39, 40, -1,
-                    50, 40, 41, -1, 50, 41, 42, -1,
-                    50, 42, 43, -1, 50, 43, 44, -1,
-                    50, 44, 45, -1, 50, 45, 46, -1,
-                    50, 46, 47, -1, 50, 47, 48, -1,
-                    50, 48, 49, -1, 9, 10, 50, -1,
-                    8, 9, 50, -1, 7, 8, 50, -1,
-                    6, 7, 50, -1, 5, 6, 50, -1,
-                    4, 5, 50, -1, 3, 4, 50, -1,
-                    2, 3, 50, -1, 1, 2, 50, -1,
-                    0, 1, 50, -1 ]
-        soIndexFace.coordIndex.setValues(0, len(indices), indices)
-        soSepArrow.addChild(Shapehint)
-        soSepArrow.addChild(cordinate) 
-        soSepArrow.addChild(soIndexFace)
-        
-        root.addChild(transform)             
-        root.addChild(trans)
-        root.addChild(material)
-        root.addChild(soSepArrow)
-        
-    elif type==1:
-        soIndexfacesHead =coin.SoIndexedFaceSet()
-        soIndexfacesTail1=coin.SoIndexedFaceSet()
-        soIndexfacesTail2=coin.SoIndexedFaceSet()
-        vertexHead=[(-5.87  ,    11.11 ,  0),
-                    (-5.87  ,    3.65  ,  0),
-                    (-31.64 ,    3.65  ,  0),
-                    (-31.64 ,    -3.65 ,  0),
-                    (-5.87  ,    -3.65 ,  0),
-                    (-5.87  ,    -11.11,  0),
-                    (5.87   ,    0     ,  0),
-                    (-5.87  ,    11.11 ,  0),
-                    (-5.87  ,    3.65  ,  0),
-                    (-31.64 ,    3.65  ,  0),
-                    (-31.64 ,    -3.65 ,  0),
-                    (-5.87  ,    -3.65 ,  0),
-                    (-5.87  ,    -11.11,  0),
-                    (5.87   ,    0     ,  0)
-                    ]
+    try:
+        root=coin.SoSeparator() #root group holder
+        transform=coin.SoTransform()
+        trans=coin.SoTranslation()
+        trans.translation.setValue(p1)
+        transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
 
-        vertexTail1=[(-38.58 ,    3.65  ,  0),
-                        (-38.58 ,    -3.65 ,  0),
-                        (-37.19 ,    -3.65 ,  0),
-                        (-37.19 ,    3.65  ,  0),
-                        (-38.58 ,    3.65  ,  0),
-                        (-38.58 ,    -3.65 ,  0),
-                        (-37.19 ,    -3.65 ,  0),
-                        (-37.19 ,    3.65  ,  0)]
-        
-        vertexTail2=[(-35.8  ,    3.65  ,  0),
-                        (-35.8  ,    -3.65 ,  0),
-                        (-33.03 ,    -3.65 ,  0),
-                        (-33.03 ,    3.65  ,  0),
-                        (-35.8  ,    3.65  ,  0),
-                        (-35.8  ,    -3.65 ,  0),
-                        (-33.03 ,    -3.65 ,  0),
-                        (-33.03 ,    3.65  ,  0)
+        tempR = coin.SbVec3f()
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+        transform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        material = coin.SoMaterial()
+        material.transparency.setValue(opacity)
+        material.diffuseColor.setValue(coin.SbColor(color))
+        if type==0:
+            soSepArrow=coin.SoSeparator()   # drawing holder
+            soIndexFace= coin.SoIndexedFaceSet()
+            cordinate= coin.SoCoordinate3()
+            Shapehint= coin.SoShapeHints()
+            Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
+            Shapehint.vertexOrdering= coin.SoShapeHints.CLOCKWISE
+            Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
+            vertexPositions=[(-16.210 ,   	 13.805   , 	0),
+                             (-15.370 ,   	 13.165   , 	0),
+                             (-14.520 ,   	 12.545   , 	0),
+                             (-13.550 ,   	 11.905   , 	0),
+                             (-12.780 ,   	 11.415   , 	0),
+                             (-12.010 ,   	 10.945   , 	0),
+                             (-10.980 ,   	 10.365   , 	0),
+                             (-9.940  ,  	 9.815    ,	    0),
+                             (-8.930  ,  	 9.315    ,	    0),
+                             (-7.940  ,  	 8.855    ,	    0),
+                             (-6.960  ,  	 8.445    ,	    0),
+                             (-5.990  ,  	 8.075    ,	    0),
+                             (-5.030  ,  	 7.735    ,	    0),
+                             (-4.090  ,  	 7.445    ,	    0),
+                             (-3.160  ,  	 7.195    ,	    0),
+                             (-2.240  ,  	 6.975    ,	    0),
+                             (-1.330  ,  	 6.795    ,	    0),
+                             (-0.440  ,  	 6.645    ,	    0),
+                             ( 0.440  ,  	 6.535    ,	    0),
+                             ( 1.310  ,  	 6.455    ,	    0),
+                             ( 2.170  ,  	 6.415    ,	    0),
+                             ( 3.020  ,  	 6.405    ,	    0),
+                             ( 3.710  ,  	 6.425    ,	    0),
+                             ( 4.410  ,  	 6.465    ,	    0),
+                             ( 4.830  ,  	 10.725   , 	0),
+                             ( 16.210 ,   	 0.015    ,	    0),
+                             ( 4.830  ,  	-10.705   , 	0),
+                             ( 4.410  ,  	-6.445    ,	    0),
+                             ( 3.450  ,  	-6.395    ,	    0),
+                             ( 2.580  ,  	-6.395    ,	    0),
+                             ( 1.710  ,  	-6.415    ,	    0),
+                             ( 0.840  ,  	-6.475    ,	    0),
+                             (-0.020  ,  	-6.555    ,	    0),
+                             (-0.880  ,  	-6.685    ,	    0),
+                             (-1.620  ,  	-6.815    ,	    0),
+                             (-2.360  ,  	-6.965    ,	    0),
+                             (-3.460  ,  	-7.255    ,	    0),
+                             (-4.560  ,  	-7.575    ,	    0),
+                             (-5.660  ,  	-7.935    ,	    0),
+                             (-6.750  ,  	-8.345    ,	    0),
+                             (-7.840  ,  	-8.795    ,	    0),
+                             (-8.920  ,  	-9.275    ,	    0),
+                             (-9.990  ,  	-9.805    ,	    0),
+                             (-11.050 ,   	-10.365   , 	0),
+                             (-12.100 ,   	-10.965   , 	0),
+                             (-13.140 ,   	-11.605   , 	0),
+                             (-14.150 ,   	-12.285   , 	0),
+                             (-15.150 ,   	-12.995   , 	0),
+                             (-15.680 ,   	-13.395   , 	0),
+                             (-16.210 ,   	-13.805   , 	0),
+                             (-16.210 ,   	 0.015    ,	    0),
+                             (-16.210 ,   	 13.805   , 	0),
+                             (-12.010 ,   	 10.945   , 	0),
+                             ( 4.410  ,  	 6.465    ,	    0),
+                             ( 4.830  ,  	 10.725   , 	0),
+                             ( 16.210 ,   	 0.015    ,	    0),
+                             ( 4.830  ,  	-10.705   , 	0),
+                             ( 4.410  ,  	-6.445    ,	    0),
+                             (-2.360  ,  	-6.965    ,	    0),
+                             (-16.210 ,   	-13.805   , 	0),
+                             (-16.210 ,   	 0.015    ,	    0),]
+
+            cordinate.point.setValues(0, 61, vertexPositions)
+            indices= [ 27, 25, 26, -1, 23, 25, 27, -1,
+                        22, 27, 28, -1, 22, 23, 27, -1,
+                        21, 28, 29, -1, 21, 22, 28, -1,
+                        20, 21, 29, -1, 20, 29, 30, -1,
+                        19, 30, 31, -1, 19, 20, 30, -1,
+                        24, 25, 23, -1, 18, 19, 31, -1,
+                        18, 31, 32, -1, 17, 32, 33, -1,
+                        17, 18, 32, -1, 16, 33, 34, -1,
+                        16, 17, 33, -1, 15, 34, 35, -1,
+                        15, 16, 34, -1, 14, 35, 36, -1,
+                        14, 15, 35, -1, 13, 14, 36, -1,
+                        13, 36, 37, -1, 12, 37, 38, -1,
+                        12, 13, 37, -1, 50, 12, 38, -1,
+                        50, 10, 11, -1, 50, 11, 12, -1,
+                        50, 38, 39, -1, 50, 39, 40, -1,
+                        50, 40, 41, -1, 50, 41, 42, -1,
+                        50, 42, 43, -1, 50, 43, 44, -1,
+                        50, 44, 45, -1, 50, 45, 46, -1,
+                        50, 46, 47, -1, 50, 47, 48, -1,
+                        50, 48, 49, -1, 9, 10, 50, -1,
+                        8, 9, 50, -1, 7, 8, 50, -1,
+                        6, 7, 50, -1, 5, 6, 50, -1,
+                        4, 5, 50, -1, 3, 4, 50, -1,
+                        2, 3, 50, -1, 1, 2, 50, -1,
+                        0, 1, 50, -1 ]
+            soIndexFace.coordIndex.setValues(0, len(indices), indices)
+            soSepArrow.addChild(Shapehint)
+            soSepArrow.addChild(cordinate) 
+            soSepArrow.addChild(soIndexFace)
+
+            root.addChild(transform)             
+            root.addChild(trans)
+            root.addChild(material)
+            root.addChild(soSepArrow)
+
+        elif type==1:
+            soIndexfacesHead =coin.SoIndexedFaceSet()
+            soIndexfacesTail1=coin.SoIndexedFaceSet()
+            soIndexfacesTail2=coin.SoIndexedFaceSet()
+            vertexHead=[(-5.87  ,    11.11 ,  0),
+                        (-5.87  ,    3.65  ,  0),
+                        (-31.64 ,    3.65  ,  0),
+                        (-31.64 ,    -3.65 ,  0),
+                        (-5.87  ,    -3.65 ,  0),
+                        (-5.87  ,    -11.11,  0),
+                        (5.87   ,    0     ,  0),
+                        (-5.87  ,    11.11 ,  0),
+                        (-5.87  ,    3.65  ,  0),
+                        (-31.64 ,    3.65  ,  0),
+                        (-31.64 ,    -3.65 ,  0),
+                        (-5.87  ,    -3.65 ,  0),
+                        (-5.87  ,    -11.11,  0),
+                        (5.87   ,    0     ,  0)
                         ]
-        
-        indicesHead= [ 1, 2, 3, -1, 1, 3, 4, -1,
-                       6, 0, 1, -1, 6, 4, 5, -1,
-                        6, 1, 4, -1 ]
-        indicesTail1=[ 3, 0, 1, -1, 3, 1, 2, -1 ]
-        indicesTail2=[ 3, 0, 1, -1, 3, 1, 2, -1 ]
 
-        coordinateHead=coin.SoCoordinate3()
-        coordinateTail1=coin.SoCoordinate3()
-        coordinateTail2=coin.SoCoordinate3()
-        
-        coordinateHead.point.setValues(0, 14, vertexHead)
-        coordinateTail1.point.setValues(0, 8, vertexTail1)
-        coordinateTail2.point.setValues(0, 8, vertexTail2)
-        
-        soSeparatorMain=coin.SoSeparator()
-        Shapehint= coin.SoShapeHints()
-        Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
-        Shapehint.vertexOrdering= coin.SoShapeHints.COUNTERCLOCKWISE
-        Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
-        
-        soIndexfacesHead.coordIndex.setValues(0, len(indicesHead), indicesHead)
-        soIndexfacesTail1.coordIndex.setValues(0, len(indicesTail1), indicesTail1)
-        soIndexfacesTail2.coordIndex.setValues(0, len(indicesTail2), indicesTail2)
-        
-        soSeparatorMain.addChild(Shapehint)
-        soSeparatorMain.addChild(coordinateHead)
-        soSeparatorMain.addChild(soIndexfacesHead)
+            vertexTail1=[(-38.58 ,    3.65  ,  0),
+                            (-38.58 ,    -3.65 ,  0),
+                            (-37.19 ,    -3.65 ,  0),
+                            (-37.19 ,    3.65  ,  0),
+                            (-38.58 ,    3.65  ,  0),
+                            (-38.58 ,    -3.65 ,  0),
+                            (-37.19 ,    -3.65 ,  0),
+                            (-37.19 ,    3.65  ,  0)]
 
-        soSeparatorMain.addChild(coordinateTail1)
-        soSeparatorMain.addChild(soIndexfacesTail1)
-        
-        soSeparatorMain.addChild(coordinateTail2)
-        soSeparatorMain.addChild(soIndexfacesTail2)        
-        
-        root.addChild(trans)
-        root.addChild(material)
-        root.addChild(transform)
+            vertexTail2=[(-35.8  ,    3.65  ,  0),
+                            (-35.8  ,    -3.65 ,  0),
+                            (-33.03 ,    -3.65 ,  0),
+                            (-33.03 ,    3.65  ,  0),
+                            (-35.8  ,    3.65  ,  0),
+                            (-35.8  ,    -3.65 ,  0),
+                            (-33.03 ,    -3.65 ,  0),
+                            (-33.03 ,    3.65  ,  0)
+                            ]
 
-        root.addChild(soSeparatorMain)
-    #Finalize the drawing by adding color, pos, scale , opacity
-    return root
+            indicesHead= [ 1, 2, 3, -1, 1, 3, 4, -1,
+                           6, 0, 1, -1, 6, 4, 5, -1,
+                            6, 1, 4, -1 ]
+            indicesTail1=[ 3, 0, 1, -1, 3, 1, 2, -1 ]
+            indicesTail2=[ 3, 0, 1, -1, 3, 1, 2, -1 ]
 
+            coordinateHead=coin.SoCoordinate3()
+            coordinateTail1=coin.SoCoordinate3()
+            coordinateTail2=coin.SoCoordinate3()
+
+            coordinateHead.point.setValues(0, 14, vertexHead)
+            coordinateTail1.point.setValues(0, 8, vertexTail1)
+            coordinateTail2.point.setValues(0, 8, vertexTail2)
+
+            soSeparatorMain=coin.SoSeparator()
+            Shapehint= coin.SoShapeHints()
+            Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
+            Shapehint.vertexOrdering= coin.SoShapeHints.COUNTERCLOCKWISE
+            Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
+
+            soIndexfacesHead.coordIndex.setValues(0, len(indicesHead), indicesHead)
+            soIndexfacesTail1.coordIndex.setValues(0, len(indicesTail1), indicesTail1)
+            soIndexfacesTail2.coordIndex.setValues(0, len(indicesTail2), indicesTail2)
+
+            soSeparatorMain.addChild(Shapehint)
+            soSeparatorMain.addChild(coordinateHead)
+            soSeparatorMain.addChild(soIndexfacesHead)
+
+            soSeparatorMain.addChild(coordinateTail1)
+            soSeparatorMain.addChild(soIndexfacesTail1)
+
+            soSeparatorMain.addChild(coordinateTail2)
+            soSeparatorMain.addChild(soIndexfacesTail2)        
+
+            root.addChild(trans)
+            root.addChild(material)
+            root.addChild(transform)
+
+            root.addChild(soSeparatorMain)
+        #Finalize the drawing by adding color, pos, scale , opacity
+        return root
+    except Exception as err:
+        App.Console.PrintError("'draw 2d Arrow failed' draw 2D-Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
 
 """
