@@ -5,11 +5,39 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="58.964359mm"
+   height="58.964367mm"
+   viewBox="0 0 58.964359 58.964367"
    version="1.1"
-   id="svg8">
+   id="svg8"
+   sodipodi:docname="WASHER.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="716"
+     inkscape:window-height="480"
+     id="namedview6786"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.2102413"
+     inkscape:cx="296.8504"
+     inkscape:cy="-286.97469"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg8" />
   <defs
      id="defs2" />
   <metadata
@@ -25,11 +53,13 @@
     </rdf:RDF>
   </metadata>
   <g
-     id="layer1">
+     id="layer1"
+     transform="translate(-26.458333,-13.606913)">
     <path
        id="path835"
-       style="fill:#3fb34f;fill-opacity:1;stroke-width:0.785"
-       d="M 211.26367 51.427734 A 111.42857 111.42857 0 0 0 100 162.85742 A 111.42857 111.42857 0 0 0 211.42773 274.28516 A 111.42857 111.42857 0 0 0 322.85742 162.85742 A 111.42857 111.42857 0 0 0 211.42773 51.427734 A 111.42857 111.42857 0 0 0 211.26367 51.427734 z M 211.27734 84.642578 A 78.214294 78.214294 0 0 1 211.42773 84.642578 A 78.214294 78.214294 0 0 1 289.64258 162.85742 A 78.214294 78.214294 0 0 1 211.42773 241.07227 A 78.214294 78.214294 0 0 1 133.21484 162.85742 A 78.214294 78.214294 0 0 1 211.27734 84.642578 z "
-       transform="scale(0.26458333)" />
+       style="fill:#3fb34f;fill-opacity:1;stroke-width:0.78500003"
+       d="M 211.26367,51.427734 A 111.42857,111.42857 0 0 0 100,162.85742 111.42857,111.42857 0 0 0 211.42773,274.28516 111.42857,111.42857 0 0 0 322.85742,162.85742 111.42857,111.42857 0 0 0 211.42773,51.427734 a 111.42857,111.42857 0 0 0 -0.16406,0 z m 0.0137,33.214844 a 78.214294,78.214294 0 0 1 0.15039,0 78.214294,78.214294 0 0 1 78.21485,78.214842 78.214294,78.214294 0 0 1 -78.21485,78.21485 78.214294,78.214294 0 0 1 -78.21289,-78.21485 78.214294,78.214294 0 0 1 78.0625,-78.214842 z"
+       transform="scale(0.26458333)"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
