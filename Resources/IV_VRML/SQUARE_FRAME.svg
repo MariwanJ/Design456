@@ -5,11 +5,39 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="46.491219mm"
+   height="46.491219mm"
+   viewBox="0 0 46.491219 46.491219"
    version="1.1"
-   id="svg8">
+   id="svg8"
+   sodipodi:docname="SQUARE_FRAME.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="716"
+     inkscape:window-height="480"
+     id="namedview5672"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="0.2102413"
+     inkscape:cx="269.70782"
+     inkscape:cy="-336.25985"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg8" />
   <defs
      id="defs2" />
   <metadata
@@ -25,11 +53,13 @@
     </rdf:RDF>
   </metadata>
   <g
-     id="layer1">
+     id="layer1"
+     transform="translate(-33.639807,-13.040031)">
     <path
        id="rect842"
-       style="fill:#3fb34f;fill-opacity:1;stroke-width:0.785"
-       d="M 127.14258 49.285156 L 127.14258 225 L 302.85742 225 L 302.85742 49.285156 L 127.14258 49.285156 z M 148.57227 73.572266 L 281.42773 73.572266 L 281.42773 200.71484 L 148.57227 200.71484 L 148.57227 73.572266 z "
-       transform="scale(0.26458333)" />
+       style="fill:#3fb34f;fill-opacity:1;stroke-width:0.78500003"
+       d="M 127.14258,49.285156 V 225 H 302.85742 V 49.285156 Z m 21.42969,24.28711 H 281.42773 V 200.71484 H 148.57227 Z"
+       transform="scale(0.26458333)"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
