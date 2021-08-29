@@ -572,3 +572,25 @@ def findnormalAtforEdge():
         u0, u1, v0, v1 = f.ParameterRange
         results.append(f.normalAt(0.5 * (u0 + u1), 0.5 * (v0 + v1)))
     return results
+
+def getDirectionOfFace():
+    """[Find direction of a face]
+
+    Returns:
+        [Vector]: [Direction of the face]
+    """
+    selectedObj=Gui.Selection.getSelectionEx()[0]
+    ss=None
+    direction=None
+    if hasattr(selectedObj,"SubObjects"):
+        ss=selectedObj.SubObjects[0]
+    else:
+        #TODO: FIXME: WHAT SHOULD WE USE?
+        print("failed")
+    if ss!=None:
+        # section direction
+        yL = ss.CenterOfMass
+        uv = ss.Surface.parameter(yL)
+        nv = ss.normalAt(uv[0], uv[1])
+        direction = yL.sub(nv + yL)
+    return direction

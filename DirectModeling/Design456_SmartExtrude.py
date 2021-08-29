@@ -92,11 +92,17 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
          # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
-    
         
-        print("ExtrudeRadius",linktocaller.ExtrudeRadius)         
+        if(linktocaller.endVector.x-linktocaller.startVector.x)!=0:
+            linktocaller.extrudeLength=linktocaller.endVector.x-linktocaller.startVector.x
+        elif(linktocaller.endVector.y-linktocaller.startVector.y)!=0:
+            linktocaller.extrudeLength=linktocaller.endVector.y-linktocaller.startVector.y
+        elif(linktocaller.endVector.z-linktocaller.startVector.z)!=0:
+            linktocaller.extrudeLength=linktocaller.endVector.z-linktocaller.startVector.z
+            
+        print("extrudeLength",linktocaller.extrudeLength)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
-        linktocaller.ExtrudeLBL.setText("scale= "+ str(round(linktocaller.ExtrudeRadius,4)))
+        linktocaller.ExtrudeLBL.setText("scale= "+ str(round(linktocaller.extrudeLength,4)))
         linktocaller.reCreateExtrudeObject()
 
     except Exception as err:
@@ -156,24 +162,34 @@ class Design456_SmartExtrude:
     run_Once = False
     endVector = None
     startVector = None
+    extrudeLength=0.0      #This will be the Delta-mouse position  
     # We will make two object, one for visual effect and the other is the original
     selectedObj =None
-    AwayFrom3DObject = 10  # Use this to take away the arrow from the object
-    objectType = None  # Either shape, Face or Edge.
     direction=None
     targetFace=None # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
-
+    newObject=None
+    
+    def reCreateExtrudeObject(self):
+        self.newObject.LengthFwd=self.extrudeLength 
+        App.ActiveDocument.recompute()
+    
     def resizeArrowWidgets(self,endVec):
         """
         Reposition the arrows by recalculating the boundary box
         and updating the vectors inside each fr_arrow_widget
         """
-        if(self.direction=="+x" or self.direction=="-x" ):
-            self.smartInd.w_vector.x = endVec.x  #Only X should affect the arrow
-        elif(self.direction=="+y" or self.direction=="-y" ):
-            self.smartInd.w_vector.y = endVec.y  #Only Y should affect the arrow
-        elif(self.direction=="+z" or self.direction=="-z" ):
-            self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
+        if self.direction==None:
+            self.direction=faced.getDirectionOfFace()
+        if(self.direction.x==0):
+            self.smartInd.w_vector.y=endVec.y
+            self.smartInd.w_vector.z=endVec.z
+        if(self.direction.y==0):
+            self.smartInd.w_vector.x=endVec.x
+            self.smartInd.w_vector.z=endVec.z
+        if(self.direction.z==0):
+            self.smartInd.w_vector.x=endVec.x
+            self.smartInd.w_vector.y=endVec.y
+
         self.smartInd.redraw()
         return
     
@@ -183,27 +199,8 @@ class Design456_SmartExtrude:
         """
         #      For now the arrow will be at the top
         rotation = [0.0,0.0,0.0,0.0]
-        self.direction= faced.getDirectionAxis() #Must be getSelectionEx
-        addFactor=(0,0,0)
-        maxBoundary= (self.selectedObj.SubObjects[0].Surface.Axis)
-        if (self.direction =="+x"):
-            rotation = [0.0, 0.0, -1.0, 90.0]
-            addFactor=(maxBoundary.x,0,0)
-        elif (self.direction =="-x"):
-            rotation = [0.0, 0.0, 1.0,90.0]
-            addFactor=(-maxBoundary.x,0,0)
-        elif (self.direction =="+y"):                
-            rotation = [0.0, 0.0, 1.0, 0.0]
-            addFactor=(0,maxBoundary.y,0)
-        elif (self.direction =="-y"):
-            rotation = [0.0, 0.0, 1.0, 180.0]
-            addFactor=(0,-maxBoundary.y,0)
-        elif (self.direction =="+z"):
-            rotation = [1.0, 0.0, 0.0, 90.0]
-            addFactor=(0,0,maxBoundary.z)
-        elif (self.direction =="-z"):
-            rotation = [-1.0, 0.0, 0.0, 90.0]
-            addFactor=(0,0,-maxBoundary.z)
+        self.direction= faced.getDirectionOfFace() #Must be getSelectionEx
+
         face1=None
         if(self.isFaceOf3DObj()):
             # The whole object is selected
@@ -212,17 +209,12 @@ class Design456_SmartExtrude:
         else:
             face1=self.selectedObj.Object.Shape.Faces[0]
         self._vector = face1.CenterOfMass
-        #FIXME - WRONG 
-        #rotation=(face1.Surface.Rotation.Axis.x,
-        #          face1.Surface.Rotation.Axis.y,
-        #          face1.Surface.Rotation.Axis.z-0.5,
-        #          180+math.degrees(face1.Surface.Rotation.Angle))
-        self._vector.z=self.selectedObj.Object.Shape.BoundBox.ZLength/2
-        self._vector.x= self._vector.x+addFactor[0]
-        self._vector.y= self._vector.y+addFactor[1]
-        self._vector.z= self._vector.z+addFactor[2]
-        
-        print("rotation=", rotation)
+        #FIXME - WRONG
+        rotation=(face1.Surface.Rotation.Axis.x,
+                  face1.Surface.Rotation.Axis.y,
+                  face1.Surface.Rotation.Axis.z,
+                  math.degrees(face1.Surface.Rotation.Angle))
+        self._vector=self._vector.multiply(self.extrudeLength)
         print(self._vector)
         return rotation
 
@@ -261,6 +253,7 @@ class Design456_SmartExtrude:
         
 
     def Activated(self):
+        print("Smart Extrusion Activated")
         sel=Gui.Selection.getSelectionEx()
         if len(sel) == 0:
             # An object must be selected
@@ -268,6 +261,7 @@ class Design456_SmartExtrude:
             faced.errorDialog(errMessage)
             return
         self.selectedObj=sel[0]
+        App.ActiveDocument.openTransaction(translate("Design456","SmartExtrude"))
         if self.isFaceOf3DObj():  #We must know if the selection is a 2D face or a face from a 3D object
             #We have a 3D Object. Extract a face and start to Extrude
             self.targetFace= self.extractFace()
@@ -281,18 +275,37 @@ class Design456_SmartExtrude:
         # 2- Extrusion is either with the same size or to different size (smaller or bigger)
         # 3- User can choose if the new object is merged to the older object or not. 
         # 4-
-        rotation=self.getArrowPosition()
+        # get rotation
         
+        rotation = self.getArrowPosition()
         self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation,1)
+        
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
-
         if self._mywin == None:
             self._mywin = win.Fr_CoinWindow()
+        
         self._mywin.addWidget(self.smartInd)
         mw = self.getMainWindow()
         self._mywin.show()
+        
+        print(self.targetFace)
+        #m =self.targetFace.Object
+        self.newObject = App.ActiveDocument.addObject('Part::Extrusion', 'Extrude')
+        self.newObject.Base = self.targetFace
+        self.newObject.DirMode = "Normal"            #Don't use Custom as it leads to PROBLEM!
+        self.newObject.DirLink = None                #Above statement is not always correct. Some faces require 'custom'
+        self.newObject.LengthFwd= self.extrudeLength
+        self.newObject.LengthRev = 0.0
+        self.newObject.Solid = True
+        self.newObject.Reversed = False
+        self.newObject.Symmetric = False
+        self.newObject.TaperAngle = 0.0
+        self.newObject.TaperAngleRev = 0.0
+        App.ActiveDocument.recompute()
+        
+
         
     def __del__(self):
         """ 
