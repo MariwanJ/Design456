@@ -177,7 +177,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         and draw the arrow on the screen. It creates a node for 
         the arrow.
         """
-        scale=[0.5,0.5,0.5]
+        scale=[0.25,0.25,0.25]
         try:
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
