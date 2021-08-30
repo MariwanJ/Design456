@@ -210,8 +210,6 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         TailsTransform.rotation.setValue(tailHeadTrs,math.radians(90))
         HeadTransform.rotation.setValue(tailHeadTrs,math.radians(90))
 
-
-
         coordsRoot = coin.SoTransform()
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
