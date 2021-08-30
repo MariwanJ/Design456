@@ -273,7 +273,7 @@ class Design456_SmartExtrude:
         return (yL + d * nv)
 
     def directoinBasedOnNewVector(self):
-        newPos = self.calculateNewVector
+        newPos = self.calculateNewVector()
 
         if newPos.x == 0 and newPos.y == 0:
             self.DirExtrusion = (App.Vector(0, 0, 1))
