@@ -221,17 +221,17 @@ class Design456_SmartChamfer:
         self.direction= faced.getDirectionAxis() #Must be getSelectionEx
 
         if (self.direction =="+x"):
-            rotation = [0.0, 0.0, 1.0, 90.0]
+            rotation = [0.0, -1.0, 0.0, 90.0]
         elif (self.direction =="-x"):
-            rotation = [0.0, 0.0, -1.0,90.0]
+            rotation = [0.0, 1.0, 0.0,90.0]
         elif (self.direction =="+y"):                
-            rotation = [0.0, 0.0, 1.0, 180.0]
+            rotation = [1.0, 0.0, 0.0, 90.0]
         elif (self.direction =="-y"):
-            rotation = [0.0, 0.0, 1.0, 0.0]
-        elif (self.direction =="+z"):
             rotation = [-1.0, 0.0, 0.0, 90.0]
+        elif (self.direction =="+z"):
+            rotation = [1.0, 0.0, 0.0, 180.0]
         elif (self.direction =="-z"):
-                rotation = [1.0, 0.0, 0.0, 90.0]
+            rotation = [1.0, 0.0, 0.0, 0.0]
 
         if self.objectType == 'Shape':
         # 'Shape'
