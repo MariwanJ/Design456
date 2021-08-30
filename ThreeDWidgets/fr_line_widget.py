@@ -165,12 +165,11 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     def draw(self):
         """
-        Main draw function. It is responsible to create the node,
-        and draw the line on the screen. It creates a node for 
-        the line.
+        Main draw function. It is responsible for creating the SoSeparator node,
+        and draw the line on the screen - in the COIN3D world.        
         """
         try:
-            
+        
             if len(self.w_vector) < 2:
                 raise ValueError('Must be 2 Vectors')
             p1 = self.w_vector[0]
