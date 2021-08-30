@@ -184,7 +184,7 @@ def draw_line(p1, p2, color, LineWidth):
 
 
 # draw arrow (Angel is in degree)
-def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.0, 1.0, 1.0, 0.0]):
+def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.0, 0.0, 1.0, 0.0]):
     '''
     Draw a 3D arrow at the position given by the _Points and the color given by _color. 
     Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
@@ -200,6 +200,18 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
         transTail = coin.SoTranslation()
         # decide at which position the whole objects will be placed
         transRoot = coin.SoTranslation()
+
+        TailsTransform=coin.SoTransform()
+        HeadTransform=coin.SoTransform()
+        
+        tailHeadTrs = coin.SbVec3f()
+        tailHeadTrs.setValue(1,0,0)
+        
+        TailsTransform.rotation.setValue(tailHeadTrs,math.radians(90))
+        HeadTransform.rotation.setValue(tailHeadTrs,math.radians(90))
+
+
+
         coordsRoot = coin.SoTransform()
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
@@ -223,8 +235,8 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
         coordsRoot.scaleFactor.setValue([_ArrSize, _ArrSize, _ArrSize])
         coordsRoot.translation.setValue(App.Vector(0, 0, 0))
 
-        # SbRotation (const SbVec3f &axis, const float radians)
-        coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))
+       
+        coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
         transRoot.translation.setValue(_Points)
@@ -234,6 +246,10 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[1.
 
         so_separatorHead.addChild(color)
         so_separatorTail.addChild(color)
+
+        #Rotate the arrow to be on Z axis
+        so_separatorHead.addChild(TailsTransform)
+        so_separatorTail.addChild(HeadTransform)
 
         so_separatorHead.addChild(transHead)
         so_separatorTail.addChild(transTail)
