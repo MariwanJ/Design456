@@ -237,6 +237,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
+        _Points.z=_Points.z+10
         transRoot.translation.setValue(_Points)
 
         color = coin.SoBaseColor()
@@ -1039,39 +1040,39 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
             soIndexfacesHead =coin.SoIndexedFaceSet()
             soIndexfacesTail1=coin.SoIndexedFaceSet()
             soIndexfacesTail2=coin.SoIndexedFaceSet()
-            vertexHead=[(-5.87  ,    11.11 ,  0),
-                        (-5.87  ,    3.65  ,  0),
-                        (-31.64 ,    3.65  ,  0),
-                        (-31.64 ,    -3.65 ,  0),
-                        (-5.87  ,    -3.65 ,  0),
-                        (-5.87  ,    -11.11,  0),
-                        (5.87   ,    0     ,  0),
-                        (-5.87  ,    11.11 ,  0),
-                        (-5.87  ,    3.65  ,  0),
-                        (-31.64 ,    3.65  ,  0),
-                        (-31.64 ,    -3.65 ,  0),
-                        (-5.87  ,    -3.65 ,  0),
-                        (-5.87  ,    -11.11,  0),
-                        (5.87   ,    0     ,  0)
+            vertexHead=[(0,11.11 ,        32.71  ),
+                        (0,3.65  ,        32.71  ),
+                        (0,3.65  ,        6.944 ),
+                        (0,-3.65 ,        6.944 ),
+                        (0,-3.65 ,        32.71  ),
+                        (0,-11.11,        32.71  ),
+                        (0,0     ,        44.45   ),
+                        (0,11.11 ,        32.71  ),
+                        (0,3.65  ,        32.71  ),
+                        (0,3.65  ,        6.944 ),
+                        (0,-3.65 ,        6.944 ),
+                        (0,-3.65 ,        32.71  ),
+                        (0,-11.11,        32.71  ),
+                        (0,0     ,        44.45   )
                         ]
 
-            vertexTail1=[(-38.58 ,    3.65  ,  0),
-                            (-38.58 ,    -3.65 ,  0),
-                            (-37.19 ,    -3.65 ,  0),
-                            (-37.19 ,    3.65  ,  0),
-                            (-38.58 ,    3.65  ,  0),
-                            (-38.58 ,    -3.65 ,  0),
-                            (-37.19 ,    -3.65 ,  0),
-                            (-37.19 ,    3.65  ,  0)]
+            vertexTail1=   [(0,    3.65 ,  0  ),
+                            (0,    -3.65,  0  ),
+                            (0,    -3.65,  1.39  ),
+                            (0,    3.65 ,  1.39  ),
+                            (0,    3.65 ,  0  ),
+                            (0,    -3.65,  0  ),
+                            (0,    -3.65,  1.39  ),
+                            (0,    3.65 ,  1.39  )]
 
-            vertexTail2=[(-35.8  ,    3.65  ,  0),
-                            (-35.8  ,    -3.65 ,  0),
-                            (-33.03 ,    -3.65 ,  0),
-                            (-33.03 ,    3.65  ,  0),
-                            (-35.8  ,    3.65  ,  0),
-                            (-35.8  ,    -3.65 ,  0),
-                            (-33.03 ,    -3.65 ,  0),
-                            (-33.03 ,    3.65  ,  0)
+            vertexTail2=   [(0,    3.65 ,  2.78  ),
+                            (0,    -3.65,  2.78  ),
+                            (0,    -3.65,  5.55  ),
+                            (0,    3.65 ,  5.55  ),
+                            (0,    3.65 ,  2.78  ),
+                            (0,    -3.65,  2.78  ),
+                            (0,    -3.65,  5.55  ),
+                            (0,    3.65 ,  5.55  )
                             ]
 
             indicesHead= [ 1, 2, 3, -1, 1, 3, 4, -1,
@@ -1111,8 +1112,8 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
             root.addChild(trans)
             root.addChild(material)
             root.addChild(transform)
-
             root.addChild(soSeparatorMain)
+            
         #Finalize the drawing by adding color, pos, scale , opacity
         return root
     except Exception as err:
