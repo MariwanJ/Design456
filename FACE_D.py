@@ -595,8 +595,9 @@ def getDirectionOfFace():
         direction = yL.sub(nv + yL)
     return direction
 
-def distanceBetweenTwoVectors(p1=App.Vector(0,0,0) , p2=App.Vector(10,10,10) ):
-    """[summary]
+def distanceBetweenTwoVectors(p1=App.Vector(0,0,0) , p2=App.Vector(10,10,10), n=App.Vector(0,0,1) ):
+    """[Measure the distance between two points, first point is optional if not provided, 
+        the function will measure the distance to origin ]
 
     Args:
         p1 ([FreeCAD.Vector], optional): [description]. Defaults to App.Vector(0,0,0).
@@ -605,5 +606,5 @@ def distanceBetweenTwoVectors(p1=App.Vector(0,0,0) , p2=App.Vector(10,10,10) ):
     Returns:
         [float]: [Deistance measured between the two vertices]
     """
-    results = p1.distanceToPoint(p2)
+    results = (p2 - p1).dot(n) #p1.distanceToPoint(p2)
     return results
