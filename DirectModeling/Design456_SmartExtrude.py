@@ -54,6 +54,7 @@ MouseScaleFactor = 1.5
     This means that the redrawing must be optimized 
 '''
 
+
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
     """[summary]
     Callback for the arrow movement. This will be used to calculate the radius of the Extrude operation.
@@ -89,21 +90,20 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         if linktocaller.run_Once == False:
             linktocaller.run_Once = True
-            #only once
+            # only once
             linktocaller.startVector = linktocaller.endVector
-        deltaMouse= App.Vector( linktocaller.endVector.x-linktocaller.startVector.x,
-                     linktocaller.endVector.y-linktocaller.startVector.y,
-                     linktocaller.endVector.z-linktocaller.startVector.z)
-         
-        if(deltaMouse.x<0 or deltaMouse.y<0 or deltaMouse.z<0):
-            linktocaller.extrudeLength=faced.distanceBetweenTwoVectors(linktocaller.startVector,linktocaller.endVector)
-        else:
-            linktocaller.extrudeLength=-faced.distanceBetweenTwoVectors(linktocaller.startVector,linktocaller.endVector)
-            
+        deltaMouse = App.Vector(linktocaller.endVector.x-linktocaller.startVector.x,
+                                linktocaller.endVector.y-linktocaller.startVector.y,
+                                linktocaller.endVector.z-linktocaller.startVector.z)
+
+        linktocaller.extrudeLength = faced.distanceBetweenTwoVectors(
+            linktocaller.startVector, linktocaller.endVector, linktocaller.normalVector)
 
         print("extrudeLength", linktocaller.extrudeLength)
-        linktocaller.resizeArrowWidgets(linktocaller.endVector)   ##TODO FIXME .. THI IS NOT CORRECT
-        linktocaller.ExtrudeLBL.setText("Length= " + str(round(linktocaller.extrudeLength, 4)))
+        # TODO FIXME .. THI IS NOT CORRECT
+        linktocaller.resizeArrowWidgets(linktocaller.endVector)
+        linktocaller.ExtrudeLBL.setText(
+            "Length= " + str(round(linktocaller.extrudeLength, 4)))
         linktocaller.reCreateExtrudeObject()
 
     except Exception as err:
@@ -179,10 +179,11 @@ class Design456_SmartExtrude:
         """
         Reposition the arrows.
         """
-        currentLength= self.extrudeLength
-        self.extrudeLength=self.extrudeLength+15 # to let the arrow be outside the object
-        self.smartInd.w_vector=self.calculateNewVector()
-        self.extrudeLength=currentLength  #return back the value.
+        currentLength = self.extrudeLength
+        # to let the arrow be outside the object
+        self.extrudeLength = self.extrudeLength+15
+        self.smartInd.w_vector = self.calculateNewVector()
+        self.extrudeLength = currentLength  # return back the value.
         self.smartInd.redraw()
         return
 
@@ -192,7 +193,6 @@ class Design456_SmartExtrude:
         """
         #      For now the arrow will be at the top
         rotation = [0.0, 0.0, 0.0, 0.0]
-        self.direction = faced.getDirectionOfFace()  # Must be getSelectionEx
 
         face1 = None
         if(self.isFaceOf3DObj()):
@@ -201,10 +201,10 @@ class Design456_SmartExtrude:
             face1 = sub1.SubObjects[0]
         else:
             face1 = self.selectedObj.Object.Shape.Faces[0]
-        self.extrudeLength= 15
-        self._vector= self.calculateNewVector()
-        self.extrudeLength= 0.0
-        
+        self.extrudeLength = 15
+        self._vector = self.calculateNewVector()
+        self.extrudeLength = 0.0
+
         #FIXME - WRONG
         rotation = (face1.Surface.Rotation.Axis.x,
                     face1.Surface.Rotation.Axis.y,
@@ -251,16 +251,18 @@ class Design456_SmartExtrude:
         yL = ss.CenterOfMass
         uv = ss.Surface.parameter(yL)
         nv = ss.normalAt(uv[0], uv[1])
-        print("yL",yL)
-        print("uv",uv)
-        print("nv",nv)
+        self.normalVector = nv
 
-        if (self.extrudeLength==0):
-            d=self.extrudeLength=1
+        print("yL", yL)
+        print("uv", uv)
+        print("nv", nv)
+
+        if (self.extrudeLength == 0):
+            d = self.extrudeLength = 1
         else:
             d = self.extrudeLength
-        point=yL + d * nv
-        print("point=" ,point)
+        point = yL + d * nv
+        print("point=", point)
         return (point)
 
     def directionBasedOnNewVector(self):
@@ -292,7 +294,8 @@ class Design456_SmartExtrude:
             faced.errorDialog(errMessage)
             return
         self.selectedObj = sel[0]
-        App.ActiveDocument.openTransaction( translate("Design456", "SmartExtrude"))
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "SmartExtrude"))
         if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
             # We have a 3D Object. Extract a face and start to Extrude
             self.targetFace = self.extractFace()
@@ -302,7 +305,8 @@ class Design456_SmartExtrude:
 
         rotation = self.getArrowPosition()
         self.directionBasedOnNewVector()
-        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 2)
+        self.smartInd = Fr_Arrow_Widget(
+            self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 2)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
@@ -314,12 +318,13 @@ class Design456_SmartExtrude:
         self._mywin.show()
 
         print(self.targetFace)
-        self.newObject = App.ActiveDocument.addObject('Part::Extrusion', 'Extrude')
+        self.newObject = App.ActiveDocument.addObject(
+            'Part::Extrusion', 'Extrude')
         self.newObject.Base = self.targetFace
         self.newObject.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
         # Above statement is not always correct. Some faces require 'custom'
         self.newObject.DirLink = None
-        self.newObject.LengthFwd = self.extrudeLength  #Must be negative 
+        self.newObject.LengthFwd = self.extrudeLength  # Must be negative
         self.newObject.LengthRev = 0.0
         self.newObject.Solid = True
         self.newObject.Reversed = False
@@ -342,7 +347,7 @@ class Design456_SmartExtrude:
                 del self._mywin
                 self._mywin = None
             App.ActiveDocument.commitTransaction()  # undo reg.
-            self.extrudeLength=0
+            self.extrudeLength = 0
 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartExtrude' del-Failed. "
