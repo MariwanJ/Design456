@@ -89,13 +89,17 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         if linktocaller.run_Once == False:
             linktocaller.run_Once = True
+            #only once
             linktocaller.startVector = linktocaller.endVector
-
-         # Keep the old value only first time when dragging starts
-            linktocaller.startVector = linktocaller.endVector
-
-        linktocaller.extrudeLength=faced.distanceBetweenTwoVectors(linktocaller.startVector,linktocaller.endVector)
- 
+        deltaMouse= App.Vector( linktocaller.endVector.x-linktocaller.startVector.x,
+                     linktocaller.endVector.y-linktocaller.startVector.y,
+                     linktocaller.endVector.z-linktocaller.startVector.z)
+         
+        if(deltaMouse.x<0 or deltaMouse.y<0 or deltaMouse.z<0):
+            linktocaller.extrudeLength=faced.distanceBetweenTwoVectors(linktocaller.startVector,linktocaller.endVector)
+        else:
+            linktocaller.extrudeLength=-faced.distanceBetweenTwoVectors(linktocaller.startVector,linktocaller.endVector)
+            
 
         print("extrudeLength", linktocaller.extrudeLength)
         linktocaller.resizeArrowWidgets(linktocaller.endVector)   ##TODO FIXME .. THI IS NOT CORRECT
@@ -199,8 +203,6 @@ class Design456_SmartExtrude:
             face1 = self.selectedObj.Object.Shape.Faces[0]
         self.extrudeLength= 15
         self._vector= self.calculateNewVector()
-        print(".....................",self._vector)
-        
         self.extrudeLength= 0.0
         
         #FIXME - WRONG
@@ -300,7 +302,7 @@ class Design456_SmartExtrude:
 
         rotation = self.getArrowPosition()
         self.directionBasedOnNewVector()
-        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 0)
+        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 1)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
