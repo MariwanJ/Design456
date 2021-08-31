@@ -220,7 +220,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         cylinder = coin.SoCylinder()
         cylinder.height = 10
         cylinder.radius = 0.5
-        p1 = App.Vector(0.0, 0.0, 0.0)  # (_Points[0])
+        p1 = App.Vector(0.0, 10.0, 0.0)  # (_Points[0])
         p2 = App.Vector(p1.x, p1.y-5, p1.z)
         styleHead = coin.SoDrawStyle()
         styleTail = coin.SoDrawStyle()
@@ -237,7 +237,6 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
-        _Points.z=_Points.z+10
         transRoot.translation.setValue(_Points)
 
         color = coin.SoBaseColor()
