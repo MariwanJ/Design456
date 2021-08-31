@@ -94,27 +94,12 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
          # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
 
-        deltaMouse = App.Vector(linktocaller.endVector.x-linktocaller.startVector.x,
-                                linktocaller.endVector.y-linktocaller.startVector.y,
-                                linktocaller.endVector.z-linktocaller.startVector.z)
-        
-        print("deltaMouse",deltaMouse)
-        print("linktocaller.DirExtrusion",linktocaller.DirExtrusion)
-        if ((linktocaller.DirExtrusion.x==1 or linktocaller.DirExtrusion.y==1) and  linktocaller.DirExtrusion.z==0):
-            linktocaller.extrudeLength=-deltaMouse.y
-            
-        if ((linktocaller.DirExtrusion.x==1 or linktocaller.DirExtrusion.z==1) and  linktocaller.DirExtrusion.y==0):
-            linktocaller.extrudeLength=-deltaMouse.z
-            print("direction xz")
-        if ((linktocaller.DirExtrusion.y==1 or linktocaller.DirExtrusion.z==1) and  linktocaller.DirExtrusion.x==0):
-            linktocaller.extrudeLength=deltaMouse.x
-            print("direction yz")
-
+        linktocaller.extrudeLength=faced.distanceBetweenTwoVectors(linktocaller.startVector,linktocaller.endVector)
+ 
 
         print("extrudeLength", linktocaller.extrudeLength)
-        linktocaller.resizeArrowWidgets(linktocaller.endVector)
-        linktocaller.ExtrudeLBL.setText(
-            "scale= " + str(round(linktocaller.extrudeLength, 4)))
+        linktocaller.resizeArrowWidgets(linktocaller.endVector)   ##TODO FIXME .. THI IS NOT CORRECT
+        linktocaller.ExtrudeLBL.setText("scale= " + str(round(linktocaller.extrudeLength, 4)))
         linktocaller.reCreateExtrudeObject()
 
     except Exception as err:
