@@ -91,7 +91,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.run_Once = True
             linktocaller.startVector = linktocaller.endVector
 
-         # Keep the old value only first time when drag start
+         # Keep the old value only first time when dragging starts
             linktocaller.startVector = linktocaller.endVector
 
         linktocaller.extrudeLength=faced.distanceBetweenTwoVectors(linktocaller.startVector,linktocaller.endVector)
@@ -99,7 +99,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         print("extrudeLength", linktocaller.extrudeLength)
         linktocaller.resizeArrowWidgets(linktocaller.endVector)   ##TODO FIXME .. THI IS NOT CORRECT
-        linktocaller.ExtrudeLBL.setText("scale= " + str(round(linktocaller.extrudeLength, 4)))
+        linktocaller.ExtrudeLBL.setText("Length= " + str(round(linktocaller.extrudeLength, 4)))
         linktocaller.reCreateExtrudeObject()
 
     except Exception as err:
@@ -168,15 +168,17 @@ class Design456_SmartExtrude:
     DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
 
     def reCreateExtrudeObject(self):
-        self.newObject.LengthFwd = self.extrudeLength
+        self.newObject.LengthFwd = -self.extrudeLength
         App.ActiveDocument.recompute()
 
     def resizeArrowWidgets(self, endVec):
         """
-        Reposition the arrows by recalculating the boundary box
-        and updating the vectors inside each fr_arrow_widget
+        Reposition the arrows.
         """
+        currentLength= self.extrudeLength
+        self.extrudeLength=self.extrudeLength+15 # to let the arrow be outside the object
         self.smartInd.w_vector=self.calculateNewVector()
+        self.extrudeLength=currentLength  #return back the value.
         self.smartInd.redraw()
         return
 
