@@ -168,7 +168,7 @@ class Design456_SmartExtrude:
     DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
 
     def reCreateExtrudeObject(self):
-        self.newObject.LengthFwd = -self.extrudeLength
+        self.newObject.LengthFwd = self.extrudeLength
         App.ActiveDocument.recompute()
 
     def resizeArrowWidgets(self, endVec):
@@ -317,7 +317,7 @@ class Design456_SmartExtrude:
         self.newObject.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
         # Above statement is not always correct. Some faces require 'custom'
         self.newObject.DirLink = None
-        self.newObject.LengthFwd = -self.extrudeLength  #Must be negative 
+        self.newObject.LengthFwd = self.extrudeLength  #Must be negative 
         self.newObject.LengthRev = 0.0
         self.newObject.Solid = True
         self.newObject.Reversed = False
