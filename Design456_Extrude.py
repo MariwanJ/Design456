@@ -34,6 +34,7 @@ import Part
 import FACE_D as faced
 from time import time as _time, sleep as _sleep
 from draftutils.translate import translate   #for translate 
+import math 
 
 class Design456_Extrude:
     def __init__(self):
@@ -57,7 +58,7 @@ class Design456_Extrude:
             #Difficult to know when you use each of them.
             f.DirMode = "Normal"            #Don't use Custom as it leads to PROBLEM!
             f.DirLink = None                #Above statement is not always correct. Some faces require 'custom'
-            degreeAngle = m.Placement.Rotation.Angle*180*22/7  # Convert to Radians
+            degreeAngle = math.degrees(m.Placement.Rotation.Angle)
             print(degreeAngle)
             """
             YOU SHOULD NOT SPECIFY THIS .. OTHERWISE IT COULD BE WRONG!!
