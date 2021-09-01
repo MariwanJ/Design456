@@ -87,7 +87,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
 
                  label: str = "",lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=[(1.0,1.0,1.0),0.0],
+                 _rotation=[(0.0,0.0,1.0),0.0],
                  _arrowType=0):  
         #Must be initialized first as per the following discussion. 
         #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671

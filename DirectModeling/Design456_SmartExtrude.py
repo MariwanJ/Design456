@@ -99,7 +99,6 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.extrudeLength = faced.distanceBetweenTwoVectors(
             linktocaller.startVector, linktocaller.endVector, linktocaller.normalVector)
 
-        print("extrudeLength", linktocaller.extrudeLength)
         # TODO FIXME .. THI IS NOT CORRECT
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ExtrudeLBL.setText(
@@ -201,16 +200,23 @@ class Design456_SmartExtrude:
             face1 = sub1.SubObjects[0]
         else:
             face1 = self.selectedObj.Object.Shape.Faces[0]
-        self.extrudeLength = 15
+        self.extrudeLength = 5
         self._vector = self.calculateNewVector()
         self.extrudeLength = 0.0
 
         #FIXME - WRONG
-        rotation = (face1.Surface.Rotation.Axis.x,
-                    face1.Surface.Rotation.Axis.y,
-                    face1.Surface.Rotation.Axis.z,
-                    math.degrees(face1.Surface.Rotation.Angle))
-        print(self._vector)
+        if (face1.Surface.Rotation.Axis.y<0 and face1.Surface.Rotation.Axis.x<0 ):
+            rotation = (face1.Surface.Rotation.Axis.x,
+                        face1.Surface.Rotation.Axis.y,
+                        face1.Surface.Rotation.Axis.z,
+                        math.degrees(face1.Surface.Rotation.Angle))
+        else : 
+                rotation = (face1.Surface.Rotation.Axis.x,
+                            face1.Surface.Rotation.Axis.y,
+                            face1.Surface.Rotation.Axis.z,
+                            math.degrees(face1.Surface.Rotation.Angle))
+
+        print("rotation",rotation)
         return rotation
 
     def isFaceOf3DObj(self):
@@ -283,7 +289,6 @@ class Design456_SmartExtrude:
             self.DirExtrusion = (App.Vector(0, 1, 1))
         elif newPos.z == 0:
             self.DirExtrusion = (App.Vector(1, 1, 0))
-        print(self.DirExtrusion)
 
     def Activated(self):
         print("Smart Extrusion Activated")
@@ -306,7 +311,7 @@ class Design456_SmartExtrude:
         rotation = self.getArrowPosition()
         self.directionBasedOnNewVector()
         self.smartInd = Fr_Arrow_Widget(
-            self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 2)
+            self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 3)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
@@ -317,7 +322,6 @@ class Design456_SmartExtrude:
         mw = self.getMainWindow()
         self._mywin.show()
 
-        print(self.targetFace)
         self.newObject = App.ActiveDocument.addObject(
             'Part::Extrusion', 'Extrude')
         self.newObject.Base = self.targetFace
