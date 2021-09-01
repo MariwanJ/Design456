@@ -92,12 +92,8 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.run_Once = True
             # only once
             linktocaller.startVector = linktocaller.endVector
-        deltaMouse = App.Vector(linktocaller.endVector.x-linktocaller.startVector.x,
-                                linktocaller.endVector.y-linktocaller.startVector.y,
-                                linktocaller.endVector.z-linktocaller.startVector.z)
 
-        linktocaller.extrudeLength = faced.distanceBetweenTwoVectors(
-            linktocaller.startVector, linktocaller.endVector, linktocaller.normalVector)
+        linktocaller.extrudeLength =  (linktocaller.endVector-linktocaller.startVector).dot( linktocaller.normalVector)
 
         # TODO FIXME .. THI IS NOT CORRECT
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
@@ -205,16 +201,16 @@ class Design456_SmartExtrude:
         self.extrudeLength = 0.0
 
         #FIXME - WRONG
-        if (face1.Surface.Rotation.Axis.y<0 and face1.Surface.Rotation.Axis.x<0 ):
-            rotation = (face1.Surface.Rotation.Axis.x,
+        print(face1)
+        print(face1.Surface)
+        print(face1.Surface.Rotation)
+        print(face1.Surface.Rotation.Axis)
+        print(face1.Surface.Rotation.Angle)
+        
+        rotation = (face1.Surface.Rotation.Axis.x,
                         face1.Surface.Rotation.Axis.y,
                         face1.Surface.Rotation.Axis.z,
                         math.degrees(face1.Surface.Rotation.Angle))
-        else : 
-                rotation = (face1.Surface.Rotation.Axis.x,
-                            face1.Surface.Rotation.Axis.y,
-                            face1.Surface.Rotation.Axis.z,
-                            math.degrees(face1.Surface.Rotation.Angle))
 
         print("rotation",rotation)
         return rotation
@@ -271,24 +267,24 @@ class Design456_SmartExtrude:
         print("point=", point)
         return (point)
 
-    def directionBasedOnNewVector(self):
-        ss = self.selectedObj.SubObjects[0]
-        yL = ss.CenterOfMass
-        uv = ss.Surface.parameter(yL)
-        nv = ss.normalAt(uv[0], uv[1])
-        newPos = nv
-        if newPos.x == 0 and newPos.y == 0:
-            self.DirExtrusion = (App.Vector(0, 0, 1))
-        elif newPos.x == 0 and newPos.z == 0:
-            self.DirExtrusion = (App.Vector(0, 1, 0))
-        elif newPos.y == 0 and newPos.z == 0:
-            self.DirExtrusion = (App.Vector(1, 0, 0))
-        elif newPos.x == 0:
-            self.DirExtrusion = (App.Vector(0, 1, 1))
-        elif newPos.y == 0:
-            self.DirExtrusion = (App.Vector(0, 1, 1))
-        elif newPos.z == 0:
-            self.DirExtrusion = (App.Vector(1, 1, 0))
+    # def directionBasedOnNewVector(self):
+    #     ss = self.selectedObj.SubObjects[0]
+    #     yL = ss.CenterOfMass
+    #     uv = ss.Surface.parameter(yL)
+    #     nv = ss.normalAt(uv[0], uv[1])
+    #     newPos = nv
+    #     if newPos.x == 0 and newPos.y == 0:
+    #         self.DirExtrusion = (App.Vector(0, 0, 1))
+    #     elif newPos.x == 0 and newPos.z == 0:
+    #         self.DirExtrusion = (App.Vector(0, 1, 0))
+    #     elif newPos.y == 0 and newPos.z == 0:
+    #         self.DirExtrusion = (App.Vector(1, 0, 0))
+    #     elif newPos.x == 0:
+    #         self.DirExtrusion = (App.Vector(0, 1, 1))
+    #     elif newPos.y == 0:
+    #         self.DirExtrusion = (App.Vector(0, 1, 1))
+    #     elif newPos.z == 0:
+    #         self.DirExtrusion = (App.Vector(1, 1, 0))
 
     def Activated(self):
         print("Smart Extrusion Activated")
@@ -306,10 +302,10 @@ class Design456_SmartExtrude:
             self.targetFace = self.extractFace()
         else:
             # We have a 2D Face - Extract it directly
-            self.targetFace = self.selectedObj
+            self.targetFace = self.selectedObj.Object
 
         rotation = self.getArrowPosition()
-        self.directionBasedOnNewVector()
+        #self.directionBasedOnNewVector()
         self.smartInd = Fr_Arrow_Widget(
             self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 0)
         self.smartInd.w_callback_ = callback_release
