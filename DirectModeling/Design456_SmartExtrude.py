@@ -47,7 +47,7 @@ from draftutils.translate import translate  # for translate
 import math
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
-MouseScaleFactor = 1.5
+MouseScaleFactor = 1
 
 '''
     We have to recreate the object each time we change the radius. 
@@ -157,7 +157,7 @@ class Design456_SmartExtrude:
     run_Once = False
     endVector = None
     startVector = None
-    extrudeLength = 0.0  # This will be the Delta-mouse position
+    extrudeLength = 0.001  # This will be the Delta-mouse position
     # We will make two object, one for visual effect and the other is the original
     selectedObj = None
     direction = None
@@ -307,7 +307,7 @@ class Design456_SmartExtrude:
         rotation = self.getArrowPosition()
         #self.directionBasedOnNewVector()
         self.smartInd = Fr_Arrow_Widget(
-            self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 0)
+            self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 2)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
