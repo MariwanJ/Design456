@@ -144,6 +144,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
             if self.releaseDrag==True:
                 self.releaseDrag==False
+                print("Release Mouse happened")
                 self.do_callback()     #Release callback should be activated even if the arrow is not under the mouse 
                 return 1
             

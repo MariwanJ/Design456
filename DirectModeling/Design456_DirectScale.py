@@ -301,7 +301,7 @@ class Design456_DirectScale:
     selectedObj = []
     # 0 is the original    1 is the fake one (just for interactive effect)
     mouseToArrowDiff = 0.0
-    mmAwayFrom3DObject = 10  # Use this to take away the arrow from the object
+    mmAwayFrom3DObject = 5  # Use this to take away the arrow from the object
 
     def getObjectLength(self, whichOne=1):
         """ 
