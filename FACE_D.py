@@ -54,8 +54,8 @@ def getDirectionAxis():
                 dir= faceSel.normalAt(0) #Circle has not two arguments, only one
             except:
                 f= findFacehasSelectedEdge()
-                if f==None:
-                    raise Exception ("Face not found")
+                if f is None:
+                    raise Exception("Face not found")
                 dir= f.normalAt(0, 0)
         
         if dir.z == 1:
@@ -215,7 +215,7 @@ class PartMover:
             import Design456Init
             
             tempPoint=self.view.getPoint(pos[0], pos[1])    
-            if(self.Direction==None):
+            if(self.Direction is None):
                 if Design456Init.DefaultDirectionOfExtrusion=='x':        
                     point=( App.Vector(0.0,tempPoint[0],tempPoint[1]) )
                 elif Design456Init.DefaultDirectionOfExtrusion=='y':
@@ -416,7 +416,7 @@ class SelectTopFace:
           
     def Activated(self):
         try:
-            if self.obj==None:
+            if self.obj is None:
                 return
             counter = 1
             centerofmass = None
@@ -518,7 +518,7 @@ class createActionTab:
         for i in toplevel:
             if i.metaObject().className() == "Gui::MainWindow":
                 self.mw=i    
-        if self.mw==None:
+        if self.mw is None:
             raise Exception("No main window found")
         dw=self.mw.findChildren(QtGui.QDockWidget)
         for i in dw:
@@ -526,7 +526,7 @@ class createActionTab:
                 self.tab= i.findChild(QtGui.QTabWidget)
             elif str(i.objectName()) == "Python Console":
                 self.tab= i.findChild(QtGui.QTabWidget)
-        if self.tab==None:
+        if self.tab is None:
                 raise Exception ("No tab widget found")
         self.dialog=QtGui.QDialog()
         oldsize=self.tab.count()
@@ -587,7 +587,7 @@ def getDirectionOfFace():
     else:
         #TODO: FIXME: WHAT SHOULD WE USE?
         print("failed")
-    if ss!=None:
+    if ss is not None:
         # section direction
         yL = ss.CenterOfMass
         uv = ss.Surface.parameter(yL)
