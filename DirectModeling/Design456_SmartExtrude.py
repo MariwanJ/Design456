@@ -95,7 +95,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         linktocaller.extrudeLength =  (linktocaller.endVector-linktocaller.startVector).dot( linktocaller.normalVector)
 
-        # TODO FIXME .. THI IS NOT CORRECT
+        # TODO FIXME .. THIS IS NOT CORRECT
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ExtrudeLBL.setText(
             "Length= " + str(round(linktocaller.extrudeLength, 4)))
