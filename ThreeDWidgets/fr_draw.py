@@ -282,7 +282,7 @@ def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD
         texture (None, optional): [File name of the texture image]. Defaults to Null string.
         style (int, optional): [Box style: Filed=0, Lines ,Points,Invisible]. Defaults to 0.
         LineWidth (int, optional): [Line width: applicable only when you have line style]. Defaults to 1.
-        LinePattern (hexadecimal, optional): [Defines if you have dashed lines or continuse line]. Defaults to 0xffff.
+        LinePattern (hexadecimal, optional): [Defines if you have dashed lines or continuous line]. Defaults to 0xffff.
 
     Returns:
         [type]: [description]
@@ -584,7 +584,7 @@ def loadImageTo3D(filename, BoxSize=(2,2,0.01), location=App.Vector(0,0,0), rota
 def draw_Curve(knots=None, data=None):
     curveSep = coin.SoSeparator()
     complexity = coin.SoComplexity()
-    # controll coordinate with normalization (last bit)
+    # control coordinate with normalization (last bit)
     controlPts = coin.SoCoordinate4()
     curve = coin.SoNurbsCurve()
     controlPts.point.setValues(data)

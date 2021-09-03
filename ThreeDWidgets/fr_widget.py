@@ -240,7 +240,7 @@ class Fr_Widget (object):
  
     def parent(self, parent):
         """ 
-            Set the parrent to the widget
+            Set the parent to the widget
         """
         self.w_parent = parent
     @property 

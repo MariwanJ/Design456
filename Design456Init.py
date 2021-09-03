@@ -32,7 +32,7 @@ This file will add all paths needed for the Design456.
 It makes life easier. By doing that you can import any file
 in any of the subdirectories. Adding more subdirectories
 needs be added here. 
-ICON path should be always added as bellow 
+ICON path should be always added as below 
 'Resources/icons/' 
 
 """
