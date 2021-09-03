@@ -63,7 +63,7 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
         
         if (linktocaller.b1.text() == 'Uniform'):
            
-            # We maximize all of them regardles the change in which axis made
+            # We maximize all of them regardless the change in which axis made
             if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
                 uniformValue = deltaY/SCALE_FACTOR
                 uniformValue= (lengthY+uniformValue)/lengthY
@@ -284,7 +284,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
 class Design456_DirectScale:
     """
-    Direct scaling of any 3D Object by draging either uniform arrow or
+    Direct scaling of any 3D Object by dragging either uniform arrow or
     un-uniform arrows.
     """
     mw = None
