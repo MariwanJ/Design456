@@ -76,11 +76,11 @@ def smartlbl_callback(smartLine,obj,parentlink):
     newValue=0
     #all lines has a 4 mm more size due to the way we calculate them. Remove that
     newValue=faced.GetInputValue(oldv).getDoubleValue()
-    if newValue==0 or newValue==None:
+    if newValue == 0 or newValue is None:
         #User canceled the value
         return -1
 
-    if obj==None:
+    if obj is None:
         # Only one object must be selected
         errMessage = "Select an object to scale"
         faced.errorDialog(errMessage)
@@ -226,7 +226,7 @@ class Design456_SmartScale:
             for i in self.smartInd:
                 i.set_target(selected)
             #set selected object to each smartline 
-            if self._mywin==None :
+            if self._mywin is None :
                 self._mywin=win.Fr_CoinWindow()
             self._mywin.addWidget(self.smartInd)
             self._mywin.show()     
@@ -272,7 +272,7 @@ class Design456_SmartScale:
                 i.hide()
                 i.__del__()
                 del i  # call destructor
-            if self._mywin!=None:
+            if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin=None
@@ -289,8 +289,8 @@ class Design456_SmartScale:
             self.mw=None
             for i in toplevel:
                 if i.metaObject().className() == "Gui::MainWindow":
-                    self.mw=i    
-            if self.mw==None:
+                    self.mw = i
+            if self.mw is None:
                 raise Exception("No main window found")
             dw=self.mw.findChildren(QtGui.QDockWidget)
             for i in dw:
@@ -298,7 +298,7 @@ class Design456_SmartScale:
                     self.tab= i.findChild(QtGui.QTabWidget)
                 elif str(i.objectName()) == "Python Console":
                     self.tab= i.findChild(QtGui.QTabWidget)
-            if self.tab==None:
+            if self.tab is None:
                     raise Exception ("No tab widget found")
 
             self.dialog=QtGui.QDialog()
