@@ -305,9 +305,7 @@ class Design456_SmartExtrude:
             self.targetFace = self.selectedObj.Object
 
         rotation = self.getArrowPosition()
-        #self.directionBasedOnNewVector()
-        self.smartInd = Fr_Arrow_Widget(
-            self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 2)
+        self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 3)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self

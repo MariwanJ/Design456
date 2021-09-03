@@ -193,8 +193,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                     self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,0,0,self.w_rotation)
                 elif self.arrowType==2:
                     self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,1,0,self.w_rotation)
-              #  elif self.arrowType==3:
-              #      self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,(1,1,1),2,0,self.w_rotation)
+                elif self.arrowType==3:
+                    self.w_widgetSoNodes=fr_draw.draw_DoubleSidedArrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
