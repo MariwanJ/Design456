@@ -28,56 +28,58 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft  as _draft
-import Part  as _part
+import Draft as _draft
+import Part as _part
 from pivy import coin
-
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
+
 
 def getDirectionAxis():
     try:
         s = Gui.Selection.getSelectionEx()
-        if len(s)==0:
-            return "" #nothing to do we cannot calculate the direction
+        if len(s) == 0:
+            return ""  # nothing to do we cannot calculate the direction
         obj = s[0]
-        if (hasattr(obj,"SubObjects")):
-            if len(obj.SubObjects)!=0:
+        if (hasattr(obj, "SubObjects")):
+            if len(obj.SubObjects) != 0:
                 faceSel = obj.SubObjects[0]
             else:
-                faceSel=obj.Object.Shape.Faces[0] # Take the first face
+                faceSel = obj.Object.Shape.Faces[0]  # Take the first face
         else:
             raise NotImplementedError
-        try: 
-            dir = faceSel.normalAt(0, 0)  #other faces needs 2 arguments
-        except: 
-            try: 
-                dir= faceSel.normalAt(0) #Circle has not two arguments, only one
+        try:
+            dir = faceSel.normalAt(0, 0)  # other faces needs 2 arguments
+        except:
+            try:
+                # Circle has not two arguments, only one
+                dir = faceSel.normalAt(0)
             except:
-                f= findFacehasSelectedEdge()
-                if f==None:
-                    raise Exception ("Face not found")
-                dir= f.normalAt(0, 0)
-        
+                f = findFacehasSelectedEdge()
+                if f == None:
+                    raise Exception("Face not found")
+                dir = f.normalAt(0, 0)
+
         if dir.z == 1:
             return "+z"
-        elif dir.z==-1:
+        elif dir.z == -1:
             return "-z"
         elif dir.y == 1:
             return "+y"
-        elif dir.y==-1:
+        elif dir.y == -1:
             return "-y"
-        elif dir.x==1:
+        elif dir.x == 1:
             return "+x"
-        elif dir.x==-1:
+        elif dir.x == -1:
             return "-x"
         else:
-            return None 
+            return None
     except Exception as err:
         App.Console.PrintError("'getDirectionAxis' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
 
 class MousePosition:
     def __init__(self, view):
@@ -108,41 +110,42 @@ class MousePosition:
 
 
 class mousePointMove:
-    def __init__(self,obj,view):
+    def __init__(self, obj, view):
         self.object = obj
         self.view = view
-        self.callbackClicked = self.view.addEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.mouseClick) #"SoLocation2Event"
-        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.mouseMove)
-        StartMovePoint=0
-        
-    def convertToVector(self,pos):
+        self.callbackClicked = self.view.addEventCallbackPivy(
+            coin.SoMouseButtonEvent.getClassTypeId(), self.mouseClick)  # "SoLocation2Event"
+        self.callbackMove = self.view.addEventCallbackPivy(
+            coin.SoLocation2Event.getClassTypeId(), self.mouseMove)
+        StartMovePoint = 0
+
+    def convertToVector(self, pos):
         try:
             import Design456Init
-            point=None
-            tempPoint=self.view.getPoint(pos[0], pos[1])        
-            if Design456Init.DefaultDirectionOfExtrusion=='x':        
-                point= App.Vector(0.0,tempPoint[0],tempPoint[1]) 
-            elif Design456Init.DefaultDirectionOfExtrusion=='y':
-                point=App.Vector(tempPoint[0],0.0,tempPoint[1]) 
-            elif Design456Init.DefaultDirectionOfExtrusion=='z':
-                point=App.Vector(tempPoint[0],tempPoint[1],0.0)
+            point = None
+            tempPoint = self.view.getPoint(pos[0], pos[1])
+            if Design456Init.DefaultDirectionOfExtrusion == 'x':
+                point = App.Vector(0.0, tempPoint[0], tempPoint[1])
+            elif Design456Init.DefaultDirectionOfExtrusion == 'y':
+                point = App.Vector(tempPoint[0], 0.0, tempPoint[1])
+            elif Design456Init.DefaultDirectionOfExtrusion == 'z':
+                point = App.Vector(tempPoint[0], tempPoint[1], 0.0)
             return point
         except Exception as err:
-                App.Console.PrintError("'converToVector' Failed. "
-                                       "{err}\n".format(err=str(err)))
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                print(exc_type, fname, exc_tb.tb_lineno)
-        
+            App.Console.PrintError("'converToVector' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
-    def mouseMove(self,events):
+    def mouseMove(self, events):
         try:
             event = events.getEvent()
             pos = event.getPosition().getValue()
-            point=self.convertToVector(pos)
-            points=self.object.Object.Points
-            #lastPoint=  point  
-            self.object.Object.End=point
+            point = self.convertToVector(pos)
+            points = self.object.Object.Points
+            #lastPoint=  point
+            self.object.Object.End = point
             App.ActiveDocument.recompute()
 
         except Exception as err:
@@ -156,18 +159,18 @@ class mousePointMove:
         try:
             import Design456Init
             event = events.getEvent()
-            eventState= event.getState()
-            getButton= event.getButton() 
-            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
-                pos=event.getPosition()
-                point=self.convertToVector(pos)
+            eventState = event.getState()
+            getButton = event.getButton()
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                pos = event.getPosition()
+                point = self.convertToVector(pos)
                 print('Mouse click \n')
-                _point= self.object.Object.Points
+                _point = self.object.Object.Points
                 _point[len(_point)-1] = point
-                #self.object.Object.End= point 
+                #self.object.Object.End= point
                 App.ActiveDocument.recompute()
                 self.remove_callbacks()
-                
+
         except Exception as err:
             App.Console.PrintError("'converToVector' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -186,9 +189,11 @@ class mousePointMove:
     def remove_callbacks(self):
         try:
             print('Remove MouseClick callback')
-            self.view.removeEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClicked)
-            self.view.removeEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-            
+            self.view.removeEventCallbackPivy(
+                coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClicked)
+            self.view.removeEventCallbackPivy(
+                coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+
         except Exception as err:
             App.Console.PrintError("'Mouse move point' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -204,34 +209,40 @@ class PartMover:
         self.initialPosition = self.obj.Placement.Base
         self.view = view
         self.deleteOnEscape = deleteOnEscape
-        self.callbackMove = self.view.addEventCallbackPivy(coin.SoLocation2Event.getClassTypeId(), self.moveMouse)
-        self.callbackClick = self.view.addEventCallbackPivy(coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick)
-        self.callbackKey = self.view.addEventCallbackPivy(coin.SoKeyboardEvent.getClassTypeId() , self.KeyboardEvent)
+        self.callbackMove = self.view.addEventCallbackPivy(
+            coin.SoLocation2Event.getClassTypeId(), self.moveMouse)
+        self.callbackClick = self.view.addEventCallbackPivy(
+            coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick)
+        self.callbackKey = self.view.addEventCallbackPivy(
+            coin.SoKeyboardEvent.getClassTypeId(), self.KeyboardEvent)
         self.objectToDelete = None  # object reference when pressing the escape key
-        self.Direction =None
-        
-    def convertToVector(self,pos):
+        self.Direction = None
+
+    def convertToVector(self, pos):
         try:
             import Design456Init
-            
-            tempPoint=self.view.getPoint(pos[0], pos[1])    
-            if(self.Direction==None):
-                if Design456Init.DefaultDirectionOfExtrusion=='x':        
-                    point=( App.Vector(0.0,tempPoint[0],tempPoint[1]) )
-                elif Design456Init.DefaultDirectionOfExtrusion=='y':
-                    point=(App.Vector(tempPoint[0],0.0,tempPoint[1])) 
-                elif Design456Init.DefaultDirectionOfExtrusion=='z':
-                    point=(App.Vector(tempPoint[0],tempPoint[1],0.0))
+
+            tempPoint = self.view.getPoint(pos[0], pos[1])
+            if(self.Direction == None):
+                if Design456Init.DefaultDirectionOfExtrusion == 'x':
+                    point = (App.Vector(0.0, tempPoint[0], tempPoint[1]))
+                elif Design456Init.DefaultDirectionOfExtrusion == 'y':
+                    point = (App.Vector(tempPoint[0], 0.0, tempPoint[1]))
+                elif Design456Init.DefaultDirectionOfExtrusion == 'z':
+                    point = (App.Vector(tempPoint[0], tempPoint[1], 0.0))
             else:
-                
-                if (self.Direction=='X'):
-                    point=( App.Vector(tempPoint[0],self.obj.Placement.Base.y,self.obj.Placement.Base.z))
-                elif (self.Direction=='Y'):
-                    point=( App.Vector(self.obj.Placement.Base.x,tempPoint[1],self.obj.Placement.Base.z))
-                elif (self.Direction=='Z'):
-                    point=( App.Vector(self.obj.Placement.Base.x,self.obj.Placement.Base.y,tempPoint[0]))
-            return point     
-            
+
+                if (self.Direction == 'X'):
+                    point = (App.Vector(
+                        tempPoint[0], self.obj.Placement.Base.y, self.obj.Placement.Base.z))
+                elif (self.Direction == 'Y'):
+                    point = (App.Vector(self.obj.Placement.Base.x,
+                             tempPoint[1], self.obj.Placement.Base.z))
+                elif (self.Direction == 'Z'):
+                    point = (App.Vector(self.obj.Placement.Base.x,
+                             self.obj.Placement.Base.y, tempPoint[0]))
+            return point
+
         except Exception as err:
             App.Console.PrintError("'Mouse click error' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -239,10 +250,10 @@ class PartMover:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
-        
+
     def moveMouse(self, events):
         try:
-            self.active=True
+            self.active = True
             event = events.getEvent()
             newPos = self.convertToVector(event.getPosition().getValue())
             self.obj.Placement.Base = newPos
@@ -258,9 +269,12 @@ class PartMover:
     def remove_callbacks(self):
         try:
             print('Remove callback')
-            self.view.removeEventCallbackPivy (coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-            self.view.removeEventCallbackPivy (coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
-            self.view.removeEventCallbackPivy (coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
+            self.view.removeEventCallbackPivy(
+                coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+            self.view.removeEventCallbackPivy(
+                coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
+            self.view.removeEventCallbackPivy(
+                coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
             self.active = False
             self.info = None
             self.view = None
@@ -276,11 +290,11 @@ class PartMover:
         try:
             import Design456Init
             event = events.getEvent()
-            eventState= event.getState()
-            getButton= event.getButton() 
-            if eventState == coin.SoMouseButtonEvent.DOWN and getButton ==coin.SoMouseButtonEvent.BUTTON1:
-                pos=event.getPosition()
-                point=self.convertToVector(pos)
+            eventState = event.getState()
+            getButton = event.getButton()
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                pos = event.getPosition()
+                point = self.convertToVector(pos)
                 newPos = point
                 self.obj.Placement.Base = newPos
                 self.obj = None
@@ -298,18 +312,18 @@ class PartMover:
     def KeyboardEvent(self, events):
         try:
             event = events.getEvent()
-            eventState=event.getState()
+            eventState = event.getState()
             if (type(event) == coin.SoKeyboardEvent):
                 key = event.getKey()
-            
-            if key == coin.SoKeyboardEvent.X and eventState== coin.SoButtonEvent.UP:
-                self.Direction='X'
-            if key == coin.SoKeyboardEvent.Y and eventState== coin.SoButtonEvent.UP:
-                self.Direction='Y'
-            if key == coin.SoKeyboardEvent.Z and eventState== coin.SoButtonEvent.UP:
-                self.Direction='Z'
-                
-            if key == coin.SoKeyboardEvent.ESCAPE and eventState== coin.SoButtonEvent.UP:
+
+            if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
+                self.Direction = 'X'
+            if key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
+                self.Direction = 'Y'
+            if key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
+                self.Direction = 'Z'
+
+            if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
                 self.remove_callbacks()
                 if not self.deleteOnEscape:
                     self.obj.Placement.Base = self.initialPosition
@@ -318,7 +332,7 @@ class PartMover:
                     self.objectToDelete = self.obj
                 App.ActiveDocument.removeObject(self.obj.Name)
                 self.obj = None
-                
+
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -326,7 +340,7 @@ class PartMover:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
-#TODO: This class must be updated to be able to move all kind of objects
+# TODO: This class must be updated to be able to move all kind of objects
 #    Mariwan
 
 
@@ -341,7 +355,7 @@ class PartMover:
 
 def getFaceName(sel):
     try:
-        if(hasattr(sel,'SubElementNames')):
+        if(hasattr(sel, 'SubElementNames')):
             Result = (sel.SubElementNames[0])
             return Result
         else:
@@ -350,17 +364,19 @@ def getFaceName(sel):
         App.Console.PrintError("'getFaceName' Failed. "
                                "{err}\n".format(err=str(err)))
 
-#TODO Remove this.. not necessary. 
+# TODO Remove this.. not necessary.
+
+
 def getObjectFromFaceName(obj, face_name):
     try:
-        faceName=face_name        
+        faceName = face_name
         if(obj.SubElementNames[0].startswith('Face')):
-            faceNumber = int(faceName[4:]) -1
+            faceNumber = int(faceName[4:]) - 1
         return obj.Object.Shape.Faces[faceNumber]
-    
+
     except Exception as err:
         App.Console.PrintError("'getObjectFromFaceName' Failed. "
-                               "{err}\n".format(err=str(err)))        
+                               "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
@@ -374,7 +390,8 @@ def getObjectCenterOfMass(obj):
         App.Console.PrintError("'getObjectCenterOfMass' Failed. "
                                "{err+}\n".format(err=str(err)))
 
-def errorDialog( msg):
+
+def errorDialog(msg):
     # Create a simple dialog QMessageBox
     # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
     diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Error', msg)
@@ -383,6 +400,8 @@ def errorDialog( msg):
 
 # From Mario Macro_CenterCenterFace at
 # https://wiki.freecadweb.org/Macro_CenterFace/fr
+
+
 def objectRealPlacement3D(obj):    # search the real Placement
     try:
         objectPlacement = obj.Object.Shape.Placement
@@ -408,20 +427,22 @@ def objectRealPlacement3D(obj):    # search the real Placement
         print(exc_type, fname, exc_tb.tb_lineno)
         return getObjectCenterOfMass(obj)
 
-#send object to this class you get back top-face's name  
-class SelectTopFace: 
+# send object to this class you get back top-face's name
+
+
+class SelectTopFace:
     def __init__(self, obj):
-          self.obj = obj
-          self.name_facename=""
-          
+        self.obj = obj
+        self.name_facename = ""
+
     def Activated(self):
         try:
-            if self.obj==None:
+            if self.obj == None:
                 return
             counter = 1
             centerofmass = None
             Highest = 0
-            Result=0
+            Result = 0
             for fac in self.obj.Shape.Faces:
                 if(fac.CenterOfMass.z > Highest):
                     Highest = fac.CenterOfMass.z
@@ -430,7 +451,8 @@ class SelectTopFace:
                 counter = counter+1
             self._facename = 'Face'+str(Result)
             Gui.Selection.clearSelection()
-            Gui.Selection.addSelection(App.ActiveDocument.Name, self.obj.Name,self._facename, centerofmass.x, centerofmass.y, centerofmass.z)
+            Gui.Selection.addSelection(App.ActiveDocument.Name, self.obj.Name,
+                                       self._facename, centerofmass.x, centerofmass.y, centerofmass.z)
             return self._facename
         except Exception as err:
             App.Console.PrintError("'SelectTopFace' Failed. "
@@ -440,43 +462,52 @@ class SelectTopFace:
             print(exc_type, fname, exc_tb.tb_lineno)
             return self.obj.SubObjects[0].CenterOfMass
 
-#TODO: Transparent dialog? how to? i.e. border less, only input widgets should be shown?
+# TODO: Transparent dialog? how to? i.e. border less, only input widgets should be shown?
+
+
 class GetInputValue:
-    def __init__(self,defaultValue=0.0):
-        self.value=defaultValue
+    def __init__(self, defaultValue=0.0):
+        self.value = defaultValue
         pass
     """
     get Input value from user. Either Text, INT or Float
     """
+
     def getIntValue(self):
-        valueDouble,ok= (QtGui.QInputDialog.getInt(None, "Input new Value", "Change size:", self.value, -10000, 10000))
+        valueDouble, ok = (QtGui.QInputDialog.getInt(
+            None, "Input new Value", "Change size:", self.value, -10000, 10000))
         if ok:
             return float(valueDouble)
         else:
             return None
-        
+
     def getTextValue(self):
-        text, ok = QtGui.QInputDialog.getText(None,'Input new Value', 'Change size:')
-        if ok:
-            return str(text)
-        else:
-            return None
-            
-    def getDoubleValue(self):
-        valueDouble,ok= (QtGui.QInputDialog.getDouble(None, 'Input new Value', 'Change size:', self.value, -10000.0, 10000.0, 2))
-        if ok:
-            return float(valueDouble)
-        else:
-            return None
-    
-    def Activated(self):
-        text, ok = QtGui.QInputDialog.getText(None,'Input new Value', 'Change size')
+        text, ok = QtGui.QInputDialog.getText(
+            None, 'Input new Value', 'Change size:')
         if ok:
             return str(text)
         else:
             return None
 
-#Visual progress indicator     
+    def getDoubleValue(self):
+        valueDouble, ok = (QtGui.QInputDialog.getDouble(
+            None, 'Input new Value', 'Change size:', self.value, -10000.0, 10000.0, 2))
+        if ok:
+            return float(valueDouble)
+        else:
+            return None
+
+    def Activated(self):
+        text, ok = QtGui.QInputDialog.getText(
+            None, 'Input new Value', 'Change size')
+        if ok:
+            return str(text)
+        else:
+            return None
+
+# Visual progress indicator
+
+
 class StatusBarProgress:
     """
     Visual progress indicator. 
@@ -488,67 +519,73 @@ class StatusBarProgress:
     Use stepUp   to step Up   the progress indicator
     Use stepDown to step down the progress indicator
     """
-    progress_bar=None
-    def __init__(self,title="",Steps=10):
-        self.ProgressTitle=title
-        self.NoOfsteps=Steps
-            
+    progress_bar = None
+
+    def __init__(self, title="", Steps=10):
+        self.ProgressTitle = title
+        self.NoOfsteps = Steps
+
     def Activated(self):
         progress_bar = App.Base.ProgressIndicator()
-         
+
     def start(self):
-        self.progress_bar.start(self.ProgressTitle,9) 
-    
+        self.progress_bar.start(self.ProgressTitle, 9)
+
     def stepUp(self):
         self.progress_bar.next()
-    
+
     def stepDown(self):
         self.progress_bar.prev()
-    def stopProgress(self):   
-        self.progress_bar.stop() 
-    
+
+    def stopProgress(self):
+        self.progress_bar.stop()
+
+
 class createActionTab:
-    def __init__(self,Title):
-        self.title=Title
-        self.mw=None
-        self.dw=None
-        self.dialog=None
+    def __init__(self, Title):
+        self.title = Title
+        self.mw = None
+        self.dw = None
+        self.dialog = None
+
     def Activated(self):
         toplevel = QtGui.QApplication.topLevelWidgets()
         for i in toplevel:
             if i.metaObject().className() == "Gui::MainWindow":
-                self.mw=i    
-        if self.mw==None:
+                self.mw = i
+        if self.mw == None:
             raise Exception("No main window found")
-        dw=self.mw.findChildren(QtGui.QDockWidget)
+        dw = self.mw.findChildren(QtGui.QDockWidget)
         for i in dw:
             if str(i.objectName()) == "Combo View":
-                self.tab= i.findChild(QtGui.QTabWidget)
+                self.tab = i.findChild(QtGui.QTabWidget)
             elif str(i.objectName()) == "Python Console":
-                self.tab= i.findChild(QtGui.QTabWidget)
-        if self.tab==None:
-                raise Exception ("No tab widget found")
-        self.dialog=QtGui.QDialog()
-        oldsize=self.tab.count()
-        self.tab.addTab(self.dialog,self.title)
+                self.tab = i.findChild(QtGui.QTabWidget)
+        if self.tab == None:
+            raise Exception("No tab widget found")
+        self.dialog = QtGui.QDialog()
+        oldsize = self.tab.count()
+        self.tab.addTab(self.dialog, self.title)
         self.tab.setCurrentWidget(self.dialog)
         self.dialog.setWindowTitle(self.title)
-        return (self.mw,self.dialog,self.tab)
+        return (self.mw, self.dialog, self.tab)
+
 
 def findFacehasSelectedEdge():
     """[Find Face that has the selected edge]
     Returns:
         [Face Object]: [Return the face has the selected edge or None if error occur]
     """
-    obj=Gui.Selection.getSelectionEx()[0]
-    edge=obj.SubObjects[0]
-    Faces=obj.Object.Shape.Faces
-    for fa in Faces: 
+    obj = Gui.Selection.getSelectionEx()[0]
+    edge = obj.SubObjects[0]
+    Faces = obj.Object.Shape.Faces
+    for fa in Faces:
         for ed in fa.Edges:
             if edge.isEqual(ed):
-            #if edge.isPartner(ed):
+                # if edge.isPartner(ed):
                 return fa
     return None
+
 
 def findFaceSHavingTheSameEdge():
     """[Find Faces that have the selected edge]
@@ -560,18 +597,20 @@ def findFaceSHavingTheSameEdge():
     shape = s.Object.Shape
     return shape.ancestorsOfType(edge, Part.Face)
 
+
 def findnormalAtforEdge():
     """[Find Directions of an edge]
 
     Returns:
         [(float,float,float)]: [Returns the results of normalAt for the faces containing the edge.]
     """
-    results=[]
-    
+    results = []
+
     for f in findFacehasSelectedEdge():
         u0, u1, v0, v1 = f.ParameterRange
         results.append(f.normalAt(0.5 * (u0 + u1), 0.5 * (v0 + v1)))
     return results
+
 
 def getDirectionOfFace():
     """[Find direction of a face]
@@ -579,15 +618,15 @@ def getDirectionOfFace():
     Returns:
         [Vector]: [Direction of the face]
     """
-    selectedObj=Gui.Selection.getSelectionEx()[0]
-    ss=None
-    direction=None
-    if hasattr(selectedObj,"SubObjects"):
-        ss=selectedObj.SubObjects[0]
+    selectedObj = Gui.Selection.getSelectionEx()[0]
+    ss = None
+    direction = None
+    if hasattr(selectedObj, "SubObjects"):
+        ss = selectedObj.SubObjects[0]
     else:
-        #TODO: FIXME: WHAT SHOULD WE USE?
+        # TODO: FIXME: WHAT SHOULD WE USE?
         print("failed")
-    if ss!=None:
+    if ss != None:
         # section direction
         yL = ss.CenterOfMass
         uv = ss.Surface.parameter(yL)
@@ -595,7 +634,8 @@ def getDirectionOfFace():
         direction = yL.sub(nv + yL)
     return direction
 
-def distanceBetweenTwoVectors(p1=App.Vector(0,0,0) , p2=App.Vector(10,10,10), n=App.Vector(0,0,1) ):
+
+def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10), n=App.Vector(0, 0, 1)):
     """[Measure the distance between two points, first point is optional if not provided, 
         the function will measure the distance to origin ]
 
@@ -606,5 +646,68 @@ def distanceBetweenTwoVectors(p1=App.Vector(0,0,0) , p2=App.Vector(10,10,10), n=
     Returns:
         [float]: [Deistance measured between the two vertices]
     """
-    results = (p2 - p1).dot(n) #p1.distanceToPoint(p2)
+    results = (p2 - p1).dot(n)  # p1.distanceToPoint(p2)
     return results
+
+
+def DisableEnableAllToolbar(value):
+    """[Disable or Enable all toolbars. This is useful to disallow using any other tool while an instans of a tool is active]
+
+    Args:
+        value ([Boolean]): [False : to disable all toolbars, 
+                            True  : to re-enable all toolbars 
+                            ]
+    """
+    mw = Gui.getMainWindow()
+    tbs = mw.findChildren(QtGui.QToolBar)
+    for i in tbs:
+        i.setEnabled(value)
+
+
+def DisableEnableAllMenus(value):
+    """[Disable or Enable all menus. This is useful to disallow using any other tool while an instans of a tool is active]
+
+    Args:
+        value ([Boolean]): [False : to disable all menus, 
+                            True  : to re-enable all menus 
+                            ]
+    """
+    mw = Gui.getMainWindow()
+    tbs = mw.findChildren(QtGui.menuBar)
+    for i in tbs:
+        i.setEnabled(value)
+
+def disableEnableOnlyOneCommand(toolName:str="",value:bool=False):
+    mw=Gui.getMainWindow()
+    t=mw.findChildren(QtCore.QTimer)
+    t[2].stop()
+
+    a=mw.findChild(QtGui.QAction,toolName) # for example "Std_New"
+    a.setDisabled(value)
+    
+
+def clearReportView(name:str=""):
+    """[Clear Report View console]
+
+    Args:
+        name ([type]): [description]
+    """
+    mw=Gui.getMainWindow()
+    r=mw.findChild(QtGui.QTextEdit, "Report view")
+    r.clear()
+    import time
+    now = time.ctime(int(time.time()))
+    App.Console.PrintWarning("Cleared Report view " +str(now)+" by " + name+"\n")
+    
+def clearPythonConsole(name:str=""):
+    """[Clear Python console]
+
+    Args:
+        name ([type]): [description]
+    """
+    mw=Gui.getMainWindow()
+    r=mw.findChild(QtGui.QPlainTextEdit, "Python console")
+    r.clear()
+    import time
+    now = time.ctime(int(time.time()))
+    App.Console.PrintWarning("Cleared Python console " +str(now)+" by " + name+"\n")
