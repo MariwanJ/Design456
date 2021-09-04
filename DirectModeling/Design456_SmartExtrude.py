@@ -295,6 +295,8 @@ class Design456_SmartExtrude:
             faced.errorDialog(errMessage)
             return
         self.selectedObj = sel[0]
+        faced.DisableEnableAllToolbar(False)
+
         App.ActiveDocument.openTransaction(
             translate("Design456", "SmartExtrude"))
         if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
@@ -346,6 +348,7 @@ class Design456_SmartExtrude:
                 self._mywin = None
             App.ActiveDocument.commitTransaction()  # undo reg.
             self.extrudeLength = 0
+            faced.DisableEnableAllToolbar(True)
 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartExtrude' del-Failed. "
@@ -379,22 +382,48 @@ class Design456_SmartExtrude:
             self.dialog.setWindowTitle("Smart Extrude")
             la = QtGui.QVBoxLayout(self.dialog)
             e1 = QtGui.QLabel("(Smart Extrude)\nFor quicker\nApplying Extrude")
+
+            self.chkAsIs = QtGui.QCheckBox("As is")
+            #chkSubtract.setObjectName("As is")
+
+            self.chkMerge = QtGui.QCheckBox("Merge")
+            #chkMerge.setObjectName("Merge")
+
+            self.chkSubtract = QtGui.QCheckBox("Subtract")
+            #chkSubtract.setObjectName("Subtract")
+
+
             commentFont = QtGui.QFont("Times", 12, True)
-            self.ExtrudeLBL = QtGui.QLabel("Extrude Radius=")
+            ExtrudeLBL = QtGui.QLabel("Extrude Radius=")
             e1.setFont(commentFont)
             la.addWidget(e1)
-            la.addWidget(self.ExtrudeLBL)
+            la.addWidget(ExtrudeLBL)
+
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons(
-                QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            
             la.addWidget(okbox)
+
+            #Adding checkbox for Merge, Subtract Or just leave it "As is"            
+            la.addWidget(self.chkAsIs)            
+            la.addWidget(self.chkMerge)
+            la.addWidget(self.chkSubtract)
+            
+            self.chkAsIs.setChecked(True)
+            self.chkMerge.setChecked(False)
+            self.chkSubtract.setChecked(False)
+
+            QtCore.QObject.connect(self.relative,QtCore.SIGNAL("toggled(bool)"),self.Merged)
+            QtCore.QObject.connect(self.relative,QtCore.SIGNAL("toggled(bool)"),self.Subtracted)
+            QtCore.QObject.connect(self.relative,QtCore.SIGNAL("toggled(bool)"),self.AsIS)
+            
             QtCore.QObject.connect(
                 okbox, QtCore.SIGNAL("accepted()"), self.hide)
-
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
+            
             return self.dialog
-
+        
         except Exception as err:
             App.Console.PrintError("'Design456_Extrude' getMainWindwo-Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -402,6 +431,22 @@ class Design456_SmartExtrude:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def AsIS(self):
+        self.OperationOption=0  #0 as Is default, 1 Merged, 2 Subtracted
+        self.chkMerge=0
+        self.chkSubtract=0
+        
+    def Merged(self):
+        self.OperationOption=1  #0 as Is default, 1 Merged, 2 Subtracted
+        self.chkAsIs=0
+        self.chkSubtract=0
+
+    def Subtracted(self):
+        self.OperationOption=0  #0 as Is default, 1 Merged, 2 Subtracted
+        self.chkAsIs=0
+        self.chkMerge=0
+
+    
     def hide(self):
         """
         Hide the widgets. Remove also the tab.
@@ -418,7 +463,7 @@ class Design456_SmartExtrude:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'Design456_Extrude.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_SmartExtrude.svg',
             'MenuText': ' Smart Extrude',
                         'ToolTip':  ' Smart Extrude'
         }
