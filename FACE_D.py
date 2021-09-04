@@ -650,7 +650,7 @@ def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10),
     return results
 
 
-def DisableEnableAllToolbar(value):
+def EnableAllToolbar(value):
     """[Disable or Enable all toolbars. This is useful to disallow using any other tool while an instans of a tool is active]
 
     Args:
@@ -711,3 +711,17 @@ def clearPythonConsole(name:str=""):
     import time
     now = time.ctime(int(time.time()))
     App.Console.PrintWarning("Cleared Python console " +str(now)+" by " + name+"\n")
+    
+def findMainListedObjects(self):
+    results=[]
+    objects= App.ActiveDocument.Objects
+    counter=0
+    for i in range (0,len(objects)):
+        results.append(objects[i])
+        if objects[i].hasChildElement():
+            i=i+1         # skip next item
+    #We have all objects that has no children (root objects)
+    
+def checkCollision(self,newObj):
+    currentBoundaryBox=newObj.BoundaryBox # Boundary box for the extruded object
+    
