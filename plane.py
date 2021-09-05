@@ -172,17 +172,17 @@ class Grid:
                 P3x = -bothSideLength+i
                 P3y = -bothSideLength
 
-                if count5Cells is 0:
+                if count5Cells == 0:
                     lineSize = 2
                 else:
                     lineSize = 1
                 # don't draw line at 0,±y and ±x,0
                 # TODO: Draw x, y using correct color
-                if P1y is not 0:
+                if P1y != 0:
                     line.append(dim_dash((P1x, P1y, 0.0),
                                 (-P1x, P1y, 0.0), col, lineSize))  # x
 
-                if P3x is not 0:
+                if P3x != 0:
                     line.append(dim_dash((P3x, P3y, 0.0),
                                 (P3x, -P3y, 0.0), col, lineSize))  # y
 

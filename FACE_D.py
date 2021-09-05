@@ -38,11 +38,23 @@ def getDirectionAxis():
     try:
         s = Gui.Selection.getSelectionEx()
         if len(s) is 0:
+            print("Nothing was selected")
             return ""  # nothing to do we cannot calculate the direction
         obj = s[0]
         if (hasattr(obj, "SubObjects")):
+            print("has subobject")
             if len(obj.SubObjects) is not 0:
-                faceSel = obj.SubObjects[0]
+                if (len (obj.SubObjects[0].Faces) is 0):
+                    print("no faces but has subobject")
+                    #it is an edge not a face:
+                    f= findFacehasSelectedEdge()
+                    if f is None:
+                        raise Exception("Face not found")
+                    print("face found not none")
+                    dir= f.normalAt(0, 0)
+                    print("direction is ", dir)
+                else:
+                    faceSel = obj.SubObjects[0]
             else:
                 faceSel = obj.Object.Shape.Faces[0]  # Take the first face
         else:
@@ -72,7 +84,16 @@ def getDirectionAxis():
         elif dir.x == -1:
             return "-x"
         else:
-            return None
+            #We have an axis that is not 1,0: 
+            if(abs(dir.x) is 0):
+                return "+z"
+            elif (abs(dir.y) is 0):
+                return "+z"
+            elif (abs(dir.z) is 0):
+                return "+x"
+            else: 
+                return "+z" # this is to avoid having NONE .. Don't know when this happen TODO: FIXME!
+
     except Exception as err:
         App.Console.PrintError("'getDirectionAxis' Failed. "
                                "{err}\n".format(err=str(err)))
