@@ -738,7 +738,7 @@ def clearPythonConsole(name:str=""):
     App.Console.PrintWarning("Cleared Python console " +str(now)+" by " + name+"\n")
     
 def is3DObject(obj):
-    if (obj.Object.Shape.Volume is 0):
+    if (obj.Shape.Volume is 0):
         return False
     else:
         return True
@@ -781,11 +781,15 @@ def Overlapping(Sourceobj1 , Targetobj2):
             return False
         if (Sourceobj1==Targetobj2):
             return False # The same object
+        if(Sourceobj1.Shape==Targetobj2.Shape):
+            return False
         common_= Sourceobj1.Shape.common(Targetobj2.Shape)
-        if (common_.Area is not 0):
+        print("area",common_.Area)
+        if (common_.Area !=0.0):
             return True
         else:
             return False
+        
     except Exception as err:
             App.Console.PrintError("'Overlapping' Failed. "
                                    "{err}\n".format(err=str(err)))

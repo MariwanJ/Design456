@@ -187,7 +187,7 @@ class Design456_SmartExtrude:
                 result = faced.checkCollision(self.newObject)
                 if len(result) is not 0:
                     for obj in result:
-                        o = Gui.ActiveDocument.getObject(o.Object.Name)
+                        o = Gui.ActiveDocument.getObject(obj.Name)
                         o.Transparency = 80
             App.ActiveDocument.recompute()
         except Exception as err:
