@@ -83,7 +83,7 @@ class Fr_Polygon_Widget(fr_widget.Fr_Widget):
     """
 
     def __init__(self, vectors: List[App.Vector] = [], labels: str = "" ,lineWidth=1):
-        super().__init__(vectors,labels) # It must be initialized first refere to fr_line_widget for more info
+        super().__init__(vectors,labels) # It must be initialized first refer to fr_line_widget for more info
         self.w_vector=vectors
         self.w_lineWidth = lineWidth # default line width        # Here we have a list (4 labels)
         self.w_label= labels

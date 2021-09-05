@@ -308,7 +308,7 @@ class root_handle():
         # elif(_typeofevent) == coin.SoTrackerEvent:
         
         
-        #Now send the event to th window widget to ditribute it over the children widgets
+        #Now send the event to th window widget to distribute it over the children widgets
         self.w_wind.handle(self.w_lastEvent)
 
     def Detect_DblClick(self):
