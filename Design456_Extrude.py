@@ -62,7 +62,7 @@ class Design456_Extrude:
             print(degreeAngle)
             """
             YOU SHOULD NOT SPECIFY THIS .. OTHERWISE IT COULD BE WRONG!!
-            if degreeAngle == 0:
+            if degreeAngle is 0:
                 f.Dir = m.Placement.Rotation.Axis
             elif ((degreeAngle== 90) or (degreeAngle== -90)):
                 f.Dir = (0, 1, 0)
@@ -72,7 +72,7 @@ class Design456_Extrude:
             #Extrude must get a negative number ???
             f.LengthFwd =(QtGui.QInputDialog.getDouble(
                 None, "Get length", "Length:", 0, -10000.0, 10000.0, 2)[0])
-            while(f.LengthFwd == 0):
+            while(f.LengthFwd is 0):
                 _sleep(.1)
                 Gui.updateGui()
             f.LengthRev = 0.0

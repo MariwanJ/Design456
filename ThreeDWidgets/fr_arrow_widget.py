@@ -187,7 +187,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                if self.arrowType==0:
+                if self.arrowType is 0 :
                     self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
                 elif self.arrowType==1:
                     self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,0,0,self.w_rotation)
@@ -281,7 +281,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active == 0:
+        if self.w_active is 0:
             return  # Nothing to do
         self.w_active = 0
     
@@ -308,7 +308,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
-        if self.w_visible == 0:
+        if self.w_visible is 0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -320,7 +320,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus == 0:
+        if self.w_hasFocus is 0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0

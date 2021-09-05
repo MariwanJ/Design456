@@ -275,7 +275,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active == 0:
+        if self.w_active is 0:
             return  # Nothing to do
         self.w_active = 0
     
@@ -302,7 +302,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
-        if self.w_visible == 0:
+        if self.w_visible is 0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -314,7 +314,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus == 0:
+        if self.w_hasFocus is 0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0

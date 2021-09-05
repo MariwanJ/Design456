@@ -63,7 +63,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         [type]: [description] None.
     """
     try:
-        if userData == None:
+        if userData is None:
             return  # Nothing to do here - shouldn't be None
         mouseToArrowDiff = 0.0
 
@@ -81,7 +81,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
-        if clickwdgdNode == None and clickwdglblNode == None:
+        if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once == False:
                 print("click move")
                 return 0  # nothing to do
@@ -189,7 +189,7 @@ class Design456_SmartChamfer:
         '''
             Find out shape-type and save the name in objectType
         '''
-        if len(self.selectedObj[0].SubElementNames)==0:
+        if len(self.selectedObj[0].SubElementNames) is 0 :
             self.objectType = 'Shape'
         elif 'Face' in self.selectedObj[0].SubElementNames[0]:
             self.objectType = 'Face'
@@ -305,7 +305,7 @@ class Design456_SmartChamfer:
         Find the edges and return it back to the caller function
         """
         result = []
-        if names == None:
+        if names is None:
             return None
         if type(names == list):
             # multiple edges
@@ -368,7 +368,7 @@ class Design456_SmartChamfer:
     def Activated(self):
         self.selectedObj.clear()
         sel=Gui.Selection.getSelectionEx()
-        if len(sel) == 0:
+        if len(sel) is 0:
             # An object must be selected
             errMessage = "Select an object, one face or one edge to chamfer"
             faced.errorDialog(errMessage)
@@ -394,7 +394,7 @@ class Design456_SmartChamfer:
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
 
-        if self._mywin == None:
+        if self._mywin is None:
             self._mywin = win.Fr_CoinWindow()
         self._mywin.addWidget(self.smartInd)
         mw = self.getMainWindow()
@@ -427,7 +427,7 @@ class Design456_SmartChamfer:
             for i in toplevel:
                 if i.metaObject().className() == "Gui::MainWindow":
                     self.mw = i
-            if self.mw == None:
+            if self.mw is None:
                 raise Exception("No main window found")
             dw = self.mw.findChildren(QtGui.QDockWidget)
             for i in dw:
@@ -435,7 +435,7 @@ class Design456_SmartChamfer:
                     self.tab = i.findChild(QtGui.QTabWidget)
                 elif str(i.objectName()) == "Python Console":
                     self.tab = i.findChild(QtGui.QTabWidget)
-            if self.tab == None:
+            if self.tab is None:
                 raise Exception("No tab widget found")
 
             self.dialog = QtGui.QDialog()
