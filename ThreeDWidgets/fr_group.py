@@ -46,7 +46,7 @@ class Fr_Group(fr_widget.Fr_Widget):
 
     def __init__(self, args: List[App.Vector] = [], l: str = ""): 
         super().__init__(args, l)
-        if args == None:
+        if args is None:
             args = []
         self.w_widgetType = constant.FR_WidgetType.FR_GROUP
         # Root of the children (coin)

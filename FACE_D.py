@@ -37,11 +37,11 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 def getDirectionAxis():
     try:
         s = Gui.Selection.getSelectionEx()
-        if len(s) == 0:
+        if len(s) is 0:
             return ""  # nothing to do we cannot calculate the direction
         obj = s[0]
         if (hasattr(obj, "SubObjects")):
-            if len(obj.SubObjects) != 0:
+            if len(obj.SubObjects) is not 0:
                 faceSel = obj.SubObjects[0]
             else:
                 faceSel = obj.Object.Shape.Faces[0]  # Take the first face

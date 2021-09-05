@@ -79,7 +79,7 @@ def calculateLineSpherical(vectors):
         else:
             thi=math.radians(90)+ math.asin((p2.x-p1.x)/r)
         
-        if(p1z_p2z==0):
+        if(p1z_p2z is 0 ):
             phi=math.radians(0)
         else:
             phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(p1x_p2x,2)+math.pow(p1y_p2y,2))/p1z_p2z)))
@@ -205,9 +205,9 @@ def draw_label(text=[], prop: propertyValues=None):
         #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
         _textNode.addChild(_transPositionPOS)
-        if phi!=0:
+        if phi is not 0:
             _textNode.addChild(_transPositionY)
-        if thi!=0:
+        if thi is not 0:
             _textNode.addChild(_transPositionZ)
         _textNode.addChild(font)
         _textNode.addChild(coinColor)
