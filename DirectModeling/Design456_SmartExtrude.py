@@ -72,7 +72,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         ArrowObject = userData.ArrowObj
         events = userData.events
         linktocaller = userData.callerObject
-        if type(events) != int:
+        if type(events) is not int:
             return
 
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
@@ -95,7 +95,6 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         linktocaller.extrudeLength =  (linktocaller.endVector-linktocaller.startVector).dot( linktocaller.normalVector)
 
-        # TODO FIXME .. THIS IS NOT CORRECT
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ExtrudeLBL.setText(
             "Length= " + str(round(linktocaller.extrudeLength, 4)))
@@ -167,14 +166,34 @@ class Design456_SmartExtrude:
     DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
     was2DObject=False
     OperationOption=0 # default is zero
+    objChangedTransparency=[]
 
     def reCreateExtrudeObject(self):
+        """
+        [
+         Recreate the object after changing the length of the extrusion
+         This will also change the opacity of object if subtraction is 
+         chosen.
+        ]
+        """
         self.newObject.LengthFwd = self.extrudeLength
+        if self.OperationOption is 2:           #Must be subtract to activate this
+            if len(self.objChangedTransparency is not 0):
+                for obj in self.objChangedTransparency:
+                    o=Gui.ActiveDocument.getObject(o.Object.Name)
+                    o.Transparency=0
+            result=faced.checkCollision(self.newObject)
+            if len(result is not 0):
+                for obj in result:
+                    o=Gui.ActiveDocument.getObject(o.Object.Name)
+                    o.Transparency=80
         App.ActiveDocument.recompute()
 
     def resizeArrowWidgets(self, endVec):
-        """
-        Reposition the arrows.
+        """[Resize the arrow widget. The widget will be moved to the new position]
+        Args:
+            endVec ([App.Vector]): [New position]
+
         """
         currentLength = self.extrudeLength
         # to let the arrow be outside the object
@@ -182,7 +201,7 @@ class Design456_SmartExtrude:
         self.smartInd.w_vector = self.calculateNewVector()
         self.extrudeLength = currentLength  # return back the value.
         self.smartInd.redraw()
-        return
+
 
     def getArrowPosition(self):
         """"
@@ -251,6 +270,11 @@ class Design456_SmartExtrude:
         return newobj
 
     def calculateNewVector(self):
+        """[Calculate the new position that will be used for the arrow drawing]
+
+        Returns:
+            [App.Vector]: [Position where the arrow will be moved to]
+        """
         if(self.isFaceOf3DObj()):
             ss = self.selectedObj.SubObjects[0]
         else:
@@ -268,6 +292,11 @@ class Design456_SmartExtrude:
         return (point)
 
     def Activated(self):
+        """[
+            Main activation function executes when the tool is used
+            
+            ]
+        """
         try:
             print("Smart Extrusion Activated")
             sel = Gui.Selection.getSelectionEx()
@@ -350,6 +379,15 @@ class Design456_SmartExtrude:
 
 
     def getMainWindow(self):
+        """[Create the tab for the tool]
+
+        Raises:
+            Exception: [If no tabs were found]
+            Exception: [If something unusual happen]
+
+        Returns:
+            [dialog]: [the new dialog which will be added as a tab to the tab section of FreeCAD]
+        """
         try:
             toplevel = QtGui.QApplication.topLevelWidgets()
             self.mw = None
@@ -419,17 +457,23 @@ class Design456_SmartExtrude:
             print(exc_type, fname, exc_tb.tb_lineno)
         
     def AsIS(self):
-        self.OperationOption=0  #0 as Is default, 1 Merged, 2 Subtracted
+        """[New created object will be left as it is]
+        """
+        self.OperationOption=0             #0 as Is default, 1 Merged, 2 Subtracted
         self.chkMerge.setChecked(False)
         self.chkSubtract.setChecked(False)
         
     def Merged(self):
-        self.OperationOption=1  #0 as Is default, 1 Merged, 2 Subtracted
+        """[New created object will be added to the other objects near by the new object]
+        """
+        self.OperationOption=1             #0 as Is default, 1 Merged, 2 Subtracted
         self.chkAsIs.setChecked(False)
         self.chkSubtract.setChecked(False)
 
     def Subtracted(self):
-        self.OperationOption=0  #0 as Is default, 1 Merged, 2 Subtracted
+        """[The new object will be used to subtract it from found object near by the new object]
+        """
+        self.OperationOption=2             #0 as Is default, 1 Merged, 2 Subtracted
         self.chkAsIs=0
         self.chkMerge=0
 
