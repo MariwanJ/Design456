@@ -50,7 +50,7 @@ SeperateLinesFromObject=4
 
 def smartLinecallback(smartLine,obj,parentlink):
     """
-        Calback when line is clicked
+        Callback when line is clicked
     """    
     pass 
     

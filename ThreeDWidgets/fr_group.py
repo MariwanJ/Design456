@@ -66,9 +66,9 @@ class Fr_Group(fr_widget.Fr_Widget):
             self.w_children.append(widg)
 
     def removeWidget(self,widg):
-        """ 
-        Remove the widget from the group. This will eleminates 
-        the widget from getting events.        
+        """
+        Remove the widget from the group. This will eliminate
+        the widget from getting events.
         """
         try:
             if type(widg)==list:
