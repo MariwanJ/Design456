@@ -32,7 +32,7 @@ import Draft as _draft
 import Part as _part
 from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-
+from typing import List
 
 def getDirectionAxis():
     try:
@@ -737,7 +737,18 @@ def clearPythonConsole(name:str=""):
     now = time.ctime(int(time.time()))
     App.Console.PrintWarning("Cleared Python console " +str(now)+" by " + name+"\n")
     
+def is3DObject(obj):
+    if (obj.Object.Shape.Volume is 0):
+        return False
+    else:
+        return True
+    
 def findMainListedObjects(self):
+    """[Find and return main objects in the active document - no children will be return]
+
+    Returns:
+        [list]: [list of objects found]
+    """
     results=[]
     objects= App.ActiveDocument.Objects
     counter=0
@@ -745,8 +756,42 @@ def findMainListedObjects(self):
         results.append(objects[i])
         if objects[i].hasChildElement():
             i=i+1         # skip next item
-    #We have all objects that has no children (root objects)
-    
+    return results        #We have all objects that has no children (root objects)
+
+
+def Overlapping(Sourceobj1 , Targetobj2):
+    """[Check if two objects overlap each other]
+
+    Args:
+        Sourceobj1 ([3D selection object]): [description]
+        Targetobj2 ([3D selection object]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    if (is3DObject(Sourceobj1) is False or is3DObject(Targetobj2) is False):
+        return False
+    if (Sourceobj1==Targetobj2):
+        return False # The same object
+    common_= Sourceobj1.Object.Shape.common(Targetobj2.Object.Shape)
+    if (common_.Area is not 0):
+        return True
+    else:
+        return False
+
 def checkCollision(self,newObj):
-    currentBoundaryBox=newObj.BoundaryBox # Boundary box for the extruded object
-    
+    """[Find a list of objects from the active document that is/are intersecting with newObj]
+
+    Args:
+        newObj ([3D Selection Object]): [Object checked with document objects]
+
+    Returns:
+        [type]: [description]
+    """
+    objList=findMainListedObjects()     # get the root objects - no children
+    results=[]
+    for obj in objList:
+        if (Overlapping(newObj,obj) is True):
+            results.append(obj)
+    return results
+
