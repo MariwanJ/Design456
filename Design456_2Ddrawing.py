@@ -161,7 +161,7 @@ class Design456_MultiPointsToWire:
             for t in selected:
                 allSelected.append(t.PickedPoints[0])
             print(allSelected)
-            if self.type == 0:
+            if self.type is 0:
                 Wire1 = _draft.makeWire(allSelected, closed=True)
             else:
                 Wire1 = _draft.makeWire(allSelected, closed=False)
@@ -307,7 +307,7 @@ class Design456_2DTrim:
 
                 elif(abs(position2-position1) == 1):
                     # It must be a line and not closed
-                    if position1 != 0 and position2 != totalPoints-1:
+                    if position1 is not 0 and position2 != totalPoints-1:
                         # In the middle of the array.
                         # Two objects must be created.
                         print("between first and last")
@@ -335,7 +335,7 @@ class Design456_2DTrim:
                         pnew2DObject1.Start = _all_points2[0]
                         pnew2DObject1.End = _all_points2[len(_all_points2)-1]
 
-                    elif position1 == 0 and position2 != totalPoints-1:
+                    elif position1 is 0 and position2 != totalPoints-1:
                         # First Points, remove  'closed' and start = pos+1
                         print("in the beginning")
                         StartPoint = WireOrEdgeMadeOfPoints[position2]
@@ -362,7 +362,7 @@ class Design456_2DTrim:
                 pnew2DObject2.Start = StartPoint
 
                 # If nothing left, remove the object
-                if len(pnew2DObject2.Shape.Vertexes) == 0:
+                if len(pnew2DObject2.Shape.Vertexes) is 0:
                     App.ActiveDocument.removeObject(pnew2DObject2.Label)
                 App.ActiveDocument.recompute()
 
@@ -428,7 +428,7 @@ class Design456_2DExtend:
                 newPoint.append(App.Vector(newPoint[len(newPoint)-1]))
                 sel.Object.Points = newPoint
                 sel.Object.End = VertPoint
-            elif positionSave == 0:
+            elif positionSave is 0:
                 # add last point and then
 
                 newPoint.insert(0, App.Vector(VertPoint))
@@ -536,7 +536,7 @@ class Star:
                 y = _math.cos(alpha) * radius
                 x = _math.sin(alpha) * radius
                 _points.append(App.Vector(x, y, 0.0))
-                if i==0: 
+                if i is 0 : 
                     saveFirstPoint=App.Vector(x,y,0.0)
                 if alpha>obj.Angle : 
                     break

@@ -65,7 +65,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         [type]: [description] None.
     """
     try:
-        if userData == None:
+        if userData is None:
             return  # Nothing to do here - shouldn't be None
         mouseToArrowDiff = 0.0
 
@@ -83,7 +83,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
-        if clickwdgdNode == None and clickwdglblNode == None:
+        if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once == False:
                 print("click move")
                 return 0  # nothing to do
@@ -115,7 +115,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
        This callback will finalize the Extrude operation. 
        Deleting the original object will be done when the user press 'OK' button
     """
-    if (userData == None):
+    if (userData is None):
         print("userData is None")
         raise TypeError
 
@@ -123,7 +123,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
     events = userData.events
     linktocaller = userData.callerObject
     # Avoid activating this part several times,
-    if (linktocaller.startVector == None):
+    if (linktocaller.startVector is None):
         return
     print("mouse release")
     ArrowObject.remove_focus()
@@ -260,7 +260,7 @@ class Design456_SmartExtrude:
         nv = ss.normalAt(uv[0], uv[1])
         self.normalVector = nv
 
-        if (self.extrudeLength == 0):
+        if (self.extrudeLength is 0):
             d = self.extrudeLength = 1
         else:
             d = self.extrudeLength
@@ -271,7 +271,7 @@ class Design456_SmartExtrude:
         try:
             print("Smart Extrusion Activated")
             sel = Gui.Selection.getSelectionEx()
-            if len(sel) == 0:
+            if len(sel) is 0:
                 # An object must be selected
                 errMessage = "Select an object, one face to Extrude"
                 faced.errorDialog(errMessage)
@@ -295,7 +295,7 @@ class Design456_SmartExtrude:
             self.smartInd.w_callback_ = callback_release
             self.smartInd.w_move_callback_ = callback_move
             self.smartInd.w_userData.callerObject = self
-            if self._mywin == None:
+            if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
 
             self._mywin.addWidget(self.smartInd)
@@ -356,7 +356,7 @@ class Design456_SmartExtrude:
             for i in toplevel:
                 if i.metaObject().className() == "Gui::MainWindow":
                     self.mw = i
-            if self.mw == None:
+            if self.mw is None:
                 raise Exception("No main window found")
             dw = self.mw.findChildren(QtGui.QDockWidget)
             for i in dw:
@@ -364,7 +364,7 @@ class Design456_SmartExtrude:
                     self.tab = i.findChild(QtGui.QTabWidget)
                 elif str(i.objectName()) == "Python Console":
                     self.tab = i.findChild(QtGui.QTabWidget)
-            if self.tab == None:
+            if self.tab is None:
                 raise Exception("No tab widget found")
 
             self.dialog = QtGui.QDialog()
@@ -444,7 +444,7 @@ class Design456_SmartExtrude:
         
         """
         
-        if (self.OperationOption==0):
+        if (self.OperationOption is 0 ):
             pass    #Here just to make the code clear that we do nothing otherwise it is not necessary
         elif(self.OperationOption==1):
             #Merge the new object with the old object

@@ -65,7 +65,7 @@ import FACE_D as faced
 def horizontal_regular_polygon_vertexes(sidescount, radius, z, startangle=0):
     try:
         vertexes = []
-        if radius != 0:
+        if radius is not 0:
             for i in range(0, sidescount+1):
                 angle = 2 * math.pi * i / sidescount + math.pi + startangle
                 vertex = (radius * math.cos(angle),
@@ -89,9 +89,9 @@ def horizontal_regular_pyramid_vertexes(sidescount, radius, z, anglez=0):
     try:
         vertexes = []
         odd = 0
-        if (sidescount % 2) == 0:
+        if (sidescount % 2) is 0:
             odd = 1
-        if radius != 0:
+        if radius is not 0:
             for i in range(0, sidescount+1):
                 angle = 2 * math.pi * i / sidescount + \
                     (math.pi * (odd/sidescount + 1/2)) + anglez * math.pi / 180
@@ -242,7 +242,7 @@ class Pyramid:
 
             self.sidescountvalue = sidescount
             faces = []
-            if radius_bottom == 0 and radius_top == 0:
+            if radius_bottom is 0 and radius_top is 0:
                 App.Console.PrintMessage("Both radiuses are zero" + "\n")
             else:
                 vertexes_bottom = horizontal_regular_pyramid_vertexes(
@@ -250,20 +250,20 @@ class Pyramid:
                 vertexes_top = horizontal_regular_pyramid_vertexes(
                     sidescount, radius_top, height, anglez)
 
-                if radius_bottom != 0:
+                if radius_bottom is not 0:
                     polygon_bottom = _part.makePolygon(vertexes_bottom)
                     face_bottom = _part.Face(polygon_bottom)
                     faces.append(face_bottom)
-                if radius_top != 0:
+                if radius_top is not 0:
                     polygon_top = _part.makePolygon(vertexes_top)
                     face_top = _part.Face(polygon_top)
                     faces.append(face_top)
 
                 for i in range(sidescount):
-                    if radius_top == 0:
+                    if radius_top is 0:
                         vertexes_side = [
                             vertexes_bottom[i], vertexes_bottom[i+1], vertexes_top[0], vertexes_bottom[i]]
-                    elif radius_bottom == 0:
+                    elif radius_bottom is 0:
                         vertexes_side = [
                             vertexes_bottom[0], vertexes_top[i+1], vertexes_top[i], vertexes_bottom[0]]
                     else:

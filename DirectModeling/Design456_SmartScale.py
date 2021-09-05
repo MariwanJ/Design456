@@ -67,16 +67,16 @@ def smartlbl_callback(smartLine,obj,parentlink):
     deltaZ= p2.z-p1.z
     side=None
     oldv=float(smartLine.w_label[0])
-    if deltaX==0 and deltaZ==0:
+    if deltaX is 0  and deltaZ is 0 :
         side= 'y'
-    elif deltaY==0.0 and deltaZ==0.0:
+    elif deltaY is 0.0 and deltaZ is 0.0:
         side='x'
-    elif deltaY==0.0 and deltaX==0.0 and deltaZ!=0.0:
+    elif deltaY is 0.0 and deltaX is 0.0 and deltaZ is not 0.0:
         side='z'
     newValue=0
     #all lines has a 4 mm more size due to the way we calculate them. Remove that
     newValue=faced.GetInputValue(oldv).getDoubleValue()
-    if newValue == 0 or newValue is None:
+    if newValue is 0 or newValue is None:
         #User canceled the value
         return -1
 

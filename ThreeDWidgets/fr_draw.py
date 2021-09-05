@@ -84,7 +84,7 @@ def draw_Point(p1,size=0.1, color=FR_COLOR.FR_GOLD, type=0):
         so_separator = coin.SoSeparator()
         coords = coin.SoTranslation()
         coords.translation.setValue(p1)
-        if type==0:
+        if type is 0 :
             point = coin.SoCube()
             point.width=size
             point.height=size
@@ -821,7 +821,7 @@ def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
     def regular_polygon_vertexes(sidescount, radius, z, startangle=0):
         try:
             vertexes = []
-            if radius != 0:
+            if radius is not 0:
                 for i in range(0, sidescount+1):
                     angle = 2 * math.pi * i / sidescount + math.pi + startangle
                     vertex = (radius * math.cos(angle),
@@ -930,7 +930,7 @@ class draw_polygonBase:
         try:
             z=position.z
             vertexes = []
-            if radius != 0:
+            if radius is not 0:
                 for i in range(0, sidescount+1):
                     angle = 2 * math.pi * i / sidescount + math.pi + startangle
                     vertex = (position.x +radius * math.cos(angle),
@@ -1048,7 +1048,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
         material = coin.SoMaterial()
         material.transparency.setValue(opacity)
         material.diffuseColor.setValue(coin.SbColor(color))
-        if type==0:
+        if type is 0 :
             soSepArrow=coin.SoSeparator()   # drawing holder
             soIndexFace= coin.SoIndexedFaceSet()
             cordinate= coin.SoCoordinate3()
@@ -3109,7 +3109,7 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
     Returns:
         [SoSeparator]: [SoSeparator which hold the drawing. Add it to the senegraph to show the arrow]
     """   
-    if type==0:
+    if type is 0 :
         arrow1_str="""#Inventor V2.1 ascii
             DEF root Separator {
               ShapeHints {
@@ -3293,7 +3293,7 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
     input.setBuffer(arrow1_str)
     result = coin.SoDB.readAll(input)
     trans.translation.setValue(p1)
-    if result == None:
+    if result is None:
         print("ERROR ")
         return None
     # Set up the duck transformations

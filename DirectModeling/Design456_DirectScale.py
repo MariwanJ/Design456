@@ -165,7 +165,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         linktocaller = userData.callerObject
 
         # Avoid activating this part several times,
-        if (linktocaller.startVector == None):
+        if (linktocaller.startVector is None):
             return
 
         print("mouse release")
@@ -211,7 +211,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
     """
 
     try:
-        if userData == None:
+        if userData is None:
             return  # Nothing to do here - shouldn't be None
 
         ArrowObject = userData.ArrowObj
@@ -228,7 +228,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         
-        if clickwdgdNode == None and clickwdglblNode == None:
+        if clickwdgdNode is None and clickwdglblNode is None:
             print("clickwdgdNode",clickwdgdNode)
             print(" clickwdglblNode",  clickwdglblNode)
             if linktocaller.run_Once == False:
@@ -427,7 +427,7 @@ class Design456_DirectScale:
             self.createArrows()
 
             # set self.selectedObj object to each smartArrow
-            if self._mywin == None:
+            if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
             self._mywin.addWidget(self.smartInd)
             self._mywin.show()

@@ -341,7 +341,7 @@ class Design456_Part_Pyramid:
             App.ActiveDocument.openTransaction(translate("Design456","Part Pyramid"))
             obj = App.Placement()
             Faces = QtGui.QInputDialog.getInt(None, "Faces", "Faces:")[0]
-            if(Faces==0):
+            if(Faces is 0 ):
                 return # Nothing to do here 
             obj.Rotation.Q = (0.0, 0.0, 0, 1.0)
             obj.Base = App.Vector(0.0, 0.0, 0.0)
@@ -414,7 +414,7 @@ class Design456_Part_Hemisphere:
     def Activated(self):
         try:
             neRaduis= QtGui.QInputDialog.getDouble(None, "Radius", "Radius:",0,1.0,10000.0,2)[0]
-            if(neRaduis==0):
+            if(neRaduis is 0 ):
                 return #Nothing to do here.
             App.ActiveDocument.openTransaction(translate("Design456","Part Hemisphere"))
             neObj = App.ActiveDocument.addObject("Part::Sphere", "tempHemisphere")
