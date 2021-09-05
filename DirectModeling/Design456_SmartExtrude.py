@@ -93,7 +93,8 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             # only once
             linktocaller.startVector = linktocaller.endVector
 
-        linktocaller.extrudeLength =  (linktocaller.endVector-linktocaller.startVector).dot( linktocaller.normalVector)
+        linktocaller.extrudeLength = (
+            linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ExtrudeLBL.setText(
@@ -164,9 +165,9 @@ class Design456_SmartExtrude:
     targetFace = None
     newObject = None
     DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
-    was2DObject=False
-    OperationOption=0 # default is zero
-    objChangedTransparency=[]
+    was2DObject = False
+    OperationOption = 0  # default is zero
+    objChangedTransparency = []
 
     def reCreateExtrudeObject(self):
         """
@@ -176,18 +177,25 @@ class Design456_SmartExtrude:
          chosen.
         ]
         """
-        self.newObject.LengthFwd = self.extrudeLength
-        if self.OperationOption is 2:           #Must be subtract to activate this
-            if len(self.objChangedTransparency is not 0):
-                for obj in self.objChangedTransparency:
-                    o=Gui.ActiveDocument.getObject(o.Object.Name)
-                    o.Transparency=0
-            result=faced.checkCollision(self.newObject)
-            if len(result is not 0):
-                for obj in result:
-                    o=Gui.ActiveDocument.getObject(o.Object.Name)
-                    o.Transparency=80
-        App.ActiveDocument.recompute()
+        try:
+            self.newObject.LengthFwd = self.extrudeLength
+            if self.OperationOption is 2:  # Must be subtract to activate this
+                if (len(self.objChangedTransparency) is not 0):
+                    for obj in self.objChangedTransparency:
+                        o = Gui.ActiveDocument.getObject(o.Object.Name)
+                        o.Transparency = 0
+                result = faced.checkCollision(self.newObject)
+                if len(result) is not 0:
+                    for obj in result:
+                        o = Gui.ActiveDocument.getObject(o.Object.Name)
+                        o.Transparency = 80
+            App.ActiveDocument.recompute()
+        except Exception as err:
+            App.Console.PrintError("'reCreateExtrudeObject' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def resizeArrowWidgets(self, endVec):
         """[Resize the arrow widget. The widget will be moved to the new position]
@@ -201,7 +209,6 @@ class Design456_SmartExtrude:
         self.smartInd.w_vector = self.calculateNewVector()
         self.extrudeLength = currentLength  # return back the value.
         self.smartInd.redraw()
-
 
     def getArrowPosition(self):
         """"
@@ -227,13 +234,13 @@ class Design456_SmartExtrude:
         print(face1.Surface.Rotation)
         print(face1.Surface.Rotation.Axis)
         print(face1.Surface.Rotation.Angle)
-        
-        rotation = (face1.Surface.Rotation.Axis.x,
-                        face1.Surface.Rotation.Axis.y,
-                        face1.Surface.Rotation.Axis.z,
-                        math.degrees(face1.Surface.Rotation.Angle))
 
-        print("rotation",rotation)
+        rotation = (face1.Surface.Rotation.Axis.x,
+                    face1.Surface.Rotation.Axis.y,
+                    face1.Surface.Rotation.Axis.z,
+                    math.degrees(face1.Surface.Rotation.Angle))
+
+        print("rotation", rotation)
         return rotation
 
     def isFaceOf3DObj(self):
@@ -278,7 +285,7 @@ class Design456_SmartExtrude:
         if(self.isFaceOf3DObj()):
             ss = self.selectedObj.SubObjects[0]
         else:
-            ss=self.selectedObj.Object.Shape
+            ss = self.selectedObj.Object.Shape
         yL = ss.CenterOfMass
         uv = ss.Surface.parameter(yL)
         nv = ss.normalAt(uv[0], uv[1])
@@ -294,7 +301,7 @@ class Design456_SmartExtrude:
     def Activated(self):
         """[
             Main activation function executes when the tool is used
-            
+
             ]
         """
         try:
@@ -313,14 +320,15 @@ class Design456_SmartExtrude:
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
                 self.targetFace = self.extractFace()
-                self.was2DObject=False
+                self.was2DObject = False
             else:
                 # We have a 2D Face - Extract it directly
                 self.targetFace = self.selectedObj.Object
-                self.was2DObject=True
+                self.was2DObject = True
 
             rotation = self.getArrowPosition()
-            self.smartInd = Fr_Arrow_Widget(self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 3)
+            self.smartInd = Fr_Arrow_Widget(
+                self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 3)
             self.smartInd.w_callback_ = callback_release
             self.smartInd.w_move_callback_ = callback_move
             self.smartInd.w_userData.callerObject = self
@@ -377,7 +385,6 @@ class Design456_SmartExtrude:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
     def getMainWindow(self):
         """[Create the tab for the tool]
 
@@ -413,11 +420,22 @@ class Design456_SmartExtrude:
             self.dialog.setWindowTitle("Smart Extrude")
             self.la = QtGui.QVBoxLayout(self.dialog)
             self.e1 = QtGui.QLabel("(Smart Extrude)\nFor quicker\nApplying Extrude")
+            self.groupBox = QtGui.QGroupBox(self.dialog)
+            self.groupBox.setGeometry(QtCore.QRect(60, 130, 120, 80))
+            self.groupBox.setObjectName("Extrusion Type")
 
-            self.chkAsIs = QtGui.QCheckBox("As is")
-            self.chkMerge = QtGui.QCheckBox("Merge")
-            self.chkSubtract = QtGui.QCheckBox("Subtract")
+            self.radAsIs = QtGui.QRadioButton(self.groupBox)
+            self.radAsIs.setObjectName("radAsIs")
+            self.radAsIs.setText("As Is")            
 
+            self.radMerge = QtGui.QRadioButton(self.groupBox)
+            self.radMerge.setObjectName("radMerge")
+            self.radMerge.setText("Merge")            
+
+            self.radSubtract = QtGui.QRadioButton(self.groupBox)
+            self.radSubtract.setObjectName("radSubtract")
+            self.radSubtract.setText("Subtract")            
+            
             commentFont = QtGui.QFont("Times", 12, True)
             self.ExtrudeLBL = QtGui.QLabel("Extrude Radius=")
             self.e1.setFont(commentFont)
@@ -426,28 +444,25 @@ class Design456_SmartExtrude:
 
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons( QtGui.QDialogButtonBox.Ok)
-            
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+
             self.la.addWidget(okbox)
 
-            #Adding checkbox for Merge, Subtract Or just leave it "As is"            
-            self.la.addWidget(self.chkAsIs)            
-            self.la.addWidget(self.chkMerge)
-            self.la.addWidget(self.chkSubtract)
+            # Adding checkbox for Merge, Subtract Or just leave it "As is"
+            self.la.addWidget(self.radAsIs)
+            self.la.addWidget(self.radMerge)
+            self.la.addWidget(self.radSubtract)
+            self.radAsIs.setChecked(True)
+            self.radAsIs.toggled.connect(lambda:self.btnState(self.radAsIs))
+            self.radMerge.toggled.connect(lambda:self.btnState(self.radMerge))
+            self.radSubtract.toggled.connect(lambda:self.btnState(self.radSubtract))
             
-            self.chkAsIs.setChecked(True)
-            self.chkMerge.setChecked(False)
-            self.chkSubtract.setChecked(False)
-
-            QtCore.QObject.connect(self.chkAsIs,QtCore.SIGNAL("toggled(bool)"),self.AsIS)
-            QtCore.QObject.connect(self.chkMerge,QtCore.SIGNAL("toggled(bool)"),self.Merged)
-            QtCore.QObject.connect(self.chkSubtract,QtCore.SIGNAL("toggled(bool)"),self.Subtracted)
-            
-            QtCore.QObject.connect( okbox, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(
+                okbox, QtCore.SIGNAL("accepted()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
-            
+
             return self.dialog
-        
+
         except Exception as err:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_Extrude' getMainWindwo-Failed. "
@@ -455,29 +470,18 @@ class Design456_SmartExtrude:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-        
-    def AsIS(self):
-        """[New created object will be left as it is]
-        """
-        self.OperationOption=0             #0 as Is default, 1 Merged, 2 Subtracted
-        self.chkMerge.setChecked(False)
-        self.chkSubtract.setChecked(False)
-        
-    def Merged(self):
-        """[New created object will be added to the other objects near by the new object]
-        """
-        self.OperationOption=1             #0 as Is default, 1 Merged, 2 Subtracted
-        self.chkAsIs.setChecked(False)
-        self.chkSubtract.setChecked(False)
 
-    def Subtracted(self):
-        """[The new object will be used to subtract it from found object near by the new object]
-        """
-        self.OperationOption=2             #0 as Is default, 1 Merged, 2 Subtracted
-        self.chkAsIs=0
-        self.chkMerge=0
+    def btnState(self, button):
+        if button.text()=="As Is":
+             if button.isChecked() == True:
+                self.OperationOption = 0  # 0 as Is default, 1 Merged, 2 Subtracted
+        elif button.text()=="Merge":
+             if button.isChecked() == True:
+                self.OperationOption = 1
+        elif button.text()=="Subtract":
+             if button.isChecked() == True:
+                self.OperationOption = 2
 
-    
     def hide(self):
         """
         Hide the widgets. Remove also the tab.
@@ -485,28 +489,28 @@ class Design456_SmartExtrude:
         I can do that during the extrusion (moving the arrow), but that will be an action
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
-        
+
         """
-        
-        if (self.OperationOption is 0 ):
-            pass    #Here just to make the code clear that we do nothing otherwise it is not necessary
-        elif(self.OperationOption==1):
-            #Merge the new object with the old object
-            #There are several cases here 
+
+        if (self.OperationOption is 0):
+            pass  # Here just to make the code clear that we do nothing otherwise it is not necessary
+        elif(self.OperationOption == 1):
+            # Merge the new object with the old object
+            # There are several cases here
             # 1- Old object was only 2D object --
             #    nothing will be done but we must see if the new object is not intersecting other objects
-            # 2- Old object is intersecting with new object.. 
-            # In case 1 and 2 when there is intersecting we should merge both 
-            if (self.was2DObject==True):
-                #No 3D but collision might happen. 
+            # 2- Old object is intersecting with new object..
+            # In case 1 and 2 when there is intersecting we should merge both
+            if (self.was2DObject == True):
+                # No 3D but collision might happen.
                 pass
         self.dialog.hide()
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize-1)  # it is 0,1,2,3 ..etc
-        #TODO remove the face or extracted face if there is a merge and make a simple copy
-        #App.ActiveDocument.removeObject(self.selectedObj.Name)
+        # TODO remove the face or extracted face if there is a merge and make a simple copy
+        # App.ActiveDocument.removeObject(self.selectedObj.Name)
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart Extrude 3dCOIN widgets
 
@@ -516,5 +520,6 @@ class Design456_SmartExtrude:
             'MenuText': ' Smart Extrude',
                         'ToolTip':  ' Smart Extrude'
         }
+
 
 Gui.addCommand('Design456_SmartExtrude', Design456_SmartExtrude())
