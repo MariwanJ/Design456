@@ -91,19 +91,19 @@ class Fr_Widget (object):
     ########################################################################
     #  {w_callback_, w_lbl_calback_}  is a pointer to a function.          #
     #  It should be used only like that.                                   #
-    #  Each widget has a single callback, 'handle' will call them.         #
+    #  Each widget has several callbacks, 'handle' will call them.         #
     #  Depending on what kind of widget you create, the callback can do    #
-    #  different tasks. run do_callback, do_lblcallback activates them.    #
+    #  different tasks. run do_callback, do_lblcallback,                   #
+    #  w_move_callback, w_KB_Callback activates them.                      #
     # ######################################################################
-    w_callback_= defaultCallback      #Subclassed widget must create callback function. 
+    w_callback_= defaultCallback      #Subclassed widget must create callback functions. 
     w_lbl_calback_=defaultCallback    #Abstract class has no callback.
     w_move_callback_= defaultCallback #Abstract class has no callback.
     w_KB_callback_= defaultCallback   #Abstract class has no callback.
     
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
-        self.w_label = [label] 
-        #self.w_label = label      # This must be a list, to have several raw, append st
+        self.w_label = [label]      # This must be a list, to have several raw, append st    
 
     @abstractmethod      
     def draw_box(self):
