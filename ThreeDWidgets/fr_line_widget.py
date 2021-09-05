@@ -139,14 +139,14 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetlblSoNodes) 
 
-            if clickwdgdNode == None and clickwdglblNode == None:
+            if clickwdgdNode is None and clickwdglblNode is None:
                 #SoSwitch not found 
                 self.remove_focus()
                 return 0 
             
             if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
-                if clickwdglblNode != None:
+                if clickwdglblNode is not None:
                     print("Double click detected")
                     #if not self.has_focus():
                     #    self.take_focus()
@@ -154,7 +154,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                     return 1
 
             elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-                if clickwdgdNode != None or clickwdglblNode != None:
+                if clickwdgdNode is not None or clickwdglblNode is not None:
                     if not self.has_focus():
                         self.take_focus()
                     self.do_callback()
@@ -252,7 +252,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             self.draw()
     
     def lblRedraw(self):
-        if(self.w_widgetlblSoNodes!=None):
+        if(self.w_widgetlblSoNodes is not None):
             self.w_widgetlblSoNodes.removeAllChildren()
         
     
@@ -286,9 +286,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """  
         self.hide()
         try:
-            if self.w_parent!=None:
+            if self.w_parent is not None:
                 self.w_parent.removeWidget(self)  # Parent should be the windows widget.
-            if self.w_parent!=None:
+            if self.w_parent is not None:
                 self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
             self.removeSoNodeFromSoSwitch()
             self.removeSoNodes()
