@@ -743,21 +743,27 @@ def is3DObject(obj):
     else:
         return True
     
-def findMainListedObjects(self):
+def findMainListedObjects():
     """[Find and return main objects in the active document - no children will be return]
 
     Returns:
         [list]: [list of objects found]
     """
-    results=[]
-    objects= App.ActiveDocument.Objects
-    counter=0
-    for i in range (0,len(objects)):
-        results.append(objects[i])
-        if objects[i].hasChildElement():
-            i=i+1         # skip next item
-    return results        #We have all objects that has no children (root objects)
-
+    try:
+        results=[]
+        objects= App.ActiveDocument.Objects
+        counter=0
+        for i in range (0,len(objects)):
+            results.append(objects[i])
+            if objects[i].hasChildElement():
+                i=i+1         # skip next item
+        return results        #We have all objects that has no children (root objects)
+    except Exception as err:
+            App.Console.PrintError("'findMainListedObjects' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
 def Overlapping(Sourceobj1 , Targetobj2):
     """[Check if two objects overlap each other]
@@ -769,17 +775,25 @@ def Overlapping(Sourceobj1 , Targetobj2):
     Returns:
         [type]: [description]
     """
-    if (is3DObject(Sourceobj1) is False or is3DObject(Targetobj2) is False):
-        return False
-    if (Sourceobj1==Targetobj2):
-        return False # The same object
-    common_= Sourceobj1.Object.Shape.common(Targetobj2.Object.Shape)
-    if (common_.Area is not 0):
-        return True
-    else:
-        return False
+    try:
 
-def checkCollision(self,newObj):
+        if (is3DObject(Sourceobj1) is False or is3DObject(Targetobj2) is False):
+            return False
+        if (Sourceobj1==Targetobj2):
+            return False # The same object
+        common_= Sourceobj1.Shape.common(Targetobj2.Shape)
+        if (common_.Area is not 0):
+            return True
+        else:
+            return False
+    except Exception as err:
+            App.Console.PrintError("'Overlapping' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+def checkCollision(newObj):
     """[Find a list of objects from the active document that is/are intersecting with newObj]
 
     Args:
@@ -788,10 +802,16 @@ def checkCollision(self,newObj):
     Returns:
         [type]: [description]
     """
-    objList=findMainListedObjects()     # get the root objects - no children
-    results=[]
-    for obj in objList:
-        if (Overlapping(newObj,obj) is True):
-            results.append(obj)
-    return results
-
+    try:
+        objList=findMainListedObjects()     # get the root objects - no children
+        results=[]
+        for obj in objList:
+            if (Overlapping(newObj,obj) is True):
+                results.append(obj)
+        return results
+    except Exception as err:
+            App.Console.PrintError("'checkCollision' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
