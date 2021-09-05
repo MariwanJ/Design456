@@ -171,7 +171,7 @@ def draw_label(text=[], prop: propertyValues=None):
     thi=0.0
     phi=0.0
     r=0.0
-    if text=='' or prop ==None: 
+    if text == '' or prop is None:
         return     # Nothing to do here 
     try:
         delta=App.Vector(0,0,0)        

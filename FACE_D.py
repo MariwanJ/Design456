@@ -54,11 +54,11 @@ def getDirectionAxis():
                 # Circle has not two arguments, only one
                 dir = faceSel.normalAt(0)
             except:
-                f = findFacehasSelectedEdge()
-                if f == None:
+                f= findFacehasSelectedEdge()
+                if f is None:
                     raise Exception("Face not found")
-                dir = f.normalAt(0, 0)
-
+                dir= f.normalAt(0, 0)
+        
         if dir.z == 1:
             return "+z"
         elif dir.z == -1:
@@ -221,15 +221,16 @@ class PartMover:
     def convertToVector(self, pos):
         try:
             import Design456Init
+            
+            tempPoint=self.view.getPoint(pos[0], pos[1])    
+            if(self.Direction is None):
+                if Design456Init.DefaultDirectionOfExtrusion=='x':        
+                    point=( App.Vector(0.0,tempPoint[0],tempPoint[1]) )
+                elif Design456Init.DefaultDirectionOfExtrusion=='y':
+                    point=(App.Vector(tempPoint[0],0.0,tempPoint[1])) 
+                elif Design456Init.DefaultDirectionOfExtrusion=='z':
+                    point=(App.Vector(tempPoint[0],tempPoint[1],0.0))
 
-            tempPoint = self.view.getPoint(pos[0], pos[1])
-            if(self.Direction == None):
-                if Design456Init.DefaultDirectionOfExtrusion == 'x':
-                    point = (App.Vector(0.0, tempPoint[0], tempPoint[1]))
-                elif Design456Init.DefaultDirectionOfExtrusion == 'y':
-                    point = (App.Vector(tempPoint[0], 0.0, tempPoint[1]))
-                elif Design456Init.DefaultDirectionOfExtrusion == 'z':
-                    point = (App.Vector(tempPoint[0], tempPoint[1], 0.0))
             else:
 
                 if (self.Direction == 'X'):
@@ -437,7 +438,8 @@ class SelectTopFace:
 
     def Activated(self):
         try:
-            if self.obj == None:
+            if self.obj is None:
+
                 return
             counter = 1
             centerofmass = None
@@ -552,20 +554,22 @@ class createActionTab:
         toplevel = QtGui.QApplication.topLevelWidgets()
         for i in toplevel:
             if i.metaObject().className() == "Gui::MainWindow":
-                self.mw = i
-        if self.mw == None:
+                self.mw=i    
+        if self.mw is None:
+
             raise Exception("No main window found")
         dw = self.mw.findChildren(QtGui.QDockWidget)
         for i in dw:
             if str(i.objectName()) == "Combo View":
                 self.tab = i.findChild(QtGui.QTabWidget)
             elif str(i.objectName()) == "Python Console":
-                self.tab = i.findChild(QtGui.QTabWidget)
-        if self.tab == None:
-            raise Exception("No tab widget found")
-        self.dialog = QtGui.QDialog()
-        oldsize = self.tab.count()
-        self.tab.addTab(self.dialog, self.title)
+                self.tab= i.findChild(QtGui.QTabWidget)
+        if self.tab is None:
+                raise Exception ("No tab widget found")
+        self.dialog=QtGui.QDialog()
+        oldsize=self.tab.count()
+        self.tab.addTab(self.dialog,self.title)
+
         self.tab.setCurrentWidget(self.dialog)
         self.dialog.setWindowTitle(self.title)
         return (self.mw, self.dialog, self.tab)
@@ -626,7 +630,7 @@ def getDirectionOfFace():
     else:
         # TODO: FIXME: WHAT SHOULD WE USE?
         print("failed")
-    if ss != None:
+    if ss is not None:
         # section direction
         yL = ss.CenterOfMass
         uv = ss.Surface.parameter(yL)

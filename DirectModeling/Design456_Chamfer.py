@@ -130,7 +130,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
        This callback will finalize the chamfer operation. 
        Deleting the original object will be done when the user press 'OK' button
     """
-    if (userData==None ):
+    if (userData is None):
         print("userData is None")
         raise TypeError 
         
@@ -138,7 +138,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
     events = userData.events
     linktocaller = userData.callerObject
     # Avoid activating this part several times,
-    if (linktocaller.startVector == None):
+    if (linktocaller.startVector is None):
         return
     print("mouse release")
     ArrowObject.remove_focus()
