@@ -67,12 +67,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
     try:
         if userData is None:
             return  # Nothing to do here - shouldn't be None
-        mouseToArrowDiff = 0.0
 
         ArrowObject = userData.ArrowObj
         events = userData.events
         linktocaller = userData.callerObject
-        if type(events) is not int:
+        if type(events) != int:
             return
 
         clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
@@ -115,30 +114,75 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
        This callback will finalize the Extrude operation. 
        Deleting the original object will be done when the user press 'OK' button
     """
-    if (userData is None):
-        print("userData is None")
-        raise TypeError
+    try:
+        if (userData is None):
+            print("userData is None")
+            raise TypeError
 
-    ArrowObject = userData.ArrowObj
-    events = userData.events
-    linktocaller = userData.callerObject
-    # Avoid activating this part several times,
-    if (linktocaller.startVector is None):
-        return
-    print("mouse release")
-    ArrowObject.remove_focus()
-    linktocaller.run_Once = False
-    linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                        ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                        ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-    # Undo
-    App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrude"))
-    linktocaller.startVector = None
-    linktocaller.mouseToArrowDiff = 0.0
-    App.ActiveDocument.commitTransaction()  # undo reg.
+        ArrowObject = userData.ArrowObj
+        events = userData.events
+        linktocaller = userData.callerObject
+        # Avoid activating this part several times,
+        if (linktocaller.startVector is None):
+            return
+        print("mouse release")
+        ArrowObject.remove_focus()
+        linktocaller.run_Once = False
+        linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        # Undo
+        App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrude"))
+        linktocaller.startVector = None
+        App.ActiveDocument.commitTransaction()  # undo reg.
 
-    App.ActiveDocument.recompute()
-    App.ActiveDocument.commitTransaction()  # undo reg.
+        #Do final operation. Either leave it as it is, merge or subtract
+        if linktocaller.OperationOption == 2:
+            #Subtraction : Subtract other objects with the extruded part.
+
+            #First merge the old object with the extruded face
+            tempnewObj = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
+            tempnewObj.Shapes = linktocaller.objChangedTransparency
+            tempnewObj.Refine = True
+            listOfObj=[]
+            print(linktocaller.selectedObj)
+            print(linktocaller.newObject)
+            #TODO FIXME
+            listOfObj.append(linktocaller.newObject.Object.Shape)
+            listOfObj.append(linktocaller.selectedObj.Object.Shape)
+
+
+            tempnewObj.Shapes = listofObj
+            
+            newObj = App.ActiveDocument.addObject("Part::Cut", "tempSubtract")
+            newObj.Base = App.ActiveDocument.getObject(linktocaller.objChangedTransparency)  # Target
+            newObj.Tool = App.ActiveDocument.getObject(tempnewObj)  # Subtracted shape/object
+            
+            App.ActiveDocument.recompute()
+            newObj.Refine = True
+
+        elif linktocaller.OperationOption == 1:
+            #Merge : Merge other objects with the extruded part and with the old object
+            newObj = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
+            #TODO FIX ME .. IT SHOULD BE SHAPE NOT OBJ. 
+            linktocaller.objChangedTransparency.append(linktocaller.selectedObj)
+            linktocaller.objChangedTransparency.append(linktocaller.newObject)
+            newObj.Shapes = linktocaller.objChangedTransparency
+            newObj.Refine = True
+        elif linktocaller.OperationOption ==0:
+            #is here just to make the code more readable. 
+            pass # nothing to do . 
+
+
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction()  # undo reg.
+    except Exception as err:
+        faced.EnableAllToolbar(True)
+        App.Console.PrintError("'Design456_Extrude' Release Filed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 
 class Design456_SmartExtrude:
@@ -173,19 +217,19 @@ class Design456_SmartExtrude:
         """
         [
          Recreate the object after changing the length of the extrusion
-         This will also change the opacity of object if subtraction is 
+         This will also change the Transparency of object if subtraction is 
          chosen.
         ]
         """
         try:
             self.newObject.LengthFwd = self.extrudeLength
-            if self.OperationOption is 2:  # Must be subtract to activate this
-                if (len(self.objChangedTransparency) is not 0):
+            if self.OperationOption ==2 or self.OperationOption ==1 :  # Must be subtract to activate this
+                if (len(self.objChangedTransparency) != 0):
                     for obj in self.objChangedTransparency:
                         o = Gui.ActiveDocument.getObject(o.Object.Name)
                         o.Transparency = 0
                 result = faced.checkCollision(self.newObject)
-                if len(result) is not 0:
+                if len(result) != 0:
                     for obj in result:
                         o = Gui.ActiveDocument.getObject(obj.Name)
                         o.Transparency = 80
@@ -291,7 +335,7 @@ class Design456_SmartExtrude:
         nv = ss.normalAt(uv[0], uv[1])
         self.normalVector = nv
 
-        if (self.extrudeLength is 0):
+        if (self.extrudeLength ==0):
             d = self.extrudeLength = 1
         else:
             d = self.extrudeLength
@@ -307,7 +351,7 @@ class Design456_SmartExtrude:
         try:
             print("Smart Extrusion Activated")
             sel = Gui.Selection.getSelectionEx()
-            if len(sel) is 0:
+            if len(sel) == 0:
                 # An object must be selected
                 errMessage = "Select an object, one face to Extrude"
                 faced.errorDialog(errMessage)
@@ -343,7 +387,7 @@ class Design456_SmartExtrude:
                 'Part::Extrusion', 'Extrude')
             self.newObject.Base = self.targetFace
             self.newObject.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
-            # Above statement is not always correct. Some faces require 'custom'
+            # Above statement != always correct. Some faces require 'custom'
             self.newObject.DirLink = None
             self.newObject.LengthFwd = self.extrudeLength  # Must be negative
             self.newObject.LengthRev = 0.0
@@ -492,13 +536,13 @@ class Design456_SmartExtrude:
 
         """
 
-        if (self.OperationOption is 0):
-            pass  # Here just to make the code clear that we do nothing otherwise it is not necessary
+        if (self.OperationOption == 0):
+            pass  # Here just to make the code clear that we do nothing otherwise it != necessary
         elif(self.OperationOption == 1):
             # Merge the new object with the old object
             # There are several cases here
             # 1- Old object was only 2D object --
-            #    nothing will be done but we must see if the new object is not intersecting other objects
+            #    nothing will be done but we must see if the new object != intersecting other objects
             # 2- Old object is intersecting with new object..
             # In case 1 and 2 when there is intersecting we should merge both
             if (self.was2DObject == True):
@@ -508,7 +552,7 @@ class Design456_SmartExtrude:
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize-1)  # it is 0,1,2,3 ..etc
+        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
         # TODO remove the face or extracted face if there is a merge and make a simple copy
         # App.ActiveDocument.removeObject(self.selectedObj.Name)
         App.ActiveDocument.recompute()

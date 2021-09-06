@@ -115,7 +115,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     def handle(self, event):
         """
         This function is responsbile of taking events and processing 
-        the actions required. If the object is not targeted, 
+        the actions required. If the object != targeted, 
         the function will skip the events. But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
         processed the event and no other widgets needs to get the 
@@ -134,7 +134,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
-            if clickwdglblNode is not None:
+            if clickwdglblNode != None:
                 print("Double click detected")
                 #if not self.has_focus():
                 #    self.take_focus()
@@ -145,10 +145,10 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             if self.releaseDrag==True:
                 self.releaseDrag==False
                 print("Release Mouse happened")
-                self.do_callback()     #Release callback should be activated even if the arrow is not under the mouse 
+                self.do_callback()     #Release callback should be activated even if the arrow != under the mouse 
                 return 1
             
-            if (clickwdgdNode is not None) or (clickwdglblNode is not None):
+            if (clickwdgdNode != None) or (clickwdglblNode != None):
                 if not self.has_focus():
                     self.take_focus()
                 self.do_callback()
@@ -159,7 +159,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         
         if self.w_parent.link_to_root_handle.w_lastEvent==FR_EVENTS.FR_MOUSE_DRAG:
             if self.releaseDrag==False:
-                if (clickwdgdNode is not None) or (clickwdglblNode is not None):
+                if (clickwdgdNode != None) or (clickwdglblNode != None):
                     self.releaseDrag=True   
                     self.take_focus()
                     self.do_move_callback()        # We use the same callback, 
@@ -167,7 +167,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                                       # the event. TODO: Do we want to change this?
                     return 1
             else:
-                self.do_move_callback()       #Continue run the callback as far as it is not releaseDrag=True
+                self.do_move_callback()       #Continue run the callback as far as it != releaseDrag=True
                 return 1
         #Don't care events, return the event to other widgets    
         return 0  # We couldn't use the event .. so return 0 
@@ -187,7 +187,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                if self.arrowType is 0 :
+                if self.arrowType ==0 :
                     self.w_widgetSoNodes=fr_draw.draw_arrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
                 elif self.arrowType==1:
                     self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,0,0,self.w_rotation)
@@ -259,7 +259,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             self.draw()
     
     def lblRedraw(self):
-        if(self.w_widgetlblSoNodes is not None):
+        if(self.w_widgetlblSoNodes != None):
             self.w_widgetlblSoNodes.removeAllChildren()
         
     def take_focus(self):
@@ -281,7 +281,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active is 0:
+        if self.w_active ==0:
             return  # Nothing to do
         self.w_active = 0
     
@@ -292,10 +292,12 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         """  
         self.hide()
         try:
-            if self.w_parent is not None:
+            if self.w_parent != None:
                 self.w_parent.removeWidget(self)  # Parent should be the windows widget.
+
             if self.w_parent is not None:
                 self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
+
             self.removeSoNodeFromSoSwitch()
             self.removeSoNodes()
             self.removeSoSwitch()    
@@ -308,7 +310,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
-        if self.w_visible is 0:
+        if self.w_visible ==0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -320,7 +322,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus is 0:
+        if self.w_hasFocus ==0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0

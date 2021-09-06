@@ -471,7 +471,7 @@ class Design456_DirectScale:
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize-1)  # it is 0,1,2,3 ..etc
+        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
         self.__del__()  # Remove all smart scale 3dCOIN widgets
 
     def btnState(self):

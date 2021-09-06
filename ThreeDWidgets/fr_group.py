@@ -116,6 +116,7 @@ class Fr_Group(fr_widget.Fr_Widget):
             pass   # just go out
     """
     # All events distributed by this function. We classify the event to be processed by each widget later.
+
     '''TODO: This is not totally correct:
        answer all the below questions
       1-focus/unfocused must come here,
