@@ -84,7 +84,7 @@ def draw_Point(p1,size=0.1, color=FR_COLOR.FR_GOLD, type=0):
         so_separator = coin.SoSeparator()
         coords = coin.SoTranslation()
         coords.translation.setValue(p1)
-        if type is 0 :
+        if type ==0 :
             point = coin.SoCube()
             point.width=size
             point.height=size
@@ -705,7 +705,7 @@ def loadImageTo3D(filename, BoxSize=(2,2,0.01), location=App.Vector(0,0,0), rota
     image.addChild(imagePos)
     image.addChild(svg)
     image.addChild(box)
-    return image                # Add this to the senegraph to show the picture.
+    return image                # Add this to the scenegraph to show the picture.
 
 
 
@@ -821,7 +821,7 @@ def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
     def regular_polygon_vertexes(sidescount, radius, z, startangle=0):
         try:
             vertexes = []
-            if radius is not 0:
+            if radius != 0:
                 for i in range(0, sidescount+1):
                     angle = 2 * math.pi * i / sidescount + math.pi + startangle
                     vertex = (radius * math.cos(angle),
@@ -930,7 +930,7 @@ class draw_polygonBase:
         try:
             z=position.z
             vertexes = []
-            if radius is not 0:
+            if radius != 0:
                 for i in range(0, sidescount+1):
                     angle = 2 * math.pi * i / sidescount + math.pi + startangle
                     vertex = (position.x +radius * math.cos(angle),
@@ -953,7 +953,7 @@ class draw_polygonBase:
         self.vertices=self.regular_polygon_vertexes(self.sides,self.radius,self.position,self.startAngel)
         numberOfvert=len(self.vertices)
         soRoot= draw_FaceSet(self.vertices,(numberOfvert,),self.color)
-        return soRoot  # SoSeparator created during the drawing. You need to add this to the senegraph
+        return soRoot  # SoSeparator created during the drawing. You need to add this to the scenegraph
 
 def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indices=[],color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
     """[Draw any faceIndexed object by providing the vertexpositions and indices.]
@@ -1002,20 +1002,21 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indi
 
 
 ####################################################
-#New drawings based on conversion of drawing in Inscape --> FreeCAD --> export vrml 
-# and later convert manually the VRML file to coin
+# New drawings based on conversion of drawing in
+# Inkscape > FreeCAD > Export VRML
+# and later convert the VRML file manually to coin
     """
-    Example using the drawing: 
+    Example using the drawing:
     from pivy import coin
     import math
-    import fr_draw as d 
+    import fr_draw as d
     import time
     from PySide import QtCore,QtGui
     sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-    for i in range (0,181): 
+    for i in range (0,181):
         root=d.draw_2Darrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [1.0, 0.0, 0.0, i])
         sg.addChild(root)
-    for i in range (0,181): 
+    for i in range (0,181):
         root=d.draw_2Darrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [-1.0, 0.0, 0.0, i])
         sg.addChild(root)
 
@@ -1033,7 +1034,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
         _rotation (list, optional): [Rotation of the arrow provided by three float and an angle (float) in degree]. Defaults to [1.0, 0.0, 0.0, 0.0].
 
     Returns:
-        [SoSeparator]: [SoSeparator which hold the drawing. Add it to the senegraph to show the arrow]
+        [SoSeparator]: [SoSeparator which hold the drawing. Add it to the scenegraph to show the arrow]
     """    
     try:
         root=coin.SoSeparator() #root group holder
@@ -1048,7 +1049,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
         material = coin.SoMaterial()
         material.transparency.setValue(opacity)
         material.diffuseColor.setValue(coin.SbColor(color))
-        if type is 0 :
+        if type ==0 :
             soSepArrow=coin.SoSeparator()   # drawing holder
             soIndexFace= coin.SoIndexedFaceSet()
             cordinate= coin.SoCoordinate3()
@@ -3107,9 +3108,10 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
         _rotation (list, optional): [Rotation of the arrow provided by three float and an angle (float) in degree]. Defaults to [1.0, 0.0, 0.0, 0.0].
 
     Returns:
-        [SoSeparator]: [SoSeparator which hold the drawing. Add it to the senegraph to show the arrow]
-    """   
+        [SoSeparator]: [SoSeparator which hold the drawing. Add it to the scenegraph to show the arrow]
+    """
     if type is 0 :
+
         arrow1_str="""#Inventor V2.1 ascii
             DEF root Separator {
               ShapeHints {
@@ -3304,10 +3306,10 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
     root.addChild(arrow)
     return root
 
-#Save senegraph to IV format 2.x
+#Save scenegraph to IV format 2.x
 from pivy import coin
-def saveSeneGraphtoIVfile(filename):
-    """[Save current senegraph to IV format]
+def saveSceneGraphtoIVfile(filename):
+    """[Save current scenegraph to IV format]
 
     Args:
         filename ([str]): [pathname and file name ]

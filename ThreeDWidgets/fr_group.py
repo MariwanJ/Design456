@@ -100,15 +100,15 @@ class Fr_Group(fr_widget.Fr_Widget):
             i.redraw()
     """     TODO: THIS SHOULD BE DONE IN ANOTHER WAY.
     def deactivate(self):
-    
+
     #Before deactivating the group, we have to remove all children.
     #Think about, you might have several groups inside the Fr_CoinWindow
-    
+
         try:
             for widget in self.w_children:
-                # Remove objects in the Root_SeneGraph
-                self.removeSeneNode(widget.w_wdgsoSwitch)
-                self.removeSeneNode(widget.w_widgetSoNodes)
+                # Remove objects in the Root_SceneGraph
+                self.removeSceneNode(widget.w_wdgsoSwitch)
+                self.removeSceneNode(widget.w_widgetSoNodes)
                 # Remove the widget itself from the group
                 del widget
             del self.w_children
@@ -116,12 +116,13 @@ class Fr_Group(fr_widget.Fr_Widget):
             pass   # just go out
     """
     # All events distributed by this function. We classify the event to be processed by each widget later.
+
     '''TODO: This is not totally correct:
-       answer all the bellow questions
+       answer all the below questions
       1-focus/unfocused must come here,
       2-widget must be under the mouse to get events, otherwise we should just remove focus & selection
       3-Think about selection /Focus / Unfocused how should they work
-      4-Keyboard  and the above events?
+      4-Keyboard and the above events?
       5-Since this widgetsystem is not intended to have a lot of widgets, is it ok to send events to all widgets?
       6-Do we need to translate/mask Keyboard events? or it is waste of time?
       

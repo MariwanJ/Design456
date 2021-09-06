@@ -91,19 +91,19 @@ class Fr_Widget (object):
     ########################################################################
     #  {w_callback_, w_lbl_calback_}  is a pointer to a function.          #
     #  It should be used only like that.                                   #
-    #  Each widget has a single callback, 'handle' will call them.         #
+    #  Each widget has several callbacks, 'handle' will call them.         #
     #  Depending on what kind of widget you create, the callback can do    #
-    #  different tasks. run do_callback, do_lblcallback activates them.    #
+    #  different tasks. run do_callback, do_lblcallback,                   #
+    #  w_move_callback, w_KB_Callback activates them.                      #
     # ######################################################################
-    w_callback_= defaultCallback      #Subclassed widget must create callback function. 
+    w_callback_= defaultCallback      #Subclassed widget must create callback functions. 
     w_lbl_calback_=defaultCallback    #Abstract class has no callback.
     w_move_callback_= defaultCallback #Abstract class has no callback.
     w_KB_callback_= defaultCallback   #Abstract class has no callback.
     
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
-        self.w_label = [label] 
-        #self.w_label = label      # This must be a list, to have several raw, append st
+        self.w_label = [label]      # This must be a list, to have several raw, append st    
 
     @abstractmethod      
     def draw_box(self):
@@ -211,7 +211,7 @@ class Fr_Widget (object):
         print("fr_widget Destructor")
         self.hide()
         self.removeSoNodes()
-        if self.w_parent is not None:
+        if self.w_parent != None:
             self.w_parent.removeWidget(self)  # Parent should be the windows widget.
 
     #@property 
@@ -293,7 +293,7 @@ class Fr_Widget (object):
             self.w_lbluserData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
-            if (self.w_lbl_calback_ is not None):
+            if (self.w_lbl_calback_ != None):
                 self.w_lbl_calback_(self.w_lbluserData)
 
         except Exception as err:
@@ -314,7 +314,7 @@ class Fr_Widget (object):
         self.w_userData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
-            if(self.w_callback_ is not None):
+            if(self.w_callback_ != None):
                 self.w_callback_(self.w_userData)
 
         except Exception as err:
@@ -335,7 +335,7 @@ class Fr_Widget (object):
         self.w_userData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
-            if(self.w_move_callback_ is not None):
+            if(self.w_move_callback_ != None):
                 self.w_move_callback_(self.w_userData)
 
         except Exception as err:
@@ -376,11 +376,11 @@ class Fr_Widget (object):
         return self.w_when
     
     def saveSoNodesToWidget(self,_Value):
-        """ Keep seneNodes in the fr_xxx object in the w_widgetSoNodes variable """
+        """ Keep sceneNodes in the fr_xxx object in the w_widgetSoNodes variable """
         self.w_widgetSoNodes=_Value
 
     def saveSoNodeslblToWidget(self,_list):
-        """ Keep the Label seneNodes in the fr_xxx object in the w_widgetlblSoNodes variable""" 
+        """ Keep the Label sceneNodes in the fr_xxx object in the w_widgetlblSoNodes variable""" 
         self.w_widgetlblSoNodes=_list
         
     #todo: Do we need an argument here? as we should add w_widgetSoNodes and w_widgetlblSoNodes
@@ -398,13 +398,13 @@ class Fr_Widget (object):
         else:
             self.w_wdgsoSwitch.addChild(listOfSoSeparator)
 
-        # Add the switch to the SeneGraph
-        self.w_parent.addSoSwitchToSeneGraph(self.w_wdgsoSwitch)
+        # Add the switch to the SceneGraph
+        self.w_parent.addSoSwitchToSceneGraph(self.w_wdgsoSwitch)
 
     def removeSoNodes(self):
         """ Remove CoinNodes and their children """
         try:
-            if self.w_widgetSoNodes is not None:
+            if self.w_widgetSoNodes != None:
                 if type(self.w_widgetSoNodes) == list:
                     for so in self.w_widgetSoNodes:
                         so.removeAllChildren()
@@ -412,7 +412,7 @@ class Fr_Widget (object):
                 else:
                     self.w_widgetSoNodes.removeAllChildren()
                     del self.w_widgetSoNodes
-            if self.w_widgetlblSoNodes is not None:
+            if self.w_widgetlblSoNodes != None:
                 if type(self.w_widgetlblSoNodes) == list:
                     for so in self.w_widgetlblSoNodes:
                         so.removeAllChildren()
@@ -425,7 +425,7 @@ class Fr_Widget (object):
             self.w_widgetlblSoNodes=None
 
         except Exception as err:
-            App.Console.PrintError("'Remove SeneNodes' Failed. "
+            App.Console.PrintError("'Remove SceneNodes' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -436,11 +436,11 @@ class Fr_Widget (object):
             Remove the children from the widget COIN3D node which is the soseparators
             i.e. all drawing, color ..etc for the widget 
         """
-        if self.w_wdgsoSwitch is not None:
+        if self.w_wdgsoSwitch != None:
             self.w_wdgsoSwitch.removeAllChildren()
 
     def removeSoSwitch(Self):
-        if Self.w_wdgsoSwitch is not None:
+        if Self.w_wdgsoSwitch != None:
             try:
                 del Self.w_wdgsoSwitch
             except:

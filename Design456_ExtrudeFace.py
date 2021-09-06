@@ -52,7 +52,7 @@ class Design456_ExtrudeFace:
                 return
             lengthForward = QtGui.QInputDialog.getDouble(
                 None, "Get value", "Input:", 0, -10000.0, 10000.0, 2)[0]
-            if(lengthForward is 0):
+            if(lengthForward ==0):
                 return  # nothing to do here
 
             objName = s[0].ObjectName
@@ -92,7 +92,7 @@ class Design456_ExtrudeFace:
             if newPart_.isValid() == False:
                 App.ActiveDocument.removeObject(newPart_.Name)
                 App.ActiveDocument.removeObject(f.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed to extrude the Face"
                 faced.getInfo(m).errorDialog(errMessage)
             else:
