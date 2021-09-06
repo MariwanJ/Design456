@@ -49,7 +49,7 @@ def moveSubElements(obj, sub_objects_names, vector):
     """moveSubElements(obj, sub_objects_names, vector)
 
     Move the given object sub_objects according to a vector or crates an new one
-    if the object is not a Part::Feature.
+    if the object != a Part::Feature.
     Parameters
     ----------
     obj : the given object
@@ -137,10 +137,10 @@ def parse_shape(shape, selected_subelements, vector):
                 new_sub_shapes = sort_wires(new_sub_shapes)
                 new_shape = Part.Face(new_sub_shapes)
                 touched = True
-                # TODO: handle the usecase when the Face is not planar anymore after modification
+                # TODO: handle the usecase when the Face != planar anymore after modification
             else:
                 print("Face geometry not supported")
-        elif touched_subshapes is 0:
+        elif touched_subshapes ==0:
             print("subshapes not touched " + shape.ShapeType + " not touched.")
             new_shape = shape
             touched = False
@@ -160,7 +160,7 @@ def parse_shape(shape, selected_subelements, vector):
             new_shape = Part.makeLine(
                 new_sub_shapes[0].Point, new_sub_shapes[1].Point)
             touched = True
-        elif touched_subshapes is 0:
+        elif touched_subshapes ==0:
             # subshapes not touched
             print("subshapes not touched " + shape.ShapeType + " not touched.")
             new_shape = shape
