@@ -84,7 +84,7 @@ def objectMouseClick_Coin3d(mouse_pos, pick_radius,TargetNode):
     ray_pick.apply(render_manager.getSceneGraph())
     picked_point = ray_pick.getPickedPoint()
     
-    if picked_point != None and picked_point is not 0:
+    if picked_point != None and picked_point != 0:
         path=picked_point.getPath()
         if type(TargetNode)==list:
             for nodeInList in TargetNode:

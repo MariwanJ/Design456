@@ -190,7 +190,7 @@ class Design456_SmartFillet:
         '''
             Find out shape-type and save the name in objectType
         '''
-        if len(self.selectedObj[0].SubElementNames) is 0 :
+        if len(self.selectedObj[0].SubElementNames) ==0 :
             self.objectType = 'Shape'
         elif 'Face' in self.selectedObj[0].SubElementNames[0]:
             self.objectType = 'Face'
@@ -368,7 +368,7 @@ class Design456_SmartFillet:
     def Activated(self):
         self.selectedObj.clear()
         sel=Gui.Selection.getSelectionEx()
-        if len(sel) is 0:
+        if len(sel) ==0:
             # An object must be selected
             errMessage = "Select an object, one face or one edge to fillet"
             faced.errorDialog(errMessage)
@@ -475,10 +475,10 @@ class Design456_SmartFillet:
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize-1)  # it is 0,1,2,3 ..etc
+        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
         temp=self.selectedObj[0]
         if(self.FilletRadius<=0.01):
-            #fillet is not applied. return the original object as it was
+            #fillet != applied. return the original object as it was
             if(len(self.selectedObj)==2):
                 if hasattr(self.selectedObj[1],"Object"):
                     App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)    

@@ -32,19 +32,19 @@ import Draft as _draft
 import Part as _part
 from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-
+from typing import List
 
 def getDirectionAxis():
     try:
         s = Gui.Selection.getSelectionEx()
-        if len(s) is 0:
+        if len(s) ==0:
             print("Nothing was selected")
             return ""  # nothing to do we cannot calculate the direction
         obj = s[0]
         if (hasattr(obj, "SubObjects")):
             print("has subobject")
-            if len(obj.SubObjects) is not 0:
-                if (len (obj.SubObjects[0].Faces) is 0):
+            if len(obj.SubObjects) != 0:
+                if (len (obj.SubObjects[0].Faces) ==0):
                     print("no faces but has subobject")
                     #it is an edge not a face:
                     f= findFacehasSelectedEdge()
@@ -84,12 +84,12 @@ def getDirectionAxis():
         elif dir.x == -1:
             return "-x"
         else:
-            #We have an axis that is not 1,0: 
-            if(abs(dir.x) is 0):
+            #We have an axis that != 1,0: 
+            if(abs(dir.x) ==0):
                 return "+z"
-            elif (abs(dir.y) is 0):
+            elif (abs(dir.y) ==0):
                 return "+z"
-            elif (abs(dir.z) is 0):
+            elif (abs(dir.z) ==0):
                 return "+x"
             else: 
                 return "+z" # this is to avoid having NONE .. Don't know when this happen TODO: FIXME!
@@ -651,7 +651,7 @@ def getDirectionOfFace():
     else:
         # TODO: FIXME: WHAT SHOULD WE USE?
         print("failed")
-    if ss is not None:
+    if ss != None:
         # section direction
         yL = ss.CenterOfMass
         uv = ss.Surface.parameter(yL)
@@ -737,16 +737,84 @@ def clearPythonConsole(name:str=""):
     now = time.ctime(int(time.time()))
     App.Console.PrintWarning("Cleared Python console " +str(now)+" by " + name+"\n")
     
-def findMainListedObjects(self):
-    results=[]
-    objects= App.ActiveDocument.Objects
-    counter=0
-    for i in range (0,len(objects)):
-        results.append(objects[i])
-        if objects[i].hasChildElement():
-            i=i+1         # skip next item
-    #We have all objects that has no children (root objects)
+def is3DObject(obj):
+    if (obj.Shape.Volume ==0):
+        return False
+    else:
+        return True
     
-def checkCollision(self,newObj):
-    currentBoundaryBox=newObj.BoundaryBox # Boundary box for the extruded object
-    
+def findMainListedObjects():
+    """[Find and return main objects in the active document - no children will be return]
+
+    Returns:
+        [list]: [list of objects found]
+    """
+    try:
+        results=[]
+        objects= App.ActiveDocument.Objects
+        counter=0
+        for i in range (0,len(objects)):
+            results.append(objects[i])
+            if objects[i].hasChildElement():
+                i=i+1         # skip next item
+        return results        #We have all objects that has no children (root objects)
+    except Exception as err:
+            App.Console.PrintError("'findMainListedObjects' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+def Overlapping(Sourceobj1 , Targetobj2):
+    """[Check if two objects overlap each other]
+
+    Args:
+        Sourceobj1 ([3D selection object]): [description]
+        Targetobj2 ([3D selection object]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    try:
+
+        if (is3DObject(Sourceobj1) is False or is3DObject(Targetobj2) is False):
+            return False
+        if (Sourceobj1==Targetobj2):
+            return False # The same object
+        if(Sourceobj1.Shape==Targetobj2.Shape):
+            return False
+        common_= Sourceobj1.Shape.common(Targetobj2.Shape)
+        if (common_.Area !=0.0):
+            return True
+        else:
+            return False
+        
+    except Exception as err:
+            App.Console.PrintError("'Overlapping' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+def checkCollision(newObj):
+    """[Find a list of objects from the active document that is/are intersecting with newObj]
+
+    Args:
+        newObj ([3D Selection Object]): [Object checked with document objects]
+
+    Returns:
+        [type]: [description]
+    """
+    try:
+        objList=findMainListedObjects()     # get the root objects - no children
+        results=[]
+        for obj in objList:
+            if (Overlapping(newObj,obj) is True):
+                results.append(obj)
+        return results
+    except Exception as err:
+            App.Console.PrintError("'checkCollision' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)

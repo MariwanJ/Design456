@@ -102,7 +102,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     def handle(self, event):
         """
         This function is responsbile of taking events and doing 
-        the action(s) required. If the object is not targeted, 
+        the action(s) required. If the object != targeted, 
         the function will skip the event(s). But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
         processed the event and no other widgets needs to get the 
@@ -206,12 +206,12 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         After the widgets damages, this function should be called.        
         """
         if self.is_visible():
-            # Remove the seneNodes from the widget
+            # Remove the sceneNodes from the widget
             self.removeSoNodes()
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
             self.draw()
 
     def take_focus(self):
@@ -233,7 +233,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active is 0:
+        if self.w_active ==0:
             return  # Nothing to do
         self.w_active = 0
 
@@ -247,7 +247,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         return self.w_active
 
     def hide(self):
-        if self.w_visible is 0:
+        if self.w_visible ==0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -259,7 +259,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus is 0:
+        if self.w_hasFocus ==0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0
@@ -338,7 +338,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
     def handle(self, event):
         """
         This function is responsbile of taking events and doing 
-        the action(s) required. If the object is not targeted, 
+        the action(s) required. If the object != targeted, 
         the function will skip the event(s). But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
         processed the event and no other widgets needs to get the 
@@ -442,12 +442,12 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         After the widgets damages, this function should be called.        
         """
         if self.is_visible():
-            # Remove the seneNodes from the widget
+            # Remove the sceneNodes from the widget
             self.removeSoNodes()
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
             self.draw()
 
     def take_focus(self):
@@ -469,7 +469,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active is 0:
+        if self.w_active ==0:
             return  # Nothing to do
         self.w_active = 0
 
@@ -483,7 +483,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         return self.w_active
 
     def hide(self):
-        if self.w_visible is 0:
+        if self.w_visible ==0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -495,7 +495,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus is 0:
+        if self.w_hasFocus ==0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0
