@@ -184,7 +184,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             if self.is_visible():
                 self.saveSoNodesToWidget(fr_draw.draw_line(p1, p2, usedColor, self.w_lineWidth))
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
-                #add both to the same switch. and add them to the senegraph automatically
+                #add both to the same switch. and add them to the scenegraph automatically
                 allSwitch=[]
                 allSwitch.append(self.w_widgetSoNodes)
                 allSwitch.append(self.w_widgetlblSoNodes)
@@ -239,12 +239,12 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         if self.is_visible():
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
 
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
            
-            # Remove the seneNodes from the widget
+            # Remove the sceneNodes from the widget
             self.removeSoNodes()
             #Redraw label
             
@@ -288,8 +288,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         try:
             if self.w_parent != None:
                 self.w_parent.removeWidget(self)  # Parent should be the windows widget.
-            if self.w_parent != None:
-                self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+
+            if self.w_parent is not None:
+                self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
             self.removeSoNodeFromSoSwitch()
             self.removeSoNodes()
             self.removeSoSwitch()   
