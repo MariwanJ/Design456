@@ -376,11 +376,11 @@ class Fr_Widget (object):
         return self.w_when
     
     def saveSoNodesToWidget(self,_Value):
-        """ Keep seneNodes in the fr_xxx object in the w_widgetSoNodes variable """
+        """ Keep sceneNodes in the fr_xxx object in the w_widgetSoNodes variable """
         self.w_widgetSoNodes=_Value
 
     def saveSoNodeslblToWidget(self,_list):
-        """ Keep the Label seneNodes in the fr_xxx object in the w_widgetlblSoNodes variable""" 
+        """ Keep the Label sceneNodes in the fr_xxx object in the w_widgetlblSoNodes variable""" 
         self.w_widgetlblSoNodes=_list
         
     #todo: Do we need an argument here? as we should add w_widgetSoNodes and w_widgetlblSoNodes
@@ -398,8 +398,8 @@ class Fr_Widget (object):
         else:
             self.w_wdgsoSwitch.addChild(listOfSoSeparator)
 
-        # Add the switch to the SeneGraph
-        self.w_parent.addSoSwitchToSeneGraph(self.w_wdgsoSwitch)
+        # Add the switch to the SceneGraph
+        self.w_parent.addSoSwitchToSceneGraph(self.w_wdgsoSwitch)
 
     def removeSoNodes(self):
         """ Remove CoinNodes and their children """
@@ -425,7 +425,7 @@ class Fr_Widget (object):
             self.w_widgetlblSoNodes=None
 
         except Exception as err:
-            App.Console.PrintError("'Remove SeneNodes' Failed. "
+            App.Console.PrintError("'Remove SceneNodes' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

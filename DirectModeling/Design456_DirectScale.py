@@ -508,7 +508,7 @@ class Design456_DirectScale:
 
     def __del__(self):
         """
-        Remove all widget from Fr_CoinWindow and from the senegraph
+        Remove all widget from Fr_CoinWindow and from the scenegraph
         """
         try:
             if type(self.smartInd) == list:

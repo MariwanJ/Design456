@@ -47,14 +47,14 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     """
     Main window which acts like a server for the children. 
     It distribute the events, keep track of adding switches to
-    the SeneGraph. Switches keep track of nodes and their 
-    drawing. So the tree is like that SeneGraph-->Switches->Node->drawings
+    the SceneGraph. Switches keep track of nodes and their 
+    drawing. So the tree is like that SceneGraph-->Switches->Node->drawings
     """
     global view
 
     # This is the holder of all objects.It should be here not inside the Fr_Group
-    # this is the root senegraph. It keeps all switch. Switches will keep drawing
-    global Root_SeneGraph
+    # this is the root scenegraph. It keeps all switch. Switches will keep drawing
+    global Root_SceneGraph
     global link_to_root_handle
 
     def __init__(self, args: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
@@ -66,7 +66,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.link_to_root_handle = fr_coin3d.root_handle()
         self.link_to_root_handle.w_wind = self
         self.link_to_root_handle.addCallbacks()
-        self.Root_SeneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        self.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self._mainfrCoinWindow=self
         
         # Activated 
@@ -96,13 +96,13 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         # Call Fr_Groups deactivate to remove all widgets.
         
     # Remove the switches and their children.
-    def removeSoSwitchFromSeneGraph(self, _soSwitch):
-        """ remove switch tree from the SeneGraph"""
+    def removeSoSwitchFromSceneGraph(self, _soSwitch):
+        """ remove switch tree from the SceneGraph"""
         if type(_soSwitch)==list:
             for i in _soSwitch:
-                self.Root_SeneGraph.removeChild(i)
+                self.Root_SceneGraph.removeChild(i)
         else:
-            self.Root_SeneGraph.removeChild(_soSwitch)
+            self.Root_SceneGraph.removeChild(_soSwitch)
         
     def callback(self, data):
         # not sure what I should do here yet.
@@ -125,10 +125,10 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             widg.parent(self._mainfrCoinWindow)             #Save a link to parent in the widget
 
         
-    def addSoSwitchToSeneGraph(self, _soSwitch):
-        """ Add new switch tree to the SeneGraph"""
+    def addSoSwitchToSceneGraph(self, _soSwitch):
+        """ Add new switch tree to the SceneGraph"""
         if type(_soSwitch)==list:
             for i in _soSwitch:
-                self.Root_SeneGraph.addChild(i)  # add sen to the root
+                self.Root_SceneGraph.addChild(i)  # add scene to the root
         else:
-            self.Root_SeneGraph.addChild(_soSwitch)
+            self.Root_SceneGraph.addChild(_soSwitch)

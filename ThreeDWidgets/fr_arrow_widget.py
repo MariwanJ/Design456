@@ -246,12 +246,12 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         """
         if self.is_visible():
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
 
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
            
-            # Remove the seneNodes from the widget
+            # Remove the sceneNodes from the widget
             self.removeSoNodes()
             #Redraw label
             
@@ -295,7 +295,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             if self.w_parent is not None:
                 self.w_parent.removeWidget(self)  # Parent should be the windows widget.
             if self.w_parent is not None:
-                self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+                self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
             self.removeSoNodeFromSoSwitch()
             self.removeSoNodes()
             self.removeSoSwitch()    
