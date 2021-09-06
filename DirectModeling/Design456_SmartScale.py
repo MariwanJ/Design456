@@ -67,16 +67,16 @@ def smartlbl_callback(smartLine,obj,parentlink):
     deltaZ= p2.z-p1.z
     side=None
     oldv=float(smartLine.w_label[0])
-    if deltaX is 0  and deltaZ is 0 :
+    if deltaX ==0  and deltaZ ==0 :
         side= 'y'
-    elif deltaY is 0.0 and deltaZ is 0.0:
+    elif deltaY ==0.0 and deltaZ ==0.0:
         side='x'
-    elif deltaY is 0.0 and deltaX is 0.0 and deltaZ is not 0.0:
+    elif deltaY ==0.0 and deltaX ==0.0 and deltaZ != 0.0:
         side='z'
     newValue=0
     #all lines has a 4 mm more size due to the way we calculate them. Remove that
     newValue=faced.GetInputValue(oldv).getDoubleValue()
-    if newValue is 0 or newValue is None:
+    if newValue ==0 or newValue is None:
         #User canceled the value
         return -1
 
@@ -272,7 +272,7 @@ class Design456_SmartScale:
                 i.hide()
                 i.__del__()
                 del i  # call destructor
-            if self._mywin is not None:
+            if self._mywin != None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin=None
@@ -334,7 +334,7 @@ class Design456_SmartScale:
         del self.dialog
         dw=self.mw.findChildren(QtGui.QDockWidget)
         newsize=self.tab.count()
-        self.tab.removeTab(newsize-1) # it is 0,1,2,3 ..etc    
+        self.tab.removeTab(newsize-1) # it ==0,1,2,3 ..etc    
         self.__del__()  # Remove all smart scale 3dCOIN widgets
 
     def GetResources(self):

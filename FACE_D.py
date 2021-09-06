@@ -37,14 +37,14 @@ from typing import List
 def getDirectionAxis():
     try:
         s = Gui.Selection.getSelectionEx()
-        if len(s) is 0:
+        if len(s) ==0:
             print("Nothing was selected")
             return ""  # nothing to do we cannot calculate the direction
         obj = s[0]
         if (hasattr(obj, "SubObjects")):
             print("has subobject")
-            if len(obj.SubObjects) is not 0:
-                if (len (obj.SubObjects[0].Faces) is 0):
+            if len(obj.SubObjects) != 0:
+                if (len (obj.SubObjects[0].Faces) ==0):
                     print("no faces but has subobject")
                     #it is an edge not a face:
                     f= findFacehasSelectedEdge()
@@ -84,12 +84,12 @@ def getDirectionAxis():
         elif dir.x == -1:
             return "-x"
         else:
-            #We have an axis that is not 1,0: 
-            if(abs(dir.x) is 0):
+            #We have an axis that != 1,0: 
+            if(abs(dir.x) ==0):
                 return "+z"
-            elif (abs(dir.y) is 0):
+            elif (abs(dir.y) ==0):
                 return "+z"
-            elif (abs(dir.z) is 0):
+            elif (abs(dir.z) ==0):
                 return "+x"
             else: 
                 return "+z" # this is to avoid having NONE .. Don't know when this happen TODO: FIXME!
@@ -651,7 +651,7 @@ def getDirectionOfFace():
     else:
         # TODO: FIXME: WHAT SHOULD WE USE?
         print("failed")
-    if ss is not None:
+    if ss != None:
         # section direction
         yL = ss.CenterOfMass
         uv = ss.Surface.parameter(yL)
@@ -738,7 +738,7 @@ def clearPythonConsole(name:str=""):
     App.Console.PrintWarning("Cleared Python console " +str(now)+" by " + name+"\n")
     
 def is3DObject(obj):
-    if (obj.Shape.Volume is 0):
+    if (obj.Shape.Volume ==0):
         return False
     else:
         return True

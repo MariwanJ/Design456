@@ -124,7 +124,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     def handle(self, event):
         """
         This function is responsible of taking events and processing 
-        it. Required action will be executed here. If the object is not targeted, 
+        it. Required action will be executed here. If the object != targeted, 
         the function will skip the events. But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
         processed the event and no other widgets needs to get the 
@@ -146,7 +146,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             
             if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
-                if clickwdglblNode is not None:
+                if clickwdglblNode != None:
                     print("Double click detected")
                     #if not self.has_focus():
                     #    self.take_focus()
@@ -154,7 +154,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                     return 1
 
             elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-                if clickwdgdNode is not None or clickwdglblNode is not None:
+                if clickwdgdNode != None or clickwdglblNode != None:
                     if not self.has_focus():
                         self.take_focus()
                     self.do_callback()
@@ -252,7 +252,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             self.draw()
     
     def lblRedraw(self):
-        if(self.w_widgetlblSoNodes is not None):
+        if(self.w_widgetlblSoNodes != None):
             self.w_widgetlblSoNodes.removeAllChildren()
         
     
@@ -275,7 +275,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active is 0:
+        if self.w_active ==0:
             return  # Nothing to do
         self.w_active = 0
     
@@ -286,9 +286,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """  
         self.hide()
         try:
-            if self.w_parent is not None:
+            if self.w_parent != None:
                 self.w_parent.removeWidget(self)  # Parent should be the windows widget.
-            if self.w_parent is not None:
+            if self.w_parent != None:
                 self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
             self.removeSoNodeFromSoSwitch()
             self.removeSoNodes()
@@ -302,7 +302,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
-        if self.w_visible is 0:
+        if self.w_visible ==0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -314,7 +314,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus is 0:
+        if self.w_hasFocus ==0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0

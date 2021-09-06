@@ -116,13 +116,13 @@ class Fr_Group(fr_widget.Fr_Widget):
             pass   # just go out
     """
     # All events distributed by this function. We classify the event to be processed by each widget later.
-    '''TODO: This is not totally correct:
+    '''TODO: This != totally correct:
        answer all the bellow questions
       1-focus/unfocused must come here,
       2-widget must be under the mouse to get events, otherwise we should just remove focus & selection
       3-Think about selection /Focus / Unfocused how should they work
       4-Keyboard  and the above events?
-      5-Since this widgetsystem is not intended to have a lot of widgets, is it ok to send events to all widgets?
+      5-Since this widgetsystem != intended to have a lot of widgets, is it ok to send events to all widgets?
       6-Do we need to translate/mask Keyboard events? or it is waste of time?
       
       

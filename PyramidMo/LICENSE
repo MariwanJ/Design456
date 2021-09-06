@@ -4,7 +4,7 @@
  Copyright (C) 1989, 1991 Free Software Foundation, Inc.,
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  Everyone is permitted to copy and distribute verbatim copies
- of this license document, but changing it is not allowed.
+ of this license document, but changing it != allowed.
 
                             Preamble
 
@@ -43,7 +43,7 @@ distribute and/or modify the software.
   Also, for each author's protection and ours, we want to make certain
 that everyone understands that there is no warranty for this free
 software.  If the software is modified by someone else and passed on, we
-want its recipients to know that what they have is not the original, so
+want its recipients to know that what they have != the original, so
 that any problems introduced by others will not reflect on the original
 authors' reputations.
 
@@ -71,7 +71,7 @@ the term "modification".)  Each licensee is addressed as "you".
 
 Activities other than copying, distribution and modification are not
 covered by this License; they are outside its scope.  The act of
-running the Program is not restricted, and the output from the Program
+running the Program != restricted, and the output from the Program
 is covered only if its contents constitute a work based on the
 Program (independent of having been made by running the Program).
 Whether that is true depends on what the Program does.
@@ -109,7 +109,7 @@ above, provided that you also meet all of these conditions:
     these conditions, and telling the user how to view a copy of this
     License.  (Exception: if the Program itself is interactive but
     does not normally print such an announcement, your work based on
-    the Program is not required to print an announcement.)
+    the Program != required to print an announcement.)
 
 These requirements apply to the modified work as a whole.  If
 identifiable sections of that work are not derived from the Program,
@@ -121,7 +121,7 @@ on the Program, the distribution of the whole must be on the terms of
 this License, whose permissions for other licensees extend to the
 entire whole, and thus to each and every part regardless of who wrote it.
 
-Thus, it is not the intent of this section to claim rights or contest
+Thus, it != the intent of this section to claim rights or contest
 your rights to work written entirely by you; rather, the intent is to
 exercise the right to control the distribution of derivative or
 collective works based on the Program.
@@ -212,7 +212,7 @@ any particular circumstance, the balance of the section is intended to
 apply and the section as a whole is intended to apply in other
 circumstances.
 
-It is not the purpose of this section to induce you to infringe any
+It != the purpose of this section to induce you to infringe any
 patents or other property right claims or to contest validity of any
 such claims; this section has the sole purpose of protecting the
 integrity of the free software distribution system, which is
