@@ -211,7 +211,7 @@ class Fr_Widget (object):
         print("fr_widget Destructor")
         self.hide()
         self.removeSoNodes()
-        if self.w_parent is not None:
+        if self.w_parent != None:
             self.w_parent.removeWidget(self)  # Parent should be the windows widget.
 
     #@property 
@@ -293,7 +293,7 @@ class Fr_Widget (object):
             self.w_lbluserData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
-            if (self.w_lbl_calback_ is not None):
+            if (self.w_lbl_calback_ != None):
                 self.w_lbl_calback_(self.w_lbluserData)
 
         except Exception as err:
@@ -314,7 +314,7 @@ class Fr_Widget (object):
         self.w_userData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
-            if(self.w_callback_ is not None):
+            if(self.w_callback_ != None):
                 self.w_callback_(self.w_userData)
 
         except Exception as err:
@@ -335,7 +335,7 @@ class Fr_Widget (object):
         self.w_userData: could be any object (for ex @dataclass, class, number, vectors ..etc)
         """
         try:
-            if(self.w_move_callback_ is not None):
+            if(self.w_move_callback_ != None):
                 self.w_move_callback_(self.w_userData)
 
         except Exception as err:
@@ -404,7 +404,7 @@ class Fr_Widget (object):
     def removeSoNodes(self):
         """ Remove CoinNodes and their children """
         try:
-            if self.w_widgetSoNodes is not None:
+            if self.w_widgetSoNodes != None:
                 if type(self.w_widgetSoNodes) == list:
                     for so in self.w_widgetSoNodes:
                         so.removeAllChildren()
@@ -412,7 +412,7 @@ class Fr_Widget (object):
                 else:
                     self.w_widgetSoNodes.removeAllChildren()
                     del self.w_widgetSoNodes
-            if self.w_widgetlblSoNodes is not None:
+            if self.w_widgetlblSoNodes != None:
                 if type(self.w_widgetlblSoNodes) == list:
                     for so in self.w_widgetlblSoNodes:
                         so.removeAllChildren()
@@ -436,11 +436,11 @@ class Fr_Widget (object):
             Remove the children from the widget COIN3D node which is the soseparators
             i.e. all drawing, color ..etc for the widget 
         """
-        if self.w_wdgsoSwitch is not None:
+        if self.w_wdgsoSwitch != None:
             self.w_wdgsoSwitch.removeAllChildren()
 
     def removeSoSwitch(Self):
-        if Self.w_wdgsoSwitch is not None:
+        if Self.w_wdgsoSwitch != None:
             try:
                 del Self.w_wdgsoSwitch
             except:

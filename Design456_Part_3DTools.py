@@ -65,7 +65,7 @@ class Design456_Part_Merge:
             App.ActiveDocument.recompute()
             if newObj.isValid() == False:
                 App.ActiveDocument.removeObject(newObj.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed Merge"
                 faced.errorDialog(errMessage)
             else:
@@ -129,7 +129,7 @@ class Design456_Part_Subtract:
             App.ActiveDocument.recompute()
             if newObj.isValid() == False:
                 App.ActiveDocument.removeObject(NewJ.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed to subtract objects"
                 faced.errorDialog(errMessage)
             else:
@@ -323,7 +323,7 @@ class Design456_Part_Shell:
             App.ActiveDocument.openTransaction(translate("Design456","Part Shell"))
             thickness = QtGui.QInputDialog.getDouble(
                 None, "Thickness", "Value:", 0, -1000.0, 1000.0, 2)[0]
-            if(thickness is 0):
+            if(thickness ==0):
                 return  # Nothing to do
             allObjects = []
             for o in s:
@@ -341,7 +341,7 @@ class Design456_Part_Shell:
             thickObj.Faces = (currentObj, getfacename,)
             if thickObj.isValid() == False:
                 App.ActiveDocument.removeObject(thickObj.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed create shell"
                 faced.errorDialog(s,errMessage)
             else:
@@ -388,7 +388,7 @@ class Design456_Part_Fillet:
             App.ActiveDocument.openTransaction(translate("Design456","Part Fillet"))
             Radius = QtGui.QInputDialog.getDouble(
                 None, "Fillet Radius", "Radius:", 0, 1.0, 20.0, 2)[0]
-            if (Radius is 0):
+            if (Radius ==0):
                 return
             tempNewObj = App.ActiveDocument.addObject(
                 "Part::Fillet", "tempFillet")
@@ -397,7 +397,7 @@ class Design456_Part_Fillet:
             names = sub1.SubElementNames
             print(names)
             EdgesToBeChanged = []
-            if (len(names) is not 0):
+            if (len(names) != 0):
                 """ we need to take the rest of the string
                             i.e. 'Edge15' --> take out 'Edge'-->4 bytes
                             len('Edge')] -->4
@@ -414,7 +414,7 @@ class Design456_Part_Fillet:
 
             if tempNewObj.isValid() == False:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed to fillet the objects"
                 faced.errorDialog(errMessage)
             else:
@@ -464,7 +464,7 @@ class Design456_Part_Chamfer:
             App.ActiveDocument.openTransaction(translate("Design456","Part Chamfer"))
             Radius = QtGui.QInputDialog.getDouble(
                 None, "Radius", "Radius:", 0, -10000.0, 10000.0, 2)[0]
-            if (Radius is 0):
+            if (Radius ==0):
                 return  # Nothing to do here
             sub1 = s[0]
             tempNewObj = App.ActiveDocument.addObject(
@@ -472,7 +472,7 @@ class Design456_Part_Chamfer:
             tempNewObj.Base = sub1.Object
             names = sub1.SubElementNames
             EdgesToBeChanged = []
-            if (len(names) is not 0):
+            if (len(names) != 0):
                 for name in names:
                     edgeNumbor = int(name[4:len(name)])
                     EdgesToBeChanged.append((edgeNumbor, Radius, Radius))
@@ -485,7 +485,7 @@ class Design456_Part_Chamfer:
             App.ActiveDocument.recompute()
             if tempNewObj.isValid() == False:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed to fillet the objects"
                 faced.errorDialog(errMessage)
             else:
