@@ -85,7 +85,7 @@ class Design456_SplitObject:
             App.ActiveDocument.recompute()
             if j.isValid() == False:
                 App.ActiveDocument.removeObject(j.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed to fillet the objects"
                 faced.errorDialog(errMessage)
             else:

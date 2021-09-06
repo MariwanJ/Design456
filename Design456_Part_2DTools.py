@@ -249,7 +249,7 @@ class Design456_Part_Surface:
             App.ActiveDocument.recompute()
             if tempNewObj.isValid() == False:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed to fillet the objects"
                 faced.errorDialog(errMessage)
             else:

@@ -57,12 +57,12 @@ class Design456_Extrude:
             # F.DirMode causes too many failure. Some faces needs custom, other needs Normal. 
             #Difficult to know when you use each of them.
             f.DirMode = "Normal"            #Don't use Custom as it leads to PROBLEM!
-            f.DirLink = None                #Above statement is not always correct. Some faces require 'custom'
+            f.DirLink = None                #Above statement != always correct. Some faces require 'custom'
             degreeAngle = math.degrees(m.Placement.Rotation.Angle)
             print(degreeAngle)
             """
             YOU SHOULD NOT SPECIFY THIS .. OTHERWISE IT COULD BE WRONG!!
-            if degreeAngle is 0:
+            if degreeAngle ==0:
                 f.Dir = m.Placement.Rotation.Axis
             elif ((degreeAngle== 90) or (degreeAngle== -90)):
                 f.Dir = (0, 1, 0)
@@ -72,7 +72,7 @@ class Design456_Extrude:
             #Extrude must get a negative number ???
             f.LengthFwd =(QtGui.QInputDialog.getDouble(
                 None, "Get length", "Length:", 0, -10000.0, 10000.0, 2)[0])
-            while(f.LengthFwd is 0):
+            while(f.LengthFwd ==0):
                 _sleep(.1)
                 Gui.updateGui()
             f.LengthRev = 0.0
@@ -93,7 +93,7 @@ class Design456_Extrude:
             if newObj.isValid() == False:
                 App.ActiveDocument.removeObject(newObj.Name)
                 App.ActiveDocument.removeObject(f.Name)
-                # Shape is not OK
+                # Shape != OK
                 errMessage = "Failed to extrude the shape"
                 faced.getInfo(m).errorDialog(errMessage)
             else:

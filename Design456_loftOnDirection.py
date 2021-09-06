@@ -177,7 +177,7 @@ class Design456_loftOnDirection_ui(object):
         selectedEdge = geTobject.SubObjects[0]      # select one element
         """This must be fixed. I don't know how to distinguish between 2s and 3d objects.
         I will return for now always 0 but this MUST BE FIXED.2021-02-03 Mariwan
-        if(selectedEdge.Volume  is 0 ):
+        if(selectedEdge.Volume  ==0 ):
                 #We have a 2D shape .. 
                 self.msgBOXShow()
                 return 1
@@ -189,7 +189,7 @@ class Design456_loftOnDirection_ui(object):
         try:
             sel = Gui.Selection.getSelectionEx()
             if(len(sel) <1 or len(sel)>1 or 
-               len(Gui.Selection.getSelectionEx()[0].SubElementNames) is 0 ):
+               len(Gui.Selection.getSelectionEx()[0].SubElementNames) ==0 ):
                 # Two object must be selected
                 errMessage = "Select a face to use LoftOnDirection Tool"
                 faced.errorDialog(errMessage)
@@ -229,7 +229,7 @@ class Design456_loftOnDirection_ui(object):
                 # section direction
 
                 # section axis
-                if createAxis is not 0:
+                if createAxis != 0:
                     # section axis
                     points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
                         0.0, 0.0, ValueLength)]
@@ -240,7 +240,7 @@ class Design456_loftOnDirection_ui(object):
                     # section axis
 
                 #### section scale ####
-                if createLoft is not 0:
+                if createLoft != 0:
                     #### section scale ####
                     _part.show(selectedEdge.copy())
                     firstFace = App.ActiveDocument.ActiveObject
@@ -250,21 +250,21 @@ class Design456_loftOnDirection_ui(object):
                     # section placement face in length and direction
                     newLocation = (App.Vector(direction).scale(
                         ValueLength, ValueLength, ValueLength))
-                    if (direction.x is not 0 and abs(direction.x)==direction.x):
+                    if (direction.x != 0 and abs(direction.x)==direction.x):
                         newLocation.x = newLocation.x+selectedEdge.Placement.Base.x*direction.x
-                    elif (direction.x is not 0 and abs(direction.x)!=direction.x):
+                    elif (direction.x != 0 and abs(direction.x)!=direction.x):
                         newLocation.x = newLocation.x-selectedEdge.Placement.Base.x*direction.x
                     else:
                         newLocation.x = selectedEdge.Placement.Base.x
-                    if (direction.y is not 0 and abs(direction.y)==direction.y): #positive >0
+                    if (direction.y != 0 and abs(direction.y)==direction.y): #positive >0
                         newLocation.y = newLocation.y+selectedEdge.Placement.Base.y*direction.y
-                    elif (direction.y is not 0 and abs(direction.x)!=direction.y): #negative <0
+                    elif (direction.y != 0 and abs(direction.x)!=direction.y): #negative <0
                         newLocation.y = newLocation.y-selectedEdge.Placement.Base.y*direction.y
                     else:
                         newLocation.y = selectedEdge.Placement.Base.y
-                    if (direction.z is not 0 and abs(direction.z)==direction.z):
+                    if (direction.z != 0 and abs(direction.z)==direction.z):
                         newLocation.z = newLocation.z+selectedEdge.Placement.Base.z*direction.z
-                    elif (direction.z is not 0 and abs(direction.z)!=direction.z): #negative <0:
+                    elif (direction.z != 0 and abs(direction.z)!=direction.z): #negative <0:
                         newLocation.z = newLocation.z-selectedEdge.Placement.Base.z*direction.z
                     else:
                         newLocation.z = selectedEdge.Placement.Base.z
