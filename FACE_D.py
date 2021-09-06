@@ -784,7 +784,6 @@ def Overlapping(Sourceobj1 , Targetobj2):
         if(Sourceobj1.Shape==Targetobj2.Shape):
             return False
         common_= Sourceobj1.Shape.common(Targetobj2.Shape)
-        print("area",common_.Area)
         if (common_.Area !=0.0):
             return True
         else:
