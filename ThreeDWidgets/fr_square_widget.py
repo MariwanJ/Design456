@@ -206,12 +206,12 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         After the widgets damages, this function should be called.        
         """
         if self.is_visible():
-            # Remove the seneNodes from the widget
+            # Remove the sceneNodes from the widget
             self.removeSoNodes()
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
             self.draw()
 
     def take_focus(self):
@@ -442,12 +442,12 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         After the widgets damages, this function should be called.        
         """
         if self.is_visible():
-            # Remove the seneNodes from the widget
+            # Remove the sceneNodes from the widget
             self.removeSoNodes()
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
             # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitchFromSeneGraph(self.w_wdgsoSwitch)
+            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
             self.draw()
 
     def take_focus(self):
