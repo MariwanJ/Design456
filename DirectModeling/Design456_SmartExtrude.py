@@ -139,24 +139,24 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         #Do final operation. Either leave it as it is, merge or subtract
         print("linktocaller.OperationOption",linktocaller.OperationOption)
         if linktocaller.OperationOption == 2:
-            #Subtraction : Subtract other objects with the extruded part.
+            #2 - Subtraction : Subtract other objects with the extruded part.
             
             #First merge the old object with the extruded face
             old = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
             old.Shapes=[linktocaller.selectedObj.Object,linktocaller.newObject]
             #Subtraction is complex. I have to cut from each object the same extruded part.
-            if (linktocaller.objChangedTransparency is not None):
-                print(len(linktocaller.objChangedTransparency))
-            if (linktocaller.objChangedTransparency is not None):
+            if (linktocaller.objChangedTransparency  !=[]):
                 for i in range(0,len(linktocaller.objChangedTransparency)):
-                    newObjcut.append(App.ActiveDocument.addObject("Part::MultiFuse", "CUT"+str(i)) ) 
-                    print(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i]))             
-                    newObjcut[i].Base = App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i])  # Target
+                    newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT"+str(i)) ) 
+                    newObjcut[i].Base = App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Name)  # Target
                     newObjcut[i].Tool = old               # Subtracted shape/object
                     newObjcut[i].Refine = True
-
+                    TE= Gui.ActiveDocument.getObject(newObjcut[i].Name)
+                    TE.Transparency =0
+                    App.ActiveDocument.recompute()
+                    
         elif linktocaller.OperationOption == 1:
-            #Merge : Merge other objects with the extruded part and with the old object
+            #1 - Merge : Merge other objects with the extruded part and with the old object
             newObj = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
             #TODO FIX ME .. IT SHOULD BE SHAPE NOT OBJ. 
             linktocaller.objChangedTransparency.append(linktocaller.selectedObj.Object.Shape)
