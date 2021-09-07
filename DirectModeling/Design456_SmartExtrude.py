@@ -139,34 +139,39 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         #Do final operation. Either leave it as it is, merge or subtract
         print("linktocaller.OperationOption",linktocaller.OperationOption)
         if linktocaller.OperationOption == 2:
-            #Subtraction : Subtract other objects with the extruded part.
+            #2 - Subtraction : Subtract other objects with the extruded part.
             
             #First merge the old object with the extruded face
             old = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
             old.Shapes=[linktocaller.selectedObj.Object,linktocaller.newObject]
             #Subtraction is complex. I have to cut from each object the same extruded part.
-            if (linktocaller.objChangedTransparency is not None):
-                print(len(linktocaller.objChangedTransparency))
-            if (linktocaller.objChangedTransparency is not None):
+            if (linktocaller.objChangedTransparency  !=[]):
                 for i in range(0,len(linktocaller.objChangedTransparency)):
-                    newObjcut.append(App.ActiveDocument.addObject("Part::MultiFuse", "CUT"+str(i)) ) 
-                    print(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i]))             
-                    newObjcut[i].Base = App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i])  # Target
+                    newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT"+str(i)) ) 
+                    newObjcut[i].Base = App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Name)  # Target
                     newObjcut[i].Tool = old               # Subtracted shape/object
                     newObjcut[i].Refine = True
-
+                    TE= Gui.ActiveDocument.getObject(newObjcut[i].Name)
+                    TE.Transparency =0
+                    App.ActiveDocument.recompute()
+                    
         elif linktocaller.OperationOption == 1:
-            #Merge : Merge other objects with the extruded part and with the old object
-            newObj = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
+            #1 - Merge : Merge other objects with the extruded part and with the old object
+            newObj = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
             #TODO FIX ME .. IT SHOULD BE SHAPE NOT OBJ. 
-            linktocaller.objChangedTransparency.append(linktocaller.selectedObj.Object.Shape)
-            linktocaller.objChangedTransparency.append(linktocaller.newObject.Shape)
-            newObj.Shapes = linktocaller.objChangedTransparency
-            newObj.Refine = True
+
+            if (linktocaller.objChangedTransparency  !=[]): 
+                all=[]
+                for obj in linktocaller.objChangedTransparency:
+                    all.append(App.ActiveDocument.getObject(obj.Name))
+                linktocaller.objChangedTransparency.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))
+                linktocaller.objChangedTransparency.append(App.ActiveDocument.getObject(linktocaller.newObject.Name))
+                all.append( linktocaller.objChangedTransparency)
+                newObj.Shapes=all
+                newObj.Refine = True
         elif linktocaller.OperationOption ==0:
             #is here just to make the code more readable. 
             pass # nothing to do . 
-
 
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.
@@ -219,7 +224,7 @@ class Design456_SmartExtrude:
             result=None
             self.newObject.LengthFwd = self.extrudeLength
             if self.OperationOption ==2 or self.OperationOption ==1 :  # Must be subtract to activate this
-                if (len(self.objChangedTransparency) != 0):
+                if (len(self.objChangedTransparency) != []):
                     for obj in self.objChangedTransparency:
                         if (hasattr(obj,"Name")):
                             o = Gui.ActiveDocument.getObject(obj.Name)
