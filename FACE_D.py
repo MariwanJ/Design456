@@ -749,15 +749,21 @@ def findMainListedObjects():
     Returns:
         [list]: [list of objects found]
     """
+    #TODO : OPTIMIZE ME 
     try:
         results=[]
-        objects= App.ActiveDocument.Objects
-        counter=0
+        objects=[]
+        for obj in App.ActiveDocument.Objects:
+            if (hasattr(obj,"Shape")):
+                print ("Object: ", obj.Name)
+                objects.append(obj)
         for i in range (0,len(objects)):
-            results.append(objects[i])
             if objects[i].hasChildElement():
                 i=i+1         # skip next item
+            else:
+                results.append(objects[i])
         return results        #We have all objects that has no children (root objects)
+    
     except Exception as err:
             App.Console.PrintError("'findMainListedObjects' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -803,15 +809,21 @@ def checkCollision(newObj):
         newObj ([3D Selection Object]): [Object checked with document objects]
 
     Returns:
-        [type]: [description]
+        [type]: [Document objects]
     """
     try:
         objList=findMainListedObjects()     # get the root objects - no children
         results=[]
+        o=None
         for obj in objList:
             if (Overlapping(newObj,obj) is True):
-                results.append(obj)
-        return results
+                if (hasattr(obj,"Name")):
+                    o = Gui.ActiveDocument.getObject(obj.Name)
+                elif (hasattr(obj,"Obj.Name")):
+                    o = Gui.ActiveDocument.getObject(obj.Object.Name)                      
+                if(o is not None):
+                    results.append(o)
+        return results   #Return document objects
     except Exception as err:
             App.Console.PrintError("'checkCollision' Failed. "
                                    "{err}\n".format(err=str(err)))
