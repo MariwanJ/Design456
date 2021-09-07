@@ -3110,7 +3110,7 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
     Returns:
         [SoSeparator]: [SoSeparator which hold the drawing. Add it to the scenegraph to show the arrow]
     """
-    if type is 0 :
+    if type == 0:
 
         arrow1_str="""#Inventor V2.1 ascii
             DEF root Separator {

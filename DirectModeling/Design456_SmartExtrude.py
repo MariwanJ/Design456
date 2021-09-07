@@ -157,16 +157,21 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                     
         elif linktocaller.OperationOption == 1:
             #1 - Merge : Merge other objects with the extruded part and with the old object
-            newObj = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
+            newObj = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
             #TODO FIX ME .. IT SHOULD BE SHAPE NOT OBJ. 
-            linktocaller.objChangedTransparency.append(linktocaller.selectedObj.Object.Shape)
-            linktocaller.objChangedTransparency.append(linktocaller.newObject.Shape)
-            newObj.Shapes = linktocaller.objChangedTransparency
-            newObj.Refine = True
+
+            if (linktocaller.objChangedTransparency  !=[]): 
+                all=[]
+                for obj in linktocaller.objChangedTransparency:
+                    all.append(App.ActiveDocument.getObject(obj.Name))
+                linktocaller.objChangedTransparency.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))
+                linktocaller.objChangedTransparency.append(App.ActiveDocument.getObject(linktocaller.newObject.Name))
+                all.append( linktocaller.objChangedTransparency)
+                newObj.Shapes=all
+                newObj.Refine = True
         elif linktocaller.OperationOption ==0:
             #is here just to make the code more readable. 
             pass # nothing to do . 
-
 
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.
@@ -219,7 +224,7 @@ class Design456_SmartExtrude:
             result=None
             self.newObject.LengthFwd = self.extrudeLength
             if self.OperationOption ==2 or self.OperationOption ==1 :  # Must be subtract to activate this
-                if (len(self.objChangedTransparency) != 0):
+                if (len(self.objChangedTransparency) != []):
                     for obj in self.objChangedTransparency:
                         if (hasattr(obj,"Name")):
                             o = Gui.ActiveDocument.getObject(obj.Name)
