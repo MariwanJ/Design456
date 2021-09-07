@@ -777,7 +777,7 @@ def Overlapping(Sourceobj1 , Targetobj2):
     """
     try:
 
-        if (is3DObject(Sourceobj1) is False or is3DObject(Targetobj2) is False):
+        if (is3DObject(Sourceobj1) == False or is3DObject(Targetobj2)== False):
             return False
         if (Sourceobj1==Targetobj2):
             return False # The same object
