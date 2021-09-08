@@ -99,7 +99,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.ExtrudeLBL.setText(
             "Length= " + str(round(linktocaller.extrudeLength, 4)))
         linktocaller.reCreateExtrudeObject()
-
+        App.ActiveDocument.recompute()
     except Exception as err:
         App.Console.PrintError("'View Inside objects' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -138,7 +138,6 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         App.ActiveDocument.commitTransaction()  # undo reg.
         newObjcut=[]
         #Do final operation. Either leave it as it is, merge or subtract
-        print("linktocaller.OperationOption",linktocaller.OperationOption)
         if linktocaller.OperationOption == 2:
             #2 - Subtraction : Subtract other objects with the extruded part.
             
@@ -148,13 +147,9 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                 old.Shapes=[linktocaller.selectedObj.Object,linktocaller.newObject]
             else:
                 old.Shapes=[linktocaller.newObject]
-                    
+
             #Subtraction is complex. I have to cut from each object the same extruded part.
             if (linktocaller.objChangedTransparency  !=[]):
-                for i in range(0,len(linktocaller.objChangedTransparency)):
-                    print("**************")
-                    print (type(linktocaller.objChangedTransparency[i]))
-                    print("**************")
                 for i in range(0,len(linktocaller.objChangedTransparency)):
                     newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT"+str(i)) ) 
                     newObjcut[i].Base = linktocaller.objChangedTransparency[i]  # Target
@@ -168,26 +163,12 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
             #1 - Merge : Merge other objects with the extruded part and with the old object
             newObj = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
             if (linktocaller.objChangedTransparency  !=[]): 
-                all=[]
-                if(linktocaller.isFaceOf3DObj()!=True):
-                    if (hasattr(linktocaller.selectedObj,"Name")):
-                        all.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Name))
-                    elif (hasattr(linktocaller.selectedObj,"Object.Name")):
-                        all.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))
-                    else:
-                        raise ValueError ("Object has no Name or Object.Name")
-                    
-                if (hasattr(linktocaller.newObject,"Name")):
-                    all.append(App.ActiveDocument.getObject(linktocaller.newObject.Name))
-                elif (hasattr(linktocaller.newObject,"Object.Name")):
-                    all.append(App.ActiveDocument.getObject(linktocaller.newObject.Object.Name))
-                    
-                    print(linktocaller.newObject)
-                    print(dir(linktocaller.newObject))
-                    print(help(linktocaller.newObject))
-                
-                all=all+linktocaller.objChangedTransparency
-                newObj.Shapes=all
+                objShapes=[]
+                objShapes.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))                    
+                objShapes=objShapes+linktocaller.objChangedTransparency
+                for shape in objShapes:
+                    objShapes.append(shape.Object.Shape)
+                newObj.Shapes=objShapes
                 newObj.Refine = True
         elif linktocaller.OperationOption ==0:
             #is here just to make the code more readable. 
@@ -195,6 +176,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
 
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.
+        
     except Exception as err:
         faced.EnableAllToolbar(True)
         App.Console.PrintError("'Design456_Extrude' Release Filed. "
@@ -241,26 +223,23 @@ class Design456_SmartExtrude:
         ]
         """
         try:
-            result=None
             self.newObject.LengthFwd = self.extrudeLength
-            if self.OperationOption ==2 or self.OperationOption ==1 :  # Must be subtract to activate this
-                if self.objChangedTransparency is not None:
-                    if (len(self.objChangedTransparency) != []):
-                        for obj in self.objChangedTransparency:
-                            obj.Transparency = 0
-
-                result = faced.checkCollision(self.newObject)
-                if len(result) != 0:
-                    for obj in result:
-                        obj.Transparency = 80
-            self.objChangedTransparency=result
-            print("------------------")
-            print("len transparency objects",len(result))
-            for onn in result:
-                print (type(onn))
-            print("------------------")
-            
-            App.ActiveDocument.recompute()
+            if self.OperationOption ==2 or self.OperationOption ==1 : 
+                if self.objChangedTransparency !=[]:
+                    for obj in self.objChangedTransparency:
+                        obj.Transparency = 0
+                else:
+                    print("here")
+                    result=[]
+                    result = faced.checkCollision(self.newObject)
+                    print ("result----------------------", len(result))
+                    if result != []:
+                        for obj in result:
+                            print(obj.Name)
+                            obj.Transparency = 80
+                            self.objChangedTransparency.append(obj)
+                App.ActiveDocument.recompute()
+                
         except Exception as err:
             App.Console.PrintError("'reCreateExtrudeObject' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -299,19 +278,10 @@ class Design456_SmartExtrude:
         self._vector = self.calculateNewVector()
         self.extrudeLength = 0.0
 
-        #FIXME - WRONG
-        print(face1)
-        print(face1.Surface)
-        print(face1.Surface.Rotation)
-        print(face1.Surface.Rotation.Axis)
-        print(face1.Surface.Rotation.Angle)
-
         rotation = (face1.Surface.Rotation.Axis.x,
                     face1.Surface.Rotation.Axis.y,
                     face1.Surface.Rotation.Axis.z,
                     math.degrees(face1.Surface.Rotation.Angle))
-
-        print("rotation", rotation)
         return rotation
 
     def isFaceOf3DObj(self):
@@ -545,13 +515,13 @@ class Design456_SmartExtrude:
 
     def btnState(self, button):
         if button.text()=="As Is":
-             if button.isChecked() == True:
+            if button.isChecked() == True:
                 self.OperationOption = 0  # 0 as Is default, 1 Merged, 2 Subtracted
         elif button.text()=="Merge":
-             if button.isChecked() == True:
+            if button.isChecked() == True:
                 self.OperationOption = 1
         elif button.text()=="Subtract":
-             if button.isChecked() == True:
+            if button.isChecked() == True:
                 self.OperationOption = 2
 
     def hide(self):

@@ -599,7 +599,7 @@ class createActionTab:
 def findFacehasSelectedEdge():
     """[Find Face that has the selected edge]
     Returns:
-        [Face Object]: [Return the face has the selected edge or None if error occur]
+        [Face Object]: [Return the face of the selected edge or None if error occurs]
     """
     obj = Gui.Selection.getSelectionEx()[0]
     edge = obj.SubObjects[0]
@@ -620,7 +620,7 @@ def findFaceSHavingTheSameEdge():
     s = Gui.Selection.getSelectionEx()[0]
     edge = s.SubObjects[0]
     shape = s.Object.Shape
-    return shape.ancestorsOfType(edge, Part.Face)
+    return shape.ancestorsOfType(edge, _part.Face)
 
 
 def findnormalAtforEdge():
@@ -737,40 +737,30 @@ def clearPythonConsole(name:str=""):
     now = time.ctime(int(time.time()))
     App.Console.PrintWarning("Cleared Python console " +str(now)+" by " + name+"\n")
     
-def is3DObject(obj):
-    if (obj.Shape.Volume ==0):
-        return False
-    else:
-        return True
-    
+
 def findMainListedObjects():
     """[Find and return main objects in the active document - no children will be return]
 
     Returns:
         [list]: [list of objects found]
     """
-    #TODO : OPTIMIZE ME - might be wrong! FIXME:
-    try:
-        results=[]
-        objects=[]
-        for obj in App.ActiveDocument.Objects:
-            if (hasattr(obj,"Shape")):
-                print ("Object: ", obj.Name)
-                objects.append(obj)
-        for i in range (0,len(objects)):
-            print("TypeIS",type(objects[i]))
-            if objects[i].hasChildElement():
-                i=i+1         # skip next item
-            else:
-                results.append(objects[i])
-        return results        #We have all objects that has no children (root objects)
-    
-    except Exception as err:
-            App.Console.PrintError("'findMainListedObjects' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+    #TODO : THIS IS CORRECT .. OPTIMIZED LATER .. DON'T CHANGE 
+    results=[]
+    objects=[]
+    for obj in App.ActiveDocument.Objects:
+        if ((hasattr(obj,"Shape")) and (type(obj) != Gui.ViewProviderDocumentObject)):
+            print ("Object: ", obj.Name)
+            objects.append(obj)
+            
+    allvalues=len(objects)
+    for i in range (0,allvalues):
+        if objects[i].hasChildElement()==True:
+            results.append(objects[i])         # skip next item
+            i=i+1 #skip the child
+        else:
+            results.append(objects[i])
+    return results        #We have all objects that has no children (root objects)
+
 
 def Overlapping(Sourceobj1 , Targetobj2):
     """[Check if two objects overlap each other]
@@ -782,27 +772,24 @@ def Overlapping(Sourceobj1 , Targetobj2):
     Returns:
         [type]: [description]
     """
-    try:
+    if (Sourceobj1.Shape.Volume ==0  or Targetobj2.Shape.Volume ==0):
+        return False
+    elif (Sourceobj1==Targetobj2):
+        return False                # The same object
+    elif (Sourceobj1.Shape==Targetobj2.Shape):
+        return False
+    print("{{{{{{{{{{{{{{{{{{{{{{{{")
+    print("First is ",Sourceobj1.Name)
+    print("Second ", Targetobj2.Name)
+    print("{{{{{{{{{{{{{{{{{{{{{{{{")
 
-        if (is3DObject(Sourceobj1) == False or is3DObject(Targetobj2)== False):
-            return False
-        if (Sourceobj1==Targetobj2):
-            return False # The same object
-        if(Sourceobj1.Shape==Targetobj2.Shape):
-            return False
-        common_= Sourceobj1.Shape.common(Targetobj2.Shape)
-        if (common_.Area !=0.0):
-            return True
-        else:
-            return False
+    common_= Sourceobj1.Shape.common(Targetobj2.Shape)
+    if (common_.Area !=0.0):
+        return True
+    else:
+        return False
+
         
-    except Exception as err:
-            App.Console.PrintError("'Overlapping' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
 def checkCollision(newObj):
     """[Find a list of objects from the active document that is/are intersecting with newObj]
 
@@ -812,25 +799,23 @@ def checkCollision(newObj):
     Returns:
         [type]: [Document objects]
     """
-    try:
-        objList=findMainListedObjects()     # get the root objects - no children
-        results=[]
-        o=None
-        for obj in objList:
-            if (Overlapping(newObj,obj) is True):
-                print("///////////////////////")
-                print("type was " , type(obj))
-                if (hasattr(obj,"Name")):
-                    o = Gui.ActiveDocument.getObject(obj.Name)
-                elif (hasattr(obj,"Obj.Name")):
-                    o = Gui.ActiveDocument.getObject(obj.Object.Name)                      
-                if(o is not None):
-                    results.append(o)
-        
-        return results   #Return document objects
-    except Exception as err:
-            App.Console.PrintError("'checkCollision' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+    objList=findMainListedObjects()     # get the root objects - no children
+    results=[]
+    o=None
+    for obj in objList:
+        if (Overlapping(newObj,obj) == True):
+            if (hasattr(obj,"Name")):
+                o = App.ActiveDocument.getObject(obj.Name)
+            elif (hasattr(obj,"Obj.Name")):
+                o = App.ActiveDocument.getObject(obj.Object.Name)                      
+        if(o is not None):
+            results.append(o)
+    for i in results:
+        print("====================")
+        print(type(i))
+        print(i.Name)
+
+    print("Collision are =" ,len(results))
+    print("====================")
+
+    return results   #Return document objects
