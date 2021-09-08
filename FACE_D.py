@@ -749,7 +749,7 @@ def findMainListedObjects():
     Returns:
         [list]: [list of objects found]
     """
-    #TODO : OPTIMIZE ME 
+    #TODO : OPTIMIZE ME - might be wrong! FIXME:
     try:
         results=[]
         objects=[]
@@ -758,6 +758,7 @@ def findMainListedObjects():
                 print ("Object: ", obj.Name)
                 objects.append(obj)
         for i in range (0,len(objects)):
+            print("TypeIS",type(objects[i]))
             if objects[i].hasChildElement():
                 i=i+1         # skip next item
             else:
@@ -817,12 +818,15 @@ def checkCollision(newObj):
         o=None
         for obj in objList:
             if (Overlapping(newObj,obj) is True):
+                print("///////////////////////")
+                print("type was " , type(obj))
                 if (hasattr(obj,"Name")):
                     o = Gui.ActiveDocument.getObject(obj.Name)
                 elif (hasattr(obj,"Obj.Name")):
                     o = Gui.ActiveDocument.getObject(obj.Object.Name)                      
                 if(o is not None):
                     results.append(o)
+        
         return results   #Return document objects
     except Exception as err:
             App.Console.PrintError("'checkCollision' Failed. "

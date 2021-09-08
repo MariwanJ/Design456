@@ -152,6 +152,10 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
             #Subtraction is complex. I have to cut from each object the same extruded part.
             if (linktocaller.objChangedTransparency  !=[]):
                 for i in range(0,len(linktocaller.objChangedTransparency)):
+                    print("**************")
+                    print (type(linktocaller.objChangedTransparency[i]))
+                    print("**************")
+                for i in range(0,len(linktocaller.objChangedTransparency)):
                     newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT"+str(i)) ) 
                     newObjcut[i].Base = linktocaller.objChangedTransparency[i]  # Target
                     newObjcut[i].Tool = old               # Subtracted shape/object
@@ -240,9 +244,10 @@ class Design456_SmartExtrude:
             result=None
             self.newObject.LengthFwd = self.extrudeLength
             if self.OperationOption ==2 or self.OperationOption ==1 :  # Must be subtract to activate this
-                if (len(self.objChangedTransparency) != []):
-                    for obj in self.objChangedTransparency:
-                        obj.Transparency = 0
+                if self.objChangedTransparency is not None:
+                    if (len(self.objChangedTransparency) != []):
+                        for obj in self.objChangedTransparency:
+                            obj.Transparency = 0
 
                 result = faced.checkCollision(self.newObject)
                 if len(result) != 0:
