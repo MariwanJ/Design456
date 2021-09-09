@@ -138,50 +138,47 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         App.ActiveDocument.commitTransaction()  # undo reg.
         newObjcut=[]
         #Do final operation. Either leave it as it is, merge or subtract
-        if linktocaller.OperationOption == 2:
-            #2 - Subtraction : Subtract other objects with the extruded part.
-
+        if linktocaller.OperationOption != 0:
             #First merge the old object with the extruded face
-            old = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTemp")
+            old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
+            old.Refine =True 
+            allObjects=[]
+            if linktocaller.OperationOption == 1:
+                for i in range(0,len(linktocaller.objChangedTransparency)):
+                    allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
+
             if(linktocaller.isFaceOf3DObj()==True):
                 #We have a 3D object.
-                old.Shapes=[linktocaller.selectedObj.Object,linktocaller.newObject]
+                print("Ok" ,len(allObjects))
+                allObjects.append(linktocaller.selectedObj.Object)
+                allObjects.append(linktocaller.newObject)
             else:
-                old.Shapes=App.ActiveDocument.getObject(linktocaller.newObject.Name)
+                allObjects.append(App.ActiveDocument.getObject(linktocaller.newObject.Name))
                 
+            old.Shapes=allObjects
+            Gui.ActiveDocument.getObject(old.Name).Transparency=0
+            #subtraction will continue to work here 
+            if linktocaller.OperationOption == 2:
+                #Subtraction is complex. I have to cut from each object the same extruded part.
+                if (linktocaller.objChangedTransparency  !=[]):
+                    allObjects=[]
+                    print(len(linktocaller.objChangedTransparency))
 
-            # #Subtraction is complex. I have to cut from each object the same extruded part.
-            # if (linktocaller.objChangedTransparency  !=[]):
-            #     allObjects=[]
-            #     for i in range(0,len(linktocaller.objChangedTransparency)):
-            #         allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
-            #         linktocaller.objChangedTransparency[i].Transparency =0
-            #     allObjects.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))
-            #     App.ActiveDocument.recompute()
-            #     for i in allObjects:
-            #         print (type(i))
-            #         print(i.Name)
-            #     print("!!!!!!!!!!!!!!!!!!!!!!!!!")
-            #    for i in range(0,len(linktocaller.objChangedTransparency)):
-            #        newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT"+str(i)) ) 
-            #        newObjcut[i].Base = allObjects  # Target
-            #        newObjcut[i].Tool = old               # Subtracted shape/object
-            #        newObjcut[i].Refine = True
-                    
-                newObjcut=App.ActiveDocument.addObject("Part::Cut", "CUT")
-                App.ActiveDocument.recompute()
+                    for i in range(0,len(linktocaller.objChangedTransparency)):
+                        allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
+                        linktocaller.objChangedTransparency[i].Transparency =0
+                    allObjects.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))
+                    App.ActiveDocument.recompute()
+                    #Create a cut object for each transparency object 
+                    for i in range(0,len(linktocaller.objChangedTransparency)):
+                        newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT"+str(i)) ) 
+                        newObjcut[i].Base = allObjects[i]   # Target
+                        newObjcut[i].Tool = old               # Subtracted shape/object
+                        newObjcut[i].Refine = True
 
-        elif linktocaller.OperationOption == 1:
-            #1 - Merge : Merge other objects with the extruded part and with the old object
-            newObjFuse = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-            if (linktocaller.objChangedTransparency  !=[]): 
-                objShapes=[]
-                objShapes.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))                    
-                objShapes=objShapes+linktocaller.objChangedTransparency
-                for shape in objShapes:
-                    objShapes.append(shape.Object.Shape)
-                newObjFuse.Shapes=objShapes
-                newObjFuse.Refine = True
+                    newObjcut=App.ActiveDocument.addObject("Part::Cut", "CUT")
+                    App.ActiveDocument.recompute()
+
         elif linktocaller.OperationOption ==0:
             #is here just to make the code more readable. 
             pass # nothing to do . 
@@ -237,18 +234,14 @@ class Design456_SmartExtrude:
         try:
             self.newObject.LengthFwd = self.extrudeLength
             if self.OperationOption ==2 or self.OperationOption ==1 : 
-                if self.objChangedTransparency !=[]:
-                    for obj in self.objChangedTransparency:
-                        obj.Transparency = 0
-                else:
-
-                    result=[]
-                    result = faced.checkCollision(self.newObject)
-                    if result != []:
-                        for obj in result:
-                            TE=Gui.ActiveDocument.getObject(obj.Name)  #should be GUI object not App object!!!
-                            TE.Transparency = 80
-                            self.objChangedTransparency.append(TE)
+                self.objChangedTransparency.clear()
+                print("Iam here")
+                result = faced.checkCollision(self.newObject)
+                if result != []:
+                    for obj in result:
+                        TE=Gui.ActiveDocument.getObject(obj.Name)  #should be GUI object not App object!!!
+                        TE.Transparency = 80
+                        self.objChangedTransparency.append(TE)
                 App.ActiveDocument.recompute()
                 
         except Exception as err:
