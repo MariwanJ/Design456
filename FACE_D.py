@@ -34,24 +34,25 @@ from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
 
+
 def getDirectionAxis():
     try:
         s = Gui.Selection.getSelectionEx()
-        if len(s) ==0:
+        if len(s) == 0:
             print("Nothing was selected")
             return ""  # nothing to do we cannot calculate the direction
         obj = s[0]
         if (hasattr(obj, "SubObjects")):
             print("has subobject")
             if len(obj.SubObjects) != 0:
-                if (len (obj.SubObjects[0].Faces) ==0):
+                if (len (obj.SubObjects[0].Faces) == 0):
                     print("no faces but has subobject")
-                    #it is an edge not a face:
-                    f= findFacehasSelectedEdge()
+                    # it is an edge not a face:
+                    f = findFacehasSelectedEdge()
                     if f is None:
                         raise Exception("Face not found")
                     print("face found not none")
-                    dir= f.normalAt(0, 0)
+                    dir = f.normalAt(0, 0)
                     print("direction is ", dir)
                 else:
                     faceSel = obj.SubObjects[0]
@@ -66,10 +67,10 @@ def getDirectionAxis():
                 # Circle has not two arguments, only one
                 dir = faceSel.normalAt(0)
             except:
-                f= findFacehasSelectedEdge()
+                f = findFacehasSelectedEdge()
                 if f is None:
                     raise Exception("Face not found")
-                dir= f.normalAt(0, 0)
+                dir = f.normalAt(0, 0)
         
         if dir.z == 1:
             return "+z"
@@ -84,15 +85,15 @@ def getDirectionAxis():
         elif dir.x == -1:
             return "-x"
         else:
-            #We have an axis that != 1,0: 
-            if(abs(dir.x) ==0):
+            # We have an axis that != 1,0: 
+            if(abs(dir.x) == 0):
                 return "+z"
-            elif (abs(dir.y) ==0):
+            elif (abs(dir.y) == 0):
                 return "+z"
-            elif (abs(dir.z) ==0):
+            elif (abs(dir.z) == 0):
                 return "+x"
             else: 
-                return "+z" # this is to avoid having NONE .. Don't know when this happen TODO: FIXME!
+                return "+z"  # this is to avoid having NONE .. Don't know when this happen TODO: FIXME!
 
     except Exception as err:
         App.Console.PrintError("'getDirectionAxis' Failed. "
@@ -103,6 +104,7 @@ def getDirectionAxis():
 
 
 class MousePosition:
+
     def __init__(self, view):
         self.view = view
         v = Gui.activeDocument().activeView()
@@ -113,7 +115,7 @@ class MousePosition:
             pos = info["Position"]
             # if (down):
             App.Console.PrintMessage(
-                "Clicked on position: ("+str(pos[0])+", "+str(pos[1])+")\n")
+                "Clicked on position: (" + str(pos[0]) + ", " + str(pos[1]) + ")\n")
             pnt = self.view.getPoint(pos)
             App.Console.PrintMessage(
                 "World coordinates: " + str(pnt) + "\n")
@@ -131,6 +133,7 @@ class MousePosition:
 
 
 class mousePointMove:
+
     def __init__(self, obj, view):
         self.object = obj
         self.view = view
@@ -165,7 +168,7 @@ class mousePointMove:
             pos = event.getPosition().getValue()
             point = self.convertToVector(pos)
             points = self.object.Object.Points
-            #lastPoint=  point
+            # lastPoint=  point
             self.object.Object.End = point
             App.ActiveDocument.recompute()
 
@@ -187,8 +190,8 @@ class mousePointMove:
                 point = self.convertToVector(pos)
                 print('Mouse click \n')
                 _point = self.object.Object.Points
-                _point[len(_point)-1] = point
-                #self.object.Object.End= point
+                _point[len(_point) - 1] = point
+                # self.object.Object.End= point
                 App.ActiveDocument.recompute()
                 self.remove_callbacks()
 
@@ -225,6 +228,7 @@ class mousePointMove:
 
 
 class PartMover:
+
     def __init__(self, view, obj, deleteOnEscape):
         self.obj = obj
         self.initialPosition = self.obj.Placement.Base
@@ -243,14 +247,14 @@ class PartMover:
         try:
             import Design456Init
             
-            tempPoint=self.view.getPoint(pos[0], pos[1])    
+            tempPoint = self.view.getPoint(pos[0], pos[1])    
             if(self.Direction is None):
-                if Design456Init.DefaultDirectionOfExtrusion=='x':        
-                    point=( App.Vector(0.0,tempPoint[0],tempPoint[1]) )
-                elif Design456Init.DefaultDirectionOfExtrusion=='y':
-                    point=(App.Vector(tempPoint[0],0.0,tempPoint[1])) 
-                elif Design456Init.DefaultDirectionOfExtrusion=='z':
-                    point=(App.Vector(tempPoint[0],tempPoint[1],0.0))
+                if Design456Init.DefaultDirectionOfExtrusion == 'x':        
+                    point = (App.Vector(0.0, tempPoint[0], tempPoint[1]))
+                elif Design456Init.DefaultDirectionOfExtrusion == 'y':
+                    point = (App.Vector(tempPoint[0], 0.0, tempPoint[1])) 
+                elif Design456Init.DefaultDirectionOfExtrusion == 'z':
+                    point = (App.Vector(tempPoint[0], tempPoint[1], 0.0))
 
             else:
 
@@ -365,7 +369,6 @@ class PartMover:
 # TODO: This class must be updated to be able to move all kind of objects
 #    Mariwan
 
-
 """ This class will return back info about the selected
     face. Many options are available but
     I will put only what I need at the moment. 
@@ -424,7 +427,7 @@ def errorDialog(msg):
 # https://wiki.freecadweb.org/Macro_CenterFace/fr
 
 
-def objectRealPlacement3D(obj):    # search the real Placement
+def objectRealPlacement3D(obj):  # search the real Placement
     try:
         objectPlacement = obj.Object.Shape.Placement
         objectPlacementBase = App.Vector(objectPlacement.Base)
@@ -453,6 +456,7 @@ def objectRealPlacement3D(obj):    # search the real Placement
 
 
 class SelectTopFace:
+
     def __init__(self, obj):
         self.obj = obj
         self.name_facename = ""
@@ -471,8 +475,8 @@ class SelectTopFace:
                     Highest = fac.CenterOfMass.z
                     centerofmass = fac.CenterOfMass
                     Result = counter
-                counter = counter+1
-            self._facename = 'Face'+str(Result)
+                counter = counter + 1
+            self._facename = 'Face' + str(Result)
             Gui.Selection.clearSelection()
             Gui.Selection.addSelection(App.ActiveDocument.Name, self.obj.Name,
                                        self._facename, centerofmass.x, centerofmass.y, centerofmass.z)
@@ -489,9 +493,11 @@ class SelectTopFace:
 
 
 class GetInputValue:
+
     def __init__(self, defaultValue=0.0):
         self.value = defaultValue
         pass
+
     """
     get Input value from user. Either Text, INT or Float
     """
@@ -565,6 +571,7 @@ class StatusBarProgress:
 
 
 class createActionTab:
+
     def __init__(self, Title):
         self.title = Title
         self.mw = None
@@ -575,7 +582,7 @@ class createActionTab:
         toplevel = QtGui.QApplication.topLevelWidgets()
         for i in toplevel:
             if i.metaObject().className() == "Gui::MainWindow":
-                self.mw=i    
+                self.mw = i    
         if self.mw is None:
 
             raise Exception("No main window found")
@@ -584,12 +591,12 @@ class createActionTab:
             if str(i.objectName()) == "Combo View":
                 self.tab = i.findChild(QtGui.QTabWidget)
             elif str(i.objectName()) == "Python Console":
-                self.tab= i.findChild(QtGui.QTabWidget)
+                self.tab = i.findChild(QtGui.QTabWidget)
         if self.tab is None:
                 raise Exception ("No tab widget found")
-        self.dialog=QtGui.QDialog()
-        oldsize=self.tab.count()
-        self.tab.addTab(self.dialog,self.title)
+        self.dialog = QtGui.QDialog()
+        oldsize = self.tab.count()
+        self.tab.addTab(self.dialog, self.title)
 
         self.tab.setCurrentWidget(self.dialog)
         self.dialog.setWindowTitle(self.title)
@@ -599,7 +606,7 @@ class createActionTab:
 def findFacehasSelectedEdge():
     """[Find Face that has the selected edge]
     Returns:
-        [Face Object]: [Return the face has the selected edge or None if error occur]
+        [Face Object]: [Return the face of the selected edge or None if error occurs]
     """
     obj = Gui.Selection.getSelectionEx()[0]
     edge = obj.SubObjects[0]
@@ -620,7 +627,7 @@ def findFaceSHavingTheSameEdge():
     s = Gui.Selection.getSelectionEx()[0]
     edge = s.SubObjects[0]
     shape = s.Object.Shape
-    return shape.ancestorsOfType(edge, Part.Face)
+    return shape.ancestorsOfType(edge, _part.Face)
 
 
 def findnormalAtforEdge():
@@ -702,12 +709,12 @@ def DisableEnableAllMenus(value):
     for i in tbs:
         i.setEnabled(value)
 
-def disableEnableOnlyOneCommand(toolName:str="",value:bool=False):
-    mw=Gui.getMainWindow()
-    t=mw.findChildren(QtCore.QTimer)
-    t[2].stop()
 
-    a=mw.findChild(QtGui.QAction,toolName) # for example "Std_New"
+def disableEnableOnlyOneCommand(toolName:str="", value:bool=False):
+    mw = Gui.getMainWindow()
+    t = mw.findChildren(QtCore.QTimer)
+    t[2].stop()
+    a = mw.findChild(QtGui.QAction, toolName)  # for example "Std_New"
     a.setDisabled(value)
     
 
@@ -717,104 +724,90 @@ def clearReportView(name:str=""):
     Args:
         name ([type]): [description]
     """
-    mw=Gui.getMainWindow()
-    r=mw.findChild(QtGui.QTextEdit, "Report view")
+    mw = Gui.getMainWindow()
+    r = mw.findChild(QtGui.QTextEdit, "Report view")
     r.clear()
     import time
     now = time.ctime(int(time.time()))
-    App.Console.PrintWarning("Cleared Report view " +str(now)+" by " + name+"\n")
+    App.Console.PrintWarning("Cleared Report view " + str(now) + " by " + name + "\n")
+
     
 def clearPythonConsole(name:str=""):
     """[Clear Python console]
-
     Args:
-        name ([type]): [description]
+        name ([type]): [Message to  print on console]
     """
-    mw=Gui.getMainWindow()
-    r=mw.findChild(QtGui.QPlainTextEdit, "Python console")
+    mw = Gui.getMainWindow()
+    r = mw.findChild(QtGui.QPlainTextEdit, "Python console")
     r.clear()
     import time
     now = time.ctime(int(time.time()))
-    App.Console.PrintWarning("Cleared Python console " +str(now)+" by " + name+"\n")
+    App.Console.PrintWarning("Cleared Python console " + str(now) + " by " + name + "\n")
     
-def is3DObject(obj):
-    if (obj.Shape.Volume ==0):
-        return False
-    else:
-        return True
-    
+
 def findMainListedObjects():
     """[Find and return main objects in the active document - no children will be return]
 
     Returns:
         [list]: [list of objects found]
     """
-    try:
-        results=[]
-        objects= App.ActiveDocument.Objects
-        counter=0
-        for i in range (0,len(objects)):
+    # TODO : THIS IS CORRECT .. OPTIMIZED LATER .. DON'T CHANGE 
+    results = []
+    objects = []
+    for obj in App.ActiveDocument.Objects:
+        if ((hasattr(obj, "Shape")) and (type(obj) != Gui.ViewProviderDocumentObject)):
+            objects.append(obj)
+    allvalues = len(objects)
+    for i in range (0, allvalues):
+        if objects[i].hasChildElement() == True:
+            results.append(objects[i])         
+            i = i + 1  # skip the child
+        else:
             results.append(objects[i])
-            if objects[i].hasChildElement():
-                i=i+1         # skip next item
-        return results        #We have all objects that has no children (root objects)
-    except Exception as err:
-            App.Console.PrintError("'findMainListedObjects' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+    return results  # We have all objects that has no children (root objects)
+
 
 def Overlapping(Sourceobj1 , Targetobj2):
     """[Check if two objects overlap each other]
-
     Args:
         Sourceobj1 ([3D selection object]): [description]
         Targetobj2 ([3D selection object]): [description]
-
     Returns:
         [type]: [description]
     """
-    try:
+    if (Sourceobj1.Shape.Volume == 0  or Targetobj2.Shape.Volume == 0):
+        return False
+    elif (Sourceobj1 == Targetobj2):
+        return False  # The same object
+    elif (Sourceobj1.Shape == Targetobj2.Shape):
+        return False
+    common_ = Sourceobj1.Shape.common(Targetobj2.Shape)
+    if (common_.Area != 0.0):
+        return True
+    else:
+        return False
 
-        if (is3DObject(Sourceobj1) == False or is3DObject(Targetobj2)== False):
-            return False
-        if (Sourceobj1==Targetobj2):
-            return False # The same object
-        if(Sourceobj1.Shape==Targetobj2.Shape):
-            return False
-        common_= Sourceobj1.Shape.common(Targetobj2.Shape)
-        if (common_.Area !=0.0):
-            return True
-        else:
-            return False
         
-    except Exception as err:
-            App.Console.PrintError("'Overlapping' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
 def checkCollision(newObj):
     """[Find a list of objects from the active document that is/are intersecting with newObj]
-
     Args:
         newObj ([3D Selection Object]): [Object checked with document objects]
-
     Returns:
-        [type]: [description]
+        [type]: [Document objects]
     """
-    try:
-        objList=findMainListedObjects()     # get the root objects - no children
-        results=[]
-        for obj in objList:
-            if (Overlapping(newObj,obj) is True):
-                results.append(obj)
-        return results
-    except Exception as err:
-            App.Console.PrintError("'checkCollision' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+    objList = findMainListedObjects()  # get the root objects - no children
+    results = []
+    for obj in objList:
+        o = None
+        if (Overlapping(newObj, obj) == True):
+            if (hasattr(obj, "Name")):
+                o = App.ActiveDocument.getObject(obj.Name)
+                print(o.Name)
+            elif (hasattr(obj, "Obj.Name")):
+                o = App.ActiveDocument.getObject(obj.Object.Name)                      
+                print(o.Name)
+            else:
+                o = None
+        if(o is not None):
+            results.append(o)
+    return results  # Return document objects

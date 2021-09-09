@@ -73,8 +73,7 @@ class Design456_Part_Merge:
                 # Make a simple copy
                 newShape = Part.getShape(
                     newObj, '', needSubElement=False, refine=True)
-                NewJ = App.ActiveDocument.addObject(
-                    'Part::Feature', 'Merged').Shape = newShape
+                App.ActiveDocument.addObject('Part::Feature', 'Merged').Shape = newShape
                 App.ActiveDocument.recompute()
                 # Remove Old objects
                 for obj in allObjects:
@@ -114,10 +113,8 @@ class Design456_Part_Subtract:
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Part Subtract"))
             newObj = App.ActiveDocument.addObject("Part::Cut", "tempSubtract")
-            newObj.Base = App.ActiveDocument.getObject(
-                s[0].ObjectName)  # Target
-            newObj.Tool = App.ActiveDocument.getObject(
-                s[1].ObjectName)  # Subtracted shape/object
+            newObj.Base = App.ActiveDocument.getObject(s[0].ObjectName)  # Target  must be Application object
+            newObj.Tool = App.ActiveDocument.getObject(s[1].ObjectName)  # Subtracted shape/object must be Application object
             App.ActiveDocument.recompute()
             newObj.Refine = True
             App.ActiveDocument.recompute()
