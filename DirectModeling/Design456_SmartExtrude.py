@@ -53,9 +53,11 @@ MouseScaleFactor = 1
     We have to recreate the object each time we change the radius. 
     This means that the redrawing must be optimized 
 '''
+#TODO: As I wish to simplify the tree and make a simple 
+# copy of all objects, I leave it now and I should
+# come back to do it. I must have it as an option in menu. (don't know how to do it now.)
 
-
-def callback_move(userData: fr_arrow_widget.userDataObject = None):
+def callback_move(userData: fr_arrow_widget.userDataObject=None):
     """[summary]
     Callback for the arrow movement. This will be used to calculate the radius of the Extrude operation.
     Args:
@@ -93,7 +95,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
 
         linktocaller.extrudeLength = (
-            linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
+            linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
 
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ExtrudeLBL.setText(
@@ -108,7 +110,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def callback_release(userData: fr_arrow_widget.userDataObject = None):
+def callback_release(userData: fr_arrow_widget.userDataObject=None):
     """
        Callback after releasing the left mouse button. 
        This callback will finalize the Extrude operation. 
@@ -136,52 +138,52 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         App.ActiveDocument.recompute()
         linktocaller.startVector = None
         App.ActiveDocument.commitTransaction()  # undo reg.
-        newObjcut=[]
-        #Do final operation. Either leave it as it is, merge or subtract
+        newObjcut = []
+        # Do final operation. Either leave it as it is, merge or subtract
         if linktocaller.OperationOption != 0:
-            #First merge the old object with the extruded face
+            # First merge the old object with the extruded face
             old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-            old.Refine =True 
-            allObjects=[]
+            old.Refine = True 
+            allObjects = []
             if linktocaller.OperationOption == 1:
-                for i in range(0,len(linktocaller.objChangedTransparency)):
+                for i in range(0, len(linktocaller.objChangedTransparency)):
                     allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
 
-            if(linktocaller.isFaceOf3DObj()==True):
-                #We have a 3D object.
-                print("Ok" ,len(allObjects))
+            if(linktocaller.isFaceOf3DObj() == True):
+                # We have a 3D object.
                 allObjects.append(linktocaller.selectedObj.Object)
                 allObjects.append(linktocaller.newObject)
             else:
                 allObjects.append(App.ActiveDocument.getObject(linktocaller.newObject.Name))
-                
-            old.Shapes=allObjects
-            Gui.ActiveDocument.getObject(old.Name).Transparency=0
-            #subtraction will continue to work here 
-            if linktocaller.OperationOption == 2:
-                #Subtraction is complex. I have to cut from each object the same extruded part.
-                if (linktocaller.objChangedTransparency  !=[]):
-                    allObjects=[]
-                    print(len(linktocaller.objChangedTransparency))
+            old.Shapes = allObjects
+            Gui.ActiveDocument.getObject(old.Name).Transparency = 0  # BUG in FreeCAD doesn't work
+            Gui.ActiveDocument.getObject(old.Name).ShapeColor=(FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
 
-                    for i in range(0,len(linktocaller.objChangedTransparency)):
+            App.ActiveDocument.recompute()
+            # subtraction will continue to work here 
+            if linktocaller.OperationOption == 2:
+                # Subtraction is complex. I have to cut from each object the same extruded part.
+                if (linktocaller.objChangedTransparency != []):
+                    allObjects = []
+
+                    for i in range(0, len(linktocaller.objChangedTransparency)):
                         allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
-                        linktocaller.objChangedTransparency[i].Transparency =0
+                        linktocaller.objChangedTransparency[i].Transparency = 0
                     allObjects.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))
                     App.ActiveDocument.recompute()
-                    #Create a cut object for each transparency object 
-                    for i in range(0,len(linktocaller.objChangedTransparency)):
-                        newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT"+str(i)) ) 
-                        newObjcut[i].Base = allObjects[i]   # Target
-                        newObjcut[i].Tool = old               # Subtracted shape/object
+                    # Create a cut object for each transparency object 
+                    for i in range(0, len(linktocaller.objChangedTransparency)):
+                        newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT" + str(i))) 
+                        newObjcut[i].Base = allObjects[i]  # Target
+                        newObjcut[i].Tool = old  # Subtracted shape/object
                         newObjcut[i].Refine = True
 
-                    newObjcut=App.ActiveDocument.addObject("Part::Cut", "CUT")
+                    newObjcut = App.ActiveDocument.addObject("Part::Cut", "CUT")
                     App.ActiveDocument.recompute()
 
-        elif linktocaller.OperationOption ==0:
-            #is here just to make the code more readable. 
-            pass # nothing to do . 
+        elif linktocaller.OperationOption == 0:
+            # is here just to make the code more readable. 
+            pass  # nothing to do . 
 
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.
@@ -233,13 +235,12 @@ class Design456_SmartExtrude:
         """
         try:
             self.newObject.LengthFwd = self.extrudeLength
-            if self.OperationOption ==2 or self.OperationOption ==1 : 
+            if self.OperationOption == 2 or self.OperationOption == 1 : 
                 self.objChangedTransparency.clear()
-                print("Iam here")
                 result = faced.checkCollision(self.newObject)
                 if result != []:
                     for obj in result:
-                        TE=Gui.ActiveDocument.getObject(obj.Name)  #should be GUI object not App object!!!
+                        TE = Gui.ActiveDocument.getObject(obj.Name)  #should be GUI object not App object!!!
                         TE.Transparency = 80
                         self.objChangedTransparency.append(TE)
                 App.ActiveDocument.recompute()
@@ -259,7 +260,7 @@ class Design456_SmartExtrude:
         """
         currentLength = self.extrudeLength
         # to let the arrow be outside the object
-        self.extrudeLength = self.extrudeLength+15
+        self.extrudeLength = self.extrudeLength + 15
         self.smartInd.w_vector = self.calculateNewVector()
         self.extrudeLength = currentLength  # return back the value.
         self.smartInd.redraw()
@@ -316,10 +317,10 @@ class Design456_SmartExtrude:
             pass  # TODO: WHAT SHOULD WE DO HERE ?
 
         name = self.selectedObj.SubElementNames[0]
-        newobj = App.ActiveDocument.addObject("Part::Feature", newobj) # create face 
+        newobj = App.ActiveDocument.addObject("Part::Feature", newobj)  # create face 
         newobj.Shape = sh.getElement(name)
         App.ActiveDocument.recompute()
-        newobj.Visibility=False 
+        newobj.Visibility = False 
         return newobj
 
     def calculateNewVector(self):
@@ -337,7 +338,7 @@ class Design456_SmartExtrude:
         nv = ss.normalAt(uv[0], uv[1])
         self.normalVector = nv
 
-        if (self.extrudeLength ==0):
+        if (self.extrudeLength == 0):
             d = self.extrudeLength = 1
         else:
             d = self.extrudeLength
@@ -351,7 +352,7 @@ class Design456_SmartExtrude:
             ]
         """
         try:
-            print("Smart Extrusion Activated")
+            print("Smart Extrusion")
             sel = Gui.Selection.getSelectionEx()
             if len(sel) == 0:
                 # An object must be selected
@@ -360,7 +361,7 @@ class Design456_SmartExtrude:
                 return
             self.selectedObj = sel[0]
             faced.EnableAllToolbar(False)
-
+            #Undo
             App.ActiveDocument.openTransaction(
                 translate("Design456", "SmartExtrude"))
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
@@ -518,13 +519,13 @@ class Design456_SmartExtrude:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def btnState(self, button):
-        if button.text()=="As Is":
+        if button.text() == "As Is":
             if button.isChecked() == True:
                 self.OperationOption = 0  # 0 as Is default, 1 Merged, 2 Subtracted
-        elif button.text()=="Merge":
+        elif button.text() == "Merge":
             if button.isChecked() == True:
                 self.OperationOption = 1
-        elif button.text()=="Subtract":
+        elif button.text() == "Subtract":
             if button.isChecked() == True:
                 self.OperationOption = 2
 
@@ -554,9 +555,8 @@ class Design456_SmartExtrude:
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-        # TODO remove the face or extracted face if there is a merge and make a simple copy
-        # App.ActiveDocument.removeObject(self.selectedObj.Name)
+        self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 ..etc
+        App.ActiveDocument.commitTransaction() #undo reg.
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart Extrude 3dCOIN widgets
 
