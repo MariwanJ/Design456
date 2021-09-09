@@ -801,20 +801,24 @@ def checkCollision(newObj):
     """
     objList=findMainListedObjects()     # get the root objects - no children
     results=[]
-    o=None
     for obj in objList:
+        o=None
         if (Overlapping(newObj,obj) == True):
             if (hasattr(obj,"Name")):
                 o = App.ActiveDocument.getObject(obj.Name)
+                print(o.Name)
             elif (hasattr(obj,"Obj.Name")):
                 o = App.ActiveDocument.getObject(obj.Object.Name)                      
+                print(o.Name)
+            else:
+                o=None
         if(o is not None):
             results.append(o)
+    
+    print("====================")
     for i in results:
-        print("====================")
-        print(type(i))
-        print(i.Name)
-
+        print(i.Name, type(i))
+        print()
     print("Collision are =" ,len(results))
     print("====================")
 
