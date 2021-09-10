@@ -92,7 +92,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.run_Once = True
             linktocaller.startVector=linktocaller.endVector
 
-         # Keep the old value only first time when drag start
+        # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
@@ -137,7 +137,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         raise TypeError
 
     ArrowObject = userData.ArrowObj
-    events = userData.events
+    #events = userData.events
     linktocaller = userData.callerObject
     # Avoid activating this part several times,
     if (linktocaller.startVector is None):
@@ -212,7 +212,7 @@ class Design456_SmartFillet:
             self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
         self.smartInd.redraw()
         return
-            
+        
     def getArrowPosition(self):
         """"
          Find out the vector and rotation of the arrow to be drawn.
@@ -412,6 +412,19 @@ class Design456_SmartFillet:
                 del self._mywin
                 self._mywin = None
             App.ActiveDocument.commitTransaction()  # undo reg.
+            self.FilletLBL = None
+            self.run_Once = False
+            self.endVector = None
+            self.startVector = None
+            self.selectedObj = []
+            self.mouseToArrowDiff = 0.0 
+            self.offset=0.0
+            self.AwayFrom3DObject = 10  
+            self.FilletRadius = 0.0001  
+            self.objectType = None  
+            self.Originalname = ''
+            self.direction=None
+            del self        # I don't know if this is correct
 
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' del-Failed. "
