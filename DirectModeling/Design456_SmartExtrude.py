@@ -57,6 +57,16 @@ MouseScaleFactor = 1
 # copy of all objects, I leave it now and I should
 # come back to do it. I must have it as an option in menu. (don't know how to do it now.)
 
+
+#TODO: FIXME : BUGS FOUND AFTER SOME TESTING !! URGENT 
+#1- IT Fils if you use a face to cut from a 3D object since the merged object fails (only one object)
+#2- Merged fails since it includes also the face as an3d object to merge 
+#3- Transparency : you have to go through the object and re-change transparency to 0
+#4- Two cuts will be created even if we have only one. This is due to the face is counted as a 3D object
+#5- It seems tht the tool is still in the memory and choses a wrong operation when you continue to work on the same object (cut)
+#6- All the above might just vanish if we have a simple copy? 
+
+
 def callback_move(userData: fr_arrow_widget.userDataObject=None):
     """[summary]
     Callback for the arrow movement. This will be used to calculate the radius of the Extrude operation.
