@@ -809,27 +809,29 @@ def checkCollision(newObj):
             results.append(o)
     return results  # Return document objects
 
-def calculateAngleForFaceNotHavingAngle():
+def calculateAngleForFaceNotHavingAngle(s):
     """[Calculate Angle of a face where there is no angle in the face itself
         but the face created with vertices that creates a tilt face
        ]
-
+    Argument:
+        [Shape]: must be Object.Shape - >gui object
     Returns:
         [float,flat,float,float]: [Angle and normal vector]
     """
-    extrudeLength=0
-    s=Gui.Selection.getSelectionEx()[0]
-    ss = s.Object.Shape
-    yL = ss.CenterOfMass
-    uv = ss.Surface.parameter(yL)
-    nv = ss.normalAt(uv[0], uv[1])
-
-    if (extrudeLength == 0):
-        d = extrudeLength = 1
-    else:
-        d = extrudeLength
-    point = yL + d * nv
-    vector2=point
-    vector1=App.Vector(0,0,0)
-    angleInRadians=math.atan2(vector2.y, vector2.x) - math.atan2(vector1.y, vector1.x);
-    return [nv.x,nv.y,nv.x,angleInRadians]
+    try:           
+        ss = s #must be Gui.Selection.getSelectionEx()[0].Object.Shape
+        yL = ss.CenterOfMass
+        uv = ss.Faces[0].Surface.parameter(yL)
+        nv = ss.normalAt(uv[0], uv[1])
+        d =  1
+        point = yL + d * nv
+        vector2=point
+        vector1=App.Vector(0,0,0)
+        angleInRadians=math.atan2(vector2.y, vector2.x) - math.atan2(vector1.y, vector1.x);
+        return [nv.x,nv.y,nv.x,math.radians(180)-angleInRadians]
+    except Exception as err:
+        App.Console.PrintError("'Design456_Extrude' getArrowPosition-Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
