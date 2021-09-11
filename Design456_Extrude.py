@@ -81,7 +81,9 @@ class Design456_Extrude:
             f.Symmetric = False
             f.TaperAngle = 0.0
             f.TaperAngleRev = 0.0
-
+            f.Dir = selection[0].Object.Shape.normalAt(0,0)        #Normal line
+            if (f.Dir.x!=1 or f.Dir.y!=1 or f.Dir.z!=1):
+                f.DirMode="Custom"
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
             newShape = Part.getShape(f, '', needSubElement=False, refine=False)
