@@ -153,6 +153,8 @@ def callback_release(userData: fr_arrow_widget.userDataObject=None):
                 MERGEallObjects=[]
                 MERGEallObjects.append(linktocaller.selectedObj.Object)
                 MERGEallObjects.append(linktocaller.newObject)
+                if(linktocaller.OperationOption==1):
+                    MERGEallObjects=MERGEallObjects+allObjects
                 old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
                 old.Refine = True 
                 old.Shapes = MERGEallObjects
