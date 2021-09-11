@@ -297,9 +297,13 @@ class Design456_SmartExtrude:
             self.extrudeLength = 5
             self._vector = self.calculateNewVector()
             self.extrudeLength = 0.0
+            #TODO:FIXME: NOT CORRECT YET!!!!!!!!!!!!!!!!!!!!!
             if (face1.Surface.Rotation is None):
-                rotation=faced.calculateAngleForFaceNotHavingAngle(self.selectedObj.Object.Shape.Faces[0])
-                #raise TypeError( " Object has no rotation value. Create a simple copy and try again")
+                yL = face1.CenterOfMass
+                uv = face1.Surface.parameter(yL)
+                nv = face1.normalAt(uv[0], uv[1])
+                calAn=nv.getAngle(App.Vector(1,1,0))
+                rotation=(0,1,0,math.degrees(calAn))
                 print("rotation----->",rotation)
             else:
                 rotation = (face1.Surface.Rotation.Axis.x,
@@ -371,6 +375,7 @@ class Design456_SmartExtrude:
         else:
             d = self.extrudeLength
         point = yL + d * nv
+        print("Arrow Vector is ", point)
         return (point)
 
     def Activated(self):
@@ -425,6 +430,12 @@ class Design456_SmartExtrude:
             self.newObject.Symmetric = False
             self.newObject.TaperAngle = 0.0
             self.newObject.TaperAngleRev = 0.0
+            self.newObject.Dir= Gui.ActiveDocument.getObject(self.targetFace.Name).Object.Shape.Faces[0].normalAt(0,0)
+            if (self.newObject.Dir.x!=1 or
+                self.newObject.Dir.y!=1 or
+                self.newObject.Dir.z!=1):
+                self.newObject.DirMode="Custom"
+                
             App.ActiveDocument.recompute()
             
         except Exception as err:
