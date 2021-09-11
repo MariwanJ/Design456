@@ -291,11 +291,16 @@ class Design456_SmartExtrude:
             face1 = sub1.SubObjects[0]
         else:
             face1 = self.selectedObj.Object.Shape.Faces[0]
+        print(face1)
+        print(type(face1))
         self.extrudeLength = 5
         self._vector = self.calculateNewVector()
         self.extrudeLength = 0.0
-
-        rotation = (face1.Surface.Rotation.Axis.x,
+        if (face1.Surface.Rotation is None):
+            rotation=faced.calculateAngleForFaceNotHavingAngle()
+            raise TypeError( " Object has no rotation value. Create a simple copy and try again")
+        else:
+            rotation = (face1.Surface.Rotation.Axis.x,
                     face1.Surface.Rotation.Axis.y,
                     face1.Surface.Rotation.Axis.z,
                     math.degrees(face1.Surface.Rotation.Angle))
@@ -413,7 +418,7 @@ class Design456_SmartExtrude:
             
         except Exception as err:
             faced.EnableAllToolbar(True)
-            App.Console.PrintError("'Design456_Extrude' getMainWindwo-Failed. "
+            App.Console.PrintError("'Design456_Extrude' Activated-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -441,7 +446,7 @@ class Design456_SmartExtrude:
             del self
 
         except Exception as err:
-            App.Console.PrintError("'Design456_Extrude' getMainWindwo-Failed. "
+            App.Console.PrintError("'Design456_Extrude' Activateds-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
