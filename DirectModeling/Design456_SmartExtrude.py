@@ -282,29 +282,40 @@ class Design456_SmartExtrude:
          Find out the vector and rotation of the arrow to be drawn.
         """
         #      For now the arrow will be at the top
-        rotation = [0.0, 0.0, 0.0, 0.0]
+        try:    
+            rotation = [0.0, 0.0, 0.0, 0.0]
 
-        face1 = None
-        if(self.isFaceOf3DObj()):
-            # The whole object is selected
-            sub1 = self.selectedObj
-            face1 = sub1.SubObjects[0]
-        else:
-            face1 = self.selectedObj.Object.Shape.Faces[0]
-        print(face1)
-        print(type(face1))
-        self.extrudeLength = 5
-        self._vector = self.calculateNewVector()
-        self.extrudeLength = 0.0
-        if (face1.Surface.Rotation is None):
-            rotation=faced.calculateAngleForFaceNotHavingAngle()
-            raise TypeError( " Object has no rotation value. Create a simple copy and try again")
-        else:
-            rotation = (face1.Surface.Rotation.Axis.x,
-                    face1.Surface.Rotation.Axis.y,
-                    face1.Surface.Rotation.Axis.z,
-                    math.degrees(face1.Surface.Rotation.Angle))
-        return rotation
+            face1 = None
+            if(self.isFaceOf3DObj()):
+                # The whole object is selected
+                sub1 = self.selectedObj
+                face1 = sub1.SubObjects[0]
+            else:
+                face1 = self.selectedObj.Object.Shape.Faces[0]
+            print(face1)
+            print(type(face1))
+            self.extrudeLength = 5
+            self._vector = self.calculateNewVector()
+            self.extrudeLength = 0.0
+            if (face1.Surface.Rotation is None):
+                rotation=faced.calculateAngleForFaceNotHavingAngle(self.selectedObj.Object.Shape.Faces[0])
+                #raise TypeError( " Object has no rotation value. Create a simple copy and try again")
+                print("rotation----->",rotation)
+            else:
+                rotation = (face1.Surface.Rotation.Axis.x,
+                        face1.Surface.Rotation.Axis.y,
+                        face1.Surface.Rotation.Axis.z,
+                        math.degrees(face1.Surface.Rotation.Angle))
+            return rotation
+        
+        except Exception as err:
+            faced.EnableAllToolbar(True)
+            App.Console.PrintError("'Design456_Extrude' getArrowPosition-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
 
     def isFaceOf3DObj(self):
         """[Check if the selected object is a face or is a 2D object. 
@@ -405,7 +416,7 @@ class Design456_SmartExtrude:
                 'Part::Extrusion', 'Extrude')
             self.newObject.Base = self.targetFace
             self.newObject.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
-            # Above statement != always correct. Some faces require 'custom'
+            # Above statement is not always correct. Some faces require 'custom'
             self.newObject.DirLink = None
             self.newObject.LengthFwd = self.extrudeLength  # Must be negative
             self.newObject.LengthRev = 0.0
