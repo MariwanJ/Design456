@@ -174,15 +174,17 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 raise ValueError('Must be 2 Vectors')
             p1 = self.w_vector[0]
             p2 = self.w_vector[1]
-
+            usedColor=usedColor = self.w_selColor
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
             elif self.is_active() and (self.has_focus() != 1):
                 usedColor = self.w_color
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
+            _rotation=(0,0,1,0)
+            vec=[p1,p2]
             if self.is_visible():
-                self.saveSoNodesToWidget(fr_draw.draw_line(p1, p2, usedColor, self.w_lineWidth))
+                self.saveSoNodesToWidget(fr_draw.draw_line(vec, usedColor, _rotation,self.w_lineWidth))
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
                 #add both to the same switch. and add them to the scenegraph automatically
                 allSwitch=[]
