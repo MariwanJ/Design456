@@ -39,18 +39,7 @@ class Design456_Workbench (Workbench):
     "Design456 Workbench object"
     runOnce =None 
     planeShow=None
-    class DocObserver:
-        def __init__(self, linkToParent) -> None:
-            self.linkToParent=linkToParent
-            
-        def slotCreatedDocument(self, doc):
-            from plane import Grid as gr
-            v=Gui.ActiveDocument.ActiveView
-            #if (self.linkToParent.planeShow is None):
-            self.linkToParent.planeShow=gr(v)
-            self.linkToParent.planeShow.Activated()
-            #print("Open/Create doc")
-
+    myDocObserver=None
     def __init__(self):
         import Design456Init
         self.__class__.Icon = Design456Init.ICON_PATH + 'WorkbenchIcon.svg'
@@ -183,13 +172,15 @@ class Design456_Workbench (Workbench):
         try:
             import WorkingPlane
             from plane import Grid as gr
+            from plane import DocObserver 
 
             #from draftguitools.gui_trackers import gridTracker
             if not(App.ActiveDocument):
                 App.newDocument()
                 
-            DocObserver= self.DocObserver(self)
-            App.addDocumentObserver(DocObserver)
+            self.myDocObserver= DocObserver()
+            self.myDocObserver.setLink(self)
+            App.addDocumentObserver(self.myDocObserver)
 
             # FROM DRAFT
             if hasattr(FreeCADGui, "draftToolBar"):
@@ -242,6 +233,7 @@ class Design456_Workbench (Workbench):
 
     def Deactivated(self):
         from plane import Grid as gr
+        from plane import DocObserver
         try:
             "workbench deactivated"
             if hasattr(FreeCADGui, "draftToolBar"):
@@ -252,7 +244,12 @@ class Design456_Workbench (Workbench):
                 dsb.hide_draft_statusbar()
             App.Console.PrintLog(
                 "Design456/Draft workbench deactivated.\n")
-            gr.removeGarbage(gr)
+            #gr.removeGarbage(gr)
+            self.planeShow.removeGarbage()
+            del self.planeShow
+            self.planeShow=None
+            App.removeDocumentObserver(self.myDocObserver)
+            self.myDocObserver=None
             return
         except Exception as exc:
             App.Console.PrintError(exc)

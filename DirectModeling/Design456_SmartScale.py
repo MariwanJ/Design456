@@ -314,10 +314,10 @@ class Design456_SmartScale:
             la.addWidget(e1)
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             la.addWidget(okbox)
             QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
-            QtCore.QObject.connect(okbox, QtCore.SIGNAL("rejected()"), self.hide)
+            #QtCore.QObject.connect(okbox, QtCore.SIGNAL("rejected()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             return self.dialog
         
