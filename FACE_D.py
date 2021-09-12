@@ -35,13 +35,25 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
 import math
 
+#TODO : FIXME BETTER WAY?
 def getDirectionAxis():
+    """[summary]
+
+    Raises:
+        Exception: [description]
+        NotImplementedError: [description]
+        Exception: [description]
+
+    Returns:
+        [str]: [Returns +x,-x,+y,-y,+z,-z]
+    """
     try:
         s = Gui.Selection.getSelectionEx()
         if len(s) == 0:
             print("Nothing was selected")
             return ""  # nothing to do we cannot calculate the direction
         obj = s[0]
+        faceSel=None
         if (hasattr(obj, "SubObjects")):
             print("has subobject")
             if len(obj.SubObjects) != 0:
@@ -52,8 +64,9 @@ def getDirectionAxis():
                     if f is None:
                         raise Exception("Face not found")
                     print("face found not none")
-                    dir = f.normalAt(0, 0)
-                    print("direction is ", dir)
+                    #direction = f.normalAt(0, 0)
+                    #print("direction is ", direction)
+                    faceSel=f
                 else:
                     faceSel = obj.SubObjects[0]
             else:
@@ -61,36 +74,36 @@ def getDirectionAxis():
         else:
             raise NotImplementedError
         try:
-            dir = faceSel.normalAt(0, 0)  # other faces needs 2 arguments
+            direction = faceSel.normalAt(0, 0)  # other faces needs 2 arguments
         except:
             try:
                 # Circle has not two arguments, only one
-                dir = faceSel.normalAt(0)
+                direction = faceSel.normalAt(0)
             except:
-                f = findFacehasSelectedEdge()
-                if f is None:
+                ftt = findFacehasSelectedEdge()
+                if ftt is None:
                     raise Exception("Face not found")
-                dir = f.normalAt(0, 0)
+                direction = ftt.normalAt(0, 0)
         
-        if dir.z == 1:
+        if direction.z == 1:
             return "+z"
-        elif dir.z == -1:
+        elif direction.z == -1:
             return "-z"
-        elif dir.y == 1:
+        elif direction.y == 1:
             return "+y"
-        elif dir.y == -1:
+        elif direction.y == -1:
             return "-y"
-        elif dir.x == 1:
+        elif direction.x == 1:
             return "+x"
-        elif dir.x == -1:
+        elif direction.x == -1:
             return "-x"
         else:
             # We have an axis that != 1,0: 
-            if(abs(dir.x) == 0):
+            if(abs(direction.x) == 0):
                 return "+z"
-            elif (abs(dir.y) == 0):
+            elif (abs(direction.y) == 0):
                 return "+z"
-            elif (abs(dir.z) == 0):
+            elif (abs(direction.z) == 0):
                 return "+x"
             else: 
                 return "+z"  # this is to avoid having NONE .. Don't know when this happen TODO: FIXME!
@@ -809,29 +822,20 @@ def checkCollision(newObj):
             results.append(o)
     return results  # Return document objects
 
-def calculateAngleForFaceNotHavingAngle(s):
-    """[Calculate Angle of a face where there is no angle in the face itself
-        but the face created with vertices that creates a tilt face
-       ]
-    Argument:
-        [Shape]: must be Object.Shape - >gui object
+
+# Function to find the angle
+# between the two lines with the origion 
+# This is here to make it clear how you do that
+def calculateAngle(v1):
+    """[Find angle between a vector and the origin
+        Assuming the the angle is between the line 
+        (0,0,0) and (1,1,0)
+    ]
+
+    Args:
+        v1 ([type]): [description]
+
     Returns:
-        [float,flat,float,float]: [Angle and normal vector]
+        [float]: [Angle to the Z Axis in degrees]
     """
-    try:           
-        ss = s #must be Gui.Selection.getSelectionEx()[0].Object.Shape
-        yL = ss.CenterOfMass
-        uv = ss.Faces[0].Surface.parameter(yL)
-        nv = ss.normalAt(uv[0], uv[1])
-        d =  1
-        point = yL + d * nv
-        vector2=point
-        vector1=App.Vector(0,0,0)
-        angleInRadians=math.atan2(vector2.y, vector2.x) - math.atan2(vector1.y, vector1.x);
-        return [nv.x,nv.y,nv.x,math.radians(180)-angleInRadians]
-    except Exception as err:
-        App.Console.PrintError("'Design456_Extrude' getArrowPosition-Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+    return math.degrees(v1.getAngle(App.Vector(1,1,0)))
