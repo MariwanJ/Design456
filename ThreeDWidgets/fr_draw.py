@@ -57,10 +57,15 @@ class userDataObject:
 """
 Example using draw_Point(p1,color):
 
-
+from pivy import coin
+import fr_draw as d 
+from PySide import QtCore,QtGui
+sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+root=d.draw_Point()
+sg.addChild(root)
         
 """
-def draw_Point(p1,size=0.1, color=FR_COLOR.FR_GOLD, type=0):
+def draw_Point(p1=App.Vector(0,0,0),size=0.1, color=FR_COLOR.FR_GOLD, type=0):
     """[Draw a point. The point could be any of cubic, or sphere shapes. Default is Cubic]
 
     Args:
@@ -107,8 +112,26 @@ def draw_Point(p1,size=0.1, color=FR_COLOR.FR_GOLD, type=0):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-#TODO:FIXME : ADD ROTATION
-def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), lineWidth=1):
+"""
+#Example using square_frame
+from pivy import coin
+import fr_draw as d 
+from PySide import QtCore,QtGui
+sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+
+ve=[]
+ve.append(App.Vector(0,0,0))
+ve.append(App.Vector(10,0,0))
+ve.append(App.Vector(10,10,0))
+ve.append(App.Vector(0,10,0))
+color= (1, 0.5, 1)
+rot=[0,1,0,-90]
+root=d.draw_square_frame(ve,color, rot, 5)
+for i in root:
+    sg.addChild(i)
+
+"""
+def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), _rotation=[0,0,1,0], lineWidth=1):
     try:
         if len(vectors) != 4:
             ValueError("4 Vertices must be given to the function")
@@ -129,7 +152,10 @@ def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), lineWidth
         v[3].vertex.set1Value(0, vectors[3])
         v[3].vertex.set1Value(1, vectors[0])
 
-        coords = coin.SoTransform()
+        transform = coin.SoTransform()
+        tempR = coin.SbVec3f()
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+        transform.rotation.setValue(tempR, math.radians(_rotation[3]))
         Totallines = []
         for i in range(0, 4):
             newSo = coin.SoSeparator()
@@ -141,8 +167,8 @@ def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), lineWidth
             col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
             col1.rgb = color
             newSo.addChild(col1)
+            newSo.addChild(transform)
             newSo.addChild(line)
-            newSo.addChild(coords)
             Totallines.append(newSo)
         return Totallines
 
@@ -153,14 +179,36 @@ def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), lineWidth
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-#TODO: FIXME: ADD ROTATION
-def draw_line(p1, p2, color, LineWidth):
+"""
+#Example using draw_line
+from pivy import coin
+import fr_draw as d 
+from PySide import QtCore,QtGui
+sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+
+ve=[]
+ve.append(App.Vector(0,0,0))
+ve.append(App.Vector(10,10,10))
+#ve.append(App.Vector(10,10,0))
+#ve.append(App.Vector(0,10,0))
+color= (1, 0.5, 1)
+rot=[0,1,0,-90]
+root=d.draw_line(ve,color, rot, 5)
+sg.addChild(root)
+
+
+"""
+def draw_line(vec=[], color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     try:
         so_separator = coin.SoSeparator()
         v = coin.SoVertexProperty()
-        v.vertex.set1Value(0, p1)
-        v.vertex.set1Value(1, p2)
-        coords = coin.SoTransform()
+        v.vertex.set1Value(0, vec[0])
+        v.vertex.set1Value(1, vec[1])
+        transform = coin.SoTransform()
+        tempR = coin.SbVec3f()
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+        transform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        
         line = coin.SoLineSet()
         line.vertexProperty = v
         style = coin.SoDrawStyle()
@@ -171,8 +219,8 @@ def draw_line(p1, p2, color, LineWidth):
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = color
         so_separator.addChild(col1)
+        so_separator.addChild(transform)
         so_separator.addChild(line)
-        so_separator.addChild(coords)
         return so_separator
 
     except Exception as err:
@@ -401,27 +449,12 @@ def draw_DoubleSidedArrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _r
 
 
 #TODO: FIXME: ADD ROTATION
-def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD, Texture="",style=0, LineWidth=1, LinePattern=0xffff):
-    """[Use this function to draw a box. The box-style could be configured.]
-
-    Args:
-        p1 ([App.Vector]): [Defines the position of the vector ] . Defaults to App.Vector(0,0,0)
-        size ([App.Vector], optional): [Defines the size of the box]. Defaults to App.Vector(1,1,1).
-        color ([tuple], optional): [Box color as defined in FR_COLOR]. Defaults to FR_COLOR.FR_GOLD.
-        texture (None, optional): [File name of the texture image]. Defaults to Null string.
-        style (int, optional): [Box style: Filed=0, Lines ,Points,Invisible]. Defaults to 0.
-        LineWidth (int, optional): [Line width: applicable only when you have line style]. Defaults to 1.
-        LinePattern (hexadecimal, optional): [Defines if you have dashed lines or continuous line]. Defaults to 0xffff.
-
-    Returns:
-        [type]: [description]
-    
+"""
     Example : 
     from pivy import coin
     import math
     import fr_draw as d 
     import time
-    from PySide import QtCore,QtGui
 
     sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
 
@@ -445,6 +478,21 @@ def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD
             time.sleep(0.1)
             sg.removeChild(root)
             QtGui.QApplication.processEvents()
+"""
+def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD, Texture="",style=0, LineWidth=1, LinePattern=0xffff):
+    """[Use this function to draw a box. The box-style could be configured.]
+
+    Args:
+        p1 ([App.Vector]): [Defines the position of the vector ] . Defaults to App.Vector(0,0,0)
+        size ([App.Vector], optional): [Defines the size of the box]. Defaults to App.Vector(1,1,1).
+        color ([tuple], optional): [Box color as defined in FR_COLOR]. Defaults to FR_COLOR.FR_GOLD.
+        texture (None, optional): [File name of the texture image]. Defaults to Null string.
+        style (int, optional): [Box style: Filed=0, Lines ,Points,Invisible]. Defaults to 0.
+        LineWidth (int, optional): [Line width: applicable only when you have line style]. Defaults to 1.
+        LinePattern (hexadecimal, optional): [Defines if you have dashed lines or continuous line]. Defaults to 0xffff.
+
+    Returns:
+        [type]: [description]
 
     """
     try:
@@ -487,6 +535,26 @@ def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD
 
 # draw a Four sided shape
 #TODO FIXME:ADD ROTATION
+"""
+        Example:
+        
+        from pivy import coin
+        import math
+        import fr_draw as d 
+        import time
+        from PySide import QtCore,QtGui
+        file="E:/TEMP/freecad.png"      #TODO: FIXME:
+        sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+        vert=[]
+        vert.append(App.Vector(0,0,0))
+        vert.append(App.Vector(120,0,30))
+        vert.append(App.Vector(120,120,30))
+        vert.append(App.Vector(0,120,30))
+
+        f=d.draw_fourSidedShape(vert,(0,0,0),file,True,4)
+        root=f.Activated()
+        sg.addChild(root)    
+"""
 class draw_fourSidedShape:
     '''
         Create a four sided shape using four vertices.
@@ -510,24 +578,7 @@ class draw_fourSidedShape:
         Returns:
             [coin.SoSeparator]: [created drawing]
             
-        Example:
-        
-        from pivy import coin
-        import math
-        import fr_draw as d 
-        import time
-        from PySide import QtCore,QtGui
-        file="E:/TEMP/freecad.png"      #TODO: FIXME:
-        sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-        vert=[]
-        vert.append(App.Vector(0,0,0))
-        vert.append(App.Vector(120,0,30))
-        vert.append(App.Vector(120,120,30))
-        vert.append(App.Vector(0,120,30))
 
-        f=d.draw_fourSidedShape(vert,(0,0,0),file,True,4)
-        root=f.Activated()
-        sg.addChild(root)
         """
         self.faces = []  # Keep the 6 faces
         self.Points = Points
@@ -3320,3 +3371,4 @@ def saveSceneGraphtoIVfile(filename):
     sowriteAct.getOutput().setBinary(False)
     sowriteAct.apply(sg)
     sowriteAct.getOutput().closeFile()
+
