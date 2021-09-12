@@ -533,8 +533,8 @@ class Star:
                     radius = obj.InnerRadius
                 else:
                     radius = obj.OuterRadius
-                y = _math.cos(alpha) * radius
-                x = _math.sin(alpha) * radius
+                x = _math.cos(alpha) * radius
+                y = _math.sin(alpha) * radius
                 _points.append(App.Vector(x, y, 0.0))
                 if i ==0 : 
                     saveFirstPoint=App.Vector(x,y,0.0)
@@ -565,7 +565,7 @@ class Design456_Star:
             newObj=Star(newObj)
             plc = App.Placement()
             newObj.Placement=plc
-            newObj.Placement.Rotation.Axis=App.Vector(0,0,1)
+            #newObj.Placement.Rotation.Axis=App.Vector(0,0,-1)
             App.ActiveDocument.recompute()
                 
         except Exception as err:
