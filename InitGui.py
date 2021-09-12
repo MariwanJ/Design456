@@ -29,6 +29,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
+
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
@@ -37,13 +38,26 @@ __url__ = "https://www.freecadweb.org"
 class Design456_Workbench (Workbench):
     "Design456 Workbench object"
     runOnce =None 
-    
+    planeShow=None
+    class DocObserver:
+        def __init__(self, linkToParent) -> None:
+            self.linkToParent=linkToParent
+            
+        def slotCreatedDocument(self, doc):
+            from plane import Grid as gr
+            v=Gui.ActiveDocument.ActiveView
+            #if (self.linkToParent.planeShow is None):
+            self.linkToParent.planeShow=gr(v)
+            self.linkToParent.planeShow.Activated()
+            #print("Open/Create doc")
+
     def __init__(self):
         import Design456Init
         self.__class__.Icon = Design456Init.ICON_PATH + 'WorkbenchIcon.svg'
         self.__class__.MenuText = "Design456"
         self.__class__.ToolTip = "A workbench easy designing objects"
         self.runOnce=True
+        
 
     def Initialize(self):
         "This function is executed when FreeCAD starts"
@@ -64,7 +78,7 @@ class Design456_Workbench (Workbench):
 
         self.appendMenu("Design456_Part",designPart.Design456_Part.list)
         self.appendMenu("Design456_2Ddrawing",TwoDDraw.Design456_2Ddrawing.list)
-        self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)   
+        self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
 
         # Design456_Part
         #self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
@@ -168,11 +182,15 @@ class Design456_Workbench (Workbench):
     def Activated(self):
         try:
             import WorkingPlane
-            #from draftguitools.gui_trackers import gridTracker
             from plane import Grid as gr
+
+            #from draftguitools.gui_trackers import gridTracker
             if not(App.ActiveDocument):
                 App.newDocument()
-            
+                
+            DocObserver= self.DocObserver(self)
+            App.addDocumentObserver(DocObserver)
+
             # FROM DRAFT
             if hasattr(FreeCADGui, "draftToolBar"):
                 Gui.draftToolBar.Activated()
@@ -187,15 +205,16 @@ class Design456_Workbench (Workbench):
             #g=gridTracker()
             v=Gui.ActiveDocument.ActiveView
             #New plane axis 2021-03-22
-            planeShow=gr(v)
-            planeShow.Activated()
+            if (self.planeShow is None):
+                self.planeShow=gr(v)
+                self.planeShow.Activated()
             #g.ff()                #draft Grid  --> I will try to remove it in the future Mariwan 2021-03-22
             #Show Top view - Isometric always
             if self.runOnce==True:
                 Gui.ActiveDocument.activeView().viewTop()
                 Gui.activeDocument().activeView().viewIsometric()
-               # Gui.SendMsgToActiveView("ViewFit")
-                for x in range(1, 10):
+                # Gui.SendMsgToActiveView("ViewFit")
+                for TT in range(1, 10):
                     Gui.ActiveDocument.ActiveView.zoomOut()
                 self.runOnce=False
             App.Console.PrintLog(
