@@ -821,3 +821,21 @@ def checkCollision(newObj):
         if(o is not None):
             results.append(o)
     return results  # Return document objects
+
+
+# Function to find the angle
+# between the two lines with the origion 
+# This is here to make it clear how you do that
+def calculateAngle(v1):
+    """[Find angle between a vector and the origin
+        Assuming the the angle is between the line 
+        (0,0,0) and (1,1,0)
+    ]
+
+    Args:
+        v1 ([type]): [description]
+
+    Returns:
+        [float]: [Angle to the Z Axis in degrees]
+    """
+    return math.degrees(v1.getAngle(App.Vector(1,1,0)))

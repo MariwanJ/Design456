@@ -50,8 +50,18 @@ from ThreeDWidgets import fr_label_draw
 MouseScaleFactor = 1
 
 '''
+    How it works: 
     We have to recreate the object each time we change the radius. 
-    This means that the redrawing must be optimized 
+    This means that the redrawing must be optimized
+    
+    1-If we have a 2D face, we just extrude it 
+    2-If we have a face from a 3D object, we extract that face and extrude it
+    3-Created object either it will remain as a new object or would be merged. 
+      But if it is used as a tool to cut another 3D object, the object will disappear. 
+    Known issue: 
+    There are circumstances where this tool will fail. Pushing is not correct yet.
+    Pushing should be developed later. To find out where this tool fails I need to get 
+    help from FreeCAD community.
 '''
 # TODO: As I wish to simplify the tree and make a simple 
 # copy of all objects, I leave it now and I should
@@ -59,7 +69,7 @@ MouseScaleFactor = 1
 
 def callback_move(userData: fr_arrow_widget.userDataObject=None):
     """[summary]
-    Callback for the arrow movement. This will be used to calculate the radius of the Extrude operation.
+    Callback for the arrow movement. This will be used to calculate the length of the Extrude operation.
     Args:
         userData (fr_arrow_widget.userDataObject, optional): [description]. Defaults to None.
 
@@ -87,7 +97,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject=None):
         if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once == False:
                 print("click move")
-                return 0  # nothing to do
+                return   # nothing to do
 
         if linktocaller.run_Once == False:
             linktocaller.run_Once = True
@@ -209,11 +219,10 @@ def callback_release(userData: fr_arrow_widget.userDataObject=None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
 class Design456_SmartExtrude:
     """
-        Apply Extrude to any 3D object by selecting the object, a Face or one or multiple edges 
-        Radius of the Extrude is counted by dragging the arrow towards the negative Z axis.
+        Apply Extrude to any 3D/2D object by selecting the object's face, 
+        Length of the Extrude is counted by dragging the arrow towards the negative Z axis.
     """
     _vector = App.Vector(0.0, 0.0, 0.0)
     mw = None
@@ -268,7 +277,6 @@ class Design456_SmartExtrude:
         """[Resize the arrow widget. The widget will be moved to the new position]
         Args:
             endVec ([App.Vector]): [New position]
-
         """
         currentLength = self.extrudeLength
         # to let the arrow be outside the object
@@ -281,7 +289,7 @@ class Design456_SmartExtrude:
         """"
          Find out the vector and rotation of the arrow to be drawn.
         """
-        #      For now the arrow will be at the top
+        # For now the arrow will be at the top
         try:    
             rotation = [0.0, 0.0, 0.0, 0.0]
 
@@ -297,13 +305,13 @@ class Design456_SmartExtrude:
             self.extrudeLength = 5
             self._vector = self.calculateNewVector()
             self.extrudeLength = 0.0
-            #TODO:FIXME: NOT CORRECT YET!!!!!!!!!!!!!!!!!!!!!
             if (face1.Surface.Rotation is None):
                 yL = face1.CenterOfMass
                 uv = face1.Surface.parameter(yL)
                 nv = face1.normalAt(uv[0], uv[1])
-                calAn=nv.getAngle(App.Vector(1,1,0))
-                rotation=(0,1,0,math.degrees(calAn))
+                calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
+                #nett= 90-faced.calculateAngle(rot)
+                rotation=[0,1,0,calAn]
                 print("rotation----->",rotation)
             else:
                 rotation = (face1.Surface.Rotation.Axis.x,
@@ -322,8 +330,9 @@ class Design456_SmartExtrude:
 
 
     def isFaceOf3DObj(self):
-        """[Check if the selected object is a face or is a 2D object. 
-        A face cannot be extruded directly. We have to extract a Face and them Extrude]
+        """[Check if the selected object is a face from a 3D object or is a 2D object. 
+            A face from a 3D object, cannot be extruded directly. 
+            We have to extract a Face and them Extrude]
             Face of 3D Object = True 
             2D Object= False
         Returns:
@@ -375,7 +384,7 @@ class Design456_SmartExtrude:
         else:
             d = self.extrudeLength
         point = yL + d * nv
-        print("Arrow Vector is ", point)
+        #print("Arrow Vector is ", point)
         return (point)
 
     def Activated(self):
@@ -526,7 +535,7 @@ class Design456_SmartExtrude:
             self.radSubtract.setText("Subtract")            
             
             commentFont = QtGui.QFont("Times", 12, True)
-            self.ExtrudeLBL = QtGui.QLabel("Extrude Radius=")
+            self.ExtrudeLBL = QtGui.QLabel("Extrude Length=")
             self.e1.setFont(commentFont)
             self.la.addWidget(self.e1)
             self.la.addWidget(self.ExtrudeLBL)
@@ -574,11 +583,11 @@ class Design456_SmartExtrude:
     def hide(self):
         """
         Hide the widgets. Remove also the tab.
+        TODO:
         For this tool, I decide to choose the hide to merge, subtract or leave it as is here. 
         I can do that during the extrusion (moving the arrow), but that will be an action
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
-
         """
 
         if (self.OperationOption == 0):
@@ -609,6 +618,5 @@ class Design456_SmartExtrude:
             'MenuText': ' Smart Extrude',
                         'ToolTip':  ' Smart Extrude'
         }
-
 
 Gui.addCommand('Design456_SmartExtrude', Design456_SmartExtrude())
