@@ -181,7 +181,6 @@ def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), _rotation
 
 """
 #Example using draw_line
-<<<<<<< HEAD
 from pivy import coin
 import fr_draw as d 
 from PySide import QtCore,QtGui
@@ -196,8 +195,8 @@ color= (1, 0.5, 1)
 rot=[0,1,0,-90]
 root=d.draw_line(ve,color, rot, 5)
 sg.addChild(root)
-=======
->>>>>>> main
+=======s
+
 
 
 """
@@ -3374,4 +3373,3 @@ def saveSceneGraphtoIVfile(filename):
     sowriteAct.getOutput().setBinary(False)
     sowriteAct.apply(sg)
     sowriteAct.getOutput().closeFile()
-
