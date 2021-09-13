@@ -39,77 +39,113 @@ from ThreeDWidgets.constant import FR_COLOR
 import math
 from dataclasses import dataclass
 
+"""
+Example using the DegreeWeel
 
+from pivy import coin
+import fr_draw2 as d 
 
-def draw_DegreeWheel(vec=[], color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+root=d.draw_DegreeWheel()
+sg.addChild(root)
+
+"""
+
+def draw_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     try:
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = _color
+        
         root = coin.SoSeparator()
-        transla=coin.SoTranslate()
+        transla=coin.SoTranslation()
         transla.translation.setValue(vec)
         root.addChild(transla)
-        material=coin.SoMaterial()
-        material.ambientColor.set (0.2, 0.2, 0.2) #check this
-        material.diffuseColor (coin.SoColor(color))
-        material.specularColor.setValue( 0, 0, 0,)
-        material.emissiveColor.setValue(0, 0, 0)
-        material.shininess(0.1)
-        material.transparency (0.1)
+        tempR = coin.SbVec3f()
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+        rootTrnasform=coin.SoTransform()
+        rootTrnasform.rotation.setValue(tempR, math.radians(_rotation[3]))
         
-        transcenter=coin.SoTransform()
+        material=coin.SoMaterial()
+        material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
+        material.diffuseColor.setValue (_color)
+        material.specularColor.setValue( 0, 0, 0)
+        material.emissiveColor.setValue(0, 0, 0)
+        material.transparency.setValue(0)
         root.addChild(material)
-        root.addChild(transcenter)
+        root.addChild(rootTrnasform)
 
         centerseparator=coin.SoSeparator() 
         center=coin.SoCylinder()
-        transcenter=coin.SoTranform()   #Center cylinder
-        center.radius=5
-        center.height=0.5
+        transcenter=coin.SoTransform()   #Center cylinder
+        tempC = coin.SbVec3f()
+        tempC.setValue(1,0,0)
+        transcenter.rotation.setValue(tempC, math.radians(90))
+        center.radius=2.5
+        center.height=0.25
         centerseparator.addChild(transcenter)
         centerseparator.addChild(center)
 
-        separator1=coin.SoSeparator() # x
+        separatorX=coin.SoSeparator() # x
         axisx=coin.SoCylinder()
-        axisx.radius=0.5
-        axisx.height=20        
         transX=coin.SoTransform()
-        transX.rotation.setValue(1, 0, 0, math.radians(90))
-        separator1.addChild(transX)
-        separator1.addChild(axisx)
+        tempX = coin.SbVec3f()
+        tempX.setValue(0,0,1)
+        transX.rotation.setValue(tempX, math.radians(90))
+        axisx.radius=0.15
+        axisx.height=20
+        separatorX.addChild(transX)
+        separatorX.addChild(axisx)
         
-
-        separator2=coin.SoSeparator() # y
-        axisy=coin.SoCylinder()
-        axisy.radius=0.5
-        axisy.height=20
+        separatorY=coin.SoSeparator() # Y
+        axisY=coin.SoCylinder()
         transY=coin.SoTransform()
-        transY.rotation.setValue(0, 0, 1, math.radians(90))
-        separator2.addChild(transY)                         
-        separator2.addChild(axisy)
+        tempY = coin.SbVec3f()
+        tempY.setValue(0,0,1)
+        transY.rotation.setValue(tempY, math.radians(0))
+        axisY.radius=0.15
+        axisY.height=20
+        separatorY.addChild(transY)
+        separatorY.addChild(axisY)        
 
-        separator3=coin.SoSeparator() # 45
+        separator45=coin.SoSeparator() # 45
         axis45=coin.SoCylinder()
         trans45=coin.SoTransform()
-        axis45.radius=0.5
-        axis45.height=20
-        trans45.rotation.setValue(0, 0, 1, math.radians(90))
-        separator2.addChild(trans45)
-        separator2.addChild(axis45)                         
+        temp45 = coin.SbVec3f()
+        temp45.setValue(0,0,1)
+        trans45.rotation.setValue(temp45, math.radians(45))
+        axis45.radius=0.15
+        axis45.height=15
+        separator45.addChild(trans45)
+        separator45.addChild(axis45)        
 
-        separator4=coin.SoSeparator() # 135
+        separator135=coin.SoSeparator() # 135
         axis135=coin.SoCylinder()
         trans135=coin.SoTransform()
-        axis135.radius=0.5
-        axis135.height=20
-        trans135=coin.SoTransform()
-        trans135.rotation.setValue(0, 0, 1, math.radians(90))
-        separator4.addChild(trans135)
-        separator4.addChild(axis135)
+        temp135 = coin.SbVec3f()
+        temp135.setValue(0,0,1)
+        trans135.rotation.setValue(temp135, math.radians(135))
+        axis135.radius=0.15
+        axis135.height=15
+        separator135.addChild(trans135)
+        separator135.addChild(axis135)        
 
-        root.addChild(centerseparator)
-        root.addChild(separator1)
-        root.addChild(separator2)
-        root.addChild(separator3)
-        root.addChild(separator4)
+        group= coin.SoSeparator()
+        transG=coin.SoTransform()
+        tempG = coin.SbVec3f()
+        tempG.setValue(0,1,0)
+        transG.rotation.setValue(tempG, math.radians(90))
+        
+        group.addChild(transG)
+        group.addChild(centerseparator)
+        group.addChild(separatorX)
+        group.addChild(separatorY)
+        group.addChild(separator45)
+        group.addChild(separator135)
+
+        root.addChild(rootTrnasform)        
+        root.addChild(transla)
+        root.addChild(col1)
+        root.addChild(group)
         return root
 
     except Exception as err:
