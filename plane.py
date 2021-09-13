@@ -214,9 +214,9 @@ class DocObserver:
         
     def slotDeletedDocument(self, doc):
         "This function is executed when the workbench is deactivated"
-        App.removeDocumentObserver(doc)
+        #App.removeDocumentObserver(doc)
         if (self.linkToParent is not None):
             self.linkToParent.planeShow.Deactivated()
-            self.linkToParent.planeShow = None
-            del self.linkToParent
-            self.linkToParent = None
+            #self.linkToParent.planeShow = None
+            #del self.linkToParent
+            #self.linkToParent = None

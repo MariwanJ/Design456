@@ -1,0 +1,66 @@
+#Inventor V2.1 ascii
+
+
+DEF root Separator {
+
+  Separator {
+
+    Transform {
+      rotation 1 0 0  1.5700002
+
+    }
+    Cylinder {
+      radius 5
+      height 0.5
+
+    }
+  }
+  Separator {
+
+    Transform {
+      rotation 0 0 0.99999994  1.5700002
+
+    }
+    Cylinder {
+      radius 0.5
+      height 20
+
+    }
+  }
+  Separator {
+
+    Transform {
+      rotation 0 0 1  0
+
+    }
+    Cylinder {
+      radius 0.5
+      height 20
+
+    }
+  }
+  Separator {
+
+    Transform {
+      rotation 0 0 0.99999994  0.78500009
+
+    }
+    Cylinder {
+      radius 0.5
+      height 15
+
+    }
+  }
+  Separator {
+
+    Transform {
+      rotation 0 0 1  2.355
+
+    }
+    Cylinder {
+      radius 0.5
+      height 15
+
+    }
+  }
+}
