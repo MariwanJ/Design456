@@ -453,8 +453,7 @@ class Design456_SmartChamfer:
             la.addWidget(self.ChamferLBL)
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons(
-                QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             la.addWidget(okbox)
             QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
 

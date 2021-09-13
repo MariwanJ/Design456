@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-
 #
 # ***************************************************************************
 # *                                                                        *
@@ -40,7 +39,6 @@ import FreeCADGui as Gui
 import FreeCAD as App
 
 
-
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
     v = coin.SoVertexProperty()
@@ -61,16 +59,15 @@ def dim_dash(p1, p2, color, LineWidth):
 
 class Grid:
     collectGarbage = []
-
+    sg=None
     def __init__(self, view):
         self.view = view
         self.sg = None
         self.collectGarbage = []  # Keep the nodes for removing
-        self.sg = None
 
-    def removeAllAxis(self):
+    def Deactivated(self):
         self.removeGarbage()
-
+        
     def Activated(self):
         try:
             self.sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
@@ -92,7 +89,7 @@ class Grid:
         col = coin.SoBaseColor()
         col.rgb = FR_COLOR.FR_YELLOW  # (237, 225, 0) # Yellow
         LengthOfGrid = 500  # mm
-        bothSideLength = LengthOfGrid/2
+        bothSideLength = LengthOfGrid / 2
         GridSize = 5
         counter = LengthOfGrid
         try:
@@ -103,8 +100,8 @@ class Grid:
                 P1y = 0
                 P2x = +2
                 P1y = 0
-                line.append(dim_dash((P1x, P1y, -bothSideLength+i),
-                            (P2x, P1y, -bothSideLength+i), col, 1))  # x
+                line.append(dim_dash((P1x, P1y, -bothSideLength + i),
+                            (P2x, P1y, -bothSideLength + i), col, 1))  # x
             for i in line:
                 self.sg.addChild(i)
                 self.collectGarbage.append(i)
@@ -121,9 +118,9 @@ class Grid:
         col1 = coin.SoBaseColor()
         col2 = coin.SoBaseColor()
         col3 = coin.SoBaseColor()
-        col1.rgb = FR_COLOR.FR_RED      # RED
-        col2.rgb = FR_COLOR.FR_GREEN    # GREEN
-        col3.rgb = FR_COLOR.FR_BLUE    # BLUE
+        col1.rgb = FR_COLOR.FR_RED  # RED
+        col2.rgb = FR_COLOR.FR_GREEN  # GREEN
+        col3.rgb = FR_COLOR.FR_BLUE  # BLUE
 
         LengthOfGrid = 1000  # mm
         try:
@@ -151,12 +148,13 @@ class Grid:
             self.sg.removeChild(i)
 
         self.collectGarbage.clear()
+        del self
 
     def drawXYPlane(self):
         col = coin.SoBaseColor()
         col.rgb = FR_COLOR.FR_BLUEG
         LengthOfGrid = 1000  # mm
-        bothSideLength = LengthOfGrid/2
+        bothSideLength = LengthOfGrid / 2
         GridSize = 2
         counter = LengthOfGrid
         try:
@@ -166,10 +164,10 @@ class Grid:
             for i in range(0, counter, GridSize):
                 # X direction
                 P1x = -bothSideLength
-                P1y = -bothSideLength+i
+                P1y = -bothSideLength + i
 
                 # y direction
-                P3x = -bothSideLength+i
+                P3x = -bothSideLength + i
                 P3y = -bothSideLength
 
                 if count5Cells == 0:
@@ -186,7 +184,7 @@ class Grid:
                     line.append(dim_dash((P3x, P3y, 0.0),
                                 (P3x, -P3y, 0.0), col, lineSize))  # y
 
-                count5Cells = count5Cells+1
+                count5Cells = count5Cells + 1
                 if count5Cells == 5:
                     count5Cells = 0
             for i in line:
@@ -199,3 +197,26 @@ class Grid:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
+            
+class DocObserver:
+    linkToParent = None
+
+    def slotCreatedDocument(self, doc):
+        v = Gui.ActiveDocument.ActiveView
+        if (self.linkToParent != None):
+            if(self.linkToParent.planeShow == None):
+                self.linkToParent.planeShow = Grid(v)
+                self.linkToParent.planeShow.Activated()
+
+    def setLink(self, linkToParent=None):
+        self.linkToParent = linkToParent
+        
+    def slotDeletedDocument(self, doc):
+        "This function is executed when the workbench is deactivated"
+        App.removeDocumentObserver(doc)
+        if (self.linkToParent is not None):
+            self.linkToParent.planeShow.Deactivated()
+            self.linkToParent.planeShow = None
+            del self.linkToParent
+            self.linkToParent = None
