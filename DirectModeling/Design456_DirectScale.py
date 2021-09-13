@@ -418,10 +418,10 @@ class Design456_DirectScale:
             la.addWidget(self.scaleLBL)
             self.okbox = QtGui.QDialogButtonBox(self.dialog)
             self.okbox.setOrientation(QtCore.Qt.Horizontal)
-            self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             la.addWidget(self.okbox)
             QtCore.QObject.connect(self.okbox, QtCore.SIGNAL("accepted()"), self.hide)
-            QtCore.QObject.connect(self.okbox, QtCore.SIGNAL("rejected()"), self.hide)
+
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             self.createArrows()

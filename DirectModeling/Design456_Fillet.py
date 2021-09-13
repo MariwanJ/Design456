@@ -465,8 +465,7 @@ class Design456_SmartFillet:
             la.addWidget(self.FilletLBL)
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons(
-                QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            okbox.setStandardButtons( QtGui.QDialogButtonBox.Ok)
             la.addWidget(okbox)
             QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
 
