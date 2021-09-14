@@ -53,9 +53,55 @@ sg.addChild(root)
 
 def draw_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     try:
+
+
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
+
+        colx = coin.SoBaseColor()  # must be converted to SoBaseColor
+        colx.rgb = FR_COLOR.FR_ORANGERED
+
+        coly = coin.SoBaseColor()  # must be converted to SoBaseColor
+        coly.rgb = FR_COLOR.FR_GREENYELLOW
+
+        colCenter = coin.SoBaseColor()  # must be converted to SoBaseColor
+        colCenter.rgb = FR_COLOR.FR_BROWN
+
+        col45 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col45.rgb = FR_COLOR.FR_BLUEVIOLET
+
+        col135 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col135.rgb = FR_COLOR.FR_ORANGE
+
+
+        txtXSo = coin.SoSeparator()  # must be converted to SoBaseColor
+        txtXTransform = coin.SoTransform()
+        txtYSo = coin.SoSeparator()  # must be converted to SoBaseColor
+        txtYTransform = coin.SoTransform()
+
+
+        txtXTransform.translation.setValue(App.Vector(0,0,0))
+        txtXTransform.rotation.setValue(coin.SbVec3f(1,0, 0),math.radians(90))
         
+        textX="0°"
+        text3DX = coin.SoAsciiText()  # Draw text in the 3D world
+        text3DX.string.setValues([l.encode("utf8") for l in textX if l])
+        
+        txtXSo.addChild(txtXTransform)
+        txtXSo.addChild(text3DX)
+        txtXSo.addChild(colx)
+
+        textY="90°"
+        text3DY = coin.SoAsciiText()  # Draw text in the 3D world
+        text3DY.string.setValues([l.encode("utf8") for l in textY if l])
+        txtXTransform.translation.setValue(App.Vector(10,0,0))
+        txtXTransform.rotation.setValue(coin.SbVec3f(1,0, 0),math.radians(0))
+        
+        txtYSo.addChild(txtXTransform)
+        txtYSo.addChild(text3DY)
+        txtYSo.addChild(coly)
+
+
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
         transla.translation.setValue(vec)
@@ -83,6 +129,7 @@ def draw_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         center.radius=2.5
         center.height=0.25
         centerseparator.addChild(transcenter)
+        centerseparator.addChild(colCenter)
         centerseparator.addChild(center)
 
         separatorX=coin.SoSeparator() # x
@@ -94,6 +141,7 @@ def draw_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         axisx.radius=0.15
         axisx.height=20
         separatorX.addChild(transX)
+        separatorX.addChild(colx)
         separatorX.addChild(axisx)
         
         separatorY=coin.SoSeparator() # Y
@@ -105,6 +153,7 @@ def draw_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         axisY.radius=0.15
         axisY.height=20
         separatorY.addChild(transY)
+        separatorY.addChild(coly)
         separatorY.addChild(axisY)        
 
         separator45=coin.SoSeparator() # 45
@@ -116,6 +165,7 @@ def draw_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         axis45.radius=0.15
         axis45.height=15
         separator45.addChild(trans45)
+        separator45.addChild(col45)
         separator45.addChild(axis45)        
 
         separator135=coin.SoSeparator() # 135
@@ -127,6 +177,7 @@ def draw_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         axis135.radius=0.15
         axis135.height=15
         separator135.addChild(trans135)
+        separator135.addChild(col135)
         separator135.addChild(axis135)        
 
         group= coin.SoSeparator()
@@ -136,9 +187,14 @@ def draw_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         transG.rotation.setValue(tempG, math.radians(90))
         
         group.addChild(transG)
+
         group.addChild(centerseparator)
         group.addChild(separatorX)
+        
+        group.addChild(txtXSo)
         group.addChild(separatorY)
+        group.addChild(txtYSo)
+        
         group.addChild(separator45)
         group.addChild(separator135)
 
