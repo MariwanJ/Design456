@@ -212,11 +212,11 @@ class DocObserver:
     def setLink(self, linkToParent=None):
         self.linkToParent = linkToParent
         
-    def slotDeletedDocument(self, doc):
-        "This function is executed when the workbench is deactivated"
-        #App.removeDocumentObserver(doc)
-        if (self.linkToParent is not None):
-            self.linkToParent.planeShow.Deactivated()
-            #self.linkToParent.planeShow = None
-            #del self.linkToParent
-            #self.linkToParent = None
+    #def slotDeletedDocument(self, doc):
+    #    "This function is executed when the workbench is deactivated"
+    #    #App.removeDocumentObserver(doc)
+    #    if (self.linkToParent is not None):
+    #        self.linkToParent.planeShow.Deactivated()
+    #        #self.linkToParent.planeShow = None
+    #        #del self.linkToParent
+    #        #self.linkToParent = None
