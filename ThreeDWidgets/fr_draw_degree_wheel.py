@@ -42,19 +42,17 @@ from dataclasses import dataclass
 Example using the DegreeWeel
 
 TODO: To make the wheel interactive, I have to separate the axis, center and the text
-
-
 from pivy import coin
-import fr_draw2 as d 
+import fr_draw_degree_wheel as dgw 
 from PySide import QtCore,QtGui
 import math
 sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-a=d.draw_Text_DegreeWheel()
-b=draw_Center_DegreeWheel()
-c=draw_Xaxis_DegreeWheel()
-d=draw_Yaxis_DegreeWheel()
-e=draw_45axis_DegreeWheel()
-f=draw_135axis_DegreeWheel()
+a=dgw.draw_Text_DegreeWheel()
+b=dgw.draw_Center_DegreeWheel()
+c=dgw.draw_Xaxis_DegreeWheel()
+d=dgw.draw_Yaxis_DegreeWheel()
+e=dgw.draw_XZPaxis_DegreeWheel()
+f=dgw.draw_XZMaxis_DegreeWheel()
 
 sg.addChild(a)
 sg.addChild(b)
@@ -62,6 +60,8 @@ sg.addChild(c)
 sg.addChild(d)
 sg.addChild(e)
 sg.addChild(f)
+
+
 """
 
 
@@ -209,7 +209,7 @@ def draw_Center_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,
         tempC = coin.SbVec3f()
         tempC.setValue(1,0,0)
         transcenter.rotation.setValue(tempC, math.radians(90))
-        center.radius=2.5
+        center.radius=1.75
         center.height=0.25
         centerseparator.addChild(transcenter)
         centerseparator.addChild(colCenter)
@@ -265,7 +265,7 @@ def draw_Xaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0
         tempX = coin.SbVec3f()
         tempX.setValue(0,0,1)
         transX.rotation.setValue(tempX, math.radians(90))
-        axisx.radius=0.15
+        axisx.radius=0.125
         axisx.height=10
         separatorX.addChild(transX)
         separatorX.addChild(colx)
@@ -324,7 +324,7 @@ def draw_Yaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0
         tempY = coin.SbVec3f()
         tempY.setValue(0,0,1)
         transY.rotation.setValue(tempY, math.radians(0))
-        axisY.radius=0.15
+        axisY.radius=0.125
         axisY.height=10
         separatorY.addChild(transY)
         separatorY.addChild(coly)
@@ -382,8 +382,8 @@ def draw_XZPaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0
         temp45 = coin.SbVec3f()
         temp45.setValue(0,0,1)
         trans45.rotation.setValue(temp45, math.radians(45))
-        axis45.radius=0.15
-        axis45.height=10
+        axis45.radius=0.125
+        axis45.height=7
         separator45.addChild(trans45)
         separator45.addChild(col45)
         separator45.addChild(axis45)        
@@ -445,8 +445,8 @@ def draw_XZMaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0
         temp135 = coin.SbVec3f()
         temp135.setValue(0,0,1)
         trans135.rotation.setValue(temp135, math.radians(135))
-        axis135.radius=0.15
-        axis135.height=10
+        axis135.radius=0.125
+        axis135.height=7
         separator135.addChild(trans135)
         separator135.addChild(col135)
         separator135.addChild(axis135)        
