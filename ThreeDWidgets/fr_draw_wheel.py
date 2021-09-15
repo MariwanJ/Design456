@@ -39,20 +39,20 @@ import math
 from dataclasses import dataclass
 
 """
-Example using the DegreeWeel
+Example using the Weel
 
 TODO: To make the wheel interactive, I have to separate the axis, center and the text
 from pivy import coin
-import fr_draw_degree_wheel as dgw 
+import fr_draw__wheel as dgw 
 from PySide import QtCore,QtGui
 import math
 sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-a=dgw.draw_Text_DegreeWheel()
-b=dgw.draw_Center_DegreeWheel()
-c=dgw.draw_Xaxis_DegreeWheel()
-d=dgw.draw_Yaxis_DegreeWheel()
-e=dgw.draw_XZPaxis_DegreeWheel()
-f=dgw.draw_XZMaxis_DegreeWheel()
+a=dgw.draw_Text_Wheel()
+b=dgw.draw_Center_Wheel()
+c=dgw.draw_Xaxis_Wheel()
+d=dgw.draw_Yaxis_Wheel()
+e=dgw.draw_XZPaxis_Wheel()
+f=dgw.draw_XZMaxis_Wheel()
 
 sg.addChild(a)
 sg.addChild(b)
@@ -65,7 +65,7 @@ sg.addChild(f)
 """
 
 
-def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         TextScale=0.04
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
@@ -169,7 +169,7 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
         root.addChild(txtRoot)
         return root
     except Exception as err:
-        App.Console.PrintError("'DegreesWheel' Failed. "
+        App.Console.PrintError("'sWheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -177,7 +177,7 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
 
 
 
-def draw_Center_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -228,14 +228,14 @@ def draw_Center_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,
         return root
 
     except Exception as err:
-        App.Console.PrintError("'DegreesWheel' Failed. "
+        App.Console.PrintError("'sWheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_Xaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -284,7 +284,7 @@ def draw_Xaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0
         return root
 
     except Exception as err:
-        App.Console.PrintError("'DegreesWheel' Failed. "
+        App.Console.PrintError("'sWheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -292,7 +292,7 @@ def draw_Xaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0
 
 
 
-def draw_Yaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     try:
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
         txtCol.rgb = FR_COLOR.FR_WHITE
@@ -342,13 +342,13 @@ def draw_Yaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0
         root.addChild(group)
         return root
     except Exception as err:
-        App.Console.PrintError("'DegreesWheel' Failed. "
+        App.Console.PrintError("'sWheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-def draw_XZPaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_XZPaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -403,14 +403,14 @@ def draw_XZPaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0
         return root
 
     except Exception as err:
-        App.Console.PrintError("'DegreesWheel' Failed. "
+        App.Console.PrintError("'sWheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_XZMaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_XZMaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -466,7 +466,7 @@ def draw_XZMaxis_DegreeWheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0
         return root
 
     except Exception as err:
-        App.Console.PrintError("'DegreesWheel' Failed. "
+        App.Console.PrintError("'sWheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
