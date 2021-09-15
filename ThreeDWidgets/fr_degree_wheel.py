@@ -72,14 +72,19 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
         txtCol.rgb = FR_COLOR.FR_WHITE
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
+
         colx = coin.SoBaseColor()  # must be converted to SoBaseColor
         colx.rgb = FR_COLOR.FR_ORANGERED
+
         coly = coin.SoBaseColor()  # must be converted to SoBaseColor
         coly.rgb = FR_COLOR.FR_GREENYELLOW
+
         colCenter = coin.SoBaseColor()  # must be converted to SoBaseColor
         colCenter.rgb = FR_COLOR.FR_BROWN
+
         col45 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col45.rgb = FR_COLOR.FR_BLUEVIOLET
+
         col135 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col135.rgb = FR_COLOR.FR_ORANGE
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
@@ -128,16 +133,19 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
         txtYPSo.addChild(txtYPTransform)
         txtYPSo.addChild(txtCol)
         txtYPSo.addChild(text3DYP)
+
         groupT=coin.SoSeparator()
         groupT.addChild(txtXSo)
         groupT.addChild(txtXPSo)
         groupT.addChild(txtYSo)
         groupT.addChild(txtYPSo)
+
         txtRoot =coin.SoSeparator()
         txtrootTrans=coin.SoTransform()
         txtrootTrans.rotation.setValue(coin.SbVec3f(1,0, 0),math.radians(90))
         txtRoot.addChild(txtrootTrans)
         txtRoot.addChild(groupT)
+
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
         transla.translation.setValue(vec)
@@ -154,6 +162,7 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
         material.transparency.setValue(0)
         root.addChild(material)
         root.addChild(rootTransform)
+
         root.addChild(rootTransform)        
         root.addChild(transla)
         root.addChild(col1)
