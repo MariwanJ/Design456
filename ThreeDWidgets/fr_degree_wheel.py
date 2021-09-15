@@ -70,10 +70,23 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
     try:
         TextScale=0.04
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
-        txtCol.rgb = _color
+        txtCol.rgb = FR_COLOR.FR_WHITE
+
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
-        
+
+        colx = coin.SoBaseColor()  # must be converted to SoBaseColor
+        colx.rgb = FR_COLOR.FR_ORANGERED
+
+        coly = coin.SoBaseColor()  # must be converted to SoBaseColor
+        coly.rgb = FR_COLOR.FR_GREENYELLOW
+
+        colCenter = coin.SoBaseColor()  # must be converted to SoBaseColor
+        colCenter.rgb = FR_COLOR.FR_BROWN
+
+        col45 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col45.rgb = FR_COLOR.FR_BLUEVIOLET
+
         col135 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col135.rgb = FR_COLOR.FR_ORANGE
 
@@ -127,10 +140,17 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
         txtYPSo.addChild(txtCol)
         txtYPSo.addChild(text3DYP)
 
+        groupT=coin.SoSeparator()
+        group.addChild(txtXSo)
+        group.addChild(txtXPSo)
+        group.addChild(txtYSo)
+        group.addChild(txtYPSo)
+
         txtRoot =coin.SoSeparator()
         txtrootTrans=coin.SoTransform()
         txtrootTrans.rotation.setValue(coin.SbVec3f(1,0, 0),math.radians(90))
         txtRoot.addChild(txtrootTrans)
+        txtRoot.addChild(groupT)
 
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
@@ -141,12 +161,29 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         
+        material=coin.SoMaterial()
+        material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
+        material.diffuseColor.setValue (_color)
+        material.specularColor.setValue( 0, 0, 0)
+        material.emissiveColor.setValue(0, 0, 0)
+        material.transparency.setValue(0)
+        root.addChild(material)
+        root.addChild(rootTransform)
+        group= coin.SoSeparator()
+        transG=coin.SoTransform()
+        tempG = coin.SbVec3f()
+        tempG.setValue(1,0,0)
+        transG.rotation.setValue(tempG, math.radians(90))
+        group.addChild(transG)
+        
         root.addChild(rootTransform)        
         root.addChild(transla)
         root.addChild(col1)
         root.addChild(txtRoot)
+        root.addChild(group)
+ 
         return root
-
+    
     except Exception as err:
         App.Console.PrintError("'DegreesWheel' Failed. "
                                "{err}\n".format(err=str(err)))
