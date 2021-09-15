@@ -141,10 +141,10 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
         txtYPSo.addChild(text3DYP)
 
         groupT=coin.SoSeparator()
-        group.addChild(txtXSo)
-        group.addChild(txtXPSo)
-        group.addChild(txtYSo)
-        group.addChild(txtYPSo)
+        groupT.addChild(txtXSo)
+        groupT.addChild(txtXPSo)
+        groupT.addChild(txtYSo)
+        groupT.addChild(txtYPSo)
 
         txtRoot =coin.SoSeparator()
         txtrootTrans=coin.SoTransform()
@@ -169,18 +169,12 @@ def draw_Text_DegreeWheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rota
         material.transparency.setValue(0)
         root.addChild(material)
         root.addChild(rootTransform)
-        group= coin.SoSeparator()
-        transG=coin.SoTransform()
-        tempG = coin.SbVec3f()
-        tempG.setValue(1,0,0)
-        transG.rotation.setValue(tempG, math.radians(90))
-        group.addChild(transG)
         
         root.addChild(rootTransform)        
         root.addChild(transla)
         root.addChild(col1)
         root.addChild(txtRoot)
-        root.addChild(group)
+
  
         return root
     
