@@ -39,7 +39,7 @@ import math
 from dataclasses import dataclass
 
 """
-Example using the Weel
+Example using the Wheel
 
 TODO: To make the wheel interactive, I have to separate the axis, center and the text
 from pivy import coin
@@ -91,7 +91,7 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
         txtCol.rgb =(0.9,0.6,0.1)
         txtXSo = coin.SoSeparator()  # must be converted to SoBaseColor
         txtXTransform = coin.SoTransform()
-        txtXTransform.translation.setValue(App.Vector(5,0,0))
+        txtXTransform.translation.setValue([(5,0,0)])
         txtXTransform.rotation.setValue(coin.SbVec3f(0,0, 0),math.radians(0))
         txtXTransform.scaleFactor.setValue(TextScale ,TextScale,TextScale)
         textX=["90.0°",]
@@ -102,7 +102,7 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
         txtXSo.addChild(text3DX)
         txtXPSo = coin.SoSeparator()  # must be converted to SoBaseColor
         txtXPTransform = coin.SoTransform()
-        txtXPTransform.translation.setValue(App.Vector(-5,0,0))
+        txtXPTransform.translation.setValue([(-5,0,0)])
         txtXPTransform.rotation.setValue(coin.SbVec3f(0,0, 0),math.radians(0))
         txtXPTransform.scaleFactor.setValue(TextScale,TextScale,TextScale)
         textXP=["270.0°",]
@@ -113,7 +113,7 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
         txtXPSo.addChild(text3DXP)
         txtYSo = coin.SoSeparator()  # must be converted to SoBaseColor
         txtYTransform = coin.SoTransform()
-        txtYTransform.translation.setValue(App.Vector(0,5,0))
+        txtYTransform.translation.setValue([(0,5,0)])
         txtYTransform.rotation.setValue(coin.SbVec3f(0,0, 0),math.radians(0))
         txtYTransform.scaleFactor.setValue(TextScale,TextScale,TextScale)
         textY=["0.0°",]
@@ -124,7 +124,7 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
         txtYSo.addChild(text3DY)
         txtYPSo = coin.SoSeparator()  # must be converted to SoBaseColor
         txtYPTransform = coin.SoTransform()
-        txtYPTransform.translation.setValue(App.Vector(0,-5,0))
+        txtYPTransform.translation.setValue([(0,-5,0)])
         txtYPTransform.rotation.setValue(coin.SbVec3f(0,0, 0),math.radians(0))
         txtYPTransform.scaleFactor.setValue(TextScale,TextScale,TextScale)
         textYP=["180.0°",]
@@ -148,7 +148,7 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
 
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
-        transla.translation.setValue(vec)
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
@@ -169,7 +169,7 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
         root.addChild(txtRoot)
         return root
     except Exception as err:
-        App.Console.PrintError("'sWheel' Failed. "
+        App.Console.PrintError("'Wheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -177,7 +177,7 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
 
 
 
-def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -189,7 +189,7 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0]
         style.lineWidth = LineWidth
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
-        transla.translation.setValue(vec)
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
@@ -228,14 +228,14 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0]
         return root
 
     except Exception as err:
-        App.Console.PrintError("'sWheel' Failed. "
+        App.Console.PrintError("'Wheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -245,7 +245,7 @@ def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         style.lineWidth = LineWidth
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
-        transla.translation.setValue(vec)
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
@@ -284,7 +284,7 @@ def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         return root
 
     except Exception as err:
-        App.Console.PrintError("'sWheel' Failed. "
+        App.Console.PrintError("'Wheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -292,7 +292,7 @@ def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
 
 
 
-def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
         txtCol.rgb = FR_COLOR.FR_WHITE
@@ -304,7 +304,7 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         style.lineWidth = LineWidth
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
-        transla.translation.setValue(vec)
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
@@ -342,13 +342,13 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0],
         root.addChild(group)
         return root
     except Exception as err:
-        App.Console.PrintError("'sWheel' Failed. "
+        App.Console.PrintError("'Wheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-def draw_XZPaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_XZPaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -360,7 +360,7 @@ def draw_XZPaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0
 
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
-        transla.translation.setValue(vec)
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
@@ -403,14 +403,14 @@ def draw_XZPaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0
         return root
 
     except Exception as err:
-        App.Console.PrintError("'sWheel' Failed. "
+        App.Console.PrintError("'Wheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_XZMaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
+def draw_XZMaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -423,7 +423,7 @@ def draw_XZMaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0
 
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
-        transla.translation.setValue(vec)
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
@@ -466,7 +466,7 @@ def draw_XZMaxis_Wheel(vec=App.Vector(0,0,0), _color=(1,1,1), _rotation=[0,0,1,0
         return root
 
     except Exception as err:
-        App.Console.PrintError("'sWheel' Failed. "
+        App.Console.PrintError("'Wheel' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

@@ -45,7 +45,7 @@ import fr_draw_wheel
 """
 Example how to use this widget. 
 
-                 # show the window and it's widgets. 
+# show the window and it's widgets. 
 
 """
 
@@ -66,7 +66,6 @@ def callback(userData:userDataObject=None):
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy wheel-widget callback")
-
 
 class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
@@ -99,23 +98,23 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         #     XY  is the Third  one -- It has the Top Camera View =2 in the list  *
         #**************************************************************************
 
-        self.w_xAxis_cb =callback         #Dummy callback
-        self.w_yAxis_cb =callback         #Dummy callback
-        self.w_zAxis_cb =callback         #Dummy callback
+        self.w_xAxis_cb = callback  # Dummy callback
+        self.w_yAxis_cb = callback  # Dummy callback
+        self.w_zAxis_cb = callback  # Dummy callback
         
-        self.w_45Axis_cb  =callback       #Dummy callback
-        self.w_135Axis_cb =callback       #Dummy callback
-        self.w_wheel_cb   =callback       #Dummy callback
-   
-        self.w_wdgsoSwitch = coin.SoSwitch()                       # the whole widget 
-        self.w_XsoSeparator      =coin.SoSeparator      
-        self.w_YsoSeparator      =coin.SoSeparator      
-        self.w_45soSeparator     =coin.SoSeparator      
-        self.w_135soSeparator    =coin.SoSeparator      
-        self.w_centersoSeparator =coin.SoSeparator      
-                
-        self.w_color = _color                                       # TODO: Not sure if we use this
-                         
+        self.w_45Axis_cb = callback  # Dummy callback
+        self.w_135Axis_cb = callback  # Dummy callback
+        self.w_wheel_cb = callback  # Dummy callback
+
+        self.w_wdgsoSwitch = coin.SoSwitch()  # the whole widget 
+        self.w_XsoSeparator = coin.SoSeparator      
+        self.w_YsoSeparator = coin.SoSeparator      
+        self.w_45soSeparator = coin.SoSeparator      
+        self.w_135soSeparator = coin.SoSeparator      
+        self.w_centersoSeparator = coin.SoSeparator      
+        
+        self.w_color = _color  # TODO: Not sure if we use this
+
         self.w_Xrotation = [0, 0, 0, 0]           
         self.w_Yrotation = [0, 0, 0, 0]
         self.w_Zrotation = [0, 0, 0, 0]
@@ -180,8 +179,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     self.releaseDrag = True   
                     self.take_focus()
                     self.do_move_callback()  # We use the same callback, 
-                                      # but user must tell the callback what was
-                                      # the event. TODO: Do we want to change this?
+                                            # but user must tell the callback what was
+                                            # the event.
                     return 1
             else:
                 self.do_move_callback()  # Continue run the callback as far as it != releaseDrag=True
@@ -195,18 +194,35 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         and draw the wheel on the screen. It creates a node for 
         the wheel.
         """
-        try:
-            self.w_XsoSeparator= fr_draw_wheel.draw_Xaxis_Wheel(self.w_vector[0],
-
-
-
-
-
-
-
-
-
-
+        try:  
+            if (len(self.w_vector) < 1):
+                raise ValueError('Must be  one vector')
+                return
+            usedColor = usedColor = self.w_selColor
+            if self.is_active() and self.has_focus():
+                usedColor = self.w_selColor
+            elif self.is_active() and (self.has_focus() != 1):
+                usedColor = self.w_color
+            elif self.is_active() != 1:
+                usedColor = self.w_inactiveColor
+            if self.is_visible():
+                allDraw = []
+                rot=[(0.0, 0.0, 1.0), 0.0]
+                self.w_zsoSeparator = fr_draw_wheel.draw_XZMaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
+                self.w_XsoSeparator = fr_draw_wheel.draw_Xaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
+                self.w_ysoSeparator = fr_draw_wheel.draw_Yaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
+                self.w_zsoSeparator = fr_draw_wheel.draw_XZPaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
+                allDraw.append(self.w_zsoSeparator)
+                allDraw.append(self.w_XsoSeparator)
+                allDraw.append(self.w_ysoSeparator)
+                allDraw.append(self.w_zsoSeparator)
+                
+                #self.saveSoNodeslblToWidget(self.draw_label(usedColor))
+                self.saveSoNodesToWidget(allDraw)
+                allSwitch=[] # add both to the same switch. and add them to the scenegraph automatically
+                allSwitch.append(self.w_widgetSoNodes)
+                #allSwitch.append(self.w_widgetlblSoNodes)
+                self.addSoNodeToSoSwitch(allSwitch)
 
         except Exception as err:
             App.Console.PrintError("'draw Fr_wheel_Widget' Failed. "
@@ -233,18 +249,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         left-top corner of the object. Or the start of the wheel
         if it is an wheel.
         """
-        self.resize([newVecPos[0], newVecPos[1]])
+        self.resize(newVecPos[0])
         
-    @property
-    def getVertexStart(self):
-        """Return the vertex of the start point"""
-        return App.Vertex(self.w_vector[0])
-
-    @property
-    def getVertexEnd(self):
-        """Return the vertex of the end point"""
-        return App.Vertex(self.w_vector[1])
-
     def show(self):
         self.w_visible = 1
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
