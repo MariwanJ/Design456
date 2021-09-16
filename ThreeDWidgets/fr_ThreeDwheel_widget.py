@@ -71,9 +71,7 @@ def callback(userData:userDataObject=None):
 class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
     """
-    This class is for drawing a one Degrees wheel
-    This will be used later to create 3D wheel. 
-    Or it can be used as a singel rotate/move widget
+    This class is for drawing a 3D Degrees wheel
     """
 
     def __init__(self, vectors: List[App.Vector]=[],
@@ -99,20 +97,20 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         #     XY  is the Third  one -- It has the Top Camera View =2 in the list  *
         #**************************************************************************
 
-        self.w_xAxis_cb =callback         #Dummy callback
-        self.w_yAxis_cb =callback         #Dummy callback
-        self.w_zAxis_cb =callback         #Dummy callback
+        self.w_xAxis_cb : List [callback]
+        self.w_yAxis_cb : List [callback]
+        self.w_zAxis_cb : List [callback]
         
-        self.w_45Axis_cb  =callback       #Dummy callback
-        self.w_135Axis_cb =callback       #Dummy callback
-        self.w_wheel_cb   =callback       #Dummy callback
-   
+        self.w_45Axis_cb : List [callback]
+        self.w_135Axis_cb : List [callback]
+        self.w_wheel_cb : List [callback]
+
         self.w_wdgsoSwitch = coin.SoSwitch()                       # the whole widget 
-        self.w_XsoSeparator      =coin.SoSeparator      
-        self.w_YsoSeparator      =coin.SoSeparator      
-        self.w_45soSeparator     =coin.SoSeparator      
-        self.w_135soSeparator    =coin.SoSeparator      
-        self.w_centersoSeparator =coin.SoSeparator      
+        self.w_XsoSeparator:List [coin.SoSeparator]                #For each axis we have 3 of them (Roll=X θ - , Pitch= Y Φ, Yaw = Z ψ )
+        self.w_YsoSeparator = List [coin.SoSeparator]              #For each axis we have 3 of them
+        self.w_45soSeparator = List [coin.SoSeparator]             #For each axis we have 3 of them
+        self.w_135soSeparator = List [coin.SoSeparator]            #For each axis we have 3 of them
+        self.w_centersoSeparator = List[coin.SoSeparator]          #For each axis we have 3 of them
                 
         self.w_color = _color                                       # TODO: Not sure if we use this
                          
@@ -196,7 +194,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         the wheel.
         """
         try:
-            self.w_XsoSeparator= fr_draw_wheel.draw_Xaxis_Wheel(self.w_vector[0],
+            pass
+            self.w_XsoSeparator= fr_draw_wheel.
 
 
 
