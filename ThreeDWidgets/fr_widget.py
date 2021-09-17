@@ -391,10 +391,15 @@ class Fr_Widget (object):
         if self.w_wdgsoSwitch is None:
             self.w_wdgsoSwitch=coin.SoSwitch()
             self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-
+        #We might have a list inside the widget 
         if type(listOfSoSeparator)==list:
-            for i in listOfSoSeparator:
-                self.w_wdgsoSwitch.addChild(i)
+            for sub in listOfSoSeparator:
+                if type(sub)==list:
+                    #we have many SoSeparator inside the widget
+                    for subSub in sub:
+                        self.w_wdgsoSwitch.addChild(subSub)
+                else:
+                    self.w_wdgsoSwitch.addChild(sub)
         else:
             self.w_wdgsoSwitch.addChild(listOfSoSeparator)
 
@@ -476,4 +481,5 @@ class propertyValues:
     labelfont : str
     fontsize  : int
     labelcolor: tuple
-    alignment : int                   
+    alignment : int 
+    rotations : tuple    # three angels in degree                  
