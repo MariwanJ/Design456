@@ -46,16 +46,22 @@ import fr_draw_wheel
 Example how to use this widget. 
 
 # show the window and it's widgets. 
-import fr_coinwindow as wn
-import fr_wheel_widget as line
-import FreeCAD as App
-g=[]
-p1=App.Vector(0,0,0)     # first point in the line and for the windows
-wny=wn.Fr_CoinWindow()  # Create the window, label has no effect at the moment
-g.append(p1)
-ln =line.Fr_DegreeWheel_Widget(g,"My label",1)   # draw the line - nothing will be visible yet
-wny.addWidget(ln)              # Add it to the window as a child 
-wny.show()      
+import ThreeDWidgets.fr_arrow_widget as wd
+import ThreeDWidgets.fr_coinwindow as wnn
+import math
+import fr_wheel_widget as w 
+mywin = wnn.Fr_CoinWindow()
+
+rotation=0
+color=(1,0,1)
+vec=[]
+vec.append(App.Vector(0,0,0))
+vec.append(App.Vector(5,0,0))
+
+rotation=[0.0, 0.0, 0.0, 0.0]
+arrows=w.Fr_DegreeWheel_Widget(vec,"Test",1, color,rotation,0)
+mywin.addWidget(arrows)
+mywin.show()
 
 """
 
@@ -77,6 +83,7 @@ def callback(userData:userDataObject=None):
     # Subclass this and impalement the callback or just change the callback function
     print("dummy wheel-widget callback")
 
+
 class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
     """
@@ -96,7 +103,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         
         self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_WHEEL
-        
+        self.w_wheelType = _wheelType
         self.w_callback_ = callback  # External function
         self.w_lbl_calback_ = callback        
         self.w_KB_callback_ = callback        
@@ -217,23 +224,25 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
             if self.is_visible():
                 allDraw = []
-                rot=[(0.0, 0.0, 1.0), 0.0]
-                self.w_zsoSeparator = fr_draw_wheel.draw_XZMaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
+                rot = [0.0, 0.0, 1.0, 0.0]
+                self.w_CentSeparator = fr_draw_wheel.draw_Center_Wheel(self.w_vector[0], usedColor, rot, 1)
+                self.w_ZmsoSeparator = fr_draw_wheel.draw_XZMaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
                 self.w_XsoSeparator = fr_draw_wheel.draw_Xaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
                 self.w_ysoSeparator = fr_draw_wheel.draw_Yaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_zsoSeparator = fr_draw_wheel.draw_XZPaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
-                allDraw.append(self.w_zsoSeparator)
+                self.w_ZpsoSeparator = fr_draw_wheel.draw_XZPaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
+                allDraw.append(self.w_CentSeparator)
+                allDraw.append(self.w_ZmsoSeparator)
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_ysoSeparator)
-                allDraw.append(self.w_zsoSeparator)
-                
+                allDraw.append(self.w_ZpsoSeparator)
+                                
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
                 self.saveSoNodesToWidget(allDraw)
-                allSwitch=[] # add both to the same switch. and add them to the scenegraph automatically
-                allSwitch.append(self.w_widgetSoNodes)
-                allSwitch.append(self.w_widgetlblSoNodes)
-                self.addSoNodeToSoSwitch(allSwitch)
-
+                # add SoSeparator to the switch
+                # We can put them in a tuple but it is better not doing so
+                self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
+                self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
+                
         except Exception as err:
             App.Console.PrintError("'draw Fr_wheel_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -247,7 +256,15 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         LabelData.labelfont = self.w_font
         LabelData.fontsize = self.w_fontsize
         LabelData.labelcolor = usedColor
-        LabelData.vectors = self.w_vector
+        if (self.w_wheelType != 2):
+            # When is hasing the Front view
+            LabelData.vectors =[App.Vector(0,0,5),App.Vector(10,0,5)] 
+            
+        else:
+            # When is hasing the Top v iew
+            LabelData.vectors = [self.w_vector[0], 
+                                 App.Vector(self.w_vector[1].x,self.w_vector[1].y+17,self.w_vector[1].z)]   # length of the arrow is 15
+
         LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label(self.w_label, LabelData)
         self.w_widgetlblSoNodes = lbl
