@@ -64,88 +64,70 @@ sg.addChild(f)
 
 """
 
-
-def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_Text_Wheel(vec=App.Vector(0.0,0.0,0.0), _color=FR_COLOR.FR_WHITE, _rotation=([0.0,0.0,1.0,0.0]), LineWidth=1.0):
     try:
         TextScale=0.04
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
-        txtCol.rgb = FR_COLOR.FR_WHITE
-        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = _color
-
-        colx = coin.SoBaseColor()  # must be converted to SoBaseColor
-        colx.rgb = FR_COLOR.FR_ORANGERED
-
-        coly = coin.SoBaseColor()  # must be converted to SoBaseColor
-        coly.rgb = FR_COLOR.FR_GREENYELLOW
-
-        colCenter = coin.SoBaseColor()  # must be converted to SoBaseColor
-        colCenter.rgb = FR_COLOR.FR_BROWN
-
-        col45 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col45.rgb = FR_COLOR.FR_BLUEVIOLET
-
-        col135 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col135.rgb = FR_COLOR.FR_ORANGE
-        txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
-        txtCol.rgb =(0.9,0.6,0.1)
+        txtCol.rgb = _color
         txtXSo = coin.SoSeparator()  # must be converted to SoBaseColor
         txtXTransform = coin.SoTransform()
-        txtXTransform.translation.setValue([(5,0,0)])
-        txtXTransform.rotation.setValue(coin.SbVec3f(0,0, 0),math.radians(0))
+        txtXTransform.translation.setValue(5.0,0.0,0.0)
+        txtXTransform.rotation.setValue(coin.SbVec3f(0.0,0.0, 0.0),math.radians(0.0))
         txtXTransform.scaleFactor.setValue(TextScale ,TextScale,TextScale)
-        textX=["90.0°",]
+        textX=["90.0°","____"]
         text3DX = coin.SoAsciiText()  # Draw text in the 3D world
         text3DX.string.setValues([l.encode("utf8") for l in textX if l])
         txtXSo.addChild(txtXTransform)
         txtXSo.addChild(txtCol)
         txtXSo.addChild(text3DX)
+        
         txtXPSo = coin.SoSeparator()  # must be converted to SoBaseColor
         txtXPTransform = coin.SoTransform()
-        txtXPTransform.translation.setValue([(-5,0,0)])
-        txtXPTransform.rotation.setValue(coin.SbVec3f(0,0, 0),math.radians(0))
+        txtXPTransform.translation.setValue(-5.0,0.0,0.0)
+        txtXPTransform.rotation.setValue(coin.SbVec3f(0.0,0.0,0.0),math.radians(0.0))
         txtXPTransform.scaleFactor.setValue(TextScale,TextScale,TextScale)
-        textXP=["270.0°",]
+        textXP=["270.0°",""]
         text3DXP = coin.SoAsciiText()  # Draw text in the 3D world
         text3DXP.string.setValues([l.encode("utf8") for l in textXP if l])
         txtXPSo.addChild(txtXPTransform)
         txtXPSo.addChild(txtCol)
         txtXPSo.addChild(text3DXP)
+        
         txtYSo = coin.SoSeparator()  # must be converted to SoBaseColor
         txtYTransform = coin.SoTransform()
-        txtYTransform.translation.setValue([(0,5,0)])
-        txtYTransform.rotation.setValue(coin.SbVec3f(0,0, 0),math.radians(0))
+        txtYTransform.translation.setValue(0.0,5.0,0.0)
+        txtYTransform.rotation.setValue(coin.SbVec3f(0.0,0.0, 0.0),math.radians(0.0))
         txtYTransform.scaleFactor.setValue(TextScale,TextScale,TextScale)
-        textY=["0.0°",]
+        textY=["0.0°",""]
         text3DY = coin.SoAsciiText()  # Draw text in the 3D world
         text3DY.string.setValues([l.encode("utf8") for l in textY if l])
         txtYSo.addChild(txtYTransform)
         txtYSo.addChild(txtCol)
         txtYSo.addChild(text3DY)
+        
         txtYPSo = coin.SoSeparator()  # must be converted to SoBaseColor
         txtYPTransform = coin.SoTransform()
-        txtYPTransform.translation.setValue([(0,-5,0)])
-        txtYPTransform.rotation.setValue(coin.SbVec3f(0,0, 0),math.radians(0))
+        txtYPTransform.translation.setValue(0.0,-5.0,0.0)
+        txtYPTransform.rotation.setValue(coin.SbVec3f(0.0,0.0, 0.0),math.radians(0.0))
         txtYPTransform.scaleFactor.setValue(TextScale,TextScale,TextScale)
-        textYP=["180.0°",]
+        textYP=["180.0°",""]
         text3DYP = coin.SoAsciiText()  # Draw text in the 3D world
         text3DYP.string.setValues([l.encode("utf8") for l in textYP if l])
         txtYPSo.addChild(txtYPTransform)
         txtYPSo.addChild(txtCol)
         txtYPSo.addChild(text3DYP)
-
+        
         groupT=coin.SoSeparator()
         groupT.addChild(txtXSo)
         groupT.addChild(txtXPSo)
         groupT.addChild(txtYSo)
         groupT.addChild(txtYPSo)
-
+        
         txtRoot =coin.SoSeparator()
         txtrootTrans=coin.SoTransform()
-        txtrootTrans.rotation.setValue(coin.SbVec3f(1,0, 0),math.radians(90))
+        txtrootTrans.rotation.setValue(coin.SbVec3f(1.0,0.0, 0.0),math.radians(90))
         txtRoot.addChild(txtrootTrans)
         txtRoot.addChild(groupT)
-
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
         transla.translation.setValue([vec.x,vec.y,vec.z])
@@ -155,19 +137,16 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         material=coin.SoMaterial()
-        material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
         material.diffuseColor.setValue (_color)
-        material.specularColor.setValue( 0, 0, 0)
-        material.emissiveColor.setValue(0, 0, 0)
-        material.transparency.setValue(0)
+        material.specularColor.setValue( 0.0, 0.0, 0.0)
+        material.emissiveColor.setValue(0.0, 0.0, 0.0)
+        material.transparency.setValue(0.0)
         root.addChild(material)
-        root.addChild(rootTransform)
-
-        root.addChild(rootTransform)        
+        #root.addChild(rootTransform)        
         root.addChild(transla)
-        root.addChild(col1)
         root.addChild(txtRoot)
         return root
+
     except Exception as err:
         App.Console.PrintError("'Wheel' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -177,7 +156,7 @@ def draw_Text_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[
 
 
 
-def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -197,12 +176,12 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         
+        
         material=coin.SoMaterial()
-        material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
+        #material.transparency.setValue(0.80)
         material.diffuseColor.setValue (_color)
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
-        material.transparency.setValue(0)
         
         root.addChild(material)
         root.addChild(rootTransform)
@@ -258,7 +237,6 @@ def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         material=coin.SoMaterial()
-        material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
         material.diffuseColor.setValue (_color)
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
@@ -297,7 +275,6 @@ def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-
 def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
@@ -317,7 +294,6 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         material=coin.SoMaterial()
-        material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
         material.diffuseColor.setValue (_color)
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
@@ -374,7 +350,6 @@ def draw_XZPaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotatio
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         
         material=coin.SoMaterial()
-        material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
         material.diffuseColor.setValue (_color)
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
@@ -437,7 +412,6 @@ def draw_XZMaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotatio
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         
         material=coin.SoMaterial()
-        material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
         material.diffuseColor.setValue (_color)
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
