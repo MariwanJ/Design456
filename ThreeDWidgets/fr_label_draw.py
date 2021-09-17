@@ -257,11 +257,7 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
         _textNode.addChild(font)
         _textNode.addChild(coinColor)
-       
-       
-       
-       
-       
+
         _textNode.addChild(_text3D)
         return _textNode  # Return the created SoSeparator that contains the text
     
