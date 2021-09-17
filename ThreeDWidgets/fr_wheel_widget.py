@@ -46,6 +46,16 @@ import fr_draw_wheel
 Example how to use this widget. 
 
 # show the window and it's widgets. 
+import fr_coinwindow as wn
+import fr_wheel_widget as line
+import FreeCAD as App
+g=[]
+p1=App.Vector(0,0,0)     # first point in the line and for the windows
+wny=wn.Fr_CoinWindow()  # Create the window, label has no effect at the moment
+g.append(p1)
+ln =line.Fr_DegreeWheel_Widget(g,"My label",1)   # draw the line - nothing will be visible yet
+wny.addWidget(ln)              # Add it to the window as a child 
+wny.show()      
 
 """
 
@@ -217,11 +227,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 allDraw.append(self.w_ysoSeparator)
                 allDraw.append(self.w_zsoSeparator)
                 
-                #self.saveSoNodeslblToWidget(self.draw_label(usedColor))
+                self.saveSoNodeslblToWidget(self.draw_label(usedColor))
                 self.saveSoNodesToWidget(allDraw)
                 allSwitch=[] # add both to the same switch. and add them to the scenegraph automatically
                 allSwitch.append(self.w_widgetSoNodes)
-                #allSwitch.append(self.w_widgetlblSoNodes)
+                allSwitch.append(self.w_widgetlblSoNodes)
                 self.addSoNodeToSoSwitch(allSwitch)
 
         except Exception as err:

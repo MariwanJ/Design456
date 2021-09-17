@@ -191,18 +191,22 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation
         transla=coin.SoTranslation()
         transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)
+        
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        
         material=coin.SoMaterial()
         material.ambientColor.setValue(0.2, 0.2, 0.2) #check this
         material.diffuseColor.setValue (_color)
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
         material.transparency.setValue(0)
+        
         root.addChild(material)
         root.addChild(rootTransform)
+        
         centerseparator=coin.SoSeparator() 
         center=coin.SoCylinder()
         transcenter=coin.SoTransform()   #Center cylinder
@@ -215,12 +219,14 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation
         centerseparator.addChild(colCenter)
         centerseparator.addChild(center)
         group= coin.SoSeparator()
+        
         transG=coin.SoTransform()
         tempG = coin.SbVec3f()
         tempG.setValue(1,0,0)
         transG.rotation.setValue(tempG, math.radians(90))
         group.addChild(transG)
         group.addChild(centerseparator)
+        
         root.addChild(rootTransform)        
         root.addChild(transla)
         root.addChild(col1)
