@@ -197,6 +197,7 @@ class FR_COLOR:
     FR_LIGHTPINK               =  (	1.0000	,	0.7137	,	0.7569	)
     FR_MEDIUMAQUAMARINE        =  (	0.4000	,	0.8039	,	0.6667	)
     FR_OLDLACE                 =  (	0.9922	,	0.9608	,	0.9020	)
+    FR_GLASS                   =  ( 0.3300  ,   1.0000  ,   1.0000  )
 
 #Box type when for widgets
 class FR_BoxType: #There will not be any boundary box or bkg box
