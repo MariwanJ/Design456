@@ -57,15 +57,25 @@ class propertyValues:
     '''
     Property-holder class for drawing labels
     ''' 
-    __slots__ = ['vectors','linewidth','labelfont','fontsize','labelcolor','alignment', 'rotation','rotationAxis']
+    __slots__ = ['vectors','linewidth','fontName','fontsize','labelcolor','alignment', 'rotation','rotationAxis']
     vectors   : VECTOR        #List[App.Vector] two vectors must be provided
     linewidth : int 
-    labelfont : str
+    fontName : str
     fontsize  : int
     labelcolor: tuple   
     alignment : int      #This will not be used .. not good      
     rotation  : tuple    # three angels in degree                  
     rotationAxis: VECTOR
+    
+    def __init__(self):
+        self.vectors    =[App.Vector(0,0,0),]
+        self.linewidth  =1
+        self.fontName  ='sans'
+        self.fontsize   =1
+        self.labelcolor =constant.FR_COLOR.FR_BLACK
+        self.alignment  =constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        self.rotation   =App.Vector(0,0,0)
+        self.rotationAxis=App.Vector(0,0,0)
 #***********************************************************************************************************
 
 
@@ -103,14 +113,7 @@ class Fr_Widget (object):
     w_hasFocus = 0           # 0 No focus , 1 Focus
     
     # Use this to send any object or value to the lbl drawing/callback(propertyValues object)
-    w_lbluserData=propertyValues( [App.Vector(0,0,0),],
-                                    1,
-                                    'sans',
-                                    4,        
-                                    constant.FR_COLOR.FR_BLACK,
-                                    constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM,
-                                    App.Vector(0,0,0),
-                                    App.Vector(0,0,0)) 
+    w_lbluserData=propertyValues() 
     
     w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
     w_widgetSoNodes = None     #Should be defined in the widget either one or a list
@@ -158,7 +161,7 @@ class Fr_Widget (object):
         raise NotImplementedError()
 
     def Font(self, newFont):
-        self.w_lbluserData.labelfont=newFont
+        self.w_lbluserData.fontName=newFont
        
     def FontSize(self,newSize):
         self.w_lbluserData.fontsize=newSize
