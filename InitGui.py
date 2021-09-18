@@ -233,7 +233,7 @@ class Design456_Workbench (Workbench):
 
     def Deactivated(self):
         from plane import Grid as gr
-        from plane import DocObserver
+        # from plane import DocObserver
         try:
             "workbench deactivated"
             if hasattr(FreeCADGui, "draftToolBar"):

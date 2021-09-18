@@ -165,19 +165,15 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_label(self):
-        LabelData = fr_widget.propertyValues()
-        LabelData.linewidth = self.w_lineWidth
-        LabelData.labelfont = self.w_font
-        LabelData.fontsize = self.w_fontsize
-        LabelData.labelcolor = self.w_lblColor
+        self.w_lbluserData.linewidth = self.w_lineWidth
+        self.w_lbluserData.labelcolor = self.w_lblColor
         firstTwovertices: List[App.Vector] = []
-
         firstTwovertices.append(self.w_vector[0])
         firstTwovertices.append(self.w_vector[1])
 
-        LabelData.vectors = firstTwovertices
-        LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        lbl = fr_label_draw.draw_label([self.w_label], LabelData)
+        self.w_lbluserData.vectors = firstTwovertices
+        self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        lbl = fr_label_draw.draw_label([self.w_label], self.w_lbluserData)
         self.w_widgetlblSoNodes = lbl
         return lbl
 
@@ -401,19 +397,16 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_label(self):
-        LabelData = fr_widget.propertyValues()
-        LabelData.linewidth = self.w_lineWidth
-        LabelData.labelfont = self.w_font
-        LabelData.fontsize = self.w_fontsize
-        LabelData.labelcolor = self.w_lblColor
+        self.w_lbluserData.linewidth = self.w_lineWidth
+        self.w_lbluserData.labelcolor = self.w_lblColor
         firstTwovertices: List[App.Vector] = []
 
         firstTwovertices.append(self.w_vector[0])
         firstTwovertices.append(self.w_vector[1])
 
-        LabelData.vectors = firstTwovertices
-        LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        lbl = fr_label_draw.draw_label([self.w_label], LabelData)
+        self.w_lbluserData.vectors = firstTwovertices
+        self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        lbl = fr_label_draw.draw_label([self.w_label], self.w_lbluserData)
         self.w_widgetlblSoNodes = lbl
         return lbl
 

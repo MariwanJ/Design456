@@ -220,3 +220,65 @@ def draw_label(text=[], prop: propertyValues=None):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+        
+        
+
+
+#New label draw .. must be better in determining direct, rotation
+
+
+def draw_newlabel(text=[], prop: propertyValues=None):
+    ''' Draw widgets label relative to the vectors given to the function
+    The three angel will decide how the text will be rotated based on that
+    vectors. 
+    
+    '''
+    if text == '' or prop is None:
+        return     # Nothing to do here 
+    try:
+        p1=prop.vectors[0]
+        p2=prop.vectors[1]
+        #direction= 
+        _translation=coin.SoTranslation()  #coin.SoTransform()
+        
+        _transformX = coin.SoTransform()
+        _transformY = coin.SoTransform()
+        _transformZ = coin.SoTransform()
+        
+        _translation.translation.setValue(coin.SbVec3f(p1))
+        _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.x)
+        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.y)
+        _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.z)
+
+        font = coin.SoFont()
+        font.size = prop.fontsize  # Font size
+        font.Name = prop.labelfont  # Font used
+        _text3D = coin.SoAsciiText()  # Draw text in the 3D world
+        _text3D.string.setValues([l.encode("utf8") for l in text if l])
+        coinColor = coin.SoMaterial()  # Font color
+        color=prop.labelcolor
+
+        coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
+        #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
+        root = coin.SoSeparator()    # A Separator to separate the text from the drawing
+        _textNodeX = coin.SoSeparator()   # A Separator to Keep the rotation in X Axis
+        _textNodeY = coin.SoSeparator()   # A Separator to Keep the rotation in Y Axis
+        _textNodeZ = coin.SoSeparator()   # A Separator to Keep the rotation in Z Axis
+        _textNodeX.addChild(_transformX)
+        _textNodeY.addCd(_transformY)
+        _textNodeZ.addChild(_transformZ)
+        root.addChild(_translation)
+        root.addChild(_textNodeX)
+        root.addChild(_textNodeY)
+        root.addChild(_textNodeZ)
+        root.addChild(coinColor)
+        root.addChild(font)
+        root.addChild(_text3D)
+        return root  # Return the created SoSeparator that contains the text
+    
+    except Exception as err:
+        App.Console.PrintError("'draw_label' Failed. "
+                                   "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
