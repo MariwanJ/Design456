@@ -327,7 +327,6 @@ class PartMover:
 
     def MouseClick(self, events):
         try:
-            import Design456Init
             event = events.getEvent()
             eventState = event.getState()
             getButton = event.getButton()
@@ -828,7 +827,7 @@ def checkCollision(newObj):
 # This is here to make it clear how you do that
 def calculateAngle(v1):
     """[Find angle between a vector and the origin
-        Assuming the the angle is between the line 
+        Assuming that the angle is between the line-vectors 
         (0,0,0) and (1,1,0)
     ]
 

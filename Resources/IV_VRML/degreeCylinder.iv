@@ -3,6 +3,15 @@
 
 DEF root Separator {
 
+  Material {
+    ambientColor 0.2 0.2 0.2
+    diffuseColor 0.80000001 0.80000001 0.80000001
+    specularColor 0 0 0
+    emissiveColor 0 0 0
+    shininess 0.1
+    transparency 0.1
+
+  }
   Separator {
 
     Transform {
@@ -18,7 +27,7 @@ DEF root Separator {
   Separator {
 
     Transform {
-      rotation 0 0 0.99999994  1.5700002
+      rotation 0 0 1  1.5700002
 
     }
     Cylinder {
@@ -42,7 +51,7 @@ DEF root Separator {
   Separator {
 
     Transform {
-      rotation 0 0 0.99999994  0.78500009
+      rotation 0 0 1  0.78500009
 
     }
     Cylinder {
@@ -62,5 +71,8 @@ DEF root Separator {
       height 15
 
     }
+  }
+  Translation {
+
   }
 }

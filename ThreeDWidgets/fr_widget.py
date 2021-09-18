@@ -40,6 +40,34 @@ from dataclasses import dataclass
 from typing import List
 from abc import abstractmethod
 
+#********************************************************************************************************
+from dataclasses import dataclass
+
+@dataclass
+class point:
+    def __init__(self):
+        self.x = 0.0
+        self.y = 0.0
+        self.z = 0.0
+
+#List of points which should be used everywhere 
+VECTOR = List[point]
+@dataclass
+class propertyValues:
+    '''
+    Property-holder class for drawing labels
+    ''' 
+    __slots__ = ['vectors','linewidth','labelfont','fontsize','labelcolor','alignment', 'rotation','rotationAxis']
+    vectors   : VECTOR        #List[App.Vector] two vectors must be provided
+    linewidth : int 
+    labelfont : str
+    fontsize  : int
+    labelcolor: tuple   
+    alignment : int      #This will not be used .. not good      
+    rotation  : tuple    # three angels in degree                  
+    rotationAxis: VECTOR
+#***********************************************************************************************************
+
 
 def defaultCallback(obj,userData=None):
     """
@@ -63,20 +91,27 @@ class Fr_Widget (object):
     
     #Default values which is shared with all objects.
     
-    w_lblPosition=None     # Should be defined when lbl is created. 
     w_visible = 1      # 1 active, 0 inactive
     w_bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
     w_color = constant.FR_COLOR.FR_BLACK
     w_inactiveColor = constant.FR_COLOR.FR_DIMGRAY
     w_selColor = constant.FR_COLOR.FR_YELLOW
-    w_lblColor= constant.FR_COLOR.FR_BLACK
     w_box = None
     w_active = 1  # 1 active , 0 inactive 
     w_parent = None
     w_widgetType = constant.FR_WidgetType.FR_WIDGET
     w_hasFocus = 0           # 0 No focus , 1 Focus
-    w_font='sans'
-    w_fontsize=4
+    
+    # Use this to send any object or value to the lbl drawing/callback(propertyValues object)
+    w_lbluserData=propertyValues( [App.Vector(0,0,0),],
+                                    1,
+                                    'sans',
+                                    4,        
+                                    constant.FR_COLOR.FR_BLACK,
+                                    constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM,
+                                    App.Vector(0,0,0),
+                                    App.Vector(0,0,0)) 
+    
     w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
     w_widgetSoNodes = None     #Should be defined in the widget either one or a list
     w_widgetlblSoNodes = None  #Should be defined in the widget either one or a list
@@ -84,10 +119,11 @@ class Fr_Widget (object):
     w_wdgsoSwitch = None         
     w_when = constant.FR_WHEN.FR_WHEN_NEVER
     w_userData = None  # Use this to send any object or value to the callback
-    w_lbluserData=None # Use this to send any object or value to the lbl callback 
     w_vector=None
     w_label=None
     w_lineWidth=1
+
+
     ########################################################################
     #  {w_callback_, w_lbl_calback_}  is a pointer to a function.          #
     #  It should be used only like that.                                   #
@@ -104,7 +140,7 @@ class Fr_Widget (object):
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
         self.w_label = [label]      # This must be a list, to have several raw, append st    
-
+        
     @abstractmethod      
     def draw_box(self):
         raise NotImplementedError()
@@ -122,11 +158,14 @@ class Fr_Widget (object):
         raise NotImplementedError()
 
     def Font(self, newFont):
-        self.w_font=newFont
+        self.w_lbluserData.labelfont=newFont
        
     def FontSize(self,newSize):
-        self.w_fontsize=newSize
-
+        self.w_lbluserData.fontsize=newSize
+    
+    def setLblData(self,newData:propertyValues):
+        self.w_lbluserData=newData
+    
     @abstractmethod         
     def redraw(self):
         """
@@ -391,10 +430,15 @@ class Fr_Widget (object):
         if self.w_wdgsoSwitch is None:
             self.w_wdgsoSwitch=coin.SoSwitch()
             self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-
+        #We might have a list inside the widget 
         if type(listOfSoSeparator)==list:
-            for i in listOfSoSeparator:
-                self.w_wdgsoSwitch.addChild(i)
+            for sub in listOfSoSeparator:
+                if type(sub)==list:
+                    #we have many SoSeparator inside the widget
+                    for subSub in sub:
+                        self.w_wdgsoSwitch.addChild(subSub)
+                else:
+                    self.w_wdgsoSwitch.addChild(sub)
         else:
             self.w_wdgsoSwitch.addChild(listOfSoSeparator)
 
@@ -453,27 +497,3 @@ class Fr_Widget (object):
     def changeLabelfloat(self,newlabel: float = 0.0):
         self.w_label=["{:.2f}".format(newlabel)]
 
-#********************************************************************************************************
-from dataclasses import dataclass
-
-@dataclass
-class point:
-    def __init__(self):
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0.0
-
-#List of points which should be used everywhere 
-VECTOR = List[point]
-
-class propertyValues:
-    '''
-    Property-holder class for drawing labels
-    ''' 
-    __slots__ = ['vectors','linewidth','labelfont','fontsize','labelcolor','alignment']
-    vectors   : VECTOR        #List[App.Vector]
-    linewidth : int 
-    labelfont : str
-    fontsize  : int
-    labelcolor: tuple
-    alignment : int                   
