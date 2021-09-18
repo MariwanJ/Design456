@@ -207,14 +207,11 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_label(self,usedColor):
-        LabelData = fr_widget.propertyValues()
-        LabelData.linewidth = self.w_lineWidth
-        LabelData.labelfont = self.w_font
-        LabelData.fontsize = self.w_fontsize
-        LabelData.labelcolor = usedColor
-        LabelData.vectors = self.w_vector
-        LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        lbl = fr_label_draw.draw_label(self.w_label, LabelData)
+        self.w_lbluserData.linewidth=self.w_lineWidth
+        self.w_lbluserData.labelcolor = usedColor
+        self.w_lbluserData.vectors = self.w_vector
+        self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.w_widgetlblSoNodes = lbl
         return lbl
 

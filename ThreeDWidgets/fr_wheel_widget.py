@@ -211,7 +211,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         and draw the wheel on the screen. It creates a node for 
         the wheel.
         """
-        try:  
+        try:
+            lablVar=fr_widget.propertyValues()  
             if (len(self.w_vector) < 1):
                 raise ValueError('Must be  one vector')
                 return
@@ -235,7 +236,13 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_ysoSeparator)
                 allDraw.append(self.w_ZpsoSeparator)
-                                
+                
+                lablVar.fontsize=10
+                lablVar.labelfont
+                lablVar.rotation
+                lablVar.rotationAxis
+                lablVar.vectors
+                
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
                 self.saveSoNodesToWidget(allDraw)
                 # add SoSeparator to the switch
@@ -253,8 +260,6 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
     def draw_label(self, usedColor):
         LabelData = fr_widget.propertyValues()
         LabelData.linewidth = self.w_lineWidth
-        LabelData.labelfont = self.w_font
-        LabelData.fontsize = self.w_fontsize
         LabelData.labelcolor = usedColor
         if (self.w_wheelType != 2):
             # When is hasing the Front view

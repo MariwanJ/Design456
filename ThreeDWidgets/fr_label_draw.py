@@ -228,7 +228,11 @@ def draw_label(text=[], prop: propertyValues=None):
 
 
 def draw_newlabel(text=[], prop: propertyValues=None):
-    ''' Draw widgets label relative to the position with alignment'''
+    ''' Draw widgets label relative to the vectors given to the function
+    The three angel will decide how the text will be rotated based on that
+    vectors. 
+    
+    '''
     if text == '' or prop is None:
         return     # Nothing to do here 
     try:
@@ -237,12 +241,14 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         #direction= 
         _translation=coin.SoTranslation()  #coin.SoTransform()
         
-        _trnasformX = coin.SoTransform()
+        _transformX = coin.SoTransform()
         _transformY = coin.SoTransform()
         _transformZ = coin.SoTransform()
         
         _translation.translation.setValue(coin.SbVec3f(p1))
-
+        _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.x)
+        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.y)
+        _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.z)
 
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
@@ -254,12 +260,21 @@ def draw_newlabel(text=[], prop: propertyValues=None):
 
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
         #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
-        _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
-        _textNode.addChild(font)
-        _textNode.addChild(coinColor)
-
-        _textNode.addChild(_text3D)
-        return _textNode  # Return the created SoSeparator that contains the text
+        root = coin.SoSeparator()    # A Separator to separate the text from the drawing
+        _textNodeX = coin.SoSeparator()   # A Separator to Keep the rotation in X Axis
+        _textNodeY = coin.SoSeparator()   # A Separator to Keep the rotation in Y Axis
+        _textNodeZ = coin.SoSeparator()   # A Separator to Keep the rotation in Z Axis
+        _textNodeX.addChild(_transformX)
+        _textNodeY.addCd(_transformY)
+        _textNodeZ.addChild(_transformZ)
+        root.addChild(_translation)
+        root.addChild(_textNodeX)
+        root.addChild(_textNodeY)
+        root.addChild(_textNodeZ)
+        root.addChild(coinColor)
+        root.addChild(font)
+        root.addChild(_text3D)
+        return root  # Return the created SoSeparator that contains the text
     
     except Exception as err:
         App.Console.PrintError("'draw_label' Failed. "
