@@ -93,7 +93,6 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
     """
 
     def __init__(self, vectors: List[App.Vector]=[],
-
                  label: str="", lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
                  _rotation=[(0.0, 0.0, 1.0), 0.0],
@@ -140,6 +139,20 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         # self.w_userData.wheelObj=self
         # self.w_userData.color=_color
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
+        
+        self.w_lbluserData.linewidth=self.w_lineWidth
+        self.w_lbluserData.rotation = App.Vector(90,0,0)
+        self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
+        
+        if (self.w_wheelType != 2):
+            # When is hasing the Front view
+            self.w_lbluserData.vectors =[App.Vector(0,0,5),App.Vector(10,0,5)] 
+            
+        else:
+            # When is hasing the Top v iew
+            self.w_lbluserData.vectors = [self.w_vector[0], 
+                                 App.Vector(self.w_vector[1].x,self.w_vector[1].y+17,self.w_vector[1].z)]   # length of the arrow is 15
+
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -238,7 +251,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 allDraw.append(self.w_ZpsoSeparator)
                 
                 lablVar.fontsize=10
-                lablVar.labelfont
+                lablVar.fontName
                 lablVar.rotation
                 lablVar.rotationAxis
                 lablVar.vectors
@@ -258,20 +271,9 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_label(self, usedColor):
-        LabelData = fr_widget.propertyValues()
-        LabelData.linewidth = self.w_lineWidth
-        LabelData.labelcolor = usedColor
-        if (self.w_wheelType != 2):
-            # When is hasing the Front view
-            LabelData.vectors =[App.Vector(0,0,5),App.Vector(10,0,5)] 
-            
-        else:
-            # When is hasing the Top v iew
-            LabelData.vectors = [self.w_vector[0], 
-                                 App.Vector(self.w_vector[1].x,self.w_vector[1].y+17,self.w_vector[1].z)]   # length of the arrow is 15
 
-        LabelData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        lbl = fr_label_draw.draw_label(self.w_label, LabelData)
+        self.w_lbluserData.labelcolor = usedColor
+        lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
         self.w_widgetlblSoNodes = lbl
         return lbl
 
