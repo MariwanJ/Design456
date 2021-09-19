@@ -186,6 +186,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.rotation = App.Vector(90,0,0)
         self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
         
+        self.w_WidgetRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
+                
         if (self.w_wheelType != 2):
             # When is hasing the Front view
             self.w_lbluserData.vectors =[App.Vector(0,0,5),App.Vector(10,0,5)] 
@@ -236,30 +238,15 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             else:
                 clickwdgdNode.append(True)
                 allObjects=current
-        
+
         if (allObjects is None):
             #SoSwitch not found. Event is not related to this widget 
             self.remove_focus()
             return 0
-        
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            #We don't accept more than one elements clicked at once
-            self.do_callbacks(0)      #  We run this always
-            if clickwdgdNode[0] ==True:
-                #The cylinder is clicked
-                self.do_callbacks(1)
-            elif clickwdgdNode[1] ==True:
-                #The Xaxis is clicked
-                self.do_callbacks(2)
-            elif clickwdgdNode[2] ==True:
-                #The Yaxis is clicked
-                self.do_callbacks(3)
-            elif clickwdgdNode[3] ==True:
-                #The 45Degree is clicked
-                self.do_callbacks(4)
-            elif clickwdgdNode[4] ==True:
-                #The 135Degree is clicked
-                self.do_callbacks(5)
+
+#        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
+#            self.do_callbacks(0)      #  We run this always
+#            return 1
 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
@@ -291,12 +278,28 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 if (clickwdgdNode != None) or (clickwdglblNode != None):
                     self.releaseDrag = True   
                     self.take_focus()
-                    self.do_move_callback()  # We use the same callback, 
-                                            # but user must tell the callback what was
-                                            # the event.
-                    return 1
-            else:
-                self.do_move_callback()  # Continue run the callback as far as it != releaseDrag=True
+                #These Object reacts only with dragging .. Clicking will not do anything useful
+                #We don't accept more than one elements clicked at once
+            print(clickwdgdNode)
+            if clickwdgdNode[0] ==True:
+                #The cylinder is clicked
+                self.do_callbacks(1)
+                return 1
+            elif clickwdgdNode[1] ==True:
+                #The Xaxis is clicked
+                self.do_callbacks(2)
+                return 1
+            elif clickwdgdNode[2] ==True:
+                #The Yaxis is clicked
+                self.do_callbacks(3)
+                return 1
+            elif clickwdgdNode[3] ==True:
+                #The 45Degree is clicked
+                self.do_callbacks(4)
+                return 1
+            elif clickwdgdNode[4] ==True:
+                #The 135Degree is clicked
+                self.do_callbacks(5)
                 return 1
         # Don't care events, return the event to other widgets    
         return 0  # We couldn't use the event .. so return 0 
@@ -372,19 +375,19 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         After the widgets damages, this function should be called.        
         """
         if self.is_visible():
-            # Remove the SoSwitch from fr_coinwindo
+            # Remove the SoSwitch from fr_coinwindow
             self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
 
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
-           
+
             # Remove the sceneNodes from the widget
             self.removeSoNodes()
             # Redraw label
             
             self.lblRedraw()
             self.draw()
-    
+
     def lblRedraw(self):
         if(self.w_widgetlblSoNodes != None):
             self.w_widgetlblSoNodes.removeAllChildren()
