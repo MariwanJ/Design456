@@ -62,7 +62,7 @@ class mouseDimension:
 
 #Implementation of double click detection
 import time
-import threading
+
 
 # get Object under mouse
 
@@ -89,7 +89,7 @@ def objectMouseClick_Coin3d(mouse_pos, pick_radius,TargetNode):
         if type(TargetNode)==list:
             for nodeInList in TargetNode:
                 if path.containsNode(nodeInList):
-                    print("found",nodeInList)
+                    #print("found",nodeInList)
                     return (path.getNode(path.findNode(nodeInList)))  #Not sure if we need it #TODO should we return only true?
             return None #Not found 
         else:        
@@ -172,7 +172,7 @@ class root_handle():
 
         if(self.w_typeofevent == coin.SoMotion3Event):
             """ represents 3D relative motion events in the 
-               Open Inventor event model.
+                Open Inventor event model.
                 sub functions: 
                 getTranslation()          # Gets the relative change in translation since the last translation event.
                 setRotation(SbRotation r) # Sets the relative change in rotation since the last rotation event.
