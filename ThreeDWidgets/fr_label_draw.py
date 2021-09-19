@@ -250,9 +250,9 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _transformZ = coin.SoTransform()
         
         _translation.translation.setValue(coin.SbVec3f(p1))
-        _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.x))
-        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.y))
-        _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.z))
+        _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.x))
+        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.y))
+        _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.z))
 
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
@@ -260,10 +260,8 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
         coinColor = coin.SoMaterial()  # Font color
-        color=prop.labelcolor
-
-        coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
-        #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
+        coinColor.diffuseColor.setValue(coin.SbColor(*prop.labelcolor))
+        coinColor.emissiveColor.setValue(coin.SbColor(*prop.labelcolor))
         root = coin.SoSeparator()    # A Separator to separate the text from the drawing
         _textNodeX = coin.SoSeparator()   # A Separator to Keep the rotation in X Axis
         _textNodeY = coin.SoSeparator()   # A Separator to Keep the rotation in Y Axis
@@ -278,7 +276,6 @@ def draw_newlabel(text=[], prop: propertyValues=None):
 
         _textNodeY.addChild(_textNodeX)
         _textNodeZ.addChild(_textNodeY)
-
 
         root.addChild(_translation)
         root.addChild(_textNodeZ)
