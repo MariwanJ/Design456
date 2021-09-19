@@ -51,8 +51,8 @@ a=dgw.draw_Text_Wheel()
 b=dgw.draw_Center_Wheel()
 c=dgw.draw_Xaxis_Wheel()
 d=dgw.draw_Yaxis_Wheel()
-e=dgw.draw_XZPaxis_Wheel()
-f=dgw.draw_XZMaxis_Wheel()
+e=dgw.draw_45axis_Wheel()
+f=dgw.draw_135axis_Wheel()
 
 sg.addChild(a)
 sg.addChild(b)
@@ -176,12 +176,11 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         
-        
         material=coin.SoMaterial()
-        #material.transparency.setValue(0.80)
+        material.transparency.setValue(0.80)
         material.diffuseColor.setValue (_color)
-        material.specularColor.setValue( 0, 0, 0)
-        material.emissiveColor.setValue(0, 0, 0)
+        #material.specularColor.setValue( 0, 0, 0)
+        #material.emissiveColor.setValue(0, 0, 0)
         
         root.addChild(material)
         root.addChild(rootTransform)
@@ -225,7 +224,7 @@ def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
         colx = coin.SoBaseColor()  # must be converted to SoBaseColor
-        colx.rgb = FR_COLOR.FR_ORANGERED
+        colx.rgb = FR_COLOR.FR_INDIANRED
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
         root = coin.SoSeparator()
@@ -330,7 +329,7 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-def draw_XZPaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_45axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
@@ -391,7 +390,7 @@ def draw_XZPaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotatio
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_XZMaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_135axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
     try:
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color

@@ -825,16 +825,16 @@ def checkCollision(newObj):
 # Function to find the angle
 # between the two lines with the origion 
 # This is here to make it clear how you do that
-def calculateAngle(v1):
+def calculateAngle(v1,v2=App.Vector(1,1,0)):
     """[Find angle between a vector and the origin
         Assuming that the angle is between the line-vectors 
         (0,0,0) and (1,1,0)
     ]
 
     Args:
-        v1 ([type]): [description]
-
+        v1 ([App.Vector]): [Vector to find angle with App.Vector(1,1,0) or with v2]
+        v2 
     Returns:
         [float]: [Angle to the Z Axis in degrees]
     """
-    return math.degrees(v1.getAngle(App.Vector(1,1,0)))
+    return math.degrees(v1.getAngle(v2))

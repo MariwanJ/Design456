@@ -117,12 +117,18 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_Xrotation = [0, 0, 0, 0]           
         self.w_Yrotation = [0, 0, 0, 0]
         self.w_Zrotation = [0, 0, 0, 0]
+
         
         self.w_userData = userDataObject()  # Keep info about the widget
         # self.w_userData.wheelObj=self
         # self.w_userData.color=_color
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
-
+    def calculateNewRotationDeg(self,vec1:App.Vector=App.Vector(0,0,0) ,
+                                vec2:App.Vector=App.Vector(0,0,0)):
+        """
+        [Calculate the new rotation degree of the whole object after a mouse drag]
+        """
+        
     def lineWidth(self, width):
         """ Set the line width"""
         self.w_lineWidth = width
@@ -195,7 +201,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         """
         try:
             pass
-            self.w_XsoSeparator= fr_draw_wheel.
+            
 
 
 
@@ -347,8 +353,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
     def setRotationAngle(self, axis_angle):
         ''' 
-        Set the rotation axis and the angle
+        Set the rotation axis and the angle for the whole widget.
         Axis is coin.SbVec3f((x,y,z)
         angle=float number
         '''
-        self.w_rotation = axis_angle    
+        self.w_rotation = axis_angle    #this rotation is for the whole widget (not only the disk)
