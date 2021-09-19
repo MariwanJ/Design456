@@ -30,15 +30,14 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import ThreeDWidgets
 import pivy.coin as coin
-from ThreeDWidgets import fr_draw
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
 from ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets import fr_label_draw
-from ThreeDWidgets.constant import FR_ALIGN
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
+import FACE_D as faced
 from dataclasses import dataclass
 import fr_draw_wheel 
 
@@ -127,7 +126,6 @@ def callback5(userData:userDataObject=None):
 
 #*************************************************************
 
-
 class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
     """
@@ -183,11 +181,21 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
 
         self.w_lbluserData.linewidth=self.w_lineWidth
-        self.w_lbluserData.rotation = App.Vector(90,0,0)
-        self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
         
-        self.w_WidgetRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
-                
+        if (self.w_wheelType==0):
+            self.w_lbluserData.rotation = App.Vector(90,0,0)
+            self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
+        elif(self.w_wheelType==1):
+            self.w_lbluserData.rotation = App.Vector(0,90,90)
+            self.w_lbluserData.rotationAxis=App.Vector(0,1,1)
+        elif(self.w_wheelType==2):
+            self.w_lbluserData.rotation = App.Vector(0,0,1)
+            self.w_lbluserData.rotationAxis=App.Vector(0,0,90)
+
+            
+        self.w_WidgetDiskRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
+        self.w_wheelTypeRotation=[0.0,0.0,1.0,0.0]
+        
         if (self.w_wheelType != 2):
             # When is hasing the Front view
             self.w_lbluserData.vectors =[App.Vector(0,0,5),App.Vector(10,0,5)] 
@@ -314,7 +322,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             lablVar=fr_widget.propertyValues()  
             if (len(self.w_vector) < 1):
                 raise ValueError('Must be  one vector')
-                return
+
             usedColor = usedColor = self.w_selColor
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
@@ -324,18 +332,27 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
             if self.is_visible():
                 allDraw = []
-                rot = [0.0, 0.0, 1.0, 0.0]
-                self.w_CentSeparator = fr_draw_wheel.draw_Center_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_XsoSeparator = fr_draw_wheel.draw_Xaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_YsoSeparator = fr_draw_wheel.draw_Yaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_45soSeparator = fr_draw_wheel.draw_45axis_Wheel(self.w_vector[0], usedColor, rot, 1) #45
-                self.w_135soSeparator = fr_draw_wheel.draw_135axis_Wheel(self.w_vector[0], usedColor, rot, 1) #135
+                if self.w_wheelType==0:
+                    self.w_wheelTypeRotation = [0.0, 0.0, 1.0, 0.0]
+                elif self.w_wheelType==1: 
+                    self.w_wheelTypeRotation=[0.0, 0.0, 1.0, 90.0]
+                else:
+                    self.w_wheelTypeRotation==[1.0, 0.0, 0.0, 90.0]
+                self.w_CentSeparator  = fr_draw_wheel.draw_Center_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
+                self.w_XsoSeparator   = fr_draw_wheel.draw_Xaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
+                self.w_YsoSeparator   = fr_draw_wheel.draw_Yaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
+                self.w_45soSeparator  = fr_draw_wheel.draw_45axis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1) #45
+                self.w_135soSeparator = fr_draw_wheel.draw_135axis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1) #135
+                self.w_degreeSeparator= fr_draw_wheel.draw_Text_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
 
+                
+                allDraw.append(self.w_degreeSeparator)
                 allDraw.append(self.w_CentSeparator)
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_YsoSeparator)
                 allDraw.append(self.w_45soSeparator)
                 allDraw.append(self.w_135soSeparator)
+                allDraw.append(self.w_degreeSeparator)
                 
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
                 self.saveSoNodesToWidget(allDraw)
@@ -472,11 +489,14 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
     def setRotationAngle(self, axis_angle):
         ''' 
-        Set the rotation axis and the angle
+        Set the rotation axis and the angle. This is for the whole widget.
         Axis is coin.SbVec3f((x,y,z)
         angle=float number
         '''
-        self.w_rotation = axis_angle    
+        self.w_rotation = axis_angle
+        
+    def calculateWidgetDiskRotationAfterDrag(self,v1,v2):
+        self.w_WidgetDiskRotation=faced.calculateAngle(v1,v2)
         
     def do_callbacks(self,callbackType):
         print("callbackType",callbackType)
