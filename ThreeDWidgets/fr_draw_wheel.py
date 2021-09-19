@@ -176,12 +176,11 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         
-        
         material=coin.SoMaterial()
-        #material.transparency.setValue(0.80)
+        material.transparency.setValue(0.80)
         material.diffuseColor.setValue (_color)
-        material.specularColor.setValue( 0, 0, 0)
-        material.emissiveColor.setValue(0, 0, 0)
+        #material.specularColor.setValue( 0, 0, 0)
+        #material.emissiveColor.setValue(0, 0, 0)
         
         root.addChild(material)
         root.addChild(rootTransform)

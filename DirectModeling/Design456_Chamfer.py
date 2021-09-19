@@ -67,9 +67,9 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             return  # Nothing to do here - shouldn't be None
         mouseToArrowDiff = 0.0
 
-        ArrowObject = userData.ArrowObj
+        ArrowObject = userData.ArrowObj      #Arrow object 
         events = userData.events
-        linktocaller = userData.callerObject
+        linktocaller = userData.callerObject  #Tool uses the arrow object (here is the Chamfer)
         if type(events) != int:
             return
 
