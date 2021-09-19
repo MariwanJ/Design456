@@ -194,7 +194,7 @@ def draw_label(text=[], prop: propertyValues=None):
 
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
-        font.Name = prop.labelfont  # Font used
+        font.Name = prop.fontName  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
         #_text3D.justification = coin.SoAsciiText.LEFT
@@ -234,10 +234,14 @@ def draw_newlabel(text=[], prop: propertyValues=None):
     
     '''
     if text == '' or prop is None:
-        return     # Nothing to do here 
+        raise ValueError        # Nothing to do here 
     try:
-        p1=prop.vectors[0]
-        p2=prop.vectors[1]
+        if len(prop.vectors)>=2:
+            p1=prop.vectors[0]
+            p2=prop.vectors[1]
+        else:
+            p1=prop.vectors[0]
+            
         #direction= 
         _translation=coin.SoTranslation()  #coin.SoTransform()
         
@@ -246,13 +250,13 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _transformZ = coin.SoTransform()
         
         _translation.translation.setValue(coin.SbVec3f(p1))
-        _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.x)
-        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.y)
-        _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis),prop.rotation.z)
+        _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.x))
+        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.y))
+        _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.z))
 
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
-        font.Name = prop.labelfont  # Font used
+        font.Name = prop.fontName  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
         coinColor = coin.SoMaterial()  # Font color
@@ -265,15 +269,20 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _textNodeY = coin.SoSeparator()   # A Separator to Keep the rotation in Y Axis
         _textNodeZ = coin.SoSeparator()   # A Separator to Keep the rotation in Z Axis
         _textNodeX.addChild(_transformX)
-        _textNodeY.addCd(_transformY)
+        _textNodeY.addChild(_transformY)
         _textNodeZ.addChild(_transformZ)
+        
+        _textNodeX.addChild(coinColor)        
+        _textNodeX.addChild(font)
+        _textNodeX.addChild(_text3D)
+
+        _textNodeY.addChild(_textNodeX)
+        _textNodeZ.addChild(_textNodeY)
+
+
         root.addChild(_translation)
-        root.addChild(_textNodeX)
-        root.addChild(_textNodeY)
         root.addChild(_textNodeZ)
-        root.addChild(coinColor)
-        root.addChild(font)
-        root.addChild(_text3D)
+
         return root  # Return the created SoSeparator that contains the text
     
     except Exception as err:
