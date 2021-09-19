@@ -81,7 +81,7 @@ def callback(userData:userDataObject=None):
             This function will run the when the Widget as whole got an event
     """
     # Subclass this and impalement the callback or just change the callback function
-    print("dummy FR_WHELL_WIDGET callback")
+    print("dummy FR_WHELL_WIDGET General callback")
 
 
 def callback1(userData:userDataObject=None):
@@ -110,15 +110,6 @@ def callback3(userData:userDataObject=None):
 
 def callback4(userData:userDataObject=None):
     """
-            This function will run the when the ZAxis 
-            event callback. 
-    """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy ZAxis callback")
-
-
-def callback5(userData:userDataObject=None):
-    """
             This function will run the when the 45Axis 
             event callback. 
     """
@@ -126,7 +117,7 @@ def callback5(userData:userDataObject=None):
     print("dummy 45Axis callback")
 
 
-def callback6(userData:userDataObject=None):
+def callback5(userData:userDataObject=None):
     """
             This function will run the when the 135Axis 
             event callback. 
@@ -167,13 +158,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         #     XY  is the Third  one -- It has the Top Camera View =2 in the list  *
         #**************************************************************************
 
-        self.w_wheel_cb_ = callback    # Dummy callback          Movement in the disk rotation (mouse click-release)
-        self.w_xAxis_cb_ = callback    # Dummy callback         Movement in the X direction (mouse click-release)
-        self.w_yAxis_cb_ = callback    # Dummy callback         Movement in the y direction (mouse click-release)
-        self.w_zAxis_cb_ = callback    # Dummy callback         Movement in the z direction (mouse click-release)
-        
-        self.w_45Axis_cb_ = callback   # Dummy callback          Movement in the 45degree direction (mouse click-release)
-        self.w_135Axis_cb_ = callback  # Dummy callback          Movement in the 135degree direction (mouse click-release)
+        self.w_wheel_cb_ = callback1    # Dummy callback          Movement in the disk rotation (mouse click-release)
+        self.w_xAxis_cb_ = callback2    # Dummy callback         Movement in the X direction (mouse click-release)
+        self.w_yAxis_cb_ = callback3    # Dummy callback         Movement in the y direction (mouse click-release)        
+        self.w_45Axis_cb_ = callback4   # Dummy callback          Movement in the 45degree direction (mouse click-release)
+        self.w_135Axis_cb_ = callback5  # Dummy callback          Movement in the 135degree direction (mouse click-release)
 
         self.w_wdgsoSwitch = coin.SoSwitch()           # the whole widget 
         self.w_XsoSeparator = coin.SoSeparator         # X cylinder  
@@ -226,54 +215,51 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1  # we treat this event. Nonthing to do 
         
-        clickwdgdNode=[]    # In this widget, we have 5 coin drawings that we need to capture event for them
-                            # 0 = Center cylinder (disk)
-                            # 1 = X-     Axis movement 
-                            # 2 = Y-     Axis movement 
-                            # 3 = Z-     Axis movement 
-                            # 4 = 45°    Axis movement
-                            # 5 = 135°   Axis movement  
-        for _soNode in range(0,5):
-            clickwdgdNode.append(fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                          self.w_pick_radius, self.w_widgetSoNodes[_soNode])
-        
-
         #This is for the widgets label - Not the axises label - be aware.
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                            self.w_pick_radius, self.w_widgetlblSoNodes) 
 
-        if (    clickwdgdNode[0] is None 
-            and clickwdgdNode[1] is None 
-            and clickwdgdNode[2] is None 
-            and clickwdgdNode[3] is None 
-            and clickwdgdNode[4] is None 
-            and clickwdgdNode[5] is None 
-            and clickwdglblNode  is None):
+        clickwdgdNode=[]    # In this widget, we have 5 coin drawings that we need to capture event for them
+                            # 0 = Center cylinder (disk)
+                            # 1 = X-     Axis movement 
+                            # 2 = Y-     Axis movement 
+                            # 3 = 45°    Axis movement
+                            # 4 = 135°   Axis movement  
+        current=None
+        allObjects=None
+        clickwdgdNode.clear()
+        for _soNode in range(0,5):
+            current=fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes[_soNode])
+            if current is None:
+                clickwdgdNode.append(False)
+            else:
+                clickwdgdNode.append(True)
+                allObjects=current
+        
+        if (allObjects is None):
             #SoSwitch not found. Event is not related to this widget 
             self.remove_focus()
-            return 0 
-                
+            return 0
+        
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
             #We don't accept more than one elements clicked at once
-            if clickwdgdNode[0] is not None:
+            self.do_callbacks(0)      #  We run this always
+            if clickwdgdNode[0] ==True:
                 #The cylinder is clicked
                 self.do_callbacks(1)
-            elif clickwdgdNode[1] is not None:
+            elif clickwdgdNode[1] ==True:
                 #The Xaxis is clicked
                 self.do_callbacks(2)
-            elif clickwdgdNode[2] is not None:
+            elif clickwdgdNode[2] ==True:
                 #The Yaxis is clicked
                 self.do_callbacks(3)
-            elif clickwdgdNode[3] is not None:
-                #The Zaxis is clicked
-                self.do_callbacks(4)
-            elif clickwdgdNode[4] is not None:
+            elif clickwdgdNode[3] ==True:
                 #The 45Degree is clicked
-                self.do_callbacks(5)
-            elif clickwdgdNode[5] is not None:
+                self.do_callbacks(4)
+            elif clickwdgdNode[4] ==True:
                 #The 135Degree is clicked
-                self.do_callbacks(6)
-
+                self.do_callbacks(5)
 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
@@ -337,21 +323,16 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 allDraw = []
                 rot = [0.0, 0.0, 1.0, 0.0]
                 self.w_CentSeparator = fr_draw_wheel.draw_Center_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_ZmsoSeparator = fr_draw_wheel.draw_XZMaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
                 self.w_XsoSeparator = fr_draw_wheel.draw_Xaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_ysoSeparator = fr_draw_wheel.draw_Yaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_ZpsoSeparator = fr_draw_wheel.draw_XZPaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
+                self.w_YsoSeparator = fr_draw_wheel.draw_Yaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
+                self.w_45soSeparator = fr_draw_wheel.draw_45axis_Wheel(self.w_vector[0], usedColor, rot, 1) #45
+                self.w_135soSeparator = fr_draw_wheel.draw_135axis_Wheel(self.w_vector[0], usedColor, rot, 1) #135
+
                 allDraw.append(self.w_CentSeparator)
-                allDraw.append(self.w_ZmsoSeparator)
                 allDraw.append(self.w_XsoSeparator)
-                allDraw.append(self.w_ysoSeparator)
-                allDraw.append(self.w_ZpsoSeparator)
-                
-                lablVar.fontsize=10
-                lablVar.fontName
-                lablVar.rotation
-                lablVar.rotationAxis
-                lablVar.vectors
+                allDraw.append(self.w_YsoSeparator)
+                allDraw.append(self.w_45soSeparator)
+                allDraw.append(self.w_135soSeparator)
                 
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
                 self.saveSoNodesToWidget(allDraw)
@@ -493,26 +474,24 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         angle=float number
         '''
         self.w_rotation = axis_angle    
-    
+        
     def do_callbacks(self,callbackType):
-        if(callbcacktype==0):
+        print("callbackType",callbackType)
+        if(callbackType==0):
             #normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
-            self.w_callback_(self.w_userData)
+            self.do_callback()
             #cylinder callback
-        elif(callbcacktype==1):
+        elif(callbackType==1):
             self.w_wheel_cb_(self.w_userData)
             #Xaxis callback
-        elif(callbcacktype==2):         
+        elif(callbackType==2):         
             self.w_xAxis_cb_(self.w_userData) 
             #Yaxis callback
-        elif(callbcacktype==3):
+        elif(callbackType==3):
             self.w_yAxis_cb_(self.w_userData) 
             #Zaxis callback
-        elif(callbcacktype==4):
-            self.w_zAxis_cb_(self.w_userData) 
+        elif(callbackType==4):
+            self.w_45Axis_cb_(self.w_userData) 
             #Zaxis callback
-        elif(callbcacktype==5):
-            self.w_zAxis_cb_(self.w_userData) 
-            #Zaxis callback
-        elif(callbcacktype==6):
-            self.w_zAxis_cb_(self.w_userData) 
+        elif(callbackType==5):
+            self.w_135Axis_cb_(self.w_userData) 
