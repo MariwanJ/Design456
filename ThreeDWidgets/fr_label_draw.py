@@ -253,15 +253,14 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.x))
         _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.y))
         _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.z))
-
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.fontName  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
         coinColor = coin.SoMaterial()  # Font color
-        coinColor.diffuseColor.setValue(coin.SbColor(*prop.labelcolor))
-        coinColor.emissiveColor.setValue(coin.SbColor(*prop.labelcolor))
+        coinColor.diffuseColor.setValue(prop.labelcolor)
+        coinColor.emissiveColor.setValue(prop.labelcolor)
         root = coin.SoSeparator()    # A Separator to separate the text from the drawing
         _textNodeX = coin.SoSeparator()   # A Separator to Keep the rotation in X Axis
         _textNodeY = coin.SoSeparator()   # A Separator to Keep the rotation in Y Axis
