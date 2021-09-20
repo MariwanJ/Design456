@@ -250,9 +250,10 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _transformZ = coin.SoTransform()
         
         _translation.translation.setValue(coin.SbVec3f(p1))
-        _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.x))
-        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.y))
-        _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,prop.rotationAxis.y,prop.rotationAxis.z),math.radians(prop.rotation.z))
+        #Don't know why, but x must go to y and vice versa :TODO: Understand why?
+        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,0,0),math.radians(prop.rotation.x))
+        _transformX.rotation.setValue(coin.SbVec3f(0,prop.rotationAxis.y,0),math.radians(prop.rotation.y))
+        _transformZ.rotation.setValue(coin.SbVec3f(0,0,prop.rotationAxis.z),math.radians(prop.rotation.z))
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.fontName  # Font used
