@@ -339,11 +339,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 elif self.w_wheelType==2:
                     self.w_wheelTypeRotation=[1.0, 0.0, 0.0, 90.0]
                 self.w_CentSeparator  = fr_wheel_draw.draw_Center_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
-                self.w_XsoSeparator   = fr_wheel_draw.draw_Xaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
-                self.w_YsoSeparator   = fr_wheel_draw.draw_Yaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
-                self.w_45soSeparator  = fr_wheel_draw.draw_45axis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1) #45
+                self.w_XsoSeparator   = fr_wheel_draw.draw_Xaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)   #RED
+                self.w_YsoSeparator   = fr_wheel_draw.draw_Yaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)   #GREEN
+                self.w_45soSeparator  = fr_wheel_draw.draw_45axis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)  #45
                 self.w_135soSeparator = fr_wheel_draw.draw_135axis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1) #135
-                self.w_degreeSeparator= fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
+                self.w_degreeSeparator= fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)    #White
 
                 
                 allDraw.append(self.w_degreeSeparator)

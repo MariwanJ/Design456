@@ -146,7 +146,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0,0.0,0.0), _color=FR_COLOR.FR_WHITE, _rota
         transla=coin.SoTranslation()
         transla.translation.setValue([vec.x,vec.y,vec.z])
 
-        root.addChild(material)
+        #root.addChild(material)
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
 
@@ -182,6 +182,9 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation
         transcenter.rotation.setValue(tempC, math.radians(90))
         center.radius=1.75
         center.height=0.25
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = FR_COLOR.FR_GLASS
+        centerseparator.addChild(col1)
         centerseparator.addChild(transcenter)
         centerseparator.addChild(center)
 
@@ -192,13 +195,11 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
         transla.translation.setValue([vec.x,vec.y,vec.z])
-        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = _color
 
         root.addChild(rootTransform)  
-        root.addChild(col1)
+
         root.addChild(transla)
-        root.addChild(material)  
+        #root.addChild(material)  
         root.addChild(centerseparator)
         return root
 
@@ -210,42 +211,40 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_INDIANRED, _rotation=[0,0,0,0], LineWidth=1):
+def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_RED, _rotation=[0,0,0,0], LineWidth=1):
     try:
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
+        
         separatorX=coin.SoSeparator() # x
         axisx=coin.SoCylinder()
         transX=coin.SoTransform()
         tempX = coin.SbVec3f()
-        tempX.setValue(0,1,0)
+        tempX.setValue(0,0,1)
         transX.rotation.setValue(tempX, math.radians(90))
         axisx.radius=0.125
         axisx.height=10
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = FR_COLOR.FR_RED
+        separatorX.addChild(col1)
         separatorX.addChild(transX)
         separatorX.addChild(axisx)
-   
+        
         material=coin.SoMaterial()
         material.diffuseColor.setValue (_color)
         material.emissiveColor.setValue(_color)
-        
-        material.specularColor.setValue( 0, 0, 0)
-        material.emissiveColor.setValue(0, 0, 0)
-        material.transparency.setValue(0)
-        
+
         root = coin.SoSeparator()
         transla=coin.SoTranslation()
         transla.translation.setValue([vec.x,vec.y,vec.z])
-        root.addChild(material)
+        #root.addChild(material)
         rootTransform=coin.SoTransform()
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2]) 
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
-        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = _color
 
         root.addChild(rootTransform)        
-        root.addChild(col1)
+
         root.addChild(transla)
         root.addChild(separatorX)
         return root
@@ -271,6 +270,10 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GREENYELLOW, _rot
         transY.rotation.setValue(tempY, math.radians(0))
         axisY.radius=0.125
         axisY.height=10
+                
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = FR_COLOR.FR_GREENYELLOW
+        separatorY.addChild(col1)
         separatorY.addChild(transY)
         separatorY.addChild(axisY)        
         root = coin.SoSeparator()
@@ -285,12 +288,10 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GREENYELLOW, _rot
         material.diffuseColor.setValue (_color)
         material.emissiveColor.setValue(_color)
         
-        root.addChild(material)
-        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = _color
+        #root.addChild(material)
 
         root.addChild(rootTransform)               
-        root.addChild(col1)
+
         root.addChild(transla)
         root.addChild(separatorY)
         return root
@@ -304,7 +305,6 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GREENYELLOW, _rot
 
 def draw_45axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_BLUEVIOLET, _rotation=[0,0,0,0], LineWidth=1):
     try:
-        
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
         separator45=coin.SoSeparator() # 45
@@ -315,31 +315,26 @@ def draw_45axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_BLUEVIOLET, _rot
         trans45.rotation.setValue(temp45, math.radians(45))
         axis45.radius=0.125
         axis45.height=7
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = FR_COLOR.FR_BLUEVIOLET
+        separator45.addChild(col1)
         separator45.addChild(trans45)
         separator45.addChild(axis45)        
         
         material=coin.SoMaterial()
         material.diffuseColor.setValue (_color)
         material.emissiveColor.setValue(_color)
-        
-        material.specularColor.setValue( 0, 0, 0)
-        material.emissiveColor.setValue(0, 0, 0)
-        material.transparency.setValue(0)
-
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         root = coin.SoSeparator()
-        root.addChild(material)
+        #root.addChild(material)
         transla=coin.SoTranslation()
         transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)        
-        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = _color
 
         root.addChild(rootTransform)        
-        root.addChild(col1)
         root.addChild(separator45)
         return root
 
@@ -364,17 +359,15 @@ def draw_135axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_ORANGE, _rotati
         trans135.rotation.setValue(temp135, math.radians(135))
         axis135.radius=0.125
         axis135.height=7
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = FR_COLOR.FR_ORANGE
+        separator135.addChild(col1)
         separator135.addChild(trans135)
         separator135.addChild(axis135)   
 
         material=coin.SoMaterial()
         material.diffuseColor.setValue (_color)
         material.emissiveColor.setValue(_color)
-        
-        material.specularColor.setValue( 0, 0, 0)
-        material.emissiveColor.setValue(0, 0, 0)
-        material.transparency.setValue(0)
-
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform=coin.SoTransform()
@@ -382,12 +375,9 @@ def draw_135axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_ORANGE, _rotati
         transla=coin.SoTranslation()   
         transla.translation.setValue([vec.x,vec.y,vec.z])     
         root = coin.SoSeparator()       
-        root.addChild(material)
-        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = _color
+        #root.addChild(material)
 
         root.addChild(rootTransform)              
-        root.addChild(col1)
         root.addChild(transla)
         root.addChild(separator135)
         return root
