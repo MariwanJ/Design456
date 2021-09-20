@@ -299,17 +299,6 @@ class Fr_Widget (object):
             return (self.w_vector[0])
         return None
     
-    @property 
-    def getPositionAsVertex(self):
-        """
-        if args is defined, it returns the vertex of the 
-        first point in the widget
-        """
-        if(self.getPosition()):
-            return App.Vertex(self.w_vector[0])
-        else:
-            return None
-
     @abstractmethod
     def position(self, x, y, z):
         """put the position of the object, which is reference to the first vector """

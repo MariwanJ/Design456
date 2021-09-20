@@ -135,8 +135,9 @@ def draw_Text_Wheel(vec=App.Vector(0.0,0.0,0.0), _color=FR_COLOR.FR_WHITE, _rota
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         
         material=coin.SoMaterial()
-        material.diffuseColor.setValue (_color)
+        material.diffuseColor.setValue (_color)        
         material.emissiveColor.setValue (_color)
+        
         material.specularColor.setValue( 0.0, 0.0, 0.0)
         material.emissiveColor.setValue(0.0, 0.0, 0.0)
         material.transparency.setValue(0.0)
@@ -146,7 +147,11 @@ def draw_Text_Wheel(vec=App.Vector(0.0,0.0,0.0), _color=FR_COLOR.FR_WHITE, _rota
         transla.translation.setValue([vec.x,vec.y,vec.z])
 
         root.addChild(material)
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = _color
+
         root.addChild(rootTransform)        
+        root.addChild(col1)
         root.addChild(transla)
         root.addChild(txtRoot)
         return root
@@ -159,29 +164,15 @@ def draw_Text_Wheel(vec=App.Vector(0.0,0.0,0.0), _color=FR_COLOR.FR_WHITE, _rota
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation=[0,0,1,0], LineWidth=1):
+def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation=[0,0,0,0], LineWidth=1):
     try:
-        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col1.rgb = _color
-        coly = coin.SoBaseColor()  # must be converted to SoBaseColor
-        coly.rgb = FR_COLOR.FR_GREENYELLOW
-        colCenter = coin.SoBaseColor()  # must be converted to SoBaseColor
-        colCenter.rgb = FR_COLOR.FR_BROWN
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
-        root = coin.SoSeparator()
-        transla=coin.SoTranslation()
-        transla.translation.setValue([vec.x,vec.y,vec.z])
-        root.addChild(transla)
-        
-        tempR = coin.SbVec3f()
-        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-        rootTransform=coin.SoTransform()
-        rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
-        
+
         material=coin.SoMaterial()
         material.transparency.setValue(0.80)
         material.diffuseColor.setValue (_color)
+        material.emissiveColor.setValue(_color)
         
         centerseparator=coin.SoSeparator() 
         center=coin.SoCylinder()
@@ -192,22 +183,23 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation
         center.radius=1.75
         center.height=0.25
         centerseparator.addChild(transcenter)
-        centerseparator.addChild(colCenter)
         centerseparator.addChild(center)
-        group= coin.SoSeparator()
-        
-        transG=coin.SoTransform()
-        tempG = coin.SbVec3f()
-        tempG.setValue(1,0,0)
-        transG.rotation.setValue(tempG, math.radians(90))
-        group.addChild(transG)
-        group.addChild(centerseparator)
-        
-        root.addChild(material)
-        root.addChild(rootTransform)        
+
+        tempR = coin.SbVec3f()
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+        rootTransform=coin.SoTransform()
+        rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        root = coin.SoSeparator()
+        transla=coin.SoTranslation()
+        transla.translation.setValue([vec.x,vec.y,vec.z])
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = _color
+
+        root.addChild(rootTransform)  
+        root.addChild(col1)
         root.addChild(transla)
-        #root.addChild(col1)
-        root.addChild(group)
+        root.addChild(material)  
+        root.addChild(centerseparator)
         return root
 
     except Exception as err:
@@ -218,49 +210,44 @@ def draw_Center_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GLASS, _rotation
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_INDIANRED, _rotation=[0,0,0,0], LineWidth=1):
     try:
-        colx = coin.SoBaseColor()  # must be converted to SoBaseColor
-        colx.rgb = FR_COLOR.FR_INDIANRED
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
-        root = coin.SoSeparator()
-        transla=coin.SoTranslation()
-        transla.translation.setValue([vec.x,vec.y,vec.z])
         separatorX=coin.SoSeparator() # x
         axisx=coin.SoCylinder()
         transX=coin.SoTransform()
         tempX = coin.SbVec3f()
-        tempX.setValue(0,0,1)
+        tempX.setValue(0,1,0)
         transX.rotation.setValue(tempX, math.radians(90))
         axisx.radius=0.125
         axisx.height=10
         separatorX.addChild(transX)
-        separatorX.addChild(colx)
         separatorX.addChild(axisx)
-        group= coin.SoSeparator()
-        transG=coin.SoTransform()
-        tempG = coin.SbVec3f()
-        tempG.setValue(1,0,0)
-        transG.rotation.setValue(tempG, math.radians(90))
-        group.addChild(transG)
-        group.addChild(separatorX)
-        
-        root.addChild(transla)
-        tempR = coin.SbVec3f()
-        tempR.setValue(_rotation[0], _rotation[1], _rotation[2]) 
-        
+   
         material=coin.SoMaterial()
         material.diffuseColor.setValue (_color)
+        material.emissiveColor.setValue(_color)
+        
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
         material.transparency.setValue(0)
+        
+        root = coin.SoSeparator()
+        transla=coin.SoTranslation()
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(material)
         rootTransform=coin.SoTransform()
+        tempR = coin.SbVec3f()
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2]) 
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = _color
+
         root.addChild(rootTransform)        
+        root.addChild(col1)
         root.addChild(transla)
-        root.addChild(group)
+        root.addChild(separatorX)
         return root
 
     except Exception as err:
@@ -271,17 +258,10 @@ def draw_Xaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_GREENYELLOW, _rotation=[0,0,0,0], LineWidth=1):
     try:
-        txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
-        txtCol.rgb = FR_COLOR.FR_WHITE
-        coly = coin.SoBaseColor()  # must be converted to SoBaseColor
-        coly.rgb = FR_COLOR.FR_GREENYELLOW
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
-        root = coin.SoSeparator()
-        transla=coin.SoTranslation()
-        transla.translation.setValue([vec.x,vec.y,vec.z])
 
         separatorY=coin.SoSeparator() # Y
         axisY=coin.SoCylinder()
@@ -292,28 +272,27 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=
         axisY.radius=0.125
         axisY.height=10
         separatorY.addChild(transY)
-        separatorY.addChild(coly)
         separatorY.addChild(axisY)        
-        group= coin.SoSeparator()
-        transG=coin.SoTransform()
-        tempG = coin.SbVec3f()
-        tempG.setValue(1,0,0)
-        transG.rotation.setValue(tempG, math.radians(90))
-        group.addChild(transG)
-        group.addChild(separatorY)
+        root = coin.SoSeparator()
 
-        root.addChild(transla)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-
         rootTransform=coin.SoTransform()
+        transla=coin.SoTranslation()
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         material=coin.SoMaterial()
         material.diffuseColor.setValue (_color)
+        material.emissiveColor.setValue(_color)
+        
         root.addChild(material)
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = _color
+
         root.addChild(rootTransform)               
+        root.addChild(col1)
         root.addChild(transla)
-        root.addChild(group)
+        root.addChild(separatorY)
         return root
 
     except Exception as err:
@@ -323,13 +302,11 @@ def draw_Yaxis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-def draw_45axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_45axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_BLUEVIOLET, _rotation=[0,0,0,0], LineWidth=1):
     try:
-        col45 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col45.rgb = FR_COLOR.FR_BLUEVIOLET
+        
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
-
         separator45=coin.SoSeparator() # 45
         axis45=coin.SoCylinder()
         trans45=coin.SoTransform()
@@ -339,36 +316,31 @@ def draw_45axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation
         axis45.radius=0.125
         axis45.height=7
         separator45.addChild(trans45)
-        separator45.addChild(col45)
         separator45.addChild(axis45)        
-
-        group= coin.SoSeparator()
-        transG=coin.SoTransform()
-        tempG = coin.SbVec3f()
-        tempG.setValue(1,0,0)
-        transG.rotation.setValue(tempG, math.radians(90))
-        group.addChild(transG)
-
-        group.addChild(separator45)
         
-        root = coin.SoSeparator()
-        transla=coin.SoTranslation()
-        transla.translation.setValue([vec.x,vec.y,vec.z])
-        root.addChild(transla)
         material=coin.SoMaterial()
         material.diffuseColor.setValue (_color)
+        material.emissiveColor.setValue(_color)
+        
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
         material.transparency.setValue(0)
-        root.addChild(material)
+
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
-        
+        root = coin.SoSeparator()
+        root.addChild(material)
+        transla=coin.SoTranslation()
+        transla.translation.setValue([vec.x,vec.y,vec.z])
         root.addChild(transla)        
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = _color
+
         root.addChild(rootTransform)        
-        root.addChild(group)
+        root.addChild(col1)
+        root.addChild(separator45)
         return root
 
     except Exception as err:
@@ -379,11 +351,8 @@ def draw_45axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_135axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotation=[0,0,1,0], LineWidth=1):
+def draw_135axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_ORANGE, _rotation=[0,0,0,0], LineWidth=1):
     try:
-        col135 = coin.SoBaseColor()  # must be converted to SoBaseColor
-        col135.rgb = FR_COLOR.FR_ORANGE
-
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
 
@@ -396,35 +365,31 @@ def draw_135axis_Wheel(vec=App.Vector(0,0,0), _color=FR_COLOR.FR_WHITE, _rotatio
         axis135.radius=0.125
         axis135.height=7
         separator135.addChild(trans135)
-        separator135.addChild(col135)
-        separator135.addChild(axis135)        
+        separator135.addChild(axis135)   
 
-        group= coin.SoSeparator()
-        transG=coin.SoTransform()
-        tempG = coin.SbVec3f()
-        tempG.setValue(1,0,0)
-        transG.rotation.setValue(tempG, math.radians(90))
-        group.addChild(transG)
-        group.addChild(separator135)
-        
         material=coin.SoMaterial()
-        transla=coin.SoTranslation()       
-        root = coin.SoSeparator()       
-        root.addChild(transla)        
-        transla.translation.setValue([vec.x,vec.y,vec.z])    
         material.diffuseColor.setValue (_color)
+        material.emissiveColor.setValue(_color)
+        
         material.specularColor.setValue( 0, 0, 0)
         material.emissiveColor.setValue(0, 0, 0)
         material.transparency.setValue(0)
-        
+
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform=coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        transla=coin.SoTranslation()   
+        transla.translation.setValue([vec.x,vec.y,vec.z])     
+        root = coin.SoSeparator()       
         root.addChild(material)
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = _color
+
         root.addChild(rootTransform)              
+        root.addChild(col1)
         root.addChild(transla)
-        root.addChild(group)
+        root.addChild(separator135)
         return root
 
     except Exception as err:
