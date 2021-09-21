@@ -39,8 +39,8 @@ from ThreeDWidgets import fr_coin3d
 from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
-from ThreeDWidgets.fr_Wheel_widget import Fr_Wheel_Widget
-from ThreeDWidgets import fr_Wheel_widget
+from ThreeDWidgets.fr_degreewheel_widget import Fr_DegreeWheel_Widget
+from ThreeDWidgets import fr_degreewheel_widget
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
@@ -75,7 +75,7 @@ MouseScaleFactor = 1
 # come back to do it. I must have it as an option in menu. (don't know how to do it now.)
 
 
-def callback_move(userData: fr_Wheel_widget.userDataObject=None):
+def callback_move(userData: fr_degreewheel_widget.userDataObject=None):
    
     try:
         if userData is None:
@@ -121,7 +121,7 @@ def callback_move(userData: fr_Wheel_widget.userDataObject=None):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def callback_release(userData: fr_Wheel_widget.userDataObject=None):
+def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
     """
        Callback after releasing the left mouse button. 
        This callback will finalize the Extrude operation. 
@@ -220,7 +220,7 @@ def callback_release(userData: fr_Wheel_widget.userDataObject=None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-class Design456_SmartExtrudeRotateRotate:
+class Design456_SmartExtrudeRotate:
     """
         Apply Extrude to any 3D/2D object by selecting the object's face, and rotate it 
         Length of the Extrude is counted by rotation degree and the axis.
@@ -229,7 +229,7 @@ class Design456_SmartExtrudeRotateRotate:
     mw = None
     dialog = None
     tab = None
-    smartInd = None
+    wheelObject = None
     _mywin = None
     b1 = None
     ExtrudeLBL = None
@@ -240,12 +240,14 @@ class Design456_SmartExtrudeRotateRotate:
     # We will make two object, one for visual effect and the other is the original
     selectedObj = None
     direction = None
+
     # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
     targetFace = None
     newObject = None
-    DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
+
     OperationOption = 0  # default is zero
     objChangedTransparency = []
+    ExtractedFaces=[]
 
     def reCreateExtrudeObject(self):
         """
@@ -273,9 +275,9 @@ class Design456_SmartExtrudeRotateRotate:
         currentLength = self.extrudeLength
         # to let the Wheel be outside the object
         self.extrudeLength = self.extrudeLength + 15
-        self.smartInd.w_vector = self.calculateNewVector()
+        self.wheelObject.w_vector = self.calculateNewVector()
         self.extrudeLength = currentLength  # return back the value.
-        self.smartInd.redraw()
+        self.wheelObject.redraw()
 
     def getWheelPosition(self):
         """"
@@ -293,28 +295,24 @@ class Design456_SmartExtrudeRotateRotate:
             else:
                 face1 = self.selectedObj.Object.Shape.Faces[0]
 
-            #TODO: WRHITE CODE HERE !!
+            #TODO: WRITE CODE HERE !!
 
-
-
-
-            #   self.extrudeLength = 5
-            #   self._vector = self.calculateNewVector()
-            #   self.extrudeLength = 0.0
-            #   if (face1.Surface.Rotation is None):
-            #       yL = face1.CenterOfMass
-            #       uv = face1.Surface.parameter(yL)
-            #       nv = face1.normalAt(uv[0], uv[1])
-            #       calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
-            #       #nett= 90-faced.calculateAngle(rot)
-            #       rotation=[0,1,0,calAn]
-            #       print("rotation----->",rotation)
-            #   else:
-            #       rotation = (face1.Surface.Rotation.Axis.x,
-            #               face1.Surface.Rotation.Axis.y,
-            #               face1.Surface.Rotation.Axis.z,
-            #               math.degrees(face1.Surface.Rotation.Angle))
-            #   return rotation
+                self._vector = self.calculateNewVector()
+                self.extrudeLength = 0.0
+                if (face1.Surface.Rotation is None):
+                    yL = face1.CenterOfMass
+                    uv = face1.Surface.parameter(yL)
+                    nv = face1.normalAt(uv[0], uv[1])
+                    calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
+                    #nett= 90-faced.calculateAngle(rot)
+                    rotation=[0,1,0,calAn]
+                    print("rotation----->",rotation)
+                else:
+                    rotation = (face1.Surface.Rotation.Axis.x,
+                            face1.Surface.Rotation.Axis.y,
+                            face1.Surface.Rotation.Axis.z,
+                            math.degrees(face1.Surface.Rotation.Angle))
+                return rotation
         
         except Exception as err:
             faced.EnableAllToolbar(True)
@@ -339,26 +337,21 @@ class Design456_SmartExtrudeRotateRotate:
         else:
             return False
 
-    def extractFace(self):
+    def extractFaces(self):
         """[Extract a face from a 3D object as it cannot be extruded otherwise]
 
         Returns:
             [Face]: [Face created from the selected face of the 3D object]
         """
-        newobj = "eFace"
-        sh = self.selectedObj.Object.Shape.copy()
+        self.ExtractedFaces.append( self.selectedObj.Object.Shape.copy())
+        self.ExtractedFaces.append( self.selectedObj.Object.Shape.copy())
         if hasattr(self.selectedObj.Object, "getGlobalPlacement"):
             gpl = self.selectedObj.Object.getGlobalPlacement()
-            sh.Placement = gpl
+            self.ExtractedFaces[0].Placement = gpl
+            self.ExtractedFaces[1].Placement = gpl
         else:
             pass  # TODO: WHAT SHOULD WE DO HERE ?
-
-        name = self.selectedObj.SubElementNames[0]
-        newobj = App.ActiveDocument.addObject("Part::Feature", newobj)  # create face 
-        newobj.Shape = sh.getElement(name)
         App.ActiveDocument.recompute()
-        newobj.Visibility = False 
-        return newobj
 
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
@@ -402,32 +395,29 @@ class Design456_SmartExtrudeRotateRotate:
             faced.EnableAllToolbar(False)
             # Undo
             App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrudeRotate"))
+            self.ExtractedFaces.clear()
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
-                self.targetFace = self.extractFace()
+                self.extractFaces()
             else:
                 # We have a 2D Face - Extract it directly
-                self.targetFace = self.selectedObj.Object
+                self.ExtractedFaces.append( self.selectedObj.Object.Shape)
+                self.ExtractedFaces.append( self.selectedObj.Object.Shape.copy())
 
             rotation = self.getWheelPosition()      #Deside how the Degree Wheel be drawn
-            self.smartInd = Fr_Wheel_Widget(
-                self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 3)
+            self.wheelObject = Fr_DegreeWheel_Widget([self._vector,App.Vector(0,0,0)], str(rotation)+"°", 1, FR_COLOR.FR_RED, rotation, 3)
             
             #Define the callbacks. We have many callbacks here. 
             
             #TODO: FIXME:
-            #self.smartInd.w_callback_ = callback_release
-            #self.smartInd.w_move_callback_ = callback_move
-            #self.smartInd.w_userData.callerObject = self
-            
-            
-            
-            
-            
+            #self.wheelObject.w_callback_ = callback_release
+            #self.wheelObject.w_move_callback_ = callback_move
+            #self.wheelObject.w_userData.callerObject = self
+
             if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
 
-            self._mywin.addWidget(self.smartInd)
+            self._mywin.addWidget(self.wheelObject)
             mw = self.getMainWindow()
             self._mywin.show()
 
@@ -455,8 +445,8 @@ class Design456_SmartExtrudeRotateRotate:
         """
         faced.EnableAllToolbar(True)
         try:
-            self.smartInd.hide()
-            self.smartInd.__del__()  # call destructor
+            self.wheelObject.hide()
+            self.wheelObject.__del__()  # call destructor
             if self._mywin != None:
                 self._mywin.hide()
                 del self._mywin

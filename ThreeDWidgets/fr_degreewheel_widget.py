@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 import FACE_D as faced
 from dataclasses import dataclass
-import fr_wheel_draw 
+from ThreeDWidgets import fr_wheel_draw 
 
 """
 Example how to use this widget. 
