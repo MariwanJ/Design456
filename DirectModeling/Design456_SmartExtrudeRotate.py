@@ -57,7 +57,7 @@ MouseScaleFactor = 1
     WHICH I SHOULD DECIDE. KEEP TUNED!! :)
     THIS WILL BE THE FIRST TOOL THAT USES THE DEGREE WHEEL WIDGET
     
-'''
+
     How it works: 
     We have to recreate the object each time we change the radius. 
     This means that the redrawing must be optimized
@@ -69,10 +69,11 @@ MouseScaleFactor = 1
     Known issue: 
         ???TODO: FIXME:§
 
-'''
+"""
 # TODO: As I wish to simplify the tree and make a simple 
 # copy of all objects, I leave it now and I should
 # come back to do it. I must have it as an option in menu. (don't know how to do it now.)
+
 
 def callback_move(userData: fr_Wheel_widget.userDataObject=None):
    
@@ -255,17 +256,8 @@ class Design456_SmartExtrudeRotateRotate:
         ]
         """
         try:
-            self.newObject.LengthFwd = self.extrudeLength
-            if self.OperationOption == 2 or self.OperationOption == 1 : 
-                self.objChangedTransparency.clear()
-                result = faced.checkCollision(self.newObject)
-                if result != []:
-                    for obj in result:
-                        TE = Gui.ActiveDocument.getObject(obj.Name)  #should be GUI object not App object!!!
-                        TE.Transparency = 80
-                        self.objChangedTransparency.append(TE)
-                App.ActiveDocument.recompute()
-                
+            pass
+
         except Exception as err:
             App.Console.PrintError("'reCreateExtrudeObject' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -300,25 +292,29 @@ class Design456_SmartExtrudeRotateRotate:
                 face1 = sub1.SubObjects[0]
             else:
                 face1 = self.selectedObj.Object.Shape.Faces[0]
-            print(face1)
-            print(type(face1))
-            self.extrudeLength = 5
-            self._vector = self.calculateNewVector()
-            self.extrudeLength = 0.0
-            if (face1.Surface.Rotation is None):
-                yL = face1.CenterOfMass
-                uv = face1.Surface.parameter(yL)
-                nv = face1.normalAt(uv[0], uv[1])
-                calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
-                #nett= 90-faced.calculateAngle(rot)
-                rotation=[0,1,0,calAn]
-                print("rotation----->",rotation)
-            else:
-                rotation = (face1.Surface.Rotation.Axis.x,
-                        face1.Surface.Rotation.Axis.y,
-                        face1.Surface.Rotation.Axis.z,
-                        math.degrees(face1.Surface.Rotation.Angle))
-            return rotation
+
+            #TODO: WRHITE CODE HERE !!
+
+
+
+
+            #   self.extrudeLength = 5
+            #   self._vector = self.calculateNewVector()
+            #   self.extrudeLength = 0.0
+            #   if (face1.Surface.Rotation is None):
+            #       yL = face1.CenterOfMass
+            #       uv = face1.Surface.parameter(yL)
+            #       nv = face1.normalAt(uv[0], uv[1])
+            #       calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
+            #       #nett= 90-faced.calculateAngle(rot)
+            #       rotation=[0,1,0,calAn]
+            #       print("rotation----->",rotation)
+            #   else:
+            #       rotation = (face1.Surface.Rotation.Axis.x,
+            #               face1.Surface.Rotation.Axis.y,
+            #               face1.Surface.Rotation.Axis.z,
+            #               math.degrees(face1.Surface.Rotation.Angle))
+            #   return rotation
         
         except Exception as err:
             faced.EnableAllToolbar(True)
@@ -370,6 +366,8 @@ class Design456_SmartExtrudeRotateRotate:
         Returns:
             [App.Vector]: [Position where the Wheel will be moved to]
         """
+        #TODO: FIXME: 
+        
         if(self.isFaceOf3DObj()):
             ss = self.selectedObj.SubObjects[0]
         else:
@@ -384,7 +382,6 @@ class Design456_SmartExtrudeRotateRotate:
         else:
             d = self.extrudeLength
         point = yL + d * nv
-        #print("Wheel Vector is ", point)
         return (point)
 
     def Activated(self):
@@ -394,7 +391,7 @@ class Design456_SmartExtrudeRotateRotate:
             ]
         """
         try:
-            print("Smart Extrusion")
+            print("Smart ExtrudeRotate")
             sel = Gui.Selection.getSelectionEx()
             if len(sel) == 0:
                 # An object must be selected
@@ -404,8 +401,7 @@ class Design456_SmartExtrudeRotateRotate:
             self.selectedObj = sel[0]
             faced.EnableAllToolbar(False)
             # Undo
-            App.ActiveDocument.openTransaction(
-                translate("Design456", "SmartExtrude"))
+            App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrudeRotate"))
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
                 self.targetFace = self.extractFace()
@@ -413,12 +409,21 @@ class Design456_SmartExtrudeRotateRotate:
                 # We have a 2D Face - Extract it directly
                 self.targetFace = self.selectedObj.Object
 
-            rotation = self.getWheelPosition()
+            rotation = self.getWheelPosition()      #Deside how the Degree Wheel be drawn
             self.smartInd = Fr_Wheel_Widget(
                 self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 3)
-            self.smartInd.w_callback_ = callback_release
-            self.smartInd.w_move_callback_ = callback_move
-            self.smartInd.w_userData.callerObject = self
+            
+            #Define the callbacks. We have many callbacks here. 
+            
+            #TODO: FIXME:
+            #self.smartInd.w_callback_ = callback_release
+            #self.smartInd.w_move_callback_ = callback_move
+            #self.smartInd.w_userData.callerObject = self
+            
+            
+            
+            
+            
             if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
 
@@ -426,24 +431,12 @@ class Design456_SmartExtrudeRotateRotate:
             mw = self.getMainWindow()
             self._mywin.show()
 
-            self.newObject = App.ActiveDocument.addObject(
-                'Part::Extrusion', 'Extrude')
-            self.newObject.Base = self.targetFace
-            self.newObject.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
-            # Above statement is not always correct. Some faces require 'custom'
-            self.newObject.DirLink = None
-            self.newObject.LengthFwd = self.extrudeLength  # Must be negative
-            self.newObject.LengthRev = 0.0
-            self.newObject.Solid = True
-            self.newObject.Reversed = False
-            self.newObject.Symmetric = False
-            self.newObject.TaperAngle = 0.0
-            self.newObject.TaperAngleRev = 0.0
-            self.newObject.Dir= Gui.ActiveDocument.getObject(self.targetFace.Name).Object.Shape.Faces[0].normalAt(0,0)
-            if (self.newObject.Dir.x!=1 or
-                self.newObject.Dir.y!=1 or
-                self.newObject.Dir.z!=1):
-                self.newObject.DirMode="Custom"
+            #Todo: FIXME: 
+            #loft will be used . make some experementations. 
+            # But when should we use sweep???? don't know now
+
+
+
                 
             App.ActiveDocument.recompute()
             
