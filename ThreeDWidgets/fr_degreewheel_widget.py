@@ -181,7 +181,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
 
         self.w_lbluserData.linewidth=self.w_lineWidth
-        
+        print("self.w_wheelType=",self.w_wheelType)
         if (self.w_wheelType==0):
             self.w_lbluserData.rotation = App.Vector(0,90,0)
             self.w_lbluserData.rotationAxis=App.Vector(0,1,0)
@@ -189,22 +189,24 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.w_lbluserData.rotation = App.Vector(90,0,90)
             self.w_lbluserData.rotationAxis=App.Vector(1,0,1)
         elif(self.w_wheelType==2):
-            self.w_lbluserData.rotation = App.Vector(00,0,0)
-            self.w_lbluserData.rotationAxis=App.Vector(0,0,0)
+            self.w_lbluserData.rotation = App.Vector(90,0,0)
+            self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
 
             
         self.w_WidgetDiskRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
         self.w_wheelTypeRotation=[0.0,0.0,1.0,0.0]
         
-        if (self.w_wheelType != 2):
+        if(self.w_wheelType == 0):
+            # When is is Top view
+            self.w_lbluserData.vectors =[self.w_vector[0].x,self.w_vector[0].y+17,self.w_vector[0].z]           
+        elif (self.w_wheelType == 1):
             # When is hasing the Front view
-            self.w_lbluserData.vectors =[App.Vector(0,0,5),App.Vector(10,0,5)] 
+            self.w_lbluserData.vectors =[self.w_vector[0].x,self.w_vector[0].y+2,self.w_vector[0].z+6]
             
-        else:
-            # When is hasing the Top v iew
-            self.w_lbluserData.vectors = [self.w_vector[0], 
-                                 App.Vector(self.w_vector[1].x,self.w_vector[1].y+17,self.w_vector[1].z)]   # length of the arrow is 15
-
+        elif (self.w_wheelType == 2):
+            # When is hasing the Front view
+            self.w_lbluserData.vectors =[self.w_vector[0].x+2,self.w_vector[0].y,self.w_vector[0].z+6]
+            
     def lineWidth(self, width):
         """ Set the line width"""
         self.w_lineWidth = width
@@ -335,7 +337,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 if self.w_wheelType==0:
                     self.w_wheelTypeRotation = [0.0, 0.0, 0.0, 0.0]
                 elif self.w_wheelType==1: 
-                    self.w_wheelTypeRotation=[0.0, 1.0, 0.0, 90.0]
+                    self.w_wheelTypeRotation=[1.0, 0.0, 0.0, 90.0]
                 elif self.w_wheelType==2:
                     self.w_wheelTypeRotation=[1.0, 0.0, 0.0, 90.0]
                 self.w_CentSeparator  = fr_wheel_draw.draw_Center_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
