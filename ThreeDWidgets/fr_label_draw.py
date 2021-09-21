@@ -236,15 +236,12 @@ def draw_newlabel(text=[], prop: propertyValues=None):
     if text == '' or prop is None:
         raise ValueError        # Nothing to do here 
     try:
+        p1=prop.vectors[0]
         if len(prop.vectors)>=2:
-            p1=prop.vectors[0]
             p2=prop.vectors[1]
-        else:
-            p1=prop.vectors[0]
-            
+
         #direction= 
         _translation=coin.SoTranslation()  #coin.SoTransform()
-        
         _transformX = coin.SoTransform()
         _transformY = coin.SoTransform()
         _transformZ = coin.SoTransform()
