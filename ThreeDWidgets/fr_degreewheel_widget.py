@@ -196,16 +196,17 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_WidgetDiskRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
         self.w_wheelTypeRotation=[0.0,0.0,1.0,0.0]
         
+        #TODO: FIXME:
         if(self.w_wheelType == 0):
             # When is is Top view
-            self.w_lbluserData.vectors =[self.w_vector[0].x,self.w_vector[0].y+17,self.w_vector[0].z]           
+            self.w_lbluserData.vectors =[(self.w_vector[0].x+2,self.w_vector[0].y,self.w_vector[0].z),(0,0,0)]           
         elif (self.w_wheelType == 1):
             # When is hasing the Front view
-            self.w_lbluserData.vectors =[self.w_vector[0].x,self.w_vector[0].y+2,self.w_vector[0].z+6]
+            self.w_lbluserData.vectors =[(self.w_vector[0].x,self.w_vector[0].y+2,self.w_vector[0].z+6),(0,0,0)]
             
         elif (self.w_wheelType == 2):
             # When is hasing the Front view
-            self.w_lbluserData.vectors =[self.w_vector[0].x+2,self.w_vector[0].y,self.w_vector[0].z+6]
+            self.w_lbluserData.vectors =[(self.w_vector[0].x+2,self.w_vector[0].y,self.w_vector[0].z+6),(0,0,0)]
             
     def lineWidth(self, width):
         """ Set the line width"""
