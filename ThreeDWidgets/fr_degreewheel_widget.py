@@ -183,33 +183,34 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.linewidth=self.w_lineWidth          #This affect only the Widget label - nothing else
         print("self.w_wheelType=",self.w_wheelType)
         if (self.w_wheelType==0):
-            self.w_lbluserData.rotation = App.Vector(0,0,0)   #don't change - Top OK
-            self.w_lbluserData.rotationAxis=App.Vector(0,0,0)
+            self.w_lbluserData.rotation = App.Vector(0,0,0 )         #OK Don't change
+            self.w_lbluserData.rotationAxis=App.Vector(0,0,0)        #OK Don't change
         elif(self.w_wheelType==1):
             self.w_lbluserData.rotation = App.Vector(0,0,90)    
             self.w_lbluserData.rotationAxis=App.Vector(0,0,1)
         elif(self.w_wheelType==2):
-            self.w_lbluserData.rotation = App.Vector(90,0,0)    #don't Change - Front OK
+            self.w_lbluserData.rotation = App.Vector(90,0,0)    
             self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
 
-            
         self.w_WidgetDiskRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
-        self.w_wheelTypeRotation=[0.0,0.0,1.0,0.0]
+        
+        self.w_rotation=_rotation
         
         #TODO: FIXME:
         if(self.w_wheelType == 0):
-            # When is is Top view
-            self.w_lbluserData.vectors =[(self.w_vector[0].x+2,self.w_vector[0].y,self.w_vector[0].z),(0,0,0)]           
+            # When is is Top view.
+            self.w_lbluserData.vectors =[(self.w_vector[0].x+2,self.w_vector[0].y+6,self.w_vector[0].z),(0,0,0)]     #OK Don't change      
         elif (self.w_wheelType == 1):
-            # When is hasing the Front view
+            # When is the Front view
             self.w_lbluserData.vectors =[(self.w_vector[0].x,self.w_vector[0].y+2,self.w_vector[0].z+6),(0,0,0)]
             
         elif (self.w_wheelType == 2):
-            # When is hasing the Front view
+            # When is the Front view
             self.w_lbluserData.vectors =[(self.w_vector[0].x+2,self.w_vector[0].y,self.w_vector[0].z+6),(0,0,0)]
             
     def lineWidth(self, width):
-        """ Set the line width"""
+        """ Set line-width 
+        """
         self.w_lineWidth = width
 
     def handle(self, event):
@@ -322,6 +323,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         the wheel.
         """
         try:
+            SETUPwheelTypeRotation=None
+            SetupTextRotation=None
             lablVar=fr_widget.propertyValues()  
             if (len(self.w_vector) < 1):
                 raise ValueError('Must be  one vector')
@@ -336,17 +339,29 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             if self.is_visible():
                 allDraw = []
                 if self.w_wheelType==0:
-                    self.w_wheelTypeRotation = [0.0, 0.0, 0.0, 0.0]    #TOP
+                    SETUPwheelTypeRotation = [0.0, 0.0, 0.0, 0.0]    #TOP             #OK Don't change
+                    SetupTextRotation= [0.0, 0.0, 0.0, 00.0]                          #OK Don't change
                 elif self.w_wheelType==1: 
-                    self.w_wheelTypeRotation=[1.0, 0.0, 1.0, 90.0]      #TODO THIS IS WRONG. IT SHOULD BE ROTATED BOTH X AND Z BUT IT DOESNT WORK!!
+                    SETUPwheelTypeRotation = [1.0, 0.0, 0.0, 90.0]    #
+                    SetupTextRotation=       [0.0, 0.0, 0.0, 00.0]      #TODO THIS IS WRONG. IT SHOULD BE ROTATED BOTH X AND Z BUT IT DOESN'T WORK!!
                 elif self.w_wheelType==2:
-                    self.w_wheelTypeRotation=[1.0, 0.0, 0.0, 90.0]     #FRONT
-                self.w_CentSeparator  = fr_wheel_draw.draw_Center_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
-                self.w_XsoSeparator   = fr_wheel_draw.draw_Xaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)   #RED
-                self.w_YsoSeparator   = fr_wheel_draw.draw_Yaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)   #GREEN
-                self.w_45soSeparator  = fr_wheel_draw.draw_45axis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)  #45
-                self.w_135soSeparator = fr_wheel_draw.draw_135axis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1) #135
-                self.w_degreeSeparator= fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)    #White
+                    SETUPwheelTypeRotation=[1.0, 0.0, 0.0, 90.0]     #
+                    SetupTextRotation=       [0.0, 0.0, 0.0, 00.0]
+                self.w_CentSeparator  = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Center", 
+                                                                    usedColor, SETUPwheelTypeRotation,
+                                                                    self.w_rotation, 1)
+                self.w_XsoSeparator   = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Xaxis", 
+                                                                    usedColor, SETUPwheelTypeRotation,
+                                                                    self.w_rotation, 1)                         #RED
+                self.w_YsoSeparator   = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Yaxis",
+                                                                    usedColor,SETUPwheelTypeRotation,
+                                                                    self.w_rotation, 1)                         #GREEN
+                self.w_45soSeparator  = fr_wheel_draw.draw_AllParts(self.w_vector[0],"45axis",usedColor,
+                                                                    SETUPwheelTypeRotation,self.w_rotation, 1)     #45
+                self.w_135soSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0],"135axis",usedColor,
+                                                                    SETUPwheelTypeRotation,self.w_rotation, 1)     #135
+                self.w_degreeSeparator= fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
+                                                                    SetupTextRotation,self.w_rotation, 1)    #White
 
                 
                 allDraw.append(self.w_degreeSeparator)
