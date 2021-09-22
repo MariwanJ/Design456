@@ -186,8 +186,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.w_lbluserData.rotation = App.Vector(0,0,0 )         #OK Don't change
             self.w_lbluserData.rotationAxis=App.Vector(0,0,0)        #OK Don't change
         elif(self.w_wheelType==1):
-            self.w_lbluserData.rotation = App.Vector(0,0,90)    
-            self.w_lbluserData.rotationAxis=App.Vector(0,0,1)
+            self.w_lbluserData.rotation = App.Vector(0,0,0)    
+            self.w_lbluserData.rotationAxis=App.Vector(0,0,0)
         elif(self.w_wheelType==2):
             self.w_lbluserData.rotation = App.Vector(90,0,0)    
             self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
