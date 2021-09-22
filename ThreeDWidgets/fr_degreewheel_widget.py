@@ -180,16 +180,16 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         # self.w_userData.color=_color
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
 
-        self.w_lbluserData.linewidth=self.w_lineWidth
+        self.w_lbluserData.linewidth=self.w_lineWidth          #This affect only the Widget label - nothing else
         print("self.w_wheelType=",self.w_wheelType)
         if (self.w_wheelType==0):
-            self.w_lbluserData.rotation = App.Vector(0,90,0)
-            self.w_lbluserData.rotationAxis=App.Vector(0,1,0)
+            self.w_lbluserData.rotation = App.Vector(0,0,0)   #don't change - Top OK
+            self.w_lbluserData.rotationAxis=App.Vector(0,0,0)
         elif(self.w_wheelType==1):
-            self.w_lbluserData.rotation = App.Vector(90,0,90)
-            self.w_lbluserData.rotationAxis=App.Vector(1,0,1)
+            self.w_lbluserData.rotation = App.Vector(0,0,90)    
+            self.w_lbluserData.rotationAxis=App.Vector(0,0,1)
         elif(self.w_wheelType==2):
-            self.w_lbluserData.rotation = App.Vector(90,0,0)
+            self.w_lbluserData.rotation = App.Vector(90,0,0)    #don't Change - Front OK
             self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
 
             
@@ -336,11 +336,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             if self.is_visible():
                 allDraw = []
                 if self.w_wheelType==0:
-                    self.w_wheelTypeRotation = [0.0, 0.0, 0.0, 0.0]
+                    self.w_wheelTypeRotation = [0.0, 0.0, 0.0, 0.0]    #TOP
                 elif self.w_wheelType==1: 
-                    self.w_wheelTypeRotation=[1.0, 0.0, 0.0, 90.0]
+                    self.w_wheelTypeRotation=[1.0, 0.0, 1.0, 90.0]      #TODO THIS IS WRONG. IT SHOULD BE ROTATED BOTH X AND Z BUT IT DOESNT WORK!!
                 elif self.w_wheelType==2:
-                    self.w_wheelTypeRotation=[1.0, 0.0, 0.0, 90.0]
+                    self.w_wheelTypeRotation=[1.0, 0.0, 0.0, 90.0]     #FRONT
                 self.w_CentSeparator  = fr_wheel_draw.draw_Center_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)
                 self.w_XsoSeparator   = fr_wheel_draw.draw_Xaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)   #RED
                 self.w_YsoSeparator   = fr_wheel_draw.draw_Yaxis_Wheel(self.w_vector[0], usedColor, self.w_wheelTypeRotation, 1)   #GREEN
