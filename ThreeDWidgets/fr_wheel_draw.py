@@ -291,8 +291,8 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype:str="",
         material.diffuseColor.setValue (_color)
         material.emissiveColor.setValue(_color)
         
+        root.addChild(transla)        
         root.addChild(rootTransform)  
-        root.addChild(transla)
         # root.addChild(material)  
         root.addChild(SoSeparatorSetupZ)
         return root
