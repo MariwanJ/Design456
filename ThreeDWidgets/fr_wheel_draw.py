@@ -158,7 +158,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         
         SoSeparatorSetupZ.addChild(transfromZ)
         SoSeparatorSetupZ.addChild(SoSeparatorSetupY)
-        print("_rotation", _rotation,)
+        print("_rotation", _rotation)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform = coin.SoTransform()

@@ -285,8 +285,6 @@ class Design456_SmartExtrudeRotate:
         """
         # For now the Wheel will be at the top
         try:    
-            rotation = [0.0, 0.0, 0.0, 0.0]
-
             face1 = None
             if(self.isFaceOf3DObj()):
                 # The whole object is selected
@@ -294,29 +292,27 @@ class Design456_SmartExtrudeRotate:
                 face1 = sub1.SubObjects[0]
             else:
                 face1 = self.selectedObj.Object.Shape.Faces[0]
-
-            #TODO: WRITE CODE HERE !!
-
-                self._vector = self.calculateNewVector()
-                self.extrudeLength = 0.0
-                if (face1.Surface.Rotation is None):
-                    yL = face1.CenterOfMass
-                    uv = face1.Surface.parameter(yL)
-                    nv = face1.normalAt(uv[0], uv[1])
-                    calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
-                    #nett= 90-faced.calculateAngle(rot)
-                    rotation=[0,1,0,calAn]
-                    print("rotation----->",rotation)
-                else:
-                    rotation = (face1.Surface.Rotation.Axis.x,
-                            face1.Surface.Rotation.Axis.y,
-                            face1.Surface.Rotation.Axis.z,
-                            math.degrees(face1.Surface.Rotation.Angle))
-                return rotation
+                
+            self.extrudeLength = 5
+            self._vector = self.calculateNewVector()
+            self.extrudeLength = 0.0
+            if (face1.Surface.Rotation is None):
+                yL = face1.CenterOfMass
+                uv = face1.Surface.parameter(yL)
+                nv = face1.normalAt(uv[0], uv[1])
+                calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
+                #nett= 90-faced.calculateAngle(rot)
+                rotation=[0,1,0,calAn]
+            else:
+                rotation = (face1.Surface.Rotation.Axis.x,
+                        face1.Surface.Rotation.Axis.y,
+                        face1.Surface.Rotation.Axis.z,
+                        math.degrees(face1.Surface.Rotation.Angle))
+            return rotation
         
         except Exception as err:
             faced.EnableAllToolbar(True)
-            App.Console.PrintError("'Design456_Extrude' getWheelPosition-Failed. "
+            App.Console.PrintError("'Design456_ExtrudeRotate' getWheelPosition-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -375,6 +371,7 @@ class Design456_SmartExtrudeRotate:
         else:
             d = self.extrudeLength
         point = yL + d * nv
+        print("New Vector is =",point)
         return (point)
 
     def Activated(self):
@@ -405,7 +402,7 @@ class Design456_SmartExtrudeRotate:
                 self.ExtractedFaces.append( self.selectedObj.Object.Shape.copy())
 
             rotation = self.getWheelPosition()      #Deside how the Degree Wheel be drawn
-            self.wheelObject = Fr_DegreeWheel_Widget([self._vector,App.Vector(0,0,0)], str(rotation)+"°", 1, FR_COLOR.FR_RED, rotation, 2)
+            self.wheelObject = Fr_DegreeWheel_Widget([self._vector,App.Vector(0,0,0)], str(round(rotation[3],2))+"°", 1, FR_COLOR.FR_RED, rotation,1)
             
             #Define the callbacks. We have many callbacks here. 
             
