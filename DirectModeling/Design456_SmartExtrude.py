@@ -300,8 +300,7 @@ class Design456_SmartExtrude:
                 face1 = sub1.SubObjects[0]
             else:
                 face1 = self.selectedObj.Object.Shape.Faces[0]
-            print(face1)
-            print(type(face1))
+                
             self.extrudeLength = 5
             self._vector = self.calculateNewVector()
             self.extrudeLength = 0.0
@@ -312,7 +311,6 @@ class Design456_SmartExtrude:
                 calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
                 #nett= 90-faced.calculateAngle(rot)
                 rotation=[0,1,0,calAn]
-                print("rotation----->",rotation)
             else:
                 rotation = (face1.Surface.Rotation.Axis.x,
                         face1.Surface.Rotation.Axis.y,
