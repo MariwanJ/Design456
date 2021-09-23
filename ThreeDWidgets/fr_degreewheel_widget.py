@@ -137,7 +137,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
     def __init__(self, vectors: List[App.Vector]=[],
                  label: str="", lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=[(0.0, 0.0, 1.0), 0.0],
+                 _rotation=[0.0, 0.0, 0.0, 0.0],
                  _wheelType=0):  
 
         super().__init__(vectors, label)

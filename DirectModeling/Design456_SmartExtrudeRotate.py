@@ -405,7 +405,7 @@ class Design456_SmartExtrudeRotate:
                 self.ExtractedFaces.append( self.selectedObj.Object.Shape.copy())
 
             rotation = self.getWheelPosition()      #Deside how the Degree Wheel be drawn
-            self.wheelObject = Fr_DegreeWheel_Widget([self._vector,App.Vector(0,0,0)], str(rotation)+"°", 1, FR_COLOR.FR_RED, rotation, 3)
+            self.wheelObject = Fr_DegreeWheel_Widget([self._vector,App.Vector(0,0,0)], str(rotation)+"°", 1, FR_COLOR.FR_RED, rotation, 2)
             
             #Define the callbacks. We have many callbacks here. 
             

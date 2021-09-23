@@ -66,7 +66,7 @@ sg.addChild(f)
 
 
 def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
-                    setupRotation=[0, 0, 0], _rotation=([0.0, 0.0, 0.0, 0.0]), LineWidth=1.0):
+                    setupRotation=[0, 0, 0], _rotation=[0.0, 0.0, 0.0, 0.0], LineWidth=1.0):
     try:
         TextScale = 0.04
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
