@@ -387,7 +387,7 @@ class Design456_SmartExtrude:
 
     def Activated(self):
         """[
-            Main activation function executes when the tool is used
+            Executes when the tool is used
 
             ]
         """

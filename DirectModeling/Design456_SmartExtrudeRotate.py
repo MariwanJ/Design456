@@ -48,7 +48,7 @@ import math
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-#TODO: FIXME: 
+# TODO: FIXME:
 """
     
     THIS IS A START OF A NEW TOOL WHICH SHOULD BE NEW IN FREECAD
@@ -70,13 +70,42 @@ MouseScaleFactor = 1
         ???TODO: FIXME:§
 
 """
-# TODO: As I wish to simplify the tree and make a simple 
+# TODO: As I wish to simplify the tree and make a simple
 # copy of all objects, I leave it now and I should
 # come back to do it. I must have it as an option in menu. (don't know how to do it now.)
 
+#TODO FIXME:
+# Double click - Rotation only
+def smartlbl_callback(smartLine, obj, parentlink):
+    pass
 
-def callback_move(userData: fr_degreewheel_widget.userDataObject=None):
-   
+# Rotation only
+def callback_Rotate():
+    pass
+
+# Extrude in the X direction
+def callback_moveX():
+    pass
+
+# Extrude in the Y direction
+def callback_moveY():
+    pass
+
+# Extrude in the Z direction
+def callback_moveZ():
+    pass
+
+# Extrude in the 45 degree rotated direction
+def callback_move45():
+    pass
+
+# Extrude in the 135 degree rotated direction
+def callback_move135():
+    pass
+
+#TODO FIXME:
+def callback_move(userData: fr_degreewheel_widget.userDataObject = None):
+
     try:
         if userData is None:
             return  # Nothing to do here - shouldn't be None
@@ -120,8 +149,8 @@ def callback_move(userData: fr_degreewheel_widget.userDataObject=None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
-def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
+#TODO FIXME:
+def callback_release(userData: fr_degreewheel_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
        This callback will finalize the Extrude operation. 
@@ -145,7 +174,8 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
                                             WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         # Undo
-        App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrude"))
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "SmartExtrude"))
         App.ActiveDocument.recompute()
         linktocaller.startVector = None
         App.ActiveDocument.commitTransaction()  # undo reg.
@@ -157,41 +187,48 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
             allObjects = []
             # if linktocaller.OperationOption == 1:
             for i in range(0, len(linktocaller.objChangedTransparency)):
-                allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
-                Gui.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name).Transparency=0
+                allObjects.append(App.ActiveDocument.getObject(
+                    linktocaller.objChangedTransparency[i].Object.Name))
+                Gui.ActiveDocument.getObject(
+                    linktocaller.objChangedTransparency[i].Object.Name).Transparency = 0
             if(linktocaller.isFaceOf3DObj() == True):
                 # We have a 3D object.
-                MERGEallObjects=[]
+                MERGEallObjects = []
                 MERGEallObjects.append(linktocaller.selectedObj.Object)
                 MERGEallObjects.append(linktocaller.newObject)
-                if(linktocaller.OperationOption==1):
-                    MERGEallObjects=MERGEallObjects+allObjects
+                if(linktocaller.OperationOption == 1):
+                    MERGEallObjects = MERGEallObjects+allObjects
                 old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-                old.Refine = True 
+                old.Refine = True
                 old.Shapes = MERGEallObjects
-                Gui.ActiveDocument.getObject(old.Name).Transparency = 0  # BUG in FreeCAD doesn't work
-                Gui.ActiveDocument.getObject(old.Name).ShapeColor = (FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
+                # BUG in FreeCAD doesn't work
+                Gui.ActiveDocument.getObject(old.Name).Transparency = 0
+                Gui.ActiveDocument.getObject(old.Name).ShapeColor = (
+                    FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
             else:
                 old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
                 allObjects.append(linktocaller.newObject)
-                old.Refine = True 
+                old.Refine = True
                 old.Shapes = allObjects
 
             App.ActiveDocument.recompute()
-            # subtraction will continue to work here 
+            # subtraction will continue to work here
             if linktocaller.OperationOption == 2:
                 # Subtraction is complex. I have to cut from each object the same extruded part.
                 if (linktocaller.objChangedTransparency != []):
                     allObjects = []
 
                     for i in range(0, len(linktocaller.objChangedTransparency)):
-                        allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
+                        allObjects.append(App.ActiveDocument.getObject(
+                            linktocaller.objChangedTransparency[i].Object.Name))
                         linktocaller.objChangedTransparency[i].Transparency = 0
-                    allObjects.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))
+                    allObjects.append(App.ActiveDocument.getObject(
+                        linktocaller.selectedObj.Object.Name))
                     App.ActiveDocument.recompute()
                     # Create a cut object for each transparency object
                     if(linktocaller.isFaceOf3DObj() != True):
-                        newObjcut = App.ActiveDocument.addObject("Part::Cut", "CUT")
+                        newObjcut = App.ActiveDocument.addObject(
+                            "Part::Cut", "CUT")
 
                         newObjcut.Base = allObjects[0]  # Target
                         newObjcut.Tool = linktocaller.newObject  # Subtracted shape/object
@@ -199,19 +236,20 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
                         linktocaller.selectedObj.Object.Visibility = False
                     else:
                         for i in range(0, len(linktocaller.objChangedTransparency)):
-                            newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT" + str(i))) 
+                            newObjcut.append(App.ActiveDocument.addObject(
+                                "Part::Cut", "CUT" + str(i)))
                             newObjcut[i].Base = allObjects[i]  # Target
                             newObjcut[i].Tool = old  # Subtracted shape/object
                             newObjcut[i].Refine = True
                     App.ActiveDocument.recompute()
 
         elif linktocaller.OperationOption == 0:
-            # is here just to make the code more readable. 
-            pass  # nothing to do . 
+            # is here just to make the code more readable.
+            pass  # nothing to do .
 
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.
-        
+
     except Exception as err:
         faced.EnableAllToolbar(True)
         App.Console.PrintError("'Design456_Extrude' Release Filed. "
@@ -219,6 +257,7 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
 
 class Design456_SmartExtrudeRotate:
     """
@@ -247,7 +286,9 @@ class Design456_SmartExtrudeRotate:
 
     OperationOption = 0  # default is zero
     objChangedTransparency = []
-    ExtractedFaces=[]
+    ExtractedFaces = []
+
+    ExtractedFaces = []
 
     def reCreateExtrudeObject(self):
         """
@@ -284,7 +325,7 @@ class Design456_SmartExtrudeRotate:
          Find out the vector and rotation of the Wheel to be drawn.
         """
         # For now the Wheel will be at the top
-        try:    
+        try:
             face1 = None
             if(self.isFaceOf3DObj()):
                 # The whole object is selected
@@ -292,7 +333,7 @@ class Design456_SmartExtrudeRotate:
                 face1 = sub1.SubObjects[0]
             else:
                 face1 = self.selectedObj.Object.Shape.Faces[0]
-                
+
             self.extrudeLength = 5
             self._vector = self.calculateNewVector()
             self.extrudeLength = 0.0
@@ -300,16 +341,16 @@ class Design456_SmartExtrudeRotate:
                 yL = face1.CenterOfMass
                 uv = face1.Surface.parameter(yL)
                 nv = face1.normalAt(uv[0], uv[1])
-                calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
+                calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 #nett= 90-faced.calculateAngle(rot)
-                rotation=[0,1,0,calAn]
+                rotation = [0, 1, 0, calAn]
             else:
                 rotation = (face1.Surface.Rotation.Axis.x,
-                        face1.Surface.Rotation.Axis.y,
-                        face1.Surface.Rotation.Axis.z,
-                        math.degrees(face1.Surface.Rotation.Angle))
+                            face1.Surface.Rotation.Axis.y,
+                            face1.Surface.Rotation.Axis.z,
+                            math.degrees(face1.Surface.Rotation.Angle))
             return rotation
-        
+
         except Exception as err:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_ExtrudeRotate' getWheelPosition-Failed. "
@@ -317,7 +358,6 @@ class Design456_SmartExtrudeRotate:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
 
     def isFaceOf3DObj(self):
         """[Check if the selected object is a face from a 3D object or is a 2D object. 
@@ -339,8 +379,8 @@ class Design456_SmartExtrudeRotate:
         Returns:
             [Face]: [Face created from the selected face of the 3D object]
         """
-        self.ExtractedFaces.append( self.selectedObj.Object.Shape.copy())
-        self.ExtractedFaces.append( self.selectedObj.Object.Shape.copy())
+        self.ExtractedFaces.append(self.selectedObj.Object.Shape.copy())
+        self.ExtractedFaces.append(self.selectedObj.Object.Shape.copy())
         if hasattr(self.selectedObj.Object, "getGlobalPlacement"):
             gpl = self.selectedObj.Object.getGlobalPlacement()
             self.ExtractedFaces[0].Placement = gpl
@@ -355,8 +395,8 @@ class Design456_SmartExtrudeRotate:
         Returns:
             [App.Vector]: [Position where the Wheel will be moved to]
         """
-        #TODO: FIXME: 
-        
+        # TODO: FIXME:
+
         if(self.isFaceOf3DObj()):
             ss = self.selectedObj.SubObjects[0]
         else:
@@ -371,13 +411,12 @@ class Design456_SmartExtrudeRotate:
         else:
             d = self.extrudeLength
         point = yL + d * nv
-        print("New Vector is =",point)
+        print("New Vector is =", point)
         return (point)
 
     def Activated(self):
         """[
-            Main activation function executes when the tool is used
-
+            Executes when the tool is used
             ]
         """
         try:
@@ -391,25 +430,39 @@ class Design456_SmartExtrudeRotate:
             self.selectedObj = sel[0]
             faced.EnableAllToolbar(False)
             # Undo
-            App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrudeRotate"))
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "SmartExtrudeRotate"))
             self.ExtractedFaces.clear()
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
                 self.extractFaces()
             else:
                 # We have a 2D Face - Extract it directly
-                self.ExtractedFaces.append( self.selectedObj.Object.Shape)
-                self.ExtractedFaces.append( self.selectedObj.Object.Shape.copy())
+                self.ExtractedFaces.append(self.selectedObj.Object.Shape)
+                self.ExtractedFaces.append(
+                    self.selectedObj.Object.Shape.copy())
 
-            rotation = self.getWheelPosition()      #Deside how the Degree Wheel be drawn
-            self.wheelObject = Fr_DegreeWheel_Widget([self._vector,App.Vector(0,0,0)], str(round(rotation[3],2))+"°", 1, FR_COLOR.FR_RED, rotation,1)
-            
-            #Define the callbacks. We have many callbacks here. 
-            
-            #TODO: FIXME:
-            #self.wheelObject.w_callback_ = callback_release
-            #self.wheelObject.w_move_callback_ = callback_move
-            #self.wheelObject.w_userData.callerObject = self
+            rotation = self.getWheelPosition()  # Deside how the Degree Wheel be drawn
+            self.wheelObject = Fr_DegreeWheel_Widget([self._vector, App.Vector(0, 0, 0)], str(
+                round(rotation[3], 2))+"°", 1, FR_COLOR.FR_RED, rotation, 1)
+
+            # Define the callbacks. We have many callbacks here.
+
+            ExtractedFaces = self.extractFaces()
+
+            # TODO: FIXME:
+
+            # Different callbacks for each action.
+            self.wheelObject.w_wheel_cb_ = callback_Rotate
+            self.wheelObject.w_xAxis_cb_ = callback_moveX
+            self.wheelObject.w_yAxis_cb_ = callback_moveY
+            self.wheelObject.w_zAxis_cb_ = callback_moveZ
+            self.wheelObject.w_45Axis_cb_ = callback_move45
+            self.wheelObject.w_135Axis_cb_ = callback_move135
+
+            self.wheelObject.w_callback_ = callback_release
+            self.wheelObject.w_move_callback_ = callback_move
+            self.wheelObject.w_userData.callerObject = self
 
             if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
@@ -418,15 +471,12 @@ class Design456_SmartExtrudeRotate:
             mw = self.getMainWindow()
             self._mywin.show()
 
-            #Todo: FIXME: 
-            #loft will be used . make some experementations. 
+            # TODO: FIXME:
+            # loft will be used . make some experementations.
             # But when should we use sweep???? don't know now
 
-
-
-                
             App.ActiveDocument.recompute()
-            
+
         except Exception as err:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_Extrude' Activated-Failed. "
@@ -450,10 +500,10 @@ class Design456_SmartExtrudeRotate:
                 self._mywin = None
             App.ActiveDocument.commitTransaction()  # undo reg.
             self.extrudeLength = 0
-            self.OperationOption=0
-            self.selectedObj=None
-            self.targetFace=None
-            self.newObject=None
+            self.OperationOption = 0
+            self.selectedObj = None
+            self.targetFace = None
+            self.newObject = None
             del self
 
         except Exception as err:
@@ -497,23 +547,24 @@ class Design456_SmartExtrudeRotate:
             self.dialog.resize(200, 450)
             self.dialog.setWindowTitle("Smart Extrude Rotate")
             self.la = QtGui.QVBoxLayout(self.dialog)
-            self.e1 = QtGui.QLabel("(Smart Extrude Rotate)\nFor quicker\nApplying Extrude")
+            self.e1 = QtGui.QLabel(
+                "(Smart Extrude Rotate)\nFor quicker\nApplying Extrude")
             self.groupBox = QtGui.QGroupBox(self.dialog)
             self.groupBox.setGeometry(QtCore.QRect(60, 130, 120, 80))
             self.groupBox.setObjectName("Extrusion Type")
 
             self.radAsIs = QtGui.QRadioButton(self.groupBox)
             self.radAsIs.setObjectName("radAsIs")
-            self.radAsIs.setText("As Is")            
+            self.radAsIs.setText("As Is")
 
             self.radMerge = QtGui.QRadioButton(self.groupBox)
             self.radMerge.setObjectName("radMerge")
-            self.radMerge.setText("Merge")            
+            self.radMerge.setText("Merge")
 
             self.radSubtract = QtGui.QRadioButton(self.groupBox)
             self.radSubtract.setObjectName("radSubtract")
-            self.radSubtract.setText("Subtract")            
-            
+            self.radSubtract.setText("Subtract")
+
             commentFont = QtGui.QFont("Times", 12, True)
             self.ExtrudeLBL = QtGui.QLabel("Extrude Length=")
             self.e1.setFont(commentFont)
@@ -531,10 +582,11 @@ class Design456_SmartExtrudeRotate:
             self.la.addWidget(self.radMerge)
             self.la.addWidget(self.radSubtract)
             self.radAsIs.setChecked(True)
-            self.radAsIs.toggled.connect(lambda:self.btnState(self.radAsIs))
-            self.radMerge.toggled.connect(lambda:self.btnState(self.radMerge))
-            self.radSubtract.toggled.connect(lambda:self.btnState(self.radSubtract))
-            
+            self.radAsIs.toggled.connect(lambda: self.btnState(self.radAsIs))
+            self.radMerge.toggled.connect(lambda: self.btnState(self.radMerge))
+            self.radSubtract.toggled.connect(
+                lambda: self.btnState(self.radSubtract))
+
             QtCore.QObject.connect(
                 okbox, QtCore.SIGNAL("accepted()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
@@ -598,5 +650,6 @@ class Design456_SmartExtrudeRotate:
             'MenuText': ' Smart Extrude Rotate',
                         'ToolTip':  ' Smart Extrude Rotate'
         }
+
 
 Gui.addCommand('Design456_SmartExtrudeRotate', Design456_SmartExtrudeRotate())
