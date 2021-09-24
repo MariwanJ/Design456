@@ -279,7 +279,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             if (clickwdgdNode != None) or (clickwdglblNode != None):
                 if not self.has_focus():
                     self.take_focus()
-                self.do_callback()
+                #self.do_callback()
+                self.do_callbacks(100)
                 return 1            
             else:
                 self.remove_focus()
@@ -521,6 +522,15 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         
     def do_callbacks(self,callbackType):
         print("callbackType",callbackType)
+        if (callbackType ==100):
+            #run all 
+            self.do_callback(self.w_userData)
+            self.w_wheel_cb_(self.w_userData)
+            self.w_xAxis_cb_(self.w_userData) 
+            self.w_yAxis_cb_(self.w_userData) 
+            self.w_45Axis_cb_(self.w_userData) 
+            self.w_135Axis_cb_(self.w_userData) 
+
         if(callbackType==0):
             #normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
             self.do_callback()
