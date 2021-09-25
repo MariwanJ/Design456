@@ -40,7 +40,7 @@ from ThreeDWidgets.constant import FR_COLOR
 import FACE_D as faced
 from dataclasses import dataclass
 from ThreeDWidgets import fr_wheel_draw 
-
+import math
 """
 Example how to use this widget. 
 
@@ -91,6 +91,9 @@ def callback1(userData:userDataObject=None):
     # Subclass this and impalement the callback or just change the callback function
     print("dummy wheel-widget callback")
 
+
+
+
 def callback2(userData:userDataObject=None):
     """
             This function will run the when the XAxis 
@@ -137,7 +140,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
     def __init__(self, vectors: List[App.Vector]=[],
                  label: str="", lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=[0.0, 0.0, 0.0, 0.0],
+                 _Rotation=[0.0, 0.0, 0.0, 0.0],
+                 _prerotation=[0.0, 0.0, 0.0, 0.0],
                  _wheelType=0):  
 
         super().__init__(vectors, label)
@@ -193,8 +197,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.w_lbluserData.rotationAxis=App.Vector(1,0,1)
 
         self.w_WidgetDiskRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
-
-        self.w_rotation=_rotation
+        self.w_Rotation=_Rotation
+        self.w_PRErotation=_prerotation
         
         #TODO: FIXME:
         if(self.w_wheelType == 0):    #This affect only the Widget label position- nothing else
@@ -255,11 +259,6 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             #SoSwitch not found. Event is not related to this widget 
             self.remove_focus()
             return 0
-
-#        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-#            self.do_callbacks(0)      #  We run this always
-#            return 1
-
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             if clickwdglblNode != None:
@@ -275,8 +274,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 print("Release Mouse happened")
                 self.do_callback()  # Release callback should be activated even if the wheel != under the mouse 
                 return 1
-            
-            if (clickwdgdNode != None) or (clickwdglblNode != None):
+            if (len(clickwdgdNode)>0  or clickwdglblNode != None):
                 if not self.has_focus():
                     self.take_focus()
                 #self.do_callback()
@@ -288,32 +286,22 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             if self.releaseDrag == False:
-                if (clickwdgdNode != None) or (clickwdglblNode != None):
+                if (clickwdgdNode is not None):
                     self.releaseDrag = True   
                     self.take_focus()
                 #These Object reacts only with dragging .. Clicking will not do anything useful
                 #We don't accept more than one elements clicked at once
-            print(clickwdgdNode)
-            if clickwdgdNode[0] ==True:
-                #The cylinder is clicked
-                self.do_callbacks(1)
-                return 1
-            elif clickwdgdNode[1] ==True:
-                #The Xaxis is clicked
-                self.do_callbacks(2)
-                return 1
-            elif clickwdgdNode[2] ==True:
-                #The Yaxis is clicked
-                self.do_callbacks(3)
-                return 1
-            elif clickwdgdNode[3] ==True:
-                #The 45Degree is clicked
-                self.do_callbacks(4)
-                return 1
-            elif clickwdgdNode[4] ==True:
-                #The 135Degree is clicked
-                self.do_callbacks(5)
-                return 1
+            print("clickwdgdNode DRAG ",clickwdgdNode)
+            for ie in range(0,5):
+                if clickwdgdNode[ie] ==True:
+                    self.do_callback(ie)
+                    return 1
+                #0 The cylinder is clicked
+                #1 The Xaxis is clicked
+                #2 The Yaxis is clicked
+                #3 The 45Degree is clicked
+                #4 The 135Degree is clicked
+
         # Don't care events, return the event to other widgets    
         return 0  # We couldn't use the event .. so return 0 
 
@@ -328,7 +316,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             SetupTextRotation=None
             lablVar=fr_widget.propertyValues()  
             if (len(self.w_vector) < 1):
-                raise ValueError('Must be  one vector')
+                raise ValueError('Must be one vector')
 
             usedColor = usedColor = self.w_selColor
             if self.is_active() and self.has_focus():
@@ -348,27 +336,26 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 elif self.w_wheelType==2:
                     SETUPwheelTypeRotation=  [90.0, 0.0, 90.0]     #RIGHT       #OK Don't change
                     SetupTextRotation=       [90.0, 0.0, 90.0]                  #OK Don't change
-                
+                print ( "here i am vector ", self.w_vector)
                 self.w_CentSeparator  = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Center", 
                                                                     usedColor, SETUPwheelTypeRotation,
-                                                                    self.w_rotation, 1)
+                                                                    self.w_PRErotation, 1)
                 self.w_XsoSeparator   = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Xaxis", 
                                                                     usedColor, SETUPwheelTypeRotation,
-                                                                    self.w_rotation, 1)                         #RED
+                                                                    self.w_PRErotation, 1)                         #RED
                 self.w_YsoSeparator   = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Yaxis",
                                                                     usedColor,SETUPwheelTypeRotation,
-                                                                    self.w_rotation, 1)                         #GREEN
+                                                                    self.w_PRErotation, 1)                         #GREEN
                 self.w_45soSeparator  = fr_wheel_draw.draw_AllParts(self.w_vector[0],"45axis",usedColor,
                                                                     SETUPwheelTypeRotation,
-                                                                    self.w_rotation, 1)     #45
+                                                                    self.w_PRErotation, 1)     #45
                 self.w_135soSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0],"135axis",usedColor,
                                                                     SETUPwheelTypeRotation,
-                                                                    self.w_rotation, 1)     #135
+                                                                    self.w_PRErotation, 1)     #135
                 self.w_degreeSeparator= fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
-                                                                    SetupTextRotation,self.w_rotation, 1)    #White
+                                                                    SetupTextRotation,self.w_PRErotation, 1)    #White
 
                 
-                allDraw.append(self.w_degreeSeparator)
                 allDraw.append(self.w_CentSeparator)
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_YsoSeparator)
@@ -376,8 +363,22 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 allDraw.append(self.w_135soSeparator)
                 allDraw.append(self.w_degreeSeparator)
                 
+                CollectThemAllRot=coin.SoTransform()
+                CollectThemAll=coin.SoSeparator()
+                tR=coin.SbVec3f()
+                tR.setValue(self.w_Rotation[0],self.w_Rotation[1], self.w_Rotation[2])
+                CollectThemAllRot.rotation.setValue(tR, math.radians(self.w_Rotation[3]))
+                
+                CollectThemAll.addChild(CollectThemAllRot)
+                CollectThemAll.addChild(self.w_CentSeparator)
+                CollectThemAll.addChild(self.w_XsoSeparator)
+                CollectThemAll.addChild(self.w_YsoSeparator)
+                CollectThemAll.addChild(self.w_45soSeparator)
+                CollectThemAll.addChild(self.w_135soSeparator)
+                CollectThemAll.addChild(self.w_degreeSeparator)
+                
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
-                self.saveSoNodesToWidget(allDraw)
+                self.saveSoNodesToWidget(CollectThemAll)
                 # add SoSeparator to the switch
                 # We can put them in a tuple but it is better not doing so
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
@@ -515,7 +516,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         Axis is coin.SbVec3f((x,y,z)
         angle=float number
         '''
-        self.w_rotation = axis_angle
+        self.w_PRErotation = axis_angle
         
     def calculateWidgetDiskRotationAfterDrag(self,v1,v2):
         self.w_WidgetDiskRotation=faced.calculateAngle(v1,v2)

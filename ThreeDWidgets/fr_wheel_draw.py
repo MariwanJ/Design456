@@ -158,7 +158,6 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         
         SoSeparatorSetupZ.addChild(transfromZ)
         SoSeparatorSetupZ.addChild(SoSeparatorSetupY)
-        print("_rotation", _rotation)
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform = coin.SoTransform()
@@ -194,8 +193,8 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
 def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype:str="",
                      _color=FR_COLOR.FR_RED,
                      setupRotation=[0, 0, 0, 0],
-                     _rotation=[0, 0, 0, 0], LineWidth=1):
-    try:
+                     _rotation=[0, 0, 0, 0], LineWidth=1):       
+        
         style = coin.SoDrawStyle()
         style.lineWidth = LineWidth
         
@@ -212,7 +211,6 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype:str="",
             col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
             col1.rgb = FR_COLOR.FR_GLASS
         elif Ptype == "Xaxis":
-
             tempC.setValue(0, 0, 1)
             transtheObject.rotation.setValue(tempC, math.radians(90))
             theObject.radius = 0.125
@@ -297,9 +295,9 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype:str="",
         root.addChild(SoSeparatorSetupZ)
         return root
 
-    except Exception as err:
-        App.Console.PrintError("'Wheel' Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+    # except Exception as err:
+    #     App.Console.PrintError("'Wheel' Failed. "
+    #                            "{err}\n".format(err=str(err)))
+    #     exc_type, exc_obj, exc_tb = sys.exc_info()
+    #     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    #     print(exc_type, fname, exc_tb.tb_lineno)
