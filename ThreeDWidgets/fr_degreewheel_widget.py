@@ -291,10 +291,10 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     self.take_focus()
                 #These Object reacts only with dragging .. Clicking will not do anything useful
                 #We don't accept more than one elements clicked at once
-            print("clickwdgdNode DRAG ",clickwdgdNode)
+            #print("clickwdgdNode DRAG ",clickwdgdNode)
             for ie in range(0,5):
                 if clickwdgdNode[ie] ==True:
-                    self.do_callback(ie)
+                    self.do_callbacks(ie)
                     return 1
                 #0 The cylinder is clicked
                 #1 The Xaxis is clicked
@@ -532,21 +532,21 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.w_45Axis_cb_(self.w_userData) 
             self.w_135Axis_cb_(self.w_userData) 
 
-        if(callbackType==0):
+        if(callbackType==10):
             #normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
             self.do_callback()
             #cylinder callback
-        elif(callbackType==1):
+        elif(callbackType==0):
             self.w_wheel_cb_(self.w_userData)
             #Xaxis callback
-        elif(callbackType==2):         
+        elif(callbackType==1):         
             self.w_xAxis_cb_(self.w_userData) 
             #Yaxis callback
-        elif(callbackType==3):
+        elif(callbackType==2):
             self.w_yAxis_cb_(self.w_userData) 
             #Zaxis callback
-        elif(callbackType==4):
+        elif(callbackType==3):
             self.w_45Axis_cb_(self.w_userData) 
             #Zaxis callback
-        elif(callbackType==5):
+        elif(callbackType==4):
             self.w_135Axis_cb_(self.w_userData) 
