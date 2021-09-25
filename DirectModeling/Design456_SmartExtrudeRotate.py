@@ -82,7 +82,7 @@ def smartlbl_callback(smartLine, obj, parentlink):
 
 
 # Rotation only
-def callback_Rotate():
+def callback_Rotate(userData: fr_degreewheel_widget.userDataObject=None):
     pass
 
 
@@ -110,16 +110,16 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
         if linktocaller.run_Once == False:
             print("click move")
             return  # nothing to do
-
     if linktocaller.run_Once == False:
         linktocaller.run_Once = True
         # only once
         linktocaller.startVector = linktocaller.endVector
     else:
         # We don't allow movement in the other direction.
-        linktocaller.endVector.y = linktocaller.startVector.y
-        linktocaller.endVector.z = linktocaller.startVector.z
-
+        #linktocaller.endVector.y = linktocaller.startVector.y
+        #linktocaller.endVector.z = linktocaller.startVector.z
+        pass 
+    
     linktocaller.extrudeLength = (
         linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -127,6 +127,7 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.reCreateExtrudeObject()
+    print("linktocaller.endVector",linktocaller.endVector)
     App.ActiveDocument.recompute()
 
 
@@ -160,9 +161,10 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
         linktocaller.startVector = linktocaller.endVector
     else:
         # We don't allow movement in the other direction.
-        linktocaller.endVector.x = linktocaller.startVector.x
-        linktocaller.endVector.z = linktocaller.startVector.z
-
+        #linktocaller.endVector.x = linktocaller.startVector.x
+        #linktocaller.endVector.z = linktocaller.startVector.z
+        pass
+    
     linktocaller.extrudeLength = (
         linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -170,6 +172,8 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.reCreateExtrudeObject()
+    print("linktocaller.endVector",linktocaller.endVector)
+
     App.ActiveDocument.recompute()
 
 # Extrude in the 45 degree rotated direction
@@ -208,6 +212,8 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.reCreateExtrudeObject()
+    print("linktocaller.endVector",linktocaller.endVector)
+
     App.ActiveDocument.recompute()
 
 
@@ -247,6 +253,7 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.reCreateExtrudeObject()
+    print("linktocaller.endVector",linktocaller.endVector)
     App.ActiveDocument.recompute()
 
     
@@ -282,6 +289,8 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
         App.ActiveDocument.commitTransaction()  # undo reg.
 
         App.ActiveDocument.recompute()
+        print("linktocaller.endVector",linktocaller.endVector)
+
         App.ActiveDocument.commitTransaction()  # undo reg.
 
     except Exception as err:
@@ -298,7 +307,7 @@ class Design456_SmartExtrudeRotate:
         Apply Extrude to any 3D/2D object by selecting the object's face, and rotate it 
         Length of the Extrude is counted by rotation degree and the axis.
     """
-    _vector = App.Vector(0.0, 0.0, 0.0)
+    _vector = App.Vector(0.0, 0.0, 0.0)  #WHEEL POSITION
     mw = None
     dialog = None
     tab = None
@@ -313,7 +322,7 @@ class Design456_SmartExtrudeRotate:
     # We will make two object, one for visual effect and the other is the original
     selectedObj = None
     direction = None
-
+    Rotation=[0,0,0,0]
     # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
     newObject = None
 
@@ -332,9 +341,9 @@ class Design456_SmartExtrudeRotate:
         ]
         """
         try:
-            self.ExtractedFaces[1].Object.Placement =self.w_vector
-            self.ExtractedFaces[1].Object.Rotation.Axis=App.Vector(self.w_rotation[0],self.w_rotation[1],self.w_rotation[2])
-            self.ExtractedFaces[1].Object.Rotation.Angle=math.radians(self.w_rotation[3])
+            self.ExtractedFaces[1].Placement.Base =self._vector
+            self.ExtractedFaces[1].Placement.Rotation.Axis=App.Vector(self.Rotation[0],self.Rotation[1],self.Rotation[2])
+            self.ExtractedFaces[1].Placement.Rotation.Angle=math.radians(self.Rotation[3])
         except Exception as err:
             App.Console.PrintError("'reCreateExtrudeObject' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -350,7 +359,7 @@ class Design456_SmartExtrudeRotate:
         currentLength = self.extrudeLength
         # to let the Wheel be outside the object
         self.extrudeLength = self.extrudeLength 
-        self.wheelObj.w_vector = self.calculateNewVector()
+        self.wheelObj.w_vector = [endVec,App.Vector(0,0,0)]
         self.extrudeLength = currentLength  # return back the value.
         self.wheelObj.redraw()
 
@@ -414,26 +423,24 @@ class Design456_SmartExtrudeRotate:
             [Face]: [Face created from the selected face of the 3D object]
         """
         try:
-            print("Iam here")
-            face=[]
-            
-            face.append(self.selectedObj.Object.SubObject[0].copy())
-            face.append(self.selectedObj.Object.SubObject[0].copy())
+            name=self.selectedObj.SubElementNames[0]
+            print(name)
+            #TODO: THIS PART MIGHT FAIL TAKE ALL KIND OF 3D OBJECT TOO SEE IF HASATTR Subobject and then fix that
+            sh=self.selectedObj.Object.Shape.copy()
+
+            o=App.ActiveDocument.addObject("Part::Feature", "face1")
+            o.Shape=sh.getElement(name)
+            self.ExtractedFaces.append(Gui.ActiveDocument.getObject(o.Label).Object)
+            o=App.ActiveDocument.addObject("Part::Feature", "face2")
+            o.Shape=sh.getElement(name)
+            self.ExtractedFaces.append(Gui.ActiveDocument.getObject(o.Label).Object)
             if hasattr(self.selectedObj.Object, "getGlobalPlacement"):
                 gpl = self.selectedObj.Object.getGlobalPlacement()
-                o=App.ActiveDocument.addObject("Part::Feature", "face1")
-                o.Shape=face[0]
-                self.ExtractedFaces.append(o)
-                o=App.ActiveDocument.addObject("Part::Feature", "face2")
-                o.Shape=face[1]
-                self.ExtractedFaces.append(o)
                 self.ExtractedFaces[0].Placement = gpl
                 self.ExtractedFaces[1].Placement = gpl
-                
             else:
                 pass  # TODO: WHAT SHOULD WE DO HERE ?
                 print("error")
-            print(len(self.ExtractedFaces))
             App.ActiveDocument.recompute()
             
         except Exception as err:
@@ -442,7 +449,7 @@ class Design456_SmartExtrudeRotate:
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+            #(exc_type, fname, exc_tb.tb_lineno)
 
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
@@ -464,7 +471,7 @@ class Design456_SmartExtrudeRotate:
         else:
             d = self.extrudeLength
         point = yL + d * nv
-        print("New Vector is =", point)
+        #print("New Vector is point =", point)
         return (point)
 
     def Activated(self):
@@ -483,8 +490,7 @@ class Design456_SmartExtrudeRotate:
             self.selectedObj = sel[0]
             faced.EnableAllToolbar(False)
             # Undo
-            App.ActiveDocument.openTransaction(
-                translate("Design456", "SmartExtrudeRotate"))
+            App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrudeRotate"))
             self.ExtractedFaces.clear()
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
@@ -492,13 +498,16 @@ class Design456_SmartExtrudeRotate:
             else:
                 # We have a 2D Face - Extract it directly
                 print("2d object copy the face itself")
-                #TODO: THIS IS WRONG FIXME:
-                self.ExtractedFaces.append(self.selectedObj.Object.Shape)
-                self.ExtractedFaces.append(self.selectedObj.Object.Shape.copy())
 
-            rotation = self.getWheelPosition()  # Deside how the Degree Wheel be drawn
+                sh=self.selectedObj.Object.Shape.copy()
+                o=App.ActiveDocument.addObject("Part::Feature", "face1")
+                o.Shape=sh
+                self.ExtractedFaces.append(self.selectedObj)
+                self.ExtractedFaces.append(o)
+
+            self.Rotation = self.getWheelPosition()  # Deside how the Degree Wheel be drawn
             self.wheelObj = Fr_DegreeWheel_Widget([self._vector, App.Vector(0, 0, 0)], str(
-                round(rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, rotation, 1)
+                round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED,[0,0,0,0], self.Rotation, 1)
 
             # Define the callbacks. We have many callbacks here.
 
