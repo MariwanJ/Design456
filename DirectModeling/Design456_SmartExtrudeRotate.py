@@ -88,7 +88,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject=None):
 
 # Extrude in the X direction
 def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
-
+    print("MOVEX")
     if userData is None:
         return  # Nothing to do here - shouldn't be None
 
@@ -100,13 +100,12 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
 
     clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                         wheelObj.w_pick_radius, wheelObj.w_XsoSeparator)
-    clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                        wheelObj.w_pick_radius, wheelObj.w_widgetlblSoNodes)
+    
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
-    if clickwdgdNode is None and clickwdglblNode is None:
+    if clickwdgdNode is None:
         if linktocaller.run_Once == False:
             print("click move")
             return  # nothing to do
@@ -116,8 +115,8 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
         linktocaller.startVector = linktocaller.endVector
     else:
         # We don't allow movement in the other direction.
-        #linktocaller.endVector.y = linktocaller.startVector.y
-        #linktocaller.endVector.z = linktocaller.startVector.z
+        linktocaller.endVector.y = linktocaller.startVector.y
+        linktocaller.endVector.z = linktocaller.startVector.z
         pass 
     
     linktocaller.extrudeLength = (
@@ -127,12 +126,14 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.reCreateExtrudeObject()
-    print("linktocaller.endVector",linktocaller.endVector)
+
     App.ActiveDocument.recompute()
 
 
 # Extrude in the Y direction
 def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
+    print("MOVEY")
+
     if userData is None:
         return  # Nothing to do here - shouldn't be None
 
@@ -144,13 +145,12 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
 
     clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                         wheelObj.w_pick_radius, wheelObj.w_YsoSeparator)
-    clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                        wheelObj.w_pick_radius, wheelObj.w_widgetlblSoNodes)
+    
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
-    if clickwdgdNode is None and clickwdglblNode is None:
+    if clickwdgdNode is None:
         if linktocaller.run_Once == False:
             print("click move")
             return  # nothing to do
@@ -161,8 +161,8 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
         linktocaller.startVector = linktocaller.endVector
     else:
         # We don't allow movement in the other direction.
-        #linktocaller.endVector.x = linktocaller.startVector.x
-        #linktocaller.endVector.z = linktocaller.startVector.z
+        linktocaller.endVector.x = linktocaller.startVector.x
+        linktocaller.endVector.z = linktocaller.startVector.z
         pass
     
     linktocaller.extrudeLength = (
@@ -172,12 +172,13 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.reCreateExtrudeObject()
-    print("linktocaller.endVector",linktocaller.endVector)
 
     App.ActiveDocument.recompute()
 
 # Extrude in the 45 degree rotated direction
 def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
+    print("MOVE45")
+
     if userData is None:
         return  # Nothing to do here - shouldn't be None
 
@@ -189,13 +190,12 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
 
     clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                         WheelObject.w_pick_radius, WheelObject.w_45soSeparator)
-    clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                        WheelObject.w_pick_radius, WheelObject.w_widgetlblSoNodes)
+
     linktocaller.endVector = App.Vector(WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
-    if clickwdgdNode is None and clickwdglblNode is None:
+    if clickwdgdNode is None:
         if linktocaller.run_Once == False:
             print("click move")
             return  # nothing to do
@@ -212,13 +212,14 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.reCreateExtrudeObject()
-    print("linktocaller.endVector",linktocaller.endVector)
 
     App.ActiveDocument.recompute()
 
 
 # Extrude in the 135 degree rotated direction
 def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
+    print("MOVE135")
+
     if userData is None:
         return  # Nothing to do here - shouldn't be None
 
@@ -230,13 +231,12 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
 
     clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                         WheelObject.w_pick_radius, WheelObject.w_45soSeparator)
-    clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                        WheelObject.w_pick_radius, WheelObject.w_widgetlblSoNodes)
+
     linktocaller.endVector = App.Vector(WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         WheelObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
-    if clickwdgdNode is None and clickwdglblNode is None:
+    if clickwdgdNode is None:
         if linktocaller.run_Once == False:
             print("click move")
             return  # nothing to do
@@ -253,10 +253,10 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.reCreateExtrudeObject()
-    print("linktocaller.endVector",linktocaller.endVector)
+
     App.ActiveDocument.recompute()
 
-    
+
 # TODO FIXME:
 def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
     """
@@ -289,7 +289,7 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
         App.ActiveDocument.commitTransaction()  # undo reg.
 
         App.ActiveDocument.recompute()
-        print("linktocaller.endVector",linktocaller.endVector)
+
 
         App.ActiveDocument.commitTransaction()  # undo reg.
 
@@ -322,6 +322,7 @@ class Design456_SmartExtrudeRotate:
     # We will make two object, one for visual effect and the other is the original
     selectedObj = None
     direction = None
+    setupRotation=[0,0,0,0]
     Rotation=[0,0,0,0]
     # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
     newObject = None
@@ -505,9 +506,9 @@ class Design456_SmartExtrudeRotate:
                 self.ExtractedFaces.append(self.selectedObj)
                 self.ExtractedFaces.append(o)
 
-            self.Rotation = self.getWheelPosition()  # Deside how the Degree Wheel be drawn
+            self.setupRotation = self.getWheelPosition()  # Deside how the Degree Wheel be drawn
             self.wheelObj = Fr_DegreeWheel_Widget([self._vector, App.Vector(0, 0, 0)], str(
-                round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED,[0,0,0,0], self.Rotation, 1)
+                round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED,[0,0,0,0], self.setupRotation, 1)
 
             # Define the callbacks. We have many callbacks here.
 
