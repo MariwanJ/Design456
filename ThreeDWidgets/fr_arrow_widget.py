@@ -162,13 +162,9 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 if (clickwdgdNode != None) or (clickwdglblNode != None):
                     self.releaseDrag=True   
                     self.take_focus()
-                    self.do_move_callback()        # We use the same callback, 
-                                      #but user must tell the callback what was
-                                      # the event. TODO: Do we want to change this?
-                    return 1
-            else:
-                self.do_move_callback()       #Continue run the callback as far as it != releaseDrag=True
-                return 1
+            self.do_move_callback()        # We use the same callback,      
+            #Continue run the callback as far as it != releaseDrag=True
+            return 1
         #Don't care events, return the event to other widgets    
         return 0  # We couldn't use the event .. so return 0 
 

@@ -89,7 +89,7 @@ def callback1(userData:userDataObject=None):
             event callback. 
     """
     # Subclass this and impalement the callback or just change the callback function
-    print("dummy wheel-widget callback")
+    print("dummy wheel-widget callback1")
 
 
 
@@ -167,11 +167,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_135Axis_cb_ = callback5  # Dummy callback          Movement in the 135degree direction (mouse click-release)
 
         self.w_wdgsoSwitch = coin.SoSwitch()           # the whole widget 
-        self.w_XsoSeparator = coin.SoSeparator         # X cylinder  
-        self.w_YsoSeparator = coin.SoSeparator         # Y cylinder 
-        self.w_45soSeparator = coin.SoSeparator        # 45degree cylinder  
-        self.w_135soSeparator = coin.SoSeparator       # 135degree cylinder   
-        self.w_centersoSeparator = coin.SoSeparator    # center disk cylinder    
+        self.w_XsoSeparator = coin.SoSeparator()         # X cylinder  
+        self.w_YsoSeparator = coin.SoSeparator()         # Y cylinder 
+        self.w_45soSeparator = coin.SoSeparator()        # 45degree cylinder  
+        self.w_135soSeparator = coin.SoSeparator()       # 135degree cylinder   
+        self.w_centersoSeparator = coin.SoSeparator()    # center disk cylinder    
         
         self.w_color = _color  # TODO: Not sure if we use this
 
@@ -183,9 +183,9 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_userData.wheelObj=self
         # self.w_userData.color=_color
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
-
+        self.currentSo=None  #Use this to keep the selected so during push-drag, after release it should be none 
+        
         self.w_lbluserData.linewidth=self.w_lineWidth          #This affect only the Widget label - nothing else
-        print("self.w_wheelType=",self.w_wheelType)
         if (self.w_wheelType==0):
             self.w_lbluserData.rotation = App.Vector(0,0,0 )         #OK Don't change
             self.w_lbluserData.rotationAxis=App.Vector(0,0,0)        #OK Don't change
@@ -245,25 +245,34 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                             # 4 = 135°   Axis movement  
         current=None
         allObjects=None
-        clickwdgdNode.clear()
-        for _soNode in range(0,5):
-            current=fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                              self.w_pick_radius, self.w_widgetSoNodes[_soNode])
-            print(type(self.w_widgetSoNodes[_soNode]))            
+        clickwdgdNode=[False,False,False,False,False,False]
+
+        current=[]        
+        if(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_centersoSeparator) is not None):
+            clickwdgdNode[0] = True
+        elif(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_XsoSeparator) is not None):
+            clickwdgdNode[1] = True
+        elif(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_YsoSeparator) is not None):
+            clickwdgdNode[2] = True
+        elif(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_45soSeparator) is not None):
+            clickwdgdNode[3] = True
+        elif(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_135soSeparator) is not None):
+            clickwdgdNode[4] = True
+
             
-            if current is None:
-                clickwdgdNode.append(False)
-            else:
-
-                clickwdgdNode.append(True)
-                allObjects=current
-
-        if (allObjects is None):
-            #SoSwitch not found. Event is not related to this widget 
-            self.remove_focus()
-            return 0
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
+
             if current != None:
                 print("Double click detected")
                 # if not self.has_focus():
@@ -272,11 +281,13 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+            self.currentSo=None
             if self.releaseDrag == True:
                 self.releaseDrag == False
                 print("Release Mouse happened")
                 self.do_callback()  # Release callback should be activated even if the wheel != under the mouse 
                 return 1
+            #TODO FIXME: NOT CORRECT
             if (len(clickwdgdNode)>0  or clickwdglblNode != None):
                 if not self.has_focus():
                     self.take_focus()
@@ -286,20 +297,25 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             else:
                 self.remove_focus()
                 return 0
-        
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+            # This part will be active only once when the first time user click on the coin drawing. 
+            # Later DRAG should be used
             if self.releaseDrag == False:
+                print("here ..... ")
                 if (current is not None):
                     self.releaseDrag = True   
                     self.take_focus()
-                #These Object reacts only with dragging .. Clicking will not do anything useful
-                #We don't accept more than one elements clicked at once
-            #print("clickwdgdNode DRAG ",clickwdgdNode)
-            for ie in range(0,5):
-                if clickwdgdNode[ie] ==True:
-                    print("the widget is ie ",ie)
-                    self.do_callbacks(ie)
-                    return 1
+            #These Object reacts only with dragging .. Clicking will not do anything useful
+            #We don't accept more than one elements clicked at once
+            if (self.currentSo is None):
+                for counter in range(0,5): 
+                    if clickwdgdNode[counter]==True:
+                        self.currentSo=counter
+                        self.do_callbacks(counter)
+                        return 1
+            else:
+                self.do_callbacks(self.currentSo)
+                    
                 #0 The cylinder is clicked
                 #1 The Xaxis is clicked
                 #2 The Yaxis is clicked
@@ -340,7 +356,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 elif self.w_wheelType==2:
                     SETUPwheelTypeRotation=  [90.0, 0.0, 90.0]     #RIGHT       #OK Don't change
                     SetupTextRotation=       [90.0, 0.0, 90.0]                  #OK Don't change
-                print ( "here i am vector ", self.w_vector)
+
                 self.w_CentSeparator  = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Center", 
                                                                     usedColor, SETUPwheelTypeRotation,
                                                                     self.w_PRErotation, 1)
@@ -525,8 +541,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
     def calculateWidgetDiskRotationAfterDrag(self,v1,v2):
         self.w_WidgetDiskRotation=faced.calculateAngle(v1,v2)
         
-    def do_callbacks(self,callbackType):
-        print("callbackType",callbackType)
+    def do_callbacks(self,callbackType=-1):
         if (callbackType ==100):
             #run all 
             self.do_callback()
@@ -535,8 +550,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.w_yAxis_cb_(self.w_userData) 
             self.w_45Axis_cb_(self.w_userData) 
             self.w_135Axis_cb_(self.w_userData) 
-
-        if(callbackType==10):
+        elif(callbackType==10):
             #normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
             self.do_callback()
             #cylinder callback

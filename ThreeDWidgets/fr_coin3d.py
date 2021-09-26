@@ -193,6 +193,7 @@ class root_handle():
             self.w_lastEventXYZ.Qt_y = pos[1]
             #if we hade mouse drag or push (not release) and there is a movement  
             if(self.w_lastEvent==FR_EVENTS.FR_MOUSE_LEFT_PUSH or self.w_lastEvent==FR_EVENTS.FR_MOUSE_DRAG):
+                #print("DRAG - MAIN EVENT")
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
             else:
                 self.w_lastEvent=FR_EVENTS.FR_MOUSE_MOVE
