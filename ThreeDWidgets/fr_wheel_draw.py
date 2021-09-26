@@ -72,6 +72,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
         txtCol.rgb = _color
         txtXSo = coin.SoSeparator()  # must be converted to SoBaseColor
+        txtXSo.Name="90Degree"
         txtXTransform = coin.SoTransform()
         txtXTransform.translation.setValue(5.5, 0.0, 0.0)
         txtXTransform.rotation.setValue(coin.SbVec3f(6.0, 0.0, 0.0), math.radians(0.0))
@@ -84,6 +85,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         txtXSo.addChild(text3DX)
         
         txtXPSo = coin.SoSeparator()  # must be converted to SoBaseColor
+        txtXPSo.Name="270Degree"
         txtXPTransform = coin.SoTransform()
         txtXPTransform.translation.setValue(0.0, -5.5, 0.0)
         txtXPTransform.rotation.setValue(coin.SbVec3f(0.0, 0.0, 0.0), math.radians(0.0))
@@ -96,6 +98,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         txtXPSo.addChild(text3DXP)
         
         txtYSo = coin.SoSeparator()  # must be converted to SoBaseColor
+        txtYSo.Name="0Degree"
         txtYTransform = coin.SoTransform()
         txtYTransform.translation.setValue(0.0, 5.5, 0.0)
         txtYTransform.rotation.setValue(coin.SbVec3f(0.0, 0.0, 0.0), math.radians(00.0))
@@ -108,6 +111,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         txtYSo.addChild(text3DY)
         
         txtYPSo = coin.SoSeparator()  # must be converted to SoBaseColor
+        txtYPSo.Name="180Degree"
         txtYPTransform = coin.SoTransform()
         txtYPTransform.translation.setValue(-6.0, 0.0, 0.0)
         txtYPTransform.rotation.setValue(coin.SbVec3f(0.0, 0.0, 0.0), math.radians(0.0))
@@ -120,12 +124,14 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         txtYPSo.addChild(text3DYP)
         
         groupT = coin.SoSeparator()
+        groupT.Name="GroupT"
         groupT.addChild(txtXSo)
         groupT.addChild(txtXPSo)
         groupT.addChild(txtYSo)
         groupT.addChild(txtYPSo)
         
         txtRoot = coin.SoSeparator()
+        txtRoot.Name="AllText-coordination"
         txtrootTrans = coin.SoTransform()
         txtrootTrans.rotation.setValue(coin.SbVec3f(1.0, 0.0, 0.0), math.radians(0))
         txtRoot.addChild(txtrootTrans)
@@ -147,8 +153,11 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         transfromZ.rotation.setValue(tRadiusZ, math.radians(setupRotation[2]))
         
         SoSeparatorSetupX = coin.SoSeparator()
+        SoSeparatorSetupX.Name="SetupX"
         SoSeparatorSetupY = coin.SoSeparator()
+        SoSeparatorSetupY.Name="SetupY"
         SoSeparatorSetupZ = coin.SoSeparator()
+        SoSeparatorSetupZ.Name="SetupZ"
         
         SoSeparatorSetupX.addChild(transfromX)
         SoSeparatorSetupX.addChild(txtRoot)
@@ -169,6 +178,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         material.transparency.setValue(0.0)
 
         root = coin.SoSeparator()
+        root.Name="RootText"
         transla = coin.SoTranslation()
         transla.translation.setValue([vec.x, vec.y, vec.z])
 
@@ -204,38 +214,43 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype:str="",
         
         tempC = coin.SbVec3f()
         if Ptype == "Center":
+            objectToDraw.Name="Center"
             tempC.setValue(1, 0, 0)
             transtheObject.rotation.setValue(tempC, math.radians(90))
-            theObject.radius = 1.75
+            theObject.radius = 3.5
             theObject.height = 0.25
             col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
             col1.rgb = FR_COLOR.FR_GLASS
         elif Ptype == "Xaxis":
+            objectToDraw.Name="Xaxis"
             tempC.setValue(0, 0, 1)
             transtheObject.rotation.setValue(tempC, math.radians(90))
-            theObject.radius = 0.125
-            theObject.height = 10
+            theObject.radius = 0.25
+            theObject.height = 20
             col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
             col1.rgb = FR_COLOR.FR_RED
         elif  Ptype == "Yaxis":
+            objectToDraw.Name="Yaxis"
             tempC.setValue(0, 0, 1)
             transtheObject.rotation.setValue(tempC, math.radians(0))
-            theObject.radius = 0.125
-            theObject.height = 10
+            theObject.radius = 0.25
+            theObject.height = 20
             col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
             col1.rgb = FR_COLOR.FR_GREENYELLOW
         elif Ptype == "45axis":
+            objectToDraw.Name="45axis"
             tempC.setValue(0, 0, 1)
             transtheObject.rotation.setValue(tempC, math.radians(45))
-            theObject.radius = 0.125
-            theObject.height = 7
+            theObject.radius = 0.25
+            theObject.height = 14
             col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
             col1.rgb = FR_COLOR.FR_BLUEVIOLET
         elif Ptype == "135axis":
+            objectToDraw.Name="135Axis"            
             tempC.setValue(0, 0, 1)
             transtheObject.rotation.setValue(tempC, math.radians(135))
-            theObject.radius = 0.125
-            theObject.height = 7
+            theObject.radius = 0.25
+            theObject.height = 14
             col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
             col1.rgb = FR_COLOR.FR_ORANGE
             
@@ -278,6 +293,7 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype:str="",
         rootTransform = coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         root = coin.SoSeparator()
+        root.Name="RootAxisDrawing"
         transla = coin.SoTranslation()
         transla.translation.setValue([vec.x, vec.y, vec.z])
 
