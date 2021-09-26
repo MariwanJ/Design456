@@ -41,6 +41,8 @@ import FreeCAD as App
 
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
+    pick_style = coin.SoPickStyle()
+    pick_style.style.setValue(coin.SoPickStyle.UNPICKABLE) #This will disallow to be picked by mouse click
     v = coin.SoVertexProperty()
     v.vertex.set1Value(0, p1)
     v.vertex.set1Value(1, p2)
@@ -50,6 +52,7 @@ def dim_dash(p1, p2, color, LineWidth):
     style.lineWidth = LineWidth
     my_transparency = coin.SoMaterial()
     my_transparency.transparency.setValue(0.5)
+    dash.addChild(pick_style)       #This will disallow to be picked by mouse click
     dash.addChild(style)
     dash.addChild(my_transparency)
     dash.addChild(color)
@@ -130,7 +133,7 @@ class Grid:
             line.append(dim_dash((0.0, -LengthOfGrid, 0.0),
                         (0.0, +LengthOfGrid, 0.0), col2, 5))  # y
             line.append(dim_dash((0.0, 0.0, -LengthOfGrid),
-                        (0.0, 0.0, LengthOfGrid), col3, 5))  # y
+                        (0.0, 0.0, LengthOfGrid), col3, 5))  # z
 
             for i in range(0, 3):
                 self.sg.addChild(line[i])

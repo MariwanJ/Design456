@@ -78,11 +78,13 @@ MouseScaleFactor = 1
 # TODO FIXME:
 # Double click - Rotation only
 def smartlbl_callback(smartLine, obj, parentlink):
+    print("lbl callback")
     pass
 
 
 # Rotation only
 def callback_Rotate(userData: fr_degreewheel_widget.userDataObject=None):
+    print("Rotate callback")
     pass
 
 
@@ -90,6 +92,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject=None):
 def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
     print("MOVEX")
     if userData is None:
+        print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
 
     wheelObj = userData.wheelObj
@@ -135,6 +138,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
     print("MOVEY")
 
     if userData is None:
+        print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
 
     wheelObj = userData.wheelObj
@@ -180,6 +184,7 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
     print("MOVE45")
 
     if userData is None:
+        print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
 
     WheelObject = userData.wheelObj
@@ -221,6 +226,7 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     print("MOVE135")
 
     if userData is None:
+        print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
 
     WheelObject = userData.wheelObj
@@ -265,6 +271,7 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
        Deleting the original object will be done when the user press 'OK' button
     """
     try:
+        print("release callback")
         if (userData is None):
             print("userData is None")
             raise TypeError
@@ -360,6 +367,12 @@ class Design456_SmartExtrudeRotate:
         currentLength = self.extrudeLength
         # to let the Wheel be outside the object
         self.extrudeLength = self.extrudeLength 
+        
+        print("************************")
+        print("New vector for the wheel object",endVec)
+        print("************************")
+
+        
         self.wheelObj.w_vector = [endVec,App.Vector(0,0,0)]
         self.extrudeLength = currentLength  # return back the value.
         self.wheelObj.redraw()

@@ -249,9 +249,12 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         for _soNode in range(0,5):
             current=fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                               self.w_pick_radius, self.w_widgetSoNodes[_soNode])
+            print(type(self.w_widgetSoNodes[_soNode]))            
+            
             if current is None:
                 clickwdgdNode.append(False)
             else:
+
                 clickwdgdNode.append(True)
                 allObjects=current
 
@@ -261,7 +264,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             return 0
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
-            if clickwdglblNode != None:
+            if current != None:
                 print("Double click detected")
                 # if not self.has_focus():
                 #    self.take_focus()
@@ -286,7 +289,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             if self.releaseDrag == False:
-                if (clickwdgdNode is not None):
+                if (current is not None):
                     self.releaseDrag = True   
                     self.take_focus()
                 #These Object reacts only with dragging .. Clicking will not do anything useful
@@ -294,6 +297,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             #print("clickwdgdNode DRAG ",clickwdgdNode)
             for ie in range(0,5):
                 if clickwdgdNode[ie] ==True:
+                    print("the widget is ie ",ie)
                     self.do_callbacks(ie)
                     return 1
                 #0 The cylinder is clicked
@@ -525,7 +529,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         print("callbackType",callbackType)
         if (callbackType ==100):
             #run all 
-            self.do_callback(self.w_userData)
+            self.do_callback()
             self.w_wheel_cb_(self.w_userData)
             self.w_xAxis_cb_(self.w_userData) 
             self.w_yAxis_cb_(self.w_userData) 
