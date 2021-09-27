@@ -193,6 +193,7 @@ class root_handle():
             self.w_lastEventXYZ.Qt_y = pos[1]
             #if we hade mouse drag or push (not release) and there is a movement  
             if(self.w_lastEvent==FR_EVENTS.FR_MOUSE_LEFT_PUSH or self.w_lastEvent==FR_EVENTS.FR_MOUSE_DRAG):
+                #print("DRAG - MAIN EVENT")
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
             else:
                 self.w_lastEvent=FR_EVENTS.FR_MOUSE_MOVE
@@ -263,7 +264,7 @@ class root_handle():
             static boolean 	                 isKeyReleaseEvent​(SoEvent e, SoKeyboardEvent.Keys whichKey) Returns whether the passed event is a keyboard release event of the passed key.
             void 	                         setKey​(SoKeyboardEvent.Keys whichKey) 	                  Sets which key generated the event.
             """
-
+            print("Keyboard Event")
             key = ""
             try:
                 key = self.w_get_event.getKey()
@@ -286,7 +287,7 @@ class root_handle():
                 else:
                     # Take care of all other keys.
                     self.w_e_state = None
-                self.w_wind.handle(events)
+                    self.w_lastEvent =key
 
             except ValueError:
                 # there is no character for this value
