@@ -482,8 +482,8 @@ class Design456_SmartExtrudeRotate:
                 sh=self.selectedObj.Object.Shape.copy()
                 o=App.ActiveDocument.addObject("Part::Feature", "face1")
                 o.Shape=sh
-                self.ExtractedFaces.append(self.selectedObj)
-                self.ExtractedFaces.append(o)
+                self.ExtractedFaces.append(self.selectedObj.Object)
+                self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
 
             self.setupRotation = self.getWheelPosition()  # Deside how the Degree Wheel be drawn
             self.wheelObj = Fr_DegreeWheel_Widget([self._vector, App.Vector(0, 0, 0)], str(
