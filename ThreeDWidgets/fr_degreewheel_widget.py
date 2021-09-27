@@ -269,7 +269,13 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.w_pick_radius, self.w_135soSeparator) is not None):
             clickwdgdNode[4] = True
 
-            
+                #Execute callback_relese when enter key pressed or E pressed
+        if (self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_ENTER or 
+            self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
+            self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_E):
+               self.do_callback()
+               
+                   
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
 

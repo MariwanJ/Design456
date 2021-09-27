@@ -222,20 +222,148 @@ class FR_DAMAGE:
     FR_LBL_DAMAGE=    10
     FR_DRAW_DAMAGE=   20
      
-           
 #No constant for keyboard as it is defined already in coin.
 class FR_EVENTS:    
-    FR_NO_EVENT=                0
-    FR_MOUSE_LEFT_PUSH=        10
-    FR_MOUSE_RIGHT_PUSH=       20
-    FR_MOUSE_MIDDLE_PUSH=      30
-    FR_MOUSE_LEFT_RELEASE=     40
-    FR_MOUSE_RIGHT_RELEASE=    50
-    FR_MOUSE_MIDDLE_RELEASE=   60
-    FR_MOUSE_LEFT_DOUBLECLICK= 70
-    FR_MOUSE_DRAG=             80
-    FR_MOUSE_MOVE=             90
-    
+    FR_NO_EVENT=               0x0000
+    FR_MOUSE_LEFT_PUSH=        0xDD10
+    FR_MOUSE_RIGHT_PUSH=       0xDD20
+    FR_MOUSE_MIDDLE_PUSH=      0xDD30
+    FR_MOUSE_LEFT_RELEASE=     0xDD40
+    FR_MOUSE_RIGHT_RELEASE=    0xDD50
+    FR_MOUSE_MIDDLE_RELEASE=   0xDD60
+    FR_MOUSE_LEFT_DOUBLECLICK= 0xDD70
+    FR_MOUSE_DRAG=             0xDD80
+    FR_MOUSE_MOVE=             0xDD90
+    #KEYBOARD EVENTS AS FOLLOW:
+    #ANY              =0
+    FR_UNDEFINED        =1
+    FR_LEFT_SHIFT       =0XFFE1
+    FR_RIGHT_SHIFT      =0XFFE2
+    FR_LEFT_CONTROL     =0XFFE3
+    FR_RIGHT_CONTROL    =0XFFE4
+
+    FR_LEFT_ALT        =0XFFE9 
+    FR_RIGHT_ALT       =0XFFEA
+
+    FR_NUMBER_0        =0X0030
+    FR_NUMBER_1        =0X0031
+    FR_NUMBER_2        =0X0032
+    FR_NUMBER_3        =0X0033
+    FR_NUMBER_4        =0X0034
+    FR_NUMBER_5        =0X0035
+    FR_NUMBER_6        =0X0036
+    FR_NUMBER_7        =0X0037
+    FR_NUMBER_8        =0X0038
+    FR_NUMBER_9        =0X0039
+
+    FR_A                =0X0061
+    FR_B                =0X0062
+    FR_C                =0X0063
+    FR_D                =0X0064
+    FR_E                =0X0065
+    FR_F                =0X0066
+    FR_G                =0X0067
+    FR_H                =0X0068
+    FR_I                =0X0069
+    FR_J                =0X006A
+    FR_K                =0X006B
+    FR_L                =0X006C
+    FR_M                =0X006D
+    FR_N                =0X006E
+    FR_O                =0X006F
+    FR_P                =0X0070
+    FR_Q                =0X0071
+    FR_R                =0X0072
+    FR_S                =0X0073
+    FR_T                =0X0074
+    FR_U                =0X0075
+    FR_V                =0X0076
+    FR_W                =0X0077
+    FR_X                =0X0078
+    FR_Y                =0X0079
+    FR_Z                =0X007A
+
+    FR_HOME             =0XFF50
+    FR_LEFT_ARROW       =0XFF51
+    FR_UP_ARROW         =0XFF52
+    FR_RIGHT_ARROW      =0XFF53
+    FR_DOWN_ARROW       =0XFF54
+    FR_PAGE_TOP         =0XFF55
+    FR_PAGE_BOTTOM      =0XFF56
+    FR_END              =0XFF57
+    #PRIOR            =0XFF55 
+    #NEXT             =
+    FR_PAD_ENTER        =0XFF8D
+    FR_PAD_F1           =0XFF91 
+    FR_PAD_F2           =0XFF92
+    FR_PAD_F3           =0XFF93
+    FR_PAD_F4           =0XFF94
+
+    FR_PAD_0            =0XFF9E 
+    FR_PAD_1            =0XFF9C 
+    FR_PAD_2            =0XFF99 
+    FR_PAD_3            =0XFF9B
+    FR_PAD_4            =0XFF96 
+    FR_PAD_5            =0XFF9D 
+    FR_PAD_6            =0XFF98 
+    FR_PAD_7            =0XFF95
+
+    FR_PAD_8            =0XFF97 
+    FR_PAD_9            =0XFF9A
+    FR_PAD_ADD          =0XFFAB 
+    FR_PAD_SUBTRACT     =0XFFAD
+                    
+    FR_PAD_MULTIPLY     =0XFFAA
+    FR_PAD_DIVIDE       =0XFFAF
+    FR_PAD_SPACE        =0XFF8D 
+    FR_PAD_TAB          =0XFF89
+    FR_PAD_INSERT       =0XFF9E 
+    FR_PAD_DELETE       =0XFF9F 
+    FR_PAD_PERIOD       =0XFF9F
+                    
+    #F1              =0XFFBE 
+    #F2              =
+    #F3              =
+    #F4              =
+    #F5              =
+    #F6              =
+    #F7              =
+    #F8              =
+    #F9              =
+    #F10             =
+    #F11             =
+    #F12             =
+    FR_BACKSPACE        =0XFF08 
+    FR_TAB              =0XFF09
+    FR_RETURN           =0XFF0D
+    FR_ENTER            =0XFF0D
+    FR_PAUSE            =0XFF13 
+    FR_SCROLL_LOCK      =0XFF14
+    FR_ESCAPE           =0XFF1B 
+    FR_DELETE           =0XFFFF 
+    FR_KEY_DELETE       =FR_DELETE
+                    
+    FR_PRINT            =0XFF61 
+    FR_INSERT           =0XFF63
+    FR_NUM_LOCK         =0XFF7F 
+    FR_CAPS_LOCK        =0XFFE5 
+    FR_SHIFT_LOCK       =0XFFE6
+                    
+    FR_SPACE            =0X0020 
+    FR_APOSTROPHE       =0X0027
+    FR_COMMA            =0X002C 
+    FR_MINUS            =0X002D 
+    FR_PERIOD           =0X002E 
+    FR_SLASH            =0X002F
+                    
+    FR_SEMICOLON        =0X003B 
+    FR_EQUAL            =0X003D
+                    
+    FR_BRACKETLEFT      =0X005B 
+    FR_BACKSLASH        =0X005C
+    FR_BRACKETRIGHT     =0X005D 
+    FR_GRAVE            =0X0060
+
 class FR_WHEN:
     FR_WHEN_NEVER	 	       = 0    # Never call the callback
     FR_WHEN_CHANGED	           = 1    # Do the callback only when the widget value changes
@@ -250,7 +378,7 @@ class FR_ALIGN:
     Alignment constants: 
     If TOP/BOTTOM not specified, always default is BOTTOM
     '''
-    FR_NO_ALIGN             = 0
+    FR_NO_ALIGN             =0
     FR_ALIGN_LEFT           =10
     FR_ALIGN_RIGHT          =20
     FR_ALIGN_TOP            =30
