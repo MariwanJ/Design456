@@ -236,34 +236,29 @@ def draw_newlabel(text=[], prop: propertyValues=None):
     if text == '' or prop is None:
         raise ValueError        # Nothing to do here 
     try:
+        p1=prop.vectors[0]
         if len(prop.vectors)>=2:
-            p1=prop.vectors[0]
             p2=prop.vectors[1]
-        else:
-            p1=prop.vectors[0]
-            
+
         #direction= 
         _translation=coin.SoTranslation()  #coin.SoTransform()
-        
         _transformX = coin.SoTransform()
         _transformY = coin.SoTransform()
         _transformZ = coin.SoTransform()
         
         _translation.translation.setValue(coin.SbVec3f(p1))
-        _transformX.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.x))
-        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.y))
-        _transformZ.rotation.setValue(coin.SbVec3f(prop.rotationAxis),math.radians(prop.rotation.z))
-
+        #Don't know why, but x must go to y and vice versa :TODO: Understand why?
+        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,0,0),math.radians(prop.rotation.x))
+        _transformX.rotation.setValue(coin.SbVec3f(0,prop.rotationAxis.y,0),math.radians(prop.rotation.y))
+        _transformZ.rotation.setValue(coin.SbVec3f(0,0,prop.rotationAxis.z),math.radians(prop.rotation.z))
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.fontName  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
         coinColor = coin.SoMaterial()  # Font color
-        color=prop.labelcolor
-
-        coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
-        #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
+        coinColor.diffuseColor.setValue(prop.labelcolor)
+        coinColor.emissiveColor.setValue(prop.labelcolor)
         root = coin.SoSeparator()    # A Separator to separate the text from the drawing
         _textNodeX = coin.SoSeparator()   # A Separator to Keep the rotation in X Axis
         _textNodeY = coin.SoSeparator()   # A Separator to Keep the rotation in Y Axis
@@ -278,7 +273,6 @@ def draw_newlabel(text=[], prop: propertyValues=None):
 
         _textNodeY.addChild(_textNodeX)
         _textNodeZ.addChild(_textNodeY)
-
 
         root.addChild(_translation)
         root.addChild(_textNodeZ)

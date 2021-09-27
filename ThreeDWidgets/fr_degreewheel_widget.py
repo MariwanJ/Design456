@@ -30,18 +30,17 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import ThreeDWidgets
 import pivy.coin as coin
-from ThreeDWidgets import fr_draw
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
 from ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets import fr_label_draw
-from ThreeDWidgets.constant import FR_ALIGN
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
+import FACE_D as faced
 from dataclasses import dataclass
-import fr_draw_wheel 
-
+from ThreeDWidgets import fr_wheel_draw 
+import math
 """
 Example how to use this widget. 
 
@@ -90,7 +89,10 @@ def callback1(userData:userDataObject=None):
             event callback. 
     """
     # Subclass this and impalement the callback or just change the callback function
-    print("dummy wheel-widget callback")
+    print("dummy wheel-widget callback1")
+
+
+
 
 def callback2(userData:userDataObject=None):
     """
@@ -127,7 +129,6 @@ def callback5(userData:userDataObject=None):
 
 #*************************************************************
 
-
 class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
     """
@@ -139,7 +140,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
     def __init__(self, vectors: List[App.Vector]=[],
                  label: str="", lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=[(0.0, 0.0, 1.0), 0.0],
+                 _Rotation=[0.0, 0.0, 0.0, 0.0],
+                 _prerotation=[0.0, 0.0, 0.0, 0.0],
                  _wheelType=0):  
 
         super().__init__(vectors, label)
@@ -165,11 +167,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_135Axis_cb_ = callback5  # Dummy callback          Movement in the 135degree direction (mouse click-release)
 
         self.w_wdgsoSwitch = coin.SoSwitch()           # the whole widget 
-        self.w_XsoSeparator = coin.SoSeparator         # X cylinder  
-        self.w_YsoSeparator = coin.SoSeparator         # Y cylinder 
-        self.w_45soSeparator = coin.SoSeparator        # 45degree cylinder  
-        self.w_135soSeparator = coin.SoSeparator       # 135degree cylinder   
-        self.w_centersoSeparator = coin.SoSeparator    # center disk cylinder    
+        self.w_XsoSeparator = coin.SoSeparator()         # X cylinder  
+        self.w_YsoSeparator = coin.SoSeparator()         # Y cylinder 
+        self.w_45soSeparator = coin.SoSeparator()        # 45degree cylinder  
+        self.w_135soSeparator = coin.SoSeparator()       # 135degree cylinder   
+        self.w_centersoSeparator = coin.SoSeparator()    # center disk cylinder    
         
         self.w_color = _color  # TODO: Not sure if we use this
 
@@ -181,24 +183,38 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_userData.wheelObj=self
         # self.w_userData.color=_color
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
-
-        self.w_lbluserData.linewidth=self.w_lineWidth
-        self.w_lbluserData.rotation = App.Vector(90,0,0)
-        self.w_lbluserData.rotationAxis=App.Vector(1,0,0)
+        self.currentSo=None  #Use this to keep the selected so during push-drag, after release it should be none 
         
-        self.w_WidgetRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
-                
-        if (self.w_wheelType != 2):
-            # When is hasing the Front view
-            self.w_lbluserData.vectors =[App.Vector(0,0,5),App.Vector(10,0,5)] 
-            
-        else:
-            # When is hasing the Top v iew
-            self.w_lbluserData.vectors = [self.w_vector[0], 
-                                 App.Vector(self.w_vector[1].x,self.w_vector[1].y+17,self.w_vector[1].z)]   # length of the arrow is 15
+        self.w_lbluserData.linewidth=self.w_lineWidth          #This affect only the Widget label - nothing else
+        if (self.w_wheelType==0):
+            self.w_lbluserData.rotation = App.Vector(0,0,0 )         #OK Don't change
+            self.w_lbluserData.rotationAxis=App.Vector(0,0,0)        #OK Don't change
+        elif(self.w_wheelType==1):
+            self.w_lbluserData.rotation = App.Vector(90,0,0)         #OK Don't change
+            self.w_lbluserData.rotationAxis=App.Vector(1,0,0)        #OK Don't change
+        elif(self.w_wheelType==2):
+            self.w_lbluserData.rotation = App.Vector(90,0,90)    
+            self.w_lbluserData.rotationAxis=App.Vector(1,0,1)
 
+        self.w_WidgetDiskRotation=0.0 #  Use this to save rotation degree of the disk which is the whole widget angle. 
+        self.w_Rotation=_Rotation
+        self.w_PRErotation=_prerotation
+        
+        #TODO: FIXME:
+        if(self.w_wheelType == 0):    #This affect only the Widget label position- nothing else
+            # When is is Top view.
+            self.w_lbluserData.vectors =[(self.w_vector[0].x+2,self.w_vector[0].y+6,self.w_vector[0].z),(0,0,0)]     #OK Don't change      
+        elif (self.w_wheelType == 1):
+            # When is 
+            self.w_lbluserData.vectors =[(self.w_vector[0].x,self.w_vector[0].y+2,self.w_vector[0].z+6),(0,0,0)]
+            
+        elif (self.w_wheelType == 2):
+            # When is 
+            self.w_lbluserData.vectors =[(self.w_vector[0].x+1,self.w_vector[0].y,self.w_vector[0].z+6),(0,0,0)]
+            
     def lineWidth(self, width):
-        """ Set the line width"""
+        """ Set line-width 
+        """
         self.w_lineWidth = width
 
     def handle(self, event):
@@ -229,28 +245,41 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                             # 4 = 135°   Axis movement  
         current=None
         allObjects=None
-        clickwdgdNode.clear()
-        for _soNode in range(0,5):
-            current=fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                              self.w_pick_radius, self.w_widgetSoNodes[_soNode])
-            if current is None:
-                clickwdgdNode.append(False)
-            else:
-                clickwdgdNode.append(True)
-                allObjects=current
+        clickwdgdNode=[False,False,False,False,False,False]
 
-        if (allObjects is None):
-            #SoSwitch not found. Event is not related to this widget 
-            self.remove_focus()
-            return 0
+        current=[]        
+        if(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_centersoSeparator) is not None):
+            clickwdgdNode[0] = True
+        elif(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_XsoSeparator) is not None):
+            clickwdgdNode[1] = True
+        elif(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_YsoSeparator) is not None):
+            clickwdgdNode[2] = True
+        elif(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_45soSeparator) is not None):
+            clickwdgdNode[3] = True
+        elif(fr_coin3d.objectMouseClick_Coin3d(
+            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            self.w_pick_radius, self.w_135soSeparator) is not None):
+            clickwdgdNode[4] = True
 
-#        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-#            self.do_callbacks(0)      #  We run this always
-#            return 1
-
+                #Execute callback_relese when enter key pressed or E pressed
+        if (self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_ENTER or 
+            self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
+            self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_E):
+               self.do_callback()
+               
+                   
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
-            if clickwdglblNode != None:
+
+            if current != None:
                 print("Double click detected")
                 # if not self.has_focus():
                 #    self.take_focus()
@@ -258,49 +287,47 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+            self.currentSo=None
             if self.releaseDrag == True:
                 self.releaseDrag == False
                 print("Release Mouse happened")
                 self.do_callback()  # Release callback should be activated even if the wheel != under the mouse 
                 return 1
-            
-            if (clickwdgdNode != None) or (clickwdglblNode != None):
+            #TODO FIXME: NOT CORRECT
+            if (len(clickwdgdNode)>0  or clickwdglblNode != None):
                 if not self.has_focus():
                     self.take_focus()
-                self.do_callback()
+                #self.do_callback()
+                self.do_callbacks(100)
                 return 1            
             else:
                 self.remove_focus()
                 return 0
-        
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+            # This part will be active only once when the first time user click on the coin drawing. 
+            # Later DRAG should be used
             if self.releaseDrag == False:
-                if (clickwdgdNode != None) or (clickwdglblNode != None):
+                print("here ..... ")
+                if (current is not None):
                     self.releaseDrag = True   
                     self.take_focus()
-                #These Object reacts only with dragging .. Clicking will not do anything useful
-                #We don't accept more than one elements clicked at once
-            print(clickwdgdNode)
-            if clickwdgdNode[0] ==True:
-                #The cylinder is clicked
-                self.do_callbacks(1)
-                return 1
-            elif clickwdgdNode[1] ==True:
-                #The Xaxis is clicked
-                self.do_callbacks(2)
-                return 1
-            elif clickwdgdNode[2] ==True:
-                #The Yaxis is clicked
-                self.do_callbacks(3)
-                return 1
-            elif clickwdgdNode[3] ==True:
-                #The 45Degree is clicked
-                self.do_callbacks(4)
-                return 1
-            elif clickwdgdNode[4] ==True:
-                #The 135Degree is clicked
-                self.do_callbacks(5)
-                return 1
+            #These Object reacts only with dragging .. Clicking will not do anything useful
+            #We don't accept more than one elements clicked at once
+            if (self.currentSo is None):
+                for counter in range(0,5): 
+                    if clickwdgdNode[counter]==True:
+                        self.currentSo=counter
+                        self.do_callbacks(counter)
+                        return 1
+            else:
+                self.do_callbacks(self.currentSo)
+                    
+                #0 The cylinder is clicked
+                #1 The Xaxis is clicked
+                #2 The Yaxis is clicked
+                #3 The 45Degree is clicked
+                #4 The 135Degree is clicked
+
         # Don't care events, return the event to other widgets    
         return 0  # We couldn't use the event .. so return 0 
 
@@ -311,10 +338,12 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         the wheel.
         """
         try:
+            SETUPwheelTypeRotation=None
+            SetupTextRotation=None
             lablVar=fr_widget.propertyValues()  
             if (len(self.w_vector) < 1):
-                raise ValueError('Must be  one vector')
-                return
+                raise ValueError('Must be one vector')
+
             usedColor = usedColor = self.w_selColor
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
@@ -324,21 +353,58 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
             if self.is_visible():
                 allDraw = []
-                rot = [0.0, 0.0, 1.0, 0.0]
-                self.w_CentSeparator = fr_draw_wheel.draw_Center_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_XsoSeparator = fr_draw_wheel.draw_Xaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_YsoSeparator = fr_draw_wheel.draw_Yaxis_Wheel(self.w_vector[0], usedColor, rot, 1)
-                self.w_45soSeparator = fr_draw_wheel.draw_45axis_Wheel(self.w_vector[0], usedColor, rot, 1) #45
-                self.w_135soSeparator = fr_draw_wheel.draw_135axis_Wheel(self.w_vector[0], usedColor, rot, 1) #135
+                if self.w_wheelType==0:
+                    SETUPwheelTypeRotation = [0.0, 0.0, 0.0]       #TOP         #OK Don't change
+                    SetupTextRotation=       [0.0, 0.0, 0.0]                    #OK Don't change
+                elif self.w_wheelType==1:         
+                    SETUPwheelTypeRotation = [90.0, 0.0, 0.0]      #FRONT       #OK Don't change        
+                    SetupTextRotation=       [90.0, 0.0, 0.0]                   #OK Don't change
+                elif self.w_wheelType==2:
+                    SETUPwheelTypeRotation=  [90.0, 0.0, 90.0]     #RIGHT       #OK Don't change
+                    SetupTextRotation=       [90.0, 0.0, 90.0]                  #OK Don't change
 
+                self.w_CentSeparator  = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Center", 
+                                                                    usedColor, SETUPwheelTypeRotation,
+                                                                    self.w_PRErotation, 1)
+                self.w_XsoSeparator   = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Xaxis", 
+                                                                    usedColor, SETUPwheelTypeRotation,
+                                                                    self.w_PRErotation, 1)                         #RED
+                self.w_YsoSeparator   = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Yaxis",
+                                                                    usedColor,SETUPwheelTypeRotation,
+                                                                    self.w_PRErotation, 1)                         #GREEN
+                self.w_45soSeparator  = fr_wheel_draw.draw_AllParts(self.w_vector[0],"45axis",usedColor,
+                                                                    SETUPwheelTypeRotation,
+                                                                    self.w_PRErotation, 1)     #45
+                self.w_135soSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0],"135axis",usedColor,
+                                                                    SETUPwheelTypeRotation,
+                                                                    self.w_PRErotation, 1)     #135
+                self.w_degreeSeparator= fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
+                                                                    SetupTextRotation,self.w_PRErotation, 1)    #White
+
+                
                 allDraw.append(self.w_CentSeparator)
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_YsoSeparator)
                 allDraw.append(self.w_45soSeparator)
                 allDraw.append(self.w_135soSeparator)
+                allDraw.append(self.w_degreeSeparator)
+                
+                CollectThemAllRot=coin.SoTransform()
+                CollectThemAll=coin.SoSeparator()
+                tR=coin.SbVec3f()
+                tR.setValue(self.w_Rotation[0],self.w_Rotation[1], self.w_Rotation[2])
+                CollectThemAllRot.rotation.setValue(tR, math.radians(self.w_Rotation[3]))
+                
+                CollectThemAll.addChild(CollectThemAllRot)
+                CollectThemAll.addChild(self.w_CentSeparator)
+                CollectThemAll.addChild(self.w_XsoSeparator)
+                CollectThemAll.addChild(self.w_YsoSeparator)
+                CollectThemAll.addChild(self.w_45soSeparator)
+                CollectThemAll.addChild(self.w_135soSeparator)
+                CollectThemAll.addChild(self.w_degreeSeparator)
                 
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
-                self.saveSoNodesToWidget(allDraw)
+                self.saveSoNodesToWidget(CollectThemAll)
                 # add SoSeparator to the switch
                 # We can put them in a tuple but it is better not doing so
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
@@ -472,29 +538,39 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
     def setRotationAngle(self, axis_angle):
         ''' 
-        Set the rotation axis and the angle
+        Set the rotation axis and the angle. This is for the whole widget.
         Axis is coin.SbVec3f((x,y,z)
         angle=float number
         '''
-        self.w_rotation = axis_angle    
+        self.w_PRErotation = axis_angle
         
-    def do_callbacks(self,callbackType):
-        print("callbackType",callbackType)
-        if(callbackType==0):
+    def calculateWidgetDiskRotationAfterDrag(self,v1,v2):
+        self.w_WidgetDiskRotation=faced.calculateAngle(v1,v2)
+        
+    def do_callbacks(self,callbackType=-1):
+        if (callbackType ==100):
+            #run all 
+            self.do_callback()
+            self.w_wheel_cb_(self.w_userData)
+            self.w_xAxis_cb_(self.w_userData) 
+            self.w_yAxis_cb_(self.w_userData) 
+            self.w_45Axis_cb_(self.w_userData) 
+            self.w_135Axis_cb_(self.w_userData) 
+        elif(callbackType==10):
             #normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
             self.do_callback()
             #cylinder callback
-        elif(callbackType==1):
+        elif(callbackType==0):
             self.w_wheel_cb_(self.w_userData)
             #Xaxis callback
-        elif(callbackType==2):         
+        elif(callbackType==1):         
             self.w_xAxis_cb_(self.w_userData) 
             #Yaxis callback
-        elif(callbackType==3):
+        elif(callbackType==2):
             self.w_yAxis_cb_(self.w_userData) 
             #Zaxis callback
-        elif(callbackType==4):
+        elif(callbackType==3):
             self.w_45Axis_cb_(self.w_userData) 
             #Zaxis callback
-        elif(callbackType==5):
+        elif(callbackType==4):
             self.w_135Axis_cb_(self.w_userData) 
