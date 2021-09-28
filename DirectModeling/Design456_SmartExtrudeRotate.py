@@ -313,7 +313,7 @@ class Design456_SmartExtrudeRotate:
     objChangedTransparency = []
     ExtractedFaces = []
 
-    ExtractedFaces = []
+
 
     def reCreateExtrudeObject(self):
         """
