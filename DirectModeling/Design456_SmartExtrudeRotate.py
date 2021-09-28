@@ -74,6 +74,24 @@ MouseScaleFactor = 1
 # copy of all objects, I leave it now and I should
 # come back to do it. I must have it as an option in menu. (don't know how to do it now.)
 
+"""
+import DraftVecUtils
+rotatedVector = DraftVecUtils.rotate(myVector,angle_in_radians,normalVector)    
+
+We need to calculate the normal vector for each direction
+
+x
+y
+45Degree
+135Degree
+
+
+"""
+
+
+
+
+
 
 # TODO FIXME:
 # Double click - Rotation only
@@ -113,10 +131,6 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
         # only once
         linktocaller.startVector = linktocaller.endVector
         linktocaller.mouseOffset = linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-    else:
-        # We don't allow movement in the other direction.
-        #linktocaller.endVector.y = linktocaller.startVector.y
-        #linktocaller.endVector.z = linktocaller.startVector.z
         pass 
     
     linktocaller.extrudeLength = (
@@ -160,7 +174,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.extrudeLength = (
         linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
 
-    linktocaller.resizeWheelWidgets(linktocaller.endVector)
+    linktocaller.resizeWheelWidgets(linktocaller.endVector-linktocaller.mouseOffset)
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     #linktocaller.wheelObj.w_vector[0] = linktocaller.endVector
@@ -242,7 +256,7 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.extrudeLength = (
         linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
 
-    linktocaller.resizeWheelWidgets(linktocaller.endVector)
+    linktocaller.resizeWheelWidgets(linktocaller.endVector-linktocaller.mouseOffset)
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     
