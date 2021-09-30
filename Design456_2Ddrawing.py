@@ -274,7 +274,7 @@ class Design456_2DTrim:
                 # Try to reconstruct the shape/wire
                 TestTwoObjectCreate = False
                 _all_points2 = []
-                objType = faced.selectedObjectType(sel1)
+                objType = selectedObjectType(sel1)
                 closedShape = None
                 EndPoint = StartPoint = None
                 if (objType == 'Wire' or objType == 'Line'):
@@ -389,7 +389,16 @@ class Design456_2DTrim:
 
 Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
 
-
+def selectedObjectType(obj):
+    if isinstance(obj.Object, _part.Shape):
+        return "Shape"
+    if hasattr(obj.Object, 'Proxy'):
+        if hasattr(obj.Object.Proxy, "Type"):
+            return obj.Object.Proxy.Type
+    if hasattr(obj.Object, 'TypeId'):
+        return obj.Object.TypeId
+    return "Unknown"
+    
 class Design456_2DExtend:
     def Activated(self):
         try:
@@ -401,7 +410,7 @@ class Design456_2DExtend:
                 faced.errorDialog(errMessage)
                 return
             sel = s[0]
-            _type = faced.selectedObjectType(sel)
+            _type = selectedObjectType(sel)
             if not (_type == 'Wire' or _type == 'Line'):
                 print(_type)
                 print("Wrong object selected")
