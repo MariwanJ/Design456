@@ -115,34 +115,22 @@ def getDirectionAxis():
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
-class MousePosition:
-
+#TODO Do we need this?
+"""def MousePosition():
     def __init__(self, view):
         self.view = view
-        v = Gui.activeDocument().activeView()
 
-    def getPosition(self, info):
-        try:
-            down = (info["State"] == "DOWN")
-            pos = info["Position"]
-            # if (down):
-            App.Console.PrintMessage(
-                "Clicked on position: (" + str(pos[0]) + ", " + str(pos[1]) + ")\n")
+    def logPosition(self, info):
+        down = (info["State"] == "DOWN")
+        pos = info["Position"]
+        if (down):
+            App.Console.PrintMessage("Clicked on position: ("+str(pos[0])+", "+str(pos[1])+")\n")
             pnt = self.view.getPoint(pos)
-            App.Console.PrintMessage(
-                "World coordinates: " + str(pnt) + "\n")
+            App.Console.PrintMessage("World coordinates: " + str(pnt) + "\n")
             info = self.view.getObjectInfo(pos)
             App.Console.PrintMessage("Object info: " + str(info) + "\n")
-            o = self.ViewObserver(self.v)
-            c = self.v.addEventCallback("SoMouseButtonEvent", o.logPosition)
-            return pnt
-        except Exception as err:
-            App.Console.PrintError("'FACE_D.getDirectionAxis' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+        return pnt
+"""
 
 #TODO: This might be wrong
 class mousePointMove:
@@ -194,7 +182,6 @@ class mousePointMove:
 
     def mouseClick(self, events):
         try:
-            import Design456Init
             event = events.getEvent()
             eventState = event.getState()
             getButton = event.getButton()
@@ -259,7 +246,6 @@ class PartMover:
     def convertToVector(self, pos):
         try:
             import Design456Init
-            
             tempPoint = self.view.getPoint(pos[0], pos[1])    
             if(self.Direction is None):
                 if Design456Init.DefaultDirectionOfExtrusion == 'x':        
@@ -268,9 +254,7 @@ class PartMover:
                     point = (App.Vector(tempPoint[0], 0.0, tempPoint[1])) 
                 elif Design456Init.DefaultDirectionOfExtrusion == 'z':
                     point = (App.Vector(tempPoint[0], tempPoint[1], 0.0))
-
             else:
-
                 if (self.Direction == 'X'):
                     point = (App.Vector(tempPoint[0], self.obj.Placement.Base.y, self.obj.Placement.Base.z))
                 elif (self.Direction == 'Y'):
@@ -291,9 +275,8 @@ class PartMover:
         try:
             self.active = True
             event = events.getEvent()
-            newPos = self.convertToVector(event.getPosition().getValue())
-            self.obj.Placement.Base = newPos
-            self.newPosition = newPos
+            self.newPosition = self.convertToVector(event.getPosition().getValue())
+            self.obj.Placement.Base = self.newPosition
         except Exception as err:
             App.Console.PrintError("'Mouse movements error' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -312,7 +295,6 @@ class PartMover:
             self.view.removeEventCallbackPivy(
                 coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
             self.active = False
-            self.info = None
             self.view = None
         except Exception as err:
             App.Console.PrintError("'remove callback error' Failed. "
@@ -329,9 +311,7 @@ class PartMover:
             getButton = event.getButton()
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 pos = event.getPosition()
-                point = self.convertToVector(pos)
-                newPos = point
-                self.obj.Placement.Base = newPos
+                self.obj.Placement.Base = self.convertToVector(pos)
                 self.obj = None
                 App.ActiveDocument.recompute()
                 self.remove_callbacks()
