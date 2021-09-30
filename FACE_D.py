@@ -144,7 +144,7 @@ class MousePosition:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
+#TODO: This might be wrong
 class mousePointMove:
 
     def __init__(self, obj, view):
@@ -272,14 +272,11 @@ class PartMover:
             else:
 
                 if (self.Direction == 'X'):
-                    point = (App.Vector(
-                        tempPoint[0], self.obj.Placement.Base.y, self.obj.Placement.Base.z))
+                    point = (App.Vector(tempPoint[0], self.obj.Placement.Base.y, self.obj.Placement.Base.z))
                 elif (self.Direction == 'Y'):
-                    point = (App.Vector(self.obj.Placement.Base.x,
-                             tempPoint[1], self.obj.Placement.Base.z))
+                    point = (App.Vector(self.obj.Placement.Base.x,tempPoint[1], self.obj.Placement.Base.z))
                 elif (self.Direction == 'Z'):
-                    point = (App.Vector(self.obj.Placement.Base.x,
-                             self.obj.Placement.Base.y, tempPoint[0]))
+                    point = (App.Vector(self.obj.Placement.Base.x,self.obj.Placement.Base.y, tempPoint[0]))
             return point
 
         except Exception as err:
