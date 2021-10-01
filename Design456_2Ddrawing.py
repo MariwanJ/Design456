@@ -439,26 +439,32 @@ class Design456_2DExtend:
                     positionSave = newPoint.index(i)
             if VertPoint == newPoint[len(newPoint)-1]:
                 # add to the last position
-                newPoint.append(App.Vector(1,1,0)) #add always (1,1,0)
-                sel.Object.Points = newPoint
-                #sel.Object.End = VertPoint
-                #sel.Object.Start=newPoint[0]
+                newPoint.append(App.Vector(_point[len(_point)-1])) #add always (1,1,0)
+                #sel.Object.Points = newPoint
             elif positionSave ==0:
                 # add to first postion 
-                newPoint.insert(0, App.Vector(1,1,0))
-                sel.Object.Points = newPoint
-                #sel.Object.Start = VertPoint
-                #sel.Object.End=newPoint[len(newPoint)-1]
+                newPoint.insert(0, App.Vector(_point[0]))
+                #sel.Object.Points = newPoint
                 print("add at last ")
             _view = Gui.ActiveDocument.ActiveView
             #Find and select the point added. 
+            pl = App.Placement()
+            pl.Rotation= sel.Object.Shape.Placement.Rotation
+            pl.Base=sel.Object.Shape.Placement.Base
+
             obj=sel.Object
             Gui.Selection.clearSelection()
             #Gui.Selection.addSelection('Unnamed','Line','Vertex2',-10.9949,4.23711,3.23066)
+            line = _draft.makeWire(newPoint, placement=pl, closed=False, face=True, support=None)
+            App.ActiveDocument.removeObject(obj.Name)
+            App.ActiveDocument.recompute()
+            
+            
+            obj=line
             for index in range(0,len(newPoint)):
                 if newPoint[positionSave]==newPoint[index]:
                     Gui.Selection.addSelection(App.ActiveDocument.Name,
-                                               sel.Object.Name,'Vertex'+str(index),
+                                               obj.Name,'Vertex'+str(index),
                                                newPoint[index].x,newPoint[index].y,newPoint[index].z)
                     break;
             App.ActiveDocument.recompute()
