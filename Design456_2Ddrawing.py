@@ -427,24 +427,42 @@ class Design456_2DExtend:
             newPoint = []
             _point = sel.Object.Points
             positionSave = 0
-
+            print("---------------")
+            print(VertPoint)
+            print(sel.Object.Start)
+            print(sel.Object.End)
+            print("---------------")
+            
             for i in _point:
                 newPoint.append(App.Vector(i))
                 if VertPoint == i:
                     positionSave = newPoint.index(i)
             if VertPoint == newPoint[len(newPoint)-1]:
-                # add last point and then moved
-                newPoint.append(App.Vector(newPoint[len(newPoint)-1]))
+                # add to the last position
+                newPoint.append(App.Vector(1,1,0)) #add always (1,1,0)
                 sel.Object.Points = newPoint
-                sel.Object.End = VertPoint
+                #sel.Object.End = VertPoint
+                #sel.Object.Start=newPoint[0]
             elif positionSave ==0:
-                # add last point and then
-
-                newPoint.insert(0, App.Vector(VertPoint))
+                # add to first postion 
+                newPoint.insert(0, App.Vector(1,1,0))
                 sel.Object.Points = newPoint
-                sel.Object.Start = VertPoint
+                #sel.Object.Start = VertPoint
+                #sel.Object.End=newPoint[len(newPoint)-1]
+                print("add at last ")
             _view = Gui.ActiveDocument.ActiveView
-
+            #Find and select the point added. 
+            obj=sel.Object
+            Gui.Selection.clearSelection()
+            #Gui.Selection.addSelection('Unnamed','Line','Vertex2',-10.9949,4.23711,3.23066)
+            for index in range(0,len(newPoint)):
+                if newPoint[positionSave]==newPoint[index]:
+                    Gui.Selection.addSelection(App.ActiveDocument.Name,
+                                               sel.Object.Name,'Vertex'+str(index),
+                                               newPoint[index].x,newPoint[index].y,newPoint[index].z)
+                    break;
+            App.ActiveDocument.recompute()
+            sel=Gui.Selection.getSelectionEx()[0]
             faced.mousePointMove(sel, _view)
             del newPoint[:]
 
