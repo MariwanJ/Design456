@@ -428,14 +428,16 @@ class Design456_2DExtend:
             _point = sel.Object.Points
             positionSave = 0
             print("---------------")
+            print(sel.Object.Points)
             print(VertPoint)
-            print(sel.Object.Start)
-            print(sel.Object.End)
             print("---------------")
             
             for i in _point:
+                print("check",i)
                 newPoint.append(App.Vector(i))
                 if VertPoint == i:
+                    print("Found at",newPoint.index(i))
+                    
                     positionSave = newPoint.index(i)
             if VertPoint == newPoint[len(newPoint)-1]:
                 # add to the last position
