@@ -399,6 +399,7 @@ def selectedObjectType(obj):
         return obj.Object.TypeId
     return "Unknown"
     
+#TODO: FIXME: THIS TOOLS IS NOT CORRECT AND DOESN'T WORK. NEEDS UNDERSTANDING OF DRAFT LINE 
 class Design456_2DExtend:
     def Activated(self):
         try:
