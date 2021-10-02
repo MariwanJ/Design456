@@ -169,7 +169,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
 
     linktocaller.extrudeLength = (
-        linktocaller.endVector.sub(linktocaller.startVector).dot(linktocaller.normalVector))
+        linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
     linktocaller.resizeWheelWidgets(linktocaller.endVector.sub(linktocaller.mouseOffset))
     linktocaller.ExtrudeLBL.setText(
@@ -207,7 +207,7 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
 
     linktocaller.extrudeLength = (
-        linktocaller.endVector.sub(linktocaller.startVector).dot(linktocaller.normalVector))
+        linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
     linktocaller.resizeWheelWidgets(linktocaller.endVector.sub(linktocaller.mouseOffset))
     linktocaller.ExtrudeLBL.setText(
@@ -242,7 +242,7 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
 
     linktocaller.extrudeLength = (
-        linktocaller.endVector.sub(linktocaller.startVector).dot(linktocaller.normalVector))
+        linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
     linktocaller.resizeWheelWidgets(linktocaller.endVector.sub(linktocaller.mouseOffset))
     linktocaller.ExtrudeLBL.setText(
@@ -404,7 +404,8 @@ class Design456_SmartExtrudeRotate:
                 print("135 with 135 degree")
             else:
                 raise ValueError
-            
+            if self.wheelObj is None:
+                self._Vector=   yL+d * nv  #Only first time .. we need to calculate it correctly
             return rotation
 
         except Exception as err:
@@ -555,6 +556,8 @@ class Design456_SmartExtrudeRotate:
             self.selectedObj = None
             self.targetFace = None
             self.newObjectect = None
+            self.direction = None
+            self._Vector = None
             del self
 
         except Exception as err:
