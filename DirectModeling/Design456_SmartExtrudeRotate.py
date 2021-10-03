@@ -110,6 +110,7 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
     events = userData.events    
     linktocaller = userData.callerObject
     if type(events) != int:
+        print("event was not int")
         return
     wheelObj = userData.wheelObj
 
@@ -135,7 +136,6 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
-    #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
     linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
@@ -150,6 +150,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
     events = userData.events    
     linktocaller = userData.callerObject
     if type(events) != int:
+        print("event was not int")
         return
     wheelObj = userData.wheelObj
 
@@ -167,7 +168,11 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
         # only once
         linktocaller.startVector = linktocaller.endVector
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
+    print("///////////////")
+    print( linktocaller.endVector)
+    print(linktocaller.startVector)
 
+    print(linktocaller.normalVector)
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -190,6 +195,7 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
     events = userData.events    
     linktocaller = userData.callerObject
     if type(events) != int:
+        print("event was not int")
         return
     wheelObj = userData.wheelObj
     linktocaller.direction = "45"
@@ -205,7 +211,8 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
         # only once
         linktocaller.startVector = linktocaller.endVector
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-
+        
+    print(linktocaller.normalVector)
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -228,6 +235,7 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     events = userData.events    
     linktocaller = userData.callerObject
     if type(events) != int:
+        print("event was not int")
         return
     wheelObj = userData.wheelObj
     linktocaller.direction = "135"
@@ -235,12 +243,19 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_135soSeparator)
 
+    linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    
     if linktocaller.run_Once == False:
         linktocaller.run_Once = True
         # only once
         linktocaller.startVector = linktocaller.endVector
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-
+    print("///////////////")
+    print( linktocaller.endVector)
+    print(linktocaller.startVector)
+    print(linktocaller.normalVector)
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -340,27 +355,59 @@ class Design456_SmartExtrudeRotate:
             endVec ([App.Vector]): [New position]
         """
         # TODO:FIXME
-       # currentLength = self.extrudeLength
+        # currentLength = self.extrudeLength
         # to let the Wheel be outside the object
-       # self.extrudeLength = self.extrudeLength 
+        # self.extrudeLength = self.extrudeLength 
         #[0] = endVec
-       # self.extrudeLength = currentLength  # return back the value.
+        # self.extrudeLength = currentLength  # return back the value.
         self.wheelObj.redraw()
         
+    def calculateRotatedNormal(self,axis):
+        #Find the rotated vector for 45 and 135 axises
+        result=None
+        faceRotation=0
+        tDir= faced.getDirectionAxis() #face direction
+        if tDir=="x":
+            result=App.Vector(0,1,0)
+        elif tDir=="-x":
+            result=App.Vector(0,-1,0)
+        elif tDir=="y":
+            result=App.Vector(1,0,0)
+        elif tDir=="-y":
+            result=App.Vector(-1,0,0)
+        if axis=="X":
+            faceRotation=90
+        elif axis=="Y":
+            faceRotation=0
+        elif axis=="45":
+            faceRotation=45
+        else: 
+            faceRotation=135
+        return (result,faceRotation)            
+            
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
         Returns:
             [App.Vector]: [Position where the Wheel will be moved to]
         """
         # For now the Wheel will be at the top
+        rotAxis=0
+        faceAngle=0
         try:
+            #TODO:FIXME
+            rotAxis,faceAngle=self.calculateRotatedNormal(self.direction)
+            pl=self.ExtractedFaces[1].Shape.Placement
+            pl.Rotation.Axis=rotAxis
+            pl.Rotation.Angle=faceAngle
+            self.ExtractedFaces[1].Placement=pl
+           
             face1 = None
             if(self.isFaceOf3DObj()):
                 # The whole object is selected
-                sub1 = self.selectedObj
+                sub1 = self.ExtractedFaces[1]
                 face1 = sub1.SubObjects[0]
             else:
-                face1 = self.selectedObj.Object.Shape
+                face1 = self.ExtractedFaces[1].Object.Shape
 
             yL = face1.CenterOfMass
             uv = face1.Surface.parameter(yL)
@@ -387,26 +434,26 @@ class Design456_SmartExtrudeRotate:
             self.FirstLocation=yL+  d * nv  # the wheel 
             if (self.direction == None):
                 self.direction = "Y"
-            if(self.direction == "X"):
-                self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(90), nv) 
-                if (self.wheelObj is not None):
-                    self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(90), nv)
-                print("x with 90 degree")  
-            elif(self.direction == "Y"):
-                pass  # Is her just to clarify that Y direction don't need anything
-                print("y with 0 degree")
-            elif (self.direction == "45"):
-                self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(45), nv)
-                if (self.wheelObj is not None):
-                    self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(45), nv)
-                print("45 with 45 degree")
-            elif (self.direction == "135"):
-                self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(135), nv)
-                if (self.wheelObj is not None):
-                    self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(135), nv)
-                print("135 with 135 degree")
-            else:
-                raise ValueError
+            #if(self.direction == "X"):
+            #    self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(90), nv) 
+            #    if (self.wheelObj is not None):
+            #        self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(90), nv)
+            #    print("x with 90 degree")  
+            #elif(self.direction == "Y"):
+            #    pass  # Is her just to clarify that Y direction don't need anything
+            #    print("y with 0 degree")
+            #elif (self.direction == "45"):
+            #    self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(45), nv)
+            #    if (self.wheelObj is not None):
+            #        self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(45), nv)
+            #    print("45 with 45 degree")
+            #elif (self.direction == "135"):
+            #    self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(135), nv)
+            #    if (self.wheelObj is not None):
+            #        self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(135), nv)
+            #    print("135 with 135 degree")
+            #else:
+            #    raise ValueError
             return rotation
 
         except Exception as err:
@@ -493,7 +540,6 @@ class Design456_SmartExtrudeRotate:
                 o.Shape = sh
                 self.ExtractedFaces.append(self.selectedObj.Object)
                 self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
-
             self.setupRotation = self.calculateNewVector()  # Deside how the Degree Wheel be drawn
             self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                 round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 1)
