@@ -135,7 +135,7 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
-    linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
+    #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
     linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
@@ -175,7 +175,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
-    linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
+    #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
     linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
@@ -213,7 +213,7 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
-    linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
+    #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
     linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
@@ -248,7 +248,7 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
-    linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
+    #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
     linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
@@ -315,7 +315,7 @@ class Design456_SmartExtrudeRotate:
     OperationOption = 0  # default is zero
     objChangedTransparency = []
     ExtractedFaces = []
-
+    FirstLocation=None
     def reCreateExtrudeObject(self):
         """
         [
@@ -374,14 +374,17 @@ class Design456_SmartExtrudeRotate:
                             face1.Surface.Rotation.Axis.y,
                             face1.Surface.Rotation.Axis.z,
                             math.degrees(face1.Surface.Rotation.Angle))
-
+            
             if (self.extrudeLength == 0):
                 d = self.extrudeLength = 1
             else:
                 d = self.extrudeLength
             self._Vector = sub1.Object.Shape.Placement.Base + d * nv  # The face itself
+            
             if (self.wheelObj is not None):                
-                self.wheelObj.w_vector[0] = self.wheelObj.w_vector[0]+  d * nv  # the wheel 
+                self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
+            
+            self.FirstLocation=yL+  d * nv  # the wheel 
             if (self.direction == None):
                 self.direction = "Y"
             if(self.direction == "X"):
@@ -404,8 +407,6 @@ class Design456_SmartExtrudeRotate:
                 print("135 with 135 degree")
             else:
                 raise ValueError
-            if self.wheelObj is None:
-                self._Vector=   yL+d * nv  #Only first time .. we need to calculate it correctly
             return rotation
 
         except Exception as err:
@@ -494,7 +495,7 @@ class Design456_SmartExtrudeRotate:
                 self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
 
             self.setupRotation = self.calculateNewVector()  # Deside how the Degree Wheel be drawn
-            self.wheelObj = Fr_DegreeWheel_Widget([self._Vector, App.Vector(0, 0, 0)], str(
+            self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                 round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 1)
 
             # Define the callbacks. We have many callbacks here.
@@ -509,7 +510,7 @@ class Design456_SmartExtrudeRotate:
 
             self.wheelObj.w_callback_ = callback_release
             self.wheelObj.w_userData.callerObject = self
-            self.newObject = App.ActiveDocument.addObject('Part::Loft', 'Loft')
+            self.newObject = App.ActiveDocument.addObject('Part::Loft', 'ExtendFace')
             self.newObject.Sections = self.ExtractedFaces
             self.newObject.Solid = True
             self.newObject.Ruled = False  # TODO: SHOULD THIS BE RULED?
