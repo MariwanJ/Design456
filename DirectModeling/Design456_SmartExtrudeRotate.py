@@ -378,7 +378,7 @@ class Design456_SmartExtrudeRotate:
         if axis=="X":
             faceRotation=90
         elif axis=="Y":
-            faceRotation=0
+            faceRotation=90
         elif axis=="45":
             faceRotation=45
         else: 
@@ -405,9 +405,9 @@ class Design456_SmartExtrudeRotate:
             if(self.isFaceOf3DObj()):
                 # The whole object is selected
                 sub1 = self.ExtractedFaces[1]
-                face1 = sub1.SubObjects[0]
+                face1 = sub1.Shape
             else:
-                face1 = self.ExtractedFaces[1].Object.Shape
+                face1 = self.ExtractedFaces[1].Shape
 
             yL = face1.CenterOfMass
             uv = face1.Surface.parameter(yL)
@@ -426,7 +426,7 @@ class Design456_SmartExtrudeRotate:
                 d = self.extrudeLength = 1
             else:
                 d = self.extrudeLength
-            self._Vector = sub1.Object.Shape.Placement.Base + d * nv  # The face itself
+            self._Vector = sub1.Shape.Placement.Base + d * nv  # The face itself
             
             if (self.wheelObj is not None):                
                 self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
