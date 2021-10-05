@@ -132,10 +132,11 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.extrudeLength = (
         linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
 
-    linktocaller.resizeWheelWidgets(linktocaller.endVector.sub(linktocaller.mouseOffset))
+   
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
+    linktocaller.resizeWheelWidgets(linktocaller.endVector -linktocaller.mouseOffset)
     linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
@@ -176,7 +177,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
-    linktocaller.resizeWheelWidgets(linktocaller.endVector.sub(linktocaller.mouseOffset))
+    linktocaller.resizeWheelWidgets(linktocaller.endVector-linktocaller.mouseOffset)
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
@@ -213,13 +214,12 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
         
     print(linktocaller.normalVector)
-    linktocaller.extrudeLength = (
-        linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
+    linktocaller.extrudeLength = (linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
-    linktocaller.resizeWheelWidgets(linktocaller.endVector.sub(linktocaller.mouseOffset))
-    linktocaller.ExtrudeLBL.setText(
-        "Length= " + str(round(linktocaller.extrudeLength, 4)))
+
+    linktocaller.ExtrudeLBL.setText("Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
+    linktocaller.resizeWheelWidgets(linktocaller.endVector- linktocaller.mouseOffset)
     #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
     linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
@@ -259,10 +259,10 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
-    linktocaller.resizeWheelWidgets(linktocaller.endVector.sub(linktocaller.mouseOffset))
-    linktocaller.ExtrudeLBL.setText(
-        "Length= " + str(round(linktocaller.extrudeLength, 4)))
+    
+    linktocaller.ExtrudeLBL.setText("Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
+    linktocaller.resizeWheelWidgets(linktocaller.endVector -linktocaller.mouseOffset)
     #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
     linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
@@ -362,7 +362,7 @@ class Design456_SmartExtrudeRotate:
         # self.extrudeLength = currentLength  # return back the value.
         self.wheelObj.redraw()
         
-    def calculateRotatedNormal(self,axis):
+    def calculateRotatedNormal(self,Wheelaxis):
         #Find the rotated vector for 45 and 135 axises
         result=None
         faceRotation=0
@@ -375,11 +375,15 @@ class Design456_SmartExtrudeRotate:
             result=App.Vector(1,0,0)
         elif tDir=="-y":
             result=App.Vector(-1,0,0)
-        if axis=="X":
+        else:
+            #TODO FIXME
+            result=App.Vector(0,1,0)
+        
+        if Wheelaxis=="X":
             faceRotation=90
-        elif axis=="Y":
-            faceRotation=90
-        elif axis=="45":
+        elif Wheelaxis=="Y":
+            faceRotation=0
+        elif Wheelaxis=="45":
             faceRotation=45
         else: 
             faceRotation=135
@@ -426,7 +430,9 @@ class Design456_SmartExtrudeRotate:
                 d = self.extrudeLength = 1
             else:
                 d = self.extrudeLength
-            self._Vector = sub1.Shape.Placement.Base + d * nv  # The face itself
+            #self._Vector = sub1.Shape.Placement.Base + d * nv  # The face itself
+            
+            self._Vector = self.selectedObj.Object.Shape.Placement.Base + d * nv  # The face itself
             
             if (self.wheelObj is not None):                
                 self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
