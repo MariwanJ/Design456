@@ -363,31 +363,60 @@ class Design456_SmartExtrudeRotate:
         self.wheelObj.redraw()
         
     def calculateRotatedNormal(self,Wheelaxis):
-        #Find the rotated vector for 45 and 135 axises
-        result=None
-        faceRotation=0
-        tDir= faced.getDirectionAxis() #face direction
-        if tDir=="x":
-            result=App.Vector(0,1,0)
-        elif tDir=="-x":
-            result=App.Vector(0,-1,0)
-        elif tDir=="y":
-            result=App.Vector(1,0,0)
-        elif tDir=="-y":
-            result=App.Vector(-1,0,0)
-        else:
-            #TODO FIXME
-            result=App.Vector(0,1,0)
+        """[calculate placement, angle of rotation, axis of rotation based on the]
+
+        Args:
+            Wheelaxis ([str]): [Direction of the wheel coin widget - Axis type ]
+
+        Returns:
+            [Base.placement]: [Placement, rotation angle and axis of rotation for face2]
+        """
         
-        if Wheelaxis=="X":
-            faceRotation=90
-        elif Wheelaxis=="Y":
-            faceRotation=0
-        elif Wheelaxis=="45":
-            faceRotation=45
-        else: 
-            faceRotation=135
-        return (result,faceRotation)            
+        pl=App.Placement()
+        faceRotation=0
+        #TODO: Lets take only X axis first , then Y ..etc and so on. 
+        face2Obj=self.ExtractFace[1]
+        tDir= faced.getDirectionAxis() #face direction
+        if   tDir=="x" and Wheelaxis=="x":              #tDir ==x --> towards +Z direction
+             pl.Rotation.Axis=App.Vector(0,-1,0)
+             pl.Rotation.Angle=90
+             pl.Base.x=face2Obj.Shape.BoundaryBox.XMin+ face2Obj.Shape.BoundaryBox.XLength  # Only X will be changed. 
+        elif tDir=="-x" and Wheelaxis=="x":
+             pl.Rotation.Axis=App.Vector(0,-1,0)
+             pl.Rotation.Angle=90
+             pl.Base.x=face2Obj.Shape.BoundaryBox.ZMax  # Only X will be changed. 
+        elif (tDir=="x" and Wheelaxis=="y") or (tDir=="x" and Wheelaxis=="-y") :
+            #We do nothing .. it is ok to not change 
+            pass
+        
+        #THIS PART WILL BE COMPLICATED AND MUST BE WELL WRITTEN. 
+        #TAKE CARE OF ALL POSSIBILITIES 
+        
+        
+        
+        
+        
+        
+        #TODO: FIXME 
+        elif   tDir=="y" and Wheelaxis=="x":              #tDir ==x --> towards +Z direction
+             pl.Rotation.Axis=App.Vector(0,-1,0)
+             pl.Rotation.Angle=90
+             pl.Base.x=face2Obj.Shape.BoundaryBox.XMin+ face2Obj.Shape.BoundaryBox.XLength  # Only X will be changed. 
+        elif tDir=="-x" and Wheelaxis=="x":
+             pl.Rotation.Axis=App.Vector(0,-1,0)
+             pl.Rotation.Angle=90
+             pl.Base.x=face2Obj.Shape.BoundaryBox.ZMax  # Only X will be changed. 
+        elif (tDir=="x" and Wheelaxis=="y") or (tDir=="x" and Wheelaxis=="-y") :
+            #We do nothing .. it is ok to not change 
+            pass
+        
+        
+        
+        
+        
+        
+        return pl
+        
             
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
@@ -395,36 +424,34 @@ class Design456_SmartExtrudeRotate:
             [App.Vector]: [Position where the Wheel will be moved to]
         """
         # For now the Wheel will be at the top
-        rotAxis=0
-        faceAngle=0
+        rotAxis=App.Vector(0,0,0) #Axis of the rotation for face2
+        faceAngle=0             #New angle due to the rotation of face2
+        base=App.Vector(0,0,0)  #New location for Face2 due to the rotation of the face
         try:
             #TODO:FIXME
-            rotAxis,faceAngle=self.calculateRotatedNormal(self.direction)
-            pl=self.ExtractedFaces[1].Shape.Placement
-            pl.Rotation.Axis=rotAxis
-            pl.Rotation.Angle=faceAngle
+            pl=self.calculateRotatedNormal(self.direction)
             self.ExtractedFaces[1].Placement=pl
            
-            face1 = None
+            face2 = None
             if(self.isFaceOf3DObj()):
                 # The whole object is selected
                 sub1 = self.ExtractedFaces[1]
-                face1 = sub1.Shape
+                face2 = sub1.Shape
             else:
-                face1 = self.ExtractedFaces[1].Shape
+                face2 = self.ExtractedFaces[1].Shape
 
-            yL = face1.CenterOfMass
-            uv = face1.Surface.parameter(yL)
-            nv = face1.normalAt(uv[0], uv[1])
+            yL = face2.CenterOfMass
+            uv = face2.Surface.parameter(yL)
+            nv = face2.normalAt(uv[0], uv[1])
             self.normalVector = nv
-            if (face1.Surface.Rotation is None):
+            if (face2.Surface.Rotation is None):
                 calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 rotation = [0, 1, 0, calAn]
             else:
-                rotation = (face1.Surface.Rotation.Axis.x,
-                            face1.Surface.Rotation.Axis.y,
-                            face1.Surface.Rotation.Axis.z,
-                            math.degrees(face1.Surface.Rotation.Angle))
+                rotation = (face2.Surface.Rotation.Axis.x,
+                            face2.Surface.Rotation.Axis.y,
+                            face2.Surface.Rotation.Axis.z,
+                            math.degrees(face2.Surface.Rotation.Angle))
             
             if (self.extrudeLength == 0):
                 d = self.extrudeLength = 1
@@ -438,28 +465,7 @@ class Design456_SmartExtrudeRotate:
                 self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
             
             self.FirstLocation=yL+  d * nv  # the wheel 
-            if (self.direction == None):
-                self.direction = "Y"
-            #if(self.direction == "X"):
-            #    self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(90), nv) 
-            #    if (self.wheelObj is not None):
-            #        self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(90), nv)
-            #    print("x with 90 degree")  
-            #elif(self.direction == "Y"):
-            #    pass  # Is her just to clarify that Y direction don't need anything
-            #    print("y with 0 degree")
-            #elif (self.direction == "45"):
-            #    self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(45), nv)
-            #    if (self.wheelObj is not None):
-            #        self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(45), nv)
-            #    print("45 with 45 degree")
-            #elif (self.direction == "135"):
-            #    self._Vector = DraftVecUtils.rotate(self._Vector, math.radians(135), nv)
-            #    if (self.wheelObj is not None):
-            #        self.wheelObj.w_vector[0] = DraftVecUtils.rotate(self.wheelObj.w_vector[0], math.radians(135), nv)
-            #    print("135 with 135 degree")
-            #else:
-            #    raise ValueError
+
             return rotation
 
         except Exception as err:
@@ -496,7 +502,7 @@ class Design456_SmartExtrudeRotate:
             # TODO: THIS PART MIGHT FAIL TAKE ALL KIND OF 3D OBJECT TOO SEE IF HASATTR Subobject and then fix that
             sh = self.selectedObj.Object.Shape.copy()
 
-            o = App.ActiveDocument.addObject("Part::Feature", "face1")
+            o = App.ActiveDocument.addObject("Part::Feature", "face2")
             o.Shape = sh.getElement(name)
             self.ExtractedFaces.append(Gui.ActiveDocument.getObject(o.Label).Object)
             o = App.ActiveDocument.addObject("Part::Feature", "face2")
@@ -542,7 +548,7 @@ class Design456_SmartExtrudeRotate:
                 # We have a 2D Face - Extract it directly
                 print("2d object copy the face itself")
                 sh = self.selectedObj.Object.Shape.copy()
-                o = App.ActiveDocument.addObject("Part::Feature", "face1")
+                o = App.ActiveDocument.addObject("Part::Feature", "face2")
                 o.Shape = sh
                 self.ExtractedFaces.append(self.selectedObj.Object)
                 self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
