@@ -377,44 +377,43 @@ class Design456_SmartExtrudeRotate:
         #TODO: Lets take only X axis first , then Y ..etc and so on. 
         face2Obj=self.ExtractFace[1]
         tDir= faced.getDirectionAxis() #face direction
-        if   tDir=="x" and Wheelaxis=="x":              #tDir ==x --> towards +Z direction
+        if   tDir=="x" and Wheelaxis=="X":              #tDir ==x --> towards +Z direction
              pl.Rotation.Axis=App.Vector(0,-1,0)
              pl.Rotation.Angle=90
              pl.Base.x=face2Obj.Shape.BoundaryBox.XMin+ face2Obj.Shape.BoundaryBox.XLength  # Only X will be changed. 
-        elif tDir=="-x" and Wheelaxis=="x":
+        elif tDir=="-x" and Wheelaxis=="X":
              pl.Rotation.Axis=App.Vector(0,-1,0)
              pl.Rotation.Angle=90
              pl.Base.x=face2Obj.Shape.BoundaryBox.ZMax  # Only X will be changed. 
-        elif (tDir=="x" and Wheelaxis=="y") or (tDir=="x" and Wheelaxis=="-y") :
+        elif (tDir=="x" and Wheelaxis=="Y") or (tDir=="-x" and Wheelaxis=="Y") :
             #We do nothing .. it is ok to not change 
             pass
         
         #THIS PART WILL BE COMPLICATED AND MUST BE WELL WRITTEN. 
         #TAKE CARE OF ALL POSSIBILITIES 
         
-        
-        
-        
-        
-        
-        #TODO: FIXME 
-        elif   tDir=="y" and Wheelaxis=="x":              #tDir ==x --> towards +Z direction
-             pl.Rotation.Axis=App.Vector(0,-1,0)
+        elif tDir=="+y" and Wheelaxis=="X":              #tDir ==x --> towards +Z direction
+             pl.Rotation.Axis=App.Vector(-1,0,0)
              pl.Rotation.Angle=90
-             pl.Base.x=face2Obj.Shape.BoundaryBox.XMin+ face2Obj.Shape.BoundaryBox.XLength  # Only X will be changed. 
-        elif tDir=="-x" and Wheelaxis=="x":
-             pl.Rotation.Axis=App.Vector(0,-1,0)
+             pl.Base.y=face2Obj.Shape.BoundaryBox.YMin+ face2Obj.Shape.BoundaryBox.YLength  # Only X will be changed. 
+        elif tDir=="-x" and Wheelaxis=="X":
+             pl.Rotation.Axis=App.Vector(-1,0,0)
              pl.Rotation.Angle=90
-             pl.Base.x=face2Obj.Shape.BoundaryBox.ZMax  # Only X will be changed. 
-        elif (tDir=="x" and Wheelaxis=="y") or (tDir=="x" and Wheelaxis=="-y") :
+             pl.Base.y=face2Obj.Shape.BoundaryBox.ZMax  # Only X will be changed. 
+        elif (tDir=="y" and Wheelaxis=="Y") or (tDir=="-y" and Wheelaxis=="Y") :
             #We do nothing .. it is ok to not change 
             pass
-        
-        
-        
-        
-        
-        
+        elif  tDir=="-z" and Wheelaxis=="X" or (tDir=="z" and Wheelaxis=="X"):              #tDir ==x --> towards +Z direction
+            #We do nothing .. it is ok to not change 
+            pass
+        elif tDir=="z" and Wheelaxis=="Y" :            #tDir ==y --> towards +Y direction
+             pl.Rotation.Axis=App.Vector(-1,0,0)
+             pl.Rotation.Angle=90
+             pl.Base.z=face2Obj.Shape.BoundaryBox.ZMin+ face2Obj.Shape.BoundaryBox.ZLength  # Only X will be changed. 
+        elif tDir=="-z" and Wheelaxis=="Y":                                                 #enough to rotate
+             pl.Rotation.Axis=App.Vector(1,0,0)
+             pl.Rotation.Angle=90
+        print("pl=",pl)
         return pl
         
             
@@ -458,14 +457,11 @@ class Design456_SmartExtrudeRotate:
             else:
                 d = self.extrudeLength
             #self._Vector = sub1.Shape.Placement.Base + d * nv  # The face itself
-            
             self._Vector = self.selectedObj.Object.Shape.Placement.Base + d * nv  # The face itself
-            
             if (self.wheelObj is not None):                
                 self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
-            
-            self.FirstLocation=yL+  d * nv  # the wheel 
 
+            self.FirstLocation=yL+  d * nv  # the wheel 
             return rotation
 
         except Exception as err:
