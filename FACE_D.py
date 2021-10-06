@@ -36,7 +36,7 @@ from typing import List
 import math
 
 #TODO : FIXME BETTER WAY?
-def getDirectionAxis():
+def getDirectionAxis(s = Gui.Selection.getSelectionEx()):
     """[summary]
 
     Raises:
@@ -48,7 +48,6 @@ def getDirectionAxis():
         [str]: [Returns +x,-x,+y,-y,+z,-z]
     """
     try:
-        s = Gui.Selection.getSelectionEx()
         if len(s) == 0:
             print("Nothing was selected")
             return ""  # nothing to do we cannot calculate the direction
