@@ -332,24 +332,14 @@ class Design456_SmartExtrudeRotate:
     objChangedTransparency = []
     ExtractedFaces = []
     FirstLocation=None
+    
     def reCreateExtrudeObject(self):
         """
-        [
-         Recreate the object after changing the length of the extrusion
-        ]
+        [Recreate the object after changing the length of the extrusion]
         """
-        try:
-            #self.ExtractedFaces[1].Placement.Base = self._Vector
-            #self.ExtractedFaces[1].Placement.Rotation.Axis = self.ExtractedFaces[0].Placement.Rotation.Axis  # App.Vector(self.Rotation[0], self.Rotation[1], self.Rotation[2])
-            #self.ExtractedFaces[1].Placement.Rotation.Angle = self.ExtractedFaces[0].Placement.Rotation.Angle  # math.radians(self.Rotation[3])
-            pass
-        
-        except Exception as err:
-            App.Console.PrintError("'reCreateExtrudeObject' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+        self.ExtractedFaces[1].Placement.Base = self._Vector
+        App.ActiveDocument.recompute()
+
 
     def calculateRotatedNormal(self,Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
@@ -364,38 +354,41 @@ class Design456_SmartExtrudeRotate:
         faceRotation=0
         #TODO: Lets take only X axis first , then Y ..etc and so on. 
         face1Obj=self.ExtractedFaces[0]
-        pl=self.ExtractedFaces[0].Object.Placement
-        tDir= faced.getDirectionAxis(self.selected) #face direction
+        pl=self.ExtractedFaces[0].Placement
+        faceDir= faced.getDirectionAxis(self.selected) #face direction
         print("WheelAxis=",Wheelaxis)
-        print("tDir=",tDir)
+        print("faceDir=",faceDir)
         
         #THIS PART WILL BE COMPLICATED AND MUST BE WELL WRITTEN. 
         #TAKE CARE OF ALL POSSIBILITIES 
         
-        if  tDir=="+x" and Wheelaxis=="X":              #tDir ==x --> towards +Z direction
+        if  faceDir=="+x" and Wheelaxis=="X":              #faceDir ==x --> towards +Z direction
             pl.Rotation.Axis=App.Vector(0,-1,0)
             pl.Rotation.Angle=math.radians(90)
-            pl.Base.x=self.selectedObj.Object.Shape.BoundBox.XMin+ 2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed. 
+            pl.Base.x=self.selectedObj.Object.Shape.BoundBox.XMin+ 2* self.selectedObj.Object.Shape.BoundBox.XLength  # Only X will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.z=face1Obj.Placement.Base.z
+            print ("meeeeeeeeeeeeeeeeeee")
             print(pl.Base)
             print(pl.Rotation.Angle)
             print(pl.Rotation.Axis)
             
-        elif tDir=="-x" and Wheelaxis=="X":
+        elif faceDir=="-x" and Wheelaxis=="X":
             pl.Rotation.Axis=App.Vector(0,-1,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only X will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.x=face1Obj.Placement.Base.x
+            print("yyyyyyyyyyyy")
             print(pl.Base)
             print(pl.Rotation.Angle)
             print(pl.Rotation.Axis)
-        elif (tDir=="+x" and Wheelaxis=="Y") or (tDir=="-x" and Wheelaxis=="Y") :
+            
+        elif (faceDir=="+x" and Wheelaxis=="Y") or (faceDir=="-x" and Wheelaxis=="Y") :
             #We do nothing .. it is ok to not change 
             pl.Rotation.Axis=App.Vector(-1,0,0)
-            pl.Rotation.Angle=math.radians(90)
-            pl.Base.y=self.selectedObj.Object.Placement.Base.y+2* face1Obj.Shape.BoundBox.YLength  # Only X will be changed. 
+            pl.Rotation.Angle=math.radians(0)
+            pl.Base.y= face1Obj.Placement.Base.y # Only X will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.z=face1Obj.Placement.Base.z
             print(pl.Base)
@@ -403,7 +396,7 @@ class Design456_SmartExtrudeRotate:
             print(pl.Rotation.Axis)
 
         
-        elif tDir=="+y" and Wheelaxis=="X":              #tDir ==x --> towards +Z direction
+        elif faceDir=="+y" and Wheelaxis=="X":              #faceDir ==x --> towards +Z direction
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.y=2*face1Obj.Shape.BoundBox.YLength  # Only X will be changed. 
@@ -413,7 +406,7 @@ class Design456_SmartExtrudeRotate:
             print(pl.Rotation.Angle)
             print(pl.Rotation.Axis)
             
-        elif tDir=="-x" and Wheelaxis=="X":                        #ok Don't change
+        elif faceDir=="-x" and Wheelaxis=="X":                        #ok Don't change
             pl.Rotation.Axis=App.Vector(0,-1,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only X will be changed. 
@@ -423,25 +416,25 @@ class Design456_SmartExtrudeRotate:
             print(pl.Rotation.Angle)
             print(pl.Rotation.Axis)
             
-        elif (tDir=="+y" and Wheelaxis=="Y") or (tDir=="-y" and Wheelaxis=="Y") :
+        elif (faceDir=="+y" and Wheelaxis=="Y") or (faceDir=="-y" and Wheelaxis=="Y") :
             #We do nothing .. it is ok to not change 
             pl.Base = self._Vector
-            pl.Rotation.Axis = self.ExtractedFaces[0].Placement.Rotation.Axis  # App.Vector(self.Rotation[0], self.Rotation[1], self.Rotation[2])
-            pl.Rotation.Angle= self.ExtractedFaces[0].Placement.Rotation.Angle  # math.radians(self.Rotation[3])
+            pl.Rotation.Axis = self.ExtractedFaces[0].Placement.Rotation.Axis 
+            pl.Rotation.Angle= self.ExtractedFaces[0].Placement.Rotation.Angle
             print(pl.Base)
             print(pl.Rotation.Angle)
             print(pl.Rotation.Axis)
             
-        elif  tDir=="-z" and Wheelaxis=="X" or (tDir=="+z" and Wheelaxis=="X"):              #tDir ==x --> towards +Z direction
+        elif  faceDir=="-z" and Wheelaxis=="X" or (faceDir=="+z" and Wheelaxis=="X"):              #faceDir ==x --> towards +Z direction
             #We do nothing .. it is ok to not change 
             pl.Base = self._Vector
-            pl.Rotation.Axis = self.ExtractedFaces[0].Placement.Rotation.Axis  # App.Vector(self.Rotation[0], self.Rotation[1], self.Rotation[2])
-            pl.Rotation.Angle= self.ExtractedFaces[0].Placement.Rotation.Angle  # math.radians(self.Rotation[3])
+            pl.Rotation.Axis = self.ExtractedFaces[0].Placement.Rotation.Axis 
+            pl.Rotation.Angle= self.ExtractedFaces[0].Placement.Rotation.Angle  
             print(pl.Base)
             print(pl.Rotation.Angle)
             print(pl.Rotation.Axis)
             
-        elif tDir=="+z" and Wheelaxis=="Y" :            #tDir ==y --> towards +Y direction
+        elif faceDir=="+z" and Wheelaxis=="Y" :            #faceDir ==y --> towards +Y direction
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.z=2*face1Obj.Shape.BoundBox.ZLength  # Only X will be changed. 
@@ -451,7 +444,7 @@ class Design456_SmartExtrudeRotate:
             print(pl.Rotation.Angle)
             print(pl.Rotation.Axis)
             
-        elif tDir=="-z" and Wheelaxis=="Y":                                                 #enough to rotate
+        elif faceDir=="-z" and Wheelaxis=="Y":                                                 #enough to rotate
             pl.Rotation.Axis=App.Vector(1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.x=2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed. 
@@ -477,10 +470,6 @@ class Design456_SmartExtrudeRotate:
             #TODO:FIXME
             pl=self.calculateRotatedNormal(self.direction)
             self.ExtractedFaces[1].Placement=pl
-            print("999999999999999999999999999999")
-            print(self.ExtractedFaces[1].Placement.Base)
-            print(self.ExtractedFaces[1].Placement.Rotation.Angle)
-            print(self.ExtractedFaces[1].Placement.Rotation.Axis)
             face2 = None
             if(self.isFaceOf3DObj()):
                 # The whole object is selected
@@ -493,6 +482,7 @@ class Design456_SmartExtrudeRotate:
             uv = face2.Surface.parameter(yL)
             nv = face2.normalAt(uv[0], uv[1])
             self.normalVector = nv
+            #Center disk rotation
             if (face2.Surface.Rotation is None):
                 calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 rotation = [0, 1, 0, calAn]
@@ -507,7 +497,7 @@ class Design456_SmartExtrudeRotate:
             else:
                 d = self.extrudeLength
             #self._Vector = sub1.Shape.Placement.Base + d * nv  # The face itself
-            self._Vector = self.selectedObj.Object.Shape.Placement.Base + d * nv  # The face itself
+            self._Vector = self.ExtractedFaces[0].Placement.Base + d * nv  # The face itself
             if (self.wheelObj is not None):                
                 self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
 
@@ -656,13 +646,30 @@ class Design456_SmartExtrudeRotate:
                 del self._mywin
                 self._mywin = None
             App.ActiveDocument.commitTransaction()  # undo reg.
-            self.extrudeLength = 0
-            self.OperationOption = 0
+            self.mw = None
+            self.dialog = None
+            self.tab = None
+            self.wheelObj = None
+            self._mywin = None
+            self.b1 = None
+            self.ExtrudeLBL = None
+            self.run_Once = False
+            self.endVector = None
+            self.startVector = None
+            self.extrudeLength = 0.001  # This will be the Delta-mouse position
+            # We will make two object, one for visual effect and the other is the original
             self.selectedObj = None
-            self.targetFace = None
-            self.newObjectect = None
-            self.direction = "Y"
-            self._Vector = None
+            self.selected=None
+            self.direction = None
+            self.setupRotation = [0, 0, 0, 0]
+            self.Rotation = [0, 0, 0, 0]  # Used only with the center (cylinder)
+            # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
+            self.newObject = None
+            self.mouseOffset = App.Vector(0, 0, 0)
+            self.OperationOption = 0  # default is zero
+            self.objChangedTransparency = []
+            self.ExtractedFaces = []
+            self.FirstLocation=None
             del self
 
         except Exception as err:
