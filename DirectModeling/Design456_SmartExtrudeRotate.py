@@ -361,10 +361,10 @@ class Design456_SmartExtrudeRotate:
             [Base.placement]: [Placement, rotation angle and axis of rotation for face2]
         """
         
-        pl=App.Placement()
         faceRotation=0
         #TODO: Lets take only X axis first , then Y ..etc and so on. 
         face1Obj=self.ExtractedFaces[0]
+        pl=self.ExtractedFaces[0].Object.Placement
         tDir= faced.getDirectionAxis(self.selected) #face direction
         print("WheelAxis=",Wheelaxis)
         print("tDir=",tDir)
