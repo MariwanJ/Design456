@@ -375,7 +375,7 @@ class Design456_SmartExtrudeRotate:
         if  tDir=="+x" and Wheelaxis=="X":              #tDir ==x --> towards +Z direction
             pl.Rotation.Axis=App.Vector(0,-1,0)
             pl.Rotation.Angle=math.radians(90)
-            pl.Base.x=2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed. 
+            pl.Base.x=self.selectedObj.Object.Shape.BoundBox.XMin+ 2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.z=face1Obj.Placement.Base.z
             print(pl.Base)
@@ -395,7 +395,7 @@ class Design456_SmartExtrudeRotate:
             #We do nothing .. it is ok to not change 
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(90)
-            pl.Base.y=2* face1Obj.Shape.BoundBox.YLength  # Only X will be changed. 
+            pl.Base.y=self.selectedObj.Object.Placement.Base.y+2* face1Obj.Shape.BoundBox.YLength  # Only X will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.z=face1Obj.Placement.Base.z
             print(pl.Base)
