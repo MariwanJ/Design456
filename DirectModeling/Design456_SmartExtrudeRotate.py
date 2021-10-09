@@ -137,7 +137,7 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
-    linktocaller.reCreateExtrudeObject()
+    #linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
@@ -182,7 +182,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    linktocaller.reCreateExtrudeObject()
+    #linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
@@ -221,7 +221,7 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
     #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    linktocaller.reCreateExtrudeObject()
+    #linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
@@ -264,7 +264,7 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
     #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    linktocaller.reCreateExtrudeObject()
+    #linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
@@ -332,14 +332,6 @@ class Design456_SmartExtrudeRotate:
     objChangedTransparency = []
     ExtractedFaces = []
     FirstLocation=None
-    
-    def reCreateExtrudeObject(self):
-        """
-        [Recreate the object after changing the length of the extrusion]
-        """
-        self.ExtractedFaces[1].Placement.Base = self._Vector
-        App.ActiveDocument.recompute()
-
 
     def calculateRotatedNormal(self,Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
@@ -363,10 +355,9 @@ class Design456_SmartExtrudeRotate:
         if  faceDir=="+x" and Wheelaxis=="X":              #faceDir ==x --> towards +Z direction
             pl.Rotation.Axis=App.Vector(0,-1,0)
             pl.Rotation.Angle=math.radians(90)
-            pl.Base.x=self.selectedObj.Object.Shape.BoundBox.XMin+ 2* self.selectedObj.Object.Shape.BoundBox.XLength  # Only X will be changed. 
+            pl.Base.x=self.selectedObj.Object.Shape.BoundBox.XMax+ self.selectedObj.Object.Shape.BoundBox.XLength  # Only X will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.z=face1Obj.Placement.Base.z
-
             
         elif faceDir=="-x" and Wheelaxis=="X":
             pl.Rotation.Axis=App.Vector(0,-1,0)
@@ -382,7 +373,6 @@ class Design456_SmartExtrudeRotate:
             pl.Base.y=face1Obj.Placement.Base.y # Only X will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.z=face1Obj.Placement.Base.z
-
         
         elif faceDir=="+y" and Wheelaxis=="X":              #faceDir ==x --> towards +Z direction
             pl.Rotation.Axis=App.Vector(-1,0,0)
@@ -390,9 +380,9 @@ class Design456_SmartExtrudeRotate:
             pl.Base.y=2*face1Obj.Shape.BoundBox.YLength  # Only X will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.z=face1Obj.Placement.Base.z
-            
-        elif faceDir=="-x" and Wheelaxis=="X":                        #ok Don't change
-            pl.Rotation.Axis=App.Vector(0,-1,0)
+
+        elif faceDir=="-y" and Wheelaxis=="X":                        #ok Don't change
+            pl.Rotation.Axis=App.Vector(1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only X will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
@@ -403,23 +393,14 @@ class Design456_SmartExtrudeRotate:
             pl.Base = face1Obj.Placement.Base
             pl.Rotation.Axis = face1Obj.Placement.Rotation.Axis 
             pl.Rotation.Angle= face1Obj.Placement.Rotation.Angle
-            print(pl.Base)
-            print(pl.Rotation.Angle)
-            print(pl.Rotation.Axis)
             
         elif  faceDir=="-z" and Wheelaxis=="X" or (faceDir=="+z" and Wheelaxis=="X"):              #faceDir ==x --> towards +Z direction
             #We do nothing .. it is ok to not change 
-            print ("Here zzzzzzzzzzzzzzzzzzzzzzzz")
             pl.Base = face1Obj.Placement.Base
             pl.Rotation.Axis = face1Obj.Placement.Rotation.Axis 
             pl.Rotation.Angle= face1Obj.Placement.Rotation.Angle  
-            print(pl.Base)
-            print(pl.Rotation.Angle)
-            print(pl.Rotation.Axis)
             
         elif faceDir=="+z" and Wheelaxis=="Y" :            #faceDir ==y --> towards +Y direction
-            print ("Here eeeeeezzzzzzzzzzzzzzzzzzzzzzzz")
-
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.z=2*face1Obj.Shape.BoundBox.ZLength  # Only X will be changed. 
@@ -435,9 +416,7 @@ class Design456_SmartExtrudeRotate:
             pl.Base.x=2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.z=face1Obj.Placement.Base.z
-            print(pl.Base)
-            print(pl.Rotation.Angle)
-            print(pl.Rotation.Axis)
+            print("-z Y")
         print("pl=",pl)
         return pl
         
@@ -481,12 +460,12 @@ class Design456_SmartExtrudeRotate:
                 d = self.extrudeLength = 1
             else:
                 d = self.extrudeLength
-            #self._Vector = sub1.Shape.Placement.Base + d * nv  # The face itself
-            self._Vector = self.ExtractedFaces[0].Placement.Base + d * nv  # The face itself
+            self.ExtractedFaces[1].Placement.Base = face2.Placement.Base + d * nv  # The face itself
             if (self.wheelObj is not None):                
                 self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
 
             self.FirstLocation=yL+  d * nv  # the wheel 
+            App.ActiveDocument.recompute()
             return rotation
 
         except Exception as err:
