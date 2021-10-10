@@ -410,7 +410,7 @@ class Design456_SmartExtrudeRotate:
         elif self.faceDir=="-z" and Wheelaxis=="Y":                                                 #enough to rotate
             pl.Rotation.Axis=App.Vector(0,1,0)
             pl.Rotation.Angle=math.radians(90)
-            pl.Base.x=2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed. 
+            pl.Base.x=2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed.  #TODO:FIXME:
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.z=face1Obj.Placement.Base.z
 
@@ -431,18 +431,18 @@ class Design456_SmartExtrudeRotate:
 
         # Now we have 45 Degrees : 
         if  self.faceDir=="+y" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
-            pl.Rotation.Axis=App.Vector(1,0,0)
+            pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(45)
             pl.Base.x=face1Obj.Placement.Base.x 
-            pl.Base.y=face1Obj.Placement.Base.y
-            pl.Base.z=face1Obj.Placement.Base.z
+            pl.Base.y=self.selectedObj.Object.Shape.BoundBox.ZMax
+            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMin
             
         elif self.faceDir=="-y" and Wheelaxis=="45":
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(45)
-            pl.Base.z=face1Obj.Placement.Base.z 
-            pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.x=face1Obj.Placement.Base.x
+            pl.Base.y=self.selectedObj.Object.Shape.BoundBox.YMin-self.selectedObj.Object.Shape.BoundBox.YLength
+            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax 
                 
             # Now we have 45 and 135 Degrees : 
         if  self.faceDir=="+z" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
@@ -477,17 +477,17 @@ class Design456_SmartExtrudeRotate:
 
         # Now we have 45 Degrees : 
         if  self.faceDir=="+y" and Wheelaxis=="135":             
-            pl.Rotation.Axis=App.Vector(1,0,0)
+            pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(135)
             pl.Base.x=face1Obj.Placement.Base.x 
-            pl.Base.y=face1Obj.Placement.Base.y
-            pl.Base.z=face1Obj.Placement.Base.z
+            pl.Base.y=self.selectedObj.Object.Shape.BoundBox.YMax+self.selectedObj.Object.Shape.BoundBox.YLength
+            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax+self.selectedObj.Object.Shape.BoundBox.ZLength
             
         elif self.faceDir=="-y" and Wheelaxis=="135":
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(135)
-            pl.Base.z=face1Obj.Placement.Base.z 
-            pl.Base.y=self.selectedObj.Object.Shape.BoundBox.YMax
+            pl.Base.z=face1Obj.Placement.Base.z
+            pl.Base.y=self.selectedObj.Object.Shape.BoundBox.YMin-self.selectedObj.Object.Shape.BoundBox.YLength
             pl.Base.x=face1Obj.Placement.Base.x
                 
             # Now we have 45 and 135 Degrees : 
@@ -541,10 +541,10 @@ class Design456_SmartExtrudeRotate:
                 calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 rotation = [0, 1, 0, calAn]
             else:
-                rotation = (face2.Surface.Rotation.Axis.x,
+                rotation = [face2.Surface.Rotation.Axis.x,
                             face2.Surface.Rotation.Axis.y,
                             face2.Surface.Rotation.Axis.z,
-                            math.degrees(face2.Surface.Rotation.Angle))
+                            math.degrees(face2.Surface.Rotation.Angle)]
 
             if (self.extrudeLength == 0):
                 d = self.extrudeLength = 1
@@ -555,8 +555,6 @@ class Design456_SmartExtrudeRotate:
                 self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
 
             self.FirstLocation=yL+  d * nv  # the wheel 
-            if (rotation==180):
-                rotation=0  #Avoid rotating the wheel 180 degree
             App.ActiveDocument.recompute()
             return rotation
 
@@ -644,12 +642,13 @@ class Design456_SmartExtrudeRotate:
                 o.Shape = sh
                 self.ExtractedFaces.append(self.selectedObj.Object)
                 self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
+            
             self.setupRotation = self.calculateNewVector()  # Deside how the Degree Wheel be drawn
-            print("self.setupRotation",self.setupRotation)
             if self.faceDir=="+z" or self.faceDir=="-z": 
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 2)
             else:
+    
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 1)
             
