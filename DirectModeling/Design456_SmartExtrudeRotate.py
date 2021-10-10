@@ -43,7 +43,6 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 import math
-import DraftVecUtils  # for rotating the vector
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
@@ -362,7 +361,7 @@ class Design456_SmartExtrudeRotate:
         elif faceDir=="-x" and Wheelaxis=="X":
             pl.Rotation.Axis=App.Vector(0,-1,0)
             pl.Rotation.Angle=math.radians(90)
-            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only X will be changed. 
+            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only z will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.x=face1Obj.Placement.Base.x
 
@@ -375,16 +374,16 @@ class Design456_SmartExtrudeRotate:
             pl.Base.z=face1Obj.Placement.Base.z
         
         elif faceDir=="+y" and Wheelaxis=="X":              #faceDir ==x --> towards +Z direction
-            pl.Rotation.Axis=App.Vector(-1,0,0)
+            pl.Rotation.Axis=App.Vector(1,0,0)
             pl.Rotation.Angle=math.radians(90)
-            pl.Base.y=2*face1Obj.Shape.BoundBox.YLength  # Only X will be changed. 
+            pl.Base.y=self.selectedObj.Object.Shape.BoundBox.YMax+self.selectedObj.Object.Shape.BoundBox.YLength  # Only y will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.z=face1Obj.Placement.Base.z
 
         elif faceDir=="-y" and Wheelaxis=="X":                        #ok Don't change
             pl.Rotation.Axis=App.Vector(1,0,0)
             pl.Rotation.Angle=math.radians(90)
-            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only X will be changed. 
+            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only z will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.y=face1Obj.Placement.Base.y
             
@@ -406,9 +405,6 @@ class Design456_SmartExtrudeRotate:
             pl.Base.z=2*face1Obj.Shape.BoundBox.ZLength  # Only X will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.y=face1Obj.Placement.Base.y
-            print(pl.Base)
-            print(pl.Rotation.Angle)
-            print(pl.Rotation.Axis)
             
         elif faceDir=="-z" and Wheelaxis=="Y":                                                 #enough to rotate
             pl.Rotation.Axis=App.Vector(1,0,0)
@@ -416,7 +412,15 @@ class Design456_SmartExtrudeRotate:
             pl.Base.x=2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.z=face1Obj.Placement.Base.z
-            print("-z Y")
+
+        # Now we have 45 and 135 Degrees : 
+        
+        
+        
+        
+        
+        
+        
         print("pl=",pl)
         return pl
         
