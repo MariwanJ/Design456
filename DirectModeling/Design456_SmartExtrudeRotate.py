@@ -322,6 +322,7 @@ class Design456_SmartExtrudeRotate:
     selectedObj = None
     selected=None
     direction = None
+    faceDir=None
     setupRotation = [0, 0, 0, 0]
     Rotation = [0, 0, 0, 0]  # Used only with the center (cylinder)
     # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
@@ -346,26 +347,26 @@ class Design456_SmartExtrudeRotate:
         #TODO: Lets take only X axis first , then Y ..etc and so on. 
         face1Obj=self.ExtractedFaces[0]
         pl=self.ExtractedFaces[0].Placement
-        faceDir= faced.getDirectionAxis(self.selected) #face direction
+        self.faceDir= faced.getDirectionAxis(self.selected) #face direction
 
         #THIS PART WILL BE COMPLICATED AND MUST BE WELL WRITTEN. 
         #TAKE CARE OF ALL POSSIBILITIES 
         
-        if  faceDir=="+x" and Wheelaxis=="X":              #faceDir ==x --> towards +Z direction
+        if  self.faceDir=="+x" and Wheelaxis=="X":              #self.faceDir ==x --> towards +Z direction
             pl.Rotation.Axis=App.Vector(0,-1,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.x=self.selectedObj.Object.Shape.BoundBox.XMax+ self.selectedObj.Object.Shape.BoundBox.XLength  # Only X will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.z=face1Obj.Placement.Base.z
             
-        elif faceDir=="-x" and Wheelaxis=="X":
+        elif self.faceDir=="-x" and Wheelaxis=="X":
             pl.Rotation.Axis=App.Vector(0,-1,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only z will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.x=face1Obj.Placement.Base.x
 
-        elif (faceDir=="+x" and Wheelaxis=="Y") or (faceDir=="-x" and Wheelaxis=="Y") :
+        elif (self.faceDir=="+x" and Wheelaxis=="Y") or (self.faceDir=="-x" and Wheelaxis=="Y") :
             #We do nothing .. it is ok to not change 
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(0)
@@ -373,52 +374,137 @@ class Design456_SmartExtrudeRotate:
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.z=face1Obj.Placement.Base.z
         
-        elif faceDir=="+y" and Wheelaxis=="X":              #faceDir ==x --> towards +Z direction
+        elif self.faceDir=="+y" and Wheelaxis=="X":              #self.faceDir ==x --> towards +Z direction
             pl.Rotation.Axis=App.Vector(1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.y=self.selectedObj.Object.Shape.BoundBox.YMax+self.selectedObj.Object.Shape.BoundBox.YLength  # Only y will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.z=face1Obj.Placement.Base.z
 
-        elif faceDir=="-y" and Wheelaxis=="X":                        #ok Don't change
+        elif self.faceDir=="-y" and Wheelaxis=="X":                        #ok Don't change
             pl.Rotation.Axis=App.Vector(1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMax  # Only z will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.y=face1Obj.Placement.Base.y
             
-        elif (faceDir=="+y" and Wheelaxis=="Y") or (faceDir=="-y" and Wheelaxis=="Y") :
+        elif (self.faceDir=="+y" and Wheelaxis=="Y") or (self.faceDir=="-y" and Wheelaxis=="Y") :
             #We do nothing .. it is ok to not change 
             pl.Base = face1Obj.Placement.Base
             pl.Rotation.Axis = face1Obj.Placement.Rotation.Axis 
             pl.Rotation.Angle= face1Obj.Placement.Rotation.Angle
             
-        elif  faceDir=="-z" and Wheelaxis=="X" or (faceDir=="+z" and Wheelaxis=="X"):              #faceDir ==x --> towards +Z direction
+        elif  self.faceDir=="-z" and Wheelaxis=="X" or (self.faceDir=="+z" and Wheelaxis=="X"):              #self.faceDir ==x --> towards +Z direction
             #We do nothing .. it is ok to not change 
             pl.Base = face1Obj.Placement.Base
             pl.Rotation.Axis = face1Obj.Placement.Rotation.Axis 
             pl.Rotation.Angle= face1Obj.Placement.Rotation.Angle  
             
-        elif faceDir=="+z" and Wheelaxis=="Y" :            #faceDir ==y --> towards +Y direction
+        elif self.faceDir=="+z" and Wheelaxis=="Y" :            #self.faceDir ==y --> towards +Y direction
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.z=2*face1Obj.Shape.BoundBox.ZLength  # Only X will be changed. 
             pl.Base.x=face1Obj.Placement.Base.x
             pl.Base.y=face1Obj.Placement.Base.y
             
-        elif faceDir=="-z" and Wheelaxis=="Y":                                                 #enough to rotate
+        elif self.faceDir=="-z" and Wheelaxis=="Y":                                                 #enough to rotate
             pl.Rotation.Axis=App.Vector(1,0,0)
             pl.Rotation.Angle=math.radians(90)
             pl.Base.x=2* face1Obj.Shape.BoundBox.XLength  # Only X will be changed. 
             pl.Base.y=face1Obj.Placement.Base.y
             pl.Base.z=face1Obj.Placement.Base.z
 
-        # Now we have 45 and 135 Degrees : 
-        
-        
-        
-        
-        
+        # Now we have 45Degrees : 
+        if  self.faceDir=="+x" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
+            pl.Rotation.Axis=App.Vector(0,-1,0)
+            pl.Rotation.Angle=math.radians(45)
+            pl.Base.x=face1Obj.Placement.Base.x  # Only X will be changed. 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.z=face1Obj.Placement.Base.z
+            
+        elif self.faceDir=="-x" and Wheelaxis=="45":
+            pl.Rotation.Axis=App.Vector(0,1,0)
+            pl.Rotation.Angle=math.radians(45)
+            pl.Base.z=face1Obj.Placement.Base.z 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.x=face1Obj.Placement.Base.x
+
+        # Now we have 45 Degrees : 
+        if  self.faceDir=="+y" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
+            pl.Rotation.Axis=App.Vector(1,0,0)
+            pl.Rotation.Angle=math.radians(45)
+            pl.Base.x=face1Obj.Placement.Base.x 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.z=face1Obj.Placement.Base.z
+            
+        elif self.faceDir=="-y" and Wheelaxis=="45":
+            pl.Rotation.Axis=App.Vector(-1,0,0)
+            pl.Rotation.Angle=math.radians(45)
+            pl.Base.z=face1Obj.Placement.Base.z 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.x=face1Obj.Placement.Base.x
+                
+            # Now we have 45 and 135 Degrees : 
+        if  self.faceDir=="+z" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
+            pl.Rotation.Axis=App.Vector(0,-1,0)
+            pl.Rotation.Angle=math.radians(45)
+            pl.Base.x=face1Obj.Placement.Base.x 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.z=face1Obj.Placement.Base.z
+            
+        elif self.faceDir=="-z" and Wheelaxis=="45":
+            pl.Rotation.Axis=App.Vector(0,1,0)
+            pl.Rotation.Angle=math.radians(45)
+            pl.Base.z=face1Obj.Placement.Base.z 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.x=face1Obj.Placement.Base.x
+
+
+        # Now we have 135 Degrees : 
+        if  self.faceDir=="+x" and Wheelaxis=="135":             
+            pl.Rotation.Axis=App.Vector(0,-1,0)
+            pl.Rotation.Angle=math.radians(135)
+            pl.Base.x=face1Obj.Placement.Base.x  
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.z=face1Obj.Placement.Base.z
+            
+        elif self.faceDir=="-x" and Wheelaxis=="135":
+            pl.Rotation.Axis=App.Vector(0,1,0)
+            pl.Rotation.Angle=math.radians(135)
+            pl.Base.z=face1Obj.Placement.Base.z 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.x=face1Obj.Placement.Base.x
+
+        # Now we have 45 Degrees : 
+        if  self.faceDir=="+y" and Wheelaxis=="135":             
+            pl.Rotation.Axis=App.Vector(1,0,0)
+            pl.Rotation.Angle=math.radians(135)
+            pl.Base.x=face1Obj.Placement.Base.x 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.z=face1Obj.Placement.Base.z
+            
+        elif self.faceDir=="-y" and Wheelaxis=="135":
+            pl.Rotation.Axis=App.Vector(-1,0,0)
+            pl.Rotation.Angle=math.radians(135)
+            pl.Base.z=face1Obj.Placement.Base.z 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.x=face1Obj.Placement.Base.x
+                
+            # Now we have 45 and 135 Degrees : 
+        if  self.faceDir=="+z" and Wheelaxis=="135":              
+            pl.Rotation.Axis=App.Vector(0,-1,0)
+            pl.Rotation.Angle=math.radians(135)
+            pl.Base.x=face1Obj.Placement.Base.x 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.z=face1Obj.Placement.Base.z
+            
+        elif self.faceDir=="-z" and Wheelaxis=="135":
+            pl.Rotation.Axis=App.Vector(0,1,0)
+            pl.Rotation.Angle=math.radians(135)
+            pl.Base.z=face1Obj.Placement.Base.z 
+            pl.Base.y=face1Obj.Placement.Base.y
+            pl.Base.x=face1Obj.Placement.Base.x
+
         
         
         print("pl=",pl)
@@ -558,9 +644,13 @@ class Design456_SmartExtrudeRotate:
                 self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
             self.setupRotation = self.calculateNewVector()  # Deside how the Degree Wheel be drawn
             print("self.setupRotation",self.setupRotation)
-            self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 1)
-
+            if self.faceDir=="+z" or self.faceDir=="-z": 
+                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
+                    round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 2)
+            else:
+                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
+                    round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 1)
+            
             # Define the callbacks. We have many callbacks here.
             # TODO: FIXME:
 
