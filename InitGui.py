@@ -175,12 +175,12 @@ class Design456_Workbench (Workbench):
             from plane import DocObserver 
 
             #from draftguitools.gui_trackers import gridTracker
+            if (self.myDocObserver is None):
+                self.myDocObserver= DocObserver()
+                self.myDocObserver.setLink(self)
+            App.addDocumentObserver(self.myDocObserver)
             if not(App.ActiveDocument):
                 App.newDocument()
-                
-            self.myDocObserver= DocObserver()
-            self.myDocObserver.setLink(self)
-            App.addDocumentObserver(self.myDocObserver)
 
             # FROM DRAFT
             if hasattr(FreeCADGui, "draftToolBar"):
