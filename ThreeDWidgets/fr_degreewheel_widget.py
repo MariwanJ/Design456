@@ -358,8 +358,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     SETUPwheelTypeRotation = [90.0, 0.0, 0.0]      #FRONT       #OK Don't change        
                     SetupTextRotation=       [90.0, 0.0, 0.0]                   #OK Don't change
                 elif self.w_wheelType==2:
-                    SETUPwheelTypeRotation=  [90.0, 90.0, 0.0]     #RIGHT       #OK Don't change
-                    SetupTextRotation=       [90.0, 90.0, 0.0]                  #OK Don't change
+                    SETUPwheelTypeRotation=  [-90.0, 90.0, 90.0]     #RIGHT       #OK Don't change
+                    SetupTextRotation=       [-90.0, 90.0, 90.0]                  #OK Don't change
 
                 self.w_CentSeparator  = fr_wheel_draw.draw_AllParts(self.w_vector[0],"Center", 
                                                                     usedColor, SETUPwheelTypeRotation,
