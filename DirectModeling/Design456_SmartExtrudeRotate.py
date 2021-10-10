@@ -695,11 +695,7 @@ class Design456_SmartExtrudeRotate:
             self.radMerge = QtGui.QRadioButton(self.groupBox)
             self.radMerge.setObjectName("radMerge")
             self.radMerge.setText("Merge")
-
-            self.radSubtract = QtGui.QRadioButton(self.groupBox)
-            self.radSubtract.setObjectName("radSubtract")
-            self.radSubtract.setText("Subtract")
-
+            
             commentFont = QtGui.QFont("Times", 12, True)
             self.ExtrudeLBL = QtGui.QLabel("Extrude Length=")
             self.e1.setFont(commentFont)
@@ -715,17 +711,14 @@ class Design456_SmartExtrudeRotate:
             # Adding checkbox for Merge, Subtract Or just leave it "As is"
             self.la.addWidget(self.radAsIs)
             self.la.addWidget(self.radMerge)
-            self.la.addWidget(self.radSubtract)
             self.radAsIs.setChecked(True)
             self.radAsIs.toggled.connect(lambda: self.btnState(self.radAsIs))
             self.radMerge.toggled.connect(lambda: self.btnState(self.radMerge))
-            self.radSubtract.toggled.connect(
-                lambda: self.btnState(self.radSubtract))
 
             QtCore.QObject.connect(
                 okbox, QtCore.SIGNAL("accepted()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
-
+            self.tab.setCurrentWidget(self.dialog)
             return self.dialog
 
         except Exception as err:
@@ -743,9 +736,7 @@ class Design456_SmartExtrudeRotate:
         elif button.text() == "Merge":
             if button.isChecked() == True:
                 self.OperationOption = 1
-        elif button.text() == "Subtract":
-            if button.isChecked() == True:
-                self.OperationOption = 2
+
 
     def hide(self):
         """
