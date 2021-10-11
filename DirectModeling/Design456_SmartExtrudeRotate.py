@@ -416,25 +416,25 @@ class Design456_SmartExtrudeRotate:
 
         # Now we have 45Degrees : 
         if  self.faceDir=="+x" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
-            pl.Rotation.Axis=App.Vector(0,-1,0)
+            pl.Rotation.Axis=App.Vector(0,1,0)
             pl.Rotation.Angle=math.radians(45)
-            pl.Base.x=face1Obj.Placement.Base.x  # Only X will be changed. 
+            pl.Base.x=face1Obj.Placement.Base.z 
             pl.Base.y=face1Obj.Placement.Base.y
-            pl.Base.z=face1Obj.Placement.Base.z
+            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMin
             
         elif self.faceDir=="-x" and Wheelaxis=="45":
             pl.Rotation.Axis=App.Vector(0,1,0)
             pl.Rotation.Angle=math.radians(45)
-            pl.Base.z=face1Obj.Placement.Base.z 
+            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZLength/2 
             pl.Base.y=face1Obj.Placement.Base.y
-            pl.Base.x=face1Obj.Placement.Base.x
-
+            pl.Base.x=-self.selectedObj.Object.Shape.BoundBox.ZLength
+            
         # Now we have 45 Degrees : 
         if  self.faceDir=="+y" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
             pl.Rotation.Axis=App.Vector(-1,0,0)
             pl.Rotation.Angle=math.radians(45)
             pl.Base.x=face1Obj.Placement.Base.x 
-            pl.Base.y=self.selectedObj.Object.Shape.BoundBox.ZMax
+            pl.Base.y=self.selectedObj.Object.Shape.BoundBox.YMax
             pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMin
             
         elif self.faceDir=="-y" and Wheelaxis=="45":
