@@ -168,11 +168,6 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
         # only once
         linktocaller.startVector = linktocaller.endVector
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-    print("///////////////")
-    print( linktocaller.endVector)
-    print(linktocaller.startVector)
-
-    print(linktocaller.normalVector)
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -251,10 +246,6 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
         # only once
         linktocaller.startVector = linktocaller.endVector
         linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-    print("///////////////")
-    print( linktocaller.endVector)
-    print(linktocaller.startVector)
-    print(linktocaller.normalVector)
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -354,7 +345,7 @@ class Design456_SmartExtrudeRotate:
         s=self.ExtractedFaces[1]   
         s.Placement=self.ExtractedFaces[0].Placement  #Reset the placement of the object if was not correct
         ax=self.selectedObj.Object.Shape.CenterOfMass
-        if  self.faceDir=="+x" and Wheelaxis=="X":              #self.faceDir ==x --> towards +Z direction
+        if  self.faceDir=="+x" and Wheelaxis=="X":              
             faced.RealRotateObjectToAnAxis(s,ax,0,90,0) 
             self.ExtractedFaces[1].Placement.Base.x=self.ExtractedFaces[1].Placement.Base.x+self.ExtractedFaces[1].Shape.BoundBox.XLength
             pl=self.ExtractedFaces[1].Placement
@@ -370,32 +361,32 @@ class Design456_SmartExtrudeRotate:
             pl=self.ExtractedFaces[1].Placement
 
         
-        elif self.faceDir=="+y" and Wheelaxis=="X":              #self.faceDir ==x --> towards +Z direction
-            faced.RealRotateObjectToAnAxis(s,ax,0,-90,0) 
-            self.ExtractedFaces[1].Placement.Base.y=self.ExtractedFaces[1].Placement.Base.y+self.ExtractedFaces[1].Shape.BoundBox.Yength
+        elif self.faceDir=="+y" and Wheelaxis=="X":              
+            faced.RealRotateObjectToAnAxis(s,ax,0,0,-90) 
+            self.ExtractedFaces[1].Placement.Base.y=self.ExtractedFaces[1].Placement.Base.y+self.ExtractedFaces[1].Shape.BoundBox.YLength
             pl=self.ExtractedFaces[1].Placement
 
-        elif self.faceDir=="-y" and Wheelaxis=="X":                        #ok Don't change
-            faced.RealRotateObjectToAnAxis(s,ax,0,90,0) 
+        elif self.faceDir=="-y" and Wheelaxis=="X":                        
+            faced.RealRotateObjectToAnAxis(s,ax,0,0,90) 
             self.ExtractedFaces[1].Placement.Base.y=self.ExtractedFaces[1].Placement.Base.y-self.ExtractedFaces[1].Shape.BoundBox.YLength
             pl=self.ExtractedFaces[1].Placement
 
         elif (self.faceDir=="+y" and Wheelaxis=="Y") or (self.faceDir=="-y" and Wheelaxis=="Y") :
             pl=self.ExtractedFaces[1].Placement
             
-        elif  self.faceDir=="-z" and Wheelaxis=="X" or (self.faceDir=="+z" and Wheelaxis=="X"):              #self.faceDir ==x --> towards +Z direction
+        elif  self.faceDir=="-z" and Wheelaxis=="X" or (self.faceDir=="+z" and Wheelaxis=="X"):            
             pl=self.ExtractedFaces[1].Placement
             
-        elif self.faceDir=="+z" and Wheelaxis=="Y" :            #self.faceDir ==y --> towards +Y direction
+        elif self.faceDir=="+z" and Wheelaxis=="Y" :            
             faced.RealRotateObjectToAnAxis(s,ax,0,0,-90) 
             pl=self.ExtractedFaces[1].Placement
             
-        elif self.faceDir=="-z" and Wheelaxis=="Y":                                                 #enough to rotate
+        elif self.faceDir=="-z" and Wheelaxis=="Y":                                                 
             faced.RealRotateObjectToAnAxis(s,ax,0,0,90) 
             pl=self.ExtractedFaces[1].Placement
 
         # Now we have 45Degrees : 
-        if  self.faceDir=="+x" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
+        if  self.faceDir=="+x" and Wheelaxis=="45":              
             faced.RotateObjectToCenterPoint(s,0,45,0)
             pl=self.ExtractedFaces[1].Placement
             
@@ -404,7 +395,7 @@ class Design456_SmartExtrudeRotate:
             pl=self.ExtractedFaces[1].Placement            
         
         # Now we have 45 Degrees : 
-        if  self.faceDir=="+y" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
+        if  self.faceDir=="+y" and Wheelaxis=="45":             
             faced.RotateObjectToCenterPoint(s,0,0,-45)
             pl=self.ExtractedFaces[1].Placement
             
@@ -413,35 +404,34 @@ class Design456_SmartExtrudeRotate:
             pl=self.ExtractedFaces[1].Placement
                 
             # Now we have 45 and 135 Degrees : 
-        if  self.faceDir=="+z" and Wheelaxis=="45":              #self.faceDir ==x --> towards +Z direction
+        if  self.faceDir=="+z" and Wheelaxis=="45":              
             faced.RotateObjectToCenterPoint(s,0,0,45)
             pl=self.ExtractedFaces[1].Placement
             
         elif self.faceDir=="-z" and Wheelaxis=="45":                  
-            faced.RotateObjectToCenterPoint(s,0,0,-45)
+            faced.RotateObjectToCenterPoint(s,0,0,45)
             pl=self.ExtractedFaces[1].Placement
 
         # Now we have 135 Degrees : 
         if  self.faceDir=="+x" and Wheelaxis=="135":             
-            faced.RotateObjectToCenterPoint(s,0,45,0)
+            faced.RotateObjectToCenterPoint(s,0,135,0)
             pl=self.ExtractedFaces[1].Placement
             
         elif self.faceDir=="-x" and Wheelaxis=="135":
             faced.RotateObjectToCenterPoint(s,0,135,0)
             pl=self.ExtractedFaces[1].Placement
 
-        # Now we have 45 Degrees : 
+
         if  self.faceDir=="+y" and Wheelaxis=="135":             
-            faced.RotateObjectToCenterPoint(s,0,135,0)
-            pl.Base.z=self.selectedObj.Object.Shape.BoundBox.ZMin
+            faced.RotateObjectToCenterPoint(s,0,0,-135)
+            pl=self.ExtractedFaces[1].Placement   
             
         elif self.faceDir=="-y" and Wheelaxis=="135":
-            faced.RotateObjectToCenterPoint(s,0,135,0)
+            faced.RotateObjectToCenterPoint(s,0,0,-135)
             pl=self.ExtractedFaces[1].Placement                
 
-            # Now we have 45 and 135 Degrees : 
         if  self.faceDir=="+z" and Wheelaxis=="135":              
-            faced.RotateObjectToCenterPoint(s,0,135,0)
+            faced.RotateObjectToCenterPoint(s,0,0,135)
             pl=self.ExtractedFaces[1].Placement                
             
         elif self.faceDir=="-z" and Wheelaxis=="135":
