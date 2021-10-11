@@ -54,15 +54,15 @@ def getDirectionAxis(s = Gui.Selection.getSelectionEx()):
         obj = s[0]
         faceSel=None
         if (hasattr(obj, "SubObjects")):
-            print("has subobject")
+            #print("has subobject")
             if len(obj.SubObjects) != 0:
                 if (len (obj.SubObjects[0].Faces) == 0):
-                    print("no faces but has subobject")
+                    #print("no faces but has subobject")
                     # it is an edge not a face:
                     f = findFacehasSelectedEdge()
                     if f is None:
                         raise Exception("Face not found")
-                    print("face found not none")
+                    #print("face found not none")
                     #direction = f.normalAt(0, 0)
                     #print("direction is ", direction)
                     faceSel=f
