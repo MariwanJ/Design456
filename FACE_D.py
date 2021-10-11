@@ -816,24 +816,70 @@ def calculateAngle(v1,v2=App.Vector(1,1,0)):
     return math.degrees(v1.getAngle(v2))
 
 
-def RealRotateObjectToAnAxis(SelectedObj=None,RealAxis=App.Vector(0,0,0),rotAngleX=0, rotAngleY=0,rotAngleZ=0):
+#The rotation below is inspired by https://wiki.freecadweb.org/Macro_Rotate_To_Point
+#Thanks Mario
+def RealRotateObjectToAnAxis(SelectedObj=None,RealAxis=App.Vector(0.0,0.0,0.0),
+                             rotAngleX=0.0, rotAngleY=0.0,rotAngleZ=0.0):
+    """[Rotate object ref to the given axis (Real rotation)]
 
+    Args:
+        SelectedObj ([Gui.Selection.Object], Required): [The object(s) to rotate].
+        RealAxis ([App.Vector], optional): [Real axis used to rotate the object]. Defaults to App.Vector(0,0,0).
+        rotAngleX (float, optional): [Angle of rotation - X Axis]. Defaults to 0.0.
+        rotAngleY (float, optional): [Angle of rotation - Y Axis]. Defaults to 0.0.
+        rotAngleZ (float, optional): [Angle of rotation - Z Axis]. Defaults to 0.0.
+    """
 
-    SelectedObj.Placement = App.Placement(App.Vector(0.0,0.0,0.0),
-                                            App.Rotation(rotAngleX, rotAngleY, rotAngleZ),
-                                            App.Vector(RealAxis.x,RealAxis.y,RealAxis.z)).multiply(
-                                                App.ActiveDocument.getObject(SelectedObj.Name).Placement)
+    if (SelectedObj==None):
+        raise ValueError("SelectedObj must be (a) selection object(s) ")
 
-    textRota=("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0],2)) + " , " +
-                                                 str(round(SelectedObj.Placement.Rotation.toEuler()[1],2)) + " , " + 
-                                                 str(round(SelectedObj.Placement.Rotation.toEuler()[2],2)) + ")] " +
-                                      "[Axis=("+ str(round(RealAxis.x,2))+" , "+ str(round(RealAxis.y,2))+" , "+ str(round(RealAxis.z,2))+")]")
-    print(textRota)
+    if (type(SelectedObj)==list):
+        for obj in SelectedObj:
+            obj.Placement = App.Placement(App.Vector(0.0,0.0,0.0),
+                                                App.Rotation(rotAngleX, rotAngleY, rotAngleZ),
+                                                App.Vector(RealAxis.x,RealAxis.y,RealAxis.z)).multiply(
+                                                    App.ActiveDocument.getObject(obj.Name).Placement)
+            textRota=("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0],2)) + " , " +
+                                                     str(round(obj.Placement.Rotation.toEuler()[1],2)) + " , " + 
+                                                     str(round(obj.Placement.Rotation.toEuler()[2],2)) + ")] " +
+                                          "[Axis=("+ str(round(RealAxis.x,2))+" , "+ str(round(RealAxis.y,2))+" , "+ 
+                                          str(round(RealAxis.z,2))+")]")
+            print(textRota)
+    else:
+        
+        SelectedObj.Placement = App.Placement(App.Vector(0.0,0.0,0.0),
+                                                App.Rotation(rotAngleX, rotAngleY, rotAngleZ),
+                                                App.Vector(RealAxis.x,RealAxis.y,RealAxis.z)).multiply(
+                                                    App.ActiveDocument.getObject(SelectedObj.Name).Placement)
 
+        textRota=("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0],2)) + " , " +
+                                                     str(round(SelectedObj.Placement.Rotation.toEuler()[1],2)) + " , " + 
+                                                     str(round(SelectedObj.Placement.Rotation.toEuler()[2],2)) + ")] " +
+                                          "[Axis=("+ str(round(RealAxis.x,2))+" , "+ str(round(RealAxis.y,2))+" , "+ str(round(RealAxis.z,2))+")]")
+        #print(textRota)
+
+#The rotation below is inspired by https://wiki.freecadweb.org/Macro_Rotate_To_Point
+#Thanks Mario
 def RotateObjectToCenterPoint(SelectedObj=None,XAngle=0, YAngle=45,ZAngle=0):
-    #The object will rotate at it's place
-    axisX = SelectedObj.Shape.BoundBox.Center.x 
-    axisY = SelectedObj.Shape.BoundBox.Center.y
-    axisZ = SelectedObj.Shape.BoundBox.Center.z
+    """[Rotate object ref to it's center point]
 
-    RealRotateObjectToAnAxis(SelectedObj,App.Vector(axisX,axisY,axisZ),XAngle,YAngle,ZAngle)
+    Args:
+        SelectedObj ([Gui.Selection.Object], Required): [description]. Defaults to None.
+        XAngle (int, optional): [description]. Defaults to 0.
+        YAngle (int, optional): [description]. Defaults to 45.
+        ZAngle (int, optional): [description]. Defaults to 0.
+    """
+    #The object will rotate at it's place
+    if (SelectedObj==None):
+        raise ValueError("SelectedObj must be (a) selection object(s) ")
+    if (type(SelectedObj)==list):
+        for obj in SelectedObj:
+                axisX = obj.Shape.BoundBox.Center.x 
+                axisY = obj.Shape.BoundBox.Center.y
+                axisZ = obj.Shape.BoundBox.Center.z
+        RealRotateObjectToAnAxis(SelectedObj,App.Vector(axisX,axisY,axisZ),XAngle,YAngle,ZAngle)
+    else:
+        axisX = SelectedObj.Shape.BoundBox.Center.x 
+        axisY = SelectedObj.Shape.BoundBox.Center.y
+        axisZ = SelectedObj.Shape.BoundBox.Center.z
+        RealRotateObjectToAnAxis(SelectedObj,App.Vector(axisX,axisY,axisZ),XAngle,YAngle,ZAngle)
