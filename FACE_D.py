@@ -799,7 +799,7 @@ def checkCollision(newObj):
 
 
 # Function to find the angle
-# between the two lines with the origion 
+# between the two lines with ref to the origion 
 # This is here to make it clear how you do that
 def calculateAngle(v1,v2=App.Vector(1,1,0)):
     """[Find angle between a vector and the origin
@@ -814,3 +814,26 @@ def calculateAngle(v1,v2=App.Vector(1,1,0)):
         [float]: [Angle to the Z Axis in degrees]
     """
     return math.degrees(v1.getAngle(v2))
+
+
+def RealRotateObjectToAnAxis(SelectedObj=None,RealAxis=App.Vector(0,0,0),rotAngleX=0, rotAngleY=0,rotAngleZ=0):
+
+
+    SelectedObj.Placement = App.Placement(App.Vector(0.0,0.0,0.0),
+                                            App.Rotation(rotAngleX, rotAngleY, rotAngleZ),
+                                            App.Vector(RealAxis.x,RealAxis.y,RealAxis.z)).multiply(
+                                                App.ActiveDocument.getObject(SelectedObj.Name).Placement)
+
+    textRota=("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0],2)) + " , " +
+                                                 str(round(SelectedObj.Placement.Rotation.toEuler()[1],2)) + " , " + 
+                                                 str(round(SelectedObj.Placement.Rotation.toEuler()[2],2)) + ")] " +
+                                      "[Axis=("+ str(round(RealAxis.x,2))+" , "+ str(round(RealAxis.y,2))+" , "+ str(round(RealAxis.z,2))+")]")
+    print(textRota)
+
+def RotateObjectToCenterPoint(SelectedObj=None,XAngle=0, YAngle=45,ZAngle=0):
+    #The object will rotate at it's place
+    axisX = SelectedObj.Shape.BoundBox.Center.x 
+    axisY = SelectedObj.Shape.BoundBox.Center.y
+    axisZ = SelectedObj.Shape.BoundBox.Center.z
+
+    RealRotateObjectToAnAxis(SelectedObj,App.Vector(axisX,axisY,axisZ),XAngle,YAngle,ZAngle)
