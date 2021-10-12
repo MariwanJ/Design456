@@ -144,6 +144,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                  _color=FR_COLOR.FR_BLACK,
                  _Rotation=[0.0, 0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0, 0.0],
+                 _scale=[1,1,1],
                  _wheelType=0):
 
         super().__init__(vectors, label)
@@ -183,6 +184,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
         self.w_color = _color  # TODO: Not sure if we use this
 
+        self.w_Scale=_scale
+        
         self.w_Xrotation = [0, 0, 0, 0]
         self.w_Yrotation = [0, 0, 0, 0]
         self.w_Zrotation = [0, 0, 0, 0]
@@ -386,21 +389,21 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
                 self.w_CentersoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Center",
                                                                    usedColor, SETUPwheelTypeRotation,
-                                                                   self.w_PRErotation, 1)
+                                                                   self.w_PRErotation,self.w_Scale, 1)
                 self.w_XsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Xaxis",
                                                                   usedColor, SETUPwheelTypeRotation,
-                                                                  self.w_PRErotation, 1)  # RED
+                                                                  self.w_PRErotation,self.w_Scale, 1)  # RED
                 self.w_YsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Yaxis",
                                                                   usedColor, SETUPwheelTypeRotation,
-                                                                  self.w_PRErotation, 1)  # GREEN
+                                                                  self.w_PRErotation,self.w_Scale, 1)  # GREEN
                 self.w_45soSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "45axis", usedColor,
                                                                    SETUPwheelTypeRotation,
-                                                                   self.w_PRErotation, 1)  # 45
+                                                                   self.w_PRErotation,self.w_Scale, 1)  # 45
                 self.w_135soSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "135axis", usedColor,
                                                                     SETUPwheelTypeRotation,
-                                                                    self.w_PRErotation, 1)  # 135
+                                                                    self.w_PRErotation,self.w_Scale, 1)  # 135
                 self.w_degreeSeparator = fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
-                                                                       SetupTextRotation, self.w_PRErotation, 1)  # White
+                                                                       SetupTextRotation, self.w_PRErotation, self.w_Scale,1)  # White
 
                 allDraw.append(self.w_CentersoSeparator)
                 allDraw.append(self.w_XsoSeparator)
@@ -502,6 +505,14 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         if self.w_active == 0:
             return  # Nothing to do
         self.w_active = 0
+
+    def ChangeScale(self,newScale=[1,1,1]):
+        """[Scale the whole widget default is no scaling ]
+
+        Args:
+            newScale (list, optional): [New scale to apply to the widget]. Defaults to [1,1,1].
+        """
+        self.w_Scale=newScale;
 
     def __del__(self):
         """

@@ -66,7 +66,8 @@ sg.addChild(f)
 
 
 def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
-                    setupRotation=[0, 0, 0], _rotation=[0.0, 0.0, 0.0, 0.0], LineWidth=1.0):
+                    setupRotation=[0, 0, 0], _rotation=[0.0, 0.0, 0.0, 0.0], 
+                    _Scale=[1, 1, 1],LineWidth=1.0):
     try:
         TextScale = 0.04
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
@@ -176,7 +177,8 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform = coin.SoTransform()
         rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
-
+        rootTransform.scaleFactor.setValue(_Scale)
+        
         material = coin.SoMaterial()
         material.diffuseColor.setValue(_color)
         material.emissiveColor.setValue(_color)
@@ -208,7 +210,9 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
 def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype: str = "",
                   _color=FR_COLOR.FR_RED,
                   setupRotation=[0, 0, 0, 0],
-                  _rotation=[0, 0, 0, 0], LineWidth=1):
+                  _rotation=[0, 0, 0, 0],
+                  _Scale=[1, 1, 1],
+                  LineWidth=1):
 
     style = coin.SoDrawStyle()
     style.lineWidth = LineWidth
@@ -297,6 +301,7 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype: str = "",
 
     rootTransform = coin.SoTransform()
     rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
+    rootTransform.scaleFactor.setValue(_Scale)
     root = coin.SoSeparator()
     root.Name = "RootAxisDrawing"
     transla = coin.SoTranslation()

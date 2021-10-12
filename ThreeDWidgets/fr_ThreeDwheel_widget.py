@@ -84,6 +84,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         super().__init__(vectors, label)
         
         self.w_lineWidth = lineWidth  # Default line width
+        self.w_Scale=[1,1,1]          # Scale the drawing as desired
         self.w_widgetType = constant.FR_WidgetType.FR_WHEEL
         
         self.w_callback_ = callback  # External function
