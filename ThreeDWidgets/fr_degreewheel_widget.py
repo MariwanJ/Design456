@@ -269,7 +269,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         current = []
         if(fr_coin3d.objectMouseClick_Coin3d(
                 self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_centersoSeparator) is not None):
+                self.w_pick_radius, self.w_CentersoSeparator) is not None):
             clickwdgdNode[0] = True
         elif(fr_coin3d.objectMouseClick_Coin3d(
             self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
@@ -307,7 +307,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.currentSo = None
             if self.releaseDrag is True:
                 self.releaseDrag is False
-                print("Release Mouse happened")
+                print("Mouse Release Occured")
                 # Release callback should be activated even if the wheel != under the mouse
                 self.do_callback()
                 return 1
@@ -332,6 +332,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             # We don't accept more than one elements clicked at once
             if (self.currentSo is None):
                 for counter in range(0, 5):
+                    print(clickwdgdNode[counter],counter,"clickwdgdNode[counter]")
                     if clickwdgdNode[counter] is True:
                         self.currentSo = counter
                         self.do_callbacks(counter)
@@ -383,7 +384,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     SETUPwheelTypeRotation = [-90.0, 90.0, 90.0]
                     SetupTextRotation = [-90.0, 90.0, 90.0]  # OK Don't change
 
-                self.w_CentSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Center",
+                self.w_CentersoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Center",
                                                                    usedColor, SETUPwheelTypeRotation,
                                                                    self.w_PRErotation, 1)
                 self.w_XsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Xaxis",
@@ -401,7 +402,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 self.w_degreeSeparator = fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
                                                                        SetupTextRotation, self.w_PRErotation, 1)  # White
 
-                allDraw.append(self.w_CentSeparator)
+                allDraw.append(self.w_CentersoSeparator)
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_YsoSeparator)
                 allDraw.append(self.w_45soSeparator)
@@ -417,7 +418,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     tR, math.radians(self.w_Rotation[3]))
 
                 CollectThemAll.addChild(CollectThemAllRot)
-                CollectThemAll.addChild(self.w_CentSeparator)
+                CollectThemAll.addChild(self.w_CentersoSeparator)
                 CollectThemAll.addChild(self.w_XsoSeparator)
                 CollectThemAll.addChild(self.w_YsoSeparator)
                 CollectThemAll.addChild(self.w_45soSeparator)
@@ -570,7 +571,6 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_WidgetDiskRotation = faced.calculateAngle(v1, v2)
 
     def do_callbacks(self, callbackType=-1):
-        print("callback type", callbackType)
         if (callbackType == 100):
             # run all
             self.do_callback()
