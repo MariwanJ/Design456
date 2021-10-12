@@ -616,7 +616,7 @@ class draw_fourSidedShape:
         _face = coin.SoFaceSet()
         _face.numVertices.set1Value(0, 4)
         FourSidedShape.addChild(coords)      
-        if self.use_texture == True:
+        if self.use_texture is True:
             FourSidedShape.addChild(textureCoords)
             FourSidedShape.addChild(texture)
         FourSidedShape.addChild(_face)

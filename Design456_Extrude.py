@@ -92,7 +92,7 @@ class Design456_Extrude:
             App.ActiveDocument.ActiveObject.Label = f.Label
             App.ActiveDocument.recompute()
             # if something went wrong .. delete all new objects.
-            if newObj.isValid() == False:
+            if newObj.isValid() is False:
                 App.ActiveDocument.removeObject(newObj.Name)
                 App.ActiveDocument.removeObject(f.Name)
                 # Shape != OK

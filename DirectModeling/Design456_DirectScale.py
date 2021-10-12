@@ -231,11 +231,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         if clickwdgdNode is None and clickwdglblNode is None:
             print("clickwdgdNode",clickwdgdNode)
             print(" clickwdglblNode",  clickwdglblNode)
-            if linktocaller.run_Once == False:
+            if linktocaller.run_Once is False:
                 print("click move")
                 return 0  # nothing to do
 
-        if linktocaller.run_Once == False:
+        if linktocaller.run_Once is False:
             linktocaller.run_Once = True
             if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
                 linktocaller.mouseToArrowDiff = ArrowObject.w_vector.y-linktocaller.endVector.y

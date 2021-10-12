@@ -63,7 +63,7 @@ class Design456_Part_Merge:
             newObj.Shapes = allObjects
             newObj.Refine = True
             App.ActiveDocument.recompute()
-            if newObj.isValid() == False:
+            if newObj.isValid() is False:
                 App.ActiveDocument.removeObject(newObj.Name)
                 # Shape != OK
                 errMessage = "Failed Merge"
@@ -124,7 +124,7 @@ class Design456_Part_Subtract:
             NewJ = App.ActiveDocument.addObject(
                 'Part::Feature', 'Subtract').Shape = newShape
             App.ActiveDocument.recompute()
-            if newObj.isValid() == False:
+            if newObj.isValid() is False:
                 App.ActiveDocument.removeObject(NewJ.Name)
                 # Shape != OK
                 errMessage = "Failed to subtract objects"
@@ -336,7 +336,7 @@ class Design456_Part_Shell:
             thickObj.SelfIntersection = False
             getfacename = faced.getFaceName(s[0])
             thickObj.Faces = (currentObj, getfacename,)
-            if thickObj.isValid() == False:
+            if thickObj.isValid() is False:
                 App.ActiveDocument.removeObject(thickObj.Name)
                 # Shape != OK
                 errMessage = "Failed create shell"
@@ -409,7 +409,7 @@ class Design456_Part_Fillet:
                 faced.errorDialog(errMessage)
                 return
 
-            if tempNewObj.isValid() == False:
+            if tempNewObj.isValid() is False:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
                 # Shape != OK
                 errMessage = "Failed to fillet the objects"
@@ -480,7 +480,7 @@ class Design456_Part_Chamfer:
                 return
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
-            if tempNewObj.isValid() == False:
+            if tempNewObj.isValid() is False:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
                 # Shape != OK
                 errMessage = "Failed to fillet the objects"

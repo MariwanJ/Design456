@@ -87,7 +87,7 @@ class Design456_Arc3Points:
             selectedOne2 = Gui.Selection.getSelectionEx()[0]
             selectedOne3 = Gui.Selection.getSelectionEx()[0]
             allSelected = []
-            if ((len(selected) < 3 or len(selected) > 3) and (selectedOne1.HasSubObjects == False or selectedOne2.HasSubObjects == False or selectedOne3.HasSubObjects == False)):
+            if ((len(selected) < 3 or len(selected) > 3) and (selectedOne1.HasSubObjects is False or selectedOne2.HasSubObjects is False or selectedOne3.HasSubObjects is False)):
                 # Two object must be selected
                 errMessage = "Select two or more objects to useArc3Points Tool"
                 faced.errorDialog(errMessage)
@@ -116,7 +116,7 @@ class Design456_Arc3Points:
             App.ActiveDocument.recompute()
             App.ActiveDocument.ActiveObject.Label = "Arc_3_Points"
             # Remove only if it != one object
-            if oneObject == False:
+            if oneObject is False:
                 for n in selected:
                     App.ActiveDocument.removeObject(n.ObjectName)
             del allSelected[:]
@@ -150,7 +150,7 @@ class Design456_MultiPointsToWire:
             oneObject = False
 
             for n in selected:
-                if n.HasSubObjects == True:
+                if n.HasSubObjects is True:
                     oneObject = True
             if (len(selected) < 2):
                 # Two object must be selected
@@ -287,7 +287,7 @@ class Design456_2DTrim:
                     return
                 else:
                     closedShape = True
-                if closedShape == True:
+                if closedShape is True:
                     # We have a shape with closed lines
                     # Here we need to do 2 things, 1 remove closed, 2 rearrange start-end
                     scan1 = min(position1, position2)

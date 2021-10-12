@@ -784,7 +784,7 @@ def checkCollision(newObj):
     results = []
     for obj in objList:
         o = None
-        if (Overlapping(newObj, obj) == True):
+        if (Overlapping(newObj, obj) is True):
             if (hasattr(obj, "Name")):
                 o = App.ActiveDocument.getObject(obj.Name)
                 print(o.Name)

@@ -78,7 +78,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
         if clickwdgdNode is None and clickwdglblNode is None:
-            if linktocaller.run_Once == False:
+            if linktocaller.run_Once is False:
                 print("click move")
                 return 0  # nothing to do
             

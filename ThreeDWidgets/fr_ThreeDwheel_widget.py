@@ -163,8 +163,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            if self.releaseDrag == True:
-                self.releaseDrag == False
+            if self.releaseDrag is True:
+                self.releaseDrag is False
                 print("Release Mouse happened")
                 self.do_callback()  # Release callback should be activated even if the wheel != under the mouse 
                 return 1
@@ -179,7 +179,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 return 0
         
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            if self.releaseDrag == False:
+            if self.releaseDrag is False:
                 if (clickwdgdNode != None) or (clickwdglblNode != None):
                     self.releaseDrag = True   
                     self.take_focus()

@@ -83,7 +83,7 @@ class Design456_SplitObject:
             j.Proxy.execute(j)
             j.purgeTouched()
             App.ActiveDocument.recompute()
-            if j.isValid() == False:
+            if j.isValid() is False:
                 App.ActiveDocument.removeObject(j.Name)
                 # Shape != OK
                 errMessage = "Failed to fillet the objects"
