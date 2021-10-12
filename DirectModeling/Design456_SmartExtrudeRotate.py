@@ -399,17 +399,19 @@ class Design456_SmartExtrudeRotate:
     faceDir = None
     setupRotation = [0, 0, 0, 0]
     CenterRotation = [0, 0, 0, 0]  # Used only with the center (cylinder)
-    # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
+    # We use this to simplify the code 
+    # for both, 2D and 3D object, the face variable is this
     newObject = None
     mouseOffset = App.Vector(0, 0, 0)
     OperationOption = 0  # default is zero
+    OperationType = 0      # default is zero     
     objChangedTransparency = []
     ExtractedFaces = []
     FirstLocation = None
     # We cannot combine rotation with direction extrusion. 
     # This varialbe is used to disale all other options
-    isItRotation=False   
-    
+    isItRotation = False
+
     def calculateRotatedNormal(self, Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
 
@@ -825,7 +827,7 @@ class Design456_SmartExtrudeRotate:
             self.lblExtrusionType = QtGui.QLabel(self.frmRotation)
             self.lblExtrusionType.setGeometry(QtCore.QRect(10, 0, 121, 31))
             font = QtGui.QFont()
-            font.setPointSize(12)
+            font.setPointSize(10)
             self.lblExtrusionType.setFont(font)
             self.lblExtrusionType.setObjectName("lblExtrusionType")
             self.frame_2 = QtGui.QFrame(self.dialog)
@@ -846,9 +848,9 @@ class Design456_SmartExtrudeRotate:
             self.radioMerge.setObjectName("radioMerge")
             self.gridExtrusionResult.addWidget(self.radioMerge, 1, 0, 1, 1)
             self.lblExtrusionResult = QtGui.QLabel(self.frame_2)
-            self.lblExtrusionResult.setGeometry(QtCore.QRect(10, 0, 191, 31))
+            self.lblExtrusionResult.setGeometry(QtCore.QRect(10, 0, 191, 61))
             font = QtGui.QFont()
-            font.setPointSize(12)
+            font.setPointSize(10)
             self.lblExtrusionResult.setFont(font)
             self.lblExtrusionResult.setObjectName("lblExtrusionResult")
             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
@@ -896,8 +898,14 @@ class Design456_SmartExtrudeRotate:
             self.RotateLBL.setText(_translate("Dialog", "Extrusion Angle="))
 
             self.radioAsIs.setChecked(True)
+            self.radioBottom.setChecked(True) 
+
             self.radioAsIs.toggled.connect(lambda: self.btnState(self.radioAsIs))
             self.radioMerge.toggled.connect(lambda: self.btnState(self.radioMerge))
+            self.radioAsIs.toggled.connect(lambda: self.btnState(self.radioTop))
+            self.radioMerge.toggled.connect(lambda: self.btnState(self.radioBottom))
+            self.radioAsIs.toggled.connect(lambda: self.btnState(self.radioRight))
+            self.radioMerge.toggled.connect(lambda: self.btnState(self.radioLeft))
 
             QtCore.QObject.connect(
                 self.btnOK, QtCore.SIGNAL("accepted()"), self.hide)
@@ -921,6 +929,19 @@ class Design456_SmartExtrudeRotate:
         elif button.text() == "Merge":
             if button.isChecked() is True:
                 self.OperationOption = 1
+        #In which direction dosen't change (axis) 
+        if button.text() == "Bottom":
+            if button.isChecked() is True:
+                self.OperationType = 0
+        elif button.text() == "Top":
+            if button.isChecked() is True:
+                self.OperationType = 1
+        elif button.text() == "Left":
+            if button.isChecked() is True:
+                self.OperationType = 2
+        elif button.text() == "Right":
+            if button.isChecked() is True:
+                self.OperationType = 1
 
     def hide(self):
         """
