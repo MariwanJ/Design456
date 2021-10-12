@@ -95,18 +95,18 @@ def smartlbl_callback(smartLine, obj, parentlink):
 
 
 # Rotation only
-def callback_Rotate(userData: fr_degreewheel_widget.userDataObject=None):
+def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     print("Rotate callback")
     pass
 
 
 # Extrude in the X direction
-def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
+def callback_moveX(userData: fr_degreewheel_widget.userDataObject = None):
     print("MOVEX")
     if userData is None:
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
-    events = userData.events    
+    events = userData.events
     linktocaller = userData.callerObject
     if type(events) != int:
         print("event was not int")
@@ -116,38 +116,38 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.direction = "X"
 
     clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                        wheelObj.w_pick_radius, wheelObj.w_XsoSeparator)
-    
+                                                      wheelObj.w_pick_radius, wheelObj.w_XsoSeparator)
+
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
-    if linktocaller.run_Once == False:
+    if linktocaller.run_Once is False:
         linktocaller.run_Once = True
         # only once
         linktocaller.startVector = linktocaller.endVector
-        linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
+        # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
+        linktocaller.mouseOffset = App.Vector(0, 0, 0)
 
     linktocaller.extrudeLength = (
         linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
 
-   
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
-    #linktocaller.reCreateExtrudeObject()
+    # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
 # Extrude in the Y direction
-def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
+def callback_moveY(userData: fr_degreewheel_widget.userDataObject = None):
     print("MOVEY")
 
     if userData is None:
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
-    events = userData.events    
+    events = userData.events
     linktocaller = userData.callerObject
     if type(events) != int:
         print("event was not int")
@@ -157,17 +157,18 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.direction = "Y"
 
     clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                        wheelObj.w_pick_radius, wheelObj.w_YsoSeparator)
-    
+                                                      wheelObj.w_pick_radius, wheelObj.w_YsoSeparator)
+
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
-    if linktocaller.run_Once == False:
+    if linktocaller.run_Once is False:
         linktocaller.run_Once = True
         # only once
         linktocaller.startVector = linktocaller.endVector
-        linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
+        # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
+        linktocaller.mouseOffset = App.Vector(0, 0, 0)
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -176,18 +177,18 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject=None):
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    #linktocaller.reCreateExtrudeObject()
+    # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
 # Extrude in the 45 degree rotated direction
-def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
+def callback_move45(userData: fr_degreewheel_widget.userDataObject = None):
     print("MOVE45")
 
     if userData is None:
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
-    events = userData.events    
+    events = userData.events
     linktocaller = userData.callerObject
     if type(events) != int:
         print("event was not int")
@@ -201,32 +202,34 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-    if linktocaller.run_Once == False:
+    if linktocaller.run_Once is False:
         linktocaller.run_Once = True
         # only once
         linktocaller.startVector = linktocaller.endVector
-        linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-        
+        # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
+        linktocaller.mouseOffset = App.Vector(0, 0, 0)
+
     print(linktocaller.normalVector)
-    linktocaller.extrudeLength = (linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
+    linktocaller.extrudeLength = (
+        linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
-
-    linktocaller.ExtrudeLBL.setText("Length= " + str(round(linktocaller.extrudeLength, 4)))
+    linktocaller.ExtrudeLBL.setText(
+        "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
     #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    #linktocaller.reCreateExtrudeObject()
+    # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
 # Extrude in the 135 degree rotated direction
-def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
+def callback_move135(userData: fr_degreewheel_widget.userDataObject = None):
     print("MOVE135")
 
     if userData is None:
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
-    events = userData.events    
+    events = userData.events
     linktocaller = userData.callerObject
     if type(events) != int:
         print("event was not int")
@@ -240,26 +243,27 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject=None):
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-    
-    if linktocaller.run_Once == False:
+
+    if linktocaller.run_Once is False:
         linktocaller.run_Once = True
         # only once
         linktocaller.startVector = linktocaller.endVector
-        linktocaller.mouseOffset = App.Vector(0, 0, 0)  # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
+        # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
+        linktocaller.mouseOffset = App.Vector(0, 0, 0)
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
-    
-    linktocaller.ExtrudeLBL.setText("Length= " + str(round(linktocaller.extrudeLength, 4)))
+    linktocaller.ExtrudeLBL.setText(
+        "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
     #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    #linktocaller.reCreateExtrudeObject()
+    # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
 # TODO FIXME:
-def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
+def callback_release(userData: fr_degreewheel_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
        This callback will finalize the Extrude operation. 
@@ -284,7 +288,7 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject=None):
 
     except Exception as err:
         faced.EnableAllToolbar(True)
-        App.Console.PrintError("'Design456_ExtrudeRotate' ExtractFace Filed. "
+        App.Console.PrintError("'Design456_ExtrudeRotate' Callback Release Filed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -310,9 +314,9 @@ class Design456_SmartExtrudeRotate:
     extrudeLength = 0.001  # This will be the Delta-mouse position
     # We will make two object, one for visual effect and the other is the original
     selectedObj = None
-    selected=None
+    selected = None
     direction = None
-    faceDir=None
+    faceDir = None
     setupRotation = [0, 0, 0, 0]
     Rotation = [0, 0, 0, 0]  # Used only with the center (cylinder)
     # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
@@ -321,9 +325,9 @@ class Design456_SmartExtrudeRotate:
     OperationOption = 0  # default is zero
     objChangedTransparency = []
     ExtractedFaces = []
-    FirstLocation=None
+    FirstLocation = None
 
-    def calculateRotatedNormal(self,Wheelaxis):
+    def calculateRotatedNormal(self, Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
 
         Args:
@@ -332,128 +336,130 @@ class Design456_SmartExtrudeRotate:
         Returns:
             [Base.placement]: [Placement, rotation angle and axis of rotation for face2]
         """
-        
-        faceRotation=0
-        #TODO: Lets take only X axis first , then Y ..etc and so on. 
-        face1Obj=self.ExtractedFaces[0]
-        pl=self.ExtractedFaces[0].Placement
-        self.faceDir= faced.getDirectionAxis(self.selected) #face direction
 
-        #THIS PART WILL BE COMPLICATED AND MUST BE WELL WRITTEN. 
-        
-        #Wheelaxis color: RED is X , GREEN is Y,  FR_BLUEVIOLET is 45 and ORANGE is 135
-        s=self.ExtractedFaces[1]   
-        s.Placement=self.ExtractedFaces[0].Placement  #Reset the placement of the object if was not correct
-        ax=self.selectedObj.Object.Shape.CenterOfMass
-        if  self.faceDir=="+x" and Wheelaxis=="X":              
-            faced.RealRotateObjectToAnAxis(s,ax,0,90,0) 
-            self.ExtractedFaces[1].Placement.Base.x=self.ExtractedFaces[1].Placement.Base.x+self.ExtractedFaces[1].Shape.BoundBox.XLength
-            pl=self.ExtractedFaces[1].Placement
-            
-            
-        elif self.faceDir=="-x" and Wheelaxis=="X":
-            faced.RealRotateObjectToAnAxis(s,ax,0,90,0) 
-            self.ExtractedFaces[1].Placement.Base.x=self.ExtractedFaces[1].Placement.Base.x-self.ExtractedFaces[1].Shape.BoundBox.XLength
-            pl=self.ExtractedFaces[1].Placement
+        faceRotation = 0
+        # TODO: Lets take only X axis first , then Y ..etc and so on.
+        face1Obj = self.ExtractedFaces[0]
+        pl = self.ExtractedFaces[0].Placement
+        self.faceDir = faced.getDirectionAxis(self.selected)  # face direction
 
-        elif (self.faceDir=="+x" and Wheelaxis=="Y") or (self.faceDir=="-x" and Wheelaxis=="Y") :
-            #We do nothing .. it is ok to not change 
-            pl=self.ExtractedFaces[1].Placement
+        # THIS PART WILL BE COMPLICATED AND MUST BE WELL WRITTEN.
 
-        
-        elif self.faceDir=="+y" and Wheelaxis=="X":              
-            faced.RealRotateObjectToAnAxis(s,ax,0,0,-90) 
-            self.ExtractedFaces[1].Placement.Base.y=self.ExtractedFaces[1].Placement.Base.y+self.ExtractedFaces[1].Shape.BoundBox.YLength
-            pl=self.ExtractedFaces[1].Placement
+        # Wheelaxis color: RED is X , GREEN is Y,  FR_BLUEVIOLET is 45 and ORANGE is 135
+        s = self.ExtractedFaces[1]
+        # Reset the placement of the object if was not correct
+        s.Placement = self.ExtractedFaces[0].Placement
+        ax = self.selectedObj.Object.Shape.CenterOfMass
+        if self.faceDir == "+x" and Wheelaxis == "X":
+            faced.RealRotateObjectToAnAxis(s, ax, 0, 90, 0)
+            self.ExtractedFaces[1].Placement.Base.x = self.ExtractedFaces[1].Placement.Base.x + \
+                self.ExtractedFaces[1].Shape.BoundBox.XLength
+            pl = self.ExtractedFaces[1].Placement
 
-        elif self.faceDir=="-y" and Wheelaxis=="X":                        
-            faced.RealRotateObjectToAnAxis(s,ax,0,0,90) 
-            self.ExtractedFaces[1].Placement.Base.y=self.ExtractedFaces[1].Placement.Base.y-self.ExtractedFaces[1].Shape.BoundBox.YLength
-            pl=self.ExtractedFaces[1].Placement
+        elif self.faceDir == "-x" and Wheelaxis == "X":
+            faced.RealRotateObjectToAnAxis(s, ax, 0, 90, 0)
+            self.ExtractedFaces[1].Placement.Base.x = self.ExtractedFaces[1].Placement.Base.x - \
+                self.ExtractedFaces[1].Shape.BoundBox.XLength
+            pl = self.ExtractedFaces[1].Placement
 
-        elif (self.faceDir=="+y" and Wheelaxis=="Y") or (self.faceDir=="-y" and Wheelaxis=="Y") :
-            pl=self.ExtractedFaces[1].Placement
-            
-        elif  self.faceDir=="-z" and Wheelaxis=="X" or (self.faceDir=="+z" and Wheelaxis=="X"):            
-            pl=self.ExtractedFaces[1].Placement
-            
-        elif self.faceDir=="+z" and Wheelaxis=="Y" :            
-            faced.RealRotateObjectToAnAxis(s,ax,0,0,-90) 
-            pl=self.ExtractedFaces[1].Placement
-            
-        elif self.faceDir=="-z" and Wheelaxis=="Y":                                                 
-            faced.RealRotateObjectToAnAxis(s,ax,0,0,90) 
-            pl=self.ExtractedFaces[1].Placement
+        elif (self.faceDir == "+x" and Wheelaxis == "Y") or (self.faceDir == "-x" and Wheelaxis == "Y"):
+            # We do nothing .. it is ok to not change
+            pl = self.ExtractedFaces[1].Placement
 
-        # Now we have 45Degrees : 
-        if  self.faceDir=="+x" and Wheelaxis=="45":              
-            faced.RotateObjectToCenterPoint(s,0,45,0)
-            pl=self.ExtractedFaces[1].Placement
-            
-        elif self.faceDir=="-x" and Wheelaxis=="45":
-            faced.RotateObjectToCenterPoint(s,0,45,0)
-            pl=self.ExtractedFaces[1].Placement            
-        
-        # Now we have 45 Degrees : 
-        if  self.faceDir=="+y" and Wheelaxis=="45":             
-            faced.RotateObjectToCenterPoint(s,0,0,-45)
-            pl=self.ExtractedFaces[1].Placement
-            
-        elif self.faceDir=="-y" and Wheelaxis=="45":
-            faced.RotateObjectToCenterPoint(s,0,0,-45)
-            pl=self.ExtractedFaces[1].Placement
-                
-            # Now we have 45 and 135 Degrees : 
-        if  self.faceDir=="+z" and Wheelaxis=="45":              
-            faced.RotateObjectToCenterPoint(s,0,0,45)
-            pl=self.ExtractedFaces[1].Placement
-            
-        elif self.faceDir=="-z" and Wheelaxis=="45":                  
-            faced.RotateObjectToCenterPoint(s,0,0,45)
-            pl=self.ExtractedFaces[1].Placement
+        elif self.faceDir == "+y" and Wheelaxis == "X":
+            faced.RealRotateObjectToAnAxis(s, ax, 0, 0, -90)
+            self.ExtractedFaces[1].Placement.Base.y = self.ExtractedFaces[1].Placement.Base.y + \
+                self.ExtractedFaces[1].Shape.BoundBox.YLength
+            pl = self.ExtractedFaces[1].Placement
 
-        # Now we have 135 Degrees : 
-        if  self.faceDir=="+x" and Wheelaxis=="135":             
-            faced.RotateObjectToCenterPoint(s,0,135,0)
-            pl=self.ExtractedFaces[1].Placement
-            
-        elif self.faceDir=="-x" and Wheelaxis=="135":
-            faced.RotateObjectToCenterPoint(s,0,135,0)
-            pl=self.ExtractedFaces[1].Placement
+        elif self.faceDir == "-y" and Wheelaxis == "X":
+            faced.RealRotateObjectToAnAxis(s, ax, 0, 0, 90)
+            self.ExtractedFaces[1].Placement.Base.y = self.ExtractedFaces[1].Placement.Base.y - \
+                self.ExtractedFaces[1].Shape.BoundBox.YLength
+            pl = self.ExtractedFaces[1].Placement
 
+        elif (self.faceDir == "+y" and Wheelaxis == "Y") or (self.faceDir == "-y" and Wheelaxis == "Y"):
+            pl = self.ExtractedFaces[1].Placement
 
-        if  self.faceDir=="+y" and Wheelaxis=="135":             
-            faced.RotateObjectToCenterPoint(s,0,0,-135)
-            pl=self.ExtractedFaces[1].Placement   
-            
-        elif self.faceDir=="-y" and Wheelaxis=="135":
-            faced.RotateObjectToCenterPoint(s,0,0,-135)
-            pl=self.ExtractedFaces[1].Placement                
+        elif self.faceDir == "-z" and Wheelaxis == "X" or (self.faceDir == "+z" and Wheelaxis == "X"):
+            pl = self.ExtractedFaces[1].Placement
 
-        if  self.faceDir=="+z" and Wheelaxis=="135":              
-            faced.RotateObjectToCenterPoint(s,0,0,135)
-            pl=self.ExtractedFaces[1].Placement                
-            
-        elif self.faceDir=="-z" and Wheelaxis=="135":
-            faced.RotateObjectToCenterPoint(s,0,0,135)
-            pl=self.ExtractedFaces[1].Placement                
-            
+        elif self.faceDir == "+z" and Wheelaxis == "Y":
+            faced.RealRotateObjectToAnAxis(s, ax, 0, 0, -90)
+            pl = self.ExtractedFaces[1].Placement
+
+        elif self.faceDir == "-z" and Wheelaxis == "Y":
+            faced.RealRotateObjectToAnAxis(s, ax, 0, 0, 90)
+            pl = self.ExtractedFaces[1].Placement
+
+        # Now we have 45Degrees :
+        if self.faceDir == "+x" and Wheelaxis == "45":
+            faced.RotateObjectToCenterPoint(s, 0, 45, 0)
+            pl = self.ExtractedFaces[1].Placement
+
+        elif self.faceDir == "-x" and Wheelaxis == "45":
+            faced.RotateObjectToCenterPoint(s, 0, 45, 0)
+            pl = self.ExtractedFaces[1].Placement
+
+        # Now we have 45 Degrees :
+        if self.faceDir == "+y" and Wheelaxis == "45":
+            faced.RotateObjectToCenterPoint(s, 0, 0, -45)
+            pl = self.ExtractedFaces[1].Placement
+
+        elif self.faceDir == "-y" and Wheelaxis == "45":
+            faced.RotateObjectToCenterPoint(s, 0, 0, -45)
+            pl = self.ExtractedFaces[1].Placement
+
+            # Now we have 45 and 135 Degrees :
+        if self.faceDir == "+z" and Wheelaxis == "45":
+            faced.RotateObjectToCenterPoint(s, 0, 0, 45)
+            pl = self.ExtractedFaces[1].Placement
+
+        elif self.faceDir == "-z" and Wheelaxis == "45":
+            faced.RotateObjectToCenterPoint(s, 0, 0, 45)
+            pl = self.ExtractedFaces[1].Placement
+
+        # Now we have 135 Degrees :
+        if self.faceDir == "+x" and Wheelaxis == "135":
+            faced.RotateObjectToCenterPoint(s, 0, 135, 0)
+            pl = self.ExtractedFaces[1].Placement
+
+        elif self.faceDir == "-x" and Wheelaxis == "135":
+            faced.RotateObjectToCenterPoint(s, 0, 135, 0)
+            pl = self.ExtractedFaces[1].Placement
+
+        if self.faceDir == "+y" and Wheelaxis == "135":
+            faced.RotateObjectToCenterPoint(s, 0, 0, -135)
+            pl = self.ExtractedFaces[1].Placement
+
+        elif self.faceDir == "-y" and Wheelaxis == "135":
+            faced.RotateObjectToCenterPoint(s, 0, 0, -135)
+            pl = self.ExtractedFaces[1].Placement
+
+        if self.faceDir == "+z" and Wheelaxis == "135":
+            faced.RotateObjectToCenterPoint(s, 0, 0, 135)
+            pl = self.ExtractedFaces[1].Placement
+
+        elif self.faceDir == "-z" and Wheelaxis == "135":
+            faced.RotateObjectToCenterPoint(s, 0, 0, 135)
+            pl = self.ExtractedFaces[1].Placement
+
         return pl
-        
-            
+
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
         Returns:
             [App.Vector]: [Position where the Wheel will be moved to]
         """
         # For now the Wheel will be at the top
-        rotAxis=App.Vector(0,0,0) #Axis of the rotation for face2
-        faceAngle=0             #New angle due to the rotation of face2
-        base=App.Vector(0,0,0)  #New location for Face2 due to the rotation of the face
+        rotAxis = App.Vector(0, 0, 0)  # Axis of the rotation for face2
+        faceAngle = 0  # New angle due to the rotation of face2
+        # New location for Face2 due to the rotation of the face
+        base = App.Vector(0, 0, 0)
         try:
-            #TODO:FIXME
-            pl=self.calculateRotatedNormal(self.direction)
-            self.ExtractedFaces[1].Placement=pl
+            # TODO:FIXME
+            pl = self.calculateRotatedNormal(self.direction)
+            self.ExtractedFaces[1].Placement = pl
             face2 = None
             if(self.isFaceOf3DObj()):
                 # The whole object is selected
@@ -466,7 +472,7 @@ class Design456_SmartExtrudeRotate:
             uv = face2.Surface.parameter(yL)
             nv = face2.normalAt(uv[0], uv[1])
             self.normalVector = nv
-            #Center disk rotation
+            # Center disk rotation
             if (face2.Surface.Rotation is None):
                 calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 rotation = [0, 1, 0, calAn]
@@ -480,11 +486,12 @@ class Design456_SmartExtrudeRotate:
                 d = self.extrudeLength = 1
             else:
                 d = self.extrudeLength
-            self.ExtractedFaces[1].Placement.Base = face2.Placement.Base + d * nv  # The face itself
-            if (self.wheelObj is not None):                
-                self.wheelObj.w_vector[0] = yL+  d * nv  # the wheel 
+            # The face itself
+            self.ExtractedFaces[1].Placement.Base = face2.Placement.Base + d * nv
+            if (self.wheelObj is not None):
+                self.wheelObj.w_vector[0] = yL + d * nv  # the wheel
 
-            self.FirstLocation=yL+  d * nv  # the wheel 
+            self.FirstLocation = yL + d * nv  # the wheel
             App.ActiveDocument.recompute()
             return rotation
 
@@ -522,12 +529,14 @@ class Design456_SmartExtrudeRotate:
             # TODO: THIS PART MIGHT FAIL TAKE ALL KIND OF 3D OBJECT TOO SEE IF HASATTR Subobject and then fix that
             sh = self.selectedObj.Object.Shape.copy()
 
-            o = App.ActiveDocument.addObject("Part::Feature", "face2")
+            o = App.ActiveDocument.addObject("Part::Feature", "BaseFace")
             o.Shape = sh.getElement(name)
-            self.ExtractedFaces.append(Gui.ActiveDocument.getObject(o.Label).Object)
-            o = App.ActiveDocument.addObject("Part::Feature", "face2")
+            self.ExtractedFaces.append(
+                Gui.ActiveDocument.getObject(o.Label).Object)
+            o = App.ActiveDocument.addObject("Part::Feature", "MovableFace")
             o.Shape = sh.getElement(name)
-            self.ExtractedFaces.append(Gui.ActiveDocument.getObject(o.Label).Object)
+            self.ExtractedFaces.append(
+                Gui.ActiveDocument.getObject(o.Label).Object)
             if hasattr(self.selectedObj.Object, "getGlobalPlacement"):
                 gpl = self.selectedObj.Object.getGlobalPlacement()
                 self.ExtractedFaces[0].Placement = gpl
@@ -559,7 +568,8 @@ class Design456_SmartExtrudeRotate:
             self.selectedObj = self.selected[0]
             faced.EnableAllToolbar(False)
             # Undo
-            App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrudeRotate"))
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "SmartExtrudeRotate"))
             self.ExtractedFaces.clear()
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
@@ -568,20 +578,23 @@ class Design456_SmartExtrudeRotate:
                 # We have a 2D Face - Extract it directly
                 print("2d object copy the face itself")
                 sh = self.selectedObj.Object.Shape.copy()
-                o = App.ActiveDocument.addObject("Part::Feature", "face2")
+                o = App.ActiveDocument.addObject(
+                    "Part::Feature", "MovableFace")
                 o.Shape = sh
                 self.ExtractedFaces.append(self.selectedObj.Object)
-                self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
-            
-            self.setupRotation = self.calculateNewVector()  # Deside how the Degree Wheel be drawn
-            if self.faceDir=="+z" or self.faceDir=="-z": 
+                self.ExtractedFaces.append(
+                    App.ActiveDocument.getObject(o.Name))
+
+            # Deside how the Degree Wheel be drawn
+            self.setupRotation = self.calculateNewVector()
+            if self.faceDir == "+z" or self.faceDir == "-z":
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 2)
             else:
-    
+
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     round(self.Rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], self.setupRotation, 1)
-            
+
             # Define the callbacks. We have many callbacks here.
             # TODO: FIXME:
 
@@ -594,7 +607,8 @@ class Design456_SmartExtrudeRotate:
 
             self.wheelObj.w_callback_ = callback_release
             self.wheelObj.w_userData.callerObject = self
-            self.newObject = App.ActiveDocument.addObject('Part::Loft', 'ExtendFace')
+            self.newObject = App.ActiveDocument.addObject(
+                'Part::Loft', 'ExtendFace')
             self.newObject.Sections = self.ExtractedFaces
             self.newObject.Solid = True
             self.newObject.Ruled = False  # TODO: SHOULD THIS BE RULED?
@@ -649,17 +663,18 @@ class Design456_SmartExtrudeRotate:
             self.extrudeLength = 0.001  # This will be the Delta-mouse position
             # We will make two object, one for visual effect and the other is the original
             self.selectedObj = None
-            self.selected=None
+            self.selected = None
             self.direction = None
             self.setupRotation = [0, 0, 0, 0]
-            self.Rotation = [0, 0, 0, 0]  # Used only with the center (cylinder)
+            # Used only with the center (cylinder)
+            self.Rotation = [0, 0, 0, 0]
             # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
             self.newObject = None
             self.mouseOffset = App.Vector(0, 0, 0)
             self.OperationOption = 0  # default is zero
             self.objChangedTransparency = []
             self.ExtractedFaces = []
-            self.FirstLocation=None
+            self.FirstLocation = None
             del self
 
         except Exception as err:
@@ -716,7 +731,7 @@ class Design456_SmartExtrudeRotate:
             self.radMerge = QtGui.QRadioButton(self.groupBox)
             self.radMerge.setObjectName("radMerge")
             self.radMerge.setText("Merge")
-            
+
             commentFont = QtGui.QFont("Times", 12, True)
             self.ExtrudeLBL = QtGui.QLabel("Extrude Length=")
             self.e1.setFont(commentFont)
@@ -752,18 +767,17 @@ class Design456_SmartExtrudeRotate:
 
     def btnState(self, button):
         if button.text() == "As Is":
-            if button.isChecked() == True:
+            if button.isChecked() is True:
                 self.OperationOption = 0  # 0 as Is default, 1 Merged, 2 Subtracted
         elif button.text() == "Merge":
-            if button.isChecked() == True:
+            if button.isChecked() is True:
                 self.OperationOption = 1
-
 
     def hide(self):
         """
         Hide the widgets. Remove also the tab.
         TODO:
-        For this tool, I decide to choose the hide to merge, subtract or leave it as is here. 
+        For this tool, I decide to choose the hide to merge, or leave it "as is" here. 
         I can do that during the extrusion (moving the Wheel), but that will be an action
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
@@ -778,7 +792,7 @@ class Design456_SmartExtrudeRotate:
             #    nothing will be done but we must see if the new object != intersecting other objects
             # 2- Old object is intersecting with new object..
             # In case 1 and 2 when there is intersecting we should merge both
-            if (self.isFaceOf3DObj() == True):
+            if (self.isFaceOf3DObj() is True):
                 # No 3D but collision might happen.
                 pass
 

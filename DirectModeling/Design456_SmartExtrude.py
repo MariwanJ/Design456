@@ -95,11 +95,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject=None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 
         if clickwdgdNode is None and clickwdglblNode is None:
-            if linktocaller.run_Once == False:
+            if linktocaller.run_Once is False:
                 print("click move")
                 return   # nothing to do
 
-        if linktocaller.run_Once == False:
+        if linktocaller.run_Once is False:
             linktocaller.run_Once = True
             # only once
             linktocaller.startVector = linktocaller.endVector
@@ -158,7 +158,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject=None):
             for i in range(0, len(linktocaller.objChangedTransparency)):
                 allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
                 Gui.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name).Transparency=0
-            if(linktocaller.isFaceOf3DObj() == True):
+            if(linktocaller.isFaceOf3DObj() is True):
                 # We have a 3D object.
                 MERGEallObjects=[]
                 MERGEallObjects.append(linktocaller.selectedObj.Object)
@@ -569,13 +569,13 @@ class Design456_SmartExtrude:
 
     def btnState(self, button):
         if button.text() == "As Is":
-            if button.isChecked() == True:
+            if button.isChecked() is True:
                 self.OperationOption = 0  # 0 as Is default, 1 Merged, 2 Subtracted
         elif button.text() == "Merge":
-            if button.isChecked() == True:
+            if button.isChecked() is True:
                 self.OperationOption = 1
         elif button.text() == "Subtract":
-            if button.isChecked() == True:
+            if button.isChecked() is True:
                 self.OperationOption = 2
 
     def hide(self):
@@ -597,7 +597,7 @@ class Design456_SmartExtrude:
             #    nothing will be done but we must see if the new object != intersecting other objects
             # 2- Old object is intersecting with new object..
             # In case 1 and 2 when there is intersecting we should merge both
-            if (self.isFaceOf3DObj() == True):
+            if (self.isFaceOf3DObj() is True):
                 # No 3D but collision might happen.
                 pass
 

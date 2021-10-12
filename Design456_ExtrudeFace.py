@@ -89,7 +89,7 @@ class Design456_ExtrudeFace:
                 'Part::Feature', f.Name+'N')
             newPart_.Shape = Part.getShape(
                 f, '', needSubElement=False, refine=False)
-            if newPart_.isValid() == False:
+            if newPart_.isValid() is False:
                 App.ActiveDocument.removeObject(newPart_.Name)
                 App.ActiveDocument.removeObject(f.Name)
                 # Shape != OK

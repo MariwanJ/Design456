@@ -247,7 +247,7 @@ class Design456_Part_Surface:
             tempNewObj.Shape = newShape
             App.ActiveDocument.ActiveObject.Label = 'Surface'
             App.ActiveDocument.recompute()
-            if tempNewObj.isValid() == False:
+            if tempNewObj.isValid() is False:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
                 # Shape != OK
                 errMessage = "Failed to fillet the objects"
