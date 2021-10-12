@@ -70,21 +70,7 @@ MouseScaleFactor = 1
 """
 # TODO: As I wish to simplify the tree and make a simple
 # copy of all objects, I leave it now and I should
-# come back to do it. I must have it as an option in menu. (don't know how to do it now.)
-
-"""
-import DraftVecUtils
-rotatedVector = DraftVecUtils.rotate(myVector,angle_in_radians,normalVector)    
-
-We need to calculate the normal vector for each direction
-
-x
-y
-45Degree
-135Degree
-
-
-"""
+# come back to do it. I must have it as an option in FreeCAD Preferences-menu. (don't know how to do it now.)
 
 
 # TODO FIXME:
@@ -94,7 +80,7 @@ def smartlbl_callback(smartLine, obj, parentlink):
     pass
 
 
-# Rotation only
+# Rotation only TODO: FIXME:
 def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     print("Center")
     if userData is None:
@@ -102,7 +88,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         return  # Nothing to do here - shouldn't be None
     events = userData.events
     linktocaller = userData.callerObject
-    linktocaller.isItRotation=True           # Disallow Axis manupulations 
+    linktocaller.isItRotation = True           # Disallow Axis manupulations
     if type(events) != int:
         print("event was not int")
         return
@@ -123,44 +109,28 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         linktocaller.startVector = linktocaller.endVector
         App.ActiveDocument.removeObject(linktocaller.newObject.Name)
 
-        #Create the Revolution
-        linktocaller.newObject=App.ActiveDocument.addObject("Part::Revolution","ExtendRotate")
-        linktocaller.newObject.ActiveDocument.Revolve.Source=linktocaller.ExtractedFaces[0].Object
-        #remove totally the second face, not needed
-        App.ActiveDocument.removeObject(linktocaller.ExtractedFaces[1].Object.Name)
-        linktocaller.ExtractedFaces[1]=None
-
-        linktocaller.newObject.Axis = (0.000000000000000,-1.000000000000000,0.000000000000000)
-        linktocaller.newObject.Base = (0.000000000000000,0.000000000000000,0.000000000000000)
-        linktocaller.newObject.Angle = linktocaller.w_rotation
-        linktocaller.newObject.Solid = False
-        #linktocaller.newObject.AxisLink = (linktocaller.selectedObj, "Edge4")
-        linktocaller.newObject.Symmetric = False
-
         del linktocaller.newObject
         linktocaller.mouseOffset = App.Vector(0, 0, 0)
 
-    linktocaller.CenterRotation[3]=round(linktocaller.CenterRotation[3]+(
-        linktocaller.endVector - 
-        linktocaller.startVector).dot(linktocaller.normalVector),2)
-    if(linktocaller.CenterRotation is None ):
+    linktocaller.CenterRotation[3] = round(linktocaller.CenterRotation[3]+(
+        linktocaller.endVector -
+        linktocaller.startVector).dot(linktocaller.normalVector), 2)
+    if (linktocaller.CenterRotation is None):
         raise ValueError("should not be zero centerration")
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText(
             "Rotation Axis= " +
-            "("+
+            "(" +
             str(linktocaller.CenterRotation[0])+","
-            +str (linktocaller.CenterRotation[1])+
-            ","+
-            str(linktocaller.CenterRotation[2])+
+            + str(linktocaller.CenterRotation[1]) +
+            "," +
+            str(linktocaller.CenterRotation[2]) +
             ")"
-            +"\nRotation Angle= " 
+            + "\nRotation Angle= "
             +
-            str(linktocaller.CenterRotation[3])+
-        " °")
-    linktocaller.calculateNewVector()
+            str(linktocaller.CenterRotation[3]) +
+            " °")
     linktocaller.wheelObj.redraw()
-    # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
@@ -247,7 +217,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject = None):
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
-    #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
+    # linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
     # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
@@ -399,18 +369,23 @@ class Design456_SmartExtrudeRotate:
     faceDir = None
     setupRotation = [0, 0, 0, 0]
     CenterRotation = [0, 0, 0, 0]  # Used only with the center (cylinder)
-    # We use this to simplify the code 
+    # We use this to simplify the code
     # for both, 2D and 3D object, the face variable is this
     newObject = None
     mouseOffset = App.Vector(0, 0, 0)
     OperationOption = 0  # default is zero
-    OperationType = 0      # default is zero     
+    OperationType = 0      # default is zero
     objChangedTransparency = []
     ExtractedFaces = []
     FirstLocation = None
-    # We cannot combine rotation with direction extrusion. 
+    # We cannot combine rotation with direction extrusion.
     # This varialbe is used to disale all other options
     isItRotation = False
+    # Rotation type
+    radioRight = None
+    radioLeft = None
+    radioTop = None
+    radioBottom = None
 
     def calculateRotatedNormal(self, Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
@@ -530,6 +505,32 @@ class Design456_SmartExtrudeRotate:
             pl = self.ExtractedFaces[1].Placement
 
         return pl
+
+    #TODO: FIXME:
+
+    def createRevolveObj(self):
+
+        # Create the Revolution
+        self.newObject = App.ActiveDocument.addObject(
+            "Part::Revolution", "ExtendRotate")
+        self.newObject.ActiveDocument.Revolve.Source = linktocaller.ExtractedFaces[0].Object
+        # remove totally the second face, not needed
+        App.ActiveDocument.removeObject(
+            linktocaller.ExtractedFaces[1].Object.Name)
+        self.ExtractedFaces[1] = None
+        self.newObject.Angle = self.w_rotation
+        self.newObject.Solid = True
+        self.newObject.Symmetric = False
+        self.direction = faced.getDirectionAxis(self.selectedObj)
+        if self.OperationType == 0:
+            # Bottom
+            pass
+            # TODO:FXIME: NOT SURE WE NEED THIS???
+        self.newObject.Base = self.ExtractedFaces[0].Placement.Base
+        self.newObject.Axis = linktocaller
+
+        if(self.OperationType == 0):
+            pass
 
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
@@ -674,12 +675,12 @@ class Design456_SmartExtrudeRotate:
             self.setupRotation = self.calculateNewVector()
             if self.faceDir == "+z" or self.faceDir == "-z":
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    round(self.CenterRotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0], 
-                    self.setupRotation,[2.0,2.0,2.0], 2)
+                    round(self.CenterRotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
+                    self.setupRotation, [2.0, 2.0, 2.0], 2)
             else:
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     round(self.CenterRotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation,[2.0,2.0,2.0], 1)
+                    self.setupRotation, [2.0, 2.0, 2.0], 1)
 
             # Define the callbacks. We have many callbacks here.
             # TODO: FIXME:
@@ -761,7 +762,7 @@ class Design456_SmartExtrudeRotate:
             self.objChangedTransparency = []
             self.ExtractedFaces = []
             self.FirstLocation = None
-            self.isItRotation=False
+            self.isItRotation = False
             del self
 
         except Exception as err:
@@ -838,7 +839,8 @@ class Design456_SmartExtrudeRotate:
             self.gridLayoutWidget_3 = QtGui.QWidget(self.frame_2)
             self.gridLayoutWidget_3.setGeometry(QtCore.QRect(10, 40, 211, 101))
             self.gridLayoutWidget_3.setObjectName("gridLayoutWidget_3")
-            self.gridExtrusionResult = QtGui.QGridLayout(self.gridLayoutWidget_3)
+            self.gridExtrusionResult = QtGui.QGridLayout(
+                self.gridLayoutWidget_3)
             self.gridExtrusionResult.setContentsMargins(0, 0, 0, 0)
             self.gridExtrusionResult.setObjectName("gridExtrusionResult")
             self.radioAsIs = QtGui.QRadioButton(self.gridLayoutWidget_3)
@@ -883,29 +885,38 @@ class Design456_SmartExtrudeRotate:
             self.RotateLBL.setObjectName("RotateLBL")
 
             _translate = QtCore.QCoreApplication.translate
-            self.dialog.setWindowTitle(_translate("Dialog", "Smart Extrude Rotate"))
+            self.dialog.setWindowTitle(_translate(
+                "Dialog", "Smart Extrude Rotate"))
             self.radioLeft.setText(_translate("Dialog", "Left"))
             self.radioTop.setText(_translate("Dialog", "Top"))
             self.radioBottom.setText(_translate("Dialog", "Bottom"))
             self.radioRight.setText(_translate("Dialog", "Right"))
-            self.lblExtrusionType.setText(_translate("Dialog", "Extrusion typ"))
+            self.lblExtrusionType.setText(
+                _translate("Dialog", "Extrusion typ"))
             self.radioAsIs.setText(_translate("Dialog", "As Is"))
             self.radioMerge.setText(_translate("Dialog", "Merge"))
-            self.lblExtrusionResult.setText(_translate("Dialog", "Extrusion Result"))
+            self.lblExtrusionResult.setText(
+                _translate("Dialog", "Extrusion Result"))
             self.lblTitle.setText(_translate("Dialog", "(Smart Extrude Rotate)\n"
-                                            "For quickerApplying Extrude"))
+                                             "For quicker applying Extrude"))
             self.ExtrudeLBL.setText(_translate("Dialog", "Extrusion Length="))
             self.RotateLBL.setText(_translate("Dialog", "Extrusion Angle="))
 
             self.radioAsIs.setChecked(True)
-            self.radioBottom.setChecked(True) 
+            self.radioBottom.setChecked(True)
 
-            self.radioAsIs.toggled.connect(lambda: self.btnState(self.radioAsIs))
-            self.radioMerge.toggled.connect(lambda: self.btnState(self.radioMerge))
-            self.radioAsIs.toggled.connect(lambda: self.btnState(self.radioTop))
-            self.radioMerge.toggled.connect(lambda: self.btnState(self.radioBottom))
-            self.radioAsIs.toggled.connect(lambda: self.btnState(self.radioRight))
-            self.radioMerge.toggled.connect(lambda: self.btnState(self.radioLeft))
+            self.radioAsIs.toggled.connect(
+                lambda: self.btnState(self.radioAsIs))
+            self.radioMerge.toggled.connect(
+                lambda: self.btnState(self.radioMerge))
+            self.radioAsIs.toggled.connect(
+                lambda: self.btnState(self.radioTop))
+            self.radioMerge.toggled.connect(
+                lambda: self.btnState(self.radioBottom))
+            self.radioAsIs.toggled.connect(
+                lambda: self.btnState(self.radioRight))
+            self.radioMerge.toggled.connect(
+                lambda: self.btnState(self.radioLeft))
 
             QtCore.QObject.connect(
                 self.btnOK, QtCore.SIGNAL("accepted()"), self.hide)
@@ -929,7 +940,7 @@ class Design456_SmartExtrudeRotate:
         elif button.text() == "Merge":
             if button.isChecked() is True:
                 self.OperationOption = 1
-        #In which direction dosen't change (axis) 
+        # In which direction dosen't change (axis)
         if button.text() == "Bottom":
             if button.isChecked() is True:
                 self.OperationType = 0
