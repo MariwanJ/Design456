@@ -265,11 +265,9 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         # 2 = Y-     Axis movement
         # 3 = 45°    Axis movement
         # 4 = 135°   Axis movement
-        current = None
         allObjects = None
         clickwdgdNode = [False, False, False, False, False, False]
 
-        current = []
         if(fr_coin3d.objectMouseClick_Coin3d(
                 self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                 self.w_pick_radius, self.w_CentersoSeparator) is not None):
@@ -296,10 +294,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
                 self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_E):
             self.do_callback()
+            return 1
 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
-            # Double click event.
-            if current is not None:
+            if (clickwdglblNode is not None):
+                # Double click event.
                 print("Double click detected")
                 # if not self.has_focus():
                 #    self.take_focus()
@@ -310,7 +309,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.currentSo = None
             if self.releaseDrag is True:
                 self.releaseDrag is False
-                print("Mouse Release Occured")
+                print("Mouse Release Occurred")
                 # Release callback should be activated even if the wheel != under the mouse
                 self.do_callback()
                 return 1
@@ -318,8 +317,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             if (len(clickwdgdNode) > 0 or clickwdglblNode is not None):
                 if not self.has_focus():
                     self.take_focus()
-                # self.do_callback()
-                self.do_callbacks(100)
+                #self.do_callbacks(100)
                 return 1
             else:
                 self.remove_focus()
@@ -328,9 +326,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             # This part will be active only once when for the first time user click on the coin drawing.
             # Later DRAG should be used
             if self.releaseDrag is False:
-                if (current is not None):
-                    self.releaseDrag = True
-                    self.take_focus()
+                self.releaseDrag = True
+                self.take_focus()
             # These Object reacts only with dragging .. Clicking will not do anything useful
             # We don't accept more than one elements clicked at once
             if (self.currentSo is None):
@@ -340,8 +337,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                         self.currentSo = counter
                         self.do_callbacks(counter)
                         return 1
+                    else:
+                        return 0   # None of them was True.
             else:
                 self.do_callbacks(self.currentSo)
+                return 1
 
                 # 0 The Center is clicked
                 # 1 The Xaxis is clicked
