@@ -516,21 +516,37 @@ class Design456_SmartExtrudeRotate:
         self.newObject.ActiveDocument.Revolve.Source = linktocaller.ExtractedFaces[0].Object
         # remove totally the second face, not needed
         App.ActiveDocument.removeObject(
-            linktocaller.ExtractedFaces[1].Object.Name)
+            self.ExtractedFaces[1].Object.Name)
         self.ExtractedFaces[1] = None
         self.newObject.Angle = self.w_rotation
         self.newObject.Solid = True
         self.newObject.Symmetric = False
         self.direction = faced.getDirectionAxis(self.selectedObj)
+        
+        edges=self.ExtractedFaces[0].Shape
+        lowestZ= self.ExtractedFaces[0].Shape.BoundBox.ZMin
+        highestZ=self.ExtractedFaces[0].Shape.BoundBox.ZMax
+        lowestX=self.ExtractedFaces[0].Shape.BoundBox.XMax
+        highestX=self.ExtractedFaces[0].Shape.BoundBox.XMax
         if self.OperationType == 0:
             # Bottom
-            pass
+            for edges in self.ExtractedFaces[0].Shape.Edges:
+               #Find the lowest z inside the vectors.
+               
+        
+        
+        
             # TODO:FXIME: NOT SURE WE NEED THIS???
         self.newObject.Base = self.ExtractedFaces[0].Placement.Base
-        self.newObject.Axis = linktocaller
+        #self.newObject.Axis = self.
+        
 
-        if(self.OperationType == 0):
-            pass
+            
+
+
+
+
+
 
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
