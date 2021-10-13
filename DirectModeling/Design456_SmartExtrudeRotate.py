@@ -508,43 +508,43 @@ class Design456_SmartExtrudeRotate:
 
     #TODO: FIXME:
 
-    def createRevolveObj(self):
+    # def createRevolveObj(self):
 
-        # Create the Revolution
-        self.newObject = App.ActiveDocument.addObject(
-            "Part::Revolution", "ExtendRotate")
-        self.newObject.ActiveDocument.Revolve.Source = linktocaller.ExtractedFaces[0].Object
-        # remove totally the second face, not needed
-        App.ActiveDocument.removeObject(
-            self.ExtractedFaces[1].Object.Name)
-        self.ExtractedFaces[1] = None
-        self.newObject.Angle = self.w_rotation
-        self.newObject.Solid = True
-        self.newObject.Symmetric = False
-        self.direction = faced.getDirectionAxis(self.selectedObj)
+    #     # Create the Revolution
+    #     self.newObject = App.ActiveDocument.addObject(
+    #         "Part::Revolution", "ExtendRotate")
+    #     self.newObject.ActiveDocument.Revolve.Source = linktocaller.ExtractedFaces[0].Object
+    #     # remove totally the second face, not needed
+    #     App.ActiveDocument.removeObject(
+    #         self.ExtractedFaces[1].Object.Name)
+    #     self.ExtractedFaces[1] = None
+    #     self.newObject.Angle = self.w_rotation
+    #     self.newObject.Solid = True
+    #     self.newObject.Symmetric = False
+    #     self.direction = faced.getDirectionAxis(self.selectedObj)
         
-        edges=self.ExtractedFaces[0].Shape
-        lowestZ= self.ExtractedFaces[0].Shape.BoundBox.ZMin
-        highestZ=self.ExtractedFaces[0].Shape.BoundBox.ZMax
-        lowestX=self.ExtractedFaces[0].Shape.BoundBox.XMax
-        highestX=self.ExtractedFaces[0].Shape.BoundBox.XMax
-        if self.OperationType == 0:
-            # Bottom
-            vec1=-1
-            vec2=-1
-            edges=self.ExtractedFaces[0].Shape.Edges
-            #Find the lowest z inside the vectors.
-            res=[]
-            for i in range (0,4):
-                if (edg[i].Vertexes[0].Point.z <=lowestZ):
-                    res.append(i)
-            if len(res>1):
-                if (edge[res[0]].Vertexes[1].Point.z< edge[res[1]].Vertexes[1].Point.z):
-                    edge.remove()
+    #     edges=self.ExtractedFaces[0].Shape
+    #     lowestZ= self.ExtractedFaces[0].Shape.BoundBox.ZMin
+    #     highestZ=self.ExtractedFaces[0].Shape.BoundBox.ZMax
+    #     lowestX=self.ExtractedFaces[0].Shape.BoundBox.XMax
+    #     highestX=self.ExtractedFaces[0].Shape.BoundBox.XMax
+    #     if self.OperationType == 0:
+    #         # Bottom
+    #         vec1=-1
+    #         vec2=-1
+    #         edges=self.ExtractedFaces[0].Shape.Edges
+    #         #Find the lowest z inside the vectors.
+    #         res=[]
+    #         for i in range (0,4):
+    #             if (edg[i].Vertexes[0].Point.z <=lowestZ):
+    #                 res.append(i)
+    #         if len(res>1):
+    #             if (edge[res[0]].Vertexes[1].Point.z< edge[res[1]].Vertexes[1].Point.z):
+    #                 edge.remove()
 
-            # TODO:FXIME: NOT SURE WE NEED THIS???
-        self.newObject.Base = self.ExtractedFaces[0].Placement.Base
-        #self.newObject.Axis = self.
+    #         # TODO:FXIME: NOT SURE WE NEED THIS???
+    #     self.newObject.Base = self.ExtractedFaces[0].Placement.Base
+    #     #self.newObject.Axis = self.
         
 
             
