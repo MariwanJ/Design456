@@ -530,12 +530,18 @@ class Design456_SmartExtrudeRotate:
         highestX=self.ExtractedFaces[0].Shape.BoundBox.XMax
         if self.OperationType == 0:
             # Bottom
-            for edges in self.ExtractedFaces[0].Shape.Edges:
-               #Find the lowest z inside the vectors.
-               
-        
-        
-        
+            vec1=-1
+            vec2=-1
+            edges=self.ExtractedFaces[0].Shape.Edges
+            #Find the lowest z inside the vectors.
+            res=[]
+            for i in range (0,4):
+                if (edg[i].Vertexes[0].Point.z <=lowestZ):
+                    res.append(i)
+            if len(res>1):
+                if (edge[res[0]].Vertexes[1].Point.z< edge[res[1]].Vertexes[1].Point.z):
+                    edge.remove()
+
             # TODO:FXIME: NOT SURE WE NEED THIS???
         self.newObject.Base = self.ExtractedFaces[0].Placement.Base
         #self.newObject.Axis = self.
