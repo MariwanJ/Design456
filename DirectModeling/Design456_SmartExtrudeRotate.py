@@ -890,7 +890,7 @@ class Design456_SmartExtrudeRotate:
             self.lblTitle.setGeometry(QtCore.QRect(10, 10, 281, 91))
             font = QtGui.QFont()
             font.setFamily("Times New Roman")
-            font.setPointSize(14)
+            font.setPointSize(10)
             self.lblTitle.setFont(font)
             self.lblTitle.setObjectName("lblTitle")
             self.ExtrudeLBL = QtGui.QLabel(self.dialog)
