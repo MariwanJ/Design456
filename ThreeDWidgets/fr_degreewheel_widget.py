@@ -337,8 +337,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                         self.currentSo = counter
                         self.do_callbacks(counter)
                         return 1
-                    else:
-                        return 0   # None of them was True.
+                return 0   # None of them was True.
             else:
                 self.do_callbacks(self.currentSo)
                 return 1
