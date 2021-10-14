@@ -133,7 +133,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                                        "," +
                                        str(linktocaller.normalVector.z) + ")"
                                        + "\nRotation Angle= " + str(linktocaller.w_rotation[3]) + " °")
-    linktocaller.wheelObj.w_Rotation = linktocaller.w_rotation[3]
+    linktocaller.wheelObj.w_Rotation = linktocaller.w_rotation
     linktocaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -515,7 +515,7 @@ class Design456_SmartExtrudeRotate:
         self.newObject = App.ActiveDocument.addObject(
             "Part::Revolution", "ExtendRotate")
         # remove totally the second face, not required anymore.
-        App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
+        #App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
         self.ExtractedFaces[1] = None
         self.newObject.Angle = self.w_rotation[3]
         self.newObject.Solid = True
