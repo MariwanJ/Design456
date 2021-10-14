@@ -109,27 +109,28 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         linktocaller.startVector = linktocaller.endVector
         App.ActiveDocument.removeObject(linktocaller.newObject.Name)
 
-        del linktocaller.newObject
+        del linktocaller.newObject  # remove any object exist (loft)
+
+        linktocaller.createRevolveObj()
         linktocaller.mouseOffset = App.Vector(0, 0, 0)
 
-    linktocaller.CenterRotation[3] = round(linktocaller.CenterRotation[3]+(
-        linktocaller.endVector -
-        linktocaller.startVector).dot(linktocaller.normalVector), 2)
-    if (linktocaller.CenterRotation is None):
-        raise ValueError("should not be zero centerration")
+    linktocaller.w_rotation = round(linktocaller.w_rotation+(
+        linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector), 2)
+    # Range is between 360 to 360
+    if (linktocaller.w_rotation > 360):
+        while (linktocaller.w_rotation - 360 > 0):
+            linktocaller.w_rotation = linktocaller.w_rotation - 360
+    elif (linktocaller.w_rotation < 0):
+        while (linktocaller.w_rotation + 360 < 0):
+            linktocaller.w_rotation = linktocaller.w_rotation + 360
     if (linktocaller.RotateLBL is not None):
-        linktocaller.RotateLBL.setText(
-            "Rotation Axis= " +
-            "(" +
-            str(linktocaller.CenterRotation[0])+","
-            + str(linktocaller.CenterRotation[1]) +
-            "," +
-            str(linktocaller.CenterRotation[2]) +
-            ")"
-            + "\nRotation Angle= "
-            +
-            str(linktocaller.CenterRotation[3]) +
-            " °")
+        linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
+                                       str(linktocaller.normalVector.x)+","
+                                       + str(linktocaller.normalVector.y) +
+                                       "," +
+                                       str(linktocaller.normalVector.z) + ")"
+                                       + "\nRotation Angle= " + str(linktocaller.w_rotation) + " °")
+    linktocaller.wheelObj.w_Rotation = linktocaller.w_rotation
     linktocaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -354,6 +355,7 @@ class Design456_SmartExtrudeRotate:
     dialog = None
     tab = None
     wheelObj = None
+    w_rotation = 0.0  # Center/Wheel rotation
     _mywin = None
     b1 = None
     ExtrudeLBL = None
@@ -368,7 +370,6 @@ class Design456_SmartExtrudeRotate:
     direction = None
     faceDir = None
     setupRotation = [0, 0, 0, 0]
-    CenterRotation = [0, 0, 0, 0]  # Used only with the center (cylinder)
     # We use this to simplify the code
     # for both, 2D and 3D object, the face variable is this
     newObject = None
@@ -506,35 +507,23 @@ class Design456_SmartExtrudeRotate:
 
         return pl
 
-    #TODO: FIXME:
+    # TODO: FIXME:
 
     def createRevolveObj(self):
 
         # Create the Revolution
         self.newObject = App.ActiveDocument.addObject(
             "Part::Revolution", "ExtendRotate")
-        self.newObject.ActiveDocument.Revolve.Source = self.ExtractedFaces[0].Object
-        # remove totally the second face, not needed
-        App.ActiveDocument.removeObject(
-            self.ExtractedFaces[1].Object.Name)
+
+        # remove totally the second face, not required anymore.
+        App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
         self.ExtractedFaces[1] = None
         self.newObject.Angle = self.w_rotation
         self.newObject.Solid = True
         self.newObject.Symmetric = False
-        self.direction = faced.getDirectionAxis(self.selectedObj)
-        
-        edg=selectedAxis=Gui.Selection.getSelection()[0].SubObjects[0]
+        self.newObject.Source = self.ExtractedFaces[0]
         self.newObject.Base = self.ExtractedFaces[0].Placement.Base
-        self.newObject.Axis = edg
-        self.newObject.
-        
-
-            
-
-
-
-
-
+        self.newObject.Axis = self.normalVector
 
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
@@ -679,11 +668,11 @@ class Design456_SmartExtrudeRotate:
             self.setupRotation = self.calculateNewVector()
             if self.faceDir == "+z" or self.faceDir == "-z":
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    round(self.CenterRotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
+                    round(self.w_rotation, 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
                     self.setupRotation, [2.0, 2.0, 2.0], 2)
             else:
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    round(self.CenterRotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
+                    round(self.w_rotation, 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
                     self.setupRotation, [2.0, 2.0, 2.0], 1)
 
             # Define the callbacks. We have many callbacks here.
@@ -944,7 +933,7 @@ class Design456_SmartExtrudeRotate:
         elif button.text() == "Merge":
             if button.isChecked() is True:
                 self.OperationOption = 1
-        # In which direction dosen't change (axis)
+        # In which direction doesn't change (axis)
         if button.text() == "Bottom":
             if button.isChecked() is True:
                 self.OperationType = 0
