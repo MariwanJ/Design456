@@ -150,7 +150,7 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject = None):
     events = userData.events
     linktocaller = userData.callerObject
     if linktocaller.isItRotation is True:
-        print("Not allowed")
+        callback_Rotate(userData)
         return  # We cannot allow this tool
     if type(events) != int:
         print("event was not int")
@@ -194,7 +194,7 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject = None):
     events = userData.events
     linktocaller = userData.callerObject
     if linktocaller.isItRotation is True:
-        print("Not allowed")
+        callback_Rotate(userData)
         return  # We cannot allow this tool
 
     if type(events) != int:
@@ -239,7 +239,7 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject = None):
     events = userData.events
     linktocaller = userData.callerObject
     if linktocaller.isItRotation is True:
-        print("Not allowed")
+        callback_Rotate(userData)
         return  # We cannot allow this tool
 
     if type(events) != int:
@@ -284,7 +284,7 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject = None):
     events = userData.events
     linktocaller = userData.callerObject
     if linktocaller.isItRotation is True:
-        print("Not allowed")
+        callback_Rotate(userData)
         return  # We cannot allow this tool
 
     if type(events) != int:
@@ -811,25 +811,25 @@ class Design456_SmartExtrudeRotate:
             self.frmRotation.setGeometry(QtCore.QRect(10, 190, 231, 181))
             self.frmRotation.setFrameShape(QtGui.QFrame.StyledPanel)
             self.frmRotation.setFrameShadow(QtGui.QFrame.Sunken)
-            self.frmRotation.setObjectName("frmRotation")
-            self.gridLayoutWidget = QtGui.QWidget(self.frmRotation)
-            self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 30, 211, 141))
-            self.gridLayoutWidget.setObjectName("gridLayoutWidget")
-            self.gridRotation = QtGui.QGridLayout(self.gridLayoutWidget)
-            self.gridRotation.setContentsMargins(0, 0, 0, 0)
-            self.gridRotation.setObjectName("gridRotation")
-            self.radioLeft = QtGui.QRadioButton(self.gridLayoutWidget)
-            self.radioLeft.setObjectName("radioLeft")
-            self.gridRotation.addWidget(self.radioLeft, 3, 0, 1, 1)
-            self.radioTop = QtGui.QRadioButton(self.gridLayoutWidget)
-            self.radioTop.setObjectName("radioTop")
-            self.gridRotation.addWidget(self.radioTop, 1, 0, 1, 1)
-            self.radioBottom = QtGui.QRadioButton(self.gridLayoutWidget)
-            self.radioBottom.setObjectName("radioBottom")
-            self.gridRotation.addWidget(self.radioBottom, 0, 0, 1, 1)
-            self.radioRight = QtGui.QRadioButton(self.gridLayoutWidget)
-            self.radioRight.setObjectName("radioRight")
-            self.gridRotation.addWidget(self.radioRight, 2, 0, 1, 1)
+            #self.frmRotation.setObjectName("frmRotation")
+            #self.gridLayoutWidget = QtGui.QWidget(self.frmRotation)
+            #self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 30, 211, 141))
+            # self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+            # self.gridRotation = QtGui.QGridLayout(self.gridLayoutWidget)
+            # self.gridRotation.setContentsMargins(0, 0, 0, 0)
+            # self.gridRotation.setObjectName("gridRotation")
+            # self.radioLeft = QtGui.QRadioButton(self.gridLayoutWidget)
+            # self.radioLeft.setObjectName("radioLeft")
+            # self.gridRotation.addWidget(self.radioLeft, 3, 0, 1, 1)
+            # self.radioTop = QtGui.QRadioButton(self.gridLayoutWidget)
+            # self.radioTop.setObjectName("radioTop")
+            # self.gridRotation.addWidget(self.radioTop, 1, 0, 1, 1)
+            # self.radioBottom = QtGui.QRadioButton(self.gridLayoutWidget)
+            # self.radioBottom.setObjectName("radioBottom")
+            # self.gridRotation.addWidget(self.radioBottom, 0, 0, 1, 1)
+            # self.radioRight = QtGui.QRadioButton(self.gridLayoutWidget)
+            # self.radioRight.setObjectName("radioRight")
+            # self.gridRotation.addWidget(self.radioRight, 2, 0, 1, 1)
             self.lblExtrusionType = QtGui.QLabel(self.frmRotation)
             self.lblExtrusionType.setGeometry(QtCore.QRect(10, 0, 121, 31))
             font = QtGui.QFont()
@@ -892,12 +892,12 @@ class Design456_SmartExtrudeRotate:
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate(
                 "Dialog", "Smart Extrude Rotate"))
-            self.radioLeft.setText(_translate("Dialog", "Left"))
-            self.radioTop.setText(_translate("Dialog", "Top"))
-            self.radioBottom.setText(_translate("Dialog", "Bottom"))
-            self.radioRight.setText(_translate("Dialog", "Right"))
-            self.lblExtrusionType.setText(
-                _translate("Dialog", "Extrusion typ"))
+            # self.radioLeft.setText(_translate("Dialog", "Left"))
+            # self.radioTop.setText(_translate("Dialog", "Top"))
+            # self.radioBottom.setText(_translate("Dialog", "Bottom"))
+            # self.radioRight.setText(_translate("Dialog", "Right"))
+            # self.lblExtrusionType.setText(
+            #     _translate("Dialog", "Extrusion typ"))
             self.radioAsIs.setText(_translate("Dialog", "As Is"))
             self.radioMerge.setText(_translate("Dialog", "Merge"))
             self.lblExtrusionResult.setText(
@@ -908,7 +908,7 @@ class Design456_SmartExtrudeRotate:
             self.RotateLBL.setText(_translate("Dialog", "Extrusion Angle="))
 
             self.radioAsIs.setChecked(True)
-            self.radioBottom.setChecked(True)
+            #self.radioBottom.setChecked(True)
 
             self.radioAsIs.toggled.connect(
                 lambda: self.btnState(self.radioAsIs))
