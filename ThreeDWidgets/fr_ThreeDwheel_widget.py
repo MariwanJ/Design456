@@ -78,7 +78,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
                  label: str="", lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=[(0.0, 0.0, 1.0), 0.0],
+                 _rotation=[0.0, 0.0, 1.0, 0.0],
                  _wheelType=0):  
 
         super().__init__(vectors, label)
@@ -118,7 +118,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_Xrotation = [0, 0, 0, 0]           
         self.w_Yrotation = [0, 0, 0, 0]
         self.w_Zrotation = [0, 0, 0, 0]
-
+        self.w_rotation=_rotation
         
         self.w_userData = userDataObject()  # Keep info about the widget
         # self.w_userData.wheelObj=self

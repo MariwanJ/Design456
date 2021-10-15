@@ -133,7 +133,10 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                                        "," +
                                        str(linktocaller.normalVector.z) + ")"
                                        + "\nRotation Angle= " + str(linktocaller.w_rotation[3]) + " °")
-    linktocaller.wheelObj.w_Rotation = linktocaller.w_rotation
+
+    #linktocaller.wheelObj.w_Rotation = linktocaller.w_rotation
+    linktocaller.wheelObj.w_Rotation = [linktocaller.newObject.Axis.x,linktocaller.newObject.Axis.y,linktocaller.newObject.Axis.z,linktocaller.newObject.Angle]
+    linktocaller.newObject.Angle = -linktocaller.w_rotation[3]
     linktocaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -523,6 +526,16 @@ class Design456_SmartExtrudeRotate:
         self.newObject.Source = self.ExtractedFaces[0]
         self.newObject.Base = self.ExtractedFaces[0].Placement.Base
         self.newObject.Axis = self.normalVector
+        if (self.newObject.Axis.x==1 or self.newObject.Axis.x==-1):
+            self.newObject.Axis.y=self.newObject.Axis.x
+            self.newObject.Axis.x=0
+        elif (self.newObject.Axis.y==1 or self.newObject.Axis.y==-1):
+            self.newObject.Axis.x=self.newObject.Axis.y
+            self.newObject.Axis.y=0
+        elif(self.newObject.Axis.z==1 or self.newObject.Axis.z==-1):
+            self.newObject.Axis.x=self.newObject.Axis.z
+            self.newObject.Axis.z=0
+
 
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]
