@@ -43,6 +43,7 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 import math
+import Part as _part 
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
@@ -110,8 +111,8 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         App.ActiveDocument.removeObject(linktocaller.newObject.Name)
 
         del linktocaller.newObject  # remove any object exist (loft)
+        linktocaller.newObject=None
 
-        linktocaller.createRevolveObj()
         linktocaller.mouseOffset = App.Vector(0, 0, 0)
 
     linktocaller.w_rotation = [linktocaller.normalVector.x,
@@ -119,13 +120,11 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                               linktocaller.normalVector.z,
                               round(linktocaller.w_rotation[3]+(linktocaller.endVector -
                                                              linktocaller.startVector).dot(linktocaller.normalVector), 2)]
-    # Range is between 360 to 360
+    # Range is between -360 to 360
     if (linktocaller.w_rotation[3] > 360):
-        while (linktocaller.w_rotation[3] - 360 > 0):
-            linktocaller.w_rotation[3] = linktocaller.w_rotation[3] - 360
-    elif (linktocaller.w_rotation[3] < 0):
-        while (linktocaller.w_rotation[3] + 360 < 0):
-            linktocaller.w_rotation[3] = linktocaller.w_rotation[3] + 360
+        linktocaller.w_rotation[3]=360
+    elif (linktocaller.w_rotation[3] < -360):
+        linktocaller.w_rotation[3] = -360
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
                                        str(linktocaller.normalVector.x)+","
@@ -134,9 +133,10 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                                        str(linktocaller.normalVector.z) + ")"
                                        + "\nRotation Angle= " + str(linktocaller.w_rotation[3]) + " °")
 
-    #linktocaller.wheelObj.w_Rotation = linktocaller.w_rotation
-    linktocaller.wheelObj.w_Rotation = [linktocaller.newObject.Axis.x,linktocaller.newObject.Axis.y,linktocaller.newObject.Axis.z,linktocaller.newObject.Angle]
-    linktocaller.newObject.Angle = -linktocaller.w_rotation[3]
+    linktocaller.wheelObj.w_Rotation[3] = linktocaller.w_rotation[3]
+    #linktocaller.wheelObj.w_Rotation = [linktocaller.newObject.Axis.x,linktocaller.newObject.Axis.y,linktocaller.newObject.Axis.z,linktocaller.newObject.Angle]
+    linktocaller.recreateRevolveObj(-linktocaller.w_rotation[3])
+    #linktocaller.newObject.Angle = -linktocaller.w_rotation[3]
     linktocaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -507,35 +507,38 @@ class Design456_SmartExtrudeRotate:
 
         elif self.faceDir == "-z" and Wheelaxis == "135":
             faced.RotateObjectToCenterPoint(s, 0, 0, 135)
-            pl = self.ExtractedFaces[1].Placement
+            pl = self.ExtractedFaces[1].Object.Placement
 
         return pl
 
     # TODO: FIXME:
 
-    def createRevolveObj(self): 
-        # Create the Revolution
-        self.newObject = App.ActiveDocument.addObject(
-            "Part::Revolution", "ExtendRotate")
-        # remove totally the second face, not required anymore.
-        #App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
-        self.ExtractedFaces[1] = None
-        self.newObject.Angle = self.w_rotation[3]
-        self.newObject.Solid = True
-        self.newObject.Symmetric = False
-        self.newObject.Source = self.ExtractedFaces[0]
-        self.newObject.Base = self.ExtractedFaces[0].Placement.Base
-        self.newObject.Axis = self.normalVector
-        if (self.newObject.Axis.x==1 or self.newObject.Axis.x==-1):
-            self.newObject.Axis.y=self.newObject.Axis.x
-            self.newObject.Axis.x=0
-        elif (self.newObject.Axis.y==1 or self.newObject.Axis.y==-1):
-            self.newObject.Axis.x=self.newObject.Axis.y
-            self.newObject.Axis.y=0
-        elif(self.newObject.Axis.z==1 or self.newObject.Axis.z==-1):
-            self.newObject.Axis.x=self.newObject.Axis.z
-            self.newObject.Axis.z=0
+    def recreateRevolveObj(self,angle): 
+        try:# Create the Revolution
+            #self.newObject = App.ActiveDocument.addObject(   "Part::Revolution", "ExtendRotate")
+            # remove totally the second face, not required anymore.
+            if(self.ExtractedFaces[1] is not None):
+                App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
+                self.ExtractedFaces[1]=None
+                #self.ExtractedFaces[1].Placement.Base
+            print(dir(self.newObject))
+            if (self.newObject is not None):
+                App.ActiveDocument.removeObject("ExtendedRotate")
 
+            App.ActiveDocument.recompute()
+            nor=faced.getNormalized(self.ExtractedFaces[0])
+            r=self.ExtractedFaces[0].Shape.revolve(App.Vector(-10,0,5),self.normalVector,-angle)
+            _part.show(r,"ExtendedRotate")
+            App.ActiveDocument.recompute()
+            self.newObject=App.ActiveDocument.getObject("ExtendedRotate")
+
+        except Exception as err:
+            faced.EnableAllToolbar(True)
+            App.Console.PrintError("'create revolve -Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def calculateNewVector(self):
         """[Calculate the new position that will be used for the Wheel drawing]

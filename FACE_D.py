@@ -28,7 +28,6 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft as _draft
 import Part as _part
 from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
@@ -883,3 +882,42 @@ def RotateObjectToCenterPoint(SelectedObj=None,XAngle=0, YAngle=45,ZAngle=0):
         axisY = SelectedObj.Shape.BoundBox.Center.y
         axisZ = SelectedObj.Shape.BoundBox.Center.z
         RealRotateObjectToAnAxis(SelectedObj,App.Vector(axisX,axisY,axisZ),XAngle,YAngle,ZAngle)
+
+
+def getLowestEdgetInAFace(selectedObj=None):
+    try:    
+        if selectedObj is None:
+            raise ValueError("SelectedObj must be a face")
+        ss = selectedObj.Shape
+        allZ = []
+        vert = ss.Vertexes
+        for i in range(0, len(ss.Vertexes)):
+            allZ.append(vert[i].Point.z)
+        allZ.sort()
+        result = None
+        for edge in ss.Edges:
+            if edge.SubShapes[0].Point.z == allZ[0] or edge.SubShapes[0].Point.z == allZ[1]:
+                   if edge.SubShapes[1].Point.z == allZ[0] or edge.SubShapes[1].Point.z == allZ[1]:
+                        return edge
+        if result == None:
+            raise Exception("Not found")  #Don't know when this happens
+    
+    except Exception as err:
+        faced.EnableAllToolbar(True)
+        App.Console.PrintError("'getLowestEdgetInAFace -Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        
+def getNormalized(selectedObj=None):
+    if selectedObj is None:
+        raise ValueError("SelectedObj must be a face")
+    edg = getLowestEdgetInAFace(selectedObj)
+    v1 = App.Vector(edg.Vertexes[0].X, 0, edg.Vertexes[0].Z)
+    v2 = App.Vector(edg.Vertexes[1].X, 0, edg.Vertexes[1].Z)
+    vt = v1.sub(v2)
+    vt=vt
+    vnormal =vt.normalize()
+    print(vnormal,vnormal)
+    return vnormal
