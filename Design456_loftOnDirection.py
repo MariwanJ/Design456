@@ -194,12 +194,12 @@ class Design456_loftOnDirection_ui(object):
                 errMessage = "Select a face to use LoftOnDirection Tool"
                 faced.errorDialog(errMessage)
                 return
-    
+
             selectedEdge = Gui.Selection.getSelectionEx(
             )[0].SubObjects[0]    # select one element
             SubElementName = Gui.Selection.getSelectionEx()[
                 0].SubElementNames[0]
-            
+
 
             #### configuration ####
             ValueLength = -(float)(self.inLength.value())

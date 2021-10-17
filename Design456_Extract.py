@@ -35,19 +35,19 @@ import FACE_D as faced
 from draftutils.translate import translate   #for translate 
 
 class Design456_Extract:
-    """Extract the selected face from objects"""
+    """Extract the selected face from the object"""
 
     def Activated(self):
         try:
             objectCreate=False
-            newobj=App.ActiveDocument.ActiveObject  #Dummy code.
+            newobj=None
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 1):
                 # An object must be selected
-                errMessage = "Select a face from an objects to use Extract"
+                errMessage = "Select a face from an object to use Extract"
                 faced.errorDialog(errMessage)
                 return
-            App.ActiveDocument.openTransaction(translate("Design456","Extract Face"))
+            App.ActiveDocument.openTransaction(translate("Design456","Extract a Face"))
             for o in s:
                 objName = o.ObjectName
                 sh = o.Object.Shape.copy()
@@ -65,7 +65,7 @@ class Design456_Extract:
                 if objectCreate==True:
                     App.ActiveDocument.removeObject(newobj.Name)
                 # Shape != OK
-                errMessage = "Failed to extract the shape"
+                errMessage = "Failed to extract the face"
                 faced.errorDialog(errMessage)
                 return
         except Exception as err:
@@ -79,7 +79,7 @@ class Design456_Extract:
         return{
             'Pixmap':   Design456Init.ICON_PATH +'Extract.svg',
             'MenuText': 'Extract',
-            'ToolTip': 'Extract selected subshapes from objects'
+            'ToolTip': 'Extract selected face from the object'
         }
 
 
