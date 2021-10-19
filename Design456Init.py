@@ -51,6 +51,9 @@ WIDGETS3D_PATH=os.path.join(__dir__,'ThreeDWidgets/')
 #Direct Modeling implementation 
 DIRECTMODELING_PATH=os.path.join(__dir__,'DirectModeling/')
 
+#From DRAFT
+__dirname__ = os.path.join(App.getResourceDir(), "Mod", "Draft")
+
 # PART
 App.addImportType("BREP format (*.brep *.brp)", "Part")
 App.addExportType("BREP format (*.brep *.brp)", "Part")
