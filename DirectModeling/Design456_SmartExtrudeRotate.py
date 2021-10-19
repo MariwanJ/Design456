@@ -261,7 +261,6 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject = None):
         # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
         linktocaller.mouseOffset = App.Vector(0, 0, 0)
 
-    print(linktocaller.normalVector)
     linktocaller.extrudeLength = (
         linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
 
@@ -521,13 +520,13 @@ class Design456_SmartExtrudeRotate:
                 App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
                 self.ExtractedFaces[1]=None
                 #self.ExtractedFaces[1].Placement.Base
-            print(dir(self.newObject))
+
             if (self.newObject is not None):
                 App.ActiveDocument.removeObject("ExtendedRotate")
 
             App.ActiveDocument.recompute()
             nor=faced.getNormalized(self.ExtractedFaces[0])
-            r=self.ExtractedFaces[0].Shape.revolve(App.Vector(-10,0,5),self.normalVector,-angle)
+            r=self.ExtractedFaces[0].Shape.revolve(self.selectedObj.Object.Shape.Placement.Base,nor,-angle)
             _part.show(r,"ExtendedRotate")
             App.ActiveDocument.recompute()
             self.newObject=App.ActiveDocument.getObject("ExtendedRotate")

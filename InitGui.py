@@ -81,27 +81,28 @@ class Design456_Workbench (Workbench):
         dependencies_OK = False
         try:
             from pivy import coin
-            if Gui.getSoDBVersion() != coin.SoDB.getVersion():
+            import FreeCAD
+            import FreeCADGui
+            if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
                 raise AssertionError("FreeCAD and Pivy use different versions "
                                      "of Coin. "
-                                     "This will lead to unexpected behavior.")
+                                     "This will lead to unexpected behaviour.")
         except AssertionError:
-            App.Console.PrintWarning("Error: FreeCAD and Pivy "
-                                     "use different versions of Coin. "
-                                     "This will lead to unexpected "
-                                     "behavior.\n")
+            FreeCAD.Console.PrintWarning("Error: FreeCAD and Pivy "
+                                         "use different versions of Coin. "
+                                         "This will lead to unexpected "
+                                         "behaviour.\n")
+        except ImportError:
+            FreeCAD.Console.PrintWarning("Error: Pivy not found, "
+                                         "Draft Workbench will be disabled.\n")
         except Exception:
-            App.Console.PrintWarning("Error: Pivy not found, "
-                                     "Design456 Workbench will be disabled.\n")
-        except Exception:
-            App.Console.PrintWarning("Error: Unknown error "
-                                     "while trying to load Pivy.\n")
+            FreeCAD.Console.PrintWarning("Error: Unknown error "
+                                         "while trying to load Pivy.\n")
         else:
             dependencies_OK = True
 
         if not dependencies_OK:
             return
-        # END DRAFT
 
         # Import Draft tools, icons
         try:
@@ -109,6 +110,8 @@ class Design456_Workbench (Workbench):
             import DraftTools
             import DraftGui
             import DraftFillet
+            import FreeCAD
+            import FreeCADGui 
             FreeCADGui.addLanguagePath(":/translations")
             FreeCADGui.addIconPath(":/icons")
         except Exception as exc:
@@ -125,7 +128,6 @@ class Design456_Workbench (Workbench):
             self.utility_commands_menu = it.get_draft_utility_commands_menu()
             self.utility_commands_toolbar = it.get_draft_utility_commands_toolbar()
             self.context_commands = it.get_draft_context_commands()
-            self.line_commands = it.get_draft_line_commands()
 
             # Set up toolbars
             it.init_toolbar(self,
@@ -166,6 +168,7 @@ class Design456_Workbench (Workbench):
                     FreeCADGui.draftToolBar.loadedPreferences = True
 
             FreeCAD.Console.PrintLog('Loading Draft workbench, done.\n')
+
             # END DRAFT
         except Exception as exc:
             App.Console.PrintError(exc)
@@ -227,14 +230,6 @@ class Design456_Workbench (Workbench):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
-        
-        
-        except Exception as exc:
-            App.Console.PrintError(exc)
-            App.Console.PrintError("Error: Design456 activation "
-                                   "failed, "
-                                   "Design456 will not work as expected.\n")
 
     def Deactivated(self):
         from plane import Grid as gr
