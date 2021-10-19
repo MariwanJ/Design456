@@ -918,6 +918,16 @@ def getNormalized(selectedObj=None):
     v2 = App.Vector(edg.Vertexes[1].Y, edg.Vertexes[1].X, edg.Vertexes[1].Z)
     vt = v1.sub(v2)
     vt=vt
-    vnormal =vt#.normalize()
-    print(vnormal,vnormal)
+    p1=edg.valueAt(edg.FirstParameter)
+    p2 = edg.valueAt(edg.LastParameter)
+
+    vnormal =p2-p1
+    print("vnormal",vnormal)
     return vnormal
+
+def getBase(selectedObj,radius=1, thickness=1):
+    edg = getLowestEdgetInAFace(selectedObj)
+    nor=getNormalized(selectedObj)
+    basePoint = edg.valueAt(edg.FirstParameter) + nor*(radius+thickness)
+    print("basePoint",basePoint)
+    return basePoint

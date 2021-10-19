@@ -103,7 +103,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-
+    startX = startY=0
     if linktocaller.run_Once is False:
         linktocaller.run_Once = True
         # only once
@@ -112,14 +112,26 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
         del linktocaller.newObject  # remove any object exist (loft)
         linktocaller.newObject=None
+        startY=wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
+        startX=wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
 
         linktocaller.mouseOffset = App.Vector(0, 0, 0)
-
+    print(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y)
+    print(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x)
+    print("8888888888888888888888")
+    angle = 270-math.degrees(math.atan2(-1*wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y-startY, 
+                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x-startX))
+    #linktocaller.w_rotation = [linktocaller.normalVector.x,
+    #                          linktocaller.normalVector.y,
+    #                          linktocaller.normalVector.z,
+    #                          round(linktocaller.w_rotation[3]+(linktocaller.endVector -
+    #                                                         linktocaller.startVector).dot(linktocaller.normalVector), 1)]
     linktocaller.w_rotation = [linktocaller.normalVector.x,
                               linktocaller.normalVector.y,
                               linktocaller.normalVector.z,
-                              round(linktocaller.w_rotation[3]+(linktocaller.endVector -
-                                                             linktocaller.startVector).dot(linktocaller.normalVector), 2)]
+                              round(angle, 1)]
+
+
     # Range is between -360 to 360
     if (linktocaller.w_rotation[3] > 360):
         linktocaller.w_rotation[3]=360
@@ -526,7 +538,8 @@ class Design456_SmartExtrudeRotate:
 
             App.ActiveDocument.recompute()
             nor=faced.getNormalized(self.ExtractedFaces[0])
-            r=self.ExtractedFaces[0].Shape.revolve(self.selectedObj.Object.Shape.Placement.Base,nor,-angle)
+            bas=faced.getBase(self.ExtractedFaces[0])
+            r=self.ExtractedFaces[0].Shape.revolve(bas,nor,-angle)
             _part.show(r,"ExtendedRotate")
             App.ActiveDocument.recompute()
             self.newObject=App.ActiveDocument.getObject("ExtendedRotate")
