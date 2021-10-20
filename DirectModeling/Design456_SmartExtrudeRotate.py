@@ -108,6 +108,8 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         linktocaller.run_Once = True
         # only once
         linktocaller.startVector = linktocaller.endVector
+        print(linktocaller.newObject.Label)
+        print("..............................")
         App.ActiveDocument.removeObject(linktocaller.newObject.Name)
 
         del linktocaller.newObject  # remove any object exist (loft)
@@ -355,6 +357,8 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject = None):
         linktocaller.run_Once = False
         App.ActiveDocument.recompute()
         linktocaller.startVector = None
+        if(linktocaller.direction=="Center"):
+            App.ActiveDocument.removeObject(linktocaller.ExtractedFaces[0].Name)
         App.ActiveDocument.commitTransaction()  # undo reg.
 
     except Exception as err:
@@ -420,7 +424,7 @@ class Design456_SmartExtrudeRotate:
         """
         if self.isItRotation is True:
             return;  #We shouldnt be here . 
-        
+
         faceRotation = 0
         # TODO: Lets take only X axis first , then Y ..etc and so on.
         face1Obj = self.ExtractedFaces[0]
@@ -530,23 +534,21 @@ class Design456_SmartExtrudeRotate:
 
     def recreateRevolveObj(self,angle): 
         try:# Create the Revolution
-            #self.newObject = App.ActiveDocument.addObject(   "Part::Revolution", "ExtendRotate")
             # remove totally the second face, not required anymore.
             if(self.ExtractedFaces[1] is not None):
                 App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
                 self.ExtractedFaces[1]=None
-                #self.ExtractedFaces[1].Placement.Base
 
             if (self.newObject is not None):
-                App.ActiveDocument.removeObject("ExtendedRotate")
+                App.ActiveDocument.removeObject(self.newObject.Name)
 
             App.ActiveDocument.recompute()
             nor=faced.getNormalized(self.ExtractedFaces[0])
             bas=faced.getBase(self.ExtractedFaces[0])
             r=self.ExtractedFaces[0].Shape.revolve(bas,nor,-angle)
-            _part.show(r,"ExtendedRotate")
+            _part.show(r,"TempExtendedRotate")
             App.ActiveDocument.recompute()
-            self.newObject=App.ActiveDocument.getObject("ExtendedRotate")
+            self.newObject=App.ActiveDocument.getObject("TempExtendedRotate")
 
         except Exception as err:
             faced.EnableAllToolbar(True)
@@ -678,8 +680,7 @@ class Design456_SmartExtrudeRotate:
             self.selectedObj = self.selected[0]
             faced.EnableAllToolbar(False)
             # Undo
-            App.ActiveDocument.openTransaction(
-                translate("Design456", "SmartExtrudeRotate"))
+            App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrudeRotate"))
             self.ExtractedFaces.clear()
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
@@ -688,12 +689,10 @@ class Design456_SmartExtrudeRotate:
                 # We have a 2D Face - Extract it directly
                 print("2d object copy the face itself")
                 sh = self.selectedObj.Object.Shape.copy()
-                o = App.ActiveDocument.addObject(
-                    "Part::Feature", "MovableFace")
+                o = App.ActiveDocument.addObject("Part::Feature", "MovableFace")
                 o.Shape = sh
                 self.ExtractedFaces.append(self.selectedObj.Object)
-                self.ExtractedFaces.append(
-                    App.ActiveDocument.getObject(o.Name))
+                self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
 
             # Deside how the Degree Wheel be drawn
             self.setupRotation = self.calculateNewVector()
@@ -760,6 +759,8 @@ class Design456_SmartExtrudeRotate:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
+            print("--------------------------------")
+            App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo reg.
             self.mw = None
             self.dialog = None
@@ -771,10 +772,11 @@ class Design456_SmartExtrudeRotate:
             self.run_Once = False
             self.endVector = None
             self.startVector = None
-            self.extrudeLength = 0.001  # This will be the Delta-mouse position
+            self.extrudeLength = 0.0 
             # We will make two object, one for visual effect and the other is the original
             self.selectedObj = None
             self.selected = None
+                
             self.direction = None
             self.setupRotation = [0, 0, 0, 0]
             # Used only with the center (cylinder)
@@ -828,35 +830,8 @@ class Design456_SmartExtrudeRotate:
             self.frmRotation = QtGui.QFrame(self.dialog)
             self.dialog.resize(200, 450)
             self.frmRotation.setGeometry(QtCore.QRect(10, 190, 231, 181))
-            self.frmRotation.setFrameShape(QtGui.QFrame.StyledPanel)
-            self.frmRotation.setFrameShadow(QtGui.QFrame.Sunken)
-            #self.frmRotation.setObjectName("frmRotation")
-            #self.gridLayoutWidget = QtGui.QWidget(self.frmRotation)
-            #self.gridLayoutWidget.setGeometry(QtCore.QRect(10, 30, 211, 141))
-            # self.gridLayoutWidget.setObjectName("gridLayoutWidget")
-            # self.gridRotation = QtGui.QGridLayout(self.gridLayoutWidget)
-            # self.gridRotation.setContentsMargins(0, 0, 0, 0)
-            # self.gridRotation.setObjectName("gridRotation")
-            # self.radioLeft = QtGui.QRadioButton(self.gridLayoutWidget)
-            # self.radioLeft.setObjectName("radioLeft")
-            # self.gridRotation.addWidget(self.radioLeft, 3, 0, 1, 1)
-            # self.radioTop = QtGui.QRadioButton(self.gridLayoutWidget)
-            # self.radioTop.setObjectName("radioTop")
-            # self.gridRotation.addWidget(self.radioTop, 1, 0, 1, 1)
-            # self.radioBottom = QtGui.QRadioButton(self.gridLayoutWidget)
-            # self.radioBottom.setObjectName("radioBottom")
-            # self.gridRotation.addWidget(self.radioBottom, 0, 0, 1, 1)
-            # self.radioRight = QtGui.QRadioButton(self.gridLayoutWidget)
-            # self.radioRight.setObjectName("radioRight")
-            # self.gridRotation.addWidget(self.radioRight, 2, 0, 1, 1)
-            self.lblExtrusionType = QtGui.QLabel(self.frmRotation)
-            self.lblExtrusionType.setGeometry(QtCore.QRect(10, 0, 121, 31))
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            self.lblExtrusionType.setFont(font)
-            self.lblExtrusionType.setObjectName("lblExtrusionType")
             self.frame_2 = QtGui.QFrame(self.dialog)
-            self.frame_2.setGeometry(QtCore.QRect(10, 380, 231, 151))
+            self.frame_2.setGeometry(QtCore.QRect(10, 195, 231, 151))
             self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
             self.frame_2.setFrameShadow(QtGui.QFrame.Sunken)
             self.frame_2.setObjectName("frame_2")
