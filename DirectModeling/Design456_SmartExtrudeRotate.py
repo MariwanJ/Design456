@@ -83,7 +83,6 @@ def smartlbl_callback(smartLine, obj, parentlink):
 
 # Rotation only TODO: FIXME:
 def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
-    print("Center")
     if userData is None:
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
@@ -101,50 +100,52 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-    startX = startY=0
-    if linktocaller.run_Once is False:
-        linktocaller.run_Once = True
-        # only once
-        linktocaller.startVector = linktocaller.endVector
-        App.ActiveDocument.removeObject(linktocaller.newObject.Name)
-        del linktocaller.newObject  # remove any object exist (loft)
-        linktocaller.reCreateRevolveObj(0)
-        startY=wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
-        startX=wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
+    startX = startY = 0
+    if linktocaller.editing is False:
+        if linktocaller.run_Once is False:
+            linktocaller.run_Once = True
+            # only once
+            linktocaller.startVector = linktocaller.endVector
+            App.ActiveDocument.removeObject(linktocaller.newObject.Name)
+            del linktocaller.newObject  # remove any object exist (loft)
+            linktocaller.reCreateRevolveObj(0)
+            startY = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
+            startX = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
+            print(startY, startX)
+            print("startY, startX")
+            linktocaller.editing=True
+    else:
+        linktocaller.run_Once=True
+
+    mouseX = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
+    mouseY = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
+    #angle = math.degrees(math.atan2(-1*(mouseY-startY), mouseX-startX))
+
+    angle=round(linktocaller.w_rotation[3]+(linktocaller.endVector -linktocaller.startVector).dot(linktocaller.normalVector), 1)
+
+    #while (angle < (linktocaller.w_rotation[3]-180)):
+    #    angle += angle+360
+    #while (angle > linktocaller.w_rotation[3]+180):
+    #    angle = angle-360
 
 
-    mouseX=wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x-wheelObj.vectors[0].x
-    mouseY=wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y-wheelObj.vectors[0].y
-    angle =270-math.degrees(math.atan2(-1*(mouseY-startY), mouseX-startX))
-    linktocaller.w_rotation = [linktocaller.normalVector.x,
-                              linktocaller.normalVector.y,
+    linktocaller.w_rotation = [linktocaller.normalVector.y,
+                              linktocaller.normalVector.x,
                               linktocaller.normalVector.z,
                               round(angle, 1)]
 
-    #linktocaller.w_rotation = [linktocaller.normalVector.x,
-    #                          linktocaller.normalVector.y,
-    #                          linktocaller.normalVector.z,
-    #                          round(linktocaller.w_rotation[3]+(linktocaller.endVector -
-    #                                                         linktocaller.startVector).dot(linktocaller.normalVector), 1)]
-
-    #  # Range is between -360 to 360
-    #  if (linktocaller.w_rotation[3] > 360):
-    #      linktocaller.w_rotation[3]=360
-    #  elif (linktocaller.w_rotation[3] < -360):
-    #      linktocaller.w_rotation[3] = -360
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
-                                       str(linktocaller.normalVector.x)+","
-                                       + str(linktocaller.normalVector.y) +
+                                       str(linktocaller.w_rotation[0])+","
+                                       + str(linktocaller.w_rotation[1]) +
                                        "," +
-                                       str(linktocaller.normalVector.z) + ")"
+                                       str(linktocaller.w_rotation[2]) + ")"
                                        + "\nRotation Angle= " + str(linktocaller.w_rotation[3]) + " °")
 
-    linktocaller.wheelObj.w_Rotation[3] = angle #linktocaller.w_rotation[3]
-    #linktocaller.wheelObj.w_Rotation = [linktocaller.newObject.Axis.x,linktocaller.newObject.Axis.y,linktocaller.newObject.Axis.z,linktocaller.newObject.Angle]
+    linktocaller.wheelObj.w_Rotation = linktocaller.w_rotation
     if linktocaller.newObject is None:
-       return
-    linktocaller.newObject.Angle = angle #linktocaller.w_rotation[3]
+        return
+    linktocaller.newObject.Angle = angle
     linktocaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -368,6 +369,7 @@ class Design456_SmartExtrudeRotate:
     dialog = None
     tab = None
     wheelObj = None
+    editing=False
     w_rotation = [0.0,0.0,0.0,0.0]  # Center/Wheel rotation
     _mywin = None
     b1 = None
@@ -758,7 +760,7 @@ class Design456_SmartExtrudeRotate:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
-            print("--------------------------------")
+            self.editing=False
             App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo reg.
             self.mw = None
