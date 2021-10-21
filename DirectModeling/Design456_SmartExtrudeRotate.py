@@ -135,8 +135,6 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                               linktocaller.normalVector.z,
                               round(linktocaller.w_rotation[3]+(linktocaller.endVector -
                                                              linktocaller.startVector).dot(linktocaller.normalVector), 1)]
-    
-
 
     # Range is between -360 to 360
     if (linktocaller.w_rotation[3] > 360):
@@ -154,7 +152,9 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     linktocaller.wheelObj.w_Rotation[3] = linktocaller.w_rotation[3]
     #linktocaller.wheelObj.w_Rotation = [linktocaller.newObject.Axis.x,linktocaller.newObject.Axis.y,linktocaller.newObject.Axis.z,linktocaller.newObject.Angle]
     linktocaller.recreateRevolveObj(-linktocaller.w_rotation[3])
-    #linktocaller.newObject.Angle = -linktocaller.w_rotation[3]
+    
+    linktocaller.newObject.Angle = -linktocaller.w_rotation[3]
+    
     linktocaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -538,15 +538,26 @@ class Design456_SmartExtrudeRotate:
             if(self.ExtractedFaces[1] is not None):
                 App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
                 self.ExtractedFaces[1]=None
-
-            if (self.newObject is not None):
-                App.ActiveDocument.removeObject(self.newObject.Name)
-
-            App.ActiveDocument.recompute()
+#
+            #if (self.newObject is not None):
+            #    App.ActiveDocument.removeObject(self.newObject.Name)
+#
+            #App.ActiveDocument.recompute()
             nor=faced.getNormalized(self.ExtractedFaces[0])
             bas=faced.getBase(self.ExtractedFaces[0])
-            r=self.ExtractedFaces[0].Shape.revolve(bas,nor,-angle)
-            _part.show(r,"TempExtendedRotate")
+            #r=self.ExtractedFaces[0].Shape.revolve(bas,nor,-angle)
+            #_part.show(r,"TempExtendedRotate")
+            
+            self.newObject = App.ActiveDocument.addObject(
+            "Part::Revolution", "ExtendRotate")
+            # remove totally the second face, not required anymore.
+            #App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
+            self.newObject.Angle = self.w_rotation[3]
+            self.newObject.Solid = True
+            self.newObject.Symmetric = False
+            self.newObject.Source = self.ExtractedFaces[0]
+            self.newObject.Base = bas
+            self.newObject.Axis = nor            
             App.ActiveDocument.recompute()
             self.newObject=App.ActiveDocument.getObject("TempExtendedRotate")
 
