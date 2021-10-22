@@ -119,14 +119,14 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
     mouseX = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
     mouseY = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
-    #angle = math.degrees(math.atan2(-1*(mouseY-startY), mouseX-startX))
+    #angle = math.degrees(math.atan2(-1*(mouseY-startY), mouseX-startX))  #doesn't work .. needs more thinking !! TODO:FIXME:
 
     angle=round(linktocaller.w_rotation[3]+(linktocaller.endVector -linktocaller.startVector).dot(linktocaller.normalVector), 1)
 
-    #while (angle < (linktocaller.w_rotation[3]-180)):
-    #    angle += angle+360
-    #while (angle > linktocaller.w_rotation[3]+180):
-    #    angle = angle-360
+    while (angle < (linktocaller.w_rotation[3]-180)):
+        angle += angle+360
+    while (angle > linktocaller.w_rotation[3]+180):
+        angle = angle-360
 
 
     linktocaller.w_rotation = [linktocaller.normalVector.y,
@@ -142,7 +142,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                                        str(linktocaller.w_rotation[2]) + ")"
                                        + "\nRotation Angle= " + str(linktocaller.w_rotation[3]) + " °")
 
-    linktocaller.wheelObj.w_Rotation = linktocaller.w_rotation
+    linktocaller.wheelObj.w_Rotation[3] = linktocaller.w_rotation[3]
     if linktocaller.newObject is None:
         return
     linktocaller.newObject.Angle = angle
@@ -525,24 +525,13 @@ class Design456_SmartExtrudeRotate:
     def reCreateRevolveObj(self,angle): 
         try:
             # Create the Revolution
-
             # remove totally the second face, not required anymore.
-            #App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
-
-            #mouseX=wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x-startX -
-            #mouseY=wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x-startY
-            #angle =-math.degrees(math.atan2(-1*wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y-startY, wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x-startX))
-            #linktocaller.w_rotation = [linktocaller.normalVector.x,
-            #                          linktocaller.normalVector.y,
-            #                          linktocaller.normalVector.z,
-            #                          round(angle, 1)]
-
             startY=self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
             startX=self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
             self.newObject = App.ActiveDocument.addObject("Part::Revolution", "ExtendRotate")
             App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
             self.ExtractedFaces[1] = None
-            self.newObject.Angle = angle        # to allow the creation other wise you get OCCT error
+            self.newObject.Angle = angle        # to allow the creation other wise you get OCCT error, angl<>0
             self.newObject.Solid = True
             self.newObject.Symmetric = False
             self.newObject.Source = self.ExtractedFaces[0]
@@ -550,6 +539,10 @@ class Design456_SmartExtrudeRotate:
             bas=faced.getBase(self.ExtractedFaces[0])
             self.newObject.Base = bas
             self.newObject.Axis = nor
+            #Try this .. might be correct
+            self.wheelObj.w_Rotation[0]=nor.x
+            self.wheelObj.w_Rotation[1]=nor.y
+            self.wheelObj.w_Rotation[2]=nor.z
 
         except Exception as err:
             faced.EnableAllToolbar(True)
