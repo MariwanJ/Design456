@@ -426,7 +426,7 @@ def objectRealPlacement3D(obj):  # search the real Placement
             globalPlacementBase = App.Vector(globalPlacement.Base)
             ####
             objectRealPlacement3D = globalPlacementBase.sub(
-                objectWorkCenter)  # mode=0 adapte pour BBox + Centerpoints
+                objectWorkCenter)  # mode=0 adapted pour BBox + Centerpoints
             ####
         else:
             objectRealPlacement3D = objectWorkCenter
@@ -890,26 +890,50 @@ def getLowestEdgetInAFace(selectedObj=None):
             raise ValueError("SelectedObj must be a face")
         ss = selectedObj.Shape
         allZ = []
+        allY = []
+        allX = []
         vert = ss.Vertexes
         for i in range(0, len(ss.Vertexes)):
+            allX.append(vert[i].Point.x)
+            allY.append(vert[i].Point.y)
             allZ.append(vert[i].Point.z)
+
+        allX.sort()
+        allY.sort()
         allZ.sort()
+
         result = None
-        for edge in ss.Edges:
-            if edge.SubShapes[0].Point.z == allZ[0] or edge.SubShapes[0].Point.z == allZ[1]:
-                   if edge.SubShapes[1].Point.z == allZ[0] or edge.SubShapes[1].Point.z == allZ[1]:
-                        return edge
+        testAllX=allX.count(allX[0]) == len(allX)
+        testAllY=allY.count(allY[0]) == len(allY)
+        testAllZ=allZ.count(allZ[0]) == len(allZ)
+        
+        if(testAllZ):
+            #We have either top or bottom
+            #for edge in ss.Edges:
+            #    if edge.SubShapes[0].Point.x == allX[0] or edge.SubShapes[0].Point.x == allX[1]:
+            #           if edge.SubShapes[1].Point.x == allX[0] or edge.SubShapes[1].Point.x == allZ[1]:
+            #                return edge
+                        
+            for edge in ss.Edges:
+                if edge.SubShapes[0].Point.y == allY[0] or edge.SubShapes[0].Point.y == allY[1]:
+                       if edge.SubShapes[1].Point.y == allY[0] or edge.SubShapes[1].Point.y == allY[1]:
+                            return edge
+        else:
+            #This is correcto for all faces but not for top or bottom. 
+            for edge in ss.Edges:
+                if edge.SubShapes[0].Point.z == allZ[0] or edge.SubShapes[0].Point.z == allZ[1]:
+                       if edge.SubShapes[1].Point.z == allZ[0] or edge.SubShapes[1].Point.z == allZ[1]:
+                            return edge
         if result == None:
             raise Exception("Not found")  #Don't know when this happens
-    
+
     except Exception as err:
-        faced.EnableAllToolbar(True)
         App.Console.PrintError("'getLowestEdgetInAFace -Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
-        
+
 def getNormalized(selectedObj=None):
     if selectedObj is None:
         raise ValueError("SelectedObj must be a face")
