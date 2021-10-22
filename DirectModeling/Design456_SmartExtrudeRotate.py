@@ -108,44 +108,33 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
             App.ActiveDocument.removeObject(linktocaller.newObject.Name)
             del linktocaller.newObject  # remove any object exist (loft)
-            linktocaller.reCreateRevolveObj(0)
-            startY = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
-            startX = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
-            print(startY, startX)
-            print("startY, startX")
+            linktocaller.reCreateRevolveObj(0)            
             linktocaller.editing=True
+
     else:
         linktocaller.run_Once=True
+        if (linktocaller.startVector==None): 
+            linktocaller.startVector = linktocaller.endVector
 
-    mouseX = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
-    mouseY = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
-    #angle = math.degrees(math.atan2(-1*(mouseY-startY), mouseX-startX))  #doesn't work .. needs more thinking !! TODO:FIXME:
-
-    angle=round(linktocaller.w_rotation[3]+(linktocaller.endVector -linktocaller.startVector).dot(linktocaller.normalVector), 1)
-
-    while (angle < (linktocaller.w_rotation[3]-180)):
-        angle += angle+360
-    while (angle > linktocaller.w_rotation[3]+180):
-        angle = angle-360
-
-
-    linktocaller.w_rotation = [linktocaller.normalVector.y,
-                              linktocaller.normalVector.x,
-                              linktocaller.normalVector.z,
-                              round(angle, 1)]
-
+    angle=-linktocaller.wheelObj.w_Rotation[3]+round((linktocaller.endVector -linktocaller.startVector).dot(linktocaller.normalVector), 1)
+    if angle==0:
+        angle=1    
+    if (angle> 360):
+            angle=360
+    elif(angle<-360):
+        -360
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
                                        str(linktocaller.w_rotation[0])+","
                                        + str(linktocaller.w_rotation[1]) +
                                        "," +
                                        str(linktocaller.w_rotation[2]) + ")"
-                                       + "\nRotation Angle= " + str(linktocaller.w_rotation[3]) + " °")
+                                       + "\nRotation Angle= " + str(angle) + " °")
 
-    linktocaller.wheelObj.w_Rotation[3] = linktocaller.w_rotation[3]
+    linktocaller.wheelObj.w_Rotation[3] =-angle
     if linktocaller.newObject is None:
         return
-    linktocaller.newObject.Angle = angle
+    linktocaller.newObject.Angle = -angle
     linktocaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -565,7 +554,8 @@ class Design456_SmartExtrudeRotate:
         try:
             # TODO:FIXME
             pl = self.calculateRotatedNormal(self.direction)
-            self.ExtractedFaces[1].Placement = pl
+            if(self.ExtractedFaces[1]!=None):
+                self.ExtractedFaces[1].Placement = pl
             face2 = None
             if(self.isFaceOf3DObj()):
                 # The whole object is selected
@@ -849,7 +839,7 @@ class Design456_SmartExtrudeRotate:
             self.lblExtrusionResult.setFont(font)
             self.lblExtrusionResult.setObjectName("lblExtrusionResult")
             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(270, 460, 111, 61))
+            self.btnOK.setGeometry(QtCore.QRect(270, 360, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
