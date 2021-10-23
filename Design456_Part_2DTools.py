@@ -77,15 +77,15 @@ class GenCommandForPartUtils:
                     f.DirMode = "Normal"
                     f.DirLink = a2dobj.Object
 
-                    if faced.getDirectionAxis()=="x":
+                    if faced.getDirectionAxis()=="+x":
                         f.Dir = (1,0,0)
                     elif faced.getDirectionAxis()=="-x":
                         f.Dir=(-1,0,0)
-                    elif faced.getDirectionAxis()=="y":
+                    elif faced.getDirectionAxis()=="+y":
                         f.Dir = (0,1,0)
                     elif faced.getDirectionAxis()=="-y":
                         f.Dir = (0,-1,0)
-                    elif faced.getDirectionAxis()=="z":
+                    elif faced.getDirectionAxis()=="+z":
                         f.Dir = (0,0,1)
                     elif faced.getDirectionAxis()=="-z":
                         f.Dir = (0,0,-1)
