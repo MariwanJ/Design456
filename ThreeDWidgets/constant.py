@@ -450,3 +450,13 @@ class FR_ALIGN:
          BRACKETRIGHT = 0x005d, GRAVE = 0x0060
        };
     '''
+    
+    
+class BRUSHES:
+    FR_CIRCLE_BRUSH         = 0
+    FR_TRIANGLE_BRUSH       = 1
+    FR_SQUARE_BRUSH         = 2
+    FR_HALVE_CIRCLE_BRUSH   = 3
+    FR_FIVE_SIDED_BRUSH     = 4
+    FR_SIX_SIDE_BRUSH       = 5
+    FR_MOON_BRUSH           = 6

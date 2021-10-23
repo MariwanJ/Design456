@@ -43,10 +43,8 @@ from dataclasses import dataclass
 import fr_draw_wheel 
 
 """
-Example how to use this widget. 
-
-                 # show the window and it's widgets. 
-
+This is not implemented. 
+Needs more time to understand how rotation should be done 2021-10-23
 """
 
 

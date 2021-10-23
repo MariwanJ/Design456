@@ -24,7 +24,8 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-import os,sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Draft as _draft
@@ -46,7 +47,7 @@ class Design456_2Ddrawing:
             "Design456_2DExtend",
             "Design456_joinTwoLines",
             "Design456_Star",
-            
+
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
@@ -161,7 +162,7 @@ class Design456_MultiPointsToWire:
             for t in selected:
                 allSelected.append(t.PickedPoints[0])
             print(allSelected)
-            if self.type ==0:
+            if self.type == 0:
                 Wire1 = _draft.makeWire(allSelected, closed=True)
             else:
                 Wire1 = _draft.makeWire(allSelected, closed=False)
@@ -335,7 +336,7 @@ class Design456_2DTrim:
                         pnew2DObject1.Start = _all_points2[0]
                         pnew2DObject1.End = _all_points2[len(_all_points2)-1]
 
-                    elif position1 ==0 and position2 != totalPoints-1:
+                    elif position1 == 0 and position2 != totalPoints-1:
                         # First Points, remove  'closed' and start = pos+1
                         print("in the beginning")
                         StartPoint = WireOrEdgeMadeOfPoints[position2]
@@ -362,7 +363,7 @@ class Design456_2DTrim:
                 pnew2DObject2.Start = StartPoint
 
                 # If nothing left, remove the object
-                if len(pnew2DObject2.Shape.Vertexes) ==0:
+                if len(pnew2DObject2.Shape.Vertexes) == 0:
                     App.ActiveDocument.removeObject(pnew2DObject2.Label)
                 App.ActiveDocument.recompute()
 
@@ -389,6 +390,7 @@ class Design456_2DTrim:
 
 Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
 
+
 def selectedObjectType(obj):
     if isinstance(obj.Object, _part.Shape):
         return "Shape"
@@ -398,8 +400,10 @@ def selectedObjectType(obj):
     if hasattr(obj.Object, 'TypeId'):
         return obj.Object.TypeId
     return "Unknown"
-    
-#TODO: FIXME: THIS TOOLS IS NOT CORRECT AND DOESN'T WORK. NEEDS UNDERSTANDING OF DRAFT LINE 
+
+# TODO: FIXME: THIS TOOLS IS NOT CORRECT AND DOESN'T WORK. NEEDS UNDERSTANDING OF DRAFT LINE
+
+
 class Design456_2DExtend:
     def Activated(self):
         try:
@@ -432,46 +436,47 @@ class Design456_2DExtend:
             print(sel.Object.Points)
             print(VertPoint)
             print("---------------")
-            
+
             for i in _point:
-                print("check",i)
+                print("check", i)
                 newPoint.append(App.Vector(i))
                 if VertPoint == i:
-                    print("Found at",newPoint.index(i))
-                    
+                    print("Found at", newPoint.index(i))
+
                     positionSave = newPoint.index(i)
             if VertPoint == newPoint[len(newPoint)-1]:
                 # add to the last position
-                newPoint.append(App.Vector(_point[len(_point)-1])) #add always (1,1,0)
+                # add always (1,1,0)
+                newPoint.append(App.Vector(_point[len(_point)-1]))
                 #sel.Object.Points = newPoint
-            elif positionSave ==0:
-                # add to first postion 
+            elif positionSave == 0:
+                # add to first postion
                 newPoint.insert(0, App.Vector(_point[0]))
                 #sel.Object.Points = newPoint
                 print("add at last ")
             _view = Gui.ActiveDocument.ActiveView
-            #Find and select the point added. 
+            # Find and select the point added.
             pl = App.Placement()
-            pl.Rotation= sel.Object.Shape.Placement.Rotation
-            pl.Base=sel.Object.Shape.Placement.Base
+            pl.Rotation = sel.Object.Shape.Placement.Rotation
+            pl.Base = sel.Object.Shape.Placement.Base
 
-            obj=sel.Object
+            obj = sel.Object
             Gui.Selection.clearSelection()
-            #Gui.Selection.addSelection('Unnamed','Line','Vertex2',-10.9949,4.23711,3.23066)
-            line = _draft.makeWire(newPoint, placement=pl, closed=False, face=True, support=None)
+            # Gui.Selection.addSelection('Unnamed','Line','Vertex2',-10.9949,4.23711,3.23066)
+            line = _draft.makeWire(
+                newPoint, placement=pl, closed=False, face=True, support=None)
             App.ActiveDocument.removeObject(obj.Name)
             App.ActiveDocument.recompute()
-            
-            
-            obj=line
-            for index in range(0,len(newPoint)):
-                if newPoint[positionSave]==newPoint[index]:
+
+            obj = line
+            for index in range(0, len(newPoint)):
+                if newPoint[positionSave] == newPoint[index]:
                     Gui.Selection.addSelection(App.ActiveDocument.Name,
-                                               obj.Name,'Vertex'+str(index),
-                                               newPoint[index].x,newPoint[index].y,newPoint[index].z)
-                    break;
+                                               obj.Name, 'Vertex'+str(index),
+                                               newPoint[index].x, newPoint[index].y, newPoint[index].z)
+                    break
             App.ActiveDocument.recompute()
-            sel=Gui.Selection.getSelectionEx()[0]
+            sel = Gui.Selection.getSelectionEx()[0]
             faced.mousePointMove(sel, _view)
             del newPoint[:]
 
@@ -520,7 +525,6 @@ class ViewProviderBox:
         pass
 
     def getIcon(self):
-        # return str(App.getUserAppDataDir()) + 'Mod' + 'Pyramids-and-Polyhedrons/Resources/Icons/' + (self.obj_name).lower() + '.svg'
         return (Design456Init.ICON_PATH + 'Design456_Star.svg')
 
     def __getstate__(self):
@@ -531,11 +535,14 @@ class ViewProviderBox:
 
 # ===========================================================================
 
-#Create 2D Star
+# Create 2D Star
+
+
 class Star:
     """
     Create a 2D Star based on the Inner radius outer radius, corners and the angle.
     """
+
     def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=2*_math.pi, _Corners=40):
         _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
         obj.addProperty("App::PropertyAngle", "Angle",
@@ -558,13 +565,13 @@ class Star:
 
     def execute(self, obj):
         try:
-            if obj.OuterRadius< obj.InnerRadius  :
-                #you cannot have it smaller 
-                obj.OuterRadius=obj.InnerRadius
+            if obj.OuterRadius < obj.InnerRadius:
+                # you cannot have it smaller
+                obj.OuterRadius = obj.InnerRadius
             _points = []
 
             for i in range(0, obj.Corners):
-                alpha = _math.pi *(2 * i + 2 - obj.Corners % 2)/(obj.Corners) 
+                alpha = _math.pi * (2 * i + 2 - obj.Corners % 2)/(obj.Corners)
                 if i % 2 == 1:
                     radius = obj.InnerRadius
                 else:
@@ -572,16 +579,15 @@ class Star:
                 x = _math.cos(alpha) * radius
                 y = _math.sin(alpha) * radius
                 _points.append(App.Vector(x, y, 0.0))
-                if i ==0 : 
-                    saveFirstPoint=App.Vector(x,y,0.0)
-                if alpha>obj.Angle : 
+                if i == 0:
+                    saveFirstPoint = App.Vector(x, y, 0.0)
+                if alpha > obj.Angle:
                     break
             _points.append(saveFirstPoint)
             test = _part.makePolygon(_points)
             obj.Shape = _part.Face(test)
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
-            
 
         except Exception as err:
             App.Console.PrintError("'Star' Failed. "
@@ -592,18 +598,17 @@ class Star:
             return
 
 
-
 class Design456_Star:
     def Activated(self):
         try:
-            newObj = App.ActiveDocument.addObject("Part::FeaturePython", "Star")
+            newObj = App.ActiveDocument.addObject(
+                "Part::FeaturePython", "Star")
             ViewProviderBox(newObj.ViewObject, "Star")
-            newObj=Star(newObj)
+            newObj = Star(newObj)
             plc = App.Placement()
-            newObj.Placement=plc
-            #newObj.Placement.Rotation.Axis=App.Vector(0,0,-1)
+            newObj.Placement = plc
             App.ActiveDocument.recompute()
-                
+
         except Exception as err:
             App.Console.PrintError("'StarCommand' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -611,9 +616,9 @@ class Design456_Star:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
-            
+
     def GetResources(self):
-        return {'Pixmap': Design456Init.ICON_PATH+ 'Design456_Star.svg',
+        return {'Pixmap': Design456Init.ICON_PATH + 'Design456_Star.svg',
                 'MenuText': "Star",
                 'ToolTip': "Draw a Star"}
 
@@ -624,63 +629,59 @@ Gui.addCommand('Design456_Star', Design456_Star())
 class Design456_joinTwoLines:
     def Activated(self):
         try:
-            _points=[]
-            s=Gui.Selection.getSelectionEx()
-            if len(s)>2 : 
-                # Two object must be selected
+            _points = []
+            s = Gui.Selection.getSelectionEx()
+            if len(s) > 2:
+                # Two objects must be selected
                 errMessage = "Select only two vertices "
                 faced.errorDialog(errMessage)
                 return
-            elif len(s)==1:
-                #We have one line .. end and start will be one.
+            elif len(s) == 1:
+                # We have one line .. end and start will be one.
                 for pnt in s[0].Object.Shape.Vertexes:
-                    if(pnt!=s[0].Object.End):
-                         _points.append( pnt.Point)
-                newObj=_draft.makeWire(_points)
-                newObj.Start=_points[0]
-                newObj.End=_points[0]
+                    if(pnt != s[0].Object.End):
+                        _points.append(pnt.Point)
+                newObj = _draft.makeWire(_points)
+                newObj.Start = _points[0]
+                newObj.End = _points[0]
                 App.ActiveDocument.removeObject(s[0].Object.Name)
                 App.ActiveDocument.recompute()
-            elif len(s)==2:
-                s1=s[0]
-                s2=s[1]
-                tempPoint=None
+            elif len(s) == 2:
+                s1 = s[0]
+                s2 = s[1]
+                tempPoint = None
 
-                p1=[]
-                p2=[]
+                p1 = []
+                p2 = []
                 p1.append(s1.Object.Start)
                 p1.append(s1.Object.End)
                 p2.append(s2.Object.Start)
                 p2.append(s2.Object.End)
-                if p2[0]== s2.SubObjects[0].Point:
+                if p2[0] == s2.SubObjects[0].Point:
                     for pnt in reversed(s2.Object.Shape.Vertexes):
                         _points.append(pnt.Point)
                 else:
                     for pnt in s2.Object.Shape.Vertexes:
                         _points.append(pnt.Point)
 
-                if p1[0]!= s1.SubObjects[0].Point:
-                    for pnt in reversed(s1.Object.Shape.Vertexes):    
-                       if pnt.Point!= p1[0]:
-                            #Start and selected is the same ignore it
+                if p1[0] != s1.SubObjects[0].Point:
+                    for pnt in reversed(s1.Object.Shape.Vertexes):
+                        if pnt.Point != p1[0]:
+                            # Start and selected is the same ignore it
                             _points.append(pnt.Point)
                 else:
-                    for pnt in s1.Object.Shape.Vertexes:    
-                       if pnt.Point!= p1[1]:
-                            #End and selected is the same ignore it
+                    for pnt in s1.Object.Shape.Vertexes:
+                        if pnt.Point != p1[1]:
+                            # End and selected is the same ignore it
                             _points.append(pnt.Point)
 
-                plc=s2.Object.Placement
-                plc.Rotation.Q= s2.Object.Placement.Rotation.Q
-                ang=s2.Object.Placement.Rotation.Angle
-                axes=s2.Object.Placement.Rotation.Axis
-                newObj=_draft.makeWire(_points)
-                newObj.Start= _points[0]
-                newObj.End=_points[len(_points)-1]
-
-                #newObj.Placement=plc
-                #newObj.Placement.Rotation.Axis=axes
-                #newObj.Placement.Rotation.Angle=ang
+                plc = s2.Object.Placement
+                plc.Rotation.Q = s2.Object.Placement.Rotation.Q
+                ang = s2.Object.Placement.Rotation.Angle
+                axes = s2.Object.Placement.Rotation.Axis
+                newObj = _draft.makeWire(_points)
+                newObj.Start = _points[0]
+                newObj.End = _points[len(_points)-1]
 
                 App.ActiveDocument.removeObject(s1.Object.Name)
                 App.ActiveDocument.removeObject(s2.Object.Name)
@@ -698,8 +699,9 @@ class Design456_joinTwoLines:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Join two lines")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Design456_JoinLines.svg',
+        return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_JoinLines.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "joinTwoLines"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-Gui.addCommand('Design456_joinTwoLines', Design456_joinTwoLines()) 
+
+Gui.addCommand('Design456_joinTwoLines', Design456_joinTwoLines())
