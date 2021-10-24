@@ -1,1 +1,1 @@
-pyuic5 Design456Pref.ui> Design456Pref.py
+pyuic5 Design456_Paint.ui> Design456_Paint.py
