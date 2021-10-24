@@ -64,9 +64,7 @@ class Design456_Paint:
     continuePainting = True
     brushSize = 1
     brushType = 0
-
-    def movingServer(self):
-        self.view = Gui.ActiveDocument.activeView()
+    resultObj=None
 
     def setSize(self):
         text = self.cmbBrushSize.currentText()
@@ -91,13 +89,16 @@ class Design456_Paint:
         pass
 
     def draw_MultiSided(self, sides):
-        pass
+        self.currentObj = _draft.makePolygon(sides, self.brushSize, True,self.pl, True,  None )
+        _draft.autogroup(self.currentObj)
 
     def draw_Moon(self):
         pass
+    
     def mergeAll(self):
         for obj in self.AllObjects:
             pass
+    
     def placeObject_cb(self, info):
         down = (info["State"] == "DOWN")
         pos = info["Position"]
@@ -110,6 +111,7 @@ class Design456_Paint:
             self.MergeAll()
 
     def recreateObject(self):
+
         if(self.currentObj is not None):
             del self.currentObj
             self.currentObj = None
@@ -125,11 +127,16 @@ class Design456_Paint:
             self.currentObj = self.draw_polygon(self.brushType)
         elif self.brushType == 7:
             self.currentObj = self.draw_Moon()
-            
+        if (self.resultObj is None):
+            self.resultObj = App.ActiveDocument.addObject("Part::MultiFuse","Paint")
+            self.resultObj.Shapes = self.AllObjects
+            self.resultObj.Refine = True
+
     def Activated(self):
 
         try:
             self.getMainWindow()
+            self.view = Gui.ActiveDocument.activeView()
             App.ActiveDocument.recompute()
             c = self.view.addEventCallback(
                 "SoMouseButtonEvent", self.placeObject_cb)
@@ -190,10 +197,10 @@ class Design456_Paint:
             self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
             self.formLayout.setContentsMargins(0, 0, 0, 0)
             self.formLayout.setObjectName("formLayout")
-            self.lblPaint = QtGui.QLabel(self.dialog.formLayoutWidget)
+            self.lblPaint = QtGui.QLabel(self.formLayoutWidget)
             self.dialog.setObjectName("Pint")
             self.formLayout.setWidget(
-                0, QtGui.QFormLayout.LabelRole, self.lblBrushType)
+                0, QtGui.QFormLayout.LabelRole, self.lblPaint)
             self.cmbBrushType = QtGui.QComboBox(self.formLayoutWidget)
             self.cmbBrushType.setCurrentText("")
             self.cmbBrushType.setObjectName("cmbBrushType")
@@ -214,8 +221,7 @@ class Design456_Paint:
             self.formLayout_2 = QtGui.QFormLayout(self.formLayoutWidget_2)
             self.formLayout_2.setContentsMargins(0, 0, 0, 0)
             self.formLayout_2.setObjectName("formLayout_2")
-            self.radioAsIs = QtGui.QRadioButton(
-                QtGui.QRadioButtonself.formLayoutWidget_2)
+            self.radioAsIs = QtGui.QRadioButton(self.formLayoutWidget_2)
             self.radioAsIs.setObjectName("radioAsIs")
             self.formLayout_2.setWidget(
                 0, QtGui.QFormLayout.FieldRole, self.radioAsIs)
@@ -246,7 +252,7 @@ class Design456_Paint:
 
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate("Pain", "Pint"))
-            self.lblBrushType.setText(_translate("Dialog", "Brush Type"))
+            self.lblPaint.setText(_translate("Dialog", "Brush Type"))
             self.cmbBrushType.setToolTip(_translate("Dialog", "Brush Type"))
             self.cmbBrushSize.setToolTip(_translate("Dialog", "Brush Type"))
             self.lblBrushSize.setText(_translate("Dialog", "Brush Size"))
