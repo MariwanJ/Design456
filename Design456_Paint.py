@@ -77,6 +77,17 @@ class Design456_Paint:
             self.brushType = int(text)
 
     def draw_circle(self):
+        #make_circle(radius, placement=None, face=None, startangle=None, endangle=None, support=None)
+        size = int(self.cmbBrushSize.currentText())
+        s = _draft.make_circle(
+            radius = size, placement = self.pl, face = True, startangle=None, endangle=None, support=None)
+        #Convert/ or get Gui object not App object
+        self.currentObj=Gui.ActiveDocument.getObject(s.Object.Name)
+
+        pass
+    def draw_Half_circle(self):
+        size = int(self.cmbBrushSize.currentText())
+
         pass
     
     def appendToList(self):
@@ -116,7 +127,7 @@ class Design456_Paint:
         print("callback!!")
         down = (info["State"] == "DOWN")
         pos = info["Position"]
-        position = self.view.getPoint(pos)
+        
         if (down):
             self.recreateObject()
             self.AllObjects.append(self.currentObj)
@@ -181,8 +192,8 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def BrushChanged_cb(self):
-        App.ActiveDocument.removeObject(self.currentObject)
-        self.currentObject = None
+        App.ActiveDocument.removeObject(self.currentObj)
+        self.currentObj = None
         self.recreateObject()
 
     def getMainWindow(self):
