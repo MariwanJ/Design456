@@ -85,7 +85,7 @@ class Design456_Paint:
             length=size, height=size, placement=pl, face=True, support=None)
         self.AllObjects.append(self.currentObj)
 
-    def draw_HalveCircle(self):
+    def draw_HalfCircle(self):
         pass
 
     def draw_MultiSided(self, sides):
@@ -119,7 +119,7 @@ class Design456_Paint:
         if self.brushType == 0:
             self.currentObj = self.draw_circle()
         elif self.brushType == 1:
-            self.currentObj = self.draw_Halve_circle()
+            self.currentObj = self.draw_Half_circle()
         elif self.brushType == 2:
             self.currentObj = self.draw_Square()
         elif (self.brushType == 3 or self.brushType == 4 or
@@ -239,8 +239,10 @@ class Design456_Paint:
             la.addWidget(okbox)
 
             self.cmbBrushType.addItem("Circle")
-            self.cmbBrushType.addItem("Halve Circle")
+            self.cmbBrushType.addItem("Half Circle")
             self.cmbBrushType.addItem("Triangle")
+            self.cmbBrushType.addItem("Square")
+            self.cmbBrushType.addItem("Four Sided")
             self.cmbBrushType.addItem("Five Sided")
             self.cmbBrushType.addItem("Six sided")
             self.cmbBrushType.addItem("Moon")
