@@ -78,12 +78,19 @@ class Design456_Paint:
 
     def draw_circle(self):
         pass
-
+    
+    def appendToList(self):
+        Dir = self.currentObj.Object.Shape.normalAt(0,0)
+        tempExtrude=self.currentObj.Object.Shape.extrude(Dir)
+        self.AllObjects.append(tempExtrude)
+        
     def draw_Square(self):
         size = int(self.cmbBrushSize.currentText())
-        self.currentObj = _draft.make_rectangle(
-            length=size, height=size, placement=pl, face=True, support=None)
-        self.AllObjects.append(self.currentObj)
+        s = _draft.make_rectangle(
+            length = size, height = size, placement = self.pl, face = True, support = None)
+        #Convert/ or get Gui object not App object
+        self.currentObj=Gui.ActiveDocument.getObject(s.Object.Name)
+        
 
     def draw_HalfCircle(self):
         pass
@@ -98,22 +105,28 @@ class Design456_Paint:
     def mergeAll(self):
         for obj in self.AllObjects:
             pass
-    
+    def MoveObj_cb(self,info):
+        print("callback!!")
+        pos = info["Position"]
+        position = self.view.getPoint(pos)
+        self.currentObj.Placement.Base = position
+        App.ActiveDocument.recompute()
+
     def placeObject_cb(self, info):
+        print("callback!!")
         down = (info["State"] == "DOWN")
         pos = info["Position"]
         position = self.view.getPoint(pos)
         if (down):
             self.recreateObject()
-        else:
-            self.currentObj.Object.Placement.Base = position
             self.AllObjects.append(self.currentObj)
             self.MergeAll()
-
+            App.ActiveDocument.recompute()
+            self.recreateObject()
+        
     def recreateObject(self):
-
+        print("Recreate")
         if(self.currentObj is not None):
-            del self.currentObj
             self.currentObj = None
 
         if self.brushType == 0:
@@ -121,25 +134,31 @@ class Design456_Paint:
         elif self.brushType == 1:
             self.currentObj = self.draw_Half_circle()
         elif self.brushType == 2:
+            self.currentObj = self.draw_polygon(self.brushType) #Triangle
+        elif self.brushType == 3:
             self.currentObj = self.draw_Square()
-        elif (self.brushType == 3 or self.brushType == 4 or
-              self.brushType == 5 or self.brushType == 6):
+        elif (self.brushType == 4 or self.brushType == 5 or
+              self.brushType == 6 or self.brushType == 7):
             self.currentObj = self.draw_polygon(self.brushType)
-        elif self.brushType == 7:
+        elif self.brushType == 8:
             self.currentObj = self.draw_Moon()
         if (self.resultObj is None):
+            Dir= faced.getDirectionAxis()
             self.resultObj = App.ActiveDocument.addObject("Part::MultiFuse","Paint")
             self.resultObj.Shapes = self.AllObjects
             self.resultObj.Refine = True
 
     def Activated(self):
-
+        self.c1 = None
+        self.c2 = None
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
+            self.recreateObject() # Initial
             App.ActiveDocument.recompute()
-            c = self.view.addEventCallback(
+            self.c1 = self.view.addEventCallback(
                 "SoMouseButtonEvent", self.placeObject_cb)
+            self.c2 = self.view.addEventCallback("SoLocation2Event", self.MoveObj_cb )
 
         except Exception as err:
             App.Console.PrintError("'PaintCommand' Failed. "
@@ -150,7 +169,8 @@ class Design456_Paint:
             return
 
     def __del__(self):
-        self.removeEventCallback("SoMouseButtonEvent",)
+        self.removeEventCallback("SoMouseButtonEvent",self.c1)
+        self.removeEventCallback("SoLocation2Event",self.c2)
         try:
             App.ActiveDocument.commitTransaction()  # undo reg.
 
@@ -160,7 +180,13 @@ class Design456_Paint:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
+    def BrushChanged_cb(self):
+        App.ActiveDocument.removeObject(self.currentObject)
+        self.currentObject = None
+        self.recreateObject()
+
     def getMainWindow(self):
+
         try:
             toplevel = QtGui.QApplication.topLevelWidgets()
             self.mw = None
@@ -248,7 +274,14 @@ class Design456_Paint:
             self.cmbBrushType.addItem("Moon")
             for i in range(1, 400):
                 self.cmbBrushSize.addItem(str(i))
-
+            self.cmbBrushSize.setCurrentIndex(FR_BRUSHES.FR_SQUARE_BRUSH)
+            self.cmbBrushSize.setCurrentIndex(1)
+            self.cmbBrushSize.currentTextChanged.connect(self.BrushChanged_cb)
+            self.cmbBrushSize.currentIndexChanged.connect(self.BrushChanged_cb)
+            self.cmbBrushType.currentTextChanged.connect(self.BrushChanged_cb)
+            self.cmbBrushType.currentIndexChanged.connect(self.BrushChanged_cb)
+            
+            
             QtCore.QObject.connect(
                 okbox, QtCore.SIGNAL("accepted()"), self.hide)
 

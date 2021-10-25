@@ -396,53 +396,12 @@ def getObjectFromFaceName(obj, face_name):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
-def getObjectCenterOfMass(obj):
-    try:
-        Result = obj.SubObjects[0].CenterOfMass
-        return Result
-    except Exception as err:
-        App.Console.PrintError("'getObjectCenterOfMass' Failed. "
-                               "{err+}\n".format(err=str(err)))
-
-
 def errorDialog(msg):
     # Create a simple dialog QMessageBox
     # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
     diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Error', msg)
     diag.setWindowModality(QtCore.Qt.ApplicationModal)
     diag.exec_()
-
-# From Mario Macro_CenterCenterFace at
-# https://wiki.freecadweb.org/Macro_CenterFace/fr
-
-
-def objectRealPlacement3D(obj):  # search the real Placement
-    try:
-        objectPlacement = obj.Object.Shape.Placement
-        objectPlacementBase = App.Vector(objectPlacement.Base)
-        ####
-        objectWorkCenter = objectPlacementBase
-        ####
-        if hasattr(obj, "getGlobalPlacement"):
-            globalPlacement = obj.Object.getGlobalPlacement()
-            globalPlacementBase = App.Vector(globalPlacement.Base)
-            ####
-            objectRealPlacement3D = globalPlacementBase.sub(
-                objectWorkCenter)  # mode=0 adapted pour BBox + Centerpoints
-            ####
-        else:
-            objectRealPlacement3D = objectWorkCenter
-        return objectRealPlacement3D
-    except Exception as err:
-        App.Console.PrintError("'Magnet' Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
-        return getObjectCenterOfMass(obj)
-
-# send object to this class you get back top-face's name
 
 
 class SelectTopFace:
@@ -479,15 +438,8 @@ class SelectTopFace:
             print(exc_type, fname, exc_tb.tb_lineno)
             return self.obj.SubObjects[0].CenterOfMass
 
-# TODO: Transparent dialog? how to? i.e. border less, only input widgets should be shown?
-
-
 class GetInputValue:
-
-    def __init__(self, defaultValue=0.0):
-        self.value = defaultValue
-        pass
-
+    value = 0.0
     """
     get Input value from user. Either Text, INT or Float
     """
@@ -525,8 +477,6 @@ class GetInputValue:
             return None
 
 # Visual progress indicator
-
-
 class StatusBarProgress:
     """
     Visual progress indicator. 
@@ -632,30 +582,6 @@ def findnormalAtforEdge():
         u0, u1, v0, v1 = f.ParameterRange
         results.append(f.normalAt(0.5 * (u0 + u1), 0.5 * (v0 + v1)))
     return results
-
-
-def getDirectionOfFace():
-    """[Find direction of a face]
-
-    Returns:
-        [Vector]: [Direction of the face]
-    """
-    selectedObj = Gui.Selection.getSelectionEx()[0]
-    ss = None
-    direction = None
-    if hasattr(selectedObj, "SubObjects"):
-        ss = selectedObj.SubObjects[0]
-    else:
-        # TODO: FIXME: WHAT SHOULD WE USE?
-        print("failed")
-    if ss != None:
-        # section direction
-        yL = ss.CenterOfMass
-        uv = ss.Surface.parameter(yL)
-        nv = ss.normalAt(uv[0], uv[1])
-        direction = yL.sub(nv + yL)
-    return direction
-
 
 def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10), n=App.Vector(0, 0, 1)):
     """[Measure the distance between two points, first point is optional if not provided, 
