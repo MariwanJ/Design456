@@ -453,6 +453,7 @@ class FR_ALIGN:
     
     
 class FR_BRUSHES:
+    #FR_CIRCLE_NOBRUSH       =-1
     FR_CIRCLE_BRUSH         = 0
     FR_HALVE_CIRCLE_BRUSH   = 1
     FR_TRIANGLE_BRUSH       = 2

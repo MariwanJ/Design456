@@ -24,7 +24,8 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # ***************************************************************************
-import os,sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
@@ -33,13 +34,12 @@ import Draft
 import Part
 import FACE_D as faced
 from time import time as _time, sleep as _sleep
-from draftutils.translate import translate   #for translate 
-import math 
+from draftutils.translate import translate  # for translate
+import math
+
 
 class Design456_Extrude:
-    def __init__(self):
-        return
-
+    
     def Activated(self):
         try:
             selection = Gui.Selection.getSelectionEx()
@@ -48,31 +48,21 @@ class Design456_Extrude:
                 errMessage = "Select a face to use Extrude"
                 faced.errorDialog(errMessage)
                 return
-            App.ActiveDocument.openTransaction(translate("Design456","Extrude"))
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "Extrude"))
             m = selection[0].Object
-            f = App.ActiveDocument.addObject('Part::Extrusion', 'ExtrudeOriginal')
-            faceSelected = faced.getFaceName(selection[0])
+            f = App.ActiveDocument.addObject(
+                'Part::Extrusion', 'ExtrudeOriginal')
             f.Base = m
-            #f.Base = App.ActiveDocument.getObject(m.Name)
-            # F.DirMode causes too many failure. Some faces needs custom, other needs Normal. 
-            #Difficult to know when you use each of them.
-            f.DirMode = "Normal"            #Don't use Custom as it leads to PROBLEM!
-            f.DirLink = None                #Above statement != always correct. Some faces require 'custom'
-            degreeAngle = math.degrees(m.Placement.Rotation.Angle)
-            print(degreeAngle)
-            """
-            YOU SHOULD NOT SPECIFY THIS .. OTHERWISE IT COULD BE WRONG!!
-            if degreeAngle ==0:
-                f.Dir = m.Placement.Rotation.Axis
-            elif ((degreeAngle== 90) or (degreeAngle== -90)):
-                f.Dir = (0, 1, 0)
-            elif ((degreeAngle == 120) or (degreeAngle== -120)):
-                f.Dir = (1, 0, 0)
-            """
-            #Extrude must get a negative number ???
-            f.LengthFwd =(QtGui.QInputDialog.getDouble(
+            # F.DirMode causes too many failure. Some faces needs custom, other needs Normal.
+            # Difficult to know when you use each of them.
+            f.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
+            f.DirLink = None  # Above statement != always correct. Some faces require 'custom'
+
+            # Extrude must get a negative number ???
+            f.LengthFwd = (QtGui.QInputDialog.getDouble(
                 None, "Get length", "Length:", 0, -10000.0, 10000.0, 2)[0])
-            while(f.LengthFwd ==0):
+            while(f.LengthFwd == 0):
                 _sleep(.1)
                 Gui.updateGui()
             f.LengthRev = 0.0
@@ -81,15 +71,14 @@ class Design456_Extrude:
             f.Symmetric = False
             f.TaperAngle = 0.0
             f.TaperAngleRev = 0.0
-            f.Dir = selection[0].Object.Shape.normalAt(0,0)        #Normal line
-            if (f.Dir.x!=1 or f.Dir.y!=1 or f.Dir.z!=1):
-                f.DirMode="Custom"
+            f.Dir = selection[0].Object.Shape.normalAt(0, 0)  # Normal line
+            if (f.Dir.x != 1 or f.Dir.y != 1 or f.Dir.z != 1):
+                f.DirMode = "Custom"
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
             newShape = Part.getShape(f, '', needSubElement=False, refine=False)
             newObj = App.ActiveDocument.addObject(
                 'Part::Feature', 'Extrude').Shape = newShape
-            App.ActiveDocument.ActiveObject.Label = f.Label
             App.ActiveDocument.recompute()
             # if something went wrong .. delete all new objects.
             if newObj.isValid() is False:
@@ -100,12 +89,12 @@ class Design456_Extrude:
                 faced.getInfo(m).errorDialog(errMessage)
             else:
                 # Remove old objects
-                #App.ActiveDocument.clearUndos()
+                # App.ActiveDocument.clearUndos()
                 App.ActiveDocument.recompute()
                 App.ActiveDocument.removeObject(f.Name)
                 App.ActiveDocument.removeObject(m.Name)
                 return
-            App.ActiveDocument.commitTransaction() #undo reg.
+            App.ActiveDocument.commitTransaction()  # undo reg.
             App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "
@@ -113,19 +102,14 @@ class Design456_Extrude:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
-
-    def GuiViewFit(self):
-        try:
-            Gui.SendMsgToActiveView("ViewFit")
-            self.timer.stop()
+            
         except Exception as err:
             App.Console.PrintError("'Design456_Extrude_ViewFit' Failed. "
                                    "{err}\n".format(err=str(err)))
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH +'Extrude.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Extrude.svg',
             'MenuText': 'Extrude',
                         'ToolTip':  'Extrude'
         }
