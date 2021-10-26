@@ -82,9 +82,8 @@ class Design456_Paint:
         s = _draft.make_circle(
             radius = size, placement = self.pl, face = True, startangle=None, endangle=None, support=None)
         #Convert/ or get Gui object not App object
-        self.currentObj=Gui.ActiveDocument.getObject(s.Object.Name)
+        self.currentObj=Gui.ActiveDocument.getObject(s.Name)
 
-        pass
     def draw_Half_circle(self):
         size = int(self.cmbBrushSize.currentText())
 
@@ -100,7 +99,7 @@ class Design456_Paint:
         s = _draft.make_rectangle(
             length = size, height = size, placement = self.pl, face = True, support = None)
         #Convert/ or get Gui object not App object
-        self.currentObj=Gui.ActiveDocument.getObject(s.Object.Name)
+        self.currentObj=Gui.ActiveDocument.getObject(s.Name)
         
 
     def draw_HalfCircle(self):
@@ -127,9 +126,7 @@ class Design456_Paint:
         print("callback!!")
         down = (info["State"] == "DOWN")
         pos = info["Position"]
-        
         if (down):
-            self.recreateObject()
             self.AllObjects.append(self.currentObj)
             self.MergeAll()
             App.ActiveDocument.recompute()
@@ -154,10 +151,10 @@ class Design456_Paint:
         elif self.brushType == 8:
             self.currentObj = self.draw_Moon()
         if (self.resultObj is None):
-            Dir= faced.getDirectionAxis()
-            self.resultObj = App.ActiveDocument.addObject("Part::MultiFuse","Paint")
-            self.resultObj.Shapes = self.AllObjects
-            self.resultObj.Refine = True
+            if (len(self.AllObjects)>0):
+                self.resultObj.Shapes = self.AllObjects
+                self.resultObj = App.ActiveDocument.addObject("Part::MultiFuse","Paint")
+                self.resultObj.Refine = True
 
     def Activated(self):
         self.c1 = None
