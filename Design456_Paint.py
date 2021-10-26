@@ -39,6 +39,7 @@ from PySide import QtGui, QtCore
 import Draft as _draft
 from ThreeDWidgets.constant import FR_BRUSHES
 import math
+from pivy import coin
 
 #TODO . FIXME
 
@@ -67,6 +68,7 @@ class Design456_Paint:
     brushSize = 1
     brushType = 0
     resultObj = None
+    runOnce = False
 
     def setSize(self):
         text = self.cmbBrushSize.currentText()
@@ -93,54 +95,57 @@ class Design456_Paint:
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def appendToList(self):
-        print(type())
+        print("Append them to the list")
         Dir = self.currentObj.Object.Shape.normalAt(0, 0)
         tempExtrude = self.currentObj.Object.Shape.extrude(Dir)
-        self.AllObjects.append(tempExtrude)
+        newobj = App.ActiveDocument.addObject("Part::Feature", self.currentObj.Object.Name)
+        newobj.Shape =tempExtrude
+        self.AllObjects.append(newobj)
+        if (self.currentObj is not None):
+            App.ActiveDocument.removeObject(self.currentObj.Object.Name)
+            self.currentObj=None
 
     def draw_Square(self):
         size = int(self.cmbBrushSize.currentText())
         s = _draft.make_rectangle(
             length=size, height=size, placement=self.pl, face=True, support=None)
         # Convert/ or get Gui object not App object
-        return( Gui.ActiveDocument.getObject(s.Name))
+        return(Gui.ActiveDocument.getObject(s.Name))
 
-    def draw_polygon(self,type):
+    def draw_polygon(self, type):
         size = int(self.cmbBrushSize.currentText())
-        s = _draft.makePolygon(type, radius=size, inscribed=True, placement=self.pl, face=True, support=None)
+        s = _draft.makePolygon(
+            type, radius=size, inscribed=True, placement=self.pl, face=True, support=None)
         # Convert/ or get Gui object not App object
-        return( Gui.ActiveDocument.getObject(s.Name))
+        return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_Moon(self):
         pass
 
-    def mergeAll(self):
-        for obj in self.AllObjects:
-            pass
-
-    def MoveObj_cb(self, info):
-        pos = info["Position"]
-        position = self.view.getPoint(pos)
-
+    def MouseMovement_cb(self, events):
+        event = events.getEvent()
+        pos = event.getPosition().getValue()
+        tempPos = self.view.getPoint(pos[0], pos[1])
+        position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
         if self.currentObj is not None:
-            if(self.currentObj.Object.Shape.Placement.Base.z==0):
+            if(self.currentObj.Object.Shape.Placement.Base.z == 0):
                 position.z = 0
-            elif (self.currentObj.Object.Shape.Placement.Base.y==0):
+            elif (self.currentObj.Object.Shape.Placement.Base.y == 0):
                 position.y = 0
-            elif  (self.currentObj.Object.Shape.Placement.Base.x==0):
+            elif (self.currentObj.Object.Shape.Placement.Base.x == 0):
                 position.x = 0
             self.currentObj.Object.Placement.Base = position
             App.ActiveDocument.recompute()
         else:
             print("Warning!! it was None")
 
-    def placeObject_cb(self, info):
-        down = (info["State"] == "DOWN")
-        pos = info["Position"]
-        if (down):
+    def MouseClick_cb(self, events):
+        event = events.getEvent()
+        eventState = event.getState()
+        getButton = event.getButton()
+        if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
             print("Place callback!!")
-            self.AllObjects.append(self.currentObj)
-            self.mergeAll()
+            self.appendToList()
             App.ActiveDocument.recompute()
             self.currentObj = None
             self.recreateObject()
@@ -153,7 +158,7 @@ class Design456_Paint:
                 print("remove object - recreate object")
                 App.ActiveDocument.removeObject(self.currentObj.Name)
                 self.currentObj = None
-    
+
             if self.brushType == 0:
                 self.currentObj = self.draw_circle()
             elif self.brushType == 1:
@@ -167,15 +172,43 @@ class Design456_Paint:
                 self.currentObj = self.draw_polygon(self.brushType)
             elif self.brushType == 8:
                 self.currentObj = self.draw_Moon()
-            self.appendToList()
             if (self.resultObj is None):
                 if (len(self.AllObjects) > 1):
-                    self.resultObj = App.ActiveDocument.addObject("Part::MultiFuse", "Paint")
-                    self.resultObj.Shapes = self.AllObjects
-                    self.resultObj.Refine = True
-                    
+                    if(self.runOnce == False):
+                        self.runOnce = True
+                        self.resultObj = App.ActiveDocument.addObject(
+                            "Part::MultiFuse", "Paint")
+                        self.resultObj.Refine = True
+                        self.resultObj.Shapes = self.AllObjects
+
         except Exception as err:
             App.Console.PrintError("'recreate Paint Obj' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+
+    def KeyboardEvent(self, events):
+        try:
+            event = events.getEvent()
+            eventState = event.getState()
+            if (type(event) == coin.SoKeyboardEvent):
+                key = event.getKey()
+
+            # if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
+            #    self.Direction = 'X'
+            # if key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
+            #    self.Direction = 'Y'
+            # if key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
+            #    self.Direction = 'Z'
+
+            if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
+                self.remove_callbacks()
+            self.hide()
+
+        except Exception as err:
+            App.Console.PrintError("'Keyboard error' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -190,10 +223,12 @@ class Design456_Paint:
             self.view = Gui.ActiveDocument.activeView()
             self.recreateObject()            # Initial
             App.ActiveDocument.recompute()
-            self.c1 = self.view.addEventCallback(
-                "SoMouseButtonEvent", self.placeObject_cb)
-            self.c2 = self.view.addEventCallback(
-                "SoLocation2Event", self.MoveObj_cb)
+            self.callbackMove = self.view.addEventCallbackPivy(
+                coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
+            self.callbackClick = self.view.addEventCallbackPivy(
+                coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick_cb)
+            self.callbackKey = self.view.addEventCallbackPivy(
+                coin.SoKeyboardEvent.getClassTypeId(), self.KeyboardEvent)
 
         except Exception as err:
             App.Console.PrintError("'PaintCommand' Failed. "
@@ -203,17 +238,35 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
             return
 
-    def __del__(self):
-        self.view.removeEventCallbackPivy("SoMouseButtonEvent", self.c1)
-        self.view.removeEventCallbackPivy("SoLocation2Event", self.c2)
-        try:
-            App.ActiveDocument.commitTransaction()  # undo reg.
+    def remove_callbacks(self):
+        self.view.removeEventCallbackPivy(
+            coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+        self.view.removeEventCallbackPivy(
+            coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
+        self.view.removeEventCallbackPivy(
+            coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
+        self.view = None
 
-        except Exception as err:
-            App.Console.PrintError("'Design456_SmartPaint' del-Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+    def __del__(self):
+        self.remove_callbacks()
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.smartInd = None
+        self._mywin = None
+        self.b1 = None
+        self.PaintLBL = None
+        self.pl = None
+        self.AllObjects = []
+        self.cmbBrushSize = None
+        self.cmbBrushType = None
+        self.currentObj = None
+        self.view = None
+        self.Observer = None
+        self.continuePainting = True
+        self.brushSize = 1
+        self.brushType = 0
+        self.resultObj = None
 
     def BrushChanged_cb(self):
         App.ActiveDocument.removeObject(self.currentObj.Object.Name)
@@ -341,6 +394,9 @@ class Design456_Paint:
         """
         Hide the widgets. Remove also the tab.
         """
+        App.ActiveDocument.removeObject(self.currentObj.Object.Name)
+        self.currentObj=None
+        App.ActiveDocument.recompute()
         self.dialog.hide()
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
@@ -349,10 +405,7 @@ class Design456_Paint:
 
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all Paint 3dCOIN widgets
-    
-    def __del__(self):
-        pass
-    
+
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_Paint.svg',
                 'MenuText': "Paint",
