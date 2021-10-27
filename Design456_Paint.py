@@ -45,35 +45,36 @@ from pivy import coin
 
 
 class Design456_Paint:
-    brushType: FR_BRUSHES = FR_BRUSHES.FR_CIRCLE_BRUSH
-    brushSize = 1
 
+    brushType: FR_BRUSHES = FR_BRUSHES.FR_SQUARE_BRUSH
     mw = None
-    dialog = None
-    tab = None
-    smartInd = None
-    _mywin = None
-    b1 = None
-    PaintLBL = None
+    dialog = None  # Dialog for the tool
+    tab = None  # Tabs
+    smartInd = None  # ?
+    _mywin = None                           #
+    b1 = None                               #
+    PaintLBL = None  # Label
     pl = App.Placement()
-    pl.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+    pl.Rotation.Q = (0.0, 0.0, 0.0, 1.0)  # Initial position
+    # Initial position - will be changed by the mouse
     pl.Base = App.Vector(0.0, 0.0, 0.0)
-    AllObjects = []
-    cmbBrushSize = None
-    cmbBrushType = None
+    AllObjects = []  # Merged shapes
+    cmbBrushSize = None  # GUI combobox -brush size
+    cmbBrushType = None  # GUI combobox -brush type
+    # current created shape (circle, square, triangles,..etc)
     currentObj = None
-    view = None
-    Observer = None
+    view = None  # used for captureing mouse events
+    Observer = None  # Usef for captureing mosue events
     continuePainting = True
-    brushSize = 1
-    brushType = 0
-    resultObj = None
-    runOnce = False
+    brushSize = 1  # Brus Size
+    resultObj = None  # Extruded shape
+    runOnce = False  # Create the merge object once only
+    MoveMentDirection = 'A'
 
     def setSize(self):
         text = self.cmbBrushSize.currentText()
         if text != "":
-            self.brushSize = int(text)
+            self.brushSize = float(text)
 
     def setTyep(self):
         text = self.cmbBrushSize.currentText()
@@ -81,43 +82,46 @@ class Design456_Paint:
             self.brushType = int(text)
 
     def draw_circle(self):
-        size = int(self.cmbBrushSize.currentText())
         s = _draft.make_circle(
-            radius=size, placement=self.pl, face=True, startangle=None, endangle=None, support=None)
+            radius=self.brushSize, placement=self.pl, face=True, startangle=None, endangle=None, support=None)
         # Convert/ or get Gui object not App object
+        App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_Half_circle(self):
-        size = int(self.cmbBrushSize.currentText())
         s = _draft.make_circle(
-            radius=size, placement=self.pl, face=True, startangle=0, endangle=math.radians(180), support=None)
+            radius=self.brushSize, placement=self.pl, face=True, startangle=0, endangle=math.radians(180), support=None)
         # Convert/ or get Gui object not App object
+        App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def appendToList(self):
         print("Append them to the list")
         Dir = self.currentObj.Object.Shape.normalAt(0, 0)
         tempExtrude = self.currentObj.Object.Shape.extrude(Dir)
-        newobj = App.ActiveDocument.addObject("Part::Feature", self.currentObj.Object.Name)
-        newobj.Shape =tempExtrude
+        newobj = App.ActiveDocument.addObject(
+            "Part::Feature", self.currentObj.Object.Name)
+        newobj.Shape = tempExtrude
         self.AllObjects.append(newobj)
         if (self.currentObj is not None):
             App.ActiveDocument.removeObject(self.currentObj.Object.Name)
-            self.currentObj=None
-
+            self.currentObj = None
 
     def draw_Square(self):
-        size = int(self.cmbBrushSize.currentText())
         s = _draft.make_rectangle(
-            length=size, height=size, placement=self.pl, face=True, support=None)
+            length=self.brushSize, height=self.brushSize, placement=self.pl, face=True, support=None)
         # Convert/ or get Gui object not App object
+        App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
 
-    def draw_polygon(self, type):
-        size = int(self.cmbBrushSize.currentText())
+    def draw_polygon(self):
         s = _draft.makePolygon(
-            type, radius=size, inscribed=True, placement=self.pl, face=True, support=None)
+            self.brushType, radius=self.brushSize, inscribed=True, placement=self.pl, face=True, support=None)
+        _draft.autogroup(s)
         # Convert/ or get Gui object not App object
+        if (s is None):
+            raise ValueError("s must be an object")
+        App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_Moon(self):
@@ -135,7 +139,16 @@ class Design456_Paint:
                 position.y = 0
             elif (self.currentObj.Object.Shape.Placement.Base.x == 0):
                 position.x = 0
-            self.currentObj.Object.Placement.Base = position
+            # All direction when A or decide which direction
+            if (self.MoveMentDirection == 'A'):
+                self.currentObj.Object.Placement.Base = position
+            elif (self.MoveMentDirection == 'X'):
+                self.currentObj.Object.Placement.Base.x = position.x
+            elif (self.MoveMentDirection == 'Y'):
+                self.currentObj.Object.Placement.Base.x = position.x
+            elif (self.MoveMentDirection == 'Z'):
+                self.currentObj.Object.Placement.Base.x = position.z
+
             App.ActiveDocument.recompute()
         else:
             print("Warning!! it was None")
@@ -149,15 +162,16 @@ class Design456_Paint:
             self.appendToList()
             App.ActiveDocument.recompute()
             self.currentObj = None
+            self.setSize()
+            self.setType()
             self.recreateObject()
 
     def recreateObject(self):
         try:
-            print("Recreate")
-            print("self.brushType", self.brushType)
             if(self.currentObj is not None):
-                print("remove object - recreate object")
-                App.ActiveDocument.removeObject(self.currentObj.Name)
+                print("remove object - recreate object",
+                      self.currentObj.Object.Name)
+                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
                 self.currentObj = None
 
             if self.brushType == 0:
@@ -165,16 +179,16 @@ class Design456_Paint:
             elif self.brushType == 1:
                 self.currentObj = self.draw_Half_circle()
             elif self.brushType == 2:
-                self.currentObj = self.draw_polygon(self.brushType)  # Triangle
+                self.currentObj = self.draw_polygon()  # Triangle
             elif self.brushType == 3:
                 self.currentObj = self.draw_Square()
             elif (self.brushType == 4 or self.brushType == 5 or
                   self.brushType == 6 or self.brushType == 7):
-                self.currentObj = self.draw_polygon(self.brushType)
+                self.currentObj = self.draw_polygon()
             elif self.brushType == 8:
                 self.currentObj = self.draw_Moon()
             if (self.resultObj is None):
-                print(len(self.AllObjects),"(len(self.AllObjects)")
+                print(len(self.AllObjects), "(len(self.AllObjects)")
                 if (len(self.AllObjects) > 1):
                     if(self.runOnce == False):
                         self.runOnce = True
@@ -200,12 +214,14 @@ class Design456_Paint:
             if (type(event) == coin.SoKeyboardEvent):
                 key = event.getKey()
 
-            # if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
-            #    self.Direction = 'X'
-            # if key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
-            #    self.Direction = 'Y'
-            # if key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
-            #    self.Direction = 'Z'
+            if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'X'
+            elif key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'Y'
+            elif key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'Z'
+            else:
+                self.MoveMentDirection = 'A'  # All
 
             if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
                 self.remove_callbacks()
@@ -225,6 +241,8 @@ class Design456_Paint:
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
+            self.setTyep()
+            self.setSize()
             self.recreateObject()            # Initial
             App.ActiveDocument.recompute()
             self.callbackMove = self.view.addEventCallbackPivy(
@@ -273,12 +291,12 @@ class Design456_Paint:
         self.resultObj = None
 
     def BrushChanged_cb(self):
-        #App.ActiveDocument.removeObject(self.currentObj.Object.Name)
+        # App.ActiveDocument.removeObject(self.currentObj.Object.Name)
         self.currentObj = None
         self.setSize()
         self.setTyep()
-        App.ActiveDocument.recompute()
         self.recreateObject()
+        App.ActiveDocument.recompute()
 
     def getMainWindow(self):
 
@@ -403,7 +421,7 @@ class Design456_Paint:
         Hide the widgets. Remove also the tab.
         """
         App.ActiveDocument.removeObject(self.currentObj.Object.Name)
-        self.currentObj=None
+        self.currentObj = None
         App.ActiveDocument.recompute()
         self.dialog.hide()
         del self.dialog
