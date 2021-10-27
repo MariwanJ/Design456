@@ -75,7 +75,7 @@ class Design456_Paint:
         if text != "":
             self.brushSize = int(text)
 
-    def setTye(self):
+    def setTyep(self):
         text = self.cmbBrushSize.currentText()
         if text != "":
             self.brushType = int(text)
@@ -104,6 +104,7 @@ class Design456_Paint:
         if (self.currentObj is not None):
             App.ActiveDocument.removeObject(self.currentObj.Object.Name)
             self.currentObj=None
+
 
     def draw_Square(self):
         size = int(self.cmbBrushSize.currentText())
@@ -173,6 +174,7 @@ class Design456_Paint:
             elif self.brushType == 8:
                 self.currentObj = self.draw_Moon()
             if (self.resultObj is None):
+                print(len(self.AllObjects),"(len(self.AllObjects)")
                 if (len(self.AllObjects) > 1):
                     if(self.runOnce == False):
                         self.runOnce = True
@@ -180,6 +182,8 @@ class Design456_Paint:
                             "Part::MultiFuse", "Paint")
                         self.resultObj.Refine = True
                         self.resultObj.Shapes = self.AllObjects
+            else:
+                self.resultObj.Shapes = self.AllObjects
 
         except Exception as err:
             App.Console.PrintError("'recreate Paint Obj' Failed. "
@@ -269,8 +273,11 @@ class Design456_Paint:
         self.resultObj = None
 
     def BrushChanged_cb(self):
-        App.ActiveDocument.removeObject(self.currentObj.Object.Name)
+        #App.ActiveDocument.removeObject(self.currentObj.Object.Name)
         self.currentObj = None
+        self.setSize()
+        self.setTyep()
+        App.ActiveDocument.recompute()
         self.recreateObject()
 
     def getMainWindow(self):
@@ -364,6 +371,7 @@ class Design456_Paint:
                 self.cmbBrushSize.addItem(str(i))
             self.cmbBrushSize.setCurrentIndex(FR_BRUSHES.FR_SQUARE_BRUSH)
             self.cmbBrushSize.setCurrentIndex(1)
+            self.cmbBrushType.setCurrentIndex(3)
             self.cmbBrushSize.currentTextChanged.connect(self.BrushChanged_cb)
             self.cmbBrushSize.currentIndexChanged.connect(self.BrushChanged_cb)
             self.cmbBrushType.currentTextChanged.connect(self.BrushChanged_cb)
