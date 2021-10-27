@@ -83,14 +83,14 @@ class Design456_Paint:
 
     def draw_circle(self):
         s = _draft.make_circle(
-            radius=self.brushSize, placement=self.pl, face=True, startangle=None, endangle=None, support=None)
+            self.brushSize, self.pl)
         # Convert/ or get Gui object not App object
         App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_Half_circle(self):
         s = _draft.make_circle(
-            radius=self.brushSize, placement=self.pl, face=True, startangle=0, endangle=math.radians(180), support=None)
+            self.brushSize, self.pl, True,0, endangle=math.radians(180))
         # Convert/ or get Gui object not App object
         App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
@@ -108,20 +108,17 @@ class Design456_Paint:
             self.currentObj = None
 
     def draw_Square(self):
-        s = _draft.make_rectangle(
-            length=self.brushSize, height=self.brushSize, placement=self.pl, face=True, support=None)
+        s = _draft.make_rectangle(self.brushSize, self.brushSize, self.pl)
         # Convert/ or get Gui object not App object
         App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_polygon(self):
-        s = _draft.makePolygon(
-            self.brushType, radius=self.brushSize, inscribed=True, placement=self.pl, face=True, support=None)
-        _draft.autogroup(s)
+        s =_draft.make_polygon(self.brushSize, self.brushSize, self.pl)
         # Convert/ or get Gui object not App object
+        App.ActiveDocument.recompute()        
         if (s is None):
             raise ValueError("s must be an object")
-        App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_Moon(self):
@@ -174,18 +171,19 @@ class Design456_Paint:
                 App.ActiveDocument.removeObject(self.currentObj.Object.Name)
                 self.currentObj = None
 
-            if self.brushType == 0:
+            if self.brushType == FR_BRUSHES.FR_CIRCLE_BRUSH:
                 self.currentObj = self.draw_circle()
-            elif self.brushType == 1:
+            elif self.brushType == FR_BRUSHES.FR_HALF_CIRCLE_BRUSH:
                 self.currentObj = self.draw_Half_circle()
-            elif self.brushType == 2:
+            elif self.brushType == FR_BRUSHES.FR_TRIANGLE_BRUSH:
                 self.currentObj = self.draw_polygon()  # Triangle
-            elif self.brushType == 3:
+            elif self.brushType == FR_BRUSHES.FR_SQUARE_BRUSH:
                 self.currentObj = self.draw_Square()
-            elif (self.brushType == 4 or self.brushType == 5 or
-                  self.brushType == 6 or self.brushType == 7):
+            elif (self.brushType == FR_BRUSHES.FR_FOUR_SIDED_BRUSH or
+                  self.brushType == FR_BRUSHES.FR_FIVE_SIDED_BRUSH or
+                  self.brushType == FR_BRUSHES.FR_SIX_SIDED_BRUSH):
                 self.currentObj = self.draw_polygon()
-            elif self.brushType == 8:
+            elif self.brushType == FR_BRUSHES.FR_MOON_BRUSH:
                 self.currentObj = self.draw_Moon()
             if (self.resultObj is None):
                 print(len(self.AllObjects), "(len(self.AllObjects)")
@@ -238,12 +236,15 @@ class Design456_Paint:
     def Activated(self):
         self.c1 = None
         self.c2 = None
+        print(type(self.currentObj))
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
             self.setTyep()
             self.setSize()
             self.recreateObject()            # Initial
+            if(self.currentObj is None):
+                print("what is that")
             App.ActiveDocument.recompute()
             self.callbackMove = self.view.addEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
@@ -258,7 +259,6 @@ class Design456_Paint:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            return
 
     def remove_callbacks(self):
         self.view.removeEventCallbackPivy(
@@ -388,8 +388,8 @@ class Design456_Paint:
             for i in range(1, 400):
                 self.cmbBrushSize.addItem(str(i))
             self.cmbBrushSize.setCurrentIndex(FR_BRUSHES.FR_SQUARE_BRUSH)
-            self.cmbBrushSize.setCurrentIndex(1)
-            self.cmbBrushType.setCurrentIndex(3)
+            self.cmbBrushSize.setCurrentIndex(5)
+            self.cmbBrushType.setCurrentIndex(0)
             self.cmbBrushSize.currentTextChanged.connect(self.BrushChanged_cb)
             self.cmbBrushSize.currentIndexChanged.connect(self.BrushChanged_cb)
             self.cmbBrushType.currentTextChanged.connect(self.BrushChanged_cb)

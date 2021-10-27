@@ -453,12 +453,11 @@ class FR_ALIGN:
     
     
 class FR_BRUSHES:
-    #FR_CIRCLE_NOBRUSH       =-1
     FR_CIRCLE_BRUSH         = 0
-    FR_HALVE_CIRCLE_BRUSH   = 1
+    FR_HALF_CIRCLE_BRUSH    = 1
     FR_TRIANGLE_BRUSH       = 2
     FR_SQUARE_BRUSH         = 3
     FR_FOUR_SIDED_BRUSH     = 4
     FR_FIVE_SIDED_BRUSH     = 5
-    FR_SIX_SIDE_BRUSH       = 6
+    FR_SIX_SIDED_BRUSH      = 6
     FR_MOON_BRUSH           = 7
