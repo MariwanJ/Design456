@@ -64,7 +64,7 @@ class Design456_Paint:
     # current created shape (circle, square, triangles,..etc)
     currentObj = None
     view = None  # used for captureing mouse events
-    Observer = None  # Usef for captureing mosue events
+    Observer = None  # Used for captureing mouse events
     continuePainting = True
     brushSize = 1  # Brus Size
     resultObj = None  # Extruded shape
@@ -74,7 +74,7 @@ class Design456_Paint:
     def setSize(self):
         text = self.cmbBrushSize.currentText()
         if text != "":
-            self.brushSize = float(text)
+            self.brushSize = int(text)
 
     def setTyep(self):
         text = self.cmbBrushSize.currentText()
@@ -82,8 +82,7 @@ class Design456_Paint:
             self.brushType = int(text)
 
     def draw_circle(self):
-        s = _draft.make_circle(
-            self.brushSize, self.pl)
+        s = _draft.make_circle(self.brushSize, self.pl)
         # Convert/ or get Gui object not App object
         App.ActiveDocument.recompute()
         return(Gui.ActiveDocument.getObject(s.Name))
@@ -164,7 +163,7 @@ class Design456_Paint:
             self.recreateObject()
 
     def recreateObject(self):
-        try:
+        #try:
             if(self.currentObj is not None):
                 print("remove object - recreate object",
                       self.currentObj.Object.Name)
@@ -197,13 +196,13 @@ class Design456_Paint:
             else:
                 self.resultObj.Shapes = self.AllObjects
 
-        except Exception as err:
-            App.Console.PrintError("'recreate Paint Obj' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-            return
+        #except Exception as err:
+        #    App.Console.PrintError("'recreate Paint Obj' Failed. "
+        #                           "{err}\n".format(err=str(err)))
+        #    exc_type, exc_obj, exc_tb = sys.exc_info()
+        #    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        #    print(exc_type, fname, exc_tb.tb_lineno)
+        #    return
 
     def KeyboardEvent(self, events):
         try:
@@ -372,10 +371,10 @@ class Design456_Paint:
             la.addWidget(self.formLayoutWidget)
             la.addWidget(e1)
             la.addWidget(self.PaintLBL)
-            okbox = QtGui.QDialogButtonBox(self.dialog)
-            okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
-            la.addWidget(okbox)
+            self.okbox = QtGui.QDialogButtonBox(self.dialog)
+            self.okbox.setOrientation(QtCore.Qt.Horizontal)
+            self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+            la.addWidget(self.okbox)
 
             self.cmbBrushType.addItem("Circle")
             self.cmbBrushType.addItem("Half Circle")
@@ -405,8 +404,7 @@ class Design456_Paint:
             self.radioMerge.setText(_translate("Dialog", "Merge"))
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
-            QtCore.QObject.connect(
-                okbox, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(self.okbox, QtCore.SIGNAL("accepted()"), self.hide)
             return self.dialog
 
         except Exception as err:
