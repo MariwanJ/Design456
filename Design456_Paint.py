@@ -76,7 +76,7 @@ class Design456_Paint:
         if text != "":
             self.brushSize = int(text)
 
-    def setTyep(self):
+    def setType(self):
         text = self.cmbBrushSize.currentText()
         if text != "":
             self.brushType = int(text)
@@ -144,10 +144,7 @@ class Design456_Paint:
                 self.currentObj.Object.Placement.Base.x = position.x
             elif (self.MoveMentDirection == 'Z'):
                 self.currentObj.Object.Placement.Base.x = position.z
-
             App.ActiveDocument.recompute()
-        else:
-            print("Warning!! it was None")
 
     def MouseClick_cb(self, events):
         event = events.getEvent()
@@ -239,7 +236,7 @@ class Design456_Paint:
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
-            self.setTyep()
+            self.setType()
             self.setSize()
             self.recreateObject()            # Initial
             if(self.currentObj is None):
@@ -293,7 +290,7 @@ class Design456_Paint:
         # App.ActiveDocument.removeObject(self.currentObj.Object.Name)
         self.currentObj = None
         self.setSize()
-        self.setTyep()
+        self.setType()
         self.recreateObject()
         App.ActiveDocument.recompute()
 
