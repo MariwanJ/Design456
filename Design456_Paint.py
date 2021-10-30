@@ -37,6 +37,7 @@ import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 import Draft as _draft
+import Part as _part
 from ThreeDWidgets.constant import FR_BRUSHES
 import math
 from pivy import coin
@@ -84,27 +85,51 @@ class Design456_Paint:
         self.brushType = self.cmbBrushType.currentIndex()
 
     def draw_circle(self):
-        print(self.brushSize)
         # Convert/ or get Gui object not App object
-        s = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
-        s.Radius = self.brushSize
-        s.Height = self.firstSize
-        s.Placement = self.pl
-        return(Gui.ActiveDocument.getObject(s.Name))
+        try:
+            s = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+            s.Radius = self.brushSize
+            s.Height = self.firstSize
+            return(Gui.ActiveDocument.getObject(s.Name))
+
+        except Exception as err:
+            App.Console.PrintError("'draw_circle' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Half_circle(self):
-        # TODO: FIXME:
-        s = _draft.make_circle(self.brushSize, self.pl, True, 0, 180)
-        vert = s.Shape.Vertexes
-        vectors = [vert[0].Point, vert[0].Point]
-        wire = _draft.makeWire(vectors, self.pl)
-        tempResult = App.ActiveDocument.addObject(
-            "Part::MultiCommon", "tempWire")
-        tempResult.Shapes = [s, wire]
-        tempResult.Refine = True
-        # Convert/ or get Gui object not App object
-        App.ActiveDocument.recompute()
-        return(Gui.ActiveDocument.getObject(tempResult.Name))
+        try:
+            first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+            first.Radius = self.brushSize
+            first.Height = self.firstSize
+            second = App.ActiveDocument.addObject("Part::Box", "Circle")
+            second.Width = self.brushSize
+            second.Length = self.brushSize*6
+            second.Height = self.firstSize
+            second.Placement.Base.x = second.Placement.Base.x-self.brushSize*3
+            newObj = App.ActiveDocument.addObject("Part::Cut", "cut")
+            newObj.Base = first
+            newObj.Tool = second
+            App.ActiveDocument.recompute()
+            # simple copy
+            newShape = _part.getShape(
+                newObj, '', needSubElement=False, refine=True)
+            s = App.ActiveDocument.addObject('Part::Feature', 'HalfCircle')
+            s.Shape = newShape
+            App.ActiveDocument.removeObject(first.Name)
+            App.ActiveDocument.removeObject(second.Name)
+            App.ActiveDocument.removeObject(newObj.Name)
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+
+        except Exception as err:
+            App.Console.PrintError("'draw_Half_circle' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def appendToList(self):
         try:
@@ -126,24 +151,57 @@ class Design456_Paint:
         s.Length = self.brushSize
         s.Width = self.brushSize
         s.Height = self.firstSize
-        s.Placement.Base = self.pl.Base
-        s.Placement.Rotation = self.pl.Rotation
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_polygon(self):
-        # Convert/ or get Gui object not App object
-        s = App.ActiveDocument.addObject("Part::Prism", "Polygon")
-        s.Circumradius = self.brushSize
-        s.Polygon = self.brushType
-        s.Placement.Base = self.pl.Base
-        s.Placement.Rotation = self.pl.Rotation
-        App.ActiveDocument.recompute()
-        if (s is None):
-            raise ValueError("s must be an object")
-        return(Gui.ActiveDocument.getObject(s.Name))
+        try:
+            # Convert/ or get Gui object not App object
+            s = App.ActiveDocument.addObject("Part::Prism", "Polygon")
+            s.Circumradius = self.brushSize
+            s.Polygon = self.brushType
+            s.Height = self.firstSize
+            App.ActiveDocument.recompute()
+            if (s is None):
+                raise ValueError("s must be an object")
+            return(Gui.ActiveDocument.getObject(s.Name))
+
+        except Exception as err:
+            App.Console.PrintError("'draw_polygon' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Moon(self):
-        pass
+        try:
+            first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+            first.Radius = self.brushSize
+            first.Height = self.firstSize
+            second = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+            second.Radius = self.brushSize
+            second.Height = self.firstSize
+            second.Placement.Base.y = second.Placement.Base.y+3
+            newObj = App.ActiveDocument.addObject("Part::Cut", "tempSubtract")
+            newObj.Base = first
+            newObj.Tool = second
+            App.ActiveDocument.recompute()
+            # simple copy
+            newShape = _part.getShape(
+                newObj, '', needSubElement=False, refine=False)
+            s = App.ActiveDocument.addObject('Part::Feature', 'Moon')
+            s.Shape = newShape
+            App.ActiveDocument.removeObject(first.Name)
+            App.ActiveDocument.removeObject(second.Name)
+            App.ActiveDocument.removeObject(newObj.Name)
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+
+        except Exception as err:
+            App.Console.PrintError("'draw_Moon' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def MouseMovement_cb(self, events):
         try:
@@ -466,7 +524,7 @@ class Design456_Paint:
             self.cmbBrushType.addItem("Five Sided")
             self.cmbBrushType.addItem("Six sided")
             self.cmbBrushType.addItem("Moon")
-            for i in range(1, 400):
+            for i in range(1, 1000):
                 self.cmbBrushSize.addItem(str(i))
             self.cmbBrushSize.setCurrentIndex(FR_BRUSHES.FR_CIRCLE_BRUSH)
             self.cmbBrushSize.setCurrentIndex(5)
@@ -504,8 +562,9 @@ class Design456_Paint:
         Hide the widgets. Remove also the tab.
         """
         try:
-            App.ActiveDocument.removeObject(self.currentObj.Object.Name)
-            self.currentObj = None
+            if (self.currentObj is not None):
+                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
+                self.currentObj = None
             self.dialog.hide()
             del self.dialog
             dw = self.mw.findChildren(QtGui.QDockWidget)
