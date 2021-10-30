@@ -41,7 +41,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import math
 from pivy import coin
 
-#TODO: . FIXME:
+# TODO: . FIXME:
 
 
 class Design456_Paint:
@@ -71,6 +71,7 @@ class Design456_Paint:
     resultObj = None  # Extruded shape
     runOnce = False  # Create the merge object once only
     MoveMentDirection = 'A'
+    firstSize = 0.1
 
     def setSize(self):
         text = self.cmbBrushSize.currentText()
@@ -84,21 +85,22 @@ class Design456_Paint:
 
     def draw_circle(self):
         print(self.brushSize)
-        s = _draft.make_circle(self.brushSize, self.pl)
         # Convert/ or get Gui object not App object
-        App.ActiveDocument.recompute()
+        s = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+        s.Radius = self.brushSize
+        s.Height = self.firstSize
+        s.Placement = self.pl
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_Half_circle(self):
-        #TODO: FIXME:
-        s = _draft.make_circle(
-            self.brushSize, self.pl, True, 0, 180)
-        vert=s.Object.Shape.Vertexes
-        vectors=[vert[0].Point,vert[0].Point]
-        wire=_draft.makeWire(vectors,self.pl)
+        # TODO: FIXME:
+        s = _draft.make_circle(self.brushSize, self.pl, True, 0, 180)
+        vert = s.Shape.Vertexes
+        vectors = [vert[0].Point, vert[0].Point]
+        wire = _draft.makeWire(vectors, self.pl)
         tempResult = App.ActiveDocument.addObject(
-                "Part::MultiCommon", "tempWire")
-        tempResult.Shapes=[s,wire]
+            "Part::MultiCommon", "tempWire")
+        tempResult.Shapes = [s, wire]
         tempResult.Refine = True
         # Convert/ or get Gui object not App object
         App.ActiveDocument.recompute()
@@ -109,16 +111,7 @@ class Design456_Paint:
             print("Append them to the list")
             if self.currentObj is None:
                 return
-            print(type(self.currentObj))
-            Dir = self.currentObj.Object.Shape.normalAt(0, 0)
-            tempExtrude = self.currentObj.Object.Shape.extrude(Dir)
-            newobj = App.ActiveDocument.addObject(
-                "Part::Feature", self.currentObj.Object.Name)
-            newobj.Shape = tempExtrude
-            self.AllObjects.append(newobj)
-            if (self.currentObj is not None):
-                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
-                self.currentObj = None
+            self.AllObjects.append(self.currentObj.Object)
 
         except Exception as err:
             App.Console.PrintError("'appendToList' Failed. "
@@ -128,14 +121,22 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Square(self):
-        s = _draft.make_rectangle(self.brushSize, self.brushSize, self.pl)
         # Convert/ or get Gui object not App object
-        App.ActiveDocument.recompute()
+        s = App.ActiveDocument.addObject("Part::Box", "Square")
+        s.Length = self.brushSize
+        s.Width = self.brushSize
+        s.Height = self.firstSize
+        s.Placement.Base = self.pl.Base
+        s.Placement.Rotation = self.pl.Rotation
         return(Gui.ActiveDocument.getObject(s.Name))
 
     def draw_polygon(self):
-        s = _draft.make_polygon(self.brushSize, self.brushSize, self.pl)
         # Convert/ or get Gui object not App object
+        s = App.ActiveDocument.addObject("Part::Prism", "Polygon")
+        s.Circumradius = self.brushSize
+        s.Polygon = self.brushType
+        s.Placement.Base = self.pl.Base
+        s.Placement.Rotation = self.pl.Rotation
         App.ActiveDocument.recompute()
         if (s is None):
             raise ValueError("s must be an object")
@@ -180,10 +181,36 @@ class Design456_Paint:
             event = events.getEvent()
             eventState = event.getState()
             getButton = event.getButton()
+            viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
+            angle = 0
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 print("Place callback!!")
                 self.appendToList()
                 App.ActiveDocument.recompute()
+
+                if(self.currentObj is not None):
+                    # Normal view - Top
+                    if(viewAxis == App.Vector(0, 0, 1)):
+                        self.pl.Base.z = 0.0
+                        self.pl.Rotation(0.0, 0.0, 0.0, 1.0)
+                    elif(viewAxis == App.Vector(0, 0, 1)):
+                        self.pl.Base.z = 0.0
+                        self.pl.Rotation = (1.0, 0.0, 0.0, 1.0)
+                    # FrontSide
+                    elif(viewAxis == App.Vector(0, 1, 0)):
+                        self.pl.Base.y = 0
+                        self.pl.Rotation = (0, 0, 0, -90)
+                    elif (viewAxis == App.Vector(0, -1, 0)):
+                        self.pl.Base.y = 0
+                        self.pl.Rotation = (0, 0, 0, 90)
+                    # RightSideView
+                    elif(viewAxis == App.Vector(-1, 0, 0)):
+                        self.pl.Base.x = 0
+                        self.pl.Rotation = (0, -90, 0)
+                    elif (viewAxis == App.Vector(1, 0, 0)):
+                        self.pl.Base.x = 0
+                        self.pl.Rotation = (0, 90, 0)
+                    # self.pl=self.currentObj.Placement
                 self.currentObj = None
                 self.setSize()
                 self.setType()
@@ -200,8 +227,8 @@ class Design456_Paint:
         try:
             if(self.currentObj is not None):
                 print("remove object - recreate object",
-                      self.currentObj.Object.Name)
-                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
+                      self.currentObj.Name)
+                App.ActiveDocument.removeObject(self.currentObj.Name)
                 self.currentObj = None
 
             if self.brushType == FR_BRUSHES.FR_CIRCLE_BRUSH:
@@ -218,8 +245,8 @@ class Design456_Paint:
                 self.currentObj = self.draw_polygon()
             elif self.brushType == FR_BRUSHES.FR_MOON_BRUSH:
                 self.currentObj = self.draw_Moon()
+            # Merge object creation.
             if (self.resultObj is None):
-                print(len(self.AllObjects), "(len(self.AllObjects)")
                 if (len(self.AllObjects) > 1):
                     if(self.runOnce == False):
                         self.runOnce = True
@@ -228,6 +255,7 @@ class Design456_Paint:
                         self.resultObj.Refine = True
                         self.resultObj.Shapes = self.AllObjects
             else:
+                # Update the Merge object
                 self.resultObj.Shapes = self.AllObjects
 
         except Exception as err:
@@ -339,7 +367,7 @@ class Design456_Paint:
     def BrushSizeChanged_cb(self):
         try:
             if (self.currentObj is not None):
-                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
+                App.ActiveDocument.removeObject(self.currentObj.Name)
                 self.currentObj = None
             self.setSize()
             self.recreateObject()
@@ -478,13 +506,11 @@ class Design456_Paint:
         try:
             App.ActiveDocument.removeObject(self.currentObj.Object.Name)
             self.currentObj = None
-            App.ActiveDocument.recompute()
             self.dialog.hide()
             del self.dialog
             dw = self.mw.findChildren(QtGui.QDockWidget)
             newsize = self.tab.count()  # Todo : Should we do that?
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-
             App.ActiveDocument.recompute()
             self.__del__()  # Remove all Paint 3dCOIN widgets
 
