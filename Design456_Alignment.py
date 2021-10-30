@@ -138,6 +138,8 @@ class Design456_BottomView:
         Design456Init.DefaultDirectionOfExtrusion='z'
         Gui.activeDocument().activeView().viewBottom()
         Gui.Snapper.grid.on()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
         
     def GetResources(self):
         import Design456Init
@@ -180,6 +182,9 @@ class Design456_RightSideView:
         Design456Init.DefaultDirectionOfExtrusion='x'
         Gui.activeDocument().activeView().viewRight()
         Gui.Snapper.grid.on()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
+        
 
     def GetResources(self):
         import Design456Init
@@ -201,6 +206,8 @@ class Design456_FrontSideView:
         Design456Init.DefaultDirectionOfExtrusion='y'
         Gui.activeDocument().activeView().viewFront()
         Gui.Snapper.grid.on()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
         import Design456Init
@@ -222,6 +229,8 @@ class Design456_BackSideView:
         Design456Init.DefaultDirectionOfExtrusion='y'
         Gui.activeDocument().activeView().viewRear()
         Gui.Snapper.grid.on()
+        Gui.runCommand("Draft_ToggleGrid")
+        Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
         import Design456Init
