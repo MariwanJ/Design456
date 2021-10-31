@@ -99,7 +99,7 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def draw_Half_circle(self):
+    def draw_Semi_circle(self):
         try:
             first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
             first.Radius = self.brushSize
@@ -125,11 +125,24 @@ class Design456_Paint:
             return(Gui.ActiveDocument.getObject(s.Name))
 
         except Exception as err:
-            App.Console.PrintError("'draw_Half_circle' Failed. "
+            App.Console.PrintError("'draw_Semi_circle' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+
+    def draw_Oval(self, Ovaltype):
+        # Convert/ or get Gui object not App object
+        if (Ovaltype == 1):
+            s = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+            s.Radius = self.brushSize
+            s.Height = self.firstSize
+            return(Gui.ActiveDocument.getObject(s.Name))
+        elif(Ovaltype == 2):
+            s = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+            s.Radius = self.brushSize
+            s.Height = self.firstSize
+            return(Gui.ActiveDocument.getObject(s.Name))
 
     def appendToList(self):
         try:
@@ -153,12 +166,12 @@ class Design456_Paint:
         s.Height = self.firstSize
         return(Gui.ActiveDocument.getObject(s.Name))
 
-    def draw_polygon(self):
+    def draw_polygon(self, Sides):
         try:
             # Convert/ or get Gui object not App object
             s = App.ActiveDocument.addObject("Part::Prism", "Polygon")
             s.Circumradius = self.brushSize
-            s.Polygon = self.brushType
+            s.Polygon = Sides
             s.Height = self.firstSize
             App.ActiveDocument.recompute()
             if (s is None):
@@ -288,21 +301,50 @@ class Design456_Paint:
                       self.currentObj.Name)
                 App.ActiveDocument.removeObject(self.currentObj.Name)
                 self.currentObj = None
-
+            # Rounded shapes
             if self.brushType == FR_BRUSHES.FR_CIRCLE_BRUSH:
                 self.currentObj = self.draw_circle()
-            elif self.brushType == FR_BRUSHES.FR_HALF_CIRCLE_BRUSH:
-                self.currentObj = self.draw_Half_circle()
+            elif self.brushType == FR_BRUSHES.FR_SEMI_CIRCLE_BRUSH:
+                self.currentObj = self.draw_Semi_circle()
+            elif self.brushType == FR_BRUSHES.FR_QUARTER_CIRCLE_BRUSH:
+                self.currentObj = self.draw_Quarter_circle()
+            elif self.brushType == FR_BRUSHES.FR_OVAL1_BRUSH:
+                self.currentObj = self.draw_Oval(1)
+            elif self.brushType == FR_BRUSHES.FR_OVAL2_BRUSH:
+                self.currentObj = self.draw_Oval(2)
+            elif self.brushType == FR_BRUSHES.FR_EGG_BRUSH:
+                self.currentObj = self.draw_Egg()
+
+            # 3 Sides shapes
             elif self.brushType == FR_BRUSHES.FR_TRIANGLE_BRUSH:
-                self.currentObj = self.draw_polygon()  # Triangle
+                self.currentObj = self.draw_polygon(3)  # Triangle
+            elif self.brushType == FR_BRUSHES.FR_RIGHT_TRIANGLE_BRUSH:
+                self.currentObj = self.draw_RightAngleTriangle()  # Right-angle-Triangle
+            elif self.brushType == FR_BRUSHES.FR_SCALENE_TRIANGLE_BRUSH:
+                self.currentObj = self.draw_scaleneTriangle()  # scalene-Triangle
+
+            # 4 Sides shapes
             elif self.brushType == FR_BRUSHES.FR_SQUARE_BRUSH:
                 self.currentObj = self.draw_Square()
-            elif (self.brushType == FR_BRUSHES.FR_FOUR_SIDED_BRUSH or
-                  self.brushType == FR_BRUSHES.FR_FIVE_SIDED_BRUSH or
-                  self.brushType == FR_BRUSHES.FR_SIX_SIDED_BRUSH):
-                self.currentObj = self.draw_polygon()
-            elif self.brushType == FR_BRUSHES.FR_MOON_BRUSH:
+
+            elif self.brushType == FR_BRUSHES.FR_RHOMBUS_BRUSH:
+                self.currentObj = self.draw_polygon(4)
+            elif self.brushType == FR_BRUSHES.FR_PENTAGON_BRUSH:
+                self.currentObj = self.draw_polygon(5)
+            elif self.brushType == FR_BRUSHES.FR_HEXAGON_BRUSH:
+                self.currentObj = self.draw_polygon(6)
+            elif self.brushType == FR_BRUSHES.FR_HEPTAGON_BRUSH:
+                self.currentObj = self.draw_polygon(7)
+            elif self.brushType == FR_BRUSHES.FR_OCTAGON_BRUSH:
+                self.currentObj = self.draw_polygon(8)
+            elif self.brushType == FR_BRUSHES.FR_ENNEAGON_BRUSH:
+                self.currentObj = self.draw_polygon(9)
+            elif self.brushType == FR_BRUSHES.FR_DECAGON_BRUSH:
+                self.currentObj = self.draw_polygon(10)
+
+            elif self.brushType == FR_BRUSHES.FR_Moon_BRUSH:
                 self.currentObj = self.draw_Moon()
+
             # Merge object creation.
             if (self.resultObj is None):
                 if (len(self.AllObjects) > 1):
