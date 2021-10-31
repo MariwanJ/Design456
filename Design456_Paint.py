@@ -74,6 +74,27 @@ class Design456_Paint:
     MoveMentDirection = 'A'
     firstSize = 0.1
 
+    listOfDrawings=["CIRCLE", 
+                    "SEMI_CIRCLE",  
+                    "QUARTER_CIRCLE", 
+                    "OVAL1", "OVAL2",
+                    "EGG", "TRIANGLE",
+                    "RIGHT_TRIANGLE", 
+                    "SCALENE_TRIANGLE", 
+                    "SQUARE", 
+                    "EQUALSIDES_PARALLELOGRAM1",
+                    "EQUALSIDES_PARALLELOGRAM2",
+                    "RECTANGLE", 
+                    "PARALLELOGRAM1", 
+                    "PARALLELOGRAM2", 
+                    "TRAPEZOID1", "TRAPEZOID2", 
+                    "RHOMBUS", "PENTAGON",
+                    "HEXAGON", "HEPTAGON",
+                    "OCTAGON", "ENNEAGON",
+                    "DECAGON", "ARROW1", 
+                    "ARROW2", "ARROW3", 
+                    "STAR",  "Moon"]
+
     def setSize(self):
         text = self.cmbBrushSize.currentText()
         print(text)
@@ -130,19 +151,90 @@ class Design456_Paint:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+    
+    def draw_Quarter_circle(self):
+        try:
+            first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+            first.Radius = self.brushSize
+            first.Height = self.firstSize
+            second = App.ActiveDocument.addObject("Part::Box", "Circle")
+            second.Width = self.brushSize
+            second.Length = self.brushSize
+            second.Height = self.firstSize
+            second.Placement.Base.x = second.Placement.Base.x+self.brushSize/2
+            second.Placement.Base.y = second.Placement.Base.y+self.brushSize/2
+            newObj = App.ActiveDocument.addObject("Part::MultiCommon","Common")
+            newObj.Shapes = [first,second]
+            App.ActiveDocument.recompute()
+            # simple copy
+            newShape = _part.getShape(
+                newObj, '', needSubElement=False, refine=True)
+            s = App.ActiveDocument.addObject('Part::Feature', 'QuarterCircle')
+            s.Shape = newShape
+            App.ActiveDocument.removeObject(first.Name)
+            App.ActiveDocument.removeObject(second.Name)
+            App.ActiveDocument.removeObject(newObj.Name)
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+
+        except Exception as err:
+            App.Console.PrintError("'draw_Quarter_circle' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+    
 
     def draw_Oval(self, Ovaltype):
         # Convert/ or get Gui object not App object
-        if (Ovaltype == 1):
-            s = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
-            s.Radius = self.brushSize
-            s.Height = self.firstSize
+        try:
+            pl = App.Placement()
+            ellipse=None
+            pl.Base = App.Vector(0, 0, 0.0)
+            pl.Rotation.Axis = (0.0, 0.0, 1)
+            if Ovaltype==1:
+                pl.Rotation.Angle = math.radians(90.0)
+            else:
+                pl.Rotation.Angle = 0.0
+            
+            ellipse = _draft.makeEllipse(self.brushSize,self.brushSize/2, placement=pl, face=True, support=None)
+            _draft.autogroup(ellipse)
+            App.ActiveDocument.recompute()
+            f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
+            f.Base = ellipse
+            f.DirMode = "Normal"  
+            f.DirLink = None  
+            f.LengthFwd = -0.1
+            f.LengthRev = 0.0
+            f.Solid = True
+            f.Reversed = False
+            f.Symmetric = False
+            f.TaperAngle = 0.0
+            f.TaperAngleRev = 0.0
+
+            f.Dir = ellipse.Shape.normalAt(0, 0)  # Normal line
+            if (f.Dir.x != 1 or f.Dir.y != 1 or f.Dir.z != 1):
+                f.DirMode = "Custom"
+            # Make a simple copy of the object
+            App.ActiveDocument.recompute()
+            newShape = _part.getShape(f, '', needSubElement=False, refine=False)
+            s = App.ActiveDocument.addObject('Part::Feature', 'Oval')
+            s.Shape = newShape
+            App.ActiveDocument.recompute()
+            # Remove old objects
+            # App.ActiveDocument.clearUndos()
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(f.Name)
+            App.ActiveDocument.removeObject(ellipse.Name)
+            App.ActiveDocument.recompute()
             return(Gui.ActiveDocument.getObject(s.Name))
-        elif(Ovaltype == 2):
-            s = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
-            s.Radius = self.brushSize
-            s.Height = self.firstSize
-            return(Gui.ActiveDocument.getObject(s.Name))
+
+        except Exception as err:
+            App.Console.PrintError("'draw_Oval' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def appendToList(self):
         try:
@@ -150,7 +242,7 @@ class Design456_Paint:
             if self.currentObj is None:
                 return
             self.AllObjects.append(self.currentObj.Object)
-
+            
         except Exception as err:
             App.Console.PrintError("'appendToList' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -158,6 +250,50 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def draw_RightAngleTriangle(self):
+        try:
+            pl = App.Placement()
+            pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
+            pl.Base = App.Vector(0, 0, 0.0)
+            points = [App.Vector(0, 0, 0.0), App.Vector(0, self.brushSize, 0.0), App.Vector(self.brushSize, 0, 0.0)]
+            first = _draft.makeWire(points, placement=pl, closed=True, face=True, support=None)
+            _draft.autogroup(first)
+            App.ActiveDocument.recompute()
+            f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
+            f.Base = first
+            f.DirMode = "Normal"  
+            f.DirLink = None  
+            f.LengthFwd = -0.1
+            f.LengthRev = 0.0
+            f.Solid = True
+            f.Reversed = False
+            f.Symmetric = False
+            f.TaperAngle = 0.0
+            f.TaperAngleRev = 0.0
+
+            f.Dir = first.Shape.normalAt(0, 0)  # Normal line
+            if (f.Dir.x != 1 or f.Dir.y != 1 or f.Dir.z != 1):
+                f.DirMode = "Custom"
+            # Make a simple copy of the object
+            App.ActiveDocument.recompute()
+            newShape = _part.getShape(f, '', needSubElement=False, refine=False)
+            s = App.ActiveDocument.addObject('Part::Feature', 'RightAngleTriangle')
+            s.Shape = newShape
+            App.ActiveDocument.recompute()
+            # Remove old objects
+            # App.ActiveDocument.clearUndos()
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(f.Name)
+            App.ActiveDocument.removeObject(first.Name)
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+        except Exception as err:
+            App.Console.PrintError("'draw_RightAngleTriangle' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+        
     def draw_Square(self):
         # Convert/ or get Gui object not App object
         s = App.ActiveDocument.addObject("Part::Box", "Square")
@@ -312,8 +448,8 @@ class Design456_Paint:
                 self.currentObj = self.draw_Oval(1)
             elif self.brushType == FR_BRUSHES.FR_OVAL2_BRUSH:
                 self.currentObj = self.draw_Oval(2)
-            elif self.brushType == FR_BRUSHES.FR_EGG_BRUSH:
-                self.currentObj = self.draw_Egg()
+            #elif self.brushType == FR_BRUSHES.FR_EGG_BRUSH:
+            #    self.currentObj = self.draw_Egg()
 
             # 3 Sides shapes
             elif self.brushType == FR_BRUSHES.FR_TRIANGLE_BRUSH:
@@ -467,7 +603,7 @@ class Design456_Paint:
     def BrushSizeChanged_cb(self):
         try:
             if (self.currentObj is not None):
-                App.ActiveDocument.removeObject(self.currentObj.Name)
+                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
                 self.currentObj = None
             self.setSize()
             self.recreateObject()
@@ -557,15 +693,10 @@ class Design456_Paint:
             self.okbox.setOrientation(QtCore.Qt.Horizontal)
             self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             la.addWidget(self.okbox)
+            #Add All shape names to the combobox 
+            for nameOfObject in self.listOfDrawings:
+                self.cmbBrushType.addItem(nameOfObject)
 
-            self.cmbBrushType.addItem("Circle")
-            self.cmbBrushType.addItem("Half Circle")
-            self.cmbBrushType.addItem("Triangle")
-            self.cmbBrushType.addItem("Square")
-            self.cmbBrushType.addItem("Four Sided")
-            self.cmbBrushType.addItem("Five Sided")
-            self.cmbBrushType.addItem("Six sided")
-            self.cmbBrushType.addItem("Moon")
             for i in range(1, 1000):
                 self.cmbBrushSize.addItem(str(i))
             self.cmbBrushSize.setCurrentIndex(FR_BRUSHES.FR_CIRCLE_BRUSH)
