@@ -459,7 +459,7 @@ class FR_BRUSHES:
     FR_OVAL1_BRUSH                     =  3
     FR_OVAL2_BRUSH                     =  4
 
-    #FR_EGG_BRUSH                       =  5                       
+    FR_EGG_BRUSH                       =  5                       
 
     FR_TRIANGLE_BRUSH                  =  6
     FR_RIGHT_TRIANGLE_BRUSH            =  7
