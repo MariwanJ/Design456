@@ -75,7 +75,7 @@ def smartlbl_callback(smartLine,obj,parentlink):
         side='z'
     newValue=0
     #all lines has a 4 mm more size due to the way we calculate them. Remove that
-    newValue=faced.GetInputValue(oldv).getDoubleValue()
+    newValue=faced.GetInputValue().getDoubleValue()
     if newValue ==0 or newValue is None:
         #User canceled the value
         return -1

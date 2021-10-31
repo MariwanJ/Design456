@@ -453,11 +453,39 @@ class FR_ALIGN:
     
     
 class FR_BRUSHES:
-    FR_CIRCLE_BRUSH         = 0
-    FR_HALF_CIRCLE_BRUSH    = 1
-    FR_TRIANGLE_BRUSH       = 2
-    FR_SQUARE_BRUSH         = 3
-    FR_FOUR_SIDED_BRUSH     = 4
-    FR_FIVE_SIDED_BRUSH     = 5
-    FR_SIX_SIDED_BRUSH      = 6
-    FR_MOON_BRUSH           = 7
+    FR_CIRCLE_BRUSH                    =  0       
+    FR_SEMI_CIRCLE_BRUSH               =  1
+    FR_QUARTER_CIRCLE_BRUSH            =  2
+    FR_OVAL1_BRUSH                     =  3
+    FR_OVAL2_BRUSH                     =  4
+
+    FR_EGG_BRUSH                       =  5                       
+
+    FR_TRIANGLE_BRUSH                  =  6
+    FR_RIGHT_TRIANGLE_BRUSH            =  7
+    FR_SCALENE_TRIANGLE_BRUSH          =  8
+
+    FR_SQUARE_BRUSH                    =  9
+    FR_EQUALSIDES_PARALLELOGRAM1_BRUSH = 10 
+    FR_EQUALSIDES_PARALLELOGRAM2_BRUSH = 11 
+
+    FR_RECTANGLE_BRUSH                 = 12
+    FR_PARALLELOGRAM1_BRUSH            = 13 
+    FR_PARALLELOGRAM2_BRUSH            = 14 
+
+    FR_TRAPEZOID1_BRUSH                = 15
+    FR_TRAPEZOID2_BRUSH                = 16
+
+    FR_RHOMBUS_BRUSH                   = 17
+    FR_PENTAGON_BRUSH                  = 18
+    FR_HEXAGON_BRUSH                   = 19
+    FR_HEPTAGON_BRUSH                  = 20
+    FR_OCTAGON_BRUSH                   = 21
+    FR_ENNEAGON_BRUSH                  = 22
+    FR_DECAGON_BRUSH                   = 23
+
+    FR_ARROW1_BRUSH                    = 23 
+    FR_ARROW2_BRUSH                    = 24             
+    FR_ARROW3_BRUSH                    = 25             
+    FR_STAR_BRUSH                      = 26
+    FR_Moon_BRUSH                      = 27 
