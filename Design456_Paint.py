@@ -36,8 +36,6 @@ import FACE_D as faced
 import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
-import Draft as _draft
-import Part as _part
 from ThreeDWidgets.constant import FR_BRUSHES
 import math
 from pivy import coin
@@ -77,7 +75,8 @@ class Design456_Paint:
     listOfDrawings = ["CIRCLE",
                       "SEMI_CIRCLE",
                       "QUARTER_CIRCLE",
-                      "OVAL1", "OVAL2",
+                      "OVAL1",
+                      "OVAL2",
                       "EGG",
                       "TRIANGLE",
                       "RIGHT_TRIANGLE",
@@ -85,16 +84,32 @@ class Design456_Paint:
                       "SQUARE",
                       "EQUALSIDES_PARALLELOGRAM1",
                       "EQUALSIDES_PARALLELOGRAM2",
-                      "RECTANGLE",
+                      "EQUALSIDES_PARALLELOGRAM3",
+                      "EQUALSIDES_PARALLELOGRAM4",
+                      "RECTANGLE1",
+                      "RECTANGLE2",
                       "PARALLELOGRAM1",
                       "PARALLELOGRAM2",
-                      "TRAPEZOID1", "TRAPEZOID2",
-                      "RHOMBUS", "PENTAGON",
-                      "HEXAGON", "HEPTAGON",
-                      "OCTAGON", "ENNEAGON",
-                      "DECAGON", "ARROW1",
-                      "ARROW2", "ARROW3",
-                      "STAR",  "Moon"]
+                      "PARALLELOGRAM3",
+                      "PARALLELOGRAM4",
+                      "RHOMBUS",
+                      "PENTAGON",
+                      "HEXAGON",
+                      "HEPTAGON",
+                      "OCTAGON",
+                      "ENNEAGON",
+                      "DECAGON",
+                      "ARROW1",
+                      "ARROW2",
+                      "ARROW3",
+                      "ARROW4",
+                      "STAR1",
+                      "STAR2",
+                      "STAR3",
+                      "MOON1",
+                      "MOON2",
+                      "MOON3",
+                      "MOON4"]
 
     def setSize(self):
         text = self.cmbBrushSize.currentText()
@@ -307,38 +322,60 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def draw_Square(self,typeOfSquare):
+    def draw_Square(self, typeOfSquare):
         # Convert/ or get Gui object not App object
-        s = App.ActiveDocument.addObject("Part::Box", "Square")
-        s.Length = self.brushSize
-        if(typeOfSquare==1):
-            s.Width = self.brushSize
-        elif(typeOfSquare==2):
-            s.Width = self.brushSize*2
-        s.Height = self.firstSize
-        return(Gui.ActiveDocument.getObject(s.Name))
-
+         try:
+            s = App.ActiveDocument.addObject("Part::Box", "Square")
+            # Square
+            if(typeOfSquare == 1):
+                s.Width = self.brushSize
+                s.Length = self.brushSize
+            # Rectangle
+            elif (typeOfSquare == 2):
+                s.Length = self.brushSize
+                s.Width = self.brushSize*2
+            elif (typeOfSquare == 3):
+                s.Length = self.brushSize*2
+                s.Width = self.brushSize
+            s.Height = self.firstSize
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+        except Exception as err:
+            App.Console.PrintError("'draw_Square' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
     def draw_Parallelogram(self, typeOfParallelogram):
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
             pl.Base = App.Vector(0, 0, 0.0)
+            points = None
             if typeOfParallelogram == 1:
-                points = [App.Vector(0.0, 0.0, 0.0), 
-                          App.Vector(self.brushSize/4, self.brushSize, 0.0), 
-                          App.Vector(self.brushSize+self.brushSize/4, self.brushSize, 0.0),
-                          App.Vector(self.brushSize-self.brushSize/4, 0.0, 0.0)]
+                points = [App.Vector(0.0, 0.0, 0.0),
+                          App.Vector(self.brushSize, self.brushSize, 0.0),
+                          App.Vector(self.brushSize+self.brushSize,
+                                     self.brushSize, 0.0),
+                          App.Vector(self.brushSize, 0.0, 0.0)]
             elif typeOfParallelogram == 2:
-                points = [App.Vector(0.0, 0.0, 0.0), 
-                          App.Vector(-self.brushSize/4, self.brushSize, 0.0), 
-                          App.Vector(self.brushSize-self.brushSize/4, self.brushSize, 0.0),
-                          App.Vector(self.brushSize-self.brushSize/4, 0.0, 0.0)]
-            elif typeOfParallelogram == 3 :
-                points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
-                    self.brushSize/4, self.brushSize/2, 0.0), App.Vector(self.brushSize, 0, 0.0)]
-            elif typeOfParallelogram == 3 :
-                points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
-                    self.brushSize/4, self.brushSize/2, 0.0), App.Vector(self.brushSize, 0, 0.0)]
+                points = [App.Vector(0.0, 0.0, 0.0),
+                          App.Vector(-self.brushSize, self.brushSize, 0.0),
+                          App.Vector(-self.brushSize-self.brushSize,
+                                     self.brushSize, 0.0),
+                          App.Vector(-self.brushSize, 0.0, 0.0)]
+            elif typeOfParallelogram == 3:
+                points = [App.Vector(0.0, 0.0, 0.0),
+                          App.Vector(self.brushSize, self.brushSize, 0.0),
+                          App.Vector(self.brushSize+self.brushSize,
+                                     self.brushSize, 0.0),
+                          App.Vector(self.brushSize+self.brushSize/2, 0.0, 0.0)]
+            elif typeOfParallelogram == 4:
+                points = [App.Vector(0.0, 0.0, 0.0),
+                          App.Vector(-self.brushSize, self.brushSize, 0.0),
+                          App.Vector(-self.brushSize-self.brushSize,
+                                     self.brushSize, 0.0),
+                          App.Vector(-self.brushSize-self.brushSize/2, 0.0, 0.0)]
 
             first = _draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
@@ -401,7 +438,29 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def draw_Moon(self):
+    def draw_Arrow(self, arrowType):
+        try:
+            pass
+
+        except Exception as err:
+            App.Console.PrintError("'draw_MOON' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def draw_Star(self, starType):
+        try:
+            pass
+
+        except Exception as err:
+            App.Console.PrintError("'draw_MOON' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def draw_MOON(self, MoonType):
         try:
             first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
             first.Radius = self.brushSize
@@ -409,7 +468,15 @@ class Design456_Paint:
             second = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
             second.Radius = self.brushSize
             second.Height = self.firstSize
-            second.Placement.Base.y = second.Placement.Base.y+3
+            if(MoonType == 1):
+                second.Placement.Base.y = second.Placement.Base.y+3
+            if(MoonType == 2):
+                second.Placement.Base.y = second.Placement.Base.y-3
+            if(MoonType == 3):
+                second.Placement.Base.x = second.Placement.Base.x+3
+            if(MoonType == 4):
+                second.Placement.Base.x = second.Placement.Base.x-3
+
             newObj = App.ActiveDocument.addObject("Part::Cut", "tempSubtract")
             newObj.Base = first
             newObj.Tool = second
@@ -417,7 +484,7 @@ class Design456_Paint:
             # simple copy
             newShape = _part.getShape(
                 newObj, '', needSubElement=False, refine=False)
-            s = App.ActiveDocument.addObject('Part::Feature', 'Moon')
+            s = App.ActiveDocument.addObject('Part::Feature', 'MOON')
             s.Shape = newShape
             App.ActiveDocument.removeObject(first.Name)
             App.ActiveDocument.removeObject(second.Name)
@@ -426,7 +493,7 @@ class Design456_Paint:
             return(Gui.ActiveDocument.getObject(s.Name))
 
         except Exception as err:
-            App.Console.PrintError("'draw_Moon' Failed. "
+            App.Console.PrintError("'draw_MOON' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -544,17 +611,40 @@ class Design456_Paint:
             # 4 Sides shapes
             elif self.brushType == FR_BRUSHES.FR_SQUARE_BRUSH:
                 self.currentObj = self.draw_Square(1)
-            elif self.brushType== FR_BRUSHES.FR_RECTANGLE_BRUSH:
-                self.draw_Square(2)
-            elif self.brushType== FR_BRUSHES.FR_PARALLELOGRAM1_BRUSH:
-                self.draw_Parallelogram(1)
-            elif self.brushType== FR_BRUSHES.FR_PARALLELOGRAM2_BRUSH:
-                self.draw_Parallelogram(2)
-            elif self.brushType== FR_BRUSHES.FR_PARALLELOGRAM3_BRUSH:
-                self.draw_Parallelogram(3)
-            elif self.brushType== FR_BRUSHES.FR_PARALLELOGRAM4_BRUSH:
-                self.draw_Parallelogram(4)
 
+            # Equal sides
+            elif self.brushType == FR_BRUSHES.FR_EQUALSIDES_PARALLELOGRAM1_BRUSH:
+                self.currentObj = self.draw_Parallelogram(1)
+            elif self.brushType == FR_BRUSHES.FR_EQUALSIDES_PARALLELOGRAM2_BRUSH:
+                self.currentObj = self.draw_Parallelogram(2)
+            elif self.brushType == FR_BRUSHES.FR_EQUALSIDES_PARALLELOGRAM3_BRUSH:
+                self.currentObj = self.draw_Parallelogram(3)
+            elif self.brushType == FR_BRUSHES.FR_EQUALSIDES_PARALLELOGRAM4_BRUSH:
+                self.currentObj = self.draw_Parallelogram(4)
+
+            # 2X & 2Y equal sides
+            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM1_BRUSH:
+                self.currentObj = self.draw_Parallelogram(5)
+            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM2_BRUSH:
+                self.currentObj = self.draw_Parallelogram(6)
+            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM3_BRUSH:
+                self.currentObj = self.draw_Parallelogram(7)
+            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM4_BRUSH:
+                self.currentObj = self.draw_Parallelogram(8)
+
+            elif self.brushType == FR_BRUSHES.FR_RECTANGLE1_BRUSH:
+                self.draw_Square(2)
+            elif self.brushType == FR_BRUSHES.FR_RECTANGLE2_BRUSH:
+                self.draw_Square(3)
+
+            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM1_BRUSH:
+                self.draw_Parallelogram(1)
+            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM2_BRUSH:
+                self.draw_Parallelogram(2)
+            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM3_BRUSH:
+                self.draw_Parallelogram(3)
+            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM4_BRUSH:
+                self.draw_Parallelogram(4)
 
             elif self.brushType == FR_BRUSHES.FR_RHOMBUS_BRUSH:
                 self.currentObj = self.draw_polygon(4)
@@ -571,8 +661,30 @@ class Design456_Paint:
             elif self.brushType == FR_BRUSHES.FR_DECAGON_BRUSH:
                 self.currentObj = self.draw_polygon(10)
 
-            elif self.brushType == FR_BRUSHES.FR_Moon_BRUSH:
-                self.currentObj = self.draw_Moon()
+            elif self.brushType == FR_BRUSHES.FR_ARROW1_BRUSH:
+                self.currentObj = self.draw_Arrow(1)
+            elif self.brushType == FR_BRUSHES.FR_ARROW2_BRUSH:
+                self.currentObj = self.draw_Arrow(2)
+            elif self.brushType == FR_BRUSHES.FR_ARROW3_BRUSH:
+                self.currentObj = self.draw_Arrow(3)
+            elif self.brushType == FR_BRUSHES.FR_ARROW4_BRUSH:
+                self.currentObj = self.draw_Arrow(4)
+
+            elif self.brushType == FR_BRUSHES.FR_STAR1_BRUSH:
+                self.currentObj = self.draw_Star(1)
+            elif self.brushType == FR_BRUSHES.FR_STAR2_BRUSH:
+                self.currentObj = self.draw_Star(2)
+            elif self.brushType == FR_BRUSHES.FR_STAR3_BRUSH:
+                self.currentObj = self.draw_Star(3)
+
+            elif self.brushType == FR_BRUSHES.FR_MOON1_BRUSH:
+                self.currentObj = self.draw_MOON(1)
+            elif self.brushType == FR_BRUSHES.FR_MOON2_BRUSH:
+                self.currentObj = self.draw_MOON(2)
+            elif self.brushType == FR_BRUSHES.FR_MOON3_BRUSH:
+                self.currentObj = self.draw_MOON(3)
+            elif self.brushType == FR_BRUSHES.FR_MOON4_BRUSH:
+                self.currentObj = self.draw_MOON(4)
 
             # Merge object creation.
             if (self.resultObj is None):
