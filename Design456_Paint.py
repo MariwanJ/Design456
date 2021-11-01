@@ -58,8 +58,8 @@ class Design456_Paint:
     # Initial position - will be changed by the mouse
     pl.Base = App.Vector(0.0, 0.0, 0.0)
     AllObjects = []  # Merged shapes
-    cmbBrushSize = None  # GUI combobox -brush size
-    cmbBrushType = None  # GUI combobox -brush type
+    lstBrushSize = None  # GUI combobox -brush size
+    lstBrushType = None  # GUI combobox -brush type
     # current created shape (circle, square, triangles,..etc)
     currentObj = None
     view = None  # used for captureing mouse events
@@ -112,14 +112,12 @@ class Design456_Paint:
                       "MOON4"]
 
     def setSize(self):
-        text = self.cmbBrushSize.currentText()
-        print(text)
-        self.brushSize = self.cmbBrushSize.currentIndex()
+        #text = self.lstBrushSize.currentItem().text()
+        self.brushSize = self.lstBrushSize.currentRow()
 
     def setType(self):
-        text = self.cmbBrushType.currentText()
-        print(text)
-        self.brushType = self.cmbBrushType.currentIndex()
+        #text = self.lstBrushType.currentItem().text()
+        self.brushType = self.lstBrushType.currentRow()
 
     def draw_circle(self):
         # Convert/ or get Gui object not App object
@@ -324,7 +322,7 @@ class Design456_Paint:
 
     def draw_Square(self, typeOfSquare):
         # Convert/ or get Gui object not App object
-         try:
+        try:
             s = App.ActiveDocument.addObject("Part::Box", "Square")
             # Square
             if(typeOfSquare == 1):
@@ -340,12 +338,14 @@ class Design456_Paint:
             s.Height = self.firstSize
             App.ActiveDocument.recompute()
             return(Gui.ActiveDocument.getObject(s.Name))
+        
         except Exception as err:
             App.Console.PrintError("'draw_Square' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
     def draw_Parallelogram(self, typeOfParallelogram):
         try:
             pl = App.Placement()
@@ -633,9 +633,9 @@ class Design456_Paint:
                 self.currentObj = self.draw_Parallelogram(8)
 
             elif self.brushType == FR_BRUSHES.FR_RECTANGLE1_BRUSH:
-                self.draw_Square(2)
+                 self.currentObj = self.draw_Square(2)
             elif self.brushType == FR_BRUSHES.FR_RECTANGLE2_BRUSH:
-                self.draw_Square(3)
+                 self.currentObj = self.draw_Square(3)
 
             elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM1_BRUSH:
                 self.draw_Parallelogram(1)
@@ -779,8 +779,8 @@ class Design456_Paint:
         self.PaintLBL = None
         self.pl = None
         self.AllObjects = []
-        self.cmbBrushSize = None
-        self.cmbBrushType = None
+        self.lstBrushSize = None
+        self.lstBrushType = None
         self.currentObj = None
         self.view = None
         self.Observer = None
@@ -862,16 +862,17 @@ class Design456_Paint:
             self.dialog.setObjectName("Pint")
             self.formLayout.setWidget(
                 0, QtGui.QFormLayout.LabelRole, self.lblPaint)
-            self.cmbBrushType = QtGui.QComboBox(self.formLayoutWidget)
-            self.cmbBrushType.setCurrentText("")
-            self.cmbBrushType.setObjectName("cmbBrushType")
+            self.lstBrushType = QtGui.QListWidget(self.dialog) 
+            self.lstBrushType.setGeometry(10, 10, 100, 40)
+            self.lstBrushType.setObjectName("lstBrushType")
             self.formLayout.setWidget(
-                0, QtGui.QFormLayout.FieldRole, self.cmbBrushType)
-            self.cmbBrushSize = QtGui.QComboBox(self.formLayoutWidget)
-            self.cmbBrushSize.setCurrentText("")
-            self.cmbBrushSize.setObjectName("cmbBrushSize")
+                0, QtGui.QFormLayout.FieldRole, self.lstBrushType)
+            self.lstBrushSize = QtGui.QListWidget(self.dialog)
+            self.lstBrushSize.setGeometry(10, 110, 100, 20)
+
+            self.lstBrushSize.setObjectName("lstBrushSize")
             self.formLayout.setWidget(
-                1, QtGui.QFormLayout.FieldRole, self.cmbBrushSize)
+                1, QtGui.QFormLayout.FieldRole, self.lstBrushSize)
             self.lblBrushSize = QtGui.QLabel(self.formLayoutWidget)
             self.lblBrushSize.setObjectName("lblBrushSize")
             self.formLayout.setWidget(
@@ -900,25 +901,24 @@ class Design456_Paint:
             la.addWidget(self.okbox)
             # Add All shape names to the combobox
             for nameOfObject in self.listOfDrawings:
-                self.cmbBrushType.addItem(nameOfObject)
+                self.lstBrushType.addItem(nameOfObject)
 
             for i in range(1, 1000):
-                self.cmbBrushSize.addItem(str(i))
-            self.cmbBrushSize.setCurrentIndex(FR_BRUSHES.FR_CIRCLE_BRUSH)
-            self.cmbBrushSize.setCurrentIndex(5)
-            self.cmbBrushType.setCurrentIndex(0)
-            # self.cmbBrushSize.currentTextChanged.connect(self.BrushChanged_cb)
-            self.cmbBrushSize.currentIndexChanged.connect(
+                self.lstBrushSize.addItem(str(i))
+            self.lstBrushSize.setCurrentRow(6)
+            self.lstBrushType.setCurrentRow(FR_BRUSHES.FR_CIRCLE_BRUSH)
+            # self.lstBrushSize.currentItem().text()anged.connect(self.BrushChanged_cb)
+            self.lstBrushSize.currentItemChanged.connect(
                 self.BrushSizeChanged_cb)
-            # self.cmbBrushType.currentTextChanged.connect(self.BrushChanged_cb)
-            self.cmbBrushType.currentIndexChanged.connect(
+            # self.lstBrushType.currentItem().text()anged.connect(self.BrushChanged_cb)
+            self.lstBrushType.currentItemChanged.connect(
                 self.BrushTypeChanged_cb)
 
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate("Pain", "Pint"))
             self.lblPaint.setText(_translate("Dialog", "Brush Type"))
-            self.cmbBrushType.setToolTip(_translate("Dialog", "Brush Type"))
-            self.cmbBrushSize.setToolTip(_translate("Dialog", "Brush Type"))
+            self.lstBrushType.setToolTip(_translate("Dialog", "Brush Type"))
+            self.lstBrushSize.setToolTip(_translate("Dialog", "Brush Type"))
             self.lblBrushSize.setText(_translate("Dialog", "Brush Size"))
             self.radioAsIs.setText(_translate("Dialog", "As is"))
             self.radioMerge.setText(_translate("Dialog", "Merge"))
