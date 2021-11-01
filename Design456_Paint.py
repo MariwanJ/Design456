@@ -307,13 +307,80 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def draw_Square(self):
+    def draw_Square(self,typeOfSquare):
         # Convert/ or get Gui object not App object
         s = App.ActiveDocument.addObject("Part::Box", "Square")
         s.Length = self.brushSize
-        s.Width = self.brushSize
+        if(typeOfSquare==1):
+            s.Width = self.brushSize
+        elif(typeOfSquare==2):
+            s.Width = self.brushSize*2
         s.Height = self.firstSize
         return(Gui.ActiveDocument.getObject(s.Name))
+
+    def draw_Parallelogram(self, typeOfParallelogram):
+        try:
+            pl = App.Placement()
+            pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
+            pl.Base = App.Vector(0, 0, 0.0)
+            if typeOfParallelogram == 1:
+                points = [App.Vector(0.0, 0.0, 0.0), 
+                          App.Vector(self.brushSize/4, self.brushSize, 0.0), 
+                          App.Vector(self.brushSize+self.brushSize/4, self.brushSize, 0.0),
+                          App.Vector(self.brushSize-self.brushSize/4, 0.0, 0.0)]
+            elif typeOfParallelogram == 2:
+                points = [App.Vector(0.0, 0.0, 0.0), 
+                          App.Vector(-self.brushSize/4, self.brushSize, 0.0), 
+                          App.Vector(self.brushSize-self.brushSize/4, self.brushSize, 0.0),
+                          App.Vector(self.brushSize-self.brushSize/4, 0.0, 0.0)]
+            elif typeOfParallelogram == 3 :
+                points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
+                    self.brushSize/4, self.brushSize/2, 0.0), App.Vector(self.brushSize, 0, 0.0)]
+            elif typeOfParallelogram == 3 :
+                points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
+                    self.brushSize/4, self.brushSize/2, 0.0), App.Vector(self.brushSize, 0, 0.0)]
+
+            first = _draft.makeWire(
+                points, placement=pl, closed=True, face=True, support=None)
+            _draft.autogroup(first)
+            App.ActiveDocument.recompute()
+            f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
+            f.Base = first
+            f.DirMode = "Normal"
+            f.DirLink = None
+            f.LengthFwd = -0.1
+            f.LengthRev = 0.0
+            f.Solid = True
+            f.Reversed = False
+            f.Symmetric = False
+            f.TaperAngle = 0.0
+            f.TaperAngleRev = 0.0
+
+            f.Dir = first.Shape.normalAt(0, 0)  # Normal line
+            if (f.Dir.x != 1 or f.Dir.y != 1 or f.Dir.z != 1):
+                f.DirMode = "Custom"
+            # Make a simple copy of the object
+            App.ActiveDocument.recompute()
+            newShape = _part.getShape(
+                f, '', needSubElement=False, refine=False)
+            s = App.ActiveDocument.addObject(
+                'Part::Feature', 'Parallelogram')
+            s.Shape = newShape
+            App.ActiveDocument.recompute()
+            # Remove old objects
+            # App.ActiveDocument.clearUndos()
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(f.Name)
+            App.ActiveDocument.removeObject(first.Name)
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+
+        except Exception as err:
+            App.Console.PrintError("'draw_SpecialTriangle' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_polygon(self, Sides):
         try:
@@ -476,7 +543,18 @@ class Design456_Paint:
 
             # 4 Sides shapes
             elif self.brushType == FR_BRUSHES.FR_SQUARE_BRUSH:
-                self.currentObj = self.draw_Square()
+                self.currentObj = self.draw_Square(1)
+            elif self.brushType== FR_BRUSHES.FR_RECTANGLE_BRUSH:
+                self.draw_Square(2)
+            elif self.brushType== FR_BRUSHES.FR_PARALLELOGRAM1_BRUSH:
+                self.draw_Parallelogram(1)
+            elif self.brushType== FR_BRUSHES.FR_PARALLELOGRAM2_BRUSH:
+                self.draw_Parallelogram(2)
+            elif self.brushType== FR_BRUSHES.FR_PARALLELOGRAM3_BRUSH:
+                self.draw_Parallelogram(3)
+            elif self.brushType== FR_BRUSHES.FR_PARALLELOGRAM4_BRUSH:
+                self.draw_Parallelogram(4)
+
 
             elif self.brushType == FR_BRUSHES.FR_RHOMBUS_BRUSH:
                 self.currentObj = self.draw_polygon(4)
