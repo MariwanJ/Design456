@@ -776,18 +776,18 @@ class Design456_Paint:
             event = events.getEvent()
             eventState = event.getState()
             if (type(event) == coin.SoKeyboardEvent):
-                key = event.getKey()
+                  key = event.getKey()
             if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
-                self.MoveMentDirection = 'X'
+                 self.MoveMentDirection = 'X'
             elif key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
                 self.MoveMentDirection = 'Y'
             elif key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
                 self.MoveMentDirection = 'Z'
             else:
                 self.MoveMentDirection = 'A'  # All
-            if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
-                self.remove_callbacks()
-            self.hide()
+            # if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
+            #     self.remove_callbacks()
+            # self.hide()
 
         except Exception as err:
             App.Console.PrintError("'KeyboardEvent' Failed. "
@@ -795,7 +795,6 @@ class Design456_Paint:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            return
 
     def Activated(self):
         self.c1 = None
