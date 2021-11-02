@@ -468,46 +468,38 @@ class FR_ALIGN:
 
 
 class FR_BRUSHES:
-    FR_CIRCLE_BRUSH                      =  0
-    FR_SEMI_CIRCLE_BRUSH                 =  1
-    FR_QUARTER_CIRCLE_BRUSH              =  2
-    FR_OVAL1_BRUSH                       =  3
-    FR_OVAL2_BRUSH                       =  4
-    FR_EGG_BRUSH                         =  5
-    FR_TRIANGLE_BRUSH                    =  6
-    FR_RIGHT_TRIANGLE_BRUSH              =  7
-    FR_SCALENE_TRIANGLE_BRUSH            =  8
-    FR_SQUARE_BRUSH                      =  9
-    FR_EQUALSIDES_PARALLELOGRAM1_BRUSH   = 10
-    FR_EQUALSIDES_PARALLELOGRAM2_BRUSH   = 11
-    FR_EQUALSIDES_PARALLELOGRAM3_BRUSH   = 12
-    FR_EQUALSIDES_PARALLELOGRAM4_BRUSH   = 13
-    FR_RECTANGLE1_BRUSH                   = 14
-    FR_RECTANGLE2_BRUSH                   = 15
-    
-    FR_PARALLELOGRAM1_BRUSH              = 16
-    FR_PARALLELOGRAM2_BRUSH              = 17
-    FR_PARALLELOGRAM3_BRUSH              = 18
-    FR_PARALLELOGRAM4_BRUSH              = 19
+    FR_CIRCLE_BRUSH                         =  0
+    FR_SEMI_CIRCLE_BRUSH                    =  1
+    FR_QUARTER_CIRCLE_BRUSH                 =  2
+    FR_OVAL1_BRUSH                          =  3
+    FR_OVAL2_BRUSH                          =  4
+    FR_EGG_BRUSH                            =  5
+    FR_TRIANGLE_BRUSH                       =  6
+    FR_RIGHT_TRIANGLE_BRUSH                 =  7
+    FR_SCALENE_TRIANGLE_BRUSH               =  8
+    FR_SQUARE_BRUSH                         =  9
+    FR_EQUALSIDES_PARALLELOGRAM1_BRUSH      =  10
+    FR_EQUALSIDES_PARALLELOGRAM2_BRUSH      =  11
+    FR_RECTANGLE1_BRUSH                     =  12
+    FR_RECTANGLE2_BRUSH                     =  13
+    FR_PARALLELOGRAM1_BRUSH                 =  14
+    FR_PARALLELOGRAM2_BRUSH                 =  15
+    FR_RHOMBUS_BRUSH                        =  16
+    FR_PENTAGON_BRUSH                       =  17
+    FR_HEXAGON_BRUSH                        =  18
+    FR_HEPTAGON_BRUSH                       =  19
+    FR_OCTAGON_BRUSH                        =  20
+    FR_ENNEAGON_BRUSH                       =  21
+    FR_DECAGON_BRUSH                        =  22
+    FR_ARROW1_BRUSH                         =  23
+    FR_ARROW2_BRUSH                         =  24
+    FR_ARROW3_BRUSH                         =  25
+    FR_ARROW4_BRUSH                         =  26
+    FR_STAR1_BRUSH                          =  27
+    FR_STAR2_BRUSH                          =  28
+    FR_STAR3_BRUSH                          =  29
+    FR_MOON1_BRUSH                          =  30
+    FR_MOON2_BRUSH                          =  31
+    FR_MOON3_BRUSH                          =  32
+    FR_MOON4_BRUSH                          =  33
 
-
-    FR_RHOMBUS_BRUSH                     = 23
-    FR_PENTAGON_BRUSH                    = 24
-    FR_HEXAGON_BRUSH                     = 25
-    FR_HEPTAGON_BRUSH                    = 26
-    FR_OCTAGON_BRUSH                     = 27
-    FR_ENNEAGON_BRUSH                    = 28
-    FR_DECAGON_BRUSH                     = 29
-   
-    FR_ARROW1_BRUSH                      = 30
-    FR_ARROW2_BRUSH                      = 31
-    FR_ARROW3_BRUSH                      = 32
-    FR_ARROW4_BRUSH                      = 33
-    FR_STAR1_BRUSH                       = 34
-    FR_STAR2_BRUSH                       = 35
-    FR_STAR3_BRUSH                       = 36
-    FR_MOON1_BRUSH                       = 37
-    FR_MOON2_BRUSH                       = 38
-    FR_MOON3_BRUSH                       = 39
-    FR_MOON4_BRUSH                       = 40
-                      
