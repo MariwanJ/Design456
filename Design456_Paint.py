@@ -785,8 +785,8 @@ class Design456_Paint:
                 self.MoveMentDirection = 'Z'
             else:
                 self.MoveMentDirection = 'A'  # All
-            # if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
-            #     self.remove_callbacks()
+            if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
+                self.remove_callbacks()
             # self.hide()
 
         except Exception as err:
