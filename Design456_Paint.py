@@ -39,7 +39,7 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES
 import math
 from pivy import coin
-
+import Design456_2Ddrawing
 # TODO: . FIXME:
 
 
@@ -84,14 +84,10 @@ class Design456_Paint:
                       "SQUARE",
                       "EQUALSIDES_PARALLELOGRAM1",
                       "EQUALSIDES_PARALLELOGRAM2",
-                      "EQUALSIDES_PARALLELOGRAM3",
-                      "EQUALSIDES_PARALLELOGRAM4",
                       "RECTANGLE1",
                       "RECTANGLE2",
                       "PARALLELOGRAM1",
                       "PARALLELOGRAM2",
-                      "PARALLELOGRAM3",
-                      "PARALLELOGRAM4",
                       "RHOMBUS",
                       "PENTAGON",
                       "HEXAGON",
@@ -112,8 +108,9 @@ class Design456_Paint:
                       "MOON4"]
 
     def setSize(self):
-        #text = self.lstBrushSize.currentItem().text()
         self.brushSize = self.lstBrushSize.currentRow()
+        self.PaintLBL = QtGui.QLabel(
+            "Use X,Y,Z to limit the movements\nAnd A for free movement\nPaint Radius or side=" + self.lstBrushSize.currentItem().text())
 
     def setType(self):
         #text = self.lstBrushType.currentItem().text()
@@ -338,14 +335,14 @@ class Design456_Paint:
             s.Height = self.firstSize
             App.ActiveDocument.recompute()
             return(Gui.ActiveDocument.getObject(s.Name))
-        
+
         except Exception as err:
             App.Console.PrintError("'draw_Square' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def draw_equalParallelogram(self, typeOfParallelogram):
         try:
             pl = App.Placement()
@@ -354,28 +351,16 @@ class Design456_Paint:
             points = None
             if typeOfParallelogram == 1:
                 points = [App.Vector(0.0, 0.0, 0.0),
-                          App.Vector(self.brushSize, self.brushSize, 0.0),
-                          App.Vector(self.brushSize+self.brushSize,
-                                     self.brushSize, 0.0),
-                          App.Vector(self.brushSize, 0.0, 0.0)]
+                          App.Vector(self.brushSize/2, self.brushSize, 0.0),
+                          App.Vector(self.brushSize/2 +
+                                     self.brushSize/2, self.brushSize, 0.0),
+                          App.Vector(self.brushSize/2, 0.0, 0.0)]
             elif typeOfParallelogram == 2:
                 points = [App.Vector(0.0, 0.0, 0.0),
-                          App.Vector(-self.brushSize, self.brushSize, 0.0),
-                          App.Vector(-self.brushSize-self.brushSize,
-                                     self.brushSize, 0.0),
-                          App.Vector(-self.brushSize, 0.0, 0.0)]
-            elif typeOfParallelogram == 3:
-                points = [App.Vector(0.0, 0.0, 0.0),
-                          App.Vector(self.brushSize, self.brushSize, 0.0),
-                          App.Vector(self.brushSize+self.brushSize,
-                                     self.brushSize, 0.0),
-                          App.Vector(self.brushSize+self.brushSize/2, 0.0, 0.0)]
-            elif typeOfParallelogram == 4:
-                points = [App.Vector(0.0, 0.0, 0.0),
-                          App.Vector(-self.brushSize, self.brushSize, 0.0),
-                          App.Vector(-self.brushSize-self.brushSize,
-                                     self.brushSize, 0.0),
-                          App.Vector(-self.brushSize-self.brushSize/2, 0.0, 0.0)]
+                          App.Vector(0, self.brushSize, 0.0),
+                          App.Vector(self.brushSize, self.brushSize +
+                                     self.brushSize/2, 0.0),
+                          App.Vector(self.brushSize, self.brushSize/2, 0.0)]
 
             first = _draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
@@ -385,7 +370,7 @@ class Design456_Paint:
             f.Base = first
             f.DirMode = "Normal"
             f.DirLink = None
-            f.LengthFwd = -0.1
+            f.LengthFwd = -self.firstSize
             f.LengthRev = 0.0
             f.Solid = True
             f.Reversed = False
@@ -418,8 +403,8 @@ class Design456_Paint:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
-    #TODO:FIXME:
+
+    # TODO:FIXME:
     def draw_Parallelogram(self, typeOfParallelogram):
         try:
             pl = App.Placement()
@@ -427,30 +412,16 @@ class Design456_Paint:
             pl.Base = App.Vector(0, 0, 0.0)
             points = None
             if typeOfParallelogram == 1:
-                points = [App.Vector(0.0, 0.0, 0.0),
-                          App.Vector(self.brushSize/2, self.brushSize, 0.0),
-                          App.Vector(self.brushSize+self.brushSize,
-                                     self.brushSize, 0.0),
-                          App.Vector(self.brushSize/4, 0.0, 0.0)]
+                points = [App.Vector(0, self.brushSize*4, 0.0),
+                          App.Vector(self.brushSize*10, self.brushSize*4, 0.0),
+                          App.Vector(self.brushSize*4 +self.brushSize*2, 0, 0.0),
+                          App.Vector(self.brushSize*4, 0.0, 0.0)]
+                          
             elif typeOfParallelogram == 2:
-                points = [App.Vector(0.0, 0.0, 0.0),
-                          App.Vector(-self.brushSize*2, self.brushSize*2, 0.0),
-                          App.Vector(-self.brushSize-self.brushSize,
-                                     self.brushSize*2, 0.0),
-                          App.Vector(-self.brushSize/4, 0.0, 0.0)]
-            elif typeOfParallelogram == 3:
-                points = [App.Vector(0.0, 0.0, 0.0),
-                          App.Vector(self.brushSize, self.brushSize*4, 0.0),
-                          App.Vector(self.brushSize+self.brushSize,
-                                     self.brushSize*4, 0.0),
-                          App.Vector(self.brushSize+self.brushSize/2, 0.0, 0.0)]
-            elif typeOfParallelogram == 4:
-                points = [App.Vector(0.0, 0.0, 0.0),
-                          App.Vector(-self.brushSize, self.brushSize, 0.0),
-                          App.Vector(-self.brushSize-self.brushSize,
-                                     self.brushSize, 0.0),
-                          App.Vector(-self.brushSize-self.brushSize/2, 0.0, 0.0)]
-
+                points = [App.Vector(0, self.brushSize*3, 0.0),
+                          App.Vector(self.brushSize*2, self.brushSize*4, 0.0),
+                          App.Vector(self.brushSize*2, 0, 0.0),
+                          App.Vector(self.brushSize, 0.0, 0.0)]
             first = _draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
             _draft.autogroup(first)
@@ -514,10 +485,85 @@ class Design456_Paint:
 
     def draw_Arrow(self, arrowType):
         try:
-            pass
+            pl = App.Placement()
+            pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
+            pl.Base = App.Vector(0, 0, 0.0)
+            points = None
+            if arrowType == 1:
+                points = [App.Vector(0.0, self.brushSize, 0.0),
+                          App.Vector(0.0, self.brushSize*2, 0.0),
+                          App.Vector(self.brushSize*2, 0.0, 0.0),
+                          App.Vector(0.0, -self.brushSize*2, 0.0),
+                          App.Vector(0.0, -self.brushSize, 0.0),
+                          App.Vector(self.brushSize, 0.0, 0.0),
+                          App.Vector(0.0, self.brushSize, 0.0),
+                          ]
+            elif arrowType == 2:
+                points = [App.Vector(0.0, self.brushSize, 0.0),
+                          App.Vector(-self.brushSize, 0.0, 0.0),
+                          App.Vector(0.0, -self.brushSize, 0.0),
+                          App.Vector(0.0, -self.brushSize*2, 0.0),
+                          App.Vector(-self.brushSize*2, 0.0, 0.0),
+                          App.Vector(0.0, self.brushSize*2, 0.0),
+                          App.Vector(0.0, self.brushSize, 0.0),
+                          ]
+
+            if arrowType == 3:
+                points = [App.Vector(self.brushSize, 0.0, 0.0),
+                          App.Vector(0.0, self.brushSize, 0.0),
+                          App.Vector(0.0, self.brushSize, 0.0),
+                          App.Vector(-self.brushSize, 0.0, 0.0),
+                          App.Vector(-self.brushSize*2, 0.0,  0.0),
+                          App.Vector(0.0, self.brushSize*2, 0.0),
+                          App.Vector(self.brushSize*2, 0.0,  0.0),
+                          App.Vector(self.brushSize, 0.0, 0.0)]
+            elif arrowType == 4:
+                points = [App.Vector(self.brushSize, 0.0, 0.0),
+                          App.Vector(self.brushSize*2, 0.0, 0.0),
+                          App.Vector(0.0, -self.brushSize*2, 0.0),
+                          App.Vector(-self.brushSize*2, 0.0, 0.0),
+                          App.Vector(-self.brushSize, 0.0, 0.0),
+                          App.Vector(0.0, -self.brushSize, 0.0),
+                          App.Vector(self.brushSize, 0.0, 0.0),
+                          ]
+
+            first = _draft.makeWire(
+                points, placement=pl, closed=True, face=True, support=None)
+            _draft.autogroup(first)
+            App.ActiveDocument.recompute()
+            f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
+            f.Base = first
+            f.DirMode = "Normal"
+            f.DirLink = None
+            f.LengthFwd = -self.firstSize
+            f.LengthRev = 0.0
+            f.Solid = True
+            f.Reversed = False
+            f.Symmetric = False
+            f.TaperAngle = 0.0
+            f.TaperAngleRev = 0.0
+
+            f.Dir = first.Shape.normalAt(0, 0)  # Normal line
+            if (f.Dir.x != 1 or f.Dir.y != 1 or f.Dir.z != 1):
+                f.DirMode = "Custom"
+            # Make a simple copy of the object
+            App.ActiveDocument.recompute()
+            newShape = _part.getShape(
+                f, '', needSubElement=False, refine=False)
+            s = App.ActiveDocument.addObject(
+                'Part::Feature', 'Parallelogram')
+            s.Shape = newShape
+            App.ActiveDocument.recompute()
+            # Remove old objects
+            # App.ActiveDocument.clearUndos()
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(f.Name)
+            App.ActiveDocument.removeObject(first.Name)
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
 
         except Exception as err:
-            App.Console.PrintError("'draw_MOON' Failed. "
+            App.Console.PrintError("'draw_SpecialTriangle' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -525,10 +571,55 @@ class Design456_Paint:
 
     def draw_Star(self, starType):
         try:
-            pass
+            first = App.ActiveDocument.addObject(
+                "Part::FeaturePython", "Star")
+            Design456_2Ddrawing.ViewProviderBox(first.ViewObject, "Star")
+            Design456_2Ddrawing.Star(first)
+            plc = App.Placement()
+            first.Placement = plc
+
+            if starType ==1:
+                first.Corners=8
+            elif starType ==2:
+                first.Corners=9
+            elif starType ==3:
+                first.Corners=10
+            App.ActiveDocument.recompute()
+            f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
+            f.Base = App.ActiveDocument.getObject(first.Name)
+            f.DirMode = "Normal"
+            f.DirLink = None
+            f.LengthFwd = -self.firstSize
+            f.LengthRev = 0.0
+            f.Solid = True
+            f.Reversed = False
+            f.Symmetric = False
+            f.TaperAngle = 0.0
+            f.TaperAngleRev = 0.0
+
+            f.Dir = first.Shape.normalAt(0, 0)  # Normal line
+            if (f.Dir.x != 1 or f.Dir.y != 1 or f.Dir.z != 1):
+                f.DirMode = "Custom"
+            # Make a simple copy of the object
+            App.ActiveDocument.recompute()
+            newShape = _part.getShape(
+                f, '', needSubElement=False, refine=False)
+            s = App.ActiveDocument.addObject(
+                'Part::Feature', 'Parallelogram')
+            s.Shape = newShape
+            App.ActiveDocument.recompute()
+            # Remove old objects
+            # App.ActiveDocument.clearUndos()
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(f.Name)
+            App.ActiveDocument.removeObject(first.Name)
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+
+
 
         except Exception as err:
-            App.Console.PrintError("'draw_MOON' Failed. "
+            App.Console.PrintError("'draw_Star' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -579,14 +670,48 @@ class Design456_Paint:
             pos = event.getPosition().getValue()
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
+            viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
             if self.currentObj is not None:
+                    # Normal view - Top
+                self.pl=self.currentObj.Object.Placement
+                self.pl.Rotation.Axis=viewAxis
+                print(viewAxis,"viewAxis")
+                if(viewAxis == App.Vector(0, 0, -1)):
+                    print("1")
+                    self.pl.Base.z = 0.0
+                    self.pl.Rotation.Angle=0
+                elif(viewAxis == App.Vector(0, 0, 1)):
+                    print("2")
+                    self.pl.Base.z = 0.0
+                    self.pl.Rotation.Angle=0
+                # FrontSide
+                elif(viewAxis == App.Vector(0, 1, 0)):
+                    print("3")
+                    self.pl.Base.y = 0
+                    self.pl.Rotation.Angle= -90
+                elif (viewAxis == App.Vector(0, -1, 0)):
+                    print("4")
+                    self.pl.Base.y = 0
+                    self.pl.Rotation.Angle= 90
+                # RightSideView
+                elif(viewAxis == App.Vector(-1, 0, 0)):
+                    print("5")
+                    self.pl.Base.x = 0
+                    self.pl.Rotation.Angle= -90
+                elif (viewAxis == App.Vector(1, 0, 0)):
+                    print("6")
+                    self.pl.Base.x = 0
+                    self.pl.Rotation.Angle= 90
+
+                self.currentObj.Object.Placement = self.pl
+
                 if(self.currentObj.Object.Placement.Base.z == 0):
                     position.z = 0
                 elif (self.currentObj.Object.Placement.Base.y == 0):
                     position.y = 0
                 elif (self.currentObj.Object.Placement.Base.x == 0):
                     position.x = 0
-                # All direction when A or decide which direction
+                #All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
                     self.currentObj.Object.Placement.Base = position
                 elif (self.MoveMentDirection == 'X'):
@@ -609,36 +734,11 @@ class Design456_Paint:
             event = events.getEvent()
             eventState = event.getState()
             getButton = event.getButton()
-            viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
             angle = 0
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 print("Place callback!!")
                 self.appendToList()
                 App.ActiveDocument.recompute()
-
-                if(self.currentObj is not None):
-                    # Normal view - Top
-                    if(viewAxis == App.Vector(0, 0, 1)):
-                        self.pl.Base.z = 0.0
-                        self.pl.Rotation(0.0, 0.0, 0.0, 1.0)
-                    elif(viewAxis == App.Vector(0, 0, 1)):
-                        self.pl.Base.z = 0.0
-                        self.pl.Rotation = (1.0, 0.0, 0.0, 1.0)
-                    # FrontSide
-                    elif(viewAxis == App.Vector(0, 1, 0)):
-                        self.pl.Base.y = 0
-                        self.pl.Rotation = (0, 0, 0, -90)
-                    elif (viewAxis == App.Vector(0, -1, 0)):
-                        self.pl.Base.y = 0
-                        self.pl.Rotation = (0, 0, 0, 90)
-                    # RightSideView
-                    elif(viewAxis == App.Vector(-1, 0, 0)):
-                        self.pl.Base.x = 0
-                        self.pl.Rotation = (0, -90, 0)
-                    elif (viewAxis == App.Vector(1, 0, 0)):
-                        self.pl.Base.x = 0
-                        self.pl.Rotation = (0, 90, 0)
-                    # self.pl=self.currentObj.Placement
                 self.currentObj = None
                 self.setSize()
                 self.setType()
@@ -691,25 +791,17 @@ class Design456_Paint:
                 self.currentObj = self.draw_equalParallelogram(1)
             elif self.brushType == FR_BRUSHES.FR_EQUALSIDES_PARALLELOGRAM2_BRUSH:
                 self.currentObj = self.draw_equalParallelogram(2)
-            elif self.brushType == FR_BRUSHES.FR_EQUALSIDES_PARALLELOGRAM3_BRUSH:
-                self.currentObj = self.draw_equalParallelogram(3)
-            elif self.brushType == FR_BRUSHES.FR_EQUALSIDES_PARALLELOGRAM4_BRUSH:
-                self.currentObj = self.draw_equalParallelogram(4)
 
             # 2X & 2Y equal sides
             elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM1_BRUSH:
                 self.currentObj = self.draw_Parallelogram(1)
             elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM2_BRUSH:
                 self.currentObj = self.draw_Parallelogram(2)
-            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM3_BRUSH:
-                self.currentObj = self.draw_Parallelogram(3)
-            elif self.brushType == FR_BRUSHES.FR_PARALLELOGRAM4_BRUSH:
-                self.currentObj = self.draw_Parallelogram(4)
 
             elif self.brushType == FR_BRUSHES.FR_RECTANGLE1_BRUSH:
-                 self.currentObj = self.draw_Square(2)
+                self.currentObj = self.draw_Square(2)
             elif self.brushType == FR_BRUSHES.FR_RECTANGLE2_BRUSH:
-                 self.currentObj = self.draw_Square(3)
+                self.currentObj = self.draw_Square(3)
 
             elif self.brushType == FR_BRUSHES.FR_RHOMBUS_BRUSH:
                 self.currentObj = self.draw_polygon(4)
@@ -776,18 +868,18 @@ class Design456_Paint:
             event = events.getEvent()
             eventState = event.getState()
             if (type(event) == coin.SoKeyboardEvent):
-                  key = event.getKey()
+                key = event.getKey()
             if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
-                 self.MoveMentDirection = 'X'
+                self.MoveMentDirection = 'X'
             elif key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
                 self.MoveMentDirection = 'Y'
             elif key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
                 self.MoveMentDirection = 'Z'
             else:
                 self.MoveMentDirection = 'A'  # All
-            if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
-                self.remove_callbacks()
-            # self.hide()
+            # TODO:This line causes a crash to FreeCAD .. don't know why :(
+            # if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
+            #    self.hide()
 
         except Exception as err:
             App.Console.PrintError("'KeyboardEvent' Failed. "
@@ -916,7 +1008,6 @@ class Design456_Paint:
             la = QtGui.QVBoxLayout(self.dialog)
             e1 = QtGui.QLabel("Paint")
             commentFont = QtGui.QFont("Times", 12, True)
-            self.PaintLBL = QtGui.QLabel("Paint Radius=")
             e1.setFont(commentFont)
 
             self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
@@ -926,13 +1017,13 @@ class Design456_Paint:
             self.dialog.setObjectName("Pint")
             self.formLayout.setWidget(
                 0, QtGui.QFormLayout.LabelRole, self.lblPaint)
-            self.lstBrushType = QtGui.QListWidget(self.dialog) 
-            self.lstBrushType.setGeometry(10, 10, 100, 40)
+            self.lstBrushType = QtGui.QListWidget(self.dialog)
+            self.lstBrushType.setGeometry(10, 10, 50, 40)
             self.lstBrushType.setObjectName("lstBrushType")
             self.formLayout.setWidget(
                 0, QtGui.QFormLayout.FieldRole, self.lstBrushType)
             self.lstBrushSize = QtGui.QListWidget(self.dialog)
-            self.lstBrushSize.setGeometry(10, 110, 100, 20)
+            self.lstBrushSize.setGeometry(10, 55, 50, 20)
 
             self.lstBrushSize.setObjectName("lstBrushSize")
             self.formLayout.setWidget(
@@ -955,6 +1046,8 @@ class Design456_Paint:
             self.radioMerge.setObjectName("radioMerge")
             self.formLayout_2.setWidget(
                 1, QtGui.QFormLayout.FieldRole, self.radioMerge)
+            self.PaintLBL = QtGui.QLabel(
+                "Use X,Y,Z to limit the movements\nAnd A for free movement\nPaint Radius or side=7")
 
             la.addWidget(self.formLayoutWidget)
             la.addWidget(e1)
@@ -971,10 +1064,10 @@ class Design456_Paint:
                 self.lstBrushSize.addItem(str(i))
             self.lstBrushSize.setCurrentRow(6)
             self.lstBrushType.setCurrentRow(FR_BRUSHES.FR_CIRCLE_BRUSH)
-            # self.lstBrushSize.currentItem().text()anged.connect(self.BrushChanged_cb)
+
             self.lstBrushSize.currentItemChanged.connect(
                 self.BrushSizeChanged_cb)
-            # self.lstBrushType.currentItem().text()anged.connect(self.BrushChanged_cb)
+
             self.lstBrushType.currentItemChanged.connect(
                 self.BrushTypeChanged_cb)
 
@@ -1008,10 +1101,10 @@ class Design456_Paint:
                 App.ActiveDocument.removeObject(self.currentObj.Object.Name)
                 self.currentObj = None
             self.dialog.hide()
-            del self.dialog
             dw = self.mw.findChildren(QtGui.QDockWidget)
             newsize = self.tab.count()  # Todo : Should we do that?
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+            del self.dialog
             App.ActiveDocument.recompute()
             self.__del__()  # Remove all Paint 3dCOIN widgets
 

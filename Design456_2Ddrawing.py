@@ -591,7 +591,8 @@ class Star:
             obj.Shape = _part.Face(test)
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
-
+            return obj  #Allow getting the
+        
         except Exception as err:
             App.Console.PrintError("'Star' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -607,11 +608,11 @@ class Design456_Star:
             newObj = App.ActiveDocument.addObject(
                 "Part::FeaturePython", "Star")
             ViewProviderBox(newObj.ViewObject, "Star")
-            newObj = Star(newObj)
+            f = Star(newObj)
             plc = App.Placement()
-            newObj.Placement = plc
+            f.Placement = plc
             App.ActiveDocument.recompute()
-
+            return newObj
         except Exception as err:
             App.Console.PrintError("'StarCommand' Failed. "
                                    "{err}\n".format(err=str(err)))
