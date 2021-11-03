@@ -40,11 +40,14 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import math
 from pivy import coin
 import Design456_2Ddrawing
-# TODO: . FIXME:
 
 
 class Design456_Paint:
+    """[Paint different shapes on any direction and with a custom sizes.
+        They are 3D shapes that are merged if they are intersecting each other.
+    ]
 
+    """
     brushType: FR_BRUSHES = FR_BRUSHES.FR_SQUARE_BRUSH
     mw = None
     dialog = None  # Dialog for the tool
@@ -71,7 +74,8 @@ class Design456_Paint:
     runOnce = False  # Create the merge object once only
     MoveMentDirection = 'A'
     firstSize = 0.1
-
+    # List of the shapes - to add more add it here, in constant and make
+    # an "if" statement and a function to draw it
     listOfDrawings = ["CIRCLE",
                       "SEMI_CIRCLE",
                       "QUARTER_CIRCLE",
@@ -108,15 +112,21 @@ class Design456_Paint:
                       "MOON4"]
 
     def setSize(self):
+        """
+            [Change the size of the shape]
+        """
         self.brushSize = self.lstBrushSize.currentRow()
         self.PaintLBL = QtGui.QLabel(
             "Use X,Y,Z to limit the movements\nAnd A for free movement\nPaint Radius or side=" + self.lstBrushSize.currentItem().text())
 
     def setType(self):
-        #text = self.lstBrushType.currentItem().text()
+        """[Change the shape type drawn]
+        """
         self.brushType = self.lstBrushType.currentRow()
 
     def draw_circle(self):
+        """[Draw a circle (filled)]
+        """
         # Convert/ or get Gui object not App object
         try:
             s = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
@@ -132,6 +142,9 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Semi_circle(self):
+        """
+            [Draw a semi circle (filled)]
+        """
         try:
             first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
             first.Radius = self.brushSize
@@ -164,6 +177,8 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Quarter_circle(self):
+        """[Draw a Quarter of a circle]
+        """
         try:
             first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
             first.Radius = self.brushSize
@@ -197,6 +212,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Oval(self, Ovaltype):
+        """[Draw Oval - Differnt types]
+
+        Args:
+            Ovaltype ([Integer]): [Type of the oval]
+        """
         # Convert/ or get Gui object not App object
         try:
             pl = App.Placement()
@@ -229,12 +249,12 @@ class Design456_Paint:
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
             newShape = _part.getShape(
-                f, '', needSubElement=False, refine=False)
+                f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject('Part::Feature', 'Oval')
             s.Shape = newShape
             App.ActiveDocument.recompute()
             # Remove old objects
-            # App.ActiveDocument.clearUndos()
+
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(f.Name)
             App.ActiveDocument.removeObject(ellipse.Name)
@@ -252,8 +272,10 @@ class Design456_Paint:
         print("Not implemented Yet")
 
     def appendToList(self):
+        """[Add the new released shape to the fusion object]
+        """
         try:
-            print("Append them to the list")
+            #print("Append them to the list")
             if self.currentObj is None:
                 return
             self.AllObjects.append(self.currentObj.Object)
@@ -266,6 +288,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_SpecialTriangle(self, TriType):
+        """[Draw Special type of Triangles]
+
+        Args:
+            TriType ([integer]): [Types]
+        """
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
@@ -298,13 +325,13 @@ class Design456_Paint:
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
             newShape = _part.getShape(
-                f, '', needSubElement=False, refine=False)
+                f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'SpecialTriangle')
             s.Shape = newShape
             App.ActiveDocument.recompute()
             # Remove old objects
-            # App.ActiveDocument.clearUndos()
+
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(f.Name)
             App.ActiveDocument.removeObject(first.Name)
@@ -318,6 +345,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Square(self, typeOfSquare):
+        """[Draw different types of Square shapes]
+
+        Args:
+            typeOfSquare ([integer]): [Type of the squre shape]
+        """
         # Convert/ or get Gui object not App object
         try:
             s = App.ActiveDocument.addObject("Part::Box", "Square")
@@ -344,6 +376,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_equalParallelogram(self, typeOfParallelogram):
+        """[Draw different types of equal-sided parallelogram]
+
+        Args:
+            typeOfParallelogram ([integer]): [type of the parallelogram]
+        """
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
@@ -384,13 +421,13 @@ class Design456_Paint:
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
             newShape = _part.getShape(
-                f, '', needSubElement=False, refine=False)
+                f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'Parallelogram')
             s.Shape = newShape
             App.ActiveDocument.recompute()
             # Remove old objects
-            # App.ActiveDocument.clearUndos()
+
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(f.Name)
             App.ActiveDocument.removeObject(first.Name)
@@ -404,8 +441,12 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    # TODO:FIXME:
     def draw_Parallelogram(self, typeOfParallelogram):
+        """[Draw diffrent parallelogram (not equal sizes)]
+
+        Args:
+            typeOfParallelogram ([integer]): [type of the parallelogram]
+        """
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
@@ -445,13 +486,13 @@ class Design456_Paint:
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
             newShape = _part.getShape(
-                f, '', needSubElement=False, refine=False)
+                f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'Parallelogram')
             s.Shape = newShape
             App.ActiveDocument.recompute()
             # Remove old objects
-            # App.ActiveDocument.clearUndos()
+
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(f.Name)
             App.ActiveDocument.removeObject(first.Name)
@@ -466,6 +507,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_polygon(self, Sides):
+        """[Draw different types of polygon]
+
+        Args:
+            Sides ([integer]): [Number of sides]
+        """
         try:
             # Convert/ or get Gui object not App object
             s = App.ActiveDocument.addObject("Part::Prism", "Polygon")
@@ -485,6 +531,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Arrow(self, arrowType):
+        """[Draw arrow-head diffrent directions]
+
+        Args:
+            arrowType ([integer]): [arrow direction]
+        """
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
@@ -550,13 +601,13 @@ class Design456_Paint:
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
             newShape = _part.getShape(
-                f, '', needSubElement=False, refine=False)
+                f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'Parallelogram')
             s.Shape = newShape
             App.ActiveDocument.recompute()
             # Remove old objects
-            # App.ActiveDocument.clearUndos()
+
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(f.Name)
             App.ActiveDocument.removeObject(first.Name)
@@ -582,15 +633,17 @@ class Design456_Paint:
             if starType == 1:
                 first.Corners = 8
             elif starType == 2:
-                first.Corners = 9
-            elif starType == 3:
                 first.Corners = 10
+            elif starType == 3:
+                first.Corners = 12
+            first.OuterRadius = self.brushSize
+            first.InnerRadius = self.brushSize/2
             App.ActiveDocument.recompute()
             f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
             f.Base = App.ActiveDocument.getObject(first.Name)
             f.DirMode = "Normal"
             f.DirLink = None
-            f.LengthFwd = -self.firstSize
+            f.LengthFwd = self.firstSize
             f.LengthRev = 0.0
             f.Solid = True
             f.Reversed = False
@@ -604,13 +657,13 @@ class Design456_Paint:
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
             newShape = _part.getShape(
-                f, '', needSubElement=False, refine=False)
+                f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
-                'Part::Feature', 'Parallelogram')
+                'Part::Feature', 'Star')
             s.Shape = newShape
             App.ActiveDocument.recompute()
             # Remove old objects
-            # App.ActiveDocument.clearUndos()
+
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(f.Name)
             App.ActiveDocument.removeObject(first.Name)
@@ -625,6 +678,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_MOON(self, MoonType):
+        """[Draw Moon shapes - diffrent directions]
+
+        Args:
+            MoonType ([integer]): [moon direction]
+        """
         try:
             first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
             first.Radius = self.brushSize
@@ -647,7 +705,7 @@ class Design456_Paint:
             App.ActiveDocument.recompute()
             # simple copy
             newShape = _part.getShape(
-                newObj, '', needSubElement=False, refine=False)
+                newObj, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject('Part::Feature', 'MOON')
             s.Shape = newShape
             App.ActiveDocument.removeObject(first.Name)
@@ -664,6 +722,12 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def MouseMovement_cb(self, events):
+        """[Mouse movement callback. It will move the object
+        and update the drawing's position depending on the mouse-position and the plane]
+
+        Args:
+            events ([Coin3D events]): [Type of the event]
+        """
         try:
             event = events.getEvent()
             pos = event.getPosition().getValue()
@@ -674,34 +738,28 @@ class Design456_Paint:
                 # Normal view - Top
                 self.pl = self.currentObj.Object.Placement
                 self.pl.Rotation.Axis = viewAxis
-                print(viewAxis, "viewAxis")
+                #print(viewAxis, "viewAxis")
                 if(viewAxis == App.Vector(0, 0, -1)):
-                    print("1")
                     self.pl.Base.z = 0.0
                     self.pl.Rotation.Angle = 0
                 elif(viewAxis == App.Vector(0, 0, 1)):
-                    print("2")
                     self.pl.Base.z = 0.0
                     self.pl.Rotation.Angle = 0
                 # FrontSide
                 elif(viewAxis == App.Vector(0, 1, 0)):
-                    print("3")
                     self.pl.Base.y = 0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (-1, 0, 0)
                 elif (viewAxis == App.Vector(0, -1, 0)):
-                    print("4")
                     self.pl.Base.y = 0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (1, 0, 0)
                 # RightSideView
                 elif(viewAxis == App.Vector(-1, 0, 0)):
-                    print("5")
                     self.pl.Base.x = 0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (0, 1, 0)
                 elif (viewAxis == App.Vector(1, 0, 0)):
-                    print("6")
                     self.pl.Base.x = 0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (0, 1, 0)
@@ -733,13 +791,18 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def MouseClick_cb(self, events):
+        """[Mouse Release callback. 
+        It will place the object after last movement and merge the object to older objects]
+
+        Args:
+            events ([COIN3D events]): [events type]
+        """
         try:
             event = events.getEvent()
             eventState = event.getState()
             getButton = event.getButton()
             angle = 0
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                print("Place callback!!")
                 self.appendToList()
                 App.ActiveDocument.recompute()
                 self.currentObj = None
@@ -755,9 +818,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def recreateObject(self):
+        """[Recreates the object after a mouse-movement. It will update the position. 
+        Or the size/shape is changed and new shape needs to be drawn.]
+        """
         try:
             if(self.currentObj is not None):
-                print("remove object - recreate object",
                       self.currentObj.Name)
                 App.ActiveDocument.removeObject(self.currentObj.Name)
                 self.currentObj = None
@@ -867,6 +932,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def KeyboardEvent(self, events):
+        """[Key board events. Used to limit the movement axis and finalize the last drawing by pressing ESC key]
+
+        Args:
+            events ([COIN3D events]): [events type]
+        """
         try:
             event = events.getEvent()
             eventState = event.getState()
@@ -892,9 +962,10 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def Activated(self):
+        """[Design456_Paint tool activation function.]
+        """
         self.c1 = None
         self.c2 = None
-        print(type(self.currentObj))
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
@@ -902,7 +973,7 @@ class Design456_Paint:
             self.setSize()
             self.recreateObject()            # Initial
             if(self.currentObj is None):
-                print("what is that")
+                print("Why it is None?")
             App.ActiveDocument.recompute()
             self.callbackMove = self.view.addEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
@@ -928,6 +999,8 @@ class Design456_Paint:
         self.view = None
 
     def __del__(self):
+        """[Python destructor for the object. Otherwise next drawing might get wrong parameters]
+        """
         self.remove_callbacks()
         self.mw = None
         self.dialog = None
@@ -950,6 +1023,8 @@ class Design456_Paint:
         self.runOnce = False
 
     def BrushTypeChanged_cb(self):
+        """[Brush change callback - Activates when the selected-bursh is changed in the listobx]
+        """
         try:
             if (self.currentObj is not None):
                 App.ActiveDocument.removeObject(self.currentObj.Object.Name)
@@ -965,6 +1040,8 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def BrushSizeChanged_cb(self):
+        """[Brush size change - callback . Activates when the size of the brush is changed  in the listbox]
+        """
         try:
             if (self.currentObj is not None):
                 App.ActiveDocument.removeObject(self.currentObj.Object.Name)
@@ -980,7 +1057,11 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def getMainWindow(self):
+        """[Create the tab for the tool]
 
+        Returns:
+            [QTtab]: [The tab created which should be added to the FreeCAD]
+        """
         try:
             toplevel = QtGui.QApplication.topLevelWidgets()
             self.mw = None
@@ -1122,6 +1203,5 @@ class Design456_Paint:
         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_Paint.svg',
                 'MenuText': "Paint",
                 'ToolTip': "Draw or Paint"}
-
 
 Gui.addCommand('Design456_Paint', Design456_Paint())
