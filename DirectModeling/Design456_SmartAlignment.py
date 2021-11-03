@@ -216,7 +216,7 @@ class Design456_SmartAlignment:
             return self.dialog
 
         except Exception as err:
-            App.Console.PrintError("'Design456_Alignment' getMainWindwo-Failed. "
+            App.Console.PrintError("'Design456_Alignment' getMainWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

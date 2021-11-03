@@ -1098,7 +1098,7 @@ class Design456_Paint:
             self.formLayout.setContentsMargins(0, 0, 0, 0)
             self.formLayout.setObjectName("formLayout")
             self.lblPaint = QtGui.QLabel(self.formLayoutWidget)
-            self.dialog.setObjectName("Pint")
+            self.dialog.setObjectName("Paint")
             self.formLayout.setWidget(
                 0, QtGui.QFormLayout.LabelRole, self.lblPaint)
             self.lstBrushType = QtGui.QListWidget(self.dialog)
@@ -1156,7 +1156,7 @@ class Design456_Paint:
                 self.BrushTypeChanged_cb)
 
             _translate = QtCore.QCoreApplication.translate
-            self.dialog.setWindowTitle(_translate("Pain", "Pint"))
+            self.dialog.setWindowTitle(_translate("Paint", "Pint"))
             self.lblPaint.setText(_translate("Dialog", "Brush Type"))
             self.lstBrushType.setToolTip(_translate("Dialog", "Brush Type"))
             self.lstBrushSize.setToolTip(_translate("Dialog", "Brush Type"))
@@ -1170,7 +1170,7 @@ class Design456_Paint:
             return self.dialog
 
         except Exception as err:
-            App.Console.PrintError("'Design456_Paint' getMainWindwo-Failed. "
+            App.Console.PrintError("'Design456_Paint' getMainWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
