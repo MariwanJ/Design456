@@ -823,7 +823,6 @@ class Design456_Paint:
         """
         try:
             if(self.currentObj is not None):
-                      self.currentObj.Name)
                 App.ActiveDocument.removeObject(self.currentObj.Name)
                 self.currentObj = None
             # Rounded shapes
@@ -1156,7 +1155,7 @@ class Design456_Paint:
                 self.BrushTypeChanged_cb)
 
             _translate = QtCore.QCoreApplication.translate
-            self.dialog.setWindowTitle(_translate("Paint", "Pint"))
+            self.dialog.setWindowTitle(_translate("Paint", "Paint"))
             self.lblPaint.setText(_translate("Dialog", "Brush Type"))
             self.lstBrushType.setToolTip(_translate("Dialog", "Brush Type"))
             self.lstBrushSize.setToolTip(_translate("Dialog", "Brush Type"))
