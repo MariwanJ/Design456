@@ -37,6 +37,7 @@ import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 import Design456_Paint
+import Design456_Hole
 
 # Move an object to the location of the mouse click on another surface
 
