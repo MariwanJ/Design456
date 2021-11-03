@@ -823,7 +823,6 @@ class Design456_Paint:
         """
         try:
             if(self.currentObj is not None):
-                      self.currentObj.Name)
                 App.ActiveDocument.removeObject(self.currentObj.Name)
                 self.currentObj = None
             # Rounded shapes
