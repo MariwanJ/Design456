@@ -50,6 +50,7 @@ class Design456_2Ddrawing:
             "Design456_joinTwoLines",
             "Design456_Star",
             "Design456_Paint",
+            "Design456_Hole",
 
 
             ]

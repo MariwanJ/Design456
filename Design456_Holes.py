@@ -41,6 +41,11 @@ import math
 from pivy import coin
 import Design456_2Ddrawing
 
+#TODO : FIXME : 
+#This tool will convert any shape(s) selected to a hole.
+#You find this in Tinkercad and other CAD software. 
+#Cutting and making hole are one of the most powerful tools that we need to have in Direct modeling
+ 
 class Design456_Hole:
 
     mw = None
@@ -52,20 +57,19 @@ class Design456_Hole:
     HoleLBL = None  # Label
     # current created shape (circle, square, triangles,..etc)
     currentObj = None
-
-    firstSize = 0.1
+    FoundObjects=None
+    SelectedObj=None
 
 
     def Activated(self):
         """[Design456_Hole tool activation function.]
         """
-        self.c1 = None
-        self.c2 = None
+
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
         except Exception as err:
-            App.Console.PrintError("'Hole Command' Failed. "
+            App.Console.PrintError("'Holes Command' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -96,16 +100,16 @@ class Design456_Hole:
 
             self.dialog = QtGui.QDialog()
             oldsize = self.tab.count()
-            self.tab.addTab(self.dialog, "Hole")
+            self.tab.addTab(self.dialog, "Holes")
             self.tab.setCurrentWidget(self.dialog)
             self.dialog.resize(200, 450)
-            self.dialog.setWindowTitle("Hole")
+            self.dialog.setWindowTitle("Holes")
             self.formLayoutWidget = QtGui.QWidget(self.dialog)
             self.formLayoutWidget.setGeometry(QtCore.QRect(10, 80, 281, 67))
             self.formLayoutWidget.setObjectName("formLayoutWidget")
 
             la = QtGui.QVBoxLayout(self.dialog)
-            e1 = QtGui.QLabel("Hole")
+            e1 = QtGui.QLabel("Holes")
             commentFont = QtGui.QFont("Times", 12, True)
             e1.setFont(commentFont)
 
@@ -113,7 +117,7 @@ class Design456_Hole:
             self.formLayout.setContentsMargins(0, 0, 0, 0)
             self.formLayout.setObjectName("formLayout")
             self.lblHole = QtGui.QLabel(self.formLayoutWidget)
-            self.dialog.setObjectName("Hole")
+            self.dialog.setObjectName("Holes")
             self.formLayout.setWidget(
                 0, QtGui.QFormLayout.LabelRole, self.lblHole)
             self.lstBrushType = QtGui.QListWidget(self.dialog)
@@ -171,7 +175,7 @@ class Design456_Hole:
                 self.BrushTypeChanged_cb)
 
             _translate = QtCore.QCoreApplication.translate
-            self.dialog.setWindowTitle(_translate("Pain", "Hole"))
+            self.dialog.setWindowTitle(_translate("Pain", "Holes"))
             self.lblHole.setText(_translate("Dialog", "Brush Type"))
             self.lstBrushType.setToolTip(_translate("Dialog", "Brush Type"))
             self.lstBrushSize.setToolTip(_translate("Dialog", "Brush Type"))
@@ -217,10 +221,10 @@ class Design456_Hole:
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
             del self.dialog
             App.ActiveDocument.recompute()
-            self.__del__()  # Remove all Hole 3dCOIN widgets
+            self.__del__()  # Remove all Holes 3dCOIN widgets
 
         except Exception as err:
-            App.Console.PrintError("'recreate Hole Obj' Failed. "
+            App.Console.PrintError("'recreate Holes Obj' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -228,8 +232,7 @@ class Design456_Hole:
 
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_Hole.svg',
-                'MenuText': "Hole",
-                'ToolTip': "Draw or Hole"}
+                'MenuText': "Holes",
+                'ToolTip': "Draw or Holes"}
 
 Gui.addCommand('Design456_Hole', Design456_Hole())
-
