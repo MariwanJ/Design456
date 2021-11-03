@@ -414,9 +414,10 @@ class Design456_Paint:
             if typeOfParallelogram == 1:
                 points = [App.Vector(0, self.brushSize*4, 0.0),
                           App.Vector(self.brushSize*10, self.brushSize*4, 0.0),
-                          App.Vector(self.brushSize*4 +self.brushSize*2, 0, 0.0),
+                          App.Vector(self.brushSize*4 +
+                                     self.brushSize*2, 0, 0.0),
                           App.Vector(self.brushSize*4, 0.0, 0.0)]
-                          
+
             elif typeOfParallelogram == 2:
                 points = [App.Vector(0, self.brushSize*3, 0.0),
                           App.Vector(self.brushSize*2, self.brushSize*4, 0.0),
@@ -578,12 +579,12 @@ class Design456_Paint:
             plc = App.Placement()
             first.Placement = plc
 
-            if starType ==1:
-                first.Corners=8
-            elif starType ==2:
-                first.Corners=9
-            elif starType ==3:
-                first.Corners=10
+            if starType == 1:
+                first.Corners = 8
+            elif starType == 2:
+                first.Corners = 9
+            elif starType == 3:
+                first.Corners = 10
             App.ActiveDocument.recompute()
             f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
             f.Base = App.ActiveDocument.getObject(first.Name)
@@ -615,8 +616,6 @@ class Design456_Paint:
             App.ActiveDocument.removeObject(first.Name)
             App.ActiveDocument.recompute()
             return(Gui.ActiveDocument.getObject(s.Name))
-
-
 
         except Exception as err:
             App.Console.PrintError("'draw_Star' Failed. "
@@ -672,36 +671,40 @@ class Design456_Paint:
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
             viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
             if self.currentObj is not None:
-                    # Normal view - Top
-                self.pl=self.currentObj.Object.Placement
-                self.pl.Rotation.Axis=viewAxis
-                print(viewAxis,"viewAxis")
+                # Normal view - Top
+                self.pl = self.currentObj.Object.Placement
+                self.pl.Rotation.Axis = viewAxis
+                print(viewAxis, "viewAxis")
                 if(viewAxis == App.Vector(0, 0, -1)):
                     print("1")
                     self.pl.Base.z = 0.0
-                    self.pl.Rotation.Angle=0
+                    self.pl.Rotation.Angle = 0
                 elif(viewAxis == App.Vector(0, 0, 1)):
                     print("2")
                     self.pl.Base.z = 0.0
-                    self.pl.Rotation.Angle=0
+                    self.pl.Rotation.Angle = 0
                 # FrontSide
                 elif(viewAxis == App.Vector(0, 1, 0)):
                     print("3")
                     self.pl.Base.y = 0
-                    self.pl.Rotation.Angle= -90
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (-1, 0, 0)
                 elif (viewAxis == App.Vector(0, -1, 0)):
                     print("4")
                     self.pl.Base.y = 0
-                    self.pl.Rotation.Angle= 90
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (1, 0, 0)
                 # RightSideView
                 elif(viewAxis == App.Vector(-1, 0, 0)):
                     print("5")
                     self.pl.Base.x = 0
-                    self.pl.Rotation.Angle= -90
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (0, 1, 0)
                 elif (viewAxis == App.Vector(1, 0, 0)):
                     print("6")
                     self.pl.Base.x = 0
-                    self.pl.Rotation.Angle= 90
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (0, 1, 0)
 
                 self.currentObj.Object.Placement = self.pl
 
@@ -711,7 +714,7 @@ class Design456_Paint:
                     position.y = 0
                 elif (self.currentObj.Object.Placement.Base.x == 0):
                     position.x = 0
-                #All direction when A or decide which direction
+                # All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
                     self.currentObj.Object.Placement.Base = position
                 elif (self.MoveMentDirection == 'X'):
