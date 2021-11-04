@@ -41,6 +41,7 @@ import math
 from pivy import coin
 import Design456_2Ddrawing
 
+
 #TODO : FIXME : 
 #This tool will convert any shape(s) selected to a hole.
 #You find this in Tinkercad and other CAD software. 
@@ -59,6 +60,15 @@ class Design456_Hole:
     currentObj = None
     FoundObjects=None
     SelectedObj=None
+    
+    #TODO: FIXME:
+    def applyHole(self):
+        #This should take care of applying the hole command to the objects
+        self.FoundObjects=faced.findMainListedObjects()
+        newObj=App.ActiveDocument.addObject("Part::Fuse","Fusion")
+        newObj.Base=self.FoundObjects
+        newObj.Tool = self.SelectedObj
+
 
 
     def Activated(self):
