@@ -73,7 +73,8 @@ class Design456_Part_Merge:
                 # Make a simple copy
                 newShape = Part.getShape(
                     newObj, '', needSubElement=False, refine=True)
-                App.ActiveDocument.addObject('Part::Feature', 'Merged').Shape = newShape
+                mergedObj=App.ActiveDocument.addObject('Part::Feature', 'Merged')
+                mergedObj.Shape = newShape
                 App.ActiveDocument.recompute()
                 # Remove Old objects
                 for obj in allObjects:
@@ -82,6 +83,7 @@ class Design456_Part_Merge:
                 App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
             del allObjects[:]
+            return mergedObj
         except Exception as err:
             App.Console.PrintError("'Part::Merge' Failed. "
                                    "{err}\n".format(err=str(err)))

@@ -40,13 +40,14 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import math
 from pivy import coin
 import Design456_2Ddrawing
+from Design456_Part_3DTools import Design456_Part_Merge
+from Design456_Part_3DTools import Design456_Part_Subtract
+# TODO : FIXME :
+# This tool will convert any shape(s) selected to a hole.
+# You find this in Tinkercad and other CAD software.
+# Cutting and making hole are one of the most powerful tools that we need to have in Direct modeling
 
 
-#TODO : FIXME : 
-#This tool will convert any shape(s) selected to a hole.
-#You find this in Tinkercad and other CAD software. 
-#Cutting and making hole are one of the most powerful tools that we need to have in Direct modeling
- 
 class Design456_Hole:
 
     mw = None
@@ -58,18 +59,26 @@ class Design456_Hole:
     HoleLBL = None  # Label
     # current created shape (circle, square, triangles,..etc)
     currentObj = None
-    FoundObjects=None
-    SelectedObj=None
-    
-    #TODO: FIXME:
+    FoundObjects = None
+    SelectedObj = None
+
+    # TODO: FIXME:
     def applyHole(self):
-        #This should take care of applying the hole command to the objects
-        self.FoundObjects=faced.findMainListedObjects()
-        newObj=App.ActiveDocument.addObject("Part::Fuse","Fusion")
-        newObj.Base=self.FoundObjects
-        newObj.Tool = self.SelectedObj
+        # This should take care of applying the hole command to the objects
+        # two things must be done:
+        # 1-Fusion for the tool (cutting objects)
+        # 2-Fusion for the base objects.
 
-
+        newToolobj = Design456_Part_Merge()
+        newCutObj = Design456_Part_Subtract()
+        merged = newToolobj.Activated()
+        App.ActiveDocument.recompute()
+        allObj=faced.findMainListedObjects()
+        self.FoundObjects = allObj.remove(merged)        
+        Gui.Selection.addSelection(allObj)
+        Gui.Selection.addSelection(merged)
+        finalObj = newCutObj.Activated()
+        App.ActiveDocument.recompute()
 
     def Activated(self):
         """[Design456_Hole tool activation function.]
@@ -78,6 +87,7 @@ class Design456_Hole:
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
+            self.applyHole()
         except Exception as err:
             App.Console.PrintError("'Holes Command' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -160,7 +170,7 @@ class Design456_Hole:
             self.formLayout_2.setWidget(
                 1, QtGui.QFormLayout.FieldRole, self.radioMerge)
             self.HoleLBL = QtGui.QLabel(
-                "Use X,Y,Z to limit the movements\nAnd A for free movement\nHole Radius or side=7")
+                "Use X,Y,Z to =7")
 
             la.addWidget(self.formLayoutWidget)
             la.addWidget(e1)
@@ -169,30 +179,8 @@ class Design456_Hole:
             self.okbox.setOrientation(QtCore.Qt.Horizontal)
             self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             la.addWidget(self.okbox)
-            # Add All shape names to the combobox
-            for nameOfObject in self.listOfDrawings:
-                self.lstBrushType.addItem(nameOfObject)
-
-            for i in range(1, 1000):
-                self.lstBrushSize.addItem(str(i))
-            self.lstBrushSize.setCurrentRow(6)
-            self.lstBrushType.setCurrentRow(FR_BRUSHES.FR_CIRCLE_BRUSH)
-
-            self.lstBrushSize.currentItemChanged.connect(
-                self.BrushSizeChanged_cb)
-
-            self.lstBrushType.currentItemChanged.connect(
-                self.BrushTypeChanged_cb)
-
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate("Pain", "Holes"))
-            self.lblHole.setText(_translate("Dialog", "Brush Type"))
-            self.lstBrushType.setToolTip(_translate("Dialog", "Brush Type"))
-            self.lstBrushSize.setToolTip(_translate("Dialog", "Brush Type"))
-            self.lblBrushSize.setText(_translate("Dialog", "Brush Size"))
-            self.radioAsIs.setText(_translate("Dialog", "As is"))
-            self.radioMerge.setText(_translate("Dialog", "Merge"))
-
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             QtCore.QObject.connect(
                 self.okbox, QtCore.SIGNAL("accepted()"), self.hide)
@@ -208,7 +196,7 @@ class Design456_Hole:
     def __del__(self):
         """[Python destructor for the object. Otherwise next drawing might get wrong parameters]
         """
- 
+
         self.mw = None
         self.dialog = None
         self.tab = None
@@ -244,5 +232,6 @@ class Design456_Hole:
         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_Hole.svg',
                 'MenuText': "Holes",
                 'ToolTip': "Draw or Holes"}
+
 
 Gui.addCommand('Design456_Hole', Design456_Hole())
