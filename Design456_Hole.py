@@ -36,7 +36,7 @@ import FACE_D as faced
 import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
-from ThreeDWidgets.constant import FR_BRUSHES
+from ThreeDWidgets.constant import FR_BRUSHES, FR_COLOR
 import math
 from pivy import coin
 import Design456_2Ddrawing
@@ -85,9 +85,13 @@ class Design456_Hole:
         """
 
         try:
+            self.SelectedObj=Gui.Selection.getSelectionEx()
+            for obj in self.SelectedObj:
+                obj.Object.ViewObject.ShapeColor=FR_COLOR.FR_ORANGE
+                obj.Object.ViewObject.Transparency=80
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
-            self.applyHole()
+            #self.applyHole()
         except Exception as err:
             App.Console.PrintError("'Holes Command' Failed. "
                                    "{err}\n".format(err=str(err)))
