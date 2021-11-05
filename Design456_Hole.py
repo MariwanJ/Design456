@@ -60,7 +60,7 @@ class Design456_Hole:
     # current created shape (circle, square, triangles,..etc)
     currentObj = None
     FoundObjects = None
-    SelectedObj = None
+    selectedObj = None
 
     # TODO: FIXME:
     def applyHole(self):
@@ -68,30 +68,62 @@ class Design456_Hole:
         # two things must be done:
         # 1-Fusion for the tool (cutting objects)
         # 2-Fusion for the base objects.
-
-        newToolobj = Design456_Part_Merge()
-        newCutObj = Design456_Part_Subtract()
-        merged = newToolobj.Activated()
-        App.ActiveDocument.recompute()
-        allObj=faced.findMainListedObjects()
-        self.FoundObjects = allObj.remove(merged)        
-        Gui.Selection.addSelection(allObj)
-        Gui.Selection.addSelection(merged)
-        finalObj = newCutObj.Activated()
-        App.ActiveDocument.recompute()
+        try:
+            fuBase = None
+            fuTool = None
+            if(len(self.selectedObj) > 1):
+                fuTool = App.ActiveDocument.addObject(
+                    "Part::MultiFuse", "tool")
+                allOBJ = []
+                for obj in self.selectedObj:
+                    allOBJ.append(obj.Object)
+                fuTool.Shapes = allOBJ
+                fuTool.Refine = True
+                App.ActiveDocument.recompute()
+            else:
+                fuTool = self.selectedObj[0]
+            if len(self.FoundObjects) > 1:
+                fuBase = App.ActiveDocument.addObject(
+                    "Part::MultiFuse", "base")
+                allOBJ = []
+                for obj in self.FoundObjects:
+                    allOBJ.append(App.ActiveDocument.getObject(obj.Name))
+                fuBase.Shapes = allOBJ
+                fuBase.Refine = True
+                App.ActiveDocument.recompute()
+            else:
+                fuBase.Shapes = self.FoundObjects
+            if (fuTool is None or fuBase is None):
+                print("something went wrong, please try again")
+                return
+            Gui.Selection.clearSelection()
+            Gui.Selection.addSelection(fuBase)
+            result = App.ActiveDocument.addObject("Part::Cut", "Cut")
+            result.Base = fuBase
+            result.Tool = fuTool
+            App.ActiveDocument.recompute()
+        except Exception as err:
+            App.Console.PrintError("'apply' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def Activated(self):
         """[Design456_Hole tool activation function.]
         """
 
         try:
-            self.SelectedObj=Gui.Selection.getSelectionEx()
-            for obj in self.SelectedObj:
-                obj.Object.ViewObject.ShapeColor=FR_COLOR.FR_ORANGE
-                obj.Object.ViewObject.Transparency=80
+            self.FoundObjects = faced.findMainListedObjects()
+            self.selectedObj = Gui.Selection.getSelectionEx()
+            for obj in self.selectedObj:
+                obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_LIGHTPINK
+                obj.Object.ViewObject.Transparency = 70
+                for nObj in self.FoundObjects:
+                    if obj == nObj:
+                        self.FoundObjects.remove(obj)
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
-            #self.applyHole()
         except Exception as err:
             App.Console.PrintError("'Holes Command' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -214,16 +246,15 @@ class Design456_Hole:
         Hide the widgets. Remove also the tab.
         """
         try:
-            if (self.currentObj is not None):
-                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
-                self.currentObj = None
+            self.applyHole()
+
             self.dialog.hide()
             dw = self.mw.findChildren(QtGui.QDockWidget)
             newsize = self.tab.count()  # Todo : Should we do that?
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
             del self.dialog
             App.ActiveDocument.recompute()
-            self.__del__()  # Remove all Holes 3dCOIN widgets
+            self.__del__()  # Remove allOBJ Holes 3dCOIN widgets
 
         except Exception as err:
             App.Console.PrintError("'recreate Holes Obj' Failed. "
