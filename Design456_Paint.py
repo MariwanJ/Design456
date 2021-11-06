@@ -32,15 +32,11 @@ import Draft as _draft
 import Part as _part
 import Design456Init
 from pivy import coin
-import FACE_D as faced
-import math as _math
+import math 
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES
-import math
-from pivy import coin
 import Design456_2Ddrawing
-
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
