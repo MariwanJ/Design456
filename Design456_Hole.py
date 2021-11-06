@@ -28,26 +28,11 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft as _draft
-import Part as _part
 import Design456Init
-from pivy import coin
 import FACE_D as faced
-import math as _math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES, FR_COLOR
-import math
-from pivy import coin
-import Design456_2Ddrawing
-from Design456_Part_3DTools import Design456_Part_Merge
-from Design456_Part_3DTools import Design456_Part_Subtract
-# TODO : FIXME :
-# This tool will convert any shape(s) selected to a hole.
-# You find this in Tinkercad and other CAD software.
-# Cutting and making hole are one of the most powerful tools that we need to have in Direct modeling
-
-
 class Design456_Hole:
 
     mw = None
@@ -62,13 +47,13 @@ class Design456_Hole:
     FoundObjects = None
     selectedObj = None
     finishedObj = None
-
-    # TODO: FIXME:
-    def applyHole(self):
         # This should take care of applying the hole command to the objects
         # two things must be done:
         # 1-Fusion for the tool (cutting objects)
         # 2-Fusion for the base objects.
+    def applyHole(self):
+        """[Create cut object and create fusion if there are several objects for tool and base]
+        """
         try:
             fuBase = None
             fuTool = None
@@ -96,7 +81,13 @@ class Design456_Hole:
                 fuBase.Shapes = allOBJ
                 fuBase.Refine = True
             else:
-                fuBase = self.FoundObjects[0]
+                if len(self.FoundObjects) >= 1:
+                    fuBase = self.FoundObjects[0]
+                else:
+                    if type(self.FoundObjects) == list:
+                        fuBase = None
+                    else:
+                        fuBase = self.FoundObjects
             if (fuTool is None or fuBase is None):
                 print("something went wrong, please try again")
                 return
@@ -119,11 +110,11 @@ class Design456_Hole:
     def Activated(self):
         """[Design456_Hole tool activation function.]
         """
-
         try:
-            overlappen=False
+            overlappen = False
             self.FoundObjects = faced.findMainListedObjects()
             self.selectedObj = Gui.Selection.getSelectionEx()
+            
             for obj in self.selectedObj:
                 obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_LIGHTPINK
                 obj.Object.ViewObject.Transparency = 70
@@ -131,19 +122,28 @@ class Design456_Hole:
                 for nObj in self.FoundObjects:
                     if obj.Object == nObj:
                         self.FoundObjects.remove(nObj)
-
+                        
             for nObj in self.FoundObjects:
-                overlappen=False
+                overlappen = False
                 for obj in self.selectedObj:
-                    if(faced.Overlapping(nObj,obj.Object)):
-                        overlappen=True
-                        break;
+                    if(faced.Overlapping(nObj, obj.Object)):
+                        overlappen = True
+                        break
+                # remove not intersecting objects
                 if not overlappen:
                     self.FoundObjects.remove(nObj)
-            
-            
+                # remove 2D objects.
+                print(len(nObj.Shape.Faces))
+                if (nObj.TypeId == "Part::Part2DObjectPython"):
+                    self.FoundObjects.remove(nObj)
+                    
+                # TODO:FIXME: Add more object that might fail otherwise
+                if not(len(nObj.Shape.Faces) > 1) and (nObj.TypeId != "Part::Torus"):
+                    self.FoundObjects.remove(nObj)
+
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
+
         except Exception as err:
             App.Console.PrintError("'Holes Command' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -194,39 +194,8 @@ class Design456_Hole:
             self.formLayout.setObjectName("formLayout")
             self.lblHole = QtGui.QLabel(self.formLayoutWidget)
             self.dialog.setObjectName("Holes")
-            self.formLayout.setWidget(
-                0, QtGui.QFormLayout.LabelRole, self.lblHole)
-            self.lstBrushType = QtGui.QListWidget(self.dialog)
-            self.lstBrushType.setGeometry(10, 10, 50, 40)
-            self.lstBrushType.setObjectName("lstBrushType")
-            self.formLayout.setWidget(
-                0, QtGui.QFormLayout.FieldRole, self.lstBrushType)
-            self.lstBrushSize = QtGui.QListWidget(self.dialog)
-            self.lstBrushSize.setGeometry(10, 55, 50, 20)
-
-            self.lstBrushSize.setObjectName("lstBrushSize")
-            self.formLayout.setWidget(
-                1, QtGui.QFormLayout.FieldRole, self.lstBrushSize)
-            self.lblBrushSize = QtGui.QLabel(self.formLayoutWidget)
-            self.lblBrushSize.setObjectName("lblBrushSize")
-            self.formLayout.setWidget(
-                1, QtGui.QFormLayout.LabelRole, self.lblBrushSize)
-            self.formLayoutWidget_2 = QtGui.QWidget(self.dialog)
-            self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 160, 160, 80))
-            self.formLayoutWidget_2.setObjectName("formLayoutWidget_2")
-            self.formLayout_2 = QtGui.QFormLayout(self.formLayoutWidget_2)
-            self.formLayout_2.setContentsMargins(0, 0, 0, 0)
-            self.formLayout_2.setObjectName("formLayout_2")
-            self.radioAsIs = QtGui.QRadioButton(self.formLayoutWidget_2)
-            self.radioAsIs.setObjectName("radioAsIs")
-            self.formLayout_2.setWidget(
-                0, QtGui.QFormLayout.FieldRole, self.radioAsIs)
-            self.radioMerge = QtGui.QRadioButton(self.formLayoutWidget_2)
-            self.radioMerge.setObjectName("radioMerge")
-            self.formLayout_2.setWidget(
-                1, QtGui.QFormLayout.FieldRole, self.radioMerge)
             self.HoleLBL = QtGui.QLabel(
-                "Use X,Y,Z to =7")
+                "Press OK to apply the hole")
 
             la.addWidget(self.formLayoutWidget)
             la.addWidget(e1)
@@ -236,7 +205,7 @@ class Design456_Hole:
             self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             la.addWidget(self.okbox)
             _translate = QtCore.QCoreApplication.translate
-            self.dialog.setWindowTitle(_translate("Pain", "Holes"))
+            self.dialog.setWindowTitle(_translate("Hole", "Hole"))
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             QtCore.QObject.connect(
                 self.okbox, QtCore.SIGNAL("accepted()"), self.hide)
@@ -286,8 +255,8 @@ class Design456_Hole:
 
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_Hole.svg',
-                'MenuText': "Holes",
-                'ToolTip': "Draw or Holes"}
+                'MenuText': "Hole",
+                'ToolTip': "Hole"}
 
 
 Gui.addCommand('Design456_Hole', Design456_Hole())
