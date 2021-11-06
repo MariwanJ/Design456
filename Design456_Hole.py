@@ -121,7 +121,7 @@ class Design456_Hole:
         """
 
         try:
-
+            overlappen=False
             self.FoundObjects = faced.findMainListedObjects()
             self.selectedObj = Gui.Selection.getSelectionEx()
             for obj in self.selectedObj:
@@ -132,6 +132,16 @@ class Design456_Hole:
                     if obj.Object == nObj:
                         self.FoundObjects.remove(nObj)
 
+            for nObj in self.FoundObjects:
+                overlappen=False
+                for obj in self.selectedObj:
+                    if(faced.Overlapping(nObj,obj.Object)):
+                        overlappen=True
+                        break;
+                if not overlappen:
+                    self.FoundObjects.remove(nObj)
+            
+            
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
         except Exception as err:
