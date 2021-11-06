@@ -61,6 +61,7 @@ class Design456_Hole:
     currentObj = None
     FoundObjects = None
     selectedObj = None
+    finishedObj = None
 
     # TODO: FIXME:
     def applyHole(self):
@@ -71,6 +72,11 @@ class Design456_Hole:
         try:
             fuBase = None
             fuTool = None
+            for obj in self.selectedObj:
+                obj.Object.ViewObject.Transparency = 100
+                obj.Object.ViewObject.Transparency = 0
+                obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_GRAY
+
             if(len(self.selectedObj) > 1):
                 fuTool = App.ActiveDocument.addObject(
                     "Part::MultiFuse", "tool")
@@ -79,7 +85,6 @@ class Design456_Hole:
                     allOBJ.append(obj.Object)
                 fuTool.Shapes = allOBJ
                 fuTool.Refine = True
-                App.ActiveDocument.recompute()
             else:
                 fuTool = self.selectedObj[0]
             if len(self.FoundObjects) > 1:
@@ -90,18 +95,20 @@ class Design456_Hole:
                     allOBJ.append(App.ActiveDocument.getObject(obj.Name))
                 fuBase.Shapes = allOBJ
                 fuBase.Refine = True
-                App.ActiveDocument.recompute()
             else:
-                fuBase.Shapes = self.FoundObjects
+                fuBase = self.FoundObjects[0]
             if (fuTool is None or fuBase is None):
                 print("something went wrong, please try again")
                 return
+            App.ActiveDocument.recompute()
             Gui.Selection.clearSelection()
             Gui.Selection.addSelection(fuBase)
-            result = App.ActiveDocument.addObject("Part::Cut", "Cut")
-            result.Base = fuBase
-            result.Tool = fuTool
+            self.finishedObj = App.ActiveDocument.addObject("Part::Cut", "Cut")
+            self.finishedObj.Base = fuBase
+            self.finishedObj.Tool = fuTool.Object
+
             App.ActiveDocument.recompute()
+
         except Exception as err:
             App.Console.PrintError("'apply' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -114,14 +121,17 @@ class Design456_Hole:
         """
 
         try:
+
             self.FoundObjects = faced.findMainListedObjects()
             self.selectedObj = Gui.Selection.getSelectionEx()
             for obj in self.selectedObj:
                 obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_LIGHTPINK
                 obj.Object.ViewObject.Transparency = 70
+
                 for nObj in self.FoundObjects:
-                    if obj == nObj:
-                        self.FoundObjects.remove(obj)
+                    if obj.Object == nObj:
+                        self.FoundObjects.remove(nObj)
+
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
         except Exception as err:
@@ -232,7 +242,6 @@ class Design456_Hole:
     def __del__(self):
         """[Python destructor for the object. Otherwise next drawing might get wrong parameters]
         """
-
         self.mw = None
         self.dialog = None
         self.tab = None
@@ -240,6 +249,8 @@ class Design456_Hole:
         self._mywin = None
         self.b1 = None
         self.HoleLBL = None
+
+        return self.finishedObj
 
     def hide(self):
         """
