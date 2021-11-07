@@ -270,7 +270,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
         if(fr_coin3d.objectMouseClick_Coin3d(
                 self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_CentersoSeparator) is not None):
+                self.w_pick_radius, self.w_centersoSeparator) is not None):
             clickwdgdNode[0] = True
         elif(fr_coin3d.objectMouseClick_Coin3d(
             self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
@@ -386,7 +386,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     SETUPwheelTypeRotation = [-90.0, 90.0, 90.0]
                     SetupTextRotation = [-90.0, 90.0, 90.0]  # OK Don't change
 
-                self.w_CentersoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Center",
+                self.w_centersoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Center",
                                                                    usedColor, SETUPwheelTypeRotation,
                                                                    self.w_PRErotation,self.w_Scale, 1)
                 self.w_XsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Xaxis",
@@ -404,7 +404,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 self.w_degreeSeparator = fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
                                                                        SetupTextRotation, self.w_PRErotation, self.w_Scale,1)  # White
 
-                allDraw.append(self.w_CentersoSeparator)
+                allDraw.append(self.w_centersoSeparator)
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_YsoSeparator)
                 allDraw.append(self.w_45soSeparator)
@@ -420,7 +420,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     tR, math.radians(self.w_Rotation[3]))
 
                 CollectThemAll.addChild(CollectThemAllRot)
-                CollectThemAll.addChild(self.w_CentersoSeparator)
+                CollectThemAll.addChild(self.w_centersoSeparator)
                 CollectThemAll.addChild(self.w_XsoSeparator)
                 CollectThemAll.addChild(self.w_YsoSeparator)
                 CollectThemAll.addChild(self.w_45soSeparator)
