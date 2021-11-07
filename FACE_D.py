@@ -692,7 +692,7 @@ def findMainListedObjects():
         Gui.ActiveDocument.getObject(name).Visibility = False
         inlist = i.InList
         if len(inlist) == 0:
-            if hasattr(i, "Shape") and i.Shape.Solids:  #Must be solid and has shape
+            if hasattr(i, "Shape") and i.Shape.Solids:  # Must be solid and has shape
                 results.append(i)
                 Gui.ActiveDocument.getObject(name).Visibility = True
     return results
