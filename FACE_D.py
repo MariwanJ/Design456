@@ -678,7 +678,9 @@ def clearPythonConsole(name: str = ""):
 
 
 def findMainListedObjects():
-    """[Find and return main objects in the active document - no children will be return]
+    """[Find and return main objects in the active document - no children will be return
+        And must be solid - no 2D or group should be included
+        ]
 
     Returns:
         [list]: [list of objects found]
@@ -690,9 +692,9 @@ def findMainListedObjects():
         Gui.ActiveDocument.getObject(name).Visibility = False
         inlist = i.InList
         if len(inlist) == 0:
-            results.append(i)
-            print(name)
-            Gui.ActiveDocument.getObject(name).Visibility = True
+            if hasattr(i, "Shape") and i.Shape.Solids:  #Must be solid and has shape
+                results.append(i)
+                Gui.ActiveDocument.getObject(name).Visibility = True
     return results
 
 
