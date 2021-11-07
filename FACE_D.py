@@ -34,7 +34,9 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
 import math
 
-#TODO : FIXME BETTER WAY?
+# TODO : FIXME BETTER WAY?
+
+
 def getDirectionAxis(s=None):
     """[summary]
 
@@ -49,16 +51,16 @@ def getDirectionAxis(s=None):
     try:
         if s is None:
             s = Gui.Selection.getSelectionEx()
-        
+
         if len(s) == 0:
             print("Nothing was selected")
             return ""  # nothing to do we cannot calculate the direction
         obj = s[0]
-        faceSel=None
+        faceSel = None
         if (hasattr(obj, "SubObjects")):
             #print("has subobject")
             if len(obj.SubObjects) != 0:
-                if (len (obj.SubObjects[0].Faces) == 0):
+                if (len(obj.SubObjects[0].Faces) == 0):
                     #print("no faces but has subobject")
                     # it is an edge not a face:
                     f = findFacehasSelectedEdge()
@@ -67,7 +69,7 @@ def getDirectionAxis(s=None):
                     #print("face found not none")
                     #direction = f.normalAt(0, 0)
                     #print("direction is ", direction)
-                    faceSel=f
+                    faceSel = f
                 else:
                     faceSel = obj.SubObjects[0]
             else:
@@ -85,7 +87,7 @@ def getDirectionAxis(s=None):
                 if ftt is None:
                     raise Exception("Face not found")
                 direction = ftt.normalAt(0, 0)
-        
+
         if direction.z == 1:
             return "+z"
         elif direction.z == -1:
@@ -99,14 +101,14 @@ def getDirectionAxis(s=None):
         elif direction.x == -1:
             return "-x"
         else:
-            # We have an axis that != 1,0: 
+            # We have an axis that != 1,0:
             if(abs(direction.x) == 0):
                 return "+z"
             elif (abs(direction.y) == 0):
                 return "+z"
             elif (abs(direction.z) == 0):
                 return "+x"
-            else: 
+            else:
                 return "+z"  # this is to avoid having NONE .. Don't know when this happen TODO: FIXME!
 
     except Exception as err:
@@ -116,7 +118,8 @@ def getDirectionAxis(s=None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-#TODO Do we need this?
+
+# TODO Do we need this?
 """def MousePosition():
     def __init__(self, view):
         self.view = view
@@ -133,7 +136,9 @@ def getDirectionAxis(s=None):
         return pnt
 """
 
-#TODO: This might be wrong
+# TODO: This might be wrong
+
+
 class mousePointMove:
 
     def __init__(self, obj, view):
@@ -247,21 +252,24 @@ class PartMover:
     def convertToVector(self, pos):
         try:
             import Design456Init
-            tempPoint = self.view.getPoint(pos[0], pos[1])    
+            tempPoint = self.view.getPoint(pos[0], pos[1])
             if(self.Direction is None):
-                if Design456Init.DefaultDirectionOfExtrusion == 'x':        
+                if Design456Init.DefaultDirectionOfExtrusion == 'x':
                     point = (App.Vector(0.0, tempPoint[0], tempPoint[1]))
                 elif Design456Init.DefaultDirectionOfExtrusion == 'y':
-                    point = (App.Vector(tempPoint[0], 0.0, tempPoint[1])) 
+                    point = (App.Vector(tempPoint[0], 0.0, tempPoint[1]))
                 elif Design456Init.DefaultDirectionOfExtrusion == 'z':
                     point = (App.Vector(tempPoint[0], tempPoint[1], 0.0))
             else:
                 if (self.Direction == 'X'):
-                    point = (App.Vector(tempPoint[0], self.obj.Placement.Base.y, self.obj.Placement.Base.z))
+                    point = (App.Vector(
+                        tempPoint[0], self.obj.Placement.Base.y, self.obj.Placement.Base.z))
                 elif (self.Direction == 'Y'):
-                    point = (App.Vector(self.obj.Placement.Base.x,tempPoint[1], self.obj.Placement.Base.z))
+                    point = (App.Vector(self.obj.Placement.Base.x,
+                             tempPoint[1], self.obj.Placement.Base.z))
                 elif (self.Direction == 'Z'):
-                    point = (App.Vector(self.obj.Placement.Base.x,self.obj.Placement.Base.y, tempPoint[0]))
+                    point = (App.Vector(self.obj.Placement.Base.x,
+                             self.obj.Placement.Base.y, tempPoint[0]))
             return point
 
         except Exception as err:
@@ -276,7 +284,8 @@ class PartMover:
         try:
             self.active = True
             event = events.getEvent()
-            self.newPosition = self.convertToVector(event.getPosition().getValue())
+            self.newPosition = self.convertToVector(
+                event.getPosition().getValue())
             self.obj.Placement.Base = self.newPosition
         except Exception as err:
             App.Console.PrintError("'Mouse movements error' Failed. "
@@ -359,6 +368,7 @@ class PartMover:
 # TODO: This class must be updated to be able to move all kind of objects
 #    Mariwan
 
+
 """ This class will return back info about the selected
     face. Many options are available but
     I will put only what I need at the moment. 
@@ -395,6 +405,7 @@ def getObjectFromFaceName(obj, face_name):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
 
 def errorDialog(msg):
     # Create a simple dialog QMessageBox
@@ -437,6 +448,7 @@ class SelectTopFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+
 class GetInputValue:
     value = 0.0
     """
@@ -476,6 +488,8 @@ class GetInputValue:
             return None
 
 # Visual progress indicator
+
+
 class StatusBarProgress:
     """
     Visual progress indicator. 
@@ -521,7 +535,7 @@ class createActionTab:
         toplevel = QtGui.QApplication.topLevelWidgets()
         for i in toplevel:
             if i.metaObject().className() == "Gui::MainWindow":
-                self.mw = i    
+                self.mw = i
         if self.mw is None:
 
             raise Exception("No main window found")
@@ -532,7 +546,7 @@ class createActionTab:
             elif str(i.objectName()) == "Python Console":
                 self.tab = i.findChild(QtGui.QTabWidget)
         if self.tab is None:
-                raise Exception ("No tab widget found")
+            raise Exception("No tab widget found")
         self.dialog = QtGui.QDialog()
         oldsize = self.tab.count()
         self.tab.addTab(self.dialog, self.title)
@@ -582,6 +596,7 @@ def findnormalAtforEdge():
         results.append(f.normalAt(0.5 * (u0 + u1), 0.5 * (v0 + v1)))
     return results
 
+
 def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10), n=App.Vector(0, 0, 1)):
     """[Measure the distance between two points, first point is optional if not provided, 
         the function will measure the distance to origin ]
@@ -625,15 +640,15 @@ def DisableEnableAllMenus(value):
         i.setEnabled(value)
 
 
-def disableEnableOnlyOneCommand(toolName:str="", value:bool=False):
+def disableEnableOnlyOneCommand(toolName: str = "", value: bool = False):
     mw = Gui.getMainWindow()
     t = mw.findChildren(QtCore.QTimer)
     t[2].stop()
     a = mw.findChild(QtGui.QAction, toolName)  # for example "Std_New"
     a.setDisabled(value)
-    
 
-def clearReportView(name:str=""):
+
+def clearReportView(name: str = ""):
     """[Clear Report View console]
 
     Args:
@@ -644,10 +659,11 @@ def clearReportView(name:str=""):
     r.clear()
     import time
     now = time.ctime(int(time.time()))
-    App.Console.PrintWarning("Cleared Report view " + str(now) + " by " + name + "\n")
+    App.Console.PrintWarning("Cleared Report view " +
+                             str(now) + " by " + name + "\n")
 
-    
-def clearPythonConsole(name:str=""):
+
+def clearPythonConsole(name: str = ""):
     """[Clear Python console]
     Args:
         name ([type]): [Message to  print on console]
@@ -657,8 +673,9 @@ def clearPythonConsole(name:str=""):
     r.clear()
     import time
     now = time.ctime(int(time.time()))
-    App.Console.PrintWarning("Cleared Python console " + str(now) + " by " + name + "\n")
-    
+    App.Console.PrintWarning(
+        "Cleared Python console " + str(now) + " by " + name + "\n")
+
 
 def findMainListedObjects():
     """[Find and return main objects in the active document - no children will be return]
@@ -666,20 +683,20 @@ def findMainListedObjects():
     Returns:
         [list]: [list of objects found]
     """
-    results=[]
+    results = []
     for i in App.ActiveDocument.Objects:
-        label=i.Label
-        name=i.Name
-        Gui.ActiveDocument.getObject(name).Visibility=False
-        inlist=i.InList
-        if len(inlist) == 0: 
+        label = i.Label
+        name = i.Name
+        Gui.ActiveDocument.getObject(name).Visibility = False
+        inlist = i.InList
+        if len(inlist) == 0:
             results.append(i)
-            print (name)
-            Gui.ActiveDocument.getObject(name).Visibility=True	
+            print(name)
+            Gui.ActiveDocument.getObject(name).Visibility = True
     return results
 
 
-def Overlapping(Sourceobj1 , Targetobj2):
+def Overlapping(Sourceobj1, Targetobj2):
     """[Check if two objects overlap each other]
     Args:
         Sourceobj1 ([3D selection object]): [description]
@@ -687,7 +704,7 @@ def Overlapping(Sourceobj1 , Targetobj2):
     Returns:
         [type]: [description]
     """
-    if (Sourceobj1.Shape.Volume == 0  or Targetobj2.Shape.Volume == 0):
+    if (Sourceobj1.Shape.Volume == 0 or Targetobj2.Shape.Volume == 0):
         return False
     elif (Sourceobj1 == Targetobj2):
         return False  # The same object
@@ -699,7 +716,7 @@ def Overlapping(Sourceobj1 , Targetobj2):
     else:
         return False
 
-        
+
 def checkCollision(newObj):
     """[Find a list of objects from the active document that is/are intersecting with newObj]
     Args:
@@ -716,7 +733,7 @@ def checkCollision(newObj):
                 o = App.ActiveDocument.getObject(obj.Name)
                 print(o.Name)
             elif (hasattr(obj, "Obj.Name")):
-                o = App.ActiveDocument.getObject(obj.Object.Name)                      
+                o = App.ActiveDocument.getObject(obj.Object.Name)
                 print(o.Name)
             else:
                 o = None
@@ -726,9 +743,9 @@ def checkCollision(newObj):
 
 
 # Function to find the angle
-# between the two lines with ref to the origion 
+# between the two lines with ref to the origion
 # This is here to make it clear how you do that
-def calculateAngle(v1,v2=App.Vector(1,1,0)):
+def calculateAngle(v1, v2=App.Vector(1, 1, 0)):
     """[Find angle between a vector and the origin
         Assuming that the angle is between the line-vectors 
         (0,0,0) and (1,1,0)
@@ -743,10 +760,10 @@ def calculateAngle(v1,v2=App.Vector(1,1,0)):
     return math.degrees(v1.getAngle(v2))
 
 
-#The rotation below is inspired by https://wiki.freecadweb.org/Macro_Rotate_To_Point
-#Thanks Mario
-def RealRotateObjectToAnAxis(SelectedObj=None,RealAxis=App.Vector(0.0,0.0,0.0),
-                             rotAngleX=0.0, rotAngleY=0.0,rotAngleZ=0.0):
+# The rotation below is inspired by https://wiki.freecadweb.org/Macro_Rotate_To_Point
+# Thanks Mario
+def RealRotateObjectToAnAxis(SelectedObj=None, RealAxis=App.Vector(0.0, 0.0, 0.0),
+                             rotAngleX=0.0, rotAngleY=0.0, rotAngleZ=0.0):
     """[Rotate object ref to the given axis (Real rotation)]
 
     Args:
@@ -757,37 +774,41 @@ def RealRotateObjectToAnAxis(SelectedObj=None,RealAxis=App.Vector(0.0,0.0,0.0),
         rotAngleZ (float, optional): [Angle of rotation - Z Axis]. Defaults to 0.0.
     """
 
-    if (SelectedObj==None):
+    if (SelectedObj == None):
         raise ValueError("SelectedObj must be (a) selection object(s) ")
 
-    if (type(SelectedObj)==list):
+    if (type(SelectedObj) == list):
         for obj in SelectedObj:
-            obj.Placement = App.Placement(App.Vector(0.0,0.0,0.0),
-                                                App.Rotation(rotAngleX, rotAngleY, rotAngleZ),
-                                                App.Vector(RealAxis.x,RealAxis.y,RealAxis.z)).multiply(
-                                                    App.ActiveDocument.getObject(obj.Name).Placement)
-            textRota=("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0],2)) + " , " +
-                                                     str(round(obj.Placement.Rotation.toEuler()[1],2)) + " , " + 
-                                                     str(round(obj.Placement.Rotation.toEuler()[2],2)) + ")] " +
-                                          "[Axis=("+ str(round(RealAxis.x,2))+" , "+ str(round(RealAxis.y,2))+" , "+ 
-                                          str(round(RealAxis.z,2))+")]")
+            obj.Placement = App.Placement(App.Vector(0.0, 0.0, 0.0),
+                                          App.Rotation(
+                                              rotAngleX, rotAngleY, rotAngleZ),
+                                          App.Vector(RealAxis.x, RealAxis.y, RealAxis.z)).multiply(
+                App.ActiveDocument.getObject(obj.Name).Placement)
+            textRota = ("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0], 2)) + " , " +
+                        str(round(obj.Placement.Rotation.toEuler()[1], 2)) + " , " +
+                        str(round(obj.Placement.Rotation.toEuler()[2], 2)) + ")] " +
+                        "[Axis=(" + str(round(RealAxis.x, 2))+" , " + str(round(RealAxis.y, 2))+" , " +
+                        str(round(RealAxis.z, 2))+")]")
             print(textRota)
     else:
-        
-        SelectedObj.Placement = App.Placement(App.Vector(0.0,0.0,0.0),
-                                                App.Rotation(rotAngleX, rotAngleY, rotAngleZ),
-                                                App.Vector(RealAxis.x,RealAxis.y,RealAxis.z)).multiply(
-                                                    App.ActiveDocument.getObject(SelectedObj.Name).Placement)
 
-        textRota=("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0],2)) + " , " +
-                                                     str(round(SelectedObj.Placement.Rotation.toEuler()[1],2)) + " , " + 
-                                                     str(round(SelectedObj.Placement.Rotation.toEuler()[2],2)) + ")] " +
-                                          "[Axis=("+ str(round(RealAxis.x,2))+" , "+ str(round(RealAxis.y,2))+" , "+ str(round(RealAxis.z,2))+")]")
-        #print(textRota)
+        SelectedObj.Placement = App.Placement(App.Vector(0.0, 0.0, 0.0),
+                                              App.Rotation(
+                                                  rotAngleX, rotAngleY, rotAngleZ),
+                                              App.Vector(RealAxis.x, RealAxis.y, RealAxis.z)).multiply(
+            App.ActiveDocument.getObject(SelectedObj.Name).Placement)
 
-#The rotation below is inspired by https://wiki.freecadweb.org/Macro_Rotate_To_Point
-#Thanks Mario
-def RotateObjectToCenterPoint(SelectedObj=None,XAngle=0, YAngle=45,ZAngle=0):
+        textRota = ("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0], 2)) + " , " +
+                    str(round(SelectedObj.Placement.Rotation.toEuler()[1], 2)) + " , " +
+                    str(round(SelectedObj.Placement.Rotation.toEuler()[2], 2)) + ")] " +
+                    "[Axis=(" + str(round(RealAxis.x, 2))+" , " + str(round(RealAxis.y, 2))+" , " + str(round(RealAxis.z, 2))+")]")
+        # print(textRota)
+
+# The rotation below is inspired by https://wiki.freecadweb.org/Macro_Rotate_To_Point
+# Thanks Mario
+
+
+def RotateObjectToCenterPoint(SelectedObj=None, XAngle=0, YAngle=45, ZAngle=0):
     """[Rotate object ref to it's center point]
 
     Args:
@@ -796,24 +817,26 @@ def RotateObjectToCenterPoint(SelectedObj=None,XAngle=0, YAngle=45,ZAngle=0):
         YAngle (int, optional): [description]. Defaults to 45.
         ZAngle (int, optional): [description]. Defaults to 0.
     """
-    #The object will rotate at it's place
-    if (SelectedObj==None):
+    # The object will rotate at it's place
+    if (SelectedObj == None):
         raise ValueError("SelectedObj must be (a) selection object(s) ")
-    if (type(SelectedObj)==list):
+    if (type(SelectedObj) == list):
         for obj in SelectedObj:
-                axisX = obj.Shape.BoundBox.Center.x 
-                axisY = obj.Shape.BoundBox.Center.y
-                axisZ = obj.Shape.BoundBox.Center.z
-        RealRotateObjectToAnAxis(SelectedObj,App.Vector(axisX,axisY,axisZ),XAngle,YAngle,ZAngle)
+            axisX = obj.Shape.BoundBox.Center.x
+            axisY = obj.Shape.BoundBox.Center.y
+            axisZ = obj.Shape.BoundBox.Center.z
+        RealRotateObjectToAnAxis(SelectedObj, App.Vector(
+            axisX, axisY, axisZ), XAngle, YAngle, ZAngle)
     else:
-        axisX = SelectedObj.Shape.BoundBox.Center.x 
+        axisX = SelectedObj.Shape.BoundBox.Center.x
         axisY = SelectedObj.Shape.BoundBox.Center.y
         axisZ = SelectedObj.Shape.BoundBox.Center.z
-        RealRotateObjectToAnAxis(SelectedObj,App.Vector(axisX,axisY,axisZ),XAngle,YAngle,ZAngle)
+        RealRotateObjectToAnAxis(SelectedObj, App.Vector(
+            axisX, axisY, axisZ), XAngle, YAngle, ZAngle)
 
 
 def getLowestEdgetInAFace(selectedObj=None):
-    try:    
+    try:
         if selectedObj is None:
             raise ValueError("SelectedObj must be a face")
         ss = selectedObj.Shape
@@ -831,29 +854,29 @@ def getLowestEdgetInAFace(selectedObj=None):
         allZ.sort()
 
         result = None
-        testAllX=allX.count(allX[0]) == len(allX)
-        testAllY=allY.count(allY[0]) == len(allY)
-        testAllZ=allZ.count(allZ[0]) == len(allZ)
-        
+        testAllX = allX.count(allX[0]) == len(allX)
+        testAllY = allY.count(allY[0]) == len(allY)
+        testAllZ = allZ.count(allZ[0]) == len(allZ)
+
         if(testAllZ):
-            #We have either top or bottom
-            #for edge in ss.Edges:
+            # We have either top or bottom
+            # for edge in ss.Edges:
             #    if edge.SubShapes[0].Point.x == allX[0] or edge.SubShapes[0].Point.x == allX[1]:
             #           if edge.SubShapes[1].Point.x == allX[0] or edge.SubShapes[1].Point.x == allZ[1]:
             #                return edge
-                        
+
             for edge in ss.Edges:
                 if edge.SubShapes[0].Point.y == allY[0] or edge.SubShapes[0].Point.y == allY[1]:
-                       if edge.SubShapes[1].Point.y == allY[0] or edge.SubShapes[1].Point.y == allY[1]:
-                            return edge
+                    if edge.SubShapes[1].Point.y == allY[0] or edge.SubShapes[1].Point.y == allY[1]:
+                        return edge
         else:
-            #This is correcto for all faces but not for top or bottom. 
+            # This is correcto for all faces but not for top or bottom.
             for edge in ss.Edges:
                 if edge.SubShapes[0].Point.z == allZ[0] or edge.SubShapes[0].Point.z == allZ[1]:
-                       if edge.SubShapes[1].Point.z == allZ[0] or edge.SubShapes[1].Point.z == allZ[1]:
-                            return edge
+                    if edge.SubShapes[1].Point.z == allZ[0] or edge.SubShapes[1].Point.z == allZ[1]:
+                        return edge
         if result == None:
-            raise Exception("Not found")  #Don't know when this happens
+            raise Exception("Not found")  # Don't know when this happens
 
     except Exception as err:
         App.Console.PrintError("'getLowestEdgetInAFace -Failed. "
@@ -862,6 +885,7 @@ def getLowestEdgetInAFace(selectedObj=None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+
 def getNormalized(selectedObj=None):
     if selectedObj is None:
         raise ValueError("SelectedObj must be a face")
@@ -869,17 +893,18 @@ def getNormalized(selectedObj=None):
     v1 = App.Vector(edg.Vertexes[0].Y, edg.Vertexes[0].X, edg.Vertexes[0].Z)
     v2 = App.Vector(edg.Vertexes[1].Y, edg.Vertexes[1].X, edg.Vertexes[1].Z)
     vt = v1.sub(v2)
-    vt=vt
-    p1=edg.valueAt(edg.FirstParameter)
+    vt = vt
+    p1 = edg.valueAt(edg.FirstParameter)
     p2 = edg.valueAt(edg.LastParameter)
 
-    vnormal =p2-p1
-    print("vnormal",vnormal)
+    vnormal = p2-p1
+    print("vnormal", vnormal)
     return vnormal
 
-def getBase(selectedObj,radius=1, thickness=1):
+
+def getBase(selectedObj, radius=1, thickness=1):
     edg = getLowestEdgetInAFace(selectedObj)
-    nor=getNormalized(selectedObj)
+    nor = getNormalized(selectedObj)
     basePoint = edg.valueAt(edg.FirstParameter) + nor*(radius+thickness)
-    print("basePoint",basePoint)
+    print("basePoint", basePoint)
     return basePoint
