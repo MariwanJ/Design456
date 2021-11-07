@@ -141,14 +141,8 @@ class Design456_Hole:
                         if(nObj in self.FoundObjects):
                             self.FoundObjects.remove(nObj)
 
-                ## remove 2D objects
-                #if (nObj.TypeId == "Part::Part2DObjectPython"):
-                #    if(len(self.FoundObjects) >= 1):
-                #        if(nObj in self.FoundObjects):
-                #            self.FoundObjects.remove(nObj)
-
                 # TODO :FIXME: See if this works ?
-                if hasattr(nObj, "Shape") and nObj.Shape.Solids:
+                if (not( hasattr(nObj, "Shape") and nObj.Shape.Solids)):
                     if(len(self.FoundObjects) >= 1):
                         if(nObj in self.FoundObjects):
                             self.FoundObjects.remove(nObj)

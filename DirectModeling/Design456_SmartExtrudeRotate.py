@@ -95,7 +95,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     wheelObj = userData.wheelObj
     linktocaller.direction = "Center"
     clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                      wheelObj.w_pick_radius, wheelObj.w_CentersoSeparator)
+                                                      wheelObj.w_pick_radius, wheelObj.w_centersoSeparator)
 
     linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
@@ -386,11 +386,7 @@ class Design456_SmartExtrudeRotate:
     # We cannot combine rotation with direction extrusion.
     # This varialbe is used to disale all other options
     isItRotation = False
-    # Rotation type
-    radioRight = None
-    radioLeft = None
-    radioTop = None
-    radioBottom = None
+
 
     def calculateRotatedNormal(self, Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
@@ -870,12 +866,7 @@ class Design456_SmartExtrudeRotate:
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate(
                 "Dialog", "Smart Extrude Rotate"))
-            # self.radioLeft.setText(_translate("Dialog", "Left"))
-            # self.radioTop.setText(_translate("Dialog", "Top"))
-            # self.radioBottom.setText(_translate("Dialog", "Bottom"))
-            # self.radioRight.setText(_translate("Dialog", "Right"))
-            # self.lblExtrusionType.setText(
-            #     _translate("Dialog", "Extrusion typ"))
+
             self.radioAsIs.setText(_translate("Dialog", "As Is"))
             self.radioMerge.setText(_translate("Dialog", "Merge"))
             self.lblExtrusionResult.setText(
@@ -892,14 +883,6 @@ class Design456_SmartExtrudeRotate:
                 lambda: self.btnState(self.radioAsIs))
             self.radioMerge.toggled.connect(
                 lambda: self.btnState(self.radioMerge))
-            self.radioAsIs.toggled.connect(
-                lambda: self.btnState(self.radioTop))
-            self.radioMerge.toggled.connect(
-                lambda: self.btnState(self.radioBottom))
-            self.radioAsIs.toggled.connect(
-                lambda: self.btnState(self.radioRight))
-            self.radioMerge.toggled.connect(
-                lambda: self.btnState(self.radioLeft))
 
             QtCore.QObject.connect(
                 self.btnOK, QtCore.SIGNAL("accepted()"), self.hide)
@@ -917,25 +900,15 @@ class Design456_SmartExtrudeRotate:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def btnState(self, button):
+        if (button==None):
+            print("button was none why?")
+            return
         if button.text() == "As Is":
             if button.isChecked() is True:
                 self.OperationOption = 0  # 0 as Is default, 1 Merged, 2 Subtracted
         elif button.text() == "Merge":
             if button.isChecked() is True:
                 self.OperationOption = 1
-        # In which direction doesn't change (axis)
-        if button.text() == "Bottom":
-            if button.isChecked() is True:
-                self.OperationType = 0
-        elif button.text() == "Top":
-            if button.isChecked() is True:
-                self.OperationType = 1
-        elif button.text() == "Left":
-            if button.isChecked() is True:
-                self.OperationType = 2
-        elif button.text() == "Right":
-            if button.isChecked() is True:
-                self.OperationType = 1
 
     def hide(self):
         """
