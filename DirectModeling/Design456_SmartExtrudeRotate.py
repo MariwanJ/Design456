@@ -43,7 +43,7 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
 import math
-import Part as _part 
+import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
@@ -108,21 +108,41 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
             App.ActiveDocument.removeObject(linktocaller.newObject.Name)
             del linktocaller.newObject  # remove any object exist (loft)
-            linktocaller.reCreateRevolveObj(0)            
-            linktocaller.editing=True
+            linktocaller.reCreateRevolveObj(0)
+            linktocaller.editing = True
+            wheelObj.w_vector[0].z=0
 
     else:
-        linktocaller.run_Once=True
-        if (linktocaller.startVector==None): 
+        linktocaller.run_Once = True
+        if (linktocaller.startVector is None):
             linktocaller.startVector = linktocaller.endVector
+    oldangle = wheelObj.w_Rotation[3]
+    mx = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x
+    my = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y
+    mz = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z
+    # calculating the angle in a better way:
+    print(linktocaller.normalVector)
+    if abs(linktocaller.normalVector.x) == 1:
+        angle = math.degrees(math.atan2(mz, mx))
+    elif abs(linktocaller.normalVector.y) == 1:
+        angle = math.degrees(math.atan2(mz, my))
+    elif abs(linktocaller.normalVector.z) == 1:
+        angle = math.degrees(math.atan2(my, mx))
+    # Here axis has an angel  find a best way to calculate
+    else:
+        angle = math.atan2(mz/my)  # Not sure if this will be good TODO:FIXME:
+    print("AngleBefore", angle)
+    angle = round(angle, 1)
+    while (angle < (oldangle-180)):
+        angle = angle+360
+    while (angle > (oldangle+180)):
+        angle = angle-360
+    print("AngleAfter", angle)
+    if (angle < -360):
+        angle = -360
+    elif (angle > 360):
+        angle = 360
 
-    angle=-linktocaller.wheelObj.w_Rotation[3]+round((linktocaller.endVector -linktocaller.startVector).dot(linktocaller.normalVector), 1)
-    if angle==0:
-        angle=1    
-    if (angle> 360):
-            angle=360
-    elif(angle<-360):
-        -360
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
                                        str(linktocaller.w_rotation[0])+","
@@ -131,11 +151,11 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                                        str(linktocaller.w_rotation[2]) + ")"
                                        + "\nRotation Angle= " + str(angle) + " °")
 
-    linktocaller.wheelObj.w_Rotation[3] =-angle
+    wheelObj.w_Rotation[3] = angle
     if linktocaller.newObject is None:
         return
-    linktocaller.newObject.Angle = -angle
-    linktocaller.wheelObj.redraw()
+    linktocaller.newObject.Angle = angle
+    wheelObj.redraw()
     App.ActiveDocument.recompute()
 
 
@@ -358,8 +378,8 @@ class Design456_SmartExtrudeRotate:
     dialog = None
     tab = None
     wheelObj = None
-    editing=False
-    w_rotation = [0.0,0.0,0.0,0.0]  # Center/Wheel rotation
+    editing = False
+    w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
     _mywin = None
     b1 = None
     ExtrudeLBL = None
@@ -387,7 +407,6 @@ class Design456_SmartExtrudeRotate:
     # This varialbe is used to disale all other options
     isItRotation = False
 
-
     def calculateRotatedNormal(self, Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
 
@@ -398,7 +417,7 @@ class Design456_SmartExtrudeRotate:
             [Base.placement]: [Placement, rotation angle and axis of rotation for face2]
         """
         if self.isItRotation is True:
-            return;  #We shouldnt be here . 
+            return  # We shouldnt be here .
 
         faceRotation = 0
         # TODO: Lets take only X axis first , then Y ..etc and so on.
@@ -415,12 +434,14 @@ class Design456_SmartExtrudeRotate:
         ax = self.selectedObj.Object.Shape.CenterOfMass
         if self.faceDir == "+x" and Wheelaxis == "X":
             faced.RealRotateObjectToAnAxis(s, ax, 0, 90, 0)
-            self.ExtractedFaces[1].Placement.Base.x = self.ExtractedFaces[1].Placement.Base.x +self.ExtractedFaces[1].Shape.BoundBox.XLength
+            self.ExtractedFaces[1].Placement.Base.x = self.ExtractedFaces[1].Placement.Base.x + \
+                self.ExtractedFaces[1].Shape.BoundBox.XLength
             pl = self.ExtractedFaces[1].Placement
 
         elif self.faceDir == "-x" and Wheelaxis == "X":
             faced.RealRotateObjectToAnAxis(s, ax, 0, 90, 0)
-            self.ExtractedFaces[1].Placement.Base.x = self.ExtractedFaces[1].Placement.Base.x -self.ExtractedFaces[1].Shape.BoundBox.XLength
+            self.ExtractedFaces[1].Placement.Base.x = self.ExtractedFaces[1].Placement.Base.x - \
+                self.ExtractedFaces[1].Shape.BoundBox.XLength
             pl = self.ExtractedFaces[1].Placement
 
         elif (self.faceDir == "+x" and Wheelaxis == "Y") or (self.faceDir == "-x" and Wheelaxis == "Y"):
@@ -429,12 +450,14 @@ class Design456_SmartExtrudeRotate:
 
         elif self.faceDir == "+y" and Wheelaxis == "X":
             faced.RealRotateObjectToAnAxis(s, ax, 0, 0, -90)
-            self.ExtractedFaces[1].Placement.Base.y = self.ExtractedFaces[1].Placement.Base.y +self.ExtractedFaces[1].Shape.BoundBox.YLength
+            self.ExtractedFaces[1].Placement.Base.y = self.ExtractedFaces[1].Placement.Base.y + \
+                self.ExtractedFaces[1].Shape.BoundBox.YLength
             pl = self.ExtractedFaces[1].Placement
 
         elif self.faceDir == "-y" and Wheelaxis == "X":
             faced.RealRotateObjectToAnAxis(s, ax, 0, 0, 90)
-            self.ExtractedFaces[1].Placement.Base.y = self.ExtractedFaces[1].Placement.Base.y -self.ExtractedFaces[1].Shape.BoundBox.YLength
+            self.ExtractedFaces[1].Placement.Base.y = self.ExtractedFaces[1].Placement.Base.y - \
+                self.ExtractedFaces[1].Shape.BoundBox.YLength
             pl = self.ExtractedFaces[1].Placement
 
         elif (self.faceDir == "+y" and Wheelaxis == "Y") or (self.faceDir == "-y" and Wheelaxis == "Y"):
@@ -507,27 +530,29 @@ class Design456_SmartExtrudeRotate:
 
     # TODO: FIXME:
 
-    def reCreateRevolveObj(self,angle): 
+    def reCreateRevolveObj(self, angle):
         try:
             # Create the Revolution
             # remove totally the second face, not required anymore.
-            startY=self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
-            startX=self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
-            self.newObject = App.ActiveDocument.addObject("Part::Revolution", "ExtendRotate")
+            startY = self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
+            startX = self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
+            self.newObject = App.ActiveDocument.addObject(
+                "Part::Revolution", "ExtendRotate")
             App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
             self.ExtractedFaces[1] = None
-            self.newObject.Angle = angle        # to allow the creation other wise you get OCCT error, angl<>0
+            # to allow the creation other wise you get OCCT error, angl<>0
+            self.newObject.Angle = angle
             self.newObject.Solid = True
             self.newObject.Symmetric = False
             self.newObject.Source = self.ExtractedFaces[0]
-            nor=faced.getNormalized(self.ExtractedFaces[0])
-            bas=faced.getBase(self.ExtractedFaces[0])
+            nor = faced.getNormalized(self.ExtractedFaces[0])
+            bas = faced.getBase(self.ExtractedFaces[0])
             self.newObject.Base = bas
             self.newObject.Axis = nor
-            #Try this .. might be correct
-            self.wheelObj.w_Rotation[0]=nor.x
-            self.wheelObj.w_Rotation[1]=nor.y
-            self.wheelObj.w_Rotation[2]=nor.z
+            # Try this .. might be correct
+            self.wheelObj.w_Rotation[0] = nor.x
+            self.wheelObj.w_Rotation[1] = nor.y
+            self.wheelObj.w_Rotation[2] = nor.z
 
         except Exception as err:
             faced.EnableAllToolbar(True)
@@ -550,7 +575,7 @@ class Design456_SmartExtrudeRotate:
         try:
             # TODO:FIXME
             pl = self.calculateRotatedNormal(self.direction)
-            if(self.ExtractedFaces[1]!=None):
+            if(self.ExtractedFaces[1] != None):
                 self.ExtractedFaces[1].Placement = pl
             face2 = None
             if(self.isFaceOf3DObj()):
@@ -660,7 +685,8 @@ class Design456_SmartExtrudeRotate:
             self.selectedObj = self.selected[0]
             faced.EnableAllToolbar(False)
             # Undo
-            App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrudeRotate"))
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "SmartExtrudeRotate"))
             self.ExtractedFaces.clear()
             if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
@@ -669,10 +695,12 @@ class Design456_SmartExtrudeRotate:
                 # We have a 2D Face - Extract it directly
                 print("2d object copy the face itself")
                 sh = self.selectedObj.Object.Shape.copy()
-                o = App.ActiveDocument.addObject("Part::Feature", "MovableFace")
+                o = App.ActiveDocument.addObject(
+                    "Part::Feature", "MovableFace")
                 o.Shape = sh
                 self.ExtractedFaces.append(self.selectedObj.Object)
-                self.ExtractedFaces.append(App.ActiveDocument.getObject(o.Name))
+                self.ExtractedFaces.append(
+                    App.ActiveDocument.getObject(o.Name))
 
             # Deside how the Degree Wheel be drawn
             self.setupRotation = self.calculateNewVector()
@@ -739,7 +767,7 @@ class Design456_SmartExtrudeRotate:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
-            self.editing=False
+            self.editing = False
             App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo reg.
             self.mw = None
@@ -752,11 +780,11 @@ class Design456_SmartExtrudeRotate:
             self.run_Once = False
             self.endVector = None
             self.startVector = None
-            self.extrudeLength = 0.0 
+            self.extrudeLength = 0.0
             # We will make two object, one for visual effect and the other is the original
             self.selectedObj = None
             self.selected = None
-                
+
             self.direction = None
             self.setupRotation = [0, 0, 0, 0]
             # Used only with the center (cylinder)
@@ -851,13 +879,13 @@ class Design456_SmartExtrudeRotate:
             self.lblTitle.setFont(font)
             self.lblTitle.setObjectName("lblTitle")
             self.ExtrudeLBL = QtGui.QLabel(self.dialog)
-            self.ExtrudeLBL.setGeometry(QtCore.QRect(10, 145, 321, 31))
+            self.ExtrudeLBL.setGeometry(QtCore.QRect(10, 145, 321, 40))
             font = QtGui.QFont()
             font.setPointSize(10)
             self.ExtrudeLBL.setFont(font)
             self.ExtrudeLBL.setObjectName("ExtrudeLBL")
             self.RotateLBL = QtGui.QLabel(self.dialog)
-            self.RotateLBL.setGeometry(QtCore.QRect(10, 100, 281, 31))
+            self.RotateLBL.setGeometry(QtCore.QRect(10, 100, 281, 40))
             font = QtGui.QFont()
             font.setPointSize(10)
             self.RotateLBL.setFont(font)
@@ -877,7 +905,7 @@ class Design456_SmartExtrudeRotate:
             self.RotateLBL.setText(_translate("Dialog", "Extrusion Angle="))
 
             self.radioAsIs.setChecked(True)
-            #self.radioBottom.setChecked(True)
+            # self.radioBottom.setChecked(True)
 
             self.radioAsIs.toggled.connect(
                 lambda: self.btnState(self.radioAsIs))
@@ -900,7 +928,7 @@ class Design456_SmartExtrudeRotate:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def btnState(self, button):
-        if (button==None):
+        if (button == None):
             print("button was none why?")
             return
         if button.text() == "As Is":
