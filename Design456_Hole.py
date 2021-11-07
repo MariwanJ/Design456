@@ -33,6 +33,8 @@ import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES, FR_COLOR
+
+
 class Design456_Hole:
 
     mw = None
@@ -47,16 +49,20 @@ class Design456_Hole:
     FoundObjects = None
     selectedObj = None
     finishedObj = None
-        # This should take care of applying the hole command to the objects
-        # two things must be done:
-        # 1-Fusion for the tool (cutting objects)
-        # 2-Fusion for the base objects.
+    # This should take care of applying the hole command to the objects
+    # two things must be done:
+    # 1-Fusion for the tool (cutting objects)
+    # 2-Fusion for the base objects.
+
     def applyHole(self):
         """[Create cut object and create fusion if there are several objects for tool and base]
         """
         try:
             fuBase = None
             fuTool = None
+            if len(self.FoundObjects) == 0:
+                return  # Nothing to do
+
             for obj in self.selectedObj:
                 obj.Object.ViewObject.Transparency = 100
                 obj.Object.ViewObject.Transparency = 0
@@ -114,7 +120,7 @@ class Design456_Hole:
             overlappen = False
             self.FoundObjects = faced.findMainListedObjects()
             self.selectedObj = Gui.Selection.getSelectionEx()
-            
+
             for obj in self.selectedObj:
                 obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_LIGHTPINK
                 obj.Object.ViewObject.Transparency = 70
@@ -122,7 +128,7 @@ class Design456_Hole:
                 for nObj in self.FoundObjects:
                     if obj.Object == nObj:
                         self.FoundObjects.remove(nObj)
-                        
+
             for nObj in self.FoundObjects:
                 overlappen = False
                 for obj in self.selectedObj:
@@ -131,15 +137,21 @@ class Design456_Hole:
                         break
                 # remove not intersecting objects
                 if not overlappen:
-                    self.FoundObjects.remove(nObj)
-                # remove 2D objects.
-                print(len(nObj.Shape.Faces))
-                if (nObj.TypeId == "Part::Part2DObjectPython"):
-                    self.FoundObjects.remove(nObj)
-                    
-                # TODO:FIXME: Add more object that might fail otherwise
-                if not(len(nObj.Shape.Faces) > 1) and (nObj.TypeId != "Part::Torus"):
-                    self.FoundObjects.remove(nObj)
+                    if(len(self.FoundObjects) >= 1):
+                        if(nObj in self.FoundObjects):
+                            self.FoundObjects.remove(nObj)
+
+                ## remove 2D objects
+                #if (nObj.TypeId == "Part::Part2DObjectPython"):
+                #    if(len(self.FoundObjects) >= 1):
+                #        if(nObj in self.FoundObjects):
+                #            self.FoundObjects.remove(nObj)
+
+                # TODO :FIXME: See if this works ?
+                if hasattr(nObj, "Shape") and nObj.Shape.Solids:
+                    if(len(self.FoundObjects) >= 1):
+                        if(nObj in self.FoundObjects):
+                            self.FoundObjects.remove(nObj)
 
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
