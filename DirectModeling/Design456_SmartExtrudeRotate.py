@@ -130,9 +130,9 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         angle = math.degrees(math.atan2(my, mx))
     # Here axis has an angel  find a best way to calculate
     else:
-        angle = math.atan2(mz/my)  # Not sure if this will be good TODO:FIXME:
+        angle = math.degrees(math.atan2(mz,my))  # Not sure if this will be good TODO:FIXME:
     print("AngleBefore", angle)
-    angle = round(angle, 1)
+    angle = int(angle)   # Difficult to get accurate decimals .. so only INT
     while (angle < (oldangle-180)):
         angle = angle+360
     while (angle > (oldangle+180)):
@@ -762,6 +762,12 @@ class Design456_SmartExtrudeRotate:
         faced.EnableAllToolbar(True)
         try:
             self.wheelObj.hide()
+            if (self.radioMerge.isChecked()):
+                fusion = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
+                fusion.Shapes = [self.newObject,self.selectedObj.Object]
+                fusion.Refine = True
+                App.ActiveDocument.recompute()
+                
             self.wheelObj.__del__()  # call destructor
             if self._mywin is not None:
                 self._mywin.hide()
