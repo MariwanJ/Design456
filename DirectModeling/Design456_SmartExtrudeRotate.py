@@ -110,7 +110,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
             del linktocaller.newObject  # remove any object exist (loft)
             linktocaller.reCreateRevolveObj(0)
             linktocaller.editing = True
-            wheelObj.w_vector[0].z=0
+            wheelObj.w_vector[0].z = 0
 
     else:
         linktocaller.run_Once = True
@@ -123,14 +123,15 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     # calculating the angle in a better way:
     print(linktocaller.normalVector)
     if abs(linktocaller.normalVector.x) == 1:
-        angle = math.degrees(math.atan2(mz, mx))
+        angle = math.degrees(-math.atan2(mz, mx))
     elif abs(linktocaller.normalVector.y) == 1:
         angle = math.degrees(math.atan2(mz, my))
     elif abs(linktocaller.normalVector.z) == 1:
-        angle = math.degrees(math.atan2(my, mx))
+        angle = math.degrees(math.atan2(mz, my))
     # Here axis has an angel  find a best way to calculate
     else:
-        angle = math.degrees(math.atan2(mz,my))  # Not sure if this will be good TODO:FIXME:
+        # Not sure if this will be good TODO:FIXME:
+        angle = math.degrees(math.atan2(mz, my))
     print("AngleBefore", angle)
     angle = int(angle)   # Difficult to get accurate decimals .. so only INT
     while (angle < (oldangle-180)):
@@ -763,11 +764,12 @@ class Design456_SmartExtrudeRotate:
         try:
             self.wheelObj.hide()
             if (self.radioMerge.isChecked()):
-                fusion = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
-                fusion.Shapes = [self.newObject,self.selectedObj.Object]
+                fusion = App.ActiveDocument.addObject(
+                    "Part::MultiFuse", "Fusion")
+                fusion.Shapes = [self.newObject, self.selectedObj.Object]
                 fusion.Refine = True
                 App.ActiveDocument.recompute()
-                
+
             self.wheelObj.__del__()  # call destructor
             if self._mywin is not None:
                 self._mywin.hide()
