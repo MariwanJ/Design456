@@ -32,11 +32,12 @@ import Draft as _draft
 import Part as _part
 import Design456Init
 from pivy import coin
-import math 
+import math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
+
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -968,7 +969,7 @@ class Design456_Paint:
             self.setSize()
             self.recreateObject()            # Initial
             if(self.currentObj is None):
-                print("Why it is None?")
+                print("Why is this None?")
             App.ActiveDocument.recompute()
             self.callbackMove = self.view.addEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
@@ -1180,6 +1181,7 @@ class Design456_Paint:
                 App.ActiveDocument.removeObject(self.currentObj.Object.Name)
                 self.currentObj = None
             self.dialog.hide()
+            
             dw = self.mw.findChildren(QtGui.QDockWidget)
             newsize = self.tab.count()  # Todo : Should we do that?
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
@@ -1198,5 +1200,6 @@ class Design456_Paint:
         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_Paint.svg',
                 'MenuText': "Paint",
                 'ToolTip': "Draw or Paint"}
+
 
 Gui.addCommand('Design456_Paint', Design456_Paint())
