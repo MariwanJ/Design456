@@ -63,11 +63,12 @@ MouseScaleFactor = 1
     Pushing should be developed later. To find out where this tool fails I need to get 
     help from FreeCAD community.
 '''
-# TODO: As I wish to simplify the tree and make a simple 
+# TODO: As I wish to simplify the tree and make a simple
 # copy of all objects, I leave it now and I should
 # come back to do it. I must have it as an option in menu. (don't know how to do it now.)
 
-def callback_move(userData: fr_arrow_widget.userDataObject=None):
+
+def callback_move(userData: fr_arrow_widget.userDataObject = None):
     """[summary]
     Callback for the arrow movement. This will be used to calculate the length of the Extrude operation.
     Args:
@@ -120,7 +121,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject=None):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def callback_release(userData: fr_arrow_widget.userDataObject=None):
+def callback_release(userData: fr_arrow_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
        This callback will finalize the Extrude operation. 
@@ -144,7 +145,8 @@ def callback_release(userData: fr_arrow_widget.userDataObject=None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         # Undo
-        App.ActiveDocument.openTransaction(translate("Design456", "SmartExtrude"))
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "SmartExtrude"))
         App.ActiveDocument.recompute()
         linktocaller.startVector = None
         App.ActiveDocument.commitTransaction()  # undo reg.
@@ -156,41 +158,48 @@ def callback_release(userData: fr_arrow_widget.userDataObject=None):
             allObjects = []
             # if linktocaller.OperationOption == 1:
             for i in range(0, len(linktocaller.objChangedTransparency)):
-                allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
-                Gui.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name).Transparency=0
+                allObjects.append(App.ActiveDocument.getObject(
+                    linktocaller.objChangedTransparency[i].Object.Name))
+                Gui.ActiveDocument.getObject(
+                    linktocaller.objChangedTransparency[i].Object.Name).Transparency = 0
             if(linktocaller.isFaceOf3DObj() is True):
                 # We have a 3D object.
-                MERGEallObjects=[]
+                MERGEallObjects = []
                 MERGEallObjects.append(linktocaller.selectedObj.Object)
                 MERGEallObjects.append(linktocaller.newObject)
-                if(linktocaller.OperationOption==1):
-                    MERGEallObjects=MERGEallObjects+allObjects
+                if(linktocaller.OperationOption == 1):
+                    MERGEallObjects = MERGEallObjects+allObjects
                 old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-                old.Refine = True 
+                old.Refine = True
                 old.Shapes = MERGEallObjects
-                Gui.ActiveDocument.getObject(old.Name).Transparency = 0  # BUG in FreeCAD doesn't work
-                Gui.ActiveDocument.getObject(old.Name).ShapeColor = (FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
+                # BUG in FreeCAD doesn't work
+                Gui.ActiveDocument.getObject(old.Name).Transparency = 0
+                Gui.ActiveDocument.getObject(old.Name).ShapeColor = (
+                    FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
             else:
                 old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
                 allObjects.append(linktocaller.newObject)
-                old.Refine = True 
+                old.Refine = True
                 old.Shapes = allObjects
 
             App.ActiveDocument.recompute()
-            # subtraction will continue to work here 
+            # subtraction will continue to work here
             if linktocaller.OperationOption == 2:
                 # Subtraction is complex. I have to cut from each object the same extruded part.
                 if (linktocaller.objChangedTransparency != []):
                     allObjects = []
 
                     for i in range(0, len(linktocaller.objChangedTransparency)):
-                        allObjects.append(App.ActiveDocument.getObject(linktocaller.objChangedTransparency[i].Object.Name))
+                        allObjects.append(App.ActiveDocument.getObject(
+                            linktocaller.objChangedTransparency[i].Object.Name))
                         linktocaller.objChangedTransparency[i].Transparency = 0
-                    allObjects.append(App.ActiveDocument.getObject(linktocaller.selectedObj.Object.Name))
+                    allObjects.append(App.ActiveDocument.getObject(
+                        linktocaller.selectedObj.Object.Name))
                     App.ActiveDocument.recompute()
                     # Create a cut object for each transparency object
                     if(linktocaller.isFaceOf3DObj() != True):
-                        newObjcut = App.ActiveDocument.addObject("Part::Cut", "CUT")
+                        newObjcut = App.ActiveDocument.addObject(
+                            "Part::Cut", "CUT")
 
                         newObjcut.Base = allObjects[0]  # Target
                         newObjcut.Tool = linktocaller.newObject  # Subtracted shape/object
@@ -198,19 +207,20 @@ def callback_release(userData: fr_arrow_widget.userDataObject=None):
                         linktocaller.selectedObj.Object.Visibility = False
                     else:
                         for i in range(0, len(linktocaller.objChangedTransparency)):
-                            newObjcut.append(App.ActiveDocument.addObject("Part::Cut", "CUT" + str(i))) 
+                            newObjcut.append(App.ActiveDocument.addObject(
+                                "Part::Cut", "CUT" + str(i)))
                             newObjcut[i].Base = allObjects[i]  # Target
                             newObjcut[i].Tool = old  # Subtracted shape/object
                             newObjcut[i].Refine = True
                     App.ActiveDocument.recompute()
 
         elif linktocaller.OperationOption == 0:
-            # is here just to make the code more readable. 
-            pass  # nothing to do . 
+            # is here just to make the code more readable.
+            pass  # nothing to do .
 
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.
-        
+
     except Exception as err:
         faced.EnableAllToolbar(True)
         App.Console.PrintError("'Design456_Extrude' Release Filed. "
@@ -218,6 +228,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject=None):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
 
 class Design456_SmartExtrude:
     """
@@ -256,16 +267,17 @@ class Design456_SmartExtrude:
         """
         try:
             self.newObject.LengthFwd = self.extrudeLength
-            if self.OperationOption == 2 or self.OperationOption == 1 : 
+            if self.OperationOption == 2 or self.OperationOption == 1:
                 self.objChangedTransparency.clear()
                 result = faced.checkCollision(self.newObject)
                 if result != []:
                     for obj in result:
-                        TE = Gui.ActiveDocument.getObject(obj.Name)  #should be GUI object not App object!!!
+                        # should be GUI object not App object!!!
+                        TE = Gui.ActiveDocument.getObject(obj.Name)
                         TE.Transparency = 80
                         self.objChangedTransparency.append(TE)
                 App.ActiveDocument.recompute()
-                
+
         except Exception as err:
             App.Console.PrintError("'reCreateExtrudeObject' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -290,7 +302,7 @@ class Design456_SmartExtrude:
          Find out the vector and rotation of the arrow to be drawn.
         """
         # For now the arrow will be at the top
-        try:    
+        try:
             rotation = [0.0, 0.0, 0.0, 0.0]
 
             face1 = None
@@ -300,7 +312,7 @@ class Design456_SmartExtrude:
                 face1 = sub1.SubObjects[0]
             else:
                 face1 = self.selectedObj.Object.Shape.Faces[0]
-                
+
             self.extrudeLength = 5
             self._vector = self.calculateNewVector()
             self.extrudeLength = 0.0
@@ -308,16 +320,16 @@ class Design456_SmartExtrude:
                 yL = face1.CenterOfMass
                 uv = face1.Surface.parameter(yL)
                 nv = face1.normalAt(uv[0], uv[1])
-                calAn=math.degrees(nv.getAngle(App.Vector(1,1,0)))
+                calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 #nett= 90-faced.calculateAngle(rot)
-                rotation=[0,1,0,calAn]
+                rotation = [0, 1, 0, calAn]
             else:
                 rotation = (face1.Surface.Rotation.Axis.x,
-                        face1.Surface.Rotation.Axis.y,
-                        face1.Surface.Rotation.Axis.z,
-                        math.degrees(face1.Surface.Rotation.Angle))
+                            face1.Surface.Rotation.Axis.y,
+                            face1.Surface.Rotation.Axis.z,
+                            math.degrees(face1.Surface.Rotation.Angle))
             return rotation
-        
+
         except Exception as err:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_Extrude' getArrowPosition-Failed. "
@@ -325,7 +337,6 @@ class Design456_SmartExtrude:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
 
     def isFaceOf3DObj(self):
         """[Check if the selected object is a face from a 3D object or is a 2D object. 
@@ -336,7 +347,8 @@ class Design456_SmartExtrude:
         Returns:
             [Boolean]: [Return True if the selected object is a face from 3D object, otherwise False]
         """
-        if len(self.selectedObj.Object.Shape.Faces) > 1:
+        # if len(self.selectedObj.Object.Shape.Faces) > 1:
+        if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.Solids:
             return True
         else:
             return False
@@ -356,10 +368,11 @@ class Design456_SmartExtrude:
             pass  # TODO: WHAT SHOULD WE DO HERE ?
 
         name = self.selectedObj.SubElementNames[0]
-        newobj = App.ActiveDocument.addObject("Part::Feature", newobj)  # create face 
+        newobj = App.ActiveDocument.addObject(
+            "Part::Feature", newobj)  # create face
         newobj.Shape = sh.getElement(name)
         App.ActiveDocument.recompute()
-        newobj.Visibility = False 
+        newobj.Visibility = False
         return newobj
 
     def calculateNewVector(self):
@@ -437,14 +450,15 @@ class Design456_SmartExtrude:
             self.newObject.Symmetric = False
             self.newObject.TaperAngle = 0.0
             self.newObject.TaperAngleRev = 0.0
-            self.newObject.Dir= Gui.ActiveDocument.getObject(self.targetFace.Name).Object.Shape.Faces[0].normalAt(0,0)
-            if (self.newObject.Dir.x!=1 or
-                self.newObject.Dir.y!=1 or
-                self.newObject.Dir.z!=1):
-                self.newObject.DirMode="Custom"
-                
+            self.newObject.Dir = Gui.ActiveDocument.getObject(
+                self.targetFace.Name).Object.Shape.Faces[0].normalAt(0, 0)
+            if (self.newObject.Dir.x != 1 or
+                self.newObject.Dir.y != 1 or
+                    self.newObject.Dir.z != 1):
+                self.newObject.DirMode = "Custom"
+
             App.ActiveDocument.recompute()
-            
+
         except Exception as err:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_Extrude' Activated-Failed. "
@@ -468,10 +482,10 @@ class Design456_SmartExtrude:
                 self._mywin = None
             App.ActiveDocument.commitTransaction()  # undo reg.
             self.extrudeLength = 0
-            self.OperationOption=0
-            self.selectedObj=None
-            self.targetFace=None
-            self.newObject=None
+            self.OperationOption = 0
+            self.selectedObj = None
+            self.targetFace = None
+            self.newObject = None
             del self
 
         except Exception as err:
@@ -515,23 +529,24 @@ class Design456_SmartExtrude:
             self.dialog.resize(200, 450)
             self.dialog.setWindowTitle("Smart Extrude")
             self.la = QtGui.QVBoxLayout(self.dialog)
-            self.e1 = QtGui.QLabel("(Smart Extrude)\nFor quicker\nApplying Extrude")
+            self.e1 = QtGui.QLabel(
+                "(Smart Extrude)\nFor quicker\nApplying Extrude")
             self.groupBox = QtGui.QGroupBox(self.dialog)
             self.groupBox.setGeometry(QtCore.QRect(60, 130, 120, 80))
             self.groupBox.setObjectName("Extrusion Type")
 
             self.radAsIs = QtGui.QRadioButton(self.groupBox)
             self.radAsIs.setObjectName("radAsIs")
-            self.radAsIs.setText("As Is")            
+            self.radAsIs.setText("As Is")
 
             self.radMerge = QtGui.QRadioButton(self.groupBox)
             self.radMerge.setObjectName("radMerge")
-            self.radMerge.setText("Merge")            
+            self.radMerge.setText("Merge")
 
             self.radSubtract = QtGui.QRadioButton(self.groupBox)
             self.radSubtract.setObjectName("radSubtract")
-            self.radSubtract.setText("Subtract")            
-            
+            self.radSubtract.setText("Subtract")
+
             commentFont = QtGui.QFont("Times", 12, True)
             self.ExtrudeLBL = QtGui.QLabel("Extrude Length=")
             self.e1.setFont(commentFont)
@@ -549,10 +564,11 @@ class Design456_SmartExtrude:
             self.la.addWidget(self.radMerge)
             self.la.addWidget(self.radSubtract)
             self.radAsIs.setChecked(True)
-            self.radAsIs.toggled.connect(lambda:self.btnState(self.radAsIs))
-            self.radMerge.toggled.connect(lambda:self.btnState(self.radMerge))
-            self.radSubtract.toggled.connect(lambda:self.btnState(self.radSubtract))
-            
+            self.radAsIs.toggled.connect(lambda: self.btnState(self.radAsIs))
+            self.radMerge.toggled.connect(lambda: self.btnState(self.radMerge))
+            self.radSubtract.toggled.connect(
+                lambda: self.btnState(self.radSubtract))
+
             QtCore.QObject.connect(
                 okbox, QtCore.SIGNAL("accepted()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
@@ -616,5 +632,6 @@ class Design456_SmartExtrude:
             'MenuText': ' Smart Extrude',
                         'ToolTip':  ' Smart Extrude'
         }
+
 
 Gui.addCommand('Design456_SmartExtrude', Design456_SmartExtrude())
