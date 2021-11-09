@@ -29,8 +29,6 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft
-import Part
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
@@ -177,10 +175,11 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                 Gui.ActiveDocument.getObject(old.Name).ShapeColor = (
                     FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
             else:
-                old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-                allObjects.append(linktocaller.newObject)
-                old.Refine = True
-                old.Shapes = allObjects
+                if(linktocaller.OperationOption == 1):
+                    old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
+                    allObjects.append(linktocaller.newObject)
+                    old.Refine = True
+                    old.Shapes = allObjects
 
             App.ActiveDocument.recompute()
             # subtraction will continue to work here
@@ -349,8 +348,10 @@ class Design456_SmartExtrude:
         """
         # if len(self.selectedObj.Object.Shape.Faces) > 1:
         if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.Solids:
+            print("3D object")
             return True
         else:
+            print("2D object")
             return False
 
     def extractFace(self):
@@ -598,25 +599,10 @@ class Design456_SmartExtrude:
         """
         Hide the widgets. Remove also the tab.
         TODO:
-        For this tool, I decide to choose the hide to merge, subtract or leave it as is here. 
-        I can do that during the extrusion (moving the arrow), but that will be an action
-        without undo. Here the user will be finished with the extrusion and want to leave the tool
+        For this tool, I decide to choose "hide" to (merge, subtract or leave it as) here. 
+        I might allow a "simple copy" in the future.
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
-
-        if (self.OperationOption == 0):
-            pass  # Here just to make the code clear that we do nothing otherwise it != necessary
-        elif(self.OperationOption == 1):
-            # Merge the new object with the old object
-            # There are several cases here
-            # 1- Old object was only 2D object --
-            #    nothing will be done but we must see if the new object != intersecting other objects
-            # 2- Old object is intersecting with new object..
-            # In case 1 and 2 when there is intersecting we should merge both
-            if (self.isFaceOf3DObj() is True):
-                # No 3D but collision might happen.
-                pass
-
         self.dialog.hide()
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
