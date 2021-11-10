@@ -103,12 +103,12 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             # only once
             linktocaller.startVector = linktocaller.endVector
 
-        linktocaller.extrudeLength = (
-            linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
+        linktocaller.extrudeLength = round((
+            linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector),2)
 
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ExtrudeLBL.setText(
-            "Length= " + str(round(linktocaller.extrudeLength, 4)))
+            "Length= " + str(linktocaller.extrudeLength))
         linktocaller.reCreateExtrudeObject()
         App.ActiveDocument.recompute()
     except Exception as err:
