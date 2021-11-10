@@ -118,7 +118,35 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+def creatFusionObject(linktocaller):
+    allObjects = []
+    for i in range(0, len(linktocaller.objChangedTransparency)):
+            allObjects.append(App.ActiveDocument.getObject(
+            linktocaller.objChangedTransparency[i].Object.Name))
+            Gui.ActiveDocument.getObject(
+            linktocaller.objChangedTransparency[i].Object.Name).Transparency = 0
 
+    if(linktocaller.isFaceOf3DObj() is True):
+        # We have a 3D object.
+        MERGEallObjects = []
+        MERGEallObjects.append(linktocaller.selectedObj.Object)
+        MERGEallObjects.append(linktocaller.newObject)
+        if(linktocaller.OperationOption == 1):
+            MERGEallObjects = MERGEallObjects+allObjects
+        old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
+        old.Refine = True
+        old.Shapes = MERGEallObjects
+        # BUG in FreeCAD doesn't work
+        Gui.ActiveDocument.getObject(old.Name).Transparency = 0
+        Gui.ActiveDocument.getObject(old.Name).ShapeColor = (
+            FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
+    else:
+            old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
+            allObjects.append(linktocaller.newObject)
+            old.Refine = True
+            old.Shapes = allObjects
+    return old
+    
 def callback_release(userData: fr_arrow_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
@@ -151,67 +179,67 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         newObjcut = []
         old = None
         # Do final operation. Either leave it as it is, merge or subtract
-        if linktocaller.OperationOption != 0:
-            # First merge the old object with the extruded face
-            allObjects = []
-            # if linktocaller.OperationOption == 1:
-            for i in range(0, len(linktocaller.objChangedTransparency)):
-                allObjects.append(App.ActiveDocument.getObject(
-                    linktocaller.objChangedTransparency[i].Object.Name))
-                Gui.ActiveDocument.getObject(
-                    linktocaller.objChangedTransparency[i].Object.Name).Transparency = 0
-            if(linktocaller.isFaceOf3DObj() is True):
-                # We have a 3D object.
-                MERGEallObjects = []
-                MERGEallObjects.append(linktocaller.selectedObj.Object)
-                MERGEallObjects.append(linktocaller.newObject)
-                if(linktocaller.OperationOption == 1):
-                    MERGEallObjects = MERGEallObjects+allObjects
-                old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-                old.Refine = True
-                old.Shapes = MERGEallObjects
-                # BUG in FreeCAD doesn't work
-                Gui.ActiveDocument.getObject(old.Name).Transparency = 0
-                Gui.ActiveDocument.getObject(old.Name).ShapeColor = (
-                    FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
-            else:
-                if(linktocaller.OperationOption == 1):
-                    old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-                    allObjects.append(linktocaller.newObject)
-                    old.Refine = True
-                    old.Shapes = allObjects
-
+        if(linktocaller.OperationOption == 1):
+            ## First merge the old object with the extruded face
+            #allObjects = []
+            #for i in range(0, len(linktocaller.objChangedTransparency)):
+            #    allObjects.append(App.ActiveDocument.getObject(
+            #        linktocaller.objChangedTransparency[i].Object.Name))
+            #    Gui.ActiveDocument.getObject(
+            #        linktocaller.objChangedTransparency[i].Object.Name).Transparency = 0
+#
+            #if(linktocaller.isFaceOf3DObj() is True):
+            #    # We have a 3D object.
+            #    MERGEallObjects = []
+            #    MERGEallObjects.append(linktocaller.selectedObj.Object)
+            #    MERGEallObjects.append(linktocaller.newObject)
+            #    if(linktocaller.OperationOption == 1):
+            #        MERGEallObjects = MERGEallObjects+allObjects
+            #    old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
+            #    old.Refine = True
+            #    old.Shapes = MERGEallObjects
+            #    # BUG in FreeCAD doesn't work
+            #    Gui.ActiveDocument.getObject(old.Name).Transparency = 0
+            #    Gui.ActiveDocument.getObject(old.Name).ShapeColor = (
+            #        FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
+            #else:
+            #        old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
+            #        allObjects.append(linktocaller.newObject)
+            #        old.Refine = True
+            #        old.Shapes = allObjects
+            creatFusionObject(linktocaller)
             App.ActiveDocument.recompute()
             # subtraction will continue to work here
-            if linktocaller.OperationOption == 2:
-                # Subtraction is complex. I have to cut from each object the same extruded part.
-                if (linktocaller.objChangedTransparency != []):
-                    allObjects = []
+        elif linktocaller.OperationOption == 2:
+            # Subtraction is complex. I have to cut from each object the same extruded part.
+            if (linktocaller.objChangedTransparency != []):
+                allObjects = []
 
-                    for i in range(0, len(linktocaller.objChangedTransparency)):
-                        allObjects.append(App.ActiveDocument.getObject(
-                            linktocaller.objChangedTransparency[i].Object.Name))
-                        linktocaller.objChangedTransparency[i].Transparency = 0
+                for i in range(0, len(linktocaller.objChangedTransparency)):
                     allObjects.append(App.ActiveDocument.getObject(
-                        linktocaller.selectedObj.Object.Name))
-                    App.ActiveDocument.recompute()
-                    # Create a cut object for each transparency object
-                    if(linktocaller.isFaceOf3DObj() != True):
-                        newObjcut = App.ActiveDocument.addObject(
-                            "Part::Cut", "CUT")
+                        linktocaller.objChangedTransparency[i].Object.Name))
+                    linktocaller.objChangedTransparency[i].Transparency = 0
+                allObjects.append(App.ActiveDocument.getObject(
+                    linktocaller.selectedObj.Object.Name))
+                App.ActiveDocument.recompute()
+                # Create a cut object for each transparency object
+                if(linktocaller.isFaceOf3DObj() != True):
+                    newObjcut = App.ActiveDocument.addObject(
+                        "Part::Cut", "CUT")
 
-                        newObjcut.Base = allObjects[0]  # Target
-                        newObjcut.Tool = linktocaller.newObject  # Subtracted shape/object
-                        newObjcut.Refine = True
-                        linktocaller.selectedObj.Object.Visibility = False
-                    else:
-                        for i in range(0, len(linktocaller.objChangedTransparency)):
-                            newObjcut.append(App.ActiveDocument.addObject(
-                                "Part::Cut", "CUT" + str(i)))
-                            newObjcut[i].Base = allObjects[i]  # Target
-                            newObjcut[i].Tool = old  # Subtracted shape/object
-                            newObjcut[i].Refine = True
-                    App.ActiveDocument.recompute()
+                    newObjcut.Base = allObjects[0]  # Target
+                    newObjcut.Tool = linktocaller.newObject  # Subtracted shape/object
+                    newObjcut.Refine = True
+                    linktocaller.selectedObj.Object.Visibility = False
+                else:
+                    for i in range(0, len(linktocaller.objChangedTransparency)):
+                        newObjcut.append(App.ActiveDocument.addObject(
+                            "Part::Cut", "CUT" + str(i)))
+                        newObjcut[i].Base = allObjects[i]  # Target
+                        mergedTool = creatFusionObject(linktocaller)               #Merge the tools all the parts
+                        newObjcut[i].Tool = mergedTool   # Subtracted shape/object
+                        newObjcut[i].Refine = True
+                App.ActiveDocument.recompute()
 
         elif linktocaller.OperationOption == 0:
             # is here just to make the code more readable.
