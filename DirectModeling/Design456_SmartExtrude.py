@@ -104,7 +104,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
 
         linktocaller.extrudeLength = round((
-            linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector),2)
+            linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector), 2)
 
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ExtrudeLBL.setText(
@@ -118,35 +118,63 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-def creatFusionObject(linktocaller):
+
+def createFusionObjectBase(linktocaller):
     allObjects = []
     for i in range(0, len(linktocaller.objChangedTransparency)):
-            allObjects.append(App.ActiveDocument.getObject(
+        allObjects.append(App.ActiveDocument.getObject(
             linktocaller.objChangedTransparency[i].Object.Name))
-            Gui.ActiveDocument.getObject(
+        Gui.ActiveDocument.getObject(
             linktocaller.objChangedTransparency[i].Object.Name).Transparency = 0
+    if(linktocaller.OperationOption == 1):
+        # we have to add the tools also
+        if(linktocaller.WasFaceFrom3DObject is True):
+            # 3D objects consist of old object + extruded face
+            allObjects.append(linktocaller.selectedObj.Object)
+            allObjects.append(linktocaller.newObject)
+        else:
+            # 2D object consist of only the new object as the old object was only 2D face
+            allObjects.append(linktocaller.newObject)
+        BaseObj = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
+        BaseObj.Refine = True
+        BaseObj.Shapes = allObjects
+        return BaseObj
+    elif(linktocaller.OperationOption == 2):
+        if(len(allObjects) > 1):
+            BaseObj = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
+            BaseObj.Refine = True
+            BaseObj.Shapes = allObjects
+        else:
 
-    if(linktocaller.isFaceOf3DObj() is True):
-        # We have a 3D object.
+            return allObjects[0]
+
+
+def createFusionObjectTool(linktocaller):
+    Transparency = False
+    for obj in linktocaller.objChangedTransparency:
+        if obj.Object == linktocaller.selectedObj.Object:
+            # The object is Base not tool
+            Transparency = True
+
+    if(linktocaller.WasFaceFrom3DObject is True
+       and Transparency is True):
+        # The face is from a 3D object that extruded to cut
+        return linktocaller.newObject
+    else:
+        # We have extracted a face from 3D object. Therefore it must be included
         MERGEallObjects = []
         MERGEallObjects.append(linktocaller.selectedObj.Object)
         MERGEallObjects.append(linktocaller.newObject)
-        if(linktocaller.OperationOption == 1):
-            MERGEallObjects = MERGEallObjects+allObjects
-        old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-        old.Refine = True
-        old.Shapes = MERGEallObjects
+        ToolObj = App.ActiveDocument.addObject("Part::MultiFuse", "MergedTool")
+        ToolObj.Refine = True
+        ToolObj.Shapes = MERGEallObjects
         # BUG in FreeCAD doesn't work
-        Gui.ActiveDocument.getObject(old.Name).Transparency = 0
-        Gui.ActiveDocument.getObject(old.Name).ShapeColor = (
+        Gui.ActiveDocument.getObject(ToolObj.Name).Transparency = 0
+        Gui.ActiveDocument.getObject(ToolObj.Name).ShapeColor = (
             FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
-    else:
-            old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-            allObjects.append(linktocaller.newObject)
-            old.Refine = True
-            old.Shapes = allObjects
-    return old
-    
+        return ToolObj
+
+
 def callback_release(userData: fr_arrow_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
@@ -180,65 +208,37 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         old = None
         # Do final operation. Either leave it as it is, merge or subtract
         if(linktocaller.OperationOption == 1):
-            ## First merge the old object with the extruded face
-            #allObjects = []
-            #for i in range(0, len(linktocaller.objChangedTransparency)):
-            #    allObjects.append(App.ActiveDocument.getObject(
-            #        linktocaller.objChangedTransparency[i].Object.Name))
-            #    Gui.ActiveDocument.getObject(
-            #        linktocaller.objChangedTransparency[i].Object.Name).Transparency = 0
-#
-            #if(linktocaller.isFaceOf3DObj() is True):
-            #    # We have a 3D object.
-            #    MERGEallObjects = []
-            #    MERGEallObjects.append(linktocaller.selectedObj.Object)
-            #    MERGEallObjects.append(linktocaller.newObject)
-            #    if(linktocaller.OperationOption == 1):
-            #        MERGEallObjects = MERGEallObjects+allObjects
-            #    old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-            #    old.Refine = True
-            #    old.Shapes = MERGEallObjects
-            #    # BUG in FreeCAD doesn't work
-            #    Gui.ActiveDocument.getObject(old.Name).Transparency = 0
-            #    Gui.ActiveDocument.getObject(old.Name).ShapeColor = (
-            #        FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
-            #else:
-            #        old = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
-            #        allObjects.append(linktocaller.newObject)
-            #        old.Refine = True
-            #        old.Shapes = allObjects
-            creatFusionObject(linktocaller)
+            createFusionObjectBase(linktocaller)
             App.ActiveDocument.recompute()
             # subtraction will continue to work here
         elif linktocaller.OperationOption == 2:
             # Subtraction is complex. I have to cut from each object the same extruded part.
             if (linktocaller.objChangedTransparency != []):
+                base = createFusionObjectBase(linktocaller)
                 allObjects = []
-
-                for i in range(0, len(linktocaller.objChangedTransparency)):
-                    allObjects.append(App.ActiveDocument.getObject(
-                        linktocaller.objChangedTransparency[i].Object.Name))
-                    linktocaller.objChangedTransparency[i].Transparency = 0
-                allObjects.append(App.ActiveDocument.getObject(
-                    linktocaller.selectedObj.Object.Name))
-                App.ActiveDocument.recompute()
                 # Create a cut object for each transparency object
-                if(linktocaller.isFaceOf3DObj() != True):
-                    newObjcut = App.ActiveDocument.addObject(
-                        "Part::Cut", "CUT")
-
-                    newObjcut.Base = allObjects[0]  # Target
-                    newObjcut.Tool = linktocaller.newObject  # Subtracted shape/object
-                    newObjcut.Refine = True
-                    linktocaller.selectedObj.Object.Visibility = False
-                else:
+                if(linktocaller.WasFaceFrom3DObject is True):
+                    # It is a 2D drawing object
+                    print("3D object ")
+                    tool = createFusionObjectTool(linktocaller)
                     for i in range(0, len(linktocaller.objChangedTransparency)):
                         newObjcut.append(App.ActiveDocument.addObject(
                             "Part::Cut", "CUT" + str(i)))
-                        newObjcut[i].Base = allObjects[i]  # Target
-                        mergedTool = creatFusionObject(linktocaller)               #Merge the tools all the parts
-                        newObjcut[i].Tool = mergedTool   # Subtracted shape/object
+                        newObjcut[i].Base = base
+                        # Subtracted shape/object
+                        newObjcut[i].Tool = tool
                         newObjcut[i].Refine = True
+                    tool.Visibility = False
+                else:
+                    print("2D object")
+                    for i in range(0, len(linktocaller.objChangedTransparency)):
+                        newObjcut.append(App.ActiveDocument.addObject(
+                            "Part::Cut", "CUT" + str(i)))
+                        newObjcut[i].Base = base
+                        # Subtracted shape/object
+                        newObjcut[i].Tool = linktocaller.newObject
+                        newObjcut[i].Refine = True
+
                 App.ActiveDocument.recompute()
 
         elif linktocaller.OperationOption == 0:
@@ -283,6 +283,7 @@ class Design456_SmartExtrude:
     DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
     OperationOption = 0  # default is zero
     objChangedTransparency = []
+    WasFaceFrom3DObject = False
 
     def reCreateExtrudeObject(self):
         """
@@ -333,7 +334,7 @@ class Design456_SmartExtrude:
             rotation = [0.0, 0.0, 0.0, 0.0]
 
             face1 = None
-            if(self.isFaceOf3DObj()):
+            if(self.WasFaceFrom3DObject):
                 # The whole object is selected
                 sub1 = self.selectedObj
                 face1 = sub1.SubObjects[0]
@@ -376,10 +377,8 @@ class Design456_SmartExtrude:
         """
         # if len(self.selectedObj.Object.Shape.Faces) > 1:
         if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.Solids:
-            print("3D object")
             return True
         else:
-            print("2D object")
             return False
 
     def extractFace(self):
@@ -410,7 +409,7 @@ class Design456_SmartExtrude:
         Returns:
             [App.Vector]: [Position where the arrow will be moved to]
         """
-        if(self.isFaceOf3DObj()):
+        if(self.WasFaceFrom3DObject):
             ss = self.selectedObj.SubObjects[0]
         else:
             ss = self.selectedObj.Object.Shape
@@ -446,7 +445,8 @@ class Design456_SmartExtrude:
             # Undo
             App.ActiveDocument.openTransaction(
                 translate("Design456", "SmartExtrude"))
-            if self.isFaceOf3DObj():  # We must know if the selection is a 2D face or a face from a 3D object
+            self.WasFaceFrom3DObject = self.isFaceOf3DObj()
+            if self.WasFaceFrom3DObject is True:  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
                 self.targetFace = self.extractFace()
             else:
@@ -505,7 +505,7 @@ class Design456_SmartExtrude:
         try:
             self.smartInd.hide()
             self.smartInd.__del__()  # call destructor
-            if self._mywin != None:
+            if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
@@ -518,7 +518,7 @@ class Design456_SmartExtrude:
             del self
 
         except Exception as err:
-            App.Console.PrintError("'Design456_Extrude' Activateds-Failed. "
+            App.Console.PrintError("'Design456_Extrude' __del__-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
