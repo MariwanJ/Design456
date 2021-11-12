@@ -253,6 +253,9 @@ class PartMover:
         try:
             import Design456Init
             tempPoint = self.view.getPoint(pos[0], pos[1])
+            tempPoint = [int(tempPoint[0]),
+                         int(tempPoint[1]), 
+                         int(tempPoint[2])]
             if(self.Direction is None):
                 if Design456Init.DefaultDirectionOfExtrusion == 'x':
                     point = (App.Vector(0.0, tempPoint[0], tempPoint[1]))
