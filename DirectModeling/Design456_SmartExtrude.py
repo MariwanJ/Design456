@@ -104,7 +104,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
 
         linktocaller.extrudeLength = round((
-            linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector), 2)
+            linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector), 1)
 
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.ExtrudeLBL.setText(
