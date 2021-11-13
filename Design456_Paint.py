@@ -106,13 +106,18 @@ class Design456_Paint:
                       "MOON1",
                       "MOON2",
                       "MOON3",
-                      "MOON4"]
+                      "MOON4",
+                      "FILLET1",
+                      "FILLET2",
+                      "FILLET3",
+                      "FILLET4",
+                      ]
 
     def setSize(self):
         """
             [Change the size of the shape]
         """
-        self.brushSize = self.lstBrushSize.currentRow()
+        self.brushSize = self.lstBrushSize.currentRow()+1
         self.PaintLBL = QtGui.QLabel(
             "Use X,Y,Z to limit the movements\nAnd A for free movement\nPaint Radius or side=" + self.lstBrushSize.currentItem().text())
 
@@ -146,7 +151,7 @@ class Design456_Paint:
             first = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
             first.Radius = self.brushSize
             first.Height = self.firstSize
-            second = App.ActiveDocument.addObject("Part::Box", "Circle")
+            second = App.ActiveDocument.addObject("Part::Box", "Box")
             second.Width = self.brushSize
             second.Length = self.brushSize*6
             second.Height = self.firstSize
@@ -450,16 +455,16 @@ class Design456_Paint:
             pl.Base = App.Vector(0, 0, 0.0)
             points = None
             if typeOfParallelogram == 1:
-                points = [App.Vector(0, self.brushSize*4, 0.0),
-                          App.Vector(self.brushSize*10, self.brushSize*4, 0.0),
-                          App.Vector(self.brushSize*4 +
-                                     self.brushSize*2, 0, 0.0),
-                          App.Vector(self.brushSize*4, 0.0, 0.0)]
+                points = [App.Vector(0, self.brushSize*0.4, 0.0),
+                          App.Vector(self.brushSize, self.brushSize*0.4, 0.0),
+                          App.Vector(self.brushSize*0.4 +
+                                     self.brushSize*0.2, 0, 0.0),
+                          App.Vector(self.brushSize*0.4, 0.0, 0.0)]
 
             elif typeOfParallelogram == 2:
-                points = [App.Vector(0, self.brushSize*3, 0.0),
-                          App.Vector(self.brushSize*2, self.brushSize*4, 0.0),
-                          App.Vector(self.brushSize*2, 0, 0.0),
+                points = [App.Vector(0, self.brushSize*3/4, 0.0),
+                          App.Vector(self.brushSize*2/4, self.brushSize*4/4, 0.0),
+                          App.Vector(self.brushSize*2/4, 0, 0.0),
                           App.Vector(self.brushSize, 0.0, 0.0)]
             first = _draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
@@ -718,6 +723,58 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def draw_Fillet(self, FilletType):
+        try:
+            pl = App.Placement()
+            pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
+            pl.Base = App.Vector(0, 0, 0.0)
+            first = App.ActiveDocument.addObject("Part::Box", "Box")
+            first.Width = self.brushSize
+            first.Length = self.brushSize
+            first.Height = self.firstSize
+
+            second = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+            second.Radius = self.brushSize
+            second.Height = self.firstSize
+
+            newObj = App.ActiveDocument.addObject("Part::Cut", "cut")
+            newObj.Base = first
+            newObj.Tool = second
+            newObj.Placement = pl
+            if FilletType == 1:
+                first.Placement = pl
+                second.Placement = pl
+                second.Placement.Base = App.Vector(
+                    self.brushSize, self.brushSize, 0)
+            elif FilletType == 2:
+                first.Placement = pl
+                second.Placement = pl
+            elif FilletType == 3:
+                first.Placement = pl
+                second.Placement = pl
+                second.Placement.Base.y = self.brushSize
+            elif FilletType == 4:
+                first.Placement = pl
+                second.Placement = pl
+                second.Placement.Base.x = self.brushSize
+            App.ActiveDocument.recompute()
+            newShape = _part.getShape(
+                newObj, '', needSubElement=False, refine=True)
+            s = App.ActiveDocument.addObject('Part::Feature', 'Fillet')
+            s.Shape = newShape
+            App.ActiveDocument.removeObject(first.Name)
+            App.ActiveDocument.removeObject(second.Name)
+            App.ActiveDocument.removeObject(newObj.Name)
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+
+        except Exception as err:
+            App.Console.PrintError("'Paint-Fillet' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
     def MouseMovement_cb(self, events):
         """[Mouse movement callback. It will move the object
         and update the drawing's position depending on the mouse-position and the plane]
@@ -731,44 +788,47 @@ class Design456_Paint:
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
             viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
+            print("position", position)
             if self.currentObj is not None:
                 # Normal view - Top
                 self.pl = self.currentObj.Object.Placement
                 self.pl.Rotation.Axis = viewAxis
-                #print(viewAxis, "viewAxis")
+                print(viewAxis, "viewAxis")
                 if(viewAxis == App.Vector(0, 0, -1)):
                     self.pl.Base.z = 0.0
+                    position.z = 0
                     self.pl.Rotation.Angle = 0
                 elif(viewAxis == App.Vector(0, 0, 1)):
                     self.pl.Base.z = 0.0
+                    position.z=0.0
                     self.pl.Rotation.Angle = 0
+                
                 # FrontSide
                 elif(viewAxis == App.Vector(0, 1, 0)):
-                    self.pl.Base.y = 0
+                    self.pl.Base.y = 0.0
+                    position.y = 0.0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (-1, 0, 0)
                 elif (viewAxis == App.Vector(0, -1, 0)):
-                    self.pl.Base.y = 0
+                    self.pl.Base.y = 0.0
+                    position.y = 0.0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (1, 0, 0)
+                
                 # RightSideView
                 elif(viewAxis == App.Vector(-1, 0, 0)):
-                    self.pl.Base.x = 0
+                    self.pl.Base.x = 0.0
+                    position.x = 0.0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (0, 1, 0)
                 elif (viewAxis == App.Vector(1, 0, 0)):
-                    self.pl.Base.x = 0
+                    self.pl.Base.x = 0.0
+                    position.x = 0.0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (0, 1, 0)
 
                 self.currentObj.Object.Placement = self.pl
-
-                if(self.currentObj.Object.Placement.Base.z == 0):
-                    position.z = 0
-                elif (self.currentObj.Object.Placement.Base.y == 0):
-                    position.y = 0
-                elif (self.currentObj.Object.Placement.Base.x == 0):
-                    position.x = 0
+                
                 # All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
                     self.currentObj.Object.Placement.Base = position
@@ -906,6 +966,14 @@ class Design456_Paint:
                 self.currentObj = self.draw_MOON(3)
             elif self.brushType == FR_BRUSHES.FR_MOON4_BRUSH:
                 self.currentObj = self.draw_MOON(4)
+            elif self.brushType == FR_BRUSHES.FR_FILLET1_BRUSH:
+                self.currentObj = self.draw_Fillet(1)
+            elif self.brushType == FR_BRUSHES.FR_FILLET2_BRUSH:
+                self.currentObj = self.draw_Fillet(2)
+            elif self.brushType == FR_BRUSHES.FR_FILLET3_BRUSH:
+                self.currentObj = self.draw_Fillet(3)
+            elif self.brushType == FR_BRUSHES.FR_FILLET4_BRUSH:
+                self.currentObj = self.draw_Fillet(4)
 
             # Merge object creation.
             if (self.resultObj is None):
@@ -1181,7 +1249,7 @@ class Design456_Paint:
                 App.ActiveDocument.removeObject(self.currentObj.Object.Name)
                 self.currentObj = None
             self.dialog.hide()
-            
+
             dw = self.mw.findChildren(QtGui.QDockWidget)
             newsize = self.tab.count()  # Todo : Should we do that?
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
