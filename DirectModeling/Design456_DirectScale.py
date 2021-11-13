@@ -66,7 +66,7 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
             # We maximize all of them regardless the change in which axis made
             if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
                 uniformValue = deltaY/SCALE_FACTOR
-                uniformValue= (lengthY+uniformValue)/lengthY
+                uniformValue = (lengthY+uniformValue)/lengthY
             elif ArrowObject.w_color == FR_COLOR.FR_RED:
                 uniformValue = deltaX/SCALE_FACTOR
                 uniformValue = (lengthX+uniformValue)/lengthX

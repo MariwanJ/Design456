@@ -502,4 +502,8 @@ class FR_BRUSHES:
     FR_MOON2_BRUSH                          =  31
     FR_MOON3_BRUSH                          =  32
     FR_MOON4_BRUSH                          =  33
+    FR_FILLET1_BRUSH                        =  34
+    FR_FILLET2_BRUSH                        =  35
+    FR_FILLET3_BRUSH                        =  36
+    FR_FILLET4_BRUSH                        =  37
 
