@@ -71,6 +71,8 @@ class Design456_Paint:
     runOnce = False  # Create the merge object once only
     MoveMentDirection = 'A'
     firstSize = 0.1
+    # used to correct the Placement of the final object
+    AverageDistanceToOrigion = App.Vector(0, 0, 0)
     # List of the shapes - to add more add it here, in constant and make
     # an "if" statement and a function to draw it
     listOfDrawings = ["CIRCLE",
@@ -463,7 +465,8 @@ class Design456_Paint:
 
             elif typeOfParallelogram == 2:
                 points = [App.Vector(0, self.brushSize*3/4, 0.0),
-                          App.Vector(self.brushSize*2/4, self.brushSize*4/4, 0.0),
+                          App.Vector(self.brushSize*2/4,
+                                     self.brushSize*4/4, 0.0),
                           App.Vector(self.brushSize*2/4, 0, 0.0),
                           App.Vector(self.brushSize, 0.0, 0.0)]
             first = _draft.makeWire(
@@ -788,21 +791,19 @@ class Design456_Paint:
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
             viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
-            print("position", position)
             if self.currentObj is not None:
                 # Normal view - Top
                 self.pl = self.currentObj.Object.Placement
                 self.pl.Rotation.Axis = viewAxis
-                print(viewAxis, "viewAxis")
                 if(viewAxis == App.Vector(0, 0, -1)):
                     self.pl.Base.z = 0.0
                     position.z = 0
                     self.pl.Rotation.Angle = 0
                 elif(viewAxis == App.Vector(0, 0, 1)):
                     self.pl.Base.z = 0.0
-                    position.z=0.0
+                    position.z = 0.0
                     self.pl.Rotation.Angle = 0
-                
+
                 # FrontSide
                 elif(viewAxis == App.Vector(0, 1, 0)):
                     self.pl.Base.y = 0.0
@@ -814,7 +815,7 @@ class Design456_Paint:
                     position.y = 0.0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (1, 0, 0)
-                
+
                 # RightSideView
                 elif(viewAxis == App.Vector(-1, 0, 0)):
                     self.pl.Base.x = 0.0
@@ -828,7 +829,7 @@ class Design456_Paint:
                     self.pl.Rotation.Axis = (0, 1, 0)
 
                 self.currentObj.Object.Placement = self.pl
-                
+
                 # All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
                     self.currentObj.Object.Placement.Base = position
@@ -842,6 +843,33 @@ class Design456_Paint:
 
         except Exception as err:
             App.Console.PrintError("'MouseMovement_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def FixPlacementIssue(self):
+        """[Find center of the merged objects and make it as placement]
+        """
+        try:
+            if(self.resultObj is None):
+                return
+            Average = App.Vector(0, 0, 0)
+            for obj in self.AllObjects:
+                objBase = obj.Placement.Base #obj.Shape.CenterOfGravity
+                if Average == App.Vector(0.0, 0.0, 0.0):
+                    # First time we should accept it without division
+                    Average = objBase  
+                Average = App.Vector((Average.x+objBase.x)/2,
+                                     (Average.y+objBase.y)/2,
+                                     (Average.z+objBase.z)/2)
+            for obj in self.AllObjects:
+                obj.Placement.Base = obj.Placement.Base.sub(Average)
+
+            self.resultObj.Placement.Base = Average
+
+        except Exception as err:
+            App.Console.PrintError("'FixPlacementIssue' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -866,6 +894,7 @@ class Design456_Paint:
                 self.setSize()
                 self.setType()
                 self.recreateObject()
+                App.ActiveDocument.recompute()
 
         except Exception as err:
             App.Console.PrintError("'MouseClick_cb' Failed. "
@@ -1245,6 +1274,7 @@ class Design456_Paint:
         Hide the widgets. Remove also the tab.
         """
         try:
+            self.FixPlacementIssue()
             if (self.currentObj is not None):
                 App.ActiveDocument.removeObject(self.currentObj.Object.Name)
                 self.currentObj = None
