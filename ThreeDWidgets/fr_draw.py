@@ -334,13 +334,23 @@ sg.addChild(root)
 
 """
 
-# draw arrow (Angel is in degree)
+# draw a 3D arrow (Angel is in degree)
 def draw_DoubleSidedArrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.0, 0.0, 1.0, 0.0]):
-    '''
-    Draw a 3D arrow at the position given by the _Points and the color given by _color. 
-    Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
-    An angle in degree. 
-    '''
+    """['''
+        Draw a 3D arrow at the position given by the _Points and the color given by _color. 
+        Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
+        An angle in degree. 
+    ''']
+
+    Args:
+        _Points (list, optional): [Position of the arrow 2 App.Vector]. Defaults to [].
+        _color ([type], optional): [Arrow Color]. Defaults to FR_COLOR.FR_BLACK.
+        _ArrSize (float, optional): [Size of the arrow]. Defaults to 1.0.
+        _rotation (list, optional): [Axis and angle of rotation]. Defaults to [0.0, 0.0, 1.0, 0.0].
+
+    Returns:
+        [type]: [description]
+    """
     try:
         so_separatorRoot = coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
@@ -2019,7 +2029,7 @@ def draw_washer(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1
                         ]
                                         
     
-    cordinate.point.setValues(0, 123, vertexPositions)
+    cordinate.point.setValues(0, 432, vertexPositions)
     indices= [ 74, 75, 76, -1, 79, 76, 77, -1,
                 79, 77, 78, -1, 72, 73, 74, -1,
                 71, 74, 76, -1, 71, 72, 74, -1,
