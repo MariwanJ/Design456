@@ -11,11 +11,11 @@ from ThreeDWidgets.constant import FR_COLOR
 import math
 
 
-def draw_DoubleSide2DdArrow(_Points=[],
-                            _color=FR_COLOR.FR_BLACK, 
-                            _ArrSize=1.0, 
+def draw_DoubleSide2DdArrow(_Points=App.Vector(0,0,0),
+                            color=FR_COLOR.FR_GOLD,
+                            scale=[0.5, 0.5, 0.5],  opacity=0,
                             _rotation=[0.0, 0.0, 1.0, 0.0]):
-    """[2D Arrow]
+    """[2D Arrow Double sided]
 
     Args:
         p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0,0,0).
@@ -28,7 +28,8 @@ def draw_DoubleSide2DdArrow(_Points=[],
     Returns:
         [SoSeparator]: [SoSeparator which hold the drawing. Add it to the scenegraph to show the arrow]
     """
-    try:
+    try: 
+        p1 = _Points
         root = coin.SoSeparator()
         transform = coin.SoTransform()
         trans = coin.SoTranslation()
@@ -209,7 +210,7 @@ def draw_DoubleSide2DdArrow(_Points=[],
                            (0.00,	 8.66,	9.16),
                            (0.00,	 8.68,	8.90)]
 
-        cordinate.point.setValues(0, 61, vertexPositions)
+        cordinate.point.setValues(0, 432, vertexPositions)
         indices = [104, 98, 103, -1, 99, 100, 98, -1,
                    103, 96, 102, -1, 98, 96, 103, -1,
                    100, 96, 98, -1, 1, 2, 0, -1,
