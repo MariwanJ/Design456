@@ -11,10 +11,10 @@ from ThreeDWidgets.constant import FR_COLOR
 import math
 
 
-def draw_2Darrow_DoubleSided(p1=App.Vector(0, 0, 0),
-                             color=FR_COLOR.FR_GOLD,
-                             scale=[0.5, 0.5, 0.5], type=0, opacity=0,
-                             _rotation=[0.0, 0.0, 1.0, 0.0]):
+def draw_DoubleSide2DdArrow(_Points=[],
+                            _color=FR_COLOR.FR_BLACK, 
+                            _ArrSize=1.0, 
+                            _rotation=[0.0, 0.0, 1.0, 0.0]):
     """[2D Arrow]
 
     Args:
