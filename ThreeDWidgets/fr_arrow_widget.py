@@ -31,6 +31,8 @@ import FreeCADGui as Gui
 import ThreeDWidgets
 import pivy.coin as coin
 from ThreeDWidgets import fr_draw
+from ThreeDWidgets import fr_draw1
+
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
 from ThreeDWidgets import fr_coin3d
@@ -198,6 +200,9 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                     self.w_widgetSoNodes=fr_draw.draw_2Darrow(self.w_vector,usedColor,scale,1,0,self.w_rotation)
                 elif self.arrowType==3:
                     self.w_widgetSoNodes=fr_draw.draw_DoubleSidedArrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
+                elif self.arrowType==4:
+                    self.w_widgetSoNodes=fr_draw1.draw_DoubleSide2DdArrow(self.w_vector, usedColor, self.w_lineWidth,self.w_rotation)
+                    
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
