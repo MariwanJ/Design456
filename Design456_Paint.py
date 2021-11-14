@@ -216,7 +216,7 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Oval(self, Ovaltype):
-        """[Draw Oval - Differnt types]
+        """[Draw Oval - Different types]
 
         Args:
             Ovaltype ([Integer]): [Type of the oval]
@@ -352,7 +352,7 @@ class Design456_Paint:
         """[Draw different types of Square shapes]
 
         Args:
-            typeOfSquare ([integer]): [Type of the squre shape]
+            typeOfSquare ([integer]): [Type of the square shape]
         """
         # Convert/ or get Gui object not App object
         try:
@@ -446,7 +446,7 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Parallelogram(self, typeOfParallelogram):
-        """[Draw diffrent parallelogram (not equal sizes)]
+        """[Draw diffrent parallelogram types (not equal side-sizes)]
 
         Args:
             typeOfParallelogram ([integer]): [type of the parallelogram]
@@ -856,10 +856,10 @@ class Design456_Paint:
                 return
             Average = App.Vector(0, 0, 0)
             for obj in self.AllObjects:
-                objBase = obj.Placement.Base #obj.Shape.CenterOfGravity
+                objBase = obj.Placement.Base  # obj.Shape.CenterOfGravity
                 if Average == App.Vector(0.0, 0.0, 0.0):
                     # First time we should accept it without division
-                    Average = objBase  
+                    Average = objBase
                 Average = App.Vector((Average.x+objBase.x)/2,
                                      (Average.y+objBase.y)/2,
                                      (Average.z+objBase.z)/2)
@@ -877,7 +877,8 @@ class Design456_Paint:
 
     def MouseClick_cb(self, events):
         """[Mouse Release callback. 
-        It will place the object after last movement and merge the object to older objects]
+        It will place the object after last movement
+        and merge the object to older objects]
 
         Args:
             events ([COIN3D events]): [events type]
@@ -904,7 +905,8 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def recreateObject(self):
-        """[Recreates the object after a mouse-movement. It will update the position. 
+        """[Recreates the object after a mouse-movement. 
+        It will update the position. 
         Or the size/shape is changed and new shape needs to be drawn.]
         """
         try:
