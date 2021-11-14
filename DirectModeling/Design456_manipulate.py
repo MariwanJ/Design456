@@ -36,6 +36,8 @@ import math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES
+from OCC.Core import ChFi2d
+from OCC import Core
 
 
 # >>> import Part
@@ -53,6 +55,13 @@ class ExtendEdge:
     ]
     """
     selectedObj = None
+    
+    def findFacesWithSharedEdge(self,edg):
+        """[Find out the faces have the same edge which will be dragged by the mouse]
+
+        Args:
+            edg ([Edge]): [Edge object shared between diffrent faces]
+        """
     
     def Activated(self):
         try:
