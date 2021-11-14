@@ -335,7 +335,7 @@ sg.addChild(root)
 """
 
 # draw a 3D arrow (Angel is in degree)
-def draw_DoubleSidedArrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.0, 0.0, 1.0, 0.0]):
+def draw_DoubleSidedArrow(_Points=App.Vector(0,0,0), _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.0, 0.0, 1.0, 0.0]):
     """['''
         Draw a 3D arrow at the position given by the _Points and the color given by _color. 
         Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
@@ -343,7 +343,7 @@ def draw_DoubleSidedArrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _r
     ''']
 
     Args:
-        _Points (list, optional): [Position of the arrow 2 App.Vector]. Defaults to [].
+        _Points (App.Vector, optional): [Position of the arrow 2 App.Vector]. Defaults to [].
         _color ([type], optional): [Arrow Color]. Defaults to FR_COLOR.FR_BLACK.
         _ArrSize (float, optional): [Size of the arrow]. Defaults to 1.0.
         _rotation (list, optional): [Axis and angle of rotation]. Defaults to [0.0, 0.0, 1.0, 0.0].
