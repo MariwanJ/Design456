@@ -46,6 +46,42 @@ from ThreeDWidgets.constant import FR_BRUSHES
 # >>> __o__.Shape=__s__
 # >>> del __s__, __o__
 
+class ExtendEdge:
+    """[Extend the edge's position to a new position. 
+    This will affect the faces share the edge.
+    
+    ]
+    """
+    selectedObj = None
+    
+    def Activated(self):
+        try:
+            selectedObj = Gui.Selection.getSelectionEx()
+            if len(selectedObj)>2: 
+                raise Exception("Please select only one edge and try again")
+
+            if not hasattr(selectedObj,"Edge"):
+                raise Exception("Please select only one edge and try again")
+        
+        except Exception as err:
+            App.Console.PrintError("'Design456_SmartFillet' del-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Fillet.svg',
+            'MenuText': ' Smart Fillet',
+                        'ToolTip':  ' Smart ExtendEdge'
+        }
+
+Gui.addCommand('Design456_ExtendEdge', Design456_ExtendEdge())
+
+
+
+
+
 
 class CornerModifier:
 
