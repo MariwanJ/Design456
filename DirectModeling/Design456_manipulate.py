@@ -38,7 +38,7 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES
 from OCC.Core import ChFi2d
 from OCC import Core
-
+import FACE_D as faced
 
 # >>> import Part
 # >>> __s__=App.ActiveDocument.Compound.Shape.Faces
@@ -55,6 +55,23 @@ class ExtendEdge:
     ]
     """
     selectedObj = None
+    selectedEdge=None
+    AffectedFaced = [] #facess needed to be recreated - resized
+    
+    def findEdgeInFace(self,face,specialEdg):
+        """[Find Edg in a face]
+
+        Args:
+            face ([Face Obj]): [Face has the specialEdg]
+            specialEdg ([Edge Obj]): [An Edge to search for]
+
+        Returns:
+            [Boolean]: [True if the face found or False if not found ]
+        """
+        for edg in face.Edges:
+            if specialEdg==edg:
+                return True
+        return False
     
     def findFacesWithSharedEdge(self,edg):
         """[Find out the faces have the same edge which will be dragged by the mouse]
@@ -62,15 +79,29 @@ class ExtendEdge:
         Args:
             edg ([Edge]): [Edge object shared between diffrent faces]
         """
-    
+        
+        for face in self.selectedObj.Shape.Faces:
+            if self.findEdgeInFace(edg):
+                self.AffectedFaced.append(face)
+        if len(self.AffectedFaced)==0:
+            errMessage = "Please select an edge which is part of other objects"
+            faced.errorDialog(errMessage)
+            return
+        
     def Activated(self):
         try:
             selectedObj = Gui.Selection.getSelectionEx()
             if len(selectedObj)>2: 
-                raise Exception("Please select only one edge and try again")
+                errMessage = "Please select only one edge and try again"
+                faced.errorDialog(errMessage)
+                return
 
-            if not hasattr(selectedObj,"Edge"):
-                raise Exception("Please select only one edge and try again")
+            self.selectedObj=selectedObj[0].Object
+            self.selectedEdge=selectedObj[0].SubObjects[0]
+            if not hasattr(self.selectedEdge,'Edge'):
+                raise Exception("Please select only one edge and try again")            
+
+            
         
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' del-Failed. "
