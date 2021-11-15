@@ -47,18 +47,80 @@ import FACE_D as faced
 # >>> __o__.Label="Compound (Solid)"
 # >>> __o__.Shape=__s__
 # >>> del __s__, __o__
+"""
+    - For square, rectangle, multisided-wire shapes :draft.wire should do the job
+    - For Circle  - Loft should do the job. 
+    - For curvature shapes - should be treated as squre. 
+    
+    We need to distinguish between : Circle edge, and wire edges
+    circle selectedEdge.Closed=true -->use this
+    others are not closed.
 
-class ExtendEdge:
+"""
+
+
+class Design456_ExtendEdge:
     """[Extend the edge's position to a new position. 
     This will affect the faces share the edge.
-    
+
     ]
     """
     selectedObj = None
-    selectedEdge=None
-    AffectedFaced = [] #facess needed to be recreated - resized
-    
-    def findEdgeInFace(self,face,specialEdg):
+    selectedEdge = None
+    AffectedFaced = []  # facess needed to be recreated - resized
+
+    WireVerticies1 = []  # Use this to keep verticies for the new created object
+    WireVerticies2 = []  # Use this to keep verticies for the new created object
+
+    # Based on the sewShape from De-featuring WB,
+    # but simplified- Thanks for the author
+    def setTolerance(self, sel):
+        if len(sel) != 1:
+            msg = "Select one object!\n"
+            App.Console.PrintWarning(msg)
+            return
+
+        o = sel[0]
+        if hasattr(o, 'Shape'):
+            ns = o.Shape.copy()
+            new_tol = 0.001
+            ns.fixTolerance(new_tol)
+            o.Object.ViewObject.Visibility = False
+            sl = App.ActiveDocument.addObject("Part::Feature", "Solid")
+            sl.Shape = ns
+            sl.ShapeColor = o.Object.ViewObject.ShapeColor
+            sl.Object.ViewObject.LineColor = o.Object.ViewObject.LineColor
+            sl.Object.ViewObject.PointColor = o.Object.ViewObject.PointColor
+            sl.Object.ViewObject.DiffuseColor = o.Object.ViewObject.DiffuseColor
+            sl.Object.ViewObject.Transparency = o.Object.ViewObject.Transparency
+            sl.Label = 'Solid'
+
+    # Based on the sewShape from De-featuring WB,
+    # but simplified- Thanks for the author
+
+    def sewShape(self, sel):
+        if len(sel) != 1:
+            msg = "Select one object!\n"
+            App.Console.PrintWarning(msg)
+            return
+
+        o = sel[0]
+        if hasattr(o, 'Shape'):
+            sh = o.Shape.copy()
+            sh.sewShape()
+            sl = App.ActiveDocument.addObject("Part::Feature", "Solid")
+            sl.Shape = sh
+            sl.ShapeColor = App.ActiveDocument.getObject(o.Name).ShapeColor
+            sl.LineColor = App.ActiveDocument.getObject(o.Name).LineColor
+            sl.PointColor = App.ActiveDocument.getObject(o.Name).PointColor
+            sl.DiffuseColor = App.ActiveDocument.getObject(
+                o.Name).DiffuseColor
+            sl.Transparency = App.ActiveDocument.getObject(
+                o.Name).Transparency
+            App.ActiveDocument.removeObject(o.Name)
+            App.ActiveDocument.recompute()
+
+    def findEdgeInFace(self, face, specialEdg):
         """[Find Edg in a face]
 
         Args:
@@ -69,61 +131,56 @@ class ExtendEdge:
             [Boolean]: [True if the face found or False if not found ]
         """
         for edg in face.Edges:
-            if specialEdg==edg:
+            if specialEdg == edg:
                 return True
         return False
-    
-    def findFacesWithSharedEdge(self,edg):
+
+    def findFacesWithSharedEdge(self, edg):
         """[Find out the faces have the same edge which will be dragged by the mouse]
 
         Args:
             edg ([Edge]): [Edge object shared between diffrent faces]
         """
-        
+
         for face in self.selectedObj.Shape.Faces:
             if self.findEdgeInFace(edg):
                 self.AffectedFaced.append(face)
-        if len(self.AffectedFaced)==0:
+        if len(self.AffectedFaced) == 0:
             errMessage = "Please select an edge which is part of other objects"
             faced.errorDialog(errMessage)
             return
-        
+
     def Activated(self):
         try:
             selectedObj = Gui.Selection.getSelectionEx()
-            if len(selectedObj)>2: 
+            if len(selectedObj) > 2:
                 errMessage = "Please select only one edge and try again"
                 faced.errorDialog(errMessage)
                 return
 
-            self.selectedObj=selectedObj[0].Object
-            self.selectedEdge=selectedObj[0].SubObjects[0]
-            if not hasattr(self.selectedEdge,'Edge'):
-                raise Exception("Please select only one edge and try again")            
+            self.selectedObj = selectedObj[0].Object
+            self.selectedEdge = selectedObj[0].SubObjects[0]
+            if not hasattr(self.selectedEdge, 'Edge'):
+                raise Exception("Please select only one edge and try again")
 
-            
-        
         except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' del-Failed. "
+            App.Console.PrintError("'Design456_ExtendEdge' del-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            
+
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'PartDesign_Fillet.svg',
-            'MenuText': ' Smart Fillet',
-                        'ToolTip':  ' Smart ExtendEdge'
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_ExtendEdge.svg',
+            'MenuText': 'Edge Extender',
+                        'ToolTip':  ' Design456 Edge Extender'
         }
+
 
 Gui.addCommand('Design456_ExtendEdge', Design456_ExtendEdge())
 
 
-
-
-
-
-class CornerModifier:
+class Design456_CornerModifier:
 
     mw = None
     dialog = None  # Dialog for the tool
@@ -132,7 +189,7 @@ class CornerModifier:
     _mywin = None                           #
     b1 = None                               #
     CornerModifierLBL = None  # Label
-    selectedObj=None
+    selectedObj = None
 
     def Activated(self):
         pass
