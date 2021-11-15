@@ -131,6 +131,7 @@ class Design456_Part_Cylinder:
         try: 
             App.ActiveDocument.openTransaction(translate("Design456","Part Cylinder"))
             newObj = App.ActiveDocument.addObject("Part::Cylinder", "Cylinder")
+            newObj.Radius = 5
             App.ActiveDocument.ActiveObject.Label = "Cylinder"
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
