@@ -67,10 +67,12 @@ class Design456_ExtendEdge:
     """
     selectedObj = None
     selectedEdge = None
-    AffectedFaced = []  # facess needed to be recreated - resized
-    extractedEdge=None
-    WireVerticies1 = []  # Use this to keep verticies for the new created object
-    WireVerticies2 = []  # Use this to keep verticies for the new created object
+    # facess needed to be recreated - resized
+    # First time it is from the object, but later will be the created faces
+    AffectedFaced = []  
+    extractedEdge = None
+    WireVertices1 = []  # Use this to keep vertices for the new created object
+    WireVertices2 = []  # Use this to keep vertices for the new created object
 
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
@@ -99,6 +101,12 @@ class Design456_ExtendEdge:
     # but simplified- Thanks for the author
 
     def sewShape(self, sel):
+        """[Fix issues might be in the created object]
+
+        Args:
+            sel ([3D Object]): [Final object that needs repair. 
+                                Always new object creates as result of sew]
+        """
         if len(sel) != 1:
             msg = "Select one object!\n"
             App.Console.PrintWarning(msg)
@@ -134,14 +142,16 @@ class Design456_ExtendEdge:
             if specialEdg == edg:
                 return True
         return False
-    def simpleCopyEdge(self):
+
+    def simpleCopyTheEdge(self):
         """[Extract the edge for movement]
         """
-        self.extractedEdge=App.ActiveDocument.addObject("Part::Feature", "Edge")
-        sh=self.selectedEdge.copy()
-        self.extractedEdge.Shape=sh
+        self.extractedEdge = App.ActiveDocument.addObject(
+            "Part::Feature", "Edge")
+        sh = self.selectedEdge.copy()
+        self.extractedEdge.Shape = sh
         App.ActiveDocument.recompute()
-        
+
     def findFacesWithSharedEdge(self, edg):
         """[Find out the faces have the same edge which will be dragged by the mouse]
 
@@ -157,10 +167,22 @@ class Design456_ExtendEdge:
             faced.errorDialog(errMessage)
             return
     
+    def getVerticesFromFace(self):
+        """
+        [Get Vertices found in the corners of the remained faces]
+        """
+        if len(self.WireVertices1 or self.WireVertices2) == 0:
+            for face in self.AffectedFaced:
+                pass
+        else:
+            pass
+        
     def recreateObject(self):
-        #FIXME:
-        pass 
-    
+        # FIXME:
+        # Here we have two sides to recreate and then compound them.
+        # We try to create a wire-closed to replace the sides we delete.
+        pass
+
     def Activated(self):
         try:
             self.selectedObj = Gui.Selection.getSelectionEx()
@@ -174,14 +196,21 @@ class Design456_ExtendEdge:
             if not hasattr(self.selectedEdge, 'Edge'):
                 raise Exception("Please select only one edge and try again")
 
-            #Start callbacks for mouse events.
+            # Start callbacks for mouse events.
             self.callbackMove = self.view.addEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
             self.callbackClick = self.view.addEventCallbackPivy(
                 coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick_cb)
             self.callbackKey = self.view.addEventCallbackPivy(
                 coin.SoKeyboardEvent.getClassTypeId(), self.KeyboardEvent)
-            
+
+        except Exception as err:
+            App.Console.PrintError("'MouseClick_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
     def MouseMovement_cb(self, events):
         """[Mouse movement callback. It will move the object
         and update the drawing's position depending on the mouse-position and the plane]
@@ -245,6 +274,11 @@ class Design456_ExtendEdge:
                     self.currentObj.Object.Placement.Base.z = position.z
                 App.ActiveDocument.recompute()
 
+        except Exception as err:
+            App.Console.PrintError("'MouseMovement_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def MouseClick_cb(self, events):
         """[Mouse Release callback. 
@@ -274,7 +308,7 @@ class Design456_ExtendEdge:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-               
+
     def KeyboardEvent(self, events):
         """[Key board events. Used to limit the movement axis and finalize the last drawing by pressing ESC key]
 
@@ -304,7 +338,7 @@ class Design456_ExtendEdge:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def remove_callbacks(self):
         """[Remove COIN32D/Events callback]
         """
@@ -315,13 +349,6 @@ class Design456_ExtendEdge:
         self.view.removeEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
         self.view = None
-        
-
-        except Exception as err:
-            App.Console.PrintError("'Design456_ExtendEdge' del-Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def GetResources(self):
         return {
@@ -514,8 +541,7 @@ class Design456_CornerModifier:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-    
-    
+
     def MouseMovement_cb(self, events):
         """[Mouse movement callback. It will move the object
         and update the drawing's position depending on the mouse-position and the plane]
@@ -584,7 +610,6 @@ class Design456_CornerModifier:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
 
     def MouseClick_cb(self, events):
         """[Mouse Release callback. 
@@ -614,7 +639,7 @@ class Design456_CornerModifier:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-               
+
     def KeyboardEvent(self, events):
         """[Key board events. Used to limit the movement axis and finalize the last drawing by pressing ESC key]
 
@@ -644,7 +669,7 @@ class Design456_CornerModifier:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def remove_callbacks(self):
         """[Remove COIN32D/Events callback]
         """
@@ -655,7 +680,7 @@ class Design456_CornerModifier:
         self.view.removeEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
         self.view = None
-        
+
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_CornerModifier.svg',
                 'MenuText': "CornerModifier",
