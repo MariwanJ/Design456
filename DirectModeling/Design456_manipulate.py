@@ -68,7 +68,7 @@ class Design456_ExtendEdge:
     selectedObj = None
     selectedEdge = None
     AffectedFaced = []  # facess needed to be recreated - resized
-
+    extractedEdge=None
     WireVerticies1 = []  # Use this to keep verticies for the new created object
     WireVerticies2 = []  # Use this to keep verticies for the new created object
 
@@ -134,7 +134,14 @@ class Design456_ExtendEdge:
             if specialEdg == edg:
                 return True
         return False
-
+    def simpleCopyEdge(self):
+        """[Extract the edge for movement]
+        """
+        self.extractedEdge=App.ActiveDocument.addObject("Part::Feature", "Edge")
+        sh=self.selectedEdge.copy()
+        self.extractedEdge.Shape=sh
+        App.ActiveDocument.recompute()
+        
     def findFacesWithSharedEdge(self, edg):
         """[Find out the faces have the same edge which will be dragged by the mouse]
 
@@ -149,19 +156,166 @@ class Design456_ExtendEdge:
             errMessage = "Please select an edge which is part of other objects"
             faced.errorDialog(errMessage)
             return
-
+    
+    def recreateObject(self):
+        #FIXME:
+        pass 
+    
     def Activated(self):
         try:
-            selectedObj = Gui.Selection.getSelectionEx()
-            if len(selectedObj) > 2:
+            self.selectedObj = Gui.Selection.getSelectionEx()
+            if len(self.selectedObj) > 2:
                 errMessage = "Please select only one edge and try again"
                 faced.errorDialog(errMessage)
                 return
 
-            self.selectedObj = selectedObj[0].Object
-            self.selectedEdge = selectedObj[0].SubObjects[0]
+            self.selectedObj = self.selectedObj[0].Object
+            self.selectedEdge = self.selectedObj[0].SubObjects[0]
             if not hasattr(self.selectedEdge, 'Edge'):
                 raise Exception("Please select only one edge and try again")
+
+            #Start callbacks for mouse events.
+            self.callbackMove = self.view.addEventCallbackPivy(
+                coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
+            self.callbackClick = self.view.addEventCallbackPivy(
+                coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick_cb)
+            self.callbackKey = self.view.addEventCallbackPivy(
+                coin.SoKeyboardEvent.getClassTypeId(), self.KeyboardEvent)
+            
+    def MouseMovement_cb(self, events):
+        """[Mouse movement callback. It will move the object
+        and update the drawing's position depending on the mouse-position and the plane]
+
+        Args:
+            events ([Coin3D events]): [Type of the event]
+        """
+        try:
+            event = events.getEvent()
+            pos = event.getPosition().getValue()
+            tempPos = self.view.getPoint(pos[0], pos[1])
+            position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
+            viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
+            if self.currentObj is not None:
+                # Normal view - Top
+                self.pl = self.currentObj.Object.Placement
+                self.pl.Rotation.Axis = viewAxis
+                if(viewAxis == App.Vector(0, 0, -1)):
+                    self.pl.Base.z = 0.0
+                    position.z = 0
+                    self.pl.Rotation.Angle = 0
+                elif(viewAxis == App.Vector(0, 0, 1)):
+                    self.pl.Base.z = 0.0
+                    position.z = 0.0
+                    self.pl.Rotation.Angle = 0
+
+                # FrontSide
+                elif(viewAxis == App.Vector(0, 1, 0)):
+                    self.pl.Base.y = 0.0
+                    position.y = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (-1, 0, 0)
+                elif (viewAxis == App.Vector(0, -1, 0)):
+                    self.pl.Base.y = 0.0
+                    position.y = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (1, 0, 0)
+
+                # RightSideView
+                elif(viewAxis == App.Vector(-1, 0, 0)):
+                    self.pl.Base.x = 0.0
+                    position.x = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (0, 1, 0)
+                elif (viewAxis == App.Vector(1, 0, 0)):
+                    self.pl.Base.x = 0.0
+                    position.x = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (0, 1, 0)
+
+                self.currentObj.Object.Placement = self.pl
+
+                # All direction when A or decide which direction
+                if (self.MoveMentDirection == 'A'):
+                    self.currentObj.Object.Placement.Base = position
+                elif (self.MoveMentDirection == 'X'):
+                    self.currentObj.Object.Placement.Base.x = position.x
+                elif (self.MoveMentDirection == 'Y'):
+                    self.currentObj.Object.Placement.Base.y = position.y
+                elif (self.MoveMentDirection == 'Z'):
+                    self.currentObj.Object.Placement.Base.z = position.z
+                App.ActiveDocument.recompute()
+
+
+    def MouseClick_cb(self, events):
+        """[Mouse Release callback. 
+        It will place the object after last movement
+        and merge the object to older objects]
+
+        Args:
+            events ([COIN3D events]): [events type]
+        """
+        try:
+            event = events.getEvent()
+            eventState = event.getState()
+            getButton = event.getButton()
+            angle = 0
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                self.appendToList()
+                App.ActiveDocument.recompute()
+                self.currentObj = None
+                self.setSize()
+                self.setType()
+                self.recreateObject()
+                App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'MouseClick_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+               
+    def KeyboardEvent(self, events):
+        """[Key board events. Used to limit the movement axis and finalize the last drawing by pressing ESC key]
+
+        Args:
+            events ([COIN3D events]): [events type]
+        """
+        try:
+            event = events.getEvent()
+            eventState = event.getState()
+            if (type(event) == coin.SoKeyboardEvent):
+                key = event.getKey()
+            if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'X'
+            elif key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'Y'
+            elif key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'Z'
+            else:
+                self.MoveMentDirection = 'A'  # All
+            # TODO:This line causes a crash to FreeCAD .. don't know why :(
+            # if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
+            #    self.hide()
+
+        except Exception as err:
+            App.Console.PrintError("'KeyboardEvent' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def remove_callbacks(self):
+        """[Remove COIN32D/Events callback]
+        """
+        self.view.removeEventCallbackPivy(
+            coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+        self.view.removeEventCallbackPivy(
+            coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
+        self.view.removeEventCallbackPivy(
+            coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
+        self.view = None
+        
 
         except Exception as err:
             App.Console.PrintError("'Design456_ExtendEdge' del-Failed. "
@@ -360,7 +514,148 @@ class Design456_CornerModifier:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+    
+    
+    def MouseMovement_cb(self, events):
+        """[Mouse movement callback. It will move the object
+        and update the drawing's position depending on the mouse-position and the plane]
 
+        Args:
+            events ([Coin3D events]): [Type of the event]
+        """
+        try:
+            event = events.getEvent()
+            pos = event.getPosition().getValue()
+            tempPos = self.view.getPoint(pos[0], pos[1])
+            position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
+            viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
+            if self.currentObj is not None:
+                # Normal view - Top
+                self.pl = self.currentObj.Object.Placement
+                self.pl.Rotation.Axis = viewAxis
+                if(viewAxis == App.Vector(0, 0, -1)):
+                    self.pl.Base.z = 0.0
+                    position.z = 0
+                    self.pl.Rotation.Angle = 0
+                elif(viewAxis == App.Vector(0, 0, 1)):
+                    self.pl.Base.z = 0.0
+                    position.z = 0.0
+                    self.pl.Rotation.Angle = 0
+
+                # FrontSide
+                elif(viewAxis == App.Vector(0, 1, 0)):
+                    self.pl.Base.y = 0.0
+                    position.y = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (-1, 0, 0)
+                elif (viewAxis == App.Vector(0, -1, 0)):
+                    self.pl.Base.y = 0.0
+                    position.y = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (1, 0, 0)
+
+                # RightSideView
+                elif(viewAxis == App.Vector(-1, 0, 0)):
+                    self.pl.Base.x = 0.0
+                    position.x = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (0, 1, 0)
+                elif (viewAxis == App.Vector(1, 0, 0)):
+                    self.pl.Base.x = 0.0
+                    position.x = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (0, 1, 0)
+
+                self.currentObj.Object.Placement = self.pl
+
+                # All direction when A or decide which direction
+                if (self.MoveMentDirection == 'A'):
+                    self.currentObj.Object.Placement.Base = position
+                elif (self.MoveMentDirection == 'X'):
+                    self.currentObj.Object.Placement.Base.x = position.x
+                elif (self.MoveMentDirection == 'Y'):
+                    self.currentObj.Object.Placement.Base.y = position.y
+                elif (self.MoveMentDirection == 'Z'):
+                    self.currentObj.Object.Placement.Base.z = position.z
+                App.ActiveDocument.recompute()
+        except Exception as err:
+            App.Console.PrintError("'MouseMovement_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+
+    def MouseClick_cb(self, events):
+        """[Mouse Release callback. 
+        It will place the object after last movement
+        and merge the object to older objects]
+
+        Args:
+            events ([COIN3D events]): [events type]
+        """
+        try:
+            event = events.getEvent()
+            eventState = event.getState()
+            getButton = event.getButton()
+            angle = 0
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                self.appendToList()
+                App.ActiveDocument.recompute()
+                self.currentObj = None
+                self.setSize()
+                self.setType()
+                self.recreateObject()
+                App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'MouseClick_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+               
+    def KeyboardEvent(self, events):
+        """[Key board events. Used to limit the movement axis and finalize the last drawing by pressing ESC key]
+
+        Args:
+            events ([COIN3D events]): [events type]
+        """
+        try:
+            event = events.getEvent()
+            eventState = event.getState()
+            if (type(event) == coin.SoKeyboardEvent):
+                key = event.getKey()
+            if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'X'
+            elif key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'Y'
+            elif key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
+                self.MoveMentDirection = 'Z'
+            else:
+                self.MoveMentDirection = 'A'  # All
+            # TODO:This line causes a crash to FreeCAD .. don't know why :(
+            # if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
+            #    self.hide()
+
+        except Exception as err:
+            App.Console.PrintError("'KeyboardEvent' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def remove_callbacks(self):
+        """[Remove COIN32D/Events callback]
+        """
+        self.view.removeEventCallbackPivy(
+            coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
+        self.view.removeEventCallbackPivy(
+            coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
+        self.view.removeEventCallbackPivy(
+            coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
+        self.view = None
+        
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_CornerModifier.svg',
                 'MenuText': "CornerModifier",
