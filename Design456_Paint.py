@@ -1070,6 +1070,8 @@ class Design456_Paint:
             if(self.currentObj is None):
                 print("Why is this None?")
             App.ActiveDocument.recompute()
+            
+            #Start callbacks for mouse events.
             self.callbackMove = self.view.addEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
             self.callbackClick = self.view.addEventCallbackPivy(
@@ -1085,6 +1087,8 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def remove_callbacks(self):
+        """[Remove COIN32D/Events callback]
+        """
         self.view.removeEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
         self.view.removeEventCallbackPivy(
