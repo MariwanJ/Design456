@@ -156,9 +156,10 @@ class Design456_MultiPointsToWire:
 
             if (len(selected) < 2):
                 # Two object must be selected
-                errMessage = "Select two or more objects to use MultiPointsToLineOpen Tool"
-                faced.errorDialog(errMessage)
-                return
+                if (not selected[0].HasSubObjects):
+                    errMessage = "Select two or more objects to use MultiPointsToLineOpen Tool"
+                    faced.errorDialog(errMessage)
+                    return
             allSelected = []
             for t in selected:
                 if type(t) == list:
