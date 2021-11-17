@@ -179,14 +179,13 @@ class Design456_ExtendEdge:
                 for faceFace in face:
                     vv.append(faceFace.Vertexes)
                 
-        for i in range [0,len(vv)]:
-            if(vv[i]==self.selectedEdge.Vertexes[0] or
-               vv[i]==self.selectedEdge.Vertexes[1]):
+        for i in range [0, len(vv)]:
+            if(vv[i] == self.selectedEdge.Vertexes[0] or
+               vv[i] == self.selectedEdge.Vertexes[1]):
                 vv.remove(vv[i])
         
         #We have all vertices                 
-        for ver in face.Vertexes:
-            pass
+
             
             
     def recreateObject(self):
