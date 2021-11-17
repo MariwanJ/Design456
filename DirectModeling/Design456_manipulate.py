@@ -172,17 +172,22 @@ class Design456_ExtendEdge:
         [Get Vertices found in the corners of the remained faces]
         """
         Vertices=[]
+        vv=[]
         #TODO: FIXME:
         if len(self.WireVertices1 or self.WireVertices2) == 0:
             for face in self.AffectedFaced:
-                for v in face.Vertexes:
-                    if not(v==self.selectedEdge.Vertexes[0] or
-                       v==self.selectedEdge.Vertexes[1]):
-                       Vertices.append(App.Vector(v.X,v.Y,v.Z))
-        
-        #We should have now all vertices
-        
+                for faceFace in face:
+                    vv.append(faceFace.Vertexes)
                 
+        for i in range [0,len(vv)]:
+            if(vv[i]==self.selectedEdge.Vertexes[0] or
+               vv[i]==self.selectedEdge.Vertexes[1]):
+                vv.remove(vv[i])
+        
+        #We have all vertices                 
+        for ver in face.Vertexes:
+            pass
+            
             
     def recreateObject(self):
         # FIXME:
