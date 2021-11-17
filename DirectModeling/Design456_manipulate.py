@@ -171,16 +171,24 @@ class Design456_ExtendEdge:
         """
         [Get Vertices found in the corners of the remained faces]
         """
+        Vertices=[]
+        #TODO: FIXME:
         if len(self.WireVertices1 or self.WireVertices2) == 0:
             for face in self.AffectedFaced:
-                pass
-        else:
-            pass
+                for v in face.Vertexes:
+                    if not(v==self.selectedEdge.Vertexes[0] or
+                       v==self.selectedEdge.Vertexes[1]):
+                       Vertices.append(App.Vector(v.X,v.Y,v.Z))
         
+        #We should have now all vertices
+        
+                
+            
     def recreateObject(self):
         # FIXME:
         # Here we have two sides to recreate and then compound them.
         # We try to create a wire-closed to replace the sides we delete.
+        # This will be way to complex .. with many bugs :(
         pass
 
     def Activated(self):
