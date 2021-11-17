@@ -153,11 +153,7 @@ class Design456_MultiPointsToWire:
     def Activated(self):
         try:
             selected = Gui.Selection.getSelectionEx()
-            oneObject = False
 
-            for n in selected:
-                if n.HasSubObjects is True:
-                    oneObject = True
             if (len(selected) < 2):
                 # Two object must be selected
                 errMessage = "Select two or more objects to use MultiPointsToLineOpen Tool"
@@ -165,8 +161,23 @@ class Design456_MultiPointsToWire:
                 return
             allSelected = []
             for t in selected:
-                allSelected.append(t.PickedPoints[0])
-            print(allSelected)
+                if type(t) == list:
+                    for tt in t:
+                        allSelected.append(App.Vector(
+                            tt.Shape.Vertexes[0].X, tt.Shape.Vertexes[0].Y, tt.Shape.Vertexes[0].Z))
+                else:
+                    if t.HasSubObjects and hasattr(t.SubObjects[0], "Vertexes"):
+                        for v in t.SubObjects:
+                            allSelected.append(App.Vector(v.X, v.Y, v.Z))
+                    elif t.HasSubObjects and hasattr(t.SubObjects[0], "Surface"):
+                        errMessage = "Only Vertexes are allowed. You selected a face"
+                        faced.errorDialog(errMessage)
+                        return
+                    else:
+                        allSelected.append(App.Vector(
+                            t.Object.Shape.X, t.Object.Shape.Y, t.Object.Shape.Z))
+
+            #print(allSelected)
             if self.type == 0:
                 Wire1 = _draft.makeWire(allSelected, closed=True)
             else:
@@ -593,8 +604,8 @@ class Star:
             obj.Shape = _part.Face(test)
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
-            return obj  #Allow getting the
-        
+            return obj  # Allow getting the
+
         except Exception as err:
             App.Console.PrintError("'Star' Failed. "
                                    "{err}\n".format(err=str(err)))
