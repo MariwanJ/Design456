@@ -128,7 +128,7 @@ class Design456_ExtendEdge:
             App.ActiveDocument.removeObject(o.Name)
             App.ActiveDocument.recompute()
 
-    def findEdgeInFace(self, face, specialEdg):
+    def findEdgesInFace(self, face, specialEdg):
         """[Find Edg in a face]
 
         Args:
@@ -185,7 +185,17 @@ class Design456_ExtendEdge:
                 vv.remove(vv[i])
         
         #We have all vertices                 
-
+        for v in vv:
+            Vertices.append(App.Vector(v.X,v.Y,v.Y))
+        #we need 2 sets of vertices 
+        # 1- lowest Z, highest X  both Highest Y and lowest
+        # 2- Lowest X, highest Z  both Highest Y and lowest
+        
+        #After creating the first two faces, we should use loft to connect the two faces to each other. 
+        
+        
+        
+        
             
             
     def recreateObject(self):
