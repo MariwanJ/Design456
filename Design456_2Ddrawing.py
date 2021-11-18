@@ -164,19 +164,17 @@ class Design456_MultiPointsToWire:
             for t in selected:
                 if type(t) == list:
                     for tt in t:
-                        allSelected.append(App.Vector(
-                            tt.Shape.Vertexes[0].X, tt.Shape.Vertexes[0].Y, tt.Shape.Vertexes[0].Z))
+                        allSelected.append(App.Vector(tt.Shape.Vertexes[0].Point))
                 else:
                     if t.HasSubObjects and hasattr(t.SubObjects[0], "Vertexes"):
                         for v in t.SubObjects:
-                            allSelected.append(App.Vector(v.X, v.Y, v.Z))
+                            allSelected.append(App.Vector(v.Point))
                     elif t.HasSubObjects and hasattr(t.SubObjects[0], "Surface"):
                         errMessage = "Only Vertexes are allowed. You selected a face"
                         faced.errorDialog(errMessage)
                         return
                     else:
-                        allSelected.append(App.Vector(
-                            t.Object.Shape.X, t.Object.Shape.Y, t.Object.Shape.Z))
+                        allSelected.append(App.Vector(t.Object.Shape.Point))
 
             #print(allSelected)
             if self.type == 0:

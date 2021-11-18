@@ -66,16 +66,16 @@ class Design456_ExtendEdge:
     ]
     """
     selectedObj = None
-    selectedEdge = None
+    selectedEdge = None     # Original vectors that will be changed by mouse.
+    oldEdgeVertexes = None
+    newEdge = None      # Keep new vectors for the moved old edge-vectors
     # facess needed to be recreated - resized
     # First time it is from the object, but later will be the created faces
-    AffectedFaced = []  
-    extractedEdge = None
-    WireVertices1 = []  # Use this to keep vertices for the new created object
-    WireVertices2 = []  # Use this to keep vertices for the new created object
-
+    AffectedFaced = []
+    view = None  # used for captureing mouse events
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
+
     def setTolerance(self, sel):
         if len(sel) != 1:
             msg = "Select one object!\n"
@@ -128,84 +128,95 @@ class Design456_ExtendEdge:
             App.ActiveDocument.removeObject(o.Name)
             App.ActiveDocument.recompute()
 
-    def findEdgeInFace(self, face, specialEdg):
-        """[Find Edg in a face]
+    # def findEdgeInFace(self, face, specialEdg):
+    #     """[Find Edg in a face]
 
-        Args:
-            face ([Face Obj]): [Face has the specialEdg]
-            specialEdg ([Edge Obj]): [An Edge to search for]
+    #     Args:
+    #         face ([Face Obj]): [Face has the specialEdg]
+    #         specialEdg ([Edge Obj]): [An Edge to search for]
 
-        Returns:
-            [Boolean]: [True if the face found or False if not found ]
-        """
-        for edg in face.Edges:
-            if specialEdg == edg:
-                return True
-        return False
+    #     Returns:
+    #         [Boolean]: [True if the face found or False if not found ]
+    #     """
+    #     for edg in face.Edges:
+    #         if specialEdg == edg:
+    #             return True
+    #     return False
 
     def simpleCopyTheEdge(self):
         """[Extract the edge for movement]
         """
-        self.extractedEdge = App.ActiveDocument.addObject(
+        self.newEdge = App.ActiveDocument.addObject(
             "Part::Feature", "Edge")
         sh = self.selectedEdge.copy()
-        self.extractedEdge.Shape = sh
+        self.newEdge.Shape = sh
+        self.selectedEdge = self.newEdge  # TODO: SHOULD WE DO THAT: FIXME:
         App.ActiveDocument.recompute()
 
-    def findFacesWithSharedEdge(self, edg):
-        """[Find out the faces have the same edge which will be dragged by the mouse]
+    # def findFacesWithSharedEdge(self, edg):
+    #     """[Find out the faces have the same edge which will be dragged by the mouse]
 
-        Args:
-            edg ([Edge]): [Edge object shared between diffrent faces]
-        """
+    #     Args:
+    #         edg ([Edge]): [Edge object shared between diffrent faces]
+    #     """
 
-        for face in self.selectedObj.Shape.Faces:
-            if self.findEdgeInFace(edg):
-                self.AffectedFaced.append(face)
-        if len(self.AffectedFaced) == 0:
-            errMessage = "Please select an edge which is part of other objects"
-            faced.errorDialog(errMessage)
-            return
-    
-    def getVerticesFromFace(self):
-        """
-        [Get Vertices found in the corners of the remained faces]
-        """
-        Vertices=[]
-        vv=[]
-        #TODO: FIXME:
-        if len(self.WireVertices1 or self.WireVertices2) == 0:
-            for face in self.AffectedFaced:
-                for faceFace in face:
-                    vv.append(faceFace.Vertexes)
-                
-        for i in range [0, len(vv)]:
-            if(vv[i] == self.selectedEdge.Vertexes[0] or
-               vv[i] == self.selectedEdge.Vertexes[1]):
-                vv.remove(vv[i])
-        
-        #We have all vertices                 
+    #     for face in self.selectedObj.Shape.Faces:
+    #         if self.findEdgeInFace(edg):
+    #             self.AffectedFaced.append(face)
+    #     if len(self.AffectedFaced) == 0:
+    #         errMessage = "Please select an edge which is part of other objects"
+    #         faced.errorDialog(errMessage)
+    #         return
 
-            
-            
+    # def getVerticesFromFace(self, face):
+    #     """
+    #     [Get Vertices found in the corners of the remained faces]
+    #     """
+    #     # TODO: FIXME:
+    #     vectors = []
+    #     for vertex in face.Vertexes:
+    #         vectors.append(vertex.Point)
+
     def recreateObject(self):
         # FIXME:
         # Here we have two sides to recreate and then compound them.
         # We try to create a wire-closed to replace the sides we delete.
         # This will be way to complex .. with many bugs :(
-        pass
+        _newFaces = []
+        _vertices = []
+        faces = self.selectedObj.Shape.Faces
+        for i in range(0, len(faces)):
+            for vertex in self.faces[i].Vertexes:
+                if vertex == self.oldEdgeVertexes[0]:
+                    _vertices.append(self.newEdge.Vertexes[0].Point)
+                elif vertex == self.oldEdgeVertexes[1]:
+                    _vertices.append(self.newEdge.Vertexes[0].Point)
+                else:
+                    _vertices.append(vertex.Point)
+            # Now we have new vertices for one face .. create the face object
+            newPolygon = _part.makePolygon(_vertices, True)
+            newFace = _part.makeFilledFace(newPolygon.Edges)
+            if newFace.isNull():
+                raise RuntimeError('Failed to create face')
+            _newFaces.append(newFace)
+
 
     def Activated(self):
         try:
-            self.selectedObj = Gui.Selection.getSelectionEx()
-            if len(self.selectedObj) > 2:
+            sel = Gui.Selection.getSelectionEx()
+            if len(sel) > 2:
                 errMessage = "Please select only one edge and try again"
                 faced.errorDialog(errMessage)
                 return
+            
 
-            self.selectedObj = self.selectedObj[0].Object
-            self.selectedEdge = self.selectedObj[0].SubObjects[0]
-            if not hasattr(self.selectedEdge, 'Edge'):
+            self.view = Gui.ActiveDocument.activeView()
+            
+            # The whole 3D object
+            self.selectedObj = sel[0].Object
+            self.selectedEdge = sel[0].SubObjects[0]
+            self.oldEdgeVertexes = self.selectedEdge.Vertexes
+            if not hasattr(self.selectedEdge, 'Edges'):
                 raise Exception("Please select only one edge and try again")
 
             # Start callbacks for mouse events.
@@ -236,55 +247,18 @@ class Design456_ExtendEdge:
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
             viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
-            if self.currentObj is not None:
-                # Normal view - Top
-                self.pl = self.currentObj.Object.Placement
-                self.pl.Rotation.Axis = viewAxis
-                if(viewAxis == App.Vector(0, 0, -1)):
-                    self.pl.Base.z = 0.0
-                    position.z = 0
-                    self.pl.Rotation.Angle = 0
-                elif(viewAxis == App.Vector(0, 0, 1)):
-                    self.pl.Base.z = 0.0
-                    position.z = 0.0
-                    self.pl.Rotation.Angle = 0
-
-                # FrontSide
-                elif(viewAxis == App.Vector(0, 1, 0)):
-                    self.pl.Base.y = 0.0
-                    position.y = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (-1, 0, 0)
-                elif (viewAxis == App.Vector(0, -1, 0)):
-                    self.pl.Base.y = 0.0
-                    position.y = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (1, 0, 0)
-
-                # RightSideView
-                elif(viewAxis == App.Vector(-1, 0, 0)):
-                    self.pl.Base.x = 0.0
-                    position.x = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (0, 1, 0)
-                elif (viewAxis == App.Vector(1, 0, 0)):
-                    self.pl.Base.x = 0.0
-                    position.x = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (0, 1, 0)
-
-                self.currentObj.Object.Placement = self.pl
-
-                # All direction when A or decide which direction
-                if (self.MoveMentDirection == 'A'):
-                    self.currentObj.Object.Placement.Base = position
-                elif (self.MoveMentDirection == 'X'):
-                    self.currentObj.Object.Placement.Base.x = position.x
-                elif (self.MoveMentDirection == 'Y'):
-                    self.currentObj.Object.Placement.Base.y = position.y
-                elif (self.MoveMentDirection == 'Z'):
-                    self.currentObj.Object.Placement.Base.z = position.z
-                App.ActiveDocument.recompute()
+            self.oldEdgeVertexes = self.newEdge.Vertexes
+            # All direction when A or decide which direction
+            if (self.MoveMentDirection == 'A'):
+                self.newEdge.Object.Placement.Base = position
+            elif (self.MoveMentDirection == 'X'):
+                self.newEdge.Object.Placement.Base.x = position.x
+            elif (self.MoveMentDirection == 'Y'):
+                self.newEdge.Object.Placement.Base.y = position.y
+            elif (self.MoveMentDirection == 'Z'):
+                self.newEdge.Object.Placement.Base.z = position.z
+            self.recreateObject()
+            App.ActiveDocument.recompute()
 
         except Exception as err:
             App.Console.PrintError("'MouseMovement_cb' Failed. "
@@ -308,7 +282,7 @@ class Design456_ExtendEdge:
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 self.appendToList()
                 App.ActiveDocument.recompute()
-                self.currentObj = None
+                self.newEdge = None
                 self.setSize()
                 self.setType()
                 self.recreateObject()
@@ -521,7 +495,7 @@ class Design456_CornerModifier:
         self.PaintLBL = None
         self.pl = None
         self.AllObjects = []
-        self.currentObj = None
+        self.newEdge = None
         self.view = None
         self.Observer = None
         self.continuePainting = True
@@ -535,9 +509,9 @@ class Design456_CornerModifier:
         Hide the widgets. Remove also the tab.
         """
         try:
-            if (self.currentObj is not None):
-                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
-                self.currentObj = None
+            if (self.newEdge is not None):
+                App.ActiveDocument.removeObject(self.newEdge.Object.Name)
+                self.newEdge = None
             self.dialog.hide()
 
             dw = self.mw.findChildren(QtGui.QDockWidget)
@@ -567,9 +541,9 @@ class Design456_CornerModifier:
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
             viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
-            if self.currentObj is not None:
+            if self.newEdge is not None:
                 # Normal view - Top
-                self.pl = self.currentObj.Object.Placement
+                self.pl = self.newEdge.Object.Placement
                 self.pl.Rotation.Axis = viewAxis
                 if(viewAxis == App.Vector(0, 0, -1)):
                     self.pl.Base.z = 0.0
@@ -604,17 +578,17 @@ class Design456_CornerModifier:
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (0, 1, 0)
 
-                self.currentObj.Object.Placement = self.pl
+                self.newEdge.Object.Placement = self.pl
 
                 # All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
-                    self.currentObj.Object.Placement.Base = position
+                    self.newEdge.Object.Placement.Base = position
                 elif (self.MoveMentDirection == 'X'):
-                    self.currentObj.Object.Placement.Base.x = position.x
+                    self.newEdge.Object.Placement.Base.x = position.x
                 elif (self.MoveMentDirection == 'Y'):
-                    self.currentObj.Object.Placement.Base.y = position.y
+                    self.newEdge.Object.Placement.Base.y = position.y
                 elif (self.MoveMentDirection == 'Z'):
-                    self.currentObj.Object.Placement.Base.z = position.z
+                    self.newEdge.Object.Placement.Base.z = position.z
                 App.ActiveDocument.recompute()
         except Exception as err:
             App.Console.PrintError("'MouseMovement_cb' Failed. "
@@ -639,7 +613,7 @@ class Design456_CornerModifier:
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 self.appendToList()
                 App.ActiveDocument.recompute()
-                self.currentObj = None
+                self.newEdge = None
                 self.setSize()
                 self.setType()
                 self.recreateObject()
