@@ -895,8 +895,8 @@ def getNormalized(selectedObj=None):
     if selectedObj is None:
         raise ValueError("SelectedObj must be a face")
     edg = getLowestEdgetInAFace(selectedObj)
-    v1 = App.Vector(edg.Vertexes[0].Y, edg.Vertexes[0].X, edg.Vertexes[0].Z)
-    v2 = App.Vector(edg.Vertexes[1].Y, edg.Vertexes[1].X, edg.Vertexes[1].Z)
+    v1 = edg.Vertexes[0].Point
+    v2 = edg.Vertexes[1].Point
     vt = v1.sub(v2)
     vt = vt
     p1 = edg.valueAt(edg.FirstParameter)
