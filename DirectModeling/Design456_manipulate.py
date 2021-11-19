@@ -40,13 +40,13 @@ from OCC.Core import ChFi2d
 from OCC import Core
 import FACE_D as faced
 
-# >>> import Part
-# >>> __s__=App.ActiveDocument.Compound.Shape.Faces
-# >>> __s__=Part.Solid(Part.Shell(__s__))
-# >>> __o__=App.ActiveDocument.addObject("Part::Feature","Compound_solid")
-# >>> __o__.Label="Compound (Solid)"
-# >>> __o__.Shape=__s__
-# >>> del __s__, __o__
+#   import Part
+#   __s__=App.ActiveDocument.Compound.Shape.Faces
+#   __s__=Part.Solid(Part.Shell(__s__))
+#   __o__=App.ActiveDocument.addObject("Part::Feature","Compound_solid")
+#   __o__.Label="Compound (Solid)"
+#   __o__.Shape=__s__
+#   del __s__, __o__
 """
     - For square, rectangle, multisided-wire shapes :draft.wire should do the job
     - For Circle  - Loft should do the job. 
@@ -131,6 +131,7 @@ class Design456_ExtendEdge:
     # def findEdgeInFace(self, face, specialEdg):
     #     """[Find Edg in a face]
 
+
     #     Args:
     #         face ([Face Obj]): [Face has the specialEdg]
     #         specialEdg ([Edge Obj]): [An Edge to search for]
@@ -152,6 +153,7 @@ class Design456_ExtendEdge:
         self.newEdge.Shape = sh
         self.selectedEdge = self.newEdge  # TODO: SHOULD WE DO THAT: FIXME:
         App.ActiveDocument.recompute()
+
 
     # def findFacesWithSharedEdge(self, edg):
     #     """[Find out the faces have the same edge which will be dragged by the mouse]
@@ -176,6 +178,7 @@ class Design456_ExtendEdge:
     #     vectors = []
     #     for vertex in face.Vertexes:
     #         vectors.append(vertex.Point)
+
 
     def recreateObject(self):
         # FIXME:
