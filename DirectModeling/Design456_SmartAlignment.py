@@ -49,6 +49,8 @@ from ThreeDWidgets import fr_label_draw
 MouseScaleFactor = 1.5      # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
 
 
+#TODO: FIXME : NOT IMPLEMENTED
+
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
     """[summary]
     Callback for the arrow movement. This will be used to calculate the radius of the Alignment operation.
