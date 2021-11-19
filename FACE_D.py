@@ -254,7 +254,7 @@ class PartMover:
             import Design456Init
             tempPoint = self.view.getPoint(pos[0], pos[1])
             tempPoint = [int(tempPoint[0]),
-                         int(tempPoint[1]), 
+                         int(tempPoint[1]),
                          int(tempPoint[2])]
             if(self.Direction is None):
                 if Design456Init.DefaultDirectionOfExtrusion == 'x':
@@ -840,7 +840,55 @@ def RotateObjectToCenterPoint(SelectedObj=None, XAngle=0, YAngle=45, ZAngle=0):
             axisX, axisY, axisZ), XAngle, YAngle, ZAngle)
 
 
-def getLowestEdgetInAFace(selectedObj=None):
+def getSortedXYZFromVertices(vertices = None):
+    """[Sort vertices in list by returning 3 lists
+        for the 3 axis X,Y,Z separated and sorted]
+
+    Args:
+        vertices ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    if vertices is None:
+        raise ValueError("Vertices must be valid")
+    try:
+        allZ = []
+        allY = []
+        allX = []
+        for i in range(0, len(vertices)):
+            allX.append(vertices[i].x)
+            allY.append(vertices[i].y)
+            allZ.append(vertices[i].z)
+        if (allX == [] or allY == [] or allZ == []):
+            raise ValueError("Vertices must be valid")
+        print()
+        allX.sort()
+        allY.sort()
+        allZ.sort()
+        return (allX, allY, allZ)
+
+    except Exception as err:
+        App.Console.PrintError("'getSortedXYZFromVertices -Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
+
+def getLowestEdgeInAFace(selectedObj=None):
+    """[Find lower Edge from a face ]
+
+    Args:
+        selectedObj ([Face Object], Required): [Face to find the lowest edg for].
+
+    Raises:
+        ValueError: [When the face is not given to the function]
+        Exception: [If something went wrong]
+
+    Returns:
+        [Edge Object]: [Lower edge in the face (z is lowest)]
+    """
     try:
         if selectedObj is None:
             raise ValueError("SelectedObj must be a face")
@@ -880,11 +928,11 @@ def getLowestEdgetInAFace(selectedObj=None):
                 if edge.SubShapes[0].Point.z == allZ[0] or edge.SubShapes[0].Point.z == allZ[1]:
                     if edge.SubShapes[1].Point.z == allZ[0] or edge.SubShapes[1].Point.z == allZ[1]:
                         return edge
-        if result == None:
-            raise Exception("Not found")  # Don't know when this happens
+        # We shouldn't be here
+        raise Exception("Not found")  # Don't know when this happens
 
     except Exception as err:
-        App.Console.PrintError("'getLowestEdgetInAFace -Failed. "
+        App.Console.PrintError("'getLowestEdgeInAFace -Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -894,7 +942,7 @@ def getLowestEdgetInAFace(selectedObj=None):
 def getNormalized(selectedObj=None):
     if selectedObj is None:
         raise ValueError("SelectedObj must be a face")
-    edg = getLowestEdgetInAFace(selectedObj)
+    edg = getLowestEdgeInAFace(selectedObj)
     v1 = edg.Vertexes[0].Point
     v2 = edg.Vertexes[1].Point
     vt = v1.sub(v2)
@@ -908,7 +956,7 @@ def getNormalized(selectedObj=None):
 
 
 def getBase(selectedObj, radius=1, thickness=1):
-    edg = getLowestEdgetInAFace(selectedObj)
+    edg = getLowestEdgeInAFace(selectedObj)
     nor = getNormalized(selectedObj)
     basePoint = edg.valueAt(edg.FirstParameter) + nor*(radius+thickness)
     print("basePoint", basePoint)
