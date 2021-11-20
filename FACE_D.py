@@ -38,7 +38,7 @@ import math
 
 
 def getDirectionAxis(s=None):
-    """[summary]
+    """[Get Direction of the selected face/Edge]
 
     Raises:
         Exception: [description]
@@ -840,7 +840,7 @@ def RotateObjectToCenterPoint(SelectedObj=None, XAngle=0, YAngle=45, ZAngle=0):
             axisX, axisY, axisZ), XAngle, YAngle, ZAngle)
 
 
-def getSortedXYZFromVertices(vertices = None):
+def getSortedXYZFromVertices(vertices=None):
     """[Sort vertices in list by returning 3 lists
         for the 3 axis X,Y,Z separated and sorted]
 
@@ -961,3 +961,41 @@ def getBase(selectedObj, radius=1, thickness=1):
     basePoint = edg.valueAt(edg.FirstParameter) + nor*(radius+thickness)
     print("basePoint", basePoint)
     return basePoint
+
+
+def findEdgeInFace(face, specialEdg):
+    """[Find Edg in a face]
+    Args:
+        face ([Face Obj]): [Face has the specialEdg]
+        specialEdg ([Edge Obj]): [An Edge to search for]
+
+    Returns:
+        [Boolean]: [True if the face found or False if not found ]
+    """
+    for edg in face.Edges:
+        if specialEdg == edg:
+            return True
+    return False
+
+
+def findFacesWithSharedEdge(selectedObj, edg):
+    """[Find faces having the same edge]
+
+    Args:
+        selectedObj ([FreeCAD Object]): [Any 3D object]
+        edg ([Edge]): [Edge shared between faces]
+
+    Returns:
+        [list]: [list of faces having the edge]
+    """
+    AffectedFaced = []
+    print(selectedObj)
+    print(edg)
+    for face in selectedObj.Shape.Faces:
+        if findEdgeInFace(face, edg):
+            AffectedFaced.append(face)
+    if len(AffectedFaced) == 0:
+        errMessage = "Please select an edge which is part of other objects"
+        errorDialog(errMessage)
+        return
+    return AffectedFaced

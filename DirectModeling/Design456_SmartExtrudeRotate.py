@@ -405,7 +405,7 @@ class Design456_SmartExtrudeRotate:
     ExtractedFaces = []
     FirstLocation = None
     # We cannot combine rotation with direction extrusion.
-    # This varialbe is used to disale all other options
+    # This variable is used to disale all other options
     isItRotation = False
 
     def calculateRotatedNormal(self, Wheelaxis):
