@@ -119,23 +119,6 @@ def getDirectionAxis(s=None):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-# TODO Do we need this?
-"""def MousePosition():
-    def __init__(self, view):
-        self.view = view
-
-    def logPosition(self, info):
-        down = (info["State"] == "DOWN")
-        pos = info["Position"]
-        if (down):
-            App.Console.PrintMessage("Clicked on position: ("+str(pos[0])+", "+str(pos[1])+")\n")
-            pnt = self.view.getPoint(pos)
-            App.Console.PrintMessage("World coordinates: " + str(pnt) + "\n")
-            info = self.view.getObjectInfo(pos)
-            App.Console.PrintMessage("Object info: " + str(info) + "\n")
-        return pnt
-"""
-
 # TODO: This might be wrong
 
 
@@ -559,33 +542,6 @@ class createActionTab:
         return (self.mw, self.dialog, self.tab)
 
 
-def findFacehasSelectedEdge():
-    """[Find Face that has the selected edge]
-    Returns:
-        [Face Object]: [Return the face of the selected edge or None if error occurs]
-    """
-    obj = Gui.Selection.getSelectionEx()[0]
-    edge = obj.SubObjects[0]
-    Faces = obj.Object.Shape.Faces
-    for fa in Faces:
-        for ed in fa.Edges:
-            if edge.isEqual(ed):
-                # if edge.isPartner(ed):
-                return fa
-    return None
-
-
-def findFaceSHavingTheSameEdge():
-    """[Find Faces that have the selected edge]
-    Returns:
-        [Face Objects]: [Return the faces have the selected edge or None if error occur]
-    """
-    s = Gui.Selection.getSelectionEx()[0]
-    edge = s.SubObjects[0]
-    shape = s.Object.Shape
-    return shape.ancestorsOfType(edge, _part.Face)
-
-
 def findnormalAtforEdge():
     """[Find Directions of an edge]
 
@@ -963,39 +919,27 @@ def getBase(selectedObj, radius=1, thickness=1):
     return basePoint
 
 
-def findEdgeInFace(face, specialEdg):
-    """[Find Edg in a face]
-    Args:
-        face ([Face Obj]): [Face has the specialEdg]
-        specialEdg ([Edge Obj]): [An Edge to search for]
-
+def findFaceSHavingTheSameEdge():
+    """[Find Faces that have the selected edge]
     Returns:
-        [Boolean]: [True if the face found or False if not found ]
+        [Face Objects]: [Return the faces have the selected edge or None if error occur]
     """
-    for edg in face.Edges:
-        if specialEdg == edg:
-            return True
-    return False
+    s = Gui.Selection.getSelectionEx()[0]
+    edge = s.SubObjects[0]
+    shape = s.Object.Shape
+    return shape.ancestorsOfType(edge, _part.Face)
 
 
-def findFacesWithSharedEdge(selectedObj, edg):
-    """[Find faces having the same edge]
-
-    Args:
-        selectedObj ([FreeCAD Object]): [Any 3D object]
-        edg ([Edge]): [Edge shared between faces]
-
+def findFacehasSelectedEdge():
+    """[Find Face that has the selected edge]
     Returns:
-        [list]: [list of faces having the edge]
+        [Face Object]: [Return the face of the selected edge or None if error occurs]
     """
-    AffectedFaced = []
-    print(selectedObj)
-    print(edg)
-    for face in selectedObj.Shape.Faces:
-        if findEdgeInFace(face, edg):
-            AffectedFaced.append(face)
-    if len(AffectedFaced) == 0:
-        errMessage = "Please select an edge which is part of other objects"
-        errorDialog(errMessage)
-        return
-    return AffectedFaced
+    obj = Gui.Selection.getSelectionEx()[0]
+    edge = obj.SubObjects[0]
+    Faces = obj.Object.Shape.Faces
+    for fa in Faces:
+        for ed in fa.Edges:
+            if edge.isEqual(ed):
+                return fa
+    return None
