@@ -80,18 +80,18 @@ class GenCommandForPartUtils:
                     f.Base = App.ActiveDocument.getObject(m.Name)
                     f.DirMode = "Normal"
                     f.DirLink = a2dobj.Object
-
-                    if faced.getDirectionAxis() == "+x":
+                    tempDir = faced.getDirectionAxis()
+                    if tempDir == "+x":
                         f.Dir = (1, 0, 0)
-                    elif faced.getDirectionAxis() == "-x":
+                    elif tempDir == "-x":
                         f.Dir = (-1, 0, 0)
-                    elif faced.getDirectionAxis() == "+y":
+                    elif tempDir == "+y":
                         f.Dir = (0, 1, 0)
-                    elif faced.getDirectionAxis() == "-y":
+                    elif tempDir == "-y":
                         f.Dir = (0, -1, 0)
-                    elif faced.getDirectionAxis() == "+z":
+                    elif tempDir == "+z":
                         f.Dir = (0, 0, 1)
-                    elif faced.getDirectionAxis() == "-z":
+                    elif tempDir == "-z":
                         f.Dir = (0, 0, -1)
 
                     f.LengthFwd = 1.00
