@@ -71,11 +71,12 @@ class Design456_ExtendEdge:
     newEdge = None      # Keep new vectors for the moved old edge-vectors
     # facess needed to be recreated - resized
     # First time it is from the object, but later will be the created faces
-    AffectedFaced = []
     view = None  # used for captureing mouse events
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
     MoveMentDirection = None
+    _newFaces = []
+    clickOccurrence = 0
 
     def setTolerance(self, sel):
         if len(sel) != 1:
@@ -144,7 +145,7 @@ class Design456_ExtendEdge:
     #             return True
     #     return False
 
-    def simpleCopyTheEdge(self):
+    def ExtractTheEdge(self):
         """[Extract the edge for movement]
         """
         self.newEdge = App.ActiveDocument.addObject(
@@ -275,29 +276,47 @@ class Design456_ExtendEdge:
         # We try to create a wire-closed to replace the sides we delete.
         # This will be way to complex .. with many bugs :(
         try:
-            _newFaces = []
             _vertices = []
-            faces = self.selectedObj.Shape.Faces
+            faces = None
+            if self._newFaces == []:
+                print("selectedObject")
+                faces = self.selectedObj.Shape.Faces
+            else:
+                print("new faces ")
+                faces = self._newFaces
+            if faces == None:
+                return #TODO CHECKME
+            
+            self._newFaces.clear()
             for i in range(0, len(faces)):
                 _vertices.clear()
+                # Change allways the edges vertices to moved one
+                #for vertex in faces[i].OuterWire.OrderedVertexes:
                 for vertex in faces[i].Vertexes:
-                    if vertex == self.oldEdgeVertexes[0]:
-                        _vertices.append(self.newEdge.Vertexes[0].Point)
-                    elif vertex == self.oldEdgeVertexes[1]:
-                        _vertices.append(self.newEdge.Vertexes[0].Point)
+                    if vertex.Point == self.oldEdgeVertexes[0].Point:
+                        print("found 0")
+                        _vertices.append(self.newEdge.Shape.Vertexes[0].Point)
+                    elif vertex.Point == self.oldEdgeVertexes[1].Point:
+                        print("found 1")
+                        _vertices.append(self.newEdge.Shape.Vertexes[0].Point)
                     else:
                         _vertices.append(vertex.Point)
                 # Now we have new vertices for one face .. create the face object
+                
+                print("before i _vertices", i, _vertices)
                 _Newvertices = self.FixSequenceOfVertices(_vertices)
+                #_Newvertices =_vertices
                 print("i _vertices", i, _Newvertices)
                 newPolygon = _part.makePolygon(_Newvertices, True)
                 App.ActiveDocument.recompute()
-                newFace = _part.makeFilledFace(newPolygon.Edges)
-                _part.show(newFace)
-                if newFace.isNull():
-                    raise RuntimeError('Failed to create face')
-                _newFaces.append(newFace)
-            self.AffectedFaced = _newFaces
+                #newFace = _part.makeFilledFace(newPolygon.Edges)
+                _part.show(newPolygon)
+
+                #if newFace.isNull():
+                #    raise RuntimeError('Failed to create face')
+
+                #self._newFaces.append(newFace)
+                print("self._newFaces", self._newFaces)
 
         except Exception as err:
             App.Console.PrintError("'recreateObject' Failed. "
@@ -308,28 +327,35 @@ class Design456_ExtendEdge:
 
     def Activated(self):
         try:
+
             sel = Gui.Selection.getSelectionEx()
             if len(sel) > 2:
                 errMessage = "Please select only one edge and try again"
                 faced.errorDialog(errMessage)
                 return
+            self.clickOccurrence = 0
             self.MoveMentDirection = 'A'
 
             self.view = Gui.ActiveDocument.activeView()
             # The whole 3D object
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
+
             self.selectedEdge = sel[0].SubObjects[0]
-            self.oldEdgeVertexes = self.selectedEdge.Vertexes
+            if(hasattr (self.selectedEdge ,"Vertexes")):
+                self.oldEdgeVertexes = self.selectedEdge.Vertexes
+            else:
+                self.oldEdgeVertexes = self.selectedEdge.Shape.Vertexes
             if not hasattr(self.selectedEdge, 'Edges'):
                 raise Exception("Please select only one edge and try again")
-            self.simpleCopyTheEdge()
 
+            self.ExtractTheEdge()
+            # Start callbacks for mouse events.
+            self.callbackClick = self.view.addEventCallbackPivy(
+                coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick_cb)
             # Start callbacks for mouse events.
             self.callbackMove = self.view.addEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
-            self.callbackClick = self.view.addEventCallbackPivy(
-                coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick_cb)
             self.callbackKey = self.view.addEventCallbackPivy(
                 coin.SoKeyboardEvent.getClassTypeId(), self.KeyboardEvent)
 
@@ -351,21 +377,21 @@ class Design456_ExtendEdge:
             event = events.getEvent()
             pos = event.getPosition().getValue()
             tempPos = self.view.getPoint(pos[0], pos[1])
-            position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
-            viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
+            position = App.Vector(int(tempPos[0]), int(tempPos[1]), int(tempPos[2]))
+            #viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
+            if position != self.newEdge.Placement.Base:
+                self.oldEdgeVertexes = self.newEdge.Shape.Vertexes
+                # All direction when A or decide which direction
+                if (self.MoveMentDirection == 'A'):
+                    self.newEdge.Placement.Base = position
+                elif (self.MoveMentDirection == 'X'):
+                    self.newEdge.Placement.Base.x = position.x
+                elif (self.MoveMentDirection == 'Y'):
+                    self.newEdge.Placement.Base.y = position.y
+                elif (self.MoveMentDirection == 'Z'):
+                    self.newEdge.Placement.Base.z = position.z
+                self.recreateObject()
 
-            self.oldEdgeVertexes = self.newEdge.Shape.Vertexes
-            # All direction when A or decide which direction
-            if (self.MoveMentDirection == 'A'):
-                self.newEdge.Placement.Base = position
-            elif (self.MoveMentDirection == 'X'):
-                self.newEdge.Placement.Base.x = position.x
-            elif (self.MoveMentDirection == 'Y'):
-                self.newEdge.Placement.Base.y = position.y
-            elif (self.MoveMentDirection == 'Z'):
-                self.newEdge.Placement.Base.z = position.z
-            #self.recreateObject()
-            App.ActiveDocument.recompute()
 
         except Exception as err:
             App.Console.PrintError("'MouseMovement_cb' Failed. "
@@ -382,15 +408,31 @@ class Design456_ExtendEdge:
             events ([COIN3D events]): [events type]
         """
         try:
+
             event = events.getEvent()
             eventState = event.getState()
             getButton = event.getButton()
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.newEdge = None
-                self.recreateObject()
-                App.ActiveDocument.recompute()
-                self.remove_callbacks()
-                
+                if self.clickOccurrence == 0:
+                    self.clickOccurrence = 1
+                    # Start callbacks for mouse events.
+                    self.callbackMove = self.view.addEventCallbackPivy(
+                        coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
+                    self.callbackKey = self.view.addEventCallbackPivy(
+                        coin.SoKeyboardEvent.getClassTypeId(), self.KeyboardEvent)
+                    return
+                elif self.clickOccurrence == 1:
+                    self.newEdge = None
+                    self.remove_callbacks()
+                    App.ActiveDocument.recompute()
+                    
+            App.ActiveDocument.removeObject(self.selectedObj.Name)
+            #myShell = _part.makeShell(self._newFaces)
+            #App.ActiveDocument.recompute()
+            #_part.show(myShell)
+            #mySolid = _part.makeSolid(myShell)
+            #self.selectedObj = mySolid
+            self.clickOccurrence = 0
 
         except Exception as err:
             App.Console.PrintError("'MouseClick_cb' Failed. "
@@ -449,298 +491,4 @@ class Design456_ExtendEdge:
 
 
 Gui.addCommand('Design456_ExtendEdge', Design456_ExtendEdge())
-
-
-# class Design456_CornerModifier:
-
-#     mw = None
-#     dialog = None  # Dialog for the tool
-#     tab = None  # Tabs
-#     smartInd = None  # ?
-#     _mywin = None                           #
-#     b1 = None                               #
-#     CornerModifierLBL = None  # Label
-#     selectedObj = None
-
-#     def Activated(self):
-#         pass
-
-#     def getMainWindow(self):
-#         """[Create the tab for the tool]
-
-#         Returns:
-#             [QTtab]: [The tab created which should be added to the FreeCAD]
-#         """
-#         try:
-#             toplevel = QtGui.QApplication.topLevelWidgets()
-#             self.mw = None
-#             for i in toplevel:
-#                 if i.metaObject().className() == "Gui::MainWindow":
-#                     self.mw = i
-#             if self.mw is None:
-#                 raise Exception("No main window found")
-#             dw = self.mw.findChildren(QtGui.QDockWidget)
-#             for i in dw:
-#                 if str(i.objectName()) == "Combo View":
-#                     self.tab = i.findChild(QtGui.QTabWidget)
-#                 elif str(i.objectName()) == "Python Console":
-#                     self.tab = i.findChild(QtGui.QTabWidget)
-#             if self.tab is None:
-#                 raise Exception("No tab widget found")
-
-#             self.dialog = QtGui.QDialog()
-#             oldsize = self.tab.count()
-#             self.tab.addTab(self.dialog, "CornerModifier")
-#             self.tab.setCurrentWidget(self.dialog)
-#             self.dialog.resize(200, 450)
-#             self.dialog.setWindowTitle("CornerModifier")
-#             self.formLayoutWidget = QtGui.QWidget(self.dialog)
-#             self.formLayoutWidget.setGeometry(QtCore.QRect(10, 80, 281, 67))
-#             self.formLayoutWidget.setObjectName("formLayoutWidget")
-
-#             la = QtGui.QVBoxLayout(self.dialog)
-#             e1 = QtGui.QLabel("CornerModifier")
-#             commentFont = QtGui.QFont("Times", 12, True)
-#             e1.setFont(commentFont)
-
-#             self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
-#             self.formLayout.setContentsMargins(0, 0, 0, 0)
-#             self.formLayout.setObjectName("formLayout")
-#             self.lblCornerModifier = QtGui.QLabel(self.formLayoutWidget)
-#             self.dialog.setObjectName("CornerModifier")
-#             self.formLayout.setWidget(
-#                 0, QtGui.QFormLayout.LabelRole, self.lblCornerModifier)
-#             self.lstBrushType = QtGui.QListWidget(self.dialog)
-#             self.lstBrushType.setGeometry(10, 10, 50, 40)
-#             self.lstBrushType.setObjectName("lstBrushType")
-#             self.formLayout.setWidget(
-#                 0, QtGui.QFormLayout.FieldRole, self.lstBrushType)
-#             self.lstBrushSize = QtGui.QListWidget(self.dialog)
-#             self.lstBrushSize.setGeometry(10, 55, 50, 20)
-
-#             self.lstBrushSize.setObjectName("lstBrushSize")
-#             self.formLayout.setWidget(
-#                 1, QtGui.QFormLayout.FieldRole, self.lstBrushSize)
-#             self.lblBrushSize = QtGui.QLabel(self.formLayoutWidget)
-#             self.lblBrushSize.setObjectName("lblBrushSize")
-#             self.formLayout.setWidget(
-#                 1, QtGui.QFormLayout.LabelRole, self.lblBrushSize)
-#             self.formLayoutWidget_2 = QtGui.QWidget(self.dialog)
-#             self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 160, 160, 80))
-#             self.formLayoutWidget_2.setObjectName("formLayoutWidget_2")
-#             self.formLayout_2 = QtGui.QFormLayout(self.formLayoutWidget_2)
-#             self.formLayout_2.setContentsMargins(0, 0, 0, 0)
-#             self.formLayout_2.setObjectName("formLayout_2")
-#             self.radioAsIs = QtGui.QRadioButton(self.formLayoutWidget_2)
-#             self.radioAsIs.setObjectName("radioAsIs")
-#             self.formLayout_2.setWidget(
-#                 0, QtGui.QFormLayout.FieldRole, self.radioAsIs)
-#             self.radioMerge = QtGui.QRadioButton(self.formLayoutWidget_2)
-#             self.radioMerge.setObjectName("radioMerge")
-#             self.formLayout_2.setWidget(
-#                 1, QtGui.QFormLayout.FieldRole, self.radioMerge)
-#             self.CornerModifierLBL = QtGui.QLabel(
-#                 "Use X,Y,Z to limit the movements\nAnd A for free movement\nCornerModifier Radius or side=7")
-
-#             la.addWidget(self.formLayoutWidget)
-#             la.addWidget(e1)
-#             la.addWidget(self.CornerModifierLBL)
-#             self.okbox = QtGui.QDialogButtonBox(self.dialog)
-#             self.okbox.setOrientation(QtCore.Qt.Horizontal)
-#             self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
-#             la.addWidget(self.okbox)
-#             # Add All shape names to the combobox
-#             for nameOfObject in self.listOfDrawings:
-#                 self.lstBrushType.addItem(nameOfObject)
-
-#             for i in range(1, 1000):
-#                 self.lstBrushSize.addItem(str(i))
-#             self.lstBrushSize.setCurrentRow(6)
-#             self.lstBrushType.setCurrentRow(FR_BRUSHES.FR_CIRCLE_BRUSH)
-
-#             self.lstBrushSize.currentItemChanged.connect(
-#                 self.BrushSizeChanged_cb)
-
-#             self.lstBrushType.currentItemChanged.connect(
-#                 self.BrushTypeChanged_cb)
-
-#             _translate = QtCore.QCoreApplication.translate
-#             self.dialog.setWindowTitle(_translate(
-#                 "CornerModifier", "CornerModifier"))
-#             self.lblCornerModifier.setText(_translate("Dialog", "Brush Type"))
-#             self.lstBrushType.setToolTip(_translate("Dialog", "Brush Type"))
-#             self.lstBrushSize.setToolTip(_translate("Dialog", "Brush Type"))
-#             self.lblBrushSize.setText(_translate("Dialog", "Brush Size"))
-#             self.radioAsIs.setText(_translate("Dialog", "As is"))
-#             self.radioMerge.setText(_translate("Dialog", "Merge"))
-
-#             QtCore.QMetaObject.connectSlotsByName(self.dialog)
-#             QtCore.QObject.connect(
-#                 self.okbox, QtCore.SIGNAL("accepted()"), self.hide)
-#             return self.dialog
-
-#         except Exception as err:
-#             App.Console.PrintError("'Design456_CornerModifier' getMainWindow-Failed. "
-#                                    "{err}\n".format(err=str(err)))
-#             exc_type, exc_obj, exc_tb = sys.exc_info()
-#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-#             print(exc_type, fname, exc_tb.tb_lineno)
-
-#     def __del__(self):
-#         """[Python destructor for the object. Otherwise next drawing might get wrong parameters]
-#         """
-#         self.remove_callbacks()
-#         self.mw = None
-#         self.dialog = None
-#         self.tab = None
-#         self.smartInd = None
-#         self._mywin = None
-#         self.b1 = None
-#         self.PaintLBL = None
-#         self.pl = None
-#         self.AllObjects = []
-#         self.newEdge = None
-#         self.view = None
-#         self.Observer = None
-#         self.continuePainting = True
-#         self.brushSize = 1
-#         self.brushType = 0
-#         self.resultObj = None
-#         self.runOnce = False
-
-#     def hide(self):
-#         """
-#         Hide the widgets. Remove also the tab.
-#         """
-#         try:
-#             if (self.newEdge is not None):
-#                 App.ActiveDocument.removeObject(self.newEdge.Object.Name)
-#                 self.newEdge = None
-#             self.dialog.hide()
-
-#             dw = self.mw.findChildren(QtGui.QDockWidget)
-#             newsize = self.tab.count()  # Todo : Should we do that?
-#             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-#             del self.dialog
-#             App.ActiveDocument.recompute()
-#             self.__del__()  # Remove all CornerModifier 3dCOIN widgets
-
-#         except Exception as err:
-#             App.Console.PrintError("'recreate CornerModifier Obj' Failed. "
-#                                    "{err}\n".format(err=str(err)))
-#             exc_type, exc_obj, exc_tb = sys.exc_info()
-#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-#             print(exc_type, fname, exc_tb.tb_lineno)
-
-#     def MouseMovement_cb(self, events):
-#         """[Mouse movement callback. It will move the object
-#         and update the drawing's position depending on the mouse-position and the plane]
-
-#         Args:
-#             events ([Coin3D events]): [Type of the event]
-#         """
-#         try:
-#             event = events.getEvent()
-#             pos = event.getPosition().getValue()
-#             tempPos = self.view.getPoint(pos[0], pos[1])
-#             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
-#             viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
-#             if self.newEdge is not None:
-#                 # Normal view - Top
-#                 self.newEdge.Object.Placement = position
-
-#                 # All direction when A or decide which direction
-#                 if (self.MoveMentDirection == 'A'):
-#                     self.newEdge.Object.Placement.Base = position
-#                 elif (self.MoveMentDirection == 'X'):
-#                     self.newEdge.Object.Placement.Base.x = position.x
-#                 elif (self.MoveMentDirection == 'Y'):
-#                     self.newEdge.Object.Placement.Base.y = position.y
-#                 elif (self.MoveMentDirection == 'Z'):
-#                     self.newEdge.Object.Placement.Base.z = position.z
-#                 App.ActiveDocument.recompute()
-
-#         except Exception as err:
-#             App.Console.PrintError("'MouseMovement_cb' Failed. "
-#                                    "{err}\n".format(err=str(err)))
-#             exc_type, exc_obj, exc_tb = sys.exc_info()
-#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-#             print(exc_type, fname, exc_tb.tb_lineno)
-
-#     def MouseClick_cb(self, events):
-#         """[Mouse Release callback.
-#         It will place the object after last movement
-#         and merge the object to older objects]
-
-#         Args:
-#             events ([COIN3D events]): [events type]
-#         """
-#         try:
-#             event = events.getEvent()
-#             eventState = event.getState()
-#             getButton = event.getButton()
-#             angle = 0
-#             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-#                 self.appendToList()
-#                 App.ActiveDocument.recompute()
-#                 self.newEdge = None
-#                 self.setSize()
-#                 self.setType()
-#                 self.recreateObject()
-#                 App.ActiveDocument.recompute()
-
-#         except Exception as err:
-#             App.Console.PrintError("'MouseClick_cb' Failed. "
-#                                    "{err}\n".format(err=str(err)))
-#             exc_type, exc_obj, exc_tb = sys.exc_info()
-#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-#             print(exc_type, fname, exc_tb.tb_lineno)
-
-#     def KeyboardEvent(self, events):
-#         """[Key board events. Used to limit the movement axis and finalize the last drawing by pressing ESC key]
-
-#         Args:
-#             events ([COIN3D events]): [events type]
-#         """
-#         try:
-#             event = events.getEvent()
-#             eventState = event.getState()
-#             if (type(event) == coin.SoKeyboardEvent):
-#                 key = event.getKey()
-#             if key == coin.SoKeyboardEvent.X and eventState == coin.SoButtonEvent.UP:
-#                 self.MoveMentDirection = 'X'
-#             elif key == coin.SoKeyboardEvent.Y and eventState == coin.SoButtonEvent.UP:
-#                 self.MoveMentDirection = 'Y'
-#             elif key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
-#                 self.MoveMentDirection = 'Z'
-#             else:
-#                 self.MoveMentDirection = 'A'  # All
-#             # TODO:This line causes a crash to FreeCAD .. don't know why :(
-#             # if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
-#             #    self.hide()
-
-#         except Exception as err:
-#             App.Console.PrintError("'KeyboardEvent' Failed. "
-#                                    "{err}\n".format(err=str(err)))
-#             exc_type, exc_obj, exc_tb = sys.exc_info()
-#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-#             print(exc_type, fname, exc_tb.tb_lineno)
-
-#     def remove_callbacks(self):
-#         """[Remove COIN32D/Events callback]
-#         """
-#         self.view.removeEventCallbackPivy(
-#             coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-#         self.view.removeEventCallbackPivy(
-#             coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
-#         self.view.removeEventCallbackPivy(
-#             coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
-#         self.view = None
-
-#     def GetResources(self):
-#         return {'Pixmap': Design456Init.ICON_PATH + 'Design456_CornerModifier.svg',
-#                 'MenuText': "CornerModifier",
-#                 'ToolTip': "Draw or CornerModifier"}
-
-
-# Gui.addCommand('Design456_CornerModifier', Design456_CornerModifier())
+#******************************************************************************************************
