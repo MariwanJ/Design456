@@ -69,11 +69,6 @@ from OCC.Core import ChFi2d
 
 # """
 
-
-# The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
-MouseScaleFactor = 1
-
-
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
      This will affect the faces share the edge.    ]
@@ -95,8 +90,8 @@ class Design456_ExtendEdge:
 
     setupRotation = [0, 0, 0, 0]
     
-    ExtendLength=1
-    
+    tweakLength=1
+    isItRotation=False
     newObject = None
     selectedObj = None
     # Original vectors that will be changed by mouse.
@@ -332,11 +327,6 @@ class Design456_ExtendEdge:
     def calculateNewVector(self):
         try:
             self.faceDir = faced.getDirectionAxis()  # face direction
-            print("ooooooooooooooooooooooo")
-            print(self.selectedObj)
-            print(self.selectedEdge)
-            print("ooooooooooooooooooooooo")
-
             faces = faced.findFaceSHavingTheSameEdge()
             # TODO: SHOULD WE DO ANY CALCULATION TO FIND BETTER FACE?
             if type(faces) == list:
@@ -359,10 +349,10 @@ class Design456_ExtendEdge:
                             face.Surface.Rotation.Axis.z,
                             math.degrees(face.Surface.Rotation.Angle)]
 
-            if (self.ExtendLength == 0):
-                d = self.ExtendLength = 1
+            if (self.tweakLength == 0):
+                d = self.tweakLength = 1
             else:
-                d = self.ExtendLength
+                d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the wheel
             App.ActiveDocument.recompute()
@@ -390,9 +380,6 @@ class Design456_ExtendEdge:
             self.selectedObj.Visibility = False
             self.selectedEdge = sel[0].SubObjects[0]
             
-            print(self.selectedEdge)
-            print("self.selectedEdge")
-            print("****************************************")
             if(hasattr(self.selectedEdge, "Vertexes")):
                 self.oldEdgeVertexes = self.selectedEdge.Vertexes
             else:
@@ -419,10 +406,10 @@ class Design456_ExtendEdge:
                     self.setupRotation, [2.0, 2.0, 2.0], 1)
 
             # Different callbacks for each action.
-            self.wheelObj.w_wheel_cb_ = self.callback_Rotate
-            self.wheelObj.w_xAxis_cb_ = self.MouseMovement_cb
-            self.wheelObj.w_yAxis_cb_ = self.MouseMovement_cb
-            self.wheelObj.w_45Axis_cb_ = self.MouseMovement_cb
+            self.wheelObj.w_wheel_cb_   = self.callback_Rotate
+            self.wheelObj.w_xAxis_cb_   = self.MouseMovement_cb
+            self.wheelObj.w_yAxis_cb_   = self.MouseMovement_cb
+            self.wheelObj.w_45Axis_cb_  = self.MouseMovement_cb
             self.wheelObj.w_135Axis_cb_ = self.MouseMovement_cb
 
             self.wheelObj.w_callback_ = self.callback_release
@@ -481,19 +468,13 @@ class Design456_ExtendEdge:
             self.tweakLength = 0.0
             # We will make two object, one for visual effect and the other is the original
             self.selectedObj = None
-            self.selected = None
-
             self.direction = None
             self.setupRotation = [0, 0, 0, 0]
             # Used only with the center (cylinder)
             self.Rotation = [0, 0, 0, 0]
             # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
-            self.newObject = None
             self.mouseOffset = App.Vector(0, 0, 0)
-            self.OperationOption = 0  # default is zero
-            self.objChangedTransparency = []
             self.FirstLocation = None
-            self.isItRotation = False
             del self
 
         except Exception as err:
@@ -619,13 +600,6 @@ class Design456_ExtendEdge:
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
 
-        if (self.OperationOption == 0):
-            pass  # Here just to make the code clear that we do nothing otherwise it != necessary
-        elif(self.OperationOption == 1):
-            if (self.isFaceOf3DObj() is True):
-                # No 3D but collision might happen.
-                pass
-
         self.dialog.hide()
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
@@ -635,8 +609,10 @@ class Design456_ExtendEdge:
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
 
-    def MouseMovement_cb(self):
-        events = self.userData.events
+    def MouseMovement_cb(self, userData = None):
+        events = userData.events
+        self.recreateObject()
+
         if self.isItRotation is True:
             self.callback_Rotate()
             return  # We cannot allow this tool
@@ -667,10 +643,10 @@ class Design456_ExtendEdge:
         App.ActiveDocument.recompute()
 
     # TODO FIXME:
-    def callback_release(self):
+    def callback_release(self,userData = None):
         try:
             print("release callback")
-            events = self.userdata.events
+            events = userData.events
             print("mouse release")
             self.wheelObj.remove_focus()
             self.run_Once = False
