@@ -273,49 +273,43 @@ class Design456_ExtendEdge:
         # This will be way to complex . with many bugs :(
         try:
             faces = None
-            print("new faces ")
             faces = self.newFaces
             if faces == None or faces == []:
                 return  # TODO: CHECKME
             
             if faces[0]==None :
                 raise ValueError("No faces found")
-            
-            print(faces)
-            print(dir(faces[0]))
             _vertices = []
-
-            self.newFaces.clear()
+            _result = []
             for i in range(0, len(faces)):
                 _vertices.clear()
                 # Change allways the edges vertices to moved one
-                for vertex in faces[i].OuterWire.OrderedVertexes:
-                    # for vertex in faces[i].Vertexes:
+                for vertex in faces[i].Shape.OuterWire.OrderedVertexes:
+                    faces[i].Visibility = False
+                #for vertex in faces[i].Shape.Vertexes:
                     if vertex.Point == self.oldEdgeVertexes[0].Point:
                         _vertices.append(
                             self.newEdge.Shape.Vertexes[0].Point)
                     elif vertex.Point == self.oldEdgeVertexes[1].Point:
                         _vertices.append(
-                            self.newEdge.Shape.Vertexes[0].Point)
+                            self.newEdge.Shape.Vertexes[1].Point)
                     else:
                         _vertices.append(vertex.Point)
                 # Now we have new vertices for one face. create the face object
                 _Newvertices = _vertices
-                if (len(faces) > 0):
-                    for face in faces:
-                        App.ActiveDocument.removeObject(face.Name)
-
                 #_Newvertices = self.FixSequenceOfVertices(_vertices)
-                print("----------------")
-                print(i, _Newvertices)
-                print("----------------")
-
                 newPolygon = _part.makePolygon(_Newvertices, True)
                 newFace = _part.makeFilledFace(newPolygon.Edges)
                 if newFace.isNull():
                     raise RuntimeError('Failed to create face')
-                newShape = _part.show(newFace, "face")
-                self.newFaces.append(newShape)
+                
+                nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
+                nFace.Shape = newFace
+                self.newFaces.append(nFace)
+                _result.append(nFace)
+                App.ActiveDocument.removeObject(faces[i].Name)
+            self.newFaces.clear()
+            self.newFace = _result
             App.ActiveDocument.recompute()
 
         except Exception as err:
@@ -388,11 +382,10 @@ class Design456_ExtendEdge:
             # Recreate the object in separated shapes.
             for face in self.selectedObj.Shape.Faces:
                 sh = face.copy()
-                nface = App.ActiveDocument.addObject("Part::Feature", "nFace")
-                nface.Shape = sh
-                self.newFaces.append(nface)
+                nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
+                nFace.Shape = sh
+                self.newFaces.append(nFace)
             App.ActiveDocument.recompute()
-            print(self.newFaces)
             
             if(hasattr(self.selectedEdge, "Vertexes")):
                 self.oldEdgeVertexes = self.selectedEdge.Vertexes
@@ -644,12 +637,13 @@ class Design456_ExtendEdge:
         self.oldEdgeVertexes = self.newEdgeVertexes
         self.newEdge.Placement.Base = self.endVector
         self.newEdgeVertexes = self.newEdge.Shape.Vertexes
+        print(self.newEdgeVertexes[0].Point,self.newEdgeVertexes[1].Point)
         self.recreateObject()
         # self.calculateNewVector()
         self.wheelObj.w_vector[0] = self.endVector
         self.wheelObj.redraw()
         App.ActiveDocument.recompute()
-
+        
     # TODO FIXME:
     def callback_release(self, userData=None):
         try:
