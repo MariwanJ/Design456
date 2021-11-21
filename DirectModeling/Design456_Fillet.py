@@ -85,9 +85,9 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if linktocaller.run_Once is False:
                 print("click move")
                 return 0  # nothing to do
-        print("start",linktocaller.startVector)
-        print("end",linktocaller.endVector)
-        print("directio",linktocaller.direction)
+        # print("start",linktocaller.startVector)
+        # print("end",linktocaller.endVector)
+        # print("direction",linktocaller.direction)
         if linktocaller.run_Once is False:
             linktocaller.run_Once = True
             linktocaller.startVector=linktocaller.endVector

@@ -171,7 +171,7 @@ class Design456_ExtendEdge:
         sh = self.selectedEdge.copy()
         self.newEdge.Shape = sh
         # self.selectedEdge = self.newEdge  # TODO: SHOULD WE DO THAT: FIXME:
-        App.ActiveDocument.recompute()
+        #App.ActiveDocument.recompute()
 
     def FixSequenceOfVertices(self, inVertices):
         """[Sort the vertices to allow making face without problem]
@@ -275,9 +275,9 @@ class Design456_ExtendEdge:
             faces = None
             faces = self.newFaces
             if faces == None or faces == []:
-                return  # TODO: CHECKME
-            
-            if faces[0]==None :
+                raise ValueError("should be valid")
+
+            if faces[0] == None :
                 raise ValueError("No faces found")
             _vertices = []
             _result = []
@@ -289,10 +289,10 @@ class Design456_ExtendEdge:
                 #for vertex in faces[i].Shape.Vertexes:
                     if vertex.Point == self.oldEdgeVertexes[0].Point:
                         _vertices.append(
-                            self.newEdge.Shape.Vertexes[0].Point)
+                            self.newEdgeVertexes[0].Point)
                     elif vertex.Point == self.oldEdgeVertexes[1].Point:
                         _vertices.append(
-                            self.newEdge.Shape.Vertexes[1].Point)
+                            self.newEdgeVertexes[1].Point)
                     else:
                         _vertices.append(vertex.Point)
                 # Now we have new vertices for one face. create the face object
@@ -309,7 +309,7 @@ class Design456_ExtendEdge:
                 _result.append(nFace)
                 App.ActiveDocument.removeObject(faces[i].Name)
             self.newFaces.clear()
-            self.newFace = _result
+            self.newFaces = _result
             App.ActiveDocument.recompute()
 
         except Exception as err:
@@ -351,8 +351,6 @@ class Design456_ExtendEdge:
                 d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the wheel
-            App.ActiveDocument.recompute()
-
             return rotation
 
         except Exception as err:
@@ -385,7 +383,7 @@ class Design456_ExtendEdge:
                 nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
                 nFace.Shape = sh
                 self.newFaces.append(nFace)
-            App.ActiveDocument.recompute()
+            #App.ActiveDocument.recompute()
             
             if(hasattr(self.selectedEdge, "Vertexes")):
                 self.oldEdgeVertexes = self.selectedEdge.Vertexes
@@ -604,12 +602,12 @@ class Design456_ExtendEdge:
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
         App.ActiveDocument.commitTransaction()  # undo reg.
-        App.ActiveDocument.recompute()
+        #App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
 
     def MouseMovement_cb(self, userData=None):
         events = userData.events
-
+        print ("mouseMove")
         if self.isItRotation is True:
             self.callback_Rotate()
             return  # We cannot allow this tool
@@ -637,7 +635,6 @@ class Design456_ExtendEdge:
         self.oldEdgeVertexes = self.newEdgeVertexes
         self.newEdge.Placement.Base = self.endVector
         self.newEdgeVertexes = self.newEdge.Shape.Vertexes
-        print(self.newEdgeVertexes[0].Point,self.newEdgeVertexes[1].Point)
         self.recreateObject()
         # self.calculateNewVector()
         self.wheelObj.w_vector[0] = self.endVector
