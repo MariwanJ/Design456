@@ -309,7 +309,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.currentSo = None
             if self.releaseDrag is True:
                 self.releaseDrag is False
-                print("Mouse Release Occurred")
+                #print("Mouse Release Occurred")
                 # Release callback should be activated even if the wheel != under the mouse
                 self.do_callback()
                 return 1
@@ -332,7 +332,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             # We don't accept more than one elements clicked at once
             if (self.currentSo is None):
                 for counter in range(0, 5):
-                    print(clickwdgdNode[counter],counter,"clickwdgdNode[counter]")
+                    #print(clickwdgdNode[counter],counter,"clickwdgdNode[counter]")
                     if clickwdgdNode[counter] is True:
                         self.currentSo = counter
                         self.do_callbacks(counter)

@@ -86,6 +86,8 @@ class Design456_ExtendEdge:
     run_Once = False
     endVector = None
     startVector = None
+    
+    counter = 0
 
     setupRotation = [0, 0, 0, 0]
 
@@ -111,7 +113,10 @@ class Design456_ExtendEdge:
 
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
-
+    def recomputeAll(self):
+        self.counter = self.counter + 1
+        print (self.counter)
+        App.ActiveDocument.recompute()
     def setTolerance(self, sel):
         if len(sel) != 1:
             msg = "Select one object!\n"
@@ -311,8 +316,8 @@ class Design456_ExtendEdge:
                 App.ActiveDocument.removeObject(faces[i].Name)
             self.newFaces.clear()
             self.newFaces = _result
-            App.ActiveDocument.recompute()
-
+            #App.ActiveDocument.recompute()
+            self.recomputeAll()
         except Exception as err:
             App.Console.PrintError("'recreate Object' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -648,7 +653,6 @@ class Design456_ExtendEdge:
     # TODO FIXME:
     def callback_release(self, userData=None):
         try:
-            print("release callback")
             events = userData.events
             print("mouse release")
             self.wheelObj.remove_focus()
