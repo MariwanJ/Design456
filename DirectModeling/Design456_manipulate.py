@@ -89,7 +89,8 @@ class Design456_ExtendEdge:
 
     setupRotation = [0, 0, 0, 0]
 
-    tweakLength = 1
+    tweakLength = 0
+    oldTweakLength = 0
     isItRotation = False
     newObject = None
     selectedObj = None
@@ -345,10 +346,10 @@ class Design456_ExtendEdge:
                             face.Surface.Rotation.Axis.z,
                             math.degrees(face.Surface.Rotation.Angle)]
 
-            if (self.tweakLength == 0):
-                d = self.tweakLength = 1
-            else:
-                d = self.tweakLength
+            # if (self.tweakLength == 0):
+            #     d = self.tweakLength = 0
+            # else:
+            d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the wheel
             return rotation
@@ -627,11 +628,14 @@ class Design456_ExtendEdge:
             # self.wheelObj.w_vector[0].sub(self.startVector)
             self.mouseOffset = App.Vector(0, 0, 0)
 
-        self.tweakLength = (
-            self.endVector - self.startVector).dot(self.normalVector)
-
+        self.tweakLength = round((
+            self.endVector - self.startVector).dot(self.normalVector), 1)
+        
+        if abs(self.oldTweakLength-self. tweakLength) < 1:
+            return # we do nothing 
         self.ExtrudeLBL.setText(
             "Length= " + str(round(self.tweakLength, 1)))
+        
         self.oldEdgeVertexes = self.newEdgeVertexes
         self.newEdge.Placement.Base = self.endVector
         self.newEdgeVertexes = self.newEdge.Shape.Vertexes
