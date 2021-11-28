@@ -863,7 +863,7 @@ class draw_cylinder:
 
 
 #TODO: FIXME : ADD ROTATION
-def draw_FaceSet(vertices=None, numvertices=(3,), _color=FR_COLOR.FR_GOLD):
+def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD):
     """[summary]
 
     Args:
