@@ -46,6 +46,21 @@ import math
 Example how to use this widget. 
 
 # show the window and it's widgets. 
+import ThreeDWidgets.fr_coinwindow as wnn
+import math
+import fr_three_arrows_widget as w 
+mywin = wnn.Fr_CoinWindow()
+
+rotation=0
+color=(.8,0.8,1)
+vec=[]
+vec.append(App.Vector(0,0,0))
+vec.append(App.Vector(0,5,5))
+
+rotation=[0.0, 0.0, 0.0, 0.0]
+arrows=w.Fr_ThreeArrows_Widget(vec,"Wheel")
+mywin.addWidget(arrows)
+mywin.show()
 
 
 """
@@ -140,9 +155,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  _lblColor=FR_COLOR.FR_BLACK,
                  arrColor=[FR_COLOR.FR_RED,
                            FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE, ],
-                 _Rotation=[0.0, 0.0, 0.0, 0.0],
-                 _prerotation=[0.0, 0.0, 0.0, 0.0],
-                 _scale=[1, 1, 1],_type=1,
+                 _Rotation=[0.0, 0.0, 0.0],
+                 _prerotation=[0.0, 0.0, 0.0],
+                 _scale=[1, 1, 1], _type=1,
                  _opacity = 0):
 
         super().__init__(vectors, label)
@@ -184,9 +199,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_Scale = _scale
         self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
 
-        self.w_Xrotation = [0, 0, 0, 0]
-        self.w_Yrotation = [0, 0, 0, 0]
-        self.w_Zrotation = [0, 0, 0, 0]
+        self.w_Xrotation = [0, 0, 0]
+        self.w_Yrotation = [0, 0, 0]
+        self.w_Zrotation = [0, 0, 0]
 
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.wheelObj = self
@@ -357,15 +372,15 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 allDraw.append(self.w_padYsoSeparator)
                 allDraw.append(self.w_padZsoSeparator)
 
-                CollectThemAllRot = coin.SoTransform()
+#                CollectThemAllRot = coin.SoTransform()
                 CollectThemAll = coin.SoSeparator()
-                tR = coin.SbVec3f()
-                tR.setValue(
-                    self.w_Rotation[0], self.w_Rotation[1], self.w_Rotation[2])
-                CollectThemAllRot.rotation.setValue(
-                    tR, math.radians(self.w_Rotation[3]))
+                #tR = coin.SbVec3f()
+                #tR.setValue(
+                #    self.w_Rotation[0], self.w_Rotation[1], self.w_Rotation[2])
+#                CollectThemAllRot.rotation.setValue(
+#                    tR, math.radians(self.w_Rotation[3]))
 
-                CollectThemAll.addChild(CollectThemAllRot)
+#                CollectThemAll.addChild(CollectThemAllRot)
                 CollectThemAll.addChild(self.w_XsoSeparator)
                 CollectThemAll.addChild(self.w_YsoSeparator)
                 CollectThemAll.addChild(self.w_ZsoSeparator)
