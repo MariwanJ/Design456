@@ -1084,7 +1084,7 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indi
 
     """
 
-def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5],type=0,opacity=0, _rotation=[0.0, 0.0, 1.0, 0.0]):
+def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5],type=0,opacity=0, _rotation=[0.0, 0.0, 0.0]):
     """[2D Arrow]
 
     Args:
@@ -1101,6 +1101,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
     try:
         root=coin.SoSeparator() #root group holder
         transform=coin.SoTransform()
+        
         transformX=coin.SoTransform() 
         transformY=coin.SoTransform()
         transformZ=coin.SoTransform()
@@ -1113,7 +1114,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
         tempRX = coin.SbVec3f()
         tempRY = coin.SbVec3f()
         tempRZ = coin.SbVec3f()
-        tempRX.setValue(1,0, 0)
+        tempRX.setValue(1, 0, 0)
         tempRY.setValue(0, 1, 0)
         tempRZ.setValue(0, 0, 1)
         
@@ -1292,7 +1293,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
             coordinateTail1.point.setValues(0, 8, vertexTail1)
             coordinateTail2.point.setValues(0, 8, vertexTail2)
 
-            soSeparatorMain=coin.SoSeparator()
+            soSepArrow=coin.SoSeparator()
             Shapehint= coin.SoShapeHints()
             Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
             Shapehint.vertexOrdering= coin.SoShapeHints.COUNTERCLOCKWISE
@@ -1302,17 +1303,15 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
             soIndexfacesTail1.coordIndex.setValues(0, len(indicesTail1), indicesTail1)
             soIndexfacesTail2.coordIndex.setValues(0, len(indicesTail2), indicesTail2)
 
-            soSeparatorMain.addChild(Shapehint)
-            soSeparatorMain.addChild(coordinateHead)
-            soSeparatorMain.addChild(soIndexfacesHead)
+            soSepArrow.addChild(Shapehint)
+            soSepArrow.addChild(coordinateHead)
+            soSepArrow.addChild(soIndexfacesHead)
 
-            soSeparatorMain.addChild(coordinateTail1)
-            soSeparatorMain.addChild(soIndexfacesTail1)
+            soSepArrow.addChild(coordinateTail1)
+            soSepArrow.addChild(soIndexfacesTail1)
 
-            soSeparatorMain.addChild(coordinateTail2)
-            soSeparatorMain.addChild(soIndexfacesTail2)        
-
-            root.addChild(soSeparatorMain)
+            soSepArrow.addChild(coordinateTail2)
+            soSepArrow.addChild(soIndexfacesTail2)        
         
         elif type==2:
             soSepArrow=coin.SoSeparator()   # drawing holder
@@ -1557,24 +1556,30 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
                         100, 86, 78, -1, 80, 84, 83, -1,
                         79, 84, 80, -1, 86, 85, 79, -1,
                         79, 85, 84, -1 ]
+            
             soIndexFace.coordIndex.setValues(0, len(indices), indices)
             soSepArrow.addChild(cordinate) 
             soSepArrow.addChild(soIndexFace)
 
-            root.addChild(material)
-            root.addChild(transform)
-            soX=coin.SoSeparator()
-            soY=coin.SoSeparator()
-            soZ=coin.SoSeparator()
-            soX.addChild(transformX)
-            soY.addChild(transformY)             
-            soZ.addChild(transformZ) 
-            
-            root.addChild(soX)
-            root.addChild(soY)
-            root.addChild(soZ)
-            root.addChild(trans)
-            root.addChild(soSepArrow)
+        root.addChild(material)
+        root.addChild(transform)
+
+        soX=coin.SoSeparator()
+        soY=coin.SoSeparator()
+        soZ=coin.SoSeparator()
+        
+        soX.addChild(transformX)
+        soX.addChild(soSepArrow)
+        
+        soY.addChild(transformY)
+        soY.addChild(soX)
+        
+        soZ.addChild(transformZ)
+        soZ.addChild(soY)
+        
+        root.addChild(trans)
+        root.addChild(soZ)
+
         #Finalize the drawing by adding color, pos, scale , opacity
         return root
     

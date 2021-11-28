@@ -29,19 +29,21 @@ from __future__ import unicode_literals
 This class is the base class for all widgets created in coin3D
 
 """
-import os,sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 from ThreeDWidgets import fr_draw
-from  ThreeDWidgets import constant
+from ThreeDWidgets import constant
 from dataclasses import dataclass
 from typing import List
 from abc import abstractmethod
 
-#********************************************************************************************************
+# ********************************************************************************************************
 from dataclasses import dataclass
+
 
 @dataclass
 class point:
@@ -50,40 +52,45 @@ class point:
         self.y = 0.0
         self.z = 0.0
 
-#List of points which should be used everywhere 
+
+# List of points which should be used everywhere
 VECTOR = List[point]
+
+
 @dataclass
 class propertyValues:
     '''
     Property-holder class for drawing labels
-    ''' 
-    __slots__ = ['vectors','linewidth','fontName','fontsize','labelcolor','alignment', 'rotation','rotationAxis']
-    vectors   : VECTOR        #List[App.Vector] two vectors must be provided
-    linewidth : int 
-    fontName : str
-    fontsize  : int
-    labelcolor: tuple   
-    alignment : int      #This will not be used .. not good      
-    rotation  : tuple    # three angels in degree                  
+    '''
+    __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
+                 'labelcolor', 'alignment', 'rotation', 'rotationAxis']
+    vectors: VECTOR  # List[App.Vector] two vectors must be provided
+    linewidth: int
+    fontName: str
+    fontsize: int
+    labelcolor: tuple
+    alignment: int  # This will not be used .. not good
+    rotation: tuple    # three angels in degree
     rotationAxis: VECTOR
-    
+
     def __init__(self):
-        self.vectors    =[App.Vector(0,0,0),]
-        self.linewidth  =1
-        self.fontName  ='sans'
-        self.fontsize   =1
-        self.labelcolor =constant.FR_COLOR.FR_BLACK
-        self.alignment  =constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        self.rotation   =App.Vector(0,0,0)
-        self.rotationAxis=App.Vector(0,0,0)
-#***********************************************************************************************************
+        self.vectors = [App.Vector(0, 0, 0), ]
+        self.linewidth = 1
+        self.fontName = 'sans'
+        self.fontsize = 1
+        self.labelcolor = constant.FR_COLOR.FR_BLACK
+        self.alignment = constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        self.rotation = App.Vector(0, 0, 0)
+        self.rotationAxis = App.Vector(0, 0, 0)
+# ***********************************************************************************************************
 
 
-def defaultCallback(obj,userData=None):
+def defaultCallback(obj, userData=None):
     """
     Dummy callback. This should be overdriven to call the real callback
     """
     raise NotImplementedError()
+
 
 class Fr_Widget (object):
     """
@@ -98,34 +105,33 @@ class Fr_Widget (object):
     fr_group doesn't need to be drawn, but 
     you can implement draw function
     """
-    
-    #Default values which is shared with all objects.
-    
+
+    # Default values which is shared with all objects.
+
     w_visible = 1      # 1 active, 0 inactive
     w_bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
     w_color = constant.FR_COLOR.FR_BLACK
     w_inactiveColor = constant.FR_COLOR.FR_DIMGRAY
     w_selColor = constant.FR_COLOR.FR_YELLOW
     w_box = None
-    w_active = 1  # 1 active , 0 inactive 
+    w_active = 1  # 1 active , 0 inactive
     w_parent = None
     w_widgetType = constant.FR_WidgetType.FR_WIDGET
     w_hasFocus = 0           # 0 No focus , 1 Focus
-    
+
     # Use this to send any object or value to the lbl drawing/callback(propertyValues object)
-    w_lbluserData=propertyValues() 
-    
+    w_lbluserData = propertyValues()
+
     w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
-    w_widgetSoNodes = None     #Should be defined in the widget either one or a list
-    w_widgetlblSoNodes = None  #Should be defined in the widget either one or a list
+    w_widgetSoNodes = None  # Should be defined in the widget either one or a list
+    w_widgetlblSoNodes = None  # Should be defined in the widget either one or a list
     # each node is a child of one switch, Add drawings a children for this switch
-    w_wdgsoSwitch = None         
+    w_wdgsoSwitch = None
     w_when = constant.FR_WHEN.FR_WHEN_NEVER
     w_userData = None  # Use this to send any object or value to the callback
-    w_vector=None
-    w_label=None
-    w_lineWidth=1
-
+    w_vector = None
+    w_label = None
+    w_lineWidth = 1
 
     ########################################################################
     #  {w_callback_, w_lbl_calback_}  is a pointer to a function.          #
@@ -135,25 +141,27 @@ class Fr_Widget (object):
     #  different tasks. run do_callback, do_lblcallback,                   #
     #  w_move_callback, w_KB_Callback activates them.                      #
     # ######################################################################
-    w_callback_= defaultCallback      #Subclassed widget must create callback functions. 
-    w_lbl_calback_=defaultCallback    #Abstract class has no callback.
-    w_move_callback_= defaultCallback #Abstract class has no callback.
-    w_KB_callback_= defaultCallback   #Abstract class has no callback.
-    
+    # Subclassed widget must create callback functions.
+    w_callback_ = defaultCallback
+    w_lbl_calback_ = defaultCallback  # Abstract class has no callback.
+    w_move_callback_ = defaultCallback  # Abstract class has no callback.
+    w_KB_callback_ = defaultCallback  # Abstract class has no callback.
+
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
         self.w_vector = args        # This should be like App.vectors
-        self.w_label = [label]      # This must be a list, to have several raw, append st    
-        
-    @abstractmethod      
+        # This must be a list, to have several raw, append st
+        self.w_label = [label]
+
+    @abstractmethod
     def draw_box(self):
         raise NotImplementedError()
-    
-    @abstractmethod      
+
+    @abstractmethod
     def draw(self):
         """ main draw function. This is responsible for all draw on screen"""
         raise NotImplementedError()
-    
-    @abstractmethod  
+
+    @abstractmethod
     def draw_label(self):
         """ draw label for the widget 
         for coin3d Class SoText2 should be used 
@@ -161,42 +169,41 @@ class Fr_Widget (object):
         raise NotImplementedError()
 
     def Font(self, newFont):
-        self.w_lbluserData.fontName=newFont
-       
-    def FontSize(self,newSize):
-        self.w_lbluserData.fontsize=newSize
-    
-    def setLblData(self,newData:propertyValues):
-        self.w_lbluserData=newData
-    
-    @abstractmethod         
+        self.w_lbluserData.fontName = newFont
+
+    def FontSize(self, newSize):
+        self.w_lbluserData.fontsize = newSize
+
+    def setLblData(self, newData: propertyValues):
+        self.w_lbluserData = newData
+
+    @abstractmethod
     def redraw(self):
         """
         After the widgets damages, this function should be called.        
         """
         raise NotImplementedError()
 
-    @abstractmethod         
+    @abstractmethod
     def lblRedraw(self):
         """
         After the lbl damage/change, this function should be called.        
         """
         raise NotImplementedError()
 
-    @abstractmethod  
+    @abstractmethod
     def take_focus(self):
         """
         Set focus to the widget. Which should be redrawn also.
         """
         raise NotImplementedError()
 
-    @abstractmethod  
-    def label_move(self,newPos):
+    @abstractmethod
+    def label_move(self, newPos):
         """ Move the label to a new location"""
         raise NotImplementedError()
-    
 
-    @abstractmethod  
+    @abstractmethod
     def move(self, x, y, z):
         """ Move the widget to a new location.
         The new location is reference to the 
@@ -209,8 +216,8 @@ class Fr_Widget (object):
         The new location is reference to the 
         center of mass"""
         raise NotImplementedError()
-    
-    #@property 
+
+    # @property
     def has_focus(self):
         """
         Check if the widget has focus
@@ -226,8 +233,8 @@ class Fr_Widget (object):
         """
         raise NotImplementedError()
     # Activated, deactivate, get status of widget
-    
-    #@property 
+
+    # @property
     def is_visible(self):
         """ 
         return the internal variable which keeps
@@ -246,7 +253,7 @@ class Fr_Widget (object):
         """
         raise NotImplementedError()
 
-    def __del__ (self):
+    def __del__(self):
         """
         This will remove the widget totally. 
         """
@@ -254,13 +261,14 @@ class Fr_Widget (object):
         self.hide()
         self.removeSoNodes()
         if self.w_parent != None:
-            self.w_parent.removeWidget(self)  # Parent should be the windows widget.
+            # Parent should be the windows widget.
+            self.w_parent.removeWidget(self)
 
-    #@property 
+    # @property
     def is_active(self):
         return self.w_active
-    
-    @abstractmethod    
+
+    @abstractmethod
     def hide(self):
         """
             Hide the widget and its children
@@ -271,25 +279,26 @@ class Fr_Widget (object):
         """
             Show the widget and its children.
         """
-        self.w_visible=1
+        self.w_visible = 1
         self.draw()
-    
+
     def getparent(self):
         """
             Get parent windows
         """
         return self.w_parent
- 
+
     def parent(self, parent):
         """ 
             Set the parent to the widget
         """
         self.w_parent = parent
-    @property 
+
+    @property
     def type(self):
         return self.w_widgetType
-    
-    @property 
+
+    @property
     def getPosition(self):
         """
         If args is defined, return the first point
@@ -298,25 +307,25 @@ class Fr_Widget (object):
         if len(self.w_vector) > 0:
             return (self.w_vector[0])
         return None
-    
+
     @abstractmethod
     def position(self, x, y, z):
         """put the position of the object, which is reference to the first vector """
         raise NotImplementedError()
 
-    @abstractmethod   
+    @abstractmethod
     def resize(self, args: List[App.Vector]):  # Width, height, thickness
         raise NotImplementedError()
 
     def size(self, args: List[App.Vector]):
         raise NotImplementedError()
 
-
     # Take care of all events
+
     def handle(self, events):
         raise NotImplementedError()
-    
-    #callback related to t
+
+    # callback related to t
     def do_lblcallback(self):
         """
             This function will run the label-changed 
@@ -355,9 +364,8 @@ class Fr_Widget (object):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
-
     # call the main callback for the widget
+
     def do_move_callback(self):
         """
         This will activate the move-callback call. 
@@ -381,7 +389,7 @@ class Fr_Widget (object):
     def Color(self, color):
         """ Foreground color at normal status"""
         self.w_color = color
-        
+
     def SelectionColor(self, color):
         """ Foreground color when widget selected i.e. has focus"""
         self.w_selColor = color
@@ -401,34 +409,34 @@ class Fr_Widget (object):
         """
         self.w_when = value
 
-    @property 
+    @property
     def getWhen(self):
         """"
         Internal value of when. This will decide when the widget-callback will happen.
         """
         return self.w_when
-    
-    def saveSoNodesToWidget(self,_Value):
-        """ Keep sceneNodes in the fr_xxx object in the w_widgetSoNodes variable """
-        self.w_widgetSoNodes=_Value
 
-    def saveSoNodeslblToWidget(self,_list):
-        """ Keep the Label sceneNodes in the fr_xxx object in the w_widgetlblSoNodes variable""" 
-        self.w_widgetlblSoNodes=_list
-        
-    #todo: Do we need an argument here? as we should add w_widgetSoNodes and w_widgetlblSoNodes
+    def saveSoNodesToWidget(self, _Value):
+        """ Keep sceneNodes in the fr_xxx object in the w_widgetSoNodes variable """
+        self.w_widgetSoNodes = _Value
+
+    def saveSoNodeslblToWidget(self, _list):
+        """ Keep the Label sceneNodes in the fr_xxx object in the w_widgetlblSoNodes variable"""
+        self.w_widgetlblSoNodes = _list
+
+    # todo: Do we need an argument here? as we should add w_widgetSoNodes and w_widgetlblSoNodes
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
         to the switch. The switch should be able to show/hide them by a command
         """
         if self.w_wdgsoSwitch is None:
-            self.w_wdgsoSwitch=coin.SoSwitch()
+            self.w_wdgsoSwitch = coin.SoSwitch()
             self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-        #We might have a list inside the widget 
-        if type(listOfSoSeparator)==list:
+        # We might have a list inside the widget
+        if type(listOfSoSeparator) == list:
             for sub in listOfSoSeparator:
-                if type(sub)==list:
-                    #we have many SoSeparator inside the widget
+                if type(sub) == list:
+                    # we have many SoSeparator inside the widget
                     for subSub in sub:
                         self.w_wdgsoSwitch.addChild(subSub)
                 else:
@@ -458,9 +466,9 @@ class Fr_Widget (object):
                 else:
                     self.w_widgetlblSoNodes.removeAllChildren()
                     del self.w_widgetlblSoNodes
-            
-            self.w_widgetSoNodes=None
-            self.w_widgetlblSoNodes=None
+
+            self.w_widgetSoNodes = None
+            self.w_widgetlblSoNodes = None
 
         except Exception as err:
             App.Console.PrintError("'Remove SceneNodes' Failed. "
@@ -468,7 +476,7 @@ class Fr_Widget (object):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-              
+
     def removeSoNodeFromSoSwitch(self):
         """
             Remove the children from the widget COIN3D node which is the soseparators
@@ -482,12 +490,11 @@ class Fr_Widget (object):
             try:
                 del Self.w_wdgsoSwitch
             except:
-                pass     #must be already removed .. don't care
-        Self.w_wdgsoSwitch=None
-    
-    def changeLabelstr(self,newlabel: str = ""):
-        self.w_label=[newlabel]
+                pass  # must be already removed .. don't care
+        Self.w_wdgsoSwitch = None
 
-    def changeLabelfloat(self,newlabel: float = 0.0):
-        self.w_label=["{:.2f}".format(newlabel)]
+    def changeLabelstr(self, newlabel: str = ""):
+        self.w_label = [newlabel]
 
+    def changeLabelfloat(self, newlabel: float = 0.0):
+        self.w_label = ["{:.2f}".format(newlabel)]
