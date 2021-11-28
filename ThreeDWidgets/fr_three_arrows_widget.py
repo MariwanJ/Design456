@@ -130,6 +130,7 @@ def callback5(userData: userDataObject = None):
 
 # *************************************************************
 
+
 def callback6(userData: userDataObject = None):
     """
         This function executes when the 135Axis 
@@ -139,6 +140,8 @@ def callback6(userData: userDataObject = None):
     print("dummy 135Axis callback")
 
 # *************************************************************
+
+
 class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     """
@@ -148,24 +151,22 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
     """
 
     def __init__(self, vectors: List[App.Vector] = [],
-                 label: str = "", lineWidth=1,
-                 _color=FR_COLOR.FR_BLACK,
+                 label: str = "",
+                 _lblColor=FR_COLOR.FR_BLACK,
+                 arrColor=[FR_COLOR.FR_RED,
+                           FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE, ],
                  _Rotation=[0.0, 0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0, 0.0],
-                 _scale=[1, 1, 1],
-                 _wheelType=0):
+                 _scale=[1, 1, 1]):
 
         super().__init__(vectors, label)
 
-        self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_WHEEL
-        self.w_wheelType = _wheelType
         # General widget callback (mouse-button) function - External function
         self.w_callback_ = callback
         self.w_lbl_calback_ = callback              # Label callback
         self.w_KB_callback_ = callback              # Keyboard
         self.w_move_callback_ = callback            # Mouse movement callback
-
 
         # Dummy callback
         self.w_xAxis_cb_ = callback1
@@ -191,8 +192,10 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_padYsoSeparator = coin.SoSeparator()
         self.w_padZsoSeparator = coin.SoSeparator()
 
-        self.w_color = _color
+        self.w_color = arrColor
+        self.w_selColor = [i * 1.2 for i in self.w_selColor]
         self.w_Scale = _scale
+        self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
 
         self.w_Xrotation = [0, 0, 0, 0]
         self.w_Yrotation = [0, 0, 0, 0]
@@ -215,9 +218,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         # TODO: FIXME:
         if(self.w_wheelType == 0):  # This affect only the Widget label position- nothing else
-            
+
             self.w_lbluserData.vectors = [
-                (self.w_vector[0].x+2, self.w_vector[0].y+6, self.w_vector[0].z), (0, 0, 0)]  # OK Don't change
+                (self.w_vector[0].x+2, self.w_vector[0].y+6, self.w_vector[0].z), (0, 0, 0)]
         elif (self.w_wheelType == 1):
 
             self.w_lbluserData.vectors = [
@@ -227,11 +230,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
             self.w_lbluserData.vectors = [
                 (self.w_vector[0].x+1, self.w_vector[0].y, self.w_vector[0].z+6), (0, 0, 0)]
-
-    def lineWidth(self, width):
-        """ Set line-width 
-        """
-        self.w_lineWidth = width
 
     def handle(self, event):
         """
@@ -291,7 +289,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.w_pick_radius, self.w_padZsoSeparator) is not None):
             clickwdgdNode[5] = True
 
-
         # Execute callback_relese when enter key pressed or E pressed
         if (self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_ENTER or
             self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
@@ -315,7 +312,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 # Release callback should be activated even if the wheel != under the mouse
                 self.do_callback()
                 return 1
-
 
             if (len(clickwdgdNode) > 0 or clickwdglblNode is not None):
                 if not self.has_focus():
@@ -360,34 +356,36 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             if (len(self.w_vector) < 1):
                 raise ValueError('Must be one vector')
 
-            usedColor = usedColor = self.w_selColor
+            usedColor = self.w_color
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
             elif self.is_active() and (self.has_focus() != 1):
-                usedColor = self.w_color
+                pass  # usedColor = self.w_color  we did that alread ..just for reference
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
+
             if self.is_visible():
                 allDraw = []
 
+                self.w_XsoSeparator = fr_wheel_draw.draw_2Darrow(self.w_vector[0],
+                                                                 FR_COLOR.FR_RED, self.w_Scale,
+                                                                 self.Opacity, self.DrawinType,
+                                                                 [0.0, 90.0, 0.0])  # RED
+                self.w_YsoSeparator = fr_wheel_draw.draw_AllPartsdraw_2Darrow(self.w_vector[0],
+                                                                              FR_COLOR.FR_GREEN, self.w_Scale,
+                                                                              self.Opacity, self.DrawinType,
+                                                                              [0.0, 90.0, 0.0])  # GREEN
+                self.w_ZsoSeparator = fr_wheel_draw.draw_AllPartsdraw_2Darrow(self.w_vector[0],
+                                                                              FR_COLOR.FR_BLUE, self.w_Scale,
+                                                                              self.Opacity, self.DrawinType,
+                                                                              [0.0, 0.0, 90.0])  # BLUE
 
-                self.w_XsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Xaxis",
-                                                                  usedColor, SETUPwheelTypeRotation,
-                                                                  self.w_PRErotation, self.w_Scale, 1)  # RED
-                self.w_YsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Yaxis",
-                                                                  usedColor, SETUPwheelTypeRotation,
-                                                                  self.w_PRErotation, self.w_Scale, 1)  # GREEN
-                self.w_ZsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Zaxis",
-                                                                  usedColor, SETUPwheelTypeRotation,
-                                                                  self.w_PRErotation, self.w_Scale, 1)  # GREEN
-
-
-                allDraw.append(self.w_centersoSeparator)
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_YsoSeparator)
-                allDraw.append(self.w_45soSeparator)
-                allDraw.append(self.w_135soSeparator)
-                allDraw.append(self.w_degreeSeparator)
+                allDraw.append(self.w_ZsoSeparator)
+                allDraw.append(self.w_padXsoSeparator)
+                allDraw.append(self.w_padYsoSeparator)
+                allDraw.append(self.w_padZsoSeparator)
 
                 CollectThemAllRot = coin.SoTransform()
                 CollectThemAll = coin.SoSeparator()
