@@ -199,9 +199,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_Scale = _scale
         self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
 
-        self.w_Xrotation = [0, 0, 0]
-        self.w_Yrotation = [0, 0, 0]
-        self.w_Zrotation = [0, 0, 0]
+        self.w_Xrotation = [0, 0, 0, 0]
+        self.w_Yrotation = [0, 0, 0, 0]
+        self.w_Zrotation = [0, 0, 0, 0]
 
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.wheelObj = self
