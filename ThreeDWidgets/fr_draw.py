@@ -1101,16 +1101,30 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
     try:
         root=coin.SoSeparator() #root group holder
         transform=coin.SoTransform()
+        transformX=coin.SoTransform() 
+        transformY=coin.SoTransform()
+        transformZ=coin.SoTransform()
+        
         trans=coin.SoTranslation()
         trans.translation.setValue(p1)
+        
         transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
 
-        tempR = coin.SbVec3f()
-        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-        transform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        tempRX = coin.SbVec3f()
+        tempRY = coin.SbVec3f()
+        tempRZ = coin.SbVec3f()
+        tempRX.setValue(1,0, 0)
+        tempRY.setValue(0, 1, 0)
+        tempRZ.setValue(0, 0, 1)
+        
+        transformX.rotation.setValue(tempRX, math.radians(_rotation[0]))
+        transformY.rotation.setValue(tempRY, math.radians(_rotation[1]))
+        transformZ.rotation.setValue(tempRZ, math.radians(_rotation[2]))
+
         material = coin.SoMaterial()
         material.transparency.setValue(opacity)
         material.diffuseColor.setValue(coin.SbColor(color))
+        
         if type ==0 :
             soSepArrow=coin.SoSeparator()   # drawing holder
             soIndexFace= coin.SoIndexedFaceSet()
@@ -1221,10 +1235,8 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
             soSepArrow.addChild(Shapehint)
             soSepArrow.addChild(cordinate) 
             soSepArrow.addChild(soIndexFace)
+            
 
-            root.addChild(transform)             
-            root.addChild(trans)
-            root.addChild(material)
             root.addChild(soSepArrow)
 
         elif type==1:
@@ -1300,9 +1312,6 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
             soSeparatorMain.addChild(coordinateTail2)
             soSeparatorMain.addChild(soIndexfacesTail2)        
 
-            root.addChild(trans)
-            root.addChild(material)
-            root.addChild(transform)
             root.addChild(soSeparatorMain)
         
         elif type==2:
@@ -1553,12 +1562,22 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5]
             soSepArrow.addChild(soIndexFace)
 
             root.addChild(material)
-            root.addChild(transform)             
+            root.addChild(transform)
+            soX=coin.SoSeparator()
+            soY=coin.SoSeparator()
+            soZ=coin.SoSeparator()
+            soX.addChild(transformX)
+            soY.addChild(transformY)             
+            soZ.addChild(transformZ) 
+            
+            root.addChild(soX)
+            root.addChild(soY)
+            root.addChild(soZ)
             root.addChild(trans)
             root.addChild(soSepArrow)
-    
         #Finalize the drawing by adding color, pos, scale , opacity
         return root
+    
     except Exception as err:
         App.Console.PrintError("'draw 2d Arrow failed' draw 2D-Failed. "
                                "{err}\n".format(err=str(err)))

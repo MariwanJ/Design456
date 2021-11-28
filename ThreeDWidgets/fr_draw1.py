@@ -284,17 +284,26 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0,0,0),
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_RotationPad(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacity=0, _rotation=[0.0, 0.0, 0.0, 0.0]):
+def draw_RotationPad(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacity=0, _rotation=[0.0, 0.0, 0.0]):
     root=coin.SoSeparator() 
     transform=coin.SoTransform()
     trans=coin.SoTranslation()
     trans.translation.setValue(p1)
-    transform.rotation.setValue(_rotation)
+    
     transform.translation.setValue(p1)
     transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
-    tempR = coin.SbVec3f()
-    tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+
+    tempRX = coin.SbVec3f()
+    tempRX.setValue(1, 0, 0)
+
+    tempRY = coin.SbVec3f()
+    tempRY.setValue(0, 1, 0)
+
+    tempRZ = coin.SbVec3f()
+    tempRZ.setValue(0, 0, 1)
+
     transform.rotation.setValue(tempR, math.radians(_rotation[3]))
+
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
