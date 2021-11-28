@@ -40,28 +40,13 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 import FACE_D as faced
 from dataclasses import dataclass
-from ThreeDWidgets import fr_wheel_draw
+from fr_draw import draw_2Darrow
 import math
 """
 Example how to use this widget. 
 
 # show the window and it's widgets. 
-import ThreeDWidgets.fr_arrow_widget as wd
-import ThreeDWidgets.fr_coinwindow as wnn
-import math
-import fr_wheel_widget as w 
-mywin = wnn.Fr_CoinWindow()
 
-rotation=0
-color=(1,0,1)
-vec=[]
-vec.append(App.Vector(0,0,0))
-vec.append(App.Vector(5,0,0))
-
-rotation=[0.0, 0.0, 0.0, 0.0]
-arrows=w.Fr_ThreeArrows_Widget(vec,"Test",1, color,rotation,0)
-mywin.addWidget(arrows)
-mywin.show()
 
 """
 
@@ -157,7 +142,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                            FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE, ],
                  _Rotation=[0.0, 0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0, 0.0],
-                 _scale=[1, 1, 1]):
+                 _scale=[1, 1, 1],_type=1,
+                 _opacity = 0):
 
         super().__init__(vectors, label)
 
@@ -167,7 +153,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_lbl_calback_ = callback              # Label callback
         self.w_KB_callback_ = callback              # Keyboard
         self.w_move_callback_ = callback            # Mouse movement callback
-
+        self.Opacity = _opacity
+        self.DrawingType = _type
         # Dummy callback
         self.w_xAxis_cb_ = callback1
         # Dummy callback
@@ -216,21 +203,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_Rotation = _Rotation
         self.w_PRErotation = _prerotation
 
-        # TODO: FIXME:
-        if(self.w_wheelType == 0):  # This affect only the Widget label position- nothing else
-
-            self.w_lbluserData.vectors = [
-                (self.w_vector[0].x+2, self.w_vector[0].y+6, self.w_vector[0].z), (0, 0, 0)]
-        elif (self.w_wheelType == 1):
-
-            self.w_lbluserData.vectors = [
-                (self.w_vector[0].x, self.w_vector[0].y+2, self.w_vector[0].z+6), (0, 0, 0)]
-
-        elif (self.w_wheelType == 2):
-
-            self.w_lbluserData.vectors = [
-                (self.w_vector[0].x+1, self.w_vector[0].y, self.w_vector[0].z+6), (0, 0, 0)]
-
     def handle(self, event):
         """
         This function is responsbile of taking events and processing 
@@ -278,7 +250,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             clickwdgdNode[2] = True
         elif(fr_coin3d.objectMouseClick_Coin3d(
             self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_135soSeparator) is not None):
+                self.w_pick_radius, self.w_padXsoSeparator) is not None):
             clickwdgdNode[3] = True
         elif (fr_coin3d.objectMouseClick_Coin3d(
                 self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
@@ -350,8 +322,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         the wheel.
         """
         try:
-            SETUPwheelTypeRotation = None
-            SetupTextRotation = None
             lablVar = fr_widget.propertyValues()
             if (len(self.w_vector) < 1):
                 raise ValueError('Must be one vector')
@@ -366,19 +336,19 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
             if self.is_visible():
                 allDraw = []
-
-                self.w_XsoSeparator = fr_wheel_draw.draw_2Darrow(self.w_vector[0],
+                #(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5],type=0,opacity=0, _rotation=[0.0, 0.0, 0.0]):
+                self.w_XsoSeparator = draw_2Darrow(self.w_vector[0],
                                                                  FR_COLOR.FR_RED, self.w_Scale,
-                                                                 self.Opacity, self.DrawinType,
+                                                                 self.Opacity, self.DrawingType,
                                                                  [0.0, 90.0, 0.0])  # RED
-                self.w_YsoSeparator = fr_wheel_draw.draw_AllPartsdraw_2Darrow(self.w_vector[0],
-                                                                              FR_COLOR.FR_GREEN, self.w_Scale,
-                                                                              self.Opacity, self.DrawinType,
-                                                                              [0.0, 90.0, 0.0])  # GREEN
-                self.w_ZsoSeparator = fr_wheel_draw.draw_AllPartsdraw_2Darrow(self.w_vector[0],
-                                                                              FR_COLOR.FR_BLUE, self.w_Scale,
-                                                                              self.Opacity, self.DrawinType,
-                                                                              [0.0, 0.0, 90.0])  # BLUE
+                self.w_YsoSeparator = draw_2Darrow(self.w_vector[0],
+                                                                 FR_COLOR.FR_GREEN, self.w_Scale,
+                                                                 self.Opacity, self.DrawingType,
+                                                                 [0.0, 90.0, 90.0])  # GREEN
+                self.w_ZsoSeparator = draw_2Darrow(self.w_vector[0],
+                                                                 FR_COLOR.FR_BLUE, self.w_Scale,
+                                                                 self.Opacity, self.DrawingType,
+                                                                 [0.0, 0.0, 90.0])  # BLUE
 
                 allDraw.append(self.w_XsoSeparator)
                 allDraw.append(self.w_YsoSeparator)
@@ -396,12 +366,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     tR, math.radians(self.w_Rotation[3]))
 
                 CollectThemAll.addChild(CollectThemAllRot)
-                CollectThemAll.addChild(self.w_centersoSeparator)
                 CollectThemAll.addChild(self.w_XsoSeparator)
                 CollectThemAll.addChild(self.w_YsoSeparator)
-                CollectThemAll.addChild(self.w_45soSeparator)
-                CollectThemAll.addChild(self.w_135soSeparator)
-                CollectThemAll.addChild(self.w_degreeSeparator)
+                CollectThemAll.addChild(self.w_ZsoSeparator)
+
+                CollectThemAll.addChild(self.w_padXsoSeparator)
+                CollectThemAll.addChild(self.w_padYsoSeparator)
+                CollectThemAll.addChild(self.w_padZsoSeparator)
 
                 self.saveSoNodeslblToWidget(self.draw_label(usedColor))
                 self.saveSoNodesToWidget(CollectThemAll)
@@ -560,26 +531,31 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         if (callbackType == 100):
             # run all
             self.do_callback()
-            self.w_wheel_cb_(self.w_userData)
             self.w_xAxis_cb_(self.w_userData)
             self.w_yAxis_cb_(self.w_userData)
-            self.w_45Axis_cb_(self.w_userData)
-            self.w_135Axis_cb_(self.w_userData)
+            self.w_zAxis_cb_(self.w_userData)
+            
+            self.w_wheelXAxis_cb_(self.w_userData)
+            self.w_wheelYAxis_cb_(self.w_userData)
+            self.w_wheelZAxis_cb_(self.w_userData)
         elif(callbackType == 10):
             # normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
             self.do_callback()
-            # cylinder callback
+
         elif(callbackType == 0):
-            self.w_wheel_cb_(self.w_userData)
-            # Xaxis callback
-        elif(callbackType == 1):
             self.w_xAxis_cb_(self.w_userData)
-            # Yaxis callback
-        elif(callbackType == 2):
+        
+        elif(callbackType == 1):
             self.w_yAxis_cb_(self.w_userData)
-            # Zaxis callback
+
+        elif(callbackType == 2):
+            self.w_zAxis_cb_(self.w_userData)
+
         elif(callbackType == 3):
-            self.w_45Axis_cb_(self.w_userData)
-            # Zaxis callback
+            self.w_wheelXAxis_cb_(self.w_userData)
+
         elif(callbackType == 4):
-            self.w_135Axis_cb_(self.w_userData)
+            self.w_wheelYAxis_cb_(self.w_userData)
+
+        elif(callbackType == 5):
+            self.w_wheelZAxis_cb_(self.w_userData)
