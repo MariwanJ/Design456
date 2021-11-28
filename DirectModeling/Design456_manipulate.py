@@ -73,47 +73,59 @@ class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
      This will affect the faces share the edge.    ]
      """
-    _Vector = App.Vector(0.0, 0.0, 0.0)  # WHEEL POSITION
+    _Vector = None
     mw = None
     dialog = None
     tab = None
     wheelObj = None
-    editing = False
-    w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
+    w_rotation = None
     _mywin = None
     b1 = None
     ExtrudeLBL = None
     RotateLBL = None
-    run_Once = False
     endVector = None
     startVector = None
-    savedVertices = [[]]
-    counter = 0
-
-    setupRotation = [0, 0, 0, 0]
-
-    tweakLength = 0
-    oldTweakLength = 0
-    isItRotation = False
+    setupRotation = None
+    savedVertices = None
+    counter = None
+    run_Once = None
+    tweakLength = None
+    oldTweakLength = None
+    isItRotation = None
     newObject = None
     selectedObj = None
-    # Original vectors that will be changed by mouse.
     selectedEdge = None
+    # Original vectors that will be changed by mouse.
     oldEdgeVertexes = None
     newEdgeVertexes = None
     newEdge = None      # Keep new vectors for the moved old edge-vectors
 
     view = None  # used for captureing mouse events
     MoveMentDirection = None
-    newFaces = []
+    newFaces = None
     faceDir = None
     FirstLocation = None
-    coinFaces = coin.SoSeparator()
-    # facess needed to be recreated - resized
-    # First time it is from the object, but later will be the created faces
+    coinFaces = None
+    sg = None  # SceneGraph
 
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
+    def __init__(self):
+        self.coinFaces = coin.SoSeparator()
+        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
+        self.setupRotation = [0, 0, 0, 0]
+        self._Vector = App.Vector(0.0, 0.0, 0.0)  # WHEEL POSITION
+        self.savedVertices = [[]]
+        self.counter = 0
+        self.run_Once = False
+        self.tweakLength = 0
+        self.oldTweakLength = 0
+        self.isItRotation = False
+        self.newFaces = []
+        self.tweakLength = 0
+        self.oldTweakLength = 0
+
+
     def recomputeAll(self):
         self.counter = self.counter + 1
         print(self.counter)
@@ -275,6 +287,7 @@ class Design456_ExtendEdge:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def COIN_recreateObject(self):
+        self.sg.removeChild(self.coinFaces)
         for i in range(0, len(self.savedVertices)):
             for j in range(0, len(self.savedVertices[i])):
                 if self.savedVertices[i][j].Point == self.oldEdgeVertexes[0].Point:
@@ -290,6 +303,7 @@ class Design456_ExtendEdge:
                 a.append(j.Point)
             self.coinFaces.addChild(draw_FaceSet(
                 a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
+        self.sg.addChild(self.coinFaces)
 
     def recreateObject(self):
         # FIXME:
@@ -297,8 +311,9 @@ class Design456_ExtendEdge:
         # We try to create a wire-closed to replace the sides we delete.
         # This will be way to complex . with many bugs :(
         try:
-
+            print("first")
             _result = []
+            _result.clear()
             for faceVert in self.savedVertices:
                 convert = []
                 for vert in faceVert:
@@ -311,9 +326,7 @@ class Design456_ExtendEdge:
                     raise RuntimeError('Failed to create face')
                 nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
                 nFace.Shape = newFace
-                self.newFaces.append(nFace)
                 _result.append(nFace)
-            self.newFaces.clear()
             self.newFaces = _result
 
         except Exception as err:
@@ -374,8 +387,8 @@ class Design456_ExtendEdge:
                 self.savedVertices.append(newPoint)
             print(self.savedVertices)
             for i in self.savedVertices:
-                for j in i: 
-                    print (j.Point)
+                for j in i:
+                    print(j.Point)
                 print("..........")
         except Exception as err:
             faced.EnableAllToolbar(True)
@@ -389,6 +402,8 @@ class Design456_ExtendEdge:
         """[ Executes when the tool is used   ]
         """
         try:
+            self.view = Gui.ActiveDocument.ActiveView
+            self.sg = self.view.getSceneGraph()
             sel = Gui.Selection.getSelectionEx()
 
             if len(sel) > 2:
@@ -422,7 +437,7 @@ class Design456_ExtendEdge:
 
             self.ExtractTheEdge()
             self.newEdgeVertexes = self.newEdge.Shape.Vertexes
-            # App.ActiveDocument.removeObject(self.selectedObj.Name)
+            App.ActiveDocument.removeObject(self.selectedObj.Name)
 
             # Undo
             App.ActiveDocument.openTransaction(
@@ -461,50 +476,6 @@ class Design456_ExtendEdge:
 
         except Exception as err:
             faced.EnableAllToolbar(True)
-            App.Console.PrintError("'Activated' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def __del__(self):
-        """
-            class destructor
-            Remove all objects from memory even fr_coinwindow
-        """
-        faced.EnableAllToolbar(True)
-        try:
-            self.wheelObj.hide()
-            self.wheelObj.__del__()  # call destructor
-            if self._mywin is not None:
-                self._mywin.hide()
-                del self._mywin
-                self._mywin = None
-            self.editing = False
-            App.ActiveDocument.recompute()
-            self.mw = None
-            self.dialog = None
-            self.tab = None
-            self.wheelObj = None
-            self._mywin = None
-            self.b1 = None
-            self.ExtrudeLBL = None
-            self.run_Once = False
-            self.endVector = None
-            self.startVector = None
-            self.tweakLength = 0.0
-            # We will make two object, one for visual effect and the other is the original
-            self.selectedObj = None
-            self.direction = None
-            self.setupRotation = [0, 0, 0, 0]
-            # Used only with the center (cylinder)
-            self.Rotation = [0, 0, 0, 0]
-            # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
-            self.mouseOffset = App.Vector(0, 0, 0)
-            self.FirstLocation = None
-            del self
-
-        except Exception as err:
             App.Console.PrintError("'Activated' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -617,23 +588,6 @@ class Design456_ExtendEdge:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def hide(self):
-        """
-        Hide the widgets. Remove also the tab.
-        TODO:
-        For this tool, I decide to choose the hide to merge, or leave it "as is" here.
-        I can do that during the extrusion (moving the Wheel), but that will be an action
-        without undo. Here the user will be finished with the extrusion and want to leave the tool
-        TODO: If there will be a discussion about this, we might change this behavior!!
-        """
-        self.dialog.hide()
-        del self.dialog
-        dw = self.mw.findChildren(QtGui.QDockWidget)
-        newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
-        # App.ActiveDocument.recompute()
-        self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
-
     def MouseMovement_cb(self, userData=None):
         events = userData.events
         # print("mouseMove")
@@ -653,7 +607,6 @@ class Design456_ExtendEdge:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
-            # self.wheelObj.w_vector[0].sub(self.startVector)
             self.mouseOffset = App.Vector(0, 0, 0)
 
         self.tweakLength = round((
@@ -667,14 +620,13 @@ class Design456_ExtendEdge:
         self.oldEdgeVertexes = self.newEdgeVertexes
         self.newEdge.Placement.Base = self.endVector
         self.newEdgeVertexes = self.newEdge.Shape.Vertexes
-        self.COIN_recreateObject()
+
         self.wheelObj.w_vector[0] = self.endVector
+        self.COIN_recreateObject()
         self.wheelObj.redraw()
-        view = Gui.ActiveDocument.ActiveView
-        sg = view.getSceneGraph()
-        sg.addChild(self.coinFaces)
 
     # TODO FIXME:
+
     def callback_release(self, userData=None):
         try:
             events = userData.events
@@ -683,13 +635,11 @@ class Design456_ExtendEdge:
             self.wheelObj.remove_focus()
             self.run_Once = False
             self.startVector = None
-            view = Gui.ActiveDocument.ActiveView
-            sg = view.getSceneGraph()
             self.coinFaces.removeAllChildren()
-            sg.removeChild(self.coinFaces)
+            self.sg.removeChild(self.coinFaces)
+            self.wheelObj.w_callback_ = None
 
         except Exception as err:
-            faced.EnableAllToolbar(True)
             App.Console.PrintError("'Activated' Release Filed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -704,12 +654,77 @@ class Design456_ExtendEdge:
     def callback_Rotate(self):
         print("Not impolemented ")
 
+    def hide(self):
+        """
+        Hide the widgets. Remove also the tab.
+        TODO:
+        For this tool, I decide to choose the hide to merge, or leave it "as is" here.
+        I can do that during the extrusion (moving the Wheel), but that will be an action
+        without undo. Here the user will be finished with the extrusion and want to leave the tool
+        TODO: If there will be a discussion about this, we might change this behavior!!
+        """
+        self.dialog.hide()
+        del self.dialog
+        dw = self.mw.findChildren(QtGui.QDockWidget)
+        newsize = self.tab.count()  # Todo : Should we do that?
+        self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
+        self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
+
+    def __del__(self):
+        """
+            class destructor
+            Remove all objects from memory even fr_coinwindow
+        """
+        print("delete executed")
+        try:
+            self.wheelObj.hide()
+            self.wheelObj.__del__()  # call destructor
+            if self._mywin is not None:
+                self._mywin.hide()
+                del self._mywin
+                self._mywin = None
+            del self.wheelObj
+            self.mw = None
+            self.dialog = None
+            self.tab = None
+            self._mywin = None
+            self.b1 = None
+            self.ExtrudeLBL = None
+            self.run_Once = None
+            self.endVector = None
+            self.startVector = None
+            self.tweakLength = None
+            # We will make two object, one for visual effect and the other is the original
+            self.selectedObj = None
+            self.direction = None
+            self.setupRotation = None
+            self.Rotation = None
+            self.mouseOffset = None
+            self.FirstLocation = None
+            del self.selectedObj
+            del self.selectedEdge
+            del self.savedVertices
+            del self.newEdgeVertexes
+            del self.oldEdgeVertexes
+            self.coinFaces.removeAllChildren()
+            del self.coinFaces
+            self.sg.removeChild(self.coinFaces)
+            self.coinFaces = None
+            del self
+
+        except Exception as err:
+            App.Console.PrintError("'Activated' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'Design456_ExtendEdge.svg',
-            'MenuText': ' Extend Edge',
-                        'ToolTip':  ' Extend Edge'
-        }
+        'Pixmap': Design456Init.ICON_PATH + 'Design456_ExtendEdge.svg',
+        'MenuText': ' Extend Edge',
+        'ToolTip':  ' Extend Edge'
+    }
 
 
 Gui.addCommand('Design456_ExtendEdge', Design456_ExtendEdge())
