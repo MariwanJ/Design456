@@ -38,6 +38,7 @@ from typing import List
 from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from ThreeDWidgets.fr_degreewheel_widget import Fr_DegreeWheel_Widget
+from ThreeDWidgets.fr_draw import draw_FaceSet
 from ThreeDWidgets import fr_degreewheel_widget
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
@@ -86,7 +87,7 @@ class Design456_ExtendEdge:
     run_Once = False
     endVector = None
     startVector = None
-    
+    savedVertices = [[]]
     counter = 0
 
     setupRotation = [0, 0, 0, 0]
@@ -107,7 +108,7 @@ class Design456_ExtendEdge:
     newFaces = []
     faceDir = None
     FirstLocation = None
-
+    coinFaces = coin.SoSeparator()
     # facess needed to be recreated - resized
     # First time it is from the object, but later will be the created faces
 
@@ -115,8 +116,9 @@ class Design456_ExtendEdge:
     # but simplified- Thanks for the author
     def recomputeAll(self):
         self.counter = self.counter + 1
-        print (self.counter)
+        print(self.counter)
         App.ActiveDocument.recompute()
+
     def setTolerance(self, sel):
         if len(sel) != 1:
             msg = "Select one object!\n"
@@ -145,7 +147,7 @@ class Design456_ExtendEdge:
         """[Fix issues might be in the created object]
 
         Args:
-            sel ([3D Object]): [Final object that needs repair. 
+            sel ([3D Object]): [Final object that needs repair.
                                 Always new object creates as result of sew]
         """
         if len(sel) != 1:
@@ -177,7 +179,7 @@ class Design456_ExtendEdge:
         sh = self.selectedEdge.copy()
         self.newEdge.Shape = sh
         # self.selectedEdge = self.newEdge  # TODO: SHOULD WE DO THAT: FIXME:
-        #App.ActiveDocument.recompute()
+        # App.ActiveDocument.recompute()
 
     def FixSequenceOfVertices(self, inVertices):
         """[Sort the vertices to allow making face without problem]
@@ -272,52 +274,48 @@ class Design456_ExtendEdge:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def COIN_recreateObject(self):
+        for i in range(0, len(self.savedVertices)):
+            for j in range(0, len(self.savedVertices[i])):
+                if self.savedVertices[i][j].Point == self.oldEdgeVertexes[0].Point:
+                    self.savedVertices[i][j] = self.newEdgeVertexes[0]
+                elif self.savedVertices[i][j].Point == self.oldEdgeVertexes[1].Point:
+                    self.savedVertices[i][j] = self.newEdgeVertexes[1]
+
+        # We have the new vertices
+        self.coinFaces.removeAllChildren()
+        for i in self.savedVertices:
+            a = []
+            for j in i:
+                a.append(j.Point)
+            self.coinFaces.addChild(draw_FaceSet(
+                a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
+
     def recreateObject(self):
         # FIXME:
         # Here we have two sides to recreate and then compound them.
         # We try to create a wire-closed to replace the sides we delete.
         # This will be way to complex . with many bugs :(
         try:
-            faces = None
-            faces = self.newFaces
-            if faces == None or faces == []:
-                raise ValueError("should be valid")
 
-            if faces[0] == None :
-                raise ValueError("No faces found")
-            _vertices = []
             _result = []
-            for i in range(0, len(faces)):
-                _vertices.clear()
-                # Change allways the edges vertices to moved one
-                for vertex in faces[i].Shape.OuterWire.OrderedVertexes:
-                    faces[i].Visibility = False
-                #for vertex in faces[i].Shape.Vertexes:
-                    if vertex.Point == self.oldEdgeVertexes[0].Point:
-                        _vertices.append(
-                            self.newEdgeVertexes[0].Point)
-                    elif vertex.Point == self.oldEdgeVertexes[1].Point:
-                        _vertices.append(
-                            self.newEdgeVertexes[1].Point)
-                    else:
-                        _vertices.append(vertex.Point)
-                # Now we have new vertices for one face. create the face object
-                _Newvertices = _vertices
-                #_Newvertices = self.FixSequenceOfVertices(_vertices)
+            for faceVert in self.savedVertices:
+                convert = []
+                for vert in faceVert:
+                    convert.append(vert.Point)
+                _Newvertices = convert
                 newPolygon = _part.makePolygon(_Newvertices, True)
+                convert.clear()
                 newFace = _part.makeFilledFace(newPolygon.Edges)
                 if newFace.isNull():
                     raise RuntimeError('Failed to create face')
-                
                 nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
                 nFace.Shape = newFace
                 self.newFaces.append(nFace)
                 _result.append(nFace)
-                App.ActiveDocument.removeObject(faces[i].Name)
             self.newFaces.clear()
             self.newFaces = _result
-            #App.ActiveDocument.recompute()
-            self.recomputeAll()
+
         except Exception as err:
             App.Console.PrintError("'recreate Object' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -351,9 +349,6 @@ class Design456_ExtendEdge:
                             face.Surface.Rotation.Axis.z,
                             math.degrees(face.Surface.Rotation.Angle)]
 
-            # if (self.tweakLength == 0):
-            #     d = self.tweakLength = 0
-            # else:
             d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the wheel
@@ -367,39 +362,67 @@ class Design456_ExtendEdge:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def saveVertices(self):
+        # Save the vertices for the faces.
+        try:
+            if len(self.savedVertices) > 0:
+                del self.savedVertices[len(self.savedVertices)-1]
+            for face in self.selectedObj.Shape.Faces:
+                newPoint = []
+                for v in face.OuterWire.OrderedVertexes:
+                    newPoint.append(v)
+                self.savedVertices.append(newPoint)
+            print(self.savedVertices)
+            for i in self.savedVertices:
+                for j in i: 
+                    print (j.Point)
+                print("..........")
+        except Exception as err:
+            faced.EnableAllToolbar(True)
+            App.Console.PrintError("'saveVertices' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
     def Activated(self):
         """[ Executes when the tool is used   ]
         """
         try:
             sel = Gui.Selection.getSelectionEx()
-            
+
             if len(sel) > 2:
                 errMessage = "Please select only one edge and try again"
                 faced.errorDialog(errMessage)
                 return
-            
+
             self.MoveMentDirection = 'A'
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
-            self.selectedEdge = sel[0].SubObjects[0]
-            
+            if (hasattr(sel[0], "SubObjects")):
+                self.selectedEdge = sel[0].SubObjects[0]
+            else:
+                raise Exception("Not implemented")
+
             # Recreate the object in separated shapes.
-            for face in self.selectedObj.Shape.Faces:
-                sh = face.copy()
-                nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
-                nFace.Shape = sh
-                self.newFaces.append(nFace)
-            #App.ActiveDocument.recompute()
-            
+            self.saveVertices()
+
             if(hasattr(self.selectedEdge, "Vertexes")):
                 self.oldEdgeVertexes = self.selectedEdge.Vertexes
             if not hasattr(self.selectedEdge, 'Edges'):
                 raise Exception("Please select only one edge and try again")
+
+            if not(type(self.selectedEdge.Curve) == _part.Line or
+                   type(self.selectedEdge.Curve) == _part.BezierCurve):
+                msg = "Curve edges are not supported yet"
+                faced.errorDialog(msg)
+                self.hide()
+
             self.setupRotation = self.calculateNewVector()
-            
+
             self.ExtractTheEdge()
             self.newEdgeVertexes = self.newEdge.Shape.Vertexes
-            App.ActiveDocument.removeObject(self.selectedObj.Name)
+            # App.ActiveDocument.removeObject(self.selectedObj.Name)
 
             # Undo
             App.ActiveDocument.openTransaction(
@@ -425,6 +448,8 @@ class Design456_ExtendEdge:
             self.wheelObj.w_callback_ = self.callback_release
             self.wheelObj.w_userData.callerObject = self
 
+            self.COIN_recreateObject()
+
             if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
 
@@ -443,7 +468,7 @@ class Design456_ExtendEdge:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def __del__(self):
-        """ 
+        """
             class destructor
             Remove all objects from memory even fr_coinwindow
         """
@@ -457,7 +482,6 @@ class Design456_ExtendEdge:
                 self._mywin = None
             self.editing = False
             App.ActiveDocument.recompute()
-            App.ActiveDocument.commitTransaction()  # undo reg.
             self.mw = None
             self.dialog = None
             self.tab = None
@@ -597,7 +621,7 @@ class Design456_ExtendEdge:
         """
         Hide the widgets. Remove also the tab.
         TODO:
-        For this tool, I decide to choose the hide to merge, or leave it "as is" here. 
+        For this tool, I decide to choose the hide to merge, or leave it "as is" here.
         I can do that during the extrusion (moving the Wheel), but that will be an action
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
@@ -607,13 +631,12 @@ class Design456_ExtendEdge:
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
-        App.ActiveDocument.commitTransaction()  # undo reg.
-        #App.ActiveDocument.recompute()
+        # App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
 
     def MouseMovement_cb(self, userData=None):
         events = userData.events
-        print ("mouseMove")
+        # print("mouseMove")
         if self.isItRotation is True:
             self.callback_Rotate()
             return  # We cannot allow this tool
@@ -635,30 +658,35 @@ class Design456_ExtendEdge:
 
         self.tweakLength = round((
             self.endVector - self.startVector).dot(self.normalVector), 1)
-        
+
         if abs(self.oldTweakLength-self. tweakLength) < 1:
-            return # we do nothing 
+            return  # we do nothing
         self.ExtrudeLBL.setText(
             "Length= " + str(round(self.tweakLength, 1)))
-        
+
         self.oldEdgeVertexes = self.newEdgeVertexes
         self.newEdge.Placement.Base = self.endVector
         self.newEdgeVertexes = self.newEdge.Shape.Vertexes
-        self.recreateObject()
-        # self.calculateNewVector()
+        self.COIN_recreateObject()
         self.wheelObj.w_vector[0] = self.endVector
         self.wheelObj.redraw()
-        App.ActiveDocument.recompute()
-        
+        view = Gui.ActiveDocument.ActiveView
+        sg = view.getSceneGraph()
+        sg.addChild(self.coinFaces)
+
     # TODO FIXME:
     def callback_release(self, userData=None):
         try:
             events = userData.events
+            self.recreateObject()
             print("mouse release")
             self.wheelObj.remove_focus()
             self.run_Once = False
             self.startVector = None
-            App.ActiveDocument.commitTransaction()  # undo reg.
+            view = Gui.ActiveDocument.ActiveView
+            sg = view.getSceneGraph()
+            self.coinFaces.removeAllChildren()
+            sg.removeChild(self.coinFaces)
 
         except Exception as err:
             faced.EnableAllToolbar(True)
