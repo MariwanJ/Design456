@@ -37,7 +37,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 from dataclasses import dataclass
-
+from pivy import coin
 
 @dataclass
 class userDataObject:
@@ -3369,7 +3369,7 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
     return root
 
 #Save scenegraph to IV format 2.x
-from pivy import coin
+
 def saveSceneGraphtoIVfile(filename):
     """[Save current scenegraph to IV format]
 
