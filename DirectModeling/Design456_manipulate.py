@@ -110,21 +110,6 @@ class Design456_ExtendEdge:
 
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
-    def __init__(self):
-        self.coinFaces = coin.SoSeparator()
-        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
-        self.setupRotation = [0, 0, 0, 0]
-        self._Vector = App.Vector(0.0, 0.0, 0.0)  # WHEEL POSITION
-        self.savedVertices = [[]]
-        self.counter = 0
-        self.run_Once = False
-        self.tweakLength = 0
-        self.oldTweakLength = 0
-        self.isItRotation = False
-        self.newFaces = []
-        self.tweakLength = 0
-        self.oldTweakLength = 0
-
 
     def recomputeAll(self):
         self.counter = self.counter + 1
@@ -401,6 +386,20 @@ class Design456_ExtendEdge:
     def Activated(self):
         """[ Executes when the tool is used   ]
         """
+        self.coinFaces = coin.SoSeparator()
+        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
+        self.setupRotation = [0, 0, 0, 0]
+        self._Vector = App.Vector(0.0, 0.0, 0.0)  # WHEEL POSITION
+        self.counter = 0
+        self.run_Once = False
+        self.tweakLength = 0
+        self.oldTweakLength = 0
+        self.isItRotation = False
+        self.newFaces = []
+        self.savedVertices = [[]]
+        self.tweakLength = 0
+        self.oldTweakLength = 0
+
         try:
             self.view = Gui.ActiveDocument.ActiveView
             self.sg = self.view.getSceneGraph()
