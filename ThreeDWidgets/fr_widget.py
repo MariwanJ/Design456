@@ -72,6 +72,7 @@ class propertyValues:
     alignment: int  # This will not be used .. not good
     rotation: tuple    # three angels in degree
     rotationAxis: VECTOR
+    scale: tuple  # Three float numbers for scaling
 
     def __init__(self):
         self.vectors = [App.Vector(0, 0, 0), ]
@@ -82,6 +83,7 @@ class propertyValues:
         self.alignment = constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         self.rotation = App.Vector(0, 0, 0)
         self.rotationAxis = App.Vector(0, 0, 0)
+        self.scale = [1.0, 1.0, 1.0]
 # ***********************************************************************************************************
 
 
