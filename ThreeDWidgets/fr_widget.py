@@ -151,6 +151,7 @@ class Fr_Widget (object):
         self.w_vector = args        # This should be like App.vectors
         # This must be a list, to have several raw, append st
         self.w_label = [label]
+        self.w_lbluserData.fontsize
 
     @abstractmethod
     def draw_box(self):

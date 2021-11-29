@@ -77,24 +77,7 @@ class userDataObject:
 
 
 # *******************************CALLBACKS DEMO *********************************************
-def callback(userData: userDataObject = None):
-    """
-        This function executes when the Widget as whole got an event
-    """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy FR_WHELL_WIDGET General callback")
-
-
 def callback1(userData: userDataObject = None):
-    """
-        This function executes when the Center has an event 
-        event callback. 
-    """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Center-wheel-widget callback1")
-
-
-def callback2(userData: userDataObject = None):
     """
         This function executes when the XAxis 
         event callback. 
@@ -103,42 +86,61 @@ def callback2(userData: userDataObject = None):
     print("dummy XAxis callback")
 
 
-def callback3(userData: userDataObject = None):
+
+def callback2(userData: userDataObject = None):
     """
-        This function executes when the YAxis 
+        This function executes when the XAxis 
         event callback. 
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy YAxis callback")
 
 
-def callback4(userData: userDataObject = None):
+def callback3(userData: userDataObject = None):
     """
-        This function executes when the 45Axis 
+        This function executes when the YAxis 
         event callback. 
     """
     # Subclass this and impalement the callback or just change the callback function
-    print("dummy 45Axis callback")
+    print("dummy ZAxis callback")
+
+
+def callback4(userData: userDataObject = None):
+    """
+        This function executes when the PadX 
+        event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy PadX callback")
 
 
 def callback5(userData: userDataObject = None):
     """
-        This function executes when the 135Axis 
+        This function executes when the PadY 
         event callback. 
     """
     # Subclass this and impalement the callback or just change the callback function
-    print("dummy 135Axis callback")
+    print("dummy PadY callback")
 
 # *************************************************************
 
-
 def callback6(userData: userDataObject = None):
     """
-        This function executes when the 135Axis 
+        This function executes when the PadZ 
         event callback. 
     """
     # Subclass this and impalement the callback or just change the callback function
-    print("dummy 135Axis callback")
+    print("dummy PadZ callback")
+
+# *************************************************************
+
+def callback(userData: userDataObject = None):
+    """
+        This function executes when lblCallbak 
+        or general widget callback occure
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy callback")
 
 # *************************************************************
 
@@ -158,9 +160,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                            FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
                  _Rotation=[0.0, 0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0],
-                 _scale=[1, 1, 1], _type=1,
+                 _scale=[1, 1, 1], _type=2,
                  _opacity=0,
-                 _distanceBetweenThem=10):
+                 _distanceBetweenThem=[20,20,20]):
 
         super().__init__(vectors, label)
 
@@ -169,15 +171,17 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_callback_ = callback
         self.w_lbl_calback_ = callback              # Label callback
         self.w_KB_callback_ = callback              # Keyboard
-        self.w_move_callback_ = callback            # Mouse movement callback
+        #self.w_move_callback_ = callback            # Mouse movement callback (Whole widget)
+        
         self.Opacity = _opacity
         self.DrawingType = _type
-        self.distanceBetweenThem = _distanceBetweenThem
-        # Dummy callback
+        #Use this to separate the arrows/lbl from the origin of the widget
+        self.distanceBetweenThem = _distanceBetweenThem 
+        # Dummy callback X-Axis
         self.w_xAxis_cb_ = callback1
-        # Dummy callback
+        # Dummy callback Y-Axis
         self.w_yAxis_cb_ = callback2
-        # Dummy callback
+        # Dummy callback  Z-Axis
         self.w_zAxis_cb_ = callback3
 
         # Dummy callback          XWheel
@@ -215,7 +219,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
-
+        self.w_lbluserData.vectors = [App.Vector(self.w_vector[0].x + self.distanceBetweenThem[0], 
+                                                self.w_vector[0].y + self.distanceBetweenThem[1],
+                                                self.w_vector[0].z + self.distanceBetweenThem[2]),]
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0
         self.w_Rotation = _Rotation
@@ -354,18 +360,18 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
             if self.is_visible():
 
-                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x+self.distanceBetweenThem,
+                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x+self.distanceBetweenThem[0],
                                                               self.w_vector[0].y, self.w_vector[0].z),
                                                    FR_COLOR.FR_RED, self.w_Scale,
                                                    self.DrawingType, self.Opacity,
                                                    [0.0, 90.0, 0.0])  # RED
                 self.w_YsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                              self.w_vector[0].y+self.distanceBetweenThem, self.w_vector[0].z),
+                                                              self.w_vector[0].y+self.distanceBetweenThem[1], self.w_vector[0].z),
                                                    FR_COLOR.FR_GREEN, self.w_Scale,
                                                    self.DrawingType, self.Opacity,
                                                    [0.0, 90.0, 90.0])  # GREEN
                 self.w_ZsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                              self.w_vector[0].y, self.w_vector[0].z+self.distanceBetweenThem),
+                                                              self.w_vector[0].y, self.w_vector[0].z+self.distanceBetweenThem[2]),
                                                    FR_COLOR.FR_BLUE, self.w_Scale,
                                                    self.DrawingType, self.Opacity,
                                                    [0.0, 0.0, 0.0])  # BLUE
