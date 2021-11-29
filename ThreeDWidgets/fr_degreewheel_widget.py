@@ -371,7 +371,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                allDraw = []
+
                 if self.w_wheelType == 0:
                     # TOP         #OK Don't change
                     SETUPwheelTypeRotation = [0.0, 0.0, 0.0]
@@ -402,13 +402,6 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                                                                     self.w_PRErotation, self.w_Scale, 1)  # 135
                 self.w_degreeSeparator = fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
                                                                        SetupTextRotation, self.w_PRErotation, self.w_Scale, 1)  # White
-
-                allDraw.append(self.w_centersoSeparator)
-                allDraw.append(self.w_XsoSeparator)
-                allDraw.append(self.w_YsoSeparator)
-                allDraw.append(self.w_45soSeparator)
-                allDraw.append(self.w_135soSeparator)
-                allDraw.append(self.w_degreeSeparator)
 
                 CollectThemAllRot = coin.SoTransform()
                 CollectThemAll = coin.SoSeparator()
