@@ -41,6 +41,7 @@ from ThreeDWidgets.constant import FR_COLOR
 import FACE_D as faced
 from dataclasses import dataclass
 from fr_draw import draw_2Darrow
+from fr_draw1 import draw_RotationPad
 import math
 """
 Example how to use this widget. 
@@ -155,10 +156,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  _lblColor=FR_COLOR.FR_BLACK,
                  arrColor=[FR_COLOR.FR_RED,
                            FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
-                 _Rotation=[0.0, 0.0, 0.0],
+                 _Rotation=[0.0, 0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0],
                  _scale=[1, 1, 1], _type=1,
-                 _opacity = 0):
+                 _opacity=0,
+                 _distanceBetweenThem=10):
 
         super().__init__(vectors, label)
 
@@ -170,6 +172,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_move_callback_ = callback            # Mouse movement callback
         self.Opacity = _opacity
         self.DrawingType = _type
+        self.distanceBetweenThem = _distanceBetweenThem
         # Dummy callback
         self.w_xAxis_cb_ = callback1
         # Dummy callback
@@ -350,37 +353,41 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
 
             if self.is_visible():
-                allDraw = []
-                #(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=[0.5,0.5,0.5],type=0,opacity=0, _rotation=[0.0, 0.0, 0.0]):
-                self.w_XsoSeparator = draw_2Darrow(self.w_vector[0],
-                                                                 FR_COLOR.FR_RED, self.w_Scale,
-                                                                 self.Opacity, self.DrawingType,
-                                                                 [0.0, 90.0, 0.0])  # RED
-                self.w_YsoSeparator = draw_2Darrow(self.w_vector[0],
-                                                                 FR_COLOR.FR_GREEN, self.w_Scale,
-                                                                 self.Opacity, self.DrawingType,
-                                                                 [0.0, 90.0, 90.0])  # GREEN
-                self.w_ZsoSeparator = draw_2Darrow(self.w_vector[0],
-                                                                 FR_COLOR.FR_BLUE, self.w_Scale,
-                                                                 self.Opacity, self.DrawingType,
-                                                                 [0.0, 0.0, 90.0])  # BLUE
 
-                allDraw.append(self.w_XsoSeparator)
-                allDraw.append(self.w_YsoSeparator)
-                allDraw.append(self.w_ZsoSeparator)
-                allDraw.append(self.w_padXsoSeparator)
-                allDraw.append(self.w_padYsoSeparator)
-                allDraw.append(self.w_padZsoSeparator)
+                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x+self.distanceBetweenThem,
+                                                              self.w_vector[0].y, self.w_vector[0].z),
+                                                   FR_COLOR.FR_RED, self.w_Scale,
+                                                   self.DrawingType, self.Opacity,
+                                                   [0.0, 90.0, 0.0])  # RED
+                self.w_YsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
+                                                              self.w_vector[0].y+self.distanceBetweenThem, self.w_vector[0].z),
+                                                   FR_COLOR.FR_GREEN, self.w_Scale,
+                                                   self.DrawingType, self.Opacity,
+                                                   [0.0, 90.0, 90.0])  # GREEN
+                self.w_ZsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
+                                                              self.w_vector[0].y, self.w_vector[0].z+self.distanceBetweenThem),
+                                                   FR_COLOR.FR_BLUE, self.w_Scale,
+                                                   self.DrawingType, self.Opacity,
+                                                   [0.0, 0.0, 0.0])  # BLUE
 
-#                CollectThemAllRot = coin.SoTransform()
+                # def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
+                # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
+                self.w_padXsoSeparator = draw_RotationPad(self.w_vector[0], FR_COLOR.FR_RED, self.w_Scale,
+                                                          self.Opacity, [0.0, 0.0, 0.0])  # RED
+                self.w_padYsoSeparator = draw_RotationPad(self.w_vector[0], FR_COLOR.FR_GREEN, self.w_Scale,
+                                                          self.Opacity, [0.0, 0.0, 90.0])  # GREEN
+                self.w_padZsoSeparator = draw_RotationPad(self.w_vector[0], FR_COLOR.FR_BLUE, self.w_Scale,
+                                                          self.Opacity, [90.0, 0.0, 0.0])  # BLUE
+
+                CollectThemAllRot = coin.SoTransform()
                 CollectThemAll = coin.SoSeparator()
-                #tR = coin.SbVec3f()
-                #tR.setValue(
-                #    self.w_Rotation[0], self.w_Rotation[1], self.w_Rotation[2])
-#                CollectThemAllRot.rotation.setValue(
-#                    tR, math.radians(self.w_Rotation[3]))
+                tR = coin.SbVec3f()
+                tR.setValue(
+                    self.w_Rotation[0], self.w_Rotation[1], self.w_Rotation[2])
+                CollectThemAllRot.rotation.setValue(
+                    tR, math.radians(self.w_Rotation[3]))
 
-#                CollectThemAll.addChild(CollectThemAllRot)
+                CollectThemAll.addChild(CollectThemAllRot)
                 CollectThemAll.addChild(self.w_XsoSeparator)
                 CollectThemAll.addChild(self.w_YsoSeparator)
                 CollectThemAll.addChild(self.w_ZsoSeparator)
@@ -549,7 +556,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.w_xAxis_cb_(self.w_userData)
             self.w_yAxis_cb_(self.w_userData)
             self.w_zAxis_cb_(self.w_userData)
-            
+
             self.w_wheelXAxis_cb_(self.w_userData)
             self.w_wheelYAxis_cb_(self.w_userData)
             self.w_wheelZAxis_cb_(self.w_userData)
@@ -559,7 +566,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         elif(callbackType == 0):
             self.w_xAxis_cb_(self.w_userData)
-        
+
         elif(callbackType == 1):
             self.w_yAxis_cb_(self.w_userData)
 
