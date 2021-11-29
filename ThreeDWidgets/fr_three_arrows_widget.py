@@ -154,7 +154,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  label: str = "",
                  _lblColor=FR_COLOR.FR_BLACK,
                  arrColor=[FR_COLOR.FR_RED,
-                           FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE, ],
+                           FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
                  _Rotation=[0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0],
                  _scale=[1, 1, 1], _type=1,
