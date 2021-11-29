@@ -2119,9 +2119,9 @@ def draw_washer(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1
     soSepArrow.addChild(cordinate) 
     soSepArrow.addChild(soIndexFace)
 
-    root.addChild(trans)
     root.addChild(material)
     root.addChild(transform)
+    root.addChild(trans)
     root.addChild(soSepArrow)
     #Finalize the drawing by adding color, pos, scale , opacity
     return root

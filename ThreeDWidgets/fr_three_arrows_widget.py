@@ -29,19 +29,18 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import ThreeDWidgets
 import pivy.coin as coin
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
 from ThreeDWidgets import fr_coin3d
 from typing import List
+import FACE_D as faced
+from dataclasses import dataclass
+from ThreeDWidgets.fr_draw import draw_2Darrow
 from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
-import FACE_D as faced
-from dataclasses import dataclass
-from fr_draw import draw_2Darrow
-from fr_draw1 import draw_RotationPad
+from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 """
 Example how to use this widget. 
@@ -52,13 +51,9 @@ import math
 import fr_three_arrows_widget as w 
 mywin = wnn.Fr_CoinWindow()
 
-rotation=0
-color=(.8,0.8,1)
 vec=[]
 vec.append(App.Vector(0,0,0))
-vec.append(App.Vector(0,5,5))
-
-rotation=[0.0, 0.0, 0.0, 0.0]
+vec.append(App.Vector(0,0,0))
 arrows=w.Fr_ThreeArrows_Widget(vec,"Wheel")
 mywin.addWidget(arrows)
 mywin.show()
@@ -347,7 +342,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         try:
             lablVar = fr_widget.propertyValues()
             if (len(self.w_vector) < 1):
-                raise ValueError('Must be one vector')
+                raise ValueError('Must be a vector')
 
             usedColor = self.w_color
             if self.is_active() and self.has_focus():
@@ -359,18 +354,22 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
             if self.is_visible():
 
-                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x+self.distanceBetweenThem[0],
-                                                              self.w_vector[0].y, self.w_vector[0].z),
+                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x + self.distanceBetweenThem[0],
+                                                              self.w_vector[0].y,
+                                                              self.w_vector[0].z),
                                                    FR_COLOR.FR_RED, self.w_Scale,
                                                    self.DrawingType, self.Opacity,
                                                    [0.0, 90.0, 0.0])  # RED
                 self.w_YsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                              self.w_vector[0].y+self.distanceBetweenThem[1], self.w_vector[0].z),
+                                                              self.w_vector[0].y +
+                                                              self.distanceBetweenThem[1],
+                                                              self.w_vector[0].z),
                                                    FR_COLOR.FR_GREEN, self.w_Scale,
                                                    self.DrawingType, self.Opacity,
                                                    [0.0, 90.0, 90.0])  # GREEN
                 self.w_ZsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                              self.w_vector[0].y, self.w_vector[0].z+self.distanceBetweenThem[2]),
+                                                              self.w_vector[0].y,
+                                                              self.w_vector[0].z + self.distanceBetweenThem[2]),
                                                    FR_COLOR.FR_BLUE, self.w_Scale,
                                                    self.DrawingType, self.Opacity,
                                                    [0.0, 0.0, 0.0])  # BLUE
@@ -533,7 +532,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.w_hasFocus = 0
             self.redraw()
 
-    
     def resize(self, _scale: tuple = [1.0, 1.0, 1.0]):
         """Resize the widget by using the new vectors"""
         self.w_scale = _scale
@@ -559,7 +557,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             newsize (int, optional): [Change font label ]. Defaults to 1.
         """
         self.w_lbluserData.scale = newsize
-        
+
     # Keep in mind you must run lblRedraw
     def label_fontSize(self, newfontSize: int = 1):
         self.w_lbluserData.fontSize = newfontSize
