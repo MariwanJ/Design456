@@ -160,9 +160,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                            FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
                  _Rotation=[0.0, 0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0],
-                 _scale=[1, 1, 1], _type=2,
+                 _scale=[1, 1, 1], _type=0,
                  _opacity=0,
-                 _distanceBetweenThem=[20,20,20]):
+                 _distanceBetweenThem=[20, 20, 20]):
 
         super().__init__(vectors, label)
 

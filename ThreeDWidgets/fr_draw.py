@@ -1127,7 +1127,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         material.diffuseColor.setValue(coin.SbColor(color))
         
         if type ==0 :
-            scale= [i/35.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 44mm to get 1mm TODO:FIXME:
+            scale= [i/35.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 35mm to get 1mm TODO:FIXME:
             soSepArrow=coin.SoSeparator()   # drawing holder
             soIndexFace= coin.SoIndexedFaceSet()
             cordinate= coin.SoCoordinate3()
@@ -1313,6 +1313,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
             soSepArrow.addChild(soIndexfacesTail2)        
         
         elif type==2:
+            scale= [i/15.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 15mm to get 1mm TODO:FIXME:
             soSepArrow=coin.SoSeparator()   # drawing holder
             soIndexFace= coin.SoIndexedFaceSet()
             cordinate= coin.SoCoordinate3()
