@@ -348,7 +348,9 @@ class Design456_ExtendEdge:
 
             d = self.tweakLength
 
-            self.FirstLocation = yL + d * nv  # the wheel
+            self.FirstLocation = yL + d * nv  # the 3 arrows-pads
+            self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
+            
             return rotation
 
         except Exception as err:

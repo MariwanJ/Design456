@@ -292,13 +292,6 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
     separatorY = coin.SoSeparator()
     separatorZ = coin.SoSeparator()
 
-    transform = coin.SoTransform()  # for scale only
-    trans = coin.SoTranslation()
-    trans.translation.setValue(p1)
-
-    transform.translation.setValue(p1)
-    transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
-
     tempRX = coin.SbVec3f()
     tempRX.setValue(1, 0, 0)
 
@@ -530,6 +523,11 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
 
     separatorZ.addChild(transformZ)
     separatorZ.addChild(separatorY)
+
+    transform = coin.SoTransform()  # for scale only
+    trans = coin.SoTranslation()
+    trans.translation.setValue(p1)
+    transform.scaleFactor.setValue([scale[0], scale[1], scale[2]]) #Only for scale only
 
     root.addChild(trans)
     root.addChild(material)

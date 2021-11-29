@@ -1107,10 +1107,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         transformX=coin.SoTransform() 
         transformY=coin.SoTransform()
         transformZ=coin.SoTransform()
-        
-        trans=coin.SoTranslation()
-        trans.translation.setValue(p1)
-        
+       
         tempRX = coin.SbVec3f()
         tempRY = coin.SbVec3f()
         tempRZ = coin.SbVec3f()
@@ -1562,8 +1559,6 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
             soSepArrow.addChild(soIndexFace)
         
         transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
-        root.addChild(material)
-        root.addChild(transform)
 
         soX=coin.SoSeparator()
         soY=coin.SoSeparator()
@@ -1576,9 +1571,12 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         soY.addChild(soX)
         
         soZ.addChild(transformZ)
+        soZ.addChild(transform)
         soZ.addChild(soY)
-        
+        trans=coin.SoTranslation()
+        trans.translation.setValue(p1)
         root.addChild(trans)
+        root.addChild(material)
         root.addChild(soZ)
 
         #Finalize the drawing by adding color, pos, scale , opacity
