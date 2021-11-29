@@ -157,7 +157,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  _prerotation=[0.0, 0.0, 0.0],
                  _scale=[1, 1, 1], _type=0,
                  _opacity=0,
-                 _distanceBetweenThem=[20, 20, 20]):
+                 _distanceBetweenThem=[10, 10, 10]):
 
         super().__init__(vectors, label)
 
@@ -348,13 +348,14 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
             elif self.is_active() and (self.has_focus() != 1):
-                pass  # usedColor = self.w_color  we did that alread ..just for reference
+                pass  # usedColor = self.w_color  we did that already ..just for reference
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
 
             if self.is_visible():
 
-                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x + self.distanceBetweenThem[0],
+                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x + 
+                                                              self.distanceBetweenThem[0],
                                                               self.w_vector[0].y,
                                                               self.w_vector[0].z),
                                                    FR_COLOR.FR_RED, self.w_Scale,
@@ -369,7 +370,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                                                    [0.0, 90.0, 90.0])  # GREEN
                 self.w_ZsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
                                                               self.w_vector[0].y,
-                                                              self.w_vector[0].z + self.distanceBetweenThem[2]),
+                                                              self.w_vector[0].z + 
+                                                              self.distanceBetweenThem[2]),
                                                    FR_COLOR.FR_BLUE, self.w_Scale,
                                                    self.DrawingType, self.Opacity,
                                                    [0.0, 0.0, 0.0])  # BLUE
