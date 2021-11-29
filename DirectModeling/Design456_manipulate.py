@@ -37,9 +37,8 @@ from ThreeDWidgets import fr_coin3d
 from typing import List
 from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
-from ThreeDWidgets.fr_degreewheel_widget import Fr_DegreeWheel_Widget
+from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 from ThreeDWidgets.fr_draw import draw_FaceSet
-from ThreeDWidgets import fr_degreewheel_widget
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translate
@@ -61,7 +60,7 @@ from OCC.Core import ChFi2d
 # """
 #     - For square, rectangle, multisided-wire shapes :draft.wire should do the job
 #     - For Circle  - Loft should do the job.
-#     - For curvature shapes - should be treated as squre.
+#     - For curvature shapes - should be treated as square.
 
 #     We need to distinguish between : Circle edge, and wire edges
 #     circle selectedEdge.Closed=true -->use this
@@ -443,14 +442,9 @@ class Design456_ExtendEdge:
                 translate("Design456", "ExtendEdge"))
 
             # Deside how the Degree Wheel be drawn
-            if self.faceDir == "+z" or self.faceDir == "-z":
-                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [2.0, 2.0, 2.0], 2)
-            else:
-                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [2.0, 2.0, 2.0], 1)
+            self.wheelObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
+                round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
+                self.setupRotation, [10.0, 10.0, 10.0], 0, 0, [10, 10, 10])
 
             # Different callbacks for each action.
             self.wheelObj.w_wheel_cb_ = self.callback_Rotate
@@ -720,10 +714,10 @@ class Design456_ExtendEdge:
 
     def GetResources(self):
         return {
-        'Pixmap': Design456Init.ICON_PATH + 'Design456_ExtendEdge.svg',
-        'MenuText': ' Extend Edge',
-        'ToolTip':  ' Extend Edge'
-    }
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_ExtendEdge.svg',
+            'MenuText': ' Extend Edge',
+            'ToolTip':  ' Extend Edge'
+        }
 
 
 Gui.addCommand('Design456_ExtendEdge', Design456_ExtendEdge())

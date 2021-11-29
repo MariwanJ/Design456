@@ -63,7 +63,8 @@ class propertyValues:
     Property-holder class for drawing labels
     '''
     __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
-                 'labelcolor', 'alignment', 'rotation', 'rotationAxis']
+                 'labelcolor', 'alignment', 'rotation', 'rotationAxis' , 
+                 'scale']
     vectors: VECTOR  # List[App.Vector] two vectors must be provided
     linewidth: int
     fontName: str
