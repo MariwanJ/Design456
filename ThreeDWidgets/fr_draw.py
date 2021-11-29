@@ -1100,6 +1100,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         [SoSeparator]: [SoSeparator which hold the drawing. Add it to the scenegraph to show the arrow]
     """    
     try:
+        
         root=coin.SoSeparator() #root group holder
         transform=coin.SoTransform()
         
@@ -1110,8 +1111,6 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         trans=coin.SoTranslation()
         trans.translation.setValue(p1)
         
-        transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
-
         tempRX = coin.SbVec3f()
         tempRY = coin.SbVec3f()
         tempRZ = coin.SbVec3f()
@@ -1128,6 +1127,7 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         material.diffuseColor.setValue(coin.SbColor(color))
         
         if type ==0 :
+            scale= [i/35.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 44mm to get 1mm TODO:FIXME:
             soSepArrow=coin.SoSeparator()   # drawing holder
             soIndexFace= coin.SoIndexedFaceSet()
             cordinate= coin.SoCoordinate3()
@@ -1237,11 +1237,9 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
             soSepArrow.addChild(Shapehint)
             soSepArrow.addChild(cordinate) 
             soSepArrow.addChild(soIndexFace)
-            
-
-            root.addChild(soSepArrow)
 
         elif type==1:
+            scale= [i/44.5 for i in scale]         #Du to the wrong size of the coin data, this should be divided by 44mm to get 1mm TODO:FIXME:
             soIndexfacesHead =coin.SoIndexedFaceSet()
             soIndexfacesTail1=coin.SoIndexedFaceSet()
             soIndexfacesTail2=coin.SoIndexedFaceSet()
@@ -1561,7 +1559,8 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
             soIndexFace.coordIndex.setValues(0, len(indices), indices)
             soSepArrow.addChild(cordinate) 
             soSepArrow.addChild(soIndexFace)
-
+        
+        transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
         root.addChild(material)
         root.addChild(transform)
 
