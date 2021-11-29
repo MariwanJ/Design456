@@ -350,7 +350,7 @@ class Design456_ExtendEdge:
 
             self.FirstLocation = yL + d * nv  # the 3 arrows-pads
             self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
-            
+
             return rotation
 
         except Exception as err:
@@ -452,8 +452,10 @@ class Design456_ExtendEdge:
             self.wheelObj.w_wheel_cb_ = self.callback_Rotate
             self.wheelObj.w_xAxis_cb_ = self.MouseMovement_cb
             self.wheelObj.w_yAxis_cb_ = self.MouseMovement_cb
-            self.wheelObj.w_45Axis_cb_ = self.MouseMovement_cb
-            self.wheelObj.w_135Axis_cb_ = self.MouseMovement_cb
+
+            self.wheelObj.w_wheelXAxis_cb_ = self.callback_Rotate
+            self.wheelObj.w_wheelYAxis_cb_ = self.callback_Rotate
+            self.wheelObj.w_wheelZAxis_cb_ = self.callback_Rotate
 
             self.wheelObj.w_callback_ = self.callback_release
             self.wheelObj.w_userData.callerObject = self
@@ -625,14 +627,11 @@ class Design456_ExtendEdge:
     def callback_release(self, userData=None):
         try:
             events = userData.events
-            self.recreateObject()
             print("mouse release")
             self.wheelObj.remove_focus()
             self.run_Once = False
-            self.startVector = None
-            self.coinFaces.removeAllChildren()
-            self.sg.removeChild(self.coinFaces)
-            self.wheelObj.w_callback_ = None
+            #self.startVector = None
+            #self.wheelObj.w_callback_ = None
 
         except Exception as err:
             App.Console.PrintError("'Activated' Release Filed. "
@@ -645,8 +644,7 @@ class Design456_ExtendEdge:
         print("lbl callback")
         pass
 
-    # Rotation only TODO: FIXME:
-    def callback_Rotate(self):
+    def callback_Rotate(self, axis):
         print("Not impolemented ")
 
     def hide(self):
@@ -659,6 +657,13 @@ class Design456_ExtendEdge:
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
         self.dialog.hide()
+        self.recreateObject()
+        
+        # Remove coin objects
+        self.coinFaces.removeAllChildren()
+        self.sg.removeChild(self.coinFaces)
+
+        
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
