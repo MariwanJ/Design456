@@ -63,7 +63,6 @@ arrows=w.Fr_ThreeArrows_Widget(vec,"Wheel")
 mywin.addWidget(arrows)
 mywin.show()
 
-
 """
 
 
@@ -76,7 +75,7 @@ class userDataObject:
         self.callerObject = None  # Class/Tool uses the fr_wheel_widget
 
 
-# *******************************CALLBACKS DEMO *********************************************
+# *******************************CALLBACKS - DEMO *********************************************
 def callback1(userData: userDataObject = None):
     """
         This function executes when the XAxis 
@@ -84,7 +83,6 @@ def callback1(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy XAxis callback")
-
 
 
 def callback2(userData: userDataObject = None):
@@ -108,7 +106,7 @@ def callback3(userData: userDataObject = None):
 def callback4(userData: userDataObject = None):
     """
         This function executes when the PadX 
-        event callback. 
+        event callback.
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy PadX callback")
@@ -117,12 +115,13 @@ def callback4(userData: userDataObject = None):
 def callback5(userData: userDataObject = None):
     """
         This function executes when the PadY 
-        event callback. 
+        event callback.
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy PadY callback")
 
 # *************************************************************
+
 
 def callback6(userData: userDataObject = None):
     """
@@ -133,6 +132,7 @@ def callback6(userData: userDataObject = None):
     print("dummy PadZ callback")
 
 # *************************************************************
+
 
 def callback(userData: userDataObject = None):
     """
@@ -171,12 +171,12 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_callback_ = callback
         self.w_lbl_calback_ = callback              # Label callback
         self.w_KB_callback_ = callback              # Keyboard
-        #self.w_move_callback_ = callback            # Mouse movement callback (Whole widget)
-        
+        # self.w_move_callback_ = callback            # Mouse movement callback (Whole widget)
+
         self.Opacity = _opacity
         self.DrawingType = _type
-        #Use this to separate the arrows/lbl from the origin of the widget
-        self.distanceBetweenThem = _distanceBetweenThem 
+        # Use this to separate the arrows/lbl from the origin of the widget
+        self.distanceBetweenThem = _distanceBetweenThem
         # Dummy callback X-Axis
         self.w_xAxis_cb_ = callback1
         # Dummy callback Y-Axis
@@ -219,9 +219,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
-        self.w_lbluserData.vectors = [App.Vector(self.w_vector[0].x + self.distanceBetweenThem[0], 
-                                                self.w_vector[0].y + self.distanceBetweenThem[1],
-                                                self.w_vector[0].z + self.distanceBetweenThem[2]),]
+        self.w_lbluserData.vectors = self.w_vector
+        
+        self.w_lbluserData.fontsize= 2
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0
         self.w_Rotation = _Rotation
