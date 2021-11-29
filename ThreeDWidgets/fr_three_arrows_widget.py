@@ -220,8 +220,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.vectors = self.w_vector
-        
-        self.w_lbluserData.fontsize= 2
+
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0
         self.w_Rotation = _Rotation
@@ -423,13 +422,15 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_widgetlblSoNodes = lbl
         return lbl
 
-    def move(self, newVecPos):
+    def move(self, newVecPos=App.Vector(0, 0, 0)):
+        """[Move the object to the new location referenced by the 
+            left-top corner of the object. Or the start of the wheel
+            if it is an wheel.]
+
+        Args:
+            newVecPos ([App.Vector], optional): [Move the label to a new position]. Defaults to App.Vector(0,0,0).
         """
-        Move the object to the new location referenced by the 
-        left-top corner of the object. Or the start of the wheel
-        if it is an wheel.
-        """
-        self.resize(newVecPos[0])
+        self.w_lbluserData.vector = [newVecPos, ]
 
     def show(self):
         self.w_visible = 1
@@ -484,14 +485,14 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         """[Scale the whole widget default is no scaling ]
 
         Args:
-            newScale (list, optional): [New scale to apply to the widget]. Defaults to [1,1,1].
+            newScale (list, optional): [New scale to apply to the widget]. Defaults to [1.0,1.0,1.0].
         """
         self.w_Scale = newScale
 
     def __del__(self):
         """
-        Class Destructor. 
-        This will remove the widget totally. 
+        Class Destructor.
+        This will remove the widget totally.
         """
         self.hide()
         try:
@@ -532,17 +533,54 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.w_hasFocus = 0
             self.redraw()
 
-    def resize(self, vectors: List[App.Vector]):  # Width, height, thickness
+    
+    def resize(self, _scale: tuple = [1.0, 1.0, 1.0]):
         """Resize the widget by using the new vectors"""
-        self.w_vector = vectors
+        self.w_scale = _scale
         self.redraw()
 
-    def size(self, vectors: List[App.Vector]):
-        """Resize the widget by using the new vectors"""
-        self.resize(vectors)
+    def size(self, _scale: tuple = [1.0, 1.0, 1.0]):
+        self.resize(_scale)
 
-    def label_move(self, newPos):
-        pass
+    # Keep in mind you must run lblRedraw
+    def label_font(self, name="sans"):
+        """[Change Label Font]
+
+        Args:
+            name (str, optional): [Change label font]. Defaults to "sans".
+        """
+        self.w_lbluserData.fontName = name
+
+    # Keep in mind you must run lblRedraw
+    def label_scale(self, newsize: tuple = [1.0, 1.0, 1.0]):
+        """[Change label font size ]
+
+        Args:
+            newsize (int, optional): [Change font label ]. Defaults to 1.
+        """
+        self.w_lbluserData.scale = newsize
+        
+    # Keep in mind you must run lblRedraw
+    def label_fontSize(self, newfontSize: int = 1):
+        self.w_lbluserData.fontSize = newfontSize
+
+    # Keep in mind you must run lblRedraw
+    def label_size(self, newsize=1):
+        """[Change label font size ]
+
+        Args:
+            newsize (int, optional): [Change font label ]. Defaults to 1.
+        """
+        self.w_lbluserData.fontsize = newsize
+
+    # Must be App.Vector
+    def label_move(self, newPos=App.Vector(0.0, 0.0, 0.0)):
+        """[Move location of the label]
+
+        Args:
+            newPos ([App.Vector], optional): [Change placement of the label]. Defaults to App.Vector(0.0, 0.0, 0.0).
+        """
+        self.w_lbluserData.vectors = [newPos, ]
 
     def setRotationAngle(self, axis_angle):
         ''' 

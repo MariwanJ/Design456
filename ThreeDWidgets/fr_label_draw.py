@@ -242,9 +242,11 @@ def draw_newlabel(text=[], prop: propertyValues=None):
 
         #direction= 
         _translation=coin.SoTranslation()  #coin.SoTransform()
+        _transform = coin.SoTransform()
         _transformX = coin.SoTransform()
         _transformY = coin.SoTransform()
         _transformZ = coin.SoTransform()
+        _transform.scaleFactor.setValue(prop.scale) #Only for scaling
         
         _translation.translation.setValue(coin.SbVec3f(p1))
         #Don't know why, but x must go to y and vice versa :TODO: Understand why?
@@ -275,8 +277,8 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _textNodeZ.addChild(_textNodeY)
 
         root.addChild(_translation)
+        root.addChild(_transform)
         root.addChild(_textNodeZ)
-
         return root  # Return the created SoSeparator that contains the text
     
     except Exception as err:
