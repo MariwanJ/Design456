@@ -116,25 +116,30 @@ class Design456_ExtendEdge:
         App.ActiveDocument.recompute()
 
     def setTolerance(self, sel):
-        if len(sel) != 1:
-            msg = "Select one object!\n"
-            App.Console.PrintWarning(msg)
-            return
-
-        o = sel[0]
-        if hasattr(o, 'Shape'):
-            ns = o.Shape.copy()
-            new_tol = 0.001
-            ns.fixTolerance(new_tol)
-            o.Object.ViewObject.Visibility = False
-            sl = App.ActiveDocument.addObject("Part::Feature", "Solid")
-            sl.Shape = ns
-            sl.ShapeColor = o.Object.ViewObject.ShapeColor
-            sl.Object.ViewObject.LineColor = o.Object.ViewObject.LineColor
-            sl.Object.ViewObject.PointColor = o.Object.ViewObject.PointColor
-            sl.Object.ViewObject.DiffuseColor = o.Object.ViewObject.DiffuseColor
-            sl.Object.ViewObject.Transparency = o.Object.ViewObject.Transparency
-            sl.Label = 'Solid'
+        try:
+            if hasattr(sel, 'Shape'):
+                ns = sel.Shape.copy()
+                new_tol = 0.001
+                ns.fixTolerance(new_tol)
+                sel.Object.ViewObject.Visibility = False
+                sl = App.ActiveDocument.addObject("Part::Feature", "Solid")
+                sl.Shape = ns
+                g = Gui.ActiveDocument.getObject(sel.Name)
+                g.ShapeColor = sel.Object.ViewObject.ShapeColor
+                g.LineColor = sel.Object.ViewObject.LineColor
+                g.PointColor = sel.Object.ViewObject.PointColor
+                g.DiffuseColor = sel.Object.ViewObject.DiffuseColor
+                g.Transparency = sel.Object.ViewObject.Transparency
+                App.ActiveDocument.removeObject(sel.Name)
+                sl.Label = 'Extended'
+                return sel
+        
+        except Exception as err:
+            App.Console.PrintError("'sewShape' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
@@ -146,26 +151,31 @@ class Design456_ExtendEdge:
             sel ([3D Object]): [Final object that needs repair.
                                 Always new object creates as result of sew]
         """
-        if len(sel) != 1:
-            msg = "Select one object!\n"
-            App.Console.PrintWarning(msg)
-            return
+        try:
+            if hasattr(sel, 'Shape'):
+                sh = sel.Shape.copy()
+                sh.sewShape()
+                sl = App.ActiveDocument.addObject("Part::Feature", "compSolid")
+                sl.Shape = sh
 
-        o = sel[0]
-        if hasattr(o, 'Shape'):
-            sh = o.Shape.copy()
-            sh.sewShape()
-            sl = App.ActiveDocument.addObject("Part::Feature", "Solid")
-            sl.Shape = sh
-            sl.ShapeColor = App.ActiveDocument.getObject(o.Name).ShapeColor
-            sl.LineColor = App.ActiveDocument.getObject(o.Name).LineColor
-            sl.PointColor = App.ActiveDocument.getObject(o.Name).PointColor
-            sl.DiffuseColor = App.ActiveDocument.getObject(
-                o.Name).DiffuseColor
-            sl.Transparency = App.ActiveDocument.getObject(
-                o.Name).Transparency
-            App.ActiveDocument.removeObject(o.Name)
-            App.ActiveDocument.recompute()
+                g = Gui.ActiveDocument.getObject(sl.Name)
+                g.ShapeColor = Gui.ActiveDocument.getObject(sel.Name).ShapeColor
+                g.LineColor =  Gui.ActiveDocument.getObject(sel.Name).LineColor
+                g.PointColor = Gui.ActiveDocument.getObject(sel.Name).PointColor
+                g.DiffuseColor = Gui.ActiveDocument.getObject(
+                    sel.Name).DiffuseColor
+                g.Transparency = Gui.ActiveDocument.getObject(
+                    sel.Name).Transparency
+                App.ActiveDocument.removeObject(sel.Name)
+                App.ActiveDocument.recompute()
+                return (sl)
+            
+        except Exception as err:
+            App.Console.PrintError("'sewShape' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def ExtractTheEdge(self):
         """[Extract the edge for movement]
@@ -291,12 +301,13 @@ class Design456_ExtendEdge:
 
     def recreateObject(self):
         # FIXME:
-        # Here we have two sides to recreate and then compound them.
+        # Here we have 
         # We try to create a wire-closed to replace the sides we delete.
         # This will be way to complex . with many bugs :(
         try:
-            print("first")
+            App.ActiveDocument.removeObject(self.newEdge.Name)
             _result = []
+            _resultFace=[]
             _result.clear()
             for faceVert in self.savedVertices:
                 convert = []
@@ -311,8 +322,15 @@ class Design456_ExtendEdge:
                 nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
                 nFace.Shape = newFace
                 _result.append(nFace)
+                _resultFace.append(newFace)
             self.newFaces = _result
-
+                        
+            soldObjShape = _part.Solid(_part.Shell(_resultFace))
+            newObj = App.ActiveDocument.addObject("Part::Feature","comp")
+            newObj.Shape = soldObjShape
+            newObj = self.sewShape(newObj)
+            newObj = self.setTolerance(newObj)
+                      
         except Exception as err:
             App.Console.PrintError("'recreate Object' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -588,14 +606,16 @@ class Design456_ExtendEdge:
     def MouseMovement_cb(self, userData=None):
         events = userData.events
         # print("mouseMove")
-        if self.isItRotation is True:
-            self.callback_Rotate()
-            return  # We cannot allow this tool
+        if self.padObj.w_userData.Axis is None:
+            if self.padObj.w_userData.padAxis is not None:
+                self.callback_Rotate()
+            else:
+                return  # We cannot allow this tool
         if type(events) != int:
             print("event was not int")
             return
-        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                          self.padObj.w_pick_radius, self.padObj.w_XsoSeparator)
+        #clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        #                                                  self.padObj.w_pick_radius, self.padObj.w_XsoSeparator)
 
         self.endVector = App.Vector(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                     self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
@@ -604,10 +624,9 @@ class Design456_ExtendEdge:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
-            self.mouseOffset = App.Vector(0, 0, 0)
 
         self.tweakLength = round((
-            self.endVector - self.startVector).dot(self.normalVector), 1)
+            self.endVector - (self.startVector+self._Vector)).dot(self.normalVector), 1)
 
         if abs(self.oldTweakLength-self. tweakLength) < 1:
             return  # we do nothing
@@ -615,10 +634,20 @@ class Design456_ExtendEdge:
             "Length= " + str(round(self.tweakLength, 1)))
 
         self.oldEdgeVertexes = self.newEdgeVertexes
-        self.newEdge.Placement.Base = self.endVector
-        self.newEdgeVertexes = self.newEdge.Shape.Vertexes
+        if self.padObj.w_userData.Axis == 'X':
+            self.newEdge.Placement.Base.x = self.endVector.x
+            self.padObj.w_vector[0].x = self.endVector.x
+        elif self.padObj.w_userData.Axis == 'Y':
+            self.newEdge.Placement.Base.y = self.endVector.y
+            self.padObj.w_vector[0].y = self.endVector.y
+        elif self.padObj.w_userData.Axis == 'Z':
+            self.newEdge.Placement.Base.z = self.endVector.z
+            self.padObj.w_vector[0].z = self.endVector.z
+        else:
+            # nothing to do here  #TODO : This shouldn't happen
+            return
 
-        self.padObj.w_vector[0] = self.endVector
+        self.newEdgeVertexes = self.newEdge.Shape.Vertexes
         self.COIN_recreateObject()
         self.padObj.redraw()
 
@@ -644,7 +673,7 @@ class Design456_ExtendEdge:
         print("lbl callback")
         pass
 
-    def callback_Rotate(self, axis):
+    def callback_Rotate(self):
         print("Not impolemented ")
 
     def hide(self):
