@@ -54,7 +54,7 @@ mywin = wnn.Fr_CoinWindow()
 vec=[]
 vec.append(App.Vector(0,0,0))
 vec.append(App.Vector(0,0,0))  #Dummy won't be used
-arrows=w.Fr_ThreeArrows_Widget(vec,"Wheel")
+arrows=w.Fr_ThreeArrows_Widget(vec,"Pad")
 mywin.addWidget(arrows)
 mywin.show()
 
@@ -65,12 +65,12 @@ mywin.show()
 class userDataObject:
 
     def __init__(self):
-        self.PadObj = None      # the wheel widget object
+        self.PadObj = None      # the Pad widget object
         self.events = None        # events - save handle events here
-        self.callerObject = None  # Class/Tool uses the fr_wheel_widget
-        self.padAxis  = None
-        self.Axis  = None
-        
+        self.callerObject = None  # Class/Tool uses the fr_Pad_widget
+        self.padAxis = None
+        self.Axis = None
+
 
 # *******************************CALLBACKS - DEMO *********************************************
 def callback1(userData: userDataObject = None):
@@ -145,8 +145,8 @@ def callback(userData: userDataObject = None):
 class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     """
-    This class is for drawing a one Degrees wheel
-    This will be used later to create 3D wheel. 
+    This class is for drawing a one Degrees Pad
+    This will be used later to create 3D Pad. 
     Or it can be used as a singel rotate/move widget
     """
 
@@ -163,12 +163,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         super().__init__(vectors, label)
 
-        self.w_widgetType = constant.FR_WidgetType.FR_WHEEL
+        self.w_widgetType = constant.FR_WidgetType.FR_Pad
         # General widget callback (mouse-button) function - External function
         self.w_callback_ = callback
         self.w_lbl_calback_ = callback              # Label callback
         self.w_KB_callback_ = callback              # Keyboard
-        # self.w_move_callback_ = callback            # Mouse movement callback (Whole widget)
 
         self.Opacity = _opacity
         self.DrawingType = _type
@@ -181,11 +180,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         # Dummy callback  Z-Axis
         self.w_zAxis_cb_ = callback3
 
-        # Dummy callback          XWheel
+        # Dummy callback          XPad
         self.w_padXAxis_cb_ = callback4
-        # Dummy callback          YWheel
+        # Dummy callback          YPad
         self.w_padYAxis_cb_ = callback5
-        # Dummy callback          ZWheel
+        # Dummy callback          ZPad
         self.w_padZAxis_cb_ = callback6
 
         self.w_wdgsoSwitch = coin.SoSwitch()
@@ -208,7 +207,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_Zrotation = [0, 0, 0, 0]
 
         self.w_userData = userDataObject()  # Keep info about the widget
-        self.w_userData.wheelObj = self
+        self.w_userData.PadObj = self
 
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
         # Use this to keep the selected so during push-drag, after release it should be none
@@ -217,7 +216,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.vectors = self.w_vector
-
+        self.w_lbluserData.labelcolor=_lblColor
+        
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0
         self.w_Rotation = _Rotation
@@ -301,7 +301,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.currentSo = None
             if self.releaseDrag is True:
                 self.releaseDrag is False
-                # Release callback should be activated even if the wheel != under the mouse
+                # Release callback should be activated even if the Pad != under the mouse
                 self.do_callback()
                 return 1
 
@@ -320,7 +320,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.releaseDrag = True
                 self.take_focus()
             # These Object reacts only with dragging .. Clicking will not do anything useful
-            # We don't accept more than one elements clicked at once
+            # We don't accept more than one element- clicking at the time
             if (self.currentSo is None):
                 for counter in range(0, 5):
                     if clickwdgdNode[counter] is True:
@@ -338,11 +338,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
     def draw(self):
         """
         Main draw function. It is responsible to create the node,
-        and draw the wheel on the screen. It creates a node for 
-        the wheel.
+        and draw the Pad on the screen. It creates a node for each 
+        element and for each Pad.
         """
         try:
-            lablVar = fr_widget.propertyValues()
+
             if (len(self.w_vector) < 1):
                 raise ValueError('Must be a vector')
 
@@ -356,7 +356,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
             if self.is_visible():
 
-                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x + 
+                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
                                                               self.distanceBetweenThem[0],
                                                               self.w_vector[0].y,
                                                               self.w_vector[0].z),
@@ -372,13 +372,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                                                    [0.0, 90.0, 90.0])  # GREEN
                 self.w_ZsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
                                                               self.w_vector[0].y,
-                                                              self.w_vector[0].z + 
+                                                              self.w_vector[0].z +
                                                               self.distanceBetweenThem[2]),
                                                    FR_COLOR.FR_BLUE, self.w_Scale,
                                                    self.DrawingType, self.Opacity,
                                                    [0.0, 0.0, 0.0])  # BLUE
 
-                # def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
+                # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                 # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
                 self.w_padXsoSeparator = draw_RotationPad(self.w_vector[0], FR_COLOR.FR_RED, self.w_Scale,
                                                           self.Opacity, [0.0, 0.0, 0.0])  # RED
@@ -404,7 +404,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 CollectThemAll.addChild(self.w_padYsoSeparator)
                 CollectThemAll.addChild(self.w_padZsoSeparator)
 
-                self.saveSoNodeslblToWidget(self.draw_label(usedColor))
+                self.saveSoNodeslblToWidget(self.draw_label())
                 self.saveSoNodesToWidget(CollectThemAll)
                 # add SoSeparator to the switch
                 # We can put them in a tuple but it is better not doing so
@@ -412,36 +412,16 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
 
         except Exception as err:
-            App.Console.PrintError("'draw Fr_wheel_Widget' Failed. "
+            App.Console.PrintError("'draw Fr_Pad_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def draw_label(self, usedColor):
-
-        self.w_lbluserData.labelcolor = usedColor
-        lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
-        self.w_widgetlblSoNodes = lbl
-        return lbl
-
-    def move(self, newVecPos=App.Vector(0, 0, 0)):
-        """[Move the object to the new location referenced by the 
-            left-top corner of the object. Or the start of the wheel
-            if it is an wheel.]
-
-        Args:
-            newVecPos ([App.Vector], optional): [Move the label to a new position]. Defaults to App.Vector(0,0,0).
-        """
-        self.w_lbluserData.vector = [newVecPos, ]
-
-    def show(self):
-        self.w_visible = 1
-        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
 
     def redraw(self):
         """
-        After the widgets damages, this function should be called.        
+        When the widget is damaged, use this function to redraw it.        
         """
         if self.is_visible():
             # Remove the SoSwitch from fr_coinwindow
@@ -456,10 +436,62 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
             self.lblRedraw()
             self.draw()
+    
+    def draw_label(self):
+        """[Draw 3D text in the scenegraph]
 
+        Returns:
+            [type]: [Use w_lbluserData variable to setup the label shape, size, font ..etc
+            
+            w_lebluserData is of type  propertyValues
+            
+            @dataclass
+            class propertyValues:
+                '''
+                Property-holder class for drawing labels
+                '''
+                __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
+                            'labelcolor', 'alignment', 'rotation', 'rotationAxis' , 
+                            'scale']
+                vectors: VECTOR  # List[App.Vector] two vectors must be provided
+                linewidth: int
+                fontName: str
+                fontsize: int
+                labelcolor: tuple
+                alignment: int  # This will not be used .. not good
+                rotation: tuple    # three angels in degree
+                rotationAxis: VECTOR
+                scale: tuple  # Three float numbers for scaling
+            ]
+        """
+    
+        self.w_lbluserData.labelcolor = self.w_color
+        lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
+        self.w_widgetlblSoNodes = lbl
+        return lbl
+    
     def lblRedraw(self):
+        """[Redraw the label]
+        """
         if(self.w_widgetlblSoNodes is not None):
             self.w_widgetlblSoNodes.removeAllChildren()
+        self.draw_label()
+        
+    def move(self, newVecPos=App.Vector(0, 0, 0)):
+        """[Move the object to the new location referenced by the 
+            left-top corner of the object. Or the start of the Pad
+            if it is an Pad.]
+
+        Args:
+            newVecPos ([App.Vector], optional): [Move the label to a new position]. Defaults to App.Vector(0,0,0).
+        """
+        self.w_lbluserData.vector = [newVecPos, ]
+
+    def show(self):
+        """[This function will show the widget. But it doesn't draw it. ]
+        """
+        self.w_visible = 1
+        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
 
     def take_focus(self):
         """
@@ -480,8 +512,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active == 0:
-            return  # Nothing to do
         self.w_active = 0
 
     def ChangeScale(self, newScale=[1, 1, 1]):
@@ -511,13 +541,18 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.removeSoSwitch()
 
         except Exception as err:
-            App.Console.PrintError("'del Fr_wheel_Widget' Failed. "
+            App.Console.PrintError("'del Fr_Pad_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
+        """[Hide the widget - but the widget is not destroyed]
+
+        Returns:
+            [type]: [description]
+        """
         if self.w_visible == 0:
             return  # nothing to do
         self.w_visible = 0
@@ -542,6 +577,12 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.redraw()
 
     def size(self, _scale: tuple = [1.0, 1.0, 1.0]):
+        """[Scale the widget for the three directions]
+
+        Args:
+            _scale (tuple, Three float values): [Scale the widget using three float values for x,y,z axis]. 
+            Defaults to [1.0, 1.0, 1.0].
+        """
         self.resize(_scale)
 
     # Keep in mind you must run lblRedraw
@@ -555,7 +596,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     # Keep in mind you must run lblRedraw
     def label_scale(self, newsize: tuple = [1.0, 1.0, 1.0]):
-        """[Change label font size ]
+        """[Scale the font using three float values. This is not the font size.
+        You must redraw the label to get this scaling done.
+        ]
 
         Args:
             newsize (int, optional): [Change font label ]. Defaults to 1.
@@ -567,11 +610,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.fontSize = newfontSize
 
     # Keep in mind you must run lblRedraw
-    def label_size(self, newsize=1):
+    def label_fontsize(self, newsize=1):
         """[Change label font size ]
 
         Args:
-            newsize (int, optional): [Change font label ]. Defaults to 1.
+            newsize (int, optional): [Change fontsize of the label ]. Defaults to 1.
         """
         self.w_lbluserData.fontsize = newsize
 
@@ -593,9 +636,17 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_PRErotation = axis_angle
 
     def calculateWidgetDiskRotationAfterDrag(self, v1, v2):
-        self.w_WidgetDiskRotation = faced.calculateAngle(v1, v2)
+        self.w_WidgetDiskRotation = math.degrees(v1.getAngle(v2))
 
     def do_callbacks(self, callbackType=-1):
+        """[summarize the call of the callbacks]
+
+        Args:
+            callbackType (int, optional): [Call specific callback depending on the callback type]. Defaults to -1.
+            userData will hold the direction dependently.
+            Axis   : holds the axis name ('X','Y' or 'Z') as letter
+            padAxis: holds the pads (wheel) rotation axis ('X','Y' or 'Z') as letter  
+        """
         if (callbackType == 100):
             # run all
             self.do_callback()
@@ -607,35 +658,36 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.w_padYAxis_cb_(self.w_userData)
             self.w_padZAxis_cb_(self.w_userData)
         elif(callbackType == 10):
-            # normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
-            
+            # normal callback This represent the whole widget. 
+            # Might not be used here TODO:Do we want this?
+
             self.do_callback()
         elif(callbackType == 0):
-            self.w_userData.Axis="X"
-            self.w_userData.padAxis=None
+            self.w_userData.Axis = "X"
+            self.w_userData.padAxis = None
             self.w_xAxis_cb_(self.w_userData)
 
         elif(callbackType == 1):
-            self.w_userData.Axis="Y"
-            self.w_userData.padAxis=None
+            self.w_userData.Axis = "Y"
+            self.w_userData.padAxis = None
             self.w_yAxis_cb_(self.w_userData)
 
         elif(callbackType == 2):
-            self.w_userData.Axis="Z"
-            self.w_userData.padAxis=None
+            self.w_userData.Axis = "Z"
+            self.w_userData.padAxis = None
             self.w_zAxis_cb_(self.w_userData)
 
         elif(callbackType == 3):
-            self.w_userData.padAxis="X"
-            self.w_userData.Axis=None
+            self.w_userData.padAxis = "X"
+            self.w_userData.Axis = None
             self.w_padXAxis_cb_(self.w_userData)
 
         elif(callbackType == 4):
-            self.w_userData.padAxis="Y"
-            self.w_userData.Axis=None
+            self.w_userData.padAxis = "Y"
+            self.w_userData.Axis = None
             self.w_padYAxis_cb_(self.w_userData)
 
         elif(callbackType == 5):
-            self.w_userData.padAxis="Z"
-            self.w_userData.Axis=None
+            self.w_userData.padAxis = "Z"
+            self.w_userData.Axis = None
             self.w_padZAxis_cb_(self.w_userData)
