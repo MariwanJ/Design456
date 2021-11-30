@@ -45,6 +45,7 @@ class FR_WidgetType:
     FR_ARROW = "Arrow Widget"
     FR_BOX = "Box Widget"
     FR_WHEEL = "Wheel Widget"
+    FR_PAD   = "Wheel PAD Widget"
 
 
 class FR_COLOR:

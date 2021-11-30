@@ -163,7 +163,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         super().__init__(vectors, label)
 
-        self.w_widgetType = constant.FR_WidgetType.FR_Pad
+        self.w_widgetType = constant.FR_WidgetType.FR_PAD
         # General widget callback (mouse-button) function - External function
         self.w_callback_ = callback
         self.w_lbl_calback_ = callback              # Label callback
