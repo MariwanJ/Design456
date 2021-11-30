@@ -110,26 +110,21 @@ class Design456_ExtendEdge:
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
 
-    def recomputeAll(self):
-        self.counter = self.counter + 1
-        print(self.counter)
-        App.ActiveDocument.recompute()
-
     def setTolerance(self, sel):
         try:
             if hasattr(sel, 'Shape'):
                 ns = sel.Shape.copy()
                 new_tol = 0.001
                 ns.fixTolerance(new_tol)
-                sel.Object.ViewObject.Visibility = False
+                sel.ViewObject.Visibility = False
                 sl = App.ActiveDocument.addObject("Part::Feature", "Solid")
                 sl.Shape = ns
                 g = Gui.ActiveDocument.getObject(sel.Name)
-                g.ShapeColor = sel.Object.ViewObject.ShapeColor
-                g.LineColor = sel.Object.ViewObject.LineColor
-                g.PointColor = sel.Object.ViewObject.PointColor
-                g.DiffuseColor = sel.Object.ViewObject.DiffuseColor
-                g.Transparency = sel.Object.ViewObject.Transparency
+                g.ShapeColor =   sel.ViewObject.ShapeColor
+                g.LineColor =    sel.ViewObject.LineColor
+                g.PointColor =   sel.ViewObject.PointColor
+                g.DiffuseColor = sel.ViewObject.DiffuseColor
+                g.Transparency = sel.ViewObject.Transparency
                 App.ActiveDocument.removeObject(sel.Name)
                 sl.Label = 'Extended'
                 return sel
@@ -206,9 +201,6 @@ class Design456_ExtendEdge:
                     inVertices[i].y == inVertices[i+1].y)
                 correctZ = correctZ and (
                     inVertices[i].z == inVertices[i+1].z)
-
-            print(correctX, correctY, correctZ)
-            print("-----------------------------")
 
             if correctX:
                 for i in inVertices:
@@ -330,6 +322,9 @@ class Design456_ExtendEdge:
             newObj.Shape = soldObjShape
             newObj = self.sewShape(newObj)
             newObj = self.setTolerance(newObj)
+            for face in self.newFaces:
+                App.ActiveDocument.removeObject(face.Name)
+            
                       
         except Exception as err:
             App.Console.PrintError("'recreate Object' Failed. "
@@ -389,11 +384,7 @@ class Design456_ExtendEdge:
                 for v in face.OuterWire.OrderedVertexes:
                     newPoint.append(v)
                 self.savedVertices.append(newPoint)
-            print(self.savedVertices)
-            for i in self.savedVertices:
-                for j in i:
-                    print(j.Point)
-                print("..........")
+
         except Exception as err:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'saveVertices' Failed. "
@@ -542,7 +533,6 @@ class Design456_ExtendEdge:
                 self.gridLayoutWidget_3)
             self.gridTweakResult.setContentsMargins(0, 0, 0, 0)
             self.gridTweakResult.setObjectName("gridTweakResult")
-            self.radioAsIs = QtGui.QRadioButton(self.gridLayoutWidget_3)
             self.lblTweakResult = QtGui.QLabel(self.frame_2)
             self.lblTweakResult.setGeometry(QtCore.QRect(10, 0, 191, 61))
             font = QtGui.QFont()
@@ -604,8 +594,8 @@ class Design456_ExtendEdge:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def MouseMovement_cb(self, userData=None):
+        
         events = userData.events
-        # print("mouseMove")
         if self.padObj.w_userData.Axis is None:
             if self.padObj.w_userData.padAxis is not None:
                 self.callback_Rotate()
@@ -614,8 +604,6 @@ class Design456_ExtendEdge:
         if type(events) != int:
             print("event was not int")
             return
-        #clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-        #                                                  self.padObj.w_pick_radius, self.padObj.w_XsoSeparator)
 
         self.endVector = App.Vector(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                     self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
@@ -651,16 +639,12 @@ class Design456_ExtendEdge:
         self.COIN_recreateObject()
         self.padObj.redraw()
 
-    # TODO FIXME:
-
     def callback_release(self, userData=None):
         try:
             events = userData.events
             print("mouse release")
             self.padObj.remove_focus()
             self.run_Once = False
-            #self.startVector = None
-            #self.padObj.w_callback_ = None
 
         except Exception as err:
             App.Console.PrintError("'Activated' Release Filed. "
@@ -692,7 +676,6 @@ class Design456_ExtendEdge:
         self.coinFaces.removeAllChildren()
         self.sg.removeChild(self.coinFaces)
 
-        
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
@@ -704,7 +687,6 @@ class Design456_ExtendEdge:
             class destructor
             Remove all objects from memory even fr_coinwindow
         """
-        print("delete executed")
         try:
             self.padObj.hide()
             self.padObj.__del__()  # call destructor
@@ -723,7 +705,8 @@ class Design456_ExtendEdge:
             self.endVector = None
             self.startVector = None
             self.tweakLength = None
-            # We will make two object, one for visual effect and the other is the original
+            # We will make two object, 
+            # one for visual effect and the other is the original
             self.selectedObj = None
             self.direction = None
             self.setupRotation = None
@@ -754,6 +737,5 @@ class Design456_ExtendEdge:
             'MenuText': ' Extend Edge',
             'ToolTip':  ' Extend Edge'
         }
-
 
 Gui.addCommand('Design456_ExtendEdge', Design456_ExtendEdge())

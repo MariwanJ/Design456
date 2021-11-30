@@ -53,7 +53,7 @@ mywin = wnn.Fr_CoinWindow()
 
 vec=[]
 vec.append(App.Vector(0,0,0))
-vec.append(App.Vector(0,0,0))
+vec.append(App.Vector(0,0,0))  #Dummy won't be used
 arrows=w.Fr_ThreeArrows_Widget(vec,"Wheel")
 mywin.addWidget(arrows)
 mywin.show()
@@ -65,14 +65,12 @@ mywin.show()
 class userDataObject:
 
     def __init__(self):
-        self.wheelObj = None      # the wheel widget object
+        self.PadObj = None      # the wheel widget object
         self.events = None        # events - save handle events here
         self.callerObject = None  # Class/Tool uses the fr_wheel_widget
         self.padAxis  = None
         self.Axis  = None
         
-        
-
 
 # *******************************CALLBACKS - DEMO *********************************************
 def callback1(userData: userDataObject = None):
