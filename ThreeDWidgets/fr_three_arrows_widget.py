@@ -68,6 +68,10 @@ class userDataObject:
         self.wheelObj = None      # the wheel widget object
         self.events = None        # events - save handle events here
         self.callerObject = None  # Class/Tool uses the fr_wheel_widget
+        self.padAxis  = None
+        self.Axis  = None
+        
+        
 
 
 # *******************************CALLBACKS - DEMO *********************************************
@@ -180,11 +184,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_zAxis_cb_ = callback3
 
         # Dummy callback          XWheel
-        self.w_wheelXAxis_cb_ = callback4
+        self.w_padXAxis_cb_ = callback4
         # Dummy callback          YWheel
-        self.w_wheelYAxis_cb_ = callback5
+        self.w_padYAxis_cb_ = callback5
         # Dummy callback          ZWheel
-        self.w_wheelZAxis_cb_ = callback6
+        self.w_padZAxis_cb_ = callback6
 
         self.w_wdgsoSwitch = coin.SoSwitch()
 
@@ -601,27 +605,39 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.w_yAxis_cb_(self.w_userData)
             self.w_zAxis_cb_(self.w_userData)
 
-            self.w_wheelXAxis_cb_(self.w_userData)
-            self.w_wheelYAxis_cb_(self.w_userData)
-            self.w_wheelZAxis_cb_(self.w_userData)
+            self.w_padXAxis_cb_(self.w_userData)
+            self.w_padYAxis_cb_(self.w_userData)
+            self.w_padZAxis_cb_(self.w_userData)
         elif(callbackType == 10):
             # normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
+            
             self.do_callback()
-
         elif(callbackType == 0):
+            self.w_userData.Axis="X"
+            self.w_userData.padAxis=None
             self.w_xAxis_cb_(self.w_userData)
 
         elif(callbackType == 1):
+            self.w_userData.Axis="Y"
+            self.w_userData.padAxis=None
             self.w_yAxis_cb_(self.w_userData)
 
         elif(callbackType == 2):
+            self.w_userData.Axis="Z"
+            self.w_userData.padAxis=None
             self.w_zAxis_cb_(self.w_userData)
 
         elif(callbackType == 3):
-            self.w_wheelXAxis_cb_(self.w_userData)
+            self.w_userData.padAxis="X"
+            self.w_userData.Axis=None
+            self.w_padXAxis_cb_(self.w_userData)
 
         elif(callbackType == 4):
-            self.w_wheelYAxis_cb_(self.w_userData)
+            self.w_userData.padAxis="Y"
+            self.w_userData.Axis=None
+            self.w_padYAxis_cb_(self.w_userData)
 
         elif(callbackType == 5):
-            self.w_wheelZAxis_cb_(self.w_userData)
+            self.w_userData.padAxis="Z"
+            self.w_userData.Axis=None
+            self.w_padZAxis_cb_(self.w_userData)

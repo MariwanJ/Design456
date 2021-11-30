@@ -76,7 +76,7 @@ class Design456_ExtendEdge:
     mw = None
     dialog = None
     tab = None
-    wheelObj = None
+    padObj = None
     w_rotation = None
     _mywin = None
     b1 = None
@@ -388,9 +388,9 @@ class Design456_ExtendEdge:
         """[ Executes when the tool is used   ]
         """
         self.coinFaces = coin.SoSeparator()
-        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
+        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/pad rotation
         self.setupRotation = [0, 0, 0, 0]
-        self._Vector = App.Vector(0.0, 0.0, 0.0)  # WHEEL POSITION
+        self._Vector = App.Vector(0.0, 0.0, 0.0)  # pad POSITION
         self.counter = 0
         self.run_Once = False
         self.tweakLength = 0
@@ -443,29 +443,29 @@ class Design456_ExtendEdge:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "ExtendEdge"))
 
-            # Deside how the Degree Wheel be drawn
-            self.wheelObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
+            # Deside how the Degree pad be drawn
+            self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                 round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
                 self.setupRotation, [10.0, 10.0, 10.0], 0, 0, [10, 10, 10])
 
             # Different callbacks for each action.
-            self.wheelObj.w_wheel_cb_ = self.callback_Rotate
-            self.wheelObj.w_xAxis_cb_ = self.MouseMovement_cb
-            self.wheelObj.w_yAxis_cb_ = self.MouseMovement_cb
+            self.padObj.w_xAxis_cb_ = self.MouseMovement_cb
+            self.padObj.w_yAxis_cb_ = self.MouseMovement_cb
+            self.padObj.w_zAxis_cb_ = self.MouseMovement_cb
 
-            self.wheelObj.w_wheelXAxis_cb_ = self.callback_Rotate
-            self.wheelObj.w_wheelYAxis_cb_ = self.callback_Rotate
-            self.wheelObj.w_wheelZAxis_cb_ = self.callback_Rotate
+            self.padObj.w_padXAxis_cb_ = self.callback_Rotate
+            self.padObj.w_padYAxis_cb_ = self.callback_Rotate
+            self.padObj.w_padZAxis_cb_ = self.callback_Rotate
 
-            self.wheelObj.w_callback_ = self.callback_release
-            self.wheelObj.w_userData.callerObject = self
+            self.padObj.w_callback_ = self.callback_release
+            self.padObj.w_userData.callerObject = self
 
             self.COIN_recreateObject()
 
             if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
 
-            self._mywin.addWidget(self.wheelObj)
+            self._mywin.addWidget(self.padObj)
             mw = self.getMainWindow()
             self._mywin.show()
 
@@ -594,12 +594,12 @@ class Design456_ExtendEdge:
         if type(events) != int:
             print("event was not int")
             return
-        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                          self.wheelObj.w_pick_radius, self.wheelObj.w_XsoSeparator)
+        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                          self.padObj.w_pick_radius, self.padObj.w_XsoSeparator)
 
-        self.endVector = App.Vector(self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                    self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                    self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        self.endVector = App.Vector(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                    self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                    self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         if self.run_Once is False:
             self.run_Once = True
             # only once
@@ -618,9 +618,9 @@ class Design456_ExtendEdge:
         self.newEdge.Placement.Base = self.endVector
         self.newEdgeVertexes = self.newEdge.Shape.Vertexes
 
-        self.wheelObj.w_vector[0] = self.endVector
+        self.padObj.w_vector[0] = self.endVector
         self.COIN_recreateObject()
-        self.wheelObj.redraw()
+        self.padObj.redraw()
 
     # TODO FIXME:
 
@@ -628,10 +628,10 @@ class Design456_ExtendEdge:
         try:
             events = userData.events
             print("mouse release")
-            self.wheelObj.remove_focus()
+            self.padObj.remove_focus()
             self.run_Once = False
             #self.startVector = None
-            #self.wheelObj.w_callback_ = None
+            #self.padObj.w_callback_ = None
 
         except Exception as err:
             App.Console.PrintError("'Activated' Release Filed. "
@@ -652,7 +652,7 @@ class Design456_ExtendEdge:
         Hide the widgets. Remove also the tab.
         TODO:
         For this tool, I decide to choose the hide to merge, or leave it "as is" here.
-        I can do that during the extrusion (moving the Wheel), but that will be an action
+        I can do that during the extrusion (moving the pad), but that will be an action
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
@@ -677,13 +677,13 @@ class Design456_ExtendEdge:
         """
         print("delete executed")
         try:
-            self.wheelObj.hide()
-            self.wheelObj.__del__()  # call destructor
+            self.padObj.hide()
+            self.padObj.__del__()  # call destructor
             if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
-            del self.wheelObj
+            del self.padObj
             self.mw = None
             self.dialog = None
             self.tab = None
