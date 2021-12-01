@@ -30,7 +30,7 @@ import DirectModeling.Design456_Fillet
 import DirectModeling.Design456_Chamfer
 import DirectModeling.Design456_SmartExtrude 
 import DirectModeling.Design456_SmartExtrudeRotate
-from DirectModeling.Design456_manipulate import Design456_ExtendEdge
+import DirectModeling.Design456_ExtendEdge 
 
 class Design456_DirectModeling:
     list = ["Design456_SmartScale",
@@ -40,6 +40,7 @@ class Design456_DirectModeling:
             "Design456_SmartExtrude",
             "Design456_SmartExtrudeRotate",
             "Design456_ExtendEdge",
+            "Design456_ExtendFace",
 
             ]
     """Design456 Direct Modeling """

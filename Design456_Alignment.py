@@ -34,7 +34,7 @@ import Draft as _draft
 import Part as _part
 import FACE_D as faced
 import Design456Init
-from draftutils.translate import translate  # for translate
+from draftutils.translate import translate  # for translation
 from pivy import coin
 
 # Toolbar class
