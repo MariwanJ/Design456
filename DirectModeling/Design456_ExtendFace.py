@@ -75,10 +75,10 @@ class Design456_ExtendFace:
     isItRotation = None
     newObject = None
     selectedObj = None
-    selectedEdge = None
+    selectedFace = None
     # Original vectors that will be changed by mouse.
     oldEdgeVertexes = None
-    newEdgeVertexes = None
+    newFaceVertexes = None
     newEdge = None      # Keep new vectors for the moved old face-vectors
 
     view = None  # used for captureing mouse events
@@ -157,11 +157,11 @@ class Design456_ExtendFace:
     def ExtractTheEdge(self):
         """[Extract the face for movement]
         """
-        self.newEdge = App.ActiveDocument.addObject(
+        self.newFace = App.ActiveDocument.addObject(
             "Part::Feature", "Face")
-        sh = self.selectedEdge.copy()
-        self.newEdge.Shape = sh
-        # self.selectedEdge = self.newEdge  # TODO: SHOULD WE DO THAT: FIXME:
+        sh = self.selectedFace.copy()
+        self.newFace.Shape = sh
+        # self.selectedFace = self.newFace  # TODO: SHOULD WE DO THAT: FIXME:
         # App.ActiveDocument.recompute()
 
     def FixSequenceOfVertices(self, inVertices):
@@ -259,9 +259,9 @@ class Design456_ExtendFace:
         for i in range(0, len(self.savedVertices)):
             for j in range(0, len(self.savedVertices[i])):
                 if self.savedVertices[i][j].Point == self.oldEdgeVertexes[0].Point:
-                    self.savedVertices[i][j] = self.newEdgeVertexes[0]
+                    self.savedVertices[i][j] = self.newFaceVertexes[0]
                 elif self.savedVertices[i][j].Point == self.oldEdgeVertexes[1].Point:
-                    self.savedVertices[i][j] = self.newEdgeVertexes[1]
+                    self.savedVertices[i][j] = self.newFaceVertexes[1]
 
         # We have the new vertices
         self.coinFaces.removeAllChildren()
@@ -279,7 +279,7 @@ class Design456_ExtendFace:
         # We try to create a wire-closed to replace the sides we delete.
         # This will be way to complex . with many bugs :(
         try:
-            App.ActiveDocument.removeObject(self.newEdge.Name)
+            App.ActiveDocument.removeObject(self.newFace.Name)
             _result = []
             _resultFace=[]
             _result.clear()
@@ -410,20 +410,20 @@ class Design456_ExtendFace:
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
             if (hasattr(sel[0], "SubObjects")):
-                self.selectedEdge = sel[0].SubObjects[0]
+                self.selectedFace = sel[0].SubObjects[0]
             else:
                 raise Exception("Not implemented")
 
             # Recreate the object in separated shapes.
             self.saveVertices()
 
-            if(hasattr(self.selectedEdge, "Vertexes")):
-                self.oldEdgeVertexes = self.selectedEdge.Vertexes
-            if not hasattr(self.selectedEdge, 'Edges'):
+            if(hasattr(self.selectedFace, "Vertexes")):
+                self.oldEdgeVertexes = self.selectedFace.Vertexes
+            if not hasattr(self.selectedFace, 'Edges'):
                 raise Exception("Please select only one face and try again")
 
-            if not(type(self.selectedEdge.Curve) == _part.Line or
-                   type(self.selectedEdge.Curve) == _part.BezierCurve):
+            if not(type(self.selectedFace.Curve) == _part.Line or
+                   type(self.selectedFace.Curve) == _part.BezierCurve):
                 msg = "Curve edges are not supported yet"
                 faced.errorDialog(msg)
                 self.hide()
@@ -431,12 +431,12 @@ class Design456_ExtendFace:
             self.setupRotation = self.calculateNewVector()
 
             self.ExtractTheEdge()
-            self.newEdgeVertexes = self.newEdge.Shape.Vertexes
+            self.newFaceVertexes = self.newFace.Shape.Vertexes
             App.ActiveDocument.removeObject(self.selectedObj.Name)
 
             # Undo
             App.ActiveDocument.openTransaction(
-                translate("Design456", "ExtendEdge"))
+                translate("Design456", "ExtendFace"))
 
             # Deside how the Degree pad be drawn
             self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
@@ -594,21 +594,21 @@ class Design456_ExtendFace:
             "Length = " + str(round(self.tweakLength, 1)))
         self.padObj.label(["Length = " + str(round(self.tweakLength, 1)) ,]) # must be tuple 
         self.padObj.lblRedraw()
-        self.oldEdgeVertexes = self.newEdgeVertexes
+        self.oldEdgeVertexes = self.newFaceVertexes
         if self.padObj.w_userData.Axis == 'X':
-            self.newEdge.Placement.Base.x = self.endVector.x
+            self.newFace.Placement.Base.x = self.endVector.x
             self.padObj.w_vector[0].x = self.endVector.x
         elif self.padObj.w_userData.Axis == 'Y':
-            self.newEdge.Placement.Base.y = self.endVector.y
+            self.newFace.Placement.Base.y = self.endVector.y
             self.padObj.w_vector[0].y = self.endVector.y
         elif self.padObj.w_userData.Axis == 'Z':
-            self.newEdge.Placement.Base.z = self.endVector.z
+            self.newFace.Placement.Base.z = self.endVector.z
             self.padObj.w_vector[0].z = self.endVector.z
         else:
             # nothing to do here  #TODO : This shouldn't happen
             return
 
-        self.newEdgeVertexes = self.newEdge.Shape.Vertexes
+        self.newFaceVertexes = self.newFace.Shape.Vertexes
         self.COIN_recreateObject()
         self.padObj.redraw()
 
@@ -690,9 +690,9 @@ class Design456_ExtendFace:
             self.mouseOffset = None
             self.FirstLocation = None
             del self.selectedObj
-            del self.selectedEdge
+            del self.selectedFace
             del self.savedVertices
-            del self.newEdgeVertexes
+            del self.newFaceVertexes
             del self.oldEdgeVertexes
             self.coinFaces.removeAllChildren()
             del self.coinFaces

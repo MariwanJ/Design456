@@ -31,6 +31,7 @@ import DirectModeling.Design456_Chamfer
 import DirectModeling.Design456_SmartExtrude 
 import DirectModeling.Design456_SmartExtrudeRotate
 import DirectModeling.Design456_ExtendEdge 
+import DirectModeling.Design456_ExtendFace
 
 class Design456_DirectModeling:
     list = ["Design456_SmartScale",
