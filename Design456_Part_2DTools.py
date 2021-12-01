@@ -33,7 +33,7 @@ import Draft as _draft
 import Part as _part
 import Design456Init
 import FACE_D as faced
-from draftutils.translate import translate  # for translate
+from draftutils.translate import translate  # for translation
 
 
 class GenCommandForPartUtils:

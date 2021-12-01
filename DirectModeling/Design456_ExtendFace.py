@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 from ThreeDWidgets.fr_draw import draw_FaceSet
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
-from draftutils.translate import translate  # for translate
+from draftutils.translate import translate  # for translation
 import Part as _part
 import FACE_D as faced
 import math
@@ -50,27 +50,9 @@ from OCC import Core
 from OCC.Core import ChFi2d
 
 
-# #   import Part
-# #   __s__=App.ActiveDocument.Compound.Shape.Faces
-# #   __s__=Part.Solid(Part.Shell(__s__))
-# #   __o__=App.ActiveDocument.addObject("Part::Feature","Compound_solid")
-# #   __o__.Label="Compound (Solid)"
-# #   __o__.Shape=__s__
-# #   del __s__, __o__
-# """
-#     - For square, rectangle, multisided-wire shapes :draft.wire should do the job
-#     - For Circle  - Loft should do the job.
-#     - For curvature shapes - should be treated as square.
-
-#     We need to distinguish between : Circle edge, and wire edges
-#     circle selectedEdge.Closed=true -->use this
-#     others are not closed.
-
-# """
-
-class Design456_ExtendEdge:
-    """[Extend the edge's position to a new position.
-     This will affect the faces share the edge.    ]
+class Design456_ExtendFace:
+    """[Extend the face's position to a new position.
+     This will affect the faces share the face.    ]
      """
     _Vector = None
     mw = None
@@ -97,7 +79,7 @@ class Design456_ExtendEdge:
     # Original vectors that will be changed by mouse.
     oldEdgeVertexes = None
     newEdgeVertexes = None
-    newEdge = None      # Keep new vectors for the moved old edge-vectors
+    newEdge = None      # Keep new vectors for the moved old face-vectors
 
     view = None  # used for captureing mouse events
     MoveMentDirection = None
@@ -173,10 +155,10 @@ class Design456_ExtendEdge:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def ExtractTheEdge(self):
-        """[Extract the edge for movement]
+        """[Extract the face for movement]
         """
         self.newEdge = App.ActiveDocument.addObject(
-            "Part::Feature", "Edge")
+            "Part::Feature", "Face")
         sh = self.selectedEdge.copy()
         self.newEdge.Shape = sh
         # self.selectedEdge = self.newEdge  # TODO: SHOULD WE DO THAT: FIXME:
@@ -416,7 +398,7 @@ class Design456_ExtendEdge:
             sel = Gui.Selection.getSelectionEx()
 
             if len(sel) > 2:
-                errMessage = "Please select only one edge and try again"
+                errMessage = "Please select only one face and try again"
                 faced.errorDialog(errMessage)
                 return
 
@@ -438,7 +420,7 @@ class Design456_ExtendEdge:
             if(hasattr(self.selectedEdge, "Vertexes")):
                 self.oldEdgeVertexes = self.selectedEdge.Vertexes
             if not hasattr(self.selectedEdge, 'Edges'):
-                raise Exception("Please select only one edge and try again")
+                raise Exception("Please select only one face and try again")
 
             if not(type(self.selectedEdge.Curve) == _part.Line or
                    type(self.selectedEdge.Curve) == _part.BezierCurve):
@@ -527,7 +509,7 @@ class Design456_ExtendEdge:
                 raise Exception("No tab widget found")
             oldsize = self.tab.count()
             self.dialog = QtGui.QDialog()
-            self.tab.addTab(self.dialog, "Extend Edge")
+            self.tab.addTab(self.dialog, "Extend Face")
             self.frmRotation = QtGui.QFrame(self.dialog)
             self.dialog.resize(200, 450)
             self.frmRotation.setGeometry(QtCore.QRect(10, 190, 231, 181))
@@ -562,9 +544,9 @@ class Design456_ExtendEdge:
 
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate(
-                "Dialog", "Extend Edge"))
+                "Dialog", "Extend Face"))
 
-            self.lblTitle.setText(_translate("Dialog", "(Extend Edge)\n"
+            self.lblTitle.setText(_translate("Dialog", "(Extend Face)\n"
                                              "Tweak an object\n Use X, Y, or Z axis to pull/push an"))
             self.TweakLBL.setFont(font)
             
@@ -727,9 +709,9 @@ class Design456_ExtendEdge:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'Design456_ExtendEdge.svg',
-            'MenuText': ' Extend Edge',
-            'ToolTip':  ' Extend Edge'
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_ExtendFace.svg',
+            'MenuText': ' Extend Face',
+            'ToolTip':  ' Extend Face'
         }
 
-Gui.addCommand('Design456_ExtendEdge', Design456_ExtendEdge())
+Gui.addCommand('Design456_ExtendFace', Design456_ExtendFace())
