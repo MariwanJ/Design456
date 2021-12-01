@@ -79,7 +79,7 @@ class propertyValues:
         self.vectors = [App.Vector(0, 0, 0), ]
         self.linewidth = 1
         self.fontName = 'sans'
-        self.fontsize = 1
+        self.fontsize = 2
         self.labelcolor = constant.FR_COLOR.FR_BLACK
         self.alignment = constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         self.rotation = App.Vector(0, 0, 0)
