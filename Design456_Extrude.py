@@ -34,7 +34,7 @@ import Draft
 import Part
 import FACE_D as faced
 from time import time as _time, sleep as _sleep
-from draftutils.translate import translate  # for translate
+from draftutils.translate import translate  # for translation
 import math
 
 

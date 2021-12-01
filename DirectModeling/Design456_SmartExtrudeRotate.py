@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_degreewheel_widget import Fr_DegreeWheel_Widget
 from ThreeDWidgets import fr_degreewheel_widget
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
-from draftutils.translate import translate  # for translate
+from draftutils.translate import translate  # for translation
 import math
 import Part as _part
 

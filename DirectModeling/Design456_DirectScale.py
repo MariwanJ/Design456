@@ -43,7 +43,7 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 import math
 from ThreeDWidgets.constant import FR_COLOR
-from draftutils.translate import translate  # for translate
+from draftutils.translate import translate  # for translation
 
 # This will be used to convert mouse movement to scale factor.
 SCALE_FACTOR = 20.0

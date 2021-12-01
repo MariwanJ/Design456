@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 from ThreeDWidgets import fr_arrow_widget
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
-from draftutils.translate import translate  # for translate
+from draftutils.translate import translate  # for translation
 import math
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
