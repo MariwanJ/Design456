@@ -226,6 +226,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.vectors = self.w_vector
+        # We must make it higher or it will intersect the object and won't be visible
+        #TODO:Check if this works always?
+        self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + 2  
         self.w_lbluserData.labelcolor = _lblColor
         
         # Use this to save rotation degree of the disk which is the whole widget angle.
