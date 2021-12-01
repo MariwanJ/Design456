@@ -160,13 +160,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     def __init__(self, vectors: List[App.Vector] = [],
                  label: str = "",
-                 _lblColor=FR_COLOR.FR_BLACK,
+                 _lblColor=FR_COLOR.FR_WHITE,
                  _padColor=[FR_COLOR.FR_RED,
                            FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
-                _color=FR_COLOR.FR_WHITE,
                  _Rotation=[0.0, 0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0],
-                 _scale=[3, 3, 3], _type=0,
+                 _scale=[3, 3, 3], 
+                 _type=1,
                  _opacity=0,
                  _distanceBetweenThem=[5, 5, 5]):
 
@@ -206,7 +206,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_padYsoSeparator = coin.SoSeparator()
         self.w_padZsoSeparator = coin.SoSeparator()
 
-        self.w_color = _color
+        self.w_color = _lblColor  #not used for this widget
         self.w_PadAxis_color=_padColor
         self.w_selColor = [i * 1.2 for i in self.w_selColor]
         self.w_Scale = _scale
@@ -365,7 +365,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
 
             if self.is_visible():
-
+    
                 self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
                                                               self.distanceBetweenThem[0],
                                                               self.w_vector[0].y,
