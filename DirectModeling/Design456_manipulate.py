@@ -80,7 +80,7 @@ class Design456_ExtendEdge:
     w_rotation = None
     _mywin = None
     b1 = None
-    ExtrudeLBL = None
+    TweakLBL = None
     RotateLBL = None
     endVector = None
     startVector = None
@@ -528,20 +528,7 @@ class Design456_ExtendEdge:
             self.frmRotation = QtGui.QFrame(self.dialog)
             self.dialog.resize(200, 450)
             self.frmRotation.setGeometry(QtCore.QRect(10, 190, 231, 181))
-            self.frame_2 = QtGui.QFrame(self.dialog)
-            self.frame_2.setGeometry(QtCore.QRect(10, 195, 231, 151))
-            self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
-            self.frame_2.setFrameShadow(QtGui.QFrame.Sunken)
-            self.frame_2.setObjectName("frame_2")
-            self.gridLayoutWidget_3 = QtGui.QWidget(self.frame_2)
-            self.gridLayoutWidget_3.setGeometry(
-                QtCore.QRect(10, 40, 211, 101))
-            self.gridLayoutWidget_3.setObjectName("gridLayoutWidget_3")
-            self.gridTweakResult = QtGui.QGridLayout(
-                self.gridLayoutWidget_3)
-            self.gridTweakResult.setContentsMargins(0, 0, 0, 0)
-            self.gridTweakResult.setObjectName("gridTweakResult")
-            self.lblTweakResult = QtGui.QLabel(self.frame_2)
+            self.lblTweakResult = QtGui.QLabel(self.dialog)
             self.lblTweakResult.setGeometry(QtCore.QRect(10, 0, 191, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
@@ -563,34 +550,26 @@ class Design456_ExtendEdge:
             font.setPointSize(10)
             self.lblTitle.setFont(font)
             self.lblTitle.setObjectName("lblTitle")
-            self.ExtrudeLBL = QtGui.QLabel(self.dialog)
-            self.ExtrudeLBL.setGeometry(QtCore.QRect(10, 145, 321, 40))
+            self.TweakLBL = QtGui.QLabel(self.dialog)
+            self.TweakLBL.setGeometry(QtCore.QRect(10, 145, 321, 40))
             font = QtGui.QFont()
             font.setPointSize(10)
-            self.ExtrudeLBL.setFont(font)
-            self.ExtrudeLBL.setObjectName("ExtrudeLBL")
-            self.RotateLBL = QtGui.QLabel(self.dialog)
-            self.RotateLBL.setGeometry(QtCore.QRect(10, 100, 281, 40))
             font = QtGui.QFont()
             font.setPointSize(10)
-            self.RotateLBL.setFont(font)
-            self.RotateLBL.setObjectName("RotateLBL")
 
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate(
                 "Dialog", "Extend Edge"))
 
-            self.lblTweakResult.setText(
-                _translate("Dialog", "Tweak Result"))
             self.lblTitle.setText(_translate("Dialog", "(Extend Edge)\n"
-                                             "Tweak an object"))
-            self.ExtrudeLBL.setText(_translate("Dialog", "Length="))
-            self.RotateLBL.setText(_translate("Dialog", "Rotation Angle="))
+                                             "Tweak an object\n Use X, Y, or Z axis to pull/push an"))
+            self.TweakLBL.setFont(font)
+            
+            self.TweakLBL.setText(_translate("Dialog", "Length = 0.0"))
             QtCore.QObject.connect(
                 self.btnOK, QtCore.SIGNAL("accepted()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             self.tab.setCurrentWidget(self.dialog)
-
             return self.dialog
 
         except Exception as err:
@@ -626,8 +605,8 @@ class Design456_ExtendEdge:
 
         if abs(self.oldTweakLength-self. tweakLength) < 1:
             return  # we do nothing
-        self.ExtrudeLBL.setText(
-            "Length= " + str(round(self.tweakLength, 1)))
+        self.TweakLBL.setText(
+            "Length = " + str(round(self.tweakLength, 1)))
 
         self.oldEdgeVertexes = self.newEdgeVertexes
         if self.padObj.w_userData.Axis == 'X':
@@ -708,7 +687,7 @@ class Design456_ExtendEdge:
             self.tab = None
             self._mywin = None
             self.b1 = None
-            self.ExtrudeLBL = None
+            self.TweakLBL = None
             self.run_Once = None
             self.endVector = None
             self.startVector = None

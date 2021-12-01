@@ -270,7 +270,7 @@ class root_handle():
             static boolean 	                 isKeyReleaseEvent​(SoEvent e, SoKeyboardEvent.Keys whichKey) Returns whether the passed event is a keyboard release event of the passed key.
             void 	                         setKey​(SoKeyboardEvent.Keys whichKey) 	                  Sets which key generated the event.
             """
-            print("Keyboard Event")
+            print("Key-Event")
             key = ""
             try:
                 key = self.w_get_event.getKey()
