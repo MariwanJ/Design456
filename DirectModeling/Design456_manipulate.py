@@ -421,6 +421,7 @@ class Design456_ExtendEdge:
                 return
 
             self.MoveMentDirection = 'A'
+
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
             if (hasattr(sel[0], "SubObjects")):
@@ -453,9 +454,16 @@ class Design456_ExtendEdge:
                 translate("Design456", "ExtendEdge"))
 
             # Deside how the Degree pad be drawn
-            self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                self.setupRotation, [10.0, 10.0, 10.0], 0, 0, [10, 10, 10])
+            self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
+                (str(round(self.w_rotation[3], 2)) + "°"),                                  #label
+                FR_COLOR.FR_WHITE ,                                                         #lblcolor
+                [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],                      #arrows color
+                [0, 0, 0, 0],                                                                #rotation
+                self.setupRotation,                                                         #setup rotation 
+                [10.0, 10.0, 10.0],                                                          #scale
+                0,                                                                           #type 
+                0,                                                                           #opacity
+                [10, 10, 10])                                                                #distance between them
 
             # Different callbacks for each action.
             self.padObj.w_xAxis_cb_ = self.MouseMovement_cb
