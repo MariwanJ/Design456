@@ -421,6 +421,9 @@ class Design456_ExtendEdge:
                 return
 
             self.MoveMentDirection = 'A'
+            
+            # Register undo
+            App.ActiveDocument.openTransaction(translate("Design456", "EdgeExtend"))
 
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
@@ -668,6 +671,9 @@ class Design456_ExtendEdge:
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
+        
+        App.ActiveDocument.commitTransaction()  # undo reg.
+        
         self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
 
     def __del__(self):
