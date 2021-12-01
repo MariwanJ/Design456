@@ -607,7 +607,8 @@ class Design456_ExtendEdge:
             return  # we do nothing
         self.TweakLBL.setText(
             "Length = " + str(round(self.tweakLength, 1)))
-
+        self.padObj.label(["Length = " + str(round(self.tweakLength, 1)) ,]) # must be tuple 
+        self.padObj.lblRedraw()
         self.oldEdgeVertexes = self.newEdgeVertexes
         if self.padObj.w_userData.Axis == 'X':
             self.newEdge.Placement.Base.x = self.endVector.x

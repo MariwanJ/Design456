@@ -462,7 +462,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 Property-holder class for drawing labels
                 '''
                 __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
-                            'labelcolor', 'alignment', 'rotation', 'rotationAxis' , 
+                            'labelcolor', 'alignment', 'rotation', 'rotationAxis',
                             'scale']
                 vectors: VECTOR  # List[App.Vector] two vectors must be provided
                 linewidth: int
@@ -598,6 +598,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         """
         self.resize(_scale)
 
+    def label(self, newlabel):
+        self.w_label = newlabel
+
     # Keep in mind you must run lblRedraw
     def label_font(self, name="sans"):
         """[Change Label Font]
@@ -617,10 +620,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             newsize (int, optional): [Change font label ]. Defaults to 1.
         """
         self.w_lbluserData.scale = newsize
-
-    # Keep in mind you must run lblRedraw
-    def label_fontSize(self, newfontSize: int = 1):
-        self.w_lbluserData.fontSize = newfontSize
 
     # Keep in mind you must run lblRedraw
     def label_fontsize(self, newsize=1):
