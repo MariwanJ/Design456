@@ -104,8 +104,8 @@ class Design456_ExtendEdge:
                 g.DiffuseColor = sel.ViewObject.DiffuseColor
                 g.Transparency = sel.ViewObject.Transparency
                 App.ActiveDocument.removeObject(sel.Name)
-                sl.Label = 'Extended'
-                return sel
+                sl.Label = 'Extending'
+                return sl
         
         except Exception as err:
             App.Console.PrintError("'sewShape' Failed. "
@@ -160,96 +160,6 @@ class Design456_ExtendEdge:
         # self.selectedEdge = self.newEdge  # TODO: SHOULD WE DO THAT: FIXME:
         # App.ActiveDocument.recompute()
 
-    def FixSequenceOfVertices(self, inVertices):
-        """[Sort the vertices to allow making face without problem]
-
-        Args:
-            inVertices ([list of vertices]): [description]
-        """
-        try:
-            sortedV = []
-            (AllX, AllY, AllZ) = faced.getSortedXYZFromVertices(inVertices)
-            correctX = True
-            correctY = True
-            correctZ = True
-            for i in range(0, len(inVertices)-2):
-                correctX = correctX and (
-                    inVertices[i].x == inVertices[i+1].x)
-                correctY = correctY and (
-                    inVertices[i].y == inVertices[i+1].y)
-                correctZ = correctZ and (
-                    inVertices[i].z == inVertices[i+1].z)
-
-            if correctX:
-                for i in inVertices:
-                    if (i.y == AllY[0] and i.z == AllZ[0]):  # lowest x,z
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllY[0]  # remove it
-                        del AllZ[0]
-                for i in inVertices:
-                    if (i.y == AllY[0] and i.z == AllZ[len(AllZ)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllY[0]  # remove it
-                        del AllZ[len(AllZ)-1]
-                for i in inVertices:
-                    if (i.y == AllY[0] and i.z == AllZ[len(AllZ)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllY[0]  # remove it
-                        del AllZ[len(AllZ)-1]
-
-            elif correctY:
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.z == AllZ[0]):  # lowest x,z
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllZ[0]
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.z == AllZ[len(AllZ)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllZ[len(AllZ)-1]
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.z == AllZ[len(AllZ)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllZ[len(AllZ)-1]
-
-            elif correctZ:
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.y == AllY[0]):  # lowest x,z
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllY[0]
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.y == AllY[len(AllY)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllY[len(AllY)-1]
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.y == AllY[len(AllY)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllY[len(AllY)-1]
-            for i in inVertices:
-                sortedV.append(i)
-            return sortedV  # results
-
-        except Exception as err:
-            App.Console.PrintError("'FixSequenceOfVertices' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
     def COIN_recreateObject(self):
         self.sg.removeChild(self.coinFaces)
         for i in range(0, len(self.savedVertices)):
@@ -295,15 +205,18 @@ class Design456_ExtendEdge:
                 _resultFace.append(newFace)
             self.newFaces = _result
                         
-            soldObjShape = _part.Solid(_part.Shell(_resultFace))
-            newObj = App.ActiveDocument.addObject("Part::Feature","comp")
-            newObj.Shape = soldObjShape
+            solidObjShape = _part.Solid(_part.Shell(_resultFace))
+            newObj = App.ActiveDocument.addObject("Part::Feature", "comp")
+            newObj.Shape = solidObjShape
             newObj = self.sewShape(newObj)
             newObj = self.setTolerance(newObj)
+            solidObjShape = _part.Solid(newObj.Shape)
+            final = App.ActiveDocument.addObject("Part::Feature", "Extended")
+            final.Shape = solidObjShape
+            App.ActiveDocument.removeObject(newObj.Name)
             for face in self.newFaces:
                 App.ActiveDocument.removeObject(face.Name)
-            
-                      
+
         except Exception as err:
             App.Console.PrintError("'recreate Object' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -396,12 +309,8 @@ class Design456_ExtendEdge:
             if len(sel) > 2:
                 errMessage = "Please select only one edge and try again"
                 faced.errorDialog(errMessage)
-                return
-
-            self.MoveMentDirection = 'A'
             
-            # Register undo
-            App.ActiveDocument.openTransaction(translate("Design456", "EdgeExtend"))
+            self.MoveMentDirection = 'A'
 
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
@@ -409,6 +318,16 @@ class Design456_ExtendEdge:
                 self.selectedEdge = sel[0].SubObjects[0]
             else:
                 raise Exception("Not implemented")
+            
+            if (not hasattr(self.selectedEdge,"Curve")):
+                errmsg = "Please select an edge "
+                faced.errorDialog(errmsg)
+                self.selectedObj.Visibility = True
+                self.__del__()
+                return
+
+            # Register undo
+            App.ActiveDocument.openTransaction(translate("Design456", "EdgeExtend"))
 
             # Recreate the object in separated shapes.
             self.saveVertices()
@@ -416,8 +335,7 @@ class Design456_ExtendEdge:
             if(hasattr(self.selectedEdge, "Vertexes")):
                 self.oldEdgeVertexes = self.selectedEdge.Vertexes
             if not hasattr(self.selectedEdge, 'Edges'):
-                raise Exception("Please select only one edge and try again")
-
+                raise Exception("Please select only one edge and try again")    
             if not(type(self.selectedEdge.Curve) == _part.Line or
                    type(self.selectedEdge.Curve) == _part.BezierCurve):
                 msg = "Curve edges are not supported yet"
@@ -660,13 +578,14 @@ class Design456_ExtendEdge:
             Remove all objects from memory even fr_coinwindow
         """
         try:
-            self.padObj.hide()
-            self.padObj.__del__()  # call destructor
+            if self.padObj is not None:
+                self.padObj.hide()
+                self.padObj.__del__()  # call destructor
+                del self.padObj
             if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
-            del self.padObj
             self.mw = None
             self.dialog = None
             self.tab = None
@@ -685,15 +604,17 @@ class Design456_ExtendEdge:
             self.Rotation = None
             self.mouseOffset = None
             self.FirstLocation = None
-            del self.selectedObj
-            del self.selectedEdge
-            del self.savedVertices
-            del self.newEdgeVertexes
-            del self.oldEdgeVertexes
+            if self.savedVertices is not None:
+                del self.savedVertices
+            if self.newEdgeVertexes is not None:
+                del self.newEdgeVertexes
+            if self.oldEdgeVertexes is not None:
+                del self.oldEdgeVertexes
             self.coinFaces.removeAllChildren()
-            del self.coinFaces
             self.sg.removeChild(self.coinFaces)
-            self.coinFaces = None
+            if self.coinFaces is not None:
+                del self.coinFaces
+                self.coinFaces = None
             del self
 
         except Exception as err:
