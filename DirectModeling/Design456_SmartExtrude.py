@@ -360,7 +360,7 @@ class Design456_SmartExtrude:
 
         except Exception as err:
             faced.EnableAllToolbar(True)
-            App.Console.PrintError("'Design456_Extrude' getArrowPosition-Failed. "
+            App.Console.PrintError("'Design456_Extrude' getArrowPosition-Failed"
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -370,13 +370,15 @@ class Design456_SmartExtrude:
         """[Check if the selected object is a face from a 3D object or is a 2D object. 
             A face from a 3D object, cannot be extruded directly. 
             We have to extract a Face and them Extrude]
-            Face of 3D Object = True 
+            Face of 3D Object = True
             2D Object= False
         Returns:
             [Boolean]: [Return True if the selected object is a face from 3D object, otherwise False]
         """
         # if len(self.selectedObj.Object.Shape.Faces) > 1:
         if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.Solids:
+            return True
+        if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.ShapeType=="Shell":
             return True
         else:
             return False
@@ -409,23 +411,32 @@ class Design456_SmartExtrude:
         Returns:
             [App.Vector]: [Position where the arrow will be moved to]
         """
-        if(self.WasFaceFrom3DObject):
-            ss = self.selectedObj.SubObjects[0]
-        else:
-            ss = self.selectedObj.Object.Shape
-        yL = ss.CenterOfMass
-        uv = ss.Surface.parameter(yL)
-        nv = ss.normalAt(uv[0], uv[1])
-        self.normalVector = nv
+        try:
+            if(self.WasFaceFrom3DObject):
+                ss = self.selectedObj.SubObjects[0]
+            else:
+                ss = self.selectedObj.Object.Shape
+            yL = ss.CenterOfMass
+            uv = ss.Surface.parameter(yL)
+            nv = ss.normalAt(uv[0], uv[1])
+            self.normalVector = nv
 
-        if (self.extrudeLength == 0):
-            d = self.extrudeLength = 1
-        else:
-            d = self.extrudeLength
-        point = yL + d * nv
-        #print("Arrow Vector is ", point)
-        return (point)
-
+            if (self.extrudeLength == 0):
+                d = self.extrudeLength = 1
+            else:
+                d = self.extrudeLength
+            point = yL + d * nv
+            #print("Arrow Vector is ", point)
+            return (point)
+        
+        except Exception as err:
+            faced.EnableAllToolbar(True)
+            App.Console.PrintError("'Design456_Extrude' calculateNewVector-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def Activated(self):
         """[
             Executes when the tool is used
