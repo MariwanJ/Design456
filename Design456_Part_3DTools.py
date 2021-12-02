@@ -47,6 +47,7 @@ from draftutils.translate import translate   #for translate
 class Design456_Part_Merge:
 
     def Activated(self):
+        mergedObj = None
         try:
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 2):
@@ -84,6 +85,7 @@ class Design456_Part_Merge:
             App.ActiveDocument.recompute()
             del allObjects[:]
             return mergedObj
+        
         except Exception as err:
             App.Console.PrintError("'Part::Merge' Failed. "
                                    "{err}\n".format(err=str(err)))
