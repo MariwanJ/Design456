@@ -349,7 +349,7 @@ class Design456_ExtendFace:
             return rotation
 
         except Exception as err:
-            faced.EnableAllToolbar(True)
+            
             App.Console.PrintError("'Calculate new Vector. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -368,7 +368,7 @@ class Design456_ExtendFace:
                 self.savedVertices.append(newPoint)
 
         except Exception as err:
-            faced.EnableAllToolbar(True)
+            
             App.Console.PrintError("'saveVertices' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -379,9 +379,9 @@ class Design456_ExtendFace:
         """[ Executes when the tool is used   ]
         """
         self.coinFaces = coin.SoSeparator()
-        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/pad rotation
+        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # pads rotation
         self.setupRotation = [0, 0, 0, 0]
-        self._Vector = App.Vector(0.0, 0.0, 0.0)  # pad POSITION
+        self._Vector = App.Vector(0.0, 0.0, 0.0)  # pads POSITION
         self.counter = 0
         self.run_Once = False
         self.tweakLength = 0
@@ -405,7 +405,6 @@ class Design456_ExtendFace:
             self.MoveMentDirection = 'A'
             
             # Register undo
-            App.ActiveDocument.openTransaction(translate("Design456", "EdgeExtend"))
 
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
@@ -413,6 +412,11 @@ class Design456_ExtendFace:
                 self.selectedFace = sel[0].SubObjects[0]
             else:
                 raise Exception("Not implemented")
+
+            if self.selectedFace.ShapeTyp!='Face':
+                errMessage = "Please select only one face and try again, was: "+ str(self.selectedFace.ShapeTyp)
+                faced.errorDialog(errMessage)
+                return
 
             # Recreate the object in separated shapes.
             self.saveVertices()
@@ -474,7 +478,7 @@ class Design456_ExtendFace:
             App.ActiveDocument.recompute()
 
         except Exception as err:
-            faced.EnableAllToolbar(True)
+            
             App.Console.PrintError("'Activated' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -558,7 +562,6 @@ class Design456_ExtendFace:
             return self.dialog
 
         except Exception as err:
-            faced.EnableAllToolbar(True)
             App.Console.PrintError("'Activated' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -568,14 +571,16 @@ class Design456_ExtendFace:
     def MouseMovement_cb(self, userData=None):
         
         events = userData.events
-        if self.padObj.w_userData.Axis is None:
-            if self.padObj.w_userData.padAxis is not None:
-                self.callback_Rotate()
-            else:
-                return  # We cannot allow this tool
         if type(events) != int:
             print("event was not int")
             return
+
+        if self.padObj.w_userData.Axis is None:
+            if self.padObj.w_userData.padAxis is not None:
+                self.callback_Rotate()
+                return
+            else:
+                return  # We cannot allow this tool
 
         self.endVector = App.Vector(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                     self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
