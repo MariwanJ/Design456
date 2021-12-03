@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import time
+
 #
 # ***************************************************************************
 # *                                                                        *
@@ -49,7 +49,6 @@ import Design456Init
 from ThreeDWidgets import constant
 from ThreeDWidgets.constant import FR_EVENTS
 from dataclasses import dataclass
-
 import time  # For double click detection
 
 
