@@ -863,7 +863,7 @@ class draw_cylinder:
 
 
 #TODO: FIXME : ADD ROTATION
-def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD):
+def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD, _opacity = 0):
     """[summary]
 
     Args:
@@ -917,8 +917,15 @@ def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD)
         myVertexProperty = coin.SoVertexProperty()
         myVertexProperty.normalBinding = coin.SoNormalBinding.PER_FACE
 
+        material = coin.SoMaterial()
+        material.transparency.setValue(_opacity)
+        material.diffuseColor.setValue(coin.SbColor(_color))
+        material.ambientColor.setValue(coin.SbColor(_color))
+        material.emissiveColor.setValue(coin.SbColor(0.1,0.1,0.1))
+        material.shininess.setValue(0.5)
+
         # Define material
-        myVertexProperty.orderedRGBA = coin.SbColor(_color).getPackedValue()
+        #myVertexProperty.orderedRGBA = coin.SbColor(_color).getPackedValue()
 
         # Define coordinates for vertices - how these vertices will be divided per face
         myVertexProperty.vertex.setValues(0, len(vertices), vertices)
@@ -928,6 +935,8 @@ def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD)
         myFaceSet.numVertices.setValues(0, len(numvertices), numvertices)
 
         myFaceSet.vertexProperty = myVertexProperty
+        
+        rootSo.addChild(material)
         rootSo.addChild(myFaceSet)
         return rootSo
 
@@ -1829,7 +1838,6 @@ def draw_washer(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
-    
     soSepArrow=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
     cordinate= coin.SoCoordinate3()
