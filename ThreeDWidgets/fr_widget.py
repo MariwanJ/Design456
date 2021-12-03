@@ -502,3 +502,32 @@ class Fr_Widget (object):
 
     def changeLabelfloat(self, newlabel: float = 0.0):
         self.w_label = ["{:.2f}".format(newlabel)]
+
+    def getWidgetsCentor(self):
+        """[Get Center of the Widget]
+
+        Returns:
+            [App.Vector]: [Return a vector represents the centor of the widget]
+        """
+        viewPort = coin.SbViewportRegion()
+        BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
+        BoundaryAction.apply(self.w_wdgsoSwitch)
+        center = BoundaryAction.getCenter()
+        return App.Vector(center[0], center[1], center[2])
+
+    def getWidgetsBoundary(self):
+        """[Retrive the Max size of the 3D coin object by returning the Min vector and Max vector]
+
+        Returns:
+            [Tuple]: [Two vectors first is for the Min Boundary, second is for the Max Boundary]
+        """
+        viewPort = coin.SbViewportRegion()
+        BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
+        BoundaryAction.apply(self.w_wdgsoSwitch)
+        Boundary = BoundaryAction.getBoundingBox()
+        BoundMax = coin.SbVec3f()
+        BoundMin = coin.SbVec3f()
+        Boundary.getMax(BoundMax)
+        Boundary.getMin(BoundMin)
+        return ([App.Vector(BoundMin[0], BoundMin[3], BoundMin[2]),
+                App.Vector(BoundMax[0], BoundMax[1], BoundMax[2])])
