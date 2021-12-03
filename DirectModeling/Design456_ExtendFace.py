@@ -159,34 +159,43 @@ class Design456_ExtendFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def ExtractTheEdge(self):
+    def ExtractFace(self):
         """[Extract the face for movement]
         """
         self.newFace = App.ActiveDocument.addObject(
-            "Part::Feature", "Face")
+            "Part::Feature", "eFace")
         sh = self.selectedFace.copy()
         self.newFace.Shape = sh
         # self.selectedFace = self.newFace  # TODO: SHOULD WE DO THAT: FIXME:
         # App.ActiveDocument.recompute()
 
     def COIN_recreateObject(self):
-        self.sg.removeChild(self.coinFaces)
-        for i in range(0, len(self.savedVertices)):
-            for j in range(0, len(self.savedVertices[i])):
-                if self.savedVertices[i][j].Point == self.oldEdgeVertexes[0].Point:
-                    self.savedVertices[i][j] = self.newFaceVertexes[0]
-                elif self.savedVertices[i][j].Point == self.oldEdgeVertexes[1].Point:
-                    self.savedVertices[i][j] = self.newFaceVertexes[1]
+        try:
+            self.sg.removeChild(self.coinFaces)
+            for i in range(0, len(self.savedVertices)):
+                for j in range(0, len(self.savedVertices[i])):
+                    for testItem in range(0,len(self.oldEdgeVertexes)):
+                        if self.savedVertices[i][j].Point == self.oldEdgeVertexes[testItem].Point:
+                            self.savedVertices[i][j] = self.newFaceVertexes[testItem]
+                            break #we are done
 
-        # We have the new vertices
-        self.coinFaces.removeAllChildren()
-        for i in self.savedVertices:
-            a = []
-            for j in i:
-                a.append(j.Point)
-            self.coinFaces.addChild(draw_FaceSet(
-                a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
-        self.sg.addChild(self.coinFaces)
+
+            # We have the new vertices
+            self.coinFaces.removeAllChildren()
+            for i in self.savedVertices:
+                a = []
+                for j in i:
+                    a.append(j.Point)
+                self.coinFaces.addChild(draw_FaceSet(
+                    a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
+            self.sg.addChild(self.coinFaces)
+            
+        except Exception as err:
+            App.Console.PrintError("'COIN_recreateObject Object' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def recreateObject(self):
         # FIXME:
@@ -353,7 +362,7 @@ class Design456_ExtendFace:
 
             self.setupRotation = self.calculateNewVector()
 
-            self.ExtractTheEdge()
+            self.ExtractFace()
             self.newFaceVertexes = self.newFace.Shape.Vertexes
             App.ActiveDocument.removeObject(self.selectedObj.Name)
 
@@ -536,7 +545,7 @@ class Design456_ExtendFace:
             # nothing to do here  #TODO : This shouldn't happen
             return
 
-        self.newFaceVertexes = self.newFace.OuterWire.OrderedVertexes
+        self.newFaceVertexes = self.newFace.Shape.OuterWire.OrderedVertexes
         self.COIN_recreateObject()
         self.padObj.redraw()
 
