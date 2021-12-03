@@ -89,10 +89,9 @@ class Design456_ExtendFace:
     coinFaces = None
     sg = None  # SceneGraph
 
-    # Based on the sewShape from De-featuring WB,
+    # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
-
-    def setTolerance(self, sel):
+     def setTolerance(self, sel):
         try:
             if hasattr(sel, 'Shape'):
                 ns = sel.Shape.copy()
@@ -102,15 +101,15 @@ class Design456_ExtendFace:
                 sl = App.ActiveDocument.addObject("Part::Feature", "Solid")
                 sl.Shape = ns
                 g = Gui.ActiveDocument.getObject(sel.Name)
-                g.ShapeColor =   sel.ViewObject.ShapeColor
-                g.LineColor =    sel.ViewObject.LineColor
-                g.PointColor =   sel.ViewObject.PointColor
+                g.ShapeColor = sel.ViewObject.ShapeColor
+                g.LineColor = sel.ViewObject.LineColor
+                g.PointColor = sel.ViewObject.PointColor
                 g.DiffuseColor = sel.ViewObject.DiffuseColor
                 g.Transparency = sel.ViewObject.Transparency
                 App.ActiveDocument.removeObject(sel.Name)
-                sl.Label = 'Extended'
-                return sel
-        
+                sl.Label = 'Extending'
+                return sl
+
         except Exception as err:
             App.Console.PrintError("'sewShape' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -120,7 +119,6 @@ class Design456_ExtendFace:
 
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
-
     def sewShape(self, sel):
         """[Fix issues might be in the created object]
 
@@ -136,9 +134,11 @@ class Design456_ExtendFace:
                 sl.Shape = sh
 
                 g = Gui.ActiveDocument.getObject(sl.Name)
-                g.ShapeColor = Gui.ActiveDocument.getObject(sel.Name).ShapeColor
-                g.LineColor =  Gui.ActiveDocument.getObject(sel.Name).LineColor
-                g.PointColor = Gui.ActiveDocument.getObject(sel.Name).PointColor
+                g.ShapeColor = Gui.ActiveDocument.getObject(
+                    sel.Name).ShapeColor
+                g.LineColor = Gui.ActiveDocument.getObject(sel.Name).LineColor
+                g.PointColor = Gui.ActiveDocument.getObject(
+                    sel.Name).PointColor
                 g.DiffuseColor = Gui.ActiveDocument.getObject(
                     sel.Name).DiffuseColor
                 g.Transparency = Gui.ActiveDocument.getObject(
@@ -146,7 +146,7 @@ class Design456_ExtendFace:
                 App.ActiveDocument.removeObject(sel.Name)
                 App.ActiveDocument.recompute()
                 return (sl)
-            
+
         except Exception as err:
             App.Console.PrintError("'sewShape' Failed. "
                                    "{err}\n".format(err=str(err)))

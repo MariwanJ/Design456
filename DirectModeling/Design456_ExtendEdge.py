@@ -86,9 +86,8 @@ class Design456_ExtendEdge:
     coinFaces = None
     sg = None  # SceneGraph
 
-    # Based on the sewShape from De-featuring WB,
+    # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
-
     def setTolerance(self, sel):
         try:
             if hasattr(sel, 'Shape'):
@@ -117,7 +116,6 @@ class Design456_ExtendEdge:
 
     # Based on the sewShape from De-featuring WB,
     # but simplified- Thanks for the author
-
     def sewShape(self, sel):
         """[Fix issues might be in the created object]
 
