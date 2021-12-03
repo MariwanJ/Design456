@@ -331,9 +331,9 @@ class Design456_ExtendFace:
             else:
                 raise Exception("Not implemented")
 
-            if self.selectedFace.ShapeTyp != 'Face':
+            if self.selectedFace.ShapeType != 'Face':
                 errMessage = "Please select only one face and try again, was: " + \
-                    str(self.selectedFace.ShapeTyp)
+                    str(self.selectedFace.ShapeType)
                 faced.errorDialog(errMessage)
                 return
 
