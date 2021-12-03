@@ -46,8 +46,11 @@ import Part as _part
 import FACE_D as faced
 import math
 
-from OCC import Core
-from OCC.Core import ChFi2d
+try:
+        from OCC import Core
+        from OCC.Core import ChFi2d
+except:
+        pass
 
 #NOT IMPLEMENTED YET!!
 
