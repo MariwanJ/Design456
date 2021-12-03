@@ -46,13 +46,18 @@ import Part as _part
 import FACE_D as faced
 import math
 
-from OCC import Core
-from OCC.Core import ChFi2d
+# Some get problem with this.. not used but Might be used in the future.
+# I might remove it for this tool. But lets leave it now.
+try:
+    from OCC import Core
+    from OCC.Core import ChFi2d
+except:
+    pass
 
 
 class Design456_ExtendFace:
     """[Extend the face's position to a new position.
-     This will affect the faces share the face.    ]
+     This will affect the faces share the face.]
      """
     _Vector = None
     mw = None
@@ -79,7 +84,7 @@ class Design456_ExtendFace:
     # Original vectors that will be changed by mouse.
     oldEdgeVertexes = None
     newFaceVertexes = None
-    newEdge = None      # Keep new vectors for the moved old face-vectors
+    newFace = None      # Keep new vectors for the moved old face-vectors
 
     view = None  # used for captureing mouse events
     MoveMentDirection = None
@@ -91,7 +96,7 @@ class Design456_ExtendFace:
 
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
-     def setTolerance(self, sel):
+    def setTolerance(self, sel):
         try:
             if hasattr(sel, 'Shape'):
                 ns = sel.Shape.copy()
@@ -164,96 +169,6 @@ class Design456_ExtendFace:
         # self.selectedFace = self.newFace  # TODO: SHOULD WE DO THAT: FIXME:
         # App.ActiveDocument.recompute()
 
-    def FixSequenceOfVertices(self, inVertices):
-        """[Sort the vertices to allow making face without problem]
-
-        Args:
-            inVertices ([list of vertices]): [description]
-        """
-        try:
-            sortedV = []
-            (AllX, AllY, AllZ) = faced.getSortedXYZFromVertices(inVertices)
-            correctX = True
-            correctY = True
-            correctZ = True
-            for i in range(0, len(inVertices)-2):
-                correctX = correctX and (
-                    inVertices[i].x == inVertices[i+1].x)
-                correctY = correctY and (
-                    inVertices[i].y == inVertices[i+1].y)
-                correctZ = correctZ and (
-                    inVertices[i].z == inVertices[i+1].z)
-
-            if correctX:
-                for i in inVertices:
-                    if (i.y == AllY[0] and i.z == AllZ[0]):  # lowest x,z
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllY[0]  # remove it
-                        del AllZ[0]
-                for i in inVertices:
-                    if (i.y == AllY[0] and i.z == AllZ[len(AllZ)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllY[0]  # remove it
-                        del AllZ[len(AllZ)-1]
-                for i in inVertices:
-                    if (i.y == AllY[0] and i.z == AllZ[len(AllZ)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllY[0]  # remove it
-                        del AllZ[len(AllZ)-1]
-
-            elif correctY:
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.z == AllZ[0]):  # lowest x,z
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllZ[0]
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.z == AllZ[len(AllZ)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllZ[len(AllZ)-1]
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.z == AllZ[len(AllZ)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllZ[len(AllZ)-1]
-
-            elif correctZ:
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.y == AllY[0]):  # lowest x,z
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllY[0]
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.y == AllY[len(AllY)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllY[len(AllY)-1]
-                for i in inVertices:
-                    if (i.x == AllX[0] and i.y == AllY[len(AllY)-1]):
-                        sortedV.append(i)
-                        inVertices.remove(i)  # we don't need it anymore
-                        del AllX[0]  # remove it
-                        del AllY[len(AllY)-1]
-            for i in inVertices:
-                sortedV.append(i)
-            return sortedV  # results
-
-        except Exception as err:
-            App.Console.PrintError("'FixSequenceOfVertices' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
     def COIN_recreateObject(self):
         self.sg.removeChild(self.coinFaces)
         for i in range(0, len(self.savedVertices)):
@@ -275,13 +190,13 @@ class Design456_ExtendFace:
 
     def recreateObject(self):
         # FIXME:
-        # Here we have 
+        # Here we have
         # We try to create a wire-closed to replace the sides we delete.
         # This will be way to complex . with many bugs :(
         try:
             App.ActiveDocument.removeObject(self.newFace.Name)
             _result = []
-            _resultFace=[]
+            _resultFace = []
             _result.clear()
             for faceVert in self.savedVertices:
                 convert = []
@@ -298,16 +213,19 @@ class Design456_ExtendFace:
                 _result.append(nFace)
                 _resultFace.append(newFace)
             self.newFaces = _result
-                        
-            soldObjShape = _part.Solid(_part.Shell(_resultFace))
-            newObj = App.ActiveDocument.addObject("Part::Feature","comp")
-            newObj.Shape = soldObjShape
+
+            solidObjShape = _part.Solid(_part.Shell(_resultFace))
+            newObj = App.ActiveDocument.addObject("Part::Feature", "comp")
+            newObj.Shape = solidObjShape
             newObj = self.sewShape(newObj)
             newObj = self.setTolerance(newObj)
+            solidObjShape = _part.Solid(newObj.Shape)
+            final = App.ActiveDocument.addObject("Part::Feature", "Extended")
+            final.Shape = solidObjShape
+            App.ActiveDocument.removeObject(newObj.Name)
             for face in self.newFaces:
                 App.ActiveDocument.removeObject(face.Name)
-            
-                      
+
         except Exception as err:
             App.Console.PrintError("'recreate Object' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -349,7 +267,7 @@ class Design456_ExtendFace:
             return rotation
 
         except Exception as err:
-            
+
             App.Console.PrintError("'Calculate new Vector. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -368,7 +286,7 @@ class Design456_ExtendFace:
                 self.savedVertices.append(newPoint)
 
         except Exception as err:
-            
+
             App.Console.PrintError("'saveVertices' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -403,7 +321,7 @@ class Design456_ExtendFace:
                 return
 
             self.MoveMentDirection = 'A'
-            
+
             # Register undo
 
             self.selectedObj = sel[0].Object
@@ -413,8 +331,9 @@ class Design456_ExtendFace:
             else:
                 raise Exception("Not implemented")
 
-            if self.selectedFace.ShapeTyp!='Face':
-                errMessage = "Please select only one face and try again, was: "+ str(self.selectedFace.ShapeTyp)
+            if self.selectedFace.ShapeTyp != 'Face':
+                errMessage = "Please select only one face and try again, was: " + \
+                    str(self.selectedFace.ShapeTyp)
                 faced.errorDialog(errMessage)
                 return
 
@@ -444,15 +363,18 @@ class Design456_ExtendFace:
 
             # Deside how the Degree pad be drawn
             self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
-                (str(round(self.w_rotation[3], 2)) + "°"),                                  #label
-                FR_COLOR.FR_WHITE ,                                                         #lblcolor
-                [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],                      #arrows color
-                [0, 0, 0, 0],                                                                #rotation
-                self.setupRotation,                                                         #setup rotation 
-                [10.0, 10.0, 10.0],                                                          #scale
-                0,                                                                           #type 
-                0,                                                                           #opacity
-                [10, 10, 10])                                                                #distance between them
+                                                # label
+                                                (str(
+                                                    round(self.w_rotation[3], 2)) + "°"),
+                                                FR_COLOR.FR_WHITE,  # lblcolor
+                                                [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
+                                                 FR_COLOR.FR_BLUE],  # arrows color
+                                                [0, 0, 0, 0],  # rotation
+                                                self.setupRotation,  # setup rotation
+                                                [10.0, 10.0, 10.0],  # scale
+                                                0,  # type
+                                                0,  # opacity
+                                                [10, 10, 10])  # distance between them
 
             # Different callbacks for each action.
             self.padObj.w_xAxis_cb_ = self.MouseMovement_cb
@@ -478,7 +400,7 @@ class Design456_ExtendFace:
             App.ActiveDocument.recompute()
 
         except Exception as err:
-            
+
             App.Console.PrintError("'Activated' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -553,7 +475,7 @@ class Design456_ExtendFace:
             self.lblTitle.setText(_translate("Dialog", "(Extend Face)\n"
                                              "Tweak an object\n Use X, Y, or Z axis to pull/push an"))
             self.TweakLBL.setFont(font)
-            
+
             self.TweakLBL.setText(_translate("Dialog", "Length = 0.0"))
             QtCore.QObject.connect(
                 self.btnOK, QtCore.SIGNAL("accepted()"), self.hide)
@@ -569,7 +491,7 @@ class Design456_ExtendFace:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def MouseMovement_cb(self, userData=None):
-        
+
         events = userData.events
         if type(events) != int:
             print("event was not int")
@@ -597,7 +519,8 @@ class Design456_ExtendFace:
             return  # we do nothing
         self.TweakLBL.setText(
             "Length = " + str(round(self.tweakLength, 1)))
-        self.padObj.label(["Length = " + str(round(self.tweakLength, 1)) ,]) # must be tuple 
+        # must be tuple
+        self.padObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
         self.padObj.lblRedraw()
         self.oldEdgeVertexes = self.newFaceVertexes
         if self.padObj.w_userData.Axis == 'X':
@@ -613,7 +536,7 @@ class Design456_ExtendFace:
             # nothing to do here  #TODO : This shouldn't happen
             return
 
-        self.newFaceVertexes = self.newFace.Shape.Vertexes
+        self.newFaceVertexes = self.newFace.OuterWire.OrderedVertexes
         self.COIN_recreateObject()
         self.padObj.redraw()
 
@@ -636,6 +559,12 @@ class Design456_ExtendFace:
         pass
 
     def callback_Rotate(self):
+        initialAng=0
+        #padCenter= 
+        
+        
+        
+        
         print("Not impolemented ")
 
     def hide(self):
@@ -649,7 +578,7 @@ class Design456_ExtendFace:
         """
         self.dialog.hide()
         self.recreateObject()
-        
+
         # Remove coin objects
         self.coinFaces.removeAllChildren()
         self.sg.removeChild(self.coinFaces)
@@ -658,9 +587,9 @@ class Design456_ExtendFace:
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
-        
+
         App.ActiveDocument.commitTransaction()  # undo reg.
-        
+
         self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
 
     def __del__(self):
@@ -686,7 +615,7 @@ class Design456_ExtendFace:
             self.endVector = None
             self.startVector = None
             self.tweakLength = None
-            # We will make two object, 
+            # We will make two object,
             # one for visual effect and the other is the original
             self.selectedObj = None
             self.direction = None
@@ -718,5 +647,6 @@ class Design456_ExtendFace:
             'MenuText': ' Extend Face',
             'ToolTip':  ' Extend Face'
         }
+
 
 Gui.addCommand('Design456_ExtendFace', Design456_ExtendFace())

@@ -553,13 +553,6 @@ class Design456_ExtendEdge:
 
     def callback_Rotate(self):
         # Complex task :( 
-        initialAng=0
-        padCenter= 
-        
-        
-        
-        
-        
         print("Not impolemented ")
 
     def hide(self):
