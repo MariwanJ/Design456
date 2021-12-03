@@ -344,12 +344,12 @@ class Design456_ExtendFace:
                 self.oldEdgeVertexes = self.selectedFace.Vertexes
             if not hasattr(self.selectedFace, 'Edges'):
                 raise Exception("Please select only one face and try again")
-
-            if not(type(self.selectedFace.Curve) == _part.Line or
-                   type(self.selectedFace.Curve) == _part.BezierCurve):
-                msg = "Curve edges are not supported yet"
-                faced.errorDialog(msg)
-                self.hide()
+            #TODO: FIXME: WHAT SHOULD WE DO WHEN IT IS A CURVED FACE???
+            #if not(type(self.selectedFace.Curve) == _part.Line or
+            #       type(self.selectedFace.Curve) == _part.BezierCurve):
+            #    msg = "Curve edges are not supported yet"
+            #    faced.errorDialog(msg)
+            #    self.hide()
 
             self.setupRotation = self.calculateNewVector()
 
