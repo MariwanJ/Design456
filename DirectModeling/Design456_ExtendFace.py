@@ -263,16 +263,26 @@ class Design456_ExtendFace:
             if (face.Surface.Rotation is None):
                 calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 rotation = [0, 1, 0, calAn]
+                print("no rotation")
             else:
-                rotation = [face.Surface.Rotation.Axis.x,
-                            face.Surface.Rotation.Axis.y,
-                            face.Surface.Rotation.Axis.z,
-                            math.degrees(face.Surface.Rotation.Angle)]
-
+                ang=face.Surface.Axis.getAngle(App.Vector(0,0,1))
+                rotation = [0, 0 , 1, ang]
+                #rotation = [face.Surface.Rotation.Axis.x,
+                #            face.Surface.Rotation.Axis.y,
+                #            face.Surface.Rotation.Axis.z,
+                #            math.degrees(face.Surface.Rotation.Angle)]
+                #
+                #            face.Surface.Axis.getAngle(App.Vector(0,0,100)
+            print (rotation)
+            
             d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the 3 arrows-pads
-            self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
+            
+            if self.oldEdgeVertexes[0].Point.z > self.selectedObj.Shape.BoundBox.ZMin:
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
+            else:
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin
 
             return rotation
 
@@ -307,8 +317,8 @@ class Design456_ExtendFace:
         """[ Executes when the tool is used   ]
         """
         self.coinFaces = coin.SoSeparator()
-        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # pads rotation
-        self.setupRotation = [0, 0, 0, 0]
+        self.w_rotation = [0.0, 0.0, 0.0]  # pads rotation
+        self.setupRotation = [0, 0, 0, 0]  # Whole widget rotation
         self._Vector = App.Vector(0.0, 0.0, 0.0)  # pads POSITION
         self.counter = 0
         self.run_Once = False
@@ -374,18 +384,20 @@ class Design456_ExtendFace:
             # Deside how the Degree pad be drawn
             self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
                                                 # label
-                                                (str(
-                                                    round(self.w_rotation[3], 2)) + "°"),
+                                                (str(round(self.w_rotation[0], 2)) + "°"+
+                                                 str(round(self.w_rotation[1], 2)) + "°"+
+                                                 str(round(self.w_rotation[2], 2)) + "°"),
                                                 FR_COLOR.FR_WHITE,  # lblcolor
                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
-                                                [0, 0, 0, 0],  # rotation
+                                                [0, 0, 0],  # rotation of the pads main
                                                 self.setupRotation,  # setup rotation
-                                                [10.0, 10.0, 10.0],  # scale
-                                                0,  # type
+                                                [15.0, 15.0, 15.0],  # scale
+                                                1,  # type
                                                 0,  # opacity
                                                 [10, 10, 10])  # distance between them
-
+            self.padObj.enablePAD()
+            
             # Different callbacks for each action.
             self.padObj.w_xAxis_cb_ = self.MouseMovement_cb
             self.padObj.w_yAxis_cb_ = self.MouseMovement_cb
@@ -564,11 +576,11 @@ class Design456_ExtendFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def smartlbl_callback(self):
+    def smartlbl_callback(self,userData = None):
         print("lbl callback")
         pass
 
-    def callback_Rotate(self):
+    def callback_Rotate(self, userData = None):
         initialAng=0
         #padCenter= 
         
