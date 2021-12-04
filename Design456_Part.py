@@ -503,16 +503,26 @@ class Design_ColorizeObject:
     def Activated(self): 
         import random
         try:
+            sel = Gui.Selection.getSelection()  # selection object
+            if len(sel) == 0:
+                errmsg="Please select an object to apply the tool"
+                faced.errorDialog(errmsg)
+                return
+            
+            selectedObj=sel[0]
             App.ActiveDocument.openTransaction(translate("Design456","Colorize"))
-            aa = Gui.Selection.getSelection()[0]  # selection object
             colors = []
-            for ii in range(len(aa.Shape.Faces)):
-                colors.append((random.uniform(0.25, 1), random.uniform(0.25, 1), random.uniform(0.25, 1), 0.0)) #red, green, blue, transparence
+            for ii in range(len(selectedObj.Shape.Faces)):
+                base = random.uniform(0.1, 0.5)  # Randomize even the lower limit 
+                colors.append((random.uniform(base, 1),
+                               random.uniform(base , 1), 
+                               random.uniform(base , 1), 0.0)) #red, green, blue, transparency
        
-            aa.ViewObject.DiffuseColor = colors 
+            selectedObj.ViewObject.DiffuseColor = colors 
             App.ActiveDocument.commitTransaction() #undo reg.
+            
         except Exception as err:
-            App.Console.PrintError("'Part::Hemisphere' Failed. "
+            App.Console.PrintError("'Design_ColorizeObject' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
