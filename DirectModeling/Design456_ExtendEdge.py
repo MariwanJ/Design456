@@ -254,7 +254,10 @@ class Design456_ExtendEdge:
             d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the 3 arrows-pads
-            self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
+            if self.oldEdgeVertexes[0].Point.z > self.selectedObj.Shape.BoundBox.ZMin:
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax+5
+            else:
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin-5
 
             return rotation
 
@@ -288,9 +291,9 @@ class Design456_ExtendEdge:
         """[ Executes when the tool is used   ]
         """
         self.coinFaces = coin.SoSeparator()
-        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/pad rotation
+        self.w_rotation = [0.0, 0.0, 0.0]  # 
         self.setupRotation = [0, 0, 0, 0]
-        self._Vector = App.Vector(0.0, 0.0, 0.0)  # pad POSITION
+        self._Vector = App.Vector(0.0, 0.0, 0.0)  # pad POSITION 
         self.counter = 0
         self.run_Once = False
         self.tweakLength = 0
@@ -353,17 +356,21 @@ class Design456_ExtendEdge:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "ExtendEdge"))
 
+            if self.oldEdgeVertexes[0].Point.z < self.selectedObj.Shape.BoundBox.ZMin:
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin - 5
+
             # Deside how the Degree pad be drawn
             self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
                                                 # label
-                                                (str(
-                                                    round(self.w_rotation[3], 2)) + "°"),
+                                                (str(round(self.w_rotation[0], 2)) + "°"+
+                                                 str(round(self.w_rotation[1], 2)) + "°"+
+                                                 str(round(self.w_rotation[2], 2)) + "°"),
                                                 FR_COLOR.FR_WHITE,  # lblcolor
                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
-                                                [0, 0, 0, 0],  # rotation
                                                 self.setupRotation,  # setup rotation
-                                                [10.0, 10.0, 10.0],  # scale
+                                                [0, 0, 0, 0],  # rotation
+                                                [15.0, 15.0, 15.0],  # scale
                                                 0,  # type
                                                 0,  # opacity
                                                 [10, 10, 10])  # distance between them

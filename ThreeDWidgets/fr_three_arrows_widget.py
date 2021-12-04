@@ -162,10 +162,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  label: str = "",
                  _lblColor=FR_COLOR.FR_WHITE,
                  _padColor=[FR_COLOR.FR_RED,
-                           FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
-                 _Rotation=[0.0, 0.0, 0.0, 0.0],
-                 _prerotation=[0.0, 0.0, 0.0],
-                 _scale=[3, 3, 3], 
+                              FR_COLOR.FR_GREEN,
+                              FR_COLOR.FR_BLUE],
+                 # User controlled rotation. This is only for the 3Pads
+                 _Rotation=[0.0, 0.0, 0.0],
+                 # Face position-direction controlled rotation at creation. Whole widget
+                 _prerotation=[0.0, 0.0, 0.0, 0.0],
+                 _scale=[3, 3, 3],
                  _type=1,
                  _opacity=0,
                  _distanceBetweenThem=[5, 5, 5]):
@@ -206,8 +209,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_padYsoSeparator = coin.SoSeparator()
         self.w_padZsoSeparator = coin.SoSeparator()
 
-        self.w_color = _lblColor  #not used for this widget
-        self.w_PadAxis_color=_padColor
+        self.w_color = _lblColor  # not used for this widget
+        self.w_PadAxis_color = _padColor
         self.w_selColor = [i * 1.2 for i in self.w_selColor]
         self.w_Scale = _scale
         self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
@@ -227,10 +230,10 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.vectors = self.w_vector
         # We must make it higher or it will intersect the object and won't be visible
-        #TODO:Check if this works always?
-        self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + 2  
+        # TODO:Check if this works always?
+        self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + 2
         self.w_lbluserData.labelcolor = _lblColor
-        
+
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0
         self.w_Rotation = _Rotation
@@ -368,28 +371,31 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
 
             if self.is_visible():
-    
+
                 self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
                                                               self.distanceBetweenThem[0],
                                                               self.w_vector[0].y,
                                                               self.w_vector[0].z),
-                                                   self.w_PadAxis_color[0], self.w_Scale,     #default FR_COLOR.FR_RED
+                                                   # default FR_COLOR.FR_RED
+                                                   self.w_PadAxis_color[0], self.w_Scale,
                                                    self.DrawingType, self.Opacity,
-                                                   [0.0, 90.0, 0.0])  # RED
+                                                   [0.0, 90.0, 0.0])    #pre-Rotation # RED
                 self.w_YsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
                                                               self.w_vector[0].y +
                                                               self.distanceBetweenThem[1],
                                                               self.w_vector[0].z),
-                                                   self.w_PadAxis_color[1], self.w_Scale,    #default FR_COLOR.FR_GREEN
+                                                   # default FR_COLOR.FR_GREEN
+                                                   self.w_PadAxis_color[1], self.w_Scale,
                                                    self.DrawingType, self.Opacity,
-                                                   [0.0, 90.0, 90.0])  # GREEN
+                                                   [0.0, 90.0, 90.0])  #pre-Rotation GREEN
                 self.w_ZsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
                                                               self.w_vector[0].y,
                                                               self.w_vector[0].z +
                                                               self.distanceBetweenThem[2]),
-                                                   self.w_PadAxis_color[2], self.w_Scale,  #default FR_COLOR.FR_BLUE
+                                                   # default FR_COLOR.FR_BLUE
+                                                   self.w_PadAxis_color[2], self.w_Scale,
                                                    self.DrawingType, self.Opacity,
-                                                   [0.0, 0.0, 0.0])  # BLUE
+                                                   [0.0, 0.0, 0.0])  #pre-Rotation BLUE
                 if self.w_padEnabled:
                     # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                     # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
@@ -404,15 +410,15 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 CollectThemAll = coin.SoSeparator()
                 tR = coin.SbVec3f()
                 tR.setValue(
-                    self.w_Rotation[0], self.w_Rotation[1], self.w_Rotation[2])
+                    self.w_PRErotation[0], self.w_PRErotation[1], self.w_PRErotation[2])
                 CollectThemAllRot.rotation.setValue(
-                    tR, math.radians(self.w_Rotation[3]))
+                    tR, math.radians(self.w_PRErotation[3]))
 
                 CollectThemAll.addChild(CollectThemAllRot)
                 CollectThemAll.addChild(self.w_XsoSeparator)
                 CollectThemAll.addChild(self.w_YsoSeparator)
                 CollectThemAll.addChild(self.w_ZsoSeparator)
-                
+
                 if self.w_padEnabled:
                     CollectThemAll.addChild(self.w_padXsoSeparator)
                     CollectThemAll.addChild(self.w_padYsoSeparator)
@@ -432,7 +438,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
     def redraw(self):
         """
         When the widget is damaged, use this function to redraw it.        
@@ -450,15 +455,15 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
             self.lblRedraw()
             self.draw()
-    
+
     def draw_label(self):
         """[Draw 3D text in the scenegraph]
 
         Returns:
             [type]: [Use w_lbluserData variable to setup the label shape, size, font ..etc
-            
+
             w_lebluserData is of type  propertyValues
-            
+
             @dataclass
             class propertyValues:
                 '''
@@ -478,18 +483,18 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 scale: tuple  # Three float numbers for scaling
             ]
         """
-    
+
         lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
         self.w_widgetlblSoNodes = lbl
         return lbl
-    
+
     def lblRedraw(self):
         """[Redraw the label]
         """
         if(self.w_widgetlblSoNodes is not None):
             self.w_widgetlblSoNodes.removeAllChildren()
         self.draw_label()
-        
+
     def move(self, newVecPos=App.Vector(0, 0, 0)):
         """[Move the widget to a new location referenced by the 
             left-top corner of the object. Or the start of the Pad
@@ -652,25 +657,25 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     def calculateWidgetDiskRotationAfterDrag(self, v1, v2):
         self.w_WidgetDiskRotation = math.degrees(v1.getAngle(v2))
-        
+
     def enablePAD(self):
         """[Enable X,Y & Z rotation pad. You need to redraw the widget]
         """
         self.w_padEnabled = True
-        
+
     def setDistanceBetweenThem(self, newvalue):
         """[Change distance between the arrows to the origin of the widget. ]
 
         Args:
             newvalue ([float]): [new distance in mm]
         """
-        self.distanceBetweenThem=newvalue
-        
+        self.distanceBetweenThem = newvalue
+
     def disablePAD(self):
         """[Disable X,Y & Z rotation pad. You need to redraw the widget]
         """
         self.w_padEnabled = False
-        
+
     def do_callbacks(self, callbackType=-1):
         """[summarize the call of the callbacks]
 
@@ -693,10 +698,10 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.w_padYAxis_cb_(self.w_userData)
                 self.w_padZAxis_cb_(self.w_userData)
         elif(callbackType == 10):
-            # normal callback This represent the whole widget. 
+            # normal callback This represent the whole widget.
             # Might not be used here TODO:Do we want this?
             self.do_callback()
-            
+
         elif(callbackType == 0):
             self.w_userData.Axis = "X"
             self.w_userData.padAxis = None
