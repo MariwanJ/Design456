@@ -47,7 +47,7 @@ import FACE_D as faced
 import math
 
 # Some get problem with this.. not used but Might be used in the future.
-# I might remove it for this tool. But lets leave it now.
+# I might remove it for this tool. But lets leave it for now.
 
 # try:
 #     from OCC import Core
@@ -175,7 +175,7 @@ class Design456_ExtendFace:
             self.sg.removeChild(self.coinFaces)
             for i in range(0, len(self.savedVertices)):
                 for j in range(0, len(self.savedVertices[i])):
-                    for testItem in range(0,len(self.oldEdgeVertexes)):
+                    for testItem in range(0, len(self.oldEdgeVertexes)):
                         if self.savedVertices[i][j].Point == self.oldEdgeVertexes[testItem].Point:
                             self.savedVertices[i][j] = self.newFaceVertexes[testItem]
                             break #we are done
@@ -351,7 +351,7 @@ class Design456_ExtendFace:
             self.saveVertices()
 
             if(hasattr(self.selectedFace, "Vertexes")):
-                self.oldEdgeVertexes = self.selectedFace.Vertexes
+                self.oldEdgeVertexes = self.selectedFace.OuterWire.OrderedVertexes
             if not hasattr(self.selectedFace, 'Edges'):
                 raise Exception("Please select only one face and try again")
             #TODO: FIXME: WHAT SHOULD WE DO WHEN IT IS A CURVED FACE???
@@ -364,7 +364,7 @@ class Design456_ExtendFace:
             self.setupRotation = self.calculateNewVector()
 
             self.ExtractFace()
-            self.newFaceVertexes = self.newFace.Shape.Vertexes
+            self.newFaceVertexes = self.newFace.Shape.OuterWire.OrderedVertexes
             App.ActiveDocument.removeObject(self.selectedObj.Name)
 
             # Undo
