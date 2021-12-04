@@ -172,7 +172,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  _type=1,
                  _opacity=0,
                  _distanceBetweenThem=[5, 5, 5]):
-
         super().__init__(vectors, label)
 
         self.w_widgetType = constant.FR_WidgetType.FR_PAD

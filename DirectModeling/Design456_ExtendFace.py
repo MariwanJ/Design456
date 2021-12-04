@@ -573,10 +573,120 @@ class Design456_ExtendFace:
     def smartlbl_callback(self,userData = None):
         print("lbl callback")
         pass
-
+        
     def callback_Rotate(self, userData = None):
         initialAng=0
-        #padCenter= 
+        #Complex calculation :(  
+        #This can be a problem for a while 
+        
+        
+        #Note : We already know which pad is active since 
+        #   w_userData.padAxis  will tell us the axis
+
+        
+                
+        if userData is None:
+            print("userData is nothing")
+            return  # Nothing to do here - shouldn't be None
+        events = userData.events
+        if type(events) != int:
+            print("event was not int")
+            return
+
+
+        self.endVector = App.Vector(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                            self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                            self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        startX = startY = 0
+        if self.run_Once is False:
+            self.run_Once = True
+            # only once
+            self.startVector = self.endVector
+        else:
+            self.run_Once = True
+            if (self.startVector is None):
+                self.startVector = self.endVector
+
+        oldangle = self.padObj.w_Rotation
+        #We use 2D mouse position only .. 
+        
+        mx = self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
+        my = self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
+        
+        # calculating the angle in a better way:
+
+        CenterOfPad = self.padObj.getWidgetsCentor()
+        boundary = self.padObj.getWidgetsBoundary()
+        
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # We need to find if the movement is on the left of the centor or on the right
+        # and we need to know if it is Upward or Downward
+        # to the left or to the right.
+        # complex unfortunately. 
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+        if userData.padAxis == 'X':
+            #So the involved axis will be 
+            pass
+        if userData.padAxis == 'Y':
+            pass
+        if userData.padAxis == 'Z':
+            pass
+        
+        mx = self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x
+        my = self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y
+        mz = self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z
+        
+        leftToCenterOfPad= None       
+        
+        
+        if userData.padAxis == 'X':
+            #So the involved adis will be 
+            pass
+        if userData.padAxis == 'Y':
+            pass
+        if userData.padAxis == 'Z':
+            pass
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        if (self.RotateLBL is not None):
+            self.RotateLBL.setText("Rotation Axis= " + "(" +
+                                        str(self.w_rotation[0])+","
+                                        + str(self.w_rotation[1]) +
+                                        "," +
+                                        str(self.w_rotation[2]) + ")"
+                                        + "\nRotation Angle= " + str(angle) + " °")
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         

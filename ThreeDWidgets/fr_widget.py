@@ -88,7 +88,7 @@ class propertyValues:
 # ***********************************************************************************************************
 
 
-def defaultCallback(obj, userData=None):
+def defaultCallback(obj, userData = None):
     """
     Dummy callback. This should be overdriven to call the real callback
     """
@@ -509,11 +509,19 @@ class Fr_Widget (object):
         Returns:
             [App.Vector]: [Return a vector represents the centor of the widget]
         """
-        viewPort = coin.SbViewportRegion()
-        BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
-        BoundaryAction.apply(self.w_wdgsoSwitch)
-        center = BoundaryAction.getCenter()
-        return App.Vector(center[0], center[1], center[2])
+        try:
+            viewPort = coin.SbViewportRegion()
+            BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
+            BoundaryAction.apply(self.w_wdgsoSwitch)
+            center = BoundaryAction.getCenter()
+            return App.Vector(center[0], center[1], center[2])
+
+        except Exception as err:
+            App.Console.PrintError("'getWidgetsCentor' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def getWidgetsBoundary(self):
         """[Retrive the Max size of the 3D coin object by returning the Min vector and Max vector]
@@ -521,13 +529,20 @@ class Fr_Widget (object):
         Returns:
             [Tuple]: [Two vectors first is for the Min Boundary, second is for the Max Boundary]
         """
-        viewPort = coin.SbViewportRegion()
-        BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
-        BoundaryAction.apply(self.w_wdgsoSwitch)
-        Boundary = BoundaryAction.getBoundingBox()
-        BoundMax = coin.SbVec3f()
-        BoundMin = coin.SbVec3f()
-        Boundary.getMax(BoundMax)
-        Boundary.getMin(BoundMin)
-        return ([App.Vector(BoundMin[0], BoundMin[3], BoundMin[2]),
-                App.Vector(BoundMax[0], BoundMax[1], BoundMax[2])])
+        try:
+            viewPort = coin.SbViewportRegion()
+            BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
+            BoundaryAction.apply(self.w_wdgsoSwitch)
+            Boundary = BoundaryAction.getBoundingBox()
+            BoundMax = coin.SbVec3f()
+            BoundMin = coin.SbVec3f()
+            Boundary.getMax(BoundMax)
+            Boundary.getMin(BoundMin)
+            return ([App.Vector(BoundMin[0], BoundMin[3], BoundMin[2]),
+                    App.Vector(BoundMax[0], BoundMax[1], BoundMax[2])])
+        except Exception as err:
+            App.Console.PrintError("'getWidgetsBoundary' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
