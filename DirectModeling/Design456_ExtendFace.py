@@ -264,17 +264,11 @@ class Design456_ExtendFace:
                 calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 rotation = [0, 1, 0, calAn]
                 print("no rotation")
+                
             else:
                 ang=face.Surface.Axis.getAngle(App.Vector(0,0,1))
                 rotation = [0, 0 , 1, ang]
-                #rotation = [face.Surface.Rotation.Axis.x,
-                #            face.Surface.Rotation.Axis.y,
-                #            face.Surface.Rotation.Axis.z,
-                #            math.degrees(face.Surface.Rotation.Angle)]
-                #
-                #            face.Surface.Axis.getAngle(App.Vector(0,0,100)
-            print (rotation)
-            
+
             d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the 3 arrows-pads
