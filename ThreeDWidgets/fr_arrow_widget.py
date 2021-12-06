@@ -140,10 +140,10 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_E):
                 print("Enter Event")
                 self.do_callback()
-               
+
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
-            # Double click event.
-            if clickwdglblNode != None:
+            # Double click event. Only when the widget is double clicked
+            if clickwdglblNode is not None:
                 print("Double click detected")
                 #if not self.has_focus():
                 #    self.take_focus()
@@ -151,29 +151,33 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            if self.releaseDrag==True:
-                self.releaseDrag==False
+            #Release is accepted even if the mouse is not over the widget
+            if self.releaseDrag is True:
+                self.releaseDrag = False
                 print("Release Mouse happened")
                 self.do_callback()     #Release callback should be activated even if the arrow != under the mouse 
                 return 1
-            
-            if (clickwdgdNode != None) or (clickwdglblNode != None):
+
+            if (clickwdgdNode is not None) or (clickwdglblNode is not None):
                 if not self.has_focus():
                     self.take_focus()
                 self.do_callback()
-                return 1            
+                return 1  
             else:
                 self.remove_focus()
                 return 0
-        
-        if self.w_parent.link_to_root_handle.w_lastEvent==FR_EVENTS.FR_MOUSE_DRAG:
-            if self.releaseDrag==False:
-                if (clickwdgdNode != None) or (clickwdglblNode != None):
-                    self.releaseDrag=True   
+        #Mouse first click and then mouse with movement is here 
+        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+            if self.releaseDrag is False:
+                if (clickwdgdNode is not None) or (clickwdglblNode is not None):
+                    self.releaseDrag = True   
                     self.take_focus()
-            self.do_move_callback()        # We use the same callback,      
-            #Continue run the callback as far as it != releaseDrag=True
-            return 1
+            
+            else:
+                if (clickwdgdNode is not None) or (clickwdglblNode is not None):
+                    #Continue run the callback as far as it != releaseDrag=True
+                    self.do_move_callback()        # We use the same callback,      
+                    return 1
         #Don't care events, return the event to other widgets    
         return 0  # We couldn't use the event .. so return 0 
 
