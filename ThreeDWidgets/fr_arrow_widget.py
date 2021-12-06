@@ -33,7 +33,7 @@ import ThreeDWidgets
 import pivy.coin as coin
 from ThreeDWidgets import fr_draw
 from ThreeDWidgets import fr_draw1
-
+from PySide import QtGui, QtCore
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
 from ThreeDWidgets import fr_coin3d
@@ -138,7 +138,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                                                           self.w_pick_radius, self.w_widgetSoNodes)
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetlblSoNodes)
-
+        if (clickwdglblNode is not None) or (clickwdgdNode is not None):
+            QtGui.QCursor.setPos()
         # Execute callback_relese when enter key pressed or E pressed
         if (self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_ENTER or
             self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
