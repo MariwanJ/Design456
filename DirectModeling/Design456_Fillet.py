@@ -29,8 +29,6 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft
-import Part
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
@@ -113,7 +111,6 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         elif linktocaller.FilletRadius>8:
             linktocaller.FilletRadius=8
         
-        print("FilletRadius",linktocaller.FilletRadius)         
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
         linktocaller.FilletLBL.setText("scale= "+ str(round(linktocaller.FilletRadius,4)))
         linktocaller.reCreatefilletObject()
@@ -179,7 +176,7 @@ class Design456_SmartFillet:
     # 0 is the original    1 is the fake one (just for interactive effect)
     mouseToArrowDiff = 0.0 
     offset=0.0
-    AwayFrom3DObject = 10  # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
+    AwayFrom3DObject = 20  # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
     FilletRadius = 0.0001   #We cannot have zero. TODO: What value we should use? FIXME:
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
