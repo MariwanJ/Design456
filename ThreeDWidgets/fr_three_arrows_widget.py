@@ -59,7 +59,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-
+#TODO: FIXME: old implementation was to complex. we will uses one arrow widget 3 times. 
 
 @dataclass
 class userDataObject:

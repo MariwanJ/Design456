@@ -92,12 +92,13 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         if linktocaller.run_Once is False:
             linktocaller.run_Once = True
             linktocaller.startVector = linktocaller.endVector
+            linktocaller.mouseToArrowDiff = linktocaller.endVector.sub(userData.ArrowObj.w_vector[0])
 
          # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
-        linktocaller.endVector=linktocaller.endVector
+        linktocaller.endVector = linktocaller.endVector
         if linktocaller.direction == "+x":
             linktocaller.ChamferRadius = (-linktocaller.endVector.x +
                                           linktocaller.startVector.x)/MouseScaleFactor
@@ -122,7 +123,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.ChamferRadius = 8
 
         print("ChamferRadius", linktocaller.ChamferRadius)
-        linktocaller.resizeArrowWidgets(linktocaller.endVector-linktocaller.startVector)
+        linktocaller.resizeArrowWidgets(linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         linktocaller.ChamferLBL.setText(
             "scale= " + str(round(linktocaller.ChamferRadius, 4)))
         linktocaller.reCreatechamferObject()
@@ -188,7 +189,7 @@ class Design456_SmartChamfer:
     # We will make two object, one for visual effect and the other is the original
     selectedObj = []
     # 0 is the original    1 is the fake one (just for interactive effect)
-    mouseToArrowDiff = 0.0
+    mouseToArrowDiff = None
     offset = 0.0
     AwayFrom3DObject = 20  # Use this to take away the arrow from the object
     # We cannot have zero. TODO: What value we should use? FIXME:
@@ -218,11 +219,11 @@ class Design456_SmartChamfer:
         and updating the vectors inside each fr_arrow_widget
         """
         if(self.direction == "+x" or self.direction == "-x"):
-            self.smartInd.w_vector.x = self.saveFirstPostion.x+ endVec.x  # Only X should affect the arrow
+            self.smartInd.w_vector[0].x = endVec.x  # Only X should affect the arrow
         elif(self.direction == "+y" or self.direction == "-y"):
-            self.smartInd.w_vector.y = self.saveFirstPostion.y+endVec.y  # Only Y should affect the arrow
+            self.smartInd.w_vector[0].y = endVec.y  # Only Y should affect the arrow
         elif(self.direction == "+z" or self.direction == "-z"):
-            self.smartInd.w_vector.z = self.saveFirstPostion.z+endVec.z  # Only Z should affect the arrow
+            self.smartInd.w_vector[0].z = endVec.z  # Only Z should affect the arrow
         self.smartInd.redraw()
         return
 
@@ -414,7 +415,7 @@ class Design456_SmartChamfer:
         rotation = self.getArrowPosition()
 
         self.smartInd = Fr_Arrow_Widget(
-            self._vector, "Chamfer", 1, FR_COLOR.FR_RED, rotation)
+            [self._vector,App.Vector(0,0,0)], "Chamfer", 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
