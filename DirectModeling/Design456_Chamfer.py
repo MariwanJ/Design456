@@ -122,7 +122,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         elif linktocaller.ChamferRadius > 8:
             linktocaller.ChamferRadius = 8
 
-        print("ChamferRadius", linktocaller.ChamferRadius)
+        #print("ChamferRadius", linktocaller.ChamferRadius)
         linktocaller.resizeArrowWidgets(linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         linktocaller.ChamferLBL.setText(
             "scale= " + str(round(linktocaller.ChamferRadius, 4)))
