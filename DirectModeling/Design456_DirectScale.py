@@ -227,10 +227,8 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-        
+
         if clickwdgdNode is None and clickwdglblNode is None:
-            print("clickwdgdNode",clickwdgdNode)
-            print(" clickwdglblNode",  clickwdglblNode)
             if linktocaller.run_Once is False:
                 print("click move")
                 return 0  # nothing to do

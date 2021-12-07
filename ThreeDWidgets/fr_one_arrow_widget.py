@@ -46,17 +46,41 @@ import math
 Example how to use this widget.
 
 # show the window and it's widgets.
+import ThreeDWidgets.fr_one_arrow_widget as wd
 import ThreeDWidgets.fr_coinwindow as wnn
-import math
-import fr_one_arrow_widget as w
-mywin = wnn.Fr_CoinWindow()
+from ThreeDWidgets.constant import FR_COLOR
 
-vec=[]
-vec.append(App.Vector(0,0,0))
-vec.append(App.Vector(0,0,0))  #Dummy won't be used
-arrows=w.Fr_OneArrow_Widget(vec,"Pad")
-mywin.addWidget(arrows)
-mywin.show()
+class test:
+	global runOunce
+	def __init__(self):
+		self.runOunce = None
+
+	def callback_move(self,userData : wd.userDataObject = None):
+     
+	     PadObj = userData.PadObj  # Arrow object
+	     click=App.Vector(PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                            PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                            PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+	     if self.runOunce == None:
+	           self.runOunce = click.sub(PadObj.w_vector[0])
+
+	     PadObj.w_vector[0]=click.sub(self.runOunce)
+	     PadObj.redraw()
+	     print(self.runOunce,"self.runOunce")
+
+	def runme(self):
+		mywin = wnn.Fr_CoinWindow()
+		vectors=[App.Vector(0,0,0), App.Vector(0,0,0)] 
+		rot=[0,0,0,0]
+		rot1=[1,0,0,0.31]
+		root=wd.Fr_OneArrow_Widget(vectors, "X-Axis")
+		root.w_move_callback_=self.callback_move
+		mywin.addWidget(root)
+		mywin.show()
+
+a=test()
+a.runme()
+a=test()
 
 """
 
@@ -162,8 +186,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.PadObj = self
 
-        self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
-        # Use this to keep the selected so during push-drag, after release it should be none
         self.currentSo = None
 
         # This affect only the Widget label - nothing else
@@ -179,6 +201,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_Rotation = _Rotation
         self.w_PRErotation = _prerotation
         self.w_padEnabled = False
+        self.releaseDrag = -1 # Used to avoid running drag code while it is in drag mode
+                              # -1 no click, 0 mouse clicked, 1 mouse dragging
 
     def handle(self, event):
         """
@@ -226,9 +250,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            self.currentSo = None
-            if self.releaseDrag is True:
-                self.releaseDrag is False
+            if self.releaseDrag == 1 or self.releaseDrag == 0:
+                self.releaseDrag = -1
+                self.currentSo = None
                 # Release callback should be activated even if the Pad != under the mouse
                 self.do_callback()
                 return 1
@@ -236,30 +260,33 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             if (len(clickwdgdNode) > 0 or clickwdglblNode is not None):
                 if not self.has_focus():
                     self.take_focus()
+                self.do_callback()
                 return 1
             else:
                 self.remove_focus()
                 return 0
-
+        #Mouse first click and then mouse with movement is here 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            # This part will be active only once when for the first time user click on the coin drawing.
-            # Later DRAG should be used
-            if self.releaseDrag is False:
-                self.releaseDrag = True
+            if ((clickwdglblNode is not None) or 
+                (clickwdgdNode is not None)) and self.releaseDrag == -1:
+                # This part will be active only once when for the first time user click on the coin drawing.
+                # Later DRAG should be used
+                self.releaseDrag = 0
                 self.take_focus()
-            # These Object reacts only with dragging .. Clicking will not do anything useful
-            # We don't accept more than one element- clicking at the time
-            if (self.currentSo is None):
-                for counter in range(0, 1):
-                    if clickwdgdNode[counter] is True:
-                        self.currentSo = counter
-                        self.do_callbacks(counter)
-                        return 1
-                return 0   # None of them was True.
-            else:
-                self.do_callbacks(self.currentSo)
                 return 1
 
+            elif ((clickwdgdNode is not None) or (clickwdglblNode is not None)) and self.releaseDrag == 0:
+                self.releaseDrag = 1  # Drag if will continue it will be a drag always
+                self.take_focus()
+                self.do_move_callback()
+                return 1
+
+            elif self.releaseDrag == 1:
+                # As far as we had DRAG before, we will continue run callback.
+                # This is because if the mouse is not exactly on the widget, it should still take the drag.
+                # Continue run the callback as far as it releaseDrag=1
+                self.do_move_callback()        # We use the same callback,
+                return 1
         # Don't care events, return the event to other widgets
         return 0  # We couldn't use the event .. so return 0
 
@@ -290,7 +317,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     preRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
                 elif self.axisType == 2:
                     preRotVal = [0.0, 0.0, 0.0]
-
+                print("w_vector",self.w_vector)
                 self.w_ArrowsSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
                                                                  self.distanceBetweenThem,
                                                                  self.w_vector[0].y,

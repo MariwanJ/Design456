@@ -212,19 +212,19 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             if self.is_visible():
                 if self.arrowType == 0:
                     self.w_widgetSoNodes = fr_draw.draw_arrow(
-                        self.w_vector, usedColor, self.w_lineWidth, self.w_rotation)
+                        self.w_vector[0], usedColor, self.w_lineWidth, self.w_rotation)
                 elif self.arrowType == 1:
                     self.w_widgetSoNodes = fr_draw.draw_2Darrow(
-                        self.w_vector, usedColor, scale, 0, 0, self.w_rotation)
+                        self.w_vector[0], usedColor, scale, 0, 0, self.w_rotation)
                 elif self.arrowType == 2:
                     self.w_widgetSoNodes = fr_draw.draw_2Darrow(
-                        self.w_vector, usedColor, scale, 1, 0, self.w_rotation)
+                        self.w_vector[0], usedColor, scale, 1, 0, self.w_rotation)
                 elif self.arrowType == 3:
                     self.w_widgetSoNodes = fr_draw.draw_DoubleSidedArrow(
-                        self.w_vector, usedColor, self.w_lineWidth, self.w_rotation)
+                        self.w_vector[0], usedColor, self.w_lineWidth, self.w_rotation)
                 elif self.arrowType == 4:
                     self.w_widgetSoNodes = fr_draw1.draw_DoubleSide2DdArrow(
-                        self.w_vector, usedColor, scale, 0, self.w_rotation)
+                        self.w_vector[0], usedColor, scale, 0, self.w_rotation)
 
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             else:

@@ -65,7 +65,14 @@ class propertyValues:
     __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
                  'labelcolor', 'alignment', 'rotation', 'rotationAxis' , 
                  'scale']
+<<<<<<< HEAD
     vectors: VECTOR  # List[App.Vector] two vectors must be provided
+=======
+    vectors: VECTOR  # List[App.Vector] two vectors must be provided. 
+                     # We cannot accept one vector as it will cause a huge problem.
+                     # Some will require several vectors, and other just one.
+                     # There is no way to avoid requiring more than 1 vector.
+>>>>>>> devbranch
     linewidth: int
     fontName: str
     fontsize: int
@@ -151,7 +158,14 @@ class Fr_Widget (object):
     w_KB_callback_ = defaultCallback  # Abstract class has no callback.
 
     def __init__(self, args: List[App.Vector] = [], label: str = ""):
+<<<<<<< HEAD
         self.w_vector = args        # This should be like App.vectors
+=======
+        self.w_vector = args    # List[App.Vector] two vectors must be provided. 
+                                # We cannot accept one vector as it causes a huge problem.
+                                # Some will require several vectors, and other just one.
+                                # There is no way to avoid requiring more than 1 vector.
+>>>>>>> devbranch
         # This must be a list, to have several raw, append st
         self.w_label = [label]
         self.w_lbluserData.fontsize
