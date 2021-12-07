@@ -66,11 +66,8 @@ wny.show()
 
 """
 
-<<<<<<< HEAD
-=======
 #FIXME: Handle is not correct . Make it like arrow widget. 
 
->>>>>>> devbranch
 def callback_default(obj,userData=None):
     print("fr_square widget default callback")
 
