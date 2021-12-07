@@ -71,11 +71,8 @@ wny.show()
 
 """
 
-<<<<<<< HEAD
-=======
 #FIXME: Handle is not correct . Make it like arrow widget. 
 
->>>>>>> devbranch
 def callback_default(obj,userData=None):
     print("Fr_Polygon widget default callback")
 
