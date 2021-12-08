@@ -29,7 +29,7 @@ import os
 import sys
 # Widgets type. QT widget will get QT in their names.
 
-
+#Implemented only for COIN3D. 
 class FR_WidgetType:
     """ Internal names of the widgets. QT widget will get 'qt' in their names """
     FR_WIDGET = "Base Widget"
@@ -39,18 +39,20 @@ class FR_WidgetType:
     FR_QTWINDOW = "QT Window"  # 2D World
     FR_EDGE = "Edge Widget"
     FR_FACE = "Face Widget"
-    FR_SQUARE_FRAME = "Square frame"
-    FR_TRIANGLE = "Triangle frame"
+    FR_SQUARE_FRAME = "Square Frame"
+    FR_TRIANGLE = "Triangle Frame"
     FR_POLYGON = "Polygon Widget"
     FR_ARROW = "Arrow Widget"
     FR_BOX = "Box Widget"
     FR_WHEEL = "Wheel Widget"
-    FR_PAD   = "Wheel PAD Widget"
+    FR_ONE_PAD   = "Wheel PAD Widget"
+    FR_THREE_PAD   = "Wheel PAD Widget"
 
-
+# Transparency - No color will be applied
 class FR_COLOR:
-    # Transparency - No color will be applied
-
+    """[Color definition used in all widgets consist of
+    a tuple of three float values between 0.0 and 1.0]
+    """
     FR_TRANSPARENCY = (-1.0000,  -1.0000,  -1.0000)  # No color
     FR_PINK = (1.0000,	0.7529,	0.7961)
     FR_BLUE = (0.0000,	0.0000,	1.0000)
@@ -205,7 +207,7 @@ class FR_COLOR:
 
 # Box type when for widgets
 
-
+# Not implemted yet
 class FR_BoxType:  # There will not be any boundary box or bkg box
     FR_NoBox = 0
     FR_FLAT_BOX = 10
@@ -224,7 +226,7 @@ class FR_BoxType:  # There will not be any boundary box or bkg box
 
 # This constant should determine the type of redraw required
 
-
+#Note impolemented yet
 class FR_DAMAGE:
     FR_ALL_DAMAGE = 0
     FR_LBL_DAMAGE = 10
@@ -234,6 +236,8 @@ class FR_DAMAGE:
 
 
 class FR_EVENTS:
+    """[COIN3D Events used for interacting with the fr_widgets]
+    """
     FR_NO_EVENT = 0x0000
     FR_MOUSE_LEFT_PUSH = 0xDD10
     FR_MOUSE_RIGHT_PUSH = 0xDD20
@@ -374,7 +378,7 @@ class FR_EVENTS:
     FR_BRACKETRIGHT = 0X005D
     FR_GRAVE = 0X0060
 
-
+#Not implemented yet
 class FR_WHEN:
     FR_WHEN_NEVER = 0    # Never call the callback
     FR_WHEN_CHANGED = 1    # Do the callback only when the widget value changes
@@ -388,7 +392,7 @@ class FR_WHEN:
     # Do the callback when the user presses the ENTER key, even if the value doesn't change
     FR_WHEN_ENTER_KEY_ALWAYS = 10
 
-
+#TODO:Not implemented yet
 class FR_ALIGN:
     '''
     Alignment constants: 
@@ -469,6 +473,8 @@ class FR_ALIGN:
 
 
 class FR_BRUSHES:
+    """[Brush types used with Design456_Paint]
+    """
     FR_CIRCLE_BRUSH                         =  0
     FR_SEMI_CIRCLE_BRUSH                    =  1
     FR_QUARTER_CIRCLE_BRUSH                 =  2
@@ -508,3 +514,17 @@ class FR_BRUSHES:
     FR_FILLET3_BRUSH                        =  36
     FR_FILLET4_BRUSH                        =  37
 
+class FR_ROTATION:
+    """[Used to indicate the direction of 
+    rotation for the wheel and pad widget]
+    
+        Rotation:  1) From -Y to +Y --> when X is Positive              Angle Decrease
+                   2) From -Y to +Y --> when X is Negative              Angle Increase
+                   3) From +Y to -Y --> when X is Negative              Angle Decrease
+                   4) From +Y to -Y --> when X is Positive              Angle Increase    
+    """
+    FR_UNDEFINED                    = -1
+    FR_YMINUS_YPLUS_XPLUS           =  0        # Angle Decrease
+    FR_YMINUS_YPLUS_XMINUS          =  1        # Angle Increase
+    FR_YPLUS_YMINUS_XPLUS           =  2        # Angle Decrease
+    FR_YPLUS_YMINUS_XMINUS          =  3        # Angle Increase

@@ -38,16 +38,18 @@ from typing import List
 from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
+from ThreeDWidgets.fr_three_arrows_widget import userDataObject
 from ThreeDWidgets.fr_draw import draw_FaceSet
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
+from ThreeDWidgets.constant import FR_ROTATION
 from draftutils.translate import translate  # for translation
 import Part as _part
 import FACE_D as faced
 import math
 
 # Some get problem with this.. not used but Might be used in the future.
-# I might remove it for this tool. But lets leave it now.
+# I might remove it for this tool. But lets leave it for now.
 
 # try:
 #     from OCC import Core
@@ -70,8 +72,13 @@ class Design456_ExtendFace:
     b1 = None
     TweakLBL = None
     RotateLBL = None
+    #coin3D
     endVector = None
     startVector = None
+    #Qt
+    endVectorQT = None
+    startVectorQT = None
+    
     setupRotation = None
     savedVertices = None
     counter = None
@@ -175,7 +182,7 @@ class Design456_ExtendFace:
             self.sg.removeChild(self.coinFaces)
             for i in range(0, len(self.savedVertices)):
                 for j in range(0, len(self.savedVertices[i])):
-                    for testItem in range(0,len(self.oldEdgeVertexes)):
+                    for testItem in range(0, len(self.oldEdgeVertexes)):
                         if self.savedVertices[i][j].Point == self.oldEdgeVertexes[testItem].Point:
                             self.savedVertices[i][j] = self.newFaceVertexes[testItem]
                             break #we are done
@@ -263,16 +270,20 @@ class Design456_ExtendFace:
             if (face.Surface.Rotation is None):
                 calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 rotation = [0, 1, 0, calAn]
+                print("no rotation")
+                
             else:
-                rotation = [face.Surface.Rotation.Axis.x,
-                            face.Surface.Rotation.Axis.y,
-                            face.Surface.Rotation.Axis.z,
-                            math.degrees(face.Surface.Rotation.Angle)]
+                ang=face.Surface.Axis.getAngle(App.Vector(0,0,1))
+                rotation = [0, 0 , 1, ang]
 
             d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the 3 arrows-pads
-            self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
+            
+            if self.oldEdgeVertexes[0].Point.z > self.selectedObj.Shape.BoundBox.ZMin:
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
+            else:
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin
 
             return rotation
 
@@ -307,8 +318,8 @@ class Design456_ExtendFace:
         """[ Executes when the tool is used   ]
         """
         self.coinFaces = coin.SoSeparator()
-        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # pads rotation
-        self.setupRotation = [0, 0, 0, 0]
+        self.w_rotation = [0.0, 0.0, 0.0]  # pads rotation
+        self.setupRotation = [0, 0, 0, 0]  # Whole widget rotation
         self._Vector = App.Vector(0.0, 0.0, 0.0)  # pads POSITION
         self.counter = 0
         self.run_Once = False
@@ -351,7 +362,7 @@ class Design456_ExtendFace:
             self.saveVertices()
 
             if(hasattr(self.selectedFace, "Vertexes")):
-                self.oldEdgeVertexes = self.selectedFace.Vertexes
+                self.oldEdgeVertexes = self.selectedFace.OuterWire.OrderedVertexes
             if not hasattr(self.selectedFace, 'Edges'):
                 raise Exception("Please select only one face and try again")
             #TODO: FIXME: WHAT SHOULD WE DO WHEN IT IS A CURVED FACE???
@@ -364,7 +375,7 @@ class Design456_ExtendFace:
             self.setupRotation = self.calculateNewVector()
 
             self.ExtractFace()
-            self.newFaceVertexes = self.newFace.Shape.Vertexes
+            self.newFaceVertexes = self.newFace.Shape.OuterWire.OrderedVertexes
             App.ActiveDocument.removeObject(self.selectedObj.Name)
 
             # Undo
@@ -374,18 +385,20 @@ class Design456_ExtendFace:
             # Deside how the Degree pad be drawn
             self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
                                                 # label
-                                                (str(
-                                                    round(self.w_rotation[3], 2)) + "°"),
+                                                (str(round(self.w_rotation[0], 2)) + "°"+
+                                                 str(round(self.w_rotation[1], 2)) + "°"+
+                                                 str(round(self.w_rotation[2], 2)) + "°"),
                                                 FR_COLOR.FR_WHITE,  # lblcolor
                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
-                                                [0, 0, 0, 0],  # rotation
+                                                [0, 0, 0],  # rotation of the pads main
                                                 self.setupRotation,  # setup rotation
-                                                [10.0, 10.0, 10.0],  # scale
-                                                0,  # type
+                                                [15.0, 15.0, 15.0],  # scale
+                                                1,  # type
                                                 0,  # opacity
                                                 [10, 10, 10])  # distance between them
-
+            self.padObj.enablePAD()
+            
             # Different callbacks for each action.
             self.padObj.w_xAxis_cb_ = self.MouseMovement_cb
             self.padObj.w_yAxis_cb_ = self.MouseMovement_cb
@@ -550,7 +563,7 @@ class Design456_ExtendFace:
         self.COIN_recreateObject()
         self.padObj.redraw()
 
-    def callback_release(self, userData=None):
+    def callback_release(self, userData:userDataObject = None):
         try:
             events = userData.events
             print("mouse release")
@@ -564,13 +577,49 @@ class Design456_ExtendFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def smartlbl_callback(self):
+    def smartlbl_callback(self,userData:userDataObject = None):
         print("lbl callback")
         pass
+        
+    def callback_Rotate(self, userData:userDataObject = None):
 
-    def callback_Rotate(self):
-        initialAng=0
-        #padCenter= 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        if (self.RotateLBL is not None):
+            self.RotateLBL.setText("Rotation Axis= " + "(" +
+                                        str(self.w_rotation[0])+","
+                                        + str(self.w_rotation[1]) +
+                                        "," +
+                                        str(self.w_rotation[2]) + ")"
+                                        + "\nRotation Angle= " + str(angle) + " °")
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         

@@ -105,14 +105,13 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         super().__init__(vectors, label)        
         #Must be initialized first as per the following discussion. 
         #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
-        
         self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_EDGE
         self.w_callback_=callback           #External function
         self.w_lbl_calback_=lblcallback     #External function
         self.w_KB_callback_=KBcallback      #External function
         self.w_move_callback_=movecallback  #External function
-        w_wdgsoSwitch = coin.SoSwitch()        
+        w_wdgsoSwitch = coin.SoSwitch()
         w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
 
 

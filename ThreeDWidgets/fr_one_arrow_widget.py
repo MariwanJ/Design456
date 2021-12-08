@@ -46,20 +46,44 @@ import math
 Example how to use this widget.
 
 # show the window and it's widgets.
+import ThreeDWidgets.fr_one_arrow_widget as wd
 import ThreeDWidgets.fr_coinwindow as wnn
-import math
-import fr_three_arrows_widget as w
-mywin = wnn.Fr_CoinWindow()
+from ThreeDWidgets.constant import FR_COLOR
 
-vec=[]
-vec.append(App.Vector(0,0,0))
-vec.append(App.Vector(0,0,0))  #Dummy won't be used
-arrows=w.Fr_ThreeArrows_Widget(vec,"Pad")
-mywin.addWidget(arrows)
-mywin.show()
+class test:
+	global runOunce
+	def __init__(self):
+		self.runOunce = None
+
+	def callback_move(self,userData : wd.userDataObject = None):
+     
+	     PadObj = userData.PadObj  # Arrow object
+	     click=App.Vector(PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                            PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                            PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+	     if self.runOunce == None:
+	           self.runOunce = click.sub(PadObj.w_vector[0])
+
+	     PadObj.w_vector[0]=click.sub(self.runOunce)
+	     PadObj.redraw()
+	     print(self.runOunce,"self.runOunce")
+
+	def runme(self):
+		mywin = wnn.Fr_CoinWindow()
+		vectors=[App.Vector(0,0,0), App.Vector(0,0,0)] 
+		rot=[0,0,0,0]
+		rot1=[1,0,0,0.31]
+		root=wd.Fr_OneArrow_Widget(vectors, "X-Axis")
+		root.w_move_callback_=self.callback_move
+		mywin.addWidget(root)
+		mywin.show()
+
+a=test()
+a.runme()
+a=test()
 
 """
-#TODO: FIXME: old implementation was to complex. we will uses one arrow widget 3 times. 
+
 
 @dataclass
 class userDataObject:
@@ -85,58 +109,13 @@ def callback1(userData: userDataObject = None):
 
 def callback2(userData: userDataObject = None):
     """
-        This function executes when the YAxis
-        event callback.
-    """
-    # Subclass this and impalement the callback or
-    # just change the callback function
-    print("dummy YAxis callback")
-
-
-def callback3(userData: userDataObject = None):
-    """
-        This function executes when the ZAxis
-        event callback.
-    """
-    # Subclass this and impalement the callback or
-    # just change the callback function
-    print("dummy ZAxis callback")
-
-
-def callback4(userData: userDataObject = None):
-    """
-        This function executes when the PadX
+        This function executes when the Pad
         event callback.
         self.w_padEnabled must be True
     """
     # Subclass this and impalement the callback or
     # just change the callback function
     print("dummy PadX callback")
-
-
-def callback5(userData: userDataObject = None):
-    """
-        This function executes when the PadY
-        event callback.
-        self.w_padEnabled must be True
-    """
-    # Subclass this and impalement the callback or
-    # just change the callback function
-    print("dummy PadY callback")
-
-# *************************************************************
-
-
-def callback6(userData: userDataObject = None):
-    """
-        This function executes when the PadZ
-        event callback.
-        self.w_padEnabled must be True
-    """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy PadZ callback")
-
-# *************************************************************
 
 
 def callback(userData: userDataObject = None):
@@ -150,7 +129,7 @@ def callback(userData: userDataObject = None):
 # *************************************************************
 
 
-class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
+class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
     """
     This class is for drawing a one Degrees Pad
@@ -160,21 +139,21 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     def __init__(self, vectors: List[App.Vector] = [],
                  label: str = "",
+                 _axisType=0,  # Default is X axis and RED color
                  _lblColor=FR_COLOR.FR_WHITE,
-                 _padColor=[FR_COLOR.FR_RED,
-                              FR_COLOR.FR_GREEN,
-                              FR_COLOR.FR_BLUE],
+                 _axisColor=FR_COLOR.FR_RED,
                  # User controlled rotation. This is only for the 3Pads
                  _Rotation=[0.0, 0.0, 0.0],
                  # Face position-direction controlled rotation at creation. Whole widget
                  _prerotation=[0.0, 0.0, 0.0, 0.0],
-                 _scale=[3, 3, 3],
+                 _scale=[3,3,3],
                  _type=1,
                  _opacity=0,
-                 _distanceBetweenThem=[5, 5, 5]):
+                 _distanceBetweenThem=5):
+
         super().__init__(vectors, label)
 
-        self.w_widgetType = constant.FR_WidgetType.FR_PAD
+        self.w_widgetType = constant.FR_WidgetType.FR_ONE_PAD
         # General widget callback (mouse-button) function - External function
         self.w_callback_ = callback
         self.w_lbl_calback_ = callback              # Label callback
@@ -184,33 +163,21 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.DrawingType = _type
         # Use this to separate the arrows/lbl from the origin of the widget
         self.distanceBetweenThem = _distanceBetweenThem
-        # Dummy callback X-Axis
-        self.w_xAxis_cb_ = callback1
-        # Dummy callback Y-Axis
-        self.w_yAxis_cb_ = callback2
-        # Dummy callback  Z-Axis
-        self.w_zAxis_cb_ = callback3
+        self.axisType = _axisType
+        # Dummy callback Axis
+        self.w_ArrowAxis_cb_ = callback1
 
-        # Dummy callback          XPad
-        self.w_padXAxis_cb_ = callback4
-        # Dummy callback          YPad
-        self.w_padYAxis_cb_ = callback5
-        # Dummy callback          ZPad
-        self.w_padZAxis_cb_ = callback6
+        # Dummy callback          Pad
+        self.w_PadXAxis_cb_ = callback2
 
         self.w_wdgsoSwitch = coin.SoSwitch()
 
-        self.w_XsoSeparator = coin.SoSeparator()
-        self.w_YsoSeparator = coin.SoSeparator()
-        self.w_ZsoSeparator = coin.SoSeparator()
+        self.w_ArrowsSeparator = coin.SoSeparator()
+        self.w_PadSeparator = coin.SoSeparator()
 
-        self.w_padXsoSeparator = coin.SoSeparator()
-        self.w_padYsoSeparator = coin.SoSeparator()
-        self.w_padZsoSeparator = coin.SoSeparator()
-
-        self.w_color = _lblColor  # not used for this widget
-        self.w_PadAxis_color = _padColor
-        self.w_selColor = [i * 1.2 for i in self.w_selColor]
+        self.w_color = _axisColor
+        self.w_PadAxis_color = _axisColor
+        self.w_selColor = [i * 1.2 for i in self.w_color]
         self.w_Scale = _scale
         self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
 
@@ -219,8 +186,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.PadObj = self
 
-        self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
-        # Use this to keep the selected so during push-drag, after release it should be none
         self.currentSo = None
 
         # This affect only the Widget label - nothing else
@@ -236,6 +201,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_Rotation = _Rotation
         self.w_PRErotation = _prerotation
         self.w_padEnabled = False
+        self.releaseDrag = -1 # Used to avoid running drag code while it is in drag mode
+                              # -1 no click, 0 mouse clicked, 1 mouse dragging
 
     def handle(self, event):
         """
@@ -256,50 +223,22 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetlblSoNodes)
 
-        # In this widget, we have 5 coin drawings that we need to capture event for them
+        # In this widget, we have 2 coin drawings that we need to capture event for them
         clickwdgdNode = []
-        # 0 = X-     Axis movement
-        # 1 = Y-     Axis movement
-        # 2 = Z-     Axis movement
+        # 0 =      Axis movement
+        # 1 =     PAD Rotation
 
-        # 3 = X-     PAD Rotation
-        # 4 = Y-     PAD Rotation
-        # 5 = Z-     PAD Rotation
-
-        clickwdgdNode = [False, False, False, False, False, False]
+        clickwdgdNode = [False, False]
 
         if(fr_coin3d.objectMouseClick_Coin3d(
             self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_XsoSeparator) is not None):
+                self.w_pick_radius, self.w_ArrowsSeparator) is not None):
             clickwdgdNode[0] = True
-        elif(fr_coin3d.objectMouseClick_Coin3d(
-            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_YsoSeparator) is not None):
-            clickwdgdNode[1] = True
-        elif(fr_coin3d.objectMouseClick_Coin3d(
-            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_ZsoSeparator) is not None):
-            clickwdgdNode[2] = True
-        elif(fr_coin3d.objectMouseClick_Coin3d(
-            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_padXsoSeparator) is not None):
-            clickwdgdNode[3] = True
         if self.w_padEnabled:
             if (fr_coin3d.objectMouseClick_Coin3d(
                     self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                    self.w_pick_radius, self.w_padYsoSeparator) is not None):
-                clickwdgdNode[4] = True
-            elif(fr_coin3d.objectMouseClick_Coin3d(
-                    self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                    self.w_pick_radius, self.w_padZsoSeparator) is not None):
-                clickwdgdNode[5] = True
-
-            # Execute callback_relese when enter key pressed or E pressed
-            if (self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_ENTER or
-                self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
-                    self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_E):
-                self.do_callback()
-                return 1
+                    self.w_pick_radius, self.w_PadSeparator) is not None):
+                clickwdgdNode[1] = True
 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             if (clickwdglblNode is not None):
@@ -311,9 +250,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            self.currentSo = None
-            if self.releaseDrag is True:
-                self.releaseDrag is False
+            if self.releaseDrag == 1 or self.releaseDrag == 0:
+                self.releaseDrag = -1
+                self.currentSo = None
                 # Release callback should be activated even if the Pad != under the mouse
                 self.do_callback()
                 return 1
@@ -321,30 +260,33 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             if (len(clickwdgdNode) > 0 or clickwdglblNode is not None):
                 if not self.has_focus():
                     self.take_focus()
+                self.do_callback()
                 return 1
             else:
                 self.remove_focus()
                 return 0
-
+        #Mouse first click and then mouse with movement is here 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            # This part will be active only once when for the first time user click on the coin drawing.
-            # Later DRAG should be used
-            if self.releaseDrag is False:
-                self.releaseDrag = True
+            if ((clickwdglblNode is not None) or 
+                (clickwdgdNode is not None)) and self.releaseDrag == -1:
+                # This part will be active only once when for the first time user click on the coin drawing.
+                # Later DRAG should be used
+                self.releaseDrag = 0
                 self.take_focus()
-            # These Object reacts only with dragging .. Clicking will not do anything useful
-            # We don't accept more than one element- clicking at the time
-            if (self.currentSo is None):
-                for counter in range(0, 5):
-                    if clickwdgdNode[counter] is True:
-                        self.currentSo = counter
-                        self.do_callbacks(counter)
-                        return 1
-                return 0   # None of them was True.
-            else:
-                self.do_callbacks(self.currentSo)
                 return 1
 
+            elif ((clickwdgdNode is not None) or (clickwdglblNode is not None)) and self.releaseDrag == 0:
+                self.releaseDrag = 1  # Drag if will continue it will be a drag always
+                self.take_focus()
+                self.do_move_callback()
+                return 1
+
+            elif self.releaseDrag == 1:
+                # As far as we had DRAG before, we will continue run callback.
+                # This is because if the mouse is not exactly on the widget, it should still take the drag.
+                # Continue run the callback as far as it releaseDrag=1
+                self.do_move_callback()        # We use the same callback,
+                return 1
         # Don't care events, return the event to other widgets
         return 0  # We couldn't use the event .. so return 0
 
@@ -367,41 +309,39 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
 
+            preRotVal = None
             if self.is_visible():
+                if self.axisType == 0:  # XAxis default   RED
+                    preRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
+                elif self.axisType == 1:  # YAxis default GREEN
+                    preRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
+                elif self.axisType == 2:
+                    preRotVal = [0.0, 0.0, 0.0]
+                print("w_vector",self.w_vector)
+                self.w_ArrowsSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
+                                                                 self.distanceBetweenThem,
+                                                                 self.w_vector[0].y,
+                                                                 self.w_vector[0].z),
+                                                      # default FR_COLOR.FR_RED
+                                                      self.w_color, self.w_Scale,
+                                                      self.DrawingType, self.Opacity,
+                                                      preRotVal)
 
-                self.w_XsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
-                                                              self.distanceBetweenThem[0],
-                                                              self.w_vector[0].y,
-                                                              self.w_vector[0].z),
-                                                   # default FR_COLOR.FR_RED
-                                                   self.w_PadAxis_color[0], self.w_Scale,
-                                                   self.DrawingType, self.Opacity,
-                                                   [0.0, 90.0, 0.0])    #pre-Rotation # RED
-                self.w_YsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                              self.w_vector[0].y +
-                                                              self.distanceBetweenThem[1],
-                                                              self.w_vector[0].z),
-                                                   # default FR_COLOR.FR_GREEN
-                                                   self.w_PadAxis_color[1], self.w_Scale,
-                                                   self.DrawingType, self.Opacity,
-                                                   [0.0, 90.0, 90.0])  #pre-Rotation GREEN
-                self.w_ZsoSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                              self.w_vector[0].y,
-                                                              self.w_vector[0].z +
-                                                              self.distanceBetweenThem[2]),
-                                                   # default FR_COLOR.FR_BLUE
-                                                   self.w_PadAxis_color[2], self.w_Scale,
-                                                   self.DrawingType, self.Opacity,
-                                                   [0.0, 0.0, 0.0])  #pre-Rotation BLUE
                 if self.w_padEnabled:
+                    preRotValPAD = None
+                    if self.axisType == 0:  # XPAD default   RED
+                        preRotValPAD = [0.0, 0.0, 90.0]
+                    elif self.axisType == 1:  # YAxis default GREEN
+                        preRotValPAD = [0.0, 90.0, 90.0]
+                    elif self.axisType == 2:
+                        preRotValPAD = [0.0, 0.0, 0.0]
                     # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                     # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
-                    self.w_padXsoSeparator = draw_RotationPad(self.w_vector[0], self.w_PadAxis_color[0], self.w_Scale,
-                                                              self.Opacity, [0.0, 0.0, 90.0])  # RED
-                    self.w_padYsoSeparator = draw_RotationPad(self.w_vector[0], self.w_PadAxis_color[1], self.w_Scale,
-                                                              self.Opacity, [0.0, 0.0, 0.0])  # GREEN
-                    self.w_padZsoSeparator = draw_RotationPad(self.w_vector[0], self.w_PadAxis_color[2], self.w_Scale,
-                                                              self.Opacity, [90.0, 0.0, 0.0])  # BLUE
+                    self.w_PadSeparator = draw_RotationPad(self.w_vector[0],
+                                                           self.w_PadAxis_color,
+                                                           self.w_Scale,
+                                                           self.Opacity,
+                                                           preRotValPAD)  # RED
 
                 CollectThemAllRot = coin.SoTransform()
                 CollectThemAll = coin.SoSeparator()
@@ -412,14 +352,10 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     tR, math.radians(self.w_PRErotation[3]))
 
                 CollectThemAll.addChild(CollectThemAllRot)
-                CollectThemAll.addChild(self.w_XsoSeparator)
-                CollectThemAll.addChild(self.w_YsoSeparator)
-                CollectThemAll.addChild(self.w_ZsoSeparator)
+                CollectThemAll.addChild(self.w_ArrowsSeparator)
 
                 if self.w_padEnabled:
-                    CollectThemAll.addChild(self.w_padXsoSeparator)
-                    CollectThemAll.addChild(self.w_padYsoSeparator)
-                    CollectThemAll.addChild(self.w_padZsoSeparator)
+                    CollectThemAll.addChild(self.w_PadSeparator)
 
                 self.saveSoNodeslblToWidget(self.draw_label())
                 self.saveSoNodesToWidget(CollectThemAll)
@@ -687,44 +623,20 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         if (callbackType == 100):
             # run all
             self.do_callback()
-            self.w_xAxis_cb_(self.w_userData)
-            self.w_yAxis_cb_(self.w_userData)
-            self.w_zAxis_cb_(self.w_userData)
+            self.w_ArrowAxis_cb_(self.w_userData)
             if self.w_padEnabled:
-                self.w_padXAxis_cb_(self.w_userData)
-                self.w_padYAxis_cb_(self.w_userData)
-                self.w_padZAxis_cb_(self.w_userData)
+                self.w_PadAxis_color(self.w_userData)
+
         elif(callbackType == 10):
             # normal callback This represent the whole widget.
             # Might not be used here TODO:Do we want this?
             self.do_callback()
 
         elif(callbackType == 0):
-            self.w_userData.Axis = "X"
             self.w_userData.padAxis = None
-            self.w_xAxis_cb_(self.w_userData)
+            self.w_ArrowAxis_cb_(self.w_userData)
 
-        elif(callbackType == 1):
-            self.w_userData.Axis = "Y"
-            self.w_userData.padAxis = None
-            self.w_yAxis_cb_(self.w_userData)
-
-        elif(callbackType == 2):
-            self.w_userData.Axis = "Z"
-            self.w_userData.padAxis = None
-            self.w_zAxis_cb_(self.w_userData)
         if self.w_padEnabled:
-            if(callbackType == 3):
-                self.w_userData.padAxis = "X"
+            if(callbackType == 1):
                 self.w_userData.Axis = None
-                self.w_padXAxis_cb_(self.w_userData)
-
-            elif(callbackType == 4):
-                self.w_userData.padAxis = "Y"
-                self.w_userData.Axis = None
-                self.w_padYAxis_cb_(self.w_userData)
-
-            elif(callbackType == 5):
-                self.w_userData.padAxis = "Z"
-                self.w_userData.Axis = None
-                self.w_padZAxis_cb_(self.w_userData)
+                self.w_PadAxis_color(self.w_userData)

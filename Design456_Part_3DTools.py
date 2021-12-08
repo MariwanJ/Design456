@@ -38,7 +38,6 @@ import Design456_Extrude
 import Design456_ExtrudeFace
 import Design456_SplitObject
 import Design456_Magnet
-import Design456_Tweak
 import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
@@ -537,7 +536,6 @@ class Design456_Part_3DToolsGroup:
                 "Design456_Part_Intersect",
                 "Design456_Part_Group",
                 "Design456_Magnet",
-                "Design456_Tweak",
                 "Design456_Part_Shell",
                 "Design456_Part_Fillet",
                 "Design456_Part_Chamfer",
