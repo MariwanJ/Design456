@@ -37,7 +37,7 @@ import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
 import ThreeDWidgets.fr_coinwindow as win
 from ThreeDWidgets import fr_coin3d
-from typing import  List
+from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
@@ -46,13 +46,14 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 
 # This will be used to convert mouse movement to scale factor.
-SCALE_FACTOR = 10.0
+SCALE_FACTOR = 15.0
+
 
 def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
     """
         Calculate the scale from the mouse movement. 
     """
-    
+
     try:
         deltaX = EndVector.x-startVector.x
         deltaY = EndVector.y-startVector.y
@@ -60,10 +61,10 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
         (lengthX, lengthY, lengthZ) = linktocaller.getObjectLength()
         uniformValue = 1.0
         oldLength = 0.0
-        
+
         if (linktocaller.b1.text() == 'Uniform'):
-           
-            # We maximize all of them regardless the change in which axis made
+
+            # We resize them all regardless the change in which axis made
             if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
                 uniformValue = deltaY/SCALE_FACTOR
                 uniformValue = (lengthY+uniformValue)/lengthY
@@ -80,7 +81,7 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
                 faced.errorDialog(errMessage)
                 return
             scaleX = scaleY = scaleZ = uniformValue
-            linktocaller.scaleLBL.setText("scale= "+str(scaleX))
+            linktocaller.scaleLBL.setText("scale= "+str(round(scaleX, 4)))
         else:
             scaleX = 1
             scaleY = 1
@@ -88,20 +89,20 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
             if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
                 # y-direction moved
                 scaleY = deltaY/SCALE_FACTOR
-                scaleY= (lengthY+scaleY)/lengthY
-                linktocaller.scaleLBL.setText("scale= "+str(scaleY))
+                scaleY = (lengthY+scaleY)/lengthY
+                linktocaller.scaleLBL.setText("scale= "+str(round(scaleY, 4)))
             elif ArrowObject.w_color == FR_COLOR.FR_RED:
                 # x-direction moved
                 scaleX = deltaX/SCALE_FACTOR
-                scaleX= (lengthX+scaleX)/lengthX
-                linktocaller.scaleLBL.setText("scale= "+str(scaleX))
+                scaleX = (lengthX+scaleX)/lengthX
+                linktocaller.scaleLBL.setText("scale= "+str(round(scaleX, 4)))
             elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
                 # z-direction moved
                 scaleZ = deltaZ/SCALE_FACTOR
                 scaleZ = (lengthZ+deltaZ)/lengthZ
-                linktocaller.scaleLBL.setText("scale= "+str(scaleZ))
-        return(scaleX,scaleY,scaleZ)
-        
+                linktocaller.scaleLBL.setText("scale= "+str(round(scaleZ, 4)))
+        return(scaleX, scaleY, scaleZ)
+
     except Exception as err:
         App.Console.PrintError("'Resize' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -115,12 +116,13 @@ def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
         This function will resize the 3D object. It clones the old object
         and make a new simple copy of the 3D object. 
     """
-    # if the whichone = 0 ---> The real object will be resized, fake will be deleted. 
+    # if the whichone = 0 ---> The real object will be resized, fake will be deleted.
     #        whichone = 1 ---> the fake object will be resized.
     try:
-        (scaleX,scaleY,scaleZ)=calculateScale(ArrowObject, linktocaller, startVector, EndVector)
-        #Apply the scale
-                # Avoid having the scale too small
+        (scaleX, scaleY, scaleZ) = calculateScale(
+            ArrowObject, linktocaller, startVector, EndVector)
+        # Apply the scale
+        # Avoid having the scale too small
         if scaleX < 0.005:
             scaleX = 0.005
             print("too small scaleX")
@@ -142,7 +144,7 @@ def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
             scaleZ = 1
             print("too high scaleZ")
 
-        linktocaller.selectedObj[1].Scale=(scaleX,scaleY,scaleZ)
+        linktocaller.selectedObj[1].Scale = (scaleX, scaleY, scaleZ)
         App.ActiveDocument.recompute()
         linktocaller.reCreateBothOriginalAndCloneObject()
 
@@ -175,15 +177,17 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         # Undo
-        App.ActiveDocument.openTransaction(translate("Design456", "DirectScale"))
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "DirectScale"))
 
-        ResizeObject(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector)
+        ResizeObject(ArrowObject, linktocaller,
+                     linktocaller.startVector, linktocaller.endVector)
 
         linktocaller.startVector = None
-        #userData = None   #This cannot be correct
+        # userData = None   #This cannot be correct
         linktocaller.mouseToArrowDiff = 0.0
         linktocaller.scaleLBL.setText("scale= ")
-                
+
         linktocaller.reCreateBothOriginalAndCloneObject()
         # original
         App.ActiveDocument.recompute()
@@ -236,11 +240,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         if linktocaller.run_Once is False:
             linktocaller.run_Once = True
             if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
-                linktocaller.mouseToArrowDiff = ArrowObject.w_vector.y-linktocaller.endVector.y
+                linktocaller.mouseToArrowDiff = ArrowObject.w_vector[0].y-linktocaller.endVector.y
             elif ArrowObject.w_color == FR_COLOR.FR_RED:
-                linktocaller.mouseToArrowDiff = ArrowObject.w_vector.x-linktocaller.endVector.x
+                linktocaller.mouseToArrowDiff = ArrowObject.w_vector[0].x-linktocaller.endVector.x
             elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
-                linktocaller.mouseToArrowDiff = ArrowObject.w_vector.z-linktocaller.endVector.z
+                linktocaller.mouseToArrowDiff = ArrowObject.w_vector[0].z-linktocaller.endVector.z
 
             # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
@@ -250,27 +254,29 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         scale = 1.0
         newPos = App.Vector(0.0, 0.0, 0.0)
 
-        (scaleX,scaleY,scaleZ)=calculateScale(ArrowObject, linktocaller, linktocaller.startVector, linktocaller.endVector)
-        
+        (scaleX, scaleY, scaleZ) = calculateScale(ArrowObject,
+                                                  linktocaller, linktocaller.startVector, linktocaller.endVector)
+
         if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
-            scale=scaleY
-            ArrowObject.w_vector.y = linktocaller.endVector.y+linktocaller.mouseToArrowDiff
-        
+            scale = scaleY
+            ArrowObject.w_vector[0].y = linktocaller.endVector.y+linktocaller.mouseToArrowDiff
+
         elif ArrowObject.w_color == FR_COLOR.FR_RED:
-            ArrowObject.w_vector.x = linktocaller.endVector.x+linktocaller.mouseToArrowDiff
-            scale=scaleX
+            ArrowObject.w_vector[0].x = linktocaller.endVector.x+linktocaller.mouseToArrowDiff
+            scale = scaleX
 
         elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
-            ArrowObject.w_vector.z = linktocaller.endVector.z+linktocaller.mouseToArrowDiff
-            scale=scaleZ
-        
+            ArrowObject.w_vector[0].z = linktocaller.endVector.z+linktocaller.mouseToArrowDiff
+            scale = scaleZ
+
         linktocaller.scaleLBL.setText("scale= "+str(scale))
 
         linktocaller.smartInd[0].redraw()
         linktocaller.smartInd[1].redraw()
         linktocaller.smartInd[2].redraw()
 
-        ResizeObject(ArrowObject, linktocaller,linktocaller.startVector, linktocaller.endVector)
+        ResizeObject(ArrowObject, linktocaller,
+                     linktocaller.startVector, linktocaller.endVector)
 
     except Exception as err:
         App.Console.PrintError("'callback' Failed. "
@@ -330,12 +336,13 @@ class Design456_DirectScale:
         leng.append(lengthX)
         leng.append(lengthY)
         leng.append(lengthZ)
-        p1 = App.Vector(startX+lengthX/2, EndY +
-                        self.mmAwayFrom3DObject, startZ+lengthZ/2)
-        p2 = App.Vector(EndX+self.mmAwayFrom3DObject,
-                        startY+lengthY/2, startZ+lengthZ/2)
-        p3 = App.Vector(startX+lengthX/2, startY+lengthY /
-                        2, EndZ+self.mmAwayFrom3DObject)
+        #Must be two vectors, second is dummy value
+        p1 = [App.Vector(startX+lengthX/2, EndY + self.mmAwayFrom3DObject,
+                         startZ+lengthZ/2), App.Vector(0, 0, 0)]
+        p2 = [App.Vector(EndX+self.mmAwayFrom3DObject, startY +
+                         lengthY/2, startZ+lengthZ/2), App.Vector(0, 0, 0)]
+        p3 = [App.Vector(startX+lengthX/2, startY+lengthY / 2,
+                         EndZ+self.mmAwayFrom3DObject), App.Vector(0, 0, 0)]
         _vectors.append(p1)
         _vectors.append(p2)
         _vectors.append(p3)
@@ -350,22 +357,25 @@ class Design456_DirectScale:
         (_vec, length) = self.returnVectorsFromBoundaryBox(0)
 
         self.smartInd.clear()
-        
-        rotation = [-1.0, 0.0, 0.0,90]
-        self.smartInd.append(Fr_Arrow_Widget(_vec[0], "X-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
+
+        rotation = [-1.0, 0.0, 0.0, 90]
+        self.smartInd.append(Fr_Arrow_Widget(
+            _vec[0], "X-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
         # External function
         self.smartInd[0].w_callback_ = callback_release
         self.smartInd[0].w_move_callback_ = callback_move
         self.smartInd[0].w_userData.callerObject = self
 
         rotation = [0.0, 1.0, 0.0, 90.0]
-        self.smartInd.append(Fr_Arrow_Widget( _vec[1], "Y-Axis", 1, FR_COLOR.FR_RED, rotation))
+        self.smartInd.append(Fr_Arrow_Widget(
+            _vec[1], "Y-Axis", 1, FR_COLOR.FR_RED, rotation))
         self.smartInd[1].w_callback_ = callback_release
         self.smartInd[1].w_move_callback_ = callback_move
         self.smartInd[1].w_userData.callerObject = self
 
-        rotation = [1.0, 0.0, 1.0,0]
-        self.smartInd.append(Fr_Arrow_Widget(_vec[2], "Z-Axis", 1, FR_COLOR.FR_BLUE, rotation))
+        rotation = [1.0, 0.0, 1.0, 0.0]
+        self.smartInd.append(Fr_Arrow_Widget(
+            _vec[2], "Z-Axis", 1, FR_COLOR.FR_BLUE, rotation))
         self.smartInd[2].w_callback_ = callback_release
         self.smartInd[2].w_move_callback_ = callback_move
         self.smartInd[2].w_userData.callerObject = self
@@ -378,7 +388,7 @@ class Design456_DirectScale:
                 errMessage = "Select one object to scale"
                 faced.errorDialog(errMessage)
                 return
-            
+
             self.selectedObj.clear()
             self.selectedObj.append(sel[0])  # original
             if not hasattr(self.selectedObj[0], 'Shape'):
@@ -392,13 +402,15 @@ class Design456_DirectScale:
             # Scale the object to 1
             cloneObj.Scale = App.Vector(1, 1, 1)
             self.selectedObj[0].Visibility = False
-            self.selectedObj.append( cloneObj)
+            self.selectedObj.append(cloneObj)
 
             App.ActiveDocument.recompute()
 
-            (self.mw, self.dialog, self.tab) = faced.createActionTab("Direct Scale").Activated()
+            (self.mw, self.dialog, self.tab) = faced.createActionTab(
+                "Direct Scale").Activated()
             la = QtGui.QVBoxLayout(self.dialog)
-            e1 = QtGui.QLabel("(Direct Scale)\nFor quicker\nresizing any\n3D Objects")
+            e1 = QtGui.QLabel(
+                "(Direct Scale)\nFor quicker\nresizing any\n3D Objects")
             self.scaleLBL = QtGui.QLabel("Scale=")
             commentFont = QtGui.QFont("Times", 12, True)
             self.b1 = QtGui.QPushButton("Uniform")
@@ -418,8 +430,8 @@ class Design456_DirectScale:
             self.okbox.setOrientation(QtCore.Qt.Horizontal)
             self.okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             la.addWidget(self.okbox)
-            QtCore.QObject.connect(self.okbox, QtCore.SIGNAL("accepted()"), self.hide)
-
+            QtCore.QObject.connect(
+                self.okbox, QtCore.SIGNAL("accepted()"), self.hide)
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             self.createArrows()
@@ -439,27 +451,28 @@ class Design456_DirectScale:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def reCreateBothOriginalAndCloneObject(self):
-        
-        #Create a simple copy
-        nameOriginal=self.selectedObj[0].Name
-        
-        App.ActiveDocument.removeObject(self.selectedObj[0].Name)
- 
-        __shape = Part.getShape(self.selectedObj[1], '', needSubElement=False, refine=False)        
-        newObj=App.ActiveDocument.addObject('Part::Feature', nameOriginal) #Our scaled shape
-        newObj.Shape = __shape
-        App.ActiveDocument.removeObject(self.selectedObj[1].Name)            
-        #Make scaled object to be the original for us now
-        self.selectedObj[0]=newObj
-        #Make a scaled from the new original shape
-        cloneObj = Draft.clone(self.selectedObj[0], forcedraft=True)
-            # Scale the object to 1
-        cloneObj.Scale = App.Vector(1, 1, 1)
-        
-        #Hide again the new Original self.selectedObj[0].Visibility = False
-        self.selectedObj[1]=cloneObj
-        App.ActiveDocument.recompute()
 
+        # Create a simple copy
+        nameOriginal = self.selectedObj[0].Name
+
+        App.ActiveDocument.removeObject(self.selectedObj[0].Name)
+
+        __shape = Part.getShape(
+            self.selectedObj[1], '', needSubElement=False, refine=False)
+        newObj = App.ActiveDocument.addObject(
+            'Part::Feature', nameOriginal)  # Our scaled shape
+        newObj.Shape = __shape
+        App.ActiveDocument.removeObject(self.selectedObj[1].Name)
+        # Make scaled object to be the original for us now
+        self.selectedObj[0] = newObj
+        # Make a scaled from the new original shape
+        cloneObj = Draft.clone(self.selectedObj[0], forcedraft=True)
+        # Scale the object to 1
+        cloneObj.Scale = App.Vector(1, 1, 1)
+
+        # Hide again the new Original self.selectedObj[0].Visibility = False
+        self.selectedObj[1] = cloneObj
+        App.ActiveDocument.recompute()
 
     def hide(self):
         """
@@ -497,7 +510,7 @@ class Design456_DirectScale:
         """
         (_vec, length) = self.returnVectorsFromBoundaryBox(1)
         for i in range(0, 3):
-            print ("i range",i)
+            print("i range", i)
             self.smartInd[i].w_vector = _vec[i]
 
         for wdg in self.smartInd:
@@ -529,7 +542,7 @@ class Design456_DirectScale:
             App.ActiveDocument.removeObject(self.selectedObj[1].Name)
             self.selectedObj[0].Visibility = True
             self.selectedObj.clear()
-            
+
         except Exception as err:
             App.Console.PrintError("'Design456_SmartScale' Failed. "
                                    "{err}\n".format(err=str(err)))

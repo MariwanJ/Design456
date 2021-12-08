@@ -235,11 +235,23 @@ def draw_line(vec=[], color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
 
 # draw arrow (Angel is in degree)
 def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.0, 0.0, 1.0, 0.0]):
-    '''
-    Draw a 3D arrow at the position given by the _Points and the color given by _color. 
-    Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
-    An angle in degree. 
-    '''
+    """[    '''
+        Draw a 3D arrow at the position given by the _Points and the color given by _color. 
+        Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
+        An angle in degree. 
+    ''']
+
+    Args:
+        _Points (list of App.Vectors, Required): [Drawing placement, two vectors at least]. Defaults to [].
+        _color ([float,float,float], optional): [Color of the drawing]. Defaults to FR_COLOR.FR_BLACK.
+        _ArrSize (float, optional): [Size of the drawing]. Defaults to 1.0.
+        _rotation (list of 4 floats, optional): [Rotation of the drawing, Axis and the angle in degrees]. 
+                   Defaults to [0.0, 0.0, 1.0, 0.0].
+
+    Returns:
+        [SoSeparator]: [drawing object and it's properities(color, size, rotation)]
+    """
+
     try:
         so_separatorRoot = coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
@@ -255,7 +267,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         HeadTransform=coin.SoTransform()
         
         tailHeadTrs = coin.SbVec3f()
-        tailHeadTrs.setValue(1,0,0)
+        tailHeadTrs.setValue(1.0, 0.0, 0.0)
         
         TailsTransform.rotation.setValue(tailHeadTrs,math.radians(90))
         HeadTransform.rotation.setValue(tailHeadTrs,math.radians(90))
@@ -286,6 +298,8 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
+        print(_Points,"_Points")
+        print(type(_Points[0]))
         transRoot.translation.setValue(_Points)
 
         color = coin.SoBaseColor()
@@ -319,6 +333,10 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
+def new_func():
+    return """
+    """
 
 """
 Example using the function: 
