@@ -225,6 +225,7 @@ class Design456_SmartScale:
             self.smartInd.append(smartLines(vectors[2],"{0:.2f}".format(lengths[2]),5,self))
             for i in self.smartInd:
                 i.set_target(selected)
+                i.FontSize(4)
             #set selected object to each smartline 
             if self._mywin is None :
                 self._mywin=win.Fr_CoinWindow()
