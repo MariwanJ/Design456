@@ -119,7 +119,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         elif linktocaller.FilletRadius > 8:
             linktocaller.FilletRadius = 8
 
-        linktocaller.resizeArrowWidgets(linktocaller.endVector)
+        linktocaller.resizeArrowWidgets(linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         linktocaller.FilletLBL.setText(
             "scale= " + str(round(linktocaller.FilletRadius, 4)))
         linktocaller.reCreatefilletObject()
