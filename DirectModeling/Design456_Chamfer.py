@@ -29,8 +29,6 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft
-import Part
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP

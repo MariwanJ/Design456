@@ -44,12 +44,14 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 import math
 from ThreeDWidgets import fr_label_draw
-MouseScaleFactor = 1.5      # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
+# The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
+MouseScaleFactor = 1.5
 
 '''
     We have to recreate the object each time we change the radius. 
     This means that the redrawing must be optimized 
 '''
+
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
     """[summary]
@@ -83,36 +85,43 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             if linktocaller.run_Once is False:
                 print("click move")
                 return 0  # nothing to do
-        # print("start",linktocaller.startVector)
-        # print("end",linktocaller.endVector)
-        # print("direction",linktocaller.direction)
+
         if linktocaller.run_Once is False:
             linktocaller.run_Once = True
-            linktocaller.startVector=linktocaller.endVector
+            linktocaller.startVector = linktocaller.endVector
+            linktocaller.mouseToArrowDiff = linktocaller.endVector.sub(
+                userData.ArrowObj.w_vector[0])
 
         # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
-        if linktocaller.direction=="+x":
-            linktocaller.FilletRadius = (-linktocaller.endVector.x+linktocaller.startVector.x)/MouseScaleFactor   
-        elif linktocaller.direction=="-x":
-            linktocaller.FilletRadius = (linktocaller.endVector.x-linktocaller.startVector.x)/MouseScaleFactor   
-        elif linktocaller.direction=="+y":
-            linktocaller.FilletRadius = (-linktocaller.endVector.y+linktocaller.startVector.y)/MouseScaleFactor   
-        elif linktocaller.direction=="-y":
-            linktocaller.FilletRadius = (linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor   
-        elif linktocaller.direction=="+z":
-            linktocaller.FilletRadius = (-linktocaller.endVector.z+linktocaller.startVector.z)/MouseScaleFactor   
-        elif linktocaller.direction=="-z":
-            linktocaller.FilletRadius = (linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor   
-        if linktocaller.FilletRadius<=0:
-            linktocaller.FilletRadius=0.0001
-        elif linktocaller.FilletRadius>8:
-            linktocaller.FilletRadius=8
-        
+        if linktocaller.direction == "+x":
+            linktocaller.FilletRadius = (-linktocaller.endVector.x +
+                                         linktocaller.startVector.x)/MouseScaleFactor
+        elif linktocaller.direction == "-x":
+            linktocaller.FilletRadius = (
+                linktocaller.endVector.x-linktocaller.startVector.x)/MouseScaleFactor
+        elif linktocaller.direction == "+y":
+            linktocaller.FilletRadius = (-linktocaller.endVector.y +
+                                         linktocaller.startVector.y)/MouseScaleFactor
+        elif linktocaller.direction == "-y":
+            linktocaller.FilletRadius = (
+                linktocaller.endVector.y-linktocaller.startVector.y)/MouseScaleFactor
+        elif linktocaller.direction == "+z":
+            linktocaller.FilletRadius = (-linktocaller.endVector.z +
+                                         linktocaller.startVector.z)/MouseScaleFactor
+        elif linktocaller.direction == "-z":
+            linktocaller.FilletRadius = (
+                linktocaller.endVector.z-linktocaller.startVector.z)/MouseScaleFactor
+        if linktocaller.FilletRadius <= 0:
+            linktocaller.FilletRadius = 0.0001
+        elif linktocaller.FilletRadius > 8:
+            linktocaller.FilletRadius = 8
+
         linktocaller.resizeArrowWidgets(linktocaller.endVector)
-        linktocaller.FilletLBL.setText("scale= "+ str(round(linktocaller.FilletRadius,4)))
+        linktocaller.FilletLBL.setText(
+            "scale= " + str(round(linktocaller.FilletRadius, 4)))
         linktocaller.reCreatefilletObject()
 
     except Exception as err:
@@ -134,7 +143,7 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         raise TypeError
 
     ArrowObject = userData.ArrowObj
-    #events = userData.events
+    events = userData.events
     linktocaller = userData.callerObject
     # Avoid activating this part several times,
     if (linktocaller.startVector is None):
@@ -149,11 +158,13 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
     App.ActiveDocument.openTransaction(translate("Design456", "SmartChamfer"))
     linktocaller.startVector = None
     linktocaller.mouseToArrowDiff = 0.0
-    linktocaller.selectedObj[0].Object.Visibility=False
-    if hasattr(linktocaller.selectedObj[0],'Object'):
-        linktocaller.selectedObj[0].Object.Label=linktocaller.Originalname
+    App.ActiveDocument.commitTransaction()  # undo reg.
+    linktocaller.selectedObj[0].Object.Visibility = False
+    if hasattr(linktocaller.selectedObj[0], 'Object'):
+        linktocaller.selectedObj[0].Object.Label = linktocaller.Originalname
     App.ActiveDocument.recompute()
     App.ActiveDocument.commitTransaction()  # undo reg.
+
 
 class Design456_SmartFillet:
     """
@@ -174,20 +185,23 @@ class Design456_SmartFillet:
     # We will make two object, one for visual effect and the other is the original
     selectedObj = []
     # 0 is the original    1 is the fake one (just for interactive effect)
-    mouseToArrowDiff = 0.0 
-    offset=0.0
-    AwayFrom3DObject = 20  # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
-    FilletRadius = 0.0001   #We cannot have zero. TODO: What value we should use? FIXME:
+    mouseToArrowDiff = 0.0
+    offset = 0.0
+    # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
+    AwayFrom3DObject = 20
+    # We cannot have zero. TODO: What value we should use? FIXME:
+    FilletRadius = 0.0001
     objectType = None  # Either shape, Face or Edge.
     Originalname = ''
-    direction=None
+    direction = None
+    saveFirstPostion=None
 
-    
+
     def registerShapeType(self):
         '''
             Find out shape-type and save the name in objectType
         '''
-        if len(self.selectedObj[0].SubElementNames) ==0 :
+        if len(self.selectedObj[0].SubElementNames) == 0:
             self.objectType = 'Shape'
         elif 'Face' in self.selectedObj[0].SubElementNames[0]:
             self.objectType = 'Face'
@@ -195,71 +209,77 @@ class Design456_SmartFillet:
             self.objectType = 'Edge'
         else:
             print("Error")
-    
-    def resizeArrowWidgets(self,endVec):
+
+    def resizeArrowWidgets(self, endVec):
         """
         Reposition the arrows by recalculating the boundary box
         and updating the vectors inside each fr_arrow_widget
         """
-        if(self.direction=="+x" or self.direction=="-x" ):
-            self.smartInd.w_vector.x = endVec.x  #Only X should affect the arrow
-        elif(self.direction=="+y" or self.direction=="-y" ):
-            self.smartInd.w_vector.y = endVec.y  #Only Y should affect the arrow
-        elif(self.direction=="+z" or self.direction=="-z" ):
-            self.smartInd.w_vector.z = endVec.z  #Only Z should affect the arrow
+        if(self.direction == "+x" or self.direction == "-x"):
+            self.smartInd.w_vector[0].x = endVec.x  # Only X should affect the arrow
+        elif(self.direction == "+y" or self.direction == "-y"):
+            self.smartInd.w_vector[0].y = endVec.y  # Only Y should affect the arrow
+        elif(self.direction == "+z" or self.direction == "-z"):
+            self.smartInd.w_vector[0].z = endVec.z  # Only Z should affect the arrow
         self.smartInd.redraw()
         return
-        
+
     def getArrowPosition(self):
         """"
          Find out the vector and rotation of the arrow to be drawn.
         """
         #      For now the arrow will be at the top
-        rotation = [0.0,0.0,0.0,0.0]
-        self.direction= faced.getDirectionAxis() #Must be getSelectionEx
+        rotation = [0.0, 0.0, 0.0, 0.0]
+        self.direction = faced.getDirectionAxis()  # Must be getSelectionEx
 
-        if (self.direction =="+x"):
+        if (self.direction == "+x"):
             rotation = [0.0, -1.0, 0.0, 90.0]
-        elif (self.direction =="-x"):
-            rotation = [0.0, 1.0, 0.0,90.0]
-        elif (self.direction =="+y"):                
+        elif (self.direction == "-x"):
+            rotation = [0.0, 1.0, 0.0, 90.0]
+        elif (self.direction == "+y"):
             rotation = [1.0, 0.0, 0.0, 90.0]
-        elif (self.direction =="-y"):
+        elif (self.direction == "-y"):
             rotation = [-1.0, 0.0, 0.0, 90.0]
-        elif (self.direction =="+z"):
+        elif (self.direction == "+z"):
             rotation = [1.0, 0.0, 0.0, 180.0]
-        elif (self.direction =="-z"):
+        elif (self.direction == "-z"):
             rotation = [1.0, 0.0, 0.0, 0.0]
 
         if self.objectType == 'Shape':
-        # 'Shape'
+            # 'Shape'
             # The whole object is selected
-            if (self.direction=="+x" or self.direction=="-x"):
-                if(self.direction=="+x"):
-                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax+ self.AwayFrom3DObject
-                else: # (direction=="-x"):
-                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax-self.AwayFrom3DObject
-                
-                self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
-                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax/2
+            if (self.direction == "+x" or self.direction == "-x"):
+                if(self.direction == "+x"):
+                    self._vector.x = self.selectedObj[0].Object.Shape.BoundBox.XMax + \
+                        self.AwayFrom3DObject
+                else:  # (direction=="-x"):
+                    self._vector.x = self.selectedObj[0].Object.Shape.BoundBox.XMax - \
+                        self.AwayFrom3DObject
 
-            elif (self.direction=="+y" or self.direction =="-y"):
-                if(self.direction=="+y"):
-                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax+self.AwayFrom3DObject
-                else: # (direction=="-y"):    
-                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax-self.AwayFrom3DObject
-                self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
-                self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax/2
-            
-            elif (self.direction=="+z" or self.direction=="-z"):
-                if(self.direction=="+z"):
-                    self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax+self.AwayFrom3DObject
-                else:   #(direction=="-z"):
-                    self._vector.z=self.selectedObj[0].Object.Shape.BoundBox.ZMax-self.AwayFrom3DObject
-                    self._vector.x=self.selectedObj[0].Object.Shape.BoundBox.XMax/2
-                    self._vector.y=self.selectedObj[0].Object.Shape.BoundBox.YMax/2
+                self._vector.y = self.selectedObj[0].Object.Shape.BoundBox.YMax/2
+                self._vector.z = self.selectedObj[0].Object.Shape.BoundBox.ZMax/2
+
+            elif (self.direction == "+y" or self.direction == "-y"):
+                if(self.direction == "+y"):
+                    self._vector.y = self.selectedObj[0].Object.Shape.BoundBox.YMax + \
+                        self.AwayFrom3DObject
+                else:  # (direction=="-y"):
+                    self._vector.y = self.selectedObj[0].Object.Shape.BoundBox.YMax - \
+                        self.AwayFrom3DObject
+                self._vector.x = self.selectedObj[0].Object.Shape.BoundBox.XMax/2
+                self._vector.z = self.selectedObj[0].Object.Shape.BoundBox.ZMax/2
+
+            elif (self.direction == "+z" or self.direction == "-z"):
+                if(self.direction == "+z"):
+                    self._vector.z = self.selectedObj[0].Object.Shape.BoundBox.ZMax + \
+                        self.AwayFrom3DObject
+                else:  # (direction=="-z"):
+                    self._vector.z = self.selectedObj[0].Object.Shape.BoundBox.ZMax - \
+                        self.AwayFrom3DObject
+                    self._vector.x = self.selectedObj[0].Object.Shape.BoundBox.XMax/2
+                    self._vector.y = self.selectedObj[0].Object.Shape.BoundBox.YMax/2
             return rotation
-        
+
         vectors = self.selectedObj[0].SubObjects[0].Vertexes
         if self.objectType == 'Face':
             self._vector.z = vectors[0].Z
@@ -270,7 +290,7 @@ class Design456_SmartFillet:
             self._vector.x = self._vector.x/4
             self._vector.y = self._vector.y/4
             self._vector.z = self._vector.z/4
-    
+
         elif self.objectType == 'Edge':
             # One edge is selected
             self._vector.z = vectors[0].Z
@@ -281,19 +301,19 @@ class Design456_SmartFillet:
             self._vector.x = self._vector.x/2
             self._vector.y = self._vector.y/2
             self._vector.z = self._vector.z/2
-        
-        if self.direction=="+x":
-            self._vector.x=self._vector.x+self.AwayFrom3DObject
-        elif self.direction=="-x":
-            self._vector.x=self._vector.x-self.AwayFrom3DObject
-        elif self.direction=="+y":
-            self._vector.y=self._vector.y+self.AwayFrom3DObject
-        elif self.direction=="-y":
-            self._vector.y=self._vector.y-self.AwayFrom3DObject
-        elif self.direction=="+z":
-            self._vector.z=self._vector.z+self.AwayFrom3DObject
-        elif self.direction=="-z":
-            self._vector.z=self._vector.z-self.AwayFrom3DObject
+
+        if self.direction == "+x":
+            self._vector.x = self._vector.x+self.AwayFrom3DObject
+        elif self.direction == "-x":
+            self._vector.x = self._vector.x-self.AwayFrom3DObject
+        elif self.direction == "+y":
+            self._vector.y = self._vector.y+self.AwayFrom3DObject
+        elif self.direction == "-y":
+            self._vector.y = self._vector.y-self.AwayFrom3DObject
+        elif self.direction == "+z":
+            self._vector.z = self._vector.z+self.AwayFrom3DObject
+        elif self.direction == "-z":
+            self._vector.z = self._vector.z-self.AwayFrom3DObject
 
         return rotation
 
@@ -313,20 +333,20 @@ class Design456_SmartFillet:
         else:
             # only one Edge
             edgeNumbor = int(names[4:len(names)])
-            result.append((edgeNumbor, self.FilletRadius,self.FilletRadius))
+            result.append((edgeNumbor, self.FilletRadius, self.FilletRadius))
         return result
 
     def getAllSelectedEdges(self):
         # The format must be (Edges Number, Start-radius, End-radius)
         EdgesToBeChanged = []
         if self.objectType == 'Face':
-            EdgesToBeChanged =self.selectedObj[0].SubObjects[0].Edges
-        elif  self.objectType=='Edge':
-            EdgesToBeChanged =self.selectedObj[0].SubObjects
+            EdgesToBeChanged = self.selectedObj[0].SubObjects[0].Edges
+        elif self.objectType == 'Edge':
+            EdgesToBeChanged = self.selectedObj[0].SubObjects
         elif self.objectType == 'Shape':
-            EdgesToBeChanged= self.selectedObj[0].Object.Shape.Edges
-        else : 
-                print ("Error couldn't find the shape type",self.objectType)
+            EdgesToBeChanged = self.selectedObj[0].Object.Shape.Edges
+        else:
+            print("Error couldn't find the shape type", self.objectType)
         return EdgesToBeChanged
 
     def reCreatefilletObject(self):
@@ -336,25 +356,28 @@ class Design456_SmartFillet:
         # reCreate the fillet. We cannot avoid recreating the object from scratch
         # That is how opencascade library works.
         try:
-            if len (self.selectedObj)>=2:
-                if hasattr(self.selectedObj[1],'ObjectName'):
-                    App.ActiveDocument.removeObject(self.selectedObj[1].ObjectName)
-                elif hasattr(self.selectedObj[1],'Name'):
+            if len(self.selectedObj) >= 2:
+                if hasattr(self.selectedObj[1], 'ObjectName'):
+                    App.ActiveDocument.removeObject(
+                        self.selectedObj[1].ObjectName)
+                elif hasattr(self.selectedObj[1], 'Name'):
                     App.ActiveDocument.removeObject(self.selectedObj[1].Name)
-                elif hasattr(self.selectedObj[1].Object,'Name'):
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)
-                else : 
+                elif hasattr(self.selectedObj[1].Object, 'Name'):
+                    App.ActiveDocument.removeObject(
+                        self.selectedObj[1].Object.Name)
+                else:
                     print("removing failed")
                 self.selectedObj.pop(1)
 
-            #This create only a shape. We have to make it as a Part::Feature
+            # This create only a shape. We have to make it as a Part::Feature
             App.ActiveDocument.recompute()
-            _shape=self.selectedObj[0].Object.Shape.makeFillet(self.FilletRadius,self.getAllSelectedEdges())
-            newObj=App.ActiveDocument.addObject('Part::Feature',"temp")
-            newObj.Shape=_shape
+            _shape = self.selectedObj[0].Object.Shape.makeFillet(
+                self.FilletRadius, self.getAllSelectedEdges())
+            newObj = App.ActiveDocument.addObject('Part::Feature', "temp")
+            newObj.Shape = _shape
             self.selectedObj.append(newObj)
             App.ActiveDocument.recompute()
-            
+
         except Exception as err:
             App.Console.PrintError("'Design456_SmartFillet' recreatefilletObject-Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -364,8 +387,8 @@ class Design456_SmartFillet:
 
     def Activated(self):
         self.selectedObj.clear()
-        sel=Gui.Selection.getSelectionEx()
-        if len(sel) ==0:
+        sel = Gui.Selection.getSelectionEx()
+        if len(sel) == 0:
             # An object must be selected
             errMessage = "Select an object, one face or one edge to fillet"
             faced.errorDialog(errMessage)
@@ -376,26 +399,27 @@ class Design456_SmartFillet:
 
         # Find Out shapes type.
         self.registerShapeType()
-        o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
-        
+        o = Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
+
         # Undo
-        App.ActiveDocument.openTransaction(translate("Design456", "SmartFillet"))
-        o.Transparency=80
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "SmartFillet"))
+        o.Transparency = 80
         self.reCreatefilletObject()
 
         # get rotation
         rotation = self.getArrowPosition()
-        self.smartInd = Fr_Arrow_Widget(self._vector, "Fillet", 1, FR_COLOR.FR_RED, rotation)
+        self.smartInd = Fr_Arrow_Widget([self._vector,App.Vector(0,0,0)],"Fillet", 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
-
+        self.saveFirstPostion=self._vector
         if self._mywin is None:
             self._mywin = win.Fr_CoinWindow()
         self._mywin.addWidget(self.smartInd)
         mw = self.getMainWindow()
         self._mywin.show()
-        
+
     def __del__(self):
         """ 
             class destructor
@@ -414,13 +438,13 @@ class Design456_SmartFillet:
             self.endVector = None
             self.startVector = None
             self.selectedObj = []
-            self.mouseToArrowDiff = 0.0 
-            self.offset=0.0
-            self.AwayFrom3DObject = 10  
-            self.FilletRadius = 0.0001  
-            self.objectType = None  
+            self.mouseToArrowDiff = 0.0
+            self.offset = 0.0
+            self.AwayFrom3DObject = 10
+            self.FilletRadius = 0.0001
+            self.objectType = None
             self.Originalname = ''
-            self.direction=None
+            self.direction = None
             del self        # I don't know if this is correct
 
         except Exception as err:
@@ -462,9 +486,10 @@ class Design456_SmartFillet:
             la.addWidget(self.FilletLBL)
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons( QtGui.QDialogButtonBox.Ok)
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             la.addWidget(okbox)
-            QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(
+                okbox, QtCore.SIGNAL("accepted()"), self.hide)
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             return self.dialog
@@ -485,24 +510,25 @@ class Design456_SmartFillet:
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-        temp=self.selectedObj[0]
-        if(self.FilletRadius<=0.01):
-            #fillet != applied. return the original object as it was
-            if(len(self.selectedObj)==2):
-                if hasattr(self.selectedObj[1],"Object"):
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)    
+        temp = self.selectedObj[0]
+        if(self.FilletRadius <= 0.01):
+            # fillet != applied. return the original object as it was
+            if(len(self.selectedObj) == 2):
+                if hasattr(self.selectedObj[1], "Object"):
+                    App.ActiveDocument.removeObject(
+                        self.selectedObj[1].Object.Name)
                 else:
                     App.ActiveDocument.removeObject(self.selectedObj[1].Name)
-            o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
-            o.Transparency=0
-            o.Object.Label=self.Originalname
+            o = Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
+            o.Transparency = 0
+            o.Object.Label = self.Originalname
         else:
-            self.selectedObj[0]=self.selectedObj[1]
+            self.selectedObj[0] = self.selectedObj[1]
             self.selectedObj.pop(1)
-            no=App.ActiveDocument.getObject(self.selectedObj[0].Name)
-            no.Label=self.Originalname
+            no = App.ActiveDocument.getObject(self.selectedObj[0].Name)
+            no.Label = self.Originalname
             App.ActiveDocument.removeObject(temp.Object.Name)
-            self.FilletRadius=0.00001
+            self.FilletRadius = 0.00001
 
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart fillet 3dCOIN widgets
@@ -513,5 +539,6 @@ class Design456_SmartFillet:
             'MenuText': ' Smart Fillet',
                         'ToolTip':  ' Smart Fillet'
         }
+
 
 Gui.addCommand('Design456_SmartFillet', Design456_SmartFillet())
