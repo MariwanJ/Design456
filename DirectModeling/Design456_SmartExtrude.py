@@ -109,6 +109,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.resizeArrowWidgets(linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         linktocaller.ExtrudeLBL.setText(
             "Length= " + str(linktocaller.extrudeLength))
+        userData.ArrowObj.changeLabelstr("  Length= " + str(linktocaller.extrudeLength))
         linktocaller.reCreateExtrudeObject()
         App.ActiveDocument.recompute()
     except Exception as err:
@@ -462,7 +463,7 @@ class Design456_SmartExtrude:
 
             rotation = self.getArrowPosition()
             self.smartInd = Fr_Arrow_Widget(
-                self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 3)
+                self._vector, "  Length 0.0", 1, FR_COLOR.FR_RED, rotation, 3)
             self.smartInd.w_callback_ = callback_release
             self.smartInd.w_move_callback_ = callback_move
             self.smartInd.w_userData.callerObject = self

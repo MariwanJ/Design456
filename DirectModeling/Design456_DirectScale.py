@@ -49,15 +49,15 @@ from draftutils.translate import translate  # for translation
 SCALE_FACTOR = 15.0
 
 
-def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
+def calculateScale(ArrowObject, linktocaller, sizeChanged):
     """
         Calculate the scale from the mouse movement. 
     """
 
     try:
-        deltaX = EndVector.x-startVector.x
-        deltaY = EndVector.y-startVector.y
-        deltaZ = EndVector.z-startVector.z
+        deltaX = sizeChanged.x
+        deltaY = sizeChanged.y
+        deltaZ = sizeChanged.z
         (lengthX, lengthY, lengthZ) = linktocaller.getObjectLength()
         uniformValue = 1.0
         oldLength = 0.0
@@ -111,7 +111,7 @@ def calculateScale(ArrowObject, linktocaller, startVector, EndVector):
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
+def ResizeObject(ArrowObject, linktocaller, sizeChanged):
     """
         This function will resize the 3D object. It clones the old object
         and make a new simple copy of the 3D object. 
@@ -120,7 +120,7 @@ def ResizeObject(ArrowObject, linktocaller, startVector, EndVector):
     #        whichone = 1 ---> the fake object will be resized.
     try:
         (scaleX, scaleY, scaleZ) = calculateScale(
-            ArrowObject, linktocaller, startVector, EndVector)
+            ArrowObject, linktocaller, sizeChanged)
         # Apply the scale
         # Avoid having the scale too small
         if scaleX < 0.005:
@@ -170,18 +170,11 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         if (linktocaller.startVector is None):
             return
 
-        print("mouse release")
         ArrowObject.remove_focus()
         linktocaller.run_Once = False
-        linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
         # Undo
         App.ActiveDocument.openTransaction(
             translate("Design456", "DirectScale"))
-
-        ResizeObject(ArrowObject, linktocaller,
-                     linktocaller.startVector, linktocaller.endVector)
 
         linktocaller.startVector = None
         # userData = None   #This cannot be correct
@@ -234,49 +227,48 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once is False:
-                print("click move")
                 return 0  # nothing to do
 
         if linktocaller.run_Once is False:
             linktocaller.run_Once = True
-            if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
-                linktocaller.mouseToArrowDiff = ArrowObject.w_vector[0].y-linktocaller.endVector.y
-            elif ArrowObject.w_color == FR_COLOR.FR_RED:
-                linktocaller.mouseToArrowDiff = ArrowObject.w_vector[0].x-linktocaller.endVector.x
-            elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
-                linktocaller.mouseToArrowDiff = ArrowObject.w_vector[0].z-linktocaller.endVector.z
-
+            linktocaller.mouseToArrowDiff =  linktocaller.endVector.sub(userData.ArrowObj.w_vector[0])
             # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
 
         scale = 1.0
-        newPos = App.Vector(0.0, 0.0, 0.0)
 
-        (scaleX, scaleY, scaleZ) = calculateScale(ArrowObject,
-                                                  linktocaller, linktocaller.startVector, linktocaller.endVector)
+        MovementsSize = linktocaller.endVector.sub(linktocaller.mouseToArrowDiff)
+        (scaleX, scaleY, scaleZ) = calculateScale(ArrowObject, linktocaller, MovementsSize)
+
 
         if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
             scale = scaleY
-            ArrowObject.w_vector[0].y = linktocaller.endVector.y+linktocaller.mouseToArrowDiff
+#            ArrowObject.w_vector[0].y = MovementsSize.y #+linktocaller.mmAwayFrom3DObject
 
         elif ArrowObject.w_color == FR_COLOR.FR_RED:
-            ArrowObject.w_vector[0].x = linktocaller.endVector.x+linktocaller.mouseToArrowDiff
+#            ArrowObject.w_vector[0].x = MovementsSize.x #+linktocaller.mmAwayFrom3DObject
             scale = scaleX
 
         elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
-            ArrowObject.w_vector[0].z = linktocaller.endVector.z+linktocaller.mouseToArrowDiff
+#            ArrowObject.w_vector[0].z = MovementsSize.z #+linktocaller.mmAwayFrom3DObject
             scale = scaleZ
 
         linktocaller.scaleLBL.setText("scale= "+str(scale))
 
+        linktocaller.smartInd[1].changeLabelstr(
+            "  Scale= " + str(round(scaleX, 4)))
+        linktocaller.smartInd[0].changeLabelstr(
+            "  Scale= " + str(round(scaleY, 4)))
+        linktocaller.smartInd[2].changeLabelstr(
+            "  Scale= " + str(round(scaleZ, 4)))
+        linktocaller.resizeArrowWidgets()
         linktocaller.smartInd[0].redraw()
         linktocaller.smartInd[1].redraw()
         linktocaller.smartInd[2].redraw()
 
-        ResizeObject(ArrowObject, linktocaller,
-                     linktocaller.startVector, linktocaller.endVector)
+        ResizeObject(ArrowObject, linktocaller, MovementsSize)
 
     except Exception as err:
         App.Console.PrintError("'callback' Failed. "
@@ -304,7 +296,7 @@ class Design456_DirectScale:
     # We will make two object, one for visual effect and the other is the original
     selectedObj = []
     # 0 is the original    1 is the fake one (just for interactive effect)
-    mouseToArrowDiff = 0.0
+    mouseToArrowDiff = None
     mmAwayFrom3DObject = 5  # Use this to take away the arrow from the object
 
     def getObjectLength(self, whichOne=1):
@@ -336,7 +328,7 @@ class Design456_DirectScale:
         leng.append(lengthX)
         leng.append(lengthY)
         leng.append(lengthZ)
-        #Must be two vectors, second is dummy value
+        # Must be two vectors, second is dummy value
         p1 = [App.Vector(startX+lengthX/2, EndY + self.mmAwayFrom3DObject,
                          startZ+lengthZ/2), App.Vector(0, 0, 0)]
         p2 = [App.Vector(EndX+self.mmAwayFrom3DObject, startY +
@@ -360,7 +352,7 @@ class Design456_DirectScale:
 
         rotation = [-1.0, 0.0, 0.0, 90]
         self.smartInd.append(Fr_Arrow_Widget(
-            _vec[0], "X-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
+            _vec[0], "Y-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
         # External function
         self.smartInd[0].w_callback_ = callback_release
         self.smartInd[0].w_move_callback_ = callback_move
@@ -368,7 +360,7 @@ class Design456_DirectScale:
 
         rotation = [0.0, 1.0, 0.0, 90.0]
         self.smartInd.append(Fr_Arrow_Widget(
-            _vec[1], "Y-Axis", 1, FR_COLOR.FR_RED, rotation))
+            _vec[1], "X-Axis", 1, FR_COLOR.FR_RED, rotation))
         self.smartInd[1].w_callback_ = callback_release
         self.smartInd[1].w_move_callback_ = callback_move
         self.smartInd[1].w_userData.callerObject = self
@@ -492,10 +484,9 @@ class Design456_DirectScale:
         """
         if self.b1.isChecked():
             self.b1.setText("Uniform")
-            print("button pressed")
+
         else:
             self.b1.setText("None Uniform")
-            print("button released")
 
     def whichbtn(self, b1):
         if b1.text() == 'Uniform':
@@ -510,7 +501,6 @@ class Design456_DirectScale:
         """
         (_vec, length) = self.returnVectorsFromBoundaryBox(1)
         for i in range(0, 3):
-            print("i range", i)
             self.smartInd[i].w_vector = _vec[i]
 
         for wdg in self.smartInd:
