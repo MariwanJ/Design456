@@ -51,7 +51,6 @@ class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
      This will affect the faces share the edge.    ]
      """
-    _Vector = None
     mw = None
     dialog = None
     tab = None
@@ -85,7 +84,12 @@ class Design456_ExtendEdge:
     FirstLocation = None
     coinFaces = None
     sg = None  # SceneGraph
-
+    awayFromObj = 0.0
+    
+    # Use mouseToArrowDiff to eleminate the diff between 
+    # placement of the 3D COIN drawing and the position of the mouse dragging
+    mouseToArrowDiff = None  
+    
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
     def setTolerance(self, sel):
@@ -255,9 +259,9 @@ class Design456_ExtendEdge:
 
             self.FirstLocation = yL + d * nv  # the 3 arrows-pads
             if self.oldEdgeVertexes[0].Point.z > self.selectedObj.Shape.BoundBox.ZMin:
-                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax+5
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax+self.awayFromObj
             else:
-                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin-5
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin-self.awayFromObj
 
             return rotation
 
@@ -292,8 +296,7 @@ class Design456_ExtendEdge:
         """
         self.coinFaces = coin.SoSeparator()
         self.w_rotation = [0.0, 0.0, 0.0]  # 
-        self.setupRotation = [0, 0, 0, 0]
-        self._Vector = App.Vector(0.0, 0.0, 0.0)  # pad POSITION 
+        self.setupRotation = [0, 0, 0, 0] 
         self.counter = 0
         self.run_Once = False
         self.tweakLength = 0
@@ -357,7 +360,7 @@ class Design456_ExtendEdge:
                 translate("Design456", "ExtendEdge"))
 
             if self.oldEdgeVertexes[0].Point.z < self.selectedObj.Shape.BoundBox.ZMin:
-                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin - 5
+                self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin - self.awayFromObj
 
             # Deside how the Degree pad be drawn
             self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
@@ -511,9 +514,11 @@ class Design456_ExtendEdge:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
-
+            self.mouseToArrowDiff = self.endVector.sub(self.padObj.w_vector[0])
+            
+        MovementLength= self.endVector.sub(self.mouseToArrowDiff)
         self.tweakLength = round((
-            self.endVector - (self.startVector+self._Vector)).dot(self.normalVector), 1)
+            MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
 
         if abs(self.oldTweakLength-self. tweakLength) < 1:
             return  # we do nothing
@@ -524,14 +529,14 @@ class Design456_ExtendEdge:
         self.padObj.lblRedraw()
         self.oldEdgeVertexes = self.newEdgeVertexes
         if self.padObj.w_userData.Axis == 'X':
-            self.newEdge.Placement.Base.x = self.endVector.x
-            self.padObj.w_vector[0].x = self.endVector.x
+            self.newEdge.Placement.Base.x = MovementLength.x
+            self.padObj.w_vector[0].x = MovementLength.x
         elif self.padObj.w_userData.Axis == 'Y':
-            self.newEdge.Placement.Base.y = self.endVector.y
-            self.padObj.w_vector[0].y = self.endVector.y
+            self.newEdge.Placement.Base.y = MovementLength.y
+            self.padObj.w_vector[0].y = MovementLength.y
         elif self.padObj.w_userData.Axis == 'Z':
-            self.newEdge.Placement.Base.z = self.endVector.z
-            self.padObj.w_vector[0].z = self.endVector.z
+            self.newEdge.Placement.Base.z = MovementLength.z
+            self.padObj.w_vector[0].z = MovementLength.z
         else:
             # nothing to do here  #TODO : This shouldn't happen
             return

@@ -120,8 +120,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.FilletRadius = 8
 
         linktocaller.resizeArrowWidgets(linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
+        ArrowObject.changeLabelstr(
+            "Radius = " + str(round(linktocaller.FilletRadius, 4)))
+        
         linktocaller.FilletLBL.setText(
-            "scale= " + str(round(linktocaller.FilletRadius, 4)))
+            "Radius = " + str(round(linktocaller.FilletRadius, 4)))
         linktocaller.reCreatefilletObject()
 
     except Exception as err:
@@ -409,7 +412,7 @@ class Design456_SmartFillet:
 
         # get rotation
         rotation = self.getArrowPosition()
-        self.smartInd = Fr_Arrow_Widget([self._vector,App.Vector(0,0,0)],"Fillet", 1, FR_COLOR.FR_RED, rotation)
+        self.smartInd = Fr_Arrow_Widget([self._vector,App.Vector(0,0,0)],"Radius = 0.0", 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
