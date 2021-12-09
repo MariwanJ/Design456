@@ -65,7 +65,6 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
     try:
         if userData is None:
             return  # Nothing to do here - shouldn't be None
-        mouseToArrowDiff = 0.0
 
         ArrowObject = userData.ArrowObj  # Arrow object
         events = userData.events
@@ -96,7 +95,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
-        linktocaller.endVector = linktocaller.endVector
+                
         if linktocaller.direction == "+x":
             linktocaller.ChamferRadius = (-linktocaller.endVector.x +
                                           linktocaller.startVector.x)/MouseScaleFactor
@@ -130,7 +129,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.reCreatechamferObject()
 
     except Exception as err:
-        App.Console.PrintError("'View Inside objects' Failed. "
+        App.Console.PrintError("'MouseMove callback' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

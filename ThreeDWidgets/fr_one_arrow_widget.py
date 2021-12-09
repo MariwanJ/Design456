@@ -107,15 +107,7 @@ def callback1(userData: userDataObject = None):
     print("dummy XAxis callback")
 
 
-def callback2(userData: userDataObject = None):
-    """
-        This function executes when the Pad
-        event callback.
-        self.w_padEnabled must be True
-    """
-    # Subclass this and impalement the callback or
-    # just change the callback function
-    print("dummy PadX callback")
+
 
 
 def callback(userData: userDataObject = None):
@@ -163,12 +155,12 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.DrawingType = _type
         # Use this to separate the arrows/lbl from the origin of the widget
         self.distanceBetweenThem = _distanceBetweenThem
-        self.axisType = _axisType
+        self.axisType = _axisType  #X, Y or Z
         # Dummy callback Axis
         self.w_ArrowAxis_cb_ = callback1
 
         # Dummy callback          Pad
-        self.w_PadXAxis_cb_ = callback2
+        self.w_PadAxis_cb_ = self.cb_PadRotate
 
         self.w_wdgsoSwitch = coin.SoSwitch()
 
@@ -181,12 +173,12 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_Scale = _scale
         self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
 
-        self.rotationDirection = None
-
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.PadObj = self
-
         self.currentSo = None
+        
+        self.newAngle=0.0
+        self.oldAngle=0.0
 
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
@@ -198,11 +190,13 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0
-        self.w_Rotation = _Rotation
-        self.w_PRErotation = _prerotation
+        self.w_Rotation = _Rotation             # Whole onearrow object rotation 
+        self.w_PRErotation = _prerotation       # Whole onearrow object Rotation
+        self.w_padAngle    = 0.0      # Only pad rotation.
         self.w_padEnabled = False
         self.releaseDrag = -1 # Used to avoid running drag code while it is in drag mode
                               # -1 no click, 0 mouse clicked, 1 mouse dragging
+        
 
     def handle(self, event):
         """
@@ -308,7 +302,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 pass  # usedColor = self.w_color  we did that already ..just for reference
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
-
+            #TODO: FIXME: 
             preRotVal = None
             if self.is_visible():
                 if self.axisType == 0:  # XAxis default   RED
@@ -330,7 +324,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 if self.w_padEnabled:
                     preRotValPAD = None
                     if self.axisType == 0:  # XPAD default   RED
-                        preRotValPAD = [0.0, 0.0, 90.0]
+                        preRotValPAD = [self.w_padAngle, 0.0, 90.0]
                     elif self.axisType == 1:  # YAxis default GREEN
                         preRotValPAD = [0.0, 90.0, 90.0]
                     elif self.axisType == 2:
@@ -608,7 +602,109 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         """[Disable X,Y & Z rotation pad. You need to redraw the widget]
         """
         self.w_padEnabled = False
+    
+    def cb_PadRotate(self, userData: userDataObject = None):
+        """
+        This function executes when the Pad
+        event callback.
+        self.w_padEnabled must be True
+        """
+        boundary= self.getWidgetsBoundary()
+        center= self.getWidgetsCentor()
+        try:
+            if userData is None:
+                return  # Nothing to do here - shouldn't be None
 
+            ArrowObject = userData.ArrowObj  # Arrow object
+            events = userData.events
+            # Tool uses the arrow object (here is the Chamfer)
+            linktocaller = userData.callerObject
+            if type(events) != int:
+                return
+
+            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                              ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
+            clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+                                                                ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
+            linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                                ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                                ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+
+            if clickwdgdNode is None and clickwdglblNode is None:
+                if linktocaller.run_Once is False:
+                    print("click move")
+                    return 0  # nothing to do
+
+            if linktocaller.run_Once is False:
+                linktocaller.run_Once = True
+                linktocaller.startVector = linktocaller.endVector
+                linktocaller.mouseToArrowDiff = linktocaller.endVector.sub(userData.ArrowObj.w_vector[0])
+
+             # Keep the old value only first time when drag start
+                linktocaller.startVector = linktocaller.endVector
+                if not ArrowObject.has_focus():
+                    ArrowObject.take_focus()
+
+
+        
+        if self.axisType=='X':                                                     # Right
+            #It means that we have changes in Z and Y only
+            #If the mouse moves at the >center in Z direction : 
+            # Z++  means   -Angel, Z--  means  +Angle    --> When Y is +                   ^
+            # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
+            # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is +                 
+            # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is -
+            my=(linktocaller.enVector.y- center.y)*(boundary[0+3]-boundary[0]);
+            mz=(linktocaller.enVector.z- center.z)*(boundary[2+3]-boundary[2]);
+            self.newAngle=-math.degrees(math.atan2(float(-my), float(mz)))
+        if self.axisType=='Y':                                                      # Front
+            #It means that we have changes in Z and X only
+            # Z++  means   -Angel, Z--  means  +Angle    -->  When X is +                   ^
+            # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
+            # X++  means   -Angel, x--  means  +Angel    -->  when Z is +                 
+            # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
+            mx=(linktocaller.enVector.x- center.x)*(boundary[1+3]-boundary[1]);
+            mz=(linktocaller.enVector.z- center.z)*(boundary[2+3]-boundary[2]);
+            self.newAngle=-math.degrees(math.atan2(float(-mx), float(mz)))
+
+        if self.axisType=='Z':
+            #It means that we have changes in X and Y only
+            # Y++  means   -Angel, Y--  means  +Angle    -->  When X is +                   ^
+            # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
+            # x++  means   -Angel, X--  means  +Angel    -->  when Y is +                 
+            # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
+            mx=(linktocaller.enVector.x- center.x)*(boundary[1+3]-boundary[1]);
+            my=(linktocaller.enVector.y- center.y)*(boundary[0+3]-boundary[0]);
+            self.newAngle=-math.degrees(math.atan2(float(-mx), float(my)))
+        while (self.newAngle < self.oldAngle-180): 
+            self.newAngle += 360
+        while (self.newAngle > self.oldAngle+180) :
+            self.newAngle -= 360
+        self.oldAngle = self.newAngle
+        print(self.newAngle)
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        print("dummy PadX callback")
+    
+    except Exception as err:
+        App.Console.PrintError("'PAD Callback' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+    
     def do_callbacks(self, callbackType=-1):
         """[summarize the call of the callbacks]
 
@@ -637,6 +733,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             self.w_ArrowAxis_cb_(self.w_userData)
 
         if self.w_padEnabled:
+            #Rotation callback - PAX
             if(callbackType == 1):
                 self.w_userData.Axis = None
-                self.w_PadAxis_color(self.w_userData)
+                self.w_PadAxis_cb_(self.w_userData)
