@@ -143,13 +143,12 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         if (self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_ENTER or
             self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
                 self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_E):
-            print("Enter Event")
             self.do_callback()
 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event. Only when the widget is double clicked
             if clickwdglblNode is not None:
-                print("Double click detected")
+
                 # if not self.has_focus():
                 #    self.take_focus()
                 self.do_lblcallback()
@@ -159,7 +158,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             # Release is accepted even if the mouse is not over the widget
             if self.releaseDrag == 1 or self.releaseDrag == 0:
                 self.releaseDrag = -1
-                print("Release Mouse happened")
                 # Release callback should be activated even if the arrow != under the mouse
                 self.do_callback()
                 return 1
@@ -225,8 +223,13 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 elif self.arrowType == 4:
                     self.w_widgetSoNodes = fr_draw1.draw_DoubleSide2DdArrow(
                         self.w_vector[0], usedColor, scale, 0, self.w_rotation)
-
+                self.w_lbluserData.linewidth = self.w_lineWidth
+                self.w_lbluserData.labelcolor = usedColor
+                self.w_lbluserData.vectors = self.w_vector
+                self.w_lbluserData.rotation = App.Vector(0, 0, 0)
+                self.lblSoNodes = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
+                self.addSoNodeToSoSwitch(self.lblSoNodes)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 

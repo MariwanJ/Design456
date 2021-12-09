@@ -95,20 +95,21 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once is False:
-                print("click move")
                 return   # nothing to do
 
         if linktocaller.run_Once is False:
             linktocaller.run_Once = True
             # only once
             linktocaller.startVector = linktocaller.endVector
+            linktocaller.mouseToArrowDiff =  linktocaller.endVector.sub(userData.ArrowObj.w_vector[0])
 
         linktocaller.extrudeLength = round((
             linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector), 1)
 
-        linktocaller.resizeArrowWidgets(linktocaller.endVector)
+        linktocaller.resizeArrowWidgets(linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         linktocaller.ExtrudeLBL.setText(
             "Length= " + str(linktocaller.extrudeLength))
+        userData.ArrowObj.changeLabelstr("  Length= " + str(linktocaller.extrudeLength))
         linktocaller.reCreateExtrudeObject()
         App.ActiveDocument.recompute()
     except Exception as err:
@@ -192,7 +193,6 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         # Avoid activating this part several times,
         if (linktocaller.startVector is None):
             return
-        print("mouse release")
         ArrowObject.remove_focus()
         linktocaller.run_Once = False
         linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
@@ -219,7 +219,6 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                 # Create a cut object for each transparency object
                 if(linktocaller.WasFaceFrom3DObject is True):
                     # It is a 2D drawing object
-                    print("3D object ")
                     tool = createFusionObjectTool(linktocaller)
                     for i in range(0, len(linktocaller.objChangedTransparency)):
                         newObjcut.append(App.ActiveDocument.addObject(
@@ -230,7 +229,6 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
                         newObjcut[i].Refine = True
                     tool.Visibility = False
                 else:
-                    print("2D object")
                     for i in range(0, len(linktocaller.objChangedTransparency)):
                         newObjcut.append(App.ActiveDocument.addObject(
                             "Part::Cut", "CUT" + str(i)))
@@ -284,7 +282,7 @@ class Design456_SmartExtrude:
     OperationOption = 0  # default is zero
     objChangedTransparency = []
     WasFaceFrom3DObject = False
-
+    mouseToArrowDiff = None 
     def reCreateExtrudeObject(self):
         """
         [
@@ -426,8 +424,7 @@ class Design456_SmartExtrude:
             else:
                 d = self.extrudeLength
             point = yL + d * nv
-            #print("Arrow Vector is ", point)
-            return (point)
+            return ([point, App.Vector(0,0,0)])  #Must be two vectors always  
         
         except Exception as err:
             faced.EnableAllToolbar(True)
@@ -466,7 +463,7 @@ class Design456_SmartExtrude:
 
             rotation = self.getArrowPosition()
             self.smartInd = Fr_Arrow_Widget(
-                self._vector, "Extrude", 1, FR_COLOR.FR_RED, rotation, 3)
+                self._vector, "  Length 0.0", 1, FR_COLOR.FR_RED, rotation, 3)
             self.smartInd.w_callback_ = callback_release
             self.smartInd.w_move_callback_ = callback_move
             self.smartInd.w_userData.callerObject = self
