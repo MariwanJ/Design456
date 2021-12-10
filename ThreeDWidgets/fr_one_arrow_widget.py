@@ -646,64 +646,66 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     ArrowObject.take_focus()
 
 
-        
-        if self.axisType=='X':                                                     # Right
-            #It means that we have changes in Z and Y only
-            #If the mouse moves at the >center in Z direction : 
-            # Z++  means   -Angel, Z--  means  +Angle    --> When Y is +                   ^
-            # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
-            # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is +                 
-            # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is -
-            my=(linktocaller.enVector.y- center.y)*(boundary[0+3]-boundary[0]);
-            mz=(linktocaller.enVector.z- center.z)*(boundary[2+3]-boundary[2]);
-            self.newAngle=-math.degrees(math.atan2(float(-my), float(mz)))
-        if self.axisType=='Y':                                                      # Front
-            #It means that we have changes in Z and X only
-            # Z++  means   -Angel, Z--  means  +Angle    -->  When X is +                   ^
-            # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
-            # X++  means   -Angel, x--  means  +Angel    -->  when Z is +                 
-            # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
-            mx=(linktocaller.enVector.x- center.x)*(boundary[1+3]-boundary[1]);
-            mz=(linktocaller.enVector.z- center.z)*(boundary[2+3]-boundary[2]);
-            self.newAngle=-math.degrees(math.atan2(float(-mx), float(mz)))
+            
+            if self.axisType=='X':                                                     # Right
+                #It means that we have changes in Z and Y only
+                #If the mouse moves at the >center in Z direction : 
+                # Z++  means   -Angel, Z--  means  +Angle    --> When Y is +                   ^
+                # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
+                # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is +                 
+                # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is -
+                my=(linktocaller.enVector.y- center.y)*(boundary[0+3]-boundary[0])
+                mz=(linktocaller.enVector.z- center.z)*(boundary[2+3]-boundary[2])
+                self.newAngle=-math.degrees(math.atan2(float(-my), float(mz)))
+            
+            if self.axisType=='Y':                                                      # Front
+                #It means that we have changes in Z and X only
+                # Z++  means   -Angel, Z--  means  +Angle    -->  When X is +                   ^
+                # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
+                # X++  means   -Angel, x--  means  +Angel    -->  when Z is +                 
+                # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
+                mx=(linktocaller.enVector.x- center.x)*(boundary[1+3]-boundary[1])
+                mz=(linktocaller.enVector.z- center.z)*(boundary[2+3]-boundary[2])
+                self.newAngle=-math.degrees(math.atan2(float(-mx), float(mz)))
 
-        if self.axisType=='Z':
-            #It means that we have changes in X and Y only
-            # Y++  means   -Angel, Y--  means  +Angle    -->  When X is +                   ^
-            # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
-            # x++  means   -Angel, X--  means  +Angel    -->  when Y is +                 
-            # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
-            mx=(linktocaller.enVector.x- center.x)*(boundary[1+3]-boundary[1]);
-            my=(linktocaller.enVector.y- center.y)*(boundary[0+3]-boundary[0]);
-            self.newAngle=-math.degrees(math.atan2(float(-mx), float(my)))
-        while (self.newAngle < self.oldAngle-180): 
-            self.newAngle += 360
-        while (self.newAngle > self.oldAngle+180) :
-            self.newAngle -= 360
-        self.oldAngle = self.newAngle
-        print(self.newAngle)
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        print("dummy PadX callback")
+            if self.axisType=='Z':
+                #It means that we have changes in X and Y only
+                # Y++  means   -Angel, Y--  means  +Angle    -->  When X is +                   ^
+                # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
+                # x++  means   -Angel, X--  means  +Angel    -->  when Y is +                 
+                # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
+                mx=(linktocaller.enVector.x- center.x)*(boundary[1+3]-boundary[1])
+                my=(linktocaller.enVector.y- center.y)*(boundary[0+3]-boundary[0])
+                self.newAngle=-math.degrees(math.atan2(float(-mx), float(my)))
+            
+            while (self.newAngle < self.oldAngle-180): 
+                self.newAngle += 360
+            while (self.newAngle > self.oldAngle+180) :
+                self.newAngle -= 360
+            self.oldAngle = self.newAngle
+            print(self.newAngle)
     
-    except Exception as err:
-        App.Console.PrintError("'PAD Callback' Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+
+
+
+
+
+
+
+
+
+
+
+
+
+            print("dummy PadX callback")
+    
+        except Exception as err:
+            App.Console.PrintError("'PAD Callback' Failed. "
+                                "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
     
     def do_callbacks(self, callbackType=-1):
         """[summarize the call of the callbacks]
