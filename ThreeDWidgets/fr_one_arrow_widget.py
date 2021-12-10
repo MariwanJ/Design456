@@ -129,7 +129,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
     def __init__(self, vectors: List[App.Vector] = [],
                  label: str = "",
-                 _axisType=0,  # Default is X axis and RED color
+                 _axisType='X',  # Default is X axis and RED color
                  _lblColor=FR_COLOR.FR_WHITE,
                  _axisColor=FR_COLOR.FR_RED,
                  # User controlled rotation. This is only for the 3discs
@@ -277,38 +277,40 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         #Mouse first click and then mouse with movement is here 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             print(clickwdgdNode[0],clickwdgdNode[1])
-            if((clickwdgdNode[1] is not None ) and (self.releaseDragDisc == -1)):
+            print("DRAG")
+            if((clickwdgdNode[1] is True ) and (self.releaseDragDisc == -1)):
                 # This part will be active only once when for the first time user click on the coin drawing.
                 # Later DRAG should be used
                 self.releaseDragDisc = 0
                 self.take_focus()
+                return 1
 
-            if ((clickwdglblNode is not None) or 
-                (clickwdgdNode[0] is not None)) and self.releaseDragAxi == -1:
+            elif (((clickwdglblNode is not None) or (clickwdgdNode[0] is True) 
+                and (self.releaseDragAxi == -1))):
                 # This part will be active only once when for the first time user click on the coin drawing.
                 # Later DRAG should be used
                 self.releaseDragAxi = 0
                 self.take_focus()
+                return 1
             #disc 
-            elif ((clickwdgdNode[1] is not None)  and (self.releaseDragDisc == 0)):
+            elif ((clickwdgdNode[1] is True)  and (self.releaseDragDisc == 0)):
                 self.releaseDragAxis = 1  # Drag if will continue it will be a drag always
                 self.take_focus()
                 self.do_callbacks(1)
                 return 1
             #Axis
-            elif (((clickwdgdNode[0] is not None) or (clickwdglblNode is not None)) and (self.releaseDragAxis)) == 0:
+            elif (((clickwdgdNode[0] is True) or (clickwdglblNode is True)) and (self.releaseDragAxis)) == 0:
                 self.releaseDragAxis = 1  # Drag if will continue it will be a drag always
                 self.take_focus()
                 self.do_callbacks(0)
                 return 1
-            
+            #DISC
             elif self.releaseDragDisc== 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
                 self.do_callbacks(1)        # We use the same callback,
                 return 1
-            
             elif self.releaseDragAxis == 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
@@ -339,11 +341,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             #TODO: FIXME: 
             preRotVal = None
             if self.is_visible():
-                if self.axisType == 0:  # XAxis default   RED
+                if self.axisType == 'X':  # XAxis default   RED
                     preRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
-                elif self.axisType == 1:  # YAxis default GREEN
+                elif self.axisType == 'Y':  # YAxis default GREEN
                     preRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
-                elif self.axisType == 2:
+                elif self.axisType == 'Z':
                     preRotVal = [0.0, 0.0, 0.0]
                 print("w_vector",self.w_vector)
                 self.w_ArrowsSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
@@ -356,13 +358,14 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                                                       preRotVal)
 
                 if self.w_discEnabled:
-                    preRotValdisc = None
-                    if self.axisType == 0:  # Xdisc default   RED
+                    preRotValdisc = [self.w_discAngle, 0.0, 90.0]
+                    if self.axisType == 'X':  # Xdisc default   RED
                         preRotValdisc = [self.w_discAngle, 0.0, 90.0]
-                    elif self.axisType == 1:  # YAxis default GREEN
+                    elif self.axisType == 'Y':  # YAxis default GREEN
                         preRotValdisc = [0.0, 90.0, 90.0]
-                    elif self.axisType == 2:
+                    elif self.axisType == 'Z':
                         preRotValdisc = [0.0, 0.0, 0.0]
+                    print(preRotValdisc,"preRotValdisc")
                     # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                     # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
                     self.w_discSeparator = draw_RotationPad(self.w_vector[0],
@@ -647,13 +650,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         print("rotate callback")
         boundary= self.getWidgetsBoundary()
         center= self.getWidgetsCentor()
+        print(boundary)
+        print(center)
         try:
-            if userData is None:
-                return  # Nothing to do here - shouldn't be None
-
-            events = userData.events
-            if type(events) != int:
-                return
 
             self.endVector = App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
                                                 self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
@@ -663,11 +662,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.startVector = self.endVector
                 self.mouseToArrowDiff = self.endVector.sub(self.w_vector[0])
 
-             # Keep the old value only first time when drag start
+            # Keep the old value only first time when drag start
                 self.startVector = self.endVector
                 if not self.has_focus():
                     self.take_focus()
-
+            print("We are here",self.axisType)
             if self.axisType=='X':                                                     # Right
                 #It means that we have changes in Z and Y only
                 #If the mouse moves at the >center in Z direction : 
@@ -675,8 +674,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
                 # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is +                 
                 # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is -
-                my=(self.enVector.y- center.y)*(boundary[0+3]-boundary[0])
-                mz=(self.enVector.z- center.z)*(boundary[2+3]-boundary[2])
+                my=(self.endVector.y- center.y)*(boundary[0+3]-boundary[0])
+                mz=(self.endVector.z- center.z)*(boundary[2+3]-boundary[2])
                 self.newAngle=-math.degrees(math.atan2(float(-my), float(mz)))
             
             if self.axisType=='Y':                                                      # Front
@@ -685,8 +684,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
                 # X++  means   -Angel, x--  means  +Angel    -->  when Z is +                 
                 # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
-                mx=(self.enVector.x- center.x)*(boundary[1+3]-boundary[1])
-                mz=(self.enVector.z- center.z)*(boundary[2+3]-boundary[2])
+                mx=(self.endVector.x- center.x)*(boundary[1+3]-boundary[1])
+                mz=(self.endVector.z- center.z)*(boundary[2+3]-boundary[2])
                 self.newAngle=-math.degrees(math.atan2(float(-mx), float(mz)))
 
             if self.axisType=='Z':
@@ -695,8 +694,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
                 # x++  means   -Angel, X--  means  +Angel    -->  when Y is +                 
                 # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
-                mx=(self.enVector.x- center.x)*(boundary[1+3]-boundary[1])
-                my=(self.enVector.y- center.y)*(boundary[0+3]-boundary[0])
+                mx=(self.endVector.x- center.x)*(boundary[1+3]-boundary[1])
+                my=(self.endVector.y- center.y)*(boundary[0+3]-boundary[0])
                 self.newAngle=-math.degrees(math.atan2(float(-mx), float(my)))
             
             while (self.newAngle < self.oldAngle-180):
@@ -725,6 +724,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             _rotaryDisc: holds the discs (wheel) rotation axis ('X','Y' or 'Z') 
             as letters.  
         """
+        print("callback type is = ", callbackType)
         if (callbackType == 100):
             # run all
             self.do_callback()

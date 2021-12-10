@@ -540,8 +540,8 @@ class Fr_Widget (object):
             BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
             BoundaryAction.apply(self.w_wdgsoSwitch)
             Boundary = BoundaryAction.getBoundingBox()
-            BoundMax = coin.SbVec3f()
-            BoundMin = coin.SbVec3f()
+            #BoundMax = coin.SbVec3f()
+            #BoundMin = coin.SbVec3f()
             BoundMax = Boundary.getMax()
             BoundMin = Boundary.getMin()
             return ([App.Vector(BoundMin[0], BoundMin[3], BoundMin[2]),
