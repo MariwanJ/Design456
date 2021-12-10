@@ -45,7 +45,7 @@ class FR_WidgetType:
     FR_ARROW = "Arrow Widget"
     FR_BOX = "Box Widget"
     FR_WHEEL = "Wheel Widget"
-    FR_ONE_PAD   = "Wheel PAD Widget"
+    FR_ONE_DISC   = "Wheel PAD Widget"
     FR_THREE_PAD   = "Wheel PAD Widget"
 
 # Transparency - No color will be applied

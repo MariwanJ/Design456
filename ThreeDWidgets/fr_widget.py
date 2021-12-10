@@ -542,8 +542,8 @@ class Fr_Widget (object):
             Boundary = BoundaryAction.getBoundingBox()
             BoundMax = coin.SbVec3f()
             BoundMin = coin.SbVec3f()
-            Boundary.getMax(BoundMax)
-            Boundary.getMin(BoundMin)
+            BoundMax = Boundary.getMax()
+            BoundMin = Boundary.getMin()
             return ([App.Vector(BoundMin[0], BoundMin[3], BoundMin[2]),
                     App.Vector(BoundMax[0], BoundMax[1], BoundMax[2])])
         except Exception as err:
