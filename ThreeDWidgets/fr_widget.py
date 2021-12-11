@@ -509,18 +509,22 @@ class Fr_Widget (object):
     def changeLabelfloat(self, newlabel: float = 0.0):
         self.w_label = ["{:.2f}".format(newlabel)]
 
-    def getWidgetsCentor(self):
+    def getWidgetsCentor(self, SoseparatorToCheck=None):
         """[Get Center of the Widget]
 
         Returns:
             [App.Vector]: [Return a vector represents the centor of the widget]
         """
         try:
-            viewPort = coin.SbViewportRegion()
-            BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
-            BoundaryAction.apply(self.w_wdgsoSwitch)
-            center = BoundaryAction.getCenter()
-            return App.Vector(center[0], center[1], center[2])
+            if SoseparatorToCheck is None:
+                boundary = self.getWidgetsBoundary(self.w_wdgsoSwitch)
+            else:
+                boundary = self.getWidgetsBoundary(SoseparatorToCheck)
+            center = App.Vector((boundary[0]+boundary[3])/2,
+                                (boundary[1]+boundary[4])/2,
+                                (boundary[2]+boundary[5])/2)
+            
+            return center
 
         except Exception as err:
             App.Console.PrintError("'getWidgetsCentor' Failed. "
@@ -529,7 +533,7 @@ class Fr_Widget (object):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def getWidgetsBoundary(self):
+    def getWidgetsBoundary(self, SoseparatorToCheck=None):
         """[Retrive the Max size of the 3D coin object by returning the Min vector and Max vector]
 
         Returns:
@@ -538,14 +542,20 @@ class Fr_Widget (object):
         try:
             viewPort = coin.SbViewportRegion()
             BoundaryAction = coin.SoGetBoundingBoxAction(viewPort)
-            BoundaryAction.apply(self.w_wdgsoSwitch)
+            if(SoseparatorToCheck is None):
+                BoundaryAction.apply(self.w_wdgsoSwitch)
+            else:
+                BoundaryAction.apply(SoseparatorToCheck)
+            
             Boundary = BoundaryAction.getBoundingBox()
-            #BoundMax = coin.SbVec3f()
-            #BoundMin = coin.SbVec3f()
             BoundMax = Boundary.getMax()
             BoundMin = Boundary.getMin()
-            return ([App.Vector(BoundMin[0], BoundMin[3], BoundMin[2]),
-                    App.Vector(BoundMax[0], BoundMax[1], BoundMax[2])])
+            return ([App.Vector(round(BoundMin[0],1), 
+                                round(BoundMin[1],1), 
+                                round(BoundMin[2],1)),
+                    App.Vector(round(BoundMax[0],1), 
+                               round(BoundMax[1],1), 
+                               round(BoundMax[2],1))])
         except Exception as err:
             App.Console.PrintError("'getWidgetsBoundary' Failed. "
                                    "{err}\n".format(err=str(err)))

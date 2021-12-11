@@ -648,8 +648,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_discEnabled must be True
         """
         print("rotate callback")
-        boundary= self.getWidgetsBoundary()
-        center= self.getWidgetsCentor()
+        boundary= self.getWidgetsBoundary(self.w_discSeparator)
+        center= self.getWidgetsCentor(self.w_discSeparator)
         print(".................................")
         print(boundary)
         print(center)
