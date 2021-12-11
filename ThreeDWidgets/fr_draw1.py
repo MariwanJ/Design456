@@ -306,8 +306,8 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
         transformY = coin.SoTransform()
         transformZ = coin.SoTransform()
 
-        transformX.rotation.setValue(tempRX, math.radians(_rotation[0]))
-        transformY.rotation.setValue(tempRY, math.radians(_rotation[1]))
+        transformX.rotation.setValue(tempRY, math.radians(_rotation[0]))
+        transformY.rotation.setValue(tempRX, math.radians(_rotation[1]))
         transformZ.rotation.setValue(tempRZ, math.radians(_rotation[2]))
 
         material = coin.SoMaterial()

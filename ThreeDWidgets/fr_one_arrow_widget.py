@@ -175,7 +175,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_userData.discObj = self
         self.currentSo = None
         
-        self.newAngle=0.0
+        self.w_discAngle    = 0.0      # Only disc rotation.        
         self.oldAngle=0.0
 
         # This affect only the Widget label - nothing else
@@ -190,7 +190,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_WidgetDiskRotation = 0.0
         self.w_Rotation = _Rotation             # Whole onearrow object rotation 
         self.w_PRErotation = _prerotation       # Whole onearrow object Rotation
-        self.w_discAngle    = 0.0      # Only disc rotation.
+
         self.w_discEnabled = False
         self.releaseDragAxi = -1  # Used to avoid running drag code while it is in drag mode
                                 # -1 no click, 0 mouse clicked, 1 mouse dragging
@@ -219,7 +219,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # In this widget, we have 2 coin drawings that we need to capture event for them
         clickwdgdNode = []
-        # 0 =      Axis movement
+        # 0 =     Axis movement
         # 1 =     disc Rotation
 
         clickwdgdNode = [False, False]
@@ -362,9 +362,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     if self.axisType == 'X':  # Xdisc default   RED
                         preRotValdisc = [self.w_discAngle, 0.0, 90.0]
                     elif self.axisType == 'Y':  # YAxis default GREEN
-                        preRotValdisc = [0.0, 90.0, 90.0]
+                        preRotValdisc = [0.0,self.w_discAngle+ 90.0, 90.0]
                     elif self.axisType == 'Z':
-                        preRotValdisc = [0.0, 0.0, 0.0]
+                        preRotValdisc = [0.0, 0.0, self.w_discAngle]
                     print(preRotValdisc,"preRotValdisc")
                     # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                     # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
@@ -650,8 +650,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         print("rotate callback")
         boundary= self.getWidgetsBoundary()
         center= self.getWidgetsCentor()
+        print(".................................")
         print(boundary)
         print(center)
+        print(".................................")
+
         try:
 
             self.endVector = App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
@@ -666,17 +669,19 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.startVector = self.endVector
                 if not self.has_focus():
                     self.take_focus()
+            print
             print("We are here",self.axisType)
+            newValue= self.endVector.sub(self.mouseToArrowDiff)
             if self.axisType=='X':                                                     # Right
                 #It means that we have changes in Z and Y only
                 #If the mouse moves at the >center in Z direction : 
                 # Z++  means   -Angel, Z--  means  +Angle    --> When Y is +                   ^
                 # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
-                # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is +                 
-                # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is -
-                my=(self.endVector.y- center.y)*(boundary[0+3]-boundary[0])
-                mz=(self.endVector.z- center.z)*(boundary[2+3]-boundary[2])
-                self.newAngle=-math.degrees(math.atan2(float(-my), float(mz)))
+                # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is +                 
+                # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is -
+                my=(newValue.y- center.y)*(boundary[1].z-boundary[0].z)
+                mz=(newValue.z- center.z)*(boundary[1].y-boundary[0].y)
+                self.w_discAngle=-int(math.degrees(math.atan2(float(-my), float(mz))))
             
             if self.axisType=='Y':                                                      # Front
                 #It means that we have changes in Z and X only
@@ -684,9 +689,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
                 # X++  means   -Angel, x--  means  +Angel    -->  when Z is +                 
                 # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
-                mx=(self.endVector.x- center.x)*(boundary[1+3]-boundary[1])
-                mz=(self.endVector.z- center.z)*(boundary[2+3]-boundary[2])
-                self.newAngle=-math.degrees(math.atan2(float(-mx), float(mz)))
+                mx=(newValue.x- center.x)*(boundary[1].z-boundary[0].z)
+                mz=(newValue.z- center.z)*(boundary[1].y-boundary[0].y)
+                self.w_discAngle=int(math.degrees(math.atan2(float(-mx), float(mz))))
 
             if self.axisType=='Z':
                 #It means that we have changes in X and Y only
@@ -694,17 +699,18 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
                 # x++  means   -Angel, X--  means  +Angel    -->  when Y is +                 
                 # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
-                mx=(self.endVector.x- center.x)*(boundary[1+3]-boundary[1])
-                my=(self.endVector.y- center.y)*(boundary[0+3]-boundary[0])
-                self.newAngle=-math.degrees(math.atan2(float(-mx), float(my)))
+                mx=(newValue.x- center.x)*(boundary[1].y-boundary[0].y)
+                my=(newValue.y- center.y)*(boundary[1].x-boundary[0].x)
+                self.w_discAngle=int(math.degrees(math.atan2(float(-mx), float(my))))
             
-            while (self.newAngle < self.oldAngle-180):
-                self.newAngle += 360
-            while (self.newAngle > self.oldAngle+180):
-                self.newAngle -= 360
+            while (self.w_discAngle < self.oldAngle-180):
+                self.w_discAngle += 360
+            while (self.w_discAngle > self.oldAngle+180):
+                self.w_discAngle -= 360
             
-            self.oldAngle = self.newAngle
-            print(self.newAngle)
+            self.oldAngle = self.w_discAngle
+            print(self.w_discAngle)
+            self.redraw()
 
         except Exception as err:
             App.Console.PrintError("'disc Callback' Failed. "
