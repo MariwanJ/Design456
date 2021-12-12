@@ -105,6 +105,17 @@ def callback1(userData: userDataObject = None):
     print("dummy XAxis callback")
 
 
+def callback2(userData: userDataObject = None):
+    """
+        This function executes when the rotary disc
+        angel changed event callback.
+    """
+    # Subclass this and impalement the callback or
+    # just change the callback function
+    print("dummy angle changed callback",userData.discObj.discAngle)
+
+
+
 
 
 
@@ -156,12 +167,12 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         # Dummy callback Axis
         self.w_ArrowAxis_cb_ = callback1
         
-
-        # Dummy callback          disc
+        #Internal angle calculation callback - User shouldn't change this
         self.w_rotaryDisc_cb_ = self.cb_discRotate
+        # Dummy callback          disc
+        self.w_rotary_cb_ = callback2
 
         self.w_wdgsoSwitch = coin.SoSwitch()
-
         self.w_ArrowsSeparator = coin.SoSeparator()
         self.w_discSeparator = coin.SoSeparator()
 
@@ -177,6 +188,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         
         self.w_discAngle    = 0.0      # Only disc rotation.        
         self.oldAngle=0.0
+        self.rotationDirection =1   # +1 CCW , -1 ACCW
 
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
@@ -294,6 +306,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             elif ((clickwdgdNode[1] is True)  and (self.releaseDragDisc == 0)):
                 self.releaseDragAxis = 1  # Drag if will continue it will be a drag always
                 self.take_focus()
+                self.cb_discRotate()
                 self.do_callbacks(1)
                 return 1
             #Axis
@@ -307,6 +320,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
+                self.cb_discRotate()
                 self.do_callbacks(1)        # We use the same callback,
                 return 1
             elif self.releaseDragAxis == 1:
@@ -638,8 +652,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         """[Disable rotation disc. You need to redraw the widget]
         """
         self.w_discEnabled = False
-    def calculateAngle(self,val1,val2):
-        """[Calculate Angle of two coordinates ( xy, yz or xz)]
+    def calculateMouseAngle(self,val1,val2):
+        """[Calculate Angle of two coordinates ( xy, yz or xz).
+            This function is useful to calculate mouse position
+            in Angle depending on the mouse position.
+        ]
 
         Args:
             val1 ([Horizontal coordinate]): [x, y]
@@ -700,11 +717,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
                 # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is +                 
                 # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is -
-                my=(newValue.y- center.y)#*(boundary[1].z-boundary[0].z)
-                mz=(newValue.z- center.z)#*(boundary[1].y-boundary[0].y)
+                my=(newValue.y- center.y)
+                mz=(newValue.z- center.z)
                 if (mz==0):
                     return # Invalid
-                self.w_discAngle=self.calculateAngle(my,mz)
+                self.w_discAngle=faced.calculateMouseAngle(my,mz)
             
             if self.axisType=='Y':                                                      # Front
                 #It means that we have changes in Z and X only
@@ -712,11 +729,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
                 # X++  means   -Angel, x--  means  +Angel    -->  when Z is +                 
                 # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
-                mx=(newValue.x- center.x)#*(boundary[1].z-boundary[0].z)
-                mz=(newValue.z- center.z)#*(boundary[1].y-boundary[0].y)
+                mx=(newValue.x- center.x)
+                mz=(newValue.z- center.z)
                 if (mz==0):
                     return # Invalid
-                self.w_discAngle=self.calculateAngle(mx,mz)
+                self.w_discAngle=faced.calculateMouseAngle(mx,mz)
 
 
             if self.axisType=='Z':
@@ -730,19 +747,22 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     return # Invalid
 
                 my=(newValue.y- center.y)#*(boundary[1].x-boundary[0].x)
-                self.w_discAngle=self.calculateAngle(mx,my)
-            print("-....................")
-            print(self.w_discAngle)
-            print(mx,my,mz)
-            print("-....................")
-            # Due to the fact that the disc is rotated
-            # at the beginning with 90.0
+                self.w_discAngle=faced.calculateMouseAngle(mx,my)
  
-            #while (self.w_discAngle < self.oldAngle-180):
-            #    self.w_discAngle += 360
-            #while (self.w_discAngle > self.oldAngle+180):
-            #    self.w_discAngle -= 360
-            
+            if (self.oldAngle < 45 and self.oldAngle>=0 and self.w_discAngle>270)  : 
+                self.rotationDirection=-1
+                self.w_discAngle=self.w_discAngle-360
+            elif(self.oldAngle < 0 and self.w_discAngle > 0 and self.w_discAngle<90):
+                self.rotationDirection=1
+
+            #we don't accept an angel grater or smaller than 360 degrees
+            if(self.rotationDirection<0):
+                self.w_discAngle=self.w_discAngle-360
+                
+            if(self.w_discAngle>360):
+                self.w_discAngle=self.w_discAngle-360
+            elif(self.w_discAngle<-360):
+                self.w_discAngle=self.w_discAngle+360
             self.oldAngle = self.w_discAngle
             print(self.w_discAngle)
             self.redraw()

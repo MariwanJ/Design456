@@ -943,3 +943,33 @@ def findFacehasSelectedEdge():
             if edge.isEqual(ed):
                 return fa
     return None
+
+def calculateMouseAngle(val1,val2):
+    """[Calculate Angle of two coordinates ( xy, yz or xz).
+        This function is useful to calculate mouse position
+        in Angle depending on the mouse position.
+    ]
+
+    Args:
+        val1 ([Horizontal coordinate]): [x, y]
+        val2 ([Vertical coordinate ]): [y or z]
+
+    Returns:
+        [int]: [Calculated value in degrees]
+    """
+    if(val2==0):
+        return None # divide by zero
+    result = 0
+    if (val1>0 and val2>0):
+        result= int(math.degrees(math.atan2(float(val1), 
+                                            float(val2))))
+    if (val1<0 and val2>0):
+        result= int(math.degrees(math.atan2(float(val1), 
+                                                float(val2))))+360
+    if (val1>0 and val2<0):
+        result= int(math.degrees(math.atan2(float(val1), 
+                                            float(val2))))
+    if (val1<0 and val2<0):
+        result= int(math.degrees(math.atan2(float(val1), 
+                                            float(val2))))+360
+    return result
