@@ -114,10 +114,7 @@ def callback2(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or
     # just change the callback function
-    print("dummy angle changed callback" , userData.discObj.discAngle)
-
-
-
+    print("dummy angle changed callback", userData.discObj.w_discAngle)
 
 
 
@@ -382,9 +379,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     if self.axisType == 'X':  # Xdisc default   RED
                         preRotValdisc = [self.w_discAngle, 0.0, 90.0]
                     elif self.axisType == 'Y':  # YAxis default GREEN
-                        preRotValdisc = [0.0,self.w_discAngle+ 90.0, 90.0]
+                        preRotValdisc = [self.w_discAngle, 0.0, 0.0]
                     elif self.axisType == 'Z':
-                        preRotValdisc = [0.0, 0.0, self.w_discAngle]
+                        preRotValdisc = [0.0, 270.0 ,-self.w_discAngle] 
                     # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                     # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
                     self.w_discSeparator = draw_RotationPad(self.w_vector[0],
@@ -712,7 +709,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     self.take_focus()
             newValue= self.endVector
 
-            #newValue= self.endVector.sub(self.mouseToArrowDiff)
+            print(center,"center")
             mx=my=mz=0.0
             
             if self.axisType=='X':                                                     # Right
@@ -747,11 +744,10 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
                 # x++  means   -Angel, X--  means  +Angel    -->  when Y is +                 
                 # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
-                mx=(newValue.x- center.x)#*(boundary[1].y-boundary[0].y)
+                mx=(newValue.x- center.x)
+                my=(newValue.y- center.y)
                 if (my==0):
                     return # Invalid
-
-                my=(newValue.y- center.y)
                 self.w_discAngle=faced.calculateMouseAngle(mx,my)
             if (self.w_discAngle==360):
                  self.w_discAngle=0
