@@ -276,8 +276,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 return 0
         #Mouse first click and then mouse with movement is here 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            print(clickwdgdNode[0],clickwdgdNode[1])
-            print("DRAG")
             if((clickwdgdNode[1] is True ) and (self.releaseDragDisc == -1)):
                 # This part will be active only once when for the first time user click on the coin drawing.
                 # Later DRAG should be used
@@ -640,6 +638,32 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         """[Disable rotation disc. You need to redraw the widget]
         """
         self.w_discEnabled = False
+    def calculateAngle(self,val1,val2):
+        """[Calculate Angle of two coordinates ( xy, yz or xz)]
+
+        Args:
+            val1 ([Horizontal coordinate]): [x, y]
+            val2 ([Vertical coordinate ]): [y or z]
+
+        Returns:
+            [int]: [Calculated value in degrees]
+        """
+        if(val2==0):
+            return None # divide by zero
+        result = 0
+        if (val1>0 and val2>0):
+            result= int(math.degrees(math.atan2(float(val1), 
+                                                float(val2))))
+        if (val1<0 and val2>0):
+            result= int(math.degrees(math.atan2(float(val1), 
+                                                 float(val2))))+360
+        if (val1>0 and val2<0):
+            result= int(math.degrees(math.atan2(float(val1), 
+                                                float(val2))))
+        if (val1<0 and val2<0):
+            result= int(math.degrees(math.atan2(float(val1), 
+                                                float(val2))))+360
+        return result
     
     def cb_discRotate(self, userData: userDataObject = None):
         """
@@ -647,14 +671,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         event callback.
         self.w_discEnabled must be True
         """
-        print("rotate callback")
+        #print("rotate callback")
         boundary= self.getWidgetsBoundary(self.w_discSeparator)
         center= self.getWidgetsCentor(self.w_discSeparator)
-        print(".................................")
-        print(boundary)
-        print(center)
-        print(".................................")
-
         try:
 
             self.endVector = App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
@@ -669,9 +688,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.startVector = self.endVector
                 if not self.has_focus():
                     self.take_focus()
-            print
-            print("We are here",self.axisType)
-            newValue= self.endVector.sub(self.mouseToArrowDiff)
+            newValue= self.endVector
+
+            #newValue= self.endVector.sub(self.mouseToArrowDiff)
+            mx=my=mz=0.0
+            
             if self.axisType=='X':                                                     # Right
                 #It means that we have changes in Z and Y only
                 #If the mouse moves at the >center in Z direction : 
@@ -679,9 +700,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
                 # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is +                 
                 # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is -
-                my=(newValue.y- center.y)*(boundary[1].z-boundary[0].z)
-                mz=(newValue.z- center.z)*(boundary[1].y-boundary[0].y)
-                self.w_discAngle=-int(math.degrees(math.atan2(float(-my), float(mz))))
+                my=(newValue.y- center.y)#*(boundary[1].z-boundary[0].z)
+                mz=(newValue.z- center.z)#*(boundary[1].y-boundary[0].y)
+                if (mz==0):
+                    return # Invalid
+                self.w_discAngle=self.calculateAngle(my,mz)
             
             if self.axisType=='Y':                                                      # Front
                 #It means that we have changes in Z and X only
@@ -689,9 +712,12 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
                 # X++  means   -Angel, x--  means  +Angel    -->  when Z is +                 
                 # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
-                mx=(newValue.x- center.x)*(boundary[1].z-boundary[0].z)
-                mz=(newValue.z- center.z)*(boundary[1].y-boundary[0].y)
-                self.w_discAngle=int(math.degrees(math.atan2(float(-mx), float(mz))))
+                mx=(newValue.x- center.x)#*(boundary[1].z-boundary[0].z)
+                mz=(newValue.z- center.z)#*(boundary[1].y-boundary[0].y)
+                if (mz==0):
+                    return # Invalid
+                self.w_discAngle=self.calculateAngle(mx,mz)
+
 
             if self.axisType=='Z':
                 #It means that we have changes in X and Y only
@@ -699,14 +725,23 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
                 # x++  means   -Angel, X--  means  +Angel    -->  when Y is +                 
                 # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
-                mx=(newValue.x- center.x)*(boundary[1].y-boundary[0].y)
-                my=(newValue.y- center.y)*(boundary[1].x-boundary[0].x)
-                self.w_discAngle=int(math.degrees(math.atan2(float(-mx), float(my))))
-            
-            while (self.w_discAngle < self.oldAngle-180):
-                self.w_discAngle += 360
-            while (self.w_discAngle > self.oldAngle+180):
-                self.w_discAngle -= 360
+                mx=(newValue.x- center.x)#*(boundary[1].y-boundary[0].y)
+                if (my==0):
+                    return # Invalid
+
+                my=(newValue.y- center.y)#*(boundary[1].x-boundary[0].x)
+                self.w_discAngle=self.calculateAngle(mx,my)
+            print("-....................")
+            print(self.w_discAngle)
+            print(mx,my,mz)
+            print("-....................")
+            # Due to the fact that the disc is rotated
+            # at the beginning with 90.0
+ 
+            #while (self.w_discAngle < self.oldAngle-180):
+            #    self.w_discAngle += 360
+            #while (self.w_discAngle > self.oldAngle+180):
+            #    self.w_discAngle -= 360
             
             self.oldAngle = self.w_discAngle
             print(self.w_discAngle)
@@ -730,7 +765,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             _rotaryDisc: holds the discs (wheel) rotation axis ('X','Y' or 'Z') 
             as letters.  
         """
-        print("callback type is = ", callbackType)
+        #print("callback type is = ", callbackType)
         if (callbackType == 100):
             # run all
             self.do_callback()
