@@ -57,24 +57,26 @@ class test:
 
 	def callback_move(self,userData : wd.userDataObject = None):
      
-	     discObj = userData.discObj  # Arrow object
-	     click=App.Vector(discObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                            discObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                            discObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+	     PadObj = userData.PadObj  # Arrow object
+	     click=App.Vector(PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
+                                            PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                            PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
 	     if self.runOunce == None:
-	           self.runOunce = click.sub(discObj.w_vector[0])
+	           self.runOunce = click.sub(PadObj.w_vector[0])
 
-	     discObj.w_vector[0]=click.sub(self.runOunce)
-	     discObj.redraw()
+	     PadObj.w_vector[0]=click.sub(self.runOunce)
+	     
+	     PadObj.redraw()
+
 	     print(self.runOunce,"self.runOunce")
 
 	def runme(self):
 		mywin = wnn.Fr_CoinWindow()
 		vectors=[App.Vector(0,0,0), App.Vector(0,0,0)] 
 		rot=[0,0,0,0]
-		rot1=[1,0,0,0.31]
 		root=wd.Fr_OneArrow_Widget(vectors, "X-Axis")
 		root.w_move_callback_=self.callback_move
+		root.enableDisc()
 		mywin.addWidget(root)
 		mywin.show()
 
@@ -112,7 +114,7 @@ def callback2(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or
     # just change the callback function
-    print("dummy angle changed callback",userData.discObj.discAngle)
+    print("dummy angle changed callback" , userData.discObj.discAngle)
 
 
 
@@ -204,7 +206,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_PRErotation = _prerotation       # Whole onearrow object Rotation
 
         self.w_discEnabled = False
-        self.releaseDragAxi = -1  # Used to avoid running drag code while it is in drag mode
+        self.releaseDragAxis = -1  # Used to avoid running drag code while it is in drag mode
                                 # -1 no click, 0 mouse clicked, 1 mouse dragging
         self.releaseDragDisc = -1 # Used to avoid running drag code while it is in drag mode
                                 # -1 no click, 0 mouse clicked, 1 mouse dragging
@@ -271,8 +273,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     return 1
             #Axis's part
             elif clickwdgdNode[0] is True:
-                if self.releaseDragAxi == 1 or self.releaseDragAxi == 0:
-                    self.releaseDragAxi = -1
+                if self.releaseDragAxis == 1 or self.releaseDragAxis == 0:
+                    self.releaseDragAxis = -1
                     self.currentSo = None   
                     self.do_callback()
                     return 1
@@ -288,32 +290,21 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 return 0
         #Mouse first click and then mouse with movement is here 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+            #DISC
             if((clickwdgdNode[1] is True ) and (self.releaseDragDisc == -1)):
                 # This part will be active only once when for the first time user click on the coin drawing.
                 # Later DRAG should be used
                 self.releaseDragDisc = 0
+                self.releaseDragAxis = -1
                 self.take_focus()
                 return 1
-
-            elif (((clickwdglblNode is not None) or (clickwdgdNode[0] is True) 
-                and (self.releaseDragAxi == -1))):
-                # This part will be active only once when for the first time user click on the coin drawing.
-                # Later DRAG should be used
-                self.releaseDragAxi = 0
-                self.take_focus()
-                return 1
-            #disc 
+            #DISC 
             elif ((clickwdgdNode[1] is True)  and (self.releaseDragDisc == 0)):
-                self.releaseDragAxis = 1  # Drag if will continue it will be a drag always
+                self.releaseDragDisc = 1  # Rotation will continue it will be a drag always
+                self.releaseDragAxis = -1
                 self.take_focus()
                 self.cb_discRotate()
                 self.do_callbacks(1)
-                return 1
-            #Axis
-            elif (((clickwdgdNode[0] is True) or (clickwdglblNode is True)) and (self.releaseDragAxis)) == 0:
-                self.releaseDragAxis = 1  # Drag if will continue it will be a drag always
-                self.take_focus()
-                self.do_callbacks(0)
                 return 1
             #DISC
             elif self.releaseDragDisc== 1:
@@ -323,6 +314,24 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.cb_discRotate()
                 self.do_callbacks(1)        # We use the same callback,
                 return 1
+
+            #Axis
+            elif (((clickwdglblNode is not None) or (clickwdgdNode[0] is True) 
+                and (self.releaseDragAxis == -1))):
+                # This part will be active only once when for the first time user click on the coin drawing.
+                # Later DRAG should be used
+                self.releaseDragAxis = 0
+                self.releaseDragDisc =-1 #Not possible to have rotation while arrow is active
+                self.take_focus()
+                return 1
+            #Axis
+            elif (((clickwdgdNode[0] is True) or (clickwdglblNode is True)) and (self.releaseDragAxis)) == 0:
+                self.releaseDragAxis = 1  # Drag  will continue, it will be a drag always
+                self.releaseDragDisc =-1
+                self.take_focus()
+                self.do_callbacks(0)
+                return 1
+            #Axis
             elif self.releaseDragAxis == 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
@@ -359,7 +368,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     preRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
                 elif self.axisType == 'Z':
                     preRotVal = [0.0, 0.0, 0.0]
-                print("w_vector",self.w_vector)
                 self.w_ArrowsSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
                                                                  self.distanceBetweenThem,
                                                                  self.w_vector[0].y,
@@ -377,7 +385,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                         preRotValdisc = [0.0,self.w_discAngle+ 90.0, 90.0]
                     elif self.axisType == 'Z':
                         preRotValdisc = [0.0, 0.0, self.w_discAngle]
-                    print(preRotValdisc,"preRotValdisc")
                     # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                     # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
                     self.w_discSeparator = draw_RotationPad(self.w_vector[0],
@@ -684,11 +691,10 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
     
     def cb_discRotate(self, userData: userDataObject = None):
         """
-        This function executes when the disc
-        event callback.
+        Internal callback function, runs when the disc
+        rotation event happens.
         self.w_discEnabled must be True
         """
-        #print("rotate callback")
         boundary= self.getWidgetsBoundary(self.w_discSeparator)
         center= self.getWidgetsCentor(self.w_discSeparator)
         try:
@@ -699,7 +705,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             if  self.run_Once is False:
                 self.run_Once = True
                 self.startVector = self.endVector
-                self.mouseToArrowDiff = self.endVector.sub(self.w_vector[0])
 
             # Keep the old value only first time when drag start
                 self.startVector = self.endVector
@@ -746,25 +751,32 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 if (my==0):
                     return # Invalid
 
-                my=(newValue.y- center.y)#*(boundary[1].x-boundary[0].x)
+                my=(newValue.y- center.y)
                 self.w_discAngle=faced.calculateMouseAngle(mx,my)
- 
-            if (self.oldAngle < 45 and self.oldAngle>=0 and self.w_discAngle>270)  : 
+            if (self.w_discAngle==360):
+                 self.w_discAngle=0
+            if (self.oldAngle < 45 and self.oldAngle>=0) and (self.w_discAngle>270): 
                 self.rotationDirection=-1
                 self.w_discAngle=self.w_discAngle-360
-            elif(self.oldAngle < 0 and self.w_discAngle > 0 and self.w_discAngle<90):
+            
+            elif(self.rotationDirection == -1 
+                 and self.w_discAngle > 0 
+                 and self.w_discAngle<45
+                 and self.oldAngle<-270):
                 self.rotationDirection=1
 
             #we don't accept an angel grater or smaller than 360 degrees
             if(self.rotationDirection<0):
                 self.w_discAngle=self.w_discAngle-360
                 
-            if(self.w_discAngle>360):
-                self.w_discAngle=self.w_discAngle-360
-            elif(self.w_discAngle<-360):
-                self.w_discAngle=self.w_discAngle+360
+            if(self.w_discAngle>359):
+                self.w_discAngle=359
+            elif(self.w_discAngle<-359):
+                self.w_discAngle=-359
+            if self.w_discAngle==-360:
+                self.w_discAngle=0
             self.oldAngle = self.w_discAngle
-            print(self.w_discAngle)
+            print("Angle=",self.w_discAngle)
             self.redraw()
 
         except Exception as err:
@@ -773,6 +785,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+    @property 
+    def getAngle(self):
+        return self.w_discAngle
     
     def do_callbacks(self, callbackType=-1):
         """[summarize the call of the callbacks]
@@ -785,7 +800,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             _rotaryDisc: holds the discs (wheel) rotation axis ('X','Y' or 'Z') 
             as letters.  
         """
-        #print("callback type is = ", callbackType)
         if (callbackType == 100):
             # run all
             self.do_callback()
@@ -809,3 +823,4 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             if(callbackType == 1 and self.w_discEnabled):
                 self.w_userData.Axis = None
                 self.w_rotaryDisc_cb_(self.w_userData)
+                self.w_rotary_cb_(self.w_userData)
