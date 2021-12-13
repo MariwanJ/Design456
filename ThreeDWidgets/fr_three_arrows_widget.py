@@ -37,10 +37,9 @@ from typing import List
 import FACE_D as faced
 from dataclasses import dataclass
 from ThreeDWidgets.fr_draw import draw_2Darrow
-from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
-from ThreeDWidgets.fr_draw1 import draw_RotationPad
+from ThreeDWidgets.fr_one_arrow_widget import Fr_OneArrow_Widget
 import math
 """
 Example how to use this widget.
@@ -59,11 +58,12 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-#TODO: FIXME: old implementation was to complex. we will uses one arrow widget 3 times. 
+# TODO: FIXME: old implementation was to complex. we will uses one arrow widget 3 times.
+
 
 @dataclass
 class userDataObject:
-#TODO :FIXME:
+    # TODO :FIXME:
     def __init__(self):
         self.PadObjs = None      # the Pad widget object
         self.events = None        # events - save handle events here
@@ -151,9 +151,9 @@ def callback(userData: userDataObject = None):
 
 # TODO : FIXME:
 # Implementation should be based on the one-arrow-widget
-# This must be much much simpler than it was. 
+# This must be much much simpler than it was.
 # All functions here must be rewritten to implement
-# 
+#
 
 
 class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
@@ -190,15 +190,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.DrawingType = _type
         # Use this to separate the arrows/lbl from the origin of the widget
         self.distanceBetweenThem = _distanceBetweenThem
-        # Dummy callback X-Axis
-        self.axisList = []
 
         self.w_color = _lblColor  # not used for this widget
         self.w_PadAxis_color = _padColor
         self.w_selColor = [i * 1.2 for i in self.w_selColor]
-        self.w_Scale = _scale
+        self.w_scale = _scale
         self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
- 
+
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.PadObjs = self
 
@@ -215,35 +213,161 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_Rotation = _Rotation
         self.w_PRErotation = _prerotation
         self.w_padEnabled = False
+        self.w_wdgsoSwitch = coin.SoSwitch()
+
+        self.axisList = []
+        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                'X', FR_COLOR.FR_WHITE,
+                                                FR_COLOR.FR_RED,
+                                                self.w_Rotation,
+                                                self.w_PRErotation,
+                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
+        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                'Y', FR_COLOR.FR_WHITE,
+                                                FR_COLOR.FR_GREEN,
+                                                self.w_Rotation,
+                                                self.w_PRErotation,
+                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
+        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                'X', FR_COLOR.FR_WHITE,
+                                                FR_COLOR.FR_BLUE,
+                                                self.w_Rotation,
+                                                self.w_PRErotation,
+                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
+        for obj in self.axisList:
+            self.w_wdgsoSwitch.addChild(obj.w_wdgsoSwitch)
+
+    def show(self):
+        for obj in self.axisList:
+            obj.show()
+
+    def draw(self):
+        for obj in self.axisList:
+            obj.draw()
+
+    def redraw(self):
+        for obj in self.axisList:
+            obj.redraw()
+
+    def hide(self):
+        for obj in self.axisList:
+            obj.hide()
+
+    def enableDisc(self, discNr='ALL'):
+        if discNr == 'ALL' or discNr == "XYZ":
+            for obj in self.axisList:
+                obj.enableDisc()
+        elif discNr == 'X':
+            self.axisList[0].enableDisc()
+        elif discNr == 'Y':
+            self.axisList[1].enableDisc()
+        elif discNr == 'Z':
+            self.axisList[2].enableDisc()
+        elif discNr == "XY":
+            self.axisList[0].enableDisc()
+            self.axisList[1].enableDisc()
+        elif discNr == 'XZ':
+            self.axisList[0].enableDisc()
+            self.axisList[2].enableDisc()
+        elif discNr == 'YZ':
+            self.axisList[1].enableDisc()
+            self.axisList[2].enableDisc()
 
     def handle(self, event):
-        
+
         # Don't care events, return the event to other widgets
         return 0  # We couldn't use the event .. so return 0
 
-    def draw(self):
+    def remove_focus(self):
         """
-        Main draw function. It is responsible to create the node,
-        and draw the Pad on the screen. It creates a node for each 
-        element and for each Pad.
+        Remove the focus from the widget. 
+        This happens by clicking anything 
+        else than the widget itself
         """
-        try:
-            #TODO : FIXME:
-            if (len(self.w_vector) < 1):
-                raise ValueError('Must be a vector')
+        if self.w_hasFocus == 0:
+            return  # nothing to do
+        else:
+            self.w_hasFocus = 0
+            self.redraw()
 
-            usedColor = self.w_color
-            if self.is_active() and self.has_focus():
-                usedColor = self.w_selColor
-            elif self.is_active() and (self.has_focus() != 1):
-                pass  # usedColor = self.w_color  we did that already ..just for reference
-            elif self.is_active() != 1:
-                usedColor = self.w_inactiveColor
+    def resize(self, _scale: tuple = [1.0, 1.0, 1.0]):
+        """Resize the widget by using the new vectors"""
+        self.w_Scale = _scale
+        self.redraw()
 
+    def size(self, _scale: tuple = [1.0, 1.0, 1.0]):
+        """[Scale the widget for the three directions]
 
-        except Exception as err:
-            App.Console.PrintError("'draw Fr_Pad_Widget' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+        Args:
+            _scale (tuple, Three float values): [Scale the widget using three float values for x,y,z axis]. 
+            Defaults to [1.0, 1.0, 1.0].
+        """
+        for obj in self.axisList:
+            obj.resize(_scale)
+
+    def label(self, newlabel,_axis="ALL"):
+        self.w_label = newlabel
+        if _axis=="ALL" or _axis="XYZ":
+            for obj in self.axisList:
+                obj.label(newlabel)
+        elif _axis == 'X':
+                self.axisList[0].label(newlabel)
+        elif _axis == 'Y':
+            self.axisList[1].label(newlabel)
+        elif _axis == 'Z':
+            self.axisList[2].label(newlabel)
+        elif _axis == "XY":
+            self.axisList[0].label(newlabel)
+            self.axisList[1].label(newlabel)
+        elif _axis == 'XZ':
+            self.axisList[0].label(newlabel)
+            self.axisList[2].label(newlabel)
+        elif _axis == 'YZ':
+            self.axisList[1].label(newlabel)
+            self.axisList[2].label(newlabel)
+
+    # Keep in mind you must run lblRedraw
+    def label_font(self, name="sans"):
+        """[Change Label Font]
+
+        Args:
+            name (str, optional): [Change label font]. Defaults to "sans".
+        """
+        self.w_lbluserData.fontName = name
+
+    # Keep in mind you must run lblRedraw
+    def label_scale(self, newsize: tuple = [1.0, 1.0, 1.0]):
+        """[Scale the font using three float values. This is not the font size.
+        You must redraw the label to get this scaling done.
+        ]
+
+        Args:
+            newsize (int, optional): [Change font label ]. Defaults to 1.
+        """
+        self.w_lbluserData.scale = newsize
+
+    # Keep in mind you must run lblRedraw
+    def label_fontsize(self, newsize=1):
+        """[Change label font size ]
+
+        Args:
+            newsize (int, optional): [Change fontsize of the label ]. Defaults to 1.
+        """
+        self.w_lbluserData.fontsize = newsize
+
+    # Must be App.Vector
+    def label_move(self, newPos=App.Vector(0.0, 0.0, 0.0)):
+        """[Move location of the label]
+
+        Args:
+            newPos ([App.Vector], optional): [Change placement of the label]. Defaults to App.Vector(0.0, 0.0, 0.0).
+        """
+        self.w_lbluserData.vectors = [newPos, ]
+
+    def setRotationAngle(self, axis_angle):
+        ''' 
+        Set the rotation axis and the angle. This is for the whole widget.
+        Axis is coin.SbVec3f((x,y,z)
+        angle=float number
+        '''
+        self.w_PRErotation = axis_angle

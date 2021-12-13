@@ -346,8 +346,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         """
         try:
 
-            if (len(self.w_vector) < 1):
-                raise ValueError('Must be a vector')
+            if (len(self.w_vector) < 2):
+                raise ValueError('Must be 2 vector at least')
 
             usedColor = self.w_color
             if self.is_active() and self.has_focus():
