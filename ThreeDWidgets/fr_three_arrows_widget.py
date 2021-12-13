@@ -214,6 +214,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_PRErotation = _prerotation
         self.w_padEnabled = False
         self.w_wdgsoSwitch = coin.SoSwitch()
+        self.w_widgetSoNodes = coin.SoSeparator()
 
         self.axisList = []
         self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
@@ -229,13 +230,15 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                                                 self.w_PRErotation,
                                                 self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
         self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
-                                                'X', FR_COLOR.FR_WHITE,
+                                                'Z', FR_COLOR.FR_WHITE,
                                                 FR_COLOR.FR_BLUE,
                                                 self.w_Rotation,
                                                 self.w_PRErotation,
                                                 self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
+
         for obj in self.axisList:
-            self.w_wdgsoSwitch.addChild(obj.w_wdgsoSwitch)
+            self.w_widgetSoNodes.addChild(obj.w_widgetSoNodes)
+        self.addSoNodeToSoSwitch(self.w_wdgsoSwitch)
 
     def show(self):
         for obj in self.axisList:
@@ -305,13 +308,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         for obj in self.axisList:
             obj.resize(_scale)
 
-    def label(self, newlabel,_axis="ALL"):
+    def label(self, newlabel, _axis="ALL"):
         self.w_label = newlabel
-        if _axis=="ALL" or _axis="XYZ":
+        if _axis == "ALL" or _axis == "XYZ":
             for obj in self.axisList:
                 obj.label(newlabel)
         elif _axis == 'X':
-                self.axisList[0].label(newlabel)
+            self.axisList[0].label(newlabel)
         elif _axis == 'Y':
             self.axisList[1].label(newlabel)
         elif _axis == 'Z':
