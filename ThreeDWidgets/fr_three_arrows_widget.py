@@ -170,8 +170,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  _padColor=[FR_COLOR.FR_RED,
                               FR_COLOR.FR_GREEN,
                               FR_COLOR.FR_BLUE],
-                 # User controlled rotation. This is only for the 3Pads
-                 _Rotation=[0.0, 0.0, 0.0],
+                 # Rotation
+                 _Rotation=[0.0, 0.0, 0.0, 0.0],
                  # Face position-direction controlled rotation at creation. Whole widget
                  _prerotation=[0.0, 0.0, 0.0, 0.0],
                  _scale=[3, 3, 3],
@@ -215,39 +215,51 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_padEnabled = False
         self.w_wdgsoSwitch = coin.SoSwitch()
         self.w_widgetSoNodes = coin.SoSeparator()
-
+        self.created =False #Use this to call the creation of the arrows and discs once 
         self.axisList = []
-        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
-                                                'X', FR_COLOR.FR_WHITE,
-                                                FR_COLOR.FR_RED,
-                                                self.w_Rotation,
-                                                self.w_PRErotation,
-                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
-        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
-                                                'Y', FR_COLOR.FR_WHITE,
-                                                FR_COLOR.FR_GREEN,
-                                                self.w_Rotation,
-                                                self.w_PRErotation,
-                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
-        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
-                                                'Z', FR_COLOR.FR_WHITE,
-                                                FR_COLOR.FR_BLUE,
-                                                self.w_Rotation,
-                                                self.w_PRErotation,
-                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
-
-        for obj in self.axisList:
-            self.w_widgetSoNodes.addChild(obj.w_widgetSoNodes)
-        self.addSoNodeToSoSwitch(self.w_wdgsoSwitch)
 
     def show(self):
         for obj in self.axisList:
             obj.show()
 
     def draw(self):
-        for obj in self.axisList:
-            obj.draw()
+        try:
+            if self.created is False:
+                self.created = True
+                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                    'X', FR_COLOR.FR_WHITE,
+                                                    FR_COLOR.FR_RED,
+                                                    self.w_Rotation,
+                                                    self.w_PRErotation,
+                                                    self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
+                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                        'Y', FR_COLOR.FR_WHITE,
+                                                        FR_COLOR.FR_GREEN,
+                                                        self.w_Rotation,
+                                                        self.w_PRErotation,
+                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
+                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                        'Z', FR_COLOR.FR_WHITE,
+                                                        FR_COLOR.FR_BLUE,
+                                                        self.w_Rotation,
+                                                        self.w_PRErotation,
+                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
 
+                for obj in self.axisList:
+                    self.w_widgetSoNodes.addChild(obj.w_widgetSoNodes)
+                self.addSoNodeToSoSwitch(self.w_wdgsoSwitch)
+
+
+            for obj in self.axisList:
+                obj.draw()
+                
+        except Exception as err:
+            App.Console.PrintError("'Fr_ThreeArrows_Widget draw' Failed. " 
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+                                  
     def redraw(self):
         for obj in self.axisList:
             obj.redraw()

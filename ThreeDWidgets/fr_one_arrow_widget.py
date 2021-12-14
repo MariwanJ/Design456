@@ -142,7 +142,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                  _axisType='X',  # Default is X axis and RED color
                  _lblColor=FR_COLOR.FR_WHITE,
                  _axisColor=FR_COLOR.FR_RED,
-                 # User controlled rotation. This is only for the 3discs
+                 # User controlled rotation. This is only for the 3discs TODO: FIXME: THIS MUST BE FIXED!!!!!!!! CONFUSING!!!!! 
                  _Rotation=[0.0, 0.0, 0.0],
                  # Face position-direction controlled rotation at creation. Whole widget
                  _prerotation=[0.0, 0.0, 0.0, 0.0],
