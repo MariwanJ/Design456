@@ -1149,10 +1149,10 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         material = coin.SoMaterial()
         material.transparency.setValue(opacity)
         material.diffuseColor.setValue(coin.SbColor(color))
-        
+        soSepArrow=coin.SoSeparator() # drawing holder
         if type ==0 :
             scale= [i/35.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 35mm to get 1mm TODO:FIXME:
-            soSepArrow=coin.SoSeparator()   # drawing holder
+               
             soIndexFace= coin.SoIndexedFaceSet()
             cordinate= coin.SoCoordinate3()
             Shapehint= coin.SoShapeHints()
@@ -1316,7 +1316,6 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
             coordinateTail1.point.setValues(0, 8, vertexTail1)
             coordinateTail2.point.setValues(0, 8, vertexTail2)
 
-            soSepArrow=coin.SoSeparator()
             Shapehint= coin.SoShapeHints()
             Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
             Shapehint.vertexOrdering= coin.SoShapeHints.COUNTERCLOCKWISE
@@ -1338,7 +1337,6 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         
         elif type==2:
             scale= [i/15.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 15mm to get 1mm TODO:FIXME:
-            soSepArrow=coin.SoSeparator()   # drawing holder
             soIndexFace= coin.SoIndexedFaceSet()
             cordinate= coin.SoCoordinate3()
             vertexPositions=[(0,	-8.7955   ,7.769	 ),
@@ -1645,7 +1643,7 @@ def draw_circle(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacit
     soSepArrow=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
     cordinate= coin.SoCoordinate3()
-    vertexPositions=[(7.11 ,   0      ,0),
+    vertexPositions=[(7.11 ,  0.0    ,0),
                     (7.1  ,   0.37   ,0),
                     (7.07 ,   0.73   ,0),
                     (7.03 ,   1.09   ,0),

@@ -168,16 +168,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  label: str = "",
                  _lblColor=FR_COLOR.FR_WHITE,
                  _padColor=[FR_COLOR.FR_RED,
-                              FR_COLOR.FR_GREEN,
-                              FR_COLOR.FR_BLUE],
-                 # Rotation
-                 _Rotation=[0.0, 0.0, 0.0, 0.0],
-                 # Face position-direction controlled rotation at creation. Whole widget
-                 _prerotation=[0.0, 0.0, 0.0, 0.0],
-                 _scale=[3, 3, 3],
-                 _type=1,
-                 _opacity=0,
-                 _distanceBetweenThem=[5, 5, 5]):
+                            FR_COLOR.FR_GREEN,
+                            FR_COLOR.FR_BLUE],
+                 _Rotation: List[float] = [0.0, 0.0, 0.0, 0.0],
+                 _scale: List[float] = [3, 3, 3],
+                 _type: int = 1,
+                 _opacity: float = 0,
+                 _distanceBetweenThem: List[float] = [5, 5, 5]):
         super().__init__(vectors, label)
 
         self.w_widgetType = constant.FR_WidgetType.FR_THREE_PAD
@@ -211,58 +208,55 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0
         self.w_Rotation = _Rotation
-        self.w_PRErotation = _prerotation
         self.w_padEnabled = False
-        self.w_wdgsoSwitch = coin.SoSwitch()
-        self.w_widgetSoNodes = coin.SoSeparator()
-        self.created =False #Use this to call the creation of the arrows and discs once 
+        self.created = False  # Use this to call the creation of the arrows and discs once
         self.axisList = []
-
-    def show(self):
-        for obj in self.axisList:
-            obj.show()
+        self.w_wdgsoSwitch = coin.SoSwitch()
+    
 
     def draw(self):
         try:
             if self.created is False:
+                print("ok here ")
                 self.created = True
                 self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
-                                                    'X', FR_COLOR.FR_WHITE,
-                                                    FR_COLOR.FR_RED,
-                                                    self.w_Rotation,
-                                                    self.w_PRErotation,
-                                                    self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
+                                                        'X', FR_COLOR.FR_WHITE,
+                                                        FR_COLOR.FR_RED,
+                                                        self.w_Rotation,
+                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[0]))
                 self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
                                                         'Y', FR_COLOR.FR_WHITE,
                                                         FR_COLOR.FR_GREEN,
                                                         self.w_Rotation,
-                                                        self.w_PRErotation,
-                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
+                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[1]))
                 self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
                                                         'Z', FR_COLOR.FR_WHITE,
                                                         FR_COLOR.FR_BLUE,
                                                         self.w_Rotation,
-                                                        self.w_PRErotation,
-                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem))
-
-                for obj in self.axisList:
-                    self.w_widgetSoNodes.addChild(obj.w_widgetSoNodes)
-                self.addSoNodeToSoSwitch(self.w_wdgsoSwitch)
-
+                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[2]))
 
             for obj in self.axisList:
                 obj.draw()
-                
+                self.saveSoNodesToWidget(obj.w_widgetSoNodes)
+                self.saveSoNodeslblToWidget(obj.w_widgetlblSoNodes)
+
+            self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
+            self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
+
         except Exception as err:
-            App.Console.PrintError("'Fr_ThreeArrows_Widget draw' Failed. " 
+            App.Console.PrintError("'Fr_ThreeArrows_Widget draw' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-                                  
+
     def redraw(self):
         for obj in self.axisList:
             obj.redraw()
+
+    def show(self):
+        for obj in self.axisList:
+            obj.show()
 
     def hide(self):
         for obj in self.axisList:
@@ -341,6 +335,16 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.axisList[1].label(newlabel)
             self.axisList[2].label(newlabel)
 
+    def draw_label(self):
+        for obj in self.axisList:
+            obj.draw_label()
+
+    def lblRedraw(self):
+        """[Redraw the label]
+        """
+        for obj in self.axisList:
+            obj.lblRedraw()
+
     # Keep in mind you must run lblRedraw
     def label_font(self, name="sans"):
         """[Change Label Font]
@@ -379,10 +383,10 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         """
         self.w_lbluserData.vectors = [newPos, ]
 
-    def setRotationAngle(self, axis_angle):
+    def setRotationAngle(self, axis_and_angle):
         ''' 
         Set the rotation axis and the angle. This is for the whole widget.
         Axis is coin.SbVec3f((x,y,z)
         angle=float number
         '''
-        self.w_PRErotation = axis_angle
+        self.w_Rotation = axis_and_angle

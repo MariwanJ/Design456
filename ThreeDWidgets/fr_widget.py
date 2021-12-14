@@ -520,6 +520,7 @@ class Fr_Widget (object):
                 boundary = self.getWidgetsBoundary(self.w_wdgsoSwitch)
             else:
                 boundary = self.getWidgetsBoundary(SoseparatorToCheck)
+
             center = App.Vector((boundary[0].x+boundary[1].x)/2,
                                 (boundary[0].y+boundary[1].y)/2,
                                 (boundary[0].z+boundary[1].z)/2)

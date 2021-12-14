@@ -117,7 +117,6 @@ def callback2(userData: userDataObject = None):
     print("dummy angle changed callback", userData.discObj.w_discAngle)
 
 
-
 def callback(userData: userDataObject = None):
     """
         This function executes when lblCallbak 
@@ -139,17 +138,17 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
     def __init__(self, vectors: List[App.Vector] = [],
                  label: str = "",
-                 _axisType='X',  # Default is X axis and RED color
+                 _axisType: str = 'X',  # Default is X axis and RED color
                  _lblColor=FR_COLOR.FR_WHITE,
                  _axisColor=FR_COLOR.FR_RED,
-                 # User controlled rotation. This is only for the 3discs TODO: FIXME: THIS MUST BE FIXED!!!!!!!! CONFUSING!!!!! 
-                 _Rotation=[0.0, 0.0, 0.0],
-                 # Face position-direction controlled rotation at creation. Whole widget
-                 _prerotation=[0.0, 0.0, 0.0, 0.0],
-                 _scale=[3, 3, 3],
-                 _type=1,
-                 _opacity=0,
-                 _distanceBetweenThem=5):
+                 # User controlled rotation.
+                 # Face position-direction controlled rotation at creation.
+                 # Whole widget rotation
+                 _rotation: List[float] = [0.0, 0.0, 0.0, 0.0],
+                 _scale: List[float] = [3, 3, 3],
+                 _type: int = 1,
+                 _opacity: float = 0.0,
+                 _distanceBetweenThem: float = 5.0):
         super().__init__(vectors, label)
 
         self.w_widgetType = constant.FR_WidgetType.FR_ONE_DISC
@@ -162,11 +161,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.DrawingType = _type
         # Use this to separate the arrows/lbl from the origin of the widget
         self.distanceBetweenThem = _distanceBetweenThem
-        self.axisType = _axisType  #X, Y or Z
+        self.axisType = _axisType  # X, Y or Z
         # Dummy callback Axis
         self.w_ArrowAxis_cb_ = callback1
-        
-        #Internal angle calculation callback - User shouldn't change this
+
+        # Internal angle calculation callback - User shouldn't change this
         self.w_rotaryDisc_cb_ = self.cb_discRotate
         # Dummy callback          disc
         self.w_rotary_cb_ = callback2
@@ -184,10 +183,10 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.discObj = self
         self.currentSo = None
-        
-        self.w_discAngle    = 0.0      # Only disc rotation.        
-        self.oldAngle=0.0
-        self.rotationDirection =1   # +1 CCW , -1 ACCW
+
+        self.w_discAngle = 0.0      # Only disc rotation.
+        self.oldAngle = 0.0
+        self.rotationDirection = 1   # +1 CCW , -1 ACCW
 
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
@@ -199,15 +198,16 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0
-        self.w_Rotation = _Rotation             # Whole onearrow object rotation 
-        self.w_PRErotation = _prerotation       # Whole onearrow object Rotation
+
+        self.w_rotation = _rotation       # Whole onearrow object Rotation
 
         self.w_discEnabled = False
         self.releaseDragAxis = -1  # Used to avoid running drag code while it is in drag mode
-                                # -1 no click, 0 mouse clicked, 1 mouse dragging
-        self.releaseDragDisc = -1 # Used to avoid running drag code while it is in drag mode
-                                # -1 no click, 0 mouse clicked, 1 mouse dragging
+        # -1 no click, 0 mouse clicked, 1 mouse dragging
+        self.releaseDragDisc = -1  # Used to avoid running drag code while it is in drag mode
+        # -1 no click, 0 mouse clicked, 1 mouse dragging
         self.run_Once = False
+        self.w_wdgsoSwitch = coin.SoSwitch()
 
     def handle(self, event):
         """
@@ -236,12 +236,12 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         clickwdgdNode = [False, False]
 
         if(fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_ArrowsSeparator) is not None):
+                                             self.w_pick_radius, self.w_ArrowsSeparator) is not None):
             clickwdgdNode[0] = True
-            
+
         if self.w_discEnabled:
             if (fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                    self.w_pick_radius, self.w_discSeparator) is not None):
+                                                  self.w_pick_radius, self.w_discSeparator) is not None):
                 clickwdgdNode[1] = True
 
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
@@ -254,9 +254,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            #disc's part 
+            # disc's part
             if clickwdgdNode[1] is True:
-                #When the discs rotates, we don't accept 
+                # When the discs rotates, we don't accept
                 # the arrow dragging. Disk rotation has priority
                 if self.releaseDragDisc == 1 or self.releaseDragDisc == 0:
                     self.releaseDragDisc = -1
@@ -265,14 +265,14 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 if self.releaseDragDisc == 1 or self.releaseDragDisc == 0:
                     self.releaseDragDisc = -1
                     self.currentSo = None
-                    # Release callback should be activated 
+                    # Release callback should be activated
                     self.do_callbacks(1)
                     return 1
-            #Axis's part
+            # Axis's part
             elif clickwdgdNode[0] is True:
                 if self.releaseDragAxis == 1 or self.releaseDragAxis == 0:
                     self.releaseDragAxis = -1
-                    self.currentSo = None   
+                    self.currentSo = None
                     self.do_callback()
                     return 1
             elif clickwdgdNode[1] is True:
@@ -282,29 +282,29 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     self.do_callbacks()
                     # Release callback should be activated even if the disc != under the mouse
 
-            else:#None of them -- remove the focus 
+            else:  # None of them -- remove the focus
                 self.remove_focus()
                 return 0
-        #Mouse first click and then mouse with movement is here 
+        # Mouse first click and then mouse with movement is here
         if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            #DISC
-            if((clickwdgdNode[1] is True ) and (self.releaseDragDisc == -1)):
+            # DISC
+            if((clickwdgdNode[1] is True) and (self.releaseDragDisc == -1)):
                 # This part will be active only once when for the first time user click on the coin drawing.
                 # Later DRAG should be used
                 self.releaseDragDisc = 0
                 self.releaseDragAxis = -1
                 self.take_focus()
                 return 1
-            #DISC 
-            elif ((clickwdgdNode[1] is True)  and (self.releaseDragDisc == 0)):
+            # DISC
+            elif ((clickwdgdNode[1] is True) and (self.releaseDragDisc == 0)):
                 self.releaseDragDisc = 1  # Rotation will continue it will be a drag always
                 self.releaseDragAxis = -1
                 self.take_focus()
                 self.cb_discRotate()
                 self.do_callbacks(1)
                 return 1
-            #DISC
-            elif self.releaseDragDisc== 1:
+            # DISC
+            elif self.releaseDragDisc == 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
@@ -312,23 +312,23 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.do_callbacks(1)        # We use the same callback,
                 return 1
 
-            #Axis
-            elif (((clickwdglblNode is not None) or (clickwdgdNode[0] is True) 
-                and (self.releaseDragAxis == -1))):
+            # Axis
+            elif (((clickwdglblNode is not None) or (clickwdgdNode[0] is True)
+                   and (self.releaseDragAxis == -1))):
                 # This part will be active only once when for the first time user click on the coin drawing.
                 # Later DRAG should be used
                 self.releaseDragAxis = 0
-                self.releaseDragDisc =-1 #Not possible to have rotation while arrow is active
+                self.releaseDragDisc = -1  # Not possible to have rotation while arrow is active
                 self.take_focus()
                 return 1
-            #Axis
+            # Axis
             elif (((clickwdgdNode[0] is True) or (clickwdglblNode is True)) and (self.releaseDragAxis)) == 0:
                 self.releaseDragAxis = 1  # Drag  will continue, it will be a drag always
-                self.releaseDragDisc =-1
+                self.releaseDragDisc = -1
                 self.take_focus()
                 self.do_callbacks(0)
                 return 1
-            #Axis
+            # Axis
             elif self.releaseDragAxis == 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
@@ -356,7 +356,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 pass  # usedColor = self.w_color  we did that already ..just for reference
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
-            #TODO: FIXME: 
+            # TODO: FIXME:
             preRotVal = None
             if self.is_visible():
                 if self.axisType == 'X':  # XAxis default   RED
@@ -381,23 +381,22 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     elif self.axisType == 'Y':  # YAxis default GREEN
                         preRotValdisc = [self.w_discAngle, 0.0, 0.0]
                     elif self.axisType == 'Z':
-                        preRotValdisc = [0.0, 270.0 ,-self.w_discAngle] 
+                        preRotValdisc = [0.0, 270.0, -self.w_discAngle]
                     # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                     # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
                     self.w_discSeparator = draw_RotationPad(self.w_vector[0],
-                                                           self.w_rotaryDisc_color,
-                                                           self.w_Scale,
-                                                           self.Opacity,
-                                                           preRotValdisc)  # RED
-                    self.w_userData.RotaryDisc=self.w_discSeparator
+                                                            self.w_rotaryDisc_color,
+                                                            self.w_Scale, self.Opacity,
+                                                            preRotValdisc)  # RED
+                    self.w_userData.RotaryDisc = self.w_discSeparator
 
                 CollectThemAllRot = coin.SoTransform()
                 CollectThemAll = coin.SoSeparator()
                 tR = coin.SbVec3f()
                 tR.setValue(
-                    self.w_PRErotation[0], self.w_PRErotation[1], self.w_PRErotation[2])
+                    self.w_rotation[0], self.w_rotation[1], self.w_rotation[2])
                 CollectThemAllRot.rotation.setValue(
-                    tR, math.radians(self.w_PRErotation[3]))
+                    tR, math.radians(self.w_rotation[3]))
 
                 CollectThemAll.addChild(CollectThemAllRot)
                 CollectThemAll.addChild(self.w_ArrowsSeparator)
@@ -413,7 +412,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
 
         except Exception as err:
-            App.Console.PrintError("'draw Fr_disc_Widget' Failed. "
+            App.Console.PrintError("'draw Fr_one_Arrow_widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -628,13 +627,13 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         """
         self.w_lbluserData.vectors = [newPos, ]
 
-    def setRotationAngle(self, axis_angle):
+    def setRotationAngle(self, axis_and_angle):
         ''' 
         Set the rotation axis and the angle. This is for the whole widget.
         Axis is coin.SbVec3f((x,y,z)
         angle=float number
         '''
-        self.w_PRErotation = axis_angle
+        self.w_rotation = axis_and_angle
 
     def calculateWidgetDiskRotationAfterDrag(self, v1, v2):
         self.w_WidgetDiskRotation = math.degrees(v1.getAngle(v2))
@@ -656,7 +655,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         """[Disable rotation disc. You need to redraw the widget]
         """
         self.w_discEnabled = False
-    def calculateMouseAngle(self,val1,val2):
+
+    def calculateMouseAngle(self, val1, val2):
         """[Calculate Angle of two coordinates ( xy, yz or xz).
             This function is useful to calculate mouse position
             in Angle depending on the mouse position.
@@ -669,37 +669,37 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         Returns:
             [int]: [Calculated value in degrees]
         """
-        if(val2==0):
-            return None # divide by zero
+        if(val2 == 0):
+            return None  # divide by zero
         result = 0
-        if (val1>0 and val2>0):
-            result= int(math.degrees(math.atan2(float(val1), 
-                                                float(val2))))
-        if (val1<0 and val2>0):
-            result= int(math.degrees(math.atan2(float(val1), 
+        if (val1 > 0 and val2 > 0):
+            result = int(math.degrees(math.atan2(float(val1),
+                                                 float(val2))))
+        if (val1 < 0 and val2 > 0):
+            result = int(math.degrees(math.atan2(float(val1),
                                                  float(val2))))+360
-        if (val1>0 and val2<0):
-            result= int(math.degrees(math.atan2(float(val1), 
-                                                float(val2))))
-        if (val1<0 and val2<0):
-            result= int(math.degrees(math.atan2(float(val1), 
-                                                float(val2))))+360
+        if (val1 > 0 and val2 < 0):
+            result = int(math.degrees(math.atan2(float(val1),
+                                                 float(val2))))
+        if (val1 < 0 and val2 < 0):
+            result = int(math.degrees(math.atan2(float(val1),
+                                                 float(val2))))+360
         return result
-    
+
     def cb_discRotate(self, userData: userDataObject = None):
         """
         Internal callback function, runs when the disc
         rotation event happens.
         self.w_discEnabled must be True
         """
-        boundary= self.getWidgetsBoundary(self.w_discSeparator)
-        center= self.getWidgetsCentor(self.w_discSeparator)
+        boundary = self.getWidgetsBoundary(self.w_discSeparator)
+        center = self.getWidgetsCentor(self.w_discSeparator)
         try:
 
             self.endVector = App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                                self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                                self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
-            if  self.run_Once is False:
+                                        self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
+                                        self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+            if self.run_Once is False:
                 self.run_Once = True
                 self.startVector = self.endVector
 
@@ -707,84 +707,84 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.startVector = self.endVector
                 if not self.has_focus():
                     self.take_focus()
-            newValue= self.endVector
+            newValue = self.endVector
 
-            print(center,"center")
-            mx=my=mz=0.0
-            
-            if self.axisType=='X':                                                     # Right
-                #It means that we have changes in Z and Y only
-                #If the mouse moves at the >center in Z direction : 
+            print(center, "center")
+            mx = my = mz = 0.0
+
+            if self.axisType == 'X':                                                     # Right
+                # It means that we have changes in Z and Y only
+                # If the mouse moves at the >center in Z direction :
                 # Z++  means   -Angel, Z--  means  +Angle    --> When Y is +                   ^
                 # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
-                # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is +                 
+                # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is +
                 # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is -
-                my=(newValue.y- center.y)
-                mz=(newValue.z- center.z)
-                if (mz==0):
-                    return # Invalid
-                self.w_discAngle=faced.calculateMouseAngle(my,mz)
-            
-            if self.axisType=='Y':                                                      # Front
-                #It means that we have changes in Z and X only
+                my = (newValue.y - center.y)
+                mz = (newValue.z - center.z)
+                if (mz == 0):
+                    return  # Invalid
+                self.w_discAngle = faced.calculateMouseAngle(my, mz)
+
+            if self.axisType == 'Y':                                                      # Front
+                # It means that we have changes in Z and X only
                 # Z++  means   -Angel, Z--  means  +Angle    -->  When X is +                   ^
                 # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
-                # X++  means   -Angel, x--  means  +Angel    -->  when Z is +                 
+                # X++  means   -Angel, x--  means  +Angel    -->  when Z is +
                 # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
-                mx=(newValue.x- center.x)
-                mz=(newValue.z- center.z)
-                if (mz==0):
-                    return # Invalid
-                self.w_discAngle=faced.calculateMouseAngle(mx,mz)
+                mx = (newValue.x - center.x)
+                mz = (newValue.z - center.z)
+                if (mz == 0):
+                    return  # Invalid
+                self.w_discAngle = faced.calculateMouseAngle(mx, mz)
 
-
-            if self.axisType=='Z':
-                #It means that we have changes in X and Y only
+            if self.axisType == 'Z':
+                # It means that we have changes in X and Y only
                 # Y++  means   -Angel, Y--  means  +Angle    -->  When X is +                   ^
                 # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
-                # x++  means   -Angel, X--  means  +Angel    -->  when Y is +                 
+                # x++  means   -Angel, X--  means  +Angel    -->  when Y is +
                 # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
-                mx=(newValue.x- center.x)
-                my=(newValue.y- center.y)
-                if (my==0):
-                    return # Invalid
-                self.w_discAngle=faced.calculateMouseAngle(mx,my)
-            if (self.w_discAngle==360):
-                 self.w_discAngle=0
-            if (self.oldAngle < 45 and self.oldAngle>=0) and (self.w_discAngle>270): 
-                self.rotationDirection=-1
-                self.w_discAngle=self.w_discAngle-360
-            
-            elif(self.rotationDirection == -1 
-                 and self.w_discAngle > 0 
-                 and self.w_discAngle<45
-                 and self.oldAngle<-270):
-                self.rotationDirection=1
+                mx = (newValue.x - center.x)
+                my = (newValue.y - center.y)
+                if (my == 0):
+                    return  # Invalid
+                self.w_discAngle = faced.calculateMouseAngle(mx, my)
+            if (self.w_discAngle == 360):
+                self.w_discAngle = 0
+            if (self.oldAngle < 45 and self.oldAngle >= 0) and (self.w_discAngle > 270):
+                self.rotationDirection = -1
+                self.w_discAngle = self.w_discAngle-360
 
-            #we don't accept an angel grater or smaller than 360 degrees
-            if(self.rotationDirection<0):
-                self.w_discAngle=self.w_discAngle-360
-                
-            if(self.w_discAngle>359):
-                self.w_discAngle=359
-            elif(self.w_discAngle<-359):
-                self.w_discAngle=-359
-            if self.w_discAngle==-360:
-                self.w_discAngle=0
+            elif(self.rotationDirection == -1
+                 and self.w_discAngle > 0
+                 and self.w_discAngle < 45
+                 and self.oldAngle < -270):
+                self.rotationDirection = 1
+
+            # we don't accept an angel grater or smaller than 360 degrees
+            if(self.rotationDirection < 0):
+                self.w_discAngle = self.w_discAngle-360
+
+            if(self.w_discAngle > 359):
+                self.w_discAngle = 359
+            elif(self.w_discAngle < -359):
+                self.w_discAngle = -359
+            if self.w_discAngle == -360:
+                self.w_discAngle = 0
             self.oldAngle = self.w_discAngle
-            print("Angle=",self.w_discAngle)
+            print("Angle=", self.w_discAngle)
             self.redraw()
 
         except Exception as err:
             App.Console.PrintError("'disc Callback' Failed. "
-                                "{err}\n".format(err=str(err)))
+                                   "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-    @property 
+
+    @property
     def getAngle(self):
         return self.w_discAngle
-    
+
     def do_callbacks(self, callbackType=-1):
         """[summarize the call of the callbacks]
 
@@ -808,14 +808,14 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             # Use this to finalize the action.
             self.do_callback()
 
-        #Move callback
+        # Move callback
         elif(callbackType == 0):
             self.w_userData._rotaryDisc = None
             self.w_ArrowAxis_cb_(self.w_userData)
 
-        #Rotate callback
+        # Rotate callback
         if self.w_discEnabled:
-            #Rotation callback - Disc
+            # Rotation callback - Disc
             if(callbackType == 1 and self.w_discEnabled):
                 self.w_userData.Axis = None
                 self.w_rotaryDisc_cb_(self.w_userData)
