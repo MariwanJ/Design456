@@ -403,9 +403,10 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
                 if self.w_discEnabled:
                     CollectThemAll.addChild(self.w_discSeparator)
-
-                self.saveSoNodeslblToWidget(self.draw_label())
+                lblso=self.draw_label()
                 self.saveSoNodesToWidget(CollectThemAll)
+                self.saveSoNodeslblToWidget(lblso)
+
                 # add SoSeparator to the switch
                 # We can put them in a tuple but it is better not doing so
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)

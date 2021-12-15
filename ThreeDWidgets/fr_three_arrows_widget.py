@@ -212,33 +212,34 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.created = False  # Use this to call the creation of the arrows and discs once
         self.axisList = []
         self.w_wdgsoSwitch = coin.SoSwitch()
-    
+        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                'X', FR_COLOR.FR_WHITE,
+                                                FR_COLOR.FR_RED,
+                                                self.w_Rotation,
+                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[0]))
+        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                'Y', FR_COLOR.FR_WHITE,
+                                                FR_COLOR.FR_GREEN,
+                                                self.w_Rotation,
+                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[1]))
+        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                                                'Z', FR_COLOR.FR_WHITE,
+                                                FR_COLOR.FR_BLUE,
+                                                self.w_Rotation,
+                                                self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[2]))
 
     def draw(self):
         try:
-            if self.created is False:
-                print("ok here ")
-                self.created = True
-                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
-                                                        'X', FR_COLOR.FR_WHITE,
-                                                        FR_COLOR.FR_RED,
-                                                        self.w_Rotation,
-                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[0]))
-                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
-                                                        'Y', FR_COLOR.FR_WHITE,
-                                                        FR_COLOR.FR_GREEN,
-                                                        self.w_Rotation,
-                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[1]))
-                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
-                                                        'Z', FR_COLOR.FR_WHITE,
-                                                        FR_COLOR.FR_BLUE,
-                                                        self.w_Rotation,
-                                                        self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[2]))
-
+            collectAll = []
+            collectAllLBL = []
             for obj in self.axisList:
+                obj.parent(self.w_parent)
                 obj.draw()
-                self.saveSoNodesToWidget(obj.w_widgetSoNodes)
-                self.saveSoNodeslblToWidget(obj.w_widgetlblSoNodes)
+                collectAllLBL.append(obj.w_widgetlblSoNodes)
+                collectAll.append(obj.w_widgetSoNodes)
+            print(self.w_parent,"self.w_parent")
+            self.saveSoNodesToWidget(collectAll)
+            self.saveSoNodeslblToWidget(collectAllLBL)
 
             self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
@@ -257,6 +258,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
     def show(self):
         for obj in self.axisList:
             obj.show()
+        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all children
 
     def hide(self):
         for obj in self.axisList:

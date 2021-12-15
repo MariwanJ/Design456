@@ -25,23 +25,24 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os,sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
-from  ThreeDWidgets import fr_group
-from  ThreeDWidgets import fr_widget
-from  ThreeDWidgets import constant
-from  ThreeDWidgets import fr_coin3d
+from ThreeDWidgets import fr_group
+from ThreeDWidgets import fr_widget
+from ThreeDWidgets import constant
+from ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets.constant import FR_WidgetType
-
 
 
 '''
 This is a class for coin3D Window
 '''
+
 
 class Fr_CoinWindow(fr_group.Fr_Group):
     """
@@ -58,7 +59,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     global link_to_root_handle
 
     def __init__(self, args: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
-                400, 400, 0)], label: str = ""):
+            400, 400, 0)], label: str = ""):
         super().__init__(args, label)
         self._view = Gui.ActiveDocument.ActiveView
         self._parent = self  # No parent and this is the main window
@@ -67,9 +68,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.link_to_root_handle.w_wind = self
         self.link_to_root_handle.addCallbacks()
         self.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
-        self._mainfrCoinWindow=self
-        
-        # Activated 
+        self._mainfrCoinWindow = self
+
+        # Activated
     def show(self):
         """
         Show the window on the 3D World
@@ -82,8 +83,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         later to this class.
         """
         self.draw()
-        super().show() #Show all children also
-        
+        super().show()  # Show all children also
+
     def __del__(self):
         """
         Class destructor 
@@ -91,23 +92,24 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         self.hide()
         del self.link_to_root_handle
-        self.link_to_root_handle=None
-        super().__del__()   #call group destructor 
+        self.link_to_root_handle = None
+        super().__del__()  # call group destructor
         # Call Fr_Groups deactivate to remove all widgets.
-        
+
     # Remove the switches and their children.
     def removeSoSwitchFromSceneGraph(self, _soSwitch):
         """ remove switch tree from the SceneGraph"""
-        if type(_soSwitch)==list:
+        if type(_soSwitch) == list:
             for i in _soSwitch:
                 self.Root_SceneGraph.removeChild(i)
         else:
             self.Root_SceneGraph.removeChild(_soSwitch)
-        
+
     def callback(self, data):
         # not sure what I should do here yet.
         pass
     # We need to have it here to give parent to the widget
+
     def addWidget(self, widg):
         """ 
         Add the new created widget(s) to the list.
@@ -116,18 +118,19 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         to the list and keep the link to the window inside
         the widget itself.
         """
-        if type(widg)==list:
+        if type(widg) == list:
             for widgets in widg:
                 self.w_children.append(widgets)
-                widgets.parent(self._mainfrCoinWindow)      #Save a link to parent in the widget
+                # Save a link to parent in the widget
+                widgets.parent(self._mainfrCoinWindow)
         else:
             self.w_children.append(widg)
-            widg.parent(self._mainfrCoinWindow)             #Save a link to parent in the widget
+            # Save a link to parent in the widget
+            widg.parent(self._mainfrCoinWindow)
 
-        
     def addSoSwitchToSceneGraph(self, _soSwitch):
         """ Add new switch tree to the SceneGraph"""
-        if type(_soSwitch)==list:
+        if type(_soSwitch) == list:
             for i in _soSwitch:
                 self.Root_SceneGraph.addChild(i)  # add scene to the root
         else:

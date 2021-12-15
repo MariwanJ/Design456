@@ -439,23 +439,32 @@ class Fr_Widget (object):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
         to the switch. The switch should be able to show/hide them by a command
         """
-        if self.w_wdgsoSwitch is None:
-            self.w_wdgsoSwitch = coin.SoSwitch()
-            self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-        # We might have a list inside the widget
-        if type(listOfSoSeparator) == list:
-            for sub in listOfSoSeparator:
-                if type(sub) == list:
-                    # we have many SoSeparator inside the widget
-                    for subSub in sub:
-                        self.w_wdgsoSwitch.addChild(subSub)
-                else:
-                    self.w_wdgsoSwitch.addChild(sub)
-        else:
-            self.w_wdgsoSwitch.addChild(listOfSoSeparator)
-
-        # Add the switch to the SceneGraph
-        self.w_parent.addSoSwitchToSceneGraph(self.w_wdgsoSwitch)
+        try:
+            if self.w_wdgsoSwitch is None:
+                self.w_wdgsoSwitch = coin.SoSwitch()
+                self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+            # We might have a list inside the widget
+            if type(listOfSoSeparator) == list:
+                for sub in listOfSoSeparator:
+                    if type(sub) == list:
+                        # we have many SoSeparator inside the widget
+                        for subSub in sub:
+                            self.w_wdgsoSwitch.addChild(subSub)
+                    else:
+                        self.w_wdgsoSwitch.addChild(sub)
+            else:
+                self.w_wdgsoSwitch.addChild(listOfSoSeparator)
+            if self.w_parent is None:
+                raise ValueError("parent was none ")
+            # Add the switch to the SceneGraph
+            self.w_parent.addSoSwitchToSceneGraph(self.w_wdgsoSwitch)
+            
+        except Exception as err:
+            App.Console.PrintError("'Fr_Widget addSoNodeToSoSwitch' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def removeSoNodes(self):
         """ Remove CoinNodes and their children """

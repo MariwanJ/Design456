@@ -56,14 +56,15 @@ class Fr_Group(fr_widget.Fr_Widget):
         self.w_mainfrCoinWindow = self.w_mainfrQtWindow = None
 
 
-    def addWidget(self, widg):
-        if type(widg)==list:
-            for widgets in widg:
-                widgets.w_parent=self.w_mainfrCoinWindow        
-                self.w_children.append(widgets)
-        else:
-            widg.w_parent=self.w_mainfrCoinWindow
-            self.w_children.append(widg)
+    # def addWidget(self, widg):
+    #     print("add widget to group")
+    #     if type(widg)==list:
+    #         for widgets in widg:
+    #             widgets.w_parent=self.w_mainfrCoinWindow        
+    #             self.w_children.append(widgets)
+    #     else:
+    #         widg.w_parent=self.w_mainfrCoinWindow
+    #         self.w_children.append(widg)
 
     def removeWidget(self,widg):
         """
