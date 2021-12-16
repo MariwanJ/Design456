@@ -212,38 +212,38 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.created = False  # Use this to call the creation of the arrows and discs once
         self.axisList = []
         self.w_wdgsoSwitch = coin.SoSwitch()
-        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+
+    def draw(self):
+        try:
+            if self.created is False:
+                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "X",
                                                 'X', FR_COLOR.FR_WHITE,
                                                 FR_COLOR.FR_RED,
                                                 self.w_Rotation,
                                                 self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[0]))
-        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "Y",
                                                 'Y', FR_COLOR.FR_WHITE,
                                                 FR_COLOR.FR_GREEN,
                                                 self.w_Rotation,
                                                 self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[1]))
-        self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "",
+                self.axisList.append(Fr_OneArrow_Widget(self.w_vector, "Z",
                                                 'Z', FR_COLOR.FR_WHITE,
                                                 FR_COLOR.FR_BLUE,
                                                 self.w_Rotation,
                                                 self.w_scale, self.type, self.Opacity, self.distanceBetweenThem[2]))
 
-    def draw(self):
-        try:
             collectAll = []
-            collectAllLBL = []
-            for obj in self.axisList:
-                obj.parent(self.w_parent)
-                obj.draw()
-                collectAllLBL.append(obj.w_widgetlblSoNodes)
-                collectAll.append(obj.w_widgetSoNodes)
-            print(self.w_parent,"self.w_parent")
+            for widg in self.axisList:
+                widg.parent(self.w_parent)
+                widg.enableDisc()
+                widg.draw()
+                collectAll.append(widg.w_wdgsoSwitch)
+            print(self.w_parent, "self.w_parent")
+            #for i in collectAll:
+            #    self.w_parent.Root_SceneGraph.removeChild(i)
             self.saveSoNodesToWidget(collectAll)
-            self.saveSoNodeslblToWidget(collectAllLBL)
-
             self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
-            self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
-
+            
         except Exception as err:
             App.Console.PrintError("'Fr_ThreeArrows_Widget draw' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -252,8 +252,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def redraw(self):
-        for obj in self.axisList:
-            obj.redraw()
+        self.removeSoNodeFromSoSwitch()
+        self.draw()
 
     def show(self):
         for obj in self.axisList:

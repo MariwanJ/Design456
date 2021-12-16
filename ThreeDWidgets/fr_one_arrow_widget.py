@@ -358,17 +358,21 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
             # TODO: FIXME:
             preRotVal = None
+            distance=[0.0, 0.0, 0.0]
             if self.is_visible():
                 if self.axisType == 'X':  # XAxis default   RED
                     preRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
+                    distance=[self.distanceBetweenThem, 0.0, 0.0]
                 elif self.axisType == 'Y':  # YAxis default GREEN
                     preRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
+                    distance=[0.0, self.distanceBetweenThem, 0.0]
                 elif self.axisType == 'Z':
                     preRotVal = [0.0, 0.0, 0.0]
+                    distance=[0.0, 0.0, self.distanceBetweenThem]
                 self.w_ArrowsSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
-                                                                 self.distanceBetweenThem,
-                                                                 self.w_vector[0].y,
-                                                                 self.w_vector[0].z),
+                                                                 distance[0],
+                                                                 self.w_vector[0].y + distance[1],
+                                                                 self.w_vector[0].z + distance[2]),
                                                       # default FR_COLOR.FR_RED
                                                       self.w_color, self.w_Scale,
                                                       self.DrawingType, self.Opacity,
