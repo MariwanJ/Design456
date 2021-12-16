@@ -227,6 +227,10 @@ class Fr_ThreeArrows_Widget(object):
         for obj in self.w_axisList:
             obj.enableDisc
 
+    def draw(self):
+        for obj in self.w_axisList:
+            obj.redraw()
+
     def redraw(self):
         for obj in self.w_axisList:
             obj.redraw()
