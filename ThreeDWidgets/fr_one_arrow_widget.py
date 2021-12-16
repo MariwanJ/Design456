@@ -191,6 +191,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.vectors = self.w_vector
+
         # We must make it higher or it will intersect the object and won't be visible
         # TODO:Check if this works always?
         self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + 2
@@ -358,20 +359,21 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
             # TODO: FIXME:
             preRotVal = None
-            distance=[0.0, 0.0, 0.0]
+            distance = [0.0, 0.0, 0.0]
             if self.is_visible():
                 if self.axisType == 'X':  # XAxis default   RED
                     preRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
-                    distance=[self.distanceBetweenThem, 0.0, 0.0]
+                    distance = [self.distanceBetweenThem, 0.0, 0.0]
                 elif self.axisType == 'Y':  # YAxis default GREEN
                     preRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
-                    distance=[0.0, self.distanceBetweenThem, 0.0]
+                    distance = [0.0, self.distanceBetweenThem, 0.0]
                 elif self.axisType == 'Z':
                     preRotVal = [0.0, 0.0, 0.0]
-                    distance=[0.0, 0.0, self.distanceBetweenThem]
+                    distance = [0.0, 0.0, self.distanceBetweenThem]
                 self.w_ArrowsSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
                                                                  distance[0],
-                                                                 self.w_vector[0].y + distance[1],
+                                                                 self.w_vector[0].y +
+                                                                 distance[1],
                                                                  self.w_vector[0].z + distance[2]),
                                                       # default FR_COLOR.FR_RED
                                                       self.w_color, self.w_Scale,
@@ -407,7 +409,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
                 if self.w_discEnabled:
                     CollectThemAll.addChild(self.w_discSeparator)
-                lblso=self.draw_label()
+                lblso = self.draw_label()
                 self.saveSoNodesToWidget(CollectThemAll)
                 self.saveSoNodeslblToWidget(lblso)
 
@@ -468,7 +470,17 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 scale: tuple  # Three float numbers for scaling
             ]
         """
-
+        if self.axisType == 'X':
+            self.w_lbluserData.rotation = App.Vector(0, 0, 0)
+            self.w_lbluserData.rotationAxis = App.Vector(0, 0, 0)
+            
+        elif self.axisType == 'Y':
+            self.w_lbluserData.rotation = App.Vector(0, 0, 90)
+            self.w_lbluserData.rotationAxis = App.Vector(0, 0, 1)
+        elif self.axisType == 'Z':
+            self.w_lbluserData.rotation = App.Vector(0, -90, 180)
+            self.w_lbluserData.rotationAxis = App.Vector(0, 1, 1)
+        self.w_lbluserData.labelcolor=self.w_color
         lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
         self.w_widgetlblSoNodes = lbl
         return lbl
