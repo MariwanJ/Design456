@@ -184,6 +184,7 @@ class Fr_ThreeArrows_Widget(object):
         self.w_type = _type
         self.w_opacity = _opacity
         self.w_distanceBetweenThem = _distanceBetweenThem
+        self.w_parent=None
 
     def Activated(self):
 
@@ -242,3 +243,15 @@ class Fr_ThreeArrows_Widget(object):
     def show(self):
         for obj in self.w_axisList:
             obj.show()
+    @property        
+    def getparent(self):
+        """
+            Get parent windows
+        """
+        return self.w_parent
+
+    def parent(self, parent):
+        """ 
+            Set the parent to the widget
+        """
+        self.w_parent = parent
