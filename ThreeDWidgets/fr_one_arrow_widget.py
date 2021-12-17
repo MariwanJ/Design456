@@ -156,23 +156,25 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_callback_ = callback
         self.w_lbl_calback_ = callback              # Label callback
         self.w_KB_callback_ = callback              # Keyboard
-
+        # Dummy callback Axis
+        self.w_ArrowAxis_cb_ = callback1
+        # Internal angle calculation callback - User shouldn't change this
+        self.w_rotaryDisc_cb_ = self.cb_discRotate
+        # Dummy callback          disc
+        self.w_rotary_cb_ = callback2
+        
+        
         self.Opacity = _opacity
         self.DrawingType = _type
         # Use this to separate the arrows/lbl from the origin of the widget
         self.distanceBetweenThem = _distanceBetweenThem
         self.axisType = _axisType  # X, Y or Z
-        # Dummy callback Axis
-        self.w_ArrowAxis_cb_ = callback1
 
-        # Internal angle calculation callback - User shouldn't change this
-        self.w_rotaryDisc_cb_ = self.cb_discRotate
-        # Dummy callback          disc
-        self.w_rotary_cb_ = callback2
+
 
         self.w_wdgsoSwitch = coin.SoSwitch()
-        self.w_ArrowsSeparator = coin.SoSeparator()
-        self.w_discSeparator = coin.SoSeparator()
+        self.w_ArrowsSeparator = None
+        self.w_discSeparator = None
 
         self.w_color = _axisColor
         self.w_rotaryDisc_color = _axisColor
@@ -267,20 +269,20 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     self.releaseDragDisc = -1
                     self.currentSo = None
                     # Release callback should be activated
-                    self.do_callbacks(1)
+                    self.do_callbacks(0)
                     return 1
             # Axis's part
             elif clickwdgdNode[0] is True:
                 if self.releaseDragAxis == 1 or self.releaseDragAxis == 0:
                     self.releaseDragAxis = -1
                     self.currentSo = None
-                    self.do_callback()
+                    self.do_callback(1)
                     return 1
             elif clickwdgdNode[1] is True:
                 if self.releaseDragDisc == 1 or self.releaseDragDisc == 0:
                     self.releaseDragDisc = -1
                     self.currentSo = None
-                    self.do_callbacks()
+                    self.do_callbacks(2)
                     # Release callback should be activated even if the disc != under the mouse
 
             else:  # None of them -- remove the focus
@@ -302,15 +304,15 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.releaseDragAxis = -1
                 self.take_focus()
                 self.cb_discRotate()
-                self.do_callbacks(1)
+                self.do_callbacks(2)
                 return 1
             # DISC
-            elif self.releaseDragDisc == 1:
+            elif self.releaseDragDisc == 1 and (clickwdgdNode[1] is True):
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
                 self.cb_discRotate()
-                self.do_callbacks(1)        # We use the same callback,
+                self.do_callbacks(2)        # We use the same callback,
                 return 1
 
             # Axis
@@ -327,14 +329,14 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.releaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.releaseDragDisc = -1
                 self.take_focus()
-                self.do_callbacks(0)
+                self.do_callbacks(1)
                 return 1
             # Axis
             elif self.releaseDragAxis == 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
-                self.do_callbacks(0)        # We use the same callback,
+                self.do_callbacks(1)        # We use the same callback,
                 return 1
         # Don't care events, return the event to other widgets
         return 0  # We couldn't use the event .. so return 0
@@ -813,27 +815,20 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             _rotaryDisc: holds the discs (wheel) rotation axis ('X','Y' or 'Z') 
             as letters.  
         """
-        if (callbackType == 100):
-            # run all
-            self.do_callback()
-            self.w_ArrowAxis_cb_(self.w_userData)
-            if self.w_discEnabled:
-                self.w_rotaryDisc_color(self.w_userData)
-
-        elif(callbackType == 10):
+        if(callbackType == 0):
             # normal callback This represent the whole widget.
             # Use this to finalize the action.
             self.do_callback()
 
-        # Move callback
-        elif(callbackType == 0):
+        # Move callback - Axis
+        elif(callbackType == 1):
             self.w_userData._rotaryDisc = None
             self.w_ArrowAxis_cb_(self.w_userData)
-
-        # Rotate callback
-        if self.w_discEnabled:
-            # Rotation callback - Disc
-            if(callbackType == 1 and self.w_discEnabled):
-                self.w_userData.Axis = None
-                self.w_rotaryDisc_cb_(self.w_userData)
-                self.w_rotary_cb_(self.w_userData)
+        elif(callbackType == 2):
+            # Rotate callback
+            if self.w_discEnabled:
+                # Rotation callback - Disc
+                if(callbackType == 1 and self.w_discEnabled):
+                    self.w_userData.Axis = None
+                    self.w_rotaryDisc_cb_(self.w_userData)
+                    self.w_rotary_cb_(self.w_userData)

@@ -83,7 +83,7 @@ def xAxis_cb(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or
     # just change the callback function
-    print("dummy XAxis callback")
+    print("dummy XAxis -3Arrows callback")
 
 
 def xDisc_cb(userData: userDataObject = None):
@@ -103,7 +103,7 @@ def yAxis_cb(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or
     # just change the callback function
-    print("dummy YAxis callback")
+    print("dummy YAxis -3Arrows callback")
 
 
 def yDisc_cb(userData: userDataObject = None):
@@ -123,7 +123,7 @@ def zAxis_cb(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or
     # just change the callback function
-    print("dummy ZAxis callback")
+    print("dummy ZAxis -3Arrows callback")
 
 
 def zDisc_cb(userData: userDataObject = None):
@@ -217,17 +217,30 @@ class Fr_ThreeArrows_Widget(object):
         return self.w_axisList
 
     def enableXDisc(self):
-        self.w_axisList[0].enableDisc
+        self.w_axisList[0].enableDisc()
 
     def enableYDisc(self):
-        self.w_axisList[1].enableDisc
+        self.w_axisList[1].enableDisc()
 
     def enableZDisc(self):
-        self.w_axisList[2].enableDisc
+        self.w_axisList[2].enableDisc()
 
     def enableDiscs(self):
         for obj in self.w_axisList:
             obj.enableDisc()
+
+    def disableXDisc(self):
+        self.w_axisList[0].disableDisc()
+
+    def disableYDisc(self):
+        self.w_axisList[1].disableDisc()
+
+    def disableZDisc(self):
+        self.w_axisList[2].disableDisc()
+
+    def disableDiscs(self):
+        for obj in self.w_axisList:
+            obj.disableDisc()
 
     def draw(self):
         for obj in self.w_axisList:
@@ -266,3 +279,9 @@ class Fr_ThreeArrows_Widget(object):
         return (self.w_axisList[0].w_discEnabled,
                 self.w_axisList[1].w_discEnabled,
                 self.w_axisList[2].w_discEnabled)
+
+    def handle(self, event):
+        t2 = self.w_axisList[1].handle(event)
+        t3 = self.w_axisList[2].handle(event)
+        t1 = self.w_axisList[0].handle(event)
+        return(t1 or t2 or t3)
