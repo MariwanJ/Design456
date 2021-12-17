@@ -185,7 +185,7 @@ class Fr_ThreeArrows_Widget(object):
         self.w_type = _type
         self.w_opacity = _opacity
         self.w_distanceBetweenThem = _distanceBetweenThem
-        self.w_parent=None
+        self.w_parent = None
 
     def Activated(self):
 
@@ -211,8 +211,6 @@ class Fr_ThreeArrows_Widget(object):
         self.w_axisList[1].w_rotary_cb_ = yDisc_cb
         self.w_axisList[2].w_ArrowAxis_cb_ = zAxis_cb
         self.w_axisList[2].w_rotary_cb_ = zDisc_cb
-        
-
 
     @property
     def getWidgets(self):
@@ -238,7 +236,7 @@ class Fr_ThreeArrows_Widget(object):
     def redraw(self):
         for obj in self.w_axisList:
             obj.redraw()
-    
+
     def hide(self):
         for obj in self.w_axisList:
             obj.hide()
@@ -249,7 +247,8 @@ class Fr_ThreeArrows_Widget(object):
 
         for obj in self.w_axisList:
             obj.show()
-    @property        
+
+    @property
     def getparent(self):
         """
             Get parent windows
@@ -261,7 +260,8 @@ class Fr_ThreeArrows_Widget(object):
             Set the parent to the widget
         """
         self.w_parent = parent
-    
+
+    @property
     def getDiscEnabled(self):
         return (self.w_axisList[0].w_discEnabled,
                 self.w_axisList[1].w_discEnabled,
