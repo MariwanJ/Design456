@@ -210,6 +210,8 @@ class Fr_ThreeArrows_Widget(object):
         self.w_axisList[1].w_rotary_cb_ = yDisc_cb
         self.w_axisList[2].w_ArrowAxis_cb_ = zAxis_cb
         self.w_axisList[2].w_rotary_cb_ = zDisc_cb
+        
+
 
     @property
     def getWidgets(self):
@@ -226,7 +228,7 @@ class Fr_ThreeArrows_Widget(object):
 
     def enableDiscs(self):
         for obj in self.w_axisList:
-            obj.enableDisc
+            obj.enableDisc()
 
     def draw(self):
         for obj in self.w_axisList:
@@ -242,6 +244,9 @@ class Fr_ThreeArrows_Widget(object):
 
     def show(self):
         for obj in self.w_axisList:
+            obj.redraw()
+
+        for obj in self.w_axisList:
             obj.show()
     @property        
     def getparent(self):
@@ -255,3 +260,8 @@ class Fr_ThreeArrows_Widget(object):
             Set the parent to the widget
         """
         self.w_parent = parent
+    
+    def getDiscEnabled(self):
+        return (self.w_axisList[0].w_discEnabled,
+                self.w_axisList[1].w_discEnabled,
+                self.w_axisList[2].w_discEnabled)
