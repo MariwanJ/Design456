@@ -55,6 +55,7 @@ vec.append(App.Vector(0,0,0))
 vec.append(App.Vector(0,0,0))  #Dummy won't be used
 arrows=w.Fr_ThreeArrows_Widget(vec,"Pad")
 arrows.Activated()
+arrows.enableDiscs()
 mywin.addWidget(arrows.getWidgets)
 mywin.show()
 
