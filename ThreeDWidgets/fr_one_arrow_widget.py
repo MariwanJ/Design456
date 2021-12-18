@@ -151,6 +151,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                  _distanceBetweenThem: float = 5.0):
         super().__init__(vectors, label)
 
+        self.w_lbluserData = fr_widget.propertyValues()
         self.w_widgetType = constant.FR_WidgetType.FR_ONE_DISC
         # General widget callback (mouse-button) function - External function
         self.w_callback_ = callback
@@ -162,15 +163,12 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_rotaryDisc_cb_ = self.cb_discRotate
         # Dummy callback          disc
         self.w_rotary_cb_ = callback2
-        
-        
+
         self.Opacity = _opacity
         self.DrawingType = _type
         # Use this to separate the arrows/lbl from the origin of the widget
         self.distanceBetweenThem = _distanceBetweenThem
         self.axisType = _axisType  # X, Y or Z
-
-
 
         self.w_wdgsoSwitch = coin.SoSwitch()
         self.w_ArrowsSeparator = None
@@ -210,7 +208,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.releaseDragDisc = -1  # Used to avoid running drag code while it is in drag mode
         # -1 no click, 0 mouse clicked, 1 mouse dragging
         self.run_Once = False
-        self.w_wdgsoSwitch = coin.SoSwitch()
 
     def handle(self, event):
         """
@@ -264,27 +261,16 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 if self.releaseDragDisc == 1 or self.releaseDragDisc == 0:
                     self.releaseDragDisc = -1
                     self.currentSo = None
-
-                if self.releaseDragDisc == 1 or self.releaseDragDisc == 0:
-                    self.releaseDragDisc = -1
-                    self.currentSo = None
                     # Release callback should be activated
                     self.do_callbacks(0)
                     return 1
-            # Axis's part
+                # Axis's part
             elif clickwdgdNode[0] is True:
                 if self.releaseDragAxis == 1 or self.releaseDragAxis == 0:
                     self.releaseDragAxis = -1
                     self.currentSo = None
                     self.do_callback(1)
                     return 1
-            elif clickwdgdNode[1] is True:
-                if self.releaseDragDisc == 1 or self.releaseDragDisc == 0:
-                    self.releaseDragDisc = -1
-                    self.currentSo = None
-                    self.do_callbacks(2)
-                    # Release callback should be activated even if the disc != under the mouse
-
             else:  # None of them -- remove the focus
                 self.remove_focus()
                 return 0
@@ -304,8 +290,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.releaseDragAxis = -1
                 self.take_focus()
                 self.cb_discRotate()
-                self.do_callbacks(2)
+                self.do_callbacks(2)  # disc callback
                 return 1
+
             # DISC
             elif self.releaseDragDisc == 1 and (clickwdgdNode[1] is True):
                 # As far as we had DRAG before, we will continue run callback.
@@ -316,7 +303,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 return 1
 
             # Axis
-            elif (((clickwdglblNode is not None) or (clickwdgdNode[0] is True)
+            elif ((((clickwdglblNode is not None)
+                    or (clickwdgdNode[0] is True))
                    and (self.releaseDragAxis == -1))):
                 # This part will be active only once when for the first time user click on the coin drawing.
                 # Later DRAG should be used
@@ -325,7 +313,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.take_focus()
                 return 1
             # Axis
-            elif (((clickwdgdNode[0] is True) or (clickwdglblNode is True)) and (self.releaseDragAxis)) == 0:
+            elif (((clickwdgdNode[0] is True) or
+                   (clickwdglblNode is not None))
+                  and (self.releaseDragAxis)) == 0:
                 self.releaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.releaseDragDisc = -1
                 self.take_focus()
@@ -411,9 +401,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
                 if self.w_discEnabled:
                     CollectThemAll.addChild(self.w_discSeparator)
-                lblso = self.draw_label()
+                self.draw_label()
                 self.saveSoNodesToWidget(CollectThemAll)
-                self.saveSoNodeslblToWidget(lblso)
 
                 # add SoSeparator to the switch
                 # We can put them in a tuple but it is better not doing so
@@ -426,24 +415,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
-    def redraw(self):
-        """
-        When the widget is damaged, use this function to redraw it.        
-        """
-        if self.is_visible():
-            # Remove the SoSwitch from fr_coinwindow
-            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
-
-            # Remove the node from the switch as a child
-            self.removeSoNodeFromSoSwitch()
-
-            # Remove the sceneNodes from the widget
-            self.removeSoNodes()
-            # Redraw label
-
-            self.lblRedraw()
-            self.draw()
 
     def draw_label(self):
         """[Draw 3D text in the scenegraph]
@@ -475,24 +446,15 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         if self.axisType == 'X':
             self.w_lbluserData.rotation = App.Vector(0, 0, 0)
             self.w_lbluserData.rotationAxis = App.Vector(0, 0, 0)
-            
         elif self.axisType == 'Y':
             self.w_lbluserData.rotation = App.Vector(0, 0, 90)
             self.w_lbluserData.rotationAxis = App.Vector(0, 0, 1)
         elif self.axisType == 'Z':
             self.w_lbluserData.rotation = App.Vector(0, -90, 180)
             self.w_lbluserData.rotationAxis = App.Vector(0, 1, 1)
-        self.w_lbluserData.labelcolor=self.w_color
+        self.w_lbluserData.labelcolor = self.w_color
         lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
-        self.w_widgetlblSoNodes = lbl
-        return lbl
-
-    def lblRedraw(self):
-        """[Redraw the label]
-        """
-        if(self.w_widgetlblSoNodes is not None):
-            self.w_widgetlblSoNodes.removeAllChildren()
-        self.draw_label()
+        self.saveSoNodeslblToWidget(lbl)
 
     def move(self, newVecPos=App.Vector(0, 0, 0)):
         """[Move the widget to a new location referenced by the 

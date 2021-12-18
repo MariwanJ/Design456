@@ -24,7 +24,8 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-import os, sys
+import os
+import sys
 import Design456Init
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -66,29 +67,34 @@ wny.show()
 
 """
 
-#FIXME: Handle is not correct . Make it like arrow widget. 
+# FIXME: Handle is not correct . Make it like arrow widget.
 
-def callback_default(obj,userData=None):
+
+def callback_default(obj, userData=None):
     print("fr_square widget default callback")
 
-def callback_defaultlbl(obj,userData=None):
+
+def callback_defaultlbl(obj, userData=None):
     print("fr_square widget default LBL callback")
+
 
 class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
     """
     This class is for drawing a line in  coin3D
     """
 
-    def __init__(self, vectors: List[App.Vector] = [], labels: str = "" ,lineWidth=1):
-        super().__init__(vectors,labels) # It must be initialized first refer to fr_line_widget for more info
-        self.w_vector=vectors
-        self.w_lineWidth = lineWidth # default line width        # Here we have a list (4 labels)
-        self.w_label= labels
+    def __init__(self, vectors: List[App.Vector] = [], labels: str = "", lineWidth=1):
+        # It must be initialized first refer to fr_line_widget for more info
+        super().__init__(vectors, labels)
+        self.w_vector = vectors
+        # default line width        # Here we have a list (4 labels)
+        self.w_lineWidth = lineWidth
+        self.w_label = labels
         self.w_widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
-        self.w_callback_=callback_default
-        self.w_lbl_calback_=callback_defaultlbl
-             
-        
+        self.w_callback_ = callback_default
+        self.w_lbl_calback_ = callback_defaultlbl
+        self.w_lbluserData = fr_widget.propertyValues()
+
     # def addVertices(self, vertices):
     #     if(len(vertices)!=4):
     #             # must be four vertices
@@ -136,7 +142,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         the line.
         """
         try:
-            
+
             if len(self.w_vector) != 4:
                 raise ValueError('Must be 4 Vectors')
             if self.is_active() and self.has_focus():
@@ -146,16 +152,16 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                square = fr_draw.draw_square_frame(self.w_vector, usedColor, self.w_lineWidth)
-                _lbl = self.draw_label()
+                square = fr_draw.draw_square_frame(
+                    self.w_vector, usedColor, self.w_lineWidth)
+                self.draw_label()
 
-                self.saveSoNodesToWidget(square)  # Add SoSeparator. Will be added to switch automatically                            
-                self.saveSoNodeslblToWidget(_lbl)
-
+                # Add SoSeparator. Will be added to switch automatically
+                self.saveSoNodesToWidget(square)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
                 self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
                 print(self.w_wdgsoSwitch)
-            
+
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 
@@ -176,8 +182,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.vectors = firstTwovertices
         self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label([self.w_label], self.w_lbluserData)
-        self.w_widgetlblSoNodes = lbl
-        return lbl
+        self.saveSoNodeslblToWidget(lbl)
 
     def move(self, newVecPos):
         """
@@ -199,19 +204,6 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         self.w_visible = 1
         self.redraw()
 
-    def redraw(self):
-        """
-        After the widgets damages, this function should be called.        
-        """
-        if self.is_visible():
-            # Remove the sceneNodes from the widget
-            self.removeSoNodes()
-            # Remove the node from the switch as a child
-            self.removeSoNodeFromSoSwitch()
-            # Remove the SoSwitch from fr_coinwindo
-            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
-            self.draw()
-
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
@@ -231,7 +223,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active ==0:
+        if self.w_active == 0:
             return  # Nothing to do
         self.w_active = 0
 
@@ -245,7 +237,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         return self.w_active
 
     def hide(self):
-        if self.w_visible ==0:
+        if self.w_visible == 0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -257,7 +249,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus ==0:
+        if self.w_hasFocus == 0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0
@@ -306,21 +298,24 @@ wny.addWidget(square_)
 wny.show()
 
 """
+
+
 class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
     """
     This class is for drawing a line in  coin3D
     """
 
-    def __init__(self, vectors: List[App.Vector] = [], labels: str = "" ,lineWidth=1):
-        super().__init__(vectors,labels) # It must be initialized first refer to fr_line_widget for more info
-        self.w_vector=vectors
-        self.w_lineWidth = lineWidth # default line width        # Here we have a list (4 labels)
-        self.w_label= labels
+    def __init__(self, vectors: List[App.Vector] = [], labels: str = "", lineWidth=1):
+        # It must be initialized first refer to fr_line_widget for more info
+        super().__init__(vectors, labels)
+        self.w_vector = vectors
+        # default line width        # Here we have a list (4 labels)
+        self.w_lineWidth = lineWidth
+        self.w_label = labels
         self.w_widgetType = constant.FR_WidgetType.FR_SQUARE_FRAME
-        self.w_callback_=callback_default
-        self.w_lbl_calback_=callback_defaultlbl
-             
-        
+        self.w_callback_ = callback_default
+        self.w_lbl_calback_ = callback_defaultlbl
+
     # def addVertices(self, vertices):
     #     if(len(vertices)!=4):
     #             # must be four vertices
@@ -368,7 +363,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         the line.
         """
         try:
-            
+
             if len(self.w_vector) != 4:
                 raise ValueError('Must be 4 Vectors')
             if self.is_active() and self.has_focus():
@@ -378,16 +373,15 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             if self.is_visible():
-                square = fr_draw.draw_fourSidedShape(self.w_vector, usedColor, self.w_lineWidth).Activated()
-                _lbl = self.draw_label()
+                square = fr_draw.draw_fourSidedShape(
+                    self.w_vector, usedColor, self.w_lineWidth).Activated()
+                self.draw_label()
 
-                self.saveSoNodesToWidget(square)  # Add SoSeparator. Will be added to switch automatically                            
-                self.saveSoNodeslblToWidget(_lbl)
-
+                # Add SoSeparator. Will be added to switch automatically
+                self.saveSoNodesToWidget(square)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
                 self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
-                print(self.w_wdgsoSwitch)
-            
+
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 
@@ -409,8 +403,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.vectors = firstTwovertices
         self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label([self.w_label], self.w_lbluserData)
-        self.w_widgetlblSoNodes = lbl
-        return lbl
+        self.saveSoNodeslblToWidget(lbl)
 
     def move(self, newVecPos):
         """
@@ -464,7 +457,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active ==0:
+        if self.w_active == 0:
             return  # Nothing to do
         self.w_active = 0
 
@@ -478,7 +471,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         return self.w_active
 
     def hide(self):
-        if self.w_visible ==0:
+        if self.w_visible == 0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -490,7 +483,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus ==0:
+        if self.w_hasFocus == 0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0

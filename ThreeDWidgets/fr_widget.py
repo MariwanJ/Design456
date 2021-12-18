@@ -121,12 +121,12 @@ class Fr_Widget (object):
     w_selColor = constant.FR_COLOR.FR_YELLOW
     w_box = None
     w_active = 1  # 1 active , 0 inactive
-    w_parent = None
+    w_parent = None # Is the main window widget
     w_widgetType = constant.FR_WidgetType.FR_WIDGET
     w_hasFocus = 0           # 0 No focus , 1 Focus
 
     # Use this to send any object or value to the lbl drawing/callback(propertyValues object)
-    w_lbluserData = propertyValues()
+    w_lbluserData = None
 
     w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
     w_widgetSoNodes = None  # Should be defined in the widget either one or a list
@@ -159,8 +159,7 @@ class Fr_Widget (object):
                                 # Some will require several vectors, and other just one.
                                 # There is no way to avoid requiring more than 1 vector.
         # This must be a list, to have several raw, append st
-        self.w_label = [label]
-        self.w_lbluserData.fontsize
+        self.w_label = [[]]
 
     @abstractmethod
     def draw_box(self):
@@ -187,19 +186,28 @@ class Fr_Widget (object):
     def setLblData(self, newData: propertyValues):
         self.w_lbluserData = newData
 
-    @abstractmethod
     def redraw(self):
         """
         After the widgets damages, this function should be called.        
         """
-        raise NotImplementedError()
+        if self.is_visible():
+            # Remove the SoSwitch from fr_coinwindo
+            self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
 
-    @abstractmethod
+            # Remove the node from the switch as a child
+            self.removeSoNodeFromSoSwitch()
+
+            # Remove the sceneNodes from the widget
+            self.removeSoNodes()
+            # Redraw label
+
+            self.lblRedraw()
+            self.draw()
+
     def lblRedraw(self):
-        """
-        After the lbl damage/change, this function should be called.        
-        """
-        raise NotImplementedError()
+        if(self.w_widgetlblSoNodes != None):
+            self.w_widgetlblSoNodes.removeAllChildren()
+
 
     @abstractmethod
     def take_focus(self):

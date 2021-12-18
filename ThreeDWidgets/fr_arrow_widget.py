@@ -114,7 +114,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_userData.color = _color
         self.releaseDrag = -1  # -1 mouse no clicked not dragging, 0 is clicked, 1 is dragging
         self.arrowType = _arrowType  # 0 3D Default , 1= 2D, 2=2D
-
+        self.w_lbluserData= fr_widget.propertyValues()
     def lineWidth(self, width):
         """ Set the line width"""
         self.w_lineWidth = width
@@ -227,9 +227,9 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.w_lbluserData.labelcolor = usedColor
                 self.w_lbluserData.vectors = self.w_vector
                 self.w_lbluserData.rotation = App.Vector(0, 0, 0)
-                self.lblSoNodes = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
+                self.draw_label(usedColor)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
-                self.addSoNodeToSoSwitch(self.lblSoNodes)
+                self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 
@@ -246,8 +246,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.vectors = self.w_vector
         self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
-        self.w_widgetlblSoNodes = lbl
-        return lbl
+        self.saveSoNodeslblToWidget(lbl)
 
     def move(self, newVecPos):
         """

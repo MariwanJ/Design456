@@ -25,7 +25,8 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os,sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
@@ -59,41 +60,47 @@ wny.show()                    # show the window and it's widgets.
 
 
 """
+
+
 def movecallback(userData=None):
     """
             This function will run the drag-move 
             event callback. 
     """
-        #TODO : Subclass this and impalement the callback 
-        #          to get the desired effect
-    print("dummy line-widget move callback" )
+    # TODO : Subclass this and impalement the callback
+    #          to get the desired effect
+    print("dummy line-widget move callback")
+
 
 def KBcallback(userData=None):
     """
             This function will run the KB 
             event callback. 
     """
-        #TODO : Subclass this and impalement the callback 
-        #          to get the desired effect
-    print("dummy line-widget KB callback" )
-    
+    # TODO : Subclass this and impalement the callback
+    #          to get the desired effect
+    print("dummy line-widget KB callback")
+
+
 def lblcallback(userData=None):
     """
             This function will run the label-changed 
             event callback.
     """
-        #TODO : Subclass this and impalement the callback 
-        #          to get the desired effect
+    # TODO : Subclass this and impalement the callback
+    #          to get the desired effect
     print("dummy line-widget-label callback")
-             
+
+
 def callback(userData=None):
     """
             This function will run the when the line is clicked 
             event callback. 
     """
-        #TODO : Subclass this and impalement the callback 
-        #          to get the desired effect
-    print("dummy line-widget callback" )
+    # TODO : Subclass this and impalement the callback
+    #          to get the desired effect
+    print("dummy line-widget callback")
+
 
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
@@ -102,18 +109,18 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
     """
 
     def __init__(self, vectors: List[App.Vector] = [], label: str = "", lineWidth=1):
-        super().__init__(vectors, label)        
-        #Must be initialized first as per the following discussion. 
-        #https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
+        super().__init__(vectors, label)
+        # Must be initialized first as per the following discussion.
+        # https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
         self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_EDGE
-        self.w_callback_=callback           #External function
-        self.w_lbl_calback_=lblcallback     #External function
-        self.w_KB_callback_=KBcallback      #External function
-        self.w_move_callback_=movecallback  #External function
+        self.w_callback_ = callback  # External function
+        self.w_lbl_calback_ = lblcallback  # External function
+        self.w_KB_callback_ = KBcallback  # External function
+        self.w_move_callback_ = movecallback  # External function
         w_wdgsoSwitch = coin.SoSwitch()
         w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
-
+        self.w_lbluserData = fr_widget.propertyValues()
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -128,25 +135,25 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        if type(event)==int:
-            if event==FR_EVENTS.FR_NO_EVENT:
-                return 1    # we treat this event. Nothing to do 
-        
+        if type(event) == int:
+            if event == FR_EVENTS.FR_NO_EVENT:
+                return 1    # we treat this event. Nothing to do
+
             clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                            self.w_pick_radius, self.w_widgetSoNodes)
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
             clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
-                                                            self.w_pick_radius, self.w_widgetlblSoNodes) 
+                                                                self.w_pick_radius, self.w_widgetlblSoNodes)
 
             if clickwdgdNode is None and clickwdglblNode is None:
-                #SoSwitch not found 
+                # SoSwitch not found
                 self.remove_focus()
-                return 0 
-            
+                return 0
+
             if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
                 if clickwdglblNode != None:
                     print("Double click detected")
-                    #if not self.has_focus():
+                    # if not self.has_focus():
                     #    self.take_focus()
                     self.do_lblcallback()
                     return 1
@@ -156,10 +163,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                     if not self.has_focus():
                         self.take_focus()
                     self.do_callback()
-                    return 1            
+                    return 1
 
-            #Don't care events, return the event to other widgets    
-        return 0  # We couldn't use the event .. so return 0 
+            # Don't care events, return the event to other widgets
+        return 0  # We couldn't use the event .. so return 0
 
     def draw(self):
         """
@@ -167,25 +174,26 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         and draw the line on the screen - in the COIN3D world.        
         """
         try:
-        
+
             if len(self.w_vector) < 2:
                 raise ValueError('Must be 2 Vectors')
             p1 = self.w_vector[0]
             p2 = self.w_vector[1]
-            usedColor=usedColor = self.w_selColor
+            usedColor = usedColor = self.w_selColor
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
             elif self.is_active() and (self.has_focus() != 1):
                 usedColor = self.w_color
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
-            _rotation=(0,0,1,0)
-            vec=[p1,p2]
+            _rotation = (0, 0, 1, 0)
+            vec = [p1, p2]
             if self.is_visible():
-                self.saveSoNodesToWidget(fr_draw.draw_line(vec, usedColor, _rotation,self.w_lineWidth))
-                self.saveSoNodeslblToWidget(self.draw_label(usedColor))
-                #add both to the same switch. and add them to the scenegraph automatically
-                allSwitch=[]
+                self.saveSoNodesToWidget(fr_draw.draw_line(
+                    vec, usedColor, _rotation, self.w_lineWidth))
+                self.draw_label(usedColor)
+                # add both to the same switch. and add them to the scenegraph automatically
+                allSwitch = []
                 allSwitch.append(self.w_widgetSoNodes)
                 allSwitch.append(self.w_widgetlblSoNodes)
                 self.addSoNodeToSoSwitch(allSwitch)
@@ -199,14 +207,13 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def draw_label(self,usedColor):
+    def draw_label(self, usedColor):
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.labelcolor = usedColor
         self.w_lbluserData.vectors = self.w_vector
         self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
-        self.w_widgetlblSoNodes = lbl
-        return lbl
+        self.saveSoNodeslblToWidget(lbl)
 
     def move(self, newVecPos):
         """
@@ -215,7 +222,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         if it is a line.
         """
         self.resize([newVecPos[0], newVecPos[1]])
-        
+
     @property
     def getVertexStart(self):
         """Return the vertex of the start point"""
@@ -240,19 +247,18 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
             # Remove the node from the switch as a child
             self.removeSoNodeFromSoSwitch()
-           
+
             # Remove the sceneNodes from the widget
             self.removeSoNodes()
-            #Redraw label
-            
+            # Redraw label
+
             self.lblRedraw()
             self.draw()
-    
+
     def lblRedraw(self):
         if(self.w_widgetlblSoNodes != None):
             self.w_widgetlblSoNodes.removeAllChildren()
-        
-    
+
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
@@ -272,26 +278,27 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         """
         Deactivate the widget. which causes that no handle comes to the widget
         """
-        if self.w_active ==0:
+        if self.w_active == 0:
             return  # Nothing to do
         self.w_active = 0
-    
+
     def __del__(self):
         """
         Class Destructor. 
         This will remove the widget totally. 
-        """  
+        """
         self.hide()
         try:
             if self.w_parent != None:
-                self.w_parent.removeWidget(self)  # Parent should be the windows widget.
+                # Parent should be the windows widget.
+                self.w_parent.removeWidget(self)
 
             if self.w_parent is not None:
                 self.w_parent.removeSoSwitchFromSceneGraph(self.w_wdgsoSwitch)
             self.removeSoNodeFromSoSwitch()
             self.removeSoNodes()
-            self.removeSoSwitch()   
-                 
+            self.removeSoSwitch()
+
         except Exception as err:
             App.Console.PrintError("'Fr_Line_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -300,7 +307,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
-        if self.w_visible ==0:
+        if self.w_visible == 0:
             return  # nothing to do
         self.w_visible = 0
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_NONE  # hide all children
@@ -312,7 +319,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         This happens by clicking anything 
         else than the widget itself
         """
-        if self.w_hasFocus ==0:
+        if self.w_hasFocus == 0:
             return  # nothing to do
         else:
             self.w_hasFocus = 0

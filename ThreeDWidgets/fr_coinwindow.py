@@ -51,26 +51,22 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     the SceneGraph. Switches keep track of nodes and their 
     drawing. So the tree is like that SceneGraph-->Switches->Node->drawings
     """
-    global view
-
     # This is the holder of all objects.It should be here not inside the Fr_Group
     # this is the root scenegraph. It keeps all switch. Switches will keep drawing
-    global Root_SceneGraph
-    global link_to_root_handle
 
-    def __init__(self, args: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
+    def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
             400, 400, 0)], label: str = ""):
-        super().__init__(args, label)
+        super().__init__(vectors, label)
+        self.w_mainfrCoinWindow = self
         self._view = Gui.ActiveDocument.ActiveView
-        self._parent = self  # No parent and this is the main window
-        self._widgetType = FR_WidgetType.FR_COINWINDOW
+        self.w_parent = self  # No parent and this is the main window
+        self.w_widgetType = FR_WidgetType.FR_COINWINDOW
         self.link_to_root_handle = fr_coin3d.root_handle()
         self.link_to_root_handle.w_wind = self
         self.link_to_root_handle.addCallbacks()
         self.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
-        self._mainfrCoinWindow = self
-
-        # Activated
+        
+        # Activate the window
     def show(self):
         """
         Show the window on the 3D World
@@ -91,8 +87,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         Like exit in normal window. This will end the windows
         """
         self.hide()
-        del self.link_to_root_handle
-        self.link_to_root_handle = None
+        if self.link_to_root_handle is not None:
+            del self.link_to_root_handle    
+            self.link_to_root_handle = None
         super().__del__()  # call group destructor
         # Call Fr_Groups deactivate to remove all widgets.
 
@@ -108,26 +105,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def callback(self, data):
         # not sure what I should do here yet.
         pass
-    # We need to have it here to give parent to the widget
-
-    def addWidget(self, widg):
-        """ 
-        Add the new created widget(s) to the list.
-        Base class of this window, which is a fr_group,
-        has the list. This function will add the new widget
-        to the list and keep the link to the window inside
-        the widget itself.
-        """
-        if type(widg) == list:
-            for widgets in widg:
-                self.w_children.append(widgets)
-                # Save a link to parent in the widget
-                widgets.parent(self._mainfrCoinWindow)
-        else:
-            self.w_children.append(widg)
-            # Save a link to parent in the widget
-            widg.parent(self._mainfrCoinWindow)
-
+    
     def addSoSwitchToSceneGraph(self, _soSwitch):
         """ Add new switch tree to the SceneGraph"""
         if type(_soSwitch) == list:

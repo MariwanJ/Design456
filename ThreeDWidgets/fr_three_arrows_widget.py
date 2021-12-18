@@ -41,6 +41,7 @@ from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_one_arrow_widget import Fr_OneArrow_Widget
+from ThreeDWidgets.constant import FR_WidgetType 
 import math
 """
 Example how to use this widget.
@@ -186,7 +187,8 @@ class Fr_ThreeArrows_Widget(object):
         self.w_opacity = _opacity
         self.w_distanceBetweenThem = _distanceBetweenThem
         self.w_parent = None
-
+        self.w_widgetType = FR_WidgetType.FR_THREE_DISC
+        
     def Activated(self):
 
         self.w_axisList.append(Fr_OneArrow_Widget(
@@ -211,6 +213,7 @@ class Fr_ThreeArrows_Widget(object):
         self.w_axisList[1].w_rotary_cb_ = yDisc_cb
         self.w_axisList[2].w_ArrowAxis_cb_ = zAxis_cb
         self.w_axisList[2].w_rotary_cb_ = zDisc_cb
+
 
     @property
     def getWidgets(self):
@@ -256,7 +259,7 @@ class Fr_ThreeArrows_Widget(object):
 
     def show(self):
         for obj in self.w_axisList:
-            obj.redraw()
+            obj.show()
 
         for obj in self.w_axisList:
             obj.show()

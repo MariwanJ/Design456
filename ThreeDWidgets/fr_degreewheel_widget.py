@@ -148,7 +148,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                  _wheelType=0):
 
         super().__init__(vectors, label)
-
+        
+        self.w_lbluserData= fr_widget.propertyValues()
         self.w_lineWidth = lineWidth  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_WHEEL
         self.w_wheelType = _wheelType
@@ -418,8 +419,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 CollectThemAll.addChild(self.w_45soSeparator)
                 CollectThemAll.addChild(self.w_135soSeparator)
                 CollectThemAll.addChild(self.w_degreeSeparator)
-
-                self.saveSoNodeslblToWidget(self.draw_label(usedColor))
+                self.draw_label(usedColor)
                 self.saveSoNodesToWidget(CollectThemAll)
                 # add SoSeparator to the switch
                 # We can put them in a tuple but it is better not doing so
@@ -438,7 +438,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.labelcolor = usedColor
         lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
         self.w_widgetlblSoNodes = lbl
-        return lbl
+        self.saveSoNodeslblToWidget(lbl)
+
 
     def move(self, newVecPos):
         """
