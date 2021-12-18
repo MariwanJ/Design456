@@ -245,6 +245,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.labelcolor = usedColor
         self.w_lbluserData.vectors = self.w_vector
         self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
+        print("self.w_lbluserData", self.w_lbluserData)
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 
@@ -289,7 +290,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             self.draw()
 
     def lblRedraw(self):
-        if(self.w_widgetlblSoNodes != None):
+        if(self.w_widgetlblSoNodes is not None):
             self.w_widgetlblSoNodes.removeAllChildren()
 
     def take_focus(self):
@@ -322,7 +323,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         """
         self.hide()
         try:
-            if self.w_parent != None:
+            if self.w_parent is not None:
                 # Parent should be the windows widget.
                 self.w_parent.removeWidget(self)
 

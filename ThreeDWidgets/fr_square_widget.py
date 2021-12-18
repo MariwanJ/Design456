@@ -122,7 +122,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
             clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
                 self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblSoNodes)
 
-            if clickwdgdNode != None or clickwdglblNode != None:
+            if clickwdgdNode is not None or clickwdglblNode is not None:
                 self.take_focus()
                 self.do_callback()
                 self.do_lblcallback()
@@ -343,7 +343,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
             clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
                 self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblSoNodes)
 
-            if clickwdgdNode != None or clickwdglblNode != None:
+            if clickwdgdNode is not None or clickwdglblNode is not None:
                 self.take_focus()
                 self.do_callback()
                 self.do_lblcallback()

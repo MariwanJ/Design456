@@ -24,7 +24,8 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import os,sys
+import os
+import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
@@ -32,7 +33,7 @@ import Design456Init
 
 from ThreeDWidgets.constant import FR_ALIGN
 from ThreeDWidgets.constant import FR_COLOR
-from ThreeDWidgets.fr_widget import propertyValues 
+from ThreeDWidgets.fr_widget import propertyValues
 import math
 '''
                          Y
@@ -54,205 +55,219 @@ import math
                          |
 
 '''
-def calculateLineSpherical(vectors):
-    # Calculate the three angles we have ref to xyz axis
-    # phi - angle to the Z axis
-    # thi - angle to the x axis 
-    #refer to https://en.wikipedia.org/wiki/Spherical_coordinate_system
-    #180 Degree must be added to thi when x<0
-    try:
-        p1 = vectors[0]
-        p2 = vectors[1]
-        px2_px1=p2.x-p1.x
-        py2_py1=p2.y-p1.y
-        pz2_pz1=p2.z-p1.z
 
-        #Bring back the p2 to the reference of origin
-        p1x_p2x=-px2_px1
-        p1y_p2y=-py2_py1
-        p1z_p2z=-pz2_pz1
-        
-        r=math.sqrt(math.pow(p1x_p2x,2)+math.pow(p1y_p2y,2)+math.pow(p1z_p2z,2))  #Enough to take p1 as a coordinate
-        
-        if p1x_p2x<0:
-            thi= math.radians(90)+math.radians(180)+math.asin((p2.x-p1.x)/r)
-        else:
-            thi=math.radians(90)+ math.asin((p2.x-p1.x)/r)
-        
-        if(p1z_p2z ==0 ):
-            phi=math.radians(0)
-        else:
-            phi=(math.radians(90)+(math.atan(math.sqrt(math.pow(p1x_p2x,2)+math.pow(p1y_p2y,2))/p1z_p2z)))
-        return (r,thi,phi)
 
-    except Exception as err:
-        App.Console.PrintError("'r1 thi phi ' Failed. "
-                           "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+# def calculateLineSpherical(vectors):
+#     # Calculate the three angles we have ref to xyz axis
+#     # phi - angle to the Z axis
+#     # thi - angle to the x axis
+#     # refer to https://en.wikipedia.org/wiki/Spherical_coordinate_system
+#     # 180 Degree must be added to thi when x<0
+#     try:
+#         p1 = vectors[0]
+#         p2 = vectors[1]
+#         px2_px1 = p2.x-p1.x
+#         py2_py1 = p2.y-p1.y
+#         pz2_pz1 = p2.z-p1.z
 
-# todo FIXME
-# this should return the lblPosition calculate based on the Vector position.
-def calculateAlignment(vectors, align):
-    try:
-        lblPos =coin.SoTransform()    # Use this to put all data needed for the lblPosition
-        p1 = p2 = p3 = p4 = None
-        # These variables will keep the min value of each coordinations
-            # WE HAVE LEFT ALIGNMENT
-        p1 = vectors[0]
-        p2 = vectors[1]
-        FourVector = False
-        if len(vectors == 4):
-            FourVector = True
-            p3 = vectors[0]
-            p4 = vectors[1]
+#         # Bring back the p2 to the reference of origin
+#         p1x_p2x = -px2_px1
+#         p1y_p2y = -py2_py1
+#         p1z_p2z = -pz2_pz1
 
-        minX = minY = minZ = maxX = minY = minZ = None
-        if FourVector == 1:
-            minX = min([p1.x, p2.x, p3.x, p4.x])
-            minY = min([p1.y, p2.y, p3.y, p4.y])
-            minZ = min([p1.z, p2.z, p3.z, p4.z])
-        else:
-            minX = min([p1.x, p2.x])
-            minY = min([p1.y, p2.y])
-            minZ = min([p1.z, p2.z])
-        if FourVector:
-            maxX = max([p1.x, p2.x, p3.x, p4.x])
-            maxY = max([p1.y, p2.y, p3.y, p4.y])
-            maxZ = max([p1.z, p2.z, p3.z, p4.z])
-        else:
-            maxX = max([p1.x, p2.x])
-            maxY = max([p1.y, p2.y])
-            maxZ = max([p1.z, p2.z])
+#         r = math.sqrt(math.pow(p1x_p2x, 2)+math.pow(p1y_p2y, 2) +
+#                       math.pow(p1z_p2z, 2))  # Enough to take p1 as a coordinate
 
-        if len(vectors) < 2:
-            return (0, 0, 0)  # We don't have any vectors, return zero
-            '''
-            The shape is like this
-                                    p1___________________ p2
-                                    |                    |
-                                    |    face            |
-                                    |                    |
-                                   p3 ___________________ p4
-            not having p3,p4 means it is a line only
-            '''
-        if align == FR_ALIGN.FR_ALIGN_LEFT or align == FR_ALIGN.FR_ALIGN_LEFT_BOTTOM:
+#         if p1x_p2x < 0:
+#             thi = math.radians(90)+math.radians(180)+math.asin((p2.x-p1.x)/r)
+#         else:
+#             thi = math.radians(90) + math.asin((p2.x-p1.x)/r)
 
-            return (p1)
+#         if(p1z_p2z == 0):
+#             phi = math.radians(0)
+#         else:
+#             phi = (math.radians(
+#                 90)+(math.atan(math.sqrt(math.pow(p1x_p2x, 2)+math.pow(p1y_p2y, 2))/p1z_p2z)))
+#         return (r, thi, phi)
 
-        elif align == FR_ALIGN.FR_ALIGN_RIGHT or align == FR_ALIGN.FR_ALIGN_RIGHT_BOTTOM:
-            # WE HAVE RIGHT ALIGNMENT
-            pass
-        elif align == FR_ALIGN.FR_ALIGN_CENTER or align == FR_ALIGN.FR_ALIGN_CENTER_BOTTOM:
-            # WE HAVE CENTER-BOTTOM ALIGNMENT
-            pass
-        elif align == FR_ALIGN.FR_ALIGN_LEFT_TOP:
-            # Align LEFT-TOP
-            pass
-        elif align == FR_ALIGN.FR_ALIGN_RIGHT_TOP:
-            # Align RIGHT-TOP
-            pass
-        elif align == FR_ALIGN.FR_ALIGN_CENTER_TOP:
-            # Align CENTER-TOP
-            pass
-        elif align == FR_ALIGN.FR_ALIGN_CENTER_CENTER:
-            # Align LEFT-TOP
-            pass
-    except Exception as err:
-        App.Console.PrintError("'calculateAlignment' Failed. "
-                           "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+#     except Exception as err:
+#         App.Console.PrintError("'r1 thi phi ' Failed. "
+#                                "{err}\n".format(err=str(err)))
+#         exc_type, exc_obj, exc_tb = sys.exc_info()
+#         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+#         print(exc_type, fname, exc_tb.tb_lineno)
 
-def draw_label(text=[], prop: propertyValues=None):
+# # todo FIXME
+# # this should return the lblPosition calculate based on the Vector position.
+
+
+# def calculateAlignment(vectors, align):
+#     try:
+#         lblPos = coin.SoTransform()    # Use this to put all data needed for the lblPosition
+#         p1 = p2 = p3 = p4 = None
+#         # These variables will keep the min value of each coordinations
+#         # WE HAVE LEFT ALIGNMENT
+#         p1 = vectors[0]
+#         p2 = vectors[1]
+#         FourVector = False
+#         if len(vectors == 4):
+#             FourVector = True
+#             p3 = vectors[0]
+#             p4 = vectors[1]
+
+#         minX = minY = minZ = maxX = minY = minZ = None
+#         if FourVector == 1:
+#             minX = min([p1.x, p2.x, p3.x, p4.x])
+#             minY = min([p1.y, p2.y, p3.y, p4.y])
+#             minZ = min([p1.z, p2.z, p3.z, p4.z])
+#         else:
+#             minX = min([p1.x, p2.x])
+#             minY = min([p1.y, p2.y])
+#             minZ = min([p1.z, p2.z])
+#         if FourVector:
+#             maxX = max([p1.x, p2.x, p3.x, p4.x])
+#             maxY = max([p1.y, p2.y, p3.y, p4.y])
+#             maxZ = max([p1.z, p2.z, p3.z, p4.z])
+#         else:
+#             maxX = max([p1.x, p2.x])
+#             maxY = max([p1.y, p2.y])
+#             maxZ = max([p1.z, p2.z])
+
+#         if len(vectors) < 2:
+#             return (0, 0, 0)  # We don't have any vectors, return zero
+#             '''
+#             The shape is like this
+#                                     p1___________________ p2
+#                                     |                    |
+#                                     |    face            |
+#                                     |                    |
+#                                    p3 ___________________ p4
+#             not having p3,p4 means it is a line only
+#             '''
+#         if align == FR_ALIGN.FR_ALIGN_LEFT or align == FR_ALIGN.FR_ALIGN_LEFT_BOTTOM:
+
+#             return (p1)
+
+#         elif align == FR_ALIGN.FR_ALIGN_RIGHT or align == FR_ALIGN.FR_ALIGN_RIGHT_BOTTOM:
+#             # WE HAVE RIGHT ALIGNMENT
+#             pass
+#         elif align == FR_ALIGN.FR_ALIGN_CENTER or align == FR_ALIGN.FR_ALIGN_CENTER_BOTTOM:
+#             # WE HAVE CENTER-BOTTOM ALIGNMENT
+#             pass
+#         elif align == FR_ALIGN.FR_ALIGN_LEFT_TOP:
+#             # Align LEFT-TOP
+#             pass
+#         elif align == FR_ALIGN.FR_ALIGN_RIGHT_TOP:
+#             # Align RIGHT-TOP
+#             pass
+#         elif align == FR_ALIGN.FR_ALIGN_CENTER_TOP:
+#             # Align CENTER-TOP
+#             pass
+#         elif align == FR_ALIGN.FR_ALIGN_CENTER_CENTER:
+#             # Align LEFT-TOP
+#             pass
+#     except Exception as err:
+#         App.Console.PrintError("'calculateAlignment' Failed. "
+#                                "{err}\n".format(err=str(err)))
+#         exc_type, exc_obj, exc_tb = sys.exc_info()
+#         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+#         print(exc_type, fname, exc_tb.tb_lineno)
+
+
+def draw_label(text=[], prop: propertyValues = None):
     ''' Draw widgets label relative to the position with alignment'''
-    thi=0.0
-    phi=0.0
-    r=0.0
     if text == '' or prop is None:
-        return     # Nothing to do here 
+        return     # Nothing to do here
     try:
-        delta=App.Vector(0,0,0)        
-        p1=App.Vector(prop.vectors[0])  #You must cast the value or it will fail
-        p2=App.Vector(prop.vectors[1])
-        delta.x=p1.x+3
-        delta.y=p1.y+3
-        delta.z=p1.z
-        (r,thi,phi)=calculateLineSpherical(prop.vectors)        #get spherical representation of the point(p2)
-        _transPositionPOS=coin.SoTranslation()  #coin.SoTransform()
-        #_transPositionX = coin.SoTransform()
-        _transPositionY = coin.SoTransform()
-        _transPositionZ = coin.SoTransform()
+        delta = App.Vector(0, 0, 0)
+        # You must cast the value or it will fail
+        p1 = App.Vector(prop.vectors[0])
+        p2 = App.Vector(prop.vectors[1])
+        delta.x = p1.x+3
+        delta.y = p1.y+3
+        delta.z = p1.z
+        # get spherical representation of the point(p2)
+        #(r, thi, phi) = calculateLineSpherical(prop.vectors)
+        xAng = math.degrees(p1.getAngle(App.Vector(1, 0, 0)))
+        yAng = math.degrees(p1.getAngle(App.Vector(0, 1, 0)))
+        zAng = math.degrees(p1.getAngle(App.Vector(0, 0, 1)))
+        _transPositionPOS = coin.SoTranslation()  # coin.SoTransform()
+        _transRotationX = coin.SoTransform()
+        _transRotationY = coin.SoTransform()
+        _transRotationZ = coin.SoTransform()
         _transPositionPOS.translation.setValue(coin.SbVec3f(delta))
 
-        _transPositionY.translation.setValue(App.Vector(0,0,0))
-        _transPositionZ.translation.setValue(App.Vector(0,0,0))
-        _transPositionY.rotation.setValue(coin.SbVec3f(1,0, 0),phi)
-        _transPositionZ.rotation.setValue(coin.SbVec3f(0, 0, 1),thi)
+        _transRotationX.rotation.setValue(coin.SbVec3f(1, 0, 0), xAng)
+        _transRotationY.rotation.setValue(coin.SbVec3f(0, 1, 0), yAng)
+        _transRotationZ.rotation.setValue(coin.SbVec3f(0, 0, 1), zAng)
 
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.fontName  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
         _text3D.string.setValues([l.encode("utf8") for l in text if l])
-        #_text3D.justification = coin.SoAsciiText.LEFT
+
         coinColor = coin.SoMaterial()  # Font color
-        color=prop.labelcolor
+        color = prop.labelcolor
 
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
         #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
         _textNode.addChild(_transPositionPOS)
-        if phi != 0:
-            _textNode.addChild(_transPositionY)
-        if thi != 0:
-            _textNode.addChild(_transPositionZ)
         _textNode.addChild(font)
         _textNode.addChild(coinColor)
         _textNode.addChild(_text3D)
-        return _textNode  # Return the created SoSeparator that contains the text
-    
+        xSoNod=coin.SoSeparator()   # A Separator to Keep the rotation
+        ySoNod=coin.SoSeparator()   # A Separator to Keep the rotation 
+        zSoNod=coin.SoSeparator()   # A Separator to Keep the rotation
+        xSoNod.addChild(_transRotationX)
+        xSoNod.addChild(_textNode)
+        ySoNod.addChild(_transRotationY)
+        ySoNod.addChild(xSoNod)
+        zSoNod.addChild(_transRotationZ)
+        zSoNod.addChild(ySoNod)
+        return zSoNod  # Return the created SoSeparator that contains the text
+
     except Exception as err:
         App.Console.PrintError("'draw_label' Failed. "
-                                   "{err}\n".format(err=str(err)))
+                               "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
-        
-        
 
 
-#New label draw .. must be better in determining direct, rotation
+# New label draw .. must be better in determining direct, rotation
 
 
-def draw_newlabel(text=[], prop: propertyValues=None):
+def draw_newlabel(text=[], prop: propertyValues = None):
     ''' Draw widgets label relative to the vectors given to the function
     The three angel will decide how the text will be rotated based on that
     vectors. 
-    
+
     '''
     if text == '' or prop is None:
-        raise ValueError        # Nothing to do here 
+        raise ValueError        # Nothing to do here
     try:
-        p1=prop.vectors[0]
-        if len(prop.vectors)>=2:
-            p2=prop.vectors[1]
+        p1 = prop.vectors[0]
+        if len(prop.vectors) >= 2:
+            p2 = prop.vectors[1]
 
-        #direction= 
-        _translation=coin.SoTranslation()  #coin.SoTransform()
+        # direction=
+        _translation = coin.SoTranslation()  # coin.SoTransform()
         _transform = coin.SoTransform()
         _transformX = coin.SoTransform()
         _transformY = coin.SoTransform()
         _transformZ = coin.SoTransform()
-        _transform.scaleFactor.setValue(prop.scale) #Only for scaling
-        
+        _transform.scaleFactor.setValue(prop.scale)  # Only for scaling
+
         _translation.translation.setValue(coin.SbVec3f(p1))
-        #Don't know why, but x must go to y and vice versa :TODO: Understand why?
-        _transformY.rotation.setValue(coin.SbVec3f(prop.rotationAxis.x,0,0),math.radians(prop.rotation.x))
-        _transformX.rotation.setValue(coin.SbVec3f(0,prop.rotationAxis.y,0),math.radians(prop.rotation.y))
-        _transformZ.rotation.setValue(coin.SbVec3f(0,0,prop.rotationAxis.z),math.radians(prop.rotation.z))
+        # Don't know why, but x must go to y and vice versa :TODO: Understand why?
+        _transformY.rotation.setValue(coin.SbVec3f(
+            prop.rotationAxis.x, 0, 0), math.radians(prop.rotation.x))
+        _transformX.rotation.setValue(coin.SbVec3f(
+            0, prop.rotationAxis.y, 0), math.radians(prop.rotation.y))
+        _transformZ.rotation.setValue(coin.SbVec3f(
+            0, 0, prop.rotationAxis.z), math.radians(prop.rotation.z))
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.fontName  # Font used
@@ -268,8 +283,8 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         _textNodeX.addChild(_transformX)
         _textNodeY.addChild(_transformY)
         _textNodeZ.addChild(_transformZ)
-        
-        _textNodeX.addChild(coinColor)        
+
+        _textNodeX.addChild(coinColor)
         _textNodeX.addChild(font)
         _textNodeX.addChild(_text3D)
 
@@ -280,10 +295,10 @@ def draw_newlabel(text=[], prop: propertyValues=None):
         root.addChild(_transform)
         root.addChild(_textNodeZ)
         return root  # Return the created SoSeparator that contains the text
-    
+
     except Exception as err:
         App.Console.PrintError("'draw_label' Failed. "
-                                   "{err}\n".format(err=str(err)))
+                               "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
