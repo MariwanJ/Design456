@@ -36,7 +36,7 @@ from typing import List
 import FACE_D as faced
 from ThreeDWidgets import fr_draw
 from ThreeDWidgets import fr_widget
-from ThreeDWidgets.constant import FR_ALIGN
+
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets import fr_label_draw
 """

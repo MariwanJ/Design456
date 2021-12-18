@@ -37,7 +37,7 @@ from ThreeDWidgets import constant
 from ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets import fr_label_draw
-from ThreeDWidgets.constant import FR_ALIGN
+
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_DAMAGE
 

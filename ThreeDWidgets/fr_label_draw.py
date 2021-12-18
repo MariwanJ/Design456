@@ -31,7 +31,7 @@ import FreeCADGui as Gui
 import pivy.coin as coin
 import Design456Init
 
-from ThreeDWidgets.constant import FR_ALIGN
+
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_widget import propertyValues
 import math
