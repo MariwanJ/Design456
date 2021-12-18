@@ -50,7 +50,7 @@ class propertyValues:
     Property-holder class for drawing labels
     '''
     __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
-                 'labelcolor', 'alignment', 'rotation', 'rotationAxis' , 
+                 'labelcolor', 'SetupRotation', 'rotation', 
                  'scale']
     vectors: List[App.Vector]  # List[App.Vector] two vectors must be provided. 
                      # We cannot accept one vector as it will cause a huge problem.
@@ -60,7 +60,6 @@ class propertyValues:
     fontName: str
     fontsize: int
     labelcolor: tuple
-    alignment: int  # This will not be used .. not good
     SetupRotation: tuple    # three angels in degree
     rotation: tuple # four float values - three axis and one angle 
     scale: tuple  # Three float numbers for scaling
@@ -71,7 +70,6 @@ class propertyValues:
         self.fontName = 'sans'
         self.fontsize = 2
         self.labelcolor = constant.FR_COLOR.FR_BLACK
-        self.alignment = constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         self.rotation = [0.0, 0.0, 0.0]  #degrees
         self.SetupRotation = [0.0, 0.0, 0.0, 0.0]
         self.scale = [1.0, 1.0, 1.0]

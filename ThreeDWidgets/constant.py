@@ -393,37 +393,9 @@ class FR_WHEN:
     # Do the callback when the user presses the ENTER key, even if the value doesn't change
     FR_WHEN_ENTER_KEY_ALWAYS = 10
 
-#TODO:Not implemented yet
-class FR_ALIGN:
-    '''
-    Alignment constants: 
-    If TOP/BOTTOM not specified, always default is BOTTOM
-    '''
-    FR_NO_ALIGN = 0
-    FR_ALIGN_LEFT = 10
-    FR_ALIGN_RIGHT = 20
-    FR_ALIGN_TOP = 30
-    FR_ALIGN_BOTTOM = 40
-    FR_ALIGN_H_CENTER = 50
-    FR_ALIGN_V_CENTER = 60
-    FR_ALIGN_CENTER = FR_ALIGN_H_CENTER
 
-    FR_ALIGN_LEFT_BOTTOM = FR_ALIGN_LEFT+FR_ALIGN_BOTTOM
-    FR_ALIGN_LEFT_TOP = FR_ALIGN_LEFT+FR_ALIGN_TOP
 
-    FR_ALIGN_RIGHT_TOP = FR_ALIGN_RIGHT+FR_ALIGN_TOP
-    FR_ALIGN_RIGHT_BOTTOM = FR_ALIGN_RIGHT+FR_ALIGN_BOTTOM
 
-    FR_ALIGN_CENTER_TOP = FR_ALIGN_H_CENTER+FR_ALIGN_TOP
-    FR_ALIGN_CENTER_BOTTOM = FR_ALIGN_H_CENTER+FR_ALIGN_BOTTOM
-
-    FR_ALIGN_CENTER_TOP = FR_ALIGN_V_CENTER+FR_ALIGN_TOP
-    FR_ALIGN_CENTER_BOTTOM = FR_ALIGN_V_CENTER+FR_ALIGN_BOTTOM
-
-    FR_ALIGN_CENTER_TOP = FR_ALIGN_CENTER+FR_ALIGN_TOP
-    FR_ALIGN_CENTER_BOTTOM = FR_ALIGN_CENTER+FR_ALIGN_BOTTOM
-
-    FR_ALIGN_CENTER_CENTER = FR_ALIGN_CENTER+FR_ALIGN_TOP
 
     # The enum key definition in COIN3D. We don't want to redefine them.
     # to find them use coin.SoKeyboardEvent.(Key name here without brackets)
