@@ -211,7 +211,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.labelcolor = usedColor
         self.w_lbluserData.vectors = self.w_vector
-        self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 

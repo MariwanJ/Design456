@@ -180,7 +180,6 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         firstTwovertices.append(self.w_vector[1])
 
         self.w_lbluserData.vectors = firstTwovertices
-        self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label([self.w_label], self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 
@@ -401,7 +400,6 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         firstTwovertices.append(self.w_vector[1])
 
         self.w_lbluserData.vectors = firstTwovertices
-        self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
         lbl = fr_label_draw.draw_label([self.w_label], self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 

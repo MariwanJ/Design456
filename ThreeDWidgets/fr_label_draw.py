@@ -102,10 +102,10 @@ def draw_label(text=[], prop: propertyValues = None):
         zSoNod.addChild(_transRotationZ)
         zSoNod.addChild(ySoNod)
         root = coin.SoSeparator()
-        root.addchild(_rootRotation)
-        root.addchild(zSoNod)
+        root.addChild(_rootRotation)
+        root.addChild(zSoNod)
 
-        return zSoNod  # Return the created SoSeparator that contains the text
+        return root  # Return the created SoSeparator that contains the text
 
     except Exception as err:
         App.Console.PrintError("'draw_label' Failed. "
