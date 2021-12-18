@@ -44,19 +44,6 @@ from abc import abstractmethod
 # ********************************************************************************************************
 from dataclasses import dataclass
 
-
-@dataclass
-class point:
-    def __init__(self):
-        self.x = 0.0
-        self.y = 0.0
-        self.z = 0.0
-
-
-# List of points which should be used everywhere
-VECTOR = List[point]
-
-
 @dataclass
 class propertyValues:
     '''
@@ -65,7 +52,7 @@ class propertyValues:
     __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
                  'labelcolor', 'alignment', 'rotation', 'rotationAxis' , 
                  'scale']
-    vectors: VECTOR  # List[App.Vector] two vectors must be provided. 
+    vectors: List[App.Vector]  # List[App.Vector] two vectors must be provided. 
                      # We cannot accept one vector as it will cause a huge problem.
                      # Some will require several vectors, and other just one.
                      # There is no way to avoid requiring more than 1 vector.
@@ -74,8 +61,8 @@ class propertyValues:
     fontsize: int
     labelcolor: tuple
     alignment: int  # This will not be used .. not good
-    rotation: tuple    # three angels in degree
-    rotationAxis: VECTOR
+    SetupRotation: tuple    # three angels in degree
+    rotation: tuple # four float values - three axis and one angle 
     scale: tuple  # Three float numbers for scaling
 
     def __init__(self):
@@ -85,8 +72,8 @@ class propertyValues:
         self.fontsize = 2
         self.labelcolor = constant.FR_COLOR.FR_BLACK
         self.alignment = constant.FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        self.rotation = App.Vector(0, 0, 0)
-        self.rotationAxis = App.Vector(0, 0, 0)
+        self.rotation = [0.0, 0.0, 0.0]  #degrees
+        self.SetupRotation = [0.0, 0.0, 0.0, 0.0]
         self.scale = [1.0, 1.0, 1.0]
 # ***********************************************************************************************************
 

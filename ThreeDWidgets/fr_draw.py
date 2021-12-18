@@ -298,8 +298,6 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
-        print(_Points,"_Points")
-        print(type(_Points[0]))
         transRoot.translation.setValue(_Points)
 
         color = coin.SoBaseColor()

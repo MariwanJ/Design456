@@ -243,9 +243,9 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     def draw_label(self, usedColor):
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.labelcolor = usedColor
+        self.w_lbluserData.rotation=self.w_rotation
         self.w_lbluserData.vectors = self.w_vector
         self.w_lbluserData.alignment = FR_ALIGN.FR_ALIGN_LEFT_BOTTOM
-        print("self.w_lbluserData", self.w_lbluserData)
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 

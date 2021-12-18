@@ -188,18 +188,30 @@ def draw_label(text=[], prop: propertyValues = None):
         delta.z = p1.z
         # get spherical representation of the point(p2)
         #(r, thi, phi) = calculateLineSpherical(prop.vectors)
-        xAng = math.degrees(p1.getAngle(App.Vector(1, 0, 0)))
-        yAng = math.degrees(p1.getAngle(App.Vector(0, 1, 0)))
-        zAng = math.degrees(p1.getAngle(App.Vector(0, 0, 1)))
+        xAng = math.radians(prop.SetupRotation[0])
+        yAng = math.radians(prop.SetupRotation[1])
+        zAng = math.radians(prop.SetupRotation[2])
+
         _transPositionPOS = coin.SoTranslation()  # coin.SoTransform()
+        _rootRotation = coin.SoTransform()
         _transRotationX = coin.SoTransform()
         _transRotationY = coin.SoTransform()
         _transRotationZ = coin.SoTransform()
         _transPositionPOS.translation.setValue(coin.SbVec3f(delta))
+        tempRX = coin.SbVec3f()
+        tempRX.setValue(1, 0, 0)
+        tempRY = coin.SbVec3f()
+        tempRY.setValue(0, 1, 0)
+        tempRZ = coin.SbVec3f()
+        tempRZ.setValue(0, 0, 1)
+        _transRotationX.rotation.setValue(tempRX, xAng)
+        _transRotationY.rotation.setValue(tempRY, yAng)
+        _transRotationZ.rotation.setValue(tempRZ, zAng)
 
-        _transRotationX.rotation.setValue(coin.SbVec3f(1, 0, 0), xAng)
-        _transRotationY.rotation.setValue(coin.SbVec3f(0, 1, 0), yAng)
-        _transRotationZ.rotation.setValue(coin.SbVec3f(0, 0, 1), zAng)
+        _rootRotation.rotation.setValue(coin.SbVec3f(prop.rotation[0],
+                                                     prop.rotation[1],
+                                                     prop.rotation[2]),
+                                        prop.rotation[3])
 
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
@@ -217,15 +229,19 @@ def draw_label(text=[], prop: propertyValues = None):
         _textNode.addChild(font)
         _textNode.addChild(coinColor)
         _textNode.addChild(_text3D)
-        xSoNod=coin.SoSeparator()   # A Separator to Keep the rotation
-        ySoNod=coin.SoSeparator()   # A Separator to Keep the rotation 
-        zSoNod=coin.SoSeparator()   # A Separator to Keep the rotation
+        xSoNod = coin.SoSeparator()   # A Separator to Keep the rotation
+        ySoNod = coin.SoSeparator()   # A Separator to Keep the rotation
+        zSoNod = coin.SoSeparator()   # A Separator to Keep the rotation
         xSoNod.addChild(_transRotationX)
         xSoNod.addChild(_textNode)
         ySoNod.addChild(_transRotationY)
         ySoNod.addChild(xSoNod)
         zSoNod.addChild(_transRotationZ)
         zSoNod.addChild(ySoNod)
+        root = coin.SoSeparator()
+        root.addchild(_rootRotation)
+        root.addchild(zSoNod)
+
         return zSoNod  # Return the created SoSeparator that contains the text
 
     except Exception as err:
