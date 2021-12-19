@@ -45,8 +45,6 @@ import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import Design456Init
-from ThreeDWidgets import constant
 from ThreeDWidgets.constant import FR_EVENTS
 from dataclasses import dataclass
 import time  # For double click detection
@@ -116,9 +114,9 @@ class root_handle():
     # static variables
 
     # This should keep the mouse pointer position on the 3D view
-    w_lastEvent = FR_EVENTS.FR_NO_EVENT
-    w_lastEventXYZ = mouseDimension()
-    w_view = Gui.ActiveDocument.ActiveView
+    w_lastEvent = None
+    w_lastEventXYZ = None
+    w_view = None
     w_wind = None
     w_countMouseCLICK = 0
     w_clicked_time = 0
@@ -131,6 +129,9 @@ class root_handle():
         self.callbackMove = None
         self.callbackClick = None
         self.callbackKey = None
+        root_handle.w_lastEvent = FR_EVENTS.FR_NO_EVENT
+        root_handle.w_lastEventXYZ = mouseDimension()
+        root_handle.w_view = Gui.ActiveDocument.ActiveView
         self.addCallbacks()
 
     # COIN3D related functions - START

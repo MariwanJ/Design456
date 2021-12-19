@@ -30,11 +30,7 @@ import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import Design456Init
 from ThreeDWidgets import fr_group
-from ThreeDWidgets import fr_widget
-from ThreeDWidgets import constant
-from ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets.constant import FR_WidgetType
 
@@ -53,17 +49,20 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     """
     # This is the holder of all objects.It should be here not inside the Fr_Group
     # this is the root scenegraph. It keeps all switch. Switches will keep drawing
+    from ThreeDWidgets import fr_coin3d
+    Root_SceneGraph = None
+    view = None
     link_to_root_handle = fr_coin3d.root_handle()
-    Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
-    view = Gui.ActiveDocument.ActiveView
-    def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
-            400, 400, 0)], label: str = ""):
-        super().__init__(vectors, label)
-        self.w_mainfrCoinWindow = self
 
+    def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
+            400, 400, 0)], label: str = [[]]):
+        Fr_CoinWindow.link_to_root_handle.w_wind=self
+        super().__init__(vectors, label)
+
+        Fr_CoinWindow.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        self.w_mainfrCoinWindow = self
         self.w_parent = self  # No parent and this is the main window
         self.w_widgetType = FR_WidgetType.FR_COINWINDOW
-        Fr_CoinWindow.link_to_root_handle.w_wind = self
         Fr_CoinWindow.link_to_root_handle.addCallbacks()
 
         # Activate the window
@@ -79,6 +78,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         distribute events and other things that might be added 
         later to this class.
         """
+        Fr_CoinWindow.link_to_root_handle.w_wind = self
+        Fr_CoinWindow.view = Gui.ActiveDocument.ActiveView
         self.draw()
         super().show()  # Show all children also
 
