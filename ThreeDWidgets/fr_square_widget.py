@@ -31,7 +31,6 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
 import constant
-import fr_coin3d
 from typing import List
 import FACE_D as faced
 from ThreeDWidgets import fr_draw
@@ -116,11 +115,11 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. fr_coinwindow object is responsible for distributing the events.
         """
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetSoNodes)
-            clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblSoNodes)
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
+            clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(
+                self.w_parent.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetSoNodes)
+            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(
+                self.w_parent.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblSoNodes)
 
             if clickwdgdNode is not None or clickwdglblNode is not None:
                 self.take_focus()
@@ -131,7 +130,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
                 self.remove_focus()
                 return event  # We couldn't use the event .. so return the event itself
 
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             print("Double click detected")
 
@@ -336,11 +335,11 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. fr_coinwindow object is responsible for distributing the events.
         """
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
-            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetSoNodes)
-            clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblSoNodes)
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH:
+            clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(
+                self.w_parent.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetSoNodes)
+            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(
+                self.w_parent.w_lastEventXYZ.pos, self.w_pick_radius, self.w_widgetlblSoNodes)
 
             if clickwdgdNode is not None or clickwdglblNode is not None:
                 self.take_focus()
@@ -351,7 +350,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
                 self.remove_focus()
                 return event  # We couldn't use the event .. so return the event itself
 
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event.
             print("Double click detected")
 

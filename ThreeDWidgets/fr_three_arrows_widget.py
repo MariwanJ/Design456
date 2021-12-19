@@ -30,15 +30,8 @@ import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-from ThreeDWidgets import fr_widget
-from ThreeDWidgets import constant
-from ThreeDWidgets import fr_coin3d
 from typing import List
-import FACE_D as faced
 from dataclasses import dataclass
-from ThreeDWidgets.fr_draw import draw_2Darrow
-from ThreeDWidgets import fr_label_draw
-from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_one_arrow_widget import Fr_OneArrow_Widget
 from ThreeDWidgets.constant import FR_WidgetType 

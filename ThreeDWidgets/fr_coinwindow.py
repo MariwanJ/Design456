@@ -58,47 +58,6 @@ class mouseDimension:
 
 # get Object under mouse
 
-def objectUnderMouse_Coin3d(self, win):
-    pass
-# get Object clicked in COIN3D
-
-
-def objectMouseClick_Coin3d(mouse_pos, pick_radius, TargetNode):
-    # This section is from DRAFT
-    # It must help in finding the correct node
-    # which represent the widget.
-    """Get edit node from given screen position."""
-    viewer = Gui.ActiveDocument.ActiveView.getViewer()
-    render_manager = viewer.getSoRenderManager()
-    ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
-    ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
-    ray_pick.setRadius(pick_radius)
-    ray_pick.setPickAll(True)
-    ray_pick.apply(render_manager.getSceneGraph())
-    picked_point = ray_pick.getPickedPoint()
-
-
-
-    if picked_point is not None and picked_point != 0:
-        path = picked_point.getPath()
-        if type(TargetNode) == list:
-            for nodeInList in TargetNode:
-                if path.containsNode(nodeInList):
-                    # print("found",nodeInList)
-                    # Not sure if we need it #TODO should we return only true?
-                    return (path.getNode(path.findNode(nodeInList)))
-            return None  # Not found
-        else:
-            if path.containsNode(TargetNode):
-                # Not sure if we need it #TODO should we return only true?
-                return (path.getNode(path.findNode(TargetNode)))
-    else:
-        return None
-
-# TODO: At the moment, we implement only Fr_CoinWindow for COIN3D, 
-#       the remained must be implemented later
-
-
 
 class Fr_CoinWindow(fr_group.Fr_Group):
     """
@@ -109,16 +68,14 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     """
     # This is the holder of all objects.It should be here not inside the Fr_Group
     # this is the root scenegraph. It keeps all switch. Switches will keep drawing
-    from ThreeDWidgets.fr_coin3d import Fr_CoinWindow
     Root_SceneGraph = None
     view = None
 
     # This should keep the mouse pointer position on the 3D view 
-    #from fr_coin3d
+    # from old-fr_coin3d
     w_lastEvent = None
     w_lastEventXYZ = None
     w_view = None
-    w_wind = None
     w_countMouseCLICK = 0
     w_clicked_time = 0
     w_typeofevent = None
@@ -129,24 +86,21 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
             400, 400, 0)], label: str = [[]]):
         super().__init__(vectors, label)
-        
+        self.w_view=Fr_CoinWindow.view = Gui.ActiveDocument.ActiveView
         self.callbackMove = None
         self.callbackClick = None
         self.callbackKey = None
         Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_NO_EVENT
         Fr_CoinWindow.w_lastEventXYZ = mouseDimension()
-        Fr_CoinWindow.w_view = Gui.ActiveDocument.ActiveView
-        self.addCallbacks()
+
 
         Fr_CoinWindow.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self.w_mainfrCoinWindow = self
         self.w_parent = self  # No parent and this is the main window
         self.w_widgetType = FR_WidgetType.FR_COINWINDOW
-
-        Fr_CoinWindow.addCallbacks()
-
         # Activate the window
-
+        Fr_CoinWindow.view = Gui.ActiveDocument.ActiveView
+        
     def show(self):
         """
         Show the window on the 3D World
@@ -158,7 +112,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         distribute events and other things that might be added 
         later to this class.
         """
-        Fr_CoinWindow.view = Gui.ActiveDocument.ActiveView
+        self.w_view = Fr_CoinWindow.view = Gui.ActiveDocument.ActiveView
+        self.addCallbacks()
         self.draw()
         super().show()  # Show all children also
 
@@ -250,7 +205,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             """ 2D location events. SoLocation2Event represents 2D location events, for example, mouse move events """
             Fr_CoinWindow.w_lastEventXYZ.pos = Fr_CoinWindow.w_get_event.getPosition()
             pos = Fr_CoinWindow.w_lastEventXYZ.pos.getValue()
-            pnt = Fr_CoinWindow.w_view.getPoint(pos[0], pos[1])
+            pnt = self.w_view.getPoint(pos[0], pos[1])
             Fr_CoinWindow.w_lastEventXYZ.Coin_x = pnt.x
             Fr_CoinWindow.w_lastEventXYZ.Coin_y = pnt.y
             Fr_CoinWindow.w_lastEventXYZ.Coin_z = pnt.z
@@ -371,7 +326,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         # elif(_typeofevent) == coin.SoTrackerEvent:
 
         # Now send the event to th window widget to distribute it over the children widgets
-        Fr_CoinWindow.w_wind.handle(Fr_CoinWindow.w_lastEvent)
+        self.handle(Fr_CoinWindow.w_lastEvent)
 
     def Detect_DblClick(self):
         t = time.time()
@@ -389,23 +344,60 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         '''
         Remove all callbacks registered for Fr_Window widget
         '''
-        Fr_CoinWindow.w_view.removeEventCallbackPivy(
+        self.w_view.removeEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-        Fr_CoinWindow.w_view.removeEventCallbackPivy(
+        self.w_view.removeEventCallbackPivy(
             coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
-        Fr_CoinWindow.w_view.removeEventCallbackPivy(
+        self.w_view.removeEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
 
     def addCallbacks(self):
         '''
         add all callbacks registered for Fr_Window widget
         '''
-        Fr_CoinWindow.callbackMove = Fr_CoinWindow.w_view.addEventCallbackPivy(
+        Fr_CoinWindow.callbackMove = self.w_view.addEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.eventProcessor)
-        Fr_CoinWindow.callbackClick = Fr_CoinWindow.w_view.addEventCallbackPivy(
+        Fr_CoinWindow.callbackClick = self.w_view.addEventCallbackPivy(
             coin.SoMouseButtonEvent.getClassTypeId(), self.eventProcessor)
-        Fr_CoinWindow.callbackKey = Fr_CoinWindow.w_view.addEventCallbackPivy(
+        Fr_CoinWindow.callbackKey = self.w_view.addEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.eventProcessor)
+
+    def objectUnderMouse_Coin3d(self, win):
+        pass
+    # get Object clicked in COIN3D
+
+
+    # TODO: At the moment, we implement only Fr_CoinWindow for COIN3D, 
+    #       the remained must be implemented later
+    def objectMouseClick_Coin3d(self, mouse_pos, pick_radius, TargetNode):
+        # This section is from DRAFT
+        # It must help in finding the correct node
+        # which represent the widget.
+        """Get edit node from given screen position."""
+        viewer = Gui.ActiveDocument.ActiveView.getViewer()
+        render_manager = viewer.getSoRenderManager()
+        ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
+        ray_pick.setPoint(coin.SbVec2s(*mouse_pos))
+        ray_pick.setRadius(pick_radius)
+        ray_pick.setPickAll(True)
+        ray_pick.apply(render_manager.getSceneGraph())
+        picked_point = ray_pick.getPickedPoint()
+
+        if picked_point is not None and picked_point != 0:
+            path = picked_point.getPath()
+            if type(TargetNode) == list:
+                for nodeInList in TargetNode:
+                    if path.containsNode(nodeInList):
+                        # print("found",nodeInList)
+                        # Not sure if we need it #TODO should we return only true?
+                        return (path.getNode(path.findNode(nodeInList)))
+                return None  # Not found
+            else:
+                if path.containsNode(TargetNode):
+                    # Not sure if we need it #TODO should we return only true?
+                    return (path.getNode(path.findNode(TargetNode)))
+        else:
+            return None
 
     def __del__(self):
         ''' 

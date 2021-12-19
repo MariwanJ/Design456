@@ -33,7 +33,6 @@ import ThreeDWidgets
 import pivy.coin as coin
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
-from ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_EVENTS
@@ -256,7 +255,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 return 1  # we treat this event. Nonthing to do
 
         # This is for the widgets label - Not the axises label - be aware.
-        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetlblSoNodes)
 
         # In this widget, we have 5 coin drawings that we need to capture event for them
@@ -269,35 +268,35 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         allObjects = None
         clickwdgdNode = [False, False, False, False, False]
 
-        if(fr_coin3d.objectMouseClick_Coin3d(
-                self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        if(self.w_parent.objectMouseClick_Coin3d(
+                self.w_parent.w_lastEventXYZ.pos,
                 self.w_pick_radius, self.w_centersoSeparator) is not None):
             clickwdgdNode[0] = True
-        elif(fr_coin3d.objectMouseClick_Coin3d(
-            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        elif(self.w_parent.objectMouseClick_Coin3d(
+            self.w_parent.w_lastEventXYZ.pos,
                 self.w_pick_radius, self.w_XsoSeparator) is not None):
             clickwdgdNode[1] = True
-        elif(fr_coin3d.objectMouseClick_Coin3d(
-            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        elif(self.w_parent.objectMouseClick_Coin3d(
+            self.w_parent.w_lastEventXYZ.pos,
                 self.w_pick_radius, self.w_YsoSeparator) is not None):
             clickwdgdNode[2] = True
-        elif(fr_coin3d.objectMouseClick_Coin3d(
-            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        elif(self.w_parent.objectMouseClick_Coin3d(
+            self.w_parent.w_lastEventXYZ.pos,
                 self.w_pick_radius, self.w_45soSeparator) is not None):
             clickwdgdNode[3] = True
-        elif(fr_coin3d.objectMouseClick_Coin3d(
-            self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        elif(self.w_parent.objectMouseClick_Coin3d(
+            self.w_parent.w_lastEventXYZ.pos,
                 self.w_pick_radius, self.w_135soSeparator) is not None):
             clickwdgdNode[4] = True
 
             # Execute callback_relese when enter key pressed or E pressed
-        if (self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_ENTER or
-            self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
-                self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_E):
+        if (self.w_parent.w_lastEvent == FR_EVENTS.FR_ENTER or
+            self.w_parent.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
+                self.w_parent.w_lastEvent == FR_EVENTS.FR_E):
             self.do_callback()
             return 1
 
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             if (clickwdglblNode is not None):
                 # Double click event.
                 print("Double click detected")
@@ -306,7 +305,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 self.do_lblcallback()
                 return 1
 
-        elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
             self.currentSo = None
             if self.releaseDrag is True:
                 self.releaseDrag is False
@@ -323,7 +322,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             else:
                 self.remove_focus()
                 return 0
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             # This part will be active only once when for the first time user click on the coin drawing.
             # Later DRAG should be used
             if self.releaseDrag is False:

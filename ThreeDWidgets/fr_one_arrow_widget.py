@@ -32,7 +32,6 @@ import FreeCADGui as Gui
 import pivy.coin as coin
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
-from ThreeDWidgets import fr_coin3d
 from typing import List
 import FACE_D as faced
 from dataclasses import dataclass
@@ -58,9 +57,9 @@ class test:
 	def callback_move(self,userData : wd.userDataObject = None):
      
 	     PadObj = userData.PadObj  # Arrow object
-	     click=App.Vector(PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                            PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                            PadObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+	     click=App.Vector(PadObj.w_parent.w_lastEventXYZ.Coin_x,
+                                            PadObj.w_parent.w_lastEventXYZ.Coin_y,
+                                            PadObj.w_parent.w_lastEventXYZ.Coin_z)
 	     if self.runOunce == None:
 	           self.runOunce = click.sub(PadObj.w_vector[0])
 
@@ -225,7 +224,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 return 1  # we treat this event. Nonthing to do
 
         # This is for the widgets label - Not the axises label - be aware.
-        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetlblSoNodes)
 
         # In this widget, we have 2 coin drawings that we need to capture event for them
@@ -235,16 +234,16 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         clickwdgdNode = [False, False]
 
-        if(fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                              self.w_pick_radius, self.w_ArrowsSeparator) is not None):
             clickwdgdNode[0] = True
 
         if self.w_discEnabled:
-            if (fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                   self.w_pick_radius, self.w_discSeparator) is not None):
                 clickwdgdNode[1] = True
 
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             if (clickwdglblNode is not None):
                 # Double click event.
                 print("Double click detected")
@@ -253,7 +252,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.do_lblcallback()
                 return 1
 
-        elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
             # disc's part
             if clickwdgdNode[1] is True:
                 # When the discs rotates, we don't accept
@@ -275,7 +274,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.remove_focus()
                 return 0
         # Mouse first click and then mouse with movement is here
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             # DISC
             if((clickwdgdNode[1] is True) and (self.releaseDragDisc == -1)):
                 # This part will be active only once when for the first time user click on the coin drawing.
@@ -677,9 +676,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         center = self.getWidgetsCentor(self.w_discSeparator)
         try:
 
-            self.endVector = App.Vector(self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                        self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                        self.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+            self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+                                        self.w_parent.w_lastEventXYZ.Coin_y,
+                                        self.w_parent.w_lastEventXYZ.Coin_z)
             if self.run_Once is False:
                 self.run_Once = True
                 self.startVector = self.endVector

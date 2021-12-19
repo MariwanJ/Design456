@@ -34,7 +34,6 @@ import Design456Init
 from ThreeDWidgets import fr_draw
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
-from ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets import fr_label_draw
 
@@ -139,9 +138,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nothing to do
 
-            clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                               self.w_pick_radius, self.w_widgetSoNodes)
-            clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                 self.w_pick_radius, self.w_widgetlblSoNodes)
 
             if clickwdgdNode is None and clickwdglblNode is None:
@@ -149,7 +148,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 self.remove_focus()
                 return 0
 
-            if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
                 if clickwdglblNode is not None or clickwdgdNode is not None:
                     print("Double click detected")
@@ -158,7 +157,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                     self.do_lblcallback()
                     return 1
 
-            elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
                 if clickwdgdNode is not None or clickwdglblNode is not None:
                     if not self.has_focus():
                         self.take_focus()

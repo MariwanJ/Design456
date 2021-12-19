@@ -36,7 +36,6 @@ from ThreeDWidgets import fr_draw1
 from PySide import QtGui, QtCore
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
-from ThreeDWidgets import fr_coin3d
 from typing import List
 from ThreeDWidgets import fr_label_draw
 
@@ -135,18 +134,18 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nonthing to do
 
-        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                           self.w_pick_radius, self.w_widgetSoNodes)
-        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(self.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetlblSoNodes)
 
         # Execute callback_relese when enter key pressed or E pressed
-        if (self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_ENTER or
-            self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
-                self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_E):
+        if (self.w_parent.w_lastEvent == FR_EVENTS.FR_ENTER or
+            self.w_parent.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
+                self.w_parent.w_lastEvent == FR_EVENTS.FR_E):
             self.do_callback()
 
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event. Only when the widget is double clicked
             if clickwdglblNode is not None:
 
@@ -155,7 +154,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.do_lblcallback()
                 return 1
 
-        elif self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
             # Release is accepted even if the mouse is not over the widget
             if self.releaseDrag == 1 or self.releaseDrag == 0:
                 self.releaseDrag = -1
@@ -172,7 +171,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.remove_focus()
                 return 0
         # Mouse first click and then mouse with movement is here
-        if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             if ((clickwdgdNode is not None) or
                     (clickwdglblNode is not None)) and self.releaseDrag == -1:
                 self.releaseDrag = 0  # Mouse clicked
