@@ -34,7 +34,7 @@ from typing import List
 from dataclasses import dataclass
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_one_arrow_widget import Fr_OneArrow_Widget
-from ThreeDWidgets.constant import FR_WidgetType 
+from ThreeDWidgets.constant import FR_WidgetType
 import math
 """
 Example how to use this widget.
@@ -47,7 +47,7 @@ mywin = wnn.Fr_CoinWindow()
 vec=[]
 vec.append(App.Vector(0,0,0))
 vec.append(App.Vector(0,0,0))  #Dummy won't be used
-arrows=w.Fr_ThreeArrows_Widget(vec,"Pad")
+arrows=w.Fr_ThreeArrows_Widget(vec,["Pad",])
 arrows.Activated()
 arrows.enableDiscs()
 mywin.addWidget(arrows.getWidgets)
@@ -155,7 +155,7 @@ class Fr_ThreeArrows_Widget(object):
     """
 
     def __init__(self, _vectors: List[App.Vector] = [],
-                 _label: str = "",
+                 _label: str = [[]],
                  _lblColor=FR_COLOR.FR_WHITE,
                  _padColors=[FR_COLOR.FR_RED,
                              FR_COLOR.FR_GREEN,
@@ -181,21 +181,21 @@ class Fr_ThreeArrows_Widget(object):
         self.w_distanceBetweenThem = _distanceBetweenThem
         self.w_parent = None
         self.w_widgetType = FR_WidgetType.FR_THREE_DISC
-        
+
     def Activated(self):
 
         self.w_axisList.append(Fr_OneArrow_Widget(
-            self.w_vector, "X-Axis", "X",
+            self.w_vector, ["X-Axis", ], "X",
             self.w_labelColor, self.w_padColors[0],
             self.w_rotation, self.w_scale, self.w_type,
             self.w_opacity[0], self.w_distanceBetweenThem[0]))
         self.w_axisList.append(Fr_OneArrow_Widget(
-            self.w_vector, "Y-Axis", "Y",
+            self.w_vector, ["Y-Axis", ], "Y",
             self.w_labelColor, self.w_padColors[1],
             self.w_rotation, self.w_scale, self.w_type,
             self.w_opacity[1], self.w_distanceBetweenThem[0]))
         self.w_axisList.append(Fr_OneArrow_Widget(
-            self.w_vector, "Z-Axis", "Z",
+            self.w_vector, ["Z-Axis", ], "Z",
             self.w_labelColor, self.w_padColors[2],
             self.w_rotation, self.w_scale, self.w_type,
             self.w_opacity[2], self.w_distanceBetweenThem[0]))
@@ -206,7 +206,6 @@ class Fr_ThreeArrows_Widget(object):
         self.w_axisList[1].w_rotary_cb_ = yDisc_cb
         self.w_axisList[2].w_ArrowAxis_cb_ = zAxis_cb
         self.w_axisList[2].w_rotary_cb_ = zDisc_cb
-
 
     @property
     def getWidgets(self):

@@ -93,7 +93,7 @@ class userDataObject:
         self.discObj = None      # the disc widget object
         self.events = None        # events - save handle events here
         self.callerObject = None  # Class/Tool uses the fr_disc_widget
-
+        self.Axis=None
 
 # *******************************CALLBACKS - DEMO *****************************
 def callback1(userData: userDataObject = None):
@@ -136,7 +136,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
     """
 
     def __init__(self, vectors: List[App.Vector] = [],
-                 label: str = "",
+                 label: str = [[]],
                  _axisType: str = 'X',  # Default is X axis and RED color
                  _lblColor=FR_COLOR.FR_WHITE,
                  _axisColor=FR_COLOR.FR_RED,
@@ -158,8 +158,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_KB_callback_ = callback              # Keyboard
         # Dummy callback Axis
         self.w_ArrowAxis_cb_ = callback1
-        # Internal angle calculation callback - User shouldn't change this
-        self.w_rotaryDisc_cb_ = self.cb_discRotate
+
+
         # Dummy callback          disc
         self.w_rotary_cb_ = callback2
 
@@ -181,8 +181,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.discObj = self
-        self.currentSo = None
-
         self.w_discAngle = 0.0      # Only disc rotation.
         self.oldAngle = 0.0
         self.rotationDirection = 1   # +1 CCW , -1 ACCW
@@ -261,7 +259,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # the arrow dragging. Disk rotation has priority
                 if self.releaseDragDisc == 1 or self.releaseDragDisc == 0:
                     self.releaseDragDisc = -1
-                    self.currentSo = None
                     # Release callback should be activated
                     self.do_callbacks(0)
                     return 1
@@ -269,7 +266,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             elif clickwdgdNode[0] is True:
                 if self.releaseDragAxis == 1 or self.releaseDragAxis == 0:
                     self.releaseDragAxis = -1
-                    self.currentSo = None
                     self.do_callback(1)
                     return 1
             else:  # None of them -- remove the focus
@@ -782,13 +778,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # Move callback - Axis
         elif(callbackType == 1):
-            self.w_userData._rotaryDisc = None
+            self.w_userData.discObj = None
             self.w_ArrowAxis_cb_(self.w_userData)
         elif(callbackType == 2):
             # Rotate callback
             if self.w_discEnabled:
                 # Rotation callback - Disc
-                if(callbackType == 1 and self.w_discEnabled):
-                    self.w_userData.Axis = None
-                    self.w_rotaryDisc_cb_(self.w_userData)
-                    self.w_rotary_cb_(self.w_userData)
+                self.w_userData.Axis = None
+                self.w_rotary_cb_(self.w_userData)
