@@ -173,18 +173,18 @@ def draw_newlabel(text=[], prop: propertyValues = None):
         _transform.scaleFactor.setValue(prop.scale)  # Only for scaling
 
         _translation.translation.setValue(coin.SbVec3f(p1))
-        # Don't know why, but x must go to y and vice versa :TODO: Understand why?
+        
         _transformY.rotation.setValue(coin.SbVec3f(
-            prop.rotationAxis.x, 0, 0), math.radians(prop.rotation.x))
+            1, 0, 0), math.radians(prop.SetupRotation[0]))
         _transformX.rotation.setValue(coin.SbVec3f(
-            0, prop.rotationAxis.y, 0), math.radians(prop.rotation.y))
+            0, 1, 0), math.radians(prop.SetupRotation[1]))
         _transformZ.rotation.setValue(coin.SbVec3f(
-            0, 0, prop.rotationAxis.z), math.radians(prop.rotation.z))
+            0, 0, 1), math.radians(prop.SetupRotation[2]))
         font = coin.SoFont()
         font.size = prop.fontsize  # Font size
         font.Name = prop.fontName  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
-        _text3D.string.setValues([l.encode("utf8") for l in text if l])
+        _text3D.string.setValues([text,])#([l.encode("utf8") for l in text if l])
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.setValue(prop.labelcolor)
         coinColor.emissiveColor.setValue(prop.labelcolor)
@@ -192,6 +192,7 @@ def draw_newlabel(text=[], prop: propertyValues = None):
         _textNodeX = coin.SoSeparator()   # A Separator to Keep the rotation in X Axis
         _textNodeY = coin.SoSeparator()   # A Separator to Keep the rotation in Y Axis
         _textNodeZ = coin.SoSeparator()   # A Separator to Keep the rotation in Z Axis
+        
         _textNodeX.addChild(_transformX)
         _textNodeY.addChild(_transformY)
         _textNodeZ.addChild(_transformZ)

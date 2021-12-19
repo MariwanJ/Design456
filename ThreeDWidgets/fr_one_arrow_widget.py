@@ -193,7 +193,9 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # We must make it higher or it will intersect the object and won't be visible
         # TODO:Check if this works always?
-        self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + 2
+        self.w_lbluserData.vectors[0].x = self.w_lbluserData.vectors[0].x + self.distanceBetweenThem
+        self.w_lbluserData.vectors[0].y = self.w_lbluserData.vectors[0].y + self.distanceBetweenThem
+        self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + self.distanceBetweenThem
         self.w_lbluserData.labelcolor = _lblColor
 
         # Use this to save rotation degree of the disk which is the whole widget angle.
@@ -429,7 +431,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 Property-holder class for drawing labels
                 '''
                 __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
-                            'labelcolor', 'alignment', 'rotation', 'rotationAxis',
+                            'labelcolor', 'alignment', 'rotation', setupRotation,
                             'scale']
                 vectors: VECTOR  # List[App.Vector] two vectors must be provided
                 linewidth: int
@@ -437,20 +439,17 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 fontsize: int
                 labelcolor: tuple
                 alignment: int  # This will not be used .. not good
-                rotation: tuple    # three angels in degree
-                rotationAxis: VECTOR
+                rotation: tuple    # three float value and an angle 
+                setupRotation: Three angle values for the xyz axis
                 scale: tuple  # Three float numbers for scaling
             ]
         """
         if self.axisType == 'X':
-            self.w_lbluserData.rotation = App.Vector(0, 0, 0)
-            self.w_lbluserData.rotationAxis = App.Vector(0, 0, 0)
+            self.w_lbluserData.SetupRotation = App.Vector(0, 0, 0)
         elif self.axisType == 'Y':
-            self.w_lbluserData.rotation = App.Vector(0, 0, 90)
-            self.w_lbluserData.rotationAxis = App.Vector(0, 0, 1)
+            self.w_lbluserData.SetupRotation = App.Vector(0, 0, 90)
         elif self.axisType == 'Z':
-            self.w_lbluserData.rotation = App.Vector(0, -90, 180)
-            self.w_lbluserData.rotationAxis = App.Vector(0, 1, 1)
+            self.w_lbluserData.SetupRotation = App.Vector(0, -90, 180)
         self.w_lbluserData.labelcolor = self.w_color
         lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
@@ -463,7 +462,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         Args:
             newVecPos ([App.Vector], optional): [Move the label to a new position]. Defaults to App.Vector(0,0,0).
         """
-        self.w_lbluserData.vector = [newVecPos, ]
+        self.w_lbluserData.vectors = [newVecPos, ]
 
     def show(self):
         """[This function will show the widget. But it doesn't draw it. ]

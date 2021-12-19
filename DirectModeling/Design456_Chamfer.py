@@ -173,29 +173,30 @@ class Design456_SmartChamfer:
         Apply chamfer to any 3D object by selecting the object, a Face or one or multiple edges 
         Radius of the chamfer is counted by dragging the arrow towards the negative Z axis.
     """
-    _vector = App.Vector(0.0, 0.0, 0.0)
-    mw = None
-    dialog = None
-    tab = None
-    smartInd = None
-    _mywin = None
-    b1 = None
-    ChamferLBL = None
-    run_Once = False
-    endVector = None
-    startVector = None
-    # We will make two object, one for visual effect and the other is the original
-    selectedObj = []
-    # 0 is the original    1 is the fake one (just for interactive effect)
-    mouseToArrowDiff = None
-    offset = 0.0
-    AwayFrom3DObject = 20  # Use this to take away the arrow from the object
-    # We cannot have zero. TODO: What value we should use? FIXME:
-    ChamferRadius = 0.00001
-    objectType = None  # Either shape, Face or Edge.
-    Originalname = ''
-    direction = None
-    saveFirstPostion=None
+    def __init__(self):
+        self._vector = App.Vector(0.0, 0.0, 0.0)
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.smartInd = None
+        self._mywin = None
+        self.b1 = None
+        self.ChamferLBL = None
+        self.run_Once = False
+        self.endVector = None
+        self.startVector = None
+        # We will make two object, one for visual effect and the other is the original
+        self.selectedObj = []
+        # 0 is the original    1 is the fake one (just for interactive effect)
+        self.mouseToArrowDiff = None
+        self.offset = 0.0
+        self.AwayFrom3DObject = 20  # Use this to take away the arrow from the object
+        # We cannot have zero. TODO: What value we should use? FIXME:
+        self.ChamferRadius = 0.00001
+        self.objectType = None  # Either shape, Face or Edge.
+        self.Originalname = ''
+        self.direction = None
+        self.saveFirstPostion=None
 
 
     def registerShapeType(self):
@@ -414,7 +415,7 @@ class Design456_SmartChamfer:
         rotation = self.getArrowPosition()
 
         self.smartInd = Fr_Arrow_Widget(
-            [self._vector,App.Vector(0,0,0)], "Radius: 0.0", 1, FR_COLOR.FR_RED, rotation)
+            [self._vector,App.Vector(0,0,0)], ["Radius: 0.0",], 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self

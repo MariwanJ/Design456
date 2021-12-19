@@ -114,6 +114,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.releaseDrag = -1  # -1 mouse no clicked not dragging, 0 is clicked, 1 is dragging
         self.arrowType = _arrowType  # 0 3D Default , 1= 2D, 2=2D
         self.w_lbluserData = fr_widget.propertyValues()
+        
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -135,9 +136,9 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 return 1    # we treat this event. Nonthing to do
 
         clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                          self.w_pick_radius, self.w_widgetSoNodes)
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                            self.w_pick_radius, self.w_widgetlblSoNodes)
+                                                                self.w_pick_radius, self.w_widgetlblSoNodes)
 
         # Execute callback_relese when enter key pressed or E pressed
         if (self.w_parent.w_lastEvent == FR_EVENTS.FR_ENTER or
@@ -226,7 +227,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.w_lbluserData.linewidth = self.w_lineWidth
                 self.w_lbluserData.labelcolor = usedColor
                 self.w_lbluserData.vectors = self.w_vector
-                self.w_lbluserData.rotation = [0,0,0]
+                self.w_lbluserData.rotation = [0, 0, 0, 0]
                 # self.w_lbluserData.SetupRotation = self.w_rotation This causes a problem. TODO:FIXME:
 
                 self.draw_label(usedColor)
@@ -245,7 +246,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     def draw_label(self, usedColor):
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.labelcolor = usedColor
-        self.w_lbluserData.rotation = self.w_rotation
+        #self.w_lbluserData.rotation = self.w_rotation
         self.w_lbluserData.vectors = self.w_vector
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)

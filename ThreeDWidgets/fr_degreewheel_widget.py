@@ -202,16 +202,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         if (self.w_wheelType == 0):
             self.w_lbluserData.rotation = App.Vector(
                 0, 0, 0)  # OK Don't change
-            self.w_lbluserData.rotationAxis = App.Vector(
-                0, 0, 0)  # OK Don't change
         elif(self.w_wheelType == 1):
-            self.w_lbluserData.rotation = App.Vector(
+            self.w_lbluserData.SetupRotation = App.Vector(
                 90, 0, 0)  # OK Don't change
-            self.w_lbluserData.rotationAxis = App.Vector(
-                1, 0, 0)  # OK Don't change
         elif(self.w_wheelType == 2):
-            self.w_lbluserData.rotation = App.Vector(90, 90, 0)
-            self.w_lbluserData.rotationAxis = App.Vector(1, 1, 0)
+            self.w_lbluserData.SetupRotation = App.Vector(90, 90, 0)
 
         # Use this to save rotation degree of the disk which is the whole widget angle.
         self.w_WidgetDiskRotation = 0.0

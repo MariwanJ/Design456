@@ -68,9 +68,9 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             return
 
         clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                          ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
+                                                                     ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
         clickwdglblNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                            ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
+                                                                       ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
         linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
                                             ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
@@ -113,10 +113,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         elif linktocaller.FilletRadius > 8:
             linktocaller.FilletRadius = 8
 
-        linktocaller.resizeArrowWidgets(linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
+        linktocaller.resizeArrowWidgets(
+            linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         ArrowObject.changeLabelstr(
             "Radius = " + str(round(linktocaller.FilletRadius, 4)))
-        
+
         linktocaller.FilletLBL.setText(
             "Radius = " + str(round(linktocaller.FilletRadius, 4)))
         linktocaller.reCreatefilletObject()
@@ -168,31 +169,31 @@ class Design456_SmartFillet:
         Apply fillet to any 3D object by selecting the object, a Face or one or multiple edges 
         Radius of the fillet is counted by dragging the arrow towards the negative Z axis.
     """
-    _vector = App.Vector(0.0, 0.0, 0.0)
-    mw = None
-    dialog = None
-    tab = None
-    smartInd = None
-    _mywin = None
-    b1 = None
-    FilletLBL = None
-    run_Once = False
-    endVector = None
-    startVector = None
-    # We will make two object, one for visual effect and the other is the original
-    selectedObj = []
-    # 0 is the original    1 is the fake one (just for interactive effect)
-    mouseToArrowDiff = 0.0
-    offset = 0.0
-    # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
-    AwayFrom3DObject = 20
-    # We cannot have zero. TODO: What value we should use? FIXME:
-    FilletRadius = 0.0001
-    objectType = None  # Either shape, Face or Edge.
-    Originalname = ''
-    direction = None
-    saveFirstPostion=None
-
+    def __init__(self):
+        self._vector = App.Vector(0.0, 0.0, 0.0)
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.smartInd = None
+        self._mywin = None
+        self.b1 = None
+        self.FilletLBL = None
+        self.run_Once = False
+        self.endVector = None
+        self.startVector = None
+        # We will make two object, one for visual effect and the other is the original
+        self.selectedObj = []
+        # 0 is the original    1 is the fake one (just for interactive effect)
+        self.mouseToArrowDiff = 0.0
+        self.offset = 0.0
+        # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
+        self.AwayFrom3DObject = 20
+        # We cannot have zero. TODO: What value we should use? FIXME:
+        self.FilletRadius = 0.0001
+        self.objectType = None  # Either shape, Face or Edge.
+        self.Originalname = ''
+        self.direction = None
+        self.saveFirstPostion = None
 
     def registerShapeType(self):
         '''
@@ -213,11 +214,14 @@ class Design456_SmartFillet:
         and updating the vectors inside each fr_arrow_widget
         """
         if(self.direction == "+x" or self.direction == "-x"):
-            self.smartInd.w_vector[0].x = endVec.x  # Only X should affect the arrow
+            # Only X should affect the arrow
+            self.smartInd.w_vector[0].x = endVec.x
         elif(self.direction == "+y" or self.direction == "-y"):
-            self.smartInd.w_vector[0].y = endVec.y  # Only Y should affect the arrow
+            # Only Y should affect the arrow
+            self.smartInd.w_vector[0].y = endVec.y
         elif(self.direction == "+z" or self.direction == "-z"):
-            self.smartInd.w_vector[0].z = endVec.z  # Only Z should affect the arrow
+            # Only Z should affect the arrow
+            self.smartInd.w_vector[0].z = endVec.z
         self.smartInd.redraw()
         return
 
@@ -407,11 +411,12 @@ class Design456_SmartFillet:
 
         # get rotation
         rotation = self.getArrowPosition()
-        self.smartInd = Fr_Arrow_Widget([self._vector,App.Vector(0,0,0)],"Radius = 0.0", 1, FR_COLOR.FR_RED, rotation)
+        self.smartInd = Fr_Arrow_Widget([self._vector, App.Vector(0, 0, 0)], [
+                                        "Radius = 0.0", ], 1, FR_COLOR.FR_RED, rotation)
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
-        self.saveFirstPostion=self._vector
+        self.saveFirstPostion = self._vector
         if self._mywin is None:
             self._mywin = win.Fr_CoinWindow()
         self._mywin.addWidget(self.smartInd)
