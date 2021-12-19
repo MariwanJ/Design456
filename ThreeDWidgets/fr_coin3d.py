@@ -104,7 +104,7 @@ def objectMouseClick_Coin3d(mouse_pos, pick_radius, TargetNode):
 #       the remained must be implemented later
 
 
-class root_handle():
+class root_handle(object):
     """
         The most critical part of the widgets system. 
         This will take care of translating the events from COIN3D to our system.
