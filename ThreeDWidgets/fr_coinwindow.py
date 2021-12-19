@@ -38,10 +38,10 @@ from dataclasses import dataclass
 import time  # For double click detection
 
 
-
 '''
 This is a class for coin3D Window
 '''
+
 
 @dataclass
 class mouseDimension:
@@ -68,39 +68,33 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     """
     # This is the holder of all objects.It should be here not inside the Fr_Group
     # this is the root scenegraph. It keeps all switch. Switches will keep drawing
-    Root_SceneGraph = None
-    view = None
-
-    # This should keep the mouse pointer position on the 3D view 
-    # from old-fr_coin3d
-    w_lastEvent = None
-    w_lastEventXYZ = None
-    w_view = None
-    w_countMouseCLICK = 0
-    w_clicked_time = 0
-    w_typeofevent = None
-    w_get_event = None
-    w_events = None
-    w_e_state = None  # Keep the CTL,SHIFT, ALT KEY SAVED HERE
-
+    w_countMouseCLICK= 0.0
     def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
             400, 400, 0)], label: str = [[]]):
         super().__init__(vectors, label)
-        self.w_view=Fr_CoinWindow.view = Gui.ActiveDocument.ActiveView
+        self.w_view = self.view = Gui.ActiveDocument.ActiveView
         self.callbackMove = None
         self.callbackClick = None
         self.callbackKey = None
-        Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_NO_EVENT
-        Fr_CoinWindow.w_lastEventXYZ = mouseDimension()
+        self.Root_SceneGraph = None
 
+        # This should keep the mouse pointer position on the 3D view
+        # from old-fr_coin3d
+        self.w_lastEvent = FR_EVENTS.FR_NO_EVENT
+        self.w_lastEventXYZ = mouseDimension()
+        Fr_CoinWindow.w_countMouseCLICK = 0
+        self.w_clicked_time = 0
+        self.w_typeofevent = None
+        self.w_get_event = None
+        self.w_events = None
+        self.w_e_state = None  # Keep the CTL,SHIFT, ALT KEY SAVED HERE
 
-        Fr_CoinWindow.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        self.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
         self.w_mainfrCoinWindow = self
         self.w_parent = self  # No parent and this is the main window
         self.w_widgetType = FR_WidgetType.FR_COINWINDOW
-        # Activate the window
-        Fr_CoinWindow.view = Gui.ActiveDocument.ActiveView
-        
+        self.view = Gui.ActiveDocument.ActiveView
+
     def show(self):
         """
         Show the window on the 3D World
@@ -112,7 +106,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         distribute events and other things that might be added 
         later to this class.
         """
-        self.w_view = Fr_CoinWindow.view = Gui.ActiveDocument.ActiveView
+        self.w_view = self.view = Gui.ActiveDocument.ActiveView
         self.addCallbacks()
         self.draw()
         super().show()  # Show all children also
@@ -123,9 +117,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         Like exit in normal window. This will end the windows
         """
         self.hide()
-        if Fr_CoinWindow.link_to_Fr_CoinWindow is not None:
-            del Fr_CoinWindow.link_to_Fr_CoinWindow
-            Fr_CoinWindow.link_to_Fr_CoinWindow = None
+        if self.link_to_Fr_CoinWindow is not None:
+            del self.link_to_Fr_CoinWindow
+            self.link_to_Fr_CoinWindow = None
         super().__del__()  # call group destructor
         # Call Fr_Groups deactivate to remove all widgets.
 
@@ -134,9 +128,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """ remove switch tree from the SceneGraph"""
         if type(_soSwitch) == list:
             for i in _soSwitch:
-                Fr_CoinWindow.Root_SceneGraph.removeChild(i)
+                self.Root_SceneGraph.removeChild(i)
         else:
-            Fr_CoinWindow.Root_SceneGraph.removeChild(_soSwitch)
+            self.Root_SceneGraph.removeChild(_soSwitch)
 
     def callback(self, data):
         # not sure what I should do here yet.
@@ -146,10 +140,10 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """ Add new switch tree to the SceneGraph"""
         if type(_soSwitch) == list:
             for i in _soSwitch:
-                Fr_CoinWindow.Root_SceneGraph.addChild(
+                self.Root_SceneGraph.addChild(
                     i)  # add scene to the root
         else:
-            Fr_CoinWindow.Root_SceneGraph.addChild(_soSwitch)
+            self.Root_SceneGraph.addChild(_soSwitch)
 
     ##########         FROM COIN3D                  #################
 
@@ -158,8 +152,8 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         if shift was pushed but not released this function will return TRUE
         """
-        result = (Fr_CoinWindow.w_e_state == coin.SoKeyboardEvent.LEFT_SHIFT)
-        result = result or (Fr_CoinWindow.w_e_state ==
+        result = (self.w_e_state == coin.SoKeyboardEvent.LEFT_SHIFT)
+        result = result or (self.w_e_state ==
                             coin.SoKeyboardEvent.RIGHT_SHIFT)
         return (result)
 
@@ -167,30 +161,30 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """
         if CTRL was pushed but not released this function will return TRUE
         """
-        result = (Fr_CoinWindow.w_e_state == coin.SoKeyboardEvent.LEFT_CONTROL)
+        result = (self.w_e_state == coin.SoKeyboardEvent.LEFT_CONTROL)
         result = result or (
-            Fr_CoinWindow.w_e_state == coin.SoKeyboardEvent.RIGHT_CONTROL)
+            self.w_e_state == coin.SoKeyboardEvent.RIGHT_CONTROL)
         return (result)
 
     def altwasclicked(self):
         """
         if ALT was pushed but not released this function will return TRUE
         """
-        result = (Fr_CoinWindow.w_e_state == coin.SoKeyboardEvent.LEFT_ALT)
-        result = result or (Fr_CoinWindow.w_e_state ==
+        result = (self.w_e_state == coin.SoKeyboardEvent.LEFT_ALT)
+        result = result or (self.w_e_state ==
                             coin.SoKeyboardEvent.RIGHT_ALT)
         return (result)
         # COIN3D related functions -END
 
     def eventProcessor(self, events):
-        Fr_CoinWindow.w_events = events
-        Fr_CoinWindow.w_get_event = Fr_CoinWindow.w_events.getEvent()
-        Fr_CoinWindow.w_typeofevent = type(Fr_CoinWindow.w_get_event)
+        self.w_events = events
+        self.w_get_event = self.w_events.getEvent()
+        self.w_typeofevent = type(self.w_get_event)
 
         # write down all possible events.
         # First mouse move event
 
-        if(Fr_CoinWindow.w_typeofevent == coin.SoMotion3Event):
+        if(self.w_typeofevent == coin.SoMotion3Event):
             """ represents 3D relative motion events in the 
                 Open Inventor event model.
                 sub functions: 
@@ -201,21 +195,21 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             """
             raise NotImplementedError()  # will not be uses  2021-04-02
 
-        elif(Fr_CoinWindow.w_typeofevent == coin.SoLocation2Event):
+        elif(self.w_typeofevent == coin.SoLocation2Event):
             """ 2D location events. SoLocation2Event represents 2D location events, for example, mouse move events """
-            Fr_CoinWindow.w_lastEventXYZ.pos = Fr_CoinWindow.w_get_event.getPosition()
-            pos = Fr_CoinWindow.w_lastEventXYZ.pos.getValue()
+            self.w_lastEventXYZ.pos = self.w_get_event.getPosition()
+            pos = self.w_lastEventXYZ.pos.getValue()
             pnt = self.w_view.getPoint(pos[0], pos[1])
-            Fr_CoinWindow.w_lastEventXYZ.Coin_x = pnt.x
-            Fr_CoinWindow.w_lastEventXYZ.Coin_y = pnt.y
-            Fr_CoinWindow.w_lastEventXYZ.Coin_z = pnt.z
-            Fr_CoinWindow.w_lastEventXYZ.Qt_x = pos[0]
-            Fr_CoinWindow.w_lastEventXYZ.Qt_y = pos[1]
+            self.w_lastEventXYZ.Coin_x = pnt.x
+            self.w_lastEventXYZ.Coin_y = pnt.y
+            self.w_lastEventXYZ.Coin_z = pnt.z
+            self.w_lastEventXYZ.Qt_x = pos[0]
+            self.w_lastEventXYZ.Qt_y = pos[1]
             # if we hade mouse drag or push (not release) and there is a movement
-            if(Fr_CoinWindow.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH or Fr_CoinWindow.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG):
-                Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
+            if(self.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH or self.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG):
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
             else:
-                Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_MOVE
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_MOVE
 
         # Doesn't work, don't know why
         # elif(_typeofevent == coin.SoMouseWheelEvent):
@@ -236,38 +230,38 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         #    """
         #    raise NotImplementedError()  # will not be uses at least now 2021-04-02
 
-        elif(Fr_CoinWindow.w_typeofevent == coin.SoMouseButtonEvent):
+        elif(self.w_typeofevent == coin.SoMouseButtonEvent):
             """
             Mouse button press and release events.
             SoMouseButtonEvent represents mouse button press and release
             """
-            eventState = Fr_CoinWindow.w_get_event.getState()  # pressed down , or it is released
-            getButton = Fr_CoinWindow.w_get_event.getButton()
-            Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_NO_EVENT
+            eventState = self.w_get_event.getState()  # pressed down , or it is released
+            getButton = self.w_get_event.getButton()
+            self.w_lastEvent = FR_EVENTS.FR_NO_EVENT
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 # detect double click here. COIN3D has no function for that
                 if self.Detect_DblClick() is True:
-                    Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
+                    self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
                 else:
-                    Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_PUSH
+                    self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_PUSH
 
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_RELEASE
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_RELEASE
 
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
-                Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_PUSH
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_PUSH
 
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON2:
-                Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
 
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON3:
-                Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
 
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
-                Fr_CoinWindow.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
 
         # Take care of Keyboard events
-        elif (Fr_CoinWindow.w_typeofevent == coin.SoKeyboardEvent):
+        elif (self.w_typeofevent == coin.SoKeyboardEvent):
             """
             Keyboard key press and keyrelease event. 
             functions used with this event: 
@@ -284,27 +278,27 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             # print("Key-Event")
             key = ""
             try:
-                key = Fr_CoinWindow.w_get_event.getKey()
+                key = self.w_get_event.getKey()
                 # Take care of CTRL,SHIFT,ALT Only when it is down.
                 # We don't send the shift key ..
-                test = (key == coin.SoKeyboardEvent.LEFT_CONTROL and Fr_CoinWindow.w_get_event.getState(
+                test = (key == coin.SoKeyboardEvent.LEFT_CONTROL and self.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.RIGHT_CONTROL and Fr_CoinWindow.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.RIGHT_CONTROL and self.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.LEFT_SHIFT and Fr_CoinWindow.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.LEFT_SHIFT and self.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.RIGHT_SHIFT and Fr_CoinWindow.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.RIGHT_SHIFT and self.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.LEFT_ALT and Fr_CoinWindow.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.LEFT_ALT and self.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.RIGHT_ALT and Fr_CoinWindow.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.RIGHT_ALT and self.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
                 if test == 1:
-                    Fr_CoinWindow.w_e_state = key
+                    self.w_e_state = key
                 else:
                     # Take care of all other keys.
-                    Fr_CoinWindow.w_e_state = None
-                    Fr_CoinWindow.w_lastEvent = key
+                    self.w_e_state = None
+                    self.w_lastEvent = key
 
             except ValueError:
                 # there is no character for this value
@@ -326,16 +320,23 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         # elif(_typeofevent) == coin.SoTrackerEvent:
 
         # Now send the event to th window widget to distribute it over the children widgets
-        self.handle(Fr_CoinWindow.w_lastEvent)
+        self.handle(self.w_lastEvent)
 
     def Detect_DblClick(self):
+        """[Detect double click. If user clicks the object two times between 0 to 0.5 sec, 
+            this had to be counted as a double click]
+
+        Returns:
+            [Boolean]: [True if double click was detected and false otherwise]
+        """
         t = time.time()
-        if t - Fr_CoinWindow.w_clicked_time <= 0.500:   # suitable value must be found 500msec is windows default
+        if (t - self.w_clicked_time) <= 0.500:   # suitable value must be found 500msec is windows default
             Fr_CoinWindow.w_countMouseCLICK += 1
         else:
             Fr_CoinWindow.w_countMouseCLICK = 0
-            Fr_CoinWindow.w_clicked_time = time.time()
-        if Fr_CoinWindow.w_countMouseCLICK == 2:
+            self.w_clicked_time = time.time()
+        #First time it is zero, double click MUST BE 1 not 2
+        if Fr_CoinWindow.w_countMouseCLICK == 1:
             return True
         else:
             return False
@@ -355,20 +356,20 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         '''
         add all callbacks registered for Fr_Window widget
         '''
-        Fr_CoinWindow.callbackMove = self.w_view.addEventCallbackPivy(
+        self.callbackMove = self.w_view.addEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.eventProcessor)
-        Fr_CoinWindow.callbackClick = self.w_view.addEventCallbackPivy(
+        self.callbackClick = self.w_view.addEventCallbackPivy(
             coin.SoMouseButtonEvent.getClassTypeId(), self.eventProcessor)
-        Fr_CoinWindow.callbackKey = self.w_view.addEventCallbackPivy(
+        self.callbackKey = self.w_view.addEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.eventProcessor)
 
     def objectUnderMouse_Coin3d(self, win):
         pass
     # get Object clicked in COIN3D
 
-
-    # TODO: At the moment, we implement only Fr_CoinWindow for COIN3D, 
+    # TODO: At the moment, we implement only Fr_CoinWindow for COIN3D,
     #       the remained must be implemented later
+
     def objectMouseClick_Coin3d(self, mouse_pos, pick_radius, TargetNode):
         # This section is from DRAFT
         # It must help in finding the correct node
