@@ -90,7 +90,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
 
     def __init__(self, vectors: List[App.Vector] = [],
 
-                 label: str = "", lineWidth=1,
+                 label: str = [[]], lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
                  _rotation=[(0.0, 0.0, 1.0), 0.0],
                  _arrowType=0):
@@ -226,7 +226,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.w_lbluserData.linewidth = self.w_lineWidth
                 self.w_lbluserData.labelcolor = usedColor
                 self.w_lbluserData.vectors = self.w_vector
-                self.w_lbluserData.rotation = [0, 0, 0]
+                self.w_lbluserData.rotation = [0,0,0]
                 # self.w_lbluserData.SetupRotation = self.w_rotation This causes a problem. TODO:FIXME:
 
                 self.draw_label(usedColor)

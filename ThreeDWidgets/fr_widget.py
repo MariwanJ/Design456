@@ -512,7 +512,7 @@ class Fr_Widget (object):
         Self.w_wdgsoSwitch = None
 
     def changeLabelstr(self, newlabel: str = ""):
-        self.w_label = [newlabel]
+        self.w_label = [newlabel,]
 
     def changeLabelfloat(self, newlabel: float = 0.0):
         self.w_label = ["{:.2f}".format(newlabel)]
