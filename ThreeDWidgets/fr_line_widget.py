@@ -30,7 +30,6 @@ import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import Design456Init
 from ThreeDWidgets import fr_draw
 from ThreeDWidgets import fr_widget
 from ThreeDWidgets import constant
@@ -38,8 +37,7 @@ from typing import List
 from ThreeDWidgets import fr_label_draw
 
 from ThreeDWidgets.constant import FR_EVENTS
-from ThreeDWidgets.constant import FR_DAMAGE
-
+import math
 
 """
 Example how to use this widget. 
@@ -121,6 +119,23 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
         self.w_lbluserData = fr_widget.propertyValues()
 
+    def findLineAnagels(self):
+
+
+        if(self.w_vector[1].x == 0):
+            xAngle=90.0
+        else:
+            xAngle = math.degrees(round(math.atan(self.w_vector[1].y/self.w_vector[1].x), 2))  #xy plane
+        if(self.w_vector[1].y==0):
+            yAngle=90.0
+        else:
+            yAngle = math.degrees(round(math.atan(self.w_vector[1].x/self.w_vector[1].y), 2))  #yx plane
+        if(self.w_vector[1].z==0):
+            zAngle=90.0
+        else:
+            zAngle = math.degrees(round(math.atan(self.w_vector[1].y/self.w_vector[1].z), 2))  #yz plane
+        print(xAngle ,yAngle, zAngle)
+        
     def lineWidth(self, width):
         """ Set the line width"""
         self.w_lineWidth = width
@@ -172,6 +187,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         Main draw function. It is responsible for creating the SoSeparator node,
         and draw the line on the screen - in the COIN3D world.        
         """
+        self.findLineAnagels()
         try:
 
             if len(self.w_vector) < 2:
