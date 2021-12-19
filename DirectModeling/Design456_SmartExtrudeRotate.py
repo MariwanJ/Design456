@@ -32,14 +32,11 @@ import FreeCADGui as Gui
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
-import ThreeDWidgets.fr_coinwindow as win
-from ThreeDWidgets import fr_coin3d
 from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_degreewheel_widget import Fr_DegreeWheel_Widget
 from ThreeDWidgets import fr_degreewheel_widget
-from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 import math
@@ -94,12 +91,12 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         return
     wheelObj = userData.wheelObj
     linktocaller.direction = "Center"
-    clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+    clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_centersoSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_y,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_z)
     startX = startY = 0
     if linktocaller.editing is False:
         if linktocaller.run_Once is False:
@@ -117,9 +114,9 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         if (linktocaller.startVector is None):
             linktocaller.startVector = linktocaller.endVector
     oldangle = wheelObj.w_Rotation[3]
-    mx = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x
-    my = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y
-    mz = wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z
+    mx = wheelObj.w_parent.w_lastEventXYZ.Coin_x
+    my = wheelObj.w_parent.w_lastEventXYZ.Coin_y
+    mz = wheelObj.w_parent.w_lastEventXYZ.Coin_z
     # calculating the angle in a better way:
     print(linktocaller.normalVector)
     if abs(linktocaller.normalVector.x) == 1:
@@ -178,12 +175,12 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject = None):
 
     linktocaller.direction = "X"
 
-    clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+    clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_XsoSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_y,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
     if linktocaller.run_Once is False:
         linktocaller.run_Once = True
@@ -223,12 +220,12 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject = None):
 
     linktocaller.direction = "Y"
 
-    clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+    clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_YsoSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_y,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
     if linktocaller.run_Once is False:
         linktocaller.run_Once = True
@@ -267,12 +264,12 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject = None):
     wheelObj = userData.wheelObj
     linktocaller.direction = "45"
 
-    clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+    clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_45soSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_y,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_z)
     if linktocaller.run_Once is False:
         linktocaller.run_Once = True
         # only once
@@ -311,12 +308,12 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject = None):
     wheelObj = userData.wheelObj
     linktocaller.direction = "135"
 
-    clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+    clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_135soSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                        wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_y,
+                                        wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
     if linktocaller.run_Once is False:
         linktocaller.run_Once = True
@@ -535,8 +532,8 @@ class Design456_SmartExtrudeRotate:
         try:
             # Create the Revolution
             # remove totally the second face, not required anymore.
-            startY = self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_y
-            startX = self.wheelObj.w_parent.link_to_root_handle.w_lastEventXYZ.Qt_x
+            startY = self.wheelObj.w_parent.w_lastEventXYZ.Qt_y
+            startX = self.wheelObj.w_parent.w_lastEventXYZ.Qt_x
             self.newObject = App.ActiveDocument.addObject(
                 "Part::Revolution", "ExtendRotate")
             App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
@@ -576,7 +573,7 @@ class Design456_SmartExtrudeRotate:
         try:
             # TODO:FIXME
             pl = self.calculateRotatedNormal(self.direction)
-            if(self.ExtractedFaces[1] != None):
+            if(self.ExtractedFaces[1] is not None):
                 self.ExtractedFaces[1].Placement = pl
             face2 = None
             if(self.isFaceOf3DObj()):
@@ -675,7 +672,9 @@ class Design456_SmartExtrudeRotate:
     def Activated(self):
         """[ Executes when the tool is used   ]
         """
+        import ThreeDWidgets.fr_coinwindow as win
         try:
+            
             print("Smart ExtrudeRotate")
             self.selected = Gui.Selection.getSelectionEx()
             if len(self.selected) == 0:

@@ -32,14 +32,11 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 from pivy import coin
-import ThreeDWidgets.fr_coinwindow as win
-from ThreeDWidgets import fr_coin3d
 from typing import List
 from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 from ThreeDWidgets.fr_draw import draw_FaceSet
-from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translat
 import Part as _part
@@ -294,6 +291,7 @@ class Design456_ExtendEdge:
     def Activated(self):
         """[ Executes when the tool is used   ]
         """
+        import ThreeDWidgets.fr_coinwindow as win
         self.coinFaces = coin.SoSeparator()
         self.w_rotation = [0.0, 0.0, 0.0]  # 
         self.setupRotation = [0, 0, 0, 0] 
@@ -372,10 +370,9 @@ class Design456_ExtendEdge:
                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
                                                 self.setupRotation,  # setup rotation
-                                                [0, 0, 0, 0],  # rotation
                                                 [15.0, 15.0, 15.0],  # scale
                                                 0,  # type
-                                                0,  # opacity
+                                                [0,0,0],  # opacity
                                                 [10, 10, 10])  # distance between them
 
             # Different callbacks for each action.
@@ -507,9 +504,9 @@ class Design456_ExtendEdge:
             else:
                 return  # We cannot allow this tool
 
-        self.endVector = App.Vector(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                    self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                    self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        self.endVector = App.Vector(self.padObj.w_parent.w_lastEventXYZ.Coin_x,
+                                    self.padObj.w_parent.w_lastEventXYZ.Coin_y,
+                                    self.padObj.w_parent.w_lastEventXYZ.Coin_z)
         if self.run_Once is False:
             self.run_Once = True
             # only once

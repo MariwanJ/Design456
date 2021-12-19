@@ -207,7 +207,7 @@ class DocObserver:
 
     def slotCreatedDocument(self, doc):
         v = Gui.ActiveDocument.ActiveView
-        if (self.linkToParent != None):
+        if (self.linkToParent is not None):
             if(self.linkToParent.planeShow == None):
                 self.linkToParent.planeShow = Grid(v)
                 self.linkToParent.planeShow.Activated()

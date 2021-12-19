@@ -29,23 +29,14 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft
-import Part
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
-import ThreeDWidgets.fr_coinwindow as win
-from ThreeDWidgets import fr_coin3d
 from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
-from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 from ThreeDWidgets import fr_arrow_widget
-from ThreeDWidgets.constant import FR_EVENTS
-from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
-import math
-from ThreeDWidgets import fr_label_draw
 MouseScaleFactor = 1.5      # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
 
 
@@ -71,13 +62,13 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         if type(events) != int:
             return
 
-        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
                                                           ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
-        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdglblNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
                                                             ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
-        linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
+                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
+                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
 
         if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once is False:
@@ -133,6 +124,7 @@ class Design456_SmartAlignment:
 
  
     def Activated(self):
+        import ThreeDWidgets.fr_coinwindow as win
         self.selectedObj.clear()
         sel=Gui.Selection.getSelectionEx()
         if len(sel) ==0:
@@ -164,7 +156,7 @@ class Design456_SmartAlignment:
         try:
             self.smartInd.hide()
             self.smartInd.__del__()  # call destructor
-            if self._mywin != None:
+            if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None

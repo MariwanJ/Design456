@@ -32,8 +32,6 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 from pivy import coin
-import ThreeDWidgets.fr_coinwindow as win
-from ThreeDWidgets import fr_coin3d
 from typing import List
 from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
@@ -317,6 +315,7 @@ class Design456_ExtendFace:
     def Activated(self):
         """[ Executes when the tool is used   ]
         """
+        import ThreeDWidgets.fr_coinwindow as win
         self.coinFaces = coin.SoSeparator()
         self.w_rotation = [0.0, 0.0, 0.0]  # pads rotation
         self.setupRotation = [0, 0, 0, 0]  # Whole widget rotation
@@ -527,9 +526,9 @@ class Design456_ExtendFace:
             else:
                 return  # We cannot allow this tool
 
-        self.endVector = App.Vector(self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                    self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                    self.padObj.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        self.endVector = App.Vector(self.padObj.w_parent.w_lastEventXYZ.Coin_x,
+                                    self.padObj.w_parent.w_lastEventXYZ.Coin_y,
+                                    self.padObj.w_parent.w_lastEventXYZ.Coin_z)
         if self.run_Once is False:
             self.run_Once = True
             # only once

@@ -35,13 +35,11 @@ from ThreeDWidgets import fr_arrow_widget
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
-import ThreeDWidgets.fr_coinwindow as win
-from ThreeDWidgets import fr_coin3d
+
 from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
-import math
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 
@@ -217,13 +215,13 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         if type(events) != int:
             return
 
-        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
                                                           ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
-        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdglblNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
                                                             ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
-        linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
+                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
+                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
 
         if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once is False:
@@ -231,7 +229,8 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         if linktocaller.run_Once is False:
             linktocaller.run_Once = True
-            linktocaller.mouseToArrowDiff =  linktocaller.endVector.sub(userData.ArrowObj.w_vector[0])
+            linktocaller.mouseToArrowDiff = linktocaller.endVector.sub(
+                userData.ArrowObj.w_vector[0])
             # Keep the old value only first time when drag start
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
@@ -239,20 +238,21 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         scale = 1.0
 
-        MovementsSize = linktocaller.endVector.sub(linktocaller.mouseToArrowDiff)
-        (scaleX, scaleY, scaleZ) = calculateScale(ArrowObject, linktocaller, MovementsSize)
-
+        MovementsSize = linktocaller.endVector.sub(
+            linktocaller.mouseToArrowDiff)
+        (scaleX, scaleY, scaleZ) = calculateScale(
+            ArrowObject, linktocaller, MovementsSize)
 
         if ArrowObject.w_color == FR_COLOR.FR_OLIVEDRAB:
             scale = scaleY
 #            ArrowObject.w_vector[0].y = MovementsSize.y #+linktocaller.mmAwayFrom3DObject
 
         elif ArrowObject.w_color == FR_COLOR.FR_RED:
-#            ArrowObject.w_vector[0].x = MovementsSize.x #+linktocaller.mmAwayFrom3DObject
+            #            ArrowObject.w_vector[0].x = MovementsSize.x #+linktocaller.mmAwayFrom3DObject
             scale = scaleX
 
         elif ArrowObject.w_color == FR_COLOR.FR_BLUE:
-#            ArrowObject.w_vector[0].z = MovementsSize.z #+linktocaller.mmAwayFrom3DObject
+            #            ArrowObject.w_vector[0].z = MovementsSize.z #+linktocaller.mmAwayFrom3DObject
             scale = scaleZ
 
         linktocaller.scaleLBL.setText("scale= "+str(scale))
@@ -298,7 +298,6 @@ class Design456_DirectScale:
     # 0 is the original    1 is the fake one (just for interactive effect)
     mouseToArrowDiff = None
     mmAwayFrom3DObject = 5  # Use this to take away the arrow from the object
-
     def getObjectLength(self, whichOne=1):
         """ 
             get Max length of the 3D object by taking the 
@@ -373,6 +372,7 @@ class Design456_DirectScale:
         self.smartInd[2].w_userData.callerObject = self
 
     def Activated(self):
+        import ThreeDWidgets.fr_coinwindow as win
         try:
             sel = Gui.Selection.getSelection()
             if len(sel) != 1:
@@ -522,7 +522,7 @@ class Design456_DirectScale:
                 self.smartInd.__del__()
                 del self.smartInd
 
-            if self._mywin != None:
+            if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None

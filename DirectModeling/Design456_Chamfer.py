@@ -32,8 +32,6 @@ import FreeCADGui as Gui
 from pivy import coin
 import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
-import ThreeDWidgets.fr_coinwindow as win
-from ThreeDWidgets import fr_coin3d
 from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
@@ -73,13 +71,13 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         if type(events) != int:
             return
 
-        clickwdgdNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
                                                           ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
-        clickwdglblNode = fr_coin3d.objectMouseClick_Coin3d(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.pos,
+        clickwdglblNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
                                                             ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
-        linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                            ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+        linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
+                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
+                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
 
         if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once is False:
@@ -155,9 +153,9 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
     print("mouse release")
     ArrowObject.remove_focus()
     linktocaller.run_Once = False
-    linktocaller.endVector = App.Vector(ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_x,
-                                        ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_y,
-                                        ArrowObject.w_parent.link_to_root_handle.w_lastEventXYZ.Coin_z)
+    linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
+                                        ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
+                                        ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
     # Undo
     App.ActiveDocument.openTransaction(translate("Design456", "SmartChamfer"))
     linktocaller.startVector = None
@@ -390,6 +388,7 @@ class Design456_SmartChamfer:
             self.__del__()
 
     def Activated(self):
+        import ThreeDWidgets.fr_coinwindow as win
         self.selectedObj.clear()
         sel = Gui.Selection.getSelectionEx()
         if len(sel) == 0:
@@ -434,7 +433,7 @@ class Design456_SmartChamfer:
         try:
             self.smartInd.hide()
             self.smartInd.__del__()  # call destructor
-            if self._mywin != None:
+            if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
