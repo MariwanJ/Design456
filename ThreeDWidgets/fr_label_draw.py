@@ -79,14 +79,14 @@ def draw_label(text=[], prop: propertyValues = None):
         yAng = math.radians(prop.SetupRotation[1])
         zAng = math.radians(prop.SetupRotation[2])
 
-        _transPositionPOS = coin.SoTranslation()  # location
+        _rootTrasnPOS = coin.SoTranslation()  # location
         _rootRotation = coin.SoTransform()
         
         _transRotationX = coin.SoTransform()
         _transRotationY = coin.SoTransform()
         _transRotationZ = coin.SoTransform()
         
-        _transPositionPOS.translation.setValue(coin.SbVec3f(delta))
+        _rootTrasnPOS.translation.setValue(coin.SbVec3f(delta))
         tempRX = coin.SbVec3f()
         tempRX.setValue(1, 0, 0)
         tempRY = coin.SbVec3f()
@@ -117,7 +117,6 @@ def draw_label(text=[], prop: propertyValues = None):
         
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
         
-        _textNode.addChild(_transPositionPOS)
         _textNode.addChild(font)
         _textNode.addChild(coinColor)
         _textNode.addChild(_text3D)
@@ -136,6 +135,7 @@ def draw_label(text=[], prop: propertyValues = None):
         
         root = coin.SoSeparator()
         root.addChild(_rootRotation)
+        root.addChild(_rootTrasnPOS)
         root.addChild(zSoNod)
 
         return root  # Return the created SoSeparator that contains the text

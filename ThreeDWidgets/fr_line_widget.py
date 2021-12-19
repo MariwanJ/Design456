@@ -119,23 +119,51 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
         self.w_lbluserData = fr_widget.propertyValues()
 
-    def findLineAnagels(self):
-
-
-        if(self.w_vector[1].x == 0):
-            xAngle=90.0
-        else:
-            xAngle = math.degrees(round(math.atan(self.w_vector[1].y/self.w_vector[1].x), 2))  #xy plane
-        if(self.w_vector[1].y==0):
-            yAngle=90.0
-        else:
-            yAngle = math.degrees(round(math.atan(self.w_vector[1].x/self.w_vector[1].y), 2))  #yx plane
-        if(self.w_vector[1].z==0):
-            zAngle=90.0
-        else:
-            zAngle = math.degrees(round(math.atan(self.w_vector[1].y/self.w_vector[1].z), 2))  #yz plane
-        print(xAngle ,yAngle, zAngle)
+    def calculateLineSpherical(self):
+        # Calculate the three angles we have ref to xyz axis
+        # phi - angle to the Z axis
+        # thi - angle to the x axis
+        # refer to https://en.wikipedia.org/wiki/Spherical_coordinate_system
+        # 180 Degree must be added to thi when x<0
         
+        thi = 0.0 #Z axis angle
+        phi = 0.0 #x-y axis angle
+        try:
+            p1 = self.w_vector[0]
+            p2 = self.w_vector[1]
+            px2_px1 = p2.x-p1.x
+            py2_py1 = p2.y-p1.y
+            pz2_pz1 = p2.z-p1.z
+
+            # Bring back the p2 to the reference of origin
+            p1x_p2x = -px2_px1
+            p1y_p2y = -py2_py1
+            p1z_p2z = -pz2_pz1
+
+            # Enough to take p1 as a coordinate
+            r = math.sqrt(math.pow(p1x_p2x, 2) +
+                          math.pow(p1y_p2y, 2)+math.pow(p1z_p2z, 2))
+
+            if p1x_p2x < 0:
+                thi = math.radians(90)+math.radians(180) + \
+                    math.asin((p2.x-p1.x)/r)
+            else:
+                thi = math.radians(90) + math.asin((p2.x-p1.x)/r)
+
+            if(p1z_p2z == 0):
+                phi = math.radians(0)
+            else:
+                phi = (math.radians(
+                    90)+(math.atan(math.sqrt(math.pow(p1x_p2x, 2)+math.pow(p1y_p2y, 2))/p1z_p2z)))
+            return (math.degrees(thi), math.degrees(phi))
+
+        except Exception as err:
+            App.Console.PrintError("'calculateLineSpherical' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
     def lineWidth(self, width):
         """ Set the line width"""
         self.w_lineWidth = width
@@ -154,9 +182,9 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                 return 1    # we treat this event. Nothing to do
 
             clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                              self.w_pick_radius, self.w_widgetSoNodes)
+                                                                  self.w_pick_radius, self.w_widgetSoNodes)
             clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                                self.w_pick_radius, self.w_widgetlblSoNodes)
+                                                                    self.w_pick_radius, self.w_widgetlblSoNodes)
 
             if clickwdgdNode is None and clickwdglblNode is None:
                 # SoSwitch not found
@@ -187,7 +215,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         Main draw function. It is responsible for creating the SoSeparator node,
         and draw the line on the screen - in the COIN3D world.        
         """
-        self.findLineAnagels()
         try:
 
             if len(self.w_vector) < 2:
@@ -226,6 +253,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.labelcolor = usedColor
         self.w_lbluserData.vectors = self.w_vector
+        (thi, phi) = self.calculateLineSpherical()
+        self.w_lbluserData.SetupRotation = [0, -phi, thi]
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 
