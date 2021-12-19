@@ -53,20 +53,21 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     """
     # This is the holder of all objects.It should be here not inside the Fr_Group
     # this is the root scenegraph. It keeps all switch. Switches will keep drawing
-
+    link_to_root_handle = fr_coin3d.root_handle()
+    Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+    view = Gui.ActiveDocument.ActiveView
     def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
             400, 400, 0)], label: str = ""):
         super().__init__(vectors, label)
         self.w_mainfrCoinWindow = self
-        self._view = Gui.ActiveDocument.ActiveView
+
         self.w_parent = self  # No parent and this is the main window
         self.w_widgetType = FR_WidgetType.FR_COINWINDOW
-        self.link_to_root_handle = fr_coin3d.root_handle()
-        self.link_to_root_handle.w_wind = self
-        self.link_to_root_handle.addCallbacks()
-        self.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
-        
+        Fr_CoinWindow.link_to_root_handle.w_wind = self
+        Fr_CoinWindow.link_to_root_handle.addCallbacks()
+
         # Activate the window
+
     def show(self):
         """
         Show the window on the 3D World
@@ -87,9 +88,9 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         Like exit in normal window. This will end the windows
         """
         self.hide()
-        if self.link_to_root_handle is not None:
-            del self.link_to_root_handle    
-            self.link_to_root_handle = None
+        if Fr_CoinWindow.link_to_root_handle is not None:
+            del Fr_CoinWindow.link_to_root_handle
+            Fr_CoinWindow.link_to_root_handle = None
         super().__del__()  # call group destructor
         # Call Fr_Groups deactivate to remove all widgets.
 
@@ -98,18 +99,19 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         """ remove switch tree from the SceneGraph"""
         if type(_soSwitch) == list:
             for i in _soSwitch:
-                self.Root_SceneGraph.removeChild(i)
+                Fr_CoinWindow.Root_SceneGraph.removeChild(i)
         else:
-            self.Root_SceneGraph.removeChild(_soSwitch)
+            Fr_CoinWindow.Root_SceneGraph.removeChild(_soSwitch)
 
     def callback(self, data):
         # not sure what I should do here yet.
         pass
-    
+
     def addSoSwitchToSceneGraph(self, _soSwitch):
         """ Add new switch tree to the SceneGraph"""
         if type(_soSwitch) == list:
             for i in _soSwitch:
-                self.Root_SceneGraph.addChild(i)  # add scene to the root
+                Fr_CoinWindow.Root_SceneGraph.addChild(
+                    i)  # add scene to the root
         else:
-            self.Root_SceneGraph.addChild(_soSwitch)
+            Fr_CoinWindow.Root_SceneGraph.addChild(_soSwitch)
