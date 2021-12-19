@@ -37,8 +37,32 @@ from ThreeDWidgets.fr_widget import propertyValues
 import math
 
 
+
 def draw_label(text=[], prop: propertyValues = None):
-    ''' Draw widgets label relative to the position with alignment'''
+    ''' Draw widgets label relative to the position with 
+        prop: Consist of several data for example:
+        prop.vectors = [App.Vector(0, 0, 0), ]
+        prop.linewidth = 1
+        prop.fontName = 'sans'
+        prop.fontsize = 2
+        prop.labelcolor = constant.FR_COLOR.FR_BLACK
+        prop.rotation = [0.0, 0.0, 0.0, 0.0] # Normal rotation like you have in FreeCAD objects
+        prop.SetupRotation = [0.0, 0.0, 0.0] # in degrees . This is a pre-rotation during initialization
+        prop.scale = [1.0, 1.0, 1.0]
+        
+        
+    Example:
+            from pivy import coin
+            from PySide import QtCore,QtGui
+            import fr_label_draw as l
+            import fr_widget as w
+            
+            sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+            p=w.propertyValues()
+            p.vectors=[App.Vector(20,20,0),App.Vector(0,0,0)]
+            wl=l.draw_label(["My Label",],p)
+            sg.addChild(wl)
+    '''
     if text == '' or prop is None:
         return     # Nothing to do here
     try:
@@ -55,11 +79,13 @@ def draw_label(text=[], prop: propertyValues = None):
         yAng = math.radians(prop.SetupRotation[1])
         zAng = math.radians(prop.SetupRotation[2])
 
-        _transPositionPOS = coin.SoTranslation()  # coin.SoTransform()
+        _transPositionPOS = coin.SoTranslation()  # location
         _rootRotation = coin.SoTransform()
+        
         _transRotationX = coin.SoTransform()
         _transRotationY = coin.SoTransform()
         _transRotationZ = coin.SoTransform()
+        
         _transPositionPOS.translation.setValue(coin.SbVec3f(delta))
         tempRX = coin.SbVec3f()
         tempRX.setValue(1, 0, 0)
@@ -67,6 +93,7 @@ def draw_label(text=[], prop: propertyValues = None):
         tempRY.setValue(0, 1, 0)
         tempRZ = coin.SbVec3f()
         tempRZ.setValue(0, 0, 1)
+        
         _transRotationX.rotation.setValue(tempRX, xAng)
         _transRotationY.rotation.setValue(tempRY, yAng)
         _transRotationZ.rotation.setValue(tempRZ, zAng)
@@ -87,7 +114,9 @@ def draw_label(text=[], prop: propertyValues = None):
 
         coinColor.diffuseColor.set1Value(0, coin.SbColor(*color))
         #coinColor.diffuseColor.set1Value(0, coin.SbColor(*prop.labelcolor))
+        
         _textNode = coin.SoSeparator()   # A Separator to separate the text from the drawing
+        
         _textNode.addChild(_transPositionPOS)
         _textNode.addChild(font)
         _textNode.addChild(coinColor)
@@ -95,12 +124,16 @@ def draw_label(text=[], prop: propertyValues = None):
         xSoNod = coin.SoSeparator()   # A Separator to Keep the rotation
         ySoNod = coin.SoSeparator()   # A Separator to Keep the rotation
         zSoNod = coin.SoSeparator()   # A Separator to Keep the rotation
+        
         xSoNod.addChild(_transRotationX)
         xSoNod.addChild(_textNode)
+        
         ySoNod.addChild(_transRotationY)
         ySoNod.addChild(xSoNod)
+        
         zSoNod.addChild(_transRotationZ)
         zSoNod.addChild(ySoNod)
+        
         root = coin.SoSeparator()
         root.addChild(_rootRotation)
         root.addChild(zSoNod)

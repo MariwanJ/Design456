@@ -52,17 +52,17 @@ class propertyValues:
     __slots__ = ['vectors', 'linewidth', 'fontName', 'fontsize',
                  'labelcolor', 'SetupRotation', 'rotation', 
                  'scale']
-    vectors: List[App.Vector]  # List[App.Vector] two vectors must be provided. 
-                     # We cannot accept one vector as it will cause a huge problem.
-                     # Some will require several vectors, and other just one.
-                     # There is no way to avoid requiring more than 1 vector.
-    linewidth: int
-    fontName: str
-    fontsize: int
-    labelcolor: tuple
-    SetupRotation: tuple    # three angels in degree
-    rotation: tuple # four float values - three axis and one angle 
-    scale: tuple  # Three float numbers for scaling
+    # vectors: List[App.Vector]  # List[App.Vector] two vectors must be provided. 
+    #                  # We cannot accept one vector as it will cause a huge problem.
+    #                  # Some will require several vectors, and other just one.
+    #                  # There is no way to avoid requiring more than 1 vector.
+    # linewidth: int
+    # fontName: str
+    # fontsize: int
+    # labelcolor: List[float]
+    # SetupRotation: List[float]    # three angels in degree
+    # rotation: List[float] # four float values - three axis and one angle 
+    # scale: List[float]  # Three float numbers for scaling
 
     def __init__(self):
         self.vectors = [App.Vector(0, 0, 0), ]
@@ -70,8 +70,8 @@ class propertyValues:
         self.fontName = 'sans'
         self.fontsize = 2
         self.labelcolor = constant.FR_COLOR.FR_BLACK
-        self.rotation = [0.0, 0.0, 0.0]  #degrees
-        self.SetupRotation = [0.0, 0.0, 0.0, 0.0]
+        self.rotation = [0.0, 0.0, 0.0, 0.0] # Normal rotation like you have in FreeCAD objects
+        self.SetupRotation = [0.0, 0.0, 0.0] # degrees
         self.scale = [1.0, 1.0, 1.0]
 # ***********************************************************************************************************
 
@@ -96,34 +96,8 @@ class Fr_Widget (object):
     fr_group doesn't need to be drawn, but 
     you can implement draw function
     """
-
-    # Default values which is shared with all objects.
-
-    w_visible = 1      # 1 active, 0 inactive
-    w_bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
-    w_color = constant.FR_COLOR.FR_BLACK
-    w_inactiveColor = constant.FR_COLOR.FR_DIMGRAY
-    w_selColor = constant.FR_COLOR.FR_YELLOW
-    w_box = None
-    w_active = 1  # 1 active , 0 inactive
-    w_parent = None # Is the main window widget
-    w_widgetType = constant.FR_WidgetType.FR_WIDGET
-    w_hasFocus = 0           # 0 No focus , 1 Focus
-
-    # Use this to send any object or value to the lbl drawing/callback(propertyValues object)
-    w_lbluserData = None
-
-    w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
-    w_widgetSoNodes = None  # Should be defined in the widget either one or a list
-    w_widgetlblSoNodes = None  # Should be defined in the widget either one or a list
-    # each node is a child of one switch, Add drawings a children for this switch
-    w_wdgsoSwitch = None
-    w_when = constant.FR_WHEN.FR_WHEN_NEVER
-    w_userData = None  # Use this to send any object or value to the callback
-    w_vector = None
-    w_label = None
-    w_lineWidth = 1
-
+    # Static Variables should be here 
+    
     ########################################################################
     #  {w_callback_, w_lbl_calback_}  is a pointer to a function.          #
     #  It should be used only like that.                                   #
@@ -132,19 +106,51 @@ class Fr_Widget (object):
     #  different tasks. run do_callback, do_lblcallback,                   #
     #  w_move_callback, w_KB_Callback activates them.                      #
     # ######################################################################
-    # Subclassed widget must create callback functions.
-    w_callback_ = defaultCallback
-    w_lbl_calback_ = defaultCallback  # Abstract class has no callback.
-    w_move_callback_ = defaultCallback  # Abstract class has no callback.
-    w_KB_callback_ = defaultCallback  # Abstract class has no callback.
 
-    def __init__(self, args: List[App.Vector] = [], label: str = ""):
+    def __init__(self, args: List[App.Vector] = [], label: str = [[]]):
+        # All Class variables which are not static should be here
+        # Look at 
+        # https://stackoverflow.com/questions/9056957/correct-way-to-define-class-variables-in-python 
+        
         self.w_vector = args    # List[App.Vector] two vectors must be provided. 
                                 # We cannot accept one vector as it causes a huge problem.
                                 # Some will require several vectors, and other just one.
                                 # There is no way to avoid requiring more than 1 vector.
         # This must be a list, to have several raw, append st
         self.w_label = [[]]
+        
+        # Default values which is the same for new created objects.
+        self.w_visible = 1      # 1 active, 0 inactive
+        self.w_bkgColor = constant.FR_COLOR.FR_TRANSPARENCY
+        self.w_color = constant.FR_COLOR.FR_BLACK
+        self.w_inactiveColor = constant.FR_COLOR.FR_DIMGRAY
+        self.w_selColor = constant.FR_COLOR.FR_YELLOW
+        self.w_box = None
+        self.w_active = 1  # 1 active , 0 inactive
+        self.w_parent = None # Is the main window widget
+        self.w_widgetType = constant.FR_WidgetType.FR_WIDGET
+        self.w_hasFocus = 0           # 0 No focus , 1 Focus
+
+        # Use this to send any object or value to the lbl drawing/callback(propertyValues object)
+        self.w_lbluserData = None
+
+        self.w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
+        self.w_widgetSoNodes = None  # Should be defined in the widget either one or a list
+        self.w_widgetlblSoNodes = None  # Should be defined in the widget either one or a list
+        # each node is a child of one switch, Add drawings a children for this switch
+        self.w_wdgsoSwitch = None
+        self.w_when = constant.FR_WHEN.FR_WHEN_NEVER
+        self.w_userData = None  # Use this to send any object or value to the callback
+        self.w_label = label
+        self.w_lineWidth = 1
+        
+        #             -  CALLBACK FUNCTIONS  -
+        # Subclassed widget must create callback functions.
+        self.w_callback_ = defaultCallback
+        self.w_lbl_calback_ = defaultCallback  # Abstract class has no callback.
+        self.w_move_callback_ = defaultCallback  # Abstract class has no callback.
+        self.w_KB_callback_ = defaultCallback  # Abstract class has no callback.
+
 
     @abstractmethod
     def draw_box(self):

@@ -102,7 +102,8 @@ def objectMouseClick_Coin3d(mouse_pos, pick_radius, TargetNode):
     else:
         return None
 
-# TODO: At the moment, we implement only root_handle for COIN3D, the rest must be implemented later
+# TODO: At the moment, we implement only root_handle for COIN3D, 
+#       the remained must be implemented later
 
 
 class root_handle():
@@ -112,72 +113,64 @@ class root_handle():
         Both QT and COIN3D windows will call this function.
         But they will be treated differently as they are different.
     """
-    # Save last mouse event
-    global w_lastEvent
-    global w_view
-    # Keep the CTL,SHIFT, ALT KEY SAVED HERE
-    global w_e_state
-
-    callbackMove = None
-    callbackClick = None
-    callbackKey = None
-
-    global w_events
-    global w_get_event
-    global w_typeofevent
-    # these two variable are used for double click detection
-    global w_countMouseCLICK
-    global w_clicked_time
+    # static variables
 
     # This should keep the mouse pointer position on the 3D view
-    global w_lastEventXYZ
-    global w_wind
+    w_lastEvent = FR_EVENTS.FR_NO_EVENT
+    w_lastEventXYZ = mouseDimension()
+    w_view = Gui.ActiveDocument.ActiveView
+    w_wind = None
+    w_countMouseCLICK = 0
+    w_clicked_time = 0
+    w_typeofevent = None
+    w_get_event = None
+    w_events = None
+    w_e_state = None  # Keep the CTL,SHIFT, ALT KEY SAVED HERE
 
     def __init__(self):
-        self.w_lastEvent = FR_EVENTS.FR_NO_EVENT
-        self.w_lastEventXYZ = mouseDimension()
-        self.w_view = Gui.ActiveDocument.ActiveView
-        self.w_wind = None
+        self.callbackMove = None
+        self.callbackClick = None
+        self.callbackKey = None
         self.addCallbacks()
-        self.w_countMouseCLICK = 0
-        self.w_clicked_time = 0
 
     # COIN3D related functions - START
     def shiftwasclicked(self):
         """
         if shift was pushed but not released this function will return TRUE
         """
-        result = (self.w_e_state == coin.SoKeyboardEvent.LEFT_SHIFT)
-        result = result or (self.w_e_state == coin.SoKeyboardEvent.RIGHT_SHIFT)
+        result = (root_handle.w_e_state == coin.SoKeyboardEvent.LEFT_SHIFT)
+        result = result or (root_handle.w_e_state ==
+                            coin.SoKeyboardEvent.RIGHT_SHIFT)
         return (result)
 
     def ctrlwasclicked(self):
         """
         if CTRL was pushed but not released this function will return TRUE
         """
-        result = (self.w_e_state == coin.SoKeyboardEvent.LEFT_CONTROL)
+        result = (root_handle.w_e_state == coin.SoKeyboardEvent.LEFT_CONTROL)
         result = result or (
-            self.w_e_state == coin.SoKeyboardEvent.RIGHT_CONTROL)
+            root_handle.w_e_state == coin.SoKeyboardEvent.RIGHT_CONTROL)
         return (result)
 
     def altwasclicked(self):
         """
         if ALT was pushed but not released this function will return TRUE
         """
-        result = (self.w_e_state == coin.SoKeyboardEvent.LEFT_ALT)
-        result = result or (self.w_e_state == coin.SoKeyboardEvent.RIGHT_ALT)
+        result = (root_handle.w_e_state == coin.SoKeyboardEvent.LEFT_ALT)
+        result = result or (root_handle.w_e_state ==
+                            coin.SoKeyboardEvent.RIGHT_ALT)
         return (result)
         # COIN3D related functions -END
 
     def eventProcessor(self, events):
-        self.w_events = events
-        self.w_get_event = self.w_events.getEvent()
-        self.w_typeofevent = type(self.w_get_event)
+        root_handle.w_events = events
+        root_handle.w_get_event = root_handle.w_events.getEvent()
+        root_handle.w_typeofevent = type(root_handle.w_get_event)
 
         # write down all possible events.
         # First mouse move event
 
-        if(self.w_typeofevent == coin.SoMotion3Event):
+        if(root_handle.w_typeofevent == coin.SoMotion3Event):
             """ represents 3D relative motion events in the 
                 Open Inventor event model.
                 sub functions: 
@@ -188,22 +181,21 @@ class root_handle():
             """
             raise NotImplementedError()  # will not be uses  2021-04-02
 
-        elif(self.w_typeofevent == coin.SoLocation2Event):
+        elif(root_handle.w_typeofevent == coin.SoLocation2Event):
             """ 2D location events. SoLocation2Event represents 2D location events, for example, mouse move events """
-            self.w_lastEventXYZ.pos = self.w_get_event.getPosition()
-            pos = self.w_lastEventXYZ.pos.getValue()
-            pnt = self.w_view.getPoint(pos[0], pos[1])
-            self.w_lastEventXYZ.Coin_x = pnt.x
-            self.w_lastEventXYZ.Coin_y = pnt.y
-            self.w_lastEventXYZ.Coin_z = pnt.z
-            self.w_lastEventXYZ.Qt_x = pos[0]
-            self.w_lastEventXYZ.Qt_y = pos[1]
+            root_handle.w_lastEventXYZ.pos = root_handle.w_get_event.getPosition()
+            pos = root_handle.w_lastEventXYZ.pos.getValue()
+            pnt = root_handle.w_view.getPoint(pos[0], pos[1])
+            root_handle.w_lastEventXYZ.Coin_x = pnt.x
+            root_handle.w_lastEventXYZ.Coin_y = pnt.y
+            root_handle.w_lastEventXYZ.Coin_z = pnt.z
+            root_handle.w_lastEventXYZ.Qt_x = pos[0]
+            root_handle.w_lastEventXYZ.Qt_y = pos[1]
             # if we hade mouse drag or push (not release) and there is a movement
-            if(self.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH or self.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG):
-                #print("DRAG - MAIN EVENT")
-                self.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
+            if(root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH or root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG):
+                root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
             else:
-                self.w_lastEvent = FR_EVENTS.FR_MOUSE_MOVE
+                root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_MOVE
 
         # Doesn't work, don't know why
         # elif(_typeofevent == coin.SoMouseWheelEvent):
@@ -224,38 +216,38 @@ class root_handle():
         #    """
         #    raise NotImplementedError()  # will not be uses at least now 2021-04-02
 
-        elif(self.w_typeofevent == coin.SoMouseButtonEvent):
+        elif(root_handle.w_typeofevent == coin.SoMouseButtonEvent):
             """
             Mouse button press and release events.
             SoMouseButtonEvent represents mouse button press and release
             """
-            eventState = self.w_get_event.getState()  # pressed down , or it is released
-            getButton = self.w_get_event.getButton()
-            self.w_lastEvent = FR_EVENTS.FR_NO_EVENT
+            eventState = root_handle.w_get_event.getState()  # pressed down , or it is released
+            getButton = root_handle.w_get_event.getButton()
+            root_handle.w_lastEvent = FR_EVENTS.FR_NO_EVENT
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 # detect double click here. COIN3D has no function for that
-                if self.Detect_DblClick() == True:
-                    self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
+                if self.Detect_DblClick() is True:
+                    root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
                 else:
-                    self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_PUSH
+                    root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_PUSH
 
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_RELEASE
+                root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_RELEASE
 
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
-                self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_PUSH
+                root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_PUSH
 
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON2:
-                self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
+                root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_RELEASE
 
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON3:
-                self.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
+                root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_PUSH
 
             elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON3:
-                self.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
+                root_handle.w_lastEvent = FR_EVENTS.FR_MOUSE_MIDDLE_RELEASE
 
         # Take care of Keyboard events
-        elif (self.w_typeofevent == coin.SoKeyboardEvent):
+        elif (root_handle.w_typeofevent == coin.SoKeyboardEvent):
             """
             Keyboard key press and keyrelease event. 
             functions used with this event: 
@@ -269,30 +261,30 @@ class root_handle():
             static boolean 	                 isKeyReleaseEvent​(SoEvent e, SoKeyboardEvent.Keys whichKey) Returns whether the passed event is a keyboard release event of the passed key.
             void 	                         setKey​(SoKeyboardEvent.Keys whichKey) 	                  Sets which key generated the event.
             """
-            #print("Key-Event")
+            # print("Key-Event")
             key = ""
             try:
-                key = self.w_get_event.getKey()
+                key = root_handle.w_get_event.getKey()
                 # Take care of CTRL,SHIFT,ALT Only when it is down.
                 # We don't send the shift key ..
-                test = (key == coin.SoKeyboardEvent.LEFT_CONTROL and self.w_get_event.getState(
+                test = (key == coin.SoKeyboardEvent.LEFT_CONTROL and root_handle.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.RIGHT_CONTROL and self.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.RIGHT_CONTROL and root_handle.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.LEFT_SHIFT and self.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.LEFT_SHIFT and root_handle.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.RIGHT_SHIFT and self.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.RIGHT_SHIFT and root_handle.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.LEFT_ALT and self.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.LEFT_ALT and root_handle.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
-                test = test or (key == coin.SoKeyboardEvent.RIGHT_ALT and self.w_get_event.getState(
+                test = test or (key == coin.SoKeyboardEvent.RIGHT_ALT and root_handle.w_get_event.getState(
                 ) == coin.SoButtonEvent.DOWN)
                 if test == 1:
-                    self.w_e_state = key
+                    root_handle.w_e_state = key
                 else:
                     # Take care of all other keys.
-                    self.w_e_state = None
-                    self.w_lastEvent = key
+                    root_handle.w_e_state = None
+                    root_handle.w_lastEvent = key
 
             except ValueError:
                 # there is no character for this value
@@ -314,16 +306,16 @@ class root_handle():
         # elif(_typeofevent) == coin.SoTrackerEvent:
 
         # Now send the event to th window widget to distribute it over the children widgets
-        self.w_wind.handle(self.w_lastEvent)
+        root_handle.w_wind.handle(root_handle.w_lastEvent)
 
     def Detect_DblClick(self):
         t = time.time()
-        if t - self.w_clicked_time <= 0.500:   # suitable value must be found 500msec is windows default
-            self.w_countMouseCLICK += 1
+        if t - root_handle.w_clicked_time <= 0.500:   # suitable value must be found 500msec is windows default
+            root_handle.w_countMouseCLICK += 1
         else:
-            self.w_countMouseCLICK = 0
-            self.w_clicked_time = time.time()
-        if self.w_countMouseCLICK == 2:
+            root_handle.w_countMouseCLICK = 0
+            root_handle.w_clicked_time = time.time()
+        if root_handle.w_countMouseCLICK == 2:
             return True
         else:
             return False
@@ -332,22 +324,22 @@ class root_handle():
         '''
         Remove all callbacks registered for Fr_Window widget
         '''
-        self.w_view.removeEventCallbackPivy(
+        root_handle.w_view.removeEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
-        self.w_view.removeEventCallbackPivy(
+        root_handle.w_view.removeEventCallbackPivy(
             coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
-        self.w_view.removeEventCallbackPivy(
+        root_handle.w_view.removeEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
 
     def addCallbacks(self):
         '''
         add all callbacks registered for Fr_Window widget
         '''
-        self.callbackMove = self.w_view.addEventCallbackPivy(
+        root_handle.callbackMove = root_handle.w_view.addEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.eventProcessor)
-        self.callbackClick = self.w_view.addEventCallbackPivy(
+        root_handle.callbackClick = root_handle.w_view.addEventCallbackPivy(
             coin.SoMouseButtonEvent.getClassTypeId(), self.eventProcessor)
-        self.callbackKey = self.w_view.addEventCallbackPivy(
+        root_handle.callbackKey = root_handle.w_view.addEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.eventProcessor)
 
     def __del__(self):

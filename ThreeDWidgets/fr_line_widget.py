@@ -118,8 +118,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_lbl_calback_ = lblcallback  # External function
         self.w_KB_callback_ = KBcallback  # External function
         self.w_move_callback_ = movecallback  # External function
-        w_wdgsoSwitch = coin.SoSwitch()
-        w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
+        self.w_wdgsoSwitch = coin.SoSwitch()
+        self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
         self.w_lbluserData = fr_widget.propertyValues()
 
     def lineWidth(self, width):
@@ -151,7 +151,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
 
             if self.w_parent.link_to_root_handle.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
-                if clickwdglblNode is not None:
+                if clickwdglblNode is not None or clickwdgdNode is not None:
                     print("Double click detected")
                     # if not self.has_focus():
                     #    self.take_focus()
@@ -193,10 +193,10 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                     vec, usedColor, _rotation, self.w_lineWidth))
                 self.draw_label(usedColor)
                 # add both to the same switch. and add them to the scenegraph automatically
-                allSwitch = []
-                allSwitch.append(self.w_widgetSoNodes)
-                allSwitch.append(self.w_widgetlblSoNodes)
-                self.addSoNodeToSoSwitch(allSwitch)
+                allToSwitch = []
+                allToSwitch.append(self.w_widgetSoNodes)
+                allToSwitch.append(self.w_widgetlblSoNodes)
+                self.addSoNodeToSoSwitch(allToSwitch)
             else:
                 return  # We draw nothing .. This is here just for clarifying the code
 
