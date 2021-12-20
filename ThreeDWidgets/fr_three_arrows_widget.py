@@ -147,13 +147,14 @@ def callback(userData: userDataObject = None):
 # *************************************************************
 
 
-class Fr_ThreeArrows_Widget(object):
+class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     """
     This class is for drawing a one Degrees Pad
     This will be used later to create 3D Pad. 
     Or it can be used as a singel rotate/move widget
     """
+    run_Once = False
 
     def __init__(self, _vectors: List[App.Vector] = [],
                  _label: str = [[]],
@@ -169,6 +170,7 @@ class Fr_ThreeArrows_Widget(object):
                  _opacity=[0.0, 0.0, 0.0],
                  _distanceBetweenThem=[5, 5, 5]
                  ):
+        super().__init__(_vectors, _label)
 
         self.w_axisList = []
         self.w_vector = _vectors
@@ -190,14 +192,25 @@ class Fr_ThreeArrows_Widget(object):
         self.w_discAngle = 0.0      # Only disc rotation.
         self.oldAngle = 0.0
         self.rotationDirection = 1   # +1 CCW , -1 ACCW
-        self.w_lineWidth =1
+        self.w_lineWidth = 1
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.vectors = self.w_vector
+        self.w_active = 1
+        self.w_visible = 1
 
-        
+    def RegisterSONODES(self):
+        if self.w_widgetSoNodes is not None:
+            del self.w_widgetSoNodes :
 
-    def Activated(self):
+        for obj in self.w_axisList:
+            
+            self.w_widgetSoNodes = coin.soSeparator()
+            self.w_widgetSoNodes.addChild(self.w_axisList[0].w_widgetSoNodes)
+            self.w_widgetSoNodes.addChild(self.w_axisList[1].w_widgetSoNodes)
+            self.w_widgetSoNodes.addChild(self.w_axisList[2].w_widgetSoNodes)
+
+    def createArrows(self):
 
         self.w_axisList.append(Fr_OneArrow_Widget(
             self.w_vector, ["X-Axis", ], "X",
@@ -214,6 +227,7 @@ class Fr_ThreeArrows_Widget(object):
             self.w_labelColor, self.w_padColors[2],
             self.w_rotation, self.w_scale, self.w_type,
             self.w_opacity[2], self.w_distanceBetweenThem[0]))
+        
 
         self.w_axisList[0].w_ArrowAxis_cb_ = xAxis_cb
         self.w_axisList[0].w_rotary_cb_ = xDisc_cb
@@ -257,17 +271,19 @@ class Fr_ThreeArrows_Widget(object):
             obj.redraw()
 
     def redraw(self):
+        
         for obj in self.w_axisList:
             obj.redraw()
-
-    def hide(self):
-        for obj in self.w_axisList:
-            obj.hide()
+        self.RegisterSONODES()
 
     def show(self):
-        for obj in self.w_axisList:
-            obj.show()
-
+        print("show activated")
+        self.RegisterSONODES()
+        if Fr_ThreeArrows_Widget.run_Once is False:
+            print("created")
+            self.createArrows()
+            Fr_ThreeArrows_Widget.run_Once = True
+        print(self.w_axisList)
         for obj in self.w_axisList:
             obj.show()
 
@@ -292,15 +308,15 @@ class Fr_ThreeArrows_Widget(object):
                 self.w_axisList[2].w_discEnabled)
 
     def handle(self, event):
-        t2 = self.w_axisList[1].handle(event)
-        t3 = self.w_axisList[2].handle(event)
-        t1 = self.w_axisList[0].handle(event)
-        return(t1 or t2 or t3)
-    
+        t1 = 1
+        for obj in self.w_axisList:
+            t1 = t1 or obj.handle(event)
+        return t1
+
     def take_focus(self):
         """
         Set focus to the widget. Which should redraw it also.
-        """ 
+        """
         for obj in self.w_axisList:
             obj.w_hasFocus = 1
             obj.redraw()
@@ -339,7 +355,8 @@ class Fr_ThreeArrows_Widget(object):
                 # Parent should be the windows widget.
                 for obj in self.w_axisList:
                     obj.w_parent.removeWidget(obj)
-                    obj.w_parent.removeSoSwitchFromSceneGraph(obj.w_wdgsoSwitch)
+                    obj.w_parent.removeSoSwitchFromSceneGraph(
+                        obj.w_wdgsoSwitch)
                     obj.removeSoNodeFromSoSwitch()
                     obj.removeSoNodes()
                     obj.removeSoSwitch()
@@ -370,7 +387,7 @@ class Fr_ThreeArrows_Widget(object):
         """
         for obj in self.w_axisList:
             obj.w_hasFocus = 0
-            obj.redraw()
+        self.redraw()
 
     def resize(self, _scale: tuple = [1.0, 1.0, 1.0]):
         """Resize the widget by using the new vectors"""
@@ -424,7 +441,7 @@ class Fr_ThreeArrows_Widget(object):
         for obj in self.w_axisList:
             obj.w_lbluserData.fontsize = newsize
 
-    # Must be App.Vector TODO:FIXME: 
+    # Must be App.Vector TODO:FIXME:
     def label_move(self, newPos=App.Vector(0.0, 0.0, 0.0)):
         """[Move location of the label]
 
@@ -433,3 +450,20 @@ class Fr_ThreeArrows_Widget(object):
         """
         for obj in self.w_axisList:
             obj.w_lbluserData.vectors[0] = newPos
+
+    def is_active(self):
+        t1 = 0
+        for obj in self.w_axisList:
+            t1 = t1 or obj.w_visible
+        return t1
+
+    # @property
+    def is_visible(self):
+        """ 
+        return the internal variable which keeps
+        the status of the widgets visibility
+        """
+        t1 = 0
+        for obj in self.w_axisList:
+            t1 = t1 or obj.w_visible
+        return t1
