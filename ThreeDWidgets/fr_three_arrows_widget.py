@@ -313,11 +313,10 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.ZreleaseDragDisc = -1
 
         # -1 no click, 0 mouse clicked, 1 mouse dragging
-        self.run_Once= [ False, False, False]
-        self.startVector=[0.0, 0.0, 0.0]
-        self.endVector=  [0.0, 0.0, 0.0]
+        self.run_Once = [False, False, False]
+        self.startVector = [0.0, 0.0, 0.0]
+        self.endVector = [0.0, 0.0, 0.0]
 
-        
     def handle(self, event):
         """
         This function is responsbile of taking events and processing 
@@ -650,36 +649,34 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             # TODO: FIXME:
-            preRotVal = [0.0, 0.0, 0.0]
-
+            XpreRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
+            YpreRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
+            ZpreRotVal = [0.0, 0.0, 0.0]
             if self.is_visible():
-                preRotVal[1] = [0.0, 90.0, 0.0]  # pre-Rotation
-                preRotVal[1] = [0.0, 90.0, 90.0]  # pre-Rotation
-                preRotVal[2] = [0.0, 0.0, 0.0]
                 self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
                                                                  self.distanceBetweenThem,
                                                                  self.w_vector[0].y,
                                                                  self.w_vector[0].z),
                                                       # default FR_COLOR.FR_RED
-                                                      self.w_color, self.w_Scale,
+                                                      usedColor[0], self.w_Scale,
                                                       self.DrawingType, self.Opacity,
-                                                      preRotVal[0])
-                self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x ,
-                                                             self.w_vector[0].y +
-                                                        self.distanceBetweenThem,
-                                                             self.w_vector[0].z ),
+                                                      XpreRotVal)
+                self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
+                                                                 self.w_vector[0].y +
+                                                                 self.distanceBetweenThem,
+                                                                 self.w_vector[0].z),
                                                       # default FR_COLOR.FR_RED
-                                                      self.w_color, self.w_Scale,
+                                                      usedColor[1], self.w_Scale,
                                                       self.DrawingType, self.Opacity,
-                                                      preRotVal[1])
+                                                      YpreRotVal)
 
                 self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                        self.w_vector[0].y,
-                                                        self.w_vector[0].z +self.distanceBetweenThem),
+                                                                 self.w_vector[0].y,
+                                                                 self.w_vector[0].z + self.distanceBetweenThem),
                                                       # default FR_COLOR.FR_RED
-                                                      self.w_color[2], self.w_Scale,
+                                                      usedColor[2], self.w_Scale,
                                                       self.DrawingType, self.Opacity,
-                                                      preRotVal[2])
+                                                      ZpreRotVal)
 
                 preRotValdisc = []
                 if self.w_discEnabled[0]:
