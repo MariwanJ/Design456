@@ -93,9 +93,11 @@ class userDataObject:
         self.discObj = None      # the disc widget object
         self.events = None        # events - save handle events here
         self.callerObject = None  # Class/Tool uses the fr_disc_widget
-        self.Axis=None
+        self.Axis = None
 
 # *******************************CALLBACKS - DEMO *****************************
+
+
 def callback1(userData: userDataObject = None):
     """
         This function executes when the XAxis
@@ -159,7 +161,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         # Dummy callback Axis
         self.w_ArrowAxis_cb_ = callback1
 
-
         # Dummy callback          disc
         self.w_rotary_cb_ = callback2
 
@@ -191,9 +192,12 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # We must make it higher or it will intersect the object and won't be visible
         # TODO:Check if this works always?
-        self.w_lbluserData.vectors[0].x = self.w_lbluserData.vectors[0].x + self.distanceBetweenThem
-        self.w_lbluserData.vectors[0].y = self.w_lbluserData.vectors[0].y + self.distanceBetweenThem
-        self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + self.distanceBetweenThem
+        self.w_lbluserData.vectors[0].x = self.w_lbluserData.vectors[0].x + \
+            self.distanceBetweenThem
+        self.w_lbluserData.vectors[0].y = self.w_lbluserData.vectors[0].y + \
+            self.distanceBetweenThem
+        self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + \
+            self.distanceBetweenThem
         self.w_lbluserData.labelcolor = _lblColor
 
         # Use this to save rotation degree of the disk which is the whole widget angle.
@@ -225,7 +229,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # This is for the widgets label - Not the axises label - be aware.
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                            self.w_pick_radius, self.w_widgetlblSoNodes)
+                                                                self.w_pick_radius, self.w_widgetlblSoNodes)
 
         # In this widget, we have 2 coin drawings that we need to capture event for them
         clickwdgdNode = []
@@ -235,12 +239,12 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         clickwdgdNode = [False, False]
 
         if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                             self.w_pick_radius, self.w_ArrowsSeparator) is not None):
+                                                 self.w_pick_radius, self.w_ArrowsSeparator) is not None):
             clickwdgdNode[0] = True
 
         if self.w_discEnabled:
             if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                  self.w_pick_radius, self.w_discSeparator) is not None):
+                                                      self.w_pick_radius, self.w_discSeparator) is not None):
                 clickwdgdNode[1] = True
 
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
