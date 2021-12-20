@@ -83,6 +83,27 @@ a=test()
 a.runme()
 a=test()
 
+OR another example :
+
+import ThreeDWidgets.fr_one_arrow_widget as wd
+import ThreeDWidgets.fr_coinwindow as wnn
+from ThreeDWidgets.constant import FR_COLOR
+
+
+
+mywin = wnn.Fr_CoinWindow()
+v1=[App.Vector(0,0,0), App.Vector(0,0,0)] 
+v2=[App.Vector(20,0,0), App.Vector(0,0,0)] 
+r1=wd.Fr_OneArrow_Widget(v1, "X-Axis")
+r1.enableDisc()
+r2=wd.Fr_OneArrow_Widget(v2, "y-Axis")
+r1.enableDisc()
+r2.enableDisc()
+
+mywin.addWidget(r1)
+mywin.addWidget(r2)
+mywin.show()
+
 """
 
 
@@ -314,9 +335,10 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.take_focus()
                 return 1
             # Axis
-            elif (((clickwdgdNode[0] is True) or
-                   (clickwdglblNode is not None))
-                  and (self.releaseDragAxis == 0)) :
+            elif ((
+                (clickwdgdNode[0] is True) or (clickwdglblNode is not None))
+                  and (self.releaseDragAxis == 0)
+                  ) :
                 self.releaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.releaseDragDisc = -1
                 self.take_focus()
