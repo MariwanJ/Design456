@@ -316,7 +316,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             # Axis
             elif (((clickwdgdNode[0] is True) or
                    (clickwdglblNode is not None))
-                  and (self.releaseDragAxis)) == 0:
+                  and (self.releaseDragAxis == 0)) :
                 self.releaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.releaseDragDisc = -1
                 self.take_focus()
@@ -334,7 +334,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
     def draw(self):
         """
-        Main draw function. It is responsible to create the node,
+        Main draw function. It is responsible for creating the node,
         and draw the disc on the screen. It creates a node for each 
         element and for each disc.
         """
