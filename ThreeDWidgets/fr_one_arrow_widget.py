@@ -232,6 +232,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.releaseDragDisc = -1  # Used to avoid running drag code while it is in drag mode
         # -1 no click, 0 mouse clicked, 1 mouse dragging
         self.run_Once = False
+        self.startVector=0.0
+        self.endVector=0.0
 
     def handle(self, event):
         """

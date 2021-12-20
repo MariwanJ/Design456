@@ -41,6 +41,7 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
+
 """
 Example how to use this widget.
 
@@ -117,6 +118,8 @@ class userDataObject:
         self.discObj = []      # the disc widget object
 
 # *******************************CALLBACKS - DEMO *****************************
+
+
 def xAxis_cb(userData: userDataObject = None):
     """
         This function executes when the XAxis
@@ -204,7 +207,7 @@ def callback(userData: userDataObject = None):
 # *************************************************************
 
 
-class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
+class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     """
     This class is for drawing a one Degrees disc
@@ -221,7 +224,7 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
                  # Whole widget rotation
                  _rotation: List[float] = [0.0, 0.0, 0.0, 0.0],
                  # Pre-rotation
-                 _setupRotation: List[float] =[0.0, 0.0, 0.0],
+                 _setupRotation: List[float] = [0.0, 0.0, 0.0],
                  _scale: List[float] = [3.0, 3.0, 3.0],
                  _type: int = 1,
                  _opacity: float = 0.0,
@@ -251,27 +254,31 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
         self.distanceBetweenThem = _distanceBetweenThem
 
         self.w_wdgsoSwitch = coin.SoSwitch()
-        
+
         self.w_XarrowSeparator = None
         self.w_XdiscSeparator = None
-        
+
         self.w_YarrowSeparator = None
         self.w_YdiscSeparator = None
-        
+
         self.w_ZarrowSeparator = None
         self.w_ZdiscSeparator = None
 
         self.w_color = _axisColor
         self.w_rotaryDisc_color = _axisColor
-        self.w_selColor = [i * 1.2 for i in self.w_color]
+        self.w_selColor = [[i * 1.2 for i in self.w_color[0]],
+                           [j * 1.2 for j in self.w_color[1]],
+                           [k * 1.2 for k in self.w_color[2]]]
         self.w_Scale = _scale
-        self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
+        self.w_inactiveColor = [[i * 0.5 for i in self.w_color[0]],
+                                [j * 0.5 for j in self.w_color[1]],
+                                [k * 0.5 for k in self.w_color[2]]]
 
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.discObj = self
         self.w_discAngle = [0.0, 0.0, 0.0]      # Only disc rotation.
         self.oldAngle = [0.0, 0.0, 0.0]
-        self.rotationDirection = [1,1,1]   # +1 CCW , -1 ACCW
+        self.rotationDirection = [1, 1, 1]   # +1 CCW , -1 ACCW
 
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
@@ -292,23 +299,24 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
 
         self.w_rotation = _rotation       # Whole object Rotation
 
-        self.w_discEnabled = [False,False,False]
-        
+        self.w_discEnabled = [False, False, False]
+
         # Used to avoid running drag code while it is in drag mode
         self.XreleaseDragAxis = -1
         self.YreleaseDragAxis = -1
         self.ZreleaseDragAxis = -1
-        
+
         # -1 no click, 0 mouse clicked, 1 mouse dragging
         # Used to avoid running drag code while it is in drag mode
         self.XreleaseDragDisc = -1
         self.YreleaseDragDisc = -1
         self.ZreleaseDragDisc = -1
-        
+
         # -1 no click, 0 mouse clicked, 1 mouse dragging
-        self.Xrun_Once = False
-        self.Yrun_Once = False
-        self.Yrun_Once = False
+        self.run_Once= [ False, False, False]
+        self.startVector=[0.0, 0.0, 0.0]
+        self.endVector=  [0.0, 0.0, 0.0]
+
         
     def handle(self, event):
         """
@@ -329,16 +337,16 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                 self.w_pick_radius, self.w_widgetlblSoNodes)
 
-        #X Axis 
+        # X Axis
         XclickwdgdNode = [False, False]
         YclickwdgdNode = [False, False]
         ZclickwdgdNode = [False, False]
-        
+
         # In this widget, we have 2 coin drawings that we need to capture event for them
-        
-        #   ------------- X Axis  ------------- 
+
+        #   ------------- X Axis  -------------
         if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                 self.w_pick_radius, self.w_XarrowsSeparator) is not None):
+                                                 self.w_pick_radius, self.w_XarrowSeparator) is not None):
             XclickwdgdNode[0] = True
 
         if self.w_discEnabled[0]:
@@ -415,8 +423,8 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             # X-Axis
             elif ((
                 (XclickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                  and (self.XreleaseDragAxis == 0)
-                  ) :
+                and (self.XreleaseDragAxis == 0)
+            ):
                 self.XreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.XreleaseDragDisc = -1
                 self.take_focus()
@@ -430,11 +438,9 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
                 self.do_callbacks(1)        # We use the same callback,
                 return 1
 
-
-
-        #   ------------- Y Axis  ------------- 
+        #   ------------- Y Axis  -------------
         if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                 self.w_pick_radius, self.w_YarrowsSeparator) is not None):
+                                                 self.w_pick_radius, self.w_YarrowSeparator) is not None):
             YclickwdgdNode[0] = True
 
         if self.w_discEnabled[0]:
@@ -470,7 +476,7 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             else:  # None of them -- remove the focus
                 self.remove_focus()
                 return 0
-        
+
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             # Y-DISC
@@ -512,8 +518,8 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             # Y-Axis
             elif ((
                 (YclickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                  and (self.YreleaseDragAxis == 0)
-                  ) :
+                and (self.YreleaseDragAxis == 0)
+            ):
                 self.YreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.YreleaseDragDisc = -1
                 self.take_focus()
@@ -527,10 +533,9 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
                 self.do_callbacks(1)        # We use the same callback,
                 return 1
 
-
-        #   ------------- Z Axis  ------------- 
+        #   ------------- Z Axis  -------------
         if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                 self.w_pick_radius, self.w_ZarrowsSeparator) is not None):
+                                                 self.w_pick_radius, self.w_ZarrowSeparator) is not None):
             ZclickwdgdNode[0] = True
 
         if self.w_discEnabled[0]:
@@ -566,7 +571,7 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             else:  # None of them -- remove the focus
                 self.remove_focus()
                 return 0
-        
+
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             # Z-DISC
@@ -608,8 +613,8 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             # Z-Axis
             elif ((
                 (ZclickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                  and (self.ZreleaseDragAxis == 0)
-                  ) :
+                and (self.ZreleaseDragAxis == 0)
+            ):
                 self.ZreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.ZreleaseDragDisc = -1
                 self.take_focus()
@@ -645,66 +650,59 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             # TODO: FIXME:
-            preRotVal =[0.0, 0.0,0.0]
-            distance = [0.0, 0.0, 0.0]
+            preRotVal = [0.0, 0.0, 0.0]
+
             if self.is_visible():
                 preRotVal[1] = [0.0, 90.0, 0.0]  # pre-Rotation
-                distance[1] = [self.distanceBetweenThem, 0.0, 0.0]
                 preRotVal[1] = [0.0, 90.0, 90.0]  # pre-Rotation
-                distance[1] = [0.0, self.distanceBetweenThem, 0.0]
                 preRotVal[2] = [0.0, 0.0, 0.0]
-                distance[2] = [0.0, 0.0, self.distanceBetweenThem]
                 self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
-                                                                 distance[0],
-                                                                 self.w_vector[0].y +
-                                                                 distance[0],
-                                                                 self.w_vector[0].z + distance[2]),
+                                                                 self.distanceBetweenThem,
+                                                                 self.w_vector[0].y,
+                                                                 self.w_vector[0].z),
                                                       # default FR_COLOR.FR_RED
                                                       self.w_color, self.w_Scale,
                                                       self.DrawingType, self.Opacity,
                                                       preRotVal[0])
-                self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
-                                                                 distance[0],
-                                                                 self.w_vector[0].y +
-                                                                 distance[1],
-                                                                 self.w_vector[0].z + distance[2]),
+                self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x ,
+                                                             self.w_vector[0].y +
+                                                        self.distanceBetweenThem,
+                                                             self.w_vector[0].z ),
                                                       # default FR_COLOR.FR_RED
                                                       self.w_color, self.w_Scale,
                                                       self.DrawingType, self.Opacity,
                                                       preRotVal[1])
 
-                self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
-                                                                 distance[0],
-                                                                 self.w_vector[0].y +
-                                                                 distance[2],
-                                                                 self.w_vector[0].z + distance[2]),
+                self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
+                                                        self.w_vector[0].y,
+                                                        self.w_vector[0].z +self.distanceBetweenThem),
                                                       # default FR_COLOR.FR_RED
                                                       self.w_color[2], self.w_Scale,
                                                       self.DrawingType, self.Opacity,
                                                       preRotVal[2])
 
-                preRotValdisc=[]
+                preRotValdisc = []
                 if self.w_discEnabled[0]:
                     preRotValdisc[0] = [self.w_discAngle, 0.0, 90.0]
                 elif self.w_discEnabled[1]:  # YAxis default GREEN
-                        preRotValdisc[2] = [self.w_discAngle, 0.0, 0.0]
+                    preRotValdisc[2] = [self.w_discAngle, 0.0, 0.0]
                 elif self.w_discEnabled[1]:
                     preRotValdisc[2] = [0.0, 270.0, -self.w_discAngle]
 
                     self.w_XdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                            self.w_rotaryDisc_color[0],
-                                                            self.w_Scale, self.Opacity,
-                                                            preRotValdisc[0])  # RED
-                    
+                                                             self.w_rotaryDisc_color[0],
+                                                             self.w_Scale, self.Opacity,
+                                                             preRotValdisc[0])  # RED
+
                     self.w_YdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                            self.w_rotaryDisc_color[1],
-                                                            self.w_Scale, self.Opacity,
-                                                            preRotValdisc[1])  # GREEN
+                                                             self.w_rotaryDisc_color[1],
+                                                             self.w_Scale, self.Opacity,
+                                                             preRotValdisc[1])  # GREEN
                     self.w_ZdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                            self.w_rotaryDisc_color[2],
-                                                            self.w_Scale, self.Opacity,
-                                                            preRotValdisc[2])  # BLUE
-                    
+                                                             self.w_rotaryDisc_color[2],
+                                                             self.w_Scale, self.Opacity,
+                                                             preRotValdisc[2])  # BLUE
+
                     self.w_userData.RotaryDisc = [self.w_XdiscSeparator,
                                                   self.w_YdiscSeparator,
                                                   self.w_ZdiscSeparator]
@@ -714,13 +712,14 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
                 tR = coin.SbVec3f()
                 tR.setValue(
                     self.w_rotation[0], self.w_rotation[1], self.w_rotation[2])
-                transformRot.rotation.setValue(tR, math.radians(self.w_rotation[3]))
+                transformRot.rotation.setValue(
+                    tR, math.radians(self.w_rotation[3]))
 
                 separtorAll.addChild(transformRot)
                 separtorAll.addChild(self.w_XarrowSeparator)
                 separtorAll.addChild(self.w_YarrowSeparator)
                 separtorAll.addChild(self.w_ZarrowSeparator)
-                
+
                 if self.w_discEnabled:
                     separtorAll.addChild(self.w_XdiscSeparator)
                     separtorAll.addChild(self.w_YdiscSeparator)
@@ -991,13 +990,13 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
         rotation event happens.
         self.w_discEnabled must be True
         """
-        boundary = self.getWidgetsBoundary(self.w_discSeparator)
-        center = self.getWidgetsCentor(self.w_discSeparator)
+        boundary = self.getWidgetsBoundary(self.w_XdiscSeparator)
+        center = self.getWidgetsCentor(self.w_XdiscSeparator)
         try:
 
             self.endVector[0] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
-                                        self.w_parent.w_lastEventXYZ.Coin_y,
-                                        self.w_parent.w_lastEventXYZ.Coin_z)
+                                           self.w_parent.w_lastEventXYZ.Coin_y,
+                                           self.w_parent.w_lastEventXYZ.Coin_z)
             if self.run_Once[0] is False:
                 self.run_Once[0] = True
                 self.startVector[0] = self.endVector[0]
@@ -1042,7 +1041,7 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             if(self.w_discAngle[0] > 359):
                 self.w_discAngle[0] = 359
             elif(self.w_discAngle[0] < -359):
-                self.w_discAngle[0]= -359
+                self.w_discAngle[0] = -359
             if self.w_discAngle[0] == -360:
                 self.w_discAngle[0] = 0
             self.oldAngle[0] = self.w_discAngle[0]
@@ -1056,20 +1055,19 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
     def cb_YdiscRotate(self, userData: userDataObject = None):
         """
         Internal callback function, runs when the disc
         rotation event happens.
         self.w_discEnabled must be True
         """
-        boundary = self.getWidgetsBoundary(self.w_discSeparator)
-        center = self.getWidgetsCentor(self.w_discSeparator)
+        boundary = self.getWidgetsBoundary(self.w_YdiscSeparator)
+        center = self.getWidgetsCentor(self.w_YdiscSeparator)
         try:
 
             self.endVector[1] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
-                                        self.w_parent.w_lastEventXYZ.Coin_y,
-                                        self.w_parent.w_lastEventXYZ.Coin_z)
+                                           self.w_parent.w_lastEventXYZ.Coin_y,
+                                           self.w_parent.w_lastEventXYZ.Coin_z)
             if self.run_Once[1] is False:
                 self.run_Once[1] = True
                 self.startVector[1] = self.endVector[1]
@@ -1109,12 +1107,12 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             if(self.rotationDirection[1] < 0):
                 self.w_discAngle[1] = self.w_discAngle[1]-360
 
-            if(self.w_discAngle [1]> 359):
+            if(self.w_discAngle[1] > 359):
                 self.w_discAngle[1] = 359
             elif(self.w_discAngle[1] < -359):
-                self.w_discAngle [1]= -359
-            if self.w_discAngle[1]== -360:
-                self.w_discAngle[1]= 0
+                self.w_discAngle[1] = -359
+            if self.w_discAngle[1] == -360:
+                self.w_discAngle[1] = 0
             self.oldAngle[1] = self.w_discAngle[1]
             print("YAngle=", self.w_discAngle[1])
             self.redraw()
@@ -1126,22 +1124,21 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
     def cb_ZdiscRotate(self, userData: userDataObject = None):
         """
         Internal callback function, runs when the disc
         rotation event happens.
         self.w_discEnabled must be True
         """
-        boundary = self.getWidgetsBoundary(self.w_discSeparator[2])
-        center = self.getWidgetsCentor(self.w_discSeparator[2])
+        boundary = self.getWidgetsBoundary(self.w_ZdiscSeparator[2])
+        center = self.getWidgetsCentor(self.w_ZdiscSeparator[2])
         try:
 
             self.endVector[2] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
-                                        self.w_parent.w_lastEventXYZ.Coin_y,
-                                        self.w_parent.w_lastEventXYZ.Coin_z)
-            if self.run_Once [2] is False:
-                self.run_Once[2]  = True
+                                           self.w_parent.w_lastEventXYZ.Coin_y,
+                                           self.w_parent.w_lastEventXYZ.Coin_z)
+            if self.run_Once[2] is False:
+                self.run_Once[2] = True
                 self.startVector[2] = self.endVector[2]
 
             # Keep the old value only first time when drag start
@@ -1170,8 +1167,8 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
                 self.w_discAngle[2] = self.w_discAngle[2]-360
 
             elif(self.rotationDirection == -1
-                 and self.w_discAngle[2]> 0
-                 and self.w_discAngle[2]< 45
+                 and self.w_discAngle[2] > 0
+                 and self.w_discAngle[2] < 45
                  and self.oldAngle[2] < -270):
                 self.rotationDirection[2] = 1
 
@@ -1179,11 +1176,11 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             if(self.rotationDirection[2] < 0):
                 self.w_discAngle[2] = self.w_discAngle[2]-360
 
-            if(self.w_discAngle [2]> 359):
-                self.w_discAngle[2]= 359
+            if(self.w_discAngle[2] > 359):
+                self.w_discAngle[2] = 359
             elif(self.w_discAngle[2] < -359):
-                self.w_discAngle [2]= -359
-            if self.w_discAngle [2]== -360:
+                self.w_discAngle[2] = -359
+            if self.w_discAngle[2] == -360:
                 self.w_discAngle[2] = 0
             self.oldAngle[2] = self.w_discAngle[2]
             print("ZAngle=", self.w_discAngle[2])
