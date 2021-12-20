@@ -35,6 +35,7 @@ from dataclasses import dataclass
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_one_arrow_widget import Fr_OneArrow_Widget
 from ThreeDWidgets.constant import FR_WidgetType
+from ThreeDWidgets import fr_widget
 import math
 """
 Example how to use this widget.
@@ -181,6 +182,20 @@ class Fr_ThreeArrows_Widget(object):
         self.w_distanceBetweenThem = _distanceBetweenThem
         self.w_parent = None
         self.w_widgetType = FR_WidgetType.FR_THREE_DISC
+        self.w_lbluserData = fr_widget.propertyValues()
+        self.w_color = FR_COLOR.FR_RED
+        self.w_selColor = [i * 1.2 for i in self.w_color]
+        self.w_userData = userDataObject()  # Keep info about the widget
+        self.w_userData.discObj = self
+        self.w_discAngle = 0.0      # Only disc rotation.
+        self.oldAngle = 0.0
+        self.rotationDirection = 1   # +1 CCW , -1 ACCW
+        self.w_lineWidth =1
+        # This affect only the Widget label - nothing else
+        self.w_lbluserData.linewidth = self.w_lineWidth
+        self.w_lbluserData.vectors = self.w_vector
+
+        
 
     def Activated(self):
 
