@@ -236,15 +236,14 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
         self.w_KB_callback_ = callback              # Keyboard
 
         # Dummy callback Axis
-        self.w_ArrowXaxis_cb_ = callback1
-        self.w_ArrowYaxis_cb_ = callback1
-        self.w_ArrowZaxis_cb_ = callback1
+        self.w_ArrowXaxis_cb_ = xAxis_cb
+        self.w_ArrowYaxis_cb_ = yAxis_cb
+        self.w_ArrowZaxis_cb_ = zAxis_cb
 
         # Dummy callback          disc
-        self.w_rotaryX_cb_ = callback2
-        self.w_rotaryY_cb_ = callback2
-        self.w_rotaryZ_cb_ = callback2
-
+        self.w_rotaryX_cb_ = xDisc_cb
+        self.w_rotaryY_cb_ = yDisc_cb
+        self.w_rotaryZ_cb_ = zDisc_cb
 
         self.Opacity = _opacity
         self.DrawingType = _type
@@ -252,11 +251,14 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
         self.distanceBetweenThem = _distanceBetweenThem
 
         self.w_wdgsoSwitch = coin.SoSwitch()
-        self.w_XarrowsSeparator = None
+        
+        self.w_XarrowSeparator = None
         self.w_XdiscSeparator = None
-        self.w_YarrowsSeparator = None
+        
+        self.w_YarrowSeparator = None
         self.w_YdiscSeparator = None
-        self.w_ZarrowsSeparator = None
+        
+        self.w_ZarrowSeparator = None
         self.w_ZdiscSeparator = None
 
         self.w_color = _axisColor
@@ -643,19 +645,25 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             elif self.is_active() != 1:
                 usedColor = self.w_inactiveColor
             # TODO: FIXME:
-            preRotVal = None
+            preRotVal =[0.0, 0.0,0.0]
             distance = [0.0, 0.0, 0.0]
             if self.is_visible():
-                if self.axisType == 'X':  # XAxis default   RED
-                    preRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
-                    distance = [self.distanceBetweenThem, 0.0, 0.0]
-                elif self.axisType == 'Y':  # YAxis default GREEN
-                    preRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
-                    distance = [0.0, self.distanceBetweenThem, 0.0]
-                elif self.axisType == 'Z':
-                    preRotVal = [0.0, 0.0, 0.0]
-                    distance = [0.0, 0.0, self.distanceBetweenThem]
-                self.w_ArrowsSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
+                preRotVal[1] = [0.0, 90.0, 0.0]  # pre-Rotation
+                distance[1] = [self.distanceBetweenThem, 0.0, 0.0]
+                preRotVal[1] = [0.0, 90.0, 90.0]  # pre-Rotation
+                distance[1] = [0.0, self.distanceBetweenThem, 0.0]
+                preRotVal[2] = [0.0, 0.0, 0.0]
+                distance[2] = [0.0, 0.0, self.distanceBetweenThem]
+                self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
+                                                                 distance[0],
+                                                                 self.w_vector[0].y +
+                                                                 distance[0],
+                                                                 self.w_vector[0].z + distance[2]),
+                                                      # default FR_COLOR.FR_RED
+                                                      self.w_color, self.w_Scale,
+                                                      self.DrawingType, self.Opacity,
+                                                      preRotVal[0])
+                self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
                                                                  distance[0],
                                                                  self.w_vector[0].y +
                                                                  distance[1],
@@ -663,7 +671,18 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
                                                       # default FR_COLOR.FR_RED
                                                       self.w_color, self.w_Scale,
                                                       self.DrawingType, self.Opacity,
-                                                      preRotVal)
+                                                      preRotVal[1])
+
+                self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
+                                                                 distance[0],
+                                                                 self.w_vector[0].y +
+                                                                 distance[2],
+                                                                 self.w_vector[0].z + distance[2]),
+                                                      # default FR_COLOR.FR_RED
+                                                      self.w_color[2], self.w_Scale,
+                                                      self.DrawingType, self.Opacity,
+                                                      preRotVal[2])
+
                 preRotValdisc=[]
                 if self.w_discEnabled[0]:
                     preRotValdisc[0] = [self.w_discAngle, 0.0, 90.0]
@@ -671,31 +690,43 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
                         preRotValdisc[2] = [self.w_discAngle, 0.0, 0.0]
                 elif self.w_discEnabled[1]:
                     preRotValdisc[2] = [0.0, 270.0, -self.w_discAngle]
-                    # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
-                    # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
-                    
-                    #FIXME:
-                    self.w_discSeparator = draw_RotationPad(self.w_vector[0],
-                                                            self.w_rotaryDisc_color,
-                                                            self.w_Scale, self.Opacity,
-                                                            preRotValdisc)  # RED
-                    self.w_userData.RotaryDisc = self.w_discSeparator
 
-                CollectThemAllRot = coin.SoTransform()
-                CollectThemAll = coin.SoSeparator()
+                    self.w_XdiscSeparator = draw_RotationPad(self.w_vector[0],
+                                                            self.w_rotaryDisc_color[0],
+                                                            self.w_Scale, self.Opacity,
+                                                            preRotValdisc[0])  # RED
+                    
+                    self.w_YdiscSeparator = draw_RotationPad(self.w_vector[0],
+                                                            self.w_rotaryDisc_color[1],
+                                                            self.w_Scale, self.Opacity,
+                                                            preRotValdisc[1])  # GREEN
+                    self.w_ZdiscSeparator = draw_RotationPad(self.w_vector[0],
+                                                            self.w_rotaryDisc_color[2],
+                                                            self.w_Scale, self.Opacity,
+                                                            preRotValdisc[2])  # BLUE
+                    
+                    self.w_userData.RotaryDisc = [self.w_XdiscSeparator,
+                                                  self.w_YdiscSeparator,
+                                                  self.w_ZdiscSeparator]
+
+                transformRot = coin.SoTransform()
+                separtorAll = coin.SoSeparator()
                 tR = coin.SbVec3f()
                 tR.setValue(
                     self.w_rotation[0], self.w_rotation[1], self.w_rotation[2])
-                CollectThemAllRot.rotation.setValue(
-                    tR, math.radians(self.w_rotation[3]))
+                transformRot.rotation.setValue(tR, math.radians(self.w_rotation[3]))
 
-                CollectThemAll.addChild(CollectThemAllRot)
-                CollectThemAll.addChild(self.w_ArrowsSeparator)
-
+                separtorAll.addChild(transformRot)
+                separtorAll.addChild(self.w_XarrowSeparator)
+                separtorAll.addChild(self.w_YarrowSeparator)
+                separtorAll.addChild(self.w_ZarrowSeparator)
+                
                 if self.w_discEnabled:
-                    CollectThemAll.addChild(self.w_discSeparator)
+                    separtorAll.addChild(self.w_XdiscSeparator)
+                    separtorAll.addChild(self.w_YdiscSeparator)
+                    separtorAll.addChild(self.w_ZdiscSeparator)
                 self.draw_label()
-                self.saveSoNodesToWidget(CollectThemAll)
+                self.saveSoNodesToWidget(separtorAll)
 
                 # add SoSeparator to the switch
                 # We can put them in a tuple but it is better not doing so
@@ -736,12 +767,9 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
                 scale: tuple  # Three float numbers for scaling
             ]
         """
-        if self.axisType == 'X':
-            self.w_lbluserData.SetupRotation = App.Vector(0, 0, 0)
-        elif self.axisType == 'Y':
-            self.w_lbluserData.SetupRotation = App.Vector(0, 0, 90)
-        elif self.axisType == 'Z':
-            self.w_lbluserData.SetupRotation = App.Vector(0, -90, 180)
+        self.w_lbluserData.SetupRotation = App.Vector(0, 0, 0)
+        #self.w_lbluserData.SetupRotation[1] = App.Vector(0, 0, 90)
+        #self.w_lbluserData.SetupRotation[2] = App.Vector(0, -90, 180)
         self.w_lbluserData.labelcolor = self.w_color
         lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
@@ -967,18 +995,18 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
         center = self.getWidgetsCentor(self.w_discSeparator)
         try:
 
-            self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+            self.endVector[0] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
                                         self.w_parent.w_lastEventXYZ.Coin_y,
                                         self.w_parent.w_lastEventXYZ.Coin_z)
-            if self.run_Once is False:
-                self.run_Once = True
-                self.startVector = self.endVector
+            if self.run_Once[0] is False:
+                self.run_Once[0] = True
+                self.startVector[0] = self.endVector[0]
 
             # Keep the old value only first time when drag start
-                self.startVector = self.endVector
+                self.startVector[0] = self.endVector[0]
                 if not self.has_focus():
                     self.take_focus()
-            newValue = self.endVector
+            newValue = self.endVector[0]
 
             print(center, "center")
             mx = my = mz = 0.0
@@ -994,31 +1022,31 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             mz = (newValue.z - center.z)
             if (mz == 0):
                 return  # Invalid
-            self.w_discAngle = faced.calculateMouseAngle(my, mz)
+            self.w_discAngle[0] = faced.calculateMouseAngle(my, mz)
             if (self.w_discAngle == 360):
-                self.w_discAngle = 0
-            if (self.oldAngle < 45 and self.oldAngle >= 0) and (self.w_discAngle > 270):
+                self.w_discAngle[0] = 0
+            if (self.oldAngle[0] < 45 and self.oldAngle[0] >= 0) and (self.w_discAngle[0] > 270):
                 self.rotationDirection = -1
-                self.w_discAngle = self.w_discAngle-360
+                self.w_discAngle[0] = self.w_discAngle[0]-360
 
-            elif(self.rotationDirection == -1
-                 and self.w_discAngle > 0
-                 and self.w_discAngle < 45
-                 and self.oldAngle < -270):
-                self.rotationDirection = 1
+            elif(self.rotationDirection[0] == -1
+                 and self.w_discAngle[0] > 0
+                 and self.w_discAngle[0] < 45
+                 and self.oldAngle[0] < -270):
+                self.rotationDirection[0] = 1
 
             # we don't accept an angel grater or smaller than 360 degrees
-            if(self.rotationDirection < 0):
-                self.w_discAngle = self.w_discAngle-360
+            if(self.rotationDirection[0] < 0):
+                self.w_discAngle[0] = self.w_discAngle[0]-360
 
-            if(self.w_discAngle > 359):
-                self.w_discAngle = 359
-            elif(self.w_discAngle < -359):
-                self.w_discAngle = -359
-            if self.w_discAngle == -360:
-                self.w_discAngle = 0
-            self.oldAngle = self.w_discAngle
-            print("XAngle=", self.w_discAngle)
+            if(self.w_discAngle[0] > 359):
+                self.w_discAngle[0] = 359
+            elif(self.w_discAngle[0] < -359):
+                self.w_discAngle[0]= -359
+            if self.w_discAngle[0] == -360:
+                self.w_discAngle[0] = 0
+            self.oldAngle[0] = self.w_discAngle[0]
+            print("XAngle=", self.w_discAngle[0])
             self.redraw()
 
         except Exception as err:
@@ -1039,18 +1067,18 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
         center = self.getWidgetsCentor(self.w_discSeparator)
         try:
 
-            self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+            self.endVector[1] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
                                         self.w_parent.w_lastEventXYZ.Coin_y,
                                         self.w_parent.w_lastEventXYZ.Coin_z)
-            if self.run_Once is False:
-                self.run_Once = True
-                self.startVector = self.endVector
+            if self.run_Once[1] is False:
+                self.run_Once[1] = True
+                self.startVector[1] = self.endVector[1]
 
             # Keep the old value only first time when drag start
-                self.startVector = self.endVector
+                self.startVector[1] = self.endVector[1]
                 if not self.has_focus():
                     self.take_focus()
-            newValue = self.endVector
+            newValue = self.endVector[1]
 
             print(center, "center")
             mx = my = mz = 0.0
@@ -1064,31 +1092,31 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             mz = (newValue.z - center.z)
             if (mz == 0):
                 return  # Invalid
-            self.w_discAngle = faced.calculateMouseAngle(mx, mz)
-            if (self.w_discAngle == 360):
-                self.w_discAngle = 0
-            if (self.oldAngle < 45 and self.oldAngle >= 0) and (self.w_discAngle > 270):
-                self.rotationDirection = -1
-                self.w_discAngle = self.w_discAngle-360
+            self.w_discAngle[1] = faced.calculateMouseAngle(mx, mz)
+            if (self.w_discAngle[1] == 360):
+                self.w_discAngle[1] = 0
+            if (self.oldAngle[1] < 45 and self.oldAngle[1] >= 0) and (self.w_discAngle[1] > 270):
+                self.rotationDirection[1] = -1
+                self.w_discAngle[1] = self.w_discAngle[1]-360
 
-            elif(self.rotationDirection == -1
-                 and self.w_discAngle > 0
-                 and self.w_discAngle < 45
-                 and self.oldAngle < -270):
-                self.rotationDirection = 1
+            elif(self.rotationDirection[1] == -1
+                 and self.w_discAngle[1] > 0
+                 and self.w_discAngle[1] < 45
+                 and self.oldAngle1[1] < -270):
+                self.rotationDirection[1] = 1
 
             # we don't accept an angel grater or smaller than 360 degrees
-            if(self.rotationDirection < 0):
-                self.w_discAngle = self.w_discAngle-360
+            if(self.rotationDirection[1] < 0):
+                self.w_discAngle[1] = self.w_discAngle[1]-360
 
-            if(self.w_discAngle > 359):
-                self.w_discAngle = 359
-            elif(self.w_discAngle < -359):
-                self.w_discAngle = -359
-            if self.w_discAngle == -360:
-                self.w_discAngle = 0
-            self.oldAngle = self.w_discAngle
-            print("YAngle=", self.w_discAngle)
+            if(self.w_discAngle [1]> 359):
+                self.w_discAngle[1] = 359
+            elif(self.w_discAngle[1] < -359):
+                self.w_discAngle [1]= -359
+            if self.w_discAngle[1]== -360:
+                self.w_discAngle[1]= 0
+            self.oldAngle[1] = self.w_discAngle[1]
+            print("YAngle=", self.w_discAngle[1])
             self.redraw()
 
         except Exception as err:
@@ -1105,22 +1133,22 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
         rotation event happens.
         self.w_discEnabled must be True
         """
-        boundary = self.getWidgetsBoundary(self.w_discSeparator)
-        center = self.getWidgetsCentor(self.w_discSeparator)
+        boundary = self.getWidgetsBoundary(self.w_discSeparator[2])
+        center = self.getWidgetsCentor(self.w_discSeparator[2])
         try:
 
-            self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+            self.endVector[2] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
                                         self.w_parent.w_lastEventXYZ.Coin_y,
                                         self.w_parent.w_lastEventXYZ.Coin_z)
-            if self.run_Once is False:
-                self.run_Once = True
-                self.startVector = self.endVector
+            if self.run_Once [2] is False:
+                self.run_Once[2]  = True
+                self.startVector[2] = self.endVector[2]
 
             # Keep the old value only first time when drag start
-                self.startVector = self.endVector
+                self.startVector[2] = self.endVector[2]
                 if not self.has_focus():
                     self.take_focus()
-            newValue = self.endVector
+            newValue = self.endVector[2]
 
             print(center, "center")
             mx = my = mz = 0.0
@@ -1134,31 +1162,31 @@ class Fr_ThreeArrow_Widget(fr_widget.Fr_Widget):
             my = (newValue.y - center.y)
             if (my == 0):
                 return  # Invalid
-            self.w_discAngle = faced.calculateMouseAngle(mx, my)
-            if (self.w_discAngle == 360):
-                self.w_discAngle = 0
-            if (self.oldAngle < 45 and self.oldAngle >= 0) and (self.w_discAngle > 270):
-                self.rotationDirection = -1
-                self.w_discAngle = self.w_discAngle-360
+            self.w_discAngle[2] = faced.calculateMouseAngle(mx, my)
+            if (self.w_discAngle[2] == 360):
+                self.w_discAngle[2] = 0
+            if (self.oldAngle[2] < 45 and self.oldAngle[2] >= 0) and (self.w_discAngle[2] > 270):
+                self.rotationDirection[2] = -1
+                self.w_discAngle[2] = self.w_discAngle[2]-360
 
             elif(self.rotationDirection == -1
-                 and self.w_discAngle > 0
-                 and self.w_discAngle < 45
-                 and self.oldAngle < -270):
-                self.rotationDirection = 1
+                 and self.w_discAngle[2]> 0
+                 and self.w_discAngle[2]< 45
+                 and self.oldAngle[2] < -270):
+                self.rotationDirection[2] = 1
 
             # we don't accept an angel grater or smaller than 360 degrees
-            if(self.rotationDirection < 0):
-                self.w_discAngle = self.w_discAngle-360
+            if(self.rotationDirection[2] < 0):
+                self.w_discAngle[2] = self.w_discAngle[2]-360
 
-            if(self.w_discAngle > 359):
-                self.w_discAngle = 359
-            elif(self.w_discAngle < -359):
-                self.w_discAngle = -359
-            if self.w_discAngle == -360:
-                self.w_discAngle = 0
-            self.oldAngle = self.w_discAngle
-            print("Angle=", self.w_discAngle)
+            if(self.w_discAngle [2]> 359):
+                self.w_discAngle[2]= 359
+            elif(self.w_discAngle[2] < -359):
+                self.w_discAngle [2]= -359
+            if self.w_discAngle [2]== -360:
+                self.w_discAngle[2] = 0
+            self.oldAngle[2] = self.w_discAngle[2]
+            print("ZAngle=", self.w_discAngle[2])
             self.redraw()
 
         except Exception as err:
