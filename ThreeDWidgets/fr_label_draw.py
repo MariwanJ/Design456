@@ -161,8 +161,8 @@ def draw_newlabel(text=[], prop: propertyValues = None):
         raise ValueError        # Nothing to do here
     try:
         p1 = prop.vectors[0]
-        if len(prop.vectors) >= 2:
-            p2 = prop.vectors[1]
+        # if len(prop.vectors) >= 2:
+        #     p2 = prop.vectors[1]
 
         # direction=
         _translation = coin.SoTranslation()  # coin.SoTransform()
@@ -184,7 +184,7 @@ def draw_newlabel(text=[], prop: propertyValues = None):
         font.size = prop.fontsize  # Font size
         font.Name = prop.fontName  # Font used
         _text3D = coin.SoAsciiText()  # Draw text in the 3D world
-        _text3D.string.setValues([text,])#([l.encode("utf8") for l in text if l])
+        _text3D.string.setValues(text)#([l.encode("utf8") for l in text if l])
         coinColor = coin.SoMaterial()  # Font color
         coinColor.diffuseColor.setValue(prop.labelcolor)
         coinColor.emissiveColor.setValue(prop.labelcolor)

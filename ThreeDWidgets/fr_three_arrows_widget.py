@@ -637,7 +637,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         element and for each disc.
         """
         try:
-
             if (len(self.w_vector) < 2):
                 raise ValueError('Must be 2 vector at least')
 
@@ -652,85 +651,100 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             XpreRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
             YpreRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
             ZpreRotVal = [0.0, 0.0, 0.0]
-            if self.is_visible():
-                self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
-                                                                 self.distanceBetweenThem,
-                                                                 self.w_vector[0].y,
-                                                                 self.w_vector[0].z),
-                                                      # default FR_COLOR.FR_RED
-                                                      usedColor[0], self.w_Scale,
-                                                      self.DrawingType, self.Opacity,
-                                                      XpreRotVal)
-                self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                                 self.w_vector[0].y +
-                                                                 self.distanceBetweenThem,
-                                                                 self.w_vector[0].z),
-                                                      # default FR_COLOR.FR_RED
-                                                      usedColor[1], self.w_Scale,
-                                                      self.DrawingType, self.Opacity,
-                                                      YpreRotVal)
+            if not self.is_visible():
+                return
+            print((App.Vector(self.w_vector[0].x +
+                                                self.distanceBetweenThem,
+                                                self.w_vector[0].y, self.w_vector[0].z),
+                                    # default FR_COLOR.FR_RED
+                                    usedColor[0], self.w_Scale, self.DrawingType,
+                                    self.Opacity, XpreRotVal))
+            print("=========================================1")
+            self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
+                                                self.distanceBetweenThem,
+                                                self.w_vector[0].y, self.w_vector[0].z),
+                                    # default FR_COLOR.FR_RED
+                                    usedColor[0], self.w_Scale, self.DrawingType,
+                                    self.Opacity, XpreRotVal)
+            print("=========================================2")
+            print((App.Vector(self.w_vector[0].x,
+                                                self.w_vector[0].y +
+                                                self.distanceBetweenThem,
+                                                self.w_vector[0].z),
+                                                # default FR_COLOR.FR_RED
+                                    usedColor[1], self.w_Scale, self.DrawingType,
+                                    self.Opacity, YpreRotVal))
+            self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
+                                                self.w_vector[0].y +
+                                                self.distanceBetweenThem,
+                                                self.w_vector[0].z),
+                                                # default FR_COLOR.FR_RED
+                                    usedColor[1], self.w_Scale, self.DrawingType,
+                                    self.Opacity, YpreRotVal)
+            print("=========================================3")
+            print((App.Vector(self.w_vector[0].x,
+                                                    self.w_vector[0].y,
+                                                    self.w_vector[0].z + self.distanceBetweenThem),
+                                        # default FR_COLOR.FR_RED
+                                        usedColor[2], self.w_Scale, self.DrawingType,
+                                        self.Opacity, ZpreRotVal)
+            )
+            self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
+                                                    self.w_vector[0].y,
+                                                    self.w_vector[0].z + self.distanceBetweenThem),
+                                        # default FR_COLOR.FR_RED
+                                        usedColor[2], self.w_Scale, self.DrawingType,
+                                        self.Opacity, ZpreRotVal)
 
-                self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                                 self.w_vector[0].y,
-                                                                 self.w_vector[0].z + self.distanceBetweenThem),
-                                                      # default FR_COLOR.FR_RED
-                                                      usedColor[2], self.w_Scale,
-                                                      self.DrawingType, self.Opacity,
-                                                      ZpreRotVal)
+            XpreRotValdisc =[self.w_discAngle[0], 0.0, 90.0]
+            YpreRotValdisc = [self.w_discAngle[1], 0.0, 0.0]
+            ZpreRotValdisc = [0.0, 270.0, (-1*self.w_discAngle[2])]
+            
+            self.w_XdiscSeparator = draw_RotationPad(self.w_vector[0],
+                                                        self.w_rotaryDisc_color[0],
+                                                        self.w_Scale, self.Opacity,
+                                                        XpreRotValdisc)  # RED
 
-                preRotValdisc = []
-                if self.w_discEnabled[0]:
-                    preRotValdisc.append([self.w_discAngle, 0.0, 90.0])
-                elif self.w_discEnabled[1]:  # YAxis default GREEN
-                    preRotValdisc.append( [self.w_discAngle, 0.0, 0.0])
-                elif self.w_discEnabled[1]:
-                    preRotValdisc.append([0.0, 270.0, -self.w_discAngle])
+            self.w_YdiscSeparator = draw_RotationPad(self.w_vector[0],
+                                                        self.w_rotaryDisc_color[1],
+                                                        self.w_Scale, self.Opacity,
+                                                        YpreRotValdisc)  # GREEN
+            self.w_ZdiscSeparator = draw_RotationPad(self.w_vector[0],
+                                                        self.w_rotaryDisc_color[2],
+                                                        self.w_Scale, self.Opacity,
+                                                        ZpreRotValdisc)  # BLUE
 
-                    self.w_XdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                             self.w_rotaryDisc_color[0],
-                                                             self.w_Scale, self.Opacity,
-                                                             preRotValdisc[0])  # RED
+            self.w_userData.RotaryDisc = [self.w_XdiscSeparator,
+                                            self.w_YdiscSeparator,
+                                            self.w_ZdiscSeparator]
 
-                    self.w_YdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                             self.w_rotaryDisc_color[1],
-                                                             self.w_Scale, self.Opacity,
-                                                             preRotValdisc[1])  # GREEN
-                    self.w_ZdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                             self.w_rotaryDisc_color[2],
-                                                             self.w_Scale, self.Opacity,
-                                                             preRotValdisc[2])  # BLUE
+            transformRot = coin.SoTransform()
+            separtorAll = coin.SoSeparator()
+            tR = coin.SbVec3f()
+            tR.setValue(
+                self.w_rotation[0], self.w_rotation[1], self.w_rotation[2])
+            transformRot.rotation.setValue(
+                tR, math.radians(self.w_rotation[3]))
 
-                    self.w_userData.RotaryDisc = [self.w_XdiscSeparator,
-                                                  self.w_YdiscSeparator,
-                                                  self.w_ZdiscSeparator]
+            separtorAll.addChild(transformRot)
+            separtorAll.addChild(self.w_XarrowSeparator)
+            separtorAll.addChild(self.w_YarrowSeparator)
+            separtorAll.addChild(self.w_ZarrowSeparator)
 
-                transformRot = coin.SoTransform()
-                separtorAll = coin.SoSeparator()
-                tR = coin.SbVec3f()
-                tR.setValue(
-                    self.w_rotation[0], self.w_rotation[1], self.w_rotation[2])
-                transformRot.rotation.setValue(
-                    tR, math.radians(self.w_rotation[3]))
+            if self.w_discEnabled:
+                separtorAll.addChild(self.w_XdiscSeparator)
+                separtorAll.addChild(self.w_YdiscSeparator)
+                separtorAll.addChild(self.w_ZdiscSeparator)
+            self.draw_label()
+            self.saveSoNodesToWidget(separtorAll)
 
-                separtorAll.addChild(transformRot)
-                separtorAll.addChild(self.w_XarrowSeparator)
-                separtorAll.addChild(self.w_YarrowSeparator)
-                separtorAll.addChild(self.w_ZarrowSeparator)
-
-                if self.w_discEnabled:
-                    separtorAll.addChild(self.w_XdiscSeparator)
-                    separtorAll.addChild(self.w_YdiscSeparator)
-                    separtorAll.addChild(self.w_ZdiscSeparator)
-                self.draw_label()
-                self.saveSoNodesToWidget(separtorAll)
-
-                # add SoSeparator to the switch
-                # We can put them in a tuple but it is better not doing so
-                self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
-                self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
+            # add SoSeparator to the switch
+            # We can put them in a tuple but it is better not doing so
+            self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
+            self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
 
         except Exception as err:
-            App.Console.PrintError("'draw Fr_one_Arrow_widget' Failed. "
+            App.Console.PrintError("'draw Three Arrows Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -763,13 +777,21 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 scale: tuple  # Three float numbers for scaling
             ]
         """
-        self.w_lbluserData.SetupRotation = App.Vector(0, 0, 0)
-        #self.w_lbluserData.SetupRotation[1] = App.Vector(0, 0, 90)
-        #self.w_lbluserData.SetupRotation[2] = App.Vector(0, -90, 180)
-        self.w_lbluserData.labelcolor = self.w_color
-        lbl = fr_label_draw.draw_newlabel(self.w_label, self.w_lbluserData)
-        self.saveSoNodeslblToWidget(lbl)
-
+        try:
+            self.w_lbluserData.SetupRotation = App.Vector(0, 0, 0)
+            #self.w_lbluserData.SetupRotation[1] = App.Vector(0, 0, 90)
+            #self.w_lbluserData.SetupRotation[2] = App.Vector(0, -90, 180)
+            #self.w_lbluserData.labelcolor = self.w_lblcolor
+            lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
+            self.saveSoNodeslblToWidget(lbl)
+            
+        except Exception as err:
+            App.Console.PrintError("'draw label Three Arrows Widget' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+    
     def move(self, newVecPos=App.Vector(0, 0, 0)):
         """[Move the widget to a new location referenced by the 
             left-top corner of the object. Or the start of the disc
@@ -1097,7 +1119,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             elif(self.rotationDirection[1] == -1
                  and self.w_discAngle[1] > 0
                  and self.w_discAngle[1] < 45
-                 and self.oldAngle1[1] < -270):
+                 and self.oldAngle[1] < -270):
                 self.rotationDirection[1] = 1
 
             # we don't accept an angel grater or smaller than 360 degrees
@@ -1210,13 +1232,45 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             # Use this to finalize the action.
             self.do_callback()
 
-        # Move callback - Axis
+        # Move callback - XAxis
         elif(callbackType == 1):
             self.w_userData.discObj = None
-            self.w_XarrowAxis_cb_(self.w_userData)
+            self.w_ArrowXaxis_cb_(self.w_userData)
         elif(callbackType == 2):
             # Rotate callback
             if self.w_discEnabled[0]:
                 # Rotation callback - Disc
                 self.w_userData.Axis = None
-                self.w_rotary_cb_(self.w_userData)
+                self.w_rotaryX_cb_(self.w_userData)
+    
+        # Move callback - YAxis
+        elif(callbackType == 3):
+            self.w_userData.discObj = None
+            self.w_ArrowYaxis_cb_(self.w_userData)
+        elif(callbackType == 4):
+            # Rotate callback
+            if self.w_discEnabled[0]:
+                # Rotation callback - Disc
+                self.w_userData.Axis = None
+                self.w_rotaryY_cb_(self.w_userData)
+
+        # Move callback - ZAxis
+        elif(callbackType == 5):
+            self.w_userData.discObj = None
+            self.w_ArrowZaxis_cb_(self.w_userData)
+        elif(callbackType == 6):
+            # Rotate callback
+            if self.w_discEnabled[0]:
+                # Rotation callback - Disc
+                self.w_userData.Axis = None
+                self.w_rotaryZ_cb_(self.w_userData)
+
+
+
+
+
+    def enableDiscs(self):
+        self.w_discEnabled=[True,True,True]
+
+    def disableDiscs(self):
+        self.w_discEnabled=[False,False,False]
