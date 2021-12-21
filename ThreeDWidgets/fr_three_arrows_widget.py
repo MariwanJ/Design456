@@ -114,8 +114,8 @@ class userDataObject:
     def __init__(self):
         self.events = None        # events - save handle events here
         self.callerObject = None  # Class/Tool uses the fr_disc_widget
-        self.Axis = None
-        self.discObj = None      # the disc widget object
+        self.Axis = False      # Disallow running callback - Arrows
+        self.padAxis = False   # Disallow running callback - pads.
 
 # *******************************CALLBACKS - DEMO *****************************
 
@@ -370,7 +370,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 if self.XreleaseDragDisc == 1 or self.XreleaseDragDisc == 0:
                     self.XreleaseDragDisc = -1
                     # Release callback should be activated
-                    self.do_callbacks(0) # Generic callback
+                    self.do_callbacks(0)  # Generic callback
                     return 1
                 # Axis's part
             elif XclickwdgdNode[0] is True:
@@ -380,7 +380,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     return 1
             else:  # None of them -- remove the focus
                 self.remove_focus()
-                
+
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             # X-DISC
@@ -464,7 +464,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 if self.YreleaseDragDisc == 1 or self.YreleaseDragDisc == 0:
                     self.YreleaseDragDisc = -1
                     # Release callback should be activated
-                    self.do_callbacks(0) # Generic callback 
+                    self.do_callbacks(0)  # Generic callback
                     return 1
                 # Axis's part
             elif YclickwdgdNode[0] is True:
@@ -474,7 +474,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     return 1
             else:  # None of them -- remove the focus
                 self.remove_focus()
-                
 
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
@@ -559,7 +558,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 if self.ZreleaseDragDisc == 1 or self.ZreleaseDragDisc == 0:
                     self.ZreleaseDragDisc = -1
                     # Release callback should be activated
-                    self.do_callbacks(0) # Generic callback
+                    self.do_callbacks(0)  # Generic callback
                     return 1
                 # Axis's part
             elif ZclickwdgdNode[0] is True:
@@ -569,7 +568,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     return 1
             else:  # None of them -- remove the focus
                 self.remove_focus()
-                
 
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
@@ -653,37 +651,37 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             ZpreRotVal = [0.0, 0.0, 0.0]
             if not self.is_visible():
                 return
-            self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +self.distanceBetweenThem,self.w_vector[0].y, self.w_vector[0].z),
-                                    # default FR_COLOR.FR_RED
-                                    usedColor[0], self.w_Scale, self.DrawingType, self.Opacity, XpreRotVal)
-            self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,self.w_vector[0].y +self.distanceBetweenThem,self.w_vector[0].z),
-                                                # default FR_COLOR.FR_RED
-                                    usedColor[1], self.w_Scale, self.DrawingType,self.Opacity, YpreRotVal)
-            self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,self.w_vector[0].y,self.w_vector[0].z + self.distanceBetweenThem),
-                                        # default FR_COLOR.FR_RED
-                                        usedColor[2], self.w_Scale, self.DrawingType,self.Opacity, ZpreRotVal)
+            self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x + self.distanceBetweenThem, self.w_vector[0].y, self.w_vector[0].z),
+                                                  # default FR_COLOR.FR_RED
+                                                  usedColor[0], self.w_Scale, self.DrawingType, self.Opacity, XpreRotVal)
+            self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y + self.distanceBetweenThem, self.w_vector[0].z),
+                                                  # default FR_COLOR.FR_RED
+                                                  usedColor[1], self.w_Scale, self.DrawingType, self.Opacity, YpreRotVal)
+            self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y, self.w_vector[0].z + self.distanceBetweenThem),
+                                                  # default FR_COLOR.FR_RED
+                                                  usedColor[2], self.w_Scale, self.DrawingType, self.Opacity, ZpreRotVal)
 
-            XpreRotValdisc =[self.w_discAngle[0], 0.0, 90.0]
+            XpreRotValdisc = [self.w_discAngle[0], 0.0, 90.0]
             YpreRotValdisc = [self.w_discAngle[1], 0.0, 0.0]
             ZpreRotValdisc = [0.0, 270.0, (-1*self.w_discAngle[2])]
-            
+
             self.w_XdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                        self.w_rotaryDisc_color[0],
-                                                        self.w_Scale, self.Opacity,
-                                                        XpreRotValdisc)  # RED
+                                                     self.w_rotaryDisc_color[0],
+                                                     self.w_Scale, self.Opacity,
+                                                     XpreRotValdisc)  # RED
 
             self.w_YdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                        self.w_rotaryDisc_color[1],
-                                                        self.w_Scale, self.Opacity,
-                                                        YpreRotValdisc)  # GREEN
+                                                     self.w_rotaryDisc_color[1],
+                                                     self.w_Scale, self.Opacity,
+                                                     YpreRotValdisc)  # GREEN
             self.w_ZdiscSeparator = draw_RotationPad(self.w_vector[0],
-                                                        self.w_rotaryDisc_color[2],
-                                                        self.w_Scale, self.Opacity,
-                                                        ZpreRotValdisc)  # BLUE
+                                                     self.w_rotaryDisc_color[2],
+                                                     self.w_Scale, self.Opacity,
+                                                     ZpreRotValdisc)  # BLUE
 
             self.w_userData.RotaryDisc = [self.w_XdiscSeparator,
-                                            self.w_YdiscSeparator,
-                                            self.w_ZdiscSeparator]
+                                          self.w_YdiscSeparator,
+                                          self.w_ZdiscSeparator]
 
             transformRot = coin.SoTransform()
             separtorAll = coin.SoSeparator()
@@ -753,14 +751,14 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             #self.w_lbluserData.labelcolor = self.w_lblcolor
             lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
             self.saveSoNodeslblToWidget(lbl)
-            
+
         except Exception as err:
             App.Console.PrintError("'draw label Three Arrows Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-    
+
     def move(self, newVecPos=App.Vector(0, 0, 0)):
         """[Move the widget to a new location referenced by the 
             left-top corner of the object. Or the start of the disc
@@ -1199,30 +1197,36 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             # Use this to finalize the action.
             self.do_callbacks()
 
+        if (callbackType == 1 or callbackType == 3 or callbackType == 5):
+            self.w_userData.Axis=True
+            self.w_userData.padAxis=False
+        elif(callbackType == 2 or callbackType == 4 or callbackType == 6):
+            self.w_userData.Axis=False
+            self.w_userData.padAxis=True
+
         # Move callback - XAxis
         elif(callbackType == 1):
-            self.w_xAxis_cb_(self.w_userData)
-        elif(callbackType == 2):
-            # Rotate callback
-            if self.abled[0]:
-                # Rotation callback - Disc
-                self.w_padXAxis_cb_(self.w_userData)
-    
+            self.w_xAxis_cb_(self.w_userData)            
+        elif(callbackType == 2 and self.w_discEnabled[0] is True):
+            # Rotation callback - Disc
+            self.w_padXAxis_cb_(self.w_userData)
+
         # Move callback - YAxis
         elif(callbackType == 3):
-            self.tation(self.w_userData)
-        elif(callbackType == 4):
-            # Rotate callback
-            if self.w_discEnabled[0]:
-                # Rotation callback - Disc
-                self.w_padYAxis_cb_(self.w_userData)
-
+            self.w_yAxis_cb_(self.w_userData)
+        elif(callbackType == 4 and self.w_discEnabled[1] is True):
+            # Rotation callback - Disc
+            self.w_padYAxis_cb_(self.w_userData)
         # Move callback - ZAxis
         elif(callbackType == 5):
-            self.Rotat(self.w_userData)
-        elif(callbackTiscEnabled[0]:
-                # Rotation callback - Disc
-                self.
-(self.w_userData)
+            self.w_zAxis_cb_(self.w_userData)
+        elif(callbackType == 6 and self.w_discEnabled[2] is True):
+            # Rotation callback - Disc
+            self.w_padZAxis_cb_(self.w_userData)
+
+
+    def enableDiscs(self):
+        self.w_discEnabled = [True, True, True]
+
     def disableDiscs(self):
-        self.w_discEnabled=[False,False,False]
+        self.w_discEnabled = [False, False, False]
