@@ -51,7 +51,7 @@ class Design456_ExtendEdge:
     mw = None
     dialog = None
     tab = None
-    padObj = None
+    discObj = None
     w_rotation = None
     _mywin = None
     b1 = None
@@ -254,7 +254,7 @@ class Design456_ExtendEdge:
 
             d = self.tweakLength
 
-            self.FirstLocation = yL + d * nv  # the 3 arrows-pads
+            self.FirstLocation = yL + d * nv  # the 3 arrows-discs
             if self.oldEdgeVertexes[0].Point.z > self.selectedObj.Shape.BoundBox.ZMin:
                 self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax+self.awayFromObj
             else:
@@ -360,8 +360,8 @@ class Design456_ExtendEdge:
             if self.oldEdgeVertexes[0].Point.z < self.selectedObj.Shape.BoundBox.ZMin:
                 self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin - self.awayFromObj
 
-            # Deside how the Degree pad be drawn
-            self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
+            # Deside how the Degree disc be drawn
+            self.discObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
                                                 # label
                                                 (str(round(self.w_rotation[0], 2)) + "°"+
                                                  str(round(self.w_rotation[1], 2)) + "°"+
@@ -377,23 +377,23 @@ class Design456_ExtendEdge:
                                                 10)  # distance between them
 
             # Different callbacks for each action.
-            self.padObj.w_xAxis_cb_ = self.MouseMovement_cb
-            self.padObj.w_yAxis_cb_ = self.MouseMovement_cb
-            self.padObj.w_zAxis_cb_ = self.MouseMovement_cb
+            self.discObj.w_xAxis_cb_ = self.MouseMovement_cb
+            self.discObj.w_yAxis_cb_ = self.MouseMovement_cb
+            self.discObj.w_zAxis_cb_ = self.MouseMovement_cb
 
-            self.padObj.w_padXAxis_cb_ = self.callback_Rotate
-            self.padObj.w_padYAxis_cb_ = self.callback_Rotate
-            self.padObj.w_padZAxis_cb_ = self.callback_Rotate
+            self.discObj.w_discXAxis_cb_ = self.callback_Rotate
+            self.discObj.w_discYAxis_cb_ = self.callback_Rotate
+            self.discObj.w_discZAxis_cb_ = self.callback_Rotate
 
-            self.padObj.w_callback_ = self.callback_release
-            self.padObj.w_userData.callerObject = self
+            self.discObj.w_callback_ = self.callback_release
+            self.discObj.w_userData.callerObject = self
 
             self.COIN_recreateObject()
 
             if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
 
-            self._mywin.addWidget(self.padObj)
+            self._mywin.addWidget(self.discObj)
             mw = self.getMainWindow()
             self._mywin.show()
 
@@ -498,23 +498,23 @@ class Design456_ExtendEdge:
             print("event was not int")
             return
         
-        if self.padObj.w_userData.Axis is None:
-            if self.padObj.w_userData.padAxis is not None:
+        if self.discObj.w_userData.Axis_cb is False:
+            if self.discObj.w_userData.Disc_cb is True:
                 self.callback_Rotate()
                 return
             else:
                 return  # We cannot allow this tool
 
-        self.endVector = App.Vector(self.padObj.w_parent.w_lastEventXYZ.Coin_x,
-                                    self.padObj.w_parent.w_lastEventXYZ.Coin_y,
-                                    self.padObj.w_parent.w_lastEventXYZ.Coin_z)
+        self.endVector = App.Vector(self.discObj.w_parent.w_lastEventXYZ.Coin_x,
+                                    self.discObj.w_parent.w_lastEventXYZ.Coin_y,
+                                    self.discObj.w_parent.w_lastEventXYZ.Coin_z)
         if self.run_Once is False:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
-            self.mouseToArrowDiff = self.endVector.sub(self.padObj.w_vector[0])
+            self.mouseToArrowDiff = self.endVector.sub(self.discObj.w_vector[0])
             
-        MovementLength= self.endVector.sub(self.mouseToArrowDiff)
+        MovementLength = self.endVector.sub(self.mouseToArrowDiff)
         self.tweakLength = round((
             MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
 
@@ -523,31 +523,31 @@ class Design456_ExtendEdge:
         self.TweakLBL.setText(
             "Length = " + str(round(self.tweakLength, 1)))
         # must be tuple
-        self.padObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
-        self.padObj.lblRedraw()
+        self.discObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
+        self.discObj.lblRedraw()
         self.oldEdgeVertexes = self.newEdgeVertexes
-        if self.padObj.w_userData.Axis == 'X':
+        if self.discObj.w_userData.discObj.axisType == 'X':
             self.newEdge.Placement.Base.x = MovementLength.x
-            self.padObj.w_vector[0].x = MovementLength.x
-        elif self.padObj.w_userData.Axis == 'Y':
+            self.discObj.w_vector[0].x = MovementLength.x
+        elif self.discObj.w_userData.discObj.axisType == 'Y':
             self.newEdge.Placement.Base.y = MovementLength.y
-            self.padObj.w_vector[0].y = MovementLength.y
-        elif self.padObj.w_userData.Axis == 'Z':
+            self.discObj.w_vector[0].y = MovementLength.y
+        elif self.discObj.w_userData.discObj.axisType == 'Z':
             self.newEdge.Placement.Base.z = MovementLength.z
-            self.padObj.w_vector[0].z = MovementLength.z
+            self.discObj.w_vector[0].z = MovementLength.z
         else:
             # nothing to do here  #TODO : This shouldn't happen
             return
 
         self.newEdgeVertexes = self.newEdge.Shape.Vertexes
         self.COIN_recreateObject()
-        self.padObj.redraw()
+        self.discObj.redraw()
 
     def callback_release(self, userData=None):
         try:
             events = userData.events
             print("mouse release")
-            self.padObj.remove_focus()
+            self.discObj.remove_focus()
             self.run_Once = False
 
         except Exception as err:
@@ -570,7 +570,7 @@ class Design456_ExtendEdge:
         Hide the widgets. Remove also the tab.
         TODO:
         For this tool, I decide to choose the hide to merge, or leave it "as is" here.
-        I can do that during the extrusion (moving the pad), but that will be an action
+        I can do that during the extrusion (moving the disc), but that will be an action
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
@@ -596,10 +596,10 @@ class Design456_ExtendEdge:
             Remove all objects from memory even fr_coinwindow
         """
         try:
-            if self.padObj is not None:
-                self.padObj.hide()
-                self.padObj.__del__()  # call destructor
-                del self.padObj
+            if self.discObj is not None:
+                self.discObj.hide()
+                self.discObj.__del__()  # call destructor
+                del self.discObj
             if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin

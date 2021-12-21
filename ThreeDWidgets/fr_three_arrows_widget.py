@@ -112,10 +112,11 @@ mywin.show()
 class userDataObject:
 
     def __init__(self):
-        self.events = None        # events - save handle events here
-        self.callerObject = None  # Class/Tool uses the fr_disc_widget
-        self.Axis = False      # Disallow running callback - Arrows
-        self.padAxis = False   # Disallow running callback - pads.
+        self.discObj      =   None    # events - save handle events here
+        self.events       =   None    # Class/Tool uses the fr_disc_widget
+        self.callerObject =   None    # Class
+        self.Axis_cb       =   False   # Disallow running callback - Arrows
+        self.Disc_cb       =   False   # Disallow running callback - discs.
 
 # *******************************CALLBACKS - DEMO *****************************
 
@@ -244,9 +245,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_zAxis_cb_ = zAxis_cb
 
         # Dummy callback          disc
-        self.w_padXAxis_cb_ = xDisc_cb
-        self.w_padYAxis_cb_ = yDisc_cb
-        self.w_padZAxis_cb_ = zDisc_cb
+        self.w_discXAxis_cb_ = xDisc_cb
+        self.w_discYAxis_cb_ = yDisc_cb
+        self.w_discZAxis_cb_ = zDisc_cb
 
         self.Opacity = _opacity
         self.DrawingType = _type
@@ -1198,31 +1199,31 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.do_callbacks()
 
         if (callbackType == 1 or callbackType == 3 or callbackType == 5):
-            self.w_userData.Axis=True
-            self.w_userData.padAxis=False
+            self.w_userData.Axis_cb=True
+            self.w_userData.Disc_cb=False
         elif(callbackType == 2 or callbackType == 4 or callbackType == 6):
-            self.w_userData.Axis=False
-            self.w_userData.padAxis=True
+            self.w_userData.Axis_cb=False
+            self.w_userData.Disc_cb=True
 
         # Move callback - XAxis
         elif(callbackType == 1):
             self.w_xAxis_cb_(self.w_userData)            
         elif(callbackType == 2 and self.w_discEnabled[0] is True):
             # Rotation callback - Disc
-            self.w_padXAxis_cb_(self.w_userData)
+            self.w_discXAxis_cb_(self.w_userData)
 
         # Move callback - YAxis
         elif(callbackType == 3):
             self.w_yAxis_cb_(self.w_userData)
         elif(callbackType == 4 and self.w_discEnabled[1] is True):
             # Rotation callback - Disc
-            self.w_padYAxis_cb_(self.w_userData)
+            self.w_discYAxis_cb_(self.w_userData)
         # Move callback - ZAxis
         elif(callbackType == 5):
             self.w_zAxis_cb_(self.w_userData)
         elif(callbackType == 6 and self.w_discEnabled[2] is True):
             # Rotation callback - Disc
-            self.w_padZAxis_cb_(self.w_userData)
+            self.w_discZAxis_cb_(self.w_userData)
 
 
     def enableDiscs(self):

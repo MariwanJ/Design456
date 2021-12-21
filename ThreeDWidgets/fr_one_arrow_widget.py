@@ -111,11 +111,11 @@ mywin.show()
 class userDataObject:
 
     def __init__(self):
-        self.discObj = None      # the disc widget object
-        self.events = None        # events - save handle events here
-        self.callerObject = None  # Class/Tool uses the fr_disc_widget
-        self.Axis = None
-
+        self.discObj      =   None    # Class/Tool uses
+        self.events       =   None    # events - save handle events here
+        self.callerObject =   None    # 
+        self.Axis_cb       =   False   # Disallow running callback - Arrows
+        self.Disc_cb       =   False   # Disallow running callback - discs.
 # *******************************CALLBACKS - DEMO *****************************
 
 
@@ -293,7 +293,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             elif clickwdgdNode[0] is True:
                 if self.releaseDragAxis == 1 or self.releaseDragAxis == 0:
                     self.releaseDragAxis = -1
-                    self.do_callback(1)
+                    self.do_callbacks(1)
                     return 1
             else:  # None of them -- remove the focus
                 self.remove_focus()
@@ -404,7 +404,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                     elif self.axisType == 'Y':  # YAxis default GREEN
                         preRotValdisc = [self.w_discAngle, 0.0, 0.0]
                     elif self.axisType == 'Z':
-                        preRotValdisc = [0.0, 270.0, -self.w_discAngle]
+                        preRotValdisc = [0.0, 270.0, (-1*self.w_discAngle)]
                     # Hint: def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                     # scale=(1, 1, 1), opacity=0, _rotation=[0.0, 0.0, 0.0]):
                     self.w_discSeparator = draw_RotationPad(self.w_vector[0],
@@ -806,11 +806,13 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # Move callback - Axis
         elif(callbackType == 1):
-            self.w_userData.discObj = None
+            self.w_userData.Disc_cb = False
+            self.w_userData.Axis_cb = True
             self.w_ArrowAxis_cb_(self.w_userData)
         elif(callbackType == 2):
             # Rotate callback
             if self.w_discEnabled:
                 # Rotation callback - Disc
-                self.w_userData.Axis = None
+                self.w_userData.Axis_cb = False
+                self.w_userData.Disc_cb = True
                 self.w_rotary_cb_(self.w_userData)
