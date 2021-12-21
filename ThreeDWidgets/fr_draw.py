@@ -1125,13 +1125,13 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         [SoSeparator]: [SoSeparator which hold the drawing. Add it to the scenegraph to show the arrow]
     """    
     try:
-        print(p1)
-        print(color)
-        print(scale)
-        print(type)
-        print(opacity)
-        print(_rotation)
-        print("......................................")
+        # print(p1)
+        # print(color)
+        # print(scale)
+        # print(type)
+        # print(opacity)
+        # print(_rotation)
+        # print("......................................")
         root=coin.SoSeparator() #root group holder
         transform=coin.SoTransform()
         

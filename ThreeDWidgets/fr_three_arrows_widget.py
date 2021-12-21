@@ -680,11 +680,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
                 preRotValdisc = []
                 if self.w_discEnabled[0]:
-                    preRotValdisc[0] = [self.w_discAngle, 0.0, 90.0]
+                    preRotValdisc.append([self.w_discAngle, 0.0, 90.0])
                 elif self.w_discEnabled[1]:  # YAxis default GREEN
-                    preRotValdisc[2] = [self.w_discAngle, 0.0, 0.0]
+                    preRotValdisc.append( [self.w_discAngle, 0.0, 0.0])
                 elif self.w_discEnabled[1]:
-                    preRotValdisc[2] = [0.0, 270.0, -self.w_discAngle]
+                    preRotValdisc.append([0.0, 270.0, -self.w_discAngle])
 
                     self.w_XdiscSeparator = draw_RotationPad(self.w_vector[0],
                                                              self.w_rotaryDisc_color[0],
