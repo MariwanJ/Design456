@@ -112,12 +112,11 @@ mywin.show()
 class userDataObject:
 
     def __init__(self):
-        self.discObj      =   None    # events - save handle events here
-        self.events       =   None    # Class/Tool uses the fr_disc_widget
-        self.callerObject =   None    # Class
+        self.discObj      =   None    # Class/Tool uses
+        self.events       =   None    # events - save handle events here
+        self.callerObject =   None    # 
         self.Axis_cb       =   False   # Disallow running callback - Arrows
         self.Disc_cb       =   False   # Disallow running callback - discs.
-
 # *******************************CALLBACKS - DEMO *****************************
 
 
@@ -1012,7 +1011,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             if (self.w_discAngle == 360):
                 self.w_discAngle[0] = 0
             if (self.oldAngle[0] < 45 and self.oldAngle[0] >= 0) and (self.w_discAngle[0] > 270):
-                self.rotationDirection = -1
+                self.rotationDirection[0] = -1
                 self.w_discAngle[0] = self.w_discAngle[0]-360
 
             elif(self.rotationDirection[0] == -1

@@ -276,7 +276,7 @@ class Design456_ExtendFace:
 
             d = self.tweakLength
 
-            self.FirstLocation = yL + d * nv  # the 3 arrows-pads
+            self.FirstLocation = yL + d * nv  # the 3 arrows-disc
             
             if self.oldEdgeVertexes[0].Point.z > self.selectedObj.Shape.BoundBox.ZMin:
                 self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
@@ -317,9 +317,9 @@ class Design456_ExtendFace:
         """
         import ThreeDWidgets.fr_coinwindow as win
         self.coinFaces = coin.SoSeparator()
-        self.w_rotation = [0.0, 0.0, 0.0]  # pads rotation
+        self.w_rotation = [0.0, 0.0, 0.0]  # disc rotation
         self.setupRotation = [0, 0, 0, 0]  # Whole widget rotation
-        self._Vector = App.Vector(0.0, 0.0, 0.0)  # pads POSITION
+        self._Vector = App.Vector(0.0, 0.0, 0.0)  # disc POSITION
         self.counter = 0
         self.run_Once = False
         self.tweakLength = 0
@@ -384,28 +384,28 @@ class Design456_ExtendFace:
             # Deside how the Degree pad be drawn
             self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
                                                 # label
-                                                (str(round(self.w_rotation[0], 2)) + "°"+
+                                                [(str(round(self.w_rotation[0], 2)) + "°"+
                                                  str(round(self.w_rotation[1], 2)) + "°"+
-                                                 str(round(self.w_rotation[2], 2)) + "°"),
+                                                 str(round(self.w_rotation[2], 2)) + "°") ,],
                                                 FR_COLOR.FR_WHITE,  # lblcolor
                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
-                                                [0, 0, 0],  # rotation of the pads main
+                                                [0, 0, 0,0],  # rotation of the disc main
                                                 self.setupRotation,  # setup rotation
                                                 [15.0, 15.0, 15.0],  # scale
                                                 1,  # type
                                                 0,  # opacity
-                                                [10, 10, 10])  # distance between them
-            self.padObj.enablePAD()
+                                                10)  # distance between them
+            self.padObj.enableDiscs()
             
             # Different callbacks for each action.
             self.padObj.w_xAxis_cb_ = self.MouseMovement_cb
             self.padObj.w_yAxis_cb_ = self.MouseMovement_cb
             self.padObj.w_zAxis_cb_ = self.MouseMovement_cb
 
-            self.padObj.w_padXAxis_cb_ = self.callback_Rotate
-            self.padObj.w_padYAxis_cb_ = self.callback_Rotate
-            self.padObj.w_padZAxis_cb_ = self.callback_Rotate
+            self.padObj.w_discXAxis_cb_ = self.callback_Rotate
+            self.padObj.w_discYAxis_cb_ = self.callback_Rotate
+            self.padObj.w_discZAxis_cb_ = self.callback_Rotate
 
             self.padObj.w_callback_ = self.callback_release
             self.padObj.w_userData.callerObject = self

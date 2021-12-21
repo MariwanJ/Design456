@@ -806,8 +806,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
         # Move callback - Axis
         elif(callbackType == 1):
-            self.w_userData.Disc_cb = False
             self.w_userData.Axis_cb = True
+            self.w_userData.Disc_cb = False
             self.w_ArrowAxis_cb_(self.w_userData)
         elif(callbackType == 2):
             # Rotate callback
