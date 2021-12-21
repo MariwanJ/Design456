@@ -369,11 +369,12 @@ class Design456_ExtendEdge:
                                                 FR_COLOR.FR_WHITE,  # lblcolor
                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
+                                                [0.0, 0.0, 0.0, 0.0], #rotation
                                                 self.setupRotation,  # setup rotation
                                                 [15.0, 15.0, 15.0],  # scale
                                                 0,  # type
-                                                [0,0,0],  # opacity
-                                                [10, 10, 10])  # distance between them
+                                                0,  # opacity
+                                                10)  # distance between them
 
             # Different callbacks for each action.
             self.padObj.w_xAxis_cb_ = self.MouseMovement_cb

@@ -239,14 +239,14 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_KB_callback_ = callback              # Keyboard
 
         # Dummy callback Axis
-        self.w_ArrowXaxis_cb_ = xAxis_cb
-        self.w_ArrowYaxis_cb_ = yAxis_cb
-        self.w_ArrowZaxis_cb_ = zAxis_cb
+        self.w_xAxis_cb_ = xAxis_cb
+        self.w_yAxis_cb_ = yAxis_cb
+        self.w_zAxis_cb_ = zAxis_cb
 
         # Dummy callback          disc
-        self.w_rotaryX_cb_ = xDisc_cb
-        self.w_rotaryY_cb_ = yDisc_cb
-        self.w_rotaryZ_cb_ = zDisc_cb
+        self.w_padXAxis_cb_ = xDisc_cb
+        self.w_padYAxis_cb_ = yDisc_cb
+        self.w_padZAxis_cb_ = zDisc_cb
 
         self.Opacity = _opacity
         self.DrawingType = _type
@@ -348,7 +348,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                                                  self.w_pick_radius, self.w_XarrowSeparator) is not None):
             XclickwdgdNode[0] = True
 
-        if self.w_discEnabled[0]:
+        if self.w_discEnabled[0] is True:
             if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                       self.w_pick_radius, self.w_XdiscSeparator) is not None):
                 XclickwdgdNode[1] = True
@@ -370,7 +370,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 if self.XreleaseDragDisc == 1 or self.XreleaseDragDisc == 0:
                     self.XreleaseDragDisc = -1
                     # Release callback should be activated
-                    self.do_callbacks(0)
+                    self.do_callbacks(0) # Generic callback
                     return 1
                 # Axis's part
             elif XclickwdgdNode[0] is True:
@@ -380,7 +380,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     return 1
             else:  # None of them -- remove the focus
                 self.remove_focus()
-                return 0
+                
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             # X-DISC
@@ -442,7 +442,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                                                  self.w_pick_radius, self.w_YarrowSeparator) is not None):
             YclickwdgdNode[0] = True
 
-        if self.w_discEnabled[0]:
+        if self.w_discEnabled[1] is True:
             if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                       self.w_pick_radius, self.w_YdiscSeparator) is not None):
                 YclickwdgdNode[1] = True
@@ -464,17 +464,17 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 if self.YreleaseDragDisc == 1 or self.YreleaseDragDisc == 0:
                     self.YreleaseDragDisc = -1
                     # Release callback should be activated
-                    self.do_callbacks(0)
+                    self.do_callbacks(0) # Generic callback 
                     return 1
                 # Axis's part
             elif YclickwdgdNode[0] is True:
                 if self.YreleaseDragAxis == 1 or self.YreleaseDragAxis == 0:
                     self.YreleaseDragAxis = -1
-                    self.do_callbacks(1)
+                    self.do_callbacks(3)
                     return 1
             else:  # None of them -- remove the focus
                 self.remove_focus()
-                return 0
+                
 
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
@@ -492,7 +492,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.YreleaseDragAxis = -1
                 self.take_focus()
                 self.cb_YdiscRotate()
-                self.do_callbacks(2)  # disc callback
+                self.do_callbacks(4)  # disc callback
                 return 1
 
             # Y-DISC
@@ -501,7 +501,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
                 self.cb_YdiscRotate()
-                self.do_callbacks(2)        # We use the same callback,
+                self.do_callbacks(4)        # We use the same callback,
                 return 1
 
             # Y-Axis
@@ -522,14 +522,14 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.YreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.YreleaseDragDisc = -1
                 self.take_focus()
-                self.do_callbacks(1)
+                self.do_callbacks(3)
                 return 1
             # Y-Axis
             elif self.YreleaseDragAxis == 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
-                self.do_callbacks(1)        # We use the same callback,
+                self.do_callbacks(3)        # We use the same callback,
                 return 1
 
         #   ------------- Z Axis  -------------
@@ -537,7 +537,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                                                  self.w_pick_radius, self.w_ZarrowSeparator) is not None):
             ZclickwdgdNode[0] = True
 
-        if self.w_discEnabled[0]:
+        if self.w_discEnabled[2] is True:
             if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                       self.w_pick_radius, self.w_ZdiscSeparator) is not None):
                 ZclickwdgdNode[1] = True
@@ -559,17 +559,17 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 if self.ZreleaseDragDisc == 1 or self.ZreleaseDragDisc == 0:
                     self.ZreleaseDragDisc = -1
                     # Release callback should be activated
-                    self.do_callbacks(0)
+                    self.do_callbacks(0) # Generic callback
                     return 1
                 # Axis's part
             elif ZclickwdgdNode[0] is True:
                 if self.ZreleaseDragAxis == 1 or self.ZreleaseDragAxis == 0:
                     self.ZreleaseDragAxis = -1
-                    self.do_callbacks(1)
+                    self.do_callbacks(5)
                     return 1
             else:  # None of them -- remove the focus
                 self.remove_focus()
-                return 0
+                
 
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
@@ -587,7 +587,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.ZreleaseDragAxis = -1
                 self.take_focus()
                 self.cb_ZdiscRotate()
-                self.do_callbacks(2)  # disc callback
+                self.do_callbacks(6)  # disc callback
                 return 1
 
             # Z-DISC
@@ -596,7 +596,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
                 self.cb_ZdiscRotate()
-                self.do_callbacks(2)        # We use the same callback,
+                self.do_callbacks(6)        # We use the same callback,
                 return 1
 
             # Z-Axis
@@ -617,14 +617,14 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.ZreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.ZreleaseDragDisc = -1
                 self.take_focus()
-                self.do_callbacks(1)
+                self.do_callbacks(5)
                 return 1
             # Z-Axis
             elif self.ZreleaseDragAxis == 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
-                self.do_callbacks(1)        # We use the same callback,
+                self.do_callbacks(5)        # We use the same callback,
                 return 1
 
         # Don't care events, return the event to other widgets
@@ -653,48 +653,15 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             ZpreRotVal = [0.0, 0.0, 0.0]
             if not self.is_visible():
                 return
-            print((App.Vector(self.w_vector[0].x +
-                                                self.distanceBetweenThem,
-                                                self.w_vector[0].y, self.w_vector[0].z),
+            self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +self.distanceBetweenThem,self.w_vector[0].y, self.w_vector[0].z),
                                     # default FR_COLOR.FR_RED
-                                    usedColor[0], self.w_Scale, self.DrawingType,
-                                    self.Opacity, XpreRotVal))
-            print("=========================================1")
-            self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x +
-                                                self.distanceBetweenThem,
-                                                self.w_vector[0].y, self.w_vector[0].z),
-                                    # default FR_COLOR.FR_RED
-                                    usedColor[0], self.w_Scale, self.DrawingType,
-                                    self.Opacity, XpreRotVal)
-            print("=========================================2")
-            print((App.Vector(self.w_vector[0].x,
-                                                self.w_vector[0].y +
-                                                self.distanceBetweenThem,
-                                                self.w_vector[0].z),
+                                    usedColor[0], self.w_Scale, self.DrawingType, self.Opacity, XpreRotVal)
+            self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,self.w_vector[0].y +self.distanceBetweenThem,self.w_vector[0].z),
                                                 # default FR_COLOR.FR_RED
-                                    usedColor[1], self.w_Scale, self.DrawingType,
-                                    self.Opacity, YpreRotVal))
-            self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                self.w_vector[0].y +
-                                                self.distanceBetweenThem,
-                                                self.w_vector[0].z),
-                                                # default FR_COLOR.FR_RED
-                                    usedColor[1], self.w_Scale, self.DrawingType,
-                                    self.Opacity, YpreRotVal)
-            print("=========================================3")
-            print((App.Vector(self.w_vector[0].x,
-                                                    self.w_vector[0].y,
-                                                    self.w_vector[0].z + self.distanceBetweenThem),
+                                    usedColor[1], self.w_Scale, self.DrawingType,self.Opacity, YpreRotVal)
+            self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,self.w_vector[0].y,self.w_vector[0].z + self.distanceBetweenThem),
                                         # default FR_COLOR.FR_RED
-                                        usedColor[2], self.w_Scale, self.DrawingType,
-                                        self.Opacity, ZpreRotVal)
-            )
-            self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x,
-                                                    self.w_vector[0].y,
-                                                    self.w_vector[0].z + self.distanceBetweenThem),
-                                        # default FR_COLOR.FR_RED
-                                        usedColor[2], self.w_Scale, self.DrawingType,
-                                        self.Opacity, ZpreRotVal)
+                                        usedColor[2], self.w_Scale, self.DrawingType,self.Opacity, ZpreRotVal)
 
             XpreRotValdisc =[self.w_discAngle[0], 0.0, 90.0]
             YpreRotValdisc = [self.w_discAngle[1], 0.0, 0.0]
@@ -731,9 +698,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             separtorAll.addChild(self.w_YarrowSeparator)
             separtorAll.addChild(self.w_ZarrowSeparator)
 
-            if self.w_discEnabled:
+            if self.w_discEnabled[0]:
                 separtorAll.addChild(self.w_XdiscSeparator)
+            if self.w_discEnabled[1]:
                 separtorAll.addChild(self.w_YdiscSeparator)
+            if self.w_discEnabled[2]:
                 separtorAll.addChild(self.w_ZdiscSeparator)
             self.draw_label()
             self.saveSoNodesToWidget(separtorAll)
@@ -1097,7 +1066,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.take_focus()
             newValue = self.endVector[1]
 
-            print(center, "center")
             mx = my = mz = 0.0
             # Front
             # It means that we have changes in Z and X only
@@ -1166,7 +1134,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.take_focus()
             newValue = self.endVector[2]
 
-            print(center, "center")
             mx = my = mz = 0.0
 
             # It means that we have changes in X and Y only
@@ -1234,37 +1201,28 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         # Move callback - XAxis
         elif(callbackType == 1):
-            self.w_ArrowXaxis_cb_(self.w_userData)
+            self.w_xAxis_cb_(self.w_userData)
         elif(callbackType == 2):
             # Rotate callback
-            if self.w_discEnabled[0]:
+            if self.abled[0]:
                 # Rotation callback - Disc
-                self.w_rotaryX_cb_(self.w_userData)
+                self.w_padXAxis_cb_(self.w_userData)
     
         # Move callback - YAxis
         elif(callbackType == 3):
-            self.w_ArrowYaxis_cb_(self.w_userData)
+            self.tation(self.w_userData)
         elif(callbackType == 4):
             # Rotate callback
             if self.w_discEnabled[0]:
                 # Rotation callback - Disc
-                self.w_rotaryY_cb_(self.w_userData)
+                self.w_padYAxis_cb_(self.w_userData)
 
         # Move callback - ZAxis
         elif(callbackType == 5):
-            self.w_ArrowZaxis_cb_(self.w_userData)
-        elif(callbackType == 6):
-            # Rotate callback
-            if self.w_discEnabled[0]:
+            self.Rotat(self.w_userData)
+        elif(callbackTiscEnabled[0]:
                 # Rotation callback - Disc
-                self.w_rotaryZ_cb_(self.w_userData)
-
-
-
-
-
-    def enableDiscs(self):
-        self.w_discEnabled=[True,True,True]
-
+                self.
+(self.w_userData)
     def disableDiscs(self):
         self.w_discEnabled=[False,False,False]
