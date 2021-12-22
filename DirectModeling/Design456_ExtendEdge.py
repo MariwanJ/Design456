@@ -48,44 +48,45 @@ class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
      This will affect the faces share the edge.    ]
      """
-    mw = None
-    dialog = None
-    tab = None
-    discObj = None
-    w_rotation = None
-    _mywin = None
-    b1 = None
-    TweakLBL = None
-    RotateLBL = None
-    endVector = None
-    startVector = None
-    setupRotation = None
-    savedVertices = None
-    counter = None
-    run_Once = None
-    tweakLength = None
-    oldTweakLength = None
-    isItRotation = None
-    newObject = None
-    selectedObj = None
-    selectedEdge = None
-    # Original vectors that will be changed by mouse.
-    oldEdgeVertexes = None
-    newEdgeVertexes = None
-    newEdge = None      # Keep new vectors for the moved old edge-vectors
+    def __init__(self):
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.discObj = None
+        self.w_rotation = None
+        self._mywin = None
+        self.b1 = None
+        self.TweakLBL = None
+        self.RotateLBL = None
+        self.endVector = None
+        self.startVector = None
+        self.setupRotation = None
+        self.savedVertices = None
+        self.counter = None
+        self.run_Once = None
+        self.tweakLength = None
+        self.oldTweakLength = None
+        self.isItRotation = None
+        self.newObject = None
+        self.selectedObj = None
+        self.selectedEdge = None
+        # Original vectors that will be changed by mouse.
+        self.oldEdgeVertexes = None
+        self.newEdgeVertexes = None
+        self.newEdge = None      # Keep new vectors for the moved old edge-vectors
 
-    view = None  # used for captureing mouse events
-    MoveMentDirection = None
-    newFaces = None
-    faceDir = None
-    FirstLocation = None
-    coinFaces = None
-    sg = None  # SceneGraph
-    awayFromObj = 0.0
-    
-    # Use mouseToArrowDiff to eleminate the diff between 
-    # placement of the 3D COIN drawing and the position of the mouse dragging
-    mouseToArrowDiff = None  
+        self.view = None  # used for captureing mouse events
+        self.MoveMentDirection = None
+        self.newFaces = None
+        self.faceDir = None
+        self.FirstLocation = None
+        self.coinFaces = None
+        self.sg = None  # SceneGraph
+        self.awayFromObj = 0.0
+
+        # Use mouseToArrowDiff to eleminate the diff between 
+        # placement of the 3D COIN drawing and the position of the mouse dragging
+        self.mouseToArrowDiff = None  
     
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author

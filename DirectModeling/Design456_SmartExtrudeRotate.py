@@ -371,39 +371,40 @@ class Design456_SmartExtrudeRotate:
         Apply Extrude to any 3D/2D object by selecting the object's face, and rotate it 
         Length of the Extrude is counted by rotation degree and the axis.
     """
-    _Vector = App.Vector(0.0, 0.0, 0.0)  # WHEEL POSITION
-    mw = None
-    dialog = None
-    tab = None
-    wheelObj = None
-    editing = False
-    w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
-    _mywin = None
-    b1 = None
-    ExtrudeLBL = None
-    RotateLBL = None
-    run_Once = False
-    endVector = None
-    startVector = None
-    extrudeLength = 0.001  # This will be the Delta-mouse position
-    # We will make two object, one for visual effect and the other is the original
-    selectedObj = None
-    selected = None
-    direction = None
-    faceDir = None
-    setupRotation = [0, 0, 0, 0]
-    # We use this to simplify the code
-    # for both, 2D and 3D object, the face variable is this
-    newObject = None
-    mouseOffset = App.Vector(0, 0, 0)
-    OperationOption = 0  # default is zero
-    OperationType = 0      # default is zero
-    objChangedTransparency = []
-    ExtractedFaces = []
-    FirstLocation = None
-    # We cannot combine rotation with direction extrusion.
-    # This variable is used to disale all other options
-    isItRotation = False
+    def __init__(self):
+        self._Vector = App.Vector(0.0, 0.0, 0.0)  # WHEEL POSITION
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.wheelObj = None
+        self.editing = False
+        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
+        self._mywin = None
+        self.b1 = None
+        self.ExtrudeLBL = None
+        self.RotateLBL = None
+        self.run_Once = False
+        self.endVector = None
+        self.startVector = None
+        self.extrudeLength = 0.001  # This will be the Delta-mouse position
+        # We will make two object, one for visual effect and the other is the original
+        self.selectedObj = None
+        self.selected = None
+        self.direction = None
+        self.faceDir = None
+        self.setupRotation = [0, 0, 0, 0]
+        # We use this to simplify the code
+        # for both, 2D and 3D object, the face variable is this
+        self.newObject = None
+        self.mouseOffset = App.Vector(0, 0, 0)
+        self.OperationOption = 0  # default is zero
+        self.OperationType = 0      # default is zero
+        self.objChangedTransparency = []
+        self.ExtractedFaces = []
+        self.FirstLocation = None
+        # We cannot combine rotation with direction extrusion.
+        # This variable is used to disale all other options
+        self.isItRotation = False
 
     def calculateRotatedNormal(self, Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]

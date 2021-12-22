@@ -60,45 +60,46 @@ class Design456_ExtendFace:
     """[Extend the face's position to a new position.
      This will affect the faces share the face.]
      """
-    _Vector = None
-    mw = None
-    dialog = None
-    tab = None
-    padObj = None
-    w_rotation = None
-    _mywin = None
-    b1 = None
-    TweakLBL = None
-    RotateLBL = None
-    #coin3D
-    endVector = None
-    startVector = None
-    #Qt
-    endVectorQT = None
-    startVectorQT = None
-    
-    setupRotation = None
-    savedVertices = None
-    counter = None
-    run_Once = None
-    tweakLength = None
-    oldTweakLength = None
-    isItRotation = None
-    newObject = None
-    selectedObj = None
-    selectedFace = None
-    # Original vectors that will be changed by mouse.
-    oldEdgeVertexes = None
-    newFaceVertexes = None
-    newFace = None      # Keep new vectors for the moved old face-vectors
+    def __init__(self):
+        self._Vector = None
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.padObj = None
+        self.w_rotation = None
+        self._mywin = None
+        self.b1 = None
+        self.TweakLBL = None
+        self.RotateLBL = None
+        #coin3D
+        self.endVector = None
+        self.startVector = None
+        #Qt
+        self.endVectorQT = None
+        self.startVectorQT = None
 
-    view = None  # used for captureing mouse events
-    MoveMentDirection = None
-    newFaces = None
-    faceDir = None
-    FirstLocation = None
-    coinFaces = None
-    sg = None  # SceneGraph
+        self.setupRotation = None
+        self.savedVertices = None
+        self.counter = None
+        self.run_Once = None
+        self.tweakLength = None
+        self.oldTweakLength = None
+        self.isItRotation = None
+        self.newObject = None
+        self.selectedObj = None
+        self.selectedFace = None
+        # Original vectors that will be changed by mouse.
+        self.oldEdgeVertexes = None
+        self.newFaceVertexes = None
+        self.newFace = None      # Keep new vectors for the moved old face-vectors
+
+        self.view = None  # used for captureing mouse events
+        self.MoveMentDirection = None
+        self.newFaces = None
+        self.faceDir = None
+        self.FirstLocation = None
+        self.coinFaces = None
+        self.sg = None  # SceneGraph
 
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author

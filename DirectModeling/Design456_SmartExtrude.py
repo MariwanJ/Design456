@@ -258,29 +258,31 @@ class Design456_SmartExtrude:
         Apply Extrude to any 3D/2D object by selecting the object's face, 
         Length of the Extrude is counted by dragging the arrow towards the negative Z axis.
     """
-    _vector = App.Vector(0.0, 0.0, 0.0)
-    mw = None
-    dialog = None
-    tab = None
-    smartInd = None
-    _mywin = None
-    b1 = None
-    ExtrudeLBL = None
-    run_Once = False
-    endVector = None
-    startVector = None
-    extrudeLength = 0.001  # This will be the Delta-mouse position
-    # We will make two object, one for visual effect and the other is the original
-    selectedObj = None
-    direction = None
-    # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
-    targetFace = None
-    newObject = None
-    DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
-    OperationOption = 0  # default is zero
-    objChangedTransparency = []
-    WasFaceFrom3DObject = False
-    mouseToArrowDiff = None 
+    def __init__(self):
+        self._vector = App.Vector(0.0, 0.0, 0.0)
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.smartInd = None
+        self._mywin = None
+        self.b1 = None
+        self.ExtrudeLBL = None
+        self.run_Once = False
+        self.endVector = None
+        self.startVector = None
+        self.extrudeLength = 0.001  # This will be the Delta-mouse position
+        # We will make two object, one for visual effect and the other is the original
+        self.selectedObj = None
+        self.direction = None
+        # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
+        self.targetFace = None
+        self.newObject = None
+        self.DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
+        self.OperationOption = 0  # default is zero
+        self.objChangedTransparency = []
+        self.WasFaceFrom3DObject = False
+        self.mouseToArrowDiff = None 
+
     def reCreateExtrudeObject(self):
         """
         [

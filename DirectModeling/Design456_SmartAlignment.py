@@ -100,27 +100,28 @@ class Design456_SmartAlignment:
         Apply Alignment to any 3D object by selecting the object, a Face or one or multiple edges 
         Radius of the Alignment is counted by dragging the arrow towards the negative Z axis.
     """
-    _vector = App.Vector(0.0, 0.0, 0.0)
-    mw = None
-    dialog = None
-    tab = None
-    smartInd = None
-    _mywin = None
-    b1 = None
-    AlignmentLBL = None
-    run_Once = False
-    endVector = None
-    startVector = None
-    # We will make two object, one for visual effect and the other is the original
-    selectedObj = []
-    # 0 is the original    1 is the fake one (just for interactive effect)
-    mouseToArrowDiff = 0.0
-    offset=0.0
-    AwayFrom3DObject = 10  # Use this to take away the arrow from the object
-    AlignmentRadius = 0.00001   #We cannot have zero. TODO: What value we should use? FIXME:
-    objectType = None  # Either shape, Face or Edge.
-    Originalname = ''
-    direction=None
+    def __init__(self):
+        self._vector = App.Vector(0.0, 0.0, 0.0)
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.smartInd = None
+        self._mywin = None
+        self.b1 = None
+        self.AlignmentLBL = None
+        self.run_Once = False
+        self.endVector = None
+        self.startVector = None
+        # We will make two object, one for visual effect and the other is the original
+        self.selectedObj = []
+        # 0 is the original    1 is the fake one (just for interactive effect)
+        self.mouseToArrowDiff = 0.0
+        self.offset=0.0
+        self.AwayFrom3DObject = 10  # Use this to take away the arrow from the object
+        self.AlignmentRadius = 0.00001   #We cannot have zero. TODO: What value we should use? FIXME:
+        self.objectType = None  # Either shape, Face or Edge.
+        self.Originalname = ''
+        self.direction=None
 
  
     def Activated(self):

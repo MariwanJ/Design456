@@ -114,7 +114,7 @@ class InstrumentationTimer():
         self.__m_Stopped = False
         self.__m_Name = name
         self.__m_StartTimepoint =  datetime.datetime.now().microsecond #time.time_ns()
-        self.current=None
+        self.current = None
 
     def __del__(self):
         print("Destructor")

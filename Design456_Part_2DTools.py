@@ -37,9 +37,9 @@ from draftutils.translate import translate  # for translation
 
 
 class GenCommandForPartUtils:
-    localShapeName = ""
-
-    typeOfCommand = 0
+    def __init__(self):
+        self.localShapeName = ""
+        self.typeOfCommand = 0
 
     def DoCommand(self, typeOfCommand):
         self.typeOfCommand = typeOfCommand

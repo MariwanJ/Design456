@@ -167,11 +167,12 @@ class Design456_SmartScale:
         Resize any 3D object by resizing each sides (x,y,z)
         Simple and interactive way to resize precisely any shape.
     """
-    _mywin = None
-    smartInd = []
-    dialog = None
-    tab = None
-    mw = None
+    def __init__(self):
+        self._mywin = None
+        self.smartInd = []
+        self.dialog = None
+        self.tab = None
+        self.mw = None
 
     def returnVectorsFromBoundaryBox(self, selected):
         # Max object length in all directions

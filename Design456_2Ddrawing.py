@@ -518,7 +518,7 @@ class ViewProviderBox:
     obj_name = "Star"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = obj_name
+        self.obj_name = ViewProviderBox.obj_name
         obj.Proxy = self
 
     def attach(self, obj):

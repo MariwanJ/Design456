@@ -36,23 +36,23 @@ from ThreeDWidgets.constant import FR_BRUSHES, FR_COLOR
 
 
 class Design456_Hole:
-
-    mw = None
-    dialog = None  # Dialog for the tool
-    tab = None  # Tabs
-    smartInd = None  # ?
-    _mywin = None                           #
-    b1 = None                               #
-    HoleLBL = None  # Label
-    # current created shape (circle, square, triangles,..etc)
-    currentObj = None
-    FoundObjects = None
-    selectedObj = None
-    finishedObj = None
-    # This should take care of applying the hole command to the objects
-    # two things must be done:
-    # 1-Fusion for the tool (cutting objects)
-    # 2-Fusion for the base objects.
+    def __init__(self):
+        self.mw = None
+        self.dialog = None  # Dialog for the tool
+        self.tab = None  # Tabs
+        self.smartInd = None  # ?
+        self._mywin = None                           #
+        self.b1 = None                               #
+        self.HoleLBL = None  # Label
+        # current created shape (circle, square, triangles,..etc)
+        self.currentObj = None
+        self.FoundObjects = None
+        self.selectedObj = None
+        self.finishedObj = None
+        # This should take care of applying the hole command to the objects
+        # two things must be done:
+        # 1-Fusion for the tool (cutting objects)
+        # 2-Fusion for the base objects.
 
     def applyHole(self):
         """[Create cut object and create fusion if there are several objects for tool and base]

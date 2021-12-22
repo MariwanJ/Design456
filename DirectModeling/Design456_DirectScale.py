@@ -283,21 +283,23 @@ class Design456_DirectScale:
     Direct scaling of any 3D Object by dragging either uniform arrow or
     un-uniform arrows.
     """
-    mw = None
-    dialog = None
-    tab = None
-    smartInd = []
-    _mywin = None
-    b1 = None
-    scaleLBL = None
-    run_Once = False
-    endVector = None
-    startVector = None
-    # We will make two object, one for visual effect and the other is the original
-    selectedObj = []
-    # 0 is the original    1 is the fake one (just for interactive effect)
-    mouseToArrowDiff = None
-    mmAwayFrom3DObject = 5  # Use this to take away the arrow from the object
+    def __init__(self):
+        self.mw = None
+        self.dialog = None
+        self.tab = None
+        self.smartInd = []
+        self._mywin = None
+        self.b1 = None
+        self.scaleLBL = None
+        self.run_Once = False
+        self.endVector = None
+        self.startVector = None
+        # We will make two object, one for visual effect and the other is the original
+        self.selectedObj = []
+        # 0 is the original    1 is the fake one (just for interactive effect)
+        self.mouseToArrowDiff = None
+        self.mmAwayFrom3DObject = 5  # Use this to take away the arrow from the object
+    
     def getObjectLength(self, whichOne=1):
         """ 
             get Max length of the 3D object by taking the 

@@ -45,75 +45,76 @@ class Design456_Paint:
     ]
 
     """
-    brushType: FR_BRUSHES = FR_BRUSHES.FR_SQUARE_BRUSH
-    mw = None
-    dialog = None  # Dialog for the tool
-    tab = None  # Tabs
-    smartInd = None  # ?
-    _mywin = None                           #
-    b1 = None                               #
-    PaintLBL = None  # Label
-    pl = App.Placement()
-    pl.Rotation.Q = (0.0, 0.0, 0.0, 1.0)  # Initial position
-    # Initial position - will be changed by the mouse
-    pl.Base = App.Vector(0.0, 0.0, 0.0)
-    AllObjects = []  # Merged shapes
-    lstBrushSize = None  # GUI combobox -brush size
-    lstBrushType = None  # GUI combobox -brush type
-    # current created shape (circle, square, triangles,..etc)
-    currentObj = None
-    view = None  # used for captureing mouse events
-    Observer = None  # Used for captureing mouse events
-    continuePainting = True
-    brushSize = 1  # Brush Size
-    brushType = 0
-    resultObj = None  # Extruded shape
-    runOnce = False  # Create the merge object once only
-    MoveMentDirection = 'A'
-    firstSize = 0.1
-    # used to correct the Placement of the final object
-    AverageDistanceToOrigion = App.Vector(0, 0, 0)
-    # List of the shapes - to add more add it here, in constant and make
-    # an "if" statement and a function to draw it
-    listOfDrawings = ["CIRCLE",
-                      "SEMI_CIRCLE",
-                      "QUARTER_CIRCLE",
-                      "OVAL1",
-                      "OVAL2",
-                      "EGG",
-                      "TRIANGLE",
-                      "RIGHT_TRIANGLE",
-                      "SCALENE_TRIANGLE",
-                      "SQUARE",
-                      "EQUALSIDES_PARALLELOGRAM1",
-                      "EQUALSIDES_PARALLELOGRAM2",
-                      "RECTANGLE1",
-                      "RECTANGLE2",
-                      "PARALLELOGRAM1",
-                      "PARALLELOGRAM2",
-                      "RHOMBUS",
-                      "PENTAGON",
-                      "HEXAGON",
-                      "HEPTAGON",
-                      "OCTAGON",
-                      "ENNEAGON",
-                      "DECAGON",
-                      "ARROW1",
-                      "ARROW2",
-                      "ARROW3",
-                      "ARROW4",
-                      "STAR1",
-                      "STAR2",
-                      "STAR3",
-                      "MOON1",
-                      "MOON2",
-                      "MOON3",
-                      "MOON4",
-                      "FILLET1",
-                      "FILLET2",
-                      "FILLET3",
-                      "FILLET4",
-                      ]
+    def __init__(self):
+        self.brushType: FR_BRUSHES = FR_BRUSHES.FR_SQUARE_BRUSH
+        self.mw = None
+        self.dialog = None  # Dialog for the tool
+        self.tab = None  # Tabs
+        self.smartInd = None  # ?
+        self._mywin = None                           #
+        self.b1 = None                               #
+        self.PaintLBL = None  # Label
+        self.pl = App.Placement()
+        self.pl.Rotation.Q = (0.0, 0.0, 0.0, 1.0)  # Initial position
+        # Initial position - will be changed by the mouse
+        self.pl.Base = App.Vector(0.0, 0.0, 0.0)
+        self.AllObjects = []  # Merged shapes
+        self.lstBrushSize = None  # GUI combobox -brush size
+        self.lstBrushType = None  # GUI combobox -brush type
+        # current created shape (circle, square, triangles,..etc)
+        self.currentObj = None
+        self.view = None  # used for captureing mouse events
+        self.Observer = None  # Used for captureing mouse events
+        self.continuePainting = True
+        self.brushSize = 1  # Brush Size
+        self.brushType = 0
+        self.resultObj = None  # Extruded shape
+        self.runOnce = False  # Create the merge object once only
+        self.MoveMentDirection = 'A'
+        self.firstSize = 0.1
+        # used to correct the Placement of the final object
+        self.AverageDistanceToOrigion = App.Vector(0, 0, 0)
+        # List of the shapes - to add more add it here, in constant and make
+        # an "if" statement and a function to draw it
+        self.listOfDrawings = ["CIRCLE",
+                          "SEMI_CIRCLE",
+                          "QUARTER_CIRCLE",
+                          "OVAL1",
+                          "OVAL2",
+                          "EGG",
+                          "TRIANGLE",
+                          "RIGHT_TRIANGLE",
+                          "SCALENE_TRIANGLE",
+                          "SQUARE",
+                          "EQUALSIDES_PARALLELOGRAM1",
+                          "EQUALSIDES_PARALLELOGRAM2",
+                          "RECTANGLE1",
+                          "RECTANGLE2",
+                          "PARALLELOGRAM1",
+                          "PARALLELOGRAM2",
+                          "RHOMBUS",
+                          "PENTAGON",
+                          "HEXAGON",
+                          "HEPTAGON",
+                          "OCTAGON",
+                          "ENNEAGON",
+                          "DECAGON",
+                          "ARROW1",
+                          "ARROW2",
+                          "ARROW3",
+                          "ARROW4",
+                          "STAR1",
+                          "STAR2",
+                          "STAR3",
+                          "MOON1",
+                          "MOON2",
+                          "MOON3",
+                          "MOON4",
+                          "FILLET1",
+                          "FILLET2",
+                          "FILLET3",
+                          "FILLET4",
+                          ]
 
     def setSize(self):
         """
