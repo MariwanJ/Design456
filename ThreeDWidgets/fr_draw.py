@@ -41,6 +41,9 @@ from pivy import coin
 
 @dataclass
 class userDataObject:
+    __slots__ = ['Vectors', 'Scale', 'Radius', 'Height',
+                 'Color', 'LineWidth', 'Opacity', 
+                 'Rotation']
     def __init__(self):
         """
             Data object used to simplify sending data to different drawing objects.
@@ -51,7 +54,7 @@ class userDataObject:
         self.Height: float = 0.0                                # height
         self.Color: List[float, float, float] = []              # color
         self.LineWidth: float = 1.0                             # drawing line width
-        self.Transparency: float = 50.0                         # transparency
+        self.Opacity: float = 50.0                         # transparency
         self.Rotation: List[(float, float, float), float] = []  # rotation axis and angle 
 
 """

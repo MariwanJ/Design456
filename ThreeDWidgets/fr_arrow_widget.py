@@ -65,6 +65,7 @@ wny.show()                    # show the window and it's widgets.
 # class object will be used as object holder between arrow widget and the callback
 @dataclass
 class userDataObject:
+    __slots__ = ['ArrowObj', 'events', 'callerObject']
     def __init__(self):
         self.ArrowObj = None     # the arrow widget object
         self.events = None     # events - save handle events here

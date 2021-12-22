@@ -109,6 +109,8 @@ mywin.show()
 
 @dataclass
 class userDataObject:
+    __slots__ = ['discObj', 'events', 'callerObject', 'Axis_cb',
+                 'Disc_cb']
 
     def __init__(self):
         self.discObj      =   None    # Class/Tool uses

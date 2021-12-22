@@ -67,7 +67,7 @@ mywin.show()
 
 @dataclass
 class userDataObject:
-
+    __slots__ = ['wheelObj', 'events', 'callerObject']
     def __init__(self):
         self.wheelObj = None      # the wheel widget object
         self.events = None        # events - save handle events here

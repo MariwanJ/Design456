@@ -110,13 +110,15 @@ mywin.show()
 
 @dataclass
 class userDataObject:
-
+    __slots__ = ['discObj', 'events', 'callerObject', 'Axis_cb',
+                 'Disc_cb']
     def __init__(self):
         self.discObj = None    # Class/Tool uses
         self.events = None    # events - save handle events here
         self.callerObject = None    #
         self.Axis_cb = False   # Disallow running callback - Arrows
         self.Disc_cb = False   # Disallow running callback - discs.
+        
 # *******************************CALLBACKS - DEMO *****************************
 
 
@@ -666,9 +668,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                                                      self.w_Scale, self.Opacity,
                                                      ZpreRotValdisc)  # BLUE
 
-            self.w_userData.RotaryDisc = [self.w_XdiscSeparator,
-                                          self.w_YdiscSeparator,
-                                          self.w_ZdiscSeparator]
+            # self.w_userData.RotaryDisc = [self.w_XdiscSeparator,
+            #                               self.w_YdiscSeparator,
+            #                               self.w_ZdiscSeparator]
 
             transformRot = coin.SoTransform()
             separtorAll = coin.SoSeparator()
