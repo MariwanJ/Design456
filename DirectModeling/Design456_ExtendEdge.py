@@ -492,12 +492,12 @@ class Design456_ExtendEdge:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def MouseMovement_cb(self, userData=None):
-
+        print("MouseMovement_cb")
         events = userData.events
         if type(events) != int:
             print("event was not int")
             return
-        
+        print(self.discObj.w_userData.Axis_cb," Mouse move Axis_cb")
         if self.discObj.w_userData.Axis_cb is False:
             if self.discObj.w_userData.Disc_cb is True:
                 self.callback_Rotate()

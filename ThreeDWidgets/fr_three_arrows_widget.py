@@ -112,11 +112,11 @@ mywin.show()
 class userDataObject:
 
     def __init__(self):
-        self.discObj      =   None    # Class/Tool uses
-        self.events       =   None    # events - save handle events here
-        self.callerObject =   None    # 
-        self.Axis_cb       =   False   # Disallow running callback - Arrows
-        self.Disc_cb       =   False   # Disallow running callback - discs.
+        self.discObj = None    # Class/Tool uses
+        self.events = None    # events - save handle events here
+        self.callerObject = None    #
+        self.Axis_cb = False   # Disallow running callback - Arrows
+        self.Disc_cb = False   # Disallow running callback - discs.
 # *******************************CALLBACKS - DEMO *****************************
 
 
@@ -196,17 +196,6 @@ def callback(userData: userDataObject = None):
 # *************************************************************
 
 
-def callback(userData: userDataObject = None):
-    """
-        This function executes when lblCallbak 
-        or general widget callback occurs
-    """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy callback")
-
-# *************************************************************
-
-
 class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     """
@@ -231,7 +220,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                  _distanceBetweenThem: float = 5.0):
         super().__init__(vectors, label)
 
-        self.w_lbluserData = fr_widget.propertyValues()
+        self.w_lbluserData = fr_widget.propertyValues()  # Only for label
         self.w_widgetType = constant.FR_WidgetType.FR_THREE_DISC
         # General widget callback (mouse-button) function - External function
         self.w_callback_ = callback
@@ -270,11 +259,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                            [j * 1.2 for j in self.w_color[1]],
                            [k * 1.2 for k in self.w_color[2]]]
         self.w_Scale = _scale
-        self.w_inactiveColor = [[i * 0.5 for i in self.w_color[0]],
-                                [j * 0.5 for j in self.w_color[1]],
-                                [k * 0.5 for k in self.w_color[2]]]
+        self.w_inactiveColor = [[i * 0.7 for i in self.w_color[0]],
+                                [j * 0.7 for j in self.w_color[1]],
+                                [k * 0.7 for k in self.w_color[2]]]
 
-        self.w_userData = userDataObject()  # Keep info about the widget
+        self.w_userData = userDataObject()  # Keep info about the whole widget
         self.w_userData.discObj = self
         self.w_discAngle = [0.0, 0.0, 0.0]      # Only disc rotation.
         self.oldAngle = [0.0, 0.0, 0.0]
@@ -312,7 +301,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.YreleaseDragDisc = -1
         self.ZreleaseDragDisc = -1
 
-        # -1 no click, 0 mouse clicked, 1 mouse dragging
         self.run_Once = [False, False, False]
         self.startVector = [0.0, 0.0, 0.0]
         self.endVector = [0.0, 0.0, 0.0]
@@ -421,8 +409,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 return 1
             # X-Axis
             elif ((
-                (XclickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                and (self.XreleaseDragAxis == 0)):
+                    (XclickwdgdNode[0] is True) or (clickwdglblNode is not None))
+                    and (self.XreleaseDragAxis == 0)):
                 self.XreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.XreleaseDragDisc = -1
                 self.take_focus()
@@ -1195,34 +1183,37 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             # normal callback This represent the whole widget.
             # Use this to finalize the action.
             self.do_callbacks()
-
+            return
+        
+        print(self.w_userData.Axis_cb,"Axis_cb", callbackType)
+        
         if (callbackType == 1 or callbackType == 3 or callbackType == 5):
-            self.w_userData.Axis_cb=True
-            self.w_userData.Disc_cb=False
+            self.w_userData.Axis_cb = True
+            self.w_userData.Disc_cb = False
         elif(callbackType == 2 or callbackType == 4 or callbackType == 6):
-            self.w_userData.Axis_cb=False
-            self.w_userData.Disc_cb=True
+            self.w_userData.Axis_cb = False
+            self.w_userData.Disc_cb = True
 
         # Move callback - XAxis
         elif(callbackType == 1):
-            self.w_xAxis_cb_(self.w_userData)            
-        elif(callbackType == 2 and self.w_discEnabled[0] is True):
+            self.w_xAxis_cb_(self.w_userData)
+        elif(callbackType == 2):
             # Rotation callback - Disc
             self.w_discXAxis_cb_(self.w_userData)
 
         # Move callback - YAxis
         elif(callbackType == 3):
             self.w_yAxis_cb_(self.w_userData)
-        elif(callbackType == 4 and self.w_discEnabled[1] is True):
+        elif(callbackType == 4):
             # Rotation callback - Disc
             self.w_discYAxis_cb_(self.w_userData)
+            
         # Move callback - ZAxis
         elif(callbackType == 5):
             self.w_zAxis_cb_(self.w_userData)
-        elif(callbackType == 6 and self.w_discEnabled[2] is True):
+        elif(callbackType == 6):
             # Rotation callback - Disc
             self.w_discZAxis_cb_(self.w_userData)
-
 
     def enableDiscs(self):
         self.w_discEnabled = [True, True, True]
