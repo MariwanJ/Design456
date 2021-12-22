@@ -412,7 +412,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                                                             self.w_rotaryDisc_color,
                                                             self.w_Scale, self.Opacity,
                                                             preRotValdisc)  # RED
-                    self.w_userData.RotaryDisc = self.w_discSeparator
+                    # self.w_userData.RotaryDisc = self.w_discSeparator
 
                 CollectThemAllRot = coin.SoTransform()
                 CollectThemAll = coin.SoSeparator()

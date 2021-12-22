@@ -111,7 +111,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_rotation = _rotation  # (x,y,z), Angle
         self.w_userData = userDataObject()   # Keep info about the widget
         self.w_userData.ArrowObj = self
-        self.w_userData.color = _color
         self.releaseDrag = -1  # -1 mouse no clicked not dragging, 0 is clicked, 1 is dragging
         self.arrowType = _arrowType  # 0 3D Default , 1= 2D, 2=2D
         self.w_lbluserData = fr_widget.propertyValues()

@@ -106,6 +106,31 @@ class Fr_Widget (object):
     #  different tasks. run do_callback, do_lblcallback,                   #
     #  w_move_callback, w_KB_Callback activates them.                      #
     # ######################################################################
+    __slots__ =['w_vector',
+                'w_label',
+                'w_visible',
+                'w_bkgColor',
+                'w_color',
+                'w_inactiveColor',
+                'w_selColor',
+                'w_box',
+                'w_active',
+                'w_parent',
+                'w_widgetType',
+                'w_hasFocus',
+                'w_lbluserData',
+                'w_pick_radius',
+                'w_widgetSoNodes',
+                'w_widgetlblSoNodes',
+                'w_wdgsoSwitch',
+                'w_when',
+                'w_userData',
+                'w_label',
+                'w_lineWidth',
+                'w_callback_',
+                'w_lbl_calback_',
+                'w_move_callback_',
+                'w_KB_callback_'   ]
 
     def __init__(self, args: List[App.Vector] = [], label: str = [[]]):
         # All Class variables which are not static should be here
