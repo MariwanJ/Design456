@@ -48,12 +48,13 @@ class mouseDimension:
     
     """[Static variables used for keeping mouse coordinators and position]
     """
-    global Coin_x
-    global Coin_y
-    global Coin_z
-    global Qt_x
-    global Qt_y
-    global pos
+    def __init__(self):
+        self.Coin_x = None
+        self.Coin_y = None
+        self.Coin_z = None
+        self.Qt_x = None
+        self.Qt_y = None
+        self.pos = None
 
 
 # Implementation of double click detection
@@ -71,7 +72,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     """
     # This is the holder of all objects.It should be here not inside the Fr_Group
     # this is the root scenegraph. It keeps all switch. Switches will keep drawing
-    w_countMouseCLICK= 0.0
+    w_countMouseCLICK = 0.0
     def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
             400, 400, 0)], label: str = [[]]):
         super().__init__(vectors, label)

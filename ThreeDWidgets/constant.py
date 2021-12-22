@@ -29,7 +29,7 @@ import os
 import sys
 # Widgets type. QT widget will get QT in their names.
 
-#Implemented only for COIN3D. 
+#Implemented only for COIN3D.
 class FR_WidgetType:
     """ Internal names of the widgets. QT widget will get 'qt' in their names """
     FR_WIDGET = "Base Widget"
@@ -486,18 +486,3 @@ class FR_BRUSHES:
     FR_FILLET2_BRUSH                        =  35
     FR_FILLET3_BRUSH                        =  36
     FR_FILLET4_BRUSH                        =  37
-
-class FR_ROTATION:
-    """[Used to indicate the direction of 
-    rotation for the wheel and pad widget]
-    
-        Rotation:  1) From -Y to +Y --> when X is Positive              Angle Decrease
-                   2) From -Y to +Y --> when X is Negative              Angle Increase
-                   3) From +Y to -Y --> when X is Negative              Angle Decrease
-                   4) From +Y to -Y --> when X is Positive              Angle Increase    
-    """
-    FR_UNDEFINED                    = -1
-    FR_YMINUS_YPLUS_XPLUS           =  0        # Angle Decrease
-    FR_YMINUS_YPLUS_XMINUS          =  1        # Angle Increase
-    FR_YPLUS_YMINUS_XPLUS           =  2        # Angle Decrease
-    FR_YPLUS_YMINUS_XMINUS          =  3        # Angle Increase
