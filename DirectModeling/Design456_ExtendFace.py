@@ -58,21 +58,22 @@ class Design456_ExtendFace:
     """[Extend the face's position to a new position.
      This will affect the faces share the face.]
      """
+
     def __init__(self):
         self._Vector = None
         self.mw = None
         self.dialog = None
         self.tab = None
-        self.padObj = None
+        self.discObj = None
         self.w_rotation = None
         self._mywin = None
         self.b1 = None
         self.TweakLBL = None
         self.RotateLBL = None
-        #coin3D
+        # coin3D
         self.endVector = None
         self.startVector = None
-        #Qt
+        # Qt
         self.endVectorQT = None
         self.startVectorQT = None
 
@@ -87,7 +88,7 @@ class Design456_ExtendFace:
         self.selectedObj = None
         self.selectedFace = None
         # Original vectors that will be changed by mouse.
-        self.oldEdgeVertexes = None
+        self.oldFaceVertexes = None
         self.newFaceVertexes = None
         self.newFace = None      # Keep new vectors for the moved old face-vectors
 
@@ -98,6 +99,7 @@ class Design456_ExtendFace:
         self.FirstLocation = None
         self.coinFaces = None
         self.sg = None  # SceneGraph
+        self.discObj = None
 
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
@@ -179,11 +181,10 @@ class Design456_ExtendFace:
             self.sg.removeChild(self.coinFaces)
             for i in range(0, len(self.savedVertices)):
                 for j in range(0, len(self.savedVertices[i])):
-                    for testItem in range(0, len(self.oldEdgeVertexes)):
-                        if self.savedVertices[i][j].Point == self.oldEdgeVertexes[testItem].Point:
+                    for testItem in range(0, len(self.oldFaceVertexes)):
+                        if self.savedVertices[i][j].Point == self.oldFaceVertexes[testItem].Point:
                             self.savedVertices[i][j] = self.newFaceVertexes[testItem]
-                            break #we are done
-
+                            break  # we are done
 
             # We have the new vertices
             self.coinFaces.removeAllChildren()
@@ -194,7 +195,7 @@ class Design456_ExtendFace:
                 self.coinFaces.addChild(draw_FaceSet(
                     a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
             self.sg.addChild(self.coinFaces)
-            
+
         except Exception as err:
             App.Console.PrintError("'COIN_recreateObject Object' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -219,7 +220,7 @@ class Design456_ExtendFace:
                 _Newvertices = convert
                 newPolygon = _part.makePolygon(_Newvertices, True)
                 convert.clear()
-                newFace = _part.makeFilledFace(newPolygon.Edges)
+                newFace = _part.makeFilledFace(newPolygon.Faces)
                 if newFace.isNull():
                     raise RuntimeError('Failed to create face')
                 nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
@@ -268,16 +269,16 @@ class Design456_ExtendFace:
                 calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
                 rotation = [0, 1, 0, calAn]
                 print("no rotation")
-                
+
             else:
-                ang=face.Surface.Axis.getAngle(App.Vector(0,0,1))
-                rotation = [0, 0 , 1, ang]
+                ang = face.Surface.Axis.getAngle(App.Vector(0, 0, 1))
+                rotation = [0, 0, 1, ang]
 
             d = self.tweakLength
 
             self.FirstLocation = yL + d * nv  # the 3 arrows-disc
-            
-            if self.oldEdgeVertexes[0].Point.z > self.selectedObj.Shape.BoundBox.ZMin:
+
+            if self.oldFaceVertexes[0].Point.z > self.selectedObj.Shape.BoundBox.ZMin:
                 self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMax
             else:
                 self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin
@@ -360,13 +361,13 @@ class Design456_ExtendFace:
             self.saveVertices()
 
             if(hasattr(self.selectedFace, "Vertexes")):
-                self.oldEdgeVertexes = self.selectedFace.OuterWire.OrderedVertexes
-            if not hasattr(self.selectedFace, 'Edges'):
+                self.oldFaceVertexes = self.selectedFace.OuterWire.OrderedVertexes
+            if not hasattr(self.selectedFace, 'Faces'):
                 raise Exception("Please select only one face and try again")
-            #TODO: FIXME: WHAT SHOULD WE DO WHEN IT IS A CURVED FACE???
-            #if not(type(self.selectedFace.Curve) == _part.Line or
+            # TODO: FIXME: WHAT SHOULD WE DO WHEN IT IS A CURVED FACE???
+            # if not(type(self.selectedFace.Curve) == _part.Line or
             #       type(self.selectedFace.Curve) == _part.BezierCurve):
-            #    msg = "Curve edges are not supported yet"
+            #    msg = "Curve Faces are not supported yet"
             #    faced.errorDialog(msg)
             #    self.hide()
 
@@ -381,40 +382,41 @@ class Design456_ExtendFace:
                 translate("Design456", "ExtendFace"))
 
             # Deside how the Degree pad be drawn
-            self.padObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
-                                                # label
-                                                [(str(round(self.w_rotation[0], 2)) + "°"+
-                                                 str(round(self.w_rotation[1], 2)) + "°"+
-                                                 str(round(self.w_rotation[2], 2)) + "°") ,],
-                                                FR_COLOR.FR_WHITE,  # lblcolor
-                                                [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
+            self.discObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
+                                                 # label
+                                                 [(str(round(self.w_rotation[0], 2)) + "°" +
+                                                   str(round(self.w_rotation[1], 2)) + "°" +
+                                                   str(round(self.w_rotation[2], 2)) + "°"), ],
+                                                 FR_COLOR.FR_WHITE,  # lblcolor
+                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
-                                                [0, 0, 0,0],  # rotation of the disc main
-                                                self.setupRotation,  # setup rotation
-                                                [15.0, 15.0, 15.0],  # scale
-                                                1,  # type
-                                                0,  # opacity
-                                                10)  # distance between them
-            self.padObj.enableDiscs()
-            
+                                                 # rotation of the disc main
+                                                 [0, 0, 0, 0],
+                                                 self.setupRotation,  # setup rotation
+                                                 [15.0, 15.0, 15.0],  # scale
+                                                 1,  # type
+                                                 0,  # opacity
+                                                 10)  # distance between them
+            self.discObj.enableDiscs()
+
             # Different callbacks for each action.
-            self.padObj.w_xAxis_cb_ = self.MouseMovement_cb
-            self.padObj.w_yAxis_cb_ = self.MouseMovement_cb
-            self.padObj.w_zAxis_cb_ = self.MouseMovement_cb
+            self.discObj.w_xAxis_cb_ = self.MouseMovement_cb
+            self.discObj.w_yAxis_cb_ = self.MouseMovement_cb
+            self.discObj.w_zAxis_cb_ = self.MouseMovement_cb
 
-            self.padObj.w_discXAxis_cb_ = self.callback_Rotate
-            self.padObj.w_discYAxis_cb_ = self.callback_Rotate
-            self.padObj.w_discZAxis_cb_ = self.callback_Rotate
+            self.discObj.w_discXAxis_cb_ = self.callback_Rotate
+            self.discObj.w_discYAxis_cb_ = self.callback_Rotate
+            self.discObj.w_discZAxis_cb_ = self.callback_Rotate
 
-            self.padObj.w_callback_ = self.callback_release
-            self.padObj.w_userData.callerObject = self
+            self.discObj.w_callback_ = self.callback_release
+            self.discObj.w_userData.callerObject = self
 
             self.COIN_recreateObject()
 
             if self._mywin is None:
                 self._mywin = win.Fr_CoinWindow()
 
-            self._mywin.addWidget(self.padObj)
+            self._mywin.addWidget(self.discObj)
             mw = self.getMainWindow()
             self._mywin.show()
 
@@ -517,55 +519,58 @@ class Design456_ExtendFace:
         if type(events) != int:
             print("event was not int")
             return
-
-        if self.padObj.w_userData.Axis is None:
-            if self.padObj.w_userData.padAxis is not None:
+        print(self.discObj.w_userData.Axis_cb, " Mouse move Axis_cb")
+        if self.discObj.w_userData.Axis_cb is False:
+            if self.discObj.w_userData.Disc_cb is True:
                 self.callback_Rotate()
                 return
             else:
                 return  # We cannot allow this tool
 
-        self.endVector = App.Vector(self.padObj.w_parent.w_lastEventXYZ.Coin_x,
-                                    self.padObj.w_parent.w_lastEventXYZ.Coin_y,
-                                    self.padObj.w_parent.w_lastEventXYZ.Coin_z)
+        self.endVector = App.Vector(self.discObj.w_parent.w_lastEventXYZ.Coin_x,
+                                    self.discObj.w_parent.w_lastEventXYZ.Coin_y,
+                                    self.discObj.w_parent.w_lastEventXYZ.Coin_z)
         if self.run_Once is False:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
+            self.mouseToArrowDiff = self.endVector.sub(
+                self.discObj.w_vector[0])
 
+        MovementLength = self.endVector.sub(self.mouseToArrowDiff)
         self.tweakLength = round((
-            self.endVector - (self.startVector+self._Vector)).dot(self.normalVector), 1)
+            MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
 
         if abs(self.oldTweakLength-self. tweakLength) < 1:
             return  # we do nothing
         self.TweakLBL.setText(
             "Length = " + str(round(self.tweakLength, 1)))
         # must be tuple
-        self.padObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
-        self.padObj.lblRedraw()
-        self.oldEdgeVertexes = self.newFaceVertexes
-        if self.padObj.w_userData.Axis == 'X':
-            self.newFace.Placement.Base.x = self.endVector.x
-            self.padObj.w_vector[0].x = self.endVector.x
-        elif self.padObj.w_userData.Axis == 'Y':
-            self.newFace.Placement.Base.y = self.endVector.y
-            self.padObj.w_vector[0].y = self.endVector.y
-        elif self.padObj.w_userData.Axis == 'Z':
-            self.newFace.Placement.Base.z = self.endVector.z
-            self.padObj.w_vector[0].z = self.endVector.z
+        self.discObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
+        self.discObj.lblRedraw()
+        self.oldFaceVertexes = self.newFaceVertexes
+        if self.discObj.w_userData.discObj.axisType == 'X':
+            self.newFace.Placement.Base.x = MovementLength.x
+            self.discObj.w_vector[0].x = MovementLength.x
+        elif self.discObj.w_userData.discObj.axisType == 'Y':
+            self.newFace.Placement.Base.y = MovementLength.y
+            self.discObj.w_vector[0].y = MovementLength.y
+        elif self.discObj.w_userData.discObj.axisType == 'Z':
+            self.newFace.Placement.Base.z = MovementLength.z
+            self.discObj.w_vector[0].z = MovementLength.z
         else:
             # nothing to do here  #TODO : This shouldn't happen
             return
 
-        self.newFaceVertexes = self.newFace.Shape.OuterWire.OrderedVertexes
+        self.newFaceVertexes = self.newFace.Shape.Vertexes
         self.COIN_recreateObject()
-        self.padObj.redraw()
+        self.discObj.redraw()
 
-    def callback_release(self, userData:userDataObject = None):
+    def callback_release(self, userData: userDataObject = None):
         try:
             events = userData.events
             print("mouse release")
-            self.padObj.remove_focus()
+            self.discObj.remove_focus()
             self.run_Once = False
 
         except Exception as err:
@@ -575,53 +580,20 @@ class Design456_ExtendFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def smartlbl_callback(self,userData:userDataObject = None):
+    def smartlbl_callback(self, userData: userDataObject = None):
         print("lbl callback")
         pass
-        
-    def callback_Rotate(self, userData:userDataObject = None):
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+    def callback_Rotate(self, userData: userDataObject = None):
 
         if (self.RotateLBL is not None):
             self.RotateLBL.setText("Rotation Axis= " + "(" +
-                                        str(self.w_rotation[0])+","
-                                        + str(self.w_rotation[1]) +
-                                        "," +
-                                        str(self.w_rotation[2]) + ")"
-                                        + "\nRotation Angle= " + str(angle) + " °")
+                                   str(self.w_rotation[0])+","
+                                   + str(self.w_rotation[1]) +
+                                   "," +
+                                   str(self.w_rotation[2]) + ")"
+                                   + "\nRotation Angle= " + str(angle) + " °")
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         print("Not impolemented ")
 
     def hide(self):
@@ -655,13 +627,13 @@ class Design456_ExtendFace:
             Remove all objects from memory even fr_coinwindow
         """
         try:
-            self.padObj.hide()
-            self.padObj.__del__()  # call destructor
+            self.discObj.hide()
+            self.discObj.__del__()  # call destructor
             if self._mywin is not None:
                 self._mywin.hide()
                 del self._mywin
                 self._mywin = None
-            del self.padObj
+            del self.discObj
             self.mw = None
             self.dialog = None
             self.tab = None
@@ -684,7 +656,7 @@ class Design456_ExtendFace:
             del self.selectedFace
             del self.savedVertices
             del self.newFaceVertexes
-            del self.oldEdgeVertexes
+            del self.oldFaceVertexes
             self.coinFaces.removeAllChildren()
             del self.coinFaces
             self.sg.removeChild(self.coinFaces)

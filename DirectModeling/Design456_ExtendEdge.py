@@ -540,7 +540,6 @@ class Design456_ExtendEdge:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def MouseMovement_cb(self, userData=None):
-        print("MouseMovement_cb")
         events = userData.events
         if type(events) != int:
             print("event was not int")

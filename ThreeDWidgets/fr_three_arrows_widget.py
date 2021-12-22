@@ -1200,32 +1200,32 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         if(callbackType == 1):
             self.axisType = 'X'
             self.w_xAxis_cb_(self.w_userData)
-            print("type 1")
+
         elif(callbackType == 2):
             # Rotation callback - Disc
             self.axisType = 'X'
             self.w_discXAxis_cb_(self.w_userData)
-            print("type 2")
+
         # Move callback - YAxis
         elif(callbackType == 3):
             self.axisType = 'Y'
             self.w_yAxis_cb_(self.w_userData)
-            print("type 3")
+
         elif(callbackType == 4):
             # Rotation callback - Disc
             self.axisType = 'Y'
             self.w_discYAxis_cb_(self.w_userData)
-            print("type 4")
+
         # Move callback - ZAxis
         elif(callbackType == 5):
             self.axisType = 'Z'
             self.w_zAxis_cb_(self.w_userData)
-            print("type 5")
+
         elif(callbackType == 6):
             # Rotation callback - Disc
             self.axisType = 'Z'
             self.w_discZAxis_cb_(self.w_userData)
-            print("type 6")
+
 
     def enableDiscs(self):
         self.w_discEnabled = [True, True, True]
