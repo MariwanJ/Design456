@@ -119,6 +119,7 @@ class userDataObject:
         self.callerObject = None    #
         self.Axis_cb = False   # Disallow running callback - Arrows
         self.Disc_cb = False   # Disallow running callback - discs.
+        self.axisType= None
 # *******************************CALLBACKS - DEMO *****************************
 
 
