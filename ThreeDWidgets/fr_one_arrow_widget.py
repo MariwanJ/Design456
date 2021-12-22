@@ -201,7 +201,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_rotaryDisc_color = _axisColor
         self.w_selColor = [i * 1.2 for i in self.w_color]
         self.w_Scale = _scale
-        self.w_inactiveColor = [i * 0.5 for i in self.w_selColor]
+        self.w_inactiveColor = [i * 0.7 for i in self.w_selColor]
 
         self.w_userData = userDataObject()  # Keep info about the widget
         self.w_userData.discObj = self

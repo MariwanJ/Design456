@@ -48,6 +48,7 @@ class mouseDimension:
     
     """[Static variables used for keeping mouse coordinators and position]
     """
+    __slots__ = ['Coin_x', 'Coin_y', 'Coin_z', 'Qt_x','Qt_y','pos']
     def __init__(self):
         self.Coin_x = None
         self.Coin_y = None
