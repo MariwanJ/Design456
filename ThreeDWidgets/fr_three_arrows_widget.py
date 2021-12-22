@@ -378,8 +378,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.XreleaseDragAxis = -1
                     self.do_callbacks(1)
                     return 1
-            else:  # None of them -- remove the focus
-                self.remove_focus()
+            # else:  # None of them -- remove the focus
+            #     self.remove_focus()
 
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
@@ -422,8 +422,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             # X-Axis
             elif ((
                 (XclickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                and (self.XreleaseDragAxis == 0)
-            ):
+                and (self.XreleaseDragAxis == 0)):
                 self.XreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.XreleaseDragDisc = -1
                 self.take_focus()
@@ -472,8 +471,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.YreleaseDragAxis = -1
                     self.do_callbacks(3)
                     return 1
-            else:  # None of them -- remove the focus
-                self.remove_focus()
+            # else:  # None of them -- remove the focus
+            #     self.remove_focus()
 
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
@@ -566,8 +565,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.ZreleaseDragAxis = -1
                     self.do_callbacks(5)
                     return 1
-            else:  # None of them -- remove the focus
-                self.remove_focus()
+            # else:  # None of them -- remove the focus
+            #     self.remove_focus()
 
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:

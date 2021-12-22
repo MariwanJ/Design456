@@ -45,6 +45,8 @@ This is a class for coin3D Window
 
 @dataclass
 class mouseDimension:
+    """[Static variables used for keeping mouse coordinators and position]
+    """
     global Coin_x
     global Coin_y
     global Coin_z

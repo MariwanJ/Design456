@@ -265,7 +265,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                                                  self.w_pick_radius, self.w_ArrowsSeparator) is not None):
             clickwdgdNode[0] = True
 
-        if self.w_discEnabled:
+        if self.w_discEnabled is True:
             if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                       self.w_pick_radius, self.w_discSeparator) is not None):
                 clickwdgdNode[1] = True
@@ -337,10 +337,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.take_focus()
                 return 1
             # Axis
-            elif ((
-                (clickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                  and (self.releaseDragAxis == 0)
-                  ) :
+            elif (((clickwdgdNode[0] is True) or (clickwdglblNode is not None))
+                  and (self.releaseDragAxis == 0)) :
                 self.releaseDragAxis = 1  # Drag  will continue, it will be a drag always
                 self.releaseDragDisc = -1
                 self.take_focus()
@@ -352,6 +350,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
                 self.do_callbacks(1)        # We use the same callback,
+                print (self.axisType,"..")
                 return 1
         # Don't care events, return the event to other widgets
         return 0  # We couldn't use the event .. so return 0
@@ -816,3 +815,11 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
                 self.w_userData.Axis_cb = False
                 self.w_userData.Disc_cb = True
                 self.w_rotary_cb_(self.w_userData)
+    
+    def setAxisType(self,_ntype = 'X'):
+        """[summary]
+
+        Args:
+            _ntype (str, optional): [setter for axis type]. Defaults to 'X'.
+        """
+        self.axisType = _ntype

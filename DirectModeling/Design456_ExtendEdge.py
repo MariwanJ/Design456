@@ -369,7 +369,7 @@ class Design456_ExtendEdge:
                                                 FR_COLOR.FR_WHITE,  # lblcolor
                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
-                                                [0.0, 0.0, 0.0, 0.0], #rotation
+                                                [0.0, 0.0, 0.0, 0.0], # rotation
                                                 self.setupRotation,  # setup rotation
                                                 [15.0, 15.0, 15.0],  # scale
                                                 0,  # type
