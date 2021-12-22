@@ -111,14 +111,14 @@ mywin.show()
 @dataclass
 class userDataObject:
     __slots__ = ['discObj', 'events', 'callerObject', 'Axis_cb',
-                 'Disc_cb']
+                 'Disc_cb', 'axisType']
+
     def __init__(self):
         self.discObj = None    # Class/Tool uses
         self.events = None    # events - save handle events here
         self.callerObject = None    #
         self.Axis_cb = False   # Disallow running callback - Arrows
         self.Disc_cb = False   # Disallow running callback - discs.
-        
 # *******************************CALLBACKS - DEMO *****************************
 
 
@@ -306,6 +306,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.run_Once = [False, False, False]
         self.startVector = [0.0, 0.0, 0.0]
         self.endVector = [0.0, 0.0, 0.0]
+        self.axisType = None
 
     def handle(self, event):
         """
@@ -354,22 +355,22 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
             # disc's part
+            # When the discs rotates, we don't accept
+            # the arrow dragging. Disk rotation has priority
+            self.XreleaseDragDisc = -1
+            self.XreleaseDragAxis = -1
+            # Release callback should be activated
             if XclickwdgdNode[1] is True:
-                # When the discs rotates, we don't accept
-                # the arrow dragging. Disk rotation has priority
                 if self.XreleaseDragDisc == 1 or self.XreleaseDragDisc == 0:
-                    self.XreleaseDragDisc = -1
-                    # Release callback should be activated
                     self.do_callbacks(0)  # Generic callback
                     return 1
                 # Axis's part
             elif XclickwdgdNode[0] is True:
                 if self.XreleaseDragAxis == 1 or self.XreleaseDragAxis == 0:
-                    self.XreleaseDragAxis = -1
                     self.do_callbacks(1)
                     return 1
-            # else:  # None of them -- remove the focus
-            #     self.remove_focus()
+            else:  # None of them -- remove the focus
+                self.remove_focus()
 
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
@@ -446,24 +447,23 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            # disc's part
+             # disc's part
+            # When the discs rotates, we don't accept
+            # the arrow dragging. Disk rotation has priority
+            self.YreleaseDragDisc = -1
+            self.YreleaseDragAxis = -1
+            # Release callback should be activated
             if YclickwdgdNode[1] is True:
-                # When the discs rotates, we don't accept
-                # the arrow dragging. Disk rotation has priority
                 if self.YreleaseDragDisc == 1 or self.YreleaseDragDisc == 0:
-                    self.YreleaseDragDisc = -1
-                    # Release callback should be activated
                     self.do_callbacks(0)  # Generic callback
                     return 1
                 # Axis's part
             elif YclickwdgdNode[0] is True:
                 if self.YreleaseDragAxis == 1 or self.YreleaseDragAxis == 0:
-                    self.YreleaseDragAxis = -1
-                    self.do_callbacks(3)
+                    self.do_callbacks(1)
                     return 1
-            # else:  # None of them -- remove the focus
-            #     self.remove_focus()
-
+            else:  # None of them -- remove the focus
+                self.remove_focus()
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             # Y-DISC
@@ -541,23 +541,23 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
             # disc's part
+            # When the discs rotates, we don't accept
+            # the arrow dragging. Disk rotation has priority
+            self.ZreleaseDragDisc = -1
+            self.ZreleaseDragAxis = -1
+            # Release callback should be activated
             if ZclickwdgdNode[1] is True:
-                # When the discs rotates, we don't accept
-                # the arrow dragging. Disk rotation has priority
                 if self.ZreleaseDragDisc == 1 or self.ZreleaseDragDisc == 0:
-                    self.ZreleaseDragDisc = -1
-                    # Release callback should be activated
                     self.do_callbacks(0)  # Generic callback
                     return 1
                 # Axis's part
             elif ZclickwdgdNode[0] is True:
                 if self.ZreleaseDragAxis == 1 or self.ZreleaseDragAxis == 0:
-                    self.ZreleaseDragAxis = -1
-                    self.do_callbacks(5)
+                    self.do_callbacks(1)
                     return 1
-            # else:  # None of them -- remove the focus
-            #     self.remove_focus()
-
+            else:  # None of them -- remove the focus
+                self.remove_focus()
+                
         # Mouse first click and then mouse with movement is here
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             # Z-DISC
@@ -1170,7 +1170,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
     def getAngle(self):
         return self.w_discAngle
 
-    def do_callbacks(self, callbackType=-1):
+    def do_callbacks(self, callbackType):
         """[summarize the call of the callbacks]
 
         Args:
@@ -1186,9 +1186,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             # Use this to finalize the action.
             self.do_callbacks()
             return
-        
-        print(self.w_userData.Axis_cb,"Axis_cb", callbackType)
-        
+
+        print(self.w_userData.Axis_cb, "Axis_cb", callbackType)
+
         if (callbackType == 1 or callbackType == 3 or callbackType == 5):
             self.w_userData.Axis_cb = True
             self.w_userData.Disc_cb = False
@@ -1197,25 +1197,35 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             self.w_userData.Disc_cb = True
 
         # Move callback - XAxis
-        elif(callbackType == 1):
+        if(callbackType == 1):
+            self.axisType = 'X'
             self.w_xAxis_cb_(self.w_userData)
+            print("type 1")
         elif(callbackType == 2):
             # Rotation callback - Disc
+            self.axisType = 'X'
             self.w_discXAxis_cb_(self.w_userData)
-
+            print("type 2")
         # Move callback - YAxis
         elif(callbackType == 3):
+            self.axisType = 'Y'
             self.w_yAxis_cb_(self.w_userData)
+            print("type 3")
         elif(callbackType == 4):
             # Rotation callback - Disc
+            self.axisType = 'Y'
             self.w_discYAxis_cb_(self.w_userData)
-            
+            print("type 4")
         # Move callback - ZAxis
         elif(callbackType == 5):
+            self.axisType = 'Z'
             self.w_zAxis_cb_(self.w_userData)
+            print("type 5")
         elif(callbackType == 6):
             # Rotation callback - Disc
+            self.axisType = 'Z'
             self.w_discZAxis_cb_(self.w_userData)
+            print("type 6")
 
     def enableDiscs(self):
         self.w_discEnabled = [True, True, True]

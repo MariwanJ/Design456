@@ -46,9 +46,50 @@ import math
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
-     This will affect the faces share the edge.    ]
-     """
+    This will affect the faces share the edge.]  """
+
+    # __slots__ = ['mw',
+    #              'dialog',
+    #              'tab',
+    #              'discObj',
+    #              'w_rotation',
+    #              '_mywin',
+    #              'b1',
+    #              'TweakLBL',
+    #              'RotateLBL',
+    #              'endVector',
+    #              'startVector',
+    #              'setupRotation',
+    #              'savedVertices',
+    #              'counter',
+    #              'run_Once',
+    #              'tweakLength',
+    #              'oldTweakLength',
+    #              'isItRotation',
+    #              'newObject',
+    #              'selectedObj',
+    #              'selectedEdge',
+    #              'oldEdgeVertexes',
+    #              'newEdgeVertexes',
+    #              'newEdge',
+    #              'view',
+    #              'MoveMentDirection',
+    #              'newFaces',
+    #              'faceDir',
+    #              'FirstLocation',
+    #              'coinFaces',
+    #              'sg',
+    #              'awayFromObj',
+    #              'mouseToArrowDiff',
+    #              'normalVector',
+    #              'frmRotation',
+    #              'lblTweakResult',
+    #              'btnOK',
+    #              'lblTitle'
+    #              ]
+
     def __init__(self):
+
         self.mw = None
         self.dialog = None
         self.tab = None
@@ -73,7 +114,7 @@ class Design456_ExtendEdge:
         # Original vectors that will be changed by mouse.
         self.oldEdgeVertexes = None
         self.newEdgeVertexes = None
-        self.newEdge = None      # Keep new vectors for the moved old edge-vectors
+        self.newEdge = None # Keep new vectors for the moved old edge-vectors
 
         self.view = None  # used for captureing mouse events
         self.MoveMentDirection = None
@@ -83,11 +124,17 @@ class Design456_ExtendEdge:
         self.coinFaces = None
         self.sg = None  # SceneGraph
         self.awayFromObj = 0.0
+        self.normalVector = None
+        self.frmRotation = None
 
-        # Use mouseToArrowDiff to eleminate the diff between 
-        # placement of the 3D COIN drawing and the position of the mouse dragging
-        self.mouseToArrowDiff = None  
-    
+        # Use mouseToArrowDiff to eleminate the diff between
+        # placement of the 3D COIN drawing and
+        # the position of the mouse dragging
+        self.mouseToArrowDiff = None
+        self.lblTweakResult = None
+        self.lblTitle = None
+        self.btnOK = None
+
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
     def setTolerance(self, sel):
@@ -294,8 +341,8 @@ class Design456_ExtendEdge:
         """
         import ThreeDWidgets.fr_coinwindow as win
         self.coinFaces = coin.SoSeparator()
-        self.w_rotation = [0.0, 0.0, 0.0]  # 
-        self.setupRotation = [0, 0, 0, 0] 
+        self.w_rotation = [0.0, 0.0, 0.0]  #
+        self.setupRotation = [0, 0, 0, 0]
         self.counter = 0
         self.run_Once = False
         self.tweakLength = 0
@@ -363,19 +410,20 @@ class Design456_ExtendEdge:
 
             # Deside how the Degree disc be drawn
             self.discObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
-                                                # label
-                                                (str(round(self.w_rotation[0], 2)) + "°"+
-                                                 str(round(self.w_rotation[1], 2)) + "°"+
-                                                 str(round(self.w_rotation[2], 2)) + "°"),
-                                                FR_COLOR.FR_WHITE,  # lblcolor
-                                                [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
+                                                 # label
+                                                 (str(round(self.w_rotation[0], 2)) + "°" +
+                                                  str(round(self.w_rotation[1], 2)) + "°" +
+                                                  str(round(self.w_rotation[2], 2)) + "°"),
+                                                 FR_COLOR.FR_WHITE,  # lblcolor
+                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
                                                  FR_COLOR.FR_BLUE],  # arrows color
-                                                [0.0, 0.0, 0.0, 0.0], # rotation
-                                                self.setupRotation,  # setup rotation
-                                                [15.0, 15.0, 15.0],  # scale
-                                                0,  # type
-                                                0,  # opacity
-                                                10)  # distance between them
+                                                 # rotation
+                                                 [0.0, 0.0, 0.0, 0.0],
+                                                 self.setupRotation,  # setup rotation
+                                                 [15.0, 15.0, 15.0],  # scale
+                                                 0,  # type
+                                                 0,  # opacity
+                                                 10)  # distance between them
 
             # Different callbacks for each action.
             self.discObj.w_xAxis_cb_ = self.MouseMovement_cb
@@ -478,8 +526,7 @@ class Design456_ExtendEdge:
             self.TweakLBL.setFont(font)
 
             self.TweakLBL.setText(_translate("Dialog", "Length = 0.0"))
-            QtCore.QObject.connect(
-                self.btnOK, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(self.btnOK, QtCore.SIGNAL("accepted()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             self.tab.setCurrentWidget(self.dialog)
             return self.dialog
@@ -498,7 +545,7 @@ class Design456_ExtendEdge:
         if type(events) != int:
             print("event was not int")
             return
-        print(self.discObj.w_userData.Axis_cb," Mouse move Axis_cb")
+        print(self.discObj.w_userData.Axis_cb, " Mouse move Axis_cb")
         if self.discObj.w_userData.Axis_cb is False:
             if self.discObj.w_userData.Disc_cb is True:
                 self.callback_Rotate()
@@ -513,8 +560,9 @@ class Design456_ExtendEdge:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
-            self.mouseToArrowDiff = self.endVector.sub(self.discObj.w_vector[0])
-            
+            self.mouseToArrowDiff = self.endVector.sub(
+                self.discObj.w_vector[0])
+
         MovementLength = self.endVector.sub(self.mouseToArrowDiff)
         self.tweakLength = round((
             MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
@@ -563,7 +611,7 @@ class Design456_ExtendEdge:
         pass
 
     def callback_Rotate(self):
-        # Complex task :( 
+        # Complex task :(
         print("Not impolemented ")
 
     def hide(self):
