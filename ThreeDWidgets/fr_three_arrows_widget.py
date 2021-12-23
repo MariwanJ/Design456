@@ -292,7 +292,8 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_rotation = _rotation       # Whole object Rotation
 
         self.w_discEnabled = [False, False, False]
-
+        self.w_arrowEnabled = [True, True, True]
+        
         # Used to avoid running drag code while it is in drag mode
         self.XreleaseDragAxis = -1
         self.YreleaseDragAxis = -1
@@ -335,285 +336,300 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         # In this widget, we have 2 coin drawings that we need to capture event for them
 
-        #   ------------- X Axis  -------------
-        if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                 self.w_pick_radius, self.w_XarrowSeparator) is not None):
-            XclickwdgdNode[0] = True
+        if self.w_discEnabled[0] or self.w_arrowEnabled[0]:
+            #   ------------- X DISC / Axis  -------------
+            if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                    self.w_pick_radius, self.w_XarrowSeparator) is not None):
+                XclickwdgdNode[0] = True
+                self.enableOnlyMe("XA")
 
-        if self.w_discEnabled[0] is True:
-            if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                      self.w_pick_radius, self.w_XdiscSeparator) is not None):
-                XclickwdgdNode[1] = True
-
-        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
-            if (clickwdglblNode is not None):
-                # Double click event.
-                print("Double click detected")
-                # if not self.has_focus():
-                #    self.take_focus()
-                self.do_lblcallback()
-                return 1
-
-        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            # disc's part
-            # When the discs rotates, we don't accept
-            # the arrow dragging. Disk rotation has priority
-            self.XreleaseDragDisc = -1
-            self.XreleaseDragAxis = -1
-            # Release callback should be activated
-            if XclickwdgdNode[1] is True:
-                if self.XreleaseDragDisc == 1 or self.XreleaseDragDisc == 0:
-                    self.do_callbacks(0)  # Generic callback
+            if self.w_discEnabled[0] is True:
+                if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                        self.w_pick_radius, self.w_XdiscSeparator) is not None):
+                    XclickwdgdNode[1] = True
+                    self.enableOnlyMe("XD")
+                    
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+                if (clickwdglblNode is not None):
+                    # Double click event.
+                    print("Double click detected")
+                    # if not self.has_focus():
+                    #    self.take_focus()
+                    self.do_lblcallback()
+                    self.enable_all()
                     return 1
-                # Axis's part
-            elif XclickwdgdNode[0] is True:
-                if self.XreleaseDragAxis == 1 or self.XreleaseDragAxis == 0:
-                    self.do_callbacks(1)
-                    return 1
-            else:  # None of them -- remove the focus
-                self.remove_focus()
 
-        # Mouse first click and then mouse with movement is here
-        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            # X-DISC
-            if((XclickwdgdNode[1] is True) and (self.XreleaseDragDisc == -1)):
-                # This part will be active only once when for the first time user click on the coin drawing.
-                # Later DRAG should be used
-                self.XreleaseDragDisc = 0
-                self.XreleaseDragAxis = -1
-                self.take_focus()
-                return 1
-            # X-DISC
-            elif ((XclickwdgdNode[1] is True) and (self.XreleaseDragDisc == 0)):
-                self.XreleaseDragDisc = 1  # Rotation will continue it will be a drag always
-                self.XreleaseDragAxis = -1
-                self.take_focus()
-                self.cb_XdiscRotate()
-                self.do_callbacks(2)  # disc callback
-                return 1
-
-            # X-DISC
-            elif self.XreleaseDragDisc == 1 and (XclickwdgdNode[1] is True):
-                # As far as we had DRAG before, we will continue run callback.
-                # This is because if the mouse is not exactly on the widget, it should still take the drag.
-                # Continue run the callback as far as it releaseDrag=1
-                self.cb_XdiscRotate()
-                self.do_callbacks(2)        # We use the same callback,
-                return 1
-
-            # X-Axis
-            elif ((((clickwdglblNode is not None)
-                    or (XclickwdgdNode[0] is True))
-                   and (self.XreleaseDragAxis == -1))):
-                # This part will be active only once when for the first time user click on the coin drawing.
-                # Later DRAG should be used
-                self.XreleaseDragAxis = 0
-                self.XreleaseDragDisc = -1  # Not possible to have rotation while arrow is active
-                self.take_focus()
-                return 1
-            # X-Axis
-            elif ((
-                    (XclickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                    and (self.XreleaseDragAxis == 0)):
-                self.XreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
+            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+                # disc's part
+                # When the discs rotates, we don't accept
+                # the arrow dragging. Disk rotation has priority
                 self.XreleaseDragDisc = -1
-                self.take_focus()
-                self.do_callbacks(1)
-                return 1
-            # X-Axis
-            elif self.XreleaseDragAxis == 1:
-                # As far as we had DRAG before, we will continue run callback.
-                # This is because if the mouse is not exactly on the widget, it should still take the drag.
-                # Continue run the callback as far as it releaseDrag=1
-                self.do_callbacks(1)        # We use the same callback,
-                return 1
+                self.XreleaseDragAxis = -1
+                self.enable_all()
 
-        #   ------------- Y Axis  -------------
-        if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                 self.w_pick_radius, self.w_YarrowSeparator) is not None):
-            YclickwdgdNode[0] = True
+                # Release callback should be activated
+                if XclickwdgdNode[1] is True:
+                    if self.XreleaseDragDisc == 1 or self.XreleaseDragDisc == 0:
+                        self.do_callbacks(0)  # Generic callback
+                        return 1
+                    # Axis's part
+                elif XclickwdgdNode[0] is True:
+                    if self.XreleaseDragAxis == 1 or self.XreleaseDragAxis == 0:
+                        self.do_callbacks(1)
+                        return 1
+                else:  # None of them -- remove the focus
+                    self.remove_focus()
 
-        if self.w_discEnabled[1] is True:
-            if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                      self.w_pick_radius, self.w_YdiscSeparator) is not None):
-                YclickwdgdNode[1] = True
-
-        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
-            if (clickwdglblNode is not None):
-                # Double click event.
-                print("Double click detected")
-                # if not self.has_focus():
-                #    self.take_focus()
-                self.do_lblcallback()
-                return 1
-
-        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-             # disc's part
-            # When the discs rotates, we don't accept
-            # the arrow dragging. Disk rotation has priority
-            self.YreleaseDragDisc = -1
-            self.YreleaseDragAxis = -1
-            # Release callback should be activated
-            if YclickwdgdNode[1] is True:
-                if self.YreleaseDragDisc == 1 or self.YreleaseDragDisc == 0:
-                    self.do_callbacks(0)  # Generic callback
+            # Mouse first click and then mouse with movement is here
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+                # X-DISC
+                if((XclickwdgdNode[1] is True) and (self.XreleaseDragDisc == -1)):
+                    # This part will be active only once when for the first time user click on the coin drawing.
+                    # Later DRAG should be used
+                    self.XreleaseDragDisc = 0
+                    self.XreleaseDragAxis = -1
+                    self.take_focus()
                     return 1
-                # Axis's part
-            elif YclickwdgdNode[0] is True:
-                if self.YreleaseDragAxis == 1 or self.YreleaseDragAxis == 0:
-                    self.do_callbacks(1)
+                # X-DISC
+                elif ((XclickwdgdNode[1] is True) and (self.XreleaseDragDisc == 0)):
+                    self.XreleaseDragDisc = 1  # Rotation will continue it will be a drag always
+                    self.XreleaseDragAxis = -1
+                    self.take_focus()
+                    self.cb_XdiscRotate()
+                    self.do_callbacks(2)  # disc callback
                     return 1
-            else:  # None of them -- remove the focus
-                self.remove_focus()
-        # Mouse first click and then mouse with movement is here
-        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            # Y-DISC
-            if((YclickwdgdNode[1] is True) and (self.YreleaseDragDisc == -1)):
-                # This part will be active only once when for the first time user click on the coin drawing.
-                # Later DRAG should be used
-                self.YreleaseDragDisc = 0
-                self.YreleaseDragAxis = -1
-                self.take_focus()
-                return 1
-            # Y-DISC
-            elif ((YclickwdgdNode[1] is True) and (self.YreleaseDragDisc == 0)):
-                self.YreleaseDragDisc = 1  # Rotation will continue it will be a drag always
-                self.YreleaseDragAxis = -1
-                self.take_focus()
-                self.cb_YdiscRotate()
-                self.do_callbacks(4)  # disc callback
-                return 1
 
-            # Y-DISC
-            elif self.YreleaseDragDisc == 1 and (YclickwdgdNode[1] is True):
-                # As far as we had DRAG before, we will continue run callback.
-                # This is because if the mouse is not exactly on the widget, it should still take the drag.
-                # Continue run the callback as far as it releaseDrag=1
-                self.cb_YdiscRotate()
-                self.do_callbacks(4)        # We use the same callback,
-                return 1
+                # X-DISC
+                elif self.XreleaseDragDisc == 1 and (XclickwdgdNode[1] is True):
+                    # As far as we had DRAG before, we will continue run callback.
+                    # This is because if the mouse is not exactly on the widget, it should still take the drag.
+                    # Continue run the callback as far as it releaseDrag=1
+                    self.cb_XdiscRotate()
+                    self.do_callbacks(2)        # We use the same callback,
+                    return 1
+                if self.w_arrowEnabled[0] is True:
+                    # X-Axis
+                    if ((((clickwdglblNode is not None)
+                            or (XclickwdgdNode[0] is True))
+                        and (self.XreleaseDragAxis == -1))):
+                        # This part will be active only once when for the first time user click on the coin drawing.
+                        # Later DRAG should be used
+                        self.XreleaseDragAxis = 0
+                        self.XreleaseDragDisc = -1  # Not possible to have rotation while arrow is active
+                        self.take_focus()
+                        return 1
+                    # X-Axis
+                    elif ((
+                            (XclickwdgdNode[0] is True) or (clickwdglblNode is not None))
+                            and (self.XreleaseDragAxis == 0)):
+                        self.XreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
+                        self.XreleaseDragDisc = -1
+                        self.take_focus()
+                        self.do_callbacks(1)
+                        return 1
+                    # X-Axis
+                    elif self.XreleaseDragAxis == 1:
+                        # As far as we had DRAG before, we will continue run callback.
+                        # This is because if the mouse is not exactly on the widget, it should still take the drag.
+                        # Continue run the callback as far as it releaseDrag=1
+                        self.do_callbacks(1)        # We use the same callback,
+                        return 1
 
-            # Y-Axis
-            elif ((((clickwdglblNode is not None)
-                    or (YclickwdgdNode[0] is True))
-                   and (self.YreleaseDragAxis == -1))):
-                # This part will be active only once when for the first time user click on the coin drawing.
-                # Later DRAG should be used
-                self.YreleaseDragAxis = 0
-                self.YreleaseDragDisc = -1  # Not possible to have rotation while arrow is active
-                self.take_focus()
-                return 1
-            # Y-Axis
-            elif ((
-                (YclickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                and (self.YreleaseDragAxis == 0)
-            ):
-                self.YreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
+        if self.w_discEnabled[1] or self.w_arrowEnabled[1]:
+            #   ------------- Y DISC / Axis  -------------
+            if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                     self.w_pick_radius, self.w_YarrowSeparator) is not None):
+                YclickwdgdNode[0] = True
+                self.enableOnlyMe("YA")
+            if self.w_discEnabled[1] is True:
+                if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                          self.w_pick_radius, self.w_YdiscSeparator) is not None):
+                    YclickwdgdNode[1] = True
+                    self.enableOnlyMe("YD")
+
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+                if (clickwdglblNode is not None):
+                    # Double click event.
+                    print("Double click detected")
+                    # if not self.has_focus():
+                    #    self.take_focus()
+                    self.do_lblcallback()
+                    self.enable_all()
+                    return 1
+
+            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+                 # disc's part
+                # When the discs rotates, we don't accept
+                # the arrow dragging. Disk rotation has priority
                 self.YreleaseDragDisc = -1
-                self.take_focus()
-                self.do_callbacks(3)
-                return 1
-            # Y-Axis
-            elif self.YreleaseDragAxis == 1:
-                # As far as we had DRAG before, we will continue run callback.
-                # This is because if the mouse is not exactly on the widget, it should still take the drag.
-                # Continue run the callback as far as it releaseDrag=1
-                self.do_callbacks(3)        # We use the same callback,
-                return 1
+                self.YreleaseDragAxis = -1
+                self.enable_all()
 
-        #   ------------- Z Axis  -------------
-        if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                 self.w_pick_radius, self.w_ZarrowSeparator) is not None):
-            ZclickwdgdNode[0] = True
+                # Release callback should be activated
+                if YclickwdgdNode[1] is True:
+                    if self.YreleaseDragDisc == 1 or self.YreleaseDragDisc == 0:
+                        self.do_callbacks(0)  # Generic callback
+                        return 1
+                    # Axis's part
+                elif YclickwdgdNode[0] is True:
+                    if self.YreleaseDragAxis == 1 or self.YreleaseDragAxis == 0:
+                        self.do_callbacks(1)
+                        return 1
+                else:  # None of them -- remove the focus
+                    self.remove_focus()
 
-        if self.w_discEnabled[2] is True:
-            if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                      self.w_pick_radius, self.w_ZdiscSeparator) is not None):
-                ZclickwdgdNode[1] = True
-
-        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
-            if (clickwdglblNode is not None):
-                # Double click event.
-                print("Double click detected")
-                # if not self.has_focus():
-                #    self.take_focus()
-                self.do_lblcallback()
-                return 1
-
-        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            # disc's part
-            # When the discs rotates, we don't accept
-            # the arrow dragging. Disk rotation has priority
-            self.ZreleaseDragDisc = -1
-            self.ZreleaseDragAxis = -1
-            # Release callback should be activated
-            if ZclickwdgdNode[1] is True:
-                if self.ZreleaseDragDisc == 1 or self.ZreleaseDragDisc == 0:
-                    self.do_callbacks(0)  # Generic callback
+            # Mouse first click and then mouse with movement is here
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+                # Y-DISC
+                if((YclickwdgdNode[1] is True) and (self.YreleaseDragDisc == -1)):
+                    # This part will be active only once when for the first time user click on the coin drawing.
+                    # Later DRAG should be used
+                    self.YreleaseDragDisc = 0
+                    self.YreleaseDragAxis = -1
+                    self.take_focus()
                     return 1
-                # Axis's part
-            elif ZclickwdgdNode[0] is True:
-                if self.ZreleaseDragAxis == 1 or self.ZreleaseDragAxis == 0:
-                    self.do_callbacks(1)
+                # Y-DISC
+                elif ((YclickwdgdNode[1] is True) and (self.YreleaseDragDisc == 0)):
+                    self.YreleaseDragDisc = 1  # Rotation will continue it will be a drag always
+                    self.YreleaseDragAxis = -1
+                    self.take_focus()
+                    self.cb_YdiscRotate()
+                    self.do_callbacks(4)  # disc callback
                     return 1
-            else:  # None of them -- remove the focus
-                self.remove_focus()
-                
-        # Mouse first click and then mouse with movement is here
-        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            # Z-DISC
-            if((ZclickwdgdNode[1] is True) and (self.ZreleaseDragDisc == -1)):
-                # This part will be active only once when for the first time user click on the coin drawing.
-                # Later DRAG should be used
-                self.ZreleaseDragDisc = 0
-                self.ZreleaseDragAxis = -1
-                self.take_focus()
-                return 1
-            # Z-DISC
-            elif ((ZclickwdgdNode[1] is True) and (self.ZreleaseDragDisc == 0)):
-                self.ZreleaseDragDisc = 1  # Rotation will continue it will be a drag always
-                self.ZreleaseDragAxis = -1
-                self.take_focus()
-                self.cb_ZdiscRotate()
-                self.do_callbacks(6)  # disc callback
-                return 1
 
-            # Z-DISC
-            elif self.ZreleaseDragDisc == 1 and (ZclickwdgdNode[1] is True):
-                # As far as we had DRAG before, we will continue run callback.
-                # This is because if the mouse is not exactly on the widget, it should still take the drag.
-                # Continue run the callback as far as it releaseDrag=1
-                self.cb_ZdiscRotate()
-                self.do_callbacks(6)        # We use the same callback,
-                return 1
+                # Y-DISC
+                elif self.YreleaseDragDisc == 1 and (YclickwdgdNode[1] is True):
+                    # As far as we had DRAG before, we will continue run callback.
+                    # This is because if the mouse is not exactly on the widget, it should still take the drag.
+                    # Continue run the callback as far as it releaseDrag=1
+                    self.cb_YdiscRotate()
+                    self.do_callbacks(4)        # We use the same callback,
+                    return 1
+                if self.w_arrowEnabled[1] is True:
+                    # Y-Axis
+                    if ((((clickwdglblNode is not None)
+                            or (YclickwdgdNode[0] is True))
+                           and (self.YreleaseDragAxis == -1))):
+                        # This part will be active only once when for the first time user click on the coin drawing.
+                        # Later DRAG should be used
+                        self.YreleaseDragAxis = 0
+                        self.YreleaseDragDisc = -1  # Not possible to have rotation while arrow is active
+                        self.take_focus()
+                        return 1
+                    # Y-Axis
+                    elif ((
+                        (YclickwdgdNode[0] is True) or (clickwdglblNode is not None))
+                        and (self.YreleaseDragAxis == 0)):
+                        self.YreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
+                        self.YreleaseDragDisc = -1
+                        self.take_focus()
+                        self.do_callbacks(3)
+                        return 1
+                    # Y-Axis
+                    elif self.YreleaseDragAxis == 1:
+                        # As far as we had DRAG before, we will continue run callback.
+                        # This is because if the mouse is not exactly on the widget, it should still take the drag.
+                        # Continue run the callback as far as it releaseDrag=1
+                        self.do_callbacks(3)        # We use the same callback,
+                        return 1
+                    
+        if self.w_discEnabled[2] or self.w_arrowEnabled[2]:
+            #   ------------- Z DISC / Axis  -------------
+            if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                     self.w_pick_radius, self.w_ZarrowSeparator) is not None):
+                ZclickwdgdNode[0] = True
+                self.enableOnlyMe("ZA")
 
-            # Z-Axis
-            elif ((((clickwdglblNode is not None)
-                    or (ZclickwdgdNode[0] is True))
-                   and (self.ZreleaseDragAxis == -1))):
-                # This part will be active only once when for the first time user click on the coin drawing.
-                # Later DRAG should be used
-                self.ZreleaseDragAxis = 0
-                self.ZreleaseDragDisc = -1  # Not possible to have rotation while arrow is active
-                self.take_focus()
-                return 1
-            # Z-Axis
-            elif ((
-                (ZclickwdgdNode[0] is True) or (clickwdglblNode is not None))
-                and (self.ZreleaseDragAxis == 0)
-            ):
-                self.ZreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
+            if self.w_discEnabled[2] is True:
+                if (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                          self.w_pick_radius, self.w_ZdiscSeparator) is not None):
+                    ZclickwdgdNode[1] = True
+                    self.enableOnlyMe("ZD")
+
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+                if (clickwdglblNode is not None):
+                    # Double click event.
+                    print("Double click detected")
+                    # if not self.has_focus():
+                    #    self.take_focus()
+                    self.do_lblcallback()
+                    self.enable_all()
+                    return 1
+
+            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+                # disc's part
+                # When the discs rotates, we don't accept
+                # the arrow dragging. Disk rotation has priority
                 self.ZreleaseDragDisc = -1
-                self.take_focus()
-                self.do_callbacks(5)
-                return 1
-            # Z-Axis
-            elif self.ZreleaseDragAxis == 1:
-                # As far as we had DRAG before, we will continue run callback.
-                # This is because if the mouse is not exactly on the widget, it should still take the drag.
-                # Continue run the callback as far as it releaseDrag=1
-                self.do_callbacks(5)        # We use the same callback,
-                return 1
+                self.ZreleaseDragAxis = -1
+                self.enable_all()
+                # Release callback should be activated
+                if ZclickwdgdNode[1] is True:
+                    if self.ZreleaseDragDisc == 1 or self.ZreleaseDragDisc == 0:
+                        self.do_callbacks(0)  # Generic callback
+                        return 1
+                    # Axis's part
+                elif ZclickwdgdNode[0] is True:
+                    if self.ZreleaseDragAxis == 1 or self.ZreleaseDragAxis == 0:
+                        self.do_callbacks(1)
+                        return 1
+                else:  # None of them -- remove the focus
+                    self.remove_focus()
+
+            # Mouse first click and then mouse with movement is here
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+                # Z-DISC
+                if((ZclickwdgdNode[1] is True) and (self.ZreleaseDragDisc == -1)):
+                    # This part will be active only once when for the first time user click on the coin drawing.
+                    # Later DRAG should be used
+                    self.ZreleaseDragDisc = 0
+                    self.ZreleaseDragAxis = -1
+                    self.take_focus()
+                    return 1
+                # Z-DISC
+                elif ((ZclickwdgdNode[1] is True) and (self.ZreleaseDragDisc == 0)):
+                    self.ZreleaseDragDisc = 1  # Rotation will continue it will be a drag always
+                    self.ZreleaseDragAxis = -1
+                    self.take_focus()
+                    self.cb_ZdiscRotate()
+                    self.do_callbacks(6)  # disc callback
+                    return 1
+
+                # Z-DISC
+                elif self.ZreleaseDragDisc == 1 and (ZclickwdgdNode[1] is True):
+                    # As far as we had DRAG before, we will continue run callback.
+                    # This is because if the mouse is not exactly on the widget, it should still take the drag.
+                    # Continue run the callback as far as it releaseDrag=1
+                    self.cb_ZdiscRotate()
+                    self.do_callbacks(6)        # We use the same callback,
+                    return 1
+                if self.w_arrowEnabled[2] is True:
+                    # Z-Axis
+                    if ((((clickwdglblNode is not None)
+                            or (ZclickwdgdNode[0] is True))
+                           and (self.ZreleaseDragAxis == -1))):
+                        # This part will be active only once when for the first time user click on the coin drawing.
+                        # Later DRAG should be used
+                        self.ZreleaseDragAxis = 0
+                        self.ZreleaseDragDisc = -1  # Not possible to have rotation while arrow is active
+                        self.take_focus()
+                        return 1
+                    # Z-Axis
+                    elif ((
+                        (ZclickwdgdNode[0] is True) or (clickwdglblNode is not None))
+                        and (self.ZreleaseDragAxis == 0)):
+                        self.ZreleaseDragAxis = 1  # Drag  will continue, it will be a drag always
+                        self.ZreleaseDragDisc = -1
+                        self.take_focus()
+                        self.do_callbacks(5)
+                        return 1
+                    # Z-Axis
+                    elif self.ZreleaseDragAxis == 1:
+                        # As far as we had DRAG before, we will continue run callback.
+                        # This is because if the mouse is not exactly on the widget, it should still take the drag.
+                        # Continue run the callback as far as it releaseDrag=1
+                        self.do_callbacks(5)        # We use the same callback,
+                        return 1
 
         # Don't care events, return the event to other widgets
         return 0  # We couldn't use the event .. so return 0
@@ -686,11 +702,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             separtorAll.addChild(self.w_YarrowSeparator)
             separtorAll.addChild(self.w_ZarrowSeparator)
 
-            if self.w_discEnabled[0]:
+            if self.w_discEnabled[0] is True:
                 separtorAll.addChild(self.w_XdiscSeparator)
-            if self.w_discEnabled[1]:
+            if self.w_discEnabled[1] is True:
                 separtorAll.addChild(self.w_YdiscSeparator)
-            if self.w_discEnabled[2]:
+            if self.w_discEnabled[2] is True:
                 separtorAll.addChild(self.w_ZdiscSeparator)
             self.draw_label()
             self.saveSoNodesToWidget(separtorAll)
@@ -912,10 +928,15 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
     def calculateWidgetDiskRotationAfterDrag(self, v1, v2):
         self.w_WidgetDiskRotation = math.degrees(v1.getAngle(v2))
 
-    def enableDisc(self):
+    def enableDisc(self, disctype:str=""):
         """[Enable rotation disc. You need to redraw the widget]
         """
-        self.w_discEnabled = True
+        if disctype == "X":
+            self.w_discEnabled[0] = True
+        elif disctype == "Y":
+            self.w_discEnabled[1] = True
+        elif disctype == "Z":
+            self.w_discEnabled[2] = True
 
     def setDistanceBetweenThem(self, newvalue):
         """[Change distance between the arrows to the origin of the widget. ]
@@ -925,10 +946,18 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         """
         self.distanceBetweenThem = newvalue
 
-    def disableDisc(self):
+    def disableDisc(self, disctype:str=""):
         """[Disable rotation disc. You need to redraw the widget]
+
+        Args:
+            disctype (str, axis name): [Disc name to disable]. Defaults to "".
         """
-        self.w_discEnabled = False
+        if disctype == "X":
+            self.w_discEnabled[0] = False
+        elif disctype == "Y":
+            self.w_discEnabled[1] = False
+        elif disctype == "Z":
+            self.w_discEnabled[2] = False
 
     def calculateMouseAngle(self, val1, val2):
         """[Calculate Angle of two coordinates ( xy, yz or xz).
@@ -1228,6 +1257,38 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     def enableDiscs(self):
         self.w_discEnabled = [True, True, True]
+    
+    def enableArrows(self):
+        self.w_arrowEnabled= [True, True, True]
 
     def disableDiscs(self):
         self.w_discEnabled = [False, False, False]
+    
+    def disableArrows(self):
+        self.w_arrowEnabled= [False, False, False]
+    
+    def enable_all(self):
+        self.enableDiscs()
+        self.enableArrows()
+
+    def enableOnlyMe (self,me):
+        self.disableDiscs()
+        self.disableArrows()
+        
+        if me =='XA':
+            self.w_arrowEnabled[0] = True
+        
+        if me =='YA':
+            self.w_arrowEnabled[1] = True
+
+        if me == 'ZA':
+            self.w_arrowEnabled[2] = True
+
+        if me == 'XD':
+            self.w_discEnabled[0] = True
+        
+        if me == 'YD':
+            self.w_discEnabled[1] = True
+
+        if me == 'ZD':
+            self.w_discEnabled[2] = True

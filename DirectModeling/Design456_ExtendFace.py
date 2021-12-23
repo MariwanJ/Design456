@@ -401,13 +401,13 @@ class Design456_ExtendFace:
             self.discObj.enableDiscs()
 
             # Different callbacks for each action.
-            self.discObj.w_xAxis_cb_ = self.MouseMovement_cb
-            self.discObj.w_yAxis_cb_ = self.MouseMovement_cb
-            self.discObj.w_zAxis_cb_ = self.MouseMovement_cb
+            self.discObj.w_xAxis_cb_ = self.MouseDragging_cb
+            self.discObj.w_yAxis_cb_ = self.MouseDragging_cb
+            self.discObj.w_zAxis_cb_ = self.MouseDragging_cb
 
-            self.discObj.w_discXAxis_cb_ = self.callback_Rotate
-            self.discObj.w_discYAxis_cb_ = self.callback_Rotate
-            self.discObj.w_discZAxis_cb_ = self.callback_Rotate
+            self.discObj.w_discXAxis_cb_ = self.RotatingFace_cb
+            self.discObj.w_discYAxis_cb_ = self.RotatingFace_cb
+            self.discObj.w_discZAxis_cb_ = self.RotatingFace_cb
 
             self.discObj.w_callback_ = self.callback_release
             self.discObj.w_userData.callerObject = self
@@ -514,15 +514,57 @@ class Design456_ExtendFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def MouseMovement_cb(self, userData=None):
+    def RotatingFace_cb(self, userData=None):
+        """[Rotation of the face by using the discs.
+        This is the callback used for all axis (X,Y and Z)]
 
+        Args:
+            userData ([type], optional): [description]. Defaults to None.
+        """
+        events = userData.events
+        if type(events) != int:
+            print("event was not int")
+            return
+        if self.discObj.w_userData.Disc_cb is False:
+            if self.discObj.w_userData.Axis_cb is True:
+                self.MouseDragging_cb(userData)
+                return
+            else:
+                return  # We cannot allow this tool
+
+        if self.discObj.w_userData.discObj.axisType == 'X':
+            self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[0])
+            self.newFace.Placement.Rotation.Axis = (1, 0, 0) 
+        elif self.discObj.w_userData.discObj.axisType == 'Y':
+            self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[1])
+            self.newFace.Placement.Rotation.Axis = (0, 1, 0) 
+        elif self.discObj.w_userData.discObj.axisType == 'Z':
+            self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[2])
+            self.newFace.Placement.Rotation.Axis = (0, 0, 1) 
+        else:
+            # nothing to do here  #TODO : This shouldn't happen
+            return
+
+        self.newFaceVertexes = self.newFace.Shape.Vertexes
+        self.COIN_recreateObject()
+        self.discObj.redraw()
+
+
+    def MouseDragging_cb(self, userData=None):
+        """[Move face by dragging the face. As far as the mouse is pressed. 
+        This is the callback for all X,Y and Z arrows]
+
+        Args:
+            userData ([type], optional): [User Data]. Defaults to None.
+        """
+        
         events = userData.events
         if type(events) != int:
             print("event was not int")
             return
         if self.discObj.w_userData.Axis_cb is False:
             if self.discObj.w_userData.Disc_cb is True:
-                self.callback_Rotate()
+                self.RotatingFace_cb(userData)
                 return
             else:
                 return  # We cannot allow this tool
