@@ -336,7 +336,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         # In this widget, we have 2 coin drawings that we need to capture event for them
 
-        if self.w_discEnabled[0] or self.w_arrowEnabled[0]:
+        if self.w_discEnabled[0] is True or self.w_arrowEnabled[0] is True:
             #   ------------- X DISC / Axis  -------------
             if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                     self.w_pick_radius, self.w_XarrowSeparator) is not None):
@@ -435,7 +435,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                         self.do_callbacks(1)        # We use the same callback,
                         return 1
 
-        if self.w_discEnabled[1] or self.w_arrowEnabled[1]:
+        if self.w_discEnabled[1] is True or self.w_arrowEnabled[1] is True:
             #   ------------- Y DISC / Axis  -------------
             if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                      self.w_pick_radius, self.w_YarrowSeparator) is not None):
@@ -533,7 +533,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                         self.do_callbacks(3)        # We use the same callback,
                         return 1
                     
-        if self.w_discEnabled[2] or self.w_arrowEnabled[2]:
+        if self.w_discEnabled[2] is True or self.w_arrowEnabled[2] is True:
             #   ------------- Z DISC / Axis  -------------
             if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                      self.w_pick_radius, self.w_ZarrowSeparator) is not None):
