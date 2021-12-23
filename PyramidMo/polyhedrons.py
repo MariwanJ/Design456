@@ -325,7 +325,7 @@ class Tetrahedron:
     # h = z / 3 * sqrt(6) = 4 * R / sqrt(6) /3 * sqrt(6) = 4 * R / 3	 = ro + R
     # radius at level = z / 2 / cos(30) = (4 * R / sqrt(6)) / 2 / sqrt(3) * 2 = 4 * R / (sqrt(6) * sqrt(3))= 4 * R / (3 * sqrt(2)
 
-    radiusvalue = 0
+
 
     def __init__(self, obj, radius=5):
         obj.addProperty("App::PropertyLength", "Radius", "Tetrahedron",
@@ -333,6 +333,7 @@ class Tetrahedron:
         obj.addProperty("App::PropertyLength", "Side",
                         "Tetrahedron", "Sidelength of the tetrahedron")
         obj.Proxy = self
+        self.radiusvalue = 0
 
     def execute(self, obj):
         try:

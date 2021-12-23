@@ -61,8 +61,7 @@ def dim_dash(p1, p2, color, LineWidth):
 
 
 class Grid:
-    collectGarbage = []
-    sg=None
+
     def __init__(self, view):
         self.view = view
         self.sg = None

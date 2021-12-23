@@ -78,12 +78,10 @@ class Design456_ExtendFace:
         self.startVectorQT = None
 
         self.setupRotation = None
-        self.savedVertices = None
+        self.savedVertexes = None
         self.counter = None
         self.run_Once = None
         self.tweakLength = None
-        self.oldTweakLength = None
-        self.isItRotation = None
         self.newObject = None
         self.selectedObj = None
         self.selectedFace = None
@@ -93,7 +91,6 @@ class Design456_ExtendFace:
         self.newFace = None      # Keep new vectors for the moved old face-vectors
 
         self.view = None  # used for captureing mouse events
-        self.MoveMentDirection = None
         self.newFaces = None
         self.faceDir = None
         self.FirstLocation = None
@@ -178,15 +175,15 @@ class Design456_ExtendFace:
     def COIN_recreateObject(self):
         try:
             self.sg.removeChild(self.coinFaces)
-            for i in range(0, len(self.savedVertices)):
-                for j in range(0, len(self.savedVertices[i])):
+            for i in range(0, len(self.savedVertexes)):
+                for j in range(0, len(self.savedVertexes[i])):
                     for testItem in range(0, len(self.oldFaceVertexes)):
-                        if self.savedVertices[i][j].Point == self.oldFaceVertexes[testItem].Point:
-                            self.savedVertices[i][j] = self.newFaceVertexes[testItem]
+                        if self.savedVertexes[i][j].Point == self.oldFaceVertexes[testItem].Point:
+                            self.savedVertexes[i][j] = self.newFaceVertexes[testItem]
 
             # We have the new vertices
             self.coinFaces.removeAllChildren()
-            for i in self.savedVertices:
+            for i in self.savedVertexes:
                 a = []
                 for j in i:
                     a.append(j.Point)
@@ -212,7 +209,7 @@ class Design456_ExtendFace:
             _result = []
             _resultFace = []
             _result.clear()
-            for faceVert in self.savedVertices:
+            for faceVert in self.savedVertexes:
                 convert = []
                 for vert in faceVert:
                     convert.append(vert.Point)
@@ -292,20 +289,20 @@ class Design456_ExtendFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def saveVertices(self):
+    def saveVertexes(self):
         # Save the vertices for the faces.
         try:
-            if len(self.savedVertices) > 0:
-                self.savedVertices.clear()
+            if len(self.savedVertexes) > 0:
+                self.savedVertexes.clear()
             for face in self.selectedObj.Shape.Faces:
                 newPoint = []
                 for v in face.OuterWire.OrderedVertexes:
                     newPoint.append(v)
-                self.savedVertices.append(newPoint)
+                self.savedVertexes.append(newPoint)
 
         except Exception as err:
 
-            App.Console.PrintError("'saveVertices' Failed. "
+            App.Console.PrintError("'saveVertexes' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -323,11 +320,9 @@ class Design456_ExtendFace:
         self.run_Once = False
         self.tweakLength = 0
         self.oldTweakLength = 0
-        self.isItRotation = False
         self.newFaces = []
-        self.savedVertices = [[]]
+        self.savedVertexes = [[]]
         self.tweakLength = 0
-        self.oldTweakLength = 0
 
         try:
             self.view = Gui.ActiveDocument.ActiveView
@@ -338,9 +333,6 @@ class Design456_ExtendFace:
                 errMessage = "Please select only one face and try again"
                 faced.errorDialog(errMessage)
                 return
-
-            self.MoveMentDirection = 'A'
-
             # Register undo
 
             self.selectedObj = sel[0].Object
@@ -357,7 +349,7 @@ class Design456_ExtendFace:
                 return
 
             # Recreate the object in separated shapes.
-            self.saveVertices()
+            self.saveVertexes()
 
             if(hasattr(self.selectedFace, "Vertexes")):
                 #self.oldFaceVertexes = self.selectedFace.OuterWire.OrderedVertexes
@@ -544,11 +536,12 @@ class Design456_ExtendFace:
             faced.RotateObjectToCenterPoint(self.newFace,0,0,self.discObj.w_userData.discObj.w_discAngle[2])            
             #self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[2])
             #self.newFace.Placement.Rotation.Axis = (0, 0, 1)
-        else:
-            # nothing to do here  #TODO : This shouldn't happen
-            return
-        print(self.newFace.Placement.Rotation)
+
         self.newFaceVertexes = self.newFace.Shape.Vertexes
+        for i in self.newFaceVertexes: 
+            print(i.Point)
+        
+        print(".............................")
         self.COIN_recreateObject()
         self.discObj.redraw()
 
@@ -583,11 +576,13 @@ class Design456_ExtendFace:
                 self.discObj.w_vector[0])
 
         MovementLength = self.endVector.sub(self.mouseToArrowDiff)
+        MovementLength=MovementLength.sub(App.Vector(self.discObj.distanceBetweenThem,
+                                                     self.discObj.distanceBetweenThem, 
+                                                     self.discObj.distanceBetweenThem))
+                                          
         self.tweakLength = round((
             MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
 
-        if abs(self.oldTweakLength-self. tweakLength) < 1:
-            return  # we do nothing
         self.TweakLBL.setText(
             "Length = " + str(round(self.tweakLength, 1)))
         # must be tuple
@@ -603,9 +598,6 @@ class Design456_ExtendFace:
         elif self.discObj.w_userData.discObj.axisType == 'Z':
             self.newFace.Placement.Base.z = MovementLength.z
             self.discObj.w_vector[0].z = MovementLength.z
-        else:
-            # nothing to do here  #TODO : This shouldn't happen
-            return
 
         self.newFaceVertexes = self.newFace.Shape.Vertexes
         self.COIN_recreateObject()
@@ -689,17 +681,15 @@ class Design456_ExtendFace:
             self.endVector = None
             self.startVector = None
             self.tweakLength = None
-            # We will make two object,
-            # one for visual effect and the other is the original
+
             self.selectedObj = None
             self.direction = None
             self.setupRotation = None
             self.Rotation = None
-            self.mouseOffset = None
             self.FirstLocation = None
             del self.selectedObj
             del self.selectedFace
-            self.savedVertices.clear()
+            self.savedVertexes.clear()
             del self.newFaceVertexes
             del self.oldFaceVertexes
             self.coinFaces.removeAllChildren()

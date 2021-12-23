@@ -793,7 +793,7 @@ def RotateObjectToCenterPoint(SelectedObj=None, XAngle=0, YAngle=45, ZAngle=0):
         axisY = SelectedObj.Shape.BoundBox.Center.y
         axisZ = SelectedObj.Shape.BoundBox.Center.z
         RealRotateObjectToAnAxis(SelectedObj, App.Vector(
-            axisX, axisY, axisZ), math.radians(XAngle),math.radians( YAngle), math.radians(ZAngle))
+            axisX, axisY, axisZ), math.radians(XAngle), math.radians( YAngle), math.radians(ZAngle))
 
 
 def getSortedXYZFromVertices(vertices=None):
