@@ -698,9 +698,12 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 tR, math.radians(self.w_rotation[3]))
 
             separtorAll.addChild(transformRot)
-            separtorAll.addChild(self.w_XarrowSeparator)
-            separtorAll.addChild(self.w_YarrowSeparator)
-            separtorAll.addChild(self.w_ZarrowSeparator)
+            if self.w_arrowEnabled[0] is True:
+                separtorAll.addChild(self.w_XarrowSeparator)
+            if self.w_arrowEnabled[1] is True:
+                separtorAll.addChild(self.w_YarrowSeparator)
+            if self.w_arrowEnabled[2] is True:
+                separtorAll.addChild(self.w_ZarrowSeparator)
 
             if self.w_discEnabled[0] is True:
                 separtorAll.addChild(self.w_XdiscSeparator)

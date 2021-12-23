@@ -193,7 +193,7 @@ class Design456_ExtendFace:
                 self.coinFaces.addChild(draw_FaceSet(
                     a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
             self.sg.addChild(self.coinFaces)
-            
+
 
         except Exception as err:
             App.Console.PrintError("'COIN_recreateObject Object' Failed. "
@@ -531,20 +531,23 @@ class Design456_ExtendFace:
                 return
             else:
                 return  # We cannot allow this tool
-
+        
         if self.discObj.w_userData.discObj.axisType == 'X':
-            self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[0])
-            self.newFace.Placement.Rotation.Axis = (1, 0, 0) 
+            faced.RotateObjectToCenterPoint(self.newFace,self.discObj.w_userData.discObj.w_discAngle[0],0,0)
+            #self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[0])
+            #self.newFace.Placement.Rotation.Axis = (1, 0, 0) 
         elif self.discObj.w_userData.discObj.axisType == 'Y':
-            self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[1])
-            self.newFace.Placement.Rotation.Axis = (0, 1, 0) 
+            faced.RotateObjectToCenterPoint(self.newFace,0,self.discObj.w_userData.discObj.w_discAngle[1],0)            
+            #self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[1])
+            #self.newFace.Placement.Rotation.Axis = (0, 1, 0) 
         elif self.discObj.w_userData.discObj.axisType == 'Z':
-            self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[2])
-            self.newFace.Placement.Rotation.Axis = (0, 0, 1) 
+            faced.RotateObjectToCenterPoint(self.newFace,0,0,self.discObj.w_userData.discObj.w_discAngle[2])            
+            #self.newFace.Placement.Rotation.Angle = math.radians(self.discObj.w_userData.discObj.w_discAngle[2])
+            #self.newFace.Placement.Rotation.Axis = (0, 0, 1)
         else:
             # nothing to do here  #TODO : This shouldn't happen
             return
-
+        print(self.newFace.Placement.Rotation)
         self.newFaceVertexes = self.newFace.Shape.Vertexes
         self.COIN_recreateObject()
         self.discObj.redraw()

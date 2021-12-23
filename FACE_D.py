@@ -750,7 +750,7 @@ def RealRotateObjectToAnAxis(SelectedObj=None, RealAxis=App.Vector(0.0, 0.0, 0.0
                         str(round(obj.Placement.Rotation.toEuler()[2], 2)) + ")] " +
                         "[Axis=(" + str(round(RealAxis.x, 2))+" , " + str(round(RealAxis.y, 2))+" , " +
                         str(round(RealAxis.z, 2))+")]")
-            print(textRota)
+            #print(textRota)
     else:
 
         SelectedObj.Placement = App.Placement(App.Vector(0.0, 0.0, 0.0),
@@ -787,13 +787,13 @@ def RotateObjectToCenterPoint(SelectedObj=None, XAngle=0, YAngle=45, ZAngle=0):
             axisY = obj.Shape.BoundBox.Center.y
             axisZ = obj.Shape.BoundBox.Center.z
         RealRotateObjectToAnAxis(SelectedObj, App.Vector(
-            axisX, axisY, axisZ), XAngle, YAngle, ZAngle)
+            axisX, axisY, axisZ), math.radians(XAngle), math.radians( YAngle),math.radians( ZAngle))
     else:
         axisX = SelectedObj.Shape.BoundBox.Center.x
         axisY = SelectedObj.Shape.BoundBox.Center.y
         axisZ = SelectedObj.Shape.BoundBox.Center.z
         RealRotateObjectToAnAxis(SelectedObj, App.Vector(
-            axisX, axisY, axisZ), XAngle, YAngle, ZAngle)
+            axisX, axisY, axisZ), math.radians(XAngle),math.radians( YAngle), math.radians(ZAngle))
 
 
 def getSortedXYZFromVertices(vertices=None):
