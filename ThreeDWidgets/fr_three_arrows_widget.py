@@ -119,7 +119,7 @@ class userDataObject:
         self.callerObject = None    #
         self.Axis_cb = False   # Disallow running callback - Arrows
         self.Disc_cb = False   # Disallow running callback - discs.
-        self.axisType= None
+        self.axisType = None
 # *******************************CALLBACKS - DEMO *****************************
 
 
@@ -1187,8 +1187,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             # Use this to finalize the action.
             self.do_callbacks()
             return
-
-        print(self.w_userData.Axis_cb, "Axis_cb", callbackType)
 
         if (callbackType == 1 or callbackType == 3 or callbackType == 5):
             self.w_userData.Axis_cb = True

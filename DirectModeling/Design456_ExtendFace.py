@@ -173,8 +173,7 @@ class Design456_ExtendFace:
             "Part::Feature", "eFace")
         sh = self.selectedFace.copy()
         self.newFace.Shape = sh
-        # self.selectedFace = self.newFace  # TODO: SHOULD WE DO THAT: FIXME:
-        # App.ActiveDocument.recompute()
+
 
     def COIN_recreateObject(self):
         try:
@@ -184,7 +183,6 @@ class Design456_ExtendFace:
                     for testItem in range(0, len(self.oldFaceVertexes)):
                         if self.savedVertices[i][j].Point == self.oldFaceVertexes[testItem].Point:
                             self.savedVertices[i][j] = self.newFaceVertexes[testItem]
-                            break  # we are done
 
             # We have the new vertices
             self.coinFaces.removeAllChildren()
@@ -195,6 +193,7 @@ class Design456_ExtendFace:
                 self.coinFaces.addChild(draw_FaceSet(
                     a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
             self.sg.addChild(self.coinFaces)
+            
 
         except Exception as err:
             App.Console.PrintError("'COIN_recreateObject Object' Failed. "
@@ -220,7 +219,7 @@ class Design456_ExtendFace:
                 _Newvertices = convert
                 newPolygon = _part.makePolygon(_Newvertices, True)
                 convert.clear()
-                newFace = _part.makeFilledFace(newPolygon.Faces)
+                newFace = _part.makeFilledFace(newPolygon.Edges)
                 if newFace.isNull():
                     raise RuntimeError('Failed to create face')
                 nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
@@ -297,7 +296,7 @@ class Design456_ExtendFace:
         # Save the vertices for the faces.
         try:
             if len(self.savedVertices) > 0:
-                del self.savedVertices[len(self.savedVertices)-1]
+                self.savedVertices.clear()
             for face in self.selectedObj.Shape.Faces:
                 newPoint = []
                 for v in face.OuterWire.OrderedVertexes:
@@ -361,7 +360,8 @@ class Design456_ExtendFace:
             self.saveVertices()
 
             if(hasattr(self.selectedFace, "Vertexes")):
-                self.oldFaceVertexes = self.selectedFace.OuterWire.OrderedVertexes
+                #self.oldFaceVertexes = self.selectedFace.OuterWire.OrderedVertexes
+                self.oldFaceVertexes = self.selectedFace.Vertexes
             if not hasattr(self.selectedFace, 'Faces'):
                 raise Exception("Please select only one face and try again")
             # TODO: FIXME: WHAT SHOULD WE DO WHEN IT IS A CURVED FACE???
@@ -374,7 +374,8 @@ class Design456_ExtendFace:
             self.setupRotation = self.calculateNewVector()
 
             self.ExtractFace()
-            self.newFaceVertexes = self.newFace.Shape.OuterWire.OrderedVertexes
+            #self.newFaceVertexes = self.newFace.Shape.OuterWire.OrderedVertexes
+            self.newFaceVertexes = self.newFace.Shape.Vertexes
             App.ActiveDocument.removeObject(self.selectedObj.Name)
 
             # Undo
@@ -468,15 +469,15 @@ class Design456_ExtendFace:
             font.setPointSize(10)
             self.lblTweakResult.setFont(font)
             self.lblTweakResult.setObjectName("lblTweakResult")
-            self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(270, 360, 111, 61))
+            btnOK = QtGui.QDialogButtonBox(self.dialog)
+            btnOK.setGeometry(QtCore.QRect(270, 360, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
             font.setWeight(75)
-            self.btnOK.setFont(font)
-            self.btnOK.setObjectName("btnOK")
-            self.btnOK.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+            btnOK.setFont(font)
+            btnOK.setObjectName("btnOK")
+            btnOK.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             self.lblTitle = QtGui.QLabel(self.dialog)
             self.lblTitle.setGeometry(QtCore.QRect(10, 10, 281, 91))
             font = QtGui.QFont()
@@ -501,7 +502,7 @@ class Design456_ExtendFace:
 
             self.TweakLBL.setText(_translate("Dialog", "Length = 0.0"))
             QtCore.QObject.connect(
-                self.btnOK, QtCore.SIGNAL("accepted()"), self.hide)
+                btnOK, QtCore.SIGNAL("accepted()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             self.tab.setCurrentWidget(self.dialog)
             return self.dialog
@@ -519,7 +520,6 @@ class Design456_ExtendFace:
         if type(events) != int:
             print("event was not int")
             return
-        print(self.discObj.w_userData.Axis_cb, " Mouse move Axis_cb")
         if self.discObj.w_userData.Axis_cb is False:
             if self.discObj.w_userData.Disc_cb is True:
                 self.callback_Rotate()
@@ -654,12 +654,12 @@ class Design456_ExtendFace:
             self.FirstLocation = None
             del self.selectedObj
             del self.selectedFace
-            del self.savedVertices
+            self.savedVertices.clear()
             del self.newFaceVertexes
             del self.oldFaceVertexes
             self.coinFaces.removeAllChildren()
-            del self.coinFaces
             self.sg.removeChild(self.coinFaces)
+            del self.coinFaces
             self.coinFaces = None
             del self
 
