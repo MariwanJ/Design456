@@ -346,7 +346,7 @@ class Design456_ExtendFace:
                 faced.errorDialog(errMessage)
                 return
             # Register undo
-
+            App.ActiveDocument.openTransaction(translate("Design456","ExtendFace"))
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
             if (hasattr(sel[0], "SubObjects")):
@@ -646,6 +646,8 @@ class Design456_ExtendFace:
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
+        App.ActiveDocument.commitTransaction() #undo reg.
+        
         self.dialog.hide()
         self.recreateObject()
 
