@@ -395,7 +395,6 @@ class Design456_Part_Fillet:
             sub1 = s[0]
             tempNewObj.Base = sub1.Object
             names = sub1.SubElementNames
-            print(names)
             EdgesToBeChanged = []
             if (len(names) != 0):
                 """ we need to take the rest of the string

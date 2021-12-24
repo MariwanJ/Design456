@@ -182,8 +182,7 @@ def zDisc_cb(userData: userDataObject = None):
     # just change the callback function
     print("dummy Zangle changed callback", userData.discObj.w_discAngle)
 
-# ******************************
-
+# *************************
 # Whole widget callback  - Might not be used
 # *************************************************************
 
@@ -1053,7 +1052,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             if self.w_discAngle[0] == -360:
                 self.w_discAngle[0] = 0
             self.oldAngle[0] = self.w_discAngle[0]
-            print("XAngle=", self.w_discAngle[0])
             self.redraw()
 
         except Exception as err:
@@ -1121,7 +1119,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             if self.w_discAngle[1] == -360:
                 self.w_discAngle[1] = 0
             self.oldAngle[1] = self.w_discAngle[1]
-            print("YAngle=", self.w_discAngle[1])
             self.redraw()
 
         except Exception as err:
@@ -1189,7 +1186,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             if self.w_discAngle[2] == -360:
                 self.w_discAngle[2] = 0
             self.oldAngle[2] = self.w_discAngle[2]
-            print("ZAngle=", self.w_discAngle[2])
             self.redraw()
 
         except Exception as err:

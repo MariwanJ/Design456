@@ -58,17 +58,13 @@ def getDirectionAxis(s=None):
         obj = s[0]
         faceSel = None
         if (hasattr(obj, "SubObjects")):
-            #print("has subobject")
+
             if len(obj.SubObjects) != 0:
                 if (len(obj.SubObjects[0].Faces) == 0):
-                    #print("no faces but has subobject")
                     # it is an edge not a face:
                     f = findFacehasSelectedEdge()
                     if f is None:
                         raise Exception("Face not found")
-                    #print("face found not none")
-                    #direction = f.normalAt(0, 0)
-                    #print("direction is ", direction)
                     faceSel = f
                 else:
                     faceSel = obj.SubObjects[0]
@@ -692,10 +688,8 @@ def checkCollision(newObj):
         if (Overlapping(newObj, obj) is True):
             if (hasattr(obj, "Name")):
                 o = App.ActiveDocument.getObject(obj.Name)
-                print(o.Name)
             elif (hasattr(obj, "Obj.Name")):
                 o = App.ActiveDocument.getObject(obj.Object.Name)
-                print(o.Name)
             else:
                 o = None
         if(o is not None):
@@ -763,7 +757,6 @@ def RealRotateObjectToAnAxis(SelectedObj=None, RealAxis=App.Vector(0.0, 0.0, 0.0
                     str(round(SelectedObj.Placement.Rotation.toEuler()[1], 2)) + " , " +
                     str(round(SelectedObj.Placement.Rotation.toEuler()[2], 2)) + ")] " +
                     "[Axis=(" + str(round(RealAxis.x, 2))+" , " + str(round(RealAxis.y, 2))+" , " + str(round(RealAxis.z, 2))+")]")
-        # print(textRota)
 
 # The rotation below is inspired by https://wiki.freecadweb.org/Macro_Rotate_To_Point
 # Thanks Mario
@@ -820,7 +813,6 @@ def getSortedXYZFromVertices(vertices=None):
             allZ.append(vertices[i].z)
         if (allX == [] or allY == [] or allZ == []):
             raise ValueError("Vertices must be valid")
-        print()
         allX.sort()
         allY.sort()
         allZ.sort()
@@ -909,7 +901,6 @@ def getNormalized(selectedObj=None):
     p2 = edg.valueAt(edg.LastParameter)
 
     vnormal = p2-p1
-    print("vnormal", vnormal)
     return vnormal
 
 
@@ -917,7 +908,6 @@ def getBase(selectedObj, radius=1, thickness=1):
     edg = getLowestEdgeInAFace(selectedObj)
     nor = getNormalized(selectedObj)
     basePoint = edg.valueAt(edg.FirstParameter) + nor*(radius+thickness)
-    print("basePoint", basePoint)
     return basePoint
 
 

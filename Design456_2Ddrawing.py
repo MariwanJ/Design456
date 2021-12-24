@@ -108,7 +108,6 @@ class Design456_Arc3Points:
                 for t in selected:
                     allSelected.append(
                         t.Object.Shape.Vertexes[0].Placement.Base)
-                    print(len(allSelected))
             else:
                 oneObject = False
                 print("A combination of objects")
@@ -176,7 +175,6 @@ class Design456_MultiPointsToWire:
                     else:
                         allSelected.append(App.Vector(t.Object.Shape.Point))
 
-            #print(allSelected)
             if self.type == 0:
                 Wire1 = _draft.makeWire(allSelected, closed=True)
             else:
@@ -342,7 +340,6 @@ class Design456_2DTrim:
                             WireOrEdgeMadeOfPoints)-1]
 
                         for index in range(0, scan2):
-                            print(index)
                             WireOrEdgeMadeOfPoints.pop(index)
 
                         pnew2DObject1 = _draft.makeWire(
@@ -361,7 +358,6 @@ class Design456_2DTrim:
                         # don't add first point
                     elif position2 == totalPoints-1:
                         # point 2 is the last point in the shape
-                        print("at the end")
                         StartPoint = WireOrEdgeMadeOfPoints[0]
                         EndPoint = WireOrEdgeMadeOfPoints[position2-1]
                         WireOrEdgeMadeOfPoints.pop(position2-1)
@@ -447,17 +443,11 @@ class Design456_2DExtend:
             newPoint = []
             _point = sel.Object.Points
             positionSave = 0
-            print("---------------")
-            print(sel.Object.Points)
-            print(VertPoint)
-            print("---------------")
 
             for i in _point:
                 print("check", i)
                 newPoint.append(App.Vector(i))
                 if VertPoint == i:
-                    print("Found at", newPoint.index(i))
-
                     positionSave = newPoint.index(i)
             if VertPoint == newPoint[len(newPoint)-1]:
                 # add to the last position
