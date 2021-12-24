@@ -361,7 +361,9 @@ class Design456_ExtendEdge:
             if len(sel) > 2:
                 errMessage = "Please select only one edge and try again"
                 faced.errorDialog(errMessage)
-
+            
+            App.ActiveDocument.openTransaction(translate("Design456","ExtendFace"))
+            
             self.MoveMentDirection = 'A'
 
             self.selectedObj = sel[0].Object
@@ -621,6 +623,8 @@ class Design456_ExtendEdge:
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
+        App.ActiveDocument.commitTransaction() #undo reg.
+        
         self.dialog.hide()
         self.recreateObject()
 
