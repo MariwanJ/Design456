@@ -362,7 +362,7 @@ class Design456_ExtendEdge:
                 errMessage = "Please select only one edge and try again"
                 faced.errorDialog(errMessage)
             
-            App.ActiveDocument.openTransaction(translate("Design456","ExtendFace"))
+            App.ActiveDocument.openTransaction(translate("Design456", "ExtendEdge"))
             
             self.MoveMentDirection = 'A'
 
