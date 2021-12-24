@@ -538,7 +538,6 @@ class Design456_ExtendFace:
     def MouseDragging_cb(self, userData=None):
         """[Move face by dragging the face. As far as the mouse is pressed. 
         This is the callback for all X,Y and Z arrows]
-
         Args:
             userData ([type], optional): [User Data]. Defaults to None.
         """
@@ -561,12 +560,15 @@ class Design456_ExtendFace:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
-            #self.mouseToArrowDiff = self.endVector.sub(self.discObj.w_vector[0])
+            self.mouseToArrowDiff = self.endVector.sub(
+                self.discObj.w_vector[0])
 
-        MovementLength = self.endVector#.sub(self.mouseToArrowDiff)
+        MovementLength = self.endVector.sub(self.mouseToArrowDiff)
+        self.tweakLength = round((
+            MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
 
-        self.tweakLength = round((MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
-        
+        if abs(self.oldTweakLength-self. tweakLength) < 1:
+            return  # we do nothing
         self.TweakLBL.setText(
             "Length = " + str(round(self.tweakLength, 1)))
         # must be tuple
@@ -574,14 +576,17 @@ class Design456_ExtendFace:
         self.discObj.lblRedraw()
         self.oldFaceVertexes = self.newFaceVertexes
         if self.discObj.w_userData.discObj.axisType == 'X':
-            self.newFace.Placement.Base.x = self.FirstLocation.x+self.tweakLength
-            self.discObj.w_vector[0].x = self.endVector.x
+            self.newFace.Placement.Base.x = MovementLength.x
+            self.discObj.w_vector[0].x = MovementLength.x
         elif self.discObj.w_userData.discObj.axisType == 'Y':
-            self.newFace.Placement.Base.y = self.FirstLocation.y+self.tweakLength
-            self.discObj.w_vector[0].y = self.endVector.y
+            self.newFace.Placement.Base.y = MovementLength.y
+            self.discObj.w_vector[0].y = MovementLength.y
         elif self.discObj.w_userData.discObj.axisType == 'Z':
-            self.newFace.Placement.Base.z = self.FirstLocation.z+self.tweakLength
-            self.discObj.w_vector[0].z = self.endVector.z
+            self.newFace.Placement.Base.z = MovementLength.z
+            self.discObj.w_vector[0].z = MovementLength.z
+        else:
+            # nothing to do here  #TODO : This shouldn't happen
+            return
 
         self.newFaceVertexes = self.newFace.Shape.Vertexes
         self.COIN_recreateObject()
