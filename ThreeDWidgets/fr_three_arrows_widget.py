@@ -258,13 +258,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         self.w_color = _axisColor
         self.w_rotaryDisc_color = _axisColor
-        self.w_selColor = [[i * 1.2 for i in self.w_color[0]],
-                           [j * 1.2 for j in self.w_color[1]],
-                           [k * 1.2 for k in self.w_color[2]]]
+        self.w_selColor = [[i * 1.5 for i in self.w_color[0]],
+                           [j * 1.5 for j in self.w_color[1]],
+                           [k * 1.5 for k in self.w_color[2]]]
         self.w_Scale = _scale
-        self.w_inactiveColor = [[i * 0.7 for i in self.w_color[0]],
-                                [j * 0.7 for j in self.w_color[1]],
-                                [k * 0.7 for k in self.w_color[2]]]
+        self.w_inactiveColor = [[i * 0.9 for i in self.w_color[0]],
+                                [j * 0.9 for j in self.w_color[1]],
+                                [k * 0.9 for k in self.w_color[2]]]
 
         self.w_userData = userDataObject()  # Keep info about the whole widget
         self.w_userData.discObj = self

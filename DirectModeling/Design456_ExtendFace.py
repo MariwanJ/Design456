@@ -97,6 +97,7 @@ class Design456_ExtendFace:
         self.coinFaces = None
         self.sg = None  # SceneGraph
         self.discObj = None
+        self.OriginalFacePlacement = None
 
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
@@ -166,12 +167,24 @@ class Design456_ExtendFace:
     def ExtractFace(self):
         """[Extract the face for movement]
         """
-        self.newFace = App.ActiveDocument.addObject(
-            "Part::Feature", "eFace")
-        sh = self.selectedFace.copy()
-        self.newFace.Shape = sh
-
-
+        try:
+            self.newFace = App.ActiveDocument.addObject(
+                "Part::Feature", "eFace")
+            sh = self.selectedFace.copy()
+            self.newFace.Shape = sh
+            s = App.ActiveDocument.getObject(self.newFace.Name)
+            self.OriginalFacePlacement = App.Placement()
+            self.OriginalFacePlacement.Base= s.Placement.Base
+            self.OriginalFacePlacement.Rotation.Angle=s.Placement.Rotation.Angle
+            self.OriginalFacePlacement.Rotation.Axis=s.Placement.Rotation.Axis
+            
+        except Exception as err:
+            App.Console.PrintError("'ExtractFace' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def COIN_recreateObject(self):
         try:
             self.sg.removeChild(self.coinFaces)
@@ -190,7 +203,6 @@ class Design456_ExtendFace:
                 self.coinFaces.addChild(draw_FaceSet(
                     a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
             self.sg.addChild(self.coinFaces)
-
 
         except Exception as err:
             App.Console.PrintError("'COIN_recreateObject Object' Failed. "
@@ -366,7 +378,6 @@ class Design456_ExtendFace:
             self.setupRotation = self.calculateNewVector()
 
             self.ExtractFace()
-            #self.newFaceVertexes = self.newFace.Shape.OuterWire.OrderedVertexes
             self.newFaceVertexes = self.newFace.Shape.Vertexes
             App.ActiveDocument.removeObject(self.selectedObj.Name)
 
@@ -386,7 +397,7 @@ class Design456_ExtendFace:
                                                  # rotation of the disc main
                                                  [0, 0, 0, 0],
                                                  self.setupRotation,  # setup rotation
-                                                 [15.0, 15.0, 15.0],  # scale
+                                                 [30.0, 30.0, 30.0],  # scale
                                                  1,  # type
                                                  0,  # opacity
                                                  10)  # distance between them
@@ -462,7 +473,7 @@ class Design456_ExtendFace:
             self.lblTweakResult.setFont(font)
             self.lblTweakResult.setObjectName("lblTweakResult")
             btnOK = QtGui.QDialogButtonBox(self.dialog)
-            btnOK.setGeometry(QtCore.QRect(270, 360, 111, 61))
+            btnOK.setGeometry(QtCore.QRect(270, 260, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
@@ -524,16 +535,19 @@ class Design456_ExtendFace:
             else:
                 return  # We cannot allow this tool
         self.oldFaceVertexes = self.newFaceVertexes
-        old=self.newFace.Shape.Vertexes
+        s = App.ActiveDocument.getObject(self.newFace.Name)
+        s.Placement = self.OriginalFacePlacement        
         if self.discObj.w_userData.discObj.axisType == 'X':
-            faced.RotateObjectToCenterPoint(self.newFace,self.discObj.w_userData.discObj.w_discAngle[0],0,0)
+            faced.RotateObjectToCenterPoint(
+                self.newFace, 0, 0, self.discObj.w_userData.discObj.w_discAngle[0])
         elif self.discObj.w_userData.discObj.axisType == 'Y':
-            faced.RotateObjectToCenterPoint(self.newFace,0,self.discObj.w_userData.discObj.w_discAngle[1],0)            
+            faced.RotateObjectToCenterPoint(
+                self.newFace, 0, self.discObj.w_userData.discObj.w_discAngle[1], 0)
         elif self.discObj.w_userData.discObj.axisType == 'Z':
-            faced.RotateObjectToCenterPoint(self.newFace,0,0,self.discObj.w_userData.discObj.w_discAngle[2])            
+            faced.RotateObjectToCenterPoint(
+                self.newFace, self.discObj.w_userData.discObj.w_discAngle[2], 0, 0,)
         self.newFaceVertexes = self.newFace.Shape.Vertexes
         self.COIN_recreateObject()
-
 
     def MouseDragging_cb(self, userData=None):
         """[Move face by dragging the face. As far as the mouse is pressed. 
@@ -541,7 +555,7 @@ class Design456_ExtendFace:
         Args:
             userData ([type], optional): [User Data]. Defaults to None.
         """
-        
+
         events = userData.events
         if type(events) != int:
             print("event was not int")
@@ -563,9 +577,11 @@ class Design456_ExtendFace:
             self.mouseToArrowDiff = self.endVector.sub(
                 self.discObj.w_vector[0])
 
-        MovementLength = self.endVector.sub(self.mouseToArrowDiff)
+        MovementLength = self.endVector#.sub(self.mouseToArrowDiff)
+        # self.tweakLength = round((
+        #    MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
         self.tweakLength = round((
-            MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
+            self.endVector - (self.startVector+self._Vector)).dot(self.normalVector), 1)
 
         if abs(self.oldTweakLength-self. tweakLength) < 1:
             return  # we do nothing
@@ -587,7 +603,6 @@ class Design456_ExtendFace:
         else:
             # nothing to do here  #TODO : This shouldn't happen
             return
-
         self.newFaceVertexes = self.newFace.Shape.Vertexes
         self.COIN_recreateObject()
         self.discObj.redraw()
