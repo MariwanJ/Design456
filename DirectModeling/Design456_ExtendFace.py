@@ -274,10 +274,18 @@ class Design456_ExtendFace:
             self.normalVector = nv
             # Setup calculation.
             if (face.Surface.Rotation is None):
-                calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
-                rotation = [0, 1, 0, calAn]
-                print("no rotation")
+                plr = plDirection = App.Placement()
 
+                # section direction. When the face doesn't have a Rotation
+                yL = face.CenterOfMass
+                uv = face.Surface.parameter(yL)
+                nv = face.normalAt(uv[0], uv[1])
+                direction = yL.sub(nv + yL)
+                r = App.Rotation(App.Vector(0, 0, 1), direction)
+                plDirection.Base = yL
+                plDirection.Rotation.Q = r.Q
+                plr = plDirection
+                rotation = (plr.Rotation.Axis.x,plr.Rotation.Axis.y,plr.Rotation.Axis.z, math.degrees(plr.Rotation.Angle))
             else:
                 ang = face.Surface.Axis.getAngle(App.Vector(0, 0, 1))
                 rotation = [0, 0, 1, ang]
