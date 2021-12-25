@@ -590,18 +590,8 @@ class Design456_SmartExtrudeRotate:
             self.normalVector = nv
             # Setup calculation.
             if (face2.Surface.Rotation is None):
-                plr = plDirection = App.Placement()
-
-                # section direction. When the face doesn't have a Rotation
-                yL = face2.CenterOfMass
-                uv = face2.Surface.parameter(yL)
-                nv = face2.normalAt(uv[0], uv[1])
-                direction = yL.sub(nv + yL)
-                r = App.Rotation(App.Vector(0, 0, 1), direction)
-                plDirection.Base = yL
-                plDirection.Rotation.Q = r.Q
-                plr = plDirection
-                rotation = (plr.Rotation.Axis.x,plr.Rotation.Axis.y,plr.Rotation.Axis.z, math.degrees(plr.Rotation.Angle))
+               calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
+               rotation = [0, 0, 1, calAn]
 
             else:
                 rotation = [face2.Surface.Rotation.Axis.x,
