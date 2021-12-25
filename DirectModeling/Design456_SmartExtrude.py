@@ -343,13 +343,20 @@ class Design456_SmartExtrude:
             self._vector = self.calculateNewVector()
             self.extrudeLength = 0.0
             if (face1.Surface.Rotation is None):
+                plr = plDirection = App.Placement()
+
+                # section direction. When the face doesn't have a Rotation
                 yL = face1.CenterOfMass
                 uv = face1.Surface.parameter(yL)
                 nv = face1.normalAt(uv[0], uv[1])
-                calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
-                #nett= 90-faced.calculateAngle(rot)
-                rotation = [0, 1, 0, calAn]
+                direction = yL.sub(nv + yL)
+                r = App.Rotation(App.Vector(0, 0, 1), direction)
+                plDirection.Base = yL
+                plDirection.Rotation.Q = r.Q
+                plr = plDirection
+                rotation = (plr.Rotation.Axis.x,plr.Rotation.Axis.y,plr.Rotation.Axis.z, math.degrees(plr.Rotation.Angle))
             else:
+                print("Rotation")
                 rotation = (face1.Surface.Rotation.Axis.x,
                             face1.Surface.Rotation.Axis.y,
                             face1.Surface.Rotation.Axis.z,
@@ -412,7 +419,9 @@ class Design456_SmartExtrude:
         try:
             if(self.WasFaceFrom3DObject):
                 ss = self.selectedObj.SubObjects[0]
+                print("first")
             else:
+                print("second")
                 ss = self.selectedObj.Object.Shape
             yL = ss.CenterOfMass
             uv = ss.Surface.parameter(yL)
