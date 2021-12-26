@@ -173,7 +173,6 @@ class mousePointMove:
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 pos = event.getPosition()
                 point = self.convertToVector(pos)
-                print('Mouse click \n')
                 _point = self.object.Object.Points
                 _point[len(_point) - 1] = point
                 # self.object.Object.End= point
@@ -197,7 +196,7 @@ class mousePointMove:
 
     def remove_callbacks(self):
         try:
-            print('Remove MouseClick callback')
+            print('Remove Mouse callback')
             self.view.removeEventCallbackPivy(
                 coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClicked)
             self.view.removeEventCallbackPivy(
@@ -347,17 +346,6 @@ class PartMover:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
-# TODO: This class must be updated to be able to move all kind of objects
-#    Mariwan
-
-
-""" This class will return back info about the selected
-    face. Many options are available but
-    I will put only what I need at the moment. 
-    See the notes below for available info
-    Give the class object Gui.Selection()[No] where No is the face you want to get info
-
-"""
 
 
 def getFaceName(sel):
@@ -370,8 +358,6 @@ def getFaceName(sel):
     except Exception as err:
         App.Console.PrintError("'getFaceName' Failed. "
                                "{err}\n".format(err=str(err)))
-
-# TODO Remove this.. not necessary.
 
 
 def getObjectFromFaceName(obj, face_name):
@@ -391,7 +377,9 @@ def getObjectFromFaceName(obj, face_name):
 
 def errorDialog(msg):
     # Create a simple dialog QMessageBox
-    # The first argument indicates the icon used: one of QtGui.QMessageBox.{NoIcon, Information, Warning, Critical, Question}
+    # The first argument indicates the icon used:
+    # one of QtGui.QMessageBox.{NoIcon, Information,
+    # Warning, Critical, Question}
     diag = QtGui.QMessageBox(QtGui.QMessageBox.Warning, 'Error', msg)
     diag.setWindowModality(QtCore.Qt.ApplicationModal)
     diag.exec_()
@@ -432,7 +420,8 @@ class SelectTopFace:
 
 
 class GetInputValue:
-    value = 0.0
+    def __init__(self):
+        self.value = 0.0
     """
     get Input value from user. Either Text, INT or Float
     """
@@ -483,14 +472,14 @@ class StatusBarProgress:
     Use stepUp   to step Up   the progress indicator
     Use stepDown to step down the progress indicator
     """
-    progress_bar = None
 
     def __init__(self, title="", Steps=10):
         self.ProgressTitle = title
         self.NoOfsteps = Steps
+        self.progress_bar = None
 
     def Activated(self):
-        progress_bar = App.Base.ProgressIndicator()
+        self.progress_bar = App.Base.ProgressIndicator()
 
     def start(self):
         self.progress_bar.start(self.ProgressTitle, 9)
@@ -530,7 +519,7 @@ class createActionTab:
         if self.tab is None:
             raise Exception("No tab widget found")
         self.dialog = QtGui.QDialog()
-        oldsize = self.tab.count()
+        #oldsize = self.tab.count()
         self.tab.addTab(self.dialog, self.title)
 
         self.tab.setCurrentWidget(self.dialog)
@@ -542,10 +531,11 @@ def findnormalAtforEdge():
     """[Find Directions of an edge]
 
     Returns:
-        [(float,float,float)]: [Returns the results of normalAt for the faces containing the edge.]
+        [(float,float,float)]: [Returns the results
+        of normalAt for the faces 
+        containing the edge.]
     """
     results = []
-
     for f in findFacehasSelectedEdge():
         u0, u1, v0, v1 = f.ParameterRange
         results.append(f.normalAt(0.5 * (u0 + u1), 0.5 * (v0 + v1)))
@@ -553,7 +543,8 @@ def findnormalAtforEdge():
 
 
 def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10), n=App.Vector(0, 0, 1)):
-    """[Measure the distance between two points, first point is optional if not provided, 
+    """[Measure the distance between two points,
+        first point is optional if not provided,
         the function will measure the distance to origin ]
 
     Args:
@@ -568,12 +559,12 @@ def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10),
 
 
 def EnableAllToolbar(value):
-    """[Disable or Enable all toolbars. This is useful to disallow using any other tool while an instans of a tool is active]
+    """[Disable or Enable all toolbars.
+    This is useful to disallow using any
+    other tool while an instans of a tool is active]
 
-    Args:
-        value ([Boolean]): [False : to disable all toolbars, 
-                            True  : to re-enable all toolbars 
-                            ]
+    Args:  value ([Boolean]): [False : to disable all toolbars,
+     True  : to re-enable all toolbars ]
     """
     mw = Gui.getMainWindow()
     tbs = mw.findChildren(QtGui.QToolBar)
@@ -582,7 +573,10 @@ def EnableAllToolbar(value):
 
 
 def DisableEnableAllMenus(value):
-    """[Disable or Enable all menus. This is useful to disallow using any other tool while an instans of a tool is active]
+    """[
+    Disable or Enable all menus. This is useful
+    to disallow using any other tool while an instans
+    of a tool is active]
 
     Args:
         value ([Boolean]): [False : to disable all menus, 
@@ -633,8 +627,10 @@ def clearPythonConsole(name: str = ""):
 
 
 def findMainListedObjects():
-    """[Find and return main objects in the active document - no children will be return
-        And must be solid - no 2D or group should be included
+    """[
+    Find and return main objects in the active document
+    - no children will be return
+    And must be solid - no 2D or group should be included
         ]
 
     Returns:
@@ -642,7 +638,6 @@ def findMainListedObjects():
     """
     results = []
     for i in App.ActiveDocument.Objects:
-        label = i.Label
         name = i.Name
         Gui.ActiveDocument.getObject(name).Visibility = False
         inlist = i.InList
@@ -675,13 +670,23 @@ def Overlapping(Sourceobj1, Targetobj2):
 
 
 def checkCollision(newObj):
-    """[Find a list of objects from the active document that is/are intersecting with newObj]
+    """[Find a list of objects from the active
+    document that is/are intersecting with newObj]
     Args:
         newObj ([3D Selection Object]): [Object checked with document objects]
     Returns:
         [type]: [Document objects]
     """
     objList = findMainListedObjects()  # get the root objects - no children
+    print("mainlist", len(objList))
+    for obj in objList:
+        print(obj.Name)
+        print("#####################3")
+        if obj.Name == newObj.Name:
+            objList.remove(obj)
+            break
+    print("mainlist", len(objList))
+
     results = []
     for obj in objList:
         o = None
@@ -744,7 +749,7 @@ def RealRotateObjectToAnAxis(SelectedObj=None, RealAxis=App.Vector(0.0, 0.0, 0.0
                         str(round(obj.Placement.Rotation.toEuler()[2], 2)) + ")] " +
                         "[Axis=(" + str(round(RealAxis.x, 2))+" , " + str(round(RealAxis.y, 2))+" , " +
                         str(round(RealAxis.z, 2))+")]")
-            #print(textRota)
+            # print(textRota)
     else:
 
         SelectedObj.Placement = App.Placement(App.Vector(0.0, 0.0, 0.0),
@@ -780,15 +785,15 @@ def RotateObjectToCenterPoint(SelectedObj=None, XAngle=0, YAngle=45, ZAngle=0):
             axisY = obj.Shape.BoundBox.Center.y
             axisZ = obj.Shape.BoundBox.Center.z
         RealRotateObjectToAnAxis(SelectedObj, App.Vector(
-            axisX, axisY, axisZ), math.radians(XAngle), math.radians( YAngle),math.radians( ZAngle))
+            axisX, axisY, axisZ), math.radians(XAngle), math.radians(YAngle), math.radians(ZAngle))
     else:
         axisX = SelectedObj.Shape.BoundBox.Center.x
         axisY = SelectedObj.Shape.BoundBox.Center.y
         axisZ = SelectedObj.Shape.BoundBox.Center.z
-        #RealRotateObjectToAnAxis(SelectedObj, App.Vector(
+        # RealRotateObjectToAnAxis(SelectedObj, App.Vector(
         #    axisX, axisY, axisZ), math.radians(XAngle), math.radians( YAngle), math.radians(ZAngle))
         RealRotateObjectToAnAxis(SelectedObj, App.Vector(
-            axisX, axisY, axisZ), (XAngle), ( YAngle),(ZAngle))
+            axisX, axisY, axisZ), (XAngle), (YAngle), (ZAngle))
 
 
 def getSortedXYZFromVertices(vertices=None):
@@ -862,12 +867,6 @@ def getLowestEdgeInAFace(selectedObj=None):
         testAllZ = allZ.count(allZ[0]) == len(allZ)
 
         if(testAllZ):
-            # We have either top or bottom
-            # for edge in ss.Edges:
-            #    if edge.SubShapes[0].Point.x == allX[0] or edge.SubShapes[0].Point.x == allX[1]:
-            #           if edge.SubShapes[1].Point.x == allX[0] or edge.SubShapes[1].Point.x == allZ[1]:
-            #                return edge
-
             for edge in ss.Edges:
                 if edge.SubShapes[0].Point.y == allY[0] or edge.SubShapes[0].Point.y == allY[1]:
                     if edge.SubShapes[1].Point.y == allY[0] or edge.SubShapes[1].Point.y == allY[1]:
@@ -914,7 +913,8 @@ def getBase(selectedObj, radius=1, thickness=1):
 def findFaceSHavingTheSameEdge():
     """[Find Faces that have the selected edge]
     Returns:
-        [Face Objects]: [Return the faces have the selected edge or None if error occur]
+        [Face Objects]: [Return the faces having
+        the selected edge or None if error occur]
     """
     s = Gui.Selection.getSelectionEx()[0]
     edge = s.SubObjects[0]
@@ -925,7 +925,8 @@ def findFaceSHavingTheSameEdge():
 def findFacehasSelectedEdge():
     """[Find Face that has the selected edge]
     Returns:
-        [Face Object]: [Return the face of the selected edge or None if error occurs]
+        [Face Object]: [Return the face of the selected
+        edge or None if error occurs]
     """
     obj = Gui.Selection.getSelectionEx()[0]
     edge = obj.SubObjects[0]
@@ -936,7 +937,8 @@ def findFacehasSelectedEdge():
                 return fa
     return None
 
-def calculateMouseAngle(val1,val2):
+
+def calculateMouseAngle(val1, val2):
     """[Calculate Angle of two coordinates ( xy, yz or xz).
         This function is useful to calculate mouse position
         in Angle depending on the mouse position.
@@ -949,19 +951,19 @@ def calculateMouseAngle(val1,val2):
     Returns:
         [int]: [Calculated value in degrees]
     """
-    if(val2==0):
-        return None # divide by zero
+    if(val2 == 0):
+        return None  # divide by zero
     result = 0
-    if (val1>0 and val2>0):
-        result= int(math.degrees(math.atan2(float(val1), 
-                                            float(val2))))
-    if (val1<0 and val2>0):
-        result= int(math.degrees(math.atan2(float(val1), 
-                                                float(val2))))+360
-    if (val1>0 and val2<0):
-        result= int(math.degrees(math.atan2(float(val1), 
-                                            float(val2))))
-    if (val1<0 and val2<0):
-        result= int(math.degrees(math.atan2(float(val1), 
-                                            float(val2))))+360
+    if (val1 > 0 and val2 > 0):
+        result = int(math.degrees(math.atan2(float(val1),
+                                             float(val2))))
+    if (val1 < 0 and val2 > 0):
+        result = int(math.degrees(math.atan2(float(val1),
+                                             float(val2))))+360
+    if (val1 > 0 and val2 < 0):
+        result = int(math.degrees(math.atan2(float(val1),
+                                             float(val2))))
+    if (val1 < 0 and val2 < 0):
+        result = int(math.degrees(math.atan2(float(val1),
+                                             float(val2))))+360
     return result
