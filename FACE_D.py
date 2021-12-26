@@ -703,7 +703,7 @@ def checkCollision(newObj):
 
 
 # Function to find the angle
-# between the two lines with ref to the origion
+# between the two lines with ref to the origin
 # This here is to make it clear how you do that
 def calculateAngle(v1, v2=App.Vector(1, 1, 0)):
     """[Find angle between a vector and the origin

@@ -252,7 +252,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
                    Defaults to [0.0, 0.0, 1.0, 0.0].
 
     Returns:
-        [SoSeparator]: [drawing object and it's properities(color, size, rotation)]
+        [SoSeparator]: [drawing object and it's properties(color, size, rotation)]
     """
 
     try:

@@ -156,8 +156,8 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
 
     """
     This class is for drawing a one Degrees disc
-    This will be used later to create 3D disc. 
-    Or it can be used as a singel rotate/move widget
+    This will be used later to create 3D disc.
+    Or it can be used as a single rotate/move widget
     """
     __slots__['w_lbluserData',
                 'w_widgetType',
@@ -288,7 +288,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1  # we treat this event. Nonthing to do
 
-        # This is for the widgets label - Not the axises label - be aware.
+        # This is for the widgets label - Not the axes label - be aware.
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                 self.w_pick_radius, self.w_widgetlblSoNodes)
 

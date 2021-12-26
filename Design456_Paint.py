@@ -447,7 +447,7 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Parallelogram(self, typeOfParallelogram):
-        """[Draw diffrent parallelogram types (not equal side-sizes)]
+        """[Draw different parallelogram types (not equal side-sizes)]
 
         Args:
             typeOfParallelogram ([integer]): [type of the parallelogram]
@@ -537,7 +537,7 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Arrow(self, arrowType):
-        """[Draw arrow-head diffrent directions]
+        """[Draw arrow-head different directions]
 
         Args:
             arrowType ([integer]): [arrow direction]
@@ -684,7 +684,7 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_MOON(self, MoonType):
-        """[Draw Moon shapes - diffrent directions]
+        """[Draw Moon shapes - different directions]
 
         Args:
             MoonType ([integer]): [moon direction]

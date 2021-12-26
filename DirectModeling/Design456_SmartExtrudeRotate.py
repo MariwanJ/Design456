@@ -85,7 +85,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         return  # Nothing to do here - shouldn't be None
     events = userData.events
     linktocaller = userData.callerObject
-    linktocaller.isItRotation = True           # Disallow Axis manupulations
+    linktocaller.isItRotation = True           # Disallow Axis manipulations
     if type(events) != int:
         print("event was not int")
         return
@@ -370,7 +370,7 @@ class Design456_SmartExtrudeRotate:
         self.ExtractedFaces = []
         self.FirstLocation = None
         # We cannot combine rotation with direction extrusion.
-        # This variable is used to disale all other options
+        # This variable is used to disable all other options
         self.isItRotation = False
 
 
@@ -384,7 +384,7 @@ class Design456_SmartExtrudeRotate:
             [Base.placement]: [Placement, rotation angle and axis of rotation for face2]
         """
         if self.isItRotation is True:
-            return  # We shouldnt be here .
+            return  # We shouldn't be here.
 
         faceRotation = 0
         # TODO: Lets take only X axis first , then Y ..etc and so on.
@@ -675,7 +675,7 @@ class Design456_SmartExtrudeRotate:
             facingdir=self.faceDir.upper()
             facingdir = facingdir[1:] 
             print(facingdir,"facingdir")
-            # Deside how the Degree Wheel be drawn
+            # Decide how the Degree Wheel be drawn
             self.setupRotation = self.calculateNewVector()
             if self.faceDir == "+z" or self.faceDir == "-z":
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
