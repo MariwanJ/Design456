@@ -37,7 +37,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
-
+import FACE_D as faced
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -45,6 +45,7 @@ class Design456_Paint:
     ]
 
     """
+
     def __init__(self):
         self.brushType: FR_BRUSHES = FR_BRUSHES.FR_SQUARE_BRUSH
         self.mw = None
@@ -74,47 +75,49 @@ class Design456_Paint:
         self.firstSize = 0.1
         # used to correct the Placement of the final object
         self.AverageDistanceToOrigion = App.Vector(0, 0, 0)
+        self.SelectedObj = None
+        self.planeVector = App.Vector(0, 0, 0)
         # List of the shapes - to add more add it here, in constant and make
         # an "if" statement and a function to draw it
         self.listOfDrawings = ["CIRCLE",
-                          "SEMI_CIRCLE",
-                          "QUARTER_CIRCLE",
-                          "OVAL1",
-                          "OVAL2",
-                          "EGG",
-                          "TRIANGLE",
-                          "RIGHT_TRIANGLE",
-                          "SCALENE_TRIANGLE",
-                          "SQUARE",
-                          "EQUALSIDES_PARALLELOGRAM1",
-                          "EQUALSIDES_PARALLELOGRAM2",
-                          "RECTANGLE1",
-                          "RECTANGLE2",
-                          "PARALLELOGRAM1",
-                          "PARALLELOGRAM2",
-                          "RHOMBUS",
-                          "PENTAGON",
-                          "HEXAGON",
-                          "HEPTAGON",
-                          "OCTAGON",
-                          "ENNEAGON",
-                          "DECAGON",
-                          "ARROW1",
-                          "ARROW2",
-                          "ARROW3",
-                          "ARROW4",
-                          "STAR1",
-                          "STAR2",
-                          "STAR3",
-                          "MOON1",
-                          "MOON2",
-                          "MOON3",
-                          "MOON4",
-                          "FILLET1",
-                          "FILLET2",
-                          "FILLET3",
-                          "FILLET4",
-                          ]
+                               "SEMI_CIRCLE",
+                               "QUARTER_CIRCLE",
+                               "OVAL1",
+                               "OVAL2",
+                               "EGG",
+                               "TRIANGLE",
+                               "RIGHT_TRIANGLE",
+                               "SCALENE_TRIANGLE",
+                               "SQUARE",
+                               "EQUALSIDES_PARALLELOGRAM1",
+                               "EQUALSIDES_PARALLELOGRAM2",
+                               "RECTANGLE1",
+                               "RECTANGLE2",
+                               "PARALLELOGRAM1",
+                               "PARALLELOGRAM2",
+                               "RHOMBUS",
+                               "PENTAGON",
+                               "HEXAGON",
+                               "HEPTAGON",
+                               "OCTAGON",
+                               "ENNEAGON",
+                               "DECAGON",
+                               "ARROW1",
+                               "ARROW2",
+                               "ARROW3",
+                               "ARROW4",
+                               "STAR1",
+                               "STAR2",
+                               "STAR3",
+                               "MOON1",
+                               "MOON2",
+                               "MOON3",
+                               "MOON4",
+                               "FILLET1",
+                               "FILLET2",
+                               "FILLET3",
+                               "FILLET4",
+                               ]
 
     def setSize(self):
         """
@@ -226,7 +229,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             ellipse = None
-            pl.Base = App.Vector(0, 0, 0.0)
+            pl.Base = self.planeVector
             pl.Rotation.Axis = (0.0, 0.0, 1)
             if Ovaltype == 1:
                 pl.Rotation.Angle = math.radians(90.0)
@@ -301,7 +304,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            pl.Base = self.planeVector
             if TriType == 1:
                 points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
                     0, self.brushSize, 0.0), App.Vector(self.brushSize, 0, 0.0)]
@@ -389,7 +392,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            pl.Base = self.planeVector
             points = None
             if typeOfParallelogram == 1:
                 points = [App.Vector(0.0, 0.0, 0.0),
@@ -455,7 +458,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            pl.Base = self.planeVector
             points = None
             if typeOfParallelogram == 1:
                 points = [App.Vector(0, self.brushSize*0.4, 0.0),
@@ -545,7 +548,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            pl.Base = self.planeVector
             points = None
             if arrowType == 1:
                 points = [App.Vector(0.0, self.brushSize, 0.0),
@@ -731,7 +734,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            pl.Base = self.planeVector
             first = App.ActiveDocument.addObject("Part::Box", "Box")
             first.Width = self.brushSize
             first.Length = self.brushSize
@@ -828,8 +831,8 @@ class Design456_Paint:
                     position.x = 0.0
                     self.pl.Rotation.Angle = math.radians(90)
                     self.pl.Rotation.Axis = (0, 1, 0)
-
-                self.currentObj.Object.Placement = self.pl
+                #self.pl.Base = self.planeVector
+                #self.currentObj.Object.Placement = self.pl
 
                 # All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
@@ -1062,6 +1065,21 @@ class Design456_Paint:
         """
         self.c1 = None
         self.c2 = None
+        s = Gui.Selection.getSelectionEx()
+        if (len(s) > 1):
+            # One object must be selected at least
+            errMessage = "Select Only one face to use the tool"
+            faced.errorDialog(errMessage)
+            return
+        elif len(s) == 1:
+            self.SelectedObj = s[0]
+            workingplane = App.DraftWorkingPlane
+            workingplane.reset()
+            f = self.SelectedObj.SubObjects[0]
+            workingplane.alignToFace(f)
+            Gui.Snapper.grid.on()
+            Gui.Snapper.forceGridOff = False
+            self.planeVector = workingplane.projectPoint(App.Vector(0, 0, 0))
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
@@ -1071,8 +1089,8 @@ class Design456_Paint:
             if(self.currentObj is None):
                 print("Why is this None?")
             App.ActiveDocument.recompute()
-            
-            #Start callbacks for mouse events.
+
+            # Start callbacks for mouse events.
             self.callbackMove = self.view.addEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
             self.callbackClick = self.view.addEventCallbackPivy(
@@ -1101,6 +1119,9 @@ class Design456_Paint:
     def __del__(self):
         """[Python destructor for the object. Otherwise next drawing might get wrong parameters]
         """
+        App.DraftWorkingPlane.reset()
+        Gui.Snapper.grid.off()
+        Gui.Snapper.forceGridOff = True
         self.remove_callbacks()
         self.mw = None
         self.dialog = None
