@@ -568,7 +568,7 @@ class Fr_Widget (object):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def getWidgetsBoundary(self, SoseparatorToCheck=None):
-        """[Retrive the Max size of the 3D coin object by returning the Min vector and Max vector]
+        """[Retrieve the Max size of the 3D coin object by returning the Min vector and Max vector]
 
         Returns:
             [Tuple]: [Two vectors first is for the Min Boundary, second is for the Max Boundary]

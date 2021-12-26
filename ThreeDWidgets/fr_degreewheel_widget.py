@@ -134,8 +134,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
     """
     This class is for drawing a one Degrees wheel
-    This will be used later to create 3D wheel. 
-    Or it can be used as a singel rotate/move widget
+    This will be used later to create 3D wheel.
+    Or it can be used as a single rotate/move widget
     """
 
     def __init__(self, vectors: List[App.Vector] = [],
@@ -255,7 +255,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1  # we treat this event. Nonthing to do
 
-        # This is for the widgets label - Not the axises label - be aware.
+        # This is for the widgets label - Not the axes label - be aware.
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                             self.w_pick_radius, self.w_widgetlblSoNodes)
 

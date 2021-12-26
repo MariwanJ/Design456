@@ -34,7 +34,7 @@ from PySide import QtGui, QtCore
 
 #There are several preferences that must be registered somewhere
 #For example simplecopy of extruded object, chamfer,..etc
-#Origionally I wanted to simplify everything. But there are users don't like that.
+#Originally I wanted to simplify everything. But there are users don't like that.
 #This is a start of the preferences pages. Not finished yet. 
 #TODO : FIXME:
 

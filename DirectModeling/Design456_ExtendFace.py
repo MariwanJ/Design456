@@ -393,7 +393,7 @@ class Design456_ExtendFace:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "ExtendFace"))
 
-            # Deside how the Degree pad be drawn
+            # Decide how the Degree pad be drawn
             self.discObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
                                                  # label
                                                  [(str(round(self.w_rotation[0], 2)) + "°" +
