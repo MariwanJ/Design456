@@ -144,7 +144,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                  _Rotation=[0.0, 0.0, 0.0, 0.0],
                  _prerotation=[0.0, 0.0, 0.0, 0.0],
                  _scale=[1, 1, 1],
-                 _wheelType=0):
+                 _wheelType=0,
+                 _wheelAxis='X'):
 
         super().__init__(vectors, label)
         
@@ -180,7 +181,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_YsoSeparator = coin.SoSeparator()         # Y cylinder
         self.w_45soSeparator = coin.SoSeparator()        # 45degree cylinder
         self.w_135soSeparator = coin.SoSeparator()       # 135degree cylinder
-        self.w_centersoSeparator = coin.SoSeparator()    # center disk cylinder
+        self.w_CenterSoSeparator = coin.SoSeparator()    # center disk cylinder
 
         self.w_color = _color  # TODO: Not sure if we use this
 
@@ -196,7 +197,13 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.releaseDrag = False  # Used to avoid running drag code while it is in drag mode
         # Use this to keep the selected so during push-drag, after release it should be none
         self.currentSo = None
-
+        
+        self.oldAngle = 0.0
+        self.w_wheelAngle = 0.0
+        self.run_Once = None
+        self.axisType = _wheelAxis # This is the direction of the wheel. It is either X or Y. 
+        self.rotationDirection = 1  # +1 CCW , -1 ACCWs
+        
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         if (self.w_wheelType == 0):
@@ -212,7 +219,6 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_WidgetDiskRotation = 0.0
         self.w_Rotation = _Rotation
         self.w_PRErotation = _prerotation
-
         # TODO: FIXME:
         if(self.w_wheelType == 0):  # This affect only the Widget label position- nothing else
             # When is is Top view.
@@ -265,7 +271,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
         if(self.w_parent.objectMouseClick_Coin3d(
                 self.w_parent.w_lastEventXYZ.pos,
-                self.w_pick_radius, self.w_centersoSeparator) is not None):
+                self.w_pick_radius, self.w_CenterSoSeparator) is not None):
             clickwdgdNode[0] = True
         elif(self.w_parent.objectMouseClick_Coin3d(
             self.w_parent.w_lastEventXYZ.pos,
@@ -380,7 +386,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     SETUPwheelTypeRotation = [-90.0, 90.0, 90.0]
                     SetupTextRotation = [-90.0, 90.0, 90.0]  # OK Don't change
 
-                self.w_centersoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Center",
+                self.w_CenterSoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Center",
                                                                        usedColor, SETUPwheelTypeRotation,
                                                                        self.w_PRErotation, self.w_Scale, 1)
                 self.w_XsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Xaxis",
@@ -407,7 +413,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     tR, math.radians(self.w_Rotation[3]))
 
                 CollectThemAll.addChild(CollectThemAllRot)
-                CollectThemAll.addChild(self.w_centersoSeparator)
+                CollectThemAll.addChild(self.w_CenterSoSeparator)
                 CollectThemAll.addChild(self.w_XsoSeparator)
                 CollectThemAll.addChild(self.w_YsoSeparator)
                 CollectThemAll.addChild(self.w_45soSeparator)
@@ -571,6 +577,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         if (callbackType == 100):
             # run all
             self.do_callback()
+            self.cb_wheelRotate()
             self.w_wheel_cb_(self.w_userData)
             self.w_xAxis_cb_(self.w_userData)
             self.w_yAxis_cb_(self.w_userData)
@@ -581,6 +588,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.do_callback()
             # cylinder callback
         elif(callbackType == 0):
+            self.cb_wheelRotate()
             self.w_wheel_cb_(self.w_userData)
             # Xaxis callback
         elif(callbackType == 1):
@@ -594,3 +602,98 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             # Zaxis callback
         elif(callbackType == 4):
             self.w_135Axis_cb_(self.w_userData)
+    
+    def cb_wheelRotate(self):
+        """
+        Internal callback function, runs when the wheel
+        rotation event happens.
+        self.w_wheelEnabled must be True
+        """
+        boundary = self.getWidgetsBoundary(self.w_CenterSoSeparator)
+        center = self.getWidgetsCentor(self.w_CenterSoSeparator)
+        try:
+
+            self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+                                        self.w_parent.w_lastEventXYZ.Coin_y,
+                                        self.w_parent.w_lastEventXYZ.Coin_z)
+            if self.run_Once is False:
+                self.run_Once = True
+                self.startVector = self.endVector
+
+            # Keep the old value only first time when drag start
+                self.startVector = self.endVector
+                if not self.has_focus():
+                    self.take_focus()
+            newValue = self.endVector
+
+            print(center, "center")
+            mx = my = mz = 0.0
+
+            if self.axisType == 'X':                                                      # Front
+                # It means that we have changes in Z and X only
+                # Z++  means   -Angel, Z--  means  +Angle    -->  When X is +                   ^
+                # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
+                # X++  means   -Angel, x--  means  +Angel    -->  when Z is +
+                # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
+                mx = (newValue.x - center.x)
+                mz = (newValue.z - center.z)
+                if (mz == 0):
+                    return  # Invalid
+                self.w_wheelAngle = faced.calculateMouseAngle(mx, mz)
+
+            if self.axisType == 'Y':                                                     # Right
+                # It means that we have changes in Z and Y only
+                # If the mouse moves at the >center in Z direction :
+                # Z++  means   -Angel, Z--  means  +Angle    --> When Y is +                   ^
+                # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
+                # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is +
+                # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is -
+                my = (newValue.y - center.y)
+                mz = (newValue.z - center.z)
+                if (mz == 0):
+                    return  # Invalid
+                self.w_wheelAngle = faced.calculateMouseAngle(my, mz)
+
+            if self.axisType == 'Z':   #TODO: FIXME: I leave it here but might not be necessary
+                # It means that we have changes in X and Y only
+                # Y++  means   -Angel, Y--  means  +Angle    -->  When X is +                   ^
+                # Y++  means   +Angel, Y--  means  -Angle    -->  When X is -                   v
+                # x++  means   -Angel, X--  means  +Angel    -->  when Y is +
+                # x++  means   +Angel, X--  means  -Angel    -->  when Y is -
+                mx = (newValue.x - center.x)
+                my = (newValue.y - center.y)
+                if (my == 0):
+                    return  # Invalid
+                self.w_wheelAngle = faced.calculateMouseAngle(mx, my)
+            if (self.w_wheelAngle == 360):
+                self.w_wheelAngle = 0
+            if (self.oldAngle < 1 and self.oldAngle >= 0) and (self.w_wheelAngle > 270):
+                self.rotationDirection = -1
+                self.w_wheelAngle = self.w_wheelAngle-360
+
+            elif(self.rotationDirection == -1
+                 and self.w_wheelAngle > 0
+                 and self.w_wheelAngle < 15
+                 and self.oldAngle < -270):
+                self.rotationDirection = 1
+
+            # we don't accept an angel grater or smaller than 360 degrees
+            if(self.rotationDirection < 0):
+                self.w_wheelAngle = self.w_wheelAngle-360
+
+            if(self.w_wheelAngle > 359):
+                self.w_wheelAngle = 359
+            elif(self.w_wheelAngle < -359):
+                self.w_wheelAngle = -359
+            if self.w_wheelAngle == -360:
+                self.w_wheelAngle = 0
+            self.oldAngle = self.w_wheelAngle
+            print("Angle=", self.w_wheelAngle)
+            self.redraw()
+            
+        except Exception as err:
+            App.Console.PrintError("'Wheel Rotate callback'. Failed "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
