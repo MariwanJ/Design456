@@ -127,7 +127,7 @@ class Design456_ExtendEdge:
         self.normalVector = None
         self.frmRotation = None
 
-        # Use mouseToArrowDiff to eleminate the diff between
+        # Use mouseToArrowDiff to eliminate the diff between
         # placement of the 3D COIN drawing and
         # the position of the mouse dragging
         self.mouseToArrowDiff = None
@@ -410,7 +410,7 @@ class Design456_ExtendEdge:
             if self.oldEdgeVertexes[0].Point.z < self.selectedObj.Shape.BoundBox.ZMin:
                 self.FirstLocation.z = self.selectedObj.Shape.BoundBox.ZMin - self.awayFromObj
 
-            # Deside how the Degree disc be drawn
+            # Decide how the Degree disc be drawn
             self.discObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
                                                  # label
                                                  (str(round(self.w_rotation[0], 2)) + "°" +

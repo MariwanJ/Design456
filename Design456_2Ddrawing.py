@@ -455,7 +455,7 @@ class Design456_2DExtend:
                 newPoint.append(App.Vector(_point[len(_point)-1]))
                 #sel.Object.Points = newPoint
             elif positionSave == 0:
-                # add to first postion
+                # add to first position
                 newPoint.insert(0, App.Vector(_point[0]))
                 #sel.Object.Points = newPoint
                 print("add at last ")
