@@ -166,8 +166,10 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
 
 class Design456_SmartFillet:
     """
-        Apply fillet to any 3D object by selecting the object, a Face or one or multiple edges 
-        Radius of the fillet is counted by dragging the arrow towards the negative Z axis.
+        Apply fillet to any 3D object by selecting
+        the object, a Face or one or multiple edges
+        Radius of the fillet is counted by dragging
+        the arrow towards the negative Z axis.
     """
     def __init__(self):
         self._vector = App.Vector(0.0, 0.0, 0.0)
@@ -181,12 +183,16 @@ class Design456_SmartFillet:
         self.run_Once = False
         self.endVector = None
         self.startVector = None
-        # We will make two object, one for visual effect and the other is the original
+        # We will make two object, one for visual
+        # effect and the other is the original
         self.selectedObj = []
-        # 0 is the original    1 is the fake one (just for interactive effect)
+        # 0 is the original    1 is the fake one
+        # (just for interactive effect)
         self.mouseToArrowDiff = 0.0
         self.offset = 0.0
-        # Use this to take away the arrow from the object TODO: What value we should use? FIXME:
+        # Use this to take away the arrow
+        # from the object 
+        # TODO: What value we should use? FIXME:
         self.AwayFrom3DObject = 20
         # We cannot have zero. TODO: What value we should use? FIXME:
         self.FilletRadius = 0.0001

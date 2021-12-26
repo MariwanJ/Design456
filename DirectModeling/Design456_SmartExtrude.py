@@ -84,9 +84,9 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             return
 
         clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                          ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
+                                                                     ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
         clickwdglblNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                            ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
+                                                                       ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
         linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
                                             ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
                                             ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
@@ -99,17 +99,21 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.run_Once = True
             # only once
             linktocaller.startVector = linktocaller.endVector
-            linktocaller.mouseToArrowDiff =  linktocaller.endVector.sub(userData.ArrowObj.w_vector[0])
+            linktocaller.mouseToArrowDiff = linktocaller.endVector.sub(
+                userData.ArrowObj.w_vector[0])
 
         linktocaller.extrudeLength = round((
             linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector), 1)
 
-        linktocaller.resizeArrowWidgets(linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
+        linktocaller.resizeArrowWidgets(
+            linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         linktocaller.ExtrudeLBL.setText(
             "Length= " + str(linktocaller.extrudeLength))
-        userData.ArrowObj.changeLabelstr("  Length= " + str(linktocaller.extrudeLength))
+        userData.ArrowObj.changeLabelstr(
+            "  Length= " + str(linktocaller.extrudeLength))
         linktocaller.reCreateExtrudeObject()
         App.ActiveDocument.recompute()
+
     except Exception as err:
         App.Console.PrintError("'View Inside objects' Failed. "
                                "{err}\n".format(err=str(err)))
@@ -143,8 +147,8 @@ def createFusionObjectBase(linktocaller):
             BaseObj = App.ActiveDocument.addObject("Part::MultiFuse", "Merged")
             BaseObj.Refine = True
             BaseObj.Shapes = allObjects
+            return BaseObj
         else:
-
             return allObjects[0]
 
 
@@ -186,7 +190,6 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
             raise TypeError
 
         ArrowObject = userData.ArrowObj
-        events = userData.events
         linktocaller = userData.callerObject
         # Avoid activating this part several times,
         if (linktocaller.startVector is None):
@@ -203,7 +206,6 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.startVector = None
         App.ActiveDocument.commitTransaction()  # undo reg.
         newObjcut = []
-        old = None
         # Do final operation. Either leave it as it is, merge or subtract
         if(linktocaller.OperationOption == 1):
             createFusionObjectBase(linktocaller)
@@ -213,10 +215,9 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
             # Subtraction is complex. I have to cut from each object the same extruded part.
             if (linktocaller.objChangedTransparency != []):
                 base = createFusionObjectBase(linktocaller)
-                allObjects = []
                 # Create a cut object for each transparency object
                 if(linktocaller.WasFaceFrom3DObject is True):
-                    # It is a 2D drawing object
+                    # It is a 3D drawing object
                     tool = createFusionObjectTool(linktocaller)
                     for i in range(0, len(linktocaller.objChangedTransparency)):
                         newObjcut.append(App.ActiveDocument.addObject(
@@ -255,9 +256,12 @@ def callback_release(userData: fr_arrow_widget.userDataObject = None):
 
 class Design456_SmartExtrude:
     """
-        Apply Extrude to any 3D/2D object by selecting the object's face, 
-        Length of the Extrude is counted by dragging the arrow towards the negative Z axis.
+        Apply Extrude to any 3D/2D object by
+        selecting the object's face, Length of
+        the Extrude is counted by dragging the
+        arrow towards the negative Z axis.
     """
+
     def __init__(self):
         self._vector = App.Vector(0.0, 0.0, 0.0)
         self.mw = None
@@ -271,24 +275,26 @@ class Design456_SmartExtrude:
         self.endVector = None
         self.startVector = None
         self.extrudeLength = 0.001  # This will be the Delta-mouse position
-        # We will make two object, one for visual effect and the other is the original
+        # We will make two object, one for visual effect and
+        # the other is the original
         self.selectedObj = None
         self.direction = None
-        # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
+        # We use this to simplify the code - for both, 2D and
+        # 3D object, the face variable is this
         self.targetFace = None
         self.newObject = None
         self.DirExtrusion = App.Vector(0, 0, 0)  # No direction if all are zero
         self.OperationOption = 0  # default is zero
         self.objChangedTransparency = []
         self.WasFaceFrom3DObject = False
-        self.mouseToArrowDiff = None 
+        self.mouseToArrowDiff = None
 
     def reCreateExtrudeObject(self):
         """
         [
          Recreate the object after changing the length of the extrusion
-         This will also change the Transparency of object if subtraction is 
-         chosen.
+         This will also change the Transparency of object if subtraction
+         is selected.
         ]
         """
         try:
@@ -354,9 +360,9 @@ class Design456_SmartExtrude:
                 plDirection.Base = yL
                 plDirection.Rotation.Q = r.Q
                 plr = plDirection
-                rotation = (plr.Rotation.Axis.x,plr.Rotation.Axis.y,plr.Rotation.Axis.z, math.degrees(plr.Rotation.Angle))
+                rotation = (plr.Rotation.Axis.x, plr.Rotation.Axis.y,
+                            plr.Rotation.Axis.z, math.degrees(plr.Rotation.Angle))
             else:
-                print("Rotation")
                 rotation = (face1.Surface.Rotation.Axis.x,
                             face1.Surface.Rotation.Axis.y,
                             face1.Surface.Rotation.Axis.z,
@@ -372,18 +378,22 @@ class Design456_SmartExtrude:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def isFaceOf3DObj(self):
-        """[Check if the selected object is a face from a 3D object or is a 2D object. 
-            A face from a 3D object, cannot be extruded directly. 
+        """[Check if the selected object is a face from
+            a 3D object or is a 2D object.
+            A face from a 3D object, cannot be extruded directly.
             We have to extract a Face and them Extrude]
             Face of 3D Object = True
             2D Object= False
         Returns:
-            [Boolean]: [Return True if the selected object is a face from 3D object, otherwise False]
+            [Boolean]: [Return True if the selected
+            object is a face from 3D object, otherwise False]
         """
-        # if len(self.selectedObj.Object.Shape.Faces) > 1:
-        if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.Solids:
+        # TODO: How accurate is this function?
+        if hasattr(self.selectedObj.Object, "Shape") and len(self.selectedObj.Object.Shape.Solids) > 0:
             return True
-        if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.ShapeType=="Shell":
+        if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.ShapeType == "Shell":
+            return True
+        if hasattr(self.selectedObj.Object, "Shape") and self.selectedObj.Object.Shape.ShapeType == "Compound":
             return True
         else:
             return False
@@ -419,9 +429,7 @@ class Design456_SmartExtrude:
         try:
             if(self.WasFaceFrom3DObject):
                 ss = self.selectedObj.SubObjects[0]
-                print("first")
             else:
-                print("second")
                 ss = self.selectedObj.Object.Shape
             yL = ss.CenterOfMass
             uv = ss.Surface.parameter(yL)
@@ -433,8 +441,8 @@ class Design456_SmartExtrude:
             else:
                 d = self.extrudeLength
             point = yL + d * nv
-            return ([point, App.Vector(0,0,0)])  #Must be two vectors always  
-        
+            return ([point, App.Vector(0, 0, 0)])  # Must be two vectors always
+
         except Exception as err:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_Extrude' calculateNewVector-Failed. "
@@ -442,12 +450,9 @@ class Design456_SmartExtrude:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
-    def Activated(self):
-        """[
-            Executes when the tool is used
 
-            ]
+    def Activated(self):
+        """[Executes when the tool is used]
         """
         import ThreeDWidgets.fr_coinwindow as win
         try:
@@ -487,7 +492,7 @@ class Design456_SmartExtrude:
             self.newObject = App.ActiveDocument.addObject(
                 'Part::Extrusion', 'Extrude')
             self.newObject.Base = self.targetFace
-            self.newObject.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
+            self.newObject.DirMode = "Normal"  # Don't use Custom as it causes a PROBLEM!
             # Above statement is not always correct. Some faces require 'custom'
             self.newObject.DirLink = None
             self.newObject.LengthFwd = self.extrudeLength  # Must be negative

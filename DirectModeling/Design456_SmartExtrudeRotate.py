@@ -773,7 +773,7 @@ class Design456_SmartExtrudeRotate:
             self.newObject = None
             self.mouseOffset = App.Vector(0, 0, 0)
             self.OperationOption = 0  # default is zero
-            self.objChangedTransparency = []
+            self.objChangedTransparency.clear()
             self.ExtractedFaces = []
             self.FirstLocation = None
             self.isItRotation = False
