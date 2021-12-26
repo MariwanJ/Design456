@@ -63,7 +63,7 @@ MouseScaleFactor = 1
     3-Created object either it will remain as a new object or would be merged. 
       But if it is used as a tool to cut another 3D object, the object will disappear. 
     Known issue: 
-        ???TODO: FIXME:§
+        ???TODO: FIXME:
 
 """
 # TODO: As I wish to simplify the tree and make a simple
@@ -92,7 +92,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     wheelObj = userData.wheelObj
     linktocaller.direction = "Center"
     clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
-                                                      wheelObj.w_pick_radius, wheelObj.w_centersoSeparator)
+                                                      wheelObj.w_pick_radius, wheelObj.w_CenterSoSeparator)
 
     linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
@@ -109,53 +109,20 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
             linktocaller.editing = True
             wheelObj.w_vector[0].z = 0
 
-    else:
-        linktocaller.run_Once = True
-        if (linktocaller.startVector is None):
-            linktocaller.startVector = linktocaller.endVector
-    oldangle = wheelObj.w_Rotation[3]
-    mx = wheelObj.w_parent.w_lastEventXYZ.Coin_x
-    my = wheelObj.w_parent.w_lastEventXYZ.Coin_y
-    mz = wheelObj.w_parent.w_lastEventXYZ.Coin_z
-    # calculating the angle in a better way:
-    print(linktocaller.normalVector)
-    if abs(linktocaller.normalVector.x) == 1:
-        angle = math.degrees(-math.atan2(mz, mx))
-    elif abs(linktocaller.normalVector.y) == 1:
-        angle = math.degrees(math.atan2(mz, my))
-    elif abs(linktocaller.normalVector.z) == 1:
-        angle = math.degrees(math.atan2(mz, my))
-    # Here axis has an angel  find a best way to calculate
-    else:
-        # Not sure if this will be good TODO:FIXME:
-        angle = math.degrees(math.atan2(mz, my))
-    print("AngleBefore", angle)
-    angle = int(angle)   # Difficult to get accurate decimals .. so only INT
-    while (angle < (oldangle-180)):
-        angle = angle+360
-    while (angle > (oldangle+180)):
-        angle = angle-360
-    print("AngleAfter", angle)
-    if (angle < -360):
-        angle = -360
-    elif (angle > 360):
-        angle = 360
-
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
                                        str(linktocaller.w_rotation[0])+","
                                        + str(linktocaller.w_rotation[1]) +
                                        "," +
                                        str(linktocaller.w_rotation[2]) + ")"
-                                       + "\nRotation Angle= " + str(angle) + " °")
+                                       + "\nRotation Angle= " + str(wheelObj.w_wheelAngle) + " °")
 
-    wheelObj.w_Rotation[3] = angle
+    wheelObj.w_Rotation[3] = -wheelObj.w_wheelAngle
     if linktocaller.newObject is None:
         return
-    linktocaller.newObject.Angle = angle
+    linktocaller.newObject.Angle = -wheelObj.w_wheelAngle
     wheelObj.redraw()
     App.ActiveDocument.recompute()
-
 
 # Extrude in the X direction
 def callback_moveX(userData: fr_degreewheel_widget.userDataObject = None):
@@ -406,6 +373,7 @@ class Design456_SmartExtrudeRotate:
         # This variable is used to disale all other options
         self.isItRotation = False
 
+
     def calculateRotatedNormal(self, Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
 
@@ -590,8 +558,9 @@ class Design456_SmartExtrudeRotate:
             self.normalVector = nv
             # Setup calculation.
             if (face2.Surface.Rotation is None):
-                calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
-                rotation = [0, 1, 0, calAn]
+               calAn = math.degrees(nv.getAngle(App.Vector(1, 1, 0)))
+               rotation = [0, 0, 1, calAn]
+
             else:
                 rotation = [face2.Surface.Rotation.Axis.x,
                             face2.Surface.Rotation.Axis.y,
@@ -685,6 +654,8 @@ class Design456_SmartExtrudeRotate:
                 return
             self.selectedObj = self.selected[0]
             faced.EnableAllToolbar(False)
+            self.faceDir = faced.getDirectionAxis(self.selected)  # face direction
+
             # Undo
             App.ActiveDocument.openTransaction(
                 translate("Design456", "SmartExtrudeRotate"))
@@ -694,7 +665,6 @@ class Design456_SmartExtrudeRotate:
                 self.extractFaces()
             else:
                 # We have a 2D Face - Extract it directly
-                print("2d object copy the face itself")
                 sh = self.selectedObj.Object.Shape.copy()
                 o = App.ActiveDocument.addObject(
                     "Part::Feature", "MovableFace")
@@ -702,17 +672,19 @@ class Design456_SmartExtrudeRotate:
                 self.ExtractedFaces.append(self.selectedObj.Object)
                 self.ExtractedFaces.append(
                     App.ActiveDocument.getObject(o.Name))
-
+            facingdir=self.faceDir.upper()
+            facingdir = facingdir[1:] 
+            print(facingdir,"facingdir")
             # Deside how the Degree Wheel be drawn
             self.setupRotation = self.calculateNewVector()
             if self.faceDir == "+z" or self.faceDir == "-z":
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [2.0, 2.0, 2.0], 2)
+                    self.setupRotation, [2.0, 2.0, 2.0], 2,facingdir)
             else:
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [2.0, 2.0, 2.0], 1)
+                    self.setupRotation, [2.0, 2.0, 2.0], 1,facingdir)
 
             # Define the callbacks. We have many callbacks here.
             # TODO: FIXME:
@@ -935,6 +907,8 @@ class Design456_SmartExtrudeRotate:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+   
+
     def btnState(self, button):
         if (button == None):
             print("button was none why?")
@@ -953,7 +927,7 @@ class Design456_SmartExtrudeRotate:
         For this tool, I decide to choose the hide to merge, or leave it "as is" here. 
         I can do that during the extrusion (moving the Wheel), but that will be an action
         without undo. Here the user will be finished with the extrusion and want to leave the tool
-        TODO: If there will be a discussion about this, we might change this behavior!!
+        TODO: If there will be a wheelussion about this, we might change this behavior!!
         """
 
         if (self.OperationOption == 0):
