@@ -39,6 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
+
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
         They are 3D shapes that are merged if they are intersecting each other.
@@ -77,7 +78,7 @@ class Design456_Paint:
         self.AverageDistanceToOrigion = App.Vector(0, 0, 0)
         self.SelectedObj = None
         self.planeVector = App.Vector(0, 0, 0)
-        self.workingPlane=None
+        self.workingPlane = None
         # List of the shapes - to add more add it here, in constant and make
         # an "if" statement and a function to draw it
         self.listOfDrawings = ["CIRCLE",
@@ -951,7 +952,8 @@ class Design456_Paint:
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
             viewAxis = self.planeVector.axis
             # Get plane rotation
-            self.pl.Rotation=self.workingPlane.getRotation().Rotation
+            self.pl.Rotation.Q = self.workingPlane.getRotation().Rotation.Q
+
             if self.currentObj is not None:
                 # Normalview - Top
                 self.pl = self.currentObj.Object.Placement
@@ -1062,7 +1064,7 @@ class Design456_Paint:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def Activated(self):
         """[Design456_Paint tool activation function.]
         """
