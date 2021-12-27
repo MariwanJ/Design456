@@ -60,6 +60,7 @@ class Design456_Magnet:
                 sub2.SubElementNames[0])
 
             sub2.Object.Placement.Base = face1.CenterOfMass
+            #This will fail if the surface doesn't have Rotation 
             sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
             sub2.Object.Placement.Rotation.Q = face1.Faces[0].Surface.Rotation.Q
             App.ActiveDocument.commitTransaction() #undo
