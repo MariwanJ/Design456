@@ -77,6 +77,7 @@ class Design456_Paint:
         self.AverageDistanceToOrigion = App.Vector(0, 0, 0)
         self.SelectedObj = None
         self.planeVector = App.Vector(0, 0, 0)
+        self.workingPlane=None
         # List of the shapes - to add more add it here, in constant and make
         # an "if" statement and a function to draw it
         self.listOfDrawings = ["CIRCLE",
@@ -782,132 +783,6 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def MouseMovement_cb(self, events):
-        """[Mouse movement callback. It will move the object
-        and update the drawing's position depending on the mouse-position and the plane]
-
-        Args:
-            events ([Coin3D events]): [Type of the event]
-        """
-        try:
-            event = events.getEvent()
-            pos = event.getPosition().getValue()
-            tempPos = self.view.getPoint(pos[0], pos[1])
-            position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
-            viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
-            if self.currentObj is not None:
-                # Normal view - Top
-                self.pl = self.currentObj.Object.Placement
-                self.pl.Rotation.Axis = viewAxis
-                if(viewAxis == App.Vector(0, 0, -1)):
-                    self.pl.Base.z = 0.0
-                    position.z = 0
-                    self.pl.Rotation.Angle = 0
-                elif(viewAxis == App.Vector(0, 0, 1)):
-                    self.pl.Base.z = 0.0
-                    position.z = 0.0
-                    self.pl.Rotation.Angle = 0
-
-                # FrontSide
-                elif(viewAxis == App.Vector(0, 1, 0)):
-                    self.pl.Base.y = 0.0
-                    position.y = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (-1, 0, 0)
-                elif (viewAxis == App.Vector(0, -1, 0)):
-                    self.pl.Base.y = 0.0
-                    position.y = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (1, 0, 0)
-
-                # RightSideView
-                elif(viewAxis == App.Vector(-1, 0, 0)):
-                    self.pl.Base.x = 0.0
-                    position.x = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (0, 1, 0)
-                elif (viewAxis == App.Vector(1, 0, 0)):
-                    self.pl.Base.x = 0.0
-                    position.x = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (0, 1, 0)
-                #self.pl.Base = self.planeVector
-                #self.currentObj.Object.Placement = self.pl
-
-                # All direction when A or decide which direction
-                if (self.MoveMentDirection == 'A'):
-                    self.currentObj.Object.Placement.Base = position
-                elif (self.MoveMentDirection == 'X'):
-                    self.currentObj.Object.Placement.Base.x = position.x
-                elif (self.MoveMentDirection == 'Y'):
-                    self.currentObj.Object.Placement.Base.y = position.y
-                elif (self.MoveMentDirection == 'Z'):
-                    self.currentObj.Object.Placement.Base.z = position.z
-                App.ActiveDocument.recompute()
-
-        except Exception as err:
-            App.Console.PrintError("'MouseMovement_cb' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def FixPlacementIssue(self):
-        """[Find center of the merged objects and make it as placement]
-        """
-        try:
-            if(self.resultObj is None):
-                return
-            Average = App.Vector(0, 0, 0)
-            for obj in self.AllObjects:
-                objBase = obj.Placement.Base  # obj.Shape.CenterOfGravity
-                if Average == App.Vector(0.0, 0.0, 0.0):
-                    # First time we should accept it without division
-                    Average = objBase
-                Average = App.Vector((Average.x+objBase.x)/2,
-                                     (Average.y+objBase.y)/2,
-                                     (Average.z+objBase.z)/2)
-            for obj in self.AllObjects:
-                obj.Placement.Base = obj.Placement.Base.sub(Average)
-
-            self.resultObj.Placement.Base = Average
-
-        except Exception as err:
-            App.Console.PrintError("'FixPlacementIssue' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def MouseClick_cb(self, events):
-        """[Mouse Release callback. 
-        It will place the object after last movement
-        and merge the object to older objects]
-
-        Args:
-            events ([COIN3D events]): [events type]
-        """
-        try:
-            event = events.getEvent()
-            eventState = event.getState()
-            getButton = event.getButton()
-            angle = 0
-            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.appendToList()
-                App.ActiveDocument.recompute()
-                self.currentObj = None
-                self.setSize()
-                self.setType()
-                self.recreateObject()
-                App.ActiveDocument.recompute()
-
-        except Exception as err:
-            App.Console.PrintError("'MouseClick_cb' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
     def recreateObject(self):
         """[Recreates the object after a mouse-movement. 
         It will update the position. 
@@ -1060,6 +935,134 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def MouseMovement_cb(self, events):
+        """[Mouse movement callback. It will move the object
+        and update the drawing's position depending on the mouse-position and the plane]
+
+        Args:
+            events ([Coin3D events]): [Type of the event]
+        """
+        try:
+            self.planeVector = self.workingPlane = App.DraftWorkingPlane
+            #projectPoint(App.Vector(0, 0, 0))
+            event = events.getEvent()
+            pos = event.getPosition().getValue()
+            tempPos = self.view.getPoint(pos[0], pos[1])
+            position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
+            viewAxis = self.planeVector.axis
+            # Get plane rotation
+            self.pl.Rotation=self.workingPlane.getRotation().Rotation
+            if self.currentObj is not None:
+                # Normalview - Top
+                self.pl = self.currentObj.Object.Placement
+                self.pl.Rotation.Axis = viewAxis
+                if(viewAxis == App.Vector(0, 0, -1)):
+                    self.pl.Base.z = 0.0
+                    position.z = 0
+                    self.pl.Rotation.Angle = 0
+                elif(viewAxis == App.Vector(0, 0, 1)):
+                    self.pl.Base.z = 0.0
+                    position.z = 0.0
+                    self.pl.Rotation.Angle = 0
+                # FrontSide
+                elif(viewAxis == App.Vector(0, 1, 0)):
+                    self.pl.Base.y = 0.0
+                    position.y = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (-1, 0, 0)
+                elif (viewAxis == App.Vector(0, -1, 0)):
+                    self.pl.Base.y = 0.0
+                    position.y = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (1, 0, 0)
+                # RightSideView
+                elif(viewAxis == App.Vector(-1, 0, 0)):
+                    self.pl.Base.x = 0.0
+                    position.x = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (0, 1, 0)
+                elif (viewAxis == App.Vector(1, 0, 0)):
+                    self.pl.Base.x = 0.0
+                    position.x = 0.0
+                    self.pl.Rotation.Angle = math.radians(90)
+                    self.pl.Rotation.Axis = (0, 1, 0)
+                self.currentObj.Object.Placement = self.pl
+
+                # All direction when A or decide which direction
+                if (self.MoveMentDirection == 'A'):
+                    self.currentObj.Object.Placement.Base = position
+                elif (self.MoveMentDirection == 'X'):
+                    self.currentObj.Object.Placement.Base.x = position.x
+
+                elif (self.MoveMentDirection == 'Y'):
+                    self.currentObj.Object.Placement.Base.y = position.y
+                elif (self.MoveMentDirection == 'Z'):
+                    self.currentObj.Object.Placement.Base.z = position.z
+                App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'MouseMovement_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def FixPlacementIssue(self):
+        """[Find center of the merged objects and make it as placement]
+        """
+        try:
+            if(self.resultObj is None):
+                return
+            Average = App.Vector(0, 0, 0)
+            for obj in self.AllObjects:
+                objBase = obj.Placement.Base  # obj.Shape.CenterOfGravity
+                if Average == App.Vector(0.0, 0.0, 0.0):
+                    # First time we should accept it without division
+                    Average = objBase
+                Average = App.Vector((Average.x+objBase.x)/2,
+                                     (Average.y+objBase.y)/2,
+                                     (Average.z+objBase.z)/2)
+            for obj in self.AllObjects:
+                obj.Placement.Base = obj.Placement.Base.sub(Average)
+
+            self.resultObj.Placement.Base = Average
+
+        except Exception as err:
+            App.Console.PrintError("'FixPlacementIssue' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def MouseClick_cb(self, events):
+        """[Mouse Release callback. 
+        It will place the object after last movement
+        and merge the object to older objects]
+
+        Args:
+            events ([COIN3D events]): [events type]
+        """
+        try:
+            event = events.getEvent()
+            eventState = event.getState()
+            getButton = event.getButton()
+            angle = 0
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                self.appendToList()
+                App.ActiveDocument.recompute()
+                self.currentObj = None
+                self.setSize()
+                self.setType()
+                self.recreateObject()
+                App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'MouseClick_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def Activated(self):
         """[Design456_Paint tool activation function.]
         """
@@ -1079,7 +1082,7 @@ class Design456_Paint:
             workingplane.alignToFace(f)
             Gui.Snapper.grid.on()
             Gui.Snapper.forceGridOff = False
-            self.planeVector = workingplane.projectPoint(App.Vector(0, 0, 0))
+
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
