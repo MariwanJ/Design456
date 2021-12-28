@@ -79,6 +79,7 @@ class Design456_Paint:
         self.SelectedObj = None
         self.planeVector = App.Vector(0, 0, 0)
         self.workingPlane = None
+        
         # List of the shapes - to add more add it here, in constant and make
         # an "if" statement and a function to draw it
         self.listOfDrawings = ["CIRCLE",
@@ -945,50 +946,24 @@ class Design456_Paint:
         """
         try:
             self.workingPlane = App.DraftWorkingPlane
-            self.planeVector =self.workingPlane
+            self.planeVector = App.DraftWorkingPlane.position
+            offset = self.workingPlane.offsetToPoint(App.Vector(0,0,0))
+            
             #projectPoint(App.Vector(0, 0, 0))
             event = events.getEvent()
             pos = event.getPosition().getValue()
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
-            viewAxis = self.planeVector.axis
+            viewAxis = App.DraftWorkingPlane.getNormal()
+            self.pl = App.Placement()
             # Get plane rotation
+            #plan.offsetToPoint(App.Vector(0,0,0))
             self.pl.Rotation.Q = App.DraftWorkingPlane.getRotation().Rotation.Q
 
             if self.currentObj is not None:
                 # Normalview - Top
-                self.pl = self.currentObj.Object.Placement
-                self.pl.Rotation.Axis = viewAxis
-                if(viewAxis == App.Vector(0, 0, -1)):
-                    self.pl.Base.z = 0.0
-                    position.z = 0
-                    self.pl.Rotation.Angle = 0
-                elif(viewAxis == App.Vector(0, 0, 1)):
-                    self.pl.Base.z = 0.0
-                    position.z = 0.0
-                    self.pl.Rotation.Angle = 0
-                # FrontSide
-                elif(viewAxis == App.Vector(0, 1, 0)):
-                    self.pl.Base.y = 0.0
-                    position.y = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (-1, 0, 0)
-                elif (viewAxis == App.Vector(0, -1, 0)):
-                    self.pl.Base.y = 0.0
-                    position.y = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (1, 0, 0)
-                # RightSideView
-                elif(viewAxis == App.Vector(-1, 0, 0)):
-                    self.pl.Base.x = 0.0
-                    position.x = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (0, 1, 0)
-                elif (viewAxis == App.Vector(1, 0, 0)):
-                    self.pl.Base.x = 0.0
-                    position.x = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (0, 1, 0)
+                self.pl.Base = App.DraftWorkingPlane.getLocalCoords(position) #App.DraftWorkingPlane.position #self.currentObj.Object.Placement
+                self.pl.Rotation.Axis = App.DraftWorkingPlane.getNormal()
                 self.currentObj.Object.Placement = self.pl
 
                 # All direction when A or decide which direction
@@ -1079,10 +1054,10 @@ class Design456_Paint:
             return
         elif len(s) == 1:
             self.SelectedObj = s[0]
-            workingplane = App.DraftWorkingPlane
-            workingplane.reset()
+            self.workingplane = App.DraftWorkingPlane
+            self.workingplane.reset()
             f = self.SelectedObj.SubObjects[0]
-            workingplane.alignToFace(f)
+            self.workingplane.alignToFace(f)
             Gui.Snapper.grid.on()
             Gui.Snapper.forceGridOff = False
 
