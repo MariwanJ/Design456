@@ -944,7 +944,8 @@ class Design456_Paint:
             events ([Coin3D events]): [Type of the event]
         """
         try:
-            self.planeVector = self.workingPlane = App.DraftWorkingPlane
+            self.workingPlane = App.DraftWorkingPlane
+            self.planeVector =self.workingPlane
             #projectPoint(App.Vector(0, 0, 0))
             event = events.getEvent()
             pos = event.getPosition().getValue()
@@ -952,7 +953,7 @@ class Design456_Paint:
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
             viewAxis = self.planeVector.axis
             # Get plane rotation
-            self.pl.Rotation.Q = self.workingPlane.getRotation().Rotation.Q
+            self.pl.Rotation.Q = App.DraftWorkingPlane.getRotation().Rotation.Q
 
             if self.currentObj is not None:
                 # Normalview - Top
