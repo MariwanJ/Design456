@@ -77,9 +77,7 @@ class Design456_Paint:
         # used to correct the Placement of the final object
         self.AverageDistanceToOrigion = App.Vector(0, 0, 0)
         self.SelectedObj = None
-        self.planeVector = App.Vector(0, 0, 0)
-        self.workingPlane = None
-        
+
         # List of the shapes - to add more add it here, in constant and make
         # an "if" statement and a function to draw it
         self.listOfDrawings = ["CIRCLE",
@@ -232,7 +230,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             ellipse = None
-            pl.Base = self.planeVector
+            pl.Base = App.Placement()
             pl.Rotation.Axis = (0.0, 0.0, 1)
             if Ovaltype == 1:
                 pl.Rotation.Angle = math.radians(90.0)
@@ -307,7 +305,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = self.planeVector
+            
             if TriType == 1:
                 points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
                     0, self.brushSize, 0.0), App.Vector(self.brushSize, 0, 0.0)]
@@ -395,7 +393,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = self.planeVector
+            
             points = None
             if typeOfParallelogram == 1:
                 points = [App.Vector(0.0, 0.0, 0.0),
@@ -461,7 +459,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = self.planeVector
+            
             points = None
             if typeOfParallelogram == 1:
                 points = [App.Vector(0, self.brushSize*0.4, 0.0),
@@ -551,7 +549,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = self.planeVector
+            
             points = None
             if arrowType == 1:
                 points = [App.Vector(0.0, self.brushSize, 0.0),
@@ -737,7 +735,6 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = self.planeVector
             first = App.ActiveDocument.addObject("Part::Box", "Box")
             first.Width = self.brushSize
             first.Length = self.brushSize
@@ -945,37 +942,18 @@ class Design456_Paint:
             events ([Coin3D events]): [Type of the event]
         """
         try:
-            self.workingPlane = App.DraftWorkingPlane
-            self.planeVector = App.DraftWorkingPlane.position
-            offset = self.workingPlane.offsetToPoint(App.Vector(0,0,0))
-            
-            #projectPoint(App.Vector(0, 0, 0))
             event = events.getEvent()
             pos = event.getPosition().getValue()
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
-            viewAxis = App.DraftWorkingPlane.getNormal()
-            # Get plane rotation
-            self.pl = App.DraftWorkingPlane.getPlacement()
-            self.pl.Rotation.Q = App.DraftWorkingPlane.getRotation().Rotation.Q
-            self.pl.Rotation.Axis =App.DraftWorkingPlane.axis
-            self.pl.Rotation.Angle = App.DraftWorkingPlane.getRotation().Rotation.Angle
-
+            self.pl = faced.get_global_placement(position)
+            self.currentObj.Object.Placement = self.pl
             if self.currentObj is not None:
-                # Normalview - Top
-                self.pl.Base = App.DraftWorkingPlane.projectPoint(position) #App.DraftWorkingPlane.position #self.currentObj.Object.Placement
-                print(self.pl, "self.pl")
-                print(self.pl.Rotation.Angle, "self.pl.Rotation.Angle")
-                print(self.pl.Rotation, "self.pl.Rotation")
-                #self.pl.Rotation.Axis = App.DraftWorkingPlane.getNormal()
-                #self.currentObj.Object.Placement = self.pl
-
                 # All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
-                    self.currentObj.Object.Placement.Base = position
+                   pass
                 elif (self.MoveMentDirection == 'X'):
                     self.currentObj.Object.Placement.Base.x = position.x
-
                 elif (self.MoveMentDirection == 'Y'):
                     self.currentObj.Object.Placement.Base.y = position.y
                 elif (self.MoveMentDirection == 'Z'):
