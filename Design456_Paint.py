@@ -955,16 +955,20 @@ class Design456_Paint:
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
             viewAxis = App.DraftWorkingPlane.getNormal()
-            self.pl = App.Placement()
             # Get plane rotation
-            #plan.offsetToPoint(App.Vector(0,0,0))
+            self.pl = App.DraftWorkingPlane.getPlacement()
             self.pl.Rotation.Q = App.DraftWorkingPlane.getRotation().Rotation.Q
+            self.pl.Rotation.Axis =App.DraftWorkingPlane.axis
+            self.pl.Rotation.Angle = App.DraftWorkingPlane.getRotation().Rotation.Angle
 
             if self.currentObj is not None:
                 # Normalview - Top
-                self.pl.Base = App.DraftWorkingPlane.getLocalCoords(position) #App.DraftWorkingPlane.position #self.currentObj.Object.Placement
-                self.pl.Rotation.Axis = App.DraftWorkingPlane.getNormal()
-                self.currentObj.Object.Placement = self.pl
+                self.pl.Base = App.DraftWorkingPlane.projectPoint(position) #App.DraftWorkingPlane.position #self.currentObj.Object.Placement
+                print(self.pl, "self.pl")
+                print(self.pl.Rotation.Angle, "self.pl.Rotation.Angle")
+                print(self.pl.Rotation, "self.pl.Rotation")
+                #self.pl.Rotation.Axis = App.DraftWorkingPlane.getNormal()
+                #self.currentObj.Object.Placement = self.pl
 
                 # All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
