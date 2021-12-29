@@ -680,8 +680,6 @@ def checkCollision(newObj):
     objList = findMainListedObjects()  # get the root objects - no children
     print("mainlist", len(objList))
     for obj in objList:
-        print(obj.Name)
-        print("#####################3")
         if obj.Name == newObj.Name:
             objList.remove(obj)
             break

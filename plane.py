@@ -210,6 +210,7 @@ class DocObserver:
             if(self.linkToParent.planeShow == None):
                 self.linkToParent.planeShow = Grid(v)
                 self.linkToParent.planeShow.Activated()
+                Gui.ActiveDocument.ActiveView.setCameraType("Perspective")
             else:
                 try:
                     self.planeShow.removeGarbage()
