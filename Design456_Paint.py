@@ -946,18 +946,8 @@ class Design456_Paint:
             pos = event.getPosition().getValue()
             tempPos = self.view.getPoint(pos[0], pos[1])
             position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
-            self.pl = faced.get_global_placement(position)
-            self.currentObj.Object.Placement = self.pl
             if self.currentObj is not None:
-                # All direction when A or decide which direction
-                if (self.MoveMentDirection == 'A'):
-                   pass
-                elif (self.MoveMentDirection == 'X'):
-                    self.currentObj.Object.Placement.Base.x = position.x
-                elif (self.MoveMentDirection == 'Y'):
-                    self.currentObj.Object.Placement.Base.y = position.y
-                elif (self.MoveMentDirection == 'Z'):
-                    self.currentObj.Object.Placement.Base.z = position.z
+                self.currentObj.Object.Placement = faced.get_global_placement(position)
                 App.ActiveDocument.recompute()
 
         except Exception as err:

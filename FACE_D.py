@@ -983,6 +983,9 @@ def get_global_placement (point, angle=0.0):
         [type]: [description]
     """
     # point (vector) and angle (degrees) relative to Draft working plane
+    import WorkingPlane
+    if not hasattr(App, "DraftWorkingPlane"):
+        App.DraftWorkingPlane = WorkingPlane.plane()
     App.DraftWorkingPlane.setup()
     place_plane = App.DraftWorkingPlane.getPlacement()
     place_rel = App.Placement()
