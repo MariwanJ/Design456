@@ -121,26 +121,30 @@ def getDirectionAxis(s=None):
 class mousePointMove:
 
     def __init__(self, obj, view):
-        self.object = obj
+        self.obj = obj
         self.view = view
         self.callbackClicked = self.view.addEventCallbackPivy(
             coin.SoMouseButtonEvent.getClassTypeId(), self.mouseClick)  # "SoLocation2Event"
         self.callbackMove = self.view.addEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.mouseMove)
-        StartMovePoint = 0
+        self.direction = 'A'
 
-    def convertToVector(self, pos):
+    def convertToVsector(self, pos):
         try:
             import Design456Init
             point = None
             tempPoint = self.view.getPoint(pos[0], pos[1])
+            print(Design456Init.DefaultDirectionOfExtrusion ,"Design456Init.DefaultDirectionOfExtrusion")
             if Design456Init.DefaultDirectionOfExtrusion == 'x':
-                point = App.Vector(0.0, tempPoint[0], tempPoint[1])
+                point = App.Vector(0.0, tempPoint[1], tempPoint[2])
             elif Design456Init.DefaultDirectionOfExtrusion == 'y':
-                point = App.Vector(tempPoint[0], 0.0, tempPoint[1])
+                point = App.Vector(tempPoint[0], 0.0, tempPoint[2])
             elif Design456Init.DefaultDirectionOfExtrusion == 'z':
                 point = App.Vector(tempPoint[0], tempPoint[1], 0.0)
+            else:
+                point = tempPoint
             return point
+
         except Exception as err:
             App.Console.PrintError("'converToVector' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -152,10 +156,7 @@ class mousePointMove:
         try:
             event = events.getEvent()
             pos = event.getPosition().getValue()
-            point = self.convertToVector(pos)
-            points = self.object.Object.Points
-            # lastPoint=  point
-            self.object.Object.End = point
+            self.obj.Object.End = self.convertToVector(pos)
             App.ActiveDocument.recompute()
 
         except Exception as err:
@@ -173,9 +174,9 @@ class mousePointMove:
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 pos = event.getPosition()
                 point = self.convertToVector(pos)
-                _point = self.object.Object.Points
+                _point = self.obj.Object.Points
                 _point[len(_point) - 1] = point
-                # self.object.Object.End= point
+                # self.obj.Object.End= point
                 App.ActiveDocument.recompute()
                 self.remove_callbacks()
 
@@ -224,8 +225,8 @@ class PartMover:
             coin.SoMouseButtonEvent.getClassTypeId(), self.MouseClick)
         self.callbackKey = self.view.addEventCallbackPivy(
             coin.SoKeyboardEvent.getClassTypeId(), self.KeyboardEvent)
-        self.objectToDelete = None  # object reference when pressing the escape key
-        self.Direction = None
+        self.objToDelete = None  # when pressing the escape key
+        self.Direction = 'A'
 
     def convertToVector(self, pos):
         try:
@@ -234,11 +235,11 @@ class PartMover:
             tempPoint = [int(tempPoint[0]),
                          int(tempPoint[1]),
                          int(tempPoint[2])]
-            if(self.Direction is None):
+            if(self.Direction == 'A'):
                 if Design456Init.DefaultDirectionOfExtrusion == 'x':
-                    point = (App.Vector(0.0, tempPoint[0], tempPoint[1]))
+                    point = (App.Vector(0.0, tempPoint[1], tempPoint[2]))
                 elif Design456Init.DefaultDirectionOfExtrusion == 'y':
-                    point = (App.Vector(tempPoint[0], 0.0, tempPoint[1]))
+                    point = (App.Vector(tempPoint[0], 0.0, tempPoint[2]))
                 elif Design456Init.DefaultDirectionOfExtrusion == 'z':
                     point = (App.Vector(tempPoint[0], tempPoint[1], 0.0))
             else:
@@ -250,7 +251,7 @@ class PartMover:
                              tempPoint[1], self.obj.Placement.Base.z))
                 elif (self.Direction == 'Z'):
                     point = (App.Vector(self.obj.Placement.Base.x,
-                             self.obj.Placement.Base.y, tempPoint[0]))
+                             self.obj.Placement.Base.y, tempPoint[2]))
             return point
 
         except Exception as err:
@@ -263,11 +264,12 @@ class PartMover:
 
     def moveMouse(self, events):
         try:
-            self.active = True
             event = events.getEvent()
             self.newPosition = self.convertToVector(
                 event.getPosition().getValue())
-            self.obj.Placement.Base = self.newPosition
+            if self.newPosition is not None:
+                self.obj.Placement.Base = self.newPosition
+
         except Exception as err:
             App.Console.PrintError("'Mouse movements error' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -285,8 +287,8 @@ class PartMover:
                 coin.SoMouseButtonEvent.getClassTypeId(), self.callbackClick)
             self.view.removeEventCallbackPivy(
                 coin.SoKeyboardEvent.getClassTypeId(), self.callbackKey)
-            self.active = False
             self.view = None
+
         except Exception as err:
             App.Console.PrintError("'remove callback error' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -303,10 +305,11 @@ class PartMover:
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 pos = event.getPosition()
                 self.obj.Placement.Base = self.convertToVector(pos)
+                self.remove_callbacks()
                 self.obj = None
                 App.ActiveDocument.recompute()
-                self.remove_callbacks()
             return
+
         except Exception as err:
             App.Console.PrintError("'Mouse click error' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -335,9 +338,9 @@ class PartMover:
                     self.obj.Placement.Base = self.initialPosition
                 else:
                     # This can be asked by a timer in a calling func...
-                    self.objectToDelete = self.obj
-                App.ActiveDocument.removeObject(self.obj.Name)
-                self.obj = None
+                    self.objToDelete = self.obj
+                    App.ActiveDocument.removeObject(self.obj.Name)
+                    self.obj = None
 
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "
