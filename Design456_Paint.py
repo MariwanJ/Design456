@@ -37,6 +37,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
+import FACE_D as faced
 
 
 class Design456_Paint:
@@ -45,6 +46,7 @@ class Design456_Paint:
     ]
 
     """
+
     def __init__(self):
         self.brushType: FR_BRUSHES = FR_BRUSHES.FR_SQUARE_BRUSH
         self.mw = None
@@ -74,47 +76,49 @@ class Design456_Paint:
         self.firstSize = 0.1
         # used to correct the Placement of the final object
         self.AverageDistanceToOrigion = App.Vector(0, 0, 0)
+        self.SelectedObj = None
+
         # List of the shapes - to add more add it here, in constant and make
         # an "if" statement and a function to draw it
         self.listOfDrawings = ["CIRCLE",
-                          "SEMI_CIRCLE",
-                          "QUARTER_CIRCLE",
-                          "OVAL1",
-                          "OVAL2",
-                          "EGG",
-                          "TRIANGLE",
-                          "RIGHT_TRIANGLE",
-                          "SCALENE_TRIANGLE",
-                          "SQUARE",
-                          "EQUALSIDES_PARALLELOGRAM1",
-                          "EQUALSIDES_PARALLELOGRAM2",
-                          "RECTANGLE1",
-                          "RECTANGLE2",
-                          "PARALLELOGRAM1",
-                          "PARALLELOGRAM2",
-                          "RHOMBUS",
-                          "PENTAGON",
-                          "HEXAGON",
-                          "HEPTAGON",
-                          "OCTAGON",
-                          "ENNEAGON",
-                          "DECAGON",
-                          "ARROW1",
-                          "ARROW2",
-                          "ARROW3",
-                          "ARROW4",
-                          "STAR1",
-                          "STAR2",
-                          "STAR3",
-                          "MOON1",
-                          "MOON2",
-                          "MOON3",
-                          "MOON4",
-                          "FILLET1",
-                          "FILLET2",
-                          "FILLET3",
-                          "FILLET4",
-                          ]
+                               "SEMI_CIRCLE",
+                               "QUARTER_CIRCLE",
+                               "OVAL1",
+                               "OVAL2",
+                               "EGG",
+                               "TRIANGLE",
+                               "RIGHT_TRIANGLE",
+                               "SCALENE_TRIANGLE",
+                               "SQUARE",
+                               "EQUALSIDES_PARALLELOGRAM1",
+                               "EQUALSIDES_PARALLELOGRAM2",
+                               "RECTANGLE1",
+                               "RECTANGLE2",
+                               "PARALLELOGRAM1",
+                               "PARALLELOGRAM2",
+                               "RHOMBUS",
+                               "PENTAGON",
+                               "HEXAGON",
+                               "HEPTAGON",
+                               "OCTAGON",
+                               "ENNEAGON",
+                               "DECAGON",
+                               "ARROW1",
+                               "ARROW2",
+                               "ARROW3",
+                               "ARROW4",
+                               "STAR1",
+                               "STAR2",
+                               "STAR3",
+                               "MOON1",
+                               "MOON2",
+                               "MOON3",
+                               "MOON4",
+                               "FILLET1",
+                               "FILLET2",
+                               "FILLET3",
+                               "FILLET4",
+                               ]
 
     def setSize(self):
         """
@@ -226,7 +230,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             ellipse = None
-            pl.Base = App.Vector(0, 0, 0.0)
+            pl.Base = App.Placement()
             pl.Rotation.Axis = (0.0, 0.0, 1)
             if Ovaltype == 1:
                 pl.Rotation.Angle = math.radians(90.0)
@@ -301,7 +305,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            
             if TriType == 1:
                 points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
                     0, self.brushSize, 0.0), App.Vector(self.brushSize, 0, 0.0)]
@@ -389,7 +393,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            
             points = None
             if typeOfParallelogram == 1:
                 points = [App.Vector(0.0, 0.0, 0.0),
@@ -455,7 +459,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            
             points = None
             if typeOfParallelogram == 1:
                 points = [App.Vector(0, self.brushSize*0.4, 0.0),
@@ -545,7 +549,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
+            
             points = None
             if arrowType == 1:
                 points = [App.Vector(0.0, self.brushSize, 0.0),
@@ -731,7 +735,6 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            pl.Base = App.Vector(0, 0, 0.0)
             first = App.ActiveDocument.addObject("Part::Box", "Box")
             first.Width = self.brushSize
             first.Length = self.brushSize
@@ -774,132 +777,6 @@ class Design456_Paint:
 
         except Exception as err:
             App.Console.PrintError("'Paint-Fillet' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def MouseMovement_cb(self, events):
-        """[Mouse movement callback. It will move the object
-        and update the drawing's position depending on the mouse-position and the plane]
-
-        Args:
-            events ([Coin3D events]): [Type of the event]
-        """
-        try:
-            event = events.getEvent()
-            pos = event.getPosition().getValue()
-            tempPos = self.view.getPoint(pos[0], pos[1])
-            position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
-            viewAxis = Gui.ActiveDocument.ActiveView.getViewDirection()
-            if self.currentObj is not None:
-                # Normal view - Top
-                self.pl = self.currentObj.Object.Placement
-                self.pl.Rotation.Axis = viewAxis
-                if(viewAxis == App.Vector(0, 0, -1)):
-                    self.pl.Base.z = 0.0
-                    position.z = 0
-                    self.pl.Rotation.Angle = 0
-                elif(viewAxis == App.Vector(0, 0, 1)):
-                    self.pl.Base.z = 0.0
-                    position.z = 0.0
-                    self.pl.Rotation.Angle = 0
-
-                # FrontSide
-                elif(viewAxis == App.Vector(0, 1, 0)):
-                    self.pl.Base.y = 0.0
-                    position.y = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (-1, 0, 0)
-                elif (viewAxis == App.Vector(0, -1, 0)):
-                    self.pl.Base.y = 0.0
-                    position.y = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (1, 0, 0)
-
-                # RightSideView
-                elif(viewAxis == App.Vector(-1, 0, 0)):
-                    self.pl.Base.x = 0.0
-                    position.x = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (0, 1, 0)
-                elif (viewAxis == App.Vector(1, 0, 0)):
-                    self.pl.Base.x = 0.0
-                    position.x = 0.0
-                    self.pl.Rotation.Angle = math.radians(90)
-                    self.pl.Rotation.Axis = (0, 1, 0)
-
-                self.currentObj.Object.Placement = self.pl
-
-                # All direction when A or decide which direction
-                if (self.MoveMentDirection == 'A'):
-                    self.currentObj.Object.Placement.Base = position
-                elif (self.MoveMentDirection == 'X'):
-                    self.currentObj.Object.Placement.Base.x = position.x
-                elif (self.MoveMentDirection == 'Y'):
-                    self.currentObj.Object.Placement.Base.y = position.y
-                elif (self.MoveMentDirection == 'Z'):
-                    self.currentObj.Object.Placement.Base.z = position.z
-                App.ActiveDocument.recompute()
-
-        except Exception as err:
-            App.Console.PrintError("'MouseMovement_cb' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def FixPlacementIssue(self):
-        """[Find center of the merged objects and make it as placement]
-        """
-        try:
-            if(self.resultObj is None):
-                return
-            Average = App.Vector(0, 0, 0)
-            for obj in self.AllObjects:
-                objBase = obj.Placement.Base  # obj.Shape.CenterOfGravity
-                if Average == App.Vector(0.0, 0.0, 0.0):
-                    # First time we should accept it without division
-                    Average = objBase
-                Average = App.Vector((Average.x+objBase.x)/2,
-                                     (Average.y+objBase.y)/2,
-                                     (Average.z+objBase.z)/2)
-            for obj in self.AllObjects:
-                obj.Placement.Base = obj.Placement.Base.sub(Average)
-
-            self.resultObj.Placement.Base = Average
-
-        except Exception as err:
-            App.Console.PrintError("'FixPlacementIssue' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def MouseClick_cb(self, events):
-        """[Mouse Release callback. 
-        It will place the object after last movement
-        and merge the object to older objects]
-
-        Args:
-            events ([COIN3D events]): [events type]
-        """
-        try:
-            event = events.getEvent()
-            eventState = event.getState()
-            getButton = event.getButton()
-            angle = 0
-            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.appendToList()
-                App.ActiveDocument.recompute()
-                self.currentObj = None
-                self.setSize()
-                self.setType()
-                self.recreateObject()
-                App.ActiveDocument.recompute()
-
-        except Exception as err:
-            App.Console.PrintError("'MouseClick_cb' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -1057,11 +934,115 @@ class Design456_Paint:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def MouseMovement_cb(self, events):
+        """[Mouse movement callback. It will move the object
+        and update the drawing's position depending on the mouse-position and the plane]
+
+        Args:
+            events ([Coin3D events]): [Type of the event]
+        """
+        try:
+            event = events.getEvent()
+            pos = event.getPosition().getValue()
+            tempPos = self.view.getPoint(pos[0], pos[1])
+            position = App.Vector(tempPos[0], tempPos[1], tempPos[2])
+            self.pl = App.DraftWorkingPlane.getPlacement()
+            self.pl.Base = App.DraftWorkingPlane.projectPoint(position)
+            if self.currentObj is not None:
+                # All direction when A or decide which direction
+                if (self.MoveMentDirection == 'A'):
+                    self.currentObj.Object.Placement = self.pl
+                elif (self.MoveMentDirection == 'X'):
+                    self.currentObj.Object.Placement.Base.x = self.pl.Base.x
+                elif (self.MoveMentDirection == 'Y'):
+                    self.currentObj.Object.Placement.Base.y = self.pl.Base.y
+                elif (self.MoveMentDirection == 'Z'):
+                    self.currentObj.Object.Placement.Base.z = self.pl.Base.z
+                App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'MouseMovement_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def FixPlacementIssue(self):
+        """[Find center of the merged objects and make it as placement]
+        """
+        try:
+            if(self.resultObj is None):
+                return
+            Average = App.Vector(0, 0, 0)
+            for obj in self.AllObjects:
+                objBase = obj.Placement.Base  # obj.Shape.CenterOfGravity
+                if Average == App.Vector(0.0, 0.0, 0.0):
+                    # First time we should accept it without division
+                    Average = objBase
+                Average = App.Vector((Average.x+objBase.x)/2,
+                                     (Average.y+objBase.y)/2,
+                                     (Average.z+objBase.z)/2)
+            for obj in self.AllObjects:
+                obj.Placement.Base = obj.Placement.Base.sub(Average)
+
+            self.resultObj.Placement.Base = Average
+
+        except Exception as err:
+            App.Console.PrintError("'FixPlacementIssue' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def MouseClick_cb(self, events):
+        """[Mouse Release callback. 
+        It will place the object after last movement
+        and merge the object to older objects]
+
+        Args:
+            events ([COIN3D events]): [events type]
+        """
+        try:
+            event = events.getEvent()
+            eventState = event.getState()
+            getButton = event.getButton()
+            angle = 0
+            if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                self.appendToList()
+                App.ActiveDocument.recompute()
+                self.currentObj = None
+                self.setSize()
+                self.setType()
+                self.recreateObject()
+                App.ActiveDocument.recompute()
+
+        except Exception as err:
+            App.Console.PrintError("'MouseClick_cb' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
     def Activated(self):
         """[Design456_Paint tool activation function.]
         """
         self.c1 = None
         self.c2 = None
+        s = Gui.Selection.getSelectionEx()
+        if (len(s) > 1):
+            # One object must be selected at least
+            errMessage = "Select Only one face to use the tool"
+            faced.errorDialog(errMessage)
+            return
+        elif len(s) == 1:
+            self.SelectedObj = s[0]
+            self.workingplane = App.DraftWorkingPlane
+            self.workingplane.reset()
+            f = self.SelectedObj.SubObjects[0]
+            self.workingplane.alignToFace(f)
+            Gui.Snapper.grid.on()
+            Gui.Snapper.forceGridOff = False
+
         try:
             self.getMainWindow()
             self.view = Gui.ActiveDocument.activeView()
@@ -1071,8 +1052,8 @@ class Design456_Paint:
             if(self.currentObj is None):
                 print("Why is this None?")
             App.ActiveDocument.recompute()
-            
-            #Start callbacks for mouse events.
+
+            # Start callbacks for mouse events.
             self.callbackMove = self.view.addEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.MouseMovement_cb)
             self.callbackClick = self.view.addEventCallbackPivy(
@@ -1101,6 +1082,9 @@ class Design456_Paint:
     def __del__(self):
         """[Python destructor for the object. Otherwise next drawing might get wrong parameters]
         """
+        App.DraftWorkingPlane.reset()
+        Gui.Snapper.grid.off()
+        Gui.Snapper.forceGridOff = True
         self.remove_callbacks()
         self.mw = None
         self.dialog = None

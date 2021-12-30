@@ -95,7 +95,6 @@ class Design456_AlignFlatToPlane:
                 elif Design456Init.DefaultDirectionOfExtrusion == 'x':
                     obj.Object.Placement.Base.x = 0.0
             App.ActiveDocument.recompute()
-            
             App.ActiveDocument.commitTransaction()  # undo reg.
         except Exception as err:
             App.Console.PrintError("'Align to Plain' Failed. "

@@ -207,15 +207,16 @@ class DocObserver:
     def slotCreatedDocument(self, doc):
         v = Gui.ActiveDocument.ActiveView
         if (self.linkToParent is not None):
-            if(self.linkToParent.planeShow == None):
+            if(self.linkToParent.planeShow is None):
                 self.linkToParent.planeShow = Grid(v)
                 self.linkToParent.planeShow.Activated()
+                Gui.ActiveDocument.ActiveView.setCameraType("Perspective")
             else:
                 try:
                     self.planeShow.removeGarbage()
                 except:
                     self.linkToParent.planeShow = Grid(v)
                     self.linkToParent.planeShow.Activated()
-                    
+
     def setLink(self, linkToParent=None):
         self.linkToParent = linkToParent
