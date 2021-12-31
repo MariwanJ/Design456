@@ -36,7 +36,7 @@ import math
 
 # TODO : FIXME BETTER WAY?
 
-__updated__ = '2021-12-31 08:56:47'
+__updated__ = '2021-12-31 13:32:19'
 
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
@@ -632,9 +632,10 @@ def clearPythonConsole(name: str = ""):
 
 def findMainListedObjects():
     """[
-    Find and return main objects in the active document
-    - no children will be return
-    And must be solid - no 2D or group should be included
+        Find and return main objects in the active document
+        - no children will be return
+        And must be solid - no 2D or group should be included
+        and must be visible
         ]
 
     Returns:
@@ -643,6 +644,8 @@ def findMainListedObjects():
     results = []
     for i in App.ActiveDocument.Objects:
         name = i.Name
+        if (Gui.ActiveDocument.getObject(name).Visibility == False):
+            continue # We shouldn't touch objects that are invisible.
         Gui.ActiveDocument.getObject(name).Visibility = False
         inlist = i.InList
         if len(inlist) == 0:
@@ -682,12 +685,10 @@ def checkCollision(newObj):
         [type]: [Document objects]
     """
     objList = findMainListedObjects()  # get the root objects - no children
-    print("mainlist", len(objList))
     for obj in objList:
         if obj.Name == newObj.Name:
             objList.remove(obj)
             break
-    print("mainlist", len(objList))
 
     results = []
     for obj in objList:

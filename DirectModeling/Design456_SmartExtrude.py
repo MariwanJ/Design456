@@ -44,7 +44,7 @@ import math
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2021-12-31 08:58:02'
+__updated__ = '2021-12-31 13:12:41'
 
 '''
     How it works: 
@@ -66,13 +66,14 @@ __updated__ = '2021-12-31 08:58:02'
 
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
-    """[summary]
-    Callback for the arrow movement. This will be used to calculate the length of the Extrude operation.
+    """[ Callback for the arrow movement. 
+    This will be used to calculate the length of the Extrude operation.]
     Args:
-        userData (fr_arrow_widget.userDataObject, optional): [description]. Defaults to None.
+        userData (fr_arrow_widget.userDataObject, optional): 
+        [Userdata contain link to several variable and the arrow widget]. Defaults to None.
 
     Returns:
-        [type]: [description] None.
+        [type]: [Nothing is returned] None.
     """
     try:
         if userData is None:
@@ -124,6 +125,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
 
 def createFusionObjectBase(linktocaller):
+    """
+        Create Fusion object to collect 
+        several object then use them in other processes. 
+        This is a Base Fusion
+    """
     allObjects = []
     for i in range(0, len(linktocaller.objChangedTransparency)):
         allObjects.append(App.ActiveDocument.getObject(
@@ -154,6 +160,9 @@ def createFusionObjectBase(linktocaller):
 
 
 def createFusionObjectTool(linktocaller):
+    """
+        Create Fusion object which is used as tool in other process.
+    """
     Transparency = False
     for obj in linktocaller.objChangedTransparency:
         if obj.Object == linktocaller.selectedObj.Object:
@@ -479,7 +488,7 @@ class Design456_SmartExtrude:
 
             rotation = self.getArrowPosition()
             self.smartInd = Fr_Arrow_Widget(
-                self._vector, "  Length 0.0", 1, FR_COLOR.FR_RED, rotation, 3)
+                self._vector, ["  Length 0.0",], 1, FR_COLOR.FR_RED, rotation, 3)
             self.smartInd.w_callback_ = callback_release
             self.smartInd.w_move_callback_ = callback_move
             self.smartInd.w_userData.callerObject = self
