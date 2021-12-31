@@ -41,6 +41,7 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 import math
+import Part
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
@@ -485,8 +486,9 @@ class Design456_SmartExtrude:
                 return
             
             self.selectedObj = sel[0]
-            if type(self.selectedObj) != 'Face':  
-                raise Exception("Select a face and use the tool to extract it.")
+            if not isinstance(self.selectedObj.Object.Shape, Part.Face):
+                errMessage = "Select one face to Extrude"
+                faced.errorDialog(errMessage)
                 return
                 
             faced.EnableAllToolbar(False)

@@ -50,7 +50,8 @@ class Design456_Extrude:
                 faced.errorDialog(errMessage)
                 return
             if not isinstance(selection[0].Object.Shape, Part.Face):
-                App.Console.PrintMessage("Error. Not a face")
+                errMessage = "Select one face to Extrude"
+                faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(
                 translate("Design456", "Extrude"))

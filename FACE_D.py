@@ -332,16 +332,10 @@ class PartMover:
                 self.Direction = 'Y'
             if key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
                 self.Direction = 'Z'
-
             if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
-                self.remove_callbacks()
                 if not self.deleteOnEscape:
                     self.obj.Placement.Base = self.initialPosition
-                else:
-                    # This can be asked by a timer in a calling func...
-                    self.objToDelete = self.obj
-                    App.ActiveDocument.removeObject(self.obj.Name)
-                    self.obj = None
+                self.remove_callbacks()
 
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "
