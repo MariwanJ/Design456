@@ -44,7 +44,7 @@ import math
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2021-12-31 13:12:41'
+__updated__ = '2021-12-31 18:21:51'
 
 '''
     How it works: 
@@ -299,6 +299,16 @@ class Design456_SmartExtrude:
         self.WasFaceFrom3DObject = False
         self.mouseToArrowDiff = None
 
+        # Extrusion checkboxes
+        self.radSubtract = None
+        self.radAsIs  = None
+        self.radSubtract  = None
+
+        # Extrusion step
+        self.combListExtrudeStep = None
+
+
+
     def reCreateExtrudeObject(self):
         """
         [
@@ -473,7 +483,12 @@ class Design456_SmartExtrude:
                 errMessage = "Select an object, one face to Extrude"
                 faced.errorDialog(errMessage)
                 return
+            
             self.selectedObj = sel[0]
+            if type(self.selectedObj) != 'Face':  
+                raise Exception("Select a face and use the tool to extract it.")
+                return
+                
             faced.EnableAllToolbar(False)
             # Undo
             App.ActiveDocument.openTransaction(
@@ -618,6 +633,19 @@ class Design456_SmartExtrude:
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
             okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+
+            self.verticalLayout = QtGui.QVBoxLayout(self.dialog)
+            self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+            self.verticalLayout.setObjectName("verticalLayout")
+            self.label =  QtGui.QLabel(self.dialog)
+            self.label.setObjectName("label")
+            self.verticalLayout.addWidget(self.label)
+            self.combListExtrudeStep =  QtGui.QComboBox(self.dialog)
+            self.combListExtrudeStep.setCurrentText("1")
+            self.combListExtrudeStep.setObjectName("combListExtrudeStep")
+            self.verticalLayout.addWidget(self.combListExtrudeStep)
+            self.la.addWidget(self.verticalLayout)
+
 
             self.la.addWidget(okbox)
 

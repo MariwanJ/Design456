@@ -61,15 +61,15 @@ class Design456_Magnet:
             App.DraftWorkingPlane.alignToFace(face1)
 
             sub2.Object.Placement.Base = face1.CenterOfMass
-            #This will fail if the surface doesn't have Rotation 
+            # This will fail if the surface doesn't have Rotation 
             if(hasattr(face1.Faces[0].Surface, "Rotation")):
                 sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
             else:
-                #Don't konw what todo . Don't let it be empty. 
+                # Don't know what todo . Don't let it be empty. 
                 # TODO: Find a solution for this.
                 sub2.Object.Placement.Rotation.Aixs = App.Vector(0, 0, 1)
                 sub2.Object.Placement.Rotation.Angle = 0
-            App.ActiveDocument.commitTransaction() #undo
+            App.ActiveDocument.commitTransaction() # undo
             App.ActiveDocument.recompute()
             
         except Exception as err:
