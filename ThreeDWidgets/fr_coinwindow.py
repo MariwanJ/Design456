@@ -42,6 +42,8 @@ import time  # For double click detection
 This is a class for coin3D Window
 '''
 
+__updated__ = ''
+
 
 @dataclass
 class mouseDimension:

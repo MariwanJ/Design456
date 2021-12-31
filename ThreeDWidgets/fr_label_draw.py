@@ -36,7 +36,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_widget import propertyValues
 import math
 
-
+__updated__ = ''
 
 def draw_label(text=[], prop: propertyValues = None):
     ''' Draw widgets label relative to the position with 

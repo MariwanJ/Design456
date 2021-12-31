@@ -44,6 +44,7 @@ import math
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1.5
+__updated__ = '2021-12-31 08:43:03'
 
 '''
     We have to recreate the object each time we change the radius. 

@@ -38,6 +38,8 @@ from PySide import QtGui, QtCore
 #This is a start of the preferences pages. Not finished yet. 
 #TODO : FIXME:
 
+__updated__ = ''
+
 class Ui_Design456Preferences(object):
     def setupUi(self, Design456Preferences):
         Design456Preferences.setObjectName("Design456Preferences")

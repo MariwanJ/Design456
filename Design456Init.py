@@ -36,6 +36,10 @@ ICON path should be always added as below
 'Resources/icons/' 
 
 """
+
+__updated__ = ''
+
+
 #Design456 
 __dir__ = os.path.dirname(__file__)
 ICON_PATH = os.path.join(__dir__, 'Resources/icons/')

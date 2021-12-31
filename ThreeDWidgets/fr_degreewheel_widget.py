@@ -63,6 +63,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
+__updated__ = ''
 
 
 @dataclass

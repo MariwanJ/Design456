@@ -71,6 +71,9 @@ wny.show()
 
 """
 
+__updated__ = ''
+
+
 # FIXME: Handle is not correct . Make it like arrow widget.
 
 

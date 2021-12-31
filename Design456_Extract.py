@@ -34,6 +34,8 @@ import Part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate 
 
+__updated__ = ''
+
 class Design456_Extract:
     """Extract the selected face from the object"""
 

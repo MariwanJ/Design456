@@ -32,6 +32,8 @@ import FreeCADGui as Gui
 import Design456Init
 from PySide import QtGui, QtCore
 
+__updated__ = ''
+
 # Toolbar class
 
 class Design456_SelectionGate:

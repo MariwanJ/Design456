@@ -40,6 +40,7 @@ from PySide import QtGui, QtCore
 from draftutils.translate import translate  # for translate
 
 SeperateLinesFromObject = 4
+__updated__ = ''
 
 
 def smartLinecallback(smartLine, obj, parentlink):

@@ -48,6 +48,8 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
+__updated__ = ''
+
 class Design456_unifySplitFuse1:
     
     def Activated(self):

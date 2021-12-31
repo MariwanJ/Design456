@@ -35,6 +35,7 @@ import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate  # for translation
 
+__updated__ = ''
 
 class GenCommandForPartUtils:
     def __init__(self):

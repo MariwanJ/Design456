@@ -27,6 +27,10 @@ from __future__ import unicode_literals
 
 import os
 import sys
+
+__updated__ = ''
+
+
 # Widgets type. QT widget will get QT in their names.
 
 #Implemented only for COIN3D.

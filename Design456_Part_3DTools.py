@@ -42,6 +42,8 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
+__updated__ = ''
+
 # Merge
 class Design456_Part_Merge:
 

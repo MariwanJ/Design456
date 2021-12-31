@@ -55,8 +55,9 @@ ln =line.Fr_Line_Widget(g,"My label",7)   # draw the line - nothing will be visi
 wny.addWidget(ln)              # Add it to the window as a child 
 wny.show()                    # show the window and it's widgets. 
 
-
 """
+
+__updated__ = ''
 
 
 def movecallback(userData=None):

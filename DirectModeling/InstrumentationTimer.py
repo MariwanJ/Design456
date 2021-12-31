@@ -40,6 +40,7 @@ import sys
 from dataclasses import dataclass
 
 #Struct in cpp
+__updated__ = ''
 
 
 class ProfileResult(object):

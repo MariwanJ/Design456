@@ -30,6 +30,8 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
+__updated__ = ''
+
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"

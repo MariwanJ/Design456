@@ -44,6 +44,9 @@ from abc import abstractmethod
 # ********************************************************************************************************
 from dataclasses import dataclass
 
+__updated__ = '2021-12-31 08:47:53'
+
+
 @dataclass
 class propertyValues:
     '''

@@ -10,6 +10,8 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
+__updated__ = ''
+
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
                             color=FR_COLOR.FR_GOLD,

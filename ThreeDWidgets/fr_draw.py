@@ -39,6 +39,8 @@ import math
 from dataclasses import dataclass
 from pivy import coin
 
+__updated__ = ''
+
 @dataclass
 class userDataObject:
     __slots__ = ['Vectors', 'Scale', 'Radius', 'Height',

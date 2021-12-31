@@ -37,6 +37,7 @@ from typing import List
 
 # Group class. Use this to collect several widgets.
 
+__updated__ = ''
 
 class Fr_Group(fr_widget.Fr_Widget):
     # Any drawing/Everything should be added to this later

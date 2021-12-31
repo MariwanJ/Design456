@@ -39,6 +39,8 @@ from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
 
+__updated__ = '2021-12-31 08:42:34'
+
 # Move an object to the location of the mouse click on another surface
 
 

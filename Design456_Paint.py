@@ -39,6 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
+__updated__ = ''
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.

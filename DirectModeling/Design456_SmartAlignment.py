@@ -38,6 +38,7 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets import fr_arrow_widget
 from draftutils.translate import translate  # for translation
 MouseScaleFactor = 1.5      # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
+__updated__ = ''
 
 
 #TODO: FIXME : NOT IMPLEMENTED

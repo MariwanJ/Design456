@@ -33,6 +33,8 @@ import DirectModeling.Design456_SmartExtrudeRotate
 import DirectModeling.Design456_ExtendEdge 
 import DirectModeling.Design456_ExtendFace
 
+__updated__ = ''
+
 class Design456_DirectModeling:
     list = ["Design456_SmartScale",
             "Design456_DirectScale",

@@ -38,6 +38,8 @@ from ThreeDWidgets.constant import FR_COLOR
 import math
 from dataclasses import dataclass
 
+__updated__ = ''
+
 """
 Example using the Wheel
 

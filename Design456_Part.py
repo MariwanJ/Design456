@@ -35,6 +35,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
+__updated__ = ''
 
 #import PartGui
 import BasicShapes.CommandShapes
