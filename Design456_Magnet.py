@@ -34,7 +34,7 @@ import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2021-12-31 08:56:25'
+__updated__ = '2021-12-31 12:44:38'
 
 # Move an object to the location of the mouse click on another surface
 class Design456_Magnet:
@@ -54,17 +54,24 @@ class Design456_Magnet:
                 faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Magnet"))
-            sub1 = Gui.Selection.getSelectionEx()[0]
-            sub2 = Gui.Selection.getSelectionEx()[1]
-            face1 = faced.getObjectFromFaceName(sub1,sub1.SubElementNames[0])
-            face2 = faced.getObjectFromFaceName(sub2,sub2.SubElementNames[0])
+            sub1 = s[0]
+            sub2 = s[1]
+            face1 = faced.getObjectFromFaceName(sub1, sub1.SubElementNames[0])
+            face2 = faced.getObjectFromFaceName(sub2, sub2.SubElementNames[0])
             App.DraftWorkingPlane.alignToFace(face1)
 
-            sub2.Object.Placement.Base = faced.get_global_placement(face1.CenterOfMass)
+            sub2.Object.Placement.Base = face1.CenterOfMass
             #This will fail if the surface doesn't have Rotation 
-            sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
+            if(hasattr("Rotation"), face1.Faces[0].Surface):
+                sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
+            else:
+                #Don't konw what todo . Don't let it be empty. 
+                # TODO: Find a solution for this.
+                sub2.Object.Placement.Rotation.Aixs = App.Vector(0, 0, 1)
+                sub2.Object.Placement.Rotation.Angle = 0
             App.ActiveDocument.commitTransaction() #undo
             App.ActiveDocument.recompute()
+            
         except Exception as err:
             App.Console.PrintError("'Magnet' Failed. "
                                    "{err}\n".format(err=str(err)))
