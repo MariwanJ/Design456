@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:57'
 
 
 # Widgets type. QT widget will get QT in their names.

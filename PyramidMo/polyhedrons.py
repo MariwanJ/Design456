@@ -61,7 +61,7 @@ from FreeCAD import Base
 import Design456Init
 import FACE_D as faced
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:57:52'
 
 def horizontal_regular_polygon_vertexes(sidescount, radius, z, startangle=0):
     try:

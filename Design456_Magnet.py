@@ -34,7 +34,7 @@ import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:25'
 
 # Move an object to the location of the mouse click on another surface
 class Design456_Magnet:

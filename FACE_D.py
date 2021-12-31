@@ -36,7 +36,7 @@ import math
 
 # TODO : FIXME BETTER WAY?
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:47'
 
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]

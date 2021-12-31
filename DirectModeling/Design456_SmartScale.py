@@ -40,7 +40,7 @@ from PySide import QtGui, QtCore
 from draftutils.translate import translate  # for translate
 
 SeperateLinesFromObject = 4
-__updated__ = ''
+__updated__ = '2021-12-31 08:58:00'
 
 
 def smartLinecallback(smartLine, obj, parentlink):

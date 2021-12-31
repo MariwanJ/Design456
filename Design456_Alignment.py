@@ -39,7 +39,7 @@ from pivy import coin
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:14'
 
 
 class Design456_ViewInsideObjects:

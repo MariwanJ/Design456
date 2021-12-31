@@ -43,7 +43,7 @@ from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2021-12-31 08:43:17'
+__updated__ = '2021-12-31 08:58:10'
 
 # This will be used to convert mouse movement to scale factor.
 SCALE_FACTOR = 15.0

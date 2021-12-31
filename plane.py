@@ -38,7 +38,7 @@ import pivy.coin as coin
 import FreeCADGui as Gui
 import FreeCAD as App
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:53'
 
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()

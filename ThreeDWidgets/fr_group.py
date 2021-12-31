@@ -37,7 +37,7 @@ from typing import List
 
 # Group class. Use this to collect several widgets.
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:57:04'
 
 class Fr_Group(fr_widget.Fr_Widget):
     # Any drawing/Everything should be added to this later

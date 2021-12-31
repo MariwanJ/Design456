@@ -36,7 +36,7 @@ import Design456_Extract as face_extract
 import Design456_Part_Tools as tools
 from draftutils.translate import translate   #for translate
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:20'
 
 class Design456_ExtrudeFace:
     def __init__(self):

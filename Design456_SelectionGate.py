@@ -32,7 +32,7 @@ import FreeCADGui as Gui
 import Design456Init
 from PySide import QtGui, QtCore
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:37'
 
 # Toolbar class
 

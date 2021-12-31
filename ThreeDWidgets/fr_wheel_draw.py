@@ -38,7 +38,7 @@ from ThreeDWidgets.constant import FR_COLOR
 import math
 from dataclasses import dataclass
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:57:46'
 
 """
 Example using the Wheel

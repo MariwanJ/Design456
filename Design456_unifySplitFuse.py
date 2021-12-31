@@ -48,7 +48,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:40'
 
 class Design456_unifySplitFuse1:
     

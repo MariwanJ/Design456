@@ -41,7 +41,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1.5
-__updated__ = '2021-12-31 08:43:51'
+__updated__ = '2021-12-31 08:58:06'
 
 
 '''

@@ -43,7 +43,7 @@ import Part as _part
 import FACE_D as faced
 import math
 
-__updated__ = '2021-12-31 08:43:26'
+__updated__ = '2021-12-31 08:58:08'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.

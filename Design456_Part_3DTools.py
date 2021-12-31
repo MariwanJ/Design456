@@ -42,7 +42,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:31'
 
 # Merge
 class Design456_Part_Merge:

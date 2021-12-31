@@ -51,7 +51,7 @@ import BOPTools.SplitFeatures as SPLIT
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:24'
 
 class Design456_loftOnDirection_ui(object):
     def __init__(self, loftOnDirection):

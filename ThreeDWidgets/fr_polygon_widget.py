@@ -71,7 +71,7 @@ wny.show()
 
 """
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:57:40'
 
 
 # FIXME: Handle is not correct . Make it like arrow widget.

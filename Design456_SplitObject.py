@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = ''
+__updated__ = '2021-12-31 08:56:39'
 
 class Design456_SplitObject:
     """Divide object in to two parts"""

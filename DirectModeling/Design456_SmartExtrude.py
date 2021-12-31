@@ -44,7 +44,7 @@ import math
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = ''
+__updated__ = '2021-12-31 08:58:02'
 
 '''
     How it works: 
