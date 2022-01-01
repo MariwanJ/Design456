@@ -43,7 +43,7 @@ from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2021-12-31 08:58:10'
+__updated__ = '2022-01-01 21:59:04'
 
 # This will be used to convert mouse movement to scale factor.
 SCALE_FACTOR = 15.0
@@ -355,7 +355,12 @@ class Design456_DirectScale:
 
         rotation = [-1.0, 0.0, 0.0, 90]
         self.smartInd.append(Fr_Arrow_Widget(
-            _vec[0], "Y-Axis", 1, FR_COLOR.FR_OLIVEDRAB, rotation))
+            _vec[0], ["Y-Axis",], 1,            # vector, label, linewidth
+            FR_COLOR.FR_OLIVEDRAB,             # arrow color
+            FR_COLOR.FR_WHITE,                 # lblcolor
+            rotation,                          # rotation
+            [3, 3, 3],                         # scale
+            0,0))                              # arrowType, opacity,
         # External function
         self.smartInd[0].w_callback_ = callback_release
         self.smartInd[0].w_move_callback_ = callback_move
@@ -363,14 +368,25 @@ class Design456_DirectScale:
 
         rotation = [0.0, 1.0, 0.0, 90.0]
         self.smartInd.append(Fr_Arrow_Widget(
-            _vec[1], "X-Axis", 1, FR_COLOR.FR_RED, rotation))
+            _vec[1], ["X-Axis",], 1,
+            FR_COLOR.FR_RED,
+            FR_COLOR.FR_WHITE,                 # lblcolor
+            rotation,                          # rotation
+            [3, 3, 3],                         # scale
+            0,0))                              # arrowType, opacity,
         self.smartInd[1].w_callback_ = callback_release
         self.smartInd[1].w_move_callback_ = callback_move
         self.smartInd[1].w_userData.callerObject = self
 
         rotation = [1.0, 0.0, 1.0, 0.0]
         self.smartInd.append(Fr_Arrow_Widget(
-            _vec[2], "Z-Axis", 1, FR_COLOR.FR_BLUE, rotation))
+            _vec[2], ["Z-Axis",], 1, 
+            FR_COLOR.FR_BLUE,
+            FR_COLOR.FR_WHITE,                 # lblcolor
+            rotation,                          # rotation
+            [3, 3, 3],                         # scale
+            0,0))                              # arrowType, opacity,
+
         self.smartInd[2].w_callback_ = callback_release
         self.smartInd[2].w_move_callback_ = callback_move
         self.smartInd[2].w_userData.callerObject = self
