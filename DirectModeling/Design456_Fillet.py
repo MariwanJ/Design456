@@ -41,7 +41,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1.5
-__updated__ = '2021-12-31 08:58:06'
+__updated__ = '2022-01-01 17:16:07'
 
 
 '''
@@ -419,8 +419,13 @@ class Design456_SmartFillet:
 
         # get rotation
         rotation = self.getArrowPosition()
-        self.smartInd = Fr_Arrow_Widget([self._vector, App.Vector(0, 0, 0)], [
-                                        "Radius = 0.0", ], 1, FR_COLOR.FR_RED, rotation)
+        self.smartInd = Fr_Arrow_Widget( [self._vector, App.Vector(0.0, 0.0, 0.0)],   # w_vector
+             ["Radius: 0.0",], 1,                                                     # Label, linewidth
+              FR_COLOR.FR_RED, FR_COLOR.FR_WHITE,                                     # color, lblcolor
+              rotation,                                                               # rotation
+              [1.0, 1.0, 1.0],                                                        # scale 
+              0,                                                                      # type
+              0.0)                                                                    # opacity  
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self

@@ -546,7 +546,7 @@ def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10),
         the function will measure the distance to origin ]
 
     Args:
-        p1 ([FreeCAD.Vector], optional): [description]. Defaults to App.Vector(0,0,0).
+        p1 ([FreeCAD.Vector], optional): [description]. Defaults to App.Vector(0.0, 0.0, 0.0).
         p2 ([FreeCAD.Vector], Required): [description]. Defaults to App.Vector(10,10,10).
 
     Returns:
@@ -705,7 +705,7 @@ def checkCollision(newObj):
 def calculateAngle(v1, v2=App.Vector(1, 1, 0)):
     """[Find angle between a vector and the origin
         Assuming that the angle is between the line-vectors 
-        (0,0,0) and (1,1,0)
+        (0.0, 0.0, 0.0) and (1,1,0)
     ]
 
     Args:
@@ -725,7 +725,7 @@ def RealRotateObjectToAnAxis(SelectedObj=None, RealAxis=App.Vector(0.0, 0.0, 0.0
 
     Args:
         SelectedObj ([Gui.Selection.Object], Required): [The object(s) to rotate].
-        RealAxis ([App.Vector], optional): [Real axis used to rotate the object]. Defaults to App.Vector(0,0,0).
+        RealAxis ([App.Vector], optional): [Real axis used to rotate the object]. Defaults to App.Vector(0.0, 0.0, 0.0).
         rotAngleX (float, optional): [Angle of rotation - X Axis]. Defaults to 0.0.
         rotAngleY (float, optional): [Angle of rotation - Y Axis]. Defaults to 0.0.
         rotAngleZ (float, optional): [Angle of rotation - Z Axis]. Defaults to 0.0.

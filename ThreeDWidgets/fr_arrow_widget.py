@@ -60,7 +60,7 @@ wny.addWidget(ln)              # Add it to the window as a child
 wny.show()                    # show the window and it's widgets. 
 
 """
-__updated__ = '2022-01-01 15:08:46'
+__updated__ = '2022-01-01 18:25:55'
 
 
 # class object will be used as object holder between arrow widget and the callback
@@ -215,8 +215,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
             if self.is_visible():
                 if self.arrowType == 0:
-                    self.w_widgetSoNodes = fr_draw.draw_arrow(
-                        self.w_vector[0], usedColor,  self.w_rotation)
+                #                                   draw_arrow(_Points=[], _color = FR_COLOR.FR_GOLD, _ArrSize=[1.0, 1.0, 1.0], _rotation=[0.0, 0.0, 1.0, 0.0]):
+                    self.w_widgetSoNodes = fr_draw.draw_arrow(self.w_vector[0], usedColor,self.w_scale, self.w_rotation)
                 elif self.arrowType == 1:
                     self.w_widgetSoNodes = fr_draw.draw_2Darrow(
                         self.w_vector[0], usedColor, self.w_scale, 0, self.w_opacity, self.w_rotation)
@@ -252,7 +252,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.labelcolor = usedColor
         self.w_lbluserData.vectors = self.w_vector 
-        self.w_lbluserData.vectors[0] += App.Vector(0 , 0 , 3)
+        #self.w_lbluserData.vectors[0] += App.Vector(0 , 0 , 3)
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 

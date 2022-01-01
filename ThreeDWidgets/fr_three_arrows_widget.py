@@ -75,7 +75,7 @@ class test:
 
 	def runme(self):
 		mywin = wnn.Fr_CoinWindow()
-		vectors=[App.Vector(0,0,0), App.Vector(0,0,0)] 
+		vectors=[App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 0.0)] 
 		rot=[0,0,0,0]
 		root=wd.Fr_OneArrow_Widget(vectors, "X-Axis")
 		root.w_move_callback_=self.callback_move
@@ -96,8 +96,8 @@ from ThreeDWidgets.constant import FR_COLOR
 
 
 mywin = wnn.Fr_CoinWindow()
-v1=[App.Vector(0,0,0), App.Vector(0,0,0)] 
-v2=[App.Vector(20,0,0), App.Vector(0,0,0)] 
+v1=[App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 0.0)] 
+v2=[App.Vector(20,0,0), App.Vector(0.0, 0.0, 0.0)] 
 r1=wd.Fr_OneArrow_Widget(v1, "X-Axis")
 r1.enableDisc()
 r2=wd.Fr_OneArrow_Widget(v2, "y-Axis")
@@ -776,7 +776,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
             if it is an disc.]
 
         Args:
-            newVecPos ([App.Vector], optional): [Move the label to a new position]. Defaults to App.Vector(0,0,0).
+            newVecPos ([App.Vector], optional): [Move the label to a new position]. Defaults to App.Vector(0.0, 0.0, 0.0).
         """
         self.w_lbluserData.vectors = [newVecPos, ]
 

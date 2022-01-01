@@ -63,7 +63,7 @@ g.append(p3)
 g.append(p4)
 g.append(p5)
 
-col=(0,0,0)
+col=(0.0, 0.0, 0.0)
 
 _polygon =polygon.Fr_Polygon_Widget(g,'polygon',2)
 wny.addWidget(_polygon)

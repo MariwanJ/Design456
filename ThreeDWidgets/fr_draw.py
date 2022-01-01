@@ -39,7 +39,7 @@ import math
 from dataclasses import dataclass
 from pivy import coin
 
-__updated__ = '2022-01-01 14:55:13'
+__updated__ = '2022-01-01 18:19:26'
 
 @dataclass
 class userDataObject:
@@ -70,7 +70,7 @@ root=d.draw_Point()
 sg.addChild(root)
         
 """
-def draw_Point(p1=App.Vector(0,0,0),size=0.1, color=FR_COLOR.FR_GOLD, type=0):
+def draw_Point(p1=App.Vector(0.0, 0.0, 0.0),size=0.1, color=FR_COLOR.FR_GOLD, type=0):
     """[Draw a point. The point could be any of cubic, or sphere shapes. Default is Cubic]
 
     Args:
@@ -125,7 +125,7 @@ from PySide import QtCore,QtGui
 sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
 
 ve=[]
-ve.append(App.Vector(0,0,0))
+ve.append(App.Vector(0.0, 0.0, 0.0))
 ve.append(App.Vector(10,0,0))
 ve.append(App.Vector(10,10,0))
 ve.append(App.Vector(0,10,0))
@@ -192,7 +192,7 @@ from PySide import QtCore,QtGui
 sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
 
 ve=[]
-ve.append(App.Vector(0,0,0))
+ve.append(App.Vector(0.0, 0.0, 0.0))
 ve.append(App.Vector(10,10,10))
 #ve.append(App.Vector(10,10,0))
 #ve.append(App.Vector(0,10,0))
@@ -239,7 +239,7 @@ def draw_line(vec=[], color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
 
 
 # draw arrow (Angel is in degree)
-def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=[1.0,1.0,1.0,], _rotation=[0.0, 0.0, 1.0, 0.0]):
+def draw_arrow(_Points=[], _color = FR_COLOR.FR_GOLD, _ArrSize=[1.0, 1.0, 1.0], _rotation=[0.0, 0.0, 1.0, 0.0]):
     """[    '''
         Draw a 3D arrow at the position given by the _Points and the color given by _color. 
         Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
@@ -261,6 +261,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=[1.0,1.0,1.0,], _r
         so_separatorRoot = coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
         so_separatorTail = coin.SoSeparator()
+
         # decide at which position the object will be placed
         transHead = coin.SoTranslation()
         # decide at which position the object will be placed
@@ -299,8 +300,8 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=[1.0,1.0,1.0,], _r
 
         coordsRoot.scaleFactor.setValue(_ArrSize[0], _ArrSize[1], _ArrSize[2])
         coordsRoot.translation.setValue(App.Vector(0, 0, 0))
-
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
+        
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
         transRoot.translation.setValue(_Points)
@@ -350,7 +351,7 @@ import fr_draw as d
 import time
 from PySide import QtCore,QtGui
 sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
-root=d.draw_DoubleSidedArrow(App.Vector(0,0,0),(0,1,1),1,[1.0, 0.0, 0.0, 180])
+root=d.draw_DoubleSidedArrow(App.Vector(0.0, 0.0, 0.0),(0,1,1),1,[1.0, 0.0, 0.0, 180])
 sg.addChild(root)
 
 """
@@ -383,14 +384,13 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0),
         so_separatorRoot = coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
         so_separatorTail = coin.SoSeparator()
-        
-        so_First = coin.SoSeparator()   #First arrow 
-        so_Second = coin.SoSeparator()   #Second arrow - reverse direction
-        
+
+        so_First = coin.SoSeparator()    # First arrow
+        so_Second = coin.SoSeparator()   # Second arrow - reverse direction
+
         firstT = coin.SoTransform()
         secondT = coin.SoTransform()
-        
-        
+ 
         # decide at which position the object will be placed
         transHead = coin.SoTranslation()
         # decide at which position the object will be placed
@@ -400,12 +400,12 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0),
 
         TailsTransform = coin.SoTransform()
         HeadTransform = coin.SoTransform()
-        
+
         tailHeadTrs = coin.SbVec3f()
-        tailHeadTrs.setValue(1,0,0)
-        
-        TailsTransform.rotation.setValue(tailHeadTrs,math.radians(90))
-        HeadTransform.rotation.setValue(tailHeadTrs,math.radians(90))
+        tailHeadTrs.setValue(1.0, 0.0, 0.0)
+
+        TailsTransform.rotation.setValue(tailHeadTrs, math.radians(90))
+        HeadTransform.rotation.setValue(tailHeadTrs, math.radians(90))
 
         coordsRoot = coin.SoTransform()
         tempR = coin.SbVec3f()
@@ -427,16 +427,16 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0),
         styleTail.style = coin.SoDrawStyle.LINES  # draw only frame not filled
         styleTail.lineWidth = 2
 
-        basicRot=coin.SbVec3f()
-        basicRot.setValue(0.0,1.0,.0)
-        firstT.rotation.setValue(basicRot,0)
+        basicRot = coin.SbVec3f()
+        basicRot.setValue(0.0, 1.0, 0.0)
+        firstT.rotation.setValue(basicRot, 0)
         firstT.translation.setValue(App.Vector(0, 0, 0))
-        secondT.rotation.setValue(basicRot,math.radians(-180.0))
+        secondT.rotation.setValue(basicRot, math.radians(-180.0))
         secondT.translation.setValue(App.Vector(0, 0, 0))
         coordsRoot.translation.setValue(App.Vector(0, 0, 0))
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))
-        coordsRoot.scaleFactor.setValue(_scale[0], _scale[1], _scale[2] )
+        coordsRoot.scaleFactor.setValue(_scale[0], _scale[1], _scale[2])
         
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
@@ -460,7 +460,6 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0),
         # so_separatorTail.addChild(styleTail)
         so_separatorTail.addChild(cylinder)
 
-        
         so_First.addChild(firstT)
         so_First.addChild(so_separatorHead)
         so_First.addChild(so_separatorTail)
@@ -474,7 +473,6 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0),
         group.addChild(coordsRoot)
         group.addChild(so_First)
         group.addChild(so_Second)
-        
         return group
     
     except Exception as err:
@@ -499,7 +497,7 @@ a=range(0,35)
 arev=reversed(a)
 while(True):
     for i in a:
-        root=d.draw_box(App.Vector(0,0,0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
+        root=d.draw_box(App.Vector(0.0, 0.0, 0.0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
         sg.addChild(root)
         QtGui.QApplication.processEvents()
         FreeCADGui.updateGui()
@@ -508,7 +506,7 @@ while(True):
         QtGui.QApplication.processEvents()
 
     for i in arev:
-        root=d.draw_box(App.Vector(0,0,0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
+        root=d.draw_box(App.Vector(0.0, 0.0, 0.0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
         sg.addChild(root)
         QtGui.QApplication.processEvents()
         FreeCADGui.updateGui()
@@ -516,11 +514,11 @@ while(True):
         sg.removeChild(root)
         QtGui.QApplication.processEvents()
 """
-def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD, Texture="",style=0, LineWidth=1, LinePattern=0xffff):
+def draw_box(p1=App.Vector(0.0, 0.0, 0.0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD, Texture="",style=0, LineWidth=1, LinePattern=0xffff):
     """[Use this function to draw a box. The box-style could be configured.]
 
     Args:
-        p1 ([App.Vector]): [Defines the position of the vector ] . Defaults to App.Vector(0,0,0)
+        p1 ([App.Vector]): [Defines the position of the vector ] . Defaults to App.Vector(0.0, 0.0, 0.0)
         size ([App.Vector], optional): [Defines the size of the box]. Defaults to App.Vector(1,1,1).
         color ([tuple], optional): [Box color as defined in FR_COLOR]. Defaults to FR_COLOR.FR_GOLD.
         texture (None, optional): [File name of the texture image]. Defaults to Null string.
@@ -583,12 +581,12 @@ def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD
         file="E:/TEMP/freecad.png"      #TODO: FIXME:
         sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
         vert=[]
-        vert.append(App.Vector(0,0,0))
+        vert.append(App.Vector(0.0, 0.0, 0.0))
         vert.append(App.Vector(120,0,30))
         vert.append(App.Vector(120,120,30))
         vert.append(App.Vector(0,120,30))
 
-        f=d.draw_fourSidedShape(vert,(0,0,0),file,True,4)
+        f=d.draw_fourSidedShape(vert,(0.0, 0.0, 0.0),file,True,4)
         root=f.Activated()
         sg.addChild(root)    
 """
@@ -677,7 +675,7 @@ class draw_fourSidedShape:
 #TODO: ADD ROTATION
 class draw_NurbsFace:
 
-    def __init__(self, Points=[], color=FR_COLOR.FR_RED, use_texture=False, LineWidth=1):
+    def __init__(self, Points=[], color=FR_COLOR.FR_RED, use_texture=False, LineWidth=1,_opacity=0):
         """ 
             Draw any four sided shape,
             This will be the base of all multi-points drawing.
@@ -707,6 +705,8 @@ class draw_NurbsFace:
         material.diffuseColor.setValue(coin.SbColor(self.color))
         material.specularColor.setValue(coin.SbColor(1, 1, 1))
         material.shininess.setValue(1.0)
+        material.transparency.setValue(_opacity)
+
 
         sizeOfPointsArray = len(self.Points)
         sqrtSize = int(math.sqrt(sizeOfPointsArray))
@@ -767,14 +767,14 @@ def createFrameShape():
 
 # Load a SVG image to the coin3D
 #Angle is in degree
-def loadImageTo3D(filename, BoxSize=(2,2,0.01), location=App.Vector(0,0,0), rotation=(0.0,0.0,0.0,0.0)):
+def loadImageTo3D(filename, BoxSize=(2,2,0.01), location=App.Vector(0.0, 0.0, 0.0), rotation=(0.0,0.0,0.0,0.0)):
     """[Load svg file to the coin3d world. 
        Place it at the location given by 'location' and you can rotate it by the angle given by rotation]
 
     Args:
         filename (str, optional): [File name must be given]. Defaults to "".
         BoxSize (tuple, optional): [Size of the image]. Defaults to (2,2,0.01).
-        location ([type], optional): [Placing location of the image]. Defaults to App.Vector(0,0,0).
+        location ([type], optional): [Placing location of the image]. Defaults to App.Vector(0.0, 0.0, 0.0).
         rotation (tuple, optional): [Rotation axis and angle ]. Defaults to (0.0,0.0,0.0,0.0).
 
     Returns:
@@ -949,6 +949,8 @@ def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD,
         material.ambientColor.setValue(coin.SbColor(_color))
         material.emissiveColor.setValue(coin.SbColor(0.1,0.1,0.1))
         material.shininess.setValue(0.5)
+        material.transparency.setValue(_opacity)
+
 
         # Define material
         #myVertexProperty.orderedRGBA = coin.SbColor(_color).getPackedValue()
@@ -976,13 +978,13 @@ def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD,
 #TODO: FIXME : ADD ROTATION
 class draw_polygonBase:
     
-    def __init__(self,sides=3,radius=5, startangel=0,pos=App.Vector(0,0,0), _color=FR_COLOR.FR_GOLD):
+    def __init__(self,sides=3,radius=5, startangel=0,pos=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_GOLD):
         """[summary]
 
         Args:
             sides (int, optional): [description]. Defaults to 3.
             angel (int, optional): [description]. Defaults to 0.
-            pos ([type], optional): [description]. Defaults to App.Vector(0,0,0).
+            pos ([type], optional): [description]. Defaults to App.Vector(0.0, 0.0, 0.0).
             _color ([type], optional): [description]. Defaults to FR_COLOR.FR_GOLD.
             
         Example:
@@ -993,7 +995,7 @@ class draw_polygonBase:
         from PySide import QtCore,QtGui
         sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
         for i in range( 3, 25):
-            f=d.draw_polygonBase(i,10,0,App.Vector(0,0,0), (0,1,1))
+            f=d.draw_polygonBase(i,10,0,App.Vector(0.0, 0.0, 0.0), (0,1,1))
             root=f.draw()
             sg.addChild(root)
             QtGui.QApplication.processEvents()
@@ -1005,7 +1007,7 @@ class draw_polygonBase:
         arange=range(3,25)
         revrange=reversed(arange)
         for i in revrange:
-            f=d.draw_polygonBase(i,10,0,App.Vector(0,0,0), (0,1,1))
+            f=d.draw_polygonBase(i,10,0,App.Vector(0.0, 0.0, 0.0), (0,1,1))
             root=f.draw()
             sg.addChild(root)
             QtGui.QApplication.processEvents()
@@ -1023,7 +1025,7 @@ class draw_polygonBase:
         self.startAngel=startangel
         self.radius=radius
         
-    def regular_polygon_vertexes(self,sidescount, radius, position=App.Vector(0,0,0),startangle=0):
+    def regular_polygon_vertexes(self,sidescount, radius, position=App.Vector(0.0, 0.0, 0.0),startangle=0):
         try:
             z=position.z
             vertexes = []
@@ -1052,11 +1054,11 @@ class draw_polygonBase:
         soRoot= draw_FaceSet(self.vertices,(numberOfvert,),self.color)
         return soRoot  # SoSeparator created during the drawing. You need to add this to the scenegraph
 
-def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indices=[],color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+def draw_faceIndexed(p1=App.Vector(0.0, 0.0, 0.0),vertexPositions: List[float] = [],indices=[],color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
     """[Draw any faceIndexed object by providing the vertexpositions and indices.]
 
     Args:
-        p1 ([App.Vector], optional): [Position of the drawing]. Defaults to App.Vector(0,0,0).
+        p1 ([App.Vector], optional): [Position of the drawing]. Defaults to App.Vector(0.0, 0.0, 0.0).
         vertexPositions (List[App.Vector], optional): [Vertices of the drawing-must be given]. Defaults to [].
         indices (list, optional): [Indexed faceset's coordIndex must be given]. Defaults to [].
         color ([float,float,float], optional): [Color of the drawing]. Defaults to FR_COLOR.FR_GOLD.
@@ -1077,8 +1079,9 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indi
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
+    material.transparency.setValue(opacity)
     
-    soSepArrow=coin.SoSeparator()   # drawing holder
+    soSepface=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
     cordinate= coin.SoCoordinate3()
     Shapehint= coin.SoShapeHints()
@@ -1088,14 +1091,14 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indi
     
     cordinate.point.setValues(0, 61, vertexPositions)
     soIndexFace.coordIndex.setValues(0, len(indices), indices)
-    soSepArrow.addChild(Shapehint)
-    soSepArrow.addChild(cordinate) 
-    soSepArrow.addChild(soIndexFace)
+    soSepface.addChild(Shapehint)
+    soSepface.addChild(cordinate) 
+    soSepface.addChild(soIndexFace)
     
     root.addChild(trans)
     root.addChild(material)
     root.addChild(transform)
-    root.addChild(soSepArrow)
+    root.addChild(soSepface)
 
 
 ####################################################
@@ -1111,20 +1114,20 @@ def draw_faceIndexed(p1=App.Vector(0,0,0),vertexPositions: List[float] = [],indi
     from PySide import QtCore,QtGui
     sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
     for i in range (0,181):
-        root=d.draw_2Darrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [1.0, 0.0, 0.0, i])
+        root=d.draw_2Darrow(App.Vector(0.0, 0.0, 0.0),(0,1,1),(1,1,1),1,0, [1.0, 0.0, 0.0, i])
         sg.addChild(root)
     for i in range (0,181):
-        root=d.draw_2Darrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [-1.0, 0.0, 0.0, i])
+        root=d.draw_2Darrow(App.Vector(0.0, 0.0, 0.0),(0,1,1),(1,1,1),1,0, [-1.0, 0.0, 0.0, i])
         sg.addChild(root)
 
     """
 
-def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
+def draw_2Darrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,
                  scale=[0.5,0.5,0.5],type=0,opacity=0, _rotation=[0.0, 0.0, 0.0]):
     """[2D Arrow]
 
     Args:
-        p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0,0,0).
+        p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0.0, 0.0, 0.0).
         color ((float,float,float)), optional): [RGB Value between 0 to 1]. Defaults to FR_COLOR.FR_GOLD.
         scale ((float,float,float)), optional): [Scale factor for each axis]. Defaults to (1,1,1).
         type (int, optional): [Arrow type. At the moment there are 2 types]. Defaults to 1.
@@ -1163,6 +1166,8 @@ def draw_2Darrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,
         material = coin.SoMaterial()
         material.transparency.setValue(opacity)
         material.diffuseColor.setValue(coin.SbColor(color))
+        material.transparency.setValue(opacity)
+
         soSepArrow=coin.SoSeparator() # drawing holder
         if type ==0 :
             scale= [i/35.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 35mm to get 1mm TODO:FIXME:
@@ -1639,7 +1644,7 @@ root=d.draw_circle()
 sg.addChild(root)    
 
 """
-def draw_circle(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacity=0, _rotation=[0.0, 0.0, 0.0, 0.0]):
+def draw_circle(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacity=0, _rotation=[0.0, 0.0, 0.0, 0.0]):
     root=coin.SoSeparator() 
     transform=coin.SoTransform()
     trans=coin.SoTranslation()
@@ -1653,6 +1658,8 @@ def draw_circle(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacit
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
+    material.transparency.setValue(opacity)
+
     
     soSepArrow=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
@@ -1854,7 +1861,7 @@ def draw_circle(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),opacit
     return root
 
 
-def draw_washer(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+def draw_washer(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
     root=coin.SoSeparator() 
     transform=coin.SoTransform()
     trans=coin.SoTranslation()
@@ -1868,6 +1875,8 @@ def draw_washer(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
+    material.transparency.setValue(opacity)
+
     soSepArrow=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
     cordinate= coin.SoCoordinate3()
@@ -2165,7 +2174,7 @@ def draw_washer(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1
 
 
 
-def draw_tube(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+def draw_tube(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
     root=coin.SoSeparator() 
     transform=coin.SoTransform()
     trans=coin.SoTranslation()
@@ -2179,6 +2188,8 @@ def draw_tube(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,o
     material = coin.SoMaterial()
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
+    material.transparency.setValue(opacity)
+
     
     soSepArrow=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
@@ -3212,18 +3223,18 @@ def draw_tube(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,o
     from PySide import QtCore,QtGui
     sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
     for i in range (0,181): 
-        root=d.draw_TwoDarrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [1.0, 0.0, 0.0, i])
+        root=d.draw_TwoDarrow(App.Vector(0.0, 0.0, 0.0),(0,1,1),(1,1,1),1,0, [1.0, 0.0, 0.0, i])
         sg.addChild(root)
     for i in range (0,181): 
-        root=d.draw_TwoDarrow(App.Vector(0,0,0),(0,1,1),(1,1,1),1,0, [-1.0, 0.0, 0.0, i])
+        root=d.draw_TwoDarrow(App.Vector(0.0, 0.0, 0.0),(0,1,1),(1,1,1),1,0, [-1.0, 0.0, 0.0, i])
         sg.addChild(root)
 
 """
-def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
+def draw_TwoDarrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),type=1,opacity=0, _rotation=[1.0, 0.0, 0.0, 0.0]):
     """[2D Arrow - This version is more like an example how you can use Inventor 2.x code for drawing. Not attempted to be used in widgets]
 
     Args:
-        p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0,0,0).
+        p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0.0, 0.0, 0.0).
         color ((float,float,float)), optional): [RGB Value between 0 to 1]. Defaults to FR_COLOR.FR_GOLD.
         scale ((float,float,float)), optional): [Scale factor for each axis]. Defaults to (1,1,1).
         type (int, optional): [Arrow type. At the moment there are 2 types]. Defaults to 1.
@@ -3409,6 +3420,8 @@ def draw_TwoDarrow(p1=App.Vector(0,0,0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),typ
     material.transparency.setValue(opacity)
     material.diffuseColor.setValue(coin.SbColor(color))
     transform.scaleFactor.setValue([scale [0], scale[1], scale[2]])
+    material.transparency.setValue(opacity)
+
 
     tempR = coin.SbVec3f()
     tempR.setValue(_rotation[0], _rotation[1], _rotation[2])

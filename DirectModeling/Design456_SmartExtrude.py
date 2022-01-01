@@ -45,7 +45,7 @@ import Part
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-01-01 14:40:20'
+__updated__ = '2022-01-01 16:42:08'
 
 '''
     How it works: 
@@ -96,7 +96,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         if clickwdgdNode is None and clickwdglblNode is None:
             if linktocaller.run_Once is False:
-                return   # nothing to do
+                return   # Nothing to do
 
         if linktocaller.run_Once is False:
             linktocaller.run_Once = True
@@ -742,6 +742,10 @@ class Design456_SmartExtrude:
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 ..etc
         App.ActiveDocument.commitTransaction()  # undo reg.
+
+        for i in range(0, len(self.objChangedTransparency)):
+            Gui.ActiveDocument.getObject(self.objChangedTransparency[i].Object.Name).Transparency = 0
+
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart Extrude 3dCOIN widgets
 

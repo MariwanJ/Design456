@@ -54,7 +54,7 @@ mywin = wnn.Fr_CoinWindow()
 rotation=0
 color=(1,0,1)
 vec=[]
-vec.append(App.Vector(0,0,0))
+vec.append(App.Vector(0.0, 0.0, 0.0))
 vec.append(App.Vector(5,0,0))
 
 rotation=[0.0, 0.0, 0.0, 0.0]

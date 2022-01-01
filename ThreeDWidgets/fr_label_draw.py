@@ -59,7 +59,7 @@ def draw_label(text=[], prop: propertyValues = None):
             
             sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
             p=w.propertyValues()
-            p.vectors=[App.Vector(20,20,0),App.Vector(0,0,0)]
+            p.vectors=[App.Vector(20,20,0),App.Vector(0.0, 0.0, 0.0)]
             wl=l.draw_label(["My Label",],p)
             sg.addChild(wl)
     '''

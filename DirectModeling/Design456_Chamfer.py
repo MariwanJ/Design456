@@ -44,7 +44,7 @@ import math
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1.5
-__updated__ = '2021-12-31 08:58:12'
+__updated__ = '2022-01-01 17:15:45'
 
 '''
     We have to recreate the object each time we change the radius. 
@@ -415,12 +415,17 @@ class Design456_SmartChamfer:
         # get rotation
         rotation = self.getArrowPosition()
 
-        self.smartInd = Fr_Arrow_Widget(
-            [self._vector,App.Vector(0,0,0)], ["Radius: 0.0",], 1, FR_COLOR.FR_RED, rotation)
+        self.smartInd = Fr_Arrow_Widget( [self._vector, App.Vector(0.0, 0.0, 0.0)],   # w_vector
+             ["Radius: 0.0",], 1,                                                     # Label, linewidth
+              FR_COLOR.FR_RED, FR_COLOR.FR_WHITE,                                     # color, lblcolor
+              rotation,                                                               # rotation
+              [1.0, 1.0, 1.0],                                                        # scale 
+              0,                                                                      # type
+              0.0)                                                                    # opacity   
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
-        self.saveFirstPostion=self._vector
+        self.saveFirstPostion = self._vector
         if self._mywin is None:
             self._mywin = win.Fr_CoinWindow()
         self._mywin.addWidget(self.smartInd)

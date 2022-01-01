@@ -20,7 +20,7 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
     """[2D Arrow Double sided]
 
     Args:
-        p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0,0,0).
+        p1 ([App.Vector], optional): [Position of the arrow]. Defaults to App.Vector(0.0, 0.0, 0.0).
         color ((float,float,float)), optional): [RGB Value between 0 to 1]. Defaults to FR_COLOR.FR_GOLD.
         scale ((float,float,float)), optional): [Scale factor for each axis]. Defaults to (1,1,1).
         type (int, optional): [Arrow type. At the moment there are 2 types]. Defaults to 1.
