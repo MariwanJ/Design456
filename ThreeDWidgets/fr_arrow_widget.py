@@ -60,7 +60,7 @@ wny.addWidget(ln)              # Add it to the window as a child
 wny.show()                    # show the window and it's widgets. 
 
 """
-__updated__ = '2021-12-31 08:56:58'
+__updated__ = '2022-01-01 14:16:19'
 
 
 # class object will be used as object holder between arrow widget and the callback
@@ -91,11 +91,13 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     # Don't do that
 
     def __init__(self, vectors: List[App.Vector] = [],
-
                  label: str = [[]], lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
-                 _rotation=[(0.0, 0.0, 1.0), 0.0],
-                 _arrowType=0):
+                 _lblColor=FR_COLOR.FR_WHITE,
+                 _rotation=[0.0, 0.0, 1.0, 0.0],
+                  _scale: List[float] = [3, 3, 3],
+                 _arrowType=0,
+                 _opacity: float = 0.0):
         # Must be initialized first as per the following discussion.
         # https://stackoverflow.com/questions/67877603/how-to-override-a-function-in-an-inheritance-hierarchy#67877671
         super().__init__(vectors, label)
@@ -115,7 +117,10 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         self.releaseDrag = -1  # -1 mouse no clicked not dragging, 0 is clicked, 1 is dragging
         self.arrowType = _arrowType  # 0 3D Default , 1= 2D, 2=2D
         self.w_lbluserData = fr_widget.propertyValues()
-        
+        self.w_lblColor = _lblColor
+        self.w_opacity = _opacity
+        self.w_scale = _scale
+
 
     def lineWidth(self, width):
         """ Set the line width"""
@@ -201,7 +206,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         and draw the arrow on the screen. It creates a node for 
         the arrow.
         """
-        scale = [0.25, 0.25, 0.25]
         try:
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
@@ -215,18 +219,18 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                         self.w_vector[0], usedColor, self.w_lineWidth, self.w_rotation)
                 elif self.arrowType == 1:
                     self.w_widgetSoNodes = fr_draw.draw_2Darrow(
-                        self.w_vector[0], usedColor, scale, 0, 0, self.w_rotation)
+                        self.w_vector[0], usedColor, self.w_scale, 0, self.w_opacity, self.w_rotation)
                 elif self.arrowType == 2:
                     self.w_widgetSoNodes = fr_draw.draw_2Darrow(
-                        self.w_vector[0], usedColor, scale, 1, 0, self.w_rotation)
+                        self.w_vector[0], usedColor, self.w_scale, 1, self.w_opacity, self.w_rotation)
                 elif self.arrowType == 3:
                     self.w_widgetSoNodes = fr_draw.draw_DoubleSidedArrow(
                         self.w_vector[0], usedColor, self.w_lineWidth, self.w_rotation)
                 elif self.arrowType == 4:
                     self.w_widgetSoNodes = fr_draw1.draw_DoubleSide2DdArrow(
-                        self.w_vector[0], usedColor, scale, 0, self.w_rotation)
+                        self.w_vector[0], usedColor, self.w_scale, self.w_opacity, self.w_rotation)
                 self.w_lbluserData.linewidth = self.w_lineWidth
-                self.w_lbluserData.labelcolor = usedColor
+                self.w_lbluserData.labelcolor = self.w_lblColor
                 self.w_lbluserData.vectors = self.w_vector
                 self.w_lbluserData.rotation = [0, 0, 0, 0]
                 # self.w_lbluserData.SetupRotation = self.w_rotation This causes a problem. TODO:FIXME:
@@ -247,8 +251,8 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     def draw_label(self, usedColor):
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.labelcolor = usedColor
-        #self.w_lbluserData.rotation = self.w_rotation
-        self.w_lbluserData.vectors = self.w_vector
+        self.w_lbluserData.vectors = self.w_vector 
+        self.w_lbluserData.vectors[0] += App.Vector(0 , 0 , 3)
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 

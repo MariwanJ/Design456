@@ -34,7 +34,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES, FR_COLOR
 
-__updated__ = '2021-12-31 08:56:22'
+__updated__ = '2022-01-01 14:24:41'
 
 class Design456_Hole:
     def __init__(self):

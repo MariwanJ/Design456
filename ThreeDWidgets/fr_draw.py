@@ -39,7 +39,7 @@ import math
 from dataclasses import dataclass
 from pivy import coin
 
-__updated__ = '2021-12-31 08:57:03'
+__updated__ = '2022-01-01 13:56:41'
 
 @dataclass
 class userDataObject:
@@ -239,7 +239,7 @@ def draw_line(vec=[], color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
 
 
 # draw arrow (Angel is in degree)
-def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.0, 0.0, 1.0, 0.0]):
+def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=[1.0,1.0,1.0,], _rotation=[0.0, 0.0, 1.0, 0.0]):
     """[    '''
         Draw a 3D arrow at the position given by the _Points and the color given by _color. 
         Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
@@ -274,8 +274,8 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         tailHeadTrs = coin.SbVec3f()
         tailHeadTrs.setValue(1.0, 0.0, 0.0)
         
-        TailsTransform.rotation.setValue(tailHeadTrs,math.radians(90))
-        HeadTransform.rotation.setValue(tailHeadTrs,math.radians(90))
+        TailsTransform.rotation.setValue(tailHeadTrs, math.radians(90))
+        HeadTransform.rotation.setValue(tailHeadTrs, math.radians(90))
 
         coordsRoot = coin.SoTransform()
         tempR = coin.SbVec3f()
@@ -297,7 +297,7 @@ def draw_arrow(_Points=[], _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.
         styleTail.style = coin.SoDrawStyle.LINES  # draw only frame not filled
         styleTail.lineWidth = 2
 
-        coordsRoot.scaleFactor.setValue([_ArrSize, _ArrSize, _ArrSize])
+        coordsRoot.scaleFactor.setValue(_ArrSize[0], _ArrSize[1], _ArrSize[2])
         coordsRoot.translation.setValue(App.Vector(0, 0, 0))
 
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
@@ -356,32 +356,39 @@ sg.addChild(root)
 """
 
 # draw a 3D arrow (Angel is in degree)
-def draw_DoubleSidedArrow(_Points=App.Vector(0,0,0), _color=FR_COLOR.FR_BLACK, _ArrSize=1.0, _rotation=[0.0, 0.0, 1.0, 0.0]):
-    """['''
-        Draw a 3D arrow at the position given by the _Points and the color given by _color. 
+def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0), 
+                        _color=FR_COLOR.FR_GOLD,
+                        _scale=[1.0, 1.0, 1.0],  
+                        _opacity=0,
+                        _rotation=[0.0, 0.0, 1.0, 0.0]):
+    """
+        [Draw a 3D arrow at the position given by the _Points and the color given by _color. 
         Scale it by the _ArrSize, and rotate it by the _rotation which consist of App.Vector(x,y,z) --the axis and 
-        An angle in degree. 
-    ''']
-
+        An angle in degree]
     Args:
         _Points (App.Vector, optional): [Position of the arrow 2 App.Vector]. Defaults to [].
-        _color ([type], optional): [Arrow Color]. Defaults to FR_COLOR.FR_BLACK.
-        _ArrSize (float, optional): [Size of the arrow]. Defaults to 1.0.
-        _rotation (list, optional): [Axis and angle of rotation]. Defaults to [0.0, 0.0, 1.0, 0.0].
+        _color ([type], optional): [Arrow Color]. Defaults to FR_COLOR.FR_GOLD.
+        _scale (list, optional): [Scale factor for all directions]. Defaults to [1.0, 1.0, 1.0].
+        _opacity (int, optional): [Opacity of the arrow]. Defaults to 0
+        _rotation (list, optional): [List of 3 floats as axis
+           and a float as rotation angle in degree]. Defaults to [0.0, 0.0, 1.0, 0.0].
+
+    Raises:
+        ValueError: [If something went wrong with the arguments]
 
     Returns:
-        [type]: [description]
+        [type]: [SoSeparator containing the drawing]
     """
     try:
         so_separatorRoot = coin.SoSeparator()
         so_separatorHead = coin.SoSeparator()
         so_separatorTail = coin.SoSeparator()
         
-        so_First  = coin.SoSeparator()   #First arrow 
+        so_First = coin.SoSeparator()   #First arrow 
         so_Second = coin.SoSeparator()   #Second arrow - reverse direction
         
-        firstT=coin.SoTransform()
-        secondT=coin.SoTransform()
+        firstT = coin.SoTransform()
+        secondT = coin.SoTransform()
         
         
         # decide at which position the object will be placed
@@ -391,8 +398,8 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0,0,0), _color=FR_COLOR.FR_BLACK, _
         # decide at which position the whole objects will be placed
         transRoot = coin.SoTranslation()
 
-        TailsTransform=coin.SoTransform()
-        HeadTransform=coin.SoTransform()
+        TailsTransform = coin.SoTransform()
+        HeadTransform = coin.SoTransform()
         
         tailHeadTrs = coin.SbVec3f()
         tailHeadTrs.setValue(1,0,0)
@@ -420,9 +427,6 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0,0,0), _color=FR_COLOR.FR_BLACK, _
         styleTail.style = coin.SoDrawStyle.LINES  # draw only frame not filled
         styleTail.lineWidth = 2
 
-        coordsRoot.scaleFactor.setValue([_ArrSize, _ArrSize, _ArrSize])
-        coordsRoot.translation.setValue(App.Vector(0, 0, 0))
-
         basicRot=coin.SbVec3f()
         basicRot.setValue(0.0,1.0,.0)
         firstT.rotation.setValue(basicRot,0)
@@ -432,6 +436,7 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0,0,0), _color=FR_COLOR.FR_BLACK, _
         
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))
+        coordsRoot.scaleFactor.setValue(_scale[0], _scale[1], _scale[2] )
         
         transHead.translation.setValue(p1)
         transTail.translation.setValue(p2)
@@ -465,15 +470,15 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0,0,0), _color=FR_COLOR.FR_BLACK, _
         so_Second.addChild(so_separatorTail)
         
         group = coin.SoSeparator()
-        group.addChild(transRoot)
         group.addChild(coordsRoot)
+        group.addChild(transRoot)
         group.addChild(so_First)
         group.addChild(so_Second)
         
         return group
     
     except Exception as err:
-        App.Console.PrintError("'draw_arrow' Failed. "
+        App.Console.PrintError("'draw_DoubleSidedArrow' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -483,33 +488,33 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0,0,0), _color=FR_COLOR.FR_BLACK, _
 #TODO: FIXME: ADD ROTATION
 """
     Example : 
-    from pivy import coin
-    import math
-    import fr_draw as d 
-    import time
+from pivy import coin
+import math
+import fr_draw as d 
+import time
 
-    sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
+sg = FreeCADGui.ActiveDocument.ActiveView.getSceneGraph()
 
-    a=range(0,35)
-    arev=reversed(a)
-    while(True):
-        for i in a:
-            root=d.draw_box(App.Vector(0,0,0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
-            sg.addChild(root)
-            QtGui.QApplication.processEvents()
-            FreeCADGui.updateGui()
-            time.sleep(0.1)
-            sg.removeChild(root)
-            QtGui.QApplication.processEvents()
+a=range(0,35)
+arev=reversed(a)
+while(True):
+    for i in a:
+        root=d.draw_box(App.Vector(0,0,0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
+        sg.addChild(root)
+        QtGui.QApplication.processEvents()
+        FreeCADGui.updateGui()
+        time.sleep(0.1)
+        sg.removeChild(root)
+        QtGui.QApplication.processEvents()
 
-        for i in arev:
-            root=d.draw_box(App.Vector(0,0,0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
-            sg.addChild(root)
-            QtGui.QApplication.processEvents()
-            FreeCADGui.updateGui()
-            time.sleep(0.1)
-            sg.removeChild(root)
-            QtGui.QApplication.processEvents()
+    for i in arev:
+        root=d.draw_box(App.Vector(0,0,0) ,App.Vector(i,i,i), (0,0.5,1), "",1,0, 0xffff)
+        sg.addChild(root)
+        QtGui.QApplication.processEvents()
+        FreeCADGui.updateGui()
+        time.sleep(0.1)
+        sg.removeChild(root)
+        QtGui.QApplication.processEvents()
 """
 def draw_box(p1=App.Vector(0,0,0),size=App.Vector(1,1,1), color=FR_COLOR.FR_GOLD, Texture="",style=0, LineWidth=1, LinePattern=0xffff):
     """[Use this function to draw a box. The box-style could be configured.]

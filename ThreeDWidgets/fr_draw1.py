@@ -34,17 +34,21 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
         p1 = _Points
         root = coin.SoSeparator()
         transform = coin.SoTransform()
+       
         trans = coin.SoTranslation()
         trans.translation.setValue(p1)
+        
         transform.rotation.setValue(_rotation)
-        transform.translation.setValue(p1)
         transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         transform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        
         material = coin.SoMaterial()
         material.transparency.setValue(opacity)
         material.diffuseColor.setValue(coin.SbColor(color))
+        material.ambientColor.setValue(coin.SbColor(color))
+        material.emissiveColor.setValue(coin.SbColor(0.1, 0.1, 0.1))
 
         soSepArrow = coin.SoSeparator()   # drawing holder
         soIndexFace = coin.SoIndexedFaceSet()
@@ -271,11 +275,11 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
         soSepArrow.addChild(cordinate)
         soSepArrow.addChild(soIndexFace)
 
-        root.addChild(trans)
-        root.addChild(material)
-        root.addChild(transform)
-        root.addChild(soSepArrow)
         # Finalize the drawing by adding color, pos, scale , opacity
+        root.addChild(trans)
+        root.addChild(transform)
+        root.addChild(material)
+        root.addChild(soSepArrow)
         return root
 
     except Exception as err:

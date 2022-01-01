@@ -45,7 +45,7 @@ import Part
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2021-12-31 18:21:51'
+__updated__ = '2022-01-01 14:06:33'
 
 '''
     How it works: 
@@ -104,9 +104,14 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
             linktocaller.mouseToArrowDiff = linktocaller.endVector.sub(
                 userData.ArrowObj.w_vector[0])
-
+        oldLength = linktocaller.extrudeLength
         linktocaller.extrudeLength = round((
             linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector), 1)
+        if(oldLength - linktocaller.extrudeLength) > 0:
+            linktocaller.extrudeLength = oldLength - linktocaller.ExtrusionStepSize
+        else:
+            linktocaller.extrudeLength = oldLength + linktocaller.ExtrusionStepSize
+        print(linktocaller.ExtrusionStepSize, "linktocaller.ExtrusionStepSize")
 
         linktocaller.resizeArrowWidgets(
             linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
@@ -302,13 +307,12 @@ class Design456_SmartExtrude:
 
         # Extrusion checkboxes
         self.radSubtract = None
-        self.radAsIs  = None
-        self.radSubtract  = None
+        self.radAsIs = None
+        self.radSubtract = None
 
         # Extrusion step
         self.combListExtrudeStep = None
-
-
+        self.ExtrusionStepSize = 1.0  # Default is one mm
 
     def reCreateExtrudeObject(self):
         """
@@ -481,16 +485,15 @@ class Design456_SmartExtrude:
             sel = Gui.Selection.getSelectionEx()
             if len(sel) == 0:
                 # An object must be selected
-                errMessage = "Select an object, one face to Extrude"
+                errMessage = "Select a face to Extrude"
                 faced.errorDialog(errMessage)
                 return
-            
             self.selectedObj = sel[0]
-            if not isinstance(self.selectedObj.Object.Shape, Part.Face):
-                errMessage = "Select one face to Extrude"
+            # Whole object is selected TODO: FIXME: Check if this works always.
+            if len(self.selectedObj.SubObjects) == 0:
+                errMessage = "Select a face to Extrude"
                 faced.errorDialog(errMessage)
                 return
-                
             faced.EnableAllToolbar(False)
             # Undo
             App.ActiveDocument.openTransaction(
@@ -504,8 +507,15 @@ class Design456_SmartExtrude:
                 self.targetFace = self.selectedObj.Object
 
             rotation = self.getArrowPosition()
-            self.smartInd = Fr_Arrow_Widget(
-                self._vector, ["  Length 0.0",], 1, FR_COLOR.FR_RED, rotation, 3)
+            self.smartInd = Fr_Arrow_Widget(self._vector,
+                                            ["  Length 0.0", ],
+                                            1,
+                                            FR_COLOR.FR_RED,
+                                            FR_COLOR.FR_WHITE,
+                                            rotation, [1.2, 1.2, 1.2],
+                                            4,
+                                            0.0)
+
             self.smartInd.w_callback_ = callback_release
             self.smartInd.w_move_callback_ = callback_move
             self.smartInd.w_userData.callerObject = self
@@ -574,6 +584,26 @@ class Design456_SmartExtrude:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def comboChanged(self, text):
+        print("text=", text)
+        self.ExtrusionStepSize = float(text.rstrip("m"))
+        if self.ExtrusionStepSize == 0.1:
+            self.lblExtrudeSize.setText("0.1 mm")
+        elif self.ExtrusionStepSize == 0.5:
+            self.lblExtrudeSize.setText("0.5 mm")
+        elif self.ExtrusionStepSize == 1.0:
+            self.lblExtrudeSize.setText("1.0 mm")
+        elif self.ExtrusionStepSize == 10.0:
+            self.lblExtrudeSize.setText("1.0 cm")
+        elif self.ExtrusionStepSize == 100.0:
+            self.lblExtrudeSize.setText("10.0 cm")
+        elif self.ExtrusionStepSize == 1000.0:
+            self.lblExtrudeSize.setText("1.0 m")
+        elif self.ExtrusionStepSize == 10000.0:
+            self.lblExtrudeSize.setText("10.0 m")
+        elif self.ExtrusionStepSize == 100000.0:
+            self.lblExtrudeSize.setText("100.0 m")
+
     def getMainWindow(self):
         """[Create the tab for the tool]
 
@@ -610,6 +640,36 @@ class Design456_SmartExtrude:
             self.la = QtGui.QVBoxLayout(self.dialog)
             self.e1 = QtGui.QLabel(
                 "(Smart Extrude)\nFor quicker\nApplying Extrude")
+
+            commentFont = QtGui.QFont("Times", 14, True)
+            self.ExtrudeLBL = QtGui.QLabel("Extrude Length=")
+            self.e1.setFont(commentFont)
+
+            okbox = QtGui.QDialogButtonBox(self.dialog)
+            okbox.setOrientation(QtCore.Qt.Horizontal)
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+
+            self.lblExtrudeSize = QtGui.QLabel(
+                "Extrude Step Size = " + str(self.ExtrusionStepSize))
+            self.lblExtrudeSize.setObjectName("lblExtrudeSize")
+            comboFont = QtGui.QFont("Times", 13, True)
+
+            self.lblExtrudeSize.setFont(comboFont)
+            self.combListExtrudeStep = QtGui.QComboBox(self.dialog)
+            self.combListExtrudeStep.addItem("0.1mm")       # 0.1 mm
+            self.combListExtrudeStep.addItem("0.5mm")       # 0.5 mm
+            self.combListExtrudeStep.addItem("1.0mm")       # 1.0 mm
+            self.combListExtrudeStep.addItem("10mm")        # 1   cm
+            self.combListExtrudeStep.addItem("100mm")       # 10   cm
+            self.combListExtrudeStep.addItem("1000mm")      # 100  cm
+            self.combListExtrudeStep.addItem("10000mm")     # 10    m
+            self.combListExtrudeStep.addItem("100000mm")    # 100   m
+            self.combListExtrudeStep.setCurrentIndex(2)
+            #self.combListExtrudeStep.move (10, 400)
+
+            self.combListExtrudeStep.activated[str].connect(self.comboChanged)
+            self.combListExtrudeStep.setObjectName("combListExtrudeStep")
+
             self.groupBox = QtGui.QGroupBox(self.dialog)
             self.groupBox.setGeometry(QtCore.QRect(60, 130, 120, 80))
             self.groupBox.setObjectName("Extrusion Type")
@@ -626,35 +686,17 @@ class Design456_SmartExtrude:
             self.radSubtract.setObjectName("radSubtract")
             self.radSubtract.setText("Subtract")
 
-            commentFont = QtGui.QFont("Times", 12, True)
-            self.ExtrudeLBL = QtGui.QLabel("Extrude Length=")
-            self.e1.setFont(commentFont)
             self.la.addWidget(self.e1)
             self.la.addWidget(self.ExtrudeLBL)
-
-            okbox = QtGui.QDialogButtonBox(self.dialog)
-            okbox.setOrientation(QtCore.Qt.Horizontal)
-            okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
-
-            self.verticalLayout = QtGui.QVBoxLayout(self.dialog)
-            self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-            self.verticalLayout.setObjectName("verticalLayout")
-            self.label =  QtGui.QLabel(self.dialog)
-            self.label.setObjectName("label")
-            self.verticalLayout.addWidget(self.label)
-            self.combListExtrudeStep =  QtGui.QComboBox(self.dialog)
-            self.combListExtrudeStep.setCurrentText("1")
-            self.combListExtrudeStep.setObjectName("combListExtrudeStep")
-            self.verticalLayout.addWidget(self.combListExtrudeStep)
-            self.la.addWidget(self.verticalLayout)
-
-
+            self.la.addWidget(self.lblExtrudeSize)
+            self.la.addWidget(self.combListExtrudeStep)
             self.la.addWidget(okbox)
 
             # Adding checkbox for Merge, Subtract Or just leave it "As is"
             self.la.addWidget(self.radAsIs)
             self.la.addWidget(self.radMerge)
             self.la.addWidget(self.radSubtract)
+
             self.radAsIs.setChecked(True)
             self.radAsIs.toggled.connect(lambda: self.btnState(self.radAsIs))
             self.radMerge.toggled.connect(lambda: self.btnState(self.radMerge))
