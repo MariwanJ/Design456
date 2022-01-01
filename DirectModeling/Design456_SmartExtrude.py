@@ -45,7 +45,7 @@ import Part
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-01-01 16:42:08'
+__updated__ = '2022-01-01 21:07:51'
 
 '''
     How it works: 
@@ -111,7 +111,6 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.extrudeLength = oldLength - linktocaller.ExtrusionStepSize
         else:
             linktocaller.extrudeLength = oldLength + linktocaller.ExtrusionStepSize
-        print(linktocaller.ExtrusionStepSize, "linktocaller.ExtrusionStepSize")
 
         linktocaller.resizeArrowWidgets(
             linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
@@ -367,8 +366,10 @@ class Design456_SmartExtrude:
                 # The whole object is selected
                 sub1 = self.selectedObj
                 face1 = sub1.SubObjects[0]
+                print("face1 testme")
             else:
                 face1 = self.selectedObj.Object.Shape.Faces[0]
+                print("face2 testme")
 
             self.extrudeLength = 5
             self._vector = self.calculateNewVector()
@@ -387,11 +388,17 @@ class Design456_SmartExtrude:
                 plr = plDirection
                 rotation = (plr.Rotation.Axis.x, plr.Rotation.Axis.y,
                             plr.Rotation.Axis.z, math.degrees(plr.Rotation.Angle))
+                print("No rotation")
             else:
                 rotation = (face1.Surface.Rotation.Axis.x,
                             face1.Surface.Rotation.Axis.y,
                             face1.Surface.Rotation.Axis.z,
                             math.degrees(face1.Surface.Rotation.Angle))
+            # TODO: This if statement is not totally correct.
+            # Cylinder or curved surfaces cause an error in the noramlAt, angle and direction
+            # I leave it like that now and I must target this later. 
+            if rotation == (0,0,1,180) or  (0,0,1,0):
+                rotation = (0,1.0,0,90)
             return rotation
 
         except Exception as err:
@@ -456,9 +463,21 @@ class Design456_SmartExtrude:
                 ss = self.selectedObj.SubObjects[0]
             else:
                 ss = self.selectedObj.Object.Shape
-            yL = ss.CenterOfMass
-            uv = ss.Surface.parameter(yL)
-            nv = ss.normalAt(uv[0], uv[1])
+            if hasattr(ss, "CenterOfMass"):
+                yL = ss.CenterOfMass
+                uv = ss.Surface.parameter(yL)
+                nv = ss.normalAt(uv[0], uv[1])
+
+            elif hasattr(ss.SubObjects[0], "CenterOfMass") :
+                yL = ss.SubObjects[0].CenterOfMass
+                uv = ss.SubObjects[0].Surface.parameter(yL)
+                nv = ss.SubObjects[0].normalAt(uv[0], uv[1])
+            else:
+                yL = self.selectedObj.Object.Shape.Faces[0].centerOfMass  #TODO This is wrong. FIXME: Don't know when and why this happens
+                uv = self.selectedObj.Object.Shape.Faces[0].Surface.parameter(yL)
+                nv = self.selectedObj.Object.Shape.Faces[0].normalAt(uv[0], uv[1])
+                print("oh no it is wrong")
+            
             self.normalVector = nv
 
             if (self.extrudeLength == 0):
