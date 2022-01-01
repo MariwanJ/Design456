@@ -45,7 +45,7 @@ import Part
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-01-01 14:06:33'
+__updated__ = '2022-01-01 14:40:20'
 
 '''
     How it works: 
@@ -513,7 +513,7 @@ class Design456_SmartExtrude:
                                             FR_COLOR.FR_RED,
                                             FR_COLOR.FR_WHITE,
                                             rotation, [1.2, 1.2, 1.2],
-                                            4,
+                                            3,
                                             0.0)
 
             self.smartInd.w_callback_ = callback_release

@@ -39,7 +39,7 @@ import math
 from dataclasses import dataclass
 from pivy import coin
 
-__updated__ = '2022-01-01 13:56:41'
+__updated__ = '2022-01-01 14:55:13'
 
 @dataclass
 class userDataObject:
@@ -433,7 +433,7 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0),
         firstT.translation.setValue(App.Vector(0, 0, 0))
         secondT.rotation.setValue(basicRot,math.radians(-180.0))
         secondT.translation.setValue(App.Vector(0, 0, 0))
-        
+        coordsRoot.translation.setValue(App.Vector(0, 0, 0))
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))    # SbRotation (const SbVec3f &axis, const float radians)
         coordsRoot.rotation.setValue(tempR, math.radians(_rotation[3]))
         coordsRoot.scaleFactor.setValue(_scale[0], _scale[1], _scale[2] )
@@ -470,8 +470,8 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0),
         so_Second.addChild(so_separatorTail)
         
         group = coin.SoSeparator()
-        group.addChild(coordsRoot)
         group.addChild(transRoot)
+        group.addChild(coordsRoot)
         group.addChild(so_First)
         group.addChild(so_Second)
         

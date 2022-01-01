@@ -60,7 +60,7 @@ wny.addWidget(ln)              # Add it to the window as a child
 wny.show()                    # show the window and it's widgets. 
 
 """
-__updated__ = '2022-01-01 14:16:19'
+__updated__ = '2022-01-01 15:08:46'
 
 
 # class object will be used as object holder between arrow widget and the callback
@@ -216,7 +216,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             if self.is_visible():
                 if self.arrowType == 0:
                     self.w_widgetSoNodes = fr_draw.draw_arrow(
-                        self.w_vector[0], usedColor, self.w_lineWidth, self.w_rotation)
+                        self.w_vector[0], usedColor,  self.w_rotation)
                 elif self.arrowType == 1:
                     self.w_widgetSoNodes = fr_draw.draw_2Darrow(
                         self.w_vector[0], usedColor, self.w_scale, 0, self.w_opacity, self.w_rotation)
@@ -225,7 +225,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                         self.w_vector[0], usedColor, self.w_scale, 1, self.w_opacity, self.w_rotation)
                 elif self.arrowType == 3:
                     self.w_widgetSoNodes = fr_draw.draw_DoubleSidedArrow(
-                        self.w_vector[0], usedColor, self.w_lineWidth, self.w_rotation)
+                        self.w_vector[0], usedColor, self.w_scale, self.w_opacity, self.w_rotation)
                 elif self.arrowType == 4:
                     self.w_widgetSoNodes = fr_draw1.draw_DoubleSide2DdArrow(
                         self.w_vector[0], usedColor, self.w_scale, self.w_opacity, self.w_rotation)
@@ -235,7 +235,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
                 self.w_lbluserData.rotation = [0, 0, 0, 0]
                 # self.w_lbluserData.SetupRotation = self.w_rotation This causes a problem. TODO:FIXME:
 
-                self.draw_label(usedColor)
+                self.draw_label(self.w_lblColor)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
                 self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
             else:
