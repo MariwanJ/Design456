@@ -43,7 +43,7 @@ import Part as _part
 import FACE_D as faced
 import math
 
-__updated__ = '2021-12-31 08:58:08'
+__updated__ = '2022-01-02 19:12:37'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -396,7 +396,7 @@ class Design456_ExtendEdge:
                    type(self.selectedEdge.Curve) == _part.BezierCurve):
                 msg = "Curve edges are not supported yet"
                 faced.errorDialog(msg)
-                self.hide()
+                return
 
             self.setupRotation = self.calculateNewVector()
 
@@ -611,7 +611,7 @@ class Design456_ExtendEdge:
         print("lbl callback")
         pass
 
-    def callback_Rotate(self):
+    def callback_Rotate(self, userData=None):
         # Complex task :(
         print("Not impolemented ")
 

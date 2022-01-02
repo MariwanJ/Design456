@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2021-12-31 08:57:44'
+__updated__ = '2022-01-02 19:16:26'
 
 
 """
@@ -293,7 +293,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         self.w_rotation = _rotation       # Whole object Rotation
 
-        self.w_discEnabled = [False, False, False]
+        self.w_discEnabled = [False, False, False] # Affect redrawing, hiding
         self.w_arrowEnabled = [True, True, True]
         
         # Used to avoid running drag code while it is in drag mode
