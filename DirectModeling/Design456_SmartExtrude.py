@@ -397,7 +397,7 @@ class Design456_SmartExtrude:
             # TODO: This if statement is not totally correct.
             # Cylinder or curved surfaces cause an error in the noramlAt, angle and direction
             # I leave it like that now and I must target this later. 
-            if rotation == (0,0,1,180) or  (0,0,1,0):
+            if rotation == (0,0,1,180) or rotation ==  (0,0,1,0):
                 rotation = (0,1.0,0,90)
             return rotation
 
