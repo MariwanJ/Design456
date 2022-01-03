@@ -36,7 +36,7 @@ import math
 
 # TODO : FIXME BETTER WAY?
 
-__updated__ = '2021-12-31 13:32:19'
+__updated__ = '2022-01-03 19:47:42'
 
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
@@ -968,28 +968,28 @@ def calculateMouseAngle(val1, val2):
 # This code is by by Roy_043 from the forum
 # https://forum.freecadweb.org/viewtopic.php?p=557404#p557404
 #But it didn't work prefectly and I leave it here for future usage. I need to understand which I DON'T NOW :(
-def get_global_placement (point, angle=0.0):
-   """[Get global placement for a point ona a active Draft working plane.
-       And rotate the object by the angle given in degrees
-   ]
+# def get_global_placement (point, angle=0.0):
+#    """[Get global placement for a point ona a active Draft working plane.
+#        And rotate the object by the angle given in degrees
+#    ]
 
-   Args:
-       point ([Mouse Position or any position to convert]): [Given point to place on the Draft Plane]
-       angle ([type]): [Rotating angle for placement rotation.]
+#    Args:
+#        point ([Mouse Position or any position to convert]): [Given point to place on the Draft Plane]
+#        angle ([type]): [Rotating angle for placement rotation.]
 
-   Returns:
-       [type]: [description]
-   """
-   # point (vector) and angle (degrees) relative to Draft working plane
-   import WorkingPlane
-   if not hasattr(App, "DraftWorkingPlane"):
-       App.DraftWorkingPlane = WorkingPlane.plane()
-   App.DraftWorkingPlane.setup()
-   place_plane = App.DraftWorkingPlane.getPlacement()
-   place_rel = App.Placement()
-   place_rel.Base = point
-   place_rel.Rotation.Angle = math.radians(angle)
-   return place_plane.multiply(place_rel)
+#    Returns:
+#        [type]: [description]
+#    """
+#    # point (vector) and angle (degrees) relative to Draft working plane
+#    import WorkingPlane
+#    if not hasattr(App, "DraftWorkingPlane"):
+#        App.DraftWorkingPlane = WorkingPlane.plane()
+#    App.DraftWorkingPlane.setup()
+#    place_plane = App.DraftWorkingPlane.getPlacement()
+#    place_rel = App.Placement()
+#    place_rel.Base = point
+#    place_rel.Rotation.Angle = math.radians(angle)
+#    return place_plane.multiply(place_rel)
 
 ''' 
 
@@ -1025,11 +1025,14 @@ App.ActiveDocument.recompute()
 class reversEngSurface(object):
     
     __slots__= ['newObject', 
-                'oldObject', ''
+                'oldNewVertices'
                 
                 
                 ]
-    def __init__ (self, oldNewVertices[[]]):
+    def __init__ (self, _oldNewVertices = [[]]):
+        self.newObject=None
+        self.oldNewVertices = _oldNewVertices
+
         pass
     
     def checkPlanar(self,obj):
