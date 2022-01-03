@@ -1018,3 +1018,32 @@ box.Placement = place
 App.ActiveDocument.recompute()
 
  '''
+ 
+# A class that will revers engineer
+# surfaces and recreate it with 
+# new vertices
+class reversEngSurface(object):
+    
+    __slots__= ['newObject', 
+                'oldObject', ''
+                
+                
+                ]
+    def __init__ (self, oldNewVertices[[]]):
+        pass
+    
+    def checkPlanar(self,obj):
+        pass
+    
+    def checkCurve(self,obj):
+        pass
+    
+    def checkLine(self,obj):
+        pass
+    
+    def reversEng(self,obj):
+        pass
+    
+    def recreateSurface(self):
+        return (self.newObject)
+     
