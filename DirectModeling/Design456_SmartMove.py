@@ -64,6 +64,12 @@ class Design456_SmartMove:
         Apply Move to any 3D object by selecting the object.
     """
     def __init__(self):
+        self.selectedObjects = None
+        self.ArrowObject = None
+        self.AxisBarObject = None
+        self.AxisBarLocation= App.Vector(0,0,0)
+        self.w_vector=App.Vector(0,0,0)
+        
         pass
 
     def Activated(self):
