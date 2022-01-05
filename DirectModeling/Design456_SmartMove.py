@@ -41,11 +41,11 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 import math
-
+from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 
 MouseScaleFactor = 1.5
 
-__updated__ = '2022-01-05 20:52:19'
+__updated__ = '2022-01-05 23:11:32'
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
     pass
@@ -232,7 +232,7 @@ class Design456_SmartMove:
     
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'Design456_Move.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_SmartMove.svg',
             'MenuText': ' Smart Move',
                         'ToolTip':  ' Smart Move'
         }

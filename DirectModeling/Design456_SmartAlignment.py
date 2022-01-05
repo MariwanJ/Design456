@@ -38,7 +38,7 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets import fr_arrow_widget
 from draftutils.translate import translate  # for translation
 MouseScaleFactor = 1.5      # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
-__updated__ = '2021-12-31 08:58:04'
+__updated__ = '2022-01-05 23:08:27'
 
 
 #TODO: FIXME : NOT IMPLEMENTED
@@ -251,7 +251,7 @@ class Design456_SmartAlignment:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'Design456_Alignment.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_SmartAlignment.svg',
             'MenuText': ' Smart Alignment',
                         'ToolTip':  ' Smart Alignment'
         }

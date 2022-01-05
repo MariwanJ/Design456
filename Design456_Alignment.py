@@ -36,10 +36,12 @@ import FACE_D as faced
 import Design456Init
 from draftutils.translate import translate  # for translation
 from pivy import coin
+import DirectModeling.Design456_SmartAlignment
+import DirectModeling.Design456_SmartMove
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2021-12-31 08:56:14'
+__updated__ = '2022-01-05 23:06:16'
 
 
 class Design456_ViewInsideObjects:
@@ -342,7 +344,8 @@ class Design456_AlignmentGroup:
                 "Design456_MoveObjectDetailed",
                 # "Separator",
                 "Design456_AlignToPlane",
-
+                "Design456_SmartMove",
+                "Design456_SmartAlignment",
                 )
 
     def GetResources(self):
@@ -350,7 +353,7 @@ class Design456_AlignmentGroup:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools for Aligning 3D/2D Shapes")
-        return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_Alignment.svg',
+        return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_SmartAlignment.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Alignment"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
