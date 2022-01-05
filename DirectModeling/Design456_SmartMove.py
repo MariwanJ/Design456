@@ -45,7 +45,7 @@ import math
 
 MouseScaleFactor = 1.5
 
-__updated__ = ''
+__updated__ = '2022-01-05 20:52:19'
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
     pass
@@ -69,14 +69,166 @@ class Design456_SmartMove:
         self.AxisBarObject = None
         self.AxisBarLocation= App.Vector(0,0,0)
         self.w_vector=App.Vector(0,0,0)
-        
-        pass
+
+        self.dialog = None
+        self.tab = None
+        self.smartInd = None
+        self._mywin = None
+        self.b1 = None
+        self.AlignmentLBL = None
+        self.run_Once = False
+        self.endVector = None
+        self.startVector = None
+        self.w_rotation = None
+        self.setupRotation = None
+        self.w_scale = None
+
 
     def Activated(self):
+        s=Gui.Selection.getSelectionEx()
+        if len(s)<1: 
+            # An object must be selected
+            errMessage = "Select an object before using the tool"
+            faced.errorDialog(errMessage)
+            return
+        try:
+            self.selectedObjects=s
+            self.w_vector= s[0].Object.Placement.Base
+            self.discObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
+                                                 # label
+                                                 [(str(round(self.w_rotation[0], 2)) + "°" +
+                                                   str(round(self.w_rotation[1], 2)) + "°" +
+                                                   str(round(self.w_rotation[2], 2)) + "°"), ],
+                                                 FR_COLOR.FR_WHITE,  # lblcolor
+                                                 [FR_COLOR.FR_RED, FR_COLOR.FR_GREEN,
+                                                 FR_COLOR.FR_BLUE],  # arrows color
+                                                 # rotation of the disc main
+                                                 [0, 0, 0, 0],
+                                                 self.setupRotation,  # setup rotation
+                                                 [30.0, 30.0, 30.0],  # scale
+                                                 1,  # type
+                                                 0,  # opacity
+                                                 10)  # distance between them
+            self.discObj.enableDiscs()
+
+            # Different callbacks for each action.
+            self.discObj.w_xAxis_cb_ = self.MouseDragging_cb
+            self.discObj.w_yAxis_cb_ = self.MouseDragging_cb
+            self.discObj.w_zAxis_cb_ = self.MouseDragging_cb
+
+            
+            self.discObj.w_discXAxis_cb_ = self.RotatingObject_cb
+            self.discObj.w_discYAxis_cb_ = self.RotatingObject_cb
+            self.discObj.w_discZAxis_cb_ = self.RotatingObject_cb
+
+
+            self.discObj.w_callback_ = self.callback_release
+            self.discObj.w_userData.callerObject = self
+
+            self.COIN_recreateObject()
+
+            if self._mywin is None:
+                self._mywin = win.Fr_CoinWindow()
+
+            self._mywin.addWidget(self.discObj)
+            mw = self.getMainWindow()
+            self._mywin.show()
+            
+        except Exception as err:
+            App.Console.PrintError("'Activated SmartMove' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+    def MouseDragging_cb(self):
+        pass
+    
+    def RotatingObject_cb(self):
         pass
 
+    def getMainWindow(self):
+        try:
+            toplevel = QtGui.QApplication.topLevelWidgets()
+            self.mw = None
+            for i in toplevel:
+                if i.metaObject().className() == "Gui::MainWindow":
+                    self.mw = i
+            if self.mw is None:
+                raise Exception("No main window found")
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            for i in dw:
+                if str(i.objectName()) == "Combo View":
+                    self.tab = i.findChild(QtGui.QTabWidget)
+                elif str(i.objectName()) == "Python Console":
+                    self.tab = i.findChild(QtGui.QTabWidget)
+            if self.tab is None:
+                raise Exception("No tab widget found")
+
+            self.dialog = QtGui.QDialog()
+            oldsize = self.tab.count()
+            self.tab.addTab(self.dialog, "Smart Alignment")
+            self.tab.setCurrentWidget(self.dialog)
+            self.dialog.resize(200, 450)
+            self.dialog.setWindowTitle("Smart Alignment")
+            la = QtGui.QVBoxLayout(self.dialog)
+            e1 = QtGui.QLabel("(Smart Alignment)\nFor quicker\nApplying Alignment")
+            commentFont = QtGui.QFont("Times", 12, True)
+            self.AlignmentLBL = QtGui.QLabel("Radius=")
+            e1.setFont(commentFont)
+            la.addWidget(e1)
+            la.addWidget(self.AlignmentLBL)
+            okbox = QtGui.QDialogButtonBox(self.dialog)
+            okbox.setOrientation(QtCore.Qt.Horizontal)
+            okbox.setStandardButtons(
+                QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            la.addWidget(okbox)
+            QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
+
+            QtCore.QMetaObject.connectSlotsByName(self.dialog)
+            return self.dialog
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_Alignment' getMainWindow-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def hide(self):
+        """
+        Hide the widgets. Remove also the tab.
+        """
+        self.dialog.hide()
+        del self.dialog
+        dw = self.mw.findChildren(QtGui.QDockWidget)
+        newsize = self.tab.count()  # Todo : Should we do that?
+        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+        temp=self.selectedObj[0]
+        App.ActiveDocument.recompute()
+        self.__del__()  # Remove all smart Alignment 3dCOIN widgets
+    
     def __del__(self):
-        pass
+        """ 
+            class destructor
+            Remove all objects from memory even fr_coinwindow
+        """
+        try:
+            self.Arrow.hide()
+            self.ArrowObject.__del__()
+            if self._mywin is not None:
+                self._mywin.hide()
+                del self._mywin
+                self._mywin = None
+            App.ActiveDocument.commitTransaction()  # undo reg.
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_SmartAlignment' del-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+
     
     def GetResources(self):
         return {

@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = '2021-12-31 08:56:57'
+__updated__ = '2022-01-05 22:20:47'
 
 
 # Widgets type. QT widget will get QT in their names.
@@ -159,6 +159,7 @@ class FR_COLOR:
     FR_MEDIUMVIOLETRED = (0.7804,	0.0824,	0.5216)
     FR_DARKVIOLET = (0.5804,	0.0000,	0.8275)
     FR_DARKGRAY = (0.6627,	0.6627,	0.6627)
+    FR_SECIAL_GRAY = (0.91015625,0.91015625,0.91015625)
     FR_SALMON = (0.9804,	0.5020,	0.4471)
     FR_DARKMAGENTA = (0.5451,	0.0000,	0.5451)
     FR_TOMATO = (1.0000,	0.3882,	0.2784)
@@ -184,6 +185,7 @@ class FR_COLOR:
     FR_SEASHELL = (1.0000,	0.9608,	0.9333)
     FR_DARKRED = (0.5451,	0.0000,	0.0000)
     FR_LIGHTSKYBLUE = (0.5294,	0.8078,	0.9804)
+    FR_SPECIAL_BLUE=  (0.7421875, 0.8828125, 0.921875)
     FR_YELLOWGREEN = (0.6039,	0.8039,	0.1961)
     FR_AQUAMARINE = (0.4980,	1.0000,	0.8314)
     FR_LIGHTCORAL = (0.9412,	0.5020,	0.5020)

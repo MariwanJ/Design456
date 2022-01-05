@@ -38,7 +38,7 @@ import pivy.coin as coin
 import FreeCADGui as Gui
 import FreeCAD as App
 
-__updated__ = '2021-12-31 08:56:53'
+__updated__ = '2022-01-05 22:04:59'
 
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
@@ -62,11 +62,14 @@ def dim_dash(p1, p2, color, LineWidth):
 
 
 class Grid:
+    """[Draw Grid plane in Design456 Workbench]
+    """
 
     def __init__(self, view):
         self.view = view
         self.sg = None
         self.collectGarbage = []  # Keep the nodes for removing
+        self.GridSize = 5    # 5 mm  The size of the grid. This should go to preferences
 
     def Deactivated(self):
         self.removeGarbage()
@@ -93,15 +96,14 @@ class Grid:
         col.rgb = FR_COLOR.FR_YELLOW  # (237, 225, 0) # Yellow
         LengthOfGrid = 500  # mm
         bothSideLength = LengthOfGrid / 2
-        GridSize = 5
         counter = LengthOfGrid
         try:
             line = []
-            for i in range(0, counter, GridSize):
+            for i in range(0, counter, self.GridSize):
                 # X direction
-                P1x = -2
+                P1x = - self.GridSize
                 P1y = 0
-                P2x = +2
+                P2x = + self.GridSize
                 P1y = 0
                 line.append(dim_dash((P1x, P1y, -bothSideLength + i),
                             (P2x, P1y, -bothSideLength + i), col, 1))  # x
@@ -155,16 +157,19 @@ class Grid:
 
     def drawXYPlane(self):
         col = coin.SoBaseColor()
-        col.rgb = FR_COLOR.FR_BLUEG
+        #col.rgb = FR_COLOR.FR_BLUEG
+
+        col.rgb = FR_COLOR.FR_SPECIAL_BLUE
+        
         LengthOfGrid = 1000  # mm
         bothSideLength = LengthOfGrid / 2
-        GridSize = 2
+
         counter = LengthOfGrid
         try:
             line = []
             count5Cells = 0
             lineSize = 1
-            for i in range(0, counter, GridSize):
+            for i in range(0, counter, self.GridSize):
                 # X direction
                 P1x = -bothSideLength
                 P1y = -bothSideLength + i

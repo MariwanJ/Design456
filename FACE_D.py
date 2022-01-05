@@ -36,7 +36,7 @@ import math
 
 # TODO : FIXME BETTER WAY?
 
-__updated__ = '2022-01-03 19:47:42'
+__updated__ = '2022-01-05 14:51:12'
 
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
@@ -1022,6 +1022,10 @@ App.ActiveDocument.recompute()
 # A class that will revers engineer
 # surfaces and recreate it with 
 # new vertices
+ 
+# A class that will revers engineer
+# surfaces and recreate it with 
+# new vertices
 class reversEngSurface(object):
     
     __slots__= ['newObject', 
@@ -1033,6 +1037,8 @@ class reversEngSurface(object):
         self.newObject=None
         self.oldNewVertices = _oldNewVertices
 
+        pass
+    def isCylinder(self,obj):
         pass
     
     def checkPlanar(self,obj):
