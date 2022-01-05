@@ -53,6 +53,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 def callback_release(userData: fr_arrow_widget.userDataObject = None):
     pass
 
+# This tool should easily more, rotate and place any object. 
+# Rotation Axis must be changable. Default will be centerofmass
+# but it can also choose other by moving the Axis bar which will be
+# a COIN3D bar or line. 
+# This must make placement of object much much easier and simpler. 
 
 class Design456_SmartMove:
     """
