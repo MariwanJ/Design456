@@ -36,7 +36,7 @@ import math
 
 # TODO : FIXME BETTER WAY?
 
-__updated__ = '2022-01-05 14:51:12'
+__updated__ = '2022-01-06 12:53:53'
 
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
@@ -964,6 +964,46 @@ def calculateMouseAngle(val1, val2):
         result = int(math.degrees(math.atan2(float(val1),
                                              float(val2))))+360
     return result
+
+
+class ResetPlacements:
+    def __init__(self, _objects):
+        self.oldObjects = []
+        self.objects = _objects
+    def Activated(self):
+        try:
+            temp = []
+            if self.objects == None: 
+                for obj in App.ActiveDocument.Objects:
+                    temp.clear() 
+                    if "Placement" in obj.PropertiesList: 
+                        temp.append(obj)
+                        temp.append(obj.getGlobalPlacement())     
+                        self.oldObjects.append(temp) 
+            else:
+                temp.clear()
+                self.oldObjects.append(self.objects)
+                temp.append(self.objects)
+                temp.append(obj.getGlobalPlacement())
+                self.oldObjects.append(temp)
+
+            for obj in self.oldObjects:               
+                if obj[0].isDerivedFrom("App::Part"):
+                    obj[0].Placement =App.Placement() 
+                    obj[0].Placement.Base=App.Vector(0.0, 0.0, 0.0)
+                    obj[0].Placement.Rotation.Axis = App.Rotation(0.0, 0.0, 0.0)
+                    obj[0].Placement.Rotation.Angle = 0.0
+                elif obj[0].TypeId[:5] == "App::":
+                    pass
+                else: 
+                    obj[0].Placement = obj[1].Placement 
+                    
+        except Exception as err:
+            App.Console.PrintError("'Reset Placements failed' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
 # This code is by by Roy_043 from the forum
 # https://forum.freecadweb.org/viewtopic.php?p=557404#p557404

@@ -41,7 +41,7 @@ import DirectModeling.Design456_SmartMove
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-01-05 23:06:16'
+__updated__ = '2022-01-06 14:18:49'
 
 
 class Design456_ViewInsideObjects:
@@ -330,6 +330,62 @@ class Design456_MoveObjectDetailed:
 Gui.addCommand('Design456_MoveObjectDetailed', Design456_MoveObjectDetailed())
 
 
+class Design456_ResetPlacements:
+    """[Reset placements of all objects or a specific object]
+        Args:
+            _objects : Object to reset it's placements to global placement. Default is None.
+    """
+    def __init__(self, _objects = None):
+        self.oldObjects = []
+        self.objects = _objects
+        
+    def Activated(self):
+        try:
+            temp = []
+            self.objects = Gui.Selection.getSelectionEx()
+            if len(self.objects) == 0: 
+                for obj in App.ActiveDocument.Objects:
+                    temp.clear() 
+                    if "Placement" in obj.PropertiesList: 
+                        temp.append(obj)
+                        temp.append(obj.getGlobalPlacement())     
+                        self.oldObjects.append(temp) 
+            else:
+                temp.clear()
+                for sObj in self.objects:
+                    temp.append(sObj.Object)
+                    temp.append(sObj.Object.getGlobalPlacement())
+                self.oldObjects.append(temp)
+
+            for obj in self.oldObjects:               
+                if obj[0].isDerivedFrom("App::Part"):
+                    obj[0].Placement =App.Placement() 
+                    obj[0].Placement.Base=App.Vector(0.0, 0.0, 0.0)
+                    obj[0].Placement.Rotation.Axis = App.Rotation(0.0, 0.0, 0.0)
+                    obj[0].Placement.Rotation.Angle = 0.0
+                elif obj[0].TypeId[:5] == "App::":
+                    pass
+                else: 
+                    obj[0].Placement = obj[1]
+                    
+        except Exception as err:
+            App.Console.PrintError("'Reset Placements failed' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Reset Placements for all objects or specific object")
+        return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_ResetPlacements.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Alignment"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand('Design456_ResetPlacements', Design456_ResetPlacements())
+
 class Design456_AlignmentGroup:
 
     """Design456 Part Alignment Tools"""
@@ -346,6 +402,8 @@ class Design456_AlignmentGroup:
                 "Design456_AlignToPlane",
                 "Design456_SmartMove",
                 "Design456_SmartAlignment",
+                "Design456_ResetPlacements"
+
                 )
 
     def GetResources(self):
@@ -353,7 +411,7 @@ class Design456_AlignmentGroup:
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools for Aligning 3D/2D Shapes")
-        return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_SmartAlignment.svg',
+        return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_Alignment.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Alignment"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 

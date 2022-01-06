@@ -45,7 +45,7 @@ from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 
 MouseScaleFactor = 1.5
 
-__updated__ = '2022-01-05 23:11:32'
+__updated__ = '2022-01-06 08:30:24'
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
     pass
@@ -94,7 +94,7 @@ class Design456_SmartMove:
         try:
             self.selectedObjects=s
             self.w_vector= s[0].Object.Placement.Base
-            self.discObj = Fr_ThreeArrows_Widget([self.FirstLocation, App.Vector(0, 0, 0)],  #
+            self.discObj = Fr_ThreeArrows_Widget([self.w_vector, App.Vector(0, 0, 0)],  #
                                                  # label
                                                  [(str(round(self.w_rotation[0], 2)) + "°" +
                                                    str(round(self.w_rotation[1], 2)) + "°" +
