@@ -329,6 +329,9 @@ class Design456_MoveObjectDetailed:
 
 Gui.addCommand('Design456_MoveObjectDetailed', Design456_MoveObjectDetailed())
 
+# Maybe using this
+# p = Box.getGlobalPlacement().multiply(Box.Placement.inverse())
+#value = p.multVec(Box.Shape.Vertexes[0].Point)
 
 class Design456_ResetPlacements:
     """[Reset placements of all objects or a specific object]
