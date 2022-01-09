@@ -41,9 +41,10 @@ import DirectModeling.Design456_SmartMove
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-01-09 11:51:07'
+__updated__ = '2022-01-09 13:56:16'
 
 
+#TODO:FIXME: Don't know if this is a useful tool to have
 class Design456_ViewInsideObjects:
     """
         View internal walls, core of objects in the 3D view
@@ -84,9 +85,10 @@ Gui.addCommand('Design456_ViewInsideObjects', Design456_ViewInsideObjects())
 
 
 class Design456_AlignFlatToPlane:
-
+#TODO: FIXME : Make this works in a better way.
     def Activated(self):
-        print( Design456Init.DefaultDirectionOfExtrusion," Design456Init.DefaultDirectionOfExtrusion")
+        print(Design456Init.DefaultDirectionOfExtrusion,
+              " Design456Init.DefaultDirectionOfExtrusion")
         try:
             Selectedobjects = Gui.Selection.getSelectionEx()
             # TODO:This must be modified
@@ -275,6 +277,7 @@ Gui.addCommand('Design456_BackSideView', Design456_BackSideView())
 
 
 # Design456 Move
+# I need to have these as not always the are in the contex menu
 class Design456_MoveObject:
 
     def Activated(self):
@@ -329,16 +332,15 @@ class Design456_MoveObjectDetailed:
 
 Gui.addCommand('Design456_MoveObjectDetailed', Design456_MoveObjectDetailed())
 
-# Maybe using this
-# p = Box.getGlobalPlacement().multiply(Box.Placement.inverse())
-# value = p.multVec(Box.Shape.Vertexes[0].Point)
 
 class Design456_ResetPlacements:
     """[Reset placements of all objects or a specific object]
         Args:
             _objects : Object to reset it's placements to global placement. Default is None.
+                        When it is None, all objects are affected in the document.
     """
-    def __init__(self, _objects = None):
+
+    def __init__(self, _objects=None):
         self.oldObjects = []
         self.objects = _objects
 
@@ -346,40 +348,49 @@ class Design456_ResetPlacements:
         try:
             temp = []
             self.objects = Gui.Selection.getSelectionEx()
-            if len(self.objects) == 0: 
+            if len(self.objects) == 0:
                 self.objects = App.ActiveDocument.Objects
-            App.ActiveDocument.openTransaction(translate("Design456", "ResetPlacement"))
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "ResetPlacement"))
 
             for sObj in self.objects:
                 temp.clear()
                 if "Placement" in sObj.Object.PropertiesList:
-                    newOBJ= App.ActiveDocument.addObject("Part::Compound","tempReset")  #Create new compound object
+                    newOBJ = App.ActiveDocument.addObject(
+                        "Part::Compound", "tempReset")  # Create new compound object
                     newOBJ.Links = sObj.Object
-                    #Start to inverse the old placement 
+                    minzPoint = sObj.Object.Shape.BoundBox.ZMin
+                    # Start to inverse the old placement
                     plOld = sObj.Object.Placement
                     pl = plOld
+                    # Take the first vector of the object as a new placement
                     plOld.Base = sObj.Object.Shape.Vertexes[0].Point
+                    plOld.Base.z = minzPoint
                     p = plOld.inverse()
                     sObj.Object.Placement = p
+                    # Put the Z axis to be the minimum point
                     newOBJ.Placement = pl
+
                     # Make a simple copy of the object
                     App.ActiveDocument.recompute()
-                    shp = _part.getShape(newOBJ, '', needSubElement=False, refine = False)
-                    simpleNew = App.ActiveDocument.addObject('Part::Feature', 'Reset')
+                    shp = _part.getShape(
+                        newOBJ, '', needSubElement=False, refine=False)
+                    simpleNew = App.ActiveDocument.addObject(
+                        'Part::Feature', 'Reset')
                     simpleNew.Shape = shp
                     App.ActiveDocument.recompute()
                     if "Group" in sObj.Object.PropertiesList:
                         for _obj in sObj.Object.Group:
-                            App.ActiveDocument.removeObject(_obj.Name)    
+                            App.ActiveDocument.removeObject(_obj.Name)
 
                     if "Links" in sObj.Object.PropertiesList:
                         for _obj in sObj.Object.Links:
-                            App.ActiveDocument.removeObject(_obj.Name)    
+                            App.ActiveDocument.removeObject(_obj.Name)
                     App.ActiveDocument.removeObject(newOBJ.Name)
                     App.ActiveDocument.removeObject(sObj.Object.Name)
             App.ActiveDocument.recompute()
-            App.ActiveDocument.commitTransaction() # undo
-                    
+            App.ActiveDocument.commitTransaction()  # undo
+
         except Exception as err:
             App.Console.PrintError("'Reset Placements failed' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -396,17 +407,20 @@ class Design456_ResetPlacements:
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "Reset Placement"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
+
 Gui.addCommand('Design456_ResetPlacements', Design456_ResetPlacements())
+
 
 class Design456_Alignment_Tools:
     list = ["Design456_MoveObject",
             "Design456_MoveObjectDetailed",
             "Separator",
             "Design456_ResetPlacements",
-            "Separator",         
+            "Separator",
             "Design456_AlignToPlane",
             "Design456_SmartMove",
-            "Design456_SmartAlignment",
+            "Design456_SmartAlignment"
+#            "Design456_ViewInsideObjects",
             ]
 
     """Design456 Alignments Tools Toolbar"""
@@ -424,6 +438,6 @@ class Design456_Alignment_Tools:
             return True
         else:
             return False
-        
+
     def Activated(self):
         self.appendToolbar("Design456__Alignment", self.list)
