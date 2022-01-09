@@ -10,7 +10,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
-__updated__ = '2021-12-31 08:57:02'
+__updated__ = '2022-01-09 21:58:06'
 
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
@@ -34,16 +34,16 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
         p1 = _Points
         root = coin.SoSeparator()
         transform = coin.SoTransform()
-       
+
         trans = coin.SoTranslation()
         trans.translation.setValue(p1)
-        
+
         transform.rotation.setValue(_rotation)
         transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
         tempR = coin.SbVec3f()
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         transform.rotation.setValue(tempR, math.radians(_rotation[3]))
-        
+
         material = coin.SoMaterial()
         material.transparency.setValue(opacity)
         material.diffuseColor.setValue(coin.SbColor(color))
@@ -534,8 +534,8 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
         transform = coin.SoTransform()  # for scale only
         trans = coin.SoTranslation()
         trans.translation.setValue(p1)
-        # Only for scale 
-        transform.scaleFactor.setValue([scale[0], scale[1], scale[2]]) 
+        # Only for scale
+        transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
 
         root.addChild(trans)
         root.addChild(material)
@@ -544,7 +544,162 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
         return root
     except Exception as err:
         App.Console.PrintError("'draw draw_RotationPad' Failed. "
-                                "{err}\n".format(err=str(err)))
+                               "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
+
+
+
+
+class drawAlignmentBars:
+    def __init__(self, _pStart=App.Vector(1.0, 1.0, 1.0),
+                      color=[FR_COLOR.FR_RED, FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
+                      scale=(1, 1, 1), opacity=0,
+                      _rotation=[0.0, 0.0, 0.0], _type=0,
+                      _Boundary=[1.0, 1.0, 1.0]):
+        self.p1 = []
+        self.p2 = []
+        self.p3 = []
+        # xAxis:
+        self.p1.append(App.Vector(0, 0, 0.0))
+        self.p1.append(App.Vector(0, _pStart/2, 0.0))
+        self.p1.append(App.Vector(0, _pStart, 0.0))
+
+        # yAxis:
+        self.p2.append(App.Vector(0, 0, 0.0))
+        self.p2.append(App.Vector(_pStart/2, 0.0, 0.0))
+        self.p2.append(App.Vector(_pStart, 0.0, 0.0))
+
+        # zAxis:
+        self.p3.append(App.Vector(0, 0, 0.0))
+        self.p3.append(App.Vector(0.0, 0.0, _pStart/2))
+        self.p3.append(App.Vector(0.0, 0.0, _pStart))
+        self.separatorX = []
+        self.separatorY = []
+        self.separatorZ = []
+        self.vector = [p1, p2, p3]
+        self.color = color
+        self.Bartype = _type
+        self.root = coin.SoSeparator()
+        self.Boundary = _Boundary
+        self.barRadius = 0.3  # constant
+        self.ButtonRadius = 0.3  # constant
+
+    def createABar(self, _vector, _color, _length):
+        color = coin.SoBaseColor()
+        color.rgb = _color
+        cone = coin.SoCone()
+        cone.bottomRadius = self.barRadius
+        cone.height = _length[i]
+        transBar = coin.SoTranslation()
+        transBar.translation.setValue(_vector)
+        barLine = coin.SoSeparator()
+        barLine.addChild(color)
+        barLine.addChild(transBar)
+        barLine.addChild(cone)
+        return barLine
+
+    def drawButtons(self):
+
+        AllButtons = []
+        # TODO FIXME: vectors are not correct
+        # X button
+        for i in range(0, 3):
+            AllButtons.append(createAButton(self.p1[i],
+                       FR_COLOR.FR_RED,
+                       self.Boundary.XLength))
+
+        # Y button
+        for i in range(0, 3):
+            AllButtons.append(createABar(self.p2[i],
+                       FR_COLOR.FR_GREEN,
+                       self.Boundary.YLength))
+
+        # Z button
+        for i in range(0, 3):
+            AllButtons.append(createAbutton(self.p3[i],
+                       FR_COLOR.FR_BLUE,
+                       self.Boundary.ZLength))
+
+        return AllButtons  # a SoSeparator that contains all bars
+
+    def drawBase(self):
+
+        AllBars=coin.SoSeparator()
+        # X bars
+        for i in range(0, 3):
+            AllBars.addChild(createABar(self.p1[i],
+                       FR_COLOR.FR_RED,
+                       self.Boundary.XLength))
+
+        # Y bars
+        for i in range(0, 3):
+            AllBars.addChild(createABar(self.p2[i],
+                       FR_COLOR.FR_GREEN,
+                       self.Boundary.YLength))
+
+        # Z bars
+        for i in range(0, 3):
+            AllBars.addChild(createABar(self.p3[i],
+                       FR_COLOR.FR_BLUE,
+                       self.Boundary.ZLength))
+
+        return AllBars  # a SoSeparator that contains all bars
+
+    def createWidget(self):
+        base=[]
+        buttons=[]
+
+    def Activate(self):
+
+        # # Each line will be saved separately in the
+        # self.separatorX.append(
+        #     self.drawOneBar(self.Boundary.XMax-self.Boundary.Xin,
+        #                     0.3,0.3,FR_COLOR.RED))
+        # self.separatorX.append(
+        #     self.drawOneBar(self.Boundary.XMax-self.Boundary.Xin,
+        #                     0.3,0.3,FR_COLOR.RED))
+        # self.separatorX.append(
+        #     self.drawOneBar(self.Boundary.XMax-self.Boundary.Xin,
+        #                     0.3,0.3,FR_COLOR.RED))
+
+        # self.separatorY = [coin.SoSeparator(), coin.SoSeparator(), coin.SoSeparator()]
+        # self.separatorZ = [coin.SoSeparator(), coin.SoSeparator(), coin.SoSeparator()]
+
+        # self.tempRX = coin.SbVec3f()
+        # self.tempRX.setValue(1, 0, 0)
+
+        # self.tempRY = coin.SbVec3f()
+        # self.tempRY.setValue(0, 1, 0)
+
+        # self.tempRZ = coin.SbVec3f()
+        # self.tempRZ.setValue(0, 0, 1)
+
+        # self.transformX = coin.SoTransform()
+        # self.transformY = coin.SoTransform()
+        # self.transformZ = coin.SoTransform()
+
+        # self.transformX.rotation.setValue(tempRY, math.radians(_rotation[0]))
+        # self.transformY.rotation.setValue(tempRX, math.radians(_rotation[1]))
+        # self.transformZ.rotation.setValue(tempRZ, math.radians(_rotation[2]))
+
+        # self.material = coin.SoMaterial()
+        # self.material.transparency.setValue(opacity)
+        # self.material.diffuseColor.setValue(coin.SbColor(color))
+
+        try:
+            if self.Bartype == 0:
+                pass
+
+
+
+            elif self.Bartype == 1:
+                pass
+
+        except Exception as err:
+            App.Console.PrintError("'draw draw_RotationPad' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb=sys.exc_info()
+            fname=os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
