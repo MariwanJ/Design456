@@ -35,12 +35,11 @@ import  Design456_Part_3DTools
 import  Design456_Part_2DTools
 import  Design456_Alignment   
 
-__updated__ = '2021-12-31 08:56:33'
+__updated__ = '2022-01-09 11:21:12'
 
 class Design456_Part_Tools:
     list = ["Design456_Part_3DToolsGroup",
-            "Design456_Part_2DToolsGroup",
-            "Design456_AlignmentGroup",
+            "Design456_Part_2DToolsGroup"
             
             ]
 

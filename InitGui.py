@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2021-12-31 08:56:49'
+__updated__ = '2022-01-09 11:24:51'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -55,6 +55,7 @@ class Design456_Workbench (Workbench):
         import Design456_Part as designPart
         import Design456_2Ddrawing as TwoDDraw
         import Design456_Part_Tools as _tools
+        import Design456_Alignment as _alignment
         import Design456_SelectionGate as SelGate
         import DirectModeling.directModelingCommands as dModeling
         # from Part import CommandShapes     #Tube  not working
@@ -64,6 +65,7 @@ class Design456_Workbench (Workbench):
         self.appendToolbar("Design456 2Ddrawing",
                            TwoDDraw.Design456_2Ddrawing.list)
         self.appendToolbar("Design456 Tools", _tools.Design456_Part_Tools.list)
+        self.appendToolbar("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
         self.appendToolbar(
             "Selection Mode", SelGate.Design456_SelectionGate.list)
         self.appendToolbar("Direct Modeling",
@@ -73,6 +75,8 @@ class Design456_Workbench (Workbench):
         self.appendMenu("Design456_2Ddrawing",
                         TwoDDraw.Design456_2Ddrawing.list)
         self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
+        self.appendMenu("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
+        
 
         # Design456_Part
         # self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
@@ -274,6 +278,7 @@ class Design456_Workbench (Workbench):
             import Design456_Part as designPart
             import Design456_Part_Tools as pTools
             import Design456_2Ddrawing as TwoDDraw
+            import Design456_Alignment as _alignment
 
             self.appendContextMenu(
                 "Design456_Part", designPart.Design456_Part.list)
@@ -281,6 +286,9 @@ class Design456_Workbench (Workbench):
                                    TwoDDraw.Design456_2Ddrawing.list)
             self.appendContextMenu(
                 "Design456 Tools", pTools.Design456_Part_Tools.list)
+            self.appendContextMenu("Design456 Alignment", 
+                                        _alignment.Design456_Alignment_Tools.list)
+
 
             # from DRAFT
             """Define an optional custom context menu."""

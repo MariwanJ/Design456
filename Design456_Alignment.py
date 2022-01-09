@@ -41,7 +41,7 @@ import DirectModeling.Design456_SmartMove
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-01-06 14:18:49'
+__updated__ = '2022-01-09 11:51:07'
 
 
 class Design456_ViewInsideObjects:
@@ -331,7 +331,7 @@ Gui.addCommand('Design456_MoveObjectDetailed', Design456_MoveObjectDetailed())
 
 # Maybe using this
 # p = Box.getGlobalPlacement().multiply(Box.Placement.inverse())
-#value = p.multVec(Box.Shape.Vertexes[0].Point)
+# value = p.multVec(Box.Shape.Vertexes[0].Point)
 
 class Design456_ResetPlacements:
     """[Reset placements of all objects or a specific object]
@@ -341,35 +341,44 @@ class Design456_ResetPlacements:
     def __init__(self, _objects = None):
         self.oldObjects = []
         self.objects = _objects
-        
+
     def Activated(self):
         try:
             temp = []
             self.objects = Gui.Selection.getSelectionEx()
             if len(self.objects) == 0: 
-                for obj in App.ActiveDocument.Objects:
-                    temp.clear() 
-                    if "Placement" in obj.PropertiesList: 
-                        temp.append(obj)
-                        temp.append(obj.getGlobalPlacement())     
-                        self.oldObjects.append(temp) 
-            else:
-                temp.clear()
-                for sObj in self.objects:
-                    temp.append(sObj.Object)
-                    temp.append(sObj.Object.getGlobalPlacement())
-                self.oldObjects.append(temp)
+                self.objects = App.ActiveDocument.Objects
+            App.ActiveDocument.openTransaction(translate("Design456", "ResetPlacement"))
 
-            for obj in self.oldObjects:               
-                if obj[0].isDerivedFrom("App::Part"):
-                    obj[0].Placement =App.Placement() 
-                    obj[0].Placement.Base=App.Vector(0.0, 0.0, 0.0)
-                    obj[0].Placement.Rotation.Axis = App.Rotation(0.0, 0.0, 0.0)
-                    obj[0].Placement.Rotation.Angle = 0.0
-                elif obj[0].TypeId[:5] == "App::":
-                    pass
-                else: 
-                    obj[0].Placement = obj[1]
+            for sObj in self.objects:
+                temp.clear()
+                if "Placement" in sObj.Object.PropertiesList:
+                    newOBJ= App.ActiveDocument.addObject("Part::Compound","tempReset")  #Create new compound object
+                    newOBJ.Links = sObj.Object
+                    #Start to inverse the old placement 
+                    plOld = sObj.Object.Placement
+                    pl = plOld
+                    plOld.Base = sObj.Object.Shape.Vertexes[0].Point
+                    p = plOld.inverse()
+                    sObj.Object.Placement = p
+                    newOBJ.Placement = pl
+                    # Make a simple copy of the object
+                    App.ActiveDocument.recompute()
+                    shp = _part.getShape(newOBJ, '', needSubElement=False, refine = False)
+                    simpleNew = App.ActiveDocument.addObject('Part::Feature', 'Reset')
+                    simpleNew.Shape = shp
+                    App.ActiveDocument.recompute()
+                    if "Group" in sObj.Object.PropertiesList:
+                        for _obj in sObj.Object.Group:
+                            App.ActiveDocument.removeObject(_obj.Name)    
+
+                    if "Links" in sObj.Object.PropertiesList:
+                        for _obj in sObj.Object.Links:
+                            App.ActiveDocument.removeObject(_obj.Name)    
+                    App.ActiveDocument.removeObject(newOBJ.Name)
+                    App.ActiveDocument.removeObject(sObj.Object.Name)
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.commitTransaction() # undo
                     
         except Exception as err:
             App.Console.PrintError("'Reset Placements failed' Failed. "
@@ -384,39 +393,37 @@ class Design456_ResetPlacements:
         """Set icon, menu and tooltip."""
         _tooltip = ("Reset Placements for all objects or specific object")
         return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_ResetPlacements.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "Alignment"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "Reset Placement"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 Gui.addCommand('Design456_ResetPlacements', Design456_ResetPlacements())
 
-class Design456_AlignmentGroup:
+class Design456_Alignment_Tools:
+    list = ["Design456_MoveObject",
+            "Design456_MoveObjectDetailed",
+            "Separator",
+            "Design456_ResetPlacements",
+            "Separator",         
+            "Design456_AlignToPlane",
+            "Design456_SmartMove",
+            "Design456_SmartAlignment",
+            ]
 
-    """Design456 Part Alignment Tools"""
-    #Separator = QtGui.QSpacerItem(5, 237, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-
-    def __init__(self):
-        return
-
-    def GetCommands(self):
-        """3D Alignments Tools."""
-        return ("Design456_MoveObject",
-                "Design456_MoveObjectDetailed",
-                # "Separator",
-                "Design456_AlignToPlane",
-                "Design456_SmartMove",
-                "Design456_SmartAlignment",
-                "Design456_ResetPlacements"
-
-                )
+    """Design456 Alignments Tools Toolbar"""
 
     def GetResources(self):
-        import Design456Init
-        from PySide.QtCore import QT_TRANSLATE_NOOP
-        """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools for Aligning 3D/2D Shapes")
-        return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_Alignment.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "Alignment"),
-                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+        return{
+            'Pixmap':    Design456Init.ICON_PATH + 'Part_Tools.svg',
+            'MenuText': 'Tools',
+            'ToolTip':  'Tools'
+        }
 
-
-Gui.addCommand("Design456_AlignmentGroup", Design456_AlignmentGroup())
+    def IsActive(self):
+        """Return True when this command should be available."""
+        if Gui.activeDocument():
+            return True
+        else:
+            return False
+        
+    def Activated(self):
+        self.appendToolbar("Design456__Alignment", self.list)
