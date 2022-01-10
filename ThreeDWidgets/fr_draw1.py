@@ -10,7 +10,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
-__updated__ = '2022-01-10 20:32:37'
+__updated__ = '2022-01-10 21:06:55'
 
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
@@ -587,9 +587,9 @@ class drawAlignmentBars:
         p2.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z))
 
         # zAxis:
-        p3.append(App.Vector(_pStart.x, _pStart.y, _pStart.z))
-        p3.append(App.Vector(_pStart.x, _pStart.y, self.Boundary.ZLength/2+_pStart.z))
-        p3.append(App.Vector(_pStart.x, _pStart.y, self.Boundary.ZLength+_pStart.z))
+        p3.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z))
+        p3.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z+ self.Boundary.ZLength/2))
+        p3.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z+self.Boundary.ZLength))
         self.vector = [p1, p2, p3]
 
     def createABar(self, _vector, _color, _length, _rotation):
@@ -635,26 +635,25 @@ class drawAlignmentBars:
         # TODO FIXME: vectors are not correct
         # X button
         for i in range(0, 3):
-            extraLength=App.Vector(self.Boundary.XLength, 0.0, 0.0)
-            extraLength= extraLength.add(self.vector[0][i])
+            extraLength=App.Vector(self.Boundary.XLength/2, 0.0, 0.0)
+            extraLength=(self.vector[0][i]).sub( extraLength)
             AllButtons.append(self.createAButton(extraLength,
                        FR_COLOR.FR_RED,[0.0, 0.0, 1.0, 90.0]))
 
         # Y button
         for i in range(0, 3):
-            extraLength = App.Vector(0.0, self.Boundary.YLength, 0.0)
-            extraLength = extraLength.add(self.vector[0][i])
+            extraLength= App.Vector(0.0, self.Boundary.YLength/2, 0.0)
+            extraLength = (self.vector[1][i]).sub(extraLength)
 
             AllButtons.append(self.createAButton(extraLength,
                        FR_COLOR.FR_GREEN, [0.0, 0.0, 0.0, 0.0]))
 
         # Z button
         for i in range(0, 3):
-            extraLength=App.Vector(0.0,0., self.Boundary.ZLength)
-            extraLength= extraLength.add(self.vector[2][i])
-
+            extraLength=App.Vector(self.Boundary.XLength/2,0.0, 0)
+            extraLength= (self.vector[2][i]).add(extraLength)
             AllButtons.append(self.createAButton(extraLength,
-                       FR_COLOR.FR_BLUE, [0.0, 0.0, 0.0,0.0]))
+                       FR_COLOR.FR_BLUE, [0.0, 0.0, 1.0, 90.0]))
 
         return AllButtons  # a SoSeparator that contains all bars
 
@@ -663,6 +662,7 @@ class drawAlignmentBars:
         AllBars=coin.SoSeparator()
         # X bars
         for i in range(0, 3):
+
             AllBars.addChild(self.createABar(self.vector[0][i],
                        FR_COLOR.FR_RED,
                        self.Boundary.XLength,[0.0, 0.0, -1.0, 90.0]))
@@ -677,7 +677,7 @@ class drawAlignmentBars:
         for i in range(0, 3):
             AllBars.addChild(self.createABar(self.vector[2][i],
                        FR_COLOR.FR_BLUE,
-                       self.Boundary.ZLength,[0.0, 0.0, 0.0, 0.0]))
+                       self.Boundary.ZLength,[0.0, 0.0, 1.0, 90.0]))
 
         return AllBars  # a SoSeparator that contains all bars
 
