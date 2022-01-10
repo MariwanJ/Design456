@@ -557,19 +557,22 @@ class drawAlignmentBars:
                       color=[FR_COLOR.FR_RED, FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
                       scale=(1, 1, 1), opacity=0,
                       _rotation=[0.0, 0.0, 0.0], _type=0,
-                      _Boundary=[1.0, 1.0, 1.0]):
-        self.p1 = []
-        self.p2 = []
-        self.p3 = []
+                      _Boundary=None):
+        p1 = []
+        p2 = []
+        p3 = []
         # xAxis:
-        self.p1.append(App.Vector(0, 0, 0.0))
-        self.p1.append(App.Vector(0, _pStart/2, 0.0))
-        self.p1.append(App.Vector(0, _pStart, 0.0))
+        if _Boundary is None: 
+            raise ValueError ("Boundary cannot be None")
+        
+        p1.append(App.Vector(0, 0, 0.0))
+        p1.append(App.Vector(0, _pStart/2, 0.0))
+        p1.append(App.Vector(0, _pStart, 0.0))
 
         # yAxis:
-        self.p2.append(App.Vector(0, 0, 0.0))
-        self.p2.append(App.Vector(_pStart/2, 0.0, 0.0))
-        self.p2.append(App.Vector(_pStart, 0.0, 0.0))
+        p2.append(App.Vector(0, 0, 0.0))
+        p2.append(App.Vector(_pStart/2, 0.0, 0.0))
+        p2.append(App.Vector(_pStart, 0.0, 0.0))
 
         # zAxis:
         self.p3.append(App.Vector(0, 0, 0.0))
@@ -591,7 +594,7 @@ class drawAlignmentBars:
         color.rgb = _color
         cone = coin.SoCone()
         cone.bottomRadius = self.barRadius
-        cone.height = _length[i]
+        cone.height = _length
         transBar = coin.SoTranslation()
         transBar.translation.setValue(_vector)
         barLine = coin.SoSeparator()
@@ -606,42 +609,42 @@ class drawAlignmentBars:
         # TODO FIXME: vectors are not correct
         # X button
         for i in range(0, 3):
-            AllButtons.append(createAButton(self.p1[i],
+            AllButtons.append(self.createAButton(self.vector[0][i],
                        FR_COLOR.FR_RED,
                        self.Boundary.XLength))
 
         # Y button
         for i in range(0, 3):
-            AllButtons.append(createABar(self.p2[i],
+            AllButtons.append(self.createAButton(self.vector[1][i],
                        FR_COLOR.FR_GREEN,
                        self.Boundary.YLength))
 
         # Z button
         for i in range(0, 3):
-            AllButtons.append(createAbutton(self.p3[i],
+            AllButtons.append(self.createAButton(self.vector[2][i],
                        FR_COLOR.FR_BLUE,
                        self.Boundary.ZLength))
 
         return AllButtons  # a SoSeparator that contains all bars
 
-    def drawBase(self):
+    def drawBars(self):
 
         AllBars=coin.SoSeparator()
         # X bars
         for i in range(0, 3):
-            AllBars.addChild(createABar(self.p1[i],
+            AllBars.addChild(self.createABar(self.vector[0][i],
                        FR_COLOR.FR_RED,
                        self.Boundary.XLength))
 
         # Y bars
         for i in range(0, 3):
-            AllBars.addChild(createABar(self.p2[i],
+            AllBars.addChild(self.createABar(self.vector[1][i],
                        FR_COLOR.FR_GREEN,
                        self.Boundary.YLength))
 
         # Z bars
         for i in range(0, 3):
-            AllBars.addChild(createABar(self.p3[i],
+            AllBars.addChild(self.createABar(self.vector[2][i],
                        FR_COLOR.FR_BLUE,
                        self.Boundary.ZLength))
 
@@ -692,7 +695,9 @@ class drawAlignmentBars:
             if self.Bartype == 0:
                 pass
 
-
+                self.barSoSeparator = self.drawBars()
+                self.buttonSoSeparator = self.drawButtons()
+                return(self.barSoSeparator,self.buttonSoSeparator)
 
             elif self.Bartype == 1:
                 pass
