@@ -10,7 +10,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
-__updated__ = '2022-01-09 21:58:06'
+__updated__ = '2022-01-10 20:32:37'
 
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
@@ -553,44 +553,51 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
 
 
 class drawAlignmentBars:
-    def __init__(self, _pStart=App.Vector(1.0, 1.0, 1.0),
+    def __init__(self,_Boundary=None ,
                       color=[FR_COLOR.FR_RED, FR_COLOR.FR_GREEN, FR_COLOR.FR_BLUE],
                       scale=(1, 1, 1), opacity=0,
-                      _rotation=[0.0, 0.0, 0.0], _type=0,
-                      _Boundary=None):
-        p1 = []
-        p2 = []
-        p3 = []
+                      _rotation=[0.0, 0.0, 0.0], _type=0):
+
         # xAxis:
         if _Boundary is None: 
             raise ValueError ("Boundary cannot be None")
         
-        p1.append(App.Vector(0, 0, 0.0))
-        p1.append(App.Vector(0, _pStart/2, 0.0))
-        p1.append(App.Vector(0, _pStart, 0.0))
+        self.vector = None
+        self.separatorX = None
+        self.separatorY = None
+        self.separatorZ = None
 
-        # yAxis:
-        p2.append(App.Vector(0, 0, 0.0))
-        p2.append(App.Vector(_pStart/2, 0.0, 0.0))
-        p2.append(App.Vector(_pStart, 0.0, 0.0))
-
-        # zAxis:
-        self.p3.append(App.Vector(0, 0, 0.0))
-        self.p3.append(App.Vector(0.0, 0.0, _pStart/2))
-        self.p3.append(App.Vector(0.0, 0.0, _pStart))
-        self.separatorX = []
-        self.separatorY = []
-        self.separatorZ = []
-        self.vector = [p1, p2, p3]
         self.color = color
         self.Bartype = _type
         self.root = coin.SoSeparator()
         self.Boundary = _Boundary
         self.barRadius = 0.3  # constant
         self.ButtonRadius = 0.3  # constant
+        p1 = []
+        p2 = []
+        p3 = []
+        _pStart = App.Vector(self.Boundary.XMin , self.Boundary.YMin, self.Boundary.ZMin)
+        p1.append(App.Vector(_pStart.x, _pStart.y, _pStart.z))
+        p1.append(App.Vector(_pStart.x, _pStart.y+self.Boundary.YLength/2, _pStart.z))
+        p1.append(App.Vector(_pStart.x, _pStart.y+self.Boundary.YLength, _pStart.z))
 
-    def createABar(self, _vector, _color, _length):
+        # yAxis:
+        p2.append(App.Vector(_pStart.x, _pStart.y, _pStart.z))
+        p2.append(App.Vector(_pStart.x+ self.Boundary.XLength/2, _pStart.y, _pStart.z))
+        p2.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z))
+
+        # zAxis:
+        p3.append(App.Vector(_pStart.x, _pStart.y, _pStart.z))
+        p3.append(App.Vector(_pStart.x, _pStart.y, self.Boundary.ZLength/2+_pStart.z))
+        p3.append(App.Vector(_pStart.x, _pStart.y, self.Boundary.ZLength+_pStart.z))
+        self.vector = [p1, p2, p3]
+
+    def createABar(self, _vector, _color, _length, _rotation):
         color = coin.SoBaseColor()
+        transform = coin.SoTransform()
+        tempR = coin.SbVec3f()
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+        transform.rotation.setValue(tempR, math.radians(_rotation[3]))
         color.rgb = _color
         cone = coin.SoCone()
         cone.bottomRadius = self.barRadius
@@ -600,7 +607,26 @@ class drawAlignmentBars:
         barLine = coin.SoSeparator()
         barLine.addChild(color)
         barLine.addChild(transBar)
+        barLine.addChild(transform)
         barLine.addChild(cone)
+        return barLine
+
+    def createAButton(self, _vector, _color, _rotation):
+        color = coin.SoBaseColor()
+        color.rgb = _color
+        transform = coin.SoTransform()
+        tempR = coin.SbVec3f()
+        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
+        transform.rotation.setValue(tempR, math.radians(_rotation[3]))
+        sphere = coin.SoSphere()
+        sphere.bottomRadius = self.ButtonRadius
+        transBar = coin.SoTranslation()
+        transBar.translation.setValue(_vector)
+        barLine = coin.SoSeparator()
+        barLine.addChild(color)
+        barLine.addChild(transBar)
+        barLine.addChild(transform)
+        barLine.addChild(sphere)
         return barLine
 
     def drawButtons(self):
@@ -609,21 +635,26 @@ class drawAlignmentBars:
         # TODO FIXME: vectors are not correct
         # X button
         for i in range(0, 3):
-            AllButtons.append(self.createAButton(self.vector[0][i],
-                       FR_COLOR.FR_RED,
-                       self.Boundary.XLength))
+            extraLength=App.Vector(self.Boundary.XLength, 0.0, 0.0)
+            extraLength= extraLength.add(self.vector[0][i])
+            AllButtons.append(self.createAButton(extraLength,
+                       FR_COLOR.FR_RED,[0.0, 0.0, 1.0, 90.0]))
 
         # Y button
         for i in range(0, 3):
-            AllButtons.append(self.createAButton(self.vector[1][i],
-                       FR_COLOR.FR_GREEN,
-                       self.Boundary.YLength))
+            extraLength = App.Vector(0.0, self.Boundary.YLength, 0.0)
+            extraLength = extraLength.add(self.vector[0][i])
+
+            AllButtons.append(self.createAButton(extraLength,
+                       FR_COLOR.FR_GREEN, [0.0, 0.0, 0.0, 0.0]))
 
         # Z button
         for i in range(0, 3):
-            AllButtons.append(self.createAButton(self.vector[2][i],
-                       FR_COLOR.FR_BLUE,
-                       self.Boundary.ZLength))
+            extraLength=App.Vector(0.0,0., self.Boundary.ZLength)
+            extraLength= extraLength.add(self.vector[2][i])
+
+            AllButtons.append(self.createAButton(extraLength,
+                       FR_COLOR.FR_BLUE, [0.0, 0.0, 0.0,0.0]))
 
         return AllButtons  # a SoSeparator that contains all bars
 
@@ -634,19 +665,19 @@ class drawAlignmentBars:
         for i in range(0, 3):
             AllBars.addChild(self.createABar(self.vector[0][i],
                        FR_COLOR.FR_RED,
-                       self.Boundary.XLength))
+                       self.Boundary.XLength,[0.0, 0.0, -1.0, 90.0]))
 
         # Y bars
         for i in range(0, 3):
             AllBars.addChild(self.createABar(self.vector[1][i],
                        FR_COLOR.FR_GREEN,
-                       self.Boundary.YLength))
+                       self.Boundary.YLength,[0.0, 0.0, 0.0, 0.0]))
 
         # Z bars
         for i in range(0, 3):
             AllBars.addChild(self.createABar(self.vector[2][i],
                        FR_COLOR.FR_BLUE,
-                       self.Boundary.ZLength))
+                       self.Boundary.ZLength,[0.0, 0.0, 0.0, 0.0]))
 
         return AllBars  # a SoSeparator that contains all bars
 
@@ -655,41 +686,6 @@ class drawAlignmentBars:
         buttons=[]
 
     def Activate(self):
-
-        # # Each line will be saved separately in the
-        # self.separatorX.append(
-        #     self.drawOneBar(self.Boundary.XMax-self.Boundary.Xin,
-        #                     0.3,0.3,FR_COLOR.RED))
-        # self.separatorX.append(
-        #     self.drawOneBar(self.Boundary.XMax-self.Boundary.Xin,
-        #                     0.3,0.3,FR_COLOR.RED))
-        # self.separatorX.append(
-        #     self.drawOneBar(self.Boundary.XMax-self.Boundary.Xin,
-        #                     0.3,0.3,FR_COLOR.RED))
-
-        # self.separatorY = [coin.SoSeparator(), coin.SoSeparator(), coin.SoSeparator()]
-        # self.separatorZ = [coin.SoSeparator(), coin.SoSeparator(), coin.SoSeparator()]
-
-        # self.tempRX = coin.SbVec3f()
-        # self.tempRX.setValue(1, 0, 0)
-
-        # self.tempRY = coin.SbVec3f()
-        # self.tempRY.setValue(0, 1, 0)
-
-        # self.tempRZ = coin.SbVec3f()
-        # self.tempRZ.setValue(0, 0, 1)
-
-        # self.transformX = coin.SoTransform()
-        # self.transformY = coin.SoTransform()
-        # self.transformZ = coin.SoTransform()
-
-        # self.transformX.rotation.setValue(tempRY, math.radians(_rotation[0]))
-        # self.transformY.rotation.setValue(tempRX, math.radians(_rotation[1]))
-        # self.transformZ.rotation.setValue(tempRZ, math.radians(_rotation[2]))
-
-        # self.material = coin.SoMaterial()
-        # self.material.transparency.setValue(opacity)
-        # self.material.diffuseColor.setValue(coin.SbColor(color))
 
         try:
             if self.Bartype == 0:

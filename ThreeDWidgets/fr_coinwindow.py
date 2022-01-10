@@ -42,7 +42,7 @@ import time  # For double click detection
 This is a class for coin3D Window
 '''
 
-__updated__ = '2021-12-31 08:56:59'
+__updated__ = '2022-01-10 16:46:07'
 
 
 @dataclass
@@ -79,7 +79,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
             400, 400, 0)], label: str = [[]]):
         super().__init__(vectors, label)
-        self.w_view = self.view = Gui.ActiveDocument.ActiveView
+        self.w_view =  Gui.ActiveDocument.ActiveView
         self.callbackMove = None
         self.callbackClick = None
         self.callbackKey = None
@@ -96,11 +96,11 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.w_events = None
         self.w_e_state = None  # Keep the CTL,SHIFT, ALT KEY SAVED HERE
 
-        self.Root_SceneGraph = Gui.ActiveDocument.ActiveView.getSceneGraph()
+        self.Root_SceneGraph = self.w_view.getSceneGraph()
         self.w_mainfrCoinWindow = self
         self.w_parent = self  # No parent and this is the main window
         self.w_widgetType = FR_WidgetType.FR_COINWINDOW
-        self.view = Gui.ActiveDocument.ActiveView
+
 
     def show(self):
         """
@@ -113,7 +113,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         distribute events and other things that might be added 
         later to this class.
         """
-        self.w_view = self.view = Gui.ActiveDocument.ActiveView
+        self.w_view = Gui.ActiveDocument.ActiveView
         self.addCallbacks()
         self.draw()
         super().show()  # Show all children also
