@@ -10,7 +10,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
-__updated__ = '2022-01-11 21:59:43'
+__updated__ = '2022-01-11 22:10:39'
 
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
@@ -573,7 +573,7 @@ class drawAlignmentBars:
         self.Boundary = _Boundary
         self.Average = (_Boundary.XLength+_Boundary.YLength+_Boundary.ZLength)/9
         self.barRadius =     self.Average
-        self.ButtonRadius =  self.Average
+        self.ButtonRadius =  self.Average*1.2
 
         p1 = []
         p2 = []
@@ -621,7 +621,7 @@ class drawAlignmentBars:
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         transform.rotation.setValue(tempR, math.radians(_rotation[3]))
         sphere = coin.SoSphere()
-        sphere.bottomRadius = self.ButtonRadius
+        sphere.radius = self.ButtonRadius
         transBar = coin.SoTranslation()
         transBar.translation.setValue(_vector)
         barLine = coin.SoSeparator()
