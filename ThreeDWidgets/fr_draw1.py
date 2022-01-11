@@ -10,7 +10,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
-__updated__ = '2022-01-10 21:06:55'
+__updated__ = '2022-01-11 21:59:43'
 
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
@@ -571,8 +571,10 @@ class drawAlignmentBars:
         self.Bartype = _type
         self.root = coin.SoSeparator()
         self.Boundary = _Boundary
-        self.barRadius = 0.3  # constant
-        self.ButtonRadius = 0.3  # constant
+        self.Average = (_Boundary.XLength+_Boundary.YLength+_Boundary.ZLength)/9
+        self.barRadius =     self.Average
+        self.ButtonRadius =  self.Average
+
         p1 = []
         p2 = []
         p3 = []
@@ -599,16 +601,16 @@ class drawAlignmentBars:
         tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         transform.rotation.setValue(tempR, math.radians(_rotation[3]))
         color.rgb = _color
-        cone = coin.SoCone()
-        cone.bottomRadius = self.barRadius
-        cone.height = _length
+        cylinder = coin.SoCylinder()
+        cylinder.height = _length
+        cylinder.radius = self.barRadius
         transBar = coin.SoTranslation()
         transBar.translation.setValue(_vector)
         barLine = coin.SoSeparator()
         barLine.addChild(color)
         barLine.addChild(transBar)
         barLine.addChild(transform)
-        barLine.addChild(cone)
+        barLine.addChild(cylinder)
         return barLine
 
     def createAButton(self, _vector, _color, _rotation):
