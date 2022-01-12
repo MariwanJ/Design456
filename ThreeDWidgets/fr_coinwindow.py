@@ -42,7 +42,7 @@ import time  # For double click detection
 This is a class for coin3D Window
 '''
 
-__updated__ = '2022-01-10 16:46:07'
+__updated__ = '2022-01-12 20:12:50'
 
 
 @dataclass
@@ -381,7 +381,16 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         # This section is from DRAFT
         # It must help in finding the correct node
         # which represent the widget.
-        """Get edit node from given screen position."""
+        """[Get the node from given mouse / screen position.]
+
+        Args:
+            mouse_pos ([type]): [mouse position clicked or mouse is over the position]
+            pick_radius ([tuple]): [ Radius of the circle where the mouse position is surrounded by]
+            TargetNode ([SoSeparator]): [coin SoSeparator]
+
+        Returns:
+            [SoSeparator]: [Return the coin object if it is found. None if not found]
+        """
         viewer = Gui.ActiveDocument.ActiveView.getViewer()
         render_manager = viewer.getSoRenderManager()
         ray_pick = coin.SoRayPickAction(render_manager.getViewportRegion())
