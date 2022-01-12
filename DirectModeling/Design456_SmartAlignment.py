@@ -38,7 +38,7 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets import fr_arrow_widget
 from draftutils.translate import translate  # for translation
 MouseScaleFactor = 1.5      # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
-__updated__ = '2022-01-05 23:08:27'
+__updated__ = '2022-01-12 19:52:17'
 
 
 #TODO: FIXME : NOT IMPLEMENTED
@@ -123,8 +123,28 @@ class Design456_SmartAlignment:
         self.objectType = None  # Either shape, Face or Edge.
         self.Originalname = ''
         self.direction=None
+        
 
- 
+    def reCountBoundary(self):
+        a = self.selectedObj[0].Object.Shape.Boundary
+        b = self.selectedObj[1].Object.Shape.Boundary
+        bTotal = ba
+
+        bTotal.XMax = maximum(a.XLength, b.XLength)
+        bTotal.XMin = minimum(a.XLength, b.XLength)
+        bTotal.YMax = maximum(a.YLength, b.YLength)
+        bTotal.YMin = minimum(a.YLength, b.YLength) 
+        bTotal.ZMax = maximum(a.ZLength, b.ZLength)
+        bTotal.ZMin = minimum(a.ZLength, b.ZLength)
+
+        bTotal.XLength = bTtotal.Xmax - bTtotal.Xmin  
+        bTotal.YLength = bTtotal.Ymax - bTtotal.Ymin
+        bTotal.ZLength = bTtotal.Zmax - bTtotal.Zmin
+        bTotal.Center = App.Vector(bTotal.XLength/2, bTotal.YLength/2, bTotal.ZLength/2)
+        bTotal.DiagonalLength = sqrt(powers(bTotal.XLength,2), 
+                                     powers(bTotal.YLength,2),
+                                     powers(bTotal.ZLength,2) )
+
     def Activated(self):
         import ThreeDWidgets.fr_coinwindow as win
         self.selectedObj.clear()

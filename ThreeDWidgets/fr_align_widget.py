@@ -49,34 +49,34 @@ Example how to use this widget.
 
 
 """
-__updated__ = '2022-01-09 17:48:03'
+__updated__ = '2022-01-12 19:55:02'
 
 
-# class object will be used as object holder between arrow widget and the callback
+# class object will be used as object holder between Align widget and the callback
 @dataclass
 class userDataObject:
     __slots__ = ['Align', 'events', 'callerObject']
     def __init__(self):
-        self.Align = None     # the arrow widget object
+        self.Align = None     # the Align widget object
         self.events = None     # events - save handle events here
-        self.callerObject = None   # Class uses the fr_arrow_widget
+        self.callerObject = None   # Class uses the fr_Align_widget
 
 
 def callback(userData: userDataObject = None):
     """
-            This function will run the when the arrow is clicked 
+            This function will run the when the Align is clicked 
             event callback. 
     """
     # Subclass this and impalement the callback or just change the callback function
-    print("dummy arrow-widget callback")
+    print("dummy Align-widget callback")
 
 
 class Fr_Align_Widget(fr_widget.Fr_Widget):
 
     """
-    This class is for drawing a arrow in coin3D world
+    This class is for drawing a Align in coin3D world
     """
-    # Big mistake  regarding the arrows: Read https://grey.colorado.edu/coin3d/classSoTransform.html#a357007d906d1680a72cd73cf974a6869
+    # Big mistake  regarding the Aligns: Read https://grey.colorado.edu/coin3d/classSoTransform.html#a357007d906d1680a72cd73cf974a6869
     # Don't do that
 
     def __init__(self, vectors: List[App.Vector] = [],
@@ -85,7 +85,7 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
                  _lblColor=FR_COLOR.FR_WHITE,
                  _rotation=[0.0, 0.0, 1.0, 0.0],
                   _scale: List[float] = [3, 3, 3],
-                 _arrowType=0,
+                 _AlignType=0,
                  _opacity: float = 0.0):
         super().__init__(vectors, label)
 
@@ -95,7 +95,7 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         self.w_callback_ = callback  # External function
         self.w_lbl_calback_ = callback  # External function
         self.w_KB_callback_ = callback  # External function
-        self.w_move_callback_ = callback  # External function
+        self.w_btn_callback_ = callback  # External function
         self.w_wdgsoSwitch = coin.SoSwitch()
         self.w_color = _color  # Default color is green
         self.w_rotation = _rotation  # (x,y,z), Angle
@@ -106,8 +106,8 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         self.w_lblColor = _lblColor
         self.w_opacity = _opacity
         self.w_scale = _scale
-        self.sphereObjs=[] #9 sphere objects
-        self.lineObjs=[]   #
+        self.sphereObjs = [] #9 sphere objects
+        self.BaseObjs =  None   #
 
 
     def lineWidth(self, width):
@@ -129,8 +129,29 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nonthing to do
 
-        clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+        btn0 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                               self.w_pick_radius, self.w_widgetSoNodes)
+        btn1 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
+        btn2 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
+        btn3 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
+        btn4 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
+        btn5 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
+        btn6 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
+        btn7 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
+        btn8 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                              self.w_pick_radius, self.w_widgetSoNodes)
+
+
+
+
+
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                 self.w_pick_radius, self.w_widgetlblSoNodes)
 
@@ -153,7 +174,7 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
             # Release is accepted even if the mouse is not over the widget
             if self.releaseDrag == 1 or self.releaseDrag == 0:
                 self.releaseDrag = -1
-                # Release callback should be activated even if the arrow != under the mouse
+                # Release callback should be activated even if the Align != under the mouse
                 self.do_callback()
                 return 1
 
@@ -224,14 +245,98 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         #self.w_lbluserData.vectors[0] += App.Vector(0 , 0 , 3)
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
+    
+    def clicked_obj(userData: fr_Align_widget.userDataObject = None):
+        try:
+            events = userData.events
+            linktocaller = userData.callerObject
+            if type(events) != int:
+                return
 
-    def move(self, newVecPos):
-        """
-        Move the object to the new location referenced by the 
-        left-top corner of the object. Or the start of the arrow
-        if it is an arrow.
-        """
-        self.resize([newVecPos[0], newVecPos[1]])
+            btn1 = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                            self.w_pick_radius, self.w_widgetSoNodes)
+            
+            
+            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                                self.w_pick_radius, self.w_widgetlblSoNodes)
+            linktocaller.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+                                                self.w_parent.w_lastEventXYZ.Coin_y,
+                                                self.w_parent.w_lastEventXYZ.Coin_z)
+
+            if clickwdgdNode is None and clickwdglblNode is None:
+                if linktocaller.run_Once is False:
+                    return 0  # nothing to do
+
+            if linktocaller.run_Once is False:
+                linktocaller.run_Once = True
+                linktocaller.mouseToArrowDiff = linktocaller.endVector.sub(
+                    userData.ArrowObj.w_vector[0])
+                # Keep the old value only first time when drag start
+                linktocaller.startVector = linktocaller.endVector
+                if not self.has_focus():
+                    self.take_focus()
+
+            scale = 1.0
+
+            MovementsSize = linktocaller.endVector.sub(
+                linktocaller.mouseToArrowDiff)
+            (scaleX, scaleY, scaleZ) = calculateScale(
+                self, linktocaller, MovementsSize)
+
+            if self.w_color == FR_COLOR.FR_OLIVEDRAB:
+                scale = scaleY
+    #            self.w_vector[0].y = MovementsSize.y #+linktocaller.mmAwayFrom3DObject
+
+            elif self.w_color == FR_COLOR.FR_RED:
+                #            self.w_vector[0].x = MovementsSize.x #+linktocaller.mmAwayFrom3DObject
+                scale = scaleX
+
+            elif self.w_color == FR_COLOR.FR_BLUE:
+                #            self.w_vector[0].z = MovementsSize.z #+linktocaller.mmAwayFrom3DObject
+                scale = scaleZ
+
+            linktocaller.scaleLBL.setText("scale= "+str(scale))
+
+            linktocaller.smartInd[1].changeLabelstr(
+                "  Scale= " + str(round(scaleX, 4)))
+            linktocaller.smartInd[0].changeLabelstr(
+                "  Scale= " + str(round(scaleY, 4)))
+            linktocaller.smartInd[2].changeLabelstr(
+                "  Scale= " + str(round(scaleZ, 4)))
+            linktocaller.resizeArrowWidgets()
+            linktocaller.smartInd[0].redraw()
+            linktocaller.smartInd[1].redraw()
+            linktocaller.smartInd[2].redraw()
+
+            ResizeObject(self, linktocaller, MovementsSize)
+
+        except Exception as err:
+            App.Console.PrintError("'callback' Failed. "
+                                "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+    def buttonPress_cb(self, button):
+        if(button==0):
+            pass
+        elif (button==1):
+            pass
+        elif (button==2):
+            pass
+        elif (button==3):
+            pass
+        elif (button==4):
+            pass
+        elif (button==5):
+            pass
+        elif (button==6):
+            pass
+        elif (button==7):
+            pass
+        elif (button==8):
+            pass
 
     def show(self):
         self.w_visible = 1

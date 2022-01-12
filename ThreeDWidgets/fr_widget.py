@@ -44,7 +44,7 @@ from abc import abstractmethod
 # ********************************************************************************************************
 from dataclasses import dataclass
 
-__updated__ = '2021-12-31 08:57:48'
+__updated__ = '2022-01-12 19:57:34'
 
 
 @dataclass
@@ -531,13 +531,13 @@ class Fr_Widget (object):
         if self.w_wdgsoSwitch is not None:
             self.w_wdgsoSwitch.removeAllChildren()
 
-    def removeSoSwitch(Self):
-        if Self.w_wdgsoSwitch is not None:
+    def removeSoSwitch(self):
+        if self.w_wdgsoSwitch is not None:
             try:
-                del Self.w_wdgsoSwitch
+                del self.w_wdgsoSwitch
             except:
                 pass  # must be already removed .. don't care
-        Self.w_wdgsoSwitch = None
+        self.w_wdgsoSwitch = None
 
     def changeLabelstr(self, newlabel: str = ""):
         self.w_label = [newlabel,]
