@@ -39,11 +39,12 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_align_widget import Fr_Align_Widget
 from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
+from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-01-13 11:21:26'
+__updated__ = '2022-01-13 13:09:59'
 
 
-#TODO: FIXME : NOT IMPLEMENTED
+# TODO: FIXME : NOT IMPLEMENTED
 
 #                        CALLBACKS              #
 
@@ -51,6 +52,8 @@ def callback_release(userData: userDataObject = None):
     print("release callback")
 
 # All buttons callbacks
+
+
 def callback_btn0(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
@@ -58,6 +61,7 @@ def callback_btn0(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn0 callback")
+
 
 def callback_btn1(userData: userDataObject = None):
     """
@@ -67,6 +71,7 @@ def callback_btn1(userData: userDataObject = None):
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn1 callback")
 
+
 def callback_btn2(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
@@ -74,6 +79,7 @@ def callback_btn2(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn2 callback")
+
 
 def callback_btn3(userData: userDataObject = None):
     """
@@ -92,6 +98,7 @@ def callback_btn4(userData: userDataObject = None):
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn4 callback")
 
+
 def callback_btn5(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
@@ -99,6 +106,7 @@ def callback_btn5(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn5 callback")
+
 
 def callback_btn6(userData: userDataObject = None):
     """
@@ -108,6 +116,7 @@ def callback_btn6(userData: userDataObject = None):
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn6 callback")
 
+
 def callback_btn7(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
@@ -115,6 +124,7 @@ def callback_btn7(userData: userDataObject = None):
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn7 callback")
+
 
 def callback_btn8(userData: userDataObject = None):
     """
@@ -128,77 +138,126 @@ def callback_btn8(userData: userDataObject = None):
 #                          END OF CALLBACKS                              #
 
 
-
 class Design456_SmartAlignment:
     """
-        Apply Alignment to any 3D object by selecting the object, a Face or one or multiple edges 
-        Radius of the Alignment is counted by dragging the arrow towards the negative Z axis.
+        Apply Alignment to any 3D object by selecting the objects 
+        Press any button to alignment the objects
     """
+
     def __init__(self):
-        self._vector = App.Vector(0.0, 0.0, 0.0) # not used dummy value
+        self._vector = App.Vector(0.0, 0.0, 0.0)  # not used dummy value
         self.mw = None
         self.dialog = None
         self.tab = None
         self.smartInd = None
         self._mywin = None
         self.b1 = None
-        self.AlignmentLBL = None
         self.endVector = None
         self.startVector = None
         # We will make two object, one for visual effect and the other is the original
         self.selectedObj = []
         # 0 is the original    1 is the fake one (just for interactive effect)
         self.objectType = None  # Either shape, Face or Edge.
-        self.NewBoundary=None
-        
+        self.NewBoundary = None
+        self.savedColors = []
+
+    def setObjctsColor(self, newValue=True):
+        if newValue is True:
+            self.selectedObj[0].Object.ViewObject.DiffuseColor = self.savedColors[0]
+            for i in range(1, len(self.selectedObj)):
+                self.selectedObj[i].Object.ViewObject.DiffuseColor = self.savedColors[1]
+        else:
+            self.selectedObj[0].Object.ViewObject.DiffuseColor = [
+                FR_COLOR.FR_DEEPSKYBLUE]
+            for i in range(1, len(self.selectedObj)):
+                self.selectedObj[i].Object.ViewObject.DiffuseColor = [
+                    FR_COLOR.FR_ORANGE]
+
+    def getValues(self):
+
+        return Results
 
     def CalculateBoundary(self):
-        a = self.selectedObj[0].Object.Shape.BoundBox
-        b = self.selectedObj[1].Object.Shape.BoundBox
-        
-        XMax = max(a.XMax, b.XMax)
-        XMin = min(a.XMin, b.XMin)
-        YMax = max(a.YMax, b.YMax)
-        YMin = min(a.YMin, b.YMin) 
-        ZMax = max(a.ZMax, b.ZMax)
-        ZMin = min(a.ZMin, b.ZMin)
-        #App.BoundBox([Xmin,Ymin,Zmin,Xmax,Ymax,Zmax])
+        Results = []
+        min = self.selectedObj[0].Object.Shape.BoundBox.XMin
+        for i in range(1, len(self.selectedObj)):
+            if self.selectedObj[i].Object.Shape.BoundBox.XMin < min :
+                min = self.selectedObj[i].Object.Shape.BoundBox.XMin
+        Results.append(min)
+
+        min = self.selectedObj[0].Object.Shape.BoundBox.YMin
+        for i in range(1, len(self.selectedObj)):
+            if self.selectedObj[i].Object.Shape.BoundBox.YMin < min :
+                min = self.selectedObj[i].Object.Shape.BoundBox.YMin
+        Results.append(min)
+        min = self.selectedObj[0].Object.Shape.BoundBox.ZMin
+        for i in range(1, len(self.selectedObj)):
+            if self.selectedObj[i].Object.Shape.BoundBox.ZMin < min :
+                min = self.selectedObj[i].Object.Shape.BoundBox.ZMin
+        Results.append(min)
+        max = self.selectedObj[0].Object.Shape.BoundBox.XMax
+        for i in range(1, len(self.selectedObj)):
+            if self.selectedObj[i].Object.Shape.BoundBox.XMax > max :
+                max = self.selectedObj[i].Object.Shape.BoundBox.XMax
+        Results.append(max)
+        max = self.selectedObj[0].Object.Shape.BoundBox.YMax
+        for i in range(1, len(self.selectedObj)):
+            if self.selectedObj[i].Object.Shape.BoundBox.YMax > max :
+                max = self.selectedObj[i].Object.Shape.BoundBox.YMax
+        Results.append(max)        
+        max = self.selectedObj[0].Object.Shape.BoundBox.ZMax
+        for i in range(1, len(self.selectedObj)):
+            if self.selectedObj[i].Object.Shape.BoundBox.ZMax > max :
+                max = self.selectedObj[i].Object.Shape.BoundBox.ZMax
+        Results.append(max)
+        XMin = Results[0]
+        YMin = Results[1]
+        ZMin = Results[2]
+        XMax = Results[3]
+        YMax = Results[4]
+        ZMax = Results[5]
+        # App.BoundBox([Xmin,Ymin,Zmin,Xmax,Ymax,Zmax])
         if self.NewBoundary is not None:
-            try: 
+            try:
                 del self.NewBoundary
             except:
                 pass
-        self.NewBoundary = App.BoundBox(XMin,YMin,ZMin,XMax,YMax,ZMax)
+        self.NewBoundary = App.BoundBox(XMin, YMin, ZMin, XMax, YMax, ZMax)
 
-        #self.NewBoundary.XLength = self.NewBoundary.XMax - self.NewBoundary.XMin  
+        #self.NewBoundary.XLength = self.NewBoundary.XMax - self.NewBoundary.XMin
         #self.NewBoundary.YLength = self.NewBoundary.YMax - self.NewBoundary.YMin
         #self.NewBoundary.ZLength = self.NewBoundary.ZMax - self.NewBoundary.ZMin
-        #self.NewBoundary.Center = App.Vector(self.NewBoundary.XLength/2, 
+        # self.NewBoundary.Center = App.Vector(self.NewBoundary.XLength/2,
         #                                    self.NewBoundary.YLength/2,
         #                                     self.NewBoundary.ZLength/2)
-        #self.NewBoundary.DiagonalLength = sqrt(powers(self.NewBoundary.XLength,2), 
+        # self.NewBoundary.DiagonalLength = sqrt(powers(self.NewBoundary.XLength,2),
         #                             powers(self.NewBoundary.YLength,2),
         #                             powers(self.NewBoundary.ZLength,2) )
 
     def Activated(self):
         import ThreeDWidgets.fr_coinwindow as win
         self.selectedObj.clear()
-        sel=Gui.Selection.getSelectionEx()
+        sel = Gui.Selection.getSelectionEx()
         if len(sel) < 2:
             # An object must be selected
             errMessage = "Select at least two objects to Align them"
             faced.errorDialog(errMessage)
             return
-        
+
         self.selectedObj = sel
         self.CalculateBoundary()
-        print(self.NewBoundary)
-        self.smartInd = Fr_Align_Widget(self.NewBoundary, ["Align Tool",])
+        self.savedColors = [self.selectedObj[0].Object.ViewObject.DiffuseColor,
+                            self.selectedObj[1].Object.ViewObject.DiffuseColor]
+        # Change the colors  -
+        # First obj (base) get a color, and others get another color
+        self.setObjctsColor(False)
+
+        self.smartInd = Fr_Align_Widget(self.NewBoundary, ["Align Tool", ])
 
         self.smartInd.w_callback_ = callback_release
-        self.w_btnCallbacks_ = [callback_btn0, 
-                                callback_btn1, 
-                                callback_btn2, 
+        self.w_btnCallbacks_ = [callback_btn0,
+                                callback_btn1,
+                                callback_btn2,
                                 callback_btn3,
                                 callback_btn4,
                                 callback_btn5,
@@ -213,7 +272,7 @@ class Design456_SmartAlignment:
         self._mywin.addWidget(self.smartInd)
         mw = self.getMainWindow()
         self._mywin.show()
-        
+
     def __del__(self):
         """ 
             class destructor
@@ -259,18 +318,18 @@ class Design456_SmartAlignment:
             self.dialog.resize(200, 450)
             self.dialog.setWindowTitle("Smart Alignment")
             la = QtGui.QVBoxLayout(self.dialog)
-            e1 = QtGui.QLabel("(Smart Alignment)\nFor quicker\nApplying Alignment")
+            e1 = QtGui.QLabel(
+                "(Smart Alignment)\nAlign objects to the same\nposition by pressing the round buttons")
             commentFont = QtGui.QFont("Times", 12, True)
-            self.AlignmentLBL = QtGui.QLabel("Radius=")
             e1.setFont(commentFont)
             la.addWidget(e1)
-            la.addWidget(self.AlignmentLBL)
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
             okbox.setStandardButtons(
                 QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
             la.addWidget(okbox)
-            QtCore.QObject.connect(okbox, QtCore.SIGNAL("accepted()"), self.hide)
+            QtCore.QObject.connect(
+                okbox, QtCore.SIGNAL("accepted()"), self.hide)
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             return self.dialog
@@ -286,20 +345,30 @@ class Design456_SmartAlignment:
         """
         Hide the widgets. Remove also the tab.
         """
-        self.dialog.hide()
-        del self.dialog
-        dw = self.mw.findChildren(QtGui.QDockWidget)
-        newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-        
-        App.ActiveDocument.recompute()
-        self.__del__()  # Remove all smart Alignment 3dCOIN widgets
+        try:
+            self.setObjctsColor(True)
+            self.dialog.hide()
+            del self.dialog
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            newsize = self.tab.count()  # Todo : Should we do that?
+            self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
 
+            App.ActiveDocument.recompute()
+            self.__del__()  # Remove all smart Alignment 3dCOIN widgets
+            
+        except Exception as err:
+            App.Console.PrintError("'Design456_Alignment' getMainWindow-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'Design456_SmartAlignment.svg',
             'MenuText': ' Smart Alignment',
                         'ToolTip':  ' Smart Alignment'
         }
+
 
 Gui.addCommand('Design456_SmartAlignment', Design456_SmartAlignment())

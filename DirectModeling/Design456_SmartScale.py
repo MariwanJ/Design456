@@ -40,7 +40,7 @@ from PySide import QtGui, QtCore
 from draftutils.translate import translate  # for translate
 
 SeperateLinesFromObject = 4
-__updated__ = '2021-12-31 08:58:00'
+__updated__ = '2022-01-13 13:06:13'
 
 
 def smartLinecallback(smartLine, obj, parentlink):
@@ -337,12 +337,20 @@ class Design456_SmartScale:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def hide(self):
-        self.dialog.hide()
-        del self.dialog
-        dw = self.mw.findChildren(QtGui.QDockWidget)
-        newsize = self.tab.count()
-        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-        self.__del__()  # Remove all smart scale 3dCOIN widgets
+        try:
+            self.dialog.hide()
+            del self.dialog
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            newsize = self.tab.count()
+            self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+            self.__del__()  # Remove all smart scale 3dCOIN widgets
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_SmartScale' hide-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
         return {

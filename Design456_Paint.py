@@ -44,6 +44,7 @@ __updated__ = '2021-12-31 08:56:28'
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
         They are 3D shapes that are merged if they are intersecting each other.
+        Select the correct plane for drawing before you click.
     ]
 
     """

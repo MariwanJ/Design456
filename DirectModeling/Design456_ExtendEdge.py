@@ -43,7 +43,7 @@ import Part as _part
 import FACE_D as faced
 import math
 
-__updated__ = '2022-01-02 19:12:37'
+__updated__ = '2022-01-13 13:07:37'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -624,23 +624,31 @@ class Design456_ExtendEdge:
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
-        App.ActiveDocument.commitTransaction() #undo reg.
-        
-        self.dialog.hide()
-        self.recreateObject()
+        try:
+            App.ActiveDocument.commitTransaction() #undo reg.
 
-        # Remove coin objects
-        self.coinFaces.removeAllChildren()
-        self.sg.removeChild(self.coinFaces)
+            self.dialog.hide()
+            self.recreateObject()
 
-        del self.dialog
-        dw = self.mw.findChildren(QtGui.QDockWidget)
-        newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
+            # Remove coin objects
+            self.coinFaces.removeAllChildren()
+            self.sg.removeChild(self.coinFaces)
 
-        App.ActiveDocument.commitTransaction()  # undo reg.
+            del self.dialog
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            newsize = self.tab.count()  # Todo : Should we do that?
+            self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
 
-        self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
+            App.ActiveDocument.commitTransaction()  # undo reg.
+
+            self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
+
+        except Exception as err:
+            App.Console.PrintError("'ExtendEdge' hide- Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def __del__(self):
         """
@@ -688,7 +696,7 @@ class Design456_ExtendEdge:
             del self
 
         except Exception as err:
-            App.Console.PrintError("'Activated' Failed. "
+            App.Console.PrintError("'ExtendEdge' __del__ Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

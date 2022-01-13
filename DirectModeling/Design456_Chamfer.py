@@ -504,34 +504,41 @@ class Design456_SmartChamfer:
         """
         Hide the widgets. Remove also the tab.
         """
-        self.dialog.hide()
-        del self.dialog
-        dw = self.mw.findChildren(QtGui.QDockWidget)
-        newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-        temp = self.selectedObj[0]
-        if(self.ChamferRadius <= 0.01):
-            # Chamfer != applied. return the original object as it was
-            if(len(self.selectedObj) == 2):
-                if hasattr(self.selectedObj[1], "Object"):
-                    App.ActiveDocument.removeObject(
-                        self.selectedObj[1].Object.Name)
-                else:
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Name)
-            o = Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
-            o.Transparency = 0
-            o.Object.Label = self.Originalname
-        else:
-            self.selectedObj[0] = self.selectedObj[1]
-            self.selectedObj.pop(1)
-            no = App.ActiveDocument.getObject(self.selectedObj[0].Name)
-            no.Label = self.Originalname
-            App.ActiveDocument.removeObject(temp.Object.Name)
-            self.ChamferRadius = 0.0001
+        try:
+            self.dialog.hide()
+            del self.dialog
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            newsize = self.tab.count()  # Todo : Should we do that?
+            self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+            temp = self.selectedObj[0]
+            if(self.ChamferRadius <= 0.01):
+                # Chamfer != applied. return the original object as it was
+                if(len(self.selectedObj) == 2):
+                    if hasattr(self.selectedObj[1], "Object"):
+                        App.ActiveDocument.removeObject(
+                            self.selectedObj[1].Object.Name)
+                    else:
+                        App.ActiveDocument.removeObject(self.selectedObj[1].Name)
+                o = Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
+                o.Transparency = 0
+                o.Object.Label = self.Originalname
+            else:
+                self.selectedObj[0] = self.selectedObj[1]
+                self.selectedObj.pop(1)
+                no = App.ActiveDocument.getObject(self.selectedObj[0].Name)
+                no.Label = self.Originalname
+                App.ActiveDocument.removeObject(temp.Object.Name)
+                self.ChamferRadius = 0.0001
 
-        App.ActiveDocument.recompute()
-        self.__del__()  # Remove all smart chamfer 3dCOIN widgets
+            App.ActiveDocument.recompute()
+            self.__del__()  # Remove all smart chamfer 3dCOIN widgets
 
+        except Exception as err:
+            App.Console.PrintError("'Design456_Chamfer' hide-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'Design456_Chamfer.svg',

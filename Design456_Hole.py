@@ -34,9 +34,11 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES, FR_COLOR
 
-__updated__ = '2022-01-01 14:24:41'
+__updated__ = '2022-01-13 13:08:36'
 
 class Design456_Hole:
+    """[Select the part that will be used to make a hole in the surrounding objects]
+    """
     def __init__(self):
         self.mw = None
         self.dialog = None  # Dialog for the tool
@@ -254,7 +256,7 @@ class Design456_Hole:
             self.__del__()  # Remove allOBJ Holes 3dCOIN widgets
 
         except Exception as err:
-            App.Console.PrintError("'recreate Holes Obj' Failed. "
+            App.Console.PrintError("'Holes' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

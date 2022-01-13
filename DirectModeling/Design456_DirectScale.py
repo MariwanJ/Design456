@@ -43,7 +43,7 @@ from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-01 21:59:04'
+__updated__ = '2022-01-13 13:05:27'
 
 # This will be used to convert mouse movement to scale factor.
 SCALE_FACTOR = 15.0
@@ -490,12 +490,20 @@ class Design456_DirectScale:
         """
         Hide the widgets. Remove also the tab.
         """
-        self.dialog.hide()
-        del self.dialog
-        dw = self.mw.findChildren(QtGui.QDockWidget)
-        newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-        self.__del__()  # Remove all smart scale 3dCOIN widgets
+        try:
+            self.dialog.hide()
+            del self.dialog
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            newsize = self.tab.count()  # Todo : Should we do that?
+            self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+
+            self.__del__()  # Remove all smart scale 3dCOIN widgets
+        except Exception as err:
+            App.Console.PrintError("'Design456_DirectScale' hide - Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def btnState(self):
         """ 
