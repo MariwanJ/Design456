@@ -195,7 +195,7 @@ def callback(userData: userDataObject = None):
         This function executes when lblCallbak (double click callback)
         or general widget callback occurs
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy callback")
 
 # *************************************************************

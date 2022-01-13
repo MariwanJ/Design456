@@ -80,7 +80,7 @@ def callback(userData: userDataObject = None):
     """
         This function executes when the Widget as whole got an event
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy FR_WHELL_WIDGET General callback")
 
 
@@ -89,7 +89,7 @@ def callback1(userData: userDataObject = None):
         This function executes when the Center has an event 
         event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Center-wheel-widget callback1")
 
 
@@ -98,7 +98,7 @@ def callback2(userData: userDataObject = None):
         This function executes when the XAxis 
         event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy XAxis callback")
 
 
@@ -107,7 +107,7 @@ def callback3(userData: userDataObject = None):
         This function executes when the YAxis 
         event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy YAxis callback")
 
 
@@ -116,7 +116,7 @@ def callback4(userData: userDataObject = None):
         This function executes when the 45Axis 
         event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy 45Axis callback")
 
 
@@ -125,7 +125,7 @@ def callback5(userData: userDataObject = None):
         This function executes when the 135Axis 
         event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy 135Axis callback")
 
 # *************************************************************

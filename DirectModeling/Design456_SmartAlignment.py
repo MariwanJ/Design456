@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-01-13 18:38:04'
+__updated__ = '2022-01-13 19:14:43'
 
 
 # TODO: FIXME : NOT IMPLEMENTED
@@ -61,9 +61,12 @@ def callback_btn0(userData: userDataObject = None):
             event callback.
             It has the alignment BoundBox.XMin 
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn0 callback")
-
+    if userDataObject is None:
+        return
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.x = caller.NewBoundary.XMin
 
 def callback_btn1(userData: userDataObject = None):
     """
@@ -71,8 +74,13 @@ def callback_btn1(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.XCenter
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn1 callback")
+    if userDataObject is None:
+        return
+
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.x = caller.NewBoundary.Center.x
 
 
 def callback_btn2(userData: userDataObject = None):
@@ -81,8 +89,13 @@ def callback_btn2(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.XMax
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn2 callback")
+    if userDataObject is None:
+        return
+
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.x = caller.NewBoundary.XMax
 
 #BTN3, BTN4, BTN5 is for Y-AXIS
 def callback_btn3(userData: userDataObject = None):
@@ -92,8 +105,13 @@ def callback_btn3(userData: userDataObject = None):
             It has the alignment BoundBox.YMin 
  
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn3 callback")
+    if userDataObject is None:
+        return
+
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.y = caller.NewBoundary.YMin
 
 
 def callback_btn4(userData: userDataObject = None):
@@ -103,8 +121,13 @@ def callback_btn4(userData: userDataObject = None):
             It has the alignment BoundBox.YCenter 
 
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn4 callback")
+    if userDataObject is None:
+        return
+
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.y = caller.NewBoundary.Center.y
 
 
 def callback_btn5(userData: userDataObject = None):
@@ -113,8 +136,13 @@ def callback_btn5(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.YMax
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn5 callback")
+    if userDataObject is None:
+        return
+
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.y = caller.NewBoundary.YMax
 
 
 # BTN6, BTN7, BTN8 is for Z-Axis
@@ -124,8 +152,13 @@ def callback_btn6(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.ZMin
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn6 callback")
+    if userDataObject is None:
+        return
+
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.z = caller.NewBoundary.ZMin
 
 
 
@@ -135,8 +168,13 @@ def callback_btn7(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.ZCenter
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn7 callback")
+    if userDataObject is None:
+        return
+
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.z = caller.NewBoundary.Center.z
 
 
 def callback_btn8(userData: userDataObject = None):
@@ -145,8 +183,13 @@ def callback_btn8(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.ZMax
     """
-    # Subclass this and impalement the callback or just change the callback function
-    print("dummy Align-widget btn8 callback")
+    if userDataObject is None:
+        return
+
+    caller = userDataObject.callerObject
+    objs = caller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.z = caller.NewBoundary.ZMax
 
 
 #                          END OF CALLBACKS                              #
@@ -174,6 +217,7 @@ class Design456_SmartAlignment:
         self.objectType = None  # Either shape, Face or Edge.
         self.NewBoundary = None
         self.savedColors = []
+
 
     def setObjctsColor(self, newValue=True):
         if newValue is True:
@@ -269,7 +313,7 @@ class Design456_SmartAlignment:
         self.smartInd = Fr_Align_Widget(self.NewBoundary, ["Align Tool", ])
 
         self.smartInd.w_callback_ = callback_release
-        self.w_btnCallbacks_ = [callback_btn0,
+        self.smartInd.w_btnCallbacks_ = [callback_btn0,
                                 callback_btn1,
                                 callback_btn2,
                                 callback_btn3,

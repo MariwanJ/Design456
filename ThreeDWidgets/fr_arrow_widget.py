@@ -78,7 +78,7 @@ def callback(userData: userDataObject = None):
             This function will run the when the arrow is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy arrow-widget callback")
 
 

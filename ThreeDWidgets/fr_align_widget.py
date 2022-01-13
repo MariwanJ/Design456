@@ -68,7 +68,7 @@ def callback(userData: userDataObject = None):
     """
             This function will run Release happens
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget callback")
 
 
@@ -78,7 +78,7 @@ def callback_btn0(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn0 callback")
 
 def callback_btn1(userData: userDataObject = None):
@@ -86,7 +86,7 @@ def callback_btn1(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn1 callback")
 
 def callback_btn2(userData: userDataObject = None):
@@ -94,7 +94,7 @@ def callback_btn2(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn2 callback")
 
 def callback_btn3(userData: userDataObject = None):
@@ -102,7 +102,7 @@ def callback_btn3(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn3 callback")
 
 
@@ -111,7 +111,7 @@ def callback_btn4(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn4 callback")
 
 def callback_btn5(userData: userDataObject = None):
@@ -119,7 +119,7 @@ def callback_btn5(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn5 callback")
 
 def callback_btn6(userData: userDataObject = None):
@@ -127,7 +127,7 @@ def callback_btn6(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn6 callback")
 
 def callback_btn7(userData: userDataObject = None):
@@ -135,7 +135,7 @@ def callback_btn7(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn7 callback")
 
 def callback_btn8(userData: userDataObject = None):
@@ -143,7 +143,7 @@ def callback_btn8(userData: userDataObject = None):
             This function will run the when the Align is clicked 
             event callback. 
     """
-    # Subclass this and impalement the callback or just change the callback function
+    # Subclass the widget and impalement the callback or just change the callback function
     print("dummy Align-widget btn8 callback")
 
 
