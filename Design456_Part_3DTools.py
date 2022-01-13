@@ -35,14 +35,13 @@ import Design456Init
 import FACE_D as faced
 import Design456_loftOnDirection
 import Design456_Extrude
-import Design456_ExtrudeFace
+import Design456_Extract
 import Design456_SplitObject
-import Design456_Magnet
 import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2021-12-31 08:56:31'
+__updated__ = '2022-01-13 21:44:20'
 
 # Merge
 class Design456_Part_Merge:
@@ -529,22 +528,19 @@ class Design456_Part_3DToolsGroup:
         """3D Modifying Tools."""
         return ("Design456_Extrude",
                 "Design456_Extract",
-                "Design456_ExtrudeFace",
-                "Design456_SplitObject",
-                "Design456_loftOnDirection",
                 "Design456_Part_Merge",
                 "Design456_Part_Subtract",
                 "Design456_Part_Intersect",
+                "Design456_loftOnDirection",
                 "Design456_Part_Group",
-                "Design456_Magnet",
+                "Design456_Part_Compound",
                 "Design456_Part_Shell",
+                "Design456_SplitObject",
                 "Design456_Part_Fillet",
                 "Design456_Part_Chamfer",
-                "Design456_Part_Compound",
                 "Design456_unifySplitFuse1",
                 "Design456_unifySplitFuse2",
-                "Design_ColorizeObject",
-
+                "Design_ColorizeObject"
                 )
 
     def GetResources(self):

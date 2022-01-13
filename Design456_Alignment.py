@@ -38,10 +38,11 @@ from draftutils.translate import translate  # for translation
 from pivy import coin
 import DirectModeling.Design456_SmartAlignment
 import DirectModeling.Design456_SmartMove
+import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-01-09 13:56:16'
+__updated__ = '2022-01-13 21:35:04'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -418,6 +419,7 @@ class Design456_Alignment_Tools:
             "Design456_ResetPlacements",
             "Separator",
             "Design456_AlignToPlane",
+            "Design456_Magnet",
             "Design456_SmartMove",
             "Design456_SmartAlignment"
 #            "Design456_ViewInsideObjects",
