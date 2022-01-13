@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-01-13 13:09:59'
+__updated__ = '2022-01-13 18:38:04'
 
 
 # TODO: FIXME : NOT IMPLEMENTED
@@ -53,11 +53,13 @@ def callback_release(userData: userDataObject = None):
 
 # All buttons callbacks
 
+#BTN0, BTN1, BTN2 is for X-AXIS
 
 def callback_btn0(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
-            event callback. 
+            event callback.
+            It has the alignment BoundBox.XMin 
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn0 callback")
@@ -67,6 +69,7 @@ def callback_btn1(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
             event callback. 
+            It has the alignment BoundBox.XCenter
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn1 callback")
@@ -76,15 +79,18 @@ def callback_btn2(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
             event callback. 
+            It has the alignment BoundBox.XMax
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn2 callback")
 
-
+#BTN3, BTN4, BTN5 is for Y-AXIS
 def callback_btn3(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
-            event callback. 
+            event callback.
+            It has the alignment BoundBox.YMin 
+ 
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn3 callback")
@@ -94,6 +100,8 @@ def callback_btn4(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
             event callback. 
+            It has the alignment BoundBox.YCenter 
+
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn4 callback")
@@ -103,24 +111,29 @@ def callback_btn5(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
             event callback. 
+            It has the alignment BoundBox.YMax
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn5 callback")
 
 
+# BTN6, BTN7, BTN8 is for Z-Axis
 def callback_btn6(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
             event callback. 
+            It has the alignment BoundBox.ZMin
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn6 callback")
+
 
 
 def callback_btn7(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
             event callback. 
+            It has the alignment BoundBox.ZCenter
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn7 callback")
@@ -130,6 +143,7 @@ def callback_btn8(userData: userDataObject = None):
     """
             This function will run the when the Align is clicked 
             event callback. 
+            It has the alignment BoundBox.ZMax
     """
     # Subclass this and impalement the callback or just change the callback function
     print("dummy Align-widget btn8 callback")
