@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-01-13 19:14:43'
+__updated__ = '2022-01-13 20:19:47'
 
 
 # TODO: FIXME : NOT IMPLEMENTED
@@ -61,12 +61,20 @@ def callback_btn0(userData: userDataObject = None):
             event callback.
             It has the alignment BoundBox.XMin 
     """
-    if userDataObject is None:
-        return
-    caller = userDataObject.callerObject
-    objs = caller.selectedObj
-    for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.x = caller.NewBoundary.XMin
+    try:
+        if userDataObject is None:
+            return
+        linktocaller = userData.callerObject
+        objs = linktocaller.selectedObj
+        for i in range(0, len(objs)):
+            objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMin
+    
+    except Exception as err:
+        App.Console.PrintError("'btn0 callback' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 def callback_btn1(userData: userDataObject = None):
     """
@@ -74,10 +82,10 @@ def callback_btn1(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.XCenter
     """
-    if userDataObject is None:
+    if userData is None:
         return
 
-    caller = userDataObject.callerObject
+    caller = userData.callerObject
     objs = caller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.x = caller.NewBoundary.Center.x
@@ -89,10 +97,10 @@ def callback_btn2(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.XMax
     """
-    if userDataObject is None:
+    if userData is None:
         return
 
-    caller = userDataObject.callerObject
+    caller = userData.callerObject
     objs = caller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.x = caller.NewBoundary.XMax
@@ -105,10 +113,10 @@ def callback_btn3(userData: userDataObject = None):
             It has the alignment BoundBox.YMin 
  
     """
-    if userDataObject is None:
+    if userData is None:
         return
 
-    caller = userDataObject.callerObject
+    caller = userData.callerObject
     objs = caller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.y = caller.NewBoundary.YMin
@@ -121,10 +129,10 @@ def callback_btn4(userData: userDataObject = None):
             It has the alignment BoundBox.YCenter 
 
     """
-    if userDataObject is None:
+    if userData is None:
         return
 
-    caller = userDataObject.callerObject
+    caller = userData.callerObject
     objs = caller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.y = caller.NewBoundary.Center.y
@@ -136,10 +144,10 @@ def callback_btn5(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.YMax
     """
-    if userDataObject is None:
+    if userData is None:
         return
 
-    caller = userDataObject.callerObject
+    caller = userData.callerObject
     objs = caller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.y = caller.NewBoundary.YMax
@@ -152,10 +160,10 @@ def callback_btn6(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.ZMin
     """
-    if userDataObject is None:
+    if userData is None:
         return
 
-    caller = userDataObject.callerObject
+    caller = userData.callerObject
     objs = caller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.z = caller.NewBoundary.ZMin
@@ -168,10 +176,10 @@ def callback_btn7(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.ZCenter
     """
-    if userDataObject is None:
+    if userData is None:
         return
 
-    caller = userDataObject.callerObject
+    caller = userData.callerObject
     objs = caller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.z = caller.NewBoundary.Center.z
@@ -183,10 +191,10 @@ def callback_btn8(userData: userDataObject = None):
             event callback. 
             It has the alignment BoundBox.ZMax
     """
-    if userDataObject is None:
+    if userData is None:
         return
 
-    caller = userDataObject.callerObject
+    caller = userData.callerObject
     objs = caller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.z = caller.NewBoundary.ZMax
