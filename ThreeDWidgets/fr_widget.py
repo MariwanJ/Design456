@@ -44,7 +44,7 @@ from abc import abstractmethod
 # ********************************************************************************************************
 from dataclasses import dataclass
 
-__updated__ = '2022-01-12 19:57:34'
+__updated__ = '2022-01-13 07:14:55'
 
 
 @dataclass
@@ -455,12 +455,22 @@ class Fr_Widget (object):
 
     def saveSoNodesToWidget(self, _Value):
         """ Keep sceneNodes in the fr_xxx object in the w_widgetSoNodes variable """
-        self.w_widgetSoNodes = _Value
+        if type(_Value)== list:
+            self.w_widgetSoNodes = coin.SoSeparator()
+            for obj in _Value:
+                self.w_widgetSoNodes.addChild(obj)
+        else:
+            self.w_widgetSoNodes = _Value
 
-    def saveSoNodeslblToWidget(self, _list):
+    def saveSoNodeslblToWidget(self, _Value):
         """ Keep the Label sceneNodes in the fr_xxx object in the w_widgetlblSoNodes variable"""
-        self.w_widgetlblSoNodes = _list
-
+        if type(_Value) == list:
+            self.w_widgetlblSoNodes = coin.SoSeparator()
+            for obj in _Value:
+                self.w_widgetlblSoNodes.addChild(obj)
+        else:
+            self.w_widgetlblSoNodes = _Value
+   
     # todo: Do we need an argument here? as we should add w_widgetSoNodes and w_widgetlblSoNodes
     def addSoNodeToSoSwitch(self, listOfSoSeparator):
         """ add all small sosseparator which holds widgets drawings, color, linewidth ..etc
@@ -482,7 +492,7 @@ class Fr_Widget (object):
             else:
                 self.w_wdgsoSwitch.addChild(listOfSoSeparator)
             if self.w_parent is None:
-                raise ValueError("parent was none ")
+                raise ValueError("parent was none")
             # Add the switch to the SceneGraph
             self.w_parent.addSoSwitchToSceneGraph(self.w_wdgsoSwitch)
             

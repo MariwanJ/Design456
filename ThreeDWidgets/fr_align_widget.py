@@ -48,7 +48,7 @@ Example how to use this widget.
 
 
 """
-__updated__ = '2022-01-12 21:53:57'
+__updated__ = '2022-01-13 07:39:40'
 
 
 # class object will be used as object holder between Align widget and the callback
@@ -151,6 +151,26 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
 
     """
     This class is for drawing a Align in coin3D world
+    Example how to use the widget:
+    
+    
+    import ThreeDWidgets.fr_align_widget as wd
+    import ThreeDWidgets.fr_coinwindow as wnn
+    from ThreeDWidgets.constant import FR_COLOR
+
+    mywin = wnn.Fr_CoinWindow()
+    # You need to select an object
+    s=Gui.Selection.getSelectionEx()[0]
+    sh=s.Object.Shape
+    b=sh.BoundBox        
+    root=wd.Fr_Align_Widget(b)
+    mywin.addWidget(root)
+    mywin.show()
+
+
+
+
+
     """
     # Big mistake  regarding the Aligns: Read https://grey.colorado.edu/coin3d/classSoTransform.html#a357007d906d1680a72cd73cf974a6869
     # Don't do that
@@ -167,7 +187,7 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         self.w_lineWidth = 1  # Default line width
         self.w_widgetType = constant.FR_WidgetType.FR_ALIGN
 
-        self.w_callback_ = self.clicked_obj  # External function
+        self.w_callback_ = callback  # External function
         self.w_lbl_calback_ = callback  # External function
         self.w_KB_callback_ = callback  # External function
         self.w_btn_callback_ = callback  # External function
@@ -226,9 +246,11 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                 self.w_pick_radius, self.w_widgetlblSoNodes)
         #We don't use double click here
+        
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
             for i in range(0, 9):
                 if self.w_userData.clickedBTN[i] is True:
+                    self.clicked_obj()
                     self.do_callback()
                     return 1
 
@@ -251,6 +273,8 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         """
         try:
             #use minimum x,y and z to draw the label
+            if self.w_boundary is None : 
+                raise ValueError("w_boundary must be specified")    
             self.w_vector[0]=App.Vector(self.w_boundary.XMin,self.w_boundary.YMin,self.w_boundary.ZMin)
             if self.is_active() and self.has_focus():
                 usedColor = self.w_selColor
@@ -261,9 +285,10 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
             if self.is_visible():
                 drawing = fr_draw1.drawAlignmentBars(
                     self.w_boundary, usedColor)
-                (self.w_btnObjs, self.w_baseObjs) = drawing.Activate()
-                self.w_widgetSoNodes = self.w_baseObjs
-                self.w_widgetSoNodes.append(self.w_baseObjs)
+                (self.w_baseObjs, self.w_btnObjs) = drawing.Activate()
+                allSoParts = self.w_btnObjs
+                allSoParts.append( self.w_baseObjs)
+                self.saveSoNodesToWidget(allSoParts)
 
                 self.draw_label(self.w_lblColor)
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
@@ -284,7 +309,7 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
         self.saveSoNodeslblToWidget(lbl)
 
-    def clicked_obj(userData: userDataObject = None):
+    def clicked_obj(self):
         try:
             for i in range(0,9):
                 if self.w_userData.clickedBTN[i] is True:
