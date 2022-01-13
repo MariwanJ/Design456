@@ -48,7 +48,7 @@ Example how to use this widget.
 
 
 """
-__updated__ = '2022-01-13 08:53:43'
+__updated__ = '2022-01-13 21:09:06'
 
 
 # class object will be used as object holder between Align widget and the callback
@@ -213,6 +213,8 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
                                 [k * 0.9 for k in self.w_color[2]]]
 
     def setBoundary(self, bnd):
+        if self.w_boundary is not None:
+            del self.w_boundary
         self.w_boundary = bnd
 
     def handle(self, event):

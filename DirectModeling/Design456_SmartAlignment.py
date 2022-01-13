@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-01-13 20:19:47'
+__updated__ = '2022-01-13 21:19:41'
 
 
 # TODO: FIXME : NOT IMPLEMENTED
@@ -61,20 +61,14 @@ def callback_btn0(userData: userDataObject = None):
             event callback.
             It has the alignment BoundBox.XMin 
     """
-    try:
-        if userDataObject is None:
-            return
-        linktocaller = userData.callerObject
-        objs = linktocaller.selectedObj
-        for i in range(0, len(objs)):
-            objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMin
-    
-    except Exception as err:
-        App.Console.PrintError("'btn0 callback' Failed. "
-                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
+    if userDataObject is None:
+        return
+    linktocaller = userData.callerObject
+    objs = linktocaller.selectedObj
+    for i in range(0, len(objs)):
+        objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMin
+
+    linktocaller.recreateAll()
 
 def callback_btn1(userData: userDataObject = None):
     """
@@ -85,11 +79,11 @@ def callback_btn1(userData: userDataObject = None):
     if userData is None:
         return
 
-    caller = userData.callerObject
-    objs = caller.selectedObj
+    linktocaller = userData.callerObject
+    objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.x = caller.NewBoundary.Center.x
-
+        objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.Center.x
+    linktocaller.recreateAll()
 
 def callback_btn2(userData: userDataObject = None):
     """
@@ -100,10 +94,12 @@ def callback_btn2(userData: userDataObject = None):
     if userData is None:
         return
 
-    caller = userData.callerObject
-    objs = caller.selectedObj
+    linktocaller = userData.callerObject
+    objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.x = caller.NewBoundary.XMax
+        objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMax
+
+    linktocaller.recreateAll()
 
 #BTN3, BTN4, BTN5 is for Y-AXIS
 def callback_btn3(userData: userDataObject = None):
@@ -116,11 +112,12 @@ def callback_btn3(userData: userDataObject = None):
     if userData is None:
         return
 
-    caller = userData.callerObject
-    objs = caller.selectedObj
+    linktocaller = userData.callerObject
+    objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.y = caller.NewBoundary.YMin
+        objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMin
 
+    linktocaller.recreateAll()
 
 def callback_btn4(userData: userDataObject = None):
     """
@@ -132,10 +129,11 @@ def callback_btn4(userData: userDataObject = None):
     if userData is None:
         return
 
-    caller = userData.callerObject
-    objs = caller.selectedObj
+    linktocaller = userData.callerObject
+    objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.y = caller.NewBoundary.Center.y
+        objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.Center.y
+    linktocaller.recreateAll()
 
 
 def callback_btn5(userData: userDataObject = None):
@@ -148,9 +146,10 @@ def callback_btn5(userData: userDataObject = None):
         return
 
     caller = userData.callerObject
-    objs = caller.selectedObj
+    objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.y = caller.NewBoundary.YMax
+        objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMax
+    linktocaller.recreateAll()
 
 
 # BTN6, BTN7, BTN8 is for Z-Axis
@@ -164,9 +163,10 @@ def callback_btn6(userData: userDataObject = None):
         return
 
     caller = userData.callerObject
-    objs = caller.selectedObj
+    objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.z = caller.NewBoundary.ZMin
+        objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMin
+    linktocaller.recreateAll()
 
 
 
@@ -180,9 +180,10 @@ def callback_btn7(userData: userDataObject = None):
         return
 
     caller = userData.callerObject
-    objs = caller.selectedObj
+    objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.z = caller.NewBoundary.Center.z
+        objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.Center.z
+    linktocaller.recreateAll()
 
 
 def callback_btn8(userData: userDataObject = None):
@@ -195,9 +196,10 @@ def callback_btn8(userData: userDataObject = None):
         return
 
     caller = userData.callerObject
-    objs = caller.selectedObj
+    objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.z = caller.NewBoundary.ZMax
+        objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMax
+    linktocaller.recreateAll()
 
 
 #                          END OF CALLBACKS                              #
@@ -290,15 +292,16 @@ class Design456_SmartAlignment:
                 pass
         self.NewBoundary = App.BoundBox(XMin, YMin, ZMin, XMax, YMax, ZMax)
 
-        #self.NewBoundary.XLength = self.NewBoundary.XMax - self.NewBoundary.XMin
-        #self.NewBoundary.YLength = self.NewBoundary.YMax - self.NewBoundary.YMin
-        #self.NewBoundary.ZLength = self.NewBoundary.ZMax - self.NewBoundary.ZMin
-        # self.NewBoundary.Center = App.Vector(self.NewBoundary.XLength/2,
-        #                                    self.NewBoundary.YLength/2,
-        #                                     self.NewBoundary.ZLength/2)
-        # self.NewBoundary.DiagonalLength = sqrt(powers(self.NewBoundary.XLength,2),
-        #                             powers(self.NewBoundary.YLength,2),
-        #                             powers(self.NewBoundary.ZLength,2) )
+    def recreateAll(self):
+        self.CalculateBoundary()
+        self.savedColors = [self.selectedObj[0].Object.ViewObject.DiffuseColor,
+                            self.selectedObj[1].Object.ViewObject.DiffuseColor]
+        # Change the colors  -
+        # First obj (base) get a color, and others get another color
+        self.setObjctsColor(False)
+        if self.smartInd is not None:
+            self.smartInd.setBoundary(self.NewBoundary)
+            self.smartInd.redraw()
 
     def Activated(self):
         import ThreeDWidgets.fr_coinwindow as win
@@ -311,13 +314,7 @@ class Design456_SmartAlignment:
             return
 
         self.selectedObj = sel
-        self.CalculateBoundary()
-        self.savedColors = [self.selectedObj[0].Object.ViewObject.DiffuseColor,
-                            self.selectedObj[1].Object.ViewObject.DiffuseColor]
-        # Change the colors  -
-        # First obj (base) get a color, and others get another color
-        self.setObjctsColor(False)
-
+        self.recreateAll()
         self.smartInd = Fr_Align_Widget(self.NewBoundary, ["Align Tool", ])
 
         self.smartInd.w_callback_ = callback_release
