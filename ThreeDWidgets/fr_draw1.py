@@ -10,7 +10,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
-__updated__ = '2022-01-13 07:35:33'
+__updated__ = '2022-01-13 11:19:10'
 
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
@@ -589,9 +589,9 @@ class drawAlignmentBars:
         p2.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z))
 
         # zAxis:
-        p3.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z))
-        p3.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z+ self.Boundary.ZLength/2))
-        p3.append(App.Vector(_pStart.x+self.Boundary.XLength, _pStart.y, _pStart.z+self.Boundary.ZLength))
+        p3.append(App.Vector(self.Boundary.XMax, _pStart.y, _pStart.z))
+        p3.append(App.Vector(self.Boundary.XMax, _pStart.y, _pStart.z+ self.Boundary.ZLength/2))
+        p3.append(App.Vector(self.Boundary.XMax, _pStart.y, _pStart.z+self.Boundary.ZLength))
         self.vector = [p1, p2, p3]
 
     def createABar(self, _vector, _color, _length, _rotation):
@@ -679,7 +679,7 @@ class drawAlignmentBars:
         for i in range(0, 3):
             AllBars.addChild(self.createABar(self.vector[2][i],
                        FR_COLOR.FR_BLUE,
-                       self.Boundary.ZLength,[0.0, 0.0, 1.0, 90.0]))
+                       self.Boundary.XLength,[0.0, 0.0, 1.0, 90.0]))
 
         return AllBars  # a SoSeparator that contains all bars
 

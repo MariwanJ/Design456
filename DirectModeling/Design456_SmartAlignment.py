@@ -36,15 +36,19 @@ from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
 
-from ThreeDWidgets.Fr_Align_Widget import Fr_Align_Widget
+from ThreeDWidgets.fr_align_widget import Fr_Align_Widget
+from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-13 10:05:42'
+__updated__ = '2022-01-13 11:21:26'
 
 
 #TODO: FIXME : NOT IMPLEMENTED
 
 #                        CALLBACKS              #
+
+def callback_release(userData: userDataObject = None):
+    print("release callback")
 
 # All buttons callbacks
 def callback_btn0(userData: userDataObject = None):
@@ -149,23 +153,32 @@ class Design456_SmartAlignment:
         
 
     def CalculateBoundary(self):
-        a = self.selectedObj[0].Object.Shape.Boundary
-        b = self.selectedObj[1].Object.Shape.Boundary
-        self.NewBoundary = a # Just initialize it
-        self.NewBoundary.XMax = maximum(a.XLength, b.XLength)
-        self.NewBoundary.XMin = minimum(a.XLength, b.XLength)
-        self.NewBoundary.YMax = maximum(a.YLength, b.YLength)
-        self.NewBoundary.YMin = minimum(a.YLength, b.YLength) 
-        self.NewBoundary.ZMax = maximum(a.ZLength, b.ZLength)
-        self.NewBoundary.ZMin = minimum(a.ZLength, b.ZLength)
+        a = self.selectedObj[0].Object.Shape.BoundBox
+        b = self.selectedObj[1].Object.Shape.BoundBox
+        
+        XMax = max(a.XMax, b.XMax)
+        XMin = min(a.XMin, b.XMin)
+        YMax = max(a.YMax, b.YMax)
+        YMin = min(a.YMin, b.YMin) 
+        ZMax = max(a.ZMax, b.ZMax)
+        ZMin = min(a.ZMin, b.ZMin)
+        #App.BoundBox([Xmin,Ymin,Zmin,Xmax,Ymax,Zmax])
+        if self.NewBoundary is not None:
+            try: 
+                del self.NewBoundary
+            except:
+                pass
+        self.NewBoundary = App.BoundBox(XMin,YMin,ZMin,XMax,YMax,ZMax)
 
-        self.NewBoundary.XLength = bTtotal.Xmax - bTtotal.Xmin  
-        self.NewBoundary.YLength = bTtotal.Ymax - bTtotal.Ymin
-        self.NewBoundary.ZLength = bTtotal.Zmax - bTtotal.Zmin
-        self.NewBoundary.Center = App.Vector(bTotal.XLength/2, bTotal.YLength/2, bTotal.ZLength/2)
-        self.NewBoundary.DiagonalLength = sqrt(powers(bTotal.XLength,2), 
-                                     powers(bTotal.YLength,2),
-                                     powers(bTotal.ZLength,2) )
+        #self.NewBoundary.XLength = self.NewBoundary.XMax - self.NewBoundary.XMin  
+        #self.NewBoundary.YLength = self.NewBoundary.YMax - self.NewBoundary.YMin
+        #self.NewBoundary.ZLength = self.NewBoundary.ZMax - self.NewBoundary.ZMin
+        #self.NewBoundary.Center = App.Vector(self.NewBoundary.XLength/2, 
+        #                                    self.NewBoundary.YLength/2,
+        #                                     self.NewBoundary.ZLength/2)
+        #self.NewBoundary.DiagonalLength = sqrt(powers(self.NewBoundary.XLength,2), 
+        #                             powers(self.NewBoundary.YLength,2),
+        #                             powers(self.NewBoundary.ZLength,2) )
 
     def Activated(self):
         import ThreeDWidgets.fr_coinwindow as win
@@ -179,7 +192,7 @@ class Design456_SmartAlignment:
         
         self.selectedObj = sel
         self.CalculateBoundary()
-        print(self.self.NewBoundary)
+        print(self.NewBoundary)
         self.smartInd = Fr_Align_Widget(self.NewBoundary, ["Align Tool",])
 
         self.smartInd.w_callback_ = callback_release
@@ -278,24 +291,6 @@ class Design456_SmartAlignment:
         dw = self.mw.findChildren(QtGui.QDockWidget)
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-        temp=self.selectedObj[0]
-        if(self.AlignmentRadius<=0.01):
-            #Alignment != applied. return the original object as it was
-            if(len(self.selectedObj)==2):
-                if hasattr(self.selectedObj[1],"Object"):
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Object.Name)    
-                else:
-                    App.ActiveDocument.removeObject(self.selectedObj[1].Name)
-            o=Gui.ActiveDocument.getObject(self.selectedObj[0].Object.Name)
-            o.Transparency=0
-            o.Object.Label=self.Originalname
-        else:
-            self.selectedObj[0]=self.selectedObj[1]
-            self.selectedObj.pop(1)
-            no=App.ActiveDocument.getObject(self.selectedObj[0].Name)
-            no.Label=self.Originalname
-            App.ActiveDocument.removeObject(temp.Object.Name)
-            self.AlignmentRadius=0.0001
         
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart Alignment 3dCOIN widgets
