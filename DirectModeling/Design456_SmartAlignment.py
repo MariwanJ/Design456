@@ -35,66 +35,95 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from typing import List
 import Design456Init
 from PySide import QtGui, QtCore
-from ThreeDWidgets import fr_arrow_widget
+
+from ThreeDWidgets.Fr_Align_Widget import Fr_Align_Widget
 from draftutils.translate import translate  # for translation
-MouseScaleFactor = 1.5      # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose? 
-__updated__ = '2022-01-12 19:52:17'
+
+__updated__ = '2022-01-13 10:05:42'
 
 
 #TODO: FIXME : NOT IMPLEMENTED
 
-def callback_move(userData: fr_arrow_widget.userDataObject = None):
-    """[summary]
-    Callback for the arrow movement. This will be used to calculate the radius of the Alignment operation.
-    Args:
-        userData (fr_arrow_widget.userDataObject, optional): [description]. Defaults to None.
+#                        CALLBACKS              #
 
-    Returns:
-        [type]: [description] None.
+# All buttons callbacks
+def callback_btn0(userData: userDataObject = None):
     """
-    try:
-        if userData is None:
-            return  # Nothing to do here - shouldn't be None
-        mouseToArrowDiff = 0.0
-
-        ArrowObject = userData.ArrowObj
-        events = userData.events
-        linktocaller = userData.callerObject
-        if type(events) != int:
-            return
-
-        clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                          ArrowObject.w_pick_radius, ArrowObject.w_widgetSoNodes)
-        clickwdglblNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                            ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
-        linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
-                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
-                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
-
-        if clickwdgdNode is None and clickwdglblNode is None:
-            if linktocaller.run_Once is False:
-                print("click move")
-                return 0  # nothing to do
-            
-
-    except Exception as err:
-        App.Console.PrintError("'View Inside objects' Failed. "
-                               "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
-
-
-def callback_release(userData: fr_arrow_widget.userDataObject = None):
+            This function will run the when the Align is clicked 
+            event callback. 
     """
-       Callback after releasing the left mouse button. 
-       This callback will finalize the Alignment operation. 
-       Deleting the original object will be done when the user press 'OK' button
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn0 callback")
+
+def callback_btn1(userData: userDataObject = None):
     """
-    if (userData is None):
-        print("userData is None")
-        raise TypeError 
-        
+            This function will run the when the Align is clicked 
+            event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn1 callback")
+
+def callback_btn2(userData: userDataObject = None):
+    """
+            This function will run the when the Align is clicked 
+            event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn2 callback")
+
+def callback_btn3(userData: userDataObject = None):
+    """
+            This function will run the when the Align is clicked 
+            event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn3 callback")
+
+
+def callback_btn4(userData: userDataObject = None):
+    """
+            This function will run the when the Align is clicked 
+            event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn4 callback")
+
+def callback_btn5(userData: userDataObject = None):
+    """
+            This function will run the when the Align is clicked 
+            event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn5 callback")
+
+def callback_btn6(userData: userDataObject = None):
+    """
+            This function will run the when the Align is clicked 
+            event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn6 callback")
+
+def callback_btn7(userData: userDataObject = None):
+    """
+            This function will run the when the Align is clicked 
+            event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn7 callback")
+
+def callback_btn8(userData: userDataObject = None):
+    """
+            This function will run the when the Align is clicked 
+            event callback. 
+    """
+    # Subclass this and impalement the callback or just change the callback function
+    print("dummy Align-widget btn8 callback")
+
+
+#                          END OF CALLBACKS                              #
+
+
 
 class Design456_SmartAlignment:
     """
@@ -102,7 +131,7 @@ class Design456_SmartAlignment:
         Radius of the Alignment is counted by dragging the arrow towards the negative Z axis.
     """
     def __init__(self):
-        self._vector = App.Vector(0.0, 0.0, 0.0)
+        self._vector = App.Vector(0.0, 0.0, 0.0) # not used dummy value
         self.mw = None
         self.dialog = None
         self.tab = None
@@ -110,38 +139,31 @@ class Design456_SmartAlignment:
         self._mywin = None
         self.b1 = None
         self.AlignmentLBL = None
-        self.run_Once = False
         self.endVector = None
         self.startVector = None
         # We will make two object, one for visual effect and the other is the original
         self.selectedObj = []
         # 0 is the original    1 is the fake one (just for interactive effect)
-        self.mouseToArrowDiff = 0.0
-        self.offset=0.0
-        self.AwayFrom3DObject = 10  # Use this to take away the arrow from the object
-        self.AlignmentRadius = 0.00001   #We cannot have zero. TODO: What value we should use? FIXME:
         self.objectType = None  # Either shape, Face or Edge.
-        self.Originalname = ''
-        self.direction=None
+        self.NewBoundary=None
         
 
-    def reCountBoundary(self):
+    def CalculateBoundary(self):
         a = self.selectedObj[0].Object.Shape.Boundary
         b = self.selectedObj[1].Object.Shape.Boundary
-        bTotal = ba
+        self.NewBoundary = a # Just initialize it
+        self.NewBoundary.XMax = maximum(a.XLength, b.XLength)
+        self.NewBoundary.XMin = minimum(a.XLength, b.XLength)
+        self.NewBoundary.YMax = maximum(a.YLength, b.YLength)
+        self.NewBoundary.YMin = minimum(a.YLength, b.YLength) 
+        self.NewBoundary.ZMax = maximum(a.ZLength, b.ZLength)
+        self.NewBoundary.ZMin = minimum(a.ZLength, b.ZLength)
 
-        bTotal.XMax = maximum(a.XLength, b.XLength)
-        bTotal.XMin = minimum(a.XLength, b.XLength)
-        bTotal.YMax = maximum(a.YLength, b.YLength)
-        bTotal.YMin = minimum(a.YLength, b.YLength) 
-        bTotal.ZMax = maximum(a.ZLength, b.ZLength)
-        bTotal.ZMin = minimum(a.ZLength, b.ZLength)
-
-        bTotal.XLength = bTtotal.Xmax - bTtotal.Xmin  
-        bTotal.YLength = bTtotal.Ymax - bTtotal.Ymin
-        bTotal.ZLength = bTtotal.Zmax - bTtotal.Zmin
-        bTotal.Center = App.Vector(bTotal.XLength/2, bTotal.YLength/2, bTotal.ZLength/2)
-        bTotal.DiagonalLength = sqrt(powers(bTotal.XLength,2), 
+        self.NewBoundary.XLength = bTtotal.Xmax - bTtotal.Xmin  
+        self.NewBoundary.YLength = bTtotal.Ymax - bTtotal.Ymin
+        self.NewBoundary.ZLength = bTtotal.Zmax - bTtotal.Zmin
+        self.NewBoundary.Center = App.Vector(bTotal.XLength/2, bTotal.YLength/2, bTotal.ZLength/2)
+        self.NewBoundary.DiagonalLength = sqrt(powers(bTotal.XLength,2), 
                                      powers(bTotal.YLength,2),
                                      powers(bTotal.ZLength,2) )
 
@@ -149,19 +171,28 @@ class Design456_SmartAlignment:
         import ThreeDWidgets.fr_coinwindow as win
         self.selectedObj.clear()
         sel=Gui.Selection.getSelectionEx()
-        if len(sel) ==0:
+        if len(sel) < 2:
             # An object must be selected
-            errMessage = "Select an object, one face or one edge to Alignment"
+            errMessage = "Select at least two objects to Align them"
             faced.errorDialog(errMessage)
             return
+        
+        self.selectedObj = sel
+        self.CalculateBoundary()
+        print(self.self.NewBoundary)
+        self.smartInd = Fr_Align_Widget(self.NewBoundary, ["Align Tool",])
 
-        self.selectedObj.append(sel[0])
-        self.Originalname = self.selectedObj[0].Object.Name
-
- 
- 
         self.smartInd.w_callback_ = callback_release
-        self.smartInd.w_move_callback_ = callback_move
+        self.w_btnCallbacks_ = [callback_btn0, 
+                                callback_btn1, 
+                                callback_btn2, 
+                                callback_btn3,
+                                callback_btn4,
+                                callback_btn5,
+                                callback_btn6,
+                                callback_btn7,
+                                callback_btn8]
+
         self.smartInd.w_userData.callerObject = self
 
         if self._mywin is None:
