@@ -48,7 +48,7 @@ Example how to use this widget.
 
 
 """
-__updated__ = '2022-01-13 07:39:40'
+__updated__ = '2022-01-13 08:53:43'
 
 
 # class object will be used as object holder between Align widget and the callback
@@ -156,7 +156,6 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
     
     import ThreeDWidgets.fr_align_widget as wd
     import ThreeDWidgets.fr_coinwindow as wnn
-    from ThreeDWidgets.constant import FR_COLOR
 
     mywin = wnn.Fr_CoinWindow()
     # You need to select an object
@@ -168,12 +167,8 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
     mywin.show()
 
 
-
-
-
     """
-    # Big mistake  regarding the Aligns: Read https://grey.colorado.edu/coin3d/classSoTransform.html#a357007d906d1680a72cd73cf974a6869
-    # Don't do that
+
 
     def __init__(self, _boundary: None,
                  label: str = [[]],
@@ -190,12 +185,10 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         self.w_callback_ = callback  # External function
         self.w_lbl_calback_ = callback  # External function
         self.w_KB_callback_ = callback  # External function
-        self.w_btn_callback_ = callback  # External function
         self.w_wdgsoSwitch = coin.SoSwitch()
-        self.w_color = _color  # Default color is green
+        self.w_color = _color  # Default color is red, green & blue
         self.w_userData = userDataObject()   # Keep info about the widget
         self.w_userData.Align = self
-        self.releaseDrag = -1  # -1 mouse no clicked not dragging, 0 is clicked, 1 is dragging
         self.w_lbluserData = fr_widget.propertyValues()
         self.w_lblColor = _lblColor
         self.w_opacity = _opacity

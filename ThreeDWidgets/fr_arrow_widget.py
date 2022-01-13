@@ -60,7 +60,7 @@ wny.addWidget(ln)              # Add it to the window as a child
 wny.show()                    # show the window and it's widgets. 
 
 """
-__updated__ = '2022-01-01 18:25:55'
+__updated__ = '2022-01-13 09:04:17'
 
 
 # class object will be used as object holder between arrow widget and the callback
@@ -87,9 +87,6 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
     """
     This class is for drawing a arrow in coin3D world
     """
-    # Big mistake  regarding the arrows: Read https://grey.colorado.edu/coin3d/classSoTransform.html#a357007d906d1680a72cd73cf974a6869
-    # Don't do that
-
     def __init__(self, vectors: List[App.Vector] = [],
                  label: str = [[]], lineWidth=1,
                  _color=FR_COLOR.FR_BLACK,
