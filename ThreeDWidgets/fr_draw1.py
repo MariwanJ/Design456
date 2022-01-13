@@ -10,7 +10,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
-__updated__ = '2022-01-13 11:19:10'
+__updated__ = '2022-01-13 18:31:11'
 
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
@@ -635,50 +635,52 @@ class drawAlignmentBars:
 
         AllButtons = []
         # TODO FIXME: vectors are not correct
-        # X button
-        for i in range(0, 3):
-            extraLength=App.Vector(self.Boundary.XLength/2, 0.0, 0.0)
-            extraLength=(self.vector[0][i]).sub( extraLength)
-            AllButtons.append(self.createAButton(extraLength,
-                       FR_COLOR.FR_RED,[0.0, 0.0, 1.0, 90.0]))
 
-        # Y button
+        # X button
         for i in range(0, 3):
             extraLength= App.Vector(0.0, self.Boundary.YLength/2, 0.0)
             extraLength = (self.vector[1][i]).sub(extraLength)
 
             AllButtons.append(self.createAButton(extraLength,
-                       FR_COLOR.FR_GREEN, [0.0, 0.0, 0.0, 0.0]))
+                       self.color[0], [0.0, 0.0, 0.0, 0.0]))
+
+        # Y button
+        for i in range(0, 3):
+            extraLength=App.Vector(self.Boundary.XLength/2, 0.0, 0.0)
+            extraLength=(self.vector[0][i]).sub( extraLength)
+            AllButtons.append(self.createAButton(extraLength,
+                       self.color[1],[0.0, 0.0, 1.0, 90.0]))
 
         # Z button
         for i in range(0, 3):
             extraLength=App.Vector(self.Boundary.XLength/2,0.0, 0)
             extraLength= (self.vector[2][i]).add(extraLength)
             AllButtons.append(self.createAButton(extraLength,
-                       FR_COLOR.FR_BLUE, [0.0, 0.0, 1.0, 90.0]))
+                       self.color[2], [0.0, 0.0, 1.0, 90.0]))
 
         return AllButtons  # a SoSeparator that contains all bars
 
     def drawBars(self):
 
         AllBars=coin.SoSeparator()
+
         # X bars
         for i in range(0, 3):
-
-            AllBars.addChild(self.createABar(self.vector[0][i],
-                       FR_COLOR.FR_RED,
-                       self.Boundary.XLength,[0.0, 0.0, -1.0, 90.0]))
+            AllBars.addChild(self.createABar(self.vector[1][i],
+                       self.color[0],
+                       self.Boundary.YLength,[0.0, 0.0, 0.0, 0.0]))
 
         # Y bars
         for i in range(0, 3):
-            AllBars.addChild(self.createABar(self.vector[1][i],
-                       FR_COLOR.FR_GREEN,
-                       self.Boundary.YLength,[0.0, 0.0, 0.0, 0.0]))
+
+            AllBars.addChild(self.createABar(self.vector[0][i],
+                       self.color[1],
+                       self.Boundary.XLength,[0.0, 0.0, -1.0, 90.0]))
 
         # Z bars
         for i in range(0, 3):
             AllBars.addChild(self.createABar(self.vector[2][i],
-                       FR_COLOR.FR_BLUE,
+                       self.color[2],
                        self.Boundary.XLength,[0.0, 0.0, 1.0, 90.0]))
 
         return AllBars  # a SoSeparator that contains all bars
