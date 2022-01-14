@@ -36,7 +36,7 @@ import math
 
 # TODO : FIXME BETTER WAY?
 
-__updated__ = '2022-01-06 12:53:53'
+__updated__ = '2022-01-14 17:14:05'
 
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
@@ -405,6 +405,9 @@ class SelectTopFace:
                     Result = counter
                 counter = counter + 1
             self._facename = 'Face' + str(Result)
+            if centerofmass is None:
+                #TODO: FIXME: Don't know when this happens
+                return
             Gui.Selection.clearSelection()
             Gui.Selection.addSelection(App.ActiveDocument.Name, self.obj.Name,
                                        self._facename, centerofmass.x, centerofmass.y, centerofmass.z)

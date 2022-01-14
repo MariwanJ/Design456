@@ -39,7 +39,7 @@ from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
 
-__updated__ = '2021-12-31 08:42:34'
+__updated__ = '2022-01-14 17:53:25'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -635,10 +635,14 @@ Gui.addCommand('Design456_Star', Design456_Star())
 
 
 class Design456_joinTwoLines:
+    def __init__(self):
+        _points = []
     def Activated(self):
         try:
-            _points = []
+            _points.clear()
             s = Gui.Selection.getSelectionEx()
+            if hasattr(s,"Point"):
+                return
             if len(s) > 2:
                 # Two objects must be selected
                 errMessage = "Select only two vertices "
