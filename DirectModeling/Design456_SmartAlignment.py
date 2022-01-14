@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-01-13 21:19:41'
+__updated__ = '2022-01-14 15:11:13'
 
 
 # TODO: FIXME : NOT IMPLEMENTED
@@ -145,7 +145,7 @@ def callback_btn5(userData: userDataObject = None):
     if userData is None:
         return
 
-    caller = userData.callerObject
+    linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMax
@@ -162,7 +162,7 @@ def callback_btn6(userData: userDataObject = None):
     if userData is None:
         return
 
-    caller = userData.callerObject
+    linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMin
@@ -179,7 +179,7 @@ def callback_btn7(userData: userDataObject = None):
     if userData is None:
         return
 
-    caller = userData.callerObject
+    linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.Center.z
@@ -195,7 +195,7 @@ def callback_btn8(userData: userDataObject = None):
     if userData is None:
         return
 
-    caller = userData.callerObject
+    linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
         objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMax
