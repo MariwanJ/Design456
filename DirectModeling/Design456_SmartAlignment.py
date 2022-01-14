@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-01-14 15:11:13'
+__updated__ = '2022-01-14 16:52:23'
 
 
 # TODO: FIXME : NOT IMPLEMENTED
@@ -66,9 +66,10 @@ def callback_btn0(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMin
-
+        if objs[i].Object.Shape.BoundBox.XMin != linktocaller.NewBoundary.XMin: 
+            objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMin
     linktocaller.recreateAll()
+    print("min")
 
 def callback_btn1(userData: userDataObject = None):
     """
@@ -82,7 +83,8 @@ def callback_btn1(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.Center.x
+        if objs[i].Object.Shape.BoundBox.Center.x != linktocaller.NewBoundary.Center.x: 
+            objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.Center.x
     linktocaller.recreateAll()
 
 def callback_btn2(userData: userDataObject = None):
@@ -97,10 +99,11 @@ def callback_btn2(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMax
-
+        if objs[i].Object.Shape.BoundBox.XMax != linktocaller.NewBoundary.XMax: 
+            objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMax  - objs[i].Object.Shape.BoundBox.XLength
     linktocaller.recreateAll()
-
+    print("max")
+    
 #BTN3, BTN4, BTN5 is for Y-AXIS
 def callback_btn3(userData: userDataObject = None):
     """
@@ -114,8 +117,9 @@ def callback_btn3(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
-    for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMin
+    for i in range(0, len(objs)): 
+        if objs[i].Object.Shape.BoundBox.YMin != linktocaller.NewBoundary.YMin: 
+            objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMin
 
     linktocaller.recreateAll()
 
@@ -132,7 +136,8 @@ def callback_btn4(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.Center.y
+        if objs[i].Object.Shape.BoundBox.Center.y != linktocaller.NewBoundary.Center.y: 
+            objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.Center.y
     linktocaller.recreateAll()
 
 
@@ -148,7 +153,8 @@ def callback_btn5(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMax
+        if objs[i].Object.Shape.BoundBox.YMax != linktocaller.NewBoundary.YMax:
+            objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMax  - objs[i].Object.Shape.BoundBox.YLength
     linktocaller.recreateAll()
 
 
@@ -165,7 +171,9 @@ def callback_btn6(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMin
+        print(objs[i].Object.Shape.BoundBox.ZMin,linktocaller.NewBoundary.ZMin )
+        if objs[i].Object.Shape.BoundBox.ZMin != linktocaller.NewBoundary.ZMin: 
+            objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMin
     linktocaller.recreateAll()
 
 
@@ -182,7 +190,9 @@ def callback_btn7(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.Center.z
+        print(objs[i].Object.Shape.BoundBox.Center, linktocaller.NewBoundary.Center)
+        if objs[i].Object.Shape.BoundBox.Center.z != linktocaller.NewBoundary.Center.z: 
+            objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.Center.z
     linktocaller.recreateAll()
 
 
@@ -197,8 +207,11 @@ def callback_btn8(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    
     for i in range(0, len(objs)):
-        objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMax
+        print(objs[i].Object.Shape.BoundBox.ZMax,linktocaller.NewBoundary.ZMax)
+        if objs[i].Object.Shape.BoundBox.ZMax != linktocaller.NewBoundary.ZMax: 
+            objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMax - objs[i].Object.Shape.BoundBox.ZLength
     linktocaller.recreateAll()
 
 
