@@ -39,7 +39,7 @@ from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
 
-__updated__ = '2022-01-14 17:53:25'
+__updated__ = '2022-01-15 13:12:32'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -575,7 +575,7 @@ class Star:
             if obj.OuterRadius < obj.InnerRadius:
                 # you cannot have it smaller
                 obj.OuterRadius = obj.InnerRadius
-            _points = []
+            self.points = []
 
             for i in range(0, obj.Corners):
                 alpha = _math.pi * (2 * i + 2 - obj.Corners % 2)/(obj.Corners)
@@ -585,13 +585,13 @@ class Star:
                     radius = obj.OuterRadius
                 x = _math.cos(alpha) * radius
                 y = _math.sin(alpha) * radius
-                _points.append(App.Vector(x, y, 0.0))
+                self.points.append(App.Vector(x, y, 0.0))
                 if i == 0:
                     saveFirstPoint = App.Vector(x, y, 0.0)
                 if alpha > obj.Angle:
                     break
-            _points.append(saveFirstPoint)
-            test = _part.makePolygon(_points)
+            self.points.append(saveFirstPoint)
+            test = _part.makePolygon(self.points)
             obj.Shape = _part.Face(test)
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
@@ -636,10 +636,10 @@ Gui.addCommand('Design456_Star', Design456_Star())
 
 class Design456_joinTwoLines:
     def __init__(self):
-        _points = []
+        self.points = []
     def Activated(self):
         try:
-            _points.clear()
+            self.points.clear()
             s = Gui.Selection.getSelectionEx()
             if hasattr(s,"Point"):
                 return
@@ -648,55 +648,57 @@ class Design456_joinTwoLines:
                 errMessage = "Select only two vertices "
                 faced.errorDialog(errMessage)
                 return
-            elif len(s) == 1:
-                # We have one line .. end and start will be one.
-                for pnt in s[0].Object.Shape.Vertexes:
-                    if(pnt != s[0].Object.End):
-                        _points.append(pnt.Point)
-                newObj = _draft.makeWire(_points)
-                newObj.Start = _points[0]
-                newObj.End = _points[0]
-                App.ActiveDocument.removeObject(s[0].Object.Name)
-                App.ActiveDocument.recompute()
+
             elif len(s) == 2:
                 s1 = s[0]
                 s2 = s[1]
-                tempPoint = None
-
-                p1 = []
-                p2 = []
-                p1.append(s1.Object.Start)
-                p1.append(s1.Object.End)
-                p2.append(s2.Object.Start)
-                p2.append(s2.Object.End)
-                if p2[0] == s2.SubObjects[0].Point:
-                    for pnt in reversed(s2.Object.Shape.Vertexes):
-                        _points.append(pnt.Point)
+                p1 = s1.SubObjects[0].Vertexes[0].Point
+                p2 = s2.SubObjects[0].Vertexes[0].Point
+                Edges1 = s1.Object.Shape.OrderedEdges
+                Edges2 = s2.Object.Shape.OrderedEdges
+                e1 = None
+                e2 = None
+                if len(Edges1)>1:
+                    for ed in Edges1:
+                        for v in ed.Vertexes:
+                            if v.Point == p1:
+                                e1 = ed
+                                Edges1.remove(e1)
+                                break
                 else:
-                    for pnt in s2.Object.Shape.Vertexes:
-                        _points.append(pnt.Point)
-
-                if p1[0] != s1.SubObjects[0].Point:
-                    for pnt in reversed(s1.Object.Shape.Vertexes):
-                        if pnt.Point != p1[0]:
-                            # Start and selected is the same ignore it
-                            _points.append(pnt.Point)
+                    e1 = Edges1[0]
+                            
+                if len(Edges2)>1:
+                    for ed in Edges2:
+                        for v in ed.Vertexes:
+                            if v.Point == p2:
+                                e2 = ed
+                                break
                 else:
-                    for pnt in s1.Object.Shape.Vertexes:
-                        if pnt.Point != p1[1]:
-                            # End and selected is the same ignore it
-                            _points.append(pnt.Point)
+                    e2 = Edges2[0]
+                
+            # We have the edges and the points
+            newEdg=_part.Edge(_part.Line(e1.Vertexes[0].Point,p2))
 
-                plc = s2.Object.Placement
-                plc.Rotation.Q = s2.Object.Placement.Rotation.Q
-                ang = s2.Object.Placement.Rotation.Angle
-                axes = s2.Object.Placement.Rotation.Axis
-                newObj = _draft.makeWire(_points)
-                newObj.Start = _points[0]
-                newObj.End = _points[len(_points)-1]
+            totalE=[]
+            if type(Edges1)==list and type(Edges2)==list:
+                totalE= Edges1+ Edges2+ [newEdg]
+            elif type(Edges1)==list and type(Edges2)!=list:
+                totalE= Edges1+ [Edges2]+[newEdg]
+            elif type(Edges1)!=list and type(Edges2)==list:
+                totalE= [Edges1]+ Edges2+ [newEdg]
+            else:
+                totalE=[Edges1]+ [Edges2]+[newEdg]
+            print (totalE)
+            totalE=_part.sortEdges(totalE)
+            print (totalE)
 
-                App.ActiveDocument.removeObject(s1.Object.Name)
-                App.ActiveDocument.removeObject(s2.Object.Name)
+            W = _part.Wire(totalE)
+            _part.show(W)
+
+
+            App.ActiveDocument.removeObject(s1.Object.Name)
+            App.ActiveDocument.removeObject(s2.Object.Name)
             App.ActiveDocument.recompute()
 
         except Exception as err:
