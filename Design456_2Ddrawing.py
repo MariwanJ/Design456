@@ -39,7 +39,7 @@ from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
 
-__updated__ = '2022-01-15 13:12:32'
+__updated__ = '2022-01-16 11:12:54'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -643,6 +643,8 @@ class Design456_joinTwoLines:
             s = Gui.Selection.getSelectionEx()
             if hasattr(s,"Point"):
                 return
+            e1 = None
+            e2 = None
             if len(s) > 2:
                 # Two objects must be selected
                 errMessage = "Select only two vertices "
@@ -656,8 +658,7 @@ class Design456_joinTwoLines:
                 p2 = s2.SubObjects[0].Vertexes[0].Point
                 Edges1 = s1.Object.Shape.OrderedEdges
                 Edges2 = s2.Object.Shape.OrderedEdges
-                e1 = None
-                e2 = None
+                print(len(Edges1))
                 if len(Edges1)>1:
                     for ed in Edges1:
                         for v in ed.Vertexes:
@@ -676,27 +677,36 @@ class Design456_joinTwoLines:
                                 break
                 else:
                     e2 = Edges2[0]
-                
+            print(len(Edges1))    
             # We have the edges and the points
-            newEdg=_part.Edge(_part.Line(e1.Vertexes[0].Point,p2))
+            if (e1.Vertexes[0].Point != p1):
+                p1= e1.Vertexes[0].Point
+            else:
+                p1= e1.Vertexes[1].Point
+            p1 = App.Vector(p1.x, p1.y, p1.z)
+            p2 = App.Vector(p2.x, p2.y, p2.z)
 
-            totalE=[]
+            l1 = _draft.makeLine(p1, p2)
+            App.ActiveDocument.recompute()
+            newEdg = l1.Shape.Edges[0]
             if type(Edges1)==list and type(Edges2)==list:
                 totalE= Edges1+ Edges2+ [newEdg]
             elif type(Edges1)==list and type(Edges2)!=list:
                 totalE= Edges1+ [Edges2]+[newEdg]
             elif type(Edges1)!=list and type(Edges2)==list:
-                totalE= [Edges1]+ Edges2+ [newEdg]
+                totalE = [Edges1]+ Edges2+ [newEdg]
             else:
                 totalE=[Edges1]+ [Edges2]+[newEdg]
-            print (totalE)
-            totalE=_part.sortEdges(totalE)
-            print (totalE)
 
-            W = _part.Wire(totalE)
-            _part.show(W)
+            newList= []
+            for e in totalE:
+                newList.append(e.copy())
+            App.ActiveDocument.removeObject(l1.Name)
+            App.ActiveDocument.recompute()
+            for e in newList:
+                _part.show(e)
 
-
+            App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(s1.Object.Name)
             App.ActiveDocument.removeObject(s2.Object.Name)
             App.ActiveDocument.recompute()
