@@ -39,7 +39,7 @@ from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
 
-__updated__ = '2022-01-16 11:12:54'
+__updated__ = '2022-01-16 11:26:39'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -656,9 +656,15 @@ class Design456_joinTwoLines:
                 s2 = s[1]
                 p1 = s1.SubObjects[0].Vertexes[0].Point
                 p2 = s2.SubObjects[0].Vertexes[0].Point
-                Edges1 = s1.Object.Shape.OrderedEdges
-                Edges2 = s2.Object.Shape.OrderedEdges
-                print(len(Edges1))
+                if hasattr(s1.Object.Shape,"OrderedEdges"):
+                    Edges1 = s1.Object.Shape.OrderedEdges
+                else:
+                    Edges1 = s1.Object.Shape.Edges
+                if hasattr(s2.Object.Shape,"OrderedEdges"):
+                    Edges2 = s2.Object.Shape.OrderedEdges
+                else:
+                    Edges2 = s2.Object.Shape.Edges
+
                 if len(Edges1)>1:
                     for ed in Edges1:
                         for v in ed.Vertexes:
@@ -676,8 +682,7 @@ class Design456_joinTwoLines:
                                 e2 = ed
                                 break
                 else:
-                    e2 = Edges2[0]
-            print(len(Edges1))    
+                    e2 = Edges2[0]   
             # We have the edges and the points
             if (e1.Vertexes[0].Point != p1):
                 p1= e1.Vertexes[0].Point
