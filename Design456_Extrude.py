@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-01-13 21:31:00'
+__updated__ = '2022-01-16 17:53:45'
 
 class Design456_Extrude:
     
@@ -51,7 +51,7 @@ class Design456_Extrude:
                 faced.errorDialog(errMessage)
                 return
             lengthForward = QtGui.QInputDialog.getDouble(
-                None, "Get value", "Input:", 0, -10000.0, 10000.0, 2)[0]
+                None, "Length of Extrusion", "Input:", 0, -10000.0, 10000.0, 2)[0]
             if(lengthForward ==0):
                 return  # nothing to do here
 
@@ -120,7 +120,6 @@ class Design456_Extrude:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
     def Activated(self):
         try:
             selection = Gui.Selection.getSelectionEx()
@@ -145,7 +144,7 @@ class Design456_Extrude:
 
                 # Extrude must get a negative number ???
                 f.LengthFwd = (QtGui.QInputDialog.getDouble(
-                    None, "Get length", "Length:", 0, -10000.0, 10000.0, 2)[0])
+                    None, "Length of Extrusion", "Length:", 0, -10000.0, 10000.0, 2)[0])
                 while(f.LengthFwd == 0):
                     _sleep(.1)
                     Gui.updateGui()

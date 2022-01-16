@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-01-13 21:35:04'
+__updated__ = '2022-01-16 18:03:12'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -356,7 +356,12 @@ class Design456_ResetPlacements:
 
             for sObj in self.objects:
                 temp.clear()
-                if "Placement" in sObj.Object.PropertiesList:
+                test=""
+                if hasattr(sObj,"Object"):
+                    test= sObj.Object.PropertiesList
+                else:
+                    test= sObj.PropertiesList
+                if "Placement" in test:
                     newOBJ = App.ActiveDocument.addObject(
                         "Part::Compound", "tempReset")  # Create new compound object
                     newOBJ.Links = sObj.Object

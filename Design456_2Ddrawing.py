@@ -38,8 +38,9 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
+from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-16 13:18:04'
+__updated__ = '2022-01-16 18:20:03'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -89,6 +90,7 @@ class Design456_2Ddrawing:
 class Design456_Arc3Points:
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456", "Arc3points"))
             oneObject = False
             selected = Gui.Selection.getSelectionEx()
             selectedOne1 = Gui.Selection.getSelectionEx()[0]
@@ -128,6 +130,7 @@ class Design456_Arc3Points:
                     App.ActiveDocument.removeObject(n.ObjectName)
             del allSelected[:]
             App.ActiveDocument.recompute()
+            App.ActiveDocument.commitTransaction()  # undo
 
         except Exception as err:
             App.Console.PrintError("'Arc3Points' Failed. "
@@ -153,6 +156,7 @@ class Design456_MultiPointsToWire:
 
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456", "MultipointsToWire"))
             selected = Gui.Selection.getSelectionEx()
 
             if (len(selected) < 2):
@@ -161,6 +165,7 @@ class Design456_MultiPointsToWire:
                     errMessage = "Select two or more objects to use MultiPointsToLineOpen Tool"
                     faced.errorDialog(errMessage)
                     return
+                    
             allSelected = []
             for t in selected:
                 if type(t) == list:
@@ -190,6 +195,7 @@ class Design456_MultiPointsToWire:
             """
             del allSelected[:]
             App.ActiveDocument.recompute()
+            App.ActiveDocument.commitTransaction()  # undo
 
         except Exception as err:
             App.Console.PrintError("'MultiPointsToWire' Failed. "
@@ -219,6 +225,7 @@ class Design456_MultiPointsToWireClose:
 class Design456_MultiPointsToWireOpen:
     def Activated(self):
         try:
+            
             newObj = Design456_MultiPointsToWire(1)
             newObj.Activated()
 
@@ -639,6 +646,7 @@ class Design456_joinTwoLines:
         self.points = []
     def Activated(self):
         try:
+
             self.points.clear()
             s = Gui.Selection.getSelectionEx()
             if hasattr(s,"Point"):
@@ -659,8 +667,6 @@ class Design456_joinTwoLines:
                 s2 = s[1]
                 p1 = s1.SubObjects[0].Vertexes[0].Point
                 p2 = s2.SubObjects[0].Vertexes[0].Point
-                print("len s1", len (s1.Object.Shape.Edges))
-                print("len s2", len (s2.Object.Shape.Edges))
                 
                 if hasattr(s1.Object.Shape,"OrderedEdges"):
                     Edges1 = s1.Object.Shape.OrderedEdges
@@ -680,15 +686,8 @@ class Design456_joinTwoLines:
                                 break
                 else:
                     e1 = Edges1[0]
-                            
-                if len(Edges2)>1:
-                    for ed in Edges2:
-                        for v in ed.Vertexes:
-                            if v.Point == p2:
-                                e2 = ed
-                                break
-                else:
-                    e2 = Edges2[0]   
+                    Edges1 = []
+
             # We have the edges and the points
             if (e1.Vertexes[0].Point != p1):
                 p1= e1.Vertexes[0].Point
@@ -696,7 +695,7 @@ class Design456_joinTwoLines:
                 p1= e1.Vertexes[1].Point
             p1 = App.Vector(p1.x, p1.y, p1.z)
             p2 = App.Vector(p2.x, p2.y, p2.z)
-
+            App.ActiveDocument.openTransaction(translate("Design456", "Join2Lines"))
             l1 = _draft.makeLine(p1, p2)
             App.ActiveDocument.recompute()
             newEdg = l1.Shape.Edges[0]
@@ -714,15 +713,16 @@ class Design456_joinTwoLines:
             newList= []
             for e in totalE:
                 newList.append(e.copy())
+            sortEdg = _part.sortEdges(newList)
+            W = [_part.Wire(e) for e in sortEdg]
+            for wire in W:
+                newobj = App.ActiveDocument.addObject("Part::Feature", "Wire")
+                newobj.Shape = wire
             App.ActiveDocument.removeObject(l1.Name)
-            App.ActiveDocument.recompute()
-            for e in newList:
-                _part.show(e)
-
-            App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(s1.Object.Name)
             App.ActiveDocument.removeObject(s2.Object.Name)
             App.ActiveDocument.recompute()
+            App.ActiveDocument.commitTransaction()  # undo reg.de here
 
         except Exception as err:
             App.Console.PrintError("'Part Surface' Failed. "
