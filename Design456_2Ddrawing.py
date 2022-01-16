@@ -39,7 +39,7 @@ from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
 
-__updated__ = '2022-01-16 11:26:39'
+__updated__ = '2022-01-16 13:18:04'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -650,12 +650,18 @@ class Design456_joinTwoLines:
                 errMessage = "Select only two vertices "
                 faced.errorDialog(errMessage)
                 return
-
+            elif len(s)==1:
+                errMessage = "Not implemented "
+                faced.errorDialog(errMessage)
+                return
             elif len(s) == 2:
                 s1 = s[0]
                 s2 = s[1]
                 p1 = s1.SubObjects[0].Vertexes[0].Point
                 p2 = s2.SubObjects[0].Vertexes[0].Point
+                print("len s1", len (s1.Object.Shape.Edges))
+                print("len s2", len (s2.Object.Shape.Edges))
+                
                 if hasattr(s1.Object.Shape,"OrderedEdges"):
                     Edges1 = s1.Object.Shape.OrderedEdges
                 else:
@@ -699,9 +705,11 @@ class Design456_joinTwoLines:
             elif type(Edges1)==list and type(Edges2)!=list:
                 totalE= Edges1+ [Edges2]+[newEdg]
             elif type(Edges1)!=list and type(Edges2)==list:
-                totalE = [Edges1]+ Edges2+ [newEdg]
+                #Only one edge in the first line, so not included
+                totalE = Edges2+ [newEdg]
             else:
-                totalE=[Edges1]+ [Edges2]+[newEdg]
+                #None of them is multiple edges. so only new edge shoud be use
+                totalE=[Edges2]+[newEdg]
 
             newList= []
             for e in totalE:
