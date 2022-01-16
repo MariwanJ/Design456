@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-01-09 11:24:51'
+__updated__ = '2022-01-16 20:22:05'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -77,6 +77,13 @@ class Design456_Workbench (Workbench):
         self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
         self.appendMenu("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
         
+        # Defeaturing WB  added to Design456 
+        self.appendToolbar("Defeaturing Tools", ["DefeaturingTools","DF_SelectLoop","refineFeatureTool","DefeatShapeFeature"])
+        #self.appendMenu("ksu Tools", ["ksuTools","ksuToolsEdit"])
+        self.appendMenu("Defeaturing Tools", ["refineFeatureTool","DefeaturingTools","DF_SelectLoop"])
+        self.appendToolbar("Fuzzy Tools", ["FuzzyCut","FuzzyUnion","FuzzyCommon"])
+        self.appendMenu("Fuzzy Tools", ["FuzzyCut","FuzzyUnion","FuzzyCommon"])
+
 
         # Design456_Part
         # self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
@@ -121,6 +128,7 @@ class Design456_Workbench (Workbench):
             import DraftFillet
             import FreeCAD
             import FreeCADGui
+
             FreeCADGui.addLanguagePath(":/translations")
             FreeCADGui.addIconPath(":/icons")
         except Exception as exc:
