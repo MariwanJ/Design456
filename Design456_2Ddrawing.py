@@ -40,7 +40,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-16 18:20:03'
+__updated__ = '2022-01-17 17:16:11'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -50,7 +50,6 @@ class Design456_2Ddrawing:
             "Design456_MultiPointsToWireOpen",
             "Design456_MultiPointsToWireClose",
             "Design456_2DTrim",
-            "Design456_2DExtend",
             "Design456_joinTwoLines",
             "Design456_Star",
             "Design456_Paint",
@@ -420,96 +419,6 @@ def selectedObjectType(obj):
     if hasattr(obj.Object, 'TypeId'):
         return obj.Object.TypeId
     return "Unknown"
-
-# TODO: FIXME: THIS TOOLS IS NOT CORRECT AND DOESN'T WORK. NEEDS UNDERSTANDING OF DRAFT LINE
-
-
-class Design456_2DExtend:
-    def Activated(self):
-        try:
-            s = Gui.Selection.getSelectionEx()
-
-            if len(s) < 1:
-                # several selections - Error
-                errMessage = "Select a line or a point to extend."
-                faced.errorDialog(errMessage)
-                return
-            sel = s[0]
-            _type = selectedObjectType(sel)
-            if not (_type == 'Wire' or _type == 'Line'):
-                print(_type)
-                print("Wrong object selected")
-                return  # Not supported yet.
-                # TODO: Is it necessary to extend Arc, Square ..etc shapes? Don't know now
-            # User decided where to extend the line.
-            # Otherwise we extend the line only to the end of the line
-            VertPoint = None
-            if hasattr(sel.SubObjects[0], 'Point'):
-                VertPoint = sel.SubObjects[0].Point
-            elif hasattr(sel.SubObjects[0], 'Edges'):
-                _point = sel.SubObjects[0].Vertexes[1].Point
-                VertPoint = sel.SubObjects[0].Vertexes[1].Point  # last point
-            newPoint = []
-            _point = sel.Object.Points
-            positionSave = 0
-
-            for i in _point:
-                print("check", i)
-                newPoint.append(App.Vector(i))
-                if VertPoint == i:
-                    positionSave = newPoint.index(i)
-            if VertPoint == newPoint[len(newPoint)-1]:
-                # add to the last position
-                # add always (1,1,0)
-                newPoint.append(App.Vector(_point[len(_point)-1]))
-                #sel.Object.Points = newPoint
-            elif positionSave == 0:
-                # add to first position
-                newPoint.insert(0, App.Vector(_point[0]))
-                #sel.Object.Points = newPoint
-                print("add at last ")
-            _view = Gui.ActiveDocument.ActiveView
-            # Find and select the point added.
-            pl = App.Placement()
-            pl.Rotation = sel.Object.Shape.Placement.Rotation
-            pl.Base = sel.Object.Shape.Placement.Base
-
-            obj = sel.Object
-            Gui.Selection.clearSelection()
-            # Gui.Selection.addSelection('Unnamed','Line','Vertex2',-10.9949,4.23711,3.23066)
-            line = _draft.makeWire(
-                newPoint, placement=pl, closed=False, face=True, support=None)
-            App.ActiveDocument.removeObject(obj.Name)
-            App.ActiveDocument.recompute()
-
-            obj = line
-            for index in range(0, len(newPoint)):
-                if newPoint[positionSave] == newPoint[index]:
-                    Gui.Selection.addSelection(App.ActiveDocument.Name,
-                                               obj.Name, 'Vertex'+str(index),
-                                               newPoint[index].x, newPoint[index].y, newPoint[index].z)
-                    break
-            App.ActiveDocument.recompute()
-            sel = Gui.Selection.getSelectionEx()[0]
-            faced.mousePointMove(sel, _view)
-            del newPoint[:]
-
-        except Exception as err:
-            App.Console.PrintError("'Extend' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def GetResources(self):
-        return {
-            'Pixmap': Design456Init.ICON_PATH + '2D_ExtendLine.svg',
-            'MenuText': 'Extend Line',
-                        'ToolTip':  'Extend Existing Line'
-        }
-
-
-Gui.addCommand('Design456_2DExtend', Design456_2DExtend())
 
 
 class ViewProviderBox:
