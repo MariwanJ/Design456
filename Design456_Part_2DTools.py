@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-16 22:12:32'
+__updated__ = '2022-01-17 12:50:42'
 
 class GenCommandForPartUtils:
     def __init__(self):
@@ -233,8 +233,7 @@ class Design456_Part_Surface:
 
     def Activated(self):
         try:
-            App.ActiveDocument.openTransaction(
-                translate("Design456", "Surface"))
+
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 1 or len(s) > 2):
                 # Two object must be selected
@@ -243,13 +242,27 @@ class Design456_Part_Surface:
                 return
             elementsName = None
             subObj = None
+            obj1=None
+            obj2=None
             if len(s)==1:
-                elementsName =s[0].SubElementNames
-                subObj = s[0].SubObjects
+                obj1shp= s[0].SubObjects[0].copy()
+                obj1=App.ActiveDocument.addObject('Part::Feature',"E1")
+                obj1.Shape=obj1shp
+                obj2shp= s[0].SubObjects[1].copy()
+                obj2=App.ActiveDocument.addObject('Part::Feature',"E2")
+                obj2.Shape=obj2shp
+                App.ActiveDocument.recompute()
+                elementsName=[obj1.Name, obj2.Name]
+                subObj = [obj1, obj2]
             elif len(s)==2 :
-                elementsName = [s[0].SubElementNames,s[0].SubElementNames]
-                subObj = [s[0].Object,s[1].Object]
-            from textwrap import wrap
+                obj1shp= s[0].SubObjects[0].copy()
+                obj1=App.ActiveDocument.addObject('Part::Feature',"E1")
+                obj1.Shape=obj1shp
+                obj2shp= s[1].SubObjects[0].copy()               
+                obj2=App.ActiveDocument.addObject('Part::Feature',"E2")
+                obj2.Shape=obj2shp
+                elementsName=[obj1.Name, obj2.Name]
+                subObj = [obj1, obj2]
             for ss in s:
                 word = ss.FullName
                 if(word.find('Vertex') != -1):
@@ -257,12 +270,14 @@ class Design456_Part_Surface:
                     errMessage = "Select two edges or two wires not Vertex"
                     faced.errorDialog(errMessage)
                     return
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "Surface"))
 
             newObj = App.ActiveDocument.addObject(
                 'Part::RuledSurface', 'tempSurface')
-            #for sub in s:
-            newObj.Curve1 = (subObj[0], elementsName[0])
-            newObj.Curve2 = (subObj[1], elementsName[0])
+            print(type(subObj[0]),type(subObj[1]))
+            newObj.Curve1 = subObj[0]
+            newObj.Curve2 = subObj[1]
             App.ActiveDocument.recompute()
             
             # Make a simple copy of the object
@@ -280,14 +295,12 @@ class Design456_Part_Surface:
                 faced.errorDialog(errMessage)
             else:
                 App.ActiveDocument.removeObject(newObj.Name)
-                # Removing these could cause problem if the line is a part of an object
-                # You cannot hide them either. TODO: I have to find a solution later
-                # App.ActiveDocument.removeObject(s[0].Object.Name)
-                # App.ActiveDocument.removeObject(s[1].Object.Name)
-                #s[0].Object.ViewObject.Visibility = False
-                #Ss[1].Object.ViewObject.Visibility = False
                 App.ActiveDocument.commitTransaction()  # undo reg.de here
                 App.ActiveDocument.recompute()
+                if (obj1 is not None and obj2 is not None):
+                    App.ActiveDocument.removeObject(obj1.Name)
+                    App.ActiveDocument.removeObject(obj2.Name)
+
         except Exception as err:
             App.Console.PrintError("'Part Surface' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -317,10 +330,10 @@ class Design456_Part_2DToolsGroup:
 
     def GetCommands(self):
         """2D Face commands."""
-        return ("Design456_CommonFace",
+        return ("Design456_Part_Surface",
                 "Design456_CombineFaces",
                 "Design456_SubtractFaces",
-                "Design456_Part_Surface",
+                "Design456_CommonFace",
 
                 )
 

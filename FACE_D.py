@@ -36,7 +36,7 @@ import math
 
 # TODO : FIXME BETTER WAY?
 
-__updated__ = '2022-01-14 17:14:05'
+__updated__ = '2022-01-17 16:09:23'
 
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
@@ -130,7 +130,7 @@ class mousePointMove:
             coin.SoLocation2Event.getClassTypeId(), self.mouseMove)
         self.direction = 'A'
 
-    def convertToVsector(self, pos):
+    def convertToVector(self, pos):
         try:
             import Design456Init
             point = None
