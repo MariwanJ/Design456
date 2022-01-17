@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2021-12-31 08:56:30'
+__updated__ = '2022-01-16 22:12:32'
 
 class GenCommandForPartUtils:
     def __init__(self):
@@ -236,11 +236,19 @@ class Design456_Part_Surface:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "Surface"))
             s = Gui.Selection.getSelectionEx()
-            if (len(s) < 2 or len(s) > 2):
+            if (len(s) < 1 or len(s) > 2):
                 # Two object must be selected
                 errMessage = "Select two edges or two wire to make a face or "
                 faced.errorDialog(errMessage)
                 return
+            elementsName = None
+            subObj = None
+            if len(s)==1:
+                elementsName =s[0].SubElementNames
+                subObj = s[0].SubObjects
+            elif len(s)==2 :
+                elementsName = [s[0].SubElementNames,s[0].SubElementNames]
+                subObj = [s[0].Object,s[1].Object]
             from textwrap import wrap
             for ss in s:
                 word = ss.FullName
@@ -252,10 +260,11 @@ class Design456_Part_Surface:
 
             newObj = App.ActiveDocument.addObject(
                 'Part::RuledSurface', 'tempSurface')
-            for sub in s:
-                newObj.Curve1 = (s[0].Object, s[0].SubElementNames)
-                newObj.Curve2 = (s[1].Object, s[1].SubElementNames)
+            #for sub in s:
+            newObj.Curve1 = (subObj[0], elementsName[0])
+            newObj.Curve2 = (subObj[1], elementsName[0])
             App.ActiveDocument.recompute()
+            
             # Make a simple copy of the object
             newShape = _part.getShape(
                 newObj, '', needSubElement=False, refine=True)
@@ -267,7 +276,7 @@ class Design456_Part_Surface:
             if tempNewObj.isValid() is False:
                 App.ActiveDocument.removeObject(tempNewObj.Name)
                 # Shape != OK
-                errMessage = "Failed to fillet the objects"
+                errMessage = "Failed to create the face"
                 faced.errorDialog(errMessage)
             else:
                 App.ActiveDocument.removeObject(newObj.Name)
@@ -275,8 +284,8 @@ class Design456_Part_Surface:
                 # You cannot hide them either. TODO: I have to find a solution later
                 # App.ActiveDocument.removeObject(s[0].Object.Name)
                 # App.ActiveDocument.removeObject(s[1].Object.Name)
-                s[0].Object.ViewObject.Visibility = False
-                s[1].Object.ViewObject.Visibility = False
+                #s[0].Object.ViewObject.Visibility = False
+                #Ss[1].Object.ViewObject.Visibility = False
                 App.ActiveDocument.commitTransaction()  # undo reg.de here
                 App.ActiveDocument.recompute()
         except Exception as err:
