@@ -33,14 +33,14 @@ import Part as _part
 import Design456Init
 from pivy import coin
 import FACE_D as faced
-import math as _math
+import math
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-18 17:53:18'
+__updated__ = '2022-01-18 22:07:21'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -439,7 +439,7 @@ class Star:
     Create a 2D Star based on the Inner radius outer radius, corners and the angle.
     """
 
-    def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=2*_math.pi, _Corners=40):
+    def __init__(self, obj, _InnerRadius=10, _OuterRadius=20, _Angle=2*math.pi, _Corners=40):
         _tip = QT_TRANSLATE_NOOP("App::Property", "Star Angel")
         obj.addProperty("App::PropertyAngle", "Angle",
                         "Star", _tip).Angle = _Angle
@@ -467,7 +467,7 @@ class Star:
             self.points = []
 
             for i in range(0, obj.Corners):
-                alpha = _math.pi * (2 * i + 2 - obj.Corners % 2)/(obj.Corners)
+                alpha = math.pi * (2 * i + 2 - obj.Corners % 2)/(obj.Corners)
                 if i % 2 == 1:
                     radius = obj.InnerRadius
                 else:
@@ -524,13 +524,9 @@ Gui.addCommand('Design456_Star', Design456_Star())
 
 
 class Design456_joinTwoLines:
-    def __init__(self):
-        self.points = []
-
     def Activated(self):
+        import DraftGeomUtils
         try:
-
-            self.points.clear()
             s = Gui.Selection.getSelectionEx()
             if hasattr(s, "Point"):
                 return
@@ -547,9 +543,42 @@ class Design456_joinTwoLines:
                 return
             elif len(s) == 2:
                 s1 = s[0]
-                s2 = s[1]
-                p1 = s1.SubObjects[0].Vertexes[0].Point
-                p2 = s2.SubObjects[0].Vertexes[0].Point
+                s2 = s[1]                
+                if ( 'Vertex' in str(s1.SubElementNames)):
+                    # Vertexes are selected
+                    p1 = s1.SubObjects[0].Vertexes[0].Point
+                    p2 = s2.SubObjects[0].Vertexes[0].Point
+                elif ( 'Edge' in str(s1.SubElementNames)):
+                    # Edges are selected
+                    # We have to find the nearest two vector. 
+                    # Joining here means the two edges will 
+                    # attach to each other while they are 
+                    # separate.
+                    vert1=[] 
+                    for e in s1.Object.Shape.OrderedEdges:
+                        for v in e.Vertexes:
+                            vert1.append(v.Point)
+                    vert2 = [] 
+                    for e in s1.Object.Shape.OrderedEdges:
+                        for v in e.Vertexes:
+                            vert1.append(v.Point)
+                    # Now we need to find the one point from each edge
+                    # that are nearest to each other   
+                    index1=DraftGeomUtils.findClosest(vert1[0],vert2)
+                    index2=DraftGeomUtils.findClosest(vert1[len(vert1)-1],vert2)
+                    dist1 = math.sqrt( pow((vert1[0].x-vert2[index1].x),2)+ 
+                                  pow((vert1[0].y-vert2[index1].y),2)+
+                                  pow((vert1[0].z-vert2[index1].z),2))
+                    dist2 = math.sqrt( pow((vert1[len(vert1)-1].x-vert2[index2].x),2)+ 
+                                  pow((vert1[len(vert1)-1].y-vert2[index2].y),2)+ 
+                                  pow((vert1[len(vert1)-1].y-vert2[index2].z),2))
+                    
+                    if dist1 == dist2 or dist1 < dist2:
+                        p1=vert1[0]
+                        p2=vert2[index1]
+                    elif dist2 < dist1:
+                        p1=vert1[len(vert1)-1]
+                        p2=vert2[index2]
 
                 if hasattr(s1.Object.Shape, "OrderedEdges"):
                     Edges1 = s1.Object.Shape.OrderedEdges
@@ -591,7 +620,7 @@ class Design456_joinTwoLines:
                 # Only one edge in the first line, so not included
                 totalE = Edges2 + [newEdg]
             else:
-                # None of them is multiple edges. so only new edge shoud be use
+                # None of them is multiple edges. so only new edge should be use
                 totalE = [Edges2]+[newEdg]
 
             newList = []
