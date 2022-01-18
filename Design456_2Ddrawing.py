@@ -40,7 +40,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-17 21:44:07'
+__updated__ = '2022-01-18 17:18:13'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -637,17 +637,30 @@ class Design456_SimplifyEdges:
                 faced.errorDialog(errMessage)
                 return
             selObj = s[0]
-            selEdges= selObj.Shape.OrderedEdges
+            selEdges= selObj.Object.Shape.OrderedEdges
             selVertexs=[]
             for e in selEdges:
-                selVertexs.append(e.Point)
+                for v in e.Vertexes:
+                    selVertexs.append(v.Point)
+
+            
             # To eliminate multiple vertices
             # incide the same edge, we take only
             # first and last entities and then
             # we make a line and convert it to 
             # an edge. which should replace the
             # old edge 
-
+            v1 = selVertexs[0]
+            v2 = selVertexs[len(selVertexs)-1]
+            l1=_draft.makeLine(v1,v2)
+            App.ActiveDocument.recompute()
+            newobj = App.ActiveDocument.addObject("Part::Feature", "Wire")
+            sh=l1.Shape
+            newobj.Shape =  sh.copy()
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(selObj.Object.Name)
+            App.ActiveDocument.removeObject(l1.Name)
+ 
         except Exception as err:
             App.Console.PrintError("'Part Surface' Failed. "
                                    "{err}\n".format(err=str(err)))
