@@ -40,10 +40,9 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-18 17:18:13'
+__updated__ = '2022-01-18 17:53:18'
 
 # Move an object to the location of the mouse click on another surface
-
 
 
 # ***************************************************************************
@@ -60,7 +59,8 @@ __updated__ = '2022-01-18 17:18:13'
 class Design456_Arc3Points:
     def Activated(self):
         try:
-            App.ActiveDocument.openTransaction(translate("Design456", "Arc3points"))
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "Arc3points"))
             oneObject = False
             selected = Gui.Selection.getSelectionEx()
             selectedOne1 = Gui.Selection.getSelectionEx()[0]
@@ -126,7 +126,8 @@ class Design456_MultiPointsToWire:
 
     def Activated(self):
         try:
-            App.ActiveDocument.openTransaction(translate("Design456", "MultipointsToWire"))
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "MultipointsToWire"))
             selected = Gui.Selection.getSelectionEx()
 
             if (len(selected) < 2):
@@ -135,12 +136,13 @@ class Design456_MultiPointsToWire:
                     errMessage = "Select two or more objects to use MultiPointsToLineOpen Tool"
                     faced.errorDialog(errMessage)
                     return
-                    
+
             allSelected = []
             for t in selected:
                 if type(t) == list:
                     for tt in t:
-                        allSelected.append(App.Vector(tt.Shape.Vertexes[0].Point))
+                        allSelected.append(App.Vector(
+                            tt.Shape.Vertexes[0].Point))
                 else:
                     if t.HasSubObjects and hasattr(t.SubObjects[0], "Vertexes"):
                         for v in t.SubObjects:
@@ -195,7 +197,7 @@ class Design456_MultiPointsToWireClose:
 class Design456_MultiPointsToWireOpen:
     def Activated(self):
         try:
-            
+
             newObj = Design456_MultiPointsToWire(1)
             newObj.Activated()
 
@@ -524,12 +526,13 @@ Gui.addCommand('Design456_Star', Design456_Star())
 class Design456_joinTwoLines:
     def __init__(self):
         self.points = []
+
     def Activated(self):
         try:
 
             self.points.clear()
             s = Gui.Selection.getSelectionEx()
-            if hasattr(s,"Point"):
+            if hasattr(s, "Point"):
                 return
             e1 = None
             e2 = None
@@ -538,7 +541,7 @@ class Design456_joinTwoLines:
                 errMessage = "Select only two vertices "
                 faced.errorDialog(errMessage)
                 return
-            elif len(s)==1:
+            elif len(s) == 1:
                 errMessage = "Not implemented "
                 faced.errorDialog(errMessage)
                 return
@@ -547,17 +550,17 @@ class Design456_joinTwoLines:
                 s2 = s[1]
                 p1 = s1.SubObjects[0].Vertexes[0].Point
                 p2 = s2.SubObjects[0].Vertexes[0].Point
-                
-                if hasattr(s1.Object.Shape,"OrderedEdges"):
+
+                if hasattr(s1.Object.Shape, "OrderedEdges"):
                     Edges1 = s1.Object.Shape.OrderedEdges
                 else:
                     Edges1 = s1.Object.Shape.Edges
-                if hasattr(s2.Object.Shape,"OrderedEdges"):
+                if hasattr(s2.Object.Shape, "OrderedEdges"):
                     Edges2 = s2.Object.Shape.OrderedEdges
                 else:
                     Edges2 = s2.Object.Shape.Edges
 
-                if len(Edges1)>1:
+                if len(Edges1) > 1:
                     for ed in Edges1:
                         for v in ed.Vertexes:
                             if v.Point == p1:
@@ -570,27 +573,28 @@ class Design456_joinTwoLines:
 
             # We have the edges and the points
             if (e1.Vertexes[0].Point != p1):
-                p1= e1.Vertexes[0].Point
+                p1 = e1.Vertexes[0].Point
             else:
-                p1= e1.Vertexes[1].Point
+                p1 = e1.Vertexes[1].Point
             p1 = App.Vector(p1.x, p1.y, p1.z)
             p2 = App.Vector(p2.x, p2.y, p2.z)
-            App.ActiveDocument.openTransaction(translate("Design456", "Join2Lines"))
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "Join2Lines"))
             l1 = _draft.makeLine(p1, p2)
             App.ActiveDocument.recompute()
             newEdg = l1.Shape.Edges[0]
-            if type(Edges1)==list and type(Edges2)==list:
-                totalE= Edges1+ Edges2+ [newEdg]
-            elif type(Edges1)==list and type(Edges2)!=list:
-                totalE= Edges1+ [Edges2]+[newEdg]
-            elif type(Edges1)!=list and type(Edges2)==list:
-                #Only one edge in the first line, so not included
-                totalE = Edges2+ [newEdg]
+            if type(Edges1) == list and type(Edges2) == list:
+                totalE = Edges1 + Edges2 + [newEdg]
+            elif type(Edges1) == list and type(Edges2) != list:
+                totalE = Edges1 + [Edges2]+[newEdg]
+            elif type(Edges1) != list and type(Edges2) == list:
+                # Only one edge in the first line, so not included
+                totalE = Edges2 + [newEdg]
             else:
-                #None of them is multiple edges. so only new edge shoud be use
-                totalE=[Edges2]+[newEdg]
+                # None of them is multiple edges. so only new edge shoud be use
+                totalE = [Edges2]+[newEdg]
 
-            newList= []
+            newList = []
             for e in totalE:
                 newList.append(e.copy())
             sortEdg = _part.sortEdges(newList)
@@ -620,49 +624,51 @@ class Design456_joinTwoLines:
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "joinTwoLines"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
+
 Gui.addCommand('Design456_joinTwoLines', Design456_joinTwoLines())
 
 
 class Design456_SimplifyEdges:
-    def __init__(self):
-        self.points = []
+    """[Simplify a list of line, wire, or edges to one edge.
+        This is useful if you want to repair a shape that has 
+        multiple complex edges that not make sense.
+    ]
+    """
     def Activated(self):
         try:
 
-            self.points.clear()
             s = Gui.Selection.getSelectionEx()
-            if len(s)>1:
-                #TODO: FIXME: Should we accept more than one object?
+            if len(s) > 1:
+                # TODO: FIXME: Should we accept more than one object?
                 errMessage = "Select edges from one object"
                 faced.errorDialog(errMessage)
                 return
             selObj = s[0]
-            selEdges= selObj.Object.Shape.OrderedEdges
-            selVertexs=[]
+            selEdges = selObj.Object.Shape.OrderedEdges
+            selVertexes = []
             for e in selEdges:
                 for v in e.Vertexes:
-                    selVertexs.append(v.Point)
+                    selVertexes.append(v.Point)
 
-            
             # To eliminate multiple vertices
             # incide the same edge, we take only
             # first and last entities and then
-            # we make a line and convert it to 
+            # we make a line and convert it to
             # an edge. which should replace the
-            # old edge 
-            v1 = selVertexs[0]
-            v2 = selVertexs[len(selVertexs)-1]
-            l1=_draft.makeLine(v1,v2)
+            # old edge
+            v1 = selVertexes[0]
+            v2 = selVertexes[len(selVertexes)-1]
+            l1 = _draft.makeLine(v1, v2)
             App.ActiveDocument.recompute()
             newobj = App.ActiveDocument.addObject("Part::Feature", "Wire")
-            sh=l1.Shape
-            newobj.Shape =  sh.copy()
+            sh = l1.Shape
+            newobj.Shape = sh.copy()
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(selObj.Object.Name)
             App.ActiveDocument.removeObject(l1.Name)
- 
+
         except Exception as err:
-            App.Console.PrintError("'Part Surface' Failed. "
+            App.Console.PrintError("'Design456_SimplifyEdges' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -682,7 +688,7 @@ Gui.addCommand('Design456_SimplifyEdges', Design456_SimplifyEdges())
 
 
 ##################################################################################
-#       Toolbar group definition 
+#       Toolbar group definition
 class Design456_2Ddrawing:
     list = ["Design456_Arc3Points",
             "Design456_MultiPointsToWireOpen",
