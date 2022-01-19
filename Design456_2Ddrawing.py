@@ -40,7 +40,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-19 19:29:32'
+__updated__ = '2022-01-19 20:46:12'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -731,7 +731,8 @@ class Design456_SimplifyFace:
                 errMessage = "Select edges from one object"
                 faced.errorDialog(errMessage)
                 return
- 
+            sel = s[0]
+            
 
         except Exception as err:
             App.Console.PrintError("'Design456_SimplifyEdges' Failed. "

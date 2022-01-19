@@ -52,12 +52,9 @@ import re, os, sys
 import OpenSCADCommands, OpenSCAD2Dgeom, OpenSCADFeatures
 from PySide import QtCore, QtGui
 import tempfile
-
-# From DefeaturingWB
-import re, time
-import dft_locator
-from DefeaturingCMD import *
-
+import Design456Init
+import base64
+from DefeaturingWB.image_file import *
 try:
     from PathScripts.PathUtils import horizontalEdgeLoop
     from PathScripts.PathUtils import horizontalFaceLoop
@@ -387,8 +384,8 @@ def merge_selected_faces_RH():
     if len(af_faces) > 0:
         #print af_faces
         try:
-           _test =  Part.Shell(af_faces)
-            if _.isNull():
+            _test =  Part.Shell(af_faces)
+            if _test.isNull():
             #raise RuntimeError('Failed to create shell')
                 App.Console.PrintWarning('Failed to create shell\n')
         except:
@@ -399,21 +396,21 @@ def merge_selected_faces_RH():
             return
         if RHDockWidget.ui.checkBox_Refine.isChecked():
             try:
-                _.removeSplitter()
+                _test.removeSplitter()
             except:
                 print ('not refined')
-        if _.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-        _=Part.Solid(_)
-        if _.isNull(): raise RuntimeError('Failed to create solid')
+        if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+        _test=Part.Solid(_test)
+        if _test.isNull(): raise RuntimeError('Failed to create solid')
         if RHDockWidget.ui.checkBox_Refine.isChecked():
             try:
-                _.removeSplitter()
+                _test.removeSplitter()
             except:
                 print ('not refined')
         if RHDockWidget.ui.checkBox_Refine.isChecked():
-            doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
+            doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
         else:
-            doc.addObject('Part::Feature','Solid').Shape=_
+            doc.addObject('Part::Feature','Solid').Shape=_test
         #App.ActiveDocument.ActiveObject.Label=App.ActiveDocument.mysolid.Label
         mysolidr = doc.ActiveObject
         #original_label = rh_obj.Label
@@ -530,8 +527,8 @@ def merge_faces_from_selected_objects_RH(refobj=None):
                     faces.append(f) 
         #print faces
         try:
-           _test =  Part.Shell(faces)
-            if _.isNull():
+            _test =  Part.Shell(faces)
+            if _test.isNull():
             #raise RuntimeError('Failed to create shell')
                 App.Console.PrintWarning('Failed to create shell\n')
         except:
@@ -546,17 +543,17 @@ def merge_faces_from_selected_objects_RH(refobj=None):
             except:
                 print ('not refined')
         if _.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-        _=Part.Solid(_)
-        if _.isNull(): raise RuntimeError('Failed to create solid')
+        _test=Part.Solid(_test)
+        if _test.isNull(): raise RuntimeError('Failed to create solid')
         if RHDockWidget.ui.checkBox_Refine.isChecked():
             try:
-                _.removeSplitter()
+                _test.removeSplitter()
             except:
                 print ('not refined')
         if RHDockWidget.ui.checkBox_Refine.isChecked():
-            doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
+            doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
         else:
-            doc.addObject('Part::Feature','Solid').Shape=_
+            doc.addObject('Part::Feature','Solid').Shape=_test
         #App.ActiveDocument.ActiveObject.Label=App.ActiveDocument.mysolid.Label
         mysolidr = doc.ActiveObject
         #original_label = rh_obj.Label
@@ -797,24 +794,24 @@ def removeHoles_RH():
             for f in created_faces:
                 faces.append(f)
             res_faces = []
-           _test =  Part.Shell(faces)
-            if _.isNull(): raise RuntimeError('Failed to create shell')
-       _test =  Part.Shell(faces)
-        if _.isNull(): raise RuntimeError('Failed to create shell')
-        _=Part.Solid(_)
-        if _.isNull(): raise RuntimeError('Failed to create solid')
+            _test =  Part.Shell(faces)
+            if _test.isNull(): raise RuntimeError('Failed to create shell')
+        _test =  Part.Shell(faces)
+        if _test.isNull(): raise RuntimeError('Failed to create shell')
+        _test=Part.Solid(_test)
+        if _test.isNull(): raise RuntimeError('Failed to create solid')
         if RHDockWidget.ui.checkBox_Refine.isChecked():
             try:
-                _.removeSplitter()
+                _test.removeSplitter()
             except:
                 print ('not refined')    
         for f in created_faces:
             new_faces = []
-            for nf in _.Faces:
+            for nf in _test.Faces:
                 new_faces.append(nf)
             new_faces.append(f)
-            del _
-           _test =  Part.Shell(new_faces)
+            del _test
+            _test =  Part.Shell(new_faces)
             i_sayw('added 1 face')
             if _.isNull(): raise RuntimeError('Failed to create shell')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
@@ -822,12 +819,12 @@ def removeHoles_RH():
                     _.removeSplitter()
                 except:
                     print ('not refined')
-            if _.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-            _=Part.Solid(_)
+            if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+            _test=Part.Solid(_)
             if _.isNull(): raise RuntimeError('Failed to create solid')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
-                    _.removeSplitter()
+                    _test.removeSplitter()
                 except:
                     print ('not refined')
             #doc.recompute()
@@ -927,8 +924,8 @@ def removeFaces_RH():
                 faces.append(f)
         if 1:
             try:
-               _test =  Part.Shell(faces)
-                if _.isNull():
+                _test =  Part.Shell(faces)
+                if _test.isNull():
                 #raise RuntimeError('Failed to create shell')
                     App.Console.PrintWarning('Failed to create shell\n')
             except:
@@ -948,12 +945,12 @@ def removeFaces_RH():
         #del _
             
         #if myshell.Shape.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-            if _.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-            _=Part.Solid(_)
-            if _.isNull(): raise RuntimeError('Failed to create solid')
+            if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+            _test=Part.Solid(_)
+            if _test.isNull(): raise RuntimeError('Failed to create solid')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
-                    _.removeSplitter()
+                    _test.removeSplitter()
                 except:
                     print ('not refined')
             #App.ActiveDocument.addObject('Part::Feature','Solid').Shape=_
@@ -1328,8 +1325,8 @@ def cleaningFaces_RH():
                 if not idx_found:
                     faces.append(f)
             try:
-               _test =  Part.Shell(faces)
-                if _.isNull():
+                _test =  Part.Shell(faces)
+                if _test.isNull():
                 #raise RuntimeError('Failed to create shell')
                     App.Console.PrintWarning('Failed to create shell\n')
             except:
@@ -1342,12 +1339,12 @@ def cleaningFaces_RH():
             #App.ActiveDocument.addObject('Part::Feature','Shell').Shape=_
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
-                    _.removeSplitter()
+                    _test.removeSplitter()
                 except:
                     print ('not refined')
-            if _.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-            _=Part.Solid(_)
-            if _.isNull(): raise RuntimeError('Failed to create solid')
+            if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+            _test=Part.Solid(_test)
+            if _test.isNull(): raise RuntimeError('Failed to create solid')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
                     _.removeSplitter()
@@ -1638,55 +1635,8 @@ def loop_edges_RH():
     #Gui.doCommand("DF_SelectLoop()")
     #i_say("here")
 
-##
-def resetPlacement_RH():
-    objs=[]
-    doc = App.ActiveDocument
-    docG = Gui.ActiveDocument
-    selEx = Gui.Selection.getSelectionEx()
-    objs = [selobj.Object for selobj in selEx]
-    #print 'here'
-    if len(objs) == 1:
-        #i_say('routine reset Placement properties')
-        s=objs[0].Shape
-        r=[]
-        t=s.copy()
-        for i in t.childShapes():
-            c=i.copy()
-            c.Placement=t.Placement.multiply(c.Placement)
-            r.append((i,c))
-
-        w=t.replaceShape(r)
-        w.Placement=App.Placement()
-        Part.show(w)
-        #say(w)
-
-        docG.ActiveObject.ShapeColor  =  docG.getObject(objs[0].Name).ShapeColor
-        docG.ActiveObject.LineColor   =  docG.getObject(objs[0].Name).LineColor
-        docG.ActiveObject.PointColor  =  docG.getObject(objs[0].Name).PointColor
-        docG.ActiveObject.DiffuseColor=  docG.getObject(objs[0].Name).DiffuseColor
-        docG.ActiveObject.Transparency=  docG.getObject(objs[0].Name).Transparency
-
-        new_label=objs[0].Label
-        #doc.removeObject(objs[0].Name)
-        #doc.recompute()
-        docG.getObject(objs[0].Name).hide()
-        Gui.Selection.removeSelection(objs[0])
-        doc.ActiveObject.Label=new_label
-        rObj=doc.ActiveObject
-        del objs
-        Gui.Selection.addSelection(rObj)
-        Gui.Selection.removeSelection(rObj)
-        #App.activeDocument().recompute()
-        #say("end of rotineRP!")
-    else:
-        i_say("Select ONE single part object !")
-        #QtGui.QMessageBox.information(None,"Info ...","Select ONE single part object !\r\n"+"\r\n")
-        del objs
-### end reset prop
-
 #import the image data. /Mariwan
-import image_file
+import DefeaturingWB.image_file
 
 class Ui_DockWidget(object):
     def setupUi(self, DockWidget):
@@ -1940,11 +1890,7 @@ class Ui_DockWidget(object):
         self.PB_SimpleCopy.setToolTip("simple copy")
         self.PB_SimpleCopy.setText("")
         self.PB_SimpleCopy.setObjectName("PB_SimpleCopy")
-        self.PB_resetPlacement = QtGui.QPushButton(self.dockWidgetContents)
-        self.PB_resetPlacement.setGeometry(QtCore.QRect(68, 468, 32, 32))
-        self.PB_resetPlacement.setToolTip("reset Placement")
-        self.PB_resetPlacement.setText("")
-        self.PB_resetPlacement.setObjectName("PB_resetPlacement")
+
         self.PB_LoopEdge = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_LoopEdge.setGeometry(QtCore.QRect(220, 56, 32, 32))
         self.PB_LoopEdge.setToolTip("add Loop Edges to List")
@@ -2147,12 +2093,6 @@ class Ui_DockWidget(object):
         self.PB_SimpleCopy.setIconSize(QtCore.QSize(btn_sizeX,btn_sizeY))
         self.PB_SimpleCopy.setIcon(QtGui.QIcon(pm))
         self.PB_SimpleCopy.clicked.connect(simplecopy_RH)
-        pm = QtGui.QPixmap()
-        pm.loadFromData(base64.b64decode(reset_placement_b64))
-        self.PB_resetPlacement.setIconSize(QtCore.QSize(btn_sizeX,btn_sizeY))
-        self.PB_resetPlacement.setIcon(QtGui.QIcon(pm))
-        self.PB_resetPlacement.clicked.connect(resetPlacement_RH)
-        
         pm = QtGui.QPixmap()
         pm.loadFromData(base64.b64decode(help_b64))
         self.PB_RHhelp.setIconSize(QtCore.QSize(btn_sizeX,btn_sizeY))

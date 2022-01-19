@@ -43,8 +43,8 @@ import FreeCADGui as Gui
 import Part
 import imp, os, sys, tempfile
 from PySide import QtGui, QtCore
-import dft_locator
-
+#import DefeaturingWB.dft_locator
+import Design456Init
 
 try:
     from PathScripts.PathUtils import horizontalEdgeLoop
@@ -62,8 +62,8 @@ def reload_lib(lib):
     else:
         reload (lib)
 
-DefeaturingWBpath = os.path.dirname(dft_locator.__file__)
-DefeaturingWB_icons_path =  os.path.join( DefeaturingWBpath, 'Resources', 'icons')
+#DefeaturingWBpath = os.path.dirname(dft_locator.__file__)
+#DefeaturingWB_icons_path =  os.path.join( DefeaturingWBpath, 'Resources', 'icons')
 
 class DefeatShapeFeature:
     def IsActive(self):

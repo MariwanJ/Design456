@@ -37,7 +37,7 @@ ICON path should be always added as below
 
 """
 
-__updated__ = '2021-12-31 08:56:43'
+__updated__ = '2022-01-19 22:31:08'
 
 
 #Design456 
@@ -58,6 +58,10 @@ DIRECTMODELING_PATH=os.path.join(__dir__,'DirectModeling/')
 #From DRAFT
 __dirname__ = os.path.join(App.getResourceDir(), "Mod", "Draft")
 
+# Defeaturing WB
+DEFEATURING_WB = os.path.join(__dir__,'DefeaturingWB/')
+DefeaturingWB_icons_path =  os.path.join( DEFEATURING_WB, 'Resources', 'icons')
+
 # PART
 App.addImportType("BREP format (*.brep *.brp)", "Part")
 App.addExportType("BREP format (*.brep *.brp)", "Part")
@@ -65,9 +69,9 @@ App.addImportType("IGES format (*.iges *.igs)", "Part")
 App.addExportType("IGES format (*.iges *.igs)", "Part")
 App.addImportType("STEP with colors (*.step *.stp)", "Import")
 App.addExportType("STEP with colors (*.step *.stp)", "Import")
-
 #Desing456 WB Default  view 
 #Default Extrusion direction, i.e. 2D/3D objects are placed on XY plane by default.
 DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the plane should be saved here.
+
 
 App.__unit_test__ += ["TestPartApp"]

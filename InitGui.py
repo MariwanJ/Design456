@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-01-16 20:22:05'
+__updated__ = '2022-01-19 22:27:44'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -58,6 +58,14 @@ class Design456_Workbench (Workbench):
         import Design456_Alignment as _alignment
         import Design456_SelectionGate as SelGate
         import DirectModeling.directModelingCommands as dModeling
+        import DefeaturingWB.DefeaturingTools
+        import DefeaturingWB.DefeaturingCMD  
+        import DefeaturingWB.FuzzyTools
+        import Design456Init
+        
+
+
+
         # from Part import CommandShapes     #Tube  not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
