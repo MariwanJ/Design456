@@ -40,7 +40,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-18 22:07:21'
+__updated__ = '2022-01-19 14:25:02'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -554,15 +554,15 @@ class Design456_joinTwoLines:
                     # Joining here means the two edges will 
                     # attach to each other while they are 
                     # separate.
-                    vert1=[] 
+                    vert1=[]
                     for e in s1.Object.Shape.OrderedEdges:
                         for v in e.Vertexes:
                             vert1.append(v.Point)
-                    vert2 = [] 
-                    for e in s1.Object.Shape.OrderedEdges:
+                    vert2 = []
+                    for e in s2.Object.Shape.OrderedEdges:
                         for v in e.Vertexes:
-                            vert1.append(v.Point)
-                    # Now we need to find the one point from each edge
+                            vert2.append(v.Point)
+                    # Now we need to find one point from each edge
                     # that are nearest to each other   
                     index1=DraftGeomUtils.findClosest(vert1[0],vert2)
                     index2=DraftGeomUtils.findClosest(vert1[len(vert1)-1],vert2)
@@ -601,10 +601,11 @@ class Design456_joinTwoLines:
                     Edges1 = []
 
             # We have the edges and the points
-            if (e1.Vertexes[0].Point != p1):
-                p1 = e1.Vertexes[0].Point
-            else:
-                p1 = e1.Vertexes[1].Point
+            if e1 is not None:
+                if (e1.Vertexes[0].Point != p1):
+                    p1 = e1.Vertexes[0].Point
+                else:
+                    p1 = e1.Vertexes[1].Point
             p1 = App.Vector(p1.x, p1.y, p1.z)
             p2 = App.Vector(p2.x, p2.y, p2.z)
             App.ActiveDocument.openTransaction(
