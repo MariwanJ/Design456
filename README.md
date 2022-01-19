@@ -1,11 +1,16 @@
 # Design456 FreeCAD Workbench 
 
+Illustrative video:
+
 [![](http://img.youtube.com/vi/qdzpGQpx94k/0.jpg)](https://www.youtube.com/watch?v=qdzpGQpx94k "Design456 Workbench")
 
 **Important Note:** **WIP!!!** Please feel free to suggest, contribute, join, help, debug etc... I am new to both Python and FreeCAD Python. My background is in other languages. I hope you find this workbench useful.
 
 ### Aim 
-FreeCAD primarily utilizes a parametric modeling paradigm. This workbench will work to develop a 'direct modeling' approach. This approach is more common in popular CAD solutions. For example, clicking on a face and being able to extrude by moving the mouse, instead of specifying a the distance by entering a number in to a text field.  
+FreeCAD primarily utilizes a parametric modeling paradigm. This workbench will work to develop 'direct modeling' approach. Currently, this approach will be accomplished interactively in the viewerport.  For example, clicking on a face and being able to extrude or push/pull by moving the mouse, instead of specifying a the distance by entering a number in to a text field.
+
+### Background
+Direct modeling approach has lately become more common in popular CAD solutions. This involves directly modifying the geometry without relying on the parameter based feature tree. While not completely replacing the parametric based approach, this approach is good for interoperability, making complex designs with rapid iterations, and using with minimal prior training.
 
 ### Install 
 
