@@ -40,7 +40,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-19 14:25:02'
+__updated__ = '2022-01-19 15:04:46'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -524,6 +524,10 @@ Gui.addCommand('Design456_Star', Design456_Star())
 
 
 class Design456_joinTwoLines:
+    """[Join two lines, edges or a series of edges to one edge
+        This is useful when you want to simplify an edge or a line.
+    ]
+    """
     def Activated(self):
         import DraftGeomUtils
         try:
