@@ -1025,7 +1025,7 @@ def removesubtree(objs):
 def cleaningFaces_RH():
     """merge two faces"""
     global force_recompute, invert
-    
+    myshape = None
     i_sayw('merging faces')
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
@@ -1033,7 +1033,7 @@ def cleaningFaces_RH():
     fcs=[];fcs_names=[];fcs_outW=[];fcs_indexes=[]
     new_faces=[]
     _test = None
-    #i_say(selEx)
+
     if len (selEx)>0:
         for selobj in selEx:
             for i,f in enumerate(selobj.SubObjects):

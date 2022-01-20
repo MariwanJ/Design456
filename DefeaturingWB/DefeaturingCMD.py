@@ -247,9 +247,9 @@ class FuzzyCut:
  
     def Activated(self):
         # do something here...
-        import FuzzyTools
-        reload_lib(FuzzyTools)
-        FuzzyTools.fuzzyCut()
+        import DefeaturingWB.FuzzyTools 
+        reload_lib(DefeaturingWB.FuzzyTools)
+        DefeaturingWB.FuzzyTools.fuzzyCut()
 
  
 Gui.addCommand('FuzzyCut',FuzzyCut())
@@ -276,9 +276,9 @@ class FuzzyUnion:
 
     def Activated(self):
         # do something here...
-        import FuzzyTools
-        reload_lib(FuzzyTools)
-        FuzzyTools.fuzzyUnion()
+        import DefeaturingWB.FuzzyTools
+        reload_lib(DefeaturingWB.FuzzyTools)
+        DefeaturingWB.FuzzyTools.fuzzyUnion()
  
 Gui.addCommand('FuzzyUnion',FuzzyUnion())
 
@@ -304,9 +304,9 @@ class FuzzyCommon:
 
     def Activated(self):
         # do something here...
-        import FuzzyTools
-        reload_lib(FuzzyTools)
-        FuzzyTools.fuzzyCommon()
+        import DefeaturingWB.FuzzyTools
+        reload_lib(DefeaturingWB.FuzzyTools)
+        DefeaturingWB.FuzzyTools.fuzzyCommon()
 
  
 Gui.addCommand('FuzzyCommon',FuzzyCommon())
