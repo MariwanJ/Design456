@@ -44,7 +44,7 @@ import Part
 import imp, os, sys, tempfile
 from PySide import QtGui, QtCore
 #import DefeaturingWB.dft_locator
-import Design456Init
+from Design456Init import *
 
 try:
     from PathScripts.PathUtils import horizontalEdgeLoop
@@ -62,12 +62,9 @@ def reload_lib(lib):
     else:
         reload (lib)
 
-#DefeaturingWBpath = os.path.dirname(dft_locator.__file__)
-#DefeaturingWB_icons_path =  os.path.join( DefeaturingWBpath, 'Resources', 'icons')
-
 class DefeatShapeFeature:
     def IsActive(self):
-        #print ('isactive')
+
         if hasattr(Part, "OCC_VERSION"):
             OCCMV = Part.OCC_VERSION.split('.')[0]
             OCCmV = Part.OCC_VERSION.split('.')[1]
