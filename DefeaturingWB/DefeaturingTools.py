@@ -62,7 +62,6 @@ try:
 except:
     App.Console.PrintError('Path WB not found\n')
     
-#int(re.search(r'\d+', string1).group())
 
 global rh_edges, rh_faces, rh_obj
 global rh_edges_names, rh_faces_names, rh_obj_name
@@ -72,9 +71,7 @@ global force_recompute, invert
 __version__ = "v1.3.5"
 
 
-## shape.sewShape(), shape.isClosed(), shape.isValid()
-## shape.getTolerance(0), shape.fixTolerance(1e-4) 
-## shape.fixTolerance(1.e-4), shape.check(True)
+
 from sys import platform as _platform
 
 # window GUI dimensions parameters
@@ -87,9 +84,7 @@ else:
     sizeX=wdsRHx;sizeY=wdsRHy-22 #482#502
 if _platform == "darwin":
     pt_osx=True
-##   # MAC OS X
-##elif _platform == "win32":
-##   # Windows
+
 btn_sizeX=28;btn_sizeY=28
 
 
@@ -155,9 +150,9 @@ def checking_BOP(o):
         chks=checkBOP(o.Shape)
         if chks is not True:
             i_sayerr('shape \''+o.Name+'\' \''+mk_str(o.Label)+'\' is INVALID!\n')
-            #print(str(chks))
+
             i_sayw(str(chks))
-            #print (chks) #[0])
+
             if 'No error' in str(chks):
                 if len (o.Shape.Shells) > 0:
                     for sh in o.Shape.Shells:
@@ -210,7 +205,7 @@ def check_TypeId_RH():
                             if '.[solid]' not in o.Label and '.[compsolid]' not in o.Label and '.[compound]' not in o.Label:
                                 o.Label=mk_str(o.Label)+'.[solid]'
                         else:
-                            #i_sayerr(mk_str(o.Label)+' object is a NON Solid')
+                            
                             non_solids+=mk_str(o.Label)+'<br>'
                         if len(o.Shape.Shells)>0:
                             i_say(mk_str(o.Label)+' Shell object(s) NBR : '+str(len(o.Shape.Shells)))
@@ -239,12 +234,9 @@ def check_TypeId_RH():
                                 o.Label=mk_str(o.Label)+'.[vertex]'
                 else:
                     App.Console.PrintWarning("Select object with a \"Shape\" to be checked!\n")
-            # if len (non_solids)>0:
-            #     reply = QtGui.QMessageBox.information(None,"Warning", 'List of <b>NON Solid</b> object(s):<br>'+non_solids)
-            # if len (solids)>0:
-            #     reply = QtGui.QMessageBox.information(None,"Info", 'List of <b>Solid</b> object(s):<br>'+solids)
+
     else:
-        #App.Console.PrintError("Select elements from dxf imported file\n")
+
         reply = QtGui.QMessageBox.information(None,"Warning", "Select one or more object(s) to be checked!")
         App.Console.PrintWarning("Select one or more object(s) to be checked!\n")             
 
@@ -287,7 +279,7 @@ def refine_parametric_RH():
                 docG.ActiveObject.PointColor=docG.getObject(selobj.Object.Name).PointColor
                 docG.ActiveObject.DiffuseColor=docG.getObject(selobj.Object.Name).DiffuseColor
                 docG.ActiveObject.Transparency=docG.getObject(selobj.Object.Name).Transparency
-                #newobj.Label='r_%s' % selobj.Object.Label
+
                 newobj.Label=selobj.Object.Label
                 selobj.Object.ViewObject.hide()
         doc.recompute()
@@ -362,31 +354,19 @@ def merge_selected_faces_RH():
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
     
-    #af_faces = []
+
     af_faces = rh_faces
-    #print rh_faces
-    #faces = []
+
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
     _test = None
-    #rh_edges = []; rh_edges_names = []; created_faces = []
-    #rh_edges_to_connect = []
-    # af_faces = [];af_faces_names = []
-    # selEx=Gui.Selection.getSelectionEx()
-    # if len (selEx):
-    #     for selFace in selEx:
-    #         for i,f in enumerate(selFace.SubObjects):
-    #         #for e in selEdge.SubObjects
-    #             if 'Face' in selFace.SubElementNames[i]:
-    #                 af_faces.append(f)
-    #                 af_faces_names.append(selFace.SubElementNames[i])
-    #                 print(selFace.SubElementNames[i])
+
     if len(af_faces) > 0:
-        #print af_faces
+
         try:
             _test =  Part.Shell(af_faces)
             if _test.isNull():
-            #raise RuntimeError('Failed to create shell')
+
                 App.Console.PrintWarning('Failed to create shell\n')
         except:
             App.Console.PrintWarning('Failed to create shell\n')
@@ -411,15 +391,9 @@ def merge_selected_faces_RH():
             doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
         else:
             doc.addObject('Part::Feature','Solid').Shape=_test
-        #App.ActiveDocument.ActiveObject.Label=App.ActiveDocument.mysolid.Label
+
         mysolidr = doc.ActiveObject
-        #original_label = rh_obj.Label
-        #if RHDockWidget.ui.checkBox_keep_original.isChecked():
-        #    docG.getObject(rh_obj.Name).Visibility=False
-        #else:
-        #    doc.removeObject(rh_obj.Name)
-        #if RHDockWidget.ui.checkBox_Refine.isChecked():
-        #    mysolidr.Label = original_label + "_refined"
+
 ##
 
 def checkShape():
@@ -554,9 +528,9 @@ def merge_faces_from_selected_objects_RH(refobj=None):
             doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
         else:
             doc.addObject('Part::Feature','Solid').Shape=_test
-        #App.ActiveDocument.ActiveObject.Label=App.ActiveDocument.mysolid.Label
+
         mysolidr = doc.ActiveObject
-        #original_label = rh_obj.Label
+
         if refobj is not None and hasattr(refobj,'Name'):
             docG.ActiveObject.ShapeColor=docG.getObject(refobj.Name).ShapeColor
             docG.ActiveObject.LineColor=docG.getObject(refobj.Name).LineColor
@@ -575,8 +549,7 @@ def merge_faces_from_selected_objects_RH(refobj=None):
         else:
             for o in sel:
                 doc.removeObject(o.Name)
-        #if RHDockWidget.ui.checkBox_Refine.isChecked():
-        #    mysolidr.Label = original_label + "_refined"
+
 ##
 
 def edges_confirmed_RH():
@@ -584,17 +557,16 @@ def edges_confirmed_RH():
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
     
-    #close_RH()
+
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
-    #rh_edges = []; rh_edges_names = []; created_faces = []
-    #rh_edges_to_connect = []
+
     en = None
     selEx=Gui.Selection.getSelectionEx()
     if len (selEx):
         for selEdge in selEx:
             for i,e in enumerate(selEdge.SubObjects):
-            #for e in selEdge.SubObjects
+
                 if 'Edge' in selEdge.SubElementNames[i]:
                     edge_in_list = False
                     for en in rh_edges_names:
@@ -610,31 +582,18 @@ def edges_confirmed_RH():
                             created_faces.append(cf)
                             i_say('face created from closed edge')
                             if RHDockWidget.ui.checkBox_keep_faces.isChecked():
-                                #_test =  Part.Solid(Part.Shell([cf]))
-                                # doc.addObject('Part::Feature','Face_Solid').Shape = _
-                                # doc.ActiveObject.Label = 'Face_Solid'
+
                                 Part.show(cf)
                                 doc.ActiveObject.Label = 'Face'
                                 docG.ActiveObject.Visibility=False
                         else:
-                            #cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges))
-                            #if _.isNull(): raise RuntimeError('Failed to create face')
-                            #    App.ActiveDocument.addObject('Part::Feature','Face').Shape=_
-                            #del _
-                            #w1 = Part.Wire(e)
-                            #try:
-                            #cf=(Part.Face(w1))
-                            #created_faces.append(cf)
-                            #if RHDockWidget.ui.checkBox_keep_faces.isChecked():
-                            #    Part.show(cf)
-                            #    docG.ActiveObject.Visibility=False
-                            #except:
+
                             rh_edges_to_connect.append(e)
-                #i_say(re.search(r'\d+', selEdge.SubElementNames[i]).group())
+               
         i_say(selEdge.ObjectName)
         if len (rh_edges_to_connect) >0:
             try:
-                #cf=Part.makeFilledFace(Part.Wire(Part.__sortEdges__(rh_edges_to_connect)))
+                
                 cf=Part.Face(Part.Wire(Part.__sortEdges__(rh_edges_to_connect)))
                 created_faces.append(cf)
                 i_say('face created from open edges')
@@ -645,35 +604,11 @@ def edges_confirmed_RH():
                 rh_edges_to_connect = []
             except:
                 i_sayerr("make Face failed")
-        #rh_obj_name.append(selx.ObjectName)
-        #rh_obj.append(selx.Object)
-        #for e in rh_edges: # selx.SubObjects:
-        #    if (e.isClosed()):
-        #        cf=(Part.Face(Part.Wire(e)))
-        #        created_faces.append(cf)
-        #    else:
-        #        rh_edges_to_connect.append(e)
-        #eh_edges_grouped = []
-        #for e in rh_edges_to_connect:
-        #nw_edges=sum((e for e in rh_edges_to_connect),[])
-        #print rh_edges_to_connect
-        #if len(rh_edges_to_connect) > 0:
-        #    f = OpenSCAD2Dgeom.edgestofaces(rh_edges_to_connect)
-        #    created_faces.append(f)
-        #Part.show(f)
-        #sn = doc.ActiveObject
-        #fn = sn.Shape.Faces[0]
-        #created_faces.append(fn)
-        #doc.removeObject(sn.Name)
+
         if 0:
             try:
                 cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges_to_connect))
-            #if _.isNull(): raise RuntimeError('Failed to create face')
-            #    App.ActiveDocument.addObject('Part::Feature','Face').Shape=_
-            #del _
-            #w1 = Part.Wire(e)
-            #try:
-            #cf=(Part.Face(w1))
+
                 created_faces.append(cf)
                 if RHDockWidget.ui.checkBox_keep_faces.isChecked():
                     Part.show(Part.makeSolid(Part.makeShell(cf)))
@@ -699,38 +634,32 @@ def faces_confirmed_RH():
     global created_faces, rh_faces_indexes, rh_edges_to_connect
     
     doc=App.ActiveDocument
-    #rh_faces = []; rh_faces_names = []
+
     selEx=Gui.Selection.getSelectionEx()
-    #fn = None
+
     if len (selEx):
         for selFace in selEx:
             for i,f in enumerate(selFace.SubObjects):
-            #for e in selEdge.SubObjects
+
                 if 'Face' in selFace.SubElementNames[i]:
                     face_in_list = False
                     for fn in rh_faces_names:
                         if fn == selFace.ObjectName+'.'+selFace.SubElementNames[i]:
                             face_in_list =True
-                    #if len (rh_faces_names) == 0:
-                    #    fn = selFace.ObjectName+'.'+selFace.SubElementNames[i]
+
                     if not face_in_list:
                         rh_faces.append(f)
                         rh_faces_indexes.append (re.search(r'\d+',selFace.SubElementNames[i]).group())
                         rh_faces_names.append(selFace.ObjectName+'.'+selFace.SubElementNames[i])
                         rh_obj.append(selFace.Object)
                         rh_obj_name.append(selFace.ObjectName)
-                    #af_faces.append(f)
-                    #af_faces_names.append(selFace.Object+'.'+selFace.SubElementNames[i])
+
                     print(selFace.ObjectName+'.'+selFace.SubElementNames[i])
         f_list=""
         for f in rh_faces_names:
             f_list=f_list+str(f)+'\n'
         RHDockWidget.ui.TE_Faces.setPlainText(f_list)
-        #print(selx.ObjectName)
-        #if selx.ObjectName != rh_obj_name:
-        #    #raise RuntimeError('ERROR object changed. Please repeat process from the start')
-        #    App.Console.PrintWarning('object changed\n')
-        #    rh_obj = selx.Object
+
         RHDockWidget.ui.Face_Nbr.setText(str(len(rh_faces)))
         unique_obj = set(rh_obj)
         unique_obj_count = len(unique_obj)
@@ -748,7 +677,7 @@ def removeHoles_RH():
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
     print('Removing Holes')
-    #print rh_edges; print rh_faces; print (rh_obj)
+
     unique_obj = set(rh_obj)
     unique_obj_count = len(unique_obj)
     if unique_obj_count == 1:
@@ -783,9 +712,7 @@ def removeHoles_RH():
                     cf = OpenSCAD2Dgeom.edgestofaces(Part.__sortEdges__(rh_edges_to_connect))
             created_faces.append(cf)
             if RHDockWidget.ui.checkBox_keep_faces.isChecked():
-                #_ = Part.Solid(Part.Shell([cf]))
-                #doc.addObject('Part::Feature','Face_Solid').Shape = _
-                #doc.ActiveObject.Label = 'Face_Solid'
+
                 Part.show(cf)
                 doc.ActiveObject.Label = 'Face'
                 docG.ActiveObject.Visibility=False
@@ -827,45 +754,12 @@ def removeHoles_RH():
                     _test.removeSplitter()
                 except:
                     print ('not refined')
-            #doc.recompute()
-        #for f in created_faces:
-        #    new_faces.append(f)
-        #del _
-        #_ = Part.Shell(new_faces)
-        #if _.isNull(): raise RuntimeError('Failed to create shell')
-        
-        #App.ActiveDocument.addObject('Part::Feature','Shell').Shape=_
-        #if RHDockWidget.ui.checkBox_Refine.isChecked():
-        #    try:
-        #        _.removeSplitter()
-        #    except:
-        #        print ('not refined')
-        #myshell = doc.ActiveObject
-        #del _
-            
-        #if myshell.Shape.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-        # if _.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-        # _=Part.Solid(_)
-        # if _.isNull(): raise RuntimeError('Failed to create solid')
-        # if RHDockWidget.ui.checkBox_Refine.isChecked():
-        #     try:
-        #         _.removeSplitter()
-        #     except:
-        #         print ('not refined')
-        #App.ActiveDocument.addObject('Part::Feature','Solid').Shape=_
-        #mysolid = doc.ActiveObject
-        #del _
-        #doc.removeObject(myshell.Name)
-        
-        #docG.mysolid.Visibility=True
-        #doc.addObject('Part::Feature','SolidRefined').Shape=mysolid.Shape.removeSplitter()
-        #doc.removeObject(mysolid.Name)
+
         if RHDockWidget.ui.checkBox_Refine.isChecked():
             doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
         else:
             doc.addObject('Part::Feature','Solid').Shape=_
-        #    doc.addObject('Part::Feature','Solid').Shape=_
-        #App.ActiveDocument.ActiveObject.Label=App.ActiveDocument.mysolid.Label
+
         mysolidr = doc.ActiveObject
         original_label = myshape.Label
         docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
@@ -902,14 +796,12 @@ def removeFaces_RH():
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
     print('Removing Holes')
-    #print rh_edges; print rh_faces; print (rh_obj)
-    #ui.TE_Edges.setPlainText("")
-    #ui.TE_Faces.setPlainText("")
+
     _test = None
     unique_obj = set(rh_obj)
     unique_obj_count = len(unique_obj)
     if unique_obj_count == 1: #ToDo manage multi objs faces selection
-    #for myshape in unique_obj:
+
         myshape = rh_obj[0]
         i = 0
         faces = []
@@ -926,7 +818,7 @@ def removeFaces_RH():
             try:
                 _test =  Part.Shell(faces)
                 if _test.isNull():
-                #raise RuntimeError('Failed to create shell')
+
                     App.Console.PrintWarning('Failed to create shell\n')
             except:
                 App.Console.PrintWarning('Failed to create shell\n')
@@ -935,16 +827,13 @@ def removeFaces_RH():
                         Part.show(f)
                         doc.ActiveObject.Label="face"
                 return
-            #App.ActiveDocument.addObject('Part::Feature','Shell').Shape=_
+
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
                     _.removeSplitter()
                 except:
                     print ('not refined')
-        #myshell = doc.ActiveObject
-        #del _
-            
-        #if myshell.Shape.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+
             if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
             _test=Part.Solid(_)
             if _test.isNull(): raise RuntimeError('Failed to create solid')
@@ -953,19 +842,12 @@ def removeFaces_RH():
                     _test.removeSplitter()
                 except:
                     print ('not refined')
-            #App.ActiveDocument.addObject('Part::Feature','Solid').Shape=_
-            #mysolid = doc.ActiveObject
-            #del _
-            #doc.removeObject(myshell.Name)
-            
-            #docG.mysolid.Visibility=True
-            #doc.addObject('Part::Feature','SolidRefined').Shape=mysolid.Shape.removeSplitter()
-            #doc.removeObject(mysolid.Name)
+
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
             else:
                 doc.addObject('Part::Feature','Solid').Shape=_
-            #App.ActiveDocument.ActiveObject.Label=App.ActiveDocument.mysolid.Label
+
         mysolidr = doc.ActiveObject
         original_label = myshape.Label
         docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
@@ -981,16 +863,7 @@ def removeFaces_RH():
             mysolidr.Label = original_label # + "_refined"
         else:
             mysolidr.Label = original_label
-        #mysolidr.hide()
-        #docG.getObject(mysolidr.Name).Visibility=False
-        #rh_edges = []; rh_edges_names = []; created_faces = []
-        #rh_edges_to_connect = []
-        #rh_faces = []; rh_faces_names = []
-        #rh_faces_indexes = []
-        #ui.Edge_Nbr.setText("0")
-        #ui.Face_Nbr.setText("0")
-        #ui.TE_Edges.setPlainText("")
-        #ui.TE_Faces.setPlainText("")
+
         clear_all_RH()
         if force_recompute:
             for obj in App.ActiveDocument.Objects:
@@ -1009,12 +882,7 @@ def addFaces_RH():
     docG = Gui.ActiveDocument
     
     if len(rh_edges) > 0:
-        #try:
-        #    print("try to makeFilledFace")
-        #    cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges))
-        #except:
-        #    print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
-        #    cf = OpenSCAD2Dgeom.edgestofaces(rh_edges)
+
         if not invert:
             try:
                 print("try to create a Face w/ OpenSCAD2Dgeom")
@@ -1029,19 +897,10 @@ def addFaces_RH():
             except:
                 print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
                 cf = OpenSCAD2Dgeom.edgestofaces(rh_edges)
-        #created_faces.append(cf)
+
         Part.show(cf)
         doc.ActiveObject.Label = "Face"
-    #if len(rh_edges_to_connect) > 0:
-    #    try:
-    #        print("try to makeFilledFace")
-    #        cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges_to_connect))
-    #    except:
-    #        print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
-    #        cf = OpenSCAD2Dgeom.edgestofaces(rh_edges_to_connect)
-    #    #created_faces.append(cf)
-    #    Part.show(cf)
-    #    doc.ActiveObject.Label = "Face"
+
     if len(rh_edges) > 0 or len(rh_edges_to_connect) > 0:
         clear_all_RH()
 ##
@@ -1096,7 +955,7 @@ def offsetEdges_RH():
     if len(rh_edges) > 0:
         for e in rh_edges:
             Part.show(e)
-            #norm=doc.ActiveObject.Shape.Faces[0].normalAt(0,0)
+
             offset_dir = RHDockWidget.ui.offset_input.text().split(':')
             if len(offset_dir)>1:
                 offset = float(offset_dir[0])
@@ -1134,16 +993,7 @@ def copyFaces_RH():
         for f in rh_faces:
             Part.show(f)
             doc.ActiveObject.Label = "Face"
-    #if len(rh_edges_to_connect) > 0:
-    #    try:
-    #        print("try to makeFilledFace")
-    #        cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges_to_connect))
-    #    except:
-    #        print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
-    #        cf = OpenSCAD2Dgeom.edgestofaces(rh_edges_to_connect)
-    #    #created_faces.append(cf)
-    #    Part.show(cf)
-    #    doc.ActiveObject.Label = "Face"
+
     if len(rh_faces) > 0:
         clear_all_RH()
 ##
@@ -1188,13 +1038,13 @@ def cleaningFaces_RH():
     if len (selEx)>0:
         for selobj in selEx:
             for i,f in enumerate(selobj.SubObjects):
-            #for e in selEdge.SubObjects
+
                 if 'Face' in selobj.SubElementNames[i]:
                     fcs.append(f)
                     fcs_names.append(selobj.SubElementNames[i])
                     fcs_indexes.append (re.search(r'\d+',selobj.SubElementNames[i]).group())
                     fcs_outW.append(f.OuterWire)
-                    #fcs_outW_names.append(f.OuterWire)
+
                     print(selobj.SubElementNames[i])
         if len(fcs)>1:
             sps=[]
@@ -1212,43 +1062,8 @@ def cleaningFaces_RH():
             wct.Tool = wc
             doc.recompute()
             i_say('outer wire created')
-            # print wct.Shape.Edges
-            # i_say('merging 2 faces')
-            # #union_w = Part.Shape(fcs_outW[0].Edges)
-            # Part.show(fcs_outW[0])
-            # union_w = doc.ActiveObject
-            # for w in fcs_outW[1:]:
-            # #for w in fcs_outW:
-            #     #s=w.Edges[0]
-            #     Part.show(w)
-            #     s = doc.ActiveObject
-            #     #Part.show(s);sps.append(doc.ActiveObject)
-            #     #sps.append(s)
-            #     #union_w=union_w.union(s)
-            #     union_w.Shape=union_w.Shape.multiFuse(s.Shape)
-            # Part.show(union_w)
-            # #sps.append()
-            # #print sps
-            # #doc.addObject("Part::MultiFuse","Wfuse")
-            # #wf=doc.ActiveObject
-            # #wf.Shapes = sps
-            # common_w = fcs_outW[0].copy().common(fcs_outW[1].copy())
-            # 
-            # #doc.addObject("Part::MultiCommon","Wcommon")
-            # #wc=doc.ActiveObject
-            # #wc.Shapes = sps
-            # #doc.addObject("Part::Cut","Wcut")
-            # #wct=doc.ActiveObject
-            # #wct.Base = wf
-            # #wct.Tool = wc
-            # cut_w = union_w.cut(common_w)
-            # doc.recompute()
-            # i_say('outer wire created')
-            # #print wct.Shape.Edges
-            # #try:
-            # #    cf=Part.makeFilledFace(Part.__sortEdges__(wct.Shape.Edges))
-            # #except:
-            # #    cf=Part.makeFace(Part.__sortEdges__(wct.Shape.Edges))
+     
+
             if not invert:
                 try:
                     print("try to create a Face w/ OpenSCAD2Dgeom")
@@ -1263,7 +1078,7 @@ def cleaningFaces_RH():
                 except:
                     print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
                     cf = OpenSCAD2Dgeom.edgestofaces((wct.Shape.Edges))
-            #created_faces.append(cf)
+
             w = cf.Faces[0].OuterWire
             removesubtree([wct])
             if not invert:
@@ -1280,7 +1095,7 @@ def cleaningFaces_RH():
                 except:
                     print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
                     cf2 = OpenSCAD2Dgeom.edgestofaces((w.Edges))
-            #cf2 = OpenSCAD2Dgeom.edgestofaces((w.Edges))
+
             Part.show(cf2)
             new_faces.append(doc.ActiveObject)
         elif len(fcs)==1:
@@ -1292,21 +1107,7 @@ def cleaningFaces_RH():
             doc.addObject('Part::Feature','face').Shape=o.Shape
             new_faces.append(doc.ActiveObject)
             removesubtree([o])
-            # stop
-            # if not invert:
-            #     try:
-            #         print("try to create a Face w/ OpenSCAD2Dgeom")
-            #         cf2 = OpenSCAD2Dgeom.edgestofaces((sw.Shape.Edges))
-            #     except:
-            #         print("OpenSCAD2Dgeom failed\ntry to makeFilledFace")
-            #         cf2=Part.makeFilledFace(Part.__sortEdges__(sw.Shape.Edges))
-            # else:
-            #     try:
-            #         print("try to makeFilledFace")
-            #         cf2=Part.makeFilledFace(Part.__sortEdges__(sw.Shape.Edges))
-            #     except:
-            #         print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
-            #         cf2 = OpenSCAD2Dgeom.edgestofaces((sw.Shape.Edges))
+
         else:
             print('Error')
         doc.ActiveObject.Label = "Face"       
@@ -1327,7 +1128,6 @@ def cleaningFaces_RH():
             try:
                 _test =  Part.Shell(faces)
                 if _test.isNull():
-                #raise RuntimeError('Failed to create shell')
                     App.Console.PrintWarning('Failed to create shell\n')
             except:
                 App.Console.PrintWarning('Failed to create shell\n')
@@ -1336,7 +1136,7 @@ def cleaningFaces_RH():
                         Part.show(f)
                         doc.ActiveObject.Label="face"
                 return
-            #App.ActiveDocument.addObject('Part::Feature','Shell').Shape=_
+
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
                     _test.removeSplitter()
@@ -1372,11 +1172,7 @@ def cleaningFaces_RH():
                 Gui.Selection.addSelection(fn)
         Gui.Selection.removeSelection(myshape)
         merge_faces_from_selected_objects_RH(myshape)
-        #for w in fcs_outW:
-        #    s=w.copy();Part.show(s)
-        
-        #App.activeDocument().addObject("Part::MultiFuse","Fusion002")
-        #App.activeDocument().Fusion002.Shapes = [App.activeDocument().Shape006,App.activeDocument().Shape007]
+
 ##
 def makeEdge_RH():
     global force_recompute
@@ -1388,7 +1184,7 @@ def makeEdge_RH():
     if len (selEx):
         for selV in selEx:
             for i,v in enumerate(selV.SubObjects):
-            #for e in selEdge.SubObjects
+
                 if 'Vertex' in selV.SubElementNames[i]:
                     verts.append(v)
                     verts_names.append(selV.SubElementNames[i])
@@ -1414,34 +1210,27 @@ def addEdges_RH():
     global force_recompute
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
-    #rh_edges = []; rh_edges_names = []; created_faces = []
-    #rh_edges_to_connect = []
+
     ae_edges = rh_edges;ae_edges_names = rh_edges_names
     selEx=Gui.Selection.getSelectionEx()
     if len (selEx):
         for selEdge in selEx:
             for i,e in enumerate(selEdge.SubObjects):
-            #for e in selEdge.SubObjects
                 if 'Edge' in selEdge.SubElementNames[i]:
                     ae_edges.append(e)
                     ae_edges_names.append(selEdge.SubElementNames[i])
                     print(selEdge.SubElementNames[i])
     if len(ae_edges) > 0:
-        #try:
-        #    print("try to makeWire")
-        #    ce=Part.Wire(Part.__sortEdges__(ae_edges))
-        #except:
-        #    print("makeWire failed\ntry to create an Edge w/ OpenSCAD2Dgeom")
-        #    ce = Part.Wire(OpenSCAD2Dgeom.edgestowires(ae_edges))
+
         if not invert:
             try:
                 print("try to create an Edge w/ OpenSCAD2Dgeom")
                 ce = Part.Wire(OpenSCAD2Dgeom.edgestowires(ae_edges))
-                #OpenSCAD2Dgeom.edgestofaces(ae_edges)
+
             except:
                 print("OpenSCAD2Dgeom failed\ntry to makeWire")
                 ce=Part.Wire(Part.__sortEdges__(ae_edges))
-                #Part.makeFilledFace(Part.__sortEdges__(ae_edges))
+
         else:
             try:
                 print("try to makeWire")
@@ -1465,8 +1254,6 @@ def showEdges_RH():
 
     for en in rh_edges_names:
         Gui.Selection.addSelection(doc.getObject(en.split('.')[0]),en.split('.')[1])
-        #print (rh_obj[0],' ', en.split('.')[1])
-        #Gui.Selection.addSelection(App.ActiveDocument.Box,'Face2',21.0,8.604081153869629,8.553047180175781)
 
 ##
 def showFaces_RH():
@@ -1479,8 +1266,6 @@ def showFaces_RH():
 
     for fn in rh_faces_names:
         Gui.Selection.addSelection(doc.getObject(fn.split('.')[0]),fn.split('.')[1])
-        #print (rh_obj[0],' ', en.split('.')[1])
-        #Gui.Selection.addSelection(App.ActiveDocument.Box,'Face2',21.0,8.604081153869629,8.553047180175781)
 
 ##
 
@@ -1496,7 +1281,7 @@ def PartDefeaturing_RH():
     import Part, DefeaturingFeature
     unique_obj = set(rh_obj)
     unique_obj_count = len(unique_obj)
-    #print ('activated')
+
     if unique_obj_count == 1 and len(rh_faces) >0: #ToDo manage multi objs faces selection
         newobj=doc.addObject("Part::FeaturePython",'defeat')
         DefeaturingFeature.DefeatShape(rh_faces_names,newobj,rh_obj[0])
@@ -1504,25 +1289,7 @@ def PartDefeaturing_RH():
         newobj.Label='defeat_%s' % rh_obj[0].Label
         rh_obj[0].ViewObject.hide()
         App.ActiveDocument.recompute()
-    #selection=Gui.Selection.getSelectionEx()
-    #rh_faces = [];rh_faces_names=[]
-    #selEx=Gui.Selection.getSelectionEx()
-    #if len (selEx) > 0:
-    #    for selFace in selEx:
-    #        for i,f in enumerate(selFace.SubObjects):
-    #            if 'Face' in selFace.SubElementNames[i]:
-    #                rh_faces.append(f)
-    #                rh_faces_names.append(selFace.ObjectName+'.'+selFace.SubElementNames[i])
-    #                print(selFace.ObjectName+'.'+selFace.SubElementNames[i])
-    #    #print (len(rh_faces))
-    #    for selobj in selection:
-    #        newobj=selobj.Document.addObject("Part::FeaturePython",'defeat')
-    #        DefeaturingFeature.DefeatShape(rh_faces_names,newobj,selobj.Object)
-    #        DefeaturingFeature.ViewProviderTree(newobj.ViewObject)
-    #        newobj.Label='defeat_%s' % selobj.Object.Label
-    #        selobj.Object.ViewObject.hide()
-    #    App.ActiveDocument.recompute()
-    
+
     def GetResources(self):
         return {'Pixmap'  : os.path.join(DefeaturingWB_icons_path,'DefeaturingParametric.svg'), 'MenuText': \
                 QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',\
@@ -1631,9 +1398,6 @@ def loop_edges_RH():
                     if e.hashCode() == i.hashCode():
                         Gui.Selection.addSelection(obj, "Edge"+str(elist.index(e)+1))
 
-    #DefeaturingCMD.DF_SelectLoop.Activated
-    #Gui.doCommand("DF_SelectLoop()")
-    #i_say("here")
 
 #import the image data. /Mariwan
 import DefeaturingWB.image_file
@@ -1902,7 +1666,7 @@ class Ui_DockWidget(object):
         QtCore.QMetaObject.connectSlotsByName(DockWidget)
         
 ################################################################################################
-        #self.PB_Exit.clicked.connect(close_RH)
+
         
         pm = QtGui.QPixmap()
         pm.loadFromData(base64.b64decode(copy_edges_b64))
@@ -2041,10 +1805,10 @@ class Ui_DockWidget(object):
         self.PB_PartDefeaturing.setIconSize(QtCore.QSize(btn_sizeX,btn_sizeY))
         self.PB_PartDefeaturing.setIcon(QtGui.QIcon(pm))
         self.PB_PartDefeaturing.clicked.connect(PartDefeaturing_RH)
-        #self.PB_PartDefeaturing.setVisible(False)
+
         self.PB_PartDefeaturing.setVisible(True)
         self.PB_PartDefeaturing.setToolTip("select Faces to be Parametric defeatured")
-        #self.PB_PartDefeaturing.setEnabled(True)
+
         
         pm = QtGui.QPixmap()
         pm.loadFromData(base64.b64decode(clean_face_b64))
@@ -2140,21 +1904,16 @@ def RH_singleInstance():
     
     app = QtGui.QApplication #QtGui.qApp
     for i in app.topLevelWidgets():
-        #i_say (str(i.objectName()))
+
         if i.objectName() == "DefeaturingTools":
-            #i_say (str(i.objectName()))
-            #i.close()
-            #i.deleteLater()
-            #i_say ('closed')
             return False
     t=Gui.getMainWindow()
     dw=t.findChildren(QtGui.QDockWidget)
-    #say( str(dw) )
+
     for i in dw:
-        #i_say (str(i.objectName()))
+
         if str(i.objectName()) == "DefeaturingTools": #"kicad StepUp 3D tools":
-            #i_say (str(i.objectName())+' docked')
-            #i.deleteLater()
+
             return False
     return True
 ##
@@ -2172,12 +1931,10 @@ def dock_right_RH():
     idw=0
     cv=None
     while looping and idw < ldw:
-    #for d in dw:
         d=dw[idw]
         idw+=1
         area = t.dockWidgetArea(d)
-        #if area == QtCore.Qt.LeftDockWidgetArea:
-        #    print (d.windowTitle(), '(Left)')
+
         if area == QtCore.Qt.RightDockWidgetArea:
             print (d.windowTitle(), '(Right)')
             r_w=str(d.objectName()) #;print(r_w)
@@ -2185,47 +1942,34 @@ def dock_right_RH():
             looping=False
     RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea,RHDockWidget)
     RHDockWidget.setFloating(False)  #dock
-    #RHDockWidget.resize(sizeXright,sizeYright)
+
     RHDockWidget.activateWindow()
     RHDockWidget.raise_()
     if RHDockWidget and cv is not None:
         dw=t.findChildren(QtGui.QDockWidget)
-        #t.tabifyDockWidget(cv,RHDockWidget)
+
         try:
             t.tabifyDockWidget(cv,RHDockWidget)
             i_say( "Tabified done !")               
-            #return
+
         except:
             i_say('exception raised')
             pass
     if instance_nbr==0:
         instance_nbr=1
         dock_right_RH()
-        # d_tab = t.findChild(QtGui.QDockWidget, "DefeaturingTools") #"kicad StepUp 3D tools")
-        # d_tab.activateWindow()
-        # d_tab.raise_()
-        # RHDockWidget.showMaximized()
-        # RHDockWidget.activateWindow()
-        # RHDockWidget.raise_()
-        # i_say( "Tabified done !")               
-        # d_tab = t.findChild(QtGui.QDockWidget, "DefeaturingTools") #"kicad StepUp 3D tools")
-        # if d_tab:
-        #     #KSUWidget.resize(sizeX,sizeY)
-        #     d_tab.activateWindow()
-        #     d_tab.raise_()
 
 ##
 def dock_left_RH():
     RHmw = Gui.getMainWindow()
     RHmw.addDockWidget(QtCore.Qt.LeftDockWidgetArea,RHDockWidget)
     RHDockWidget.setFloating(False)  #dock
-    #RHDockWidget.resize(sizeXright,sizeYright)
+
     RHDockWidget.activateWindow()
     RHDockWidget.raise_()
-#def tabify():
 
     RHDockWidget.setFloating(False)  #dock
-    #RHDockWidget.resize(sizeX,sizeY)
+
     RHDockWidget.activateWindow()
     RHDockWidget.raise_()
     t=Gui.getMainWindow()
@@ -2238,29 +1982,14 @@ def dock_left_RH():
         except:
             i_say('exception raised')
             pass
-    #d_tab = t.findChild(QtGui.QDockWidget, "DefeaturingTools") #"kicad StepUp 3D tools")
-    #d_tab.activateWindow()
-    #d_tab.raise_()
-    #RHDockWidget.showMaximized()
-    #RHDockWidget.activateWindow()
-    #RHDockWidget.raise_()
-    #i_say( "Tabified done !")               
-    #d_tab = t.findChild(QtGui.QDockWidget, "DefeaturingTools") #"kicad StepUp 3D tools")
-    #if d_tab:
-    #    #KSUWidget.resize(sizeX,sizeY)
-    #    d_tab.activateWindow()
-    #    d_tab.raise_()
-    ##say ("focus on me!")
 ##
 def RH_centerOnScreen (widg):
     '''centerOnScreen()
     Centers the window on the screen.'''
-    # sayw(widg.width());sayw(widg.height())
-    # sayw(widg.pos().x());sayw(widg.pos().y())
     resolution = QtGui.QDesktopWidget().screenGeometry()
     xp=(resolution.width() / 2) - sizeX/2 # - (KSUWidget.frameSize().width() / 2)
     yp=(resolution.height() / 2) - sizeY/2 # - (KSUWidget.frameSize().height() / 2))
-    # xp=widg.pos().x()-sizeXMax/2;yp=widg.pos().y()#+sizeY/2
+
     widg.setGeometry(xp, yp, sizeX, sizeY)
 ##
 def onHelp():
@@ -2291,29 +2020,17 @@ if RH_singleInstance():
     RHDockWidget.ui.setupUi(RHDockWidget) # setup the ui
     RHDockWidget.setObjectName("DefeaturingTools")
     RHDockWidget.raise_()
-    #RHDockWidget.ui.closeEvent.connect(showFaces_RH())
-    #RHDockWidget.setFeatures( QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable | QtGui.QDockWidget.DockWidgetClosable )
     RHDockWidget.setFeatures( QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable) #|QtGui.QDockWidget.DockWidgetClosable )
     
     def onClickClose():
-        #print("Changed visibility")
+
         RH_visible = RHDockWidget.isVisible()
-        #print (RH_visible)
-        #if not RH_visible:
-        #    RHDockWidget.deleteLater()
-    
-    #RHDockWidget.destroyed.connect(onDestroy)
+
     RHDockWidget.visibilityChanged.connect(onClickClose)
-    #RHDockWidget.closed.connect(onDestroy)
-    #ui = Ui_DockWidget()
-    #ui.setupUi(RHDockWidget)
-    #RHDockWidget.show()
-    #RHDockWidget.setFeatures( QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable) #|QtGui.QDockWidget.DockWidgetClosable )
-        
+ 
     RHmw = Gui.getMainWindow()                 # PySide # the active qt window, = the App window since we are inside it
     RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea,RHDockWidget)
     RHDockWidget.setFloating(True)  #undock
-    #RHDockWidget.resize(sizeX,sizeY)
     RH_centerOnScreen(RHDockWidget)
     RHDockWidget.ui.Version.setText(__version__)
     
@@ -2323,19 +2040,17 @@ if RH_singleInstance():
         if (int(OCCMV)>= 7) and (int(OCCmV)>= 3):
             RHDockWidget.ui.PB_PartDefeaturing.setVisible(True)
             RHDockWidget.ui.PB_PartDefeaturing.setEnabled(True)
+
+
+
+
+
+
+
+
+
+
 #raising up
 RHDockWidget.activateWindow()
 RHDockWidget.raise_()
-        
-    # print (instance_nbr)
-    # if instance_nbr >1:
-    #     RH_killInstance()
-        
-    #RHDockWidget.resize(sizeX,sizeY)
-    
-#    dw = ui.QDockWidget("Test",mw)
-#    dw.setWidget(ui.QLabel("Content"))
-
-#    mw.addDockWidget(core.Qt.RightDockWidgetArea, dw)
-
-
+dock_left_RH() # Dock the widget to the left        

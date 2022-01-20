@@ -43,7 +43,6 @@ import FreeCADGui as Gui
 import Part
 import imp, os, sys, tempfile
 from PySide import QtGui, QtCore
-#import DefeaturingWB.dft_locator
 from Design456Init import *
 
 try:
@@ -122,7 +121,6 @@ class DefeaturingTools:
         import DefeaturingTools
         reload_lib(DefeaturingTools)
         App.Console.PrintWarning( 'Defeaturing Tools active :)\n' )
-        #import kicadStepUptools
  
 Gui.addCommand('DefeaturingTools',DefeaturingTools())
 
@@ -139,8 +137,6 @@ class DF_SelectLoop:
                 'ToolTip': "Defeaturing SelectLoop"}
 
     def IsActive(self):
-        #if bool(Gui.Selection.getSelection()) is False:
-        #    return False
         if 0: #try:
             sel = Gui.Selection.getSelectionEx()[0]
             if sel.Object == self.obj and sel.SubElementNames == self.sub:
@@ -222,7 +218,7 @@ class refineFeatureTool:
                     docG.ActiveObject.PointColor=docG.getObject(selobj.Object.Name).PointColor
                     docG.ActiveObject.DiffuseColor=docG.getObject(selobj.Object.Name).DiffuseColor
                     docG.ActiveObject.Transparency=docG.getObject(selobj.Object.Name).Transparency
-                    #newobj.Label='r_%s' % selobj.Object.Label
+
                     newobj.Label=selobj.Object.Label
                     selobj.Object.ViewObject.hide()
             doc.recompute()
@@ -254,7 +250,7 @@ class FuzzyCut:
         import FuzzyTools
         reload_lib(FuzzyTools)
         FuzzyTools.fuzzyCut()
-        # App.Console.PrintWarning( 'Fuzzy Boolean Tools active :)\n' )
+
  
 Gui.addCommand('FuzzyCut',FuzzyCut())
 
@@ -283,7 +279,6 @@ class FuzzyUnion:
         import FuzzyTools
         reload_lib(FuzzyTools)
         FuzzyTools.fuzzyUnion()
-        # App.Console.PrintWarning( 'Fuzzy Boolean Tools active :)\n' )
  
 Gui.addCommand('FuzzyUnion',FuzzyUnion())
 
@@ -312,6 +307,6 @@ class FuzzyCommon:
         import FuzzyTools
         reload_lib(FuzzyTools)
         FuzzyTools.fuzzyCommon()
-        # App.Console.PrintWarning( 'Fuzzy Boolean Tools active :)\n' )
+
  
 Gui.addCommand('FuzzyCommon',FuzzyCommon())

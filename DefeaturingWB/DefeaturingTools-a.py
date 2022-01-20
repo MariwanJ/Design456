@@ -289,10 +289,12 @@ class Ui_DockWidget(object):
 
 if __name__ == "__main__":
     import sys
+    from DefeaturingWB.DefeaturingTools import dock_left_RH
     app = QtGui.QApplication(sys.argv)
     DockWidget = QtGui.QDockWidget()
     ui = Ui_DockWidget()
     ui.setupUi(DockWidget)
+    dock_left_RH() # Dock the widget to the left
     DockWidget.show()
     sys.exit(app.exec_())
 
