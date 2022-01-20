@@ -40,7 +40,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-20 12:04:40'
+__updated__ = '2022-01-20 19:17:07'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -755,7 +755,7 @@ Gui.addCommand('Design456_SimplifyFace', Design456_SimplifyFace())
 
 
 
-class Design456_DevideCircleFace:
+class Design456_DivideCircleFace:
     def Activated(self):
         try:
 
@@ -767,9 +767,8 @@ class Design456_DevideCircleFace:
                 return
             sel = s[0]
             
-
         except Exception as err:
-            App.Console.PrintError("'Design456_SimplifyEdges' Failed. "
+            App.Console.PrintError("'Design456_DivideCircleFace' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -779,13 +778,13 @@ class Design456_DevideCircleFace:
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
-        _tooltip = ("Simplify Edges")
-        return {'Pixmap':  Design456Init.ICON_PATH + 'SimplifyFace.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "SimplifyFace"),
+        _tooltip = ("Divide Circle Face")
+        return {'Pixmap':  Design456Init.ICON_PATH + 'DivideCircleFace.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "DivideCircleFace"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 
-Gui.addCommand('Design456_SimplifyFace', Design456_SimplifyFace())
+Gui.addCommand('Design456_DivideCircleFace', Design456_DivideCircleFace())
 
 ##################################################################################
 #       Toolbar group definition
