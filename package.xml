@@ -18,9 +18,7 @@
       <version>0.00.1</version>
       <icon>Resources/icons/WorkbenchIcon.svg</icon>
       <freecadmin>0.20.0</freecadmin>
-      <tag>manipulations</tag>
-      <tag>defeaturing</tag>
-      <tag>Modeling</tag>
+      <tag>direct-modeling</tag>
     </workbench>
   </content>
 </package>
