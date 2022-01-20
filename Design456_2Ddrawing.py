@@ -40,7 +40,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-19 20:46:12'
+__updated__ = '2022-01-20 12:04:40'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -720,7 +720,7 @@ class Design456_SimplifyEdges:
 
 Gui.addCommand('Design456_SimplifyEdges', Design456_SimplifyEdges())
 
-
+#This is necess
 class Design456_SimplifyFace:
     def Activated(self):
         try:
@@ -753,6 +753,39 @@ class Design456_SimplifyFace:
 
 Gui.addCommand('Design456_SimplifyFace', Design456_SimplifyFace())
 
+
+
+class Design456_DevideCircleFace:
+    def Activated(self):
+        try:
+
+            s = Gui.Selection.getSelectionEx()
+            if len(s) > 1:
+                # TODO: FIXME: Should we accept more than one object?
+                errMessage = "Select edges from one object"
+                faced.errorDialog(errMessage)
+                return
+            sel = s[0]
+            
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_SimplifyEdges' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Simplify Edges")
+        return {'Pixmap':  Design456Init.ICON_PATH + 'SimplifyFace.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "SimplifyFace"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+
+Gui.addCommand('Design456_SimplifyFace', Design456_SimplifyFace())
 
 ##################################################################################
 #       Toolbar group definition

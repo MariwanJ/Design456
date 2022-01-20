@@ -513,10 +513,10 @@ def merge_faces_from_selected_objects_RH(refobj=None):
             return
         if RHDockWidget.ui.checkBox_Refine.isChecked():
             try:
-                _.removeSplitter()
+                _test.removeSplitter()
             except:
                 print ('not refined')
-        if _.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+        if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
         _test=Part.Solid(_test)
         if _test.isNull(): raise RuntimeError('Failed to create solid')
         if RHDockWidget.ui.checkBox_Refine.isChecked():
@@ -740,15 +740,15 @@ def removeHoles_RH():
             del _test
             _test =  Part.Shell(new_faces)
             i_sayw('added 1 face')
-            if _.isNull(): raise RuntimeError('Failed to create shell')
+            if _test.isNull(): raise RuntimeError('Failed to create shell')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
-                    _.removeSplitter()
+                    _test.removeSplitter()
                 except:
                     print ('not refined')
             if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-            _test=Part.Solid(_)
-            if _.isNull(): raise RuntimeError('Failed to create solid')
+            _test=Part.Solid(_test)
+            if _test.isNull(): raise RuntimeError('Failed to create solid')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
                     _test.removeSplitter()
@@ -756,9 +756,9 @@ def removeHoles_RH():
                     print ('not refined')
 
         if RHDockWidget.ui.checkBox_Refine.isChecked():
-            doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
+            doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
         else:
-            doc.addObject('Part::Feature','Solid').Shape=_
+            doc.addObject('Part::Feature','Solid').Shape=_test
 
         mysolidr = doc.ActiveObject
         original_label = myshape.Label
@@ -775,7 +775,6 @@ def removeHoles_RH():
             mysolidr.Label = original_label # + "_refined"
         else:
             mysolidr.Label = original_label
-        #mysolidr.hide()
         clear_all_RH()
         if force_recompute:
             for obj in App.ActiveDocument.Objects:
@@ -830,12 +829,12 @@ def removeFaces_RH():
 
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
-                    _.removeSplitter()
+                    _test.removeSplitter()
                 except:
                     print ('not refined')
 
             if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-            _test=Part.Solid(_)
+            _test=Part.Solid(_test)
             if _test.isNull(): raise RuntimeError('Failed to create solid')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
@@ -846,7 +845,7 @@ def removeFaces_RH():
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
             else:
-                doc.addObject('Part::Feature','Solid').Shape=_
+                doc.addObject('Part::Feature','Solid').Shape=_test
 
         mysolidr = doc.ActiveObject
         original_label = myshape.Label
@@ -1044,8 +1043,8 @@ def cleaningFaces_RH():
                     fcs_names.append(selobj.SubElementNames[i])
                     fcs_indexes.append (re.search(r'\d+',selobj.SubElementNames[i]).group())
                     fcs_outW.append(f.OuterWire)
-
                     print(selobj.SubElementNames[i])
+                    
         if len(fcs)>1:
             sps=[]
             for w in fcs_outW:
@@ -1147,13 +1146,13 @@ def cleaningFaces_RH():
             if _test.isNull(): raise RuntimeError('Failed to create solid')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
-                    _.removeSplitter()
+                    _test.removeSplitter()
                 except:
                     print ('not refined')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
-                doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
+                doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
             else:
-                doc.addObject('Part::Feature','Solid').Shape=_
+                doc.addObject('Part::Feature','Solid').Shape=_test
             mysolidr = doc.ActiveObject
             original_label = myshape.Label
             docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
