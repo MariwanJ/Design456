@@ -1,6 +1,6 @@
 # Design456 FreeCAD Workbench 
 
-Illustrative video:
+Video Showcase:
 
 [![](http://img.youtube.com/vi/qdzpGQpx94k/0.jpg)](https://www.youtube.com/watch?v=qdzpGQpx94k "Design456 Workbench")
 
