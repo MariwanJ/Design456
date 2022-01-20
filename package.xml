@@ -16,7 +16,6 @@
       <classname>Design456Workbench</classname>
       <description>Direct Modeling Workbench for FreeCAD</description>
       <version>0.001</version>
-      <subdirectory>./</subdirectory>
       <icon>Resources/icons/WorkbenchIcon.svg</icon>
       <freecadmin>0.20.0</freecadmin>
       <tag>manipulations</tag>
