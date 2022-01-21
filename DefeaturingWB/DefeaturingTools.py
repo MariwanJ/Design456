@@ -288,6 +288,7 @@ def refine_RH():
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
     sel=Gui.Selection.getSelection()
+    App.ActiveDocument.openTransaction(translate("Design456","refine_RH"))
     if len (sel):
         for o in sel:
             if hasattr(o,"Shape"):
@@ -301,6 +302,7 @@ def refine_RH():
                 docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
                 doc.recompute()
 
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def edges_clear_RH():
     global rh_edges, rh_faces, rh_obj
@@ -350,6 +352,7 @@ def close_RH():
 
 def merge_selected_faces_RH():
     """merging Faces of selected shapes""" 
+    App.ActiveDocument.openTransaction(translate("Design456","merge_selected_faces_RH"))
     global rh_edges, rh_faces, rh_obj
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
@@ -393,7 +396,7 @@ def merge_selected_faces_RH():
             doc.addObject('Part::Feature','Solid').Shape=_test
 
         mysolidr = doc.ActiveObject
-
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 
 def checkShape():
@@ -416,7 +419,7 @@ def sewShape():
     
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
-       
+    App.ActiveDocument.openTransaction(translate("Design456","sewShape"))   
     sel=Gui.Selection.getSelection()
     if len (sel) == 1:
         o = sel[0]
@@ -437,6 +440,7 @@ def sewShape():
         msg="Select one or more object(s) to be checked!\n"
         reply = QtGui.QMessageBox.information(None,"Warning", msg)
         App.Console.PrintWarning(msg)             
+    App.ActiveDocument.commitTransaction() #undo reg.
 
 def getTolerance():
     """getting Tolerance""" 
@@ -460,7 +464,7 @@ def setTolerance():
     
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
-       
+    App.ActiveDocument.openTransaction(translate("Design456","Star"))   
     sel=Gui.Selection.getSelection()
     if len (sel) == 1:
         o = sel[0]
@@ -484,6 +488,8 @@ def setTolerance():
         reply = QtGui.QMessageBox.information(None,"Warning", msg)
         App.Console.PrintWarning(msg)           
     
+    App.ActiveDocument.commitTransaction() #undo reg.
+
 ##
 def merge_faces_from_selected_objects_RH(refobj=None):
     """merging Faces of selected shapes""" 
@@ -491,7 +497,7 @@ def merge_faces_from_selected_objects_RH(refobj=None):
     faces = []
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
-    
+    App.ActiveDocument.openTransaction(translate("Design456","merge_faces_from_selected_objects_RH"))
     _test = None
     sel=Gui.Selection.getSelection()
     if len (sel):
@@ -550,6 +556,7 @@ def merge_faces_from_selected_objects_RH(refobj=None):
             for o in sel:
                 doc.removeObject(o.Name)
 
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 
 def edges_confirmed_RH():
@@ -560,7 +567,7 @@ def edges_confirmed_RH():
 
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
-
+    App.ActiveDocument.openTransaction(translate("Design456","edges_confirmed_RH"))
     en = None
     selEx=Gui.Selection.getSelectionEx()
     if len (selEx):
@@ -627,6 +634,8 @@ def edges_confirmed_RH():
         RHDockWidget.ui.Obj_Nbr.setText(str(unique_obj_count))
         for ob in App.ActiveDocument.Objects:
             Gui.Selection.removeSelection(ob)
+
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def faces_confirmed_RH():
     global rh_edges, rh_faces, rh_obj
@@ -634,7 +643,7 @@ def faces_confirmed_RH():
     global created_faces, rh_faces_indexes, rh_edges_to_connect
     
     doc=App.ActiveDocument
-
+    App.ActiveDocument.openTransaction(translate("Design456","faces_confirmed_RH"))
     selEx=Gui.Selection.getSelectionEx()
 
     if len (selEx):
@@ -666,9 +675,10 @@ def faces_confirmed_RH():
         RHDockWidget.ui.Obj_Nbr_2.setText(str(unique_obj_count))
         for ob in App.ActiveDocument.Objects:
             Gui.Selection.removeSelection(ob)
-        
+        App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def removeHoles_RH():
+    App.ActiveDocument.openTransaction(translate("Design456","removeHoles_RH"))
     global rh_edges, rh_faces, rh_obj
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
@@ -783,10 +793,12 @@ def removeHoles_RH():
         print('ToDo Apply colors to corresponding faces') 
     else:
         i_sayerr('select only one object')
-##
+    
+    App.ActiveDocument.commitTransaction() #undo reg.
 
 ##
 def removeFaces_RH():
+    App.ActiveDocument.openTransaction(translate("Design456","removeFaces_RH"))
     global rh_edges, rh_faces, rh_obj
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
@@ -869,9 +881,10 @@ def removeFaces_RH():
                 obj.touch()
         doc.recompute() 
     print('ToDo Apply colors to corresponding faces') 
-
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def addFaces_RH():
+    App.ActiveDocument.openTransaction(translate("Design456","addFaces_RH"))
     global rh_edges, rh_faces, rh_obj
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
@@ -902,8 +915,10 @@ def addFaces_RH():
 
     if len(rh_edges) > 0 or len(rh_edges_to_connect) > 0:
         clear_all_RH()
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def offsetFaces_RH():
+    App.ActiveDocument.openTransaction(translate("Design456","offsetFaces_RH"))
     global rh_edges, rh_faces, rh_obj
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
@@ -941,8 +956,10 @@ def offsetFaces_RH():
             doc.removeObject(fname)
             Part.show(s)
             doc.ActiveObject.Label = "Face"
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def offsetEdges_RH():
+    App.ActiveDocument.openTransaction(translate("Design456","offsetEdges_RH"))
     global rh_edges, rh_faces, rh_obj
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
@@ -978,6 +995,7 @@ def offsetEdges_RH():
             doc.removeObject(fname)
             Part.show(s)
             doc.ActiveObject.Label = "Edge"
+    App.ActiveDocument.commitTransaction() #undo reg.
 
 def copyFaces_RH():
     global rh_edges, rh_faces, rh_obj
@@ -997,6 +1015,7 @@ def copyFaces_RH():
         clear_all_RH()
 ##
 def removesubtree(objs):
+    App.ActiveDocument.openTransaction(translate("Design456","removesubtree"))
     def addsubobjs(obj,toremoveset):
         toremove.add(obj)
         for subobj in obj.OutList:
@@ -1019,11 +1038,12 @@ def removesubtree(objs):
             obj.Document.removeObject(obj.Name)
         except:
             pass
-
+    App.ActiveDocument.commitTransaction() #undo reg.
 ###
 
 def cleaningFaces_RH():
     """merge two faces"""
+    App.ActiveDocument.openTransaction(translate("Design456","cleaningFaces_RH"))
     global force_recompute, invert
     myshape = None
     i_sayw('merging faces')
@@ -1171,9 +1191,10 @@ def cleaningFaces_RH():
                 Gui.Selection.addSelection(fn)
         Gui.Selection.removeSelection(myshape)
         merge_faces_from_selected_objects_RH(myshape)
-
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def makeEdge_RH():
+    App.ActiveDocument.openTransaction(translate("Design456","makeEdge_RH"))
     global force_recompute
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
@@ -1201,8 +1222,10 @@ def makeEdge_RH():
         i_sayerr("select only 2 Vertexes")
     for ob in App.ActiveDocument.Objects:
         Gui.Selection.removeSelection(ob)
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def addEdges_RH():
+    App.ActiveDocument.openTransaction(translate("Design456","addEdges_RH"))
     global rh_edges, rh_faces, rh_obj
     global rh_edges_names, rh_faces_names, rh_obj_name
     global created_faces, rh_faces_indexes, rh_edges_to_connect
@@ -1242,6 +1265,7 @@ def addEdges_RH():
         doc.ActiveObject.Label = "Edge"
         if len(rh_edges) > 0:
             clear_all_RH()
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def showEdges_RH():
     global rh_edges, rh_faces, rh_obj
@@ -1299,7 +1323,7 @@ def PartDefeaturing_RH():
 ##
 
 def makeSolidExpSTEP_RH():
-    
+    App.ActiveDocument.openTransaction(translate("Design456","makeSolidExpSTEP_RH"))
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
     if doc is not None:
@@ -1322,10 +1346,11 @@ def makeSolidExpSTEP_RH():
             i_sayerr('select only one object')
     else:
         i_sayerr('select only one object')
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##    
 
 def shape_Connect_RH():
-    
+    App.ActiveDocument.openTransaction(translate("Design456","shape_Connect_RH"))
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
     sel=Gui.Selection.getSelection()
@@ -1347,9 +1372,11 @@ def shape_Connect_RH():
             connected_objG.Transparency=docG.getObject(obj.Name).Transparency
     else:
         i_sayerr('select only one object')
+    App.ActiveDocument.commitTransaction() #undo reg.
     
 ##    
 def simplecopy_RH():
+    App.ActiveDocument.openTransaction(translate("Design456","simplecopy_RH"))
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
     sel=Gui.Selection.getSelection()
@@ -1367,6 +1394,7 @@ def simplecopy_RH():
                 doc.recompute()
     else:
         i_sayerr('select object(s) with a Shape')
+    App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def loop_edges_RH():
     import DefeaturingCMD

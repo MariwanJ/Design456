@@ -40,7 +40,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-20 19:17:07'
+__updated__ = '2022-01-21 18:33:54'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -498,6 +498,7 @@ class Star:
 class Design456_Star:
     def Activated(self):
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","Star"))
             newObj = App.ActiveDocument.addObject(
                 "Part::FeaturePython", "Star")
             ViewProviderBox(newObj.ViewObject, "Star")
@@ -505,6 +506,7 @@ class Design456_Star:
             plc = App.Placement()
             f.Placement = plc
             App.ActiveDocument.recompute()
+            App.ActiveDocument.commitTransaction()  # undo
             return newObj
         except Exception as err:
             App.Console.PrintError("'StarCommand' Failed. "
@@ -677,6 +679,8 @@ class Design456_SimplifyEdges:
                 errMessage = "Select edges from one object"
                 faced.errorDialog(errMessage)
                 return
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "SimplifyEdges"))
             selObj = s[0]
             selEdges = selObj.Object.Shape.OrderedEdges
             selVertexes = []
@@ -700,7 +704,8 @@ class Design456_SimplifyEdges:
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(selObj.Object.Name)
             App.ActiveDocument.removeObject(l1.Name)
-
+            App.ActiveDocument.commitTransaction()  # undo
+            
         except Exception as err:
             App.Console.PrintError("'Design456_SimplifyEdges' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -720,7 +725,8 @@ class Design456_SimplifyEdges:
 
 Gui.addCommand('Design456_SimplifyEdges', Design456_SimplifyEdges())
 
-#This is necess
+# Not sure if I should write this tool. Defeaturing has it:
+# TODO:FIXME:
 class Design456_SimplifyFace:
     def Activated(self):
         try:
@@ -758,7 +764,6 @@ Gui.addCommand('Design456_SimplifyFace', Design456_SimplifyFace())
 class Design456_DivideCircleFace:
     def Activated(self):
         try:
-
             s = Gui.Selection.getSelectionEx()
             if len(s) > 1:
                 # TODO: FIXME: Should we accept more than one object?
@@ -795,7 +800,7 @@ class Design456_2Ddrawing:
             "Design456_2DTrim",
             "Design456_joinTwoLines",
             "Design456_SimplifyEdges",
-            "Design456_SimplifyFace",
+#            "Design456_SimplifyFace",
             "Design456_Star",
             "Design456_Paint",
             "Design456_Hole",
