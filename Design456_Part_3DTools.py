@@ -41,7 +41,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-01-21 14:28:55'
+__updated__ = '2022-01-21 18:33:21'
 
 # Merge
 class Design456_Part_Merge:
@@ -548,6 +548,7 @@ class Design456_SimplifyCompound:
             else:
                 ss=s
             result=[]
+            App.ActiveDocument.openTransaction(translate("Design456","SimplifyCompound"))
             for obj in ss:
                 #connect Object
                 con =  BOPTools.JoinFeatures.makeConnect(name= 'tempConnect') 
@@ -565,6 +566,7 @@ class Design456_SimplifyCompound:
                 App.ActiveDocument.removeObject(con.Name)
                 App.ActiveDocument.removeObject(obj.Name)
                 result.append(newPart)
+            App.ActiveDocument.commitTransaction()  # undo
             return result
             
         except Exception as err:
