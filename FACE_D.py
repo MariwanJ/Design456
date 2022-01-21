@@ -36,7 +36,7 @@ import math
 
 # TODO : FIXME BETTER WAY?
 
-__updated__ = '2022-01-17 16:09:23'
+__updated__ = '2022-01-21 13:13:58'
 
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
@@ -1060,4 +1060,5 @@ class reversEngSurface(object):
     
     def recreateSurface(self):
         return (self.newObject)
-     
+
+

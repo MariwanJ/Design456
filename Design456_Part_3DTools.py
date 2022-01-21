@@ -41,7 +41,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-01-13 21:44:20'
+__updated__ = '2022-01-21 14:28:55'
 
 # Merge
 class Design456_Part_Merge:
@@ -520,6 +520,70 @@ class Design456_Part_Chamfer:
 Gui.addCommand('Design456_Part_Chamfer', Design456_Part_Chamfer())
 
 
+# Simplify Compound
+class Design456_SimplifyCompound:
+    """[simplify compound object by connecting, refining and simplifying them]
+
+    Argument:
+        [Object] :[A compound object to simplify ]. Default is None.
+    Returns:
+        [Object]: [new simplified and created object(s)]
+    """
+    def Activated(self,input_object = None):
+        try:
+
+            import BOPTools.JoinFeatures
+            s=Gui.Selection.getSelection()
+            ss=None
+            if input_object == None:
+                if (len(s) < 1):
+                    # One object must be selected at least
+                    errMessage = "Select a face or an edge use Chamfer"
+                    faced.errorDialog(errMessage)
+                    return None
+            else:
+                s = input_object
+            if len(s)==1:
+                ss = [s[0]]
+            else:
+                ss=s
+            result=[]
+            for obj in ss:
+                #connect Object
+                con =  BOPTools.JoinFeatures.makeConnect(name= 'tempConnect') 
+                con.Objects=[obj]
+                con.Refine=True
+                con.Tolerance = 0.0
+                con.Proxy.execute(con)
+                con.purgeTouched()
+                #simple copy of connect. 
+                newShape = con.Shape.copy()
+                newPart = App.ActiveDocument.addObject('Part::Feature', "Simplified")
+                newPart.Shape=newShape
+                App.ActiveDocument.recompute()
+
+                App.ActiveDocument.removeObject(con.Name)
+                App.ActiveDocument.removeObject(obj.Name)
+                result.append(newPart)
+            return result
+            
+        except Exception as err:
+            App.Console.PrintError("'SimplifyCompound' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + 'SimplifyCompound.svg',
+            'MenuText': 'SimplifyCompound',
+            'ToolTip':  'Simplify Compound'
+        }
+
+Gui.addCommand('Design456_SimplifyCompound', Design456_SimplifyCompound())
+
+
 class Design456_Part_3DToolsGroup:
         
     """Design456 Part 3D Tools"""
@@ -529,6 +593,7 @@ class Design456_Part_3DToolsGroup:
         return ("Design456_Extrude",
                 "Design456_Extract",
                 "Design456_Part_Merge",
+                "Design456_SimplifyCompound",
                 "Design456_Part_Subtract",
                 "Design456_Part_Intersect",
                 "Design456_loftOnDirection",
@@ -554,3 +619,4 @@ class Design456_Part_3DToolsGroup:
 
 
 Gui.addCommand("Design456_Part_3DToolsGroup", Design456_Part_3DToolsGroup())
+
