@@ -53,7 +53,7 @@ import math
 # except:
 #     pass
 
-__updated__ = '2021-12-31 08:58:07'
+__updated__ = '2022-01-22 17:54:27'
 
 class Design456_ExtendFace:
     """[Extend the face's position to a new position.
@@ -238,7 +238,7 @@ class Design456_ExtendFace:
                 _resultFace.append(newFace)
             self.newFaces = _result
 
-            solidObjShape = _part.Solid(_part.Shell(_resultFace))
+            solidObjShape = _part.Solid(_part.makeShell(_resultFace))
             newObj = App.ActiveDocument.addObject("Part::Feature", "comp")
             newObj.Shape = solidObjShape
             newObj = self.sewShape(newObj)

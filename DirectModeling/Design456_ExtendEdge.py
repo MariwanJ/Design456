@@ -256,7 +256,7 @@ class Design456_ExtendEdge:
                 _resultFace.append(newFace)
             self.newFaces = _result
 
-            solidObjShape = _part.Solid(_part.Shell(_resultFace))
+            solidObjShape = _part.Solid(_part.makeShell(_resultFace))
             newObj = App.ActiveDocument.addObject("Part::Feature", "comp")
             newObj.Shape = solidObjShape
             newObj = self.sewShape(newObj)
