@@ -46,7 +46,7 @@ Please leave comments, bugs, fixes in the issue queue of this repository.
 
 ### Relevant Links
 
-* FreeCAD forum thread [announcing Design456 workbench](https://forum.freecadweb.org/viewtopic.php?f=8&t=54893)  
+* FreeCAD forum thread [announcing Design456 workbench](https://forum.freecadweb.org/viewtopic.php?f=8&t=54893)    (No more used 2022-01-20)
 * FreeCAD forum thread [progress Design456 workbench](https://forum.freecadweb.org/viewtopic.php?f=10&t=55866&p=480589#p480589) (No more used 2022-01-20)
 ### Developer
 
