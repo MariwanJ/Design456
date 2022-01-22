@@ -168,184 +168,226 @@ def checking_BOP(o):
 ##
 
 def check_TypeId_RH():
-    if Gui.Selection.getSelection():
-        sel=Gui.Selection.getSelection()
+    try:
+        if Gui.Selection.getSelection():
+            sel=Gui.Selection.getSelection()
 
-        if len(sel)<1:
-                msg="Select one or more object(s) to be checked!\n"
-                reply = QtGui.QMessageBox.information(None,"Warning", msg)
-                App.Console.PrintWarning(msg)             
-        else:
-            non_solids=''
-            solids=''
-            for o in sel:
-                if hasattr(o,"Shape"):
-                    if '.[compsolid]' in o.Label or '.[solid]' in o.Label or '.[shell]' in o.Label\
-                            or '.[compound]' in o.Label or '.[face]' in o.Label or '.[edge]' in o.Label or '.[wire]' in o.Label\
-                            or '.[vertex]' in o.Label:
-                        o.Label=mk_str(o.Label).replace('.[solid]','').replace('.[shell]','').replace('.[compsolid]','').replace('.[compound]','')\
-                                               .replace('.[face]','').replace('.[wire]','').replace('.[edge]','').replace('.[vertex]','')
-                    else:
-                        len_shapes = len(o.Shape.Solids)+len(o.Shape.Shells)+len(o.Shape.Compounds)+len(o.Shape.CompSolids)+\
-                                     len(o.Shape.Faces)+len(o.Shape.Edges)+len(o.Shape.Wires)+len(o.Shape.Vertexes)
-                        lbl = mk_str (o.Label)
-                        i_say('\n'+lbl + '-> Shape Content: '+str(len_shapes)+' shapes -------------------------------')
-                        if len(o.Shape.Solids)==0:
-                            i_sayerr(mk_str(o.Label)+' object is a NON Solid')
-                        if len(o.Shape.CompSolids)>0:
-                            i_say(mk_str(o.Label)+' CompSolids object(s) NBR : '+str(len(o.Shape.CompSolids)))
-                            if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
-                                and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[edge]' not in o.Label:
-                                o.Label=mk_str(o.Label)+'.[compsolid]'
-                        if len(o.Shape.Compounds)>0:
-                            i_say(mk_str(o.Label)+' Compound object(s) NBR : '+str(len(o.Shape.Compounds)))
-                            if '.[compound]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label:
-                                o.Label=mk_str(o.Label)+'.[compound]'
-                        if len(o.Shape.Solids)>0:
-                            i_say(mk_str(o.Label)+' Solid object(s) NBR : '+str(len(o.Shape.Solids)))
-                            solids+=mk_str(o.Label)+'<br>'
-                            if '.[solid]' not in o.Label and '.[compsolid]' not in o.Label and '.[compound]' not in o.Label:
-                                o.Label=mk_str(o.Label)+'.[solid]'
+            if len(sel)<1:
+                    msg="Select one or more object(s) to be checked!\n"
+                    reply = QtGui.QMessageBox.information(None,"Warning", msg)
+                    App.Console.PrintWarning(msg)             
+            else:
+                non_solids=''
+                solids=''
+                for o in sel:
+                    if hasattr(o,"Shape"):
+                        if '.[compsolid]' in o.Label or '.[solid]' in o.Label or '.[shell]' in o.Label\
+                                or '.[compound]' in o.Label or '.[face]' in o.Label or '.[edge]' in o.Label or '.[wire]' in o.Label\
+                                or '.[vertex]' in o.Label:
+                            o.Label=mk_str(o.Label).replace('.[solid]','').replace('.[shell]','').replace('.[compsolid]','').replace('.[compound]','')\
+                                                .replace('.[face]','').replace('.[wire]','').replace('.[edge]','').replace('.[vertex]','')
                         else:
-                            
-                            non_solids+=mk_str(o.Label)+'<br>'
-                        if len(o.Shape.Shells)>0:
-                            i_say(mk_str(o.Label)+' Shell object(s) NBR : '+str(len(o.Shape.Shells)))
-                            if '.[shell]' not in o.Label and '.[solid]' not in o.Label and '.[compsolid]' not in o.Label and '.[compound]' not in o.Label:
-                                o.Label=mk_str(o.Label)+'.[shell]'
-                        if len(o.Shape.Faces)>0:
-                            i_say(mk_str(o.Label)+' Face object(s) NBR : '+str(len(o.Shape.Faces)))
-                            if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
-                                and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[edge]' not in o.Label:
-                                o.Label=mk_str(o.Label)+'.[face]'
-                        if len(o.Shape.Wires)>0:
-                            i_say(mk_str(o.Label)+' Wire object(s) NBR : '+str(len(o.Shape.Wires)))
-                            if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
-                                and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[wire]' not in o.Label:
-                                o.Label=mk_str(o.Label)+'.[wire]'
-                        if len(o.Shape.Edges)>0:
-                            i_say(mk_str(o.Label)+' Edge object(s) NBR : '+str(len(o.Shape.Edges)))
-                            if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
-                                and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[edge]' not in o.Label and '.[wire]' not in o.Label:
-                                o.Label=mk_str(o.Label)+'.[edge]'
-                        if len(o.Shape.Vertexes)>0:
-                            i_say(mk_str(o.Label)+' Vertex object(s) NBR : '+str(len(o.Shape.Vertexes)))
-                            if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
-                                and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[edge]' not in o.Label\
-                                and '.[wire]' not in o.Label and '.[vertex]' not in o.Label:
-                                o.Label=mk_str(o.Label)+'.[vertex]'
-                else:
-                    App.Console.PrintWarning("Select object with a \"Shape\" to be checked!\n")
+                            len_shapes = len(o.Shape.Solids)+len(o.Shape.Shells)+len(o.Shape.Compounds)+len(o.Shape.CompSolids)+\
+                                        len(o.Shape.Faces)+len(o.Shape.Edges)+len(o.Shape.Wires)+len(o.Shape.Vertexes)
+                            lbl = mk_str (o.Label)
+                            i_say('\n'+lbl + '-> Shape Content: '+str(len_shapes)+' shapes -------------------------------')
+                            if len(o.Shape.Solids)==0:
+                                i_sayerr(mk_str(o.Label)+' object is a NON Solid')
+                            if len(o.Shape.CompSolids)>0:
+                                i_say(mk_str(o.Label)+' CompSolids object(s) NBR : '+str(len(o.Shape.CompSolids)))
+                                if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
+                                    and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[edge]' not in o.Label:
+                                    o.Label=mk_str(o.Label)+'.[compsolid]'
+                            if len(o.Shape.Compounds)>0:
+                                i_say(mk_str(o.Label)+' Compound object(s) NBR : '+str(len(o.Shape.Compounds)))
+                                if '.[compound]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label:
+                                    o.Label=mk_str(o.Label)+'.[compound]'
+                            if len(o.Shape.Solids)>0:
+                                i_say(mk_str(o.Label)+' Solid object(s) NBR : '+str(len(o.Shape.Solids)))
+                                solids+=mk_str(o.Label)+'<br>'
+                                if '.[solid]' not in o.Label and '.[compsolid]' not in o.Label and '.[compound]' not in o.Label:
+                                    o.Label=mk_str(o.Label)+'.[solid]'
+                            else:
+                                
+                                non_solids+=mk_str(o.Label)+'<br>'
+                            if len(o.Shape.Shells)>0:
+                                i_say(mk_str(o.Label)+' Shell object(s) NBR : '+str(len(o.Shape.Shells)))
+                                if '.[shell]' not in o.Label and '.[solid]' not in o.Label and '.[compsolid]' not in o.Label and '.[compound]' not in o.Label:
+                                    o.Label=mk_str(o.Label)+'.[shell]'
+                            if len(o.Shape.Faces)>0:
+                                i_say(mk_str(o.Label)+' Face object(s) NBR : '+str(len(o.Shape.Faces)))
+                                if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
+                                    and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[edge]' not in o.Label:
+                                    o.Label=mk_str(o.Label)+'.[face]'
+                            if len(o.Shape.Wires)>0:
+                                i_say(mk_str(o.Label)+' Wire object(s) NBR : '+str(len(o.Shape.Wires)))
+                                if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
+                                    and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[wire]' not in o.Label:
+                                    o.Label=mk_str(o.Label)+'.[wire]'
+                            if len(o.Shape.Edges)>0:
+                                i_say(mk_str(o.Label)+' Edge object(s) NBR : '+str(len(o.Shape.Edges)))
+                                if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
+                                    and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[edge]' not in o.Label and '.[wire]' not in o.Label:
+                                    o.Label=mk_str(o.Label)+'.[edge]'
+                            if len(o.Shape.Vertexes)>0:
+                                i_say(mk_str(o.Label)+' Vertex object(s) NBR : '+str(len(o.Shape.Vertexes)))
+                                if '.[compsolid]' not in o.Label and '.[solid]' not in o.Label and '.[shell]' not in o.Label\
+                                    and '.[compound]' not in o.Label and '.[face]' not in o.Label and '.[edge]' not in o.Label\
+                                    and '.[wire]' not in o.Label and '.[vertex]' not in o.Label:
+                                    o.Label=mk_str(o.Label)+'.[vertex]'
+                    else:
+                        App.Console.PrintWarning("Select object with a \"Shape\" to be checked!\n")
 
-    else:
+        else:
 
-        reply = QtGui.QMessageBox.information(None,"Warning", "Select one or more object(s) to be checked!")
-        App.Console.PrintWarning("Select one or more object(s) to be checked!\n")             
+            reply = QtGui.QMessageBox.information(None,"Warning", "Select one or more object(s) to be checked!")
+            App.Console.PrintWarning("Select one or more object(s) to be checked!\n")             
+    except Exception as err:
+        App.Console.PrintError("'check_TypeId_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 def clear_all_RH():
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
+    try:
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
 
-    rh_edges = []
-    rh_edges_names = []
-    rh_edges_to_connect = []
-    created_faces = []
-    RHDockWidget.ui.TE_Edges.setPlainText("")
-    rh_faces = []
-    rh_faces_names = []
-    rh_faces_indexes = []
-    created_faces = []
-    RHDockWidget.ui.TE_Faces.setPlainText("")
-    rh_obj = []
-    rh_obj_name = []    
-    RHDockWidget.ui.Edge_Nbr.setText("0")
-    RHDockWidget.ui.Face_Nbr.setText("0")
-    RHDockWidget.ui.Obj_Nbr.setText("0")
-    RHDockWidget.ui.Obj_Nbr_2.setText("0")   
+        rh_edges = []
+        rh_edges_names = []
+        rh_edges_to_connect = []
+        created_faces = []
+        RHDockWidget.ui.TE_Edges.setPlainText("")
+        rh_faces = []
+        rh_faces_names = []
+        rh_faces_indexes = []
+        created_faces = []
+        RHDockWidget.ui.TE_Faces.setPlainText("")
+        rh_obj = []
+        rh_obj_name = []    
+        RHDockWidget.ui.Edge_Nbr.setText("0")
+        RHDockWidget.ui.Face_Nbr.setText("0")
+        RHDockWidget.ui.Obj_Nbr.setText("0")
+        RHDockWidget.ui.Obj_Nbr_2.setText("0")   
+    except Exception as err:
+        App.Console.PrintError("'clear_all_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def refine_parametric_RH():
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    sel=Gui.Selection.getSelectionEx()
-    if len (sel) > 0:
-        for selobj in sel:
-            if hasattr(selobj.Object,"Shape"):        
-                newobj=selobj.Document.addObject("Part::FeaturePython",'refined')
-                OpenSCADFeatures.RefineShape(newobj,selobj.Object)
-                OpenSCADFeatures.ViewProviderTree(newobj.ViewObject)
-                ## to do: see if it is possible to conserve colors in refining
-                ao = App.ActiveDocument.ActiveObject
-                docG.ActiveObject.ShapeColor=docG.getObject(selobj.Object.Name).ShapeColor
-                docG.ActiveObject.LineColor=docG.getObject(selobj.Object.Name).LineColor
-                docG.ActiveObject.PointColor=docG.getObject(selobj.Object.Name).PointColor
-                docG.ActiveObject.DiffuseColor=docG.getObject(selobj.Object.Name).DiffuseColor
-                docG.ActiveObject.Transparency=docG.getObject(selobj.Object.Name).Transparency
+    try:
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        sel=Gui.Selection.getSelectionEx()
+        if len (sel) > 0:
+            for selobj in sel:
+                if hasattr(selobj.Object,"Shape"):        
+                    newobj=selobj.Document.addObject("Part::FeaturePython",'refined')
+                    OpenSCADFeatures.RefineShape(newobj,selobj.Object)
+                    OpenSCADFeatures.ViewProviderTree(newobj.ViewObject)
+                    ## to do: see if it is possible to conserve colors in refining
+                    ao = App.ActiveDocument.ActiveObject
+                    docG.ActiveObject.ShapeColor=docG.getObject(selobj.Object.Name).ShapeColor
+                    docG.ActiveObject.LineColor=docG.getObject(selobj.Object.Name).LineColor
+                    docG.ActiveObject.PointColor=docG.getObject(selobj.Object.Name).PointColor
+                    docG.ActiveObject.DiffuseColor=docG.getObject(selobj.Object.Name).DiffuseColor
+                    docG.ActiveObject.Transparency=docG.getObject(selobj.Object.Name).Transparency
 
-                newobj.Label=selobj.Object.Label
-                selobj.Object.ViewObject.hide()
-        doc.recompute()
+                    newobj.Label=selobj.Object.Label
+                    selobj.Object.ViewObject.hide()
+            doc.recompute()
+    except Exception as err:
+        App.Console.PrintError("'refine_parametric_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def refine_RH():
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    sel=Gui.Selection.getSelection()
-    App.ActiveDocument.openTransaction(translate("Design456","refine_RH"))
-    if len (sel):
-        for o in sel:
-            if hasattr(o,"Shape"):
-                doc.addObject('Part::Feature','refined').Shape=o.Shape.removeSplitter()
-                doc.ActiveObject.Label=o.Label
-                docG.getObject(o.Name).hide()                
-                docG.ActiveObject.ShapeColor=docG.getObject(o.Name).ShapeColor
-                docG.ActiveObject.LineColor=docG.getObject(o.Name).LineColor
-                docG.ActiveObject.PointColor=docG.getObject(o.Name).PointColor
-                docG.ActiveObject.DiffuseColor=docG.getObject(o.Name).DiffuseColor
-                docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
-                doc.recompute()
+    try:
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        sel=Gui.Selection.getSelection()
+        App.ActiveDocument.openTransaction(translate("Design456","refine_RH"))
+        if len (sel):
+            for o in sel:
+                if hasattr(o,"Shape"):
+                    doc.addObject('Part::Feature','refined').Shape=o.Shape.removeSplitter()
+                    doc.ActiveObject.Label=o.Label
+                    docG.getObject(o.Name).hide()                
+                    docG.ActiveObject.ShapeColor=docG.getObject(o.Name).ShapeColor
+                    docG.ActiveObject.LineColor=docG.getObject(o.Name).LineColor
+                    docG.ActiveObject.PointColor=docG.getObject(o.Name).PointColor
+                    docG.ActiveObject.DiffuseColor=docG.getObject(o.Name).DiffuseColor
+                    docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
+                    doc.recompute()
 
-    App.ActiveDocument.commitTransaction() #undo reg.
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'refine_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def edges_clear_RH():
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
+    try:
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
 
-    rh_edges = []
-    rh_edges_names = []
-    rh_edges_to_connect = []
-    created_faces = []
-    RHDockWidget.ui.TE_Edges.setPlainText("")
-    rh_faces = []
-    rh_faces_names = []
-    rh_faces_indexes = []
-    created_faces = []
-    RHDockWidget.ui.TE_Faces.setPlainText("")
-    rh_obj = []
-    rh_obj_name = []    
-    RHDockWidget.ui.Edge_Nbr.setText("0")
-    RHDockWidget.ui.Face_Nbr.setText("0")
+        rh_edges = []
+        rh_edges_names = []
+        rh_edges_to_connect = []
+        created_faces = []
+        RHDockWidget.ui.TE_Edges.setPlainText("")
+        rh_faces = []
+        rh_faces_names = []
+        rh_faces_indexes = []
+        created_faces = []
+        RHDockWidget.ui.TE_Faces.setPlainText("")
+        rh_obj = []
+        rh_obj_name = []    
+        RHDockWidget.ui.Edge_Nbr.setText("0")
+        RHDockWidget.ui.Face_Nbr.setText("0")
+    except Exception as err:
+        App.Console.PrintError("'edges_clear_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 
 def faces_clear_RH():
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
+    try:
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
 
-    rh_faces = []
-    rh_faces_names = []
-    rh_faces_indexes = []
-    created_faces = []
-    RHDockWidget.ui.TE_Faces.setPlainText("")
-    rh_edges = []
-    rh_edges_names = []
-    rh_edges_to_connect = []
-    created_faces = []
-    rh_obj = []
-    rh_obj_name = []
-    RHDockWidget.ui.TE_Edges.setPlainText("")
-    RHDockWidget.ui.Edge_Nbr.setText("0")
-    RHDockWidget.ui.Face_Nbr.setText("0")
+        rh_faces = []
+        rh_faces_names = []
+        rh_faces_indexes = []
+        created_faces = []
+        RHDockWidget.ui.TE_Faces.setPlainText("")
+        rh_edges = []
+        rh_edges_names = []
+        rh_edges_to_connect = []
+        created_faces = []
+        rh_obj = []
+        rh_obj_name = []
+        RHDockWidget.ui.TE_Edges.setPlainText("")
+        RHDockWidget.ui.Edge_Nbr.setText("0")
+        RHDockWidget.ui.Face_Nbr.setText("0")
+    except Exception as err:
+        App.Console.PrintError("'faces_clear_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 
 def close_RH():
@@ -354,51 +396,58 @@ def close_RH():
 
 def merge_selected_faces_RH():
     """merging Faces of selected shapes""" 
-    App.ActiveDocument.openTransaction(translate("Design456","merge_selected_faces_RH"))
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","merge_selected_faces_RH"))
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
 
-    af_faces = rh_faces
 
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    _test = None
+        af_faces = rh_faces
 
-    if len(af_faces) > 0:
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        _test = None
 
-        try:
-            _test =  Part.Shell(af_faces)
-            if _test.isNull():
+        if len(af_faces) > 0:
 
+            try:
+                _test =  Part.Shell(af_faces)
+                if _test.isNull():
+
+                    App.Console.PrintWarning('Failed to create shell\n')
+            except:
                 App.Console.PrintWarning('Failed to create shell\n')
-        except:
-            App.Console.PrintWarning('Failed to create shell\n')
-            for f in af_faces:
-                Part.show(f)
-                doc.ActiveObject.Label="face"
-            return
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            try:
-                _test.removeSplitter()
-            except:
-                print ('not refined')
-        if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-        _test=Part.Solid(_test)
-        if _test.isNull(): raise RuntimeError('Failed to create solid')
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            try:
-                _test.removeSplitter()
-            except:
-                print ('not refined')
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
-        else:
-            doc.addObject('Part::Feature','Solid').Shape=_test
+                for f in af_faces:
+                    Part.show(f)
+                    doc.ActiveObject.Label="face"
+                return
+            if RHDockWidget.ui.checkBox_Refine.isChecked():
+                try:
+                    _test.removeSplitter()
+                except:
+                    print ('not refined')
+            if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+            _test=Part.Solid(_test)
+            if _test.isNull(): raise RuntimeError('Failed to create solid')
+            if RHDockWidget.ui.checkBox_Refine.isChecked():
+                try:
+                    _test.removeSplitter()
+                except:
+                    print ('not refined')
+            if RHDockWidget.ui.checkBox_Refine.isChecked():
+                doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
+            else:
+                doc.addObject('Part::Feature','Solid').Shape=_test
 
-        mysolidr = doc.ActiveObject
-    App.ActiveDocument.commitTransaction() #undo reg.
+            mysolidr = doc.ActiveObject
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'merge_selected_faces_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 
 def checkShape():
@@ -418,31 +467,37 @@ def checkShape():
 
 def sewShape():
     """checking Shape""" 
-    
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    App.ActiveDocument.openTransaction(translate("Design456","sewShape"))   
-    sel=Gui.Selection.getSelection()
-    if len (sel) == 1:
-        o = sel[0]
-        if hasattr(o,'Shape'):
-            sh = o.Shape.copy()
-            sh.sewShape()
-            sl = Part.Solid(sh)
-            docG.getObject(o.Name).Visibility = False
-            Part.show(sl)
-            ao = App.ActiveDocument.ActiveObject
-            ao.Label = 'Solid'
-            docG.ActiveObject.ShapeColor=docG.getObject(o.Name).ShapeColor
-            docG.ActiveObject.LineColor=docG.getObject(o.Name).LineColor
-            docG.ActiveObject.PointColor=docG.getObject(o.Name).PointColor
-            docG.ActiveObject.DiffuseColor=docG.getObject(o.Name).DiffuseColor
-            docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
-    else:
-        msg="Select one or more object(s) to be checked!\n"
-        reply = QtGui.QMessageBox.information(None,"Warning", msg)
-        App.Console.PrintWarning(msg)             
-    App.ActiveDocument.commitTransaction() #undo reg.
+    try:
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        App.ActiveDocument.openTransaction(translate("Design456","sewShape"))   
+        sel=Gui.Selection.getSelection()
+        if len (sel) == 1:
+            o = sel[0]
+            if hasattr(o,'Shape'):
+                sh = o.Shape.copy()
+                sh.sewShape()
+                sl = Part.Solid(sh)
+                docG.getObject(o.Name).Visibility = False
+                Part.show(sl)
+                ao = App.ActiveDocument.ActiveObject
+                ao.Label = 'Solid'
+                docG.ActiveObject.ShapeColor=docG.getObject(o.Name).ShapeColor
+                docG.ActiveObject.LineColor=docG.getObject(o.Name).LineColor
+                docG.ActiveObject.PointColor=docG.getObject(o.Name).PointColor
+                docG.ActiveObject.DiffuseColor=docG.getObject(o.Name).DiffuseColor
+                docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
+        else:
+            msg="Select one or more object(s) to be checked!\n"
+            reply = QtGui.QMessageBox.information(None,"Warning", msg)
+            App.Console.PrintWarning(msg)             
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'sewShape' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 def getTolerance():
     """getting Tolerance""" 
@@ -463,251 +518,279 @@ def getTolerance():
 ##
 def setTolerance():
     """getting Tolerance""" 
-    
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    App.ActiveDocument.openTransaction(translate("Design456","Star"))   
-    sel=Gui.Selection.getSelection()
-    if len (sel) == 1:
-        o = sel[0]
-        if hasattr(o,'Shape'):
-            ns = o.Shape.copy()
-            i_say (mk_str(o.Label)+' tolerance = '+str(ns.getTolerance(0)))
-            new_tol = float(RHDockWidget.ui.tolerance_value.text())
-            ns.fixTolerance(new_tol) #1e-4)
-            docG.getObject(o.Name).Visibility = False
-            Part.show(ns)
-            ao = App.ActiveDocument.ActiveObject
-            docG.ActiveObject.ShapeColor=docG.getObject(o.Name).ShapeColor
-            docG.ActiveObject.LineColor=docG.getObject(o.Name).LineColor
-            docG.ActiveObject.PointColor=docG.getObject(o.Name).PointColor
-            docG.ActiveObject.DiffuseColor=docG.getObject(o.Name).DiffuseColor
-            docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
-            ao.Label = 'Solid'
-            i_say (mk_str(ao.Label)+' tolerance = '+str(ao.Shape.getTolerance(0)))
-    else:
-        msg="Select one or more object(s) to be checked!\n"
-        reply = QtGui.QMessageBox.information(None,"Warning", msg)
-        App.Console.PrintWarning(msg)           
-    
-    App.ActiveDocument.commitTransaction() #undo reg.
+    try:
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        App.ActiveDocument.openTransaction(translate("Design456","Star"))   
+        sel=Gui.Selection.getSelection()
+        if len (sel) == 1:
+            o = sel[0]
+            if hasattr(o,'Shape'):
+                ns = o.Shape.copy()
+                i_say (mk_str(o.Label)+' tolerance = '+str(ns.getTolerance(0)))
+                new_tol = float(RHDockWidget.ui.tolerance_value.text())
+                ns.fixTolerance(new_tol) #1e-4)
+                docG.getObject(o.Name).Visibility = False
+                Part.show(ns)
+                ao = App.ActiveDocument.ActiveObject
+                docG.ActiveObject.ShapeColor=docG.getObject(o.Name).ShapeColor
+                docG.ActiveObject.LineColor=docG.getObject(o.Name).LineColor
+                docG.ActiveObject.PointColor=docG.getObject(o.Name).PointColor
+                docG.ActiveObject.DiffuseColor=docG.getObject(o.Name).DiffuseColor
+                docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
+                ao.Label = 'Solid'
+                i_say (mk_str(ao.Label)+' tolerance = '+str(ao.Shape.getTolerance(0)))
+        else:
+            msg="Select one or more object(s) to be checked!\n"
+            reply = QtGui.QMessageBox.information(None,"Warning", msg)
+            App.Console.PrintWarning(msg)           
 
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'setTolerance' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def merge_faces_from_selected_objects_RH(refobj=None):
     """merging Faces of selected shapes""" 
-    
-    faces = []
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    App.ActiveDocument.openTransaction(translate("Design456","merge_faces_from_selected_objects_RH"))
-    _test = None
-    sel=Gui.Selection.getSelection()
-    if len (sel):
-        for o in sel:
-            for f in o.Shape.Faces:
-                if f.Area > 0:
-                    faces.append(f) 
-        #print faces
-        try:
-            _test =  Part.Shell(faces)
-            if _test.isNull():
-            #raise RuntimeError('Failed to create shell')
+    try:
+        faces = []
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        App.ActiveDocument.openTransaction(translate("Design456","merge_faces_from_selected_objects_RH"))
+        _test = None
+        sel=Gui.Selection.getSelection()
+        if len (sel):
+            for o in sel:
+                for f in o.Shape.Faces:
+                    if f.Area > 0:
+                        faces.append(f) 
+            #print faces
+            try:
+                _test =  Part.Shell(faces)
+                if _test.isNull():
+                #raise RuntimeError('Failed to create shell')
+                    App.Console.PrintWarning('Failed to create shell\n')
+            except:
                 App.Console.PrintWarning('Failed to create shell\n')
-        except:
-            App.Console.PrintWarning('Failed to create shell\n')
-            for f in faces:
-                Part.show(f)
-                doc.ActiveObject.Label="face"
-            return
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            try:
-                _test.removeSplitter()
-            except:
-                print ('not refined')
-        if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-        _test=Part.Solid(_test)
-        if _test.isNull(): raise RuntimeError('Failed to create solid')
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            try:
-                _test.removeSplitter()
-            except:
-                print ('not refined')
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
-        else:
-            doc.addObject('Part::Feature','Solid').Shape=_test
+                for f in faces:
+                    Part.show(f)
+                    doc.ActiveObject.Label="face"
+                return
+            if RHDockWidget.ui.checkBox_Refine.isChecked():
+                try:
+                    _test.removeSplitter()
+                except:
+                    print ('not refined')
+            if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+            _test=Part.Solid(_test)
+            if _test.isNull(): raise RuntimeError('Failed to create solid')
+            if RHDockWidget.ui.checkBox_Refine.isChecked():
+                try:
+                    _test.removeSplitter()
+                except:
+                    print ('not refined')
+            if RHDockWidget.ui.checkBox_Refine.isChecked():
+                doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
+            else:
+                doc.addObject('Part::Feature','Solid').Shape=_test
 
-        mysolidr = doc.ActiveObject
+            mysolidr = doc.ActiveObject
 
-        if refobj is not None and hasattr(refobj,'Name'):
-            docG.ActiveObject.ShapeColor=docG.getObject(refobj.Name).ShapeColor
-            docG.ActiveObject.LineColor=docG.getObject(refobj.Name).LineColor
-            docG.ActiveObject.PointColor=docG.getObject(refobj.Name).PointColor
-            docG.ActiveObject.DiffuseColor=docG.getObject(refobj.Name).DiffuseColor
-            docG.ActiveObject.Transparency=docG.getObject(refobj.Name).Transparency
-        else:
-            docG.ActiveObject.ShapeColor=docG.getObject(sel[0].Name).ShapeColor
-            docG.ActiveObject.LineColor=docG.getObject(sel[0].Name).LineColor
-            docG.ActiveObject.PointColor=docG.getObject(sel[0].Name).PointColor
-            docG.ActiveObject.DiffuseColor=docG.getObject(sel[0].Name).DiffuseColor
-            docG.ActiveObject.Transparency=docG.getObject(sel[0].Name).Transparency
-        if RHDockWidget.ui.checkBox_keep_original.isChecked():
-            for o in sel:
-                docG.getObject(o.Name).Visibility=False
-        else:
-            for o in sel:
-                doc.removeObject(o.Name)
+            if refobj is not None and hasattr(refobj,'Name'):
+                docG.ActiveObject.ShapeColor=docG.getObject(refobj.Name).ShapeColor
+                docG.ActiveObject.LineColor=docG.getObject(refobj.Name).LineColor
+                docG.ActiveObject.PointColor=docG.getObject(refobj.Name).PointColor
+                docG.ActiveObject.DiffuseColor=docG.getObject(refobj.Name).DiffuseColor
+                docG.ActiveObject.Transparency=docG.getObject(refobj.Name).Transparency
+            else:
+                docG.ActiveObject.ShapeColor=docG.getObject(sel[0].Name).ShapeColor
+                docG.ActiveObject.LineColor=docG.getObject(sel[0].Name).LineColor
+                docG.ActiveObject.PointColor=docG.getObject(sel[0].Name).PointColor
+                docG.ActiveObject.DiffuseColor=docG.getObject(sel[0].Name).DiffuseColor
+                docG.ActiveObject.Transparency=docG.getObject(sel[0].Name).Transparency
+            if RHDockWidget.ui.checkBox_keep_original.isChecked():
+                for o in sel:
+                    docG.getObject(o.Name).Visibility=False
+            else:
+                for o in sel:
+                    doc.removeObject(o.Name)
 
-    App.ActiveDocument.commitTransaction() #undo reg.
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'merge_faces_from_selected_objects_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 
 def edges_confirmed_RH():
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    
+    try:
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
 
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    App.ActiveDocument.openTransaction(translate("Design456","edges_confirmed_RH"))
-    en = None
-    selEx=Gui.Selection.getSelectionEx()
-    if len (selEx):
-        for selEdge in selEx:
-            for i,e in enumerate(selEdge.SubObjects):
 
-                if 'Edge' in selEdge.SubElementNames[i]:
-                    edge_in_list = False
-                    for en in rh_edges_names:
-                        if en == selEdge.ObjectName+'.'+selEdge.SubElementNames[i]:
-                            edge_in_list =True
-                    if not edge_in_list:
-                        rh_edges.append(e)
-                        rh_edges_names.append(selEdge.ObjectName+'.'+selEdge.SubElementNames[i])
-                        rh_obj.append(selEdge.Object)
-                        rh_obj_name.append(selEdge.ObjectName)
-                        if (e.isClosed()):
-                            cf=(Part.Face(Part.Wire(e)))
-                            created_faces.append(cf)
-                            i_say('face created from closed edge')
-                            if RHDockWidget.ui.checkBox_keep_faces.isChecked():
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        App.ActiveDocument.openTransaction(translate("Design456","edges_confirmed_RH"))
+        en = None
+        selEx=Gui.Selection.getSelectionEx()
+        if len (selEx):
+            for selEdge in selEx:
+                for i,e in enumerate(selEdge.SubObjects):
 
-                                Part.show(cf)
-                                doc.ActiveObject.Label = 'Face'
-                                docG.ActiveObject.Visibility=False
-                        else:
+                    if 'Edge' in selEdge.SubElementNames[i]:
+                        edge_in_list = False
+                        for en in rh_edges_names:
+                            if en == selEdge.ObjectName+'.'+selEdge.SubElementNames[i]:
+                                edge_in_list =True
+                        if not edge_in_list:
+                            rh_edges.append(e)
+                            rh_edges_names.append(selEdge.ObjectName+'.'+selEdge.SubElementNames[i])
+                            rh_obj.append(selEdge.Object)
+                            rh_obj_name.append(selEdge.ObjectName)
+                            if (e.isClosed()):
+                                cf=(Part.Face(Part.Wire(e)))
+                                created_faces.append(cf)
+                                i_say('face created from closed edge')
+                                if RHDockWidget.ui.checkBox_keep_faces.isChecked():
 
-                            rh_edges_to_connect.append(e)
-               
-        i_say(selEdge.ObjectName)
-        if len (rh_edges_to_connect) >0:
-            try:
-                
-                cf=Part.Face(Part.Wire(Part.__sortEdges__(rh_edges_to_connect)))
-                created_faces.append(cf)
-                i_say('face created from open edges')
-                if RHDockWidget.ui.checkBox_keep_faces.isChecked():
-                    Part.show(cf)
-                    doc.ActiveObject.Label = 'Face'
-                    docG.ActiveObject.Visibility=False
-                rh_edges_to_connect = []
-            except:
-                i_sayerr("make Face failed")
+                                    Part.show(cf)
+                                    doc.ActiveObject.Label = 'Face'
+                                    docG.ActiveObject.Visibility=False
+                            else:
 
-        if 0:
-            try:
-                cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges_to_connect))
+                                rh_edges_to_connect.append(e)
 
-                created_faces.append(cf)
-                if RHDockWidget.ui.checkBox_keep_faces.isChecked():
-                    Part.show(Part.makeSolid(Part.makeShell(cf)))
-                    docG.ActiveObject.Visibility=False
-                rh_edges_to_connect = []
-            except:
-                print('edge outline not closed')
-        print ('To Do: collect connected edges to create a Wire')
-        e_list=""
-        for e in rh_edges_names:
-            e_list=e_list+str(e)+'\n'
-        RHDockWidget.ui.TE_Edges.setPlainText(e_list)
-        RHDockWidget.ui.Edge_Nbr.setText(str(len(rh_edges)))
-        unique_obj = set(rh_obj)
-        unique_obj_count = len(unique_obj)
-        RHDockWidget.ui.Obj_Nbr.setText(str(unique_obj_count))
-        for ob in App.ActiveDocument.Objects:
-            Gui.Selection.removeSelection(ob)
+            i_say(selEdge.ObjectName)
+            if len (rh_edges_to_connect) >0:
+                try:
 
-    App.ActiveDocument.commitTransaction() #undo reg.
+                    cf=Part.Face(Part.Wire(Part.__sortEdges__(rh_edges_to_connect)))
+                    created_faces.append(cf)
+                    i_say('face created from open edges')
+                    if RHDockWidget.ui.checkBox_keep_faces.isChecked():
+                        Part.show(cf)
+                        doc.ActiveObject.Label = 'Face'
+                        docG.ActiveObject.Visibility=False
+                    rh_edges_to_connect = []
+                except:
+                    i_sayerr("make Face failed")
+
+            if 0:
+                try:
+                    cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges_to_connect))
+
+                    created_faces.append(cf)
+                    if RHDockWidget.ui.checkBox_keep_faces.isChecked():
+                        Part.show(Part.makeSolid(Part.makeShell(cf)))
+                        docG.ActiveObject.Visibility=False
+                    rh_edges_to_connect = []
+                except:
+                    print('edge outline not closed')
+            print ('To Do: collect connected edges to create a Wire')
+            e_list=""
+            for e in rh_edges_names:
+                e_list=e_list+str(e)+'\n'
+            RHDockWidget.ui.TE_Edges.setPlainText(e_list)
+            RHDockWidget.ui.Edge_Nbr.setText(str(len(rh_edges)))
+            unique_obj = set(rh_obj)
+            unique_obj_count = len(unique_obj)
+            RHDockWidget.ui.Obj_Nbr.setText(str(unique_obj_count))
+            for ob in App.ActiveDocument.Objects:
+                Gui.Selection.removeSelection(ob)
+
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'edges_confirmed_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def faces_confirmed_RH():
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    
-    doc=App.ActiveDocument
-    App.ActiveDocument.openTransaction(translate("Design456","faces_confirmed_RH"))
-    selEx=Gui.Selection.getSelectionEx()
+    try:
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
 
-    if len (selEx):
-        for selFace in selEx:
-            for i,f in enumerate(selFace.SubObjects):
+        doc=App.ActiveDocument
+        App.ActiveDocument.openTransaction(translate("Design456","faces_confirmed_RH"))
+        selEx=Gui.Selection.getSelectionEx()
 
-                if 'Face' in selFace.SubElementNames[i]:
-                    face_in_list = False
-                    for fn in rh_faces_names:
-                        if fn == selFace.ObjectName+'.'+selFace.SubElementNames[i]:
-                            face_in_list =True
+        if len (selEx):
+            for selFace in selEx:
+                for i,f in enumerate(selFace.SubObjects):
 
-                    if not face_in_list:
-                        rh_faces.append(f)
-                        rh_faces_indexes.append (re.search(r'\d+',selFace.SubElementNames[i]).group())
-                        rh_faces_names.append(selFace.ObjectName+'.'+selFace.SubElementNames[i])
-                        rh_obj.append(selFace.Object)
-                        rh_obj_name.append(selFace.ObjectName)
+                    if 'Face' in selFace.SubElementNames[i]:
+                        face_in_list = False
+                        for fn in rh_faces_names:
+                            if fn == selFace.ObjectName+'.'+selFace.SubElementNames[i]:
+                                face_in_list =True
 
-                    print(selFace.ObjectName+'.'+selFace.SubElementNames[i])
-        f_list=""
-        for f in rh_faces_names:
-            f_list=f_list+str(f)+'\n'
-        RHDockWidget.ui.TE_Faces.setPlainText(f_list)
+                        if not face_in_list:
+                            rh_faces.append(f)
+                            rh_faces_indexes.append (re.search(r'\d+',selFace.SubElementNames[i]).group())
+                            rh_faces_names.append(selFace.ObjectName+'.'+selFace.SubElementNames[i])
+                            rh_obj.append(selFace.Object)
+                            rh_obj_name.append(selFace.ObjectName)
 
-        RHDockWidget.ui.Face_Nbr.setText(str(len(rh_faces)))
-        unique_obj = set(rh_obj)
-        unique_obj_count = len(unique_obj)
-        RHDockWidget.ui.Obj_Nbr_2.setText(str(unique_obj_count))
-        for ob in App.ActiveDocument.Objects:
-            Gui.Selection.removeSelection(ob)
-        App.ActiveDocument.commitTransaction() #undo reg.
+                        print(selFace.ObjectName+'.'+selFace.SubElementNames[i])
+            f_list=""
+            for f in rh_faces_names:
+                f_list=f_list+str(f)+'\n'
+            RHDockWidget.ui.TE_Faces.setPlainText(f_list)
+
+            RHDockWidget.ui.Face_Nbr.setText(str(len(rh_faces)))
+            unique_obj = set(rh_obj)
+            unique_obj_count = len(unique_obj)
+            RHDockWidget.ui.Obj_Nbr_2.setText(str(unique_obj_count))
+            for ob in App.ActiveDocument.Objects:
+                Gui.Selection.removeSelection(ob)
+            App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'faces_confirmed_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def removeHoles_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","removeHoles_RH"))
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    global force_recompute, invert
-    _test = None
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    print('Removing Holes')
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","removeHoles_RH"))
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
+        global force_recompute, invert
+        _test = None
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        print('Removing Holes')
 
-    unique_obj = set(rh_obj)
-    unique_obj_count = len(unique_obj)
-    if unique_obj_count == 1:
-        RHDockWidget.ui.TE_Edges.setPlainText("")
-        RHDockWidget.ui.TE_Faces.setPlainText("")
-        myshape = rh_obj[0]
-        i = 0
-        faces = []
-        for f in myshape.Shape.Faces:
-            i+=1
-            idx_found = False
-            for j in rh_faces_indexes:
-                if int(j) == i:
-                    idx_found = True
-                    print('index found '+str(j))
-            if not idx_found:
-                faces.append(f)
-        if len(rh_edges_to_connect) > 0:
+        unique_obj = set(rh_obj)
+        unique_obj_count = len(unique_obj)
+        print(uniquie_obj,"uniquie_obj")
+        print(unique_obj_count,"unique_obj_count")
+        if unique_obj_count == 1:
+            RHDockWidget.ui.TE_Edges.setPlainText("")
+            RHDockWidget.ui.TE_Faces.setPlainText("")
+            myshape = rh_obj[0]
+            i = 0
+            faces = []
+            for f in myshape.Shape.Faces:
+                i+=1
+                idx_found = False
+                for j in rh_faces_indexes:
+                    if int(j) == i:
+                        idx_found = True
+                        print('index found '+str(j))
+                if not idx_found:
+                    faces.append(f)
+            if len(rh_edges_to_connect) > 0:
             if not invert:
                 try:
                     print("try to create a Face w/ OpenSCAD2Dgeom")
@@ -729,275 +812,309 @@ def removeHoles_RH():
                 doc.ActiveObject.Label = 'Face'
                 docG.ActiveObject.Visibility=False
             rh_edges_to_connect = []
-        if 0:
-            for f in created_faces:
-                faces.append(f)
-            res_faces = []
+            #if 0:
+            #    for f in created_faces:
+            #        faces.append(f)
+            #    res_faces = []
+            #    _test =  Part.Shell(faces)
+            #    if _test.isNull(): raise RuntimeError('Failed to create shell')
             _test =  Part.Shell(faces)
             if _test.isNull(): raise RuntimeError('Failed to create shell')
-        _test =  Part.Shell(faces)
-        if _test.isNull(): raise RuntimeError('Failed to create shell')
-        _test=Part.Solid(_test)
-        if _test.isNull(): raise RuntimeError('Failed to create solid')
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            try:
-                _test.removeSplitter()
-            except:
-                print ('not refined')    
-        for f in created_faces:
-            new_faces = []
-            for nf in _test.Faces:
-                new_faces.append(nf)
-            new_faces.append(f)
-            del _test
-            _test =  Part.Shell(new_faces)
-            i_sayw('added 1 face')
-            if _test.isNull(): raise RuntimeError('Failed to create shell')
-            if RHDockWidget.ui.checkBox_Refine.isChecked():
-                try:
-                    _test.removeSplitter()
-                except:
-                    print ('not refined')
-            if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
             _test=Part.Solid(_test)
             if _test.isNull(): raise RuntimeError('Failed to create solid')
             if RHDockWidget.ui.checkBox_Refine.isChecked():
                 try:
                     _test.removeSplitter()
                 except:
-                    print ('not refined')
-
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
-        else:
-            doc.addObject('Part::Feature','Solid').Shape=_test
-
-        mysolidr = doc.ActiveObject
-        original_label = myshape.Label
-        docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
-        docG.ActiveObject.LineColor=docG.getObject(myshape.Name).LineColor
-        docG.ActiveObject.PointColor=docG.getObject(myshape.Name).PointColor
-        docG.ActiveObject.DiffuseColor=docG.getObject(myshape.Name).DiffuseColor
-        docG.ActiveObject.Transparency=docG.getObject(myshape.Name).Transparency
-        if RHDockWidget.ui.checkBox_keep_original.isChecked():
-            docG.getObject(myshape.Name).Visibility=False
-        else:
-            doc.removeObject(myshape.Name)
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            mysolidr.Label = original_label # + "_refined"
-        else:
-            mysolidr.Label = original_label
-        clear_all_RH()
-        if force_recompute:
-            for obj in App.ActiveDocument.Objects:
-                obj.touch()
-        doc.recompute() 
-        print('ToDo Apply colors to corresponding faces') 
-    else:
-        i_sayerr('select only one object')
-    
-    App.ActiveDocument.commitTransaction() #undo reg.
-
-##
-def removeFaces_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","removeFaces_RH"))
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    global force_recompute
-
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    print('Removing Holes')
-
-    _test = None
-    unique_obj = set(rh_obj)
-    unique_obj_count = len(unique_obj)
-    if unique_obj_count == 1: #ToDo manage multi objs faces selection
-
-        myshape = rh_obj[0]
-        i = 0
-        faces = []
-        for f in myshape.Shape.Faces:
-            i+=1
-            idx_found = False
-            for j in rh_faces_indexes:
-                if int(j) == i:
-                    idx_found = True
-                    print('index found '+str(j))
-            if not idx_found:
-                faces.append(f)
-        if 1:
-            try:
-                _test =  Part.Shell(faces)
-                if _test.isNull():
-
-                    App.Console.PrintWarning('Failed to create shell\n')
-            except:
-                App.Console.PrintWarning('Failed to create shell\n')
-                if RHDockWidget.ui.checkBox_keep_faces.isChecked():
-                    for f in faces:
-                        Part.show(f)
-                        doc.ActiveObject.Label="face"
-                return
+                    print ('not refined')    
+            for f in created_faces:
+                new_faces = []
+                for nf in _test.Faces:
+                    new_faces.append(nf)
+                new_faces.append(f)
+                del _test
+                _test =  Part.Shell(new_faces)
+                i_sayw('added 1 face')
+                if _test.isNull(): raise RuntimeError('Failed to create shell')
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    try:
+                        _test.removeSplitter()
+                    except:
+                        print ('not refined')
+                if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+                _test=Part.Solid(_test)
+                if _test.isNull(): raise RuntimeError('Failed to create solid')
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    try:
+                        _test.removeSplitter()
+                    except:
+                        print ('not refined')
 
             if RHDockWidget.ui.checkBox_Refine.isChecked():
-                try:
-                    _test.removeSplitter()
-                except:
-                    print ('not refined')
-
-            if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-            _test=Part.Solid(_test)
-            if _test.isNull(): raise RuntimeError('Failed to create solid')
-            if RHDockWidget.ui.checkBox_Refine.isChecked():
-                try:
-                    _test.removeSplitter()
-                except:
-                    print ('not refined')
-
-            if RHDockWidget.ui.checkBox_Refine.isChecked():
-                doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
+                doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
             else:
                 doc.addObject('Part::Feature','Solid').Shape=_test
 
-        mysolidr = doc.ActiveObject
-        original_label = myshape.Label
-        docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
-        docG.ActiveObject.LineColor=docG.getObject(myshape.Name).LineColor
-        docG.ActiveObject.PointColor=docG.getObject(myshape.Name).PointColor
-        docG.ActiveObject.DiffuseColor=docG.getObject(myshape.Name).DiffuseColor
-        docG.ActiveObject.Transparency=docG.getObject(myshape.Name).Transparency
-        if RHDockWidget.ui.checkBox_keep_original.isChecked():
-            docG.getObject(myshape.Name).Visibility=False
+            mysolidr = doc.ActiveObject
+            original_label = myshape.Label
+            docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
+            docG.ActiveObject.LineColor=docG.getObject(myshape.Name).LineColor
+            docG.ActiveObject.PointColor=docG.getObject(myshape.Name).PointColor
+            docG.ActiveObject.DiffuseColor=docG.getObject(myshape.Name).DiffuseColor
+            docG.ActiveObject.Transparency=docG.getObject(myshape.Name).Transparency
+            if RHDockWidget.ui.checkBox_keep_original.isChecked():
+                docG.getObject(myshape.Name).Visibility=False
+            else:
+                doc.removeObject(myshape.Name)
+            if RHDockWidget.ui.checkBox_Refine.isChecked():
+                mysolidr.Label = original_label # + "_refined"
+            else:
+                mysolidr.Label = original_label
+            clear_all_RH()
+            if force_recompute:
+                for obj in App.ActiveDocument.Objects:
+                    obj.touch()
+            doc.recompute() 
+            print('ToDo Apply colors to corresponding faces') 
         else:
-            doc.removeObject(myshape.Name)
-        if RHDockWidget.ui.checkBox_Refine.isChecked():
-            mysolidr.Label = original_label # + "_refined"
-        else:
-            mysolidr.Label = original_label
+            i_sayerr('select only one object')
 
-        clear_all_RH()
-        if force_recompute:
-            for obj in App.ActiveDocument.Objects:
-                obj.touch()
-        doc.recompute() 
-    print('ToDo Apply colors to corresponding faces') 
-    App.ActiveDocument.commitTransaction() #undo reg.
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'removeHoles_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        
+##
+def removeFaces_RH():
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","removeFaces_RH"))
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
+        global force_recompute
+
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        print('Removing Holes')
+
+        _test = None
+        unique_obj = set(rh_obj)
+        unique_obj_count = len(unique_obj)
+        if unique_obj_count == 1: #ToDo manage multi objs faces selection
+
+            myshape = rh_obj[0]
+            i = 0
+            faces = []
+            for f in myshape.Shape.Faces:
+                i+=1
+                idx_found = False
+                for j in rh_faces_indexes:
+                    if int(j) == i:
+                        idx_found = True
+                        print('index found '+str(j))
+                if not idx_found:
+                    faces.append(f)
+            if 1:
+                try:
+                    _test =  Part.Shell(faces)
+                    if _test.isNull():
+
+                        App.Console.PrintWarning('Failed to create shell\n')
+                except:
+                    App.Console.PrintWarning('Failed to create shell\n')
+                    if RHDockWidget.ui.checkBox_keep_faces.isChecked():
+                        for f in faces:
+                            Part.show(f)
+                            doc.ActiveObject.Label="face"
+                    return
+
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    try:
+                        _test.removeSplitter()
+                    except:
+                        print ('not refined')
+
+                if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+                _test=Part.Solid(_test)
+                if _test.isNull(): raise RuntimeError('Failed to create solid')
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    try:
+                        _test.removeSplitter()
+                    except:
+                        print ('not refined')
+
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    doc.addObject('Part::Feature','SolidRefined').Shape=_.removeSplitter()
+                else:
+                    doc.addObject('Part::Feature','Solid').Shape=_test
+
+            mysolidr = doc.ActiveObject
+            original_label = myshape.Label
+            docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
+            docG.ActiveObject.LineColor=docG.getObject(myshape.Name).LineColor
+            docG.ActiveObject.PointColor=docG.getObject(myshape.Name).PointColor
+            docG.ActiveObject.DiffuseColor=docG.getObject(myshape.Name).DiffuseColor
+            docG.ActiveObject.Transparency=docG.getObject(myshape.Name).Transparency
+            if RHDockWidget.ui.checkBox_keep_original.isChecked():
+                docG.getObject(myshape.Name).Visibility=False
+            else:
+                doc.removeObject(myshape.Name)
+            if RHDockWidget.ui.checkBox_Refine.isChecked():
+                mysolidr.Label = original_label # + "_refined"
+            else:
+                mysolidr.Label = original_label
+
+            clear_all_RH()
+            if force_recompute:
+                for obj in App.ActiveDocument.Objects:
+                    obj.touch()
+            doc.recompute() 
+        print('ToDo Apply colors to corresponding faces') 
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'removeFaces_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def addFaces_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","addFaces_RH"))
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    global force_recompute, invert
-    
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    
-    if len(rh_edges) > 0:
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","addFaces_RH"))
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
+        global force_recompute, invert
 
-        if not invert:
-            try:
-                print("try to create a Face w/ OpenSCAD2Dgeom")
-                cf = OpenSCAD2Dgeom.edgestofaces(rh_edges)
-            except:
-                print("OpenSCAD2Dgeom failed\ntry to makeFilledFace")
-                cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges))
-        else:
-            try:
-                print("try to makeFilledFace")
-                cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges))
-            except:
-                print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
-                cf = OpenSCAD2Dgeom.edgestofaces(rh_edges)
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
 
-        Part.show(cf)
-        doc.ActiveObject.Label = "Face"
+        if len(rh_edges) > 0:
 
-    if len(rh_edges) > 0 or len(rh_edges_to_connect) > 0:
-        clear_all_RH()
-    App.ActiveDocument.commitTransaction() #undo reg.
+            if not invert:
+                try:
+                    print("try to create a Face w/ OpenSCAD2Dgeom")
+                    cf = OpenSCAD2Dgeom.edgestofaces(rh_edges)
+                except:
+                    print("OpenSCAD2Dgeom failed\ntry to makeFilledFace")
+                    cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges))
+            else:
+                try:
+                    print("try to makeFilledFace")
+                    cf=Part.makeFilledFace(Part.__sortEdges__(rh_edges))
+                except:
+                    print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
+                    cf = OpenSCAD2Dgeom.edgestofaces(rh_edges)
+
+            Part.show(cf)
+            doc.ActiveObject.Label = "Face"
+
+        if len(rh_edges) > 0 or len(rh_edges_to_connect) > 0:
+            clear_all_RH()
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'addFaces_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)    
 ##
 def offsetFaces_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","offsetFaces_RH"))
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    global force_recompute, invert
-    
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    
-    if len(rh_faces) > 0:
-        for f in rh_faces:
-            Part.show(f)
-            fname = doc.ActiveObject.Name
-            s=doc.ActiveObject.Shape.copy()
-            offset_dir = RHDockWidget.ui.offset_input.text().split(':')
-            if len(offset_dir)>1:
-                offset = float(offset_dir[0])
-                if 'x' in offset_dir[1]:
-                    norm=App.Vector(1,0,0)
-                elif 'y'in offset_dir[1]:
-                    norm=App.Vector(0,1,0)
-                elif 'z' in offset_dir[1]:
-                    norm=App.Vector(0,0,1)
-                elif 'n' in offset_dir[1]:
-                    norm=f.normalAt(0,0)
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","offsetFaces_RH"))
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
+        global force_recompute, invert
+
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+
+        if len(rh_faces) > 0:
+            for f in rh_faces:
+                Part.show(f)
+                fname = doc.ActiveObject.Name
+                s=doc.ActiveObject.Shape.copy()
+                offset_dir = RHDockWidget.ui.offset_input.text().split(':')
+                if len(offset_dir)>1:
+                    offset = float(offset_dir[0])
+                    if 'x' in offset_dir[1]:
+                        norm=App.Vector(1,0,0)
+                    elif 'y'in offset_dir[1]:
+                        norm=App.Vector(0,1,0)
+                    elif 'z' in offset_dir[1]:
+                        norm=App.Vector(0,0,1)
+                    elif 'n' in offset_dir[1]:
+                        norm=f.normalAt(0,0)
+                    else:
+                        i_sayerr('direction not inserted, using norm to face')
+                        norm=f.normalAt(0,0)
+                        RHDockWidget.ui.offset_input.setText(str(offset)+':n')
                 else:
+                    offset = float(RHDockWidget.ui.offset_input.text())
                     i_sayerr('direction not inserted, using norm to face')
                     norm=f.normalAt(0,0)
                     RHDockWidget.ui.offset_input.setText(str(offset)+':n')
-            else:
-                offset = float(RHDockWidget.ui.offset_input.text())
-                i_sayerr('direction not inserted, using norm to face')
-                norm=f.normalAt(0,0)
-                RHDockWidget.ui.offset_input.setText(str(offset)+':n')
-            s.translate(norm*offset)
-            doc.removeObject(fname)
-            Part.show(s)
-            doc.ActiveObject.Label = "Face"
-    App.ActiveDocument.commitTransaction() #undo reg.
+                s.translate(norm*offset)
+                doc.removeObject(fname)
+                Part.show(s)
+                doc.ActiveObject.Label = "Face"
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'offsetFaces_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno) 
 ##
 def offsetEdges_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","offsetEdges_RH"))
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    global force_recompute, invert
-    
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    
-    if len(rh_edges) > 0:
-        for e in rh_edges:
-            Part.show(e)
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","offsetEdges_RH"))
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
+        global force_recompute, invert
 
-            offset_dir = RHDockWidget.ui.offset_input.text().split(':')
-            if len(offset_dir)>1:
-                offset = float(offset_dir[0])
-                if 'x' in offset_dir[1]:
-                    norm=App.Vector(1,0,0)
-                elif 'y'in offset_dir[1]:
-                    norm=App.Vector(0,1,0)
-                elif 'z' in offset_dir[1]:
-                    norm=App.Vector(0,0,1)
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+
+        if len(rh_edges) > 0:
+            for e in rh_edges:
+                Part.show(e)
+
+                offset_dir = RHDockWidget.ui.offset_input.text().split(':')
+                if len(offset_dir)>1:
+                    offset = float(offset_dir[0])
+                    if 'x' in offset_dir[1]:
+                        norm=App.Vector(1,0,0)
+                    elif 'y'in offset_dir[1]:
+                        norm=App.Vector(0,1,0)
+                    elif 'z' in offset_dir[1]:
+                        norm=App.Vector(0,0,1)
+                    else:
+                        i_sayerr('direction not inserted, using z axis')
+                        norm=App.Vector(0,0,1)
                 else:
+                    offset = float(RHDockWidget.ui.offset_input.text())
                     i_sayerr('direction not inserted, using z axis')
-                    norm=App.Vector(0,0,1)
-            else:
-                offset = float(RHDockWidget.ui.offset_input.text())
-                i_sayerr('direction not inserted, using z axis')
-                norm = App.Vector(0,0,1)
-                RHDockWidget.ui.offset_input.setText(str(offset)+':x')
-            fname = doc.ActiveObject.Name
-            s=doc.ActiveObject.Shape.copy()
-            s.translate(norm*offset)
-            doc.removeObject(fname)
-            Part.show(s)
-            doc.ActiveObject.Label = "Edge"
-    App.ActiveDocument.commitTransaction() #undo reg.
+                    norm = App.Vector(0,0,1)
+                    RHDockWidget.ui.offset_input.setText(str(offset)+':x')
+                fname = doc.ActiveObject.Name
+                s=doc.ActiveObject.Shape.copy()
+                s.translate(norm*offset)
+                doc.removeObject(fname)
+                Part.show(s)
+                doc.ActiveObject.Label = "Edge"
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'offsetEdges_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 
 def copyFaces_RH():
     global rh_edges, rh_faces, rh_obj
@@ -1017,269 +1134,298 @@ def copyFaces_RH():
         clear_all_RH()
 ##
 def removesubtree(objs):
-    App.ActiveDocument.openTransaction(translate("Design456","removesubtree"))
-    def addsubobjs(obj,toremoveset):
-        toremove.add(obj)
-        for subobj in obj.OutList:
-            addsubobjs(subobj,toremoveset)
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","removesubtree"))
+        def addsubobjs(obj,toremoveset):
+            toremove.add(obj)
+            for subobj in obj.OutList:
+                addsubobjs(subobj,toremoveset)
 
-    import App
-    toremove=set()
-    for obj in objs:
-        addsubobjs(obj,toremove)
-    checkinlistcomplete =False
-    while not checkinlistcomplete:
+        toremove=set()
+        for obj in objs:
+            addsubobjs(obj,toremove)
+        checkinlistcomplete =False
+        while not checkinlistcomplete:
+            for obj in toremove:
+                if (obj not in objs) and (frozenset(obj.InList) - toremove):
+                    toremove.remove(obj)
+                    break
+            else:
+                checkinlistcomplete = True
         for obj in toremove:
-            if (obj not in objs) and (frozenset(obj.InList) - toremove):
-                toremove.remove(obj)
-                break
-        else:
-            checkinlistcomplete = True
-    for obj in toremove:
-        try:
-            obj.Document.removeObject(obj.Name)
-        except:
-            pass
-    App.ActiveDocument.commitTransaction() #undo reg.
+            try:
+                obj.Document.removeObject(obj.Name)
+            except:
+                pass
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'removesubtree' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ###
 
 def cleaningFaces_RH():
     """merge two faces"""
-    App.ActiveDocument.openTransaction(translate("Design456","cleaningFaces_RH"))
-    global force_recompute, invert
-    myshape = None
-    i_sayw('merging faces')
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    selEx=Gui.Selection.getSelectionEx()
-    fcs=[];fcs_names=[];fcs_outW=[];fcs_indexes=[]
-    new_faces=[]
-    _test = None
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","cleaningFaces_RH"))
+        global force_recompute, invert
+        myshape = None
+        i_sayw('merging faces')
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        selEx=Gui.Selection.getSelectionEx()
+        fcs=[];fcs_names=[];fcs_outW=[];fcs_indexes=[]
+        new_faces=[]
+        _test = None
+        o=None
 
-    if len (selEx)>0:
-        for selobj in selEx:
-            for i,f in enumerate(selobj.SubObjects):
-                if 'Face' in selobj.SubElementNames[i]:
-                    fcs.append(f)
-                    fcs_names.append(selobj.SubElementNames[i])
-                    fcs_indexes.append (re.search(r'\d+',selobj.SubElementNames[i]).group())
-                    fcs_outW.append(f.OuterWire)
-                    print(selobj.SubElementNames[i])
-                    
-        if len(fcs)>1:
-            sps=[]
-            for w in fcs_outW:
+        if len (selEx)>0:
+            for selobj in selEx:
+                for i,f in enumerate(selobj.SubObjects):
+                    if 'Face' in selobj.SubElementNames[i]:
+                        fcs.append(f)
+                        fcs_names.append(selobj.SubElementNames[i])
+                        fcs_indexes.append (re.search(r'\d+',selobj.SubElementNames[i]).group())
+                        fcs_outW.append(f.OuterWire)
+                        print(selobj.SubElementNames[i])
+
+            if len(fcs)>1:
+                sps=[]
+                for w in fcs_outW:
+                    s=w.copy()
+                    obj=App.ActiveDocument.addObject('Part::Feature', "Shape")
+                    #Part.show(s)
+                    obj.Shape=s
+                    sps.append(obj)
+
+                wf=doc.addObject("Part::MultiFuse","Wfuse")
+                #wf=doc.ActiveObject
+                obj.Shapes = sps
+                wc=doc.addObject("Part::MultiCommon","Wcommon")
+                #wc=doc.ActiveObject
+                wc.Shapes = sps
+                wct=doc.addObject("Part::Cut","Wcut")
+                #wct=doc.ActiveObject
+                wct.Base = wf
+                wct.Tool = wc
+                doc.recompute()
+                i_say('outer wire created')
+
+                if not invert:
+                    try:
+                        print("try to create a Face w/ OpenSCAD2Dgeom")
+                        cf = OpenSCAD2Dgeom.edgestofaces((wct.Shape.Edges))
+                    except:
+                        print("OpenSCAD2Dgeom failed\ntry to makeFilledFace")
+                        cf=Part.makeFilledFace(Part.__sortEdges__(wct.Shape.Edges))
+                else:
+                    try:
+                        print("try to makeFilledFace")
+                        cf=Part.makeFilledFace(Part.__sortEdges__(wct.Shape.Edges))
+                    except:
+                        print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
+                        cf = OpenSCAD2Dgeom.edgestofaces((wct.Shape.Edges))
+
+                w = cf.Faces[0].OuterWire
+                removesubtree([wct])
+                if not invert:
+                    try:
+                        print("try to create a Face w/ OpenSCAD2Dgeom")
+                        cf2 = OpenSCAD2Dgeom.edgestofaces((w.Edges))
+                    except:
+                        print("OpenSCAD2Dgeom failed\ntry to makeFilledFace")
+                        cf2=Part.makeFilledFace(Part.__sortEdges__(w.Edges))
+                else:
+                    try:
+                        print("try to makeFilledFace")
+                        cf2=Part.makeFilledFace(Part.__sortEdges__(w.Edges))
+                    except:
+                        print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
+                        cf2 = OpenSCAD2Dgeom.edgestofaces((w.Edges))
+
+                Part.show(cf2)
+                new_faces.append(doc.ActiveObject)
+            elif len(fcs)==1:
+                w = fcs[0].OuterWire
                 s=w.copy()
-                obj=App.ActiveDocument.addObject('Part::Feature', "Shape")
-                #Part.show(s)
-                obj.Shape=s
-                sps.append(obj)
-            
-            wf=doc.addObject("Part::MultiFuse","Wfuse")
-            #wf=doc.ActiveObject
-            obj.Shapes = sps
-            wc=doc.addObject("Part::MultiCommon","Wcommon")
-            #wc=doc.ActiveObject
-            wc.Shapes = sps
-            wct=doc.addObject("Part::Cut","Wcut")
-            #wct=doc.ActiveObject
-            wct.Base = wf
-            wct.Tool = wc
-            doc.recompute()
-            i_say('outer wire created')
-     
-            if not invert:
-                try:
-                    print("try to create a Face w/ OpenSCAD2Dgeom")
-                    cf = OpenSCAD2Dgeom.edgestofaces((wct.Shape.Edges))
-                except:
-                    print("OpenSCAD2Dgeom failed\ntry to makeFilledFace")
-                    cf=Part.makeFilledFace(Part.__sortEdges__(wct.Shape.Edges))
+                sw=App.ActiveDocument.addObject('Part::Feature', "Shape")
+                sw.Shape=s
+                #sw=(doc.ActiveObject)
+                o=doc.addObject("Part::Face", "Face")
+                o.Sources = (sw, )
+                doc.recompute()
+                #o=doc.ActiveObject
+                newObj=doc.addObject('Part::Feature','face')
+                newObj.Shape=o.Shape
+                new_faces.append(newObj)
+                removesubtree([o])
+
             else:
-                try:
-                    print("try to makeFilledFace")
-                    cf=Part.makeFilledFace(Part.__sortEdges__(wct.Shape.Edges))
-                except:
-                    print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
-                    cf = OpenSCAD2Dgeom.edgestofaces((wct.Shape.Edges))
-
-            w = cf.Faces[0].OuterWire
-            removesubtree([wct])
-            if not invert:
-                try:
-                    print("try to create a Face w/ OpenSCAD2Dgeom")
-                    cf2 = OpenSCAD2Dgeom.edgestofaces((w.Edges))
-                except:
-                    print("OpenSCAD2Dgeom failed\ntry to makeFilledFace")
-                    cf2=Part.makeFilledFace(Part.__sortEdges__(w.Edges))
-            else:
-                try:
-                    print("try to makeFilledFace")
-                    cf2=Part.makeFilledFace(Part.__sortEdges__(w.Edges))
-                except:
-                    print("makeFilledFace failed\ntry to create a Face w/ OpenSCAD2Dgeom")
-                    cf2 = OpenSCAD2Dgeom.edgestofaces((w.Edges))
-
-            Part.show(cf2)
-            new_faces.append(doc.ActiveObject)
-        elif len(fcs)==1:
-            w = fcs[0].OuterWire
-            s=w.copy()
-            sw=App.ActiveDocument.addObject('Part::Feature', "Shape")
-            sw.Shape=s
-            #sw=(doc.ActiveObject)
-            o=doc.addObject("Part::Face", "Face").Sources = (sw, )
+                print('Error')
+            doc.ActiveObject.Label = "Face"       
             doc.recompute()
-            #o=doc.ActiveObject
-            newObj=doc.addObject('Part::Feature','face')
-            newObj.Shape=o.Shape
-            new_faces.append(newObj)
-            removesubtree([o])
-
-        else:
-            print('Error')
-        doc.ActiveObject.Label = "Face"       
-        doc.recompute()
-        if len(selEx) == 1:
-            myshape=selEx[0].Object
-            i = 0
-            faces = []
-            for f in myshape.Shape.Faces:
-                i+=1
-                idx_found = False
-                for j in fcs_indexes:
-                    if int(j) == i:
-                        idx_found = True
-                        print('index found '+str(j))
-                if not idx_found:
-                    faces.append(f)
-            try:
-                _test =  Part.Shell(faces)
-                if _test.isNull():
+            if len(selEx) == 1:
+                myshape=selEx[0].Object
+                i = 0
+                faces = []
+                for f in myshape.Shape.Faces:
+                    i+=1
+                    idx_found = False
+                    for j in fcs_indexes:
+                        if int(j) == i:
+                            idx_found = True
+                            print('index found '+str(j))
+                    if not idx_found:
+                        faces.append(f)
+                try:
+                    _test =  Part.Shell(faces)
+                    if _test.isNull():
+                        App.Console.PrintWarning('Failed to create shell\n')
+                except:
                     App.Console.PrintWarning('Failed to create shell\n')
-            except:
-                App.Console.PrintWarning('Failed to create shell\n')
-                if RHDockWidget.ui.checkBox_keep_faces.isChecked():
-                    for f in faces:
-                        newObj=App.ActiveDocument.addObject('Part::Feature', "Face")
-                        newObj.Shape=f
-                        newObj.Label="face"
-                App.ActiveDocument.recompute()
-                return
+                    if RHDockWidget.ui.checkBox_keep_faces.isChecked():
+                        for f in faces:
+                            newObj=App.ActiveDocument.addObject('Part::Feature', "Face")
+                            newObj.Shape=f
+                            newObj.Label="face"
+                    App.ActiveDocument.recompute()
+                    return
 
-            if RHDockWidget.ui.checkBox_Refine.isChecked():
-                try:
-                    _test.removeSplitter()
-                except:
-                    print ('not refined')
-            if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
-            _test=Part.Solid(_test)
-            if _test.isNull(): raise RuntimeError('Failed to create solid')
-            if RHDockWidget.ui.checkBox_Refine.isChecked():
-                try:
-                    _test.removeSplitter()
-                except:
-                    print ('not refined')
-            newObj=None
-            if RHDockWidget.ui.checkBox_Refine.isChecked():
-                newObj=doc.addObject('Part::Feature','SolidRefined')
-                newObj.Shape=_test.removeSplitter()
-            else:
-                newObj=doc.addObject('Part::Feature','Solid')
-                newObj.Shape=_test
-            mysolidr = newObj
-            original_label = myshape.Label
-            docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
-            docG.ActiveObject.LineColor=docG.getObject(myshape.Name).LineColor
-            docG.ActiveObject.PointColor=docG.getObject(myshape.Name).PointColor
-            docG.ActiveObject.DiffuseColor=docG.getObject(myshape.Name).DiffuseColor
-            docG.ActiveObject.Transparency=docG.getObject(myshape.Name).Transparency            
-            if RHDockWidget.ui.checkBox_keep_original.isChecked():
-                docG.getObject(myshape.Name).Visibility=False
-            else:
-                doc.removeObject(myshape.Name)
-            if RHDockWidget.ui.checkBox_Refine.isChecked():
-                mysolidr.Label = original_label # + "_refined"
-            Gui.Selection.addSelection(mysolidr)
-            for fn in new_faces:
-                Gui.Selection.addSelection(fn)
-        Gui.Selection.removeSelection(myshape)
-        merge_faces_from_selected_objects_RH(myshape)
-    App.ActiveDocument.commitTransaction() #undo reg.
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    try:
+                        _test.removeSplitter()
+                    except:
+                        print ('not refined')
+                if _test.ShapeType != 'Shell': raise RuntimeError('Part object is not a shell')
+                _test=Part.Solid(_test)
+                if _test.isNull(): raise RuntimeError('Failed to create solid')
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    try:
+                        _test.removeSplitter()
+                    except:
+                        print ('not refined')
+                newObj=None
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    newObj=doc.addObject('Part::Feature','SolidRefined')
+                    newObj.Shape=_test.removeSplitter()
+                else:
+                    newObj=doc.addObject('Part::Feature','Solid')
+                    newObj.Shape=_test
+                mysolidr = newObj
+                original_label = myshape.Label
+                docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
+                docG.ActiveObject.LineColor=docG.getObject(myshape.Name).LineColor
+                docG.ActiveObject.PointColor=docG.getObject(myshape.Name).PointColor
+                docG.ActiveObject.DiffuseColor=docG.getObject(myshape.Name).DiffuseColor
+                docG.ActiveObject.Transparency=docG.getObject(myshape.Name).Transparency            
+                if RHDockWidget.ui.checkBox_keep_original.isChecked():
+                    docG.getObject(myshape.Name).Visibility=False
+                else:
+                    doc.removeObject(myshape.Name)
+                if RHDockWidget.ui.checkBox_Refine.isChecked():
+                    mysolidr.Label = original_label # + "_refined"
+                Gui.Selection.addSelection(mysolidr)
+                for fn in new_faces:
+                    Gui.Selection.addSelection(fn)
+            Gui.Selection.removeSelection(myshape)
+            merge_faces_from_selected_objects_RH(myshape)
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'cleaningFaces_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def makeEdge_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","makeEdge_RH"))
-    global force_recompute
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    verts = []; verts_names = []
-    selEx=Gui.Selection.getSelectionEx()
-    verts = []
-    if len (selEx):
-        for selV in selEx:
-            for i,v in enumerate(selV.SubObjects):
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","makeEdge_RH"))
+        global force_recompute
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        verts = []; verts_names = []
+        selEx=Gui.Selection.getSelectionEx()
+        verts = []
+        if len (selEx):
+            for selV in selEx:
+                for i,v in enumerate(selV.SubObjects):
 
-                if 'Vertex' in selV.SubElementNames[i]:
-                    verts.append(v)
-                    verts_names.append(selV.SubElementNames[i])
-                    print(selV.SubElementNames[i])
-    if len(verts) == 2:
-        try:
-            i_say("try to create an Edge w/ makeLine")
-            ce = Part.makeLine(verts[0].Point, verts[1].Point)
-            Part.show(ce)
-            del ce
-            doc.ActiveObject.Label = "Edge"
-        except:
-            i_sayerr("failed to create a Line")
-    else:
-        i_sayerr("select only 2 Vertexes")
-    for ob in App.ActiveDocument.Objects:
-        Gui.Selection.removeSelection(ob)
-    App.ActiveDocument.commitTransaction() #undo reg.
+                    if 'Vertex' in selV.SubElementNames[i]:
+                        verts.append(v)
+                        verts_names.append(selV.SubElementNames[i])
+                        print(selV.SubElementNames[i])
+        if len(verts) == 2:
+            try:
+                i_say("try to create an Edge w/ makeLine")
+                ce = Part.makeLine(verts[0].Point, verts[1].Point)
+                Part.show(ce)
+                del ce
+                doc.ActiveObject.Label = "Edge"
+            except:
+                i_sayerr("failed to create a Line")
+        else:
+            i_sayerr("select only 2 Vertexes")
+        for ob in App.ActiveDocument.Objects:
+            Gui.Selection.removeSelection(ob)
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'makeEdge_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def addEdges_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","addEdges_RH"))
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    global force_recompute
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","addEdges_RH"))
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
+        global force_recompute
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
 
-    ae_edges = rh_edges;ae_edges_names = rh_edges_names
-    selEx=Gui.Selection.getSelectionEx()
-    if len (selEx):
-        for selEdge in selEx:
-            for i,e in enumerate(selEdge.SubObjects):
-                if 'Edge' in selEdge.SubElementNames[i]:
-                    ae_edges.append(e)
-                    ae_edges_names.append(selEdge.SubElementNames[i])
-                    print(selEdge.SubElementNames[i])
-    if len(ae_edges) > 0:
+        ae_edges = rh_edges;ae_edges_names = rh_edges_names
+        selEx=Gui.Selection.getSelectionEx()
+        if len (selEx):
+            for selEdge in selEx:
+                for i,e in enumerate(selEdge.SubObjects):
+                    if 'Edge' in selEdge.SubElementNames[i]:
+                        ae_edges.append(e)
+                        ae_edges_names.append(selEdge.SubElementNames[i])
+                        print(selEdge.SubElementNames[i])
+        if len(ae_edges) > 0:
 
-        if not invert:
-            try:
-                print("try to create an Edge w/ OpenSCAD2Dgeom")
-                ce = Part.Wire(OpenSCAD2Dgeom.edgestowires(ae_edges))
+            if not invert:
+                try:
+                    print("try to create an Edge w/ OpenSCAD2Dgeom")
+                    ce = Part.Wire(OpenSCAD2Dgeom.edgestowires(ae_edges))
 
-            except:
-                print("OpenSCAD2Dgeom failed\ntry to makeWire")
-                ce=Part.Wire(Part.__sortEdges__(ae_edges))
+                except:
+                    print("OpenSCAD2Dgeom failed\ntry to makeWire")
+                    ce=Part.Wire(Part.__sortEdges__(ae_edges))
 
-        else:
-            try:
-                print("try to makeWire")
-                ce=Part.Wire(Part.__sortEdges__(ae_edges))
-            except:
-                print("makeWire failed\ntry to create an Edge w/ OpenSCAD2Dgeom")
-                ce = OpenSCAD2Dgeom.edgestofaces(ae_edges)
-        #created_faces.append(cf)
-        Part.show(ce)
-        doc.ActiveObject.Label = "Edge"
-        if len(rh_edges) > 0:
-            clear_all_RH()
-    App.ActiveDocument.commitTransaction() #undo reg.
+            else:
+                try:
+                    print("try to makeWire")
+                    ce=Part.Wire(Part.__sortEdges__(ae_edges))
+                except:
+                    print("makeWire failed\ntry to create an Edge w/ OpenSCAD2Dgeom")
+                    ce = OpenSCAD2Dgeom.edgestofaces(ae_edges)
+            #created_faces.append(cf)
+            Part.show(ce)
+            doc.ActiveObject.Label = "Edge"
+            if len(rh_edges) > 0:
+                clear_all_RH()
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+        App.Console.PrintError("'addEdges_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 def showEdges_RH():
     global rh_edges, rh_faces, rh_obj
@@ -1307,137 +1453,174 @@ def showFaces_RH():
 ##
 
 def PartDefeaturing_RH():
-    #pass
-    global rh_edges, rh_faces, rh_obj
-    global rh_edges_names, rh_faces_names, rh_obj_name
-    global created_faces, rh_faces_indexes, rh_edges_to_connect
-    global force_recompute
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
+    try:
+        #pass
+        global rh_edges, rh_faces, rh_obj
+        global rh_edges_names, rh_faces_names, rh_obj_name
+        global created_faces, rh_faces_indexes, rh_edges_to_connect
+        global force_recompute
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
 
-    import Part, DefeaturingFeature
-    unique_obj = set(rh_obj)
-    unique_obj_count = len(unique_obj)
+        import Part, DefeaturingFeature
+        unique_obj = set(rh_obj)
+        unique_obj_count = len(unique_obj)
 
-    if unique_obj_count == 1 and len(rh_faces) >0: #ToDo manage multi objs faces selection
-        newobj=doc.addObject("Part::FeaturePython",'defeat')
-        DefeaturingFeature.DefeatShape(rh_faces_names,newobj,rh_obj[0])
-        DefeaturingFeature.ViewProviderTree(newobj.ViewObject)
-        newobj.Label='defeat_%s' % rh_obj[0].Label
-        rh_obj[0].ViewObject.hide()
-        App.ActiveDocument.recompute()
+        if unique_obj_count == 1 and len(rh_faces) >0: #ToDo manage multi objs faces selection
+            newobj=doc.addObject("Part::FeaturePython",'defeat')
+            DefeaturingFeature.DefeatShape(rh_faces_names,newobj,rh_obj[0])
+            DefeaturingFeature.ViewProviderTree(newobj.ViewObject)
+            newobj.Label='defeat_%s' % rh_obj[0].Label
+            rh_obj[0].ViewObject.hide()
+            App.ActiveDocument.recompute()
 
-    def GetResources(self):
-        return {'Pixmap'  : os.path.join(DefeaturingWB_icons_path,'DefeaturingParametric.svg'), 'MenuText': \
-                QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',\
-                'Defeat Shape Feature'), 'ToolTip': \
-                QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',\
-                'Create Defeat Shape Parametric Feature')}
-   
+        def GetResources(self):
+            return {'Pixmap'  : os.path.join(DefeaturingWB_icons_path,'DefeaturingParametric.svg'), 'MenuText': \
+                    QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',\
+                    'Defeat Shape Feature'), 'ToolTip': \
+                    QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',\
+                    'Create Defeat Shape Parametric Feature')}
+    except Exception as err:
+
+        App.Console.PrintError("'PartDefeaturing_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##
 
 def makeSolidExpSTEP_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","makeSolidExpSTEP_RH"))
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    if doc is not None:
-        fname = doc.FileName
-        if len(fname) == 0:
-            fname='untitled'
-        tempdir = tempfile.gettempdir() # get the current temporary directory
-        tempfilepath = os.path.join(tempdir,fname + u'.stp')
-        sel=Gui.Selection.getSelection()
-        if len (sel) == 1:
-            __objs__=[]
-            __objs__.append(sel[0])
-            import ImportGui
-            ImportGui.export(__objs__,tempfilepath)
-            del __objs__
-            docG.getObject(sel[0].Name).Visibility = False
-            ImportGui.insert(tempfilepath,doc.Name)
-            Gui.SendMsgToActiveView("ViewFit")
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","makeSolidExpSTEP_RH"))
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        if doc is not None:
+            fname = doc.FileName
+            if len(fname) == 0:
+                fname='untitled'
+            tempdir = tempfile.gettempdir() # get the current temporary directory
+            tempfilepath = os.path.join(tempdir,fname + u'.stp')
+            sel=Gui.Selection.getSelection()
+            if len (sel) == 1:
+                __objs__=[]
+                __objs__.append(sel[0])
+                import ImportGui
+                ImportGui.export(__objs__,tempfilepath)
+                del __objs__
+                docG.getObject(sel[0].Name).Visibility = False
+                ImportGui.insert(tempfilepath,doc.Name)
+                Gui.SendMsgToActiveView("ViewFit")
+            else:
+                i_sayerr('select only one object')
         else:
             i_sayerr('select only one object')
-    else:
-        i_sayerr('select only one object')
-    App.ActiveDocument.commitTransaction() #undo reg.
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+
+        App.Console.PrintError("'makeSolidExpSTEP_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
 ##    
 
 def shape_Connect_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","shape_Connect_RH"))
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    sel=Gui.Selection.getSelection()
-    if len (sel) == 1:
-        import PartGui
-        from PartGui import BOPTools
-        j = BOPTools.JoinFeatures.makeConnect(name = 'Connect')
-        j.Objects = [sel[0]]
-        j.Proxy.execute(j)
-        j.purgeTouched()
-        connected_obj = doc.ActiveObject
-        connected_objG = docG.ActiveObject
-        for obj in j.ViewObject.Proxy.claimChildren():
-            obj.ViewObject.hide()
-            connected_objG.ShapeColor=docG.getObject(obj.Name).ShapeColor
-            connected_objG.LineColor=docG.getObject(obj.Name).LineColor
-            connected_objG.PointColor=docG.getObject(obj.Name).PointColor
-            connected_objG.DiffuseColor=docG.getObject(obj.Name).DiffuseColor
-            connected_objG.Transparency=docG.getObject(obj.Name).Transparency
-    else:
-        i_sayerr('select only one object')
-    App.ActiveDocument.commitTransaction() #undo reg.
-    
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","shape_Connect_RH"))
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        sel=Gui.Selection.getSelection()
+        if len (sel) == 1:
+            import PartGui
+            from PartGui import BOPTools
+            j = BOPTools.JoinFeatures.makeConnect(name = 'Connect')
+            j.Objects = [sel[0]]
+            j.Proxy.execute(j)
+            j.purgeTouched()
+            connected_obj = doc.ActiveObject
+            connected_objG = docG.ActiveObject
+            for obj in j.ViewObject.Proxy.claimChildren():
+                obj.ViewObject.hide()
+                connected_objG.ShapeColor=docG.getObject(obj.Name).ShapeColor
+                connected_objG.LineColor=docG.getObject(obj.Name).LineColor
+                connected_objG.PointColor=docG.getObject(obj.Name).PointColor
+                connected_objG.DiffuseColor=docG.getObject(obj.Name).DiffuseColor
+                connected_objG.Transparency=docG.getObject(obj.Name).Transparency
+        else:
+            i_sayerr('select only one object')
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+
+        App.Console.PrintError("'shape_Connect_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)    
 ##    
 def simplecopy_RH():
-    App.ActiveDocument.openTransaction(translate("Design456","simplecopy_RH"))
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    sel=Gui.Selection.getSelection()
-    if len (sel):
-        for o in sel:
-            if hasattr(o,"Shape"):
-                doc.addObject('Part::Feature','Copy').Shape=o.Shape #.removeSplitter()
-                doc.ActiveObject.Label=o.Label
-                docG.getObject(o.Name).hide()                
-                docG.ActiveObject.ShapeColor=docG.getObject(o.Name).ShapeColor
-                docG.ActiveObject.LineColor=docG.getObject(o.Name).LineColor
-                docG.ActiveObject.PointColor=docG.getObject(o.Name).PointColor
-                docG.ActiveObject.DiffuseColor=docG.getObject(o.Name).DiffuseColor
-                docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
-                doc.recompute()
-    else:
-        i_sayerr('select object(s) with a Shape')
-    App.ActiveDocument.commitTransaction() #undo reg.
+    try:
+        App.ActiveDocument.openTransaction(translate("Design456","simplecopy_RH"))
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        sel=Gui.Selection.getSelection()
+        if len (sel):
+            for o in sel:
+                if hasattr(o,"Shape"):
+                    doc.addObject('Part::Feature','Copy').Shape=o.Shape #.removeSplitter()
+                    doc.ActiveObject.Label=o.Label
+                    docG.getObject(o.Name).hide()                
+                    docG.ActiveObject.ShapeColor=docG.getObject(o.Name).ShapeColor
+                    docG.ActiveObject.LineColor=docG.getObject(o.Name).LineColor
+                    docG.ActiveObject.PointColor=docG.getObject(o.Name).PointColor
+                    docG.ActiveObject.DiffuseColor=docG.getObject(o.Name).DiffuseColor
+                    docG.ActiveObject.Transparency=docG.getObject(o.Name).Transparency
+                    doc.recompute()
+        else:
+            i_sayerr('select object(s) with a Shape')
+        App.ActiveDocument.commitTransaction() #undo reg.
+    except Exception as err:
+
+        App.Console.PrintError("'simplecopy_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)    
 ##
 def loop_edges_RH():
-    doc=App.ActiveDocument
-    docG = Gui.ActiveDocument
-    sl = Gui.Selection.getSelection()
-    if len (sl)>0:
-        sel = Gui.Selection.getSelectionEx()[0]
-        obj = sel.Object
-        edge1 = sel.SubObjects[0]
-        if 'Face' in sel.SubElementNames[0]:
-            loop = horizontalFaceLoop(sel.Object, sel.SubObjects[0], sel.SubElementNames)
-            if loop:
-                Gui.Selection.clearSelection()
-                Gui.Selection.addSelection(sel.Object, loop)
-            loopwire = []
-        elif len(sel.SubObjects) == 1:
-            loopwire = horizontalEdgeLoop(obj, edge1)
-        else:
-            edge2 = sel.SubObjects[1]
-            loopwire = loopdetect(obj, edge1, edge2)
-    
-        if loopwire:
-            Gui.Selection.clearSelection()
-            elist = obj.Shape.Edges
-            for e in elist:
-                for i in loopwire.Edges:
-                    if e.hashCode() == i.hashCode():
-                        Gui.Selection.addSelection(obj, "Edge"+str(elist.index(e)+1))
+    try:
+        doc=App.ActiveDocument
+        docG = Gui.ActiveDocument
+        sl = Gui.Selection.getSelection()
+        if len (sl)>0:
+            sel = Gui.Selection.getSelectionEx()[0]
+            obj = sel.Object
+            edge1 = sel.SubObjects[0]
+            if 'Face' in sel.SubElementNames[0]:
+                loop = horizontalFaceLoop(sel.Object, sel.SubObjects[0], sel.SubElementNames)
+                if loop:
+                    Gui.Selection.clearSelection()
+                    Gui.Selection.addSelection(sel.Object, loop)
+                loopwire = []
+            elif len(sel.SubObjects) == 1:
+                loopwire = horizontalEdgeLoop(obj, edge1)
+            else:
+                edge2 = sel.SubObjects[1]
+                loopwire = loopdetect(obj, edge1, edge2)
 
+            if loopwire:
+                Gui.Selection.clearSelection()
+                elist = obj.Shape.Edges
+                for e in elist:
+                    for i in loopwire.Edges:
+                        if e.hashCode() == i.hashCode():
+                            Gui.Selection.addSelection(obj, "Edge"+str(elist.index(e)+1))
+    except Exception as err:
+
+        App.Console.PrintError("'loop_edges_RH' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno) 
 
 #import the image data. /Mariwan
 import DefeaturingWB.image_file
