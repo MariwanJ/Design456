@@ -54,7 +54,9 @@ from PySide import QtCore, QtGui
 import tempfile
 import Design456Init
 import base64
+import DefeaturingWB.DefeaturingCMD 
 from DefeaturingWB.image_file import *
+from draftutils.translate import translate  # for translation
 try:
     from PathScripts.PathUtils import horizontalEdgeLoop
     from PathScripts.PathUtils import horizontalFaceLoop
@@ -1057,7 +1059,6 @@ def cleaningFaces_RH():
     if len (selEx)>0:
         for selobj in selEx:
             for i,f in enumerate(selobj.SubObjects):
-
                 if 'Face' in selobj.SubElementNames[i]:
                     fcs.append(f)
                     fcs_names.append(selobj.SubElementNames[i])
@@ -1068,21 +1069,25 @@ def cleaningFaces_RH():
         if len(fcs)>1:
             sps=[]
             for w in fcs_outW:
-                s=w.copy();Part.show(s);sps.append(doc.ActiveObject)
-            doc.addObject("Part::MultiFuse","Wfuse")
-            wf=doc.ActiveObject
-            wf.Shapes = sps
-            doc.addObject("Part::MultiCommon","Wcommon")
-            wc=doc.ActiveObject
+                s=w.copy()
+                obj=App.ActiveDocument.addObject('Part::Feature', "Shape")
+                #Part.show(s)
+                obj.Shape=s
+                sps.append(obj)
+            
+            wf=doc.addObject("Part::MultiFuse","Wfuse")
+            #wf=doc.ActiveObject
+            obj.Shapes = sps
+            wc=doc.addObject("Part::MultiCommon","Wcommon")
+            #wc=doc.ActiveObject
             wc.Shapes = sps
-            doc.addObject("Part::Cut","Wcut")
-            wct=doc.ActiveObject
+            wct=doc.addObject("Part::Cut","Wcut")
+            #wct=doc.ActiveObject
             wct.Base = wf
             wct.Tool = wc
             doc.recompute()
             i_say('outer wire created')
      
-
             if not invert:
                 try:
                     print("try to create a Face w/ OpenSCAD2Dgeom")
@@ -1119,12 +1124,16 @@ def cleaningFaces_RH():
             new_faces.append(doc.ActiveObject)
         elif len(fcs)==1:
             w = fcs[0].OuterWire
-            s=w.copy();Part.show(s);sw=(doc.ActiveObject)
-            doc.addObject("Part::Face", "Face").Sources = (sw, )
+            s=w.copy()
+            sw=App.ActiveDocument.addObject('Part::Feature', "Shape")
+            sw.Shape=s
+            #sw=(doc.ActiveObject)
+            o=doc.addObject("Part::Face", "Face").Sources = (sw, )
             doc.recompute()
-            o=doc.ActiveObject
-            doc.addObject('Part::Feature','face').Shape=o.Shape
-            new_faces.append(doc.ActiveObject)
+            #o=doc.ActiveObject
+            newObj=doc.addObject('Part::Feature','face')
+            newObj.Shape=o.Shape
+            new_faces.append(newObj)
             removesubtree([o])
 
         else:
@@ -1152,8 +1161,10 @@ def cleaningFaces_RH():
                 App.Console.PrintWarning('Failed to create shell\n')
                 if RHDockWidget.ui.checkBox_keep_faces.isChecked():
                     for f in faces:
-                        Part.show(f)
-                        doc.ActiveObject.Label="face"
+                        newObj=App.ActiveDocument.addObject('Part::Feature', "Face")
+                        newObj.Shape=f
+                        newObj.Label="face"
+                App.ActiveDocument.recompute()
                 return
 
             if RHDockWidget.ui.checkBox_Refine.isChecked():
@@ -1169,11 +1180,14 @@ def cleaningFaces_RH():
                     _test.removeSplitter()
                 except:
                     print ('not refined')
+            newObj=None
             if RHDockWidget.ui.checkBox_Refine.isChecked():
-                doc.addObject('Part::Feature','SolidRefined').Shape=_test.removeSplitter()
+                newObj=doc.addObject('Part::Feature','SolidRefined')
+                newObj.Shape=_test.removeSplitter()
             else:
-                doc.addObject('Part::Feature','Solid').Shape=_test
-            mysolidr = doc.ActiveObject
+                newObj=doc.addObject('Part::Feature','Solid')
+                newObj.Shape=_test
+            mysolidr = newObj
             original_label = myshape.Label
             docG.ActiveObject.ShapeColor=docG.getObject(myshape.Name).ShapeColor
             docG.ActiveObject.LineColor=docG.getObject(myshape.Name).LineColor
@@ -1397,7 +1411,6 @@ def simplecopy_RH():
     App.ActiveDocument.commitTransaction() #undo reg.
 ##
 def loop_edges_RH():
-    import DefeaturingCMD
     doc=App.ActiveDocument
     docG = Gui.ActiveDocument
     sl = Gui.Selection.getSelection()
