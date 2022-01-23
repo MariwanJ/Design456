@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-01-20 10:45:17'
+__updated__ = '2022-01-23 12:56:35'
 
 class Design456_Extrude:
     
@@ -50,7 +50,7 @@ class Design456_Extrude:
                 errMessage = "Select an object to use Extrude Face"
                 faced.errorDialog(errMessage)
                 return
-            lengthForward = QtGui.QInputDialog.getDouble(
+            lengthForward =- QtGui.QInputDialog.getDouble(
                 None, "Length of Extrusion", "Input:", 0, -10000.0, 10000.0, 2)[0]
             if(lengthForward ==0):
                 return  # nothing to do here
@@ -84,6 +84,16 @@ class Design456_Extrude:
             f.Symmetric = False
             f.TaperAngle = 0.0
             f.TaperAngleRev = 0.0
+            yL = newobj.Shape.Faces[0].CenterOfMass
+            uv = newobj.Shape.Faces[0].Surface.parameter(yL)
+            nv = newobj.Shape.Faces[0].normalAt(uv[0], uv[1])
+            direction = yL.sub(nv + yL)
+            direction= App.Vector(round(direction.x,2),round(direction.y,2),round(direction.z,2) )
+            print(direction,"direction" )
+            r = App.Rotation(App.Vector(0, 0, 0), direction)
+            if (abs(f.Dir.x) != 1 or abs(f.Dir.y) != 1 or abs(f.Dir.z) != 1):
+                f.DirMode = "Custom"
+            f.Dir=direction
             App.ActiveDocument.recompute()
             newPart_ = App.ActiveDocument.addObject(
                 'Part::Feature', f.Name+'N')
@@ -142,8 +152,9 @@ class Design456_Extrude:
                 f.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
                 f.DirLink = None  # Above statement != always correct. Some faces require 'custom'
 
+                
                 # Extrude must get a negative number ???
-                f.LengthFwd = (QtGui.QInputDialog.getDouble(
+                f.LengthFwd =- (QtGui.QInputDialog.getDouble(
                     None, "Length of Extrusion", "Length:", 0, -10000.0, 10000.0, 2)[0])
                 while(f.LengthFwd == 0):
                     _sleep(.1)
@@ -154,7 +165,17 @@ class Design456_Extrude:
                 f.Symmetric = False
                 f.TaperAngle = 0.0
                 f.TaperAngleRev = 0.0
-                f.Dir = selection[0].Object.Shape.normalAt(0, 0)  # Normal line
+                # section direction
+                yL = m.Shape.Faces[0].CenterOfMass
+                uv = m.Shape.Faces[0].Surface.parameter(yL)
+                nv = m.Shape.Faces[0].normalAt(uv[0], uv[1])
+                direction = yL.sub(nv + yL)
+                direction= App.Vector(round(direction.x,2),round(direction.y,2),round(direction.z,2) )
+                f.Dir=direction
+                print(direction,"direction" )
+                r = App.Rotation(App.Vector(0, 0, 0), direction)
+
+                f.Dir = direction #selection[0].Object.Shape.normalAt(0, 0)  # Normal line
                 if (f.Dir.x != 1 or f.Dir.y != 1 or f.Dir.z != 1):
                     f.DirMode = "Custom"
                 # Make a simple copy of the object
