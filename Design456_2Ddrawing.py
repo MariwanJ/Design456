@@ -34,13 +34,14 @@ import Design456Init
 from pivy import coin
 import FACE_D as faced
 import math
+from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-22 19:28:23'
+__updated__ = '2022-01-23 19:09:10'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -725,59 +726,66 @@ class Design456_SimplifyEdges:
 
 Gui.addCommand('Design456_SimplifyEdges', Design456_SimplifyEdges())
 
-# Not sure if I should write this tool. Defeaturing has it:
-# TODO:FIXME:
-class Design456_SimplifyFace:
-    def Activated(self):
-        try:
-
-            s = Gui.Selection.getSelectionEx()
-            if len(s) > 1:
-                # TODO: FIXME: Should we accept more than one object?
-                errMessage = "Select edges from one object"
-                faced.errorDialog(errMessage)
-                return
-            sel = s[0]
-            
-
-        except Exception as err:
-            App.Console.PrintError("'Design456_SimplifyEdges' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
-    def GetResources(self):
-        import Design456Init
-        from PySide.QtCore import QT_TRANSLATE_NOOP
-        """Set icon, menu and tooltip."""
-        _tooltip = ("Simplify Edges")
-        return {'Pixmap':  Design456Init.ICON_PATH + 'SimplifyFace.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "SimplifyFace"),
-                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
-
-
-Gui.addCommand('Design456_SimplifyFace', Design456_SimplifyFace())
-
-
 
 class Design456_DivideCircleFace:
+
+    def findEdgeHavingCurve(self):
+        edges=self.selected.SubObjects[0].Edges
+        result=[]
+        for edg in edges:
+            if hasatt(edg, 'Curve'):
+                result.append(edg)
+        return result
+#circle = make_circle(radius, placement=None, face=None, 
+#                       startangle=None, endangle=None, 
+#                       support=None)
+    def recreateEdges(self,edges,dividedTo):
+        newObjs=[]
+        for edge in edges:
+            newObj = None
+            Radius = edg.Curve.Radius
+            center = edg.Curve.Center
+            firstP = math.degrees(edg.Curve.FirstParameter)
+            lastP = math.degrees(edge.Curve.LastParameter)
+            AnglePart = (lastP - firstP)/dividedTo 
+            for i in range(0,dividedTo):
+                initial = firstP+(i*AnglePart)
+                circle = _draft.make_circle(Radius,center,True,initial,initial+AnglePart)
+                line = _draft.makeLine(circle.Shape.Vertexes[0].Point,circle.Shape.Vertexes[1].Point)
+                # Convert it to a wire
+                Obj=_draft.upgrade([circle,line],True)
+                # Create face
+                Obj=_draft.upgrade(obj,True)
+                newObjs.append(obj)
+            
+
+
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
             if len(s) > 1:
                 # TODO: FIXME: Should we accept more than one object?
-                errMessage = "Select edges from one object"
+                errMessage = "Select one object"
                 faced.errorDialog(errMessage)
                 return
-            sel = s[0]
             
+            DivideBy =QtGui.QInputDialog.getInt(
+                None, "Divide by", "Input:", 0, 1, 50.0, 2)[0]
+            if(DivideBy <=1):
+                return  # nothing to do here
+            self.selected = s[0].Object
+            edgesToRecreate=self.findEdgeHavingCurve()
+            #We have the edges that needs to be divided
+            self.recreateEdges(edgesToRecreate,DivideBy)
+            App.ActiveDocument.removeObject(self.selected.Name)
+
         except Exception as err:
             App.Console.PrintError("'Design456_DivideCircleFace' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+
 
     def GetResources(self):
         import Design456Init
@@ -804,7 +812,7 @@ class Design456_2Ddrawing:
             "Design456_Star",
             "Design456_Paint",
             "Design456_Hole",
-
+            "Design456_DivideCircleFace",
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""

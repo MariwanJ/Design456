@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-01-23 12:56:35'
+__updated__ = '2022-01-23 18:45:18'
 
 class Design456_Extrude:
     
@@ -50,7 +50,7 @@ class Design456_Extrude:
                 errMessage = "Select an object to use Extrude Face"
                 faced.errorDialog(errMessage)
                 return
-            lengthForward =- QtGui.QInputDialog.getDouble(
+            lengthForward = QtGui.QInputDialog.getDouble(
                 None, "Length of Extrusion", "Input:", 0, -10000.0, 10000.0, 2)[0]
             if(lengthForward ==0):
                 return  # nothing to do here
@@ -154,7 +154,7 @@ class Design456_Extrude:
 
                 
                 # Extrude must get a negative number ???
-                f.LengthFwd =- (QtGui.QInputDialog.getDouble(
+                f.LengthFwd = (QtGui.QInputDialog.getDouble(
                     None, "Length of Extrusion", "Length:", 0, -10000.0, 10000.0, 2)[0])
                 while(f.LengthFwd == 0):
                     _sleep(.1)
