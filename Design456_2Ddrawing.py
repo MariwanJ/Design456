@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-23 19:09:10'
+__updated__ = '2022-01-24 19:33:25'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -754,16 +754,18 @@ class Design456_DivideCircleFace:
                     plc= self.selected.Object.Placement
                     circle = _draft.make_circle(Radius, plc,True,initial,initial+AnglePart)
                     App.ActiveDocument.recompute()
-                    line = _draft.makeLine(circle.Shape.Vertexes[0].Point,circle.Shape.Vertexes[1].Point)
+                    line1 = _draft.makeLine(circle.Shape.Vertexes[0].Point,center)
+                    line2 =_draft.makeLine(circle.Shape.Vertexes[1].Point,center)
                     App.ActiveDocument.recompute()
                     # Convert it to a wire
-                    Obj=_draft.upgrade([circle,line],True)
+                    Obj=_draft.upgrade([circle,line1,line2],True)
                     # Create face
-                    App.ActiveDocument.recompute()
                     Obj=_draft.upgrade(Obj[0],True)
                     App.ActiveDocument.recompute()
-                    newObjs.append(Obj)
-
+                    newObjs=newObjs+Obj[0]
+            tobj = _draft.upgrade(newObjs, True)
+            newObjs = tobj[0]
+            return newObjs
         except Exception as err:
             App.Console.PrintError("'Design456_DivideCircleFace' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -782,16 +784,17 @@ class Design456_DivideCircleFace:
                 faced.errorDialog(errMessage)
                 return
             
-            DivideBy =QtGui.QInputDialog.getInt(
-                None, "Divide by", "Input:", 0, 1, 50.0, 2)[0]
+            DivideBy = QtGui.QInputDialog.getInt(
+                None, "Divide by", "Input:", 0, 1, 50.0, 1)[0]
             if(DivideBy <=1):
                 return  # nothing to do here
             self.selected = s[0]
             edgesToRecreate=self.findEdgeHavingCurve()
             #We have the edges that needs to be divided
-            self.recreateEdges(edgesToRecreate,DivideBy)
+            newObjects=self.recreateEdges(edgesToRecreate,DivideBy)
             App.ActiveDocument.removeObject(self.selected.Object.Name)
-
+            return newObjects
+            
         except Exception as err:
             App.Console.PrintError("'Design456_DivideCircleFace' Failed. "
                                    "{err}\n".format(err=str(err)))
