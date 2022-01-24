@@ -760,7 +760,7 @@ class Design456_DivideCircleFace:
                     Obj=_draft.upgrade([circle,line],True)
                     # Create face
                     App.ActiveDocument.recompute()
-                    Obj=_draft.upgrade(Obj,True)
+                    Obj=_draft.upgrade(Obj[0],True)
                     App.ActiveDocument.recompute()
                     newObjs.append(Obj)
 
