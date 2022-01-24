@@ -740,29 +740,37 @@ class Design456_DivideCircleFace:
 #                       startangle=None, endangle=None, 
 #                       support=None)
     def recreateEdges(self,edges,dividedTo):
-        newObjs=[]
-        for edge in edges:
-            newObj = None
-            Radius = edge.Curve.Radius
-            center = edge.Curve.Center
-            firstP = math.degrees(edge.Curve.FirstParameter)
-            lastP = math.degrees(edge.Curve.LastParameter)
-            AnglePart = (lastP - firstP)/dividedTo 
-            for i in range(0,dividedTo-1):
-                initial = firstP+(i*AnglePart)
-                plc= self.selected.Object.Placement
-                circle = _draft.make_circle(Radius, plc,True,initial,initial+AnglePart)
-                App.ActiveDocument.recompute()
-                line = _draft.makeLine(circle.Shape.Vertexes[0].Point,circle.Shape.Vertexes[1].Point)
-                App.ActiveDocument.recompute()
-                # Convert it to a wire
-                Obj=_draft.upgrade([circle,line],True)
-                # Create face
-                App.ActiveDocument.recompute()
-                Obj=_draft.upgrade(Obj,True)
-                App.ActiveDocument.recompute()
-                newObjs.append(Obj)
-            
+        try:
+            newObjs=[]
+            for edge in edges:
+                newObj = None
+                Radius = edge.Curve.Radius
+                center = edge.Curve.Center
+                firstP = math.degrees(edge.Curve.FirstParameter)
+                lastP = math.degrees(edge.Curve.LastParameter)
+                AnglePart = (lastP - firstP)/dividedTo 
+                for i in range(0,dividedTo):
+                    initial = firstP+(i*AnglePart)
+                    plc= self.selected.Object.Placement
+                    circle = _draft.make_circle(Radius, plc,True,initial,initial+AnglePart)
+                    App.ActiveDocument.recompute()
+                    line = _draft.makeLine(circle.Shape.Vertexes[0].Point,circle.Shape.Vertexes[1].Point)
+                    App.ActiveDocument.recompute()
+                    # Convert it to a wire
+                    Obj=_draft.upgrade([circle,line],True)
+                    # Create face
+                    App.ActiveDocument.recompute()
+                    Obj=_draft.upgrade(Obj,True)
+                    App.ActiveDocument.recompute()
+                    newObjs.append(Obj)
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_DivideCircleFace' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+ 
 
 
     def Activated(self):
