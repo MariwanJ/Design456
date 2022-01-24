@@ -733,7 +733,7 @@ class Design456_DivideCircleFace:
         edges=self.selected.SubObjects[0].Edges
         result=[]
         for edg in edges:
-            if hasatt(edg, 'Curve'):
+            if hasattr(edg, 'Curve'):
                 result.append(edg)
         return result
 #circle = make_circle(radius, placement=None, face=None, 
@@ -743,20 +743,25 @@ class Design456_DivideCircleFace:
         newObjs=[]
         for edge in edges:
             newObj = None
-            Radius = edg.Curve.Radius
-            center = edg.Curve.Center
-            firstP = math.degrees(edg.Curve.FirstParameter)
+            Radius = edge.Curve.Radius
+            center = edge.Curve.Center
+            firstP = math.degrees(edge.Curve.FirstParameter)
             lastP = math.degrees(edge.Curve.LastParameter)
             AnglePart = (lastP - firstP)/dividedTo 
-            for i in range(0,dividedTo):
+            for i in range(0,dividedTo-1):
                 initial = firstP+(i*AnglePart)
-                circle = _draft.make_circle(Radius,center,True,initial,initial+AnglePart)
+                plc= self.selected.Object.Placement
+                circle = _draft.make_circle(Radius, plc,True,initial,initial+AnglePart)
+                App.ActiveDocument.recompute()
                 line = _draft.makeLine(circle.Shape.Vertexes[0].Point,circle.Shape.Vertexes[1].Point)
+                App.ActiveDocument.recompute()
                 # Convert it to a wire
                 Obj=_draft.upgrade([circle,line],True)
                 # Create face
-                Obj=_draft.upgrade(obj,True)
-                newObjs.append(obj)
+                App.ActiveDocument.recompute()
+                Obj=_draft.upgrade(Obj,True)
+                App.ActiveDocument.recompute()
+                newObjs.append(Obj)
             
 
 
@@ -773,11 +778,11 @@ class Design456_DivideCircleFace:
                 None, "Divide by", "Input:", 0, 1, 50.0, 2)[0]
             if(DivideBy <=1):
                 return  # nothing to do here
-            self.selected = s[0].Object
+            self.selected = s[0]
             edgesToRecreate=self.findEdgeHavingCurve()
             #We have the edges that needs to be divided
             self.recreateEdges(edgesToRecreate,DivideBy)
-            App.ActiveDocument.removeObject(self.selected.Name)
+            App.ActiveDocument.removeObject(self.selected.Object.Name)
 
         except Exception as err:
             App.Console.PrintError("'Design456_DivideCircleFace' Failed. "
