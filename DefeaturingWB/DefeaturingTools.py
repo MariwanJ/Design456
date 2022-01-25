@@ -932,7 +932,7 @@ def removeHoles_RH():
                     print ('not refined')    
             for f in created_faces:
                 new_faces = []
-                for nf in _.Faces:
+                for nf in _test.Faces:
                     new_faces.append(nf)
                 new_faces.append(f)
                 del _test
