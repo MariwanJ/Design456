@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-24 19:33:25'
+__updated__ = '2022-01-25 21:10:50'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -778,7 +778,7 @@ class Design456_DivideCircleFace:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
-            if len(s) > 1:
+            if len(s) > 1 or len(s)<1:
                 # TODO: FIXME: Should we accept more than one object?
                 errMessage = "Select one object"
                 faced.errorDialog(errMessage)
