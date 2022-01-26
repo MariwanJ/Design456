@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-25 21:10:50'
+__updated__ = '2022-01-26 21:16:54'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -473,8 +473,8 @@ class Star:
                     radius = obj.InnerRadius
                 else:
                     radius = obj.OuterRadius
-                x = _math.cos(alpha) * radius
-                y = _math.sin(alpha) * radius
+                x = math.cos(alpha) * radius
+                y = math.sin(alpha) * radius
                 self.points.append(App.Vector(x, y, 0.0))
                 if i == 0:
                     saveFirstPoint = App.Vector(x, y, 0.0)

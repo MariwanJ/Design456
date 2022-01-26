@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-01-25 22:11:09'
+__updated__ = '2022-01-26 21:13:33'
 
 
 class Design456_Extrude:
@@ -89,7 +89,6 @@ class Design456_Extrude:
                 errMessage = "Select a face to use Extrude"
                 faced.errorDialog(errMessage)
                 return
-            
             if len(self.selectedObj) == 1:
                 # It is only one object. But might have different faces
                 if (self.selectedObj[0].HasSubObjects):
@@ -109,39 +108,22 @@ class Design456_Extrude:
                 # We have multiple objects selected. Could be faces, 3D objects
                 # or mixed
                 result=[]
-                for obj in self.selectedObj:
-                    result.clear()
-                    if (obj.HasSubObjects):
-                        # Here it can be a face with multiple faces
-                            # Or a 3D object with multiple faces?
-                        for nobj in obj.SubObjects:
-                            if type(nobj) == Part.Face:
-                                result.append(nobj)
-                        if(len(AllObjects))>0:
-                            for obj in result:
-                                AllObjects.append(obj)
+                result.clear()
+                for i in range (0, len(self.selectedObj)):
+
+                    print(i)
+                    _obj = self.selectedObj[i]
+                    if (hasattr(_obj,"HasSubObjects")):
+                        if(_obj.HasSubObjects): 
+                            for nobj in _obj.SubObjects:
+                                if type(nobj) == Part.Face:
+                                    result.append(nobj)
                         else:
-                            AllObjects=result
-                    else:
-                        # Only One object that doesn't have subobjects
-                        if isinstance(obj.Object.Shape, Part.Face):
-                            # It is a face. i.e. the object itself is a face only
-                            if(len(AllObjects))>0:
-                                for t in obj:
-                                    AllObjects.append(t)
-                            else:
-                                AllObjects=t
-                        else:
-                            # It is a face of a 3D object
-                            result=self.ExtractFace(obj)
-                            if(len(AllObjects))>0:
-                                for t in result:
-                                    AllObjects.append(t)
-                            else:
-                                AllObjects=result
-                                
-            self.ExtrudeFace( AllObjects)
-            
+                            result.append(_obj)
+                print("OK")
+                print(result)
+                AllObjects=self.ExtractFace(result)                                
+            self.ExtrudeFace( AllObjects )
         except Exception as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "
                                    "{err}\n".format(err=str(err)))
