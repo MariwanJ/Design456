@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-01-26 21:45:11'
+__updated__ = '2022-01-26 22:07:35'
 
 
 class Design456_Extrude:
@@ -197,6 +197,5 @@ class Design456_Extrude:
             'MenuText': 'Extrude',
                         'ToolTip':  'Extrude'
         }
-
 
 Gui.addCommand('Design456_Extrude', Design456_Extrude())
