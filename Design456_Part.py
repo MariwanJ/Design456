@@ -35,7 +35,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-01-13 20:47:55'
+__updated__ = '2022-01-26 22:06:24'
 
 #import PartGui
 import BasicShapes.CommandShapes
@@ -514,11 +514,10 @@ class Design_ColorizeObject:
                 App.ActiveDocument.openTransaction(translate("Design456","Colorize"))
                 colors = []
                 for ii in range(len(selectedObj.Shape.Faces)):
-                    base = random.uniform(0.1, 0.5)  # Randomize even the lower limit 
+                    base =random.uniform(0.3, 0.7)  # Randomize even the lower limit 
                     colors.append((random.uniform(base, 1),
                                    random.uniform(base , 1), 
                                    random.uniform(base , 1), 0.0)) #red, green, blue, transparency
-        
                 selectedObj.ViewObject.DiffuseColor = colors 
                 App.ActiveDocument.commitTransaction() #undo reg.
             
