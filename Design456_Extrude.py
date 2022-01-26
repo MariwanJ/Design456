@@ -37,92 +37,37 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-01-24 18:25:28'
+__updated__ = '2022-01-26 21:13:33'
+
 
 class Design456_Extrude:
-    
-    def ExtractThenExtrude(self):
+
+    def ExtractFace(self, nTObj=None):
         try:
-
-            s = Gui.Selection.getSelectionEx()
-            if (len(s) < 1):
-                # An object must be selected
-                errMessage = "Select an object to use Extrude Face"
-                faced.errorDialog(errMessage)
-                return
-            lengthForward = -QtGui.QInputDialog.getDouble(
-                None, "Length of Extrusion", "Input:", 0, -10000.0, 10000.0, 2)[0]
-            if(lengthForward ==0):
-                return  # nothing to do here
-
-            objName = s[0].ObjectName
-            App.ActiveDocument.openTransaction(translate("Design456","Extrude a face"))
-            sh = s[0].Object.Shape.copy()
-            if hasattr(s[0].Object, "getGlobalPlacement"):
-                gpl = s[0].Object.getGlobalPlacement()
-                sh.Placement = gpl
-            name = s[0].SubElementNames[0]
-            fullname = objName+"_"+name  # Name of the face extracted
-            newobj = s[0].Document.addObject("Part::Feature", fullname)
-            newobj.Shape = sh.getElement(name)
-            selection = newobj  # The face extracted
-            activeSel = Gui.Selection.getSelection(App.ActiveDocument.Name)
-            Gui.Selection.removeSelection(activeSel[0])
-            # Select the face extracted before
-            Gui.Selection.addSelection(selection)
-            App.ActiveDocument.recompute()
-            m = App.ActiveDocument.getObject(fullname)
-            f = App.ActiveDocument.addObject(
-                'Part::Extrusion', 'ExtrudeFace')     # Add extrusion
-            f.Base = newobj             # App.ActiveDocument.getObject(fullname)
-            f.DirMode = "Normal"
-            f.DirLink = None
-            f.LengthFwd = lengthForward
-            f.LengthRev = 0.0
-            f.Solid = True
-            f.Reversed = False
-            f.Symmetric = False
-            f.TaperAngle = 0.0
-            f.TaperAngleRev = 0.0
-            yL = newobj.Shape.Faces[0].CenterOfMass
-            uv = newobj.Shape.Faces[0].Surface.parameter(yL)
-            nv = newobj.Shape.Faces[0].normalAt(uv[0], uv[1])
-            direction = yL.sub(nv + yL)
-            direction= App.Vector(round(direction.x,2),round(direction.y,2),round(direction.z,2) )
-            print(direction,"direction" )
-            r = App.Rotation(App.Vector(0, 0, 0), direction)
-            if (abs(f.Dir.x) != 1 or abs(f.Dir.y) != 1 or abs(f.Dir.z) != 1):
-                f.DirMode = "Custom"
-            f.Dir=direction
-            App.ActiveDocument.recompute()
-            newPart_ = App.ActiveDocument.addObject(
-                'Part::Feature', f.Name+'N')
-            newPart_.Shape = Part.getShape(
-                f, '', needSubElement=False, refine=False)
-            if newPart_.isValid() is False:
-                App.ActiveDocument.removeObject(newPart_.Name)
-                App.ActiveDocument.removeObject(f.Name)
-                # Shape != OK
-                errMessage = "Failed to extrude the Face"
-                faced.getInfo(m).errorDialog(errMessage)
+            newlistObj=[]
+            newObj=None
+            if nTObj is None:
+                fullname = "ExtractedFace"
+                newObj = App.ActiveDocument.addObject("Part::Feature", fullname)
+                newObj.Shape = self.selectedObj[0].SubObjects[0].copy()
+                App.ActiveDocument.recompute()
+                return [newobj]
             else:
-                # remove old objects
-                App.ActiveDocument.removeObject(f.Name)
-                App.ActiveDocument.removeObject(m.Name)
-                # This will not work for split objects as they are not two separate objects.2021-02-22
-                # Make the two objects merged
-                obj1 = App.ActiveDocument.getObject(s[0].ObjectName)
-                obj2 = newPart_
-                selections = Gui.Selection.getSelectionEx()
-                for i in selections:
-                    Gui.Selection.removeSelection(selections)
-                    Gui.Selection.addSelection(obj1)
-                    Gui.Selection.addSelection(obj2)
-                    Gui.runCommand('Design456_Part_Merge', 0)
-            App.ActiveDocument.commitTransaction() #undo reg.
-            App.ActiveDocument.recompute()
-
-            return
+                print(type(nTObj))
+                if type(nTObj) !=list and type(nTObj) !=tuple:
+                    TObj=[nTObj]
+                else:
+                    TObj=nTObj
+                xx=0
+                for obj in TObj:
+                    fullname = "Face"+str(xx)
+                    xx=xx+1
+                    newObj = App.ActiveDocument.addObject("Part::Feature", fullname)
+                    newObj.Shape = obj.copy()
+                    App.ActiveDocument.recompute()
+                    newlistObj.append(newObj)  # Extracted Face.
+                return newlistObj
+            
         except Exception as err:
             App.Console.PrintError("'ExtrudeFace' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -132,86 +77,125 @@ class Design456_Extrude:
 
     def Activated(self):
         try:
-            selection = Gui.Selection.getSelectionEx()
-            if (len(selection) < 1):
+            AllObjects = []
+            self.extrusionLength=-(QtGui.QInputDialog.getDouble(
+                None, "Extrusion Length", "Length:", 0, -10000.0, 10000.0, 2)[0])
+            if self.extrusionLength==0.0 :
+                return
+  
+            self.selectedObj = Gui.Selection.getSelectionEx()
+            if (len(self.selectedObj) < 1):
                 # An object must be selected
                 errMessage = "Select a face to use Extrude"
                 faced.errorDialog(errMessage)
                 return
-            if not isinstance(selection[0].Object.Shape, Part.Face):
-                self.ExtractThenExtrude()
+            if len(self.selectedObj) == 1:
+                # It is only one object. But might have different faces
+                if (self.selectedObj[0].HasSubObjects):
+                    # Here it can be a face with multiple faces
+                        # Or a 3D object with multiple faces?
+                        result = self.selectedObj[0].SubObjects
+                        AllObjects = self.ExtractFace(result)
+                else:
+                    # Only One object that doesn't have subobjects
+                    if isinstance(self.selectedObj[0].Object.Shape, Part.Face):
+                        # It is a face. i.e. the object itself is a face only
+                        AllObjects = [self.selectedObj[0]]
+                    else:
+                        # It is a face of a 3D object
+                        AllObjects = [self.ExtractFace()]
             else:
+                # We have multiple objects selected. Could be faces, 3D objects
+                # or mixed
+                result=[]
+                result.clear()
+                for i in range (0, len(self.selectedObj)):
+
+                    print(i)
+                    _obj = self.selectedObj[i]
+                    if (hasattr(_obj,"HasSubObjects")):
+                        if(_obj.HasSubObjects): 
+                            for nobj in _obj.SubObjects:
+                                if type(nobj) == Part.Face:
+                                    result.append(nobj)
+                        else:
+                            result.append(_obj)
+                print("OK")
+                print(result)
+                AllObjects=self.ExtractFace(result)                                
+            self.ExtrudeFace( AllObjects )
+        except Exception as err:
+            App.Console.PrintError("'Design456_Extrude' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb=sys.exc_info()
+            fname=os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def ExtrudeFace(self, allObjects):
+        try:
+            for obj in allObjects: 
                 App.ActiveDocument.openTransaction(
                     translate("Design456", "Extrude"))
-                m = selection[0].Object
-                f = App.ActiveDocument.addObject(
+                m=obj
+                f=App.ActiveDocument.addObject(
                     'Part::Extrusion', 'ExtrudeOriginal')
-                f.Base = m
+                # section direction
+                print( m , type(m) )
+                print(".....................................")
+                yL=m.Shape.Faces[0].CenterOfMass
+                uv=m.Shape.Faces[0].Surface.parameter(yL)
+                nv=m.Shape.Faces[0].normalAt(uv[0], uv[1])
+                direction=yL.sub(nv + yL)
+                direction=App.Vector(round(direction.x, 2), round(
+                    direction.y, 2), round(direction.z, 2))
+                f.Dir=direction
+                print(direction, "direction")
+                
+                f.Base=m
                 # F.DirMode causes too many failure. Some faces needs custom, other needs Normal.
                 # Difficult to know when you use each of them.
-                f.DirMode = "Normal"  # Don't use Custom as it leads to PROBLEM!
-                f.DirLink = None  # Above statement != always correct. Some faces require 'custom'
-
-                
-                # Extrude must get a negative number ???
-                f.LengthFwd = -(QtGui.QInputDialog.getDouble(
-                    None, "Length of Extrusion", "Length:", 0, -10000.0, 10000.0, 2)[0])
-                while(f.LengthFwd == 0):
-                    _sleep(.1)
-                    Gui.updateGui()
-                f.LengthRev = 0.0
-                f.Solid = True
-                f.Reversed = False
-                f.Symmetric = False
-                f.TaperAngle = 0.0
-                f.TaperAngleRev = 0.0
-                # section direction
-                yL = m.Shape.Faces[0].CenterOfMass
-                uv = m.Shape.Faces[0].Surface.parameter(yL)
-                nv = m.Shape.Faces[0].normalAt(uv[0], uv[1])
-                direction = yL.sub(nv + yL)
-                direction= App.Vector(round(direction.x,2),round(direction.y,2),round(direction.z,2) )
-                f.Dir=direction
-                print(direction,"direction" )
-                r = App.Rotation(App.Vector(0, 0, 0), direction)
-
-                f.Dir = direction #selection[0].Object.Shape.normalAt(0, 0)  # Normal line
                 if (f.Dir.x != 1 or f.Dir.y != 1 or f.Dir.z != 1):
-                    f.DirMode = "Custom"
+                    f.DirMode="Custom"
+                else:
+                    f.DirMode="Normal"  
+                f.DirLink=None  # Above statement != always correct. Some faces require 'custom'                
+                f.LengthFwd=self.extrusionLength
+                f.LengthRev=0.0
+                f.Solid=True
+                f.Reversed=False
+                f.Symmetric=False
+                f.TaperAngle=0.0
+                f.TaperAngleRev=0.0
+                r=App.Rotation(App.Vector(0, 0, 0), direction)
+                f.Dir=direction
+
                 # Make a simple copy of the object
                 App.ActiveDocument.recompute()
-                newShape = Part.getShape(f, '', needSubElement=False, refine=False)
-                newObj = App.ActiveDocument.addObject(
-                    'Part::Feature', 'Extrude').Shape = newShape
+                newShape=Part.getShape(
+                    f, '', needSubElement=False, refine=False)
+                newObj=App.ActiveDocument.addObject(
+                    'Part::Feature', 'Extrude').Shape=newShape
                 App.ActiveDocument.recompute()
                 # if something went wrong .. delete all new objects.
                 if newObj.isValid() is False:
                     App.ActiveDocument.removeObject(newObj.Name)
                     App.ActiveDocument.removeObject(f.Name)
                     # Shape != OK
-                    errMessage = "Failed to extrude the shape"
+                    errMessage="Failed to extrude the shape"
                     faced.getInfo(m).errorDialog(errMessage)
                 else:
-                    # Remove old objects
-                    # App.ActiveDocument.clearUndos()
                     App.ActiveDocument.recompute()
                     App.ActiveDocument.removeObject(f.Name)
                     App.ActiveDocument.removeObject(m.Name)
-                    return
-                App.ActiveDocument.commitTransaction()  # undo reg.
-                App.ActiveDocument.recompute()
-                
+            App.ActiveDocument.commitTransaction()  # undo reg.
+            App.ActiveDocument.recompute()
+
         except Exception as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            exc_type, exc_obj, exc_tb=sys.exc_info()
+            fname=os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
-        except Exception as err:
-            App.Console.PrintError("'Design456_Extrude_ViewFit' Failed. "
-                                   "{err}\n".format(err=str(err)))
-
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'Extrude.svg',
