@@ -140,7 +140,7 @@ class Design456_Extrude:
                             else:
                                 AllObjects=result
                                 
-                self.ExtrudeFace( AllObjects)
+            self.ExtrudeFace( AllObjects)
             
         except Exception as err:
             App.Console.PrintError("'Design456_Extrude' Failed. "
