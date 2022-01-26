@@ -138,7 +138,7 @@ class Design456_Extrude:
                                 for t in result:
                                     AllObjects.append(t)
                             else:
-                            AllObjects=result
+                                AllObjects=result
                                 
                 self.ExtrudeFace( AllObjects)
             
