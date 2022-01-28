@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import unicode_literals
 #
 # ***************************************************************************
 # *                                                                         *
@@ -69,7 +69,6 @@ try:
 except:
     App.Console.PrintError('Path WB not found\n')
 
-from __future__ import unicode_literals
 import DefeaturingWB.image_file
 from sys import platform as _platform
 

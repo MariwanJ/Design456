@@ -33,11 +33,13 @@ from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
 import math
+import OCC
+from OCC.Core import BRepTools
+
+
+__updated__ = '2022-01-28 22:00:43'
 
 # TODO : FIXME BETTER WAY?
-
-__updated__ = '2022-01-21 13:13:58'
-
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
 
@@ -1023,6 +1025,26 @@ box.Placement = place
 App.ActiveDocument.recompute()
 
  '''
+
+
+# Class to remove surface,edge, wire,line,vertex from a shape
+class removeSubShapes:
+
+    def __init__(self,subObj,OriginalShape):
+        self.SubObj = subObj
+        self.targetShape = OriginalShape
+        self.reshape = OCC.Core.BRepTools.BRepTools_ReShape()
+
+    def removeVertex(self):
+        pass
+    def removeEdge(self):
+        self.reshape.Remove(self.SubObj)
+        return reshape.Apply(shape)
+        
+    def removeFce(self):
+        pass
+    def removeShell(self):
+        pass
  
 # A class that will revers engineer
 # surfaces and recreate it with 

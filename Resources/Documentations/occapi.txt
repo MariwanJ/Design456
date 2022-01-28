@@ -1,3 +1,14 @@
+Open CASCADE Technology 
+    Module ApplicationFramework
+    Module DataExchange
+    Module Draw
+    Module FoundationClasses
+    Module ModelingAlgorithms
+    Module ModelingData
+    Module Visualization
+
+
+
 OCC.Core.BRep:
 
 .................................................................
