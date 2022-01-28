@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-import DefeaturingWB.image_file
-from sys import platform as _platform
+
 #
 # ***************************************************************************
 # *                                                                         *
@@ -70,6 +68,10 @@ try:
     from PathScripts.PathUtils import loopdetect
 except:
     App.Console.PrintError('Path WB not found\n')
+
+from __future__ import unicode_literals
+import DefeaturingWB.image_file
+from sys import platform as _platform
 
 
 global rh_edges, rh_faces, rh_obj
