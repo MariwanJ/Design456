@@ -37,7 +37,7 @@ import OCC
 from OCC.Core import BRepTools
 
 
-__updated__ = '2022-01-30 21:56:22'
+__updated__ = '2022-01-30 22:09:55'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -1033,9 +1033,15 @@ class removeSubShapes:
     def __init__(self,subObj,OriginalShape):
         self.SubObj = subObj
         self.targetShape = OriginalShape
-        self.reshape = OCC.Core.BRepTools.BRepTools_ReShape
-    def removeSubShapes(self):
-        return Part.__fromPythonOCC__(self.reshape.Remove(Part.__toPythonOCC__(self.SubObj)))
+        self.reshape = OCC.Core.BRepTools.BRepTools_ReShape()
+    
+    def removeShapes(self):
+        a=Part.__toPythonOCC__(self.SubObj)
+        result=self.reshape.Remove(a)
+        if result is not None:
+            return Part.__fromPythonOCC__(result)
+        else:
+            return None
  
 # A class that will revers engineer
 # surfaces and recreate it with 
