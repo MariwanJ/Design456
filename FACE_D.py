@@ -28,7 +28,7 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Part as _part
+import Part
 from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
@@ -37,7 +37,7 @@ import OCC
 from OCC.Core import BRepTools
 
 
-__updated__ = '2022-01-28 22:00:43'
+__updated__ = '2022-01-30 21:56:22'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -921,7 +921,7 @@ def findFaceSHavingTheSameEdge():
     s = Gui.Selection.getSelectionEx()[0]
     edge = s.SubObjects[0]
     shape = s.Object.Shape
-    return shape.ancestorsOfType(edge, _part.Face)
+    return shape.ancestorsOfType(edge, Part.Face)
 
 
 def findFacehasSelectedEdge():
@@ -1033,18 +1033,9 @@ class removeSubShapes:
     def __init__(self,subObj,OriginalShape):
         self.SubObj = subObj
         self.targetShape = OriginalShape
-        self.reshape = OCC.Core.BRepTools.BRepTools_ReShape()
-
-    def removeVertex(self):
-        pass
-    def removeEdge(self):
-        self.reshape.Remove(self.SubObj)
-        return reshape.Apply(shape)
-        
-    def removeFce(self):
-        pass
-    def removeShell(self):
-        pass
+        self.reshape = OCC.Core.BRepTools.BRepTools_ReShape
+    def removeSubShapes(self):
+        return Part.__fromPythonOCC__(self.reshape.Remove(Part.__toPythonOCC__(self.SubObj)))
  
 # A class that will revers engineer
 # surfaces and recreate it with 
