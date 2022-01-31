@@ -35,9 +35,9 @@ from typing import List
 import math
 import OCC
 from OCC.Core import BRepTools
+from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 
-
-__updated__ = '2022-01-30 22:09:55'
+__updated__ = '2022-01-31 20:16:00'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -1030,16 +1030,17 @@ App.ActiveDocument.recompute()
 # Class to remove surface,edge, wire,line,vertex from a shape
 class removeSubShapes:
 
-    def __init__(self,subObj,OriginalShape):
+    def __init__(self,subObj=[] ,OriginalShape):
         self.SubObj = subObj
         self.targetShape = OriginalShape
-        self.reshape = OCC.Core.BRepTools.BRepTools_ReShape()
-    
     def removeShapes(self):
-        a=Part.__toPythonOCC__(self.SubObj)
-        result=self.reshape.Remove(a)
-        if result is not None:
-            return Part.__fromPythonOCC__(result)
+        Removal=rf()
+        Removal.AddFacesToRemove(Part.__toPythonOCC__(self.SubObj))
+        Removal.SetShape(Part.__toPythonOCC__(self.targetShape))
+       
+        Removal.Perform()
+        if not Removal.HasErrors():
+            return Part.__fromPythonOCC__(Removal.Shape())
         else:
             return None
  
