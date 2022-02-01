@@ -1631,7 +1631,8 @@ def PartDefeaturing_RH():
         docG = Gui.ActiveDocument
 
         import Part
-        import DefeaturingFeature
+        from DefeaturingWB import DefeaturingFeature
+        import  DefeaturingWB.DefeaturingFeature 
         unique_obj = set(rh_obj)
         unique_obj_count = len(unique_obj)
 
@@ -1698,15 +1699,17 @@ def makeSolidExpSTEP_RH():
 
 
 def shape_Connect_RH():
+    import PartGui
+    import BOPTools
+    import BOPTools.JoinFeatures
     try:
-        App.ActiveDocument.openTransaction(
-            translate("Design456", "shape_Connect_RH"))
+
         doc = App.ActiveDocument
         docG = Gui.ActiveDocument
         sel = Gui.Selection.getSelection()
         if len(sel) == 1:
-            import PartGui
-            from PartGui import BOPTools
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "shape_Connect_RH"))
             j = BOPTools.JoinFeatures.makeConnect(name='Connect')
             j.Objects = [sel[0]]
             j.Proxy.execute(j)
@@ -1905,17 +1908,17 @@ class Ui_DockWidget(object):
         self.checkBox_keep_faces.setObjectName("checkBox_keep_faces")
         self.PB_RFaces = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_RFaces.setGeometry(QtCore.QRect(68, 288, 32, 32))
-        self.PB_RFaces.setToolTip("remove \'in List\' Faces")
+        self.PB_RFaces.setToolTip("remove \'in Listbox\' Faces")
         self.PB_RFaces.setText("")
         self.PB_RFaces.setObjectName("PB_RFaces")
         self.PB_AFaces = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_AFaces.setGeometry(QtCore.QRect(124, 288, 32, 32))
-        self.PB_AFaces.setToolTip("add Faces from \'in List\' Edges")
+        self.PB_AFaces.setToolTip("add Faces from \'in Listbox\' Edges")
         self.PB_AFaces.setText("")
         self.PB_AFaces.setObjectName("PB_AFaces")
         self.PB_makeShell = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_makeShell.setGeometry(QtCore.QRect(12, 360, 32, 32))
-        self.PB_makeShell.setToolTip("make Solid from in list Faces")
+        self.PB_makeShell.setToolTip("make Solid from in listbox Faces")
         self.PB_makeShell.setText("")
         self.PB_makeShell.setObjectName("PB_makeShell")
         self.PB_makeShell_2 = QtGui.QPushButton(self.dockWidgetContents)
@@ -1945,17 +1948,17 @@ class Ui_DockWidget(object):
         self.Obj_Nbr_2.setObjectName("Obj_Nbr_2")
         self.PB_AEdges = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_AEdges.setGeometry(QtCore.QRect(220, 288, 32, 32))
-        self.PB_AEdges.setToolTip("create a copy of the \'in List\' Edges")
+        self.PB_AEdges.setToolTip("create a copy of the \'in Listbox\' Edges")
         self.PB_AEdges.setText("")
         self.PB_AEdges.setObjectName("PB_AEdges")
         self.PB_showEdgeList = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_showEdgeList.setGeometry(QtCore.QRect(12, 396, 32, 32))
-        self.PB_showEdgeList.setToolTip("show \'in List\' Edge(s)")
+        self.PB_showEdgeList.setToolTip("show \'in Listbox\' Edge(s)")
         self.PB_showEdgeList.setText("")
         self.PB_showEdgeList.setObjectName("PB_showEdgeList")
         self.PB_showFaceList = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_showFaceList.setGeometry(QtCore.QRect(68, 396, 32, 32))
-        self.PB_showFaceList.setToolTip("show \'in List\' Face(s)")
+        self.PB_showFaceList.setToolTip("show \'in Listbox\' Face(s)")
         self.PB_showFaceList.setText("")
         self.PB_showFaceList.setObjectName("PB_showFaceList")
         self.PB_Refine = QtGui.QPushButton(self.dockWidgetContents)
@@ -1970,12 +1973,12 @@ class Ui_DockWidget(object):
         self.PB_RefineParametric.setObjectName("PB_RefineParametric")
         self.PB_CFaces = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_CFaces.setGeometry(QtCore.QRect(12, 324, 32, 32))
-        self.PB_CFaces.setToolTip("copy Faces from \'in List\' Edges")
+        self.PB_CFaces.setToolTip("copy Faces from \'in Listbox\' Edges")
         self.PB_CFaces.setText("")
         self.PB_CFaces.setObjectName("PB_CFaces")
         self.PB_TFace = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_TFace.setGeometry(QtCore.QRect(68, 324, 32, 32))
-        self.PB_TFace.setToolTip("copy Faces from \'in List\' Edges")
+        self.PB_TFace.setToolTip("copy Faces from \'in Listbox\' Edges")
         self.PB_TFace.setText("")
         self.PB_TFace.setObjectName("PB_TFace")
         self.offset_input = QtGui.QLineEdit(self.dockWidgetContents)
@@ -1985,7 +1988,7 @@ class Ui_DockWidget(object):
         self.offset_input.setObjectName("offset_input")
         self.PB_TEdge = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_TEdge.setGeometry(QtCore.QRect(220, 324, 32, 32))
-        self.PB_TEdge.setToolTip("copy Faces from \'in List\' Edges")
+        self.PB_TEdge.setToolTip("copy Faces from \'in Listbox\' Edges")
         self.PB_TEdge.setText("")
         self.PB_TEdge.setObjectName("PB_TEdge")
         self.PB_close = QtGui.QPushButton(self.dockWidgetContents)
@@ -2021,7 +2024,7 @@ class Ui_DockWidget(object):
         self.PB_PartDefeaturing = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_PartDefeaturing.setEnabled(False)
         self.PB_PartDefeaturing.setGeometry(QtCore.QRect(172, 288, 32, 32))
-        self.PB_PartDefeaturing.setToolTip("show \'in List\' Edge(s)")
+        self.PB_PartDefeaturing.setToolTip("show \'in Listbox\' Edge(s)")
         self.PB_PartDefeaturing.setText("")
         self.PB_PartDefeaturing.setObjectName("PB_PartDefeaturing")
         self.PB_CleaningFaces = QtGui.QPushButton(self.dockWidgetContents)
@@ -2032,7 +2035,7 @@ class Ui_DockWidget(object):
         self.PB_CleaningFaces.setObjectName("PB_CleaningFaces")
         self.PB_checkS = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_checkS.setGeometry(QtCore.QRect(12, 432, 32, 32))
-        self.PB_checkS.setToolTip("show \'in List\' Edge(s)")
+        self.PB_checkS.setToolTip("show \'in Listbox\' Edge(s)")
         self.PB_checkS.setText("")
         self.PB_checkS.setObjectName("PB_checkS")
         self.tolerance_value = QtGui.QLineEdit(self.dockWidgetContents)
@@ -2042,17 +2045,17 @@ class Ui_DockWidget(object):
         self.tolerance_value.setObjectName("tolerance_value")
         self.PB_setTol = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_setTol.setGeometry(QtCore.QRect(220, 432, 32, 32))
-        self.PB_setTol.setToolTip("copy Faces from \'in List\' Edges")
+        self.PB_setTol.setToolTip("copy Faces from \'in Listbox\' Edges")
         self.PB_setTol.setText("")
         self.PB_setTol.setObjectName("PB_setTol")
         self.PB_getTol = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_getTol.setGeometry(QtCore.QRect(68, 432, 32, 32))
-        self.PB_getTol.setToolTip("copy Faces from \'in List\' Edges")
+        self.PB_getTol.setToolTip("copy Faces from \'in Listbox\' Edges")
         self.PB_getTol.setText("")
         self.PB_getTol.setObjectName("PB_getTol")
         self.PB_sewS = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_sewS.setGeometry(QtCore.QRect(220, 468, 32, 32))
-        self.PB_sewS.setToolTip("copy Faces from \'in List\' Edges")
+        self.PB_sewS.setToolTip("copy Faces from \'in Listbox\' Edges")
         self.PB_sewS.setText("")
         self.PB_sewS.setObjectName("PB_sewS")
         self.PB_RHhelp = QtGui.QPushButton(self.dockWidgetContents)
@@ -2160,7 +2163,7 @@ class Ui_DockWidget(object):
         self.PB_CFaces.setIconSize(QtCore.QSize(btn_sizeX, btn_sizeY))
         self.PB_CFaces.setIcon(QtGui.QIcon(pm))
         self.PB_CFaces.clicked.connect(copyFaces_RH)
-        self.PB_CFaces.setToolTip("copy Faces from \'in List\' Faces")
+        self.PB_CFaces.setToolTip("copy Faces from \'in Listbox\' Faces")
         self.checkBox_keep_original.setChecked(True)
         self.checkBox_keep_faces.setChecked(False)
         pm = QtGui.QPixmap()

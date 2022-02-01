@@ -42,13 +42,11 @@ from __future__ import unicode_literals
 #    for detail see the LICENCE text file.                                  *
 #****************************************************************************
 
-import dft_locator, os
+import  os
 import OpenSCADUtils, FreeCAD, FreeCADGui, Part, os
-
-DefeaturingWBpath = os.path.dirname(dft_locator.__file__)
-DefeaturingWB_icons_path =  os.path.join( DefeaturingWBpath, 'Resources', 'icons')
+import  Design456Init
 global defeat_icon, use_cm
-defeat_icon=os.path.join(DefeaturingWB_icons_path,'DefeaturingParametric.svg')
+defeat_icon=os.path.join(Design456Init.DefeaturingWB_icons_path,'DefeaturingParametric.svg')
 use_cm = True
 
 '''
@@ -209,21 +207,21 @@ class DefeatShape:
                     sh = fp.Base.Shape.defeaturing(d_faces)
                     if fp.Base.Shape.isPartner(sh):
                         App.Console.PrintError('Defeaturing failed 1\n')
-                        defeat_icon=os.path.join(DefeaturingWB_icons_path,'error.svg')
+                        defeat_icon=os.path.join(Design456Init.DefeaturingWB_icons_path,'error.svg')
                         docG.getObject(fp.Name).ShapeColor  =  (1.00,0.00,0.00)
                         raise NameError('Defeaturing FAILED!')
                     else:
                         fp.Shape=OpenSCADUtils.applyPlacement(sh)
                         if fp.Label.find('_ERR') != -1:
                             fp.Label=fp.Label[:fp.Label.rfind('_ERR')]
-                        defeat_icon=os.path.join(DefeaturingWB_icons_path,'DefeaturingParametric.svg')
+                        defeat_icon=os.path.join(Design456Init.DefeaturingWB_icons_path,'DefeaturingParametric.svg')
                         docG.getObject(fp.Name).ShapeColor  =  docG.getObject(fp.Base.Name).ShapeColor
                         docG.getObject(fp.Name).LineColor   =  docG.getObject(fp.Base.Name).LineColor
                         docG.getObject(fp.Name).PointColor  =  docG.getObject(fp.Base.Name).PointColor
                         docG.getObject(fp.Name).DiffuseColor=  docG.getObject(fp.Base.Name).DiffuseColor
                         docG.getObject(fp.Name).Transparency=  docG.getObject(fp.Base.Name).Transparency
                 else:
-                    defeat_icon=os.path.join(DefeaturingWB_icons_path,'error.svg')
+                    defeat_icon=os.path.join(Design456Init.DefeaturingWB_icons_path,'error.svg')
 
                     App.Console.PrintError('Defeaturing failed 2\n')
                     sh = fp.Base.Shape

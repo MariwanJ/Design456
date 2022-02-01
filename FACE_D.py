@@ -38,7 +38,7 @@ from OCC.Core import BRepTools
 from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-01-31 22:02:20'
+__updated__ = '2022-02-01 20:39:31'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -1031,6 +1031,12 @@ App.ActiveDocument.recompute()
 # https://dev.opencascade.org/content/brepoffsetapimakethicksolid-some-characters-can-be-hollowed-out-some-cant-help-pythonocc
 # 
 # Class to remove surface,edge, wire,line,vertex from a shape
+'''Some api hits
+
+DraftGeomUtils.findIntersection()
+
+
+'''
 class removeSubShapes:
 
     def __init__(self, subObj, OriginalShape):
