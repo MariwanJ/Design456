@@ -28,19 +28,16 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Part
+import Part as _part
 from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
 import math
-import OCC
-from OCC.Core import BRepTools
-from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
-from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
-
-__updated__ = '2022-02-01 20:39:31'
 
 # TODO : FIXME BETTER WAY?
+
+__updated__ = '2022-02-02 21:22:35'
+
 def getDirectionAxis(s=None):
     """[Get Direction of the selected face/Edge]
 
@@ -922,7 +919,7 @@ def findFaceSHavingTheSameEdge():
     s = Gui.Selection.getSelectionEx()[0]
     edge = s.SubObjects[0]
     shape = s.Object.Shape
-    return shape.ancestorsOfType(edge, Part.Face)
+    return shape.ancestorsOfType(edge, _part.Face)
 
 
 def findFacehasSelectedEdge():
@@ -1026,32 +1023,6 @@ box.Placement = place
 App.ActiveDocument.recompute()
 
  '''
-
-#look at 
-# https://dev.opencascade.org/content/brepoffsetapimakethicksolid-some-characters-can-be-hollowed-out-some-cant-help-pythonocc
-# 
-# Class to remove surface,edge, wire,line,vertex from a shape
-'''Some api hits
-
-DraftGeomUtils.findIntersection()
-
-
-'''
-class removeSubShapes:
-
-    def __init__(self, subObj, OriginalShape):
-        self.SubObj = subObj
-        self.targetShape = OriginalShape
-    def removeShapes(self):
-        Removal=rf()
-        Removal.AddFacesToRemove(Part.__toPythonOCC__(self.SubObj))
-        Removal.SetShape(Part.__toPythonOCC__(self.targetShape))
-       
-        Removal.Perform()
-        if not Removal.HasErrors():
-            return Part.__fromPythonOCC__(Removal.Shape())
-        else:
-            return None
  
 # A class that will revers engineer
 # surfaces and recreate it with 
