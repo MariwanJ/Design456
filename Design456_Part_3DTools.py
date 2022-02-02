@@ -41,7 +41,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-01-21 18:33:21'
+__updated__ = '2022-02-02 20:50:06'
 
 # Merge
 class Design456_Part_Merge:
@@ -543,10 +543,13 @@ class Design456_SimplifyCompound:
                     return None
             else:
                 s = input_object
-            if len(s)==1:
-                ss = [s[0]]
+            if type(s)==list:
+                if len(s)==1:
+                    ss = [s[0]]
+                else:
+                    ss=[s]
             else:
-                ss=s
+                ss=[s]
             result=[]
             App.ActiveDocument.openTransaction(translate("Design456","SimplifyCompound"))
             for obj in ss:

@@ -34,8 +34,9 @@ import Part as _part
 import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate  # for translation
+from  Design456_Part_3DTools import Design456_SimplifyCompound 
 
-__updated__ = '2022-01-17 12:50:42'
+__updated__ = '2022-02-02 20:52:15'
 
 class GenCommandForPartUtils:
     def __init__(self):
@@ -163,14 +164,32 @@ class GenCommandForPartUtils:
 
 
 class Design456_CommonFace:
+    """[Create a new shape that is the common between two other shapes.]
 
+    """
     def Activated(self):
         App.ActiveDocument.openTransaction(
             translate("Design456", "CommonFace"))
-        cmp = GenCommandForPartUtils()
-        cmp.makeIt(1)
-        App.ActiveDocument.commitTransaction()  # undo reg.de here
+        s=Gui.Selection.getSelectionEx()
+        newshape=None
+        for obj in s:
+            if obj.HasSubObjects:
+                sh1=obj.SubObjects[0]
+            else:
+                sh1=obj.Object.Shape
+            if newshape !=None:
+                newshape= newshape.common(sh1)
+            else:
+                newshape= sh1
+            App.ActiveDocument.recompute()
+        newobj = App.ActiveDocument.addObject("Part::Feature", "CommonFace")
+        newobj.Shape=newshape
         App.ActiveDocument.recompute()
+        for obj in s:
+            App.ActiveDocument.removeObject(obj.Object.Name)
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction()  # undo reg.de here
+
 
     def GetResources(self):
         return{
@@ -189,11 +208,26 @@ Gui.addCommand('Design456_CommonFace', Design456_CommonFace())
 class Design456_SubtractFaces:
     def Activated(self):
         App.ActiveDocument.openTransaction(
-            translate("Design456", "CommonFace"))
-        cmp = GenCommandForPartUtils()
-        cmp.makeIt(2)
-        App.ActiveDocument.commitTransaction()  # undo reg.de here
+            translate("Design456", "SubtractFace"))
+        s=Gui.Selection.getSelectionEx()
+        newshape=None
+        for obj in s:
+            if obj.HasSubObjects:
+                sh1=obj.SubObjects[0]
+            else:
+                sh1=obj.Object.Shape
+            if newshape !=None:
+                newshape= newshape.cut(sh1)
+            else:
+                newshape= sh1
+            App.ActiveDocument.recompute()
+        newobj = App.ActiveDocument.addObject("Part::Feature", "SubtractFace")
+        newobj.Shape=newshape
         App.ActiveDocument.recompute()
+        for obj in s:
+            App.ActiveDocument.removeObject(obj.Object.Name)
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction()  # undo reg.de here
 
     def GetResources(self):
         return{
@@ -210,12 +244,31 @@ Gui.addCommand('Design456_SubtractFaces', Design456_SubtractFaces())
 
 class Design456_CombineFaces:
     def Activated(self):
+
         App.ActiveDocument.openTransaction(
-            translate("Design456", "Combine Faces"))
-        cmp = GenCommandForPartUtils()
-        cmp.makeIt(3)
-        App.ActiveDocument.commitTransaction()  # undo reg.de here
+            translate("Design456", "CombineFaces"))
+        s=Gui.Selection.getSelectionEx()
+        newshape=None
+        for obj in s:
+            if obj.HasSubObjects:
+                sh1=obj.SubObjects[0]
+            else:
+                sh1=obj.Object.Shape
+            if newshape !=None:
+                newshape= newshape.fuse(sh1)
+            else:
+                newshape= sh1
+            App.ActiveDocument.recompute()
+        newobj = App.ActiveDocument.addObject("Part::Feature", "CombineFaces")
+        newobj.Shape=newshape
         App.ActiveDocument.recompute()
+        for obj in s:
+            App.ActiveDocument.removeObject(obj.Object.Name)
+        App.ActiveDocument.recompute()
+        simp= Design456_SimplifyCompound()
+        simp.Activated(newobj)
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction()  # undo reg.de here
 
     def GetResources(self):
         return{
