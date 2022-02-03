@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-01-26 21:16:54'
+__updated__ = '2022-02-03 22:03:19'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -783,16 +783,18 @@ class Design456_DivideCircleFace:
                 errMessage = "Select one object"
                 faced.errorDialog(errMessage)
                 return
-            
             DivideBy = QtGui.QInputDialog.getInt(
                 None, "Divide by", "Input:", 0, 1, 50.0, 1)[0]
             if(DivideBy <=1):
                 return  # nothing to do here
             self.selected = s[0]
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "Divide Circle"))
             edgesToRecreate=self.findEdgeHavingCurve()
             #We have the edges that needs to be divided
             newObjects=self.recreateEdges(edgesToRecreate,DivideBy)
             App.ActiveDocument.removeObject(self.selected.Object.Name)
+            App.ActiveDocument.commitTransaction()  # undo
             return newObjects
             
         except Exception as err:
@@ -815,6 +817,119 @@ class Design456_DivideCircleFace:
 
 Gui.addCommand('Design456_DivideCircleFace', Design456_DivideCircleFace())
 
+
+class Design456_RemmoveEdge:
+    # Based on the sewShape from De-featuring WB,
+    # but simplified- Thanks for the author
+    def sewShape(self, sel):
+        """[Fix issues might be in the created object]
+
+        Args:
+            sel ([3D Object]): [Final object that needs repair.
+                                Always new object creates as result of sew]
+        """
+        try:
+            if hasattr(sel, 'Shape'):
+                sh = sel.Shape.copy()
+                sh.sewShape()
+                sl = App.ActiveDocument.addObject("Part::Feature", "compSolid")
+                sl.Shape = sh
+
+                g = Gui.ActiveDocument.getObject(sl.Name)
+                g.ShapeColor = Gui.ActiveDocument.getObject(
+                    sel.Name).ShapeColor
+                g.LineColor = Gui.ActiveDocument.getObject(sel.Name).LineColor
+                g.PointColor = Gui.ActiveDocument.getObject(
+                    sel.Name).PointColor
+                g.DiffuseColor = Gui.ActiveDocument.getObject(
+                    sel.Name).DiffuseColor
+                g.Transparency = Gui.ActiveDocument.getObject(
+                    sel.Name).Transparency
+                App.ActiveDocument.removeObject(sel.Name)
+                App.ActiveDocument.recompute()
+                return (sl)
+
+        except Exception as err:
+            App.Console.PrintError("'sewShape' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def Activated(self):
+        try:
+            
+            s = Gui.Selection.getSelectionEx()
+            if len(s) > 1:
+                errMessage = "Select edges from one object"
+                faced.errorDialog(errMessage)
+                return
+            if hasattr(s[0],"SubObjects"):
+                if s[0].HasSubObjects:
+                    selectedObj=s[0].SubObjects
+                else:
+                    selectedObj=s[0].Object.Shape.Edges[0]
+            else:
+                return 
+            edges=[[]]
+            AllFaces=s[0].Object.Shape.Faces
+            for i in range(0,len(AllFaces)):
+                if hasattr(AllFaces[i].OuterWire, "OrderedEdges"):
+                    edges.append(AllFaces[i].OuterWire.OrderedEdges)
+                else:
+                    edges.append(AllFaces[i].OuterWire.OrderedEdges)
+
+            for obj in selectedObj:
+                for i in range(0,len(edges)):
+                    for j in range(0,len(edges[i])):
+                        if edges[i][j]==obj:
+                            edges(obj)
+            
+            #recreate the shape
+            _resultFace=[]
+            #Register undo
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "RemoveEdge"))
+            for i in range(0,len(edges)):
+                nFace=_part.makeFilledFace(edges[i]) 
+                if nFace.isNull():
+                    raise RuntimeError('Failed to create face')
+                nF = App.ActiveDocument.addObject("Part::Feature", "nFace")
+                nF.Shape = nFace       
+                _resultFace.append(nF)
+            App.ActiveDocument.recompute()
+            
+            solidObjShape = _part.Solid(_part.makeShell(_resultFaces))
+            newObj = App.ActiveDocument.addObject("Part::Feature", "comp")
+            newObj.Shape = solidObjShape
+            newObj = self.sewShape(newObj)
+            solidObjShape = _part.Solid(newObj.Shape)
+            final = App.ActiveDocument.addObject("Part::Feature", "RemovedEdge")
+            final.Shape = solidObjShape
+            App.ActiveDocument.removeObject(newObj.Name)
+            for face in newFaces:
+                App.ActiveDocument.removeObject(face.Name)
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_RemoveEdge' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        import Design456Init
+        from PySide.QtCore import QT_TRANSLATE_NOOP
+        """Set icon, menu and tooltip."""
+        _tooltip = ("Remove Edge")
+        return {'Pixmap':  Design456Init.ICON_PATH + 'RemoveEdge.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "RemvoeEdge"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand('Design456_RemmoveEdge', Design456_RemmoveEdge())
+
+
+
 ##################################################################################
 #       Toolbar group definition
 class Design456_2Ddrawing:
@@ -829,6 +944,7 @@ class Design456_2Ddrawing:
             "Design456_Paint",
             "Design456_Hole",
             "Design456_DivideCircleFace",
+            "Design456_RemmoveEdge",
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""
