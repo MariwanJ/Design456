@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-02-06 12:12:09'
+__updated__ = '2022-02-06 19:53:04'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -819,42 +819,6 @@ Gui.addCommand('Design456_DivideCircleFace', Design456_DivideCircleFace())
 
 
 class Design456_RemmoveEdge:
-    # Based on the sewShape from De-featuring WB,
-    # but simplified- Thanks for the author
-    def sewShape(self, sel):
-        """[Fix issues might be in the created object]
-
-        Args:
-            sel ([3D Object]): [Final object that needs repair.
-                                Always new object creates as result of sew]
-        """
-        try:
-            if hasattr(sel, 'Shape'):
-                sh = sel.Shape.copy()
-                sh.sewShape()
-                sl = App.ActiveDocument.addObject("Part::Feature", "compSolid")
-                sl.Shape = sh
-
-                g = Gui.ActiveDocument.getObject(sl.Name)
-                g.ShapeColor = Gui.ActiveDocument.getObject(
-                    sel.Name).ShapeColor
-                g.LineColor = Gui.ActiveDocument.getObject(sel.Name).LineColor
-                g.PointColor = Gui.ActiveDocument.getObject(
-                    sel.Name).PointColor
-                g.DiffuseColor = Gui.ActiveDocument.getObject(
-                    sel.Name).DiffuseColor
-                g.Transparency = Gui.ActiveDocument.getObject(
-                    sel.Name).Transparency
-                App.ActiveDocument.removeObject(sel.Name)
-                App.ActiveDocument.recompute()
-                return (sl)
-
-        except Exception as err:
-            App.Console.PrintError("'sewShape' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
             
     def Activated(self):
         result=[]
@@ -879,11 +843,8 @@ class Design456_RemmoveEdge:
                 edges=(AllFaces[i].OuterWire.OrderedEdges)
                 temp=[]
                 temp.clear()
-                print("temp=",temp)
-                print("i=",i)
                 for j in range(0,len(edges)):
                     found=False
-                    print("j=",j)
                     for obj in selectedObj:
                         if ( (edges[j]).isEqual(obj)):
                             found=True
@@ -896,28 +857,25 @@ class Design456_RemmoveEdge:
                     App.ActiveDocument.openTransaction(
                         translate("Design456", "RemoveEdge"))
                     nFace=None
-                    nF = App.ActiveDocument.addObject("Part::Feature", "nFace")
-                    try:
-                        nFace=_part.makeFilledFace(temp)
-                    except:
-                        pass
+                    nWire=_part.Wire(temp)
+                    if nWire.isClosed():
+                        try:
+                            nFace=_part.makeFilledFace(temp)
+                        except:
+                            pass
                     if (nFace is None) or (nFace.isNull()):
-                        nFace=_part.Wire(temp)
+                        print("failed")
+                        nF = App.ActiveDocument.addObject("Part::Feature", "nWire")
+                        nF.Shape=nWire
                     else:
                         _resultFaces.append(nFace)
-                    nF.Shape = nFace
-
-
             App.ActiveDocument.recompute()
             shell=_part.makeShell(_resultFaces)
-            _part.show(shell)
             App.ActiveDocument.recompute()
-            final = App.ActiveDocument.addObject("Part::Feature", "RemovedEdge")
+            final = App.ActiveDocument.addObject("Part::Feature", "RemoveEdge")
             final.Shape = shell
             App.ActiveDocument.recompute()
             App.ActiveDocument.removeObject(s[0].Object.Name)
-            #for face in _resultFaces:
-            #    App.ActiveDocument.removeObject(face.Name)
 
         except Exception as err:
             App.Console.PrintError("'Design456_RemoveEdge' Failed. "
