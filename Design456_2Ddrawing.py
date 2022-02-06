@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-02-03 22:03:19'
+__updated__ = '2022-02-06 12:12:09'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -857,8 +857,8 @@ class Design456_RemmoveEdge:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def Activated(self):
+        result=[]
         try:
-            
             s = Gui.Selection.getSelectionEx()
             if len(s) > 1:
                 errMessage = "Select edges from one object"
@@ -871,44 +871,53 @@ class Design456_RemmoveEdge:
                     selectedObj=s[0].Object.Shape.Edges[0]
             else:
                 return 
-            edges=[[]]
+            edges=[]
+            _resultFaces=[]
             AllFaces=s[0].Object.Shape.Faces
             for i in range(0,len(AllFaces)):
-                if hasattr(AllFaces[i].OuterWire, "OrderedEdges"):
-                    edges.append(AllFaces[i].OuterWire.OrderedEdges)
-                else:
-                    edges.append(AllFaces[i].OuterWire.OrderedEdges)
+                edges.clear()
+                edges=(AllFaces[i].OuterWire.OrderedEdges)
+                temp=[]
+                temp.clear()
+                print("temp=",temp)
+                print("i=",i)
+                for j in range(0,len(edges)):
+                    found=False
+                    print("j=",j)
+                    for obj in selectedObj:
+                        if ( (edges[j]).isEqual(obj)):
+                            found=True
+                            print ("found")
+                        else:
+                            temp.append(edges[j].copy())
+                if (len(temp)> 0 ):
+                #recreate the shape
+                #Register undo
+                    App.ActiveDocument.openTransaction(
+                        translate("Design456", "RemoveEdge"))
+                    nFace=None
+                    nF = App.ActiveDocument.addObject("Part::Feature", "nFace")
+                    try:
+                        nFace=_part.makeFilledFace(temp)
+                    except:
+                        pass
+                    if (nFace is None) or (nFace.isNull()):
+                        nFace=_part.Wire(temp)
+                    else:
+                        _resultFaces.append(nFace)
+                    nF.Shape = nFace
 
-            for obj in selectedObj:
-                for i in range(0,len(edges)):
-                    for j in range(0,len(edges[i])):
-                        if edges[i][j]==obj:
-                            edges(obj)
-            
-            #recreate the shape
-            _resultFace=[]
-            #Register undo
-            App.ActiveDocument.openTransaction(
-                translate("Design456", "RemoveEdge"))
-            for i in range(0,len(edges)):
-                nFace=_part.makeFilledFace(edges[i]) 
-                if nFace.isNull():
-                    raise RuntimeError('Failed to create face')
-                nF = App.ActiveDocument.addObject("Part::Feature", "nFace")
-                nF.Shape = nFace       
-                _resultFace.append(nF)
+
             App.ActiveDocument.recompute()
-            
-            solidObjShape = _part.Solid(_part.makeShell(_resultFaces))
-            newObj = App.ActiveDocument.addObject("Part::Feature", "comp")
-            newObj.Shape = solidObjShape
-            newObj = self.sewShape(newObj)
-            solidObjShape = _part.Solid(newObj.Shape)
+            shell=_part.makeShell(_resultFaces)
+            _part.show(shell)
+            App.ActiveDocument.recompute()
             final = App.ActiveDocument.addObject("Part::Feature", "RemovedEdge")
-            final.Shape = solidObjShape
-            App.ActiveDocument.removeObject(newObj.Name)
-            for face in newFaces:
-                App.ActiveDocument.removeObject(face.Name)
+            final.Shape = shell
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(s[0].Object.Name)
+            #for face in _resultFaces:
+            #    App.ActiveDocument.removeObject(face.Name)
 
         except Exception as err:
             App.Console.PrintError("'Design456_RemoveEdge' Failed. "
