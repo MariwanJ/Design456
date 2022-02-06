@@ -33,14 +33,15 @@ from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
 import math
-if 0:
-    import OCC
-    
-    from OCC.Core import BRepTools
-    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
-    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-02-04 19:41:52'
+#if 0:
+#    import OCC
+#    
+#    from OCC.Core import BRepTools
+#    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
+#    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
+
+__updated__ = '2022-02-06 20:09:35'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
