@@ -890,7 +890,7 @@ class Design456_RemmoveEdge:
         """Set icon, menu and tooltip."""
         _tooltip = ("Remove Edge")
         return {'Pixmap':  Design456Init.ICON_PATH + 'RemoveEdge.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "RemvoeEdge"),
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "RemoveEdge"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 Gui.addCommand('Design456_RemmoveEdge', Design456_RemmoveEdge())
