@@ -38,30 +38,46 @@ from PySide import QtGui, QtCore
 #This is a start of the preferences pages. Not finished yet. 
 #TODO : FIXME:
 
-__updated__ = '2021-12-31 08:56:45'
+__updated__ = '2022-02-07 21:50:13'
 
 class Ui_Design456Preferences(object):
+    def __init__(self):
+        self.grpSimplify=None
+        self.tabfirst=None
+        self.tabsecond=None
+        self.listWidget=None
+        self.listWidget=None
+        self.chkDisableGrid=None
+
     def setupUi(self, Design456Preferences):
         Design456Preferences.setObjectName("Design456Preferences")
         Design456Preferences.resize(800, 600)
-        self.tabConfig = QtGui.QTabWidget(Design456Preferences)
+        self.tabConfig = QtWidgets.QTabWidget(Design456Preferences)
         self.tabConfig.setGeometry(QtCore.QRect(110, 0, 691, 581))
+        self.tabConfig.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
         self.tabConfig.setObjectName("tabConfig")
-        self.tabfirst = QtGui.QWidget()
+        self.tabfirst = QtWidgets.QWidget()
         self.tabfirst.setObjectName("tabfirst")
-        self.grpSimplify = QtGui.QGroupBox(self.tabfirst)
-        self.grpSimplify.setGeometry(QtCore.QRect(10, 10, 671, 61))
+        self.grpSimplify = QtWidgets.QGroupBox(self.tabfirst)
+        self.grpSimplify.setGeometry(QtCore.QRect(0, 0, 671, 221))
         self.grpSimplify.setObjectName("grpSimplify")
-        self.chkSimplify = QtGui.QCheckBox(self.grpSimplify)
+        self.chkSimplify = QtWidgets.QCheckBox(self.grpSimplify)
         self.chkSimplify.setGeometry(QtCore.QRect(10, 20, 171, 20))
         self.chkSimplify.setObjectName("chkSimplify")
+        self.chkDisableGrid = QtWidgets.QCheckBox(self.grpSimplify)
+        self.chkDisableGrid.setGeometry(QtCore.QRect(10, 50, 171, 20))
+        self.chkDisableGrid.setObjectName("chkDisableGrid")
         self.tabConfig.addTab(self.tabfirst, "")
-        self.tabsecond = QtGui.QWidget()
+        self.tabsecond = QtWidgets.QWidget()
         self.tabsecond.setObjectName("tabsecond")
         self.tabConfig.addTab(self.tabsecond, "")
-        self.listWidget = QtGui.QListWidget(Design456Preferences)
+        self.listWidget = QtWidgets.QListWidget(Design456Preferences)
         self.listWidget.setGeometry(QtCore.QRect(0, 0, 111, 581))
         self.listWidget.setObjectName("listWidget")
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget.addItem(item)
 
         self.retranslateUi(Design456Preferences)
         self.tabConfig.setCurrentIndex(0)
@@ -72,21 +88,29 @@ class Ui_Design456Preferences(object):
         Design456Preferences.setWindowTitle(_translate("Design456Preferences", "Design456Preferences"))
         self.grpSimplify.setTitle(_translate("Design456Preferences", "Object Creation in Design456"))
         self.chkSimplify.setText(_translate("Design456Preferences", "Simplify created objects"))
+        self.chkDisableGrid.setText(_translate("Design456Preferences", "Disable Grid"))
         self.tabConfig.setTabText(self.tabConfig.indexOf(self.tabfirst), _translate("Design456Preferences", "General"))
-        self.tabConfig.setTabText(self.tabConfig.indexOf(self.tabsecond), _translate("Design456Preferences", "Tab 2"))
-
+        self.tabConfig.setTabText(self.tabConfig.indexOf(self.tabsecond), _translate("Design456Preferences", "Others"))
+        __sortingEnabled = self.listWidget.isSortingEnabled()
+        self.listWidget.setSortingEnabled(False)
+        item = self.listWidget.item(0)
+        item.setText(_translate("Design456Preferences", "General"))
+        item = self.listWidget.item(1)
+        item.setText(_translate("Design456Preferences", "Others"))
+        self.listWidget.setSortingEnabled(__sortingEnabled)
 
 
 from PySide import QtGui
 
-class Design456Prefrences:
+class Design456Preferences:
     def __init__(self):
-        self.form = QtGui.QCalendarWidget()
-        self.form.setWindowTitle("Design456 Preferences")
+        self.d = QtGui.QWidget()
+        self.ui = Ui_Design456Preferences()
+        self.ui.retranslateUi(self.d)
+
     def saveSettings(self):
         pass
     def loadSettings(self):
         pass
 
-Gui.addPreferencePage(Design456Prefrences, "Design456Workbench
-                      ")
+Gui.addPreferencePage(Design456Preferences, "Design456Workbench")

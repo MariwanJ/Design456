@@ -22,6 +22,9 @@
      <height>581</height>
     </rect>
    </property>
+   <property name="locale">
+    <locale language="English" country="Europe"/>
+   </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
@@ -32,10 +35,10 @@
     <widget class="QGroupBox" name="grpSimplify">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
+       <x>0</x>
+       <y>0</y>
        <width>671</width>
-       <height>61</height>
+       <height>221</height>
       </rect>
      </property>
      <property name="title">
@@ -54,11 +57,24 @@
        <string>Simplify created objects</string>
       </property>
      </widget>
+     <widget class="QCheckBox" name="chkDsableGrid">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Disable Grid</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="tabsecond">
     <attribute name="title">
-     <string>Tab 2</string>
+     <string>Others</string>
     </attribute>
    </widget>
   </widget>
@@ -71,6 +87,16 @@
      <height>581</height>
     </rect>
    </property>
+   <item>
+    <property name="text">
+     <string>General</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Others</string>
+    </property>
+   </item>
   </widget>
  </widget>
  <resources/>

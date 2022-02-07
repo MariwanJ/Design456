@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-01-19 22:27:44'
+__updated__ = '2022-02-07 21:31:28'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -62,6 +62,7 @@ class Design456_Workbench (Workbench):
         import DefeaturingWB.DefeaturingCMD  
         import DefeaturingWB.FuzzyTools
         import Design456Init
+        from Design456Pref import Design456Preferences
         
 
 
