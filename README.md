@@ -2,7 +2,7 @@
 
 Video Showcase:
 
-[![](http://img.youtube.com/vi/qdzpGQpx94k/0.jpg)](https://www.youtube.com/watch?v=qdzpGQpx94k "Design456 Workbench")
+[![](http://img.youtube.com/vi/pmGW4OxVbYw/0.jpg)](https://www.youtube.com/watch?v=pmGW4OxVbYw "Design456 Workbench")
 
 **Important Note:** **WIP!!!** Please feel free to suggest, contribute, join, help, debug etc... I am new to both Python and FreeCAD Python. My background is in other languages. I hope you find this workbench useful.
 
