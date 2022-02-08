@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-01-16 19:26:26'
+__updated__ = '2022-02-08 21:25:16'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -91,9 +91,15 @@ class Design456_AlignFlatToPlane:
         print(Design456Init.DefaultDirectionOfExtrusion,
               " Design456Init.DefaultDirectionOfExtrusion")
         try:
+            #Reset the object otherwise this tool fails.
+            reset=Design456_ResetPlacements()
+            reset.Activated()
+
             Selectedobjects = Gui.Selection.getSelectionEx()
             # TODO:This must be modified
+
             for obj in Selectedobjects:
+
                 if Design456Init.DefaultDirectionOfExtrusion == 'z':
                     obj.Object.Placement.Base.z = 0.0
                 elif Design456Init.DefaultDirectionOfExtrusion == 'y':
@@ -348,12 +354,13 @@ class Design456_ResetPlacements:
     def Activated(self):
         try:
             temp = []
+            
             self.objects = Gui.Selection.getSelectionEx()
             if len(self.objects) == 0:
                 self.objects = App.ActiveDocument.Objects
             App.ActiveDocument.openTransaction(
                 translate("Design456", "ResetPlacement"))
-
+            Gui.Selection.clearSelection()
             for sObj in self.objects:
                 temp.clear()
                 test=""
@@ -383,6 +390,7 @@ class Design456_ResetPlacements:
                         newOBJ, '', needSubElement=False, refine=False)
                     simpleNew = App.ActiveDocument.addObject(
                         'Part::Feature', 'Reset')
+                    Gui.Selection.addSelection(simpleNew)
                     simpleNew.Shape = shp
                     App.ActiveDocument.recompute()
                     if "Group" in sObj.Object.PropertiesList:

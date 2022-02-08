@@ -39,80 +39,37 @@ from draftutils.translate import translate   #for translate
 #This is a start of the preferences pages. Not finished yet. 
 #TODO : FIXME:
 
-__updated__ = '2022-02-07 21:56:48'
-
-class Ui_Design456Preferences(object):
-    def __init__(self):
-        self.grpSimplify=None
-        self.tabfirst=None
-        self.tabsecond=None
-        self.listWidget=None
-        self.listWidget=None
-        self.chkDisableGrid=None
-
-    def setupUi(self, Design456Preferences):
-        Design456Preferences.setObjectName("Design456Preferences")
-        Design456Preferences.resize(800, 600)
-        self.tabConfig = QtGui.QTabWidget(Design456Preferences)
-        self.tabConfig.setGeometry(QtCore.QRect(110, 0, 691, 581))
-        self.tabConfig.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
-        self.tabConfig.setObjectName("tabConfig")
-        self.tabfirst = QtGui.QWidget()
-        self.tabfirst.setObjectName("tabfirst")
-        self.grpSimplify = QtGui.QGroupBox(self.tabfirst)
-        self.grpSimplify.setGeometry(QtCore.QRect(0, 0, 671, 221))
-        self.grpSimplify.setObjectName("grpSimplify")
-        self.chkSimplify = QtGui.QCheckBox(self.grpSimplify)
-        self.chkSimplify.setGeometry(QtCore.QRect(10, 20, 171, 20))
-        self.chkSimplify.setObjectName("chkSimplify")
-        self.chkDisableGrid = QtGui.QCheckBox(self.grpSimplify)
-        self.chkDisableGrid.setGeometry(QtCore.QRect(10, 50, 171, 20))
-        self.chkDisableGrid.setObjectName("chkDisableGrid")
-        self.tabConfig.addTab(self.tabfirst, "")
-        self.tabsecond = QtGui.QWidget()
-        self.tabsecond.setObjectName("tabsecond")
-        self.tabConfig.addTab(self.tabsecond, "")
-        self.listWidget = QtGui.QListWidget(Design456Preferences)
-        self.listWidget.setGeometry(QtCore.QRect(0, 0, 111, 581))
-        self.listWidget.setObjectName("listWidget")
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-        item = QtGui.QListWidgetItem()
-        self.listWidget.addItem(item)
-
-        self.retranslateUi(Design456Preferences)
-        self.tabConfig.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(Design456Preferences)
-
-    def retranslateUi(self, Design456Preferences):
-        _translate = QtCore.QCoreApplication.translate
-        Design456Preferences.setWindowTitle(_translate("Design456Preferences", "Design456Preferences"))
-        self.grpSimplify.setTitle(_translate("Design456Preferences", "Object Creation in Design456"))
-        self.chkSimplify.setText(_translate("Design456Preferences", "Simplify created objects"))
-        self.chkDisableGrid.setText(_translate("Design456Preferences", "Disable Grid"))
-        self.tabConfig.setTabText(self.tabConfig.indexOf(self.tabfirst), _translate("Design456Preferences", "General"))
-        self.tabConfig.setTabText(self.tabConfig.indexOf(self.tabsecond), _translate("Design456Preferences", "Others"))
-        __sortingEnabled = self.listWidget.isSortingEnabled()
-        self.listWidget.setSortingEnabled(False)
-        item = self.listWidget.item(0)
-        item.setText(_translate("Design456Preferences", "General"))
-        item = self.listWidget.item(1)
-        item.setText(_translate("Design456Preferences", "Others"))
-        self.listWidget.setSortingEnabled(__sortingEnabled)
-
+__updated__ = '2022-02-08 20:28:39'
 
 from PySide import QtGui
 
+def Design456_preferences():
+    return Gui.ParamGet("User parameter:BaseApp/Preferences/Mod/Design456")
+
+def setGrid(enabled=True):
+    pref = Design456_preferences()
+    pref.SetBool("GridEnabled", enabled)
+
+def setSimplified(enabled=False):
+    pref = Design456_preferences()
+    pref.SetBool("Simplified", enabled)
+
 class Design456Preferences:
-    def __init__(self):
-        self.d = QtGui.QWidget()
-        self.ui = Ui_Design456Preferences()
-        self.ui.setupUi(self.d)
-        self.ui.retranslateUi(self.d)
+    def __init__(self, parent=None):
+        self.form = Gui.PySideUic.loadUi(Design456Init.UI_PATH+'Design456Pref.ui')
 
     def saveSettings(self):
-        pass
+        Design456_preferences().setPreferencesAdvanced(
+                self.form.chkDisableGrid.isChecked(),
+                self.form.chkSimplify.isChecked()
+                )
+
     def loadSettings(self):
+        self.form.chkDisableGrid.setChecked(Design456Init.PATH_PREF.chkDisableGrid())
+        self.form.chkSimplify.setChecked(Design456Init.PATH_PREF.chkSimplify())
+        self.updateSelection()
+
+    def updateSelection(self, state=None):
         pass
 
-Gui.addPreferencePage(Design456Preferences, "Design456Workbench")
+Gui.addPreferencePage(Design456Preferences,"Design456")

@@ -13,12 +13,15 @@
   <property name="windowTitle">
    <string>Design456Preferences</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="Sweden"/>
+  </property>
   <widget class="QTabWidget" name="tabConfig">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>0</x>
      <y>0</y>
-     <width>691</width>
+     <width>781</width>
      <height>581</height>
     </rect>
    </property>
@@ -35,16 +38,51 @@
     <widget class="QGroupBox" name="grpSimplify">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>671</width>
-       <height>221</height>
+       <x>10</x>
+       <y>10</y>
+       <width>651</width>
+       <height>151</height>
       </rect>
      </property>
      <property name="title">
       <string>Object Creation in Design456</string>
      </property>
      <widget class="QCheckBox" name="chkSimplify">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>241</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Created Objects are simplified</string>
+      </property>
+      <property name="chkSimplified" stdset="0">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="grpSimplify_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>651</width>
+       <height>331</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Design456 Configurations</string>
+     </property>
+     <widget class="QCheckBox" name="chkDsableGrid_3">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -54,20 +92,87 @@
        </rect>
       </property>
       <property name="text">
-       <string>Simplify created objects</string>
+       <string>Grid Enabled</string>
+      </property>
+      <property name="chkGridEnabled" stdset="0">
+       <bool>true</bool>
       </property>
      </widget>
-     <widget class="QCheckBox" name="chkDsableGrid">
+     <widget class="Gui::PrefColorButton" name="DefaultBKGColor_3">
+      <property name="geometry">
+       <rect>
+        <x>199</x>
+        <y>40</y>
+        <width>46</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>The default color for new shapes</string>
+      </property>
+      <property name="color" stdset="0">
+       <color>
+        <red>189</red>
+        <green>225</green>
+        <blue>235</blue>
+       </color>
+      </property>
+      <property name="prefEntry" stdset="0">
+       <cstring>DefaultBKGColor</cstring>
+      </property>
+      <property name="prefPath" stdset="0">
+       <cstring>Mod/Design456</cstring>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
-        <width>171</width>
-        <height>20</height>
+        <y>40</y>
+        <width>182</width>
+        <height>28</height>
        </rect>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>182</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="text">
-       <string>Disable Grid</string>
+       <string>Default BKG color</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="grdSize">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>80</y>
+        <width>42</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="gridSize" stdset="0">
+       <number>5</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>182</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>182</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Grid size</string>
       </property>
      </widget>
     </widget>
@@ -78,27 +183,19 @@
     </attribute>
    </widget>
   </widget>
-  <widget class="QListWidget" name="listWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>111</width>
-     <height>581</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>General</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Others</string>
-    </property>
-   </item>
-  </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::ColorButton</class>
+   <extends>QPushButton</extends>
+   <header>Gui/Widgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefColorButton</class>
+   <extends>Gui::ColorButton</extends>
+   <header>Gui/PrefWidgets.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
