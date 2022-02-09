@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-02-09 20:34:22'
+__updated__ = '2022-02-09 20:40:12'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -86,13 +86,14 @@ Gui.addCommand('Design456_ViewInsideObjects', Design456_ViewInsideObjects())
 
 
 class Design456_AlignFlatToPlane:
-#TODO: FIXME : Make this works in a better way.
+    """[Align the selected object to the current draft working plane]
+    """
     def Activated(self):
-        print(Design456Init.DefaultDirectionOfExtrusion,
-              " Design456Init.DefaultDirectionOfExtrusion")
         try:
             Selectedobjects = Gui.Selection.getSelectionEx()
             for obj in Selectedobjects:
+                #Get the placement of the plane and project location of the object on the plane
+                #Use it as new placement
                 obj.Object.Placement.Base = App.DraftWorkingPlane.projectPoint(obj.Object.Placement.Base)
                 #TODO: FIXME: Should we rotate the objects also? don't think so at the moment 
             App.ActiveDocument.recompute()
