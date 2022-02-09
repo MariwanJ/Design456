@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-02-08 21:25:16'
+__updated__ = '2022-02-09 19:59:31'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -374,15 +374,31 @@ class Design456_ResetPlacements:
                     newOBJ.Links = sObj.Object
                     minzPoint = sObj.Object.Shape.BoundBox.ZMin
                     # Start to inverse the old placement
-                    plOld = sObj.Object.Placement
-                    pl = plOld
-                    # Take the first vector of the object as a new placement
-                    plOld.Base = sObj.Object.Shape.Vertexes[0].Point
-                    plOld.Base.z = minzPoint
-                    p = plOld.inverse()
-                    sObj.Object.Placement = p
-                    # Put the Z axis to be the minimum point
-                    newOBJ.Placement = pl
+                    plOld = sObj.Object.Placement.copy()
+                    if (plOld.Base !=App.Vector(0,0,0)):
+                        # The object is not at relative origin. 
+                        # We need to reset it before doing any action
+                        # and we need to keep the old values also.
+                        saveTemp=plOld
+                        plOld.Base=App.Vector(0,0,0)
+                        pl = plOld
+                        # Take the first vector of the object as a new placement
+                        plOld.Base = sObj.Object.Shape.Vertexes[0].Point
+                        plOld.Base.z = minzPoint
+                        p = plOld.inverse()
+                        sObj.Object.Placement = p
+                        # Put the Z axis to be the minimum point
+                        newOBJ.Placement = pl
+                        newOBJ.Placement.Base= newOBJ.Placement.Base + (saveTemp.Base)
+                    else: 
+                        pl = plOld
+                        # Take the first vector of the object as a new placement
+                        plOld.Base = sObj.Object.Shape.Vertexes[0].Point
+                        plOld.Base.z = minzPoint
+                        p = plOld.inverse()
+                        sObj.Object.Placement = p
+                        # Put the Z axis to be the minimum point
+                        newOBJ.Placement = pl
 
                     # Make a simple copy of the object
                     App.ActiveDocument.recompute()
