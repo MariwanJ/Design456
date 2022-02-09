@@ -42,7 +42,7 @@ import time  # For double click detection
 This is a class for coin3D Window
 '''
 
-__updated__ = '2022-01-12 20:12:50'
+__updated__ = '2022-02-09 21:35:19'
 
 
 @dataclass

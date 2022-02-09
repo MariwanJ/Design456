@@ -44,7 +44,7 @@ from abc import abstractmethod
 # ********************************************************************************************************
 from dataclasses import dataclass
 
-__updated__ = '2022-01-13 07:14:55'
+__updated__ = '2022-02-09 21:37:26'
 
 
 @dataclass
@@ -162,7 +162,7 @@ class Fr_Widget (object):
         # Use this to send any object or value to the lbl drawing/callback(propertyValues object)
         self.w_lbluserData = None
 
-        self.w_pick_radius = 2  # See if this must be a parameter in the GUI /Mariwan
+        self.w_pick_radius = 5  # See if this must be a parameter in the GUI /Mariwan
         self.w_widgetSoNodes = None  # Should be defined in the widget either one or a list
         self.w_widgetlblSoNodes = None  # Should be defined in the widget either one or a list
         # each node is a child of one switch, Add drawings a children for this switch

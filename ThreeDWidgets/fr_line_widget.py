@@ -57,7 +57,7 @@ wny.show()                    # show the window and it's widgets.
 
 """
 
-__updated__ = '2021-12-31 08:57:05'
+__updated__ = '2022-02-09 22:01:22'
 
 
 def movecallback(userData=None):
@@ -178,6 +178,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
+
         if type(event) == int:
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nothing to do
@@ -187,22 +188,28 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                     self.w_pick_radius, self.w_widgetlblSoNodes)
 
-            if clickwdgdNode is None and clickwdglblNode is None:
-                # SoSwitch not found
-                self.remove_focus()
-                return 0
 
+            if (clickwdgdNode is None) and (clickwdglblNode is None):
+                # SoSwitch not found
+                print("self.w_widgetSoNodes",self.w_widgetSoNodes)
+                print("self.w_widgetlblSoNodes",self.w_widgetlblSoNodes)
+                self.remove_focus()
+                print("not found")
+                return 0
             if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
-                if clickwdglblNode is not None or clickwdgdNode is not None:
-                    print("Double click detected")
+                print("Double click detected")
+                if (clickwdglblNode is not None) or (clickwdgdNode is not None):
                     # if not self.has_focus():
                     #    self.take_focus()
                     self.do_lblcallback()
                     return 1
 
             elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-                if clickwdgdNode is not None or clickwdglblNode is not None:
+                print("handle mouseeee")
+                print("self.w_widgetSoNodes",self.w_widgetSoNodes)
+                print("self.w_widgetlblSoNodes",self.w_widgetlblSoNodes)
+                if (clickwdgdNode is not None) or (clickwdglblNode is not None):
                     if not self.has_focus():
                         self.take_focus()
                     self.do_callback()
@@ -232,8 +239,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             _rotation = (0, 0, 1, 0)
             vec = [p1, p2]
             if self.is_visible():
-                self.saveSoNodesToWidget(fr_draw.draw_line(
-                    vec, usedColor, _rotation, self.w_lineWidth))
+                self.w_widgetSoNodes=fr_draw.draw_line(
+                    vec, usedColor, _rotation, self.w_lineWidth)
                 self.draw_label(usedColor)
                 # add both to the same switch. and add them to the scenegraph automatically
                 allToSwitch = []
@@ -256,8 +263,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.vectors = self.w_vector
         (thi, phi) = self.calculateLineSpherical()
         self.w_lbluserData.SetupRotation = [0, -phi, thi]
-        lbl = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
-        self.saveSoNodeslblToWidget(lbl)
+        self.w_widgetlblSoNodes = fr_label_draw.draw_label(self.w_label, self.w_lbluserData)
 
     def move(self, newVecPos):
         """

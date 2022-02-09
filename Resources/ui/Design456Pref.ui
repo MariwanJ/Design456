@@ -175,6 +175,38 @@
        <string>Grid size</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>182</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>182</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Pick Radius (COIN)</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="grdPickRadius">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>110</y>
+        <width>42</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="pickRadius" stdset="0">
+       <number>5</number>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="tabsecond">

@@ -43,7 +43,7 @@ from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-02-07 20:16:56'
+__updated__ = '2022-02-09 20:59:31'
 
 # This will be used to convert mouse movement to scale factor.
 SCALE_FACTOR = 20.0
@@ -241,7 +241,6 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         scale = 1.0
 
         MovementsSize = linktocaller.endVector.sub( linktocaller.startVector)
-        print("MovementsSize",MovementsSize)
         (scaleX, scaleY, scaleZ) = calculateScale(
             ArrowObject, linktocaller, MovementsSize)
 
