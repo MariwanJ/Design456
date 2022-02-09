@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-02-09 19:59:31'
+__updated__ = '2022-02-09 20:34:22'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -91,21 +91,10 @@ class Design456_AlignFlatToPlane:
         print(Design456Init.DefaultDirectionOfExtrusion,
               " Design456Init.DefaultDirectionOfExtrusion")
         try:
-            #Reset the object otherwise this tool fails.
-            reset=Design456_ResetPlacements()
-            reset.Activated()
-
             Selectedobjects = Gui.Selection.getSelectionEx()
-            # TODO:This must be modified
-
             for obj in Selectedobjects:
-
-                if Design456Init.DefaultDirectionOfExtrusion == 'z':
-                    obj.Object.Placement.Base.z = 0.0
-                elif Design456Init.DefaultDirectionOfExtrusion == 'y':
-                    obj.Object.Placement.Base.y = 0.0
-                elif Design456Init.DefaultDirectionOfExtrusion == 'x':
-                    obj.Object.Placement.Base.x = 0.0
+                obj.Object.Placement.Base = App.DraftWorkingPlane.projectPoint(obj.Object.Placement.Base)
+                #TODO: FIXME: Should we rotate the objects also? don't think so at the moment 
             App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo reg.
         except Exception as err:
