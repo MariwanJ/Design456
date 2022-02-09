@@ -34,7 +34,7 @@ import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2021-12-31 12:57:19'
+__updated__ = '2022-02-09 20:53:54'
 
 # Move an object to the location of the mouse click on another surface
 class Design456_Magnet:
@@ -58,9 +58,10 @@ class Design456_Magnet:
             sub2 = s[1]
             face1 = faced.getObjectFromFaceName(sub1, sub1.SubElementNames[0])
             face2 = faced.getObjectFromFaceName(sub2, sub2.SubElementNames[0])
-            App.DraftWorkingPlane.alignToFace(face1)
+            #App.DraftWorkingPlane.alignToFace(face1)
 
-            sub2.Object.Placement.Base = face1.CenterOfMass
+            sub2.Object.Placement.Base = face1.Placement.Base #face1.CenterOfMass
+            sub2.Object.Placement.Base.z= face1.CenterOfMass.z
             # This will fail if the surface doesn't have Rotation 
             if(hasattr(face1.Faces[0].Surface, "Rotation")):
                 sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
