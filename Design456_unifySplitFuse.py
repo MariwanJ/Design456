@@ -48,17 +48,14 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
-__updated__ = '2021-12-31 08:56:40'
+__updated__ = '2022-02-10 22:41:32'
 
-class Design456_unifySplitFuse1:
+class Design456_LoftBetweenFaces:
     
     def Activated(self):
         try: 
-            #### Config Begin ####
-            switchRemoveConstructionObject = self.askQuestion()    # if 0= (NO) not removed creation objects 1= (YES) remove objects
-            #### Config End ####
-            App.ActiveDocument.openTransaction(translate("Design456","UnifySplitFuse1"))
-            selectedEdge     = Gui.Selection.getSelectionEx()
+            App.ActiveDocument.openTransaction(translate("Design456","LoftBetweenFaces"))
+            selectedObj     = Gui.Selection.getSelectionEx()
             sel = selObjects = Gui.Selection.getSelection()
             try:
                 subElementName = Gui.Selection.getSelectionEx()[0].SubElementNames[0] # for color first face selected
@@ -67,91 +64,91 @@ class Design456_unifySplitFuse1:
                 
             if (len(sel) != 2):
                 # Two object must be selected
-                errMessage = "Select two objects to use the Tool"
+                errMessage = "Select two Faces of two objects to use the Tool"
                 faced.errorDialog(errMessage)
                 return
 
             try:
                 colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] # color face selected
-                ##App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] = colorFace# give color on face
             except Exception:
                 colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[0] # color face selected [0] 
 
             ### Begin command Part_ElementCopy First selection
-            newFace1 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedEdge[0].SubElementNames[0],needSubElement=True,refine=False).copy()
-            App.ActiveDocument.addObject('Part::Feature','Face1').Shape = newFace1
-            shapeFace1 = App.ActiveDocument.ActiveObject
+            newFace1 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[0],needSubElement=True,refine=False).copy()
+            newObj1= App.ActiveDocument.addObject('Part::Feature','Face1')
+            newObj1.Shape = newFace1
             ####
 
             ### Begin command Part_ElementCopy Second selection
             try:# independent object 
-                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[1].Name),selectedEdge[1].SubElementNames[0],needSubElement=True,refine=False).copy()
+                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[1].Name),selectedObj[1].SubElementNames[0],needSubElement=True,refine=False).copy()
             except Exception:
                 # same object other face  TODO: This will fail if you have a sphere shape or a ball Mariwan 2021-03-18
-                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedEdge[0].SubElementNames[1],needSubElement=True,refine=False).copy()
+                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[1],needSubElement=True,refine=False).copy()
 
-            App.ActiveDocument.addObject('Part::Feature','Face2').Shape = newFace2
-            shapeFace2 = App.ActiveDocument.ActiveObject
+
+            newObj2=App.ActiveDocument.addObject('Part::Feature','Face2')
+            newObj2.Shape = newFace2
             App.ActiveDocument.recompute()
             ### End command Part_ElementCopy
 
             ### Begin command Part_Loft
             attached = App.ActiveDocument.addObject('Part::Loft','Attached')
-            attached.Sections = [App.ActiveDocument.Face1, App.ActiveDocument.Face2, ]
+            attached.Sections = [newObj1,newObj2 ]
             attached.Solid=True
             attached.Ruled=False
             attached.Closed=False
             ### End command Part_Loft
+            App.ActiveDocument.recompute()
 
             ### Begin command Part_Fuse
-            fusion = App.ActiveDocument.addObject("Part::MultiFuse","Fusion")
-            try:                # multiple objects
-                App.ActiveDocument.Fusion.Shapes = [App.ActiveDocument.getObject(selObjects[0].Name),App.ActiveDocument.Attached,App.ActiveDocument.getObject(selObjects[1].Name),]
-            except Exception:   # single object
-                App.ActiveDocument.Fusion.Shapes = [App.ActiveDocument.getObject(selObjects[0].Name),App.ActiveDocument.Attached,App.ActiveDocument.getObject(selObjects[0].Name),]
+            fusion = App.ActiveDocument.addObject("Part::MultiFuse","multiFusion")
+               # multiple objects
+            allObjects= []
+            for o in selectedObj:
+                allObjects.append(o.Object)
+            allObjects.append(attached)
+            fusion.Shapes = allObjects
             App.ActiveDocument.recompute()
             ### End command Part_Fuse
 
             # create single object
-            _part.show(fusion.Shape.copy())
-            App.ActiveDocument.ActiveObject.ViewObject.DiffuseColor = colorFace    # give face color on object
-            App.ActiveDocument.ActiveObject.Label = sel[0].Label + "_" + subElementName
 
+            fusion.Shape.copy()
+            newObj2.Shape = newFace2
+            App.ActiveDocument.recompute()
+
+            shp = fusion.Shape.copy()
+            resultObj= App.ActiveDocument.addObject('Part::Feature','JoinedObjects')
+            resultObj.Shape=shp
+            App.ActiveDocument.recompute()
+            
             ##### removeObject work
-            if switchRemoveConstructionObject == 1:
+            if len(selObjects)>1:
+                for obj in selectedObj:
+                    App.ActiveDocument.removeObject(obj.Object.Name)
+            else:
                 App.ActiveDocument.removeObject(selObjects[0].Name)
-                try:                # multiple objects
-                    App.ActiveDocument.removeObject(selObjects[1].Name)
-                except Exception:   # single object
-                    None
-                App.ActiveDocument.removeObject(attached.Name)
-                App.ActiveDocument.removeObject(fusion.Name)
-                App.ActiveDocument.removeObject(shapeFace1.Name)
-                App.ActiveDocument.removeObject(shapeFace2.Name)
+            App.ActiveDocument.removeObject(attached.Name)
+            App.ActiveDocument.removeObject(fusion.Name)
+            App.ActiveDocument.removeObject(newObj1.Name)
+            App.ActiveDocument.removeObject(newObj2.Name)
             App.ActiveDocument.commitTransaction() #undo reg.
         except Exception as err:
-            App.Console.PrintError("'UnifySplitFuse1' Failed. "
+            App.Console.PrintError("'LoftBetweenFaces' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-    def askQuestion(self):
-        msgBox = QtGui.QMessageBox()
-        msgBox.setStandardButtons(QtGui.QMessageBox.Yes |QtGui.QMessageBox.No)
-        msgBox.setInformativeText("Remove old objects?")
-        t= msgBox.exec_()
-        if t== QtGui.QMessageBox.Yes:
-            return 1
-        else: 
-            return 0
+
     def GetResources(self):
             return{
-            'Pixmap':    Design456Init.ICON_PATH + 'unifySplitFuse1.svg',
+            'Pixmap':    Design456Init.ICON_PATH + 'UnifySplitFuse1.svg',
             'MenuText': 'unify-Split & Fuse',
             'ToolTip':  'unify Split and Fuse'
         }
             
-Gui.addCommand('Design456_unifySplitFuse1', Design456_unifySplitFuse1())
+Gui.addCommand('Design456_LoftBetweenFaces', Design456_LoftBetweenFaces())
 
 
 
@@ -165,7 +162,7 @@ class Design456_unifySplitFuse2:
                 faced.errorDialog(errMessage)
                 return
             reply = self.askQuestion()
-            App.ActiveDocument.openTransaction(translate("Design456","UnifySplitFuse1"))
+            App.ActiveDocument.openTransaction(translate("Design456","LoftBetweenFaces"))
             Gui.ActiveDocument.getObject(sel[0].Name).Visibility=False
             Gui.ActiveDocument.getObject(sel[1].Name).Visibility=False
 

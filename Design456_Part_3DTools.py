@@ -41,7 +41,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-02-02 20:50:06'
+__updated__ = '2022-02-10 22:40:31'
 
 # Merge
 class Design456_Part_Merge:
@@ -608,7 +608,7 @@ class Design456_Part_3DToolsGroup:
                 "Design456_SplitObject",
                 "Design456_Part_Fillet",
                 "Design456_Part_Chamfer",
-                "Design456_unifySplitFuse1",
+                "Design456_LoftBetweenFaces",
                 "Design456_unifySplitFuse2",
                 "Design_ColorizeObject"
                 )

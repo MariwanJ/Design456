@@ -35,7 +35,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-01-26 22:06:24'
+__updated__ = '2022-02-10 21:35:57'
 
 #import PartGui
 import BasicShapes.CommandShapes
@@ -415,12 +415,12 @@ class Design456_Part_Hemisphere:
 
     def Activated(self):
         try:
-            neRaduis= QtGui.QInputDialog.getDouble(None, "Radius", "Radius:",0,1.0,10000.0,2)[0]
-            if(neRaduis ==0 ):
+            neRadius= QtGui.QInputDialog.getDouble(None, "Radius", "Radius:",0,1.0,10000.0,2)[0]
+            if(neRadius ==0 ):
                 return #Nothing to do here.
             App.ActiveDocument.openTransaction(translate("Design456","Part Hemisphere"))
             neObj = App.ActiveDocument.addObject("Part::Sphere", "tempHemisphere")
-            neObj.Radius=neRaduis 
+            neObj.Radius=neRadius 
             neObj.Placement = App.Placement(App.Vector(
                 0.00, 0.00, 0.00), App.Rotation(App.Vector(1.00, 0.00, 0.00), 90.00))
             neObj.Angle1 = '-90.00 deg'
