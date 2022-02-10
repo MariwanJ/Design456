@@ -37,7 +37,7 @@ from typing import List
 
 # Group class. Use this to collect several widgets.
 
-__updated__ = '2021-12-31 08:57:04'
+__updated__ = '2022-02-10 21:25:35'
 
 class Fr_Group(fr_widget.Fr_Widget):
     # Any drawing/Everything should be added to this later
@@ -60,7 +60,6 @@ class Fr_Group(fr_widget.Fr_Widget):
         Args:
             widgets ([Fr_Widget object]): [Widget to add to the group]
         """
-        print("add widget to group")
         if type(widgets) == list:
             for widget in widgets:
                 widget.w_parent = self.w_mainfrCoinWindow

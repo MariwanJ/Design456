@@ -57,7 +57,7 @@ wny.show()                    # show the window and it's widgets.
 
 """
 
-__updated__ = '2022-02-09 22:01:22'
+__updated__ = '2022-02-10 21:24:44'
 
 
 def movecallback(userData=None):
@@ -178,7 +178,6 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-
         if type(event) == int:
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1    # we treat this event. Nothing to do
@@ -189,26 +188,17 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
                                                                     self.w_pick_radius, self.w_widgetlblSoNodes)
 
 
-            if (clickwdgdNode is None) and (clickwdglblNode is None):
-                # SoSwitch not found
-                print("self.w_widgetSoNodes",self.w_widgetSoNodes)
-                print("self.w_widgetlblSoNodes",self.w_widgetlblSoNodes)
+            if ((clickwdgdNode is None) and (clickwdglblNode is None)):
+                # SoSnodes not found
                 self.remove_focus()
-                print("not found")
                 return 0
-            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+            if event == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
-                print("Double click detected")
                 if (clickwdglblNode is not None) or (clickwdgdNode is not None):
-                    # if not self.has_focus():
-                    #    self.take_focus()
                     self.do_lblcallback()
                     return 1
 
-            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-                print("handle mouseeee")
-                print("self.w_widgetSoNodes",self.w_widgetSoNodes)
-                print("self.w_widgetlblSoNodes",self.w_widgetlblSoNodes)
+            elif event == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
                 if (clickwdgdNode is not None) or (clickwdglblNode is not None):
                     if not self.has_focus():
                         self.take_focus()
@@ -348,6 +338,7 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             self.removeSoNodeFromSoSwitch()
             self.removeSoNodes()
             self.removeSoSwitch()
+
 
         except Exception as err:
             App.Console.PrintError("'Fr_Line_Widget' Failed. "

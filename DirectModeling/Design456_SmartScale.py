@@ -40,21 +40,20 @@ from PySide import QtGui, QtCore
 from draftutils.translate import translate  # for translate
 
 SeperateLinesFromObject = 4
-__updated__ = '2022-01-13 13:06:13'
+__updated__ = '2022-02-10 21:23:07'
 
 
 def smartLinecallback(smartLine, obj, parentlink):
     """
         Callback when line is clicked
     """
-    pass
+    smartlbl_callback(smartLine, obj, parentlink)
 
 
 def smartlbl_callback(smartLine, obj, parentlink):
     """
         callback when label is double clicked
     """
-    print("smartline lbl callback")
     # clone the object
     p1 = smartLine.w_vector[0]
     p2 = smartLine.w_vector[1]

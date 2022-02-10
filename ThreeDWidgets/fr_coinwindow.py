@@ -42,7 +42,7 @@ import time  # For double click detection
 This is a class for coin3D Window
 '''
 
-__updated__ = '2022-02-09 21:35:19'
+__updated__ = '2022-02-10 21:25:00'
 
 
 @dataclass
@@ -346,6 +346,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         if Fr_CoinWindow.w_countMouseCLICK == 1:
             return True
         else:
+            Fr_CoinWindow.w_countMouseCLICK = 0
             return False
 
     def removeCallbacks(self):
