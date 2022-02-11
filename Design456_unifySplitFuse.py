@@ -48,7 +48,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
-__updated__ = '2022-02-11 21:44:43'
+__updated__ = '2022-02-11 22:00:12'
 
 class Design456_LoftBetweenFaces:
     
@@ -80,6 +80,7 @@ class Design456_LoftBetweenFaces:
                 newFace1 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[0],needSubElement=True,refine=False).copy()
                 newObj1= App.ActiveDocument.addObject('Part::Feature','Face1')
                 newObj1.Shape = newFace1
+                App.ActiveDocument.recompute()
             else:
                 newObj1=selectedObj[0].Object
             ####
@@ -96,7 +97,6 @@ class Design456_LoftBetweenFaces:
                 App.ActiveDocument.recompute()
             else:
                 newObj2=selectedObj[1].Object
-
             ### Part_Loft
             attached = App.ActiveDocument.addObject('Part::Loft','Attached')
             attached.Sections = [newObj1,newObj2 ]
@@ -127,11 +127,8 @@ class Design456_LoftBetweenFaces:
                 App.ActiveDocument.recompute()
                 
                 ##### remove Objects 
-                if len(selObjects)>1:
-                    for obj in selectedObj:
-                        App.ActiveDocument.removeObject(obj.Object.Name)
-                else:
-                    App.ActiveDocument.removeObject(selObjects[0].Name)
+                for obj in selectedObj:
+                    App.ActiveDocument.removeObject(obj.Object.Name)
                 App.ActiveDocument.removeObject(attached.Name)
                 App.ActiveDocument.removeObject(fusion.Name)
                 App.ActiveDocument.removeObject(newObj1.Name)
@@ -147,6 +144,7 @@ class Design456_LoftBetweenFaces:
                 App.ActiveDocument.removeObject(attached.Name)
                 App.ActiveDocument.removeObject(newObj1.Name)
                 App.ActiveDocument.removeObject(newObj2.Name)
+            App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction() #undo reg.
 
         except Exception as err:
