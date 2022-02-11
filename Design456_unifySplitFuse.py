@@ -48,7 +48,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
-__updated__ = '2022-02-10 22:41:32'
+__updated__ = '2022-02-11 21:44:43'
 
 class Design456_LoftBetweenFaces:
     
@@ -57,6 +57,7 @@ class Design456_LoftBetweenFaces:
             App.ActiveDocument.openTransaction(translate("Design456","LoftBetweenFaces"))
             selectedObj     = Gui.Selection.getSelectionEx()
             sel = selObjects = Gui.Selection.getSelection()
+            Both3DObject=[False,False]
             try:
                 subElementName = Gui.Selection.getSelectionEx()[0].SubElementNames[0] # for color first face selected
             except: 
@@ -67,32 +68,36 @@ class Design456_LoftBetweenFaces:
                 errMessage = "Select two Faces of two objects to use the Tool"
                 faced.errorDialog(errMessage)
                 return
+            newObj1=newObj2=None
+            if faced.isFaceOf3DObj(selectedObj[0]) is True:
+                Both3DObject[0]=True
+                try:
+                    colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] # color face selected
+                except Exception:
+                    colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[0] # color face selected [0] 
 
-            try:
-                colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] # color face selected
-            except Exception:
-                colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[0] # color face selected [0] 
-
-            ### Begin command Part_ElementCopy First selection
-            newFace1 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[0],needSubElement=True,refine=False).copy()
-            newObj1= App.ActiveDocument.addObject('Part::Feature','Face1')
-            newObj1.Shape = newFace1
+                ### Begin command Part_ElementCopy First selection
+                newFace1 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[0],needSubElement=True,refine=False).copy()
+                newObj1= App.ActiveDocument.addObject('Part::Feature','Face1')
+                newObj1.Shape = newFace1
+            else:
+                newObj1=selectedObj[0].Object
             ####
 
-            ### Begin command Part_ElementCopy Second selection
-            try:# independent object 
-                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[1].Name),selectedObj[1].SubElementNames[0],needSubElement=True,refine=False).copy()
-            except Exception:
-                # same object other face  TODO: This will fail if you have a sphere shape or a ball Mariwan 2021-03-18
-                newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[1],needSubElement=True,refine=False).copy()
+            if faced.isFaceOf3DObj(selectedObj[0]) is True:
+                Both3DObject[1]=True
+                try:# independent object 
+                    newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[1].Name),selectedObj[1].SubElementNames[0],needSubElement=True,refine=False).copy()
+                except Exception:
+                    # same object other face  TODO: This will fail if you have a sphere shape or a ball Mariwan 2021-03-18
+                    newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[1],needSubElement=True,refine=False).copy()
+                newObj2=App.ActiveDocument.addObject('Part::Feature','Face2')
+                newObj2.Shape = newFace2
+                App.ActiveDocument.recompute()
+            else:
+                newObj2=selectedObj[1].Object
 
-
-            newObj2=App.ActiveDocument.addObject('Part::Feature','Face2')
-            newObj2.Shape = newFace2
-            App.ActiveDocument.recompute()
-            ### End command Part_ElementCopy
-
-            ### Begin command Part_Loft
+            ### Part_Loft
             attached = App.ActiveDocument.addObject('Part::Loft','Attached')
             attached.Sections = [newObj1,newObj2 ]
             attached.Solid=True
@@ -101,39 +106,49 @@ class Design456_LoftBetweenFaces:
             ### End command Part_Loft
             App.ActiveDocument.recompute()
 
-            ### Begin command Part_Fuse
-            fusion = App.ActiveDocument.addObject("Part::MultiFuse","multiFusion")
-               # multiple objects
-            allObjects= []
-            for o in selectedObj:
-                allObjects.append(o.Object)
-            allObjects.append(attached)
-            fusion.Shapes = allObjects
-            App.ActiveDocument.recompute()
-            ### End command Part_Fuse
-
-            # create single object
-
-            fusion.Shape.copy()
-            newObj2.Shape = newFace2
-            App.ActiveDocument.recompute()
-
-            shp = fusion.Shape.copy()
-            resultObj= App.ActiveDocument.addObject('Part::Feature','JoinedObjects')
-            resultObj.Shape=shp
-            App.ActiveDocument.recompute()
-            
-            ##### removeObject work
-            if len(selObjects)>1:
-                for obj in selectedObj:
-                    App.ActiveDocument.removeObject(obj.Object.Name)
+            ###Part_Fuse
+            if (Both3DObject[0] ==True and Both3DObject[1]==True ):
+                fusion = App.ActiveDocument.addObject("Part::MultiFuse","multiFusion")
+                allObjects= []
+                for o in selectedObj:
+                    allObjects.append(o.Object)
+                allObjects.append(attached)
+                fusion.Shapes = allObjects
+                App.ActiveDocument.recompute()
+    
+                #simplify object
+                fusion.Shape.copy()
+                newObj2.Shape = newFace2
+                App.ActiveDocument.recompute()
+    
+                shp = fusion.Shape.copy()
+                resultObj= App.ActiveDocument.addObject('Part::Feature','JoinedObjects')
+                resultObj.Shape=shp
+                App.ActiveDocument.recompute()
+                
+                ##### remove Objects 
+                if len(selObjects)>1:
+                    for obj in selectedObj:
+                        App.ActiveDocument.removeObject(obj.Object.Name)
+                else:
+                    App.ActiveDocument.removeObject(selObjects[0].Name)
+                App.ActiveDocument.removeObject(attached.Name)
+                App.ActiveDocument.removeObject(fusion.Name)
+                App.ActiveDocument.removeObject(newObj1.Name)
+                App.ActiveDocument.removeObject(newObj2.Name)
             else:
-                App.ActiveDocument.removeObject(selObjects[0].Name)
-            App.ActiveDocument.removeObject(attached.Name)
-            App.ActiveDocument.removeObject(fusion.Name)
-            App.ActiveDocument.removeObject(newObj1.Name)
-            App.ActiveDocument.removeObject(newObj2.Name)
+                Gui.ActiveDocument.getObject(newObj1.Name).Visibility == False
+                Gui.ActiveDocument.getObject(newObj2.Name).Visibility == False
+                
+                shp = attached.Shape.copy()
+                resultObj= App.ActiveDocument.addObject('Part::Feature','JoinedObjects')
+                resultObj.Shape=shp
+                App.ActiveDocument.recompute()
+                App.ActiveDocument.removeObject(attached.Name)
+                App.ActiveDocument.removeObject(newObj1.Name)
+                App.ActiveDocument.removeObject(newObj2.Name)
             App.ActiveDocument.commitTransaction() #undo reg.
+
         except Exception as err:
             App.Console.PrintError("'LoftBetweenFaces' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -143,9 +158,9 @@ class Design456_LoftBetweenFaces:
 
     def GetResources(self):
             return{
-            'Pixmap':    Design456Init.ICON_PATH + 'UnifySplitFuse1.svg',
-            'MenuText': 'unify-Split & Fuse',
-            'ToolTip':  'unify Split and Fuse'
+            'Pixmap':    Design456Init.ICON_PATH + 'LoftBetweenFaces.svg',
+            'MenuText': 'Loft Between Faces',
+            'ToolTip':  'Loft Between 2D/3D Faces'
         }
             
 Gui.addCommand('Design456_LoftBetweenFaces', Design456_LoftBetweenFaces())

@@ -41,7 +41,7 @@ import math
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-02-06 20:09:35'
+__updated__ = '2022-02-11 19:47:23'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -1094,3 +1094,22 @@ class reversEngSurface(object):
         return (self.newObject)
 
 
+def isFaceOf3DObj(selectedObj):
+    """[Check if the selected object is a face from
+        a 3D object or is a 2D object.
+
+        Face of 3D Object = True
+        2D Object= False
+    Returns:
+        [Boolean]: [Return True if the selected
+        object is a face from 3D object, otherwise False]
+    """
+    # TODO: How accurate is this function?
+    if hasattr(selectedObj.Object, "Shape") and len(selectedObj.Object.Shape.Solids) > 0:
+        return True
+    if hasattr(selectedObj.Object, "Shape") and selectedObj.Object.Shape.ShapeType == "Shell":
+        return True
+    if hasattr(selectedObj.Object, "Shape") and selectedObj.Object.Shape.ShapeType == "Compound":
+        return True
+    else:
+        return False
