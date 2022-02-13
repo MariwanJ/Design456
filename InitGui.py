@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-02-08 19:55:08'
+__updated__ = '2022-02-13 20:35:55'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -63,7 +63,7 @@ class Design456_Workbench (Workbench):
         import DefeaturingWB.FuzzyTools
         import Design456Init
         from Design456Pref import Design456Preferences
-        
+        import Design456_Segmented as _segmented
 
 
 
@@ -73,6 +73,8 @@ class Design456_Workbench (Workbench):
         self.appendToolbar("Design456_Part", designPart.Design456_Part.list)
         self.appendToolbar("Design456 2Ddrawing",
                            TwoDDraw.Design456_2Ddrawing.list)
+        self.appendToolbar("Design456_Segmented",_segmented.Design456_Segmented.list)
+        
         self.appendToolbar("Design456 Tools", _tools.Design456_Part_Tools.list)
         self.appendToolbar("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
         self.appendToolbar(

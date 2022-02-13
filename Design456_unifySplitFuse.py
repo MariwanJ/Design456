@@ -48,7 +48,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
-__updated__ = '2022-02-11 22:00:12'
+__updated__ = '2022-02-12 07:53:02'
 
 class Design456_LoftBetweenFaces:
     
@@ -63,11 +63,13 @@ class Design456_LoftBetweenFaces:
             except: 
                 subElementName = Gui.Selection.getSelectionEx()[0].SubObjects[0]
                 
-            if (len(sel) != 2):
+            if (len(selectedObj) != 2):
                 # Two object must be selected
-                errMessage = "Select two Faces of two objects to use the Tool"
-                faced.errorDialog(errMessage)
-                return
+                if (len(selectedObj[0].SubObjects)!=2):
+                    errMessage = "Select two Faces of to use the Tool"
+                    faced.errorDialog(errMessage)
+                    return
+            
             newObj1=newObj2=None
             if faced.isFaceOf3DObj(selectedObj[0]) is True:
                 Both3DObject[0]=True
