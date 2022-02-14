@@ -34,7 +34,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 import math 
-__updated__ = '2022-02-13 22:04:27'
+__updated__ = '2022-02-14 22:24:34'
 
 import Design456Init
 # from Part import CommandShapes     #Tube   not working
@@ -118,26 +118,27 @@ class SegmentedSephere:
             self.vertexes.clear()
             for ring in range(0,self.Rings+1):
                 phi = ring * math.radians(self.Z_Angle) / self.Rings
-                for segment in range(0,self.Segments +1):
+
+                for segment in range(0,self.Segments+1):
                     theta = segment * math.radians(self.XY_Angle) / self.Segments
                     x = round(self.Radius * math.cos(theta) * math.sin(phi),0)
                     y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
                     z = round(self.Radius * math.cos(phi),0)
+                    print("z",z)
+                    print(math.degrees(phi)) 
                     self.vertexes.append(App.Vector(x, y, z))
-
+            print(".............")
+            print(self.vertexes)
+            print(".............")
+            
             allRan=len(self.vertexes)
-            for i in range(0,int(allRan/2)):
-                print("i=",i)
-                print(self.vertexes[i], self.vertexes[i+1],
-                             self.vertexes[self.Segments+i+1],
-                             self.vertexes[self.Segments+i])
-                
+            for i in range(0,int(allRan/2)):                
                 allSelected=[self.vertexes[i],
                              self.vertexes[i+1],
-                             self.vertexes[self.Segments+i+1],
-                             self.vertexes[self.Segments+i]
+                             self.vertexes[self.Segments+i+2],
+                             self.vertexes[self.Segments+i+1]
                              ]
-                i=i+2
+                i=i+1
                 #Gui.updateGui()	
                 f=_draft.makeWire(allSelected, closed=True)
                 #self.faces.append(f.Shape.Faces[0])
