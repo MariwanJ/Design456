@@ -127,12 +127,17 @@ class SegmentedSephere:
 
             allRan=len(self.vertexes)
             for i in range(0,int(allRan/2)):
+                print("i=",i)
+                print(self.vertexes[i], self.vertexes[i+1],
+                             self.vertexes[self.Segments+i+1],
+                             self.vertexes[self.Segments+i])
+                
                 allSelected=[self.vertexes[i],
                              self.vertexes[i+1],
                              self.vertexes[self.Segments+i+1],
                              self.vertexes[self.Segments+i]
                              ]
-                i=i+4
+                i=i+2
                 #Gui.updateGui()	
                 f=_draft.makeWire(allSelected, closed=True)
                 #self.faces.append(f.Shape.Faces[0])
