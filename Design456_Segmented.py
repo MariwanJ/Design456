@@ -26,7 +26,6 @@ from __future__ import unicode_literals
 # **************************************************************************
 import os
 import sys
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
@@ -35,20 +34,10 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 import math 
-
 __updated__ = '2022-02-13 22:04:27'
-
-#import PartGui
-import BasicShapes.CommandShapes
-#import CompoundTools._CommandCompoundFilter
-import CompoundTools._CommandExplodeCompound
 
 import Design456Init
 # from Part import CommandShapes     #Tube   not working
-
-
-
-sys.path.append(Design456Init.PYRAMID_PATH)
 
 #Sephere
 
