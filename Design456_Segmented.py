@@ -83,8 +83,8 @@ class SegmentedSephere:
                        radius=10,
                        z_angle=360,
                        xy_angle=360,
-                       segments=6,
-                       rings=4
+                       segments=10,
+                       rings=10
                        ):
         obj.addProperty("App::PropertyLength", "Radius", "SegmentedSephere",
                         "Radius of the SegmentedSephere").Radius = radius
@@ -118,7 +118,7 @@ class SegmentedSephere:
             self.vertexes.clear()
             for ring in range(0,self.Rings+1):
                 phi = ring * math.radians(self.Z_Angle) / self.Rings
-                for segment in range(0,self.Segments ):
+                for segment in range(0,self.Segments +1):
                     theta = segment * math.radians(self.XY_Angle) / self.Segments
                     x = round(self.Radius * math.cos(theta) * math.sin(phi),0)
                     y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
@@ -129,8 +129,8 @@ class SegmentedSephere:
             for i in range(0,int(allRan/2)):
                 allSelected=[self.vertexes[i],
                              self.vertexes[i+1],
-                             self.vertexes[self.Segments+i],
-                             self.vertexes[self.Segments+i+1]
+                             self.vertexes[self.Segments+i+1],
+                             self.vertexes[self.Segments+i]
                              ]
                 i=i+4
                 #Gui.updateGui()	
