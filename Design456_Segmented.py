@@ -34,7 +34,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 import math 
-__updated__ = '2022-02-14 22:24:34'
+__updated__ = '2022-02-15 22:23:02'
 
 import Design456Init
 # from Part import CommandShapes     #Tube   not working
@@ -109,7 +109,7 @@ class SegmentedSephere:
         self.XY_Angle=float(obj.XY_Angle)
         self.Segments=int(obj.Segments)
         self.Rings=int(obj.Rings)
-        self.vertexes = []
+        self.vertexes = [[]]
         self.faces = []
         self.phi = 0
 
@@ -118,28 +118,23 @@ class SegmentedSephere:
             self.vertexes.clear()
             for ring in range(0,self.Rings+1):
                 phi = ring * math.radians(self.Z_Angle) / self.Rings
-
                 for segment in range(0,self.Segments+1):
                     theta = segment * math.radians(self.XY_Angle) / self.Segments
                     x = round(self.Radius * math.cos(theta) * math.sin(phi),0)
                     y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
                     z = round(self.Radius * math.cos(phi),0)
-                    print("z",z)
-                    print(math.degrees(phi)) 
-                    self.vertexes.append(App.Vector(x, y, z))
-            print(".............")
-            print(self.vertexes)
-            print(".............")
-            
-            allRan=len(self.vertexes)
-            for i in range(0,int(allRan/2)):                
-                allSelected=[self.vertexes[i],
-                             self.vertexes[i+1],
-                             self.vertexes[self.Segments+i+2],
-                             self.vertexes[self.Segments+i+1]
-                             ]
-                i=i+1
-                #Gui.updateGui()	
+                    self.vertexes.append([])
+                    self.vertexes[ring].append(App.Vector(x, y, z))
+            allRan=len(self.vertexes[0])
+
+            print(allRan,"allRan")
+            print(len(self.vertexes))
+            for j in range(0,len(self.vertexes)-1):
+                for i in range(0, allRan-1):
+                    print(j,i,"j i ")
+                    allSelected=[self.vertexes[j][i], self.vertexes[j][i+1],
+                                 self.vertexes[j+1][i+1], self.vertexes[j+1][i]]
+                
                 f=_draft.makeWire(allSelected, closed=True)
                 #self.faces.append(f.Shape.Faces[0])
             App.ActiveDocument.recompute()
