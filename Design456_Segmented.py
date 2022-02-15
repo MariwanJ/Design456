@@ -34,7 +34,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 import math 
-__updated__ = '2022-02-15 22:23:02'
+__updated__ = '2022-02-15 22:31:13'
 
 import Design456Init
 # from Part import CommandShapes     #Tube   not working
@@ -116,21 +116,23 @@ class SegmentedSephere:
         try:
             self.faces.clear()
             self.vertexes.clear()
+            newRing=[]
             for ring in range(0,self.Rings+1):
+                newRing.clear()
                 phi = ring * math.radians(self.Z_Angle) / self.Rings
                 for segment in range(0,self.Segments+1):
                     theta = segment * math.radians(self.XY_Angle) / self.Segments
                     x = round(self.Radius * math.cos(theta) * math.sin(phi),0)
                     y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
                     z = round(self.Radius * math.cos(phi),0)
-                    self.vertexes.append([])
-                    self.vertexes[ring].append(App.Vector(x, y, z))
+                    newRing.append(App.Vector(x, y, z))
+                self.vertexes.append(newRing)
             allRan=len(self.vertexes[0])
 
             print(allRan,"allRan")
-            print(len(self.vertexes))
-            for j in range(0,len(self.vertexes)-1):
-                for i in range(0, allRan-1):
+            print(len(self.vertexes)/len(self.vertexes[0]))
+            for j in range(0,self.Rings):
+                for i in range(0, self.Segments):
                     print(j,i,"j i ")
                     allSelected=[self.vertexes[j][i], self.vertexes[j][i+1],
                                  self.vertexes[j+1][i+1], self.vertexes[j+1][i]]
