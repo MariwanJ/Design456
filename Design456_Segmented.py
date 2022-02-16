@@ -81,7 +81,7 @@ class ViewProviderBox:
 class SegmentedSephere:
     def __init__(self, obj, 
                        radius=10,
-                       z_angle=360,
+                       z_angle=180,
                        xy_angle=360,
                        segments=10,
                        rings=10
@@ -125,9 +125,9 @@ class SegmentedSephere:
                     y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
                     z = round(self.Radius * math.cos(phi),0)
                     self.vertexes[ring].append(App.Vector(x, y, z))
-            allRan=len(self.vertexes[0])
-
-            print(allRan,"allRan")
+            print("......")
+            print(self.vertexes)
+            print("......")
             print(len(self.vertexes)/len(self.vertexes[0]))
             for j in range(0,self.Rings):
                 for i in range(0, self.Segments):
@@ -135,7 +135,8 @@ class SegmentedSephere:
                     allSelected=[self.vertexes[j][i], self.vertexes[j][i+1],
                                  self.vertexes[j+1][i+1], self.vertexes[j+1][i]]
                 
-                f=_draft.makeWire(allSelected, closed=True)
+                    f=_draft.makeWire(allSelected, closed=True)
+                    allSelected.clear()
                 #self.faces.append(f.Shape.Faces[0])
             App.ActiveDocument.recompute()
             #solidObjShape = _part.Solid(self.faces)
