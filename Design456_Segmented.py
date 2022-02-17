@@ -29,12 +29,12 @@ import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-import Draft as _draft
-import Part as _part
+import Draft 
+import Part 
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 import math 
-__updated__ = '2022-02-15 22:35:10'
+__updated__ = '2022-02-17 22:11:17'
 
 import Design456Init
 # from Part import CommandShapes     #Tube   not working
@@ -103,6 +103,30 @@ class SegmentedSephere:
         
         obj.Proxy = self
 
+    def MakeFace(self, vert):
+        """[summary]
+
+        Args:
+            vert ([type]): [description]
+
+        Returns:
+            [Face Object]: [Face created using the vertices]
+        """
+        try:
+            L1 = Part.makePolygon(vert,True)
+            S1=Part.Shape(L1)
+            App.ActiveDocument.recompute()
+            face = Part.Face(S1)
+            return face
+
+        except Exception as err:
+            App.Console.PrintError("'SegmentedSephere MakeFace' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            return
+
     def execute(self, obj):
         self.Radius = float(obj.Radius)
         self.Z_Angle=float(obj.Z_Angle)
@@ -125,21 +149,16 @@ class SegmentedSephere:
                     y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
                     z = round(self.Radius * math.cos(phi),0)
                     self.vertexes[ring].append(App.Vector(x, y, z))
-            print("......")
-            print(self.vertexes)
-            print("......")
-            print(len(self.vertexes)/len(self.vertexes[0]))
             for j in range(0,self.Rings):
                 for i in range(0, self.Segments):
-                    print(j,i,"j i ")
                     allSelected=[self.vertexes[j][i], self.vertexes[j][i+1],
                                  self.vertexes[j+1][i+1], self.vertexes[j+1][i]]
-                
-                    f=_draft.makeWire(allSelected, closed=True)
+                    f=self.MakeFace(allSelected)
                     allSelected.clear()
-                #self.faces.append(f.Shape.Faces[0])
-            App.ActiveDocument.recompute()
-            #solidObjShape = _part.Solid(self.faces)
+                    self.faces.append(f)
+  
+            shel=Part.Shell(self.faces)
+            solidObjShape = Part.Solid(shel)
             App.ActiveDocument.recompute()   
 
         except Exception as err:
