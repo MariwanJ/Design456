@@ -103,7 +103,7 @@ class SegmentedSephere:
         
         obj.Proxy = self
 
-    def MakeFace(self, vert):
+    def createAFace(self, vert):
         """[summary]
 
         Args:
@@ -113,10 +113,11 @@ class SegmentedSephere:
             [Face Object]: [Face created using the vertices]
         """
         try:
-            print(vert,"vert is ")
+            print("........................")
+            print("vert is ",vert)
+            print("........................")
             L1 = Part.makePolygon(vert,True)
             S1=Part.Shape(L1)
-            App.ActiveDocument.recompute()
             face = Part.Face(S1)
             return face
 
@@ -153,17 +154,13 @@ class SegmentedSephere:
             
             for j in range(0,self.Rings):
                 for i in range(0, self.Segments):
-                    allSelected=[self.vertexes[j][i], self.vertexes[j][i+1],
-                                 self.vertexes[j+1]]
-                    f1=self.MakeFace(allSelected)
-                    allSelected=[self.vertexes[j][i+1], self.vertexes[j+1][i],self.vertexes[j+1][i+1]]
-                    f2=self.MakeFace(allSelected)
-                    allSelected.clear()
+                    f1=self.createAFace([self.vertexes[j][i], self.vertexes[j][i+1],self.vertexes[j+1]])
+                    f2=self.createAFace([self.vertexes[j][i+1], self.vertexes[j+1][i],self.vertexes[j+1][i+1]])
                     self.faces.append(f1)
                     self.faces.append(f2)
   
-            shel=Part.Shell(self.faces)
-            solidObjShape = Part.Solid(shel)
+            _shell=Part.Shell(self.faces)
+            solidObjShape = Part.Solid(_shell)
             App.ActiveDocument.recompute()   
 
         except Exception as err:
