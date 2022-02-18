@@ -113,6 +113,7 @@ class SegmentedSephere:
             [Face Object]: [Face created using the vertices]
         """
         try:
+            print(vert,"vert is ")
             L1 = Part.makePolygon(vert,True)
             S1=Part.Shape(L1)
             App.ActiveDocument.recompute()
@@ -149,13 +150,17 @@ class SegmentedSephere:
                     y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
                     z = round(self.Radius * math.cos(phi),0)
                     self.vertexes[ring].append(App.Vector(x, y, z))
+            
             for j in range(0,self.Rings):
                 for i in range(0, self.Segments):
                     allSelected=[self.vertexes[j][i], self.vertexes[j][i+1],
-                                 self.vertexes[j+1][i+1], self.vertexes[j+1][i]]
-                    f=self.MakeFace(allSelected)
+                                 self.vertexes[j+1]]
+                    f1=self.MakeFace(allSelected)
+                    allSelected=[self.vertexes[j][i+1], self.vertexes[j+1][i],self.vertexes[j+1][i+1]]
+                    f2=self.MakeFace(allSelected)
                     allSelected.clear()
-                    self.faces.append(f)
+                    self.faces.append(f1)
+                    self.faces.append(f2)
   
             shel=Part.Shell(self.faces)
             solidObjShape = Part.Solid(shel)
