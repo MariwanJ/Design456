@@ -34,7 +34,7 @@ import Part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 import math 
-__updated__ = '2022-02-17 22:11:17'
+__updated__ = '2022-02-19 09:11:27'
 
 import Design456Init
 # from Part import CommandShapes     #Tube   not working
@@ -83,8 +83,8 @@ class SegmentedSephere:
                        radius=10,
                        z_angle=180,
                        xy_angle=360,
-                       segments=10,
-                       rings=10
+                       segments=4,
+                       rings=4
                        ):
         obj.addProperty("App::PropertyLength", "Radius", "SegmentedSephere",
                         "Radius of the SegmentedSephere").Radius = radius
@@ -113,13 +113,28 @@ class SegmentedSephere:
             [Face Object]: [Face created using the vertices]
         """
         try:
-            print("........................")
-            print("vert is ",vert)
-            print("........................")
-            L1 = Part.makePolygon(vert,True)
-            S1=Part.Shape(L1)
-            face = Part.Face(S1)
-            return face
+            if len(vert)>3 and (vert[0]!= vert[1])and (vert[2]!= vert[3]) and (vert[0]!= vert[3]) and (vert[2]!= vert[1]):
+                #Two edges make a face
+                newObj = App.ActiveDocument.addObject(
+                'Part::RuledSurface', 'tempSurface')
+
+                newObj.Curve1 = Draft.make_line(vert[0], vert[1])
+                newObj.Curve2 = Draft.make_line(vert[2], vert[3])
+                App.ActiveDocument.recompute()
+
+                # Make a simple copy of the object
+                newShape = Part.getShape(newObj, '', needSubElement=False, refine=True)
+                tempNewObj = App.ActiveDocument.addObject(
+                    'Part::Feature', 'Face')
+                tempNewObj.Shape = newShape
+                App.ActiveDocument.ActiveObject.Label = 'Surface'
+                return tempNewObj
+            else:
+                L1 = Part.makePolygon(vert,True)
+                S1=Part.Shape(L1)
+                App.ActiveDocument.recompute()
+                face = Part.Face(S1)
+                return face
 
         except Exception as err:
             App.Console.PrintError("'SegmentedSephere MakeFace' Failed. "
@@ -154,10 +169,21 @@ class SegmentedSephere:
             
             for j in range(0,self.Rings):
                 for i in range(0, self.Segments):
-                    f1=self.createAFace([self.vertexes[j][i], self.vertexes[j][i+1],self.vertexes[j+1]])
-                    f2=self.createAFace([self.vertexes[j][i+1], self.vertexes[j+1][i],self.vertexes[j+1][i+1]])
-                    self.faces.append(f1)
-                    self.faces.append(f2)
+                    # f=Draft.makeWire([self.vertexes[j+1][i],self.vertexes[j][i], self.vertexes[j][i+1],
+                    #                   self.vertexes[j+1][i+1],], closed=True)
+                    f=self.createAFace([self.vertexes[j+1][i],self.vertexes[j][i], self.vertexes[j][i+1],
+                                      self.vertexes[j+1][i+1]])
+                    # if len(f.Shape.Faces)==0:
+                    #     App.ActiveDocument.removeObject(f.Name)
+                    #     f1=self.createAFace([self.vertexes[j+1][i], self.vertexes[j][i+1],self.vertexes[j][i]])
+                    #     f2=self.createAFace([self.vertexes[j][i+1], self.vertexes[j+1][i],self.vertexes[j+1][i+1]])
+                    #     self.faces.append(f1)
+                    #     self.faces.append(f2)
+                    #     Part.show(f1)
+                    #     Part.show(f2)
+                    # else:
+                    #     Part.show(f)
+                    #     self.faces.append(f)
   
             _shell=Part.Shell(self.faces)
             solidObjShape = Part.Solid(_shell)

@@ -36,7 +36,7 @@ import FACE_D as faced
 from draftutils.translate import translate  # for translation
 from  Design456_Part_3DTools import Design456_SimplifyCompound 
 
-__updated__ = '2022-02-02 21:52:32'
+__updated__ = '2022-02-18 21:22:11'
 
 
 class Design456_CommonFace:
@@ -204,7 +204,7 @@ class Design456_Part_Surface:
 
             newObj = App.ActiveDocument.addObject(
                 'Part::RuledSurface', 'tempSurface')
-            print(type(subObj[0]),type(subObj[1]))
+
             newObj.Curve1 = subObj[0]
             newObj.Curve2 = subObj[1]
             App.ActiveDocument.recompute()
