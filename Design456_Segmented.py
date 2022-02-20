@@ -38,7 +38,7 @@ import DraftGeomUtils
 import Design456Init
 
 
-__updated__ = '2022-02-20 21:12:41'
+__updated__ = '2022-02-20 21:30:01'
 
 #SegmentedSphere
 
@@ -248,9 +248,10 @@ class SegmentedCylinder:
         loft.Solid=True
         loft.Ruled=False
         loft.Closed=False
-        finalObj= App.ActiveDocument.addObject('Part::Feature', 'SegmentedCylinder')
-        finalObj.Shape=loft.Shape.copy()
-        obj=finalObj
+        #finalObj= App.ActiveDocument.addObject('Part::Feature', 'SegmentedCylinder')
+        #finalObj.Shape=loft.Shape.copy()
+        obj.Shape=loft.Shape.copy()
+
         App.ActiveDocument.removeObject(loft.Name)
         App.ActiveDocument.removeObject(polygon1.Name)
         App.ActiveDocument.removeObject(polygon2.Name)
