@@ -38,13 +38,13 @@ import DraftGeomUtils
 import Design456Init
 
 
-__updated__ = '2022-02-20 20:14:21'
+__updated__ = '2022-02-20 20:53:26'
 
-#Sephere
+#SegmentedSephere
 
 class ViewProviderBox:
 
-    obj_name = "SegmentedSephere"
+    obj_name = "SegmentedSphere"
 
     def __init__(self, obj, obj_name):
         self.obj_name = obj_name
@@ -85,20 +85,20 @@ class SegmentedSephere:
                        segments=15,
                        rings=10
                        ):
-        obj.addProperty("App::PropertyLength", "Radius", "SegmentedSephere",
-                        "Radius of the SegmentedSephere").Radius = radius
+        obj.addProperty("App::PropertyLength", "Radius", "SegmentedSphere",
+                        "Radius of the SegmentedSphere").Radius = radius
         # This causes the shape to be invalid
-        # obj.addProperty("App::PropertyLength", "Z_Angle","SegmentedSephere",
-        #                 "Z axis angle of the SegmentedSephere").Z_Angle =z_angle
+        # obj.addProperty("App::PropertyLength", "Z_Angle","SegmentedSphere",
+        #                 "Z axis angle of the SegmentedSphere").Z_Angle =z_angle
 
-        # obj.addProperty("App::PropertyLength", "XY_Angle","SegmentedSephere", 
-        #                 "XY axis angle of the SegmentedSephere").XY_Angle=xy_angle
+        # obj.addProperty("App::PropertyLength", "XY_Angle","SegmentedSphere", 
+        #                 "XY axis angle of the SegmentedSphere").XY_Angle=xy_angle
 
-        obj.addProperty("App::PropertyLength", "Segments","SegmentedSephere", 
+        obj.addProperty("App::PropertyLength", "Segments","SegmentedSphere", 
                         "segments of the SegmentedSephere").Segments =segments
 
-        obj.addProperty("App::PropertyLength", "Rings","SegmentedSephere", 
-                        "Rings of the SegmentedSephere").Rings=rings
+        obj.addProperty("App::PropertyLength", "Rings","SegmentedSphere", 
+                        "Rings of the SegmentedSphere").Rings=rings
         
         obj.Proxy = self
     
@@ -157,23 +157,23 @@ class SegmentedSephere:
 class Design456_Seg_Sephere:
     def GetResources(self):
         return {'Pixmap':Design456Init.ICON_PATH + 'SegmentedSphere.svg',
-                'MenuText': "SegmentedSephere",
-                'ToolTip': "Generate a SegmentedSephere"}
+                'MenuText': "SegmentedSphere",
+                'ToolTip': "Generate a SegmentedSphere"}
 
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
-            "Part::FeaturePython", "SegmentedSephere")
+            "Part::FeaturePython", "SegmentedSphere")
         SegmentedSephere(newObj)
-        ViewProviderBox(newObj.ViewObject, "SegmentedSephere")
+        ViewProviderBox(newObj.ViewObject, "SegmentedSphere")
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
-Gui.addCommand('Design456_Seg_Sephere', Design456_Seg_Sephere())
+Gui.addCommand('Design456_Seg_Sphere', Design456_Seg_Sphere())
 
 #************************
 
-#Sephere
+#SegmentedCylinder
 
 class ViewProviderBox:
 
