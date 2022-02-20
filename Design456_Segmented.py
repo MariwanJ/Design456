@@ -34,10 +34,11 @@ import Part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 import math 
-__updated__ = '2022-02-20 13:57:21'
-
+import DraftGeomUtils
 import Design456Init
-# from Part import CommandShapes     #Tube   not working
+
+
+__updated__ = '2022-02-20 19:50:19'
 
 #Sephere
 
@@ -83,8 +84,8 @@ class SegmentedSephere:
                        radius=10,
                        z_angle=180,
                        xy_angle=360,
-                       segments=4,
-                       rings=4
+                       segments=5,
+                       rings=5
                        ):
         obj.addProperty("App::PropertyLength", "Radius", "SegmentedSephere",
                         "Radius of the SegmentedSephere").Radius = radius
@@ -102,10 +103,29 @@ class SegmentedSephere:
                         "Rings of the SegmentedSephere").Rings=rings
         
         obj.Proxy = self
+        
+
+    
+    
+    
     def make_face(self,vert):
-        wire = Part.makePolygon(vert)
-        face = Part.Face(wire)
-        return face
+        face=None
+
+        try:       
+            wire = Part.makePolygon(vert)
+            face=Part.Face(wire)
+            self.faces.append(face)
+            print("normal")
+        except:
+            print("Triangles")
+            wire1 = Part.makePolygon([vert[0],vert[1],vert[2],vert[0]])
+            wire2 = Part.makePolygon([vert[0],vert[2],vert[3],vert[0]])
+            face1=Part.Face(wire1)
+            face2=Part.Face(wire2)
+            self.faces.append(face1)
+            self.faces.append(face2)
+
+
     # def createAFace(self, vert):
     #     """[summary]
 
@@ -139,10 +159,9 @@ class SegmentedSephere:
         self.vertexes = [[]]
         self.faces = []
         self.phi = 0
-
-
         self.faces.clear()
         self.vertexes.clear()
+        self.Untouchedfaces = []
         for ring in range(0,self.Rings+1):
             self.vertexes.append([])
             phi = ring * math.radians(self.Z_Angle) / self.Rings
@@ -152,29 +171,10 @@ class SegmentedSephere:
                 y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
                 z = round(self.Radius * math.cos(phi),0)
                 self.vertexes[ring].append(App.Vector(x, y, z))
-        print(self.vertexes)
+
         for j in range(0,self.Rings):
             for i in range(0, self.Segments):
-                # f=Draft.makeWire([self.vertexes[j+1][i],self.vertexes[j][i], self.vertexes[j][i+1],
-                #                   self.vertexes[j+1][i+1],], closed=True)
-                #f=self.createAFace([self.vertexes[j+1][i],self.vertexes[j][i], self.vertexes[j][i+1],
-                #                    self.vertexes[j+1][i+1]])
-               
-                f=self.make_face([self.vertexes[j+1][i],self.vertexes[j][i], self.vertexes[j][i+1],self.vertexes[j+1][i+1],self.vertexes[j+1][i]])
-                self.faces.append(f)
-                #Part.show(f)
-                # if len(f.Shape.Faces)==0:
-                #     App.ActiveDocument.removeObject(f.Name)
-                #     f1=self.createAFace([self.vertexes[j+1][i], self.vertexes[j][i+1],self.vertexes[j][i]])
-                #     f2=self.createAFace([self.vertexes[j][i+1], self.vertexes[j+1][i],self.vertexes[j+1][i+1]])
-                #     self.faces.append(f1)
-                #     self.faces.append(f2)
-                #     Part.show(f1)
-                #     Part.show(f2)
-                # else:
-                #     Part.show(f)
-                #     self.faces.append(f)
-        
+                self.make_face([self.vertexes[j+1][i],self.vertexes[j][i], self.vertexes[j][i+1],self.vertexes[j+1][i+1],self.vertexes[j+1][i]])
         _shell=Part.Shell(self.faces)
         obj.Shape = Part.Solid(_shell)
 
