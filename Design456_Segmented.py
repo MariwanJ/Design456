@@ -38,7 +38,7 @@ import DraftGeomUtils
 import Design456Init
 
 
-__updated__ = '2022-02-20 19:50:19'
+__updated__ = '2022-02-20 20:14:21'
 
 #Sephere
 
@@ -82,19 +82,17 @@ class ViewProviderBox:
 class SegmentedSephere:
     def __init__(self, obj, 
                        radius=10,
-                       z_angle=180,
-                       xy_angle=360,
-                       segments=5,
-                       rings=5
+                       segments=15,
+                       rings=10
                        ):
         obj.addProperty("App::PropertyLength", "Radius", "SegmentedSephere",
                         "Radius of the SegmentedSephere").Radius = radius
-        
-        obj.addProperty("App::PropertyLength", "Z_Angle","SegmentedSephere",
-                        "Z axis angle of the SegmentedSephere").Z_Angle =z_angle
+        # This causes the shape to be invalid
+        # obj.addProperty("App::PropertyLength", "Z_Angle","SegmentedSephere",
+        #                 "Z axis angle of the SegmentedSephere").Z_Angle =z_angle
 
-        obj.addProperty("App::PropertyLength", "XY_Angle","SegmentedSephere", 
-                        "XY axis angle of the SegmentedSephere").XY_Angle=xy_angle
+        # obj.addProperty("App::PropertyLength", "XY_Angle","SegmentedSephere", 
+        #                 "XY axis angle of the SegmentedSephere").XY_Angle=xy_angle
 
         obj.addProperty("App::PropertyLength", "Segments","SegmentedSephere", 
                         "segments of the SegmentedSephere").Segments =segments
@@ -103,10 +101,6 @@ class SegmentedSephere:
                         "Rings of the SegmentedSephere").Rings=rings
         
         obj.Proxy = self
-        
-
-    
-    
     
     def make_face(self,vert):
         face=None
@@ -115,9 +109,7 @@ class SegmentedSephere:
             wire = Part.makePolygon(vert)
             face=Part.Face(wire)
             self.faces.append(face)
-            print("normal")
         except:
-            print("Triangles")
             wire1 = Part.makePolygon([vert[0],vert[1],vert[2],vert[0]])
             wire2 = Part.makePolygon([vert[0],vert[2],vert[3],vert[0]])
             face1=Part.Face(wire1)
@@ -125,35 +117,10 @@ class SegmentedSephere:
             self.faces.append(face1)
             self.faces.append(face2)
 
-
-    # def createAFace(self, vert):
-    #     """[summary]
-
-    #     Args:
-    #         vert ([type]): [description]
-
-    #     Returns:
-    #         [Face Object]: [Face created using the vertices]
-    #     """
-    #     if len(vert)>3 and ((vert[0]!= vert[1])and (vert[2]!= vert[3]) and (vert[0]!= vert[3]) and (vert[2]!= vert[1])):
-    #         #Two edges make a face
-    #         newObj = App.ActiveDocument.addObject('Part::RuledSurface', 'tempSurface')
-    #         newObj.Curve1 = Draft.make_line(vert[0], vert[1])
-    #         newObj.Curve2 = Draft.make_line(vert[2], vert[3])
-    #         newObj.touch()
-    #         App.ActiveDocument.recompute()
-    #         self.faces.append(newObj)
-    #     else:
-    #         L1 = Part.makePolygon(vert,True)
-    #         S1=Part.Shape(L1)
-    #         App.ActiveDocument.recompute()
-    #         face = Part.Face(S1)
-    #         self.faces.append( face)
-
     def execute(self, obj):
         self.Radius = float(obj.Radius)
-        self.Z_Angle=float(obj.Z_Angle)
-        self.XY_Angle=float(obj.XY_Angle)
+        self.Z_Angle=180.0
+        self.XY_Angle=360.0
         self.Segments=int(obj.Segments)
         self.Rings=int(obj.Rings)
         self.vertexes = [[]]
@@ -162,22 +129,30 @@ class SegmentedSephere:
         self.faces.clear()
         self.vertexes.clear()
         self.Untouchedfaces = []
-        for ring in range(0,self.Rings+1):
-            self.vertexes.append([])
-            phi = ring * math.radians(self.Z_Angle) / self.Rings
-            for segment in range(0,self.Segments+1):
-                theta = segment * math.radians(self.XY_Angle) / self.Segments
-                x = round(self.Radius * math.cos(theta) * math.sin(phi),0)
-                y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
-                z = round(self.Radius * math.cos(phi),0)
-                self.vertexes[ring].append(App.Vector(x, y, z))
-
-        for j in range(0,self.Rings):
-            for i in range(0, self.Segments):
-                self.make_face([self.vertexes[j+1][i],self.vertexes[j][i], self.vertexes[j][i+1],self.vertexes[j+1][i+1],self.vertexes[j+1][i]])
-        _shell=Part.Shell(self.faces)
-        obj.Shape = Part.Solid(_shell)
-
+        try:
+            for ring in range(0,self.Rings+1):
+                self.vertexes.append([])
+                phi = ring * math.radians(self.Z_Angle) / self.Rings
+                for segment in range(0,self.Segments+1):
+                    theta = segment * math.radians(self.XY_Angle) / self.Segments
+                    x = round(self.Radius * math.cos(theta) * math.sin(phi),0)
+                    y = round(self.Radius * math.sin(theta) * math.sin(phi),0)
+                    # To let the object be above (0,0,0) we have to add the radius
+                    z =  round(self.Radius * math.cos(phi),0) + self.Radius 
+                    self.vertexes[ring].append(App.Vector(x, y, z))
+    
+            for j in range(0,self.Rings):
+                for i in range(0, self.Segments):
+                    self.make_face([self.vertexes[j+1][i],self.vertexes[j][i], self.vertexes[j][i+1],self.vertexes[j+1][i+1],self.vertexes[j+1][i]])
+            _shell=Part.Shell(self.faces)
+            obj.Shape = Part.Solid(_shell)
+        
+        except Exception as err:
+            App.Console.PrintError("'SegmentedSephere' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
 class Design456_Seg_Sephere:
     def GetResources(self):
@@ -189,9 +164,7 @@ class Design456_Seg_Sephere:
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "SegmentedSephere")
         SegmentedSephere(newObj)
-
         ViewProviderBox(newObj.ViewObject, "SegmentedSephere")
-
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
