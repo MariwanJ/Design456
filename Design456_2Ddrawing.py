@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-02-06 19:53:04'
+__updated__ = '2022-02-20 21:11:39'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -395,12 +395,12 @@ def selectedObjectType(obj):
     return "Unknown"
 
 
-class ViewProviderBox:
+class ViewProviderStar:
 
     obj_name = "Star"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = ViewProviderBox.obj_name
+        self.obj_name = ViewProviderStar.obj_name
         obj.Proxy = self
 
     def attach(self, obj):
@@ -502,7 +502,7 @@ class Design456_Star:
             App.ActiveDocument.openTransaction(translate("Design456","Star"))
             newObj = App.ActiveDocument.addObject(
                 "Part::FeaturePython", "Star")
-            ViewProviderBox(newObj.ViewObject, "Star")
+            ViewProviderStar(newObj.ViewObject, "Star")
             f = Star(newObj)
             plc = App.Placement()
             f.Placement = plc

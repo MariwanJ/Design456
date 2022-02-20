@@ -38,16 +38,16 @@ import DraftGeomUtils
 import Design456Init
 
 
-__updated__ = '2022-02-20 20:53:26'
+__updated__ = '2022-02-20 21:12:41'
 
-#SegmentedSephere
+#SegmentedSphere
 
-class ViewProviderBox:
+class ViewProviderSphere:
 
     obj_name = "SegmentedSphere"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = obj_name
+        self.obj_name = ViewProviderSphere.obj_name
         obj.Proxy = self
 
     def attach(self, obj):
@@ -79,7 +79,7 @@ class ViewProviderBox:
 
 
 
-class SegmentedSephere:
+class SegmentedSphere:
     def __init__(self, obj, 
                        radius=10,
                        segments=15,
@@ -95,7 +95,7 @@ class SegmentedSephere:
         #                 "XY axis angle of the SegmentedSphere").XY_Angle=xy_angle
 
         obj.addProperty("App::PropertyLength", "Segments","SegmentedSphere", 
-                        "segments of the SegmentedSephere").Segments =segments
+                        "segments of the SegmentedSphere").Segments =segments
 
         obj.addProperty("App::PropertyLength", "Rings","SegmentedSphere", 
                         "Rings of the SegmentedSphere").Rings=rings
@@ -148,13 +148,13 @@ class SegmentedSephere:
             obj.Shape = Part.Solid(_shell)
         
         except Exception as err:
-            App.Console.PrintError("'SegmentedSephere' Failed. "
+            App.Console.PrintError("'SegmentedSphere' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-class Design456_Seg_Sephere:
+class Design456_Seg_Sphere:
     def GetResources(self):
         return {'Pixmap':Design456Init.ICON_PATH + 'SegmentedSphere.svg',
                 'MenuText': "SegmentedSphere",
@@ -163,8 +163,8 @@ class Design456_Seg_Sephere:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "SegmentedSphere")
-        SegmentedSephere(newObj)
-        ViewProviderBox(newObj.ViewObject, "SegmentedSphere")
+        SegmentedSphere(newObj)
+        ViewProviderSphere(newObj.ViewObject, "SegmentedSphere")
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
@@ -175,12 +175,12 @@ Gui.addCommand('Design456_Seg_Sphere', Design456_Seg_Sphere())
 
 #SegmentedCylinder
 
-class ViewProviderBox:
+class ViewProviderCylinder:
 
     obj_name = "SegmentedCylinder"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = obj_name
+        self.obj_name = ViewProviderCylinder.obj_name
         obj.Proxy = self
 
     def attach(self, obj):
@@ -267,7 +267,7 @@ class Design456_Seg_Cylinder:
             "Part::FeaturePython", "SegmentedCylinder")
         SegmentedCylinder(newObj)
 
-        ViewProviderBox(newObj.ViewObject, "SegmentedCylinder")
+        ViewProviderCylinder(newObj.ViewObject, "SegmentedCylinder")
 
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
@@ -281,7 +281,7 @@ Gui.addCommand('Design456_Seg_Cylinder', Design456_Seg_Cylinder())
 
 class Design456_Segmented:
     import polyhedrons
-    list = ["Design456_Seg_Sephere",
+    list = ["Design456_Seg_Sphere",
             "Design456_Seg_Cylinder",
             ]
 
