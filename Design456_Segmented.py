@@ -241,20 +241,10 @@ class SegmentedCylinder:
         pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
         pl.Base = App.Vector(0, 0, 0.0)
         polygon1 = Draft.makePolygon(self.Segments, radius=self.Radius, inscribed=True, placement=pl, face=True, support=None)
-        pl.Base.z=pl.Base.z+self.Height
-        polygon2 = Draft.makePolygon(self.Segments, radius=self.Radius, inscribed=True, placement=pl, face=True, support=None)
-        loft=App.ActiveDocument.addObject('Part::Loft','Loft')
-        loft.Sections=[polygon1,polygon2]
-        loft.Solid=True
-        loft.Ruled=False
-        loft.Closed=False
-        #finalObj= App.ActiveDocument.addObject('Part::Feature', 'SegmentedCylinder')
-        #finalObj.Shape=loft.Shape.copy()
-        obj.Shape=loft.Shape.copy()
-
-        App.ActiveDocument.removeObject(loft.Name)
+        shp= polygon1.Shape.copy()
+        solid = shp.extrude(App.Vector(0.0, 0.0,self.Height ))
+        obj.Shape=solid
         App.ActiveDocument.removeObject(polygon1.Name)
-        App.ActiveDocument.removeObject(polygon2.Name)
 
 
 class Design456_Seg_Cylinder:
