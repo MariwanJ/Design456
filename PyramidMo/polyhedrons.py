@@ -61,7 +61,7 @@ from FreeCAD import Base
 import Design456Init
 import FACE_D as faced
 
-__updated__ = '2021-12-31 08:57:52'
+__updated__ = '2022-02-21 22:06:46'
 
 def horizontal_regular_polygon_vertexes(sidescount, radius, z, startangle=0):
     try:
@@ -86,7 +86,7 @@ def horizontal_regular_polygon_vertexes(sidescount, radius, z, startangle=0):
 
 
 # angle in degrees
-def horizontal_regular_pyramid_vertexes(sidescount, radius, z, anglez=0):
+def horizontal_regular_pyramid_vertexes(sidescount, radius, z, MoveTopBottom=App.Vector(0,0,0), anglez=0, ):
     try:
         vertexes = []
         odd = 0
@@ -96,8 +96,8 @@ def horizontal_regular_pyramid_vertexes(sidescount, radius, z, anglez=0):
             for i in range(0, sidescount+1):
                 angle = 2 * math.pi * i / sidescount + \
                     (math.pi * (odd/sidescount + 1/2)) + anglez * math.pi / 180
-                vertex = (radius * math.cos(angle),
-                          radius * math.sin(angle), z)
+                vertex = (radius * math.cos(angle)+MoveTopBottom.x,
+                          radius * math.sin(angle)+MoveTopBottom.y, z)
                 vertexes.append(vertex)
         else:
             vertex = (0, 0, z)
@@ -190,7 +190,8 @@ class Pyramid:
     side2value = 0
     anglez = 0
 
-    def __init__(self, obj, sidescount=5, radius_bottom=2, radius_top=4, height=10, angz=0):
+    def __init__(self, obj, sidescount=5, radius_bottom=2, radius_top=4, 
+                 height=10,xy_top=App.Vector(0,0,0), xy_bottom=App.Vector(0,0,0),angz=0):
         obj.addProperty("App::PropertyLength", "Radius1", "Pyramid",
                         "Radius of the pyramid").Radius1 = radius_bottom
         obj.addProperty("App::PropertyLength", "Radius2", "Pyramid",
@@ -205,6 +206,10 @@ class Pyramid:
                         "Pyramid", "Sidelength2 of the pyramid")
         obj.addProperty("App::PropertyAngle", "Z_rotation",
                         "Pyramid", "alfa angle around Z").Z_rotation = angz
+        obj.addProperty("App::PropertyVector", "XYTop",
+                        "Pyramid", "Move Top Face ").XYTop = xy_top
+        obj.addProperty("App::PropertyVector", "XYBottom",
+                        "Pyramid", "Move Bottom Face ").XYBottom = xy_bottom
 
         obj.Proxy = self
 
@@ -218,6 +223,8 @@ class Pyramid:
             sidelength_bottom = float(obj.Sidelength1)
             height = float(obj.Height)
             anglez = float(obj.Z_rotation)
+            xy_bottom= obj.XYBottom
+            xy_top= obj.XYTop
 
             if radius_bottom != self.radius1value or sidescount != self.sidescountvalue:
                 obj.Sidelength1 = radius_bottom * math.sin(angle/2) * 2
@@ -247,9 +254,9 @@ class Pyramid:
                 App.Console.PrintMessage("Both radiuses are zero" + "\n")
             else:
                 vertexes_bottom = horizontal_regular_pyramid_vertexes(
-                    sidescount, radius_bottom, 0, anglez)
+                    sidescount, radius_bottom, 0,xy_bottom, anglez)
                 vertexes_top = horizontal_regular_pyramid_vertexes(
-                    sidescount, radius_top, height, anglez)
+                    sidescount, radius_top, height,xy_top, anglez)
 
                 if radius_bottom != 0:
                     polygon_bottom = _part.makePolygon(vertexes_bottom)
