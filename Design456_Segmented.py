@@ -38,7 +38,7 @@ import DraftGeomUtils
 import Design456Init
 
 
-__updated__ = '2022-02-20 21:30:01'
+__updated__ = '2022-02-21 21:05:02'
 
 #SegmentedSphere
 
@@ -231,7 +231,7 @@ class SegmentedCylinder:
         obj.addProperty("App::PropertyLength", "Height","SegmentedCylinder", 
                         "Rings of the SegmentedCylinder").Height=height
         obj.Proxy = self
-
+    
     def execute(self, obj):
         self.Radius = float(obj.Radius)
         self.XY_Angle=float(obj.XY_Angle)
@@ -240,11 +240,17 @@ class SegmentedCylinder:
         pl = App.Placement()
         pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
         pl.Base = App.Vector(0, 0, 0.0)
-        polygon1 = Draft.makePolygon(self.Segments, radius=self.Radius, inscribed=True, placement=pl, face=True, support=None)
-        shp= polygon1.Shape.copy()
-        solid = shp.extrude(App.Vector(0.0, 0.0,self.Height ))
-        obj.Shape=solid
-        App.ActiveDocument.removeObject(polygon1.Name)
+        vertices =[]
+        FIRST=None
+        for segment in range(0,self.Segments):
+            theta = segment * math.radians(self.XY_Angle) / self.Segments
+            x= self.Radius*math.cos(theta)
+            y=math.sin(theta)*self.Radius
+            vertices.append(App.Vector(x,y,0.0))
+        vertices.append(vertices[0])
+        polygon=Part.Face(Part.makePolygon(vertices))
+        solid=polygon.extrude(App.Vector(0.0, 0.0,self.Height ))
+        obj.Shape= solid
 
 
 class Design456_Seg_Cylinder:
