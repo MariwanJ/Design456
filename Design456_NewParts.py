@@ -30,23 +30,23 @@ import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-import Draft as _draft
-import Part as _part
-import FACE_D as faced
+import Draft
+import Part
 from draftutils.translate import translate   #for translate
 import Design456Init
+import FACE_D as faced
 
-__updated__ = '2022-02-10 21:35:57'
+__updated__ = '2022-02-22 21:43:40'
 
 
 #Roof
 
-class ViewProviderCylinder:
+class ViewProviderRoof:
 
     obj_name = "Roof"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = ViewProviderCylinder.obj_name
+        self.obj_name = ViewProviderRoof.obj_name
         obj.Proxy = self
 
     def attach(self, obj):
@@ -77,32 +77,50 @@ class ViewProviderCylinder:
         return None
 
 
-
+#Roof 
 class Design456_Roof:
+    """ Roof shape based on several parameters
+    """
     def __init__(self, obj, 
-                       width=10,
-                       length=360,
-                       segments=8,
+                       width=20,
+                       length=20,
                        height=10,
-                       ):
+                       thickness=1):
 
-        obj.addProperty("App::PropertyLength", "Height","Roof", 
-                        "Rings of the Roof").Height=height
 
         obj.addProperty("App::PropertyLength", "Width","Roof", 
-                        "Length of the Roof").Width=width,
+                        "Width of the Roof").Width = width
 
         obj.addProperty("App::PropertyLength", "Length","Roof", 
-                        "Length of the Roof").Length =length,
-        
-        obj.addProperty("App::PropertyLength", "Segments","Roof", 
-                        "segments of the Roof").Segments =segments
+                        "Length of the Roof").Length = length
+
+        obj.addProperty("App::PropertyLength", "Height","Roof", 
+                        "Height of the Roof").Height = height
+
+        obj.addProperty("App::PropertyLength", "Thickness","Roof", 
+                        "Thickness of the Roof").Thickness = thickness
         obj.Proxy = self
     
     def execute(self, obj):
-        pass
-
-class Design456_Seg_Cylinder:
+        self.Width=float(obj.Width)
+        self.Height=float(obj.Height)
+        self.Length=float(obj.Length)
+        self.Thickness=float(obj.Thickness)
+        vert1=[App.Vector(0,0,0),App.Vector(self.Width,0,0),
+                App.Vector(self.Width/2,0.0,self.Height),
+                App.Vector(0,0,0)]
+        vert2=[App.Vector(self.Thickness,self.Thickness,0),App.Vector(self.Width-self.Thickness,self.Thickness,0),
+               App.Vector((self.Width-2*self.Thickness)/2,self.Thickness,self.Height-2*self.Thickness),
+               App.Vector(self.Thickness,self.Thickness,0)]
+        FaceTriangle1=Part.Face(Part.makePolygon(vert1))
+        obj1 =FaceTriangle1.extrude(App.Vector(0.0,self.Length,0.0))
+        
+        FaceTriangle2=Part.Face(Part.makePolygon(vert2))
+        obj2= FaceTriangle2.extrude(App.Vector(0.0,self.Length-2*self.Thickness,0.0))
+        Result = obj1.cut(obj2)
+        obj.Shape=Result
+        
+class Design456_Seg_Roof:
     def GetResources(self):
         return {'Pixmap':Design456Init.ICON_PATH + 'Roof.svg',
                 'MenuText': "Roof",
@@ -113,10 +131,10 @@ class Design456_Seg_Cylinder:
             "Part::FeaturePython", "Roof")
         Design456_Roof(newObj)
 
-        ViewProviderCylinder(newObj.ViewObject, "Roof")
+        ViewProviderRoof(newObj.ViewObject, "Roof")
 
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
-Gui.addCommand('Design456_Roof', Design456_Roof())
+Gui.addCommand('Design456_Seg_Roof', Design456_Seg_Roof())

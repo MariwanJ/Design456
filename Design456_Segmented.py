@@ -36,9 +36,9 @@ from draftutils.translate import translate   #for translate
 import math 
 import DraftGeomUtils
 import Design456Init
+import Design456_NewParts
 
-
-__updated__ = '2022-02-21 21:05:02'
+__updated__ = '2022-02-22 19:57:05'
 
 #SegmentedSphere
 
@@ -280,6 +280,7 @@ class Design456_Segmented:
     import polyhedrons
     list = ["Design456_Seg_Sphere",
             "Design456_Seg_Cylinder",
+            "Design456_Seg_Roof",
             ]
 
 
