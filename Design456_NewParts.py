@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 
-__updated__ = '2022-02-23 21:45:51'
+__updated__ = '2022-02-23 22:08:55'
 
 
 #Roof
@@ -334,25 +334,31 @@ class Design456_RoundedHousingBase:
         self.Radius=float(obj.Radius)
         self.Thickness=float(obj.Thickness)
         Result=None
-        V1_FSQ=[App.Vector(0,0,0),
-                 App.Vector(self.Width,0,0),
-                 App.Vector(self.Width,self.Length,0),
-                 App.Vector(0.0,self.Length,0),
-                 App.Vector(0,0,0)]
-
-        V2_FSQ=[App.Vector(self.Thickness,self.Thickness,0),
-                 App.Vector(self.Width-self.Thickness,self.Thickness,0),
-                 App.Vector(self.Width-self.Thickness,self.Length-self.Thickness,0),
-                 App.Vector(self.Thickness,self.Length-self.Thickness,0),
-                 App.Vector(self.Thickness,self.Thickness,0)]
-        firstFace1=Part.Face(Part.makePolygon(V1_FSQ))  # one used with secondFace to cut
-        firstFace2=Part.Face(Part.makePolygon(V1_FSQ))  # Other used to make the bottom
-        secondFace=Part.Face(Part.makePolygon(V2_FSQ))
-        resultButtom=firstFace1.cut(secondFace)
-        extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
-        extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
-        fused=extrude1.fuse(extrude2)
-        Result=fused.removeSplitter()
+        VL1= [App.Vector(0,0,0),App.Vector(self.Width,0,0)]
+        VL2=[App.Vector(self.Width,0,0),App.Vector(self.Width,self.Length,0)]
+        VL3=[App.Vector(self.Width,self.Length,0),App.Vector(0.0,self.Length,0)]
+        VL4=[App.Vector(0.0,self.Length,0),App.Vector(0,0,0)]
+        Fillet1=DraftGeomUtils.fillet(VL1,VL2,self.Radius)
+        
+       # V1_FSQ=[App.Vector(0,0,0),
+       #          App.Vector(self.Width,0,0),
+       #          App.Vector(self.Width,self.Length,0),
+       #          App.Vector(0.0,self.Length,0),
+       #          App.Vector(0,0,0)]
+#
+       # V2_FSQ=[App.Vector(self.Thickness,self.Thickness,0),
+       #          App.Vector(self.Width-self.Thickness,self.Thickness,0),
+       #          App.Vector(self.Width-self.Thickness,self.Length-self.Thickness,0),
+       #          App.Vector(self.Thickness,self.Length-self.Thickness,0),
+       #          App.Vector(self.Thickness,self.Thickness,0)]
+        #firstFace1=Part.Face(Part.makePolygon(V1_FSQ))  # one used with secondFace to cut
+        #firstFace2=Part.Face(Part.makePolygon(V1_FSQ))  # Other used to make the bottom
+        #secondFace=Part.Face(Part.makePolygon(V2_FSQ))
+        #resultButtom=firstFace1.cut(secondFace)
+        #extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
+        #extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
+        #fused=extrude1.fuse(extrude2)
+        #Result=fused.removeSplitter()
         obj.Shape=Result
         
 class Design456_RoundedHousing:
