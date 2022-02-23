@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 
-__updated__ = '2022-02-23 20:26:02'
+__updated__ = '2022-02-23 20:42:40'
 
 
 #Roof
@@ -226,14 +226,14 @@ class Design456_HousingBase:
                  App.Vector(self.Width-self.Thickness,self.Length-self.Thickness,0),
                  App.Vector(self.Thickness,self.Length-self.Thickness,0),
                  App.Vector(self.Thickness,self.Thickness,0)]
-        firstFace1=Part.Face(Part.Polygon(V1_FSQ))  # one used with secondFace to cut
-        firstFace2=Part.Face(Part.Polygon(V1_FSQ))  # Other used to make the bottom
-        secondFace=Part.Face(Part.Polygon(V2_FSQ))
+        firstFace1=Part.Face(Part.makePolygon(V1_FSQ))  # one used with secondFace to cut
+        firstFace2=Part.Face(Part.makePolygon(V1_FSQ))  # Other used to make the bottom
+        secondFace=Part.Face(Part.makePolygon(V2_FSQ))
         resultButtom=firstFace1.cut(secondFace)
-        extrude1=resultButtom.extrude(0,0,self.Height)
-        extrude2=firstFace2.extrude(0,0,self.Height)
-        result=Part.Merge(extrude1,extrude2)
-        
+        extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
+        extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
+        fused=extrude1.fuse(extrude2)
+        Result=fused.removeSplitter()
         obj.Shape=Result
         
 class Design456_Housing:
