@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 
-__updated__ = '2022-02-23 20:42:40'
+__updated__ = '2022-02-23 21:45:51'
 
 
 #Roof
@@ -254,3 +254,123 @@ class Design456_Housing:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_Housing', Design456_Housing())
+
+
+
+
+
+#RoundedHousing
+
+class ViewProviderRoundedHousing:
+
+    obj_name = "RoundedHousing"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderRoundedHousing.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'RoundedHousing.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+################################
+
+
+#RoundedHousing 
+class Design456_RoundedHousingBase:
+    """ RoundedHousing shape based on several parameters
+    """
+    def __init__(self, obj, 
+                       width=20,
+                       length=20,
+                       height=10,
+                       radius=1,
+                       thickness=1):
+
+
+        obj.addProperty("App::PropertyLength", "Width","RoundedHousing", 
+                        "Width of the RoundedHousing").Width = width
+
+        obj.addProperty("App::PropertyLength", "Length","RoundedHousing", 
+                        "Length of the RoundedHousing").Length = length
+
+        obj.addProperty("App::PropertyLength", "Height","RoundedHousing", 
+                        "Height of the RoundedHousing").Height = height
+
+        obj.addProperty("App::PropertyLength", "Radius","RoundedHousing", 
+                        "Height of the RoundedHousing").Radius = radius
+
+        obj.addProperty("App::PropertyLength", "Thickness","RoundedHousing", 
+                        "Thickness of the RoundedHousing").Thickness = thickness
+        obj.Proxy = self
+    
+    def execute(self, obj):
+        self.Width=float(obj.Width)
+        self.Height=float(obj.Height)
+        self.Length=float(obj.Length)
+        self.Radius=float(obj.Radius)
+        self.Thickness=float(obj.Thickness)
+        Result=None
+        V1_FSQ=[App.Vector(0,0,0),
+                 App.Vector(self.Width,0,0),
+                 App.Vector(self.Width,self.Length,0),
+                 App.Vector(0.0,self.Length,0),
+                 App.Vector(0,0,0)]
+
+        V2_FSQ=[App.Vector(self.Thickness,self.Thickness,0),
+                 App.Vector(self.Width-self.Thickness,self.Thickness,0),
+                 App.Vector(self.Width-self.Thickness,self.Length-self.Thickness,0),
+                 App.Vector(self.Thickness,self.Length-self.Thickness,0),
+                 App.Vector(self.Thickness,self.Thickness,0)]
+        firstFace1=Part.Face(Part.makePolygon(V1_FSQ))  # one used with secondFace to cut
+        firstFace2=Part.Face(Part.makePolygon(V1_FSQ))  # Other used to make the bottom
+        secondFace=Part.Face(Part.makePolygon(V2_FSQ))
+        resultButtom=firstFace1.cut(secondFace)
+        extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
+        extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
+        fused=extrude1.fuse(extrude2)
+        Result=fused.removeSplitter()
+        obj.Shape=Result
+        
+class Design456_RoundedHousing:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'RoundedHousing.svg',
+                'MenuText': "RoundedHousing",
+                'ToolTip': "Generate a RoundedHousing"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "RoundedHousing")
+        Design456_RoundedHousingBase(newObj)
+
+        ViewProviderRoundedHousing(newObj.ViewObject, "RoundedHousing")
+
+        App.ActiveDocument.recompute()
+        v = Gui.ActiveDocument.ActiveView
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_RoundedHousing', Design456_RoundedHousing())
+
