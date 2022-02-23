@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 
-__updated__ = '2022-02-22 21:43:40'
+__updated__ = '2022-02-23 20:26:02'
 
 
 #Roof
@@ -109,8 +109,11 @@ class Design456_Roof:
         vert1=[App.Vector(0,0,0),App.Vector(self.Width,0,0),
                 App.Vector(self.Width/2,0.0,self.Height),
                 App.Vector(0,0,0)]
-        vert2=[App.Vector(self.Thickness,self.Thickness,0),App.Vector(self.Width-self.Thickness,self.Thickness,0),
-               App.Vector((self.Width-2*self.Thickness)/2,self.Thickness,self.Height-2*self.Thickness),
+        newWidth=self.Width-2*self.Thickness
+        newLength=self.Length-2*self.Thickness
+        newHeight=self.Height-self.Thickness
+        vert2=[App.Vector(self.Thickness,self.Thickness,0),App.Vector(self.Thickness+newWidth,self.Thickness,0),
+               App.Vector(self.Width/2,self.Thickness,newHeight),
                App.Vector(self.Thickness,self.Thickness,0)]
         FaceTriangle1=Part.Face(Part.makePolygon(vert1))
         obj1 =FaceTriangle1.extrude(App.Vector(0.0,self.Length,0.0))
