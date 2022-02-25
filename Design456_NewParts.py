@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
-__updated__ = '2022-02-25 21:03:38'
+__updated__ = '2022-02-25 21:19:36'
 
 
 #Roof
@@ -359,7 +359,7 @@ class Design456_RoundedHousingBase:
         firstFace2=firstFace1.copy()  # Other used to make the bottom
 
         W2=Part.makePolygon(V2_FSQ)
-        W22 = DraftGeomUtils.filletWire(W2,self.Radius, chamfer=False)
+        W22 = DraftGeomUtils.filletWire(W2,self.Radius, chamfer=self.Chamfer)
         
         secondFace=Part.Face(W22)
 
