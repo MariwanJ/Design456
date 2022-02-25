@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
-__updated__ = '2022-02-25 21:02:02'
+__updated__ = '2022-02-25 21:03:38'
 
 
 #Roof
@@ -326,7 +326,7 @@ class Design456_RoundedHousingBase:
         obj.addProperty("App::PropertyLength", "Thickness","RoundedHousing", 
                         "Thickness of the RoundedHousing").Thickness = thickness
 
-        obj.addProperty("App::PropertyLists", "Chamfer","RoundedHousing", 
+        obj.addProperty("App::PropertyBool", "Chamfer","RoundedHousing", 
                         "Chamfer corner").Chamfer = chamfer
         obj.Proxy = self
     
