@@ -35,8 +35,8 @@ import Part
 from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
-
-__updated__ = '2022-02-23 22:08:55'
+import DraftGeomUtils
+__updated__ = '2022-02-25 21:02:02'
 
 
 #Roof
@@ -308,7 +308,7 @@ class Design456_RoundedHousingBase:
                        length=20,
                        height=10,
                        radius=1,
-                       thickness=1):
+                       thickness=1,chamfer=False):
 
 
         obj.addProperty("App::PropertyLength", "Width","RoundedHousing", 
@@ -325,6 +325,9 @@ class Design456_RoundedHousingBase:
 
         obj.addProperty("App::PropertyLength", "Thickness","RoundedHousing", 
                         "Thickness of the RoundedHousing").Thickness = thickness
+
+        obj.addProperty("App::PropertyLists", "Chamfer","RoundedHousing", 
+                        "Chamfer corner").Chamfer = chamfer
         obj.Proxy = self
     
     def execute(self, obj):
@@ -333,32 +336,38 @@ class Design456_RoundedHousingBase:
         self.Length=float(obj.Length)
         self.Radius=float(obj.Radius)
         self.Thickness=float(obj.Thickness)
+        self.Chamfer=obj.Chamfer
         Result=None
-        VL1= [App.Vector(0,0,0),App.Vector(self.Width,0,0)]
-        VL2=[App.Vector(self.Width,0,0),App.Vector(self.Width,self.Length,0)]
-        VL3=[App.Vector(self.Width,self.Length,0),App.Vector(0.0,self.Length,0)]
-        VL4=[App.Vector(0.0,self.Length,0),App.Vector(0,0,0)]
-        Fillet1=DraftGeomUtils.fillet(VL1,VL2,self.Radius)
+        # base rectangle vertices and walls after a cut
+        V1_FSQ=[App.Vector(0,0,0),
+                App.Vector(self.Width,0,0),
+                App.Vector(self.Width,self.Length,0),
+                App.Vector(0.0,self.Length,0),
+                App.Vector(0,0,0)]
+
+        # cut middle part to make walls
+        V2_FSQ=[App.Vector(self.Thickness,self.Thickness,0),
+                App.Vector(self.Width-self.Thickness,self.Thickness,0),
+                App.Vector(self.Width-self.Thickness,self.Length-self.Thickness,0),
+                App.Vector(self.Thickness,self.Length-self.Thickness,0),
+                App.Vector(self.Thickness,self.Thickness,0)]
         
-       # V1_FSQ=[App.Vector(0,0,0),
-       #          App.Vector(self.Width,0,0),
-       #          App.Vector(self.Width,self.Length,0),
-       #          App.Vector(0.0,self.Length,0),
-       #          App.Vector(0,0,0)]
-#
-       # V2_FSQ=[App.Vector(self.Thickness,self.Thickness,0),
-       #          App.Vector(self.Width-self.Thickness,self.Thickness,0),
-       #          App.Vector(self.Width-self.Thickness,self.Length-self.Thickness,0),
-       #          App.Vector(self.Thickness,self.Length-self.Thickness,0),
-       #          App.Vector(self.Thickness,self.Thickness,0)]
-        #firstFace1=Part.Face(Part.makePolygon(V1_FSQ))  # one used with secondFace to cut
-        #firstFace2=Part.Face(Part.makePolygon(V1_FSQ))  # Other used to make the bottom
-        #secondFace=Part.Face(Part.makePolygon(V2_FSQ))
-        #resultButtom=firstFace1.cut(secondFace)
-        #extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
-        #extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
-        #fused=extrude1.fuse(extrude2)
-        #Result=fused.removeSplitter()
+        W1=Part.makePolygon(V1_FSQ)
+        W11 = DraftGeomUtils.filletWire(W1,self.Radius, chamfer=self.Chamfer)
+        
+        firstFace1=Part.Face(W11)  # one used with secondFace to cut
+        firstFace2=firstFace1.copy()  # Other used to make the bottom
+
+        W2=Part.makePolygon(V2_FSQ)
+        W22 = DraftGeomUtils.filletWire(W2,self.Radius, chamfer=False)
+        
+        secondFace=Part.Face(W22)
+
+        resultButtom=firstFace1.cut(secondFace)
+        extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
+        extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
+        fused=extrude1.fuse(extrude2)
+        Result=fused.removeSplitter()
         obj.Shape=Result
         
 class Design456_RoundedHousing:
