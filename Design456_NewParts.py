@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
-__updated__ = '2022-02-25 22:41:48'
+__updated__ = '2022-02-26 15:38:41'
 
 
 #Roof
@@ -435,18 +435,10 @@ class Design456_EllipseBoxBase:
     """ EllipseHousingshape based on several parameters
     """
     def __init__(self, obj, 
-                       width=20,
-                       length=20,
                        height=10,
-                       major_radius=1,minor_radius=1,
+                       major_radius=10,
+                       minor_radius=8,
                        thickness=1):
-
-
-        obj.addProperty("App::PropertyLength", "Width","EllipseBox", 
-                        "Width of the EllipseBox").Width = width
-
-        obj.addProperty("App::PropertyLength", "Length","EllipseBox", 
-                        "Length of the EllipseBox").Length = length
 
         obj.addProperty("App::PropertyLength", "Height","EllipseBox", 
                         "Height of the EllipseBox").Height = height
@@ -463,27 +455,24 @@ class Design456_EllipseBoxBase:
         obj.Proxy = self
     
     def execute(self, obj):
-        self.Width=float(obj.Width)
         self.Height=float(obj.Height)
-        self.Length=float(obj.Length)
         self.MajorRadius=float(obj.MajorRadius)
         self.MinorRadius=float(obj.MinorRadius)
         self.Thickness=float(obj.Thickness)
         Result=None
-        # base rectangle vertices and walls after a cut
+        # base Ellipse vertices and walls after a cut
 
-        Center1=App.Vector(self.Width/2,self.Length/2,0)
-        W1=Part.Ellipse(Center1,self.MajorRadius,self.MinorRadius)
-        firstFace1=Part.Face(W1.toShape())  # one used with secondFace to cut
+        if(self.MajorRadius<self.MinorRadius):
+            self.MajorRadius=self.MinorRadius
+            print("Major Radius must be grater or equal to Minor Radius")
+        Center=App.Vector(App.Vector(0,0,0))
+        W1=Part.Ellipse(Center,self.MajorRadius,self.MinorRadius)
+        firstFace1=Part.Face(Part.Wire(W1.toShape()))  # one used with secondFace to cut
         firstFace2=firstFace1.copy()  # Other used to make the bottom
 
-        Center=App.Vector(self.Width/2,self.Length/2,0)
-        W2=Part.Ellipse(Center,self.MajorRadius-self.Thickness,self.MinorRadius-self.Thickness)
-        Part.show(W1.toShape())
-        Part.show(W2.toShape())
         
-        secondFace=Part.Face(W2.toShape())
-
+        W2=Part.Ellipse(Center,self.MajorRadius-self.Thickness,self.MinorRadius-self.Thickness)
+        secondFace=Part.Face(Part.Wire(W2.toShape()))
         resultButtom=firstFace1.cut(secondFace)
         extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
         extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
