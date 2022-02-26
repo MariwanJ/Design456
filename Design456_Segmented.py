@@ -38,7 +38,7 @@ import DraftGeomUtils
 import Design456Init
 import Design456_NewParts
 
-__updated__ = '2022-02-25 22:23:56'
+__updated__ = '2022-02-26 18:25:28'
 
 #SegmentedSphere
 
@@ -284,6 +284,7 @@ class Design456_Segmented:
             "Design456_Housing",
             "Design456_RoundedHousing",
             "Design456_EllipseBox",
+            "Design456_NonuniformedBox",
             ]
 
 

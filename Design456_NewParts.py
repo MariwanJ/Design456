@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
-__updated__ = '2022-02-26 15:38:41'
+__updated__ = '2022-02-26 22:28:28'
 
 
 #Roof
@@ -393,7 +393,7 @@ Gui.addCommand('Design456_RoundedHousing', Design456_RoundedHousing())
 ###########################33
 
 
-#RoundedHousing
+#EllipseBox
 
 class ViewProviderEllipseBox:
 
@@ -498,5 +498,142 @@ class Design456_EllipseBox:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_EllipseBox', Design456_EllipseBox())
+
+
+############################3333
+
+#NonuniformedBox
+
+class ViewProviderNoneUniformBox:
+
+    obj_name = "NonuniformedBoxBase"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderNoneUniformBox.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'NonuniformedBoxBase.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+#NonuniformedBox
+class Design456_NonuniformedBoxBase:
+    """ NonuniformedBoxshape based on several parameters
+    """
+    def __init__(self, obj, 
+                       width=10,
+                       length=10,
+                       height=10,
+                       radius=1,
+                       thickness=1,
+                       vertices=[App.Vector(0, 0, 0),
+                                 App.Vector(10, 0, 0),
+                                 App.Vector(10, 10, 0),
+                                 App.Vector(0, 10, 0),App.Vector(0, 0, 0)], chamfer=False):
+
+        obj.addProperty("App::PropertyLength", "Width","NonuniformedBox", 
+                        "Width of the NonuniformedBox").Width = width
+
+        obj.addProperty("App::PropertyLength", "Length","NonuniformedBox", 
+                        "Length of the NonuniformedBox").Length = length
+
+        obj.addProperty("App::PropertyLength", "Height","NonuniformedBox", 
+                        "Height of the NonuniformedBox").Height = height
+
+        obj.addProperty("App::PropertyLength", "Radius","NonuniformedBox", 
+                        "Height of the NonuniformedBox").Radius = radius
+
+        obj.addProperty("App::PropertyLength", "Thickness","NonuniformedBox", 
+                        "Thickness of the NonuniformedBox").Thickness = thickness
+        obj.addProperty("App::PropertyVectorList", "Vertices", "Source","Enter a list of at least 3 vertices").Vertices = vertices
+
+        obj.addProperty("App::PropertyBool", "Chamfer","RoundedHousing", 
+                        "Chamfer corner").Chamfer = chamfer
+
+        obj.Proxy = self
+    
+    def execute(self, obj):
+        self.Width=float(obj.Width)
+        self.Height=float(obj.Height)
+        self.Length=float(obj.Length)
+        self.Radius=float(obj.Radius)
+        self.Thickness=float(obj.Thickness)
+        self.Chamfer=obj.Chamfer
+        self.Vertices=obj.Vertices
+        Result=None
+        # base None-uniformed vertices and walls after a cut
+        s=Gui.Selection.getSelectionEx()
+        V1_FSQ=[]
+        if len(s)>2:
+            self.Vertices=[]
+            for subObj in s:
+                self.Vertices.append(subObj.Object.Shape.Vertexes[0].Point)
+            self.Vertices.append(s[0].Object.Shape.Vertexes[0].Point)
+            obj.Vertices.clear()
+            obj.Vertices=self.Vertices
+            self.Width=self.Vertices[1].x
+            self.Length=self.Vertices[2].y
+        
+        else:
+            V1_FSQ= self.Vertices
+
+        V1_FSQ=self.Vertices
+        V2_FSQ=[App.Vector(self.Thickness,self.Thickness,0),
+                 App.Vector(self.Width-self.Thickness,self.Thickness,0),
+                 App.Vector(self.Width-self.Thickness,self.Length-self.Thickness,0),
+                 App.Vector(self.Thickness,self.Length-self.Thickness,0),
+                 App.Vector(self.Thickness,self.Thickness,0)]
+        
+        firstFace1=Part.Face(Part.makePolygon(V1_FSQ))  # one used with secondFace to cut
+        firstFace2=Part.Face(Part.makePolygon(V1_FSQ))  # Other used to make the bottom
+        secondFace=Part.Face(Part.makePolygon(V2_FSQ))
+        resultButtom=firstFace1.cut(secondFace)
+        extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
+        extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
+        fused=extrude1.fuse(extrude2)
+        Result=fused.removeSplitter()
+        obj.Shape=Result
+        
+class Design456_NonuniformedBox:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'NonuniformedBox.svg',
+                'MenuText': "NonuniformedBox",
+                'ToolTip': "Generate a NonuniformedBox"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "NonuniformedBox")
+        Design456_NonuniformedBoxBase(newObj)
+
+        ViewProviderNoneUniformBox(newObj.ViewObject, "NonuniformedBox")
+
+        App.ActiveDocument.recompute()
+        v = Gui.ActiveDocument.ActiveView
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_NonuniformedBox', Design456_NonuniformedBox())
 
 
