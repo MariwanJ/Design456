@@ -130,26 +130,7 @@ class DF_SelectLoop:
         self.obj = None
         self.sub = []
         self.active = False
-
-    def GetResources(self):
-        return {'Pixmap'  : os.path.join( DefeaturingWB_icons_path , 'Path-SelectLoop.svg') ,
-                'MenuText': "Defeaturing_SelectLoop",
-                'ToolTip': "Defeaturing SelectLoop"}
-
-    def IsActive(self):
-        if 0: #try:
-            sel = Gui.Selection.getSelectionEx()[0]
-            if sel.Object == self.obj and sel.SubElementNames == self.sub:
-                return self.active
-            self.obj = sel.Object
-            self.sub = sel.SubElementNames
-            if sel.SubObjects:
-                self.active = self.formsPartOfALoop(sel.Object, sel.SubObjects[0], sel.SubElementNames)
-            else:
-                self.active = False
-            return self.active
-        return True
-
+        
     def Activated(self):
         sel = Gui.Selection.getSelectionEx()[0]
         obj = sel.Object
@@ -185,6 +166,11 @@ class DF_SelectLoop:
             return False
         return True
 
+    def GetResources(self):
+        return {'Pixmap'  : os.path.join( DefeaturingWB_icons_path , 'Path-SelectLoop.svg') ,
+                'MenuText': "Defeaturing_SelectLoop",
+                'ToolTip': "Defeaturing SelectLoop"} 
+                
 if App.GuiUp:
     Gui.addCommand('DF_SelectLoop', DF_SelectLoop())
 

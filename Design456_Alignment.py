@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-02-27 20:11:57'
+__updated__ = '2022-02-27 20:30:54'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -574,7 +574,7 @@ class Design456_SelectTool:
         newsize = self.tab.count()  # Todo : Should we do that?
         self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
         del self.dialog
-        self.showFirstTab()
+        faced.showFirstTab()
         return
         
     def getValue(self):

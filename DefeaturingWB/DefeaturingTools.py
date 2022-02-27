@@ -2326,17 +2326,14 @@ def RH_singleInstance():
 
     app = QtGui.QApplication  # QtGui.qApp
     for i in app.topLevelWidgets():
-
         if i.objectName() == "DefeaturingTools":
             return False
     t = Gui.getMainWindow()
     dw = t.findChildren(QtGui.QDockWidget)
 
     for i in dw:
-
         # "kicad StepUp 3D tools":
         if str(i.objectName()) == "DefeaturingTools":
-
             return False
     return True
 ##

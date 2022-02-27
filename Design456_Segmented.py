@@ -38,7 +38,7 @@ import DraftGeomUtils
 import Design456Init
 import Design456_NewParts
 
-__updated__ = '2022-02-26 18:25:28'
+__updated__ = '2022-02-27 20:36:43'
 
 #SegmentedSphere
 
@@ -222,7 +222,7 @@ class SegmentedCylinder:
         obj.addProperty("App::PropertyLength", "Radius", "SegmentedCylinder",
                         "Radius of the SegmentedCylinder").Radius = radius
 
-        obj.addProperty("App::PropertyLength", "XY_Angle","SegmentedCylinder", 
+        obj.addProperty("App::PropertyAngle", "XY_Angle","SegmentedCylinder", 
                         "XY axis angle of the SegmentedCylinder").XY_Angle=xy_angle
 
         obj.addProperty("App::PropertyLength", "Segments","SegmentedCylinder", 
