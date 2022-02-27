@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-02-09 20:40:12'
+__updated__ = '2022-02-27 16:47:37'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -429,7 +429,142 @@ class Design456_ResetPlacements:
 
 
 Gui.addCommand('Design456_ResetPlacements', Design456_ResetPlacements())
+#####
 
+
+# Select Tool
+class Design456_SelectTool:
+    """[Select Tool for selecting faces, edges, vertices]
+    """
+    def askUser(self):
+
+        self.dialog = QtGui.QDialog()
+        self.dialog.setObjectName("seldialog")
+        self.dialog.resize(325, 322)
+        font = QtGui.QFont()
+        font.setFamily("Guttman-Aharoni")
+        font.setBold(True)
+        self.dialog.setFont(font)
+        self.dialog.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
+        self.radSel_1 = QtGui.QRadioButton(self.dialog)
+        self.radSel_1.setGeometry(QtCore.QRect(20, 60, 89, 20))
+        self.radSel_1.setObjectName("radSel_1")
+        self.radSel_2 = QtGui.QRadioButton(self.dialog)
+        self.radSel_2.setGeometry(QtCore.QRect(20, 80, 121, 20))
+        self.radSel_2.setObjectName("radSel_2")
+        self.radSel_3 = QtGui.QRadioButton(self.dialog)
+        self.radSel_3.setGeometry(QtCore.QRect(20, 100, 121, 20))
+        self.radSel_3.setObjectName("radSel_3")
+        self.radSel_4 = QtGui.QRadioButton(self.dialog)
+        self.radSel_4.setGeometry(QtCore.QRect(20, 120, 151, 20))
+        self.radSel_4.setObjectName("radSel_4")
+        self.radSel_5 = QtGui.QRadioButton(self.dialog)
+        self.radSel_5.setGeometry(QtCore.QRect(20, 140, 191, 20))
+        self.radSel_5.setObjectName("radSel_5")
+        self.radSel_6 = QtGui.QRadioButton(self.dialog)
+        self.radSel_6.setGeometry(QtCore.QRect(20, 160, 201, 20))
+        self.radSel_6.setObjectName("radSel_6")
+        self.radSel_7 = QtGui.QRadioButton(self.dialog)
+        self.radSel_7.setGeometry(QtCore.QRect(20, 180, 241, 20))
+        self.radSel_7.setObjectName("radSel_7")
+        self.radSel_8 = QtGui.QRadioButton(self.dialog)
+        self.radSel_8.setGeometry(QtCore.QRect(20, 200, 181, 20))
+        self.radSel_8.setObjectName("radSel_8")
+        self.radSel_9 = QtGui.QRadioButton(self.dialog)
+        self.radSel_9.setGeometry(QtCore.QRect(20, 220, 181, 20))
+        self.radSel_9.setObjectName("radSel_9")
+        self.radSel_10 = QtGui.QRadioButton(self.dialog)
+        self.radSel_10.setGeometry(QtCore.QRect(20, 240, 181, 20))
+        self.radSel_10.setObjectName("radSel_10")
+        self.radSel_11 = QtGui.QRadioButton(self.dialog)
+        self.radSel_11.setGeometry(QtCore.QRect(20, 260, 181, 20))
+        self.radSel_11.setObjectName("radSel_11")
+        self.label = QtGui.QLabel(self.dialog)
+        self.label.setGeometry(QtCore.QRect(20, 10, 361, 41))
+        font = QtGui.QFont()
+        font.setFamily("Caladea")
+        font.setPointSize(12)
+        font.setBold(True)
+        self.label.setFont(font)
+        self.label.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
+        self.label.setFrameShape(QtGui.QFrame.NoFrame)
+        self.label.setFrameShadow(QtGui.QFrame.Sunken)
+        self.label.setObjectName("label")
+        self.buttonBox = QtGui.QDialogButtonBox(self.dialog)
+        self.buttonBox.setGeometry(QtCore.QRect(150, 290, 156, 24))
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        _translate = QtCore.QCoreApplication.translate
+        self.dialog.setWindowTitle(_translate("self.dialog", "Dialog"))
+        self.radSel_1.setText(_translate("self.dialog", "All Faces"))
+        self.radSel_2.setText(_translate("self.dialog", "Horizontal Faces"))
+        self.radSel_3.setText(_translate("self.dialog", "Vertical Faces"))
+        self.radSel_4.setText(_translate("self.dialog", "All Edges in the Object"))
+        self.radSel_5.setText(_translate("self.dialog", "All Edges in the Face"))
+        self.radSel_6.setText(_translate("self.dialog", "All Edges in the Face"))
+        self.radSel_7.setText(_translate("self.dialog", "All Edges Horizontal Direction"))
+        self.radSel_8.setText(_translate("self.dialog", "All Edges Vertical Direction"))
+        self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Object"))
+        self.radSel_10.setText(_translate("self.dialog", "All Vertexes in the Face"))
+        self.radSel_11.setText(_translate("self.dialog", "All Vertexes in the Edge"))
+        self.label.setText(_translate("self.dialog", "Select Desired subobjects by\n selecting below options"))
+        QtCore.QMetaObject.connectSlotsByName(self.dialog)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.getValue)
+        self.dialog.show()
+
+
+    def getValue(self):
+        result=0
+        if radSel_1.isChecked():
+            result= 1
+        elif radSel_2.isChecked():
+            result= 2
+        elif radSel_3.isChecked():
+            result= 3
+        elif radSel_4.isChecked():
+            result= 4
+        elif radSel_5.isChecked():
+            result= 5
+        elif radSel_6.isChecked():
+            result= 6
+        elif radSel_7.isChecked():
+            result= 7
+        elif radSel_8.isChecked():
+            result= 8
+        elif radSel_9.isChecked():
+            result= 9
+        elif radSel_10.isChecked():
+            result= 10
+        elif radSel_11.isChecked():
+            result= 11
+        self.dialog.hide()
+        return result
+
+            
+    def Activated(self):
+        self.selectedValue=0 # used to identify the user-chosen option of selection
+        answer=0
+        try:
+            answer=self.askUser()
+            
+        
+        except Exception as err:
+            App.Console.PrintError("'NonuniformedBox' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + 'SelectTool.svg',
+            'MenuText': 'SelectTool',
+            'ToolTip':  'SelectTool'
+        }
+
+Gui.addCommand('Design456_SelectTool', Design456_SelectTool())
+
+##
 
 class Design456_Alignment_Tools:
     list = ["Design456_MoveObject",
@@ -440,7 +575,8 @@ class Design456_Alignment_Tools:
             "Design456_AlignToPlane",
             "Design456_Magnet",
 #            "Design456_SmartMove",
-            "Design456_SmartAlignment"
+            "Design456_SmartAlignment",
+            "Design456_SelectTool"
 #            "Design456_ViewInsideObjects",
             ]
 
