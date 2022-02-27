@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-02-27 16:47:37'
+__updated__ = '2022-02-27 20:11:57'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -436,106 +436,170 @@ Gui.addCommand('Design456_ResetPlacements', Design456_ResetPlacements())
 class Design456_SelectTool:
     """[Select Tool for selecting faces, edges, vertices]
     """
-    def askUser(self):
+    def getMainWindow(self):
+        """[Create the tab for the tool]
 
-        self.dialog = QtGui.QDialog()
-        self.dialog.setObjectName("seldialog")
-        self.dialog.resize(325, 322)
-        font = QtGui.QFont()
-        font.setFamily("Guttman-Aharoni")
-        font.setBold(True)
-        self.dialog.setFont(font)
-        self.dialog.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
-        self.radSel_1 = QtGui.QRadioButton(self.dialog)
-        self.radSel_1.setGeometry(QtCore.QRect(20, 60, 89, 20))
-        self.radSel_1.setObjectName("radSel_1")
-        self.radSel_2 = QtGui.QRadioButton(self.dialog)
-        self.radSel_2.setGeometry(QtCore.QRect(20, 80, 121, 20))
-        self.radSel_2.setObjectName("radSel_2")
-        self.radSel_3 = QtGui.QRadioButton(self.dialog)
-        self.radSel_3.setGeometry(QtCore.QRect(20, 100, 121, 20))
-        self.radSel_3.setObjectName("radSel_3")
-        self.radSel_4 = QtGui.QRadioButton(self.dialog)
-        self.radSel_4.setGeometry(QtCore.QRect(20, 120, 151, 20))
-        self.radSel_4.setObjectName("radSel_4")
-        self.radSel_5 = QtGui.QRadioButton(self.dialog)
-        self.radSel_5.setGeometry(QtCore.QRect(20, 140, 191, 20))
-        self.radSel_5.setObjectName("radSel_5")
-        self.radSel_6 = QtGui.QRadioButton(self.dialog)
-        self.radSel_6.setGeometry(QtCore.QRect(20, 160, 201, 20))
-        self.radSel_6.setObjectName("radSel_6")
-        self.radSel_7 = QtGui.QRadioButton(self.dialog)
-        self.radSel_7.setGeometry(QtCore.QRect(20, 180, 241, 20))
-        self.radSel_7.setObjectName("radSel_7")
-        self.radSel_8 = QtGui.QRadioButton(self.dialog)
-        self.radSel_8.setGeometry(QtCore.QRect(20, 200, 181, 20))
-        self.radSel_8.setObjectName("radSel_8")
-        self.radSel_9 = QtGui.QRadioButton(self.dialog)
-        self.radSel_9.setGeometry(QtCore.QRect(20, 220, 181, 20))
-        self.radSel_9.setObjectName("radSel_9")
-        self.radSel_10 = QtGui.QRadioButton(self.dialog)
-        self.radSel_10.setGeometry(QtCore.QRect(20, 240, 181, 20))
-        self.radSel_10.setObjectName("radSel_10")
-        self.radSel_11 = QtGui.QRadioButton(self.dialog)
-        self.radSel_11.setGeometry(QtCore.QRect(20, 260, 181, 20))
-        self.radSel_11.setObjectName("radSel_11")
-        self.label = QtGui.QLabel(self.dialog)
-        self.label.setGeometry(QtCore.QRect(20, 10, 361, 41))
-        font = QtGui.QFont()
-        font.setFamily("Caladea")
-        font.setPointSize(12)
-        font.setBold(True)
-        self.label.setFont(font)
-        self.label.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
-        self.label.setFrameShape(QtGui.QFrame.NoFrame)
-        self.label.setFrameShadow(QtGui.QFrame.Sunken)
-        self.label.setObjectName("label")
-        self.buttonBox = QtGui.QDialogButtonBox(self.dialog)
-        self.buttonBox.setGeometry(QtCore.QRect(150, 290, 156, 24))
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
-        _translate = QtCore.QCoreApplication.translate
-        self.dialog.setWindowTitle(_translate("self.dialog", "Dialog"))
-        self.radSel_1.setText(_translate("self.dialog", "All Faces"))
-        self.radSel_2.setText(_translate("self.dialog", "Horizontal Faces"))
-        self.radSel_3.setText(_translate("self.dialog", "Vertical Faces"))
-        self.radSel_4.setText(_translate("self.dialog", "All Edges in the Object"))
-        self.radSel_5.setText(_translate("self.dialog", "All Edges in the Face"))
-        self.radSel_6.setText(_translate("self.dialog", "All Edges in the Face"))
-        self.radSel_7.setText(_translate("self.dialog", "All Edges Horizontal Direction"))
-        self.radSel_8.setText(_translate("self.dialog", "All Edges Vertical Direction"))
-        self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Object"))
-        self.radSel_10.setText(_translate("self.dialog", "All Vertexes in the Face"))
-        self.radSel_11.setText(_translate("self.dialog", "All Vertexes in the Edge"))
-        self.label.setText(_translate("self.dialog", "Select Desired subobjects by\n selecting below options"))
-        QtCore.QMetaObject.connectSlotsByName(self.dialog)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.getValue)
-        self.dialog.show()
+        Returns:
+            [QTtab]: [The tab created which should be added to the FreeCAD]
+        """
+        try:
+            toplevel = QtGui.QApplication.topLevelWidgets()
+            self.mw = None
+            for i in toplevel:
+                if i.metaObject().className() == "Gui::MainWindow":
+                    self.mw = i
+            if self.mw is None:
+                raise Exception("No main window found")
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            for i in dw:
+                if str(i.objectName()) == "Combo View":
+                    self.tab = i.findChild(QtGui.QTabWidget)
+                elif str(i.objectName()) == "Python Console":
+                    self.tab = i.findChild(QtGui.QTabWidget)
+            if self.tab is None:
+                raise Exception("No tab widget found")
+
+            self.dialog = QtGui.QDialog()
+            self.dialog.setObjectName("seldialog")
+
+            oldsize = self.tab.count()
+            self.tab.addTab(self.dialog, "Select")
+            self.tab.setCurrentWidget(self.dialog)
+            self.dialog.resize(325, 450)
+            self.dialog.setWindowTitle("Select")
+
+            font = QtGui.QFont()
+            font.setFamily("Guttman-Aharoni")
+            font.setBold(True)
+            la = QtGui.QVBoxLayout(self.dialog)
+            self.dialog.setFont(font)
+            self.dialog.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
+            self.radSel_1 = QtGui.QRadioButton(self.dialog)
+            self.radSel_1.setGeometry(QtCore.QRect(20, 60, 240, 20))
+            self.radSel_1.setObjectName("radSel_1")
+            self.radSel_2 = QtGui.QRadioButton(self.dialog)
+            self.radSel_2.setGeometry(QtCore.QRect(20, 80, 240, 20))
+            self.radSel_2.setObjectName("radSel_2")
+            self.radSel_3 = QtGui.QRadioButton(self.dialog)
+            self.radSel_3.setGeometry(QtCore.QRect(20, 100, 240, 20))
+            self.radSel_3.setObjectName("radSel_3")
+            self.radSel_4 = QtGui.QRadioButton(self.dialog)
+            self.radSel_4.setGeometry(QtCore.QRect(20, 120, 240, 20))
+            self.radSel_4.setObjectName("radSel_4")
+            self.radSel_5 = QtGui.QRadioButton(self.dialog)
+            self.radSel_5.setGeometry(QtCore.QRect(20, 140, 240, 20))
+            self.radSel_5.setObjectName("radSel_5")
+            self.radSel_6 = QtGui.QRadioButton(self.dialog)
+            self.radSel_6.setGeometry(QtCore.QRect(20, 160, 240, 20))
+            self.radSel_6.setObjectName("radSel_6")
+            self.radSel_7 = QtGui.QRadioButton(self.dialog)
+            self.radSel_7.setGeometry(QtCore.QRect(20, 180, 241, 20))
+            self.radSel_7.setObjectName("radSel_7")
+            self.radSel_8 = QtGui.QRadioButton(self.dialog)
+            self.radSel_8.setGeometry(QtCore.QRect(20, 200, 240, 20))
+            self.radSel_8.setObjectName("radSel_8")
+            self.radSel_9 = QtGui.QRadioButton(self.dialog)
+            self.radSel_9.setGeometry(QtCore.QRect(20, 220, 240, 20))
+            self.radSel_9.setObjectName("radSel_9")
+            self.radSel_10 = QtGui.QRadioButton(self.dialog)
+            self.radSel_10.setGeometry(QtCore.QRect(20, 240, 240, 20))
+            self.radSel_10.setObjectName("radSel_10")
+            self.radSel_11 = QtGui.QRadioButton(self.dialog)
+            self.radSel_11.setGeometry(QtCore.QRect(20, 260, 240, 20))
+            self.radSel_11.setObjectName("radSel_11")
+            la.addWidget(self.radSel_1 )
+            la.addWidget(self.radSel_2 )
+            la.addWidget(self.radSel_3 )
+            la.addWidget(self.radSel_4 )
+            la.addWidget(self.radSel_5 )
+            la.addWidget(self.radSel_6 )
+            la.addWidget(self.radSel_7 )
+            la.addWidget(self.radSel_8 )
+            la.addWidget(self.radSel_9 )
+            la.addWidget(self.radSel_10)
+            la.addWidget(self.radSel_11)
+            
 
 
+            self.label = QtGui.QLabel(self.dialog)
+            self.label.setGeometry(QtCore.QRect(20, 10, 361, 41))
+
+            font = QtGui.QFont()
+            font.setFamily("Caladea")
+            font.setPointSize(12)
+            font.setBold(True)
+            self.label.setFont(font)
+            self.label.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
+            self.label.setFrameShape(QtGui.QFrame.NoFrame)
+            self.label.setFrameShadow(QtGui.QFrame.Sunken)
+            self.label.setObjectName("label")
+            self.buttonBox = QtGui.QDialogButtonBox(self.dialog)
+            self.buttonBox.setGeometry(QtCore.QRect(150, 290, 156, 24))
+            self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            self.buttonBox.setObjectName("buttonBox")
+
+            la.addWidget(self.label)
+            la.addWidget(self.buttonBox)
+
+
+            _translate = QtCore.QCoreApplication.translate
+            self.radSel_1.setText(_translate("self.dialog", "All Faces"))
+            self.radSel_2.setText(_translate("self.dialog", "Horizontal Faces"))
+            self.radSel_3.setText(_translate("self.dialog", "Vertical Faces"))
+            self.radSel_4.setText(_translate("self.dialog", "All Edges in the Object"))
+            self.radSel_5.setText(_translate("self.dialog", "All Edges in the Face"))
+            self.radSel_6.setText(_translate("self.dialog", "All Edges in the Face"))
+            self.radSel_7.setText(_translate("self.dialog", "All Edges Horizontal Direction"))
+            self.radSel_8.setText(_translate("self.dialog", "All Edges Vertical Direction"))
+            self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Object"))
+            self.radSel_10.setText(_translate("self.dialog", "All Vertexes in the Face"))
+            self.radSel_11.setText(_translate("self.dialog", "All Vertexes in the Edge"))
+            self.label.setText(_translate("self.dialog", "Select Desired subobjects by\n selecting below options"))
+            QtCore.QMetaObject.connectSlotsByName(self.dialog)
+            QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.getValue)
+            QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.hideDialog)
+            return self.dialog
+            #self.dialog.show()
+        except Exception as err:
+            App.Console.PrintError("'Design456_SelectTool' getMainWindow-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+    def hideDialog(self):
+        self.dialog.hide()
+        dw = self.mw.findChildren(QtGui.QDockWidget)
+        newsize = self.tab.count()  # Todo : Should we do that?
+        self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+        del self.dialog
+        self.showFirstTab()
+        return
+        
     def getValue(self):
         result=0
-        if radSel_1.isChecked():
+        if self.radSel_1.isChecked():
             result= 1
-        elif radSel_2.isChecked():
+        elif self.radSel_2.isChecked():
             result= 2
-        elif radSel_3.isChecked():
+        elif self.radSel_3.isChecked():
             result= 3
-        elif radSel_4.isChecked():
+        elif self.radSel_4.isChecked():
             result= 4
-        elif radSel_5.isChecked():
+        elif self.radSel_5.isChecked():
             result= 5
-        elif radSel_6.isChecked():
+        elif self.radSel_6.isChecked():
             result= 6
-        elif radSel_7.isChecked():
+        elif self.radSel_7.isChecked():
             result= 7
-        elif radSel_8.isChecked():
+        elif self.radSel_8.isChecked():
             result= 8
-        elif radSel_9.isChecked():
+        elif self.radSel_9.isChecked():
             result= 9
-        elif radSel_10.isChecked():
+        elif self.radSel_10.isChecked():
             result= 10
-        elif radSel_11.isChecked():
+        elif self.radSel_11.isChecked():
             result= 11
         self.dialog.hide()
         return result
@@ -545,7 +609,7 @@ class Design456_SelectTool:
         self.selectedValue=0 # used to identify the user-chosen option of selection
         answer=0
         try:
-            answer=self.askUser()
+            answer=self.getMainWindow()
             
         
         except Exception as err:

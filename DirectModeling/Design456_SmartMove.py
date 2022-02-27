@@ -207,6 +207,7 @@ class Design456_SmartMove:
         self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
         temp=self.selectedObj[0]
         App.ActiveDocument.recompute()
+        faced.showFirstTab()
         self.__del__()  # Remove all smart Alignment 3dCOIN widgets
     
     def __del__(self):

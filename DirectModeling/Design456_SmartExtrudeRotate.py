@@ -952,6 +952,7 @@ class Design456_SmartExtrudeRotate:
         self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 ..etc
         App.ActiveDocument.commitTransaction()  # undo reg.
         App.ActiveDocument.recompute()
+        faced.showFirstTab()
         self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
 
     def GetResources(self):

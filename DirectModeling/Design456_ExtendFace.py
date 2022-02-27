@@ -53,7 +53,7 @@ import math
 # except:
 #     pass
 
-__updated__ = '2022-01-22 17:54:27'
+__updated__ = '2022-02-27 20:15:07'
 
 class Design456_ExtendFace:
     """[Extend the face's position to a new position.
@@ -670,7 +670,7 @@ class Design456_ExtendFace:
         self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
 
         App.ActiveDocument.commitTransaction()  # undo reg.
-
+        faced.showFirstTab()
         self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
 
     def __del__(self):

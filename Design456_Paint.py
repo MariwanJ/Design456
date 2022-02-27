@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2021-12-31 08:56:28'
+__updated__ = '2022-02-27 20:14:01'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -1278,6 +1278,7 @@ class Design456_Paint:
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
             del self.dialog
             App.ActiveDocument.recompute()
+            faced.showFirstTab()
             self.__del__()  # Remove all Paint 3dCOIN widgets
 
         except Exception as err:

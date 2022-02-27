@@ -41,7 +41,7 @@ import math
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-02-11 19:47:23'
+__updated__ = '2022-02-27 20:12:54'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -1113,3 +1113,17 @@ def isFaceOf3DObj(selectedObj):
         return True
     else:
         return False
+
+
+
+def showFirstTab():
+    """Return back the view of the tab 
+        to 'Model'
+    """
+    mw=Gui.getMainWindow()
+    dw=mw.findChildren(QtGui.QDockWidget)
+    for i in dw:
+        if i.objectName() == "Combo View":
+            tab = i.findChild(QtGui.QTabWidget)
+            break
+    tab.setCurrentIndex(0)

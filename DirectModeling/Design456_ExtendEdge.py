@@ -43,7 +43,7 @@ import Part as _part
 import FACE_D as faced
 import math
 
-__updated__ = '2022-01-13 13:07:37'
+__updated__ = '2022-02-27 20:14:43'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -640,7 +640,7 @@ class Design456_ExtendEdge:
             self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 .etc
 
             App.ActiveDocument.commitTransaction()  # undo reg.
-
+            faced.showFirstTab()
             self.__del__()  # Remove all smart Extrude Rotate 3dCOIN widgets
 
         except Exception as err:

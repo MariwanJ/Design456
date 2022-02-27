@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-01-14 16:52:23'
+__updated__ = '2022-02-27 20:15:27'
 
 
 # TODO: FIXME : NOT IMPLEMENTED
@@ -430,6 +430,7 @@ class Design456_SmartAlignment:
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
 
             App.ActiveDocument.recompute()
+            faced.showFirstTab()
             self.__del__()  # Remove all smart Alignment 3dCOIN widgets
             
         except Exception as err:

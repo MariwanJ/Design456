@@ -40,7 +40,7 @@ from PySide import QtGui, QtCore
 from draftutils.translate import translate  # for translate
 
 SeperateLinesFromObject = 4
-__updated__ = '2022-02-10 21:23:07'
+__updated__ = '2022-02-27 20:21:28'
 
 
 def smartLinecallback(smartLine, obj, parentlink):
@@ -342,6 +342,7 @@ class Design456_SmartScale:
             dw = self.mw.findChildren(QtGui.QDockWidget)
             newsize = self.tab.count()
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+            faced.showFirstTab()
             self.__del__()  # Remove all smart scale 3dCOIN widgets
 
         except Exception as err:

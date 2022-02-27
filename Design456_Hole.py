@@ -34,7 +34,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES, FR_COLOR
 
-__updated__ = '2022-01-13 13:08:36'
+__updated__ = '2022-02-27 20:13:43'
 
 class Design456_Hole:
     """[Select the part that will be used to make a hole in the surrounding objects]
@@ -253,6 +253,7 @@ class Design456_Hole:
             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
             del self.dialog
             App.ActiveDocument.recompute()
+            faced.showFirstTab()
             self.__del__()  # Remove allOBJ Holes 3dCOIN widgets
 
         except Exception as err:
