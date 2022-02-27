@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
-__updated__ = '2022-02-26 22:28:28'
+__updated__ = '2022-02-27 12:37:58'
 
 
 #Roof
@@ -531,7 +531,7 @@ class ViewProviderNoneUniformBox:
         pass
 
     def getIcon(self):
-        return ( Design456Init.ICON_PATH + 'NonuniformedBoxBase.svg')
+        return ( Design456Init.ICON_PATH + 'NonuniformedBox.svg')
 
     def __getstate__(self):
         return None
@@ -544,72 +544,64 @@ class Design456_NonuniformedBoxBase:
     """ NonuniformedBoxshape based on several parameters
     """
     def __init__(self, obj, 
-                       width=10,
-                       length=10,
                        height=10,
                        radius=1,
                        thickness=1,
-                       vertices=[App.Vector(0, 0, 0),
-                                 App.Vector(10, 0, 0),
-                                 App.Vector(10, 10, 0),
-                                 App.Vector(0, 10, 0),App.Vector(0, 0, 0)], chamfer=False):
-
-        obj.addProperty("App::PropertyLength", "Width","NonuniformedBox", 
-                        "Width of the NonuniformedBox").Width = width
-
-        obj.addProperty("App::PropertyLength", "Length","NonuniformedBox", 
-                        "Length of the NonuniformedBox").Length = length
+                       base_radius=1,
+                       vertices=[], chamfer=False):
 
         obj.addProperty("App::PropertyLength", "Height","NonuniformedBox", 
                         "Height of the NonuniformedBox").Height = height
-
-        obj.addProperty("App::PropertyLength", "Radius","NonuniformedBox", 
-                        "Height of the NonuniformedBox").Radius = radius
-
         obj.addProperty("App::PropertyLength", "Thickness","NonuniformedBox", 
                         "Thickness of the NonuniformedBox").Thickness = thickness
-        obj.addProperty("App::PropertyVectorList", "Vertices", "Source","Enter a list of at least 3 vertices").Vertices = vertices
-
+                        
         obj.addProperty("App::PropertyBool", "Chamfer","RoundedHousing", 
                         "Chamfer corner").Chamfer = chamfer
+                        
+        obj.addProperty("App::PropertyLength", "Radius","RoundedHousing", 
+                        "Radius of the NonuniformedBox").Radius = radius
+
+        obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
+                        "Base Radius of the NonuniformedBox").RadiusOfBase = base_radius
+                        
 
         obj.Proxy = self
-    
-    def execute(self, obj):
-        self.Width=float(obj.Width)
-        self.Height=float(obj.Height)
-        self.Length=float(obj.Length)
-        self.Radius=float(obj.Radius)
-        self.Thickness=float(obj.Thickness)
-        self.Chamfer=obj.Chamfer
-        self.Vertices=obj.Vertices
-        Result=None
-        # base None-uniformed vertices and walls after a cut
         s=Gui.Selection.getSelectionEx()
-        V1_FSQ=[]
+        self.Vertices=[]
         if len(s)>2:
-            self.Vertices=[]
+            self.Vertices.clear()
             for subObj in s:
                 self.Vertices.append(subObj.Object.Shape.Vertexes[0].Point)
             self.Vertices.append(s[0].Object.Shape.Vertexes[0].Point)
-            obj.Vertices.clear()
-            obj.Vertices=self.Vertices
-            self.Width=self.Vertices[1].x
-            self.Length=self.Vertices[2].y
-        
-        else:
-            V1_FSQ= self.Vertices
+            
+    def execute(self, obj):
+        self.Height=float(obj.Height)
+        self.Radius=float(obj.Radius)
+        self.RadiusOfBase=float(obj.RadiusOfBase)
+        self.Thickness=float(obj.Thickness)
+        self.Chamfer=obj.Chamfer
+    
+        Result=None
+        # base None-uniformed vertices and walls after a cut
 
+        V1_FSQ=[]
         V1_FSQ=self.Vertices
-        V2_FSQ=[App.Vector(self.Thickness,self.Thickness,0),
-                 App.Vector(self.Width-self.Thickness,self.Thickness,0),
-                 App.Vector(self.Width-self.Thickness,self.Length-self.Thickness,0),
-                 App.Vector(self.Thickness,self.Length-self.Thickness,0),
-                 App.Vector(self.Thickness,self.Thickness,0)]
+        W1=Part.makePolygon(V1_FSQ)
+
+        if self.Radius>0:
+            W11 = DraftGeomUtils.filletWire(W1,self.Radius, chamfer=self.Chamfer)
+        else:
+            W11=W1
         
-        firstFace1=Part.Face(Part.makePolygon(V1_FSQ))  # one used with secondFace to cut
-        firstFace2=Part.Face(Part.makePolygon(V1_FSQ))  # Other used to make the bottom
-        secondFace=Part.Face(Part.makePolygon(V2_FSQ))
+        firstFace1=Part.Face(W11)  # One used with secondFace to cut
+        
+        if self.RadiusOfBase>0:
+            W12 = DraftGeomUtils.filletWire(W1,self.RadiusOfBase, chamfer=self.Chamfer)
+        else:
+            W12=W1  # Other used to make the bottom
+        
+        firstFace2=Part.Face(W12) 
+        secondFace= firstFace2.makeOffset2D(-self.Thickness)
         resultButtom=firstFace1.cut(secondFace)
         extrude1=resultButtom.extrude(App.Vector(0,0,self.Height))
         extrude2=firstFace2.extrude(App.Vector(0,0,self.Thickness))
