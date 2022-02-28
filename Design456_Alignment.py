@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-02-27 20:30:54'
+__updated__ = '2022-02-28 20:04:22'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -543,6 +543,7 @@ class Design456_SelectTool:
 
 
             _translate = QtCore.QCoreApplication.translate
+            self.label.setText(_translate("self.dialog", "Select Desired subobjects by\n selecting below options"))
             self.radSel_1.setText(_translate("self.dialog", "All Faces"))
             self.radSel_2.setText(_translate("self.dialog", "Horizontal Faces"))
             self.radSel_3.setText(_translate("self.dialog", "Vertical Faces"))
@@ -554,7 +555,6 @@ class Design456_SelectTool:
             self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Object"))
             self.radSel_10.setText(_translate("self.dialog", "All Vertexes in the Face"))
             self.radSel_11.setText(_translate("self.dialog", "All Vertexes in the Edge"))
-            self.label.setText(_translate("self.dialog", "Select Desired subobjects by\n selecting below options"))
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.getValue)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.hideDialog)

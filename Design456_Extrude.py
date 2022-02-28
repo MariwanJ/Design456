@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-01-26 22:07:35'
+__updated__ = '2022-02-28 20:13:22'
 
 
 class Design456_Extrude:
@@ -52,7 +52,7 @@ class Design456_Extrude:
                     "Part::Feature", fullname)
                 newObj.Shape = self.selectedObj[0].SubObjects[0].copy()
                 App.ActiveDocument.recompute()
-                return [newobj]
+                return newobj
             else:
                 print(type(nTObj))
                 if type(nTObj) != list and type(nTObj) != tuple:
