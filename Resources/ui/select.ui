@@ -6,13 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>325</width>
-    <height>322</height>
+    <width>331</width>
+    <height>339</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>322</height>
+   </size>
   </property>
   <property name="font">
    <font>
     <family>Guttman-Aharoni</family>
+    <weight>75</weight>
     <bold>true</bold>
    </font>
   </property>
@@ -22,193 +29,139 @@
   <property name="locale">
    <locale language="English" country="Europe"/>
   </property>
-  <widget class="QRadioButton" name="radSelectType">
+  <widget class="QSplitter" name="splitter">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>60</y>
-     <width>89</width>
-     <height>20</height>
+     <x>10</x>
+     <y>0</y>
+     <width>311</width>
+     <height>331</height>
     </rect>
    </property>
-   <property name="text">
-    <string>All Faces</string>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
    </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>80</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Horizental Faces</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_3">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>100</y>
-     <width>121</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Vertical Faces</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_4">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>120</y>
-     <width>151</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Edges in the Object</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_5">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>140</y>
-     <width>191</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Edges in the Face</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_6">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>160</y>
-     <width>201</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Edges in the Face</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_7">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>180</y>
-     <width>241</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Edges Horizental Direction</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_8">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>200</y>
-     <width>181</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Edges Vertical Direction</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_9">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>220</y>
-     <width>181</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Vertexes in the Object</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_10">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>240</y>
-     <width>181</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Vertexes in the Face</string>
-   </property>
-  </widget>
-  <widget class="QRadioButton" name="radSelectType_11">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>260</y>
-     <width>181</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>All Vertexes in the Edge</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>361</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Caladea</family>
-     <pointsize>12</pointsize>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="locale">
-    <locale language="English" country="Europe"/>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::NoFrame</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Sunken</enum>
-   </property>
-   <property name="text">
-    <string>Select Desired subobjects by
+   <widget class="QLabel" name="label">
+    <property name="font">
+     <font>
+      <family>Caladea</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="locale">
+     <locale language="English" country="Europe"/>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="text">
+     <string>Select Desired subobjects by
  selecting below options</string>
-   </property>
-  </widget>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>290</y>
-     <width>156</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType">
+    <property name="text">
+     <string>All Faces</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_2">
+    <property name="text">
+     <string>Horizental Faces</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_3">
+    <property name="text">
+     <string>Vertical Faces</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_4">
+    <property name="text">
+     <string>All Edges in the Object</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_5">
+    <property name="text">
+     <string>All Edges in the Face</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_6">
+    <property name="text">
+     <string>All Edges in the Face</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_7">
+    <property name="text">
+     <string>All Edges Horizental Direction</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_8">
+    <property name="text">
+     <string>All Edges Vertical Direction</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_9">
+    <property name="text">
+     <string>All Vertexes in the Object</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_10">
+    <property name="text">
+     <string>All Vertexes in the Face</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="radSelectType_11">
+    <property name="text">
+     <string>All Vertexes in the Edge</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup</string>
+    </attribute>
+   </widget>
+   <widget class="QDialogButtonBox" name="buttonBox">
+    <property name="standardButtons">
+     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

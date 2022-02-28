@@ -42,7 +42,7 @@ import Design456_Magnet
 
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-02-28 20:04:22'
+__updated__ = '2022-02-28 22:09:10'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -461,17 +461,17 @@ class Design456_SelectTool:
 
             self.dialog = QtGui.QDialog()
             self.dialog.setObjectName("seldialog")
-
             oldsize = self.tab.count()
             self.tab.addTab(self.dialog, "Select")
             self.tab.setCurrentWidget(self.dialog)
             self.dialog.resize(325, 450)
             self.dialog.setWindowTitle("Select")
-
+            self.buttonGroup = QtGui.QButtonGroup(self.dialog)
+            la = QtGui.QVBoxLayout(self.dialog)
+              
             font = QtGui.QFont()
             font.setFamily("Guttman-Aharoni")
             font.setBold(True)
-            la = QtGui.QVBoxLayout(self.dialog)
             self.dialog.setFont(font)
             self.dialog.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
             self.radSel_1 = QtGui.QRadioButton(self.dialog)
@@ -505,8 +505,32 @@ class Design456_SelectTool:
             self.radSel_10.setGeometry(QtCore.QRect(20, 240, 240, 20))
             self.radSel_10.setObjectName("radSel_10")
             self.radSel_11 = QtGui.QRadioButton(self.dialog)
-            self.radSel_11.setGeometry(QtCore.QRect(20, 260, 240, 20))
-            self.radSel_11.setObjectName("radSel_11")
+            self.generalBox = QtGui.QGroupBox(u'Selection Type')
+            self.label = QtGui.QLabel(self.dialog)
+            self.label.setGeometry(QtCore.QRect(20, 10, 361, 41))
+            
+            self.buttonGroup.addButton(self.radSel_1 )
+            self.buttonGroup.addButton(self.radSel_2 )
+            self.buttonGroup.addButton(self.radSel_3 )
+            self.buttonGroup.addButton(self.radSel_4 )
+            self.buttonGroup.addButton(self.radSel_5 )
+            self.buttonGroup.addButton(self.radSel_6 )
+            self.buttonGroup.addButton(self.radSel_7 )
+            self.buttonGroup.addButton(self.radSel_8 )
+            self.buttonGroup.addButton(self.radSel_9 )
+            self.buttonGroup.addButton(self.radSel_10)
+
+            self.label.setFont(font)
+            self.label.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
+            self.label.setFrameShape(QtGui.QFrame.NoFrame)
+            self.label.setFrameShadow(QtGui.QFrame.Sunken)
+            self.label.setObjectName("label")
+            self.buttonBox = QtGui.QDialogButtonBox(self.dialog)
+            self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+            self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            self.buttonBox.setObjectName("buttonBox")
+
+            la.addWidget(self.label)
             la.addWidget(self.radSel_1 )
             la.addWidget(self.radSel_2 )
             la.addWidget(self.radSel_3 )
@@ -517,30 +541,11 @@ class Design456_SelectTool:
             la.addWidget(self.radSel_8 )
             la.addWidget(self.radSel_9 )
             la.addWidget(self.radSel_10)
-            la.addWidget(self.radSel_11)
-            
-
-
-            self.label = QtGui.QLabel(self.dialog)
-            self.label.setGeometry(QtCore.QRect(20, 10, 361, 41))
-
+            la.addWidget( self.buttonBox)
             font = QtGui.QFont()
             font.setFamily("Caladea")
-            font.setPointSize(12)
+            font.setPointSize(10)
             font.setBold(True)
-            self.label.setFont(font)
-            self.label.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
-            self.label.setFrameShape(QtGui.QFrame.NoFrame)
-            self.label.setFrameShadow(QtGui.QFrame.Sunken)
-            self.label.setObjectName("label")
-            self.buttonBox = QtGui.QDialogButtonBox(self.dialog)
-            self.buttonBox.setGeometry(QtCore.QRect(150, 290, 156, 24))
-            self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-            self.buttonBox.setObjectName("buttonBox")
-
-            la.addWidget(self.label)
-            la.addWidget(self.buttonBox)
-
 
             _translate = QtCore.QCoreApplication.translate
             self.label.setText(_translate("self.dialog", "Select Desired subobjects by\n selecting below options"))
@@ -549,17 +554,18 @@ class Design456_SelectTool:
             self.radSel_3.setText(_translate("self.dialog", "Vertical Faces"))
             self.radSel_4.setText(_translate("self.dialog", "All Edges in the Object"))
             self.radSel_5.setText(_translate("self.dialog", "All Edges in the Face"))
-            self.radSel_6.setText(_translate("self.dialog", "All Edges in the Face"))
-            self.radSel_7.setText(_translate("self.dialog", "All Edges Horizontal Direction"))
-            self.radSel_8.setText(_translate("self.dialog", "All Edges Vertical Direction"))
-            self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Object"))
-            self.radSel_10.setText(_translate("self.dialog", "All Vertexes in the Face"))
-            self.radSel_11.setText(_translate("self.dialog", "All Vertexes in the Edge"))
+            self.radSel_6.setText(_translate("self.dialog", "All Edges Horizontal Direction"))
+            self.radSel_7.setText(_translate("self.dialog", "All Edges Vertical Direction"))
+            self.radSel_8.setText(_translate("self.dialog", "All Vertexes in the Object"))
+            self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Face"))
+            self.radSel_10.setText(_translate("self.dialog", "All Vertexes in the Edge"))
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.getValue)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.hideDialog)
+            # connects the slot function and makes the argument of the band int type
+            self.buttonGroup.buttonClicked.connect(self.selectObjects)
+
             return self.dialog
-            #self.dialog.show()
         except Exception as err:
             App.Console.PrintError("'Design456_SelectTool' getMainWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -577,6 +583,11 @@ class Design456_SelectTool:
         faced.showFirstTab()
         return
         
+
+    def selectObjects(self,obj):
+        print("Key was pressed, id is:", self.buttonGroup.id(obj))
+
+
     def getValue(self):
         result=0
         if self.radSel_1.isChecked():
