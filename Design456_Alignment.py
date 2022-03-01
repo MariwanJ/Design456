@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-01 21:46:44'
+__updated__ = '2022-03-01 21:50:31'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -628,7 +628,7 @@ class Design456_SelectTool:
             self.selectVertexes(FR_SELECTION.ALL_VERTEXES_VERTICAL)
 
     def selectFaces(self,Seltype):
-        faces=self.selectedObj.Object.Shape.Faces
+        faces=self.selectedObj[0].Object.Shape.Faces
         Gui.Selection.removeSelection()
         if Seltype == FR_SELECTION.ALL_FACES_IN_OBJECT:
             pass
