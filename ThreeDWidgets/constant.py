@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = '2022-01-12 19:53:56'
+__updated__ = '2022-03-01 21:18:25'
 
 
 # Widgets type. QT widget will get QT in their names.
@@ -493,3 +493,21 @@ class FR_BRUSHES:
     FR_FILLET2_BRUSH                        =  35
     FR_FILLET3_BRUSH                        =  36
     FR_FILLET4_BRUSH                        =  37
+
+
+    
+class FR_SELECTION:
+    """[Selection of sub objects enum]"""
+    
+    ALL_FACES_IN_OBJECT         =   0
+    ALL_HORIZONTAL_FACES        =   1
+    ALL_VERTICAL_FACES          =   2
+    ALL_EDGES_IN_OBJECT         =   3
+    ALL_EDGES_IN_FACES          =   4
+    ALL_EDGES_HORIZONTAL        =   5
+    ALL_EDGES_VERTICAL          =   6
+    ALL_VERTEXES_IN_OBJECT      =   7
+    ALL_VERTEXES_IN_FACE        =   8
+    ALL_VERTEXES_IN_EDGE        =   9
+    ALL_VERTEXES_HORIZONTAL     =   10
+    ALL_VERTEXES_VERTICAL       =   11
