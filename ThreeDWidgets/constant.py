@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = '2022-03-01 21:18:25'
+__updated__ = '2022-03-02 20:21:06'
 
 
 # Widgets type. QT widget will get QT in their names.
@@ -503,7 +503,7 @@ class FR_SELECTION:
     ALL_HORIZONTAL_FACES        =   1
     ALL_VERTICAL_FACES          =   2
     ALL_EDGES_IN_OBJECT         =   3
-    ALL_EDGES_IN_FACES          =   4
+    ALL_EDGES_IN_FACE           =   4
     ALL_EDGES_HORIZONTAL        =   5
     ALL_EDGES_VERTICAL          =   6
     ALL_VERTEXES_IN_OBJECT      =   7

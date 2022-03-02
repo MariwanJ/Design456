@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-01 21:50:31'
+__updated__ = '2022-03-02 21:27:27'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -602,6 +602,7 @@ class Design456_SelectTool:
     def selectObjects(self,obj):
         currentID=self.buttonGroup.id(obj)
         print("Key was pressed, id is:", self.buttonGroup.id(obj))
+        Gui.Selection.clearSelection()
         if currentID==0:
             self.selectFaces(FR_SELECTION.ALL_FACES_IN_OBJECT)
         elif currentID==1:
@@ -609,9 +610,9 @@ class Design456_SelectTool:
         elif currentID==2:
             self.selectFaces(FR_SELECTION.ALL_VERTICAL_FACES)
         elif currentID==3:
-            self.selectEdgets(FR_SELECTION.ALL_EDGES_IN_OBJECT)
+            self.selectEdges(FR_SELECTION.ALL_EDGES_IN_OBJECT)
         elif currentID==4:
-             self.selectEdges(FR_SELECTION.ALL_EDGES_IN_FACES)
+             self.selectEdges(FR_SELECTION.ALL_EDGES_IN_FACE)
         elif currentID==5:
             self.selectEdges(FR_SELECTION.ALL_EDGES_HORIZONTAL)
         elif currentID==6:
@@ -627,17 +628,48 @@ class Design456_SelectTool:
         elif currentID==9:
             self.selectVertexes(FR_SELECTION.ALL_VERTEXES_VERTICAL)
 
-    def selectFaces(self,Seltype):
-        faces=self.selectedObj[0].Object.Shape.Faces
-        Gui.Selection.removeSelection()
+    def selectFaces(self,Seltype): 
         if Seltype == FR_SELECTION.ALL_FACES_IN_OBJECT:
-            pass
+            for i in range(0,len(self.faces)):
+                Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
         elif Seltype == FR_SELECTION.ALL_HORIZONTAL_FACES:
-            pass
+             for i in range(0,len(self.faces)):
+                 if (self.faces[i].normalAt(1,1)==App.Vector (-1.0, -0.0, 0.0) or
+                     self.faces[i].normalAt(1,1)==App.Vector (1.0, -0.0, 0.0) or
+                     self.faces[i].normalAt(1,1)==App.Vector (0.0, -1.0, 0.0) or
+                     self.faces[i].normalAt(1,1)==App.Vector (0.0, 1.0, 0.0)):
+                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
         elif Seltype == FR_SELECTION.ALL_VERTICAL_FACES:
-            pass
+            for i in range(0,len(self.faces)):
+                 if (self.faces[i].normalAt(1,1)==App.Vector (0.0, 0.0, -1.0) or
+                     self.faces[i].normalAt(1,1)==App.Vector (0.0, 0.0, 1.0)):
+                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
     def selectEdges(self,Seltype):
-        pass
+        if Seltype == FR_SELECTION.ALL_EDGES_IN_OBJECT:
+            for i in range(0,len(self.edges)):
+                Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Edge"+str(i+1))
+        elif Seltype == FR_SELECTION.ALL_EDGES_IN_FACE:
+            f=self.selectedObj[0].SubObjects[0]
+            for e in f.Edges:
+                for j in enumerate(self.edges):
+                    if j[1].isEqual(e):
+                        name="Edge%d" %(j[0]+1)
+                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+        elif Seltype == FR_SELECTION.ALL_EDGES_HORIZONTAL:
+            for i in range(0,len(self.faces)):
+                 if (self.faces[i].normalAt(1,1)==App.Vector (-1.0, -0.0, 0.0) or
+                     self.faces[i].normalAt(1,1)==App.Vector (1.0, -0.0, 0.0) or
+                     self.faces[i].normalAt(1,1)==App.Vector (0.0, -1.0, 0.0) or
+                     self.faces[i].normalAt(1,1)==App.Vector (0.0, 1.0, 0.0)):
+                    for e in self.faces[i].Edges:
+                        for j in enumerate(self.edges):
+                            if j[1].isEqual(e):
+                                    v1=j[1].Vertexes[0]
+                                    v2=j[1].Vertexes[1]
+                                    if (v1.Point.x==v2.Point.x or v1.Point.y==v2.Point.y)and (v1.Point.z!=v2.Point.z):
+                                        name="Edge%d" %(j[0]+1)
+                                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                            
     def selectVertexes(self,Seltype):
         pass
 
@@ -655,6 +687,11 @@ class Design456_SelectTool:
            
     def Activated(self):
         self.selectedObj=Gui.Selection.getSelectionEx()
+        self.faces=self.selectedObj[0].Object.Shape.Faces
+        self.edges=self.selectedObj[0].Object.Shape.Edges
+        self.vertexes=self.selectedObj[0].Object.Shape.Vertexes
+        self.Targetobj = self.selectedObj[0].Object
+        self.doc=App.ActiveDocument
         if len(self.selectedObj)== 0:
             # An object must be selected
             errMessage = "Select an object, one face or one edge before using the tool"
