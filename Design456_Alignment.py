@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-02 21:27:27'
+__updated__ = '2022-03-02 22:07:23'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -634,15 +634,18 @@ class Design456_SelectTool:
                 Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
         elif Seltype == FR_SELECTION.ALL_HORIZONTAL_FACES:
              for i in range(0,len(self.faces)):
-                 if (self.faces[i].normalAt(1,1)==App.Vector (-1.0, -0.0, 0.0) or
-                     self.faces[i].normalAt(1,1)==App.Vector (1.0, -0.0, 0.0) or
-                     self.faces[i].normalAt(1,1)==App.Vector (0.0, -1.0, 0.0) or
-                     self.faces[i].normalAt(1,1)==App.Vector (0.0, 1.0, 0.0)):
+                normal=self.faces[i].normalAt(1,1)
+                print("normal is ",normal)
+                if (normal==App.Vector (-1.0, -0.0, 0.0) or
+                     normal==App.Vector (1.0, -0.0, 0.0) or
+                     normal==App.Vector (0.0, -1.0, 0.0) or
+                     normal==App.Vector (0.0, 1.0, 0.0)):
                      Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
         elif Seltype == FR_SELECTION.ALL_VERTICAL_FACES:
             for i in range(0,len(self.faces)):
                  if (self.faces[i].normalAt(1,1)==App.Vector (0.0, 0.0, -1.0) or
-                     self.faces[i].normalAt(1,1)==App.Vector (0.0, 0.0, 1.0)):
+                     self.faces[i].normalAt(1,1)==App.Vector (0.0, 0.0, 1.0) or
+                     (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z))):
                      Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
     def selectEdges(self,Seltype):
         if Seltype == FR_SELECTION.ALL_EDGES_IN_OBJECT:
@@ -657,10 +660,13 @@ class Design456_SelectTool:
                         Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
         elif Seltype == FR_SELECTION.ALL_EDGES_HORIZONTAL:
             for i in range(0,len(self.faces)):
-                 if (self.faces[i].normalAt(1,1)==App.Vector (-1.0, -0.0, 0.0) or
-                     self.faces[i].normalAt(1,1)==App.Vector (1.0, -0.0, 0.0) or
-                     self.faces[i].normalAt(1,1)==App.Vector (0.0, -1.0, 0.0) or
-                     self.faces[i].normalAt(1,1)==App.Vector (0.0, 1.0, 0.0)):
+                normal=self.faces[i].normalAt(1,1)
+                print("normal is ",normal)
+                if (normal==App.Vector (-1.0, -0.0, 0.0) or
+                     normal==App.Vector (1.0, -0.0, 0.0) or
+                     normal==App.Vector (0.0, -1.0, 0.0) or
+                     normal==App.Vector (0.0, 1.0, 0.0) or
+                     (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)) ):
                     for e in self.faces[i].Edges:
                         for j in enumerate(self.edges):
                             if j[1].isEqual(e):
