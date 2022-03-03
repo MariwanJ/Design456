@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-02 22:10:16'
+__updated__ = '2022-03-03 22:07:23'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -628,6 +628,8 @@ class Design456_SelectTool:
         elif currentID==9:
             self.selectVertexes(FR_SELECTION.ALL_VERTEXES_VERTICAL)
 
+    
+    #Faces
     def selectFaces(self,Seltype): 
         if Seltype == FR_SELECTION.ALL_FACES_IN_OBJECT:
             for i in range(0,len(self.faces)):
@@ -648,21 +650,26 @@ class Design456_SelectTool:
                      normal==App.Vector (0.0, 0.0, 1.0) or
                      (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z))):
                      Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
+    
+    #Edges
     def selectEdges(self,Seltype):
         if Seltype == FR_SELECTION.ALL_EDGES_IN_OBJECT:
             for i in range(0,len(self.edges)):
                 Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Edge"+str(i+1))
+        
         elif Seltype == FR_SELECTION.ALL_EDGES_IN_FACE:
+            self.edges=self.selectedObj[0].Object.Shape.Edges
             f=self.selectedObj[0].SubObjects[0]
             for e in f.Edges:
                 for j in enumerate(self.edges):
-                    if j[1].isEqual(e):
+                    print(j[1], e , "j and e")
+                    if j[1].isSame(e):
                         name="Edge%d" %(j[0]+1)
                         Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+        
         elif Seltype == FR_SELECTION.ALL_EDGES_HORIZONTAL:
             for i in range(0,len(self.faces)):
                 normal=self.faces[i].normalAt(1,1)
-                print("normal is ",normal)
                 if (normal==App.Vector (-1.0, -0.0, 0.0) or
                      normal==App.Vector (1.0, -0.0, 0.0) or
                      normal==App.Vector (0.0, -1.0, 0.0) or
@@ -670,13 +677,24 @@ class Design456_SelectTool:
                      (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)) ):
                     for e in self.faces[i].Edges:
                         for j in enumerate(self.edges):
-                            if j[1].isEqual(e):
+                            if j[1].isSame(e):
                                     v1=j[1].Vertexes[0]
                                     v2=j[1].Vertexes[1]
                                     if (v1.Point.x==v2.Point.x or v1.Point.y==v2.Point.y)and (v1.Point.z!=v2.Point.z):
                                         name="Edge%d" %(j[0]+1)
                                         Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
                             
+        elif Seltype == FR_SELECTION.ALL_EDGES_VERTICAL:
+            for i in range(0,len(self.faces)):
+                normal=self.faces[i].normalAt(1,1)
+                if (normal==App.Vector (0.0, 0.0, -1.0) or
+                     normal==App.Vector (0.0, 0.0, 1.0)):
+                      for e in self.faces[i].Edges:
+                        for j in enumerate(self.edges):
+                            if j[1].isSame(e):
+                                name="Edge%d" %(j[0]+1)
+                                Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+    
     def selectVertexes(self,Seltype):
         pass
 
