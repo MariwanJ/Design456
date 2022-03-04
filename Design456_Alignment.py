@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-03 22:07:23'
+__updated__ = '2022-03-04 20:14:49'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -473,7 +473,6 @@ class Design456_SelectTool:
             font.setFamily("Guttman-Aharoni")
             font.setBold(True)
             self.dialog.setFont(font)
-            self.dialog.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
             self.radSel_0 = QtGui.QRadioButton(self.dialog)
             self.radSel_0.setGeometry(QtCore.QRect(20, 60, 240, 20))
             self.radSel_0.setObjectName("radSel_1")
@@ -561,28 +560,42 @@ class Design456_SelectTool:
             _translate = QtCore.QCoreApplication.translate
             self.label.setText(_translate("self.dialog", "Select Desired subobjects by\n selecting below options"))
             self.radSel_0.setText(_translate("self.dialog", "All Faces"))
+            self.radSel_0.setStyleSheet('QRadioButton {background-color: #A3C1DA; color: red;}')
             self.buttonGroup.setId(self.radSel_0,0)
             self.radSel_1.setText(_translate("self.dialog", "Horizontal Faces"))
+            self.radSel_1.setStyleSheet('QRadioButton {background-color: #A3C1DA; color: red;}')
             self.buttonGroup.setId(self.radSel_1,1)
             self.radSel_2.setText(_translate("self.dialog", "Vertical Faces"))
+            self.radSel_2.setStyleSheet('QRadioButton {background-color: #A3C1DA; color: red;}')
+            
             self.buttonGroup.setId(self.radSel_2,2)
             self.radSel_3.setText(_translate("self.dialog", "All Edges in the Object"))
+            self.radSel_3.setStyleSheet('QRadioButton {background-color: #cec4b4; color: green;}')
             self.buttonGroup.setId(self.radSel_3,3)
             self.radSel_4.setText(_translate("self.dialog", "All Edges in the Face"))
+            self.radSel_4.setStyleSheet('QRadioButton {background-color: #cec4b4; color: green;}')
             self.buttonGroup.setId(self.radSel_4,4)
             self.radSel_5.setText(_translate("self.dialog", "All Edges-Horizontal Direction"))
+            self.radSel_5.setStyleSheet('QRadioButton {background-color: #cec4b4; color: green;}')
             self.buttonGroup.setId(self.radSel_5,5)
             self.radSel_6.setText(_translate("self.dialog", "All Edges-Vertical Direction"))
             self.buttonGroup.setId(self.radSel_6,6)
+            self.radSel_6.setStyleSheet('QRadioButton {background-color: #cec4b4; color: green;}')
+            
             self.radSel_7.setText(_translate("self.dialog", "All Vertexes in the Object"))
             self.buttonGroup.setId(self.radSel_7,7)
+            self.radSel_7.setStyleSheet('QRadioButton {background-color: #e994e7; color: yellow;}')
             self.radSel_8.setText(_translate("self.dialog", "All Vertexes in the Face"))
+            self.radSel_8.setStyleSheet('QRadioButton {background-color: #e994e7; color: yellow;}')
             self.buttonGroup.setId(self.radSel_8,8)
             self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Edge"))
+            self.radSel_9.setStyleSheet('QRadioButton {background-color: #e994e7; color: yellow;}')
             self.buttonGroup.setId(self.radSel_9,9)
             self.radSel_10.setText(_translate("self.dialog", "All Vertexes-Horizontal"))
+            self.radSel_10.setStyleSheet('QRadioButton {background-color: #e994e7; color: yellow;}')
             self.buttonGroup.setId(self.radSel_10,10)
             self.radSel_11.setText(_translate("self.dialog", "All Vertexes-Vertical"))
+            self.radSel_11.setStyleSheet('QRadioButton {background-color: #e994e7; color: yellow;}')
             self.buttonGroup.setId(self.radSel_11,11)
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
