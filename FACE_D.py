@@ -41,7 +41,7 @@ import math
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-02-27 20:12:54'
+__updated__ = '2022-03-05 22:04:40'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -915,34 +915,46 @@ def getBase(selectedObj, radius=1, thickness=1):
     basePoint = edg.valueAt(edg.FirstParameter) + nor*(radius+thickness)
     return basePoint
 
-
-def findFaceSHavingTheSameEdge():
+#TODO: FIXME : ALLOW SENDING THE EDGE AND SHAPE TO THIS FUNCTION
+# See https://forum.freecadweb.org/viewtopic.php?style=1&p=527043
+def findFaceSHavingTheSameEdge(edge=None,shape=None):
     """[Find Faces that have the selected edge]
     Returns:
         [Face Objects]: [Return the faces having
-        the selected edge or None if error occur]
+        the selected edge or None if not found/error occur]
     """
-    s = Gui.Selection.getSelectionEx()[0]
-    edge = s.SubObjects[0]
-    shape = s.Object.Shape
-    return shape.ancestorsOfType(edge, Part.Face)
+    if edge is None:
+        s = Gui.Selection.getSelectionEx()[0]
+        edge = s.SubObjects[0]
+        shape = s.Object.Shape
+    else:
+        edge = edge
+        shape = shape
+    result = shape.ancestorsOfType(edge, Part.Face)
+    if len(result)>=1:
+        return result
+    else: 
+        return None 
 
 
-def findFacehasSelectedEdge():
+def findFacehasSelectedEdge(_edge=None,_shape=None):
     """[Find Face that has the selected edge]
     Returns:
         [Face Object]: [Return the face of the selected
         edge or None if error occurs]
     """
-    obj = Gui.Selection.getSelectionEx()[0]
-    edge = obj.SubObjects[0]
-    Faces = obj.Object.Shape.Faces
+    if _edge is None:
+        obj = Gui.Selection.getSelectionEx()[0]
+        edge = obj.SubObjects[0]
+        Faces = obj.Object.Shape.Faces
+    else:
+        edge=_edge
+        Faces=_shape.Faces
     for fa in Faces:
         for ed in fa.Edges:
             if edge.isEqual(ed):
                 return fa
     return None
-
 
 def calculateMouseAngle(val1, val2):
     """[Calculate Angle of two coordinates ( xy, yz or xz).

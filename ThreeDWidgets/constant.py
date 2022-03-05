@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = '2022-03-02 20:21:06'
+__updated__ = '2022-03-04 21:16:03'
 
 
 # Widgets type. QT widget will get QT in their names.
@@ -499,15 +499,23 @@ class FR_BRUSHES:
 class FR_SELECTION:
     """[Selection of sub objects enum]"""
     
-    ALL_FACES_IN_OBJECT         =   0
-    ALL_HORIZONTAL_FACES        =   1
-    ALL_VERTICAL_FACES          =   2
-    ALL_EDGES_IN_OBJECT         =   3
-    ALL_EDGES_IN_FACE           =   4
-    ALL_EDGES_HORIZONTAL        =   5
-    ALL_EDGES_VERTICAL          =   6
-    ALL_VERTEXES_IN_OBJECT      =   7
-    ALL_VERTEXES_IN_FACE        =   8
-    ALL_VERTEXES_IN_EDGE        =   9
-    ALL_VERTEXES_HORIZONTAL     =   10
-    ALL_VERTEXES_VERTICAL       =   11
+    ALL_FACES_IN_OBJECT                 =   10              # 1
+    ALL_HORIZONTAL_FACES                =   20              # 2
+    ALL_VERTICAL_FACES                  =   30              # 3
+    ALL_HORIZONTAL_FACES_INNER          =   40              # 4
+    ALL_HORIZONTAL_FACES_OUTER          =   50              # 5
+
+    ALL_EDGES_IN_OBJECT                 =   60              # 6
+    ALL_EDGES_IN_FACE                   =   70              # 7
+    ALL_EDGES_HORIZONTAL                =   80              # 8
+    ALL_EDGES_VERTICAL                  =   90              # 9
+    ALL_EDGES_HORIZONTAL_INNER          =  100              #10
+    ALL_EDGES_HORIZONTAL_OUTER          =  110              #11
+
+    ALL_VERTEXES_IN_OBJECT              =  200              #12 
+    ALL_VERTEXES_IN_FACE                =  210              #13 
+    ALL_VERTEXES_IN_EDGE                =  220              #14 
+    ALL_VERTEXES_HORIZONTAL             =  240              #15 
+    ALL_VERTEXES_VERTICAL               =  260              #16
+    ALL_VERTEXES_HORIZONTAL_INNER       =  270              #17 
+    ALL_VERTEXES_HORIZONTAL_OUTER       =  280              #18
