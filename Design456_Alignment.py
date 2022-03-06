@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-05 22:43:36'
+__updated__ = '2022-03-06 17:22:23'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -445,6 +445,8 @@ class Design456_SelectTool:
         try:
             toplevel = QtGui.QApplication.topLevelWidgets()
             self.mw = None
+            
+
             for i in toplevel:
                 if i.metaObject().className() == "Gui::MainWindow":
                     self.mw = i
@@ -460,6 +462,9 @@ class Design456_SelectTool:
                 raise Exception("No tab widget found")
 
             self.dialog = QtGui.QDialog()
+            #self.scroll= QtGui.QScrollArea(self.dialog)
+            #self.scroll.resize(350,610)
+            #self.scroll.setWidgetResizable(True)
             self.dialog.setObjectName("seldialog")
             oldsize = self.tab.count()
             self.tab.addTab(self.dialog, "Select")
@@ -467,8 +472,14 @@ class Design456_SelectTool:
             self.dialog.resize(325, 450)
             self.dialog.setWindowTitle("Select")
             self.buttonGroup = QtGui.QButtonGroup(self.dialog)
-            la = QtGui.QVBoxLayout(self.dialog)
-              
+            #self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+            #self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+            #self.widget = QtGui.QWidget()
+            #self.scroll.setWidgetResizable(True)
+            #self.scroll.setWidget(self.widget)    
+            #la = QtGui.QVBoxLayout(self.widget)
+            la = QtGui.QVBoxLayout(self.dialog)    
+            #self.widget.setLayout(la)
             font = QtGui.QFont()
             font.setFamily("Guttman-Aharoni")
             font.setBold(True)
@@ -660,11 +671,11 @@ class Design456_SelectTool:
             self.buttonGroup.setId(self.radSel_15,FR_SELECTION.ALL_VERTEXES_VERTICAL)
             self.radSel_15.setStyleSheet('QRadioButton { color: blue;}')
 
-            self.radSel_16.setText(_translate("self.dialog", "All Vertexes-Vertical"))
+            self.radSel_16.setText(_translate("self.dialog", "All Vertexes-Horizontal-Inner"))
             self.buttonGroup.setId(self.radSel_16,FR_SELECTION.ALL_VERTEXES_HORIZONTAL_INNER)
             self.radSel_16.setStyleSheet('QRadioButton { color: blue;}')
 
-            self.radSel_17.setText(_translate("self.dialog", "All Vertexes-Vertical"))
+            self.radSel_17.setText(_translate("self.dialog", "All Horizontal-Outer"))
             self.buttonGroup.setId(self.radSel_17,FR_SELECTION.ALL_VERTEXES_HORIZONTAL_OUTER)
             self.radSel_17.setStyleSheet('QRadioButton { color: blue;}')
 
@@ -736,6 +747,7 @@ class Design456_SelectTool:
         HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
         firstFaceEdges=[]
         for e in HorizontalEdges:
+            print(len(firstFace),"First")
             if self.faceHasEdge(firstFace,e):
                 firstFaceEdges.append(e)
         #We have the horizontal edges of first edge
@@ -753,6 +765,7 @@ class Design456_SelectTool:
                 currentFace=f[0]
             #we have new face, find edges
             for e in HorizontalEdges:
+                print(len(currentFace), "HorizontalEdges")
                 if self.faceHasEdge(currentFace, e):
                     currentEdges.append(e)
             if not(currentEdges[0].isSame(newEdge)):
