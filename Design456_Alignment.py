@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-06 21:52:35'
+__updated__ = '2022-03-06 21:57:45'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -533,7 +533,7 @@ class Design456_SelectTool:
             self.btnRefresh=QtGui.QPushButton(self.dialog)
             self.btnRefresh.setText("Update\nSelection")
             self.btnRefresh.setGeometry(50,80,80,80)
-            self.btnRefresh.setStyleSheet("background: green;")
+            self.btnRefresh.setStyleSheet("background: cyan;")
 
             self.generalBox = QtGui.QGroupBox(u'Selection Type')
             self.label = QtGui.QLabel(self.dialog)
@@ -666,7 +666,7 @@ class Design456_SelectTool:
             # connects the slot function and makes the argument of the band int type
             self.buttonGroup.buttonClicked.connect(self.selectObjects)
 
-            self.btnRefresh.buttonClicked.connect(self.refreshSelection)
+            self.btnRefresh.clicked.connect(self.refreshSelection)
             return self.dialog
         except Exception as err:
             App.Console.PrintError("'Design456_SelectTool' getMainWindow-Failed. "
@@ -708,7 +708,6 @@ class Design456_SelectTool:
     def selectFaces_Horizontal(self):
         for i in range(0,len(self.faces)):
             normal=self.faces[i].normalAt(1,1)
-            print("normal is ",normal)
             if (normal==App.Vector (-1.0, -0.0, 0.0) or
                     normal==App.Vector (1.0, -0.0, 0.0) or
                     normal==App.Vector (0.0, -1.0, 0.0) or
