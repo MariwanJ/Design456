@@ -41,7 +41,7 @@ import math
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-03-05 22:04:40'
+__updated__ = '2022-03-06 21:17:55'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -287,7 +287,6 @@ class PartMover:
 
     def remove_callbacks(self):
         try:
-            print('Remove callback')
             self.view.removeEventCallbackPivy(
                 coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
             self.view.removeEventCallbackPivy(

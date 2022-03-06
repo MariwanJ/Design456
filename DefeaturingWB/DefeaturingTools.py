@@ -2371,7 +2371,6 @@ def dock_right_RH():
 
         try:
             t.tabifyDockWidget(cv, RHDockWidget)
-            i_say("Tabified done !")
 
         except:
             i_say('exception raised')
@@ -2401,7 +2400,6 @@ def dock_left_RH():
         dw = t.findChildren(QtGui.QDockWidget)
         try:
             t.tabifyDockWidget(cv, RHDockWidget)
-            i_say("Tabified done !")
         except:
             i_say('exception raised')
             pass

@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-06 17:22:23'
+__updated__ = '2022-03-06 21:16:12'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -498,43 +498,43 @@ class Design456_SelectTool:
             self.radSel_3.setObjectName("radSel_4")
             self.radSel_4 = QtGui.QRadioButton(self.dialog)
             self.radSel_4.setGeometry(QtCore.QRect(20, 140, 240, 20))
+            self.radSel_4.setObjectName("radSel_4")
+            self.radSel_4 = QtGui.QRadioButton(self.dialog)
+            self.radSel_4.setGeometry(QtCore.QRect(20, 160, 240, 20))
             self.radSel_4.setObjectName("radSel_5")
             self.radSel_5 = QtGui.QRadioButton(self.dialog)
-            self.radSel_5.setGeometry(QtCore.QRect(20, 160, 240, 20))
+            self.radSel_5.setGeometry(QtCore.QRect(20, 180, 240, 20))
             self.radSel_5.setObjectName("radSel_6")
             self.radSel_6 = QtGui.QRadioButton(self.dialog)
-            self.radSel_6.setGeometry(QtCore.QRect(20, 180, 240, 20))
+            self.radSel_6.setGeometry(QtCore.QRect(20, 200, 240, 20))
             self.radSel_6.setObjectName("radSel_7")
             self.radSel_7 = QtGui.QRadioButton(self.dialog)
-            self.radSel_7.setGeometry(QtCore.QRect(20, 200, 240, 20))
+            self.radSel_7.setGeometry(QtCore.QRect(20, 220, 240, 20))
             self.radSel_7.setObjectName("radSel_8")
             self.radSel_8 = QtGui.QRadioButton(self.dialog)
-            self.radSel_8.setGeometry(QtCore.QRect(20, 220, 240, 20))
-            self.radSel_8.setObjectName("radSel_9")
-            self.radSel_9 = QtGui.QRadioButton(self.dialog)
-            self.radSel_9.setGeometry(QtCore.QRect(20, 240, 240, 20))
-            self.radSel_9.setObjectName("radSel_10")
+            self.radSel_8.setGeometry(QtCore.QRect(20, 240, 240, 20))
+            self.radSel_8.setObjectName("radSel_10")
             self.radSel_10 = QtGui.QRadioButton(self.dialog)
             self.radSel_10.setGeometry(QtCore.QRect(20, 260, 240, 20))
             self.radSel_10.setObjectName("radSel_10")
+            self.radSel_9 = QtGui.QRadioButton(self.dialog)
+            self.radSel_9.setGeometry(QtCore.QRect(20, 280, 240, 20))
+            self.radSel_9.setObjectName("radSel_9")
+            self.radSel_10 = QtGui.QRadioButton(self.dialog)
+            self.radSel_10.setGeometry(QtCore.QRect(20, 280, 240, 20))
+            self.radSel_10.setObjectName("radSel_10")
             self.radSel_11 = QtGui.QRadioButton(self.dialog)
-            self.radSel_11.setGeometry(QtCore.QRect(20, 280, 240, 20))
+            self.radSel_11.setGeometry(QtCore.QRect(20, 300, 240, 20))
             self.radSel_11.setObjectName("radSel_11")
             self.radSel_12 = QtGui.QRadioButton(self.dialog)
-            self.radSel_12.setGeometry(QtCore.QRect(20, 280, 240, 20))
+            self.radSel_12.setGeometry(QtCore.QRect(20, 320, 240, 20))
             self.radSel_12.setObjectName("radSel_12")
             self.radSel_13 = QtGui.QRadioButton(self.dialog)
-            self.radSel_13.setGeometry(QtCore.QRect(20, 300, 240, 20))
+            self.radSel_13.setGeometry(QtCore.QRect(20, 340, 240, 20))
             self.radSel_13.setObjectName("radSel_13")
             self.radSel_14 = QtGui.QRadioButton(self.dialog)
-            self.radSel_14.setGeometry(QtCore.QRect(20, 320, 240, 20))
+            self.radSel_14.setGeometry(QtCore.QRect(20, 360, 240, 20))
             self.radSel_14.setObjectName("radSel_14")
-            self.radSel_15 = QtGui.QRadioButton(self.dialog)
-            self.radSel_15.setGeometry(QtCore.QRect(20, 340, 240, 20))
-            self.radSel_15.setObjectName("radSel_15")
-            self.radSel_16 = QtGui.QRadioButton(self.dialog)
-            self.radSel_16.setGeometry(QtCore.QRect(20, 360, 240, 20))
-            self.radSel_16.setObjectName("radSel_16")
             self.radSel_17 = QtGui.QRadioButton(self.dialog)
             self.radSel_17.setGeometry(QtCore.QRect(20, 380, 240, 20))
             self.radSel_17.setObjectName("radSel_17")
@@ -551,18 +551,18 @@ class Design456_SelectTool:
             self.buttonGroup.addButton(self.radSel_2 )
             self.buttonGroup.addButton(self.radSel_3 )
             self.buttonGroup.addButton(self.radSel_4 )
+            self.buttonGroup.addButton(self.radSel_4 )
             self.buttonGroup.addButton(self.radSel_5 )
             self.buttonGroup.addButton(self.radSel_6 )
             self.buttonGroup.addButton(self.radSel_7 )
             self.buttonGroup.addButton(self.radSel_8 )
+            self.buttonGroup.addButton(self.radSel_10 )
             self.buttonGroup.addButton(self.radSel_9 )
             self.buttonGroup.addButton(self.radSel_10 )
             self.buttonGroup.addButton(self.radSel_11 )
             self.buttonGroup.addButton(self.radSel_12 )
             self.buttonGroup.addButton(self.radSel_13 )
             self.buttonGroup.addButton(self.radSel_14 )
-            self.buttonGroup.addButton(self.radSel_15 )
-            self.buttonGroup.addButton(self.radSel_16 )
             self.buttonGroup.addButton(self.radSel_17 )
 
 
@@ -584,17 +584,14 @@ class Design456_SelectTool:
             la.addWidget(self.radSel_4 )
             la.addWidget(self.radSel_5 )
             la.addWidget(self.radSel_6 )
-            la.addWidget(self.radSel_7 )
+            la.addWidget(self.radSel_7)
             la.addWidget(self.radSel_8)
             la.addWidget(self.radSel_9)
-            la.addWidget(self.radSel_10)
-            la.addWidget(self.radSel_11)
-            la.addWidget(self.radSel_12 )
-            la.addWidget(self.radSel_13 )
+            la.addWidget(self.radSel_10 )
+            la.addWidget(self.radSel_11 )
+            la.addWidget(self.radSel_12)
+            la.addWidget(self.radSel_13)
             la.addWidget(self.radSel_14)
-            la.addWidget(self.radSel_15)
-            la.addWidget(self.radSel_16)
-            la.addWidget(self.radSel_17)
 
             la.addWidget( self.buttonBox)
             font = QtGui.QFont()
@@ -617,67 +614,55 @@ class Design456_SelectTool:
             self.buttonGroup.setId(self.radSel_2,FR_SELECTION.ALL_VERTICAL_FACES)
             self.radSel_2.setStyleSheet('QRadioButton { color: red;}')
 
-            self.radSel_3.setText(_translate("self.dialog", "Horizontal Faces-Inner"))
-            self.buttonGroup.setId(self.radSel_3,FR_SELECTION.ALL_HORIZONTAL_FACES_INNER)
+            self.radSel_3.setText(_translate("self.dialog", "Horizontal Face-Loop"))
+            self.buttonGroup.setId(self.radSel_3,FR_SELECTION.ALL_HORIZONTAL_FACE_LOOP)
             self.radSel_3.setStyleSheet('QRadioButton { color: red;}')
 
-            self.radSel_4.setText(_translate("self.dialog", "Horizontal Faces-Outer"))
-            self.buttonGroup.setId(self.radSel_4,FR_SELECTION.ALL_HORIZONTAL_FACES_OUTER)
-            self.radSel_4.setStyleSheet('QRadioButton { color: red;}')
-
             #Edges
-            self.radSel_5.setText(_translate("self.dialog", "All Edges in the Object"))
-            self.buttonGroup.setId(self.radSel_5,FR_SELECTION.ALL_EDGES_IN_OBJECT)
+            self.radSel_4.setText(_translate("self.dialog", "All Edges in the Object"))
+            self.buttonGroup.setId(self.radSel_4,FR_SELECTION.ALL_EDGES_IN_OBJECT)
+            self.radSel_4.setStyleSheet('QRadioButton { color: green;}')
+
+            self.radSel_5.setText(_translate("self.dialog", "All Edges in the Face"))
+            self.buttonGroup.setId(self.radSel_5,FR_SELECTION.ALL_EDGES_IN_FACE)
             self.radSel_5.setStyleSheet('QRadioButton { color: green;}')
 
-            self.radSel_6.setText(_translate("self.dialog", "All Edges in the Face"))
-            self.buttonGroup.setId(self.radSel_6,FR_SELECTION.ALL_EDGES_IN_FACE)
+            self.radSel_6.setText(_translate("self.dialog", "All Edges-Horizontal Direction"))
+            self.buttonGroup.setId(self.radSel_6,FR_SELECTION.ALL_EDGES_HORIZONTAL)
             self.radSel_6.setStyleSheet('QRadioButton { color: green;}')
 
-            self.radSel_7.setText(_translate("self.dialog", "All Edges-Horizontal Direction"))
-            self.buttonGroup.setId(self.radSel_7,FR_SELECTION.ALL_EDGES_HORIZONTAL)
-            self.radSel_7.setStyleSheet('QRadioButton { color: green;}')
-
-            self.radSel_8.setText(_translate("self.dialog", "All Edges-Vertical Direction"))
-            self.buttonGroup.setId(self.radSel_8,FR_SELECTION.ALL_EDGES_VERTICAL)
-            self.radSel_8.setStyleSheet('QRadioButton { color: green;}')            
+            self.radSel_7.setText(_translate("self.dialog", "All Edges-Vertical Direction"))
+            self.buttonGroup.setId(self.radSel_7,FR_SELECTION.ALL_EDGES_VERTICAL)
+            self.radSel_7.setStyleSheet('QRadioButton { color: green;}')            
             
-            self.radSel_9.setText(_translate("self.dialog", "All Edges-Horizontal-Inner"))
-            self.buttonGroup.setId(self.radSel_9,FR_SELECTION.ALL_EDGES_HORIZONTAL_INNER)
-            self.radSel_9.setStyleSheet('QRadioButton { color: green;}')
+            self.radSel_8.setText(_translate("self.dialog", "All Edges-Horizontal-Loop"))
+            self.buttonGroup.setId(self.radSel_8,FR_SELECTION.ALL_EDGES_HORIZONTAL_FACE_LOOP)
+            self.radSel_8.setStyleSheet('QRadioButton { color: green;}')
             
-            self.radSel_10.setText(_translate("self.dialog", "All Edges-Horizontal-Outer"))
-            self.buttonGroup.setId(self.radSel_10,FR_SELECTION.ALL_EDGES_HORIZONTAL_OUTER)
-            self.radSel_10.setStyleSheet('QRadioButton { color: green;}')
-
             #Vertexes
-            self.radSel_11.setText(_translate("self.dialog", "All Vertexes in the Object"))
-            self.buttonGroup.setId(self.radSel_11,FR_SELECTION.ALL_VERTEXES_IN_OBJECT)
-            self.radSel_11.setStyleSheet('QRadioButton { color: blue;}')
+            self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Object"))
+            self.buttonGroup.setId(self.radSel_9,FR_SELECTION.ALL_VERTEXES_IN_OBJECT)
+            self.radSel_9.setStyleSheet('QRadioButton { color: blue;}')
 
-            self.radSel_12.setText(_translate("self.dialog", "All Vertexes in the Face"))
-            self.buttonGroup.setId(self.radSel_12,FR_SELECTION.ALL_VERTEXES_IN_FACE)
+            self.radSel_10.setText(_translate("self.dialog", "All Vertexes in the Face"))
+            self.buttonGroup.setId(self.radSel_10,FR_SELECTION.ALL_VERTEXES_IN_FACE)
+            self.radSel_10.setStyleSheet('QRadioButton { color: blue;}')
+
+            self.radSel_11.setText(_translate("self.dialog", "All Vertexes in the Edge"))
+            self.buttonGroup.setId(self.radSel_11,FR_SELECTION.ALL_VERTEXES_IN_EDGE)
+            self.radSel_11.setStyleSheet('QRadioButton { color: blue;}')
+            
+            self.radSel_12.setText(_translate("self.dialog", "All Vertexes-Horizontal"))
+            self.buttonGroup.setId(self.radSel_12,FR_SELECTION.ALL_VERTEXES_HORIZONTAL)
             self.radSel_12.setStyleSheet('QRadioButton { color: blue;}')
 
-            self.radSel_13.setText(_translate("self.dialog", "All Vertexes in the Edge"))
-            self.buttonGroup.setId(self.radSel_13,FR_SELECTION.ALL_VERTEXES_IN_EDGE)
+            self.radSel_13.setText(_translate("self.dialog", "All Vertexes-Vertical"))
+            self.buttonGroup.setId(self.radSel_13,FR_SELECTION.ALL_VERTEXES_VERTICAL)
             self.radSel_13.setStyleSheet('QRadioButton { color: blue;}')
-            
-            self.radSel_14.setText(_translate("self.dialog", "All Vertexes-Horizontal"))
-            self.buttonGroup.setId(self.radSel_14,FR_SELECTION.ALL_VERTEXES_HORIZONTAL)
+
+            self.radSel_14.setText(_translate("self.dialog", "All Vertexes-Horizontal-Loop"))
+            self.buttonGroup.setId(self.radSel_14,FR_SELECTION.ALL_VERTEXES_HORIZONTAL_FACE_LOOP)
             self.radSel_14.setStyleSheet('QRadioButton { color: blue;}')
-
-            self.radSel_15.setText(_translate("self.dialog", "All Vertexes-Vertical"))
-            self.buttonGroup.setId(self.radSel_15,FR_SELECTION.ALL_VERTEXES_VERTICAL)
-            self.radSel_15.setStyleSheet('QRadioButton { color: blue;}')
-
-            self.radSel_16.setText(_translate("self.dialog", "All Vertexes-Horizontal-Inner"))
-            self.buttonGroup.setId(self.radSel_16,FR_SELECTION.ALL_VERTEXES_HORIZONTAL_INNER)
-            self.radSel_16.setStyleSheet('QRadioButton { color: blue;}')
-
-            self.radSel_17.setText(_translate("self.dialog", "All Horizontal-Outer"))
-            self.buttonGroup.setId(self.radSel_17,FR_SELECTION.ALL_VERTEXES_HORIZONTAL_OUTER)
-            self.radSel_17.setStyleSheet('QRadioButton { color: blue;}')
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.hideDialog)
@@ -695,16 +680,15 @@ class Design456_SelectTool:
 
     def selectObjects(self,obj):
         currentID=self.buttonGroup.id(obj)
-        print("Key was pressed, id is:", self.buttonGroup.id(obj))
         Gui.Selection.clearSelection()
         if ((currentID>=FR_SELECTION.ALL_FACES_IN_OBJECT) and 
-           (currentID<=FR_SELECTION.ALL_HORIZONTAL_FACES_OUTER)):
+           (currentID<=FR_SELECTION.ALL_HORIZONTAL_FACE_LOOP)):
            self.selectFaces(currentID)
         elif ((currentID>=FR_SELECTION.ALL_EDGES_IN_OBJECT) and 
-           (currentID<=FR_SELECTION.ALL_EDGES_HORIZONTAL_OUTER)):
+           (currentID<=FR_SELECTION.ALL_EDGES_HORIZONTAL_FACE_LOOP)):
             self.selectEdges(currentID)
         elif ((currentID>=FR_SELECTION.ALL_VERTEXES_IN_OBJECT) and 
-          (currentID<=FR_SELECTION.ALL_VERTEXES_HORIZONTAL_OUTER)):
+          (currentID<=FR_SELECTION.ALL_VERTEXES_HORIZONTAL_FACE_LOOP)):
             self.selectVertexes(currentID)
 
     def selectFaces_All(self):
@@ -718,7 +702,9 @@ class Design456_SelectTool:
             if (normal==App.Vector (-1.0, -0.0, 0.0) or
                     normal==App.Vector (1.0, -0.0, 0.0) or
                     normal==App.Vector (0.0, -1.0, 0.0) or
-                    normal==App.Vector (0.0, 1.0, 0.0)):
+                    normal==App.Vector (0.0, 1.0, 0.0) or
+                    normal.z==0.0
+                    ):
                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
     
     def selectFaces_Vertical(self):
@@ -735,8 +721,8 @@ class Design456_SelectTool:
                 return True  
         return False
 
-    def selectFaces_Horizontal_Inner(self):
-        firstFace=[self.selectedObj[0].SubObjects[0]]  #Selected face in the inner side
+    def selectFaces_Horizontal_faceloop(self):
+        firstFace=self.selectedObj[0].SubObjects[0]  #Selected face in the Loop side
         firstFaceName= self.selectedObj[0].SubElementNames[0] #Selected facename
         shape=self.selectedObj[0].Object.Shape
         Gui.Selection.clearSelection()
@@ -744,10 +730,11 @@ class Design456_SelectTool:
         HorizontalFaces=Gui.Selection.getSelectionEx()[0].SubObjects #all horizontal
         Gui.Selection.clearSelection()
         self.selectEdges_Horizontal()
+        print("here")
+        return
         HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
         firstFaceEdges=[]
         for e in HorizontalEdges:
-            print(len(firstFace),"First")
             if self.faceHasEdge(firstFace,e):
                 firstFaceEdges.append(e)
         #We have the horizontal edges of first edge
@@ -756,7 +743,7 @@ class Design456_SelectTool:
         currentFace=firstFace
         currentEdges=[]
         while (not(newEdge.isSame(firstFaceEdges[0]))):
-            f=faced.findFaceSHavingTheSameEdge(newEde,shape)
+            f=faced.findFaceSHavingTheSameEdge(newEdge,shape)
             if f[0].isSame(currentFace):
                 TotalFaces.append(f[1])
                 currentFace=f[1]
@@ -765,7 +752,6 @@ class Design456_SelectTool:
                 currentFace=f[0]
             #we have new face, find edges
             for e in HorizontalEdges:
-                print(len(currentFace), "HorizontalEdges")
                 if self.faceHasEdge(currentFace, e):
                     currentEdges.append(e)
             if not(currentEdges[0].isSame(newEdge)):
@@ -773,13 +759,15 @@ class Design456_SelectTool:
             else:
                 newEdge=currentEdges[1]
             currentEdges.clear()
+        Gui.Selection.clearSelection()
+        
         for i in range(0, len(self.faces)):
             for j in range(0,len(TotalFaces)):
                 f1=self.faces[i]
                 f2=TotalFaces[j]
                 if(f2.isSame(f1)):
                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
-
+        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,firstFaceName)
 
 
     #Faces
@@ -790,8 +778,8 @@ class Design456_SelectTool:
             self.selectFaces_Horizontal()
         elif Seltype == FR_SELECTION.ALL_VERTICAL_FACES:
             self.selectFaces_Vertical()
-        elif Seltype == FR_SELECTION.ALL_HORIZONTAL_FACES_INNER:
-            self.selectFaces_Horizontal_Inner()
+        elif Seltype == FR_SELECTION.ALL_HORIZONTAL_FACE_LOOP:
+            self.selectFaces_Horizontal_faceloop()
     
     def selectEdges_All(self):
         for i in range(0,len(self.edges)):
@@ -840,7 +828,7 @@ class Design456_SelectTool:
         if Seltype == FR_SELECTION.ALL_EDGES_IN_OBJECT:
             self.selectEdges_All()
         elif Seltype == FR_SELECTION.ALL_EDGES_IN_FACE:
-            selectEdges_inFace()
+            self.selectEdges_inFace()
         elif Seltype == FR_SELECTION.ALL_EDGES_HORIZONTAL:
             self.selectEdges_Horizontal()
         elif Seltype == FR_SELECTION.ALL_EDGES_VERTICAL:
@@ -887,7 +875,7 @@ class Design456_SelectTool:
 
     def GetResources(self):
         return {
-            'Pixmap': Design456Init.ICON_PATH + 'SelectTool.svg',
+            'Pixmap': Design456Init.ICON_PATH + 'Design456_Select.svg',
             'MenuText': 'SelectTool',
             'ToolTip':  'SelectTool'
         }

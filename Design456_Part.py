@@ -35,7 +35,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-02-10 21:35:57'
+__updated__ = '2022-03-06 20:51:35'
 
 #import PartGui
 import BasicShapes.CommandShapes
@@ -342,7 +342,7 @@ class Design456_Part_Pyramid:
         try:
             App.ActiveDocument.openTransaction(translate("Design456","Part Pyramid"))
             obj = App.Placement()
-            Faces = QtGui.QInputDialog.getInt(None, "Faces", "Faces:")[0]
+            Faces = QtGui.QInputDialog.getInt(None, "Faces", "Faces:",5)[0]
             if(Faces ==0 ):
                 return # Nothing to do here 
             obj.Rotation.Q = (0.0, 0.0, 0, 1.0)
