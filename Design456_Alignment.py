@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-06 21:16:12'
+__updated__ = '2022-03-06 21:52:35'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -462,24 +462,15 @@ class Design456_SelectTool:
                 raise Exception("No tab widget found")
 
             self.dialog = QtGui.QDialog()
-            #self.scroll= QtGui.QScrollArea(self.dialog)
-            #self.scroll.resize(350,610)
-            #self.scroll.setWidgetResizable(True)
             self.dialog.setObjectName("seldialog")
             oldsize = self.tab.count()
             self.tab.addTab(self.dialog, "Select")
             self.tab.setCurrentWidget(self.dialog)
             self.dialog.resize(325, 450)
             self.dialog.setWindowTitle("Select")
+
             self.buttonGroup = QtGui.QButtonGroup(self.dialog)
-            #self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-            #self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-            #self.widget = QtGui.QWidget()
-            #self.scroll.setWidgetResizable(True)
-            #self.scroll.setWidget(self.widget)    
-            #la = QtGui.QVBoxLayout(self.widget)
             la = QtGui.QVBoxLayout(self.dialog)    
-            #self.widget.setLayout(la)
             font = QtGui.QFont()
             font.setFamily("Guttman-Aharoni")
             font.setBold(True)
@@ -538,9 +529,11 @@ class Design456_SelectTool:
             self.radSel_17 = QtGui.QRadioButton(self.dialog)
             self.radSel_17.setGeometry(QtCore.QRect(20, 380, 240, 20))
             self.radSel_17.setObjectName("radSel_17")
-
-
-
+            
+            self.btnRefresh=QtGui.QPushButton(self.dialog)
+            self.btnRefresh.setText("Update\nSelection")
+            self.btnRefresh.setGeometry(50,80,80,80)
+            self.btnRefresh.setStyleSheet("background: green;")
 
             self.generalBox = QtGui.QGroupBox(u'Selection Type')
             self.label = QtGui.QLabel(self.dialog)
@@ -571,12 +564,15 @@ class Design456_SelectTool:
             self.label.setFrameShape(QtGui.QFrame.NoFrame)
             self.label.setFrameShadow(QtGui.QFrame.Sunken)
             self.label.setObjectName("label")
+
+            
             self.buttonBox = QtGui.QDialogButtonBox(self.dialog)
             self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
             self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
             self.buttonBox.setObjectName("buttonBox")
 
-            la.addWidget(self.label)
+            la.addWidget(self.label)            
+            la.addWidget(self.btnRefresh)
             la.addWidget(self.radSel_0 )
             la.addWidget(self.radSel_1 )
             la.addWidget(self.radSel_2 )
@@ -592,8 +588,8 @@ class Design456_SelectTool:
             la.addWidget(self.radSel_12)
             la.addWidget(self.radSel_13)
             la.addWidget(self.radSel_14)
-
             la.addWidget( self.buttonBox)
+
             font = QtGui.QFont()
             font.setFamily("Caladea")
             font.setPointSize(10)
@@ -670,6 +666,7 @@ class Design456_SelectTool:
             # connects the slot function and makes the argument of the band int type
             self.buttonGroup.buttonClicked.connect(self.selectObjects)
 
+            self.btnRefresh.buttonClicked.connect(self.refreshSelection)
             return self.dialog
         except Exception as err:
             App.Console.PrintError("'Design456_SelectTool' getMainWindow-Failed. "
@@ -678,6 +675,19 @@ class Design456_SelectTool:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def refreshSelection(self):
+        self.selectedObj=Gui.Selection.getSelectionEx()
+        self.faces=self.selectedObj[0].Object.Shape.Faces
+        self.edges=self.selectedObj[0].Object.Shape.Edges
+        self.vertexes=self.selectedObj[0].Object.Shape.Vertexes
+        self.Targetobj = self.selectedObj[0].Object
+        self.doc=App.ActiveDocument
+        if len(self.selectedObj)== 0:
+            # An object must be selected
+            errMessage = "Select an object, one face or one edge before using the tool"
+            faced.errorDialog(errMessage)
+            return
+        
     def selectObjects(self,obj):
         currentID=self.buttonGroup.id(obj)
         Gui.Selection.clearSelection()
@@ -730,8 +740,6 @@ class Design456_SelectTool:
         HorizontalFaces=Gui.Selection.getSelectionEx()[0].SubObjects #all horizontal
         Gui.Selection.clearSelection()
         self.selectEdges_Horizontal()
-        print("here")
-        return
         HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
         firstFaceEdges=[]
         for e in HorizontalEdges:
@@ -802,7 +810,9 @@ class Design456_SelectTool:
                     normal==App.Vector (1.0, -0.0, 0.0) or
                     normal==App.Vector (0.0, -1.0, 0.0) or
                     normal==App.Vector (0.0, 1.0, 0.0) or
-                    (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)) ):
+                    (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)) or
+                    normal.z==0.0
+                    ):
                 for e in self.faces[i].Edges:
                     for j in enumerate(self.edges):
                         if j[1].isSame(e):
@@ -848,24 +858,12 @@ class Design456_SelectTool:
         return
         
     def Activated(self):
-        self.selectedObj=Gui.Selection.getSelectionEx()
-        self.faces=self.selectedObj[0].Object.Shape.Faces
-        self.edges=self.selectedObj[0].Object.Shape.Edges
-        self.vertexes=self.selectedObj[0].Object.Shape.Vertexes
-        self.Targetobj = self.selectedObj[0].Object
-        self.doc=App.ActiveDocument
-        if len(self.selectedObj)== 0:
-            # An object must be selected
-            errMessage = "Select an object, one face or one edge before using the tool"
-            faced.errorDialog(errMessage)
-            return
-
+        self.refreshSelection()
         self.selectedValue=0 # used to identify the user-chosen option of selection
         answer=0
         try:
             answer=self.getMainWindow()
-            
-        
+
         except Exception as err:
             App.Console.PrintError("'NonuniformedBox' Failed. "
                                    "{err}\n".format(err=str(err)))
