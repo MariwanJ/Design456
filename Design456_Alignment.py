@@ -808,13 +808,16 @@ class Design456_SelectTool:
     def selectEdges_Horizontal(self):
         for i in range(0,len(self.faces)):
             normal=self.faces[i].normalAt(1,1)
-            if (normal==App.Vector (-1.0, -0.0, 0.0) or
-                    normal==App.Vector (1.0, -0.0, 0.0) or
-                    normal==App.Vector (0.0, -1.0, 0.0) or
-                    normal==App.Vector (0.0, 1.0, 0.0) or
-                    (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)) or
-                    normal.z==0.0
-                    ):
+            # if (normal==App.Vector (-1.0, -0.0, 0.0) or
+            #         normal==App.Vector (1.0, -0.0, 0.0) or
+            #         normal==App.Vector (0.0, -1.0, 0.0) or
+            #         normal==App.Vector (0.0, 1.0, 0.0) or
+            #         (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)) or
+            #         normal.z==0.0
+            #         ):
+            if not((normal==App.Vector (0.0, 0.0, -1.0) or
+                normal==App.Vector (0.0, 0.0, 1.0) or
+                (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)))):
                 for e in self.faces[i].Edges:
                     for j in enumerate(self.edges):
                         if j[1].isSame(e):
