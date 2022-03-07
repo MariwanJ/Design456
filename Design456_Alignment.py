@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-06 21:57:45'
+__updated__ = '2022-03-07 20:18:16'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -596,7 +596,7 @@ class Design456_SelectTool:
             font.setBold(True)
 
             _translate = QtCore.QCoreApplication.translate
-            self.label.setText(_translate("self.dialog", "Select Desired subobjects by\n selecting below options"))
+            self.label.setText(_translate("self.dialog", "Select Desired subobjects"))
             #Face
             self.radSel_0.setText(_translate("self.dialog", "All Faces"))
             self.buttonGroup.setId(self.radSel_0,FR_SELECTION.ALL_FACES_IN_OBJECT)
@@ -746,6 +746,7 @@ class Design456_SelectTool:
         firstFaceEdges=[]
         for e in HorizontalEdges:
             if self.faceHasEdge(firstFace,e):
+                print("found")
                 firstFaceEdges.append(e)
         #We have the horizontal edges of first edge
         TotalFaces=[]
@@ -816,14 +817,14 @@ class Design456_SelectTool:
             #         normal.z==0.0
             #         ):
             if not((normal==App.Vector (0.0, 0.0, -1.0) or
-                normal==App.Vector (0.0, 0.0, 1.0) or
-                (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)))):
+                normal==App.Vector (0.0, 0.0, 1.0) )):
                 for e in self.faces[i].Edges:
                     for j in enumerate(self.edges):
                         if j[1].isSame(e):
                                 v1=j[1].Vertexes[0]
                                 v2=j[1].Vertexes[1]
-                                if (v1.Point.x==v2.Point.x or v1.Point.y==v2.Point.y)and (v1.Point.z!=v2.Point.z):
+                                #if (v1.Point.x==v2.Point.x or v1.Point.y==v2.Point.y)and (v1.Point.z!=v2.Point.z):
+                                if (v1.Point.z!=v2.Point.z):
                                     name="Edge%d" %(j[0]+1)
                                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
 
