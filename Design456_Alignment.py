@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-07 20:18:16'
+__updated__ = '2022-03-07 22:18:17'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -517,15 +517,15 @@ class Design456_SelectTool:
             self.radSel_11 = QtGui.QRadioButton(self.dialog)
             self.radSel_11.setGeometry(QtCore.QRect(20, 300, 240, 20))
             self.radSel_11.setObjectName("radSel_11")
+            self.radSel_11 = QtGui.QRadioButton(self.dialog)
+            self.radSel_11.setGeometry(QtCore.QRect(20, 320, 240, 20))
+            self.radSel_11.setObjectName("radSel_11")
             self.radSel_12 = QtGui.QRadioButton(self.dialog)
-            self.radSel_12.setGeometry(QtCore.QRect(20, 320, 240, 20))
+            self.radSel_12.setGeometry(QtCore.QRect(20, 340, 240, 20))
             self.radSel_12.setObjectName("radSel_12")
-            self.radSel_13 = QtGui.QRadioButton(self.dialog)
-            self.radSel_13.setGeometry(QtCore.QRect(20, 340, 240, 20))
-            self.radSel_13.setObjectName("radSel_13")
-            self.radSel_14 = QtGui.QRadioButton(self.dialog)
-            self.radSel_14.setGeometry(QtCore.QRect(20, 360, 240, 20))
-            self.radSel_14.setObjectName("radSel_14")
+            self.radSel_11 = QtGui.QRadioButton(self.dialog)
+            self.radSel_11.setGeometry(QtCore.QRect(20, 360, 240, 20))
+            self.radSel_11.setObjectName("radSel_11")
             self.radSel_17 = QtGui.QRadioButton(self.dialog)
             self.radSel_17.setGeometry(QtCore.QRect(20, 380, 240, 20))
             self.radSel_17.setObjectName("radSel_17")
@@ -553,9 +553,9 @@ class Design456_SelectTool:
             self.buttonGroup.addButton(self.radSel_9 )
             self.buttonGroup.addButton(self.radSel_10 )
             self.buttonGroup.addButton(self.radSel_11 )
+            self.buttonGroup.addButton(self.radSel_11 )
             self.buttonGroup.addButton(self.radSel_12 )
-            self.buttonGroup.addButton(self.radSel_13 )
-            self.buttonGroup.addButton(self.radSel_14 )
+            self.buttonGroup.addButton(self.radSel_11 )
             self.buttonGroup.addButton(self.radSel_17 )
 
 
@@ -585,9 +585,6 @@ class Design456_SelectTool:
             la.addWidget(self.radSel_9)
             la.addWidget(self.radSel_10 )
             la.addWidget(self.radSel_11 )
-            la.addWidget(self.radSel_12)
-            la.addWidget(self.radSel_13)
-            la.addWidget(self.radSel_14)
             la.addWidget( self.buttonBox)
 
             font = QtGui.QFont()
@@ -644,21 +641,9 @@ class Design456_SelectTool:
             self.buttonGroup.setId(self.radSel_10,FR_SELECTION.ALL_VERTEXES_IN_FACE)
             self.radSel_10.setStyleSheet('QRadioButton { color: blue;}')
 
-            self.radSel_11.setText(_translate("self.dialog", "All Vertexes in the Edge"))
-            self.buttonGroup.setId(self.radSel_11,FR_SELECTION.ALL_VERTEXES_IN_EDGE)
+            self.radSel_11.setText(_translate("self.dialog", "All Vertexes-Horizontal-Loop"))
+            self.buttonGroup.setId(self.radSel_11,FR_SELECTION.ALL_VERTEXES_HORIZONTAL_FACE_LOOP)
             self.radSel_11.setStyleSheet('QRadioButton { color: blue;}')
-            
-            self.radSel_12.setText(_translate("self.dialog", "All Vertexes-Horizontal"))
-            self.buttonGroup.setId(self.radSel_12,FR_SELECTION.ALL_VERTEXES_HORIZONTAL)
-            self.radSel_12.setStyleSheet('QRadioButton { color: blue;}')
-
-            self.radSel_13.setText(_translate("self.dialog", "All Vertexes-Vertical"))
-            self.buttonGroup.setId(self.radSel_13,FR_SELECTION.ALL_VERTEXES_VERTICAL)
-            self.radSel_13.setStyleSheet('QRadioButton { color: blue;}')
-
-            self.radSel_14.setText(_translate("self.dialog", "All Vertexes-Horizontal-Loop"))
-            self.buttonGroup.setId(self.radSel_14,FR_SELECTION.ALL_VERTEXES_HORIZONTAL_FACE_LOOP)
-            self.radSel_14.setStyleSheet('QRadioButton { color: blue;}')
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.hideDialog)
@@ -708,12 +693,6 @@ class Design456_SelectTool:
     def selectFaces_Horizontal(self):
         for i in range(0,len(self.faces)):
             normal=self.faces[i].normalAt(1,1)
-            # if (normal==App.Vector (-1.0, -0.0, 0.0) or
-            #         normal==App.Vector (1.0, -0.0, 0.0) or
-            #         normal==App.Vector (0.0, -1.0, 0.0) or
-            #         normal==App.Vector (0.0, 1.0, 0.0) or
-            #         normal.z==0.0
-            #         ):
             if not((normal==App.Vector (0.0, 0.0, -1.0) or
                 normal==App.Vector (0.0, 0.0, 1.0) or
                 (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)))):
@@ -735,6 +714,10 @@ class Design456_SelectTool:
 
     def selectFaces_Horizontal_faceloop(self):
         firstFace=self.selectedObj[0].SubObjects[0]  #Selected face in the Loop side
+        if( hasattr(firstFace, 'curvature')):
+            print("Curvature face has only one face")
+            return  # cylinder has only one face 
+
         firstFaceName= self.selectedObj[0].SubElementNames[0] #Selected facename
         shape=self.selectedObj[0].Object.Shape
         Gui.Selection.clearSelection()
@@ -780,7 +763,6 @@ class Design456_SelectTool:
                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
         Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,firstFaceName)
 
-
     #Faces
     def selectFaces(self,Seltype): 
         if Seltype == FR_SELECTION.ALL_FACES_IN_OBJECT:
@@ -797,9 +779,9 @@ class Design456_SelectTool:
             Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Edge"+str(i+1))
 
     def selectEdges_inFace(self):
-        self.edges=self.selectedObj[0].Object.Shape.Edges
+        edges=self.selectedObj[0].Object.Shape.Edges
         f=self.selectedObj[0].SubObjects[0]
-        for j in enumerate(self.edges):
+        for j in enumerate(edges):
             for e in f.Edges:
                 if j[1].isSame(e):
                     name="Edge%d" %(j[0]+1)
@@ -809,13 +791,6 @@ class Design456_SelectTool:
     def selectEdges_Horizontal(self):
         for i in range(0,len(self.faces)):
             normal=self.faces[i].normalAt(1,1)
-            # if (normal==App.Vector (-1.0, -0.0, 0.0) or
-            #         normal==App.Vector (1.0, -0.0, 0.0) or
-            #         normal==App.Vector (0.0, -1.0, 0.0) or
-            #         normal==App.Vector (0.0, 1.0, 0.0) or
-            #         (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)) or
-            #         normal.z==0.0
-            #         ):
             if not((normal==App.Vector (0.0, 0.0, -1.0) or
                 normal==App.Vector (0.0, 0.0, 1.0) )):
                 for e in self.faces[i].Edges:
@@ -823,7 +798,6 @@ class Design456_SelectTool:
                         if j[1].isSame(e):
                                 v1=j[1].Vertexes[0]
                                 v2=j[1].Vertexes[1]
-                                #if (v1.Point.x==v2.Point.x or v1.Point.y==v2.Point.y)and (v1.Point.z!=v2.Point.z):
                                 if (v1.Point.z!=v2.Point.z):
                                     name="Edge%d" %(j[0]+1)
                                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
@@ -839,6 +813,26 @@ class Design456_SelectTool:
                                 name="Edge%d" %(j[0]+1)
                                 Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
         
+    def selectEdges_Horizontal_Loop(self):
+        Gui.Selection.clearSelection()
+        self.selectFaces_Horizontal_faceloop()
+        faces=Gui.Selection.getSelectionEx()[0].SubObjects
+        Gui.Selection.clearSelection()
+        self.selectEdges_Horizontal()
+        edges=Gui.Selection.getSelectionEx()[0].SubObjects
+        foundEdges=[]
+        for j in enumerate(edges):
+            for f in faces:
+                if self.faceHasEdge(f,j[1]):
+                    foundEdges.append(j[1])
+                    
+        Gui.Selection.clearSelection()        
+        for j in enumerate(self.edges):
+            for e in foundEdges:
+                if j[1].isSame(e):
+                    name="Edge%d" %(j[0]+1)
+                    Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                    break
     #Edges
     def selectEdges(self,Seltype):
         if Seltype == FR_SELECTION.ALL_EDGES_IN_OBJECT:
@@ -849,10 +843,48 @@ class Design456_SelectTool:
             self.selectEdges_Horizontal()
         elif Seltype == FR_SELECTION.ALL_EDGES_VERTICAL:
             self.selectEdges_Vertical()
+        elif Seltype == FR_SELECTION.ALL_EDGES_HORIZONTAL_FACE_LOOP:
+            self.selectEdges_Horizontal_Loop()
+
+
+    def selectVertexes_All(self):
+        for i in range(0,len(self.vertexes)):
+            Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Vertex"+str(i+1))
+    
+    def selectVertexes_InFace(self):
+        vertex=self.selectedObj[0].Object.Shape.Vertexes
+        f=self.selectedObj[0].SubObjects[0]
+        for j in enumerate(vertex):
+            for e in f.Vertexes:
+                if j[1].isSame(e):
+                    name="Vertex%d" %(j[0]+1)
+                    Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                    break
+
+    def selectVertexes_Horizontal_Loop(self):
+        Gui.Selection.clearSelection()
+        self.selectEdges_Horizontal_Loop()
+        edges=Gui.Selection.getSelectionEx()[0].SubObjects
+        Gui.Selection.clearSelection()
+        for j in enumerate(self.vertexes):
+            for e in edges:
+                for v in e.Vertexes :
+                    for e in v.Vertexes:
+                        if j[1].isSame(e):
+                            name="Vertex%d" %(j[0]+1)
+                            Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                            break
+
 
     #Vertexes      
     def selectVertexes(self,Seltype):
-        pass
+        if Seltype==FR_SELECTION.ALL_VERTEXES_IN_OBJECT:
+            self.selectVertexes_All()
+        if Seltype==FR_SELECTION.ALL_VERTEXES_IN_FACE:
+            self.selectVertexes_InFace()
+        if Seltype==FR_SELECTION.ALL_VERTEXES_HORIZONTAL_FACE_LOOP:
+            self.selectVertexes_Horizontal_Loop()
+            
 
     def hideDialog(self):
         self.dialog.hide()
