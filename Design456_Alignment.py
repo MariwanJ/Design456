@@ -708,12 +708,15 @@ class Design456_SelectTool:
     def selectFaces_Horizontal(self):
         for i in range(0,len(self.faces)):
             normal=self.faces[i].normalAt(1,1)
-            if (normal==App.Vector (-1.0, -0.0, 0.0) or
-                    normal==App.Vector (1.0, -0.0, 0.0) or
-                    normal==App.Vector (0.0, -1.0, 0.0) or
-                    normal==App.Vector (0.0, 1.0, 0.0) or
-                    normal.z==0.0
-                    ):
+            # if (normal==App.Vector (-1.0, -0.0, 0.0) or
+            #         normal==App.Vector (1.0, -0.0, 0.0) or
+            #         normal==App.Vector (0.0, -1.0, 0.0) or
+            #         normal==App.Vector (0.0, 1.0, 0.0) or
+            #         normal.z==0.0
+            #         ):
+            if not((normal==App.Vector (0.0, 0.0, -1.0) or
+                normal==App.Vector (0.0, 0.0, 1.0) or
+                (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)))):
                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
     
     def selectFaces_Vertical(self):
