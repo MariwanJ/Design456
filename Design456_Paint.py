@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-02-27 20:14:01'
+__updated__ = '2022-03-08 21:27:38'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -232,7 +232,7 @@ class Design456_Paint:
         try:
             pl = App.Placement()
             ellipse = None
-            pl.Base = App.Placement()
+            pl.Base = App.Vector(0, 0, 0)
             pl.Rotation.Axis = (0.0, 0.0, 1)
             if Ovaltype == 1:
                 pl.Rotation.Angle = math.radians(90.0)
@@ -400,8 +400,7 @@ class Design456_Paint:
             if typeOfParallelogram == 1:
                 points = [App.Vector(0.0, 0.0, 0.0),
                           App.Vector(self.brushSize/2, self.brushSize, 0.0),
-                          App.Vector(self.brushSize/2 +
-                                     self.brushSize/2, self.brushSize, 0.0),
+                          App.Vector(self.brushSize, self.brushSize, 0.0),
                           App.Vector(self.brushSize/2, 0.0, 0.0)]
             elif typeOfParallelogram == 2:
                 points = [App.Vector(0.0, 0.0, 0.0),
@@ -471,11 +470,10 @@ class Design456_Paint:
                           App.Vector(self.brushSize*0.4, 0.0, 0.0)]
 
             elif typeOfParallelogram == 2:
-                points = [App.Vector(0, self.brushSize*3/4, 0.0),
-                          App.Vector(self.brushSize*2/4,
-                                     self.brushSize*4/4, 0.0),
-                          App.Vector(self.brushSize*2/4, 0, 0.0),
-                          App.Vector(self.brushSize, 0.0, 0.0)]
+                points = [App.Vector(self.brushSize*0.4, 0.0, 0.0),
+                          App.Vector(self.brushSize*0.4 +self.brushSize*0.2, 0.0, 0.0),
+                          App.Vector(self.brushSize, -self.brushSize*0.4, 0.0),
+                            App.Vector(0, -self.brushSize*0.4, 0.0),]
             first = _draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
             _draft.autogroup(first)
@@ -637,7 +635,7 @@ class Design456_Paint:
         try:
             first = App.ActiveDocument.addObject(
                 "Part::FeaturePython", "Star")
-            Design456_2Ddrawing.ViewProviderBox(first.ViewObject, "Star")
+            Design456_2Ddrawing.ViewProviderStar(first.ViewObject, "Star")
             Design456_2Ddrawing.Star(first)
             plc = App.Placement()
             first.Placement = plc
