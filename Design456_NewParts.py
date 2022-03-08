@@ -669,7 +669,7 @@ class ViewProviderParaboloid:
     def __setstate__(self, state):
         return None
 
-
+########################################################################### TODO: FIXME:
 #Paraboloid
 class Design456_ParaboloidBase:
     """ Paraboloidshape based on several parameters
@@ -718,3 +718,115 @@ class Design456_Paraboloid:
 
 Gui.addCommand('Design456_Paraboloid', Design456_Paraboloid())
 
+
+
+#################################
+
+#RoundRoof
+
+class ViewProviderRoundRoof:
+
+    obj_name = "RoundRoof"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderRoundRoof.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'RoundRoof.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+
+#RoundRoof 
+class Design456_RoundRoof:
+    """ RoundRoof shape based on several parameters
+    """
+    def __init__(self, obj, 
+                       width=20,
+                       radius=5,
+                       length=20,
+                       height=10,
+                       thickness=1):
+
+
+        obj.addProperty("App::PropertyLength", "Width","RoundRoof", 
+                        "Width of the RoundRoof").Width = width
+
+        obj.addProperty("App::PropertyLength", "Length","RoundRoof", 
+                        "Length of the RoundRoof").Length = length
+
+        obj.addProperty("App::PropertyLength", "Height","RoundRoof", 
+                        "Height of the RoundRoof").Height = height
+
+        obj.addProperty("App::PropertyLength", "Radius","RoundRoof", 
+                        "Height of the RoundRoof").Radius = radius
+
+        obj.addProperty("App::PropertyLength", "Thickness","RoundRoof", 
+                        "Thickness of the RoundRoof").Thickness = thickness
+        obj.Proxy = self
+    
+    def execute(self, obj):
+        self.Width=float(obj.Width)
+        self.Height=float(obj.Height)
+        self.Length=float(obj.Length)
+        self.Radius=float(obj.Radius)
+        self.Thickness=float(obj.Thickness)
+        Result=None
+        # vert1=[App.Vector(0,0,0),App.Vector(self.Width,0,0),
+        #         App.Vector(self.Width/2,0.0,self.Height),
+        #         App.Vector(0,0,0)]
+        # newWidth=self.Width-2*self.Thickness
+        # newLength=self.Length-2*self.Thickness
+        # newHeight=self.Height-self.Thickness
+        # vert2=[App.Vector(self.Thickness,self.Thickness,0),App.Vector(self.Thickness+newWidth,self.Thickness,0),
+        #        App.Vector(self.Width/2,self.Thickness,newHeight),
+        #        App.Vector(self.Thickness,self.Thickness,0)]
+        # FaceTriangle1=Part.Face(Part.makePolygon(vert1))
+        # obj1 =FaceTriangle1.extrude(App.Vector(0.0,self.Length,0.0))
+        
+        # FaceTriangle2=Part.Face(Part.makePolygon(vert2))
+        # obj2= FaceTriangle2.extrude(App.Vector(0.0,self.Length-2*self.Thickness,0.0))
+        # Result = obj1.cut(obj2)
+        obj.Shape=Result
+        
+class Design456_Seg_RoundRoof:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'RoundRoof.svg',
+                'MenuText': "RoundRoof",
+                'ToolTip': "Generate a RoundRoof"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "RoundRoof")
+        Design456_RoundRoof(newObj)
+
+        ViewProviderRoundRoof(newObj.ViewObject, "RoundRoof")
+
+        App.ActiveDocument.recompute()
+        v = Gui.ActiveDocument.ActiveView
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_Seg_RoundRoof', Design456_Seg_RoundRoof())
