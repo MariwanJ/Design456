@@ -719,9 +719,186 @@ class Design456_Paraboloid:
 Gui.addCommand('Design456_Paraboloid', Design456_Paraboloid())
 
 
+################################
+
+#Elipsoid
+
+class ViewProviderElipsoid:
+
+    obj_name = "ElipsoidBase"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderNoneUniformBox.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'Elipsoid.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+########################################################################### TODO: FIXME:
+
+#Elipsoid
+class Design456_ElipsoidBase:
+    """ Elipsoidshape based on several parameters
+    """
+    def __init__(self, obj, 
+                       height=10,
+                       base_radius=1,
+                       ):
+
+        obj.addProperty("App::PropertyLength", "Height","Elipsoid", 
+                        "Height of the Elipsoid").Height = height
+
+        obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
+                        "Base Radius of the Elipsoid").RadiusOfBase = base_radius
+                        
+
+        obj.Proxy = self
+
+            
+    def execute(self, obj):
+        self.Height=float(obj.Height)
+        self.RadiusOfBase=float(obj.RadiusOfBase)
+
+        Result=None
+        # base None-uniformed vertices and walls after a cut
+        #fused=extrude1.fuse(extrude2)
+        #Result=fused.removeSplitter()
+        obj.Shape=Result
+        
+class Design456_Elipsoid:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'Elipsoid.svg',
+                'MenuText': "Elipsoid",
+                'ToolTip': "Generate a Elipsoid"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "Elipsoid")
+        Design456_ElipsoidBase(newObj)
+
+        ViewProviderNoneUniformBox(newObj.ViewObject, "Elipsoid")
+
+        App.ActiveDocument.recompute()
+        v = Gui.ActiveDocument.ActiveView
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_Elipsoid', Design456_Elipsoid())
 
 #################################
 
+
+#Parallelepiped
+
+class ViewProviderParallelepiped:
+
+    obj_name = "ParallelepipedBase"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderNoneUniformBox.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'Parallelepiped.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+########################################################################### TODO: FIXME:
+#Parallelepiped
+class Design456_ParallelepipedBase:
+    """ Parallelepipedshape based on several parameters
+    """
+    def __init__(self, obj, 
+                       height=10,
+                       base_radius=1,
+                       ):
+
+        obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
+                        "Height of the Parallelepiped").Height = height
+
+        obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
+                        "Base Radius of the Parallelepiped").RadiusOfBase = base_radius
+                        
+
+        obj.Proxy = self
+
+            
+    def execute(self, obj):
+        self.Height=float(obj.Height)
+        self.RadiusOfBase=float(obj.RadiusOfBase)
+
+        Result=None
+        # base None-uniformed vertices and walls after a cut
+        #fused=extrude1.fuse(extrude2)
+        #Result=fused.removeSplitter()
+        obj.Shape=Result
+        
+class Design456_Parallelepiped:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'Parallelepiped.svg',
+                'MenuText': "Parallelepiped",
+                'ToolTip': "Generate a Parallelepiped"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "Parallelepiped")
+        Design456_ParallelepipedBase(newObj)
+
+        ViewProviderNoneUniformBox(newObj.ViewObject, "Parallelepiped")
+
+        App.ActiveDocument.recompute()
+        v = Gui.ActiveDocument.ActiveView
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_Parallelepiped', Design456_Parallelepiped())
+
+
+####################
 #RoundRoof
 
 class ViewProviderRoundRoof:
