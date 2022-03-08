@@ -500,7 +500,7 @@ class Design456_EllipseBox:
 Gui.addCommand('Design456_EllipseBox', Design456_EllipseBox())
 
 
-############################3333
+############################
 
 #NonuniformedBox
 
@@ -628,4 +628,93 @@ class Design456_NonuniformedBox:
 
 Gui.addCommand('Design456_NonuniformedBox', Design456_NonuniformedBox())
 
+
+
+############################
+
+#Paraboloid
+
+class ViewProviderParaboloid:
+
+    obj_name = "ParaboloidBase"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderNoneUniformBox.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'Paraboloid.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+
+#Paraboloid
+class Design456_ParaboloidBase:
+    """ Paraboloidshape based on several parameters
+    """
+    def __init__(self, obj, 
+                       height=10,
+                       base_radius=1,
+                       ):
+
+        obj.addProperty("App::PropertyLength", "Height","Paraboloid", 
+                        "Height of the Paraboloid").Height = height
+
+        obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
+                        "Base Radius of the Paraboloid").RadiusOfBase = base_radius
+                        
+
+        obj.Proxy = self
+
+            
+    def execute(self, obj):
+        self.Height=float(obj.Height)
+        self.RadiusOfBase=float(obj.RadiusOfBase)
+
+        Result=None
+        # base None-uniformed vertices and walls after a cut
+        #fused=extrude1.fuse(extrude2)
+        #Result=fused.removeSplitter()
+        obj.Shape=Result
+        
+class Design456_Paraboloid:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'Paraboloid.svg',
+                'MenuText': "Paraboloid",
+                'ToolTip': "Generate a Paraboloid"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "Paraboloid")
+        Design456_ParaboloidBase(newObj)
+
+        ViewProviderNoneUniformBox(newObj.ViewObject, "Paraboloid")
+
+        App.ActiveDocument.recompute()
+        v = Gui.ActiveDocument.ActiveView
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_Paraboloid', Design456_Paraboloid())
 
