@@ -850,6 +850,7 @@ class ViewProviderParallelepiped:
 
 ########################################################################### TODO: FIXME:
 #Parallelepiped
+
 class Design456_ParallelepipedBase:
     """ Parallelepipedshape based on several parameters
     """
