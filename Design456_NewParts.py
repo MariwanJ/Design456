@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
-__updated__ = '2022-02-27 12:37:58'
+__updated__ = '2022-03-09 20:25:36'
 
 
 #Roof
@@ -676,24 +676,46 @@ class Design456_ParaboloidBase:
     """
     def __init__(self, obj, 
                        height=10,
-                       base_radius=1,
+                       base_radius=10,
+                       middle_radius=8,
                        ):
 
         obj.addProperty("App::PropertyLength", "Height","Paraboloid", 
                         "Height of the Paraboloid").Height = height
 
-        obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
-                        "Base Radius of the Paraboloid").RadiusOfBase = base_radius
-                        
+        obj.addProperty("App::PropertyLength", "BaseRadius","Paraboloid", 
+                        "Base Radius of the Paraboloid").BaseRadius = base_radius
 
+        obj.addProperty("App::PropertyLength", "MiddleRadius","Paraboloid", 
+                        "Base Radius of the Paraboloid").MiddleRadius = middle_radius
+
+        self.points=[]                       
         obj.Proxy = self
 
             
     def execute(self, obj):
         self.Height=float(obj.Height)
-        self.RadiusOfBase=float(obj.RadiusOfBase)
+        self.BaseRadius=float(obj.BaseRadius)
+        self.MiddleRadius=float(obj.MiddleRadius)
 
+        point1=App.Vector(self.BaseRadius,0,0)
+        point2=App.Vector(self.MiddleRadius,0,self.Height/2)
+        point3=App.Vector(0,0,self.Height)
         Result=None
+        # makeSweepSurface(...) method of builtins.tuple instance
+        # makeSweepSurface(edge(path),edge(profile),[float]) -- Create a profile along a path.
+        #  makeCircle(radius,[pnt,dir,angle1,angle2]) -- Make a circle with a given radius
+        # By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0 and angle2=360
+
+        bsp=Part.BSplineCurve()
+        bsp.buildFromPoles([point1,point2,point3])
+        shp=bsp.toShape()
+        circle=Part.makeCircle(self.BaseRadius, App.Vector(0,0,0),App.Vector(0,0,1))
+        sweep=Part.makeSweepSurface(circle,shp)
+        base=Part.Face(Part.Wire(circle))
+        shell1=Part.Shell([base,sweep])
+
+        Result=Part.makeSolid(shell1)
         # base None-uniformed vertices and walls after a cut
         #fused=extrude1.fuse(extrude2)
         #Result=fused.removeSplitter()
@@ -721,11 +743,11 @@ Gui.addCommand('Design456_Paraboloid', Design456_Paraboloid())
 
 ################################
 
-#Elipsoid
+#Ellipsoid
 
-class ViewProviderElipsoid:
+class ViewProviderEllipsoid:
 
-    obj_name = "ElipsoidBase"
+    obj_name = "EllipsoidBase"
 
     def __init__(self, obj, obj_name):
         self.obj_name = ViewProviderNoneUniformBox.obj_name
@@ -750,7 +772,7 @@ class ViewProviderElipsoid:
         pass
 
     def getIcon(self):
-        return ( Design456Init.ICON_PATH + 'Elipsoid.svg')
+        return ( Design456Init.ICON_PATH + 'Ellipsoid.svg')
 
     def __getstate__(self):
         return None
@@ -760,20 +782,20 @@ class ViewProviderElipsoid:
 
 ########################################################################### TODO: FIXME:
 
-#Elipsoid
-class Design456_ElipsoidBase:
-    """ Elipsoidshape based on several parameters
+#Ellipsoid
+class Design456_EllipsoidBase:
+    """ Ellipsoidshape based on several parameters
     """
     def __init__(self, obj, 
                        height=10,
                        base_radius=1,
                        ):
 
-        obj.addProperty("App::PropertyLength", "Height","Elipsoid", 
-                        "Height of the Elipsoid").Height = height
+        obj.addProperty("App::PropertyLength", "Height","Ellipsoid", 
+                        "Height of the Ellipsoid").Height = height
 
         obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
-                        "Base Radius of the Elipsoid").RadiusOfBase = base_radius
+                        "Base Radius of the Ellipsoid").RadiusOfBase = base_radius
                         
 
         obj.Proxy = self
@@ -789,24 +811,24 @@ class Design456_ElipsoidBase:
         #Result=fused.removeSplitter()
         obj.Shape=Result
         
-class Design456_Elipsoid:
+class Design456_Ellipsoid:
     def GetResources(self):
-        return {'Pixmap':Design456Init.ICON_PATH + 'Elipsoid.svg',
-                'MenuText': "Elipsoid",
-                'ToolTip': "Generate a Elipsoid"}
+        return {'Pixmap':Design456Init.ICON_PATH + 'Ellipsoid.svg',
+                'MenuText': "Ellipsoid",
+                'ToolTip': "Generate a Ellipsoid"}
 
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
-            "Part::FeaturePython", "Elipsoid")
-        Design456_ElipsoidBase(newObj)
+            "Part::FeaturePython", "Ellipsoid")
+        Design456_EllipsoidBase(newObj)
 
-        ViewProviderNoneUniformBox(newObj.ViewObject, "Elipsoid")
+        ViewProviderNoneUniformBox(newObj.ViewObject, "Ellipsoid")
 
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
-Gui.addCommand('Design456_Elipsoid', Design456_Elipsoid())
+Gui.addCommand('Design456_Ellipsoid', Design456_Ellipsoid())
 
 #################################
 
