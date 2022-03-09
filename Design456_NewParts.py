@@ -36,7 +36,8 @@ from draftutils.translate import translate   #for translate
 import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
-__updated__ = '2022-03-09 20:25:36'
+import math
+__updated__ = '2022-03-09 22:40:36'
 
 
 #Roof
@@ -561,8 +562,8 @@ class Design456_NonuniformedBoxBase:
         obj.addProperty("App::PropertyLength", "Radius","RoundedHousing", 
                         "Radius of the NonuniformedBox").Radius = radius
 
-        obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
-                        "Base Radius of the NonuniformedBox").RadiusOfBase = base_radius
+        obj.addProperty("App::PropertyLength", "SideOneRadius","RoundedHousing", 
+                        "Base Radius of the NonuniformedBox").SideOneRadius = base_radius
                         
 
         obj.Proxy = self
@@ -577,7 +578,7 @@ class Design456_NonuniformedBoxBase:
     def execute(self, obj):
         self.Height=float(obj.Height)
         self.Radius=float(obj.Radius)
-        self.RadiusOfBase=float(obj.RadiusOfBase)
+        self.SideOneRadius=float(obj.SideOneRadius)
         self.Thickness=float(obj.Thickness)
         self.Chamfer=obj.Chamfer
     
@@ -595,8 +596,8 @@ class Design456_NonuniformedBoxBase:
         
         firstFace1=Part.Face(W11)  # One used with secondFace to cut
         
-        if self.RadiusOfBase>0:
-            W12 = DraftGeomUtils.filletWire(W1,self.RadiusOfBase, chamfer=self.Chamfer)
+        if self.SideOneRadius>0:
+            W12 = DraftGeomUtils.filletWire(W1,self.SideOneRadius, chamfer=self.Chamfer)
         else:
             W12=W1  # Other used to make the bottom
         
@@ -669,7 +670,7 @@ class ViewProviderParaboloid:
     def __setstate__(self, state):
         return None
 
-########################################################################### TODO: FIXME:
+###########################################################################
 #Paraboloid
 class Design456_ParaboloidBase:
     """ Paraboloidshape based on several parameters
@@ -697,16 +698,10 @@ class Design456_ParaboloidBase:
         self.Height=float(obj.Height)
         self.BaseRadius=float(obj.BaseRadius)
         self.MiddleRadius=float(obj.MiddleRadius)
-
         point1=App.Vector(self.BaseRadius,0,0)
         point2=App.Vector(self.MiddleRadius,0,self.Height/2)
         point3=App.Vector(0,0,self.Height)
         Result=None
-        # makeSweepSurface(...) method of builtins.tuple instance
-        # makeSweepSurface(edge(path),edge(profile),[float]) -- Create a profile along a path.
-        #  makeCircle(radius,[pnt,dir,angle1,angle2]) -- Make a circle with a given radius
-        # By default pnt=Vector(0,0,0), dir=Vector(0,0,1), angle1=0 and angle2=360
-
         bsp=Part.BSplineCurve()
         bsp.buildFromPoles([point1,point2,point3])
         shp=bsp.toShape()
@@ -715,10 +710,8 @@ class Design456_ParaboloidBase:
         base=Part.Face(Part.Wire(circle))
         shell1=Part.Shell([base,sweep])
 
-        Result=Part.makeSolid(shell1)
-        # base None-uniformed vertices and walls after a cut
-        #fused=extrude1.fuse(extrude2)
-        #Result=fused.removeSplitter()
+        nResult=Part.makeSolid(shell1)
+        Result=nResult.removeSplitter()
         obj.Shape=Result
         
 class Design456_Paraboloid:
@@ -743,11 +736,11 @@ Gui.addCommand('Design456_Paraboloid', Design456_Paraboloid())
 
 ################################
 
-#Ellipsoid
+#capsule
 
-class ViewProviderEllipsoid:
+class ViewProvidercapsule:
 
-    obj_name = "EllipsoidBase"
+    obj_name = "capsuleBase"
 
     def __init__(self, obj, obj_name):
         self.obj_name = ViewProviderNoneUniformBox.obj_name
@@ -772,7 +765,7 @@ class ViewProviderEllipsoid:
         pass
 
     def getIcon(self):
-        return ( Design456Init.ICON_PATH + 'Ellipsoid.svg')
+        return ( Design456Init.ICON_PATH + 'capsule.svg')
 
     def __getstate__(self):
         return None
@@ -782,53 +775,79 @@ class ViewProviderEllipsoid:
 
 ########################################################################### TODO: FIXME:
 
-#Ellipsoid
-class Design456_EllipsoidBase:
-    """ Ellipsoidshape based on several parameters
+#capsule
+class Design456_capsuleBase:
+    """ capsuleshape based on several parameters
     """
     def __init__(self, obj, 
-                       height=10,
-                       base_radius=1,
+                       length=20,
+                       side_R_radius=5,
+                       side_L_radius=5,
+                       height_radius=5,
                        ):
 
-        obj.addProperty("App::PropertyLength", "Height","Ellipsoid", 
-                        "Height of the Ellipsoid").Height = height
+        obj.addProperty("App::PropertyLength", "Length","capsule", 
+                        "Length of the capsule").Length = length
 
-        obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
-                        "Base Radius of the Ellipsoid").RadiusOfBase = base_radius
+        obj.addProperty("App::PropertyFloat", "SideRightRadius","Capsule", 
+                        "Base Radius of the capsule").SideRightRadius = side_R_radius
+        obj.addProperty("App::PropertyFloat", "SideLeftRadius","Capsule", 
+                        "Base Radius of the capsule").SideLeftRadius = side_L_radius
                         
-
+        obj.addProperty("App::PropertyFloat", "HeightRadius","Capsule", 
+                        "Base Radius of the capsule").HeightRadius = height_radius
         obj.Proxy = self
 
             
     def execute(self, obj):
-        self.Height=float(obj.Height)
-        self.RadiusOfBase=float(obj.RadiusOfBase)
+        self.Length=float(obj.Length)
+        self.SideRightRadius=float(obj.SideRightRadius)
+        self.SideLeftRadius=float(obj.SideLeftRadius)
+        self.HeightRadius=float(obj.HeightRadius)
+        l1=Part.makeLine(App.Vector(self.Length/2,-self.HeightRadius,0),App.Vector(-self.Length/2,-self.HeightRadius,0))
+        l2=Part.makeLine(App.Vector(self.Length/2,self.HeightRadius,0),App.Vector(-self.Length/2,self.HeightRadius,0))
+        cur1=Part.makeCircle(self.SideRightRadius, 
+                             App.Vector(self.Length/2, 0, 0), 
+                             App.Vector(0, 0, 1),
+                             -90,90)
 
-        Result=None
-        # base None-uniformed vertices and walls after a cut
-        #fused=extrude1.fuse(extrude2)
-        #Result=fused.removeSplitter()
+        cur2=Part.makeCircle(self.SideLeftRadius, 
+                             App.Vector(-self.Length/2, 0, 0), 
+                             App.Vector(0, 0, 1),
+                             90,270)
+
+        circle=Part.makeCircle(self.HeightRadius, 
+                             App.Vector(0, 0, 0), 
+                             App.Vector(1, 0, 0))
+        #makeSweepSurface(...) method of builtins.tuple instance 
+        #makeSweepSurface(edge(path),edge(profile),[float]) -- Create a profile along a path.
+        
+        W=Part.Wire([l1.Edges[0],cur1.Edges[0],l2.Edges[0],cur2.Edges[0]])
+        f=Part.Face(W)
+        sweep=W.makePipeShell([circle],True,False)
+        #sweep=Part.makeSweepSurface(circle,f)
+        nResult=Part.makeSolid(sweep)
+        Result=nResult.removeSplitter()
         obj.Shape=Result
         
-class Design456_Ellipsoid:
+class Design456_capsule:
     def GetResources(self):
-        return {'Pixmap':Design456Init.ICON_PATH + 'Ellipsoid.svg',
-                'MenuText': "Ellipsoid",
-                'ToolTip': "Generate a Ellipsoid"}
+        return {'Pixmap':Design456Init.ICON_PATH + 'capsule.svg',
+                'MenuText': "capsule",
+                'ToolTip': "Generate a capsule"}
 
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
-            "Part::FeaturePython", "Ellipsoid")
-        Design456_EllipsoidBase(newObj)
+            "Part::FeaturePython", "capsule")
+        Design456_capsuleBase(newObj)
 
-        ViewProviderNoneUniformBox(newObj.ViewObject, "Ellipsoid")
+        ViewProviderNoneUniformBox(newObj.ViewObject, "capsule")
 
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
-Gui.addCommand('Design456_Ellipsoid', Design456_Ellipsoid())
+Gui.addCommand('Design456_capsule', Design456_capsule())
 
 #################################
 
@@ -884,8 +903,8 @@ class Design456_ParallelepipedBase:
         obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
                         "Height of the Parallelepiped").Height = height
 
-        obj.addProperty("App::PropertyLength", "RadiusOfBase","RoundedHousing", 
-                        "Base Radius of the Parallelepiped").RadiusOfBase = base_radius
+        obj.addProperty("App::PropertyLength", "SideOneRadius","RoundedHousing", 
+                        "Base Radius of the Parallelepiped").SideOneRadius = base_radius
                         
 
         obj.Proxy = self
@@ -893,7 +912,7 @@ class Design456_ParallelepipedBase:
             
     def execute(self, obj):
         self.Height=float(obj.Height)
-        self.RadiusOfBase=float(obj.RadiusOfBase)
+        self.SideOneRadius=float(obj.SideOneRadius)
 
         Result=None
         # base None-uniformed vertices and walls after a cut
