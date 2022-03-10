@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-10 21:42:50'
+__updated__ = '2022-03-10 21:56:09'
 
 
 #Roof
@@ -725,7 +725,7 @@ class Design456_Paraboloid:
             "Part::FeaturePython", "Paraboloid")
         Design456_ParaboloidBase(newObj)
 
-        ViewProviderNoneUniformBox(newObj.ViewObject, "Paraboloid")
+        ViewProviderParaboloid(newObj.ViewObject, "Paraboloid")
 
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
