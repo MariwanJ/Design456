@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-10 21:36:18'
+__updated__ = '2022-03-10 21:42:50'
 
 
 #Roof
@@ -822,7 +822,7 @@ class Design456_Capsule:
             "Part::FeaturePython", "Capsule")
         Design456_CapsuleBase(newObj)
 
-        ViewProviderNoneUniformBox(newObj.ViewObject, "Capsule")
+        ViewProviderCapsule(newObj.ViewObject, "Capsule")
 
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
