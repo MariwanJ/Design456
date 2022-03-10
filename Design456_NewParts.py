@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-09 22:40:36'
+__updated__ = '2022-03-10 21:36:18'
 
 
 #Roof
@@ -736,11 +736,11 @@ Gui.addCommand('Design456_Paraboloid', Design456_Paraboloid())
 
 ################################
 
-#capsule
+#Capsule
 
-class ViewProvidercapsule:
+class ViewProviderCapsule:
 
-    obj_name = "capsuleBase"
+    obj_name = "CapsuleBase"
 
     def __init__(self, obj, obj_name):
         self.obj_name = ViewProviderNoneUniformBox.obj_name
@@ -765,7 +765,7 @@ class ViewProvidercapsule:
         pass
 
     def getIcon(self):
-        return ( Design456Init.ICON_PATH + 'capsule.svg')
+        return ( Design456Init.ICON_PATH + 'Capsule.svg')
 
     def __getstate__(self):
         return None
@@ -775,9 +775,9 @@ class ViewProvidercapsule:
 
 ########################################################################### TODO: FIXME:
 
-#capsule
-class Design456_capsuleBase:
-    """ capsuleshape based on several parameters
+#Capsule
+class Design456_CapsuleBase:
+    """ Capsuleshape based on several parameters
     """
     def __init__(self, obj, 
                        length=20,
@@ -786,16 +786,16 @@ class Design456_capsuleBase:
                        height_radius=5,
                        ):
 
-        obj.addProperty("App::PropertyLength", "Length","capsule", 
-                        "Length of the capsule").Length = length
+        obj.addProperty("App::PropertyLength", "Length","Capsule", 
+                        "Length of the Capsule").Length = length
 
         obj.addProperty("App::PropertyFloat", "SideRightRadius","Capsule", 
-                        "Base Radius of the capsule").SideRightRadius = side_R_radius
+                        "Base Radius of the Capsule").SideRightRadius = side_R_radius
         obj.addProperty("App::PropertyFloat", "SideLeftRadius","Capsule", 
-                        "Base Radius of the capsule").SideLeftRadius = side_L_radius
+                        "Base Radius of the Capsule").SideLeftRadius = side_L_radius
                         
         obj.addProperty("App::PropertyFloat", "HeightRadius","Capsule", 
-                        "Base Radius of the capsule").HeightRadius = height_radius
+                        "Base Radius of the Capsule").HeightRadius = height_radius
         obj.Proxy = self
 
             
@@ -804,51 +804,31 @@ class Design456_capsuleBase:
         self.SideRightRadius=float(obj.SideRightRadius)
         self.SideLeftRadius=float(obj.SideLeftRadius)
         self.HeightRadius=float(obj.HeightRadius)
-        l1=Part.makeLine(App.Vector(self.Length/2,-self.HeightRadius,0),App.Vector(-self.Length/2,-self.HeightRadius,0))
-        l2=Part.makeLine(App.Vector(self.Length/2,self.HeightRadius,0),App.Vector(-self.Length/2,self.HeightRadius,0))
-        cur1=Part.makeCircle(self.SideRightRadius, 
-                             App.Vector(self.Length/2, 0, 0), 
-                             App.Vector(0, 0, 1),
-                             -90,90)
-
-        cur2=Part.makeCircle(self.SideLeftRadius, 
-                             App.Vector(-self.Length/2, 0, 0), 
-                             App.Vector(0, 0, 1),
-                             90,270)
-
-        circle=Part.makeCircle(self.HeightRadius, 
-                             App.Vector(0, 0, 0), 
-                             App.Vector(1, 0, 0))
-        #makeSweepSurface(...) method of builtins.tuple instance 
-        #makeSweepSurface(edge(path),edge(profile),[float]) -- Create a profile along a path.
-        
-        W=Part.Wire([l1.Edges[0],cur1.Edges[0],l2.Edges[0],cur2.Edges[0]])
-        #f=Part.Face(W)
-        W=W.approximate() 
-        sweep=Part.makeSweepSurface(circle,W.toShape())
-        Part.show(sweep)
-        nResult=Part.makeSolid(sweep)
-        Result=nResult.removeSplitter()
+        middle=Part.makeCylinder(self.HeightRadius,self.Length,App.Vector(-self.Length/2,0,0),App.Vector(1,0,0),360)
+        left=Part.makeSphere(self.SideLeftRadius,App.Vector(self.Length/2,0,0),App.Vector(1,0,0))
+        right=Part.makeSphere(self.SideRightRadius,App.Vector(-self.Length/2,0,0),App.Vector(1,0,0))
+        shpt=middle.fuse([right,left])
+        Result=shpt.removeSplitter()
         obj.Shape=Result
         
-class Design456_capsule:
+class Design456_Capsule:
     def GetResources(self):
         return {'Pixmap':Design456Init.ICON_PATH + 'capsule.svg',
-                'MenuText': "capsule",
-                'ToolTip': "Generate a capsule"}
+                'MenuText': "Capsule",
+                'ToolTip': "Generate a Capsule"}
 
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
-            "Part::FeaturePython", "capsule")
-        Design456_capsuleBase(newObj)
+            "Part::FeaturePython", "Capsule")
+        Design456_CapsuleBase(newObj)
 
-        ViewProviderNoneUniformBox(newObj.ViewObject, "capsule")
+        ViewProviderNoneUniformBox(newObj.ViewObject, "Capsule")
 
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
-Gui.addCommand('Design456_capsule', Design456_capsule())
+Gui.addCommand('Design456_Capsule', Design456_Capsule())
 
 #################################
 
