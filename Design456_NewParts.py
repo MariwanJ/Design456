@@ -823,9 +823,10 @@ class Design456_capsuleBase:
         #makeSweepSurface(edge(path),edge(profile),[float]) -- Create a profile along a path.
         
         W=Part.Wire([l1.Edges[0],cur1.Edges[0],l2.Edges[0],cur2.Edges[0]])
-        f=Part.Face(W)
-        sweep=W.makePipeShell([circle],True,False)
-        #sweep=Part.makeSweepSurface(circle,f)
+        #f=Part.Face(W)
+        W=W.approximate() 
+        sweep=Part.makeSweepSurface(circle,W.toShape())
+        Part.show(sweep)
         nResult=Part.makeSolid(sweep)
         Result=nResult.removeSplitter()
         obj.Shape=Result
