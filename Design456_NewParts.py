@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-10 22:08:36'
+__updated__ = '2022-03-10 22:30:37'
 
 
 #Roof
@@ -878,6 +878,8 @@ class Design456_ParallelepipedBase:
     """
     def __init__(self, obj, 
                        height=10,
+                       length=10,
+                       width=10,
                        angle=30,
                        chamfer=False,
                        chamfer_Radius=0.0,
@@ -885,21 +887,50 @@ class Design456_ParallelepipedBase:
 
         obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
                         "Height of the Parallelepiped").Height = height
+        obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
+                        "length of the Parallelepiped").Length = length
+        obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
+                        "Width of the Parallelepiped").Width = width
 
         obj.addProperty("App::PropertyAngle", "Height","Parallelepiped", 
                         "Angle of the Parallelepiped").Angle = angle
                   
         obj.addProperty("App::PropertyBool", "Chamfer","RoundedHousing", 
                         "Chamfer corner").Chamfer = chamfer 
+                        
         obj.addProperty("App::PropertyLength", "ChamferRadius","Parallelepiped", 
-                        "Chamfer Radius of the Parallelepiped").Height = height
+                        "Chamfer Radius of the Parallelepiped").ChamferRadius = chamfer_Radius
 
         obj.Proxy = self
 
             
     def execute(self, obj):
         self.Height=float(obj.Height)
-        self.SideOneRadius=float(obj.SideOneRadius)
+        self.Length=float(obj.Length)
+        self.Width=float(obj.Width)
+        self.Angle= float(obj.Angle)
+        self.Chamfer=chamfer
+        self.ChamferRadius=chamfer_Radius
+        point1=App.Vector(-self.Width/2,-self.Length/2,0)
+        point2=App.Vector(-self.Width/2,self.Length/2,0)
+        point3=App.Vector(self.Width/2,self.Length/2,0)
+        point4=App.Vector(-self.Width/2,self.Length/2,0)
+
+        
+        bottom=Part.makePolygon([p1,p2,p3,p4,p1])
+        Bottomface=Part.Face(bottom)
+        shiftSize=self.Height *math.cos(math.radians(self.Angle))
+
+        point11=App.Vector(shiftSize-self.Width/2,shiftSize-self.Length/2,self.Height)
+        point22=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
+        point33=App.Vector(shiftSize+self.Width/2,shiftSize+self.Length/2,self.Height)
+        point44=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
+
+        top=Part.makePolygon([p1,p2,p3,p4,p1])
+        Topface=Part.Face(top)
+        Part.show(TopFace)
+        Part.show(Bottomface)
+
 
         Result=None
         # base None-uniformed vertices and walls after a cut
