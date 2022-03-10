@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-10 21:56:09'
+__updated__ = '2022-03-10 22:08:36'
 
 
 #Roof
@@ -773,7 +773,7 @@ class ViewProviderCapsule:
     def __setstate__(self, state):
         return None
 
-########################################################################### TODO: FIXME:
+########################################################################### 
 
 #Capsule
 class Design456_CapsuleBase:
@@ -805,8 +805,8 @@ class Design456_CapsuleBase:
         self.SideLeftRadius=float(obj.SideLeftRadius)
         self.HeightRadius=float(obj.HeightRadius)
         middle=Part.makeCylinder(self.HeightRadius,self.Length,App.Vector(-self.Length/2,0,0),App.Vector(1,0,0),360)
-        left=Part.makeSphere(self.SideLeftRadius,App.Vector(self.Length/2,0,0),App.Vector(1,0,0))
-        right=Part.makeSphere(self.SideRightRadius,App.Vector(-self.Length/2,0,0),App.Vector(1,0,0))
+        left=Part.makeSphere(self.SideLeftRadius,App.Vector(-self.Length/2,0,0),App.Vector(1,0,0))
+        right=Part.makeSphere(self.SideRightRadius,App.Vector(self.Length/2,0,0),App.Vector(1,0,0))
         shpt=middle.fuse([right,left])
         Result=shpt.removeSplitter()
         obj.Shape=Result
@@ -878,15 +878,21 @@ class Design456_ParallelepipedBase:
     """
     def __init__(self, obj, 
                        height=10,
-                       base_radius=1,
+                       angle=30,
+                       chamfer=False,
+                       chamfer_Radius=0.0,
                        ):
 
         obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
                         "Height of the Parallelepiped").Height = height
 
-        obj.addProperty("App::PropertyLength", "SideOneRadius","RoundedHousing", 
-                        "Base Radius of the Parallelepiped").SideOneRadius = base_radius
-                        
+        obj.addProperty("App::PropertyAngle", "Height","Parallelepiped", 
+                        "Angle of the Parallelepiped").Angle = angle
+                  
+        obj.addProperty("App::PropertyBool", "Chamfer","RoundedHousing", 
+                        "Chamfer corner").Chamfer = chamfer 
+        obj.addProperty("App::PropertyLength", "ChamferRadius","Parallelepiped", 
+                        "Chamfer Radius of the Parallelepiped").Height = height
 
         obj.Proxy = self
 
@@ -912,7 +918,7 @@ class Design456_Parallelepiped:
             "Part::FeaturePython", "Parallelepiped")
         Design456_ParallelepipedBase(newObj)
 
-        ViewProviderNoneUniformBox(newObj.ViewObject, "Parallelepiped")
+        ViewProviderParallelepiped(newObj.ViewObject, "Parallelepiped")
 
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
