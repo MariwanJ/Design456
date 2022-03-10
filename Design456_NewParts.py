@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-10 22:30:37'
+__updated__ = '2022-03-10 22:42:30'
 
 
 #Roof
@@ -887,12 +887,14 @@ class Design456_ParallelepipedBase:
 
         obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
                         "Height of the Parallelepiped").Height = height
-        obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
+
+        obj.addProperty("App::PropertyLength", "Length","Parallelepiped", 
                         "length of the Parallelepiped").Length = length
-        obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
+
+        obj.addProperty("App::PropertyLength", "Width","Parallelepiped", 
                         "Width of the Parallelepiped").Width = width
 
-        obj.addProperty("App::PropertyAngle", "Height","Parallelepiped", 
+        obj.addProperty("App::PropertyAngle", "Angle","Parallelepiped", 
                         "Angle of the Parallelepiped").Angle = angle
                   
         obj.addProperty("App::PropertyBool", "Chamfer","RoundedHousing", 
@@ -909,26 +911,26 @@ class Design456_ParallelepipedBase:
         self.Length=float(obj.Length)
         self.Width=float(obj.Width)
         self.Angle= float(obj.Angle)
-        self.Chamfer=chamfer
-        self.ChamferRadius=chamfer_Radius
-        point1=App.Vector(-self.Width/2,-self.Length/2,0)
-        point2=App.Vector(-self.Width/2,self.Length/2,0)
-        point3=App.Vector(self.Width/2,self.Length/2,0)
-        point4=App.Vector(-self.Width/2,self.Length/2,0)
+        self.Chamfer=bool(obj.Chamfer)
+        self.ChamferRadius=float(obj.ChamferRadius)
+        p1=App.Vector(-self.Width/2,-self.Length/2,0)
+        p2=App.Vector(-self.Width/2,self.Length/2,0)
+        p3=App.Vector(self.Width/2,self.Length/2,0)
+        p4=App.Vector(-self.Width/2,self.Length/2,0)
 
-        
+        print(p1,p2,p3,p4)
         bottom=Part.makePolygon([p1,p2,p3,p4,p1])
         Bottomface=Part.Face(bottom)
-        shiftSize=self.Height *math.cos(math.radians(self.Angle))
+        shiftSize=self.Height * math.cos(math.radians(self.Angle))
 
-        point11=App.Vector(shiftSize-self.Width/2,shiftSize-self.Length/2,self.Height)
-        point22=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
-        point33=App.Vector(shiftSize+self.Width/2,shiftSize+self.Length/2,self.Height)
-        point44=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
+        p11=App.Vector(shiftSize-self.Width/2,shiftSize-self.Length/2,self.Height)
+        p22=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
+        p33=App.Vector(shiftSize+self.Width/2,shiftSize+self.Length/2,self.Height)
+        p44=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
 
-        top=Part.makePolygon([p1,p2,p3,p4,p1])
+        top=Part.makePolygon([p11,p22,p33,p44,p11])
         Topface=Part.Face(top)
-        Part.show(TopFace)
+        Part.show(Topface)
         Part.show(Bottomface)
 
 
