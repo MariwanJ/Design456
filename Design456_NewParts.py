@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-10 22:42:30'
+__updated__ = '2022-03-11 22:34:20'
 
 
 #Roof
@@ -879,8 +879,9 @@ class Design456_ParallelepipedBase:
     def __init__(self, obj, 
                        height=10,
                        length=10,
-                       width=10,
-                       angle=30,
+                       width=30,
+                       anglex=30,
+                       angley=30,
                        chamfer=False,
                        chamfer_Radius=0.0,
                        ):
@@ -894,9 +895,12 @@ class Design456_ParallelepipedBase:
         obj.addProperty("App::PropertyLength", "Width","Parallelepiped", 
                         "Width of the Parallelepiped").Width = width
 
-        obj.addProperty("App::PropertyAngle", "Angle","Parallelepiped", 
-                        "Angle of the Parallelepiped").Angle = angle
-                  
+        obj.addProperty("App::PropertyAngle", "AngleX","Parallelepiped", 
+                        "Angle of the Parallelepiped").AngleX = anglex
+
+        obj.addProperty("App::PropertyAngle", "AngleY","Parallelepiped", 
+                        "Angle of the Parallelepiped").AngleY = angley
+                                    
         obj.addProperty("App::PropertyBool", "Chamfer","RoundedHousing", 
                         "Chamfer corner").Chamfer = chamfer 
                         
@@ -910,32 +914,45 @@ class Design456_ParallelepipedBase:
         self.Height=float(obj.Height)
         self.Length=float(obj.Length)
         self.Width=float(obj.Width)
-        self.Angle= float(obj.Angle)
+        self.AngleX= float(obj.AngleX)
+        self.AngleY= float(obj.AngleY)
+
         self.Chamfer=bool(obj.Chamfer)
         self.ChamferRadius=float(obj.ChamferRadius)
-        p1=App.Vector(-self.Width/2,self.Length/2,0)
-        p2=App.Vector(self.Width/2,self.Length/2,0)
-        p3=App.Vector(-self.Width/2,self.Length/2,0)
-        p4=App.Vector(-self.Width/2,-self.Length/2,0)
+        p1=App.Vector(-self.Width/2,self.Length/2,0)    # - +  
+        p2=App.Vector(self.Width/2,self.Length/2,0)     # + +  
+        p3=App.Vector(self.Width/2,-self.Length/2,0)    # - +  
+        p4=App.Vector(-self.Width/2,-self.Length/2,0)   # - -
 
-        print(p1,p2,p3,p4)
-        bottom=Part.makePolygon([p1,p2,p3,p4])
-        Bottomface=Part.Face(bottom)
-        shiftSize=self.Height * math.cos(math.radians(self.Angle))
+        shiftSizeX=self.Height * math.cos(math.radians(self.AngleX))
+        shiftSizeY=self.Height * math.sin(math.radians(self.AngleY))
+        
+        p11=App.Vector(shiftSizeX-self.Width/2,shiftSizeY+self.Length/2,self.Height)
+        p22=App.Vector(shiftSizeX+self.Width/2,shiftSizeY+self.Length/2,self.Height)
+        p33=App.Vector(shiftSizeX+self.Width/2,shiftSizeY-self.Length/2,self.Height)
+        p44=App.Vector(shiftSizeX-self.Width/2,shiftSizeY-self.Length/2,self.Height)
 
-        p11=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
-        p22=App.Vector(shiftSize+self.Width/2,shiftSize+self.Length/2,self.Height)
-        p33=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
-        p44=App.Vector(shiftSize-self.Width/2,shiftSize-self.Length/2,self.Height)
-        #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
-        top=Part.makePolygon([p11,p22,p33,p44])
+        bottom=Part.makePolygon([p1,p2,p3,p4,p1])
+        top=Part.makePolygon([p11,p22,p33,p44,p11])
+        left=Part.makePolygon([p4,p44,p11,p1,p4])
+        right=Part.makePolygon([p33,p22,p2,p3,p33])
+        front=Part.makePolygon([p4,p44,p33,p3,p4])
+        back=Part.makePolygon([p1,p11,p22,p2,p1])
+
         W1=Part.Wire(bottom)
         W2=Part.Wire(top)
-        
-        Topface=Part.Face(top)
-        Result= Part.makeLoft([W1,W2], True,True,True)
-        #Part.show(Topface)
-        #Part.show(Bottomface)
+        W3=Part.Wire(left)
+        W4=Part.Wire(right)
+        W5=Part.Wire(front)
+        W6=Part.Wire(back)
+        f1=Part.Face(W1)
+        f2=Part.Face(W2)
+        f3=Part.Face(W3)
+        f4=Part.Face(W4)
+        f5=Part.Face(W5)
+        f6=Part.Face(W6)
+        shell=Part.makeShell([f1,f2,f3,f4,f5,f6])
+        Result=Part.makeSolid(shell)
         obj.Shape=Result
         
 class Design456_Parallelepiped:
