@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-11 22:34:20'
+__updated__ = '2022-03-11 22:58:52'
 
 
 #Roof
@@ -945,14 +945,36 @@ class Design456_ParallelepipedBase:
         W4=Part.Wire(right)
         W5=Part.Wire(front)
         W6=Part.Wire(back)
-        f1=Part.Face(W1)
-        f2=Part.Face(W2)
-        f3=Part.Face(W3)
-        f4=Part.Face(W4)
-        f5=Part.Face(W5)
-        f6=Part.Face(W6)
+        if self.ChamferRadius>0:
+            cW1 = DraftGeomUtils.filletWire(W1,self.ChamferRadius, chamfer=self.Chamfer)
+            cW2 = DraftGeomUtils.filletWire(W2,self.ChamferRadius, chamfer=self.Chamfer)
+            cW3 = DraftGeomUtils.filletWire(W3,self.ChamferRadius, chamfer=self.Chamfer)
+            cW4 = DraftGeomUtils.filletWire(W4,self.ChamferRadius, chamfer=self.Chamfer)
+            cW5 = DraftGeomUtils.filletWire(W5,self.ChamferRadius, chamfer=self.Chamfer)
+            cW6 = DraftGeomUtils.filletWire(W6,self.ChamferRadius, chamfer=self.Chamfer)
+        else:
+            cW1=W1
+            cW2=W2
+            cW3=W3
+            cW4=W4
+            cW5=W5
+            cW6=W6
+
+        f1=Part.Face(cW1)
+        f2=Part.Face(cW2)
+        f3=Part.Face(cW3)
+        f4=Part.Face(cW4)
+        f5=Part.Face(cW5)
+        f6=Part.Face(cW6)
         shell=Part.makeShell([f1,f2,f3,f4,f5,f6])
-        Result=Part.makeSolid(shell)
+        nResult=Part.makeSolid(shell)
+        if self.ChamferRadius>0:
+            if self.Chamfer is True:
+                Result=nResult.makeChamfer(self.ChamferRadius,nResult.Edges) 
+            else:
+                Result=nResult.makeFillet(self.ChamferRadius,nResult.Edges)
+        else:
+            Result=nResult
         obj.Shape=Result
         
 class Design456_Parallelepiped:
