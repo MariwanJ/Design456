@@ -913,31 +913,29 @@ class Design456_ParallelepipedBase:
         self.Angle= float(obj.Angle)
         self.Chamfer=bool(obj.Chamfer)
         self.ChamferRadius=float(obj.ChamferRadius)
-        p1=App.Vector(-self.Width/2,-self.Length/2,0)
-        p2=App.Vector(-self.Width/2,self.Length/2,0)
-        p3=App.Vector(self.Width/2,self.Length/2,0)
-        p4=App.Vector(-self.Width/2,self.Length/2,0)
+        p1=App.Vector(-self.Width/2,self.Length/2,0)
+        p2=App.Vector(self.Width/2,self.Length/2,0)
+        p3=App.Vector(-self.Width/2,self.Length/2,0)
+        p4=App.Vector(-self.Width/2,-self.Length/2,0)
 
         print(p1,p2,p3,p4)
-        bottom=Part.makePolygon([p1,p2,p3,p4,p1])
+        bottom=Part.makePolygon([p1,p2,p3,p4])
         Bottomface=Part.Face(bottom)
         shiftSize=self.Height * math.cos(math.radians(self.Angle))
 
-        p11=App.Vector(shiftSize-self.Width/2,shiftSize-self.Length/2,self.Height)
-        p22=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
-        p33=App.Vector(shiftSize+self.Width/2,shiftSize+self.Length/2,self.Height)
-        p44=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
-
-        top=Part.makePolygon([p11,p22,p33,p44,p11])
+        p11=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
+        p22=App.Vector(shiftSize+self.Width/2,shiftSize+self.Length/2,self.Height)
+        p33=App.Vector(shiftSize-self.Width/2,shiftSize+self.Length/2,self.Height)
+        p44=App.Vector(shiftSize-self.Width/2,shiftSize-self.Length/2,self.Height)
+        #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
+        top=Part.makePolygon([p11,p22,p33,p44])
+        W1=Part.Wire(bottom)
+        W2=Part.Wire(top)
+        
         Topface=Part.Face(top)
-        Part.show(Topface)
-        Part.show(Bottomface)
-
-
-        Result=None
-        # base None-uniformed vertices and walls after a cut
-        #fused=extrude1.fuse(extrude2)
-        #Result=fused.removeSplitter()
+        Result= Part.makeLoft([W1,W2], True,True,True)
+        #Part.show(Topface)
+        #Part.show(Bottomface)
         obj.Shape=Result
         
 class Design456_Parallelepiped:
