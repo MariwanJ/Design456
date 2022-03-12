@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-12 10:29:22'
+__updated__ = '2022-03-12 11:41:27'
 
 
 #Roof
@@ -1010,11 +1010,12 @@ class Design456_RoundRoof:
     """
     def __init__(self, obj, 
                        width=20,
-                       radius=5,
                        length=20,
                        height=10,
+                       inner_direction=0,
+                       radius=10,
+                       angle=180,
                        thickness=1):
-
 
         obj.addProperty("App::PropertyLength", "Width","RoundRoof", 
                         "Width of the RoundRoof").Width = width
@@ -1025,11 +1026,18 @@ class Design456_RoundRoof:
         obj.addProperty("App::PropertyLength", "Height","RoundRoof", 
                         "Height of the RoundRoof").Height = height
 
-        obj.addProperty("App::PropertyLength", "Radius","RoundRoof", 
+        obj.addProperty("App::PropertyAngle", "Radius","RoundRoof", 
                         "Height of the RoundRoof").Radius = radius
+
+        obj.addProperty("App::PropertyAngle", "Angle","RoundRoof", 
+                        "Height of the RoundRoof").Angle = angle
 
         obj.addProperty("App::PropertyLength", "Thickness","RoundRoof", 
                         "Thickness of the RoundRoof").Thickness = thickness
+
+        obj.addProperty("App::PropertyInteger", "InnerDirection","RoundRoof", 
+                        "InnerDirection of the RoundRoof").InnerDirection = inner_direction
+
         obj.Proxy = self
     
     def execute(self, obj):
@@ -1037,23 +1045,73 @@ class Design456_RoundRoof:
         self.Height=float(obj.Height)
         self.Length=float(obj.Length)
         self.Radius=float(obj.Radius)
+        self.Angle=float(obj.Angle)
         self.Thickness=float(obj.Thickness)
+        self.InnerDirection=float(obj.InnerDirection)
         Result=None
-        # vert1=[App.Vector(0,0,0),App.Vector(self.Width,0,0),
-        #         App.Vector(self.Width/2,0.0,self.Height),
-        #         App.Vector(0,0,0)]
-        # newWidth=self.Width-2*self.Thickness
-        # newLength=self.Length-2*self.Thickness
-        # newHeight=self.Height-self.Thickness
-        # vert2=[App.Vector(self.Thickness,self.Thickness,0),App.Vector(self.Thickness+newWidth,self.Thickness,0),
-        #        App.Vector(self.Width/2,self.Thickness,newHeight),
-        #        App.Vector(self.Thickness,self.Thickness,0)]
-        # FaceTriangle1=Part.Face(Part.makePolygon(vert1))
-        # obj1 =FaceTriangle1.extrude(App.Vector(0.0,self.Length,0.0))
-        
-        # FaceTriangle2=Part.Face(Part.makePolygon(vert2))
-        # obj2= FaceTriangle2.extrude(App.Vector(0.0,self.Length-2*self.Thickness,0.0))
-        # Result = obj1.cut(obj2)
+
+
+        if self.InnerDirection<0 or self.InnerDirection>17:
+            self.InnerDirection=0
+            obj.InnerDirection=0
+        if self.Radius>270 :
+            self.Radius=270
+        elif self.Radius==0:
+            self.Radius=1
+        obj.Radius=self.Radius
+
+        #Z
+        if self.InnerDirection==0:
+            direction=App.Vector(0,0,1)
+        elif self.InnerDirection==1:
+            direction=App.Vector(0,0,-1)
+        #X
+        elif self.InnerDirection==2:
+            direction=App.Vector(1,0,0)
+        elif self.InnerDirection==3:
+            direction=App.Vector(-1,0,0)
+        #Y
+        elif self.InnerDirection==4:
+            direction=App.Vector(0,1,0)
+        elif self.InnerDirection==5:
+            direction=App.Vector(0,-1,0)
+        #XY
+        elif self.InnerDirection==6:
+            direction=App.Vector(1,1,0)
+        elif self.InnerDirection==7:
+            direction=App.Vector(-1,1,0)
+        elif self.InnerDirection==8:
+            direction=App.Vector(-1,-1,0)
+        elif self.InnerDirection==9:
+            direction=App.Vector(1,-1,0)
+
+        #XZ
+        elif self.InnerDirection==10:
+            direction=App.Vector(1,0,1)
+        elif self.InnerDirection==11:
+            direction=App.Vector(-1,0,1)
+        elif self.InnerDirection==12:
+            direction=App.Vector(-1,0,-1)
+        elif self.InnerDirection==13:
+            direction=App.Vector(1,0,-1)
+
+        #YZ
+        elif self.InnerDirection==14:
+            direction=App.Vector(0,1,1)
+        elif self.InnerDirection==15:
+            direction=App.Vector(0,-1,1)
+        elif self.InnerDirection==16:
+            direction=App.Vector(0,-1,-1)
+        elif self.InnerDirection==17:
+            direction=App.Vector(0,1,-1)
+
+        # makeCylinder(...) method of builtins.tuple instance
+        # makeCylinder(radius,height,[pnt,dir,angle]) -- Make a cylinder with a given radius and height
+        # By default pnt=Vector(0,0,0),dir=Vector(0,0,1) and angle=360
+        base=Part.makeCylinder(self.Radius,self.Height,App.Vector(0,0,0), direction,self.Angle)
+        inner=Part.makeCylinder(self.Radius-2*self.Thickness,self.Height-2*self.Thickness,App.Vector(self.Thickness,self.Thickness,0), direction,self.Angle)
+        Result=base.cut(inner)
+
         obj.Shape=Result
         
 class Design456_Seg_RoundRoof:
