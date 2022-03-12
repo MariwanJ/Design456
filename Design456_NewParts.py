@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-12 17:24:04'
+__updated__ = '2022-03-12 17:37:32'
 
 
 #Roof
@@ -1005,7 +1005,7 @@ class ViewProviderRoundRoof:
 
 
 #RoundRoof 
-class Design456_RoundRoof:
+class Design456_BaseRoundRoof:
     """ RoundRoof shape based on several parameters
     """
     def __init__(self, obj, 
@@ -1059,7 +1059,7 @@ class Design456_RoundRoof:
         Result=obj1.cut(obj2)
         obj.Shape=Result
 
-class Design456_Seg_RoundRoof:
+class Design456_RoundRoof:
     def GetResources(self):
         return {'Pixmap':Design456Init.ICON_PATH + 'RoundRoof.svg',
                 'MenuText': "RoundRoof",
@@ -1068,7 +1068,7 @@ class Design456_Seg_RoundRoof:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "RoundRoof")
-        Design456_RoundRoof(newObj)
+        Design456_BaseRoundRoof(newObj)
 
         ViewProviderRoundRoof(newObj.ViewObject, "RoundRoof")
 
@@ -1076,4 +1076,4 @@ class Design456_Seg_RoundRoof:
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
-Gui.addCommand('Design456_Seg_RoundRoof', Design456_Seg_RoundRoof())
+Gui.addCommand('Design456_RoundRoof', Design456_RoundRoof())
