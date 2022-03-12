@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-11 22:58:52'
+__updated__ = '2022-03-12 10:29:22'
 
 
 #Roof
@@ -882,8 +882,6 @@ class Design456_ParallelepipedBase:
                        width=30,
                        anglex=30,
                        angley=30,
-                       chamfer=False,
-                       chamfer_Radius=0.0,
                        ):
 
         obj.addProperty("App::PropertyLength", "Height","Parallelepiped", 
@@ -901,12 +899,6 @@ class Design456_ParallelepipedBase:
         obj.addProperty("App::PropertyAngle", "AngleY","Parallelepiped", 
                         "Angle of the Parallelepiped").AngleY = angley
                                     
-        obj.addProperty("App::PropertyBool", "Chamfer","RoundedHousing", 
-                        "Chamfer corner").Chamfer = chamfer 
-                        
-        obj.addProperty("App::PropertyLength", "ChamferRadius","Parallelepiped", 
-                        "Chamfer Radius of the Parallelepiped").ChamferRadius = chamfer_Radius
-
         obj.Proxy = self
 
             
@@ -917,15 +909,13 @@ class Design456_ParallelepipedBase:
         self.AngleX= float(obj.AngleX)
         self.AngleY= float(obj.AngleY)
 
-        self.Chamfer=bool(obj.Chamfer)
-        self.ChamferRadius=float(obj.ChamferRadius)
         p1=App.Vector(-self.Width/2,self.Length/2,0)    # - +  
         p2=App.Vector(self.Width/2,self.Length/2,0)     # + +  
         p3=App.Vector(self.Width/2,-self.Length/2,0)    # - +  
         p4=App.Vector(-self.Width/2,-self.Length/2,0)   # - -
 
-        shiftSizeX=self.Height * math.cos(math.radians(self.AngleX))
-        shiftSizeY=self.Height * math.sin(math.radians(self.AngleY))
+        shiftSizeX=self.Height * math.cos(math.radians(90-self.AngleX))
+        shiftSizeY=self.Height * math.cos(math.radians(90-self.AngleY))
         
         p11=App.Vector(shiftSizeX-self.Width/2,shiftSizeY+self.Length/2,self.Height)
         p22=App.Vector(shiftSizeX+self.Width/2,shiftSizeY+self.Length/2,self.Height)
@@ -945,36 +935,14 @@ class Design456_ParallelepipedBase:
         W4=Part.Wire(right)
         W5=Part.Wire(front)
         W6=Part.Wire(back)
-        if self.ChamferRadius>0:
-            cW1 = DraftGeomUtils.filletWire(W1,self.ChamferRadius, chamfer=self.Chamfer)
-            cW2 = DraftGeomUtils.filletWire(W2,self.ChamferRadius, chamfer=self.Chamfer)
-            cW3 = DraftGeomUtils.filletWire(W3,self.ChamferRadius, chamfer=self.Chamfer)
-            cW4 = DraftGeomUtils.filletWire(W4,self.ChamferRadius, chamfer=self.Chamfer)
-            cW5 = DraftGeomUtils.filletWire(W5,self.ChamferRadius, chamfer=self.Chamfer)
-            cW6 = DraftGeomUtils.filletWire(W6,self.ChamferRadius, chamfer=self.Chamfer)
-        else:
-            cW1=W1
-            cW2=W2
-            cW3=W3
-            cW4=W4
-            cW5=W5
-            cW6=W6
-
-        f1=Part.Face(cW1)
-        f2=Part.Face(cW2)
-        f3=Part.Face(cW3)
-        f4=Part.Face(cW4)
-        f5=Part.Face(cW5)
-        f6=Part.Face(cW6)
+        f1=Part.Face(W1)
+        f2=Part.Face(W2)
+        f3=Part.Face(W3)
+        f4=Part.Face(W4)
+        f5=Part.Face(W5)
+        f6=Part.Face(W6)
         shell=Part.makeShell([f1,f2,f3,f4,f5,f6])
-        nResult=Part.makeSolid(shell)
-        if self.ChamferRadius>0:
-            if self.Chamfer is True:
-                Result=nResult.makeChamfer(self.ChamferRadius,nResult.Edges) 
-            else:
-                Result=nResult.makeFillet(self.ChamferRadius,nResult.Edges)
-        else:
-            Result=nResult
+        Result=Part.Solid(shell)
         obj.Shape=Result
         
 class Design456_Parallelepiped:
