@@ -38,7 +38,7 @@ import DraftGeomUtils
 import Design456Init
 import Design456_NewParts
 
-__updated__ = '2022-03-12 11:13:04'
+__updated__ = '2022-03-12 12:00:35'
 
 #SegmentedSphere
 

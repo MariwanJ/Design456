@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-12 11:41:27'
+__updated__ = '2022-03-12 17:24:04'
 
 
 #Roof
@@ -1012,9 +1012,6 @@ class Design456_RoundRoof:
                        width=20,
                        length=20,
                        height=10,
-                       inner_direction=0,
-                       radius=10,
-                       angle=180,
                        thickness=1):
 
         obj.addProperty("App::PropertyLength", "Width","RoundRoof", 
@@ -1026,17 +1023,8 @@ class Design456_RoundRoof:
         obj.addProperty("App::PropertyLength", "Height","RoundRoof", 
                         "Height of the RoundRoof").Height = height
 
-        obj.addProperty("App::PropertyAngle", "Radius","RoundRoof", 
-                        "Height of the RoundRoof").Radius = radius
-
-        obj.addProperty("App::PropertyAngle", "Angle","RoundRoof", 
-                        "Height of the RoundRoof").Angle = angle
-
         obj.addProperty("App::PropertyLength", "Thickness","RoundRoof", 
                         "Thickness of the RoundRoof").Thickness = thickness
-
-        obj.addProperty("App::PropertyInteger", "InnerDirection","RoundRoof", 
-                        "InnerDirection of the RoundRoof").InnerDirection = inner_direction
 
         obj.Proxy = self
     
@@ -1044,76 +1032,33 @@ class Design456_RoundRoof:
         self.Width=float(obj.Width)
         self.Height=float(obj.Height)
         self.Length=float(obj.Length)
-        self.Radius=float(obj.Radius)
-        self.Angle=float(obj.Angle)
         self.Thickness=float(obj.Thickness)
-        self.InnerDirection=float(obj.InnerDirection)
         Result=None
 
+        p1=App.Vector(0,0,0)
+        p2=App.Vector(0,self.Length/2,self.Height)
+        p3=App.Vector(0,self.Length,0)
 
-        if self.InnerDirection<0 or self.InnerDirection>17:
-            self.InnerDirection=0
-            obj.InnerDirection=0
-        if self.Radius>270 :
-            self.Radius=270
-        elif self.Radius==0:
-            self.Radius=1
-        obj.Radius=self.Radius
+        p11=App.Vector(p1.x+self.Thickness,p1.y+self.Thickness,p1.z)
+        p22=App.Vector(p2.x+self.Thickness,p2.y,p2.z-self.Thickness)
+        p33=App.Vector(p3.x+self.Thickness,p3.y-self.Thickness,p3.z)
 
-        #Z
-        if self.InnerDirection==0:
-            direction=App.Vector(0,0,1)
-        elif self.InnerDirection==1:
-            direction=App.Vector(0,0,-1)
-        #X
-        elif self.InnerDirection==2:
-            direction=App.Vector(1,0,0)
-        elif self.InnerDirection==3:
-            direction=App.Vector(-1,0,0)
-        #Y
-        elif self.InnerDirection==4:
-            direction=App.Vector(0,1,0)
-        elif self.InnerDirection==5:
-            direction=App.Vector(0,-1,0)
-        #XY
-        elif self.InnerDirection==6:
-            direction=App.Vector(1,1,0)
-        elif self.InnerDirection==7:
-            direction=App.Vector(-1,1,0)
-        elif self.InnerDirection==8:
-            direction=App.Vector(-1,-1,0)
-        elif self.InnerDirection==9:
-            direction=App.Vector(1,-1,0)
-
-        #XZ
-        elif self.InnerDirection==10:
-            direction=App.Vector(1,0,1)
-        elif self.InnerDirection==11:
-            direction=App.Vector(-1,0,1)
-        elif self.InnerDirection==12:
-            direction=App.Vector(-1,0,-1)
-        elif self.InnerDirection==13:
-            direction=App.Vector(1,0,-1)
-
-        #YZ
-        elif self.InnerDirection==14:
-            direction=App.Vector(0,1,1)
-        elif self.InnerDirection==15:
-            direction=App.Vector(0,-1,1)
-        elif self.InnerDirection==16:
-            direction=App.Vector(0,-1,-1)
-        elif self.InnerDirection==17:
-            direction=App.Vector(0,1,-1)
-
-        # makeCylinder(...) method of builtins.tuple instance
-        # makeCylinder(radius,height,[pnt,dir,angle]) -- Make a cylinder with a given radius and height
-        # By default pnt=Vector(0,0,0),dir=Vector(0,0,1) and angle=360
-        base=Part.makeCylinder(self.Radius,self.Height,App.Vector(0,0,0), direction,self.Angle)
-        inner=Part.makeCylinder(self.Radius-2*self.Thickness,self.Height-2*self.Thickness,App.Vector(self.Thickness,self.Thickness,0), direction,self.Angle)
-        Result=base.cut(inner)
-
-        obj.Shape=Result
+        c1= Part.ArcOfCircle(p1,p2,p3)
+        c11=c1.copy()
+        l1=Part.LineSegment(p1,p3)
         
+        c2=Part.ArcOfCircle(p11,p22,p33)
+        l2=Part.LineSegment(p11,p33)
+                
+        W1=Part.Wire([c1.toShape(),l1.toShape()])
+        W2=Part.Wire([c2.toShape(),l2.toShape()])
+        f1=Part.Face(W1)
+        f2=Part.Face(W2)
+        obj1=f1.extrude(App.Vector(self.Width,0,0))
+        obj2=f2.extrude(App.Vector(self.Width-2*self.Thickness,0,0))
+        Result=obj1.cut(obj2)
+        obj.Shape=Result
+
 class Design456_Seg_RoundRoof:
     def GetResources(self):
         return {'Pixmap':Design456Init.ICON_PATH + 'RoundRoof.svg',
