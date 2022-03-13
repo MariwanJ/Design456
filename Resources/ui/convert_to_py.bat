@@ -1,1 +1,1 @@
-pyuic5 select.ui> select.py
+pyuic5 iconlist.ui> iconlist.py

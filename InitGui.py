@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-02-13 20:35:55'
+__updated__ = '2022-03-13 14:33:35'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -64,7 +64,7 @@ class Design456_Workbench (Workbench):
         import Design456Init
         from Design456Pref import Design456Preferences
         import Design456_Segmented as _segmented
-
+        import Design456_ICONPanel  #Side panel for ICONS
 
 
         # from Part import CommandShapes     #Tube  not working

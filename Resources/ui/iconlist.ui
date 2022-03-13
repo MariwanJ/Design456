@@ -6,25 +6,73 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
+    <width>353</width>
     <height>638</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QTableWidget" name="tableWidget">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>290</y>
-     <width>71</width>
-     <height>111</height>
+     <x>40</x>
+     <y>0</y>
+     <width>311</width>
+     <height>631</height>
     </rect>
    </property>
-   <property name="text">
-    <string>PushButton</string>
+   <property name="rowCount">
+    <number>10</number>
    </property>
+   <property name="columnCount">
+    <number>3</number>
+   </property>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <column/>
+   <column/>
+   <column/>
+   <item row="0" column="0">
+    <property name="text">
+     <string/>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../images/Toolbars/Part_Box.png</normaloff>../images/Toolbars/Part_Box.png</iconset>
+    </property>
+   </item>
+   <item row="0" column="1">
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../images/Toolbars/Part_Cylinder.png</normaloff>../images/Toolbars/Part_Cylinder.png</iconset>
+    </property>
+   </item>
+   <item row="0" column="2">
+    <property name="icon">
+     <iconset>
+      <normaloff>../images/Toolbars/Part_Cone.png</normaloff>../images/Toolbars/Part_Cone.png</iconset>
+    </property>
+   </item>
   </widget>
  </widget>
  <resources/>

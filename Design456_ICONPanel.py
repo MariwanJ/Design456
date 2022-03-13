@@ -36,72 +36,81 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-03-12 21:58:09'
+__updated__ = '2022-03-13 22:10:12'
 
 class PrimitivePartsIconList:
     def __init__(self):
-        pass
+        self.frmBasicShapes=None
+        
     def Activated(self):
+        self.setupUi()
+        self.frmBasicShapes.show()
+        
+    def dock_right_RH(self):
+        RHmw = Gui.getMainWindow()
+        RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.frmBasicShapes)
+
+    def HideIconList(self):
         pass
     
-    def dock_right_RH(self):
-        
-        MyListWidget = QtGui.QDockWidget()
-        MyListWidget.setFeatures(
-            QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
-        RHmw = Gui.getMainWindow()
-        RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea, RHDockWidget)
-        MyListWidget.setFloating(True)  # undock
-        mw = Gui.getMainWindow()
-        dw = mw.findChildren(QtGui.QDockWidget)
-        idw = 0
-        cv = None
-        if len(dw)>0:
-            while  idw < len(dw):
-                d = dw[idw]
-                idw += 1
-                area = mw.dockWidgetArea(d)
-                if area == QtCore.Qt.RightDockWidgetArea:
-                    r_w = str(d.objectName()) 
-                    cv = mw.findChild(QtGui.QDockWidget, r_w)
-                    break
-        mw.addDockWidget(QtCore.Qt.RightDockWidgetArea, MyListWidget)
-        MyListWidget.activateWindow()
-        MyListWidget.raise_()
-        if MyListWidget and cv is not None:
-            dw = mw.findChildren(QtGui.QDockWidget)
-            try:
-                mw.tabifyDockWidget(cv, MyListWidget)
-            except:
-                pass
+    
+    def addListItem(self, text):
+        item = QtGui.QListWidgetItem(text)
+        self.list.addItem(item)
+        widget = QtGui.QWidget(self.list)
+        button = QtGui.QToolButton(widget)
+        layout = QtGui.QHBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addStretch()
+        layout.addWidget(button)
+        self.list.setItemWidget(item, widget)
+        button.clicked[()].connect(
+            lambda: self.handleButtonClicked(item))
 
+    def handleButtonClicked(self, item):
+        print(item.text())
+        
     def setupUi(self):
         self.frmBasicShapes=QtGui.QDockWidget()
         self.frmBasicShapes.setObjectName("frmBasicShapes")
         self.frmBasicShapes.resize(260, 534)
-        self.frmBasicShapes.setWindowIcon(icon)
+        #self.frmBasicShapes.setWindowIcon(icon)
         self.frmBasicShapes.setToolTip("Basic Shapes")
         self.frmBasicShapes.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.frmBasicShapes.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.frmBasicShapes.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
         self.frmBasicShapes.setWindowTitle("Basic Shapes")
+        self.list = QtGui.QListWidget(self.frmBasicShapes)
+        self.list.setGeometry(QtCore.QRect(40, 0, 311, 631))
+        layout = QtGui.QVBoxLayout(self.frmBasicShapes)
+        layout.addWidget(self.list)
+        
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(Design456Init.IMAGE_PATH + "/Toolbars/Part_Box.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        btn = QtGui.QPushButton()
+        btn.setIcon(icon)
+        
+        self.btnHide = QtGui.QPushButton(self.frmBasicShapes)
+        self.btnHide.setGeometry(QtCore.QRect(0, 290, 41, 111))
+        self.btnHide.setText("")
+        self.btnHide.clicked.connect(self.HideIconList)
+        btn =  QtGui.QPushButton()
+        icon = QtGui.QIcon()
+        icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
+        btn.setIcon(icon)
+        
+        
+    
+        
         self.dockWidgetContents = QtGui.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
-        layout = QtGui.QGridLayout()
-        btn =  QtGui.QPushButton()
-        btn.setIcon(Design456Init.ICON_PATH + 'RoundRoof.svg')
-        layout.addWidget(btn)
-        count += 1
+        self.frmBasicShapes.setFeatures(
+           QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
+        
+        self.frmBasicShapes.setWidget(self.dockWidgetContents)
+        QtCore.QMetaObject.connectSlotsByName(self.frmBasicShapes)
+        return self.frmBasicShapes
 
-        DockWidget.setWidget(self.dockWidgetContents)
-        QtCore.QMetaObject.connectSlotsByName(DockWidget)
-
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    DockWidget = QtGui.QDockWidget()
-    ui = PrimitivePartsIconList()
-    ui.setupUi(DockWidget)
-    ui.dock_right_RH() # Dock the widget to the left
-    DockWidget.show()
-    sys.exit(app.exec_())
-
+f=PrimitivePartsIconList()
+f.Activated()
+f.dock_right_RH()
