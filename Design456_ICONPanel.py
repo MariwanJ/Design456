@@ -82,6 +82,16 @@ class PrimitivePartsIconList:
         self.frmBasicShapes.setWindowTitle("Basic Shapes")
         self.list = QtGui.QListWidget(self.frmBasicShapes)
         self.list.setGeometry(QtCore.QRect(40, 0, 311, 631))
+        self.scrollArea =QtGui.QScrollArea(self.frmBasicShapes)
+        self.pWgt = QtGui.QWidget()
+        
+        self.pLayout =QtGui.QVBoxLayout(self.frmBasicShapes)
+        for  i in range(0,100):
+            pbtn = QtGui.QPushButton()
+            pbtn.setText(str(i))
+            pbtn.setMinimumSize(60,30)
+            self.pLayout.addWidget(pbtn)
+
         layout = QtGui.QVBoxLayout(self.frmBasicShapes)
         layout.addWidget(self.list)
         
