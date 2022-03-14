@@ -36,7 +36,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-03-13 22:10:12'
+__updated__ = '2022-03-14 22:28:58'
 
 class PrimitivePartsIconList:
     def __init__(self):
@@ -80,34 +80,39 @@ class PrimitivePartsIconList:
         self.frmBasicShapes.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.frmBasicShapes.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
         self.frmBasicShapes.setWindowTitle("Basic Shapes")
-        self.list = QtGui.QListWidget(self.frmBasicShapes)
-        self.list.setGeometry(QtCore.QRect(40, 0, 311, 631))
-        self.scrollArea =QtGui.QScrollArea(self.frmBasicShapes)
-        self.pWgt = QtGui.QWidget()
-        
-        self.pLayout =QtGui.QVBoxLayout(self.frmBasicShapes)
-        for  i in range(0,100):
-            pbtn = QtGui.QPushButton()
-            pbtn.setText(str(i))
-            pbtn.setMinimumSize(60,30)
-            self.pLayout.addWidget(pbtn)
-
-        layout = QtGui.QVBoxLayout(self.frmBasicShapes)
-        layout.addWidget(self.list)
-        
+        self.centralWidget = QtGui.QWidget(self.frmBasicShapes)
+        self.layout = QtGui.QVBoxLayout(self.centralWidget)
+        self.scrollArea = QtGui.QScrollArea(self.centralWidget)
+        self.scrollArea.setVerticalScrollBarPolicy(QtGui.Qt.ScrollBarAlwaysOn)
+        self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QtGui.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(20, 40, 260, 400)   
+        self.gridLayout = QtGui.QGridLayout(self.centralWidget)      
+        self.gridLayout.setSpacing(6)
+        self.gridLayout.setObjectName("gridLayout")
+        self.scrollArea.setEnabled(True)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(Design456Init.IMAGE_PATH + "/Toolbars/Part_Box.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        btn = QtGui.QPushButton()
-        btn.setIcon(icon)
+        btn1 = QtGui.QPushButton()
+        btn1.setIcon(icon)
+        
+        for  i in range(0,10):
+            for j in range(0,3):
+                pbtn = QtGui.QPushButton()
+                #pbtn.setText(str(i))
+                pbtn.setIcon(icon)
+                pbtn.setMinimumSize(64,64)
+                self.gridLayout.addWidget(pbtn,j,i)
+      
+
         
         self.btnHide = QtGui.QPushButton(self.frmBasicShapes)
-        self.btnHide.setGeometry(QtCore.QRect(0, 290, 41, 111))
-        self.btnHide.setText("")
+        self.btnHide.setGeometry(QtCore.QRect(0, 290, 30, 110))
         self.btnHide.clicked.connect(self.HideIconList)
-        btn =  QtGui.QPushButton()
         icon = QtGui.QIcon()
         icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
-        btn.setIcon(icon)
+        self.btnHide.setIcon(icon)
         
         
     
