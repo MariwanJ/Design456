@@ -35,7 +35,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-03-06 20:51:35'
+__updated__ = '2022-03-15 21:56:07'
 
 #import PartGui
 import BasicShapes.CommandShapes
@@ -45,49 +45,8 @@ import CompoundTools._CommandExplodeCompound
 import Design456Init
 # from Part import CommandShapes     #Tube   not working
 
-
-
 sys.path.append(Design456Init.PYRAMID_PATH)
-class Design456_Part:
-    import polyhedrons
-    list = ["Design456_Part_Box",
-            "Design456_Part_Cylinder",
-            "Design456_Part_Tube",
-            "Design456_Part_Sphere",
-            "Design456_Part_Cone",
-            "Design456_Part_Torus",
-            "Design456_Part_Wedge",
-            "Design456_Part_Prism",
-            "Design456_Part_Pyramid",
-            "Design456_Part_Hemisphere",
-            "Design456_Part_Ellipsoid",
-            "Pyramid",
-            "Tetrahedron",
-            #"Hexahedron",               #No need for this as box is in part.
-            "Octahedron",
-            "Dodecahedron",
-            "Icosahedron",
-            "Icosahedron_truncated",
-            "Geodesic_sphere"
-            ]
 
-
-
-
-    """Design456 Part Toolbar"""
-
-    def GetResources(self):
-        return{
-            'Pixmap':   Design456Init.ICON_PATH + 'Part_Box.svg',
-            'MenuText': 'Box',
-                        'ToolTip': 'Box'
-        }
-
-    def IsActive(self):
-        if App.ActiveDocument is None:
-            return False
-        else:
-            return True
 
 #    def Activated(self):
 #        self.appendToolbar("Design456_Part", self.list)
@@ -536,3 +495,47 @@ class Design_ColorizeObject:
         }
 
 Gui.addCommand('Design_ColorizeObject', Design_ColorizeObject())
+
+############################################################################
+
+class Design456_Part:
+    import polyhedrons
+    list = ["Design456_Part_Box",
+            "Design456_Part_Cylinder",
+            "Design456_Part_Tube",
+            "Design456_Part_Sphere",
+            "Design456_Part_Cone",
+            "Design456_Part_Torus",
+            "Design456_Part_Wedge",
+            "Design456_Part_Prism",
+            "Design456_Part_Pyramid",
+            "Design456_Part_Hemisphere",
+            "Design456_Part_Ellipsoid",
+            "Pyramid",
+            "Tetrahedron",
+            #"Hexahedron",               #No need for this as box is in part.
+            "Octahedron",
+            "Dodecahedron",
+            "Icosahedron",
+            "Icosahedron_truncated",
+            "Geodesic_sphere"
+            ]
+
+
+
+
+    """Design456 Part Toolbar"""
+
+    def GetResources(self):
+        return{
+            'Pixmap':   Design456Init.ICON_PATH + 'Part_Box.svg',
+            'MenuText': 'Box',
+                        'ToolTip': 'Box'
+        }
+
+    def IsActive(self):
+        if App.ActiveDocument is None:
+            return False
+        else:
+            return True
+        

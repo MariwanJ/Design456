@@ -35,12 +35,13 @@ from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
-
-__updated__ = '2022-03-14 22:28:58'
+import Design456_Part
+__updated__ = '2022-03-15 21:56:51'
 
 class PrimitivePartsIconList:
     def __init__(self):
         self.frmBasicShapes=None
+        parts=Design456_Part.Design456_Part()
         
     def Activated(self):
         self.setupUi()
@@ -76,22 +77,37 @@ class PrimitivePartsIconList:
         self.frmBasicShapes.resize(260, 534)
         #self.frmBasicShapes.setWindowIcon(icon)
         self.frmBasicShapes.setToolTip("Basic Shapes")
-        self.frmBasicShapes.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.frmBasicShapes.setWindowTitle("Basic Shapes")
         self.frmBasicShapes.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.frmBasicShapes.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
-        self.frmBasicShapes.setWindowTitle("Basic Shapes")
-        self.centralWidget = QtGui.QWidget(self.frmBasicShapes)
-        self.layout = QtGui.QVBoxLayout(self.centralWidget)
-        self.scrollArea = QtGui.QScrollArea(self.centralWidget)
-        self.scrollArea.setVerticalScrollBarPolicy(QtGui.Qt.ScrollBarAlwaysOn)
-        self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.btnHide = QtGui.QPushButton(self.frmBasicShapes)
+        self.btnHide.setGeometry(QtCore.QRect(0, 290, 30, 110))
+        self.btnHide.clicked.connect(self.HideIconList)
+        icon = QtGui.QIcon()
+        icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
+        self.btnHide.setIcon(icon)
+        
+        self.scrollArea = QtGui.QScrollArea(self.frmBasicShapes)
+        self.scrollArea.setGeometry(QtCore.QRect(20,50, 280, 500))
+        self.scrollArea.setVisible(True)
+        self.scrollArea.setFrameShape(QtGui.QFrame.Box)
+        self.scrollArea.setObjectName("scrollArea")
         self.scrollArea.setWidgetResizable(True)
-        self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(20, 40, 260, 400)   
-        self.gridLayout = QtGui.QGridLayout(self.centralWidget)      
-        self.gridLayout.setSpacing(6)
-        self.gridLayout.setObjectName("gridLayout")
+        self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scrollArea.setEnabled(True)
+
+        #Container Widget
+        self.btnWDG = QtGui.QWidget()
+        self.btnWDG.setGeometry(QtCore.QRect(0, 40, 260, 600))
+        self.btnWDG.setObjectName("btnWDG")
+        self.scrollArea.setWidget(self.btnWDG)
+
+        #Oscar Home Horizontal Layout - QHBoxLayout#
+        self.gridLayout = QtGui.QGridLayout(self.btnWDG)
+        self.gridLayout.setObjectName("gridLayout")
+        self.gridLayout.setSpacing(6)
+        
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(Design456Init.IMAGE_PATH + "/Toolbars/Part_Box.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         btn1 = QtGui.QPushButton()
@@ -100,29 +116,16 @@ class PrimitivePartsIconList:
         for  i in range(0,10):
             for j in range(0,3):
                 pbtn = QtGui.QPushButton()
-                #pbtn.setText(str(i))
                 pbtn.setIcon(icon)
                 pbtn.setMinimumSize(64,64)
-                self.gridLayout.addWidget(pbtn,j,i)
-      
+                #pbtn.setIconSize( QtCore.QSize(pbtn.width()-2,pbtn.height()-2) )
+                pbtn.setIconSize( QtCore.QSize(48,48) )
+                pbtn.setGeometry(QtCore.QRect(0, 0, 68, 68))
+                self.gridLayout.addWidget(pbtn,i,j)
+                
 
-        
-        self.btnHide = QtGui.QPushButton(self.frmBasicShapes)
-        self.btnHide.setGeometry(QtCore.QRect(0, 290, 30, 110))
-        self.btnHide.clicked.connect(self.HideIconList)
-        icon = QtGui.QIcon()
-        icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
-        self.btnHide.setIcon(icon)
-        
-        
-    
-        
-        self.dockWidgetContents = QtGui.QWidget()
-        self.dockWidgetContents.setObjectName("dockWidgetContents")
-        self.frmBasicShapes.setFeatures(
-           QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
-        
-        self.frmBasicShapes.setWidget(self.dockWidgetContents)
+        # self.frmBasicShapes.setFeatures(
+        #    QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
         QtCore.QMetaObject.connectSlotsByName(self.frmBasicShapes)
         return self.frmBasicShapes
 
