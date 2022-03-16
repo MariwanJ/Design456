@@ -37,25 +37,25 @@ from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
 import Design456_Part as p
 import PyramidMo.polyhedrons as dd
-__updated__ = '2022-03-16 21:17:18'
+__updated__ = '2022-03-16 22:05:34'
 
 COMMANDS=[
-    [Gui.runCommand("Design456_Part_Box",0),list(p.Design456_Part_Box.GetResources().values())[0] ],
-    [Gui.runCommand("Design456_Part_Cylinder",0),list(p.Design456_Part_Cylinder.GetResources().values())[0] ],
-    [Gui.runCommand("Design456_Part_Tube",0),list(p.Design456_Part_Tube.GetResources().values())[0] ],
-    [Gui.runCommand("Design456_Part_Sphere",0),list(p.Design456_Part_Sphere.GetResources().values())[0] ],
-    [Gui.runCommand("Design456_Part_Cone",0),list(p.Design456_Part_Cone.GetResources().values())[0] ],
-    [Gui.runCommand("Design456_Part_Torus",0),list(p.Design456_Part_Torus.GetResources().values())[0] ],
-    [Gui.runCommand("Design456_Part_Wedge",0),list(p.Design456_Part_Wedge.GetResources().values())[0] ],
-    [Gui.runCommand("Design456_Part_Prism",0),list(p.Design456_Part_Prism.GetResources().values())[0] ],
-    [Gui.runCommand("Design456_Part_Pyramid",0),list(p.Design456_Part_Pyramid.GetResources().values())[0] ],
-    [Gui.runCommand("Pyramid",0),list(dd.Pyramid.GetResources().values())[0] ],
-    [Gui.runCommand("Tetrahedron",0),list(dd.Tetrahedron.GetResources().values())[0] ],
-    [Gui.runCommand("Octahedron",0),list(dd.Octahedron.GetResources().values())[0] ],
-    [Gui.runCommand("Dodecahedron",0),list(dd.Dodecahedron.GetResources().values())[0] ],
-    [Gui.runCommand("Icosahedron",0),list(dd.Icosahedron.GetResources().values())[0] ],
-    [Gui.runCommand("Icosahedron_truncated",0),list(dd.Icosahedron_truncated.GetResources().values())[0] ],    
-    [Gui.runCommand("Geodesic_sphere",0),list(dd.Geodesic_sphere.GetResources().values())[0] ]
+    ["Design456_Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
+    ["Design456_Part_Cylinder",Design456Init.ICON_PATH + 'Part_Cylinder.svg'],
+    ["Design456_Part_Tube",Design456Init.ICON_PATH + 'Part_Tube.svg' ],
+    ["Design456_Part_Sphere",Design456Init.ICON_PATH + 'Part_Sphere.svg'],
+    ["Design456_Part_Cone",Design456Init.ICON_PATH + 'Part_Cone.svg'],
+    ["Design456_Part_Torus", Design456Init.ICON_PATH + 'Part_Torus.svg'],
+    ["Design456_Part_Wedge",Design456Init.ICON_PATH + 'Part_Wedge.svg'],
+    ["Design456_Part_Prism", Design456Init.ICON_PATH + 'Part_Prism.svg'],
+    ["Design456_Part_Pyramid",Design456Init.ICON_PATH + 'Part_Pyramid.svg'],
+    ["Pyramid", Design456Init.ICON_PATH + 'Part_Hemisphere.svg'],
+    ["Tetrahedron",Design456Init.ICON_PATH + 'Part_Ellipsoid.svg'],
+    ["Octahedron",Design456Init.ICON_PATH + 'Design456_Colorize.svg'],
+    ["Dodecahedron", Design456Init.PYRAMID_ICON_PATH+'dodecahedron.svg'],
+    ["Icosahedron", Design456Init.PYRAMID_ICON_PATH+'icosahedron.svg'],
+    ["Icosahedron_truncated",  Design456Init.PYRAMID_ICON_PATH+ 'icosahedron_trunc.svg'],    
+    ["Geodesic_sphere",  Design456Init.PYRAMID_ICON_PATH+'geodesic_sphere.svg']
     ]
 
 class PrimitivePartsIconList:
@@ -83,8 +83,11 @@ class PrimitivePartsIconList:
         button.clicked[()].connect(
             lambda: self.handleButtonClicked(item))
 
-    def handleButtonClicked(self, item):
-        print(item.text())
+    def HideIconList(self):
+        pass
+    def runCommands(self,index):
+        print(str(index))
+        Gui.runCommand(COMMANDS[index][0],0)
         
     def setupUi(self):
         self.frmBasicShapes=QtGui.QDockWidget()
@@ -123,19 +126,21 @@ class PrimitivePartsIconList:
         self.gridLayout.setObjectName("gridLayout")
         self.gridLayout.setSpacing(6)
         
-        
-        for  i in range(0,10):
-            for j in range(0,3):
-                icon = QtGui.QIcon()
-                icon.addPixmap(QtGui.QPixmap(COMMANDS[i*3+j][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                pbtn = QtGui.QPushButton()
-                pbtn.setIcon(icon)
-                pbtn.setMinimumSize(64,64)
-                pbtn.setIconSize( QtCore.QSize(48,48) )
-                pbtn.setGeometry(QtCore.QRect(0, 0, 68, 68))
-                self.gridLayout.addWidget(pbtn,i,j)
-                pbtn.clicked.connect(COMMANDS[i*3+j][0])
-                
+        j=0        
+        for items in range(0,len(COMMANDS)):
+            i=int(items/3)
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap(COMMANDS[i*3+j][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            pbtn = QtGui.QPushButton()
+            pbtn.setIcon(icon)
+            pbtn.setMinimumSize(64,64)
+            pbtn.setIconSize( QtCore.QSize(48,48) )
+            pbtn.setGeometry(QtCore.QRect(0, 0, 68, 68))
+            self.gridLayout.addWidget(pbtn,i,j)
+            pbtn.clicked.connect(self.runCommands(i*3+j))
+            j+=1
+            if j==3:
+                j=0   
 
         # self.frmBasicShapes.setFeatures(
         #    QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
