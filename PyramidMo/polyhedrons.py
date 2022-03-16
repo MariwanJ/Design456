@@ -61,7 +61,7 @@ from FreeCAD import Base
 import Design456Init
 import FACE_D as faced
 
-__updated__ = '2022-02-21 22:06:46'
+__updated__ = '2022-03-16 21:03:58'
 
 def horizontal_regular_polygon_vertexes(sidescount, radius, z, startangle=0):
     try:
@@ -181,7 +181,7 @@ class ViewProviderBox:
 # ===========================================================================
 
 
-class Pyramid:
+class PyramidBase:
 
     radius1value = 0
     radius2value = 0
@@ -293,7 +293,7 @@ class Pyramid:
             return
 
 
-class PyramidCommand:
+class Pyramid:
 
     def GetResources(self):
         return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/pyramid.svg',
@@ -306,7 +306,7 @@ class PyramidCommand:
             # see https://www.freecadweb.org/wiki/Creating_a_FeaturePython_Box,_Part_II
             newObj = App.ActiveDocument.addObject(
                 "Part::FeaturePython", "Pyramid")
-            Pyramid(newObj)
+            PyramidBase(newObj)
             ViewProviderBox(newObj.ViewObject, "Pyramid")
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
@@ -320,12 +320,12 @@ class PyramidCommand:
             return
 
 
-Gui.addCommand('Pyramid', PyramidCommand())
+Gui.addCommand('Pyramid', Pyramid())
 
 
 # ===========================================================================
 
-class Tetrahedron:
+class TetrahedronBase:
     # == basics ==
     # R = z / 4 * sqrt(6)
     # ro = z / 12 * sqrt(6)	  -->	ro = R / 3
@@ -381,7 +381,7 @@ class Tetrahedron:
             return
 
 
-class TetrahedronCommand:
+class Tetrahedron:
 
     def GetResources(self):
         return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/tetrahedron.svg',
@@ -393,13 +393,13 @@ class TetrahedronCommand:
         try:
             newObj = App.ActiveDocument.addObject(
                 "Part::FeaturePython", "Tetrahedron")
-            Tetrahedron(newObj)
+            TetrahedronBase(newObj)
             ViewProviderBox(newObj.ViewObject, "Tetrahedron")
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v, newObj, deleteOnEscape=True)
         except Exception as err:
-            App.Console.PrintError("'TetrahedronCommand' Failed. "
+            App.Console.PrintError("'Tetrahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -407,12 +407,12 @@ class TetrahedronCommand:
             return
 
 
-Gui.addCommand('Tetrahedron', TetrahedronCommand())
+Gui.addCommand('Tetrahedron', Tetrahedron())
 
 # ===========================================================================
 
 
-class Hexahedron:
+class HexahedronBase:
 
     radiusvalue = 0
 
@@ -467,7 +467,7 @@ class Hexahedron:
             return
 
 
-class HexahedronCommand:
+class Hexahedron:
 
     def GetResources(self):
         return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/hexahedron.svg',
@@ -478,18 +478,18 @@ class HexahedronCommand:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "Hexahedron")
-        Hexahedron(newObj)
+        HexahedronBase(newObj)
         ViewProviderBox(newObj.ViewObject, "Hexahedron")
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 
-Gui.addCommand('Hexahedron', HexahedronCommand())
+Gui.addCommand('Hexahedron', Hexahedron())
 # ===========================================================================
 
 
-class Octahedron:
+class OctahedronBase:
     # Z = R * sqrt(2)
     radiusvalue = 0
 
@@ -542,7 +542,7 @@ class Octahedron:
             return
 
 
-class OctahedronCommand:
+class Octahedron:
 
     def GetResources(self):
         return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/octahedron.svg',
@@ -554,13 +554,13 @@ class OctahedronCommand:
         try:
             newObj = App.ActiveDocument.addObject(
                 "Part::FeaturePython", "Octahedron")
-            Octahedron(newObj)
+            OctahedronBase(newObj)
             ViewProviderBox(newObj.ViewObject, "Octahedron")
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
             faced.PartMover(v, newObj, deleteOnEscape=True)
         except Exception as err:
-            App.Console.PrintError("'OctahedronCommand' Failed. "
+            App.Console.PrintError("'Octahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -568,12 +568,12 @@ class OctahedronCommand:
             return
 
 
-Gui.addCommand('Octahedron', OctahedronCommand())
+Gui.addCommand('Octahedron', Octahedron())
 
 # ===========================================================================
 
 
-class Dodecahedron:
+class DodecahedronBase:
 
     radiusvalue = 0
 
@@ -658,7 +658,7 @@ class Dodecahedron:
             return
 
 
-class DodecahedronCommand:
+class Dodecahedron:
     def GetResources(self):
         return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/dodecahedron.svg',
                 'Accel': "Shift+D",
@@ -668,19 +668,19 @@ class DodecahedronCommand:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "Dodecahedron")
-        Dodecahedron(newObj)
+        DodecahedronBase(newObj)
         ViewProviderBox(newObj.ViewObject, "Dodecahedron")
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 
-Gui.addCommand('Dodecahedron', DodecahedronCommand())
+Gui.addCommand('Dodecahedron', Dodecahedron())
 
 # ===========================================================================
 
 
-class Icosahedron:
+class IcosahedronBase:
 
     radiusvalue = 0
 
@@ -705,8 +705,8 @@ class Icosahedron:
                 radius = self.radiusvalue
 
             z = 4*radius / math.sqrt(10 + 2 * math.sqrt(5))
-            anglefaces = 138.189685104
-            r = z/12 * math.sqrt(3) * (3 + math.sqrt(5))
+            #anglefaces = 138.189685104
+            #r = z/12 * math.sqrt(3) * (3 + math.sqrt(5))
 
             # radius of a pentagram with the same side
             radius2 = z / math.sin(36 * math.pi/180)/2
@@ -759,7 +759,7 @@ class Icosahedron:
             return
 
 
-class IcosahedronCommand:
+class Icosahedron:
     def GetResources(self):
         return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/icosahedron.svg',
                 'Accel': "Shift+I",
@@ -769,7 +769,7 @@ class IcosahedronCommand:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "Icosahedron")
-        Icosahedron(newObj)
+        IcosahedronBase(newObj)
 
         ViewProviderBox(newObj.ViewObject, "Icosahedron")
 
@@ -778,12 +778,12 @@ class IcosahedronCommand:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 
-Gui.addCommand('Icosahedron', IcosahedronCommand())
+Gui.addCommand('Icosahedron', Icosahedron())
 
 # ===========================================================================
 
 
-class Icosahedron_truncated:
+class Icosahedron_truncatedBase:
 
     radiusvalue = 0
 
@@ -809,8 +809,8 @@ class Icosahedron_truncated:
 
             z = float(4*radius) / math.sqrt(10 + 2 *
                                             math.sqrt(5))  # z of base icosahedron
-            anglefaces = 138.189685104
-            r = z/12 * math.sqrt(3) * (3 + math.sqrt(5))
+            # anglefaces = 138.189685104
+            # r = z/12 * math.sqrt(3) * (3 + math.sqrt(5))
 
             # radius of a pentagram with the same side
             radius2 = z / math.sin(36 * math.pi/180)/2
@@ -948,7 +948,7 @@ class Icosahedron_truncated:
             return
 
 
-class IcosahedronTrCommand:
+class Icosahedron_truncated:
     def GetResources(self):
         return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/icosahedron_trunc.svg',
                 'Accel': "Shift+F",
@@ -958,7 +958,7 @@ class IcosahedronTrCommand:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "Icosahedron_truncated")
-        Icosahedron_truncated(newObj)
+        Icosahedron_truncatedBase(newObj)
 
         ViewProviderBox(newObj.ViewObject, "Icosahedron_trunc")
 
@@ -967,7 +967,7 @@ class IcosahedronTrCommand:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 
-Gui.addCommand('Icosahedron_truncated', IcosahedronTrCommand())
+Gui.addCommand('Icosahedron_truncated', Icosahedron_truncated())
 
 # ===========================================================================
 
@@ -1002,7 +1002,7 @@ def geodesic_side2radius(side, div):
 
 # ===========================================================================
 
-class Geodesic_sphere:
+class Geodesic_sphereBase:
 
     radiusvalue = 0
     divided_by = 2
@@ -1093,8 +1093,8 @@ class Geodesic_sphere:
             self.divided_by = obj.DividedBy
 
             z = 4*radius / math.sqrt(10 + 2 * math.sqrt(5))
-            anglefaces = 138.189685104
-            r = z/12 * math.sqrt(3) * (3 + math.sqrt(5))
+            # anglefaces = 138.189685104
+            # r = z/12 * math.sqrt(3) * (3 + math.sqrt(5))
 
             # radius of a pentagram with the same side
             radius2 = z / math.sin(36 * math.pi/180)/2
@@ -1139,7 +1139,7 @@ class Geodesic_sphere:
             return
 
 
-class GeodesicSphereCommand:
+class Geodesic_sphere:
     def GetResources(self):
         return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/geodesic_sphere.svg',
                 'Accel': "Shift+G",
@@ -1149,7 +1149,7 @@ class GeodesicSphereCommand:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "Geodesic sphere")
-        Geodesic_sphere(newObj)
+        Geodesic_sphereBase(newObj)
 
         ViewProviderBox(newObj.ViewObject, "Geodesic sphere")
         App.ActiveDocument.recompute()
@@ -1157,4 +1157,4 @@ class GeodesicSphereCommand:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 
-Gui.addCommand('Geodesic_sphere', GeodesicSphereCommand())
+Gui.addCommand('Geodesic_sphere', Geodesic_sphere())

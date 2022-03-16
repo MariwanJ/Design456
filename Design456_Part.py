@@ -35,25 +35,16 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-03-15 21:56:07'
+__updated__ = '2022-03-16 21:04:24'
 
-#import PartGui
 import BasicShapes.CommandShapes
-#import CompoundTools._CommandCompoundFilter
 import CompoundTools._CommandExplodeCompound
 
 import Design456Init
-# from Part import CommandShapes     #Tube   not working
 
 sys.path.append(Design456Init.PYRAMID_PATH)
 
-
-#    def Activated(self):
-#        self.appendToolbar("Design456_Part", self.list)
-
 # BOX
-
-
 class Design456_Part_Box:
 
     def Activated(self):
@@ -520,9 +511,6 @@ class Design456_Part:
             "Icosahedron_truncated",
             "Geodesic_sphere"
             ]
-
-
-
 
     """Design456 Part Toolbar"""
 

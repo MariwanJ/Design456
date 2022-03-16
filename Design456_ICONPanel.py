@@ -35,13 +35,32 @@ from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
-import Design456_Part
-__updated__ = '2022-03-15 21:56:51'
+import Design456_Part as p
+import PyramidMo.polyhedrons as dd
+__updated__ = '2022-03-16 21:17:18'
+
+COMMANDS=[
+    [Gui.runCommand("Design456_Part_Box",0),list(p.Design456_Part_Box.GetResources().values())[0] ],
+    [Gui.runCommand("Design456_Part_Cylinder",0),list(p.Design456_Part_Cylinder.GetResources().values())[0] ],
+    [Gui.runCommand("Design456_Part_Tube",0),list(p.Design456_Part_Tube.GetResources().values())[0] ],
+    [Gui.runCommand("Design456_Part_Sphere",0),list(p.Design456_Part_Sphere.GetResources().values())[0] ],
+    [Gui.runCommand("Design456_Part_Cone",0),list(p.Design456_Part_Cone.GetResources().values())[0] ],
+    [Gui.runCommand("Design456_Part_Torus",0),list(p.Design456_Part_Torus.GetResources().values())[0] ],
+    [Gui.runCommand("Design456_Part_Wedge",0),list(p.Design456_Part_Wedge.GetResources().values())[0] ],
+    [Gui.runCommand("Design456_Part_Prism",0),list(p.Design456_Part_Prism.GetResources().values())[0] ],
+    [Gui.runCommand("Design456_Part_Pyramid",0),list(p.Design456_Part_Pyramid.GetResources().values())[0] ],
+    [Gui.runCommand("Pyramid",0),list(dd.Pyramid.GetResources().values())[0] ],
+    [Gui.runCommand("Tetrahedron",0),list(dd.Tetrahedron.GetResources().values())[0] ],
+    [Gui.runCommand("Octahedron",0),list(dd.Octahedron.GetResources().values())[0] ],
+    [Gui.runCommand("Dodecahedron",0),list(dd.Dodecahedron.GetResources().values())[0] ],
+    [Gui.runCommand("Icosahedron",0),list(dd.Icosahedron.GetResources().values())[0] ],
+    [Gui.runCommand("Icosahedron_truncated",0),list(dd.Icosahedron_truncated.GetResources().values())[0] ],    
+    [Gui.runCommand("Geodesic_sphere",0),list(dd.Geodesic_sphere.GetResources().values())[0] ]
+    ]
 
 class PrimitivePartsIconList:
     def __init__(self):
         self.frmBasicShapes=None
-        parts=Design456_Part.Design456_Part()
         
     def Activated(self):
         self.setupUi()
@@ -50,11 +69,7 @@ class PrimitivePartsIconList:
     def dock_right_RH(self):
         RHmw = Gui.getMainWindow()
         RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.frmBasicShapes)
-
-    def HideIconList(self):
-        pass
-    
-    
+  
     def addListItem(self, text):
         item = QtGui.QListWidgetItem(text)
         self.list.addItem(item)
@@ -108,20 +123,18 @@ class PrimitivePartsIconList:
         self.gridLayout.setObjectName("gridLayout")
         self.gridLayout.setSpacing(6)
         
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(Design456Init.IMAGE_PATH + "/Toolbars/Part_Box.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        btn1 = QtGui.QPushButton()
-        btn1.setIcon(icon)
         
         for  i in range(0,10):
             for j in range(0,3):
+                icon = QtGui.QIcon()
+                icon.addPixmap(QtGui.QPixmap(COMMANDS[i*3+j][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                 pbtn = QtGui.QPushButton()
                 pbtn.setIcon(icon)
                 pbtn.setMinimumSize(64,64)
-                #pbtn.setIconSize( QtCore.QSize(pbtn.width()-2,pbtn.height()-2) )
                 pbtn.setIconSize( QtCore.QSize(48,48) )
                 pbtn.setGeometry(QtCore.QRect(0, 0, 68, 68))
                 self.gridLayout.addWidget(pbtn,i,j)
+                pbtn.clicked.connect(COMMANDS[i*3+j][0])
                 
 
         # self.frmBasicShapes.setFeatures(
