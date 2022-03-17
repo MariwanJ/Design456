@@ -37,7 +37,7 @@ from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
 import Design456_Part as p
 import PyramidMo.polyhedrons as dd
-__updated__ = '2022-03-16 22:05:34'
+__updated__ = '2022-03-17 21:47:43'
 
 COMMANDS=[
     ["Design456_Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -61,6 +61,7 @@ COMMANDS=[
 class PrimitivePartsIconList:
     def __init__(self):
         self.frmBasicShapes=None
+        self.btn=[]    
         
     def Activated(self):
         self.setupUi()
@@ -85,11 +86,15 @@ class PrimitivePartsIconList:
 
     def HideIconList(self):
         pass
+    def handleButton(self):
+        print("clicked")
+        
+        
     def runCommands(self,index):
-        print(str(index))
         Gui.runCommand(COMMANDS[index][0],0)
         
     def setupUi(self):
+        from functools import partial
         self.frmBasicShapes=QtGui.QDockWidget()
         self.frmBasicShapes.setObjectName("frmBasicShapes")
         self.frmBasicShapes.resize(260, 534)
@@ -126,22 +131,27 @@ class PrimitivePartsIconList:
         self.gridLayout.setObjectName("gridLayout")
         self.gridLayout.setSpacing(6)
         
-        j=0        
+        j=0 
+        self.btn.clear()    
         for items in range(0,len(COMMANDS)):
             i=int(items/3)
+            index=i*3+j
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(COMMANDS[i*3+j][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-            pbtn = QtGui.QPushButton()
-            pbtn.setIcon(icon)
-            pbtn.setMinimumSize(64,64)
-            pbtn.setIconSize( QtCore.QSize(48,48) )
-            pbtn.setGeometry(QtCore.QRect(0, 0, 68, 68))
-            self.gridLayout.addWidget(pbtn,i,j)
-            pbtn.clicked.connect(self.runCommands(i*3+j))
+            icon.addPixmap(QtGui.QPixmap(COMMANDS[index][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            
+            self.btn.append(QtGui.QPushButton())
+            self.btn[index].setIcon(icon)
+            self.btn[index].setMinimumSize(64,64)
+            self.btn[index].setIconSize( QtCore.QSize(48,48) )
+            self.btn[index].setGeometry(QtCore.QRect(0, 0, 68, 68))   
+            self.btn[index].setObjectName(str(index))
+            self.btn[index].setToolTip(COMMANDS[index][0]   )         
+            self.gridLayout.addWidget(self.btn[index],i,j)
+            self.btn[index].clicked.connect(partial(self.runCommands,index))
             j+=1
             if j==3:
                 j=0   
-
+        
         # self.frmBasicShapes.setFeatures(
         #    QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
         QtCore.QMetaObject.connectSlotsByName(self.frmBasicShapes)
