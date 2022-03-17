@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-03-13 14:33:35'
+__updated__ = '2022-03-17 22:11:04'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -89,9 +89,9 @@ class Design456_Workbench (Workbench):
         self.appendMenu("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
         
         # Defeaturing WB  added to Design456 
-        self.appendToolbar("Defeaturing Tools", ["DefeaturingTools","DF_SelectLoop","refineFeatureTool","DefeatShapeFeature"])
+        self.appendToolbar("Defeaturing Tools", ["DF_SelectLoop","refineFeatureTool","DefeatShapeFeature"])
         #self.appendMenu("ksu Tools", ["ksuTools","ksuToolsEdit"])
-        self.appendMenu("Defeaturing Tools", ["refineFeatureTool","DefeaturingTools","DF_SelectLoop"])
+        self.appendMenu("Defeaturing Tools", ["refineFeatureTool","DF_SelectLoop"])
         self.appendToolbar("Fuzzy Tools", ["FuzzyCut","FuzzyUnion","FuzzyCommon"])
         self.appendMenu("Fuzzy Tools", ["FuzzyCut","FuzzyUnion","FuzzyCommon"])
         Gui.addIconPath(Design456Init.ICON_PATH)

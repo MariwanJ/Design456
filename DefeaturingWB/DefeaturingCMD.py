@@ -104,25 +104,25 @@ class DefeatShapeFeature:
 Gui.addCommand('DefeatShapeFeature',DefeatShapeFeature())
 
 
-class DefeaturingTools:
-    "defeaturing tools object"
+# class DefeaturingTools:
+#     "defeaturing tools object"
  
-    def GetResources(self):
-        return {'Pixmap'  : os.path.join( DefeaturingWB_icons_path , 'defeaturingTools.svg') , # the name of a svg file available in the resources
-                     'MenuText': "Defeaturing Tools" ,
-                     'ToolTip' : "Defeaturing workbench"}
+#     def GetResources(self):
+#         return {'Pixmap'  : os.path.join( DefeaturingWB_icons_path , 'defeaturingTools.svg') , # the name of a svg file available in the resources
+#                      'MenuText': "Defeaturing Tools" ,
+#                      'ToolTip' : "Defeaturing workbench"}
  
-    def IsActive(self):
-        import os, sys
-        return True
+#     def IsActive(self):
+#         import os, sys
+#         return True
  
-    def Activated(self):
-        # do something here...
-        import DefeaturingTools
-        reload_lib(DefeaturingTools)
-        App.Console.PrintWarning( 'Defeaturing Tools active :)\n' )
+#     def Activated(self):
+#         # do something here...
+#         import DefeaturingTools
+#         reload_lib(DefeaturingTools)
+#         App.Console.PrintWarning( 'Defeaturing Tools active :)\n' )
  
-Gui.addCommand('DefeaturingTools',DefeaturingTools())
+# Gui.addCommand('DefeaturingTools',DefeaturingTools())
 
 class DF_SelectLoop:
     "the Path command to complete loop selection definition"

@@ -37,7 +37,7 @@ from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
 import Design456_Part as p
 import PyramidMo.polyhedrons as dd
-__updated__ = '2022-03-17 21:47:43'
+__updated__ = '2022-03-17 22:23:52'
 
 COMMANDS=[
     ["Design456_Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -49,9 +49,9 @@ COMMANDS=[
     ["Design456_Part_Wedge",Design456Init.ICON_PATH + 'Part_Wedge.svg'],
     ["Design456_Part_Prism", Design456Init.ICON_PATH + 'Part_Prism.svg'],
     ["Design456_Part_Pyramid",Design456Init.ICON_PATH + 'Part_Pyramid.svg'],
-    ["Pyramid", Design456Init.ICON_PATH + 'Part_Hemisphere.svg'],
-    ["Tetrahedron",Design456Init.ICON_PATH + 'Part_Ellipsoid.svg'],
-    ["Octahedron",Design456Init.ICON_PATH + 'Design456_Colorize.svg'],
+    ["Pyramid", Design456Init.PYRAMID_ICON_PATH + 'pyramid.svg'],
+    ["Tetrahedron",Design456Init.PYRAMID_ICON_PATH + 'tetrahedron.svg'],
+    ["Octahedron",Design456Init.PYRAMID_ICON_PATH + 'octahedron.svg'],
     ["Dodecahedron", Design456Init.PYRAMID_ICON_PATH+'dodecahedron.svg'],
     ["Icosahedron", Design456Init.PYRAMID_ICON_PATH+'icosahedron.svg'],
     ["Icosahedron_truncated",  Design456Init.PYRAMID_ICON_PATH+ 'icosahedron_trunc.svg'],    
@@ -61,7 +61,8 @@ COMMANDS=[
 class PrimitivePartsIconList:
     def __init__(self):
         self.frmBasicShapes=None
-        self.btn=[]    
+        self.btn=[]
+        self.hidden = False    
         
     def Activated(self):
         self.setupUi()
@@ -85,11 +86,20 @@ class PrimitivePartsIconList:
             lambda: self.handleButtonClicked(item))
 
     def HideIconList(self):
-        pass
-    def handleButton(self):
         print("clicked")
-        
-        
+        if self.hidden == True:
+            self.hidden = False
+            icon = QtGui.QIcon()
+            icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
+            self.btnHide.setIcon(icon)
+            self.frmBasicShapes.resize(260, 534)
+        else:
+            self.hidden=True
+            icon = QtGui.QIcon()
+            icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/2.png', QtCore.QSize(64, 64))
+            self.btnHide.setIcon(icon)
+            self.frmBasicShapes.resize(30,534)
+
     def runCommands(self,index):
         Gui.runCommand(COMMANDS[index][0],0)
         
@@ -97,7 +107,7 @@ class PrimitivePartsIconList:
         from functools import partial
         self.frmBasicShapes=QtGui.QDockWidget()
         self.frmBasicShapes.setObjectName("frmBasicShapes")
-        self.frmBasicShapes.resize(260, 534)
+        #self.frmBasicShapes.resize(260, 534)
         #self.frmBasicShapes.setWindowIcon(icon)
         self.frmBasicShapes.setToolTip("Basic Shapes")
         self.frmBasicShapes.setWindowTitle("Basic Shapes")

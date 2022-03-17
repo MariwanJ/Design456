@@ -35,7 +35,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-03-16 21:04:24'
+__updated__ = '2022-03-17 22:36:47'
 
 import BasicShapes.CommandShapes
 import CompoundTools._CommandExplodeCompound
@@ -308,7 +308,7 @@ class Design456_Part_Pyramid:
             )[0].SubObjects[0]    # select one element
 
             # loft
-            plr = plDirection = App.Placement()
+            plDirection = App.Placement()
             yL = selectedEdge.CenterOfMass
             uv = selectedEdge.Surface.parameter(yL)
             nv = selectedEdge.normalAt(uv[0], uv[1])
@@ -316,7 +316,6 @@ class Design456_Part_Pyramid:
             r = App.Rotation(App.Vector(0, 0, 1), direction)
             plDirection.Rotation.Q = r.Q
             plDirection.Base = yL
-            plr = plDirection
 
             firstFace = newObj
             point = _draft.makePoint(0, 0.0, 10.0)
@@ -328,7 +327,7 @@ class Design456_Part_Pyramid:
             App.ActiveDocument.recompute()
 
             # copy
-            newOBJ = App.ActiveDocument.addObject('Part::Feature', 'Pyramid').Shape = _part.getShape(
+            App.ActiveDocument.addObject('Part::Feature', 'Pyramid').Shape = _part.getShape(
                 newObj1, '', needSubElement=False, refine=False)
             App.ActiveDocument.recompute()
 

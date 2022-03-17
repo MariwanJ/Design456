@@ -61,7 +61,7 @@ from FreeCAD import Base
 import Design456Init
 import FACE_D as faced
 
-__updated__ = '2022-03-16 21:44:17'
+__updated__ = '2022-03-17 22:33:34'
 
 def horizontal_regular_polygon_vertexes(sidescount, radius, z, startangle=0):
     try:
@@ -112,32 +112,32 @@ def horizontal_regular_pyramid_vertexes(sidescount, radius, z, MoveTopBottom=App
         return
 
 
-def getWorkbenchFolder():
+# def getWorkbenchFolder():
 
-    return (Design456Init.PYRAMID_PATH)
+#     return (Design456Init.PYRAMID_PATH)
 
-    import os.path
-    from os import path
+#     import os.path
+#     from os import path
 
-    import workbenchfolders
+#     import workbenchfolders
 
-    basedir = str(App.getUserAppDataDir())
-    folder = ""
+#     basedir = str(App.getUserAppDataDir())
+#     folder = ""
 
-    for tryfolder in workbenchfolders.recommended_folders:
-        if path.exists(basedir + tryfolder):
-            folder = basedir + tryfolder
-            return folder
+#     for tryfolder in workbenchfolders.recommended_folders:
+#         if path.exists(basedir + tryfolder):
+#             folder = basedir + tryfolder
+#             return folder
 
-    for tryfolder in workbenchfolders.user_chosen_folders:
-        if path.exists(basedir + tryfolder):
-            folder = basedir + tryfolder
-            return folder
-        if path.exists(tryfolder):
-            folder = tryfolder
-            return folder
+#     for tryfolder in workbenchfolders.user_chosen_folders:
+#         if path.exists(basedir + tryfolder):
+#             folder = basedir + tryfolder
+#             return folder
+#         if path.exists(tryfolder):
+#             folder = tryfolder
+#             return folder
 
-    return ""
+#     return ""
 
 
 # ===========================================================================
@@ -170,7 +170,7 @@ class ViewProviderBox:
 
     def getIcon(self):
         # return str(App.getUserAppDataDir()) + 'Mod' + 'Pyramids-and-Polyhedrons/Resources/Icons/' + (self.obj_name).lower() + '.svg'
-        return getWorkbenchFolder() + "/Resources/Icons/' + (self.obj_name).lower() + '.svg'"
+        return (Design456Init.PYRAMID_ICON_PATH+ self.obj_name.lower() + '.svg')
 
     def __getstate__(self):
         return None
@@ -296,7 +296,7 @@ class PyramidBase:
 class Pyramid:
 
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/pyramid.svg',
+        return {'Pixmap': Design456Init.PYRAMID_ICON_PATH+'pyramid.svg',
                 'Accel': "Shift+P",
                 'MenuText': "Pyramid",
                 'ToolTip': "Generate a Pyramid with any number of sides"}
@@ -384,7 +384,7 @@ class TetrahedronBase:
 class Tetrahedron:
 
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/tetrahedron.svg',
+        return {'Pixmap': Design456Init.PYRAMID_ICON_PATH+'tetrahedron.svg',
                 'Accel': "Shift+T",
                 'MenuText': "Tetrahedron",
                 'ToolTip': "Generate a Tetrahedron"}
@@ -470,7 +470,7 @@ class HexahedronBase:
 class Hexahedron:
 
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/hexahedron.svg',
+        return {'Pixmap': Design456Init.PYRAMID_ICON_PATH+'hexahedron.svg',
                 'Accel': "Shift+T",
                 'MenuText': "Hexahedron",
                 'ToolTip': "Generate a Hexahedron"}
@@ -545,7 +545,7 @@ class OctahedronBase:
 class Octahedron:
 
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/octahedron.svg',
+        return {'Pixmap': Design456Init.PYRAMID_ICON_PATH+'octahedron.svg',
                 'Accel': "Shift+O",
                 'MenuText': "Octahedron",
                 'ToolTip': "Generate a Octahedron"}
@@ -660,7 +660,7 @@ class DodecahedronBase:
 
 class Dodecahedron:
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/dodecahedron.svg',
+        return {'Pixmap': Design456Init.PYRAMID_ICON_PATH+'dodecahedron.svg',
                 'Accel': "Shift+D",
                 'MenuText': "Dodecahedron",
                 'ToolTip': "Generate a Dodecahedron"}
@@ -761,7 +761,7 @@ class IcosahedronBase:
 
 class Icosahedron:
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/icosahedron.svg',
+        return {'Pixmap': Design456Init.PYRAMID_ICON_PATH+'icosahedron.svg',
                 'Accel': "Shift+I",
                 'MenuText': "Icosahedron",
                 'ToolTip': "Generate a Icosahedron"}
@@ -950,7 +950,7 @@ class Icosahedron_truncatedBase:
 
 class Icosahedron_truncated:
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/icosahedron_trunc.svg',
+        return {'Pixmap': Design456Init.PYRAMID_ICON_PATH+'icosahedron_trunc.svg',
                 'Accel': "Shift+F",
                 'MenuText': "Icosahedron truncated",
                 'ToolTip': "Generate a Truncated Icosahedron (football)"}
@@ -1141,7 +1141,7 @@ class Geodesic_sphereBase:
 
 class Geodesic_sphere:
     def GetResources(self):
-        return {'Pixmap': getWorkbenchFolder() + 'Resources/Icons/geodesic_sphere.svg',
+        return {'Pixmap': Design456Init.PYRAMID_ICON_PATH+'geodesic_sphere.svg',
                 'Accel': "Shift+G",
                 'MenuText': "Geodesic sphere",
                 'ToolTip': "Generate Geodesic Spheres"}
@@ -1151,7 +1151,7 @@ class Geodesic_sphere:
             "Part::FeaturePython", "Geodesic sphere")
         Geodesic_sphereBase(newObj)
 
-        ViewProviderBox(newObj.ViewObject, "Geodesic sphere")
+        ViewProviderBox(newObj.ViewObject, "Geodesic_sphere")
         App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
