@@ -58,6 +58,19 @@ COMMANDS=[
     ["Geodesic_sphere",  Design456Init.PYRAMID_ICON_PATH+'geodesic_sphere.svg']
     ]
 
+#Class to allow resizing docked dialog.
+class MyWidget(QtGui.QWidget):
+    _sizehint = None
+
+    def setSizeHint(self, width, height):
+        self._sizehint = QtCore.QSize(width, height)
+
+    def sizeHint(self):
+        if self._sizehint is not None:
+            return self._sizehint
+        return super(MyWidget, self).sizeHint()
+
+
 class PrimitivePartsIconList:
     def __init__(self):
         self.frmBasicShapes=None
@@ -92,7 +105,7 @@ class PrimitivePartsIconList:
             icon = QtGui.QIcon()
             icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
             self.btnHide.setIcon(icon)
-            self.frmBasicShapes.resize(260, 534)
+            self.frmBasicShapes.resize(300, 534)
         else:
             self.hidden=True
             icon = QtGui.QIcon()
