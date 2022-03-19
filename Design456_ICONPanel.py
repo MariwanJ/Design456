@@ -31,15 +31,20 @@ import FreeCADGui as Gui
 import Design456Init
 from pivy import coin
 import FACE_D as faced
+import Part
 from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
 import Design456_Part as p
-import PyramidMo.polyhedrons as dd
-__updated__ = '2022-03-17 22:23:52'
+import PyramidMo.polyhedrons 
+import Design456_Segmented 
+import Design456_NewParts
 
-COMMANDS=[
+
+__updated__ = '2022-03-19 22:02:45'
+
+COMMANDS_Basic=[
     ["Design456_Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
     ["Design456_Part_Cylinder",Design456Init.ICON_PATH + 'Part_Cylinder.svg'],
     ["Design456_Part_Tube",Design456Init.ICON_PATH + 'Part_Tube.svg' ],
@@ -57,7 +62,20 @@ COMMANDS=[
     ["Icosahedron_truncated",  Design456Init.PYRAMID_ICON_PATH+ 'icosahedron_trunc.svg'],    
     ["Geodesic_sphere",  Design456Init.PYRAMID_ICON_PATH+'geodesic_sphere.svg']
     ]
-
+COMMANDS_Advanced=[
+    ["Design456_Seg_Sphere", Design456Init.ICON_PATH + 'SegmentedSphere.svg'],
+    ["Design456_Seg_Cylinder", Design456Init.ICON_PATH + 'SegmentedCylinder.svg'],
+    ["Design456_Seg_Roof", Design456Init.ICON_PATH + 'Roof.svg'],
+    ["Design456_RoundRoof", Design456Init.ICON_PATH + 'RoundRoof.svg'],
+    ["Design456_Paraboloid", Design456Init.ICON_PATH + 'Paraboloid.svg'],
+    ["Design456_Capsule", Design456Init.ICON_PATH + 'capsule.svg'],
+    ["Design456_Parallelepiped", Design456Init.ICON_PATH + 'Parallelepiped.svg'],
+    ["Design456_Housing", Design456Init.ICON_PATH + 'Housing.svg'],
+    ["Design456_RoundedHousing", Design456Init.ICON_PATH + 'RoundedHousing.svg'],
+    ["Design456_EllipseBox", Design456Init.ICON_PATH + 'Design456_EllipseBox.svg'],
+    ["Design456_NonuniformedBox", Design456Init.ICON_PATH + 'NonuniformedBox.svg'],
+    ]
+COMMANDS_Imported=[]
 #Class to allow resizing docked dialog.
 class MyWidget(QtGui.QWidget):
     _sizehint = None
@@ -75,16 +93,30 @@ class PrimitivePartsIconList:
     def __init__(self):
         self.frmBasicShapes=None
         self.btn=[]
-        self.hidden = False    
+        self.hidden = False
+            
         
     def Activated(self):
-        self.setupUi()
+        self.setupUi()        
+        self.currentSelectedItem=self.combo.currentText()
+        self.loadIconList(None)
         self.frmBasicShapes.show()
         
-    def dock_right_RH(self):
+        
+    def dock_right(self):
         RHmw = Gui.getMainWindow()
         RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.frmBasicShapes)
-  
+        
+    def dock_left(self):
+        RHmw = Gui.getMainWindow()
+        RHmw.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.frmBasicShapes)
+        self.frmBasicShapes.setFloating(False)  # dock
+        t = Gui.getMainWindow()
+        cv = t.findChild(QtGui.QDockWidget, "Combo View")
+        if self.frmBasicShapes and cv:
+            t.tabifyDockWidget(cv, self.frmBasicShapes)
+
+
     def addListItem(self, text):
         item = QtGui.QListWidgetItem(text)
         self.list.addItem(item)
@@ -98,24 +130,51 @@ class PrimitivePartsIconList:
         button.clicked[()].connect(
             lambda: self.handleButtonClicked(item))
 
-    def HideIconList(self):
-        print("clicked")
-        if self.hidden == True:
-            self.hidden = False
-            icon = QtGui.QIcon()
-            icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
-            self.btnHide.setIcon(icon)
-            self.frmBasicShapes.resize(300, 534)
-        else:
-            self.hidden=True
-            icon = QtGui.QIcon()
-            icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/2.png', QtCore.QSize(64, 64))
-            self.btnHide.setIcon(icon)
-            self.frmBasicShapes.resize(30,534)
-
-    def runCommands(self,index):
-        Gui.runCommand(COMMANDS[index][0],0)
+    def runCommands(self,index,command):
+        Gui.runCommand(command[index][0],0)
+    
+    def activeComboItem(self):
+        oldItem=self.currentSelectedItem
+        self.currentSelectedItem=self.combo.currentText()
+        self.loadIconList(oldItem)
         
+    def loadIconList(self,oldItem=None):
+        
+        if oldItem ==self.currentSelectedItem:
+            #Nothing to do here go out
+            return
+        
+        CommandVariable=None        
+        if self.currentSelectedItem=="Part_Box" or oldItem==None:
+            #Part Box list - Basic shapes
+            CommandVariable=COMMANDS_Basic
+        elif self.self.currentSelectedItem=="Advanced Shapes":
+            CommandVariable=COMMANDS_Advanced
+        elif self.self.currentSelectedItem=="Imported Shapes":
+            CommandVariable=COMMANDS_Imported
+            j=0 
+
+            self.btn.clear()    
+            for items in range(0,len(CommandVariable)):
+                i=int(items/3)
+                index=i*3+j
+                icon = QtGui.QIcon()
+                icon.addPixmap(QtGui.QPixmap(CommandVariable[index][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                
+                self.btn.append(QtGui.QPushButton())
+                self.btn[index].setIcon(icon)
+                self.btn[index].setMinimumSize(64,64)
+                self.btn[index].setIconSize( QtCore.QSize(48,48) )
+                self.btn[index].setGeometry(QtCore.QRect(0, 0, 68, 68))   
+                self.btn[index].setObjectName(str(index))
+                self.btn[index].setToolTip(CommandVariable[index][0]   )         
+                self.gridLayout.addWidget(self.btn[index],i,j)
+                self.btn[index].clicked.connect(partial(self.runCommands,index,CommandVariable))
+                j+=1
+                if j==3:
+                    j=0   
+            
+            
     def setupUi(self):
         from functools import partial
         self.frmBasicShapes=QtGui.QDockWidget()
@@ -126,15 +185,32 @@ class PrimitivePartsIconList:
         self.frmBasicShapes.setWindowTitle("Basic Shapes")
         self.frmBasicShapes.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.frmBasicShapes.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
-        self.btnHide = QtGui.QPushButton(self.frmBasicShapes)
-        self.btnHide.setGeometry(QtCore.QRect(0, 290, 30, 110))
-        self.btnHide.clicked.connect(self.HideIconList)
-        icon = QtGui.QIcon()
-        icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
-        self.btnHide.setIcon(icon)
+        #self.btnHide = QtGui.QPushButton(self.frmBasicShapes)
+        #self.btnHide.setGeometry(QtCore.QRect(0, 290, 30, 110))
+        #self.btnHide.clicked.connect(self.HideIconList)
+        #icon = QtGui.QIcon()
+        #icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
+        #self.btnHide.setIcon(icon)
+        icon0= QtGui.QIcon()
+        icon0.addFile(Design456Init.IMAGE_PATH+'Toolbars/Part_Box.png')
+        icon1= QtGui.QIcon()
+        icon1.addFile(Design456Init.IMAGE_PATH+'Toolbars/NonuniformedBox.png')
+        icon2= QtGui.QIcon()
+        icon2.addFile(Design456Init.IMAGE_PATH+'Toolbars/imported.png')
         
+        self.combo = QtGui.QComboBox(self.frmBasicShapes)
+        self.combo.setGeometry(QtCore.QRect(5, 25, 280, 42))
+        self.combo.setIconSize(QtCore.QSize(40,40))
+        self.combo.currentTextChanged.connect(self.activeComboItem)
+        self.combo.addItem('Basic Shapes')
+        self.combo.addItem('Advanced Shapes')
+        self.combo.addItem('')
+        self.combo.setItemIcon(0,icon0)
+        self.combo.setItemIcon(1,icon1)
+        self.combo.setItemIcon(2,icon2)
+
         self.scrollArea = QtGui.QScrollArea(self.frmBasicShapes)
-        self.scrollArea.setGeometry(QtCore.QRect(20,50, 280, 500))
+        self.scrollArea.setGeometry(QtCore.QRect(20,80, 280, 500))
         self.scrollArea.setVisible(True)
         self.scrollArea.setFrameShape(QtGui.QFrame.Box)
         self.scrollArea.setObjectName("scrollArea")
@@ -145,7 +221,7 @@ class PrimitivePartsIconList:
 
         #Container Widget
         self.btnWDG = QtGui.QWidget()
-        self.btnWDG.setGeometry(QtCore.QRect(0, 40, 260, 600))
+        self.btnWDG.setGeometry(QtCore.QRect(0, 70, 260, 600))
         self.btnWDG.setObjectName("btnWDG")
         self.scrollArea.setWidget(self.btnWDG)
 
@@ -154,32 +230,21 @@ class PrimitivePartsIconList:
         self.gridLayout.setObjectName("gridLayout")
         self.gridLayout.setSpacing(6)
         
-        j=0 
-        self.btn.clear()    
-        for items in range(0,len(COMMANDS)):
-            i=int(items/3)
-            index=i*3+j
-            icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(COMMANDS[index][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-            
-            self.btn.append(QtGui.QPushButton())
-            self.btn[index].setIcon(icon)
-            self.btn[index].setMinimumSize(64,64)
-            self.btn[index].setIconSize( QtCore.QSize(48,48) )
-            self.btn[index].setGeometry(QtCore.QRect(0, 0, 68, 68))   
-            self.btn[index].setObjectName(str(index))
-            self.btn[index].setToolTip(COMMANDS[index][0]   )         
-            self.gridLayout.addWidget(self.btn[index],i,j)
-            self.btn[index].clicked.connect(partial(self.runCommands,index))
-            j+=1
-            if j==3:
-                j=0   
+
         
         # self.frmBasicShapes.setFeatures(
         #    QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
         QtCore.QMetaObject.connectSlotsByName(self.frmBasicShapes)
         return self.frmBasicShapes
+    def retriveFileList(self):
+        pass
+    def importListedObjects(self):
+         
+        shape=Part.Shape()
+        shape.read(r"D:\Users\Mavi\Desktop\del\1.step")
 
+        
+        
 f=PrimitivePartsIconList()
 f.Activated()
-f.dock_right_RH()
+f.dock_left()
