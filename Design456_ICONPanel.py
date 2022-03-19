@@ -36,13 +36,13 @@ from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
-import Design456_Part as p
-import PyramidMo.polyhedrons 
-import Design456_Segmented 
-import Design456_NewParts
+# import Design456_Part as p
+# import PyramidMo.polyhedrons 
+# import Design456_Segmented 
+# import Design456_NewParts
+from functools import partial
 
-
-__updated__ = '2022-03-19 22:02:45'
+__updated__ = '2022-03-19 22:29:28'
 
 COMMANDS_Basic=[
     ["Design456_Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -94,7 +94,7 @@ class PrimitivePartsIconList:
         self.frmBasicShapes=None
         self.btn=[]
         self.hidden = False
-            
+        self.currentSelectedItem=None    
         
     def Activated(self):
         self.setupUi()        
@@ -136,47 +136,52 @@ class PrimitivePartsIconList:
     def activeComboItem(self):
         oldItem=self.currentSelectedItem
         self.currentSelectedItem=self.combo.currentText()
+        print(self.currentSelectedItem)
         self.loadIconList(oldItem)
         
+    def cleanButtons(self):
+        for obj in self.btn:
+            del obj
+        self.btn.clear()      
+          
     def loadIconList(self,oldItem=None):
-        
         if oldItem ==self.currentSelectedItem:
             #Nothing to do here go out
+            print("Nothing to do here")
             return
-        
+        self.cleanButtons()
         CommandVariable=None        
-        if self.currentSelectedItem=="Part_Box" or oldItem==None:
+        if self.currentSelectedItem=="Basic Shapes" or oldItem==None:
             #Part Box list - Basic shapes
             CommandVariable=COMMANDS_Basic
-        elif self.self.currentSelectedItem=="Advanced Shapes":
+        elif self.currentSelectedItem == "Advanced Shapes":
             CommandVariable=COMMANDS_Advanced
-        elif self.self.currentSelectedItem=="Imported Shapes":
+        elif self.currentSelectedItem == "Imported Shapes":
             CommandVariable=COMMANDS_Imported
-            j=0 
-
-            self.btn.clear()    
-            for items in range(0,len(CommandVariable)):
-                i=int(items/3)
-                index=i*3+j
-                icon = QtGui.QIcon()
-                icon.addPixmap(QtGui.QPixmap(CommandVariable[index][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-                
-                self.btn.append(QtGui.QPushButton())
-                self.btn[index].setIcon(icon)
-                self.btn[index].setMinimumSize(64,64)
-                self.btn[index].setIconSize( QtCore.QSize(48,48) )
-                self.btn[index].setGeometry(QtCore.QRect(0, 0, 68, 68))   
-                self.btn[index].setObjectName(str(index))
-                self.btn[index].setToolTip(CommandVariable[index][0]   )         
-                self.gridLayout.addWidget(self.btn[index],i,j)
-                self.btn[index].clicked.connect(partial(self.runCommands,index,CommandVariable))
-                j+=1
-                if j==3:
-                    j=0   
+        j=0 
+        print ("I am here",len(CommandVariable)) 
+        for items in range(0,len(CommandVariable)):
+            i=int(items/3)
+            index=i*3+j
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap(CommandVariable[index][1]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             
+            self.btn.append(QtGui.QPushButton())
+            self.btn[index].setIcon(icon)
+            self.btn[index].setMinimumSize(64,64)
+            self.btn[index].setIconSize( QtCore.QSize(48,48) )
+            self.btn[index].setGeometry(QtCore.QRect(0, 0, 68, 68))   
+            self.btn[index].setObjectName(str(index))
+            self.btn[index].setToolTip(CommandVariable[index][0]   )         
+            self.gridLayout.addWidget(self.btn[index],i,j)
+            self.btn[index].clicked.connect(partial(self.runCommands,index,CommandVariable))
+            j+=1
+            if j==3:
+                j=0   
+        
             
     def setupUi(self):
-        from functools import partial
+        
         self.frmBasicShapes=QtGui.QDockWidget()
         self.frmBasicShapes.setObjectName("frmBasicShapes")
         #self.frmBasicShapes.resize(260, 534)
@@ -201,14 +206,15 @@ class PrimitivePartsIconList:
         self.combo = QtGui.QComboBox(self.frmBasicShapes)
         self.combo.setGeometry(QtCore.QRect(5, 25, 280, 42))
         self.combo.setIconSize(QtCore.QSize(40,40))
-        self.combo.currentTextChanged.connect(self.activeComboItem)
+
         self.combo.addItem('Basic Shapes')
         self.combo.addItem('Advanced Shapes')
-        self.combo.addItem('')
+        self.combo.addItem('Imported Shapes')
         self.combo.setItemIcon(0,icon0)
         self.combo.setItemIcon(1,icon1)
         self.combo.setItemIcon(2,icon2)
-
+        self.combo.currentTextChanged.connect(self.activeComboItem)
+        
         self.scrollArea = QtGui.QScrollArea(self.frmBasicShapes)
         self.scrollArea.setGeometry(QtCore.QRect(20,80, 280, 500))
         self.scrollArea.setVisible(True)
