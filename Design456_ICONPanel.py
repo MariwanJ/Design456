@@ -29,20 +29,18 @@ import sys,os
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-from pivy import coin
 import FACE_D as faced
 import Part
 from PySide import QtGui, QtCore
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 from draftutils.translate import translate  # for translation
-# import Design456_Part as p
-# import PyramidMo.polyhedrons 
-# import Design456_Segmented 
-# import Design456_NewParts
+import glob
+        
+
 from functools import partial
 
-__updated__ = '2022-03-20 20:46:39'
+__updated__ = '2022-03-20 21:22:27'
 
 COMMANDS_Basic=[
     ["Design456_Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -76,25 +74,30 @@ COMMANDS_Advanced=[
     ["Design456_NonuniformedBox", Design456Init.ICON_PATH + 'NonuniformedBox.svg'],
     ]
 COMMANDS_Imported=[]
-#Class to allow resizing docked dialog.
-class MyWidget(QtGui.QWidget):
-    _sizehint = None
-
-    def setSizeHint(self, width, height):
-        self._sizehint = QtCore.QSize(width, height)
-
-    def sizeHint(self):
-        if self._sizehint is not None:
-            return self._sizehint
-        return super(MyWidget, self).sizeHint()
 
 
 class PrimitivePartsIconList:
+    """ A class that create the tab for retriving 
+        the list of primitives and imported shapes.
+        Imported shapes are saved under the folder
+        '/Imported'
+    """
     def __init__(self):
         self.frmBasicShapes=None
         self.btn=[]
         self.hidden = False
         self.currentSelectedItem=None    
+    
+    def retriveFileList(self):
+        _path=Design456Init.IMPORT_PATH
+        ObjectList=[]
+        files=(glob.glob(_path+"*.step")) 
+        OnlyFileNames=[]
+        for f in files:
+            OnlyFileNames.append( os.path.splitext(os.path.basename(f))[0]) 
+        for name in OnlyFileNames:
+            ObjectList.append([name, _path+name+".svg"])
+        return ObjectList
         
     def Activated(self):
         self.setupUi()        
@@ -144,7 +147,7 @@ class PrimitivePartsIconList:
     def runImportCommands(self,index,command):
         importobj=Design456Init.IMPORT_PATH+command[index][0]+".step"
         print("importobj",importobj)
-        self.importListedObjects(importobj)
+        self.importListedObjects(importobj,command[index][0])
             
     
     def activeComboItem(self):
@@ -184,7 +187,7 @@ class PrimitivePartsIconList:
             self.btn[index].setToolTip(CommandVariable[index][0])         
             self.gridLayout.addWidget(self.btn[index],i,j)
             if self.currentSelectedItem =="Imported Shapes":
-                self.runImportCommands(index,CommandVariable)
+                self.btn[index].clicked.connect(partial(self.runImportCommands,index,CommandVariable))
             else:
                 self.btn[index].clicked.connect(partial(self.runCommands,index,CommandVariable))
             j+=1
@@ -193,7 +196,6 @@ class PrimitivePartsIconList:
         
             
     def setupUi(self):
-        
         self.frmBasicShapes=QtGui.QDockWidget()
         self.frmBasicShapes.setObjectName("frmBasicShapes")
         self.frmBasicShapes.setToolTip("Basic Shapes")
@@ -241,13 +243,19 @@ class PrimitivePartsIconList:
         QtCore.QMetaObject.connectSlotsByName(self.frmBasicShapes)
         return self.frmBasicShapes
     
-    def retriveFileList(self):      
-        result=retriveImportedObjects()
-        return result
-    
-    def importListedObjects(self,fileName):
-        shape=Part.Shape()
-        shape.read((fileName))
+   
+    def importListedObjects(self,fileName,name):
+        shp=Part.Shape()
+        shp.read(fileName)
+        App.ActiveDocument.openTransaction(translate("Design456","Part Import"))
+        newObj = App.ActiveDocument.addObject('Part::Feature', name )
+        newObj.Shape=shp
+        App.ActiveDocument.ActiveObject.Label = name
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v,newObj,deleteOnEscape = True)
+        App.ActiveDocument.commitTransaction() #undo reg.
+       
 
         
         
@@ -258,19 +266,6 @@ f.hideToolbars()
 
 ###########################################################################################################
 
-def retriveImportedObjects():
-    import glob
-    _path=Design456Init.IMPORT_PATH  #.replace("\\","/")
-    ObjectList=[]
-    print("_pat",_path)
-    files=(glob.glob(_path+"*.step")) 
-    OnlyFileNames=[]
-    for f in files:
-        OnlyFileNames.append( os.path.splitext(os.path.basename(f))[0]) 
-    for name in OnlyFileNames:
-        ObjectList.append([name, _path+name+".svg"])
-    return ObjectList
-        
         
         
 
