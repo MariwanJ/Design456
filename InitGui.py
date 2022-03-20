@@ -30,14 +30,14 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-03-17 22:11:04'
+__updated__ = '2022-03-20 11:08:27'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
 
 
-class Design456_Workbench (Workbench):
+class Design456 (Workbench):
     "Design456 Workbench object"
 
     def __init__(self):
@@ -350,7 +350,7 @@ class Design456_Workbench (Workbench):
         return "Gui::PythonWorkbench"
 
 
-Gui.addWorkbench(Design456_Workbench())
+Gui.addWorkbench(Design456())
 # FROM DRAFT
 # Preference pages for importing and exporting various file formats
 # are independent of the loading of the workbench and can be loaded at startup

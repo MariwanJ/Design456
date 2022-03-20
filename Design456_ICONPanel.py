@@ -42,7 +42,7 @@ from draftutils.translate import translate  # for translation
 # import Design456_NewParts
 from functools import partial
 
-__updated__ = '2022-03-19 22:29:28'
+__updated__ = '2022-03-20 10:44:00'
 
 COMMANDS_Basic=[
     ["Design456_Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -72,7 +72,7 @@ COMMANDS_Advanced=[
     ["Design456_Parallelepiped", Design456Init.ICON_PATH + 'Parallelepiped.svg'],
     ["Design456_Housing", Design456Init.ICON_PATH + 'Housing.svg'],
     ["Design456_RoundedHousing", Design456Init.ICON_PATH + 'RoundedHousing.svg'],
-    ["Design456_EllipseBox", Design456Init.ICON_PATH + 'Design456_EllipseBox.svg'],
+    ["Design456_EllipseBox", Design456Init.ICON_PATH + 'EllipseBox.svg'],
     ["Design456_NonuniformedBox", Design456Init.ICON_PATH + 'NonuniformedBox.svg'],
     ]
 COMMANDS_Imported=[]
@@ -134,6 +134,7 @@ class PrimitivePartsIconList:
         Gui.runCommand(command[index][0],0)
     
     def activeComboItem(self):
+        self.cleanButtons()
         oldItem=self.currentSelectedItem
         self.currentSelectedItem=self.combo.currentText()
         print(self.currentSelectedItem)
@@ -141,15 +142,15 @@ class PrimitivePartsIconList:
         
     def cleanButtons(self):
         for obj in self.btn:
-            del obj
+            obj.deleteLater()
         self.btn.clear()      
           
     def loadIconList(self,oldItem=None):
-        if oldItem ==self.currentSelectedItem:
-            #Nothing to do here go out
-            print("Nothing to do here")
-            return
-        self.cleanButtons()
+        # if oldItem ==self.currentSelectedItem:
+        #     #Nothing to do here go out
+        #     print("Nothing to do here")
+        #     return
+        # self.cleanButtons()
         CommandVariable=None        
         if self.currentSelectedItem=="Basic Shapes" or oldItem==None:
             #Part Box list - Basic shapes
@@ -190,18 +191,12 @@ class PrimitivePartsIconList:
         self.frmBasicShapes.setWindowTitle("Basic Shapes")
         self.frmBasicShapes.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
         self.frmBasicShapes.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
-        #self.btnHide = QtGui.QPushButton(self.frmBasicShapes)
-        #self.btnHide.setGeometry(QtCore.QRect(0, 290, 30, 110))
-        #self.btnHide.clicked.connect(self.HideIconList)
-        #icon = QtGui.QIcon()
-        #icon.addFile(Design456Init.IMAGE_PATH + '/Toolbars/1.png', QtCore.QSize(64, 64))
-        #self.btnHide.setIcon(icon)
         icon0= QtGui.QIcon()
-        icon0.addFile(Design456Init.IMAGE_PATH+'Toolbars/Part_Box.png')
+        icon0.addFile(Design456Init.ICON_PATH+'Part_Box.svg')
         icon1= QtGui.QIcon()
-        icon1.addFile(Design456Init.IMAGE_PATH+'Toolbars/NonuniformedBox.png')
+        icon1.addFile(Design456Init.ICON_PATH+'NonuniformedBox.svg')
         icon2= QtGui.QIcon()
-        icon2.addFile(Design456Init.IMAGE_PATH+'Toolbars/imported.png')
+        icon2.addFile(Design456Init.ICON_PATH+'Imported.svg')
         
         self.combo = QtGui.QComboBox(self.frmBasicShapes)
         self.combo.setGeometry(QtCore.QRect(5, 25, 280, 42))
@@ -254,3 +249,13 @@ class PrimitivePartsIconList:
 f=PrimitivePartsIconList()
 f.Activated()
 f.dock_left()
+
+
+###########################################################################################################
+
+class retriveImportedObjects:
+    def __init__(self):
+        pass
+    def Activate(self):
+        pass
+    
