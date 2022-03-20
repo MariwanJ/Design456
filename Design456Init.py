@@ -37,13 +37,14 @@ ICON path should be always added as below
 
 """
 
-__updated__ = '2022-02-08 19:59:26'
+__updated__ = '2022-03-20 14:59:16'
 
 
 #Design456 
 __dir__ = os.path.dirname(__file__)
 ICON_PATH = os.path.join(__dir__, 'Resources/icons/')
 IMAGE_PATH = os.path.join(__dir__, 'Resources/images/')
+IMPORT_PATH= os.path.join(__dir__, 'Imported/')
 UI_PATH = os.path.join(__dir__, 'Resources/ui/')
 PATH_PREF=os.path.join(__dir__, 'Preferences/')
 #Pyramid shapes 

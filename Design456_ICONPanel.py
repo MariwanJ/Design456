@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
 
-import sys
+import sys,os
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
@@ -42,7 +42,7 @@ from draftutils.translate import translate  # for translation
 # import Design456_NewParts
 from functools import partial
 
-__updated__ = '2022-03-20 10:44:00'
+__updated__ = '2022-03-20 20:46:39'
 
 COMMANDS_Basic=[
     ["Design456_Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -101,8 +101,16 @@ class PrimitivePartsIconList:
         self.currentSelectedItem=self.combo.currentText()
         self.loadIconList(None)
         self.frmBasicShapes.show()
-        
-        
+
+    #TODO : FIXME : This doesn't work here. It should be defined with Preferences
+    def hideToolbars(self):
+        bars=Gui.getMainWindow().findChildren(QtGui.QToolBar)
+        for b in bars:
+            test= ( b.objectName()=="Design456_Part" or
+                    b.objectName()=="Design456_Segmented")
+            if test is True:
+                b.hide()
+                
     def dock_right(self):
         RHmw = Gui.getMainWindow()
         RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.frmBasicShapes)
@@ -133,6 +141,12 @@ class PrimitivePartsIconList:
     def runCommands(self,index,command):
         Gui.runCommand(command[index][0],0)
     
+    def runImportCommands(self,index,command):
+        importobj=Design456Init.IMPORT_PATH+command[index][0]+".step"
+        print("importobj",importobj)
+        self.importListedObjects(importobj)
+            
+    
     def activeComboItem(self):
         self.cleanButtons()
         oldItem=self.currentSelectedItem
@@ -146,11 +160,6 @@ class PrimitivePartsIconList:
         self.btn.clear()      
           
     def loadIconList(self,oldItem=None):
-        # if oldItem ==self.currentSelectedItem:
-        #     #Nothing to do here go out
-        #     print("Nothing to do here")
-        #     return
-        # self.cleanButtons()
         CommandVariable=None        
         if self.currentSelectedItem=="Basic Shapes" or oldItem==None:
             #Part Box list - Basic shapes
@@ -158,9 +167,8 @@ class PrimitivePartsIconList:
         elif self.currentSelectedItem == "Advanced Shapes":
             CommandVariable=COMMANDS_Advanced
         elif self.currentSelectedItem == "Imported Shapes":
-            CommandVariable=COMMANDS_Imported
+            CommandVariable=self.retriveFileList()
         j=0 
-        print ("I am here",len(CommandVariable)) 
         for items in range(0,len(CommandVariable)):
             i=int(items/3)
             index=i*3+j
@@ -173,9 +181,12 @@ class PrimitivePartsIconList:
             self.btn[index].setIconSize( QtCore.QSize(48,48) )
             self.btn[index].setGeometry(QtCore.QRect(0, 0, 68, 68))   
             self.btn[index].setObjectName(str(index))
-            self.btn[index].setToolTip(CommandVariable[index][0]   )         
+            self.btn[index].setToolTip(CommandVariable[index][0])         
             self.gridLayout.addWidget(self.btn[index],i,j)
-            self.btn[index].clicked.connect(partial(self.runCommands,index,CommandVariable))
+            if self.currentSelectedItem =="Imported Shapes":
+                self.runImportCommands(index,CommandVariable)
+            else:
+                self.btn[index].clicked.connect(partial(self.runCommands,index,CommandVariable))
             j+=1
             if j==3:
                 j=0   
@@ -185,8 +196,6 @@ class PrimitivePartsIconList:
         
         self.frmBasicShapes=QtGui.QDockWidget()
         self.frmBasicShapes.setObjectName("frmBasicShapes")
-        #self.frmBasicShapes.resize(260, 534)
-        #self.frmBasicShapes.setWindowIcon(icon)
         self.frmBasicShapes.setToolTip("Basic Shapes")
         self.frmBasicShapes.setWindowTitle("Basic Shapes")
         self.frmBasicShapes.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
@@ -225,37 +234,44 @@ class PrimitivePartsIconList:
         self.btnWDG.setGeometry(QtCore.QRect(0, 70, 260, 600))
         self.btnWDG.setObjectName("btnWDG")
         self.scrollArea.setWidget(self.btnWDG)
-
-        #Oscar Home Horizontal Layout - QHBoxLayout#
         self.gridLayout = QtGui.QGridLayout(self.btnWDG)
         self.gridLayout.setObjectName("gridLayout")
         self.gridLayout.setSpacing(6)
-        
 
-        
-        # self.frmBasicShapes.setFeatures(
-        #    QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
         QtCore.QMetaObject.connectSlotsByName(self.frmBasicShapes)
         return self.frmBasicShapes
-    def retriveFileList(self):
-        pass
-    def importListedObjects(self):
-         
+    
+    def retriveFileList(self):      
+        result=retriveImportedObjects()
+        return result
+    
+    def importListedObjects(self,fileName):
         shape=Part.Shape()
-        shape.read(r"D:\Users\Mavi\Desktop\del\1.step")
+        shape.read((fileName))
 
         
         
 f=PrimitivePartsIconList()
 f.Activated()
 f.dock_left()
-
+f.hideToolbars()
 
 ###########################################################################################################
 
-class retriveImportedObjects:
-    def __init__(self):
-        pass
-    def Activate(self):
-        pass
+def retriveImportedObjects():
+    import glob
+    _path=Design456Init.IMPORT_PATH  #.replace("\\","/")
+    ObjectList=[]
+    print("_pat",_path)
+    files=(glob.glob(_path+"*.step")) 
+    OnlyFileNames=[]
+    for f in files:
+        OnlyFileNames.append( os.path.splitext(os.path.basename(f))[0]) 
+    for name in OnlyFileNames:
+        ObjectList.append([name, _path+name+".svg"])
+    return ObjectList
+        
+        
+        
+
     
