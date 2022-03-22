@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-02-28 20:13:22'
+__updated__ = '2022-03-22 21:32:37'
 
 
 class Design456_Extrude:
@@ -52,7 +52,7 @@ class Design456_Extrude:
                     "Part::Feature", fullname)
                 newObj.Shape = self.selectedObj[0].SubObjects[0].copy()
                 App.ActiveDocument.recompute()
-                return newobj
+                return newObj
             else:
                 print(type(nTObj))
                 if type(nTObj) != list and type(nTObj) != tuple:
@@ -102,7 +102,7 @@ class Design456_Extrude:
                     # Only One object that doesn't have subobjects
                     if isinstance(self.selectedObj[0].Object.Shape, Part.Face):
                         # It is a face. i.e. the object itself is a face only
-                        AllObjects = [self.selectedObj[0]]
+                        AllObjects = [self.selectedObj[0].Object]
                     else:
                         # It is a face of a 3D object
                         AllObjects = [self.ExtractFace()]
