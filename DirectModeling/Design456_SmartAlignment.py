@@ -41,19 +41,17 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-02-27 20:15:27'
+__updated__ = '2022-03-22 20:56:54'
 
-
-# TODO: FIXME : NOT IMPLEMENTED
 
 #                        CALLBACKS              #
-
 def callback_release(userData: userDataObject = None):
     print("release callback")
 
 # All buttons callbacks
 
-#BTN0, BTN1, BTN2 is for X-AXIS
+#min   center  max  
+#BTN0, BTN1,  BTN2 is for X-AXIS
 
 def callback_btn0(userData: userDataObject = None):
     """
@@ -69,12 +67,12 @@ def callback_btn0(userData: userDataObject = None):
         if objs[i].Object.Shape.BoundBox.XMin != linktocaller.NewBoundary.XMin: 
             objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMin
     linktocaller.recreateAll()
-    print("min")
+    print("_min")
 
 def callback_btn1(userData: userDataObject = None):
     """
-            This function will run the when the Align is clicked 
-            event callback. 
+            This function run when Align is clicked 
+            - event callback. 
             It has the alignment BoundBox.XCenter
     """
     if userData is None:
@@ -83,14 +81,15 @@ def callback_btn1(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
+        print("center1", objs[i].Object.Shape.BoundBox.Center,"\ncenter2", linktocaller.NewBoundary.Center)
         if objs[i].Object.Shape.BoundBox.Center.x != linktocaller.NewBoundary.Center.x: 
-            objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.Center.x
+            objs[i].Object.Placement.Base.x = objs[i].Object.Shape.BoundBox.XMin+(linktocaller.NewBoundary.Center.x-objs[i].Object.Shape.BoundBox.Center.x)
     linktocaller.recreateAll()
 
 def callback_btn2(userData: userDataObject = None):
     """
-            This function will run the when the Align is clicked 
-            event callback. 
+            This function run when Align is clicked 
+            - event callback. 
             It has the alignment BoundBox.XMax
     """
     if userData is None:
@@ -102,13 +101,14 @@ def callback_btn2(userData: userDataObject = None):
         if objs[i].Object.Shape.BoundBox.XMax != linktocaller.NewBoundary.XMax: 
             objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMax  - objs[i].Object.Shape.BoundBox.XLength
     linktocaller.recreateAll()
-    print("max")
-    
+    print("_max")
+ 
+#min   center  max     
 #BTN3, BTN4, BTN5 is for Y-AXIS
 def callback_btn3(userData: userDataObject = None):
     """
-            This function will run the when the Align is clicked 
-            event callback.
+            This function run when Align is clicked 
+            - event callback. 
             It has the alignment BoundBox.YMin 
  
     """
@@ -125,8 +125,8 @@ def callback_btn3(userData: userDataObject = None):
 
 def callback_btn4(userData: userDataObject = None):
     """
-            This function will run the when the Align is clicked 
-            event callback. 
+            This function run when Align is clicked 
+            - event callback. 
             It has the alignment BoundBox.YCenter 
 
     """
@@ -137,14 +137,14 @@ def callback_btn4(userData: userDataObject = None):
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.Center.y != linktocaller.NewBoundary.Center.y: 
-            objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.Center.y
+            objs[i].Object.Placement.Base.y = objs[i].Object.Shape.BoundBox.YMin+(linktocaller.NewBoundary.Center.y-objs[i].Object.Shape.BoundBox.Center.y)
     linktocaller.recreateAll()
 
 
 def callback_btn5(userData: userDataObject = None):
     """
-            This function will run the when the Align is clicked 
-            event callback. 
+            This function run when Align is clicked 
+            - event callback. 
             It has the alignment BoundBox.YMax
     """
     if userData is None:
@@ -157,12 +157,12 @@ def callback_btn5(userData: userDataObject = None):
             objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMax  - objs[i].Object.Shape.BoundBox.YLength
     linktocaller.recreateAll()
 
-
+#min   center  max  
 # BTN6, BTN7, BTN8 is for Z-Axis
 def callback_btn6(userData: userDataObject = None):
     """
-            This function will run the when the Align is clicked 
-            event callback. 
+            This function run when Align is clicked 
+            - event callback. 
             It has the alignment BoundBox.ZMin
     """
     if userData is None:
@@ -180,8 +180,8 @@ def callback_btn6(userData: userDataObject = None):
 
 def callback_btn7(userData: userDataObject = None):
     """
-            This function will run the when the Align is clicked 
-            event callback. 
+            This function run when Align is clicked 
+            - event callback. 
             It has the alignment BoundBox.ZCenter
     """
     if userData is None:
@@ -190,16 +190,16 @@ def callback_btn7(userData: userDataObject = None):
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
-        print(objs[i].Object.Shape.BoundBox.Center, linktocaller.NewBoundary.Center)
+        print("center1", objs[i].Object.Shape.BoundBox.Center,"\ncenter2", linktocaller.NewBoundary.Center)
         if objs[i].Object.Shape.BoundBox.Center.z != linktocaller.NewBoundary.Center.z: 
-            objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.Center.z
+            objs[i].Object.Placement.Base.z = objs[i].Object.Shape.BoundBox.ZMin+(linktocaller.NewBoundary.Center.z-objs[i].Object.Shape.BoundBox.Center.z)
     linktocaller.recreateAll()
 
 
 def callback_btn8(userData: userDataObject = None):
     """
-            This function will run the when the Align is clicked 
-            event callback. 
+            This function run when Align is clicked 
+            - event callback. 
             It has the alignment BoundBox.ZMax
     """
     if userData is None:
@@ -209,7 +209,7 @@ def callback_btn8(userData: userDataObject = None):
     objs = linktocaller.selectedObj
     
     for i in range(0, len(objs)):
-        print(objs[i].Object.Shape.BoundBox.ZMax,linktocaller.NewBoundary.ZMax)
+        print("i=",i,"\nold",objs[i].Object.Shape.BoundBox.ZMax,"\nnew",linktocaller.NewBoundary.ZMax)
         if objs[i].Object.Shape.BoundBox.ZMax != linktocaller.NewBoundary.ZMax: 
             objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMax - objs[i].Object.Shape.BoundBox.ZLength
     linktocaller.recreateAll()
@@ -254,43 +254,43 @@ class Design456_SmartAlignment:
                 self.selectedObj[i].Object.ViewObject.DiffuseColor = [
                     FR_COLOR.FR_ORANGE]
 
-    def getValues(self):
+    # def getValues(self):
 
-        return Results
+    #     return Results
 
     def CalculateBoundary(self):
         Results = []
-        min = self.selectedObj[0].Object.Shape.BoundBox.XMin
+        _min = self.selectedObj[0].Object.Shape.BoundBox.XMin
         for i in range(1, len(self.selectedObj)):
-            if self.selectedObj[i].Object.Shape.BoundBox.XMin < min :
-                min = self.selectedObj[i].Object.Shape.BoundBox.XMin
-        Results.append(min)
+            if self.selectedObj[i].Object.Shape.BoundBox.XMin < _min :
+                _min = self.selectedObj[i].Object.Shape.BoundBox.XMin
+        Results.append(_min)
 
-        min = self.selectedObj[0].Object.Shape.BoundBox.YMin
+        _min = self.selectedObj[0].Object.Shape.BoundBox.YMin
         for i in range(1, len(self.selectedObj)):
-            if self.selectedObj[i].Object.Shape.BoundBox.YMin < min :
-                min = self.selectedObj[i].Object.Shape.BoundBox.YMin
-        Results.append(min)
-        min = self.selectedObj[0].Object.Shape.BoundBox.ZMin
+            if self.selectedObj[i].Object.Shape.BoundBox.YMin < _min :
+                _min = self.selectedObj[i].Object.Shape.BoundBox.YMin
+        Results.append(_min)
+        _min = self.selectedObj[0].Object.Shape.BoundBox.ZMin
         for i in range(1, len(self.selectedObj)):
-            if self.selectedObj[i].Object.Shape.BoundBox.ZMin < min :
-                min = self.selectedObj[i].Object.Shape.BoundBox.ZMin
-        Results.append(min)
-        max = self.selectedObj[0].Object.Shape.BoundBox.XMax
+            if self.selectedObj[i].Object.Shape.BoundBox.ZMin < _min :
+                _min = self.selectedObj[i].Object.Shape.BoundBox.ZMin
+        Results.append(_min)
+        _max = self.selectedObj[0].Object.Shape.BoundBox.XMax
         for i in range(1, len(self.selectedObj)):
-            if self.selectedObj[i].Object.Shape.BoundBox.XMax > max :
-                max = self.selectedObj[i].Object.Shape.BoundBox.XMax
-        Results.append(max)
-        max = self.selectedObj[0].Object.Shape.BoundBox.YMax
+            if self.selectedObj[i].Object.Shape.BoundBox.XMax > _max :
+                _max = self.selectedObj[i].Object.Shape.BoundBox.XMax
+        Results.append(_max)
+        _max = self.selectedObj[0].Object.Shape.BoundBox.YMax
         for i in range(1, len(self.selectedObj)):
-            if self.selectedObj[i].Object.Shape.BoundBox.YMax > max :
-                max = self.selectedObj[i].Object.Shape.BoundBox.YMax
-        Results.append(max)        
-        max = self.selectedObj[0].Object.Shape.BoundBox.ZMax
+            if self.selectedObj[i].Object.Shape.BoundBox.YMax > _max :
+                _max = self.selectedObj[i].Object.Shape.BoundBox.YMax
+        Results.append(_max)        
+        _max = self.selectedObj[0].Object.Shape.BoundBox.ZMax
         for i in range(1, len(self.selectedObj)):
-            if self.selectedObj[i].Object.Shape.BoundBox.ZMax > max :
-                max = self.selectedObj[i].Object.Shape.BoundBox.ZMax
-        Results.append(max)
+            if self.selectedObj[i].Object.Shape.BoundBox.ZMax > _max :
+                _max = self.selectedObj[i].Object.Shape.BoundBox.ZMax
+        Results.append(_max)
         XMin = Results[0]
         YMin = Results[1]
         ZMin = Results[2]
