@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-02-20 21:11:39'
+__updated__ = '2022-03-22 22:16:10'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -64,30 +64,34 @@ class Design456_Arc3Points:
                 translate("Design456", "Arc3points"))
             oneObject = False
             selected = Gui.Selection.getSelectionEx()
-            selectedOne1 = Gui.Selection.getSelectionEx()[0]
-            selectedOne2 = Gui.Selection.getSelectionEx()[0]
-            selectedOne3 = Gui.Selection.getSelectionEx()[0]
-            allSelected = []
-            if ((len(selected) < 3 or len(selected) > 3) and (selectedOne1.HasSubObjects is False or selectedOne2.HasSubObjects is False or selectedOne3.HasSubObjects is False)):
+            if ((len(selected) < 3 or len(selected) > 3)):
                 # Two object must be selected
-                errMessage = "Select two or more objects to useArc3Points Tool"
+                errMessage = "Select three Vertexes to use Arc3Points Tool"
                 faced.errorDialog(errMessage)
                 return
-            if selectedOne1.HasSubObjects and len(selected) == 1:
+            
+            allSelected = []
+
+            if selected[0].HasSubObjects and len(selected) == 1:
                 # We have only one object that we take vertices from
-                oneObject = True
+
                 subObjects = selected[0].SubObjects
                 for n in subObjects:
                     allSelected.append(n.Point)
             elif len(selected) == 3:
                 for t in selected:
-                    allSelected.append(
-                        t.Object.Shape.Vertexes[0].Placement.Base)
+                    if t.HasSubObjects:
+                        n=t.SubObjects[0]
+                        allSelected.append(n.Point)
+                    else:
+                        #Must be a Vertex object with only one vertex
+                        allSelected.append(
+                            App.Vector(t.Object.Shape.Vertexes[0].Point))
             else:
-                oneObject = False
                 print("A combination of objects")
                 print("Not implemented")
                 return
+            print("allSelected",allSelected)
             C1 = _part.Arc(App.Vector(allSelected[0]), App.Vector(
                 allSelected[1]), App.Vector(allSelected[2]))
             S1 = _part.Shape([C1])
@@ -95,10 +99,10 @@ class Design456_Arc3Points:
             _part.show(W)
             App.ActiveDocument.recompute()
             App.ActiveDocument.ActiveObject.Label = "Arc_3_Points"
-            # Remove only if it != one object
-            if oneObject is False:
-                for n in selected:
-                    App.ActiveDocument.removeObject(n.ObjectName)
+            # # Remove only if it != one object
+            # if oneObject is False:
+            #     for n in selected:
+            #         App.ActiveDocument.removeObject(n.ObjectName)
             del allSelected[:]
             App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo
