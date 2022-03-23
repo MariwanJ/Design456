@@ -30,13 +30,13 @@ import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft as _draft
-import Part as _part
+import Part
 import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate  # for translation
 from  Design456_Part_3DTools import Design456_SimplifyCompound 
 
-__updated__ = '2022-02-18 21:22:11'
+__updated__ = '2022-03-23 21:22:54'
 
 
 class Design456_CommonFace:
@@ -210,7 +210,7 @@ class Design456_Part_Surface:
             App.ActiveDocument.recompute()
             
             # Make a simple copy of the object
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 newObj, '', needSubElement=False, refine=True)
             tempNewObj = App.ActiveDocument.addObject(
                 'Part::Feature', 'Surface')
@@ -247,7 +247,104 @@ class Design456_Part_Surface:
 
 Gui.addCommand('Design456_Part_Surface', Design456_Part_Surface())
 
+#########################
 
+
+
+class Design456_ArcFace6Points:
+    def Activated(self):
+        try:
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "ArcFace6Points"))
+            selected = Gui.Selection.getSelectionEx() 
+            # if ((
+            #     (len(selected) < 6 and selected[0].HasSubObjects==False) or
+            #     len(selected) > 6) or
+            #     (not((len(selected) == 3) and selected[0].HasSubObjects))
+            #     ):
+            #     # 6 object must be selected
+            #     errMessage = "Select 6 Vertexes to use ArcFace6Points Tool"
+            #     faced.errorDialog(errMessage)
+            #     return
+            
+            allSelected = []
+
+            if selected[0].HasSubObjects and len(selected) == 1:
+                # We have only one object that we take vertices from
+                subObjects = selected[0].SubObjects
+                for n in subObjects:
+                    allSelected.append(n.Point)
+            elif selected[0].HasSubObjects and len(selected) == 3:
+                for obj in selected:
+                    subObjects = obj.SubObjects
+                    for n in subObjects:
+                        allSelected.append(n.Point)
+            elif len(selected) == 6:
+                for t in selected:
+                    if t.HasSubObjects:
+                        n=t.SubObjects[0]
+                        allSelected.append(n.Point)
+                    else:
+                        #Must be a Vertex object with only one vertex
+                        allSelected.append(
+                            App.Vector(t.Object.Shape.Vertexes[0].Point))
+            else:
+                print("A combination of objects")
+                print("Not implemented")
+                return
+            print("allSelected",allSelected)
+            allSelected=Part.__sort__(allSelected)
+            C1 = Part.Arc(App.Vector(allSelected[0]), App.Vector(
+                allSelected[1]), App.Vector(allSelected[2]))
+            C2 = Part.Arc(App.Vector(allSelected[3]), App.Vector(
+                allSelected[4]), App.Vector(allSelected[5]))
+            
+            S1 = C1.toShape()
+            S2 = C2.toShape()
+            W1 = Part.Wire(S1.Edges)
+            W2 = Part.Wire(S2.Edges)
+            newObj = App.ActiveDocument.addObject(
+                'Part::RuledSurface', 'Test')
+            obj1=App.ActiveDocument.addObject('Part::Feature',"E1")
+            obj1.Shape=W1
+            obj2=App.ActiveDocument.addObject('Part::Feature',"E2")
+            obj2.Shape=W2
+            newObj.Curve1 = obj1
+            newObj.Curve2 = obj2
+            App.ActiveDocument.recompute()
+            finalObj = App.ActiveDocument.addObject(
+                'Part::Feature', 'ArcFace6Points')
+            
+            finalObj.Shape=newObj.Shape.copy()
+            
+            # App.ActiveDocument.removeObject(newObj.Name)            
+            # App.ActiveDocument.removeObject(obj1.Name)
+            # App.ActiveDocument.removeObject(obj2.Name)
+            
+            App.ActiveDocument.recompute()
+            del allSelected[:]
+            App.ActiveDocument.commitTransaction()  # undo
+
+        except Exception as err:
+            App.Console.PrintError("'ArcFace6Points' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + 'ArcFace6Points.svg',
+            'MenuText': 'ArcFace6Points',
+                        'ToolTip':  'ArcFace 6 Points'
+        }
+
+Gui.addCommand('Design456_ArcFace6Points', Design456_ArcFace6Points())
+
+
+
+
+# ##############################
 """Design456 Part 2D Tools"""
 
 
@@ -260,6 +357,7 @@ class Design456_Part_2DToolsGroup:
     def GetCommands(self):
         """2D Face commands."""
         return ("Design456_Part_Surface",
+                "Design456_ArcFace6Points",
                 "Design456_CombineFaces",
                 "Design456_SubtractFaces",
                 "Design456_CommonFace",

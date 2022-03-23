@@ -29,7 +29,7 @@ import sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Draft as _draft
-import Part as _part
+import Part
 import Design456Init
 from pivy import coin
 import FACE_D as faced
@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-03-22 22:16:10'
+__updated__ = '2022-03-23 19:27:44'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -62,7 +62,6 @@ class Design456_Arc3Points:
         try:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "Arc3points"))
-            oneObject = False
             selected = Gui.Selection.getSelectionEx()
             if ((len(selected) < 3 or len(selected) > 3)):
                 # Two object must be selected
@@ -91,18 +90,13 @@ class Design456_Arc3Points:
                 print("A combination of objects")
                 print("Not implemented")
                 return
-            print("allSelected",allSelected)
-            C1 = _part.Arc(App.Vector(allSelected[0]), App.Vector(
+            C1 = Part.Arc(App.Vector(allSelected[0]), App.Vector(
                 allSelected[1]), App.Vector(allSelected[2]))
-            S1 = _part.Shape([C1])
-            W = _part.Wire(S1.Edges)
-            _part.show(W)
+            S1 = Part.Shape([C1])
+            W = Part.Wire(S1.Edges)
+            Part.show(W)
             App.ActiveDocument.recompute()
             App.ActiveDocument.ActiveObject.Label = "Arc_3_Points"
-            # # Remove only if it != one object
-            # if oneObject is False:
-            #     for n in selected:
-            #         App.ActiveDocument.removeObject(n.ObjectName)
             del allSelected[:]
             App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo
@@ -126,8 +120,8 @@ Gui.addCommand('Design456_Arc3Points', Design456_Arc3Points())
 
 
 class Design456_MultiPointsToWire:
-    def __init__(self, type):
-        self.type = type
+    def __init__(self, _type):
+        self.type = _type
 
     def Activated(self):
         try:
@@ -246,7 +240,7 @@ class Design456_2DTrim:
                 # Save position and angle
                 _placement = sel1.Object.Placement
                 _placement.Rotation.Q = sel1.Object.Placement.Rotation.Q
-                currentObject = App.ActiveDocument.getObject(sel1.Object.Name)
+                # = App.ActiveDocument.getObject(sel1.Object.Name)
                 SelectedPoints.clear()  # points in the targeted line to be trimmed
                 _edg = sel1.SubObjects[0]
                 # TODO: trim only 2 points at the moment
@@ -272,7 +266,7 @@ class Design456_2DTrim:
                         position2 = count
                     count = count+1
                 # Try to reconstruct the shape/wire
-                TestTwoObjectCreate = False
+                #TestTwoObjectCreate = False
                 _all_points2 = []
                 objType = selectedObjectType(sel1)
                 closedShape = None
@@ -312,10 +306,10 @@ class Design456_2DTrim:
                         # Two objects must be created.
                         print("between first and last")
                         _all_points2.clear()
-                        plusOrMinus = 0
+                        #plusOrMinus = 0
                         scan1 = min(position1, position2)
                         scan2 = max(position1, position2)
-                        SaveValue = None
+                        #SaveValue = None
                         index = 0
                         while (index <= scan1):
                             _all_points2.append(WireOrEdgeMadeOfPoints[index])
@@ -389,7 +383,7 @@ Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
 
 
 def selectedObjectType(obj):
-    if isinstance(obj.Object, _part.Shape):
+    if isinstance(obj.Object, Part.Shape):
         return "Shape"
     if hasattr(obj.Object, 'Proxy'):
         if hasattr(obj.Object.Proxy, "Type"):
@@ -485,8 +479,8 @@ class Star:
                 if alpha > obj.Angle:
                     break
             self.points.append(saveFirstPoint)
-            test = _part.makePolygon(self.points)
-            obj.Shape = _part.Face(test)
+            test = Part.makePolygon(self.points)
+            obj.Shape = Part.Face(test)
             if hasattr(obj, "Area") and hasattr(obj.Shape, "Area"):
                 obj.Area = obj.Shape.Area
             return obj  # Allow getting the
@@ -638,8 +632,8 @@ class Design456_joinTwoLines:
             newList = []
             for e in totalE:
                 newList.append(e.copy())
-            sortEdg = _part.sortEdges(newList)
-            W = [_part.Wire(e) for e in sortEdg]
+            sortEdg = Part.sortEdges(newList)
+            W = [Part.Wire(e) for e in sortEdg]
             for wire in W:
                 newobj = App.ActiveDocument.addObject("Part::Feature", "Wire")
                 newobj.Shape = wire
@@ -657,7 +651,6 @@ class Design456_joinTwoLines:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
-        import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Join two lines")
@@ -861,10 +854,10 @@ class Design456_RemmoveEdge:
                     App.ActiveDocument.openTransaction(
                         translate("Design456", "RemoveEdge"))
                     nFace=None
-                    nWire=_part.Wire(temp)
+                    nWire=Part.Wire(temp)
                     if nWire.isClosed():
                         try:
-                            nFace=_part.makeFilledFace(temp)
+                            nFace=Part.makeFilledFace(temp)
                         except:
                             pass
                     if (nFace is None) or (nFace.isNull()):
@@ -874,7 +867,7 @@ class Design456_RemmoveEdge:
                     else:
                         _resultFaces.append(nFace)
             App.ActiveDocument.recompute()
-            shell=_part.makeShell(_resultFaces)
+            shell=Part.makeShell(_resultFaces)
             App.ActiveDocument.recompute()
             final = App.ActiveDocument.addObject("Part::Feature", "RemoveEdge")
             final.Shape = shell
@@ -889,8 +882,6 @@ class Design456_RemmoveEdge:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
-        import Design456Init
-        from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Remove Edge")
         return {'Pixmap':  Design456Init.ICON_PATH + 'RemoveEdge.svg',
@@ -898,6 +889,7 @@ class Design456_RemmoveEdge:
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 Gui.addCommand('Design456_RemmoveEdge', Design456_RemmoveEdge())
+
 
 
 
