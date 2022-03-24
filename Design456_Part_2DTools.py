@@ -36,7 +36,7 @@ import FACE_D as faced
 from draftutils.translate import translate  # for translation
 from  Design456_Part_3DTools import Design456_SimplifyCompound 
 
-__updated__ = '2022-03-24 22:02:34'
+__updated__ = '2022-03-24 22:15:18'
 
 
 class Design456_CommonFace:
@@ -273,9 +273,13 @@ class Design456_ArcFace6Points:
             allSelected = []
             if len(selected)==1:
                 #We have one object with 6 vertexes selected - 1-3 must be first row, 4-6 must be second row
-                subObjects = selected[0].SubObjects
-                for n in subObjects:
-                    allSelected.append(n.Point)
+                firstRow.append(selected[0].SubObjects[0].Point)                
+                firstRow.append(selected[0].SubObjects[1].Point)                
+                firstRow.append(selected[0].SubObjects[2].Point)                
+                secondRow.append(selected[0].SubObjects[3].Point)                
+                secondRow.append(selected[0].SubObjects[4].Point)                
+                secondRow.append(selected[0].SubObjects[5].Point)                
+
             elif len(selected)==2:
                 # we have two objects, each object must have 3 vertexes which is a row 
                 firstRow.append(selected[0].SubObjects[0].Point)                
