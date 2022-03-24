@@ -36,7 +36,7 @@ import FACE_D as faced
 from draftutils.translate import translate  # for translation
 from  Design456_Part_3DTools import Design456_SimplifyCompound 
 
-__updated__ = '2022-03-23 21:22:54'
+__updated__ = '2022-03-24 22:02:34'
 
 
 class Design456_CommonFace:
@@ -257,43 +257,101 @@ class Design456_ArcFace6Points:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "ArcFace6Points"))
             selected = Gui.Selection.getSelectionEx() 
-            # if ((
-            #     (len(selected) < 6 and selected[0].HasSubObjects==False) or
-            #     len(selected) > 6) or
-            #     (not((len(selected) == 3) and selected[0].HasSubObjects))
-            #     ):
-            #     # 6 object must be selected
-            #     errMessage = "Select 6 Vertexes to use ArcFace6Points Tool"
-            #     faced.errorDialog(errMessage)
-            #     return
-            
-            allSelected = []
+            '''
+                Kind of selections: 
+                1-Three objects  - 2 Vertexes per each 
+                2-mixed objects with different vertexes (2 objects three vertex each, 4 vertex 2-1-3 ..etc)
+                3- Six vertexes (6 objects)
 
-            if selected[0].HasSubObjects and len(selected) == 1:
-                # We have only one object that we take vertices from
+                For each object we take first vertex as row 1, second as row 2 if we have more than 1 object
+                
+
+            
+            '''
+            firstRow=[]
+            secondRow=[]
+            allSelected = []
+            if len(selected)==1:
+                #We have one object with 6 vertexes selected - 1-3 must be first row, 4-6 must be second row
                 subObjects = selected[0].SubObjects
                 for n in subObjects:
                     allSelected.append(n.Point)
-            elif selected[0].HasSubObjects and len(selected) == 3:
+            elif len(selected)==2:
+                # we have two objects, each object must have 3 vertexes which is a row 
+                firstRow.append(selected[0].SubObjects[0].Point)                
+                firstRow.append(selected[0].SubObjects[1].Point)                
+                firstRow.append(selected[0].SubObjects[2].Point)                
+                secondRow.append(selected[1].SubObjects[0].Point)                
+                secondRow.append(selected[1].SubObjects[1].Point)                
+                secondRow.append(selected[1].SubObjects[2].Point)                
+            elif len(selected)==3:
+                #We have three objects. Must be with 2 vertex each . 
+                # First are first row, second vertex for each are second row
                 for obj in selected:
-                    subObjects = obj.SubObjects
-                    for n in subObjects:
-                        allSelected.append(n.Point)
-            elif len(selected) == 6:
-                for t in selected:
-                    if t.HasSubObjects:
-                        n=t.SubObjects[0]
-                        allSelected.append(n.Point)
+                    if len(obj.SubObjects)>1:
+                        firstRow.append (obj.SubObjects[0].Point)
+                        secondRow.append(obj.SubObjects[1].Point)
                     else:
-                        #Must be a Vertex object with only one vertex
-                        allSelected.append(
-                            App.Vector(t.Object.Shape.Vertexes[0].Point))
-            else:
-                print("A combination of objects")
-                print("Not implemented")
-                return
-            print("allSelected",allSelected)
-            allSelected=Part.__sort__(allSelected)
+                        errMessage = "Please select 2 vertexes on each object"
+                        faced.errorDialog(errMessage)
+                        return                    
+            elif len(selected)==4 or len(selected)==5:
+                # this can be a combination of different things. 
+                #Still we take first vertexes as first row, and second vertexes as second row. 
+                first=0
+                second=0
+                if len(selected[0])>1:
+                    firstRow.append(selected[0].SubObjects[0].Point)
+                    secondRow.append(selected[0].SubObjects[1].Point)
+                    first+=1
+                    second+=1
+                else:
+                    first+=1
+                    firstRow.append(selected[0].SubObjects[0].Point)
+                if len(selected[1])>1:
+                    firstRow.append(selected[1].SubObjects[0].Point)
+                    secondRow.append(selected[1].SubObjects[0].Point)
+                    first+=1
+                    second+=1
+                else:
+                    first+=1
+                    firstRow.append(selected[0].SubObjects[0].Point)
+                if len(selected[2])>1:
+                    firstRow.append(selected[1].SubObjects[0].Point)
+                    secondRow.append(selected[1].SubObjects[0].Point)
+                    first+=1
+                    second+=1
+                else:
+                    first+=1
+                    firstRow.append(selected[0].SubObjects[0].Point)
+                if len(selected[3])>1:
+                    if firstRow==3:
+                        #First row is finished
+                        secondRow.append(selected[3].SubObjects[0].Point)
+                        secondRow.append(selected[3].SubObjects[1].Point)
+                    else:
+                        firstRow.append(selected[3].SubObjects[0].Point)
+                        secondRow.append(selected[3].SubObjects[1].Point)
+                else:
+                    if firstRow==3:
+                        #First row is finished
+                        secondRow.append(selected[3].SubObjects[0].Point)
+                    else:
+                        errMessage = "Selection error please try again"
+                        faced.errorDialog(errMessage)
+                        return 
+                            
+            elif len(selected)==6:
+                firstRow.append(selected[0].SubObjects[0].Point)
+                firstRow.append(selected[1].SubObjects[0].Point)
+                firstRow.append(selected[2].SubObjects[0].Point)
+
+                secondRow.append(selected[3].SubObjects[0].Point)
+                secondRow.append(selected[4].SubObjects[0].Point)
+                secondRow.append(selected[5].SubObjects[0].Point)
+
+            
+            allSelected=firstRow+secondRow
             C1 = Part.Arc(App.Vector(allSelected[0]), App.Vector(
                 allSelected[1]), App.Vector(allSelected[2]))
             C2 = Part.Arc(App.Vector(allSelected[3]), App.Vector(
@@ -317,9 +375,9 @@ class Design456_ArcFace6Points:
             
             finalObj.Shape=newObj.Shape.copy()
             
-            # App.ActiveDocument.removeObject(newObj.Name)            
-            # App.ActiveDocument.removeObject(obj1.Name)
-            # App.ActiveDocument.removeObject(obj2.Name)
+            App.ActiveDocument.removeObject(newObj.Name)            
+            App.ActiveDocument.removeObject(obj1.Name)
+            App.ActiveDocument.removeObject(obj2.Name)
             
             App.ActiveDocument.recompute()
             del allSelected[:]
