@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-03-22 21:32:37'
+__updated__ = '2022-03-25 19:15:27'
 
 
 class Design456_Extrude:
@@ -168,7 +168,8 @@ class Design456_Extrude:
                 newShape = Part.getShape(
                     f, '', needSubElement=False, refine=False)
                 newObj = App.ActiveDocument.addObject(
-                    'Part::Feature', 'Extrude').Shape = newShape
+                    'Part::Feature', 'Extrude')
+                newObj.Shape = newShape
                 App.ActiveDocument.recompute()
                 # if something went wrong .. delete all new objects.
                 if newObj.isValid() is False:
@@ -176,7 +177,7 @@ class Design456_Extrude:
                     App.ActiveDocument.removeObject(f.Name)
                     # Shape != OK
                     errMessage = "Failed to extrude the shape"
-                    faced.getInfo(m).errorDialog(errMessage)
+                    faced.errorDialog(errMessage)
                 else:
                     App.ActiveDocument.recompute()
                     App.ActiveDocument.removeObject(f.Name)

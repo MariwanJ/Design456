@@ -198,7 +198,6 @@ class refineFeatureTool:
                     OpenSCADFeatures.RefineShape(newobj,selobj.Object)
                     OpenSCADFeatures.ViewProviderTree(newobj.ViewObject)
                     ## to do: see if it is possible to conserve colors in refining
-                    ao = App.ActiveDocument.ActiveObject
                     docG.ActiveObject.ShapeColor=docG.getObject(selobj.Object.Name).ShapeColor
                     docG.ActiveObject.LineColor=docG.getObject(selobj.Object.Name).LineColor
                     docG.ActiveObject.PointColor=docG.getObject(selobj.Object.Name).PointColor

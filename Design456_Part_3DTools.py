@@ -41,7 +41,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-02-10 22:40:31'
+__updated__ = '2022-03-25 19:18:33'
 
 # Merge
 class Design456_Part_Merge:
@@ -126,7 +126,8 @@ class Design456_Part_Subtract:
             newShape = Part.getShape(
                 newObj, '', needSubElement=False, refine=False)
             NewJ = App.ActiveDocument.addObject(
-                'Part::Feature', 'Subtract').Shape = newShape
+                'Part::Feature', 'Subtract')
+            NewJ.Shape = newShape
             App.ActiveDocument.recompute()
             if newObj.isValid() is False:
                 App.ActiveDocument.removeObject(NewJ.Name)
@@ -184,7 +185,8 @@ class Design456_Part_Intersect:
             newShape = Part.getShape(
                 newObj, '', needSubElement=False, refine=False)
             NewJ = App.ActiveDocument.addObject(
-                'Part::Feature', 'Intersect').Shape = newShape
+                'Part::Feature', 'Intersect')
+            NewJ.Shape = newShape
             App.ActiveDocument.recompute()
             # Remove Old objects
             allObjects = []
@@ -283,7 +285,8 @@ class Design456_Part_Compound:
             newShape = Part.getShape(
                 newObj, '', needSubElement=False, refine=True)
             NewJ = App.ActiveDocument.addObject(
-                'Part::Feature', 'Compound').Shape = newShape
+                'Part::Feature', 'Compound')
+            NewJ.Shape = newShape
 
             # Remove Old objects
             for obj in allObjects:
@@ -348,7 +351,8 @@ class Design456_Part_Shell:
             else:
                 App.ActiveDocument.recompute()
                 NewJ = App.ActiveDocument.addObject(
-                    'Part::Feature', 'Shell').Shape = thickObj.Shape
+                    'Part::Feature', 'Shell')
+                NewJ.Shape = thickObj.Shape
                 App.ActiveDocument.recompute()
                 # Remove Old objects
                 for obj in allObjects:
@@ -421,7 +425,8 @@ class Design456_Part_Fillet:
                 # Make a simple copy of the object
                 App.ActiveDocument.recompute()
                 newShape = Part.getShape(tempNewObj, '', needSubElement=False, refine=False)
-                newObj = App.ActiveDocument.addObject('Part::Feature', 'Fillet').Shape = newShape
+                newObj = App.ActiveDocument.addObject('Part::Feature', 'Fillet')
+                newObj.Shape = newShape
                 App.ActiveDocument.recompute()
                 App.ActiveDocument.ActiveObject.Label = 'Fillet'
 
@@ -492,7 +497,8 @@ class Design456_Part_Chamfer:
                 newShape = Part.getShape(
                     tempNewObj, '', needSubElement=False, refine=False)
                 newObj = App.ActiveDocument.addObject(
-                    'Part::Feature', 'Chamfer').Shape = newShape
+                    'Part::Feature', 'Chamfer')
+                newObj.Shape = newShape
                 App.ActiveDocument.recompute()
                 App.ActiveDocument.ActiveObject.Label = 'Chamfer'
 

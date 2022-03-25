@@ -94,7 +94,8 @@ class Design456_SplitObject:
                 # Make a simple copy
                 newShape = Part.getShape(j, '', needSubElement=False, refine=False)
                 NewJ = App.ActiveDocument.addObject(
-                'Part::Feature', 'SplitObject').Shape = newShape
+                'Part::Feature', 'SplitObject')
+                NewJ.Shape = newShape
                 # Remove Old objects
                 for obj in j.Objects:
                     App.ActiveDocument.removeObject(obj.Name)

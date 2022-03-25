@@ -382,7 +382,8 @@ class Design456_Part_Hemisphere:
             
             if not sh.isPartner(nsh):
                 defeat = App.ActiveDocument.addObject(
-                    'Part::Feature', 'Hemisphere').Shape = nsh
+                    'Part::Feature', 'Hemisphere')
+                defeat.Shape = nsh
                 App.ActiveDocument.removeObject(neObj.Name)
             else:
                 App.Console.PrintError('Defeaturing failed\n')
@@ -390,7 +391,7 @@ class Design456_Part_Hemisphere:
             App.ActiveDocument.commitTransaction() #undo reg.
             newObj= App.ActiveDocument.ActiveObject
             v = Gui.ActiveDocument.ActiveView
-            faced.PartMover(v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
+            faced.PartMover(v,newObj,deleteOnEscape = True)
 
         except Exception as err:
             App.Console.PrintError("'Part::Hemisphere' Failed. "

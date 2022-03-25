@@ -48,7 +48,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
-__updated__ = '2022-02-12 07:53:02'
+__updated__ = '2022-03-25 19:21:22'
 
 class Design456_LoftBetweenFaces:
     
@@ -200,7 +200,8 @@ class Design456_unifySplitFuse2:
             newObjectCut_A2 = App.ActiveDocument.ActiveObject
             ####
             commonObject     = App.ActiveDocument.addObject("Part::MultiCommon","Common")
-            commonObjectMake = App.ActiveDocument.getObject(commonObject.Name).Shapes = [App.ActiveDocument.getObject(newObjectCut_A1.Name), App.ActiveDocument.getObject(newObjectCut_A2.Name),]
+            commonObjectMake = App.ActiveDocument.getObject(commonObject.Name)
+            commonObjectMake.Shapes = [App.ActiveDocument.getObject(newObjectCut_A1.Name), App.ActiveDocument.getObject(newObjectCut_A2.Name),]
             shapeCommonMake  = App.ActiveDocument.ActiveObject
             App.ActiveDocument.recompute()
             Gui.ActiveDocument.activeObject().ShapeColor = colorCommon

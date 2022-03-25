@@ -45,6 +45,7 @@ from __future__ import unicode_literals
 import  os
 import OpenSCADUtils, FreeCAD, FreeCADGui, Part, os
 import  Design456Init
+import FreeCAD as App
 global defeat_icon, use_cm
 defeat_icon=os.path.join(Design456Init.DefeaturingWB_icons_path,'DefeaturingParametric.svg')
 use_cm = True
