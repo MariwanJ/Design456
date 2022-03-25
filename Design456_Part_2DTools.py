@@ -36,7 +36,7 @@ import FACE_D as faced
 from draftutils.translate import translate  # for translation
 from  Design456_Part_3DTools import Design456_SimplifyCompound 
 
-__updated__ = '2022-03-24 22:15:18'
+__updated__ = '2022-03-25 21:18:24'
 
 
 class Design456_CommonFace:
@@ -346,14 +346,21 @@ class Design456_ArcFace6Points:
                         return 
                             
             elif len(selected)==6:
-                firstRow.append(selected[0].SubObjects[0].Point)
-                firstRow.append(selected[1].SubObjects[0].Point)
-                firstRow.append(selected[2].SubObjects[0].Point)
+                if selected[0].HasSubObjects:
+                    firstRow.append(selected[0].SubObjects[0].Point)
+                    firstRow.append(selected[1].SubObjects[0].Point)
+                    firstRow.append(selected[2].SubObjects[0].Point)
 
-                secondRow.append(selected[3].SubObjects[0].Point)
-                secondRow.append(selected[4].SubObjects[0].Point)
-                secondRow.append(selected[5].SubObjects[0].Point)
-
+                    secondRow.append(selected[3].SubObjects[0].Point)
+                    secondRow.append(selected[4].SubObjects[0].Point)
+                    secondRow.append(selected[5].SubObjects[0].Point)
+                else:
+                    firstRow.append(selected[0].Object.Shape.Vertexes[0].Point)
+                    firstRow.append(selected[1].Object.Shape.Vertexes[0].Point)
+                    firstRow.append(selected[2].Object.Shape.Vertexes[0].Point)
+                    secondRow.append(selected[3].Object.Shape.Vertexes[0].Point)
+                    secondRow.append(selected[4].Object.Shape.Vertexes[0].Point)
+                    secondRow.append(selected[5].Object.Shape.Vertexes[0].Point)
             
             allSelected=firstRow+secondRow
             C1 = Part.Arc(App.Vector(allSelected[0]), App.Vector(

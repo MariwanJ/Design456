@@ -51,7 +51,7 @@ import BOPTools.SplitFeatures as SPLIT
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2021-12-31 08:56:24'
+__updated__ = '2022-03-25 19:43:12'
 
 class Design456_loftOnDirection_ui(object):
     def __init__(self, loftOnDirection):
@@ -190,7 +190,7 @@ class Design456_loftOnDirection_ui(object):
         try:
             sel = Gui.Selection.getSelectionEx()
             if(len(sel) <1 or len(sel)>1 or 
-               len(Gui.Selection.getSelectionEx()[0].SubElementNames) ==0 ):
+               len(sel[0].SubElementNames) ==0 ):
                 # Two object must be selected
                 errMessage = "Select a face to use LoftOnDirection Tool"
                 faced.errorDialog(errMessage)
@@ -287,9 +287,9 @@ class Design456_loftOnDirection_ui(object):
 
                     # Remove Old objects. I don't like to keep so many objects without any necessity.
 
-                    for obj in newObj.Sections:
-                        App.ActiveDocument.removeObject(obj.Name)
-                    App.ActiveDocument.removeObject(newObj.Name)
+                    #for obj in newObj.Sections:
+                    #    App.ActiveDocument.removeObject(obj.Name)
+                    #App.ActiveDocument.removeObject(newObj.Name)
                     App.ActiveDocument.commitTransaction()
                     App.ActiveDocument.recompute()
                     # section hidden faces work

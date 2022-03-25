@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = '2022-03-07 21:43:29'
+__updated__ = '2022-03-25 21:06:09'
 
 
 # Widgets type. QT widget will get QT in their names.
@@ -493,6 +493,10 @@ class FR_BRUSHES:
     FR_FILLET2_BRUSH                        =  35
     FR_FILLET3_BRUSH                        =  36
     FR_FILLET4_BRUSH                        =  37
+    FR_FILLET5_BRUSH                        =  38
+    FR_FILLET6_BRUSH                        =  39
+    FR_FILLET7_BRUSH                        =  40
+    FR_FILLET8_BRUSH                        =  41
 
 
     

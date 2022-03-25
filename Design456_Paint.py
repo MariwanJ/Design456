@@ -28,8 +28,8 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft as _draft
-import Part as _part
+import Draft 
+import Part 
 import Design456Init
 from pivy import coin
 import math
@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-03-08 21:27:38'
+__updated__ = '2022-03-25 22:23:09'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -120,6 +120,11 @@ class Design456_Paint:
                                "FILLET2",
                                "FILLET3",
                                "FILLET4",
+                               "FILLET5",
+                               "FILLET6",
+                               "FILLET7",
+                               "FILLET8",
+                               
                                ]
 
     def setSize(self):
@@ -170,7 +175,7 @@ class Design456_Paint:
             newObj.Tool = second
             App.ActiveDocument.recompute()
             # simple copy
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 newObj, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject('Part::Feature', 'HalfCircle')
             s.Shape = newShape
@@ -205,7 +210,7 @@ class Design456_Paint:
             newObj.Shapes = [first, second]
             App.ActiveDocument.recompute()
             # simple copy
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 newObj, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject('Part::Feature', 'QuarterCircle')
             s.Shape = newShape
@@ -238,9 +243,9 @@ class Design456_Paint:
                 pl.Rotation.Angle = math.radians(90.0)
             else:
                 pl.Rotation.Angle = 0.0
-            ellipse = _draft.makeEllipse(
+            ellipse = Draft.makeEllipse(
                 self.brushSize, self.brushSize/2, placement=pl, face=True, support=None)
-            _draft.autogroup(ellipse)
+            Draft.autogroup(ellipse)
             App.ActiveDocument.recompute()
             f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
             f.Base = ellipse
@@ -259,7 +264,7 @@ class Design456_Paint:
                 f.DirMode = "Custom"
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject('Part::Feature', 'Oval')
             s.Shape = newShape
@@ -314,9 +319,9 @@ class Design456_Paint:
             elif TriType == 2:
                 points = [App.Vector(0.0, 0.0, 0.0), App.Vector(
                     self.brushSize/4, self.brushSize/2, 0.0), App.Vector(self.brushSize, 0, 0.0)]
-            first = _draft.makeWire(
+            first = Draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
-            _draft.autogroup(first)
+            Draft.autogroup(first)
             App.ActiveDocument.recompute()
             f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
             f.Base = first
@@ -335,7 +340,7 @@ class Design456_Paint:
                 f.DirMode = "Custom"
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'SpecialTriangle')
@@ -409,9 +414,9 @@ class Design456_Paint:
                                      self.brushSize/2, 0.0),
                           App.Vector(self.brushSize, self.brushSize/2, 0.0)]
 
-            first = _draft.makeWire(
+            first = Draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
-            _draft.autogroup(first)
+            Draft.autogroup(first)
             App.ActiveDocument.recompute()
             f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
             f.Base = first
@@ -430,7 +435,7 @@ class Design456_Paint:
                 f.DirMode = "Custom"
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'Parallelogram')
@@ -474,9 +479,9 @@ class Design456_Paint:
                           App.Vector(self.brushSize*0.4 +self.brushSize*0.2, 0.0, 0.0),
                           App.Vector(self.brushSize, -self.brushSize*0.4, 0.0),
                             App.Vector(0, -self.brushSize*0.4, 0.0),]
-            first = _draft.makeWire(
+            first = Draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
-            _draft.autogroup(first)
+            Draft.autogroup(first)
             App.ActiveDocument.recompute()
             f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
             f.Base = first
@@ -495,7 +500,7 @@ class Design456_Paint:
                 f.DirMode = "Custom"
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'Parallelogram')
@@ -589,9 +594,9 @@ class Design456_Paint:
                           App.Vector(self.brushSize, 0.0, 0.0),
                           ]
 
-            first = _draft.makeWire(
+            first = Draft.makeWire(
                 points, placement=pl, closed=True, face=True, support=None)
-            _draft.autogroup(first)
+            Draft.autogroup(first)
             App.ActiveDocument.recompute()
             f = App.ActiveDocument.addObject('Part::Extrusion', 'Original')
             f.Base = first
@@ -610,7 +615,7 @@ class Design456_Paint:
                 f.DirMode = "Custom"
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'Parallelogram')
@@ -666,7 +671,7 @@ class Design456_Paint:
                 f.DirMode = "Custom"
             # Make a simple copy of the object
             App.ActiveDocument.recompute()
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 f, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject(
                 'Part::Feature', 'Star')
@@ -714,7 +719,7 @@ class Design456_Paint:
             newObj.Tool = second
             App.ActiveDocument.recompute()
             # simple copy
-            newShape = _part.getShape(
+            newShape = Part.getShape(
                 newObj, '', needSubElement=False, refine=True)
             s = App.ActiveDocument.addObject('Part::Feature', 'MOON')
             s.Shape = newShape
@@ -732,46 +737,84 @@ class Design456_Paint:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw_Fillet(self, FilletType):
-        try:
+        try: 
             pl = App.Placement()
-            pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            first = App.ActiveDocument.addObject("Part::Box", "Box")
-            first.Width = self.brushSize
-            first.Length = self.brushSize
-            first.Height = self.firstSize
+            if (FilletType <4):
+                pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
+                first = App.ActiveDocument.addObject("Part::Box", "Box")
+                first.Width = self.brushSize
+                first.Length = self.brushSize
+                first.Height = self.firstSize
 
-            second = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
-            second.Radius = self.brushSize
-            second.Height = self.firstSize
+                second = App.ActiveDocument.addObject("Part::Cylinder", "Circle")
+                second.Radius = self.brushSize
+                second.Height = self.firstSize
 
-            newObj = App.ActiveDocument.addObject("Part::Cut", "cut")
-            newObj.Base = first
-            newObj.Tool = second
-            newObj.Placement = pl
-            if FilletType == 1:
-                first.Placement = pl
-                second.Placement = pl
-                second.Placement.Base = App.Vector(
-                    self.brushSize, self.brushSize, 0)
-            elif FilletType == 2:
-                first.Placement = pl
-                second.Placement = pl
-            elif FilletType == 3:
-                first.Placement = pl
-                second.Placement = pl
-                second.Placement.Base.y = self.brushSize
-            elif FilletType == 4:
-                first.Placement = pl
-                second.Placement = pl
-                second.Placement.Base.x = self.brushSize
-            App.ActiveDocument.recompute()
-            newShape = _part.getShape(
+                newObj = App.ActiveDocument.addObject("Part::Cut", "cut")
+                newObj.Base = first
+                newObj.Tool = second
+                newObj.Placement = pl
+                if FilletType == 1:
+                    first.Placement = pl
+                    second.Placement = pl
+                    second.Placement.Base = App.Vector(
+                        self.brushSize, self.brushSize, 0)
+                elif FilletType == 2:
+                    first.Placement = pl
+                    second.Placement = pl
+                elif FilletType == 3:
+                    first.Placement = pl
+                    second.Placement = pl
+                    second.Placement.Base.y = self.brushSize
+                elif FilletType == 4:
+                    first.Placement = pl
+                    second.Placement = pl
+                    second.Placement.Base.x = self.brushSize
+                App.ActiveDocument.recompute()
+                newShape = Part.getShape(
                 newObj, '', needSubElement=False, refine=True)
-            s = App.ActiveDocument.addObject('Part::Feature', 'Fillet')
-            s.Shape = newShape
-            App.ActiveDocument.removeObject(first.Name)
-            App.ActiveDocument.removeObject(second.Name)
-            App.ActiveDocument.removeObject(newObj.Name)
+                s = App.ActiveDocument.addObject('Part::Feature', 'Fillet')
+                s.Shape = newShape
+                App.ActiveDocument.removeObject(first.Name)
+                App.ActiveDocument.removeObject(second.Name)
+                App.ActiveDocument.removeObject(newObj.Name)
+            else:
+                if FilletType==5:
+                    V1=App.Vector(0,0,0)
+                    V2=App.Vector(self.brushSize,0,0)
+                    V3=App.Vector(self.brushSize,self.brushSize,0)
+                    V4=App.Vector(0,self.brushSize,0)
+                    V5=App.Vector(self.brushSize,self.brushSize*0.25,0)
+                elif FilletType==6:
+                    V1=App.Vector(0,0,0)
+                    V2=App.Vector(-self.brushSize,0,0)
+                    V3=App.Vector(-self.brushSize,self.brushSize,0)
+                    V4=App.Vector(0,self.brushSize,0)
+                    V5=App.Vector(-self.brushSize,self.brushSize*0.25,0)
+
+                elif FilletType==7:
+                    V1=App.Vector(0,0,0)
+                    V2=App.Vector(0,self.brushSize,0)
+                    V3=App.Vector(self.brushSize,self.brushSize,0)
+                    V4=App.Vector(self.brushSize,0,0)
+                    V5=App.Vector(self.brushSize*0.25,self.brushSize,0)
+
+                elif FilletType==8:
+                    V1=App.Vector(0,0,0)
+                    V2=App.Vector(0-self.brushSize,0)
+                    V3=App.Vector(self.brushSize,-self.brushSize,0)
+                    V4=App.Vector(self.brushSize,0,0)
+                    V5=App.Vector(self.brushSize*0.25,-self.brushSize,0)
+                    
+                E1= Part.makePolygon([V1,V2,V3,V4])
+                arc=Part.Arc(V4,V5,V1).toShape()
+                W=Part.Wire([*E1.Edges,*arc.Edges])
+                F=Part.Face(W)
+                extrude=F.extrude(App.Vector(0,0,self.firstSize))
+                s = App.ActiveDocument.addObject('Part::Feature', "Fillet")
+                s.Placement= pl 
+                s.Shape=extrude
+
             App.ActiveDocument.recompute()
             return(Gui.ActiveDocument.getObject(s.Name))
 
@@ -883,6 +926,15 @@ class Design456_Paint:
                 self.currentObj = self.draw_Fillet(3)
             elif self.brushType == FR_BRUSHES.FR_FILLET4_BRUSH:
                 self.currentObj = self.draw_Fillet(4)
+            elif self.brushType == FR_BRUSHES.FR_FILLET5_BRUSH:
+                self.currentObj = self.draw_Fillet(5)
+            elif self.brushType == FR_BRUSHES.FR_FILLET6_BRUSH:
+                self.currentObj = self.draw_Fillet(6)
+            elif self.brushType == FR_BRUSHES.FR_FILLET7_BRUSH:
+                self.currentObj = self.draw_Fillet(7)
+            elif self.brushType == FR_BRUSHES.FR_FILLET8_BRUSH:
+                self.currentObj = self.draw_Fillet(8)
+                
 
             # Merge object creation.
             if (self.resultObj is None):
