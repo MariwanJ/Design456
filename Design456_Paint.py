@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-03-25 22:23:09'
+__updated__ = '2022-03-26 22:05:36'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -780,34 +780,43 @@ class Design456_Paint:
                 App.ActiveDocument.removeObject(newObj.Name)
             else:
                 if FilletType==5:
-                    V1=App.Vector(0,0,0)
-                    V2=App.Vector(self.brushSize,0,0)
-                    V3=App.Vector(self.brushSize,self.brushSize,0)
+                    V1=App.Vector(self.brushSize/2,self.brushSize*0.1,0)
+                    V2=App.Vector(self.brushSize/2,0,0)
+                    V3=App.Vector(0,0,0)
                     V4=App.Vector(0,self.brushSize,0)
-                    V5=App.Vector(self.brushSize,self.brushSize*0.25,0)
+                    V5=App.Vector(self.brushSize/2,self.brushSize,0)
+                    V6=App.Vector(self.brushSize/2,self.brushSize-0.1*self.brushSize,0)
+                    V7=App.Vector(self.brushSize*0.1,self.brushSize/2,0)
                 elif FilletType==6:
-                    V1=App.Vector(0,0,0)
-                    V2=App.Vector(-self.brushSize,0,0)
-                    V3=App.Vector(-self.brushSize,self.brushSize,0)
+                    V1=App.Vector(self.brushSize/2,-self.brushSize*0.1,0)
+                    V2=App.Vector(self.brushSize/2,0,0)
+                    V3=App.Vector(0,0,0)
                     V4=App.Vector(0,self.brushSize,0)
-                    V5=App.Vector(-self.brushSize,self.brushSize*0.25,0)
-
+                    V5=App.Vector(self.brushSize/2,-self.brushSize,0)
+                    V6=App.Vector(self.brushSize/2,-self.brushSize-0.1*self.brushSize,0)
+                    V7=App.Vector(self.brushSize*0.1,-self.brushSize/2,0)
+                
                 elif FilletType==7:
-                    V1=App.Vector(0,0,0)
-                    V2=App.Vector(0,self.brushSize,0)
-                    V3=App.Vector(self.brushSize,self.brushSize,0)
+                    V1=App.Vector(self.brushSize*0.1,self.brushSize/2,0)
+                    V2=App.Vector(0,self.brushSize/2,0)
+                    V3=App.Vector(0,0,0)
                     V4=App.Vector(self.brushSize,0,0)
-                    V5=App.Vector(self.brushSize*0.25,self.brushSize,0)
-
-                elif FilletType==8:
-                    V1=App.Vector(0,0,0)
-                    V2=App.Vector(0-self.brushSize,0)
-                    V3=App.Vector(self.brushSize,-self.brushSize,0)
-                    V4=App.Vector(self.brushSize,0,0)
-                    V5=App.Vector(self.brushSize*0.25,-self.brushSize,0)
+                    V5=App.Vector(self.brushSize,self.brushSize/2,0)
+                    V6=App.Vector(self.brushSize-0.1*self.brushSize,self.brushSize/2,0)
+                    V7=App.Vector(self.brushSize/2,self.brushSize*0.1,0)
                     
-                E1= Part.makePolygon([V1,V2,V3,V4])
-                arc=Part.Arc(V4,V5,V1).toShape()
+                elif FilletType==8:
+                    V1=App.Vector(-self.brushSize*0.1,self.brushSize/2,0)
+                    V2=App.Vector(0,self.brushSize/2,0)
+                    V3=App.Vector(0,0,0)
+                    V4=App.Vector(self.brushSize,0,0)
+                    V5=App.Vector(-self.brushSize,self.brushSize/2,0)
+                    V6=App.Vector(-self.brushSize-0.1*self.brushSize,self.brushSize/2,0)
+                    V7=App.Vector(-self.brushSize/2,self.brushSize*0.1,0)
+                print(V1,V2,V3,V4,V5,V6,V7)
+                E1= Part.makePolygon([V1,V2,V3,V4,V5,V6])
+                print(V6,V7,V1)
+                arc=Part.Arc(V6,V7,V1).toShape()
                 W=Part.Wire([*E1.Edges,*arc.Edges])
                 F=Part.Face(W)
                 extrude=F.extrude(App.Vector(0,0,self.firstSize))
