@@ -104,7 +104,7 @@ class Design456_Arc3Points:
         except Exception as err:
             App.Console.PrintError("'Arc3Points' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -171,7 +171,7 @@ class Design456_MultiPointsToWire:
         except Exception as err:
             App.Console.PrintError("'MultiPointsToWire' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -366,7 +366,7 @@ class Design456_2DTrim:
         except Exception as err:
             App.Console.PrintError("'Trim 2D' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -488,7 +488,7 @@ class Star:
         except Exception as err:
             App.Console.PrintError("'Star' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -510,7 +510,7 @@ class Design456_Star:
         except Exception as err:
             App.Console.PrintError("'StarCommand' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -646,7 +646,7 @@ class Design456_joinTwoLines:
         except Exception as err:
             App.Console.PrintError("'Part Surface' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -707,7 +707,7 @@ class Design456_SimplifyEdges:
         except Exception as err:
             App.Console.PrintError("'Design456_SimplifyEdges' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -766,7 +766,7 @@ class Design456_DivideCircleFace:
         except Exception as err:
             App.Console.PrintError("'Design456_DivideCircleFace' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
  
@@ -797,7 +797,7 @@ class Design456_DivideCircleFace:
         except Exception as err:
             App.Console.PrintError("'Design456_DivideCircleFace' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -877,7 +877,7 @@ class Design456_RemmoveEdge:
         except Exception as err:
             App.Console.PrintError("'Design456_RemoveEdge' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 

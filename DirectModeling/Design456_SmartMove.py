@@ -45,15 +45,15 @@ from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 
 MouseScaleFactor = 1.5
 
-__updated__ = '2022-01-06 08:30:24'
+__updated__ = '2022-03-27 10:22:58'
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
     pass
 
 def callback_release(userData: fr_arrow_widget.userDataObject = None):
     pass
-
-# This tool should easily more, rotate and place any object. 
+#TODO: FIXME:
+# This tool should easily move, rotate and place any object. 
 # Rotation Axis must be changable. Default will be centerofmass
 # but it can also choose other by moving the Axis bar which will be
 # a COIN3D bar or line. 
@@ -137,7 +137,7 @@ class Design456_SmartMove:
         except Exception as err:
             App.Console.PrintError("'Activated SmartMove' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -192,7 +192,7 @@ class Design456_SmartMove:
         except Exception as err:
             App.Console.PrintError("'Design456_Alignment' getMainWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -227,7 +227,7 @@ class Design456_SmartMove:
         except Exception as err:
             App.Console.PrintError("'Design456_SmartAlignment' del-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     

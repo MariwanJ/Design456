@@ -89,7 +89,7 @@ class Design456_Part_Merge:
         except Exception as err:
             App.Console.PrintError("'Part::Merge' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -149,7 +149,7 @@ class Design456_Part_Subtract:
         except Exception as err:
             App.Console.PrintError("'Part::Subtract' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -201,7 +201,7 @@ class Design456_Part_Intersect:
         except Exception as err:
             App.Console.PrintError("'Part::Intersect' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -247,7 +247,7 @@ class Design456_Part_Group:
         except Exception as err:
             App.Console.PrintError("'Part::Part' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -298,7 +298,7 @@ class Design456_Part_Compound:
         except Exception as err:
             App.Console.PrintError("'Part::Compound' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -364,7 +364,7 @@ class Design456_Part_Shell:
         except Exception as err:
             App.Console.PrintError("'Part::Shell' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -440,7 +440,7 @@ class Design456_Part_Fillet:
         except Exception as err:
             App.Console.PrintError("'Fillet' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -511,7 +511,7 @@ class Design456_Part_Chamfer:
         except Exception as err:
             App.Console.PrintError("'Chamfer' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -581,7 +581,7 @@ class Design456_SimplifyCompound:
         except Exception as err:
             App.Console.PrintError("'SimplifyCompound' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 

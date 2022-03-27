@@ -113,7 +113,7 @@ def draw_Point(p1=App.Vector(0.0, 0.0, 0.0),size=0.1, color=FR_COLOR.FR_GOLD, ty
     except Exception as err:
         App.Console.PrintError("'draw_point' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -180,7 +180,7 @@ def draw_square_frame(vectors: List[App.Vector] = [], color=(0, 0, 0), _rotation
     except Exception as err:
         App.Console.PrintError("'draw_square' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -233,7 +233,7 @@ def draw_line(vec=[], color=(1,1,1), _rotation=[0,0,1,0], LineWidth=1):
     except Exception as err:
         App.Console.PrintError("'draw_line' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -334,7 +334,7 @@ def draw_arrow(_Points=[], _color = FR_COLOR.FR_GOLD, _ArrSize=[1.0, 1.0, 1.0], 
     except Exception as err:
         App.Console.PrintError("'draw_arrow' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -478,7 +478,7 @@ def draw_DoubleSidedArrow(_Points=App.Vector(0, 0, 0),
     except Exception as err:
         App.Console.PrintError("'draw_DoubleSidedArrow' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -562,7 +562,7 @@ def draw_box(p1=App.Vector(0.0, 0.0, 0.0),size=App.Vector(1,1,1), color=FR_COLOR
     except Exception as err:
         App.Console.PrintError("'draw_point' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -922,7 +922,7 @@ def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD,
         except Exception as err:
             App.Console.PrintError("'regular_polygon_vertexes' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -971,7 +971,7 @@ def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD,
     except Exception as err:
         App.Console.PrintError("'Draw Face' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1043,7 +1043,7 @@ class draw_polygonBase:
         except Exception as err:
             App.Console.PrintError("'regular_polygon_vertexes' Failed. "
                                "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -1629,7 +1629,7 @@ def draw_2Darrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,
     except Exception as err:
         App.Console.PrintError("'draw 2d Arrow failed' draw 2D-Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
 

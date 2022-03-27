@@ -366,7 +366,7 @@ class Design456_SmartAlignment:
         except Exception as err:
             App.Console.PrintError("'Design456_SmartAlignment' del-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def getMainWindow(self):
@@ -413,7 +413,7 @@ class Design456_SmartAlignment:
         except Exception as err:
             App.Console.PrintError("'Design456_Alignment' getMainWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -436,7 +436,7 @@ class Design456_SmartAlignment:
         except Exception as err:
             App.Console.PrintError("'Design456_Alignment' getMainWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             

@@ -330,7 +330,7 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject = None):
         faced.EnableAllToolbar(True)
         App.Console.PrintError("'Design456_ExtrudeRotate' Callback Release Filed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -527,7 +527,7 @@ class Design456_SmartExtrudeRotate:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'create revolve -Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -586,7 +586,7 @@ class Design456_SmartExtrudeRotate:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'ExtractFace getWheelPosition-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -637,7 +637,7 @@ class Design456_SmartExtrudeRotate:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_ExtrudeRotate' ExtractFace-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             # (exc_type, fname, exc_tb.tb_lineno)
 
@@ -725,7 +725,7 @@ class Design456_SmartExtrudeRotate:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_ExtrudeRotate' ExtractFace-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -784,7 +784,7 @@ class Design456_SmartExtrudeRotate:
         except Exception as err:
             App.Console.PrintError("'Design456_ExtrudeRotate' ExtractFace-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -905,7 +905,7 @@ class Design456_SmartExtrudeRotate:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'Design456_ExtrudeRotate' ExtractFace-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 

@@ -130,7 +130,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
     except Exception as err:
         App.Console.PrintError("'MouseMove callback' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -385,7 +385,7 @@ class Design456_SmartChamfer:
         except Exception as err:
             App.Console.PrintError("'Design456_SmartChamfer' recreatechamferObject-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             self.__del__()
 
@@ -449,7 +449,7 @@ class Design456_SmartChamfer:
         except Exception as err:
             App.Console.PrintError("'Design456_SmartChamfer' del-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
     def getMainWindow(self):
@@ -496,7 +496,7 @@ class Design456_SmartChamfer:
         except Exception as err:
             App.Console.PrintError("'Design456_Chamfer' getMainWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -536,7 +536,7 @@ class Design456_SmartChamfer:
         except Exception as err:
             App.Console.PrintError("'Design456_Chamfer' hide-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
     def GetResources(self):

@@ -79,7 +79,7 @@ def horizontal_regular_polygon_vertexes(sidescount, radius, z, startangle=0):
     except Exception as err:
         App.Console.PrintError("'horizontal_regular_polygon_vertexes' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
         return
@@ -106,7 +106,7 @@ def horizontal_regular_pyramid_vertexes(sidescount, radius, z, MoveTopBottom=App
     except Exception as err:
         App.Console.PrintError("'horizontal_regular_pyramid_vertexes' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
+        exc_type,  exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
         return
@@ -287,7 +287,7 @@ class PyramidBase:
         except Exception as err:
             App.Console.PrintError("'Class Pyramid' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -314,7 +314,7 @@ class Pyramid:
         except Exception as err:
             App.Console.PrintError("'PyramidCommand' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -375,7 +375,7 @@ class TetrahedronBase:
         except Exception as err:
             App.Console.PrintError("'PyramidCommand' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -401,7 +401,7 @@ class Tetrahedron:
         except Exception as err:
             App.Console.PrintError("'Tetrahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -461,7 +461,7 @@ class HexahedronBase:
         except Exception as err:
             App.Console.PrintError("'Hexahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -536,7 +536,7 @@ class OctahedronBase:
         except Exception as err:
             App.Console.PrintError("'Octahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -562,7 +562,7 @@ class Octahedron:
         except Exception as err:
             App.Console.PrintError("'Octahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -652,7 +652,7 @@ class DodecahedronBase:
         except Exception as err:
             App.Console.PrintError("'Dodecahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -753,7 +753,7 @@ class IcosahedronBase:
         except Exception as err:
             App.Console.PrintError("'Icosahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -942,7 +942,7 @@ class Icosahedron_truncatedBase:
         except Exception as err:
             App.Console.PrintError("'Icosahedron_truncated' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -1065,7 +1065,7 @@ class Geodesic_sphereBase:
         except Exception as err:
             App.Console.PrintError("'Icosahedron' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -1133,7 +1133,7 @@ class Geodesic_sphereBase:
         except Exception as err:
             App.Console.PrintError("'geodesic_divide_triangles' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
+            exc_type,  exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
