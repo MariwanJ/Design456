@@ -285,7 +285,7 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
     except Exception as err:
         App.Console.PrintError("'draw_arrow2DDoublesided' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -545,7 +545,7 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
     except Exception as err:
         App.Console.PrintError("'draw draw_RotationPad' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -705,6 +705,6 @@ class drawAlignmentBars:
         except Exception as err:
             App.Console.PrintError("'draw draw_RotationPad' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb=sys.exc_info()
+            exc_type, exc_obj, exc_tb=sys.exc_info()
             fname=os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)

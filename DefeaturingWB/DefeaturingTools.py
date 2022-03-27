@@ -279,7 +279,7 @@ def check_TypeId_RH():
     except Exception as err:
         App.Console.PrintError("'check_TypeId_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -309,7 +309,7 @@ def clear_all_RH():
     except Exception as err:
         App.Console.PrintError("'clear_all_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -346,7 +346,7 @@ def refine_parametric_RH():
     except Exception as err:
         App.Console.PrintError("'refine_parametric_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -381,7 +381,7 @@ def refine_RH():
     except Exception as err:
         App.Console.PrintError("'refine_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -410,7 +410,7 @@ def edges_clear_RH():
     except Exception as err:
         App.Console.PrintError("'edges_clear_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -439,7 +439,7 @@ def faces_clear_RH():
     except Exception as err:
         App.Console.PrintError("'faces_clear_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -504,7 +504,7 @@ def merge_selected_faces_RH():
     except Exception as err:
         App.Console.PrintError("'merge_selected_faces_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -560,7 +560,7 @@ def sewShape():
     except Exception as err:
         App.Console.PrintError("'sewShape' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -622,7 +622,7 @@ def setTolerance():
     except Exception as err:
         App.Console.PrintError("'setTolerance' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -711,7 +711,7 @@ def merge_faces_from_selected_objects_RH(refobj=None):
     except Exception as err:
         App.Console.PrintError("'merge_faces_from_selected_objects_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -801,7 +801,7 @@ def edges_confirmed_RH():
     except Exception as err:
         App.Console.PrintError("'edges_confirmed_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -854,7 +854,7 @@ def faces_confirmed_RH():
     except Exception as err:
         App.Console.PrintError("'faces_confirmed_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -990,7 +990,7 @@ def removeHoles_RH():
     except Exception as err:
         App.Console.PrintError("'removeHoles_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1095,7 +1095,7 @@ def removeFaces_RH():
     except Exception as err:
         App.Console.PrintError("'removeFaces_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1140,7 +1140,7 @@ def addFaces_RH():
     except Exception as err:
         App.Console.PrintError("'addFaces_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1191,7 +1191,7 @@ def offsetFaces_RH():
     except Exception as err:
         App.Console.PrintError("'offsetFaces_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1240,7 +1240,7 @@ def offsetEdges_RH():
     except Exception as err:
         App.Console.PrintError("'offsetEdges_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1294,7 +1294,7 @@ def removesubtree(objs):
     except Exception as err:
         App.Console.PrintError("'removesubtree' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ###
@@ -1488,7 +1488,7 @@ def cleaningFaces_RH():
     except Exception as err:
         App.Console.PrintError("'cleaningFaces_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1530,7 +1530,7 @@ def makeEdge_RH():
     except Exception as err:
         App.Console.PrintError("'makeEdge_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1584,7 +1584,7 @@ def addEdges_RH():
     except Exception as err:
         App.Console.PrintError("'addEdges_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1655,7 +1655,7 @@ def PartDefeaturing_RH():
 
         App.Console.PrintError("'PartDefeaturing_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1692,7 +1692,7 @@ def makeSolidExpSTEP_RH():
 
         App.Console.PrintError("'makeSolidExpSTEP_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1732,7 +1732,7 @@ def shape_Connect_RH():
 
         App.Console.PrintError("'shape_Connect_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1770,7 +1770,7 @@ def simplecopy_RH():
 
         App.Console.PrintError("'simplecopy_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 ##
@@ -1810,7 +1810,7 @@ def loop_edges_RH():
 
         App.Console.PrintError("'loop_edges_RH' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 

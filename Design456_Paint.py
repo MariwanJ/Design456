@@ -153,7 +153,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_circle' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -188,7 +188,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_Semi_circle' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -223,7 +223,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_Quarter_circle' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -280,7 +280,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_Oval' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -299,7 +299,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'appendToList' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -356,7 +356,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_SpecialTriangle' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -387,7 +387,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_Square' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -452,7 +452,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_SpecialTriangle' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -517,7 +517,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_SpecialTriangle' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -541,7 +541,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_polygon' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -632,7 +632,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_SpecialTriangle' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -688,7 +688,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_Star' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -732,7 +732,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'draw_MOON' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -830,7 +830,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'Paint-Fillet' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -961,7 +961,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'recreateObject Paint Obj' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -991,7 +991,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'KeyboardEvent' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1024,7 +1024,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'MouseMovement_cb' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1051,7 +1051,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'FixPlacementIssue' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1080,7 +1080,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'MouseClick_cb' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1125,7 +1125,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'PaintCommand' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1180,7 +1180,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'TypeChanged_cb' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1197,7 +1197,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'SizeChanged_cb' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1317,7 +1317,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'Design456_Paint' getMainWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -1343,7 +1343,7 @@ class Design456_Paint:
         except Exception as err:
             App.Console.PrintError("'recreate Paint Obj' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 

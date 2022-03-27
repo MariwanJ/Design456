@@ -478,7 +478,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         except Exception as err:
             App.Console.PrintError("'draw Fr_one_Arrow_widget' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -588,7 +588,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         except Exception as err:
             App.Console.PrintError("'del Fr_disc_Widget' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -821,7 +821,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         except Exception as err:
             App.Console.PrintError("'disc Callback' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 

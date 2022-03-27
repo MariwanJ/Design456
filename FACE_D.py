@@ -33,7 +33,7 @@ from pivy import coin
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
 import math
-
+from draftutils.translate import translate  # for translation
 #if 0:
 #    import OCC
 #    
@@ -41,7 +41,7 @@ import math
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-03-27 11:03:56'
+__updated__ = '2022-03-27 19:03:23'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -117,7 +117,7 @@ def getDirectionAxis(s=None):
     except Exception as err:
         App.Console.PrintError("'getDirectionAxis' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -155,7 +155,7 @@ class mousePointMove:
         except Exception as err:
             App.Console.PrintError("'converToVector' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -169,7 +169,7 @@ class mousePointMove:
         except Exception as err:
             App.Console.PrintError("'Extend' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -190,14 +190,14 @@ class mousePointMove:
         except Exception as err:
             App.Console.PrintError("'converToVector' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
         except Exception as err:
             App.Console.PrintError("'Mouse click ' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return None
@@ -213,10 +213,78 @@ class mousePointMove:
         except Exception as err:
             App.Console.PrintError("'Mouse move point' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
+
+
+
+
+class StepSizeGUI(QtGui.QMainWindow):
+
+    def __init__(self):
+        super(StepSizeGUI, self).__init__()
+        self.__stepValue=0.1
+        self.initUI()
+
+    def onCancel(self):
+        self.result = "Cancelled"
+        self.close()
+
+    def onOk(self):
+        self.result = "OK"
+        self.close()
+        
+    def selectionchange(self):
+        self.__stepValue=float(self.cmbStepSize.currentText())
+    
+    def stepValue(self):
+        return self.__stepValue
+    def Activate(self):
+        self.show() 
+    def initUI(self):
+        # create window
+        _translate = QtCore.QCoreApplication.translate
+        # define window		xLoc,yLoc,xDim,yDim
+        self.setGeometry(500, 500, 400, 100)
+        self.lblUnit=QtGui.QLabel(self)
+        self.lblUnit.setText(_translate("self", "mm"))
+        self.lblUnit.setGeometry(QtCore.QRect(10,10,100,30))
+        self.cmbStepSize= QtGui.QComboBox(self)
+        
+        self.cmbStepSize.setGeometry(QtCore.QRect(10,50,100,30))
+        self.cmbStepSize.addItem("0.1")
+        self.cmbStepSize.addItem("2.0")
+        self.cmbStepSize.addItem("3.0")
+        self.cmbStepSize.addItem("4.0")
+        self.cmbStepSize.addItem("5.0")
+        self.cmbStepSize.addItem("6.0")
+        self.cmbStepSize.addItem("7.0")
+        self.cmbStepSize.addItem("8.0")
+        self.cmbStepSize.addItem("9.0")
+        self.cmbStepSize.addItem("10.0")
+        self.cmbStepSize.addItem("20.0")
+        self.cmbStepSize.addItem("30.0")
+        self.cmbStepSize.addItem("40.0")
+        self.cmbStepSize.addItem("50.0")
+        self.cmbStepSize.addItem("60.0")
+        self.cmbStepSize.addItem("70.0")
+        self.cmbStepSize.addItem("80.0")
+        self.cmbStepSize.addItem("90.0")
+        self.cmbStepSize.addItem("100.0")
+        self.cmbStepSize.setCurrentIndex(0)
+        self.cmbStepSize.currentIndexChanged.connect(self.selectionchange)
+        self.setWindowTitle("Default mouse step")
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint|
+                            QtCore.Qt.WindowStaysOnTopHint|
+                            QtCore.Qt.MSWindowsFixedSizeDialogHint)
+        self.setMouseTracking(True)
+
+        self.result = "Cancelled"
+        self.setWindowFlags(QtCore.Qt.CustomizeWindowHint);
+
+        return
 
 
 class PartMover:
@@ -234,10 +302,9 @@ class PartMover:
             coin.SoKeyboardEvent.getClassTypeId(), self.KeyboardEvent)
         self.objToDelete = None  # when pressing the escape key
         self.Direction = 'A'
-        
-        #TODO:FIXME: Allow the part mover to move 0.1mm,1mm,5mm,10mm using keypads 0 to 9
-        self.StepSize=0.1 # 0.1mm
-        self.oldPosition=0.0       #Old mouse distance-change
+        self.StepDialog = None
+        self.stepSize= 0.1 # 0.1mm
+        self.oldPosition=None       #Old mouse distance-change
         self.newPosition=0.0   #Current mouse distance-change
 
     def convertToVector(self, pos):
@@ -269,28 +336,40 @@ class PartMover:
         except Exception as err:
             App.Console.PrintError("'Mouse click error' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
 
     def moveMouse(self, events):
         try:
+            #Update step
+            if self.StepDialog is None:
+                self.StepDialog=StepSizeGUI()
+                self.StepDialog.Activate()
+            
+            self.stepSize = self.StepDialog.stepValue()
+            self.StepDialog.lblUnit.setText(("mm - Axis =")+self.Direction)
             event = events.getEvent()
             newValue = self.convertToVector(
                 event.getPosition().getValue())
-            delta = newValue - self.oldPosition
-            if (delta)>0 and abs(delta) >=self.StepSize:
+            if self.oldPosition is None:
+                self.oldPosition=newValue
+            delta = newValue.sub(self.oldPosition)
+            length=delta.Length
+            
+            if (length)>0 and abs(length) >=self.stepSize:
                 self.newPosition=newValue
-
             else:
                 self.newPosition=self.oldPosition
             self.obj.Placement.Base = self.newPosition
-
+            self.oldPosition=self.newPosition
+            
+            
         except Exception as err:
             App.Console.PrintError("'Mouse movements error' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -308,7 +387,7 @@ class PartMover:
         except Exception as err:
             App.Console.PrintError("'remove callback error' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -329,7 +408,7 @@ class PartMover:
         except Exception as err:
             App.Console.PrintError("'Mouse click error' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -348,28 +427,30 @@ class PartMover:
             if key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
                 self.Direction = 'Z'
             #step size setup
-            if key == coin.SoKeyboardEvent.Keys.NUMBER_0 and eventState == coin.SoButtonEvent.UP:
+            if key == coin.SoKeyboardEvent.NUMBER_0 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=10 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_1 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_1 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=1 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_2 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_2 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=2 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_3 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_3 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=3 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_4 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_4 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=4 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_5 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_5 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=5 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_6 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_6 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=6 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_7 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_7 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=7 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_8 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_8 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=8 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.NUMBER_9 and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.NUMBER_9 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=9 #10mm
-            elif key == coin.SoKeyboardEvent.Keys.D and eventState == coin.SoButtonEvent.UP:
+            elif key == coin.SoKeyboardEvent.D and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=0.1 #10mm
+            elif key == coin.SoKeyboardEvent.PAD_TAB and eventState == coin.SoButtonEvent.UP:
+                self.StepDialog.cmbStepSize.setFocus()
             else:
                 self.StepSize=0.1 #10mm
 
@@ -381,7 +462,7 @@ class PartMover:
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             return
@@ -409,7 +490,7 @@ def getObjectFromFaceName(obj, face_name):
     except Exception as err:
         App.Console.PrintError("'getObjectFromFaceName' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -456,7 +537,7 @@ class SelectTopFace:
         except Exception as err:
             App.Console.PrintError("'SelectTopFace' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -867,7 +948,7 @@ def getSortedXYZFromVertices(vertices=None):
     except Exception as err:
         App.Console.PrintError("'getSortedXYZFromVertices -Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -924,7 +1005,7 @@ def getLowestEdgeInAFace(selectedObj=None):
     except Exception as err:
         App.Console.PrintError("'getLowestEdgeInAFace -Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 

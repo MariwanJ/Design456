@@ -124,7 +124,7 @@ class Design456_ExtendFace:
         except Exception as err:
             App.Console.PrintError("'sewShape' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -161,7 +161,7 @@ class Design456_ExtendFace:
         except Exception as err:
             App.Console.PrintError("'sewShape' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -182,7 +182,7 @@ class Design456_ExtendFace:
         except Exception as err:
             App.Console.PrintError("'ExtractFace' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             
@@ -208,7 +208,7 @@ class Design456_ExtendFace:
         except Exception as err:
             App.Console.PrintError("'COIN_recreateObject Object' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -253,7 +253,7 @@ class Design456_ExtendFace:
         except Exception as err:
             App.Console.PrintError("'recreate Object' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -306,7 +306,7 @@ class Design456_ExtendFace:
 
             App.Console.PrintError("'Calculate new Vector. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -325,7 +325,7 @@ class Design456_ExtendFace:
 
             App.Console.PrintError("'saveVertexes' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -439,7 +439,7 @@ class Design456_ExtendFace:
 
             App.Console.PrintError("'Activated' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -522,7 +522,7 @@ class Design456_ExtendFace:
         except Exception as err:
             App.Console.PrintError("'Activated' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -626,7 +626,7 @@ class Design456_ExtendFace:
         except Exception as err:
             App.Console.PrintError("'Activated' Release Filed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
@@ -716,7 +716,7 @@ class Design456_ExtendFace:
         except Exception as err:
             App.Console.PrintError("'Activated' Failed. "
                                    "{err}\n".format(err=str(err)))
-            exc_type,  exc_tb = sys.exc_info()
+            exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 

@@ -204,7 +204,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
     except Exception as err:
         App.Console.PrintError("'Wheel' Failed. "
                                "{err}\n".format(err=str(err)))
-        exc_type,  exc_tb = sys.exc_info()
+        exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
