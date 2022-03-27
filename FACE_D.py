@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-03-27 19:03:23'
+__updated__ = '2022-03-27 22:07:40'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -219,23 +219,13 @@ class mousePointMove:
             return
 
 
-
-
 class StepSizeGUI(QtGui.QMainWindow):
 
     def __init__(self):
         super(StepSizeGUI, self).__init__()
         self.__stepValue=0.1
         self.initUI()
-
-    def onCancel(self):
-        self.result = "Cancelled"
-        self.close()
-
-    def onOk(self):
-        self.result = "OK"
-        self.close()
-        
+     
     def selectionchange(self):
         self.__stepValue=float(self.cmbStepSize.currentText())
     
@@ -243,16 +233,21 @@ class StepSizeGUI(QtGui.QMainWindow):
         return self.__stepValue
     def Activate(self):
         self.show() 
+ 
     def initUI(self):
         # create window
         _translate = QtCore.QCoreApplication.translate
         # define window		xLoc,yLoc,xDim,yDim
-        self.setGeometry(500, 500, 400, 100)
+        self.setGeometry(1200, 300, 400, 100)
         self.lblUnit=QtGui.QLabel(self)
+        self.lblInfo=QtGui.QLabel(self)
+        self.lblInfo.setText(_translate("self", "Use A,X,Y & Z for axis selection\nUse Tab and arrows to change step size"))
+        
         self.lblUnit.setText(_translate("self", "mm"))
         self.lblUnit.setGeometry(QtCore.QRect(10,10,100,30))
-        self.cmbStepSize= QtGui.QComboBox(self)
+        self.lblInfo.setGeometry(QtCore.QRect(150,10,250,60))
         
+        self.cmbStepSize= QtGui.QComboBox(self)        
         self.cmbStepSize.setGeometry(QtCore.QRect(10,50,100,30))
         self.cmbStepSize.addItem("0.1")
         self.cmbStepSize.addItem("2.0")
@@ -276,13 +271,11 @@ class StepSizeGUI(QtGui.QMainWindow):
         self.cmbStepSize.setCurrentIndex(0)
         self.cmbStepSize.currentIndexChanged.connect(self.selectionchange)
         self.setWindowTitle("Default mouse step")
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint|
-                            QtCore.Qt.WindowStaysOnTopHint|
-                            QtCore.Qt.MSWindowsFixedSizeDialogHint)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint|QtCore.Qt.FramelessWindowHint|
+                            QtCore.Qt.MSWindowsFixedSizeDialogHint|
+                            QtCore.Qt.CustomizeWindowHint)
         self.setMouseTracking(True)
-
-        self.result = "Cancelled"
-        self.setWindowFlags(QtCore.Qt.CustomizeWindowHint);
+        #self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         return
 
@@ -403,6 +396,7 @@ class PartMover:
                 self.remove_callbacks()
                 self.obj = None
                 App.ActiveDocument.recompute()
+                self.StepDialog.close()
             return
 
         except Exception as err:
@@ -426,6 +420,8 @@ class PartMover:
                 self.Direction = 'Y'
             if key == coin.SoKeyboardEvent.Z and eventState == coin.SoButtonEvent.UP:
                 self.Direction = 'Z'
+            if key == coin.SoKeyboardEvent.A and eventState == coin.SoButtonEvent.UP:
+                self.Direction = 'A'
             #step size setup
             if key == coin.SoKeyboardEvent.NUMBER_0 and eventState == coin.SoButtonEvent.UP:
                 self.StepSize=10 #10mm
