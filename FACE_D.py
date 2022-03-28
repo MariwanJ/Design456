@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-03-28 20:29:42'
+__updated__ = '2022-03-28 20:38:31'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -241,11 +241,11 @@ class StepSizeGUI(QtGui.QMainWindow):
         self.setGeometry(1200, 300, 400, 100)
         self.lblUnit=QtGui.QLabel(self)
         self.lblInfo=QtGui.QLabel(self)
-        self.lblInfo.setText(_translate("self", "Use A,X,Y & Z for axis selection\nUse Tab and arrows to change step size\nUse middle mouse button to give focus to Main window again or ALT+TAB"))
+        self.lblInfo.setText(_translate("self", "Use A,X,Y & Z for axis selection\nUse Tab and arrows to change step size\nUse middle mouse button to give focus\nto Main window again or ALT+TAB"))
         
         self.lblUnit.setText(_translate("self", "mm"))
         self.lblUnit.setGeometry(QtCore.QRect(10,10,100,30))
-        self.lblInfo.setGeometry(QtCore.QRect(150,10,250,60))
+        self.lblInfo.setGeometry(QtCore.QRect(150,10,250,70))
         
         self.cmbStepSize= QtGui.QComboBox(self)        
         self.cmbStepSize.setGeometry(QtCore.QRect(10,50,100,30))
