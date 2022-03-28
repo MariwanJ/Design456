@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-03-28 20:38:31'
+__updated__ = '2022-03-28 20:41:30'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -309,11 +309,11 @@ class PartMover:
                          int(tempPoint[2])]
             if(self.Direction == 'A'):
                 if Design456Init.DefaultDirectionOfExtrusion == 'x':
-                    point = (App.Vector(0.0, tempPoint[1], tempPoint[2]))
+                    point = (App.Vector(self.obj.Placement.Base.x, tempPoint[1], tempPoint[2]))
                 elif Design456Init.DefaultDirectionOfExtrusion == 'y':
-                    point = (App.Vector(tempPoint[0], 0.0, tempPoint[2]))
+                    point = (App.Vector(tempPoint[0], self.obj.Placement.Base.y, tempPoint[2]))
                 elif Design456Init.DefaultDirectionOfExtrusion == 'z':
-                    point = (App.Vector(tempPoint[0], tempPoint[1], 0.0))
+                    point = (App.Vector(tempPoint[0], tempPoint[1], self.obj.Placement.Base.z))
             else:
                 if (self.Direction == 'X'):
                     point = (App.Vector(
