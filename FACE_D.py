@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-03-27 22:07:40'
+__updated__ = '2022-03-28 20:29:42'
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -241,7 +241,7 @@ class StepSizeGUI(QtGui.QMainWindow):
         self.setGeometry(1200, 300, 400, 100)
         self.lblUnit=QtGui.QLabel(self)
         self.lblInfo=QtGui.QLabel(self)
-        self.lblInfo.setText(_translate("self", "Use A,X,Y & Z for axis selection\nUse Tab and arrows to change step size"))
+        self.lblInfo.setText(_translate("self", "Use A,X,Y & Z for axis selection\nUse Tab and arrows to change step size\nUse middle mouse button to give focus to Main window again or ALT+TAB"))
         
         self.lblUnit.setText(_translate("self", "mm"))
         self.lblUnit.setGeometry(QtCore.QRect(10,10,100,30))
@@ -349,12 +349,20 @@ class PartMover:
             if self.oldPosition is None:
                 self.oldPosition=newValue
             delta = newValue.sub(self.oldPosition)
-            length=delta.Length
+            result=0
+            resultVector=App.Vector(0,0,0)
+            if abs(delta.x)>0 and abs(delta.x)>=self.stepSize:
+                result=int(delta.x/self.stepSize)
+                resultVector.x=(result*self.stepSize)
+            if abs(delta.y)>0 and abs(delta.y)>=self.stepSize:
+                result=int(delta.y/self.stepSize)
+                resultVector.y=(result*self.stepSize)
+
+            if abs(delta.z)>0 and abs(delta.z)>=self.stepSize:
+                result=int(delta.z/self.stepSize)
+                resultVector.z=(result*self.stepSize)
             
-            if (length)>0 and abs(length) >=self.stepSize:
-                self.newPosition=newValue
-            else:
-                self.newPosition=self.oldPosition
+            self.newPosition=self.oldPosition.add(resultVector)
             self.obj.Placement.Base = self.newPosition
             self.oldPosition=self.newPosition
             
