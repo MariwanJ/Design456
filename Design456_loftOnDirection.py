@@ -51,7 +51,7 @@ import BOPTools.SplitFeatures as SPLIT
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-03-25 19:43:12'
+__updated__ = '2022-03-29 20:51:39'
 
 class Design456_loftOnDirection_ui(object):
     def __init__(self, loftOnDirection):
@@ -118,6 +118,11 @@ class Design456_loftOnDirection_ui(object):
         self.inScaleZ.setRange(-100000.0, 100000.0)
         self.inScaleZ.setObjectName("inScaleZ")
 
+        self.inScaleX.setValue(1)
+        self.inScaleY.setValue(1)
+        self.inScaleZ.setValue(1)
+
+
         # Default Values
         self.chkAxis.setChecked(0)
         self.chkLoft.setChecked(1)
@@ -175,10 +180,10 @@ class Design456_loftOnDirection_ui(object):
 
     def checkIfShapeIsValid(self):
         geTobject = Gui.Selection.getSelectionEx()[0]
-        selectedEdge = geTobject.SubObjects[0]      # select one element
+        selectedFace = geTobject.SubObjects[0]      # select one element
         """This must be fixed. I don't know how to distinguish between 2s and 3d objects.
         I will return for now always 0 but this MUST BE FIXED.2021-02-03 Mariwan
-        if(selectedEdge.Volume  ==0 ):
+        if(selectedFace.Volume  ==0 ):
                 #We have a 2D shape .. 
                 self.msgBOXShow()
                 return 1
@@ -196,7 +201,7 @@ class Design456_loftOnDirection_ui(object):
                 faced.errorDialog(errMessage)
                 return
 
-            selectedEdge = Gui.Selection.getSelectionEx(
+            selectedFace = Gui.Selection.getSelectionEx(
             )[0].SubObjects[0]    # select one element
             SubElementName = Gui.Selection.getSelectionEx()[
                 0].SubElementNames[0]
@@ -213,13 +218,13 @@ class Design456_loftOnDirection_ui(object):
             createLoft = self.chkLoft.isChecked()          # 0 = not loft, other = loft
             #### configuration ####
             App.ActiveDocument.openTransaction(translate("Design456","LoftOnDirection"))
-            if hasattr(selectedEdge, 'Surface'):
+            if hasattr(selectedFace, 'Surface'):
                 plr = plDirection = App.Placement()
 
                 # section direction
-                yL = selectedEdge.CenterOfMass
-                uv = selectedEdge.Surface.parameter(yL)
-                nv = selectedEdge.normalAt(uv[0], uv[1])
+                yL = selectedFace.CenterOfMass
+                uv = selectedFace.Surface.parameter(yL)
+                nv = selectedFace.normalAt(uv[0], uv[1])
                 direction = yL.sub(nv + yL)
                 r = App.Rotation(App.Vector(0, 0, 0), direction)
                 plDirection.Rotation.Q = r.Q
@@ -243,7 +248,7 @@ class Design456_loftOnDirection_ui(object):
                 #### section scale ####
                 if createLoft != 0:
                     #### section scale ####
-                    _part.show(selectedEdge.copy())
+                    _part.show(selectedFace.copy())
                     firstFace = App.ActiveDocument.ActiveObject
                     objClone = _draft.scale(firstFace, App.Vector(
                         ValueScaleX, ValueScaleY, ValueScaleZ), center=App.Vector(plDirection.Base), copy=True)  # False
@@ -252,23 +257,23 @@ class Design456_loftOnDirection_ui(object):
                     newLocation = (App.Vector(direction).scale(
                         ValueLength, ValueLength, ValueLength))
                     if (direction.x != 0 and abs(direction.x)==direction.x):
-                        newLocation.x = newLocation.x+selectedEdge.Placement.Base.x*direction.x
+                        newLocation.x = newLocation.x+selectedFace.Placement.Base.x*direction.x
                     elif (direction.x != 0 and abs(direction.x)!=direction.x):
-                        newLocation.x = newLocation.x-selectedEdge.Placement.Base.x*direction.x
+                        newLocation.x = newLocation.x-selectedFace.Placement.Base.x*direction.x
                     else:
-                        newLocation.x = selectedEdge.Placement.Base.x
+                        newLocation.x = selectedFace.Placement.Base.x
                     if (direction.y != 0 and abs(direction.y)==direction.y): #positive >0
-                        newLocation.y = newLocation.y+selectedEdge.Placement.Base.y*direction.y
+                        newLocation.y = newLocation.y+selectedFace.Placement.Base.y*direction.y
                     elif (direction.y != 0 and abs(direction.x)!=direction.y): #negative <0
-                        newLocation.y = newLocation.y-selectedEdge.Placement.Base.y*direction.y
+                        newLocation.y = newLocation.y-selectedFace.Placement.Base.y*direction.y
                     else:
-                        newLocation.y = selectedEdge.Placement.Base.y
+                        newLocation.y = selectedFace.Placement.Base.y
                     if (direction.z != 0 and abs(direction.z)==direction.z):
-                        newLocation.z = newLocation.z+selectedEdge.Placement.Base.z*direction.z
+                        newLocation.z = newLocation.z+selectedFace.Placement.Base.z*direction.z
                     elif (direction.z != 0 and abs(direction.z)!=direction.z): #negative <0:
-                        newLocation.z = newLocation.z-selectedEdge.Placement.Base.z*direction.z
+                        newLocation.z = newLocation.z-selectedFace.Placement.Base.z*direction.z
                     else:
-                        newLocation.z = selectedEdge.Placement.Base.z
+                        newLocation.z = selectedFace.Placement.Base.z
                     objClone.Placement.Base = newLocation
                     
                     
@@ -287,9 +292,9 @@ class Design456_loftOnDirection_ui(object):
 
                     # Remove Old objects. I don't like to keep so many objects without any necessity.
 
-                    #for obj in newObj.Sections:
-                    #    App.ActiveDocument.removeObject(obj.Name)
-                    #App.ActiveDocument.removeObject(newObj.Name)
+                    for obj in newObj.Sections:
+                        App.ActiveDocument.removeObject(obj.Name)
+                    App.ActiveDocument.removeObject(newObj.Name)
                     App.ActiveDocument.commitTransaction()
                     App.ActiveDocument.recompute()
                     # section hidden faces work

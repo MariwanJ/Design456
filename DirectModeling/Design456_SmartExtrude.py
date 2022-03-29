@@ -45,7 +45,7 @@ import Part
 from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-03-25 19:24:14'
+__updated__ = '2022-03-29 22:36:49'
 
 '''
     How it works: 
@@ -374,22 +374,27 @@ class Design456_SmartExtrude:
             self.extrudeLength = 5
             self._vector = self.calculateNewVector()
             self.extrudeLength = 0.0
-            if (face1.Surface.Rotation is None):
-                plr = plDirection = App.Placement()
-
+            if (face1.Surface.Rotation.Axis==App.Vector(0,0,1) or 
+                face1.Surface.Rotation.Axis==App.Vector(1,0,0) or 
+                face1.Surface.Rotation.Axis==App.Vector(0,1,0) or
+                face1.Surface.Rotation.Axis==App.Vector(0,0,0) or
+                face1.Surface.Rotation.Axis==App.Vector(1,1,0) or
+                face1.Surface.Rotation.Axis==App.Vector(1,1,1) ):
                 # section direction. When the face doesn't have a Rotation
                 yL = face1.CenterOfMass
                 uv = face1.Surface.parameter(yL)
                 nv = face1.normalAt(uv[0], uv[1])
                 direction = yL.sub(nv + yL)
-                r = App.Rotation(App.Vector(0, 0, 1), direction)
-                plDirection.Base = yL
-                plDirection.Rotation.Q = r.Q
-                plr = plDirection
-                rotation = (plr.Rotation.Axis.x, plr.Rotation.Axis.y,
-                            plr.Rotation.Axis.z, math.degrees(plr.Rotation.Angle))
-                print("No rotation")
+                t=direction.x
+                direction.x=direction.y
+                direction.y=t
+
+                rotation = (direction.x,direction.y,direction.z, math.degrees(nv.getAngle(App.Vector(0,0,10))))
+                print(nv,"nv")
+                print(direction,"direction")
+                print(rotation)
             else:
+                print("rotation")
                 rotation = (face1.Surface.Rotation.Axis.x,
                             face1.Surface.Rotation.Axis.y,
                             face1.Surface.Rotation.Axis.z,
@@ -397,8 +402,8 @@ class Design456_SmartExtrude:
             # TODO: This if statement is not totally correct.
             # Cylinder or curved surfaces cause an error in the noramlAt, angle and direction
             # I leave it like that now and I must target this later. 
-            if rotation == (0,0,1,180) or rotation ==  (0,0,1,0):
-                rotation = (0,1.0,0,90)
+            # if rotation == (0,0,1,180) or rotation ==  (0,0,1,0):
+            #     rotation = (0,1.0,0,90)
             return rotation
 
         except Exception as err:
