@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-03-30 22:04:02'
+__updated__ = '2022-03-30 22:27:20'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -124,10 +124,10 @@ class Design456_Paint:
                                "FILLET6",
                                "FILLET7",
                                "FILLET8",
-                               "CAMFER1",
-                               "CAMFER2",
-                               "CAMFER3",
-                               "CAMFER4"
+                               "CHAMFER1",
+                               "CHAMFER2",
+                               "CHAMFER3",
+                               "CHAMFER4"
                                
                                ]
 
@@ -781,7 +781,6 @@ class Design456_Paint:
             else:
                 print("ERROR - INVALID OPTION")
                 return
-            print(V1,V2,V3,V4,V5,V6,V7)
             E1= Part.makePolygon([V1,V2,V3,V4,V5,V6,V7,V1])
             W=Part.Wire([*E1.Edges])
             F=Part.Face(W)
@@ -789,6 +788,9 @@ class Design456_Paint:
             s = App.ActiveDocument.addObject('Part::Feature', "Chamfer")
             s.Placement= pl 
             s.Shape=extrude
+            App.ActiveDocument.recompute()
+            return(Gui.ActiveDocument.getObject(s.Name))
+        
         except Exception as err:
             App.Console.PrintError("'Paint-Chamfer' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -878,7 +880,6 @@ class Design456_Paint:
                 else:
                     print("ERROR - INVALID OPTION")
                     return
-                print(V1,V2,V3,V4,V5,V6,V7)
                 E1= Part.makePolygon([V1,V2,V3,V4,V5,V6])
                 print(V6,V7,V1)
                 arc=Part.Arc(V6,V7,V1).toShape()
@@ -1010,14 +1011,13 @@ class Design456_Paint:
                 self.currentObj = self.draw_Fillet(8)
             elif self.brushType == FR_BRUSHES.FR_CHAMFER1_BRUSH:
                 self.currentObj = self.draw_Chamfer(1)
-            elif self.brushType == FR_BRUSHES.FR_CHAMFER1_BRUSH:
+            elif self.brushType == FR_BRUSHES.FR_CHAMFER2_BRUSH:
                 self.currentObj = self.draw_Chamfer(2)
-            elif self.brushType == FR_BRUSHES.FR_CHAMFER1_BRUSH:
+            elif self.brushType == FR_BRUSHES.FR_CHAMFER3_BRUSH:
                 self.currentObj = self.draw_Chamfer(3)
-            elif self.brushType == FR_BRUSHES.FR_CHAMFER1_BRUSH:
+            elif self.brushType == FR_BRUSHES.FR_CHAMFER4_BRUSH:
                 self.currentObj = self.draw_Chamfer(4)
-                
-
+ 
             # Merge object creation.
             if (self.resultObj is None):
                 if (len(self.AllObjects) > 1):
@@ -1140,7 +1140,6 @@ class Design456_Paint:
             event = events.getEvent()
             eventState = event.getState()
             getButton = event.getButton()
-            angle = 0
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 self.appendToList()
                 App.ActiveDocument.recompute()
