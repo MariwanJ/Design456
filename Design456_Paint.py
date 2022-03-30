@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-03-26 22:09:14'
+__updated__ = '2022-03-30 20:55:13'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -739,6 +739,7 @@ class Design456_Paint:
     def draw_Fillet(self, FilletType):
         try: 
             pl = App.Placement()
+            
             if (FilletType <4):
                 pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
                 first = App.ActiveDocument.addObject("Part::Box", "Box")
@@ -779,6 +780,7 @@ class Design456_Paint:
                 App.ActiveDocument.removeObject(second.Name)
                 App.ActiveDocument.removeObject(newObj.Name)
             else:
+                V1=V2=V3=V4=V5=V6=V7=None
                 if FilletType==5:
                     V1=App.Vector(self.brushSize/2,self.brushSize*0.1,0)
                     V2=App.Vector(self.brushSize/2,0,0)
@@ -813,6 +815,9 @@ class Design456_Paint:
                     V5=App.Vector(self.brushSize,-self.brushSize/2,0)
                     V6=App.Vector(self.brushSize-0.1*self.brushSize,-self.brushSize/2,0)
                     V7=App.Vector(self.brushSize/2,-self.brushSize*0.1,0)
+                else:
+                    print("ERROR - INVALID OPTION")
+                    return
                 print(V1,V2,V3,V4,V5,V6,V7)
                 E1= Part.makePolygon([V1,V2,V3,V4,V5,V6])
                 print(V6,V7,V1)

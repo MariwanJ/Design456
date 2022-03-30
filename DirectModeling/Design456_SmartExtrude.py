@@ -43,27 +43,21 @@ from draftutils.translate import translate  # for translation
 import math
 import Part
 from ThreeDWidgets import fr_label_draw
-# The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
+
+# The ration of delta mouse to mm
 MouseScaleFactor = 1
-__updated__ = '2022-03-29 22:36:49'
+__updated__ = '2022-03-30 21:09:04'
 
 '''
     How it works: 
-    We have to recreate the object each time we change the radius. 
+    We have to recreate the object each time we change the length. 
     This means that the redrawing must be optimized
     
     1-If we have a 2D face, we just extrude it 
     2-If we have a face from a 3D object, we extract that face and extrude it
-    3-Created object either it will remain as a new object or would be merged. 
+    3-Created object: either it will remain as a new object or would be merged. 
       But if it is used as a tool to cut another 3D object, the object will disappear. 
-    Known issue: 
-    There are circumstances where this tool will fail. Pushing is not correct yet.
-    Pushing should be developed later. To find out where this tool fails I need to get 
-    help from FreeCAD community.
 '''
-# TODO: As I wish to simplify the tree and make a simple
-# copy of all objects, I leave it now and I should
-# come back to do it. I must have it as an option in menu. (don't know how to do it now.)
 
 
 def callback_move(userData: fr_arrow_widget.userDataObject = None):
@@ -102,16 +96,11 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.run_Once = True
             # only once
             linktocaller.startVector = linktocaller.endVector
-            linktocaller.mouseToArrowDiff = linktocaller.endVector.sub(
-                userData.ArrowObj.w_vector[0])
-        oldLength = linktocaller.extrudeLength
-        linktocaller.extrudeLength = round((
-            linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector), 1)
-        if(oldLength - linktocaller.extrudeLength) > 0:
-            linktocaller.extrudeLength = oldLength - linktocaller.ExtrusionStepSize
-        else:
-            linktocaller.extrudeLength = oldLength + linktocaller.ExtrusionStepSize
-
+            linktocaller.mouseToArrowDiff = (linktocaller.endVector.sub(userData.ArrowObj.w_vector[0])/linktocaller.ExtrusionStepSize)
+        
+        deltaChange=(linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
+        linktocaller.extrudeLength = linktocaller.ExtrusionStepSize* (int(deltaChange/linktocaller.ExtrusionStepSize))
+        
         linktocaller.resizeArrowWidgets(
             linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         linktocaller.ExtrudeLBL.setText(
@@ -399,11 +388,6 @@ class Design456_SmartExtrude:
                             face1.Surface.Rotation.Axis.y,
                             face1.Surface.Rotation.Axis.z,
                             math.degrees(face1.Surface.Rotation.Angle))
-            # TODO: This if statement is not totally correct.
-            # Cylinder or curved surfaces cause an error in the noramlAt, angle and direction
-            # I leave it like that now and I must target this later. 
-            # if rotation == (0,0,1,180) or rotation ==  (0,0,1,0):
-            #     rotation = (0,1.0,0,90)
             return rotation
 
         except Exception as err:
