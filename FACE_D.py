@@ -34,14 +34,15 @@ from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 from typing import List
 import math
 from draftutils.translate import translate  # for translation
-#if 0:
+# if 0:
 #    import OCC
 #    
 #    from OCC.Core import BRepTools
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-03-28 20:41:30'
+__updated__ = '2022-03-31 22:05:46'
+
 
 # TODO : FIXME BETTER WAY?
 def getDirectionAxis(s=None):
@@ -121,7 +122,6 @@ def getDirectionAxis(s=None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
 # TODO: This might be wrong
 
 
@@ -141,7 +141,7 @@ class mousePointMove:
             import Design456Init
             point = None
             tempPoint = self.view.getPoint(pos[0], pos[1])
-            print(Design456Init.DefaultDirectionOfExtrusion ,"Design456Init.DefaultDirectionOfExtrusion")
+            print(Design456Init.DefaultDirectionOfExtrusion , "Design456Init.DefaultDirectionOfExtrusion")
             if Design456Init.DefaultDirectionOfExtrusion == 'x':
                 point = App.Vector(0.0, tempPoint[1], tempPoint[2])
             elif Design456Init.DefaultDirectionOfExtrusion == 'y':
@@ -223,33 +223,45 @@ class StepSizeGUI(QtGui.QMainWindow):
 
     def __init__(self):
         super(StepSizeGUI, self).__init__()
-        self.__stepValue=0.1
+        self.__stepValue = 1.0
         self.initUI()
      
     def selectionchange(self):
-        self.__stepValue=float(self.cmbStepSize.currentText())
+        self.__stepValue = float(self.cmbStepSize.currentText())
+        print(self.__stepValue)
     
     def stepValue(self):
         return self.__stepValue
+
     def Activate(self):
         self.show() 
  
     def initUI(self):
         # create window
         _translate = QtCore.QCoreApplication.translate
-        # define window		xLoc,yLoc,xDim,yDim
-        self.setGeometry(1200, 300, 400, 100)
-        self.lblUnit=QtGui.QLabel(self)
-        self.lblInfo=QtGui.QLabel(self)
-        self.lblInfo.setText(_translate("self", "Use A,X,Y & Z for axis selection\nUse Tab and arrows to change step size\nUse middle mouse button to give focus\nto Main window again or ALT+TAB"))
-        
+        # define window		x,y,width,height
+        self.setGeometry(1200, 300, 440, 110)
+        self.lblUnit = QtGui.QLabel(self)
+        self.lblUnit.setGeometry(QtCore.QRect(10, 10, 140, 30))
         self.lblUnit.setText(_translate("self", "mm"))
-        self.lblUnit.setGeometry(QtCore.QRect(10,10,100,30))
-        self.lblInfo.setGeometry(QtCore.QRect(150,10,250,70))
-        
-        self.cmbStepSize= QtGui.QComboBox(self)        
-        self.cmbStepSize.setGeometry(QtCore.QRect(10,50,100,30))
-        self.cmbStepSize.addItem("0.1")
+
+        self.lblInfo = QtGui.QLabel(self)
+        self.lblInfo.setGeometry(QtCore.QRect(120, 10, 250, 70))
+        self.lblInfo.setText(_translate("self", "Use A,X,Y & Z for axis selection\nUse Tab and arrows to change step size\nUse middle mouse button to give focus\nto Main window again or ALT+TAB"))
+
+        self.lblCurrentLocation = QtGui.QLabel(self)
+        self.lblCurrentLocation.setGeometry(QtCore.QRect(5, 80, 400, 40))
+        self.lblCurrentLocation.setText("Location:" + "X=0.0,Y=0.0" + "Z=0.0")            
+        font = QtGui.QFont()
+        font.setFamily("Caladea")
+        font.setPointSize(12)
+        font.setBold(True)
+        self.lblCurrentLocation.setFont(font)
+                             
+        # Selectable steps
+        self.cmbStepSize = QtGui.QComboBox(self)        
+        self.cmbStepSize.setGeometry(QtCore.QRect(10, 50, 100, 30))
+        self.cmbStepSize.addItem("1.0")
         self.cmbStepSize.addItem("2.0")
         self.cmbStepSize.addItem("3.0")
         self.cmbStepSize.addItem("4.0")
@@ -271,12 +283,11 @@ class StepSizeGUI(QtGui.QMainWindow):
         self.cmbStepSize.setCurrentIndex(0)
         self.cmbStepSize.currentIndexChanged.connect(self.selectionchange)
         self.setWindowTitle("Default mouse step")
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint|QtCore.Qt.FramelessWindowHint|
-                            QtCore.Qt.MSWindowsFixedSizeDialogHint|
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint | 
+                            QtCore.Qt.MSWindowsFixedSizeDialogHint | 
                             QtCore.Qt.CustomizeWindowHint)
         self.setMouseTracking(True)
-        #self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
-
+        # self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
         return
 
 
@@ -296,9 +307,9 @@ class PartMover:
         self.objToDelete = None  # when pressing the escape key
         self.Direction = 'A'
         self.StepDialog = None
-        self.stepSize= 0.1 # 0.1mm
-        self.oldPosition=None       #Old mouse distance-change
-        self.newPosition=0.0   #Current mouse distance-change
+        self.stepSize = 1.0  # 1.0mm
+        self.oldPosition = None  # Old mouse distance-change
+        self.newPosition = 0.0  # Current mouse distance-change
 
     def convertToVector(self, pos):
         try:
@@ -336,36 +347,38 @@ class PartMover:
 
     def moveMouse(self, events):
         try:
-            #Update step
+            # Update step
             if self.StepDialog is None:
-                self.StepDialog=StepSizeGUI()
+                self.StepDialog = StepSizeGUI()
                 self.StepDialog.Activate()
             
             self.stepSize = self.StepDialog.stepValue()
-            self.StepDialog.lblUnit.setText(("mm - Axis =")+self.Direction)
+            self.StepDialog.lblUnit.setText(("mm - Axis =") + self.Direction)
             event = events.getEvent()
             newValue = self.convertToVector(
                 event.getPosition().getValue())
             if self.oldPosition is None:
-                self.oldPosition=newValue
+                self.oldPosition = newValue
             delta = newValue.sub(self.oldPosition)
-            result=0
-            resultVector=App.Vector(0,0,0)
-            if abs(delta.x)>0 and abs(delta.x)>=self.stepSize:
-                result=int(delta.x/self.stepSize)
-                resultVector.x=(result*self.stepSize)
-            if abs(delta.y)>0 and abs(delta.y)>=self.stepSize:
-                result=int(delta.y/self.stepSize)
-                resultVector.y=(result*self.stepSize)
+            result = 0
+            resultVector = App.Vector(0, 0, 0)
+            if abs(delta.x) > 0 and abs(delta.x) >= self.stepSize:
+                result = int(delta.x / self.stepSize)
+                resultVector.x = (result * self.stepSize)
+            if abs(delta.y) > 0 and abs(delta.y) >= self.stepSize:
+                result = int(delta.y / self.stepSize)
+                resultVector.y = (result * self.stepSize)
 
-            if abs(delta.z)>0 and abs(delta.z)>=self.stepSize:
-                result=int(delta.z/self.stepSize)
-                resultVector.z=(result*self.stepSize)
+            if abs(delta.z) > 0 and abs(delta.z) >= self.stepSize:
+                result = int(delta.z / self.stepSize)
+                resultVector.z = (result * self.stepSize)
             
-            self.newPosition=self.oldPosition.add(resultVector)
+            self.newPosition = self.oldPosition.add(resultVector)
             self.obj.Placement.Base = self.newPosition
-            self.oldPosition=self.newPosition
-            
+            self.oldPosition = self.newPosition
+            self.StepDialog.lblCurrentLocation.setText("Location: X=" + f'{self.newPosition.x:7.2f}' + 
+                                                       " Y= " + f'{self.newPosition.y:7.2f}' + 
+                                                       " Z= " + f'{self.newPosition.z:7.2f}')
             
         except Exception as err:
             App.Console.PrintError("'Mouse movements error' Failed. "
@@ -430,33 +443,33 @@ class PartMover:
                 self.Direction = 'Z'
             if key == coin.SoKeyboardEvent.A and eventState == coin.SoButtonEvent.UP:
                 self.Direction = 'A'
-            #step size setup
+            # step size setup
             if key == coin.SoKeyboardEvent.NUMBER_0 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=10 #10mm
+                self.StepSize = 10  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_1 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=1 #10mm
+                self.StepSize = 1  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_2 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=2 #10mm
+                self.StepSize = 2  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_3 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=3 #10mm
+                self.StepSize = 3  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_4 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=4 #10mm
+                self.StepSize = 4  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_5 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=5 #10mm
+                self.StepSize = 5  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_6 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=6 #10mm
+                self.StepSize = 6  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_7 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=7 #10mm
+                self.StepSize = 7  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_8 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=8 #10mm
+                self.StepSize = 8  # 10mm
             elif key == coin.SoKeyboardEvent.NUMBER_9 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=9 #10mm
+                self.StepSize = 9  # 10mm
             elif key == coin.SoKeyboardEvent.D and eventState == coin.SoButtonEvent.UP:
-                self.StepSize=0.1 #10mm
+                self.StepSize = 0.1  # 10mm
             elif key == coin.SoKeyboardEvent.PAD_TAB and eventState == coin.SoButtonEvent.UP:
                 self.StepDialog.cmbStepSize.setFocus()
             else:
-                self.StepSize=0.1 #10mm
+                self.StepSize = 0.1  # 10mm
 
             if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
                 if not self.deleteOnEscape:
@@ -532,7 +545,7 @@ class SelectTopFace:
                 counter = counter + 1
             self._facename = 'Face' + str(Result)
             if centerofmass is None:
-                #TODO: FIXME: Don't know when this happens
+                # TODO: FIXME: Don't know when this happens
                 return
             Gui.Selection.clearSelection()
             Gui.Selection.addSelection(App.ActiveDocument.Name, self.obj.Name,
@@ -547,8 +560,10 @@ class SelectTopFace:
 
 
 class GetInputValue:
+
     def __init__(self):
         self.value = 0.0
+
     """
     get Input value from user. Either Text, INT or Float
     """
@@ -646,7 +661,7 @@ class createActionTab:
         if self.tab is None:
             raise Exception("No tab widget found")
         self.dialog = QtGui.QDialog()
-        #oldsize = self.tab.count()
+        # oldsize = self.tab.count()
         self.tab.addTab(self.dialog, self.title)
 
         self.tab.setCurrentWidget(self.dialog)
@@ -716,7 +731,7 @@ def DisableEnableAllMenus(value):
         i.setEnabled(value)
 
 
-def disableEnableOnlyOneCommand(toolName: str = "", value: bool = False):
+def disableEnableOnlyOneCommand(toolName: str="", value: bool=False):
     mw = Gui.getMainWindow()
     t = mw.findChildren(QtCore.QTimer)
     t[2].stop()
@@ -724,7 +739,7 @@ def disableEnableOnlyOneCommand(toolName: str = "", value: bool = False):
     a.setDisabled(value)
 
 
-def clearReportView(name: str = ""):
+def clearReportView(name: str=""):
     """[Clear Report View console]
 
     Args:
@@ -735,11 +750,11 @@ def clearReportView(name: str = ""):
     r.clear()
     import time
     now = time.ctime(int(time.time()))
-    App.Console.PrintWarning("Cleared Report view " +
+    App.Console.PrintWarning("Cleared Report view " + 
                              str(now) + " by " + name + "\n")
 
 
-def clearPythonConsole(name: str = ""):
+def clearPythonConsole(name: str=""):
     """[Clear Python console]
     Args:
         name ([type]): [Message to  print on console]
@@ -768,7 +783,7 @@ def findMainListedObjects():
     for i in App.ActiveDocument.Objects:
         name = i.Name
         if (Gui.ActiveDocument.getObject(name).Visibility == False):
-            continue # We shouldn't touch objects that are invisible.
+            continue  # We shouldn't touch objects that are invisible.
         Gui.ActiveDocument.getObject(name).Visibility = False
         inlist = i.InList
         if len(inlist) == 0:
@@ -870,11 +885,11 @@ def RealRotateObjectToAnAxis(SelectedObj=None, RealAxis=App.Vector(0.0, 0.0, 0.0
                                               rotAngleX, rotAngleY, rotAngleZ),
                                           App.Vector(RealAxis.x, RealAxis.y, RealAxis.z)).multiply(
                 App.ActiveDocument.getObject(obj.Name).Placement)
-            textRota = ("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0], 2)) + " , " +
-                        str(round(obj.Placement.Rotation.toEuler()[1], 2)) + " , " +
-                        str(round(obj.Placement.Rotation.toEuler()[2], 2)) + ")] " +
-                        "[Axis=(" + str(round(RealAxis.x, 2))+" , " + str(round(RealAxis.y, 2))+" , " +
-                        str(round(RealAxis.z, 2))+")]")
+            textRota = ("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0], 2)) + " , " + 
+                        str(round(obj.Placement.Rotation.toEuler()[1], 2)) + " , " + 
+                        str(round(obj.Placement.Rotation.toEuler()[2], 2)) + ")] " + 
+                        "[Axis=(" + str(round(RealAxis.x, 2)) + " , " + str(round(RealAxis.y, 2)) + " , " + 
+                        str(round(RealAxis.z, 2)) + ")]")
             # print(textRota)
     else:
 
@@ -884,10 +899,10 @@ def RealRotateObjectToAnAxis(SelectedObj=None, RealAxis=App.Vector(0.0, 0.0, 0.0
                                               App.Vector(RealAxis.x, RealAxis.y, RealAxis.z)).multiply(
             App.ActiveDocument.getObject(SelectedObj.Name).Placement)
 
-        textRota = ("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0], 2)) + " , " +
-                    str(round(SelectedObj.Placement.Rotation.toEuler()[1], 2)) + " , " +
-                    str(round(SelectedObj.Placement.Rotation.toEuler()[2], 2)) + ")] " +
-                    "[Axis=(" + str(round(RealAxis.x, 2))+" , " + str(round(RealAxis.y, 2))+" , " + str(round(RealAxis.z, 2))+")]")
+        textRota = ("[Rot=(" + str(round(SelectedObj.Placement.Rotation.toEuler()[0], 2)) + " , " + 
+                    str(round(SelectedObj.Placement.Rotation.toEuler()[1], 2)) + " , " + 
+                    str(round(SelectedObj.Placement.Rotation.toEuler()[2], 2)) + ")] " + 
+                    "[Axis=(" + str(round(RealAxis.x, 2)) + " , " + str(round(RealAxis.y, 2)) + " , " + str(round(RealAxis.z, 2)) + ")]")
 
 # The rotation below is inspired by https://wiki.freecadweb.org/Macro_Rotate_To_Point
 # Thanks Mario
@@ -1025,19 +1040,20 @@ def getNormalized(selectedObj=None):
     p1 = edg.valueAt(edg.FirstParameter)
     p2 = edg.valueAt(edg.LastParameter)
 
-    vnormal = p2-p1
+    vnormal = p2 - p1
     return vnormal
 
 
 def getBase(selectedObj, radius=1, thickness=1):
     edg = getLowestEdgeInAFace(selectedObj)
     nor = getNormalized(selectedObj)
-    basePoint = edg.valueAt(edg.FirstParameter) + nor*(radius+thickness)
+    basePoint = edg.valueAt(edg.FirstParameter) + nor * (radius + thickness)
     return basePoint
 
-#TODO: FIXME : ALLOW SENDING THE EDGE AND SHAPE TO THIS FUNCTION
+
+# TODO: FIXME : ALLOW SENDING THE EDGE AND SHAPE TO THIS FUNCTION
 # See https://forum.freecadweb.org/viewtopic.php?style=1&p=527043
-def findFaceSHavingTheSameEdge(edge=None,shape=None):
+def findFaceSHavingTheSameEdge(edge=None, shape=None):
     """[Find Faces that have the selected edge]
     Returns:
         [Face Objects]: [Return the faces having
@@ -1051,13 +1067,13 @@ def findFaceSHavingTheSameEdge(edge=None,shape=None):
         edge = edge
         shape = shape
     result = shape.ancestorsOfType(edge, Part.Face)
-    if len(result)>=1:
+    if len(result) >= 1:
         return result
     else: 
         return None 
 
 
-def findFacehasSelectedEdge(_edge=None,_shape=None):
+def findFacehasSelectedEdge(_edge=None, _shape=None):
     """[Find Face that has the selected edge]
     Returns:
         [Face Object]: [Return the face of the selected
@@ -1068,13 +1084,14 @@ def findFacehasSelectedEdge(_edge=None,_shape=None):
         edge = obj.SubObjects[0]
         Faces = obj.Object.Shape.Faces
     else:
-        edge=_edge
-        Faces=_shape.Faces
+        edge = _edge
+        Faces = _shape.Faces
     for fa in Faces:
         for ed in fa.Edges:
             if edge.isEqual(ed):
                 return fa
     return None
+
 
 def calculateMouseAngle(val1, val2):
     """[Calculate Angle of two coordinates ( xy, yz or xz).
@@ -1097,20 +1114,18 @@ def calculateMouseAngle(val1, val2):
                                              float(val2))))
     if (val1 < 0 and val2 > 0):
         result = int(math.degrees(math.atan2(float(val1),
-                                             float(val2))))+360
+                                             float(val2)))) + 360
     if (val1 > 0 and val2 < 0):
         result = int(math.degrees(math.atan2(float(val1),
                                              float(val2))))
     if (val1 < 0 and val2 < 0):
         result = int(math.degrees(math.atan2(float(val1),
-                                             float(val2))))+360
+                                             float(val2)))) + 360
     return result
-
-
 
 # This code is by by Roy_043 from the forum
 # https://forum.freecadweb.org/viewtopic.php?p=557404#p557404
-#But it didn't work prefectly and I leave it here for future usage. I need to understand which I DON'T NOW :(
+# But it didn't work prefectly and I leave it here for future usage. I need to understand which I DON'T NOW :(
 # def get_global_placement (point, angle=0.0):
 #    """[Get global placement for a point ona a active Draft working plane.
 #        And rotate the object by the angle given in degrees
@@ -1162,7 +1177,7 @@ App.ActiveDocument.recompute()
 
  '''
 
-#look at 
+# look at 
 # https://dev.opencascade.org/content/brepoffsetapimakethicksolid-some-characters-can-be-hollowed-out-some-cant-help-pythonocc
 # 
 # Class to remove surface,edge, wire,line,vertex from a shape
@@ -1172,7 +1187,7 @@ DraftGeomUtils.findIntersection()
 
 
 #'''
-#class removeSubShapes:
+# class removeSubShapes:
 #
 #    def __init__(self, subObj, OriginalShape):
 #        self.SubObj = subObj
@@ -1191,35 +1206,37 @@ DraftGeomUtils.findIntersection()
 # A class that will revers engineer
 # surfaces and recreate it with 
 # new vertices
+
  
 # A class that will revers engineer
 # surfaces and recreate it with 
 # new vertices
 class reversEngSurface(object):
     
-    __slots__= ['newObject', 
+    __slots__ = ['newObject',
                 'oldNewVertices'
                 
-                
                 ]
-    def __init__ (self, _oldNewVertices = [[]]):
-        self.newObject=None
+
+    def __init__ (self, _oldNewVertices=[[]]):
+        self.newObject = None
         self.oldNewVertices = _oldNewVertices
 
         pass
-    def isCylinder(self,obj):
+
+    def isCylinder(self, obj):
         pass
     
-    def checkPlanar(self,obj):
+    def checkPlanar(self, obj):
         pass
     
-    def checkCurve(self,obj):
+    def checkCurve(self, obj):
         pass
     
-    def checkLine(self,obj):
+    def checkLine(self, obj):
         pass
     
-    def reversEng(self,obj):
+    def reversEng(self, obj):
         pass
     
     def recreateSurface(self):
@@ -1247,13 +1264,12 @@ def isFaceOf3DObj(selectedObj):
         return False
 
 
-
 def showFirstTab():
     """Return back the view of the tab 
         to 'Model'
     """
-    mw=Gui.getMainWindow()
-    dw=mw.findChildren(QtGui.QDockWidget)
+    mw = Gui.getMainWindow()
+    dw = mw.findChildren(QtGui.QDockWidget)
     for i in dw:
         if i.objectName() == "Combo View":
             tab = i.findChild(QtGui.QTabWidget)

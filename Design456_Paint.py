@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-03-30 22:27:20'
+__updated__ = '2022-03-31 20:50:48'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -881,7 +881,6 @@ class Design456_Paint:
                     print("ERROR - INVALID OPTION")
                     return
                 E1= Part.makePolygon([V1,V2,V3,V4,V5,V6])
-                print(V6,V7,V1)
                 arc=Part.Arc(V6,V7,V1).toShape()
                 W=Part.Wire([*E1.Edges,*arc.Edges])
                 F=Part.Face(W)
