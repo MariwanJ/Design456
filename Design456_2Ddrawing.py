@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-03-23 19:27:44'
+__updated__ = '2022-04-02 14:08:32'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -63,8 +63,8 @@ class Design456_Arc3Points:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "Arc3points"))
             selected = Gui.Selection.getSelectionEx()
-            if ((len(selected) < 3 or len(selected) > 3)):
-                # Two object must be selected
+            if (not(selected[0].HasSubObjects and len(selected) == 1)) and ((len(selected) < 3 or len(selected) > 3) ):
+                # Three object must be selected
                 errMessage = "Select three Vertexes to use Arc3Points Tool"
                 faced.errorDialog(errMessage)
                 return

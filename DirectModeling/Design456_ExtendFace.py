@@ -53,7 +53,7 @@ import math
 # except:
 #     pass
 
-__updated__ = '2022-02-27 20:15:07'
+__updated__ = '2022-04-01 18:46:41'
 
 class Design456_ExtendFace:
     """[Extend the face's position to a new position.
@@ -214,7 +214,7 @@ class Design456_ExtendFace:
 
     def recreateObject(self):
         # FIXME:
-        # Here we have
+        # Here
         # We try to create a wire-closed to replace the sides we delete.
         # This will be way to complex . with many bugs :(
         try:
@@ -650,7 +650,7 @@ class Design456_ExtendFace:
         """
         Hide the widgets. Remove also the tab.
         TODO:
-        For this tool, I decide to choose the hide to merge, or leave it "as is" here.
+        For this tool, I decide to choose "hide" to merge, or leave it "as is" here.
         I can do that during the extrusion (moving the pad), but that will be an action
         without undo. Here the user will be finished with the extrusion and want to leave the tool
         TODO: If there will be a discussion about this, we might change this behavior!!

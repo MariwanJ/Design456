@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-03-31 22:05:46'
+__updated__ = '2022-04-02 11:36:23'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1213,32 +1213,43 @@ DraftGeomUtils.findIntersection()
 # new vertices
 class reversEngSurface(object):
     
-    __slots__ = ['newObject',
-                'oldNewVertices'
-                
-                ]
-
-    def __init__ (self, _oldNewVertices=[[]]):
+#    __slots__ = ['newObject',
+#                'oldNewVertices'
+#                ]
+#
+    def __init__ (self, selObj):
+        self.selObject=selObj
+        self.faceList=[[]]
         self.newObject = None
-        self.oldNewVertices = _oldNewVertices
+        
+    
+    def separateFaces(self):
+        for face in self.selObject:
+            if self.isPlanar(face):
+                pass
 
-        pass
+            elif self.isCylinder(face):
+                pass
 
+            elif self.isCurve(face):
+                pass
+
+            elif self.isBSplineSurface(face):
+                pass
+
+    def isPlanar(self, obj):
+        return str(obj.Surface) =="<Plane object>"
+    
     def isCylinder(self, obj):
-        pass
+        return str(obj.Surface) =="<Cylinder object>"
     
-    def checkPlanar(self, obj):
+    def isCurve(self, obj):
         pass
+        return True
     
-    def checkCurve(self, obj):
-        pass
-    
-    def checkLine(self, obj):
-        pass
-    
-    def reversEng(self, obj):
-        pass
-    
+    def isBSplineSurface(self,obj):
+        return  str(obj.Surface)=="<BSplineSurface object>" 
+
     def recreateSurface(self):
         return (self.newObject)
 
