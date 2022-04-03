@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-03 15:14:40'
+__updated__ = '2022-04-03 19:13:14'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -463,107 +463,92 @@ class Design456_SelectTool:
 
             self.dialog = QtGui.QDialog()
             self.dialog.setObjectName("seldialog")
+            la = QtGui.QVBoxLayout(self.dialog)   
+            v_widget = QtGui.QWidget(self.dialog)
+            v_widget.setLayout(la)
+            v_widget.setFixedWidth(300)
+            v_widget.setFixedHeight(200)
+            
             oldsize = self.tab.count()
             self.tab.addTab(self.dialog, "Select")
             self.tab.setCurrentWidget(self.dialog)
             self.dialog.resize(325, 450)
             self.dialog.setWindowTitle("Select")
-
-            self.buttonGroup = QtGui.QButtonGroup(self.dialog)
-            la = QtGui.QVBoxLayout(self.dialog)    
+            self.label=QtGui.QLabel(self.dialog)
+            
             font = QtGui.QFont()
             font.setFamily("Guttman-Aharoni")
             font.setBold(True)
-            self.dialog.setFont(font)
-            self.radSel_0 = QtGui.QRadioButton(self.dialog)
-            self.radSel_0.setGeometry(QtCore.QRect(20, 60, 240, 20))
-            self.radSel_0.setObjectName("radSel_1")
-            self.radSel_1 = QtGui.QRadioButton(self.dialog)
-            self.radSel_1.setGeometry(QtCore.QRect(20, 80, 240, 20))
-            self.radSel_1.setObjectName("radSel_2")
-            self.radSel_2 = QtGui.QRadioButton(self.dialog)
-            self.radSel_2.setGeometry(QtCore.QRect(20, 100, 240, 20))
-            self.radSel_2.setObjectName("radSel_3")
-            self.radSel_3 = QtGui.QRadioButton(self.dialog)
-            self.radSel_3.setGeometry(QtCore.QRect(20, 120, 240, 20))
-            self.radSel_3.setObjectName("radSel_4")
-            self.radSel_4 = QtGui.QRadioButton(self.dialog)
-            self.radSel_4.setGeometry(QtCore.QRect(20, 140, 240, 20))
-            self.radSel_4.setObjectName("radSel_4")
-            self.radSel_4 = QtGui.QRadioButton(self.dialog)
-            self.radSel_4.setGeometry(QtCore.QRect(20, 160, 240, 20))
-            self.radSel_4.setObjectName("radSel_5")
-            self.radSel_5 = QtGui.QRadioButton(self.dialog)
-            self.radSel_5.setGeometry(QtCore.QRect(20, 180, 240, 20))
-            self.radSel_5.setObjectName("radSel_6")
-            self.radSel_6 = QtGui.QRadioButton(self.dialog)
-            self.radSel_6.setGeometry(QtCore.QRect(20, 200, 240, 20))
-            self.radSel_6.setObjectName("radSel_7")
-            self.radSel_7 = QtGui.QRadioButton(self.dialog)
-            self.radSel_7.setGeometry(QtCore.QRect(20, 220, 240, 20))
-            self.radSel_7.setObjectName("radSel_8")
-            self.radSel_8 = QtGui.QRadioButton(self.dialog)
-            self.radSel_8.setGeometry(QtCore.QRect(20, 240, 240, 20))
-            self.radSel_8.setObjectName("radSel_10")
-            self.radSel_10 = QtGui.QRadioButton(self.dialog)
-            self.radSel_10.setGeometry(QtCore.QRect(20, 260, 240, 20))
-            self.radSel_10.setObjectName("radSel_10")
-            self.radSel_9 = QtGui.QRadioButton(self.dialog)
-            self.radSel_9.setGeometry(QtCore.QRect(20, 280, 240, 20))
-            self.radSel_9.setObjectName("radSel_9")
-            self.radSel_10 = QtGui.QRadioButton(self.dialog)
-            self.radSel_10.setGeometry(QtCore.QRect(20, 280, 240, 20))
-            self.radSel_10.setObjectName("radSel_10")
-            self.radSel_11 = QtGui.QRadioButton(self.dialog)
-            self.radSel_11.setGeometry(QtCore.QRect(20, 300, 240, 20))
-            self.radSel_11.setObjectName("radSel_11")
-            self.radSel_11 = QtGui.QRadioButton(self.dialog)
-            self.radSel_11.setGeometry(QtCore.QRect(20, 320, 240, 20))
-            self.radSel_11.setObjectName("radSel_11")
-            self.radSel_12 = QtGui.QRadioButton(self.dialog)
-            self.radSel_12.setGeometry(QtCore.QRect(20, 340, 240, 20))
-            self.radSel_12.setObjectName("radSel_12")
-            self.radSel_11 = QtGui.QRadioButton(self.dialog)
-            self.radSel_11.setGeometry(QtCore.QRect(20, 360, 240, 20))
-            self.radSel_11.setObjectName("radSel_11")
-            self.radSel_17 = QtGui.QRadioButton(self.dialog)
-            self.radSel_17.setGeometry(QtCore.QRect(20, 380, 240, 20))
-            self.radSel_17.setObjectName("radSel_17")
+            self.dialog.setFont(font) 
+            self.label.setFont(font)
+            self.label.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
+            self.label.setFrameShape(QtGui.QFrame.NoFrame)
+            self.label.setFrameShadow(QtGui.QFrame.Sunken)
+            self.label.setObjectName("label")
+ 
+            self.combo = QtGui.QComboBox(self.dialog)
+            self.combo.setGeometry(QtCore.QRect(20, 60, 240, 20))
+            self.combo.setIconSize(QtCore.QSize(40,40))
+ 
+            self.label.setText(translate("self.dialog", "Select Desired subobjects"))
+            self.combo.setItemData(0, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+
+            #Face
+            self.combo.addItem(translate("self.dialog", "All Faces"))
+            self.combo.addItem(translate("self.dialog", "Horizontal Faces"))
+            self.combo.addItem(translate("self.dialog", "Vertical Faces"))
+            self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to XY"))
+            self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to XZ"))
+            self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to YZ"))
+            
+            self.combo.setItemData(1, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(2, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(3, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(4, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(5, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(6, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
+            
+            #Edges
+            self.combo.addItem(translate("self.dialog", "All Edges in the Object"))
+            self.combo.addItem(translate("self.dialog", "All Edges in the Face"))
+            self.combo.addItem(translate("self.dialog", "All Edges-Horizontal Direction"))
+            self.combo.addItem(translate("self.dialog", "All Edges-Vertical Direction"))
+            self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to XY"))
+            self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to XZ"))
+            self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to YZ"))
+
+            self.combo.setItemData(7, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(8, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(9, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(10, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(11, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(12, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(13, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+
+            #Vertexes
+            self.combo.addItem(translate("self.dialog", "All Vertexes in the Object"))
+            self.combo.addItem(translate("self.dialog", "All Vertexes in the Face"))
+            self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to XY"))
+            self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to XZ"))
+            self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to YZ"))
+
+            self.combo.setItemData(14, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(15, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(16, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(17, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(18, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+          
+            # self.combo.setItemIcon(0,icon0)
+            # self.combo.setItemIcon(1,icon1)
+            # self.combo.setItemIcon(2,icon2)
+            self.combo.currentTextChanged.connect(self.activeComboItem)
             
             self.btnRefresh=QtGui.QPushButton(self.dialog)
             self.btnRefresh.setText("Update\nSelection")
             self.btnRefresh.setGeometry(50,80,80,80)
             self.btnRefresh.setStyleSheet("background: cyan;")
 
-            self.generalBox = QtGui.QGroupBox(u'Selection Type')
-            self.label = QtGui.QLabel(self.dialog)
-            self.label.setGeometry(QtCore.QRect(20, 10, 361, 41))
-            
-            self.buttonGroup.addButton(self.radSel_0 )
-            self.buttonGroup.addButton(self.radSel_1 )
-            self.buttonGroup.addButton(self.radSel_2 )
-            self.buttonGroup.addButton(self.radSel_3 )
-            self.buttonGroup.addButton(self.radSel_4 )
-            self.buttonGroup.addButton(self.radSel_4 )
-            self.buttonGroup.addButton(self.radSel_5 )
-            self.buttonGroup.addButton(self.radSel_6 )
-            self.buttonGroup.addButton(self.radSel_7 )
-            self.buttonGroup.addButton(self.radSel_8 )
-            self.buttonGroup.addButton(self.radSel_10 )
-            self.buttonGroup.addButton(self.radSel_9 )
-            self.buttonGroup.addButton(self.radSel_10 )
-            self.buttonGroup.addButton(self.radSel_11 )
-            self.buttonGroup.addButton(self.radSel_11 )
-            self.buttonGroup.addButton(self.radSel_12 )
-            self.buttonGroup.addButton(self.radSel_11 )
-            self.buttonGroup.addButton(self.radSel_17 )
 
-
-            self.label.setFont(font)
-            self.label.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
-            self.label.setFrameShape(QtGui.QFrame.NoFrame)
-            self.label.setFrameShadow(QtGui.QFrame.Sunken)
-            self.label.setObjectName("label")
 
             
             self.buttonBox = QtGui.QDialogButtonBox(self.dialog)
@@ -573,83 +558,17 @@ class Design456_SelectTool:
 
             la.addWidget(self.label)            
             la.addWidget(self.btnRefresh)
-            la.addWidget(self.radSel_0 )
-            la.addWidget(self.radSel_1 )
-            la.addWidget(self.radSel_2 )
-            la.addWidget(self.radSel_3 )
-            la.addWidget(self.radSel_4 )
-            la.addWidget(self.radSel_5 )
-            la.addWidget(self.radSel_6 )
-            la.addWidget(self.radSel_7)
-            la.addWidget(self.radSel_8)
-            la.addWidget(self.radSel_9)
-            la.addWidget(self.radSel_10 )
-            la.addWidget(self.radSel_11 )
+            la.addWidget(self.combo)
             la.addWidget( self.buttonBox)
 
-            font = QtGui.QFont()
-            font.setFamily("Caladea")
-            font.setPointSize(10)
-            font.setBold(True)
-
-            _translate = QtCore.QCoreApplication.translate
-            self.label.setText(_translate("self.dialog", "Select Desired subobjects"))
-            #Face
-            self.radSel_0.setText(_translate("self.dialog", "All Faces"))
-            self.buttonGroup.setId(self.radSel_0,FR_SELECTION.ALL_FACES_IN_OBJECT)
-            self.radSel_0.setStyleSheet('QRadioButton { color: red;}')
-
-            self.radSel_1.setText(_translate("self.dialog", "Horizontal Faces"))
-            self.buttonGroup.setId(self.radSel_1,FR_SELECTION.ALL_HORIZONTAL_FACES)
-            self.radSel_1.setStyleSheet('QRadioButton { color: red;}')
-
-            self.radSel_2.setText(_translate("self.dialog", "Vertical Faces"))
-            self.buttonGroup.setId(self.radSel_2,FR_SELECTION.ALL_VERTICAL_FACES)
-            self.radSel_2.setStyleSheet('QRadioButton { color: red;}')
-
-            self.radSel_3.setText(_translate("self.dialog", "Horizontal Face-Loop"))
-            self.buttonGroup.setId(self.radSel_3,FR_SELECTION.ALL_HORIZONTAL_FACE_LOOP)
-            self.radSel_3.setStyleSheet('QRadioButton { color: red;}')
-
-            #Edges
-            self.radSel_4.setText(_translate("self.dialog", "All Edges in the Object"))
-            self.buttonGroup.setId(self.radSel_4,FR_SELECTION.ALL_EDGES_IN_OBJECT)
-            self.radSel_4.setStyleSheet('QRadioButton { color: green;}')
-
-            self.radSel_5.setText(_translate("self.dialog", "All Edges in the Face"))
-            self.buttonGroup.setId(self.radSel_5,FR_SELECTION.ALL_EDGES_IN_FACE)
-            self.radSel_5.setStyleSheet('QRadioButton { color: green;}')
-
-            self.radSel_6.setText(_translate("self.dialog", "All Edges-Horizontal Direction"))
-            self.buttonGroup.setId(self.radSel_6,FR_SELECTION.ALL_EDGES_HORIZONTAL)
-            self.radSel_6.setStyleSheet('QRadioButton { color: green;}')
-
-            self.radSel_7.setText(_translate("self.dialog", "All Edges-Vertical Direction"))
-            self.buttonGroup.setId(self.radSel_7,FR_SELECTION.ALL_EDGES_VERTICAL)
-            self.radSel_7.setStyleSheet('QRadioButton { color: green;}')            
-            
-            self.radSel_8.setText(_translate("self.dialog", "All Edges-Horizontal-Loop"))
-            self.buttonGroup.setId(self.radSel_8,FR_SELECTION.ALL_EDGES_HORIZONTAL_FACE_LOOP)
-            self.radSel_8.setStyleSheet('QRadioButton { color: green;}')
-            
-            #Vertexes
-            self.radSel_9.setText(_translate("self.dialog", "All Vertexes in the Object"))
-            self.buttonGroup.setId(self.radSel_9,FR_SELECTION.ALL_VERTEXES_IN_OBJECT)
-            self.radSel_9.setStyleSheet('QRadioButton { color: blue;}')
-
-            self.radSel_10.setText(_translate("self.dialog", "All Vertexes in the Face"))
-            self.buttonGroup.setId(self.radSel_10,FR_SELECTION.ALL_VERTEXES_IN_FACE)
-            self.radSel_10.setStyleSheet('QRadioButton { color: blue;}')
-
-            self.radSel_11.setText(_translate("self.dialog", "All Vertexes-Horizontal-Loop"))
-            self.buttonGroup.setId(self.radSel_11,FR_SELECTION.ALL_VERTEXES_HORIZONTAL_FACE_LOOP)
-            self.radSel_11.setStyleSheet('QRadioButton { color: blue;}')
+            # font = QtGui.QFont()
+            # font.setFamily("Caladea")
+            # font.setPointSize(10)
+            # font.setBold(True)
 
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.hideDialog)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.hideDialog)
-            # connects the slot function and makes the argument of the band int type
-            self.buttonGroup.buttonClicked.connect(self.selectObjects)
 
             self.btnRefresh.clicked.connect(self.refreshSelection)
             return self.dialog
@@ -659,7 +578,12 @@ class Design456_SelectTool:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+    
+    def activeComboItem(self):
+        self.currentSelectedItem=self.combo.currentText()
+        print(self.currentSelectedItem)
 
+        
     def refreshSelection(self):
         self.selectedObj=Gui.Selection.getSelectionEx()
         self.faces=self.selectedObj[0].Object.Shape.Faces
@@ -689,6 +613,10 @@ class Design456_SelectTool:
     def selectFaces_All(self):
         for i in range(0,len(self.faces)):
             Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
+
+    def FacesArePerpendicularToXY(self,face):
+        return ((face.Surface.normalAt(1,1)==App.Vector (0,0,1)) or
+                 (face.Surface.normalAt(1,1)==App.Vector (0,0,-1)))
 
     def selectFaces_Horizontal(self):
         for i in range(0,len(self.faces)):
