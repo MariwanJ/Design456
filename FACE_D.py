@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-02 11:36:23'
+__updated__ = '2022-04-03 12:35:55'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1237,14 +1237,26 @@ class reversEngSurface(object):
             elif self.isBSplineSurface(face):
                 pass
 
+    def isLine(self,edg):
+        return(str(edg.Curve)=="<Line object>")
+
+    def isCurve(self,edg):
+        if "Circle" in str(edg.Curve): 
+            return True
+        else:
+            return False
+
+    def isBspline(self,edg):
+        return (str(edg.Curve) =="<BezierCurve object>")
+            
     def isPlanar(self, obj):
-        return str(obj.Surface) =="<Plane object>"
+        return (str(obj.Surface) =="<Plane object>")
     
     def isCylinder(self, obj):
-        return str(obj.Surface) =="<Cylinder object>"
+        return (str(obj.Surface) =="<Cylinder object>")
     
     def isCurve(self, obj):
-        pass
+        #TODO : Dose this exits?
         return True
     
     def isBSplineSurface(self,obj):

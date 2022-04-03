@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-03-07 22:18:17'
+__updated__ = '2022-04-03 15:14:40'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
