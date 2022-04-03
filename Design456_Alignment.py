@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-03 19:13:14'
+__updated__ = '2022-04-03 19:38:11'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -491,17 +491,20 @@ class Design456_SelectTool:
             self.combo.setIconSize(QtCore.QSize(40,40))
  
             self.label.setText(translate("self.dialog", "Select Desired subobjects"))
-            self.combo.setItemData(0, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            
 
+            self.combo.addItem(translate("self.dialog", "Preselected"))
+            self.combo.setItemData(0, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
             #Face
             self.combo.addItem(translate("self.dialog", "All Faces"))
+            self.combo.setItemData(1, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            
             self.combo.addItem(translate("self.dialog", "Horizontal Faces"))
             self.combo.addItem(translate("self.dialog", "Vertical Faces"))
             self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to XY"))
             self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to XZ"))
             self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to YZ"))
             
-            self.combo.setItemData(1, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
             self.combo.setItemData(2, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
             self.combo.setItemData(3, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
             self.combo.setItemData(4, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
@@ -517,13 +520,13 @@ class Design456_SelectTool:
             self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to XZ"))
             self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to YZ"))
 
-            self.combo.setItemData(7, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(8, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(9, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(10, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(11, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(12, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(13, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(7, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(8 , QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(9 , QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(10, QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(11, QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(12, QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(13, QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
 
             #Vertexes
             self.combo.addItem(translate("self.dialog", "All Vertexes in the Object"))
@@ -532,11 +535,11 @@ class Design456_SelectTool:
             self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to XZ"))
             self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to YZ"))
 
-            self.combo.setItemData(14, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(15, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(16, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(17, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
-            self.combo.setItemData(18, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(14, QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(15, QtGui.QBrush(QtCore.Qt.black), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(16, QtGui.QBrush(QtCore.Qt.black), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(17, QtGui.QBrush(QtCore.Qt.black), QtCore.Qt.TextColorRole)
+            self.combo.setItemData(18, QtGui.QBrush(QtCore.Qt.black), QtCore.Qt.TextColorRole)
           
             # self.combo.setItemIcon(0,icon0)
             # self.combo.setItemIcon(1,icon1)
