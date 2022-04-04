@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-04 12:13:05'
+__updated__ = '2022-04-04 14:55:22'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -438,6 +438,7 @@ class Design456_SelectTool:
     """
     def __init__(self):
         self.selectedObj = None
+        self.firstFace=None
     def getMainWindow(self):
         """[Create the tab for the tool]
 
@@ -600,6 +601,7 @@ class Design456_SelectTool:
             closing the tool.
         """
         self.selectedObj=Gui.Selection.getSelectionEx()
+        self.firstFace=self.selectedObj[0].SubObjects[0]
         if len(self.selectedObj)== 0:
             # An object must be selected
             errMessage = "Select a face before using the tool"
