@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = '2022-03-30 22:25:37'
+__updated__ = '2022-04-04 10:15:02'
 
 
 # Widgets type. QT widget will get QT in their names.
@@ -506,19 +506,28 @@ class FR_BRUSHES:
 class FR_SELECTION:
     """[Selection of sub objects enum]"""
     
-    ALL_FACES_IN_OBJECT                 =   10              # 1
-    ALL_HORIZONTAL_FACES                =   20              # 2
-    ALL_VERTICAL_FACES                  =   30              # 3
-    ALL_HORIZONTAL_FACE_LOOP            =   40              # 4
-
-
-    ALL_EDGES_IN_OBJECT                 =   60              # 6
-    ALL_EDGES_IN_FACE                   =   70              # 7
-    ALL_EDGES_HORIZONTAL                =   80              # 8
-    ALL_EDGES_VERTICAL                  =   90              # 9
-    ALL_EDGES_HORIZONTAL_FACE_LOOP      =  100              #10
-
-    ALL_VERTEXES_IN_OBJECT              =  200              #12 
-    ALL_VERTEXES_IN_FACE                =  210              #13 
-    ALL_VERTEXES_HORIZONTAL_FACE_LOOP   =  270              #17 
+    PRE_SELECTED_FACE                   =     0
+    #FACES
+    FACES_IN_OBJECT                     =     1
+    FACES_PERPENDICULAR_TO_XY           =     2
+    FACES_PARALLEL_TO_XY                =     3
+    LOOP_FACES_PERPENDICULAR_TO_XY      =     4
+    LOOP_FACES_PERPENDICULAR_TO_XZ      =     5
+    LOOP_FACES_PERPENDICULAR_TO_YZ      =     6
+ 
+    #EDGES 
+    EDGES_IN_OBJECT                     =     7 
+    EDGES_IN_FACE                       =     8
+    EDGES_PERPENDICULAR_TO_XY           =     9
+    EDGES_PARALLEL_TO_XY                =    10
+    LOOP_EDGES_PERPENDICULAR_TO_XY      =    11 
+    LOOP_EDGES_PERPENDICULAR_TO_XZ      =    12
+    LOOP_EDGES_PERPENDICULAR_TO_YZ      =    13
+    
+    #VERTEXES
+    VERTEXES_IN_OBJECT                  =    14 
+    VERTEXES_IN_FACE                    =    15 
+    LOOP_VERTEXES_PERPENDICULAR_TO_XY   =    16
+    LOOP_VERTEXES_PERPENDICULAR_TO_XZ   =    17
+    LOOP_VERTEXES_PERPENDICULAR_TO_YZ   =    18
 

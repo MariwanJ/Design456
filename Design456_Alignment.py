@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-03 19:38:11'
+__updated__ = '2022-04-04 12:13:05'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -436,6 +436,8 @@ Gui.addCommand('Design456_ResetPlacements', Design456_ResetPlacements())
 class Design456_SelectTool:
     """[Select Tool for selecting faces, edges, vertices]
     """
+    def __init__(self):
+        self.selectedObj = None
     def getMainWindow(self):
         """[Create the tab for the tool]
 
@@ -499,8 +501,8 @@ class Design456_SelectTool:
             self.combo.addItem(translate("self.dialog", "All Faces"))
             self.combo.setItemData(1, QtGui.QBrush(QtCore.Qt.red), QtCore.Qt.TextColorRole)
             
-            self.combo.addItem(translate("self.dialog", "Horizontal Faces"))
-            self.combo.addItem(translate("self.dialog", "Vertical Faces"))
+            self.combo.addItem(translate("self.dialog", "Faces-Perpendicular to XY"))
+            self.combo.addItem(translate("self.dialog", "Faces-Parallel to XY"))
             self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to XY"))
             self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to XZ"))
             self.combo.addItem(translate("self.dialog", "Loop-Faces Perpendicular to YZ"))
@@ -512,10 +514,10 @@ class Design456_SelectTool:
             self.combo.setItemData(6, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
             
             #Edges
-            self.combo.addItem(translate("self.dialog", "All Edges in the Object"))
-            self.combo.addItem(translate("self.dialog", "All Edges in the Face"))
-            self.combo.addItem(translate("self.dialog", "All Edges-Horizontal Direction"))
-            self.combo.addItem(translate("self.dialog", "All Edges-Vertical Direction"))
+            self.combo.addItem(translate("self.dialog", "Edges in the Object"))
+            self.combo.addItem(translate("self.dialog", "Edges in the Face"))
+            self.combo.addItem(translate("self.dialog", "Edges-Perpendicular to XY"))
+            self.combo.addItem(translate("self.dialog", "Edges-Parallel to XY"))
             self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to XY"))
             self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to XZ"))
             self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to YZ"))
@@ -529,8 +531,8 @@ class Design456_SelectTool:
             self.combo.setItemData(13, QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
 
             #Vertexes
-            self.combo.addItem(translate("self.dialog", "All Vertexes in the Object"))
-            self.combo.addItem(translate("self.dialog", "All Vertexes in the Face"))
+            self.combo.addItem(translate("self.dialog", "Vertexes in the Object"))
+            self.combo.addItem(translate("self.dialog", "Vertexes in the Face"))
             self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to XY"))
             self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to XZ"))
             self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to YZ"))
@@ -544,16 +546,13 @@ class Design456_SelectTool:
             # self.combo.setItemIcon(0,icon0)
             # self.combo.setItemIcon(1,icon1)
             # self.combo.setItemIcon(2,icon2)
-            self.combo.currentTextChanged.connect(self.activeComboItem)
+            self.combo.currentTextChanged.connect(self.activeComboItem_cb)
             
             self.btnRefresh=QtGui.QPushButton(self.dialog)
             self.btnRefresh.setText("Update\nSelection")
             self.btnRefresh.setGeometry(50,80,80,80)
             self.btnRefresh.setStyleSheet("background: cyan;")
 
-
-
-            
             self.buttonBox = QtGui.QDialogButtonBox(self.dialog)
             self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
             self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
@@ -564,12 +563,6 @@ class Design456_SelectTool:
             la.addWidget(self.combo)
             la.addWidget( self.buttonBox)
 
-            # font = QtGui.QFont()
-            # font.setFamily("Caladea")
-            # font.setPointSize(10)
-            # font.setBold(True)
-
-            QtCore.QMetaObject.connectSlotsByName(self.dialog)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.hideDialog)
             QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.hideDialog)
 
@@ -582,46 +575,64 @@ class Design456_SelectTool:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
     
-    def activeComboItem(self):
+    def activeComboItem_cb(self):
+        """Combobox callback. It will execute the chosen selection type
+        """
         self.currentSelectedItem=self.combo.currentText()
         print(self.currentSelectedItem)
-
-        
+        currentID=self.combo.currentIndex()
+        Gui.Selection.clearSelection()
+        if currentID==0:
+            #Only preselected item
+            Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,self.firstFaceName)
+            return
+        if ((currentID>=FR_SELECTION.FACES_IN_OBJECT) and (currentID<=FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ)):
+            self.selectFaces(currentID)
+        elif ((currentID>=FR_SELECTION.EDGES_IN_OBJECT) and (currentID<=FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ)):
+            self.selectEdges(currentID)
+        elif ((currentID>=FR_SELECTION.VERTEXES_IN_OBJECT) and (currentID<=FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_YZ)):
+            self.selectVertexes(currentID)
+    
+    
     def refreshSelection(self):
+        """ Update selected object and it's sub objects
+            This allow user to use the tool continuously without
+            closing the tool.
+        """
         self.selectedObj=Gui.Selection.getSelectionEx()
+        if len(self.selectedObj)== 0:
+            # An object must be selected
+            errMessage = "Select a face before using the tool"
+            faced.errorDialog(errMessage)
+            return
+            
+        self.firstFaceName= self.selectedObj[0].SubElementNames[0]   
         self.faces=self.selectedObj[0].Object.Shape.Faces
         self.edges=self.selectedObj[0].Object.Shape.Edges
         self.vertexes=self.selectedObj[0].Object.Shape.Vertexes
         self.Targetobj = self.selectedObj[0].Object
         self.doc=App.ActiveDocument
-        if len(self.selectedObj)== 0:
-            # An object must be selected
-            errMessage = "Select an object, one face or one edge before using the tool"
-            faced.errorDialog(errMessage)
-            return
-        
-    def selectObjects(self,obj):
-        currentID=self.buttonGroup.id(obj)
-        Gui.Selection.clearSelection()
-        if ((currentID>=FR_SELECTION.ALL_FACES_IN_OBJECT) and 
-           (currentID<=FR_SELECTION.ALL_HORIZONTAL_FACE_LOOP)):
-           self.selectFaces(currentID)
-        elif ((currentID>=FR_SELECTION.ALL_EDGES_IN_OBJECT) and 
-           (currentID<=FR_SELECTION.ALL_EDGES_HORIZONTAL_FACE_LOOP)):
-            self.selectEdges(currentID)
-        elif ((currentID>=FR_SELECTION.ALL_VERTEXES_IN_OBJECT) and 
-          (currentID<=FR_SELECTION.ALL_VERTEXES_HORIZONTAL_FACE_LOOP)):
-            self.selectVertexes(currentID)
 
     def selectFaces_All(self):
+        """Select all faces found in the 3D object
+        """
         for i in range(0,len(self.faces)):
             Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
 
     def FacesArePerpendicularToXY(self,face):
-        return ((face.Surface.normalAt(1,1)==App.Vector (0,0,1)) or
-                 (face.Surface.normalAt(1,1)==App.Vector (0,0,-1)))
+        return (not( (face.Surface.normalAt(1,1)==App.Vector (0,0,1)) or
+                    (face.Surface.normalAt(1,1)==App.Vector (0,0,-1))))
+    
+    def FacesArePerpendicularToXZ(self,face):
+        return (not((face.Surface.normalAt(1,1)==App.Vector (0,1,0)) or
+                 (face.Surface.normalAt(1,1)==App.Vector (0,-1,0))))
 
-    def selectFaces_Horizontal(self):
+    def FacesArePerpendicularToYZ(self,face):
+        return (not((face.Surface.normalAt(1,1)==App.Vector (1,0,0)) or
+                 (face.Surface.normalAt(1,1)==App.Vector (-1,0,0))))
+
+        
+    def selectFaces_PerpendicularToXY(self):
         for i in range(0,len(self.faces)):
             normal=self.faces[i].normalAt(1,1)
             if not((normal==App.Vector (0.0, 0.0, -1.0) or
@@ -629,7 +640,7 @@ class Design456_SelectTool:
                 (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)))):
                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
     
-    def selectFaces_Vertical(self):
+    def selectFaces_ParallelToXY(self):
         for i in range(0,len(self.faces)):
             normal=self.faces[i].normalAt(1,1)
             if (normal==App.Vector (0.0, 0.0, -1.0) or
@@ -643,29 +654,25 @@ class Design456_SelectTool:
                 return True  
         return False
 
-    def selectFaces_Horizontal_faceloop(self):
-        firstFace=self.selectedObj[0].SubObjects[0]  #Selected face in the Loop side
-        if( hasattr(firstFace, 'curvature')):
+    def selectFaces_faceloop(self,typeOfFaces):
+       
+        if( hasattr(self.firstFace, 'curvature')):
             print("Curvature face has only one face")
             return  # cylinder has only one face 
 
-        firstFaceName= self.selectedObj[0].SubElementNames[0] #Selected facename
         shape=self.selectedObj[0].Object.Shape
         Gui.Selection.clearSelection()
-        self.selectFaces_Horizontal()
-        HorizontalFaces=Gui.Selection.getSelectionEx()[0].SubObjects #all horizontal
-        Gui.Selection.clearSelection()
-        self.selectEdges_Horizontal()
+        self.selectEdges_PerpendicularToXY()
         HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
         firstFaceEdges=[]
         for e in HorizontalEdges:
-            if self.faceHasEdge(firstFace,e):
+            if self.faceHasEdge(self.firstFace,e):
                 print("found")
                 firstFaceEdges.append(e)
         #We have the horizontal edges of first edge
         TotalFaces=[]
         newEdge=firstFaceEdges[1]
-        currentFace=firstFace
+        currentFace=self.firstFace
         currentEdges=[]
         while (not(newEdge.isSame(firstFaceEdges[0]))):
             f=faced.findFaceSHavingTheSameEdge(newEdge,shape)
@@ -692,18 +699,22 @@ class Design456_SelectTool:
                 f2=TotalFaces[j]
                 if(f2.isSame(f1)):
                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
-        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,firstFaceName)
+        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,self.firstFaceName)
 
     #Faces
     def selectFaces(self,Seltype): 
-        if Seltype == FR_SELECTION.ALL_FACES_IN_OBJECT:
+        if Seltype == FR_SELECTION.FACES_IN_OBJECT:
             self.selectFaces_All()
-        elif Seltype == FR_SELECTION.ALL_HORIZONTAL_FACES:
-            self.selectFaces_Horizontal()
-        elif Seltype == FR_SELECTION.ALL_VERTICAL_FACES:
-            self.selectFaces_Vertical()
-        elif Seltype == FR_SELECTION.ALL_HORIZONTAL_FACE_LOOP:
-            self.selectFaces_Horizontal_faceloop()
+        elif Seltype == FR_SELECTION.FACES_PERPENDICULAR_TO_XY:
+            self.selectFaces_PerpendicularToXY()
+        elif Seltype == FR_SELECTION.FACES_PARALLEL_TO_XY:
+            self.selectFaces_ParallelToXY()
+        elif Seltype == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY:
+            self.selectFaces_faceloop(Seltype)
+        elif Seltype == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ:
+            self.selectFaces_faceloop(Seltype)
+        elif Seltype == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ:
+            self.selectFaces_faceloop(Seltype)
     
     def selectEdges_All(self):
         for i in range(0,len(self.edges)):
@@ -719,11 +730,12 @@ class Design456_SelectTool:
                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
                     break
 
-    def selectEdges_Horizontal(self):
+    def selectEdges_PerpendicularToXY(self):
         for i in range(0,len(self.faces)):
-            normal=self.faces[i].normalAt(1,1)
-            if not((normal==App.Vector (0.0, 0.0, -1.0) or
-                normal==App.Vector (0.0, 0.0, 1.0) )):
+            # normal=self.faces[i].normalAt(1,1)
+            if self.FacesArePerpendicularToXY(self.faces[i]):
+            # if not((normal==App.Vector (0.0, 0.0, -1.0) or
+            #     normal==App.Vector (0.0, 0.0, 1.0) )):
                 for e in self.faces[i].Edges:
                     for j in enumerate(self.edges):
                         if j[1].isSame(e):
@@ -733,23 +745,37 @@ class Design456_SelectTool:
                                     name="Edge%d" %(j[0]+1)
                                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
 
-    def selectEdges_Vertical(self):
+    def selectEdges_ParallelToXY(self):
         for i in range(0,len(self.faces)):
-            normal=self.faces[i].normalAt(1,1)
-            if (normal==App.Vector (0.0, 0.0, -1.0) or
-                    normal==App.Vector (0.0, 0.0, 1.0)):
+            # normal=self.faces[i].normalAt(1,1)
+            # if (normal==App.Vector (0.0, 0.0, -1.0) or
+            #         normal==App.Vector (0.0, 0.0, 1.0)):
+            if self.FacesArePerpendicularToXZ(self.faces[i]) or self.FacesArePerpendicularToYZ(self.faces[i]):
                     for e in self.faces[i].Edges:
                         for j in enumerate(self.edges):
                             if j[1].isSame(e):
                                 name="Edge%d" %(j[0]+1)
                                 Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
         
-    def selectEdges_Horizontal_Loop(self):
+    def selectEdges_Loop(self,typeOfEdges):
         Gui.Selection.clearSelection()
-        self.selectFaces_Horizontal_faceloop()
+        desiredType=None
+        if typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY:
+            desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY
+        elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ:
+            desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ
+        elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ:
+            desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ
+        else:
+            pass #error
+            return
         faces=Gui.Selection.getSelectionEx()[0].SubObjects
         Gui.Selection.clearSelection()
-        self.selectEdges_Horizontal()
+        if desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY:
+            self.selectEdges_PerpendicularToXY(desiredType)
+        else:
+            self.selectEdges_ParallelToXY(desiredType)
+        
         edges=Gui.Selection.getSelectionEx()[0].SubObjects
         foundEdges=[]
         for j in enumerate(edges):
@@ -766,16 +792,20 @@ class Design456_SelectTool:
                     break
     #Edges
     def selectEdges(self,Seltype):
-        if Seltype == FR_SELECTION.ALL_EDGES_IN_OBJECT:
+        if Seltype == FR_SELECTION.EDGES_IN_OBJECT:
             self.selectEdges_All()
-        elif Seltype == FR_SELECTION.ALL_EDGES_IN_FACE:
+        elif Seltype == FR_SELECTION.EDGES_IN_FACE:
             self.selectEdges_inFace()
-        elif Seltype == FR_SELECTION.ALL_EDGES_HORIZONTAL:
-            self.selectEdges_Horizontal()
-        elif Seltype == FR_SELECTION.ALL_EDGES_VERTICAL:
-            self.selectEdges_Vertical()
-        elif Seltype == FR_SELECTION.ALL_EDGES_HORIZONTAL_FACE_LOOP:
-            self.selectEdges_Horizontal_Loop()
+        elif Seltype == FR_SELECTION.EDGES_PERPENDICULAR_TO_XY:
+            self.selectEdges_PerpendicularToXY()
+        elif Seltype == FR_SELECTION.EDGES_PARALLEL_TO_XY:
+            self.selectEdges_ParallelToXY()
+        elif Seltype == FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY:
+            self.selectEdges_Loop(Seltype)
+        elif Seltype == FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ:
+            self.selectEdges_Loop(Seltype)
+        elif Seltype == FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ:
+            self.selectEdges_Loop(Seltype)
 
 
     def selectVertexes_All(self):
@@ -794,7 +824,7 @@ class Design456_SelectTool:
 
     def selectVertexes_Horizontal_Loop(self):
         Gui.Selection.clearSelection()
-        self.selectEdges_Horizontal_Loop()
+        self.selectEdges_Loop()
         edges=Gui.Selection.getSelectionEx()[0].SubObjects
         Gui.Selection.clearSelection()
         for j in enumerate(self.vertexes):
@@ -809,14 +839,17 @@ class Design456_SelectTool:
 
     #Vertexes      
     def selectVertexes(self,Seltype):
-        if Seltype==FR_SELECTION.ALL_VERTEXES_IN_OBJECT:
+        if Seltype==FR_SELECTION.VERTEXES_IN_OBJECT:
             self.selectVertexes_All()
-        if Seltype==FR_SELECTION.ALL_VERTEXES_IN_FACE:
+        if Seltype==FR_SELECTION.VERTEXES_IN_FACE:
             self.selectVertexes_InFace()
-        if Seltype==FR_SELECTION.ALL_VERTEXES_HORIZONTAL_FACE_LOOP:
+        if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_XY:
+            self.selectVertexes_Horizontal_Loop()
+        if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_XZ:
+            self.selectVertexes_Horizontal_Loop()            
+        if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_YZ:
             self.selectVertexes_Horizontal_Loop()
             
-
     def hideDialog(self):
         self.dialog.hide()
         dw = self.mw.findChildren(QtGui.QDockWidget)
