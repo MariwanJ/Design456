@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-05 14:11:32'
+__updated__ = '2022-04-05 17:13:43'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1299,3 +1299,16 @@ def showFirstTab():
             tab = i.findChild(QtGui.QTabWidget)
             break
     tab.setCurrentIndex(0)
+
+def roundVector(inVector:App.Vector=App.Vector(0,0,0),digits:int=0):
+    """Round vector to the desired digits after comma
+    Args:
+        inVector (App.Vector, optional): Vector to round to the desired digits after comma. Defaults to App.Vector(0,0,0).
+        digits (int, optional): Digits after comma. Defaults to 0.
+
+    Returns:
+        App.Vector: Vector represent the rounded values
+    """
+    return App.Vector((round(inVector.x,digits)),
+                    (round(inVector.y,digits)), 
+                    (round(inVector.z,digits)))

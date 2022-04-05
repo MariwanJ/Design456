@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-05 16:36:23'
+__updated__ = '2022-04-05 19:47:07'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -636,18 +636,18 @@ class Design456_SelectTool:
 
     #EDGE : check edge is perpendicular XY, XZ and YZ 
     def EdgeIsPerpendicularToXY(self,edge):
-        if(edge.tangentAt(edge.FirstParameter) == App.Vector(0,0,1)):
+        if(faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(0,0,1)):
             return True
         else:
             return False
     def EdgeIsPerpendicularToXZ(self,edge):
-        if(edge.tangentAt(edge.FirstParameter) == App.Vector(0,1,0)):
+        if( faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(0,1,0)):
             return True
         else:
             return False
         
     def EdgeIsPerpendicularToYZ(self,edge):
-        if(edge.tangentAt(edge.FirstParameter) == App.Vector(1,0,0)):
+        if(faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(1,0,0)):
             return True
         else:
             return False
@@ -767,26 +767,22 @@ class Design456_SelectTool:
                     break
 
     def selectEdges_PerpendicularToXY(self):
-        for i in range(0,len(self.faces)):
-            if self.FaceIsPerpendicularToXY(self.faces[i]):
-                for e in self.faces[i].Edges:
-                    for j in enumerate(self.edges):
-                        if j[1].isSame(e):
-                                v1=j[1].Vertexes[0]
-                                v2=j[1].Vertexes[1]
-                                if (v1.Point.z!=v2.Point.z):
-                                    name="Edge%d" %(j[0]+1)
-                                    Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+        for i in range(0,len(self.edges)):
+            if self.EdgeIsPerpendicularToXY(self.edges[i]):
+                e=self.edges[i]
+                for j in enumerate(self.edges):
+                    if j[1].isSame(e):
+                        name="Edge%d" %(j[0]+1)
+                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
 
     def selectEdges_ParallelToXY(self):
         for i in range(0,len(self.faces)):
-            if(self.FaceIsPerpendicularToXZ(self.faces[i]) or 
-               self.FaceIsPerpendicularToYZ(self.faces[i])):
-                    for e in self.faces[i].Edges:
-                        for j in enumerate(self.edges):
-                            if j[1].isSame(e):
-                                name="Edge%d" %(j[0]+1)
-                                Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+            if not(self.EdgeIsPerpendicularToXY(self.edges[i])):
+                e=self.edges[i]
+                for j in enumerate(self.edges):
+                    if j[1].isSame(e):
+                        name="Edge%d" %(j[0]+1)
+                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
         
     def selectEdges_Loop(self,typeOfEdges):
         try:
@@ -802,6 +798,9 @@ class Design456_SelectTool:
                 pass #error
                 return
             self.selectFaces(desiredType)
+            if len(Gui.Selection.getSelectionEx())==0:
+                print("Not found")
+                return 
             faces=Gui.Selection.getSelectionEx()[0].SubObjects
             Gui.Selection.clearSelection()
             if desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY:
@@ -862,9 +861,12 @@ class Design456_SelectTool:
                     Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
                     break
 
-    def selectVertexes_Horizontal_Loop(self):
+    def selectVertexes_In_Loop(self,selType):
         Gui.Selection.clearSelection()
-        self.selectEdges_Loop()
+        self.selectEdges_Loop(selType)
+        if len(Gui.Selection.getSelectionEx())==0:
+            print("not found")
+            return
         edges=Gui.Selection.getSelectionEx()[0].SubObjects
         Gui.Selection.clearSelection()
         for j in enumerate(self.vertexes):
@@ -884,11 +886,11 @@ class Design456_SelectTool:
         if Seltype==FR_SELECTION.VERTEXES_IN_FACE:
             self.selectVertexes_InFace()
         if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_XY:
-            self.selectVertexes_Horizontal_Loop()
+            self.selectVertexes_In_Loop(FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY)
         if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_XZ:
-            self.selectVertexes_Horizontal_Loop()            
+            self.selectVertexes_In_Loop(FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ)            
         if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_YZ:
-            self.selectVertexes_Horizontal_Loop()
+            self.selectVertexes_In_Loop(FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ)
             
     def hideDialog(self):
         self.dialog.hide()
