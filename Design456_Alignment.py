@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-04 14:55:22'
+__updated__ = '2022-04-05 14:05:43'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -621,33 +621,37 @@ class Design456_SelectTool:
         for i in range(0,len(self.faces)):
             Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
 
+    #check how the face is located againt XY, XZ and YZ 
     def FacesArePerpendicularToXY(self,face):
-        return (not( (face.Surface.normalAt(1,1)==App.Vector (0,0,1)) or
-                    (face.Surface.normalAt(1,1)==App.Vector (0,0,-1))))
+        return (not( (face.normalAt(1,1)==App.Vector (0,0,1)) or
+                    (face.normalAt(1,1)==App.Vector (0,0,-1))))
     
     def FacesArePerpendicularToXZ(self,face):
-        return (not((face.Surface.normalAt(1,1)==App.Vector (0,1,0)) or
-                 (face.Surface.normalAt(1,1)==App.Vector (0,-1,0))))
+        return (not((face.normalAt(1,1)==App.Vector (0,1,0)) or
+                 (face.normalAt(1,1)==App.Vector (0,-1,0))))
 
     def FacesArePerpendicularToYZ(self,face):
-        return (not((face.Surface.normalAt(1,1)==App.Vector (1,0,0)) or
-                 (face.Surface.normalAt(1,1)==App.Vector (-1,0,0))))
+        return (not((face.normalAt(1,1)==App.Vector (1,0,0)) or
+                 (face.normalAt(1,1)==App.Vector (-1,0,0))))
 
         
     def selectFaces_PerpendicularToXY(self):
         for i in range(0,len(self.faces)):
-            normal=self.faces[i].normalAt(1,1)
-            if not((normal==App.Vector (0.0, 0.0, -1.0) or
-                normal==App.Vector (0.0, 0.0, 1.0) or
-                (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)))):
-                    Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
+            #normal=self.faces[i].normalAt(1,1)
+            # if not((normal==App.Vector (0.0, 0.0, -1.0) or
+            #     normal==App.Vector (0.0, 0.0, 1.0) or
+            #     (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)))):
+            if self.FacesArePerpendicularToXY(self.faces[i]):
+                Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
     
     def selectFaces_ParallelToXY(self):
         for i in range(0,len(self.faces)):
-            normal=self.faces[i].normalAt(1,1)
-            if (normal==App.Vector (0.0, 0.0, -1.0) or
-                normal==App.Vector (0.0, 0.0, 1.0) or
-                (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z))):
+            #normal=self.faces[i].normalAt(1,1)
+            #if (normal==App.Vector (0.0, 0.0, -1.0) or
+            #    normal==App.Vector (0.0, 0.0, 1.0) or
+            #    (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z))):
+            if (self.FacesArePerpendicularToXZ(self.faces[i]) or 
+                self.FacesArePerpendicularToXZ(self.faces[i])) :    
                 Gui.Selection.addSelection(self.doc.Name, self.Targetobj.Name, "Face"+str(i+1))
 
     def faceHasEdge(self, face, edge):
@@ -664,7 +668,14 @@ class Design456_SelectTool:
 
         shape=self.selectedObj[0].Object.Shape
         Gui.Selection.clearSelection()
-        self.selectEdges_PerpendicularToXY()
+        if(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY):
+            self.selectEdges_PerpendicularToXY()
+        elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ):
+            self.selectEdges_ParallelToXY()
+        elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ):
+            self.selectEdges_ParallelToXY()
+            
+
         HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
         firstFaceEdges=[]
         for e in HorizontalEdges:
@@ -734,10 +745,7 @@ class Design456_SelectTool:
 
     def selectEdges_PerpendicularToXY(self):
         for i in range(0,len(self.faces)):
-            # normal=self.faces[i].normalAt(1,1)
             if self.FacesArePerpendicularToXY(self.faces[i]):
-            # if not((normal==App.Vector (0.0, 0.0, -1.0) or
-            #     normal==App.Vector (0.0, 0.0, 1.0) )):
                 for e in self.faces[i].Edges:
                     for j in enumerate(self.edges):
                         if j[1].isSame(e):
@@ -749,9 +757,6 @@ class Design456_SelectTool:
 
     def selectEdges_ParallelToXY(self):
         for i in range(0,len(self.faces)):
-            # normal=self.faces[i].normalAt(1,1)
-            # if (normal==App.Vector (0.0, 0.0, -1.0) or
-            #         normal==App.Vector (0.0, 0.0, 1.0)):
             if self.FacesArePerpendicularToXZ(self.faces[i]) or self.FacesArePerpendicularToYZ(self.faces[i]):
                     for e in self.faces[i].Edges:
                         for j in enumerate(self.edges):
@@ -771,12 +776,13 @@ class Design456_SelectTool:
         else:
             pass #error
             return
+        self.selectFaces(desiredType)
         faces=Gui.Selection.getSelectionEx()[0].SubObjects
         Gui.Selection.clearSelection()
         if desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY:
-            self.selectEdges_PerpendicularToXY(desiredType)
+            self.selectEdges_PerpendicularToXY()
         else:
-            self.selectEdges_ParallelToXY(desiredType)
+            self.selectEdges_ParallelToXY()
         
         edges=Gui.Selection.getSelectionEx()[0].SubObjects
         foundEdges=[]

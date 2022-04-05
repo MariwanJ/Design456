@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-03 12:35:55'
+__updated__ = '2022-04-05 14:11:32'
 
 
 # TODO : FIXME BETTER WAY?
@@ -475,6 +475,7 @@ class PartMover:
                 if not self.deleteOnEscape:
                     self.obj.Placement.Base = self.initialPosition
                 self.remove_callbacks()
+                self.StepDialog.close()
 
         except Exception as err:
             App.Console.PrintError("'Keyboard error' Failed. "
