@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-05 14:05:43'
+__updated__ = '2022-04-05 16:36:23'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -621,38 +621,47 @@ class Design456_SelectTool:
         for i in range(0,len(self.faces)):
             Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
 
-    #check how the face is located againt XY, XZ and YZ 
-    def FacesArePerpendicularToXY(self,face):
+    #FACE : check face is  perpendicular XY, XZ and YZ 
+    def FaceIsPerpendicularToXY(self,face):
         return (not( (face.normalAt(1,1)==App.Vector (0,0,1)) or
                     (face.normalAt(1,1)==App.Vector (0,0,-1))))
     
-    def FacesArePerpendicularToXZ(self,face):
+    def FaceIsPerpendicularToXZ(self,face):
         return (not((face.normalAt(1,1)==App.Vector (0,1,0)) or
                  (face.normalAt(1,1)==App.Vector (0,-1,0))))
 
-    def FacesArePerpendicularToYZ(self,face):
+    def FaceIsPerpendicularToYZ(self,face):
         return (not((face.normalAt(1,1)==App.Vector (1,0,0)) or
                  (face.normalAt(1,1)==App.Vector (-1,0,0))))
 
+    #EDGE : check edge is perpendicular XY, XZ and YZ 
+    def EdgeIsPerpendicularToXY(self,edge):
+        if(edge.tangentAt(edge.FirstParameter) == App.Vector(0,0,1)):
+            return True
+        else:
+            return False
+    def EdgeIsPerpendicularToXZ(self,edge):
+        if(edge.tangentAt(edge.FirstParameter) == App.Vector(0,1,0)):
+            return True
+        else:
+            return False
         
+    def EdgeIsPerpendicularToYZ(self,edge):
+        if(edge.tangentAt(edge.FirstParameter) == App.Vector(1,0,0)):
+            return True
+        else:
+            return False
+
     def selectFaces_PerpendicularToXY(self):
         for i in range(0,len(self.faces)):
-            #normal=self.faces[i].normalAt(1,1)
-            # if not((normal==App.Vector (0.0, 0.0, -1.0) or
-            #     normal==App.Vector (0.0, 0.0, 1.0) or
-            #     (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z)))):
-            if self.FacesArePerpendicularToXY(self.faces[i]):
+            if self.FaceIsPerpendicularToXY(self.faces[i]):
                 Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
     
     def selectFaces_ParallelToXY(self):
         for i in range(0,len(self.faces)):
-            #normal=self.faces[i].normalAt(1,1)
-            #if (normal==App.Vector (0.0, 0.0, -1.0) or
-            #    normal==App.Vector (0.0, 0.0, 1.0) or
-            #    (abs(normal.x)==abs(normal.y) and abs(normal.x)==abs(normal.z))):
-            if (self.FacesArePerpendicularToXZ(self.faces[i]) or 
-                self.FacesArePerpendicularToXZ(self.faces[i])) :    
+            if (not (self.FaceIsPerpendicularToXY(self.faces[i]))):    
                 Gui.Selection.addSelection(self.doc.Name, self.Targetobj.Name, "Face"+str(i+1))
+
 
     def faceHasEdge(self, face, edge):
         for e in face.Edges:
@@ -661,59 +670,73 @@ class Design456_SelectTool:
         return False
 
     def selectFaces_faceloop(self,typeOfFaces):
-       
-        if( hasattr(self.firstFace, 'curvature')):
-            print("Curvature face has only one face")
-            return  # cylinder has only one face 
+        try:
+            if( hasattr(self.firstFace, 'curvature')):
+                print("Curvature face has only one face")
+                return  # cylinder has only one face 
 
-        shape=self.selectedObj[0].Object.Shape
-        Gui.Selection.clearSelection()
-        if(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY):
-            self.selectEdges_PerpendicularToXY()
-        elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ):
-            self.selectEdges_ParallelToXY()
-        elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ):
-            self.selectEdges_ParallelToXY()
-            
+            shape=self.selectedObj[0].Object.Shape
+            Gui.Selection.clearSelection()
+            if(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY):
+                self.selectEdges_PerpendicularToXY()
+            elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ):
+                self.selectEdges_ParallelToXY()
+            elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ):
+                self.selectEdges_ParallelToXY()
 
-        HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
-        firstFaceEdges=[]
-        for e in HorizontalEdges:
-            if self.faceHasEdge(self.firstFace,e):
-                print("found")
-                firstFaceEdges.append(e)
-        #We have the horizontal edges of first edge
-        TotalFaces=[]
-        newEdge=firstFaceEdges[1]
-        currentFace=self.firstFace
-        currentEdges=[]
-        while (not(newEdge.isSame(firstFaceEdges[0]))):
-            f=faced.findFaceSHavingTheSameEdge(newEdge,shape)
-            if f[0].isSame(currentFace):
-                TotalFaces.append(f[1])
-                currentFace=f[1]
-            else:
-                TotalFaces.append(f[0])
-                currentFace=f[0]
-            #we have new face, find edges
+            HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
+            if len(HorizontalEdges)==0:
+                print("nothing found")
+                return
+            firstFaceEdges=[]
             for e in HorizontalEdges:
-                if self.faceHasEdge(currentFace, e):
-                    currentEdges.append(e)
-            if not(currentEdges[0].isSame(newEdge)):
-                newEdge=currentEdges[0]
-            else:
-                newEdge=currentEdges[1]
-            currentEdges.clear()
-        Gui.Selection.clearSelection()
-        
-        for i in range(0, len(self.faces)):
-            for j in range(0,len(TotalFaces)):
-                f1=self.faces[i]
-                f2=TotalFaces[j]
-                if(f2.isSame(f1)):
-                    Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
-        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,self.firstFaceName)
+                if self.faceHasEdge(self.firstFace,e):
+                    print("found")
+                    firstFaceEdges.append(e)
+            #We have the horizontal edges of first edge
+            TotalFaces=[]
+            if (len(firstFaceEdges)<2):
+                print("not found")
+                Gui.Selection.clearSelection()
+                return
+            
+            newEdge=firstFaceEdges[1]
+            currentFace=self.firstFace
+            currentEdges=[]
+            while (not(newEdge.isSame(firstFaceEdges[0]))):
+                f=faced.findFaceSHavingTheSameEdge(newEdge,shape)
+                if f[0].isSame(currentFace):
+                    TotalFaces.append(f[1])
+                    currentFace=f[1]
+                else:
+                    TotalFaces.append(f[0])
+                    currentFace=f[0]
+                #we have new face, find edges
+                for e in HorizontalEdges:
+                    if self.faceHasEdge(currentFace, e):
+                        currentEdges.append(e)
+                if not(currentEdges[0].isSame(newEdge)):
+                    newEdge=currentEdges[0]
+                else:
+                    newEdge=currentEdges[1]
+                currentEdges.clear()
+            Gui.Selection.clearSelection()
 
+            for i in range(0, len(self.faces)):
+                for j in range(0,len(TotalFaces)):
+                    f1=self.faces[i]
+                    f2=TotalFaces[j]
+                    if(f2.isSame(f1)):
+                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
+            Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,self.firstFaceName)
+            
+        except Exception as err:
+            App.Console.PrintError("'selectFaces_faceloop' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     #Faces
     def selectFaces(self,Seltype): 
         if Seltype == FR_SELECTION.FACES_IN_OBJECT:
@@ -745,7 +768,7 @@ class Design456_SelectTool:
 
     def selectEdges_PerpendicularToXY(self):
         for i in range(0,len(self.faces)):
-            if self.FacesArePerpendicularToXY(self.faces[i]):
+            if self.FaceIsPerpendicularToXY(self.faces[i]):
                 for e in self.faces[i].Edges:
                     for j in enumerate(self.edges):
                         if j[1].isSame(e):
@@ -757,7 +780,8 @@ class Design456_SelectTool:
 
     def selectEdges_ParallelToXY(self):
         for i in range(0,len(self.faces)):
-            if self.FacesArePerpendicularToXZ(self.faces[i]) or self.FacesArePerpendicularToYZ(self.faces[i]):
+            if(self.FaceIsPerpendicularToXZ(self.faces[i]) or 
+               self.FaceIsPerpendicularToYZ(self.faces[i])):
                     for e in self.faces[i].Edges:
                         for j in enumerate(self.edges):
                             if j[1].isSame(e):
@@ -765,39 +789,47 @@ class Design456_SelectTool:
                                 Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
         
     def selectEdges_Loop(self,typeOfEdges):
-        Gui.Selection.clearSelection()
-        desiredType=None
-        if typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY:
-            desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY
-        elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ:
-            desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ
-        elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ:
-            desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ
-        else:
-            pass #error
-            return
-        self.selectFaces(desiredType)
-        faces=Gui.Selection.getSelectionEx()[0].SubObjects
-        Gui.Selection.clearSelection()
-        if desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY:
-            self.selectEdges_PerpendicularToXY()
-        else:
-            self.selectEdges_ParallelToXY()
-        
-        edges=Gui.Selection.getSelectionEx()[0].SubObjects
-        foundEdges=[]
-        for j in enumerate(edges):
-            for f in faces:
-                if self.faceHasEdge(f,j[1]):
-                    foundEdges.append(j[1])
+        try:
+            Gui.Selection.clearSelection()
+            desiredType=None
+            if typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY:
+                desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY
+            elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ:
+                desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ
+            elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ:
+                desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ
+            else:
+                pass #error
+                return
+            self.selectFaces(desiredType)
+            faces=Gui.Selection.getSelectionEx()[0].SubObjects
+            Gui.Selection.clearSelection()
+            if desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY:
+                self.selectEdges_PerpendicularToXY()
+            else:
+                self.selectEdges_ParallelToXY()
+
+            edges=Gui.Selection.getSelectionEx()[0].SubObjects
+            foundEdges=[]
+            for j in enumerate(edges):
+                for f in faces:
+                    if self.faceHasEdge(f,j[1]):
+                        foundEdges.append(j[1])
+
+            Gui.Selection.clearSelection()        
+            for j in enumerate(self.edges):
+                for e in foundEdges:
+                    if j[1].isSame(e):
+                        name="Edge%d" %(j[0]+1)
+                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                        break
                     
-        Gui.Selection.clearSelection()        
-        for j in enumerate(self.edges):
-            for e in foundEdges:
-                if j[1].isSame(e):
-                    name="Edge%d" %(j[0]+1)
-                    Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
-                    break
+        except Exception as err:
+            App.Console.PrintError("'selectEdges_Loop' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)                   
     #Edges
     def selectEdges(self,Seltype):
         if Seltype == FR_SELECTION.EDGES_IN_OBJECT:
