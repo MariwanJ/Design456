@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-05 19:47:07'
+__updated__ = '2022-04-06 09:17:25'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -684,6 +684,7 @@ class Design456_SelectTool:
             elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ):
                 self.selectEdges_ParallelToXY()
 
+            print("I am here")
             HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
             if len(HorizontalEdges)==0:
                 print("nothing found")
@@ -728,6 +729,7 @@ class Design456_SelectTool:
                     f2=TotalFaces[j]
                     if(f2.isSame(f1)):
                         Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
+                        break
             Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,self.firstFaceName)
             
         except Exception as err:
@@ -767,23 +769,40 @@ class Design456_SelectTool:
                     break
 
     def selectEdges_PerpendicularToXY(self):
-        for i in range(0,len(self.edges)):
-            if self.EdgeIsPerpendicularToXY(self.edges[i]):
-                e=self.edges[i]
-                for j in enumerate(self.edges):
-                    if j[1].isSame(e):
-                        name="Edge%d" %(j[0]+1)
-                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+        try:
+            for i in range(0,len(self.edges)):
+                if self.EdgeIsPerpendicularToXY(self.edges[i]):
+                    e=self.edges[i]
+                    for j in enumerate(self.edges):
+                        if j[1].isSame(e):
+                            name="Edge%d" %(j[0]+1)
+                            Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                            break
 
+        except Exception as err:
+            App.Console.PrintError("'selectEdges_ParallelToXY' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno) 
+            
     def selectEdges_ParallelToXY(self):
-        for i in range(0,len(self.faces)):
-            if not(self.EdgeIsPerpendicularToXY(self.edges[i])):
+        try:
+            for i in range(0,len(self.edges)):
                 e=self.edges[i]
-                for j in enumerate(self.edges):
-                    if j[1].isSame(e):
-                        name="Edge%d" %(j[0]+1)
-                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
-        
+                if not(self.EdgeIsPerpendicularToXY(self.edges[i])):
+                    for j in enumerate(self.edges):
+                        if j[1].isSame(e):
+                            name="Edge%d" %(j[0]+1)
+                            Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                            break
+        except Exception as err:
+            App.Console.PrintError("'selectEdges_ParallelToXY' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)    
+                    
     def selectEdges_Loop(self,typeOfEdges):
         try:
             Gui.Selection.clearSelection()
