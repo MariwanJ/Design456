@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-05 17:13:43'
+__updated__ = '2022-04-06 13:40:07'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1312,3 +1312,21 @@ def roundVector(inVector:App.Vector=App.Vector(0,0,0),digits:int=0):
     return App.Vector((round(inVector.x,digits)),
                     (round(inVector.y,digits)), 
                     (round(inVector.z,digits)))
+
+def checkTwoVectors(v1:App.Vector, v2:App.Vector):
+    """_summary_
+
+    Args:
+        v1 (App.Vector): First  Vector
+        v2 (App.Vector): Second Vector
+
+    Returns:
+        str: Result of the comparision  Perpendicular, Parallel or anti-parallel as text 
+    """
+    x = v1.Dot(v2)/(v1.Length() * v2.Length())
+    if x == 0:
+        return "perpendicular"  #Perpendicular
+    elif x == 1:
+        return "parallel"  # Parallel
+    elif x == -1:
+        "anti-parallel"     #They have angles and they might cross each other

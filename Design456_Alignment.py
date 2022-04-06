@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-06 09:17:25'
+__updated__ = '2022-04-06 19:50:51'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -69,7 +69,6 @@ class Design456_ViewInsideObjects:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'ViewInsideObjects.svg',
             'MenuText': 'View Inside objects',
@@ -106,7 +105,6 @@ class Design456_AlignFlatToPlane:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'AlignToPlane.svg',
             'MenuText': 'Align To Plane',
@@ -119,11 +117,8 @@ Gui.addCommand('Design456_AlignToPlane', Design456_AlignFlatToPlane())
 # Plane Alignments
 
 # Top
-
-
 class Design456_TopSideView:
     def Activated(self):
-        import Design456Init
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 1.0), 0.0)
@@ -132,7 +127,6 @@ class Design456_TopSideView:
         Gui.Snapper.grid.on()
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'TopSideView.svg',
             'MenuText': 'Top Side View',
@@ -146,7 +140,6 @@ Gui.addCommand('Design456_TopSideView', Design456_TopSideView())
 
 
 class Design456_BottomView:
-    import Design456Init
 
     def Activated(self):
         Gui.Snapper.grid.off()
@@ -159,7 +152,6 @@ class Design456_BottomView:
         Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'BottomSideView.svg',
             'MenuText': 'Bottom Side View',
@@ -174,7 +166,6 @@ Gui.addCommand('Design456_BottomView', Design456_BottomView())
 
 class Design456_LeftSideView:
     def Activated(self):
-        import Design456Init
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(1.0, 0.0, 0.0), 0.0)
@@ -183,7 +174,6 @@ class Design456_LeftSideView:
         Gui.Snapper.grid.on()
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'LeftSideView.svg',
             'MenuText': 'Left Side View',
@@ -198,7 +188,6 @@ Gui.addCommand('Design456_LeftSideView', Design456_LeftSideView())
 
 class Design456_RightSideView:
     def Activated(self):
-        import Design456Init
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(-1.0, 0.0, 0.0), 0.0)
@@ -209,7 +198,6 @@ class Design456_RightSideView:
         Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'RightSideView.svg',
             'MenuText': 'Right Side View',
@@ -224,7 +212,6 @@ Gui.addCommand('Design456_RightSideView', Design456_RightSideView())
 
 class Design456_FrontSideView:
     def Activated(self):
-        import Design456Init
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 1.0, 0.0), 0.0)
@@ -235,7 +222,6 @@ class Design456_FrontSideView:
         Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'FrontSideView.svg',
             'MenuText': 'Front Side View',
@@ -249,7 +235,6 @@ Gui.addCommand('Design456_FrontSideView', Design456_FrontSideView())
 
 
 class Design456_BackSideView:
-    import Design456Init
 
     def Activated(self):
         Gui.Snapper.grid.off()
@@ -262,7 +247,6 @@ class Design456_BackSideView:
         Gui.runCommand("Draft_ToggleGrid")
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'BackSideView.svg',
             'MenuText': 'Backside View',
@@ -279,7 +263,6 @@ class Design456_MoveObject:
 
     def Activated(self):
         try:
-            # Gui.runCommand('Std_Transform')
             Gui.runCommand('Std_TransformManip')
             return
 
@@ -291,7 +274,6 @@ class Design456_MoveObject:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'Design456_Move.svg',
             'MenuText': 'Design456 Move',
@@ -319,7 +301,6 @@ class Design456_MoveObjectDetailed:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def GetResources(self):
-        import Design456Init
         return{
             'Pixmap':    Design456Init.ICON_PATH + 'Design456_MoveD.svg',
             'MenuText': 'Design456 Move-Detailed',
@@ -636,18 +617,21 @@ class Design456_SelectTool:
 
     #EDGE : check edge is perpendicular XY, XZ and YZ 
     def EdgeIsPerpendicularToXY(self,edge):
-        if(faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(0,0,1)):
+        if(faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(0,0,1) or
+           faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(0,0,-1)):
             return True
         else:
             return False
     def EdgeIsPerpendicularToXZ(self,edge):
-        if( faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(0,1,0)):
+        if( faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(0,1,0) or
+           faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(0,-1,0)):
             return True
         else:
             return False
         
     def EdgeIsPerpendicularToYZ(self,edge):
-        if(faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(1,0,0)):
+        if(faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(1,0,0) or
+           faced.roundVector(edge.tangentAt(edge.FirstParameter)) == App.Vector(-1,0,0) ):
             return True
         else:
             return False
@@ -656,7 +640,17 @@ class Design456_SelectTool:
         for i in range(0,len(self.faces)):
             if self.FaceIsPerpendicularToXY(self.faces[i]):
                 Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
-    
+ 
+    def selectFaces_PerpendicularToXZ(self):
+        for i in range(0,len(self.faces)):
+            if self.FaceIsPerpendicularToXZ(self.faces[i]):
+                Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
+
+    def selectFaces_PerpendicularToYZ(self):
+        for i in range(0,len(self.faces)):
+            if self.FaceIsPerpendicularToYZ(self.faces[i]):
+                Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,"Face"+str(i+1))
+                   
     def selectFaces_ParallelToXY(self):
         for i in range(0,len(self.faces)):
             if (not (self.FaceIsPerpendicularToXY(self.faces[i]))):    
@@ -680,42 +674,57 @@ class Design456_SelectTool:
             if(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY):
                 self.selectEdges_PerpendicularToXY()
             elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ):
-                self.selectEdges_ParallelToXY()
+                self.selectEdges_PerpendicularToXZ()
             elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ):
-                self.selectEdges_ParallelToXY()
-
+                self.selectEdges_PerpendicularToYZ()     
+        
             print("I am here")
             HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
             if len(HorizontalEdges)==0:
                 print("nothing found")
                 return
+            print(len(HorizontalEdges),"HorizontalEdges")
             firstFaceEdges=[]
             for e in HorizontalEdges:
                 if self.faceHasEdge(self.firstFace,e):
-                    print("found")
                     firstFaceEdges.append(e)
+            
+            print("found - edges-len",len(firstFaceEdges))
             #We have the horizontal edges of first edge
             TotalFaces=[]
             if (len(firstFaceEdges)<2):
                 print("not found")
                 Gui.Selection.clearSelection()
                 return
-            
-            newEdge=firstFaceEdges[1]
+            else:
+                print("Edges of the first face found",len(firstFaceEdges))                
+            newEdge=firstFaceEdges[1]  #second edge of the face1
             currentFace=self.firstFace
+            print(self.firstFace,"firstFace")
             currentEdges=[]
+            #TODO THIS IS WRONG!!!!!!
+            
             while (not(newEdge.isSame(firstFaceEdges[0]))):
                 f=faced.findFaceSHavingTheSameEdge(newEdge,shape)
-                if f[0].isSame(currentFace):
-                    TotalFaces.append(f[1])
-                    currentFace=f[1]
+                if (f is not None):
+                    if f[0].isSame(currentFace):
+                        TotalFaces.append(f[1])
+                        currentFace=f[1]
+                    else:
+                        TotalFaces.append(f[0])
+                        currentFace=f[0]
                 else:
-                    TotalFaces.append(f[0])
-                    currentFace=f[0]
+                    currentFace=None
+                if currentFace is None:
+                    break
                 #we have new face, find edges
-                for e in HorizontalEdges:
-                    if self.faceHasEdge(currentFace, e):
-                        currentEdges.append(e)
+                tempcurrentEdges=currentFace.Edges
+                currentEdges.clear()
+                for end in tempcurrentEdges:
+                    for ed in HorizontalEdges:
+                        if ed.isSame(end):
+                            currentEdges.append(ed)
+                            break              
                 if not(currentEdges[0].isSame(newEdge)):
                     newEdge=currentEdges[0]
                 else:
@@ -785,7 +794,44 @@ class Design456_SelectTool:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno) 
-            
+    
+    def selectEdges_PerpendicularToXZ(self):
+        try:
+            for i in range(0,len(self.edges)):
+                if self.EdgeIsPerpendicularToXZ(self.edges[i]):
+                    e=self.edges[i]
+                    for j in enumerate(self.edges):
+                        if j[1].isSame(e):
+                            name="Edge%d" %(j[0]+1)
+                            Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                            break
+
+        except Exception as err:
+            App.Console.PrintError("'selectEdges_ParallelToXY' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno) 
+
+    def selectEdges_PerpendicularToYZ(self):
+        try:
+            for i in range(0,len(self.edges)):
+                if self.EdgeIsPerpendicularToYZ(self.edges[i]):
+                    e=self.edges[i]
+                    for j in enumerate(self.edges):
+                        if j[1].isSame(e):
+                            name="Edge%d" %(j[0]+1)
+                            Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
+                            break
+
+        except Exception as err:
+            App.Console.PrintError("'selectEdges_ParallelToXY' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno) 
+
+
     def selectEdges_ParallelToXY(self):
         try:
             for i in range(0,len(self.edges)):
@@ -808,7 +854,7 @@ class Design456_SelectTool:
             Gui.Selection.clearSelection()
             desiredType=None
             if typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY:
-                desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY
+                desiredType= FR_SELECTION.FACES_PERPENDICULAR_TO_XY
             elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ:
                 desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ
             elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ:
@@ -824,9 +870,15 @@ class Design456_SelectTool:
             Gui.Selection.clearSelection()
             if desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY:
                 self.selectEdges_PerpendicularToXY()
-            else:
-                self.selectEdges_ParallelToXY()
-
+            elif desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ:
+                self.selectEdges_PerpendicularToXZ()
+            elif desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ:
+                self.selectEdges_PerpendicularToYZ()
+            
+            if(len(Gui.Selection.getSelectionEx())==0):
+                print("not found")
+                return
+            
             edges=Gui.Selection.getSelectionEx()[0].SubObjects
             foundEdges=[]
             for j in enumerate(edges):
