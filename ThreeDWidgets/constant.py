@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = '2022-04-04 10:15:02'
+__updated__ = '2022-04-09 18:01:54'
 
 
 # Widgets type. QT widget will get QT in their names.
@@ -518,16 +518,15 @@ class FR_SELECTION:
     #EDGES 
     EDGES_IN_OBJECT                     =     7 
     EDGES_IN_FACE                       =     8
-    EDGES_PERPENDICULAR_TO_XY           =     9
-    EDGES_PARALLEL_TO_XY                =    10
-    LOOP_EDGES_PERPENDICULAR_TO_XY      =    11 
-    LOOP_EDGES_PERPENDICULAR_TO_XZ      =    12
-    LOOP_EDGES_PERPENDICULAR_TO_YZ      =    13
+    EDGES_PARALLEL_TO_XY                =     9
+    EDGES_PERPENDICULAR_TO_XY           =    10
+    EDGES_PERPENDICULAR_TO_XZ           =    11
+    EDGES_PERPENDICULAR_TO_YZ           =    12
     
     #VERTEXES
-    VERTEXES_IN_OBJECT                  =    14 
-    VERTEXES_IN_FACE                    =    15 
-    LOOP_VERTEXES_PERPENDICULAR_TO_XY   =    16
-    LOOP_VERTEXES_PERPENDICULAR_TO_XZ   =    17
-    LOOP_VERTEXES_PERPENDICULAR_TO_YZ   =    18
+    VERTEXES_IN_OBJECT                  =    13 
+    VERTEXES_IN_FACE                    =    14 
+    VERTEXES_PERPENDICULAR_TO_XY        =    15
+    VERTEXES_PERPENDICULAR_TO_XZ        =    16
+    VERTEXES_PERPENDICULAR_TO_YZ        =    17
 

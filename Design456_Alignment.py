@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-06 19:50:51'
+__updated__ = '2022-04-09 18:16:21'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -498,11 +498,10 @@ class Design456_SelectTool:
             #Edges
             self.combo.addItem(translate("self.dialog", "Edges in the Object"))
             self.combo.addItem(translate("self.dialog", "Edges in the Face"))
-            self.combo.addItem(translate("self.dialog", "Edges-Perpendicular to XY"))
             self.combo.addItem(translate("self.dialog", "Edges-Parallel to XY"))
-            self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to XY"))
-            self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to XZ"))
-            self.combo.addItem(translate("self.dialog", "Loop-Edges Perpendicular to YZ"))
+            self.combo.addItem(translate("self.dialog", "Edges Perpendicular to XY"))
+            self.combo.addItem(translate("self.dialog", "Edges Perpendicular to XZ"))
+            self.combo.addItem(translate("self.dialog", "Edges Perpendicular to YZ"))
 
             self.combo.setItemData(7, QtGui.QBrush(QtCore.Qt.green), QtCore.Qt.TextColorRole)
             self.combo.setItemData(8 , QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
@@ -515,9 +514,9 @@ class Design456_SelectTool:
             #Vertexes
             self.combo.addItem(translate("self.dialog", "Vertexes in the Object"))
             self.combo.addItem(translate("self.dialog", "Vertexes in the Face"))
-            self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to XY"))
-            self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to XZ"))
-            self.combo.addItem(translate("self.dialog", "Loop-Vertexes Perpendicular to YZ"))
+            self.combo.addItem(translate("self.dialog", "Vertexes Perpendicular to XY"))
+            self.combo.addItem(translate("self.dialog", "Vertexes Perpendicular to XZ"))
+            self.combo.addItem(translate("self.dialog", "Vertexes Perpendicular to YZ"))
 
             self.combo.setItemData(14, QtGui.QBrush(QtCore.Qt.blue), QtCore.Qt.TextColorRole)
             self.combo.setItemData(15, QtGui.QBrush(QtCore.Qt.black), QtCore.Qt.TextColorRole)
@@ -570,9 +569,9 @@ class Design456_SelectTool:
             return
         if ((currentID>=FR_SELECTION.FACES_IN_OBJECT) and (currentID<=FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ)):
             self.selectFaces(currentID)
-        elif ((currentID>=FR_SELECTION.EDGES_IN_OBJECT) and (currentID<=FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ)):
+        elif ((currentID>=FR_SELECTION.EDGES_IN_OBJECT) and (currentID<=FR_SELECTION.EDGES_PERPENDICULAR_TO_YZ)):
             self.selectEdges(currentID)
-        elif ((currentID>=FR_SELECTION.VERTEXES_IN_OBJECT) and (currentID<=FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_YZ)):
+        elif ((currentID>=FR_SELECTION.VERTEXES_IN_OBJECT) and (currentID<=FR_SELECTION.VERTEXES_PERPENDICULAR_TO_YZ)):
             self.selectVertexes(currentID)
     
     
@@ -698,21 +697,27 @@ class Design456_SelectTool:
                 return
             else:
                 print("Edges of the first face found",len(firstFaceEdges))                
+            
             newEdge=firstFaceEdges[1]  #second edge of the face1
             currentFace=self.firstFace
-            print(self.firstFace,"firstFace")
             currentEdges=[]
             #TODO THIS IS WRONG!!!!!!
-            
+            xx=-1
             while (not(newEdge.isSame(firstFaceEdges[0]))):
+                xx=xx+1
+                print(xx)
+                Gui.updateGui()
                 f=faced.findFaceSHavingTheSameEdge(newEdge,shape)
                 if (f is not None):
                     if f[0].isSame(currentFace):
                         TotalFaces.append(f[1])
                         currentFace=f[1]
-                    else:
+                    elif f[1].isSame(currentFace):
                         TotalFaces.append(f[0])
                         currentFace=f[0]
+                    else:
+                        print("NOT FOUND! out")
+                        break #go out
                 else:
                     currentFace=None
                 if currentFace is None:
@@ -725,10 +730,15 @@ class Design456_SelectTool:
                         if ed.isSame(end):
                             currentEdges.append(ed)
                             break              
-                if not(currentEdges[0].isSame(newEdge)):
+                if (currentEdges[0].isSame(newEdge) ):
+                    newEdge=currentEdges[1]
+                elif (currentEdges[1].isSame(newEdge)):
                     newEdge=currentEdges[0]
                 else:
-                    newEdge=currentEdges[1]
+                    print("not found")
+                    break
+                if newEdge.isSame(firstFaceEdges[1]) or newEdge.isSame(firstFaceEdges[0]): 
+                    break
                 currentEdges.clear()
             Gui.Selection.clearSelection()
 
@@ -852,48 +862,17 @@ class Design456_SelectTool:
     def selectEdges_Loop(self,typeOfEdges):
         try:
             Gui.Selection.clearSelection()
-            desiredType=None
-            if typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY:
-                desiredType= FR_SELECTION.FACES_PERPENDICULAR_TO_XY
-            elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ:
-                desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ
-            elif typeOfEdges==FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ:
-                desiredType= FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ
-            else:
-                pass #error
-                return
-            self.selectFaces(desiredType)
-            if len(Gui.Selection.getSelectionEx())==0:
-                print("Not found")
-                return 
-            faces=Gui.Selection.getSelectionEx()[0].SubObjects
-            Gui.Selection.clearSelection()
-            if desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XY:
+
+            if typeOfEdges==FR_SELECTION.EDGES_PERPENDICULAR_TO_XY:
                 self.selectEdges_PerpendicularToXY()
-            elif desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_XZ:
+            elif typeOfEdges==FR_SELECTION.EDGES_PERPENDICULAR_TO_XZ:
                 self.selectEdges_PerpendicularToXZ()
-            elif desiredType==FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ:
+            elif typeOfEdges==FR_SELECTION.EDGES_PERPENDICULAR_TO_YZ:
                 self.selectEdges_PerpendicularToYZ()
             
             if(len(Gui.Selection.getSelectionEx())==0):
-                print("not found")
-                return
+                print("Selection of edges failed -out")
             
-            edges=Gui.Selection.getSelectionEx()[0].SubObjects
-            foundEdges=[]
-            for j in enumerate(edges):
-                for f in faces:
-                    if self.faceHasEdge(f,j[1]):
-                        foundEdges.append(j[1])
-
-            Gui.Selection.clearSelection()        
-            for j in enumerate(self.edges):
-                for e in foundEdges:
-                    if j[1].isSame(e):
-                        name="Edge%d" %(j[0]+1)
-                        Gui.Selection.addSelection(self.doc.Name,self.Targetobj.Name,name)
-                        break
-                    
         except Exception as err:
             App.Console.PrintError("'selectEdges_Loop' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -910,11 +889,11 @@ class Design456_SelectTool:
             self.selectEdges_PerpendicularToXY()
         elif Seltype == FR_SELECTION.EDGES_PARALLEL_TO_XY:
             self.selectEdges_ParallelToXY()
-        elif Seltype == FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY:
+        elif Seltype == FR_SELECTION.EDGES_PERPENDICULAR_TO_XY:
             self.selectEdges_Loop(Seltype)
-        elif Seltype == FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ:
+        elif Seltype == FR_SELECTION.EDGES_PERPENDICULAR_TO_XZ:
             self.selectEdges_Loop(Seltype)
-        elif Seltype == FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ:
+        elif Seltype == FR_SELECTION.EDGES_PERPENDICULAR_TO_YZ:
             self.selectEdges_Loop(Seltype)
 
 
@@ -938,6 +917,7 @@ class Design456_SelectTool:
         if len(Gui.Selection.getSelectionEx())==0:
             print("not found")
             return
+        
         edges=Gui.Selection.getSelectionEx()[0].SubObjects
         Gui.Selection.clearSelection()
         for j in enumerate(self.vertexes):
@@ -956,12 +936,12 @@ class Design456_SelectTool:
             self.selectVertexes_All()
         if Seltype==FR_SELECTION.VERTEXES_IN_FACE:
             self.selectVertexes_InFace()
-        if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_XY:
-            self.selectVertexes_In_Loop(FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XY)
-        if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_XZ:
-            self.selectVertexes_In_Loop(FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_XZ)            
-        if Seltype==FR_SELECTION.LOOP_VERTEXES_PERPENDICULAR_TO_YZ:
-            self.selectVertexes_In_Loop(FR_SELECTION.LOOP_EDGES_PERPENDICULAR_TO_YZ)
+        if Seltype==FR_SELECTION.VERTEXES_PERPENDICULAR_TO_XY:
+            self.selectVertexes_In_Loop(FR_SELECTION.EDGES_PERPENDICULAR_TO_XY)
+        if Seltype==FR_SELECTION.VERTEXES_PERPENDICULAR_TO_XZ:
+            self.selectVertexes_In_Loop(FR_SELECTION.EDGES_PERPENDICULAR_TO_XZ)            
+        if Seltype==FR_SELECTION.VERTEXES_PERPENDICULAR_TO_YZ:
+            self.selectVertexes_In_Loop(FR_SELECTION.EDGES_PERPENDICULAR_TO_YZ)
             
     def hideDialog(self):
         self.dialog.hide()
