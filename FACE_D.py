@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-06 13:40:07'
+__updated__ = '2022-04-09 18:20:29'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1068,7 +1068,7 @@ def findFaceSHavingTheSameEdge(edge=None, shape=None):
         edge = edge
         shape = shape
     result = shape.ancestorsOfType(edge, Part.Face)
-    if len(result) >= 1:
+    if len(result) >= 2:
         return result
     else: 
         return None 
@@ -1255,11 +1255,7 @@ class reversEngSurface(object):
     
     def isCylinder(self, obj):
         return (str(obj.Surface) =="<Cylinder object>")
-    
-    def isCurve(self, obj):
-        #TODO : Dose this exits?
-        return True
-    
+        
     def isBSplineSurface(self,obj):
         return  str(obj.Surface)=="<BSplineSurface object>" 
 

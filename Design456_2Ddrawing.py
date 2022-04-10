@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-04-02 14:08:32'
+__updated__ = '2022-04-10 12:37:35'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -121,7 +121,7 @@ Gui.addCommand('Design456_Arc3Points', Design456_Arc3Points())
 
 class Design456_MultiPointsToWire:
     def __init__(self, _type):
-        self.type = _type
+        self._type = _type
 
     def Activated(self):
         try:
@@ -152,18 +152,14 @@ class Design456_MultiPointsToWire:
                         return
                     else:
                         allSelected.append(App.Vector(t.Object.Shape.Point))
-
-            if self.type == 0:
-                Wire1 = _draft.makeWire(allSelected, closed=True)
+            f=0
+            if self._type == 0:
+                W=Part.makePolygon([*allSelected,allSelected[0]])
+                f=Part.Face(W)
+                Part.show(f,"MultiPointsToWire")
             else:
-                Wire1 = _draft.makeWire(allSelected, closed=False)
-            """
-            I have to find a way to avoid deleting Vertices if they are a part from another object.
-            This is disabled at the moment.
-
-            for n in selected:
-                App.ActiveDocument.removeObject(n.Object.Name)
-            """
+                W=Part.makePolygon(allSelected)
+                Part.show(W,"MultiPointsToWire")
             del allSelected[:]
             App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo
@@ -196,7 +192,6 @@ class Design456_MultiPointsToWireClose:
 class Design456_MultiPointsToWireOpen:
     def Activated(self):
         try:
-
             newObj = Design456_MultiPointsToWire(1)
             newObj.Activated()
 
@@ -223,7 +218,6 @@ Gui.addCommand('Design456_MultiPointsToWireClose',
 
 class Design456_2DTrim:
     def Activated(self):
-
         try:
             sel = Gui.Selection.getSelectionEx()
             if len(sel) < 1:
@@ -304,7 +298,6 @@ class Design456_2DTrim:
                     if position1 != 0 and position2 != totalPoints-1:
                         # In the middle of the array.
                         # Two objects must be created.
-                        print("between first and last")
                         _all_points2.clear()
                         #plusOrMinus = 0
                         scan1 = min(position1, position2)
@@ -330,7 +323,6 @@ class Design456_2DTrim:
 
                     elif position1 == 0 and position2 != totalPoints-1:
                         # First Points, remove  'closed' and start = pos+1
-                        print("in the beginning")
                         StartPoint = WireOrEdgeMadeOfPoints[position2]
                         WireOrEdgeMadeOfPoints.pop(position1)
                         EndPoint = WireOrEdgeMadeOfPoints[len(
@@ -343,13 +335,11 @@ class Design456_2DTrim:
                         WireOrEdgeMadeOfPoints.pop(position2-1)
 
                         # don't add last point
-
                 pnew2DObject2 = _draft.makeWire(
                     WireOrEdgeMadeOfPoints, placement=None, closed=False, face=False, support=None)
                 App.ActiveDocument.removeObject(sel1.ObjectName)
                 App.ActiveDocument.recompute()
                 pnew2DObject2.Label = 'Wire'
-
                 pnew2DObject2.End = EndPoint
                 pnew2DObject2.Start = StartPoint
 
@@ -377,7 +367,6 @@ class Design456_2DTrim:
             'MenuText': 'Trim Line',
                         'ToolTip':  'Trim Line or edge in a 2D shape'
         }
-
 
 Gui.addCommand('Design456_2DTrim', Design456_2DTrim())
 
@@ -431,7 +420,6 @@ class ViewProviderStar:
 # ===========================================================================
 
 # Create 2D Star
-
 
 class Star:
     """
@@ -657,7 +645,6 @@ class Design456_joinTwoLines:
         return {'Pixmap':  Design456Init.ICON_PATH + 'Design456_JoinLines.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "joinTwoLines"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
-
 
 Gui.addCommand('Design456_joinTwoLines', Design456_joinTwoLines())
 
@@ -892,6 +879,44 @@ Gui.addCommand('Design456_RemmoveEdge', Design456_RemmoveEdge())
 
 
 
+class Design456_SimplifiedFace:
+            
+    def Activated(self):
+        try:
+            s = Gui.Selection.getSelectionEx()
+            if len(s) < 1:
+                errMessage = "Select Simplified Face"
+                faced.errorDialog(errMessage)
+                return
+
+            AllEdges=[]
+            for obj in s:
+                shp=obj.Object.Shape
+                for edg in shp.Edges:
+                    if faced.findFaceSHavingTheSameEdge(edg,shp) is None:
+                        AllEdges.append(edg)
+            
+            W=Part.Wire(Part.__sortEdges__([*AllEdges,AllEdges[0]]))
+            newFace=Part.Face(W)
+            Part.show(newFace,"SimplifiedFace")
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_SimplifiedFace' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        """Set icon, menu and tooltip."""
+        _tooltip = ("SimplifiedFace")
+        return {'Pixmap':  Design456Init.ICON_PATH + 'SimplifiedFace.svg',
+                'MenuText': QT_TRANSLATE_NOOP("Design456", "SimplifiedFace"),
+                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
+
+Gui.addCommand('Design456_SimplifiedFace', Design456_SimplifiedFace())
+
+
 
 ##################################################################################
 #       Toolbar group definition
@@ -902,7 +927,7 @@ class Design456_2Ddrawing:
             "Design456_2DTrim",
             "Design456_joinTwoLines",
             "Design456_SimplifyEdges",
-#            "Design456_SimplifyFace",
+            "Design456_SimplifiedFace",
             "Design456_Star",
             "Design456_Paint",
             "Design456_Hole",
