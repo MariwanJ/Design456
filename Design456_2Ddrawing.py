@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-04-10 12:37:35'
+__updated__ = '2022-04-10 13:26:29'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -880,7 +880,9 @@ Gui.addCommand('Design456_RemmoveEdge', Design456_RemmoveEdge())
 
 
 class Design456_SimplifiedFace:
-            
+    """
+            Simplify any object (2D) by removing embedded edges
+    """      
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
@@ -893,6 +895,7 @@ class Design456_SimplifiedFace:
             for obj in s:
                 shp=obj.Object.Shape
                 for edg in shp.Edges:
+                    #if the edges are shared between faces, don't add
                     if faced.findFaceSHavingTheSameEdge(edg,shp) is None:
                         AllEdges.append(edg)
             
