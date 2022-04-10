@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-04-10 16:12:37'
+__updated__ = '2022-04-10 16:34:46'
 
 # Move an object to the location of the mouse click on another surface
 

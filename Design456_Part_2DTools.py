@@ -34,9 +34,9 @@ import Part
 import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate  # for translation
-from  Design456_Part_3DTools import Design456_SimplifyCompound 
+from  Design456_2Ddrawing import Design456_SimplifiedFace  
 
-__updated__ = '2022-03-25 21:18:24'
+__updated__ = '2022-04-10 16:39:13'
 
 
 class Design456_CommonFace:
@@ -141,8 +141,10 @@ class Design456_CombineFaces:
         for obj in s:
             App.ActiveDocument.removeObject(obj.Object.Name)
         App.ActiveDocument.recompute()
-        simp= Design456_SimplifyCompound()
-        simp.Activated(newobj)
+        simp= Design456_SimplifiedFace()
+        Gui.Selection.clearSelection()
+        Gui.Selection.addSelection(App.ActiveDocument.Name,newobj.Name)
+        simp.Activated()
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.de here
 

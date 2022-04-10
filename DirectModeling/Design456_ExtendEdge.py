@@ -43,7 +43,7 @@ import Part as _part
 import FACE_D as faced
 import math
 
-__updated__ = '2022-02-27 20:14:43'
+__updated__ = '2022-04-10 16:16:31'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -74,7 +74,7 @@ class Design456_ExtendEdge:
     #              'newEdgeVertexes',
     #              'newEdge',
     #              'view',
-    #              'MoveMentDirection',
+    #              'MovementDirection',
     #              'newFaces',
     #              'faceDir',
     #              'FirstLocation',
@@ -118,7 +118,7 @@ class Design456_ExtendEdge:
         self.newEdge = None # Keep new vectors for the moved old edge-vectors
 
         self.view = None  # used for captureing mouse events
-        self.MoveMentDirection = None
+        self.MovementDirection = None
         self.newFaces = None
         self.faceDir = None
         self.FirstLocation = None
@@ -365,7 +365,7 @@ class Design456_ExtendEdge:
             
             App.ActiveDocument.openTransaction(translate("Design456", "ExtendEdge"))
             
-            self.MoveMentDirection = 'A'
+            self.MovementDirection = 'A'
 
             self.selectedObj = sel[0].Object
             self.selectedObj.Visibility = False
