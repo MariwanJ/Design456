@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-09 18:20:29'
+__updated__ = '2022-04-10 19:42:20'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1208,59 +1208,6 @@ DraftGeomUtils.findIntersection()
 # surfaces and recreate it with 
 # new vertices
 
- 
-# A class that will revers engineer
-# surfaces and recreate it with 
-# new vertices
-class reversEngSurface(object):
-    
-#    __slots__ = ['newObject',
-#                'oldNewVertices'
-#                ]
-#
-    def __init__ (self, selObj):
-        self.selObject=selObj
-        self.faceList=[[]]
-        self.newObject = None
-        
-    
-    def separateFaces(self):
-        for face in self.selObject:
-            if self.isPlanar(face):
-                pass
-
-            elif self.isCylinder(face):
-                pass
-
-            elif self.isCurve(face):
-                pass
-
-            elif self.isBSplineSurface(face):
-                pass
-
-    def isLine(self,edg):
-        return(str(edg.Curve)=="<Line object>")
-
-    def isCurve(self,edg):
-        if "Circle" in str(edg.Curve): 
-            return True
-        else:
-            return False
-
-    def isBspline(self,edg):
-        return (str(edg.Curve) =="<BezierCurve object>")
-            
-    def isPlanar(self, obj):
-        return (str(obj.Surface) =="<Plane object>")
-    
-    def isCylinder(self, obj):
-        return (str(obj.Surface) =="<Cylinder object>")
-        
-    def isBSplineSurface(self,obj):
-        return  str(obj.Surface)=="<BSplineSurface object>" 
-
-    def recreateSurface(self):
-        return (self.newObject)
 
 
 def isFaceOf3DObj(selectedObj):
@@ -1326,3 +1273,90 @@ def checkTwoVectors(v1:App.Vector, v2:App.Vector):
         return "parallel"  # Parallel
     elif x == -1:
         "anti-parallel"     #They have angles and they might cross each other
+
+######################################################################################
+#          Study Objects, faces, edges here
+###################################################################################### 
+# A class that will revers engineer
+# surfaces and recreate it with 
+# new vertices
+
+class reversEngSurface(object):
+    
+#    __slots__ = ['newObject',
+#                'oldNewVertices'
+#                ]
+#
+    def __init__ (self, selObj):
+        self.selObject=selObj
+        self.faceList=[[]]
+        self.newObject = None
+        
+    
+    def separateFaces(self):
+        for face in self.selObject:
+            if self.isPlanar(face):
+                pass
+
+            elif self.isCylinder(face):
+                pass
+
+            elif self.isCurve(face):
+                pass
+
+            elif self.isBSplineSurface(face):
+                pass
+
+    def isLine(self,edg):
+        return(str(edg.Curve)=="<Line object>")
+
+    def isCurve(self,edg):
+        if "Circle" in str(edg.Curve): 
+            return True
+        else:
+            return False
+
+    def isBspline(self,edg):
+        return (str(edg.Curve) =="<BezierCurve object>")
+            
+    def isPlanar(self, obj):
+        return (str(obj.Surface) =="<Plane object>")
+    
+    def isCylinder(self, obj):
+        return (str(obj.Surface) =="<Cylinder object>")
+        
+    def isBSplineSurface(self,obj):
+        return  str(obj.Surface)=="<BSplineSurface object>" 
+
+    def recreateSurface(self):
+        pass   
+
+
+
+
+def divideFace(sel=None,numbers=100.0):
+    try:
+        sel=Gui.Selection.getSelectionEx()[0]
+        f=sel.SubObjects[0]
+        (vectors,ign)=f.tessellate(numbers,False)
+        j=0
+        allFaces=[]
+        for i in range(0,int(len(vectors)/4)):
+            p=Part.makePolygon([vectors[i*4],
+                                vectors[i*4+j+1],
+                                vectors[i*4+j+2],
+                                vectors[i*4+j+3],
+                                vectors[i*4] ])    
+            f=Part.Face(Part.Wire(p))
+            allFaces.append(f)
+            j=j+4
+            Part.show(f)
+            Part.show(Part.Point(i).toShape)
+            
+    except Exception as err:
+        App.Console.PrintError("'devideFace' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+    
