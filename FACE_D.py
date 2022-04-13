@@ -1332,7 +1332,21 @@ class reversEngSurface(object):
         pass   
 
 
+"""
+s=Gui.Selection.getSelectionEx()[0]
+f= s.SubObjects[0]
+surf=f.Surface
+Radius= surf.Radius
 
+
+center=surf.Center
+e1=f.Edges[0]
+curve=e1.Curve
+circle=Part.makeCircle(Radius,center)
+v1= e1.firstVertex().Point
+v2=e1.lastVertex().Point
+
+"""
 
 def divideFace(sel=None,numbers=100.0):
     try:
