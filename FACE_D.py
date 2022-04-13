@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-10 19:42:20'
+__updated__ = '2022-04-13 21:45:32'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1333,6 +1333,7 @@ class reversEngSurface(object):
 
 
 """
+import math
 s=Gui.Selection.getSelectionEx()[0]
 f= s.SubObjects[0]
 surf=f.Surface
@@ -1342,9 +1343,19 @@ Radius= surf.Radius
 center=surf.Center
 e1=f.Edges[0]
 curve=e1.Curve
-circle=Part.makeCircle(Radius,center)
 v1= e1.firstVertex().Point
 v2=e1.lastVertex().Point
+
+angle1=math.degrees(math.acos(v1.x/Radius))
+angle2=math.degrees(math.acos(v2.x/Radius))
+
+circle=Part.makeCircle(Radius,center, App.Vector(0,0,1),angle1,angle2)
+Part.show(circle)
+
+
+#cos(t) = x / r 
+#sin(t) = y / r
+
 
 """
 
@@ -1366,7 +1377,7 @@ def divideFace(sel=None,numbers=100.0):
             j=j+4
             Part.show(f)
             Part.show(Part.Point(i).toShape)
-            
+
     except Exception as err:
         App.Console.PrintError("'devideFace' Failed. "
                                 "{err}\n".format(err=str(err)))
