@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-16 18:35:33'
+__updated__ = '2022-04-16 18:50:39'
 
 
 class Design456_CommonFace:
@@ -473,9 +473,13 @@ class Design456_SegmentAFace:
             shape.makeShapeFromMesh(mesh.Topology, swe) 
             solid = App.ActiveDocument.addObject('Part::Feature', "collectFace")
             solid.Shape = shape
-            solid.Placement=self.sel.Object.Placement
+
             App.ActiveDocument.recompute()
-            newSolid=simplify.Activated(solid)
+            temp=simplify.Activated(solid)[0]
+            newSolid = App.ActiveDocument.addObject('Part::Feature', "SegmentAFace")
+            newSolid.Shape = temp.Shape.copy()
+            newSolid.Placement=temp.Placement
+            App.ActiveDocument.removeObject(temp.Name)
             return newSolid
 
         except Exception as err:
