@@ -40,8 +40,9 @@ import Design456_SplitObject
 import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
+from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-03-25 19:18:33'
+__updated__ = '2022-04-16 16:46:35'
 
 # Merge
 class Design456_Part_Merge:
@@ -595,7 +596,9 @@ class Design456_SimplifyCompound:
 Gui.addCommand('Design456_SimplifyCompound', Design456_SimplifyCompound())
 
 
-class Design456_Part_3DToolsGroup:
+
+
+class Design456_3DToolsGroup:
         
     """Design456 Part 3D Tools"""
 
@@ -629,5 +632,5 @@ class Design456_Part_3DToolsGroup:
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 
-Gui.addCommand("Design456_Part_3DToolsGroup", Design456_Part_3DToolsGroup())
+Gui.addCommand("Design456_3DToolsGroup", Design456_3DToolsGroup())
 

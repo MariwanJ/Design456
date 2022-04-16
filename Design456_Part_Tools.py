@@ -31,14 +31,14 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
 
-import  Design456_Part_3DTools
-import  Design456_Part_2DTools
+import  Design456_3DTools
+import  Design456_2DTools
 
-__updated__ = '2022-01-13 21:41:47'
+__updated__ = '2022-04-16 16:47:21'
 
 class Design456_Part_Tools:
-    list = ["Design456_Part_3DToolsGroup",
-            "Design456_Part_2DToolsGroup"
+    list = ["Design456_3DToolsGroup",
+            "Design456_2DToolsGroup"
             
             ]
 

@@ -35,8 +35,10 @@ import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate  # for translation
 from  Design456_2Ddrawing import Design456_SimplifiedFace  
+import Mesh
+import MeshPart
 
-__updated__ = '2022-04-10 16:39:13'
+__updated__ = '2022-04-16 16:45:05'
 
 
 class Design456_CommonFace:
@@ -414,12 +416,78 @@ Gui.addCommand('Design456_ArcFace6Points', Design456_ArcFace6Points())
 
 
 
+# Segment a face from 3D object or 2D object
+class Design456_SegmentAFace:
+
+    def Activated(self):
+        try:
+            sel=Gui.Selection.getSelectionEx()[0]
+            mesh = self.divideFace(sel)
+            solid = self.collectFace(mesh)
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_SegmentAFace' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + 'SegmentAFace.svg',
+            'MenuText': 'SegmentAFace',
+            'ToolTip':  'Segment A Face'
+        }
+
+    def divideFace(self, sel,numbers=10.0):
+        try:
+            shp = sel.Object.Shape    
+            mesh = App.ActiveDocument.addObject("Mesh::Feature", "Mesh")
+            mesh.Mesh = MeshPart.meshFromShape(
+                    Shape=shp,
+                    LinearDeflection=1/numbers,
+                    AngularDeflection=1.0,
+                    Relative=False)
+            App.ActiveDocument.recompute()
+            return mesh
+    
+        except Exception as err:
+            App.Console.PrintError("'devideFace' Failed. "
+                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def collectFace(self,obj,swe=.05):
+        try:
+            #sel=Gui.Selection.getSelectionEx()[0]
+            simplify=Design456_SimplifyCompound()
+            
+            mesh = obj.Mesh
+            shape = Part.Shape()
+            shape.makeShapeFromMesh(mesh.Topology, swe) 
+            solid = App.ActiveDocument.addObject('Part::Feature', "collectFace")
+            solid.Shape = shape
+            App.ActiveDocument.recompute()
+            return solid
+
+        except Exception as err:
+            App.Console.PrintError("'SegmentAFace' Failed. "
+                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+Gui.addCommand('Design456_SegmentAFace', Design456_SegmentAFace())
+
+
+
 
 # ##############################
 """Design456 Part 2D Tools"""
 
 
-class Design456_Part_2DToolsGroup:
+class Design456_2DToolsGroup:
     def __init__(self):
         return
 
@@ -432,6 +500,7 @@ class Design456_Part_2DToolsGroup:
                 "Design456_CombineFaces",
                 "Design456_SubtractFaces",
                 "Design456_CommonFace",
+                "Design456_SegmentAFace",
 
                 )
 
@@ -445,4 +514,4 @@ class Design456_Part_2DToolsGroup:
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
 
-Gui.addCommand("Design456_Part_2DToolsGroup", Design456_Part_2DToolsGroup())
+Gui.addCommand("Design456_2DToolsGroup", Design456_2DToolsGroup())

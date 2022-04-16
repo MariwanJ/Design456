@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-13 21:45:32'
+__updated__ = '2022-04-16 14:00:46'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1359,29 +1359,5 @@ Part.show(circle)
 
 """
 
-def divideFace(sel=None,numbers=100.0):
-    try:
-        sel=Gui.Selection.getSelectionEx()[0]
-        f=sel.SubObjects[0]
-        (vectors,ign)=f.tessellate(numbers,False)
-        j=0
-        allFaces=[]
-        for i in range(0,int(len(vectors)/4)):
-            p=Part.makePolygon([vectors[i*4],
-                                vectors[i*4+j+1],
-                                vectors[i*4+j+2],
-                                vectors[i*4+j+3],
-                                vectors[i*4] ])    
-            f=Part.Face(Part.Wire(p))
-            allFaces.append(f)
-            j=j+4
-            Part.show(f)
-            Part.show(Part.Point(i).toShape)
 
-    except Exception as err:
-        App.Console.PrintError("'devideFace' Failed. "
-                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
-    
+
