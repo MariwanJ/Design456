@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-16 16:53:44'
+__updated__ = '2022-04-16 18:35:33'
 
 
 class Design456_CommonFace:
@@ -419,13 +419,17 @@ Gui.addCommand('Design456_ArcFace6Points', Design456_ArcFace6Points())
 
 # Segment a face from 3D object or 2D object
 class Design456_SegmentAFace:
-
+    def __init__(self):
+        self.sel=None
+        
     def Activated(self):
         try:
-            sel=Gui.Selection.getSelectionEx()[0]
-            mesh = self.divideFace(sel)
+            self.sel=Gui.Selection.getSelectionEx()[0]
+            mesh = self.divideFace()
             solid = self.collectFace(mesh)
-
+            App.ActiveDocument.removeObject(self.sel.Object.Name)
+            App.ActiveDocument.removeObject(mesh.Name)
+            
         except Exception as err:
             App.Console.PrintError("'Design456_SegmentAFace' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -440,9 +444,9 @@ class Design456_SegmentAFace:
             'ToolTip':  'Segment A Face'
         }
 
-    def divideFace(self, sel,numbers=10.0):
+    def divideFace(self, numbers=10.0):
         try:
-            shp = sel.Object.Shape    
+            shp = self.sel.Object.Shape    
             mesh = App.ActiveDocument.addObject("Mesh::Feature", "Mesh")
             mesh.Mesh = MeshPart.meshFromShape(
                     Shape=shp,
@@ -469,6 +473,7 @@ class Design456_SegmentAFace:
             shape.makeShapeFromMesh(mesh.Topology, swe) 
             solid = App.ActiveDocument.addObject('Part::Feature', "collectFace")
             solid.Shape = shape
+            solid.Placement=self.sel.Object.Placement
             App.ActiveDocument.recompute()
             newSolid=simplify.Activated(solid)
             return newSolid
