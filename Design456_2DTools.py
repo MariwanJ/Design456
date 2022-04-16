@@ -37,8 +37,9 @@ from draftutils.translate import translate  # for translation
 from  Design456_2Ddrawing import Design456_SimplifiedFace  
 import Mesh
 import MeshPart
+from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-16 16:45:05'
+__updated__ = '2022-04-16 16:53:44'
 
 
 class Design456_CommonFace:
@@ -469,7 +470,8 @@ class Design456_SegmentAFace:
             solid = App.ActiveDocument.addObject('Part::Feature', "collectFace")
             solid.Shape = shape
             App.ActiveDocument.recompute()
-            return solid
+            newSolid=simplify.Activated(solid)
+            return newSolid
 
         except Exception as err:
             App.Console.PrintError("'SegmentAFace' Failed. "

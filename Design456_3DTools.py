@@ -40,9 +40,8 @@ import Design456_SplitObject
 import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
-from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-16 16:46:35'
+__updated__ = '2022-04-16 16:50:11'
 
 # Merge
 class Design456_Part_Merge:
