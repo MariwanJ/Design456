@@ -51,7 +51,7 @@ import BOPTools.SplitFeatures as SPLIT
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-03-29 20:51:39'
+__updated__ = '2022-04-18 15:12:32'
 
 class Design456_loftOnDirection_ui(object):
     def __init__(self, loftOnDirection):
@@ -180,16 +180,14 @@ class Design456_loftOnDirection_ui(object):
 
     def checkIfShapeIsValid(self):
         geTobject = Gui.Selection.getSelectionEx()[0]
-        selectedFace = geTobject.SubObjects[0]      # select one element
-        """This must be fixed. I don't know how to distinguish between 2s and 3d objects.
-        I will return for now always 0 but this MUST BE FIXED.2021-02-03 Mariwan
-        if(selectedFace.Volume  ==0 ):
-                #We have a 2D shape .. 
-                self.msgBOXShow()
-                return 1
-            else:
-                return 0
-            """
+        if len(geTobject.Object.Shape.Solids)==0:
+            #We have 2D shape - a Face 
+            msg="Please select a face"
+            faced.error(msg)
+            return 0
+        else:
+            #We have 3D Shape selected
+            return 1
 
     def runClass(self):
         try:

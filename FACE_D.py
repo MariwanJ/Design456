@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-16 14:00:46'
+__updated__ = '2022-04-18 14:32:29'
 
 
 # TODO : FIXME BETTER WAY?
@@ -122,9 +122,65 @@ def getDirectionAxis(s=None):
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
+
+#Shape color preserver 
+def PreserveColorTexture(objOld, objNew):
+    """ Save DiffuseColor and other information from any 
+        object that are going to be manupulated. 
+        Apply the information retrived from the old object to the new object
+        Use Object or object Names (string) as input to the function.
+        
+    Args:
+            objOld (Gui.Selection.getSelectionEx()[0].Object): Object has the DiffuseColor to preserve.
+            ObjNew (Gui.Selection.getSelectionEx()[1].Object): Object to apply the old DiffuseColor to.
+        or
+            objOld (Name1 (string)): Object has the DiffuseColor to preserve.
+            ObjNew (Name2 (string)): Object to apply the old DiffuseColor to.
+
+    """
+    import random
+    try:
+        if type(objOld)==str:
+            objOld=Gui.ActiveDocument.getObject(objOld)
+
+        if type(objNew)==str:
+            objNew=Gui.ActiveDocument.getObject(objNew)
+        objoldLen=len(objOld.Shape.Faces)
+        objnewLen=len(objNew.Shape.Faces)
+
+        changMe=None
+
+        if  hasattr(objOld,"ViewObject"):
+            objOld=objOld.ViewObject
+        if hasattr(objNew,"ViewObject"):
+            objNew=objNew.ViewObject
+        _DiffuseColor=objOld.DiffuseColor
+        if (objoldLen!=objnewLen):
+            n_DiffuseColor=[]
+            diff=objnewLen-objoldLen
+            if (diff>0):
+                for i in range(0,diff):
+                    n_DiffuseColor.append((random.uniform(0.3, 1),
+                                   random.uniform(0.3 , 1), 
+                                   random.uniform(0.3 , 1), 0.0)) #red, green, blue, transparency
+                _DiffuseColor=_DiffuseColor+n_DiffuseColor
+            else:
+                del _DiffuseColor[::diff]
+            objNew.ShapeColor  =  objOld.ShapeColor
+            objNew.LineColor   =  objOld.LineColor
+            objNew.PointColor  =  objOld.PointColor
+            objNew.DiffuseColor=  _DiffuseColor
+            objNew.Transparency=  objOld.Transparency
+
+    except Exception as err:
+        App.Console.PrintError("'PreserveColorTexture' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+
+
 # TODO: This might be wrong
-
-
 class mousePointMove:
 
     def __init__(self, obj, view):

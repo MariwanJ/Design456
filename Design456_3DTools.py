@@ -41,7 +41,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-04-16 16:50:11'
+__updated__ = '2022-04-18 14:36:52'
 
 # Merge
 class Design456_Part_Merge:
@@ -67,7 +67,7 @@ class Design456_Part_Merge:
             if newObj.isValid() is False:
                 App.ActiveDocument.removeObject(newObj.Name)
                 # Shape != OK
-                errMessage = "Failed Merge"
+                errMessage = "Failed to Merge"
                 faced.errorDialog(errMessage)
             else:
 
@@ -77,6 +77,8 @@ class Design456_Part_Merge:
                 mergedObj=App.ActiveDocument.addObject('Part::Feature', 'Merged')
                 mergedObj.Shape = newShape
                 App.ActiveDocument.recompute()
+                #Preserve color and other properties of the old obj
+                faced.PreserveColorTexture(s[0].Object,mergedObj)
                 # Remove Old objects
                 for obj in allObjects:
                    App.ActiveDocument.removeObject(obj.Name)
@@ -129,6 +131,9 @@ class Design456_Part_Subtract:
                 'Part::Feature', 'Subtract')
             NewJ.Shape = newShape
             App.ActiveDocument.recompute()
+            #Preserve color and other properties of the old obj
+            faced.PreserveColorTexture(s[0].Object,NewJ)
+
             if newObj.isValid() is False:
                 App.ActiveDocument.removeObject(NewJ.Name)
                 # Shape != OK
@@ -190,6 +195,8 @@ class Design456_Part_Intersect:
             App.ActiveDocument.recompute()
             # Remove Old objects
             allObjects = []
+            #Preserve color and other properties of the old obj
+            faced.PreserveColorTexture(s[0].Object,NewJ)
             for o in s:
                 allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
             for obj in allObjects:
@@ -237,11 +244,11 @@ class Design456_Part_Group:
                 faced.errorDialog(errMessage)
                 return
 
-            newObj = App.ActiveDocument.Tip = App.ActiveDocument.addObject('App::Part', 'Group')
+            newObj = App.ActiveDocument.addObject('App::Part', 'Group')
             newObj.Label = 'Group'
             for obj_ in s:
                 obj = App.ActiveDocument.getObject(obj_.ObjectName)
-                newObj.addObject(obj)
+
             #App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
         except Exception as err:
@@ -287,7 +294,10 @@ class Design456_Part_Compound:
             NewJ = App.ActiveDocument.addObject(
                 'Part::Feature', 'Compound')
             NewJ.Shape = newShape
-
+            
+            #Preserve color and other properties of the old obj
+            faced.PreserveColorTexture(s[0].Object,NewJ)
+            
             # Remove Old objects
             for obj in allObjects:
                 App.ActiveDocument.removeObject(obj.Name)
@@ -354,6 +364,10 @@ class Design456_Part_Shell:
                     'Part::Feature', 'Shell')
                 NewJ.Shape = thickObj.Shape
                 App.ActiveDocument.recompute()
+                
+                #Preserve color and other properties of the old obj
+                faced.PreserveColorTexture(s[0].Object,NewJ)
+                
                 # Remove Old objects
                 for obj in allObjects:
                     App.ActiveDocument.removeObject(obj.Name)
@@ -374,7 +388,6 @@ class Design456_Part_Shell:
             'MenuText': 'Part_Shell',
             'ToolTip':  'Part Shell'
         }
-
 
 Gui.addCommand('Design456_Part_Shell', Design456_Part_Shell())
 
@@ -429,13 +442,15 @@ class Design456_Part_Fillet:
                 newObj.Shape = newShape
                 App.ActiveDocument.recompute()
                 App.ActiveDocument.ActiveObject.Label = 'Fillet'
+                
+                #Preserve color and other properties of the old obj
+                faced.PreserveColorTexture(s[0].Object,newObj)
 
                 App.ActiveDocument.removeObject(sub1.Object.Name)
                 App.ActiveDocument.removeObject(tempNewObj.Name)
             App.ActiveDocument.commitTransaction() #undo reg.
             del EdgesToBeChanged[:]
             App.ActiveDocument.recompute()
-            
 
         except Exception as err:
             App.Console.PrintError("'Fillet' Failed. "
@@ -501,7 +516,10 @@ class Design456_Part_Chamfer:
                 newObj.Shape = newShape
                 App.ActiveDocument.recompute()
                 App.ActiveDocument.ActiveObject.Label = 'Chamfer'
-
+                
+                #Preserve color and other properties of the old obj
+                faced.PreserveColorTexture(s[0].Object,newObj)
+                                
                 App.ActiveDocument.removeObject(sub1.Object.Name)
                 App.ActiveDocument.removeObject(tempNewObj.Name)
             del EdgesToBeChanged[:]
@@ -570,8 +588,10 @@ class Design456_SimplifyCompound:
                 newShape = con.Shape.copy()
                 newPart = App.ActiveDocument.addObject('Part::Feature', "Simplified")
                 newPart.Shape=newShape
-                App.ActiveDocument.recompute()
-
+                App.ActiveDocument.recompute()                
+                #Preserve color and other properties of the old obj
+                faced.PreserveColorTexture(obj,newPart)
+                
                 App.ActiveDocument.removeObject(con.Name)
                 App.ActiveDocument.removeObject(obj.Name)
                 result.append(newPart)

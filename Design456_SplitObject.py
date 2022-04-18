@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2021-12-31 08:56:39'
+__updated__ = '2022-04-18 14:50:36'
 
 class Design456_SplitObject:
     """Divide object in to two parts"""
@@ -96,6 +96,8 @@ class Design456_SplitObject:
                 NewJ = App.ActiveDocument.addObject(
                 'Part::Feature', 'SplitObject')
                 NewJ.Shape = newShape
+                #Preserve color and other properties of the old obj
+                faced.PreserveColorTexture(selection[0].Object,NewJ)
                 # Remove Old objects
                 for obj in j.Objects:
                     App.ActiveDocument.removeObject(obj.Name)
