@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-04-18 14:47:11'
+__updated__ = '2022-04-18 17:33:36'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -687,6 +687,10 @@ class Design456_SimplifyEdges:
             sh = l1.Shape
             newobj.Shape = sh.copy()
             App.ActiveDocument.recompute()
+
+            #Preserve color and other properties of the old obj
+            faced.PreserveColorTexture(s[0].Object,newobj)
+            
             App.ActiveDocument.removeObject(selObj.Object.Name)
             App.ActiveDocument.removeObject(l1.Name)
             App.ActiveDocument.commitTransaction()  # undo

@@ -1,1 +1,1 @@
-pyuic5 iconlist.ui> iconlist.py
+pyuic5 seg.ui> seg.py

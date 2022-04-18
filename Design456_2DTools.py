@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-18 16:25:29'
+__updated__ = '2022-04-18 19:34:19'
 
 
 class Design456_CommonFace:
@@ -421,9 +421,16 @@ Gui.addCommand('Design456_ArcFace6Points', Design456_ArcFace6Points())
 class Design456_SegmentAFace:
     def __init__(self):
         self.sel=None
+        self.Segments=10
+        self.SingleFace=False
         
-    def Activated(self):
+    def selectedOptions(self):
         from DefeaturingWB.DefeaturingTools import sewShape
+        self.Segments=self.inpINTSegments.value()
+        if self.radAll.isChecked():
+            self.SingleFace=False
+        elif self.radOneFace.isChecked():
+            self.SingleFace=True
         try:
             self.sel=Gui.Selection.getSelectionEx()[0]
             mesh = self.divideFace()
@@ -431,13 +438,60 @@ class Design456_SegmentAFace:
             sewShape([solid])
             App.ActiveDocument.removeObject(self.sel.Object.Name)
             App.ActiveDocument.removeObject(mesh.Name)
-
+            
         except Exception as err:
             App.Console.PrintError("'Design456_SegmentAFace' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+            print(exc_type, fname, exc_tb.tb_lineno)        
+    
+    def hide(self):
+        self.frmMain.hide()
+        return
+    
+    def createDialog(self):
+        self.frmMain=QtGui.QDialog()
+        self.frmMain.setObjectName("frmMain")
+        self.frmMain.resize(374, 200)
+        self.frmMain.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.Europe))
+        self.frmMain.setModal(True)
+        self.buttonBox = QtGui.QDialogButtonBox(self.frmMain)
+        self.buttonBox.setGeometry(QtCore.QRect(30, 150, 341, 32))
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.buttonGroup =   QtGui.QButtonGroup(self.frmMain)
+        self.buttonGroup.setObjectName("buttonGroup")
+        self.radOneFace = QtGui.QRadioButton(self.frmMain)
+        self.radOneFace.setGeometry(QtCore.QRect(20, 20, 89, 20))
+        self.radOneFace.setObjectName("radOneFace")
+        self.radAll = QtGui.QRadioButton(self.frmMain)
+        self.radAll.setGeometry(QtCore.QRect(20, 50, 89, 20))
+        self.radAll.setObjectName("radAll")
+        self.inpINTSegments = QtGui.QSpinBox(self.frmMain)
+        self.inpINTSegments.setGeometry(QtCore.QRect(210, 60, 121, 22))
+        self.inpINTSegments.setObjectName("inpINTSegments")
+        self.label = QtGui.QLabel(self.frmMain)
+        self.label.setGeometry(QtCore.QRect(210, 40, 91, 16))
+        self.label.setObjectName("label")
+        self.buttonGroup.addButton(self.radOneFace)
+        self.buttonGroup.addButton(self.radAll)
+        self.radAll.setChecked(True)
+        self.inpINTSegments.setValue(10)
+        _translate = QtCore.QCoreApplication.translate
+        self.frmMain.setWindowTitle(_translate("frmMain", "Select Face and Segments size"))
+        self.radOneFace.setText(_translate("frmMain", "Only selected face"))
+        self.radAll.setText(_translate("frmMain", "All faces"))
+        self.label.setText(_translate("frmMain", "Segments"))
+   
+        self.buttonBox.accepted.connect(self.selectedOptions)
+        self.buttonBox.rejected.connect(self.hide)
+        QtCore.QMetaObject.connectSlotsByName(self.frmMain)
+        self.frmMain.show()
+   
+    def Activated(self):
+        self.createDialog()
 
     def GetResources(self):
         return {
@@ -446,15 +500,17 @@ class Design456_SegmentAFace:
             'ToolTip':  'Segment A Face'
         }
 
-    def divideFace(self, numbers=10.0):
+    def divideFace(self):
         try:
             shp = self.sel.Object.Shape    
             mesh = App.ActiveDocument.addObject("Mesh::Feature", "Mesh")
-            mesh.Mesh = MeshPart.meshFromShape(
-                    Shape=shp,
-                    LinearDeflection=1/numbers,
-                    AngularDeflection=1.0,
-                    Relative=False)
+            if self.SingleFace is False:
+                mesh.Mesh = MeshPart.meshFromShape(
+                        Shape=shp,
+                        LinearDeflection=1/self.Segments,
+                        AngularDeflection=1.0,
+                        Relative=False)
+
             App.ActiveDocument.recompute()
             return mesh
     

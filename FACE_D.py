@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-18 14:32:29'
+__updated__ = '2022-04-18 19:44:17'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1417,3 +1417,8 @@ Part.show(circle)
 
 
 
+
+def ReplaceFace(ThreeD_ObjectFace,FaceToUse):
+    obj=ThreeD_ObjectFace.Object
+    shp=obj.Shapes
+    
