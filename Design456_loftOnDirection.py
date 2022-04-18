@@ -51,7 +51,7 @@ import BOPTools.SplitFeatures as SPLIT
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-04-18 15:12:32'
+__updated__ = '2022-04-18 15:48:28'
 
 class Design456_loftOnDirection_ui(object):
     def __init__(self, loftOnDirection):
@@ -159,7 +159,7 @@ class Design456_loftOnDirection_ui(object):
         QtCore.QObject.connect(
             self.btnOK, QtCore.SIGNAL("accepted()"), self.runClass)
         QtCore.QObject.connect(
-            self.btnOK, QtCore.SIGNAL("pressed()"), self.runClass)
+           self.btnOK, QtCore.SIGNAL("pressed()"), self.runClass)
         QtCore.QObject.connect(
             self.btnCancel, QtCore.SIGNAL("accepted()"), self.GetOut)
         QtCore.QMetaObject.connectSlotsByName(loftOnDirection)
@@ -179,12 +179,15 @@ class Design456_loftOnDirection_ui(object):
         """
 
     def checkIfShapeIsValid(self):
-        geTobject = Gui.Selection.getSelectionEx()[0]
-        if len(geTobject.Object.Shape.Solids)==0:
-            #We have 2D shape - a Face 
-            msg="Please select a face"
-            faced.error(msg)
-            return 0
+        getObject = Gui.Selection.getSelectionEx()[0]
+        if len(getObject.Object.Shape.Solids)!=0:
+            if getObject.HasSubObjects:
+                return 1
+            else:
+                #We have 2D shape - a Face 
+                msg="Please select a face"
+                faced.errorDialog(msg)
+                return 0
         else:
             #We have 3D Shape selected
             return 1
@@ -194,9 +197,9 @@ class Design456_loftOnDirection_ui(object):
             sel = Gui.Selection.getSelectionEx()
             if(len(sel) <1 or len(sel)>1 or 
                len(sel[0].SubElementNames) ==0 ):
-                # Two object must be selected
-                errMessage = "Select a face to use LoftOnDirection Tool"
-                faced.errorDialog(errMessage)
+                # # Two object must be selected
+                # errMessage = "Select a face to use LoftOnDirection Tool"
+                # faced.errorDialog(errMessage)
                 return
 
             selectedFace = Gui.Selection.getSelectionEx(
@@ -313,7 +316,7 @@ class Design456_loftOnDirection():
 
     def Activated(self):
         self.d.setWindowModality(QtCore.Qt.ApplicationModal)
-        if(self.ui.checkIfShapeIsValid() == 1):
+        if(self.ui.checkIfShapeIsValid() == 0):
             return
         self.d.show()
 

@@ -526,13 +526,14 @@ def checkShape():
         App.Console.PrintWarning(msg)
 
 
-def sewShape():
+def sewShape(sel=None):
     """checking Shape"""
     try:
         doc = App.ActiveDocument
         docG = Gui.ActiveDocument
         App.ActiveDocument.openTransaction(translate("Design456", "sewShape"))
-        sel = Gui.Selection.getSelection()
+        if sel is None:
+            sel = Gui.Selection.getSelection()
         if len(sel) == 1:
             o = sel[0]
             if hasattr(o, 'Shape'):

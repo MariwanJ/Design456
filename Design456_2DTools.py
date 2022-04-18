@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-16 18:50:39'
+__updated__ = '2022-04-18 16:25:29'
 
 
 class Design456_CommonFace:
@@ -423,13 +423,15 @@ class Design456_SegmentAFace:
         self.sel=None
         
     def Activated(self):
+        from DefeaturingWB.DefeaturingTools import sewShape
         try:
             self.sel=Gui.Selection.getSelectionEx()[0]
             mesh = self.divideFace()
             solid = self.collectFace(mesh)
+            sewShape([solid])
             App.ActiveDocument.removeObject(self.sel.Object.Name)
             App.ActiveDocument.removeObject(mesh.Name)
-            
+
         except Exception as err:
             App.Console.PrintError("'Design456_SegmentAFace' Failed. "
                                    "{err}\n".format(err=str(err)))
