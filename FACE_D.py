@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-18 19:44:17'
+__updated__ = '2022-04-19 17:55:53'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1429,21 +1429,31 @@ def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
     Returns:
         Part.Solid: new object created after replacing the face.
     """
-    obj=object
-    shp=obj.Shape
-    faces=shp.Faces
-    newFaces= []
-    for fa in faces:
-        if fa.isSame(ThreeD_ObjectFace):
-            newFaces.append(FaceToUse)
-        else:
-            newFaces.append(fa)
-    _shell=Part.Shell(newFaces)
-    name=obj.Name
-    App.ActiveDocument.removeObject(obj.Name)
-    _solid=Part.Solid(_shell)
-    newSolid=App.ActiveDocument.addObject("Part::Feature","ReplacedFace")
-    newSolid.Shape=_solid.copy()
-    return newSolid
+    try:
+        obj=object
+        shp=obj.Shape
+        faces=shp.Faces
+        newFaces= []
+        for fa in faces:
+            if fa.isSame(ThreeD_ObjectFace):
+                newFaces.append(FaceToUse)
+            else:
+                newFaces.append(fa)
+        print(newFaces)
+        for f in newFaces:
+            Part.show(f)
+        _shell=Part.Shell(newFaces)
+        name=obj.Name
+        App.ActiveDocument.removeObject(obj.Name)
+        _solid=Part.Solid(_shell)
+        newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
+        newSolid.Shape=_solid.copy()
+        return newSolid
     
+    except Exception as err:
+        App.Console.PrintError("'ReplaceFace' Failed. "
+                                "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)    
             
