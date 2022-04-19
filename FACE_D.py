@@ -1419,21 +1419,31 @@ Part.show(circle)
 
 
 def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
+    """Replace existing face with any new face.
+    
+    Args:
+        object (3D Object): Object has the face to replace
+        ThreeD_ObjectFace (Part.Face): Face will be replaced by new face
+        FaceToUse (Part.Face): New face that will be added to the solid object
+
+    Returns:
+        Part.Solid: new object created after replacing the face.
+    """
     obj=object
     shp=obj.Shape
-    faces=shp.faces
+    faces=shp.Faces
     newFaces= []
     for fa in faces:
         if fa.isSame(ThreeD_ObjectFace):
             newFaces.append(FaceToUse)
         else:
-            newFaces.appned(fa)
+            newFaces.append(fa)
     _shell=Part.Shell(newFaces)
     name=obj.Name
     App.ActiveDocument.removeObject(obj.Name)
-    _solid=Part.Solid(_shell,name)
+    _solid=Part.Solid(_shell)
     newSolid=App.ActiveDocument.addObject("Part::Feature","ReplacedFace")
-    newSolid.Shape=_solid.Shape.copy()
+    newSolid.Shape=_solid.copy()
     return newSolid
     
             
