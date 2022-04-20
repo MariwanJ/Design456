@@ -534,6 +534,9 @@ def sewShape(sel=None):
         App.ActiveDocument.openTransaction(translate("Design456", "sewShape"))
         if sel is None:
             sel = Gui.Selection.getSelection()
+        elif type(sel) =="<class 'bool'>":
+            sel=None
+            
         if len(sel) == 1:
             o = sel[0]
             if hasattr(o, 'Shape'):

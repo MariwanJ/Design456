@@ -1442,10 +1442,10 @@ def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
         print(newFaces)
         for f in newFaces:
             Part.show(f)
-        _shell=Part.Shell(newFaces)
+        _shell=Part.makeShell(newFaces)
         name=obj.Name
         App.ActiveDocument.removeObject(obj.Name)
-        _solid=Part.Solid(_shell)
+        _solid=Part.makeSolid(_shell)
         newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
         newSolid.Shape=_solid.copy()
         return newSolid
