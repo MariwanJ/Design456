@@ -532,10 +532,10 @@ def sewShape(sel=None):
         doc = App.ActiveDocument
         docG = Gui.ActiveDocument
         App.ActiveDocument.openTransaction(translate("Design456", "sewShape"))
+        if  isinstance(sel,bool):
+            sel=None
         if sel is None:
             sel = Gui.Selection.getSelection()
-        elif type(sel) =="<class 'bool'>":
-            sel=None
             
         if len(sel) == 1:
             o = sel[0]
