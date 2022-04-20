@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-09 18:16:21'
+__updated__ = '2022-04-20 17:32:33'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -677,12 +677,11 @@ class Design456_SelectTool:
             elif(typeOfFaces == FR_SELECTION.LOOP_FACES_PERPENDICULAR_TO_YZ):
                 self.selectEdges_PerpendicularToYZ()     
         
-            print("I am here")
             HorizontalEdges=Gui.Selection.getSelectionEx()[0].SubObjects
             if len(HorizontalEdges)==0:
                 print("nothing found")
                 return
-            print(len(HorizontalEdges),"HorizontalEdges")
+            #print(len(HorizontalEdges),"HorizontalEdges")
             firstFaceEdges=[]
             for e in HorizontalEdges:
                 if self.faceHasEdge(self.firstFace,e):
@@ -696,12 +695,13 @@ class Design456_SelectTool:
                 Gui.Selection.clearSelection()
                 return
             else:
-                print("Edges of the first face found",len(firstFaceEdges))                
+                pass
+                #print("Edges of the first face found",len(firstFaceEdges))                
             
             newEdge=firstFaceEdges[1]  #second edge of the face1
             currentFace=self.firstFace
             currentEdges=[]
-            #TODO THIS IS WRONG!!!!!!
+
             xx=-1
             while (not(newEdge.isSame(firstFaceEdges[0]))):
                 xx=xx+1

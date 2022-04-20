@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-19 17:55:53'
+__updated__ = '2022-04-20 17:57:59'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1428,6 +1428,7 @@ def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
 
     Returns:
         Part.Solid: new object created after replacing the face.
+        or None if failed.
     """
     try:
         obj=object
@@ -1439,16 +1440,19 @@ def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
                 newFaces.append(FaceToUse)
             else:
                 newFaces.append(fa)
-        print(newFaces)
+        #print(newFaces)
         for f in newFaces:
             Part.show(f)
         _shell=Part.makeShell(newFaces)
-        name=obj.Name
-        App.ActiveDocument.removeObject(obj.Name)
-        _solid=Part.makeSolid(_shell)
-        newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
-        newSolid.Shape=_solid.copy()
-        return newSolid
+        if _shell.isValid:
+            name=obj.Name
+            App.ActiveDocument.removeObject(obj.Name)
+            _solid=Part.makeSolid(_shell)
+            if _solid.isValid:
+                newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
+                newSolid.Shape=_solid.copy()
+                return newSolid
+        return None
     
     except Exception as err:
         App.Console.PrintError("'ReplaceFace' Failed. "

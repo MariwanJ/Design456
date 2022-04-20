@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-18 19:34:19'
+__updated__ = '2022-04-20 18:00:27'
 
 
 class Design456_CommonFace:
@@ -423,6 +423,7 @@ class Design456_SegmentAFace:
         self.sel=None
         self.Segments=10
         self.SingleFace=False
+        self.oldFace=None
         
     def selectedOptions(self):
         from DefeaturingWB.DefeaturingTools import sewShape
@@ -431,8 +432,14 @@ class Design456_SegmentAFace:
             self.SingleFace=False
         elif self.radOneFace.isChecked():
             self.SingleFace=True
+        self.frmMain.hide()
+        self.oldFace=None
         try:
             self.sel=Gui.Selection.getSelectionEx()[0]
+            if hasattr(self.sel,"HasSubObjects"):
+                if self.sel.HasSubObjects:
+                   self.oldFace=self.sel.SubObjects
+
             mesh = self.divideFace()
             solid = self.collectFace(mesh)
             sewShape([solid])
@@ -502,18 +509,25 @@ class Design456_SegmentAFace:
 
     def divideFace(self):
         try:
-            shp = self.sel.Object.Shape    
             mesh = App.ActiveDocument.addObject("Mesh::Feature", "Mesh")
+            shp=None
             if self.SingleFace is False:
+                shp = self.sel.Object.Shape    
                 mesh.Mesh = MeshPart.meshFromShape(
-                        Shape=shp,
-                        LinearDeflection=1/self.Segments,
-                        AngularDeflection=1.0,
-                        Relative=False)
-
+                            Shape=shp,
+                            LinearDeflection=1/self.Segments,
+                            AngularDeflection=1.0,
+                            Relative=False)
+            else:   
+                shp = self.sel.SubObjects[0]
+                mesh.Mesh = MeshPart.meshFromShape(
+                            Shape=shp,
+                            LinearDeflection=1/self.Segments,
+                            AngularDeflection=1.0,
+                            Relative=False)
             App.ActiveDocument.recompute()
             return mesh
-    
+
         except Exception as err:
             App.Console.PrintError("'devideFace' Failed. "
                                     "{err}\n".format(err=str(err)))
@@ -521,24 +535,28 @@ class Design456_SegmentAFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             
-    def collectFace(self,obj,swe=.05):
+    def collectFace(self,obj,swe=0.1):
         try:
             #sel=Gui.Selection.getSelectionEx()[0]
             simplify=Design456_SimplifyCompound()
-            
             mesh = obj.Mesh
             shape = Part.Shape()
             shape.makeShapeFromMesh(mesh.Topology, swe) 
-            solid = App.ActiveDocument.addObject('Part::Feature', "collectFace")
-            solid.Shape = shape
-
-            App.ActiveDocument.recompute()
-            temp=simplify.Activated(solid)[0]
+            newObj = App.ActiveDocument.addObject('Part::Feature', "collectFace")
             newSolid = App.ActiveDocument.addObject('Part::Feature', "SegmentAFace")
-            newSolid.Shape = temp.Shape.copy()
-            newSolid.Placement=temp.Placement
-            App.ActiveDocument.removeObject(temp.Name)
+
+            if self.SingleFace is False:
+                newObj.Shape = shape
+                App.ActiveDocument.recompute()
+                temp=simplify.Activated(newObj)[0]
+                newSolid.Shape = temp.Shape.copy()
+                newSolid.Placement=temp.Placement
+                App.ActiveDocument.removeObject(temp.Name)
+            else:
+                newSolid =faced.ReplaceFace(self.sel,newObj,shape)
+            
             return newSolid
+            
 
         except Exception as err:
             App.Console.PrintError("'SegmentAFace' Failed. "
