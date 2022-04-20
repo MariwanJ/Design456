@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-20 18:00:27'
+__updated__ = '2022-04-20 18:37:41'
 
 
 class Design456_CommonFace:
@@ -553,8 +553,7 @@ class Design456_SegmentAFace:
                 newSolid.Placement=temp.Placement
                 App.ActiveDocument.removeObject(temp.Name)
             else:
-                newSolid =faced.ReplaceFace(self.sel,newObj,shape)
-            
+                newSolid =faced.ReplaceFace(self.sel.Object,self.sel.SubObjects[0],shape.Faces[0])
             return newSolid
             
 
