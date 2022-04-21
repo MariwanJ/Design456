@@ -443,8 +443,7 @@ class Design456_SegmentAFace:
             mesh = self.divideFace()
             solid = self.collectFace(mesh)
             sewShape([solid])
-            App.ActiveDocument.removeObject(self.sel.Object.Name)
-            App.ActiveDocument.removeObject(mesh.Name)
+            #App.ActiveDocument.removeObject(self.sel.Object.Name)
             
         except Exception as err:
             App.Console.PrintError("'Design456_SegmentAFace' Failed. "
