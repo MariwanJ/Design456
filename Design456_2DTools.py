@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-20 18:37:41'
+__updated__ = '2022-04-23 16:32:04'
 
 
 class Design456_CommonFace:
@@ -439,12 +439,21 @@ class Design456_SegmentAFace:
             if hasattr(self.sel,"HasSubObjects"):
                 if self.sel.HasSubObjects:
                    self.oldFace=self.sel.SubObjects
-
-            mesh = self.divideFace()
-            solid = self.collectFace(mesh)
-            sewShape([solid])
-            #App.ActiveDocument.removeObject(self.sel.Object.Name)
             
+            App.ActiveDocument.openTransaction(translate("Design456","SegmentAFace"))
+            
+            mesh = self.divideFace()
+            _solid = self.collectFace(mesh) 
+            App.ActiveDocument.removeObject(mesh.Name)
+            #undo
+
+            newObj=App.ActiveDocument.addObject('Part::Feature', "SegmentAFace")
+            result=sewShape([_solid])
+            newObj.Shape=result[0].Shape.copy()
+            App.ActiveDocument.removeObject(_solid.Name)
+            App.ActiveDocument.removeObject(result[0].Name)
+            App.ActiveDocument.commitTransaction() #undo reg.
+        
         except Exception as err:
             App.Console.PrintError("'Design456_SegmentAFace' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -541,18 +550,23 @@ class Design456_SegmentAFace:
             mesh = obj.Mesh
             shape = Part.Shape()
             shape.makeShapeFromMesh(mesh.Topology, swe) 
-            newObj = App.ActiveDocument.addObject('Part::Feature', "collectFace")
-            newSolid = App.ActiveDocument.addObject('Part::Feature', "SegmentAFace")
+            compShp=Part.makeCompound(shape)
+            newSolid = App.ActiveDocument.addObject('Part::Feature', "tempSegmentAFace")
 
             if self.SingleFace is False:
+                newObj = App.ActiveDocument.addObject('Part::Feature', "collectFace")
                 newObj.Shape = shape
                 App.ActiveDocument.recompute()
                 temp=simplify.Activated(newObj)[0]
+                
                 newSolid.Shape = temp.Shape.copy()
                 newSolid.Placement=temp.Placement
                 App.ActiveDocument.removeObject(temp.Name)
             else:
-                newSolid =faced.ReplaceFace(self.sel.Object,self.sel.SubObjects[0],shape.Faces[0])
+                tempShape=faced.ReplaceFace(self.sel.Object,self.sel.SubObjects[0],compShp)
+                newSolid.Shape =tempShape.Shape.copy()
+                App.ActiveDocument.removeObject(tempShape.Name)
+                App.ActiveDocument.recompute()
             return newSolid
             
 

@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-20 17:57:59'
+__updated__ = '2022-04-23 14:43:26'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1430,6 +1430,7 @@ def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
         Part.Solid: new object created after replacing the face.
         or None if failed.
     """
+    from Design456_3DTools import Design456_SimplifyCompound as simpl
     try:
         obj=object
         shp=obj.Shape
@@ -1440,18 +1441,18 @@ def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
                 newFaces.append(FaceToUse)
             else:
                 newFaces.append(fa)
-        #print(newFaces)
-        for f in newFaces:
-            Part.show(f)
-        _shell=Part.makeShell(newFaces)
-        if _shell.isValid:
+        _compt=Part.makeCompound(newFaces)
+        _comp=App.ActiveDocument.addObject("Part::Feature","tcomp")
+        _comp.Shape =_compt
+        if _comp.isValid:
             name=obj.Name
             App.ActiveDocument.removeObject(obj.Name)
-            _solid=Part.makeSolid(_shell)
-            if _solid.isValid:
-                newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
-                newSolid.Shape=_solid.copy()
-                return newSolid
+            newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
+            _solid =simpl().Activated(_comp)
+            newSolid.Shape=_solid[0].Shape
+            App.ActiveDocument.removeObject(_solid[0].Name)
+            App.ActiveDocument.recompute()
+            return newSolid
         return None
     
     except Exception as err:

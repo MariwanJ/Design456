@@ -532,6 +532,7 @@ def sewShape(sel=None):
         doc = App.ActiveDocument
         docG = Gui.ActiveDocument
         App.ActiveDocument.openTransaction(translate("Design456", "sewShape"))
+        returnedObj=[]
         if  isinstance(sel,bool):
             sel=None
         if sel is None:
@@ -544,9 +545,9 @@ def sewShape(sel=None):
                 sh.sewShape()
                 sl = Part.Solid(sh)
                 docG.getObject(o.Name).Visibility = False
-                Part.show(sl)
-                ao = App.ActiveDocument.ActiveObject
-                ao.Label = 'Solid'
+                newSolid=App.ActiveDocument.addObject("Part::Feature","Solid")
+                newSolid.Shape=sl
+                returnedObj.append(newSolid)
                 docG.ActiveObject.ShapeColor = docG.getObject(
                     o.Name).ShapeColor
                 docG.ActiveObject.LineColor = docG.getObject(o.Name).LineColor
@@ -556,6 +557,7 @@ def sewShape(sel=None):
                     o.Name).DiffuseColor
                 docG.ActiveObject.Transparency = docG.getObject(
                     o.Name).Transparency
+            return returnedObj
         else:
             msg = "Select one or more object(s) to be checked!\n"
             reply = QtGui.QMessageBox.information(None, "Warning", msg)

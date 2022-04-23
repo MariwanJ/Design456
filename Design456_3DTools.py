@@ -41,7 +41,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-04-18 14:36:52'
+__updated__ = '2022-04-23 14:29:44'
 
 # Merge
 class Design456_Part_Merge:
@@ -559,10 +559,10 @@ class Design456_SimplifyCompound:
             import BOPTools.JoinFeatures
             s=Gui.Selection.getSelection()
             ss=None
-            if input_object == None:
+            if input_object is None:
                 if (len(s) < 1):
                     # One object must be selected at least
-                    errMessage = "Select a face or an edge use Chamfer"
+                    errMessage = "Select a face or an edge use SimplifyCompound"
                     faced.errorDialog(errMessage)
                     return None
             else:
