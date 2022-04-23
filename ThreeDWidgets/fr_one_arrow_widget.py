@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2021-12-31 08:57:39'
+__updated__ = '2022-04-23 19:34:32'
 
 
 """
@@ -700,35 +700,35 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         """
         self.w_discEnabled = False
 
-    def calculateMouseAngle(self, val1, val2):
-        """[Calculate Angle of two coordinates ( xy, yz or xz).
-            This function is useful to calculate mouse position
-            in Angle depending on the mouse position.
-        ]
+    # def calculateMouseAngle(self, val1, val2):
+    #     """[Calculate Angle of two coordinates ( xy, yz or xz).
+    #         This function is useful to calculate mouse position
+    #         in Angle depending on the mouse position.
+    #     ]
 
-        Args:
-            val1 ([Horizontal coordinate]): [x, y]
-            val2 ([Vertical coordinate ]): [y or z]
+    #     Args:
+    #         val1 ([Horizontal coordinate]): [x, y]
+    #         val2 ([Vertical coordinate ]): [y or z]
 
-        Returns:
-            [int]: [Calculated value in degrees]
-        """
-        if(val2 == 0):
-            return None  # divide by zero
-        result = 0
-        if (val1 > 0 and val2 > 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                 float(val2))))
-        if (val1 < 0 and val2 > 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                 float(val2))))+360
-        if (val1 > 0 and val2 < 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                 float(val2))))
-        if (val1 < 0 and val2 < 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                 float(val2))))+360
-        return result
+    #     Returns:
+    #         [int]: [Calculated value in degrees]
+    #     """
+    #     if(val2 == 0):
+    #         return None  # divide by zero
+    #     result = 0
+    #     if (val1 > 0 and val2 > 0):
+    #         result = int(math.degrees(math.atan2(float(val1),
+    #                                              float(val2))))
+    #     if (val1 < 0 and val2 > 0):
+    #         result = int(math.degrees(math.atan2(float(val1),
+    #                                              float(val2))))+360
+    #     if (val1 > 0 and val2 < 0):
+    #         result = int(math.degrees(math.atan2(float(val1),
+    #                                              float(val2))))
+    #     if (val1 < 0 and val2 < 0):
+    #         result = int(math.degrees(math.atan2(float(val1),
+    #                                              float(val2))))+360
+    #     return result
 
     def cb_discRotate(self, userData: userDataObject = None):
         """

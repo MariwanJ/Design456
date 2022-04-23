@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2021-12-31 08:58:01'
+__updated__ = '2022-04-23 19:27:28'
 
 # TODO: FIXME:
 """
@@ -119,10 +119,10 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                                        str(linktocaller.w_rotation[2]) + ")"
                                        + "\nRotation Angle= " + str(wheelObj.w_wheelAngle) + " °")
 
-    wheelObj.w_Rotation[3] = -wheelObj.w_wheelAngle
+    wheelObj.w_Rotation[3] = wheelObj.w_wheelAngle
     if linktocaller.newObject is None:
         return
-    linktocaller.newObject.Angle = -wheelObj.w_wheelAngle
+    linktocaller.newObject.Angle = wheelObj.w_wheelAngle
     wheelObj.redraw()
     App.ActiveDocument.recompute()
 

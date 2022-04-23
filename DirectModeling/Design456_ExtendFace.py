@@ -53,7 +53,7 @@ import math
 # except:
 #     pass
 
-__updated__ = '2022-04-01 18:46:41'
+__updated__ = '2022-04-23 21:51:34'
 
 class Design456_ExtendFace:
     """[Extend the face's position to a new position.
@@ -260,15 +260,7 @@ class Design456_ExtendFace:
     def calculateNewVector(self):
         try:
             self.faceDir = faced.getDirectionAxis()  # face direction
-            faces = faced.findFaceSHavingTheSameEdge()
-            # TODO: SHOULD WE DO ANY CALCULATION TO FIND BETTER FACE?
-            if type(faces) == list:
-                face = faces[0]
-            elif faces is not None:
-                face = faces
-            else:
-                raise ValueError("Face returned was none")
-
+            face=self.selectedFace
             yL = face.CenterOfMass
             uv = face.Surface.parameter(yL)
             nv = face.normalAt(uv[0], uv[1])
