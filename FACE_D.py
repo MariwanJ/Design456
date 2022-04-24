@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-23 14:43:26'
+__updated__ = '2022-04-24 15:51:09'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1090,14 +1090,9 @@ def getNormalized(selectedObj=None):
     if selectedObj is None:
         raise ValueError("SelectedObj must be a face")
     edg = getLowestEdgeInAFace(selectedObj)
-    v1 = edg.Vertexes[0].Point
-    v2 = edg.Vertexes[1].Point
-    vt = v1.sub(v2)
-    vt = vt
     p1 = edg.valueAt(edg.FirstParameter)
     p2 = edg.valueAt(edg.LastParameter)
-
-    vnormal = p2 - p1
+    vnormal = p2.sub(p1)/2
     return vnormal
 
 
@@ -1107,8 +1102,6 @@ def getBase(selectedObj, radius=1, thickness=1):
     basePoint = edg.valueAt(edg.FirstParameter) + nor * (radius + thickness)
     return basePoint
 
-
-# TODO: FIXME : ALLOW SENDING THE EDGE AND SHAPE TO THIS FUNCTION
 # See https://forum.freecadweb.org/viewtopic.php?style=1&p=527043
 def findFaceSHavingTheSameEdge(edge=None, shape=None):
     """[Find Faces that have the selected edge]

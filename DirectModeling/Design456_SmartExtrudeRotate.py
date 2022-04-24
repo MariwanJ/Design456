@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-23 19:27:28'
+__updated__ = '2022-04-24 19:42:54'
 
 # TODO: FIXME:
 """
@@ -151,21 +151,13 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject = None):
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
-    if linktocaller.run_Once is False:
-        linktocaller.run_Once = True
-        # only once
-        linktocaller.startVector = linktocaller.endVector
-        # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-        linktocaller.mouseOffset = App.Vector(0, 0, 0)
-
-    linktocaller.extrudeLength = (
-        linktocaller.endVector - linktocaller.startVector).dot(linktocaller.normalVector)
-
+    #Calculate length
+    linktocaller.calculateNewLength()
+    
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
-    # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
@@ -196,21 +188,13 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject = None):
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
-    if linktocaller.run_Once is False:
-        linktocaller.run_Once = True
-        # only once
-        linktocaller.startVector = linktocaller.endVector
-        # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-        linktocaller.mouseOffset = App.Vector(0, 0, 0)
-    linktocaller.extrudeLength = (
-        linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
+    #Calculate length
+    linktocaller.calculateNewLength()
 
-    linktocaller.wheelObj.redraw()
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
-    # linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    # linktocaller.reCreateExtrudeObject()
+    linktocaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
 
@@ -239,22 +223,13 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject = None):
     linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
-    if linktocaller.run_Once is False:
-        linktocaller.run_Once = True
-        # only once
-        linktocaller.startVector = linktocaller.endVector
-        # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-        linktocaller.mouseOffset = App.Vector(0, 0, 0)
-
-    linktocaller.extrudeLength = (
-        linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
-
+    #Calculate length
+    linktocaller.calculateNewLength()
+    
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
-    #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
@@ -284,21 +259,13 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject = None):
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
-    if linktocaller.run_Once is False:
-        linktocaller.run_Once = True
-        # only once
-        linktocaller.startVector = linktocaller.endVector
-        # linktocaller.wheelObj.w_vector[0].sub(linktocaller.startVector)
-        linktocaller.mouseOffset = App.Vector(0, 0, 0)
-    linktocaller.extrudeLength = (
-        linktocaller.endVector-linktocaller.startVector).dot(linktocaller.normalVector)
-
+    #Calculate length
+    linktocaller.calculateNewLength()
+    
     linktocaller.ExtrudeLBL.setText(
         "Length= " + str(round(linktocaller.extrudeLength, 4)))
     linktocaller.calculateNewVector()
     linktocaller.wheelObj.redraw()
-    #linktocaller.wheelObj.w_vector[0] = linktocaller._Vector
-    # linktocaller.reCreateExtrudeObject()
     App.ActiveDocument.recompute()
 
 
@@ -375,7 +342,29 @@ class Design456_SmartExtrudeRotate:
         # This variable is used to disable all other options
         self.isItRotation = False
 
+    def calculateNewLength(self):
+        """ Calculate new extrude length 
+        """
+        try:
+            
+            if self.run_Once is False:
+                self.run_Once = True
+                # only once
+                self.startVector = self.endVector
+                #No need for offset
+                #self.mouseOffset = self.endVector.sub(self.wheelObj.w_vector[0])
+            self.extrudeLength = ((self.endVector.sub( self.startVector))).dot(self.normalVector)
 
+
+            
+        except Exception as err:
+            faced.EnableAllToolbar(True)
+            App.Console.PrintError("'calculateNewLength-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def calculateRotatedNormal(self, Wheelaxis):
         """[calculate placement, angle of rotation, axis of rotation based on the]
 
@@ -498,7 +487,8 @@ class Design456_SmartExtrudeRotate:
         return pl
 
     # TODO: FIXME:
-
+    
+      
     def reCreateRevolveObj(self, angle):
         try:
             # Create the Revolution
@@ -509,7 +499,7 @@ class Design456_SmartExtrudeRotate:
                 "Part::Revolution", "ExtendRotate")
             App.ActiveDocument.removeObject(self.ExtractedFaces[1].Name)
             self.ExtractedFaces[1] = None
-            # to allow the creation other wise you get OCCT error, angl<>0
+            # to allow the creation other wise you get OCC error, angl<>0
             self.newObject.Angle = angle
             self.newObject.Solid = True
             self.newObject.Symmetric = False
@@ -518,7 +508,16 @@ class Design456_SmartExtrudeRotate:
             bas = faced.getBase(self.ExtractedFaces[0])
             self.newObject.Base = bas
             self.newObject.Axis = nor
-            # Try this .. might be correct
+            """# Try this .. might be correct TODO:FIXME: not correct
+            self.wheelObj.w_Rotation[0] = nor.x
+            self.wheelObj.w_Rotation[1] = nor.y
+            self.wheelObj.w_Rotation[2] = nor.z
+            """
+            print(".............................")
+            print("Normal axis ",nor)
+            print("base", bas)
+            print("angle",self.wheelObj.w_wheelAngle)
+            print("...........................")
             self.wheelObj.w_Rotation[0] = nor.x
             self.wheelObj.w_Rotation[1] = nor.y
             self.wheelObj.w_Rotation[2] = nor.z

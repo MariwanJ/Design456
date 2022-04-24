@@ -63,7 +63,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2021-12-31 08:57:00'
+__updated__ = '2022-04-24 15:22:25'
 
 
 @dataclass
