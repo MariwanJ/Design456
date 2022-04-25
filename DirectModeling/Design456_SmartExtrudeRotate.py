@@ -113,11 +113,11 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
-                                       str(linktocaller.w_rotation[0])+","
-                                       + str(linktocaller.w_rotation[1]) +
+                                       str(round(linktocaller.w_rotation[0]),2)+","
+                                       + str(round(linktocaller.w_rotation[1],2)) +
                                        "," +
-                                       str(linktocaller.w_rotation[2]) + ")"
-                                       + "\nRotation Angle= " + str(wheelObj.w_wheelAngle) + " °")
+                                       str(round(linktocaller.w_rotation[2]),2) + ")"
+                                       + "\nRotation Angle= " + str(round(wheelObj.w_wheelAngle,2)) + " °")
 
     wheelObj.w_Rotation[3] = wheelObj.w_wheelAngle
     if linktocaller.newObject is None:
@@ -508,6 +508,11 @@ class Design456_SmartExtrudeRotate:
             bas = faced.getBase(self.ExtractedFaces[0])
             self.newObject.Base = bas
             self.newObject.Axis = nor
+            #TODO: CONFUSING CODE FIXME: You have bot w_rotation and wheelObj.w_Rotation .. remove w_rotation
+            self.w_rotation[0]=nor.x
+            self.w_rotation[1]=nor.y
+            self.w_rotation[2]=nor.z
+            
             """# Try this .. might be correct TODO:FIXME: not correct
             self.wheelObj.w_Rotation[0] = nor.x
             self.wheelObj.w_Rotation[1] = nor.y
@@ -517,7 +522,9 @@ class Design456_SmartExtrudeRotate:
             print("Normal axis ",nor)
             print("base", bas)
             print("angle",self.wheelObj.w_wheelAngle)
+            print("wheel axis",self.wheelObj.w_Xrotation)
             print("...........................")
+            
             self.wheelObj.w_Rotation[0] = nor.x
             self.wheelObj.w_Rotation[1] = nor.y
             self.wheelObj.w_Rotation[2] = nor.z
@@ -844,7 +851,7 @@ class Design456_SmartExtrudeRotate:
             self.lblExtrusionResult.setFont(font)
             self.lblExtrusionResult.setObjectName("lblExtrusionResult")
             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(270, 360, 111, 61))
+            self.btnOK.setGeometry(QtCore.QRect(200, 360, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
