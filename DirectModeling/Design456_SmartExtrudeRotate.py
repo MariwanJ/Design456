@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-24 19:42:54'
+__updated__ = '2022-04-25 18:40:16'
 
 # TODO: FIXME:
 """
@@ -113,10 +113,10 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
-                                       str(round(linktocaller.w_rotation[0]),2)+","
-                                       + str(round(linktocaller.w_rotation[1],2)) +
+                                       str(round(wheelObj.w_Rotation[0]),2)+","
+                                       + str(round(wheelObj.w_Rotation[1],2)) +
                                        "," +
-                                       str(round(linktocaller.w_rotation[2]),2) + ")"
+                                       str(round(wheelObj.w_Rotation[2]),2) + ")"
                                        + "\nRotation Angle= " + str(round(wheelObj.w_wheelAngle,2)) + " °")
 
     wheelObj.w_Rotation[3] = wheelObj.w_wheelAngle
@@ -314,7 +314,6 @@ class Design456_SmartExtrudeRotate:
         self.tab = None
         self.wheelObj = None
         self.editing = False
-        self.w_rotation = [0.0, 0.0, 0.0, 0.0]  # Center/Wheel rotation
         self._mywin = None
         self.b1 = None
         self.ExtrudeLBL = None
@@ -508,11 +507,7 @@ class Design456_SmartExtrudeRotate:
             bas = faced.getBase(self.ExtractedFaces[0])
             self.newObject.Base = bas
             self.newObject.Axis = nor
-            #TODO: CONFUSING CODE FIXME: You have bot w_rotation and wheelObj.w_Rotation .. remove w_rotation
-            self.w_rotation[0]=nor.x
-            self.w_rotation[1]=nor.y
-            self.w_rotation[2]=nor.z
-            
+           
             """# Try this .. might be correct TODO:FIXME: not correct
             self.wheelObj.w_Rotation[0] = nor.x
             self.wheelObj.w_Rotation[1] = nor.y
@@ -687,11 +682,11 @@ class Design456_SmartExtrudeRotate:
             self.setupRotation = self.calculateNewVector()
             if self.faceDir == "+z" or self.faceDir == "-z":
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [2.0, 2.0, 2.0], 2,facingdir)
+                    (0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
+                    self.setupRotation, [2.0, 2.0, 2.0], 2,facingdir))
             else:
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    round(self.w_rotation[3], 2)) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
+                    0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
                     self.setupRotation, [2.0, 2.0, 2.0], 1,facingdir)
 
             # Define the callbacks. We have many callbacks here.
@@ -775,8 +770,6 @@ class Design456_SmartExtrudeRotate:
 
             self.direction = None
             self.setupRotation = [0, 0, 0, 0]
-            # Used only with the center (cylinder)
-            self.Rotation = [0, 0, 0, 0]
             # We use this to simplify the code - for both, 2D and 3D object, the face variable is this
             self.newObject = None
             self.mouseOffset = App.Vector(0, 0, 0)
