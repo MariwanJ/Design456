@@ -302,8 +302,8 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype: str = "",
     tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
 
     rootTransform = coin.SoTransform()
-    rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
     rootTransform.scaleFactor.setValue(_Scale)
+    rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
     root = coin.SoSeparator()
     root.Name = "RootAxisDrawing"
     transla = coin.SoTranslation()

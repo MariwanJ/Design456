@@ -113,10 +113,10 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
-                                       str(round(wheelObj.w_Rotation[0]),2)+","
+                                       str(round(wheelObj.w_Rotation[0],2))+","
                                        + str(round(wheelObj.w_Rotation[1],2)) +
                                        "," +
-                                       str(round(wheelObj.w_Rotation[2]),2) + ")"
+                                       str(round(wheelObj.w_Rotation[2],2)) + ")"
                                        + "\nRotation Angle= " + str(round(wheelObj.w_wheelAngle,2)) + " °")
 
     wheelObj.w_Rotation[3] = wheelObj.w_wheelAngle
@@ -520,9 +520,9 @@ class Design456_SmartExtrudeRotate:
             print("wheel axis",self.wheelObj.w_Xrotation)
             print("...........................")
             
-            self.wheelObj.w_Rotation[0] = nor.x
-            self.wheelObj.w_Rotation[1] = nor.y
-            self.wheelObj.w_Rotation[2] = nor.z
+            self.wheelObj.w_Rotation[0] = bas.x
+            self.wheelObj.w_Rotation[1] = bas.y
+            self.wheelObj.w_Rotation[2] = bas.z
 
         except Exception as err:
             faced.EnableAllToolbar(True)
@@ -681,9 +681,9 @@ class Design456_SmartExtrudeRotate:
             # Decide how the Degree Wheel be drawn
             self.setupRotation = self.calculateNewVector()
             if self.faceDir == "+z" or self.faceDir == "-z":
-                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
+                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str
                     (0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [2.0, 2.0, 2.0], 2,facingdir))
+                    self.setupRotation, [2.0, 2.0, 2.0], 2,facingdir)
             else:
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
@@ -844,7 +844,7 @@ class Design456_SmartExtrudeRotate:
             self.lblExtrusionResult.setFont(font)
             self.lblExtrusionResult.setObjectName("lblExtrusionResult")
             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(200, 360, 111, 61))
+            self.btnOK.setGeometry(QtCore.QRect(150, 360, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
