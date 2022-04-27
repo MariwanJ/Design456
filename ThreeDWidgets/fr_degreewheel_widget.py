@@ -413,6 +413,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 CollectThemAllRot.rotation.setValue(
                     tR, math.radians(self.w_Rotation[3]))
 
+                #TODO FIXME: THIS MIGHT BE WRONG. MAKE IT IN TWO STAGES. FIRST PUT THEM TOGETHER AND TEHN ROTATE.
                 CollectThemAll.addChild(CollectThemAllRot)
                 CollectThemAll.addChild(self.w_CenterSoSeparator)
                 CollectThemAll.addChild(self.w_XsoSeparator)
@@ -420,6 +421,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 CollectThemAll.addChild(self.w_45soSeparator)
                 CollectThemAll.addChild(self.w_135soSeparator)
                 CollectThemAll.addChild(self.w_degreeSeparator)
+                
                 self.draw_label(usedColor)
                 self.saveSoNodesToWidget(CollectThemAll)
                 # add SoSeparator to the switch

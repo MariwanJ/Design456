@@ -110,6 +110,13 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
             linktocaller.reCreateRevolveObj(0)
             linktocaller.editing = True
             wheelObj.w_vector[0].z = 0
+            
+            #TODO:EXPERIMENTAL CODE : FIXME:
+            nor = faced.getNormalized(linktocaller.ExtractedFaces[0])
+            bas = faced.getBase(linktocaller.ExtractedFaces[0])
+            linktocaller.wheelObj.w_Rotation[0] = nor.x
+            linktocaller.wheelObj.w_Rotation[1] = nor.y
+            linktocaller.wheelObj.w_Rotation[2] = nor.z
 
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
@@ -119,6 +126,8 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                                        str(round(wheelObj.w_Rotation[2],2)) + ")"
                                        + "\nRotation Angle= " + str(round(wheelObj.w_wheelAngle,2)) + " °")
 
+
+            
     wheelObj.w_Rotation[3] = wheelObj.w_wheelAngle
     if linktocaller.newObject is None:
         return
@@ -520,9 +529,9 @@ class Design456_SmartExtrudeRotate:
             print("wheel axis",self.wheelObj.w_Xrotation)
             print("...........................")
             
-            self.wheelObj.w_Rotation[0] = bas.x
-            self.wheelObj.w_Rotation[1] = bas.y
-            self.wheelObj.w_Rotation[2] = bas.z
+            # self.wheelObj.w_Rotation[0] = bas.x
+            # self.wheelObj.w_Rotation[1] = bas.y
+            # self.wheelObj.w_Rotation[2] = bas.z
 
         except Exception as err:
             faced.EnableAllToolbar(True)
