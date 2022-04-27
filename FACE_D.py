@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-24 15:51:09'
+__updated__ = '2022-04-27 18:37:54'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1063,14 +1063,14 @@ def getLowestEdgeInAFace(selectedObj=None):
         testAllX = allX.count(allX[0]) == len(allX)
         testAllY = allY.count(allY[0]) == len(allY)
         testAllZ = allZ.count(allZ[0]) == len(allZ)
-
+        #TODO:FIXME: THIS IS NOT OK FOR TOP FACES
         if(testAllZ):
             for edge in ss.Edges:
                 if edge.SubShapes[0].Point.y == allY[0] or edge.SubShapes[0].Point.y == allY[1]:
                     if edge.SubShapes[1].Point.y == allY[0] or edge.SubShapes[1].Point.y == allY[1]:
                         return edge
         else:
-            # This is correcto for all faces but not for top or bottom.
+            # This is correct for all faces but not for top or bottom.
             for edge in ss.Edges:
                 if edge.SubShapes[0].Point.z == allZ[0] or edge.SubShapes[0].Point.z == allZ[1]:
                     if edge.SubShapes[1].Point.z == allZ[0] or edge.SubShapes[1].Point.z == allZ[1]:

@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-25 18:40:16'
+__updated__ = '2022-04-27 18:22:37'
 
 # TODO: FIXME:
 """
@@ -131,7 +131,11 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     wheelObj.w_Rotation[3] = wheelObj.w_wheelAngle
     if linktocaller.newObject is None:
         return
-    linktocaller.newObject.Angle = wheelObj.w_wheelAngle
+    if linktocaller.faceDir=="-x" or linktocaller.faceDir=="-y" or linktocaller.faceDir=="-z":
+        linktocaller.newObject.Angle =wheelObj.w_wheelAngle 
+    else:
+        linktocaller.newObject.Angle = wheelObj.w_wheelAngle
+        
     wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -396,7 +400,7 @@ class Design456_SmartExtrudeRotate:
         # Wheelaxis color: RED is X , GREEN is Y,  FR_BLUEVIOLET is 45 and ORANGE is 135
         s = self.ExtractedFaces[1]
         # Reset the placement of the object if was not correct
-        s.Placement = self.ExtractedFaces[0].Placement
+        s.Placement = pl
         ax = self.selectedObj.Object.Shape.CenterOfMass
         if self.faceDir == "+x" and Wheelaxis == "X":
             faced.RealRotateObjectToAnAxis(s, ax, 0, 90, 0)
@@ -516,23 +520,7 @@ class Design456_SmartExtrudeRotate:
             bas = faced.getBase(self.ExtractedFaces[0])
             self.newObject.Base = bas
             self.newObject.Axis = nor
-           
-            """# Try this .. might be correct TODO:FIXME: not correct
-            self.wheelObj.w_Rotation[0] = nor.x
-            self.wheelObj.w_Rotation[1] = nor.y
-            self.wheelObj.w_Rotation[2] = nor.z
-            """
-            print(".............................")
-            print("Normal axis ",nor)
-            print("base", bas)
-            print("angle",self.wheelObj.w_wheelAngle)
-            print("wheel axis",self.wheelObj.w_Xrotation)
-            print("...........................")
-            
-            # self.wheelObj.w_Rotation[0] = bas.x
-            # self.wheelObj.w_Rotation[1] = bas.y
-            # self.wheelObj.w_Rotation[2] = bas.z
-
+ 
         except Exception as err:
             faced.EnableAllToolbar(True)
             App.Console.PrintError("'create revolve -Failed. "

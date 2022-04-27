@@ -63,7 +63,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-04-24 15:22:25'
+__updated__ = '2022-04-27 18:18:31'
 
 
 @dataclass
@@ -405,25 +405,24 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 self.w_degreeSeparator = fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
                                                                        SetupTextRotation, self.w_PRErotation, self.w_Scale, 1)  # White
 
-                CollectThemAllRot = coin.SoTransform()
-                CollectThemAll = coin.SoSeparator()
+                RootSoTransform = coin.SoTransform()
+                RootSO= coin.SoSeparator()
+                preGroup = coin.SoSeparator()
                 tR = coin.SbVec3f()
-                tR.setValue(
-                    self.w_Rotation[0], self.w_Rotation[1], self.w_Rotation[2])
-                CollectThemAllRot.rotation.setValue(
-                    tR, math.radians(self.w_Rotation[3]))
+                tR.setValue(self.w_Rotation[0], self.w_Rotation[1], self.w_Rotation[2])
+                RootSoTransform.rotation.setValue(tR, math.radians(self.w_Rotation[3]))
 
                 #TODO FIXME: THIS MIGHT BE WRONG. MAKE IT IN TWO STAGES. FIRST PUT THEM TOGETHER AND TEHN ROTATE.
-                CollectThemAll.addChild(CollectThemAllRot)
-                CollectThemAll.addChild(self.w_CenterSoSeparator)
-                CollectThemAll.addChild(self.w_XsoSeparator)
-                CollectThemAll.addChild(self.w_YsoSeparator)
-                CollectThemAll.addChild(self.w_45soSeparator)
-                CollectThemAll.addChild(self.w_135soSeparator)
-                CollectThemAll.addChild(self.w_degreeSeparator)
-                
+                preGroup.addChild(self.w_CenterSoSeparator)
+                preGroup.addChild(self.w_XsoSeparator)
+                preGroup.addChild(self.w_YsoSeparator)
+                preGroup.addChild(self.w_45soSeparator)
+                preGroup.addChild(self.w_135soSeparator)
+                preGroup.addChild(self.w_degreeSeparator)
+                RootSO.addChild(RootSoTransform)
+                RootSO.addChild(preGroup)
                 self.draw_label(usedColor)
-                self.saveSoNodesToWidget(CollectThemAll)
+                self.saveSoNodesToWidget(RootSO)
                 # add SoSeparator to the switch
                 # We can put them in a tuple but it is better not doing so
                 self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
@@ -681,15 +680,15 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 self.rotationDirection = 1
 
             # we don't accept an angel grater or smaller than 360 degrees
-            if(self.rotationDirection < 0):
-                self.w_wheelAngle = self.w_wheelAngle-360
+            # if(self.rotationDirection < 0):
+            #     self.w_wheelAngle = self.w_wheelAngle-360
 
-            if(self.w_wheelAngle > 359):
-                self.w_wheelAngle = 359
-            elif(self.w_wheelAngle < -359):
-                self.w_wheelAngle = -359
-            if self.w_wheelAngle == -360:
-                self.w_wheelAngle = 0
+            # if(self.w_wheelAngle > 359):
+            #     self.w_wheelAngle = 359
+            # elif(self.w_wheelAngle < -359):
+            #     self.w_wheelAngle = -359
+            # if self.w_wheelAngle == -360:
+            #     self.w_wheelAngle = 0
             self.oldAngle = self.w_wheelAngle
             print("Angle=", self.w_wheelAngle)
             self.redraw()
