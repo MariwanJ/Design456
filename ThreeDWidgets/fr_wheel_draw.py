@@ -38,7 +38,7 @@ from ThreeDWidgets.constant import FR_COLOR
 import math
 from dataclasses import dataclass
 
-__updated__ = '2021-12-31 08:57:46'
+__updated__ = '2022-04-28 19:02:11'
 
 """
 Example using the Wheel
@@ -209,10 +209,10 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype: str = "",
+def draw_AllParts(Ptype: str = "",
                   _color=FR_COLOR.FR_RED,
                   setupRotation=[0, 0, 0, 0],
-                  _rotation=[0, 0, 0, 0],
+                  #_rotation=[0, 0, 0, 0],
                   _Scale=[1, 1, 1],
                   LineWidth=1):
 
@@ -297,18 +297,10 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype: str = "",
 
     SoSeparatorSetupZ.addChild(tempTransform_z)
     SoSeparatorSetupZ.addChild(SoSeparatorSetupY)
-
-    tempR = coin.SbVec3f()
-    tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
-
     rootTransform = coin.SoTransform()
     rootTransform.scaleFactor.setValue(_Scale)
-    rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
     root = coin.SoSeparator()
     root.Name = "RootAxisDrawing"
-    transla = coin.SoTranslation()
-    transla.translation.setValue([vec.x, vec.y, vec.z])
-
     material = coin.SoMaterial()
     if(Ptype == "Center"):
         material.transparency.setValue(0.80)
@@ -316,9 +308,6 @@ def draw_AllParts(vec=App.Vector(0, 0, 0), Ptype: str = "",
         material.transparency.setValue(0.0)
     material.diffuseColor.setValue(_color)
     material.emissiveColor.setValue(_color)
-
-    root.addChild(transla)
     root.addChild(rootTransform)
-    #root.addChild(material)
     root.addChild(SoSeparatorSetupZ)
     return root

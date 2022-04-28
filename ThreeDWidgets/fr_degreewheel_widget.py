@@ -63,7 +63,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-04-27 18:18:31'
+__updated__ = '2022-04-28 18:58:24'
 
 
 @dataclass
@@ -387,39 +387,51 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     SETUPwheelTypeRotation = [-90.0, 90.0, 90.0]
                     SetupTextRotation = [-90.0, 90.0, 90.0]  # OK Don't change
 
-                self.w_CenterSoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Center",
+                self.w_CenterSoSeparator = fr_wheel_draw.draw_AllParts( "Center",
                                                                        usedColor, SETUPwheelTypeRotation,
-                                                                       self.w_PRErotation, self.w_Scale, 1)
-                self.w_XsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Xaxis",
+                                                                       self.w_Scale, 1)
+                self.w_XsoSeparator = fr_wheel_draw.draw_AllParts( "Xaxis",
                                                                   usedColor, SETUPwheelTypeRotation,
-                                                                  self.w_PRErotation, self.w_Scale, 1)  # RED
-                self.w_YsoSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "Yaxis",
+                                                                   self.w_Scale, 1)  # RED
+                self.w_YsoSeparator = fr_wheel_draw.draw_AllParts( "Yaxis",
                                                                   usedColor, SETUPwheelTypeRotation,
-                                                                  self.w_PRErotation, self.w_Scale, 1)  # GREEN
-                self.w_45soSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "45axis", usedColor,
+                                                                  self.w_Scale, 1)  # GREEN
+                self.w_45soSeparator = fr_wheel_draw.draw_AllParts( "45axis", usedColor,
                                                                    SETUPwheelTypeRotation,
-                                                                   self.w_PRErotation, self.w_Scale, 1)  # 45
-                self.w_135soSeparator = fr_wheel_draw.draw_AllParts(self.w_vector[0], "135axis", usedColor,
+                                                                    self.w_Scale, 1)  # 45
+                self.w_135soSeparator = fr_wheel_draw.draw_AllParts( "135axis", usedColor,
                                                                     SETUPwheelTypeRotation,
-                                                                    self.w_PRErotation, self.w_Scale, 1)  # 135
+                                                                     self.w_Scale, 1)  # 135
                 self.w_degreeSeparator = fr_wheel_draw.draw_Text_Wheel(self.w_vector[0], usedColor,
                                                                        SetupTextRotation, self.w_PRErotation, self.w_Scale, 1)  # White
 
                 RootSoTransform = coin.SoTransform()
+                rootTranslte=coin.SoTranslation()
+                transR=coin.SbVec3f()
+                transR.setValue(self.w_vector[0].x,self.w_vector[0].y,self.w_vector[0].z)
+                
+                rootTranslte.translation.setValue(transR)
                 RootSO= coin.SoSeparator()
                 preGroup = coin.SoSeparator()
                 tR = coin.SbVec3f()
                 tR.setValue(self.w_Rotation[0], self.w_Rotation[1], self.w_Rotation[2])
                 RootSoTransform.rotation.setValue(tR, math.radians(self.w_Rotation[3]))
+                preRotation=coin.SoTransform()
+                preRot=coin.SbVec3f()
+                preRot.setValue(self.w_PRErotation[0],self.w_PRErotation[0],self.w_PRErotation[0])
+                preRotation.rotation.setValue(preRot, math.degrees(self.w_PRErotation[3]))
 
-                #TODO FIXME: THIS MIGHT BE WRONG. MAKE IT IN TWO STAGES. FIRST PUT THEM TOGETHER AND TEHN ROTATE.
+                #preGroup.addChild(preRotation)
                 preGroup.addChild(self.w_CenterSoSeparator)
                 preGroup.addChild(self.w_XsoSeparator)
                 preGroup.addChild(self.w_YsoSeparator)
                 preGroup.addChild(self.w_45soSeparator)
                 preGroup.addChild(self.w_135soSeparator)
                 preGroup.addChild(self.w_degreeSeparator)
+                
+
                 RootSO.addChild(RootSoTransform)
+                RootSO.addChild(rootTranslte)
                 RootSO.addChild(preGroup)
                 self.draw_label(usedColor)
                 self.saveSoNodesToWidget(RootSO)

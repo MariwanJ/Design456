@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-27 18:22:37'
+__updated__ = '2022-04-28 19:02:37'
 
 # TODO: FIXME:
 """
@@ -114,9 +114,9 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
             #TODO:EXPERIMENTAL CODE : FIXME:
             nor = faced.getNormalized(linktocaller.ExtractedFaces[0])
             bas = faced.getBase(linktocaller.ExtractedFaces[0])
-            # linktocaller.wheelObj.w_Rotation[0] = nor.x
-            # linktocaller.wheelObj.w_Rotation[1] = nor.y
-            # linktocaller.wheelObj.w_Rotation[2] = nor.z
+            linktocaller.wheelObj.w_Rotation[0] = bas.x
+            linktocaller.wheelObj.w_Rotation[1] = bas.y
+            linktocaller.wheelObj.w_Rotation[2] = bas.z
 
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
