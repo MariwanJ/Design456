@@ -691,6 +691,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             #     self.w_wheelAngle = 0
             self.oldAngle = self.w_wheelAngle
             print("Angle=", self.w_wheelAngle)
+            self.w_Rotation[3]=self.w_wheelAngle
             self.redraw()
             
         except Exception as err:
