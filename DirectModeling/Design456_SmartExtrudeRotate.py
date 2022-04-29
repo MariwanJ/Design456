@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-28 19:02:37'
+__updated__ = '2022-04-29 19:57:47'
 
 # TODO: FIXME:
 """
@@ -114,9 +114,9 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
             #TODO:EXPERIMENTAL CODE : FIXME:
             nor = faced.getNormalized(linktocaller.ExtractedFaces[0])
             bas = faced.getBase(linktocaller.ExtractedFaces[0])
-            linktocaller.wheelObj.w_Rotation[0] = bas.x
-            linktocaller.wheelObj.w_Rotation[1] = bas.y
-            linktocaller.wheelObj.w_Rotation[2] = bas.z
+            linktocaller.wheelObj.w_Rotation[0] = nor.x
+            linktocaller.wheelObj.w_Rotation[1] = nor.y
+            linktocaller.wheelObj.w_Rotation[2] = nor.z
 
     if (linktocaller.RotateLBL is not None):
         linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
@@ -132,9 +132,9 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     if linktocaller.newObject is None:
         return
     if linktocaller.faceDir=="-x" or linktocaller.faceDir=="-y" or linktocaller.faceDir=="-z":
-        linktocaller.newObject.Angle =wheelObj.w_wheelAngle 
+        linktocaller.newObject.Angle = wheelObj.w_wheelAngle 
     else:
-        linktocaller.newObject.Angle = wheelObj.w_wheelAngle
+        linktocaller.newObject.Angle =- wheelObj.w_wheelAngle
         
     wheelObj.redraw()
     App.ActiveDocument.recompute()
@@ -353,7 +353,7 @@ class Design456_SmartExtrudeRotate:
         # We cannot combine rotation with direction extrusion.
         # This variable is used to disable all other options
         self.isItRotation = False
-
+        self.realAngle=0.0  #We need this since the angle of the wheel might be negative
     def calculateNewLength(self):
         """ Calculate new extrude length 
         """
@@ -675,16 +675,21 @@ class Design456_SmartExtrudeRotate:
             facingdir=self.faceDir.upper()
             facingdir = facingdir[1:] 
             print(facingdir,"facingdir")
-            # Decide how the Degree Wheel be drawn
+            # Decide how the Degree Wheel be drawn . Depending on the direction, change the type.
             self.setupRotation = self.calculateNewVector()
             if self.faceDir == "+z" or self.faceDir == "-z":
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str
                     (0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [2.0, 2.0, 2.0], 2,facingdir)
+                    self.setupRotation, [5.0, 5.0, 5.0], 2,facingdir)
+            elif self.faceDir == "+x" or self.faceDir == "-x":
+                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
+                    0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
+                    self.setupRotation, [5.0, 5.0, 5.0], 1,facingdir)
             else:
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [2.0, 2.0, 2.0], 1,facingdir)
+                    self.setupRotation, [5.0, 5.0, 5.0], 2,facingdir)
+
 
             # Define the callbacks. We have many callbacks here.
             # TODO: FIXME:

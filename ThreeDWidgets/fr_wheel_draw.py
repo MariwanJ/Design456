@@ -38,7 +38,7 @@ from ThreeDWidgets.constant import FR_COLOR
 import math
 from dataclasses import dataclass
 
-__updated__ = '2022-04-28 19:02:11'
+__updated__ = '2022-04-29 18:38:54'
 
 """
 Example using the Wheel
@@ -67,8 +67,8 @@ sg.addChild(f)
 """
 
 
-def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
-                    setupRotation=[0, 0, 0], _rotation=[0.0, 0.0, 0.0, 0.0], 
+def draw_Text_Wheel(_color=FR_COLOR.FR_WHITE,
+                    setupRotation=[0, 0, 0], 
                     _Scale=[1, 1, 1],LineWidth=1.0):
     try:
         TextScale = 0.04
@@ -175,10 +175,7 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
 
         SoSeparatorSetupZ.addChild(transfromZ)
         SoSeparatorSetupZ.addChild(SoSeparatorSetupY)
-        tempR = coin.SbVec3f()
-        tempR.setValue(_rotation[0], _rotation[1], _rotation[2])
         rootTransform = coin.SoTransform()
-        rootTransform.rotation.setValue(tempR, math.radians(_rotation[3]))
         rootTransform.scaleFactor.setValue(_Scale)
         
         material = coin.SoMaterial()
@@ -188,16 +185,12 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
 
         root = coin.SoSeparator()
         root.Name = "RootText"
-        transla = coin.SoTranslation()
-        transla.translation.setValue([vec.x, vec.y, vec.z])
-
         root.addChild(material)
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = _color
 
         root.addChild(rootTransform)
         root.addChild(col1)
-        root.addChild(transla)
         root.addChild(SoSeparatorSetupZ)
         return root
 
@@ -208,11 +201,10 @@ def draw_Text_Wheel(vec=App.Vector(0.0, 0.0, 0.0), _color=FR_COLOR.FR_WHITE,
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
-
+#We have only setup rotation, other rotation must be done later.
 def draw_AllParts(Ptype: str = "",
                   _color=FR_COLOR.FR_RED,
                   setupRotation=[0, 0, 0, 0],
-                  #_rotation=[0, 0, 0, 0],
                   _Scale=[1, 1, 1],
                   LineWidth=1):
 
@@ -265,14 +257,15 @@ def draw_AllParts(Ptype: str = "",
         col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
         col1.rgb = FR_COLOR.FR_ORANGE
 
-    objectToDraw.addChild(col1)
-    objectToDraw.addChild(transtheObject)
-    objectToDraw.addChild(theObject)
+    objectToDraw.addChild(col1)   #cOLOR
+    objectToDraw.addChild(transtheObject)    #ROTATION OF THE SUB OBJECT
+    objectToDraw.addChild(theObject)         #THE DRAWN OBJECT
 
     tRadiusX = coin.SbVec3f()
     tRadiusY = coin.SbVec3f()
     tRadiusZ = coin.SbVec3f()
 
+    #Axis
     tRadiusX.setValue(1, 0, 0)
     tRadiusY.setValue(0, 1, 0)
     tRadiusZ.setValue(0, 0, 1)
@@ -297,10 +290,15 @@ def draw_AllParts(Ptype: str = "",
 
     SoSeparatorSetupZ.addChild(tempTransform_z)
     SoSeparatorSetupZ.addChild(SoSeparatorSetupY)
+    
+    #Scale
     rootTransform = coin.SoTransform()
     rootTransform.scaleFactor.setValue(_Scale)
+
     root = coin.SoSeparator()
     root.Name = "RootAxisDrawing"
+    
+    #for giving color to the object
     material = coin.SoMaterial()
     if(Ptype == "Center"):
         material.transparency.setValue(0.80)
@@ -308,6 +306,7 @@ def draw_AllParts(Ptype: str = "",
         material.transparency.setValue(0.0)
     material.diffuseColor.setValue(_color)
     material.emissiveColor.setValue(_color)
+    
     root.addChild(rootTransform)
     root.addChild(SoSeparatorSetupZ)
     return root
