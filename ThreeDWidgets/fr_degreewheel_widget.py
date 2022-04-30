@@ -63,7 +63,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-04-30 14:11:38'
+__updated__ = '2022-04-30 15:13:14'
 
 
 @dataclass
@@ -403,7 +403,8 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                                                                     SETUPwheelTypeRotation,
                                                                      self.w_Scale, 1)  # 135
                 self.w_degreeSeparator = fr_wheel_draw.draw_Text_Wheel(usedColor,
-                                                                       SetupTextRotation,  self.w_Scale, 1)  # White
+                                                                       SetupTextRotation, 
+                                                    [element * 2 for element in self.w_Scale], 1)  # White
 
                 RootSoTransform = coin.SoTransform()
                 rootTranslte=coin.SoTranslation()

@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-30 13:59:18'
+__updated__ = '2022-04-30 15:08:06'
 
 # TODO: FIXME:
 """
@@ -131,12 +131,30 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
     if linktocaller.newObject is None:
         return
-    # if linktocaller.faceDir=="-x" or linktocaller.faceDir=="-y" or linktocaller.faceDir=="-z":
-    #     linktocaller.newObject.Angle = -wheelObj.w_wheelAngle 
-    # else:
-    #     linktocaller.newObject.Angle = wheelObj.w_wheelAngle
-    linktocaller.newObject.Angle = wheelObj.w_wheelAngle
-    wheelObj.w_Rotation[3] = linktocaller.newObject.Angle     
+    print("face is =",linktocaller.faceDir)
+    if linktocaller.faceDir=="-x" :
+        print ("Iam -x")
+        linktocaller.newObject.Angle = -(wheelObj.w_wheelAngle)   
+    elif linktocaller.faceDir=="+x":
+        print ("Iam +x")
+        linktocaller.newObject.Angle = (wheelObj.w_wheelAngle)
+
+    elif linktocaller.faceDir=="-y" :
+        print ("Iam -y")
+        linktocaller.newObject.Angle = -(wheelObj.w_wheelAngle )  
+    elif linktocaller.faceDir=="+y":
+        print ("Iam +y")
+        linktocaller.newObject.Angle = (wheelObj.w_wheelAngle) 
+
+    elif linktocaller.faceDir=="-z" :
+        print ("Iam -z")
+        linktocaller.newObject.Angle = (wheelObj.w_wheelAngle )  
+    elif linktocaller.faceDir=="+z":
+        print ("Iam +z")
+        linktocaller.newObject.Angle = -(wheelObj.w_wheelAngle)
+    else:
+        print("none of them")
+        
     wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -396,7 +414,7 @@ class Design456_SmartExtrudeRotate:
         pl = self.ExtractedFaces[0].Placement
         self.faceDir = faced.getDirectionAxis(self.selected)  # face direction
 
-        # THIS PART WILL BE COMPLICATED AND MUST BE WELL WRITTEN.
+        # THIS PART IS COMPLICATED 
 
         # Wheelaxis color: RED is X , GREEN is Y,  FR_BLUEVIOLET is 45 and ORANGE is 135
         s = self.ExtractedFaces[1]
