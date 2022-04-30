@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-30 15:08:06'
+__updated__ = '2022-04-30 15:39:30'
 
 # TODO: FIXME:
 """
@@ -703,6 +703,7 @@ class Design456_SmartExtrudeRotate:
             print(facingdir,"facingdir")
             # Decide how the Degree Wheel be drawn . Depending on the direction, change the type.
             self.setupRotation = self.calculateNewVector()
+            print("setup Rotation", self.setupRotation)
             if self.faceDir == "+z" or self.faceDir == "-z":
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str
                     (0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
@@ -712,6 +713,7 @@ class Design456_SmartExtrudeRotate:
                     0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
                     self.setupRotation, [5.0, 5.0, 5.0], 1,facingdir)
             else:
+                print( "direction is not x or y or z")
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
                     self.setupRotation, [5.0, 5.0, 5.0], 2,facingdir)

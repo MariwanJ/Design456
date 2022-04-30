@@ -63,7 +63,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-04-30 15:13:14'
+__updated__ = '2022-04-30 16:15:35'
 
 
 @dataclass
@@ -421,6 +421,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 preRot.setValue(self.w_PRErotation[0],self.w_PRErotation[1],self.w_PRErotation[2])
                 preRotation.rotation.setValue(preRot, math.radians(self.w_PRErotation[3]))
                 
+                preGroup.addChild(preRotation)
                 preGroup.addChild(self.w_CenterSoSeparator)
                 preGroup.addChild(self.w_XsoSeparator)
                 preGroup.addChild(self.w_YsoSeparator)
