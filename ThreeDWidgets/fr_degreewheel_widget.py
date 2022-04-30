@@ -63,7 +63,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-04-30 14:03:17'
+__updated__ = '2022-04-30 14:11:38'
 
 
 @dataclass
@@ -696,28 +696,18 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 if (my == 0):
                     return  # Invalid
                 self.w_wheelAngle = self.calculateMouseAngle(mx, my)
-            if (self.w_wheelAngle == 360):
+            if (self.w_wheelAngle == 360 or self.w_wheelAngle == -360 ):
                 self.w_wheelAngle = 0
 
             if (self.oldAngle < 1 and self.oldAngle >= 0) and (self.w_wheelAngle > 270):
                 self.rotationDirection = -1
-                self.w_wheelAngle = self.w_wheelAngle-360
+                #self.w_wheelAngle = self.w_wheelAngle-360
             elif(self.rotationDirection == -1
                  and self.w_wheelAngle > 0
                  and self.w_wheelAngle < 1
                  and self.oldAngle < -270):
                 self.rotationDirection = 1
 
-            # we don't accept an angel grater or smaller than 360 degrees
-            if(self.rotationDirection < 0):
-                self.w_wheelAngle = self.w_wheelAngle-360
-
-            if(self.w_wheelAngle > 359):
-                self.w_wheelAngle = 359
-            elif(self.w_wheelAngle < -359):
-                self.w_wheelAngle = -359
-            if self.w_wheelAngle == -360:
-                self.w_wheelAngle = 0
             self.oldAngle = self.w_wheelAngle
             print("Angle=", self.w_wheelAngle)
             self.w_Rotation[3]=self.w_wheelAngle
