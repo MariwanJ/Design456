@@ -63,7 +63,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-04-29 20:23:47'
+__updated__ = '2022-04-30 14:03:17'
 
 
 @dataclass
@@ -615,7 +615,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         elif(callbackType == 4):
             self.w_135Axis_cb_(self.w_userData)
  
-    def calculateMouseAngle(self,val1, val2):
+    def calculateMouseAngle(self,Yval, Xval):
         """[Calculate Angle of two coordinates ( xy, yz or xz).
             This function is useful to calculate mouse position
             in Angle depending on the mouse position.
@@ -628,22 +628,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         Returns:
             [int]: [Calculated value in degrees]
         """
-        if(val2 == 0):
-            return None  # divide by zero
         result = 0
-        if (val1 > 0 and val2 > 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                float(val2))))
-        if (val1 < 0 and val2 > 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                float(val2)))) + 360
-        if (val1 > 0 and val2 < 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                float(val2))))
-        if (val1 < 0 and val2 < 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                float(val2)))) + 360
-        return (-1*result)
+        result= math.atan2(float(Yval),float(Xval))
+        if (result<0.0):
+            result=result+2.0*math.pi
+        return (-1*int(math.degrees(result)))
 
     def cb_wheelRotate(self):
         """
@@ -709,13 +698,13 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 self.w_wheelAngle = self.calculateMouseAngle(mx, my)
             if (self.w_wheelAngle == 360):
                 self.w_wheelAngle = 0
+
             if (self.oldAngle < 1 and self.oldAngle >= 0) and (self.w_wheelAngle > 270):
                 self.rotationDirection = -1
                 self.w_wheelAngle = self.w_wheelAngle-360
-
             elif(self.rotationDirection == -1
                  and self.w_wheelAngle > 0
-                 and self.w_wheelAngle < 15
+                 and self.w_wheelAngle < 1
                  and self.oldAngle < -270):
                 self.rotationDirection = 1
 

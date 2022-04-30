@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-29 19:57:47'
+__updated__ = '2022-04-30 13:59:18'
 
 # TODO: FIXME:
 """
@@ -128,14 +128,15 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
 
             
-    wheelObj.w_Rotation[3] = wheelObj.w_wheelAngle
+
     if linktocaller.newObject is None:
         return
-    if linktocaller.faceDir=="-x" or linktocaller.faceDir=="-y" or linktocaller.faceDir=="-z":
-        linktocaller.newObject.Angle = wheelObj.w_wheelAngle 
-    else:
-        linktocaller.newObject.Angle =- wheelObj.w_wheelAngle
-        
+    # if linktocaller.faceDir=="-x" or linktocaller.faceDir=="-y" or linktocaller.faceDir=="-z":
+    #     linktocaller.newObject.Angle = -wheelObj.w_wheelAngle 
+    # else:
+    #     linktocaller.newObject.Angle = wheelObj.w_wheelAngle
+    linktocaller.newObject.Angle = wheelObj.w_wheelAngle
+    wheelObj.w_Rotation[3] = linktocaller.newObject.Angle     
     wheelObj.redraw()
     App.ActiveDocument.recompute()
 
@@ -401,7 +402,14 @@ class Design456_SmartExtrudeRotate:
         s = self.ExtractedFaces[1]
         # Reset the placement of the object if was not correct
         s.Placement = pl
-        ax = self.selectedObj.Object.Shape.CenterOfMass
+        #Compoud objects doesn't have CenterOfMass
+        if hasattr(self.selectedObj.Object.Shape,"CenterOfMass"):
+            ax = self.selectedObj.Object.Shape.CenterOfMass
+        elif hasattr(self.selectedObj.Object.Shape,"CenterOfGravity"):
+            ax = self.selectedObj.Object.Shape.CenterOfGravity
+        else:
+            ax= self.selectedObj.Object.Shape.BoundBox.Center
+            
         if self.faceDir == "+x" and Wheelaxis == "X":
             faced.RealRotateObjectToAnAxis(s, ax, 0, 90, 0)
             self.ExtractedFaces[1].Placement.Base.x = self.ExtractedFaces[1].Placement.Base.x + \
