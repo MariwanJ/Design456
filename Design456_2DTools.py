@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-04-23 16:32:04'
+__updated__ = '2022-05-01 09:30:15'
 
 
 class Design456_CommonFace:
@@ -441,7 +441,7 @@ class Design456_SegmentAFace:
                    self.oldFace=self.sel.SubObjects
             
             App.ActiveDocument.openTransaction(translate("Design456","SegmentAFace"))
-            
+            self.sel.Object.Visibility= False
             mesh = self.divideFace()
             _solid = self.collectFace(mesh) 
             App.ActiveDocument.removeObject(mesh.Name)
@@ -479,21 +479,24 @@ class Design456_SegmentAFace:
         self.buttonGroup =   QtGui.QButtonGroup(self.frmMain)
         self.buttonGroup.setObjectName("buttonGroup")
         self.radOneFace = QtGui.QRadioButton(self.frmMain)
-        self.radOneFace.setGeometry(QtCore.QRect(20, 20, 89, 20))
+        self.radOneFace.setGeometry(QtCore.QRect(20, 20, 130, 20))
         self.radOneFace.setObjectName("radOneFace")
         self.radAll = QtGui.QRadioButton(self.frmMain)
         self.radAll.setGeometry(QtCore.QRect(20, 50, 89, 20))
         self.radAll.setObjectName("radAll")
         self.inpINTSegments = QtGui.QSpinBox(self.frmMain)
-        self.inpINTSegments.setGeometry(QtCore.QRect(210, 60, 121, 22))
+        self.inpINTSegments.setGeometry(QtCore.QRect(210, 60, 130, 22))
         self.inpINTSegments.setObjectName("inpINTSegments")
         self.label = QtGui.QLabel(self.frmMain)
-        self.label.setGeometry(QtCore.QRect(210, 40, 91, 16))
+        self.label.setGeometry(QtCore.QRect(210, 40, 130, 16))
         self.label.setObjectName("label")
         self.buttonGroup.addButton(self.radOneFace)
         self.buttonGroup.addButton(self.radAll)
         self.radAll.setChecked(True)
         self.inpINTSegments.setValue(10)
+        self.inpINTSegments.setMaximum (10000)
+        self.inpINTSegments.setMinimum(1)
+        
         _translate = QtCore.QCoreApplication.translate
         self.frmMain.setWindowTitle(_translate("frmMain", "Select Face and Segments size"))
         self.radOneFace.setText(_translate("frmMain", "Only selected face"))
@@ -521,19 +524,16 @@ class Design456_SegmentAFace:
             shp=None
             if self.SingleFace is False:
                 shp = self.sel.Object.Shape    
-                mesh.Mesh = MeshPart.meshFromShape(
-                            Shape=shp,
-                            LinearDeflection=1/self.Segments,
-                            AngularDeflection=1.0,
-                            Relative=False)
             else:   
                 shp = self.sel.SubObjects[0]
-                mesh.Mesh = MeshPart.meshFromShape(
-                            Shape=shp,
-                            LinearDeflection=1/self.Segments,
-                            AngularDeflection=1.0,
-                            Relative=False)
+            mesh.Mesh = MeshPart.meshFromShape(
+                        Shape=shp,
+                        LinearDeflection=5/self.Segments,
+                        AngularDeflection=10/2.5,
+                        Relative=False)
+
             App.ActiveDocument.recompute()
+
             return mesh
 
         except Exception as err:
