@@ -117,7 +117,8 @@ def mk_str(input):
         if isinstance(input, str):
             return input
         else:
-            input = input.encode('utf-8')
+            #TODO : FIXME : FAILING 2022-05-01 
+            #input = input.encode('utf-8')
             return input
     else:  # py2
         if type(input) == unicode:
