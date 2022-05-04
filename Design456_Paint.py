@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-05-03 22:14:29'
+__updated__ = '2022-05-04 20:48:07'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -72,13 +72,14 @@ class Design456_Paint:
         self.continuePainting = True
         self.brushSize = 1  # Brush Size
         self.brushType = 0
-        self.resultObj = None  # Extruded shape
+        self.resultObj = None  # Extruded shape1248
+        
         self.runOnce = False  # Create the merge object once only
         self.MoveMentDirection = 'A'
-        self.MoveStepSize =0.1
+        self.stepSize = 0.1
         self.firstSize = 0.1
         self.SelectedObj = None
-        self.oldPosition=App.Vector(0, 0, 0)
+        self.oldPosition = App.Vector(0, 0, 0)
         # List of the shapes - to add more add it here, in constant and make
         # an "if" statement and a function to draw it
         self.listOfDrawings = ["CIRCLE",
@@ -229,7 +230,12 @@ class Design456_Paint:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def defineFirstPlacement(self):
+        self.pl = App.DraftWorkingPlane.getPlacement()
+        self.pl.Base = App.DraftWorkingPlane.projectPoint(self.oldPosition)
 
+        
     def draw_Oval(self, Ovaltype):
         """[Draw Oval - Different types]
 
@@ -905,7 +911,7 @@ class Design456_Paint:
         """
         try:
             if(self.currentObj is not None):
-                App.ActiveDocument.removeObject(self.currentObj.Name)
+                App.ActiveDocument.removeObject(self.currentObj.Object.Name)
                 self.currentObj = None
             # Rounded shapes
             if self.brushType == FR_BRUSHES.FR_CIRCLE_BRUSH:
@@ -1028,6 +1034,10 @@ class Design456_Paint:
             else:
                 # Update the Merge object
                 self.resultObj.Shapes = self.AllObjects
+                
+            #Placement on current plane 
+            self.defineFirstPlacement() 
+            self.currentObj.Object.Placement= self.pl
 
         except Exception as err:
             App.Console.PrintError("'recreateObject Paint Obj' Failed. "
@@ -1074,7 +1084,7 @@ class Design456_Paint:
             events ([Coin3D events]): [Type of the event]
         """
         try:
-            self.oldPosition=self.currentObj.Object.Placement.Base
+            
             
             event = events.getEvent()
             pos = event.getPosition().getValue()
@@ -1085,21 +1095,26 @@ class Design456_Paint:
             if self.currentObj is not None:
                 # All direction when A or decide which direction
                 if (self.MoveMentDirection == 'A'):
-                    self.currentObj.Object.Placement = self.pl
+                    self.currentObj.Object.Placement.Base = self.pl.Base
                 elif (self.MoveMentDirection == 'X'):
                     self.currentObj.Object.Placement.Base.x = self.pl.Base.x
                 elif (self.MoveMentDirection == 'Y'):
                     self.currentObj.Object.Placement.Base.y = self.pl.Base.y
                 elif (self.MoveMentDirection == 'Z'):
                     self.currentObj.Object.Placement.Base.z = self.pl.Base.z
-                App.ActiveDocument.recompute()
-            deltaChange=self.currentObj.Object.Placement.Base.sub(self.oldPosition)
 
-            self.currentObj.Object.Placement.Base.x=self.MoveStepSize*(int(deltaChange.x/self.MoveStepSize))
-            self.currentObj.Object.Placement.Base.y=self.MoveStepSize*(int(deltaChange.y/self.MoveStepSize))
-            self.currentObj.Object.Placement.Base.z=self.MoveStepSize*(int(deltaChange.z/self.MoveStepSize))
-                
-
+                delta=self.currentObj.Object.Placement.Base.sub(self.oldPosition)
+                resultVector = App.Vector(0, 0, 0)
+                if abs(delta.x) > 0 and abs(delta.x) >= self.stepSize:
+                    resultVector.x=self.stepSize*(int(delta.x/self.stepSize))
+                if abs(delta.y) > 0 and abs(delta.y) >= self.stepSize:
+                    resultVector.y=self.stepSize*(int(delta.y/self.stepSize))
+                if abs(delta.z) > 0 and abs(delta.z) >= self.stepSize:
+                    resultVector.z=self.stepSize*(int(delta.z/self.stepSize))   
+                self.currentObj.Object.Placement.Base=self.oldPosition.add(resultVector)     
+                self.oldPosition=self.currentObj.Object.Placement.Base
+                App.ActiveDocument.recompute()     
+                    
         except Exception as err:
             App.Console.PrintError("'MouseMovement_cb' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -1244,7 +1259,7 @@ class Design456_Paint:
         self.brushType = 0
         self.resultObj = None
         self.runOnce = False
-        self.MoveStepSize=0.1
+        self.stepSize=0.1
 
     def BrushTypeChanged_cb(self):
         """[Brush change callback - Activates when the selected-bursh is changed in the listobx]
@@ -1282,7 +1297,7 @@ class Design456_Paint:
 
     def comboChanged(self, text):
         print("text=", text)
-        self.MoveStepSize = float(text.rstrip("m"))
+        self.stepSize= float(text.rstrip("m"))
 
 
     def getMainWindow(self):
@@ -1364,18 +1379,30 @@ class Design456_Paint:
 
             self.combListExtrudeStep = QtGui.QComboBox(self.dialog)
             self.combListExtrudeStep.setGeometry(QtCore.QRect(20, 100, 240, 20))
-            self.combListExtrudeStep.addItem("0.1mm")       # 0.1 mm
-            self.combListExtrudeStep.addItem("0.5mm")       # 0.5 mm
-            self.combListExtrudeStep.addItem("1.0mm")       # 1.0 mm
-            self.combListExtrudeStep.addItem("2mm")        # 1   cm
-            self.combListExtrudeStep.addItem("3mm")        # 1   cm
-            self.combListExtrudeStep.addItem("4mm")        # 1   cm
-            self.combListExtrudeStep.addItem("5mm")        # 1   cm
-            self.combListExtrudeStep.addItem("6mm")       # 10   cm
-            self.combListExtrudeStep.addItem("7mm")       # 10   cm
-            self.combListExtrudeStep.addItem("8mm")       # 10   cm
-            self.combListExtrudeStep.addItem("9mm")       # 10   cm
-            self.combListExtrudeStep.addItem("10mm")       # 10   cm
+            self.combListExtrudeStep.addItem("0.1mm")      #   0.1 mm
+            self.combListExtrudeStep.addItem("0.5mm")      #   0.5 mm
+            self.combListExtrudeStep.addItem("1.0mm")      #   1.0 mm
+            self.combListExtrudeStep.addItem("2.0mm")      #   2.0 mm
+            self.combListExtrudeStep.addItem("3.0mm")      #   3.0 mm
+            self.combListExtrudeStep.addItem("4.0mm")      #   4.0 mm
+            self.combListExtrudeStep.addItem("5.0mm")      #   5.0 mm
+            self.combListExtrudeStep.addItem("6.0mm")      #   6.0 mm
+            self.combListExtrudeStep.addItem("7.0mm")      #   7.0 mm
+            self.combListExtrudeStep.addItem("8.0mm")      #   8.0 mm
+            self.combListExtrudeStep.addItem("9.0mm")      #   9.0 mm
+            self.combListExtrudeStep.addItem("10.0mm")     #  10.0 mm
+
+            self.combListExtrudeStep.addItem("20.0mm")     #  20.0 mm
+            self.combListExtrudeStep.addItem("30.0mm")     #  30.0 mm
+            self.combListExtrudeStep.addItem("40.0mm")     #  40.0 mm
+            self.combListExtrudeStep.addItem("50.0mm")     #  50.0 mm
+            self.combListExtrudeStep.addItem("60.0mm")     #  60.0 mm
+            self.combListExtrudeStep.addItem("70.0mm")     #  70.0 mm
+            self.combListExtrudeStep.addItem("80.0mm")     #  80.0 mm
+            self.combListExtrudeStep.addItem("90.0mm")     #  90.0 mm
+            self.combListExtrudeStep.addItem("100.0mm")    # 100.0 mm
+
+
             self.combListExtrudeStep.activated[str].connect(self.comboChanged)
             
             la.addWidget(self.formLayoutWidget)
@@ -1383,9 +1410,6 @@ class Design456_Paint:
             la.addWidget(self.combListExtrudeStep)
             la.addWidget(self.PaintLBL)
 
-
-
-            
             self.combListExtrudeStep.setCurrentIndex(2)
 
             self.okbox = QtGui.QDialogButtonBox(self.dialog)
