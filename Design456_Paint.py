@@ -1076,7 +1076,7 @@ class Design456_Paint:
             events ([Coin3D events]): [Type of the event]
         """
         try:
-            self.oldPosition=self.currentObj.Placement.Base
+            self.oldPosition=self.currentObj.Object.Placement.Base
             
             event = events.getEvent()
             pos = event.getPosition().getValue()
@@ -1364,12 +1364,8 @@ class Design456_Paint:
             self.PaintLBL = QtGui.QLabel(
                 "Use X,Y,Z to limit the movements\nAnd A for free movement\nPaint Radius or side=7")
 
-            la.addWidget(self.formLayoutWidget)
-            la.addWidget(e1)
-            la.addWidget(self.PaintLBL)
-
-
             self.combListExtrudeStep = QtGui.QComboBox(self.dialog)
+            self.combListExtrudeStep.setGeometry(QtCore.QRect(20, 100, 240, 20))
             self.combListExtrudeStep.addItem("0.1mm")       # 0.1 mm
             self.combListExtrudeStep.addItem("0.5mm")       # 0.5 mm
             self.combListExtrudeStep.addItem("1.0mm")       # 1.0 mm
@@ -1383,6 +1379,14 @@ class Design456_Paint:
             self.combListExtrudeStep.addItem("9mm")       # 10   cm
             self.combListExtrudeStep.addItem("10mm")       # 10   cm
             self.combListExtrudeStep.activated[str].connect(self.comboChanged)
+            
+            la.addWidget(self.formLayoutWidget)
+            la.addWidget(e1)
+            la.addWidget(self.combListExtrudeStep)
+            la.addWidget(self.PaintLBL)
+
+
+
             
             self.combListExtrudeStep.setCurrentIndex(2)
 
