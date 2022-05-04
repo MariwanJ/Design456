@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-05-04 20:48:07'
+__updated__ = '2022-05-04 21:12:15'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -1375,7 +1375,7 @@ class Design456_Paint:
             self.formLayout_2.setWidget(
                 1, QtGui.QFormLayout.FieldRole, self.radioMerge)
             self.PaintLBL = QtGui.QLabel(
-                "Use X,Y,Z to limit the movements\nAnd A for free movement\nPaint Radius or side=7")
+                "Use X,Y & Z Keys to limit the movements\nAnd A for free movement\nPaint Radius or side=7")
 
             self.combListExtrudeStep = QtGui.QComboBox(self.dialog)
             self.combListExtrudeStep.setGeometry(QtCore.QRect(20, 100, 240, 20))
