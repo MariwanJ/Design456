@@ -77,10 +77,8 @@ class Design456_Paint:
         self.MoveMentDirection = 'A'
         self.MoveStepSize =0.1
         self.firstSize = 0.1
-        # used to correct the Placement of the final object
-        self.AverageDistanceToOrigion = App.Vector(0, 0, 0)
         self.SelectedObj = None
-        self.oldPosition=None
+        self.oldPosition=App.Vector(0, 0, 0)
         # List of the shapes - to add more add it here, in constant and make
         # an "if" statement and a function to draw it
         self.listOfDrawings = ["CIRCLE",
