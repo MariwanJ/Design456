@@ -75,5 +75,9 @@ App.addExportType("STEP with colors (*.step *.stp)", "Import")
 #Default Extrusion direction, i.e. 2D/3D objects are placed on XY plane by default.
 DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the plane should be saved here.
 
+#Global Variable to keep GRID size in the whole workbench.
+
+#TODO : MAKE THIS IN THE PREFERENCES : FIXME: !!
+DefaultGridSize=1.0
 
 App.__unit_test__ += ["TestPartApp"]

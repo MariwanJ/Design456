@@ -44,7 +44,7 @@ class Design456 (Workbench):
         import Design456Init
         self.__class__.Icon = Design456Init.ICON_PATH + 'WorkbenchIcon.svg'
         self.__class__.MenuText = "Design456"
-        self.__class__.ToolTip = "A workbench easy designing objects"
+        self.__class__.ToolTip = "Direct Modeling Workbench"
         self.runOnce = True
         self.planeShow = None
         self.myDocObserver = None
