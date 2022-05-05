@@ -79,30 +79,30 @@
      <property name="title">
       <string>Design456 Configurations</string>
      </property>
-     <widget class="QCheckBox" name="chkDsableGrid_3">
+     <widget class="QCheckBox" name="chkDisableGrid">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>20</y>
+        <y>90</y>
         <width>171</width>
         <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>Grid Enabled</string>
+       <string>Plane Grid Enabled</string>
       </property>
       <property name="chkGridEnabled" stdset="0">
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="Gui::PrefColorButton" name="DefaultBKGColor_3">
+     <widget class="Gui::PrefColorButton" name="btnBkgColor">
       <property name="geometry">
        <rect>
         <x>199</x>
-        <y>40</y>
+        <y>210</y>
         <width>46</width>
         <height>28</height>
        </rect>
@@ -124,11 +124,11 @@
        <cstring>Mod/Design456</cstring>
       </property>
      </widget>
-     <widget class="QLabel" name="label_8">
+     <widget class="QLabel" name="lblBKGColor">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>40</y>
+        <y>210</y>
         <width>182</width>
         <height>28</height>
        </rect>
@@ -140,17 +140,20 @@
        </size>
       </property>
       <property name="text">
-       <string>Default BKG color</string>
+       <string>Default BKG Color</string>
       </property>
      </widget>
      <widget class="QSpinBox" name="grdSize">
       <property name="geometry">
        <rect>
         <x>200</x>
-        <y>80</y>
+        <y>120</y>
         <width>42</width>
         <height>22</height>
        </rect>
+      </property>
+      <property name="value">
+       <number>5</number>
       </property>
       <property name="gridSize" stdset="0">
        <number>5</number>
@@ -160,7 +163,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>110</y>
         <width>182</width>
         <height>28</height>
        </rect>
@@ -172,14 +175,14 @@
        </size>
       </property>
       <property name="text">
-       <string>Grid size</string>
+       <string>Plane Grid size</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_10">
+     <widget class="QLabel" name="lblRadiusCoin">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>100</y>
+        <y>170</y>
         <width>182</width>
         <height>28</height>
        </rect>
@@ -198,13 +201,57 @@
       <property name="geometry">
        <rect>
         <x>200</x>
-        <y>110</y>
+        <y>180</y>
         <width>42</width>
         <height>22</height>
        </rect>
       </property>
+      <property name="value">
+       <number>5</number>
+      </property>
       <property name="pickRadius" stdset="0">
        <number>5</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblMouseStepSize">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>182</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>182</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Mouse step size</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="comMouseStepSize">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>50</y>
+        <width>62</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="minimum">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>200.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.000000000000000</double>
       </property>
      </widget>
     </widget>
