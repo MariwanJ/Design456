@@ -38,7 +38,7 @@ import pivy.coin as coin
 import FreeCADGui as Gui
 import FreeCAD as App
 
-__updated__ = '2022-01-05 22:04:59'
+__updated__ = '2022-05-06 20:55:10'
 
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
@@ -69,7 +69,7 @@ class Grid:
         self.view = view
         self.sg = None
         self.collectGarbage = []  # Keep the nodes for removing
-        self.GridSize = 5    # 5 mm  The size of the grid. This should go to preferences
+        self.GridSize = Design456Init.Design456pref.PlaneGridSize    # 5 mm  The size of the grid. This should go to preferences
 
     def Deactivated(self):
         self.removeGarbage()

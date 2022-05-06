@@ -27,6 +27,8 @@ from __future__ import unicode_literals
 import os,sys
 import FreeCAD as App
 from draftutils.translate import translate   #for translate
+from Design456Pref import Design456PrefValues
+
 """
 This file will add all paths needed for the Design456.
 It makes life easier. By doing that you can import any file
@@ -37,7 +39,7 @@ ICON path should be always added as below
 
 """
 
-__updated__ = '2022-03-20 14:59:16'
+__updated__ = '2022-05-06 20:03:43'
 
 
 #Design456 
@@ -77,7 +79,6 @@ DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the
 
 #Global Variable to keep GRID size in the whole workbench.
 
-#TODO : MAKE THIS IN THE PREFERENCES : FIXME: !!
-DefaultGridSize=1.0
 
+Design456pref= Design456PrefValues()
 App.__unit_test__ += ["TestPartApp"]

@@ -39,7 +39,7 @@ import math
 from dataclasses import dataclass
 from pivy import coin
 
-__updated__ = '2022-01-01 18:19:26'
+__updated__ = '2022-05-06 20:08:16'
 
 @dataclass
 class userDataObject:
@@ -896,7 +896,7 @@ def draw_FaceSet(vertices = None, numvertices = (3,), _color = FR_COLOR.FR_GOLD,
         vertices (App.Vector, optional): Vertices will be used to draw the face. 3 will result in a triangle, four and above could draw different shapes. 
           Defaults to None.
         numvertices (List of integers, optional): [This will specify how these vertices should be used when the function draw them]. Defaults (3,).
-        _color ([FL_COLOR], optional): [Provides the color for the drawing]. Defaults to FR_COLOR.FR_GOLD.
+        _color ([FR_COLOR], optional): [Provides the color for the drawing]. Defaults to FR_COLOR.FR_GOLD.
 
     Returns:
         [type]: [description]

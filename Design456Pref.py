@@ -32,15 +32,26 @@ import FACE_D as faced
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from draftutils.translate import translate   #for translate
-
+from ThreeDWidgets.constant import FR_COLOR
 #There are several preferences that must be registered somewhere
 #For example simplecopy of extruded object, chamfer,..etc
 #Originally I wanted to simplify everything. But there are users don't like that.
 #This is a start of the preferences pages. Not finished yet. 
 #TODO : FIXME:
 
-__updated__ = '2022-05-05 22:19:49'
+__updated__ = '2022-05-06 20:57:04'
 
+
+class Design456PrefValues:
+    """ Static variable for preferences
+    """
+    MouseStepSize=1.0
+    PlaneGridDisabled=True
+    Simplified=False
+    PlaneGridSize=5
+    BKGColor = int(65536*FR_COLOR.FR_SPECIAL_BLUE[0]+ 256*FR_COLOR.FR_SPECIAL_BLUE[1]+FR_COLOR.FR_SPECIAL_BLUE[2])
+    
+    
 def getColor(c):
     r = ((c>>24)&0xFF)/255.0
     g = ((c>>16)&0xFF)/255.0
@@ -53,33 +64,32 @@ def Design456_preferences():
 #set 
 def setPlaneGrid(enabled=True):
     pref = Design456_preferences()
-    pref.SetBool("PlaneGridEnabled", enabled)
+    pref.SetBool("PlaneGridDisabled", enabled)
 
-def setPlaneGridSize(_size=True):
+def setPlaneGridSize(_size):
     pref = Design456_preferences()
-    pref.SetFloat("PlaneGridSize",_size)
+    pref.SetInt("PlaneGridSize",_size)
 
-def setSimplified(enabled=False):
+def setSimplified(enabled):
     pref = Design456_preferences()
     pref.SetBool("Simplified", enabled)
 
-def setMouseStepSize(_size=0.1):
+def setMouseStepSize(_size):
     pref = Design456_preferences()
-    pref.comMouseStepSize.SetFloat("MouseStepSize", _size)
+    pref.SetFloat("MouseStepSize", _size)
 
 def setBKGColor(color=0xbde1eb):
     pref = Design456_preferences()
-    pref.btnBkgColor.SetUnsigned("BKGColor", color)
-
+    pref.SetUnsigned("BKGColor", color)
 
 #get
 def getPlaneGrid():
     pref = Design456_preferences()
-    return pref.GetBool("PlaneGridEnabled", True)
+    return pref.GetBool("PlaneGridDisabled", True)
 
 def getPlaneGridSize():
     pref = Design456_preferences()
-    return pref.GetFloat("PlaneGridSize", 5)
+    return pref.GetFloat("PlaneGridSize", 5.0)
 
 def getSimplified():
     pref = Design456_preferences()
@@ -87,35 +97,42 @@ def getSimplified():
 
 def getMouseStepSize(_size=0.1):
     pref = Design456_preferences()
-    return pref.GetFloat("MouseStepSize", 5)
+    return pref.GetFloat("MouseStepSize", 5.0)
 
 def getBKGColor():
     pref = Design456_preferences()
     c=pref.GetUnsigned("BKGColor",0xbde1eb)
     return getColor(c)
 
-
-
 class Design456Preferences:
     def __init__(self, parent=None):
         self.form = Gui.PySideUic.loadUi(Design456Init.UI_PATH+'Design456Pref.ui')
 
     def saveSettings(self):
-        setPlaneGrid(self.form.chkDisableGrid.isChecked())
-        setPlaneGridSize(self.form.grdSize.value())
-        setSimplified(self.form.chkSimplify.isChecked())
-        setMouseStepSize(self.form.comMouseStepSize.value())
-        setBKGColor(self.form.btnBkgColor.getColor())
+        Design456Init.Design456pref.PlaneGridDisabled=self.form.chkDisableGrid.isChecked()
+        Design456Init.Design456pref.PlaneGridSize=self.form.grdSize.value()
+        Design456Init.Design456pref.Simplified=self.form.chkSimplify.isChecked()
+        RGB=self.form.btnBkgColor.palette().button().color()
+        Design456Init.Design456pref.BKGColor=65536*RGB.red()+256*RGB.green()+RGB.blue()
+        Design456Init.Design456pref.MouseStepSize=self.form.comMouseStepSize.value()
+
+        setPlaneGrid(Design456Init.Design456pref.PlaneGridDisabled)
+        setPlaneGridSize(Design456Init.Design456pref.PlaneGridSize)
+        setSimplified(Design456Init.Design456pref.Simplified)
+        setBKGColor(Design456Init.Design456pref.BKGColor)
+        setMouseStepSize(Design456Init.Design456pref.MouseStepSize)
 
     def loadSettings(self):
-        self.form.chkDisableGrid.setChecked(getPlaneGrid())
-        self.form.grdSize.setValue(getPlaneGridSize())
-        self.form.comMouseStepSize.setValue(getMouseStepSize())
-
-        self.form.chkSimplify.setChecked(getSimplified())
-        self.form.btnBkgColor.setProperty("color",getBKGColor()) 
-
-    def updateSelection(self, state=None):
-        pass
-
+        Design456Init.Design456pref.PlaneGridDisabled=getPlaneGrid()
+        Design456Init.Design456pref.PlaneGridSize=getPlaneGridSize()
+        Design456Init.Design456pref.Simplified=getSimplified()
+        Design456Init.Design456pref.BKGColor=getBKGColor()
+        Design456Init.Design456pref.MouseStepSize=getMouseStepSize()
+        
+        self.form.chkDisableGrid.setChecked(Design456Init.Design456pref.PlaneGridDisabled)
+        self.form.grdSize.setValue(Design456Init.Design456pref.PlaneGridSize)
+        self.form.chkSimplify.setChecked(Design456Init.Design456pref.Simplified)
+        self.form.btnBkgColor.setProperty("color",Design456Init.Design456pref.BKGColor) 
+        self.form.comMouseStepSize.setValue(Design456Init.Design456pref.MouseStepSize)
+        
 Gui.addPreferencePage(Design456Preferences,"Design456")
