@@ -1225,6 +1225,8 @@ class Design456_Paint:
     def remove_callbacks(self):
         """[Remove COIN32D/Events callback]
         """
+        if self.view is None:
+            return
         self.view.removeEventCallbackPivy(
             coin.SoLocation2Event.getClassTypeId(), self.callbackMove)
         self.view.removeEventCallbackPivy(
