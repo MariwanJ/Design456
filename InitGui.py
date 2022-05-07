@@ -30,14 +30,14 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-05-06 20:02:00'
+__updated__ = '2022-05-07 16:48:16'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
 
 
-class Design456 (Workbench):
+class Design456 (Gui.Workbench):
     "Design456 Workbench object"
 
     def __init__(self):
@@ -217,7 +217,8 @@ class Design456 (Workbench):
             import WorkingPlane
             from plane import Grid as gr
             from plane import DocObserver
-
+            from Design456Pref import Design456pref_var
+            import Design456Pref             
             if (self.myDocObserver is None):
                 self.myDocObserver = DocObserver()
                 self.myDocObserver.setLink(self)
@@ -225,6 +226,15 @@ class Design456 (Workbench):
             if not(App.ActiveDocument):
                 App.newDocument()
                 Gui.ActiveDocument.ActiveView.setCameraType("Perspective")
+                
+
+            #retrive preferences from user.cfg
+            Design456pref_var.PlaneGridEnabled=Design456Pref.getPlaneGrid()
+            Design456pref_var.PlaneGridSize=Design456Pref.getPlaneGridSize()
+            Design456pref_var.Simplified==Design456Pref.getSimplified()
+            Design456pref_var.MouseStepSize=Design456Pref.getMouseStepSize()
+            Design456pref_var.BKGColor = Design456Pref.getBKGColor()
+            Design456pref_var.pickSize=Design456Pref.getPickSize()
 
             # FROM DRAFT
             if hasattr(FreeCADGui, "draftToolBar"):

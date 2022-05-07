@@ -37,8 +37,10 @@ from constant import FR_COLOR
 import pivy.coin as coin
 import FreeCADGui as Gui
 import FreeCAD as App
+import Design456Pref
+from Design456Pref import Design456pref_var
 
-__updated__ = '2022-05-06 20:55:10'
+__updated__ = '2022-05-07 16:19:39'
 
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
@@ -69,13 +71,17 @@ class Grid:
         self.view = view
         self.sg = None
         self.collectGarbage = []  # Keep the nodes for removing
-        self.GridSize = Design456Init.Design456pref.PlaneGridSize    # 5 mm  The size of the grid. This should go to preferences
+        self.GridSize = 5 #Just initialization otherwise it will changes later
 
     def Deactivated(self):
         self.removeGarbage()
         
     def Activated(self):
         try:
+            if Design456pref_var.PlaneGridEnabled==False:
+                return #Nothing to draw 
+
+            self.GridSize = Design456pref_var.PlaneGridSize    # 5 mm  The size of the grid. This should go to preferences
             self.sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
             # Draw xy plane
             self.drawXYPlane()

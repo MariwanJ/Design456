@@ -79,7 +79,7 @@
      <property name="title">
       <string>Design456 Configurations</string>
      </property>
-     <widget class="QCheckBox" name="chkDisableGrid">
+     <widget class="QCheckBox" name="chkEnableGrid">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -93,6 +93,9 @@
       </property>
       <property name="text">
        <string>Plane Grid Enabled</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
       <property name="chkGridEnabled" stdset="0">
        <bool>true</bool>
@@ -163,7 +166,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>110</y>
+        <y>120</y>
         <width>182</width>
         <height>28</height>
        </rect>
