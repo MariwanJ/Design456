@@ -71,7 +71,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>170</y>
+       <y>140</y>
        <width>651</width>
        <height>331</height>
       </rect>
@@ -111,17 +111,17 @@
        </rect>
       </property>
       <property name="toolTip">
-       <string>The default color for new shapes</string>
+       <string>The default grid color xy plane</string>
       </property>
       <property name="color" stdset="0">
-       <color>
+       <color alpha="0">
         <red>189</red>
         <green>225</green>
         <blue>235</blue>
        </color>
       </property>
       <property name="prefEntry" stdset="0">
-       <cstring>DefaultBKGColor</cstring>
+       <cstring>BKGColor</cstring>
       </property>
       <property name="prefPath" stdset="0">
        <cstring>Mod/Design456</cstring>

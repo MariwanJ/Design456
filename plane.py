@@ -40,7 +40,7 @@ import FreeCAD as App
 import Design456Pref
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-05-07 16:19:39'
+__updated__ = '2022-05-08 20:56:13'
 
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
@@ -162,16 +162,18 @@ class Grid:
         del self
 
     def drawXYPlane(self):
-        col = coin.SoBaseColor()
-        #col.rgb = FR_COLOR.FR_BLUEG
-
-        col.rgb = FR_COLOR.FR_SPECIAL_BLUE
-        
-        LengthOfGrid = 1000  # mm
-        bothSideLength = LengthOfGrid / 2
-
-        counter = LengthOfGrid
         try:
+            col = coin.SoBaseColor()
+            #col.rgb = FR_COLOR.FR_SPECIAL_BLUE
+            
+            #get color from preferences variable
+            test=Design456Pref.getRGBColor(Design456pref_var.BKGColor)
+            col.rgb =test
+            LengthOfGrid = 1000  # mm
+            bothSideLength = LengthOfGrid / 2
+
+            counter = LengthOfGrid
+
             line = []
             count5Cells = 0
             lineSize = 1

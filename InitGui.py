@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-05-07 18:04:21'
+__updated__ = '2022-05-08 21:22:12'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -219,15 +219,15 @@ class Design456 (Gui.Workbench):
             from plane import DocObserver
             from Design456Pref import Design456pref_var
             import Design456Pref            
-
+           
             #retrive preferences from user.cfg
+            Design456Pref.Design456Preferences().loadSettings()
             Design456pref_var.PlaneGridEnabled=Design456Pref.getPlaneGrid()
             Design456pref_var.PlaneGridSize=Design456Pref.getPlaneGridSize()
             Design456pref_var.Simplified==Design456Pref.getSimplified()
             Design456pref_var.MouseStepSize=Design456Pref.getMouseStepSize()
             Design456pref_var.BKGColor = Design456Pref.getBKGColor()
-            Design456pref_var.pickSize=Design456Pref.getPickSize()
-            
+            Design456pref_var.pickSize=Design456Pref.getPickSize()         
              
             if (self.myDocObserver is None):
                 self.myDocObserver = DocObserver()
@@ -249,19 +249,19 @@ class Design456 (Gui.Workbench):
                 App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, 1), 0.0)
             # Show the Grid always
             # g=gridTracker()
-            v = Gui.ActiveDocument.ActiveView
+            _view = Gui.ActiveDocument.ActiveView
             # New plane axis 2021-03-22
             if (self.planeShow is None):
-                self.planeShow = gr(v)
+                self.planeShow = gr(_view)
                 self.planeShow.Activated()
             # g.ff()                #draft Grid  --> I will try to remove it in the future Mariwan 2021-03-22
             # Show Top view - Isometric always
             if self.runOnce == True:
-                Gui.ActiveDocument.activeView().viewTop()
-                Gui.activeDocument().activeView().viewIsometric()
+                _view.viewTop()
+                _view.viewIsometric()
                 # Gui.SendMsgToActiveView("ViewFit")
                 for TT in range(1, 10):
-                    Gui.ActiveDocument.ActiveView.zoomOut()
+                    _view.zoomOut()
                 self.runOnce = False
             App.Console.PrintLog(
                 "Draft workbench activated Inside Design456.\n")

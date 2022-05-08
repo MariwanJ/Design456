@@ -28,18 +28,20 @@ import os,sys
 import FreeCAD as App
 import FreeCADGui as Gui
 import Design456Init
-import FACE_D as faced
+
 from PySide.QtCore import QT_TRANSLATE_NOOP
 from PySide import QtGui, QtCore
 from draftutils.translate import translate   #for translate
-from ThreeDWidgets.constant import FR_COLOR
+
 #There are several preferences that must be registered somewhere
 #For example simplecopy of extruded object, chamfer,..etc
 #Originally I wanted to simplify everything. But there are users don't like that.
 #This is a start of the preferences pages. Not finished yet. 
-#TODO : FIXME:
 
-__updated__ = '2022-05-07 17:55:02'
+#TODO :  FIXME: Further preferences will be added later 
+
+__updated__ = '2022-05-08 20:55:01'
+
 
 class Design456PrefValues:
     """ Static variable for preferences
@@ -48,25 +50,31 @@ class Design456PrefValues:
     PlaneGridSize=5
     Simplified=False
     MouseStepSize=1.0
-    BKGColor = int(65536*FR_COLOR.FR_SPECIAL_BLUE[0]+ 256*FR_COLOR.FR_SPECIAL_BLUE[1]+FR_COLOR.FR_SPECIAL_BLUE[2])
+    BKGColor = 0xbde1eb      #12444139  #ONLY RGB no Alfa value
     pickSize=5.0
     
 Design456pref_var= Design456PrefValues()
 
+#Convert RGB color to push button color format 
+def QTgetColor(c):
+    r = ((c>>16)&0xFF)/255.0
+    g = ((c>>8)&0xFF)/255.0
+    b = ((c)&0xFF)/255.0
+    result=QtGui.QColor.fromRgbF(r,g,b)
+    return result
 
-
-
-    #Convert RGB color to push button color format 
-def getColor(c):
-    r = ((c>>24)&0xFF)/255.0
-    g = ((c>>16)&0xFF)/255.0
-    b = ((c>>8)&0xFF)/255.0
-    return QtGui.QColor.fromRgbF(r,g,b)
+def getRGBColor(c):
+    #Contains RGB only no alfa 
+    print(c,"c was")
+    r = ((c>>16)&0xFF)/255.0
+    g = ((c>>8)&0xFF)/255.0
+    b = ((c)&0xFF)/255.0
+    return (r,g,b)
 
 def Design456_preferences():
     return App.ParamGet("User parameter:BaseApp/Preferences/Mod/Design456")
 
-#set 
+#set  (Save values in user.cfg)
 def setPlaneGrid(enabled):
     """ Show or hide the Grid drawn for xyz plane
 
@@ -121,7 +129,7 @@ def setPickSize(_size):
     pref = Design456_preferences()
     pref.SetUnsigned("PickSize", _size)
     
-#get
+#get values from (user.cfg)
 def getPlaneGrid():
     pref = Design456_preferences()
     return pref.GetBool("PlaneGridEnabled", True)
@@ -140,8 +148,8 @@ def getMouseStepSize(_size=0.1):
 
 def getBKGColor():
     pref = Design456_preferences()
-    c=pref.GetUnsigned("BKGColor",0xbde1eb)
-    return getColor(c)
+    c=pref.GetUnsigned("BKGColor",12444139)
+    return c
 
 def getPickSize():
     pref = Design456_preferences()
@@ -149,21 +157,34 @@ def getPickSize():
 
 
 class Design456Preferences:
+    """ Design456 preferences- Definitions and implementation of the 
+        Load and save mechanism. 
+        Reading carefully the code, you should be able to make your own.
+        Don't forget that you should have a xxx.ui file in your Resources folder 
+    """
     @classmethod
     def __init__(self):
         self.form= None
+        # Dialog made by QTDesigner 
         self.form=Gui.PySideUic.loadUi(Design456Init.UI_PATH+'Design456Pref.ui')
         
     @classmethod
     def saveSettings(self):
-        print("SAVE Setting")
+        """ Save preferences - settings 
+        """
         Design456pref_var.PlaneGridEnabled=self.form.chkEnableGrid.isChecked()
         Design456pref_var.PlaneGridSize=self.form.grdSize.value()
         Design456pref_var.Simplified=self.form.chkSimplify.isChecked()
-        RGB=self.form.btnBkgColor.palette().button().color()
-        Design456pref_var.BKGColor=65536*RGB.red()+256*RGB.green()+RGB.blue()
-        Design456pref_var.MouseStepSize=self.form.comMouseStepSize.value()
+        #Retrive the chosen value in RGB (INT) form as a list
+        RGB=self.form.btnBkgColor.property("color").getRgb()
 
+        R=RGB[0]
+        G=RGB[1]
+        B=RGB[2]
+        Design456pref_var.BKGColor=  0x10000 * R + 0x100 * G + B #Alfa value is ignored
+        Design456pref_var.MouseStepSize=self.form.comMouseStepSize.value()
+        
+        #Save New values to user.cfg
         setPlaneGrid(Design456pref_var.PlaneGridEnabled)
         setPlaneGridSize(Design456pref_var.PlaneGridSize)
         setSimplified(Design456pref_var.Simplified)
@@ -172,7 +193,8 @@ class Design456Preferences:
     
     @classmethod
     def loadSettings(self):
-
+        """ Load preferencess
+        """
         print("load Setting")
         Design456pref_var.PlaneGridEnabled=getPlaneGrid()
         Design456pref_var.PlaneGridSize=getPlaneGridSize()
@@ -183,7 +205,8 @@ class Design456Preferences:
         self.form.chkEnableGrid.setChecked(Design456pref_var.PlaneGridEnabled)
         self.form.grdSize.setValue(Design456pref_var.PlaneGridSize)
         self.form.chkSimplify.setChecked(Design456pref_var.Simplified)
-        self.form.btnBkgColor.setProperty("color",Design456pref_var.BKGColor) 
+        _color=QTgetColor(Design456pref_var.BKGColor)
+        self.form.btnBkgColor.setProperty("color",_color) 
         self.form.comMouseStepSize.setValue(Design456pref_var.MouseStepSize)
         
 Gui.addPreferencePage(Design456Preferences,QT_TRANSLATE_NOOP("Design456","Design456"))
