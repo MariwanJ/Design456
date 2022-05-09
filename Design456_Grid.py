@@ -165,3 +165,34 @@ class GridSizeThirty:
                 'MenuText': "Grid30.0mm",
                 'ToolTip': "Grid Size 30.0 mm"}
 Gui.addCommand('GridSizeThirty', GridSizeThirty())
+
+
+
+#############################
+
+
+class Design456_GridSize:
+    list = ["GridSizePointOne",
+            
+            "GridSizeThirty",
+            
+            ]
+
+    """Design456 Grid Size Toolbar"""
+
+    def GetResources(self):
+        return{
+            'Pixmap':    Design456Init.ICON_PATH + 'GridSize.svg',
+            'MenuText': 'GridSize',
+            'ToolTip':  'GridSize'
+        }
+
+    def IsActive(self):
+        """Return True when this command should be available."""
+        if Gui.activeDocument():
+            return True
+        else:
+            return False
+        
+    def Activated(self):
+        self.appendToolbar("Design456_GridSize", self.list)
