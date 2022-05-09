@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-05-08 21:22:12'
+__updated__ = '2022-05-09 20:51:21'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -66,7 +66,7 @@ class Design456 (Gui.Workbench):
         from Design456Pref import Design456Preferences
         import Design456_Segmented as _segmented
         import Design456_ICONPanel  #Side panel for ICONS
-
+        import Design456_Grid as _grid
 
         # from Part import CommandShapes     #Tube  not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
@@ -82,6 +82,7 @@ class Design456 (Gui.Workbench):
             "Selection Mode", SelGate.Design456_SelectionGate.list)
         self.appendToolbar("Direct Modeling",
                            dModeling.Design456_DirectModeling.list)
+        self.appendToolbar ("GridSize",_grid.Design456_GridSize.list)
 
         self.appendMenu("Design456_Part", designPart.Design456_Part.list)
         self.appendMenu("Design456_2Ddrawing",
@@ -310,6 +311,7 @@ class Design456 (Gui.Workbench):
             import Design456_Part_Tools as pTools
             import Design456_2Ddrawing as TwoDDraw
             import Design456_Alignment as _alignment
+            import Design456_Grid as _grid
 
             self.appendContextMenu(
                 "Design456_Part", designPart.Design456_Part.list)
@@ -319,13 +321,14 @@ class Design456 (Gui.Workbench):
                 "Design456 Tools", pTools.Design456_Part_Tools.list)
             self.appendContextMenu("Design456 Alignment", 
                                         _alignment.Design456_Alignment_Tools.list)
-
-
-            # from DRAFT
-            """Define an optional custom context menu."""
             # from Design456_PART
             self.appendContextMenu(
                 "Design456_Part", designPart.Design456_Part.list)
+            
+            self.appendContextMenu ("GridSize",_grid.Design456_GridSize.list)
+           
+            # from DRAFT
+            """Define an optional custom context menu."""
             from DraftGui import translate
             if recipient == "View":
                 if App.activeDraftCommand is None:
