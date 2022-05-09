@@ -24,15 +24,14 @@ from __future__ import unicode_literals
 # *                                                                         *
 # *  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # ***************************************************************************
-import os
-import sys
+import os, sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Part
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-import math
 from draftutils.translate import translate  # for translation
-from Design456Init import DefaultGridSize
+import Design456Init 
+
+from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
 
 __updated__ = '2022-04-27 18:37:54'
 
@@ -40,31 +39,129 @@ __updated__ = '2022-04-27 18:37:54'
 #In PartMover, Paint ..etc
 
 
-def setGridSize(_gridSize):
-        DefaultGridSize=_gridSize
+class GridSizePointOne:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=0.10   #0.1 mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizePointOne.svg',
+                'MenuText': "Grid1.0mm",
+                'ToolTip': "Grid Size 1.0 mm"}
+Gui.addCommand('GridSizePointOne', GridSizePointOne())
+
+class GridSizeOne:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=1.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeOne.svg',
+                'MenuText': "Grid1.0mm",
+                'ToolTip': "Grid Size 1.0 mm"}
+Gui.addCommand('GridSizeOne', GridSizeOne())
+
+class GridSizeTwo:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=2.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeTwo.svg',
+                'MenuText': "Grid2.0mm",
+                'ToolTip': "Grid Size 2.0 mm"}
+Gui.addCommand('GridSizeTwo', GridSizeTwo())
+
+class GridSizeThree:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=3.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeThree.svg',
+                'MenuText': "Grid3.0mm",
+                'ToolTip': "Grid Size 3.0 mm"}
+Gui.addCommand('GridSizeThree', GridSizeThree())
+
+class GridSizeFour:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=4.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeFour.svg',
+                'MenuText': "Grid4.0mm",
+                'ToolTip': "Grid Size 4.0 mm"}
+Gui.addCommand('GridSizeFour', GridSizeFour())
 
 
-# def setgridSize_1mm():
-#     setGridSize(1.0)    
-# def setgridSize_1mm():
-#     setGridSize(2.0)    
-# def setgridSize_2mm():
-#     setGridSize(1.0)    
-# def setgridSize_3mm():
-#     setGridSize(3.0)    
-# def setgridSize_4mm():
-#     setGridSize(4.0)    
-# def setgridSize_5mm():
-#     setGridSize(5.0)    
-# def setgridSize_6mm():
-#     setGridSize(6.0)    
-# def setgridSize_7mm():
-#     setGridSize(7.0)    
-# def setgridSize_8mm():
-#     setGridSize(8.0)    
-# def setgridSize_8mm():
-#     setGridSize(8.0)    
-# def setgridSize_9mm():
-#     setGridSize(9.0)    
-# def setgridSize_9mm():
-#     setGridSize(10.0)    
+class GridSizeFive:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=5.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeFive.svg',
+                'MenuText': "Grid5.0mm",
+                'ToolTip': "Grid Size 5.0 mm"}
+Gui.addCommand('GridSizeFive', GridSizeFive())
+
+class GridSizeSix:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=6.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeSix.svg',
+                'MenuText': "Grid6.0mm",
+                'ToolTip': "Grid Size 6.0 mm"}
+Gui.addCommand('GridSizeSix', GridSizeSix())
+
+class GridSizeSeven:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=7.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeSeven.svg',
+                'MenuText': "Grid7.0mm",
+                'ToolTip': "Grid Size 7.0 mm"}
+Gui.addCommand('GridSizeSeven', GridSizeSeven())
+
+class GridSizeEight:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=8.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeEight.svg',
+                'MenuText': "Grid8.0mm",
+                'ToolTip': "Grid Size 8.0 mm"}
+Gui.addCommand('GridSizeEight', GridSizeEight())
+
+class GridSizeNine:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=9.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeNine.svg',
+                'MenuText': "Grid9.0mm",
+                'ToolTip': "Grid Size 9.0 mm"}
+Gui.addCommand('GridSizeNine', GridSizeNine())
+
+class GridSizeTen:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=10.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeTen.svg',
+                'MenuText': "Grid10.0mm",
+                'ToolTip': "Grid Size 10.0 mm"}
+Gui.addCommand('GridSizeTen', GridSizeTen())
+
+class GridSizeFifteen:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=15.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeFifteen.svg',
+                'MenuText': "Grid15.0mm",
+                'ToolTip': "Grid Size 15.0 mm"}
+Gui.addCommand('GridSizeFifteen', GridSizeFifteen())
+
+class GridSizeTwenty:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=20.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeTwenty.svg',
+                'MenuText': "Grid20.0mm",
+                'ToolTip': "Grid Size 20.0 mm"}
+Gui.addCommand('GridSizeTwenty', GridSizeTwenty())
+
+class GridSizeThirty:
+    def Activated(self):
+        Design456pref_var.MouseStepSize=20.0   #mm Size
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'GridSizeThirty.svg',
+                'MenuText': "Grid30.0mm",
+                'ToolTip': "Grid Size 30.0 mm"}
+Gui.addCommand('GridSizeThirty', GridSizeThirty())
