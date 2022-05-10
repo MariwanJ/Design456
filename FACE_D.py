@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-05-10 20:47:40'
+__updated__ = '2022-05-10 21:50:34'
 
 
 # TODO : FIXME BETTER WAY?
@@ -279,16 +279,9 @@ class StepSizeGUI(QtGui.QMainWindow):
 
     def __init__(self):
         super(StepSizeGUI, self).__init__()
-        self.__stepValue = 1.0
+
         self.initUI()
      
-    def selectionchange(self):
-        self.__stepValue = float(self.cmbStepSize.currentText())
-        print(self.__stepValue)
-    
-    def stepValue(self):
-        return self.__stepValue
-
     def Activate(self):
         self.show() 
  
@@ -298,7 +291,7 @@ class StepSizeGUI(QtGui.QMainWindow):
         # define window		x,y,width,height
         self.setGeometry(1200, 300, 440, 110)
         self.lblUnit = QtGui.QLabel(self)
-        self.lblUnit.setGeometry(QtCore.QRect(10, 10, 140, 30))
+        self.lblUnit.setGeometry(QtCore.QRect(10, 10, 140, 40))
         self.lblUnit.setText(_translate("self", "mm"))
 
         self.lblInfo = QtGui.QLabel(self)
@@ -314,36 +307,11 @@ class StepSizeGUI(QtGui.QMainWindow):
         font.setBold(True)
         self.lblCurrentLocation.setFont(font)
                              
-        # Selectable steps
-        self.cmbStepSize = QtGui.QComboBox(self)        
-        self.cmbStepSize.setGeometry(QtCore.QRect(10, 50, 100, 30))
-        self.cmbStepSize.addItem("1.0")
-        self.cmbStepSize.addItem("2.0")
-        self.cmbStepSize.addItem("3.0")
-        self.cmbStepSize.addItem("4.0")
-        self.cmbStepSize.addItem("5.0")
-        self.cmbStepSize.addItem("6.0")
-        self.cmbStepSize.addItem("7.0")
-        self.cmbStepSize.addItem("8.0")
-        self.cmbStepSize.addItem("9.0")
-        self.cmbStepSize.addItem("10.0")
-        self.cmbStepSize.addItem("20.0")
-        self.cmbStepSize.addItem("30.0")
-        self.cmbStepSize.addItem("40.0")
-        self.cmbStepSize.addItem("50.0")
-        self.cmbStepSize.addItem("60.0")
-        self.cmbStepSize.addItem("70.0")
-        self.cmbStepSize.addItem("80.0")
-        self.cmbStepSize.addItem("90.0")
-        self.cmbStepSize.addItem("100.0")
-        self.cmbStepSize.setCurrentIndex(0)
-        self.cmbStepSize.currentIndexChanged.connect(self.selectionchange)
         self.setWindowTitle("Default mouse step")
         self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint | 
                             QtCore.Qt.MSWindowsFixedSizeDialogHint | 
                             QtCore.Qt.CustomizeWindowHint)
         self.setMouseTracking(True)
-        # self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
         return
 
 
@@ -407,9 +375,7 @@ class PartMover:
             if self.StepDialog is None:
                 self.StepDialog = StepSizeGUI()
                 self.StepDialog.Activate()
-            
             self.stepSize = Design456pref_var.MouseStepSize
-            self.stepSize = self.StepDialog.stepValue()
             self.StepDialog.lblUnit.setText(("mm - Axis =") + self.Direction)
             event = events.getEvent()
             newValue = self.convertToVector(
@@ -433,7 +399,8 @@ class PartMover:
             self.newPosition = self.oldPosition.add(resultVector)
             self.obj.Placement.Base = self.newPosition
             self.oldPosition = self.newPosition
-            self.StepDialog.lblCurrentLocation.setText("Location: X=" + f'{self.newPosition.x:7.2f}' + 
+            self.StepDialog.lblCurrentLocation.setText("StepSize="+str(self.stepSize)+
+                                                       "\nLocation: X=" + f'{self.newPosition.x:7.2f}' + 
                                                        " Y= " + f'{self.newPosition.y:7.2f}' + 
                                                        " Z= " + f'{self.newPosition.z:7.2f}')
             
@@ -500,34 +467,7 @@ class PartMover:
                 self.Direction = 'Z'
             if key == coin.SoKeyboardEvent.A and eventState == coin.SoButtonEvent.UP:
                 self.Direction = 'A'
-            # step size setup
-            if key == coin.SoKeyboardEvent.NUMBER_0 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 10  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_1 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 1  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_2 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 2  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_3 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 3  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_4 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 4  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_5 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 5  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_6 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 6  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_7 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 7  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_8 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 8  # 10mm
-            elif key == coin.SoKeyboardEvent.NUMBER_9 and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 9  # 10mm
-            elif key == coin.SoKeyboardEvent.D and eventState == coin.SoButtonEvent.UP:
-                self.StepSize = 0.1  # 10mm
-            elif key == coin.SoKeyboardEvent.PAD_TAB and eventState == coin.SoButtonEvent.UP:
-                self.StepDialog.cmbStepSize.setFocus()
-            else:
-                self.StepSize = 0.1  # 10mm
-
+                
             if key == coin.SoKeyboardEvent.ESCAPE and eventState == coin.SoButtonEvent.UP:
                 if not self.deleteOnEscape:
                     self.obj.Placement.Base = self.initialPosition

@@ -33,7 +33,7 @@ import Design456Init
 import Design456Pref as pref
 from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
 
-__updated__ = '2022-05-10 20:14:00'
+__updated__ = '2022-05-10 22:01:51'
 
 #Design some command for deciding which grid we should use for all mouse movements_sizes 
 #In PartMover, Paint ..etc
@@ -242,7 +242,7 @@ Gui.addCommand('GridSizeOneHundred', GridSizeOneHundred())
 
 #############################
 
-class Design456_GridGroup1:
+class Design456_GridGroup:
         
     """Design456 Grid Size"""
 
@@ -259,27 +259,7 @@ class Design456_GridGroup1:
                 "GridSizeSeven",
                 "GridSizeEight",
                 "GridSizeNine",
-    )
-
-    def GetResources(self):
-        import Design456Init
-        from PySide.QtCore import QT_TRANSLATE_NOOP
-        """Set icon, menu and tooltip."""
-        _tooltip = ("Different Tools for modifying 3D Shapes")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Design456_Grid1.svg',
-                'MenuText': QT_TRANSLATE_NOOP("Design456", "GridSize"),
-                'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
-
-Gui.addCommand("Design456_GridGroup1", Design456_GridGroup1())
-
-
-class Design456_GridGroup2:
-        
-    """Design456 Grid Size"""
-
-    def GetCommands(self):
-        """Grid Size commands"""
-        return ("GridSizeTen",
+                "GridSizeTen",
                 "GridSizeFifteen",
                 "GridSizeTwenty",
                 "GridSizeThirty",
@@ -290,23 +270,22 @@ class Design456_GridGroup2:
                 "GridSizeEighty",
                 "GridSizeNinety",
                 "GridSizeOneHundred")
+    
 
     def GetResources(self):
         import Design456Init
         from PySide.QtCore import QT_TRANSLATE_NOOP
         """Set icon, menu and tooltip."""
         _tooltip = ("Different Tools for modifying 3D Shapes")
-        return {'Pixmap':  Design456Init.ICON_PATH+ 'Design456_Grid2.svg',
+        return {'Pixmap':  Design456Init.ICON_PATH+ 'Design456_Grid1.svg',
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "GridSize"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-Gui.addCommand("Design456_GridGroup2", Design456_GridGroup2())
-
+Gui.addCommand("Design456_GridGroup", Design456_GridGroup())
 
 
 class Design456_GridSize:
-    list = ["Design456_GridGroup1", 
-            "Design456_GridGroup2"
+    list = ["Design456_GridGroup",
             ]
 
     """Design456 Grid Size Toolbar"""

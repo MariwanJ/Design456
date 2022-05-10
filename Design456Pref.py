@@ -40,7 +40,7 @@ from draftutils.translate import translate   #for translate
 
 #TODO :  FIXME: Further preferences will be added later 
 
-__updated__ = '2022-05-10 21:14:38'
+__updated__ = '2022-05-10 21:54:37'
 
 
 class Design456PrefValues:
@@ -111,6 +111,8 @@ def setMouseStepSize(_size):
     """
     pref = Design456_preferences()
     pref.SetFloat("MouseStepSize", _size)
+    Design456pref_var.MouseStepSize=_size
+    
 
 def setBKGColor(_color):
     """Line color - XY Plane grid drawing 
