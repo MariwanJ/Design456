@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-04-27 18:37:54'
+__updated__ = '2022-05-10 20:47:40'
 
 
 # TODO : FIXME BETTER WAY?
@@ -347,8 +347,8 @@ class StepSizeGUI(QtGui.QMainWindow):
         return
 
 
+from Design456Pref import Design456pref_var
 class PartMover:
-
     def __init__(self, view, obj, deleteOnEscape):
         self.obj = obj
         self.initialPosition = self.obj.Placement.Base
@@ -363,7 +363,7 @@ class PartMover:
         self.objToDelete = None  # when pressing the escape key
         self.Direction = 'A'
         self.StepDialog = None
-        self.stepSize = 1.0  # 1.0mm
+        self.stepSize = 1.0
         self.oldPosition = None  # Old mouse distance-change
         self.newPosition = 0.0  # Current mouse distance-change
 
@@ -408,6 +408,7 @@ class PartMover:
                 self.StepDialog = StepSizeGUI()
                 self.StepDialog.Activate()
             
+            self.stepSize = Design456pref_var.MouseStepSize
             self.stepSize = self.StepDialog.stepValue()
             self.StepDialog.lblUnit.setText(("mm - Axis =") + self.Direction)
             event = events.getEvent()

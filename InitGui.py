@@ -30,11 +30,12 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-05-09 20:51:21'
+__updated__ = '2022-05-10 20:37:58'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
+
 
 
 class Design456 (Gui.Workbench):
@@ -48,6 +49,7 @@ class Design456 (Gui.Workbench):
         self.runOnce = True
         self.planeShow = None
         self.myDocObserver = None
+        Design456Init.pToWorkbench=self
 
 
     def Initialize(self):

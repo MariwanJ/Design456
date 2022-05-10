@@ -40,7 +40,7 @@ import FreeCAD as App
 import Design456Pref
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-05-08 20:56:13'
+__updated__ = '2022-05-10 21:31:36'
 
 def dim_dash(p1, p2, color, LineWidth):
     dash = coin.SoSeparator()
@@ -74,21 +74,35 @@ class Grid:
         self.GridSize = 5 #Just initialization otherwise it will changes later
 
     def Deactivated(self):
-        self.removeGarbage()
+        self.removeGarbage(True)
         
-    def Activated(self):
+    def redraw(self):          
+        self.GridSize = Design456pref_var.PlaneGridSize 
+        self.removeGarbage(False)
+        self.draw()
+        
+    def draw(self):
         try:
-            if Design456pref_var.PlaneGridEnabled==False:
-                return #Nothing to draw 
-
-            self.GridSize = Design456pref_var.PlaneGridSize    # 5 mm  The size of the grid. This should go to preferences
-            self.sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
-            # Draw xy plane
             self.drawXYPlane()
             # Draw Z plane
             self.drawZAxis()
             # Draw Axis
             self.draw_XandYandZZeroAxis()
+
+        except Exception as err:
+            App.Console.PrintError("'Plane' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def Activated(self):
+        try:
+            if Design456pref_var.PlaneGridEnabled==False:
+                return #Nothing to draw 
+            self.GridSize = Design456pref_var.PlaneGridSize    # 5 mm  The size of the grid. This should go to preferences
+            self.sg = Gui.ActiveDocument.ActiveView.getSceneGraph()
+            self.draw()
 
         except Exception as err:
             App.Console.PrintError("'Plane' Failed. "
@@ -154,12 +168,13 @@ class Grid:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def removeGarbage(self):
+    def removeGarbage(self,removeMe=False):
         for i in (self.collectGarbage):
             self.sg.removeChild(i)
 
         self.collectGarbage.clear()
-        del self
+        if removeMe is True:
+            del self
 
     def drawXYPlane(self):
         try:

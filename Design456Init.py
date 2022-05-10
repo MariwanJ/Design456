@@ -37,7 +37,7 @@ ICON path should be always added as below
 
 """
 
-__updated__ = '2022-05-07 16:19:21'
+__updated__ = '2022-05-10 20:37:42'
 
 
 #Design456 
@@ -75,6 +75,7 @@ App.addExportType("STEP with colors (*.step *.stp)", "Import")
 #Default Extrusion direction, i.e. 2D/3D objects are placed on XY plane by default.
 DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the plane should be saved here.
 
-#Global Variable to keep GRID size in the whole workbench.
+#Pointer to the workbench
+pToWorkbench=None
 
 App.__unit_test__ += ["TestPartApp"]
