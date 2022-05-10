@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-05-10 21:50:34'
+__updated__ = '2022-05-10 22:14:50'
 
 
 # TODO : FIXME BETTER WAY?
@@ -289,9 +289,9 @@ class StepSizeGUI(QtGui.QMainWindow):
         # create window
         _translate = QtCore.QCoreApplication.translate
         # define window		x,y,width,height
-        self.setGeometry(1200, 300, 440, 110)
+        self.setGeometry(1200, 300, 440, 140)
         self.lblUnit = QtGui.QLabel(self)
-        self.lblUnit.setGeometry(QtCore.QRect(10, 10, 140, 40))
+        self.lblUnit.setGeometry(QtCore.QRect(10, 10, 140, 70))
         self.lblUnit.setText(_translate("self", "mm"))
 
         self.lblInfo = QtGui.QLabel(self)
@@ -299,7 +299,7 @@ class StepSizeGUI(QtGui.QMainWindow):
         self.lblInfo.setText(_translate("self", "Use A,X,Y & Z for axis selection\nUse Tab and arrows to change step size\nUse middle mouse button to give focus\nto Main window again or ALT+TAB"))
 
         self.lblCurrentLocation = QtGui.QLabel(self)
-        self.lblCurrentLocation.setGeometry(QtCore.QRect(5, 80, 400, 40))
+        self.lblCurrentLocation.setGeometry(QtCore.QRect(5, 80, 400, 70))
         self.lblCurrentLocation.setText("Location:" + "X=0.0,Y=0.0" + "Z=0.0")            
         font = QtGui.QFont()
         font.setFamily("Caladea")
