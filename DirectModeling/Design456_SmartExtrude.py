@@ -46,7 +46,7 @@ from ThreeDWidgets import fr_label_draw
 from Design456Pref import Design456pref_var
 # The ration of delta mouse to mm
 MouseScaleFactor = 1
-__updated__ = '2022-05-15 21:49:18'
+__updated__ = '2022-05-15 21:58:58'
 
 '''
     How it works: 
@@ -358,10 +358,8 @@ class Design456_SmartExtrude:
                 # The whole object is selected
                 sub1 = self.selectedObj
                 face1 = sub1.SubObjects[0]
-                print("face1 testme")
             else:
                 face1 = self.selectedObj.Object.Shape.Faces[0]
-                print("face2 testme")
 
             self.extrudeLength = 5
             self._vector = self.calculateNewVector()

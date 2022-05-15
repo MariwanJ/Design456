@@ -40,7 +40,7 @@ from draftutils.translate import translate   #for translate
 
 #TODO :  FIXME: Further preferences will be added later 
 
-__updated__ = '2022-05-10 21:54:37'
+__updated__ = '2022-05-15 22:00:33'
 
 
 class Design456PrefValues:
@@ -65,7 +65,6 @@ def QTgetColor(c):
 
 def getRGBColor(c):
     #Contains RGB only no alfa 
-    print(c,"c was")
     r = ((c>>16)&0xFF)/255.0
     g = ((c>>8)&0xFF)/255.0
     b = ((c)&0xFF)/255.0
@@ -198,7 +197,6 @@ class Design456Preferences:
     def loadSettings(self):
         """ Load preferencess
         """
-        print("load Setting")
         Design456pref_var.PlaneGridEnabled=getPlaneGrid()
         Design456pref_var.PlaneGridSize=getPlaneGridSize()
         Design456pref_var.Simplified=getSimplified()
