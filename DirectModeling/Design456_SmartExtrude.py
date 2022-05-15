@@ -43,10 +43,10 @@ from draftutils.translate import translate  # for translation
 import math
 import Part
 from ThreeDWidgets import fr_label_draw
-
+from Design456Pref import Design456pref_var
 # The ration of delta mouse to mm
 MouseScaleFactor = 1
-__updated__ = '2022-03-30 21:09:04'
+__updated__ = '2022-05-15 21:49:18'
 
 '''
     How it works: 
@@ -71,12 +71,14 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         [type]: [Nothing is returned] None.
     """
     try:
+        
         if userData is None:
             return  # Nothing to do here - shouldn't be None
 
         ArrowObject = userData.ArrowObj
         events = userData.events
         linktocaller = userData.callerObject
+        linktocaller.ExtrusionStepSize=Design456pref_var.MouseStepSize
         if type(events) != int:
             return
 
@@ -104,10 +106,12 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         linktocaller.resizeArrowWidgets(
             linktocaller.endVector.sub(linktocaller.mouseToArrowDiff))
         linktocaller.ExtrudeLBL.setText(
-            "Length= " + str(linktocaller.extrudeLength))
+            "Length= " + str(round(linktocaller.extrudeLength,2)))
         userData.ArrowObj.changeLabelstr(
-            "  Length= " + str(linktocaller.extrudeLength))
+            "  Length= " + str(round(linktocaller.extrudeLength,2)))
         linktocaller.reCreateExtrudeObject()
+        
+        linktocaller.lblExtrudeSize.setText("Extrude Step Size = " + str(linktocaller.ExtrusionStepSize))
         App.ActiveDocument.recompute()
 
     except Exception as err:
@@ -299,8 +303,7 @@ class Design456_SmartExtrude:
         self.radSubtract = None
 
         # Extrusion step
-        self.combListExtrudeStep = None
-        self.ExtrusionStepSize = 1.0  # Default is one mm
+        self.ExtrusionStepSize = Design456pref_var.MouseStepSize
 
     def reCreateExtrudeObject(self):
         """
@@ -491,6 +494,8 @@ class Design456_SmartExtrude:
         try:
             print("Smart Extrusion")
             sel = Gui.Selection.getSelectionEx()
+            self.ExtrusionStepSize=Design456pref_var.MouseStepSize            
+            
             if len(sel) == 0:
                 # An object must be selected
                 errMessage = "Select a face to Extrude"
@@ -592,26 +597,6 @@ class Design456_SmartExtrude:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def comboChanged(self, text):
-        print("text=", text)
-        self.ExtrusionStepSize = float(text.rstrip("m"))
-        if self.ExtrusionStepSize == 0.1:
-            self.lblExtrudeSize.setText("0.1 mm")
-        elif self.ExtrusionStepSize == 0.5:
-            self.lblExtrudeSize.setText("0.5 mm")
-        elif self.ExtrusionStepSize == 1.0:
-            self.lblExtrudeSize.setText("1.0 mm")
-        elif self.ExtrusionStepSize == 10.0:
-            self.lblExtrudeSize.setText("1.0 cm")
-        elif self.ExtrusionStepSize == 100.0:
-            self.lblExtrudeSize.setText("10.0 cm")
-        elif self.ExtrusionStepSize == 1000.0:
-            self.lblExtrudeSize.setText("1.0 m")
-        elif self.ExtrusionStepSize == 10000.0:
-            self.lblExtrudeSize.setText("10.0 m")
-        elif self.ExtrusionStepSize == 100000.0:
-            self.lblExtrudeSize.setText("100.0 m")
-
     def getMainWindow(self):
         """[Create the tab for the tool]
 
@@ -663,20 +648,6 @@ class Design456_SmartExtrude:
             comboFont = QtGui.QFont("Times", 13, True)
 
             self.lblExtrudeSize.setFont(comboFont)
-            self.combListExtrudeStep = QtGui.QComboBox(self.dialog)
-            self.combListExtrudeStep.addItem("0.1mm")       # 0.1 mm
-            self.combListExtrudeStep.addItem("0.5mm")       # 0.5 mm
-            self.combListExtrudeStep.addItem("1.0mm")       # 1.0 mm
-            self.combListExtrudeStep.addItem("10mm")        # 1   cm
-            self.combListExtrudeStep.addItem("100mm")       # 10   cm
-            self.combListExtrudeStep.addItem("1000mm")      # 100  cm
-            self.combListExtrudeStep.addItem("10000mm")     # 10    m
-            self.combListExtrudeStep.addItem("100000mm")    # 100   m
-            self.combListExtrudeStep.setCurrentIndex(2)
-            #self.combListExtrudeStep.move (10, 400)
-
-            self.combListExtrudeStep.activated[str].connect(self.comboChanged)
-            self.combListExtrudeStep.setObjectName("combListExtrudeStep")
 
             self.groupBox = QtGui.QGroupBox(self.dialog)
             self.groupBox.setGeometry(QtCore.QRect(60, 130, 120, 80))
@@ -697,7 +668,6 @@ class Design456_SmartExtrude:
             self.la.addWidget(self.e1)
             self.la.addWidget(self.ExtrudeLBL)
             self.la.addWidget(self.lblExtrudeSize)
-            self.la.addWidget(self.combListExtrudeStep)
             self.la.addWidget(okbox)
 
             # Adding checkbox for Merge, Subtract Or just leave it "As is"
