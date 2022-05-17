@@ -41,7 +41,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1.5
-__updated__ = '2022-01-01 17:16:07'
+__updated__ = '2022-05-16 19:03:13'
 
 
 '''
@@ -288,7 +288,9 @@ class Design456_SmartFillet:
                     self._vector.x = self.selectedObj[0].Object.Shape.BoundBox.XMax/2
                     self._vector.y = self.selectedObj[0].Object.Shape.BoundBox.YMax/2
             return rotation
-
+        if (len(self.selectedObj)==0):
+            printf("nothing selected")
+            return
         vectors = self.selectedObj[0].SubObjects[0].Vertexes
         if self.objectType == 'Face':
             self._vector.z = vectors[0].Z
@@ -380,8 +382,11 @@ class Design456_SmartFillet:
 
             # This create only a shape. We have to make it as a Part::Feature
             App.ActiveDocument.recompute()
-            _shape = self.selectedObj[0].Object.Shape.makeFillet(
-                self.FilletRadius, self.getAllSelectedEdges())
+            #failing why??
+            _obj= self.selectedObj[0].Object
+            _eedg=self.getAllSelectedEdges()
+            _shp=self.selectedObj[0].Object.Shape
+            _shape = _shp.makeFillet(self.FilletRadius, _eedg)
             newObj = App.ActiveDocument.addObject('Part::Feature', "temp")
             newObj.Shape = _shape
             self.selectedObj.append(newObj)

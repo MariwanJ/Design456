@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-05-10 20:37:58'
+__updated__ = '2022-05-17 20:29:36'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -112,8 +112,6 @@ class Design456 (Gui.Workbench):
         dependencies_OK = False
         try:
             from pivy import coin
-            import FreeCAD
-            import FreeCADGui
             if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
                 raise AssertionError("FreeCAD and Pivy use different versions "
                                      "of Coin. "
@@ -141,79 +139,62 @@ class Design456 (Gui.Workbench):
             import DraftTools
             import DraftGui
             import DraftFillet
-            import FreeCAD
-            import FreeCADGui
-
-            FreeCADGui.addLanguagePath(":/translations")
-            FreeCADGui.addIconPath(":/icons")
-        except Exception as exc:
-            FreeCAD.Console.PrintError(exc)
-            FreeCAD.Console.PrintError("Error: Initializing one or more "
-                                       "of the Draft modules failed, "
-                                       "Draft will not work as expected.\n")
-        try:
-            # Set up command lists
-            import draftutils.init_tools as it
-            self.drawing_commands = it.get_draft_drawing_commands()
-            self.annotation_commands = it.get_draft_annotation_commands()
-            self.modification_commands = it.get_draft_modification_commands()
-            self.utility_commands_menu = it.get_draft_utility_commands_menu()
-            self.utility_commands_toolbar = it.get_draft_utility_commands_toolbar()
-            self.context_commands = it.get_draft_context_commands()
-
-            # Set up toolbars
-            it.init_toolbar(self,
-                            QT_TRANSLATE_NOOP("Draft", "Draft creation tools"),
-                            self.drawing_commands)
-            it.init_toolbar(self,
-                            QT_TRANSLATE_NOOP(
-                                "Draft", "Draft annotation tools"),
-                            self.annotation_commands)
-            it.init_toolbar(self,
-                            QT_TRANSLATE_NOOP(
-                                "Draft", "Draft modification tools"),
-                            self.modification_commands)
-            it.init_toolbar(self,
-                            QT_TRANSLATE_NOOP("Draft", "Draft utility tools"),
-                            self.utility_commands_toolbar)
-
-            # Set up menus
-            it.init_menu(self,
-                         [QT_TRANSLATE_NOOP("Draft", "&Drafting")],
-                         self.drawing_commands)
-            it.init_menu(self,
-                         [QT_TRANSLATE_NOOP("Draft", "&Annotation")],
-                         self.annotation_commands)
-            it.init_menu(self,
-                         [QT_TRANSLATE_NOOP("Draft", "&Modification")],
-                         self.modification_commands)
-            it.init_menu(self,
-                         [QT_TRANSLATE_NOOP("Draft", "&Utilities")],
-                         self.utility_commands_menu)
-
-            # Set up preferences pages
-            if hasattr(FreeCADGui, "draftToolBar"):
-                if not hasattr(FreeCADGui.draftToolBar, "loadedPreferences"):
-                    FreeCADGui.addPreferencePage(
-                        ":/ui/preferences-draft.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.addPreferencePage(
-                        ":/ui/preferences-draftinterface.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.addPreferencePage(
-                        ":/ui/preferences-draftsnap.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.addPreferencePage(
-                        ":/ui/preferences-draftvisual.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.addPreferencePage(
-                        ":/ui/preferences-drafttexts.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                    FreeCADGui.draftToolBar.loadedPreferences = True
-
-            FreeCAD.Console.PrintLog('Loading Draft workbench, done.\n')
-
-            # END DRAFT
+            Gui.addLanguagePath(":/translations")
+            Gui.addIconPath(":/icons")
         except Exception as exc:
             App.Console.PrintError(exc)
             App.Console.PrintError("Error: Initializing one or more "
-                                   "of the Draft modules failed, "
-                                   "Design456 will not work as expected.\n")
+                                       "of the Draft modules failed, "
+                                       "Draft will not work as expected.\n")
+
+        # Set up command lists
+        import draftutils.init_tools as it
+        self.drawing_commands = it.get_draft_drawing_commands()
+        self.annotation_commands = it.get_draft_annotation_commands()
+        self.modification_commands = it.get_draft_modification_commands()
+        self.utility_commands_menu = it.get_draft_utility_commands_menu()
+        self.utility_commands_toolbar = it.get_draft_utility_commands_toolbar()
+        self.context_commands = it.get_draft_context_commands()
+
+        # Set up toolbars
+        it.init_toolbar(self,
+                        QT_TRANSLATE_NOOP("Draft", "Draft creation tools"),
+                        self.drawing_commands)
+        it.init_toolbar(self,
+                        QT_TRANSLATE_NOOP("Draft", "Draft annotation tools"),
+                        self.annotation_commands)
+        it.init_toolbar(self,
+                        QT_TRANSLATE_NOOP("Draft", "Draft modification tools"),
+                        self.modification_commands)
+        it.init_toolbar(self,
+                        QT_TRANSLATE_NOOP("Draft", "Draft utility tools"),
+                        self.utility_commands_toolbar)
+
+        # Set up menus
+        it.init_menu(self,
+                     [QT_TRANSLATE_NOOP("Draft", "&Drafting")],
+                     self.drawing_commands)
+        it.init_menu(self,
+                     [QT_TRANSLATE_NOOP("Draft", "&Annotation")],
+                     self.annotation_commands)
+        it.init_menu(self,
+                     [QT_TRANSLATE_NOOP("Draft", "&Modification")],
+                     self.modification_commands)
+        it.init_menu(self,
+                     [QT_TRANSLATE_NOOP("Draft", "&Utilities")],
+                     self.utility_commands_menu)
+
+        # Set up preferences pages
+        if hasattr(Gui, "draftToolBar"):
+            if not hasattr(Gui.draftToolBar, "loadedPreferences"):
+                Gui.addPreferencePage(":/ui/preferences-draft.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+                Gui.addPreferencePage(":/ui/preferences-draftinterface.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+                Gui.addPreferencePage(":/ui/preferences-draftsnap.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+                Gui.addPreferencePage(":/ui/preferences-draftvisual.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+                Gui.addPreferencePage(":/ui/preferences-drafttexts.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+                Gui.draftToolBar.loadedPreferences = True
+
+        App.Console.PrintLog('Loading Draft workbench, done.\n')
 
     def Activated(self):
         try:
@@ -222,7 +203,8 @@ class Design456 (Gui.Workbench):
             from plane import DocObserver
             from Design456Pref import Design456pref_var
             import Design456Pref            
-           
+            import draftutils
+            
             #retrive preferences from user.cfg
             Design456Pref.Design456Preferences().loadSettings()
             Design456pref_var.PlaneGridEnabled=Design456Pref.getPlaneGrid()
@@ -241,9 +223,9 @@ class Design456 (Gui.Workbench):
                 Gui.ActiveDocument.ActiveView.setCameraType("Perspective")
                 
             # FROM DRAFT
-            if hasattr(FreeCADGui, "draftToolBar"):
+            if hasattr(Gui, "draftToolBar"):
                 Gui.draftToolBar.Activated()
-            if hasattr(FreeCADGui, "Snapper"):
+            if hasattr(Gui, "Snapper"):
                 Gui.Snapper.show()
                 import draftutils.init_draft_statusbar as dsb
                 dsb.show_draft_statusbar()
@@ -286,9 +268,9 @@ class Design456 (Gui.Workbench):
         # from plane import DocObserver
         try:
             "workbench deactivated"
-            if hasattr(FreeCADGui, "draftToolBar"):
+            if hasattr(Gui, "draftToolBar"):
                 Gui.draftToolBar.Deactivated()
-            if hasattr(FreeCADGui, "Snapper"):
+            if hasattr(Gui, "Snapper"):
                 Gui.Snapper.hide()
                 import draftutils.init_draft_statusbar as dsb
                 dsb.hide_draft_statusbar()
@@ -341,18 +323,6 @@ class Design456 (Gui.Workbench):
                             "Utilities", self.context_commands)
                     else:
                         self.appendContextMenu("Draft", self.drawing_commands)
-                else:
-                    if App.activeDraftCommand.featureName in (translate("draft", "Line"),
-                                                              translate(
-                            "draft", "Wire"),
-                            translate(
-                            "draft", "Polyline"),
-                            translate(
-                            "draft", "BSpline"),
-                            translate(
-                            "draft", "BezCurve"),
-                            translate("draft", "CubicBezCurve")):
-                        self.appendContextMenu("", self.line_commands)
             else:
                 if Gui.Selection.getSelectionEx():
                     self.appendContextMenu("Utilities", self.context_commands)
