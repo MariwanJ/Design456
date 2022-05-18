@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-05-10 22:14:50'
+__updated__ = '2022-05-17 22:00:51'
 
 
 # TODO : FIXME BETTER WAY?
@@ -331,7 +331,7 @@ class PartMover:
         self.objToDelete = None  # when pressing the escape key
         self.Direction = 'A'
         self.StepDialog = None
-        self.stepSize = 1.0
+        self.stepSize = Design456pref_var.MouseStepSize
         self.oldPosition = None  # Old mouse distance-change
         self.newPosition = 0.0  # Current mouse distance-change
 

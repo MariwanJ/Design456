@@ -41,7 +41,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-05-01 14:24:39'
+__updated__ = '2022-05-18 20:10:17'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -906,9 +906,8 @@ class Design456_SimplifiedFace:
                     #if the edges are shared between faces, don't add
                     if faced.findFaceSHavingTheSameEdge(edg,shp) is None:
                         AllEdges.append(edg)
-            
-            W=Part.Wire(Part.__sortEdges__([*AllEdges,AllEdges[0]]))
-            newFace=Part.Face(W)
+            AllEdges=Part.__sortEdges__(AllEdges)
+            newFace=Part.makeFilledFace(AllEdges)
             newObj=App.ActiveDocument.addObject('Part::Feature', 'SimplifiedFace')
             newObj.Placement=s[0].Object.Placement
             newObj.Shape=newFace
