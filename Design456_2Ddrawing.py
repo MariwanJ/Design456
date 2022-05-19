@@ -28,8 +28,9 @@ import os
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
-import Draft as _draft
+import Draft
 import Part
+
 import Design456Init
 from pivy import coin
 import FACE_D as faced
@@ -41,7 +42,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-05-18 20:10:17'
+__updated__ = '2022-05-18 22:20:05'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -315,7 +316,7 @@ class Design456_2DTrim:
                         for index in range(0, scan2):
                             WireOrEdgeMadeOfPoints.pop(index)
 
-                        pnew2DObject1 = _draft.makeWire(
+                        pnew2DObject1 = Draft.makeWire(
                             _all_points2, placement=None, closed=False, face=False, support=None)
                         pnew2DObject1.Label = 'Wire'
                         pnew2DObject1.Start = _all_points2[0]
@@ -335,7 +336,7 @@ class Design456_2DTrim:
                         WireOrEdgeMadeOfPoints.pop(position2-1)
 
                         # don't add last point
-                pnew2DObject2 = _draft.makeWire(
+                pnew2DObject2 = Draft.makeWire(
                     WireOrEdgeMadeOfPoints, placement=None, closed=False, face=False, support=None)
                 App.ActiveDocument.removeObject(sel1.ObjectName)
                 App.ActiveDocument.recompute()
@@ -603,7 +604,7 @@ class Design456_joinTwoLines:
             p2 = App.Vector(p2.x, p2.y, p2.z)
             App.ActiveDocument.openTransaction(
                 translate("Design456", "Join2Lines"))
-            l1 = _draft.makeLine(p1, p2)
+            l1 = Draft.makeLine(p1, p2)
             App.ActiveDocument.recompute()
             newEdg = l1.Shape.Edges[0]
             if type(Edges1) == list and type(Edges2) == list:
@@ -681,7 +682,7 @@ class Design456_SimplifyEdges:
             # old edge
             v1 = selVertexes[0]
             v2 = selVertexes[len(selVertexes)-1]
-            l1 = _draft.makeLine(v1, v2)
+            l1 = Draft.makeLine(v1, v2)
             App.ActiveDocument.recompute()
             newobj = App.ActiveDocument.addObject("Part::Feature", "Wire")
             sh = l1.Shape
@@ -740,18 +741,18 @@ class Design456_DivideCircleFace:
                 for i in range(0,dividedTo):
                     initial = firstP+(i*AnglePart)
                     plc= self.selected.Object.Placement
-                    circle = _draft.make_circle(Radius, plc,True,initial,initial+AnglePart)
+                    circle = Draft.make_circle(Radius, plc,True,initial,initial+AnglePart)
                     App.ActiveDocument.recompute()
-                    line1 = _draft.makeLine(circle.Shape.Vertexes[0].Point,center)
-                    line2 =_draft.makeLine(circle.Shape.Vertexes[1].Point,center)
+                    line1 = Draft.makeLine(circle.Shape.Vertexes[0].Point,center)
+                    line2 =Draft.makeLine(circle.Shape.Vertexes[1].Point,center)
                     App.ActiveDocument.recompute()
                     # Convert it to a wire
-                    Obj=_draft.upgrade([circle,line1,line2],True)
+                    Obj=Draft.upgrade([circle,line1,line2],True)
                     # Create face
-                    Obj=_draft.upgrade(Obj[0],True)
+                    Obj=Draft.upgrade(Obj[0],True)
                     App.ActiveDocument.recompute()
                     newObjs=newObjs+Obj[0]
-            tobj = _draft.upgrade(newObjs, True)
+            tobj = Draft.upgrade(newObjs, True)
             newObjs = tobj[0]
             return newObjs
         except Exception as err:
@@ -887,6 +888,7 @@ class Design456_SimplifiedFace:
     """
             Simplify any object (2D) by removing embedded edges
     """      
+
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
@@ -894,6 +896,14 @@ class Design456_SimplifiedFace:
                 errMessage = "Select Simplified Face"
                 faced.errorDialog(errMessage)
                 return
+            # if len(s)>1:
+            #     #We have several faces. Make them compound. 
+            #     ss=Part.makeShell(s)
+            #     newFace = App.ActiveDocument.addObject("Part::Feature", "Shell")
+            #     newFace.Shape=ss
+            #     for o in s:
+            #         App.ActiveDocument.removeObject(o.Name)
+            #     s=newFace
 
             AllEdges=[]
             App.ActiveDocument.openTransaction(

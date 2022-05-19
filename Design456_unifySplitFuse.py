@@ -48,59 +48,47 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
-__updated__ = '2022-03-25 19:21:22'
+__updated__ = '2022-05-19 22:40:58'
 
 class Design456_LoftBetweenFaces:
     
     def Activated(self):
         try: 
             App.ActiveDocument.openTransaction(translate("Design456","LoftBetweenFaces"))
-            selectedObj     = Gui.Selection.getSelectionEx()
-            sel = selObjects = Gui.Selection.getSelection()
+            selectedObj  = Gui.Selection.getSelectionEx()
             Both3DObject=[False,False]
-            try:
-                subElementName = Gui.Selection.getSelectionEx()[0].SubElementNames[0] # for color first face selected
-            except: 
-                subElementName = Gui.Selection.getSelectionEx()[0].SubObjects[0]
-                
+            FACE1=FACE2=None
+            
             if (len(selectedObj) != 2):
                 # Two object must be selected
                 if (len(selectedObj[0].SubObjects)!=2):
                     errMessage = "Select two Faces of to use the Tool"
                     faced.errorDialog(errMessage)
                     return
-            
+                else:
+                    FACE1=selectedObj[0].SubObjects[0]
+                    FACE2=selectedObj[0].SubObjects[1]
+
+                    Both3DObject[0]=True
+                    Both3DObject[1]=True
+            else:
+                FACE1=selectedObj[0].SubObjects[0]
+                FACE2=selectedObj[1].SubObjects[0]
+                for i in range(0,2):
+                    if faced.isFaceOf3DObj(selectedObj[i]) is True:
+                        Both3DObject[i]=True
+                    else:
+                        Both3DObject[i]=False
+
             newObj1=newObj2=None
-            if faced.isFaceOf3DObj(selectedObj[0]) is True:
-                Both3DObject[0]=True
-                try:
-                    colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[int(SubElementName[4:])-1] # color face selected
-                except Exception:
-                    colorFace = App.ActiveDocument.getObject(sel[0].Name).ViewObject.DiffuseColor[0] # color face selected [0] 
-
-                ### Begin command Part_ElementCopy First selection
-                newFace1 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[0],needSubElement=True,refine=False).copy()
-                newObj1= App.ActiveDocument.addObject('Part::Feature','Face1')
-                newObj1.Shape = newFace1
-                App.ActiveDocument.recompute()
-            else:
-                newObj1=selectedObj[0].Object
-            ####
-
-            if faced.isFaceOf3DObj(selectedObj[0]) is True:
-                Both3DObject[1]=True
-                try:# independent object 
-                    newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[1].Name),selectedObj[1].SubElementNames[0],needSubElement=True,refine=False).copy()
-                except Exception:
-                    # same object other face  TODO: This will fail if you have a sphere shape or a ball Mariwan 2021-03-18
-                    newFace2 = _part.getShape(App.ActiveDocument.getObject(sel[0].Name),selectedObj[0].SubElementNames[1],needSubElement=True,refine=False).copy()
-                newObj2=App.ActiveDocument.addObject('Part::Feature','Face2')
-                newObj2.Shape = newFace2
-                App.ActiveDocument.recompute()
-            else:
-                newObj2=selectedObj[1].Object
+            newObj1= App.ActiveDocument.addObject('Part::Feature','Face1')
+            newObj1.Shape = FACE1.copy()
+            newObj2=App.ActiveDocument.addObject('Part::Feature','Face2')
+            newObj2.Shape = FACE2.copy()
+            App.ActiveDocument.recompute()
+            
             ### Part_Loft
-            attached = App.ActiveDocument.addObject('Part::Loft','Attached')
+            attached = App.ActiveDocument.addObject('Part::Loft','Fuse')
             attached.Sections = [newObj1,newObj2 ]
             attached.Solid=True
             attached.Ruled=False
@@ -119,16 +107,11 @@ class Design456_LoftBetweenFaces:
                 App.ActiveDocument.recompute()
     
                 #simplify object
-                fusion.Shape.copy()
-                newObj2.Shape = newFace2
-                App.ActiveDocument.recompute()
-    
-                shp = fusion.Shape.copy()
                 resultObj= App.ActiveDocument.addObject('Part::Feature','JoinedObjects')
-                resultObj.Shape=shp
+                resultObj.Shape=fusion.Shape.copy()
                 App.ActiveDocument.recompute()
                 
-                ##### remove Objects 
+                # ##### remove Objects 
                 for obj in selectedObj:
                     App.ActiveDocument.removeObject(obj.Object.Name)
                 App.ActiveDocument.removeObject(attached.Name)
@@ -136,17 +119,14 @@ class Design456_LoftBetweenFaces:
                 App.ActiveDocument.removeObject(newObj1.Name)
                 App.ActiveDocument.removeObject(newObj2.Name)
             else:
-                Gui.ActiveDocument.getObject(newObj1.Name).Visibility == False
-                Gui.ActiveDocument.getObject(newObj2.Name).Visibility == False
-                
-                shp = attached.Shape.copy()
                 resultObj= App.ActiveDocument.addObject('Part::Feature','JoinedObjects')
-                resultObj.Shape=shp
+                resultObj.Shape = attached.Shape.copy()
                 App.ActiveDocument.recompute()
-                App.ActiveDocument.removeObject(attached.Name)
-                App.ActiveDocument.removeObject(newObj1.Name)
-                App.ActiveDocument.removeObject(newObj2.Name)
-            App.ActiveDocument.recompute()
+                # for obj in selectedObj:
+                #     App.ActiveDocument.removeObject(obj.Object.Name)
+                # App.ActiveDocument.removeObject(attached.Name)
+
+
             App.ActiveDocument.commitTransaction() #undo reg.
 
         except Exception as err:
