@@ -48,7 +48,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from draftobjects.base import DraftObject
 #
 
-__updated__ = '2022-05-19 22:40:58'
+__updated__ = '2022-05-19 22:44:02'
 
 class Design456_LoftBetweenFaces:
     
@@ -122,10 +122,12 @@ class Design456_LoftBetweenFaces:
                 resultObj= App.ActiveDocument.addObject('Part::Feature','JoinedObjects')
                 resultObj.Shape = attached.Shape.copy()
                 App.ActiveDocument.recompute()
-                # for obj in selectedObj:
-                #     App.ActiveDocument.removeObject(obj.Object.Name)
-                # App.ActiveDocument.removeObject(attached.Name)
-
+                for obj in selectedObj:
+                    App.ActiveDocument.removeObject(obj.Object.Name)
+                App.ActiveDocument.removeObject(attached.Name)
+                App.ActiveDocument.removeObject(newObj1.Name)
+                App.ActiveDocument.removeObject(newObj2.Name)
+                App.ActiveDocument.recompute()
 
             App.ActiveDocument.commitTransaction() #undo reg.
 
