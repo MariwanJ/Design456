@@ -40,8 +40,9 @@ import Design456_SplitObject
 import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
+import math
 
-__updated__ = '2022-05-22 18:52:15'
+__updated__ = '2022-05-22 20:57:53'
 
 # Merge
 class Design456_Part_Merge:
@@ -624,6 +625,12 @@ class Design456_DivideCylinder:
         self.spinAxisX=None
         self.spinAxisY=None
         self.spinAxisZ=None
+        self.Axis=App.Vector(0.0,0.0,1.0)
+        self.XY_Angle=0
+        self.Sections=1
+        pl = App.Placement()
+        pl.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        pl.Base = App.Vector(0.0, 0.0, 0.0)
         self.selected=Gui.Selection.getSelectionEx()
         self.selObj=self.selected[0].Object
         if len(self.selected)==0:
@@ -635,22 +642,14 @@ class Design456_DivideCylinder:
     def createSplittedObj(self):
         import BOPTools.SplitFeatures
         try:
-            self.XY_Angle=0
-            self.Sections=1
-            self.Axis=App.Vector(0.0,0.0,1.0)
-            
-            pl = App.Placement()
-            pl.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
-            pl.Base = App.Vector(0.0, 0.0, 0.0)
             slicedObj = BOPTools.SplitFeatures.makeSlice(name= 'Slice')
             self.boundary=self.selObj.Shape.BoundBox
             x1=self.boundary.XMin
-            y1=self.self.boundary.Center.y 
+            y1=self.boundary.Center.y 
             x2=self.boundary.XMax
             y2=self.boundary.Center.y+self.boundary.YLength/2
             z1=self.boundary.ZMin
             z2=self.boundary.ZMax
-
             plS = App.Placement()
             plS.Rotation= (0.0, 0.0, 1.0,0.0)
             plS.Rotation.Angle=self.XY_Angle
@@ -666,18 +665,34 @@ class Design456_DivideCylinder:
             fObj.Placement=plS
             fObj.Shape = f
 
-            rectangles=[]        
-            for i in range(0,self.Sections):
+            rectangles=[]
+            print(self.Sections)
+            if (self.Sections>1):
+                angleSliced=360/self.Sections     
+                for i in range(0,self.Sections):
+                    fObj=App.ActiveDocument.addObject('Part::Feature', "cutterF")
+                    fObj.Placement=plS
+                    fObj.Placement.Rotation.Axis=self.Axis
+                    fObj.Placement.Rotation.Angle=math.radians(self.XY_Angle+angleSliced*i)
+                    fObj.Shape=f.copy()
+                    rectangles.append(fObj)
+            else:
                 rectangles.append(fObj)
-            slicedObj.Base = self.selected.Object
+                fObj.Placement.Rotation.Axis=self.Axis
+                fObj.Placement.Rotation.Angle=math.radians(self.XY_Angle)
+
+            slicedObj.Base = self.selObj
             slicedObj.Tools = rectangles
             objFinal=App.ActiveDocument.addObject('Part::Feature', "Splitted")
-            objFinal.Placement=self.selected.Object.Placement
+            objFinal.Placement=self.selObj.Placement
             App.ActiveDocument.recompute()
             objFinal.Shape=slicedObj.Shape.copy()
+            self.selObj.Visibility=False
             App.ActiveDocument.recompute()
-            App.ActiveDocument.removeObject(slicedObj.Name)
-            App.ActiveDocument.removeObject(fObj.Name)
+            # for obj in rectangles:
+            #     App.ActiveDocument.removeObject(obj.Name)
+
+            # App.ActiveDocument.removeObject(slicedObj.Name)
             
         except Exception as err:
             App.Console.PrintError("'createDialog' Failed. "
@@ -774,6 +789,8 @@ class Design456_DivideCylinder:
         del self.frmSlice
     
     def Section_cb(self):
+        print("changed")
+        print(self.spinSections.value())
         self.Sections=self.spinSections.value()
     
     def Angel_cb(self):
