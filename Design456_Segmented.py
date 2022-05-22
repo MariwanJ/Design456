@@ -38,7 +38,7 @@ import DraftGeomUtils
 import Design456Init
 import Design456_NewParts
 
-__updated__ = '2022-05-20 21:43:24'
+__updated__ = '2022-05-21 18:21:32'
 
 #SegmentedSphere
 
@@ -272,91 +272,13 @@ class Design456_Seg_Cylinder:
 
 Gui.addCommand('Design456_Seg_Cylinder', Design456_Seg_Cylinder())
 
-####################################################
 
-#DivideCylinder
-
-class ViewProviderCylinder:
-
-    obj_name = "DivideCylinder"
-
-    def __init__(self, obj, obj_name):
-        self.obj_name = ViewProviderCylinder.obj_name
-        obj.Proxy = self
-
-    def attach(self, obj):
-        return
-
-    def updateData(self, fp, prop):
-        return
-
-    def getDisplayModes(self, obj):
-        return "As Is"
-
-    def getDefaultDisplayMode(self):
-        return "As Is"
-
-    def setDisplayMode(self, mode):
-        return "As Is"
-
-    def onChanged(self, vobj, prop):
-        pass
-
-    def getIcon(self):
-        return ( Design456Init.ICON_PATH + 'DivideCylinder.svg')
-
-    def __getstate__(self):
-        return None
-
-    def __setstate__(self, state):
-        return None
-
-
-
-class DivideCylinder:
-    def __init__(self, obj, 
-                       xy_angle=0,
-                       sections=4,
-                       ):
-        obj.addProperty("App::PropertyAngle", "XY_Angle","DivideCylinder", 
-                        "XY axis angle of the DivideCylinder").XY_Angle=xy_angle
-
-        obj.addProperty("App::PropertyLength", "Sections","DivideCylinder", 
-                        "segments of the DivideCylinder").Sections =sections
-        obj.Proxy = self
-    
-    def execute(self, obj):
-        self.XY_Angle=float(obj.XY_Angle)
-        self.Sections=int(obj.Sections)
-        pl = App.Placement()
-        pl.Rotation.Q = (0.0, 0.0, 0, 1.0)
-        pl.Base = App.Vector(0, 0, 0.0)
-
-
-class Design456_Seg_Cylinder:
-    def GetResources(self):
-        return {'Pixmap':Design456Init.ICON_PATH + 'DivideCylinder.svg',
-                'MenuText': "DivideCylinder",
-                'ToolTip': "Generate a DivideCylinder"}
-
-    def Activated(self):
-        newObj = App.ActiveDocument.addObject(
-            "Part::FeaturePython", "DivideCylinder")
-        DivideCylinder(newObj)
-
-        ViewProviderCylinder(newObj.ViewObject, "DivideCylinder")
-
-        App.ActiveDocument.recompute()
-        v = Gui.ActiveDocument.ActiveView
-        faced.PartMover(v, newObj, deleteOnEscape=True)
-
-Gui.addCommand('Design456_Seg_Cylinder', Design456_Seg_Cylinder())
 
 ####################################################
 #Group tools
 
 class Design456_Segmented:
-    import polyhedrons
+    #import polyhedrons
     list = ["Design456_Seg_Sphere",
             "Design456_Seg_Cylinder",
             "Design456_Seg_Roof",

@@ -41,7 +41,7 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-04-23 14:29:44'
+__updated__ = '2022-05-22 18:52:15'
 
 # Merge
 class Design456_Part_Merge:
@@ -615,6 +615,182 @@ class Design456_SimplifyCompound:
 Gui.addCommand('Design456_SimplifyCompound', Design456_SimplifyCompound())
 
 
+class Design456_DivideCylinder:
+
+    def Activated(self):
+        self.frmSlice=None
+        self.spinSections=None
+        self.spinAngel=None
+        self.spinAxisX=None
+        self.spinAxisY=None
+        self.spinAxisZ=None
+        self.selected=Gui.Selection.getSelectionEx()
+        self.selObj=self.selected[0].Object
+        if len(self.selected)==0:
+            errMessage="Please select an object"
+            faced.errorDialog(errMessage)
+            return
+        self.createDialog()
+        
+    def createSplittedObj(self):
+        import BOPTools.SplitFeatures
+        try:
+            self.XY_Angle=0
+            self.Sections=1
+            self.Axis=App.Vector(0.0,0.0,1.0)
+            
+            pl = App.Placement()
+            pl.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+            pl.Base = App.Vector(0.0, 0.0, 0.0)
+            slicedObj = BOPTools.SplitFeatures.makeSlice(name= 'Slice')
+            self.boundary=self.selObj.Shape.BoundBox
+            x1=self.boundary.XMin
+            y1=self.self.boundary.Center.y 
+            x2=self.boundary.XMax
+            y2=self.boundary.Center.y+self.boundary.YLength/2
+            z1=self.boundary.ZMin
+            z2=self.boundary.ZMax
+
+            plS = App.Placement()
+            plS.Rotation= (0.0, 0.0, 1.0,0.0)
+            plS.Rotation.Angle=self.XY_Angle
+            plS.Base = App.Vector(x1,y1,z1)
+            
+            p=Part.makePolygon([App.Vector(x1,y1,z1),
+                                App.Vector(x1,y1,z2),
+                                App.Vector(x2,y1,z2),
+                                App.Vector(x2,y1,z1),
+                                App.Vector(x1,y1,z1)])
+            f=Part.Face(Part.Wire(p))
+            fObj=App.ActiveDocument.addObject('Part::Feature', "cutterF")
+            fObj.Placement=plS
+            fObj.Shape = f
+
+            rectangles=[]        
+            for i in range(0,self.Sections):
+                rectangles.append(fObj)
+            slicedObj.Base = self.selected.Object
+            slicedObj.Tools = rectangles
+            objFinal=App.ActiveDocument.addObject('Part::Feature', "Splitted")
+            objFinal.Placement=self.selected.Object.Placement
+            App.ActiveDocument.recompute()
+            objFinal.Shape=slicedObj.Shape.copy()
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(slicedObj.Name)
+            App.ActiveDocument.removeObject(fObj.Name)
+            
+        except Exception as err:
+            App.Console.PrintError("'createDialog' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def createDialog(self):
+        try:
+            self.frmSlice=QtGui.QDialog()
+            self.frmSlice.setObjectName("frmSlice")
+            self.frmSlice.resize(379, 126)
+            self.spinSections = QtGui.QSpinBox(self.frmSlice)
+            self.spinSections.setGeometry(QtCore.QRect(70, 10, 91, 22))
+            self.spinSections.setProperty("value", 1)
+            self.spinSections.setObjectName("spinSections")
+            self.spinAngel = QtGui.QDoubleSpinBox(self.frmSlice)
+            self.spinAngel.setGeometry(QtCore.QRect(70, 40, 91, 22))
+            self.spinAngel.setObjectName("spinAngel")
+            self.label_2 = QtGui.QLabel(self.frmSlice)
+            self.label_2.setGeometry(QtCore.QRect(10, 40, 49, 16))
+            self.label_2.setObjectName("label_2")
+            self.label_4 = QtGui.QLabel(self.frmSlice)
+            self.label_4.setGeometry(QtCore.QRect(10, 10, 49, 16))
+            self.label_4.setObjectName("label_4")
+            self.label_3 = QtGui.QLabel(self.frmSlice)
+            self.label_3.setGeometry(QtCore.QRect(10, 90, 49, 16))
+            self.label_3.setObjectName("label_3")
+            self.spinAxisX = QtGui.QDoubleSpinBox(self.frmSlice)
+            self.spinAxisX.setGeometry(QtCore.QRect(60, 90, 51, 22))
+            self.spinAxisX.setObjectName("spinAxisX")
+            self.spinAxisY = QtGui.QDoubleSpinBox(self.frmSlice)
+            self.spinAxisY.setGeometry(QtCore.QRect(110, 90, 51, 22))
+            self.spinAxisY.setObjectName("spinAxisY")
+            self.spinAxisZ = QtGui.QDoubleSpinBox(self.frmSlice)
+            self.spinAxisZ.setGeometry(QtCore.QRect(160, 90, 51, 22))
+            self.spinAxisZ.setProperty("value", 1.0)
+            self.spinAxisZ.setObjectName("spinAxisZ")
+            self.label_5 = QtGui.QLabel(self.frmSlice)
+            self.label_5.setGeometry(QtCore.QRect(70, 70, 21, 16))
+            self.label_5.setObjectName("label_5")
+            self.label_6 = QtGui.QLabel(self.frmSlice)
+            self.label_6.setGeometry(QtCore.QRect(120, 70, 21, 16))
+            self.label_6.setObjectName("label_6")
+            self.label_7 = QtGui.QLabel(self.frmSlice)
+            self.label_7.setGeometry(QtCore.QRect(170, 70, 21, 16))
+            self.label_7.setObjectName("label_7")
+            self.buttonBox = QtGui.QDialogButtonBox(self.frmSlice)
+            self.buttonBox.setGeometry(QtCore.QRect(220, 90, 156, 24))
+            self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+            self.buttonBox.setObjectName("buttonBox")
+
+            self.spinAngel.valueChanged.connect(self.Angel_cb)
+            self.spinSections.valueChanged.connect(self.Section_cb)
+            
+            self.spinAxisX.valueChanged.connect(self.XYZ_cb)
+            self.spinAxisY.valueChanged.connect(self.XYZ_cb)
+            self.spinAxisZ.valueChanged.connect(self.XYZ_cb)
+            
+            self.buttonBox.accepted.connect(self.OK_cb)
+            self.buttonBox.rejected.connect(self.Cancel_cb)
+
+            _translate = QtCore.QCoreApplication.translate
+            self.frmSlice.setWindowTitle(_translate("frmSlice", "Slice Object"))
+            self.label_2.setText(_translate("frmSlice", "Angel"))
+            self.label_4.setText(_translate("frmSlice", "Sections"))
+            self.label_3.setText(_translate("frmSlice", "Axis"))
+            self.label_5.setText(_translate("frmSlice", "X"))
+            self.label_6.setText(_translate("frmSlice", "Y"))
+            self.label_7.setText(_translate("frmSlice", "Z"))
+            self.frmSlice.show()
+            
+        except Exception as err:
+            App.Console.PrintError("'createDialog' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)    
+            
+    #callbacks
+    def OK_cb(self):
+        self.Sections=self.spinSections.value()
+        self.XY_Angle=self.spinAngel.value()
+        self.Axis=App.Vector(self.spinAxisX.value(),
+                             self.spinAxisY.value(),
+                             self.spinAxisZ.value())
+        self.frmSlice.hide()
+        del self.frmSlice
+        self.createSplittedObj()
+            
+    def Cancel_cb(self):
+        self.frmSlice.hide()
+        del self.frmSlice
+    
+    def Section_cb(self):
+        self.Sections=self.spinSections.value()
+    
+    def Angel_cb(self):
+        self.XY_Angle=self.spinAngel.value()
+    
+    def XYZ_cb(self):
+        self.Axis=App.Vector(self.spinAxisX.value(),
+                             self.spinAxisY.value(),
+                             self.spinAxisZ.value())
+
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'DivideCylinder.svg',
+                'MenuText': "DivideCylinder",
+                'ToolTip': "Generate a DivideCylinder"}
+
+Gui.addCommand('Design456_DivideCylinder', Design456_DivideCylinder())
+##########################################################################
 
 
 class Design456_3DToolsGroup:
@@ -633,6 +809,7 @@ class Design456_3DToolsGroup:
                 "Design456_Part_Group",
                 "Design456_Part_Compound",
                 "Design456_Part_Shell",
+                "Design456_DivideCylinder",
                 "Design456_SplitObject",
                 "Design456_Part_Fillet",
                 "Design456_Part_Chamfer",

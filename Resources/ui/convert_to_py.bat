@@ -1,1 +1,1 @@
-pyuic5 seg.ui> seg.py
+pyuic5 slice.ui> slice.py
