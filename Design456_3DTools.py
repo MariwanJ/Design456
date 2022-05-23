@@ -698,10 +698,10 @@ class Design456_DivideObject:
             objFinal.Shape=slicedObj.Shape.copy()
             self.selObj.Visibility=False
             App.ActiveDocument.recompute()
-            # for obj in rectangles:
-            #     App.ActiveDocument.removeObject(obj.Name)
+            for obj in rectangles:
+                App.ActiveDocument.removeObject(obj.Name)
 
-            # App.ActiveDocument.removeObject(slicedObj.Name)
+            App.ActiveDocument.removeObject(slicedObj.Name)
             
         except Exception as err:
             App.Console.PrintError("'createDialog' Failed. "
