@@ -42,7 +42,7 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-05-22 22:48:14'
+__updated__ = '2022-05-23 18:31:41'
 
 # Merge
 class Design456_Part_Merge:
@@ -617,7 +617,10 @@ Gui.addCommand('Design456_SimplifyCompound', Design456_SimplifyCompound())
 
 
 class Design456_DivideObject:
-
+    """ Divid any 3D object by splitting it into sections. 
+        The sections are rotated by the 180/sections degree.
+        
+    """
     def Activated(self):
         self.frmSlice=None
         self.spinSections=None
@@ -642,6 +645,7 @@ class Design456_DivideObject:
     def createSplittedObj(self):
         import BOPTools.SplitFeatures
         try:
+            App.ActiveDocument.openTransaction(translate("Design456","DivideObject"))
             fObj=None
             self.boundary=self.selObj.Shape.BoundBox
             x1=self.boundary.Center.x - self.boundary.XLength
@@ -700,8 +704,10 @@ class Design456_DivideObject:
             App.ActiveDocument.recompute()
             for obj in rectangles:
                 App.ActiveDocument.removeObject(obj.Name)
-
             App.ActiveDocument.removeObject(slicedObj.Name)
+            #Preserve color and other properties of the old obj
+            faced.PreserveColorTexture(self.selObj,objFinal)
+            App.ActiveDocument.commitTransaction()  # undo
             
         except Exception as err:
             App.Console.PrintError("'createDialog' Failed. "
