@@ -674,7 +674,7 @@ class Design456_DivideObject:
                     if self.Axis==App.Vector(0.0,0.0,1.0):
                         faced.RotateObjectToCenterPoint(fObj,0,0,self.XY_Angle+angleSliced*i)
                     elif self.Axis==App.Vector(0.0,1.0,0.0):
-                        faced.RotateObjectToCenterPoint(fObj,90,self.XY_Angle+angleSliced*i,0)
+                        faced.RotateObjectToCenterPoint(fObj,0,self.XY_Angle+angleSliced*i,90)
                     elif self.Axis==App.Vector(1.0,0.0,0.0):
                         faced.RotateObjectToCenterPoint(fObj,self.XY_Angle+angleSliced*i,0,0)
                     else:
