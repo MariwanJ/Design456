@@ -642,7 +642,7 @@ class Design456_DivideObject:
     def createSplittedObj(self):
         import BOPTools.SplitFeatures
         try:
-
+            fObj=None
             self.boundary=self.selObj.Shape.BoundBox
             x1=self.boundary.Center.x - self.boundary.XLength
             x2=self.boundary.Center.x+self.boundary.XLength
@@ -665,7 +665,7 @@ class Design456_DivideObject:
             rectangles=[]
             print(self.Sections)
             if (self.Sections>1):
-                angleSliced=360/self.Sections     
+                angleSliced=180/self.Sections     
                 for i in range(0,self.Sections):
                     fObj=App.ActiveDocument.addObject('Part::Feature', "cutterF")
                     fObj.Placement=plS 
@@ -673,9 +673,9 @@ class Design456_DivideObject:
                     App.ActiveDocument.recompute()
                     if self.Axis==App.Vector(0.0,0.0,1.0):
                         faced.RotateObjectToCenterPoint(fObj,0,0,self.XY_Angle+angleSliced*i)
-                    elif self.Axis==App.Vector(0,1,0):
-                        faced.RotateObjectToCenterPoint(fObj,0,self.XY_Angle+angleSliced*i,0)
-                    elif self.Axis==App.Vector(1,0,0):
+                    elif self.Axis==App.Vector(0.0,1.0,0.0):
+                        faced.RotateObjectToCenterPoint(fObj,90,self.XY_Angle+angleSliced*i,0)
+                    elif self.Axis==App.Vector(1.0,0.0,0.0):
                         faced.RotateObjectToCenterPoint(fObj,self.XY_Angle+angleSliced*i,0,0)
                     else:
                         faced.RotateObjectToCenterPoint(fObj,0,0,self.XY_Angle+angleSliced*i)
@@ -698,10 +698,10 @@ class Design456_DivideObject:
             objFinal.Shape=slicedObj.Shape.copy()
             self.selObj.Visibility=False
             App.ActiveDocument.recompute()
-            for obj in rectangles:
-                App.ActiveDocument.removeObject(obj.Name)
+            # for obj in rectangles:
+            #     App.ActiveDocument.removeObject(obj.Name)
 
-            App.ActiveDocument.removeObject(slicedObj.Name)
+            # App.ActiveDocument.removeObject(slicedObj.Name)
             
         except Exception as err:
             App.Console.PrintError("'createDialog' Failed. "
