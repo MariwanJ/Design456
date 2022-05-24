@@ -1490,9 +1490,7 @@ Gui.addCommand('Design456_Paint', Design456_Paint())
 ############################################################333
 
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtCore import Qt
-import sys
+
 from PySide.QtCore import Qt
 from PySide import QtGui, QtCore
 from PySide2 import QtWidgets
