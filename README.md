@@ -32,6 +32,10 @@ Result: The Design456 workbench should now be available in the workbench drop-do
 
 Initial inspiration came from exploring the a template workbench named D3D-Printer-Workbench. Thanks to the author. Other workbenches will be inspected to see what other code can be re-used. 
 
+### FreeCAD is broken and unreliable
+Many of my tools fails due to the internal failure of OCC or FreeCAD as a whole. I wounder if Direct modeling will be possible while the union, cut, ..etc basic operaions fails totally in some cases. 
+
+
 ### Notes
 
 - You need to use latest FreeCAD to not get problems with this WB. Update your local version of Design456 regularly by daily basis.
