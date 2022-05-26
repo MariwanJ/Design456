@@ -37,7 +37,7 @@ from time import time as _time, sleep as _sleep
 from draftutils.translate import translate  # for translation
 import math
 
-__updated__ = '2022-03-25 19:36:32'
+__updated__ = '2022-05-26 22:35:47'
 
 
 class Design456_Extrude:
@@ -50,7 +50,20 @@ class Design456_Extrude:
                 fullname = "ExtractedFace"
                 newObj = App.ActiveDocument.addObject(
                     "Part::Feature", fullname)
-                newObj.Shape = self.selectedObj[0].SubObjects[0].copy()
+                if (self.selectedObj[0].HasSubObjects):
+                    newObj.Shape = self.selectedObj[0].SubObjects[0].copy()
+                else:
+                    #We have the whole object selected, take all faces and return a list
+                    xx = 0
+                    for obj in self.selectedObj[0].Object.Shape.Faces:
+                        fullname = "Face"+str(xx)
+                        xx = xx+1
+                        newObj = App.ActiveDocument.addObject(
+                            "Part::Feature", fullname)
+                        newObj.Shape = obj.copy()
+                        App.ActiveDocument.recompute()
+                        newlistObj.append(newObj)  # Extracted Face.
+                        return newlistObj
                 App.ActiveDocument.recompute()
                 return newObj
             else:
@@ -71,7 +84,7 @@ class Design456_Extrude:
                 return newlistObj
 
         except Exception as err:
-            App.Console.PrintError("'ExtrudeFace' Failed. "
+            App.Console.PrintError("'Extract Face' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -105,7 +118,11 @@ class Design456_Extrude:
                         AllObjects = [self.selectedObj[0].Object]
                     else:
                         # It is a face of a 3D object
-                        AllObjects = [self.ExtractFace()]
+                        _nResult= self.ExtractFace()
+                        if type(_nResult)==list:
+                            AllObjects=_nResult
+                        else:    
+                            AllObjects = [_nResult]
             else:
                 # We have multiple objects selected. Could be faces, 3D objects
                 # or mixed
