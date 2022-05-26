@@ -39,7 +39,7 @@ from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
 
-__updated__ = '2022-05-04 21:12:15'
+__updated__ = '2022-05-23 22:32:15'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -1487,3 +1487,59 @@ class Design456_Paint:
 
 
 Gui.addCommand('Design456_Paint', Design456_Paint())
+############################################################333
+
+import sys
+
+from PySide.QtCore import Qt
+from PySide import QtGui, QtCore
+from PySide2 import QtWidgets
+#TODO:FIXME : DOESNT WORK
+class Design456_FreeDraw:
+    def __init__(self):
+        self.frmMain=None
+        
+    def findInChildren(self,obj, searched):
+        
+        for child in obj.children():
+            if isinstance(child, searched):
+                return child
+            else:
+                res = self.findInChildren(child, searched)
+                if res:
+                    return res
+        return None
+
+    def Activated(self):
+        view = self.findInChildren(Gui.getMainWindow(),QtWidgets.QGraphicsView)
+
+        self.frmMain=Gui.getMainWindow()
+        self.label = QtGui.QLabel
+        canvas = QtGui.QPixmap(300,300)
+        canvas.fill(QtGui.QColor("white"))
+        self.label.setPixmap(canvas)
+        view.scene().addWidget(self.label)
+        #self.setCentralWidget(self.label)
+        self.last_x, self.last_y = None, None
+        #self.frmMain.show()
+
+    def mouseMoveEvent(self, e):
+        if self.last_x is None: # First event.
+            self.last_x = e.x()
+            self.last_y = e.y()
+            return # Ignore the first time.
+
+        painter = QtGui.QPainter(self.label.pixmap())
+        painter.drawLine(self.last_x, self.last_y, e.x(), e.y())
+        painter.end()
+        self.update()
+
+        # Update the origin for next time.
+        self.last_x = e.x()
+        self.last_y = e.y()
+
+    def mouseReleaseEvent(self, e):
+        self.last_x = None
+        self.last_y = None
+
+window = Design456_FreeDraw()

@@ -42,7 +42,7 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-05-23 18:31:41'
+__updated__ = '2022-05-23 18:51:56'
 
 # Merge
 class Design456_Part_Merge:
@@ -423,7 +423,6 @@ class Design456_Part_Fillet:
                 for name in names:
                     edgeNumbor = int(name[4:len(name)])
                     EdgesToBeChanged.append((edgeNumbor, Radius, Radius))
-                print(EdgesToBeChanged)
                 tempNewObj.Edges = EdgesToBeChanged
             else:
                 errMessage = "Fillet failed. No subelements found"
@@ -667,7 +666,6 @@ class Design456_DivideObject:
             f=Part.Face(Part.Wire(p))
 
             rectangles=[]
-            print(self.Sections)
             if (self.Sections>1):
                 angleSliced=180/self.Sections     
                 for i in range(0,self.Sections):
@@ -804,8 +802,6 @@ class Design456_DivideObject:
         del self.frmSlice
     
     def Section_cb(self):
-        print("changed")
-        print(self.spinSections.value())
         self.Sections=self.spinSections.value()
     
     def Angel_cb(self):
