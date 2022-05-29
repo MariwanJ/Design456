@@ -2,18 +2,18 @@
 <package format="1">
   <name>Design456 workbench</name>
   <description>Direct Modeling Workbench for FreeCAD</description>
-  <version></version>
+  <version>0.00.1</version>
   <date>2022-01-20</date>
   <maintainer email="mariwan.jalal@gmail.com">Mariwan Jalal</maintainer>
   <license file="LICENSE">GPL-3</license>
-  <url type="repository" branch="master">https://github.com/MariwanJ/Design456</url>
+  <url type="repository" branch="main">https://github.com/MariwanJ/Design456</url>
   <url type="documentation">https://wiki.freecadweb.org/Design456_Workbench</url>
 
 
   <content>
     <workbench>
       <name>Design456 workbench</name>
-      <classname>Design456Workbench</classname>
+      <classname>Design456</classname>
       <description>Direct Modeling Workbench for FreeCAD</description>
       <version>0.00.1</version>
       <subdirectory>./</subdirectory>
