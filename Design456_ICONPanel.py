@@ -77,7 +77,7 @@ COMMANDS_Imported=[]
 
 
 class PrimitivePartsIconList:
-    """ A class that create the tab for retriving 
+    """ A class that create the tab for retrieving
         the list of primitives and imported shapes.
         Imported shapes are saved under the folder
         '/Imported'
@@ -88,7 +88,7 @@ class PrimitivePartsIconList:
         self.hidden = False
         self.currentSelectedItem=None    
     
-    def retriveFileList(self):
+    def retrieveFileList(self):
         _path=Design456Init.IMPORT_PATH
         ObjectList=[]
         files=(glob.glob(_path+"*.step")) 
@@ -170,7 +170,7 @@ class PrimitivePartsIconList:
         elif self.currentSelectedItem == "Advanced Shapes":
             CommandVariable=COMMANDS_Advanced
         elif self.currentSelectedItem == "Imported Shapes":
-            CommandVariable=self.retriveFileList()
+            CommandVariable=self.retrieveFileList()
         j=0 
         for items in range(0,len(CommandVariable)):
             i=int(items/3)

@@ -197,7 +197,7 @@ class Design456_SmartChamfer:
         self.objectType = None  # Either shape, Face or Edge.
         self.Originalname = ''
         self.direction = None
-        self.saveFirstPostion=None
+        self.saveFirstPosition = None
 
 
     def registerShapeType(self):
@@ -425,7 +425,7 @@ class Design456_SmartChamfer:
         self.smartInd.w_callback_ = callback_release
         self.smartInd.w_move_callback_ = callback_move
         self.smartInd.w_userData.callerObject = self
-        self.saveFirstPostion = self._vector
+        self.saveFirstPosition = self._vector
         if self._mywin is None:
             self._mywin = win.Fr_CoinWindow()
         self._mywin.addWidget(self.smartInd)
