@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-05-17 22:00:51'
+__updated__ = '2022-05-31 23:06:35'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1054,9 +1054,6 @@ def findFaceSHavingTheSameEdge(edge=None, shape=None):
         s = Gui.Selection.getSelectionEx()[0]
         edge = s.SubObjects[0]
         shape = s.Object.Shape
-    else:
-        edge = edge
-        shape = shape
     result = shape.ancestorsOfType(edge, Part.Face)
     if len(result) >= 2:
         return result
