@@ -56,7 +56,7 @@ class Design456_CommonFace:
                 sh1=obj.SubObjects[0]
             else:
                 sh1=obj.Object.Shape
-            if newshape !=None:
+            if newshape is not None:
                 newshape= newshape.common(sh1)
             else:
                 newshape= sh1
@@ -95,7 +95,7 @@ class Design456_SubtractFaces:
                 sh1=obj.SubObjects[0]
             else:
                 sh1=obj.Object.Shape
-            if newshape !=None:
+            if newshape is not None:
                 newshape= newshape.cut(sh1)
             else:
                 newshape= sh1
@@ -133,7 +133,7 @@ class Design456_CombineFaces:
                 sh1=obj.SubObjects[0]
             else:
                 sh1=obj.Object.Shape
-            if newshape !=None:
+            if newshape is not None:
                 newshape= newshape.fuse(sh1)
             else:
                 newshape= sh1

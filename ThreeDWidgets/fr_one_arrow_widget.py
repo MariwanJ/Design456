@@ -64,7 +64,7 @@ class test:
 	     click=App.Vector(PadObj.w_parent.w_lastEventXYZ.Coin_x,
                                             PadObj.w_parent.w_lastEventXYZ.Coin_y,
                                             PadObj.w_parent.w_lastEventXYZ.Coin_z)
-	     if self.runOunce == None:
+	     if self.runOunce is None:
 	           self.runOunce = click.sub(PadObj.w_vector[0])
 
 	     PadObj.w_vector[0]=click.sub(self.runOunce)
