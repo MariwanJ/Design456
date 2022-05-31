@@ -34,7 +34,7 @@ Initial inspiration came from exploring the a template workbench named D3D-Print
 ### FreeCAD is broken and unreliable
 ```diff
 - Many of my tools fails due to the internal failure of OCC or FreeCAD as a whole. 
-- I wouder if Direct modeling will be possible while the union, cut, ..etc basic operations fails totally in some cases. 
+- I wonder if Direct modeling will be possible while the union, cut, ..etc basic operations fails totally in some cases. 
 ```
 [![](http://img.youtube.com/vi/GLnkoe0oK8U/0.jpg)](https://www.youtube.com/watch?v=GLnkoe0oK8U "How broken is FreeCAD?")
 
