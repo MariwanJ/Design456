@@ -43,6 +43,7 @@ from draftutils.translate import translate  # for translation
 import Part as _part
 import FACE_D as faced
 import math
+from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
 
 # Some get problem with this.. not used but Might be used in the future.
 # I might remove it for this tool. But lets leave it for now.
@@ -53,7 +54,7 @@ import math
 # except:
 #     pass
 
-__updated__ = '2022-04-23 21:51:34'
+__updated__ = '2022-05-31 22:18:59'
 
 class Design456_ExtendFace:
     """[Extend the face's position to a new position.
@@ -99,6 +100,7 @@ class Design456_ExtendFace:
         self.sg = None  # SceneGraph
         self.discObj = None
         self.OriginalFacePlacement = None
+        self.StepSize=1
 
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
@@ -336,7 +338,7 @@ class Design456_ExtendFace:
         self.newFaces = []
         self.savedVertexes = [[]]
         self.tweakLength = 0
-
+        self.StepSize= Design456pref_var.MouseStepSize
         try:
             self.view = Gui.ActiveDocument.ActiveView
             self.sg = self.view.getSceneGraph()
@@ -556,7 +558,7 @@ class Design456_ExtendFace:
         Args:
             userData ([type], optional): [User Data]. Defaults to None.
         """
-
+        self.StepSize= Design456pref_var.MouseStepSize
         events = userData.events
         if type(events) != int:
             print("event was not int")
@@ -575,32 +577,29 @@ class Design456_ExtendFace:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
-            self.mouseToArrowDiff = self.endVector.sub(
-                self.discObj.w_vector[0])
+            self.mouseToArrowDiff = self.endVector.sub(self.discObj.w_vector[0])/self.StepSize
 
-        MovementLength = self.endVector#.sub(self.mouseToArrowDiff)
-        # self.tweakLength = round((
-        #    MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
-        self.tweakLength = round((
-            self.endVector - (self.startVector+self._Vector)).dot(self.normalVector), 1)
+        deltaChange=(self.endVector.sub(self.startVector)).dot(self.normalVector)
+        self.tweakLength = self.StepSize* (int(deltaChange/self.StepSize))
 
-        if abs(self.oldTweakLength-self. tweakLength) < 1:
+        if abs(self.oldTweakLength-self.tweakLength) < 1:
             return  # we do nothing
         self.TweakLBL.setText(
             "Length = " + str(round(self.tweakLength, 1)))
         # must be tuple
         self.discObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
         self.discObj.lblRedraw()
+        newPos= self.endVector.sub(self.mouseToArrowDiff)
         self.oldFaceVertexes = self.newFaceVertexes
         if self.discObj.w_userData.discObj.axisType == 'X':
-            self.newFace.Placement.Base.x = MovementLength.x
-            self.discObj.w_vector[0].x = MovementLength.x
+            self.newFace.Placement.Base.x = self.StepSize*(int(newPos.x/self.StepSize))
+            self.discObj.w_vector[0].x = self.StepSize*(int(newPos.x/self.StepSize))
         elif self.discObj.w_userData.discObj.axisType == 'Y':
-            self.newFace.Placement.Base.y = MovementLength.y
-            self.discObj.w_vector[0].y = MovementLength.y
+            self.newFace.Placement.Base.y = self.StepSize*(int(newPos.y/self.StepSize))
+            self.discObj.w_vector[0].y = self.StepSize*(int(newPos.y/self.StepSize))
         elif self.discObj.w_userData.discObj.axisType == 'Z':
-            self.newFace.Placement.Base.z = MovementLength.z
-            self.discObj.w_vector[0].z = MovementLength.z
+            self.newFace.Placement.Base.z = self.StepSize*(int(newPos.z/self.StepSize))
+            self.discObj.w_vector[0].z = self.StepSize*(int(newPos.z/self.StepSize))
         else:
             # nothing to do here  #TODO : This shouldn't happen
             return

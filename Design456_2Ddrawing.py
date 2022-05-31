@@ -42,7 +42,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-05-18 22:20:05'
+__updated__ = '2022-05-31 18:46:01'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -918,9 +918,11 @@ class Design456_SimplifiedFace:
                         AllEdges.append(edg)
             AllEdges=Part.__sortEdges__(AllEdges)
             newFace=Part.makeFilledFace(AllEdges)
+            App.ActiveDocument.recompute()
             newObj=App.ActiveDocument.addObject('Part::Feature', 'SimplifiedFace')
             newObj.Placement=s[0].Object.Placement
             newObj.Shape=newFace
+            App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo
 
         except Exception as err:
