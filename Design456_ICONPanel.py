@@ -164,7 +164,7 @@ class PrimitivePartsIconList:
           
     def loadIconList(self,oldItem=None):
         CommandVariable=None        
-        if self.currentSelectedItem=="Basic Shapes" or oldItem==None:
+        if self.currentSelectedItem == "Basic Shapes" or oldItem is None:
             #Part Box list - Basic shapes
             CommandVariable=COMMANDS_Basic
         elif self.currentSelectedItem == "Advanced Shapes":

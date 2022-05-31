@@ -873,7 +873,7 @@ def RealRotateObjectToAnAxis(SelectedObj=None, RealAxis=App.Vector(0.0, 0.0, 0.0
         rotAngleZ (float, optional): [Angle of rotation - Z Axis]. Defaults to 0.0.
     """
 
-    if (SelectedObj == None):
+    if (SelectedObj is None):
         raise ValueError("SelectedObj must be (a) selection object(s) ")
 
     if (type(SelectedObj) == list):
@@ -916,7 +916,7 @@ def RotateObjectToCenterPoint(SelectedObj=None, XAngle=0, YAngle=45, ZAngle=0):
         ZAngle (int, optional): [description]. Defaults to 0.
     """
     # The object will rotate at it's place
-    if (SelectedObj == None):
+    if (SelectedObj is None):
         raise ValueError("SelectedObj must be (a) selection object(s) ")
     if (type(SelectedObj) == list):
         for obj in SelectedObj:

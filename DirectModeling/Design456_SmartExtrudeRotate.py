@@ -941,7 +941,7 @@ class Design456_SmartExtrudeRotate:
    
 
     def btnState(self, button):
-        if (button == None):
+        if (button is None):
             print("button was none why?")
             return
         if button.text() == "As Is":
