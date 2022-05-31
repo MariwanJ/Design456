@@ -258,7 +258,7 @@ Gui.addCommand('Design456_BackSideView', Design456_BackSideView())
 
 
 # Design456 Move
-# I need to have these as not always the are in the contex menu
+# I need to have these as not always the are in the context menu
 class Design456_MoveObject:
 
     def Activated(self):

@@ -747,7 +747,7 @@ class Design456_SmartExtrudeRotate:
             self._mywin.show()
 
             # TODO: FIXME:
-            # loft will be used . make some experementations.
+            # loft will be used . make some experimentations.
             # But when should we use sweep???? don't know now
 
             App.ActiveDocument.recompute()

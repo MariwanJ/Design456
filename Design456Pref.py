@@ -177,7 +177,7 @@ class Design456Preferences:
         Design456pref_var.PlaneGridEnabled=self.form.chkEnableGrid.isChecked()
         Design456pref_var.PlaneGridSize=self.form.grdSize.value()
         Design456pref_var.Simplified=self.form.chkSimplify.isChecked()
-        #Retrive the chosen value in RGB (INT) form as a list
+        #Retrieve the chosen value in RGB (INT) form as a list
         RGB=self.form.btnBkgColor.property("color").getRgb()
 
         R=RGB[0]

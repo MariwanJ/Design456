@@ -205,7 +205,7 @@ class Design456 (Gui.Workbench):
             import Design456Pref            
             import draftutils
             
-            #retrive preferences from user.cfg
+            #retrieve preferences from user.cfg
             Design456Pref.Design456Preferences().loadSettings()
             Design456pref_var.PlaneGridEnabled=Design456Pref.getPlaneGrid()
             Design456pref_var.PlaneGridSize=Design456Pref.getPlaneGridSize()

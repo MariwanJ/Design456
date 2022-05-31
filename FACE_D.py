@@ -125,9 +125,9 @@ def getDirectionAxis(s=None):
 
 #Shape color preserver 
 def PreserveColorTexture(objOld, objNew):
-    """ Save DiffuseColor and other information from any 
-        object that are going to be manupulated. 
-        Apply the information retrived from the old object to the new object
+    """ Save DiffuseColor and other information from any
+        object that is going to be manipulated.
+        Apply the information retrieved from the old object to the new object
         Use Object or object Names (string) as input to the function.
         
     Args:
@@ -1116,7 +1116,7 @@ def calculateMouseAngle(val1, val2):
 
 # This code is by by Roy_043 from the forum
 # https://forum.freecadweb.org/viewtopic.php?p=557404#p557404
-# But it didn't work prefectly and I leave it here for future usage. I need to understand which I DON'T NOW :(
+# But it didn't work perfectly and I leave it here for future usage. I need to understand which I DON'T NOW :(
 # def get_global_placement (point, angle=0.0):
 #    """[Get global placement for a point ona a active Draft working plane.
 #        And rotate the object by the angle given in degrees
@@ -1254,7 +1254,7 @@ def checkTwoVectors(v1:App.Vector, v2:App.Vector):
         v2 (App.Vector): Second Vector
 
     Returns:
-        str: Result of the comparision  Perpendicular, Parallel or anti-parallel as text 
+        str: Result of the comparison Perpendicular, Parallel or anti-parallel as text 
     """
     x = v1.Dot(v2)/(v1.Length() * v2.Length())
     if x == 0:
