@@ -52,7 +52,7 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
 
         soSepArrow = coin.SoSeparator()   # drawing holder
         soIndexFace = coin.SoIndexedFaceSet()
-        cordinate = coin.SoCoordinate3()
+        coordinate = coin.SoCoordinate3()
         vertexPositions = [(0.00,	 8.68,	8.90),
                            (0.00,	 8.68,	8.90),
                            (0.00,	 8.66,	9.16),
@@ -216,7 +216,7 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
                            (0.00,	 8.66,	9.16),
                            (0.00,	 8.68,	8.90)]
 
-        cordinate.point.setValues(0, 432, vertexPositions)
+        coordinate.point.setValues(0, 432, vertexPositions)
         indices = [104, 98, 103, -1, 99, 100, 98, -1,
                    103, 96, 102, -1, 98, 96, 103, -1,
                    100, 96, 98, -1, 1, 2, 0, -1,
@@ -272,7 +272,7 @@ def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
                    21, 20, 72, -1, 72, 20, 17, -1,
                    72, 17, 75, -1, 75, 17, 76, -1]
         soIndexFace.coordIndex.setValues(0, len(indices), indices)
-        soSepArrow.addChild(cordinate)
+        soSepArrow.addChild(coordinate)
         soSepArrow.addChild(soIndexFace)
 
         # Finalize the drawing by adding color, pos, scale , opacity
@@ -325,7 +325,7 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
         Shapehint.faceType = coin.SoShapeHints.UNKNOWN_FACE_TYPE
 
         soIndexFace = coin.SoIndexedFaceSet()
-        cordinate = coin.SoCoordinate3()
+        coordinate = coin.SoCoordinate3()
         vertexPositions = [(0,       0,    0.5),
                            (0.01,          0,       0.5),
                            (0.02,          0,       0.5),
@@ -458,7 +458,7 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
                            (0.1,         0,      0.45),
                            (0.09,          0,       0.49)]
 
-        cordinate.point.setValues(0, 468, vertexPositions)
+        coordinate.point.setValues(0, 468, vertexPositions)
         indices = [5, 1, 0, -1, 5, 2, 1, -1,
                    5, 3, 2, -1, 5, 4, 3, -1,
                    5, 7, 6, -1, 5, 8, 7, -1,
@@ -522,7 +522,7 @@ def draw_RotationPad(p1=App.Vector(0.0, 0.0, 0.0), color=FR_COLOR.FR_GOLD,
         soIndexFace.coordIndex.setValues(0, len(indices), indices)
         separatorX.addChild(transformX)
         separatorX.addChild(Shapehint)
-        separatorX.addChild(cordinate)
+        separatorX.addChild(coordinate)
         separatorX.addChild(soIndexFace)
 
         separatorY.addChild(transformY)
