@@ -1083,16 +1083,16 @@ def draw_faceIndexed(p1=App.Vector(0.0, 0.0, 0.0),vertexPositions: List[float] =
     
     soSepface=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
-    cordinate= coin.SoCoordinate3()
+    coordinate= coin.SoCoordinate3()
     Shapehint= coin.SoShapeHints()
     Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
     Shapehint.vertexOrdering= coin.SoShapeHints.CLOCKWISE
     Shapehint.faceType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
     
-    cordinate.point.setValues(0, 61, vertexPositions)
+    coordinate.point.setValues(0, 61, vertexPositions)
     soIndexFace.coordIndex.setValues(0, len(indices), indices)
     soSepface.addChild(Shapehint)
-    soSepface.addChild(cordinate) 
+    soSepface.addChild(coordinate) 
     soSepface.addChild(soIndexFace)
     
     root.addChild(trans)
@@ -1173,7 +1173,7 @@ def draw_2Darrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,
             scale= [i/35.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 35mm to get 1mm TODO:FIXME:
                
             soIndexFace= coin.SoIndexedFaceSet()
-            cordinate= coin.SoCoordinate3()
+            coordinate= coin.SoCoordinate3()
             Shapehint= coin.SoShapeHints()
             Shapehint.shapeType=coin.SoShapeHints.UNKNOWN_FACE_TYPE
             Shapehint.vertexOrdering= coin.SoShapeHints.CLOCKWISE
@@ -1247,7 +1247,7 @@ def draw_2Darrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,
                             (0.00,	16.29	,0.17 )
                             ]
 
-            cordinate.point.setValues(0, 61, vertexPositions)
+            coordinate.point.setValues(0, 61, vertexPositions)
             indices= [  4, 2, 3, -1, 1, 4, 5, -1,
               1, 5, 6, -1, 1, 6, 7, -1,
               1, 7, 8, -1, 1, 8, 9, -1,
@@ -1278,7 +1278,7 @@ def draw_2Darrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,
               30, 32, 28, -1 ]
             soIndexFace.coordIndex.setValues(0, len(indices), indices)
             soSepArrow.addChild(Shapehint)
-            soSepArrow.addChild(cordinate) 
+            soSepArrow.addChild(coordinate) 
             soSepArrow.addChild(soIndexFace)
 
         elif type==1:
@@ -1357,7 +1357,7 @@ def draw_2Darrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,
         elif type==2:
             scale= [i/15.0 for i in scale]  #Du to the wrong size of the coin data, this should be divided by 15mm to get 1mm TODO:FIXME:
             soIndexFace= coin.SoIndexedFaceSet()
-            cordinate= coin.SoCoordinate3()
+            coordinate= coin.SoCoordinate3()
             vertexPositions=[(0,	-8.7955   ,7.769	 ),
                              (0,	-8.7485   ,7.571	 ),
                              (0,	-8.6795   ,7.376	 ),
@@ -1526,7 +1526,7 @@ def draw_2Darrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,
                              (0,	-8.7955   ,7.769    ),
                              ]
 
-            cordinate.point.setValues(0, 166, vertexPositions)
+            coordinate.point.setValues(0, 166, vertexPositions)
             indices= [ 121, 120, 122, -1, 131, 134, 132, -1,
                         132, 134, 133, -1, 130, 135, 131, -1,
                         131, 135, 134, -1, 122, 119, 123, -1,
@@ -1599,7 +1599,7 @@ def draw_2Darrow(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,
                         79, 85, 84, -1 ]
             
             soIndexFace.coordIndex.setValues(0, len(indices), indices)
-            soSepArrow.addChild(cordinate) 
+            soSepArrow.addChild(coordinate) 
             soSepArrow.addChild(soIndexFace)
         
         transform.scaleFactor.setValue([scale[0], scale[1], scale[2]])
@@ -1663,7 +1663,7 @@ def draw_circle(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1
     
     soSepArrow=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
-    cordinate= coin.SoCoordinate3()
+    coordinate= coin.SoCoordinate3()
     vertexPositions=[(7.11 ,  0.0    ,0),
                     (7.1  ,   0.37   ,0),
                     (7.07 ,   0.73   ,0),
@@ -1788,7 +1788,7 @@ def draw_circle(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1
                     (7.1  ,  -0.37   ,0),
                     (7.11 ,     0    ,0),]
     
-    cordinate.point.setValues(0, 123, vertexPositions)
+    coordinate.point.setValues(0, 123, vertexPositions)
     indices= [ 74, 75, 76, -1, 79, 76, 77, -1,
                 79, 77, 78, -1, 72, 73, 74, -1,
                 71, 74, 76, -1, 71, 72, 74, -1,
@@ -1850,7 +1850,7 @@ def draw_circle(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1
                 15, 17, 28, -1, 15, 43, 52, -1,
                 15, 52, 113, -1, 15, 28, 43, -1 ]
     soIndexFace.coordIndex.setValues(0, len(indices), indices)
-    soSepArrow.addChild(cordinate) 
+    soSepArrow.addChild(coordinate) 
     soSepArrow.addChild(soIndexFace)
 
     root.addChild(trans)
@@ -1879,7 +1879,7 @@ def draw_washer(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1
 
     soSepArrow=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
-    cordinate= coin.SoCoordinate3()
+    coordinate= coin.SoCoordinate3()
     vertexPositions=[ (7.11  ,  0.00   , 0.0),
                         (7.10  ,  0.37   , 0.0),
                         (7.07  ,  0.73   , 0.0),
@@ -2099,7 +2099,7 @@ def draw_washer(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1
                         ]
                                         
     
-    cordinate.point.setValues(0, 432, vertexPositions)
+    coordinate.point.setValues(0, 432, vertexPositions)
     indices= [ 74, 75, 76, -1, 79, 76, 77, -1,
                 79, 77, 78, -1, 72, 73, 74, -1,
                 71, 74, 76, -1, 71, 72, 74, -1,
@@ -2161,7 +2161,7 @@ def draw_washer(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1
                 15, 17, 28, -1, 15, 43, 52, -1,
                 15, 52, 113, -1, 15, 28, 43, -1 ]
     soIndexFace.coordIndex.setValues(0, len(indices), indices)
-    soSepArrow.addChild(cordinate) 
+    soSepArrow.addChild(coordinate) 
     soSepArrow.addChild(soIndexFace)
 
     root.addChild(material)
@@ -2193,7 +2193,7 @@ def draw_tube(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),
     
     soSepArrow=coin.SoSeparator()   # drawing holder
     soIndexFace= coin.SoIndexedFaceSet()
-    cordinate= coin.SoCoordinate3()
+    coordinate= coin.SoCoordinate3()
     vertexPositions=[(5.00000	  ,	 0.00000  ,		10	 ),
                     (4.99013	  ,	 0.31395	,	 10	 ), 
                     (4.96057	  ,	 0.62667	,	 10	 ), 
@@ -2858,7 +2858,7 @@ def draw_tube(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),
                          ]
                                         
     
-    cordinate.point.setValues(0, 660, vertexPositions)
+    coordinate.point.setValues(0, 660, vertexPositions)
     indices= [1, 0, 101, -1, 1, 101, 102, -1,
                 2, 102, 103, -1, 2, 1, 102, -1,
                 3, 103, 104, -1, 3, 2, 103, -1,
@@ -3187,7 +3187,7 @@ def draw_tube(p1=App.Vector(0.0, 0.0, 0.0),color=FR_COLOR.FR_GOLD,scale=(1,1,1),
                 589, 590, 653, -1, 590, 591, 655, -1 
                 ]
     soIndexFace.coordIndex.setValues(0, len(indices), indices)
-    soSepArrow.addChild(cordinate) 
+    soSepArrow.addChild(coordinate) 
     soSepArrow.addChild(soIndexFace)
 
     root.addChild(trans)
