@@ -42,7 +42,7 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-05-23 18:51:56'
+__updated__ = '2022-05-31 22:32:34'
 
 # Merge
 class Design456_Part_Merge:

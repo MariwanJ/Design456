@@ -42,8 +42,9 @@ from draftutils.translate import translate  # for translat
 import Part as _part
 import FACE_D as faced
 import math
+from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
 
-__updated__ = '2022-05-22 15:57:09'
+__updated__ = '2022-05-31 22:55:44'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -135,7 +136,7 @@ class Design456_ExtendEdge:
         self.lblTweakResult = None
         self.lblTitle = None
         self.btnOK = None
-
+        self.StepSize=1
     # Based on the setTolerance from De-featuring WB,
     # but simplified- Thanks for the author
     def setTolerance(self, sel):
@@ -544,6 +545,7 @@ class Design456_ExtendEdge:
 
     def MouseMovement_cb(self, userData=None):
         events = userData.events
+        self.StepSize= Design456pref_var.MouseStepSize
         if type(events) != int:
             print("event was not int")
             return
@@ -561,13 +563,10 @@ class Design456_ExtendEdge:
             self.run_Once = True
             # only once
             self.startVector = self.endVector
-            self.mouseToArrowDiff = self.endVector.sub(
-                self.discObj.w_vector[0])
+            self.mouseToArrowDiff = self.endVector.sub(self.discObj.w_vector[0])/self.StepSize  
 
-        MovementLength = self.endVector.sub(self.mouseToArrowDiff)
-        self.tweakLength = round((
-            MovementLength.sub(self.startVector)).dot(self.normalVector), 1)
-
+        deltaChange=(self.endVector.sub(self.startVector)).dot(self.normalVector)
+        self.tweakLength = self.StepSize* (int(deltaChange/self.StepSize))
         if abs(self.oldTweakLength-self. tweakLength) < 1:
             return  # we do nothing
         self.TweakLBL.setText(
@@ -576,15 +575,17 @@ class Design456_ExtendEdge:
         self.discObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
         self.discObj.lblRedraw()
         self.oldEdgeVertexes = self.newEdgeVertexes
+        newPos= self.endVector.sub(self.mouseToArrowDiff)
+        self.oldEdgeVertexes = self.newEdgeVertexes
         if self.discObj.w_userData.discObj.axisType == 'X':
-            self.newEdge.Placement.Base.x = MovementLength.x
-            self.discObj.w_vector[0].x = MovementLength.x
+            self.newEdge.Placement.Base.x = self.StepSize*(int(newPos.x/self.StepSize))
+            self.discObj.w_vector[0].x = self.StepSize*(int(newPos.x/self.StepSize))
         elif self.discObj.w_userData.discObj.axisType == 'Y':
-            self.newEdge.Placement.Base.y = MovementLength.y
-            self.discObj.w_vector[0].y = MovementLength.y
+            self.newEdge.Placement.Base.y = self.StepSize*(int(newPos.y/self.StepSize))
+            self.discObj.w_vector[0].y = self.StepSize*(int(newPos.y/self.StepSize))
         elif self.discObj.w_userData.discObj.axisType == 'Z':
-            self.newEdge.Placement.Base.z = MovementLength.z
-            self.discObj.w_vector[0].z = MovementLength.z
+            self.newEdge.Placement.Base.z = self.StepSize*(int(newPos.z/self.StepSize))
+            self.discObj.w_vector[0].z = self.StepSize*(int(newPos.z/self.StepSize))
         else:
             # nothing to do here  #TODO : This shouldn't happen
             return
@@ -600,6 +601,7 @@ class Design456_ExtendEdge:
             self.discObj.remove_focus()
             self.run_Once = False
 
+            
         except Exception as err:
             App.Console.PrintError("'Activated' Release Filed. "
                                    "{err}\n".format(err=str(err)))

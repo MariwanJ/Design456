@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-01-02 19:16:26'
+__updated__ = '2022-05-31 22:57:32'
 
 
 """
@@ -314,7 +314,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     def handle(self, event):
         """
-        This function is responsbile of taking events and processing 
+        This function is responsible of taking events and processing 
         the actions required. If the object != targeted, 
         the function will skip the events. But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
@@ -325,7 +325,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_userData.events = event  # Keep the event always here
         if type(event) == int:
             if event == FR_EVENTS.FR_NO_EVENT:
-                return 1  # we treat this event. Nonthing to do
+                return 1  # we treat this event. Nothing to do
 
         # This is for the widgets label - Not the axes label - be aware.
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
