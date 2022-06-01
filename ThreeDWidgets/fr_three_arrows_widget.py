@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-05-31 22:57:32'
+__updated__ = '2022-06-01 20:39:44'
 
 
 """
@@ -293,7 +293,9 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
         self.w_rotation = _rotation       # Whole object Rotation
 
-        self.w_discEnabled = [False, False, False] # Affect redrawing, hiding
+        self.w_discEnabled = [False, False, False] # Affect redrawing, disabling/enabling
+        self.w_discHided = [False, False, False] # Affect redrawing, hiding
+
         self.w_arrowEnabled = [True, True, True]
         
         # Used to avoid running drag code while it is in drag mode
@@ -708,11 +710,14 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                 separtorAll.addChild(self.w_ZarrowSeparator)
 
             if self.w_discEnabled[0] is True:
-                separtorAll.addChild(self.w_XdiscSeparator)
+                if self.w_discHided[0] is False:
+                    separtorAll.addChild(self.w_XdiscSeparator)
             if self.w_discEnabled[1] is True:
-                separtorAll.addChild(self.w_YdiscSeparator)
+                if self.w_discHided[1] is False:            
+                    separtorAll.addChild(self.w_YdiscSeparator)
             if self.w_discEnabled[2] is True:
-                separtorAll.addChild(self.w_ZdiscSeparator)
+               if self.w_discHided[2] is False:
+                    separtorAll.addChild(self.w_ZdiscSeparator)
             self.draw_label()
             self.saveSoNodesToWidget(separtorAll)
 
@@ -1265,6 +1270,13 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     def disableDiscs(self):
         self.w_discEnabled = [False, False, False]
+    
+    def hideDiscs(self):
+        self.w_discHided=[True,True,True]
+
+    def visibleDiscs(self):
+        self.w_discHided=[False,False,False]
+
     
     def disableArrows(self):
         self.w_arrowEnabled= [False, False, False]

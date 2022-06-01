@@ -44,7 +44,7 @@ import FACE_D as faced
 import math
 from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
 
-__updated__ = '2022-05-31 22:55:44'
+__updated__ = '2022-06-01 20:32:31'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -428,7 +428,8 @@ class Design456_ExtendEdge:
                                                  0,  # type
                                                  0,  # opacity
                                                  10)  # distance between them
-
+            self.discObj.hideDiscs()
+            
             # Different callbacks for each action.
             self.discObj.w_xAxis_cb_ = self.MouseMovement_cb
             self.discObj.w_yAxis_cb_ = self.MouseMovement_cb
