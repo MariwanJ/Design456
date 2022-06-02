@@ -212,7 +212,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             self.w_lastEventXYZ.Coin_z = pnt.z
             self.w_lastEventXYZ.Qt_x = pos[0]
             self.w_lastEventXYZ.Qt_y = pos[1]
-            # if we hade mouse drag or push (not release) and there is a movement
+            # if we receive mouse drag or push (not release) and there is a movement
             if(self.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_PUSH or self.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG):
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_DRAG
             else:
