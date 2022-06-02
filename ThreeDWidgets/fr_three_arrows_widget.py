@@ -316,7 +316,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
 
     def handle(self, event):
         """
-        This function is responsible of taking events and processing 
+        This function is responsible for taking events and processing 
         the actions required. If the object != targeted, 
         the function will skip the events. But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
