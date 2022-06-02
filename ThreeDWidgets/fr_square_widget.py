@@ -110,7 +110,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
 
     def handle(self, event):
         """
-        This function is responsbile of taking events and doing 
+        This function is responsible for taking events and doing 
         the action(s) required. If the object != targeted, 
         the function will skip the event(s). But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
@@ -330,7 +330,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
 
     def handle(self, event):
         """
-        This function is responsbile of taking events and doing 
+        This function is responsible for taking events and doing 
         the action(s) required. If the object != targeted, 
         the function will skip the event(s). But if the widget was
         targeted, it returns 1. Returning 1 means that the widget
