@@ -42,7 +42,7 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-05-31 22:32:34'
+__updated__ = '2022-06-02 22:51:00'
 
 # Merge
 class Design456_Part_Merge:
@@ -620,7 +620,13 @@ class Design456_DivideObject:
         The sections are rotated by the 180/sections degree.
         
     """
-    def Activated(self):
+              
+    def Activated(self,_obj=None,_sec=4,_angle=0,_axis=App.Vector(0.0,0.0,1.0)):
+        #If above is given, dialog will not be loaded.
+        self.selObj=_obj
+        self.Sections=_sec
+        self.XY_Angle=_angle
+        self.Axis=_axis
         self.frmSlice=None
         self.spinSections=None
         self.spinAngel=None
@@ -633,14 +639,16 @@ class Design456_DivideObject:
         pl = App.Placement()
         pl.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         pl.Base = App.Vector(0.0, 0.0, 0.0)
-        self.selected=Gui.Selection.getSelectionEx()
-        self.selObj=self.selected[0].Object
-        if len(self.selected)==0:
-            errMessage="Please select an object"
-            faced.errorDialog(errMessage)
-            return
+        if(self.selObj is None):
+            print("get object")
+            selected=Gui.Selection.getSelectionEx()
+            self.selObj=selected[0].Object
+            if len(selected)==0:
+                errMessage="Please select an object"
+                faced.errorDialog(errMessage)
+                return
         self.createDialog()
-        
+            
     def createSplittedObj(self):
         import BOPTools.SplitFeatures
         try:
@@ -706,7 +714,7 @@ class Design456_DivideObject:
             #Preserve color and other properties of the old obj
             faced.PreserveColorTexture(self.selObj,objFinal)
             App.ActiveDocument.commitTransaction()  # undo
-            
+        
         except Exception as err:
             App.Console.PrintError("'createDialog' Failed. "
                                    "{err}\n".format(err=str(err)))
