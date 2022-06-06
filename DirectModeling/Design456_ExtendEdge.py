@@ -44,7 +44,7 @@ import FACE_D as faced
 import math
 from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
 from Design456_3DTools import Design456_DivideObject
-__updated__ = '2022-06-06 19:55:33'
+__updated__ = '2022-06-06 23:12:07'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -234,26 +234,24 @@ class Design456_ExtendEdge:
     def avoidNonPlanar(self,face):
         
         try:
-            newList=[]       
-            if face.Shape.Surface.isPlanar() is not True:
+            newList=None    
+            if face.Shape.Surface.isPlanar():
+                newList=face
+            else:
                 direction = faced.getDirectionAxis(face)
                 Axis=None
                 if direction == "+x" or direction == "-x":
-                    Axis=App.Vector(0.0,1.0,0.0)
-                elif direction == "+y" or direction == "-y":
                     Axis=App.Vector(1.0,0.0,0.0)
+                elif direction == "+y" or direction == "-y":
+                    Axis=App.Vector(0.0,1.0,0.0)
                 elif direction == "+z" or direction == "-z":
                     Axis=App.Vector(0.0,0.0,1.0)
                 divide= Design456_DivideObject()
-                nFace=divide.Activated(face,2,0,Axis)
+                nFace=divide.Activated(face,4,0,Axis)
+                App.ActiveDocument.removeObject(face.Name)
                 newList=nFace
-            else:
-                newList=face
             return newList
-            # if newList.Shape.Surface.isPlanar():
-            #     return newList
-            # else:
-            #     self.avoidNonPlanar(newList) #Continue sending it to get planar surface
+
                 
         except Exception as err:
             App.Console.PrintError("'avoidNonPlanar' Failed. "
@@ -286,9 +284,16 @@ class Design456_ExtendEdge:
                     raise RuntimeError('Failed to create face')
                 nFace=App.ActiveDocument.addObject("Part::Feature", "nFace")
                 nFace.Shape=newFace
-                newFace=self.avoidNonPlanar(nFace)
+                newFaceT=self.avoidNonPlanar(nFace)
                 #we need the shape not the object
-                _resultFace.append(newFace.Shape)
+                if type(newFaceT.Shape)==_part.Compound:
+                    f=newFaceT.Shape.Faces
+                    for face in f:
+                        _resultFace.append(face.copy())        
+                else:
+                    _resultFace.append(newFaceT.Shape.copy())
+                App.ActiveDocument.recompute()
+                App.ActiveDocument.removeObject(newFaceT.Name)
                 #Convert any non-planar face to planar by dividing it.
 
 
