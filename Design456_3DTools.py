@@ -42,7 +42,7 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-06-02 22:51:00'
+__updated__ = '2022-06-05 10:45:28'
 
 # Merge
 class Design456_Part_Merge:
@@ -621,7 +621,7 @@ class Design456_DivideObject:
         
     """
               
-    def Activated(self,_obj=None,_sec=4,_angle=0,_axis=App.Vector(0.0,0.0,1.0)):
+    def Activated(self,_obj=None,_sec=1,_angle=0,_axis=App.Vector(1.0,0.0,0.0)):
         #If above is given, dialog will not be loaded.
         self.selObj=_obj
         self.Sections=_sec
@@ -647,8 +647,10 @@ class Design456_DivideObject:
                 errMessage="Please select an object"
                 faced.errorDialog(errMessage)
                 return
-        self.createDialog()
-            
+            self.createDialog()
+        else:
+            return self.createSplittedObj()
+
     def createSplittedObj(self):
         import BOPTools.SplitFeatures
         try:
@@ -692,13 +694,13 @@ class Design456_DivideObject:
 
                     rectangles.append(fObj)
             else:
-                rectangles.append(fObj)            
+       
                 fObj=App.ActiveDocument.addObject('Part::Feature', "cutterF")
                 fObj.Placement=plS
                 fObj.Shape = f
                 fObj.Placement.Rotation.Axis=self.Axis
                 fObj.Placement.Rotation.Angle=math.radians(self.XY_Angle)
-                
+                rectangles.append(fObj)     
             slicedObj = BOPTools.SplitFeatures.makeSlice(name= 'Slice')
             slicedObj.Base = self.selObj
             slicedObj.Tools = rectangles
@@ -714,6 +716,7 @@ class Design456_DivideObject:
             #Preserve color and other properties of the old obj
             faced.PreserveColorTexture(self.selObj,objFinal)
             App.ActiveDocument.commitTransaction()  # undo
+            return objFinal
         
         except Exception as err:
             App.Console.PrintError("'createDialog' Failed. "

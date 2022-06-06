@@ -43,8 +43,8 @@ import Part as _part
 import FACE_D as faced
 import math
 from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
-
-__updated__ = '2022-06-01 20:32:31'
+from Design456_3DTools import Design456_DivideObject
+__updated__ = '2022-06-06 19:55:33'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -231,6 +231,37 @@ class Design456_ExtendEdge:
                 a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
         self.sg.addChild(self.coinFaces)
 
+    def avoidNonPlanar(self,face):
+        
+        try:
+            newList=[]       
+            if face.Shape.Surface.isPlanar() is not True:
+                direction = faced.getDirectionAxis(face)
+                Axis=None
+                if direction == "+x" or direction == "-x":
+                    Axis=App.Vector(0.0,1.0,0.0)
+                elif direction == "+y" or direction == "-y":
+                    Axis=App.Vector(1.0,0.0,0.0)
+                elif direction == "+z" or direction == "-z":
+                    Axis=App.Vector(0.0,0.0,1.0)
+                divide= Design456_DivideObject()
+                nFace=divide.Activated(face,2,0,Axis)
+                newList=nFace
+            else:
+                newList=face
+            return newList
+            # if newList.Shape.Surface.isPlanar():
+            #     return newList
+            # else:
+            #     self.avoidNonPlanar(newList) #Continue sending it to get planar surface
+                
+        except Exception as err:
+            App.Console.PrintError("'avoidNonPlanar' Failed. "
+                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def recreateObject(self):
         # FIXME:
         # Here we have
@@ -241,21 +272,25 @@ class Design456_ExtendEdge:
             _result = []
             _resultFace = []
             _result.clear()
+            newFace=None
             for faceVert in self.savedVertices:
                 convert = []
                 for vert in faceVert:
                     convert.append(vert.Point)
-                _Newvertices = convert
-                newPolygon = _part.makePolygon(_Newvertices, True)
+                _NewVertices = convert
+                newPolygon = _part.makePolygon(_NewVertices, True)
                 convert.clear()
                 newFace = _part.makeFilledFace(newPolygon.Edges)
+                App.ActiveDocument.recompute()
                 if newFace.isNull():
                     raise RuntimeError('Failed to create face')
-                nFace = App.ActiveDocument.addObject("Part::Feature", "nFace")
-                nFace.Shape = newFace
-                _result.append(nFace)
-                _resultFace.append(newFace)
-            self.newFaces = _result
+                nFace=App.ActiveDocument.addObject("Part::Feature", "nFace")
+                nFace.Shape=newFace
+                newFace=self.avoidNonPlanar(nFace)
+                #we need the shape not the object
+                _resultFace.append(newFace.Shape)
+                #Convert any non-planar face to planar by dividing it.
+
 
             solidObjShape = _part.Solid(_part.makeShell(_resultFace))
             newObj = App.ActiveDocument.addObject("Part::Feature", "comp")

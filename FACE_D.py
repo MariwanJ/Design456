@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-05-31 23:06:35'
+__updated__ = '2022-06-06 20:06:48'
 
 
 # TODO : FIXME BETTER WAY?
@@ -59,14 +59,15 @@ def getDirectionAxis(s=None):
     try:
         if s is None:
             s = Gui.Selection.getSelectionEx()
-
-        if len(s) == 0:
-            print("Nothing was selected")
-            return ""  # nothing to do we cannot calculate the direction
-        obj = s[0]
+        if type(s)== list:
+            if len(s) == 0:
+                print("Nothing was selected")
+                return ""  # nothing to do we cannot calculate the direction
+            obj = s[0]
+        else:
+            obj=s
         faceSel = None
         if (hasattr(obj, "SubObjects")):
-
             if len(obj.SubObjects) != 0:
                 if (len(obj.SubObjects[0].Faces) == 0):
                     # it is an edge not a face:
@@ -78,6 +79,8 @@ def getDirectionAxis(s=None):
                     faceSel = obj.SubObjects[0]
             else:
                 faceSel = obj.Object.Shape.Faces[0]  # Take the first face
+        elif hasattr(obj.Shape,"normalAt"):
+            faceSel=obj.Shape
         else:
             raise NotImplementedError
         try:
