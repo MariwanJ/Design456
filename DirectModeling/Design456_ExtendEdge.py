@@ -234,7 +234,7 @@ class Design456_ExtendEdge:
                 a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
         self.sg.addChild(self.coinFaces)
 
-    def MeshFace(self,face,shp):
+    def MeshFace(self,shp):
         Segments=10
         try:
             mesh = App.ActiveDocument.addObject("Mesh::Feature", "Mesh")
