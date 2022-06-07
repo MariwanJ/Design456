@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-06-07 23:09:11'
+__updated__ = '2022-06-07 23:10:38'
 
 
 #                        CALLBACKS              #
@@ -119,7 +119,7 @@ def callback_btn3(userData: userDataObject = None):
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)): 
         if objs[i].Object.Shape.BoundBox.YMin != linktocaller.NewBoundary.YMin: 
-            objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMin+(objs[i].Object.Placement.Base.y-objs[i].Object.Shape.BoundBox.Ymin)
+            objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMin+(objs[i].Object.Placement.Base.y-objs[i].Object.Shape.BoundBox.YMin)
 
     linktocaller.recreateAll()
 
