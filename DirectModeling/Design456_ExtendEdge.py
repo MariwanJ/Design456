@@ -43,7 +43,10 @@ import Part as _part
 import FACE_D as faced
 import math
 from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
-from Design456_3DTools import Design456_DivideObject
+#from Design456_3DTools import Design456_DivideObject
+import Mesh
+import MeshPart
+
 __updated__ = '2022-06-06 23:12:07'
 
 class Design456_ExtendEdge:
@@ -231,10 +234,28 @@ class Design456_ExtendEdge:
                 a, [len(a), ], FR_COLOR.FR_LIGHTGRAY))
         self.sg.addChild(self.coinFaces)
 
+    def MeshFace(self,face,shp):
+        Segments=10
+        try:
+            mesh = App.ActiveDocument.addObject("Mesh::Feature", "Mesh")
+            mesh.Mesh = MeshPart.meshFromShape(
+                        Shape=shp,
+                        LinearDeflection=5/Segments,
+                        AngularDeflection=Segments/2.5,
+                        Relative=False)
+            App.ActiveDocument.recompute()
+            return mesh
+        except Exception as err:
+            App.Console.PrintError("'MeshFace' Failed. "
+                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)       
+    
     def avoidNonPlanar(self,face):
-        
         try:
             newList=None    
+            nFace=None
             if face.Shape.Surface.isPlanar():
                 newList=face
             else:
@@ -246,8 +267,9 @@ class Design456_ExtendEdge:
                     Axis=App.Vector(0.0,1.0,0.0)
                 elif direction == "+z" or direction == "-z":
                     Axis=App.Vector(0.0,0.0,1.0)
-                divide= Design456_DivideObject()
-                nFace=divide.Activated(face,4,0,Axis)
+                #divide= Design456_DivideObject()
+                nFace=App.ActiveDocument.addObject("Part::Feature", "nFace")
+                nFace.Shape=self.MeshFace(face.Shape)
                 App.ActiveDocument.removeObject(face.Name)
                 newList=nFace
             return newList
