@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-03-22 20:56:54'
+__updated__ = '2022-06-07 22:52:31'
 
 
 #                        CALLBACKS              #
@@ -82,8 +82,9 @@ def callback_btn1(userData: userDataObject = None):
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
         print("center1", objs[i].Object.Shape.BoundBox.Center,"\ncenter2", linktocaller.NewBoundary.Center)
-        if objs[i].Object.Shape.BoundBox.Center.x != linktocaller.NewBoundary.Center.x: 
-            objs[i].Object.Placement.Base.x = objs[i].Object.Shape.BoundBox.XMin+(linktocaller.NewBoundary.Center.x-objs[i].Object.Shape.BoundBox.Center.x)
+        if objs[i].Object.Shape.BoundBox.Center.x != linktocaller.NewBoundary.Center.x:
+            #TODO: assume that all objects must have BoundBox.Center == placement.base   
+            objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.Center.x+(objs[i].Object.Placement.Base.x-objs[i].Object.Shape.BoundBox.Center.x) #objs[i].Object.Shape.BoundBox.XMin+(linktocaller.NewBoundary.Center.x-objs[i].Object.Shape.BoundBox.Center.x)
     linktocaller.recreateAll()
 
 def callback_btn2(userData: userDataObject = None):
@@ -137,7 +138,7 @@ def callback_btn4(userData: userDataObject = None):
     objs = linktocaller.selectedObj
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.Center.y != linktocaller.NewBoundary.Center.y: 
-            objs[i].Object.Placement.Base.y = objs[i].Object.Shape.BoundBox.YMin+(linktocaller.NewBoundary.Center.y-objs[i].Object.Shape.BoundBox.Center.y)
+            objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.Center.y+(objs[i].Object.Placement.Base.y-objs[i].Object.Shape.BoundBox.Center.y)
     linktocaller.recreateAll()
 
 
@@ -192,7 +193,7 @@ def callback_btn7(userData: userDataObject = None):
     for i in range(0, len(objs)):
         print("center1", objs[i].Object.Shape.BoundBox.Center,"\ncenter2", linktocaller.NewBoundary.Center)
         if objs[i].Object.Shape.BoundBox.Center.z != linktocaller.NewBoundary.Center.z: 
-            objs[i].Object.Placement.Base.z = objs[i].Object.Shape.BoundBox.ZMin+(linktocaller.NewBoundary.Center.z-objs[i].Object.Shape.BoundBox.Center.z)
+             objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.Center.z+(objs[i].Object.Placement.Base.z-objs[i].Object.Shape.BoundBox.Center.z)
     linktocaller.recreateAll()
 
 
