@@ -38,8 +38,8 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 from ThreeDWidgets.fr_draw import draw_FaceSet
 from ThreeDWidgets.constant import FR_COLOR
-from draftutils.translate import translate  # for translat
-import Part as _part
+from draftutils.translate import translate  # for translation
+import Part 
 import FACE_D as faced
 import math
 from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
@@ -47,7 +47,7 @@ from Design456Pref import Design456pref_var  #Variable shared between preference
 import Mesh
 import MeshPart
 
-__updated__ = '2022-06-06 23:12:07'
+__updated__ = '2022-06-07 20:58:22'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.
@@ -237,14 +237,21 @@ class Design456_ExtendEdge:
     def MeshFace(self,shp):
         Segments=10
         try:
-            mesh = App.ActiveDocument.addObject("Mesh::Feature", "Mesh")
-            mesh.Mesh = MeshPart.meshFromShape(
+            _mesh = App.ActiveDocument.addObject("Mesh::Feature", "Mesh")
+            _mesh.Mesh = MeshPart.meshFromShape(
                         Shape=shp,
                         LinearDeflection=5/Segments,
                         AngularDeflection=Segments/2.5,
                         Relative=False)
+            shape = Part.Shape()
             App.ActiveDocument.recompute()
-            return mesh
+            swe=0.1
+            shape.makeShapeFromMesh(_mesh.Mesh.Topology, swe) 
+            compShp=Part.makeCompound(shape)
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.removeObject(_mesh.Name)
+            return compShp
+
         except Exception as err:
             App.Console.PrintError("'MeshFace' Failed. "
                                     "{err}\n".format(err=str(err)))
@@ -270,6 +277,7 @@ class Design456_ExtendEdge:
                 #divide= Design456_DivideObject()
                 nFace=App.ActiveDocument.addObject("Part::Feature", "nFace")
                 nFace.Shape=self.MeshFace(face.Shape)
+                App.ActiveDocument.recompute()
                 App.ActiveDocument.removeObject(face.Name)
                 newList=nFace
             return newList
@@ -298,9 +306,9 @@ class Design456_ExtendEdge:
                 for vert in faceVert:
                     convert.append(vert.Point)
                 _NewVertices = convert
-                newPolygon = _part.makePolygon(_NewVertices, True)
+                newPolygon = Part.makePolygon(_NewVertices, True)
                 convert.clear()
-                newFace = _part.makeFilledFace(newPolygon.Edges)
+                newFace = Part.makeFilledFace(newPolygon.Edges)
                 App.ActiveDocument.recompute()
                 if newFace.isNull():
                     raise RuntimeError('Failed to create face')
@@ -308,7 +316,7 @@ class Design456_ExtendEdge:
                 nFace.Shape=newFace
                 newFaceT=self.avoidNonPlanar(nFace)
                 #we need the shape not the object
-                if type(newFaceT.Shape)==_part.Compound:
+                if type(newFaceT.Shape)==Part.Compound:
                     f=newFaceT.Shape.Faces
                     for face in f:
                         _resultFace.append(face.copy())        
@@ -319,12 +327,12 @@ class Design456_ExtendEdge:
                 #Convert any non-planar face to planar by dividing it.
 
 
-            solidObjShape = _part.Solid(_part.makeShell(_resultFace))
+            solidObjShape = Part.Solid(Part.makeShell(_resultFace))
             newObj = App.ActiveDocument.addObject("Part::Feature", "comp")
             newObj.Shape = solidObjShape
             newObj = self.sewShape(newObj)
             newObj = self.setTolerance(newObj)
-            solidObjShape = _part.Solid(newObj.Shape)
+            solidObjShape = Part.Solid(newObj.Shape)
             final = App.ActiveDocument.addObject("Part::Feature", "Extended")
             final.Shape = solidObjShape
             App.ActiveDocument.removeObject(newObj.Name)
@@ -455,8 +463,8 @@ class Design456_ExtendEdge:
                 self.oldEdgeVertexes = self.selectedEdge.Vertexes
             if not hasattr(self.selectedEdge, 'Edges'):
                 raise Exception("Please select only one edge and try again")
-            if not(type(self.selectedEdge.Curve) == _part.Line or
-                   type(self.selectedEdge.Curve) == _part.BezierCurve):
+            if not(type(self.selectedEdge.Curve) == Part.Line or
+                   type(self.selectedEdge.Curve) == Part.BezierCurve):
                 msg = "Curve edges are not supported yet"
                 faced.errorDialog(msg)
                 return
