@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-08 22:09:45'
+__updated__ = '2022-06-08 22:59:23'
 
 
 #Roof
@@ -1125,7 +1125,7 @@ class Design456_BaseFlowerVase:
     """
     def __init__(self, obj, 
                        _baseType="Circle",
-                       _middleType="Polygon",
+                       _middleType="Octagon",
                        _topType="Circle",
                        _baseRadius=10,
                        _middleRadius=20,
@@ -1133,15 +1133,15 @@ class Design456_BaseFlowerVase:
                        _height=10,
                        _thickness=1):
 
-        obj.addProperty("App::PropertyStringList"", "baseType","FlowerVase", 
+        obj.addProperty("App::PropertyEnumeration", "baseType","FlowerVase", 
                         "FlowerVase base type").baseType = ["Circle","Octagon","Triangle"]
         obj.baseType=_baseType
 
-        obj.addProperty("App::PropertyStringList"", "middleType","FlowerVase", 
+        obj.addProperty("App::PropertyEnumeration", "middleType","FlowerVase", 
                         "FlowerVase middle type").middleType = ["Circle","Octagon","Triangle"]
         obj.middleType=_middleType
 
-        obj.addProperty("App::PropertyStringList"", "topType","FlowerVase", 
+        obj.addProperty("App::PropertyEnumeration", "topType","FlowerVase", 
                         "FlowerVase top type").topType = ["Circle","Octagon","Triangle"]
         obj.topType=_topType
 
@@ -1152,7 +1152,7 @@ class Design456_BaseFlowerVase:
         obj.addProperty("App::PropertyLength", "middleRadius","FlowerVase", 
                         "Length of the FlowerVase").middleRadius = _middleRadius
 
-        obj.addProperty("App::PropertyLength", "baseRadius","FlowerVase", 
+        obj.addProperty("App::PropertyLength", "topRadius","FlowerVase", 
                         "Length of the FlowerVase").topRadius = _topRadius
 
 
@@ -1183,7 +1183,7 @@ class Design456_BaseFlowerVase:
 
         p1=App.Vector(0,0,0)
         if self.baseType=="Circle":
-            
+            pass
         obj.Shape=Result
 
 class Design456_FlowerVase:
