@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-06-07 23:10:38'
+__updated__ = '2022-06-08 20:16:04'
 
 
 #                        CALLBACKS              #
@@ -240,17 +240,17 @@ class Design456_SmartAlignment:
         self.savedColors = []
 
 
-    def setObjctsColor(self, newValue=True):
-        if newValue is True:
-            self.selectedObj[0].Object.ViewObject.DiffuseColor = self.savedColors[0]
-            for i in range(1, len(self.selectedObj)):
-                self.selectedObj[i].Object.ViewObject.DiffuseColor = self.savedColors[1]
-        else:
-            self.selectedObj[0].Object.ViewObject.DiffuseColor = [
-                FR_COLOR.FR_DEEPSKYBLUE]
-            for i in range(1, len(self.selectedObj)):
-                self.selectedObj[i].Object.ViewObject.DiffuseColor = [
-                    FR_COLOR.FR_ORANGE]
+    # def setObjctsColor(self, newValue=True):
+    #     if newValue is True:
+    #         self.selectedObj[0].Object.ViewObject.DiffuseColor = self.savedColors[0]
+    #         for i in range(1, len(self.selectedObj)):
+    #             self.selectedObj[i].Object.ViewObject.DiffuseColor = self.savedColors[1]
+    #     else:
+    #         self.selectedObj[0].Object.ViewObject.DiffuseColor = [
+    #             FR_COLOR.FR_DEEPSKYBLUE]
+    #         for i in range(1, len(self.selectedObj)):
+    #             self.selectedObj[i].Object.ViewObject.DiffuseColor = [
+    #                 FR_COLOR.FR_ORANGE]
 
     # def getValues(self):
 
@@ -309,7 +309,7 @@ class Design456_SmartAlignment:
                             self.selectedObj[1].Object.ViewObject.DiffuseColor]
         # Change the colors  -
         # First obj (base) get a color, and others get another color
-        self.setObjctsColor(False)
+        # self.setObjctsColor(False)
         if self.smartInd is not None:
             self.smartInd.setBoundary(self.NewBoundary)
             self.smartInd.redraw()
