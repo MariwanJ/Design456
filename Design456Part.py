@@ -35,7 +35,7 @@ import Part as _part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-03-17 22:36:47'
+__updated__ = '2022-06-08 19:07:44'
 
 import BasicShapes.CommandShapes
 import CompoundTools._CommandExplodeCompound
@@ -45,7 +45,7 @@ import Design456Init
 sys.path.append(Design456Init.PYRAMID_PATH)
 
 # BOX
-class Design456_Part_Box:
+class Design456Part_Box:
 
     def Activated(self):
         try:
@@ -71,12 +71,12 @@ class Design456_Part_Box:
         }
 
 
-Gui.addCommand('Design456_Part_Box', Design456_Part_Box())
+Gui.addCommand('Design456Part_Box', Design456Part_Box())
 
 # Cylinder
 
 
-class Design456_Part_Cylinder:
+class Design456Part_Cylinder:
 
     def Activated(self):
         try: 
@@ -102,11 +102,11 @@ class Design456_Part_Cylinder:
                         'ToolTip':  'Part Cylinder'
         }
 
-Gui.addCommand('Design456_Part_Cylinder', Design456_Part_Cylinder())
+Gui.addCommand('Design456Part_Cylinder', Design456Part_Cylinder())
 
 
 # Tube
-class Design456_Part_Tube:
+class Design456Part_Tube:
 
     def Activated(self):
         try:
@@ -133,11 +133,11 @@ class Design456_Part_Tube:
         }
 
 
-Gui.addCommand('Design456_Part_Tube', Design456_Part_Tube())
+Gui.addCommand('Design456Part_Tube', Design456Part_Tube())
 
 
 # Sphere
-class Design456_Part_Sphere:
+class Design456Part_Sphere:
 
     def Activated(self):
         try:
@@ -164,11 +164,11 @@ class Design456_Part_Sphere:
         }
 
 
-Gui.addCommand('Design456_Part_Sphere', Design456_Part_Sphere())
+Gui.addCommand('Design456Part_Sphere', Design456Part_Sphere())
 # Cone
 
 
-class Design456_Part_Cone:
+class Design456Part_Cone:
 
     def Activated(self):
         try:
@@ -194,11 +194,11 @@ class Design456_Part_Cone:
         }
 
 
-Gui.addCommand('Design456_Part_Cone', Design456_Part_Cone())
+Gui.addCommand('Design456Part_Cone', Design456Part_Cone())
 
 
 # Cone
-class Design456_Part_Torus:
+class Design456Part_Torus:
 
     def Activated(self):
         try:
@@ -223,12 +223,12 @@ class Design456_Part_Torus:
                         'ToolTip':  'Part Torus'
         }
 
-Gui.addCommand('Design456_Part_Torus', Design456_Part_Torus())
+Gui.addCommand('Design456Part_Torus', Design456Part_Torus())
 
 # Wedge
 
 
-class Design456_Part_Wedge:
+class Design456Part_Wedge:
 
     def Activated(self):
         try:
@@ -253,11 +253,11 @@ class Design456_Part_Wedge:
                         'ToolTip':  'Part Wedge'
         }
 
-Gui.addCommand('Design456_Part_Wedge', Design456_Part_Wedge())
+Gui.addCommand('Design456Part_Wedge', Design456Part_Wedge())
 
 
 # Prism
-class Design456_Part_Prism:
+class Design456Part_Prism:
 
     def Activated(self):
         try:
@@ -282,11 +282,11 @@ class Design456_Part_Prism:
                         'ToolTip':  'Part Prism'
         }
 
-Gui.addCommand('Design456_Part_Prism', Design456_Part_Prism())
+Gui.addCommand('Design456Part_Prism', Design456Part_Prism())
 
 
 # Pyramid
-class Design456_Part_Pyramid:
+class Design456Part_Pyramid:
 
     def Activated(self):
         try:
@@ -356,11 +356,11 @@ class Design456_Part_Pyramid:
                         'ToolTip':  'Part Pyramid'
         }
 
-Gui.addCommand('Design456_Part_Pyramid', Design456_Part_Pyramid())
+Gui.addCommand('Design456Part_Pyramid', Design456Part_Pyramid())
 
 
 # Hemisphere
-class Design456_Part_Hemisphere:
+class Design456Part_Hemisphere:
 
     def Activated(self):
         try:
@@ -407,12 +407,12 @@ class Design456_Part_Hemisphere:
                         'ToolTip':  'Part Hemisphere'
         }
 
-Gui.addCommand('Design456_Part_Hemisphere', Design456_Part_Hemisphere())
+Gui.addCommand('Design456Part_Hemisphere', Design456Part_Hemisphere())
 
 # Ellipsoid
 
 
-class Design456_Part_Ellipsoid:
+class Design456Part_Ellipsoid:
 
     def Activated(self):
         try:
@@ -439,7 +439,7 @@ class Design456_Part_Ellipsoid:
                         'ToolTip':  'Part Ellipsoid'
         }
 
-Gui.addCommand('Design456_Part_Ellipsoid', Design456_Part_Ellipsoid())
+Gui.addCommand('Design456Part_Ellipsoid', Design456Part_Ellipsoid())
 
 #########################################################################
 #Macro_D_Un_Jour_Random_Color_Faces                                     #
@@ -489,19 +489,19 @@ Gui.addCommand('Design_ColorizeObject', Design_ColorizeObject())
 
 ############################################################################
 
-class Design456_Part:
+class Design456Part:
     import polyhedrons
-    list = ["Design456_Part_Box",
-            "Design456_Part_Cylinder",
-            "Design456_Part_Tube",
-            "Design456_Part_Sphere",
-            "Design456_Part_Cone",
-            "Design456_Part_Torus",
-            "Design456_Part_Wedge",
-            "Design456_Part_Prism",
-            "Design456_Part_Pyramid",
-            "Design456_Part_Hemisphere",
-            "Design456_Part_Ellipsoid",
+    list = ["Design456Part_Box",
+            "Design456Part_Cylinder",
+            "Design456Part_Tube",
+            "Design456Part_Sphere",
+            "Design456Part_Cone",
+            "Design456Part_Torus",
+            "Design456Part_Wedge",
+            "Design456Part_Prism",
+            "Design456Part_Pyramid",
+            "Design456Part_Hemisphere",
+            "Design456Part_Ellipsoid",
             "Pyramid",
             "Tetrahedron",
             #"Hexahedron",               #No need for this as box is in part.

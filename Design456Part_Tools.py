@@ -34,9 +34,9 @@ import Design456Init
 import  Design456_3DTools
 import  Design456_2DTools
 
-__updated__ = '2022-04-16 16:47:21'
+__updated__ = '2022-06-08 19:08:23'
 
-class Design456_Part_Tools:
+class Design456Part_Tools:
     list = ["Design456_3DToolsGroup",
             "Design456_2DToolsGroup"
             
@@ -59,4 +59,4 @@ class Design456_Part_Tools:
             return False
         
     def Activated(self):
-        self.appendToolbar("Design456_Part_Tools", self.list)
+        self.appendToolbar("Design456Part_Tools", self.list)

@@ -55,9 +55,9 @@ class Design456 (Gui.Workbench):
     def Initialize(self):
         "This function is executed when FreeCAD starts"
         import BOPTools  # as bop
-        import Design456_Part as designPart
+        import Design456Part as designPart
         import Design456_2Ddrawing as TwoDDraw
-        import Design456_Part_Tools as _tools
+        import Design456Part_Tools as _tools
         import Design456_Alignment as _alignment
         import Design456_SelectionGate as SelGate
         import DirectModeling.directModelingCommands as dModeling
@@ -73,12 +73,12 @@ class Design456 (Gui.Workbench):
         # from Part import CommandShapes     #Tube  not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
-        self.appendToolbar("Design456_Part", designPart.Design456_Part.list)
+        self.appendToolbar("Design456Part", designPart.Design456Part.list)
         self.appendToolbar("Design456 2Ddrawing",
                            TwoDDraw.Design456_2Ddrawing.list)
         self.appendToolbar("Design456_Segmented",_segmented.Design456_Segmented.list)
         
-        self.appendToolbar("Design456 Tools", _tools.Design456_Part_Tools.list)
+        self.appendToolbar("Design456 Tools", _tools.Design456Part_Tools.list)
         self.appendToolbar("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
         self.appendToolbar(
             "Selection Mode", SelGate.Design456_SelectionGate.list)
@@ -86,10 +86,10 @@ class Design456 (Gui.Workbench):
                            dModeling.Design456_DirectModeling.list)
         self.appendToolbar ("GridSize",_grid.Design456_GridSize.list)
 
-        self.appendMenu("Design456_Part", designPart.Design456_Part.list)
+        self.appendMenu("Design456Part", designPart.Design456Part.list)
         self.appendMenu("Design456_2Ddrawing",
                         TwoDDraw.Design456_2Ddrawing.list)
-        self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
+        self.appendMenu("Design456 Tools", _tools.Design456Part_Tools.list)
         self.appendMenu("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
         
         # Defeaturing WB  added to Design456 
@@ -100,10 +100,10 @@ class Design456 (Gui.Workbench):
         self.appendMenu("Fuzzy Tools", ["FuzzyCut","FuzzyUnion","FuzzyCommon"])
         Gui.addIconPath(Design456Init.ICON_PATH)
 
-        # Design456_Part
+        # Design456Part
         # self.appendMenu(QT_TRANSLATE_NOOP("Draft", "&Drafting"), self.drawing_commands)
 
-        # Design456_Part
+        # Design456Part
         # DRAFT
         def QT_TRANSLATE_NOOP(context, text):
             return text
@@ -291,23 +291,23 @@ class Design456 (Gui.Workbench):
         "right-clicks on screen"
         try:
             import BOPTools  # as bop
-            import Design456_Part as designPart
-            import Design456_Part_Tools as pTools
+            import Design456Part as designPart
+            import Design456Part_Tools as pTools
             import Design456_2Ddrawing as TwoDDraw
             import Design456_Alignment as _alignment
             import Design456_Grid as _grid
 
             self.appendContextMenu(
-                "Design456_Part", designPart.Design456_Part.list)
+                "Design456Part", designPart.Design456Part.list)
             self.appendContextMenu("Design456_2Ddrawing",
                                    TwoDDraw.Design456_2Ddrawing.list)
             self.appendContextMenu(
-                "Design456 Tools", pTools.Design456_Part_Tools.list)
+                "Design456 Tools", pTools.Design456Part_Tools.list)
             self.appendContextMenu("Design456 Alignment", 
                                         _alignment.Design456_Alignment_Tools.list)
-            # from Design456_PART
+            # from Design456Part
             self.appendContextMenu(
-                "Design456_Part", designPart.Design456_Part.list)
+                "Design456Part", designPart.Design456Part.list)
             
             self.appendContextMenu ("GridSize",_grid.Design456_GridSize.list)
            

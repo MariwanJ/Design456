@@ -42,10 +42,10 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-06-05 10:45:28'
+__updated__ = '2022-06-08 19:09:57'
 
 # Merge
-class Design456_Part_Merge:
+class Design456Part_Merge:
 
     def Activated(self):
         mergedObj = None
@@ -104,11 +104,11 @@ class Design456_Part_Merge:
         }
 
 
-Gui.addCommand('Design456_Part_Merge', Design456_Part_Merge())
+Gui.addCommand('Design456Part_Merge', Design456Part_Merge())
 
 
 # Subtract
-class Design456_Part_Subtract:
+class Design456Part_Subtract:
 
     def Activated(self):
         try:
@@ -167,11 +167,11 @@ class Design456_Part_Subtract:
         }
 
 
-Gui.addCommand('Design456_Part_Subtract', Design456_Part_Subtract())
+Gui.addCommand('Design456Part_Subtract', Design456Part_Subtract())
 
 
 # Intersect
-class Design456_Part_Intersect:
+class Design456Part_Intersect:
     """Message box (error) """
 
     def Activated(self):
@@ -221,11 +221,11 @@ class Design456_Part_Intersect:
         }
 
 
-Gui.addCommand('Design456_Part_Intersect', Design456_Part_Intersect())
+Gui.addCommand('Design456Part_Intersect', Design456Part_Intersect())
 # Group
 
 
-class Design456_Part_Group:
+class Design456Part_Group:
     """Message box (error) """
 
     def errorDialog(self, msg):
@@ -267,11 +267,11 @@ class Design456_Part_Group:
         }
 
 
-Gui.addCommand('Design456_Part_Group', Design456_Part_Group())
+Gui.addCommand('Design456Part_Group', Design456Part_Group())
 
 
 # Compound
-class Design456_Part_Compound:
+class Design456Part_Compound:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
@@ -321,12 +321,12 @@ class Design456_Part_Compound:
         }
 
 
-Gui.addCommand('Design456_Part_Compound', Design456_Part_Compound())
+Gui.addCommand('Design456Part_Compound', Design456Part_Compound())
 
 # Shell
 
 
-class Design456_Part_Shell:
+class Design456Part_Shell:
     def Activated(self):
         try:
             s = Gui.Selection.getSelectionEx()
@@ -390,11 +390,11 @@ class Design456_Part_Shell:
             'ToolTip':  'Part Shell'
         }
 
-Gui.addCommand('Design456_Part_Shell', Design456_Part_Shell())
+Gui.addCommand('Design456Part_Shell', Design456Part_Shell())
 
 
 # fillet
-class Design456_Part_Fillet:
+class Design456Part_Fillet:
 
     def Activated(self):
         try:
@@ -467,11 +467,11 @@ class Design456_Part_Fillet:
         }
 
 
-Gui.addCommand('Design456_Part_Fillet', Design456_Part_Fillet())
+Gui.addCommand('Design456Part_Fillet', Design456Part_Fillet())
 
 
 # chamfer
-class Design456_Part_Chamfer:
+class Design456Part_Chamfer:
 
     def Activated(self):
         try:
@@ -541,7 +541,7 @@ class Design456_Part_Chamfer:
         }
 
 
-Gui.addCommand('Design456_Part_Chamfer', Design456_Part_Chamfer())
+Gui.addCommand('Design456Part_Chamfer', Design456Part_Chamfer())
 
 
 # Simplify Compound
@@ -840,18 +840,18 @@ class Design456_3DToolsGroup:
         """3D Modifying Tools."""
         return ("Design456_Extrude",
                 "Design456_Extract",
-                "Design456_Part_Merge",
+                "Design456Part_Merge",
                 "Design456_SimplifyCompound",
-                "Design456_Part_Subtract",
-                "Design456_Part_Intersect",
+                "Design456Part_Subtract",
+                "Design456Part_Intersect",
                 "Design456_loftOnDirection",
-                "Design456_Part_Group",
-                "Design456_Part_Compound",
-                "Design456_Part_Shell",
+                "Design456Part_Group",
+                "Design456Part_Compound",
+                "Design456Part_Shell",
                 "Design456_DivideObject",
                 "Design456_SplitObject",
-                "Design456_Part_Fillet",
-                "Design456_Part_Chamfer",
+                "Design456Part_Fillet",
+                "Design456Part_Chamfer",
                 "Design456_LoftBetweenFaces",
                 "Design456_unifySplitFuse2",
                 "Design_ColorizeObject"

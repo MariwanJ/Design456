@@ -163,7 +163,7 @@ Gui.addCommand('Design456_CombineFaces', Design456_CombineFaces())
 # Surface between two line
 
 
-class Design456_Part_Surface:
+class Design456Part_Surface:
 
     def Activated(self):
         try:
@@ -250,7 +250,7 @@ class Design456_Part_Surface:
         }
 
 
-Gui.addCommand('Design456_Part_Surface', Design456_Part_Surface())
+Gui.addCommand('Design456Part_Surface', Design456Part_Surface())
 
 #########################
 
@@ -594,7 +594,7 @@ class Design456_2DToolsGroup:
 
     def GetCommands(self):
         """2D Face commands."""
-        return ("Design456_Part_Surface",
+        return ("Design456Part_Surface",
                 "Design456_ArcFace6Points",
                 "Design456_CombineFaces",
                 "Design456_SubtractFaces",
