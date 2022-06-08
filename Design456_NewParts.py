@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-03-12 17:37:32'
+__updated__ = '2022-06-08 22:09:45'
 
 
 #Roof
@@ -1077,3 +1077,130 @@ class Design456_RoundRoof:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_RoundRoof', Design456_RoundRoof())
+
+
+####################################
+
+#FlowerVase
+
+class ViewProviderFlowerVase:
+
+    obj_name = "FlowerVase"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderFlowerVase.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'FlowerVase.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+
+#FlowerVase 
+class Design456_BaseFlowerVase:
+    """ FlowerVase shape based on several parameters
+    """
+    def __init__(self, obj, 
+                       _baseType="Circle",
+                       _middleType="Polygon",
+                       _topType="Circle",
+                       _baseRadius=10,
+                       _middleRadius=20,
+                       _topRadius=5,
+                       _height=10,
+                       _thickness=1):
+
+        obj.addProperty("App::PropertyStringList"", "baseType","FlowerVase", 
+                        "FlowerVase base type").baseType = ["Circle","Octagon","Triangle"]
+        obj.baseType=_baseType
+
+        obj.addProperty("App::PropertyStringList"", "middleType","FlowerVase", 
+                        "FlowerVase middle type").middleType = ["Circle","Octagon","Triangle"]
+        obj.middleType=_middleType
+
+        obj.addProperty("App::PropertyStringList"", "topType","FlowerVase", 
+                        "FlowerVase top type").topType = ["Circle","Octagon","Triangle"]
+        obj.topType=_topType
+
+
+        obj.addProperty("App::PropertyLength", "baseRadius","FlowerVase", 
+                        "Length of the FlowerVase").baseRadius = _baseRadius
+
+        obj.addProperty("App::PropertyLength", "middleRadius","FlowerVase", 
+                        "Length of the FlowerVase").middleRadius = _middleRadius
+
+        obj.addProperty("App::PropertyLength", "baseRadius","FlowerVase", 
+                        "Length of the FlowerVase").topRadius = _topRadius
+
+
+        obj.addProperty("App::PropertyLength", "Height","FlowerVase", 
+                        "Height of the FlowerVase").Height = _height
+
+        obj.addProperty("App::PropertyLength", "Thickness","FlowerVase", 
+                        "Thickness of the FlowerVase").Thickness = _thickness
+
+        obj.Proxy = self
+    
+    def execute(self, obj):
+        self.baseType=str(obj.baseType)
+        self.middleType=str(obj.middleType)
+        self.topType=str(obj.topType)
+
+        self.baseRadius=float(obj.baseRadius)
+        self.middleRadius=float(obj.middleRadius)
+        self.topRadius=float(obj.topRadius)
+        
+        self.Height=float(obj.Height)
+        self.Thickness=float(obj.Thickness)
+        Result=None
+
+        baseObj=None
+        middleObj=None
+        topObj = None
+
+        p1=App.Vector(0,0,0)
+        if self.baseType=="Circle":
+            
+        obj.Shape=Result
+
+class Design456_FlowerVase:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'FlowerVase.svg',
+                'MenuText': "FlowerVase",
+                'ToolTip': "Generate a FlowerVase"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "FlowerVase")
+        Design456_BaseFlowerVase(newObj)
+
+        ViewProviderFlowerVase(newObj.ViewObject, "FlowerVase")
+
+        App.ActiveDocument.recompute()
+        v = Gui.ActiveDocument.ActiveView
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_FlowerVase', Design456_FlowerVase())
