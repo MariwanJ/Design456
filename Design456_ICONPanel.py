@@ -51,7 +51,7 @@ COMMANDS_Basic=[
     ["Design456_Part_Torus", Design456Init.ICON_PATH + 'Part_Torus.svg'],
     ["Design456_Part_Wedge",Design456Init.ICON_PATH + 'Part_Wedge.svg'],
     ["Design456_Part_Prism", Design456Init.ICON_PATH + 'Part_Prism.svg'],
-    ["Design456_Part_Pyramid",Design456Init.ICON_PATH + 'Part_Pyramid.svg'],
+    ["Design456_Pyramid",Design456Init.ICON_PATH + 'Part_Pyramid.svg'],
     ["Pyramid", Design456Init.PYRAMID_ICON_PATH + 'pyramid.svg'],
     ["Tetrahedron",Design456Init.PYRAMID_ICON_PATH + 'tetrahedron.svg'],
     ["Octahedron",Design456Init.PYRAMID_ICON_PATH + 'octahedron.svg'],

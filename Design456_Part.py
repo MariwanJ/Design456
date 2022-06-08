@@ -30,8 +30,8 @@ import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-import Draft as _draft
-import Part as _part
+import Draft 
+import Part 
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
@@ -45,7 +45,7 @@ import Design456Init
 sys.path.append(Design456Init.PYRAMID_PATH)
 
 # BOX
-class Design456_Part_Box:
+class Design456Part_Box:
 
     def Activated(self):
         try:
@@ -71,12 +71,12 @@ class Design456_Part_Box:
         }
 
 
-Gui.addCommand('Design456_Part_Box', Design456_Part_Box())
+Gui.addCommand('Design456Part_Box', Design456Part_Box())
 
 # Cylinder
 
 
-class Design456_Part_Cylinder:
+class Design456Part_Cylinder:
 
     def Activated(self):
         try: 
@@ -102,11 +102,11 @@ class Design456_Part_Cylinder:
                         'ToolTip':  'Part Cylinder'
         }
 
-Gui.addCommand('Design456_Part_Cylinder', Design456_Part_Cylinder())
+Gui.addCommand('Design456Part_Cylinder', Design456Part_Cylinder())
 
 
 # Tube
-class Design456_Part_Tube:
+class Design456Part_Tube:
 
     def Activated(self):
         try:
@@ -133,11 +133,11 @@ class Design456_Part_Tube:
         }
 
 
-Gui.addCommand('Design456_Part_Tube', Design456_Part_Tube())
+Gui.addCommand('Design456Part_Tube', Design456Part_Tube())
 
 
 # Sphere
-class Design456_Part_Sphere:
+class Design456Part_Sphere:
 
     def Activated(self):
         try:
@@ -164,11 +164,11 @@ class Design456_Part_Sphere:
         }
 
 
-Gui.addCommand('Design456_Part_Sphere', Design456_Part_Sphere())
+Gui.addCommand('Design456Part_Sphere', Design456Part_Sphere())
 # Cone
 
 
-class Design456_Part_Cone:
+class Design456Part_Cone:
 
     def Activated(self):
         try:
@@ -194,11 +194,11 @@ class Design456_Part_Cone:
         }
 
 
-Gui.addCommand('Design456_Part_Cone', Design456_Part_Cone())
+Gui.addCommand('Design456Part_Cone', Design456Part_Cone())
 
 
 # Cone
-class Design456_Part_Torus:
+class Design456Part_Torus:
 
     def Activated(self):
         try:
@@ -223,12 +223,12 @@ class Design456_Part_Torus:
                         'ToolTip':  'Part Torus'
         }
 
-Gui.addCommand('Design456_Part_Torus', Design456_Part_Torus())
+Gui.addCommand('Design456Part_Torus', Design456Part_Torus())
 
 # Wedge
 
 
-class Design456_Part_Wedge:
+class Design456Part_Wedge:
 
     def Activated(self):
         try:
@@ -253,11 +253,11 @@ class Design456_Part_Wedge:
                         'ToolTip':  'Part Wedge'
         }
 
-Gui.addCommand('Design456_Part_Wedge', Design456_Part_Wedge())
+Gui.addCommand('Design456Part_Wedge', Design456Part_Wedge())
 
 
 # Prism
-class Design456_Part_Prism:
+class Design456Part_Prism:
 
     def Activated(self):
         try:
@@ -282,24 +282,23 @@ class Design456_Part_Prism:
                         'ToolTip':  'Part Prism'
         }
 
-Gui.addCommand('Design456_Part_Prism', Design456_Part_Prism())
+Gui.addCommand('Design456Part_Prism', Design456Part_Prism())
 
-
+#TODO: FIXME: clean up the code and fix the code
 # Pyramid
-class Design456_Part_Pyramid:
+class Design456Part_Pyramid:
 
     def Activated(self):
         try:
-            App.ActiveDocument.openTransaction(translate("Design456","Part Pyramid"))
-            obj = App.Placement()
+            App.ActiveDocument.openTransaction(translate("Design456","Pyramid"))
+            plc = App.Placement()
             Faces = QtGui.QInputDialog.getInt(None, "Faces", "Faces:",5)[0]
             if(Faces ==0 ):
                 return # Nothing to do here 
-            obj.Rotation.Q = (0.0, 0.0, 0, 1.0)
-            obj.Base = App.Vector(0.0, 0.0, 0.0)
-            newObj = _draft.makePolygon(
-                Faces, radius=10, inscribed=True, placement=obj, face=True, support=None)
-            _draft.autogroup(newObj)
+            plc.Rotation.Q = (0.0, 0.0, 0, 1.0)
+            plc.Base = App.Vector(0.0, 0.0, 0.0)
+            newObj = Draft.makePolygon(Faces, radius=10, inscribed=True, placement=plc, face=True, support=None)
+            #Draft.autogroup(newObj)
             App.ActiveDocument.recompute()
             Gui.Selection.clearSelection()
             Gui.Selection.addSelection(
@@ -318,7 +317,7 @@ class Design456_Part_Pyramid:
             plDirection.Base = yL
 
             firstFace = newObj
-            point = _draft.makePoint(0, 0.0, 10.0)
+            point = Draft.makePoint(0, 0.0, 10.0)
 
             newObj1 = App.ActiveDocument.addObject('Part::Loft', 'tempPyramid')
             App.ActiveDocument.ActiveObject.Sections = [firstFace, point, ]
@@ -327,7 +326,7 @@ class Design456_Part_Pyramid:
             App.ActiveDocument.recompute()
 
             # copy
-            App.ActiveDocument.addObject('Part::Feature', 'Pyramid').Shape = _part.getShape(
+            App.ActiveDocument.addObject('Part::Feature', 'Pyramid').Shape = Part.getShape(
                 newObj1, '', needSubElement=False, refine=False)
             App.ActiveDocument.recompute()
 
@@ -343,7 +342,7 @@ class Design456_Part_Pyramid:
             faced.PartMover(v,App.ActiveDocument.ActiveObject,deleteOnEscape = True)
 
         except Exception as err:
-            App.Console.PrintError("'Part::Pyramid' Failed. "
+            App.Console.PrintError("'Pyramid' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -352,15 +351,15 @@ class Design456_Part_Pyramid:
     def GetResources(self):
         return {
             'Pixmap': Design456Init.ICON_PATH + 'Part_Pyramid.svg',
-            'MenuText': 'Part_Pyramid',
-                        'ToolTip':  'Part Pyramid'
+            'MenuText': 'Pyramid',
+                        'ToolTip':  'Pyramid'
         }
 
-Gui.addCommand('Design456_Part_Pyramid', Design456_Part_Pyramid())
+Gui.addCommand('Design456Part_Pyramid', Design456Part_Pyramid())
 
 
 # Hemisphere
-class Design456_Part_Hemisphere:
+class Design456Part_Hemisphere:
 
     def Activated(self):
         try:
@@ -407,12 +406,12 @@ class Design456_Part_Hemisphere:
                         'ToolTip':  'Part Hemisphere'
         }
 
-Gui.addCommand('Design456_Part_Hemisphere', Design456_Part_Hemisphere())
+Gui.addCommand('Design456Part_Hemisphere', Design456Part_Hemisphere())
 
 # Ellipsoid
 
 
-class Design456_Part_Ellipsoid:
+class Design456Part_Ellipsoid:
 
     def Activated(self):
         try:
@@ -439,7 +438,7 @@ class Design456_Part_Ellipsoid:
                         'ToolTip':  'Part Ellipsoid'
         }
 
-Gui.addCommand('Design456_Part_Ellipsoid', Design456_Part_Ellipsoid())
+Gui.addCommand('Design456Part_Ellipsoid', Design456Part_Ellipsoid())
 
 #########################################################################
 #Macro_D_Un_Jour_Random_Color_Faces                                     #
@@ -489,19 +488,19 @@ Gui.addCommand('Design_ColorizeObject', Design_ColorizeObject())
 
 ############################################################################
 
-class Design456_Part:
+class Design456Part:
     import polyhedrons
-    list = ["Design456_Part_Box",
-            "Design456_Part_Cylinder",
-            "Design456_Part_Tube",
-            "Design456_Part_Sphere",
-            "Design456_Part_Cone",
-            "Design456_Part_Torus",
-            "Design456_Part_Wedge",
-            "Design456_Part_Prism",
-            "Design456_Part_Pyramid",
-            "Design456_Part_Hemisphere",
-            "Design456_Part_Ellipsoid",
+    list = ["Design456Part_Box",
+            "Design456Part_Cylinder",
+            "Design456Part_Tube",
+            "Design456Part_Sphere",
+            "Design456Part_Cone",
+            "Design456Part_Torus",
+            "Design456Part_Wedge",
+            "Design456Part_Prism",
+            "Design456Part_Pyramid",
+            "Design456Part_Hemisphere",
+            "Design456Part_Ellipsoid",
             "Pyramid",
             "Tetrahedron",
             #"Hexahedron",               #No need for this as box is in part.

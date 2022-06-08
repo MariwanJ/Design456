@@ -73,7 +73,7 @@ class Design456 (Gui.Workbench):
         # from Part import CommandShapes     #Tube  not working
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
-        self.appendToolbar("Design456_Part", designPart.Design456_Part.list)
+        self.appendToolbar("Design456Part", designPart.Design456Part.list)
         self.appendToolbar("Design456 2Ddrawing",
                            TwoDDraw.Design456_2Ddrawing.list)
         self.appendToolbar("Design456_Segmented",_segmented.Design456_Segmented.list)
@@ -86,7 +86,7 @@ class Design456 (Gui.Workbench):
                            dModeling.Design456_DirectModeling.list)
         self.appendToolbar ("GridSize",_grid.Design456_GridSize.list)
 
-        self.appendMenu("Design456_Part", designPart.Design456_Part.list)
+        self.appendMenu("Design456Part", designPart.Design456Part.list)
         self.appendMenu("Design456_2Ddrawing",
                         TwoDDraw.Design456_2Ddrawing.list)
         self.appendMenu("Design456 Tools", _tools.Design456_Part_Tools.list)
