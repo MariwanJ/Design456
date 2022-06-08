@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-06-08 20:16:04'
+__updated__ = '2022-06-08 20:26:27'
 
 
 #                        CALLBACKS              #
@@ -240,22 +240,6 @@ class Design456_SmartAlignment:
         self.savedColors = []
 
 
-    # def setObjctsColor(self, newValue=True):
-    #     if newValue is True:
-    #         self.selectedObj[0].Object.ViewObject.DiffuseColor = self.savedColors[0]
-    #         for i in range(1, len(self.selectedObj)):
-    #             self.selectedObj[i].Object.ViewObject.DiffuseColor = self.savedColors[1]
-    #     else:
-    #         self.selectedObj[0].Object.ViewObject.DiffuseColor = [
-    #             FR_COLOR.FR_DEEPSKYBLUE]
-    #         for i in range(1, len(self.selectedObj)):
-    #             self.selectedObj[i].Object.ViewObject.DiffuseColor = [
-    #                 FR_COLOR.FR_ORANGE]
-
-    # def getValues(self):
-
-    #     return Results
-
     def CalculateBoundary(self):
         Results = []
         _min = self.selectedObj[0].Object.Shape.BoundBox.XMin
@@ -307,9 +291,6 @@ class Design456_SmartAlignment:
         self.CalculateBoundary()
         self.savedColors = [self.selectedObj[0].Object.ViewObject.DiffuseColor,
                             self.selectedObj[1].Object.ViewObject.DiffuseColor]
-        # Change the colors  -
-        # First obj (base) get a color, and others get another color
-        # self.setObjctsColor(False)
         if self.smartInd is not None:
             self.smartInd.setBoundary(self.NewBoundary)
             self.smartInd.redraw()
@@ -420,7 +401,6 @@ class Design456_SmartAlignment:
         Hide the widgets. Remove also the tab.
         """
         try:
-            self.setObjctsColor(True)
             self.dialog.hide()
             del self.dialog
             dw = self.mw.findChildren(QtGui.QDockWidget)

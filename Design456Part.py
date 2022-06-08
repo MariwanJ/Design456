@@ -35,7 +35,7 @@ import Part
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-06-08 19:21:47'
+__updated__ = '2022-06-08 20:25:33'
 
 import BasicShapes.CommandShapes
 import CompoundTools._CommandExplodeCompound
@@ -295,10 +295,10 @@ class Design456Part_Pyramid:
             Faces = QtGui.QInputDialog.getInt(None, "Faces", "Faces:",5)[0]
             if(Faces ==0 ):
                 return # Nothing to do here 
-            plc.Rotation.Q = (0.0, 0.0, 0, 1.0)
+            plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
             plc.Base = App.Vector(0.0, 0.0, 0.0)
             newObj = Draft.makePolygon(Faces, radius=10, inscribed=True, placement=plc, face=True, support=None)
-            #Draft.autogroup(newObj)
+            Draft.autogroup(newObj)
             App.ActiveDocument.recompute()
             Gui.Selection.clearSelection()
             Gui.Selection.addSelection(
@@ -317,7 +317,7 @@ class Design456Part_Pyramid:
             plDirection.Base = yL
 
             firstFace = newObj
-            point = Draft.makePoint(0, 0.0, 10.0)
+            point = Draft.makePoint(0.0, 0.0, 10.0)
 
             newObj1 = App.ActiveDocument.addObject('Part::Loft', 'tempPyramid')
             App.ActiveDocument.ActiveObject.Sections = [firstFace, point, ]
@@ -325,17 +325,15 @@ class Design456Part_Pyramid:
             newObj1 = App.ActiveDocument.ActiveObject
             App.ActiveDocument.recompute()
 
-            # copy
+            # Simple copy
             App.ActiveDocument.addObject('Part::Feature', 'Pyramid').Shape = Part.getShape(
                 newObj1, '', needSubElement=False, refine=False)
             App.ActiveDocument.recompute()
 
-            # Remove Old objects. I don't like to keep so many objects without any necessity.
+            # Remove Old objects.
             for obj in newObj1.Sections:
                 App.ActiveDocument.removeObject(obj.Name)
-            # Gui.SendMsgToActiveView("ViewFit")
             App.ActiveDocument.removeObject(newObj1.Name)
-            # App.ActiveDocument.removeObject(point)
             App.ActiveDocument.commitTransaction() #undo reg.
             App.ActiveDocument.recompute()
             v = Gui.ActiveDocument.ActiveView
