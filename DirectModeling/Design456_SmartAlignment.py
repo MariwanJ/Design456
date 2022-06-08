@@ -41,7 +41,7 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-06-08 20:26:27'
+__updated__ = '2022-06-08 20:27:09'
 
 
 #                        CALLBACKS              #
