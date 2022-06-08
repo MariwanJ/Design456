@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-08 22:59:23'
+__updated__ = '2022-06-08 23:07:08'
 
 
 #Roof
@@ -1133,33 +1133,33 @@ class Design456_BaseFlowerVase:
                        _height=10,
                        _thickness=1):
 
-        obj.addProperty("App::PropertyEnumeration", "baseType","FlowerVase", 
+        obj.addProperty("App::PropertyEnumeration", "baseType","1)Sections", 
                         "FlowerVase base type").baseType = ["Circle","Octagon","Triangle"]
         obj.baseType=_baseType
 
-        obj.addProperty("App::PropertyEnumeration", "middleType","FlowerVase", 
+        obj.addProperty("App::PropertyEnumeration", "middleType","1)Sections", 
                         "FlowerVase middle type").middleType = ["Circle","Octagon","Triangle"]
         obj.middleType=_middleType
 
-        obj.addProperty("App::PropertyEnumeration", "topType","FlowerVase", 
+        obj.addProperty("App::PropertyEnumeration", "topType","1)Sections", 
                         "FlowerVase top type").topType = ["Circle","Octagon","Triangle"]
         obj.topType=_topType
 
 
-        obj.addProperty("App::PropertyLength", "baseRadius","FlowerVase", 
+        obj.addProperty("App::PropertyLength", "baseRadius","2)Radius", 
                         "Length of the FlowerVase").baseRadius = _baseRadius
 
-        obj.addProperty("App::PropertyLength", "middleRadius","FlowerVase", 
+        obj.addProperty("App::PropertyLength", "middleRadius","2)Radius", 
                         "Length of the FlowerVase").middleRadius = _middleRadius
 
-        obj.addProperty("App::PropertyLength", "topRadius","FlowerVase", 
+        obj.addProperty("App::PropertyLength", "topRadius","2)Radius", 
                         "Length of the FlowerVase").topRadius = _topRadius
 
 
-        obj.addProperty("App::PropertyLength", "Height","FlowerVase", 
+        obj.addProperty("App::PropertyLength", "Height","3)Others", 
                         "Height of the FlowerVase").Height = _height
 
-        obj.addProperty("App::PropertyLength", "Thickness","FlowerVase", 
+        obj.addProperty("App::PropertyLength", "Thickness","3)Others", 
                         "Thickness of the FlowerVase").Thickness = _thickness
 
         obj.Proxy = self
