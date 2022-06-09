@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-08 23:07:08'
+__updated__ = '2022-06-09 22:31:56'
 
 
 #Roof
@@ -1163,8 +1163,13 @@ class Design456_BaseFlowerVase:
                         "Thickness of the FlowerVase").Thickness = _thickness
 
         obj.Proxy = self
-    
-    def execute(self, obj):
+        self.recreateObject(obj)
+        
+    def recreateObject(self,obj):
+        
+        self.plc=App.Placement()
+        self.plc.Base=App.Vector(0,0,0)
+        self.plc.Rotation= (0.0, 0.0, 1.0,0.0)
         self.baseType=str(obj.baseType)
         self.middleType=str(obj.middleType)
         self.topType=str(obj.topType)
@@ -1175,16 +1180,70 @@ class Design456_BaseFlowerVase:
         
         self.Height=float(obj.Height)
         self.Thickness=float(obj.Thickness)
-        Result=None
+        self.Result=None
 
-        baseObj=None
-        middleObj=None
-        topObj = None
-
-        p1=App.Vector(0,0,0)
+        self.baseObj=None
+        self.middleObj=None
+        self.topObj = None
+        self.baseObj=None
+        self.sweepPath=None
         if self.baseType=="Circle":
-            pass
-        obj.Shape=Result
+            self.baseObj=Part.makeCircle(self.baseRadius,App.Vector(0,0,0), App.Vector(0,0,1),0,360)
+        elif self.baseType=="Octagon":
+            self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,8))
+        elif self.baseType=="Triangle":
+            self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,3))
+
+        if self.middleType=="Circle":
+            self.middleObj=Part.makeCircle(self.middleRadius,App.Vector(0,0,self.Height/2), App.Vector(0,0,1),0,360)
+        elif self.middleType=="Octagon":
+            self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,8,self.Height/2))
+        elif self.middleType=="Triangle":
+            self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,3,self.Height/2))
+
+        if self.topType=="Circle":
+            self.topObj=Part.makeCircle(self.topRadius,App.Vector(0,0,self.Height), App.Vector(0,0,1),0,360)
+        elif self.topType=="Octagon":
+            self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,8,self.Height))
+        elif self.topType=="Triangle":
+            self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,3,self.Height))        
+        
+        self.f1=App.ActiveDocument.addObject("Part::Feature", "base")
+        self.f2=App.ActiveDocument.addObject("Part::Feature", "middle")
+        self.f3=App.ActiveDocument.addObject("Part::Feature", "top")
+        self.f1.Shape=self.baseObj
+        self.f2.Shape=self.middleObj
+        self.f3.Shape=self.topObj
+        sweepPath=Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)])
+        self.nObj=App.ActiveDocument.addObject('Part::Sweep','Sweep')
+        self.nObj.Sections=[self.f1,self.f2,self.f3]
+        self._line=App.ActiveDocument.addObject("Part::Feature", "sweepPath")
+        self._line.Shape=sweepPath
+        self.nObj.Spine=self._line
+        self.nObj.Solid=False
+        self.nObj.Frenet=False
+        App.ActiveDocument.recompute()
+        obj.Shape=self.nObj.Shape.copy()
+        App.ActiveDocument.removeObject(self.f1.Name)
+        App.ActiveDocument.removeObject(self.f2.Name)
+        App.ActiveDocument.removeObject(self.f3.Name)
+        App.ActiveDocument.removeObject(self._line.Name)
+        App.ActiveDocument.removeObject(self.nObj.Name)
+            
+    def calculatePolygonVertices(self,radius,sides,Zaxis=0.0):
+        vertices=[]
+        angle=math.radians(360/sides)
+        for i in range(0, sides+1):
+            x=radius * math.cos(angle*i)
+            y=radius *math.sin(angle*i)
+            z=Zaxis
+            point = App.Vector(x,y, z)
+            vertices.append(point)
+        return vertices
+    
+    def execute(self, obj):
+        pass
+        
 
 class Design456_FlowerVase:
     def GetResources(self):
