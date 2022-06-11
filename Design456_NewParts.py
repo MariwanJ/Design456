@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-09 22:31:56'
+__updated__ = '2022-06-11 23:05:57'
 
 
 #Roof
@@ -1126,25 +1126,26 @@ class Design456_BaseFlowerVase:
     def __init__(self, obj, 
                        _baseType="Circle",
                        _middleType="Octagon",
-                       _topType="Circle",
+                       _topType="Triangle",
                        _baseRadius=10,
                        _middleRadius=20,
                        _topRadius=5,
-                       _height=10,
-                       _thickness=1):
+                       _height=20,
+                       _thickness=1,
+                        _solid=True,
+                        _frenet=False):
 
         obj.addProperty("App::PropertyEnumeration", "baseType","1)Sections", 
-                        "FlowerVase base type").baseType = ["Circle","Octagon","Triangle"]
+                        "FlowerVase base type").baseType = ["Circle","Octagon","Rectangle","Triangle"]
         obj.baseType=_baseType
 
         obj.addProperty("App::PropertyEnumeration", "middleType","1)Sections", 
-                        "FlowerVase middle type").middleType = ["Circle","Octagon","Triangle"]
+                        "FlowerVase middle type").middleType = ["Circle","Octagon","Rectangle","Triangle"]
         obj.middleType=_middleType
 
         obj.addProperty("App::PropertyEnumeration", "topType","1)Sections", 
-                        "FlowerVase top type").topType = ["Circle","Octagon","Triangle"]
+                        "FlowerVase top type").topType = ["Circle","Octagon","Rectangle","Triangle"]
         obj.topType=_topType
-
 
         obj.addProperty("App::PropertyLength", "baseRadius","2)Radius", 
                         "Length of the FlowerVase").baseRadius = _baseRadius
@@ -1162,88 +1163,104 @@ class Design456_BaseFlowerVase:
         obj.addProperty("App::PropertyLength", "Thickness","3)Others", 
                         "Thickness of the FlowerVase").Thickness = _thickness
 
+        obj.addProperty("App::PropertyBool", "Solid","3)Others", 
+                        "FlowerVase top type").Solid=_solid
+        obj.addProperty("App::PropertyBool", "Frenet","3)Others", 
+                        "FlowerVase top type").Frenet=_frenet
         obj.Proxy = self
-        self.recreateObject(obj)
+        self.Type ="FlowerVase"
         
-    def recreateObject(self,obj):
-        
-        self.plc=App.Placement()
-        self.plc.Base=App.Vector(0,0,0)
-        self.plc.Rotation= (0.0, 0.0, 1.0,0.0)
-        self.baseType=str(obj.baseType)
-        self.middleType=str(obj.middleType)
-        self.topType=str(obj.topType)
-
-        self.baseRadius=float(obj.baseRadius)
-        self.middleRadius=float(obj.middleRadius)
-        self.topRadius=float(obj.topRadius)
-        
-        self.Height=float(obj.Height)
-        self.Thickness=float(obj.Thickness)
-        self.Result=None
-
-        self.baseObj=None
-        self.middleObj=None
-        self.topObj = None
-        self.baseObj=None
-        self.sweepPath=None
-        if self.baseType=="Circle":
-            self.baseObj=Part.makeCircle(self.baseRadius,App.Vector(0,0,0), App.Vector(0,0,1),0,360)
-        elif self.baseType=="Octagon":
-            self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,8))
-        elif self.baseType=="Triangle":
-            self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,3))
-
-        if self.middleType=="Circle":
-            self.middleObj=Part.makeCircle(self.middleRadius,App.Vector(0,0,self.Height/2), App.Vector(0,0,1),0,360)
-        elif self.middleType=="Octagon":
-            self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,8,self.Height/2))
-        elif self.middleType=="Triangle":
-            self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,3,self.Height/2))
-
-        if self.topType=="Circle":
-            self.topObj=Part.makeCircle(self.topRadius,App.Vector(0,0,self.Height), App.Vector(0,0,1),0,360)
-        elif self.topType=="Octagon":
-            self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,8,self.Height))
-        elif self.topType=="Triangle":
-            self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,3,self.Height))        
-        
-        self.f1=App.ActiveDocument.addObject("Part::Feature", "base")
-        self.f2=App.ActiveDocument.addObject("Part::Feature", "middle")
-        self.f3=App.ActiveDocument.addObject("Part::Feature", "top")
-        self.f1.Shape=self.baseObj
-        self.f2.Shape=self.middleObj
-        self.f3.Shape=self.topObj
-        sweepPath=Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)])
-        self.nObj=App.ActiveDocument.addObject('Part::Sweep','Sweep')
-        self.nObj.Sections=[self.f1,self.f2,self.f3]
-        self._line=App.ActiveDocument.addObject("Part::Feature", "sweepPath")
-        self._line.Shape=sweepPath
-        self.nObj.Spine=self._line
-        self.nObj.Solid=False
-        self.nObj.Frenet=False
-        App.ActiveDocument.recompute()
-        obj.Shape=self.nObj.Shape.copy()
-        App.ActiveDocument.removeObject(self.f1.Name)
-        App.ActiveDocument.removeObject(self.f2.Name)
-        App.ActiveDocument.removeObject(self.f3.Name)
-        App.ActiveDocument.removeObject(self._line.Name)
-        App.ActiveDocument.removeObject(self.nObj.Name)
+ 
             
-    def calculatePolygonVertices(self,radius,sides,Zaxis=0.0):
-        vertices=[]
-        angle=math.radians(360/sides)
-        for i in range(0, sides+1):
-            x=radius * math.cos(angle*i)
-            y=radius *math.sin(angle*i)
-            z=Zaxis
-            point = App.Vector(x,y, z)
-            vertices.append(point)
-        return vertices
-    
-    def execute(self, obj):
-        pass
+    def calculatePolygonVertices(self,radius,sides,plc,Zaxis=0.0):
+        try:
+            vertices=[]
+            slice=360/sides
+            _angle=math.radians(slice)
+            for i in range(0, sides+1):
+                x=plc.Base.x+(radius * math.cos(_angle*i))
+                y=plc.Base.y+(radius *math.sin(_angle*i))
+                z=Zaxis+plc.Base.z
+                point = App.Vector(x,y, z)
+                vertices.append(point)
+            return vertices
         
+        except Exception as err:
+            App.Console.PrintError("'calculatePolygonVertices' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+                
+    def execute(self, obj):
+        try:
+            self.plc=App.Placement()
+            self.plc.Base=App.Vector(0,0,0)
+            self.plc.Rotation= (0.0, 0.0, 1.0,0.0)
+            self.baseType=str(obj.baseType)
+            self.middleType=str(obj.middleType)
+            self.topType=str(obj.topType)
+
+            self.baseRadius=float(obj.baseRadius)
+            self.middleRadius=float(obj.middleRadius)
+            self.topRadius=float(obj.topRadius)
+
+            self.Height=float(obj.Height)
+            self.Thickness=float(obj.Thickness)
+            self.Result=None
+
+            self.baseObj=None
+            self.middleObj=None
+            self.topObj = None
+            self.baseObj=None
+            self.sweepPath=None
+            self.Solid=obj.Solid
+            self.Frenet=obj.Frenet
+            obj.Placement=self.plc
+            if self.baseType=="Circle":                                #(self,radius,sides,plc,Zaxis=0.0):
+                self.baseObj=Part.Wire(Part.makeCircle(self.baseRadius,obj.Placement.Base, App.Vector(0,0,1),0,360))
+            elif self.baseType=="Octagon":
+                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,8,self.plc))
+            elif self.baseType=="Rectangle":
+                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,4,self.plc))
+            elif self.baseType=="Triangle":
+                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,3,self.plc))
+
+            if self.middleType=="Circle":
+                self.middleObj=Part.Wire(Part.makeCircle(self.middleRadius,App.Vector(0,0,self.Height/2), App.Vector(0,0,1),0,360))
+            elif self.middleType=="Octagon":
+                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,8,self.plc,self.Height/2))
+            elif self.baseType=="Rectangle":
+                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,4,self.plc))
+            elif self.middleType=="Triangle":
+                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,3,self.plc,self.Height/2))
+
+            if self.topType=="Circle":
+                self.topObj=Part.Wire(Part.makeCircle(self.topRadius,App.Vector(0,0,self.Height), App.Vector(0,0,1),0,360))
+            elif self.topType=="Octagon":
+                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,8,self.plc,self.Height))
+            elif self.baseType=="Rectangle":
+                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,4,self.plc))
+            elif self.topType=="Triangle":
+                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,3,self.plc,self.Height))        
+            self.sweepPath=Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)])
+            W2section=Part.Wire([self.baseObj])
+            W1path=self.sweepPath
+            tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
+            #add(Profile, WithContact=False, WithCorrection=False)
+            tnObj.add(self.baseObj,True,True)
+            tnObj.add(self.middleObj,True,True)
+            tnObj.add(self.topObj,True,True)
+            nObj=Part.Solid(tnObj.shape())
+            obj.Shape =nObj
+
+
+        except Exception as err:
+            App.Console.PrintError("'execute FlowerVase' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
 class Design456_FlowerVase:
     def GetResources(self):
@@ -1257,8 +1274,6 @@ class Design456_FlowerVase:
         Design456_BaseFlowerVase(newObj)
 
         ViewProviderFlowerVase(newObj.ViewObject, "FlowerVase")
-
-        App.ActiveDocument.recompute()
         v = Gui.ActiveDocument.ActiveView
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
