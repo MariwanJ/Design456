@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-12 16:48:45'
+__updated__ = '2022-06-12 16:53:42'
 
 
 #Roof
@@ -1222,7 +1222,6 @@ class Design456_BaseFlowerVase:
             self.Height=float(obj.Height)
             self.neckHeight=float(obj.neckHeight)
             self.Result=None
-            self.polygonSides=int(obj.polygonSides)
 
             self.baseObj=None
             self.middleObj=None
@@ -1262,11 +1261,10 @@ class Design456_BaseFlowerVase:
             self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
 
             tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
-            #add(Profile, WithContact=False, WithCorrection=False)
             tnObj.add(self.baseObj,self.WithContact,self.WithCorrection)
             tnObj.add(self.middleObj,self.WithContact,self.WithCorrection)
             tnObj.add(self.topObj,self.WithContact,self.WithCorrection)
-            tnObj.setTransitionMode(1)  #Round edges
+            tnObj.setTransitionMode(0)  #Round edges
             f1=Part.Face(faceTopCover)
             f2 = Part.Face(self.baseObj)            
             f=tnObj.shape().Faces
