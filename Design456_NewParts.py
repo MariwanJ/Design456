@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-12 22:59:13'
+__updated__ = '2022-06-12 23:20:21'
 
 
 #Roof
@@ -1350,14 +1350,15 @@ class Design456_BaseAcousticFoam:
         self.Type ="AcousticFoam"
 
     def calculateWavedEdge(self):
-        points=[]
-        for i in range(0,self.Length):
-            for j in range(0,i/self.wavePeriod):
-                angel1=math.radians(360/6) #6 points for getting two bspline
-                
-                X=
-        Draft.make_bspline(points, closed=False, face=True, support=None)
-        pass
+        vertices=[]
+        angelParts=math.radians(360/6)
+        for ii in range(0,6):
+            x=math.sin(ii*angelParts)
+            y=angelParts
+            z=0
+            vertices.append(App.Vector(x,y,z))
+        return(vertices)
+
     def execute(self, obj):
         try:
             self.plc=App.Placement()
@@ -1374,37 +1375,17 @@ class Design456_BaseAcousticFoam:
             self.WithContact=obj.WithContact
             self.WithCorrection=obj.WithCorrection
             obj.Placement=self.plc
-            
+            vert=self.calculateWavedEdge()
+            bObj=Part.Wire((Draft.make_bspline(vert, closed=False, face=False, support=None)).Shape.Edges[0])
 
-            try:
-                self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
-                tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
-                tnObj.add(self.baseObj,self.WithContact,self.WithCorrection)
-                tnObj.add(self.middleObj,self.WithContact,self.WithCorrection)
-                tnObj.add(self.topObj,self.WithContact,self.WithCorrection)
-                tnObj.setTransitionMode(0)  #Round edges
-                f=tnObj.shape().Faces
-                f.append(Part.Face(self.baseObj))
-                nObj = Part.makeShell(f)
-                FinalObj=None
-                if self.Solid is True:
-                    tnObj.makeSolid()
-                    FinalObj = tnObj.shape()
-                else:
-                    FinalObj=nObj
-            except:
-                #In case OCC fails
-                FinalObj=self.baseObj
-                print("OCC Failed please change your values")
-                
-            if FinalObj is None:
-                print("OCC Failed please change your values")
-                obj.Shape=self.baseObj  #Avoid not showing anything      
-            elif FinalObj.isValid():
-                obj.Shape = FinalObj
-            else:
-                print("OCC Failed please change your values")
-                obj.Shape=self.baseObj  #Avoid not showing anything
+            self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
+            tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
+            tnObj.add(bObj,self.WithContact,self.WithCorrection)
+            tnObj.setTransitionMode(0)  #Round edges
+            f=tnObj.shape().Faces
+            f.append(Part.Face(self.baseObj))
+            nObj = Part.makeShell(f)
+            obj.Shape = nObj.shape()
 
         except Exception as err:
             App.Console.PrintError("'execute AcousticFoam' Failed. "
