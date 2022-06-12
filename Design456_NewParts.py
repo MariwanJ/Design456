@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-12 19:35:11'
+__updated__ = '2022-06-12 22:59:13'
 
 
 #Roof
@@ -1304,3 +1304,129 @@ class Design456_FlowerVase:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_FlowerVase', Design456_FlowerVase())
+
+
+######################
+
+
+#AcousticFoam 
+class Design456_BaseAcousticFoam:
+    """ AcousticFoam shape based on several parameters
+    """
+    def __init__(self, obj, 
+                       _height=10,
+                       _width=10,
+                       _length=10,
+                       _wavePeriod=1;
+                        _solid=True,
+                        _waveType="Sine",
+                        _waveAmplitude=0.5,
+                        _withContact=False,
+                        _withCorrection=False):
+
+        obj.addProperty("App::PropertyLength", "Height","Foam", 
+                        "Height of the AcousticFoam").Height = _height
+        obj.addProperty("App::PropertyLength", "Height","Foam", 
+                        "Width of the AcousticFoam").Width = _width
+        obj.addProperty("App::PropertyLength", "Length","Foam", 
+                        "Height of the AcousticFoam").Length = _length
+        
+        obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
+                        "wave Amplitude of the AcousticFoam").waveAmplitude = _waveAmplitude
+
+        obj.addProperty("App::PropertyLength", "wavePeriod","Foam", 
+                        "wave Amplitude of the AcousticFoam").waveAmplitude = _wavePeriod
+        
+        obj.addProperty("App::PropertyEnumeration", "waveType","Foam", 
+                        "FlowerVase top type").topType = ["Sine","Cos","Tan"]
+
+        obj.addProperty("App::PropertyBool", "Solid","Foam", 
+                        "AcousticFoam top type").Solid=_solid
+        obj.addProperty("App::PropertyBool", "WithContact","Foam", 
+                        "AcousticFoam top type").WithContact=_withContact
+        obj.addProperty("App::PropertyBool", "WithCorrection","Foam", 
+                        "AcousticFoam top type").WithCorrection=_withCorrection
+        obj.Proxy = self
+        self.Type ="AcousticFoam"
+
+    def calculateWavedEdge(self):
+        points=[]
+        for i in range(0,self.Length):
+            for j in range(0,i/self.wavePeriod):
+                angel1=math.radians(360/6) #6 points for getting two bspline
+                
+                X=
+        Draft.make_bspline(points, closed=False, face=True, support=None)
+        pass
+    def execute(self, obj):
+        try:
+            self.plc=App.Placement()
+            self.plc.Base=App.Vector(0,0,0)
+            self.plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+          
+            self.Height=float(obj.Height)
+            self.waveAmplitude=float(obj.waveAmplitude)
+            self.waveType=str(obj.waveType)
+            
+            self.baseObj=None
+            self.sweepPath=None
+            self.Solid=obj.Solid
+            self.WithContact=obj.WithContact
+            self.WithCorrection=obj.WithCorrection
+            obj.Placement=self.plc
+            
+
+            try:
+                self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
+                tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
+                tnObj.add(self.baseObj,self.WithContact,self.WithCorrection)
+                tnObj.add(self.middleObj,self.WithContact,self.WithCorrection)
+                tnObj.add(self.topObj,self.WithContact,self.WithCorrection)
+                tnObj.setTransitionMode(0)  #Round edges
+                f=tnObj.shape().Faces
+                f.append(Part.Face(self.baseObj))
+                nObj = Part.makeShell(f)
+                FinalObj=None
+                if self.Solid is True:
+                    tnObj.makeSolid()
+                    FinalObj = tnObj.shape()
+                else:
+                    FinalObj=nObj
+            except:
+                #In case OCC fails
+                FinalObj=self.baseObj
+                print("OCC Failed please change your values")
+                
+            if FinalObj is None:
+                print("OCC Failed please change your values")
+                obj.Shape=self.baseObj  #Avoid not showing anything      
+            elif FinalObj.isValid():
+                obj.Shape = FinalObj
+            else:
+                print("OCC Failed please change your values")
+                obj.Shape=self.baseObj  #Avoid not showing anything
+
+        except Exception as err:
+            App.Console.PrintError("'execute AcousticFoam' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+class Design456_AcousticFoam:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'AcousticFoam.svg',
+                'MenuText': "AcousticFoam",
+                'ToolTip': "Generate a AcousticFoam"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "AcousticFoam")
+        Design456_BaseAcousticFoam(newObj)
+
+        ViewProviderAcousticFoam(newObj.ViewObject, "AcousticFoam")
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_AcousticFoam', Design456_AcousticFoam())
