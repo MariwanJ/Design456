@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-12 23:20:21'
+__updated__ = '2022-06-12 23:22:38'
 
 
 #Roof
@@ -1317,7 +1317,7 @@ class Design456_BaseAcousticFoam:
                        _height=10,
                        _width=10,
                        _length=10,
-                       _wavePeriod=1;
+                       _wavePeriod=1,
                         _solid=True,
                         _waveType="Sine",
                         _waveAmplitude=0.5,
