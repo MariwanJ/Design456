@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-12 16:53:42'
+__updated__ = '2022-06-12 19:35:11'
 
 
 #Roof
@@ -1196,7 +1196,6 @@ class Design456_BaseFlowerVase:
                 z=Zaxis+plc.Base.z
                 point = App.Vector(x,y, z)
                 vertices.append(point)
-            print(vertices)
             return vertices
         
         except Exception as err:
@@ -1235,15 +1234,11 @@ class Design456_BaseFlowerVase:
             self.WithContact=obj.WithContact
             self.WithCorrection=obj.WithCorrection
             obj.Placement=self.plc
-            faceTopCover=None
+
             if self.baseType=="Circle":                                #(self,radius,sides,plc,Zaxis=0.0):
                 self.baseObj=Part.Wire(Part.makeCircle(self.baseRadius,obj.Placement.Base, App.Vector(0,0,1),0,360))
-            elif self.baseType=="Octagon":
+            elif self.baseType=="Polygon":
                 self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.baseSides,self.plc))
-            elif self.baseType=="Rectangle":
-                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.middleSides,self.plc))
-            elif self.baseType=="Triangle":
-                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.topSides,self.plc))
 
             if self.middleType=="Circle":
                 self.middleObj=Part.Wire(Part.makeCircle(self.middleRadius,App.Vector(0,0,(self.Height-self.neckHeight)/2), App.Vector(0,0,1),0,360))
@@ -1252,31 +1247,38 @@ class Design456_BaseFlowerVase:
 
             if self.topType=="Circle":
                 self.topObj=Part.Wire(Part.makeCircle(self.topRadius,App.Vector(0,0,(self.Height-self.neckHeight)), App.Vector(0,0,1),0,360))
-                faceTopCover=self.topObj=Part.Wire(Part.makeCircle(self.topRadius,App.Vector(0,0,(self.Height)), App.Vector(0,0,1),0,360))
             elif self.middleType=="Polygon":
                 self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,self.topSides,self.plc,(self.Height-self.neckHeight)))
-                faceTopCover=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,self.topSides,self.plc,(self.Height)))
-            
-            
-            self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
-
-            tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
-            tnObj.add(self.baseObj,self.WithContact,self.WithCorrection)
-            tnObj.add(self.middleObj,self.WithContact,self.WithCorrection)
-            tnObj.add(self.topObj,self.WithContact,self.WithCorrection)
-            tnObj.setTransitionMode(0)  #Round edges
-            f1=Part.Face(faceTopCover)
-            f2 = Part.Face(self.baseObj)            
-            f=tnObj.shape().Faces
-            nObj = Part.makeShell(f)
-            FinalObj=None
-            if self.Solid is True:
-                tnObj.makeSolid()
-                FinalObj = tnObj.shape()
+          
+            try:
+                self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
+                tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
+                tnObj.add(self.baseObj,self.WithContact,self.WithCorrection)
+                tnObj.add(self.middleObj,self.WithContact,self.WithCorrection)
+                tnObj.add(self.topObj,self.WithContact,self.WithCorrection)
+                tnObj.setTransitionMode(0)  #Round edges
+                f=tnObj.shape().Faces
+                f.append(Part.Face(self.baseObj))
+                nObj = Part.makeShell(f)
+                FinalObj=None
+                if self.Solid is True:
+                    tnObj.makeSolid()
+                    FinalObj = tnObj.shape()
+                else:
+                    FinalObj=nObj
+            except:
+                #In case OCC fails
+                FinalObj=self.baseObj
+                print("OCC Failed please change your values")
+                
+            if FinalObj is None:
+                print("OCC Failed please change your values")
+                obj.Shape=self.baseObj  #Avoid not showing anything      
+            elif FinalObj.isValid():
+                obj.Shape = FinalObj
             else:
-                FinalObj=nObj
-
-            obj.Shape = FinalObj
+                print("OCC Failed please change your values")
+                obj.Shape=self.baseObj  #Avoid not showing anything
 
         except Exception as err:
             App.Console.PrintError("'execute FlowerVase' Failed. "

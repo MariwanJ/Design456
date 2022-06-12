@@ -34,8 +34,9 @@ import Draft
 import Part 
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
+import Design456_NewParts
 
-__updated__ = '2022-06-08 20:25:33'
+__updated__ = '2022-06-12 18:56:11'
 
 import BasicShapes.CommandShapes
 import CompoundTools._CommandExplodeCompound
@@ -506,7 +507,19 @@ class Design456Part:
             "Dodecahedron",
             "Icosahedron",
             "Icosahedron_truncated",
-            "Geodesic_sphere"
+            "Geodesic_sphere",
+            "Design456_Seg_Sphere",
+            "Design456_Seg_Cylinder", 
+            "Design456_Seg_Roof", 
+            "Design456_RoundRoof",
+            "Design456_Paraboloid", 
+            "Design456_Capsule", 
+            "Design456_Parallelepiped", 
+            "Design456_Housing", 
+            "Design456_RoundedHousing", 
+            "Design456_EllipseBox", 
+            "Design456_NonuniformedBox",
+            "Design456_FlowerVase",
             ]
 
     """Design456 Part Toolbar"""
