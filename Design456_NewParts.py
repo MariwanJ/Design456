@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-11 23:05:57'
+__updated__ = '2022-06-12 16:48:45'
 
 
 #Roof
@@ -1125,26 +1125,30 @@ class Design456_BaseFlowerVase:
     """
     def __init__(self, obj, 
                        _baseType="Circle",
-                       _middleType="Octagon",
-                       _topType="Triangle",
+                       _middleType="Polygon",
+                       _topType="Circle",
+                       _baseSides=8,
+                       _middleSides=8,
+                       _topSides=8,
                        _baseRadius=10,
                        _middleRadius=20,
                        _topRadius=5,
                        _height=20,
-                       _thickness=1,
+                       _neckHeight=2,
                         _solid=True,
-                        _frenet=False):
+                        _withContact=False,
+                        _withCorrection=False):
 
         obj.addProperty("App::PropertyEnumeration", "baseType","1)Sections", 
-                        "FlowerVase base type").baseType = ["Circle","Octagon","Rectangle","Triangle"]
+                        "FlowerVase base type").baseType = ["Circle","Polygon"]
         obj.baseType=_baseType
 
         obj.addProperty("App::PropertyEnumeration", "middleType","1)Sections", 
-                        "FlowerVase middle type").middleType = ["Circle","Octagon","Rectangle","Triangle"]
+                        "FlowerVase middle type").middleType = ["Circle","Polygon"]
         obj.middleType=_middleType
 
         obj.addProperty("App::PropertyEnumeration", "topType","1)Sections", 
-                        "FlowerVase top type").topType = ["Circle","Octagon","Rectangle","Triangle"]
+                        "FlowerVase top type").topType = ["Circle","Polygon"]
         obj.topType=_topType
 
         obj.addProperty("App::PropertyLength", "baseRadius","2)Radius", 
@@ -1159,14 +1163,23 @@ class Design456_BaseFlowerVase:
 
         obj.addProperty("App::PropertyLength", "Height","3)Others", 
                         "Height of the FlowerVase").Height = _height
+        
+        obj.addProperty("App::PropertyLength", "neckHeight","3)Others", 
+                        "Height of the FlowerVase").neckHeight = _neckHeight
 
-        obj.addProperty("App::PropertyLength", "Thickness","3)Others", 
-                        "Thickness of the FlowerVase").Thickness = _thickness
-
+        obj.addProperty("App::PropertyInteger", "baseSides","3)Others", 
+                        "base sides of the FlowerVase").baseSides = _baseSides
+        obj.addProperty("App::PropertyInteger", "middleSides","3)Others", 
+                        "middle sides of the FlowerVase").middleSides = _middleSides
+        obj.addProperty("App::PropertyInteger", "topSides","3)Others", 
+                        "top sides of the FlowerVase").topSides = _topSides
+        
         obj.addProperty("App::PropertyBool", "Solid","3)Others", 
                         "FlowerVase top type").Solid=_solid
-        obj.addProperty("App::PropertyBool", "Frenet","3)Others", 
-                        "FlowerVase top type").Frenet=_frenet
+        obj.addProperty("App::PropertyBool", "WithContact","3)Others", 
+                        "FlowerVase top type").WithContact=_withContact
+        obj.addProperty("App::PropertyBool", "WithCorrection","3)Others", 
+                        "FlowerVase top type").WithCorrection=_withCorrection
         obj.Proxy = self
         self.Type ="FlowerVase"
         
@@ -1183,6 +1196,7 @@ class Design456_BaseFlowerVase:
                 z=Zaxis+plc.Base.z
                 point = App.Vector(x,y, z)
                 vertices.append(point)
+            print(vertices)
             return vertices
         
         except Exception as err:
@@ -1196,7 +1210,7 @@ class Design456_BaseFlowerVase:
         try:
             self.plc=App.Placement()
             self.plc.Base=App.Vector(0,0,0)
-            self.plc.Rotation= (0.0, 0.0, 1.0,0.0)
+            self.plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
             self.baseType=str(obj.baseType)
             self.middleType=str(obj.middleType)
             self.topType=str(obj.topType)
@@ -1206,8 +1220,9 @@ class Design456_BaseFlowerVase:
             self.topRadius=float(obj.topRadius)
 
             self.Height=float(obj.Height)
-            self.Thickness=float(obj.Thickness)
+            self.neckHeight=float(obj.neckHeight)
             self.Result=None
+            self.polygonSides=int(obj.polygonSides)
 
             self.baseObj=None
             self.middleObj=None
@@ -1215,45 +1230,55 @@ class Design456_BaseFlowerVase:
             self.baseObj=None
             self.sweepPath=None
             self.Solid=obj.Solid
-            self.Frenet=obj.Frenet
+            self.baseSides=obj.baseSides
+            self.middleSides=obj.middleSides
+            self.topSides=obj.topSides
+            self.WithContact=obj.WithContact
+            self.WithCorrection=obj.WithCorrection
             obj.Placement=self.plc
+            faceTopCover=None
             if self.baseType=="Circle":                                #(self,radius,sides,plc,Zaxis=0.0):
                 self.baseObj=Part.Wire(Part.makeCircle(self.baseRadius,obj.Placement.Base, App.Vector(0,0,1),0,360))
             elif self.baseType=="Octagon":
-                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,8,self.plc))
+                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.baseSides,self.plc))
             elif self.baseType=="Rectangle":
-                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,4,self.plc))
+                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.middleSides,self.plc))
             elif self.baseType=="Triangle":
-                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,3,self.plc))
+                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.topSides,self.plc))
 
             if self.middleType=="Circle":
-                self.middleObj=Part.Wire(Part.makeCircle(self.middleRadius,App.Vector(0,0,self.Height/2), App.Vector(0,0,1),0,360))
-            elif self.middleType=="Octagon":
-                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,8,self.plc,self.Height/2))
-            elif self.baseType=="Rectangle":
-                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,4,self.plc))
-            elif self.middleType=="Triangle":
-                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,3,self.plc,self.Height/2))
+                self.middleObj=Part.Wire(Part.makeCircle(self.middleRadius,App.Vector(0,0,(self.Height-self.neckHeight)/2), App.Vector(0,0,1),0,360))
+            elif self.middleType=="Polygon":
+                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,self.middleSides,self.plc,(self.Height-self.neckHeight)/2))
 
             if self.topType=="Circle":
-                self.topObj=Part.Wire(Part.makeCircle(self.topRadius,App.Vector(0,0,self.Height), App.Vector(0,0,1),0,360))
-            elif self.topType=="Octagon":
-                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,8,self.plc,self.Height))
-            elif self.baseType=="Rectangle":
-                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,4,self.plc))
-            elif self.topType=="Triangle":
-                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,3,self.plc,self.Height))        
-            self.sweepPath=Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)])
-            W2section=Part.Wire([self.baseObj])
-            W1path=self.sweepPath
+                self.topObj=Part.Wire(Part.makeCircle(self.topRadius,App.Vector(0,0,(self.Height-self.neckHeight)), App.Vector(0,0,1),0,360))
+                faceTopCover=self.topObj=Part.Wire(Part.makeCircle(self.topRadius,App.Vector(0,0,(self.Height)), App.Vector(0,0,1),0,360))
+            elif self.middleType=="Polygon":
+                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,self.topSides,self.plc,(self.Height-self.neckHeight)))
+                faceTopCover=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,self.topSides,self.plc,(self.Height)))
+            
+            
+            self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
+
             tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
             #add(Profile, WithContact=False, WithCorrection=False)
-            tnObj.add(self.baseObj,True,True)
-            tnObj.add(self.middleObj,True,True)
-            tnObj.add(self.topObj,True,True)
-            nObj=Part.Solid(tnObj.shape())
-            obj.Shape =nObj
+            tnObj.add(self.baseObj,self.WithContact,self.WithCorrection)
+            tnObj.add(self.middleObj,self.WithContact,self.WithCorrection)
+            tnObj.add(self.topObj,self.WithContact,self.WithCorrection)
+            tnObj.setTransitionMode(1)  #Round edges
+            f1=Part.Face(faceTopCover)
+            f2 = Part.Face(self.baseObj)            
+            f=tnObj.shape().Faces
+            nObj = Part.makeShell(f)
+            FinalObj=None
+            if self.Solid is True:
+                tnObj.makeSolid()
+                FinalObj = tnObj.shape()
+            else:
+                FinalObj=nObj
 
+            obj.Shape = FinalObj
 
         except Exception as err:
             App.Console.PrintError("'execute FlowerVase' Failed. "
@@ -1275,6 +1300,7 @@ class Design456_FlowerVase:
 
         ViewProviderFlowerVase(newObj.ViewObject, "FlowerVase")
         v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_FlowerVase', Design456_FlowerVase())

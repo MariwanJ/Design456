@@ -40,7 +40,7 @@ import glob
 
 from functools import partial
 
-__updated__ = '2022-06-08 22:30:47'
+__updated__ = '2022-06-12 12:53:31'
 
 COMMANDS_Basic=[
     ["Design456Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -59,7 +59,7 @@ COMMANDS_Basic=[
     ["Icosahedron", Design456Init.PYRAMID_ICON_PATH+'icosahedron.svg'],
     ["Icosahedron_truncated",  Design456Init.PYRAMID_ICON_PATH+ 'icosahedron_trunc.svg'],    
     ["Geodesic_sphere",  Design456Init.PYRAMID_ICON_PATH+'geodesic_sphere.svg'],
-    ["Design456_FlowerVase",  Design456Init.PYRAMID_ICON_PATH+'FlowerVase.svg']
+    ["Design456_FlowerVase",  Design456Init.ICON_PATH+'FlowerVase.svg']
     
     ]
 COMMANDS_Advanced=[
