@@ -1403,6 +1403,8 @@ class Design456_BaseAcousticFoam:
             self.plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
           
             self.Height=float(obj.Height)
+            self.Length=float(obj.Length)
+            self.Width=float(obj.Width)
             self.waveAmplitude=float(obj.waveAmplitude)
             self.waveType=str(obj.waveType)
             
@@ -1411,6 +1413,7 @@ class Design456_BaseAcousticFoam:
             self.Solid=obj.Solid
             self.WithContact=obj.WithContact
             self.WithCorrection=obj.WithCorrection
+
             obj.Placement=self.plc
             vert=self.calculateWavedEdge()
             print(vert)
