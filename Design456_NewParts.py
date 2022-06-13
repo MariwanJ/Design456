@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-12 23:22:38'
+__updated__ = '2022-06-13 22:14:52'
 
 
 #Roof
@@ -1180,20 +1180,21 @@ class Design456_BaseFlowerVase:
                         "FlowerVase top type").WithContact=_withContact
         obj.addProperty("App::PropertyBool", "WithCorrection","3)Others", 
                         "FlowerVase top type").WithCorrection=_withCorrection
+
+        self.Placement=obj.Placement
         obj.Proxy = self
-        self.Type ="FlowerVase"
-        
+        self.Type ="FlowerVase"        
  
             
-    def calculatePolygonVertices(self,radius,sides,plc,Zaxis=0.0):
+    def calculatePolygonVertices(self,radius,sides,Zaxis=0.0):
         try:
             vertices=[]
             slice=360/sides
             _angle=math.radians(slice)
             for i in range(0, sides+1):
-                x=plc.Base.x+(radius * math.cos(_angle*i))
-                y=plc.Base.y+(radius *math.sin(_angle*i))
-                z=Zaxis+plc.Base.z
+                x=self.Placement.Base.x+(radius * math.cos(_angle*i))
+                y=self.Placement.Base.y+(radius *math.sin(_angle*i))
+                z=Zaxis+self.Placement.Base.z
                 point = App.Vector(x,y, z)
                 vertices.append(point)
             return vertices
@@ -1207,9 +1208,7 @@ class Design456_BaseFlowerVase:
                 
     def execute(self, obj):
         try:
-            self.plc=App.Placement()
-            self.plc.Base=App.Vector(0,0,0)
-            self.plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+
             self.baseType=str(obj.baseType)
             self.middleType=str(obj.middleType)
             self.topType=str(obj.topType)
@@ -1233,22 +1232,21 @@ class Design456_BaseFlowerVase:
             self.topSides=obj.topSides
             self.WithContact=obj.WithContact
             self.WithCorrection=obj.WithCorrection
-            obj.Placement=self.plc
 
             if self.baseType=="Circle":                                #(self,radius,sides,plc,Zaxis=0.0):
                 self.baseObj=Part.Wire(Part.makeCircle(self.baseRadius,obj.Placement.Base, App.Vector(0,0,1),0,360))
             elif self.baseType=="Polygon":
-                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.baseSides,self.plc))
+                self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.baseSides))
 
             if self.middleType=="Circle":
                 self.middleObj=Part.Wire(Part.makeCircle(self.middleRadius,App.Vector(0,0,(self.Height-self.neckHeight)/2), App.Vector(0,0,1),0,360))
             elif self.middleType=="Polygon":
-                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,self.middleSides,self.plc,(self.Height-self.neckHeight)/2))
+                self.middleObj=Part.makePolygon(self.calculatePolygonVertices(self.middleRadius,self.middleSides,(self.Height-self.neckHeight)/2))
 
             if self.topType=="Circle":
                 self.topObj=Part.Wire(Part.makeCircle(self.topRadius,App.Vector(0,0,(self.Height-self.neckHeight)), App.Vector(0,0,1),0,360))
             elif self.middleType=="Polygon":
-                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,self.topSides,self.plc,(self.Height-self.neckHeight)))
+                self.topObj=Part.makePolygon(self.calculatePolygonVertices(self.topRadius,self.topSides,(self.Height-self.neckHeight)))
           
             try:
                 self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
@@ -1296,6 +1294,10 @@ class Design456_FlowerVase:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "FlowerVase")
+        plc=App.Placement()
+        plc.Base=App.Vector(0,0,0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.placement=plc
         Design456_BaseFlowerVase(newObj)
 
         ViewProviderFlowerVase(newObj.ViewObject, "FlowerVase")
@@ -1364,14 +1366,14 @@ class Design456_BaseAcousticFoam:
                         "Height of the AcousticFoam").Height = _height
         obj.addProperty("App::PropertyLength", "Width","Foam", 
                         "Width of the AcousticFoam").Width = _width
-        obj.addProperty("App::PropertyInteger", "Length","Foam", 
+        obj.addProperty("App::PropertyLength", "Length","Foam", 
                         "Height of the AcousticFoam").Length = _length
         
         obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
                         "wave Amplitude of the AcousticFoam").waveAmplitude = _waveAmplitude
 
         obj.addProperty("App::PropertyLength", "wavePeriod","Foam", 
-                        "wave Amplitude of the AcousticFoam").waveAmplitude = _wavePeriod
+                        "wave Amplitude of the AcousticFoam").wavePeriod = _wavePeriod
         
         obj.addProperty("App::PropertyEnumeration", "waveType","Foam", 
                         "FlowerVase top type").waveType = ["Sine","Cos","Tan"]
@@ -1382,30 +1384,39 @@ class Design456_BaseAcousticFoam:
                         "AcousticFoam top type").WithContact=_withContact
         obj.addProperty("App::PropertyBool", "WithCorrection","Foam", 
                         "AcousticFoam top type").WithCorrection=_withCorrection
-        obj.Proxy = self
+        
+        self.Placement=obj.Placement
         obj.waveType="Sine"
+        obj.Proxy = self
         self.Type ="AcousticFoam"
 
     def calculateWavedEdge(self):
         vertices=[]
         angelParts=math.radians(360/6)
-        for ii in range(0,self.Length+1):
-            x=ii
-            y=0
-            z=math.sin(ii*angelParts)
-            vertices.append(App.Vector(x,y,z))
+        count1=0.0
+        count2=0
+        seg1=(self.wavePeriod/6)                     #basic single segments per each angle
+        x=0.0
+        y=0.0
+        z=0.0
+        while(count1<self.Length):
+            for count2 in range(0,6):
+                z=self.wavePeriod/3*math.sin(count2*angelParts)
+                vertices.append(App.Vector(x+self.Placement.Base.x,
+                                           y+self.Placement.Base.y,
+                                           z+self.Placement.Base.z))
+                x=x+seg1
+            count1=count1+self.wavePeriod
         return(vertices)
 
     def execute(self, obj):
         try:
-            self.plc=App.Placement()
-            self.plc.Base=App.Vector(0,0,0)
-            self.plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
-          
+
             self.Height=float(obj.Height)
             self.Length=float(obj.Length)
             self.Width=float(obj.Width)
             self.waveAmplitude=float(obj.waveAmplitude)
+            self.wavePeriod =float(obj.wavePeriod)
             self.waveType=str(obj.waveType)
             
             self.baseObj=None
@@ -1413,20 +1424,16 @@ class Design456_BaseAcousticFoam:
             self.Solid=obj.Solid
             self.WithContact=obj.WithContact
             self.WithCorrection=obj.WithCorrection
-
-            obj.Placement=self.plc
             vert=self.calculateWavedEdge()
-            print(vert)
-            bObj=Part.Wire((Draft.make_bspline(vert, closed=False, face=False, support=None)).Shape.Edges[0])
-
-            self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
+            bs = Part.BSplineCurve()
+            bs.interpolate(vert)
+            bObj=bs.toShape()
+            self.sweepPath = Part.makePolygon([App.Vector(self.Length/2,0,self.wavePeriod/3),App.Vector(self.Length/2,self.Width,self.wavePeriod/3)]) #must be the total height
             tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
-            tnObj.add(bObj,self.WithContact,self.WithCorrection)
-            tnObj.setTransitionMode(0)  #Round edges
-            f=tnObj.shape().Faces
-            f.append(Part.Face(self.baseObj))
-            nObj = Part.makeShell(f)
-            obj.Shape = nObj.shape()
+            tnObj.add(Part.Wire(bObj))#,self.WithContact,self.WithCorrection)
+            #tnObj.setTransitionMode(0)  #Round edges
+            #nObj = Part.makeShell()
+            obj.Shape =tnObj.shape()
 
         except Exception as err:
             App.Console.PrintError("'execute AcousticFoam' Failed. "
@@ -1444,6 +1451,10 @@ class Design456_AcousticFoam:
     def Activated(self):
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "AcousticFoam")
+        plc=App.Placement()
+        plc.Base=App.Vector(0,0,0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.Placement = plc
         Design456_BaseAcousticFoam(newObj)
 
         ViewProviderAcousticFoam(newObj.ViewObject, "AcousticFoam")
