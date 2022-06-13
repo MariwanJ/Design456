@@ -1389,7 +1389,7 @@ class Design456_BaseAcousticFoam:
     def calculateWavedEdge(self):
         vertices=[]
         angelParts=math.radians(360/6)
-        for ii in range(0,6+1):
+        for ii in range(0,self.Length+1):
             x=ii
             y=0
             z=math.sin(ii*angelParts)
