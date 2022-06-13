@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-13 22:57:05'
+__updated__ = '2022-06-13 23:04:10'
 
 
 #Roof
@@ -1353,33 +1353,29 @@ class Design456_BaseCorrugatedSteel:
     """ CorrugatedSteel shape based on several parameters
     """
     def __init__(self, obj, 
-                       _height=10,
-                       _width=10,
-                       _length=10,
-                       _wavePeriod=1,
+                       _height=0.5,
+                       _width=10.0,
+                       _length=10.0,
+                       _wavePeriod=1.0,
                         _solid=True,
-                        _waveAmplitude=0.5,
                         _withContact=False,
                         _withCorrection=False):
 
-        obj.addProperty("App::PropertyLength", "Height","Foam", 
+        obj.addProperty("App::PropertyLength", "Height","Sheet", 
                         "Height of the CorrugatedSteel").Height = _height
-        obj.addProperty("App::PropertyLength", "Width","Foam", 
+        obj.addProperty("App::PropertyLength", "Width","Sheet", 
                         "Width of the CorrugatedSteel").Width = _width
-        obj.addProperty("App::PropertyLength", "Length","Foam", 
+        obj.addProperty("App::PropertyLength", "Length","Sheet", 
                         "Height of the CorrugatedSteel").Length = _length
-        
-        obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
-                        "wave Amplitude of the CorrugatedSteel").waveAmplitude = _waveAmplitude
 
-        obj.addProperty("App::PropertyLength", "wavePeriod","Foam", 
+        obj.addProperty("App::PropertyLength", "wavePeriod","Sheet", 
                         "wave Amplitude of the CorrugatedSteel").wavePeriod = _wavePeriod
         
-        obj.addProperty("App::PropertyBool", "Solid","Foam", 
+        obj.addProperty("App::PropertyBool", "Solid","Sheet", 
                         "CorrugatedSteel top type").Solid=_solid
-        obj.addProperty("App::PropertyBool", "WithContact","Foam", 
+        obj.addProperty("App::PropertyBool", "WithContact","Sheet", 
                         "CorrugatedSteel top type").WithContact=_withContact
-        obj.addProperty("App::PropertyBool", "WithCorrection","Foam", 
+        obj.addProperty("App::PropertyBool", "WithCorrection","Sheet", 
                         "CorrugatedSteel top type").WithCorrection=_withCorrection
         
         self.Placement=obj.Placement
@@ -1411,10 +1407,8 @@ class Design456_BaseCorrugatedSteel:
             self.Height=float(obj.Height)
             self.Length=float(obj.Length)
             self.Width=float(obj.Width)
-            self.waveAmplitude=float(obj.waveAmplitude)
             self.wavePeriod =float(obj.wavePeriod)
-            self.waveType=str(obj.waveType)
-            
+          
             self.baseObj=None
             self.sweepPath=None
             self.Solid=obj.Solid
@@ -1426,7 +1420,7 @@ class Design456_BaseCorrugatedSteel:
             bObj=bs.toShape()
             self.sweepPath = Part.makePolygon([App.Vector(self.Length/2,0,self.wavePeriod/3),App.Vector(self.Length/2,self.Width,self.wavePeriod/3)])
             tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
-            tnObj.add(Part.Wire(bObj))#,self.WithContact,self.WithCorrection)
+            tnObj.add(Part.Wire(bObj),self.WithContact,self.WithCorrection)
             tnObj.setTransitionMode(0)  #Round edges
             #nObj = Part.makeShell()
             obj.Shape =tnObj.shape()
@@ -1503,9 +1497,9 @@ class Design456_BaseAcousticFoam:
     """ AcousticFoam shape based on several parameters
     """
     def __init__(self, obj, 
-                       _height=10,
-                       _width=10,
-                       _length=10,
+                       _height=1.0,
+                       _width=10.0,
+                       _length=10.0,
                        _wavePeriod=1,
                         _solid=True,
                         _waveType="Sine",
@@ -1581,7 +1575,7 @@ class Design456_BaseAcousticFoam:
             bObj=bs.toShape()
             self.sweepPath = Part.makePolygon([App.Vector(self.Length/2,0,self.wavePeriod/3),App.Vector(self.Length/2,self.Width,self.wavePeriod/3)]) #must be the total height
             tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
-            tnObj.add(Part.Wire(bObj))#,self.WithContact,self.WithCorrection)
+            tnObj.add(Part.Wire(bObj),self.WithContact,self.WithCorrection)
             tnObj.setTransitionMode(0)  #Round edges
             #nObj = Part.makeShell()
             obj.Shape =tnObj.shape()
