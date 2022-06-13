@@ -1309,6 +1309,42 @@ Gui.addCommand('Design456_FlowerVase', Design456_FlowerVase())
 ######################
 
 
+
+class ViewProviderAcousticFoam:
+
+    obj_name = "AcousticFoam"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderAcousticFoam.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'AcousticFoam.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+    
 #AcousticFoam 
 class Design456_BaseAcousticFoam:
     """ AcousticFoam shape based on several parameters
@@ -1326,7 +1362,7 @@ class Design456_BaseAcousticFoam:
 
         obj.addProperty("App::PropertyLength", "Height","Foam", 
                         "Height of the AcousticFoam").Height = _height
-        obj.addProperty("App::PropertyLength", "Height","Foam", 
+        obj.addProperty("App::PropertyLength", "Width","Foam", 
                         "Width of the AcousticFoam").Width = _width
         obj.addProperty("App::PropertyLength", "Length","Foam", 
                         "Height of the AcousticFoam").Length = _length
@@ -1338,7 +1374,7 @@ class Design456_BaseAcousticFoam:
                         "wave Amplitude of the AcousticFoam").waveAmplitude = _wavePeriod
         
         obj.addProperty("App::PropertyEnumeration", "waveType","Foam", 
-                        "FlowerVase top type").topType = ["Sine","Cos","Tan"]
+                        "FlowerVase top type").waveType = ["Sine","Cos","Tan"]
 
         obj.addProperty("App::PropertyBool", "Solid","Foam", 
                         "AcousticFoam top type").Solid=_solid
@@ -1347,15 +1383,16 @@ class Design456_BaseAcousticFoam:
         obj.addProperty("App::PropertyBool", "WithCorrection","Foam", 
                         "AcousticFoam top type").WithCorrection=_withCorrection
         obj.Proxy = self
+        obj.waveType="Sine"
         self.Type ="AcousticFoam"
 
     def calculateWavedEdge(self):
         vertices=[]
         angelParts=math.radians(360/6)
-        for ii in range(0,6):
-            x=math.sin(ii*angelParts)
-            y=angelParts
-            z=0
+        for ii in range(0,6+1):
+            x=ii
+            y=0
+            z=math.sin(ii*angelParts)
             vertices.append(App.Vector(x,y,z))
         return(vertices)
 
@@ -1376,6 +1413,7 @@ class Design456_BaseAcousticFoam:
             self.WithCorrection=obj.WithCorrection
             obj.Placement=self.plc
             vert=self.calculateWavedEdge()
+            print(vert)
             bObj=Part.Wire((Draft.make_bspline(vert, closed=False, face=False, support=None)).Shape.Edges[0])
 
             self.sweepPath = Part.makePolygon([App.Vector(0,0,0),App.Vector(0,0,self.Height)]) #must be the total height
