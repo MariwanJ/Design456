@@ -1364,7 +1364,7 @@ class Design456_BaseAcousticFoam:
                         "Height of the AcousticFoam").Height = _height
         obj.addProperty("App::PropertyLength", "Width","Foam", 
                         "Width of the AcousticFoam").Width = _width
-        obj.addProperty("App::PropertyLength", "Length","Foam", 
+        obj.addProperty("App::PropertyInteger", "Length","Foam", 
                         "Height of the AcousticFoam").Length = _length
         
         obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
