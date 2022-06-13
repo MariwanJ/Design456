@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-13 22:14:52'
+__updated__ = '2022-06-13 22:57:05'
 
 
 #Roof
@@ -1312,6 +1312,157 @@ Gui.addCommand('Design456_FlowerVase', Design456_FlowerVase())
 
 
 
+#Corrugated Steel 
+class ViewProviderCorrugatedSteel:
+
+    obj_name = "CorrugatedSteel"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderCorrugatedSteel.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'CorrugatedSteel.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+    
+#CorrugatedSteel 
+class Design456_BaseCorrugatedSteel:
+    """ CorrugatedSteel shape based on several parameters
+    """
+    def __init__(self, obj, 
+                       _height=10,
+                       _width=10,
+                       _length=10,
+                       _wavePeriod=1,
+                        _solid=True,
+                        _waveAmplitude=0.5,
+                        _withContact=False,
+                        _withCorrection=False):
+
+        obj.addProperty("App::PropertyLength", "Height","Foam", 
+                        "Height of the CorrugatedSteel").Height = _height
+        obj.addProperty("App::PropertyLength", "Width","Foam", 
+                        "Width of the CorrugatedSteel").Width = _width
+        obj.addProperty("App::PropertyLength", "Length","Foam", 
+                        "Height of the CorrugatedSteel").Length = _length
+        
+        obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
+                        "wave Amplitude of the CorrugatedSteel").waveAmplitude = _waveAmplitude
+
+        obj.addProperty("App::PropertyLength", "wavePeriod","Foam", 
+                        "wave Amplitude of the CorrugatedSteel").wavePeriod = _wavePeriod
+        
+        obj.addProperty("App::PropertyBool", "Solid","Foam", 
+                        "CorrugatedSteel top type").Solid=_solid
+        obj.addProperty("App::PropertyBool", "WithContact","Foam", 
+                        "CorrugatedSteel top type").WithContact=_withContact
+        obj.addProperty("App::PropertyBool", "WithCorrection","Foam", 
+                        "CorrugatedSteel top type").WithCorrection=_withCorrection
+        
+        self.Placement=obj.Placement
+        obj.Proxy = self
+        self.Type ="CorrugatedSteel"
+
+    def calculateWavedEdge(self):
+        vertices=[]
+        angelParts=math.radians(360/6)
+        count1=0.0
+        count2=0
+        seg1=(self.wavePeriod/6)                     #basic single segments per each angle
+        x=0.0
+        y=0.0
+        z=0.0
+        while(count1<self.Length):
+            for count2 in range(0,6):
+                z=self.Height*(self.wavePeriod/3*math.sin(count2*angelParts))
+                vertices.append(App.Vector(x+self.Placement.Base.x,
+                                           y+self.Placement.Base.y,
+                                           z+self.Placement.Base.z))
+                x=x+seg1
+            count1=count1+self.wavePeriod
+        return(vertices)
+
+    def execute(self, obj):
+        try:
+
+            self.Height=float(obj.Height)
+            self.Length=float(obj.Length)
+            self.Width=float(obj.Width)
+            self.waveAmplitude=float(obj.waveAmplitude)
+            self.wavePeriod =float(obj.wavePeriod)
+            self.waveType=str(obj.waveType)
+            
+            self.baseObj=None
+            self.sweepPath=None
+            self.Solid=obj.Solid
+            self.WithContact=obj.WithContact
+            self.WithCorrection=obj.WithCorrection
+            vert=self.calculateWavedEdge()
+            bs = Part.BSplineCurve()
+            bs.interpolate(vert)
+            bObj=bs.toShape()
+            self.sweepPath = Part.makePolygon([App.Vector(self.Length/2,0,self.wavePeriod/3),App.Vector(self.Length/2,self.Width,self.wavePeriod/3)])
+            tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
+            tnObj.add(Part.Wire(bObj))#,self.WithContact,self.WithCorrection)
+            tnObj.setTransitionMode(0)  #Round edges
+            #nObj = Part.makeShell()
+            obj.Shape =tnObj.shape()
+
+        except Exception as err:
+            App.Console.PrintError("'execute CorrugatedSteel' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+class Design456_CorrugatedSteel:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'CorrugatedSteel.svg',
+                'MenuText': "CorrugatedSteel",
+                'ToolTip': "Generate a CorrugatedSteel"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "CorrugatedSteel")
+        plc=App.Placement()
+        plc.Base=App.Vector(0,0,0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.Placement = plc
+        Design456_BaseCorrugatedSteel(newObj)
+
+        ViewProviderCorrugatedSteel(newObj.ViewObject, "CorrugatedSteel")
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_CorrugatedSteel', Design456_CorrugatedSteel())
+
+############################
+
+
 class ViewProviderAcousticFoam:
 
     obj_name = "AcousticFoam"
@@ -1401,7 +1552,7 @@ class Design456_BaseAcousticFoam:
         z=0.0
         while(count1<self.Length):
             for count2 in range(0,6):
-                z=self.wavePeriod/3*math.sin(count2*angelParts)
+                z=self.Height*(self.wavePeriod/3*math.sin(count2*angelParts))
                 vertices.append(App.Vector(x+self.Placement.Base.x,
                                            y+self.Placement.Base.y,
                                            z+self.Placement.Base.z))
@@ -1431,7 +1582,7 @@ class Design456_BaseAcousticFoam:
             self.sweepPath = Part.makePolygon([App.Vector(self.Length/2,0,self.wavePeriod/3),App.Vector(self.Length/2,self.Width,self.wavePeriod/3)]) #must be the total height
             tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
             tnObj.add(Part.Wire(bObj))#,self.WithContact,self.WithCorrection)
-            #tnObj.setTransitionMode(0)  #Round edges
+            tnObj.setTransitionMode(0)  #Round edges
             #nObj = Part.makeShell()
             obj.Shape =tnObj.shape()
 
@@ -1463,3 +1614,6 @@ class Design456_AcousticFoam:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_AcousticFoam', Design456_AcousticFoam())
+
+
+######################################################################
