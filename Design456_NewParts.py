@@ -1503,6 +1503,7 @@ class Design456_BaseAcousticFoam:
                        _wavePeriod=1,
                         _solid=True,
                         _waveType="Sine",
+                        _distanceBetweenWaves=1,
                         _waveAmplitude=0.5,
                         _withContact=False,
                         _withCorrection=False):
@@ -1513,6 +1514,10 @@ class Design456_BaseAcousticFoam:
                         "Width of the AcousticFoam").Width = _width
         obj.addProperty("App::PropertyLength", "Length","Foam", 
                         "Height of the AcousticFoam").Length = _length
+
+        obj.addProperty("App::PropertyLength", "distanceBetweenWaves","Foam", 
+                        "distance between waves of the AcousticFoam").distanceBetweenWaves = _distanceBetweenWaves
+
         
         obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
                         "wave Amplitude of the AcousticFoam").waveAmplitude = _waveAmplitude
@@ -1531,13 +1536,13 @@ class Design456_BaseAcousticFoam:
                         "AcousticFoam top type").WithCorrection=_withCorrection
         
         self.Placement=obj.Placement
-        obj.waveType="Sine"
+        obj.waveType=_waveType
         obj.Proxy = self
         self.Type ="AcousticFoam"
 
-    def calculateWavedEdge(self):
+    def calculateWavedEdge(self,plc,angle=0):
         vertices=[]
-        angelParts=math.radians(360/6)
+        angelParts=math.radians(360/6)+math.radians(angle)
         count1=0.0
         count2=0
         seg1=(self.wavePeriod/6)                     #basic single segments per each angle
@@ -1547,9 +1552,9 @@ class Design456_BaseAcousticFoam:
         while(count1<self.Length):
             for count2 in range(0,6):
                 z=self.Height*(self.wavePeriod/3*math.sin(count2*angelParts))
-                vertices.append(App.Vector(x+self.Placement.Base.x,
-                                           y+self.Placement.Base.y,
-                                           z+self.Placement.Base.z))
+                vertices.append(App.Vector(x+plc.Base.x,
+                                           y+plc.Base.y,
+                                           z+plc.Base.z))
                 x=x+seg1
             count1=count1+self.wavePeriod
         return(vertices)
@@ -1557,25 +1562,34 @@ class Design456_BaseAcousticFoam:
     def execute(self, obj):
         try:
 
-            self.Height=float(obj.Height)
-            self.Length=float(obj.Length)
-            self.Width=float(obj.Width)
-            self.waveAmplitude=float(obj.waveAmplitude)
+            self.Height=float(obj.Height)  # Extrusion Axis (Z)
+            self.Length=float(obj.Length)  #X AXIS 
+            self.Width=float(obj.Width)    #Y AXIS
+            self.waveAmplitude=float(obj.waveAmplitude) #Wave amplitude (Z) for one surface
             self.wavePeriod =float(obj.wavePeriod)
             self.waveType=str(obj.waveType)
-            
+            self.distanceBetweenWaves=float(obj.distanceBetweenWaves)
             self.baseObj=None
             self.sweepPath=None
             self.Solid=obj.Solid
             self.WithContact=obj.WithContact
             self.WithCorrection=obj.WithCorrection
-            vert=self.calculateWavedEdge()
-            bs = Part.BSplineCurve()
-            bs.interpolate(vert)
-            bObj=bs.toShape()
+            waves=[]
+            nrOfWaves=int(self.Width/self.distanceBetweenWaves)
             self.sweepPath = Part.makePolygon([App.Vector(self.Length/2,0,self.wavePeriod/3),App.Vector(self.Length/2,self.Width,self.wavePeriod/3)]) #must be the total height
             tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
-            tnObj.add(Part.Wire(bObj),self.WithContact,self.WithCorrection)
+            for i in range(0,nrOfWaves):
+                Nplc=self.Placement
+                Nplc.Base.y=Nplc.Base.y+self.distanceBetweenWaves*i
+                if int(i/2)== i/2:
+                    vert=self.calculateWavedEdge(Nplc,0)
+                else:
+                    vert=self.calculateWavedEdge(Nplc,90)
+                bs = Part.BSplineCurve()
+                bs.interpolate(vert)
+                bObj=bs.toShape()
+                tnObj.add(Part.Wire(bObj),self.WithContact,self.WithCorrection)
+            Part.show(tnObj)
             tnObj.setTransitionMode(0)  #Round edges
             #nObj = Part.makeShell()
             obj.Shape =tnObj.shape()
