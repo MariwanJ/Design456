@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-13 23:04:10'
+__updated__ = '2022-06-14 21:45:36'
 
 
 #Roof
@@ -1542,7 +1542,7 @@ class Design456_BaseAcousticFoam:
 
     def calculateWavedEdge(self,plc,angle=0):
         vertices=[]
-        angelParts=math.radians(360/6)+math.radians(angle)
+        angelParts=math.radians(360/6)
         count1=0.0
         count2=0
         seg1=(self.wavePeriod/6)                     #basic single segments per each angle
@@ -1551,7 +1551,7 @@ class Design456_BaseAcousticFoam:
         z=0.0
         while(count1<self.Length):
             for count2 in range(0,6):
-                z=self.Height*(self.wavePeriod/3*math.sin(count2*angelParts))
+                z=self.Height*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
                 vertices.append(App.Vector(x+plc.Base.x,
                                            y+plc.Base.y,
                                            z+plc.Base.z))
@@ -1576,23 +1576,27 @@ class Design456_BaseAcousticFoam:
             self.WithCorrection=obj.WithCorrection
             waves=[]
             nrOfWaves=int(self.Width/self.distanceBetweenWaves)
-            self.sweepPath = Part.makePolygon([App.Vector(self.Length/2,0,self.wavePeriod/3),App.Vector(self.Length/2,self.Width,self.wavePeriod/3)]) #must be the total height
-            tnObj=Part.BRepOffsetAPI.MakePipeShell(self.sweepPath)
+            
+            Nplc=self.Placement
+            originalY=self.Placement.Base.y
             for i in range(0,nrOfWaves):
-                Nplc=self.Placement
-                Nplc.Base.y=Nplc.Base.y+self.distanceBetweenWaves*i
+                Nplc.Base.y=originalY+self.distanceBetweenWaves*i
                 if int(i/2)== i/2:
                     vert=self.calculateWavedEdge(Nplc,0)
+                    Nplc.Base.y=originalY+self.distanceBetweenWaves*i/2                    
                 else:
                     vert=self.calculateWavedEdge(Nplc,90)
+                    Nplc.Base.y=originalY+self.distanceBetweenWaves*i/2
+                p1=App.Vector(vert[0].x,Nplc.Base.y, vert[0].z)
+                p2=App.Vector(vert[0].x+self.Length, Nplc.Base.y, vert[len(vert)-1].z)
+
                 bs = Part.BSplineCurve()
                 bs.interpolate(vert)
                 bObj=bs.toShape()
-                tnObj.add(Part.Wire(bObj),self.WithContact,self.WithCorrection)
-            Part.show(tnObj)
-            tnObj.setTransitionMode(0)  #Round edges
-            #nObj = Part.makeShell()
-            obj.Shape =tnObj.shape()
+                waves.append(Part.Wire(bObj))
+                waves.append(Part.Wire(Part.makePolygon([p1,p2])))
+            tnObj=Part.makeLoft(waves,False)
+            obj.Shape =tnObj
 
         except Exception as err:
             App.Console.PrintError("'execute AcousticFoam' Failed. "
