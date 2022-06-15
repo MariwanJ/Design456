@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-15 20:56:41'
+__updated__ = '2022-06-15 21:37:34'
 
 
 #Roof
@@ -1499,14 +1499,12 @@ class Design456_BaseAcousticFoam:
     def __init__(self, obj, 
                        _height=1.0,
                        _width=10.0,
-                       _length=12.0,
+                       _length=10.0,
                        _wavePeriod=1,
                         _solid=True,
                         _waveType="Sine",
-                        _distanceBetweenWaves=4,
-                        _waveAmplitude=0.5,
-                        _withContact=False,
-                        _withCorrection=False):
+                        _distanceBetweenWaves=1,
+                        _waveAmplitude=0.3):
 
         obj.addProperty("App::PropertyLength", "Height","Foam", 
                         "Height of the AcousticFoam").Height = _height
@@ -1530,17 +1528,11 @@ class Design456_BaseAcousticFoam:
 
         obj.addProperty("App::PropertyBool", "Solid","Foam", 
                         "AcousticFoam top type").Solid=_solid
-        obj.addProperty("App::PropertyBool", "WithContact","Foam", 
-                        "AcousticFoam top type").WithContact=_withContact
-        obj.addProperty("App::PropertyBool", "WithCorrection","Foam", 
-                        "AcousticFoam top type").WithCorrection=_withCorrection
-        
-        self.Placement=obj.Placement
         obj.waveType=_waveType
         obj.Proxy = self
         self.Type ="AcousticFoam"
 
-    def calculateWavedEdge(self,plc,angle=0):
+    def calculateWavedEdge(self,vector,angle=0):
         vertices=[]
         angelParts=math.radians(360/6)
         count1=0.0
@@ -1551,10 +1543,16 @@ class Design456_BaseAcousticFoam:
         z=0.0
         while(count1<self.Length):
             for count2 in range(0,6):
-                z=self.Height*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
-                vertices.append(App.Vector(x+plc.Base.x,
-                                           y+plc.Base.y,
-                                           z+plc.Base.z))
+                if self.waveType =="Sine":
+                    z=self.waveAmplitude*self.Height*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
+                elif self.waveType=="Cos":
+                    z=self.waveAmplitude*self.Height*(self.wavePeriod/3*math.cos(math.radians(angle)+count2*angelParts))
+                elif self.waveType=="Tan":
+                    z=self.waveAmplitude*self.Height*(self.wavePeriod/3*math.tan(math.radians(angle)+count2*angelParts))
+
+                vertices.append(App.Vector(x+vector.x,
+                                           y+vector.y,
+                                           z+vector.z))
                 x=x+seg1
             count1=count1+self.wavePeriod
         return(vertices)
@@ -1572,22 +1570,19 @@ class Design456_BaseAcousticFoam:
             self.baseObj=None
             self.sweepPath=None
             self.Solid=obj.Solid
-            self.WithContact=obj.WithContact
-            self.WithCorrection=obj.WithCorrection
             waves=[]
             nrOfWaves=int(self.Width/self.distanceBetweenWaves)
             
-            Nplc=self.Placement
-            originalY=self.Placement.Base.y
+            v=App.Vector(0,0,0)
+            originalY=v.y
             for i in range(0,nrOfWaves):
-                print(i)
-                Nplc.Base.y=originalY+self.distanceBetweenWaves*i
+                v.y=originalY+self.distanceBetweenWaves*i
                 if int(i/2)== (i/2):
-                    vert=self.calculateWavedEdge(Nplc,0)
-                    Nplc.Base.y=originalY+self.distanceBetweenWaves*i                    
+                    vert=self.calculateWavedEdge(v,0)
+                    v.y=originalY+self.distanceBetweenWaves*i                    
                 else:
-                    vert=self.calculateWavedEdge(Nplc,-180)
-                    Nplc.Base.y=originalY+self.distanceBetweenWaves*i
+                    vert=self.calculateWavedEdge(v,-180)
+                    v.y=originalY+self.distanceBetweenWaves*i
                 newY=originalY+self.distanceBetweenWaves/2+self.distanceBetweenWaves*i
                 p1=App.Vector(vert[0].x,newY, 0)
                 p2=App.Vector(vert[0].x+self.Length,newY , 0)
@@ -1598,7 +1593,7 @@ class Design456_BaseAcousticFoam:
                 waves.append(Part.Wire(bObj))
                 waves.append(objLINE)
                        #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
-            tnObj=Part.makeLoft(waves,False,True)
+            tnObj=Part.makeLoft(waves,False,False)
             obj.Shape =tnObj
 
         except Exception as err:
