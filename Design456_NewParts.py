@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-14 21:45:36'
+__updated__ = '2022-06-15 20:56:41'
 
 
 #Roof
@@ -1499,11 +1499,11 @@ class Design456_BaseAcousticFoam:
     def __init__(self, obj, 
                        _height=1.0,
                        _width=10.0,
-                       _length=10.0,
+                       _length=12.0,
                        _wavePeriod=1,
                         _solid=True,
                         _waveType="Sine",
-                        _distanceBetweenWaves=10,
+                        _distanceBetweenWaves=4,
                         _waveAmplitude=0.5,
                         _withContact=False,
                         _withCorrection=False):
@@ -1580,22 +1580,25 @@ class Design456_BaseAcousticFoam:
             Nplc=self.Placement
             originalY=self.Placement.Base.y
             for i in range(0,nrOfWaves):
+                print(i)
                 Nplc.Base.y=originalY+self.distanceBetweenWaves*i
-                if int(i/2)== i/2:
+                if int(i/2)== (i/2):
                     vert=self.calculateWavedEdge(Nplc,0)
-                    Nplc.Base.y=originalY+self.distanceBetweenWaves*i/2                    
+                    Nplc.Base.y=originalY+self.distanceBetweenWaves*i                    
                 else:
-                    vert=self.calculateWavedEdge(Nplc,90)
-                    Nplc.Base.y=originalY+self.distanceBetweenWaves*i/2
-                p1=App.Vector(vert[0].x,Nplc.Base.y, vert[0].z)
-                p2=App.Vector(vert[0].x+self.Length, Nplc.Base.y, vert[0].z)
-
+                    vert=self.calculateWavedEdge(Nplc,-180)
+                    Nplc.Base.y=originalY+self.distanceBetweenWaves*i
+                newY=originalY+self.distanceBetweenWaves/2+self.distanceBetweenWaves*i
+                p1=App.Vector(vert[0].x,newY, 0)
+                p2=App.Vector(vert[0].x+self.Length,newY , 0)
+                objLINE=Part.Wire(Part.makePolygon([p1,p2]))
                 bs = Part.BSplineCurve()
                 bs.interpolate(vert)
                 bObj=bs.toShape()
                 waves.append(Part.Wire(bObj))
-                waves.append(Part.Wire(Part.makePolygon([p1,p2])))
-            tnObj=Part.makeLoft(waves,True)
+                waves.append(objLINE)
+                       #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
+            tnObj=Part.makeLoft(waves,False,True)
             obj.Shape =tnObj
 
         except Exception as err:
