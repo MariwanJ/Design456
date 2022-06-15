@@ -1503,7 +1503,7 @@ class Design456_BaseAcousticFoam:
                        _wavePeriod=1,
                         _solid=True,
                         _waveType="Sine",
-                        _distanceBetweenWaves=1,
+                        _distanceBetweenWaves=10,
                         _waveAmplitude=0.5,
                         _withContact=False,
                         _withCorrection=False):
@@ -1588,14 +1588,14 @@ class Design456_BaseAcousticFoam:
                     vert=self.calculateWavedEdge(Nplc,90)
                     Nplc.Base.y=originalY+self.distanceBetweenWaves*i/2
                 p1=App.Vector(vert[0].x,Nplc.Base.y, vert[0].z)
-                p2=App.Vector(vert[0].x+self.Length, Nplc.Base.y, vert[len(vert)-1].z)
+                p2=App.Vector(vert[0].x+self.Length, Nplc.Base.y, vert[0].z)
 
                 bs = Part.BSplineCurve()
                 bs.interpolate(vert)
                 bObj=bs.toShape()
                 waves.append(Part.Wire(bObj))
                 waves.append(Part.Wire(Part.makePolygon([p1,p2])))
-            tnObj=Part.makeLoft(waves,False)
+            tnObj=Part.makeLoft(waves,True)
             obj.Shape =tnObj
 
         except Exception as err:
