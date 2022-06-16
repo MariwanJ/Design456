@@ -1607,6 +1607,7 @@ class Design456_BaseAcousticFoam:
             if self.Solid is True:
                 tnObj=tnObj.extrude(App.Vector(0,0,self.Height))
                 box=Part.makeBox(self.Length-(self.wavePeriod)  ,self.Width-(self.wavePeriod),self.Height*2) # remove PI size from the box
+                Part.show(box)
                 tnObj=tnObj.cut(box)
 
             obj.Shape =tnObj
