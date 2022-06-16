@@ -1493,6 +1493,9 @@ class ViewProviderAcousticFoam:
         return None
     
 #AcousticFoam 
+
+import BOPTools.SplitFeatures
+
 class Design456_BaseAcousticFoam:
     """ AcousticFoam shape based on several parameters
     """
@@ -1594,6 +1597,18 @@ class Design456_BaseAcousticFoam:
                 waves.append(objLINE)
                        #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
             tnObj=Part.makeLoft(waves,False,False)
+            #if self.Solid is True:
+            #     box=Part.makeBox(self.Length-(self.wavePeriod/3)  ,self.Width-(self.wavePeriod/6),self.Height*2) # remove PI size from the box
+            #     f = BOPTools.SplitFeatures.makeSlice(name='Slice')
+            #     f.Base = box
+            #     f.Tools = tnObj
+            #     f.Mode = 'Split'
+            #     f.Proxy.execute(f)
+            if self.Solid is True:
+                tnObj=tnObj.extrude(App.Vector(0,0,self.Height))
+                box=Part.makeBox(self.Length-(self.wavePeriod/3)  ,self.Width-(self.wavePeriod/3),self.Height*2) # remove PI size from the box
+                tnObj=tnObj.cut(box)
+
             obj.Shape =tnObj
 
         except Exception as err:
