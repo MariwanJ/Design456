@@ -37,7 +37,7 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-15 21:37:34'
+__updated__ = '2022-06-16 17:08:11'
 
 
 #Roof
@@ -1533,6 +1533,10 @@ class Design456_BaseAcousticFoam:
                         "AcousticFoam top type").Solid=_solid
         obj.waveType=_waveType
         obj.Proxy = self
+        if obj.Solid is True:
+            self.intersectOffset=int(_wavePeriod)
+        else:
+            self.intersectOffset=0
         self.Type ="AcousticFoam"
 
     def calculateWavedEdge(self,vector,angle=0):
@@ -1544,12 +1548,12 @@ class Design456_BaseAcousticFoam:
         x=0.0
         y=0.0
         z=0.0
-        while(count1<self.Length):
+        while(count1<self.Length+self.intersectOffset):
             for count2 in range(0,6):
                 if self.waveType =="Sine":
-                    z=self.waveAmplitude*self.Height*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
+                    z=self.waveAmplitude*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
                 elif self.waveType=="Cos":
-                    z=self.waveAmplitude*self.Height*(self.wavePeriod/3*math.cos(math.radians(angle)+count2*angelParts))
+                    z=self.waveAmplitude*(self.wavePeriod/3*math.cos(math.radians(angle)+count2*angelParts))
                 elif self.waveType=="Tan":
                     z=self.waveAmplitude*self.Height*(self.wavePeriod/3*math.tan(math.radians(angle)+count2*angelParts))
 
@@ -1562,7 +1566,6 @@ class Design456_BaseAcousticFoam:
 
     def execute(self, obj):
         try:
-
             self.Height=float(obj.Height)  # Extrusion Axis (Z)
             self.Length=float(obj.Length)  #X AXIS 
             self.Width=float(obj.Width)    #Y AXIS
@@ -1572,10 +1575,9 @@ class Design456_BaseAcousticFoam:
             self.distanceBetweenWaves=float(obj.distanceBetweenWaves)
             self.baseObj=None
             self.sweepPath=None
-            self.Solid=obj.Solid
+            self.Solid=obj.Solid            
             waves=[]
-            nrOfWaves=int(self.Width/self.distanceBetweenWaves)
-            
+            nrOfWaves=int((self.Width+self.intersectOffset)/self.distanceBetweenWaves)
             v=App.Vector(0,0,0)
             originalY=v.y
             for i in range(0,nrOfWaves):
@@ -1588,7 +1590,7 @@ class Design456_BaseAcousticFoam:
                     v.y=originalY+self.distanceBetweenWaves*i
                 newY=originalY+self.distanceBetweenWaves/2+self.distanceBetweenWaves*i
                 p1=App.Vector(vert[0].x,newY, 0)
-                p2=App.Vector(vert[0].x+self.Length,newY , 0)
+                p2=App.Vector(vert[0].x+self.Length+self.intersectOffset,newY , 0)
                 objLINE=Part.Wire(Part.makePolygon([p1,p2]))
                 bs = Part.BSplineCurve()
                 bs.interpolate(vert)
@@ -1597,19 +1599,12 @@ class Design456_BaseAcousticFoam:
                 waves.append(objLINE)
                        #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
             tnObj=Part.makeLoft(waves,False,False)
-            #if self.Solid is True:
-            #     box=Part.makeBox(self.Length-(self.wavePeriod/3)  ,self.Width-(self.wavePeriod/6),self.Height*2) # remove PI size from the box
-            #     f = BOPTools.SplitFeatures.makeSlice(name='Slice')
-            #     f.Base = box
-            #     f.Tools = tnObj
-            #     f.Mode = 'Split'
-            #     f.Proxy.execute(f)
+
             if self.Solid is True:
                 tnObj=tnObj.extrude(App.Vector(0,0,self.Height))
-                box=Part.makeBox(self.Length-(self.wavePeriod)  ,self.Width-(self.wavePeriod),self.Height*2) # remove PI size from the box
-                Part.show(box)
-                tnObj=tnObj.cut(box)
-
+                box=Part.makeBox(self.Length  ,self.Width,self.Height*4) # remove PI size from the box
+                box.Placement.Base.z=-self.Height
+                tnObj=tnObj.common(box)
             obj.Shape =tnObj
 
         except Exception as err:
