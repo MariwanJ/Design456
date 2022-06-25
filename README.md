@@ -14,7 +14,7 @@ Direct modeling approach has lately become more common in popular CAD solutions.
 
 ### Install 
 
-1. `cd  ~/.FreeCAD/Mod`
+1. `cd  ~/.local/share/FreeCAD/Mod/`
 2. `git clone https://github.com/MariwanJ/Design456`
 3. Restart FreeCAD
 
@@ -22,7 +22,7 @@ Result: The Design456 workbench should now be available in the workbench drop-do
 
 **Note:** Please keep this workbench up-to-date by pulling changes from this repository via `git`. This can be done before each time Design456 will be used.  
 
-1. `cd  ~/.FreeCAD/Mod/Design456`
+1. `cd  ~/.local/share/FreeCAD/Mod/Design456`
 2. `git pull`
 3. Restart FreeCAD
 
