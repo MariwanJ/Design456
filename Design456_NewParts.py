@@ -37,7 +37,9 @@ import Design456Init
 import FACE_D as faced
 import DraftGeomUtils
 import math
-__updated__ = '2022-06-16 17:08:11'
+import BOPTools.SplitFeatures
+
+__updated__ = '2022-06-16 21:37:15'
 
 
 #Roof
@@ -1494,7 +1496,6 @@ class ViewProviderAcousticFoam:
     
 #AcousticFoam 
 
-import BOPTools.SplitFeatures
 
 class Design456_BaseAcousticFoam:
     """ AcousticFoam shape based on several parameters
@@ -1635,6 +1636,184 @@ class Design456_AcousticFoam:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_AcousticFoam', Design456_AcousticFoam())
+
+
+######################################################################
+
+
+
+class ViewProviderGrass:
+
+    obj_name = "Grass"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderGrass.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'Grass.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+    
+#Grass 
+
+class Design456_BaseGrass:
+    """ Grass shape based on several parameters
+    """
+    def __init__(self, obj, 
+                       _height=1.0,
+                       _width=10.0,
+                       _length=10.0,
+                       _wavePeriod=1,
+                        _solid=True,
+                        _waveType="Sine",
+                        _distanceBetweenWaves=1,
+                        _waveAmplitude=0.3):
+
+        obj.addProperty("App::PropertyLength", "Height","Foam", 
+                        "Height of the Grass").Height = _height
+        obj.addProperty("App::PropertyLength", "Width","Foam", 
+                        "Width of the Grass").Width = _width
+        obj.addProperty("App::PropertyLength", "Length","Foam", 
+                        "Height of the Grass").Length = _length
+
+        obj.addProperty("App::PropertyLength", "distanceBetweenWaves","Foam", 
+                        "distance between waves of the Grass").distanceBetweenWaves = _distanceBetweenWaves
+
+        
+        obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
+                        "wave Amplitude of the Grass").waveAmplitude = _waveAmplitude
+
+        obj.addProperty("App::PropertyLength", "wavePeriod","Foam", 
+                        "wave Amplitude of the Grass").wavePeriod = _wavePeriod
+        
+        obj.addProperty("App::PropertyEnumeration", "waveType","Foam", 
+                        "FlowerVase top type").waveType = ["Sine","Cos","Tan"]
+
+        obj.addProperty("App::PropertyBool", "Solid","Foam", 
+                        "Grass top type").Solid=_solid
+        obj.waveType=_waveType
+        obj.Proxy = self
+        if obj.Solid is True:
+            self.intersectOffset=int(_wavePeriod)
+        else:
+            self.intersectOffset=0
+        self.Type ="Grass"
+
+    def calculateWavedEdge(self,vector,angle=0):
+        vertices=[]
+        angelParts=math.radians(360/6)
+        count1=0.0
+        count2=0
+        seg1=(self.wavePeriod/6)                     #basic single segments per each angle
+        x=0.0
+        y=0.0
+        z=0.0
+        while(count1<self.Length+self.intersectOffset):
+            for count2 in range(0,6):
+                if self.waveType =="Sine":
+                    z=self.waveAmplitude*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))*math.sin(math.radians(angle)+count2*angelParts)
+
+                vertices.append(App.Vector(x+vector.x,
+                                           y+vector.y,
+                                           z+vector.z))
+                x=x+seg1
+            count1=count1+self.wavePeriod
+        return(vertices)
+
+    def execute(self, obj):
+        try:
+            self.Height=float(obj.Height)  # Extrusion Axis (Z)
+            self.Length=float(obj.Length)  #X AXIS 
+            self.Width=float(obj.Width)    #Y AXIS
+            self.waveAmplitude=float(obj.waveAmplitude) #Wave amplitude (Z) for one surface
+            self.wavePeriod =float(obj.wavePeriod)
+            self.waveType=str(obj.waveType)
+            self.distanceBetweenWaves=float(obj.distanceBetweenWaves)
+            self.baseObj=None
+            self.sweepPath=None
+            self.Solid=obj.Solid            
+            waves=[]
+            nrOfWaves=int((self.Width+self.intersectOffset)/self.distanceBetweenWaves)
+            v=App.Vector(0,0,0)
+            originalY=v.y
+            for i in range(0,nrOfWaves):
+                v.y=originalY+self.distanceBetweenWaves*i
+                if int(i/2)== (i/2):
+                    vert=self.calculateWavedEdge(v,0)
+                    v.y=originalY+self.distanceBetweenWaves*i                    
+                else:
+                    vert=self.calculateWavedEdge(v,-180)
+                    v.y=originalY+self.distanceBetweenWaves*i
+                newY=originalY+self.distanceBetweenWaves/2+self.distanceBetweenWaves*i
+                p1=App.Vector(vert[0].x,newY, 0)
+                p2=App.Vector(vert[0].x+self.Length+self.intersectOffset,newY , 0)
+                objLINE=Part.Wire(Part.makePolygon([p1,p2]))
+                bs = Part.BSplineCurve()
+                bs.interpolate(vert)
+                bObj=bs.toShape()
+                waves.append(Part.Wire(bObj))
+                waves.append(objLINE)
+                       #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
+            tnObj=Part.makeLoft(waves,False,False)
+
+            if self.Solid is True:
+                tnObj=tnObj.extrude(App.Vector(0,0,self.Height))
+                box=Part.makeBox(self.Length  ,self.Width,self.Height*4) # remove PI size from the box
+                box.Placement.Base.z=-self.Height
+                tnObj=tnObj.common(box)
+            obj.Shape =tnObj
+
+        except Exception as err:
+            App.Console.PrintError("'execute Grass' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+class Design456_Grass:
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'Grass.svg',
+                'MenuText': "Grass",
+                'ToolTip': "Generate a Grass"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "Grass")
+        plc=App.Placement()
+        plc.Base=App.Vector(0,0,0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.Placement = plc
+        Design456_BaseGrass(newObj)
+
+        ViewProviderGrass(newObj.ViewObject, "Grass")
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_Grass', Design456_Grass())
 
 
 ######################################################################
