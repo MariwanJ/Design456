@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-06-26 21:51:07'
+__updated__ = '2022-06-26 22:19:38'
 
 
 #Roof
@@ -1790,7 +1790,6 @@ class Design456_BaseGrass:
                 bObj=bs.toShape()
                 waves.append(Part.Wire(bObj))
                 #waves.append(objLINE)
-                       #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
             tnObj=Part.makeLoft(waves,False,False)
 
             if self.Solid is True:
