@@ -42,7 +42,7 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-06-08 19:09:57'
+__updated__ = '2022-06-26 23:14:04'
 
 # Merge
 class Design456Part_Merge:
@@ -829,6 +829,65 @@ class Design456_DivideObject:
                 'ToolTip': "Generate a DivideObject"}
 
 Gui.addCommand('Design456_DivideObject', Design456_DivideObject())
+
+#******************************************************
+
+
+# Resize Hole
+class Design456_ResizeHole:
+
+    def Activated(self,input_object = None):
+        try:
+            result=None
+            return result
+            
+        except Exception as err:
+            App.Console.PrintError("'ResizeHole' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        return {
+            'Pixmap': Design456Init.ICON_PATH + 'ResizeHole.svg',
+            'MenuText': 'ResizeHole',
+            'ToolTip':  'Resize Hole'
+        }
+
+Gui.addCommand('Design456_ResizeHole', Design456_ResizeHole())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ##########################################################################
 
 
