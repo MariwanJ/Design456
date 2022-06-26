@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-06-26 22:19:38'
+__updated__ = '2022-06-26 22:46:48'
 
 
 #Roof
@@ -1552,7 +1552,7 @@ class Design456_BaseAcousticFoam:
         x=0.0
         y=0.0
         z=0.0
-        while(count1<self.Length+self.cutOffset):
+        while(count1<(self.Length+self.cutOffset)):
             for count2 in range(0,6):
                 if self.waveType =="Sine":
                     z=self.waveAmplitude*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
@@ -1601,7 +1601,6 @@ class Design456_BaseAcousticFoam:
                 bObj=bs.toShape()
                 waves.append(Part.Wire(bObj))
                 waves.append(objLINE)
-                       #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
             tnObj=Part.makeLoft(waves,False,False)
 
             if self.Solid is True:
@@ -1741,7 +1740,7 @@ class Design456_BaseGrass:
         x=0.0
         y=0.0
         z=0.0
-        while(count1<self.Length+self.cutOffset):
+        while(count1<(self.Length+self.cutOffset)):
             for count2 in range(0,6):
                 if self.waveType =="Sine":
                      z=self.waveAmplitude*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
@@ -1784,12 +1783,10 @@ class Design456_BaseGrass:
                 newY=originalY+self.distanceBetweenWaves/2+self.distanceBetweenWaves*i
                 p1=App.Vector(vert[0].x,newY, 0)
                 p2=App.Vector(vert[0].x+self.Length+self.cutOffset,newY , 0)
-                #objLINE=Part.Wire(Part.makePolygon([p1,p2]))
                 bs = Part.BSplineCurve()
                 bs.interpolate(vert)
                 bObj=bs.toShape()
                 waves.append(Part.Wire(bObj))
-                #waves.append(objLINE)
             tnObj=Part.makeLoft(waves,False,False)
 
             if self.Solid is True:
