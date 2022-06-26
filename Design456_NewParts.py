@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-06-16 21:37:15'
+__updated__ = '2022-06-26 21:51:07'
 
 
 #Roof
@@ -1508,36 +1508,39 @@ class Design456_BaseAcousticFoam:
                         _solid=True,
                         _waveType="Sine",
                         _distanceBetweenWaves=1,
-                        _waveAmplitude=0.3):
+                        _waveAmplitude=0.3,
+                        _cutOffset=2):
 
         obj.addProperty("App::PropertyLength", "Height","Foam", 
                         "Height of the AcousticFoam").Height = _height
         obj.addProperty("App::PropertyLength", "Width","Foam", 
                         "Width of the AcousticFoam").Width = _width
         obj.addProperty("App::PropertyLength", "Length","Foam", 
-                        "Height of the AcousticFoam").Length = _length
+                        "Length of the AcousticFoam").Length = _length
 
         obj.addProperty("App::PropertyLength", "distanceBetweenWaves","Foam", 
                         "distance between waves of the AcousticFoam").distanceBetweenWaves = _distanceBetweenWaves
 
-        
         obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
                         "wave Amplitude of the AcousticFoam").waveAmplitude = _waveAmplitude
 
         obj.addProperty("App::PropertyLength", "wavePeriod","Foam", 
-                        "wave Amplitude of the AcousticFoam").wavePeriod = _wavePeriod
+                        "wave period of the AcousticFoam").wavePeriod = _wavePeriod
+
+        obj.addProperty("App::PropertyInteger", "cutOffset","Foam", 
+                        "cut Offset of the AcousticFoam").cutOffset = _cutOffset
         
         obj.addProperty("App::PropertyEnumeration", "waveType","Foam", 
-                        "FlowerVase top type").waveType = ["Sine","Cos","Tan"]
+                        "AcousticFoam wave type").waveType = ["Sine","Cos","Tan"]
 
         obj.addProperty("App::PropertyBool", "Solid","Foam", 
                         "AcousticFoam top type").Solid=_solid
         obj.waveType=_waveType
         obj.Proxy = self
         if obj.Solid is True:
-            self.intersectOffset=int(_wavePeriod)
+            self.cutOffset= _cutOffset 
         else:
-            self.intersectOffset=0
+            self.cutOffset=0
         self.Type ="AcousticFoam"
 
     def calculateWavedEdge(self,vector,angle=0):
@@ -1549,7 +1552,7 @@ class Design456_BaseAcousticFoam:
         x=0.0
         y=0.0
         z=0.0
-        while(count1<self.Length+self.intersectOffset):
+        while(count1<self.Length+self.cutOffset):
             for count2 in range(0,6):
                 if self.waveType =="Sine":
                     z=self.waveAmplitude*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
@@ -1578,7 +1581,7 @@ class Design456_BaseAcousticFoam:
             self.sweepPath=None
             self.Solid=obj.Solid            
             waves=[]
-            nrOfWaves=int((self.Width+self.intersectOffset)/self.distanceBetweenWaves)
+            nrOfWaves=int((self.Width+self.cutOffset)/self.distanceBetweenWaves)
             v=App.Vector(0,0,0)
             originalY=v.y
             for i in range(0,nrOfWaves):
@@ -1591,7 +1594,7 @@ class Design456_BaseAcousticFoam:
                     v.y=originalY+self.distanceBetweenWaves*i
                 newY=originalY+self.distanceBetweenWaves/2+self.distanceBetweenWaves*i
                 p1=App.Vector(vert[0].x,newY, 0)
-                p2=App.Vector(vert[0].x+self.Length+self.intersectOffset,newY , 0)
+                p2=App.Vector(vert[0].x+self.Length+self.cutOffset,newY , 0)
                 objLINE=Part.Wire(Part.makePolygon([p1,p2]))
                 bs = Part.BSplineCurve()
                 bs.interpolate(vert)
@@ -1690,52 +1693,62 @@ class Design456_BaseGrass:
                         _solid=True,
                         _waveType="Sine",
                         _distanceBetweenWaves=1,
-                        _waveAmplitude=0.3):
+                        _waveAmplitude=0.3,
+                        _waveMaxAngel=75.0,
+                        _cutOffset=2):
 
-        obj.addProperty("App::PropertyLength", "Height","Foam", 
+        obj.addProperty("App::PropertyLength", "Height","Grass", 
                         "Height of the Grass").Height = _height
-        obj.addProperty("App::PropertyLength", "Width","Foam", 
+        obj.addProperty("App::PropertyLength", "Width","Grass", 
                         "Width of the Grass").Width = _width
-        obj.addProperty("App::PropertyLength", "Length","Foam", 
-                        "Height of the Grass").Length = _length
+        obj.addProperty("App::PropertyLength", "Length","Grass", 
+                        "Length of the Grass").Length = _length
+        
+        obj.addProperty("App::PropertyLength", "waveMaxAngle","Grass", 
+                        "wave Max angle of the Grass").waveMaxAngle = _waveMaxAngel
 
-        obj.addProperty("App::PropertyLength", "distanceBetweenWaves","Foam", 
+        obj.addProperty("App::PropertyLength", "distanceBetweenWaves","Grass", 
                         "distance between waves of the Grass").distanceBetweenWaves = _distanceBetweenWaves
 
+        obj.addProperty("App::PropertyInteger", "cutOffset","Grass", 
+                        "cut Offset of the Grass").cutOffset = _cutOffset
         
-        obj.addProperty("App::PropertyLength", "waveAmplitude","Foam", 
+        obj.addProperty("App::PropertyLength", "waveAmplitude","Grass", 
                         "wave Amplitude of the Grass").waveAmplitude = _waveAmplitude
 
-        obj.addProperty("App::PropertyLength", "wavePeriod","Foam", 
-                        "wave Amplitude of the Grass").wavePeriod = _wavePeriod
+        obj.addProperty("App::PropertyLength", "wavePeriod","Grass", 
+                        "wave period of the Grass").wavePeriod = _wavePeriod
         
-        obj.addProperty("App::PropertyEnumeration", "waveType","Foam", 
-                        "FlowerVase top type").waveType = ["Sine","Cos","Tan"]
+        obj.addProperty("App::PropertyEnumeration", "waveType","Grass", 
+                        "Grass wave type").waveType = ["Sine","Cos","Tan"]
 
-        obj.addProperty("App::PropertyBool", "Solid","Foam", 
-                        "Grass top type").Solid=_solid
+        obj.addProperty("App::PropertyBool", "Solid","Grass", 
+                        "Grass type").Solid=_solid
         obj.waveType=_waveType
         obj.Proxy = self
         if obj.Solid is True:
-            self.intersectOffset=int(_wavePeriod)
+            self.cutOffset=_cutOffset
         else:
-            self.intersectOffset=0
+            self.cutOffset=0
         self.Type ="Grass"
 
     def calculateWavedEdge(self,vector,angle=0):
         vertices=[]
-        angelParts=math.radians(360/6)
+        angelParts=math.radians(self.waveMaxAngle/6)
         count1=0.0
         count2=0
         seg1=(self.wavePeriod/6)                     #basic single segments per each angle
         x=0.0
         y=0.0
         z=0.0
-        while(count1<self.Length+self.intersectOffset):
+        while(count1<self.Length+self.cutOffset):
             for count2 in range(0,6):
                 if self.waveType =="Sine":
-                    z=self.waveAmplitude*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))*math.sin(math.radians(angle)+count2*angelParts)
-
+                     z=self.waveAmplitude*(self.wavePeriod/3*math.sin(math.radians(angle)+count2*angelParts))
+                elif self.waveType =="Cos":
+                     z=self.waveAmplitude*(self.wavePeriod/3*math.cos(math.radians(angle)+count2*angelParts))
+                elif self.waveType =="Tan":
+                     z=self.waveAmplitude*(self.wavePeriod/3*math.tan(math.radians(angle)+count2*angelParts))
                 vertices.append(App.Vector(x+vector.x,
                                            y+vector.y,
                                            z+vector.z))
@@ -1754,9 +1767,10 @@ class Design456_BaseGrass:
             self.distanceBetweenWaves=float(obj.distanceBetweenWaves)
             self.baseObj=None
             self.sweepPath=None
-            self.Solid=obj.Solid            
+            self.Solid=obj.Solid       
+            self.waveMaxAngle=float(obj.waveMaxAngle)     
             waves=[]
-            nrOfWaves=int((self.Width+self.intersectOffset)/self.distanceBetweenWaves)
+            nrOfWaves=int((self.Width+self.cutOffset)/self.distanceBetweenWaves)
             v=App.Vector(0,0,0)
             originalY=v.y
             for i in range(0,nrOfWaves):
@@ -1769,13 +1783,13 @@ class Design456_BaseGrass:
                     v.y=originalY+self.distanceBetweenWaves*i
                 newY=originalY+self.distanceBetweenWaves/2+self.distanceBetweenWaves*i
                 p1=App.Vector(vert[0].x,newY, 0)
-                p2=App.Vector(vert[0].x+self.Length+self.intersectOffset,newY , 0)
-                objLINE=Part.Wire(Part.makePolygon([p1,p2]))
+                p2=App.Vector(vert[0].x+self.Length+self.cutOffset,newY , 0)
+                #objLINE=Part.Wire(Part.makePolygon([p1,p2]))
                 bs = Part.BSplineCurve()
                 bs.interpolate(vert)
                 bObj=bs.toShape()
                 waves.append(Part.Wire(bObj))
-                waves.append(objLINE)
+                #waves.append(objLINE)
                        #makeLoft(list of wires,[solid=False,ruled=False,closed=False,maxDegree=5])
             tnObj=Part.makeLoft(waves,False,False)
 
