@@ -40,14 +40,14 @@ Initial inspiration came from exploring the a template workbench named D3D-Print
 
 
 ### Notes
-
+- Workbench updates are announced at my youtube channel only. You can also check my project page for getting info about current developments status.
 - You need to use latest FreeCAD to not get problems with this WB. Update your local version of Design456 regularly by daily basis.
 - Caution: It's recommended to work on a copy of your object even if Undo is functional now. If you find out it works on your test object, then apply it to your original object.  
 - There might be other issues, as I am the sole developer on this project, it is difficult to do all the work quickly. I have in my plan to test all these functions in quite depth. But at the moment, I wish to implement them and learn how I can do them. I am still in the beginning of the learning process.  
 - Tutorials and guides will be written /made later
 - Check out my videos to know how to use the tools.
 - The workbench is under heavy development. Still there is no released version. I need to have the base tools to announce a released version.
-- Keep updating your local version regularly. I announce at my youtube channel any changes I make.    
+- Keep updating your local version regularly.    
 
 ### Feedback
 
