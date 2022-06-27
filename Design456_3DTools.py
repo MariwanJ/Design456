@@ -838,8 +838,17 @@ class Design456_ResizeHole:
 
     def Activated(self,input_object = None):
         try:
-            result=None
-            return result
+            s=Gui.Selection.getSelectionEx()
+            if len(s)==0:
+                errMessage="Please select a face"
+                faced.errorDialog(errMessage)
+                return
+            sel=s[0]
+            #get info about the surface (cylindrical)
+            radius = sel.Surface.Radius
+            axis= sel.Surface.Axis
+            center=sel.Surface.Center
+            rotation=sel.Surface.Rotation
             
         except Exception as err:
             App.Console.PrintError("'ResizeHole' Failed. "
