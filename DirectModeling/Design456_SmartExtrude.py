@@ -46,7 +46,7 @@ from ThreeDWidgets import fr_label_draw
 from Design456Pref import Design456pref_var
 # The ration of delta mouse to mm
 MouseScaleFactor = 1
-__updated__ = '2022-05-15 21:58:58'
+__updated__ = '2022-06-27 23:23:57'
 
 '''
     How it works: 
@@ -301,10 +301,39 @@ class Design456_SmartExtrude:
         self.radSubtract = None
         self.radAsIs = None
         self.radSubtract = None
+        
+        #Cylindrical Face 
+        self.plcBase=None
+        self.height=None
+        self.OriginalRadius=None
 
         # Extrusion step
         self.ExtrusionStepSize = Design456pref_var.MouseStepSize
+    
+    #Used only with cylindrical face
+    def recreateCylinderObject(self,newInnerRadius,newOuterRadius):
+        try:
+            innerObj=None
+            outerObj=None
+            innerObj=Part.makeCylinder(newInnerRadius, self.height,self.center,self.axis,360)
+            outerObj=Part.makeCylinder(newOuterRadius, self.height,self.center,self.axis,360)
+            self.newObj= App.ActiveDocument.addObject('Part::Feature', "CyExtrude")
 
+            if newInnerRadius>newOuterRadius:
+                self.newObj.Shape=innerObj.cut(outerObj)
+            elif newInnerRadius<newOuterRadius:
+                self.newObj.Shape=innerObj.cut(outerObj)
+            App.ActiveDocument.recompute()
+            #Now decide wether we leave as it is or merge, or cut. 
+            return self.newObj
+        
+        except Exception as err:
+            App.Console.PrintError("'recreateNewObject' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def reCreateExtrudeObject(self):
         """
         [
@@ -510,6 +539,12 @@ class Design456_SmartExtrude:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "SmartExtrude"))
             self.WasFaceFrom3DObject = self.isFaceOf3DObj()
+            #TODO :FIXME : CONTINUE DEVELOPING HERE. 
+            '''
+                CHECK IF IT IS CYLINDRICAL
+                IF YES SKIP THE OTHER LINES AND MAKE PREPARATION FOR THE RECREATING THE OBJECT
+            '''
+            
             if self.WasFaceFrom3DObject is True:  # We must know if the selection is a 2D face or a face from a 3D object
                 # We have a 3D Object. Extract a face and start to Extrude
                 self.targetFace = self.extractFace()
@@ -734,3 +769,74 @@ class Design456_SmartExtrude:
 
 
 Gui.addCommand('Design456_SmartExtrude', Design456_SmartExtrude())
+
+
+#################################################################################3
+'''
+    to extrude, or resize a hole we need to :
+    1-create a pipe that will start at the face, and will be either filled to the outer-ide or to the inner-side
+    2-Resize the inner or outer radius depending on the direction of movement
+    3-Merge or subtract depending on the selection
+    4-Finalize the object and simplify it.
+
+
+
+makeCylinder(...) method of builtins.tuple instance
+    makeCylinder(radius,height,[pnt,dir,angle]) -- Make a cylinder with a given radius and height
+    By default pnt=Vector(0,0,0),dir=Vector(0,0,1) and angle=360
+'''
+
+# Resize Hole. This will be merged with above tool. but for now I write the code only here.
+class Design456_CylindricalFace:
+    def __init__(self):
+        self.newObj=None
+        self.axis=App.Vector(0,0,1)
+        self.center=App.Vector(0,0,0)
+        self.rotation=App.Vector(0,0,0,0)
+        self.height=1
+        
+    def recreateCylinderObject(self,newInnerRadius,newOuterRadius):
+        try:
+            innerObj=None
+            outerObj=None
+            innerObj=Part.makeCylinder(newInnerRadius, self.height,self.center,self.axis,360)
+            outerObj=Part.makeCylinder(newOuterRadius, self.height,self.center,self.axis,360)
+            self.newObj= App.ActiveDocument.addObject('Part::Feature', "CyExtrude")
+
+            if newInnerRadius>newOuterRadius:
+                self.newObj.Shape=innerObj.cut(outerObj)
+            elif newInnerRadius<newOuterRadius:
+                self.newObj.Shape=innerObj.cut(outerObj)
+            App.ActiveDocument.recompute()
+            #Now decide wether we leave as it is or merge, or cut. 
+            return self.newObj
+        
+        except Exception as err:
+            App.Console.PrintError("'recreateNewObject' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+                    
+    def Activated(self):
+        try:
+            s=Gui.Selection.getSelectionEx()
+            obj=s[0].Object
+            if len(s)==0:
+                errMessage="Please select a face"
+                faced.errorDialog(errMessage)
+                return
+            sel=s[0]
+            #get info about the surface (cylindrical)
+            self.originalRadius = sel.Surface.Radius
+            self.axis= sel.Surface.Axis
+            self.center=sel.Surface.Center
+            self.rotation=sel.Surface.Rotation
+            self.height=sel.BoundBox.ZLength
+            
+        except Exception as err:
+            App.Console.PrintError("'ResizeHole' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
