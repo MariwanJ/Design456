@@ -306,6 +306,7 @@ class Design456_SmartExtrude:
         self.plcBase=None
         self.height=None
         self.OriginalRadius=None
+        self.CylindricalFace=False
 
         # Extrusion step
         self.ExtrusionStepSize = Design456pref_var.MouseStepSize
@@ -539,19 +540,7 @@ class Design456_SmartExtrude:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "SmartExtrude"))
             self.WasFaceFrom3DObject = self.isFaceOf3DObj()
-            #TODO :FIXME : CONTINUE DEVELOPING HERE. 
-            '''
-                CHECK IF IT IS CYLINDRICAL
-                IF YES SKIP THE OTHER LINES AND MAKE PREPARATION FOR THE RECREATING THE OBJECT
-            '''
-            
-            if self.WasFaceFrom3DObject is True:  # We must know if the selection is a 2D face or a face from a 3D object
-                # We have a 3D Object. Extract a face and start to Extrude
-                self.targetFace = self.extractFace()
-            else:
-                # We have a 2D Face - Extract it directly
-                self.targetFace = self.selectedObj.Object
-
+           
             rotation = self.getArrowPosition()
             self.smartInd = Fr_Arrow_Widget(self._vector,
                                             ["  Length 0.0", ],
@@ -572,25 +561,47 @@ class Design456_SmartExtrude:
             mw = self.getMainWindow()
             self._mywin.show()
 
-            self.newObject = App.ActiveDocument.addObject(
-                'Part::Extrusion', 'Extrude')
-            self.newObject.Base = self.targetFace
-            self.newObject.DirMode = "Normal"  # Don't use Custom as it causes a PROBLEM!
-            # Above statement is not always correct. Some faces require 'custom'
-            self.newObject.DirLink = None
-            self.newObject.LengthFwd = self.extrudeLength  # Must be negative
-            self.newObject.LengthRev = 0.0
-            self.newObject.Solid = True
-            self.newObject.Reversed = False
-            self.newObject.Symmetric = False
-            self.newObject.TaperAngle = 0.0
-            self.newObject.TaperAngleRev = 0.0
-            self.newObject.Dir = Gui.ActiveDocument.getObject(
-                self.targetFace.Name).Object.Shape.Faces[0].normalAt(0, 0)
-            if (self.newObject.Dir.x != 1 or
-                self.newObject.Dir.y != 1 or
-                    self.newObject.Dir.z != 1):
-                self.newObject.DirMode = "Custom"
+            #TODO :FIXME : CONTINUE DEVELOPING HERE. 
+            '''
+                CHECK IF IT IS CYLINDRICAL
+                IF YES SKIP THE OTHER LINES AND MAKE PREPARATION FOR THE RECREATING THE OBJECT
+            '''
+            if (hasattr(self.selectedObj.SubObjects[0].Surface,"Radius")):
+                #We have a cylinder shape 
+                self.CylindricalFace=True
+                self.OriginalRadius = self.selectedObj.SubObjects[0].Surface.Radius
+                self.height=self.selectedObj.Object.Shape.BoundBox.ZLength
+                self.center=self.selectedObj.Object.Placement.Base
+                self.newObject=self.recreateCylinderObject(self.OriginalRadius,self.OriginalRadius+0.001) # we put slightly bigger just to net error from OCC : TODO:FIXME: Is it correct?
+                
+            else:
+                self.CylindricalFace=False
+                if self.WasFaceFrom3DObject is True:  # We must know if the selection is a 2D face or a face from a 3D object
+                    # We have a 3D Object. Extract a face and start to Extrude
+                    self.targetFace = self.extractFace()
+                else:
+                    # We have a 2D Face - Extract it directly
+                    self.targetFace = self.selectedObj.Object
+
+                self.newObject = App.ActiveDocument.addObject(
+                    'Part::Extrusion', 'Extrude')
+                self.newObject.Base = self.targetFace
+                self.newObject.DirMode = "Normal"  # Don't use Custom as it causes a PROBLEM!
+                # Above statement is not always correct. Some faces require 'custom'
+                self.newObject.DirLink = None
+                self.newObject.LengthFwd = self.extrudeLength  # Must be negative
+                self.newObject.LengthRev = 0.0
+                self.newObject.Solid = True
+                self.newObject.Reversed = False
+                self.newObject.Symmetric = False
+                self.newObject.TaperAngle = 0.0
+                self.newObject.TaperAngleRev = 0.0
+                self.newObject.Dir = Gui.ActiveDocument.getObject(
+                    self.targetFace.Name).Object.Shape.Faces[0].normalAt(0, 0)
+                if (self.newObject.Dir.x != 1 or
+                    self.newObject.Dir.y != 1 or
+                        self.newObject.Dir.z != 1):
+                    self.newObject.DirMode = "Custom"
 
             App.ActiveDocument.recompute()
 
