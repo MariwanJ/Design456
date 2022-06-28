@@ -46,7 +46,7 @@ from ThreeDWidgets import fr_label_draw
 from Design456Pref import Design456pref_var
 # The ration of delta mouse to mm
 MouseScaleFactor = 1
-__updated__ = '2022-06-27 23:23:57'
+__updated__ = '2022-06-28 20:55:48'
 
 '''
     How it works: 
@@ -109,7 +109,10 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             "Length= " + str(round(linktocaller.extrudeLength,2)))
         userData.ArrowObj.changeLabelstr(
             "  Length= " + str(round(linktocaller.extrudeLength,2)))
-        linktocaller.reCreateExtrudeObject()
+        if linktocaller.CylindricalFace is True:
+            linktocaller.recreateCylinderObject()
+        else:
+            linktocaller.reCreateExtrudeObject()
         
         linktocaller.lblExtrudeSize.setText("Extrude Step Size = " + str(linktocaller.ExtrusionStepSize))
         App.ActiveDocument.recompute()
@@ -182,7 +185,7 @@ def createFusionObjectTool(linktocaller):
         # BUG in FreeCAD doesn't work
         Gui.ActiveDocument.getObject(ToolObj.Name).Transparency = 0
         Gui.ActiveDocument.getObject(ToolObj.Name).ShapeColor = (
-            FR_COLOR.FR_BISQUE)  # Transparency doesn't work bug in FREECAD
+            FR_COLOR.FR_BISQUE)  # Transparency doesn't work, bug in FREECAD
         return ToolObj
 
 
@@ -301,6 +304,7 @@ class Design456_SmartExtrude:
         self.radSubtract = None
         self.radAsIs = None
         self.radSubtract = None
+        self.axis=App.Vector(0, 0,1)
         
         #Cylindrical Face 
         self.plcBase=None
@@ -312,22 +316,51 @@ class Design456_SmartExtrude:
         self.ExtrusionStepSize = Design456pref_var.MouseStepSize
     
     #Used only with cylindrical face
-    def recreateCylinderObject(self,newInnerRadius,newOuterRadius):
+    def recreateCylinderObject(self):
         try:
+            if self.extrudeLength <0:
+                newInnerRadius=self.OriginalRadius
+                newOuterRadius=self.OriginalRadius+self.extrudeLength
+            else:
+                newInnerRadius=self.OriginalRadius+self.extrudeLength
+                newOuterRadius=self.OriginalRadius
+           
             innerObj=None
             outerObj=None
-            innerObj=Part.makeCylinder(newInnerRadius, self.height,self.center,self.axis,360)
-            outerObj=Part.makeCylinder(newOuterRadius, self.height,self.center,self.axis,360)
-            self.newObj= App.ActiveDocument.addObject('Part::Feature', "CyExtrude")
+            if newInnerRadius>0:                
+                innerObj=Part.makeCylinder(newInnerRadius, self.height,self.center,self.axis,360)
+            if newOuterRadius>0:
+                outerObj=Part.makeCylinder(newOuterRadius, self.height,self.center,self.axis,360)
+            newObj= App.ActiveDocument.addObject('Part::Feature', "CyExtrude")
 
-            if newInnerRadius>newOuterRadius:
-                self.newObj.Shape=innerObj.cut(outerObj)
-            elif newInnerRadius<newOuterRadius:
-                self.newObj.Shape=innerObj.cut(outerObj)
+            if innerObj is not None and outerObj is not None:
+                if newInnerRadius>newOuterRadius:
+                    newObj.Shape=innerObj.cut(outerObj)
+                elif newInnerRadius<newOuterRadius:
+                    newObj.Shape=innerObj.cut(outerObj)
+            elif innerObj is None and outerObj is not None:
+                newObj.Shape=outerObj
+            elif outerObj is None and innerObj is not None:
+                newObj.Shape=innerObj
+            else:
+                #DON'T KNOW WHAT TODO : TODO: FIXME:
+                newObj=None
             App.ActiveDocument.recompute()
             #Now decide wether we leave as it is or merge, or cut. 
-            return self.newObj
-        
+            if newObj is not None:
+                if self.newObject is not None:
+                    App.ActiveDocument.removeObject(self.newObject.Name)
+                    self.newObject =None
+                self.newObject=newObj
+            if self.OperationOption == 2 or self.OperationOption == 1:
+                self.objChangedTransparency.clear()
+                result = faced.checkCollision(self.newObject)
+                if result != []:
+                    for obj in result:
+                        # should be GUI object not App object!!!
+                        TE = Gui.ActiveDocument.getObject(obj.Name)
+                        TE.Transparency = 80
+                        self.objChangedTransparency.append(TE)
         except Exception as err:
             App.Console.PrintError("'recreateNewObject' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -382,7 +415,6 @@ class Design456_SmartExtrude:
         # For now the arrow will be at the top
         try:
             rotation = [0.0, 0.0, 0.0, 0.0]
-
             face1 = None
             if(self.WasFaceFrom3DObject):
                 # The whole object is selected
@@ -408,13 +440,8 @@ class Design456_SmartExtrude:
                 t=direction.x
                 direction.x=direction.y
                 direction.y=t
-
                 rotation = (direction.x,direction.y,direction.z, math.degrees(nv.getAngle(App.Vector(0,0,10))))
-                print(nv,"nv")
-                print(direction,"direction")
-                print(rotation)
             else:
-                print("rotation")
                 rotation = (face1.Surface.Rotation.Axis.x,
                             face1.Surface.Rotation.Axis.y,
                             face1.Surface.Rotation.Axis.z,
@@ -571,8 +598,10 @@ class Design456_SmartExtrude:
                 self.CylindricalFace=True
                 self.OriginalRadius = self.selectedObj.SubObjects[0].Surface.Radius
                 self.height=self.selectedObj.Object.Shape.BoundBox.ZLength
-                self.center=self.selectedObj.Object.Placement.Base
-                self.newObject=self.recreateCylinderObject(self.OriginalRadius,self.OriginalRadius+0.001) # we put slightly bigger just to net error from OCC : TODO:FIXME: Is it correct?
+                self.center=self.selectedObj.SubObjects[0].Surface.Center
+                # we put slightly bigger radius just to net error from OCC : TODO:FIXME: Is it correct?
+                self.extrudeLength=0.01 
+                self.recreateCylinderObject() 
                 
             else:
                 self.CylindricalFace=False
