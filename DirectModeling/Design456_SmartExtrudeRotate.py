@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-04-30 15:39:30'
+__updated__ = '2022-06-29 20:57:20'
 
 # TODO: FIXME:
 """
@@ -403,7 +403,7 @@ class Design456_SmartExtrudeRotate:
             Wheelaxis ([str]): [Direction of the wheel coin widget - Axis type ]
 
         Returns:
-            [Base.placement]: [Placement, rotation angle and axis of rotation for face2]
+            [Base.Placement]: [Placement, rotation angle and axis of rotation for face2]
         """
         if self.isItRotation is True:
             return  # We shouldn't be here.
