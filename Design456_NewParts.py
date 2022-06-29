@@ -1299,7 +1299,7 @@ class Design456_FlowerVase:
         plc=App.Placement()
         plc.Base=App.Vector(0,0,0)
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
-        newObj.placement=plc
+        newObj.Placement=plc
         Design456_BaseFlowerVase(newObj)
 
         ViewProviderFlowerVase(newObj.ViewObject, "FlowerVase")
