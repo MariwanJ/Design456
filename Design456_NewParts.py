@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-06-26 22:46:48'
+__updated__ = '2022-06-29 20:51:24'
 
 
 #Roof
@@ -1120,6 +1120,43 @@ class ViewProviderFlowerVase:
     def __setstate__(self, state):
         return None
 
+#FlowerVase
+
+class ViewProviderFlowerVase:
+
+    obj_name = "FlowerVase"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderFlowerVase.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'FlowerVase.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
 
 #FlowerVase 
 class Design456_BaseFlowerVase:
@@ -1236,7 +1273,7 @@ class Design456_BaseFlowerVase:
             self.WithCorrection=obj.WithCorrection
 
             if self.baseType=="Circle":                                #(self,radius,sides,plc,Zaxis=0.0):
-                self.baseObj=Part.Wire(Part.makeCircle(self.baseRadius,obj.Placement.Base, App.Vector(0,0,1),0,360))
+                self.baseObj=Part.Wire(Part.makeCircle(self.baseRadius,App.Vector(0,0,0), App.Vector(0,0,1),0,360))
             elif self.baseType=="Polygon":
                 self.baseObj=Part.makePolygon(self.calculatePolygonVertices(self.baseRadius,self.baseSides))
 
@@ -1307,7 +1344,6 @@ class Design456_FlowerVase:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_FlowerVase', Design456_FlowerVase())
-
 
 ######################
 
