@@ -38,8 +38,9 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets.constant import FR_BRUSHES
 import Design456_2Ddrawing
 import FACE_D as faced
+from Design456Pref import Design456pref_var
 
-__updated__ = '2022-05-23 22:32:15'
+__updated__ = '2022-06-30 08:43:17'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -1085,7 +1086,7 @@ class Design456_Paint:
         """
         try:
             
-            
+            self.stepSize = Design456pref_var.MouseStepSize
             event = events.getEvent()
             pos = event.getPosition().getValue()
             tempPos = self.view.getPoint(pos[0], pos[1])
