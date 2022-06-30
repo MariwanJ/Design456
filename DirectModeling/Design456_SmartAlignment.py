@@ -41,8 +41,33 @@ from ThreeDWidgets.fr_align_widget import userDataObject
 from draftutils.translate import translate  # for translation
 from ThreeDWidgets.constant import FR_COLOR
 
-__updated__ = '2022-06-08 20:27:09'
+__updated__ = '2022-06-30 09:25:44'
+#####################################################
 
+#We need to capture undo redo for the buttons. To redraw the buttons. 
+class SmartAlignObserver(object):
+    '''
+        This object will provide the mechanism to
+        undo actions while the tool is active.
+    '''
+    def __init__(self,_linkToCaller):
+        '''
+            Initialize the class with the link to the caller object
+        '''
+        self.linkToCaller = _linkToCaller
+        
+    def slotRedoDocument(self,doc):
+        '''
+            Capture Redo event from the document
+        '''
+        self.linkToCaller.recreateAll()  #Redo event. Redraw everything
+    
+    def slotUndoDocument(self,doc):
+        '''
+            Capture Undo event from the document
+        '''
+        self.linkToCaller.recreateAll() #Undo event. Redraw everything
+#####################################################
 
 #                        CALLBACKS              #
 def callback_release(userData: userDataObject = None):
@@ -63,11 +88,12 @@ def callback_btn0(userData: userDataObject = None):
         return
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn0")) #Register Undo
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.XMin != linktocaller.NewBoundary.XMin: 
             objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMin+(objs[i].Object.Placement.Base.x-objs[i].Object.Shape.BoundBox.XMin)
     linktocaller.recreateAll()
-
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
 def callback_btn1(userData: userDataObject = None):
     """
@@ -80,11 +106,13 @@ def callback_btn1(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn1")) #Register Undo
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.Center.x != linktocaller.NewBoundary.Center.x:
             # assume that all objects must have BoundBox.Center == placement.base   
             objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.Center.x+(objs[i].Object.Placement.Base.x-objs[i].Object.Shape.BoundBox.Center.x) #objs[i].Object.Shape.BoundBox.XMin+(linktocaller.NewBoundary.Center.x-objs[i].Object.Shape.BoundBox.Center.x)
     linktocaller.recreateAll()
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
 def callback_btn2(userData: userDataObject = None):
     """
@@ -97,10 +125,12 @@ def callback_btn2(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn2"))  #Register Undo
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.XMax != linktocaller.NewBoundary.XMax: 
             objs[i].Object.Placement.Base.x = linktocaller.NewBoundary.XMax  +(objs[i].Object.Placement.Base.x-objs[i].Object.Shape.BoundBox.XMax)
     linktocaller.recreateAll()
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
  
 #min   center  max     
@@ -117,12 +147,14 @@ def callback_btn3(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn3")) #Register Undo
     for i in range(0, len(objs)): 
         if objs[i].Object.Shape.BoundBox.YMin != linktocaller.NewBoundary.YMin: 
             objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMin+(objs[i].Object.Placement.Base.y-objs[i].Object.Shape.BoundBox.YMin)
 
     linktocaller.recreateAll()
-
+    App.ActiveDocument.commitTransaction()  # undo reg.
+    
 def callback_btn4(userData: userDataObject = None):
     """
             This function run when Align is clicked 
@@ -135,10 +167,12 @@ def callback_btn4(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn4")) #Register Undo
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.Center.y != linktocaller.NewBoundary.Center.y: 
             objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.Center.y+(objs[i].Object.Placement.Base.y-objs[i].Object.Shape.BoundBox.Center.y)
     linktocaller.recreateAll()
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
 
 def callback_btn5(userData: userDataObject = None):
@@ -152,10 +186,12 @@ def callback_btn5(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn5")) #Register Undo
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.YMax != linktocaller.NewBoundary.YMax:
             objs[i].Object.Placement.Base.y = linktocaller.NewBoundary.YMax +(objs[i].Object.Placement.Base.y-objs[i].Object.Shape.BoundBox.YMax)
     linktocaller.recreateAll()
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
 #min   center  max  
 # BTN6, BTN7, BTN8 is for Z-Axis
@@ -170,11 +206,12 @@ def callback_btn6(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn6")) #Register Undo
     for i in range(0, len(objs)):
-
         if objs[i].Object.Shape.BoundBox.ZMin != linktocaller.NewBoundary.ZMin: 
             objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMin+(objs[i].Object.Placement.Base.z-objs[i].Object.Shape.BoundBox.ZMin)
     linktocaller.recreateAll()
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
 
 
@@ -189,10 +226,12 @@ def callback_btn7(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn7")) #Register Undo
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.Center.z != linktocaller.NewBoundary.Center.z: 
              objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.Center.z+(objs[i].Object.Placement.Base.z-objs[i].Object.Shape.BoundBox.Center.z)
     linktocaller.recreateAll()
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
 
 def callback_btn8(userData: userDataObject = None):
@@ -206,11 +245,12 @@ def callback_btn8(userData: userDataObject = None):
 
     linktocaller = userData.callerObject
     objs = linktocaller.selectedObj
-    
+    App.ActiveDocument.openTransaction(translate("Design456", "SmartAlign_btn8")) #Register Undo
     for i in range(0, len(objs)):
         if objs[i].Object.Shape.BoundBox.ZMax != linktocaller.NewBoundary.ZMax: 
             objs[i].Object.Placement.Base.z = linktocaller.NewBoundary.ZMax +(objs[i].Object.Placement.Base.z-objs[i].Object.Shape.BoundBox.ZMax)
     linktocaller.recreateAll()
+    App.ActiveDocument.commitTransaction()  # undo reg.
 
 
 #                          END OF CALLBACKS                              #
@@ -238,6 +278,7 @@ class Design456_SmartAlignment:
         self.objectType = None  # Either shape, Face or Edge.
         self.NewBoundary = None
         self.savedColors = []
+        self.DocObserver = None
 
 
     def CalculateBoundary(self):
@@ -304,7 +345,10 @@ class Design456_SmartAlignment:
             errMessage = "Select at least two objects to Align them"
             faced.errorDialog(errMessage)
             return
-
+        #Observer to capture events
+        self.DocObserver= SmartAlignObserver(self)
+        App.addDocumentObserver(self.DocObserver)
+        
         self.selectedObj = sel
         self.recreateAll()
         self.smartInd = Fr_Align_Widget(self.NewBoundary, ["Align Tool", ])
@@ -401,6 +445,7 @@ class Design456_SmartAlignment:
         Hide the widgets. Remove also the tab.
         """
         try:
+            App.removeDocumentObserver(self.DocObserver)
             self.dialog.hide()
             del self.dialog
             dw = self.mw.findChildren(QtGui.QDockWidget)
