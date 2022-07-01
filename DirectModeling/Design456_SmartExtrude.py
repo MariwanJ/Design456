@@ -46,7 +46,7 @@ from ThreeDWidgets import fr_label_draw
 from Design456Pref import Design456pref_var
 # The ration of delta mouse to mm
 MouseScaleFactor = 1
-__updated__ = '2022-07-01 11:48:12'
+__updated__ = '2022-07-01 11:54:45'
 
 '''
     How it works: 
@@ -265,6 +265,10 @@ class Design456_SmartExtrude:
     
     #Used only with cylindrical face
     def recreateCylinderObject(self):
+        """
+            This function creates the cylinder object 
+            after each change in the extrusion length
+        """
         try:
             if self.extrudeLength <0:
                 newInnerRadius=self.OriginalRadius
@@ -726,6 +730,12 @@ class Design456_SmartExtrude:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def symmetric_cb(self,state):
+        """ Activate or deactivate the symmetric for the created object
+
+        Args:
+            state (_type_): If True , Symmetric will be added to the created object
+            otherwise no change will happen to the object
+        """
         if self.CylindricalFace is True:
             # An object must be selected
             errMessage = "For cylindrical face, Symmetric is not supported"
@@ -736,6 +746,13 @@ class Design456_SmartExtrude:
         
         
     def btnState(self, button):
+        """ When radio buttons clicked this callback will executes
+            It decide whether the created object is merged, cut or 
+            left "as is" without modification
+
+        Args:
+            button (_type_): Which button is clicked and get the value
+        """
         if button.text() == "As Is":
             if button.isChecked() is True:
                 self.OperationOption = 0  # 0 as Is default, 1 Merged, 2 Subtracted
@@ -745,7 +762,6 @@ class Design456_SmartExtrude:
         elif button.text() == "Subtract":
             if button.isChecked() is True:
                 self.OperationOption = 2
-
 
 
     def doFinalJob(self):
