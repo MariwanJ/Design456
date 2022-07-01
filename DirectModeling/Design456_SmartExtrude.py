@@ -46,7 +46,7 @@ from ThreeDWidgets import fr_label_draw
 from Design456Pref import Design456pref_var
 # The ration of delta mouse to mm
 MouseScaleFactor = 1
-__updated__ = '2022-06-30 08:15:29'
+__updated__ = '2022-07-01 11:48:12'
 
 '''
     How it works: 
@@ -189,72 +189,17 @@ def createFusionObjectTool(linktocaller):
         return ToolObj
 
 
+    
 def callback_release(userData: fr_arrow_widget.userDataObject = None):
     """
        Callback after releasing the left mouse button. 
-       This callback will finalize the Extrude operation. 
-       Deleting the original object will be done when the user press 'OK' button
+
     """
     try:
-        if (userData is None):
-            print("userData is None")
-            raise TypeError
-
-        ArrowObject = userData.ArrowObj
-        linktocaller = userData.callerObject
-        # Avoid activating this part several times,
-        if (linktocaller.startVector is None):
-            return
-        ArrowObject.remove_focus()
-        linktocaller.run_Once = False
-        linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
-                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
-                                            ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
-        # Undo
-        App.ActiveDocument.openTransaction(
-            translate("Design456", "SmartExtrude"))
-        App.ActiveDocument.recompute()
-        linktocaller.startVector = None
-        App.ActiveDocument.commitTransaction()  # undo reg.
-        newObjcut = []
-        # Do final operation. Either leave it as it is, merge or subtract
-        if(linktocaller.OperationOption == 1):
-            createFusionObjectBase(linktocaller)
-            App.ActiveDocument.recompute()
-            # subtraction will continue to work here
-        elif linktocaller.OperationOption == 2:
-            # Subtraction is complex. I have to cut from each object the same extruded part.
-            if (linktocaller.objChangedTransparency != []):
-                base = createFusionObjectBase(linktocaller)
-                # Create a cut object for each transparency object
-                if(linktocaller.WasFaceFrom3DObject is True):
-                    # It is a 3D drawing object
-                    tool = createFusionObjectTool(linktocaller)
-                    for i in range(0, len(linktocaller.objChangedTransparency)):
-                        newObjcut.append(App.ActiveDocument.addObject(
-                            "Part::Cut", "CUT" + str(i)))
-                        newObjcut[i].Base = base
-                        # Subtracted shape/object
-                        newObjcut[i].Tool = tool
-                        newObjcut[i].Refine = True
-                    tool.Visibility = False
-                else:
-                    for i in range(0, len(linktocaller.objChangedTransparency)):
-                        newObjcut.append(App.ActiveDocument.addObject(
-                            "Part::Cut", "CUT" + str(i)))
-                        newObjcut[i].Base = base
-                        # Subtracted shape/object
-                        newObjcut[i].Tool = linktocaller.newObject
-                        newObjcut[i].Refine = True
-
-                App.ActiveDocument.recompute()
-
-        elif linktocaller.OperationOption == 0:
-            # is here just to make the code more readable.
-            pass  # nothing to do .
-
-        App.ActiveDocument.recompute()
-        App.ActiveDocument.commitTransaction()  # undo reg.
+        #Final touch moved from the callback to another function. This allow the tool to do final touch 
+        #at the time of pressing OK button not the release of the arrow widget. 
+        #I keep this function for future use but it is not doing anything at the moment
+        pass
 
     except Exception as err:
         faced.EnableAllToolbar(True)
@@ -305,6 +250,9 @@ class Design456_SmartExtrude:
         self.radAsIs = None
         self.radSubtract = None
         self.axis=App.Vector(0, 0,1)
+        
+        # 
+        self.Symmetric=None
         
         #Cylindrical Face 
         self.plcBase=None
@@ -586,6 +534,7 @@ class Design456_SmartExtrude:
 
             self._mywin.addWidget(self.smartInd)
             mw = self.getMainWindow()
+            mw.setFocus()
             self._mywin.show()
 
             #TODO :FIXME : CONTINUE DEVELOPING HERE. 
@@ -738,9 +687,17 @@ class Design456_SmartExtrude:
             self.radSubtract.setObjectName("radSubtract")
             self.radSubtract.setText("Subtract")
 
+            self.Symmetric=QtGui.QCheckBox(self.dialog)
+            self.Symmetric.setObjectName("Symmetric")
+            self.Symmetric.setText("Symmetric")
+            self.Symmetric.toggled.connect(lambda: self.symmetric_cb(self.Symmetric.isChecked()))
+            
+  
+  
             self.la.addWidget(self.e1)
             self.la.addWidget(self.ExtrudeLBL)
             self.la.addWidget(self.lblExtrudeSize)
+            self.la.addWidget(self.Symmetric)
             self.la.addWidget(okbox)
 
             # Adding checkbox for Merge, Subtract Or just leave it "As is"
@@ -768,6 +725,16 @@ class Design456_SmartExtrude:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def symmetric_cb(self,state):
+        if self.CylindricalFace is True:
+            # An object must be selected
+            errMessage = "For cylindrical face, Symmetric is not supported"
+            faced.errorDialog(errMessage)
+            self.Symmetric.setChecked(False)
+            return
+        self.newObject.Symmetric = state
+        
+        
     def btnState(self, button):
         if button.text() == "As Is":
             if button.isChecked() is True:
@@ -779,6 +746,69 @@ class Design456_SmartExtrude:
             if button.isChecked() is True:
                 self.OperationOption = 2
 
+
+
+    def doFinalJob(self):
+        """   
+        This function will finalize the Extrude operation. 
+        Deleting the original object will be done when the user press 'OK' button
+        """
+        try:
+            # Undo
+            App.ActiveDocument.openTransaction(
+                translate("Design456", "SmartExtrude"))
+            App.ActiveDocument.recompute()
+            self.startVector = None
+            App.ActiveDocument.commitTransaction()  # undo reg.
+            newObjcut = []
+            # Do final operation. Either leave it as it is, merge or subtract
+            if(self.OperationOption == 1):
+                createFusionObjectBase(self)
+                App.ActiveDocument.recompute()
+                # subtraction will continue to work here
+            elif self.OperationOption == 2:
+                # Subtraction is complex. I have to cut from each object the same extruded part.
+                if (self.objChangedTransparency != []):
+                    base = createFusionObjectBase(self)
+                    # Create a cut object for each transparency object
+                    if(self.WasFaceFrom3DObject is True):
+                        # It is a 3D drawing object
+                        tool = createFusionObjectTool(self)
+                        for i in range(0, len(self.objChangedTransparency)):
+                            newObjcut.append(App.ActiveDocument.addObject(
+                                "Part::Cut", "CUT" + str(i)))
+                            newObjcut[i].Base = base
+                            # Subtracted shape/object
+                            newObjcut[i].Tool = tool
+                            newObjcut[i].Refine = True
+                        tool.Visibility = False
+                    else:
+                        for i in range(0, len(self.objChangedTransparency)):
+                            newObjcut.append(App.ActiveDocument.addObject(
+                                "Part::Cut", "CUT" + str(i)))
+                            newObjcut[i].Base = base
+                            # Subtracted shape/object
+                            newObjcut[i].Tool = self.newObject
+                            newObjcut[i].Refine = True
+
+                    App.ActiveDocument.recompute()
+
+            elif self.OperationOption == 0:
+                # is here just to make the code more readable.
+                pass  # nothing to do .
+            self.run_Once =False 
+            App.ActiveDocument.recompute()
+            App.ActiveDocument.commitTransaction()  # undo reg.
+
+        except Exception as err:
+            faced.EnableAllToolbar(True)
+            App.Console.PrintError("'Design456_Extrude' Release Filed. "
+                                "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+
     def hide(self):
         """
         Hide the widgets. Remove also the tab.
@@ -787,11 +817,12 @@ class Design456_SmartExtrude:
         I might allow a "simple copy" in the future.
         TODO: If there will be a discussion about this, we might change this behavior!!
         """
+        self.doFinalJob() #Do final job
         self.dialog.hide()
         del self.dialog
         dw = self.mw.findChildren(QtGui.QDockWidget)
-        newsize = self.tab.count()  # Todo : Should we do that?
-        self.tab.removeTab(newsize - 1)  # it ==0,1,2,3 ..etc
+        NewSize = self.tab.count()  # Todo : Should we do that?
+        self.tab.removeTab(NewSize - 1)  # it ==0,1,2,3 ..etc
         App.ActiveDocument.commitTransaction()  # undo reg.
 
         for i in range(0, len(self.objChangedTransparency)):
