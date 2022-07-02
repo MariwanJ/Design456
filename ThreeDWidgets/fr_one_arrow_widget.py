@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-04-23 19:34:32'
+__updated__ = '2022-07-02 20:19:08'
 
 
 """
@@ -163,42 +163,37 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
     This will be used later to create 3D disc.
     Or it can be used as a single rotate/move widget
     """
-    __slots__['w_lbluserData',
-                'w_widgetType',
-                'w_callback_',
-                'w_lbl_calback_',
-                'w_KB_callback_',
-                'w_ArrowAxis_cb_',
-                'w_rotary_cb_',
-                'Opacity',
-                'DrawingType',
-                'distanceBetweenThem',
-                'axisType',
-                'w_wdgsoSwitch',
-                'w_ArrowsSeparator',
-                'w_discSeparator',
-                'w_color',
-                'w_rotaryDisc_color',
-                'w_selColor',
-                'w_Scale',
-                'w_inactiveColor',
-                'w_userData',
-                'w_userData.discObj',
-                'w_discAngle',
-                'oldAngle',
-                'rotationDirection',
-                'w_lbluserData',
-                'distanceBetweenThem',
-                'distanceBetweenThem',
-                'distanceBetweenThem',
-                'w_WidgetDiskRotation',
-                'w_rotation',
-                'w_discEnabled',
-                'releaseDragAxis',
-                'releaseDragDisc',
-                'run_Once',
-                'startVector',
-                'endVector', ''   ]
+    __slots__ =["w_lbluserData",
+                "w_widgetType",
+                "w_callback_",
+                "w_lbl_calback_",
+                "w_KB_callback_",
+                "w_ArrowAxis_cb_",
+                "w_rotary_cb_",
+                "Opacity",
+                "DrawingType",
+                "distanceBetweenThem",
+                "axisType",
+                "w_wdgsoSwitch",
+                "w_ArrowsSeparator",
+                "w_discSeparator",
+                "w_color",
+                "w_rotaryDisc_color",
+                "w_selColor",
+                "w_Scale",
+                "w_inactiveColor",
+                "w_userData",
+                "w_discAngle",
+                "oldAngle",
+                "rotationDirection",
+                "w_WidgetDiskRotation",
+                "w_rotation",
+                "w_discEnabled",
+                "releaseDragAxis",
+                "releaseDragDisc",
+                "run_Once",
+                "startVector",
+                "endVector"]
 
     def __init__(self, vectors: List[App.Vector] = [],
                  label: str = [[]],
@@ -678,9 +673,6 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         angle=float number
         '''
         self.w_rotation = axis_and_angle
-
-    def calculateWidgetDiskRotationAfterDrag(self, v1, v2):
-        self.w_WidgetDiskRotation = math.degrees(v1.getAngle(v2))
 
     def enableDisc(self):
         """[Enable rotation disc. You need to redraw the widget]

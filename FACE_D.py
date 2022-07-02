@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-06-06 20:06:48'
+__updated__ = '2022-07-02 19:53:16'
 
 
 # TODO : FIXME BETTER WAY?
@@ -823,30 +823,32 @@ def checkCollision(newObj):
     Returns:
         [type]: [Document objects]
     """
-    objList = findMainListedObjects()  # get the root objects - no children
-    for obj in objList:
-        if obj.Name == newObj.Name:
-            objList.remove(obj)
-            break
+    try:
+        objList = findMainListedObjects()  # get the root objects - no children
+        for obj in objList:
+            if obj.Name == newObj.Name:
+                objList.remove(obj)
+                break
 
-    results = []
-    for obj in objList:
-        o = None
-        if (Overlapping(newObj, obj) is True):
-            if (hasattr(obj, "Name")):
-                o = App.ActiveDocument.getObject(obj.Name)
-            elif (hasattr(obj, "Obj.Name")):
-                o = App.ActiveDocument.getObject(obj.Object.Name)
-            else:
-                o = None
-        if(o is not None):
-            results.append(o)
-    return results  # Return document objects
-
+        results = []
+        for obj in objList:
+            o = None
+            if (Overlapping(newObj, obj) is True):
+                if (hasattr(obj, "Name")):
+                    o = App.ActiveDocument.getObject(obj.Name)
+                elif (hasattr(obj, "Obj.Name")):
+                    o = App.ActiveDocument.getObject(obj.Object.Name)
+                else:
+                    o = None
+            if(o is not None):
+                results.append(o)
+        return results  # Return document objects
+    except:
+        return []
 
 # Function to find the angle
 # between the two lines with ref to the origin
-# This here is to make it clear how you do that
+# This is here  to make it clear how you do that
 def calculateAngle(v1, v2=App.Vector(1, 1, 0)):
     """[Find angle between a vector and the origin
         Assuming that the angle is between the line-vectors 
@@ -1087,7 +1089,7 @@ def findFacehasSelectedEdge(_edge=None, _shape=None):
 def calculateMouseAngle(val1, val2):
     """[Calculate Angle of two coordinates ( xy, yz or xz).
         This function is useful to calculate mouse position
-        in Angle depending on the mouse position.
+        in Angles depending on the mouse location.
     ]
 
     Args:

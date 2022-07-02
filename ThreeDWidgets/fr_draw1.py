@@ -10,7 +10,7 @@ from ThreeDWidgets.constant import FR_COLOR
 # draw a line in 3D world
 import math
 
-__updated__ = '2022-01-13 18:31:11'
+__updated__ = '2022-07-01 18:00:59'
 
 
 def draw_DoubleSide2DdArrow(_Points=App.Vector(0, 0, 0),
@@ -708,3 +708,4 @@ class drawAlignmentBars:
             exc_type, exc_obj, exc_tb=sys.exc_info()
             fname=os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+#*********************************************************

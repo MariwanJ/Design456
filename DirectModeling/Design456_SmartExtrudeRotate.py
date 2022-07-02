@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-06-29 20:57:20'
+__updated__ = '2022-07-02 18:24:52'
 
 # TODO: FIXME:
 """
@@ -126,9 +126,6 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
                                        str(round(wheelObj.w_Rotation[2],2)) + ")"
                                        + "\nRotation Angle= " + str(round(wheelObj.w_wheelAngle,2)) + " °")
 
-
-            
-
     if linktocaller.newObject is None:
         return
     print("face is =",linktocaller.faceDir)
@@ -141,7 +138,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
     elif linktocaller.faceDir=="-y" :
         print ("Iam -y")
-        linktocaller.newObject.Angle = -(wheelObj.w_wheelAngle )  
+        linktocaller.newObject.Angle =  (wheelObj.w_wheelAngle )  
     elif linktocaller.faceDir=="+y":
         print ("Iam +y")
         linktocaller.newObject.Angle = (wheelObj.w_wheelAngle) 
@@ -151,7 +148,8 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         linktocaller.newObject.Angle = (wheelObj.w_wheelAngle )  
     elif linktocaller.faceDir=="+z":
         print ("Iam +z")
-        linktocaller.newObject.Angle = -(wheelObj.w_wheelAngle)
+        linktocaller.newObject.Angle =  (wheelObj.w_wheelAngle)
+        print("linktocaller.newObject.Angle=",linktocaller.newObject.Angle)
     else:
         print("none of them")
         
@@ -373,11 +371,14 @@ class Design456_SmartExtrudeRotate:
         # This variable is used to disable all other options
         self.isItRotation = False
         self.realAngle=0.0  #We need this since the angle of the wheel might be negative
+        self.freeMove=False  #Use this to allow free mouse movement of the axis extrusions
+        self.Symmetric=None
+        self.FreeMoveCheck= None
+
     def calculateNewLength(self):
         """ Calculate new extrude length 
         """
         try:
-            
             if self.run_Once is False:
                 self.run_Once = True
                 # only once
@@ -385,8 +386,6 @@ class Design456_SmartExtrudeRotate:
                 #No need for offset
                 #self.mouseOffset = self.endVector.sub(self.wheelObj.w_vector[0])
             self.extrudeLength = ((self.endVector.sub( self.startVector))).dot(self.normalVector)
-
-
             
         except Exception as err:
             faced.EnableAllToolbar(True)
@@ -412,6 +411,10 @@ class Design456_SmartExtrudeRotate:
         # TODO: Lets take only X axis first , then Y ..etc and so on.
         face1Obj = self.ExtractedFaces[0]
         pl = self.ExtractedFaces[0].Placement
+        #if Wheel Obj is not defined, the rest of the code will be ignored 
+        if Wheelaxis==None:
+            return pl
+
         self.faceDir = faced.getDirectionAxis(self.selected)  # face direction
 
         # THIS PART IS COMPLICATED 
@@ -526,7 +529,6 @@ class Design456_SmartExtrudeRotate:
 
     # TODO: FIXME:
     
-      
     def reCreateRevolveObj(self, angle):
         try:
             # Create the Revolution
@@ -699,9 +701,10 @@ class Design456_SmartExtrudeRotate:
                 self.ExtractedFaces.append(
                     App.ActiveDocument.getObject(o.Name))
             facingdir=self.faceDir.upper()
-            facingdir = facingdir[1:] 
-            print(facingdir,"facingdir")
+            facingdir = facingdir[1:]      #Used only to indicate the axis for the wheel- No polarity is preserved
+
             # Decide how the Degree Wheel be drawn . Depending on the direction, change the type.
+            #TODO: THIS IS WRONG -- THERE IS NO CHECK FOR -Y AND Y FIXME:
             self.setupRotation = self.calculateNewVector()
             print("setup Rotation", self.setupRotation)
             if self.faceDir == "+z" or self.faceDir == "-z":
@@ -713,10 +716,10 @@ class Design456_SmartExtrudeRotate:
                     0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
                     self.setupRotation, [5.0, 5.0, 5.0], 1,facingdir)
             else:
-                print( "direction is not x or y or z")
+                print( "direction is not x or z")
                 self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
                     0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [5.0, 5.0, 5.0], 2,facingdir)
+                    self.setupRotation, [5.0, 5.0, 5.0], 1,facingdir)
 
 
             # Define the callbacks. We have many callbacks here.
@@ -902,6 +905,16 @@ class Design456_SmartExtrudeRotate:
             self.RotateLBL.setFont(font)
             self.RotateLBL.setObjectName("RotateLBL")
 
+            self.Symmetric=QtGui.QCheckBox(self.dialog)
+            self.Symmetric.setObjectName("Symmetric")
+            self.Symmetric.setText("Symmetric")
+            self.Symmetric.setFont(font)
+            
+            self.FreeMoveCheck=QtGui.QCheckBox(self.dialog)
+            self.FreeMoveCheck.setObjectName("Free Move")
+            self.FreeMoveCheck.setText("Free Move")
+            self.FreeMoveCheck.setFont(font)
+            
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate(
                 "Dialog", "Smart Extrude Rotate"))
@@ -916,7 +929,6 @@ class Design456_SmartExtrudeRotate:
             self.RotateLBL.setText(_translate("Dialog", "Extrusion Angle="))
 
             self.radioAsIs.setChecked(True)
-            # self.radioBottom.setChecked(True)
 
             self.radioAsIs.toggled.connect(
                 lambda: self.btnState(self.radioAsIs))

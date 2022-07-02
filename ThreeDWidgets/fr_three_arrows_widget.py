@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-06-01 20:39:44'
+__updated__ = '2022-07-02 19:49:30'
 
 
 """
@@ -934,9 +934,6 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         angle=float number
         '''
         self.w_rotation = axis_and_angle
-
-    def calculateWidgetDiskRotationAfterDrag(self, v1, v2):
-        self.w_WidgetDiskRotation = math.degrees(v1.getAngle(v2))
 
     def enableDisc(self, disctype:str=""):
         """[Enable rotation disc. You need to redraw the widget]

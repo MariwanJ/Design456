@@ -48,7 +48,7 @@ Example how to use this widget.
 import ThreeDWidgets.fr_arrow_widget as wd
 import ThreeDWidgets.fr_coinwindow as wnn
 import math
-import fr_wheel_widget as w 
+from ThreeDWidgets import fr_degreewheel_widget as w 
 mywin = wnn.Fr_CoinWindow()
 
 rotation=0
@@ -56,14 +56,15 @@ color=(1,0,1)
 vec=[]
 vec.append(App.Vector(0.0, 0.0, 0.0))
 vec.append(App.Vector(5,0,0))
-
+preRot=[0,0,0,0]
+scale=[1,1,1]
 rotation=[0.0, 0.0, 0.0, 0.0]
-arrows=w.Fr_DegreeWheel_Widget(vec,"Test",1, color,rotation,0)
+arrows=w.Fr_DegreeWheel_Widget(vec,"Test",1, color,rotation,preRot,scale,0)
 mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-04-30 16:15:35'
+__updated__ = '2022-07-02 19:47:28'
 
 
 @dataclass
@@ -583,9 +584,6 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         angle=float number
         '''
         self.w_PRErotation = axis_angle
-
-    def calculateWidgetDiskRotationAfterDrag(self, v1, v2):
-        self.w_WidgetDiskRotation = faced.calculateAngle(v1, v2)
 
     def do_callbacks(self, callbackType=-1):
         if (callbackType == 100):
