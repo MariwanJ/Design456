@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-07-03 18:21:31'
+__updated__ = '2022-07-03 23:19:15'
 
 # TODO: FIXME:
 '''
@@ -711,28 +711,21 @@ class Design456_SmartExtrudeRotate:
                 self.ExtractedFaces.append(self.selectedObj.Object)
                 self.ExtractedFaces.append(
                     App.ActiveDocument.getObject(o.Name))
-            facingdir=self.faceDir.upper()
-            facingdir = facingdir[1:]      #Used only to indicate the axis for the wheel- No polarity is preserved
-
+            if self.faceDir=="+x" or self.faceDir=="-x":
+                facingdir="XZ"
+            elif self.faceDir=="+y" or self.faceDir=="-y":
+                facingdir="YZ"
+            elif self.faceDir=="+z" or self.faceDir=="-z":
+                facingdir="XZ"
+            
             # Decide how the Degree Wheel be drawn . Depending on the direction, change the type.
             #TODO: THIS IS WRONG -- THERE IS NO CHECK FOR -Y AND Y FIXME:
             self.setupRotation = self.calculateNewVector()
             print("setup Rotation", self.setupRotation)
-            if self.faceDir == "+z" or self.faceDir == "-z":
-                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str
+            self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str
                     (0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
                     self.setupRotation, [5.0, 5.0, 5.0], 2,facingdir)
-            elif self.faceDir == "+x" or self.faceDir == "-x":
-                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [5.0, 5.0, 5.0], 1,facingdir)
-            else:
-                print( "direction is not x or z")
-                self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str(
-                    0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
-                    self.setupRotation, [5.0, 5.0, 5.0], 1,facingdir)
-
-
+            
             # Define the callbacks. We have many callbacks here.
             # TODO: FIXME:
 

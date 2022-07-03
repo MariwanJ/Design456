@@ -64,7 +64,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-07-03 22:55:56'
+__updated__ = '2022-07-03 23:13:13'
 
 
 @dataclass
@@ -387,15 +387,15 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 usedColor = self.w_inactiveColor
             if self.is_visible():
 
-                if self.w_wheelLBLType == 0:
+                if self.axisType == "XY":
                     # TOP         #OK Don't change
                     SETUPwheelTypeRotation = [0.0, 0.0, 0.0]
                     SetupTextRotation = [0.0, 0.0, 0.0]  # OK Don't change
-                elif self.w_wheelLBLType == 1:
+                elif self.axisType == "XZ":
                     # FRONT       #OK Don't change
                     SETUPwheelTypeRotation = [90.0, 0.0, 0.0]
                     SetupTextRotation = [90.0, 0.0, 0.0]  # OK Don't change
-                elif self.w_wheelLBLType == 2:
+                elif self.axisType == "YZ":
                     # RIGHT       #OK Don't change
                     SETUPwheelTypeRotation = [-90.0, 90.0, 90.0]
                     SetupTextRotation = [-90.0, 90.0, 90.0]  # OK Don't change
@@ -673,7 +673,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
                 # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is +
                 # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is -
-                my = (newValue.x - center.x)
+                mx = (newValue.x - center.x)
                 mz = (newValue.z - center.z)
                 if (mz == 0):
                     return  # Invalid
@@ -714,7 +714,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             if (self.w_wheelAngle == 360):
                 self.w_wheelAngle = 0
             self.w_Rotation[3]=self.w_wheelAngle
-            print(self.w_wheelAngle)
+            print("self.w_wheelAngle.--->",self.w_wheelAngle)
             self.redraw()
             
         except Exception as err:
