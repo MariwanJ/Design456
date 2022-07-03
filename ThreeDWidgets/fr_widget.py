@@ -44,7 +44,7 @@ from abc import abstractmethod
 # ********************************************************************************************************
 from dataclasses import dataclass
 
-__updated__ = '2022-02-09 21:37:26'
+__updated__ = '2022-07-02 20:24:09'
 
 
 @dataclass
@@ -555,7 +555,7 @@ class Fr_Widget (object):
     def changeLabelfloat(self, newlabel: float = 0.0):
         self.w_label = ["{:.2f}".format(newlabel)]
 
-    def getWidgetsCentor(self, SoseparatorToCheck=None):
+    def getWidgetsCenter(self, SoseparatorToCheck=None):
         """[Get Center of the Widget]
 
         Returns:
@@ -574,7 +574,7 @@ class Fr_Widget (object):
             return center
 
         except Exception as err:
-            App.Console.PrintError("'getWidgetsCentor' Failed. "
+            App.Console.PrintError("'getWidgetsCenter' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

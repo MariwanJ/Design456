@@ -44,36 +44,38 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-07-02 18:24:52'
+__updated__ = '2022-07-03 12:43:40'
 
 # TODO: FIXME:
-"""
-    
-    THIS IS A START OF A NEW TOOL WHICH SHOULD BE NEW IN FREECAD
-    I HAVE SEEN THAT IN OTHER CAD PROGRAM AND I WANT TO MAKE IT
-    EXTRUDE A FACE BY ROTATING A FACE. THERE WILL BE OPTIONS 
-    WHICH I SHOULD DECIDE. KEEP TUNED!! :)
-    THIS WILL BE THE FIRST TOOL THAT USES THE DEGREE WHEEL WIDGET
-    
-
-    How it works: 
-    We have to recreate the object each time we change the radius. 
-    This means that the redrawing must be optimized
-    
-    1-If we have a 2D face, we just extrude it by rotating the face to desired degree 
-    2-If we have a face from a 3D object, we extract that face and extrude it and as point 1
-    3-Created object either it will remain as a new object or would be merged. 
-      But if it is used as a tool to cut another 3D object, the object will disappear. 
-    Known issue: 
-        ???TODO: FIXME:
-
-"""
-# TODO: As I wish to simplify the tree and make a simple
-# copy of all objects, I leave it now and I should
-# come back to do it. I must have it as an option in FreeCAD Preferences-menu. (don't know how to do it now.)
+'''
+    Calculating the disc direction, angle of rotation, revolve direction is more complicate.
+    Here is the attempt to fix the bugs I have in this tool:
+    1-When the face is at top or bottom:
+        facedir =z or -z
+        wheel should be facing : 
+            zx or zy
+    2-When the face is at left-right :
+        facedir =x or -x
+        wheel should be facing : 
+            zy or -zy
+        
+    3-When the face is at front-rear :
+        facedir =y or -y
+        wheel should be facing : 
+            zx or -zx
 
 
-# TODO FIXME:
+    Now the CombRotation will affect the above values. Should we rotate the disc? 
+    I don't think so at the moment
+
+
+
+
+
+
+'''
+
+
 # Double click - Rotation only
 def smartlbl_callback(smartLine, obj, parentlink):
     print("lbl callback")
@@ -86,70 +88,69 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
     events = userData.events
-    linktocaller = userData.callerObject
-    linktocaller.isItRotation = True           # Disallow Axis manipulations
+    linkToCaller = userData.callerObject
+    linkToCaller.isItRotation = True           # Disallow Axis manipulations
     if type(events) != int:
         print("event was not int")
         return
     wheelObj = userData.wheelObj
-    linktocaller.direction = "Center"
+    linkToCaller.direction = "Center"
     clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_CenterSoSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+    linkToCaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
     startX = startY = 0
-    if linktocaller.editing is False:
-        if linktocaller.run_Once is False:
-            linktocaller.run_Once = True
+    if linkToCaller.editing is False:
+        if linkToCaller.run_Once is False:
+            linkToCaller.run_Once = True
             # only once
-            linktocaller.startVector = linktocaller.endVector
-            App.ActiveDocument.removeObject(linktocaller.newObject.Name)
-            del linktocaller.newObject  # remove any object exist (loft)
-            linktocaller.reCreateRevolveObj(0)
-            linktocaller.editing = True
+            linkToCaller.startVector = linkToCaller.endVector
+            App.ActiveDocument.removeObject(linkToCaller.newObject.Name)
+            del linkToCaller.newObject  # remove any object exist (loft)
+            linkToCaller.reCreateRevolveObj(0)
+            linkToCaller.editing = True
             wheelObj.w_vector[0].z = 0
             
-            #TODO:EXPERIMENTAL CODE : FIXME:
-            nor = faced.getNormalized(linktocaller.ExtractedFaces[0])
-            bas = faced.getBase(linktocaller.ExtractedFaces[0])
-            linktocaller.wheelObj.w_Rotation[0] = nor.x
-            linktocaller.wheelObj.w_Rotation[1] = nor.y
-            linktocaller.wheelObj.w_Rotation[2] = nor.z
+            nor = faced.getNormalized(linkToCaller.ExtractedFaces[0])
+            bas = faced.getBase(linkToCaller.ExtractedFaces[0])
+            linkToCaller.wheelObj.w_Rotation[0] = nor.x
+            linkToCaller.wheelObj.w_Rotation[1] = nor.y
+            linkToCaller.wheelObj.w_Rotation[2] = nor.z
 
-    if (linktocaller.RotateLBL is not None):
-        linktocaller.RotateLBL.setText("Rotation Axis= " + "(" +
+    if (linkToCaller.RotateLBL is not None):
+        linkToCaller.RotateLBL.setText("Rotation Axis= " + "(" +
                                        str(round(wheelObj.w_Rotation[0],2))+","
                                        + str(round(wheelObj.w_Rotation[1],2)) +
                                        "," +
                                        str(round(wheelObj.w_Rotation[2],2)) + ")"
                                        + "\nRotation Angle= " + str(round(wheelObj.w_wheelAngle,2)) + " °")
 
-    if linktocaller.newObject is None:
+    if linkToCaller.newObject is None:
         return
-    print("face is =",linktocaller.faceDir)
-    if linktocaller.faceDir=="-x" :
+    print("face is =",linkToCaller.faceDir)
+    if linkToCaller.faceDir=="-x" :
         print ("Iam -x")
-        linktocaller.newObject.Angle = -(wheelObj.w_wheelAngle)   
-    elif linktocaller.faceDir=="+x":
+        linkToCaller.newObject.Angle = -(wheelObj.w_wheelAngle)   
+    elif linkToCaller.faceDir=="+x":
         print ("Iam +x")
-        linktocaller.newObject.Angle = (wheelObj.w_wheelAngle)
+        linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle)
 
-    elif linktocaller.faceDir=="-y" :
+    elif linkToCaller.faceDir=="-y" :
         print ("Iam -y")
-        linktocaller.newObject.Angle =  (wheelObj.w_wheelAngle )  
-    elif linktocaller.faceDir=="+y":
+        linkToCaller.newObject.Angle =  (wheelObj.w_wheelAngle )  
+    elif linkToCaller.faceDir=="+y":
         print ("Iam +y")
-        linktocaller.newObject.Angle = (wheelObj.w_wheelAngle) 
+        linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle) 
 
-    elif linktocaller.faceDir=="-z" :
+    elif linkToCaller.faceDir=="-z" :
         print ("Iam -z")
-        linktocaller.newObject.Angle = (wheelObj.w_wheelAngle )  
-    elif linktocaller.faceDir=="+z":
+        linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle )  
+    elif linkToCaller.faceDir=="+z":
         print ("Iam +z")
-        linktocaller.newObject.Angle =  (wheelObj.w_wheelAngle)
-        print("linktocaller.newObject.Angle=",linktocaller.newObject.Angle)
+        linkToCaller.newObject.Angle =  (wheelObj.w_wheelAngle)
+        print("linkToCaller.newObject.Angle=",linkToCaller.newObject.Angle)
     else:
         print("none of them")
         
@@ -163,8 +164,8 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject = None):
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
     events = userData.events
-    linktocaller = userData.callerObject
-    if linktocaller.isItRotation is True:
+    linkToCaller = userData.callerObject
+    if linkToCaller.isItRotation is True:
         callback_Rotate(userData)
         return  # We cannot allow this tool
     if type(events) != int:
@@ -172,22 +173,22 @@ def callback_moveX(userData: fr_degreewheel_widget.userDataObject = None):
         return
     wheelObj = userData.wheelObj
 
-    linktocaller.direction = "X"
+    linkToCaller.direction = "X"
 
     clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_XsoSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+    linkToCaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
     #Calculate length
-    linktocaller.calculateNewLength()
+    linkToCaller.calculateNewLength()
     
-    linktocaller.ExtrudeLBL.setText(
-        "Length= " + str(round(linktocaller.extrudeLength, 4)))
-    linktocaller.calculateNewVector()
-    linktocaller.wheelObj.redraw()
+    linkToCaller.ExtrudeLBL.setText(
+        "Length= " + str(round(linkToCaller.extrudeLength, 4)))
+    linkToCaller.calculateNewVector()
+    linkToCaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
 
@@ -199,8 +200,8 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject = None):
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
     events = userData.events
-    linktocaller = userData.callerObject
-    if linktocaller.isItRotation is True:
+    linkToCaller = userData.callerObject
+    if linkToCaller.isItRotation is True:
         callback_Rotate(userData)
         return  # We cannot allow this tool
 
@@ -209,22 +210,22 @@ def callback_moveY(userData: fr_degreewheel_widget.userDataObject = None):
         return
     wheelObj = userData.wheelObj
 
-    linktocaller.direction = "Y"
+    linkToCaller.direction = "Y"
 
     clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_YsoSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+    linkToCaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
     #Calculate length
-    linktocaller.calculateNewLength()
+    linkToCaller.calculateNewLength()
 
-    linktocaller.ExtrudeLBL.setText(
-        "Length= " + str(round(linktocaller.extrudeLength, 4)))
-    linktocaller.calculateNewVector()
-    linktocaller.wheelObj.redraw()
+    linkToCaller.ExtrudeLBL.setText(
+        "Length= " + str(round(linkToCaller.extrudeLength, 4)))
+    linkToCaller.calculateNewVector()
+    linkToCaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
 
@@ -236,8 +237,8 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject = None):
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
     events = userData.events
-    linktocaller = userData.callerObject
-    if linktocaller.isItRotation is True:
+    linkToCaller = userData.callerObject
+    if linkToCaller.isItRotation is True:
         callback_Rotate(userData)
         return  # We cannot allow this tool
 
@@ -245,21 +246,21 @@ def callback_move45(userData: fr_degreewheel_widget.userDataObject = None):
         print("event was not int")
         return
     wheelObj = userData.wheelObj
-    linktocaller.direction = "45"
+    linkToCaller.direction = "45"
 
     clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_45soSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+    linkToCaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
     #Calculate length
-    linktocaller.calculateNewLength()
+    linkToCaller.calculateNewLength()
     
-    linktocaller.ExtrudeLBL.setText(
-        "Length= " + str(round(linktocaller.extrudeLength, 4)))
-    linktocaller.calculateNewVector()
-    linktocaller.wheelObj.redraw()
+    linkToCaller.ExtrudeLBL.setText(
+        "Length= " + str(round(linkToCaller.extrudeLength, 4)))
+    linkToCaller.calculateNewVector()
+    linkToCaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
 
@@ -271,8 +272,8 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject = None):
         print("userData is nothing")
         return  # Nothing to do here - shouldn't be None
     events = userData.events
-    linktocaller = userData.callerObject
-    if linktocaller.isItRotation is True:
+    linkToCaller = userData.callerObject
+    if linkToCaller.isItRotation is True:
         callback_Rotate(userData)
         return  # We cannot allow this tool
 
@@ -280,22 +281,22 @@ def callback_move135(userData: fr_degreewheel_widget.userDataObject = None):
         print("event was not int")
         return
     wheelObj = userData.wheelObj
-    linktocaller.direction = "135"
+    linkToCaller.direction = "135"
 
     clickwdgdNode = wheelObj.w_parent.objectMouseClick_Coin3d(wheelObj.w_parent.w_lastEventXYZ.pos,
                                                       wheelObj.w_pick_radius, wheelObj.w_135soSeparator)
 
-    linktocaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
+    linkToCaller.endVector = App.Vector(wheelObj.w_parent.w_lastEventXYZ.Coin_x,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_y,
                                         wheelObj.w_parent.w_lastEventXYZ.Coin_z)
 
     #Calculate length
-    linktocaller.calculateNewLength()
+    linkToCaller.calculateNewLength()
     
-    linktocaller.ExtrudeLBL.setText(
-        "Length= " + str(round(linktocaller.extrudeLength, 4)))
-    linktocaller.calculateNewVector()
-    linktocaller.wheelObj.redraw()
+    linkToCaller.ExtrudeLBL.setText(
+        "Length= " + str(round(linkToCaller.extrudeLength, 4)))
+    linkToCaller.calculateNewVector()
+    linkToCaller.wheelObj.redraw()
     App.ActiveDocument.recompute()
 
 
@@ -312,15 +313,15 @@ def callback_release(userData: fr_degreewheel_widget.userDataObject = None):
             print("userData is None")
             raise TypeError
         events = userData.events
-        linktocaller = userData.callerObject
+        linkToCaller = userData.callerObject
         # Avoid activating this part several times,
-        if (linktocaller.startVector is None):
+        if (linkToCaller.startVector is None):
             return
         print("mouse release")
         userData.wheelObj.remove_focus()
-        linktocaller.run_Once = False
+        linkToCaller.run_Once = False
         App.ActiveDocument.recompute()
-        linktocaller.startVector = None
+        linkToCaller.startVector = None
         App.ActiveDocument.commitTransaction()  # undo reg.
 
     except Exception as err:
@@ -851,9 +852,9 @@ class Design456_SmartExtrudeRotate:
             self.tab.addTab(self.dialog, "Smart Extrude Rotate")
             self.frmRotation = QtGui.QFrame(self.dialog)
             self.dialog.resize(200, 450)
-            self.frmRotation.setGeometry(QtCore.QRect(10, 190, 231, 181))
+            self.frmRotation.setGeometry(QtCore.QRect(10, 240, 231, 181))
             self.frame_2 = QtGui.QFrame(self.dialog)
-            self.frame_2.setGeometry(QtCore.QRect(10, 195, 231, 151))
+            self.frame_2.setGeometry(QtCore.QRect(10, 280, 231, 151))
             self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
             self.frame_2.setFrameShadow(QtGui.QFrame.Sunken)
             self.frame_2.setObjectName("frame_2")
@@ -877,7 +878,7 @@ class Design456_SmartExtrudeRotate:
             self.lblExtrusionResult.setFont(font)
             self.lblExtrusionResult.setObjectName("lblExtrusionResult")
             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(150, 360, 111, 61))
+            self.btnOK.setGeometry(QtCore.QRect(150, 430, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
@@ -909,11 +910,20 @@ class Design456_SmartExtrudeRotate:
             self.Symmetric.setObjectName("Symmetric")
             self.Symmetric.setText("Symmetric")
             self.Symmetric.setFont(font)
+            self.Symmetric.setGeometry(QtCore.QRect(10, 175, 321, 30))
             
             self.FreeMoveCheck=QtGui.QCheckBox(self.dialog)
             self.FreeMoveCheck.setObjectName("Free Move")
+            self.FreeMoveCheck.setGeometry(QtCore.QRect(10, 195, 321, 30))
             self.FreeMoveCheck.setText("Free Move")
             self.FreeMoveCheck.setFont(font)
+            
+            self.RotateRevolve = QtGui.QComboBox(self.dialog)
+            self.RotateRevolve.addItem("Rotate 0°")
+            self.RotateRevolve.addItem("Rotate 90°")
+            self.RotateRevolve.addItem("Rotate -90°")
+            self.RotateRevolve.setGeometry(QtCore.QRect(10, 225, 321, 30))
+            self.RotateRevolve.activated[str].connect(self.comboRotate_cb)
             
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate(
@@ -951,7 +961,15 @@ class Design456_SmartExtrudeRotate:
             print(exc_type, fname, exc_tb.tb_lineno)
 
    
-
+    def comboRotate_cb(self,text):
+        #TODO:FIXME:
+        if   text=='Rotate 0°':
+            pass  
+        elif text=='Rotate 90°':
+            pass
+        elif text=='Rotate -90°':  
+            pass
+        
     def btnState(self, button):
         if (button is None):
             print("button was none why?")

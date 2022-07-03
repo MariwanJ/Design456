@@ -64,7 +64,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-07-02 19:47:28'
+__updated__ = '2022-07-03 10:44:38'
 
 
 @dataclass
@@ -408,10 +408,10 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                                                     [element * 2 for element in self.w_Scale], 1)  # White
 
                 RootSoTransform = coin.SoTransform()
-                rootTranslte=coin.SoTranslation()
+                rootTranslate=coin.SoTranslation()
                 transR=coin.SbVec3f()
                 transR.setValue(self.w_vector[0].x,self.w_vector[0].y,self.w_vector[0].z)
-                rootTranslte.translation.setValue(transR)
+                rootTranslate.translation.setValue(transR)
                 RootSO= coin.SoSeparator()
                 preGroup = coin.SoSeparator()
                 tR = coin.SbVec3f()
@@ -430,7 +430,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 preGroup.addChild(self.w_135soSeparator)
                 preGroup.addChild(self.w_degreeSeparator)
                 
-                RootSO.addChild(rootTranslte)
+                RootSO.addChild(rootTranslate)
                 RootSO.addChild(RootSoTransform)
                 RootSO.addChild(preGroup)
                 
@@ -615,25 +615,6 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         elif(callbackType == 4):
             self.w_135Axis_cb_(self.w_userData)
  
-    def calculateMouseAngle(self,Yval, Xval):
-        """[Calculate Angle of two coordinates ( xy, yz or xz).
-            This function is useful to calculate mouse position
-            in Angle depending on the mouse position.
-        ]
-
-        Args:
-            val1 ([Horizontal coordinate]): [x, y]
-            val2 ([Vertical coordinate ]): [y or z]
-
-        Returns:
-            [int]: [Calculated value in degrees]
-        """
-        result = 0
-        result= math.atan2(float(Yval),float(Xval))
-        if (result<0.0):
-            result=result+2.0*math.pi
-        return (-1*int(math.degrees(result)))
-
     def cb_wheelRotate(self):
         """
         Internal callback function, runs when the wheel
@@ -641,7 +622,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.w_wheelEnabled must be True
         """
         boundary = self.getWidgetsBoundary(self.w_CenterSoSeparator)
-        center = self.getWidgetsCentor(self.w_CenterSoSeparator)
+        center = self.getWidgetsCenter(self.w_CenterSoSeparator)
         try:
 
             self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
@@ -659,18 +640,19 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
 
             print(center, "center")
             mx = my = mz = 0.0
-
+            print("Now axis type =",self.axisType)
+            
             if self.axisType == 'X':                                                      # Front
                 # It means that we have changes in Z and X only
                 # Z++  means   -Angel, Z--  means  +Angle    -->  When X is +                   ^
                 # Z++  means   +Angel, Z--  means  -Angle    -->  When X is -                   v
                 # X++  means   -Angel, x--  means  +Angel    -->  when Z is +
                 # X++  means   +Angel, x--  means  -Angel    -->  when Z is -
-                mx = (newValue.x - center.x)
+                my = (newValue.y - center.y)
                 mz = (newValue.z - center.z)
                 if (mz == 0):
                     return  # Invalid
-                self.w_wheelAngle = -self.calculateMouseAngle(mx, mz)
+                self.w_wheelAngle = faced.calculateMouseAngle(my, mz)
 
             if self.axisType == 'Y':                                                     # Right
                 # It means that we have changes in Z and Y only
@@ -679,11 +661,11 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 # Z++  means   +Angel, Z--  means  -Angle    --> When Y is -                   v
                 # Y++  means   +Angel, Y--  means  -Angel    -->  when Z is +
                 # Y++  means   -Angel, Y--  means  +Angel    -->  when Z is -
-                my = (newValue.y - center.y)
+                my = (newValue.x - center.x)
                 mz = (newValue.z - center.z)
                 if (mz == 0):
                     return  # Invalid
-                self.w_wheelAngle = self.calculateMouseAngle(my, mz)
+                self.w_wheelAngle = faced.calculateMouseAngle(mx, mz)
 
             if self.axisType == 'Z':   #TODO: FIXME: I leave it here but might not be necessary
                 # It means that we have changes in X and Y only
@@ -695,22 +677,32 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 my = (newValue.y - center.y)
                 if (my == 0):
                     return  # Invalid
-                self.w_wheelAngle = self.calculateMouseAngle(mx, my)
-            if (self.w_wheelAngle == 360 or self.w_wheelAngle == -360 ):
+                self.w_wheelAngle = faced.calculateMouseAngle(mx, my)
+            if (self.w_wheelAngle == 360):
                 self.w_wheelAngle = 0
-
-            if (self.oldAngle < 1 and self.oldAngle >= 0) and (self.w_wheelAngle > 270):
+                
+            if (self.oldAngle < 45 and self.oldAngle >= 0) and (self.w_wheelAngle > 270):
                 self.rotationDirection = -1
-                #self.w_wheelAngle = self.w_wheelAngle-360
+                self.w_wheelAngle = self.w_wheelAngle-360
+                
             elif(self.rotationDirection == -1
                  and self.w_wheelAngle > 0
-                 and self.w_wheelAngle < 1
+                 and self.w_wheelAngle < 45
                  and self.oldAngle < -270):
-                self.rotationDirection = 1
+                self.rotationDirection= 1
 
-            self.oldAngle = self.w_wheelAngle
-            print("Angle=", self.w_wheelAngle)
+            # we don't accept an angel grater or smaller than 360 degrees
+            if(self.rotationDirection< 0):
+               self.w_wheelAngle = self.w_wheelAngle-360
+
+            if(self.w_wheelAngle > 359):
+                self.w_wheelAngle = 359
+            elif(self.w_wheelAngle < -359):
+                self.w_wheelAngle = -359
+            if self.w_wheelAngle == -360:
+                self.w_wheelAngle = 0
             self.w_Rotation[3]=self.w_wheelAngle
+            print(self.w_wheelAngle)
             self.redraw()
             
         except Exception as err:

@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-07-02 19:49:30'
+__updated__ = '2022-07-03 09:52:06'
 
 
 """
@@ -966,35 +966,35 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         elif disctype == "Z":
             self.w_discEnabled[2] = False
 
-    def calculateMouseAngle(self, val1, val2):
-        """[Calculate Angle of two coordinates ( xy, yz or xz).
-            This function is useful to calculate mouse position
-            in Angle depending on the mouse position.
-        ]
+    # def calculateMouseAngle(self, val1, val2):
+    #     """[Calculate Angle of two coordinates ( xy, yz or xz).
+    #         This function is useful to calculate mouse position
+    #         in Angle depending on the mouse position.
+    #     ]
 
-        Args:
-            val1 ([Horizontal coordinate]): [x, y]
-            val2 ([Vertical coordinate ]): [y or z]
+    #     Args:
+    #         val1 ([Horizontal coordinate]): [x, y]
+    #         val2 ([Vertical coordinate ]): [y or z]
 
-        Returns:
-            [int]: [Calculated value in degrees]
-        """
-        if(val2 == 0):
-            return None  # divide by zero
-        result = 0
-        if (val1 > 0 and val2 > 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                 float(val2))))
-        if (val1 < 0 and val2 > 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                 float(val2))))+360
-        if (val1 > 0 and val2 < 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                 float(val2))))
-        if (val1 < 0 and val2 < 0):
-            result = int(math.degrees(math.atan2(float(val1),
-                                                 float(val2))))+360
-        return result
+    #     Returns:
+    #         [int]: [Calculated value in degrees]
+    #     """
+    #     if(val2 == 0):
+    #         return None  # divide by zero
+    #     result = 0
+    #     if (val1 > 0 and val2 > 0):
+    #         result = int(math.degrees(math.atan2(float(val1),
+    #                                              float(val2))))
+    #     if (val1 < 0 and val2 > 0):
+    #         result = int(math.degrees(math.atan2(float(val1),
+    #                                              float(val2))))+360
+    #     if (val1 > 0 and val2 < 0):
+    #         result = int(math.degrees(math.atan2(float(val1),
+    #                                              float(val2))))
+    #     if (val1 < 0 and val2 < 0):
+    #         result = int(math.degrees(math.atan2(float(val1),
+    #                                              float(val2))))+360
+    #     return result
 
     def cb_XdiscRotate(self, userData: userDataObject = None):
         """
@@ -1003,7 +1003,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_discEnabled must be True
         """
         boundary = self.getWidgetsBoundary(self.w_XdiscSeparator)
-        center = self.getWidgetsCentor(self.w_XdiscSeparator)
+        center = self.getWidgetsCenter(self.w_XdiscSeparator)
         try:
 
             self.endVector[0] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
@@ -1073,7 +1073,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_discEnabled must be True
         """
         boundary = self.getWidgetsBoundary(self.w_YdiscSeparator)
-        center = self.getWidgetsCentor(self.w_YdiscSeparator)
+        center = self.getWidgetsCenter(self.w_YdiscSeparator)
         try:
 
             self.endVector[1] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
@@ -1140,7 +1140,7 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_discEnabled must be True
         """
         boundary = self.getWidgetsBoundary(self.w_ZdiscSeparator[2])
-        center = self.getWidgetsCentor(self.w_ZdiscSeparator[2])
+        center = self.getWidgetsCenter(self.w_ZdiscSeparator[2])
         try:
 
             self.endVector[2] = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,

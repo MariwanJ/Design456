@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-07-02 20:19:08'
+__updated__ = '2022-07-02 20:24:38'
 
 
 """
@@ -729,7 +729,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_discEnabled must be True
         """
         boundary = self.getWidgetsBoundary(self.w_discSeparator)
-        center = self.getWidgetsCentor(self.w_discSeparator)
+        center = self.getWidgetsCenter(self.w_discSeparator)
         try:
 
             self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
