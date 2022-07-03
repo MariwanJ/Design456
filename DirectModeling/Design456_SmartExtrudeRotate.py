@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-07-03 12:43:40'
+__updated__ = '2022-07-03 18:21:31'
 
 # TODO: FIXME:
 '''
@@ -53,18 +53,22 @@ __updated__ = '2022-07-03 12:43:40'
     1-When the face is at top or bottom:
         facedir =z or -z
         wheel should be facing : 
-            zx or zy
+            z x
+        angleChange=
+            z y
+
     2-When the face is at left-right :
         facedir =x or -x
         wheel should be facing : 
-            zy or -zy
-        
+            z x
+        angleChange=
+            x y
     3-When the face is at front-rear :
         facedir =y or -y
         wheel should be facing : 
-            zx or -zx
-
-
+            zy
+        angleChange=
+            yx
     Now the CombRotation will affect the above values. Should we rotate the disc? 
     I don't think so at the moment
 
@@ -130,27 +134,33 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
     if linkToCaller.newObject is None:
         return
     print("face is =",linkToCaller.faceDir)
-    if linkToCaller.faceDir=="-x" :
-        print ("Iam -x")
-        linkToCaller.newObject.Angle = -(wheelObj.w_wheelAngle)   
-    elif linkToCaller.faceDir=="+x":
+    linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle)
+    if linkToCaller.faceDir=="+x":
         print ("Iam +x")
         linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle)
+    elif linkToCaller.faceDir=="-x" :
+        print ("Iam -x")
+        linkToCaller.newObject.Angle = -(wheelObj.w_wheelAngle) 
 
-    elif linkToCaller.faceDir=="-y" :
-        print ("Iam -y")
-        linkToCaller.newObject.Angle =  (wheelObj.w_wheelAngle )  
     elif linkToCaller.faceDir=="+y":
         print ("Iam +y")
         linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle) 
+        
+    elif linkToCaller.faceDir=="-y" :
+        print ("Iam -y")
+        linkToCaller.newObject.Angle =  (wheelObj.w_wheelAngle )  
 
-    elif linkToCaller.faceDir=="-z" :
-        print ("Iam -z")
-        linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle )  
     elif linkToCaller.faceDir=="+z":
         print ("Iam +z")
         linkToCaller.newObject.Angle =  (wheelObj.w_wheelAngle)
         print("linkToCaller.newObject.Angle=",linkToCaller.newObject.Angle)
+        
+    elif linkToCaller.faceDir=="-z" :
+        print ("Iam -z")
+        linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle )  
+    
+    
+
     else:
         print("none of them")
         
