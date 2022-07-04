@@ -64,7 +64,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-07-03 23:13:13'
+__updated__ = '2022-07-04 21:06:46'
 
 
 @dataclass
@@ -218,10 +218,10 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         self.axisType = _wheelAxis # This is the direction of the wheel. . 
         self.rotationDirection = 1  # +1 CCW , -1 ACCWs
         
-        # This affect only the Widget label - nothing else
+        # This affect only the whole-Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         if (self.w_wheelLBLType == 0):
-            self.w_lbluserData.rotation = App.Vector(
+            self.w_lbluserData.SetupRotation = App.Vector(
                 0, 0, 0)  # OK Don't change
         elif(self.w_wheelLBLType == 1):
             self.w_lbluserData.SetupRotation = App.Vector(
@@ -393,12 +393,12 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                     SetupTextRotation = [0.0, 0.0, 0.0]  # OK Don't change
                 elif self.axisType == "XZ":
                     # FRONT       #OK Don't change
-                    SETUPwheelTypeRotation = [90.0, 0.0, 0.0]
+                    SETUPwheelTypeRotation = [90.0, 0.0, 0.0] 
                     SetupTextRotation = [90.0, 0.0, 0.0]  # OK Don't change
                 elif self.axisType == "YZ":
                     # RIGHT       #OK Don't change
-                    SETUPwheelTypeRotation = [-90.0, 90.0, 90.0]
-                    SetupTextRotation = [-90.0, 90.0, 90.0]  # OK Don't change
+                    SETUPwheelTypeRotation = [270.0, 0.0, 0.0]
+                    SetupTextRotation = [270.0, -180.0, 180.0]  # OK Don't change
 
                 self.w_CenterSoSeparator = fr_wheel_draw.draw_AllParts( "Center",
                                                                        usedColor, SETUPwheelTypeRotation,

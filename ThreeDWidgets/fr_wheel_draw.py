@@ -38,7 +38,7 @@ from ThreeDWidgets.constant import FR_COLOR
 import math
 from dataclasses import dataclass
 
-__updated__ = '2022-04-29 18:38:54'
+__updated__ = '2022-07-04 20:23:45'
 
 """
 Example using the Wheel
@@ -75,13 +75,13 @@ def draw_Text_Wheel(_color=FR_COLOR.FR_WHITE,
         txtCol = coin.SoBaseColor()  # must be converted to SoBaseColor
         txtCol.rgb = _color
         txtXSo = coin.SoSeparator()  # must be converted to SoBaseColor
-        txtXSo.Name = "90Degree"
+        txtXSo.Name = "270Degree"
         txtXTransform = coin.SoTransform()
         txtXTransform.translation.setValue(5.5, 0.0, 0.0)
         txtXTransform.rotation.setValue(
             coin.SbVec3f(6.0, 0.0, 0.0), math.radians(0.0))
         txtXTransform.scaleFactor.setValue(TextScale, TextScale, TextScale)
-        textX = ["90.0°", ""]
+        textX = ["270.0°", ""]
         text3DX = coin.SoAsciiText()  # Draw text in the 3D world
         text3DX.string.setValues([l.encode("utf8") for l in textX if l])
         txtXSo.addChild(txtXTransform)
@@ -89,13 +89,13 @@ def draw_Text_Wheel(_color=FR_COLOR.FR_WHITE,
         txtXSo.addChild(text3DX)
 
         txtXPSo = coin.SoSeparator()  # must be converted to SoBaseColor
-        txtXPSo.Name = "270Degree"
+        txtXPSo.Name = "180Degree"
         txtXPTransform = coin.SoTransform()
         txtXPTransform.translation.setValue(0.0, -5.5, 0.0)
         txtXPTransform.rotation.setValue(
             coin.SbVec3f(0.0, 0.0, 0.0), math.radians(0.0))
         txtXPTransform.scaleFactor.setValue(TextScale, TextScale, TextScale)
-        textXP = ["270.0°", ""]
+        textXP = ["180.0°", ""]
         text3DXP = coin.SoAsciiText()  # Draw text in the 3D world
         text3DXP.string.setValues([l.encode("utf8") for l in textXP if l])
         txtXPSo.addChild(txtXPTransform)
@@ -117,13 +117,13 @@ def draw_Text_Wheel(_color=FR_COLOR.FR_WHITE,
         txtYSo.addChild(text3DY)
 
         txtYPSo = coin.SoSeparator()  # must be converted to SoBaseColor
-        txtYPSo.Name = "180Degree"
+        txtYPSo.Name = "90Degree"
         txtYPTransform = coin.SoTransform()
         txtYPTransform.translation.setValue(-6.0, 0.0, 0.0)
         txtYPTransform.rotation.setValue(
             coin.SbVec3f(0.0, 0.0, 0.0), math.radians(0.0))
         txtYPTransform.scaleFactor.setValue(TextScale, TextScale, TextScale)
-        textYP = ["180.0°", ""]
+        textYP = ["90.0°", ""]
         text3DYP = coin.SoAsciiText()  # Draw text in the 3D world
         text3DYP.string.setValues([l.encode("utf8") for l in textYP if l])
         txtYPSo.addChild(txtYPTransform)
