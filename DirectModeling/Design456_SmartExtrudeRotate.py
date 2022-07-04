@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-07-03 23:19:15'
+__updated__ = '2022-07-04 23:21:30'
 
 # TODO: FIXME:
 '''
@@ -140,7 +140,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle)
     elif linkToCaller.faceDir=="-x" :
         print ("Iam -x")
-        linkToCaller.newObject.Angle = -(wheelObj.w_wheelAngle) 
+        linkToCaller.newObject.Angle = -360+(wheelObj.w_wheelAngle) 
 
     elif linkToCaller.faceDir=="+y":
         print ("Iam +y")
@@ -148,7 +148,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         
     elif linkToCaller.faceDir=="-y" :
         print ("Iam -y")
-        linkToCaller.newObject.Angle =  (wheelObj.w_wheelAngle )  
+        linkToCaller.newObject.Angle =360+(wheelObj.w_wheelAngle )  
 
     elif linkToCaller.faceDir=="+z":
         print ("Iam +z")
@@ -157,7 +157,7 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
         
     elif linkToCaller.faceDir=="-z" :
         print ("Iam -z")
-        linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle )  
+        linkToCaller.newObject.Angle = -360+(wheelObj.w_wheelAngle )  
     
     
 
@@ -990,8 +990,7 @@ class Design456_SmartExtrudeRotate:
         TODO:
         For this tool, I decide to choose the hide to merge, or leave it "as is" here. 
         I can do that during the extrusion (moving the Wheel), but that will be an action
-        without undo. Here the user will be finished with the extrusion and want to leave the tool
-        TODO: If there will be a wheelussion about this, we might change this behavior!!
+        without undo. Finalize extrusion here
         """
 
         if (self.OperationOption == 0):
