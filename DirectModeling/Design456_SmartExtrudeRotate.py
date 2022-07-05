@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-07-04 23:21:30'
+__updated__ = '2022-07-05 22:46:26'
 
 # TODO: FIXME:
 '''
@@ -152,12 +152,12 @@ def callback_Rotate(userData: fr_degreewheel_widget.userDataObject = None):
 
     elif linkToCaller.faceDir=="+z":
         print ("Iam +z")
-        linkToCaller.newObject.Angle =  (wheelObj.w_wheelAngle)
+        linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle)+360
         print("linkToCaller.newObject.Angle=",linkToCaller.newObject.Angle)
         
     elif linkToCaller.faceDir=="-z" :
         print ("Iam -z")
-        linkToCaller.newObject.Angle = -360+(wheelObj.w_wheelAngle )  
+        linkToCaller.newObject.Angle = (wheelObj.w_wheelAngle )  
     
     
 
@@ -434,7 +434,7 @@ class Design456_SmartExtrudeRotate:
         s = self.ExtractedFaces[1]
         # Reset the placement of the object if was not correct
         s.Placement = pl
-        #Compoud objects doesn't have CenterOfMass
+        #Compound objects doesn't have CenterOfMass
         if hasattr(self.selectedObj.Object.Shape,"CenterOfMass"):
             ax = self.selectedObj.Object.Shape.CenterOfMass
         elif hasattr(self.selectedObj.Object.Shape,"CenterOfGravity"):
@@ -473,16 +473,25 @@ class Design456_SmartExtrudeRotate:
         elif (self.faceDir == "+y" and Wheelaxis == "Y") or (self.faceDir == "-y" and Wheelaxis == "Y"):
             pl = self.ExtractedFaces[1].Placement
 
-        elif self.faceDir == "-z" and Wheelaxis == "X" or (self.faceDir == "+z" and Wheelaxis == "X"):
-            pl = self.ExtractedFaces[1].Placement
-
-        elif self.faceDir == "+z" and Wheelaxis == "Y":
+        elif (self.faceDir == "-z" and Wheelaxis == "X"):
+            #pl = self.ExtractedFaces[1].Placement
             faced.RealRotateObjectToAnAxis(s, ax, 0, 0, -90)
             pl = self.ExtractedFaces[1].Placement
 
-        elif self.faceDir == "-z" and Wheelaxis == "Y":
+        elif (self.faceDir == "+z" and Wheelaxis == "X"):
+            #pl = self.ExtractedFaces[1].Placement
             faced.RealRotateObjectToAnAxis(s, ax, 0, 0, 90)
             pl = self.ExtractedFaces[1].Placement
+ 
+        elif self.faceDir == "+z" and Wheelaxis == "Y":
+            pl = self.ExtractedFaces[1].Placement
+            #faced.RealRotateObjectToAnAxis(s, ax, 0, 0, -90)
+            #pl = self.ExtractedFaces[1].Placement
+
+        elif self.faceDir == "-z" and Wheelaxis == "Y":
+            pl = self.ExtractedFaces[1].Placement
+            #faced.RealRotateObjectToAnAxis(s, ax, 0, 0, 90)
+            #pl = self.ExtractedFaces[1].Placement
 
         # Now we have 45Degrees :
         if self.faceDir == "+x" and Wheelaxis == "45":
@@ -495,11 +504,11 @@ class Design456_SmartExtrudeRotate:
 
         # Now we have 45 Degrees :
         if self.faceDir == "+y" and Wheelaxis == "45":
-            faced.RotateObjectToCenterPoint(s, 0, 0, -45)
+            faced.RotateObjectToCenterPoint(s, 0, 0, 45)
             pl = self.ExtractedFaces[1].Placement
 
         elif self.faceDir == "-y" and Wheelaxis == "45":
-            faced.RotateObjectToCenterPoint(s, 0, 0, -45)
+            faced.RotateObjectToCenterPoint(s, 0, 0, 45)
             pl = self.ExtractedFaces[1].Placement
 
             # Now we have 45 and 135 Degrees :
@@ -521,11 +530,11 @@ class Design456_SmartExtrudeRotate:
             pl = self.ExtractedFaces[1].Placement
 
         if self.faceDir == "+y" and Wheelaxis == "135":
-            faced.RotateObjectToCenterPoint(s, 0, 0, -135)
+            faced.RotateObjectToCenterPoint(s, 0, 0, 135)
             pl = self.ExtractedFaces[1].Placement
 
         elif self.faceDir == "-y" and Wheelaxis == "135":
-            faced.RotateObjectToCenterPoint(s, 0, 0, -135)
+            faced.RotateObjectToCenterPoint(s, 0, 0, 135)
             pl = self.ExtractedFaces[1].Placement
 
         if self.faceDir == "+z" and Wheelaxis == "135":
@@ -538,8 +547,6 @@ class Design456_SmartExtrudeRotate:
 
         return pl
 
-    # TODO: FIXME:
-    
     def reCreateRevolveObj(self, angle):
         try:
             # Create the Revolution
@@ -553,7 +560,7 @@ class Design456_SmartExtrudeRotate:
             # to allow the creation other wise you get OCC error, angl<>0
             self.newObject.Angle = angle
             self.newObject.Solid = True
-            self.newObject.Symmetric = False
+            self.newObject.Symmetric = self.Symmetric.isChecked()
             self.newObject.Source = self.ExtractedFaces[0]
             nor = faced.getNormalized(self.ExtractedFaces[0])
             bas = faced.getBase(self.ExtractedFaces[0])
@@ -579,7 +586,6 @@ class Design456_SmartExtrudeRotate:
         # New location for Face2 due to the rotation of the face
         base = App.Vector(0, 0, 0)
         try:
-            # TODO:FIXME
             pl = self.calculateRotatedNormal(self.direction)
             if(self.ExtractedFaces[1] is not None):
                 self.ExtractedFaces[1].Placement = pl
@@ -716,11 +722,12 @@ class Design456_SmartExtrudeRotate:
             elif self.faceDir=="+y" or self.faceDir=="-y":
                 facingdir="YZ"
             elif self.faceDir=="+z" or self.faceDir=="-z":
-                facingdir="XZ"
+                facingdir="YZ"
             
             # Decide how the Degree Wheel be drawn . Depending on the direction, change the type.
-            #TODO: THIS IS WRONG -- THERE IS NO CHECK FOR -Y AND Y FIXME:
             self.setupRotation = self.calculateNewVector()
+            if self.faceDir == "+z" or self.faceDir == "-z":
+                self.setupRotation[3]=-90
             print("setup Rotation", self.setupRotation)
             self.wheelObj = Fr_DegreeWheel_Widget([self.FirstLocation, App.Vector(0, 0, 0)], str
                     (0.0) + "°", 1, FR_COLOR.FR_RED, [0, 0, 0, 0],
@@ -752,10 +759,6 @@ class Design456_SmartExtrudeRotate:
             self._mywin.addWidget(self.wheelObj)
             mw = self.getMainWindow()
             self._mywin.show()
-
-            # TODO: FIXME:
-            # loft will be used . make some experimentations.
-            # But when should we use sweep???? don't know now
 
             App.ActiveDocument.recompute()
 
@@ -914,19 +917,15 @@ class Design456_SmartExtrudeRotate:
             self.Symmetric.setText("Symmetric")
             self.Symmetric.setFont(font)
             self.Symmetric.setGeometry(QtCore.QRect(10, 175, 321, 30))
+            self.Symmetric.stateChanged.connect(self.symmetric_cb)
             
-            self.FreeMoveCheck=QtGui.QCheckBox(self.dialog)
-            self.FreeMoveCheck.setObjectName("Free Move")
-            self.FreeMoveCheck.setGeometry(QtCore.QRect(10, 195, 321, 30))
-            self.FreeMoveCheck.setText("Free Move")
-            self.FreeMoveCheck.setFont(font)
-            
-            self.RotateRevolve = QtGui.QComboBox(self.dialog)
-            self.RotateRevolve.addItem("Rotate 0°")
-            self.RotateRevolve.addItem("Rotate 90°")
-            self.RotateRevolve.addItem("Rotate -90°")
-            self.RotateRevolve.setGeometry(QtCore.QRect(10, 225, 321, 30))
-            self.RotateRevolve.activated[str].connect(self.comboRotate_cb)
+            #TODO FIXME: Don't at the moment if this is a good thing?? 
+            #Aims to freely change angle of the extrusion.
+            #self.FreeMoveCheck=QtGui.QCheckBox(self.dialog)
+            #self.FreeMoveCheck.setObjectName("Free Move")
+            #self.FreeMoveCheck.setGeometry(QtCore.QRect(10, 195, 321, 30))
+            #self.FreeMoveCheck.setText("Free Move")
+            #self.FreeMoveCheck.setFont(font)
             
             _translate = QtCore.QCoreApplication.translate
             self.dialog.setWindowTitle(_translate(
@@ -963,16 +962,18 @@ class Design456_SmartExtrudeRotate:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-   
-    def comboRotate_cb(self,text):
-        #TODO:FIXME:
-        if   text=='Rotate 0°':
-            pass  
-        elif text=='Rotate 90°':
-            pass
-        elif text=='Rotate -90°':  
-            pass
-        
+    def symmetric_cb(self,state):
+        """Change symmetric option
+
+        Args:
+            state (QtCore.Qt.Checked): if checked ==QtCore.Qt.Checked
+        """
+        if state==QtCore.Qt.Checked:
+           self.newObject.Symmetric=True
+        else:
+           self.newObject.Symmetric=False
+        App.ActiveDocument.recompute()
+
     def btnState(self, button):
         if (button is None):
             print("button was none why?")
