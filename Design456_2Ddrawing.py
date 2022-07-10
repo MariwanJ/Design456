@@ -42,7 +42,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-07-10 12:46:28'
+__updated__ = '2022-07-10 16:24:29'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -666,19 +666,36 @@ class Design456_SimplifyEdges:
             App.ActiveDocument.openTransaction(
                 translate("Design456", "SimplifyEdges"))
             selObj = s[0]
-            selEdges = selObj.Object.Shape.OrderedEdges
+            #selEdges = selObj.Object.Shape.OrderedEdges
+            selEdges = selObj.Object.Shape.Edges
             selVertexes = []
             for e in selEdges:
                 for v in e.Vertexes:
-                    selVertexes.append(v.Point)
+                    if len(selVertexes)==0:
+                        selVertexes.append(v.Point)
+                    else:
+                        for p in selVertexes:
+                            if v.Point!=p:#//skip what is inside the list
+                                selVertexes.append(v.Point)
+                                break
+                            else:
+                                continue
 
             if hasattr(selObj.Object.Shape.Edges[0], "Curve") or  hasattr(selObj.Object.Shape.Edges[1], "Curve"):
                 #We have a curve, must be treated differently from line
                 #Whenever there is a curve+curve, or curve+line, the result will be only curve.
                 #Otherwise there is no reason to simplify
-                v1=selVertexes[0]
-                v2=selVertexes[1]
-                v3=selVertexes[3]
+                print(len(selVertexes))
+                print(selVertexes)
+                if len(selVertexes)>3:
+                    v1=selVertexes[0]
+                    v2=selVertexes[2]
+                    v3=selVertexes[3]
+                else:
+                    v1=selVertexes[0]
+                    v2=selVertexes[1]
+                    v3=selVertexes[2]
+                print(v1,v2,v3)
                 nEdgeObj=(Part.Arc(v1,v2,v3)).toShape()
             else:
                 # To eliminate multiple vertices
