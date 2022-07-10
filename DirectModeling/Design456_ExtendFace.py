@@ -54,7 +54,7 @@ from Design456Pref import Design456pref_var  #Variable shared between preference
 # except:
 #     pass
 
-__updated__ = '2022-05-31 22:18:59'
+__updated__ = '2022-07-10 12:34:38'
 
 class Design456_ExtendFace:
     """[Extend the face's position to a new position.
@@ -228,8 +228,8 @@ class Design456_ExtendFace:
                 convert = []
                 for vert in faceVert:
                     convert.append(vert.Point)
-                _Newvertices = convert
-                newPolygon = _part.makePolygon(_Newvertices, True)
+                _NewVertices = convert
+                newPolygon = _part.makePolygon(_NewVertices, True)
                 convert.clear()
                 newFace = _part.makeFilledFace(newPolygon.Edges)
                 if newFace.isNull():

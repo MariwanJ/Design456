@@ -42,7 +42,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-05-31 18:46:01'
+__updated__ = '2022-07-10 12:46:28'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -545,9 +545,7 @@ class Design456_joinTwoLines:
                 elif ( 'Edge' in str(s1.SubElementNames)):
                     # Edges are selected
                     # We have to find the nearest two vector. 
-                    # Joining here means the two edges will 
-                    # attach to each other while they are 
-                    # separate.
+                    # Joining here means inner vertices will be removed.
                     vert1=[]
                     for e in s1.Object.Shape.OrderedEdges:
                         for v in e.Vertexes:
@@ -658,7 +656,7 @@ class Design456_SimplifyEdges:
     """
     def Activated(self):
         try:
-
+            nEdgeObj=None
             s = Gui.Selection.getSelectionEx()
             if len(s) > 1:
                 # TODO: FIXME: Should we accept more than one object?
@@ -674,18 +672,27 @@ class Design456_SimplifyEdges:
                 for v in e.Vertexes:
                     selVertexes.append(v.Point)
 
-            # To eliminate multiple vertices
-            # incide the same edge, we take only
-            # first and last entities and then
-            # we make a line and convert it to
-            # an edge. which should replace the
-            # old edge
-            v1 = selVertexes[0]
-            v2 = selVertexes[len(selVertexes)-1]
-            l1 = Draft.makeLine(v1, v2)
-            App.ActiveDocument.recompute()
+            if hasattr(selObj.Object.Shape.Edges[0], "Curve") or  hasattr(selObj.Object.Shape.Edges[1], "Curve"):
+                #We have a curve, must be treated differently from line
+                #Whenever there is a curve+curve, or curve+line, the result will be only curve.
+                #Otherwise there is no reason to simplify
+                v1=selVertexes[0]
+                v2=selVertexes[1]
+                v3=selVertexes[3]
+                nEdgeObj=(Part.Arc(v1,v2,v3)).toShape()
+            else:
+                # To eliminate multiple vertices
+                # inside the same edge, we take only
+                # first and last entities and then
+                # we make a line and convert it to
+                # an edge. which should replace the
+                # old edge
+                v1 = selVertexes[0]
+                v2 = selVertexes[len(selVertexes)-1]
+                nEdgeObj = Part.makePolygon([v1, v2])
+                App.ActiveDocument.recompute()
             newobj = App.ActiveDocument.addObject("Part::Feature", "Wire")
-            sh = l1.Shape
+            sh = nEdgeObj
             newobj.Shape = sh.copy()
             App.ActiveDocument.recompute()
 
@@ -693,7 +700,6 @@ class Design456_SimplifyEdges:
             faced.PreserveColorTexture(s[0].Object,newobj)
             
             App.ActiveDocument.removeObject(selObj.Object.Name)
-            App.ActiveDocument.removeObject(l1.Name)
             App.ActiveDocument.commitTransaction()  # undo
             
         except Exception as err:

@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-04-20 17:32:33'
+__updated__ = '2022-07-08 20:26:42'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -267,7 +267,7 @@ class Design456_MoveObject:
             return
 
         except Exception as err:
-            App.Console.PrintError("'Design456_loftOnDirection' Failed. "
+            App.Console.PrintError("'Design456_MoveObject' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
