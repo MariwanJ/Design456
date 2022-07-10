@@ -42,7 +42,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-07-10 16:24:29'
+__updated__ = '2022-07-10 16:34:15'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -685,8 +685,6 @@ class Design456_SimplifyEdges:
                 #We have a curve, must be treated differently from line
                 #Whenever there is a curve+curve, or curve+line, the result will be only curve.
                 #Otherwise there is no reason to simplify
-                print(len(selVertexes))
-                print(selVertexes)
                 if len(selVertexes)>3:
                     v1=selVertexes[0]
                     v2=selVertexes[2]
@@ -695,7 +693,6 @@ class Design456_SimplifyEdges:
                     v1=selVertexes[0]
                     v2=selVertexes[1]
                     v3=selVertexes[2]
-                print(v1,v2,v3)
                 nEdgeObj=(Part.Arc(v1,v2,v3)).toShape()
             else:
                 # To eliminate multiple vertices
