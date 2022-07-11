@@ -581,6 +581,49 @@ Gui.addCommand('Design456_SegmentAFace', Design456_SegmentAFace())
 
 
 
+class Design456_ReplaceFace:
+    """[Use this tool to equalize two faces (copy first, replace second with the copied face).]
+
+    """
+    def Activated(self):
+        try:
+            
+            App.ActiveDocument.openTransaction(translate("Design456", "ReplaceFace"))
+            s=Gui.Selection.getSelectionEx()
+            newshape=None
+            if len(s)<2 or len(s>2):
+            #error message
+                # Two object must be selected
+                errMessage = "Select two faces to use the tool "
+                faced.errorDialog(errMessage)
+                return
+            f1=s[0].SubObjects[0]
+            f2=s[0].SubObjects[1]
+            if type(f1)!=Part.Face or type(f2)!=Part.Face:
+                errMessage = "Select two faces to use the tool "
+                faced.errorDialog(errMessage)
+                return
+               
+            App.ActiveDocument.commitTransaction()  # undo reg.de here
+
+        except Exception as err:
+            App.Console.PrintError("'ReplaceFace' Failed. "
+                                    "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def GetResources(self):
+        return{
+            'Pixmap':   Design456Init.ICON_PATH + 'ReplaceFace.svg',
+            'MenuText': 'ReplaceFace',
+            'ToolTip':  'ReplaceFace between 2-2D Faces'
+        }
+
+
+Gui.addCommand('Design456_ReplaceFace', Design456_ReplaceFace())
+
+
 
 # ##############################
 """Design456 Part 2D Tools"""
