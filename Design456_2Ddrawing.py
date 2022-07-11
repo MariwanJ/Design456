@@ -42,7 +42,7 @@ import Design456_Paint
 import Design456_Hole
 from draftutils.translate import translate  # for translation
 
-__updated__ = '2022-07-10 16:34:15'
+__updated__ = '2022-07-10 17:54:25'
 
 # Move an object to the location of the mouse click on another surface
 
@@ -827,7 +827,7 @@ class Design456_DivideCircleFace:
 Gui.addCommand('Design456_DivideCircleFace', Design456_DivideCircleFace())
 
 
-class Design456_RemmoveEdge:
+class Design456_RemoveEdge:
             
     def Activated(self):
         result=[]
@@ -900,7 +900,7 @@ class Design456_RemmoveEdge:
                 'MenuText': QT_TRANSLATE_NOOP("Design456", "RemoveEdge"),
                 'ToolTip': QT_TRANSLATE_NOOP("Design456", _tooltip)}
 
-Gui.addCommand('Design456_RemmoveEdge', Design456_RemmoveEdge())
+Gui.addCommand('Design456_RemoveEdge', Design456_RemoveEdge())
 
 
 
@@ -977,7 +977,7 @@ class Design456_2Ddrawing:
             "Design456_Paint",
             "Design456_Hole",
             "Design456_DivideCircleFace",
-            "Design456_RemmoveEdge",
+            "Design456_RemoveEdge",
 
             ]
     """Design456 Design456_2Ddrawing Toolbar"""

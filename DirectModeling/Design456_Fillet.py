@@ -41,7 +41,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1.5
-__updated__ = '2022-05-16 19:03:13'
+__updated__ = '2022-07-11 21:32:08'
 
 
 '''
@@ -289,7 +289,7 @@ class Design456_SmartFillet:
                     self._vector.y = self.selectedObj[0].Object.Shape.BoundBox.YMax/2
             return rotation
         if (len(self.selectedObj)==0):
-            printf("nothing selected")
+            print("nothing selected")
             return
         vectors = self.selectedObj[0].SubObjects[0].Vertexes
         if self.objectType == 'Face':

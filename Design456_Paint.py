@@ -40,7 +40,7 @@ import Design456_2Ddrawing
 import FACE_D as faced
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-06-30 08:43:17'
+__updated__ = '2022-07-11 21:49:47'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -1199,7 +1199,7 @@ class Design456_Paint:
             Gui.Snapper.forceGridOff = False
 
         try:
-            self.getMainWindow()
+            self.getDialogWindow()
             self.view = Gui.ActiveDocument.activeView()
             self.setType()
             self.setSize()
@@ -1303,7 +1303,7 @@ class Design456_Paint:
         self.stepSize= float(text.rstrip("m"))
 
 
-    def getMainWindow(self):
+    def getDialogWindow(self):
         """[Create the tab for the tool]
 
         Returns:
@@ -1449,7 +1449,7 @@ class Design456_Paint:
             return self.dialog
 
         except Exception as err:
-            App.Console.PrintError("'Design456_Paint' getMainWindow-Failed. "
+            App.Console.PrintError("'Design456_Paint' getDialogWindow-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -1490,12 +1490,14 @@ class Design456_Paint:
 Gui.addCommand('Design456_Paint', Design456_Paint())
 ############################################################333
 
+#TODO:FIXME : DOESN'T WORK -----------------------> Do we need this?????????????2022-07-11
+
 import sys
 
 from PySide.QtCore import Qt
 from PySide import QtGui, QtCore
 from PySide2 import QtWidgets
-#TODO:FIXME : DOESNT WORK
+
 class Design456_FreeDraw:
     def __init__(self):
         self.frmMain=None
@@ -1520,9 +1522,7 @@ class Design456_FreeDraw:
         canvas.fill(QtGui.QColor("white"))
         self.label.setPixmap(canvas)
         view.scene().addWidget(self.label)
-        #self.setCentralWidget(self.label)
         self.last_x, self.last_y = None, None
-        #self.frmMain.show()
 
     def mouseMoveEvent(self, e):
         if self.last_x is None: # First event.
@@ -1542,5 +1542,4 @@ class Design456_FreeDraw:
     def mouseReleaseEvent(self, e):
         self.last_x = None
         self.last_y = None
-
-window = Design456_FreeDraw()
+Gui.addCommand('Design456_FreeDraw', Design456_FreeDraw())
