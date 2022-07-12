@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-12 18:46:59'
+__updated__ = '2022-07-12 23:02:18'
 
 
 class Design456_CommonFace:
@@ -638,73 +638,52 @@ class Design456_ReplaceFace:
             oldsize = self.tab.count()
             self.dialog = QtGui.QDialog()
             self.tab.addTab(self.dialog, "Replace Face")
-            self.frmRotation = QtGui.QFrame(self.dialog)
             self.dialog.resize(200, 450)
-            self.frmRotation.setGeometry(QtCore.QRect(10, 190, 231, 181))
             self.lblReplace = QtGui.QLabel(self.dialog)
             self.lblReplace.setGeometry(QtCore.QRect(10, 0, 191, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
-
-            btnOK = QtGui.QDialogButtonBox(self.dialog)
-            btnOK.setGeometry(QtCore.QRect(270, 260, 111, 61))
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            font.setBold(True)
-            font.setWeight(75)
-            btnOK.setFont(font)
-            btnOK.setObjectName("btnOK")
-            btnOK.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             self.lblTitle = QtGui.QLabel(self.dialog)
-            self.lblTitle.setGeometry(QtCore.QRect(10, 10, 281, 91))
+            self.lblTitle.setGeometry(QtCore.QRect(10, 10, 300, 91))
             font = QtGui.QFont()
             font.setFamily("Times New Roman")
             font.setPointSize(10)
             self.lblTitle.setFont(font)
             self.lblTitle.setObjectName("lblTitle")
-
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            font = QtGui.QFont()
-            font.setPointSize(10)
-
             _translate = QtCore.QCoreApplication.translate
-            self.dialog.setWindowTitle(_translate(
-                "Dialog", "Replace Face"))
-
+            self.dialog.setWindowTitle(_translate("Dialog", "Replace Face"))
             self.lblTitle.setText(_translate("Dialog", "(Replace Face)\n"
                                              "Tweak an object by replacing faces or equalize them"))
-            self.formLayoutWidget = QtGui.QWidget(self.dialog)
-            self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
-            self.formLayout.setContentsMargins(0, 0, 0, 0)
-            self.formLayout.setObjectName("formLayout")
-            self.lblPaint = QtGui.QLabel(self.formLayoutWidget)
             self.formLayoutWidget_2 = QtGui.QWidget(self.dialog)
-            self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 160, 160, 80))
+            self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 100, 400, 300))
             self.formLayoutWidget_2.setObjectName("formLayoutWidget_2")
-            self.formLayout_2 = QtGui.QFormLayout(self.formLayoutWidget_2)
-            self.formLayout_2.setContentsMargins(0, 0, 0, 0)
-            self.formLayout_2.setObjectName("formLayout_2")
             self.radioXdir = QtGui.QRadioButton(self.formLayoutWidget_2)
             self.radioXdir.setObjectName("xDir")
             self.radioYdir = QtGui.QRadioButton(self.formLayoutWidget_2)
             self.radioYdir.setObjectName("yDir")
             self.radioZdir = QtGui.QRadioButton(self.formLayoutWidget_2)
             self.radioZdir.setObjectName("zDir")
+            self.radioXdir.setGeometry(QtCore.QRect(10, 170, 100, 30))
+            self.radioYdir.setGeometry(QtCore.QRect(10, 200, 100, 30))
+            self.radioZdir.setGeometry(QtCore.QRect(10, 230, 100, 30))
 
             self.radioXdir.setText(_translate("Dialog", "X-Dir"))
             self.radioYdir.setText(_translate("Dialog", "Y-Dir"))
             self.radioZdir.setText(_translate("Dialog", "Z-Dir"))
-
-            self.formLayout_2.setWidget(
-                0, QtGui.QFormLayout.FieldRole, self.radioXdir)
-            self.formLayout_2.setWidget(
-                0, QtGui.QFormLayout.FieldRole, self.radioYdir)
-            self.formLayout_2.setWidget(
-                0, QtGui.QFormLayout.FieldRole, self.radioZdir)
-
-            QtCore.QObject.connect(
-                btnOK, QtCore.SIGNAL("accepted()"), self.hide)
+            
+            font = QtGui.QFont()
+            font.setPointSize(10)
+            font.setBold(True)
+            font.setWeight(75)
+            btnOK = QtGui.QDialogButtonBox(self.dialog)
+            btnOK.setGeometry(QtCore.QRect(270, 400, 111, 61))
+            btnOK.setFont(font)
+            btnOK.setObjectName("btnOK")
+            btnOK.setStandardButtons(
+                QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            self.btnOK.accepted.connect(self.OK_cb)
+            self.btnOK.rejected.connect(self.Cancel_cb)
+            
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
             self.tab.setCurrentWidget(self.dialog)
             return self.dialog
@@ -715,9 +694,14 @@ class Design456_ReplaceFace:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
     def hide(self):
         pass
-                
+    def OK_cb(self):
+        pass
+    def Cancel_cb(self):
+        pass
+    
     def GetResources(self):
         return{
             'Pixmap':   Design456Init.ICON_PATH + 'ReplaceFace.svg',
