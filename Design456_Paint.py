@@ -1542,4 +1542,10 @@ class Design456_FreeDraw:
     def mouseReleaseEvent(self, e):
         self.last_x = None
         self.last_y = None
+    
+    def GetResources(self):
+        return {'Pixmap': Design456Init.ICON_PATH + 'freedraw.svg',
+                'MenuText': "Freedraw",
+                'ToolTip': "Draw  "}
+        
 Gui.addCommand('Design456_FreeDraw', Design456_FreeDraw())
