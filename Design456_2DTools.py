@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-11 21:43:31'
+__updated__ = '2022-07-12 18:46:59'
 
 
 class Design456_CommonFace:
@@ -662,8 +662,7 @@ class Design456_ReplaceFace:
             font.setPointSize(10)
             self.lblTitle.setFont(font)
             self.lblTitle.setObjectName("lblTitle")
-            self.TweakLBL = QtGui.QLabel(self.dialog)
-            self.TweakLBL.setGeometry(QtCore.QRect(10, 145, 321, 40))
+
             font = QtGui.QFont()
             font.setPointSize(10)
             font = QtGui.QFont()
@@ -673,11 +672,8 @@ class Design456_ReplaceFace:
             self.dialog.setWindowTitle(_translate(
                 "Dialog", "Replace Face"))
 
-            self.lblTitle.setText(_translate("Dialog", "(Extend Face)\n"
-                                             "Tweak an object\n Use X, Y, or Z axis to pull/push an"))
-            self.TweakLBL.setFont(font)
-
-            self.TweakLBL.setText(_translate("Dialog", "Length = 0.0"))
+            self.lblTitle.setText(_translate("Dialog", "(Replace Face)\n"
+                                             "Tweak an object by replacing faces or equalize them"))
             self.formLayoutWidget = QtGui.QWidget(self.dialog)
             self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
             self.formLayout.setContentsMargins(0, 0, 0, 0)

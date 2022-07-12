@@ -40,7 +40,7 @@ from draftutils.translate import translate   #for translate
 
 #TODO :  FIXME: Further preferences will be added later 
 
-__updated__ = '2022-05-17 22:19:46'
+__updated__ = '2022-07-12 18:58:20'
 
 
 class Design456PrefValues:
@@ -91,8 +91,11 @@ def setPlaneGridSize(_size):
     """
     pref = Design456_preferences()
     pref.SetInt("PlaneGridSize",_size)
-    Design456Init.pToWorkbench.planeShow.redraw()
-
+    try:
+        Design456Init.pToWorkbench.planeShow.redraw()
+    except:
+        print("please switch to the workbench to see the plane")
+        pass #if workbench is not loaded, this will fail
 def setSimplified(enabled):
     """ If this is checked, objects gets simplified after manipulations(for ex merge, cut ..etc)
 
