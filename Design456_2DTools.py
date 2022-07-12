@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-12 23:02:18'
+__updated__ = '2022-07-12 23:08:43'
 
 
 class Design456_CommonFace:
@@ -584,6 +584,8 @@ Gui.addCommand('Design456_SegmentAFace', Design456_SegmentAFace())
 class Design456_ReplaceFace:
     def __init__(self):
         self.dialog= None
+        self.faceObjects=[]
+        
     """[Use this tool to equalize two faces (copy first, replace second with the copied face).]
 
     """
@@ -605,6 +607,7 @@ class Design456_ReplaceFace:
                 errMessage = "Select two faces to use the tool "
                 faced.errorDialog(errMessage)
                 return
+            self.faceObjects=[s[0].Object,s[1].Object]
             self.dialog = self.getMainWindow()
  
             App.ActiveDocument.commitTransaction()  # undo reg.de here
@@ -615,7 +618,10 @@ class Design456_ReplaceFace:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+    def replaceFace(self):
+        b1=self.faceObjects[0].Shape.BoundBox
+        b2=self.faceObjects[1].Shape.BoundBox
+        
     def getMainWindow(self):
         """[Create the tab for the tool]
         """
