@@ -705,11 +705,6 @@ class Design456_ReplaceFace:
             self.formLayout_2.setWidget(
                 0, QtGui.QFormLayout.FieldRole, self.radioZdir)
 
-
-
-
-
-
             QtCore.QObject.connect(
                 btnOK, QtCore.SIGNAL("accepted()"), self.hide)
             QtCore.QMetaObject.connectSlotsByName(self.dialog)
