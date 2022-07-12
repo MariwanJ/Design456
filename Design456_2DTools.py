@@ -582,6 +582,8 @@ Gui.addCommand('Design456_SegmentAFace', Design456_SegmentAFace())
 
 
 class Design456_ReplaceFace:
+    def __init__(self):
+        self.dialog= None
     """[Use this tool to equalize two faces (copy first, replace second with the copied face).]
 
     """
@@ -591,19 +593,20 @@ class Design456_ReplaceFace:
             App.ActiveDocument.openTransaction(translate("Design456", "ReplaceFace"))
             s=Gui.Selection.getSelectionEx()
             newshape=None
-            if len(s)<2 or len(s>2):
+            if len(s)<2 or len(s)>2 :
             #error message
                 # Two object must be selected
                 errMessage = "Select two faces to use the tool "
                 faced.errorDialog(errMessage)
                 return
             f1=s[0].SubObjects[0]
-            f2=s[0].SubObjects[1]
+            f2=s[1].SubObjects[0]
             if type(f1)!=Part.Face or type(f2)!=Part.Face:
                 errMessage = "Select two faces to use the tool "
                 faced.errorDialog(errMessage)
                 return
-               
+            self.dialog = self.getMainWindow()
+ 
             App.ActiveDocument.commitTransaction()  # undo reg.de here
 
         except Exception as err:
@@ -612,6 +615,7 @@ class Design456_ReplaceFace:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
     def getMainWindow(self):
         """[Create the tab for the tool]
         """
@@ -674,13 +678,11 @@ class Design456_ReplaceFace:
             self.TweakLBL.setFont(font)
 
             self.TweakLBL.setText(_translate("Dialog", "Length = 0.0"))
-
+            self.formLayoutWidget = QtGui.QWidget(self.dialog)
             self.formLayout = QtGui.QFormLayout(self.formLayoutWidget)
             self.formLayout.setContentsMargins(0, 0, 0, 0)
             self.formLayout.setObjectName("formLayout")
             self.lblPaint = QtGui.QLabel(self.formLayoutWidget)
-            self.formLayout.setWidget(
-                1, QtGui.QFormLayout.LabelRole, self.lblBrushSize)
             self.formLayoutWidget_2 = QtGui.QWidget(self.dialog)
             self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 160, 160, 80))
             self.formLayoutWidget_2.setObjectName("formLayoutWidget_2")
@@ -722,7 +724,9 @@ class Design456_ReplaceFace:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+    def hide(self):
+        pass
+                
     def GetResources(self):
         return{
             'Pixmap':   Design456Init.ICON_PATH + 'ReplaceFace.svg',
@@ -753,6 +757,7 @@ class Design456_2DToolsGroup:
                 "Design456_SubtractFaces",
                 "Design456_CommonFace",
                 "Design456_SegmentAFace",
+                "Design456_ReplaceFace",
 
                 )
 
