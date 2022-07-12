@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-07-12 18:26:48'
+__updated__ = '2022-07-12 19:08:22'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -338,16 +338,16 @@ class Design456 (Gui.Workbench):
 
 
 Gui.addWorkbench(Design456())
-# FROM DRAFT
-# Preference pages for importing and exporting various file formats
-# are independent of the loading of the workbench and can be loaded at startup
-Gui.addPreferencePage(
-    ":/ui/preferences-dxf.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
-Gui.addPreferencePage(
-    ":/ui/preferences-dwg.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
-Gui.addPreferencePage(
-    ":/ui/preferences-svg.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
-Gui.addPreferencePage(
-    ":/ui/preferences-oca.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
+# # FROM DRAFT
+# # Preference pages for importing and exporting various file formats
+# # are independent of the loading of the workbench and can be loaded at startup
+# Gui.addPreferencePage(
+#     ":/ui/preferences-dxf.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
+# Gui.addPreferencePage(
+#     ":/ui/preferences-dwg.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
+# Gui.addPreferencePage(
+#     ":/ui/preferences-svg.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
+# Gui.addPreferencePage(
+#     ":/ui/preferences-oca.ui", QT_TRANSLATE_NOOP("Draft", "Import-Export"))
 
-App.__unit_test__ += ["TestDraftGui"]
+# App.__unit_test__ += ["TestDraftGui"]
