@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-12 23:08:43'
+__updated__ = '2022-07-13 18:11:07'
 
 
 class Design456_CommonFace:
@@ -618,9 +618,39 @@ class Design456_ReplaceFace:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
     def replaceFace(self):
-        b1=self.faceObjects[0].Shape.BoundBox
-        b2=self.faceObjects[1].Shape.BoundBox
+        s1=self.faceObjects[0]
+        s2=self.faceObjects[1]
+        
+        self.faceObjects[1].Placement
+        Shape=self.faceObjects[0].Shape.copy()
+        '''
+        >>> s=Gui.Selection.getSelectionEx()[0].Object
+        >>> s=Gui.Selection.getSelectionEx()[0].Object
+        >>> s=Gui.Selection.getSelectionEx()[0].Object
+        >>> s1=Gui.Selection.getSelectionEx()[0].Object
+        >>> s2=Gui.Selection.getSelectionEx()[1].Object
+        >>> c=s1.Shape.copy()
+        >>> c.Placement=s2.Placement
+        >>> s2.Shape=c
+        >>> # Gui.Selection.clearSelection()
+        >>> s2.Placement.Base.x=s1.Placement.Base.x
+        >>> s2.Placement.Base.y=s1.Placement.Base.y
+        >>> 
+                '''
+        
+        newShp=s1.Shape.copy()
+        newShp.Placement=s2.Placement
+        newShp.Placement.ROTATION=s2.Placement.ROTATION
+        if self.radioXdir.isChecked():
+            newShp.Placement.Base.x=s2.Placement.Base.x
+        if self.radioYdir.isChecked():
+            newShp.Placement.Base.y=s2.Placement.Base.y
+        if self.radioZdir.isChecked():
+            newShp.Placement.Base.z=s2.Placement.Base.z
+        App.ActiveDocument.recompute()
+        
         
     def getMainWindow(self):
         """[Create the tab for the tool]
