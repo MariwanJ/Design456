@@ -706,16 +706,17 @@ class Design456_ReplaceFace:
             self.radioXdir.setText(_translate("Dialog", "X-Dir"))
             self.radioYdir.setText(_translate("Dialog", "Y-Dir"))
             self.radioZdir.setText(_translate("Dialog", "Z-Dir"))
+            self.radioZdir.setValue(1)  # default
             
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
             font.setWeight(75)
-            btnOK = QtGui.QDialogButtonBox(self.dialog)
-            btnOK.setGeometry(QtCore.QRect(270, 400, 111, 61))
-            btnOK.setFont(font)
-            btnOK.setObjectName("btnOK")
-            btnOK.setStandardButtons(
+            self.btnOK = QtGui.QDialogButtonBox(self.dialog)
+            self.btnOK.setGeometry(QtCore.QRect(270, 400, 111, 61))
+            self.btnOK.setFont(font)
+            self.btnOK.setObjectName("btnOK")
+            self.btnOK.setStandardButtons(
                 QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
             self.btnOK.accepted.connect(self.OK_cb)
             self.btnOK.rejected.connect(self.Cancel_cb)
@@ -732,11 +733,30 @@ class Design456_ReplaceFace:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def hide(self):
+        try:
+            self.dialog.hide()
+            del self.dialog
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            newsize = self.tab.count()
+            self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+            faced.showFirstTab()
+        
+        except Exception as err:
+            App.Console.PrintError("'Hide' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+        
+    def ReplaceFace(self):
         pass
+    
     def OK_cb(self):
-        pass
+        self.hide()
+        
     def Cancel_cb(self):
-        pass
+        self.hide()
+        
     
     def GetResources(self):
         return{
