@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-13 18:11:07'
+__updated__ = '2022-07-13 23:04:24'
 
 
 class Design456_CommonFace:
@@ -373,10 +373,10 @@ class Design456_ArcFace6Points:
             C2 = Part.Arc(App.Vector(allSelected[3]), App.Vector(
                 allSelected[4]), App.Vector(allSelected[5]))
             
-            S1 = C1.toShape()
-            S2 = C2.toShape()
-            W1 = Part.Wire(S1.Edges)
-            W2 = Part.Wire(S2.Edges)
+            sel1 = C1.toShape()
+            sel2 = C2.toShape()
+            W1 = Part.Wire(sel1.Edges)
+            W2 = Part.Wire(sel2.Edges)
             newObj = App.ActiveDocument.addObject(
                 'Part::RuledSurface', 'Test')
             obj1=App.ActiveDocument.addObject('Part::Feature',"E1")
@@ -563,7 +563,7 @@ class Design456_SegmentAFace:
                 newSolid.Placement=temp.Placement
                 App.ActiveDocument.removeObject(temp.Name)
             else:
-                tempShape=faced.ReplaceFace(self.sel.Object,self.sel.SubObjects[0],compShp)
+                tempShape=faced.EqualizeFaces(self.sel.Object,self.sel.SubObjects[0],compShp)
                 newSolid.Shape =tempShape.Shape.copy()
                 App.ActiveDocument.removeObject(tempShape.Name)
                 App.ActiveDocument.recompute()
@@ -581,10 +581,10 @@ Gui.addCommand('Design456_SegmentAFace', Design456_SegmentAFace())
 
 
 
-class Design456_ReplaceFace:
+class Design456_EqualizeFaces:
     def __init__(self):
         self.dialog= None
-        self.faceObjects=[]
+        self.sel=None
         
     """[Use this tool to equalize two faces (copy first, replace second with the copied face).]
 
@@ -592,65 +592,32 @@ class Design456_ReplaceFace:
     def Activated(self):
         try:
             
-            App.ActiveDocument.openTransaction(translate("Design456", "ReplaceFace"))
-            s=Gui.Selection.getSelectionEx()
+            App.ActiveDocument.openTransaction(translate("Design456", "EqualizeFaces"))
+            self.sel=Gui.Selection.getSelectionEx()
             newshape=None
-            if len(s)<2 or len(s)>2 :
+            if len(self.sel)<2 or len(self.sel)>2 :
             #error message
                 # Two object must be selected
                 errMessage = "Select two faces to use the tool "
                 faced.errorDialog(errMessage)
                 return
-            f1=s[0].SubObjects[0]
-            f2=s[1].SubObjects[0]
+            f1=self.sel[0].SubObjects[0]
+            f2=self.sel[1].SubObjects[0]
             if type(f1)!=Part.Face or type(f2)!=Part.Face:
                 errMessage = "Select two faces to use the tool "
                 faced.errorDialog(errMessage)
                 return
-            self.faceObjects=[s[0].Object,s[1].Object]
             self.dialog = self.getMainWindow()
  
             App.ActiveDocument.commitTransaction()  # undo reg.de here
 
         except Exception as err:
-            App.Console.PrintError("'ReplaceFace' Failed. "
+            App.Console.PrintError("'EqualizeFaces' Failed. "
                                     "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             
-    def replaceFace(self):
-        s1=self.faceObjects[0]
-        s2=self.faceObjects[1]
-        
-        self.faceObjects[1].Placement
-        Shape=self.faceObjects[0].Shape.copy()
-        '''
-        >>> s=Gui.Selection.getSelectionEx()[0].Object
-        >>> s=Gui.Selection.getSelectionEx()[0].Object
-        >>> s=Gui.Selection.getSelectionEx()[0].Object
-        >>> s1=Gui.Selection.getSelectionEx()[0].Object
-        >>> s2=Gui.Selection.getSelectionEx()[1].Object
-        >>> c=s1.Shape.copy()
-        >>> c.Placement=s2.Placement
-        >>> s2.Shape=c
-        >>> # Gui.Selection.clearSelection()
-        >>> s2.Placement.Base.x=s1.Placement.Base.x
-        >>> s2.Placement.Base.y=s1.Placement.Base.y
-        >>> 
-                '''
-        
-        newShp=s1.Shape.copy()
-        newShp.Placement=s2.Placement
-        newShp.Placement.ROTATION=s2.Placement.ROTATION
-        if self.radioXdir.isChecked():
-            newShp.Placement.Base.x=s2.Placement.Base.x
-        if self.radioYdir.isChecked():
-            newShp.Placement.Base.y=s2.Placement.Base.y
-        if self.radioZdir.isChecked():
-            newShp.Placement.Base.z=s2.Placement.Base.z
-        App.ActiveDocument.recompute()
-        
         
     def getMainWindow(self):
         """[Create the tab for the tool]
@@ -699,21 +666,21 @@ class Design456_ReplaceFace:
             self.radioYdir.setObjectName("yDir")
             self.radioZdir = QtGui.QRadioButton(self.formLayoutWidget_2)
             self.radioZdir.setObjectName("zDir")
-            self.radioXdir.setGeometry(QtCore.QRect(10, 170, 100, 30))
-            self.radioYdir.setGeometry(QtCore.QRect(10, 200, 100, 30))
-            self.radioZdir.setGeometry(QtCore.QRect(10, 230, 100, 30))
+            self.radioXdir.setGeometry(QtCore.QRect(10, 120, 100, 30))
+            self.radioYdir.setGeometry(QtCore.QRect(10, 150, 100, 30))
+            self.radioZdir.setGeometry(QtCore.QRect(10, 180, 100, 30))
 
             self.radioXdir.setText(_translate("Dialog", "X-Dir"))
             self.radioYdir.setText(_translate("Dialog", "Y-Dir"))
             self.radioZdir.setText(_translate("Dialog", "Z-Dir"))
-            self.radioZdir.setValue(1)  # default
+            self.radioZdir.setChecked(1)  # default
             
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
             font.setWeight(75)
             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(270, 400, 111, 61))
+            self.btnOK.setGeometry(QtCore.QRect(200, 300, 190, 61))
             self.btnOK.setFont(font)
             self.btnOK.setObjectName("btnOK")
             self.btnOK.setStandardButtons(
@@ -748,25 +715,43 @@ class Design456_ReplaceFace:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
         
-    def ReplaceFace(self):
-        pass
+    def EqualizeFaces(self):
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "EqualizeFaces")) #Record undo
+        sel1=self.sel[0].Object
+        sel2=self.sel[1].Object
+        newShape= App.ActiveDocument.addObject('Part::Feature',sel2.Name)
+        newShape.Shape=sel1.Shape.copy()
+        App.ActiveDocument.recompute()
+        pl=sel1.Placement
+        pl.Rotation=sel1.Placement.Rotation
+        if self.radioXdir.isChecked():
+            pl.Base.x=sel2.Placement.Base.x
+        elif self.radioYdir.isChecked():
+            pl.Base.y=sel2.Placement.Base.y
+        elif self.radioZdir.isChecked():
+            pl.Base.z=sel2.Placement.Base.z
+        newShape.Placement=pl
+        App.ActiveDocument.removeObject(sel2.Name)
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction()  # undo reg.de here
     
     def OK_cb(self):
+        self.EqualizeFaces()
         self.hide()
         
     def Cancel_cb(self):
         self.hide()
-        
     
     def GetResources(self):
         return{
-            'Pixmap':   Design456Init.ICON_PATH + 'ReplaceFace.svg',
-            'MenuText': 'ReplaceFace',
-            'ToolTip':  'ReplaceFace between 2-2D Faces'
+            'Pixmap':   Design456Init.ICON_PATH + 'EqualizeFaces.svg',
+            'MenuText': 'EqualizeFaces',
+            'ToolTip':  'EqualizeFaces between 2-2D Faces'
         }
 
 
-Gui.addCommand('Design456_ReplaceFace', Design456_ReplaceFace())
+Gui.addCommand('Design456_EqualizeFaces', Design456_EqualizeFaces())
 
 
 
@@ -788,7 +773,7 @@ class Design456_2DToolsGroup:
                 "Design456_SubtractFaces",
                 "Design456_CommonFace",
                 "Design456_SegmentAFace",
-                "Design456_ReplaceFace",
+                "Design456_EqualizeFaces",
 
                 )
 
