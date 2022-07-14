@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-13 23:04:24'
+__updated__ = '2022-07-14 23:10:36'
 
 
 class Design456_CommonFace:
@@ -716,33 +716,47 @@ class Design456_EqualizeFaces:
             print(exc_type, fname, exc_tb.tb_lineno)
         
     def EqualizeFaces(self):
-        from Design456_Alignment import Design456_ResetPlacements as reset
-        
+       
         App.ActiveDocument.openTransaction(
             translate("Design456", "EqualizeFaces")) #Record undo
         sel1=self.sel[0].Object
         sel2=self.sel[1].Object
-        resObject=reset(sel1)
-        sel1=resObject.Activated( )
-        del resObject
-        resObject=reset(sel2)
-        sel2=resObject.Activated( )
-        del resObject
         
         newShape= App.ActiveDocument.addObject('Part::Feature',sel2.Name)
         newShape.Shape=sel1.Shape.copy()
         App.ActiveDocument.recompute()
-        pl=sel1.Placement
-        print(pl.Base,"before")
-        pl.Rotation=sel1.Placement.Rotation
+        pl1=sel1.Placement
+        
+        X1min=sel1.Shape.BoundBox.XMin
+        Y1min=sel1.Shape.BoundBox.YMin
+        Z1min=sel1.Shape.BoundBox.ZMin
+        X1max=sel1.Shape.BoundBox.XMax
+        Y1max=sel1.Shape.BoundBox.YMax
+        Z1max=sel1.Shape.BoundBox.ZMax
+
+        X2min=sel2.Shape.BoundBox.XMin
+        Y2min=sel2.Shape.BoundBox.YMin
+        Z2min=sel2.Shape.BoundBox.ZMin
+        X2max=sel2.Shape.BoundBox.XMax
+        Y2max=sel2.Shape.BoundBox.YMax
+        Z2max=sel2.Shape.BoundBox.ZMax
+
+        newShape.Placement=App.Placement()
+        newShape.Placement.Base.x=pl1.Base.x
+        newShape.Placement.Base.y=pl1.Base.y
+        newShape.Placement.Base.z=pl1.Base.z
+                
         if self.radioXdir.isChecked():
-            pl.Base.x=sel2.Placement.Base.x
+            newShape.Placement.Base.x=-X2min
         elif self.radioYdir.isChecked():
-            pl.Base.y=sel2.Placement.Base.y
+            newShape.Placement.Base.y=-Y2min
         elif self.radioZdir.isChecked():
-            pl.Base.z=sel2.Placement.Base.z
-        print(pl.Base)
-        newShape.Placement=pl
+            newShape.Placement.Base.z=-Z1min
+
+
+
+        
+        #newShape.Placement.Rotation=rot
         App.ActiveDocument.removeObject(sel2.Name)
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.de here
