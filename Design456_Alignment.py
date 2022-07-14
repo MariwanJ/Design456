@@ -391,6 +391,7 @@ class Design456_ResetPlacements:
                     App.ActiveDocument.removeObject(sObj.Object.Name)
             App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo
+            return simpleNew # if the class is used for other purpose than GUI.
 
         except Exception as err:
             App.Console.PrintError("'Reset Placements failed' Failed. "

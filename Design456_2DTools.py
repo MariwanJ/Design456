@@ -716,14 +716,24 @@ class Design456_EqualizeFaces:
             print(exc_type, fname, exc_tb.tb_lineno)
         
     def EqualizeFaces(self):
+        from Design456_Alignment import Design456_ResetPlacements as reset
+        
         App.ActiveDocument.openTransaction(
             translate("Design456", "EqualizeFaces")) #Record undo
         sel1=self.sel[0].Object
         sel2=self.sel[1].Object
+        resObject=reset(sel1)
+        sel1=resObject.Activated( )
+        del resObject
+        resObject=reset(sel2)
+        sel2=resObject.Activated( )
+        del resObject
+        
         newShape= App.ActiveDocument.addObject('Part::Feature',sel2.Name)
         newShape.Shape=sel1.Shape.copy()
         App.ActiveDocument.recompute()
         pl=sel1.Placement
+        print(pl.Base,"before")
         pl.Rotation=sel1.Placement.Rotation
         if self.radioXdir.isChecked():
             pl.Base.x=sel2.Placement.Base.x
@@ -731,6 +741,7 @@ class Design456_EqualizeFaces:
             pl.Base.y=sel2.Placement.Base.y
         elif self.radioZdir.isChecked():
             pl.Base.z=sel2.Placement.Base.z
+        print(pl.Base)
         newShape.Placement=pl
         App.ActiveDocument.removeObject(sel2.Name)
         App.ActiveDocument.recompute()
