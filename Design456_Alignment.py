@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-07-08 20:26:42'
+__updated__ = '2022-07-16 20:26:48'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -354,7 +354,7 @@ class Design456_ResetPlacements:
                         plOld.Base=App.Vector(0,0,0)
                         pl = plOld
                         # Take the first vector of the object as a new placement
-                        plOld.Base = sObj.Object.Shape.Vertexes[0].Point
+                        plOld.Base =  faced.calculateFacePlacement(sObj.Object)   #sObj.Object.Shape.Vertexes[0].Point
                         plOld.Base.z = minzPoint
                         p = plOld.inverse()
                         sObj.Object.Placement = p
@@ -364,7 +364,7 @@ class Design456_ResetPlacements:
                     else: 
                         pl = plOld
                         # Take the first vector of the object as a new placement
-                        plOld.Base = sObj.Object.Shape.Vertexes[0].Point
+                        plOld.Base = faced.calculateFacePlacement(sObj.Object)   #sObj.Object.Shape.Vertexes[0].Point
                         plOld.Base.z = minzPoint
                         p = plOld.inverse()
                         sObj.Object.Placement = p
