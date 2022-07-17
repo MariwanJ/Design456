@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-07-16 20:26:48'
+__updated__ = '2022-07-17 12:10:39'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -319,7 +319,7 @@ class Design456_ResetPlacements:
     """
 
     def __init__(self, _objects=None):
-        self.oldObjects = []
+        self.newObjects = []
         self.objects = _objects
 
     def Activated(self):
@@ -354,7 +354,7 @@ class Design456_ResetPlacements:
                         plOld.Base=App.Vector(0,0,0)
                         pl = plOld
                         # Take the first vector of the object as a new placement
-                        plOld.Base =  faced.calculateFacePlacement(sObj.Object)   #sObj.Object.Shape.Vertexes[0].Point
+                        plOld.Base =  faced.calculateRealPlacement(sObj.Object)   #sObj.Object.Shape.Vertexes[0].Point
                         plOld.Base.z = minzPoint
                         p = plOld.inverse()
                         sObj.Object.Placement = p
@@ -364,7 +364,7 @@ class Design456_ResetPlacements:
                     else: 
                         pl = plOld
                         # Take the first vector of the object as a new placement
-                        plOld.Base = faced.calculateFacePlacement(sObj.Object)   #sObj.Object.Shape.Vertexes[0].Point
+                        plOld.Base = faced.calculateRealPlacement(sObj.Object)   #sObj.Object.Shape.Vertexes[0].Point
                         plOld.Base.z = minzPoint
                         p = plOld.inverse()
                         sObj.Object.Placement = p
@@ -389,9 +389,11 @@ class Design456_ResetPlacements:
                             App.ActiveDocument.removeObject(_obj.Name)
                     App.ActiveDocument.removeObject(newOBJ.Name)
                     App.ActiveDocument.removeObject(sObj.Object.Name)
+                    #Save created objects for returning when this tool is used as internal tool
+                    self.newObjects.append(simpleNew)
             App.ActiveDocument.recompute()
             App.ActiveDocument.commitTransaction()  # undo
-            return simpleNew # if the class is used for other purpose than GUI.
+            return  self.newObjects # if the class is used for other purpose than GUI.
 
         except Exception as err:
             App.Console.PrintError("'Reset Placements failed' Failed. "

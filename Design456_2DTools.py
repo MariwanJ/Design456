@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-14 23:10:36'
+__updated__ = '2022-07-17 12:08:36'
 
 
 class Design456_CommonFace:
@@ -584,32 +584,36 @@ Gui.addCommand('Design456_SegmentAFace', Design456_SegmentAFace())
 class Design456_EqualizeFaces:
     def __init__(self):
         self.dialog= None
-        self.sel=None
+        self.sel1=None
+        self.sel2=None
         
     """[Use this tool to equalize two faces (copy first, replace second with the copied face).]
 
     """
     def Activated(self):
         try:
-            
-            App.ActiveDocument.openTransaction(translate("Design456", "EqualizeFaces"))
-            self.sel=Gui.Selection.getSelectionEx()
+            from Design456_Alignment import Design456_ResetPlacements 
+            sel=Gui.Selection.getSelectionEx()
             newshape=None
-            if len(self.sel)<2 or len(self.sel)>2 :
+            if len(sel)<2 or len(sel)>2 :
             #error message
                 # Two object must be selected
                 errMessage = "Select two faces to use the tool "
                 faced.errorDialog(errMessage)
                 return
-            f1=self.sel[0].SubObjects[0]
-            f2=self.sel[1].SubObjects[0]
+            f1=sel[0].SubObjects[0]
+            f2=sel[1].SubObjects[0]
             if type(f1)!=Part.Face or type(f2)!=Part.Face:
                 errMessage = "Select two faces to use the tool "
                 faced.errorDialog(errMessage)
                 return
             self.dialog = self.getMainWindow()
- 
-            App.ActiveDocument.commitTransaction()  # undo reg.de here
+            #We must reset placement for each object otherwise this tool is impossible
+
+            App.ActiveDocument.openTransaction(translate("Design456", "EqualizeFaces"))
+            restedObj=Design456_ResetPlacements([sel[0].Object,sel[1].Object]).Activated() 
+            self.sel1=restedObj[0]
+            self.sel2=restedObj[1]
 
         except Exception as err:
             App.Console.PrintError("'EqualizeFaces' Failed. "
@@ -718,28 +722,25 @@ class Design456_EqualizeFaces:
     def EqualizeFaces(self):
        
         App.ActiveDocument.openTransaction(
-            translate("Design456", "EqualizeFaces")) #Record undo
-        sel1=self.sel[0].Object
-        sel2=self.sel[1].Object
-        
+            translate("Design456", "EqualizeFaces")) #Record undo        
         newShape= App.ActiveDocument.addObject('Part::Feature',sel2.Name)
-        newShape.Shape=sel1.Shape.copy()
+        newShape.Shape=self.sel1.Shape.copy()
         App.ActiveDocument.recompute()
-        pl1=sel1.Placement
+        pl1=self.sel1.Placement
         
-        X1min=sel1.Shape.BoundBox.XMin
-        Y1min=sel1.Shape.BoundBox.YMin
-        Z1min=sel1.Shape.BoundBox.ZMin
-        X1max=sel1.Shape.BoundBox.XMax
-        Y1max=sel1.Shape.BoundBox.YMax
-        Z1max=sel1.Shape.BoundBox.ZMax
+        X1min=self.sel1.Shape.BoundBox.XMin
+        Y1min=self.sel1.Shape.BoundBox.YMin
+        Z1min=self.sel1.Shape.BoundBox.ZMin
+        X1max=self.sel1.Shape.BoundBox.XMax
+        Y1max=self.sel1.Shape.BoundBox.YMax
+        Z1max=self.sel1.Shape.BoundBox.ZMax
 
-        X2min=sel2.Shape.BoundBox.XMin
-        Y2min=sel2.Shape.BoundBox.YMin
-        Z2min=sel2.Shape.BoundBox.ZMin
-        X2max=sel2.Shape.BoundBox.XMax
-        Y2max=sel2.Shape.BoundBox.YMax
-        Z2max=sel2.Shape.BoundBox.ZMax
+        X2min=self.sel2.Shape.BoundBox.XMin
+        Y2min=self.sel2.Shape.BoundBox.YMin
+        Z2min=self.sel2.Shape.BoundBox.ZMin
+        X2max=self.sel2.Shape.BoundBox.XMax
+        Y2max=self.sel2.Shape.BoundBox.YMax
+        Z2max=self.sel2.Shape.BoundBox.ZMax
 
         newShape.Placement=App.Placement()
         newShape.Placement.Base.x=pl1.Base.x
@@ -757,9 +758,10 @@ class Design456_EqualizeFaces:
 
         
         #newShape.Placement.Rotation=rot
-        App.ActiveDocument.removeObject(sel2.Name)
+        App.ActiveDocument.removeObject(self.sel2.Name)
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.de here
+
     
     def OK_cb(self):
         self.EqualizeFaces()
