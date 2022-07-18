@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-17 12:08:36'
+__updated__ = '2022-07-18 22:15:50'
 
 
 class Design456_CommonFace:
@@ -723,7 +723,7 @@ class Design456_EqualizeFaces:
        
         App.ActiveDocument.openTransaction(
             translate("Design456", "EqualizeFaces")) #Record undo        
-        newShape= App.ActiveDocument.addObject('Part::Feature',sel2.Name)
+        newShape= App.ActiveDocument.addObject('Part::Feature',self.sel2.Name)
         newShape.Shape=self.sel1.Shape.copy()
         App.ActiveDocument.recompute()
         pl1=self.sel1.Placement
