@@ -347,24 +347,26 @@ class Design456_ResetPlacements:
                     # Start to inverse the old placement
                     plOld = sObj.Object.Placement.copy()
                     if (plOld.Base !=App.Vector(0,0,0)):
+                        print("1")
                         # The object is not at relative origin. 
                         # We need to reset it before doing any action
                         # and we need to keep the old values also.
                         saveTemp=plOld
-                        plOld.Base=App.Vector(0,0,0)
                         pl = plOld
                         # Take the first vector of the object as a new placement
-                        plOld.Base =  faced.calculateRealPlacement(sObj.Object)   #sObj.Object.Shape.Vertexes[0].Point
+                        plOld.Base =  faced.calculateRealPlacement(sObj.Object).sub(saveTemp.Base)   
                         plOld.Base.z = minzPoint
                         p = plOld.inverse()
+                        print("p",p)
                         sObj.Object.Placement = p
                         # Put the Z axis to be the minimum point
                         newOBJ.Placement = pl
-                        newOBJ.Placement.Base= newOBJ.Placement.Base + (saveTemp.Base)
+                        newOBJ.Placement.Base= newOBJ.Placement.Base.add(saveTemp.Base)
                     else: 
+                        print("0")
                         pl = plOld
                         # Take the first vector of the object as a new placement
-                        plOld.Base = faced.calculateRealPlacement(sObj.Object)   #sObj.Object.Shape.Vertexes[0].Point
+                        plOld.Base = faced.calculateRealPlacement(sObj.Object)   
                         plOld.Base.z = minzPoint
                         p = plOld.inverse()
                         sObj.Object.Placement = p
