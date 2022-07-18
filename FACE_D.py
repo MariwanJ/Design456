@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-07-16 20:14:44'
+__updated__ = '2022-07-18 21:20:51'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1397,33 +1397,3 @@ def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)    
-
-
-def calculateRealPlacement(obj):
-    """A way to reset wrong placement FreeCAD and OCC has. 
-        This will return calculated center of the object 
-        and use that as a Placement.Base value
-
-    Args:
-        obj (3D/2D object): Could be any of 2D shapes or 3D shapes
-
-    Returns:
-        Placement.Base: Placement Base calculated based on the center of the object
-    """
-    plBase=None
-    distance=App.Vector(0,0,0)
-    if hasattr(obj, 'Shape') is True:
-        #Any object has a shape attribute
-        center=obj.Shape.BoundBox.Center
-        plBase=obj.Placement.Base
-    else:
-        center=obj.BoundBox.Center
-        plBase=obj.Placement.Base
-        # if (type(obj)==Part.Face):
-        #     pass
-        # elif (type(obj)==Part.Shell):
-        #     pass
-        # elif (type(obj)==Part.Compound):
-        #     pass
-    distance=((center).sub(App.Vector(0,0,0)))
-    return (plBase.add(distance))
