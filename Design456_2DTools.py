@@ -800,7 +800,7 @@ class Design456_2DToolsGroup:
                 "Design456_SubtractFaces",
                 "Design456_CommonFace",
                 "Design456_SegmentAFace",
-                "Design456_EqualizeFaces",
+                #"Design456_EqualizeFaces",
 
                 )
 
