@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 # *                                                                         *
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
-# *  Copyright (C) 2021                                                     *
+# *  Copyright (C) 2022                                                    *
 # *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-07-18 21:20:51'
+__updated__ = '2022-07-27 19:23:33'
 
 
 # TODO : FIXME BETTER WAY?
@@ -695,7 +695,7 @@ def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10),
         p2 ([FreeCAD.Vector], Required): [description]. Defaults to App.Vector(10,10,10).
 
     Returns:
-        [float]: [Deistance measured between the two vertices]
+        [float]: [Distance measured between the two vertices]
     """
     results = (p2 - p1).dot(n)  # p1.distanceToPoint(p2)
     return results

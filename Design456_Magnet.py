@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                        *
-# * Copyright (C) 2021                                                     *
+# * Copyright (C) 2022                                                    *
 # *                                                                        *
 # *                                                                        *
 # * This library is free software; you can redistribute it and/or          *
@@ -34,7 +34,7 @@ import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
 
-__updated__ = '2022-02-09 20:53:54'
+__updated__ = '2022-07-29 09:46:24'
 
 # Move an object to the location of the mouse click on another surface
 class Design456_Magnet:
@@ -57,16 +57,16 @@ class Design456_Magnet:
             sub1 = s[0]
             sub2 = s[1]
             face1 = faced.getObjectFromFaceName(sub1, sub1.SubElementNames[0])
-            face2 = faced.getObjectFromFaceName(sub2, sub2.SubElementNames[0])
-            #App.DraftWorkingPlane.alignToFace(face1)
+            #face2 = faced.getObjectFromFaceName(sub2, sub2.SubElementNames[0])
 
-            sub2.Object.Placement.Base = face1.Placement.Base #face1.CenterOfMass
+
+            sub2.Object.Placement.Base = face1.Placement.Base
             sub2.Object.Placement.Base.z= face1.CenterOfMass.z
             # This will fail if the surface doesn't have Rotation 
             if(hasattr(face1.Faces[0].Surface, "Rotation")):
                 sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
             else:
-                # Don't know what todo . Don't let it be empty.
+                # Don't know what todo . Don't leave it empty.
                 # TODO: Find a solution for this.
                 sub2.Object.Placement.Rotation.Axis = App.Vector(0, 0, 1)
                 sub2.Object.Placement.Rotation.Angle = 0

@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 # *                                                                         *
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
-# *  Copyright (C) 2021                                                     *
+# *  Copyright (C) 2022                                                    *
 # *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-18 22:15:50'
+__updated__ = '2022-07-24 11:45:09'
 
 
 class Design456_CommonFace:
@@ -728,36 +728,24 @@ class Design456_EqualizeFaces:
         App.ActiveDocument.recompute()
         pl1=self.sel1.Placement
         
-        X1min=self.sel1.Shape.BoundBox.XMin
-        Y1min=self.sel1.Shape.BoundBox.YMin
-        Z1min=self.sel1.Shape.BoundBox.ZMin
-        X1max=self.sel1.Shape.BoundBox.XMax
-        Y1max=self.sel1.Shape.BoundBox.YMax
-        Z1max=self.sel1.Shape.BoundBox.ZMax
+        # X1min=self.sel1.Shape.BoundBox.XMin
+        # Y1min=self.sel1.Shape.BoundBox.YMin
+        # Z1min=self.sel1.Shape.BoundBox.ZMin
+        # X1max=self.sel1.Shape.BoundBox.XMax
+        # Y1max=self.sel1.Shape.BoundBox.YMax
+        # Z1max=self.sel1.Shape.BoundBox.ZMax
 
-        X2min=self.sel2.Shape.BoundBox.XMin
-        Y2min=self.sel2.Shape.BoundBox.YMin
-        Z2min=self.sel2.Shape.BoundBox.ZMin
-        X2max=self.sel2.Shape.BoundBox.XMax
-        Y2max=self.sel2.Shape.BoundBox.YMax
-        Z2max=self.sel2.Shape.BoundBox.ZMax
+        # X2min=self.sel2.Shape.BoundBox.XMin
+        # Y2min=self.sel2.Shape.BoundBox.YMin
+        # Z2min=self.sel2.Shape.BoundBox.ZMin
+        # X2max=self.sel2.Shape.BoundBox.XMax
+        # Y2max=self.sel2.Shape.BoundBox.YMax
+        # Z2max=self.sel2.Shape.BoundBox.ZMax
 
-        newShape.Placement=App.Placement()
-        newShape.Placement.Base.x=pl1.Base.x
-        newShape.Placement.Base.y=pl1.Base.y
-        newShape.Placement.Base.z=pl1.Base.z
-                
-        if self.radioXdir.isChecked():
-            newShape.Placement.Base.x=-X2min
-        elif self.radioYdir.isChecked():
-            newShape.Placement.Base.y=-Y2min
-        elif self.radioZdir.isChecked():
-            newShape.Placement.Base.z=-Z1min
+        newShape.Placement=self.sel2.Placement.copy()
+        newShape.Placement.Rotation.Axis=self.Shape.CenterOfMass
+        newShape.Placement.Rotation.Angle=self.Shape.SubShapes[0].Surface.Rotation.Angle
 
-
-
-        
-        #newShape.Placement.Rotation=rot
         App.ActiveDocument.removeObject(self.sel2.Name)
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.de here
