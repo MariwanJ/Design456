@@ -42,7 +42,7 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-06-27 21:43:07'
+__updated__ = '2022-07-29 20:11:46'
 
 # Merge
 class Design456Part_Merge:
@@ -276,22 +276,23 @@ class Design456Part_Compound:
         try:
             s = Gui.Selection.getSelectionEx()
             
-            if (len(s) < 2):
+            if (len(s) < 1):
                 # Two object must be selected
                 errMessage = "Select two or more objects to Merge"
                 faced.errorDialog(errMessage)
                 return
             App.ActiveDocument.openTransaction(translate("Design456","Part Compound"))
             allObjects = []
-            for o in s:
-                allObjects.append(App.ActiveDocument.getObject(o.ObjectName))
-
+            if (len(s)>1):
+                for o in s:
+                    allObjects.append(o.Object)
+            else:
+                allObjects.append(s[0].Object)
             newObj = App.ActiveDocument.addObject("Part::Compound", "TempCompound")
             newObj.Links = allObjects
             # Make a simple copy
             App.ActiveDocument.recompute()
-            newShape = Part.getShape(
-                newObj, '', needSubElement=False, refine=True)
+            newShape = Part.getShape(newObj, '', needSubElement=False, refine=True)
             NewJ = App.ActiveDocument.addObject(
                 'Part::Feature', 'Compound')
             NewJ.Shape = newShape

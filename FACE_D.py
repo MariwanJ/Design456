@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-07-27 19:23:33'
+__updated__ = '2022-07-31 20:59:49'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1354,46 +1354,63 @@ Part.show(circle)
 
 
 
-def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
-    """Replace existing face with any new face.
+# def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
+#     """Replace existing face with any new face.
     
-    Args:
-        object (3D Object): Object has the face to replace
-        ThreeD_ObjectFace (Part.Face): Face will be replaced by new face
-        FaceToUse (Part.Face): New face that will be added to the solid object
+#     Args:
+#         object (3D Object): Object has the face to replace
+#         ThreeD_ObjectFace (Part.Face): Face will be replaced by new face
+#         FaceToUse (Part.Face): New face that will be added to the solid object
 
-    Returns:
-        Part.Solid: new object created after replacing the face.
-        or None if failed.
-    """
-    from Design456_3DTools import Design456_SimplifyCompound as simpl
-    try:
-        obj=object
-        shp=obj.Shape
-        faces=shp.Faces
-        newFaces= []
-        for fa in faces:
-            if fa.isSame(ThreeD_ObjectFace):
-                newFaces.append(FaceToUse)
-            else:
-                newFaces.append(fa)
-        _compt=Part.makeCompound(newFaces)
-        _comp=App.ActiveDocument.addObject("Part::Feature","tcomp")
-        _comp.Shape =_compt
-        if _comp.isValid:
-            name=obj.Name
-            App.ActiveDocument.removeObject(obj.Name)
-            newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
-            _solid =simpl().Activated(_comp)
-            newSolid.Shape=_solid[0].Shape
-            App.ActiveDocument.removeObject(_solid[0].Name)
-            App.ActiveDocument.recompute()
-            return newSolid
-        return None
+#     Returns:
+#         Part.Solid: new object created after replacing the face.
+#         or None if failed.
+#     """
+#     from Design456_3DTools import Design456_SimplifyCompound as simpl
+#     try:
+#         obj=object
+#         shp=obj.Shape
+#         faces=shp.Faces
+#         newFaces= []
+#         for fa in faces:
+#             if fa.isSame(ThreeD_ObjectFace):
+#                 newFaces.append(FaceToUse)
+#             else:
+#                 newFaces.append(fa)
+#         _compt=Part.makeCompound(newFaces)
+#         _comp=App.ActiveDocument.addObject("Part::Feature","tcomp")
+#         _comp.Shape =_compt
+#         if _comp.isValid:
+#             name=obj.Name
+#             App.ActiveDocument.removeObject(obj.Name)
+#             newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
+#             _solid =simpl().Activated(_comp)
+#             newSolid.Shape=_solid[0].Shape
+#             App.ActiveDocument.removeObject(_solid[0].Name)
+#             App.ActiveDocument.recompute()
+#             return newSolid
+#         return None
     
-    except Exception as err:
-        App.Console.PrintError("'ReplaceFace' Failed. "
-                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)    
+#     except Exception as err:
+#         App.Console.PrintError("'ReplaceFace' Failed. "
+#                                 "{err}\n".format(err=str(err)))
+#         exc_type, exc_obj, exc_tb = sys.exc_info()
+#         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+#         print(exc_type, fname, exc_tb.tb_lineno)    
+
+
+def resetFacePlacement(oldFaceObj):
+    newFace=None
+    compObj=None
+    shp=oldFaceObj.Shape
+    oldplc=oldFaceObj.Placement
+    newplc=None
+    _surface=shp.Surface
+    compObj= App.ActiveDocument.addObject("Part::Compound", "tFace")  # Create new compound object
+
+    oldFaceObj.Placement.Base=shp.BoundBox.Center
+    newplc=App.Placement()
+    newplc.Base=_surface.Position
+    newplc.Rotation=_surface.Rotation
+    oldFaceObj.Placement=newplc.inverse()
+    compObj.Link=oldFaceObj
