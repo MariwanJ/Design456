@@ -36,7 +36,7 @@ import FACE_D as faced
 from draftutils.translate import translate   #for translate
 import Design456_NewParts
 
-__updated__ = '2022-07-30 18:02:04'
+__updated__ = '2022-08-04 22:08:47'
 
 import BasicShapes.CommandShapes
 import CompoundTools._CommandExplodeCompound
@@ -525,7 +525,8 @@ class Design456Part:
             "Design456_FlowerVase",
             "Design456_CorrugatedSteel",
             "Design456_AcousticFoam",  
-            "Design456_Grass"            
+            "Design456_Grass",
+            "Design456_HoneycombCylinder"            
             ]
 
     """Design456 Part Toolbar"""

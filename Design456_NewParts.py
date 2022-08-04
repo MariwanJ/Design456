@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-04 21:55:33'
+__updated__ = '2022-08-04 22:23:21'
 
 
 #Roof
@@ -1865,14 +1865,50 @@ Gui.addCommand('Design456_Grass', Design456_Grass())
 
 #Honeycomb Cylinder
 
-class Design456_HoneycombCylinder:
+class ViewProviderHoneycombCylinder:
+
+    obj_name = "Grass"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderGrass.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return ( Design456Init.ICON_PATH + 'HoneycombCylinder.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+    
+    
+class HoneycombCylinder:
     """ HoneycombCylinder shape based on several parameters
     """
     def __init__(self, obj, 
-                       _height=1.0,                 #Shape hight
+                       _height=10.0,                 #Shape hight
                        _radius=10.0,                #Shape radius
                        _distanceBetweenHoles=1.0,   #Distance between hole and another
-                       _thickness=1,                #Thickness of the walls
+                       _thickness=2,                #Thickness of the walls
                        _holeRadius=1,               #Hole Radius
                        _holeType=0,                 #Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
                        ):
@@ -1895,10 +1931,15 @@ class Design456_HoneycombCylinder:
         
     def createObject(self):
         finalObj=None
-        basObj=None
+        baseObj=None
         coreObj=None
         Holes=[]
-        
+        baseObj=Part.makeCylinder(self.Radius,self.Height,App.Vector(0,0,-self.Height/2))  #From this tool, I will create shapes having a origin center in the centerofmass
+        Part.show(baseObj)
+        coreObj=Part.makeCylinder(self.Radius-self.Thickness, self.Height+20,App.Vector(0,0,-5-self.Height/2)) # We should have a higher shape to cut the top also
+        Part.show(coreObj)
+        finalObj=baseObj.cut(coreObj)
+        Part.show(finalObj)
         return finalObj
         
     def execute(self, obj):
@@ -1909,10 +1950,7 @@ class Design456_HoneycombCylinder:
             self.Thickness=float(obj.Thickness)
             self.HoleRadius=float(obj.HoleRadius)
             self.HoleType=float(obj.HoleType)
-            newObj=self.createObject()
-            newObj=None
-
-            obj.Shape =newObj
+            obj.Shape =self.createObject()
 
         except Exception as err:
             App.Console.PrintError("'execute HoneycombCylinder' Failed. "
@@ -1936,14 +1974,12 @@ class Design456_HoneycombCylinder:
         plc.Base=App.Vector(0,0,0)
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         newObj.Placement = plc
-        Design456_BaseGrass(newObj)
 
+        HoneycombCylinder(newObj)
         ViewProviderGrass(newObj.ViewObject, "HoneycombCylinder")
         v = Gui.ActiveDocument.ActiveView
         App.ActiveDocument.recompute()
         faced.PartMover(v, newObj, deleteOnEscape=True)
-
-
 
 Gui.addCommand('Design456_HoneycombCylinder', Design456_HoneycombCylinder())
 
