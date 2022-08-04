@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-04 22:23:21'
+__updated__ = '2022-08-04 22:28:37'
 
 
 #Roof
@@ -1867,7 +1867,7 @@ Gui.addCommand('Design456_Grass', Design456_Grass())
 
 class ViewProviderHoneycombCylinder:
 
-    obj_name = "Grass"
+    obj_name = "HoneycombCylinder"
 
     def __init__(self, obj, obj_name):
         self.obj_name = ViewProviderGrass.obj_name
