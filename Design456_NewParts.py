@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-06-29 20:51:24'
+__updated__ = '2022-08-04 21:55:33'
 
 
 #Roof
@@ -1862,3 +1862,91 @@ Gui.addCommand('Design456_Grass', Design456_Grass())
 
 
 ######################################################################
+
+#Honeycomb Cylinder
+
+class Design456_HoneycombCylinder:
+    """ HoneycombCylinder shape based on several parameters
+    """
+    def __init__(self, obj, 
+                       _height=1.0,                 #Shape hight
+                       _radius=10.0,                #Shape radius
+                       _distanceBetweenHoles=1.0,   #Distance between hole and another
+                       _thickness=1,                #Thickness of the walls
+                       _holeRadius=1,               #Hole Radius
+                       _holeType=0,                 #Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
+                       ):
+
+        obj.addProperty("App::PropertyLength", "Height","HoneycombCylinder", 
+                        "Height of the HoneycombCylinder").Height = _height
+        obj.addProperty("App::PropertyLength", "Radius","HoneycombCylinder", 
+                        "Radius of the HoneycombCylinder").Radius = _radius
+        obj.addProperty("App::PropertyLength", "Distance","HoneycombCylinder", 
+                        "Distance between holes").Distance = _distanceBetweenHoles
+        
+        obj.addProperty("App::PropertyLength", "Thickness","HoneycombCylinder", 
+                        "Thickness of the walls").Thickness = _thickness
+
+        obj.addProperty("App::PropertyLength", "HoleRadius","HoneycombCylinder", 
+                        "Hole Radius").HoleRadius = _holeRadius
+
+        obj.addProperty("App::PropertyInteger", "HoleType","HoneycombCylinder", 
+                        "Hole type").HoleType = _holeType
+        
+    def createObject(self):
+        finalObj=None
+        basObj=None
+        coreObj=None
+        Holes=[]
+        
+        return finalObj
+        
+    def execute(self, obj):
+        try:
+            self.Height=float(obj.Height)  
+            self.Radius=float(obj.Radius)  
+            self.Distance=float(obj.Distance)    
+            self.Thickness=float(obj.Thickness)
+            self.HoleRadius=float(obj.HoleRadius)
+            self.HoleType=float(obj.HoleType)
+            newObj=self.createObject()
+            newObj=None
+
+            obj.Shape =newObj
+
+        except Exception as err:
+            App.Console.PrintError("'execute HoneycombCylinder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+class Design456_HoneycombCylinder:
+
+    def GetResources(self):
+        return {'Pixmap':Design456Init.ICON_PATH + 'HoneycombCylinder.svg',
+                'MenuText': "HoneycombCylinder",
+                'ToolTip': "Generate a HoneycombCylinder"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "HoneycombCylinder")
+        plc=App.Placement()
+        plc.Base=App.Vector(0,0,0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.Placement = plc
+        Design456_BaseGrass(newObj)
+
+        ViewProviderGrass(newObj.ViewObject, "HoneycombCylinder")
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+
+
+Gui.addCommand('Design456_HoneycombCylinder', Design456_HoneycombCylinder())
+
+
+######################################################################
+
