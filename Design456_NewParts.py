@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-04 22:28:37'
+__updated__ = '2022-08-05 22:41:47'
 
 
 #Roof
@@ -1932,14 +1932,62 @@ class HoneycombCylinder:
         self.Type ="HoneycombCylinder"
         obj.Proxy = self
         
+    def createPolygon3D(self,sides=3):
+        points=[]
+        flatObj=None
+        newObj=None
+        angles=360/sides
+        y =-self.Radius*2 +5  #Extra 5 points to make the object bigger
+        for i in range (0,sides+1):
+            #The polygon will be
+            x= self.HoleRadius*math.sin(math.radians(i*angles)) 
+            z= self.HoleRadius*math.cos(math.radians(i*angles))
+            points.append(App.Vector(x,y,z))
+        flatObj=Part.makePolygon(points)
+        newObj=flatObj.extrude(App.Vector(0,self.Radius*2 +10,0))
+        return newObj
+    
     def createObject(self):
         finalObj=None
         baseObj=None
         coreObj=None
         Holes=[]
-        baseObj=Part.makeCylinder(self.Radius,self.Height,App.Vector(0,0,-self.Height/2))  #From this tool, I will create shapes having a origin center in the centerofmass
-        coreObj=Part.makeCylinder(self.Radius-self.Thickness, self.Height+20,App.Vector(0,0,-5-self.Height/2)) # We should have a higher shape to cut the top also
-        finalObj=baseObj.cut(coreObj)
+
+        try:
+            baseObj=Part.makeCylinder(self.Radius,self.Height,App.Vector(0,0,-self.Height/2))  #From this tool, I will create shapes having a origin center in the centerofmass
+            coreObj=Part.makeCylinder(self.Radius-self.Thickness, self.Height+20,App.Vector(0,0,-5-self.Height/2)) # We should have a higher shape to cut the top also
+            finalObj=baseObj.cut(coreObj)
+            nrOfHoles=int(self.Height /(self.Distance+self.HoleRadius*2))+1 #One more just to cover everything
+            angles=306/nrOfHoles
+            plc=App.Placement()
+            x=0
+            y=0
+            z=-self.Radius
+            plc.Rotation.Axis = App.Vector( 0.0, 0.0, 1.0)
+            for i in range(0,nrOfHoles):
+                z=-self.Radius+(2*self.Radius+self.Distance)*(i)         #We start from -radius
+                plc.Base= App.Vector(x,y,z)
+                plc.Rotation.Angle=angles*i
+                if   self.HoleType==0:
+                     #No holes
+                     pass # do nothing
+                elif self.HoleType==1: #Triangle
+                    Holes.append(self.createPolygon3D(3))
+                    Holes[i].Placement=plc.copy()
+            compoundOBJ=Part.makeCompound(Holes)
+            Part.show(compoundOBJ)
+            
+            ResultObj=finalObj.cut(compoundOBJ)
+            return ResultObj
+        except Exception as err:
+            App.Console.PrintError("'createObject HoneycombCylinder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+    
+
+        
         return finalObj
         
     def execute(self, obj):
@@ -1949,7 +1997,7 @@ class HoneycombCylinder:
             self.Distance=float(obj.Distance)    
             self.Thickness=float(obj.Thickness)
             self.HoleRadius=float(obj.HoleRadius)
-            self.HoleType=float(obj.HoleType)
+            self.HoleType=float(obj.HoleType)            
             obj.Shape =self.createObject()
 
         except Exception as err:
