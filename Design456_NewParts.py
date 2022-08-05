@@ -1976,7 +1976,7 @@ class Design456_HoneycombCylinder:
         newObj.Placement = plc
 
         HoneycombCylinder(newObj)
-        ViewProviderGrass(newObj.ViewObject, "HoneycombCylinder")
+        ViewProviderHoneycombCylinder(newObj.ViewObject, "HoneycombCylinder")
         v = Gui.ActiveDocument.ActiveView
         App.ActiveDocument.recompute()
         faced.PartMover(v, newObj, deleteOnEscape=True)
