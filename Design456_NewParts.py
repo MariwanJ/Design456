@@ -1929,6 +1929,9 @@ class HoneycombCylinder:
         obj.addProperty("App::PropertyInteger", "HoleType","HoneycombCylinder", 
                         "Hole type").HoleType = _holeType
         
+        self.Type ="HoneycombCylinder"
+        obj.Proxy = self
+        
     def createObject(self):
         finalObj=None
         baseObj=None
