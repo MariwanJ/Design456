@@ -1938,11 +1938,8 @@ class HoneycombCylinder:
         coreObj=None
         Holes=[]
         baseObj=Part.makeCylinder(self.Radius,self.Height,App.Vector(0,0,-self.Height/2))  #From this tool, I will create shapes having a origin center in the centerofmass
-        Part.show(baseObj)
         coreObj=Part.makeCylinder(self.Radius-self.Thickness, self.Height+20,App.Vector(0,0,-5-self.Height/2)) # We should have a higher shape to cut the top also
-        Part.show(coreObj)
         finalObj=baseObj.cut(coreObj)
-        Part.show(finalObj)
         return finalObj
         
     def execute(self, obj):
