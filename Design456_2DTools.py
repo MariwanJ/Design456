@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-08-04 21:31:34'
+__updated__ = '2022-08-06 17:19:33'
 
 
 class Design456_CommonFace:
@@ -795,7 +795,6 @@ class Design456_2DToolsGroup:
                 "Design456_SubtractFaces",
                 "Design456_CommonFace",
                 "Design456_SegmentAFace",
-                "Design456_EqualizeFaces",
 
                 )
 
