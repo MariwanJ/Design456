@@ -40,7 +40,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-07 22:32:21'
+__updated__ = '2022-08-07 22:34:21'
 
 
 # Roof
@@ -2053,7 +2053,7 @@ class HoneycombCylinder:
                 pass  # do nothing
             elif self.HoleType == 1:  # Triangle
                 for i in range(0, nrOfRings):
-                    z = -self.Height/2 +(space)*(i)  # We start from -radius
+                    z = space*(i)  # We start from -radius
                     allRings.append(self.createOneRing())
                     allRings[i].Placement.Base.z=allRings[i].Placement.Base.z+z
                     if cutRot==0 : 
