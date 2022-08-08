@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-08 21:42:59'
+__updated__ = '2022-08-08 21:43:54'
 
 
 #Roof
@@ -1862,3 +1862,214 @@ Gui.addCommand('Design456_Grass', Design456_Grass())
 
 
 ######################################################################
+
+# Honeycomb Cylinder
+
+class ViewProviderHoneycombCylinder:
+
+    obj_name = "HoneycombCylinder"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderGrass.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return (Design456Init.ICON_PATH + 'HoneycombCylinder.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+
+class HoneycombCylinder:
+    """ HoneycombCylinder shape based on several parameters
+    """
+
+    def __init__(self, obj,
+                 _height=10.0,  # Shape hight
+                 _radius=5.0,  # Shape radius
+                 _distanceBetweenHoles=0.1,  # Distance between hole and another
+                 _thickness=2,  # Thickness of the walls
+                 _holeRadius=1,  # Hole Radius
+                 _holeType=1,  # Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
+                 ):
+
+        obj.addProperty("App::PropertyLength", "Height", "HoneycombCylinder",
+                        "Height of the HoneycombCylinder").Height = _height
+        obj.addProperty("App::PropertyLength", "Radius", "HoneycombCylinder",
+                        "Radius of the HoneycombCylinder").Radius = _radius
+        obj.addProperty("App::PropertyLength", "Distance", "HoneycombCylinder",
+                        "Distance between holes").Distance = _distanceBetweenHoles
+
+        obj.addProperty("App::PropertyLength", "Thickness", "HoneycombCylinder",
+                        "Thickness of the walls").Thickness = _thickness
+
+        obj.addProperty("App::PropertyLength", "HoleRadius", "HoneycombCylinder",
+                        "Hole Radius").HoleRadius = _holeRadius
+
+        obj.addProperty("App::PropertyInteger", "HoleType", "HoneycombCylinder",
+                        "Hole type").HoleType = _holeType
+
+        self.Type = "HoneycombCylinder"
+        self.Placement=obj.Placement
+        obj.Proxy = self
+
+    def createPolygonOne3D(self, sides=3):
+        try:
+            points = []
+            flatObj = None
+            newObj = None
+            angles = 360/sides
+            y = -(self.Radius +5)  # Extra 5 points to make the object longer for cutting
+            for i in range(0, sides):
+                # The polygon will be
+                x = self.Placement.Base.x+self.HoleRadius*math.sin(math.radians(i*angles))
+                z = self.Placement.Base.z+self.HoleRadius*math.cos(math.radians(i*angles))
+                points.append(App.Vector(x, y, z))
+            points.append(points[0]) #close the loop
+            flatObj = Part.Face(Part.makePolygon(points))
+            newObj = flatObj.extrude(App.Vector(0, self.Radius+5,0))
+            return newObj
+        
+        except Exception as err:
+            App.Console.PrintError("'createObject HoneycombCylinder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)   
+            
+    def createOneRing(self):
+        try:
+            circumstance = 2*math.pi*self.Radius
+            nrOfHoles = 12#int(circumstance/(self.Distance+self.HoleRadius*2)) # One more just to cover everything
+            angles = int(180/nrOfHoles)
+            print(nrOfHoles,"nrOfHoles")
+            print(angles,"angles")
+            
+            plc = self.Placement.copy()
+            ringHoles=[]
+            plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
+            plc.Base = self.Placement.Base
+            plc.Base.z= -self.Height/2 #Always lowest point but later it will be changed,
+            for i in range(0, nrOfHoles+1):
+                ringHoles.append(self.createPolygonOne3D(3))
+                plc.Rotation.Angle = angles*i
+                ringHoles[i].Placement=plc
+            #Part.show(Part.makeCompound(ringHoles))
+            return(Part.makeCompound(ringHoles))
+
+        except Exception as err:
+            App.Console.PrintError("'createObject HoneycombCylinder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def createObject(self):
+        finalObj = None
+        baseObj = None
+        coreObj = None
+        Holes = []
+        try:
+            # From this tool, I will create shapes having a origin center in the centerofmass
+            baseObj = Part.makeCylinder(self.Radius, self.Height, App.Vector(self.Placement.Base.x, self.Placement.Base.y, self.Placement.Base.z-self.Height/2))
+            # We should have a higher shape to cut the top also
+            coreObj = Part.makeCylinder(self.Radius-self.Thickness, self.Height+20, App.Vector(self.Placement.Base.x, self.Placement.Base.y, self.Placement.Base.z-5-self.Height/2))
+            finalObj = baseObj.cut(coreObj)
+            x = 0
+            y = 0
+            z = -self.HoleRadius
+            allRings=[]
+            cutRot=45
+            space=self.HoleRadius*2+self.Distance
+            nrOfRings=int(self.Height/(space))
+            if self.HoleType == 0:
+                # No holes
+                pass  # do nothing
+            elif self.HoleType == 1:  # Triangle
+                for i in range(0, nrOfRings+1):
+                    z = (space)*(i)  # We start from -radius
+                    allRings.append(self.createOneRing())
+                    allRings[i].Placement.Base.z=allRings[i].Placement.Base.z+z
+                    if cutRot==0 : 
+                        cutRot=45
+                    else:
+                        cutRot=0
+                    allRings[i].Placement.Rotation.Angle=math.degrees(cutRot)
+                    print(cutRot)
+                    allRings[i].Placement.Rotation.Axis=App.Vector(0,0,1)
+            compoundOBJ=Part.Compound(allRings)
+            
+            #Part.show(compoundOBJ)
+            ResultObj = finalObj.cut(compoundOBJ)
+            return ResultObj
+        
+        except Exception as err:
+            App.Console.PrintError("'createObject HoneycombCylinder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def execute(self, obj):
+        try:
+            self.Height = float(obj.Height)
+            self.Radius = float(obj.Radius)
+            self.Distance = float(obj.Distance)
+            self.Thickness = float(obj.Thickness)
+            self.HoleRadius = float(obj.HoleRadius)
+            self.HoleType = float(obj.HoleType)
+            plc = App.Placement()
+            obj.Placement=plc
+            
+            obj.Shape = Part.makeCompound(self.createObject())
+
+        except Exception as err:
+            App.Console.PrintError("'execute HoneycombCylinder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+class Design456_HoneycombCylinder:
+
+    def GetResources(self):
+        return {'Pixmap': Design456Init.ICON_PATH + 'HoneycombCylinder.svg',
+                'MenuText': "HoneycombCylinder",
+                'ToolTip': "Generate a HoneycombCylinder"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "HoneycombCylinder")
+        plc = App.Placement()
+        plc.Base = App.Vector(0, 0, 0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.Placement = plc
+
+        HoneycombCylinder(newObj)
+        ViewProviderHoneycombCylinder(newObj.ViewObject, "HoneycombCylinder")
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_HoneycombCylinder', Design456_HoneycombCylinder())
