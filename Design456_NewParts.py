@@ -1953,9 +1953,9 @@ class HoneycombCylinder:
     def __init__(self, obj,
                  _height=10.0,  # Shape hight
                  _radius=5.0,  # Shape radius
-                 _distanceBetweenHoles=0.01,  # Distance between hole and another
+                 _distanceBetweenHoles=0.1,  # Distance between hole and another
                  _thickness=2,  # Thickness of the walls
-                 _holeRadius=0.2,  # Hole Radius
+                 _holeRadius=1,  # Hole Radius
                  _holeType=1,  # Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
                  ):
 
@@ -2016,7 +2016,7 @@ class HoneycombCylinder:
             plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
             plc.Base = self.Placement.Base
             plc.Base.z= -self.Height/2 #Always lowest point but later it will be changed,
-            for i in range(0, nrOfHoles):
+            for i in range(0, nrOfHoles+1):
                 ringHoles.append(self.createPolygonOne3D(3))
                 plc.Rotation.Angle = angles*i
                 ringHoles[i].Placement=plc
@@ -2052,18 +2052,20 @@ class HoneycombCylinder:
                 # No holes
                 pass  # do nothing
             elif self.HoleType == 1:  # Triangle
-                for i in range(0, nrOfRings):
-                    z = -self.Height/2 +(space)*(i)  # We start from -radius
+                for i in range(0, nrOfRings+1):
+                    z = (space)*(i)  # We start from -radius
                     allRings.append(self.createOneRing())
                     allRings[i].Placement.Base.z=allRings[i].Placement.Base.z+z
                     if cutRot==0 : 
                         cutRot=45
                     else:
                         cutRot=0
-                    allRings[i].Placement.Rotation.Angle=cutRot
+                    allRings[i].Placement.Rotation.Angle=math.degrees(cutRot)
+                    print(cutRot)
                     allRings[i].Placement.Rotation.Axis=App.Vector(0,0,1)
             compoundOBJ=Part.Compound(allRings)
-            Part.show(compoundOBJ)
+            
+            #Part.show(compoundOBJ)
             ResultObj = finalObj.cut(compoundOBJ)
             return ResultObj
         
@@ -2083,7 +2085,6 @@ class HoneycombCylinder:
             self.HoleRadius = float(obj.HoleRadius)
             self.HoleType = float(obj.HoleType)
             plc = App.Placement()
-            #plc.Base.z=-self.Height/2
             obj.Placement=plc
             
             obj.Shape = Part.makeCompound(self.createObject())
