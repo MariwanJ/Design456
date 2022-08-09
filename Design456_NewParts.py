@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-08 22:27:25'
+__updated__ = '2022-08-09 22:27:17'
 
 
 #Roof
@@ -1907,26 +1907,16 @@ class HoneycombCylinder:
 
     def __init__(self, obj,
                  _height=10.0,  # Shape hight
-                 _radius=5.0,  # Shape radius
-                 _distanceBetweenHoles=0.1,  # Distance between hole and another
-                 _thickness=2,  # Thickness of the walls
-                 _holeRadius=1,  # Hole Radius
+                 _scale=1.0,
                  _holeType=1,  # Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
                  ):
 
         obj.addProperty("App::PropertyLength", "Height", "HoneycombCylinder",
                         "Height of the HoneycombCylinder").Height = _height
-        obj.addProperty("App::PropertyLength", "Radius", "HoneycombCylinder",
-                        "Radius of the HoneycombCylinder").Radius = _radius
-        obj.addProperty("App::PropertyLength", "Distance", "HoneycombCylinder",
-                        "Distance between holes").Distance = _distanceBetweenHoles
-
-        obj.addProperty("App::PropertyLength", "Thickness", "HoneycombCylinder",
-                        "Thickness of the walls").Thickness = _thickness
-
-        obj.addProperty("App::PropertyLength", "HoleRadius", "HoneycombCylinder",
-                        "Hole Radius").HoleRadius = _holeRadius
-
+        
+        obj.addProperty("App::PropertyLength", "Scale", "HoneycombCylinder",
+                        "Radius of the HoneycombCylinder").Scale = _scale        
+        
         obj.addProperty("App::PropertyInteger", "HoleType", "HoneycombCylinder",
                         "Hole type").HoleType = _holeType
 
@@ -1940,7 +1930,7 @@ class HoneycombCylinder:
             flatObj = None
             newObj = None
             angles = 360/sides
-            y =self.Placement.Base.y -(self.Radius+5)  # Extra 5 points to make the object longer for cutting
+            y =self.Placement.Base.y -(self.Radius+0.5)  # Extra 5 points to make the object longer for cutting
             for i in range(0, sides):
                 # The polygon will be
                 x = self.Placement.Base.x+self.HoleRadius*math.sin(math.radians(i*angles))
@@ -1948,7 +1938,7 @@ class HoneycombCylinder:
                 points.append(App.Vector(x, y, z))
             points.append(points[0]) #close the loop
             flatObj = Part.Face(Part.makePolygon(points))
-            newObj = flatObj.extrude(App.Vector(0, 2*self.Radius+10,0))
+            newObj = flatObj.extrude(App.Vector(0, 2*self.Radius+1,0))
             return newObj
         
         except Exception as err:
@@ -1960,22 +1950,18 @@ class HoneycombCylinder:
             
     def createOneRing(self):
         try:
-            circumstance = 2*math.pi*self.Radius
-            nrOfHoles = int(circumstance/(self.Distance+self.HoleRadius*2)) # One more just to cover everything
-            angles = 180/nrOfHoles
-            print(nrOfHoles,"nrOfHoles")
+            angles = 180/self.Holes
             print(angles,"angles")
             
             plc = self.Placement.copy()
             ringHoles=[]
             plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
             plc.Base = self.Placement.Base
-            plc.Base.z= plc.Base.z-self.Height/2 #Always lowest point but later it will be changed,
-            for i in range(0, nrOfHoles):
+            plc.Base.z= plc.Base.z-self.Height/2+self.Distance #Always lowest point but later it will be changed,
+            for i in range(0, self.Holes):
                 ringHoles.append(self.createPolygonOne3D(6))
                 plc.Rotation.Angle = math.radians(angles*i)
                 ringHoles[i].Placement=plc
-            #Part.show(Part.makeCompound(ringHoles))
             return(Part.makeCompound(ringHoles))
 
         except Exception as err:
@@ -1989,40 +1975,42 @@ class HoneycombCylinder:
         finalObj = None
         baseObj = None
         coreObj = None
-        Holes = []
+        self.Distance=3
         try:
             # From this tool, I will create shapes having a origin center in the centerofmass
-            baseObj = Part.makeCylinder(self.Radius, self.Height, App.Vector(self.Placement.Base.x, self.Placement.Base.y, self.Placement.Base.z-self.Height/2))
+            baseObj = Part.makeCylinder(self.Radius, self.Height, 
+                                        App.Vector(self.Placement.Base.x, 
+                                                   self.Placement.Base.y,
+                                                   self.Placement.Base.z-self.Height/2))
             # We should have a higher shape to cut the top also
-            coreObj = Part.makeCylinder(self.Radius-self.Thickness, self.Height+20, App.Vector(self.Placement.Base.x, self.Placement.Base.y, self.Placement.Base.z-5-self.Height/2))
+            coreObj = Part.makeCylinder(self.innerRadius, self.Height, App.Vector(self.Placement.Base.x, self.Placement.Base.y, self.Placement.Base.z-self.Height/2))
             finalObj = baseObj.cut(coreObj)
             x = 0
             y = 0
             z = -self.HoleRadius
             allRings=[]
-            cutRot=45
-            space=self.HoleRadius*2+self.Distance
-            nrOfRings=int(self.Height/(space))
+            cutRot=15
+            nrOfRings=int(self.Height/(3))
             if self.HoleType == 0:
                 # No holes
                 pass  # do nothing
             elif self.HoleType == 1:  # Triangle
-                for i in range(0, nrOfRings+1):
-                    z = (space)*(i)  # We start from -radius
+                for i in range(0, nrOfRings):
+                    z = 3*i
                     allRings.append(self.createOneRing())
                     allRings[i].Placement.Base.z=allRings[i].Placement.Base.z+z
                     if cutRot==0 : 
-                        cutRot=60
+                        cutRot=15
                     else:
                         cutRot=0
                     allRings[i].Placement.Rotation.Angle=math.degrees(cutRot)
-                    print(cutRot)
                     allRings[i].Placement.Rotation.Axis=App.Vector(0,0,1)
-            compoundOBJ=Part.Compound(allRings)
+                compoundOBJ=Part.Compound(allRings)
+            #Part.show(compoundOBJ)
             #return compoundOBJ
-            Part.show(compoundOBJ)
-            #ResultObj = finalObj.cut(compoundOBJ)
-            return finalObj
+            #Part.show(compoundOBJ)
+            ResultObj = finalObj.cut(compoundOBJ)
+            return ResultObj
         
         except Exception as err:
             App.Console.PrintError("'createObject HoneycombCylinder' Failed. "
@@ -2034,11 +2022,11 @@ class HoneycombCylinder:
     def execute(self, obj):
         try:
             self.Height = float(obj.Height)
-            self.Radius = float(obj.Radius)
-            self.Distance = float(obj.Distance)
-            self.Thickness = float(obj.Thickness)
-            self.HoleRadius = float(obj.HoleRadius)
-            self.HoleType = float(obj.HoleType)
+            self.Radius = 5.4
+            self.HoleRadius =1.4
+            self.innerRadius=5.1
+            self.Holes=12
+            self.HoleType = int(obj.HoleType)
             obj.Shape = Part.makeCompound(self.createObject())
 
         except Exception as err:
