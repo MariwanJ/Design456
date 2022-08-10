@@ -1975,7 +1975,7 @@ class HoneycombCylinder:
         finalObj = None
         baseObj = None
         coreObj = None
-        self.Distance=3
+        self.Distance=2
         try:
             # From this tool, I will create shapes having a origin center in the centerofmass
             baseObj = Part.makeCylinder(self.Radius, self.Height, 
@@ -1990,7 +1990,7 @@ class HoneycombCylinder:
             z = -self.HoleRadius
             allRings=[]
             cutRot=15
-            nrOfRings=int(self.Height/(3))
+            nrOfRings=int(self.Height/self.HoleRadius)
             if self.HoleType == 0:
                 # No holes
                 pass  # do nothing
@@ -2023,10 +2023,10 @@ class HoneycombCylinder:
         try:
             self.Height = float(obj.Height)
             self.Radius = 5.4
-            self.HoleRadius =1.4
             self.innerRadius=5.1
-            self.Holes=12
+            self.Holes=6
             self.HoleType = int(obj.HoleType)
+            self.HoleRadius=1.5
             obj.Shape = Part.makeCompound(self.createObject())
 
         except Exception as err:
