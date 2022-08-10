@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-09 22:27:17'
+__updated__ = '2022-08-10 20:39:46'
 
 
 #Roof
@@ -1957,7 +1957,7 @@ class HoneycombCylinder:
             ringHoles=[]
             plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
             plc.Base = self.Placement.Base
-            plc.Base.z= plc.Base.z-self.Height/2+self.Distance #Always lowest point but later it will be changed,
+            plc.Base.z= plc.Base.z+self.Distance #Always lowest point but later it will be changed,
             for i in range(0, self.Holes):
                 ringHoles.append(self.createPolygonOne3D(6))
                 plc.Rotation.Angle = math.radians(angles*i)
@@ -1989,7 +1989,7 @@ class HoneycombCylinder:
             y = 0
             z = -self.HoleRadius
             allRings=[]
-            cutRot=15
+            cutRot=20
             nrOfRings=int(self.Height/self.HoleRadius)
             if self.HoleType == 0:
                 # No holes
@@ -2000,14 +2000,15 @@ class HoneycombCylinder:
                     allRings.append(self.createOneRing())
                     allRings[i].Placement.Base.z=allRings[i].Placement.Base.z+z
                     if cutRot==0 : 
-                        cutRot=15
+                        cutRot=20
                     else:
                         cutRot=0
                     allRings[i].Placement.Rotation.Angle=math.degrees(cutRot)
                     allRings[i].Placement.Rotation.Axis=App.Vector(0,0,1)
+                    compoundOBJ=Part.Compound(allRings)
+                    Part.show(compoundOBJ)
                 compoundOBJ=Part.Compound(allRings)
-            #Part.show(compoundOBJ)
-            #return compoundOBJ
+            return compoundOBJ
             #Part.show(compoundOBJ)
             ResultObj = finalObj.cut(compoundOBJ)
             return ResultObj
@@ -2022,12 +2023,12 @@ class HoneycombCylinder:
     def execute(self, obj):
         try:
             self.Height = float(obj.Height)
-            self.Radius = 5.4
-            self.innerRadius=5.1
+            self.Radius = 10
+            self.innerRadius=8
             self.Holes=6
             self.HoleType = int(obj.HoleType)
-            self.HoleRadius=1.4
-            self.Distance=2.4
+            self.HoleRadius=2.35
+            self.Distance   =self.HoleRadius*2
             obj.Shape = Part.makeCompound(self.createObject())
 
         except Exception as err:
