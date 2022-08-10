@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-10 22:18:03'
+__updated__ = '2022-08-10 22:29:39'
 
 
 #Roof
@@ -1957,7 +1957,7 @@ class HoneycombCylinder:
             ringHoles=[]
             plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
             plc.Base = self.Placement.Base
-            plc.Base.z= plc.Base.z+self.Distance #Always lowest point but later it will be changed,
+            plc.Base.z= plc.Base.z#+self.Distance #Always lowest point but later it will be changed,
             for i in range(0, self.Holes):
                 ringHoles.append(self.createPolygonOne3D(6))
                 plc.Rotation.Angle = math.radians(angles*i)
@@ -1998,8 +1998,8 @@ class HoneycombCylinder:
                 # No holes
                 pass  # do nothing
             elif self.HoleType == 1:  # Triangle
-                for i in range(0, nrOfRings):
-                    z = z+self.Distance*i
+                for i in range(0, nrOfRings+1):
+                    z = -self.Height/2+self.Distance*i
                     allRings.append(self.createOneRing())
                     allRings[i].Placement.Base.z= z
                     if cutRot==0 : 
