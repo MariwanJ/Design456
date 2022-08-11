@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-10 22:29:39'
+__updated__ = '2022-08-11 22:30:03'
 
 
 # Roof
@@ -1988,33 +1988,34 @@ class HoneycombCylinder:
     def __init__(self, obj,
                  _height=20.0,  # Shape hight
                  _scale=1.0,
-                 _scaleRadius=1.0
-                 _holeType=1,  # Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
+                 _CylinderRadius=10.0,
+                 _holeType="Hexagon 06Sides",  # Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
                  ):
 
         obj.addProperty("App::PropertyLength", "Height", "HoneycombCylinder",
                         "Height of the HoneycombCylinder").Height = _height
 
-        obj.addProperty("App::PropertyLength", "Radius", "HoneycombCylinder",
-                        "Radius of the HoneycombCylinder").scaleRadius = _scaleRadius
+        obj.addProperty("App::PropertyLength", "CylinderRadius", "HoneycombCylinder",
+                        "Radius of the HoneycombCylinder").CylinderRadius = _CylinderRadius
 
         obj.addProperty("App::PropertyLength", "Scale", "HoneycombCylinder",
                         "Scale of the HoneycombCylinder").Scale = _scale
 
-        obj.addProperty("App::PropertyInteger", "HoleType", "HoneycombCylinder",
+        obj.addProperty("App::PropertyEnumeration", "HoleType", "HoneycombCylinder",
                         "Hole type").HoleType = ["Circle",
-                                                 "Triangle 3Sides",
-                                                 "Square 4Sides",
-                                                 "Pentagon 5Sides",
-                                                 "Hexagon 6Sides",
-                                                 "Heptagon 7Sides",
-                                                 "Octagon 8Sides",
-                                                 "Nonagon 9Sides",
+                                                 "Triangle 03Sides",
+                                                 "Square 04Sides",
+                                                 "Pentagon 05Sides",
+                                                 "Hexagon 06Sides",
+                                                 "Heptagon 07Sides",
+                                                 "Octagon 08Sides",
+                                                 "Nonagon 09Sides",
                                                  "Decagon 10Sides"]
 
         self.Type = "HoneycombCylinder"
         self.Placement = obj.Placement
         obj.Proxy = self
+        obj.HoleType =_holeType
 
     def createPolygonOne3D(self, sides=3):
         try:
@@ -2088,24 +2089,32 @@ class HoneycombCylinder:
             z = -self.Height/2
             allRings = []
             cutRot = 20
-            _sides = 0
+            _sides = 1
             nrOfRings = int(self.Height/self.HoleRadius/2)
             print(nrOfRings)
+            compoundOBJ=None
             if self.HoleType == "":
                 # No holes
                 pass  # do nothing
 
             elif self.HoleType == "Circle":
                 pass
+                # doesn't work with these options yet
+                #   self.HoleType == "Heptagon 07Sides" or
+                #   self.HoleType == "Octagon 08Sides" or
+                #   self.HoleType == "Nonagon 09Sides" or
+                #   self.HoleType == "Decagon 10Sides"
+                #   self.HoleType == "Square 04Sides" or
+                #   self.HoleType == "Pentagon 05Sides" or
+
             elif (self.HoleType == "Triangle 03Sides" or 
-                  self.HoleType == "Square 04Sides" or
-                  self.HoleType == "Pentagon 05Sides" or
-                  self.HoleType == "Hexagon 06Sides" or
-                  self.HoleType == "Heptagon 07Sides" or
-                  self.HoleType == "Octagon 08Sides" or
-                  self.HoleType == "Nonagon 09Sides" or
-                  self.HoleType == "Decagon 10Sides"):
-                _sides = int(self.HoleType[8:2])
+                  self.HoleType == "Hexagon 06Sides"             ):
+                
+                pos=self.HoleType.find(" ")+1
+                _sides=int(self.HoleType[pos:pos+2])
+                if _sides==0 :
+                    _sides=1 #avoid divide by zero
+
                 for i in range(0, nrOfRings+1):
                     z = -self.Height/2+self.Distance*i
                     allRings.append(self.createOneRing(_sides))
@@ -2121,10 +2130,31 @@ class HoneycombCylinder:
                 compoundOBJ = Part.Compound(allRings)
             # return compoundOBJ
             # Part.show(compoundOBJ)
-            ResultObj = finalObj.cut(compoundOBJ)
-            ResultObj=ResultObj.scale(10/self.scaleRadius,10/self.scaleRadius,1)   #Change radius
-            ResultObj= ResultObj.scale(self.scale,self.scale,self.scale)
-            return ResultObj
+
+
+            ResultObj1 = finalObj.cut(compoundOBJ)
+            """     scaleX    0      0
+                    0   scaleY    0
+                    0      0   scaleZ
+            """
+            mtr1= App.Matrix(  self.Scale, 0, 0, 0,
+                                0, self.Scale, 0, 0,
+                                0, 0, self.Scale, 0,
+                                0,    0,    0,    1   )
+            _scaleR=round(self.CylinderRadius/10.0,2)
+        
+            ResultObj2 = ResultObj1.transformGeometry(mtr1)
+            if _scaleR!=1.00:
+                mtr2= App.Matrix(  _scaleR, 0, 0, 0,
+                                0, _scaleR, 0, 0,
+                                0, 0, 1, 0,
+                                0, 0, 0, 1 )
+
+                ResultObj3= ResultObj2.transformGeometry(mtr2)
+            else:
+                ResultObj3=ResultObj2
+
+            return ResultObj3
 
         except Exception as err:
             App.Console.PrintError("'createObject HoneycombCylinder' Failed. "
@@ -2136,13 +2166,14 @@ class HoneycombCylinder:
     def execute(self, obj):
         try:
             self.Height = float(obj.Height)
-            self.Radius = 10
-            self.innerRadius = 8
-            self.Holes = 6
-            self.HoleType = int(obj.HoleType)
+            self.Radius = 10.0
+            self.innerRadius = 8.0
+            self.Holes = int(6)
+            self.HoleType = obj.HoleType
             self.HoleRadius = 2.35
-            self.scaleRadius = float(obj.scaleRadius)
-            self.Distance = self.HoleRadius*2
+            self.CylinderRadius = float(obj.CylinderRadius)
+            self.Distance = float(self.HoleRadius*2)
+            self.Scale=float(obj.Scale)
 
             obj.Shape = Part.makeCompound(self.createObject())
 
