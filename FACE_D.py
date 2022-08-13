@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-08-02 18:43:57'
+__updated__ = '2022-08-12 21:15:46'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1352,3 +1352,33 @@ Part.show(circle)
 """
 
 
+"""
+Note: this is a hint on how to scale using Matrix
+
+               #scaleX    0      0
+               #     0   scaleY    0
+               #     0      0   scaleZ
+          
+            mtr1= App.Matrix(  self.Scale, 0, 0, 0,
+                                0, self.Scale, 0, 0,
+                                0, 0, self.Scale, 0,
+                                0,    0,    0,    1   )
+            _scaleR=round(self.Radius/10.0,2)
+        
+            if self.Scale!=1:
+                ResultObj2 = ResultObj1.transformGeometry(mtr1)
+            else:
+                ResultObj2=ResultObj1
+            if _scaleR!=1.00:
+                mtr2= App.Matrix(  _scaleR, 0, 0, 0,
+                                0, _scaleR, 0, 0,
+                                0, 0, 1, 0,
+                                0, 0, 0, 1 )
+
+                ResultObj3= ResultObj2.transformGeometry(mtr2)
+            else:
+                ResultObj3=ResultObj2
+
+
+
+"""
