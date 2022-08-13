@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-13 15:12:17'
+__updated__ = '2022-08-13 15:39:54'
 
 
 # Roof
@@ -2193,3 +2193,258 @@ class Design456_HoneycombCylinder:
 
 
 Gui.addCommand('Design456_HoneycombCylinder', Design456_HoneycombCylinder())
+#-----------------------------------------------------------------------------
+
+
+
+# Honeycomb Fence
+
+class ViewProviderHoneycombFence:
+
+    obj_name = "HoneycombFence"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderGrass.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return (Design456Init.ICON_PATH + 'HoneycombFence.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+
+
+class HoneycombFence:
+    """ HoneycombFence shape based on several parameters
+    """
+
+    def __init__(self, obj,
+                 _height=20.0,  # Shape hight
+                 _Radius=10.0,
+                 _holeType="Hexagon 06Sides",  # Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
+                 ):
+
+        obj.addProperty("App::PropertyLength", "Height", "HoneycombFence",
+                        "Height of the HoneycombFence").Height = _height
+
+        obj.addProperty("App::PropertyLength", "Radius", "HoneycombFence",
+                        "Radius of the HoneycombFence").Radius = _Radius
+
+        obj.addProperty("App::PropertyEnumeration", "HoleType", "HoneycombFence",
+                        "Hole type").HoleType = ["Circle",
+                                                 "Triangle 03Sides",
+                                                 "Square 04Sides",
+                                                 "Pentagon 05Sides",
+                                                 "Hexagon 06Sides",
+                                                 "Heptagon 07Sides",
+                                                 "Octagon 08Sides",
+                                                 "Nonagon 09Sides",
+                                                 "Decagon 10Sides"]
+
+        self.Type = "HoneycombFence"
+        self.Placement = obj.Placement
+        obj.Proxy = self
+        obj.HoleType =_holeType
+
+    def createPolygonOne3D(self, sides=3):
+        try:
+            points = []
+            flatObj = None
+            newObj = None
+            angles = 360/sides
+            # Extra 5 points to make the object longer for cutting
+            y1 = self.Placement.Base.y - (2*self.Radius+5)
+            y2 = -y1+ (2*self.Radius+5)
+            
+            for i in range(0, sides):
+                # The polygon will be
+                x = self.Placement.Base.x+self.HoleRadius * math.cos(math.radians(i*angles))
+                z = self.Placement.Base.z+self.HoleRadius * math.sin(math.radians(i*angles))
+                points.append(App.Vector(x, y1, z))
+            
+            points.append(points[0])  # close the loop
+            flatObj = Part.Face(Part.makePolygon(points))
+            newObj = flatObj.extrude(App.Vector(0, y2, 0))
+            return newObj
+
+        except Exception as err:
+            App.Console.PrintError("'createObject HoneycombFence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def createOneRing(self, _sides):
+        try:
+            angles = 180/self.Holes
+            plc = self.Placement.copy()
+            ringHoles = []
+            plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
+            plc.Base = self.Placement.Base
+            plc.Base.z = plc.Base.z
+            for i in range(0, self.Holes):
+                if self.HoleType=="Circle":
+                    ringHoles.append(self.createOneCylinder())
+                else:
+                    ringHoles.append(self.createPolygonOne3D(_sides))
+                plc.Rotation.Angle = math.radians(angles*i)
+                ringHoles[i].Placement = plc
+            return (Part.makeCompound(ringHoles))
+
+        except Exception as err:
+            App.Console.PrintError("'createObject HoneycombFence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+    
+    def createOneCylinder(self):        
+        try:
+            flatObj = None
+            newObj = None
+            x = self.Placement.Base.x
+            z = self.Placement.Base.z
+            y1 = self.Placement.Base.y - (2*self.Radius+5)
+            y2 = -y1+ (2*self.Radius+5)
+            circle=Part.Wire(Part.makeCircle(self.HoleRadius,App.Vector(x,y1,z),App.Vector(0,1,0)))
+            flatObj = Part.Face(circle)
+            newObj = flatObj.extrude(App.Vector(0, y2, 0))
+            return newObj
+
+        except Exception as err:
+            App.Console.PrintError("'createObject HoneycombFence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def createObject(self):
+        finalObj = None
+        baseObj = None
+        coreObj = None
+        try:
+            # From this tool, I will create shapes having a origin center in the centerofmass
+            baseObj = Part.makeCylinder(self.Radius, self.Height,
+                                        App.Vector(self.Placement.Base.x,
+                                                   self.Placement.Base.y,
+                                                   self.Placement.Base.z-self.Height/2))
+            # We should have a higher shape to cut the top also
+            coreObj = Part.makeCylinder(self.innerRadius, self.Height,
+                                        App.Vector(self.Placement.Base.x,
+                                                   self.Placement.Base.y,
+                                                   self.Placement.Base.z-self.Height/2))
+            finalObj = baseObj.cut(coreObj)
+
+            z = -self.Height/2
+            allRings = []
+            cutRot = 20
+            _sides = 1
+            nrOfRings = int(self.Height/self.HoleRadius/2)
+            compoundOBJ=None
+            if self.HoleType == "":
+                # No holes
+                pass  # do nothing
+
+            elif self.HoleType == "Circle":
+                pass
+            elif (self.HoleType == "Triangle 03Sides" or 
+                  self.HoleType == "Square 04Sides" or
+                  self.HoleType == "Pentagon 05Sides" or
+                  self.HoleType == "Hexagon 06Sides" or
+                  self.HoleType == "Heptagon 07Sides" or
+                  self.HoleType == "Octagon 08Sides" or
+                  self.HoleType == "Nonagon 09Sides" or
+                  self.HoleType == "Decagon 10Sides"):
+                pos=self.HoleType.find(" ")+1
+                _sides=int(self.HoleType[pos:pos+2])
+                if _sides==0 and self.HoleType != "Circle":
+                    _sides=3 #avoid divide by zero
+                    print("warning the side was zero")
+
+            for i in range(0, nrOfRings+1):
+                z = -self.Height/2.4+self.Distance*i
+                allRings.append(self.createOneRing(_sides))
+                allRings[i].Placement.Base.z = z
+                if cutRot == 0:
+                    cutRot = 20
+                else:
+                    cutRot = 0
+                allRings[i].Placement.Rotation.Angle = math.degrees(cutRot)
+                allRings[i].Placement.Rotation.Axis = App.Vector(0, 0, 1)
+                compoundOBJ = Part.Compound(allRings)
+
+            compoundOBJ = Part.Compound(allRings)
+            ResultObj = finalObj.cut(compoundOBJ)
+            return ResultObj
+
+        except Exception as err:
+            App.Console.PrintError("'createObject HoneycombFence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def execute(self, obj):
+        try:
+            self.Height = float(obj.Height)
+            self.Radius = float(obj.Radius)
+            self.innerRadius = self.Radius-1
+            self.Holes = int(6)
+            self.HoleType = obj.HoleType
+            self.HoleRadius = self.Radius* 0.218 #2.35
+            self.Distance = float(self.HoleRadius*2)
+            obj.Shape = Part.makeCompound(self.createObject())
+
+        except Exception as err:
+            App.Console.PrintError("'execute HoneycombFence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+class Design456_HoneycombFence:
+
+    def GetResources(self):
+        return {'Pixmap': Design456Init.ICON_PATH + 'HoneycombFence.svg',
+                'MenuText': "HoneycombFence",
+                'ToolTip': "Generate a HoneycombFence"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "HoneycombFence")
+        plc = App.Placement()
+        plc.Base = App.Vector(0, 0, 0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.Placement = plc
+
+        HoneycombFence(newObj)
+        ViewProviderHoneycombFence(newObj.ViewObject, "HoneycombFence")
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+
+Gui.addCommand('Design456_HoneycombFence', Design456_HoneycombFence())
