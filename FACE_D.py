@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 # *                                                                         *
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
-# *  Copyright (C) 2021                                                     *
+# *  Copyright (C) 2022                                                    *
 # *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-07-18 21:20:51'
+__updated__ = '2022-08-12 21:15:46'
 
 
 # TODO : FIXME BETTER WAY?
@@ -695,7 +695,7 @@ def distanceBetweenTwoVectors(p1=App.Vector(0, 0, 0), p2=App.Vector(10, 10, 10),
         p2 ([FreeCAD.Vector], Required): [description]. Defaults to App.Vector(10,10,10).
 
     Returns:
-        [float]: [Deistance measured between the two vertices]
+        [float]: [Distance measured between the two vertices]
     """
     results = (p2 - p1).dot(n)  # p1.distanceToPoint(p2)
     return results
@@ -1352,48 +1352,33 @@ Part.show(circle)
 """
 
 
+"""
+Note: this is a hint on how to scale using Matrix
 
-
-def ReplaceFace(object, ThreeD_ObjectFace,FaceToUse):
-    """Replace existing face with any new face.
-    
-    Args:
-        object (3D Object): Object has the face to replace
-        ThreeD_ObjectFace (Part.Face): Face will be replaced by new face
-        FaceToUse (Part.Face): New face that will be added to the solid object
-
-    Returns:
-        Part.Solid: new object created after replacing the face.
-        or None if failed.
-    """
-    from Design456_3DTools import Design456_SimplifyCompound as simpl
-    try:
-        obj=object
-        shp=obj.Shape
-        faces=shp.Faces
-        newFaces= []
-        for fa in faces:
-            if fa.isSame(ThreeD_ObjectFace):
-                newFaces.append(FaceToUse)
+               #scaleX    0      0
+               #     0   scaleY    0
+               #     0      0   scaleZ
+          
+            mtr1= App.Matrix(  self.Scale, 0, 0, 0,
+                                0, self.Scale, 0, 0,
+                                0, 0, self.Scale, 0,
+                                0,    0,    0,    1   )
+            _scaleR=round(self.Radius/10.0,2)
+        
+            if self.Scale!=1:
+                ResultObj2 = ResultObj1.transformGeometry(mtr1)
             else:
-                newFaces.append(fa)
-        _compt=Part.makeCompound(newFaces)
-        _comp=App.ActiveDocument.addObject("Part::Feature","tcomp")
-        _comp.Shape =_compt
-        if _comp.isValid:
-            name=obj.Name
-            App.ActiveDocument.removeObject(obj.Name)
-            newSolid=App.ActiveDocument.addObject("Part::Feature","ReplaceFace")
-            _solid =simpl().Activated(_comp)
-            newSolid.Shape=_solid[0].Shape
-            App.ActiveDocument.removeObject(_solid[0].Name)
-            App.ActiveDocument.recompute()
-            return newSolid
-        return None
-    
-    except Exception as err:
-        App.Console.PrintError("'ReplaceFace' Failed. "
-                                "{err}\n".format(err=str(err)))
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)    
+                ResultObj2=ResultObj1
+            if _scaleR!=1.00:
+                mtr2= App.Matrix(  _scaleR, 0, 0, 0,
+                                0, _scaleR, 0, 0,
+                                0, 0, 1, 0,
+                                0, 0, 0, 1 )
+
+                ResultObj3= ResultObj2.transformGeometry(mtr2)
+            else:
+                ResultObj3=ResultObj2
+
+
+
+"""

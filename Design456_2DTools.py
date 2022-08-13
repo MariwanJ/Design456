@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 # *                                                                         *
 # *  This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                         *
-# *  Copyright (C) 2021                                                     *
+# *  Copyright (C) 2022                                                    *
 # *                                                                         *
 # *                                                                         *
 # *  This library is free software; you can redistribute it and/or          *
@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-07-17 12:08:36'
+__updated__ = '2022-08-13 15:25:39'
 
 
 class Design456_CommonFace:
@@ -579,206 +579,201 @@ class Design456_SegmentAFace:
 
 Gui.addCommand('Design456_SegmentAFace', Design456_SegmentAFace())
 
+######################################################################
 
-
-class Design456_EqualizeFaces:
-    def __init__(self):
-        self.dialog= None
-        self.sel1=None
-        self.sel2=None
+"""    
+        Unfortunately, I couldn't find a solution and I don't want to waste more time at the moment
+        on this tool. I leave it for now, and comment the code. Maybe when I find a solution 
+        I come back to it. 
+        The problem is that there is no way to reset  face's placement. It can have an Axis and a rotation axis
+        which means double rotation. Resetting that with the weird rotation mechanism in FreeCAD is not easy. 
+"""
+# class Design456_EqualizeFaces:
+#     def __init__(self):
+#         self.dialog= None
+#         self.sel1=None
+#         self.sel2=None
         
-    """[Use this tool to equalize two faces (copy first, replace second with the copied face).]
+#     """[Use this tool to equalize two faces (copy first, replace second with the copied face).]
 
-    """
-    def Activated(self):
-        try:
-            from Design456_Alignment import Design456_ResetPlacements 
-            sel=Gui.Selection.getSelectionEx()
-            newshape=None
-            if len(sel)<2 or len(sel)>2 :
-            #error message
-                # Two object must be selected
-                errMessage = "Select two faces to use the tool "
-                faced.errorDialog(errMessage)
-                return
-            f1=sel[0].SubObjects[0]
-            f2=sel[1].SubObjects[0]
-            if type(f1)!=Part.Face or type(f2)!=Part.Face:
-                errMessage = "Select two faces to use the tool "
-                faced.errorDialog(errMessage)
-                return
-            self.dialog = self.getMainWindow()
-            #We must reset placement for each object otherwise this tool is impossible
+#     """
+#     def Activated(self):
+#         try:
+#             from Design456_Alignment import Design456_ResetPlacements 
+#             sel=Gui.Selection.getSelectionEx()
+#             newshape=None
+#             if len(sel)<2 or len(sel)>2 :
+#             #error message
+#                 # Two object must be selected
+#                 errMessage = "Select two faces to use the tool "
+#                 faced.errorDialog(errMessage)
+#                 return
+#             f1=sel[0].SubObjects[0]
+#             f2=sel[1].SubObjects[0]
+#             if type(f1)!=Part.Face or type(f2)!=Part.Face:
+#                 errMessage = "Select two faces to use the tool "
+#                 faced.errorDialog(errMessage)
+#                 return
+#             self.dialog = self.getMainWindow()
+#             #We must reset placement for each object otherwise this tool is impossible
 
-            App.ActiveDocument.openTransaction(translate("Design456", "EqualizeFaces"))
-            restedObj=Design456_ResetPlacements([sel[0].Object,sel[1].Object]).Activated() 
-            self.sel1=restedObj[0]
-            self.sel2=restedObj[1]
+#             App.ActiveDocument.openTransaction(translate("Design456", "EqualizeFaces"))
+#             restedObj=Design456_ResetPlacements([sel[0].Object,sel[1].Object]).Activated() 
+#             self.sel1=restedObj[0]
+#             self.sel2=restedObj[1]
 
-        except Exception as err:
-            App.Console.PrintError("'EqualizeFaces' Failed. "
-                                    "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+#         except Exception as err:
+#             App.Console.PrintError("'EqualizeFaces' Failed. "
+#                                     "{err}\n".format(err=str(err)))
+#             exc_type, exc_obj, exc_tb = sys.exc_info()
+#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+#             print(exc_type, fname, exc_tb.tb_lineno)
             
         
-    def getMainWindow(self):
-        """[Create the tab for the tool]
-        """
-        try:
-            toplevel = QtGui.QApplication.topLevelWidgets()
-            self.mw = None
-            for i in toplevel:
-                if i.metaObject().className() == "Gui::MainWindow":
-                    self.mw = i
-            if self.mw is None:
-                raise Exception("No main window found")
-            dw = self.mw.findChildren(QtGui.QDockWidget)
-            for i in dw:
-                if str(i.objectName()) == "Combo View":
-                    self.tab = i.findChild(QtGui.QTabWidget)
-                elif str(i.objectName()) == "Python Console":
-                    self.tab = i.findChild(QtGui.QTabWidget)
-            if self.tab is None:
-                raise Exception("No tab widget found")
-            oldsize = self.tab.count()
-            self.dialog = QtGui.QDialog()
-            self.tab.addTab(self.dialog, "Replace Face")
-            self.dialog.resize(200, 450)
-            self.lblReplace = QtGui.QLabel(self.dialog)
-            self.lblReplace.setGeometry(QtCore.QRect(10, 0, 191, 61))
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            self.lblTitle = QtGui.QLabel(self.dialog)
-            self.lblTitle.setGeometry(QtCore.QRect(10, 10, 300, 91))
-            font = QtGui.QFont()
-            font.setFamily("Times New Roman")
-            font.setPointSize(10)
-            self.lblTitle.setFont(font)
-            self.lblTitle.setObjectName("lblTitle")
-            _translate = QtCore.QCoreApplication.translate
-            self.dialog.setWindowTitle(_translate("Dialog", "Replace Face"))
-            self.lblTitle.setText(_translate("Dialog", "(Replace Face)\n"
-                                             "Tweak an object by replacing faces or equalize them"))
-            self.formLayoutWidget_2 = QtGui.QWidget(self.dialog)
-            self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 100, 400, 300))
-            self.formLayoutWidget_2.setObjectName("formLayoutWidget_2")
-            self.radioXdir = QtGui.QRadioButton(self.formLayoutWidget_2)
-            self.radioXdir.setObjectName("xDir")
-            self.radioYdir = QtGui.QRadioButton(self.formLayoutWidget_2)
-            self.radioYdir.setObjectName("yDir")
-            self.radioZdir = QtGui.QRadioButton(self.formLayoutWidget_2)
-            self.radioZdir.setObjectName("zDir")
-            self.radioXdir.setGeometry(QtCore.QRect(10, 120, 100, 30))
-            self.radioYdir.setGeometry(QtCore.QRect(10, 150, 100, 30))
-            self.radioZdir.setGeometry(QtCore.QRect(10, 180, 100, 30))
+#     def getMainWindow(self):
+#         """[Create the tab for the tool]
+#         """
+#         try:
+#             toplevel = QtGui.QApplication.topLevelWidgets()
+#             self.mw = None
+#             for i in toplevel:
+#                 if i.metaObject().className() == "Gui::MainWindow":
+#                     self.mw = i
+#             if self.mw is None:
+#                 raise Exception("No main window found")
+#             dw = self.mw.findChildren(QtGui.QDockWidget)
+#             for i in dw:
+#                 if str(i.objectName()) == "Combo View":
+#                     self.tab = i.findChild(QtGui.QTabWidget)
+#                 elif str(i.objectName()) == "Python Console":
+#                     self.tab = i.findChild(QtGui.QTabWidget)
+#             if self.tab is None:
+#                 raise Exception("No tab widget found")
+#             oldsize = self.tab.count()
+#             self.dialog = QtGui.QDialog()
+#             self.tab.addTab(self.dialog, "Replace Face")
+#             self.dialog.resize(200, 450)
+#             self.lblReplace = QtGui.QLabel(self.dialog)
+#             self.lblReplace.setGeometry(QtCore.QRect(10, 0, 191, 61))
+#             font = QtGui.QFont()
+#             font.setPointSize(10)
+#             self.lblTitle = QtGui.QLabel(self.dialog)
+#             self.lblTitle.setGeometry(QtCore.QRect(10, 10, 300, 91))
+#             font = QtGui.QFont()
+#             font.setFamily("Times New Roman")
+#             font.setPointSize(10)
+#             self.lblTitle.setFont(font)
+#             self.lblTitle.setObjectName("lblTitle")
+#             _translate = QtCore.QCoreApplication.translate
+#             self.dialog.setWindowTitle(_translate("Dialog", "Replace Face"))
+#             self.lblTitle.setText(_translate("Dialog", "(Replace Face)\n"
+#                                              "Tweak an object by replacing faces or equalize them"))
+#             self.formLayoutWidget_2 = QtGui.QWidget(self.dialog)
+#             self.formLayoutWidget_2.setGeometry(QtCore.QRect(10, 100, 400, 300))
+#             self.formLayoutWidget_2.setObjectName("formLayoutWidget_2")
+#             self.radioXdir = QtGui.QRadioButton(self.formLayoutWidget_2)
+#             self.radioXdir.setObjectName("xDir")
+#             self.radioYdir = QtGui.QRadioButton(self.formLayoutWidget_2)
+#             self.radioYdir.setObjectName("yDir")
+#             self.radioZdir = QtGui.QRadioButton(self.formLayoutWidget_2)
+#             self.radioZdir.setObjectName("zDir")
+#             self.radioXdir.setGeometry(QtCore.QRect(10, 120, 100, 30))
+#             self.radioYdir.setGeometry(QtCore.QRect(10, 150, 100, 30))
+#             self.radioZdir.setGeometry(QtCore.QRect(10, 180, 100, 30))
 
-            self.radioXdir.setText(_translate("Dialog", "X-Dir"))
-            self.radioYdir.setText(_translate("Dialog", "Y-Dir"))
-            self.radioZdir.setText(_translate("Dialog", "Z-Dir"))
-            self.radioZdir.setChecked(1)  # default
+#             self.radioXdir.setText(_translate("Dialog", "X-Dir"))
+#             self.radioYdir.setText(_translate("Dialog", "Y-Dir"))
+#             self.radioZdir.setText(_translate("Dialog", "Z-Dir"))
+#             self.radioZdir.setChecked(1)  # default
             
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            font.setBold(True)
-            font.setWeight(75)
-            self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(200, 300, 190, 61))
-            self.btnOK.setFont(font)
-            self.btnOK.setObjectName("btnOK")
-            self.btnOK.setStandardButtons(
-                QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-            self.btnOK.accepted.connect(self.OK_cb)
-            self.btnOK.rejected.connect(self.Cancel_cb)
+#             font = QtGui.QFont()
+#             font.setPointSize(10)
+#             font.setBold(True)
+#             font.setWeight(75)
+#             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
+#             self.btnOK.setGeometry(QtCore.QRect(200, 300, 190, 61))
+#             self.btnOK.setFont(font)
+#             self.btnOK.setObjectName("btnOK")
+#             self.btnOK.setStandardButtons(
+#                 QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+#             self.btnOK.accepted.connect(self.OK_cb)
+#             self.btnOK.rejected.connect(self.Cancel_cb)
             
-            QtCore.QMetaObject.connectSlotsByName(self.dialog)
-            self.tab.setCurrentWidget(self.dialog)
-            return self.dialog
+#             QtCore.QMetaObject.connectSlotsByName(self.dialog)
+#             self.tab.setCurrentWidget(self.dialog)
+#             return self.dialog
 
-        except Exception as err:
-            App.Console.PrintError("'Activated' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+#         except Exception as err:
+#             App.Console.PrintError("'Activated' Failed. "
+#                                    "{err}\n".format(err=str(err)))
+#             exc_type, exc_obj, exc_tb = sys.exc_info()
+#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+#             print(exc_type, fname, exc_tb.tb_lineno)
             
-    def hide(self):
-        try:
-            self.dialog.hide()
-            del self.dialog
-            dw = self.mw.findChildren(QtGui.QDockWidget)
-            newsize = self.tab.count()
-            self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
-            faced.showFirstTab()
+#     def hide(self):
+#         try:
+#             self.dialog.hide()
+#             del self.dialog
+#             dw = self.mw.findChildren(QtGui.QDockWidget)
+#             newsize = self.tab.count()
+#             self.tab.removeTab(newsize-1)  # it ==0,1,2,3 ..etc
+#             faced.showFirstTab()
         
-        except Exception as err:
-            App.Console.PrintError("'Hide' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+#         except Exception as err:
+#             App.Console.PrintError("'Hide' Failed. "
+#                                    "{err}\n".format(err=str(err)))
+#             exc_type, exc_obj, exc_tb = sys.exc_info()
+#             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+#             print(exc_type, fname, exc_tb.tb_lineno)
         
-    def EqualizeFaces(self):
+#     def EqualizeFaces(self):
        
-        App.ActiveDocument.openTransaction(
-            translate("Design456", "EqualizeFaces")) #Record undo        
-        newShape= App.ActiveDocument.addObject('Part::Feature',sel2.Name)
-        newShape.Shape=self.sel1.Shape.copy()
-        App.ActiveDocument.recompute()
-        pl1=self.sel1.Placement
+#         App.ActiveDocument.openTransaction(
+#             translate("Design456", "EqualizeFaces")) #Record undo        
+#         newShape= App.ActiveDocument.addObject('Part::Feature',self.sel2.Name)
+#         newShape.Shape=self.sel1.Shape.copy()
+#         App.ActiveDocument.recompute()
+#         pl1=self.sel1.Placement
         
-        X1min=self.sel1.Shape.BoundBox.XMin
-        Y1min=self.sel1.Shape.BoundBox.YMin
-        Z1min=self.sel1.Shape.BoundBox.ZMin
-        X1max=self.sel1.Shape.BoundBox.XMax
-        Y1max=self.sel1.Shape.BoundBox.YMax
-        Z1max=self.sel1.Shape.BoundBox.ZMax
+#         # X1min=self.sel1.Shape.BoundBox.XMin
+#         # Y1min=self.sel1.Shape.BoundBox.YMin
+#         # Z1min=self.sel1.Shape.BoundBox.ZMin
+#         # X1max=self.sel1.Shape.BoundBox.XMax
+#         # Y1max=self.sel1.Shape.BoundBox.YMax
+#         # Z1max=self.sel1.Shape.BoundBox.ZMax
 
-        X2min=self.sel2.Shape.BoundBox.XMin
-        Y2min=self.sel2.Shape.BoundBox.YMin
-        Z2min=self.sel2.Shape.BoundBox.ZMin
-        X2max=self.sel2.Shape.BoundBox.XMax
-        Y2max=self.sel2.Shape.BoundBox.YMax
-        Z2max=self.sel2.Shape.BoundBox.ZMax
+#         # X2min=self.sel2.Shape.BoundBox.XMin
+#         # Y2min=self.sel2.Shape.BoundBox.YMin
+#         # Z2min=self.sel2.Shape.BoundBox.ZMin
+#         # X2max=self.sel2.Shape.BoundBox.XMax
+#         # Y2max=self.sel2.Shape.BoundBox.YMax
+#         # Z2max=self.sel2.Shape.BoundBox.ZMax
 
-        newShape.Placement=App.Placement()
-        newShape.Placement.Base.x=pl1.Base.x
-        newShape.Placement.Base.y=pl1.Base.y
-        newShape.Placement.Base.z=pl1.Base.z
-                
-        if self.radioXdir.isChecked():
-            newShape.Placement.Base.x=-X2min
-        elif self.radioYdir.isChecked():
-            newShape.Placement.Base.y=-Y2min
-        elif self.radioZdir.isChecked():
-            newShape.Placement.Base.z=-Z1min
+#         newShape.Placement=self.sel2.Placement.copy()
+#         newShape.Placement.Rotation.Axis=self.Shape.CenterOfMass
+#         newShape.Placement.Rotation.Angle=self.Shape.SubShapes[0].Surface.Rotation.Angle
 
-
-
-        
-        #newShape.Placement.Rotation=rot
-        App.ActiveDocument.removeObject(self.sel2.Name)
-        App.ActiveDocument.recompute()
-        App.ActiveDocument.commitTransaction()  # undo reg.de here
+#         App.ActiveDocument.removeObject(self.sel2.Name)
+#         App.ActiveDocument.recompute()
+#         App.ActiveDocument.commitTransaction()  # undo reg.de here
 
     
-    def OK_cb(self):
-        self.EqualizeFaces()
-        self.hide()
+#     def OK_cb(self):
+#         self.EqualizeFaces()
+#         self.hide()
         
-    def Cancel_cb(self):
-        self.hide()
+#     def Cancel_cb(self):
+#         self.hide()
     
-    def GetResources(self):
-        return{
-            'Pixmap':   Design456Init.ICON_PATH + 'EqualizeFaces.svg',
-            'MenuText': 'EqualizeFaces',
-            'ToolTip':  'EqualizeFaces between 2-2D Faces'
-        }
+#     def GetResources(self):
+#         return{
+#             'Pixmap':   Design456Init.ICON_PATH + 'EqualizeFaces.svg',
+#             'MenuText': 'EqualizeFaces',
+#             'ToolTip':  'EqualizeFaces between 2-2D Faces'
+#         }
 
 
-Gui.addCommand('Design456_EqualizeFaces', Design456_EqualizeFaces())
+# Gui.addCommand('Design456_EqualizeFaces', Design456_EqualizeFaces())
 
 
 
@@ -801,7 +796,6 @@ class Design456_2DToolsGroup:
                 "Design456_CommonFace",
                 "Design456_SegmentAFace",
                 #"Design456_EqualizeFaces",
-
                 )
 
     def GetResources(self):

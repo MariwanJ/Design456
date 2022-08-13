@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                        *
-# * Copyright (C) 2021                                                     *
+# * Copyright (C) 2022                                                    *
 # *                                                                        *
 # *                                                                        *
 # * This library is free software; you can redistribute it and/or          *
@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-07-18 21:32:42'
+__updated__ = '2022-07-29 11:43:33'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -323,6 +323,7 @@ class Design456_ResetPlacements:
         self.objects = _objects
 
     def Activated(self):
+        #TODO : FIXME: This reset is not resetting the object's rotation (for ex. a tilt face). Needs more investigation
         try:
             temp = []
             
@@ -346,20 +347,20 @@ class Design456_ResetPlacements:
                     plOld = sObj.Object.Placement.copy()
                     saveTemp=plOld.copy()
                     if (plOld.Base !=App.Vector(0,0,0)):
-                        print("1")
+
                         # The object is not at relative origin. 
                         # We need to reset it before doing any action
                         # and we need to keep the old values also
-                        distance=sObj.Object.Shape.BoundBox.Center
-                        plOld.Base =  saveTemp.Base.sub(distance)   
-                        sObj.Object.Placement =plOld                        
-                        newOBJ.Placement.Base =distance
+                        distance=sObj.Object.Shape.BoundBox.Center   #Real distance to origin from center
+                        plOld.Base =  saveTemp.Base.sub(distance)    #if Base was not (0,0,0)
+                        sObj.Object.Placement =plOld                 #move original object back to the new position inside the compound        
+                        newOBJ.Placement.Base =distance              # set the compound at the position the original object was
                     else: 
                         plOld.Base = sObj.Object.Shape.BoundBox.Center 
                         sObj.Object.Placement = plOld.inverse()
                         newOBJ.Placement = plOld 
 
-                    # Make a simple copy of the object
+                    # Make a simple copy of the compound object which has rested placement
                     App.ActiveDocument.recompute()
                     shp = _part.getShape(
                         newOBJ, '', needSubElement=False, refine=False)

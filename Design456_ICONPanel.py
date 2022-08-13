@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * This file is a part of the Open Source Design456 Workbench - FreeCAD.  *
 # *                                                                        *
-# * Copyright (C) 2021                                                     *
+# * Copyright (C) 2022                                                    *
 # *                                                                        *
 # *                                                                        *
 # * This library is free software; you can redistribute it and/or          *
@@ -40,7 +40,7 @@ import glob
 
 from functools import partial
 
-__updated__ = '2022-06-16 21:18:43'
+__updated__ = '2022-08-04 22:23:54'
 
 COMMANDS_Basic=[
     ["Design456Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -63,6 +63,8 @@ COMMANDS_Basic=[
     ["Design456_CorrugatedSteel",  Design456Init.ICON_PATH+'CorrugatedSteel.svg'],
     ["Design456_AcousticFoam",  Design456Init.ICON_PATH+'AcousticFoam.svg'],
     ["Design456_Grass",Design456Init.ICON_PATH+'Grass'],
+    ["Design456_HoneycombCylinder", Design456Init.ICON_PATH + 'HoneycombCylinder.svg'],
+
     ]
 COMMANDS_Advanced=[
     ["Design456_Seg_Sphere", Design456Init.ICON_PATH + 'SegmentedSphere.svg'],
