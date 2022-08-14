@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-13 21:29:17'
+__updated__ = '2022-08-14 14:07:43'
 
 
 # Roof
@@ -1945,6 +1945,8 @@ Gui.addCommand('Design456_Grass', Design456_Grass())
 
 # Honeycomb Cylinder
 
+# Honeycomb Cylinder
+
 class ViewProviderHoneycombCylinder:
 
     obj_name = "HoneycombCylinder"
@@ -2090,7 +2092,7 @@ class HoneycombCylinder:
         baseObj = None
         coreObj = None
         try:
-            # From this tool, I will create shapes having a origin center in the centerofmass
+            # From this tool, I will create shapes having  origin center in the centerofmass TODO: Good or bad? let me know!
             baseObj = Part.makeCylinder(self.Radius, self.Height,
                                         App.Vector(self.Placement.Base.x,
                                                    self.Placement.Base.y,
@@ -2243,7 +2245,6 @@ class HoneycombFence:
                  _height=30.0,  # Shape hight
                  _width=30.0,
                  _thickness=2,
-                 _Distance=1,
                  _holeType="Hexagon 06Sides",  # Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
                  ):
 
@@ -2302,14 +2303,14 @@ class HoneycombFence:
 
     def createOneLine(self, _sides):
         try:
-            pos = self.Distance+self.Width/self.HoleRadius
+            pos = self.Distance+self.HoleRadius*2
             plc = self.Placement.copy()
             ringHoles = []
             plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
             plc.Base = self.Placement.Base
             plc.Base.z = plc.Base.z
             startX=plc.Base.x
-            for i in range(0, self.Holes):
+            for i in range(0, self.Holes+2):
                 if self.HoleType=="Circle":
                     ringHoles.append(self.createOneCylinder())
                 else:
@@ -2348,17 +2349,16 @@ class HoneycombFence:
     def createObject(self):
         baseObj = None
         try:
-            # From this tool, I will create shapes having a origin center in the centerofmass
+            # origin center is in the centerofmass #  TODO: Good or bad? let me know!
             baseObj = Part.makeBox(self.Width, self.Thickness,self.Height,
                                         App.Vector(self.Placement.Base.x-self.Width/2,
                                                    self.Placement.Base.y,
                                                    self.Placement.Base.z-self.Height/2))
-            Part.show(baseObj)
             z = -self.Height/2
             allRings = []
             cutRot = 20
             _sides = 1
-            nrOfRings = int(self.Height/(self.HoleRadius*2+self.Distance))
+            nrOfRings = int(self.Height/(self.Distance))
             compoundOBJ=None
             if self.HoleType == "":
                 # No holes
@@ -2380,19 +2380,16 @@ class HoneycombFence:
                     _sides=3 #avoid divide by zero
                     print("warning the side was zero")
 
-            for i in range(0, nrOfRings+1):
-                z = -self.Height/2+(self.HoleRadius+self.Distance)*i
+            for i in range(0, nrOfRings*2+3):
+                z = -self.Height/2+(self.Distance/2)*i
                 allRings.append(self.createOneLine(_sides))
                 allRings[i].Placement.Base.z = z
                 if cutRot == 0:
-                    cutRot = self.HoleRadius/2
+                    cutRot = self.HoleRadius*2
                 else:
                     cutRot = 0
-                #allRings[i].Placement.Rotation.Angle = math.degrees(cutRot)
-                #allRings[i].Placement.Rotation.Axis = App.Vector(0, 0, 1)
                 allRings[i].Placement.Base.x=allRings[i].Placement.Base.x+cutRot
                 compoundOBJ = Part.Compound(allRings)
-            Part.show(compoundOBJ)
             compoundOBJ = Part.Compound(allRings)
             ResultObj = baseObj.cut(compoundOBJ)
             return ResultObj
@@ -2409,12 +2406,13 @@ class HoneycombFence:
             self.Height = float(obj.Height)
             self.Width = float(obj.Width)
             self.Thickness=float(obj.Thickness)
-            self.Holes = int(6)
             self.HoleType = obj.HoleType
-            self.HoleRadius = (self.Width/6)*0.6
-            self.Distance =self.HoleRadius*2
-            
-            print(self.HoleRadius)
+            if self.Width>self.Height:
+                self.HoleRadius = (self.Height/6)*0.5
+            else:    
+                self.HoleRadius = (self.Width/6)*0.5
+            self.Distance =self.HoleRadius*2.2
+            self.Holes = int(self.Width/(self.HoleRadius+self.Distance))
             obj.Shape = Part.makeCompound(self.createObject())
 
         except Exception as err:
