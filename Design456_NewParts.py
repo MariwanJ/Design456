@@ -2445,3 +2445,255 @@ class Design456_HoneycombFence:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_HoneycombFence', Design456_HoneycombFence())
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#TODO:FIXME:
+
+# Pen holder
+
+class ViewProviderPenHolder:
+
+    obj_name = "PenHolder"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderGrass.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return (Design456Init.ICON_PATH + 'PenHolder.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+
+
+class PenHolder:
+    """ PenHolder shape based on several parameters
+    """
+
+    def __init__(self, obj,
+                 _height=30.0,  # Shape hight
+                 _width=30.0,
+                 _thickness=2,
+                 _holeType="Hexagon 06Sides",  # Hole type : Triangle, Square, Oval, Pentagon, Heptagon, Octagon, Hexagon ..etc
+                 ):
+
+        obj.addProperty("App::PropertyLength", "Height", "PenHolder",
+                        "Height of the PenHolder").Height = _height
+
+        obj.addProperty("App::PropertyLength", "Thickness", "PenHolder",
+                        "Width of the PenHolder").Thickness = _thickness
+        
+        obj.addProperty("App::PropertyLength", "Width", "PenHolder",
+                        "Width of the PenHolder").Width = _width
+
+        obj.addProperty("App::PropertyEnumeration", "HoleType", "PenHolder",
+                        "Hole type").HoleType = ["Circle",
+                                                 "Triangle 03Sides",
+                                                 "Square 04Sides",
+                                                 "Pentagon 05Sides",
+                                                 "Hexagon 06Sides",
+                                                 "Heptagon 07Sides",
+                                                 "Octagon 08Sides",
+                                                 "Nonagon 09Sides",
+                                                 "Decagon 10Sides"]
+
+        self.Type = "PenHolder"
+        self.Placement = obj.Placement
+        obj.Proxy = self
+        obj.HoleType =_holeType
+
+    def createPolygonOne3D(self, sides=3):
+        try:
+            points = []
+            flatObj = None
+            newObj = None
+            angles = 360/sides
+            # Extra 5 points to make the object longer for cutting
+            y1 = self.Placement.Base.y - (2*self.Thickness+5)
+            y2 = -y1+ (2*self.Thickness+5)
+            
+            for i in range(0, sides):
+                # The polygon will be
+                x = self.Placement.Base.x-self.Width/2 +self.HoleRadius * math.cos(math.radians(i*angles))
+                z = self.Placement.Base.z+self.HoleRadius * math.sin(math.radians(i*angles))
+                points.append(App.Vector(x, y1, z))
+            
+            points.append(points[0])  # close the loop
+            flatObj = Part.Face(Part.makePolygon(points))
+            newObj = flatObj.extrude(App.Vector(0, y2, 0))
+            return newObj
+
+        except Exception as err:
+            App.Console.PrintError("'createObject PenHolder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def createOneLine(self, _sides):
+        try:
+            pos = self.Distance+self.HoleRadius*2
+            plc = self.Placement.copy()
+            ringHoles = []
+            plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
+            plc.Base = self.Placement.Base
+            plc.Base.z = plc.Base.z
+            startX=plc.Base.x
+            for i in range(0, self.Holes+2):
+                if self.HoleType=="Circle":
+                    ringHoles.append(self.createOneCylinder())
+                else:
+                    ringHoles.append(self.createPolygonOne3D(_sides))
+                plc.Base.x= startX+(pos*i)
+                ringHoles[i].Placement = plc
+            return (Part.makeCompound(ringHoles))
+
+        except Exception as err:
+            App.Console.PrintError("'createObject PenHolder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+    
+    def createOneCylinder(self):        
+        try:
+            flatObj = None
+            newObj = None
+            x = self.Placement.Base.x-self.Width/2
+            z = self.Placement.Base.z
+            y1 = self.Placement.Base.y - (2*self.Thickness+5)
+            y2 = -y1+ (2*self.Thickness+5)
+            circle=Part.Wire(Part.makeCircle(self.HoleRadius,App.Vector(x,y1,z),App.Vector(0,1,0)))
+            flatObj = Part.Face(circle)
+            newObj = flatObj.extrude(App.Vector(0, y2, 0))
+            return newObj
+
+        except Exception as err:
+            App.Console.PrintError("'createObject PenHolder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def createObject(self):
+        baseObj = None
+        try:
+            # origin center is in the centerofmass #  TODO: Good or bad? let me know!
+            baseObj = Part.makeBox(self.Width, self.Thickness,self.Height,
+                                        App.Vector(self.Placement.Base.x-self.Width/2,
+                                                   self.Placement.Base.y,
+                                                   self.Placement.Base.z-self.Height/2))
+            z = -self.Height/2
+            allRings = []
+            cutRot = 20
+            _sides = 1
+            nrOfRings = int(self.Height/(self.Distance))
+            compoundOBJ=None
+            if self.HoleType == "":
+                # No holes
+                pass  # do nothing
+
+            elif self.HoleType == "Circle":
+                pass
+            elif (self.HoleType == "Triangle 03Sides" or 
+                  self.HoleType == "Square 04Sides" or
+                  self.HoleType == "Pentagon 05Sides" or
+                  self.HoleType == "Hexagon 06Sides" or
+                  self.HoleType == "Heptagon 07Sides" or
+                  self.HoleType == "Octagon 08Sides" or
+                  self.HoleType == "Nonagon 09Sides" or
+                  self.HoleType == "Decagon 10Sides"):
+                pos=self.HoleType.find(" ")+1
+                _sides=int(self.HoleType[pos:pos+2])
+                if _sides==0 and self.HoleType != "Circle":
+                    _sides=3 #avoid divide by zero
+                    print("warning the side was zero")
+
+            for i in range(0, nrOfRings*2+3):
+                z = -self.Height/2+(self.Distance/2)*i
+                allRings.append(self.createOneLine(_sides))
+                allRings[i].Placement.Base.z = z
+                if cutRot == 0:
+                    cutRot = self.HoleRadius*2
+                else:
+                    cutRot = 0
+                allRings[i].Placement.Base.x=allRings[i].Placement.Base.x+cutRot
+                compoundOBJ = Part.Compound(allRings)
+            compoundOBJ = Part.Compound(allRings)
+            ResultObj = baseObj.cut(compoundOBJ)
+            return ResultObj
+
+        except Exception as err:
+            App.Console.PrintError("'createObject PenHolder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+    def execute(self, obj):
+        try:
+            self.Height = float(obj.Height)
+            self.Width = float(obj.Width)
+            self.Thickness=float(obj.Thickness)
+            self.HoleType = obj.HoleType
+            if self.Width>self.Height:
+                self.HoleRadius = (self.Height/6)*0.5
+            else:    
+                self.HoleRadius = (self.Width/6)*0.5
+            self.Distance =self.HoleRadius*2.2
+            self.Holes = int(self.Width/(self.HoleRadius+self.Distance))
+            obj.Shape = Part.makeCompound(self.createObject())
+
+        except Exception as err:
+            App.Console.PrintError("'execute PenHolder' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+class Design456_PenHolder:
+
+    def GetResources(self):
+        return {'Pixmap': Design456Init.ICON_PATH + 'PenHolder.svg',
+                'MenuText': "PenHolder",
+                'ToolTip': "Generate a PenHolder"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "PenHolder")
+        plc = App.Placement()
+        plc.Base = App.Vector(0, 0, 0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.Placement = plc
+
+        PenHolder(newObj)
+        ViewProviderPenHolder(newObj.ViewObject, "PenHolder")
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_PenHolder', Design456_PenHolder())
+
