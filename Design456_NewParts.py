@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-15 21:36:57'
+__updated__ = '2022-08-16 19:49:44'
 
 
 # Roof
@@ -1952,7 +1952,7 @@ class ViewProviderHoneycombCylinder:
     obj_name = "HoneycombCylinder"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = ViewProviderGrass.obj_name
+        self.obj_name = ViewProviderHoneycombCylinder.obj_name
         obj.Proxy = self
 
     def attach(self, obj):
@@ -1983,7 +1983,7 @@ class ViewProviderHoneycombCylinder:
         return None
 
 
-class HoneycombCylinder:
+class BaseHoneycombCylinder:
     """ HoneycombCylinder shape based on several parameters
     """
 
@@ -2187,7 +2187,7 @@ class Design456_HoneycombCylinder:
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         newObj.Placement = plc
 
-        HoneycombCylinder(newObj)
+        BaseHoneycombCylinder(newObj)
         ViewProviderHoneycombCylinder(newObj.ViewObject, "HoneycombCylinder")
         v = Gui.ActiveDocument.ActiveView
         App.ActiveDocument.recompute()
@@ -2205,7 +2205,7 @@ class ViewProviderHoneycombFence:
     obj_name = "HoneycombFence"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = ViewProviderGrass.obj_name
+        self.obj_name = ViewProviderHoneycombFence.obj_name
         obj.Proxy = self
 
     def attach(self, obj):
@@ -2237,7 +2237,7 @@ class ViewProviderHoneycombFence:
 
 
 
-class HoneycombFence:
+class BaseHoneycombFence:
     """ HoneycombFence shape based on several parameters
     """
 
@@ -2438,7 +2438,7 @@ class Design456_HoneycombFence:
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         newObj.Placement = plc
 
-        HoneycombFence(newObj)
+        BaseHoneycombFence(newObj)
         ViewProviderHoneycombFence(newObj.ViewObject, "HoneycombFence")
         v = Gui.ActiveDocument.ActiveView
         App.ActiveDocument.recompute()
@@ -2456,7 +2456,7 @@ class ViewProviderPenHolder:
     obj_name = "PenHolder"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = ViewProviderGrass.obj_name
+        self.obj_name = ViewProviderPenHolder.obj_name
         obj.Proxy = self
 
     def attach(self, obj):
@@ -2488,7 +2488,7 @@ class ViewProviderPenHolder:
 
 
 
-class PenHolder:
+class BasePenHolder:
     """ PenHolder shape based on several parameters
     """
 
@@ -2515,7 +2515,11 @@ class PenHolder:
 
         obj.addProperty("App::PropertyLength", "SharpLength", "PenHolder",
                         "Sharp Length of the PenHolder").SharpLength = _sharpLength
-            
+        
+        self.Type = "PenHolder"
+        self.Placement = obj.Placement
+        obj.Proxy = self
+        
     def createObject(self):
         ResultObj=None
         plc=self.Placement.Base
@@ -2545,15 +2549,20 @@ class PenHolder:
             side1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p15,p1])))
             side2=Part.Face(Part.Wire(Part.makePolygon([p2,p3,p15,p2])))
             side3=Part.Face(Part.Wire(Part.makePolygon([p3,p4,p15,p3])))
-            side4=Part.Face(Part.Wire(Part.makePolygon([p4,p1,p15,p3])))
+            side4=Part.Face(Part.Wire(Part.makePolygon([p4,p1,p15,p4])))
             
             side11=Part.Face(Part.Wire(Part.makePolygon([p11,p12,p16,p11])))
             side12=Part.Face(Part.Wire(Part.makePolygon([p12,p13,p16,p12])))
             side13=Part.Face(Part.Wire(Part.makePolygon([p13,p14,p16,p13])))
-            side14=Part.Face(Part.Wire(Part.makePolygon([p14,p11,p16,p13])))
-            leftG =Part.Solid([left,side1,side2,side3,side4])
-            rightG=Part.Solid([right,side11,side12,side13,side14])
-            ResultObj=Part.Compound(leftG,rightG)
+            side14=Part.Face(Part.Wire(Part.makePolygon([p14,p11,p16,p14])))
+            leftG =Part.Solid(Part.Shell([left,side1,side2,side3,side4]))
+            rightG=Part.Solid(Part.Shell([right,side11,side12,side13,side14]))
+            box=left.extrude(App.Vector(plc.x,plc.y+self.Radius,plc.z))
+            print(type(leftG))
+            print(type(rightG))
+            print(type(box))
+            ResultObj1=box.fuse(leftG)
+            ResultObj=ResultObj1.fuse(rightG)
             return ResultObj
 
         except Exception as err:
@@ -2565,7 +2574,12 @@ class PenHolder:
 
     def execute(self, obj):
         try:
-
+            self.Height = float(obj.Height)
+            self.Radius = float(obj.Radius)
+            self.Thickness=float(obj.Thickness)
+            self.SectionWidth=float(obj.SectionWidth)
+            self.SharpLength=float(obj.SharpLength)
+            
             obj.Shape =self.createObject()
 
         except Exception as err:
@@ -2591,7 +2605,7 @@ class Design456_PenHolder:
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         newObj.Placement = plc
 
-        PenHolder(newObj)
+        BasePenHolder(newObj)
         ViewProviderPenHolder(newObj.ViewObject, "PenHolder")
         v = Gui.ActiveDocument.ActiveView
         App.ActiveDocument.recompute()
