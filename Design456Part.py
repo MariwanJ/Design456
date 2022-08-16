@@ -527,7 +527,8 @@ class Design456Part:
             "Design456_AcousticFoam",  
             "Design456_Grass",
             "Design456_HoneycombCylinder",
-            "Design456_HoneycombFence"            
+            "Design456_HoneycombFence",
+            "Design456_PenHolder"            
             ]
 
     """Design456 Part Toolbar"""

@@ -2498,6 +2498,7 @@ class PenHolder:
                  _thickness=2,
                  _sectionWidth=2,
                  _sharpLength=3,
+
                  ):
 
         obj.addProperty("App::PropertyLength", "Height", "PenHolder",
@@ -2532,9 +2533,27 @@ class PenHolder:
             p12=App.Vector(plc.x+self.SectionWidth,plc.y+self.Radius,plc.z)
             p13=App.Vector(plc.x+self.SectionWidth,plc.y+self.Radius,plc.z+self.SectionWidth)
             p14=App.Vector(plc.x,plc.y+self.Radius,plc.z+self.SectionWidth)
-            left=Part.Wire(Part.makePolygon([p1,p2,p3,p4,p1]))
-            right=Part.Wire(Part.makePolygon([p11,p12,p13,p14,p11]))
             
+            p15= App.Vector(plc.x+self.SectionWidth/2,plc.y-self.SharpLength,plc.z+self.SectionWidth/2)
+            p16=App.Vector(plc.x+self.SectionWidth/2,plc.y+self.Radius+self.SharpLength,plc.z+self.SectionWidth/2)
+            
+            #Square shape on the sides
+            left=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p1])))
+            right=Part.Face(Part.Wire(Part.makePolygon([p11,p12,p13,p14,p11])))
+            
+            #Pyramid on the sides:
+            side1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p15,p1])))
+            side2=Part.Face(Part.Wire(Part.makePolygon([p2,p3,p15,p2])))
+            side3=Part.Face(Part.Wire(Part.makePolygon([p3,p4,p15,p3])))
+            side4=Part.Face(Part.Wire(Part.makePolygon([p4,p1,p15,p3])))
+            
+            side11=Part.Face(Part.Wire(Part.makePolygon([p11,p12,p16,p11])))
+            side12=Part.Face(Part.Wire(Part.makePolygon([p12,p13,p16,p12])))
+            side13=Part.Face(Part.Wire(Part.makePolygon([p13,p14,p16,p13])))
+            side14=Part.Face(Part.Wire(Part.makePolygon([p14,p11,p16,p13])))
+            leftG =Part.Solid([left,side1,side2,side3,side4])
+            rightG=Part.Solid([right,side11,side12,side13,side14])
+            ResultObj=Part.Compound(leftG,rightG)
             return ResultObj
 
         except Exception as err:
@@ -2547,7 +2566,7 @@ class PenHolder:
     def execute(self, obj):
         try:
 
-            obj.Shape =None
+            obj.Shape =self.createObject()
 
         except Exception as err:
             App.Console.PrintError("'execute PenHolder' Failed. "
