@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-16 19:49:44'
+__updated__ = '2022-08-16 22:13:18'
 
 
 # Roof
@@ -2498,7 +2498,7 @@ class BasePenHolder:
                  _thickness=2,
                  _sectionWidth=2,
                  _sharpLength=3,
-
+                 _makeShell=True
                  ):
 
         obj.addProperty("App::PropertyLength", "Height", "PenHolder",
@@ -2516,11 +2516,14 @@ class BasePenHolder:
         obj.addProperty("App::PropertyLength", "SharpLength", "PenHolder",
                         "Sharp Length of the PenHolder").SharpLength = _sharpLength
         
+        obj.addProperty("App::PropertyBool", "makeShell", "PenHolder",
+                        "Sharp Length of the PenHolder").makeShell = _makeShell
+                
         self.Type = "PenHolder"
         self.Placement = obj.Placement
         obj.Proxy = self
         
-    def createObject(self):
+    def createObjectOneElement(self):
         ResultObj=None
         plc=self.Placement.Base
         """                     box
@@ -2529,41 +2532,49 @@ class BasePenHolder:
                         ......................  
         """
         try:
-            p1 =App.Vector(plc.x,plc.y,plc.z)
-            p2 =App.Vector(plc.x+self.SectionWidth,plc.y,plc.z)
-            p3 =App.Vector(plc.x+self.SectionWidth,plc.y,plc.z+self.SectionWidth)
-            p4 =App.Vector(plc.x,plc.y,plc.z+self.SectionWidth)
-            p11=App.Vector(plc.x,plc.y+self.Radius,plc.z)
-            p12=App.Vector(plc.x+self.SectionWidth,plc.y+self.Radius,plc.z)
-            p13=App.Vector(plc.x+self.SectionWidth,plc.y+self.Radius,plc.z+self.SectionWidth)
-            p14=App.Vector(plc.x,plc.y+self.Radius,plc.z+self.SectionWidth)
-            
-            p15= App.Vector(plc.x+self.SectionWidth/2,plc.y-self.SharpLength,plc.z+self.SectionWidth/2)
-            p16=App.Vector(plc.x+self.SectionWidth/2,plc.y+self.Radius+self.SharpLength,plc.z+self.SectionWidth/2)
-            
-            #Square shape on the sides
-            left=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p1])))
-            right=Part.Face(Part.Wire(Part.makePolygon([p11,p12,p13,p14,p11])))
-            
-            #Pyramid on the sides:
-            side1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p15,p1])))
-            side2=Part.Face(Part.Wire(Part.makePolygon([p2,p3,p15,p2])))
-            side3=Part.Face(Part.Wire(Part.makePolygon([p3,p4,p15,p3])))
-            side4=Part.Face(Part.Wire(Part.makePolygon([p4,p1,p15,p4])))
-            
-            side11=Part.Face(Part.Wire(Part.makePolygon([p11,p12,p16,p11])))
-            side12=Part.Face(Part.Wire(Part.makePolygon([p12,p13,p16,p12])))
-            side13=Part.Face(Part.Wire(Part.makePolygon([p13,p14,p16,p13])))
-            side14=Part.Face(Part.Wire(Part.makePolygon([p14,p11,p16,p14])))
-            leftG =Part.Solid(Part.Shell([left,side1,side2,side3,side4]))
-            rightG=Part.Solid(Part.Shell([right,side11,side12,side13,side14]))
-            box=left.extrude(App.Vector(plc.x,plc.y+self.Radius,plc.z))
-            print(type(leftG))
-            print(type(rightG))
-            print(type(box))
-            ResultObj1=box.fuse(leftG)
-            ResultObj=ResultObj1.fuse(rightG)
-            return ResultObj
+            rows=int(self.Height/self.SectionWidth)
+            objs=[]
+            originalZ=plc.z
+            print("rows",rows)
+            starty=plc.y-self.Radius
+            for i in range(0,rows):
+                plc.z=originalZ+self.SectionWidth*i
+                p1 =App.Vector(plc.x,starty,plc.z)
+                p2 =App.Vector(plc.x+self.SectionWidth,starty,plc.z)
+                p3 =App.Vector(plc.x+self.SectionWidth,starty,plc.z+self.SectionWidth)
+                p4 =App.Vector(plc.x,starty,plc.z+self.SectionWidth)
+                p11=App.Vector(plc.x,starty+self.Radius*2,plc.z)
+                p12=App.Vector(plc.x+self.SectionWidth,starty+self.Radius*2,plc.z)
+                p13=App.Vector(plc.x+self.SectionWidth,starty+self.Radius*2,plc.z+self.SectionWidth)
+                p14=App.Vector(plc.x,starty+self.Radius*2,plc.z+self.SectionWidth)
+
+                p15= App.Vector(plc.x+self.SectionWidth/2,starty-self.SharpLength,plc.z+self.SectionWidth/2)
+                p16=App.Vector(plc.x+self.SectionWidth/2,starty+self.Radius*2+self.SharpLength,plc.z+self.SectionWidth/2)
+
+                #Square shape on the sides
+                left=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p1])))
+                right=Part.Face(Part.Wire(Part.makePolygon([p11,p12,p13,p14,p11])))
+
+                #Pyramid on the sides:
+                side1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p15,p1])))
+                side2=Part.Face(Part.Wire(Part.makePolygon([p2,p3,p15,p2])))
+                side3=Part.Face(Part.Wire(Part.makePolygon([p3,p4,p15,p3])))
+                side4=Part.Face(Part.Wire(Part.makePolygon([p4,p1,p15,p4])))
+
+                side11=Part.Face(Part.Wire(Part.makePolygon([p11,p12,p16,p11])))
+                side12=Part.Face(Part.Wire(Part.makePolygon([p12,p13,p16,p12])))
+                side13=Part.Face(Part.Wire(Part.makePolygon([p13,p14,p16,p13])))
+                side14=Part.Face(Part.Wire(Part.makePolygon([p14,p11,p16,p14])))
+                leftG =Part.Solid(Part.Shell([left,side1,side2,side3,side4]))
+                rightG=Part.Solid(Part.Shell([right,side11,side12,side13,side14]))
+                box=left.extrude(App.Vector(0,self.Radius*2,0))
+                ResultObj1=box.fuse(leftG)
+                ResultObj=ResultObj1.fuse(rightG)
+                objs.append(ResultObj)
+            finalObj=objs[0]
+            for i in range(1,len(objs)):
+                finalObj=finalObj.fuse(objs[i])
+            return finalObj.removeSplitter()
 
         except Exception as err:
             App.Console.PrintError("'createObject PenHolder' Failed. "
@@ -2571,7 +2582,29 @@ class BasePenHolder:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def createObject(self):
+        Columns=int(math.pi*self.Radius/self.SectionWidth)
+        print("Columns",Columns)
+        angles=180/Columns
+        allObj=[]
+        OneColumn=self.createObjectOneElement()
+        #allObj.append(OneColumn)
+        for i in range(1,Columns+1):
+            nobj=OneColumn.copy()
+            nobj.Placement.Rotation.Axis=App.Vector(0,0,1)
+            nobj.Placement.Rotation.Angle=math.radians(angles*i)
+            allObj.append(nobj)
+        outsideObj=(OneColumn.multiFuse(allObj)).removeSplitter()
+        cyl1=Part.makeCylinder(self.Radius,self.Height,self.Placement) 
+        newObj1=cyl1.multiFuse(outsideObj)
+        if self.makeShell is True:
+            plc=self.Placement
+            plc.z=plc.z+self.Thickness
+            cyl2=Part.makeCylinder(self.Radius,self.Height,self.Placement) 
 
+        return 
+            
     def execute(self, obj):
         try:
             self.Height = float(obj.Height)
