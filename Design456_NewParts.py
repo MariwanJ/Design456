@@ -2584,43 +2584,45 @@ class BasePenHolder:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def createObject(self):
-        Columns=int(math.pi*self.Radius/self.SectionWidth)
-        print("Columns",Columns)
-        angles=180/Columns
-        allObj=[]
-        OneColumn=self.createObjectOneElement()
-        #allObj.append(OneColumn)
-        for i in range(1,Columns+1):
-            nobj=OneColumn.copy()
-            nobj.Placement.Rotation.Axis=App.Vector(0,0,1)
-            nobj.Placement.Rotation.Angle=math.radians(angles*i)
-            allObj.append(nobj)
-        outsideObj=(OneColumn.multiFuse(allObj)).removeSplitter()
-        cyl1=Part.makeCylinder(self.Radius,self.Height,self.Placement) 
-        newObj1=cyl1.multiFuse(outsideObj)
-        if self.makeShell is True:
-            plc=self.Placement
-            plc.z=plc.z+self.Thickness
-            cyl2=Part.makeCylinder(self.Radius,self.Height,self.Placement) 
-
-        return 
-            
-    def execute(self, obj):
         try:
-            self.Height = float(obj.Height)
-            self.Radius = float(obj.Radius)
-            self.Thickness=float(obj.Thickness)
-            self.SectionWidth=float(obj.SectionWidth)
-            self.SharpLength=float(obj.SharpLength)
-            
-            obj.Shape =self.createObject()
-
+            Columns=int(math.pi*self.Radius/self.SectionWidth)
+            print("Columns",Columns)
+            angles=180/Columns
+            allObj=[]
+            OneColumn=self.createObjectOneElement()
+            #allObj.append(OneColumn)
+            for i in range(1,Columns+1):
+                nobj=OneColumn.copy()
+                nobj.Placement.Rotation.Axis=App.Vector(0,0,1)
+                nobj.Placement.Rotation.Angle=math.radians(angles*i)
+                allObj.append(nobj)
+            outsideObj=(OneColumn.multiFuse(allObj)).removeSplitter()
+            cyl1=Part.makeCylinder(self.Radius+0.25,self.Height,self.Placement.Base) 
+            cyl1.Placement=self.Placement
+            newObj1=outsideObj.multiFuse(cyl1)
+            if self.makeShell is True:
+                plc=self.Placement
+                plc.z=plc.z+self.Thickness
+                cyl2=Part.makeCylinder(self.Radius-self.thickness,self.Height,self.Placement.Base) 
+                FinalObject=newObj1.cut(cyl2)
+            else:
+                FinalObject=newObj1
+            return FinalObject
         except Exception as err:
             App.Console.PrintError("'execute PenHolder' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def execute(self, obj):
+        self.Height = float(obj.Height)
+        self.Radius = float(obj.Radius)
+        self.Thickness=float(obj.Thickness)
+        self.SectionWidth=float(obj.SectionWidth)
+        self.SharpLength=float(obj.SharpLength)
+        obj.Shape =self.createObject()
+
 
 
 class Design456_PenHolder:
