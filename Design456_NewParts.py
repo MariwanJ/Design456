@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-16 22:13:18'
+__updated__ = '2022-08-17 18:35:11'
 
 
 # Roof
@@ -2596,14 +2596,13 @@ class BasePenHolder:
                 nobj.Placement.Rotation.Axis=App.Vector(0,0,1)
                 nobj.Placement.Rotation.Angle=math.radians(angles*i)
                 allObj.append(nobj)
-            outsideObj=(OneColumn.multiFuse(allObj)).removeSplitter()
             cyl1=Part.makeCylinder(self.Radius+0.25,self.Height,self.Placement.Base) 
-            cyl1.Placement=self.Placement
-            newObj1=outsideObj.multiFuse(cyl1)
+            outsideObj=OneColumn.fuse([*allObj,cyl1])
+            newObj1=outsideObj.removeSplitter()
             if self.makeShell is True:
                 plc=self.Placement
-                plc.z=plc.z+self.Thickness
-                cyl2=Part.makeCylinder(self.Radius-self.thickness,self.Height,self.Placement.Base) 
+                plc.Base.z=plc.Base.z+self.Thickness
+                cyl2=Part.makeCylinder(self.Radius-self.Thickness,self.Height,self.Placement.Base) 
                 FinalObject=newObj1.cut(cyl2)
             else:
                 FinalObject=newObj1
@@ -2621,6 +2620,7 @@ class BasePenHolder:
         self.Thickness=float(obj.Thickness)
         self.SectionWidth=float(obj.SectionWidth)
         self.SharpLength=float(obj.SharpLength)
+        self.makeShell = bool(obj.makeShell)
         obj.Shape =self.createObject()
 
 
