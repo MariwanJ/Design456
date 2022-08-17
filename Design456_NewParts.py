@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-17 18:35:11'
+__updated__ = '2022-08-17 21:13:17'
 
 
 # Roof
@@ -2308,7 +2308,6 @@ class BaseHoneycombFence:
             ringHoles = []
             plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
             plc.Base = self.Placement.Base
-            plc.Base.z = plc.Base.z
             startX=plc.Base.x
             for i in range(0, self.Holes+2):
                 if self.HoleType=="Circle":
@@ -2486,19 +2485,19 @@ class ViewProviderPenHolder:
     def __setstate__(self, state):
         return None
 
-
-
 class BasePenHolder:
     """ PenHolder shape based on several parameters
     """
 
     def __init__(self, obj,
-                 _height=10.0,  # Shape hight
-                 _radius=10.0,
+                 _height=12.0,  # Shape hight
+                 _radius=12.0,
                  _thickness=2,
-                 _sectionWidth=2,
-                 _sharpLength=3,
+                 _sectionWidth=4,
+                 _sharpLength=2,
+                 _coverIssue=0.4,
                  _makeShell=True
+
                  ):
 
         obj.addProperty("App::PropertyLength", "Height", "PenHolder",
@@ -2517,17 +2516,24 @@ class BasePenHolder:
                         "Sharp Length of the PenHolder").SharpLength = _sharpLength
         
         obj.addProperty("App::PropertyBool", "makeShell", "PenHolder",
-                        "Sharp Length of the PenHolder").makeShell = _makeShell
+                        "Make shell for the PenHolder").makeShell = _makeShell
+
+        obj.addProperty("App::PropertyLength", "CoverIssue", "PenHolder",
+                        "Cover issue of the PenHolder").CoverIssue = _coverIssue
                 
         self.Type = "PenHolder"
         self.Placement = obj.Placement
         obj.Proxy = self
         
     def createObjectOneElement(self):
+        """ Create one element that will be used later to create the object
+            by copying it and rotating. Later merging all of them. 
+        """
         ResultObj=None
         plc=self.Placement.Base
-        """                     box
-                        ......................  loft
+        """   One element consist of 3 parts box, and two pyramid
+                                box
+                        ......................  
                      .                           .
                         ......................  
         """
@@ -2535,7 +2541,6 @@ class BasePenHolder:
             rows=int(self.Height/self.SectionWidth)
             objs=[]
             originalZ=plc.z
-            print("rows",rows)
             starty=plc.y-self.Radius
             for i in range(0,rows):
                 plc.z=originalZ+self.SectionWidth*i
@@ -2586,26 +2591,25 @@ class BasePenHolder:
     def createObject(self):
         try:
             Columns=int(math.pi*self.Radius/self.SectionWidth)
-            print("Columns",Columns)
             angles=180/Columns
             allObj=[]
             OneColumn=self.createObjectOneElement()
-            #allObj.append(OneColumn)
             for i in range(1,Columns+1):
                 nobj=OneColumn.copy()
                 nobj.Placement.Rotation.Axis=App.Vector(0,0,1)
                 nobj.Placement.Rotation.Angle=math.radians(angles*i)
                 allObj.append(nobj)
-            cyl1=Part.makeCylinder(self.Radius+0.25,self.Height,self.Placement.Base) 
+            cyl1=Part.makeCylinder(self.Radius+self.CoverIssue,self.Height,self.Placement.Base) #TODO: This must be a segmented cylinder
             outsideObj=OneColumn.fuse([*allObj,cyl1])
             newObj1=outsideObj.removeSplitter()
             if self.makeShell is True:
-                plc=self.Placement
+                plc=self.Placement.copy()
                 plc.Base.z=plc.Base.z+self.Thickness
-                cyl2=Part.makeCylinder(self.Radius-self.Thickness,self.Height,self.Placement.Base) 
+                cyl2=Part.makeCylinder(self.Radius-self.Thickness,self.Height,plc.Base) 
                 FinalObject=newObj1.cut(cyl2)
             else:
                 FinalObject=newObj1
+            FinalObject.Placement=self.Placement
             return FinalObject
         except Exception as err:
             App.Console.PrintError("'execute PenHolder' Failed. "
@@ -2621,8 +2625,8 @@ class BasePenHolder:
         self.SectionWidth=float(obj.SectionWidth)
         self.SharpLength=float(obj.SharpLength)
         self.makeShell = bool(obj.makeShell)
+        self.CoverIssue=float(obj.CoverIssue)
         obj.Shape =self.createObject()
-
 
 
 class Design456_PenHolder:
@@ -2647,4 +2651,3 @@ class Design456_PenHolder:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_PenHolder', Design456_PenHolder())
-
