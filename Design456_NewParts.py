@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-17 21:13:17'
+__updated__ = '2022-08-17 21:16:04'
 
 
 # Roof
@@ -2594,7 +2594,7 @@ class BasePenHolder:
             angles=180/Columns
             allObj=[]
             OneColumn=self.createObjectOneElement()
-            for i in range(1,Columns+1):
+            for i in range(1,Columns):
                 nobj=OneColumn.copy()
                 nobj.Placement.Rotation.Axis=App.Vector(0,0,1)
                 nobj.Placement.Rotation.Angle=math.radians(angles*i)
