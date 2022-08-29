@@ -2651,3 +2651,152 @@ class Design456_PenHolder:
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_PenHolder', Design456_PenHolder())
+
+
+
+######################################################################################
+#TODO : FIXME:
+# Pumpkin
+
+class ViewProviderPumpkin:
+
+    obj_name = "Pumpkin"
+
+    def __init__(self, obj, obj_name):
+        self.obj_name = ViewProviderPumpkin.obj_name
+        obj.Proxy = self
+
+    def attach(self, obj):
+        return
+
+    def updateData(self, fp, prop):
+        return
+
+    def getDisplayModes(self, obj):
+        return "As Is"
+
+    def getDefaultDisplayMode(self):
+        return "As Is"
+
+    def setDisplayMode(self, mode):
+        return "As Is"
+
+    def onChanged(self, vobj, prop):
+        pass
+
+    def getIcon(self):
+        return (Design456Init.ICON_PATH + 'Pumpkin.svg')
+
+    def __getstate__(self):
+        return None
+
+    def __setstate__(self, state):
+        return None
+
+class BasePumpkin:
+    """ Pumpkin shape based on several parameters
+    """
+
+    def __init__(self, obj,
+                 _height=12.0,  # Shape hight
+                 _radius=12.0,
+                 _thickness=2,
+                 _sectionWidth=4,
+                 _sharpLength=2,
+                 _coverIssue=0.4,
+                 _makeShell=True
+
+                 ):
+
+        obj.addProperty("App::PropertyLength", "Height", "Pumpkin",
+                        "Height of the Pumpkin").Height = _height
+
+        obj.addProperty("App::PropertyLength", "Thickness", "Pumpkin",
+                        "Width of the Pumpkin").Thickness = _thickness
+        
+        obj.addProperty("App::PropertyLength", "SectionWidth", "Pumpkin",
+                        "Section Width of the Pumpkin").SectionWidth = _sectionWidth
+
+        obj.addProperty("App::PropertyLength", "Radius", "Pumpkin",
+                        "Radius of the Pumpkin").Radius = _radius
+
+        obj.addProperty("App::PropertyLength", "SharpLength", "Pumpkin",
+                        "Sharp Length of the Pumpkin").SharpLength = _sharpLength
+        
+        obj.addProperty("App::PropertyBool", "makeShell", "Pumpkin",
+                        "Make shell for the Pumpkin").makeShell = _makeShell
+
+        obj.addProperty("App::PropertyLength", "CoverIssue", "Pumpkin",
+                        "Cover issue of the Pumpkin").CoverIssue = _coverIssue
+                
+        self.Type = "Pumpkin"
+        self.Placement = obj.Placement
+        obj.Proxy = self
+        
+    def createObjectOneElement(self):
+        """ Create one element that will be used later to create the object
+            by copying it and rotating. Later merging all of them. 
+        """
+        ResultObj=None
+        plc=self.Placement.Base
+        """   One element consist of 3 parts box, and two pyramid
+                                box
+                        ......................  
+                     .                           .
+                        ......................  
+        """
+        try:
+            pass
+            return None
+
+        except Exception as err:
+            App.Console.PrintError("'createObject Pumpkin' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def createObject(self):
+        try:
+            pass
+            return None
+        except Exception as err:
+            App.Console.PrintError("'execute Pumpkin' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+    def execute(self, obj):
+        self.Height = float(obj.Height)
+        self.Radius = float(obj.Radius)
+        self.Thickness=float(obj.Thickness)
+        self.SectionWidth=float(obj.SectionWidth)
+        self.SharpLength=float(obj.SharpLength)
+        self.makeShell = bool(obj.makeShell)
+        self.CoverIssue=float(obj.CoverIssue)
+        obj.Shape =self.createObject()
+
+
+class Design456_Pumpkin:
+
+    def GetResources(self):
+        return {'Pixmap': Design456Init.ICON_PATH + 'Pumpkin.svg',
+                'MenuText': "Pumpkin",
+                'ToolTip': "Generate a Pumpkin"}
+
+    def Activated(self):
+        newObj = App.ActiveDocument.addObject(
+            "Part::FeaturePython", "Pumpkin")
+        plc = App.Placement()
+        plc.Base = App.Vector(0, 0, 0)
+        plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        newObj.Placement = plc
+
+        BasePumpkin(newObj)
+        ViewProviderPumpkin(newObj.ViewObject, "Pumpkin")
+        v = Gui.ActiveDocument.ActiveView
+        App.ActiveDocument.recompute()
+        faced.PartMover(v, newObj, deleteOnEscape=True)
+
+Gui.addCommand('Design456_Pumpkin', Design456_Pumpkin())
