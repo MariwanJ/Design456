@@ -2737,17 +2737,30 @@ class BasePumpkin:
         """ Create one element that will be used later to create the object
             by copying it and rotating. Later merging all of them. 
         """
-        ResultObj=None
-        plc=self.Placement.Base
-        """   One element consist of 3 parts box, and two pyramid
-                                box
-                        ......................  
-                     .                           .
-                        ......................  
-        """
+        obj1=None
         try:
-            pass
-            return None
+            #makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius
+            b1=self.Placement.Base
+            b2=b1
+            b2.x=b1.x+ self.SectionWidth
+            mtr1= App.Matrix(  1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, self.Scale, 0,
+                    0,    0,    0,    1   )
+                        
+            obj1=Part.makeSphere(self.Radius,
+                                      b1,
+                                      App.Vector(0,0,1)
+                                      )
+            obj2=Part.makeSphere(self.Radius,
+                                      b2,
+                                      App.Vector(0,0,1)
+                                      )
+
+            obj1=obj1.transformGeometry(mtr1)
+            obj2=obj2.transformGeometry(mtr1)
+            obj3=obj1.fuse(obj2)
+            return obj3
 
         except Exception as err:
             App.Console.PrintError("'createObject Pumpkin' Failed. "
@@ -2758,8 +2771,8 @@ class BasePumpkin:
             
     def createObject(self):
         try:
-            pass
-            return None
+            Element=self.createObjectOneElement()
+            return Element
         except Exception as err:
             App.Console.PrintError("'execute Pumpkin' Failed. "
                                    "{err}\n".format(err=str(err)))

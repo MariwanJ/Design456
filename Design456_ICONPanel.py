@@ -66,6 +66,9 @@ COMMANDS_Basic=[
     ["Design456_HoneycombCylinder", Design456Init.ICON_PATH + 'HoneycombCylinder.svg'],
     ["Design456_HoneycombFence", Design456Init.ICON_PATH + 'HoneycombFence.svg'],
     ["Design456_PenHolder", Design456Init.ICON_PATH + 'PenHolder.svg'],
+    ["Design456_Pumpkin", Design456Init.ICON_PATH + 'Pumpkin.svg'],
+    
+    
 
 
     ]

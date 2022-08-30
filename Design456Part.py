@@ -528,7 +528,8 @@ class Design456Part:
             "Design456_Grass",
             "Design456_HoneycombCylinder",
             "Design456_HoneycombFence",
-            "Design456_PenHolder"            
+            "Design456_PenHolder",     
+            "Design456_Pumpkin"    
             ]
 
     """Design456 Part Toolbar"""
