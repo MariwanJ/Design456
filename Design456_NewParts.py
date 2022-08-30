@@ -2698,37 +2698,26 @@ class BasePumpkin:
     """
 
     def __init__(self, obj,
-                 _height=12.0,  # Shape hight
-                 _radius=12.0,
-                 _thickness=2,
+                 _radius=10.0,
+                 _scale=0.7,
                  _sectionWidth=4,
-                 _sharpLength=2,
-                 _coverIssue=0.4,
-                 _makeShell=True
+                 _sections=5,
+                 _makeShell=True ):
 
-                 ):
-
-        obj.addProperty("App::PropertyLength", "Height", "Pumpkin",
-                        "Height of the Pumpkin").Height = _height
-
-        obj.addProperty("App::PropertyLength", "Thickness", "Pumpkin",
-                        "Width of the Pumpkin").Thickness = _thickness
-        
         obj.addProperty("App::PropertyLength", "SectionWidth", "Pumpkin",
                         "Section Width of the Pumpkin").SectionWidth = _sectionWidth
+        
+        obj.addProperty("App::PropertyLength", "Scale", "Pumpkin",
+                        "Radius of the Pumpkin").Scale = _scale
 
+        obj.addProperty("App::PropertyInteger", "Sections", "Pumpkin",
+                        "Radius of the Pumpkin").Sections = _sections
+        
         obj.addProperty("App::PropertyLength", "Radius", "Pumpkin",
                         "Radius of the Pumpkin").Radius = _radius
-
-        obj.addProperty("App::PropertyLength", "SharpLength", "Pumpkin",
-                        "Sharp Length of the Pumpkin").SharpLength = _sharpLength
         
         obj.addProperty("App::PropertyBool", "makeShell", "Pumpkin",
                         "Make shell for the Pumpkin").makeShell = _makeShell
-
-        obj.addProperty("App::PropertyLength", "CoverIssue", "Pumpkin",
-                        "Cover issue of the Pumpkin").CoverIssue = _coverIssue
-                
         self.Type = "Pumpkin"
         self.Placement = obj.Placement
         obj.Proxy = self
@@ -2740,20 +2729,20 @@ class BasePumpkin:
         obj1=None
         try:
             #makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius
-            b1=self.Placement.Base
-            b2=b1
-            b2.x=b1.x+ self.SectionWidth
+            b1=self.Placement
+            b2=self.Placement.copy()
+            b2.Base.x=b1.Base.x+ self.SectionWidth
             mtr1= App.Matrix(  1, 0, 0, 0,
                     0, 1, 0, 0,
                     0, 0, self.Scale, 0,
                     0,    0,    0,    1   )
                         
             obj1=Part.makeSphere(self.Radius,
-                                      b1,
+                                      b1.Base,
                                       App.Vector(0,0,1)
                                       )
             obj2=Part.makeSphere(self.Radius,
-                                      b2,
+                                      b2.Base,
                                       App.Vector(0,0,1)
                                       )
 
@@ -2771,8 +2760,17 @@ class BasePumpkin:
             
     def createObject(self):
         try:
-            Element=self.createObjectOneElement()
-            return Element
+            angle=180/self.Sections
+            Elements=[]
+            first=self.createObjectOneElement()
+            for i in range(0,self.Sections-1):
+                Elements.append(first.copy())
+                Elements[i].Placement.Rotation.Angle=math.radians(angle*(i+1))
+                Elements[i].Placement.Rotation.Axis=App.Vector(0,0,1)
+
+            for i in range(0,self.Sections-1):
+                finalObj=first.fuse(Elements[i])
+            return finalObj
         except Exception as err:
             App.Console.PrintError("'execute Pumpkin' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -2781,18 +2779,14 @@ class BasePumpkin:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def execute(self, obj):
-        self.Height = float(obj.Height)
         self.Radius = float(obj.Radius)
-        self.Thickness=float(obj.Thickness)
         self.SectionWidth=float(obj.SectionWidth)
-        self.SharpLength=float(obj.SharpLength)
         self.makeShell = bool(obj.makeShell)
-        self.CoverIssue=float(obj.CoverIssue)
+        self.Scale=float(obj.Scale)
+        self.Sections=int(obj.Sections)
         obj.Shape =self.createObject()
 
-
 class Design456_Pumpkin:
-
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'Pumpkin.svg',
                 'MenuText': "Pumpkin",
