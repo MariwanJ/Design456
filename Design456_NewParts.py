@@ -2698,7 +2698,7 @@ class BasePumpkin:
     """
 
     def __init__(self, obj,
-                 _radius=20.0,
+                 _radius=10.0,
                  _scale=0.75,
                  _sectionWidth=10.0,
                  _sections=8,
@@ -2740,21 +2740,17 @@ class BasePumpkin:
                              0, 0,          0, 1)
                                     
             obj1=Part.makeSphere(self.Radius,
-                                      App.Vector(self.SectionWidth/2,0,1),
+                                      App.Vector(self.SectionWidth/2,0,0),
                                       App.Vector(0,0,1)
                                       )
             obj2=Part.makeSphere(self.Radius,
                                       App.Vector(-self.SectionWidth/2,0,0),
                                       App.Vector(0,0,1)
                                       )
-
-            #obj1=obj1.transformGeometry(mtr1)
-            #obj2=obj2.transformGeometry(mtr1)
+            obj1=obj1.transformGeometry(mtr1)
+            obj2=obj2.transformGeometry(mtr1)
             obj3=obj1.fuse(obj2)
             obj3.Placement=self.Placement.copy()
-            obj3=obj3.transformGeometry(mtr1)
-            #obj3.Placement.Base= -obj3.BoundBox.Center
-            #Part.show(obj3)
             return obj3
 
         except Exception as err:
@@ -2772,13 +2768,12 @@ class BasePumpkin:
             for i in range(0,self.Sections-1):
                 Elements.append(first.copy())
                 Elements[i].Placement.Rotation.Angle=angle+angle*(i)
-                print(Elements[i].Placement.Rotation.Angle)
                 Elements[i].Placement.Rotation.Axis=App.Vector(0,0,1)
 
-            #for i in range(0,self.Sections-1):
+            # for i in range(0,self.Sections-1):
             #    finalObj=first.fuse(Elements[i])
             #    first=finalObj
-            #return finalObj
+            # return finalObj
             return Part.makeCompound([first,*Elements])
         except Exception as err:
             App.Console.PrintError("'execute Pumpkin' Failed. "
