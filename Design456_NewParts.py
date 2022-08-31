@@ -2701,7 +2701,7 @@ class BasePumpkin:
                  _radius=10.0,
                  _scale=0.75,
                  _sectionWidth=10.0,
-                 _sections=12,
+                 _sections=8,
                  _makeShell=True ):
 
         obj.addProperty("App::PropertyLength", "SectionWidth", "Pumpkin",
@@ -2768,7 +2768,7 @@ class BasePumpkin:
             angle=math.radians(180/self.Sections)
             Elements=[]
             first=self.createObjectOneElement()
-            for i in range(0,self.Sections):
+            for i in range(0,self.Sections-1):
                 Elements.append(first.copy())
                 Elements[i].Placement.Rotation.Angle=angle+angle*(i)
                 print(Elements[i].Placement.Rotation.Angle)
