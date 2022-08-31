@@ -2699,9 +2699,9 @@ class BasePumpkin:
 
     def __init__(self, obj,
                  _radius=10.0,
-                 _scale=0.7,
-                 _sectionWidth=4,
-                 _sections=5,
+                 _scale=0.75,
+                 _sectionWidth=10.0,
+                 _sections=12,
                  _makeShell=True ):
 
         obj.addProperty("App::PropertyLength", "SectionWidth", "Pumpkin",
@@ -2729,29 +2729,31 @@ class BasePumpkin:
         obj1=None
         try:
             #makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius
-            b1=self.Placement
-            b2=self.Placement.copy()
-            b1.Base.x=b1.Base.x-self.SectionWidth
-            b2.Base.x=b1.Base.x+self.SectionWidth
-            mtr1= App.Matrix(  1, 0, 0, 0,
-                    0, 1, 0, 0,
-                    0, 0, self.Scale, 0,
-                    0,    0,    0,    1   )
-                        
+            # b1=self.Placement
+            # b2=self.Placement.copy()
+            # b1.Base.x=b1.Base.x-self.SectionWidth
+            # b2.Base.x=b1.Base.x+self.SectionWidth
+            mtr1= App.Matrix(  
+                             1, 0,          0, 0,
+                             0, self.Scale, 0, 0,
+                             0, 0,          1, 0,
+                             0, 0,          0, 1)
+                                    
             obj1=Part.makeSphere(self.Radius,
-                                      App.Vector(0,0,0),
+                                      App.Vector(self.SectionWidth/2,0,1),
                                       App.Vector(0,0,1)
                                       )
             obj2=Part.makeSphere(self.Radius,
-                                      App.Vector(self.SectionWidth,0,0),
+                                      App.Vector(-self.SectionWidth/2,0,0),
                                       App.Vector(0,0,1)
                                       )
 
             obj1=obj1.transformGeometry(mtr1)
             obj2=obj2.transformGeometry(mtr1)
             obj3=obj1.fuse(obj2)
-            obj3.Placement=self.Placement
-            obj3.Placement.Base= obj3.BoundBox.Center
+            obj3.Placement=self.Placement.copy()
+            #obj3.Placement.Base= -obj3.BoundBox.Center
+            #Part.show(obj3)
             return obj3
 
         except Exception as err:
@@ -2763,12 +2765,13 @@ class BasePumpkin:
             
     def createObject(self):
         try:
-            angle=180/self.Sections
+            angle=math.radians(180/self.Sections)
             Elements=[]
             first=self.createObjectOneElement()
-            for i in range(0,self.Sections-1):
+            for i in range(0,self.Sections):
                 Elements.append(first.copy())
-                Elements[i].Placement.Rotation.Angle=math.radians(angle*(i+1))
+                Elements[i].Placement.Rotation.Angle=angle+angle*(i)
+                print(Elements[i].Placement.Rotation.Angle)
                 Elements[i].Placement.Rotation.Axis=App.Vector(0,0,1)
 
             #for i in range(0,self.Sections-1):
