@@ -4,7 +4,8 @@ Video Showcase:
 
 [![](http://img.youtube.com/vi/pmGW4OxVbYw/0.jpg)](https://www.youtube.com/watch?v=pmGW4OxVbYw "Design456 Workbench")
 
-**Important Note:** **WIP!!!** Please feel free to suggest, contribute, join, help, debug etc... I am new to both Python and FreeCAD Python. My background is in other languages. I hope you find this workbench useful.
+**Important Note:** **WIP!!!** Please feel free to suggest, contribute, join, help, debug etc... I hope you find this workbench useful. Keep in mind that I am still learning FreeCAD API and I might do
+some solution in a way that is not perfect or optimized. FreeCAD contains many libraries that are complex. Developers needs sometime to understand fully how to use them. 
 
 ### Aim 
 FreeCAD primarily utilizes a parametric modeling paradigm. This workbench will work to develop 'direct modeling' approach. Currently, this approach will be accomplished interactively using the viewerport widgets.  For example, clicking on a face and being able to extrude or push/pull by moving the mouse, instead of specifying a the distance by entering a number in to a text field.
@@ -59,4 +60,4 @@ Please leave comments, bugs, fixes in the issue queue of this repository.
 * FreeCAD forum thread [progress Design456 workbench](https://forum.freecadweb.org/viewtopic.php?f=10&t=55866&p=480589#p480589) (No more used 2022-01-20)
 ### Developer
 
-Mariwan Jalal 2021-01-29
+Mariwan Jalal 2021-08-31
