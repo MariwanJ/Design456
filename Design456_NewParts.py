@@ -2731,24 +2731,27 @@ class BasePumpkin:
             #makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius
             b1=self.Placement
             b2=self.Placement.copy()
-            b2.Base.x=b1.Base.x+ self.SectionWidth
+            b1.Base.x=b1.Base.x-self.SectionWidth
+            b2.Base.x=b1.Base.x+self.SectionWidth
             mtr1= App.Matrix(  1, 0, 0, 0,
                     0, 1, 0, 0,
                     0, 0, self.Scale, 0,
                     0,    0,    0,    1   )
                         
             obj1=Part.makeSphere(self.Radius,
-                                      b1.Base,
+                                      App.Vector(0,0,0),
                                       App.Vector(0,0,1)
                                       )
             obj2=Part.makeSphere(self.Radius,
-                                      b2.Base,
+                                      App.Vector(self.SectionWidth,0,0),
                                       App.Vector(0,0,1)
                                       )
 
             obj1=obj1.transformGeometry(mtr1)
             obj2=obj2.transformGeometry(mtr1)
             obj3=obj1.fuse(obj2)
+            obj3.Placement=self.Placement
+            obj3.Placement.Base= obj3.BoundBox.Center
             return obj3
 
         except Exception as err:
@@ -2768,9 +2771,11 @@ class BasePumpkin:
                 Elements[i].Placement.Rotation.Angle=math.radians(angle*(i+1))
                 Elements[i].Placement.Rotation.Axis=App.Vector(0,0,1)
 
-            for i in range(0,self.Sections-1):
-                finalObj=first.fuse(Elements[i])
-            return finalObj
+            #for i in range(0,self.Sections-1):
+            #    finalObj=first.fuse(Elements[i])
+            #    first=finalObj
+            #return finalObj
+            return Part.makeCompound([first,*Elements])
         except Exception as err:
             App.Console.PrintError("'execute Pumpkin' Failed. "
                                    "{err}\n".format(err=str(err)))
