@@ -105,11 +105,27 @@ class BaseFence:
         self.Type = _type
         self.Placement = obj.Placement
         obj.Proxy = self
-        
+    def oneElementNormalFence(self):
+        obj=None
+        p10=App.Vector(self.Placement.x,self.y,self.z-self.Height/2)
+        p11=App.Vector(self.Placement.x,self.y,self.z+self.Height/2)
+        p12=App.Vector(self.Placement.x+self.SectionWidth/4,self.y,self.z+self.Height/2)
+        p13=App.Vector(self.Placement.x+self.SectionWidth/2,self.y,self.z+self.Height/2)
+        p14=App.Vector(self.Placement.x+self.SectionWidth/2,self.y,self.z-self.Height/2)
+
+        #p15=App.Vector()
+        #p16=App.Vector()
+        #p17=App.Vector()
+        #p18=App.Vector()
+        #p19=App.Vector()
+        obj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p10])))
+        objExtr=obj.extrude(App.Vector(0,2,0))
+        return objExtr
+    
     def normalFence(self):
         obj1=None
         try:
-            pass
+            obj1=self.oneElementNormalFence()
             return obj1
 
         except Exception as err:
@@ -120,11 +136,9 @@ class BaseFence:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def TypeOne(self):
-        obj1=None
         try:
- 
-            return obj1
-
+            return self.normalFence()
+    
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
                                    "{err}\n".format(err=str(err)))
