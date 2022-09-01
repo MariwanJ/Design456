@@ -2655,7 +2655,7 @@ Gui.addCommand('Design456_PenHolder', Design456_PenHolder())
 
 
 ######################################################################################
-#TODO : FIXME:
+#TODO : FIXME: Shell is not implemented yet
 # Pumpkin
 
 class ViewProviderPumpkin:
@@ -2716,6 +2716,7 @@ class BasePumpkin:
         obj.addProperty("App::PropertyLength", "Radius", "Pumpkin",
                         "Radius of the Pumpkin").Radius = _radius
         
+        #TODO :FIXME : Not implemented yet
         obj.addProperty("App::PropertyBool", "makeShell", "Pumpkin",
                         "Make shell for the Pumpkin").makeShell = _makeShell
         self.Type = "Pumpkin"
@@ -2728,11 +2729,6 @@ class BasePumpkin:
         """
         obj1=None
         try:
-            #makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius
-            # b1=self.Placement
-            # b2=self.Placement.copy()
-            # b1.Base.x=b1.Base.x-self.SectionWidth
-            # b2.Base.x=b1.Base.x+self.SectionWidth
             mtr1= App.Matrix(  
                              1, 0,          0, 0,
                              0, self.Scale, 0, 0,
@@ -2770,11 +2766,8 @@ class BasePumpkin:
                 Elements[i].Placement.Rotation.Angle=angle+angle*(i)
                 Elements[i].Placement.Rotation.Axis=App.Vector(0,0,1)
 
-            # for i in range(0,self.Sections-1):
-            #    finalObj=first.fuse(Elements[i])
-            #    first=finalObj
-            # return finalObj
-            return Part.makeCompound([first,*Elements])
+            finalObj=first.fuse(Elements)
+            return finalObj
         except Exception as err:
             App.Console.PrintError("'execute Pumpkin' Failed. "
                                    "{err}\n".format(err=str(err)))

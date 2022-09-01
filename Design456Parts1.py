@@ -34,7 +34,7 @@ import Draft
 import Part 
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
-import Design456_NewParts
+import Design456Parts2
 
 __updated__ = '2022-08-13 16:21:26'
 

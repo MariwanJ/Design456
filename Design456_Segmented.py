@@ -36,7 +36,7 @@ from draftutils.translate import translate   #for translate
 import math 
 import DraftGeomUtils
 import Design456Init
-import Design456_NewParts
+import Design456Parts2
 
 __updated__ = '2022-05-21 18:21:32'
 
