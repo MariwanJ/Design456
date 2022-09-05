@@ -34,7 +34,6 @@ import Draft
 import Part 
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
-import Design456Parts2
 
 __updated__ = '2022-08-13 16:21:26'
 
@@ -489,61 +488,3 @@ class Design_ColorizeObject:
 Gui.addCommand('Design_ColorizeObject', Design_ColorizeObject())
 
 ############################################################################
-
-class Design456Part:
-    import polyhedrons
-    list = ["Design456Part_Box",
-            "Design456Part_Cylinder",
-            "Design456Part_Tube",
-            "Design456Part_Sphere",
-            "Design456Part_Cone",
-            "Design456Part_Torus",
-            "Design456Part_Wedge",
-            "Design456Part_Prism",
-            "Design456Part_Pyramid",
-            "Design456Part_Hemisphere",
-            "Design456Part_Ellipsoid",
-            "Pyramid",
-            "Tetrahedron",
-            #"Hexahedron",               #No need for this as box is in part.
-            "Octahedron",
-            "Dodecahedron",
-            "Icosahedron",
-            "Icosahedron_truncated",
-            "Geodesic_sphere",
-            "Design456_Seg_Sphere",
-            "Design456_Seg_Cylinder", 
-            "Design456_Seg_Roof", 
-            "Design456_RoundRoof",
-            "Design456_Paraboloid", 
-            "Design456_Capsule", 
-            "Design456_Parallelepiped", 
-            "Design456_Housing", 
-            "Design456_RoundedHousing", 
-            "Design456_EllipseBox", 
-            "Design456_NonuniformedBox",
-            "Design456_FlowerVase",
-            "Design456_CorrugatedSteel",
-            "Design456_AcousticFoam",  
-            "Design456_Grass",
-            "Design456_HoneycombCylinder",
-            "Design456_HoneycombFence",
-            "Design456_PenHolder",     
-            "Design456_Pumpkin"    
-            ]
-
-    """Design456 Part Toolbar"""
-
-    def GetResources(self):
-        return{
-            'Pixmap':   Design456Init.ICON_PATH + 'Part_Box.svg',
-            'MenuText': 'Box',
-                        'ToolTip': 'Box'
-        }
-
-    def IsActive(self):
-        if App.ActiveDocument is None:
-            return False
-        else:
-            return True
-        

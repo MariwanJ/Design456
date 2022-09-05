@@ -55,7 +55,7 @@ class Design456 (Gui.Workbench):
     def Initialize(self):
         "This function is executed when FreeCAD starts"
         import BOPTools  # as bop
-        import Design456Parts1 as designPart
+        import Design456Parts as designPart
         import Design456_2Ddrawing as TwoDDraw
         import Design456Part_Tools as _tools
         import Design456_Alignment as _alignment

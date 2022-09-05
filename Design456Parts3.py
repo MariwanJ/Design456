@@ -107,11 +107,11 @@ class BaseFence:
         obj.Proxy = self
     def oneElementNormalFence(self):
         obj=None
-        p10=App.Vector(self.Placement.x,self.y,self.z-self.Height/2)
-        p11=App.Vector(self.Placement.x,self.y,self.z+self.Height/2)
-        p12=App.Vector(self.Placement.x+self.SectionWidth/4,self.y,self.z+self.Height/2)
-        p13=App.Vector(self.Placement.x+self.SectionWidth/2,self.y,self.z+self.Height/2)
-        p14=App.Vector(self.Placement.x+self.SectionWidth/2,self.y,self.z-self.Height/2)
+        p10=App.Vector(self.Placement.Base.x,self.Placement.Base.y,self.Placement.Base.z-self.Height/2)
+        p11=App.Vector(self.Placement.Base.x,self.Placement.Base.y,self.Placement.Base.z+self.Height/2)
+        p12=App.Vector(self.Placement.Base.x+self.SectionWidth/4,self.Placement.Base.y,self.Placement.Base.z+self.Height/2)
+        p13=App.Vector(self.Placement.Base.x+self.SectionWidth/2,self.Placement.Base.y,self.Placement.Base.z+self.Height/2)
+        p14=App.Vector(self.Placement.Base.x+self.SectionWidth/2,self.Placement.Base.y,self.Placement.Base.z-self.Height/2)
 
         #p15=App.Vector()
         #p16=App.Vector()
@@ -150,7 +150,7 @@ class BaseFence:
         try:
             finalObj=None
             if self.Type==0:
-                finalObj=self.normalType()
+                finalObj=self.normalFence()
             elif self.Type==1:
                 pass
             elif self.Type==2:
