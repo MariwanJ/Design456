@@ -87,15 +87,31 @@ class BaseFence:
     def __init__(self, obj,
                  _width=10.0,
                  _height=10,
+                 _connectionWidth=1,
                  _sectionWidth=4,
+                 _topDistance1=1,
+                 _topDistance2=3,
+                 _topDistance3=4,
                  _type=0,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence",
                         "Width of the Fence").Width = _width
 
+        obj.addProperty("App::PropertyLength", "ConnectionWidth", "Fence",
+                        "Section Width of the Fence").ConnectionWidth = _connectionWidth
+
         obj.addProperty("App::PropertyLength", "SectionWidth", "Fence",
                         "Section Width of the Fence").SectionWidth = _sectionWidth
+
+        obj.addProperty("App::PropertyLength", "topDistance1", "Fence",
+                        "Top distance1 for section").TopDistance1 = _topDistance1
+
+        obj.addProperty("App::PropertyLength", "topDistance2", "Fence",
+                        "Top distance2 for section").TopDistance2 = _topDistance2
+
+        obj.addProperty("App::PropertyLength", "topDistance3", "Fence",
+                        "Top distance2 for section").TopDistance3= _topDistance3
 
         obj.addProperty("App::PropertyInteger", "Height", "Fence",
                         "Radius of the Fence").Height = _height
@@ -107,12 +123,56 @@ class BaseFence:
         obj.Proxy = self
     def oneElementNormalFence(self):
         obj=None
-        p10=App.Vector(self.Placement.Base.x,self.Placement.Base.y,self.Placement.Base.z-self.Height/2)
-        p11=App.Vector(self.Placement.Base.x,self.Placement.Base.y,self.Placement.Base.z+self.Height/2)
-        p12=App.Vector(self.Placement.Base.x+self.SectionWidth/4,self.Placement.Base.y,self.Placement.Base.z+self.Height/2)
-        p13=App.Vector(self.Placement.Base.x+self.SectionWidth/2,self.Placement.Base.y,self.Placement.Base.z+self.Height/2)
-        p14=App.Vector(self.Placement.Base.x+self.SectionWidth/2,self.Placement.Base.y,self.Placement.Base.z-self.Height/2)
+        
+        #Left side 
+        p10=App.Vector(self.Placement.Base.x+(self.Width-self.SectionWidth)/2,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2)
 
+        p11=App.Vector(self.Placement.Base.x+(self.Width-self.SectionWidth)/2,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2+self.topDistance1)
+
+        p12=App.Vector(self.Placement.Base.x,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2+self.topDistance1)
+
+        p13=App.Vector(self.Placement.Base.x,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2+self.topDistance1+self.ConnectionWidth)
+
+        p14=App.Vector(self.Placement.Base.x+(self.Width-self.SectionWidth)/2,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2+self.topDistance1+self.ConnectionWidth)
+
+
+        p15=App.Vector(self.Placement.Base.x+(self.Width-self.SectionWidth)/2,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2+self.topDistance2)
+        
+        p16=App.Vector(self.Placement.Base.x,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2+self.topDistance2)
+        
+        p16=App.Vector(self.Placement.Base.x,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2+self.topDistance2+self.ConnectionWidth)
+
+        p17=App.Vector(self.Placement.Base.x+(self.Width-self.SectionWidth)/2,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z-self.Height/2+self.topDistance2+self.ConnectionWidth)
+        
+        p18=App.Vector(self.Placement.Base.x+(self.Width-self.SectionWidth)/2,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z+self.Height/2-self.TopDistance3)
+        
+        p19=App.Vector(self.Placement.Base.x+(self.SectionWidth)/2,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z+self.Height)
+
+        #Right side 
+
+        
         #p15=App.Vector()
         #p16=App.Vector()
         #p17=App.Vector()
