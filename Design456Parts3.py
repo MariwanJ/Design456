@@ -183,11 +183,11 @@ class BaseFence:
                        self.Placement.Base.z+zOffset+self.TopDistance2+self.ConnectionWidth)
 
         
-        p37=App.Vector(self.Placement.Base.x+self.SectionWidth,
+        p37=App.Vector(self.Placement.Base.x+self.Width,
                        self.Placement.Base.y,
                        self.Placement.Base.z+zOffset+self.TopDistance2+self.ConnectionWidth)
         
-        p36=App.Vector(self.Placement.Base.x+self.SectionWidth,
+        p36=App.Vector(self.Placement.Base.x+self.Width,
                        self.Placement.Base.y,
                        self.Placement.Base.z+zOffset+self.TopDistance2)
                                 
@@ -200,14 +200,15 @@ class BaseFence:
                        self.Placement.Base.z+zOffset+self.TopDistance1+self.ConnectionWidth)
         
  
-        p33=App.Vector(self.Placement.Base.x+self.SectionWidth,
+        p33=App.Vector(self.Placement.Base.x+self.Width,
                        self.Placement.Base.y,
                        self.Placement.Base.z+zOffset+self.TopDistance1+self.ConnectionWidth)
 
 
-        p32=App.Vector(self.Placement.Base.x+self.SectionWidth,
+        p32=App.Vector(self.Placement.Base.x+self.Width,
                        self.Placement.Base.y,
                        self.Placement.Base.z+zOffset+self.TopDistance1)
+        
         p31=App.Vector(self.Placement.Base.x+CoreStart+self.SectionWidth,
                        self.Placement.Base.y,
                        self.Placement.Base.z+zOffset+self.TopDistance1)
