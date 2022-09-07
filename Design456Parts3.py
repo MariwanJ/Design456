@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-06 21:16:26'
+__updated__ = '2022-09-07 19:12:53'
 
 
 #TODO : FIXME: 
@@ -85,19 +85,21 @@ class BaseFence:
     """
 
     def __init__(self, obj,
-                 _width=10.0,
-                 _height=10,
-                 _connectionWidth=1,
-                 _sectionWidth=4,
-                 _topDistance1=1,
-                 _TopDistance2=3,
-                 _topDistance3=4,
+                 _width=10.00,
+                 _height=10.00,
+                 _connectionWidth=1.00,
+                 _sectionWidth=4.00,
+                 _topDistance1=1.00,
+                 _TopDistance2=3.00,
+                 _topDistance3=4.00,
                  _type=0,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence",
                         "Width of the Fence").Width = _width
-
+        obj.addProperty("App::PropertyLength", "Height", "Fence",
+                        "Radius of the Fence").Height = _height
+        
         obj.addProperty("App::PropertyLength", "ConnectionWidth", "Fence",
                         "Section Width of the Fence").ConnectionWidth = _connectionWidth
 
@@ -112,9 +114,6 @@ class BaseFence:
 
         obj.addProperty("App::PropertyLength", "TopDistance3", "Fence",
                         "Top distance2 for section").TopDistance3= _topDistance3
-
-        obj.addProperty("App::PropertyInteger", "Height", "Fence",
-                        "Radius of the Fence").Height = _height
         
         obj.addProperty("App::PropertyInteger", "Type", "Type",
                         "FlowerVase base type").Type = _type
@@ -169,7 +168,7 @@ class BaseFence:
         
         p20=App.Vector(self.Placement.Base.x+CoreStart+(self.SectionWidth)/2,
                        self.Placement.Base.y,
-                       self.Placement.Base.z+self.Height)
+                       self.Placement.Base.z+self.Height/2)
         
         #Right side 
 
@@ -213,7 +212,11 @@ class BaseFence:
                        self.Placement.Base.y,
                        self.Placement.Base.z+zOffset+self.TopDistance1)
         
-        obj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p10])))
+        p30=App.Vector(self.Placement.Base.x+CoreStart+self.SectionWidth,
+                       self.Placement.Base.y,
+                       self.Placement.Base.z+zOffset)
+                
+        obj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
         objExtr=obj.extrude(App.Vector(0,2,0))
         return objExtr
     
