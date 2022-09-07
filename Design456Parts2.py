@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-08-17 21:16:04'
+__updated__ = '2022-09-07 20:55:48'
 
 
 # Roof
@@ -328,7 +328,7 @@ class Design456_RoundedHousingBase:
                         "Height of the RoundedHousing").Height = height
 
         obj.addProperty("App::PropertyLength", "Radius", "RoundedHousing",
-                        "Height of the RoundedHousing").Radius = radius
+                        "Radius of the RoundedHousing").Radius = radius
 
         obj.addProperty("App::PropertyLength", "Thickness", "RoundedHousing",
                         "Thickness of the RoundedHousing").Thickness = thickness
@@ -457,10 +457,10 @@ class Design456_EllipseBoxBase:
                         "Height of the EllipseBox").Height = height
 
         obj.addProperty("App::PropertyLength", "MajorRadius", "EllipseBox",
-                        "Height of the EllipseBox").MajorRadius = major_radius
+                        "Major Radius of the EllipseBox").MajorRadius = major_radius
 
         obj.addProperty("App::PropertyLength", "MinorRadius", "EllipseBox",
-                        "Height of the EllipseBox").MinorRadius = minor_radius
+                        "Minor Radius of the EllipseBox").MinorRadius = minor_radius
 
         obj.addProperty("App::PropertyLength", "Thickness", "EllipseBox",
                         "Thickness of the EllipseBox").Thickness = thickness
@@ -571,6 +571,7 @@ class Design456_NonuniformedBoxBase:
 
         obj.addProperty("App::PropertyLength", "Height", "NonuniformedBox",
                         "Height of the NonuniformedBox").Height = height
+        
         obj.addProperty("App::PropertyLength", "Thickness", "NonuniformedBox",
                         "Thickness of the NonuniformedBox").Thickness = thickness
 
@@ -581,7 +582,7 @@ class Design456_NonuniformedBoxBase:
                         "Radius of the NonuniformedBox").Radius = radius
 
         obj.addProperty("App::PropertyLength", "SideOneRadius", "RoundedHousing",
-                        "Base Radius of the NonuniformedBox").SideOneRadius = base_radius
+                        "Side Radius of the NonuniformedBox").SideOneRadius = base_radius
 
         obj.Proxy = self
         s = Gui.Selection.getSelectionEx()
@@ -711,7 +712,7 @@ class Design456_ParaboloidBase:
                         "Base Radius of the Paraboloid").BaseRadius = base_radius
 
         obj.addProperty("App::PropertyLength", "MiddleRadius", "Paraboloid",
-                        "Base Radius of the Paraboloid").MiddleRadius = middle_radius
+                        "Middle Radius of the Paraboloid").MiddleRadius = middle_radius
 
         self.points = []
         obj.Proxy = self
@@ -804,7 +805,7 @@ class ViewProviderCapsule:
 
 
 class Design456_CapsuleBase:
-    """ Capsuleshape based on several parameters
+    """ Capsule shape based on several parameters
     """
 
     def __init__(self, obj,
@@ -818,12 +819,13 @@ class Design456_CapsuleBase:
                         "Length of the Capsule").Length = length
 
         obj.addProperty("App::PropertyFloat", "SideRightRadius", "Capsule",
-                        "Base Radius of the Capsule").SideRightRadius = side_R_radius
+                        "R-Base Radius of the Capsule").SideRightRadius = side_R_radius
+        
         obj.addProperty("App::PropertyFloat", "SideLeftRadius", "Capsule",
-                        "Base Radius of the Capsule").SideLeftRadius = side_L_radius
+                        "L-Base Radius of the Capsule").SideLeftRadius = side_L_radius
 
         obj.addProperty("App::PropertyFloat", "HeightRadius", "Capsule",
-                        "Base Radius of the Capsule").HeightRadius = height_radius
+                        "Height-Radius of the Capsule").HeightRadius = height_radius
         obj.Proxy = self
 
     def execute(self, obj):
@@ -922,16 +924,16 @@ class Design456_ParallelepipedBase:
                         "Height of the Parallelepiped").Height = height
 
         obj.addProperty("App::PropertyLength", "Length", "Parallelepiped",
-                        "length of the Parallelepiped").Length = length
+                        "Length of the Parallelepiped").Length = length
 
         obj.addProperty("App::PropertyLength", "Width", "Parallelepiped",
                         "Width of the Parallelepiped").Width = width
 
         obj.addProperty("App::PropertyAngle", "AngleX", "Parallelepiped",
-                        "Angle of the Parallelepiped").AngleX = anglex
+                        "AngleY of the Parallelepiped").AngleX = anglex
 
         obj.addProperty("App::PropertyAngle", "AngleY", "Parallelepiped",
-                        "Angle of the Parallelepiped").AngleY = angley
+                        "AngleX of the Parallelepiped").AngleY = angley
 
         obj.Proxy = self
 
@@ -1233,33 +1235,37 @@ class Design456_BaseFlowerVase:
         obj.topType = _topType
 
         obj.addProperty("App::PropertyLength", "baseRadius", "2)Radius",
-                        "Length of the FlowerVase").baseRadius = _baseRadius
+                        "baseRadius of the FlowerVase").baseRadius = _baseRadius
 
         obj.addProperty("App::PropertyLength", "middleRadius", "2)Radius",
-                        "Length of the FlowerVase").middleRadius = _middleRadius
+                        "middleRadius of the FlowerVase").middleRadius = _middleRadius
 
         obj.addProperty("App::PropertyLength", "topRadius", "2)Radius",
-                        "Length of the FlowerVase").topRadius = _topRadius
+                        "topRadius of the FlowerVase").topRadius = _topRadius
 
         obj.addProperty("App::PropertyLength", "Height", "3)Others",
                         "Height of the FlowerVase").Height = _height
 
         obj.addProperty("App::PropertyLength", "neckHeight", "3)Others",
-                        "Height of the FlowerVase").neckHeight = _neckHeight
+                        "neckHeight of the FlowerVase").neckHeight = _neckHeight
 
         obj.addProperty("App::PropertyInteger", "baseSides", "3)Others",
                         "base sides of the FlowerVase").baseSides = _baseSides
+        
         obj.addProperty("App::PropertyInteger", "middleSides", "3)Others",
                         "middle sides of the FlowerVase").middleSides = _middleSides
+        
         obj.addProperty("App::PropertyInteger", "topSides", "3)Others",
                         "top sides of the FlowerVase").topSides = _topSides
 
         obj.addProperty("App::PropertyBool", "Solid", "3)Others",
-                        "FlowerVase top type").Solid = _solid
+                        "Solid").Solid = _solid
+        
         obj.addProperty("App::PropertyBool", "WithContact", "3)Others",
-                        "FlowerVase top type").WithContact = _withContact
+                        "With Contact").WithContact = _withContact
+        
         obj.addProperty("App::PropertyBool", "WithCorrection", "3)Others",
-                        "FlowerVase top type").WithCorrection = _withCorrection
+                        "With Correction").WithCorrection = _withCorrection
 
         self.Placement = obj.Placement
         obj.Proxy = self
@@ -1453,20 +1459,24 @@ class Design456_BaseCorrugatedSteel:
 
         obj.addProperty("App::PropertyLength", "Height", "Sheet",
                         "Height of the CorrugatedSteel").Height = _height
+        
         obj.addProperty("App::PropertyLength", "Width", "Sheet",
                         "Width of the CorrugatedSteel").Width = _width
+        
         obj.addProperty("App::PropertyLength", "Length", "Sheet",
-                        "Height of the CorrugatedSteel").Length = _length
+                        "Length of the CorrugatedSteel").Length = _length
 
         obj.addProperty("App::PropertyLength", "wavePeriod", "Sheet",
                         "wave Amplitude of the CorrugatedSteel").wavePeriod = _wavePeriod
 
         obj.addProperty("App::PropertyBool", "Solid", "Sheet",
-                        "CorrugatedSteel top type").Solid = _solid
+                        "Solid").Solid = _solid
+        
         obj.addProperty("App::PropertyBool", "WithContact", "Sheet",
-                        "CorrugatedSteel top type").WithContact = _withContact
+                        "CorrugatedSteel Width contact").WithContact = _withContact
+        
         obj.addProperty("App::PropertyBool", "WithCorrection", "Sheet",
-                        "CorrugatedSteel top type").WithCorrection = _withCorrection
+                        "CorrugatedSteel With Correction").WithCorrection = _withCorrection
 
         self.Placement = obj.Placement
         obj.Proxy = self
@@ -1605,8 +1615,10 @@ class Design456_BaseAcousticFoam:
 
         obj.addProperty("App::PropertyLength", "Height", "Foam",
                         "Height of the AcousticFoam").Height = _height
+        
         obj.addProperty("App::PropertyLength", "Width", "Foam",
                         "Width of the AcousticFoam").Width = _width
+        
         obj.addProperty("App::PropertyLength", "Length", "Foam",
                         "Length of the AcousticFoam").Length = _length
 
@@ -1802,8 +1814,10 @@ class Design456_BaseGrass:
 
         obj.addProperty("App::PropertyLength", "Height", "Grass",
                         "Height of the Grass").Height = _height
+        
         obj.addProperty("App::PropertyLength", "Width", "Grass",
                         "Width of the Grass").Width = _width
+        
         obj.addProperty("App::PropertyLength", "Length", "Grass",
                         "Length of the Grass").Length = _length
 
@@ -2504,7 +2518,7 @@ class BasePenHolder:
                         "Height of the PenHolder").Height = _height
 
         obj.addProperty("App::PropertyLength", "Thickness", "PenHolder",
-                        "Width of the PenHolder").Thickness = _thickness
+                        "Thickness of the PenHolder").Thickness = _thickness
         
         obj.addProperty("App::PropertyLength", "SectionWidth", "PenHolder",
                         "Section Width of the PenHolder").SectionWidth = _sectionWidth
