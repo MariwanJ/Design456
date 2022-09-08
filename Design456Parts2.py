@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-07 20:55:48'
+__updated__ = '2022-09-08 21:17:37'
 
 
 # Roof
@@ -1205,7 +1205,7 @@ class ViewProviderFlowerVase:
 class Design456_BaseFlowerVase:
     """ FlowerVase shape based on several parameters
     """
-
+    Placement=None
     def __init__(self, obj,
                  _baseType="Circle",
                  _middleType="Polygon",
@@ -1267,7 +1267,7 @@ class Design456_BaseFlowerVase:
         obj.addProperty("App::PropertyBool", "WithCorrection", "3)Others",
                         "With Correction").WithCorrection = _withCorrection
 
-        self.Placement = obj.Placement
+        Design456_BaseFlowerVase.Placement = obj.Placement
         obj.Proxy = self
         self.Type = "FlowerVase"
 
@@ -1277,9 +1277,9 @@ class Design456_BaseFlowerVase:
             slice = 360/sides
             _angle = math.radians(slice)
             for i in range(0, sides+1):
-                x = self.Placement.Base.x+(radius * math.cos(_angle*i))
-                y = self.Placement.Base.y+(radius * math.sin(_angle*i))
-                z = Zaxis+self.Placement.Base.z
+                x =  Design456_BaseFlowerVase.Placement.Base.x+(radius * math.cos(_angle*i))
+                y =  Design456_BaseFlowerVase.Placement.Base.y+(radius * math.sin(_angle*i))
+                z = Zaxis+ Design456_BaseFlowerVase.Placement.Base.z
                 point = App.Vector(x, y, z)
                 vertices.append(point)
             return vertices
@@ -1447,7 +1447,7 @@ class ViewProviderCorrugatedSteel:
 class Design456_BaseCorrugatedSteel:
     """ CorrugatedSteel shape based on several parameters
     """
-
+    Placement=None
     def __init__(self, obj,
                  _height=0.5,
                  _width=10.0,
@@ -1478,7 +1478,7 @@ class Design456_BaseCorrugatedSteel:
         obj.addProperty("App::PropertyBool", "WithCorrection", "Sheet",
                         "CorrugatedSteel With Correction").WithCorrection = _withCorrection
 
-        self.Placement = obj.Placement
+        Design456_BaseCorrugatedSteel.Placement = obj.Placement
         obj.Proxy = self
         self.Type = "CorrugatedSteel"
 
@@ -1494,9 +1494,9 @@ class Design456_BaseCorrugatedSteel:
         while (count1 < self.Length):
             for count2 in range(0, 6):
                 z = self.Height*(self.wavePeriod/3*math.sin(count2*angelParts))
-                vertices.append(App.Vector(x+self.Placement.Base.x,
-                                           y+self.Placement.Base.y,
-                                           z+self.Placement.Base.z))
+                vertices.append(App.Vector(x+Design456_BaseCorrugatedSteel.Placement.Base.x,
+                                           y+Design456_BaseCorrugatedSteel.Placement.Base.y,
+                                           z+Design456_BaseCorrugatedSteel.Placement.Base.z))
                 x = x+seg1
             count1 = count1+self.wavePeriod
         return (vertices)
@@ -2000,7 +2000,7 @@ class ViewProviderHoneycombCylinder:
 class BaseHoneycombCylinder:
     """ HoneycombCylinder shape based on several parameters
     """
-
+    Placement=None
     def __init__(self, obj,
                  _height=20.0,  # Shape hight
                  _Radius=10.0,
@@ -2025,7 +2025,7 @@ class BaseHoneycombCylinder:
                                                  "Decagon 10Sides"]
 
         self.Type = "HoneycombCylinder"
-        self.Placement = obj.Placement
+        BaseHoneycombCylinder.Placement = obj.Placement
         obj.Proxy = self
         obj.HoleType =_holeType
 
@@ -2036,13 +2036,13 @@ class BaseHoneycombCylinder:
             newObj = None
             angles = 360/sides
             # Extra 5 points to make the object longer for cutting
-            y1 = self.Placement.Base.y - (2*self.Radius+5)
+            y1 = BaseHoneycombCylinder.Placement.Base.y - (2*self.Radius+5)
             y2 = -y1+ (2*self.Radius+5)
             
             for i in range(0, sides):
                 # The polygon will be
-                x = self.Placement.Base.x+self.HoleRadius * math.cos(math.radians(i*angles))
-                z = self.Placement.Base.z+self.HoleRadius * math.sin(math.radians(i*angles))
+                x = BaseHoneycombCylinder.Placement.Base.x+self.HoleRadius * math.cos(math.radians(i*angles))
+                z = BaseHoneycombCylinder.Placement.Base.z+self.HoleRadius * math.sin(math.radians(i*angles))
                 points.append(App.Vector(x, y1, z))
             
             points.append(points[0])  # close the loop
@@ -2060,10 +2060,10 @@ class BaseHoneycombCylinder:
     def createOneRing(self, _sides):
         try:
             angles = 180/self.Holes
-            plc = self.Placement.copy()
+            plc = BaseHoneycombCylinder.Placement.copy()
             ringHoles = []
             plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
-            plc.Base = self.Placement.Base
+            plc.Base = BaseHoneycombCylinder.Placement.Base
             plc.Base.z = plc.Base.z
             for i in range(0, self.Holes):
                 if self.HoleType=="Circle":
@@ -2085,9 +2085,9 @@ class BaseHoneycombCylinder:
         try:
             flatObj = None
             newObj = None
-            x = self.Placement.Base.x
-            z = self.Placement.Base.z
-            y1 = self.Placement.Base.y - (2*self.Radius+5)
+            x = BaseHoneycombCylinder.Placement.Base.x
+            z = BaseHoneycombCylinder.Placement.Base.z
+            y1 = BaseHoneycombCylinder.Placement.Base.y - (2*self.Radius+5)
             y2 = -y1+ (2*self.Radius+5)
             circle=Part.Wire(Part.makeCircle(self.HoleRadius,App.Vector(x,y1,z),App.Vector(0,1,0)))
             flatObj = Part.Face(circle)
@@ -2108,14 +2108,14 @@ class BaseHoneycombCylinder:
         try:
             # From this tool, I will create shapes having  origin center in the centerofmass TODO: Good or bad? let me know!
             baseObj = Part.makeCylinder(self.Radius, self.Height,
-                                        App.Vector(self.Placement.Base.x,
-                                                   self.Placement.Base.y,
-                                                   self.Placement.Base.z-self.Height/2))
+                                        App.Vector(BaseHoneycombCylinder.Base.x,
+                                                   BaseHoneycombCylinder.Base.y,
+                                                   BaseHoneycombCylinder.Base.z-self.Height/2))
             # We should have a higher shape to cut the top also
             coreObj = Part.makeCylinder(self.innerRadius, self.Height,
-                                        App.Vector(self.Placement.Base.x,
-                                                   self.Placement.Base.y,
-                                                   self.Placement.Base.z-self.Height/2))
+                                        App.Vector(BaseHoneycombCylinder.Base.x,
+                                                   BaseHoneycombCylinder.Base.y,
+                                                   BaseHoneycombCylinder.Base.z-self.Height/2))
             finalObj = baseObj.cut(coreObj)
 
             z = -self.Height/2
@@ -2254,7 +2254,7 @@ class ViewProviderHoneycombFence:
 class BaseHoneycombFence:
     """ HoneycombFence shape based on several parameters
     """
-
+    Placement=None
     def __init__(self, obj,
                  _height=30.0,  # Shape hight
                  _width=30.0,
@@ -2283,7 +2283,7 @@ class BaseHoneycombFence:
                                                  "Decagon 10Sides"]
 
         self.Type = "HoneycombFence"
-        self.Placement = obj.Placement
+        BaseHoneycombFence.Placement = obj.Placement
         obj.Proxy = self
         obj.HoleType =_holeType
 
@@ -2294,13 +2294,13 @@ class BaseHoneycombFence:
             newObj = None
             angles = 360/sides
             # Extra 5 points to make the object longer for cutting
-            y1 = self.Placement.Base.y - (2*self.Thickness+5)
+            y1 = BaseHoneycombFence.Placement.Base.y - (2*self.Thickness+5)
             y2 = -y1+ (2*self.Thickness+5)
             
             for i in range(0, sides):
                 # The polygon will be
-                x = self.Placement.Base.x-self.Width/2 +self.HoleRadius * math.cos(math.radians(i*angles))
-                z = self.Placement.Base.z+self.HoleRadius * math.sin(math.radians(i*angles))
+                x = BaseHoneycombFence.Placement.Base.x-self.Width/2 +self.HoleRadius * math.cos(math.radians(i*angles))
+                z = BaseHoneycombFence.Placement.Base.z+self.HoleRadius * math.sin(math.radians(i*angles))
                 points.append(App.Vector(x, y1, z))
             
             points.append(points[0])  # close the loop
@@ -2318,10 +2318,10 @@ class BaseHoneycombFence:
     def createOneLine(self, _sides):
         try:
             pos = self.Distance+self.HoleRadius*2
-            plc = self.Placement.copy()
+            plc = BaseHoneycombFence.Placement.copy()
             ringHoles = []
             plc.Rotation.Axis = App.Vector(0.0, 0.0, 1.0)
-            plc.Base = self.Placement.Base
+            plc.Base = BaseHoneycombFence.Placement.Base
             startX=plc.Base.x
             for i in range(0, self.Holes+2):
                 if self.HoleType=="Circle":
@@ -2343,9 +2343,9 @@ class BaseHoneycombFence:
         try:
             flatObj = None
             newObj = None
-            x = self.Placement.Base.x-self.Width/2
-            z = self.Placement.Base.z
-            y1 = self.Placement.Base.y - (2*self.Thickness+5)
+            x = BaseHoneycombFence.Placement.Base.x-self.Width/2
+            z = BaseHoneycombFence.Placement.Base.z
+            y1 = BaseHoneycombFence.Placement.Base.y - (2*self.Thickness+5)
             y2 = -y1+ (2*self.Thickness+5)
             circle=Part.Wire(Part.makeCircle(self.HoleRadius,App.Vector(x,y1,z),App.Vector(0,1,0)))
             flatObj = Part.Face(circle)
@@ -2364,9 +2364,9 @@ class BaseHoneycombFence:
         try:
             # origin center is in the centerofmass #  TODO: Good or bad? let me know!
             baseObj = Part.makeBox(self.Width, self.Thickness,self.Height,
-                                        App.Vector(self.Placement.Base.x-self.Width/2,
-                                                   self.Placement.Base.y,
-                                                   self.Placement.Base.z-self.Height/2))
+                                        App.Vector(BaseHoneycombFence.Placement.Base.x-self.Width/2,
+                                                   BaseHoneycombFence.Placement.Base.y,
+                                                   BaseHoneycombFence.Placement.Base.z-self.Height/2))
             z = -self.Height/2
             allRings = []
             cutRot = 20
@@ -2502,7 +2502,7 @@ class ViewProviderPenHolder:
 class BasePenHolder:
     """ PenHolder shape based on several parameters
     """
-
+    Placement=None
     def __init__(self, obj,
                  _height=12.0,  # Shape hight
                  _radius=12.0,
@@ -2536,7 +2536,7 @@ class BasePenHolder:
                         "Cover issue of the PenHolder").CoverIssue = _coverIssue
                 
         self.Type = "PenHolder"
-        self.Placement = obj.Placement
+        BasePenHolder.Placement = obj.Placement
         obj.Proxy = self
         
     def createObjectOneElement(self):
@@ -2544,7 +2544,7 @@ class BasePenHolder:
             by copying it and rotating. Later merging all of them. 
         """
         ResultObj=None
-        plc=self.Placement.Base
+        plc=BasePenHolder.Placement.Base
         """   One element consist of 3 parts box, and two pyramid
                                 box
                         ......................  
@@ -2613,17 +2613,17 @@ class BasePenHolder:
                 nobj.Placement.Rotation.Axis=App.Vector(0,0,1)
                 nobj.Placement.Rotation.Angle=math.radians(angles*i)
                 allObj.append(nobj)
-            cyl1=Part.makeCylinder(self.Radius+self.CoverIssue,self.Height,self.Placement.Base) #TODO: This must be a segmented cylinder
+            cyl1=Part.makeCylinder(self.Radius+self.CoverIssue,self.Height,BasePenHolder.Placement.Base) #TODO: This must be a segmented cylinder
             outsideObj=OneColumn.fuse([*allObj,cyl1])
             newObj1=outsideObj.removeSplitter()
             if self.makeShell is True:
-                plc=self.Placement.copy()
+                plc=BasePenHolder.Placement.copy()
                 plc.Base.z=plc.Base.z+self.Thickness
                 cyl2=Part.makeCylinder(self.Radius-self.Thickness,self.Height,plc.Base) 
                 FinalObject=newObj1.cut(cyl2)
             else:
                 FinalObject=newObj1
-            FinalObject.Placement=self.Placement
+            FinalObject.Placement=BasePenHolder.Placement
             return FinalObject
         except Exception as err:
             App.Console.PrintError("'execute PenHolder' Failed. "
@@ -2710,7 +2710,7 @@ class ViewProviderPumpkin:
 class BasePumpkin:
     """ Pumpkin shape based on several parameters
     """
-
+    Placement=None
     def __init__(self, obj,
                  _radius=10.0,
                  _scale=0.75,
@@ -2734,7 +2734,7 @@ class BasePumpkin:
         obj.addProperty("App::PropertyBool", "makeShell", "Pumpkin",
                         "Make shell for the Pumpkin").makeShell = _makeShell
         self.Type = "Pumpkin"
-        self.Placement = obj.Placement
+        BasePumpkin.Placement = obj.Placement
         obj.Proxy = self
         
     def createObjectOneElement(self):
@@ -2760,7 +2760,7 @@ class BasePumpkin:
             obj1=obj1.transformGeometry(mtr1)
             obj2=obj2.transformGeometry(mtr1)
             obj3=obj1.fuse(obj2)
-            obj3.Placement=self.Placement.copy()
+            obj3.Placement=BasePumpkin.Placement.copy()
             return obj3
 
         except Exception as err:
