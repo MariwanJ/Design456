@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-07 20:45:57'
+__updated__ = '2022-09-08 20:41:31'
 
 
 #TODO : FIXME: 
@@ -70,7 +70,13 @@ class ViewProviderFence:
 
     def onChanged(self, vobj, prop):
         pass
-
+    
+    def __getstate__(self):
+        return None
+    
+    def __setstate__(self):
+        return None
+    
     def getIcon(self):
         return (Design456Init.ICON_PATH + 'Fence.svg')
 
@@ -89,10 +95,10 @@ class BaseFence:
                  _height=10.00,
                  _sections=10,
                  _connectionWidth=1.00,
-                 _sectionWidth=4.00,
-                 _topDistance1=1.00,
-                 _TopDistance2=3.00,
-                 _sharpLength=4.00,
+                 _sectionWidth=2.00,
+                 _bottomDistance=1.00,
+                 _topDistance=6.00,
+                 _sharpLength=1.00,
                  _type=0,
                  ):
 
@@ -108,11 +114,11 @@ class BaseFence:
         obj.addProperty("App::PropertyLength", "SectionWidth", "Fence",
                         "Section Width of the Fence").SectionWidth = _sectionWidth
 
-        obj.addProperty("App::PropertyLength", "TopDistance1", "Fence",
-                        "Connection Bottom distance").TopDistance1 = _topDistance1
+        obj.addProperty("App::PropertyLength", "BottomDistance", "Fence",
+                        "Connection Bottom distance").BottomDistance = _bottomDistance
 
-        obj.addProperty("App::PropertyLength", "TopDistance2", "Fence",
-                        "Top connection distance").TopDistance2 = _TopDistance2
+        obj.addProperty("App::PropertyLength", "TopDistance", "Fence",
+                        "Top connection distance").TopDistance = _topDistance
 
         obj.addProperty("App::PropertyLength", "SharpLength", "Fence",
                         "Sharp part length").SharpLength= _sharpLength
@@ -122,107 +128,106 @@ class BaseFence:
         
         obj.addProperty("App::PropertyInteger", "Type", "Fence",
                         "Fence base type").Type = _type
-        self.Type = _type
-        self.Placement = obj.Placement
         obj.Proxy = self
+        self.object=obj
+
         
     def oneElementNormalFence(self,Xoffsett,smallWidth):
-        obj=None
         CoreStart=(smallWidth-self.SectionWidth)/2
         zOffset=-self.Height/2
         #Left side         
-        p10=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset)
+        p10=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset)
 
-        p11=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance1)
+        p11=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.BottomDistance)
 
-        p12=App.Vector(self.Placement.Base.x+Xoffsett,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance1)
+        p12=App.Vector(self.object.Placement.Base.x+Xoffsett,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.BottomDistance)
 
-        p13=App.Vector(self.Placement.Base.x+Xoffsett,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance1+self.ConnectionWidth)
+        p13=App.Vector(self.object.Placement.Base.x+Xoffsett,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
 
-        p14=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance1+self.ConnectionWidth)
+        p14=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
 
-        p15=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance2)
+        p15=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.TopDistance)
         
-        p16=App.Vector(self.Placement.Base.x+Xoffsett,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance2)
+        p16=App.Vector(self.object.Placement.Base.x+Xoffsett,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.TopDistance)
         
-        p17=App.Vector(self.Placement.Base.x+Xoffsett,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance2+self.ConnectionWidth)
+        p17=App.Vector(self.object.Placement.Base.x+Xoffsett,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
         
-        p18=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance2+self.ConnectionWidth)
+        p18=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
         
-        p19=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+self.Height/2-self.SharpLength)
+        p19=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+self.Height/2-self.SharpLength)
         
-        p20=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart+(self.SectionWidth)/2,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+self.Height/2)
+        p20=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart+(self.SectionWidth)/2,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+self.Height/2)
         
         #Right side 
 
         
-        p39=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+self.Height/2-self.SharpLength)
+        p39=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+self.Height/2-self.SharpLength)
         
-        p38=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance2+self.ConnectionWidth)
+        p38=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
 
         
-        p37=App.Vector(self.Placement.Base.x+Xoffsett+smallWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance2+self.ConnectionWidth)
+        p37=App.Vector(self.object.Placement.Base.x+Xoffsett+smallWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
         
-        p36=App.Vector(self.Placement.Base.x+Xoffsett+smallWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance2)
+        p36=App.Vector(self.object.Placement.Base.x+Xoffsett+smallWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.TopDistance)
                                 
-        p35=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance2)                                
+        p35=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.TopDistance)                                
                                 
-        p34=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance1+self.ConnectionWidth)
+        p34=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
         
  
-        p33=App.Vector(self.Placement.Base.x+Xoffsett+smallWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance1+self.ConnectionWidth)
+        p33=App.Vector(self.object.Placement.Base.x+Xoffsett+smallWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
 
 
-        p32=App.Vector(self.Placement.Base.x+Xoffsett+smallWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance1)
+        p32=App.Vector(self.object.Placement.Base.x+Xoffsett+smallWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.BottomDistance)
         
-        p31=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset+self.TopDistance1)
+        p31=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset+self.BottomDistance)
         
-        p30=App.Vector(self.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       self.Placement.Base.y,
-                       self.Placement.Base.z+zOffset)
+        p30=App.Vector(self.object.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       self.object.Placement.Base.y,
+                       self.object.Placement.Base.z+zOffset)
                 
-        obj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
-        objExtr=obj.extrude(App.Vector(0,2,0))
+        newobj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
+        objExtr=newobj.extrude(App.Vector(0,2,0))
         return objExtr
     
     def normalFence(self):
@@ -236,9 +241,10 @@ class BaseFence:
                 offset=i*smallWidth
                 objs.append(self.oneElementNormalFence(offset,smallWidth))
             if(len(objs)>1):
-                return obj1.fuse(objs)
+                return (obj1.fuse(objs)).removeSplitter()
             else:
-                return obj1
+                return obj1.removeSplitter()
+            
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -280,17 +286,27 @@ class BaseFence:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def execute(self, obj):
-        self.Width=float(obj.Width)        
-        self.Height=int(obj.Height)
+
+
+        self.Width = float(obj.Width)        
+        self.Height = int(obj.Height)
         self.SectionWidth = float(obj.SectionWidth)
-        self.Type=int(obj.Type)
-        self.TopDistance1=float(obj.TopDistance1)
-        self.TopDistance2=float(obj.TopDistance2)
-        self.SharpLength=float(obj.SharpLength)
-        self.ConnectionWidth=float(obj.ConnectionWidth)
-        self.Sections=int(obj.Sections)
-        
-        obj.Shape =self.createObject()
+        self.Type = int(obj.Type)
+        self.BottomDistance = float(obj.BottomDistance)
+        self.TopDistance = float(obj.TopDistance)
+        self.SharpLength = float(obj.SharpLength)
+        self.ConnectionWidth = float(obj.ConnectionWidth)
+        self.Sections = int(obj.Sections)
+        #Both distances cannot crosse each other 
+        if self.BottomDistance == self.TopDistance or self.BottomDistance > self.TopDistance:
+            self.BottomDistance = self.TopDistance -(1.0)
+            obj.BottomDistance=self.BottomDistance
+
+        elif self.TopDistance < self.BottomDistance:
+            self.TopDistance = self.BottomDistance + (1.0)
+            obj.TopDistance=self.TopDistance
+            
+        obj.Shape = self.createObject()
 
 class Design456_Fence:
     def GetResources(self):

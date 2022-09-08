@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-07-12 19:16:12'
+__updated__ = '2022-09-08 20:55:36'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -291,7 +291,7 @@ class Design456 (Gui.Workbench):
         "right-clicks on screen"
         try:
             import BOPTools  # as bop
-            import Design456Parts1 as designPart
+            import Design456Parts as designPart
             import Design456Part_Tools as pTools
             import Design456_2Ddrawing as TwoDDraw
             import Design456_Alignment as _alignment
