@@ -61,7 +61,7 @@ from FreeCAD import Base
 import Design456Init
 import FACE_D as faced
 
-__updated__ = '2022-03-17 22:33:34'
+__updated__ = '2022-09-08 21:06:42'
 
 def horizontal_regular_polygon_vertexes(sidescount, radius, z, startangle=0):
     try:
@@ -147,7 +147,7 @@ class ViewProviderBox:
     obj_name = "Dodecahedron"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = obj_name
+        ViewProviderBox.obj_name = obj_name
         obj.Proxy = self
 
     def attach(self, obj):
