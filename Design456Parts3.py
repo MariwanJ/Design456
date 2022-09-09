@@ -89,7 +89,7 @@ class ViewProviderFence:
 class BaseFence:
     """ Fence shape based on several parameters
     """
-    placement=App.Placement()
+    Placement=App.Placement()
     def __init__(self, obj,
                  _width=30.00,
                  _height=10.00,
@@ -136,95 +136,95 @@ class BaseFence:
         CoreStart=(smallWidth-self.SectionWidth)/2
         zOffset=-self.Height/2
         #Left side         
-        p10=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset)
+        p10=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset)
 
-        p11=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.BottomDistance)
+        p11=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
 
-        p12=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.BottomDistance)
+        p12=App.Vector(BaseFence.Placement.Base.x+Xoffsett,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
 
-        p13=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
+        p13=App.Vector(BaseFence.Placement.Base.x+Xoffsett,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
 
-        p14=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
+        p14=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
 
-        p15=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.TopDistance)
+        p15=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance)
         
-        p16=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.TopDistance)
+        p16=App.Vector(BaseFence.Placement.Base.x+Xoffsett,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance)
         
-        p17=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
+        p17=App.Vector(BaseFence.Placement.Base.x+Xoffsett,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
         
-        p18=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
+        p18=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
         
-        p19=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+self.Height/2-self.SharpLength)
+        p19=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.Height/2-self.SharpLength)
         
-        p20=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart+(self.SectionWidth)/2,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+self.Height/2)
+        p20=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+(self.SectionWidth)/2,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.Height/2)
         
         #Right side 
 
         
-        p39=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+self.Height/2-self.SharpLength)
+        p39=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.Height/2-self.SharpLength)
         
-        p38=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
+        p38=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
 
         
-        p37=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+smallWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
+        p37=App.Vector(BaseFence.Placement.Base.x+Xoffsett+smallWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
         
-        p36=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+smallWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.TopDistance)
+        p36=App.Vector(BaseFence.Placement.Base.x+Xoffsett+smallWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance)
                                 
-        p35=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.TopDistance)                                
+        p35=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance)                                
                                 
-        p34=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
+        p34=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
         
  
-        p33=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+smallWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
+        p33=App.Vector(BaseFence.Placement.Base.x+Xoffsett+smallWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
 
 
-        p32=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+smallWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.BottomDistance)
+        p32=App.Vector(BaseFence.Placement.Base.x+Xoffsett+smallWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
         
-        p31=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset+self.BottomDistance)
+        p31=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
         
-        p30=App.Vector(BaseFence.placement.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
-                       BaseFence.placement.Placement.Base.y,
-                       BaseFence.placement.Placement.Base.z+zOffset)
+        p30=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset)
                 
         newobj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
         objExtr=newobj.extrude(App.Vector(0,2,0))
