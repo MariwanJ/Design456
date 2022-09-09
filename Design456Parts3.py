@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-08 21:10:43'
+__updated__ = '2022-09-09 21:31:26'
 
 
 #TODO : FIXME: 
@@ -93,6 +93,7 @@ class BaseFence:
     def __init__(self, obj,
                  _width=30.00,
                  _height=10.00,
+                 _thickness=2,
                  _sections=10,
                  _connectionWidth=1.00,
                  _sectionWidth=2.00,
@@ -105,8 +106,12 @@ class BaseFence:
         obj.addProperty("App::PropertyLength", "Width", "Fence",
                         "Width of the Fence").Width = _width
         
+                
         obj.addProperty("App::PropertyLength", "Height", "Fence",
                         "Height of the Fence").Height = _height
+
+        obj.addProperty("App::PropertyLength", "Thickness", "Fence",
+                        "Thickness of the Fence").Thickness = _thickness
         
         obj.addProperty("App::PropertyLength", "ConnectionWidth", "Fence",
                         "Connections Width between sections").ConnectionWidth = _connectionWidth
@@ -135,6 +140,7 @@ class BaseFence:
     def oneElementNormalFence(self,Xoffsett,smallWidth):
         CoreStart=(smallWidth-self.SectionWidth)/2
         zOffset=-self.Height/2
+        newobj=None
         #Left side         
         p10=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
                        BaseFence.Placement.Base.y,
@@ -225,9 +231,15 @@ class BaseFence:
         p30=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset)
-                
-        newobj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
-        objExtr=newobj.extrude(App.Vector(0,2,0))
+        
+        if self.Type==0:        
+            newobj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
+        elif self.Type==1:
+            e1=(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19]))
+            e2=(Part.ArcOfCircle(p19,p20,p39))
+            e3=(Part.makePolygon([p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10]))
+            newobj=Part.Face(Part.Wire([e1,e2.toShape(),e3]) )
+        objExtr=newobj.extrude(App.Vector(0,self.Thickness,0))
         return objExtr
     
     def normalFence(self):
@@ -266,10 +278,8 @@ class BaseFence:
     def createObject(self):
         try:
             finalObj=None
-            if self.Type==0:
+            if self.Type==0 or self.Type==1:
                 finalObj=self.normalFence()
-            elif self.Type==1:
-                pass
             elif self.Type==2:
                 pass
             elif self.Type==3:
@@ -290,6 +300,7 @@ class BaseFence:
 
         self.Width = float(obj.Width)        
         self.Height = int(obj.Height)
+        self.Thickness = int(obj.Thickness)
         self.SectionWidth = float(obj.SectionWidth)
         self.Type = int(obj.Type)
         self.BottomDistance = float(obj.BottomDistance)
