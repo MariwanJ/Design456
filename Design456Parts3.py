@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-10 22:06:51'
+__updated__ = '2022-09-10 22:49:02'
 
 
 #TODO : FIXME: 
@@ -101,7 +101,7 @@ class BaseFence:
                  _topDistance=6.00,
                  _sharpLength=1.00,
                  _waveDepth=3.0,
-                 _type=2,
+                 _type=3,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence",
@@ -411,9 +411,17 @@ class BaseFence:
             objs=[]
             offset=0
             obj1=None
-            
-         
-            return obj1.removeSplitter()
+            p1=App.Vector(BaseFence.Placement.Base.x, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)
+            p2=App.Vector(BaseFence.Placement.Base.x, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2)
+            p3=App.Vector(BaseFence.Placement.Base.x+self.Width, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2)
+            p4=App.Vector(BaseFence.Placement.Base.x+self.Width, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)
+            p5=App.Vector(BaseFence.Placement.Base.x+self.Width-self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)            
+            p6=App.Vector(BaseFence.Placement.Base.x+self.Width-self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+self.SectionWidth)
+            p7=App.Vector(BaseFence.Placement.Base.x+self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+self.SectionWidth)
+            p8=App.Vector(BaseFence.Placement.Base.x+self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)            
+            obj1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p5,p6,p7,p8,p1])))
+            objNew=obj1.extrude(App.Vector(0,self.Thickness,0))
+            return objNew.removeSplitter()
     
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
@@ -430,10 +438,9 @@ class BaseFence:
             elif self.Type==2:
                 finalObj=self.wavedFence()
             elif self.Type==3:
-                pass
+                finalObj=self.NetFence()
             elif self.Type==4:
                 pass
-            
             return finalObj
         except Exception as err:
             App.Console.PrintError("'execute Fence' Failed. "
