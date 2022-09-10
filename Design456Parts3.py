@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-10 21:54:20'
+__updated__ = '2022-09-10 22:01:39'
 
 
 #TODO : FIXME: 
@@ -389,7 +389,6 @@ class BaseFence:
                   angels.append(angle*i)
             for i in range(0, self.Sections):
                 offset=(i*smallWidth)
-                print(math.degrees(angels[i]))
                 objs.append(self.oneElementWavedFence(offset,smallWidth,abs(self.waveDepth*math.cos(angels[i]))))
 
             obj1=objs[0]
