@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-10 17:48:16'
+__updated__ = '2022-09-10 21:54:20'
 
 
 #TODO : FIXME: 
@@ -94,15 +94,14 @@ class BaseFence:
                  _width=30.00,
                  _height=10.00,
                  _thickness=2,
-                 _sections=10,
+                 _sections=4,
                  _connectionWidth=1.00,
                  _sectionWidth=2.00,
                  _bottomDistance=1.00,
                  _topDistance=6.00,
                  _sharpLength=1.00,
-                 _subSections=3,
                  _waveDepth=3.0,
-                 _type=0,
+                 _type=2,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence",
@@ -122,9 +121,6 @@ class BaseFence:
 
         obj.addProperty("App::PropertyLength", "SectionWidth", "Sections",
                         "Section Width of the Fence").SectionWidth = _sectionWidth
-
-        obj.addProperty("App::PropertyInteger", "subSections", "Sections",
-                        "Section Width of the Fence").subSections = _subSections
 
         obj.addProperty("App::PropertyLength", "waveDepth", "Sections",
                         "Section Width of the Fence").waveDepth = _waveDepth
@@ -188,18 +184,17 @@ class BaseFence:
         
         p19=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
                        BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-waveOffset+self.Height/2-self.SharpLength)
+                       BaseFence.Placement.Base.z+self.Height/2-self.SharpLength-waveOffset)
         
         p20=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+(self.SectionWidth)/2,
                        BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-waveOffset+self.Height/2)
+                       BaseFence.Placement.Base.z+self.Height/2-waveOffset)
         
         #Right side 
 
-        
         p39=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
                        BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z+self.Height/2-self.SharpLength)
+                       BaseFence.Placement.Base.z+self.Height/2-self.SharpLength-waveOffset)
         
         p38=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
                        BaseFence.Placement.Base.y,
@@ -240,17 +235,13 @@ class BaseFence:
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset)
         
-        if self.Type==0:        
-            newobj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
-        elif self.Type==1:
-            e1=(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19]))
-            e2=(Part.ArcOfCircle(p19,p20,p39))
-            e3=(Part.makePolygon([p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10]))
-            newobj=Part.Face(Part.Wire([e1,e2.toShape(),e3]) )
+ 
+        newobj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
         objExtr=newobj.extrude(App.Vector(0,self.Thickness,0))
         return objExtr
     
-            
+                
+    
     def oneElementNormalFence(self,Xoffsett,smallWidth):
         CoreStart=(smallWidth-self.SectionWidth)/2
         zOffset=-self.Height/2
@@ -381,24 +372,32 @@ class BaseFence:
     def wavedFence(self):
         #Wavy length
         try:
-            smallWidth=self.Width/self.Sections
-            portion=int(smallWidth/self.subSections)
-            
+            smallWidth=self.Width/self.Sections          
             objs=[]
             offset=0
-            obj1=self.oneElementWavedFence(offset,portion)
-            wavePortion=self.waveDepth/self.subSections
-            for j in (1, self.Sections):
-                for i in range(0, self.subSections):
-                    if j==1:
-                        i=1
-                    offset=(j-1*smallWidth)+i*portion
-                    objs.append(self.oneElementWavedFence(offset,portion,wavePortion*i))
-                if(len(objs)>1):
-                    return (obj1.fuse(objs)).removeSplitter()
+            angle=math.radians(180/(self.Sections-1))
+            angels=[]
+            if (self.Sections/2 ==int(self.Sections/2)):
+                for i in range(0,int(self.Sections/2)-1):
+                  angels.append(angle*i)
+                angels.append(angle*self.Sections/2)
+                angels.append(angle*self.Sections/2)
+                for i in range(int(self.Sections/2)+1,self.Sections):
+                  angels.append(angle*i)
+            else:
+                for i in range(0,self.Sections):
+                  angels.append(angle*i)
+            for i in range(0, self.Sections):
+                offset=(i*smallWidth)
+                print(math.degrees(angels[i]))
+                objs.append(self.oneElementWavedFence(offset,smallWidth,abs(self.waveDepth*math.cos(angels[i]))))
+
+            obj1=objs[0]
+            objs.pop(0)  #Remove it from the list to allow fuse without problem
+            if(len(objs)>1):
+                return (obj1.fuse(objs)).removeSplitter()
             else:
                 return obj1.removeSplitter()
-
     
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
@@ -440,7 +439,6 @@ class BaseFence:
         self.SharpLength = float(obj.SharpLength)
         self.ConnectionWidth = float(obj.ConnectionWidth)
         self.Sections = int(obj.Sections)
-        self.subSections=int(obj.subSections)
         self.waveDepth=float(obj.waveDepth)
         #Both distances cannot crosse each other 
         if self.BottomDistance == self.TopDistance or self.BottomDistance > self.TopDistance:
