@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-10 22:01:39'
+__updated__ = '2022-09-10 22:06:51'
 
 
 #TODO : FIXME: 
@@ -405,6 +405,23 @@ class BaseFence:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
  
+    def NetFence(self):
+        try:
+            smallWidth=self.Width/self.Sections          
+            objs=[]
+            offset=0
+            obj1=None
+            
+         
+            return obj1.removeSplitter()
+    
+        except Exception as err:
+            App.Console.PrintError("'createObject Fence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def createObject(self):
         try:
             finalObj=None
