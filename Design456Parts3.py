@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-09 21:31:26'
+__updated__ = '2022-09-10 17:48:16'
 
 
 #TODO : FIXME: 
@@ -100,13 +100,14 @@ class BaseFence:
                  _bottomDistance=1.00,
                  _topDistance=6.00,
                  _sharpLength=1.00,
+                 _subSections=3,
+                 _waveDepth=3.0,
                  _type=0,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence",
                         "Width of the Fence").Width = _width
-        
-                
+                        
         obj.addProperty("App::PropertyLength", "Height", "Fence",
                         "Height of the Fence").Height = _height
 
@@ -116,8 +117,17 @@ class BaseFence:
         obj.addProperty("App::PropertyLength", "ConnectionWidth", "Fence",
                         "Connections Width between sections").ConnectionWidth = _connectionWidth
 
-        obj.addProperty("App::PropertyLength", "SectionWidth", "Fence",
+        obj.addProperty("App::PropertyInteger", "Sections", "Sections",
+                        "Fence type").Sections = _sections
+
+        obj.addProperty("App::PropertyLength", "SectionWidth", "Sections",
                         "Section Width of the Fence").SectionWidth = _sectionWidth
+
+        obj.addProperty("App::PropertyInteger", "subSections", "Sections",
+                        "Section Width of the Fence").subSections = _subSections
+
+        obj.addProperty("App::PropertyLength", "waveDepth", "Sections",
+                        "Section Width of the Fence").waveDepth = _waveDepth
 
         obj.addProperty("App::PropertyLength", "BottomDistance", "Fence",
                         "Connection Bottom distance").BottomDistance = _bottomDistance
@@ -128,15 +138,119 @@ class BaseFence:
         obj.addProperty("App::PropertyLength", "SharpLength", "Fence",
                         "Sharp part length").SharpLength= _sharpLength
         
-        obj.addProperty("App::PropertyInteger", "Sections", "Fence",
-                        "Fence type").Sections = _sections
         
         obj.addProperty("App::PropertyInteger", "Type", "Fence",
                         "Fence base type").Type = _type
         obj.Proxy = self
         BaseFence.placement=obj.Placement
 
+       
+    def oneElementWavedFence(self,Xoffsett,smallWidth,waveOffset):
+        CoreStart=(smallWidth-self.SectionWidth)/2
+        zOffset=-self.Height/2
+        newobj=None
+        #Left side         
+        p10=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset)
+
+        p11=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
+
+        p12=App.Vector(BaseFence.Placement.Base.x+Xoffsett,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
+
+        p13=App.Vector(BaseFence.Placement.Base.x+Xoffsett,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
+
+        p14=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
+
+        p15=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance)
         
+        p16=App.Vector(BaseFence.Placement.Base.x+Xoffsett,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance)
+        
+        p17=App.Vector(BaseFence.Placement.Base.x+Xoffsett,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
+        
+        p18=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
+        
+        p19=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z-waveOffset+self.Height/2-self.SharpLength)
+        
+        p20=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+(self.SectionWidth)/2,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z-waveOffset+self.Height/2)
+        
+        #Right side 
+
+        
+        p39=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.Height/2-self.SharpLength)
+        
+        p38=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
+
+        
+        p37=App.Vector(BaseFence.Placement.Base.x+Xoffsett+smallWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
+        
+        p36=App.Vector(BaseFence.Placement.Base.x+Xoffsett+smallWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance)
+                                
+        p35=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.TopDistance)                                
+                                
+        p34=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
+        
+ 
+        p33=App.Vector(BaseFence.Placement.Base.x+Xoffsett+smallWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
+
+
+        p32=App.Vector(BaseFence.Placement.Base.x+Xoffsett+smallWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
+        
+        p31=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
+        
+        p30=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+zOffset)
+        
+        if self.Type==0:        
+            newobj=Part.Face(Part.Wire(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10])))
+        elif self.Type==1:
+            e1=(Part.makePolygon([p10,p11,p12,p13,p14,p15,p16,p17,p18,p19]))
+            e2=(Part.ArcOfCircle(p19,p20,p39))
+            e3=(Part.makePolygon([p39,p38,p37,p36,p35,p34,p33,p32,p31,p30,p10]))
+            newobj=Part.Face(Part.Wire([e1,e2.toShape(),e3]) )
+        objExtr=newobj.extrude(App.Vector(0,self.Thickness,0))
+        return objExtr
+    
+            
     def oneElementNormalFence(self,Xoffsett,smallWidth):
         CoreStart=(smallWidth-self.SectionWidth)/2
         zOffset=-self.Height/2
@@ -264,9 +378,27 @@ class BaseFence:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
             
-    def TypeOne(self):
+    def wavedFence(self):
+        #Wavy length
         try:
-            return self.normalFence()
+            smallWidth=self.Width/self.Sections
+            portion=int(smallWidth/self.subSections)
+            
+            objs=[]
+            offset=0
+            obj1=self.oneElementWavedFence(offset,portion)
+            wavePortion=self.waveDepth/self.subSections
+            for j in (1, self.Sections):
+                for i in range(0, self.subSections):
+                    if j==1:
+                        i=1
+                    offset=(j-1*smallWidth)+i*portion
+                    objs.append(self.oneElementWavedFence(offset,portion,wavePortion*i))
+                if(len(objs)>1):
+                    return (obj1.fuse(objs)).removeSplitter()
+            else:
+                return obj1.removeSplitter()
+
     
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
@@ -281,7 +413,7 @@ class BaseFence:
             if self.Type==0 or self.Type==1:
                 finalObj=self.normalFence()
             elif self.Type==2:
-                pass
+                finalObj=self.wavedFence()
             elif self.Type==3:
                 pass
             elif self.Type==4:
@@ -308,6 +440,8 @@ class BaseFence:
         self.SharpLength = float(obj.SharpLength)
         self.ConnectionWidth = float(obj.ConnectionWidth)
         self.Sections = int(obj.Sections)
+        self.subSections=int(obj.subSections)
+        self.waveDepth=float(obj.waveDepth)
         #Both distances cannot crosse each other 
         if self.BottomDistance == self.TopDistance or self.BottomDistance > self.TopDistance:
             self.BottomDistance = self.TopDistance -(1.0)
@@ -316,7 +450,6 @@ class BaseFence:
         elif self.TopDistance < self.BottomDistance:
             self.TopDistance = self.BottomDistance + (1.0)
             obj.TopDistance=self.TopDistance
-            
         obj.Shape = self.createObject()
 
 class Design456_Fence:
