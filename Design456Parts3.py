@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-10 22:49:02'
+__updated__ = '2022-09-11 21:51:36'
 
 
 #TODO : FIXME: 
@@ -101,6 +101,7 @@ class BaseFence:
                  _topDistance=6.00,
                  _sharpLength=1.00,
                  _waveDepth=3.0,
+                 _netDistance=0.1,
                  _type=3,
                  ):
 
@@ -134,7 +135,9 @@ class BaseFence:
         obj.addProperty("App::PropertyLength", "SharpLength", "Fence",
                         "Sharp part length").SharpLength= _sharpLength
         
-        
+        obj.addProperty("App::PropertyLength", "NetDistance", "Fence",
+                        "Sharp part length").NetDistance= _netDistance
+
         obj.addProperty("App::PropertyInteger", "Type", "Fence",
                         "Fence base type").Type = _type
         obj.Proxy = self
@@ -411,16 +414,59 @@ class BaseFence:
             objs=[]
             offset=0
             obj1=None
+            '''
+                            p1  p8                              p4                    
+                                                        p5      
+                            
+                                p7                      p6      
+                            p2                                   p3
+            '''
             p1=App.Vector(BaseFence.Placement.Base.x, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)
             p2=App.Vector(BaseFence.Placement.Base.x, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2)
             p3=App.Vector(BaseFence.Placement.Base.x+self.Width, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2)
             p4=App.Vector(BaseFence.Placement.Base.x+self.Width, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)
+            
             p5=App.Vector(BaseFence.Placement.Base.x+self.Width-self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)            
             p6=App.Vector(BaseFence.Placement.Base.x+self.Width-self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+self.SectionWidth)
             p7=App.Vector(BaseFence.Placement.Base.x+self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+self.SectionWidth)
             p8=App.Vector(BaseFence.Placement.Base.x+self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)            
+
+            #Lines will have self.netDistance width and will have space of the same size
+            NrOfNetLines=int(self.Height/(self.NetDistance))
+            
+            TopInnerPointLeft =p8
+            TopInnerPointRight=p5
+
+            BottomInnerPointLeft=p7
+            BottomInnerPointRight=p6
+            oneSeg=[]
+            netObj=[]
+            _height=self.Width-self.SectionWidth*2
+            step=self.NetDistance
+            step1=self.NetDistance*2
+
+            while (_height>step1):
+                oneSeg.clear()
+                
+                oneSeg.append(BottomInnerPointLeft+App.Vector(0,0, step))
+                oneSeg.append(BottomInnerPointLeft+App.Vector(0,0, step1))
+                oneSeg.append(BottomInnerPointLeft+App.Vector(step1,0, 0))
+                oneSeg.append(BottomInnerPointLeft+App.Vector(step,0, 0))
+                
+                # oneSeg.append(BottomInnerPointRight+App.Vector(0,0, step))
+                # oneSeg.append(BottomInnerPointRight+App.Vector(0,0, step1))
+                # oneSeg.append(BottomInnerPointRight+App.Vector(-step,0, 0))
+                # oneSeg.append(BottomInnerPointRight+App.Vector(-step1,0, 0))
+
+                
+                netObj.append(Part.Face(Part.makePolygon([*oneSeg,oneSeg[0]])))
+                print(oneSeg)
+                step=step+self.NetDistance*2
+                step1=step1+self.NetDistance*2
+                
             obj1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p5,p6,p7,p8,p1])))
-            objNew=obj1.extrude(App.Vector(0,self.Thickness,0))
+            allObjects=obj1.fuse(netObj)
+            objNew=allObjects.extrude(App.Vector(0,self.Thickness,0))
             return objNew.removeSplitter()
     
         except Exception as err:
@@ -463,6 +509,7 @@ class BaseFence:
         self.ConnectionWidth = float(obj.ConnectionWidth)
         self.Sections = int(obj.Sections)
         self.waveDepth=float(obj.waveDepth)
+        self.NetDistance=float(obj.NetDistance)
         #Both distances cannot crosse each other 
         if self.BottomDistance == self.TopDistance or self.BottomDistance > self.TopDistance:
             self.BottomDistance = self.TopDistance -(1.0)
