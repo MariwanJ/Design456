@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-11 21:51:36'
+__updated__ = '2022-09-11 22:03:54'
 
 
 #TODO : FIXME: 
@@ -101,7 +101,7 @@ class BaseFence:
                  _topDistance=6.00,
                  _sharpLength=1.00,
                  _waveDepth=3.0,
-                 _netDistance=0.1,
+                 _netDistance=0.5,
                  _type=3,
                  ):
 
@@ -444,12 +444,23 @@ class BaseFence:
             _height=self.Width-self.SectionWidth*2
             step=self.NetDistance
             step1=self.NetDistance*2
-
+            xChange1=0
+            xChange2=0
             while (_height>step1):
                 oneSeg.clear()
-                
-                oneSeg.append(BottomInnerPointLeft+App.Vector(0,0, step))
-                oneSeg.append(BottomInnerPointLeft+App.Vector(0,0, step1))
+                if step<= self.Height:
+                    h1=step
+                else:
+                    h1=self.Height
+                    xChange1=xChange1+self.NetDistance
+                if step1<= self.Height:
+                    h2=step1
+                else:
+                    h2=self.Height
+                    xChange2=xChange2+self.NetDistance*2
+                    
+                oneSeg.append(BottomInnerPointLeft+App.Vector(xChange1,0, h1))
+                oneSeg.append(BottomInnerPointLeft+App.Vector(xChange2,0, h2))
                 oneSeg.append(BottomInnerPointLeft+App.Vector(step1,0, 0))
                 oneSeg.append(BottomInnerPointLeft+App.Vector(step,0, 0))
                 
