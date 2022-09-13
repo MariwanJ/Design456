@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-12 22:11:28'
+__updated__ = '2022-09-13 21:07:29'
 
 
 #TODO : FIXME: 
@@ -448,36 +448,46 @@ class BaseFence:
             xChange2=0
             zChange1=0
             zChange2=0
-            while (_height>=step1 or xChange2<TopInnerPointRight.x):
+            firstTimeL=0
+            firstTimeR=0
+            while (_height>=step1 or xChange2<(TopInnerPointRight.x-self.NetDistance*4)):
                 oneSeg.clear()
-                if step< (self.Height-self.SectionWidth):
+                if step< (self.Height-self.SectionWidth):  #SectionWidth is the width of the frame
+                    #LeftSide is less than the height .. change only the Z
                     h1=step
                     h2=step1
+                    xChange2=xChange1=0    #Just to make clear what values they have
                 else:
+                    #Leftside is more than the height.. keep the max height and move only the X
                     h1=self.Height-self.SectionWidth
-                    xChange1=xChange1+self.NetDistance*2
+                    if firstTimeL==0:
+                        xChange1=xChange1+self.NetDistance
+                        firstTimeL=1
+                    else:
+                        xChange1=xChange1+self.NetDistance*2
                     h2=h1
                     xChange2=xChange1+self.NetDistance
-                    
                     
                 oneSeg.append(BottomInnerPointLeft+App.Vector(xChange1,0, h1))
                 oneSeg.append(BottomInnerPointLeft+App.Vector(xChange2,0, h2))    
                 
                                                   
                 if step1>=TopInnerPointRight.x:
-                    zChange1=zChange1+self.NetDistance*2
-                    zChange2=zChange1+self.NetDistance
-                    oneSeg.append(BottomInnerPointLeft+App.Vector(TopInnerPointRight.x,0, zChange2))
-                    oneSeg.append(BottomInnerPointLeft+App.Vector(TopInnerPointRight.x+self.NetDistance,0, zChange1))
+                    if firstTimeR==0:
+                        zChange2=zChange1+self.NetDistance*2
+                        firstTimeR=1
+                    else:
+                        zChange2=zChange1+self.NetDistance
+                    zChange1=zChange2+self.NetDistance
+                    oneSeg.append(BottomInnerPointRight+App.Vector(self.NetDistance,0, zChange1))
+                    oneSeg.append(BottomInnerPointRight+App.Vector(self.NetDistance,0, zChange2))                
                 else:
-                    oneSeg.append(BottomInnerPointLeft+App.Vector(step1,0, zChange2))
-                    oneSeg.append(BottomInnerPointLeft+App.Vector(step,0, zChange1))
-                print(oneSeg)
-                print("-----------")
-                
+                    oneSeg.append(BottomInnerPointLeft+App.Vector(step1-self.NetDistance,0, zChange1))
+                    oneSeg.append(BottomInnerPointLeft+App.Vector(step-self.NetDistance,0, zChange2))
                 netObj.append(Part.Face(Part.makePolygon([*oneSeg,oneSeg[0]])))
                 step=step+self.NetDistance*2
                 step1=step+self.NetDistance
+
                 
             obj1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p5,p6,p7,p8,p1])))
             allObjects=obj1.fuse(netObj)
