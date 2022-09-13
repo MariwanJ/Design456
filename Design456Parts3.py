@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-13 21:52:51'
+__updated__ = '2022-09-13 22:16:33'
 
 
 #TODO : FIXME: 
@@ -447,6 +447,9 @@ class BaseFence:
             BottomInnerPointRight=p6
             oneSeg=[]
             netObj=[]
+            oneSeg2=[]
+            netObj2=[]
+
             _height=self.Width-self.SectionWidth*2
             step=self.NetDistance
             step1=self.NetDistance*2
@@ -458,6 +461,7 @@ class BaseFence:
             firstTimeR=0
             yExtrude= self.Thickness*self.netThickness
             yOffset=((1-self.netThickness)*self.Thickness)/2
+            #from left to right
             while (_height>=step1 or xChange2<(TopInnerPointRight.x-self.NetDistance*4)):
                 oneSeg.clear()
                 if step< (self.Height-self.SectionWidth):  #SectionWidth is the width of the frame
@@ -497,13 +501,17 @@ class BaseFence:
                 step=step+self.NetDistance*2
                 step1=step+self.NetDistance
 
-            #frame    
-            obj1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p5,p6,p7,p8,p1])))
-            obj1Extruded=obj1.extrude(App.Vector(0,self.Thickness,0))
             f=netObj[0]
             netObj.remove(netObj[0])
-            
             netObjExtruded=(f.fuse(netObj)).extrude(App.Vector(0,yExtrude,0))
+            
+            #TODO : FIXME : ROTATE THIS COPY TO 180 in the center of the object
+            net2=netObjExtruded.copy()
+        
+  
+            #frame
+            obj1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p5,p6,p7,p8,p1])))
+            obj1Extruded=obj1.extrude(App.Vector(0,self.Thickness,0))            
             objNew=obj1Extruded.fuse(netObjExtruded)
             return objNew.removeSplitter()
     
