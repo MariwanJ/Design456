@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-14 21:30:46'
+__updated__ = '2022-09-14 22:17:56'
 
 
 #TODO : FIXME: 
@@ -412,6 +412,22 @@ class BaseFence:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
  
+    def Uniform_X_Formed(self):
+        #this is simpler than other types. a X and = combined together
+        
+        p1=App.Vector(BaseFence.Placement.Base.x,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.BottomDistance)
+        
+        p2=App.Vector(BaseFence.Placement.Base.x,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.TopDistance)
+        Objects=[]
+        pass
+    
+    
+    
+    
     def NetFence(self):
         try:
             smallWidth=self.Width/self.Sections          
