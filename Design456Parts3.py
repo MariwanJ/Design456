@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-14 20:45:47'
+__updated__ = '2022-09-14 21:30:46'
 
 
 #TODO : FIXME: 
@@ -490,6 +490,7 @@ class BaseFence:
                         firstTimeR=1
                     else:
                         zChange2=zChange1+self.NetDistance
+                        
                     zChange1=zChange2+self.NetDistance
                     oneSeg.append(BottomInnerPointRight+App.Vector(self.NetDistance,yOffset, zChange1))
                     oneSeg.append(BottomInnerPointRight+App.Vector(self.NetDistance,yOffset, zChange2))                
@@ -508,20 +509,15 @@ class BaseFence:
                 step=step+self.NetDistance*2
                 step1=step+self.NetDistance       
                  
-            f2=netObj[0]
-            netObj2.remove(netObj2[0])
-            netObjExtruded2=(f2.fuse(netObj2)).extrude(App.Vector(0,yExtrude,0))
             f=netObj[0]
             netObj.remove(netObj[0])
-            netObjExtruded=(f.fuse(netObj)).extrude(App.Vector(0,yExtrude,0))
-
+            netObjExtruded=(f.fuse([*netObj2,*netObj])).extrude(App.Vector(0,yExtrude,0))
   
             #frame
             obj1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p5,p6,p7,p8,p1])))
             obj1Extruded=obj1.extrude(App.Vector(0,self.Thickness,0))            
-            objNew=obj1Extruded.fuse(netObjExtruded2)
-            objNewT=objNew.fuse(netObjExtruded)
-            return objNewT.removeSplitter()
+            objNew=obj1Extruded.fuse(netObjExtruded)
+            return objNew.removeSplitter()
     
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
