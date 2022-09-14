@@ -511,7 +511,7 @@ class BaseFence:
             firstTimeL=0
             firstTimeR=0
             #from right to left
-            while (_height>=step1 or xChange2<(TopInnerPointLeft.x+self.NetDistance*4)):
+            while (_height>=step1 or xChange2>(TopInnerPointLeft.x-self.NetDistance*4)):
                 oneSeg2.clear()
                 if step< (self.Height-self.SectionWidth):  #SectionWidth is the width of the frame
                     #LeftSide is less than the height .. change only the Z
