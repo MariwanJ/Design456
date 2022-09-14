@@ -540,11 +540,11 @@ class BaseFence:
                     else:
                         zChange2=zChange1+self.NetDistance
                     zChange1=zChange2+self.NetDistance
-                    oneSeg2.append(BottomInnerPointLeft+App.Vector(self.NetDistance,yOffset, zChange1))
-                    oneSeg2.append(BottomInnerPointLeft+App.Vector(self.NetDistance,yOffset, zChange2))                
+                    oneSeg2.append(BottomInnerPointRight+App.Vector(self.NetDistance,yOffset, zChange1))
+                    oneSeg2.append(BottomInnerPointRight+App.Vector(self.NetDistance,yOffset, zChange2))                
                 else:
-                    oneSeg2.append(BottomInnerPointRight+App.Vector(step1-self.NetDistance,yOffset, zChange1))
-                    oneSeg2.append(BottomInnerPointRight+App.Vector(step-self.NetDistance,yOffset, zChange2))
+                    oneSeg2.append(BottomInnerPointLeft+App.Vector(step1-self.NetDistance,yOffset, zChange1))
+                    oneSeg2.append(BottomInnerPointLeft+App.Vector(step-self.NetDistance,yOffset, zChange2))
                 #Net shape
                 netObj2.append(Part.Face(Part.makePolygon([*oneSeg2,oneSeg2[0]])))
                 step=step+self.NetDistance*2
