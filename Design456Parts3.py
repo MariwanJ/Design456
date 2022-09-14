@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-13 22:16:33'
+__updated__ = '2022-09-14 20:45:47'
 
 
 #TODO : FIXME: 
@@ -498,75 +498,30 @@ class BaseFence:
                     oneSeg.append(BottomInnerPointLeft+App.Vector(step-self.NetDistance,yOffset, zChange2))
                 #Net shape
                 netObj.append(Part.Face(Part.makePolygon([*oneSeg,oneSeg[0]])))
-                step=step+self.NetDistance*2
-                step1=step+self.NetDistance
 
-            #Reset values
-            step=self.NetDistance
-            step1=self.NetDistance*2
-            xChange1=0
-            xChange2=0
-            zChange1=0
-            zChange2=0
-            firstTimeL=0
-            firstTimeR=0
-            #from right to left
-            while (_height>=step1 or xChange2>(TopInnerPointLeft.x-self.NetDistance*4)):
-                oneSeg2.clear()
-                if step< (self.Height-self.SectionWidth):  #SectionWidth is the width of the frame
-                    #LeftSide is less than the height .. change only the Z
-                    h1=step
-                    h2=step1
-                    xChange2=xChange1=0    #Just to make clear what values they have
-                else:
-                    #Leftside is more than the height.. keep the max height and move only the X
-                    h1=self.Height-self.SectionWidth
-                    if firstTimeL==0:
-                        xChange1=xChange1-self.NetDistance
-                        firstTimeL=1
-                    else:
-                        xChange1=xChange1-self.NetDistance*2
-                    h2=h1
-                    xChange2=xChange1-self.NetDistance
-                    
-                oneSeg2.append(BottomInnerPointRight+App.Vector(xChange1,yOffset, h1))
-                oneSeg2.append(BottomInnerPointRight+App.Vector(xChange2,yOffset, h2))    
-                
-                                                  
-                if step1>=TopInnerPointRight.x:
-                    if firstTimeR==0:
-                        zChange2=zChange1+self.NetDistance*2
-                        firstTimeR=1
-                    else:
-                        zChange2=zChange1+self.NetDistance
-                    zChange1=zChange2+self.NetDistance
-                    oneSeg2.append(BottomInnerPointRight+App.Vector(self.NetDistance,yOffset, zChange1))
-                    oneSeg2.append(BottomInnerPointRight+App.Vector(self.NetDistance,yOffset, zChange2))                
-                else:
-                    oneSeg2.append(BottomInnerPointLeft+App.Vector(step1-self.NetDistance,yOffset, zChange1))
-                    oneSeg2.append(BottomInnerPointLeft+App.Vector(step-self.NetDistance,yOffset, zChange2))
-                #Net shape
+                oneSeg2=oneSeg.copy()
+                for i in range(0,len(oneSeg2)):
+                    pass
+                    oneSeg2[i].x=p3.x- oneSeg[i].x
                 netObj2.append(Part.Face(Part.makePolygon([*oneSeg2,oneSeg2[0]])))
-                step=step+self.NetDistance*2
-                step1=step+self.NetDistance
                 
+                step=step+self.NetDistance*2
+                step1=step+self.NetDistance       
+                 
             f2=netObj[0]
             netObj2.remove(netObj2[0])
             netObjExtruded2=(f2.fuse(netObj2)).extrude(App.Vector(0,yExtrude,0))
-            Part.show(netObjExtruded2)
             f=netObj[0]
             netObj.remove(netObj[0])
             netObjExtruded=(f.fuse(netObj)).extrude(App.Vector(0,yExtrude,0))
-            
-            #TODO : FIXME : ROTATE THIS COPY TO 180 in the center of the object
-            net2=netObjExtruded.copy()
-        
+
   
             #frame
             obj1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p5,p6,p7,p8,p1])))
             obj1Extruded=obj1.extrude(App.Vector(0,self.Thickness,0))            
-            objNew=obj1Extruded.fuse(netObjExtruded)
-            return objNew.removeSplitter()
+            objNew=obj1Extruded.fuse(netObjExtruded2)
+            objNewT=objNew.fuse(netObjExtruded)
+            return objNewT.removeSplitter()
     
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
