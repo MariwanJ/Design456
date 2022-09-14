@@ -501,6 +501,59 @@ class BaseFence:
                 step=step+self.NetDistance*2
                 step1=step+self.NetDistance
 
+            #Reset values
+            step=self.NetDistance
+            step1=self.NetDistance*2
+            xChange1=0
+            xChange2=0
+            zChange1=0
+            zChange2=0
+            firstTimeL=0
+            firstTimeR=0
+            #from right to left
+            while (_height>=step1 or xChange2<(TopInnerPointLeft.x+self.NetDistance*4)):
+                oneSeg2.clear()
+                if step< (self.Height-self.SectionWidth):  #SectionWidth is the width of the frame
+                    #LeftSide is less than the height .. change only the Z
+                    h1=step
+                    h2=step1
+                    xChange2=xChange1=0    #Just to make clear what values they have
+                else:
+                    #Leftside is more than the height.. keep the max height and move only the X
+                    h1=self.Height-self.SectionWidth
+                    if firstTimeL==0:
+                        xChange1=xChange1-self.NetDistance
+                        firstTimeL=1
+                    else:
+                        xChange1=xChange1-self.NetDistance*2
+                    h2=h1
+                    xChange2=xChange1-self.NetDistance
+                    
+                oneSeg2.append(BottomInnerPointRight+App.Vector(xChange1,yOffset, h1))
+                oneSeg2.append(BottomInnerPointRight+App.Vector(xChange2,yOffset, h2))    
+                
+                                                  
+                if step1>=TopInnerPointRight.x:
+                    if firstTimeR==0:
+                        zChange2=zChange1+self.NetDistance*2
+                        firstTimeR=1
+                    else:
+                        zChange2=zChange1+self.NetDistance
+                    zChange1=zChange2+self.NetDistance
+                    oneSeg2.append(BottomInnerPointLeft+App.Vector(self.NetDistance,yOffset, zChange1))
+                    oneSeg2.append(BottomInnerPointLeft+App.Vector(self.NetDistance,yOffset, zChange2))                
+                else:
+                    oneSeg2.append(BottomInnerPointRight+App.Vector(step1-self.NetDistance,yOffset, zChange1))
+                    oneSeg2.append(BottomInnerPointRight+App.Vector(step-self.NetDistance,yOffset, zChange2))
+                #Net shape
+                netObj2.append(Part.Face(Part.makePolygon([*oneSeg2,oneSeg2[0]])))
+                step=step+self.NetDistance*2
+                step1=step+self.NetDistance
+                
+            f2=netObj[0]
+            netObj2.remove(netObj2[0])
+            netObjExtruded2=(f2.fuse(netObj2)).extrude(App.Vector(0,yExtrude,0))
+            Part.show(netObjExtruded2)
             f=netObj[0]
             netObj.remove(netObj[0])
             netObjExtruded=(f.fuse(netObj)).extrude(App.Vector(0,yExtrude,0))
