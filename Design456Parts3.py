@@ -417,11 +417,37 @@ class BaseFence:
         
         p1=App.Vector(BaseFence.Placement.Base.x,
                        BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z+self.BottomDistance)
+                       BaseFence.Placement.Base.z+self.BottomDistance)              #Left-Bottom
         
         p2=App.Vector(BaseFence.Placement.Base.x,
                        BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z+self.TopDistance)
+                       BaseFence.Placement.Base.z+self.TopDistance)                 #Left-top
+        
+        p11=App.Vector(BaseFence.Placement.Base.x+self.Width-self.SectionWidth*2,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.BottomDistance)              #Right-Bottom
+        
+        p21=App.Vector(BaseFence.Placement.Base.x+self.Width-self.SectionWidth*2,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.TopDistance)                 #Rigth-Top
+                
+        p12=App.Vector(BaseFence.Placement.Base.x+self.netThickness,
+                       BaseFence.Placement.Base.y, 
+                       BaseFence.Placement.Base.z+self.BottomDistance)              #Left-Bottom
+        
+        p22=App.Vector(BaseFence.Placement.Base.x+self.netThickness,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.TopDistance)                #Left-Top
+        
+        p13=App.Vector(BaseFence.Placement.Base.x-self.netThickness+self.Width-self.SectionWidth*2,
+                       BaseFence.Placement.Base.y, 
+                       BaseFence.Placement.Base.z+self.BottomDistance)              #Right-Bottom
+        
+        p23=App.Vector(BaseFence.Placement.Base.x-self.netThickness+self.Width-self.SectionWidth*2,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.TopDistance)                 #Right -Top
+        
+        
         Objects=[]
         pass
     
