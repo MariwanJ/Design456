@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-15 22:17:26'
+__updated__ = '2022-09-16 20:40:46'
 
 
 #TODO : FIXME: 
@@ -413,58 +413,36 @@ class BaseFence:
             print(exc_type, fname, exc_tb.tb_lineno)
  
     def Uniform_X_Formed(self):
-
-        
         #this is simpler than other types. a X and = combined together
+        offset=self.Height/2
         
+        Cp1=App.Vector(BaseFence.Placement.Base.x,BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z-offset+self.BottomDistance)            
         
-        Cp1=App.Vector(BaseFence.Placement.Base.x,
-                       BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.BottomDistance)              #Bottom-Left
+        Cp2=App.Vector(Cp1.x+self.NetDistance,Cp1.y,Cp1.z+self.NetDistance)
+        Cp3=App.Vector(Cp1.x+self.Width-self.NetDistance,Cp1.y,Cp1.z+self.NetDistance)
+        Cp4=App.Vector(Cp1.x+self.Width,Cp1.y,Cp1.z)
+        Cp5=App.Vector(Cp1.x,Cp1.y,Cp1.z+self.TopDistance)                                             
+        Cp6=App.Vector(Cp5.x+self.NetDistance,Cp5.y,Cp5.z-self.NetDistance)             
+        Cp7=App.Vector(Cp5.x-self.NetDistance+self.Width,Cp5.y,Cp5.z-self.NetDistance)                             
+        Cp8=App.Vector(Cp5.x+self.Width,Cp5.y,Cp5.z) 
         
-        Cp2=App.Vector(Cp1.x+self.NetDistance,Cp1.y,Cp1.z)
-        Cp3=App.Vector(Cp1.x+self.Width,Cp1.y,Cp1.z+self.NetDistance)
-        Cp4=App.Vector(Cp1.x+-self.NetDistance+self.Width,Cp1.y,Cp1.z+self.NetDistance)
-
-
-        Cp55=App.Vector(Cp1.x,Cp1.y,Cp1.z+self.TopDistance+self.NetDistance)
-
-        Cp56=App.Vector(Cp1.x+self.Width,Cp1.y,Cp1.z+self.TopDistance+self.NetDistance)              #Bottom-Left
-
-        Cp5=App.Vector(BaseFence.Placement.Base.x,
-                       BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.TopDistance)                 #top-Left 1
-        
-        
-        Cp6=App.Vector(BaseFence.Placement.Base.x+self.NetDistance,
-                       BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.TopDistance+self.NetDistance)                #Top-Left 2
-
-
-        Cp7=App.Vector(BaseFence.Placement.Base.x+self.Width,
-                       BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.TopDistance)                 #Top-Right 1      
-        
-             
-        Cp8=App.Vector(BaseFence.Placement.Base.x-self.netThickness+self.Width,
-                       BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.TopDistance)                 #Top-Right 2
-        
-
         '''         
-                    c55                                             c56 
-                Cp5  Cp6                                          Cp7  Cp8
-
-                Cp1  Cp2                                          Cp3  Cp4
+                Cp5                                                Cp8
+                        Cp6                                  Cp7  
+                                                             
+                    
+                     Cp2                                  Cp3      
+                Cp1                                             Cp4
         '''
-        bar1=(Part.Face(Part.Wire(Part.makePolygon([Cp3,Cp7,Cp8,Cp4,Cp3])))).extrude(App.Vector(0,self.Thickness,0))            
-        bar2=(Part.Face(Part.Wire(Part.makePolygon([Cp1,Cp5,Cp6,Cp2,Cp1])))).extrude(App.Vector(0,self.Thickness,0))            
-        bar3=(Part.Face(Part.Wire(Part.makePolygon([Cp1,Cp7,Cp8,Cp2,Cp1])))).extrude(App.Vector(0,self.Thickness,0))            
-        bar4=(Part.Face(Part.Wire(Part.makePolygon([Cp3,Cp5,Cp6,Cp4,Cp3])))).extrude(App.Vector(0,self.Thickness,0))            
-        bar5=(Part.Face(Part.Wire(Part.makePolygon([Cp5,Cp8,Cp56,Cp55,Cp5])))).extrude(App.Vector(0,self.Thickness,0))            
+        bar1=(Part.Face(Part.Wire(Part.makePolygon([Cp1,Cp4,Cp3,Cp2,Cp1])))).extrude(App.Vector(0,self.Thickness,0))            
+        bar2=(Part.Face(Part.Wire(Part.makePolygon([Cp5,Cp6,Cp7,Cp8,Cp5])))).extrude(App.Vector(0,self.Thickness,0))            
+        bar3=(Part.Face(Part.Wire(Part.makePolygon([Cp2,Cp8,Cp7,Cp1,Cp2])))).extrude(App.Vector(0,self.Thickness,0))            
+        bar4=(Part.Face(Part.Wire(Part.makePolygon([Cp5,Cp3,Cp4,Cp6,Cp5])))).extrude(App.Vector(0,self.Thickness,0))            
+   
         obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
         objT=obj1.extrude(App.Vector(0,self.Thickness,0))
-        objNew=objT.fuse([bar1,bar2,bar3,bar4,bar5])
+        objNew=objT.fuse([bar1,bar2,bar3,bar4])
         return objNew.removeSplitter()
 
     
