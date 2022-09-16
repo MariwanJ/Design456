@@ -463,7 +463,7 @@ class BaseFence:
              
         Cp8=App.Vector(BaseFence.Placement.Base.x-self.netThickness+self.Width,
                        BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.TopDistance+self.NetDistance)                 #Top-Right 2
+                       BaseFence.Placement.Base.z-self.Height/2+self.TopDistance)                 #Top-Right 2
         
 
         '''         
