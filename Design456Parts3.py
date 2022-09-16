@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-16 20:40:46'
+__updated__ = '2022-09-16 22:10:23'
 
 
 #TODO : FIXME: 
@@ -103,7 +103,7 @@ class BaseFence:
                  _waveDepth=3.0,
                  _netDistance=0.5,
                  _netThickness=0.80,
-                 _type=4,
+                 _type=5,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence",
@@ -412,6 +412,35 @@ class BaseFence:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
  
+    def holeInBox_oneSegMent(self):
+        holes=[]
+        from random import randrange
+        holesX=int(self.Width/self.Sections)
+        holesZ=int((self.Height-self.SectionWidth))
+        
+        print(holesZ)
+        print(holesX)
+        
+        for j in range(0,holesZ):
+            for i in range(0,holesX):
+            # Part.Ellipse(Center,MajorRadius,MinorRadius)
+                r1=randrange(10)
+                r2=randrange(10)
+                objN=Part.Face(Part.Wire(Part.Ellipse(App.Vector(BaseFence.Placement.Base.x+i,BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+1.05*j)).toShape()
+                             ,r1,r2))
+                Part.show(objN)
+
+                holes.append(objN)
+                
+        objN=(Part.Compound(holes))
+        obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
+        objNew=obj1.fuse(objN)
+        objT=objNew.extrude(App.Vector(0,self.Thickness,0))
+        
+        return objT
+    
+    
+    
     def Uniform_X_Formed(self):
         #this is simpler than other types. a X and = combined together
         offset=self.Height/2
@@ -445,7 +474,8 @@ class BaseFence:
         objNew=objT.fuse([bar1,bar2,bar3,bar4])
         return objNew.removeSplitter()
 
-    
+    def holeInBox(self):
+        return (self.holeInBox_oneSegMent())
     def NetFence(self):
         try:
             smallWidth=self.Width/self.Sections          
@@ -559,6 +589,9 @@ class BaseFence:
                 finalObj=self.NetFence()
             elif self.Type==4:
                 finalObj=self.Uniform_X_Formed()
+            elif self.Type==5:
+                finalObj=self.holeInBox()
+                
             return finalObj
         except Exception as err:
             App.Console.PrintError("'execute Fence' Failed. "
