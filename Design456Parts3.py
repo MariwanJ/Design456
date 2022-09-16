@@ -422,29 +422,14 @@ class BaseFence:
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z-self.Height/2+self.BottomDistance)              #Bottom-Left
         
-        Cp2=App.Vector(BaseFence.Placement.Base.x+self.NetDistance,
-                       BaseFence.Placement.Base.y, 
-                       BaseFence.Placement.Base.z-self.Height/2+self.BottomDistance+self.NetDistance)              #Bottom-Left 2
+        Cp2=App.Vector(Cp1.x+self.NetDistance,Cp1.y,Cp1.z)
+        Cp3=App.Vector(Cp1.x+self.Width,Cp1.y,Cp1.z+self.NetDistance)
+        Cp4=App.Vector(Cp1.x+-self.NetDistance+self.Width,Cp1.y,Cp1.z+self.NetDistance)
 
 
-        Cp3=App.Vector(BaseFence.Placement.Base.x+self.Width,
-                       BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.BottomDistance)              #Bottom-Right 1
+        Cp55=App.Vector(Cp1.x,Cp1.y,Cp1.z+self.TopDistance+self.NetDistance)
 
-
-        Cp4=App.Vector(BaseFence.Placement.Base.x-self.NetDistance+self.Width,
-                       BaseFence.Placement.Base.y, 
-                       BaseFence.Placement.Base.z-self.Height/2+self.BottomDistance+self.NetDistance)              #Bottom-Right 2
-
-
-
-        Cp55=App.Vector(BaseFence.Placement.Base.x,
-                       BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.TopDistance+self.NetDistance)              #Bottom-Left
-
-        Cp56=App.Vector(BaseFence.Placement.Base.x+self.Width,
-                       BaseFence.Placement.Base.y,
-                       BaseFence.Placement.Base.z-self.Height/2+self.TopDistance+self.NetDistance)              #Bottom-Left
+        Cp56=App.Vector(Cp1.x+self.Width,Cp1.y,Cp1.z+self.TopDistance+self.NetDistance)              #Bottom-Left
 
         Cp5=App.Vector(BaseFence.Placement.Base.x,
                        BaseFence.Placement.Base.y,
