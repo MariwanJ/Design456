@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-16 22:10:23'
+__updated__ = '2022-09-17 21:59:29'
 
 
 #TODO : FIXME: 
@@ -413,31 +413,89 @@ class BaseFence:
             print(exc_type, fname, exc_tb.tb_lineno)
  
     def holeInBox_oneSegMent(self):
+        '''
+                            p1  p8                              p4                    
+                                                        p5      
+                            
+                                p7                      p6      
+                            p2                                   p3
+        '''
         holes=[]
         from random import randrange
         holesX=int(self.Width/self.Sections)
         holesZ=int((self.Height-self.SectionWidth))
-        
-        print(holesZ)
-        print(holesX)
-        
+        yOffset=((1-self.netThickness)*self.Thickness)/2
+        yExtrude= self.Thickness*self.netThickness
+        _p1=App.Vector(self.p8.x,self.p8.y+yOffset,self.p8.z)
+        _p2=App.Vector(self.p5.x,self.p5.y+yOffset,self.p5.z)
+        _p3=App.Vector(self.p6.x,self.p6.y+yOffset,self.p6.z)
+        _p4=App.Vector(self.p7.x,self.p7.y+yOffset,self.p7.z)
+        oneSpace=((self.Height-self.SectionWidth)/10)
+        oneSpaceX=(self.Width-self.SectionWidth)/10
+        r=[oneSpace*0.5,oneSpace*0.45,
+           oneSpace*0.25,oneSpace*0.4,
+           oneSpace*0.3,oneSpace*0.22,
+           oneSpace*0.5,oneSpace*0.15,
+           oneSpace*0.25,oneSpace*0.3]        
+        box=Part.Face(Part.Wire(Part.makePolygon([_p1,_p2,_p3,_p4,_p1])))
+        zOffset=(self.Height-self.SectionWidth)/10
+        scale=0.45
+        oneLine=[]
+        nPlc=BaseFence.Placement.copy()
+        nPlc.Rotation.Angle=math.radians(90)
+        nPlc.Rotation.Axis=App.Vector(1,0,0)
         for j in range(0,holesZ):
-            for i in range(0,holesX):
-            # Part.Ellipse(Center,MajorRadius,MinorRadius)
-                r1=randrange(10)
-                r2=randrange(10)
-                objN=Part.Face(Part.Wire(Part.Ellipse(App.Vector(BaseFence.Placement.Base.x+i,BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+1.05*j)).toShape()
-                             ,r1,r2))
-                Part.show(objN)
+            
+            oneLine.append(Part.makeCylinder(0.1,self.Thickness*10,App.Vector(nPlc.Base.x+1*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
+            oneLine.append(Part.makeCylinder(0.25,self.Thickness*10,App.Vector(nPlc.Base.x+2*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
 
-                holes.append(objN)
-                
+            oneLine.append(Part.makeCylinder(0.3,self.Thickness*10,App.Vector(nPlc.Base.x+3*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
+            oneLine.append(Part.makeCylinder(0.2,self.Thickness*10,App.Vector(nPlc.Base.x+4*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
+
+            oneLine.append(Part.makeCylinder(0.34,self.Thickness*10,App.Vector(nPlc.Base.x+5*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
+
+            oneLine.append(Part.makeCylinder(0.2,self.Thickness*10,App.Vector(nPlc.Base.x+6*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
+
+            oneLine.append(Part.makeCylinder(0.36,self.Thickness*10,App.Vector(nPlc.Base.x+7*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
+
+            oneLine.append(Part.makeCylinder(0.19,self.Thickness*10,App.Vector(nPlc.Base.x+8*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
+
+            oneLine.append(Part.makeCylinder(0.3,self.Thickness*10,App.Vector(nPlc.Base.x+9*oneSpaceX,
+                                                nPlc.Base.z-self.Height/2+zOffset*j,
+                                                nPlc.Base.y-self.Thickness*2)))
+
+            
+            mtr1= App.Matrix(  1, 0, 0, 0,
+                                0, scale, 0, 0,
+                                0, 0, 1, 0,
+                                0, 0, 0,  1)
+            for i in range(0,len(oneLine)):
+                oneLine[i]=oneLine[i].transformGeometry(mtr1)
+                oneLine[i].Placement.Rotation=nPlc.Rotation
+                holes.append(oneLine[i])
+            oneLine.clear()
         objN=(Part.Compound(holes))
         obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
-        objNew=obj1.fuse(objN)
-        objT=objNew.extrude(App.Vector(0,self.Thickness,0))
-        
-        return objT
+        objNewT=obj1.extrude(App.Vector(0,self.Thickness,0))
+        boxE=box.extrude(App.Vector(0,yExtrude,0))
+        objNew=objNewT.fuse(boxE.cut(objN))
+        return objNew
     
     
     
