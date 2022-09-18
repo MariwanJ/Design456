@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-18 19:15:25'
+__updated__ = '2022-09-18 20:27:32'
 
 
 #TODO : FIXME: 
@@ -505,10 +505,9 @@ class BaseFence:
             newLine=[]
             for i in range(0,10):
                 newLine.clear()
+                newLine.append(oneLine[j].copy)
                 for j in range(0,10):
-                    newLine.append(oneLine[j].copy)
-                    print(dir(newLine[j])) 
-                    newLine[j].Placement.Base.y=newLine[j].Placement.Base.y+zOffset*i
+                    newLine[i][j].Placement.Base.y=newLine[i][j].Placement.Base.y+zOffset*i
                 holes.append(newLine)
             
             obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
