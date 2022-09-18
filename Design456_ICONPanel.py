@@ -40,7 +40,7 @@ import glob
 
 from functools import partial
 
-__updated__ = '2022-08-13 16:20:47'
+__updated__ = '2022-09-18 19:10:37'
 
 COMMANDS_Basic=[
     ["Design456Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -237,7 +237,7 @@ class PrimitivePartsIconList:
         self.combo.currentTextChanged.connect(self.activeComboItem)
         
         self.scrollArea = QtGui.QScrollArea(self.frmBasicShapes)
-        self.scrollArea.setGeometry(QtCore.QRect(20,80, 280, 500))
+        self.scrollArea.setGeometry(QtCore.QRect(20,80, 280, 420))
         self.scrollArea.setVisible(True)
         self.scrollArea.setFrameShape(QtGui.QFrame.Box)
         self.scrollArea.setObjectName("scrollArea")
