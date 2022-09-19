@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-19 20:12:07'
+__updated__ = '2022-09-19 20:32:45'
 
 
 #TODO : FIXME: 
@@ -503,6 +503,27 @@ class BaseFence:
 
     def holeInBox(self):
         return (self.holeInBox_oneSegMent())
+    
+    def bricksSeg(self):
+            yExtrude= self.Thickness*self.netThickness
+            brickWidth=0.6
+            brickHeight=0.3
+            noOfBricksW=int(self.Width-self.SectionWidth)/brickWidth
+            noOfBricksZ=int(self.Width-self.SectionWidth)/brickHeight
+            for j in range(0,brickHeight):
+                for i in range(0,noOfBricksW):
+            
+            
+            
+            
+            
+            obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
+            objNewT=obj1.extrude(App.Vector(0,self.Thickness,0))
+            boxE=box.extrude(App.Vector(0,yExtrude,0))
+            
+        
+        
+        
     def NetFence(self):
         try:
             smallWidth=self.Width/self.Sections          
@@ -618,6 +639,8 @@ class BaseFence:
                 finalObj=self.Uniform_X_Formed()
             elif self.Type==5:
                 finalObj=self.holeInBox()
+            elif self.Type==6:
+                finalObj=self.bricksSeg()
                 
             return finalObj
         except Exception as err:
