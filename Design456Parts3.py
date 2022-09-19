@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-19 21:46:01'
+__updated__ = '2022-09-19 22:01:59'
 
 
 #TODO : FIXME: 
@@ -506,25 +506,30 @@ class BaseFence:
     
     def bricksSeg(self):
         yExtrude= self.Thickness*self.netThickness
-        brickWidth=0.9
-        brickHeight=0.6
-        noOfBricksW=int((self.Width-2*self.SectionWidth)/brickWidth)
-        noOfBricksZ=int((self.Width-self.SectionWidth)/brickHeight)
+        brickWidth=2
+        brickHeight=1
+        noOfBricksW=int((self.Width-self.SectionWidth)/brickWidth)
+        noOfBricksZ=int((self.Height-self.SectionWidth)/brickHeight)
         b1=self.p7
 
-        
+        print(noOfBricksW)
+        print(noOfBricksZ)
         bricks=[]
         for j in range(1,noOfBricksZ):
             for i in range(1,noOfBricksW):
+                if int(j/2)==j/2:
+                    offset=App.Vector(0,0,0)
+                else:
+                    offset=App.Vector(brickWidth/2,0,0)
                 rightB=App.Vector(i*brickWidth,0,0)
                 leftT=App.Vector(0,0,j*brickHeight)
                 rightT=App.Vector(i*brickWidth,0,j*brickHeight)
-                brick=(Part.Face(Part.Wire(Part.makePolygon([b1,b1+rightB,b1+rightT,b1+leftT,b1]))))
+                brick=(Part.Face(Part.Wire(Part.makePolygon([b1+offset,b1+rightB+offset,b1+rightT+offset,b1+leftT+offset,b1+offset]))))
                 bricks.append(brick.extrude(App.Vector(0,yExtrude,0)))
                 
         obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
         objNewT=obj1.extrude(App.Vector(0,self.Thickness,0))
-        objN=objNewT.fuse(bricks)
+        objN=Part.Compound([objNewT,*bricks])
         return objN
         
     def NetFence(self):
