@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-19 20:32:45'
+__updated__ = '2022-09-19 21:46:01'
 
 
 #TODO : FIXME: 
@@ -103,7 +103,7 @@ class BaseFence:
                  _waveDepth=3.0,
                  _netDistance=0.5,
                  _netThickness=0.80,
-                 _type=5,
+                 _type=6,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence",
@@ -505,30 +505,30 @@ class BaseFence:
         return (self.holeInBox_oneSegMent())
     
     def bricksSeg(self):
-            yExtrude= self.Thickness*self.netThickness
-            brickWidth=0.6
-            brickHeight=0.3
-            noOfBricksW=int(self.Width-self.SectionWidth)/brickWidth
-            noOfBricksZ=int(self.Width-self.SectionWidth)/brickHeight
-            for j in range(0,brickHeight):
-                for i in range(0,noOfBricksW):
-            
-            
-            
-            
-            
-            obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
-            objNewT=obj1.extrude(App.Vector(0,self.Thickness,0))
-            boxE=box.extrude(App.Vector(0,yExtrude,0))
-            
+        yExtrude= self.Thickness*self.netThickness
+        brickWidth=0.9
+        brickHeight=0.6
+        noOfBricksW=int((self.Width-2*self.SectionWidth)/brickWidth)
+        noOfBricksZ=int((self.Width-self.SectionWidth)/brickHeight)
+        b1=self.p7
+
         
-        
+        bricks=[]
+        for j in range(1,noOfBricksZ):
+            for i in range(1,noOfBricksW):
+                rightB=App.Vector(i*brickWidth,0,0)
+                leftT=App.Vector(0,0,j*brickHeight)
+                rightT=App.Vector(i*brickWidth,0,j*brickHeight)
+                brick=(Part.Face(Part.Wire(Part.makePolygon([b1,b1+rightB,b1+rightT,b1+leftT,b1]))))
+                bricks.append(brick.extrude(App.Vector(0,yExtrude,0)))
+                
+        obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
+        objNewT=obj1.extrude(App.Vector(0,self.Thickness,0))
+        objN=objNewT.fuse(bricks)
+        return objN
         
     def NetFence(self):
         try:
-            smallWidth=self.Width/self.Sections          
-            objs=[]
-            offset=0
             obj1=None
             '''
                             p1  p8                              p4                    
@@ -539,10 +539,7 @@ class BaseFence:
             '''
             #Net shapes vertices
             #Lines will have self.netDistance width and will have space of the same size
-            NrOfNetLines=int(self.Height/(self.NetDistance))
-            TopInnerPointLeft =self.p8
             TopInnerPointRight=self.p5
-
             BottomInnerPointLeft=self.p7
             BottomInnerPointRight=self.p6
             oneSeg=[]
@@ -666,8 +663,13 @@ class BaseFence:
         self.waveDepth=float(obj.waveDepth)
         self.NetDistance=float(obj.NetDistance)
         self.netThickness=float(obj.netThickness)
-        
-        
+        '''
+                        p1  p8                              p4                    
+                                                    p5      
+                        
+                            p7                      p6      
+                        p2                                   p3
+        '''
         #Frame shape vertices
         self.p1=App.Vector(BaseFence.Placement.Base.x, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)
         self.p2=App.Vector(BaseFence.Placement.Base.x, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2)
