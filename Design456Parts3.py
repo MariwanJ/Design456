@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-20 20:24:03'
+__updated__ = '2022-09-20 22:20:10'
 
 
 #TODO : FIXME: 
@@ -511,21 +511,26 @@ class BaseFence:
             brickHeight=1
             noOfBricksW=int((self.Width-self.SectionWidth)/brickWidth)
             noOfBricksZ=int((self.Height-self.SectionWidth)/brickHeight)
-            print(noOfBricksW,"noOfBricksW")
-            print("\n")
-            print("noOfBricksZ",noOfBricksZ)
-            print("\n")
-            b1=self.p7
-            bricks=[]                    
-            rightB=App.Vector(brickWidth,0,0)
-            leftT=App.Vector(0,0,brickHeight)
-            rightT=rightB+leftT
-            for j in range(1,noOfBricksZ):
+            bricks=[]
+            yOffset=((1-self.netThickness)*self.Thickness)/2    
+            b1=self.p7+App.Vector(0,yOffset,0)                            
+            for jj in range(1,noOfBricksZ+1):
                 for i in range(1,noOfBricksW):
-                    if int(j/2)==j/2:
+                    if int(jj/2)==jj/2:
                         offset=App.Vector(0,0,0)
                     else:
                         offset=App.Vector(-brickWidth/2,0,0)
+                        
+                    if (i==1 and int(jj/2)!=jj/2):
+                        rightB=App.Vector(brickWidth/2,0,0)
+                        leftT=App.Vector(0,0,brickHeight)
+                        rightT=rightB+leftT
+                        offset=App.Vector(0, 0,0)
+                    else:
+                        rightB=App.Vector(brickWidth,0,0)
+                        leftT=App.Vector(0,0,brickHeight)
+                        rightT=rightB+leftT
+
                     a=[b1+offset,
                        b1+offset+rightB,
                        b1+offset+rightT,
@@ -533,9 +538,16 @@ class BaseFence:
                        b1+offset]
                     brick=Part.Face(Part.Wire(Part.makePolygon(a)))
                     bricks.append(brick.extrude(App.Vector(0,yExtrude,0)))
-                    b1=self.p7+App.Vector(i*brickWidth,0,0)
-                b1=self.p7+App.Vector(0,0,j*brickHeight)
-                print(b1,j,"B1 J")
+                    b1=b1+App.Vector(brickWidth,0,0)
+                if (offset.x==-brickWidth/2):
+                    a=[b1+offset,
+                        b1+offset+App.Vector(brickWidth/2,0,0),
+                        b1+offset+leftT+App.Vector(brickWidth/2,0,0),
+                        b1+offset+leftT,
+                        b1+offset]
+                    brick=Part.Face(Part.Wire(Part.makePolygon(a)))
+                    bricks.append(brick.extrude(App.Vector(0,yExtrude,0)))
+                b1=self.p7+App.Vector(0,0,jj*brickHeight)+App.Vector(0,yOffset,0)   
             obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
             objNewT=obj1.extrude(App.Vector(0,self.Thickness,0))
             objN=Part.Compound([objNewT,*bricks])
