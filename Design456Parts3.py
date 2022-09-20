@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-19 22:01:59'
+__updated__ = '2022-09-20 20:24:03'
 
 
 #TODO : FIXME: 
@@ -505,33 +505,50 @@ class BaseFence:
         return (self.holeInBox_oneSegMent())
     
     def bricksSeg(self):
-        yExtrude= self.Thickness*self.netThickness
-        brickWidth=2
-        brickHeight=1
-        noOfBricksW=int((self.Width-self.SectionWidth)/brickWidth)
-        noOfBricksZ=int((self.Height-self.SectionWidth)/brickHeight)
-        b1=self.p7
-
-        print(noOfBricksW)
-        print(noOfBricksZ)
-        bricks=[]
-        for j in range(1,noOfBricksZ):
-            for i in range(1,noOfBricksW):
-                if int(j/2)==j/2:
-                    offset=App.Vector(0,0,0)
-                else:
-                    offset=App.Vector(brickWidth/2,0,0)
-                rightB=App.Vector(i*brickWidth,0,0)
-                leftT=App.Vector(0,0,j*brickHeight)
-                rightT=App.Vector(i*brickWidth,0,j*brickHeight)
-                brick=(Part.Face(Part.Wire(Part.makePolygon([b1+offset,b1+rightB+offset,b1+rightT+offset,b1+leftT+offset,b1+offset]))))
-                bricks.append(brick.extrude(App.Vector(0,yExtrude,0)))
-                
-        obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
-        objNewT=obj1.extrude(App.Vector(0,self.Thickness,0))
-        objN=Part.Compound([objNewT,*bricks])
-        return objN
+        try:
+            yExtrude= self.Thickness*self.netThickness
+            brickWidth=2
+            brickHeight=1
+            noOfBricksW=int((self.Width-self.SectionWidth)/brickWidth)
+            noOfBricksZ=int((self.Height-self.SectionWidth)/brickHeight)
+            print(noOfBricksW,"noOfBricksW")
+            print("\n")
+            print("noOfBricksZ",noOfBricksZ)
+            print("\n")
+            b1=self.p7
+            bricks=[]                    
+            rightB=App.Vector(brickWidth,0,0)
+            leftT=App.Vector(0,0,brickHeight)
+            rightT=rightB+leftT
+            for j in range(1,noOfBricksZ):
+                for i in range(1,noOfBricksW):
+                    if int(j/2)==j/2:
+                        offset=App.Vector(0,0,0)
+                    else:
+                        offset=App.Vector(-brickWidth/2,0,0)
+                    a=[b1+offset,
+                       b1+offset+rightB,
+                       b1+offset+rightT,
+                       b1+offset+leftT,
+                       b1+offset]
+                    brick=Part.Face(Part.Wire(Part.makePolygon(a)))
+                    bricks.append(brick.extrude(App.Vector(0,yExtrude,0)))
+                    b1=self.p7+App.Vector(i*brickWidth,0,0)
+                b1=self.p7+App.Vector(0,0,j*brickHeight)
+                print(b1,j,"B1 J")
+            obj1=Part.Face(Part.Wire(Part.makePolygon([self.p1,self.p2,self.p3,self.p4,self.p5,self.p6,self.p7,self.p8,self.p1])))
+            objNewT=obj1.extrude(App.Vector(0,self.Thickness,0))
+            objN=Part.Compound([objNewT,*bricks])
+            return objN
         
+        except Exception as err:
+            App.Console.PrintError("'createObject Fence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
+                    
     def NetFence(self):
         try:
             obj1=None
