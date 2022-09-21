@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-20 22:20:10'
+__updated__ = '2022-09-21 20:07:35'
 
 
 #TODO : FIXME: 
@@ -94,9 +94,10 @@ class BaseFence:
                  _width=30.00,
                  _height=10.00,
                  _thickness=2,
+                 _frameWidth=2,
+                 _innerSecWidth=2,
                  _sections=4,
                  _connectionWidth=1.00,
-                 _sectionWidth=2.00,
                  _bottomDistance=1.00,
                  _topDistance=6.00,
                  _sharpLength=1.00,
@@ -115,6 +116,12 @@ class BaseFence:
         obj.addProperty("App::PropertyLength", "Thickness", "Fence",
                         "Thickness of the Fence").Thickness = _thickness
 
+        obj.addProperty("App::PropertyLength", "FrameWidth", "Fence",
+                        "Fence Frame Width").FrameWidth = _frameWidth
+
+        obj.addProperty("App::PropertyLength", "InnerSecWidth", "Fence",
+                        "Fence Inner section Width").InnerSecWidth = _innerSecWidth
+        
         obj.addProperty("App::PropertyLength", "netThickness", "Fence",
                         "Thickness of the Fence").netThickness = _netThickness #This is a percentage of the total thickness
         
@@ -123,9 +130,6 @@ class BaseFence:
 
         obj.addProperty("App::PropertyInteger", "Sections", "Sections",
                         "Fence type").Sections = _sections
-
-        obj.addProperty("App::PropertyLength", "SectionWidth", "Sections",
-                        "Section Width of the Fence").SectionWidth = _sectionWidth
 
         obj.addProperty("App::PropertyLength", "waveDepth", "Sections",
                         "Section Width of the Fence").waveDepth = _waveDepth
@@ -149,7 +153,7 @@ class BaseFence:
 
        
     def oneElementWavedFence(self,Xoffsett,smallWidth,waveOffset):
-        CoreStart=(smallWidth-self.SectionWidth)/2
+        CoreStart=(smallWidth-self.InnerSecWidth)/2
         zOffset=-self.Height/2
         newobj=None
         #Left side         
@@ -193,17 +197,17 @@ class BaseFence:
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+self.Height/2-self.SharpLength-waveOffset)
         
-        p20=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+(self.SectionWidth)/2,
+        p20=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+(self.InnerSecWidth)/2,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+self.Height/2-waveOffset)
         
         #Right side 
 
-        p39=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p39=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+self.Height/2-self.SharpLength-waveOffset)
         
-        p38=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p38=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
 
@@ -216,11 +220,11 @@ class BaseFence:
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.TopDistance)
                                 
-        p35=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p35=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.TopDistance)                                
                                 
-        p34=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p34=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
         
@@ -234,11 +238,11 @@ class BaseFence:
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
         
-        p31=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p31=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
         
-        p30=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p30=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset)
         
@@ -248,9 +252,8 @@ class BaseFence:
         return objExtr
     
                 
-    
     def oneElementNormalFence(self,Xoffsett,smallWidth):
-        CoreStart=(smallWidth-self.SectionWidth)/2
+        CoreStart=(smallWidth-self.InnerSecWidth)/2
         zOffset=-self.Height/2
         newobj=None
         #Left side         
@@ -294,18 +297,17 @@ class BaseFence:
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+self.Height/2-self.SharpLength)
         
-        p20=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+(self.SectionWidth)/2,
+        p20=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+(self.InnerSecWidth)/2,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+self.Height/2)
         
         #Right side 
 
-        
-        p39=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p39=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+self.Height/2-self.SharpLength)
         
-        p38=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p38=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.TopDistance+self.ConnectionWidth)
 
@@ -318,11 +320,11 @@ class BaseFence:
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.TopDistance)
                                 
-        p35=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p35=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.TopDistance)                                
                                 
-        p34=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p34=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.BottomDistance+self.ConnectionWidth)
         
@@ -336,11 +338,11 @@ class BaseFence:
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
         
-        p31=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p31=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset+self.BottomDistance)
         
-        p30=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.SectionWidth,
+        p30=App.Vector(BaseFence.Placement.Base.x+Xoffsett+CoreStart+self.InnerSecWidth,
                        BaseFence.Placement.Base.y,
                        BaseFence.Placement.Base.z+zOffset)
         
@@ -423,7 +425,7 @@ class BaseFence:
         try:
             holes=[]
             from random import randrange
-            holesX=int(self.Width-2*self.SectionWidth)
+            holesX=int(self.Width-2*self.FrameWidth)
             yOffset=((1-self.netThickness)*self.Thickness)/2
             yExtrude= self.Thickness*self.netThickness
             _p1=App.Vector(self.p8.x,self.p8.y+yOffset,self.p8.z)
@@ -435,7 +437,7 @@ class BaseFence:
             nPlc=BaseFence.Placement.copy()
             nPlc.Rotation.Angle=math.radians(90)
             nPlc.Rotation.Axis=App.Vector(1,0,0)
-            total=int((self.Width-2*self.SectionWidth))
+            total=int((self.Width-2*self.FrameWidth))
             if total<1:
                 total=1
             mtr1= App.Matrix(  1, 0, 0, 0,
@@ -449,7 +451,7 @@ class BaseFence:
                         r=0.35
                     else:
                         r=0.25
-                    oneH=(Part.makeCylinder(r,self.Thickness*10,App.Vector(nPlc.Base.x+r*1.5+self.SectionWidth+i,
+                    oneH=(Part.makeCylinder(r,self.Thickness*10,App.Vector(nPlc.Base.x+r*1.5+self.FrameWidth+i,
                                                 nPlc.Base.z-self.Height/2+j*(2),
                                                 nPlc.Base.y-self.Thickness*2)))
                     oneHS=oneH.transformGeometry(mtr1)
@@ -509,13 +511,16 @@ class BaseFence:
             yExtrude= self.Thickness*self.netThickness
             brickWidth=2
             brickHeight=1
-            noOfBricksW=int((self.Width-self.SectionWidth)/brickWidth)
-            noOfBricksZ=int((self.Height-self.SectionWidth)/brickHeight)
+            noOfBricksW=int((self.Width-self.FrameWidth)/brickWidth)
+            noOfBricksZ=int((self.Height-self.FrameWidth)/brickHeight)
             bricks=[]
+            oneMore=0
+            if (self.FrameWidth==1):
+                oneMore=1
             yOffset=((1-self.netThickness)*self.Thickness)/2    
             b1=self.p7+App.Vector(0,yOffset,0)                            
             for jj in range(1,noOfBricksZ+1):
-                for i in range(1,noOfBricksW):
+                for i in range(1,noOfBricksW+oneMore):
                     if int(jj/2)==jj/2:
                         offset=App.Vector(0,0,0)
                     else:
@@ -581,7 +586,7 @@ class BaseFence:
             oneSeg2=[]
             netObj2=[]
 
-            _height=self.Width-self.SectionWidth*2
+            _height=self.Width-self.FrameWidth*2
             step=self.NetDistance
             step1=self.NetDistance*2
             xChange1=0
@@ -595,14 +600,14 @@ class BaseFence:
             #from left to right
             while (_height>=step1 or xChange2<(TopInnerPointRight.x-self.NetDistance*4)):
                 oneSeg.clear()
-                if step< (self.Height-self.SectionWidth):  #SectionWidth is the width of the frame
+                if step< (self.Height-self.FrameWidth):  #FrameWidth is the width of the frame
                     #LeftSide is less than the height .. change only the Z
                     h1=step
                     h2=step1
                     xChange2=xChange1=0    #Just to make clear what values they have
                 else:
                     #Leftside is more than the height.. keep the max height and move only the X
-                    h1=self.Height-self.SectionWidth
+                    h1=self.Height-self.FrameWidth
                     if firstTimeL==0:
                         xChange1=xChange1+self.NetDistance
                         firstTimeL=1
@@ -687,7 +692,6 @@ class BaseFence:
         self.Width = float(obj.Width)        
         self.Height = int(obj.Height)
         self.Thickness = int(obj.Thickness)
-        self.SectionWidth = float(obj.SectionWidth)
         self.Type = int(obj.Type)
         self.BottomDistance = float(obj.BottomDistance)
         self.TopDistance = float(obj.TopDistance)
@@ -697,6 +701,8 @@ class BaseFence:
         self.waveDepth=float(obj.waveDepth)
         self.NetDistance=float(obj.NetDistance)
         self.netThickness=float(obj.netThickness)
+        self.FrameWidth=float(obj.FrameWidth)
+        self.InnerSecWidth= float(obj.InnerSecWidth)
         '''
                         p1  p8                              p4                    
                                                     p5      
@@ -710,10 +716,10 @@ class BaseFence:
         self.p3=App.Vector(BaseFence.Placement.Base.x+self.Width, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2)
         self.p4=App.Vector(BaseFence.Placement.Base.x+self.Width, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)
         
-        self.p5=App.Vector(BaseFence.Placement.Base.x+self.Width-self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)            
-        self.p6=App.Vector(BaseFence.Placement.Base.x+self.Width-self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+self.SectionWidth)
-        self.p7=App.Vector(BaseFence.Placement.Base.x+self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+self.SectionWidth)
-        self.p8=App.Vector(BaseFence.Placement.Base.x+self.SectionWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)            
+        self.p5=App.Vector(BaseFence.Placement.Base.x+self.Width-self.FrameWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)            
+        self.p6=App.Vector(BaseFence.Placement.Base.x+self.Width-self.FrameWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+self.FrameWidth)
+        self.p7=App.Vector(BaseFence.Placement.Base.x+self.FrameWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z-self.Height/2+self.FrameWidth)
+        self.p8=App.Vector(BaseFence.Placement.Base.x+self.FrameWidth, BaseFence.Placement.Base.y,BaseFence.Placement.Base.z+self.Height/2)            
         
         #Both distances cannot crosse each other 
         if self.BottomDistance == self.TopDistance or self.BottomDistance > self.TopDistance:
