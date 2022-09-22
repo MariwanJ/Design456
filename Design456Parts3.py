@@ -518,10 +518,23 @@ class BaseFence:
                             p2                                   p3
         '''
         p1=self.p1
-        p3=p1+App.Vector(0,0,self.Height)
-        p2=p1+App.Vector(self.InnerSecWidth,0,0)
-        p4=p2+App.Vector(0,0,self.Height)
+        pinObj =[]
+        #pins
+        for i in range(0,self.Sections):
+            p1=self.p1+smallWidth*i
+            p2=p1+App.Vector(0,0,self.Height)
+            p3=p1+App.Vector(self.InnerSecWidth,0,0)+App.Vector(0,0,self.Height)
+            p4=p1+App.Vector(self.InnerSecWidth,0,0)
+            pinObj.append(Part.Face(Part.Wire(Part.makePolygon([p1, p2,p3, p4]))))
+
+        #horizontal sections
+        Hp1=App.Vector(BaseFence.Placement.Base.x,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.TopDistance)
         
+        Hp2=App.Vector(BaseFence.Placement.Base.x,
+                       BaseFence.Placement.Base.y,
+                       BaseFence.Placement.Base.z+self.BottomDistance)
         
         pass
     
