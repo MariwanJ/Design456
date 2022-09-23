@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-21 20:26:07'
+__updated__ = '2022-09-23 22:26:15'
 
 
 #TODO : FIXME: 
@@ -104,7 +104,7 @@ class BaseFence:
                  _waveDepth=3.0,
                  _netDistance=0.5,
                  _netThickness=0.80,
-                 _type=6,
+                 _type=7,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence",
@@ -507,24 +507,57 @@ class BaseFence:
         return (self.holeInBox_oneSegMent())
     
     def curvedSection(self):
-        
-        smallWidth=self.Width/self.Sections          
-        obj1=None
-        '''
+        try:
+            smallWidth=self.Width/self.Sections          
+            obj1=None
+            '''
                             p1  p8                              p4                    
                                                         p5      
                             
                                 p7                      p6      
                             p2                                   p3
-        '''
-        p1=self.p1
-        p3=p1+App.Vector(0,0,self.Height)
-        p2=p1+App.Vector(self.InnerSecWidth,0,0)
-        p4=p2+App.Vector(0,0,self.Height)
+            '''
+            np1=self.p2     #Bottom
+            np2=self.p1
+            np3=np1+App.Vector(self.InnerSecWidth,0,0)        #InnerSecWidth is the width of the pins
+            np4=np1+App.Vector(self.InnerSecWidth,0,self.Height)
+            
+            pc1=np1+App.Vector(0,0,self.TopDistance+self.ConnectionWidth/2)            #curve 1_1 point 1
+            pc2=np3+App.Vector(0,0,self.TopDistance+self.ConnectionWidth/2)            #curve 1_1 point 2
+
+            pc11=np1+App.Vector(0,0,self.TopDistance-self.ConnectionWidth/2)            #curve 1_2 point 1
+            pc12=np3+App.Vector(0,0,self.TopDistance-self.ConnectionWidth/2)            #curve 1_2 point 2
+            
+            pc11H=np2+App.Vector(smallWidth/2,0,.1)           #curve 1_2 point 3
+            pc12H=np2-App.Vector(smallWidth/2,0,.1)           #curve 1_2 point 3
+            
+            
+            C1 = Part.Arc(pc1,pc11H, pc2)
+            C2 = Part.Arc(pc11,pc12H, pc12)
+            lin1=Part.makePolygon([pc1,pc11])
+            lin2=Part.makePolygon([pc2,pc12])
+            Part.show(C1.toShape())
+            Part.show(C2.toShape())
+            Part.show(lin1)
+            Part.show(lin2)
+            
+            nObj=[]
+            a=Part.Wire([C1.toShape(),lin1,C2.toShape(),lin2])
+            Part.show(a)
+            nObj.append(a)
+
+            pin1=Part.Face(Part.Wire(Part.makePolygon([np1,np2,np3,np4,np1])))
+            obj1=Part.Compound(nObj)
+            #pin1.fuse(nObj)
+            return obj1 
         
-        
-        pass
-    
+        except Exception as err:
+            App.Console.PrintError("'createObject Fence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+                
     def bricksSeg(self):
         try:
             yExtrude= self.Thickness*self.netThickness

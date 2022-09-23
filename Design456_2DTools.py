@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-08-13 15:25:39'
+__updated__ = '2022-09-22 21:31:17'
 
 
 class Design456_CommonFace:
@@ -178,6 +178,7 @@ class Design456Part_Surface:
             subObj = None
             obj1=None
             obj2=None
+            App.ActiveDocument.openTransaction(translate("Design456", "Surface"))
             if len(s)==1:
                 obj1shp= s[0].SubObjects[0].copy()
                 obj1=App.ActiveDocument.addObject('Part::Feature',"E1")
@@ -204,8 +205,7 @@ class Design456Part_Surface:
                     errMessage = "Select two edges or two wires not Vertex"
                     faced.errorDialog(errMessage)
                     return
-            App.ActiveDocument.openTransaction(
-                translate("Design456", "Surface"))
+
 
             newObj = App.ActiveDocument.addObject(
                 'Part::RuledSurface', 'tempSurface')
