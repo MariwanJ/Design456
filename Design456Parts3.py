@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-23 22:26:15'
+__updated__ = '2022-09-23 22:37:32'
 
 
 #TODO : FIXME: 
@@ -550,7 +550,7 @@ class BaseFence:
             obj1=Part.Compound(nObj)
             #pin1.fuse(nObj)
             return obj1 
-        
+
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
                                    "{err}\n".format(err=str(err)))
