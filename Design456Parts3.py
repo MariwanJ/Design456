@@ -26,20 +26,16 @@ from __future__ import unicode_literals
 # **************************************************************************
 import os
 import sys
-import ImportGui
 import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
-import Draft
 import Part
 from draftutils.translate import translate  # for translate
 import Design456Init
 import FACE_D as faced
-import DraftGeomUtils
 import math
-import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-24 14:15:16'
+__updated__ = '2022-09-24 17:55:25'
 
 
 #TODO : FIXME: 
@@ -98,8 +94,8 @@ class BaseFence:
                  _innerSecWidth=2,
                  _sections=4,
                  _connectionWidth=1.00,
-                 _bottomDistance=1.00,
-                 _topDistance=6.00,
+                 _bottomDistance=2.00,
+                 _topDistance=8.00,
                  _sharpLength=1.00,
                  _waveDepth=3.0,
                  _netDistance=0.5,
@@ -117,16 +113,16 @@ class BaseFence:
                         "Thickness of the Fence").Thickness = _thickness
 
         obj.addProperty("App::PropertyLength", "FrameWidth", "Fence Widths",
-                        "Fence Frame Width").FrameWidth = _frameWidth
+                        "Fence Frame Width").FrameWidth = _frameWidth               # X axis
 
         obj.addProperty("App::PropertyLength", "InnerSecWidth", "Fence Widths",
-                        "Fence Inner section Width").InnerSecWidth = _innerSecWidth
+                        "Fence Inner section Width").InnerSecWidth = _innerSecWidth  # X axis  
         
         obj.addProperty("App::PropertyLength", "netThickness", "Fence Thicknesses",
                         "Thickness of the Fence").netThickness = _netThickness #This is a percentage of the total thickness
         
         obj.addProperty("App::PropertyLength", "ConnectionWidth", "Fence Widths",
-                        "Connections Width between sections").ConnectionWidth = _connectionWidth
+                        "Connections Width between sections").ConnectionWidth = _connectionWidth    # Z axis
 
         obj.addProperty("App::PropertyInteger", "Sections", "Sections",
                         "Fence type").Sections = _sections
@@ -506,32 +502,27 @@ class BaseFence:
     def holeInBox(self):
         return (self.holeInBox_oneSegMent())
     
-    def curvedSection(self):
+    def curvedSectionSeg(self,sec):
         try:
             yExtrude=self.Thickness*self.netThickness
-            smallWidth=self.Width/self.Sections          
+            smallWidth=self.Width/self.Sections
+            if (sec!=0):          
+                offset=App.Vector((smallWidth)*sec,0,0)
+            else:
+                offset=App.Vector(smallWidth*sec,0,0)
+                
             obj1=None
-            '''
-                            p1  p8                              p4                    
-                                                        p5      
-                            
-                                p7                      p6      
-                            p2                                   p3
-            '''
             #Left pin            
-            np1=self.p2     #Bottom left
-            np2=self.p1     #Top left
-            np3=np1+App.Vector(self.InnerSecWidth,0,0)        #InnerSecWidth is the width of the pins
-            np4=np2+App.Vector(self.InnerSecWidth,0,0)
+            np1=offset+self.p2     #Bottom left
+            np2=offset+self.p1     #Top left
+            np3=np1+App.Vector(self.FrameWidth,0,0)        #InnerSecWidth is the width of the pins
+            np4=np2+App.Vector(self.FrameWidth,0,0)
             
             #Right pin            
-            np5=np1+App.Vector(self.InnerSecWidth,0,0)
-            np6=np1+App.Vector(self.InnerSecWidth,0,0)
-            np7=np1+App.Vector(self.InnerSecWidth,0,0)
-            np8=np1+App.Vector(self.InnerSecWidth,0,0)
-            
-            
-            
+            np5=np1+App.Vector(smallWidth-self.FrameWidth,0,0)
+            np6=np2+App.Vector(smallWidth-self.FrameWidth,0,0)
+            np7=np3+App.Vector(smallWidth-self.FrameWidth,0,0)
+            np8=np4+App.Vector(smallWidth-self.FrameWidth,0,0)
             
             apc1=np1+App.Vector(0,0,self.TopDistance)                         #left point
             apc2=apc1+App.Vector(smallWidth/2,0,self.ConnectionWidth/2)       #middle point
@@ -566,12 +557,11 @@ class BaseFence:
             eOBJ=bnObj.fuse(anObj).extrude(App.Vector(0,yExtrude,0))
 
             pin1=Part.Face(Part.Wire(Part.makePolygon([np1,np2,np4,np3,np1])))
-            pin2=Part.Face(Part.Wire(Part.makePolygon([np5,np6,np7,np8,np5])))
+            pin2=Part.Face(Part.Wire(Part.makePolygon([np5,np6,np8,np7,np5])))
             
             epin1=pin1.extrude(App.Vector(0,self.Thickness,0))
             epin2=pin2.extrude(App.Vector(0,self.Thickness,0))
-            
-            nObj=epin1.fuse([eOBJ,epin2])         
+            nObj=epin1.fuse([eOBJ,epin2]).removeSplitter()         
             return nObj 
 
         except Exception as err:
@@ -580,7 +570,16 @@ class BaseFence:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-                
+            
+    def curvedSection(self):
+        allOBJ=[]
+        for i in range (0,self.Sections):
+            allOBJ.append(self.curvedSectionSeg(i))
+        
+        first=allOBJ[0]
+        allOBJ.pop(0)
+        return first.fuse(allOBJ)
+    
     def bricksSeg(self):
         try:
             yExtrude= self.Thickness*self.netThickness
@@ -764,7 +763,6 @@ class BaseFence:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def execute(self, obj):
-
 
         self.Width = float(obj.Width)        
         self.Height = int(obj.Height)
