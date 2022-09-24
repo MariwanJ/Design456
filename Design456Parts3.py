@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-23 22:37:32'
+__updated__ = '2022-09-24 14:15:16'
 
 
 #TODO : FIXME: 
@@ -107,25 +107,25 @@ class BaseFence:
                  _type=7,
                  ):
 
-        obj.addProperty("App::PropertyLength", "Width", "Fence",
+        obj.addProperty("App::PropertyLength", "Width", "Fence Widths",
                         "Width of the Fence").Width = _width
                         
         obj.addProperty("App::PropertyLength", "Height", "Fence",
                         "Height of the Fence").Height = _height
 
-        obj.addProperty("App::PropertyLength", "Thickness", "Fence",
+        obj.addProperty("App::PropertyLength", "Thickness", "Fence Thicknesses",
                         "Thickness of the Fence").Thickness = _thickness
 
-        obj.addProperty("App::PropertyLength", "FrameWidth", "Fence",
+        obj.addProperty("App::PropertyLength", "FrameWidth", "Fence Widths",
                         "Fence Frame Width").FrameWidth = _frameWidth
 
-        obj.addProperty("App::PropertyLength", "InnerSecWidth", "Fence",
+        obj.addProperty("App::PropertyLength", "InnerSecWidth", "Fence Widths",
                         "Fence Inner section Width").InnerSecWidth = _innerSecWidth
         
-        obj.addProperty("App::PropertyLength", "netThickness", "Fence",
+        obj.addProperty("App::PropertyLength", "netThickness", "Fence Thicknesses",
                         "Thickness of the Fence").netThickness = _netThickness #This is a percentage of the total thickness
         
-        obj.addProperty("App::PropertyLength", "ConnectionWidth", "Fence",
+        obj.addProperty("App::PropertyLength", "ConnectionWidth", "Fence Widths",
                         "Connections Width between sections").ConnectionWidth = _connectionWidth
 
         obj.addProperty("App::PropertyInteger", "Sections", "Sections",
@@ -440,7 +440,7 @@ class BaseFence:
             total=int((self.Width-2*self.FrameWidth))
             if total<1:
                 total=1
-            mtr1= App.Matrix(  1, 0, 0, 0,
+            mtr1= App.Matrix(1, 0, 0, 0,
                                     0, scale, 0, 0,
                                     0, 0, 1, 0,
                                     0, 0, 0,  1)
@@ -508,6 +508,7 @@ class BaseFence:
     
     def curvedSection(self):
         try:
+            yExtrude=self.Thickness*self.netThickness
             smallWidth=self.Width/self.Sections          
             obj1=None
             '''
@@ -517,39 +518,61 @@ class BaseFence:
                                 p7                      p6      
                             p2                                   p3
             '''
-            np1=self.p2     #Bottom
-            np2=self.p1
+            #Left pin            
+            np1=self.p2     #Bottom left
+            np2=self.p1     #Top left
             np3=np1+App.Vector(self.InnerSecWidth,0,0)        #InnerSecWidth is the width of the pins
-            np4=np1+App.Vector(self.InnerSecWidth,0,self.Height)
+            np4=np2+App.Vector(self.InnerSecWidth,0,0)
             
-            pc1=np1+App.Vector(0,0,self.TopDistance+self.ConnectionWidth/2)            #curve 1_1 point 1
-            pc2=np3+App.Vector(0,0,self.TopDistance+self.ConnectionWidth/2)            #curve 1_1 point 2
+            #Right pin            
+            np5=np1+App.Vector(self.InnerSecWidth,0,0)
+            np6=np1+App.Vector(self.InnerSecWidth,0,0)
+            np7=np1+App.Vector(self.InnerSecWidth,0,0)
+            np8=np1+App.Vector(self.InnerSecWidth,0,0)
+            
+            
+            
+            
+            apc1=np1+App.Vector(0,0,self.TopDistance)                         #left point
+            apc2=apc1+App.Vector(smallWidth/2,0,self.ConnectionWidth/2)       #middle point
+            apc3=apc1+App.Vector(smallWidth,0,0)                              #right point
 
-            pc11=np1+App.Vector(0,0,self.TopDistance-self.ConnectionWidth/2)            #curve 1_2 point 1
-            pc12=np3+App.Vector(0,0,self.TopDistance-self.ConnectionWidth/2)            #curve 1_2 point 2
-            
-            pc11H=np2+App.Vector(smallWidth/2,0,.1)           #curve 1_2 point 3
-            pc12H=np2-App.Vector(smallWidth/2,0,.1)           #curve 1_2 point 3
-            
-            
-            C1 = Part.Arc(pc1,pc11H, pc2)
-            C2 = Part.Arc(pc11,pc12H, pc12)
-            lin1=Part.makePolygon([pc1,pc11])
-            lin2=Part.makePolygon([pc2,pc12])
-            Part.show(C1.toShape())
-            Part.show(C2.toShape())
-            Part.show(lin1)
-            Part.show(lin2)
-            
-            nObj=[]
-            a=Part.Wire([C1.toShape(),lin1,C2.toShape(),lin2])
-            Part.show(a)
-            nObj.append(a)
+            #Upper side
+            apc11=apc1-App.Vector(0,0,self.ConnectionWidth/2)                 #left point upper curve
+            apc12=apc2-App.Vector(0,0,self.ConnectionWidth*2 )                #middle point upper curve
+            apc13=apc3-App.Vector(0,0,self.ConnectionWidth/2)                 #right point upper curve
+           
+            aC11 = Part.Arc(apc1,apc2, apc3)                                    #curve upp TOP DISTANCE
+            aC12 = Part.Arc(apc13,apc12, apc11)                                 #curve down TOP DISTANCE
+            alin11=Part.makePolygon([apc1,apc11])                              #Line left between curves
+            alin12=Part.makePolygon([apc3,apc13])                              #Line right between curves
+            anObj=Part.Face(Part.Wire([aC11.toShape(),alin11,aC12.toShape(),alin12]))
 
-            pin1=Part.Face(Part.Wire(Part.makePolygon([np1,np2,np3,np4,np1])))
-            obj1=Part.Compound(nObj)
-            #pin1.fuse(nObj)
-            return obj1 
+            #Lower side
+            bpc1=np1+App.Vector(0,0,self.BottomDistance)                        #left point
+            bpc2=bpc1+App.Vector(smallWidth/2,0,self.ConnectionWidth/2)       #middle point
+            bpc3=bpc1+App.Vector(smallWidth,0,0)                              #right point
+            
+            #Upper side
+            bpc11=bpc1-App.Vector(0,0,self.ConnectionWidth/2)                 #left point upper curve
+            bpc12=bpc2-App.Vector(0,0,self.ConnectionWidth*2 )                #middle point upper curve
+            bpc13=bpc3-App.Vector(0,0,self.ConnectionWidth/2)                 #right point upper curve
+           
+            bC11 = Part.Arc(bpc1,bpc2, bpc3)                                    #curve upp TOP DISTANCE
+            bC12 = Part.Arc(bpc13,bpc12, bpc11)                                 #curve down TOP DISTANCE
+            blin11=Part.makePolygon([bpc1,bpc11])                              #Line left between curves
+            blin12=Part.makePolygon([bpc3,bpc13])                              #Line right between curves
+            bnObj=Part.Face(Part.Wire([bC11.toShape(),blin11,bC12.toShape(),blin12]))
+            eOBJ=bnObj.fuse(anObj).extrude(App.Vector(0,yExtrude,0))
+
+            pin1=Part.Face(Part.Wire(Part.makePolygon([np1,np2,np4,np3,np1])))
+            pin2=Part.Face(Part.Wire(Part.makePolygon([np5,np6,np7,np8,np5])))
+            
+            epin1=pin1.extrude(App.Vector(0,self.Thickness,0))
+            epin2=pin2.extrude(App.Vector(0,self.Thickness,0))
+            
+            nObj=epin1.fuse([eOBJ,epin2])         
+            return nObj 
 
         except Exception as err:
             App.Console.PrintError("'createObject Fence' Failed. "
