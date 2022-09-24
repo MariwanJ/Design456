@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-24 20:18:16'
+__updated__ = '2022-09-24 22:02:03'
 
 
 #TODO : FIXME: 
@@ -744,8 +744,28 @@ class BaseFence:
         objN=None
         yExtrude= self.Thickness*self.netThickness
         smallWidth=self.Width/self.Sections
+        '''
+                        p1  p4                      p8   p5                    
+                                                          
+                        
+                                                        
+                        p2  p3                      p7   p6
+        '''        
+        p1=self.p1
+        p2=self.p2
+        p3=self.p2+App.Vector(self.FrameWidth,0,0)
+        p4=self.p1+App.Vector(self.FrameWidth,0,0)
         
+        p5=p1+App.Vector(smallWidth,0,0)
+        p6=p2+App.Vector(smallWidth,0,0)
+        p7=p6+App.Vector(self.FrameWidth,0,0)
+        p8=p5-App.Vector(self.FrameWidth,0,0)
+        
+        pin1=Part.Face(Part.Wire(Part.makePolygon(p1,p2,p3,p4,p1)))
+        pin2=Part.Face(Part.Wire(Part.makePolygon(p5,p6,p7,p8,p5)))
 
+        pin1x=Part.Face(Part.Wire(Part.makePolygon(p1,p4,p6,p7,p1)))
+        pin1y=Part.Face(Part.Wire(Part.makePolygon()))
         
     def MultiXSections(self):
         objNew=[]
