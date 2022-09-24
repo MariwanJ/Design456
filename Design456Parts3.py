@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-24 18:29:21'
+__updated__ = '2022-09-24 20:18:16'
 
 
 #TODO : FIXME: 
@@ -505,6 +505,7 @@ class BaseFence:
     def curvedSectionSeg(self,sec):
         try:
             yExtrude=self.Thickness*self.netThickness
+            yOffset=((1-self.netThickness)*self.Thickness)/2
             smallWidth=self.Width/self.Sections
             if (sec!=0):          
                 offset=App.Vector((smallWidth)*sec,0,0)
@@ -524,11 +525,13 @@ class BaseFence:
             np7=np3+App.Vector(smallWidth-self.FrameWidth,0,0)
             np8=np4+App.Vector(smallWidth-self.FrameWidth,0,0)
             
-            apc1=np1+App.Vector(0,0,self.TopDistance)                         #left point
+            #upper side            
+            #First Curve - upp
+            apc1=np1+App.Vector(0,yOffset,self.TopDistance)                         #left point
             apc2=apc1+App.Vector(smallWidth/2,0,self.ConnectionWidth/2)       #middle point
             apc3=apc1+App.Vector(smallWidth,0,0)                              #right point
 
-            #Upper side
+            #second curve - upp
             apc11=apc1-App.Vector(0,0,self.ConnectionWidth/2)                 #left point upper curve
             apc12=apc2-App.Vector(0,0,self.ConnectionWidth*2 )                #middle point upper curve
             apc13=apc3-App.Vector(0,0,self.ConnectionWidth/2)                 #right point upper curve
@@ -539,8 +542,9 @@ class BaseFence:
             alin12=Part.makePolygon([apc3,apc13])                              #Line right between curves
             anObj=Part.Face(Part.Wire([aC11.toShape(),alin11,aC12.toShape(),alin12]))
 
+
             #Lower side
-            bpc1=np1+App.Vector(0,0,self.BottomDistance)                        #left point
+            bpc1=np1+App.Vector(0,yOffset,self.BottomDistance)                        #left point
             bpc2=bpc1+App.Vector(smallWidth/2,0,self.ConnectionWidth/2)       #middle point
             bpc3=bpc1+App.Vector(smallWidth,0,0)                              #right point
             
@@ -735,7 +739,24 @@ class BaseFence:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+    
+    def MultiXSectionsSeg(self,seg):
+        objN=None
+        yExtrude= self.Thickness*self.netThickness
+        smallWidth=self.Width/self.Sections
+        
+
+        
+    def MultiXSections(self):
+        objNew=[]
+        for i in range(self.Sections):
+            objNew.append(self.MultiXSectionsSeg(i))
+        first=objNew[0]
+        objNew.pop[0]
+        
+        return (first.fuse(objNew).removeSplitter())
+
+
     def createObject(self):
         try:
             finalObj=None
@@ -753,6 +774,9 @@ class BaseFence:
                 finalObj=self.bricksSeg()
             elif self.Type==7:
                 finalObj=self.curvedSection()
+            elif self.Type==8:
+                finalObj=self.MultiXSections()
+                
                 
             return finalObj
         except Exception as err:
