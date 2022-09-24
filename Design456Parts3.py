@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-24 17:55:25'
+__updated__ = '2022-09-24 18:29:21'
 
 
 #TODO : FIXME: 
@@ -515,7 +515,7 @@ class BaseFence:
             #Left pin            
             np1=offset+self.p2     #Bottom left
             np2=offset+self.p1     #Top left
-            np3=np1+App.Vector(self.FrameWidth,0,0)        #InnerSecWidth is the width of the pins
+            np3=np1+App.Vector(self.FrameWidth,0,0)        
             np4=np2+App.Vector(self.FrameWidth,0,0)
             
             #Right pin            
