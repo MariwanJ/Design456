@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-25 12:46:31'
+__updated__ = '2022-09-25 22:22:24'
 
 
 #TODO : FIXME: 
@@ -90,7 +90,7 @@ class BaseFence:
                  _width=30.00,
                  _height=10.00,
                  _thickness=2,
-                 _frameWidth=2,
+                 _frameWidth=2,             #Out side frame
                  _innerSecWidth=2,
                  _sections=4,
                  _connectionWidth=1.00,
@@ -141,13 +141,13 @@ class BaseFence:
         
         obj.addProperty("App::PropertyLength", "NetDistance", "Fence",
                         "Sharp part length").NetDistance= _netDistance
-
+        
         obj.addProperty("App::PropertyInteger", "Type", "Fence",
                         "Fence base type").Type = _type
         obj.Proxy = self
         BaseFence.placement=obj.Placement
 
-    #type 0
+    #type 0 &1
     def oneElementNormalFence(self,Xoffsett,smallWidth):
         CoreStart=(smallWidth-self.InnerSecWidth)/2
         zOffset=-self.Height/2
@@ -252,7 +252,7 @@ class BaseFence:
         objExtr=newobj.extrude(App.Vector(0,self.Thickness,0))
         return objExtr
     
-    #Type 0
+    #Type 0&1
     def normalFence(self):
         obj1=None
         try:
@@ -274,51 +274,7 @@ class BaseFence:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-    #Type 1
-    def MultiXSectionsSeg(self,seg):
-        objN=None
-        yExtrude= self.Thickness*self.netThickness
-        smallWidth=self.Width/self.Sections
-        '''
-                        p1  p4                      p8   p5                    
-                                                          
-                        
-                                                        
-                        p2  p3                      p7   p6
-        '''        
-        p1=self.p1
-        p2=self.p2
-        p3=self.p2+App.Vector(self.FrameWidth,0,0)
-        p4=self.p1+App.Vector(self.FrameWidth,0,0)
-        p33=p3+App.Vector(0,0,self.NetDistance)
-        p44=p4+App.Vector(0,0,self.NetDistance)
-        
-        p5=p1+App.Vector(smallWidth,0,0)
-        p6=p2+App.Vector(smallWidth,0,0)
-        p7=p6+App.Vector(self.FrameWidth,0,0)
-        p8=p5-App.Vector(self.FrameWidth,0,0)
-        p77=p7-App.Vector(0,0,self.self.NetDistance)
-        p88=p8-App.Vector(0,0,self.self.NetDistance)
-        
-        pin1=Part.Face(Part.Wire(Part.makePolygon(p1,p2,p3,p4,p1)))
-        pin2=Part.Face(Part.Wire(Part.makePolygon(p5,p6,p7,p8,p5)))
-
-        pin1x=Part.Face(Part.Wire(Part.makePolygon([p1,p44,p6,p77,p1])))
-        pin1y=Part.Face(Part.Wire(Part.makePolygon([p88,p5,p33,p2,p88])))
-        Part.Compound([pin1,pin2,pin1x,pin1y])
-    
-    #Type 1    
-    def MultiXSections(self):
-        objNew=[]
-        if self.Sections>1:
-                
-            for i in range(self.Sections):
-                objNew.append(self.MultiXSectionsSeg(i))
-            first=objNew[0]
-            objNew.pop[0]
-            return (first.fuse(objNew).removeSplitter())
-        else:
-            return (self.MultiXSectionsSeg(1))        
+  
                
     #Type 2
     def wavedFence(self):
@@ -356,7 +312,7 @@ class BaseFence:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-    #Type 1
+    #Type 2
     def oneElementWavedFence(self,Xoffsett,smallWidth,waveOffset):
         CoreStart=(smallWidth-self.InnerSecWidth)/2
         zOffset=-self.Height/2
@@ -614,6 +570,7 @@ class BaseFence:
             total=int((self.Width-2*self.FrameWidth))
             if total<1:
                 total=1
+            # Scale in one direction
             mtr1= App.Matrix(1, 0, 0, 0,
                                     0, scale, 0, 0,
                                     0, 0, 1, 0,
@@ -782,6 +739,7 @@ class BaseFence:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
     #Type 7
+    
     def curvedSection(self):
         allOBJ=[]
         for i in range (0,self.Sections):
@@ -790,18 +748,89 @@ class BaseFence:
         first=allOBJ[0]
         allOBJ.pop(0)
         return first.fuse(allOBJ)
+    
+    #Type 8
+    def MultiXSectionsSeg(self,seg):
+        try:
+            
+            objN=None
+            yExtrude= self.Thickness*self.netThickness
+            yOffset=((1-self.netThickness)*self.Thickness)/2
+            smallWidth=(self.Width-(self.FrameWidth*(self.Sections-1)))/(self.Sections)
+            xOffset=App.Vector(seg*(smallWidth-self.FrameWidth),0,0)
 
+            '''
+                            p1  p4                      p8   p5                    
+                                p44                     p88    
+                            
+                                p33                     p77       
+                            p2  p3                      p7   p6
+            '''        
+            p1=self.p1+xOffset
+            p2=self.p2+xOffset
+            p3=p2+App.Vector(self.FrameWidth,0,0)
+            p4=p1+App.Vector(self.FrameWidth,0,0)
+            
+            p5=p1+App.Vector(smallWidth,0,0)
+            p6=p2+App.Vector(smallWidth,0,0)
+            p7=p6-App.Vector(self.FrameWidth,0,0)
+            p8=p5-App.Vector(self.FrameWidth,0,0)
+            
+            barP1=p4-App.Vector(self.NetDistance,0,0) +App.Vector(0,yOffset,0)
+            barP2=p4+App.Vector(0,yOffset,0)
+            barP3=p7+App.Vector(self.NetDistance,0,0)+App.Vector(0,yOffset,0)
+            barP4=p7+App.Vector(0,yOffset,0)
 
+            barP5=p3-App.Vector(self.NetDistance,0,0)+App.Vector(0,yOffset,0)
+            barP6=p3+App.Vector(0,yOffset,0)
+            barP7=p8+App.Vector(self.NetDistance,0,0)+App.Vector(0,yOffset,0)
+            barP8=p8+App.Vector(0,yOffset,0)
+            
+            pin1=Part.Face(Part.Wire(Part.makePolygon([p1,p2,p3,p4,p1])))
+            pin2=Part.Face(Part.Wire(Part.makePolygon([p8,p7,p6,p5,p8])))
 
+            pin1x=Part.Face(Part.Wire(Part.makePolygon( [barP1,barP2,barP3,barP4,barP1] )))
+            pin1y=Part.Face(Part.Wire(Part.makePolygon( [barP5,barP6,barP7,barP8,barP5] )))
+            innerPart=(pin1x.fuse(pin1y)).extrude(App.Vector(0,yExtrude,0))
+            frame=(pin1.fuse(pin2)).extrude(App.Vector(0,self.Thickness,0))
+            finalObj=frame.fuse(innerPart)
+            return finalObj
 
+        except Exception as err:
+            App.Console.PrintError("'execute Fence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+    
+    #Type 8
+    def MultiXSections(self):
+        try:
+            objNew=[]
+            if self.Sections>1:
+                for i in range(self.Sections):
+                    objNew.append(self.MultiXSectionsSeg(i))
+                first=objNew[0]
+                if len(objNew)>2:
+                    objNew.pop(0)
+                else:
+                    return objNew[0]
+                return (first.fuse(objNew).removeSplitter())
+            else:
+                return (self.MultiXSectionsSeg(1))      
+        except Exception as err:
+            App.Console.PrintError("'execute Fence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+                
     def createObject(self):
         try:
             finalObj=None
             if self.Type==0 or self.Type==1:
                 finalObj=self.normalFence()
-            elif self.Type==1:
-                finalObj=self.MultiXSections()
-            elif self.Type==2:
+            elif self.Type==2:    
                 finalObj=self.wavedFence()
             elif self.Type==3:
                 finalObj=self.NetFence()
@@ -813,7 +842,9 @@ class BaseFence:
                 finalObj=self.bricksSeg()
             elif self.Type==7:
                 finalObj=self.curvedSection()
-                
+            elif self.Type==8:
+                finalObj=self.MultiXSections()
+
                 
             return finalObj
         except Exception as err:
