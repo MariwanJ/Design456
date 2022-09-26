@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-25 22:22:24'
+__updated__ = '2022-09-26 20:10:31'
 
 
 #TODO : FIXME: 
@@ -793,7 +793,7 @@ class BaseFence:
             pin1y=Part.Face(Part.Wire(Part.makePolygon( [barP5,barP6,barP7,barP8,barP5] )))
             innerPart=(pin1x.fuse(pin1y)).extrude(App.Vector(0,yExtrude,0))
             frame=(pin1.fuse(pin2)).extrude(App.Vector(0,self.Thickness,0))
-            finalObj=frame.fuse(innerPart)
+            finalObj=frame.fuse(innerPart)        
             return finalObj
 
         except Exception as err:
@@ -807,6 +807,7 @@ class BaseFence:
     def MultiXSections(self):
         try:
             objNew=[]
+            finalObj=None
             if self.Sections>1:
                 for i in range(self.Sections):
                     objNew.append(self.MultiXSectionsSeg(i))
@@ -814,10 +815,19 @@ class BaseFence:
                 if len(objNew)>2:
                     objNew.pop(0)
                 else:
-                    return objNew[0]
-                return (first.fuse(objNew).removeSplitter())
+                    finalObj= objNew[0]
+                finalObj= (first.fuse(objNew).removeSplitter())
             else:
-                return (self.MultiXSectionsSeg(1))      
+                finalObj= (self.MultiXSectionsSeg(1))  
+            relativeThickness=self.netThickness*self.Thickness
+            box=Part.Face(Part.Wire(Part.makePolygon([self.p1+App.Vector(0,(relativeThickness)/2-0.1),
+                                                     self.p2+App.Vector(0,relativeThickness/2-0.1),
+                                                     self.p3+App.Vector(0,relativeThickness/2-0.1),
+                                                     self.p4+App.Vector(0,relativeThickness/2-0.1),+
+                                                     self.p1+App.Vector(0,relativeThickness/2-0.1)])))
+            eBox=box.extrude(App.Vector(0,0.2,0))   #Hardcoded thickness  TODO: Is this good?
+            return eBox.fuse(finalObj)
+
         except Exception as err:
             App.Console.PrintError("'execute Fence' Failed. "
                                    "{err}\n".format(err=str(err)))
