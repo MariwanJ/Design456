@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-26 21:38:32'
+__updated__ = '2022-09-26 22:09:38'
 
 
 #TODO : FIXME: 
@@ -100,7 +100,7 @@ class BaseFence:
                  _waveDepth=3.0,
                  _netDistance=0.5,
                  _netThickness=0.80,
-                 _type=8,
+                 _type=9,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence Widths",
@@ -836,15 +836,31 @@ class BaseFence:
             print(exc_type, fname, exc_tb.tb_lineno)
 
     def ballCylinderNetSeg(self,seg):
-        nObj=None
-        ball_Cylinder=None
-        radius=self.FrameWidth/2
-        cylinder=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p1+radius,0,0), App.Vector(0,0,1),360)
-        
-        
+        try:
+            nObj=None
+            ball_Cylinder=None
+            radius=self.FrameWidth/2
+            #   makeCylinder(radius,height,[pnt,dir,angle]) 
+            cylinder=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p1.x+radius,0,0), App.Vector(0,0,1),360)
+            # makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius        
+            print(radius)
+            ball=Part.makeSphere(radius,App.Vector(self.p1.x+radius,0,self.Height-radius),App.Vector(0,0,1),-90,90,360)
+            ball_cylinder=cylinder.fuse(ball)
+            return ball_cylinder
+    
+        except Exception as err:
+            App.Console.PrintError("'execute Fence' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
     def ballCylinderNet(self):
+        return self.ballCylinderNetSeg(0)
+    
         NObj=[]
         objFinal=None
+
         for i in range(0,self.Sections):
             NObj.append(self.ballCylinderNetSeg(i))
         
