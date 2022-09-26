@@ -756,7 +756,7 @@ class BaseFence:
             objN=None
             yExtrude= self.Thickness*self.netThickness
             yOffset=((1-self.netThickness)*self.Thickness)/2
-            smallWidth=(self.Width-(self.FrameWidth*(self.Sections-1)))/(self.Sections)
+            smallWidth=(self.Width-self.FrameWidth*(1-self.Sections))/(self.Sections)
             xOffset=App.Vector(seg*(smallWidth-self.FrameWidth),0,0)
 
             '''
