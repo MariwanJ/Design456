@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-26 20:28:16'
+__updated__ = '2022-09-26 21:38:32'
 
 
 #TODO : FIXME: 
@@ -834,7 +834,23 @@ class BaseFence:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-                
+
+    def ballCylinderNetSeg(self,seg):
+        nObj=None
+        ball_Cylinder=None
+        radius=self.FrameWidth/2
+        cylinder=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p1+radius,0,0), App.Vector(0,0,1),360)
+        
+        
+    def ballCylinderNet(self):
+        NObj=[]
+        objFinal=None
+        for i in range(0,self.Sections):
+            NObj.append(self.ballCylinderNetSeg(i))
+        
+        
+        return objFinal
+      
     def createObject(self):
         try:
             finalObj=None
@@ -853,7 +869,9 @@ class BaseFence:
             elif self.Type==7:
                 finalObj=self.curvedSection()
             elif self.Type==8:
-                finalObj=self.MultiXSections()
+                finalObj=self.MultiXSections()                
+            elif self.Type==9:
+                finalObj=self.ballCylinderNet()
 
                 
             return finalObj
