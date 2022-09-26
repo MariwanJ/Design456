@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-26 20:10:31'
+__updated__ = '2022-09-26 20:28:16'
 
 
 #TODO : FIXME: 
@@ -819,12 +819,12 @@ class BaseFence:
                 finalObj= (first.fuse(objNew).removeSplitter())
             else:
                 finalObj= (self.MultiXSectionsSeg(1))  
-            relativeThickness=self.netThickness*self.Thickness
-            box=Part.Face(Part.Wire(Part.makePolygon([self.p1+App.Vector(0,(relativeThickness)/2-0.1),
-                                                     self.p2+App.Vector(0,relativeThickness/2-0.1),
-                                                     self.p3+App.Vector(0,relativeThickness/2-0.1),
-                                                     self.p4+App.Vector(0,relativeThickness/2-0.1),+
-                                                     self.p1+App.Vector(0,relativeThickness/2-0.1)])))
+            yOffset=((1-self.netThickness)*self.Thickness+self.Thickness*self.netThickness)/2
+            box=Part.Face(Part.Wire(Part.makePolygon([self.p1+App.Vector(0,yOffset),
+                                                      self.p2+App.Vector(0,yOffset),
+                                                      self.p3+App.Vector(0,yOffset),
+                                                      self.p4+App.Vector(0,yOffset),
+                                                      self.p1+App.Vector(0,yOffset)])))
             eBox=box.extrude(App.Vector(0,0.2,0))   #Hardcoded thickness  TODO: Is this good?
             return eBox.fuse(finalObj)
 
