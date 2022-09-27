@@ -839,6 +839,32 @@ class BaseFence:
         try:
             nObj=None
             ball_Cylinder=None
+            smallWidth=(self.Width-self.FrameWidth*(1-self.Sections))/(self.Sections)
+            stepsZ=(self.TopDistance-self.BottomDistance)/5  #TODO:HARDCODED IS IT OK?
+            stepsX=smallWidth/5                              #TODO:HARDCODED IS IT OK?
+            pointsL=[]
+            pointsR=[]
+            pointsB=[]
+            pointsT=[]
+            netObj=[]
+            #Prepare points
+            for i in range(0,5):            
+                pointsL.append(self.p1 +App.Vector(0,0,stepsZ*i))
+                pointsR.append(self.p1 +App.Vector(self.smallWidth-radius,0,stepsZ*i))
+                pointsB.append(self.p1 +App.Vector(stepsX*i,0,self.BottomDistance))
+                pointsT.append(self.p1 +App.Vector(stepsX*i,0,self.TopDistance))
+            #Create Net:
+            for i in range(0,5): #Todo fixme  <<<<<<<<<<<<<<<<<<<<<------
+                a=Part.Face(Part.Wire(Part.makePolygon(pointsL[i])))
+                netObj.append()
+            
+            
+            
+            
+            
+            
+            
+            
             radius=self.FrameWidth/2
             #   makeCylinder(radius,height,[pnt,dir,angle]) 
             cylinder=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p1.x+radius,0,0), App.Vector(0,0,1),360)
