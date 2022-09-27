@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-26 22:09:38'
+__updated__ = '2022-09-27 22:14:26'
 
 
 #TODO : FIXME: 
@@ -839,39 +839,71 @@ class BaseFence:
         try:
             nObj=None
             ball_Cylinder=None
+            yExtrude= self.Thickness*self.netThickness
+            yOffset=((1-self.netThickness)*self.Thickness)/2
+            radius=self.FrameWidth/2
             smallWidth=(self.Width-self.FrameWidth*(1-self.Sections))/(self.Sections)
-            stepsZ=(self.TopDistance-self.BottomDistance)/5  #TODO:HARDCODED IS IT OK?
-            stepsX=smallWidth/5                              #TODO:HARDCODED IS IT OK?
+            subSections=int(smallWidth/self.NetDistance)
+            stepsZ=(self.TopDistance-self.BottomDistance)/subSections
+            stepsX=(smallWidth)/subSections
+
             pointsL=[]
             pointsR=[]
             pointsB=[]
             pointsT=[]
             netObj=[]
             #Prepare points
-            for i in range(0,5):            
-                pointsL.append(self.p1 +App.Vector(0,0,stepsZ*i))
-                pointsR.append(self.p1 +App.Vector(self.smallWidth-radius,0,stepsZ*i))
-                pointsB.append(self.p1 +App.Vector(stepsX*i,0,self.BottomDistance))
-                pointsT.append(self.p1 +App.Vector(stepsX*i,0,self.TopDistance))
+            for i in range(0,subSections):            
+                pointsL.append(self.p2 +App.Vector(0,yOffset,self.BottomDistance+stepsZ*i))
+                pointsR.append(self.p2 +App.Vector(smallWidth-radius,yOffset,self.BottomDistance+stepsZ*i))
+                pointsB.append(self.p2 +App.Vector(stepsX*i,yOffset,self.BottomDistance))
+                pointsT.append(self.p2 +App.Vector(stepsX*i,yOffset,self.TopDistance))
             #Create Net:
-            for i in range(0,5): #Todo fixme  <<<<<<<<<<<<<<<<<<<<<------
-                a=Part.Face(Part.Wire(Part.makePolygon(pointsL[i])))
-                netObj.append()
             
+            for i in range(0,subSections):                
+                a=Part.Face(Part.Wire(Part.makePolygon([pointsB[i]+App.Vector(0,0,0.1),
+                                                        pointsR[len(pointsB)-1-i],
+                                                        pointsR[len(pointsB)-1-i]-App.Vector(0,0,0.1),
+                                                        pointsB[i],
+                                                        pointsB[i]+App.Vector(0,0,0.1)])))
+                
+                b=Part.Face(Part.Wire(Part.makePolygon([pointsL[len(pointsB)-1-i],
+                                                        pointsB[len(pointsB)-1-i],
+                                                        pointsB[len(pointsB)-1-i]-App.Vector(0.1,0,0),
+                                                        pointsL[len(pointsB)-1-i]-App.Vector(0,0,0.1),
+                                                        pointsL[len(pointsB)-1-i]])))
+                
+                c=Part.Face(Part.Wire(Part.makePolygon([pointsT[len(pointsB)-1-i]+App.Vector(0,0,0.1),
+                                                        pointsL[i]+App.Vector(0,0,0.1),
+                                                        pointsL[i],
+                                                        pointsT[len(pointsB)-1-i],
+                                                        pointsT[len(pointsB)-1-i]+App.Vector(0,0,0.1)])))
+                
             
-            
-            
-            
-            
-            
-            
-            radius=self.FrameWidth/2
+                d=Part.Face(Part.Wire(Part.makePolygon([pointsT[i]+App.Vector(0,0,0.1),
+                                                        pointsR[i]+App.Vector(0,0,0.1),
+                                                        pointsR[i],
+                                                        pointsT[i],
+                                                        pointsT[i]+App.Vector(0,0,0.1)])))
+                
+
+                netObj.append(a)
+                netObj.append(b)
+                netObj.append(c)
+                netObj.append(d)
+            first=netObj[0]
+            netObj.pop(0)
+            extrudeNetObj=first.fuse(netObj).extrude(App.Vector(0,yExtrude,0))
             #   makeCylinder(radius,height,[pnt,dir,angle]) 
-            cylinder=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p1.x+radius,0,0), App.Vector(0,0,1),360)
+            cylinder1=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p2.x+radius,0,0), App.Vector(0,0,1),360)
             # makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius        
-            print(radius)
-            ball=Part.makeSphere(radius,App.Vector(self.p1.x+radius,0,self.Height-radius),App.Vector(0,0,1),-90,90,360)
-            ball_cylinder=cylinder.fuse(ball)
+
+            ball1=Part.makeSphere(radius,App.Vector(self.p2.x+radius,0,self.Height-radius),App.Vector(0,0,1),-90,90,360)
+
+            cylinder2=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p2.x-radius+smallWidth,0,0), App.Vector(0,0,1),360)
+            ball2=Part.makeSphere(radius,App.Vector(self.p2.x-radius+smallWidth,0,self.Height-radius),App.Vector(0,0,1),-90,90,360)
+            
+            ball_cylinder=cylinder1.fuse([ball1,ball2,cylinder2,extrudeNetObj])
             return ball_cylinder
     
         except Exception as err:
