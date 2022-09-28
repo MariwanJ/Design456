@@ -854,7 +854,7 @@ class BaseFence:
             netObj=[]
             #Prepare points
             for i in range(0,subSections):            
-                pointsL.append(self.p2 +App.Vector(0,yOffset,self.BottomDistance+stepsZ*i))
+                pointsL.append(self.p2 +App.Vector(radius,yOffset,self.BottomDistance+stepsZ*i))
                 pointsR.append(self.p2 +App.Vector(smallWidth-radius,yOffset,self.BottomDistance+stepsZ*i))
                 pointsB.append(self.p2 +App.Vector(stepsX*i,yOffset,self.BottomDistance))
                 pointsT.append(self.p2 +App.Vector(stepsX*i,yOffset,self.TopDistance))
