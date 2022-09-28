@@ -840,8 +840,8 @@ class BaseFence:
             nObj=None
             ball_Cylinder=None
             yExtrude= self.Thickness*self.netThickness
-            yOffset=((1-self.netThickness)*self.Thickness)/2
             radius=self.FrameWidth/2
+            yOffset=(((1-self.netThickness)*self.Thickness)/2)-radius
             smallWidth=(self.Width-self.FrameWidth*(1-self.Sections))/(self.Sections)
             subSections=int(smallWidth/self.NetDistance)
             stepsZ=(self.TopDistance-self.BottomDistance)/subSections
@@ -895,13 +895,13 @@ class BaseFence:
             netObj.pop(0)
             extrudeNetObj=first.fuse(netObj).extrude(App.Vector(0,yExtrude,0))
             #   makeCylinder(radius,height,[pnt,dir,angle]) 
-            cylinder1=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p2.x+radius,0,0), App.Vector(0,0,1),360)
+            cylinder1=Part.makeCylinder(radius,(self.Height-self.FrameWidth),self.p2+App.Vector(radius,0,0), App.Vector(0,0,1),360)
             # makeSphere(radius,[pnt, dir, angle1,angle2,angle3]) -- Make a sphere with a given radius        
 
-            ball1=Part.makeSphere(radius,App.Vector(self.p2.x+radius,0,self.Height-radius),App.Vector(0,0,1),-90,90,360)
+            ball1=Part.makeSphere(radius,self.p2+App.Vector(radius,0,self.Height-radius),App.Vector(0,0,1),-90,90,360)
 
-            cylinder2=Part.makeCylinder(radius,(self.Height-self.FrameWidth),App.Vector(self.p2.x-radius+smallWidth,0,0), App.Vector(0,0,1),360)
-            ball2=Part.makeSphere(radius,App.Vector(self.p2.x-radius+smallWidth,0,self.Height-radius),App.Vector(0,0,1),-90,90,360)
+            cylinder2=Part.makeCylinder(radius,(self.Height-self.FrameWidth),self.p2+App.Vector(smallWidth-radius,0,0), App.Vector(0,0,1),360)
+            ball2=Part.makeSphere(radius,self.p2+App.Vector(smallWidth-radius,0,self.Height-radius),App.Vector(0,0,1),-90,90,360)
             
             ball_cylinder=cylinder1.fuse([ball1,ball2,cylinder2,extrudeNetObj])
             return ball_cylinder
