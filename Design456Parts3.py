@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-27 22:14:26'
+__updated__ = '2022-09-29 22:26:03'
 
 
 #TODO : FIXME: 
@@ -860,7 +860,7 @@ class BaseFence:
                 pointsT.append(self.p2 +App.Vector(stepsX*i,yOffset,self.TopDistance))
             #Create Net:
             
-            for i in range(0,subSections):                
+            for i in range(2,subSections-2):                
                 a=Part.Face(Part.Wire(Part.makePolygon([pointsB[i]+App.Vector(0,0,0.1),
                                                         pointsR[len(pointsB)-1-i],
                                                         pointsR[len(pointsB)-1-i]-App.Vector(0,0,0.1),
@@ -873,11 +873,11 @@ class BaseFence:
                                                         pointsL[len(pointsB)-1-i]-App.Vector(0,0,0.1),
                                                         pointsL[len(pointsB)-1-i]])))
                 
-                c=Part.Face(Part.Wire(Part.makePolygon([pointsT[len(pointsB)-1-i]+App.Vector(0,0,0.1),
+                c=Part.Face(Part.Wire(Part.makePolygon([pointsT[len(pointsB)-i]+App.Vector(0,0,0.1),
                                                         pointsL[i]+App.Vector(0,0,0.1),
                                                         pointsL[i],
-                                                        pointsT[len(pointsB)-1-i],
-                                                        pointsT[len(pointsB)-1-i]+App.Vector(0,0,0.1)])))
+                                                        pointsT[len(pointsB)-i],
+                                                        pointsT[len(pointsB)-i]+App.Vector(0,0,0.1)])))
                 
             
                 d=Part.Face(Part.Wire(Part.makePolygon([pointsT[i]+App.Vector(0,0,0.1),
@@ -885,8 +885,6 @@ class BaseFence:
                                                         pointsR[i],
                                                         pointsT[i],
                                                         pointsT[i]+App.Vector(0,0,0.1)])))
-                
-
                 netObj.append(a)
                 netObj.append(b)
                 netObj.append(c)
@@ -1000,7 +998,8 @@ class BaseFence:
         if self.netThickness>1.00 or self.netThickness<0.00:
             self.netThickness=1.00 #We don't allow values bigger than 1 or less than 0
         obj.Shape = self.createObject()
-
+        # if obj.Type!=1:
+        #     obj.removeProperty("NetDistance")
 class Design456_Fence:
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'Fence.svg',
@@ -1019,6 +1018,6 @@ class Design456_Fence:
         ViewProviderFence(newObj.ViewObject, "Fence")
         v = Gui.ActiveDocument.ActiveView
         App.ActiveDocument.recompute()
-        faced.PartMover(v, newObj, deleteOnEscape=True)
+        #faced.PartMover(v, newObj, deleteOnEscape=True)
 
 Gui.addCommand('Design456_Fence', Design456_Fence())
