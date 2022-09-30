@@ -35,10 +35,10 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-30 21:46:07'
+__updated__ = '2022-09-30 21:52:18'
 
 
-#TODO : FIXME: 
+#TODO : FIXME: Add more shapes!!
 # Fence
 
 class ViewProviderFence:

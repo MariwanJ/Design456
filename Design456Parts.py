@@ -40,12 +40,12 @@ import CompoundTools._CommandExplodeCompound
 
 import Design456Parts1
 import Design456Parts2
-import Design456Parts3
+import Design456_Fence
 import Design456Init
 
 sys.path.append(Design456Init.PYRAMID_PATH)
 
-__updated__ = '2022-08-13 16:21:26'
+__updated__ = '2022-09-30 21:51:55'
 
 class Design456Part:
     import polyhedrons
