@@ -35,7 +35,7 @@ import Design456Init
 import FACE_D as faced
 import math
 
-__updated__ = '2022-09-30 21:44:21'
+__updated__ = '2022-09-30 21:46:07'
 
 
 #TODO : FIXME: 
@@ -100,7 +100,7 @@ class BaseFence:
                  _waveDepth=3.0,
                  _netDistance=0.5,
                  _netThickness=0.80,
-                 _type=9,
+                 _type=0,
                  ):
 
         obj.addProperty("App::PropertyLength", "Width", "Fence Widths",
