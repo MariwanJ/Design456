@@ -42,7 +42,7 @@ from PySide import QtCore, QtGui
 from draftutils.translate import translate   #for translate
 import math
 
-__updated__ = '2022-10-01 21:22:04'
+__updated__ = '2022-10-01 21:25:56'
 
 # Merge
 class Design456Part_Merge:
@@ -240,11 +240,11 @@ class Design456Part_Group:
             s = Gui.Selection.getSelectionEx()
             if (len(s) < 2):
                 # Two object must be selected
-                App.ActiveDocument.openTransaction(translate("Design456","Part Group"))
                 errMessage = "Select two or more objects to create a group"
                 faced.errorDialog(errMessage)
                 return
 
+            App.ActiveDocument.openTransaction(translate("Design456","Part Group"))
             newObj = App.ActiveDocument.addObject('App::Part', 'Group')
             newObj.Label = 'Group'
             for _obj in s:
