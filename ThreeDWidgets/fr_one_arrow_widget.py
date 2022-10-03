@@ -285,7 +285,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         self.w_userData.events = event  # Keep the event always here
         if type(event) == int:
             if event == FR_EVENTS.FR_NO_EVENT:
-                return 1  # we treat this event. Nonthing to do
+                return 1  # we treat this event. Nothing to do
 
         # This is for the widgets label - Not the axes label - be aware.
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,

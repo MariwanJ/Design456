@@ -230,7 +230,7 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
         self.w_userData.events = event   # Keep the event always here
         if type(event) == int:
             if event == FR_EVENTS.FR_NO_EVENT:
-                return 1    # we treat this event. Nonthing to do
+                return 1    # we treat this event. Nothing to do
 
         self.w_userData.clickedBTN = [False, False, False, False, False, False, False, False, False]
         for i in range(0, 9):

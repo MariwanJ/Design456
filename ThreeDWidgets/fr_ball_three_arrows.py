@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-10-03 21:06:39'
+__updated__ = '2022-10-03 21:14:22'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -233,6 +233,58 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
          
 
     def handle(self, event):
+
+        """
+        This function is responsible for taking events and processing 
+        the actions required. If the object != targeted, 
+        the function will skip the events. But if the widget was
+        targeted, it returns 1. Returning 1 means that the widget
+        processed the event and no other widgets needs to get the 
+        event. Window object is responsible for distributing the events.
+        """
+
+        try:
+            self.w_userData.events = event  # Keep the event always here
+            if type(event) == int:
+                if event == FR_EVENTS.FR_NO_EVENT:
+                    return 1  # we treat this event. Nothing to do
+
+            # This is for the widgets label - Not the axes label - be aware.
+            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                                    self.w_pick_radius, self.w_widgetlblSoNodes)
+
+            # In this widget, we have 2 coin drawings that we need to capture event for them
+            clickwdgdNode = []
+            # 0 =     Axis movement
+            # 1 =     disc Rotation
+
+            clickwdgdNode = [False, False]
+
+            if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                    self.w_pick_radius, self.w_ArrowsSeparator) is not None):
+                clickwdgdNode[0] = True
+
+
+
+
+        except Exception as err:
+            App.Console.PrintError("'handle ball3arrows' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+
+
+
+
+
+
+
+
+
+
         return 0  # We couldn't use the event .. so return 0
 
     def draw(self):
@@ -319,7 +371,6 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         """
         self.w_active = 0
 
-    
     def __del__(self):
         """
         Class Destructor.
