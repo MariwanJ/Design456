@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-07-03 09:52:06'
+__updated__ = '2022-10-03 20:53:08'
 
 
 """
@@ -665,10 +665,10 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
                                                   # default FR_COLOR.FR_RED
                                                   usedColor[0], self.w_Scale, self.DrawingType, self.Opacity, XpreRotVal)
             self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y + self.distanceBetweenThem, self.w_vector[0].z),
-                                                  # default FR_COLOR.FR_RED
+                                                  # default FR_COLOR.FR_GREEN
                                                   usedColor[1], self.w_Scale, self.DrawingType, self.Opacity, YpreRotVal)
             self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y, self.w_vector[0].z + self.distanceBetweenThem),
-                                                  # default FR_COLOR.FR_RED
+                                                  # default FR_COLOR.FR_BLUE
                                                   usedColor[2], self.w_Scale, self.DrawingType, self.Opacity, ZpreRotVal)
 
             XpreRotValdisc = [self.w_discAngle[0], 0.0, 90.0]

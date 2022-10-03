@@ -27,18 +27,22 @@ from __future__ import unicode_literals
 
 import os
 import sys
-from types import coroutine
 import FreeCAD as App
 import FreeCADGui as Gui
 import pivy.coin as coin
-import Design456Init
+from ThreeDWidgets import fr_widget
+from ThreeDWidgets import constant
 from typing import List
-from ThreeDWidgets.constant import FR_COLOR
-# draw a line in 3D world
-import math
+import FACE_D as faced
 from dataclasses import dataclass
+from ThreeDWidgets.fr_draw import draw_2Darrow
+from ThreeDWidgets import fr_label_draw
+from ThreeDWidgets.constant import FR_EVENTS
+from ThreeDWidgets.constant import FR_COLOR
+from ThreeDWidgets.fr_draw1 import draw_RotationPad
+import math
 
-__updated__ = '2022-10-02 22:06:32'
+__updated__ = '2022-10-03 21:06:39'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -65,6 +69,74 @@ from ThreeDWidgets.constant import FR_COLOR
 
 """
 
+
+
+@dataclass
+class userDataObject:
+    __slots__ = ['ballObj', 'events', 'callerObject', 'Axis_cb', 'axisType']
+
+    def __init__(self):
+        self.ballObj = None         # Class/Tool uses
+        self.events = None          # events - save handle events here
+        self.callerObject = None    #
+        self.Axis_cb = False        # Disallow running callback - Arrows
+        self.axisType = None
+# *******************************CALLBACKS - DEMO *****************************
+
+
+def xAxis_cb(userData: userDataObject = None):
+    """
+        This function executes when the XAxis
+        event callback.
+    """
+    # Subclass this and impalement the callback or
+    # just change the callback function
+    print("dummy XAxis -3Arrows callback")
+
+
+def yAxis_cb(userData: userDataObject = None):
+    """
+        This function executes when the rotary disc
+        angel changed event callback.
+    """
+    # Subclass this and impalement the callback or
+    # just change the callback function
+    print("dummy YAxis -3Arrows callback")
+
+
+def zAxis_cb(userData: userDataObject = None):
+    """
+        This function executes when the XAxis
+        event callback.
+    """
+    # Subclass this and impalement the callback or
+    # just change the callback function
+    print("dummy ZAxis -3Arrows callback")
+    
+def ball_cb(userData: userDataObject = None):
+    """
+        This function executes when the XAxis
+        event callback.
+    """
+    # Subclass this and impalement the callback or
+    # just change the callback function
+    print("dummy ball - callback")
+    
+# *************************
+# Whole widget callback  - Might not be used
+# *************************************************************
+def callback(userData: userDataObject = None):
+    """
+        This function executes when lblCallbak (double click callback)
+        or general widget callback occurs
+    """
+    # Subclass the widget and impalement the callback or just change the callback function
+    print("dummy callback")
+
+# *************************************************************
+
+
+
 # *************************************************************
 
 
@@ -73,11 +145,92 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
     def __init__(self, vectors: List[App.Vector] = [],
                  label: str = [[]],
                  _lblColor=FR_COLOR.FR_WHITE,
-                 _axisColor=FR_COLOR.FR_RED,
-                 _opacity: float = 0.0):
+                 _axisColor=[FR_COLOR.FR_RED,
+                             FR_COLOR.FR_GREEN,
+                             FR_COLOR.FR_BLUE],
+                 # Whole widget rotation
+                 _rotation: List[float] = [0.0, 0.0, 0.0, 0.0],
+                 
+                 # Pre-rotation
+                 _setupRotation: List[float] = [0.0, 0.0, 0.0],
+                 _scale: List[float] = [3.0, 3.0, 3.0],
+                 _type: int = 1,
+                 _opacity: float = 0.0,
+                 _distanceBetweenThem: float = 5.0):
         super().__init__(vectors, label)
+        self.w_lbluserData = fr_widget.propertyValues()  # Only for label
+        self.w_widgetType = constant.FR_WidgetType.FR_THREE_DISC
+        # General widget callback (mouse-button) function - External function
+        self.w_callback_ = callback
+        self.w_lbl_calback_ = callback              # Label callback
+        self.w_KB_callback_ = callback              # Keyboard
 
- 
+        # Dummy callback Axis
+        self.w_xAxis_cb_ = xAxis_cb
+        self.w_yAxis_cb_ = yAxis_cb
+        self.w_zAxis_cb_ = zAxis_cb
+        self.w_ball_cb_ =  ball_cb
+
+        self.Opacity = _opacity
+        self.DrawingType = _type
+        # Use this to separate the arrows/lbl from the origin of the widget
+        self.distanceBetweenThem = _distanceBetweenThem
+
+        self.w_wdgsoSwitch = coin.SoSwitch()
+
+        self.w_XarrowSeparator = None
+        self.w_YarrowSeparator = None
+        self.w_ZarrowSeparator = None
+        self.w_BallSeparator = None
+        
+
+        self.w_color = _axisColor
+        self.w_rotaryDisc_color = _axisColor
+        self.w_selColor = [[i * 1.5 for i in self.w_color[0]],
+                           [j * 1.5 for j in self.w_color[1]],
+                           [k * 1.5 for k in self.w_color[2]]]
+        self.w_Scale = _scale
+        self.w_inactiveColor = [[i * 0.9 for i in self.w_color[0]],
+                                [j * 0.9 for j in self.w_color[1]],
+                                [k * 0.9 for k in self.w_color[2]]]
+
+        self.w_userData = userDataObject()  # Keep info about the whole widget
+        self.w_userData.discObj = self
+
+        # This affect only the Widget label - nothing else
+        self.w_lbluserData.linewidth = self.w_lineWidth
+        self.w_lbluserData.vectors = self.w_vector
+
+        # We must make it higher or it will intersect the object and won't be visible
+        # TODO:Check if this works always?
+        self.w_lbluserData.vectors[0].x = self.w_lbluserData.vectors[0].x + \
+            self.distanceBetweenThem
+        self.w_lbluserData.vectors[0].y = self.w_lbluserData.vectors[0].y + \
+            self.distanceBetweenThem
+        self.w_lbluserData.vectors[0].z = self.w_lbluserData.vectors[0].z + \
+            self.distanceBetweenThem
+        self.w_lbluserData.labelcolor = _lblColor
+
+        self.w_rotation = _rotation       # Whole object Rotation
+
+        self.w_arrowEnabled = [True, True, True]
+        
+        # Used to avoid running drag code while it is in drag mode
+        self.XreleaseDragAxis = -1
+        self.YreleaseDragAxis = -1
+        self.ZreleaseDragAxis = -1
+
+        # -1 no click, 0 mouse clicked, 1 mouse dragging
+        # Used to avoid running drag code while it is in drag mode
+        self.XreleaseDragDisc = -1
+        self.YreleaseDragDisc = -1
+        self.ZreleaseDragDisc = -1
+
+        self.run_Once = [False, False, False]
+        self.startVector = [0.0, 0.0, 0.0]
+        self.endVector = [0.0, 0.0, 0.0]
+        self.axisType = None
+         
 
     def handle(self, event):
         return 0  # We couldn't use the event .. so return 0
@@ -89,16 +242,51 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         element and for each disc.
         """
         try:
-            pass
+            if (len(self.w_vector) < 2):
+                raise ValueError('Must be 2 vector at least')
+
+            usedColor = self.w_color
+            if self.is_active() and self.has_focus():
+                usedColor = self.w_selColor
+            elif self.is_active() and (self.has_focus() != 1):
+                pass  # usedColor = self.w_color  we did that already ..just for reference
+            elif self.is_active() != 1:
+                usedColor = self.w_inactiveColor
+
+            XpreRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
+            YpreRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
+            ZpreRotVal = [0.0, 0.0, 0.0]
+            if not self.is_visible():
+                return
+            self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x + self.distanceBetweenThem, self.w_vector[0].y, self.w_vector[0].z),
+                                                    # default FR_COLOR.FR_RED
+                                                    usedColor[0], self.w_Scale, self.DrawingType, self.Opacity, XpreRotVal)
+            self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y + self.distanceBetweenThem, self.w_vector[0].z),
+                                                    # default FR_COLOR.FR_GREEN
+                                                    usedColor[1], self.w_Scale, self.DrawingType, self.Opacity, YpreRotVal)
+            self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y, self.w_vector[0].z + self.distanceBetweenThem),
+                                                    # default FR_COLOR.FR_BLUE
+                                                  usedColor[2], self.w_Scale, self.DrawingType, self.Opacity, ZpreRotVal)
+            #Remove all drawings and label
+            self.removeSoNodes()
+ 
+            self.draw_label()
+            self.saveSoNodesToWidget([self.w_XarrowSeparator,
+                                      self.w_YarrowSeparator,
+                                      self.w_ZarrowSeparator,
+                                      self.w_BallSeparator,])
+        
+            # add SoSeparator to the switch
+            # We can put them in a tuple but it is better not doing so
+            self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
+            self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
+                            
         except Exception as err:
             App.Console.PrintError("'draw Fr_one_Arrow_widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
-    def draw_label(self):
-        pass
 
  
     def show(self):
