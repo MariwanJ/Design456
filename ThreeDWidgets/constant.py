@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
-__updated__ = '2022-04-10 13:27:30'
+__updated__ = '2022-10-03 21:23:56'
 
 
 # Widgets type. QT widget will get QT in their names.
@@ -52,6 +52,7 @@ class FR_WidgetType:
     FR_ONE_DISC   = "Wheel Disc Widget"
     FR_THREE_DISC   = "Wheel 3 Disc Widget"
     FR_ALIGN        = "Alignment Widget"
+    FR_THREE_BALL   = "A Ball and 3 Arrows"
     
 
 # Transparency - No color will be applied

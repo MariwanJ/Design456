@@ -60,7 +60,7 @@ wny.addWidget(ln)              # Add it to the window as a child
 wny.show()                    # show the window and it's widgets. 
 
 """
-__updated__ = '2022-01-13 09:04:17'
+__updated__ = '2022-10-03 22:04:06'
 
 
 # class object will be used as object holder between arrow widget and the callback
