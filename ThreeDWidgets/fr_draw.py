@@ -39,7 +39,7 @@ import math
 from dataclasses import dataclass
 from pivy import coin
 
-__updated__ = '2022-10-03 20:47:21'
+__updated__ = '2022-10-04 19:28:42'
 
 @dataclass
 class userDataObject:
@@ -3456,3 +3456,32 @@ def saveSceneGraphtoIVfile(filename):
     sowriteAct.getOutput().setBinary(False)
     sowriteAct.apply(sg)
     sowriteAct.getOutput().closeFile()
+
+
+def draw_ball(vectors: List[App.Vector] = [], 
+              color=(FR_COLOR.FR_RED),
+              scale=[1,1,1], 
+              radius=1,lineWidth=1):
+    try:
+        if len(vectors) <1:
+            ValueError("1 point must be given to the function")
+        transfer=coin.SoTranslation()
+        transfer.translation.setValue(vectors[0])
+        ball=coin.SoSphere()
+        newSo = coin.SoSeparator()
+        style = coin.SoDrawStyle()
+        style.lineWidth = lineWidth
+        newSo.addChild(style)
+        col1 = coin.SoBaseColor()  # must be converted to SoBaseColor
+        col1.rgb = color
+        newSo.addChild(col1)
+        newSo.addChild(transfer)
+        newSo.addChild(ball)
+        return newSo
+
+    except Exception as err:
+        App.Console.PrintError("'draw_square' Failed. "
+                               "{err}\n".format(err=str(err)))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)

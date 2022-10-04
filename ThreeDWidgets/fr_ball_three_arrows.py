@@ -36,13 +36,15 @@ from typing import List
 import FACE_D as faced
 from dataclasses import dataclass
 from ThreeDWidgets.fr_draw import draw_2Darrow
+from ThreeDWidgets.fr_draw import draw_ball
+
 from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-10-03 22:08:10'
+__updated__ = '2022-10-04 20:47:05'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -80,20 +82,20 @@ mywin.show()
 
 @dataclass
 class userDataObject:
-    __slots__ = ['ballObj', 'events', 'callerObject', 'Axis_cb']
+    __slots__ = ['ballObj', 'events', 'callerObject', 'AxisObjects']
 
     def __init__(self):
         self.ballObj = None         # Class/Tool uses
         self.events = None          # events - save handle events here
         self.callerObject = None    #
-        self.Axis_cb = False        # Disallow running callback - Arrows
+        self.AxisObjects= None
+
+
 # *******************************CALLBACKS - DEMO *****************************
-
-
 def xAxis_cb(userData: userDataObject = None):
     """
         This function executes when the XAxis
-        event callback.
+        event callback occurs.
     """
     # Subclass this and impalement the callback or
     # just change the callback function
@@ -103,7 +105,7 @@ def xAxis_cb(userData: userDataObject = None):
 def yAxis_cb(userData: userDataObject = None):
     """
         This function executes when the rotary ball
-        angel changed event callback.
+        angel changed event callback occurs.
     """
     # Subclass this and impalement the callback or
     # just change the callback function
@@ -113,7 +115,7 @@ def yAxis_cb(userData: userDataObject = None):
 def zAxis_cb(userData: userDataObject = None):
     """
         This function executes when the XAxis
-        event callback.
+        event callback occurs.
     """
     # Subclass this and impalement the callback or
     # just change the callback function
@@ -121,8 +123,8 @@ def zAxis_cb(userData: userDataObject = None):
     
 def ball_cb(userData: userDataObject = None):
     """
-        This function executes when the XAxis
-        event callback.
+        This function executes when the ball (is clicked)
+        event callback occurs.
     """
     # Subclass this and impalement the callback or
     # just change the callback function
@@ -137,15 +139,15 @@ def callback(userData: userDataObject = None):
         or general widget callback occurs
     """
     # Subclass the widget and impalement the callback or just change the callback function
-    print("dummy callback")
+    print("dummy General Widget callback")
 
 # *************************************************************
 
 
 
+
+#Widget class - definitions and functions
 # *************************************************************
-
-
 class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
 
     def __init__(self, vectors: List[App.Vector] = [],
@@ -162,8 +164,9 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                  _scale: List[float] = [3.0, 3.0, 3.0],
                  _type: int = 1,
                  _opacity: float = 0.0,
-                 _distanceBetweenThem: float = 5.0):
+                 _distanceBetweenThem: float = 0.5):
         super().__init__(vectors, label)
+        
         self.w_lbluserData = fr_widget.propertyValues()  # Only for label
         self.w_widgetType = constant.FR_WidgetType.FR_THREE_BALL
         # General widget callback (mouse-button) function - External function
@@ -189,7 +192,6 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_ZarrowSeparator = None
         self.w_BallSeparator = None
         
-
         self.w_color = _axisColor
         self.w_selColor = [[i * 1.5 for i in self.w_color[0]],
                            [j * 1.5 for j in self.w_color[1]],
@@ -218,7 +220,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
 
         self.w_rotation = _rotation       # Whole object Rotation
 
-        self.w_arrowEnabled = [True, True, True]
+        self.w_arrowsEnabled = [True, True, True]
         
         # Used to avoid running drag code while it is in drag mode
         self.XreleaseDragAxis = -1
@@ -257,19 +259,45 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                     self.w_pick_radius, self.w_widgetlblSoNodes)
 
-            # In this widget, we have 2 coin drawings that we need to capture event for them
-            clickwdgdNode = []
-            # 0 =     Axis movement
-            # 1 =     ball Rotation
+            
+            # In this widget, we have 4 coin drawings that we need to capture event for them
+            clickwdgdNode = [False, False,False,False]
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
 
-            clickwdgdNode = [False, False]
+                #Prioritized callback TODO: is it correct
+                if clickwdglblNode is not None:
+                    self.do_lblcallback()
+                    self.do_callback()
+                    return 1
 
-            if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                    self.w_pick_radius, self.w_widgetSoNodes) is not None):
-                clickwdgdNode[0] = True
-
-
-            return 0  # We couldn't use the event .. so return 0
+                if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                        self.w_pick_radius, self.w_XarrowSeparator) is not None):
+                    clickwdgdNode[0] = True
+                elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                        self.w_pick_radius, self.w_YarrowSeparator) is not None):
+                    clickwdgdNode[1] = True
+                elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                        self.w_pick_radius, self.w_ZarrowSeparator) is not None):
+                    clickwdgdNode[2] = True
+                elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                        self.w_pick_radius, self.w_BallSeparator) is not None):
+                    clickwdgdNode[3] = True
+                else:
+                    return 0  # We couldn't use the event .. so return 0
+    
+                if clickwdgdNode[0] is True:
+                    self.w_xAxis_cb_(self.w_userData)
+                    self.do_callback()
+                elif clickwdgdNode[1] is True:
+                    self.w_yAxis_cb_(self.w_userData)
+                    self.do_callback()
+                elif clickwdgdNode[2] is True:
+                    self.w_zAxis_cb_(self.w_userData)
+                    self.do_callback()
+                elif clickwdgdNode[3] is True:
+                    self.w_ball_cb_(self.w_userData)
+                    self.do_callback()
+                
 
         except Exception as err:
             App.Console.PrintError("'handle ball3arrows' Failed. "
@@ -277,61 +305,61 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-    def draw_a_ball(self,position,color):
-        pass #TODO FIXME:
-        return 
+    
     def draw(self):
         """
         Main draw function. It is responsible for creating the node,
         and draw the ball on the screen. It creates a node for each 
         element and for each ball.
         """
-        #try:
-        if (len(self.w_vector) < 2):
-            raise ValueError('Must be 2 vector at least')
+        try:
+            if (len(self.w_vector) < 2):
+                raise ValueError('Must be 2 vector at least')
 
-        usedColor = self.w_color
-        if self.is_active() and self.has_focus():
-            usedColor = self.w_selColor
-        elif self.is_active() and (self.has_focus() != 1):
-            pass  # usedColor = self.w_color  we did that already ..just for reference
-        elif self.is_active() != 1:
-            usedColor = self.w_inactiveColor
+            usedColor = self.w_color
+            if self.is_active() and self.has_focus():
+                usedColor = self.w_selColor
+            elif self.is_active() and (self.has_focus() != 1):
+                pass  # usedColor = self.w_color  we did that already ..just for reference
+            elif self.is_active() != 1:
+                usedColor = self.w_inactiveColor
 
-        XpreRotVal = [0.0, 90.0, 0.0]  # pre-Rotation
-        YpreRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
-        ZpreRotVal = [0.0, 0.0, 0.0]
-        if not self.is_visible():
-            return
-        self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x + self.distanceBetweenThem, self.w_vector[0].y, self.w_vector[0].z),
-                                                # default FR_COLOR.FR_RED
-                                                usedColor[0], self.w_Scale, self.DrawingType, self.Opacity, XpreRotVal)
-        self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y + self.distanceBetweenThem, self.w_vector[0].z),
-                                                # default FR_COLOR.FR_GREEN
-                                                usedColor[1], self.w_Scale, self.DrawingType, self.Opacity, YpreRotVal)
-        self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y, self.w_vector[0].z + self.distanceBetweenThem),
-                                                # default FR_COLOR.FR_BLUE
-                                                usedColor[2], self.w_Scale, self.DrawingType, self.Opacity, ZpreRotVal)
-        #Remove all drawings and label
-        self.removeSoNodes()
+            XpreRotVal = [0.0, 90.0, 0.0]   # pre-Rotation
+            YpreRotVal = [0.0, 90.0, 90.0]  # pre-Rotation
+            ZpreRotVal = [0.0, 0.0, 0.0]
+            if not self.is_visible():
+                return
+            self.w_XarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x + self.distanceBetweenThem, self.w_vector[0].y, self.w_vector[0].z),
+                                                    # default FR_COLOR.FR_RED
+                                                    usedColor[0], self.w_Scale, self.DrawingType, self.Opacity, XpreRotVal)
+            self.w_YarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y + self.distanceBetweenThem, self.w_vector[0].z),
+                                                    # default FR_COLOR.FR_GREEN
+                                                    usedColor[1], self.w_Scale, self.DrawingType, self.Opacity, YpreRotVal)
+            self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y, self.w_vector[0].z + self.distanceBetweenThem),
+                                                    # default FR_COLOR.FR_BLUE
+                                                    usedColor[2], self.w_Scale, self.DrawingType, self.Opacity, ZpreRotVal)
+            
+            self.w_BallSeparator=draw_ball(self.w_vector)
+            #Remove all drawings and label
+            self.removeSoNodes()
 
-        self.draw_label(usedColor[0]) #TDOD: FIXME:
+            self.draw_label(usedColor[0])
+            
+            self.saveSoNodesToWidget([self.w_XarrowSeparator,
+                                        self.w_YarrowSeparator,
+                                        self.w_ZarrowSeparator,self.w_BallSeparator])
         
-        self.saveSoNodesToWidget([self.w_XarrowSeparator,
-                                    self.w_YarrowSeparator,
-                                    self.w_ZarrowSeparator])#,self.w_BallSeparator])
-    
-        # add SoSeparator to the switch
-        # We can put them in a tuple but it is better not doing so
-        self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
-        self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
-                        
-        # except Exception as err:
-        #     App.Console.PrintError("'draw Fr_one_Arrow_widget' Failed. "
-        #                            "{err}\n".format(err=str(err)))
-        #     exc_type, exc_obj, exc_tb = sys.exc_info()
-        #     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        #     print(exc_type, fname, exc_tb.tb_lineno)
+            # add SoSeparator to the switch
+            # We can put them in a tuple but it is better not doing so
+            self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
+            self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
+                            
+        except Exception as err:
+            App.Console.PrintError("'draw Fr_one_Arrow_widget' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
 
     def draw_label(self, usedColor):
