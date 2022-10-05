@@ -426,7 +426,7 @@ class Design456_SegmentAFace:
         self.oldFace=None
         
     def selectedOptions(self):
-        from DefeaturingWB.DefeaturingTools import sewShape
+        from DefeaturingWB.oDefeaturingTools import sewShape
         self.Segments=self.inpINTSegments.value()
         if self.radAll.isChecked():
             self.SingleFace=False
