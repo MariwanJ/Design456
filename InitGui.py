@@ -61,9 +61,9 @@ class Design456 (Gui.Workbench):
         import Design456_Alignment as _alignment
         import Design456_SelectionGate as SelGate
         import DirectModeling.directModelingCommands as dModeling
-        import Defeaturing.oDefeaturingTools
-        import Defeaturing.oDefeaturingCMD  
-        import Defeaturing.oFuzzyTools
+        import DefeaturingWB.oDefeaturingTools
+        import DefeaturingWB.oDefeaturingCMD  
+        import DefeaturingWB.oFuzzyTools
         import Design456Init
         from Design456Pref import Design456Preferences
         import Design456_Segmented as _segmented

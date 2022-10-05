@@ -59,8 +59,8 @@ from PySide import QtCore, QtGui
 import tempfile
 import Design456Init
 import base64
-import Defeaturing.oDefeaturingCMD
-from Defeaturing.oimage_file import *
+import DefeaturingWB.oDefeaturingCMD
+from DefeaturingWB.oimage_file import *
 from draftutils.translate import translate  # for translation
 try:
     from PathScripts.PathUtils import horizontalEdgeLoop
@@ -69,7 +69,7 @@ try:
 except:
     App.Console.PrintError('Path WB not found\n')
 
-import Defeaturing.oimage_file
+import DefeaturingWB.oimage_file
 from sys import platform as _platform
 
 
@@ -1639,7 +1639,7 @@ def oPartDefeaturing_RH():
 
         import Part
         from Defeaturing import oDefeaturingFeature
-        import  Defeaturing.oDefeaturingFeature 
+        import  DefeaturingWB.oDefeaturingFeature 
         unique_obj = set(rh_obj)
         unique_obj_count = len(unique_obj)
 
@@ -1654,9 +1654,9 @@ def oPartDefeaturing_RH():
 
         def GetResources(self):
             return {'Pixmap': os.path.join(DefeaturingWB_icons_path, 'DefeaturingParametric.svg'), 'MenuText':
-                    QtCore.QT_TRANSLATE_NOOP('oDefeatShapeFeature',
+                    QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',
                     'Defeat Shape Feature'), 'ToolTip':
-                    QtCore.QT_TRANSLATE_NOOP('oDefeatShapeFeature',
+                    QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',
                     'Create Defeat Shape Parametric Feature')}
     except Exception as err:
 
