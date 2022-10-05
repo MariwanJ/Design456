@@ -44,7 +44,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-10-04 20:47:05'
+__updated__ = '2022-10-05 22:09:20'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -64,15 +64,13 @@ __updated__ = '2022-10-04 20:47:05'
 Example how to use this widget.
 
 # show the window and it's widgets.
-import ThreeDWidgets.fr_one_arrow_widget as wd
 import ThreeDWidgets.fr_coinwindow as wnn
 from ThreeDWidgets.constant import FR_COLOR
 import ThreeDWidgets.fr_ball_three_arrows as wd
 
 mywin = wnn.Fr_CoinWindow()
-v1=[App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 0.0)] 
-#v2=[App.Vector(20,0,0), App.Vector(0.0, 0.0, 0.0)] 
-r1=wd.Fr_BallThreeArrows_Widget(v1, "BallThreeAxis")
+v1=[App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 0.0),App.Vector(0.0, 0.0, 0.0)] 
+r1=wd.Fr_BallThreeArrows_Widget(v1, ["BallThreeAxis",])
 mywin.addWidget(r1)
 mywin.show()
 
