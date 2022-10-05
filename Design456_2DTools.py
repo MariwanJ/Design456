@@ -39,7 +39,7 @@ import Mesh
 import MeshPart
 from Design456_3DTools import Design456_SimplifyCompound
 
-__updated__ = '2022-09-22 21:31:17'
+__updated__ = '2022-10-05 19:12:50'
 
 
 class Design456_CommonFace:
@@ -426,7 +426,7 @@ class Design456_SegmentAFace:
         self.oldFace=None
         
     def selectedOptions(self):
-        from DefeaturingWB.oDefeaturingTools import sewShape
+        from Defeaturing.oDefeaturingTools import sewShape
         self.Segments=self.inpINTSegments.value()
         if self.radAll.isChecked():
             self.SingleFace=False

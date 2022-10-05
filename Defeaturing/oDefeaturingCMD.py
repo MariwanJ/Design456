@@ -91,7 +91,7 @@ class oDefeatShapeFeature:
             for selobj in selection:
                 newobj=selobj.Document.addObject("Part::FeaturePython",'defeat')
                 DefeaturingFeature.oDefeatShape(rh_faces_names,newobj,selobj.Object)
-                DefeaturingFeature.oViewProviderTree(newobj.ViewObject)
+                DefeaturingFeature.ViewProviderTree(newobj.ViewObject)
                 newobj.Label='defeat_%s' % selobj.Object.Label
                 selobj.Object.ViewObject.hide()
             App.ActiveDocument.recompute()
@@ -176,7 +176,7 @@ class orefineFeatureTool:
                 if hasattr(selobj.Object,"Shape"):        
                     newobj=selobj.Document.addObject("Part::FeaturePython",'refined')
                     OpenSCADFeatures.RefineShape(newobj,selobj.Object)
-                    OpenSCADFeatures.oViewProviderTree(newobj.ViewObject)
+                    OpenSCADFeatures.ViewProviderTree(newobj.ViewObject)
                     ## to do: see if it is possible to conserve colors in refining
                     docG.ActiveObject.ShapeColor=docG.getObject(selobj.Object.Name).ShapeColor
                     docG.ActiveObject.LineColor=docG.getObject(selobj.Object.Name).LineColor
@@ -212,9 +212,9 @@ class oFuzzyCut:
  
     def Activated(self):
         # do something here...
-        import DefeaturingWB.oFuzzyTools 
-        oreload_lib(DefeaturingWB.oFuzzyTools)
-        DefeaturingWB.oFuzzyTools.fuzzyCut()
+        import Defeaturing.oFuzzyTools 
+        oreload_lib(Defeaturing.oFuzzyTools)
+        Defeaturing.oFuzzyTools.ofuzzyCut()
 
  
 Gui.addCommand('oFuzzyCut',oFuzzyCut())
@@ -241,9 +241,9 @@ class oFuzzyUnion:
 
     def Activated(self):
         # do something here...
-        import DefeaturingWB.oFuzzyTools
-        oreload_lib(DefeaturingWB.oFuzzyTools)
-        DefeaturingWB.oFuzzyTools.fuzzyUnion()
+        import Defeaturing.oFuzzyTools
+        oreload_lib(Defeaturing.oFuzzyTools)
+        Defeaturing.oFuzzyTools.ofuzzyUnion()
  
 Gui.addCommand('oFuzzyUnion',oFuzzyUnion())
 
@@ -269,9 +269,9 @@ class oFuzzyCommon:
 
     def Activated(self):
         # do something here...
-        import DefeaturingWB.oFuzzyTools
-        oreload_lib(DefeaturingWB.oFuzzyTools)
-        DefeaturingWB.oFuzzyTools.fuzzyCommon()
+        import Defeaturing.oFuzzyTools
+        oreload_lib(Defeaturing.oFuzzyTools)
+        Defeaturing.oFuzzyTools.ofuzzyCommon()
 
  
 Gui.addCommand('oFuzzyCommon',oFuzzyCommon())

@@ -53,7 +53,7 @@ use_cm = True
 '''
 This Script includes python Features to represent Defeaturing Operations
 '''
-class oViewProviderTree:
+class ViewProviderTree:
     "A generic View Provider for Elements with Children"
         
     def __init__(self, obj):
@@ -91,7 +91,7 @@ class oViewProviderTree:
             doc = App.ActiveDocument #crap
             self.Object = doc.getObject(state['ObjectName'])
 
-    def oclaimChildren(self):
+    def claimChildren(self):
         objs = []
         if hasattr(self.Object.Proxy,"Base"):
             objs.append(self.Object.Proxy.Base)

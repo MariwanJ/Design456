@@ -61,7 +61,7 @@ DIRECTMODELING_PATH=os.path.join(__dir__,'DirectModeling/')
 __dirname__ = os.path.join(App.getResourceDir(), "Mod", "Draft")
 
 # Defeaturing WB
-DEFEATURING_WB = os.path.join(__dir__,'DefeaturingWB/')
+DEFEATURING_WB = os.path.join(__dir__,'Defeaturing/')
 DefeaturingWB_icons_path =  os.path.join( DEFEATURING_WB, 'Resources', 'icons')
 
 # PART

@@ -52,20 +52,20 @@ from PySide import QtCore, QtGui
 
 __version__ = "v1.0.2"
 
-def f_say(msg):
+def of_say(msg):
     App.Console.PrintMessage(msg)
     App.Console.PrintMessage('\n')
 
-def f_sayw(msg):
+def of_sayw(msg):
     App.Console.PrintWarning(msg)
     App.Console.PrintWarning('\n')
     
-def f_sayerr(msg):
+def of_sayerr(msg):
     App.Console.PrintError(msg)
     App.Console.PrintWarning('\n')
 
 ##
-def fuzzyCut():
+def ofuzzyCut():
     global fuzzyTolerance
     from PySide import QtCore, QtGui
     
@@ -101,7 +101,7 @@ def fuzzyCut():
         added.Label = 'CutFuzzy'
         doc.recompute()
 ##
-def fuzzyUnion():
+def ofuzzyUnion():
     global fuzzyTolerance
     
     fuzzyTolerance = 0.01
@@ -130,7 +130,7 @@ def fuzzyUnion():
     added.Label = 'UnionFuzzy'
     doc.recompute()
 ##
-def fuzzyCommon():
+def ofuzzyCommon():
     global fuzzyTolerance
     
     fuzzyTolerance = 0.01

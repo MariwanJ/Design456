@@ -59,8 +59,8 @@ from PySide import QtCore, QtGui
 import tempfile
 import Design456Init
 import base64
-import DefeaturingWB.oDefeaturingCMD
-from DefeaturingWB.oimage_file import *
+import Defeaturing.oDefeaturingCMD
+from Defeaturing.oimage_file import *
 from draftutils.translate import translate  # for translation
 try:
     from PathScripts.PathUtils import horizontalEdgeLoop
@@ -69,7 +69,7 @@ try:
 except:
     App.Console.PrintError('Path WB not found\n')
 
-import DefeaturingWB.oimage_file
+import Defeaturing.oimage_file
 from sys import platform as _platform
 
 
@@ -327,7 +327,7 @@ def orefine_parametric_RH():
                     newobj = selobj.Document.addObject(
                         "Part::FeaturePython", 'refined')
                     OpenSCADFeatures.RefineShape(newobj, selobj.Object)
-                    OpenSCADFeatures.oViewProviderTree(newobj.ViewObject)
+                    OpenSCADFeatures.ViewProviderTree(newobj.ViewObject)
                     # to do: see if it is possible to conserve colors in refining
                     ao = App.ActiveDocument.ActiveObject
                     docG.ActiveObject.ShapeColor = docG.getObject(
@@ -527,12 +527,12 @@ def ocheckShape():
         App.Console.PrintWarning(msg)
 
 
-def osewShape(sel=None):
+def sewShape(sel=None):
     """checking Shape"""
     try:
         doc = App.ActiveDocument
         docG = Gui.ActiveDocument
-        App.ActiveDocument.openTransaction(translate("Design456", "osewShape"))
+        App.ActiveDocument.openTransaction(translate("Design456", "sewShape"))
         returnedObj=[]
         if  isinstance(sel,bool):
             sel=None
@@ -543,7 +543,7 @@ def osewShape(sel=None):
             o = sel[0]
             if hasattr(o, 'Shape'):
                 sh = o.Shape.copy()
-                sh.osewShape()
+                sh.sewShape()
                 sl = Part.Solid(sh)
                 docG.getObject(o.Name).Visibility = False
                 newSolid=App.ActiveDocument.addObject("Part::Feature","Solid")
@@ -565,14 +565,14 @@ def osewShape(sel=None):
             App.Console.PrintWarning(msg)
         App.ActiveDocument.commitTransaction()  # undo reg.
     except Exception as err:
-        App.Console.PrintError("'osewShape' Failed. "
+        App.Console.PrintError("'sewShape' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
 
 
-def ogetTolerance():
+def getTolerance():
     """getting Tolerance"""
 
     doc = App.ActiveDocument
@@ -582,7 +582,7 @@ def ogetTolerance():
     if len(sel) == 1:
         o = sel[0]
         if hasattr(o, 'Shape'):
-            tol = o.Shape.ogetTolerance(0)
+            tol = o.Shape.getTolerance(0)
             oi_say(omk_str(o.Label)+' tolerance = '+str(tol))
     else:
         msg = "Select one or more object(s) to be checked!\n"
@@ -602,7 +602,7 @@ def osetTolerance():
             o = sel[0]
             if hasattr(o, 'Shape'):
                 ns = o.Shape.copy()
-                oi_say(omk_str(o.Label)+' tolerance = '+str(ns.ogetTolerance(0)))
+                oi_say(omk_str(o.Label)+' tolerance = '+str(ns.getTolerance(0)))
                 new_tol = float(oRHDockWidget.ui.tolerance_value.text())
                 ns.fixTolerance(new_tol)  # 1e-4)
                 docG.getObject(o.Name).Visibility = False
@@ -619,7 +619,7 @@ def osetTolerance():
                     o.Name).Transparency
                 ao.Label = 'Solid'
                 oi_say(omk_str(ao.Label)+' tolerance = ' +
-                      str(ao.Shape.ogetTolerance(0)))
+                      str(ao.Shape.getTolerance(0)))
         else:
             msg = "Select one or more object(s) to be checked!\n"
             reply = QtGui.QMessageBox.information(None, "Warning", msg)
@@ -1638,8 +1638,8 @@ def oPartDefeaturing_RH():
         docG = Gui.ActiveDocument
 
         import Part
-        from DefeaturingWB import oDefeaturingFeature
-        import  DefeaturingWB.oDefeaturingFeature 
+        from Defeaturing import oDefeaturingFeature
+        import  Defeaturing.oDefeaturingFeature 
         unique_obj = set(rh_obj)
         unique_obj_count = len(unique_obj)
 
@@ -1647,7 +1647,7 @@ def oPartDefeaturing_RH():
         if unique_obj_count == 1 and len(rh_faces) > 0:
             newobj = doc.addObject("Part::FeaturePython", 'defeat')
             oDefeaturingFeature.oDefeatShape(rh_faces_names, newobj, rh_obj[0])
-            oDefeaturingFeature.oViewProviderTree(newobj.ViewObject)
+            oDefeaturingFeature.ViewProviderTree(newobj.ViewObject)
             newobj.Label = 'defeat_%s' % rh_obj[0].Label
             rh_obj[0].ViewObject.hide()
             App.ActiveDocument.recompute()
@@ -1723,7 +1723,7 @@ def oshape_Connect_RH():
             j.purgeTouched()
             connected_obj = doc.ActiveObject
             connected_objG = docG.ActiveObject
-            for obj in j.ViewObject.Proxy.oclaimChildren():
+            for obj in j.ViewObject.Proxy.claimChildren():
                 obj.ViewObject.hide()
                 connected_objG.ShapeColor = docG.getObject(obj.Name).ShapeColor
                 connected_objG.LineColor = docG.getObject(obj.Name).LineColor
@@ -2262,9 +2262,9 @@ class oUi_DockWidget(object):
         pm.loadFromData(base64.b64decode(getTol_b64))
         self.PB_getTol.setIconSize(QtCore.QSize(btn_sizeX, btn_sizeY))
         self.PB_getTol.setIcon(QtGui.QIcon(pm))
-        self.PB_getTol.clicked.connect(ogetTolerance)
+        self.PB_getTol.clicked.connect(getTolerance)
         self.PB_getTol.setToolTip("get Tolerance value")
-        self.PB_sewS.clicked.connect(osewShape)
+        self.PB_sewS.clicked.connect(sewShape)
         pm = QtGui.QPixmap()
         pm.loadFromData(base64.b64decode(sew_shape_b64))
         self.PB_sewS.setIconSize(QtCore.QSize(btn_sizeX, btn_sizeY))
@@ -2291,7 +2291,7 @@ class oUi_DockWidget(object):
         self.PB_RHhelp.clicked.connect(oonHelp)
 
         pm = QtGui.QPixmap()
-        pm.loadFromData(base64.b64decode(closeW_b64))
+        pm.loadFromData(base64.b64decode(ocloseW_b64))
         self.PB_close.setGeometry(QtCore.QRect(-1, -1, 20, 20))
         self.PB_close.setToolTip("close")
         self.PB_close.setText("")
