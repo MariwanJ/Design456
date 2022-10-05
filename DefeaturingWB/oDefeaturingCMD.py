@@ -52,16 +52,16 @@ try:
 except:
     App.Console.PrintError('Path WB not found\n')
 
-reload_Gui=False#True
+#reload_Gui=False#True
 
-def reload_lib(lib):
+def oreload_lib(lib):
     if (sys.version_info > (3, 0)):
         import importlib
         importlib.reload(lib)
     else:
         reload (lib)
 
-class DefeatShapeFeature:
+class oDefeatShapeFeature:
     def IsActive(self):
 
         if hasattr(Part, "OCC_VERSION"):
@@ -90,41 +90,21 @@ class DefeatShapeFeature:
 
             for selobj in selection:
                 newobj=selobj.Document.addObject("Part::FeaturePython",'defeat')
-                DefeaturingFeature.DefeatShape(rh_faces_names,newobj,selobj.Object)
-                DefeaturingFeature.ViewProviderTree(newobj.ViewObject)
+                DefeaturingFeature.oDefeatShape(rh_faces_names,newobj,selobj.Object)
+                DefeaturingFeature.oViewProviderTree(newobj.ViewObject)
                 newobj.Label='defeat_%s' % selobj.Object.Label
                 selobj.Object.ViewObject.hide()
             App.ActiveDocument.recompute()
     def GetResources(self):
         return {'Pixmap'  : os.path.join(DefeaturingWB_icons_path,'DefeaturingParametric.svg'), 'MenuText': \
-                QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',\
+                QtCore.QT_TRANSLATE_NOOP('oDefeatShapeFeature',\
                 'Defeat Shape Feature'), 'ToolTip': \
-                QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',\
+                QtCore.QT_TRANSLATE_NOOP('oDefeatShapeFeature',\
                 'Create Defeat Shape Parametric Feature')}
-Gui.addCommand('DefeatShapeFeature',DefeatShapeFeature())
+Gui.addCommand('oDefeatShapeFeature',oDefeatShapeFeature())
 
 
-# class DefeaturingTools:
-#     "defeaturing tools object"
- 
-#     def GetResources(self):
-#         return {'Pixmap'  : os.path.join( DefeaturingWB_icons_path , 'defeaturingTools.svg') , # the name of a svg file available in the resources
-#                      'MenuText': "Defeaturing Tools" ,
-#                      'ToolTip' : "Defeaturing workbench"}
- 
-#     def IsActive(self):
-#         import os, sys
-#         return True
- 
-#     def Activated(self):
-#         # do something here...
-#         import DefeaturingTools
-#         reload_lib(DefeaturingTools)
-#         App.Console.PrintWarning( 'Defeaturing Tools active :)\n' )
- 
-# Gui.addCommand('DefeaturingTools',DefeaturingTools())
-
-class DF_SelectLoop:
+class oDF_SelectLoop:
     "the Path command to complete loop selection definition"
     def __init__(self):
         self.obj = None
@@ -172,9 +152,9 @@ class DF_SelectLoop:
                 'ToolTip': "Defeaturing SelectLoop"} 
                 
 if App.GuiUp:
-    Gui.addCommand('DF_SelectLoop', DF_SelectLoop())
+    Gui.addCommand('oDF_SelectLoop', oDF_SelectLoop())
 
-class refineFeatureTool:
+class orefineFeatureTool:
     "refine Feature Parametric"
  
     def GetResources(self):
@@ -196,7 +176,7 @@ class refineFeatureTool:
                 if hasattr(selobj.Object,"Shape"):        
                     newobj=selobj.Document.addObject("Part::FeaturePython",'refined')
                     OpenSCADFeatures.RefineShape(newobj,selobj.Object)
-                    OpenSCADFeatures.ViewProviderTree(newobj.ViewObject)
+                    OpenSCADFeatures.oViewProviderTree(newobj.ViewObject)
                     ## to do: see if it is possible to conserve colors in refining
                     docG.ActiveObject.ShapeColor=docG.getObject(selobj.Object.Name).ShapeColor
                     docG.ActiveObject.LineColor=docG.getObject(selobj.Object.Name).LineColor
@@ -207,10 +187,10 @@ class refineFeatureTool:
                     newobj.Label=selobj.Object.Label
                     selobj.Object.ViewObject.hide()
             doc.recompute()
-Gui.addCommand('refineFeatureTool',refineFeatureTool())
+Gui.addCommand('orefineFeatureTool',orefineFeatureTool())
 
 
-class FuzzyCut:
+class oFuzzyCut:
     "Fuzzy boolean Cut"
  
     def GetResources(self):
@@ -232,15 +212,15 @@ class FuzzyCut:
  
     def Activated(self):
         # do something here...
-        import DefeaturingWB.FuzzyTools 
-        reload_lib(DefeaturingWB.FuzzyTools)
-        DefeaturingWB.FuzzyTools.fuzzyCut()
+        import DefeaturingWB.oFuzzyTools 
+        oreload_lib(DefeaturingWB.oFuzzyTools)
+        DefeaturingWB.oFuzzyTools.fuzzyCut()
 
  
-Gui.addCommand('FuzzyCut',FuzzyCut())
+Gui.addCommand('oFuzzyCut',oFuzzyCut())
 
 
-class FuzzyUnion:
+class oFuzzyUnion:
     "Fuzzy boolean Union"
     def GetResources(self):
         return {'Pixmap'  : os.path.join( DefeaturingWB_icons_path , 'FuzzyUnion.svg') , # the name of a svg file available in the resources
@@ -261,13 +241,13 @@ class FuzzyUnion:
 
     def Activated(self):
         # do something here...
-        import DefeaturingWB.FuzzyTools
-        reload_lib(DefeaturingWB.FuzzyTools)
-        DefeaturingWB.FuzzyTools.fuzzyUnion()
+        import DefeaturingWB.oFuzzyTools
+        oreload_lib(DefeaturingWB.oFuzzyTools)
+        DefeaturingWB.oFuzzyTools.fuzzyUnion()
  
-Gui.addCommand('FuzzyUnion',FuzzyUnion())
+Gui.addCommand('oFuzzyUnion',oFuzzyUnion())
 
-class FuzzyCommon:
+class oFuzzyCommon:
     "Fuzzy boolean Common"
  
     def GetResources(self):
@@ -289,9 +269,9 @@ class FuzzyCommon:
 
     def Activated(self):
         # do something here...
-        import DefeaturingWB.FuzzyTools
-        reload_lib(DefeaturingWB.FuzzyTools)
-        DefeaturingWB.FuzzyTools.fuzzyCommon()
+        import DefeaturingWB.oFuzzyTools
+        oreload_lib(DefeaturingWB.oFuzzyTools)
+        DefeaturingWB.oFuzzyTools.fuzzyCommon()
 
  
-Gui.addCommand('FuzzyCommon',FuzzyCommon())
+Gui.addCommand('oFuzzyCommon',oFuzzyCommon())

@@ -61,9 +61,9 @@ class Design456 (Gui.Workbench):
         import Design456_Alignment as _alignment
         import Design456_SelectionGate as SelGate
         import DirectModeling.directModelingCommands as dModeling
-        import DefeaturingWB.DefeaturingTools
-        import DefeaturingWB.DefeaturingCMD  
-        import DefeaturingWB.FuzzyTools
+        import DefeaturingWB.oDefeaturingTools
+        import DefeaturingWB.oDefeaturingCMD  
+        import DefeaturingWB.oFuzzyTools
         import Design456Init
         from Design456Pref import Design456Preferences
         import Design456_Segmented as _segmented
@@ -93,11 +93,11 @@ class Design456 (Gui.Workbench):
         self.appendMenu("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
         
         # Defeaturing WB  added to Design456 
-        self.appendToolbar("Defeaturing Tools", ["DF_SelectLoop","refineFeatureTool","DefeatShapeFeature"])
+        self.appendToolbar("Defeaturing Tools", ["oDF_SelectLoop","orefineFeatureTool","oDefeatShapeFeature"])
         #self.appendMenu("ksu Tools", ["ksuTools","ksuToolsEdit"])
-        # self.appendMenu("Defeaturing Tools", ["refineFeatureTool","DF_SelectLoop"])
-        self.appendToolbar("Fuzzy Tools", ["FuzzyCut","FuzzyUnion","FuzzyCommon"])
-        # self.appendMenu("Fuzzy Tools", ["FuzzyCut","FuzzyUnion","FuzzyCommon"])
+        # self.appendMenu("Defeaturing Tools", ["orefineFeatureTool","oDF_SelectLoop"])
+        self.appendToolbar("Fuzzy Tools", ["oFuzzyCut","oFuzzyUnion","oFuzzyCommon"])
+        # self.appendMenu("Fuzzy Tools", ["oFuzzyCut","oFuzzyUnion","oFuzzyCommon"])
         Gui.addIconPath(Design456Init.ICON_PATH)
 
         # Design456Part

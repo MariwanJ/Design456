@@ -40,8 +40,8 @@ from __future__ import unicode_literals
 
 import os, sys
 
-def module_path():
+def omodule_path():
     return os.path.dirname(__file__)
  
-def abs_module_path():
+def oabs_module_path():
     return os.path.realpath(__file__)

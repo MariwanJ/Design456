@@ -53,7 +53,7 @@ use_cm = True
 '''
 This Script includes python Features to represent Defeaturing Operations
 '''
-class ViewProviderTree:
+class oViewProviderTree:
     "A generic View Provider for Elements with Children"
         
     def __init__(self, obj):
@@ -66,7 +66,7 @@ class ViewProviderTree:
 
     def getIcon(self):
         global defeat_icon
-        if isinstance(self.Object.Proxy,DefeatShape):
+        if isinstance(self.Object.Proxy,oDefeatShape):
             return(defeat_icon)
 
     def updateData(self, fp, prop):
@@ -91,7 +91,7 @@ class ViewProviderTree:
             doc = App.ActiveDocument #crap
             self.Object = doc.getObject(state['ObjectName'])
 
-    def claimChildren(self):
+    def oclaimChildren(self):
         objs = []
         if hasattr(self.Object.Proxy,"Base"):
             objs.append(self.Object.Proxy.Base)
@@ -107,7 +107,7 @@ class ViewProviderTree:
    
 
 ##
-class DefeatShape:
+class oDefeatShape:
     '''return a refined shape'''
     def __init__(self, fc, obj, child=None):
         

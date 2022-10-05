@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 # ***************************************************************************
 
 
-# Form implementation generated from reading ui file 'C:\Users\userC\Documents\GitHub\Defeaturing_WB\DefeaturingTools.ui'
+# Form implementation generated from reading ui file 'C:\Users\userC\Documents\GitHub\Defeaturing_WB\oDefeaturingTools.ui'
 #
 # Created: Wed Jul 18 12:50:18 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
@@ -36,7 +36,7 @@ from __future__ import unicode_literals
 
 from PySide import QtCore, QtGui
 
-class Ui_DockWidget(object):
+class oUi_DockWidget(object):
     def setupUi(self, DockWidget):
         DockWidget.setObjectName("DockWidget")
         DockWidget.resize(260, 534)
