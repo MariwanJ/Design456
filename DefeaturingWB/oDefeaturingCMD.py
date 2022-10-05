@@ -101,7 +101,7 @@ class oDefeatShapeFeature:
                 'Defeat Shape Feature'), 'ToolTip': \
                 QtCore.QT_TRANSLATE_NOOP('DefeatShapeFeature',\
                 'Create Defeat Shape Parametric Feature')}
-Gui.addCommand('DefeatShapeFeature',oDefeatShapeFeature())
+Gui.addCommand('oDefeatShapeFeature',oDefeatShapeFeature())
 
 
 class oDF_SelectLoop:

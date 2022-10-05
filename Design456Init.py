@@ -37,7 +37,7 @@ ICON path should be always added as below
 
 """
 
-__updated__ = '2022-05-10 20:37:42'
+__updated__ = '2022-10-05 20:55:16'
 
 
 #Design456 
@@ -61,7 +61,7 @@ DIRECTMODELING_PATH=os.path.join(__dir__,'DirectModeling/')
 __dirname__ = os.path.join(App.getResourceDir(), "Mod", "Draft")
 
 # Defeaturing WB
-DEFEATURING_WB = os.path.join(__dir__,'Defeaturing/')
+DEFEATURING_WB = os.path.join(__dir__,'DefeaturingWB/')
 DefeaturingWB_icons_path =  os.path.join( DEFEATURING_WB, 'Resources', 'icons')
 
 # PART

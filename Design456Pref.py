@@ -40,7 +40,7 @@ from draftutils.translate import translate   #for translate
 
 #TODO :  FIXME: Further preferences will be added later 
 
-__updated__ = '2022-07-12 18:58:20'
+__updated__ = '2022-10-05 21:44:57'
 
 
 class Design456PrefValues:
@@ -198,7 +198,7 @@ class Design456Preferences:
     
     @classmethod
     def loadSettings(self):
-        """ Load preferencess
+        """ Load preferences
         """
         Design456pref_var.PlaneGridEnabled=getPlaneGrid()
         Design456pref_var.PlaneGridSize=getPlaneGridSize()
