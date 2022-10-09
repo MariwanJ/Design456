@@ -80,13 +80,14 @@ mywin.show()
 
 @dataclass
 class userDataObject:
-    __slots__ = ['events', 'callerObject', 'ballArrows']
+    __slots__ = ['ballObj', 'events', 'callerObject', 'AxisObjects']
 
     def __init__(self):
+        self.ballObj = None         # Class/Tool uses
         self.events = None          # events - save handle events here
-        self.callerObject = None    # Link to the Tool that creates this widget
-        self.ballArrows= None       # will consists of a link to the whole widget
-        self.ActiveAxis=""
+        self.callerObject = None    #
+        self.AxisObjects= None
+
 
 # *******************************CALLBACKS - DEMO *****************************
 def xAxis_cb(userData: userDataObject = None):
@@ -199,11 +200,12 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                                 [k * 0.9 for k in self.w_color[2]]]
 
         self.w_userData = userDataObject()  # Keep info about the whole widget
+        self.w_userData.ballObj = self
+
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.vectors = self.w_vector
-        self.ballArrows= self
-                
+
         # We must make it higher or it will intersect the object and won't be visible
         # TODO:Check if this works always?
         self.w_lbluserData.vectors[0].x = self.w_lbluserData.vectors[0].x + \
@@ -282,19 +284,15 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     return 0  # We couldn't use the event .. so return 0
     
                 if clickwdgdNode[0] is True:
-                    self.w_userData.ActiveAxis="X"
                     self.w_xAxis_cb_(self.w_userData)
                     self.do_callback()
                 elif clickwdgdNode[1] is True:
-                    self.w_userData.ActiveAxis="Y"
                     self.w_yAxis_cb_(self.w_userData)
                     self.do_callback()
                 elif clickwdgdNode[2] is True:
-                    self.w_userData.ActiveAxis="Z"
                     self.w_zAxis_cb_(self.w_userData)
                     self.do_callback()
                 elif clickwdgdNode[3] is True:
-                    self.w_userData.ActiveAxis="A"  #All three, the ball is moved
                     self.w_ball_cb_(self.w_userData)
                     self.do_callback()
                 
@@ -353,7 +351,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             # We can put them in a tuple but it is better not doing so
             self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
-      
+                            
         except Exception as err:
             App.Console.PrintError("'draw Fr_one_Arrow_widget' Failed. "
                                    "{err}\n".format(err=str(err)))

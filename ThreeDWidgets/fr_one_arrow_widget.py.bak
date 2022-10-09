@@ -54,34 +54,34 @@ import ThreeDWidgets.fr_coinwindow as wnn
 from ThreeDWidgets.constant import FR_COLOR
 
 class test:
-        global runOunce
-        def __init__(self):
-                self.runOunce = None
+	global runOunce
+	def __init__(self):
+		self.runOunce = None
 
-        def callback_move(self,userData : wd.userDataObject = None):
+	def callback_move(self,userData : wd.userDataObject = None):
      
-             PadObj = userData.PadObj  # Arrow object
-             click=App.Vector(PadObj.w_parent.w_lastEventXYZ.Coin_x,
+	     PadObj = userData.PadObj  # Arrow object
+	     click=App.Vector(PadObj.w_parent.w_lastEventXYZ.Coin_x,
                                             PadObj.w_parent.w_lastEventXYZ.Coin_y,
                                             PadObj.w_parent.w_lastEventXYZ.Coin_z)
-             if self.runOunce is None:
-                   self.runOunce = click.sub(PadObj.w_vector[0])
+	     if self.runOunce is None:
+	           self.runOunce = click.sub(PadObj.w_vector[0])
 
-             PadObj.w_vector[0]=click.sub(self.runOunce)
-             
-             PadObj.redraw()
+	     PadObj.w_vector[0]=click.sub(self.runOunce)
+	     
+	     PadObj.redraw()
 
-             print(self.runOunce,"self.runOunce")
+	     print(self.runOunce,"self.runOunce")
 
-        def runme(self):
-                mywin = wnn.Fr_CoinWindow()
-                vectors=[App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 0.0)] 
-                rot=[0,0,0,0]
-                root=wd.Fr_OneArrow_Widget(vectors, "X-Axis")
-                root.w_move_callback_=self.callback_move
-                root.enableDisc()
-                mywin.addWidget(root)
-                mywin.show()
+	def runme(self):
+		mywin = wnn.Fr_CoinWindow()
+		vectors=[App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 0.0)] 
+		rot=[0,0,0,0]
+		root=wd.Fr_OneArrow_Widget(vectors, "X-Axis")
+		root.w_move_callback_=self.callback_move
+		root.enableDisc()
+		mywin.addWidget(root)
+		mywin.show()
 
 a=test()
 a.runme()

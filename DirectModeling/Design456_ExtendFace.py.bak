@@ -563,9 +563,6 @@ class Design456_ExtendFace:
         if type(events) != int:
             print("event was not int")
             return
-        if events != FR_EVENTS.FR_MOUSE_DRAG:
-            return #We accept only mouse drag
-                
         if self.discObj.w_userData.Axis_cb is False:
             if self.discObj.w_userData.Disc_cb is True:
                 self.RotatingFace_cb(userData)

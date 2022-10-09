@@ -94,6 +94,9 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
+        
+        if events != FR_EVENTS.FR_MOUSE_DRAG:
+            return #We accept only mouse drag
                 
         if linktocaller.direction == "+x":
             linktocaller.ChamferRadius = (-linktocaller.endVector.x +

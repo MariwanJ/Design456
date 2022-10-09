@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-10-08 18:07:41'
+__updated__ = '2022-10-03 20:53:08'
 
 
 """

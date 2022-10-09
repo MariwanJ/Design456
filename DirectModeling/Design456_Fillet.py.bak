@@ -92,10 +92,6 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
             linktocaller.startVector = linktocaller.endVector
             if not ArrowObject.has_focus():
                 ArrowObject.take_focus()
-        
-        if events != FR_EVENTS.FR_MOUSE_DRAG:
-            return #We accept only mouse drag
-        
         if linktocaller.direction == "+x":
             linktocaller.FilletRadius = (-linktocaller.endVector.x +
                                          linktocaller.startVector.x)/MouseScaleFactor
@@ -364,7 +360,7 @@ class Design456_SmartFillet:
             print("Error couldn't find the shape type", self.objectType)
         return EdgesToBeChanged
 
-    def reCreateFilletObject(self):
+    def reCreatefilletObject(self):
         """
             Use this function to recreate the target object after applying the fillet radius.
         """
@@ -424,7 +420,7 @@ class Design456_SmartFillet:
         App.ActiveDocument.openTransaction(
             translate("Design456", "SmartFillet"))
         o.Transparency = 80
-        self.reCreateFilletObject()
+        self.reCreatefilletObject()
 
         # get rotation
         rotation = self.getArrowPosition()

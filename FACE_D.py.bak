@@ -291,7 +291,7 @@ class StepSizeGUI(QtGui.QMainWindow):
     def initUI(self):
         # create window
         _translate = QtCore.QCoreApplication.translate
-        # define window                x,y,width,height
+        # define window		x,y,width,height
         self.setGeometry(1200, 300, 440, 140)
         self.lblUnit = QtGui.QLabel(self)
         self.lblUnit.setGeometry(QtCore.QRect(10, 10, 140, 70))

@@ -1,24 +1,24 @@
 # ***************************************************************************
-# *          Copyright (c) 2019  Eddy Verlinden , Genk Belgium          (eddyverl)                *
-# *                                                                                                                                                        *
-# *          This file is a part of the FreeCAD CAx development system.                        *
-# *                                                                                                                                                        *
-# *          This program is free software; you can redistribute it and/or modify        *
-# *          it under the terms of the GNU Lesser General Public License (LGPL)        *
-# *          as published by the Free Software Foundation; either version 2 of                *
-# *          the License, or (at your option) any later version.                                        *
-# *          for detail see the LICENCE text file.                                                                        *
-# *                                                                                                                                                        *
-# *          FreeCAD is distributed in the hope that it will be useful,                        *
-# *          but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-# *          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.        See the                        *
-# *          GNU Lesser General Public License for more details.                                        *
-# *                                                                                                                                                        *
-# *          You should have received a copy of the GNU Library General Public                *
-# *          License along with FreeCAD; if not, write to the Free Software                *
-# *          Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA        02111-1307        *
-# *          USA                                                                                                                                        *
-# *                                                                                                                                                        *
+# *	  Copyright (c) 2019  Eddy Verlinden , Genk Belgium	  (eddyverl)		*
+# *																			*
+# *	  This file is a part of the FreeCAD CAx development system.			*
+# *																			*
+# *	  This program is free software; you can redistribute it and/or modify	*
+# *	  it under the terms of the GNU Lesser General Public License (LGPL)	*
+# *	  as published by the Free Software Foundation; either version 2 of		*
+# *	  the License, or (at your option) any later version.					*
+# *	  for detail see the LICENCE text file.									*
+# *																			*
+# *	  FreeCAD is distributed in the hope that it will be useful,			*
+# *	  but WITHOUT ANY WARRANTY; without even the implied warranty of		*
+# *	  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the			*
+# *	  GNU Lesser General Public License for more details.					*
+# *																			*
+# *	  You should have received a copy of the GNU Library General Public		*
+# *	  License along with FreeCAD; if not, write to the Free Software		*
+# *	  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA	02111-1307	*
+# *	  USA																	*
+# *																			*
 # ***************************************************************************
 
 # Based on examples at : https://www.freecadweb.org/wiki/Workbench_creation
@@ -26,22 +26,22 @@
 # Version 01.07
 
 
-# Version 01.02         (2020-01-15)
+# Version 01.02	 (2020-01-15)
 # added geodesic sphere
 
-# version 01.03          (2020-01-23)
-# added hexahedron        (cube)
+# version 01.03	  (2020-01-23)
+# added hexahedron	(cube)
 
-# version 01.04         (2020-01-30)
+# version 01.04	 (2020-01-30)
 # renamed Mod to Pyramids-and-Polyhedrons
 
-# version 01.05         (2020-02-24)
+# version 01.05	 (2020-02-24)
 # Side of icosahedron_truncated was side of icosahedron -> corrected
 
-# version 01.06         (2020-12-21)
+# version 01.06	 (2020-12-21)
 # Pyramids are rotatable around the z-axis and start parallel to the x-axis
 
-# version 01.07         (2020-12-26)
+# version 01.07	 (2020-12-26)
 # Some namechanges
 
 # version 01.07a (2020-12-30)
@@ -328,9 +328,9 @@ Gui.addCommand('Pyramid', Pyramid())
 class TetrahedronBase:
     # == basics ==
     # R = z / 4 * sqrt(6)
-    # ro = z / 12 * sqrt(6)          -->        ro = R / 3
+    # ro = z / 12 * sqrt(6)	  -->	ro = R / 3
     # z = 4 * R / sqrt(6)
-    # h = z / 3 * sqrt(6) = 4 * R / sqrt(6) /3 * sqrt(6) = 4 * R / 3         = ro + R
+    # h = z / 3 * sqrt(6) = 4 * R / sqrt(6) /3 * sqrt(6) = 4 * R / 3	 = ro + R
     # radius at level = z / 2 / cos(30) = (4 * R / sqrt(6)) / 2 / sqrt(3) * 2 = 4 * R / (sqrt(6) * sqrt(3))= 4 * R / (3 * sqrt(2)
 
 
@@ -825,7 +825,7 @@ class Icosahedron_truncatedBase:
             vertexes_low = horizontal_regular_polygon_vertexes(
                 5, radius2, -height)
             vertexes_high = horizontal_regular_polygon_vertexes(
-                5, radius2, height,         -math.pi/5)
+                5, radius2, height,	 -math.pi/5)
             vertex_top = (0, 0, radius)
 
             vertexes_bottom = []
@@ -987,7 +987,7 @@ def geodesic_radius2side(radius, div):
 
 
 def geodesic_side2radius(side, div):
-    # approximatily experience values!        Not all sides are equal!
+    # approximatily experience values!	Not all sides are equal!
     dictsides = {"2": 618.034, "3": 412.41, "4": 312.87, "5": 245.09,
                  "6": 205.91, "7": 173.53, "8": 152.96, "9": 135.96, "10": 121.55}
     div = int(round(div))
