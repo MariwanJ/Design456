@@ -46,7 +46,7 @@ from ThreeDWidgets import fr_label_draw
 from Design456Pref import Design456pref_var
 # The ration of delta mouse to mm
 MouseScaleFactor = 1
-__updated__ = '2022-07-01 11:54:45'
+__updated__ = '2022-10-09 20:33:13'
 
 '''
     How it works: 
@@ -118,7 +118,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
         App.ActiveDocument.recompute()
 
     except Exception as err:
-        App.Console.PrintError("'View Inside objects' Failed. "
+        App.Console.PrintError("'callback_move' Failed. "
                                "{err}\n".format(err=str(err)))
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

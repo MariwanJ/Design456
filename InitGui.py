@@ -30,7 +30,7 @@ import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
 
-__updated__ = '2022-09-08 20:55:36'
+__updated__ = '2022-10-09 21:30:30'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -51,7 +51,6 @@ class Design456 (Gui.Workbench):
         self.myDocObserver = None
         Design456Init.pToWorkbench=self
 
-
     def Initialize(self):
         "This function is executed when FreeCAD starts"
         import BOPTools  # as bop
@@ -70,7 +69,7 @@ class Design456 (Gui.Workbench):
         import Design456_ICONPanel  #Side panel for ICONS
         import Design456_Grid as _grid
 
-        # from Part import CommandShapes     #Tube  not working
+        # from Part import CommandShapes     
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
         self.appendToolbar("Design456Part", designPart.Design456Part.list)

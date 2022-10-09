@@ -42,7 +42,7 @@ import Design456_Magnet
 from ThreeDWidgets.constant import FR_SELECTION
 # Toolbar class
 # Based  on https://forum.freecadweb.org/viewtopic.php?style=4&f=22&t=29138&start=20
-__updated__ = '2022-07-29 11:43:33'
+__updated__ = '2022-10-09 20:41:51'
 
 
 #TODO:FIXME: Don't know if this is a useful tool to have
@@ -55,8 +55,7 @@ class Design456_ViewInsideObjects:
     def Activated(self):
         try:
             clip_plane = coin.SoClipPlaneManip()
-            clip_plane.setValue(coin.SbBox3f(
-                4, 4, 4, 8, 8, 8), coin.SbVec3f(-1, -1, -1), 1)
+            clip_plane.setValue(coin.SbBox3f(4, 4, 4, 8, 8, 8), coin.SbVec3f(-1, -1, -1), 1)
             Gui.ActiveDocument.ActiveView.getSceneGraph().insertChild(clip_plane, 1)
             Gui.ActiveDocument.ActiveView.viewAxonometric()
             Gui.ActiveDocument.ActiveView.fitAll()

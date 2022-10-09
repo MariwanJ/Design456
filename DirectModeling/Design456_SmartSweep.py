@@ -47,9 +47,10 @@ from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 import math
 from ThreeDWidgets import fr_label_draw
+import ThreeDWidgets.fr_coinwindow as win
 
 
-__updated__ = '2022-10-08 18:05:45'
+__updated__ = '2022-10-09 21:34:18'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -153,7 +154,7 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
             return
 
         except Exception as err:
-            App.Console.PrintError("'View Inside objects' Failed. "
+            App.Console.PrintError("'DraggingCallback' Failed. "
                                 "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -252,6 +253,7 @@ class Design456_SmartSweep:
         self.WidgetObj=[]
         self.CoinThreeDWindow=None
         
+        
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'SmartSweep.svg',
                 'MenuText': "SmartSweep",
@@ -270,9 +272,15 @@ class Design456_SmartSweep:
         App.ActiveDocument.recompute()
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
+        if self.CoinThreeDWindow is None:
+            self.CoinThreeDWindow = win.Fr_CoinWindow()
+        self.CoinThreeDWindow.addWidget(self.smartInd)
+        mw = self.getMainWindow()
+        self.CoinThreeDWindow.show()
+
         for i in range(0,len(newObj.Vertices)):
             self.WidgetObj.append(threeArrowBall(newObj.Vertices[i]))
-            wnn.addWidget(self.WidgetObj[0])
+            self.CoinThreeDWindow.addWidget(self.WidgetObj[0])
                 
         #v = Gui.ActiveDocument.ActiveView
         #App.ActiveDocument.recompute()
