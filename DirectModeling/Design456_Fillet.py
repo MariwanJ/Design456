@@ -37,11 +37,14 @@ import Design456Init
 from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_arrow_widget import Fr_Arrow_Widget
 from ThreeDWidgets import fr_arrow_widget
+from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
+import math
+from ThreeDWidgets import fr_label_draw
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1.5
-__updated__ = '2022-07-11 21:32:08'
+__updated__ = '2022-10-09 18:02:18'
 
 
 '''
@@ -126,7 +129,7 @@ def callback_move(userData: fr_arrow_widget.userDataObject = None):
 
         linktocaller.FilletLBL.setText(
             "Radius = " + str(round(linktocaller.FilletRadius, 4)))
-        linktocaller.reCreatefilletObject()
+        linktocaller.reCreateFilletObject()
 
     except Exception as err:
         App.Console.PrintError("'MouseMove callback' Failed. "
@@ -199,7 +202,7 @@ class Design456_SmartFillet:
         # Use this to take away the arrow
         # from the object 
         # TODO: What value we should use? FIXME:
-        self.AwayFrom3DObject = 20
+        self.AwayFrom3DObject = 30
         # We cannot have zero. TODO: What value we should use? FIXME:
         self.FilletRadius = 0.0001
         self.objectType = None  # Either shape, Face or Edge.
@@ -397,7 +400,7 @@ class Design456_SmartFillet:
             App.ActiveDocument.recompute()
 
         except Exception as err:
-            App.Console.PrintError("'Design456_SmartFillet' recreatefilletObject-Failed. "
+            App.Console.PrintError("'Design456_SmartFillet' recreateFilletObject-Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -465,8 +468,6 @@ class Design456_SmartFillet:
             self.selectedObj = []
             self.mouseToArrowDiff = 0.0
             self.offset = 0.0
-            self.AwayFrom3DObject = 10
-            self.FilletRadius = 0.0001
             self.objectType = None
             self.Originalname = ''
             self.direction = None
@@ -553,7 +554,7 @@ class Design456_SmartFillet:
             no = App.ActiveDocument.getObject(self.selectedObj[0].Name)
             no.Label = self.Originalname
             App.ActiveDocument.removeObject(temp.Object.Name)
-            self.FilletRadius = 0.00001
+            self.FilletRadius = 0.0001
 
         App.ActiveDocument.recompute()
         self.__del__()  # Remove all smart fillet 3dCOIN widgets

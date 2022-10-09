@@ -192,11 +192,11 @@ class Design456_SmartChamfer:
         # We will make two object, one for visual effect and the other is the original
         self.selectedObj = []
         # 0 is the original    1 is the fake one (just for interactive effect)
-        self.mouseToArrowDiff = None
+        self.mouseToArrowDiff = 0.0
         self.offset = 0.0
-        self.AwayFrom3DObject = 20  # Use this to take away the arrow from the object
+        self.AwayFrom3DObject = 30  # Use this to take away the arrow from the object
         # We cannot have zero. TODO: What value we should use? FIXME:
-        self.ChamferRadius = 0.00001
+        self.ChamferRadius = 0.0001
         self.objectType = None  # Either shape, Face or Edge.
         self.Originalname = ''
         self.direction = None
@@ -285,7 +285,9 @@ class Design456_SmartChamfer:
                     self._vector.x = self.selectedObj[0].Object.Shape.BoundBox.XMax/2
                     self._vector.y = self.selectedObj[0].Object.Shape.BoundBox.YMax/2
             return rotation
-
+        if (len(self.selectedObj)==0):
+            print("nothing selected")
+            return
         vectors = self.selectedObj[0].SubObjects[0].Vertexes
         if self.objectType == 'Face':
             self._vector.z = vectors[0].Z
