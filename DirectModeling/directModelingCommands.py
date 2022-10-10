@@ -32,8 +32,9 @@ import DirectModeling.Design456_SmartExtrude
 import DirectModeling.Design456_SmartExtrudeRotate
 import DirectModeling.Design456_ExtendEdge 
 import DirectModeling.Design456_ExtendFace
+import DirectModeling.Design456_SmartSweep
 
-__updated__ = '2021-12-31 08:57:59'
+__updated__ = '2022-10-10 20:04:19'
 
 class Design456_DirectModeling:
     list = ["Design456_SmartScale",
@@ -44,6 +45,7 @@ class Design456_DirectModeling:
             "Design456_SmartExtrudeRotate",
             "Design456_ExtendEdge",
             "Design456_ExtendFace",
+            "Design456_SmartSweep"
 
             ]
     """Design456 Direct Modeling """

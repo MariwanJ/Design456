@@ -27,7 +27,7 @@ from __future__ import unicode_literals
 
 import os
 import sys
-from tkinter import N
+#from tkinter import N
 
 from pivy import coin
 import FreeCAD as App
@@ -48,9 +48,10 @@ from draftutils.translate import translate  # for translation
 import math
 from ThreeDWidgets import fr_label_draw
 import ThreeDWidgets.fr_coinwindow as win
+import Part
+import Draft
 
-
-__updated__ = '2022-10-09 21:34:18'
+__updated__ = '2022-10-10 20:16:28'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -208,15 +209,17 @@ class BaseSmartSweep:
                  _vertices=None, 
                  _section=None):
         obj.addProperty("App::PropertyLinkSub","Section","Sweep",
-                        QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=None
-        obj.addProperty("App::PropertyVectorList","Points","Sweep",
-                        QT_TRANSLATE_NOOP("App::Property","PathVertices")).PathVertices=[]        
+                        QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=_section
+        obj.addProperty("App::PropertyVectorList","PathVertices","Sweep",
+                        QT_TRANSLATE_NOOP("App::Property","PathVertices" )).PathVertices=[]        
         obj.addProperty("App::PropertyBoolean", "Apply", "Sweep").Apply=False
+
+        obj.addProperty("App::PropertyLinkList", "PathPointList", 
+                        "Sweep", "Link to Point objects").PathPointList=[]
 
         self.Type = "SmartSweep"
         BaseSmartSweep.Placement = obj.Placement
         obj.Proxy = self
-
             
     def createObject(self):
         try:
@@ -236,6 +239,7 @@ class BaseSmartSweep:
             self.Section=obj.Section
             self.Vertices=obj.Vertices
             self.Apply=obj.Apply
+            self.PathPointList=obj.PathPointList
             
             objResult = self.createObject()            
             obj.Shape = objResult
@@ -266,10 +270,22 @@ class Design456_SmartSweep:
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         newObj.Placement = plc
 
+        sel=Gui.Selection.getSelectionEx()
         BaseSmartSweep(newObj)
         ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
         v = Gui.ActiveDocument.ActiveView
         App.ActiveDocument.recompute()
+        testOK=True
+        if (len(sel)!=0):
+            for i in range(len(sel)):
+                if type(sel[i].Object.Shape!=Part.Vertex):
+                    testOK=False
+                    break
+            if testOK is True:
+                newObj.PathVertices=sel
+            else:
+                App.Console.PrintError("Wrong objects were selected")
+
         faced.PartMover(v, newObj, deleteOnEscape=True)
 
         if self.CoinThreeDWindow is None:
