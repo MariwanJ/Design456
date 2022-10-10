@@ -50,8 +50,9 @@ from ThreeDWidgets import fr_label_draw
 import ThreeDWidgets.fr_coinwindow as win
 import Part
 import Draft
+from symbol import try_stmt
 
-__updated__ = '2022-10-10 20:16:28'
+__updated__ = '2022-10-10 21:51:07'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -205,17 +206,23 @@ class BaseSmartSweep:
     """ SmartSweep shape with a flexible capabilities 
     """
     Placement=None
+    mywin=None
     def __init__(self, obj,
                  _vertices=None, 
-                 _section=None):
+                 _section=None,
+                 _pathType="Curve"):
+        
         obj.addProperty("App::PropertyLinkSub","Section","Sweep",
                         QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=_section
-        obj.addProperty("App::PropertyVectorList","PathVertices","Sweep",
+        obj.addProperty("App::PropertyVectorList","PathVertices", "Sweep",
                         QT_TRANSLATE_NOOP("App::Property","PathVertices" )).PathVertices=[]        
-        obj.addProperty("App::PropertyBoolean", "Apply", "Sweep").Apply=False
-
-        obj.addProperty("App::PropertyLinkList", "PathPointList", 
-                        "Sweep", "Link to Point objects").PathPointList=[]
+        obj.addProperty("App::PropertyLinkList", "PathPointList", "Sweep", 
+                        QT_TRANSLATE_NOOP("App::Property", "Link to Point objects")).PathPointList=[]
+        obj.addProperty("App::PropertyBool", "Apply", "Execute",
+                        QT_TRANSLATE_NOOP("App::Property","Execute the command" )).Apply=False
+        obj.addProperty("App::PropertyEnumeration", "PathType", "PathType",
+                        "FlowerVase middle type").PathType = ["BSplineCurve","Curve", "Line"]
+        obj.middleType = _pathType
 
         self.Type = "SmartSweep"
         BaseSmartSweep.Placement = obj.Placement
@@ -234,16 +241,60 @@ class BaseSmartSweep:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
+    def recreateCOIN3DObjects(self):
+        try:
+            sel=Gui.Selection.getSelectionEx()
+            if (len(sel)!=0):
+                for i in range(len(sel)):
+                    if type(sel[i].Object.Shape!=Part.Vertex):
+                        testOK=False
+                        break
+                if testOK is True:
+                    self.PathVertices=sel
+                else:
+                    App.Console.PrintError("Wrong objects were selected")
+
+            for i in range(0,len(self.Vertices)):
+                self.WidgetObj.append(threeArrowBall(self.Vertices[i]))
+                BaseSmartSweep.mywin.addWidget(self.WidgetObj[0])
+
+        except Exception as err:
+            App.Console.PrintError("'execute SmartSweep' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+    def reCreateSweep(self):
+        try:
+            if self.PathType == "BSplineCurve":
+                pass
+            elif self.PathType == "Curve":
+                pass
+            elif self.PathType == "Line":
+                pass
+            
+        except Exception as err:
+            App.Console.PrintError("'execute SmartSweep' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)       
+                
     def execute(self, obj):
         try:
-            self.Section=obj.Section
-            self.Vertices=obj.Vertices
-            self.Apply=obj.Apply
-            self.PathPointList=obj.PathPointList
+            self.Section=obj.Section                #
+            self.PathVertices=obj.PathVertices      #List link to Draft.Point objects.
+            self.Apply=obj.Apply                    #Create the sweep 
+            self.PathPointList=obj.PathPointList  #Either you put directly your vertices or you create point objects not both.
+            self.PathType=obj.PathType  #BSplineCurve, Curve, or Line
             
-            objResult = self.createObject()            
-            obj.Shape = objResult
-
+            if BaseSmartSweep.mywin is None:
+                BaseSmartSweep.mywin=win.Fr_CoinWindow()
+            objResult = self.createObject()     
+            if self.Apply is True:       
+                obj.Shape = objResult
+            else:
+                return
         except Exception as err:
             App.Console.PrintError("'execute SmartSweep' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -269,35 +320,14 @@ class Design456_SmartSweep:
         plc.Base = App.Vector(0, 0, 0)
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         newObj.Placement = plc
-
-        sel=Gui.Selection.getSelectionEx()
         BaseSmartSweep(newObj)
         ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
         v = Gui.ActiveDocument.ActiveView
         App.ActiveDocument.recompute()
         testOK=True
-        if (len(sel)!=0):
-            for i in range(len(sel)):
-                if type(sel[i].Object.Shape!=Part.Vertex):
-                    testOK=False
-                    break
-            if testOK is True:
-                newObj.PathVertices=sel
-            else:
-                App.Console.PrintError("Wrong objects were selected")
-
-        faced.PartMover(v, newObj, deleteOnEscape=True)
-
-        if self.CoinThreeDWindow is None:
-            self.CoinThreeDWindow = win.Fr_CoinWindow()
-        self.CoinThreeDWindow.addWidget(self.smartInd)
-        mw = self.getMainWindow()
-        self.CoinThreeDWindow.show()
-
-        for i in range(0,len(newObj.Vertices)):
-            self.WidgetObj.append(threeArrowBall(newObj.Vertices[i]))
-            self.CoinThreeDWindow.addWidget(self.WidgetObj[0])
-                
+        # mw = self.getMainWindow()
+       
+        self._mywin.show()        
         #v = Gui.ActiveDocument.ActiveView
         #App.ActiveDocument.recompute()
         #faced.PartMover(v, newObj, deleteOnEscape=True)
