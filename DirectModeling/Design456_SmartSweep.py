@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-11 22:18:20'
+__updated__ = '2022-10-11 22:25:15'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -211,7 +211,6 @@ class BaseSmartSweep:
     mywin=None
     WidgetObj=[]
     def __init__(self, obj,
-                 _vertices=None, 
                  _section=None,
                  _pathType="BSplineCurve",
                  ):
@@ -242,7 +241,7 @@ class BaseSmartSweep:
             finalObj=tnObj.makeSolid()
             Part.show(tnObj)
             #Part.show(finalObj)
-            return finalObj.toShape()
+            return tnObj.toShape()
 
         except Exception as err:
             App.Console.PrintError("'createObject SmartSweep' Failed. "
