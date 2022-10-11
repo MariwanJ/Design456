@@ -44,7 +44,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-10-05 22:09:20'
+__updated__ = '2022-10-11 18:07:31'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -80,7 +80,7 @@ mywin.show()
 
 @dataclass
 class userDataObject:
-    __slots__ = ['events', 'callerObject', 'ballArrows']
+    __slots__ = ['ActiveAxis','events', 'callerObject', 'ballArrows']
 
     def __init__(self):
         self.events = None          # events - save handle events here

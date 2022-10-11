@@ -52,7 +52,7 @@ import Part
 import Draft
 from symbol import try_stmt
 
-__updated__ = '2022-10-10 22:25:41'
+__updated__ = '2022-10-11 19:37:19'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -207,6 +207,7 @@ class BaseSmartSweep:
     """
     Placement=None
     mywin=None
+    WidgetObj=[]
     def __init__(self, obj,
                  _vertices=None, 
                  _section=None,
@@ -243,32 +244,24 @@ class BaseSmartSweep:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def delOldCoin3dObjects(self):
-        if self.mywin is None:
+        if BaseSmartSweep.mywin is None:
             return #Nothing to do here
-        for i in range(0,len(self.WidgetObj)):
-            self.WidgetObj[i].hide()
-            self.WidgetObj[i].__del__()
-        del self.WidgetObj
-        self.WidgetObj=[]
+        for i in range(0,len(BaseSmartSweep.WidgetObj)):
+            BaseSmartSweep.WidgetObj[i].hide()
+            BaseSmartSweep.WidgetObj[i].__del__()
+        BaseSmartSweep.WidgetObj.clear()
         
     def recreateCOIN3DObjects(self):
         try:
             self.delOldCoin3dObjects()
-            sel=Gui.Selection.getSelectionEx()
-            if (len(sel)!=0):
-                for i in range(len(sel)):
-                    if type(sel[i].Object.Shape!=Part.Vertex):
-                        testOK=False
-                        break
-                if testOK is True:
-                    self.PathVertices=sel
-                else:
-                    App.Console.PrintError("Wrong objects were selected")
-
-            for i in range(0,len(self.PathVertices)):
-                self.WidgetObj.append(threeArrowBall(self.PathVertices[i]))
-                BaseSmartSweep.mywin.addWidget(self.WidgetObj[0])
-            BaseSmartSweep.mywin.redraw()
+            for i in range(0,len(self.PathPointList)):
+                BaseSmartSweep.WidgetObj.append(threeArrowBall([
+                    App.Vector(self.PathPointList[i].X,
+                               self.PathPointList[i].Y,
+                               self.PathPointList[i].Z)
+                               ,App.Vector(0,0,0)]))
+                BaseSmartSweep.mywin.addWidget(BaseSmartSweep.WidgetObj[i])
+            BaseSmartSweep.mywin.show()
             
         except Exception as err:
             App.Console.PrintError("'execute SmartSweep' Failed. "
@@ -295,7 +288,6 @@ class BaseSmartSweep:
                 
     def execute(self, obj):
         try:
-            self.WidgetObj=[]
             self.Section=obj.Section                #
             self.PathVertices=obj.PathVertices      #List link to Draft.Point objects.
             self.Apply=obj.Apply                    #Create the sweep 
@@ -325,6 +317,7 @@ class Design456_SmartSweep:
 
     def Activated(self):
         newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
+        
         plc = App.Placement()
         plc.Base = App.Vector(0, 0, 0)
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)

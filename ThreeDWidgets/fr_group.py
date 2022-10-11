@@ -146,7 +146,7 @@ class Fr_Group(fr_widget.Fr_Widget):
         Widgets shouldn't get the event if they are not targeted.
         """
         for wdg in self.w_children:
-            wdg.w_userData.events=events  #distribute the events to the widgets
+            wdg.w_userData.events=  events  #distribute the events to the widgets
             if (wdg.is_active() and wdg.is_visible() and wdg.w_widgetType != constant.FR_WidgetType.FR_WIDGET):
                 results = wdg.handle(events)
                 if results == 1:
