@@ -51,8 +51,10 @@ import ThreeDWidgets.fr_coinwindow as win
 import Part
 import Draft
 from symbol import try_stmt
+import BOPTools.SplitFeatures
 
-__updated__ = '2022-10-11 19:37:19'
+
+__updated__ = '2022-10-11 22:18:20'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -232,9 +234,15 @@ class BaseSmartSweep:
             
     def createObject(self):
         try:
-            finalObj = None
- 
-            return finalObj
+            finalObj = None 
+            sweepPath=self.reCreateSweep()
+            tnObj = Part.BRepOffsetAPI.MakePipeShell(sweepPath)
+            tnObj.add(self.Section, WithContact=False, WithCorrection=False) #Todo check WithContact and WithCorrection
+            tnObj.setTransitionMode(0)  # Round edges
+            finalObj=tnObj.makeSolid()
+            Part.show(tnObj)
+            #Part.show(finalObj)
+            return finalObj.toShape()
 
         except Exception as err:
             App.Console.PrintError("'createObject SmartSweep' Failed. "
@@ -272,8 +280,19 @@ class BaseSmartSweep:
             
     def reCreateSweep(self):
         try:
+            points=[]
+            
+            for i in range(0,len(self.PathPointList)):
+                points.append(App.Vector(self.PathPointList[i].X,
+                               self.PathPointList[i].Y,
+                               self.PathPointList[i].Z))
+                
             if self.PathType == "BSplineCurve":
-                pass
+                curve=Part.BSplineCurve()
+                print(BaseSmartSweep.WidgetObj,"BaseSmartSweep.WidgetObj")
+                curve.interpolate(points)
+                Part.show(curve.toShape())
+                return curve.toShape()
             elif self.PathType == "Curve":
                 pass
             elif self.PathType == "Line":
