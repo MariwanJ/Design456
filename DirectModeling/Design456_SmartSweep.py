@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-11 22:25:15'
+__updated__ = '2022-10-12 22:30:12'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -215,7 +215,7 @@ class BaseSmartSweep:
                  _pathType="BSplineCurve",
                  ):
         
-        obj.addProperty("App::PropertyLinkSub","Section","Sweep",
+        obj.addProperty("App::PropertyLink","Section","Sweep",
                         QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=_section
         obj.addProperty("App::PropertyVectorList","PathVertices", "Sweep",
                         QT_TRANSLATE_NOOP("App::Property","PathVertices" )).PathVertices=[]        
@@ -226,7 +226,6 @@ class BaseSmartSweep:
         obj.addProperty("App::PropertyEnumeration", "PathType", "PathType",
                         "FlowerVase middle type").PathType = ["BSplineCurve","Curve", "Line"]
         obj.PathType = _pathType
-
         self.Type = "SmartSweep"
         BaseSmartSweep.Placement = obj.Placement
         obj.Proxy = self
@@ -235,13 +234,21 @@ class BaseSmartSweep:
         try:
             finalObj = None 
             sweepPath=self.reCreateSweep()
-            tnObj = Part.BRepOffsetAPI.MakePipeShell(sweepPath)
-            tnObj.add(self.Section, WithContact=False, WithCorrection=False) #Todo check WithContact and WithCorrection
-            tnObj.setTransitionMode(0)  # Round edges
-            finalObj=tnObj.makeSolid()
-            Part.show(tnObj)
-            #Part.show(finalObj)
-            return tnObj.toShape()
+            base=self.Section.Shape
+            if base is None:
+                return sweepPath
+            
+            if self.Apply==True:
+                tnObj = Part.BRepOffsetAPI.MakePipeShell(sweepPath)
+                tnObj.add(Part.Wire(base.Edges), WithContact=False, WithCorrection=False) #Todo check WithContact and WithCorrection
+                tnObj.setTransitionMode(0)  # Round edges
+                f = tnObj.shape().Faces
+                f.append(base)
+                final = Part.makeShell(f)
+                finalObj=Part.makeSolid(final)
+            else:
+                finalObj = sweepPath
+            return finalObj
 
         except Exception as err:
             App.Console.PrintError("'createObject SmartSweep' Failed. "
@@ -257,7 +264,7 @@ class BaseSmartSweep:
             BaseSmartSweep.WidgetObj[i].hide()
             BaseSmartSweep.WidgetObj[i].__del__()
         BaseSmartSweep.WidgetObj.clear()
-        
+
     def recreateCOIN3DObjects(self):
         try:
             self.delOldCoin3dObjects()
@@ -285,13 +292,11 @@ class BaseSmartSweep:
                 points.append(App.Vector(self.PathPointList[i].X,
                                self.PathPointList[i].Y,
                                self.PathPointList[i].Z))
-                
             if self.PathType == "BSplineCurve":
                 curve=Part.BSplineCurve()
                 print(BaseSmartSweep.WidgetObj,"BaseSmartSweep.WidgetObj")
                 curve.interpolate(points)
-                Part.show(curve.toShape())
-                return curve.toShape()
+                return Part.Wire(curve.toShape())
             elif self.PathType == "Curve":
                 pass
             elif self.PathType == "Line":
@@ -303,21 +308,18 @@ class BaseSmartSweep:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)       
-                
+
     def execute(self, obj):
         try:
-            self.Section=obj.Section                #
+            self.Section= obj.Section
             self.PathVertices=obj.PathVertices      #List link to Draft.Point objects.
             self.Apply=obj.Apply                    #Create the sweep 
-            self.PathPointList=obj.PathPointList  #Either you put directly your vertices or you create point objects not both.
-            self.PathType=obj.PathType  #BSplineCurve, Curve, or Line
+            self.PathPointList=obj.PathPointList    #Either you put directly your vertices or you create point objects not both.
+            self.PathType=obj.PathType              #BSplineCurve, Curve, or Line
             self.recreateCOIN3DObjects()
-            objResult = self.createObject()     
-            if self.Apply is True:       
-                obj.Shape = objResult
-            else:
-                return
-            
+            objResult = self.createObject()
+            obj.Shape = objResult
+
         except Exception as err:
             App.Console.PrintError("'execute SmartSweep' Failed. "
                                    "{err}\n".format(err=str(err)))
