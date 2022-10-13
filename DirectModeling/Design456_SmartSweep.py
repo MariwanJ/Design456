@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-12 22:30:12'
+__updated__ = '2022-10-13 22:19:57'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -105,8 +105,21 @@ Instance of the class for this tool. Callbacks will be inside the class.
 class threeArrowBall(Fr_BallThreeArrows_Widget):
     
     def __init__(self, vectors: List[App.Vector] = [], label: str = [[]]):
+        self.linkToPoint=None
         super().__init__(vectors, label)
-        
+    
+    def setLinkToDraftPoint(self,draftPointObj):
+        self.linkToPoint= draftPointObj# 
+    
+    def updatePointObject(self):
+        self.linkToPoint.Placement.Base=self.w_vector[0]
+    
+    def Activated(self):
+        self.w_ball_cb_=self.DraggingCallback
+        self.w_xAxis_cb_=self.DraggingCallback
+        self.w_yAxis_cb_=self.DraggingCallback
+        self.w_zAxis_cb_=self.DraggingCallback
+            
     def DraggingCallback(self,userData: fr_ball_three_arrows.userDataObject = None):
         """[ Callback for the arrow movement. 
         This will be used to calculate the length of the Extrude operation.]
@@ -121,39 +134,38 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
             
             if userData is None:
                 return  # Nothing to do here - shouldn't be None
-
-            ArrowObject = userData.ballArrows
+            userData.ballArrows=self
             events = userData.events
             linktocaller = userData.callerObject
             linktocaller.stepSizeDelta=Design456pref_var.MouseStepSize
             if type(events) != int:
                 return
-            linktocaller.endVector = App.Vector(ArrowObject.w_parent.w_lastEventXYZ.Coin_x,
-                                                ArrowObject.w_parent.w_lastEventXYZ.Coin_y,
-                                                ArrowObject.w_parent.w_lastEventXYZ.Coin_z)
+            linktocaller.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+                                                self.w_parent.w_lastEventXYZ.Coin_y,
+                                                self.w_parent.w_lastEventXYZ.Coin_z)
             if(userData.ActiveAxis=="X"):
-                clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                                        ArrowObject.w_pick_radius, ArrowObject.w_XarrowSeparator)
-                linktocaller.w_vector[0].x=linktocaller.endVector.x
+                clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                                        self.w_pick_radius, self.w_XarrowSeparator)
+                self.linkToPoint.Placement.Base.x=linktocaller.endVector.x
                 
             elif (userData.ActiveAxis=="Y"):
-                clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                                        ArrowObject.w_pick_radius, ArrowObject.w_YarrowSeparator)
-                linktocaller.w_vector[0].y=linktocaller.endVector.y
+                clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                                        self.w_pick_radius, self.w_YarrowSeparator)
+                self.linkToPoint.Placement.Base.y=linktocaller.endVector.y
             elif (userData.ActiveAxis=="Z"):
-                clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                                        ArrowObject.w_pick_radius, ArrowObject.w_ZarrowSeparator)
-                linktocaller.w_vector[0].z=linktocaller.endVector.z
+                clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                                        self.w_pick_radius, self.w_ZarrowSeparator)
+                self.linkToPoint.Placement.Base.z=linktocaller.endVector.z
             elif (userData.ActiveAxis=="A"):
-                clickwdgdNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                                        ArrowObject.w_pick_radius, ArrowObject.w_ZarrowSeparator)
-                linktocaller.w_vector[0]=linktocaller.endVector
+                clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                                        self.w_pick_radius, self.w_ZarrowSeparator)
+                self.linkToPoint.Placement.Base=linktocaller.endVector
 
-            clickwdglblNode = ArrowObject.w_parent.objectMouseClick_Coin3d(ArrowObject.w_parent.w_lastEventXYZ.pos,
-                                                                        ArrowObject.w_pick_radius, ArrowObject.w_widgetlblSoNodes)
+            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                                        self.w_pick_radius, self.w_widgetlblSoNodes)
             if clickwdgdNode is None and clickwdglblNode is None:
                 return   # Nothing to do
-            linktocaller.recreatePoint()
+            self.updatePointObject()
             linktocaller.lblExtrudeSize.setText("xLength Steps = " + str(linktocaller.stepSizeDelta))
             return
 
@@ -234,6 +246,9 @@ class BaseSmartSweep:
         try:
             finalObj = None 
             sweepPath=self.reCreateSweep()
+            if self.Section is None:
+                return sweepPath
+            
             base=self.Section.Shape
             if base is None:
                 return sweepPath
@@ -274,6 +289,9 @@ class BaseSmartSweep:
                                self.PathPointList[i].Y,
                                self.PathPointList[i].Z)
                                ,App.Vector(0,0,0)]))
+                BaseSmartSweep.WidgetObj[i].setLinkToDraftPoint(self.PathPointList[i])
+                BaseSmartSweep.WidgetObj[i].Activated()
+                BaseSmartSweep.WidgetObj[i].w_userData.callerObject = self
                 BaseSmartSweep.mywin.addWidget(BaseSmartSweep.WidgetObj[i])
             BaseSmartSweep.mywin.show()
             
@@ -319,6 +337,7 @@ class BaseSmartSweep:
             self.recreateCOIN3DObjects()
             objResult = self.createObject()
             obj.Shape = objResult
+            self.stepSizeDelta=Design456pref_var.MouseStepSize
 
         except Exception as err:
             App.Console.PrintError("'execute SmartSweep' Failed. "
