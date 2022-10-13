@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-13 22:19:57'
+__updated__ = '2022-10-13 22:24:07'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -166,7 +166,7 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
             if clickwdgdNode is None and clickwdglblNode is None:
                 return   # Nothing to do
             self.updatePointObject()
-            linktocaller.lblExtrudeSize.setText("xLength Steps = " + str(linktocaller.stepSizeDelta))
+            #linktocaller.lblExtrudeSize.setText("xLength Steps = " + str(linktocaller.stepSizeDelta))
             return
 
         except Exception as err:
@@ -312,7 +312,6 @@ class BaseSmartSweep:
                                self.PathPointList[i].Z))
             if self.PathType == "BSplineCurve":
                 curve=Part.BSplineCurve()
-                print(BaseSmartSweep.WidgetObj,"BaseSmartSweep.WidgetObj")
                 curve.interpolate(points)
                 return Part.Wire(curve.toShape())
             elif self.PathType == "Curve":
