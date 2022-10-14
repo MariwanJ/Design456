@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-13 22:24:07'
+__updated__ = '2022-10-14 21:50:15'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -114,11 +114,15 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
     def updatePointObject(self):
         self.linkToPoint.Placement.Base=self.w_vector[0]
     
+    def callback(self,userData):
+        pass #Do nothing
+    
     def Activated(self):
         self.w_ball_cb_=self.DraggingCallback
         self.w_xAxis_cb_=self.DraggingCallback
         self.w_yAxis_cb_=self.DraggingCallback
         self.w_zAxis_cb_=self.DraggingCallback
+        self.w_callback_=self.callback
             
     def DraggingCallback(self,userData: fr_ball_three_arrows.userDataObject = None):
         """[ Callback for the arrow movement. 
@@ -147,25 +151,32 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_XarrowSeparator)
                 self.linkToPoint.Placement.Base.x=linktocaller.endVector.x
+                self.w_vector[0].x=linktocaller.endVector.x
                 
             elif (userData.ActiveAxis=="Y"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_YarrowSeparator)
                 self.linkToPoint.Placement.Base.y=linktocaller.endVector.y
+                self.w_vector[0].y=linktocaller.endVector.y
+
             elif (userData.ActiveAxis=="Z"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_ZarrowSeparator)
                 self.linkToPoint.Placement.Base.z=linktocaller.endVector.z
+                self.w_vector[0].z=linktocaller.endVector.z
+
             elif (userData.ActiveAxis=="A"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_ZarrowSeparator)
                 self.linkToPoint.Placement.Base=linktocaller.endVector
+                self.w_vector[0]=linktocaller.endVector
 
             clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_widgetlblSoNodes)
             if clickwdgdNode is None and clickwdglblNode is None:
                 return   # Nothing to do
             self.updatePointObject()
+            self.redraw()
             #linktocaller.lblExtrudeSize.setText("xLength Steps = " + str(linktocaller.stepSizeDelta))
             return
 
