@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-16 08:01:51'
+__updated__ = '2022-10-16 21:33:00'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -108,13 +108,10 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
         self.linkToPoint=None
         super().__init__(vectors, label)
         self.StepSize=0.0
+        self.oldPosition = None
             
     def setLinkToDraftPoint(self,draftPointObj):
         self.linkToPoint= draftPointObj# 
-    
-    def updatePointObject(self):
-        print()
-        self.linkToPoint.Placement.Base=self.w_vector[0]
     
     def callback(self,userData):
         pass #Do nothing
@@ -138,7 +135,6 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
         """
         print("dragging!!")
         try:
-            
             if userData is None:
                 return  # Nothing to do here - shouldn't be None
             userData.ballArrows=self
@@ -153,41 +149,59 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
                                                 self.w_parent.w_lastEventXYZ.Coin_z)
             mouseToArrowDiff = (self.endVector.sub(self.w_vector[0])/self.StepSize)
             newPos= self.endVector.sub(mouseToArrowDiff)
+            
+            if self.oldPosition is None:
+                self.oldPosition = self.endVector
+            delta = self.endVector.sub(self.oldPosition)
+            result = 0
+            resultVector = App.Vector(0, 0, 0)
+            if abs(delta.x) > 0 and abs(delta.x) >= self.StepSize:
+                result = int(delta.x / self.StepSize)
+                resultVector.x = (result * self.StepSize)
+            if abs(delta.y) > 0 and abs(delta.y) >= self.StepSize:
+                result = int(delta.y / self.StepSize)
+                resultVector.y = (result * self.StepSize)
+
+            if abs(delta.z) > 0 and abs(delta.z) >= self.StepSize:
+                result = int(delta.z / self.StepSize)
+                resultVector.z = (result * self.StepSize)
+            newPosition = self.oldPosition.add(resultVector)
+            self.oldPosition = newPosition       
+            print (userData.ActiveAxis)                 
             if(userData.ActiveAxis=="X"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_XarrowSeparator)
-                self.linkToPoint.x=self.StepSize*(int(newPos.x/self.StepSize))
-                self.w_vector[0].x=self.StepSize*(int(newPos.x/self.StepSize))
+                self.linkToPoint.X=newPosition.x
+                self.w_vector[0].x=newPosition.x
                 
             elif (userData.ActiveAxis=="Y"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_YarrowSeparator)
-                self.linkToPoint.Y=self.StepSize*(int(newPos.y/self.StepSize))
-                self.w_vector[0].y=self.StepSize*(int(newPos.y/self.StepSize))
+                self.linkToPoint.Y=newPosition.y
+                self.w_vector[0].y=newPosition.y
 
             elif (userData.ActiveAxis=="Z"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_ZarrowSeparator)
-                self.linkToPoint.Z=self.StepSize*(int(newPos.z/self.StepSize))
-                self.w_vector[0].z=self.StepSize*(int(newPos.z/self.StepSize))
+                self.linkToPoint.Z=newPosition.z
+                self.w_vector[0].z=newPosition.z
 
             elif (userData.ActiveAxis=="A"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_ZarrowSeparator)
-                self.linkToPoint.X=self.StepSize*(int(newPos.x/self.StepSize))
-                self.linkToPoint.Y=self.StepSize*(int(newPos.y/self.StepSize))
-                self.linkToPoint.Z=self.StepSize*(int(newPos.z/self.StepSize))
+                self.linkToPoint.X=newPosition.x
+                self.linkToPoint.Y=newPosition.y
+                self.linkToPoint.Z=newPosition.z
 
-                self.w_vector[0]=App.Vector(self.linkToPoint.X,self.linkToPoint.Y,self.linkToPoint.Z)
-                print(self.w_vector)
+                self.w_vector[0]=newPosition
                 
             clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_widgetlblSoNodes)
             if clickwdgdNode is None and clickwdglblNode is None:
                 return   # Nothing to do
-            self.updatePointObject()
+            
             self.redraw()
-            App.ActiveDocument.recompute()
+            self.linkToPoint.recompute()
             return
 
         except Exception as err:
@@ -363,7 +377,7 @@ class BaseSmartSweep:
             self.recreateCOIN3DObjects()
             objResult = self.createObject()
             obj.Shape = objResult
-            self.stepSize=Design456pref_var.MouseStepSize
+            self.StepSize=Design456pref_var.MouseStepSize
             self.mywin=None
             self.endVector=App.Vector(0,0,0)
             self.startVector=App.Vector(0,0,0)
