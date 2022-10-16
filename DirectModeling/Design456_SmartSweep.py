@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-14 21:50:15'
+__updated__ = '2022-10-16 08:01:51'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -107,11 +107,13 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = [[]]):
         self.linkToPoint=None
         super().__init__(vectors, label)
-    
+        self.StepSize=0.0
+            
     def setLinkToDraftPoint(self,draftPointObj):
         self.linkToPoint= draftPointObj# 
     
     def updatePointObject(self):
+        print()
         self.linkToPoint.Placement.Base=self.w_vector[0]
     
     def callback(self,userData):
@@ -134,50 +136,58 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
         Returns:
             [type]: [Nothing is returned].
         """
+        print("dragging!!")
         try:
             
             if userData is None:
                 return  # Nothing to do here - shouldn't be None
             userData.ballArrows=self
             events = userData.events
-            linktocaller = userData.callerObject
-            linktocaller.stepSizeDelta=Design456pref_var.MouseStepSize
+            #linktocaller = userData.callerObject
+            self.StepSize=Design456pref_var.MouseStepSize
             if type(events) != int:
                 return
-            linktocaller.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+            print(self.linkToPoint.Placement.Base,"self.linkToPoint.Placement.Base")
+            self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
                                                 self.w_parent.w_lastEventXYZ.Coin_y,
                                                 self.w_parent.w_lastEventXYZ.Coin_z)
+            mouseToArrowDiff = (self.endVector.sub(self.w_vector[0])/self.StepSize)
+            newPos= self.endVector.sub(mouseToArrowDiff)
             if(userData.ActiveAxis=="X"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_XarrowSeparator)
-                self.linkToPoint.Placement.Base.x=linktocaller.endVector.x
-                self.w_vector[0].x=linktocaller.endVector.x
+                self.linkToPoint.x=self.StepSize*(int(newPos.x/self.StepSize))
+                self.w_vector[0].x=self.StepSize*(int(newPos.x/self.StepSize))
                 
             elif (userData.ActiveAxis=="Y"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_YarrowSeparator)
-                self.linkToPoint.Placement.Base.y=linktocaller.endVector.y
-                self.w_vector[0].y=linktocaller.endVector.y
+                self.linkToPoint.Y=self.StepSize*(int(newPos.y/self.StepSize))
+                self.w_vector[0].y=self.StepSize*(int(newPos.y/self.StepSize))
 
             elif (userData.ActiveAxis=="Z"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_ZarrowSeparator)
-                self.linkToPoint.Placement.Base.z=linktocaller.endVector.z
-                self.w_vector[0].z=linktocaller.endVector.z
+                self.linkToPoint.Z=self.StepSize*(int(newPos.z/self.StepSize))
+                self.w_vector[0].z=self.StepSize*(int(newPos.z/self.StepSize))
 
             elif (userData.ActiveAxis=="A"):
                 clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_ZarrowSeparator)
-                self.linkToPoint.Placement.Base=linktocaller.endVector
-                self.w_vector[0]=linktocaller.endVector
+                self.linkToPoint.X=self.StepSize*(int(newPos.x/self.StepSize))
+                self.linkToPoint.Y=self.StepSize*(int(newPos.y/self.StepSize))
+                self.linkToPoint.Z=self.StepSize*(int(newPos.z/self.StepSize))
 
+                self.w_vector[0]=App.Vector(self.linkToPoint.X,self.linkToPoint.Y,self.linkToPoint.Z)
+                print(self.w_vector)
+                
             clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                         self.w_pick_radius, self.w_widgetlblSoNodes)
             if clickwdgdNode is None and clickwdglblNode is None:
                 return   # Nothing to do
             self.updatePointObject()
             self.redraw()
-            #linktocaller.lblExtrudeSize.setText("xLength Steps = " + str(linktocaller.stepSizeDelta))
+            App.ActiveDocument.recompute()
             return
 
         except Exception as err:
@@ -220,13 +230,20 @@ class ViewProviderSmartSweep:
     def getIcon(self):
         return (Design456Init.ICON_PATH + 'SmartSweep.svg')
 
+    # def __getstate__(self):
+    #     return None
+
+    #def __setstate__(self, state):
+    #    return None
+    #
+    
     def __getstate__(self):
-        return None
+      return self.Type 
 
     def __setstate__(self, state):
-        return None
-
-
+       if state:
+           self.Type = state 
+           
 class BaseSmartSweep:
     """ SmartSweep shape with a flexible capabilities 
     """
@@ -235,8 +252,7 @@ class BaseSmartSweep:
     WidgetObj=[]
     def __init__(self, obj,
                  _section=None,
-                 _pathType="BSplineCurve",
-                 ):
+                 _pathType="BSplineCurve" ):
         
         obj.addProperty("App::PropertyLink","Section","Sweep",
                         QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=_section
@@ -285,7 +301,7 @@ class BaseSmartSweep:
             
     def delOldCoin3dObjects(self):
         if BaseSmartSweep.mywin is None:
-            return #Nothing to do here
+            BaseSmartSweep.mywin=win.Fr_CoinWindow()
         for i in range(0,len(BaseSmartSweep.WidgetObj)):
             BaseSmartSweep.WidgetObj[i].hide()
             BaseSmartSweep.WidgetObj[i].__del__()
@@ -347,8 +363,10 @@ class BaseSmartSweep:
             self.recreateCOIN3DObjects()
             objResult = self.createObject()
             obj.Shape = objResult
-            self.stepSizeDelta=Design456pref_var.MouseStepSize
-
+            self.stepSize=Design456pref_var.MouseStepSize
+            self.mywin=None
+            self.endVector=App.Vector(0,0,0)
+            self.startVector=App.Vector(0,0,0)
         except Exception as err:
             App.Console.PrintError("'execute SmartSweep' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -366,19 +384,17 @@ class Design456_SmartSweep:
 
     def Activated(self):
         newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
-        
         plc = App.Placement()
         plc.Base = App.Vector(0, 0, 0)
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         newObj.Placement = plc
-        BaseSmartSweep.mywin=win.Fr_CoinWindow()
         BaseSmartSweep(newObj)
         ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
         # v = Gui.ActiveDocument.ActiveView
         # App.ActiveDocument.recompute()
-        testOK=True
+
         # mw = self.getMainWindow()
-        BaseSmartSweep.mywin.show()
+        #BaseSmartSweep.mywin.show()
         #v = Gui.ActiveDocument.ActiveView
         #App.ActiveDocument.recompute()
         #faced.PartMover(v, newObj, deleteOnEscape=True)

@@ -54,7 +54,7 @@ from Design456Pref import Design456pref_var  #Variable shared between preference
 # except:
 #     pass
 
-__updated__ = '2022-07-10 12:34:38'
+__updated__ = '2022-10-16 07:51:22'
 
 class Design456_ExtendFace:
     """[Extend the face's position to a new position.
