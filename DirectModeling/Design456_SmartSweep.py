@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-16 21:33:00'
+__updated__ = '2022-10-16 22:12:03'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -109,6 +109,7 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
         super().__init__(vectors, label)
         self.StepSize=0.0
         self.oldPosition = None
+
             
     def setLinkToDraftPoint(self,draftPointObj):
         self.linkToPoint= draftPointObj# 
@@ -139,7 +140,9 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
                 return  # Nothing to do here - shouldn't be None
             userData.ballArrows=self
             events = userData.events
-            #linktocaller = userData.callerObject
+            clickwdgdNode =None
+            clickwdglblNode=None
+
             self.StepSize=Design456pref_var.MouseStepSize
             if type(events) != int:
                 return
@@ -147,8 +150,8 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
             self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
                                                 self.w_parent.w_lastEventXYZ.Coin_y,
                                                 self.w_parent.w_lastEventXYZ.Coin_z)
-            mouseToArrowDiff = (self.endVector.sub(self.w_vector[0])/self.StepSize)
-            newPos= self.endVector.sub(mouseToArrowDiff)
+            # mouseToArrowDiff = (self.endVector.sub(self.w_vector[0])/self.StepSize)
+            # newPos= self.endVector.sub(mouseToArrowDiff)
             
             if self.oldPosition is None:
                 self.oldPosition = self.endVector
