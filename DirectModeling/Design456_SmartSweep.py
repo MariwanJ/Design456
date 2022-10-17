@@ -204,7 +204,8 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
                 return   # Nothing to do
             
             self.redraw()
-            self.linkToPoint.recompute()
+            #self.linkToPoint.recompute()
+            App.ActiveDocument.recompute()
             return
 
         except Exception as err:
