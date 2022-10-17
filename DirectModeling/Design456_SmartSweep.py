@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-16 22:12:03'
+__updated__ = '2022-10-17 21:53:26'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -115,6 +115,7 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
         self.linkToPoint= draftPointObj# 
     
     def callback(self,userData):
+        App.ActiveDocument.recompute()
         pass #Do nothing
     
     def Activated(self):
@@ -152,8 +153,8 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
                                                 self.w_parent.w_lastEventXYZ.Coin_z)
             # mouseToArrowDiff = (self.endVector.sub(self.w_vector[0])/self.StepSize)
             # newPos= self.endVector.sub(mouseToArrowDiff)
-            
             if self.oldPosition is None:
+                print("old is none")
                 self.oldPosition = self.endVector
             delta = self.endVector.sub(self.oldPosition)
             result = 0
@@ -170,42 +171,29 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
                 resultVector.z = (result * self.StepSize)
             newPosition = self.oldPosition.add(resultVector)
             self.oldPosition = newPosition       
-            print (userData.ActiveAxis)                 
+            print (userData.ActiveAxis)      
+                       
             if(userData.ActiveAxis=="X"):
-                clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                                        self.w_pick_radius, self.w_XarrowSeparator)
                 self.linkToPoint.X=newPosition.x
                 self.w_vector[0].x=newPosition.x
                 
             elif (userData.ActiveAxis=="Y"):
-                clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                                        self.w_pick_radius, self.w_YarrowSeparator)
                 self.linkToPoint.Y=newPosition.y
                 self.w_vector[0].y=newPosition.y
 
             elif (userData.ActiveAxis=="Z"):
-                clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                                        self.w_pick_radius, self.w_ZarrowSeparator)
+
                 self.linkToPoint.Z=newPosition.z
                 self.w_vector[0].z=newPosition.z
 
             elif (userData.ActiveAxis=="A"):
-                clickwdgdNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                                        self.w_pick_radius, self.w_ZarrowSeparator)
                 self.linkToPoint.X=newPosition.x
                 self.linkToPoint.Y=newPosition.y
                 self.linkToPoint.Z=newPosition.z
 
                 self.w_vector[0]=newPosition
-                
-            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                                        self.w_pick_radius, self.w_widgetlblSoNodes)
-            if clickwdgdNode is None and clickwdglblNode is None:
-                return   # Nothing to do
-            
             self.redraw()
-            #self.linkToPoint.recompute()
-            App.ActiveDocument.recompute()
+            #App.ActiveDocument.recompute()
             return
 
         except Exception as err:
@@ -320,9 +308,9 @@ class BaseSmartSweep:
     def delOldCoin3dObjects(self):
         if BaseSmartSweep.mywin is None:
             BaseSmartSweep.mywin=win.Fr_CoinWindow()
-        for i in range(0,len(BaseSmartSweep.WidgetObj)):
-            BaseSmartSweep.WidgetObj[i].hide()
+        for i in range(0,len(BaseSmartSweep.WidgetObj)-1):
             BaseSmartSweep.WidgetObj[i].__del__()
+            del BaseSmartSweep.WidgetObj[i]
         BaseSmartSweep.WidgetObj.clear()
 
     def recreateCOIN3DObjects(self):
@@ -337,7 +325,9 @@ class BaseSmartSweep:
                 BaseSmartSweep.WidgetObj[i].setLinkToDraftPoint(self.PathPointList[i])
                 BaseSmartSweep.WidgetObj[i].Activated()
                 BaseSmartSweep.WidgetObj[i].w_userData.callerObject = self
+                BaseSmartSweep.WidgetObj[i].w_parent=BaseSmartSweep.mywin
                 BaseSmartSweep.mywin.addWidget(BaseSmartSweep.WidgetObj[i])
+
             BaseSmartSweep.mywin.show()
             
         except Exception as err:
