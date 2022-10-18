@@ -60,7 +60,7 @@ wny.addWidget(ln)              # Add it to the window as a child
 wny.show()                    # show the window and it's widgets. 
 
 """
-__updated__ = '2022-10-03 22:04:06'
+__updated__ = '2022-10-16 21:12:29'
 
 
 # class object will be used as object holder between arrow widget and the callback
@@ -148,6 +148,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             self.w_parent.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
                 self.w_parent.w_lastEvent == FR_EVENTS.FR_E):
             self.do_callback()
+            return 1
 
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             # Double click event. Only when the widget is double clicked

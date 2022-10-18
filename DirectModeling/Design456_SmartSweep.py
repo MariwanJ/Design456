@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-17 21:53:26'
+__updated__ = '2022-10-17 22:26:01'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -307,8 +307,14 @@ class BaseSmartSweep:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def delOldCoin3dObjects(self):
+<<<<<<< Updated upstream
         if self.myWindow is None:
             self.myWindow=win.Fr_CoinWindow()
+=======
+        if BaseSmartSweep.mywin is None:
+            print("was none -- 1")
+            BaseSmartSweep.mywin=win.Fr_CoinWindow()
+>>>>>>> Stashed changes
         for i in range(0,len(BaseSmartSweep.WidgetObj)-1):
             BaseSmartSweep.WidgetObj[i].__del__()
             del BaseSmartSweep.WidgetObj[i]

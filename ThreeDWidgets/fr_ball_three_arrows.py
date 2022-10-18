@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import os
+from re import X
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -44,7 +45,11 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
+<<<<<<< Updated upstream
 __updated__ = '2022-10-18 20:08:27'
+=======
+__updated__ = '2022-10-17 21:57:05'
+>>>>>>> Stashed changes
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -218,6 +223,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
 
         self.w_arrowsEnabled = [True, True, True]
         
+        # -1 no click, 0 mouse clicked, 1 mouse dragging
         # Used to avoid running drag code while it is in drag mode
         self.XreleaseDragAxis = -1
         self.YreleaseDragAxis = -1
@@ -225,9 +231,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
 
         # -1 no click, 0 mouse clicked, 1 mouse dragging
         # Used to avoid running drag code while it is in drag mode
-        self.XreleaseDragball = -1
-        self.YreleaseDragball = -1
-        self.ZreleaseDragball = -1
+        self.AreleaseDragAxis = -1
 
         self.run_Once = [False, False, False]
         self.startVector = [0.0, 0.0, 0.0]
@@ -244,67 +248,125 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
+        #try:
+        print("event=",hex(event),"\n")
+        if type(event) == int:
+            if event == FR_EVENTS.FR_NO_EVENT:
+                return 1  # we treat this event. Nothing to do
+        self.w_userData.events = event  # Keep the event always here
+        if self.w_parent is None:
+            print("self.w_parent is NOne")
+            return
+        # This is for the widgets label - Not the axes label - be aware.
+        print (type(self.w_parent),"parent")
+        print(type(self.w_pick_radius),"pick")
+        print(type(self.w_widgetlblSoNodes),"lbl nodes")
+        clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                    self.w_pick_radius, self.w_widgetlblSoNodes)
+        # In this widget, we have 4 coin drawings that we need to capture event for them
 
-        try:
-            self.w_userData.events = event  # Keep the event always here
-            if type(event) == int:
-                if event == FR_EVENTS.FR_NO_EVENT:
-                    return 1  # we treat this event. Nothing to do
+        clickwdgdNode = [False, False,False,False]
+        if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                self.w_pick_radius, self.w_XarrowSeparator) is not None):
+            clickwdgdNode[0] = True
+        elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                self.w_pick_radius, self.w_YarrowSeparator) is not None):
+            clickwdgdNode[1] = True
+        elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                self.w_pick_radius, self.w_ZarrowSeparator) is not None):
+            clickwdgdNode[2] = True
+        elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                self.w_pick_radius, self.w_BallSeparator) is not None):
+            clickwdgdNode[3] = True
 
-            # This is for the widgets label - Not the axes label - be aware.
-            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                                    self.w_pick_radius, self.w_widgetlblSoNodes)
+        else:
+            return 0  # We couldn't use the event .. so return 0
 
-            
-            # In this widget, we have 4 coin drawings that we need to capture event for them
-            clickwdgdNode = [False, False,False,False]
-            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+            #Prioritized callback TODO: is it correct
+            if clickwdglblNode is not None:
+                self.do_lblcallback()
+                return 1
 
-                #Prioritized callback TODO: is it correct
-                if clickwdglblNode is not None:
-                    self.do_lblcallback()
-                    self.do_callback()
-                    return 1
-
-                if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                        self.w_pick_radius, self.w_XarrowSeparator) is not None):
-                    clickwdgdNode[0] = True
-                elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                        self.w_pick_radius, self.w_YarrowSeparator) is not None):
-                    clickwdgdNode[1] = True
-                elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                        self.w_pick_radius, self.w_ZarrowSeparator) is not None):
-                    clickwdgdNode[2] = True
-                elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                        self.w_pick_radius, self.w_BallSeparator) is not None):
-                    clickwdgdNode[3] = True
-                else:
-                    return 0  # We couldn't use the event .. so return 0
-    
-                if clickwdgdNode[0] is True:
-                    self.w_userData.ActiveAxis="X"
-                    self.w_xAxis_cb_(self.w_userData)
-                    self.do_callback()
-                elif clickwdgdNode[1] is True:
-                    self.w_userData.ActiveAxis="Y"
-                    self.w_yAxis_cb_(self.w_userData)
-                    self.do_callback()
-                elif clickwdgdNode[2] is True:
-                    self.w_userData.ActiveAxis="Z"
-                    self.w_zAxis_cb_(self.w_userData)
-                    self.do_callback()
-                elif clickwdgdNode[3] is True:
-                    self.w_userData.ActiveAxis="A"  #All three, the ball is moved
-                    self.w_ball_cb_(self.w_userData)
-                    self.do_callback()
+        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+            #if clickwdgdNode[0] is True or clickwdgdNode[1] is True or clickwdgdNode[2] is True or clickwdgdNode[3] is True:
+            if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
+                self.do_callback()
+                self.XreleaseDragAxis=-1  #drag is finished
+                self.YreleaseDragAxis=-1  #drag is finished
+                self.ZreleaseDragAxis=-1  #drag is finished
+                self.AreleaseDragAxis=-1
                 
+                return 1
 
-        except Exception as err:
-            App.Console.PrintError("'handle ball3arrows' Failed. "
-                                   "{err}\n".format(err=str(err)))
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
+        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+            print("drag -Widget")
+            #X-Axis and arrow
+            if clickwdgdNode[0] is True and self.XreleaseDragAxis==-1:
+                self.XreleaseDragAxis=0 # Arrow clicked first time it will just change this value
+                self.w_userData.ActiveAxis="X"
+                return
+            elif clickwdgdNode[0] is True and self.XreleaseDragAxis==0:
+                self.XreleaseDragAxis=1
+                self.w_userData.ActiveAxis="X"
+                self.w_xAxis_cb_(self.w_userData)
+                return 1
+            elif self.XreleaseDragAxis==1:
+                #continue X drag 
+                self.w_xAxis_cb_(self.w_userData)
+                return 1                
+
+            #Y-Axis and arrow
+            if clickwdgdNode[1] is True and self.YreleaseDragAxis==-1:
+                self.YreleaseDragAxis=0 # Arrow clicked first time it will just change this value
+                self.w_userData.ActiveAxis="Y"
+                return
+            elif clickwdgdNode[1] is True and self.YreleaseDragAxis==0:
+                self.YreleaseDragAxis=1
+                self.w_userData.ActiveAxis="Y"
+                self.w_yAxis_cb_(self.w_userData)
+                return 1
+            elif self.YreleaseDragAxis==1:
+                #continue Y drag 
+                self.w_yAxis_cb_(self.w_userData)
+                return 1                
+            #Z-Axis
+            if clickwdgdNode[2] is True and self.ZreleaseDragAxis==-1:
+                self.ZreleaseDragAxis=0 # Arrow clicked first time it will just change this value
+                self.w_userData.ActiveAxis="Y"
+                return
+            elif clickwdgdNode[2] is True and self.ZreleaseDragAxis==0:
+                self.ZreleaseDragAxis=1
+                self.w_userData.ActiveAxis="Y"
+                self.w_zAxis_cb_(self.w_userData)
+                return 1
+            elif self.ZreleaseDragAxis==1:
+                #continue drag 
+                self.w_zAxis_cb_(self.w_userData)
+                return 1      
+
+            #Ball 
+            if clickwdgdNode[3] is True and self.AreleaseDragAxis==-1:
+                self.AreleaseDragAxis=0 # Arrow clicked first time it will just change this value
+                self.w_userData.ActiveAxis="A"
+                return
+            elif clickwdgdNode[2] is True and self.AreleaseDragAxis==0:
+                self.AreleaseDragAxis=1
+                self.w_userData.ActiveAxis="A"
+                self.w_ball_cb_(self.w_userData)
+                return 1
+            elif self.AreleaseDragAxis==1:
+                #continue drag 
+                self.w_ball_cb_(self.w_userData)
+                return 1         
+        return 0 
+        
+        # except Exception as err:
+        #     App.Console.PrintError("'handle ball3arrows' Failed. "
+        #                            "{err}\n".format(err=str(err)))
+        #     exc_type, exc_obj, exc_tb = sys.exc_info()
+        #     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        #     print(exc_type, fname, exc_tb.tb_lineno)
     
     def draw(self):
         """

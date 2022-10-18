@@ -42,7 +42,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-10-08 18:07:41'
+__updated__ = '2022-10-16 07:44:07'
 
 
 """
@@ -324,11 +324,11 @@ class Fr_ThreeArrows_Widget(fr_widget.Fr_Widget):
         event. Window object is responsible for distributing the events.
         """
 
-        self.w_userData.events = event  # Keep the event always here
         if type(event) == int:
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1  # we treat this event. Nothing to do
 
+        self.w_userData.events = event  # Keep the event always here
         # This is for the widgets label - Not the axes label - be aware.
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                                 self.w_pick_radius, self.w_widgetlblSoNodes)
