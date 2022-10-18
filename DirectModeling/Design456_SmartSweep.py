@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-18 21:12:03'
+__updated__ = '2022-10-18 22:03:30'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -204,10 +204,10 @@ class ViewProviderSmartSweep:
 class BaseSmartSweep:
     """ SmartSweep shape with a flexible capabilities 
     """
+    __slots__ = ['myWindow','Apply','Section','PathVertices','PathPointList','PathType','Type','StepSize']
     Placement=None
-    mywin=None
     WidgetObj=[]
-    def __init__(self, obj, myWindow,
+    def __init__(self, obj, _myWindow,
                  _section=None,
                  _pathType="BSplineCurve" ):
         
@@ -223,7 +223,8 @@ class BaseSmartSweep:
                         "FlowerVase middle type").PathType = ["BSplineCurve","Curve", "Line"]
         obj.PathType = _pathType
         self.Type = "SmartSweep"
-        self.myWindow=myWindow
+        self.myWindow=_myWindow
+        self.StepSize=0.1
         BaseSmartSweep.Placement = obj.Placement
         obj.Proxy = self
             
@@ -258,13 +259,21 @@ class BaseSmartSweep:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def delOldCoin3dObjects(self):
-        if self.myWindow is None:
-            self.myWindow=win.Fr_CoinWindow()
-        for i in range(0,len(BaseSmartSweep.WidgetObj)-1):
-            BaseSmartSweep.WidgetObj[i].__del__()
-            del BaseSmartSweep.WidgetObj[i]
-        BaseSmartSweep.WidgetObj.clear()
-
+        try:
+            if self.myWindow is None:
+                self.myWindow=win.Fr_CoinWindow()
+            for i in range(0,len(BaseSmartSweep.WidgetObj)-1):
+                BaseSmartSweep.WidgetObj[i].__del__()
+                del BaseSmartSweep.WidgetObj[i]
+            BaseSmartSweep.WidgetObj.clear()
+            
+        except Exception as err:
+            App.Console.PrintError("'execute SmartSweep' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def recreateCOIN3DObjects(self):
         try:
             self.delOldCoin3dObjects()
@@ -275,10 +284,10 @@ class BaseSmartSweep:
                                self.PathPointList[i].Z)
                                ,App.Vector(0,0,0)]))
                 BaseSmartSweep.WidgetObj[i].setFreeCADObj(self.PathPointList[i])
-                BaseSmartSweep.WidgetObj[i].setStepSize()
+
                 BaseSmartSweep.WidgetObj[i].Activated()
                 BaseSmartSweep.WidgetObj[i].w_userData.callerObject = self
-                BaseSmartSweep.WidgetObj[i].w_parent=self.myWindow
+                #BaseSmartSweep.WidgetObj[i].w_parent=self.myWindow
                 self.myWindow.addWidget(BaseSmartSweep.WidgetObj[i])
 
             self.myWindow.show()
@@ -325,9 +334,6 @@ class BaseSmartSweep:
             objResult = self.createObject()
             obj.Shape = objResult
             self.StepSize=Design456pref_var.MouseStepSize
-            self.mywin=None
-            self.endVector=App.Vector(0,0,0)
-            self.startVector=App.Vector(0,0,0)
         except Exception as err:
             App.Console.PrintError("'execute SmartSweep' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -344,7 +350,6 @@ class Design456_SmartSweep:
                 'ToolTip': "Generate a SmartSweep"}
 
     def Activated(self):
-        mywin=None
         newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
         plc = App.Placement()
         plc.Base = App.Vector(0, 0, 0)
