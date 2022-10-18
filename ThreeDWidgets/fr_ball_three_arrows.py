@@ -44,7 +44,7 @@ from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 
-__updated__ = '2022-10-11 18:07:31'
+__updated__ = '2022-10-18 20:08:27'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
