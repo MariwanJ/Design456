@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-17 22:26:01'
+__updated__ = '2022-10-18 21:12:03'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -141,59 +141,10 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
                 return  # Nothing to do here - shouldn't be None
             userData.ballArrows=self
             events = userData.events
-            clickwdgdNode =None
-            clickwdglblNode=None
-
-            self.StepSize=Design456pref_var.MouseStepSize
             if type(events) != int:
                 return
-            print(self.linkToPoint.Placement.Base,"self.linkToPoint.Placement.Base")
-            self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
-                                                self.w_parent.w_lastEventXYZ.Coin_y,
-                                                self.w_parent.w_lastEventXYZ.Coin_z)
-            # mouseToArrowDiff = (self.endVector.sub(self.w_vector[0])/self.StepSize)
-            # newPos= self.endVector.sub(mouseToArrowDiff)
-            if self.oldPosition is None:
-                print("old is none")
-                self.oldPosition = self.endVector
-            delta = self.endVector.sub(self.oldPosition)
-            result = 0
-            resultVector = App.Vector(0, 0, 0)
-            if abs(delta.x) > 0 and abs(delta.x) >= self.StepSize:
-                result = int(delta.x / self.StepSize)
-                resultVector.x = (result * self.StepSize)
-            if abs(delta.y) > 0 and abs(delta.y) >= self.StepSize:
-                result = int(delta.y / self.StepSize)
-                resultVector.y = (result * self.StepSize)
-
-            if abs(delta.z) > 0 and abs(delta.z) >= self.StepSize:
-                result = int(delta.z / self.StepSize)
-                resultVector.z = (result * self.StepSize)
-            newPosition = self.oldPosition.add(resultVector)
-            self.oldPosition = newPosition       
-            print (userData.ActiveAxis)      
-                       
-            if(userData.ActiveAxis=="X"):
-                self.linkToPoint.X=newPosition.x
-                self.w_vector[0].x=newPosition.x
-                
-            elif (userData.ActiveAxis=="Y"):
-                self.linkToPoint.Y=newPosition.y
-                self.w_vector[0].y=newPosition.y
-
-            elif (userData.ActiveAxis=="Z"):
-
-                self.linkToPoint.Z=newPosition.z
-                self.w_vector[0].z=newPosition.z
-
-            elif (userData.ActiveAxis=="A"):
-                self.linkToPoint.X=newPosition.x
-                self.linkToPoint.Y=newPosition.y
-                self.linkToPoint.Z=newPosition.z
-
-                self.w_vector[0]=newPosition
             self.redraw()
-            #App.ActiveDocument.recompute()
+            App.ActiveDocument.recompute()
             return
 
         except Exception as err:
@@ -307,14 +258,8 @@ class BaseSmartSweep:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def delOldCoin3dObjects(self):
-<<<<<<< Updated upstream
         if self.myWindow is None:
             self.myWindow=win.Fr_CoinWindow()
-=======
-        if BaseSmartSweep.mywin is None:
-            print("was none -- 1")
-            BaseSmartSweep.mywin=win.Fr_CoinWindow()
->>>>>>> Stashed changes
         for i in range(0,len(BaseSmartSweep.WidgetObj)-1):
             BaseSmartSweep.WidgetObj[i].__del__()
             del BaseSmartSweep.WidgetObj[i]
@@ -329,7 +274,8 @@ class BaseSmartSweep:
                                self.PathPointList[i].Y,
                                self.PathPointList[i].Z)
                                ,App.Vector(0,0,0)]))
-                BaseSmartSweep.WidgetObj[i].setLinkToDraftPoint(self.PathPointList[i])
+                BaseSmartSweep.WidgetObj[i].setFreeCADObj(self.PathPointList[i])
+                BaseSmartSweep.WidgetObj[i].setStepSize()
                 BaseSmartSweep.WidgetObj[i].Activated()
                 BaseSmartSweep.WidgetObj[i].w_userData.callerObject = self
                 BaseSmartSweep.WidgetObj[i].w_parent=self.myWindow

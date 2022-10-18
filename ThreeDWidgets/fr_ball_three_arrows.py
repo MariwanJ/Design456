@@ -44,12 +44,9 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
+from Design456Pref import Design456pref_var
 
-<<<<<<< Updated upstream
-__updated__ = '2022-10-18 20:08:27'
-=======
-__updated__ = '2022-10-17 21:57:05'
->>>>>>> Stashed changes
+__updated__ = '2022-10-18 21:13:36'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -166,6 +163,8 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                  _scale: List[float] = [3.0, 3.0, 3.0],
                  _type: int = 1,
                  _opacity: float = 0.0,
+                 _linkToFreeCADObj=None,
+                 _stepSize =Design456pref_var.MouseStepSize,   #This is based on the stepsize defined by Design456 WB
                  _distanceBetweenThem: float = 0.5):
         super().__init__(vectors, label)
         
@@ -236,8 +235,17 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         self.run_Once = [False, False, False]
         self.startVector = [0.0, 0.0, 0.0]
         self.endVector = [0.0, 0.0, 0.0]
-         
-
+        #link to any object that it's placement will be based on this widget 
+        self.linkToFreeCADObj=_linkToFreeCADObj 
+        self.StepSize=_stepSize
+        self.oldPosition=None
+    
+    def setFreeCADObj(self,OBJECT):
+        self.linkToFreeCADObj=OBJECT
+    #TODO: NOT SURE IF THIS NECESSARY :FIXME:
+    def setStepSize(self,step):
+        self.StepSize=step
+    
     def handle(self, event):
 
         """
@@ -296,11 +304,29 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.YreleaseDragAxis=-1  #drag is finished
                 self.ZreleaseDragAxis=-1  #drag is finished
                 self.AreleaseDragAxis=-1
-                
-                return 1
-
+                return 
+            
         elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
             print("drag -Widget")
+            
+            if self.oldPosition is None:
+                self.oldPosition = self.endVector
+            delta = self.endVector.sub(self.oldPosition)
+            result = 0
+            resultVector = App.Vector(0, 0, 0)
+            if abs(delta.x) > 0 and abs(delta.x) >= self.StepSize:
+                result = int(delta.x / self.StepSize)
+                resultVector.x = (result * self.StepSize)
+            if abs(delta.y) > 0 and abs(delta.y) >= self.StepSize:
+                result = int(delta.y / self.StepSize)
+                resultVector.y = (result * self.StepSize)
+
+            if abs(delta.z) > 0 and abs(delta.z) >= self.StepSize:
+                result = int(delta.z / self.StepSize)
+                resultVector.z = (result * self.StepSize)
+            newPosition = self.oldPosition.add(resultVector)
+            self.oldPosition = newPosition       
+       
             #X-Axis and arrow
             if clickwdgdNode[0] is True and self.XreleaseDragAxis==-1:
                 self.XreleaseDragAxis=0 # Arrow clicked first time it will just change this value
@@ -309,11 +335,25 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             elif clickwdgdNode[0] is True and self.XreleaseDragAxis==0:
                 self.XreleaseDragAxis=1
                 self.w_userData.ActiveAxis="X"
+                if (hasattr(self.linkToFreeCADObj,"X")):
+                    #Draft Point
+                    self.linkToFreeCADObj.X=newPosition.x
+                else:
+                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                    self.linkToFreeCADObj.Placement.Base.x=newPosition.x
+                self.w_vector[0].x=newPosition.x                
                 self.w_xAxis_cb_(self.w_userData)
                 return 1
             elif self.XreleaseDragAxis==1:
                 #continue X drag 
                 self.w_xAxis_cb_(self.w_userData)
+                if (hasattr(self.linkToFreeCADObj,"X")):
+                    #Draft Point
+                    self.linkToFreeCADObj.X=newPosition.x
+                else:
+                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                    self.linkToFreeCADObj.Placement.Base.x=newPosition.x
+                self.w_vector[0].x=newPosition.x       
                 return 1                
 
             #Y-Axis and arrow
@@ -324,25 +364,54 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             elif clickwdgdNode[1] is True and self.YreleaseDragAxis==0:
                 self.YreleaseDragAxis=1
                 self.w_userData.ActiveAxis="Y"
+                if (hasattr(self.linkToFreeCADObj,"Y")):
+                    #Draft Point
+                    self.linkToFreeCADObj.Y=newPosition.y
+                else:
+                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                    self.linkToFreeCADObj.Placement.Base.y=newPosition.y                
+                self.w_vector[0].y=newPosition.y   
                 self.w_yAxis_cb_(self.w_userData)
                 return 1
             elif self.YreleaseDragAxis==1:
                 #continue Y drag 
+                if (hasattr(self.linkToFreeCADObj,"Y")):
+                    #Draft Point
+                    self.linkToFreeCADObj.Y=newPosition.y
+                else:
+                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                    self.linkToFreeCADObj.Placement.Base.y=newPosition.y                
+                self.w_vector[0].y=newPosition.y  
                 self.w_yAxis_cb_(self.w_userData)
-                return 1                
+                return 1     
+                       
             #Z-Axis
             if clickwdgdNode[2] is True and self.ZreleaseDragAxis==-1:
                 self.ZreleaseDragAxis=0 # Arrow clicked first time it will just change this value
-                self.w_userData.ActiveAxis="Y"
+                self.w_userData.ActiveAxis="Z"
                 return
             elif clickwdgdNode[2] is True and self.ZreleaseDragAxis==0:
                 self.ZreleaseDragAxis=1
-                self.w_userData.ActiveAxis="Y"
+                self.w_userData.ActiveAxis="z"
+                if (hasattr(self.linkToFreeCADObj,"Z")):
+                    #Draft Point
+                    self.linkToFreeCADObj.Z=newPosition.z
+                else:
+                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                    self.linkToFreeCADObj.Placement.Base.z=newPosition.z                
+                self.w_vector[0].z=newPosition.z   
                 self.w_zAxis_cb_(self.w_userData)
                 return 1
             elif self.ZreleaseDragAxis==1:
                 #continue drag 
+                if (hasattr(self.linkToFreeCADObj,"Z")):
+                    #Draft Point
+                    self.linkToFreeCADObj.Z=newPosition.z
+                else:
+                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                    self.linkToFreeCADObj.Placement.Base.z=newPosition.z                
                 self.w_zAxis_cb_(self.w_userData)
+                
                 return 1      
 
             #Ball 
@@ -353,10 +422,28 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             elif clickwdgdNode[2] is True and self.AreleaseDragAxis==0:
                 self.AreleaseDragAxis=1
                 self.w_userData.ActiveAxis="A"
+                if (hasattr(self.linkToFreeCADObj,"X")):
+                    #Draft Point
+                    self.linkToFreeCADObj.X=newPosition.x
+                    self.linkToFreeCADObj.Y=newPosition.y
+                    self.linkToFreeCADObj.Z=newPosition.z
+                else:
+                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                    self.linkToFreeCADObj.Placement.Base=newPosition                
+                self.w_vector[0]=newPosition                   
                 self.w_ball_cb_(self.w_userData)
                 return 1
             elif self.AreleaseDragAxis==1:
                 #continue drag 
+                if (hasattr(self.linkToFreeCADObj,"X")):
+                    #Draft Point
+                    self.linkToFreeCADObj.X=newPosition.x
+                    self.linkToFreeCADObj.Y=newPosition.y
+                    self.linkToFreeCADObj.Z=newPosition.z
+                else:
+                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                    self.linkToFreeCADObj.Placement.Base=newPosition                
+                self.w_vector[0]=newPosition                   
                 self.w_ball_cb_(self.w_userData)
                 return 1         
         return 0 
