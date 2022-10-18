@@ -256,7 +256,7 @@ class BaseSmartSweep:
     Placement=None
     mywin=None
     WidgetObj=[]
-    def __init__(self, obj,
+    def __init__(self, obj, myWindow,
                  _section=None,
                  _pathType="BSplineCurve" ):
         
@@ -272,6 +272,7 @@ class BaseSmartSweep:
                         "FlowerVase middle type").PathType = ["BSplineCurve","Curve", "Line"]
         obj.PathType = _pathType
         self.Type = "SmartSweep"
+        self.myWindow=myWindow
         BaseSmartSweep.Placement = obj.Placement
         obj.Proxy = self
             
@@ -306,8 +307,8 @@ class BaseSmartSweep:
             print(exc_type, fname, exc_tb.tb_lineno)
             
     def delOldCoin3dObjects(self):
-        if BaseSmartSweep.mywin is None:
-            BaseSmartSweep.mywin=win.Fr_CoinWindow()
+        if self.myWindow is None:
+            self.myWindow=win.Fr_CoinWindow()
         for i in range(0,len(BaseSmartSweep.WidgetObj)-1):
             BaseSmartSweep.WidgetObj[i].__del__()
             del BaseSmartSweep.WidgetObj[i]
@@ -325,10 +326,10 @@ class BaseSmartSweep:
                 BaseSmartSweep.WidgetObj[i].setLinkToDraftPoint(self.PathPointList[i])
                 BaseSmartSweep.WidgetObj[i].Activated()
                 BaseSmartSweep.WidgetObj[i].w_userData.callerObject = self
-                BaseSmartSweep.WidgetObj[i].w_parent=BaseSmartSweep.mywin
-                BaseSmartSweep.mywin.addWidget(BaseSmartSweep.WidgetObj[i])
+                BaseSmartSweep.WidgetObj[i].w_parent=self.myWindow
+                self.myWindow.addWidget(BaseSmartSweep.WidgetObj[i])
 
-            BaseSmartSweep.mywin.show()
+            self.myWindow.show()
             
         except Exception as err:
             App.Console.PrintError("'execute SmartSweep' Failed. "
@@ -391,12 +392,14 @@ class Design456_SmartSweep:
                 'ToolTip': "Generate a SmartSweep"}
 
     def Activated(self):
+        mywin=None
         newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
         plc = App.Placement()
         plc.Base = App.Vector(0, 0, 0)
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
+        mywin=win.Fr_CoinWindow()
         newObj.Placement = plc
-        BaseSmartSweep(newObj)
+        BaseSmartSweep(newObj,mywin)
         ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
         # v = Gui.ActiveDocument.ActiveView
         # App.ActiveDocument.recompute()
