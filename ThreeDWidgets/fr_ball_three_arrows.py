@@ -46,7 +46,7 @@ from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-10-18 21:13:36'
+__updated__ = '2022-10-19 21:03:42'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -206,7 +206,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         # This affect only the Widget label - nothing else
         self.w_lbluserData.linewidth = self.w_lineWidth
         self.w_lbluserData.vectors = self.w_vector
-        self.ballArrows= self
+        self.w_userData.ballArrows= self
                 
         # We must make it higher or it will intersect the object and won't be visible
         # TODO:Check if this works always?
@@ -219,9 +219,8 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         self.w_lbluserData.labelcolor = _lblColor
 
         self.w_rotation = _rotation       # Whole object Rotation
-
         self.w_arrowsEnabled = [True, True, True]
-        
+
         # -1 no click, 0 mouse clicked, 1 mouse dragging
         # Used to avoid running drag code while it is in drag mode
         self.XreleaseDragAxis = -1
@@ -233,8 +232,8 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         self.AreleaseDragAxis = -1
 
         self.run_Once = [False, False, False]
-        self.startVector = [0.0, 0.0, 0.0]
-        self.endVector = [0.0, 0.0, 0.0]
+        self.startVector = App.Vector(0.0, 0.0, 0.0)
+        self.endVector = App.Vector(0.0, 0.0, 0.0)
         #link to any object that it's placement will be based on this widget 
         self.linkToFreeCADObj=_linkToFreeCADObj 
         self.StepSize=_stepSize
@@ -257,7 +256,6 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         event. Window object is responsible for distributing the events.
         """
         #try:
-        print("event=",hex(event),"\n")
         if type(event) == int:
             if event == FR_EVENTS.FR_NO_EVENT:
                 return 1  # we treat this event. Nothing to do
@@ -265,10 +263,12 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         if self.w_parent is None:
             print("self.w_parent is NOne")
             return
+        
+        self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+                                        self.w_parent.w_lastEventXYZ.Coin_y,
+                                        self.w_parent.w_lastEventXYZ.Coin_z)
+        
         # This is for the widgets label - Not the axes label - be aware.
-        print (type(self.w_parent),"parent")
-        print(type(self.w_pick_radius),"pick")
-        print(type(self.w_widgetlblSoNodes),"lbl nodes")
         clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
                                                     self.w_pick_radius, self.w_widgetlblSoNodes)
         # In this widget, we have 4 coin drawings that we need to capture event for them
@@ -287,9 +287,9 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                                                 self.w_pick_radius, self.w_BallSeparator) is not None):
             clickwdgdNode[3] = True
 
-        else:
-            return 0  # We couldn't use the event .. so return 0
-
+        # else:
+        #     return 0  # We couldn't use the event .. so return 0
+        
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
             #Prioritized callback TODO: is it correct
             if clickwdglblNode is not None:
@@ -297,7 +297,6 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                 return 1
 
         elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            #if clickwdgdNode[0] is True or clickwdgdNode[1] is True or clickwdgdNode[2] is True or clickwdgdNode[3] is True:
             if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
                 self.do_callback()
                 self.XreleaseDragAxis=-1  #drag is finished
@@ -305,13 +304,14 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                 self.ZreleaseDragAxis=-1  #drag is finished
                 self.AreleaseDragAxis=-1
                 return 
-            
+
         elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            print("drag -Widget")
+            print("----------------------------------------\ndrag -Widget")
             
             if self.oldPosition is None:
                 self.oldPosition = self.endVector
             delta = self.endVector.sub(self.oldPosition)
+            print(delta , "delta")
             result = 0
             resultVector = App.Vector(0, 0, 0)
             if abs(delta.x) > 0 and abs(delta.x) >= self.StepSize:
@@ -326,12 +326,12 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                 resultVector.z = (result * self.StepSize)
             newPosition = self.oldPosition.add(resultVector)
             self.oldPosition = newPosition       
-       
+            print(newPosition,"newPosition")
             #X-Axis and arrow
             if clickwdgdNode[0] is True and self.XreleaseDragAxis==-1:
                 self.XreleaseDragAxis=0 # Arrow clicked first time it will just change this value
                 self.w_userData.ActiveAxis="X"
-                return
+                return 1
             elif clickwdgdNode[0] is True and self.XreleaseDragAxis==0:
                 self.XreleaseDragAxis=1
                 self.w_userData.ActiveAxis="X"
@@ -354,13 +354,14 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
                     self.linkToFreeCADObj.Placement.Base.x=newPosition.x
                 self.w_vector[0].x=newPosition.x       
+                self.redraw()
                 return 1                
 
             #Y-Axis and arrow
             if clickwdgdNode[1] is True and self.YreleaseDragAxis==-1:
                 self.YreleaseDragAxis=0 # Arrow clicked first time it will just change this value
                 self.w_userData.ActiveAxis="Y"
-                return
+                return 1
             elif clickwdgdNode[1] is True and self.YreleaseDragAxis==0:
                 self.YreleaseDragAxis=1
                 self.w_userData.ActiveAxis="Y"
@@ -383,16 +384,17 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.linkToFreeCADObj.Placement.Base.y=newPosition.y                
                 self.w_vector[0].y=newPosition.y  
                 self.w_yAxis_cb_(self.w_userData)
+                self.redraw()
                 return 1     
-                       
+
             #Z-Axis
             if clickwdgdNode[2] is True and self.ZreleaseDragAxis==-1:
                 self.ZreleaseDragAxis=0 # Arrow clicked first time it will just change this value
                 self.w_userData.ActiveAxis="Z"
-                return
+                return 1
             elif clickwdgdNode[2] is True and self.ZreleaseDragAxis==0:
                 self.ZreleaseDragAxis=1
-                self.w_userData.ActiveAxis="z"
+                self.w_userData.ActiveAxis="Z"
                 if (hasattr(self.linkToFreeCADObj,"Z")):
                     #Draft Point
                     self.linkToFreeCADObj.Z=newPosition.z
@@ -411,15 +413,15 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
                     self.linkToFreeCADObj.Placement.Base.z=newPosition.z                
                 self.w_zAxis_cb_(self.w_userData)
-                
+                self.redraw()
                 return 1      
 
             #Ball 
             if clickwdgdNode[3] is True and self.AreleaseDragAxis==-1:
                 self.AreleaseDragAxis=0 # Arrow clicked first time it will just change this value
                 self.w_userData.ActiveAxis="A"
-                return
-            elif clickwdgdNode[2] is True and self.AreleaseDragAxis==0:
+                return 1
+            elif clickwdgdNode[3] is True and self.AreleaseDragAxis==0:
                 self.AreleaseDragAxis=1
                 self.w_userData.ActiveAxis="A"
                 if (hasattr(self.linkToFreeCADObj,"X")):
@@ -445,16 +447,17 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.linkToFreeCADObj.Placement.Base=newPosition                
                 self.w_vector[0]=newPosition                   
                 self.w_ball_cb_(self.w_userData)
+                self.redraw()
                 return 1         
         return 0 
-        
+
         # except Exception as err:
         #     App.Console.PrintError("'handle ball3arrows' Failed. "
         #                            "{err}\n".format(err=str(err)))
         #     exc_type, exc_obj, exc_tb = sys.exc_info()
         #     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         #     print(exc_type, fname, exc_tb.tb_lineno)
-    
+
     def draw(self):
         """
         Main draw function. It is responsible for creating the node,
@@ -487,7 +490,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             self.w_ZarrowSeparator = draw_2Darrow(App.Vector(self.w_vector[0].x, self.w_vector[0].y, self.w_vector[0].z + self.distanceBetweenThem),
                                                     # default FR_COLOR.FR_BLUE
                                                     usedColor[2], self.w_Scale, self.DrawingType, self.Opacity, ZpreRotVal)
-            
+
             self.w_BallSeparator=draw_ball(self.w_vector)
             #Remove all drawings and label
             self.removeSoNodes()
@@ -497,19 +500,18 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             self.saveSoNodesToWidget([self.w_XarrowSeparator,
                                         self.w_YarrowSeparator,
                                         self.w_ZarrowSeparator,self.w_BallSeparator])
-        
+
             # add SoSeparator to the switch
             # We can put them in a tuple but it is better not doing so
             self.addSoNodeToSoSwitch(self.w_widgetSoNodes)
             self.addSoNodeToSoSwitch(self.w_widgetlblSoNodes)
-      
+
         except Exception as err:
             App.Console.PrintError("'draw Fr_one_Arrow_widget' Failed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
 
     def draw_label(self, usedColor):
         self.w_lbluserData.linewidth = self.w_lineWidth
@@ -636,7 +638,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
     # Must be App.Vector
     def label_move(self, newPos=App.Vector(0.0, 0.0, 0.0)):
         """[Move location of the label]
-
+        
         Args:
             newPos ([App.Vector], optional): [Change placement of the label]. Defaults to App.Vector(0.0, 0.0, 0.0).
         """
