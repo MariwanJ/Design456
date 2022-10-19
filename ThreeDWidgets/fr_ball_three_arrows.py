@@ -46,7 +46,7 @@ from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-10-19 21:03:42'
+__updated__ = '2022-10-19 22:22:08'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -255,208 +255,204 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         processed the event and no other widgets needs to get the 
         event. Window object is responsible for distributing the events.
         """
-        #try:
-        if type(event) == int:
-            if event == FR_EVENTS.FR_NO_EVENT:
-                return 1  # we treat this event. Nothing to do
-        self.w_userData.events = event  # Keep the event always here
-        if self.w_parent is None:
-            print("self.w_parent is NOne")
-            return
-        
-        self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
-                                        self.w_parent.w_lastEventXYZ.Coin_y,
-                                        self.w_parent.w_lastEventXYZ.Coin_z)
-        
-        # This is for the widgets label - Not the axes label - be aware.
-        clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                    self.w_pick_radius, self.w_widgetlblSoNodes)
-        # In this widget, we have 4 coin drawings that we need to capture event for them
-
-        clickwdgdNode = [False, False,False,False]
-        if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                self.w_pick_radius, self.w_XarrowSeparator) is not None):
-            clickwdgdNode[0] = True
-        elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                self.w_pick_radius, self.w_YarrowSeparator) is not None):
-            clickwdgdNode[1] = True
-        elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                self.w_pick_radius, self.w_ZarrowSeparator) is not None):
-            clickwdgdNode[2] = True
-        elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
-                                                self.w_pick_radius, self.w_BallSeparator) is not None):
-            clickwdgdNode[3] = True
-
-        # else:
-        #     return 0  # We couldn't use the event .. so return 0
-        
-        if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
-            #Prioritized callback TODO: is it correct
-            if clickwdglblNode is not None:
-                self.do_lblcallback()
-                return 1
-
-        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-            if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
-                self.do_callback()
-                self.XreleaseDragAxis=-1  #drag is finished
-                self.YreleaseDragAxis=-1  #drag is finished
-                self.ZreleaseDragAxis=-1  #drag is finished
-                self.AreleaseDragAxis=-1
-                return 
-
-        elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
-            print("----------------------------------------\ndrag -Widget")
+        try:
+            if type(event) == int:
+                if event == FR_EVENTS.FR_NO_EVENT:
+                    return 1  # we treat this event. Nothing to do
+            self.w_userData.events = event  # Keep the event always here
+            if self.w_parent is None:
+                print("self.w_parent is NOne")
+                return
             
-            if self.oldPosition is None:
-                self.oldPosition = self.endVector
-            delta = self.endVector.sub(self.oldPosition)
-            print(delta , "delta")
-            result = 0
-            resultVector = App.Vector(0, 0, 0)
-            if abs(delta.x) > 0 and abs(delta.x) >= self.StepSize:
-                result = int(delta.x / self.StepSize)
-                resultVector.x = (result * self.StepSize)
-            if abs(delta.y) > 0 and abs(delta.y) >= self.StepSize:
-                result = int(delta.y / self.StepSize)
-                resultVector.y = (result * self.StepSize)
+            self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
+                                            self.w_parent.w_lastEventXYZ.Coin_y,
+                                            self.w_parent.w_lastEventXYZ.Coin_z)
+            
+            # This is for the widgets label - Not the axes label - be aware.
+            clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                        self.w_pick_radius, self.w_widgetlblSoNodes)
+            # In this widget, we have 4 coin drawings that we need to capture event for them
 
-            if abs(delta.z) > 0 and abs(delta.z) >= self.StepSize:
-                result = int(delta.z / self.StepSize)
-                resultVector.z = (result * self.StepSize)
-            newPosition = self.oldPosition.add(resultVector)
-            self.oldPosition = newPosition       
-            print(newPosition,"newPosition")
-            #X-Axis and arrow
-            if clickwdgdNode[0] is True and self.XreleaseDragAxis==-1:
-                self.XreleaseDragAxis=0 # Arrow clicked first time it will just change this value
-                self.w_userData.ActiveAxis="X"
-                return 1
-            elif clickwdgdNode[0] is True and self.XreleaseDragAxis==0:
-                self.XreleaseDragAxis=1
-                self.w_userData.ActiveAxis="X"
-                if (hasattr(self.linkToFreeCADObj,"X")):
-                    #Draft Point
-                    self.linkToFreeCADObj.X=newPosition.x
-                else:
-                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
-                    self.linkToFreeCADObj.Placement.Base.x=newPosition.x
-                self.w_vector[0].x=newPosition.x                
-                self.w_xAxis_cb_(self.w_userData)
-                return 1
-            elif self.XreleaseDragAxis==1:
-                #continue X drag 
-                self.w_xAxis_cb_(self.w_userData)
-                if (hasattr(self.linkToFreeCADObj,"X")):
-                    #Draft Point
-                    self.linkToFreeCADObj.X=newPosition.x
-                else:
-                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
-                    self.linkToFreeCADObj.Placement.Base.x=newPosition.x
-                self.w_vector[0].x=newPosition.x       
-                self.redraw()
-                return 1                
+            clickwdgdNode = [False, False,False,False]
+            if(self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                    self.w_pick_radius, self.w_XarrowSeparator) is not None):
+                clickwdgdNode[0] = True
+            elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                    self.w_pick_radius, self.w_YarrowSeparator) is not None):
+                clickwdgdNode[1] = True
+            elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                    self.w_pick_radius, self.w_ZarrowSeparator) is not None):
+                clickwdgdNode[2] = True
+            elif (self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
+                                                    self.w_pick_radius, self.w_BallSeparator) is not None):
+                clickwdgdNode[3] = True
 
-            #Y-Axis and arrow
-            if clickwdgdNode[1] is True and self.YreleaseDragAxis==-1:
-                self.YreleaseDragAxis=0 # Arrow clicked first time it will just change this value
-                self.w_userData.ActiveAxis="Y"
-                return 1
-            elif clickwdgdNode[1] is True and self.YreleaseDragAxis==0:
-                self.YreleaseDragAxis=1
-                self.w_userData.ActiveAxis="Y"
-                if (hasattr(self.linkToFreeCADObj,"Y")):
-                    #Draft Point
-                    self.linkToFreeCADObj.Y=newPosition.y
-                else:
-                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
-                    self.linkToFreeCADObj.Placement.Base.y=newPosition.y                
-                self.w_vector[0].y=newPosition.y   
-                self.w_yAxis_cb_(self.w_userData)
-                return 1
-            elif self.YreleaseDragAxis==1:
-                #continue Y drag 
-                if (hasattr(self.linkToFreeCADObj,"Y")):
-                    #Draft Point
-                    self.linkToFreeCADObj.Y=newPosition.y
-                else:
-                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
-                    self.linkToFreeCADObj.Placement.Base.y=newPosition.y                
-                self.w_vector[0].y=newPosition.y  
-                self.w_yAxis_cb_(self.w_userData)
-                self.redraw()
-                return 1     
+            # else:
+            #     return 0  # We couldn't use the event .. so return 0
+            
+            if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
+                #Prioritized callback TODO: is it correct
+                if clickwdglblNode is not None:
+                    self.do_lblcallback()
+                    return 1
 
-            #Z-Axis
-            if clickwdgdNode[2] is True and self.ZreleaseDragAxis==-1:
-                self.ZreleaseDragAxis=0 # Arrow clicked first time it will just change this value
-                self.w_userData.ActiveAxis="Z"
-                return 1
-            elif clickwdgdNode[2] is True and self.ZreleaseDragAxis==0:
-                self.ZreleaseDragAxis=1
-                self.w_userData.ActiveAxis="Z"
-                if (hasattr(self.linkToFreeCADObj,"Z")):
-                    #Draft Point
-                    self.linkToFreeCADObj.Z=newPosition.z
-                else:
-                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
-                    self.linkToFreeCADObj.Placement.Base.z=newPosition.z                
-                self.w_vector[0].z=newPosition.z   
-                self.w_zAxis_cb_(self.w_userData)
-                return 1
-            elif self.ZreleaseDragAxis==1:
-                #continue drag 
-                if (hasattr(self.linkToFreeCADObj,"Z")):
-                    #Draft Point
-                    self.linkToFreeCADObj.Z=newPosition.z
-                else:
-                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
-                    self.linkToFreeCADObj.Placement.Base.z=newPosition.z                
-                self.w_zAxis_cb_(self.w_userData)
-                self.redraw()
-                return 1      
+            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+                if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
+                    self.do_callback()
+                    self.XreleaseDragAxis=-1  #drag is finished
+                    self.YreleaseDragAxis=-1  #drag is finished
+                    self.ZreleaseDragAxis=-1  #drag is finished
+                    self.AreleaseDragAxis=-1
+                    return 
 
-            #Ball 
-            if clickwdgdNode[3] is True and self.AreleaseDragAxis==-1:
-                self.AreleaseDragAxis=0 # Arrow clicked first time it will just change this value
-                self.w_userData.ActiveAxis="A"
-                return 1
-            elif clickwdgdNode[3] is True and self.AreleaseDragAxis==0:
-                self.AreleaseDragAxis=1
-                self.w_userData.ActiveAxis="A"
-                if (hasattr(self.linkToFreeCADObj,"X")):
-                    #Draft Point
-                    self.linkToFreeCADObj.X=newPosition.x
-                    self.linkToFreeCADObj.Y=newPosition.y
-                    self.linkToFreeCADObj.Z=newPosition.z
-                else:
-                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
-                    self.linkToFreeCADObj.Placement.Base=newPosition                
-                self.w_vector[0]=newPosition                   
-                self.w_ball_cb_(self.w_userData)
-                return 1
-            elif self.AreleaseDragAxis==1:
-                #continue drag 
-                if (hasattr(self.linkToFreeCADObj,"X")):
-                    #Draft Point
-                    self.linkToFreeCADObj.X=newPosition.x
-                    self.linkToFreeCADObj.Y=newPosition.y
-                    self.linkToFreeCADObj.Z=newPosition.z
-                else:
-                    #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
-                    self.linkToFreeCADObj.Placement.Base=newPosition                
-                self.w_vector[0]=newPosition                   
-                self.w_ball_cb_(self.w_userData)
-                self.redraw()
-                return 1         
-        return 0 
+            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
+                if self.oldPosition is None:
+                    self.oldPosition = self.endVector
+                delta = self.endVector.sub(self.oldPosition)
+                result = 0
+                resultVector = App.Vector(0, 0, 0)
+                if abs(delta.x) > 0 and abs(delta.x) >= self.StepSize:
+                    result = int(delta.x / self.StepSize)
+                    resultVector.x = (result * self.StepSize)
+                if abs(delta.y) > 0 and abs(delta.y) >= self.StepSize:
+                    result = int(delta.y / self.StepSize)
+                    resultVector.y = (result * self.StepSize)
 
-        # except Exception as err:
-        #     App.Console.PrintError("'handle ball3arrows' Failed. "
-        #                            "{err}\n".format(err=str(err)))
-        #     exc_type, exc_obj, exc_tb = sys.exc_info()
-        #     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        #     print(exc_type, fname, exc_tb.tb_lineno)
+                if abs(delta.z) > 0 and abs(delta.z) >= self.StepSize:
+                    result = int(delta.z / self.StepSize)
+                    resultVector.z = (result * self.StepSize)
+                newPosition = self.oldPosition.add(resultVector)
+                self.oldPosition = newPosition       
+                #X-Axis and arrow
+                if clickwdgdNode[0] is True and self.XreleaseDragAxis==-1:
+                    self.XreleaseDragAxis=0 # Arrow clicked first time it will just change this value
+                    self.w_userData.ActiveAxis="X"
+                    return 1
+                elif clickwdgdNode[0] is True and self.XreleaseDragAxis==0:
+                    self.XreleaseDragAxis=1
+                    self.w_userData.ActiveAxis="X"
+                    if (hasattr(self.linkToFreeCADObj,"X")):
+                        #Draft Point
+                        self.linkToFreeCADObj.X=newPosition.x
+                    else:
+                        #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                        self.linkToFreeCADObj.Placement.Base.x=newPosition.x
+                    self.w_vector[0].x=newPosition.x                
+                    self.w_xAxis_cb_(self.w_userData)
+                    return 1
+                elif self.XreleaseDragAxis==1:
+                    #continue X drag 
+                    self.w_xAxis_cb_(self.w_userData)
+                    if (hasattr(self.linkToFreeCADObj,"X")):
+                        #Draft Point
+                        self.linkToFreeCADObj.X=newPosition.x
+                    else:
+                        #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                        self.linkToFreeCADObj.Placement.Base.x=newPosition.x
+                    self.w_vector[0].x=newPosition.x       
+                    self.redraw()
+                    return 1                
+
+                #Y-Axis and arrow
+                if clickwdgdNode[1] is True and self.YreleaseDragAxis==-1:
+                    self.YreleaseDragAxis=0 # Arrow clicked first time it will just change this value
+                    self.w_userData.ActiveAxis="Y"
+                    return 1
+                elif clickwdgdNode[1] is True and self.YreleaseDragAxis==0:
+                    self.YreleaseDragAxis=1
+                    self.w_userData.ActiveAxis="Y"
+                    if (hasattr(self.linkToFreeCADObj,"Y")):
+                        #Draft Point
+                        self.linkToFreeCADObj.Y=newPosition.y
+                    else:
+                        #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                        self.linkToFreeCADObj.Placement.Base.y=newPosition.y                
+                    self.w_vector[0].y=newPosition.y   
+                    self.w_yAxis_cb_(self.w_userData)
+                    return 1
+                elif self.YreleaseDragAxis==1:
+                    #continue Y drag 
+                    if (hasattr(self.linkToFreeCADObj,"Y")):
+                        #Draft Point
+                        self.linkToFreeCADObj.Y=newPosition.y
+                    else:
+                        #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                        self.linkToFreeCADObj.Placement.Base.y=newPosition.y                
+                    self.w_vector[0].y=newPosition.y  
+                    self.w_yAxis_cb_(self.w_userData)
+                    self.redraw()
+                    return 1     
+
+                #Z-Axis
+                if clickwdgdNode[2] is True and self.ZreleaseDragAxis==-1:
+                    self.ZreleaseDragAxis=0 # Arrow clicked first time it will just change this value
+                    self.w_userData.ActiveAxis="Z"
+                    return 1
+                elif clickwdgdNode[2] is True and self.ZreleaseDragAxis==0:
+                    self.ZreleaseDragAxis=1
+                    self.w_userData.ActiveAxis="Z"
+                    if (hasattr(self.linkToFreeCADObj,"Z")):
+                        #Draft Point
+                        self.linkToFreeCADObj.Z=newPosition.z
+                    else:
+                        #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                        self.linkToFreeCADObj.Placement.Base.z=newPosition.z                
+                    self.w_vector[0].z=newPosition.z   
+                    self.w_zAxis_cb_(self.w_userData)
+                    return 1
+                elif self.ZreleaseDragAxis==1:
+                    #continue drag 
+                    if (hasattr(self.linkToFreeCADObj,"Z")):
+                        #Draft Point
+                        self.linkToFreeCADObj.Z=newPosition.z
+                    else:
+                        #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                        self.linkToFreeCADObj.Placement.Base.z=newPosition.z                
+                    self.w_zAxis_cb_(self.w_userData)
+                    self.redraw()
+                    return 1      
+
+                #Ball 
+                if clickwdgdNode[3] is True and self.AreleaseDragAxis==-1:
+                    self.AreleaseDragAxis=0 # Arrow clicked first time it will just change this value
+                    self.w_userData.ActiveAxis="A"
+                    return 1
+                elif clickwdgdNode[3] is True and self.AreleaseDragAxis==0:
+                    self.AreleaseDragAxis=1
+                    self.w_userData.ActiveAxis="A"
+                    if (hasattr(self.linkToFreeCADObj,"X")):
+                        #Draft Point
+                        self.linkToFreeCADObj.X=newPosition.x
+                        self.linkToFreeCADObj.Y=newPosition.y
+                        self.linkToFreeCADObj.Z=newPosition.z
+                    else:
+                        #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                        self.linkToFreeCADObj.Placement.Base=newPosition                
+                    self.w_vector[0]=newPosition                   
+                    self.w_ball_cb_(self.w_userData)
+                    return 1
+                elif self.AreleaseDragAxis==1:
+                    #continue drag 
+                    if (hasattr(self.linkToFreeCADObj,"X")):
+                        #Draft Point
+                        self.linkToFreeCADObj.X=newPosition.x
+                        self.linkToFreeCADObj.Y=newPosition.y
+                        self.linkToFreeCADObj.Z=newPosition.z
+                    else:
+                        #other objects if they are not like Point :TODO: FIXME: Don't know if this is correct
+                        self.linkToFreeCADObj.Placement.Base=newPosition                
+                    self.w_vector[0]=newPosition                   
+                    self.w_ball_cb_(self.w_userData)
+                    self.redraw()
+                    return 1         
+            return 0 
+
+        except Exception as err:
+            App.Console.PrintError("'handle ball3arrows' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def draw(self):
         """
