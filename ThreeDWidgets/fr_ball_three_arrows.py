@@ -46,7 +46,7 @@ from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-10-20 20:46:59'
+__updated__ = '2022-10-20 22:14:15'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -240,6 +240,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         self.linkToFreeCADObj=_linkToFreeCADObj 
         self.StepSize=_stepSize
         self.oldPosition=None
+        self.mouseToArrowDiff=App.Vector(0, 0, 0)
     
     def setFreeCADObj(self,OBJECT):
         self.linkToFreeCADObj=OBJECT
@@ -266,10 +267,12 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             if self.w_parent is None:
                 print("self.w_parent is NOne")
                 return
-            
+            self.StepSize=Design456pref_var.MouseStepSize  # this must be updated always.
+             
             self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
                                             self.w_parent.w_lastEventXYZ.Coin_y,
                                             self.w_parent.w_lastEventXYZ.Coin_z)
+            
             
             # This is for the widgets label - Not the axes label - be aware.
             clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
@@ -295,6 +298,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             
             if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 #Prioritized callback TODO: is it correct
+                self.mouseToArrowDiff=App.Vector(0,0,0)
                 if clickwdglblNode is not None:
                     self.do_lblcallback()
                     return 1
@@ -306,12 +310,14 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.YreleaseDragAxis=-1  #drag is finished
                     self.ZreleaseDragAxis=-1  #drag is finished
                     self.AreleaseDragAxis=-1
+                    self.mouseToArrowDiff=App.Vector(0,0,0)
                     return 
 
             elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
                 if self.oldPosition is None:
                     self.oldPosition = self.endVector
-                delta = self.endVector.sub(self.oldPosition)
+                    self.mouseToArrowDiff=self.endVector.sub(self.w_vector[0]) #difference between mouse click and start of the coin widget
+                delta = (self.endVector.sub(self.oldPosition)).sub(self.mouseToArrowDiff)
                 result = 0
                 resultVector = App.Vector(0, 0, 0)
                 if abs(delta.x) > 0 and abs(delta.x) >= self.StepSize:

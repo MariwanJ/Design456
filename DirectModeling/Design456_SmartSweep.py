@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-20 20:32:14'
+__updated__ = '2022-10-20 22:16:08'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -134,12 +134,9 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
         Returns:
             [type]: [Nothing is returned].
         """
-        print("dragging!!")
         try:
             if userData is None:
                 return  # Nothing to do here - shouldn't be None
-            #self.redraw()
-            #App.ActiveDocument.recompute()
             return
 
         except Exception as err:
@@ -199,7 +196,7 @@ class ViewProviderSmartSweep:
 class BaseSmartSweep:
     """ SmartSweep shape with a flexible capabilities 
     """
-    __slots__ = ['myWindow','Apply','Section','PathVertices','PathPointList','PathType','Type','StepSize']
+    __slots__ = ['myWindow','Apply','Section','PathPointList','PathType','Type','StepSize']
     Placement=None
     WidgetObj=[]
     def __init__(self, obj, 
@@ -207,9 +204,7 @@ class BaseSmartSweep:
                  _pathType="BSplineCurve" ):
         
         obj.addProperty("App::PropertyLink","Section","Sweep",
-                        QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=_section
-        obj.addProperty("App::PropertyVectorList","PathVertices", "Sweep",
-                        QT_TRANSLATE_NOOP("App::Property","PathVertices" )).PathVertices=[]        
+                        QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=_section   
         obj.addProperty("App::PropertyLinkList", "PathPointList", "Sweep", 
                         QT_TRANSLATE_NOOP("App::Property", "Link to Point objects")).PathPointList=[]
         obj.addProperty("App::PropertyBool", "Apply", "Execute",
@@ -241,9 +236,10 @@ class BaseSmartSweep:
                 f = tnObj.shape().Faces
                 f.append(base)
                 final = Part.makeShell(f)
-                finalObj=Part.makeSolid(final)
+                finalObj=final#Part.makeSolid(final)
             else:
                 finalObj = sweepPath
+            self.Section.Placement.Base=App.Vector(self.PathPointList[0].X,self.PathPointList[0].Y,self.PathPointList[0].Z)
             return finalObj
 
         except Exception as err:
@@ -322,11 +318,10 @@ class BaseSmartSweep:
 
     def execute(self, obj):
         try:
-            
             self.Section= obj.Section
-            self.PathVertices=obj.PathVertices      #List link to Draft.Point objects.
-            self.Apply=obj.Apply                    #Create the sweep 
-            self.PathPointList=obj.PathPointList    #Either you put directly your vertices or you create point objects not both.
+            self.Apply=obj.Apply
+            #Create the sweep 
+            self.PathPointList=obj.PathPointList   #We must have the first point always.    
             self.PathType=obj.PathType              #BSplineCurve, Curve, or Line
             self.myWindow=None 
             self.StepSize=Design456pref_var.MouseStepSize
@@ -357,14 +352,7 @@ class Design456_SmartSweep:
         newObj.Placement = plc
         BaseSmartSweep(newObj)
         ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
-        # v = Gui.ActiveDocument.ActiveView
-        # App.ActiveDocument.recompute()
-
-        # mw = self.getMainWindow()
-        #BaseSmartSweep.mywin.show()
-        #v = Gui.ActiveDocument.ActiveView
-        #App.ActiveDocument.recompute()
-        #faced.PartMover(v, newObj, deleteOnEscape=True)
+        App.ActiveDocument.recompute()
 
 Gui.addCommand('Design456_SmartSweep', Design456_SmartSweep())
 #-----------------------------------------------------------------------------
