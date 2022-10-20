@@ -218,11 +218,11 @@ class BaseSmartSweep:
                         "FlowerVase middle type").PathType = ["BSplineCurve","Curve", "Line"]
         obj.PathType = _pathType
         self.Type = "SmartSweep"
-        self.myWindow=None
         self.StepSize=0.1
         BaseSmartSweep.Placement = obj.Placement
         obj.Proxy = self
-            
+        self.myWindow=None
+                    
     def createObject(self):
         try:
             finalObj = None 
@@ -320,17 +320,17 @@ class BaseSmartSweep:
     def execute(self, obj):
         try:
             
-            self.myWindow=None 
-            print(type(self.myWindow))
             self.Section= obj.Section
             self.PathVertices=obj.PathVertices      #List link to Draft.Point objects.
             self.Apply=obj.Apply                    #Create the sweep 
             self.PathPointList=obj.PathPointList    #Either you put directly your vertices or you create point objects not both.
             self.PathType=obj.PathType              #BSplineCurve, Curve, or Line
+            self.myWindow=None 
+            self.StepSize=Design456pref_var.MouseStepSize
             self.recreateCOIN3DObjects()
             objResult = self.createObject()
             obj.Shape = objResult
-            self.StepSize=Design456pref_var.MouseStepSize
+
         except Exception as err:
             App.Console.PrintError("'execute SmartSweep' Failed. "
                                    "{err}\n".format(err=str(err)))
@@ -352,6 +352,7 @@ class Design456_SmartSweep:
         plc.Base = App.Vector(0, 0, 0)
         plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         newObj.Placement = plc
+        BaseSmartSweep(newObj)
         ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
         # v = Gui.ActiveDocument.ActiveView
         # App.ActiveDocument.recompute()
