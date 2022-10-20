@@ -52,12 +52,12 @@ class mouseDimension:
     """
     __slots__ = ['Coin_x', 'Coin_y', 'Coin_z', 'Qt_x','Qt_y','pos']
     def __init__(self):
-        self.Coin_x = None
-        self.Coin_y = None
-        self.Coin_z = None
-        self.Qt_x = None
-        self.Qt_y = None
-        self.pos = None
+        self.Coin_x = 0
+        self.Coin_y = 0
+        self.Coin_z = 0
+        self.Qt_x = 0
+        self.Qt_y = 0
+        self.pos = [0,0]
 
 
 # Implementation of double click detection

@@ -46,7 +46,7 @@ from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-10-19 22:22:08'
+__updated__ = '2022-10-20 20:46:59'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -161,6 +161,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                  # Pre-rotation
                  _setupRotation: List[float] = [0.0, 0.0, 0.0],
                  _scale: List[float] = [3.0, 3.0, 3.0],
+                 _ballScale:List[float] = [0.75, 0.75, 0.75],
                  _type: int = 1,
                  _opacity: float = 0.0,
                  _linkToFreeCADObj=None,
@@ -198,6 +199,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                            [j * 1.5 for j in self.w_color[1]],
                            [k * 1.5 for k in self.w_color[2]]]
         self.w_Scale = _scale
+        self.ballScale=_ballScale
         self.w_inactiveColor = [[i * 0.9 for i in self.w_color[0]],
                                 [j * 0.9 for j in self.w_color[1]],
                                 [k * 0.9 for k in self.w_color[2]]]
@@ -256,6 +258,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
         event. Window object is responsible for distributing the events.
         """
         try:
+            newPosition=App.Vector(0.0,0.0,0.0)
             if type(event) == int:
                 if event == FR_EVENTS.FR_NO_EVENT:
                     return 1  # we treat this event. Nothing to do
@@ -487,7 +490,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                                                     # default FR_COLOR.FR_BLUE
                                                     usedColor[2], self.w_Scale, self.DrawingType, self.Opacity, ZpreRotVal)
 
-            self.w_BallSeparator=draw_ball(self.w_vector)
+            self.w_BallSeparator=draw_ball(self.w_vector,FR_COLOR.FR_RED,self.ballScale,)
             #Remove all drawings and label
             self.removeSoNodes()
 

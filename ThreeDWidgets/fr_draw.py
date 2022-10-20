@@ -39,7 +39,7 @@ import math
 from dataclasses import dataclass
 from pivy import coin
 
-__updated__ = '2022-10-16 22:00:55'
+__updated__ = '2022-10-20 20:44:06'
 
 @dataclass
 class userDataObject:
@@ -3460,8 +3460,8 @@ def saveSceneGraphtoIVfile(filename):
 
 def draw_ball(vectors: List[App.Vector] = [], 
               color=(FR_COLOR.FR_RED),
-              scale=[0.5,0.5,0.5], 
-              radius=1,lineWidth=1):
+              scale=[0.75,0.75,0.75], 
+              lineWidth=1):
     try:
         if len(vectors) <1:
             ValueError("1 point must be given to the function")

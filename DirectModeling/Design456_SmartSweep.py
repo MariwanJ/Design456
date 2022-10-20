@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-19 22:24:03'
+__updated__ = '2022-10-20 20:32:14'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -259,7 +259,8 @@ class BaseSmartSweep:
                 self.myWindow=win.Fr_CoinWindow()
             for i in range(0,len(BaseSmartSweep.WidgetObj)):
                 BaseSmartSweep.WidgetObj[i].__del__()
-                del BaseSmartSweep.WidgetObj[i]
+            while(len(BaseSmartSweep.WidgetObj)>0):
+                del BaseSmartSweep.WidgetObj[len(BaseSmartSweep.WidgetObj)-1]    
             BaseSmartSweep.WidgetObj.clear()
             
         except Exception as err:
@@ -273,6 +274,7 @@ class BaseSmartSweep:
         try:
             self.delOldCoin3dObjects()
             for i in range(0,len(self.PathPointList)):
+                print("\ni=",i)
                 BaseSmartSweep.WidgetObj.append(threeArrowBall([
                     App.Vector(self.PathPointList[i].X,
                                self.PathPointList[i].Y,
@@ -284,6 +286,7 @@ class BaseSmartSweep:
                 BaseSmartSweep.WidgetObj[i].w_userData.callerObject = self
                 #BaseSmartSweep.WidgetObj[i].w_parent=self.myWindow
                 self.myWindow.addWidget(BaseSmartSweep.WidgetObj[i])
+
 
             self.myWindow.show()
             
