@@ -54,7 +54,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-20 22:16:08'
+__updated__ = '2022-10-21 22:18:45'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -232,11 +232,10 @@ class BaseSmartSweep:
             if self.Apply==True:
                 tnObj = Part.BRepOffsetAPI.MakePipeShell(sweepPath)
                 tnObj.add(Part.Wire(base.Edges), WithContact=False, WithCorrection=False) #Todo check WithContact and WithCorrection
-                tnObj.setTransitionMode(0)  # Round edges
-                f = tnObj.shape().Faces
-                f.append(base)
-                final = Part.makeShell(f)
-                finalObj=final#Part.makeSolid(final)
+                #tnObj.setTransitionMode(1)  # Round edges
+                #tnObj.setFrenetMode(True)
+                tnObj.makeSolid()
+                finalObj=tnObj.shape()
             else:
                 finalObj = sweepPath
             self.Section.Placement.Base=App.Vector(self.PathPointList[0].X,self.PathPointList[0].Y,self.PathPointList[0].Z)
@@ -270,20 +269,19 @@ class BaseSmartSweep:
         try:
             self.delOldCoin3dObjects()
             for i in range(0,len(self.PathPointList)):
-                print("\ni=",i)
                 BaseSmartSweep.WidgetObj.append(threeArrowBall([
                     App.Vector(self.PathPointList[i].X,
                                self.PathPointList[i].Y,
                                self.PathPointList[i].Z)
                                ,App.Vector(0,0,0)]))
+                self.PathPointList[i].Visibility=False
                 BaseSmartSweep.WidgetObj[i].setFreeCADObj(self.PathPointList[i])
 
                 BaseSmartSweep.WidgetObj[i].Activated()
                 BaseSmartSweep.WidgetObj[i].w_userData.callerObject = self
                 #BaseSmartSweep.WidgetObj[i].w_parent=self.myWindow
                 self.myWindow.addWidget(BaseSmartSweep.WidgetObj[i])
-
-
+            self.Section.Visibility = False
             self.myWindow.show()
             
         except Exception as err:
