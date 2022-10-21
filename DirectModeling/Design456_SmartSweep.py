@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import os
+from re import T
 import sys
 #from tkinter import N
 
@@ -54,7 +55,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-21 22:18:45'
+__updated__ = '2022-10-21 22:32:28'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -232,8 +233,9 @@ class BaseSmartSweep:
             if self.Apply==True:
                 tnObj = Part.BRepOffsetAPI.MakePipeShell(sweepPath)
                 tnObj.add(Part.Wire(base.Edges), WithContact=False, WithCorrection=False) #Todo check WithContact and WithCorrection
-                #tnObj.setTransitionMode(1)  # Round edges
-                #tnObj.setFrenetMode(True)
+                tnObj.setTransitionMode(1)  # Round edges
+                tnObj.setFrenetMode(True)
+                tnObj.build()  #This will create the shape. Without his the SmartSweep fail since the shape is still not made
                 tnObj.makeSolid()
                 finalObj=tnObj.shape()
             else:
