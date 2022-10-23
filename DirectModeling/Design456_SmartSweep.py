@@ -55,7 +55,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-21 22:32:28'
+__updated__ = '2022-10-23 09:52:21'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -203,7 +203,6 @@ class BaseSmartSweep:
     def __init__(self, obj, 
                  _section=None,
                  _pathType="BSplineCurve" ):
-        
         obj.addProperty("App::PropertyLink","Section","Sweep",
                         QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=_section   
         obj.addProperty("App::PropertyLinkList", "PathPointList", "Sweep", 
@@ -211,7 +210,7 @@ class BaseSmartSweep:
         obj.addProperty("App::PropertyBool", "Apply", "Execute",
                         QT_TRANSLATE_NOOP("App::Property","Execute the command" )).Apply=False
         obj.addProperty("App::PropertyEnumeration", "PathType", "PathType",
-                        "FlowerVase middle type").PathType = ["BSplineCurve","Curve", "Line"]
+                        "FlowerVase middle type").PathType = ["BSplineCurve","ArcOfThree", "Line"]
         obj.PathType = _pathType
         self.Type = "SmartSweep"
         self.StepSize=0.1
@@ -270,7 +269,10 @@ class BaseSmartSweep:
     def recreateCOIN3DObjects(self):
         try:
             self.delOldCoin3dObjects()
-            for i in range(0,len(self.PathPointList)):
+            nrOfPoints=len(self.PathPointList)
+            if nrOfPoints<1:
+                return #Nothing to do 
+            for i in range(0,nrOfPoints):
                 BaseSmartSweep.WidgetObj.append(threeArrowBall([
                     App.Vector(self.PathPointList[i].X,
                                self.PathPointList[i].Y,
@@ -281,7 +283,6 @@ class BaseSmartSweep:
 
                 BaseSmartSweep.WidgetObj[i].Activated()
                 BaseSmartSweep.WidgetObj[i].w_userData.callerObject = self
-                #BaseSmartSweep.WidgetObj[i].w_parent=self.myWindow
                 self.myWindow.addWidget(BaseSmartSweep.WidgetObj[i])
             self.Section.Visibility = False
             self.myWindow.show()
@@ -295,8 +296,10 @@ class BaseSmartSweep:
             
     def reCreateSweep(self):
         try:
+            edges=[]
             points=[]
-            for i in range(0,len(self.PathPointList)):
+            nrOfPoints=len(self.PathPointList)
+            for i in range(0,nrOfPoints):
                 points.append(App.Vector(self.PathPointList[i].X,
                                self.PathPointList[i].Y,
                                self.PathPointList[i].Z))
@@ -304,10 +307,28 @@ class BaseSmartSweep:
                 curve=Part.BSplineCurve()
                 curve.interpolate(points)
                 return Part.Wire(curve.toShape())
-            elif self.PathType == "Curve":
-                pass
+            
+            if self.PathType == "ArcOfThree":
+                nrOfEdges=0
+                nrOfEdges=int(nrOfPoints/3)
+                ge=int(nrOfEdges*3)
+                print(ge!=nrOfPoints)
+                if (ge!=nrOfPoints):
+                    #We have less than 3*n points. You need to give multiples of 3 points.
+                    App.Console.PrintError("You need to have multiple of 3 points when you use ArcOfThree")
+                    App.Console.PrintError("Last points are ignored")
+                if nrOfEdges>1:
+                    for i in range(0,nrOfEdges):
+                        C1 = Part.Arc(points[0+3*i], points[1+3*i], points[2+3*i])
+                    edges.append(C1.toShape())
+                else:
+                        C1 = Part.Arc(points[0], points[1], points[2])
+                        edges.append(C1.toShape())
+                W=Part.Wire(edges)
+                return W
             elif self.PathType == "Line":
-                pass
+                W=Part.Wire(Part.makePolygon(points))            
+                return W
             
         except Exception as err:
             App.Console.PrintError("'reCreateSweep SmartSweep' Failed. "
@@ -327,6 +348,8 @@ class BaseSmartSweep:
             self.StepSize=Design456pref_var.MouseStepSize
             self.recreateCOIN3DObjects()
             objResult = self.createObject()
+            if objResult is None:
+                objResult = Part.Point(App.Vector(0,0,0)) #dummy shape just to avoid problem in freecad
             obj.Shape = objResult
 
         except Exception as err:

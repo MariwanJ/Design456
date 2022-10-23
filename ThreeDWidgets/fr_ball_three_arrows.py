@@ -46,7 +46,7 @@ from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-10-20 22:14:15'
+__updated__ = '2022-10-22 17:37:22'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -160,8 +160,8 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                  
                  # Pre-rotation
                  _setupRotation: List[float] = [0.0, 0.0, 0.0],
-                 _scale: List[float] = [3.0, 3.0, 3.0],
-                 _ballScale:List[float] = [0.75, 0.75, 0.75],
+                 _scale: List[float] = [6.0, 6.0, 6.0],
+                 _ballScale:List[float] = [1, 1, 1],
                  _type: int = 1,
                  _opacity: float = 0.0,
                  _linkToFreeCADObj=None,
@@ -247,6 +247,28 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
     #TODO: NOT SURE IF THIS NECESSARY :FIXME:
     def setStepSize(self,step):
         self.StepSize=step
+        
+    def KeyboardEvent(self, events):
+        try:
+            key = events.getKey() 
+            eventState = events.getState()
+            if key == coin.SoKeyboardEvent.E and eventState == coin.SoButtonEvent.UP:
+                self.w_parent.w_lastEvent = FR_EVENTS.FR_NO_EVENT
+            if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
+                self.do_callback()
+                self.XreleaseDragAxis=-1  #drag is finished
+                self.YreleaseDragAxis=-1  #drag is finished
+                self.ZreleaseDragAxis=-1  #drag is finished
+                self.AreleaseDragAxis=-1
+                self.mouseToArrowDiff=App.Vector(0,0,0)
+                return 1
+            return 0
+        except Exception as err:
+            App.Console.PrintError("'KeyBoardEvent' Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
     
     def handle(self, event):
 
@@ -272,7 +294,10 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             self.endVector = App.Vector(self.w_parent.w_lastEventXYZ.Coin_x,
                                             self.w_parent.w_lastEventXYZ.Coin_y,
                                             self.w_parent.w_lastEventXYZ.Coin_z)
-            
+
+            if (type(event) == coin.SoKeyboardEvent):
+                return self.KeyboardEvent(event)
+                            
             
             # This is for the widgets label - Not the axes label - be aware.
             clickwdglblNode = self.w_parent.objectMouseClick_Coin3d(self.w_parent.w_lastEventXYZ.pos,
