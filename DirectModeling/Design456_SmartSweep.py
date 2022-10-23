@@ -55,7 +55,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-23 09:52:21'
+__updated__ = '2022-10-23 09:59:45'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -196,6 +196,7 @@ class ViewProviderSmartSweep:
            
 class BaseSmartSweep:
     """ SmartSweep shape with a flexible capabilities 
+
     """
     __slots__ = ['myWindow','Apply','Section','PathPointList','PathType','Type','StepSize']
     Placement=None
@@ -349,7 +350,7 @@ class BaseSmartSweep:
             self.recreateCOIN3DObjects()
             objResult = self.createObject()
             if objResult is None:
-                objResult = Part.Point(App.Vector(0,0,0)) #dummy shape just to avoid problem in freecad
+                objResult = Part.Point(App.Vector(0,0,0)).toShape() #dummy shape just to avoid problem in freecad
             obj.Shape = objResult
 
         except Exception as err:
