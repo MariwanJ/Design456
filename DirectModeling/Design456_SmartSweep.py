@@ -55,7 +55,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-24 20:51:28'
+__updated__ = '2022-10-24 22:16:54'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -103,6 +103,7 @@ TODO:
 '''
 Instance of the class for this tool. Callbacks will be inside the class.
 '''
+globalWinVar=None
 class threeArrowBall(Fr_BallThreeArrows_Widget):
     
     def __init__(self, vectors: List[App.Vector] = [], label: str = [[]]):
@@ -198,14 +199,16 @@ class BaseSmartSweep:
     """ SmartSweep shape with a flexible capabilities 
 ['Apply', 'CoinVisible', 'PathPointList', 'PathType', 'Placement', 'Section', 'StepSize', 'Type',
     """
-    __slots__ = ['Apply','CoinVisible','PathPointList','PathType','Section','StepSize','Type','WidgetObj']
+    __slots__ = ['Apply','stepSize','coinWin','CoinVisible','PathPointList','PathType','Section','StepSize','Type','WidgetObj']
     #Placement=None
-    coinWin=None
-    def __init__(self, obj, 
-                 _section=None,
-                 _pathType="BSplineCurve" ):
+    global stepSize
+    global Type
+    global WidgetObj
+    
+    def __init__(self, obj,_coinWin=None):
+        
         obj.addProperty("App::PropertyLink","Section","Sweep",
-                        QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=_section   
+                        QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=None   
         obj.addProperty("App::PropertyLinkList", "PathPointList", "Sweep", 
                         QT_TRANSLATE_NOOP("App::Property", "Link to Point objects")).PathPointList=[]
         obj.addProperty("App::PropertyBool", "Apply", "Execute",
@@ -216,15 +219,9 @@ class BaseSmartSweep:
         obj.addProperty("App::PropertyBool", "CoinVisible", "Execute",
                         QT_TRANSLATE_NOOP("App::Property","Hide or show coin widget" )).CoinVisible=True
             
-        obj.PathType = _pathType
-        #BaseSmartSweep.Placement = obj.Placement
-        global stepSize
-        global Type
-        global WidgetObj
-        
-        self.StepSize=0.1
-        BaseSmartSweep.coinWin=win.Fr_CoinWindow()
-        self.Type = ""
+        obj.PathType = "BSplineCurve"
+        self.coinWin=globalWinVar
+        self.stepSize=0.1
         self.WidgetObj=[]
         obj.Proxy = self
            
@@ -261,8 +258,6 @@ class BaseSmartSweep:
             
     def delOldCoin3dObjects(self):
         try:
-            if BaseSmartSweep.coinWin is None:
-               return
             for i in range(0,len(self.WidgetObj)):
                 self.WidgetObj[i].__del__()
             while(len(self.WidgetObj)>0):
@@ -279,11 +274,7 @@ class BaseSmartSweep:
     def recreateCOIN3DObjects(self):
         try:
             if self.CoinVisible is False:
-                if BaseSmartSweep.coinWin is None:
-                    BaseSmartSweep.coinWin=win.Fr_CoinWindow()
-                BaseSmartSweep.coinWin.hide()
-                return
-            self.delOldCoin3dObjects()
+                self.delOldCoin3dObjects()
             nrOfPoints=len(self.PathPointList)
             if nrOfPoints<1:
                 return #Nothing to do 
@@ -298,9 +289,9 @@ class BaseSmartSweep:
 
                 self.WidgetObj[i].Activated()
                 self.WidgetObj[i].w_userData.callerObject = self
-                BaseSmartSweep.coinWin.addWidget(self.WidgetObj[i])
+                self.coinWin.addWidget(self.WidgetObj[i])
             self.Section.Visibility = False
-            BaseSmartSweep.coinWin.show()
+            self.coinWin.show()
             
         except Exception as err:
             App.Console.PrintError("'recreateCOIN3DObjects SmartSweep' Failed. "
@@ -379,20 +370,19 @@ class BaseSmartSweep:
 
 
 class Design456_SmartSweep:
-        
     def GetResources(self):
         return {'Pixmap': Design456Init.ICON_PATH + 'SmartSweep.svg',
                 'MenuText': "SmartSweep",
                 'ToolTip': "Generate a SmartSweep"}
 
     def Activated(self):
-        
         newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
         # plc = App.Placement()
         # plc.Base = App.Vector(0, 0, 0)
         # plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
         #newObj.Placement = plc
-        self.baseObj=BaseSmartSweep(newObj)
+        globalWinVar=win.Fr_CoinWindow()
+        BaseSmartSweep(newObj)
         ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
         App.ActiveDocument.recompute()
 
