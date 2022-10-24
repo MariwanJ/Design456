@@ -46,7 +46,7 @@ from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-10-22 17:37:22'
+__updated__ = '2022-10-24 20:45:27'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -295,8 +295,10 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                                             self.w_parent.w_lastEventXYZ.Coin_y,
                                             self.w_parent.w_lastEventXYZ.Coin_z)
 
-            if (type(event) == coin.SoKeyboardEvent):
-                return self.KeyboardEvent(event)
+            # if (type(event) == coin.SoKeyboardEvent):
+            #     if (self.KeyboardEvent(event)) ==1:
+            #         return 1
+            
                             
             
             # This is for the widgets label - Not the axes label - be aware.

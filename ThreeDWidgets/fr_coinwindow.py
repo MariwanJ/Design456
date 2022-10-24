@@ -42,7 +42,7 @@ import time  # For double click detection
 This is a class for coin3D Window
 '''
 
-__updated__ = '2022-10-16 21:38:54'
+__updated__ = '2022-10-24 20:37:11'
 
 
 @dataclass
@@ -76,6 +76,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
     # This is the holder of all objects.It should be here not inside the Fr_Group
     # this is the root scenegraph. It keeps all switch. Switches will keep drawing
     w_countMouseCLICK = 0.0
+    w_InstanceCounter=0
     def __init__(self, vectors: List[App.Vector] = [App.Vector(0, 0, 0), App.Vector(
             400, 400, 0)], label: str = [[]]):
         super().__init__(vectors, label)
@@ -100,7 +101,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.w_mainfrCoinWindow = self
         self.w_parent = self  # No parent and this is the main window
         self.w_widgetType = FR_WidgetType.FR_COINWINDOW
-
+        Fr_CoinWindow.w_InstanceCounter=Fr_CoinWindow.w_InstanceCounter+1
 
     def show(self):
         """
@@ -116,6 +117,7 @@ class Fr_CoinWindow(fr_group.Fr_Group):
         self.w_view = Gui.ActiveDocument.ActiveView
         self.addCallbacks()
         self.draw()
+        print("frCoinWindow Counter=",Fr_CoinWindow.w_InstanceCounter)
         super().show()  # Show all children also
 
     def __del__(self):

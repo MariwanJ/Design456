@@ -55,7 +55,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-23 22:18:31'
+__updated__ = '2022-10-24 20:51:28'
 
 '''
 Part.BSplineCurve([poles],              #[vector]
@@ -262,7 +262,7 @@ class BaseSmartSweep:
     def delOldCoin3dObjects(self):
         try:
             if BaseSmartSweep.coinWin is None:
-                raise Exception("No coin windows")
+               return
             for i in range(0,len(self.WidgetObj)):
                 self.WidgetObj[i].__del__()
             while(len(self.WidgetObj)>0):
@@ -280,9 +280,7 @@ class BaseSmartSweep:
         try:
             if self.CoinVisible is False:
                 if BaseSmartSweep.coinWin is None:
-                    print ("BaseSmartSweep.coinWin is none")
-                    raise Exception("No coin windows")
-                    return # Nothing to do 
+                    BaseSmartSweep.coinWin=win.Fr_CoinWindow()
                 BaseSmartSweep.coinWin.hide()
                 return
             self.delOldCoin3dObjects()
@@ -361,7 +359,6 @@ class BaseSmartSweep:
             self.Apply=obj.Apply
             #Create the sweep 
             self.Type = "SmartSweep"
-            print(dir(self))
             self.PathPointList=obj.PathPointList   #We must have the first point always.    
             self.PathType=obj.PathType              #BSplineCurve, Curve, or Line
 
