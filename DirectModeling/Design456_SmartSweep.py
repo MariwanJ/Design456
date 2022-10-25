@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 #
 # **************************************************************************
 # *                                                                        *
@@ -28,7 +29,8 @@ from __future__ import unicode_literals
 import os
 from re import T
 import sys
-#from tkinter import N
+
+# from tkinter import N
 
 from pivy import coin
 import FreeCAD as App
@@ -41,8 +43,10 @@ from PySide import QtGui, QtCore
 from ThreeDWidgets.fr_ball_three_arrows import Fr_BallThreeArrows_Widget
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
-from ThreeDWidgets import fr_ball_three_arrows 
-from Design456Pref import Design456pref_var  #Variable shared between preferences and other tools
+from ThreeDWidgets import fr_ball_three_arrows
+from Design456Pref import (
+    Design456pref_var,
+)  # Variable shared between preferences and other tools
 
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
@@ -55,9 +59,9 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = '2022-10-24 22:16:54'
+__updated__ = "2022-10-25 22:35:51"
 
-'''
+"""
 Part.BSplineCurve([poles],              #[vector]
                   [multiplicities],     #[int]
                   [knots],              #[float]
@@ -80,8 +84,8 @@ curve.interpolate(absolutePoints)
 Part.show(curve.toShape())
 Gui.ActiveDocument.ActiveView.fitAll()
 
-'''
-#*********************************************************************************
+"""
+# *********************************************************************************
 
 
 """
@@ -100,37 +104,36 @@ TODO:
 """
 
 
-'''
+"""
 Instance of the class for this tool. Callbacks will be inside the class.
-'''
-globalWinVar=None
+"""
+
+
 class threeArrowBall(Fr_BallThreeArrows_Widget):
-    
     def __init__(self, vectors: List[App.Vector] = [], label: str = [[]]):
-        self.linkToPoint=None
+        self.linkToPoint = None
         super().__init__(vectors, label)
         self.oldPosition = None
 
-            
-    def setLinkToDraftPoint(self,draftPointObj):
-        self.linkToPoint= draftPointObj# 
-    
-    def callback(self,userData):
+    def setLinkToDraftPoint(self, draftPointObj):
+        self.linkToPoint = draftPointObj  #
+
+    def callback(self, userData):
         App.ActiveDocument.recompute()
-        pass #Do nothing
-    
+        pass  # Do nothing
+
     def Activated(self):
-        self.w_ball_cb_=self.DraggingCallback
-        self.w_xAxis_cb_=self.DraggingCallback
-        self.w_yAxis_cb_=self.DraggingCallback
-        self.w_zAxis_cb_=self.DraggingCallback
-        self.w_callback_=self.callback
-            
-    def DraggingCallback(self,userData: fr_ball_three_arrows.userDataObject = None):
-        """[ Callback for the arrow movement. 
+        self.w_ball_cb_ = self.DraggingCallback
+        self.w_xAxis_cb_ = self.DraggingCallback
+        self.w_yAxis_cb_ = self.DraggingCallback
+        self.w_zAxis_cb_ = self.DraggingCallback
+        self.w_callback_ = self.callback
+
+    def DraggingCallback(self, userData: fr_ball_three_arrows.userDataObject = None):
+        """[ Callback for the arrow movement.
         This will be used to calculate the length of the Extrude operation.]
         Args:
-            userData (fr_ball_three_arrows.userDataObject, optional): 
+            userData (fr_ball_three_arrows.userDataObject, optional):
             [Userdata contain link to several variable and the ball-arrows widget]. Defaults to None.
 
         Returns:
@@ -142,15 +145,18 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
             return
 
         except Exception as err:
-            App.Console.PrintError("'DraggingCallback' Failed. "
-                                "{err}\n".format(err=str(err)))
+            App.Console.PrintError(
+                "'DraggingCallback' Failed. " "{err}\n".format(err=str(err))
+            )
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
- 
+
+
 ######################################################################
 
-# Smart Sweep 
+# Smart Sweep
+
 
 class ViewProviderSmartSweep:
 
@@ -179,191 +185,250 @@ class ViewProviderSmartSweep:
         pass
 
     def getIcon(self):
-        return (Design456Init.ICON_PATH + 'SmartSweep.svg')
+        return Design456Init.ICON_PATH + "SmartSweep.svg"
 
     # def __getstate__(self):
     #     return None
 
-    #def __setstate__(self, state):
+    # def __setstate__(self, state):
     #    return None
     #
-    
+
     def __getstate__(self):
-      return self.Type 
+        return self.Type
 
     def __setstate__(self, state):
-       if state:
-           self.Type = state 
-           
-class BaseSmartSweep:
-    """ SmartSweep shape with a flexible capabilities 
-['Apply', 'CoinVisible', 'PathPointList', 'PathType', 'Placement', 'Section', 'StepSize', 'Type',
-    """
-    __slots__ = ['Apply','stepSize','coinWin','CoinVisible','PathPointList','PathType','Section','StepSize','Type','WidgetObj']
-    #Placement=None
-    global stepSize
-    global Type
-    global WidgetObj
-    
-    def __init__(self, obj,_coinWin=None):
-        
-        obj.addProperty("App::PropertyLink","Section","Sweep",
-                        QT_TRANSLATE_NOOP("App::Property","Face to sweep")).Section=None   
-        obj.addProperty("App::PropertyLinkList", "PathPointList", "Sweep", 
-                        QT_TRANSLATE_NOOP("App::Property", "Link to Point objects")).PathPointList=[]
-        obj.addProperty("App::PropertyBool", "Apply", "Execute",
-                        QT_TRANSLATE_NOOP("App::Property","Execute the command" )).Apply=False
-        obj.addProperty("App::PropertyEnumeration", "PathType", "PathType",
-                        "FlowerVase middle type").PathType = ["BSplineCurve","ArcOfThree", "Line"]
+        if state:
+            self.Type = state
 
-        obj.addProperty("App::PropertyBool", "CoinVisible", "Execute",
-                        QT_TRANSLATE_NOOP("App::Property","Hide or show coin widget" )).CoinVisible=True
-            
+
+class BaseSmartSweep:
+    """SmartSweep shape with a flexible capabilities"""
+    coinWin = None
+    __slots__ = [
+        "Apply",
+        "stepSize",
+        "CoinVisible",
+        "PathPointList",
+        "PathType",
+        "Section",
+        "StepSize",
+        "Type",
+        "WidgetObj",
+    ]
+    # Placement=None
+
+    def __init__(self, obj, _coinWin):
+
+        obj.addProperty(
+            "App::PropertyLink",
+            "Section",
+            "Sweep",
+            QT_TRANSLATE_NOOP("App::Property", "Face to sweep"),
+        ).Section = None
+        obj.addProperty(
+            "App::PropertyLinkList",
+            "PathPointList",
+            "Sweep",
+            QT_TRANSLATE_NOOP("App::Property", "Link to Point objects"),
+        ).PathPointList = []
+        obj.addProperty(
+            "App::PropertyBool",
+            "Apply",
+            "Execute",
+            QT_TRANSLATE_NOOP("App::Property", "Execute the command"),
+        ).Apply = False
+        obj.addProperty(
+            "App::PropertyEnumeration", "PathType", "PathType", "FlowerVase middle type"
+        ).PathType = ["BSplineCurve", "ArcOfThree", "Line"]
+
+        obj.addProperty(
+            "App::PropertyBool",
+            "CoinVisible",
+            "Execute",
+            QT_TRANSLATE_NOOP("App::Property", "Hide or show coin widget"),
+        ).CoinVisible = True
+        global stepSize
+        global Type
+        global WidgetObj
+
         obj.PathType = "BSplineCurve"
-        self.coinWin=globalWinVar
-        self.stepSize=0.1
-        self.WidgetObj=[]
+        self.stepSize = 0.1
+        self.WidgetObj = []
+        BaseSmartSweep.coinWin=_coinWin
+
         obj.Proxy = self
-           
+
     def createObject(self):
         try:
-            finalObj = None 
-            sweepPath=self.reCreateSweep()
+            finalObj = None
+            sweepPath = self.reCreateSweep()
             if self.Section is None:
                 return sweepPath
-            
-            base=self.Section.Shape
+
+            base = self.Section.Shape
             if base is None:
                 return sweepPath
-            
-            if self.Apply==True:
+
+            if self.Apply == True:
                 tnObj = Part.BRepOffsetAPI.MakePipeShell(sweepPath)
-                tnObj.add(Part.Wire(base.Edges), WithContact=False, WithCorrection=False) #Todo check WithContact and WithCorrection
+                tnObj.add(
+                    Part.Wire(base.Edges), WithContact=False, WithCorrection=False
+                )  # Todo check WithContact and WithCorrection
                 tnObj.setTransitionMode(1)  # Round edges
                 tnObj.setFrenetMode(True)
-                tnObj.build()  #This will create the shape. Without his the SmartSweep fail since the shape is still not made
+                tnObj.build()  # This will create the shape. Without his the SmartSweep fail since the shape is still not made
                 tnObj.makeSolid()
-                finalObj=tnObj.shape()
+                finalObj = tnObj.shape()
             else:
                 finalObj = sweepPath
-            self.Section.Placement.Base=App.Vector(self.PathPointList[0].X,self.PathPointList[0].Y,self.PathPointList[0].Z)
+            self.Section.Placement.Base = App.Vector(
+                self.PathPointList[0].X,
+                self.PathPointList[0].Y,
+                self.PathPointList[0].Z,
+            )
             return finalObj
 
         except Exception as err:
-            App.Console.PrintError("'createObject SmartSweep' Failed. "
-                                   "{err}\n".format(err=str(err)))
+            App.Console.PrintError(
+                "'createObject SmartSweep' Failed. " "{err}\n".format(err=str(err))
+            )
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def delOldCoin3dObjects(self):
         try:
-            for i in range(0,len(self.WidgetObj)):
+            print(type(self.WidgetObj))
+            print(dir(self.WidgetObj))
+            totalWID = len(self.WidgetObj)
+            for i in range(0, totalWID):
                 self.WidgetObj[i].__del__()
-            while(len(self.WidgetObj)>0):
-                del self.WidgetObj[len(self.WidgetObj)-1]    
             self.WidgetObj.clear()
-            
+
         except Exception as err:
-            App.Console.PrintError("'delOldCoin3dObjects SmartSweep' Failed. "
-                                   "{err}\n".format(err=str(err)))
+            App.Console.PrintError(
+                "'delOldCoin3dObjects SmartSweep' Failed. "
+                "{err}\n".format(err=str(err))
+            )
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def recreateCOIN3DObjects(self):
         try:
-            if self.CoinVisible is False:
-                self.delOldCoin3dObjects()
-            nrOfPoints=len(self.PathPointList)
-            if nrOfPoints<1:
-                return #Nothing to do 
-            for i in range(0,nrOfPoints):
-                self.WidgetObj.append(threeArrowBall([
-                    App.Vector(self.PathPointList[i].X,
-                               self.PathPointList[i].Y,
-                               self.PathPointList[i].Z)
-                               ,App.Vector(0,0,0)]))
-                self.PathPointList[i].Visibility=False
+            self.delOldCoin3dObjects()
+            nrOfPoints = len(self.PathPointList)
+            if nrOfPoints < 1:
+                return  # Nothing to do
+            for i in range(0, nrOfPoints):
+                self.WidgetObj.append(
+                    threeArrowBall(
+                        [
+                            App.Vector(
+                                self.PathPointList[i].X,
+                                self.PathPointList[i].Y,
+                                self.PathPointList[i].Z,
+                            ),
+                            App.Vector(0, 0, 0),
+                        ]
+                    )
+                )
+                self.PathPointList[i].Visibility = False
                 self.WidgetObj[i].setFreeCADObj(self.PathPointList[i])
 
                 self.WidgetObj[i].Activated()
                 self.WidgetObj[i].w_userData.callerObject = self
-                self.coinWin.addWidget(self.WidgetObj[i])
+                BaseSmartSweep.coinWin.addWidget(self.WidgetObj[i])
             self.Section.Visibility = False
-            self.coinWin.show()
-            
+            BaseSmartSweep.coinWin.show()
+
         except Exception as err:
-            App.Console.PrintError("'recreateCOIN3DObjects SmartSweep' Failed. "
-                                   "{err}\n".format(err=str(err)))
+            App.Console.PrintError(
+                "'recreateCOIN3DObjects SmartSweep' Failed. "
+                "{err}\n".format(err=str(err))
+            )
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            
+
     def reCreateSweep(self):
         try:
-            edges=[]
-            points=[]
-            nrOfPoints=len(self.PathPointList)
-            for i in range(0,nrOfPoints):
-                points.append(App.Vector(self.PathPointList[i].X,
-                               self.PathPointList[i].Y,
-                               self.PathPointList[i].Z))
+            edges = []
+            points = []
+            nrOfPoints = len(self.PathPointList)
+            for i in range(0, nrOfPoints):
+                points.append(
+                    App.Vector(
+                        self.PathPointList[i].X,
+                        self.PathPointList[i].Y,
+                        self.PathPointList[i].Z,
+                    )
+                )
             if self.PathType == "BSplineCurve":
-                curve=Part.BSplineCurve()
+                curve = Part.BSplineCurve()
                 curve.interpolate(points)
                 return Part.Wire(curve.toShape())
-            
+
             if self.PathType == "ArcOfThree":
-                nrOfEdges=0
-                nrOfEdges=int(nrOfPoints/3)
-                ge=int(nrOfEdges*3)
-                if (ge!=nrOfPoints):
-                    #We have less than 3*n points. You need to give multiples of 3 points.
-                    App.Console.PrintError("You need to have multiple of 3 points when you use ArcOfThree")
+                nrOfEdges = 0
+                nrOfEdges = int(nrOfPoints / 3)
+                ge = int(nrOfEdges * 3)
+                if ge != nrOfPoints:
+                    # We have less than 3*n points. You need to give multiples of 3 points.
+                    App.Console.PrintError(
+                        "You need to have multiple of 3 points when you use ArcOfThree"
+                    )
                     App.Console.PrintError("Last points are ignored")
-                if nrOfEdges>1:
+                if nrOfEdges > 1:
                     C1 = Part.Arc(points[0], points[1], points[2])
                     edges.append(C1.toShape())
-                    for i in range(0,nrOfEdges):
-                        C1 = Part.Arc(points[2+2*i], points[3+2*i], points[4+2*i])
+                    for i in range(0, nrOfEdges):
+                        C1 = Part.Arc(
+                            points[2 + 2 * i], points[3 + 2 * i], points[4 + 2 * i]
+                        )
                         edges.append(C1.toShape())
                 else:
                     C1 = Part.Arc(points[0], points[1], points[2])
                     edges.append(C1.toShape())
-                W=Part.Wire(edges)
+                W = Part.Wire(edges)
                 return W
             elif self.PathType == "Line":
-                W=Part.Wire(Part.makePolygon(points))            
+                W = Part.Wire(Part.makePolygon(points))
                 return W
-            
+
         except Exception as err:
-            App.Console.PrintError("'reCreateSweep SmartSweep' Failed. "
-                                   "{err}\n".format(err=str(err)))
+            App.Console.PrintError(
+                "'reCreateSweep SmartSweep' Failed. " "{err}\n".format(err=str(err))
+            )
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)       
+            print(exc_type, fname, exc_tb.tb_lineno)
 
     def execute(self, obj):
         try:
-            self.Section= obj.Section
-            self.Apply=obj.Apply
-            #Create the sweep 
+            self.Section = obj.Section
+            self.Apply = obj.Apply
+            # Create the sweep
             self.Type = "SmartSweep"
-            self.PathPointList=obj.PathPointList   #We must have the first point always.    
-            self.PathType=obj.PathType              #BSplineCurve, Curve, or Line
-
-            self.StepSize=Design456pref_var.MouseStepSize
-            self.CoinVisible=obj.CoinVisible
+            self.PathPointList = (
+                obj.PathPointList
+            )  # We must have the first point always.
+            self.PathType = obj.PathType  # BSplineCurve, Curve, or Line
+            self.StepSize = Design456pref_var.MouseStepSize
+            self.CoinVisible = obj.CoinVisible
             self.recreateCOIN3DObjects()
             objResult = self.createObject()
             if objResult is None:
-                objResult = Part.Point(App.Vector(0,0,0)).toShape() #dummy shape just to avoid problem in freecad
+                objResult = Part.Point(
+                    App.Vector(0, 0, 0)
+                ).toShape()  # dummy shape just to avoid problem in freecad
             obj.Shape = objResult
 
         except Exception as err:
-            App.Console.PrintError("'execute SmartSweep' Failed. "
-                                   "{err}\n".format(err=str(err)))
+            App.Console.PrintError(
+                "'execute SmartSweep' Failed. " "{err}\n".format(err=str(err))
+            )
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
@@ -371,21 +436,23 @@ class BaseSmartSweep:
 
 class Design456_SmartSweep:
     def GetResources(self):
-        return {'Pixmap': Design456Init.ICON_PATH + 'SmartSweep.svg',
-                'MenuText': "SmartSweep",
-                'ToolTip': "Generate a SmartSweep"}
+        return {
+            "Pixmap": Design456Init.ICON_PATH + "SmartSweep.svg",
+            "MenuText": "SmartSweep",
+            "ToolTip": "Generate a SmartSweep",
+        }
 
     def Activated(self):
         newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
         # plc = App.Placement()
         # plc.Base = App.Vector(0, 0, 0)
         # plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
-        #newObj.Placement = plc
-        globalWinVar=win.Fr_CoinWindow()
-        BaseSmartSweep(newObj)
+        # newObj.Placement = plc
+        _coinWin = win.Fr_CoinWindow()
+        BaseSmartSweep(newObj, _coinWin)
         ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
         App.ActiveDocument.recompute()
 
-Gui.addCommand('Design456_SmartSweep', Design456_SmartSweep())
-#-----------------------------------------------------------------------------
 
+Gui.addCommand("Design456_SmartSweep", Design456_SmartSweep())
+# -----------------------------------------------------------------------------
