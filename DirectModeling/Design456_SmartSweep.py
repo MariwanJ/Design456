@@ -200,10 +200,10 @@ class ViewProviderSmartSweep:
     def __setstate__(self, state):
         if state:
             self.Type = state
-
+""" 
 
 class BaseSmartSweep:
-    """SmartSweep shape with a flexible capabilities"""
+    # 
     coinWin = None
     __slots__ = [
         "Apply",
@@ -220,34 +220,34 @@ class BaseSmartSweep:
 
     def __init__(self, obj, _coinWin):
 
-        obj.addProperty(
-            "App::PropertyLink",
-            "Section",
-            "Sweep",
-            QT_TRANSLATE_NOOP("App::Property", "Face to sweep"),
-        ).Section = None
-        obj.addProperty(
-            "App::PropertyLinkList",
-            "PathPointList",
-            "Sweep",
-            QT_TRANSLATE_NOOP("App::Property", "Link to Point objects"),
-        ).PathPointList = []
-        obj.addProperty(
-            "App::PropertyBool",
-            "Apply",
-            "Execute",
-            QT_TRANSLATE_NOOP("App::Property", "Execute the command"),
-        ).Apply = False
-        obj.addProperty(
-            "App::PropertyEnumeration", "PathType", "PathType", "FlowerVase middle type"
-        ).PathType = ["BSplineCurve", "ArcOfThree", "Line"]
+        # obj.addProperty(
+        #     "App::PropertyLink",
+        #     "Section",
+        #     "Sweep",
+        #     QT_TRANSLATE_NOOP("App::Property", "Face to sweep"),
+        # ).Section = None
+        # obj.addProperty(
+        #     "App::PropertyLinkList",
+        #     "PathPointList",
+        #     "Sweep",
+        #     QT_TRANSLATE_NOOP("App::Property", "Link to Point objects"),
+        # ).PathPointList = []
+        # obj.addProperty(
+        #     "App::PropertyBool",
+        #     "Apply",
+        #     "Execute",
+        #     QT_TRANSLATE_NOOP("App::Property", "Execute the command"),
+        # ).Apply = False
+        # obj.addProperty(
+        #     "App::PropertyEnumeration", "PathType", "PathType", "FlowerVase middle type"
+        # ).PathType = ["BSplineCurve", "ArcOfThree", "Line"]
 
-        obj.addProperty(
-            "App::PropertyBool",
-            "CoinVisible",
-            "Execute",
-            QT_TRANSLATE_NOOP("App::Property", "Hide or show coin widget"),
-        ).CoinVisible = True
+        # obj.addProperty(
+        #     "App::PropertyBool",
+        #     "CoinVisible",
+        #     "Execute",
+        #     QT_TRANSLATE_NOOP("App::Property", "Hide or show coin widget"),
+        # ).CoinVisible = True
         global stepSize
         global Type
         global WidgetObj
@@ -433,25 +433,85 @@ class BaseSmartSweep:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-
+ """
 class Design456_SmartSweep:
+    def __init__(self):
+        self.Object=None
+        self.coinWin=None
+        self.PathType="BSplineCurve"
+        self.stepSize = 0.1
+        self.WidgetObj = []
+
+    def Activated(self):
+        self.Object = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
+        self.coinWin = win.Fr_CoinWindow()
+        ViewProviderSmartSweep(self.Object.ViewObject, "SmartSweep")
+          
+        App.ActiveDocument.recompute()
+
+
+
+
+
+    def getMainWindow(self):
+        try:
+            toplevel = QtGui.QApplication.topLevelWidgets()
+            self.mw = None
+            for i in toplevel:
+                if i.metaObject().className() == "Gui::MainWindow":
+                    self.mw = i
+            if self.mw is None:
+                raise Exception("No main window found")
+            dw = self.mw.findChildren(QtGui.QDockWidget)
+            for i in dw:
+                if str(i.objectName()) == "Combo View":
+                    self.tab = i.findChild(QtGui.QTabWidget)
+                elif str(i.objectName()) == "Python Console":
+                    self.tab = i.findChild(QtGui.QTabWidget)
+            if self.tab is None:
+                raise Exception("No tab widget found")
+
+            self.dialog = QtGui.QDialog()
+            oldsize = self.tab.count()
+            self.tab.addTab(self.dialog, "Smart Sweep")
+            self.tab.setCurrentWidget(self.dialog)
+            self.dialog.resize(200, 450)
+            self.dialog.setWindowTitle("Smart Sweep")
+            la = QtGui.QVBoxLayout(self.dialog)
+            e1 = QtGui.QLabel("Smart Sweep")
+            commentFont = QtGui.QFont("Times", 12, True)
+            e1.setFont(commentFont)
+            la.addWidget(e1)
+            la.addWidget(self.FilletLBL)
+            okbox = QtGui.QDialogButtonBox(self.dialog)
+            okbox.setOrientation(QtCore.Qt.Horizontal)
+            okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+            la.addWidget(okbox)
+            QtCore.QObject.connect(
+                okbox, QtCore.SIGNAL("accepted()"), self.hide)
+
+            QtCore.QMetaObject.connectSlotsByName(self.dialog)
+            return self.dialog
+
+        except Exception as err:
+            App.Console.PrintError("'Design456_Fillet' getMainWindow-Failed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+
+
+    def hide(self):
+        pass
+        
+        
     def GetResources(self):
         return {
             "Pixmap": Design456Init.ICON_PATH + "SmartSweep.svg",
             "MenuText": "SmartSweep",
             "ToolTip": "Generate a SmartSweep",
         }
-
-    def Activated(self):
-        newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
-        # plc = App.Placement()
-        # plc.Base = App.Vector(0, 0, 0)
-        # plc.Rotation.Q = (0.0, 0.0, 0.0, 1.0)
-        # newObj.Placement = plc
-        _coinWin = win.Fr_CoinWindow()
-        BaseSmartSweep(newObj, _coinWin)
-        ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
-        App.ActiveDocument.recompute()
+    
 
 
 Gui.addCommand("Design456_SmartSweep", Design456_SmartSweep())
