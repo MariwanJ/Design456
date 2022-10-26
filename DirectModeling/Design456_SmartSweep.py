@@ -59,7 +59,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = "2022-10-25 22:35:51"
+__updated__ = "2022-10-26 20:33:17"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -142,12 +142,10 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
         try:
             if userData is None:
                 return  # Nothing to do here - shouldn't be None
-            return
+            obj=userData.ballArrows
 
         except Exception as err:
-            App.Console.PrintError(
-                "'DraggingCallback' Failed. " "{err}\n".format(err=str(err))
-            )
+            App.Console.PrintError("'execute SmartSweep' Failed. " "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
@@ -200,81 +198,74 @@ class ViewProviderSmartSweep:
     def __setstate__(self, state):
         if state:
             self.Type = state
-""" 
 
-class BaseSmartSweep:
-    # 
-    coinWin = None
-    __slots__ = [
-        "Apply",
-        "stepSize",
-        "CoinVisible",
-        "PathPointList",
-        "PathType",
-        "Section",
-        "StepSize",
-        "Type",
-        "WidgetObj",
-    ]
-    # Placement=None
-
-    def __init__(self, obj, _coinWin):
-
-        # obj.addProperty(
-        #     "App::PropertyLink",
-        #     "Section",
-        #     "Sweep",
-        #     QT_TRANSLATE_NOOP("App::Property", "Face to sweep"),
-        # ).Section = None
-        # obj.addProperty(
-        #     "App::PropertyLinkList",
-        #     "PathPointList",
-        #     "Sweep",
-        #     QT_TRANSLATE_NOOP("App::Property", "Link to Point objects"),
-        # ).PathPointList = []
-        # obj.addProperty(
-        #     "App::PropertyBool",
-        #     "Apply",
-        #     "Execute",
-        #     QT_TRANSLATE_NOOP("App::Property", "Execute the command"),
-        # ).Apply = False
-        # obj.addProperty(
-        #     "App::PropertyEnumeration", "PathType", "PathType", "FlowerVase middle type"
-        # ).PathType = ["BSplineCurve", "ArcOfThree", "Line"]
-
-        # obj.addProperty(
-        #     "App::PropertyBool",
-        #     "CoinVisible",
-        #     "Execute",
-        #     QT_TRANSLATE_NOOP("App::Property", "Hide or show coin widget"),
-        # ).CoinVisible = True
-        global stepSize
-        global Type
-        global WidgetObj
-
-        obj.PathType = "BSplineCurve"
+class Design456_SmartSweep:
+    def __init__(self):
+        self.Object = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
+        self.coinWin=None
+        self.PathType="BSplineCurve"
         self.stepSize = 0.1
         self.WidgetObj = []
-        BaseSmartSweep.coinWin=_coinWin
+        self.PathPointList=[]
+        self.Section=None     
+        
+        self.Object.addProperty("App::PropertyLink","Section","Sweep",
+             QT_TRANSLATE_NOOP("App::Property", "Face to sweep"),).Section = None
+        self.Object.addProperty("App::PropertyLinkList", "PathPointList","Sweep",
+             QT_TRANSLATE_NOOP("App::Property", "Link to Point objects"),).PathPointList = []
+        self.Object.addProperty("App::PropertyBool", "Apply", "Execute",
+             QT_TRANSLATE_NOOP("App::Property", "Execute the command"),).Apply = False
+        self.Object.addProperty( "App::PropertyEnumeration", "PathType", "PathType", 
+                                "Path types").PathType = ["BSplineCurve", "ArcOfThree", "Line"]
+        self.Object.addProperty("App::PropertyBool", "CoinVisible", "Execute",
+             QT_TRANSLATE_NOOP("App::Property", "Hide or show coin widget"),).CoinVisible = True
+        self.Object.Proxy = self
 
-        obj.Proxy = self
+    def execute(self):
+        try:
+            self.Section=self.Object.Section
+            self.PathPointList=self.Object.PathPointList
+            self.Apply=self.Object.Apply
+            self.PathType=self.Object.PathType
+            self.CoinVisible=self.Object.CoinVisible
+            self.recreateCOIN3DObjects()
+            objResult = self.createObject()
+            if objResult is None:
+                objResult = Part.Point(   App.Vector(0, 0, 0)).toShape()  # dummy shape just to avoid problem in freecad
+            ViewProviderSmartSweep(self.Object.ViewObject, "SmartSweep")
+            
+            self.Object.Shape = objResult
+            print("Iam here")
 
+        except Exception as err:
+            App.Console.PrintError("'Execute SmartSweep' Failed. "
+                "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+                        
+    def Activated(self):
+        self.coinWin = win.Fr_CoinWindow()
+        
+
+        
+        self.stepSize=Design456pref_var.MouseStepSize
+        self.execute()
+        mw = self.getMainWindow()
+        self.coinWin.show()
+        
     def createObject(self):
         try:
             finalObj = None
             sweepPath = self.reCreateSweep()
             if self.Section is None:
                 return sweepPath
-
             base = self.Section.Shape
             if base is None:
                 return sweepPath
-
             if self.Apply == True:
                 tnObj = Part.BRepOffsetAPI.MakePipeShell(sweepPath)
-                tnObj.add(
-                    Part.Wire(base.Edges), WithContact=False, WithCorrection=False
-                )  # Todo check WithContact and WithCorrection
+                tnObj.add(Part.Wire(base.Edges), WithContact=False, WithCorrection=False)  # Todo check WithContact and WithCorrection
                 tnObj.setTransitionMode(1)  # Round edges
                 tnObj.setFrenetMode(True)
                 tnObj.build()  # This will create the shape. Without his the SmartSweep fail since the shape is still not made
@@ -288,7 +279,6 @@ class BaseSmartSweep:
                 self.PathPointList[0].Z,
             )
             return finalObj
-
         except Exception as err:
             App.Console.PrintError(
                 "'createObject SmartSweep' Failed. " "{err}\n".format(err=str(err))
@@ -296,11 +286,9 @@ class BaseSmartSweep:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
+                    
     def delOldCoin3dObjects(self):
         try:
-            print(type(self.WidgetObj))
-            print(dir(self.WidgetObj))
             totalWID = len(self.WidgetObj)
             for i in range(0, totalWID):
                 self.WidgetObj[i].__del__()
@@ -314,7 +302,7 @@ class BaseSmartSweep:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-
+            
     def recreateCOIN3DObjects(self):
         try:
             self.delOldCoin3dObjects()
@@ -339,9 +327,9 @@ class BaseSmartSweep:
 
                 self.WidgetObj[i].Activated()
                 self.WidgetObj[i].w_userData.callerObject = self
-                BaseSmartSweep.coinWin.addWidget(self.WidgetObj[i])
+                self.coinWin.addWidget(self.WidgetObj[i])
             self.Section.Visibility = False
-            BaseSmartSweep.coinWin.show()
+            self.coinWin.redraw()
 
         except Exception as err:
             App.Console.PrintError(
@@ -405,52 +393,6 @@ class BaseSmartSweep:
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
 
-    def execute(self, obj):
-        try:
-            self.Section = obj.Section
-            self.Apply = obj.Apply
-            # Create the sweep
-            self.Type = "SmartSweep"
-            self.PathPointList = (
-                obj.PathPointList
-            )  # We must have the first point always.
-            self.PathType = obj.PathType  # BSplineCurve, Curve, or Line
-            self.StepSize = Design456pref_var.MouseStepSize
-            self.CoinVisible = obj.CoinVisible
-            self.recreateCOIN3DObjects()
-            objResult = self.createObject()
-            if objResult is None:
-                objResult = Part.Point(
-                    App.Vector(0, 0, 0)
-                ).toShape()  # dummy shape just to avoid problem in freecad
-            obj.Shape = objResult
-
-        except Exception as err:
-            App.Console.PrintError(
-                "'execute SmartSweep' Failed. " "{err}\n".format(err=str(err))
-            )
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, fname, exc_tb.tb_lineno)
-
- """
-class Design456_SmartSweep:
-    def __init__(self):
-        self.Object=None
-        self.coinWin=None
-        self.PathType="BSplineCurve"
-        self.stepSize = 0.1
-        self.WidgetObj = []
-
-    def Activated(self):
-        self.Object = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
-        self.coinWin = win.Fr_CoinWindow()
-        ViewProviderSmartSweep(self.Object.ViewObject, "SmartSweep")
-          
-        App.ActiveDocument.recompute()
-
-
-
 
 
     def getMainWindow(self):
@@ -482,7 +424,6 @@ class Design456_SmartSweep:
             commentFont = QtGui.QFont("Times", 12, True)
             e1.setFont(commentFont)
             la.addWidget(e1)
-            la.addWidget(self.FilletLBL)
             okbox = QtGui.QDialogButtonBox(self.dialog)
             okbox.setOrientation(QtCore.Qt.Horizontal)
             okbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
@@ -512,7 +453,6 @@ class Design456_SmartSweep:
             "ToolTip": "Generate a SmartSweep",
         }
     
-
 
 Gui.addCommand("Design456_SmartSweep", Design456_SmartSweep())
 # -----------------------------------------------------------------------------
