@@ -59,7 +59,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = "2022-10-26 21:46:09"
+__updated__ = "2022-10-26 22:11:49"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -202,23 +202,22 @@ class ViewProviderSmartSweep:
 
 
 class Design456_SmartSweep:
-    __slots__ = ["coinWin","InnerObject" ]
     def __init__(self):
         self.coinWin=None
 
     class BaseSmartSweep(object):
         """SmartSweep shape with a flexible capabilities"""
-        __slots__ = [
-            "Apply",
-            "stepSize",
-            "CoinVisible",
-            "PathPointList",
-            "PathType",
-            "Section",
-            "StepSize",
-            "WidgetObj",
-            "outer"
-        ]
+        # __slots__ = [
+        #     "Apply",
+        #     "stepSize",
+        #     "CoinVisible",
+        #     "PathPointList",
+        #     "PathType",
+        #     "Section",
+        #     "StepSize",
+        #     "WidgetObj",
+        #     "outer"
+        # ]
         # Placement=None
 
         def __init__(self,OuterObject, obj):
@@ -278,7 +277,9 @@ class Design456_SmartSweep:
 
         def delOldCoin3dObjects(self):
             try:
+                
                 totalWID = len(self.WidgetObj)
+                print("totalWID",totalWID)
                 for jj in range(0, totalWID):
                     self.WidgetObj[jj].__del__()
                 self.WidgetObj.clear()
@@ -294,7 +295,9 @@ class Design456_SmartSweep:
         def recreateCOIN3DObjects(self):
             try:
                 self.delOldCoin3dObjects()
+                
                 nrOfPoints = len(self.PathPointList)
+                print("nrOfPoints",nrOfPoints)
                 if nrOfPoints < 1:
                     return  # Nothing to do
                 for i in range(0, nrOfPoints):
@@ -315,9 +318,9 @@ class Design456_SmartSweep:
 
                     self.WidgetObj[i].Activated()
                     self.WidgetObj[i].w_userData.callerObject = self
-                    self.Proxy.outer.coinWin.addWidget(self.WidgetObj[i])
+                    self.outer.coinWin.addWidget(self.WidgetObj[i])
                 self.Section.Visibility = False
-                self.Proxy.outer.coinWin.show()
+                self.outer.coinWin.show()
 
             except Exception as err:
                 App.Console.PrintError(
