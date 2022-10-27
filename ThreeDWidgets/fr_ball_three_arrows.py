@@ -364,7 +364,10 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.XreleaseDragAxis=0 # Arrow clicked first time it will just change this value
                     self.w_userData.ActiveAxis="X"
                     return 1
-                elif clickwdgdNode[0] is True and self.XreleaseDragAxis==0:
+                if self.linkToFreeCADObj is None:
+                    return 1 # Nothing to do  the object is not linked TODO:FIXME :IS THIS CORRECT?!!!!!!!!!!!!!!!
+
+                if clickwdgdNode[0] is True and self.XreleaseDragAxis==0:
                     self.XreleaseDragAxis=1
                     self.w_userData.ActiveAxis="X"
                     if (hasattr(self.linkToFreeCADObj,"X")):
