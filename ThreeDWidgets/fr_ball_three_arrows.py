@@ -46,7 +46,7 @@ from ThreeDWidgets.fr_draw1 import draw_RotationPad
 import math
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-10-24 20:45:27'
+__updated__ = '2022-10-27 21:52:40'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -330,16 +330,6 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.do_lblcallback()
                     return 1
 
-            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
-                if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
-                    self.do_callback()
-                    self.XreleaseDragAxis=-1  #drag is finished
-                    self.YreleaseDragAxis=-1  #drag is finished
-                    self.ZreleaseDragAxis=-1  #drag is finished
-                    self.AreleaseDragAxis=-1
-                    self.mouseToArrowDiff=App.Vector(0,0,0)
-                    return 
-
             elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_DRAG:
                 if self.oldPosition is None:
                     self.oldPosition = self.endVector
@@ -484,6 +474,17 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     self.w_ball_cb_(self.w_userData)
                     self.redraw()
                     return 1         
+
+
+            elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
+                if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
+                    self.do_callback()
+                    self.XreleaseDragAxis=-1  #drag is finished
+                    self.YreleaseDragAxis=-1  #drag is finished
+                    self.ZreleaseDragAxis=-1  #drag is finished
+                    self.AreleaseDragAxis=-1
+                    self.mouseToArrowDiff=App.Vector(0,0,0)
+                    return  1
             return 0 
 
         except Exception as err:
@@ -531,7 +532,6 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             self.removeSoNodes()
 
             self.draw_label(usedColor[0])
-            
             self.saveSoNodesToWidget([self.w_XarrowSeparator,
                                         self.w_YarrowSeparator,
                                         self.w_ZarrowSeparator,self.w_BallSeparator])

@@ -59,7 +59,7 @@ from symbol import try_stmt
 import BOPTools.SplitFeatures
 
 
-__updated__ = "2022-10-26 22:11:49"
+__updated__ = "2022-10-27 22:11:01"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -119,7 +119,7 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
         self.linkToPoint = draftPointObj  #
 
     def callback(self, userData):
-        #App.ActiveDocument.recompute()
+        App.ActiveDocument.recompute()
         pass  # Do nothing
 
     def Activated(self):
@@ -205,7 +205,7 @@ class Design456_SmartSweep:
     def __init__(self):
         self.coinWin=None
 
-    class BaseSmartSweep(object):
+    class BaseSmartSweep:
         """SmartSweep shape with a flexible capabilities"""
         # __slots__ = [
         #     "Apply",
@@ -235,6 +235,7 @@ class Design456_SmartSweep:
             obj.PathType = "BSplineCurve"
             self.outer=OuterObject
             self.WidgetObj=[]
+            self.Type="SmartSweep"
             obj.Proxy = self
 
         def createObject(self):
@@ -282,6 +283,10 @@ class Design456_SmartSweep:
                 print("totalWID",totalWID)
                 for jj in range(0, totalWID):
                     self.WidgetObj[jj].__del__()
+                
+                while(len(self.WidgetObj)>0):
+                    del self.WidgetObj[len(self.WidgetObj)-1]    
+            
                 self.WidgetObj.clear()
 
             except Exception as err:
@@ -294,8 +299,11 @@ class Design456_SmartSweep:
 
         def recreateCOIN3DObjects(self):
             try:
+                if self.CoinVisible is False:
+                    self.outer.coinWin.hide()
+                    return
                 self.delOldCoin3dObjects()
-                
+                   
                 nrOfPoints = len(self.PathPointList)
                 print("nrOfPoints",nrOfPoints)
                 if nrOfPoints < 1:
@@ -319,7 +327,8 @@ class Design456_SmartSweep:
                     self.WidgetObj[i].Activated()
                     self.WidgetObj[i].w_userData.callerObject = self
                     self.outer.coinWin.addWidget(self.WidgetObj[i])
-                self.Section.Visibility = False
+                if self.Section is not None:
+                    self.Section.Visibility = False
                 self.outer.coinWin.show()
 
             except Exception as err:
@@ -336,6 +345,8 @@ class Design456_SmartSweep:
                 edges = []
                 points = []
                 nrOfPoints = len(self.PathPointList)
+                if nrOfPoints ==0:
+                    return None #Nothing to create
                 for i in range(0, nrOfPoints):
                     points.append(
                         App.Vector(
