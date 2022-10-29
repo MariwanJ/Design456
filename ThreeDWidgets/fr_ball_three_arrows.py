@@ -26,7 +26,6 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import os
-from re import X
 import sys
 import FreeCAD as App
 import FreeCADGui as Gui
@@ -42,11 +41,9 @@ from ThreeDWidgets.fr_draw import draw_ball
 from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
-from ThreeDWidgets.fr_draw1 import draw_RotationPad
-import math
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-10-27 21:52:40'
+__updated__ = '2022-10-29 07:46:26'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 

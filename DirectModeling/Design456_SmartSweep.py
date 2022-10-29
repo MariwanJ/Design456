@@ -27,7 +27,6 @@ from __future__ import unicode_literals
 # **************************************************************************
 
 import os
-from re import T
 import sys
 
 # from tkinter import N
@@ -50,16 +49,12 @@ from Design456Pref import (
 
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
-import math
 from ThreeDWidgets import fr_label_draw
 import ThreeDWidgets.fr_coinwindow as win
 import Part
-import Draft
-from symbol import try_stmt
-import BOPTools.SplitFeatures
 
 
-__updated__ = "2022-10-27 22:11:01"
+__updated__ = "2022-10-29 07:50:43"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -278,7 +273,7 @@ class Design456_SmartSweep:
 
         def delOldCoin3dObjects(self):
             try:
-                
+                print("deleting")
                 totalWID = len(self.WidgetObj)
                 print("totalWID",totalWID)
                 for jj in range(0, totalWID):
@@ -305,7 +300,7 @@ class Design456_SmartSweep:
                 self.delOldCoin3dObjects()
                    
                 nrOfPoints = len(self.PathPointList)
-                print("nrOfPoints",nrOfPoints)
+                print("creating")
                 if nrOfPoints < 1:
                     return  # Nothing to do
                 for i in range(0, nrOfPoints):
