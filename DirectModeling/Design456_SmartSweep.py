@@ -54,7 +54,7 @@ import ThreeDWidgets.fr_coinwindow as win
 import Part
 
 
-__updated__ = "2022-10-29 07:50:43"
+__updated__ = "2022-10-29 21:53:07"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -106,8 +106,8 @@ Instance of the class for this tool. Callbacks will be inside the class.
 
 class threeArrowBall(Fr_BallThreeArrows_Widget):
     def __init__(self, vectors: List[App.Vector] = [], label: str = [[]]):
-        self.linkToPoint = None
         super().__init__(vectors, label)
+        self.linkToPoint = None
         self.oldPosition = None
 
     def setLinkToDraftPoint(self, draftPointObj):
@@ -180,20 +180,11 @@ class ViewProviderSmartSweep:
     def getIcon(self):
         return Design456Init.ICON_PATH + "SmartSweep.svg"
 
-    # def __getstate__(self):
-    #     return None
-
-    # def __setstate__(self, state):
-    #    return None
-    #
-
     def __getstate__(self):
-        return self.Type
+        return None
 
     def __setstate__(self, state):
-        if state:
-            self.Type = state
-
+        return None
 
 
 class Design456_SmartSweep:

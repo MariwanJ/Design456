@@ -42,8 +42,8 @@ from ThreeDWidgets import fr_label_draw
 from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from Design456Pref import Design456pref_var
-
-__updated__ = '2022-10-29 07:46:26'
+import ThreeDWidgets.help as helpp
+__updated__ = '2022-10-30 21:16:00'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -319,7 +319,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
 
             # else:
             #     return 0  # We couldn't use the event .. so return 0
-            
+            print(helpp.eventEmuToText(event),"\n")
             if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 #Prioritized callback TODO: is it correct
                 self.mouseToArrowDiff=App.Vector(0,0,0)

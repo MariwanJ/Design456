@@ -44,7 +44,7 @@ from abc import abstractmethod
 # ********************************************************************************************************
 from dataclasses import dataclass
 
-__updated__ = '2022-07-02 20:24:09'
+__updated__ = '2022-10-29 11:17:14'
 
 
 @dataclass

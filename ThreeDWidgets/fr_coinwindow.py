@@ -42,7 +42,7 @@ import time  # For double click detection
 This is a class for coin3D Window
 '''
 
-__updated__ = '2022-10-24 20:37:11'
+__updated__ = '2022-10-30 21:24:56'
 
 
 @dataclass
@@ -248,14 +248,14 @@ class Fr_CoinWindow(fr_group.Fr_Group):
             getButton = self.w_get_event.getButton()
             self.w_lastEvent = FR_EVENTS.FR_NO_EVENT
             if eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON1:
+                self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_PUSH
+
+            elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
                 # detect double click here. COIN3D has no function for that
                 if self.Detect_DblClick() is True:
                     self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK
                 else:
-                    self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_PUSH
-
-            elif eventState == coin.SoMouseButtonEvent.UP and getButton == coin.SoMouseButtonEvent.BUTTON1:
-                self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_RELEASE
+                    self.w_lastEvent = FR_EVENTS.FR_MOUSE_LEFT_RELEASE
 
             elif eventState == coin.SoMouseButtonEvent.DOWN and getButton == coin.SoMouseButtonEvent.BUTTON2:
                 self.w_lastEvent = FR_EVENTS.FR_MOUSE_RIGHT_PUSH
