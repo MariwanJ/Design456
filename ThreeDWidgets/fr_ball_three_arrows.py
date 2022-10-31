@@ -284,7 +284,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                     return 1  # we treat this event. Nothing to do
             self.w_userData.events = event  # Keep the event always here
             if self.w_parent is None:
-                print("self.w_parent is NOne")
+                print("self.w_parent is None")
                 return
             self.StepSize=Design456pref_var.MouseStepSize  # this must be updated always.
              
@@ -319,7 +319,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
 
             # else:
             #     return 0  # We couldn't use the event .. so return 0
-            print(helpp.eventEmuToText(event),"\n")
+            #print(helpp.eventEmuToText(event),"\n")  #to see in text format which event came to handle 
             if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 #Prioritized callback TODO: is it correct
                 self.mouseToArrowDiff=App.Vector(0,0,0)
