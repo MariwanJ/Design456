@@ -54,7 +54,7 @@ import ThreeDWidgets.fr_coinwindow as win
 import Part
 
 
-__updated__ = "2022-10-29 21:53:07"
+__updated__ = "2022-10-31 22:00:19"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -214,6 +214,10 @@ class Design456_SmartSweep:
                 QT_TRANSLATE_NOOP("App::Property", "Link to Point objects"),).PathPointList = []
             obj.addProperty("App::PropertyBool", "Apply","Execute",
                 QT_TRANSLATE_NOOP("App::Property", "Execute the command"),).Apply = False
+            obj.addProperty("App::PropertyBool", "SimpleCopy","Finalize",
+                QT_TRANSLATE_NOOP("App::Property", "Create Simple Copy"),).SimpleCopy = False
+
+
             obj.addProperty("App::PropertyEnumeration", "PathType", "PathType", 
                             "Path Type").PathType = ["BSplineCurve", "ArcOfThree", "Line"]
             obj.addProperty("App::PropertyBool", "CoinVisible", "Execute",
@@ -222,6 +226,7 @@ class Design456_SmartSweep:
             self.outer=OuterObject
             self.WidgetObj=[]
             self.Type="SmartSweep"
+            self.done=False
             obj.Proxy = self
 
         def createObject(self):
@@ -264,15 +269,11 @@ class Design456_SmartSweep:
 
         def delOldCoin3dObjects(self):
             try:
-                print("deleting")
                 totalWID = len(self.WidgetObj)
-                print("totalWID",totalWID)
                 for jj in range(0, totalWID):
                     self.WidgetObj[jj].__del__()
-                
                 while(len(self.WidgetObj)>0):
-                    del self.WidgetObj[len(self.WidgetObj)-1]    
-            
+                    del self.WidgetObj[len(self.WidgetObj)-1]
                 self.WidgetObj.clear()
 
             except Exception as err:
@@ -291,7 +292,6 @@ class Design456_SmartSweep:
                 self.delOldCoin3dObjects()
                    
                 nrOfPoints = len(self.PathPointList)
-                print("creating")
                 if nrOfPoints < 1:
                     return  # Nothing to do
                 for i in range(0, nrOfPoints):
@@ -385,6 +385,7 @@ class Design456_SmartSweep:
             try:
                 self.Section = obj.Section
                 self.Apply = obj.Apply
+                self.SimpleCopy = obj.SimpleCopy  #used to finalize the object
                 # Create the sweep
 
                 self.PathPointList = ( obj.PathPointList )  # We must have the first point always.
@@ -396,6 +397,28 @@ class Design456_SmartSweep:
                 if objResult is None:
                     objResult = Part.Point(App.Vector(0, 0, 0)).toShape()  # dummy shape just to avoid problem in freecad
                 obj.Shape = objResult
+                newObj=None
+                if self.SimpleCopy is True:
+                    import DefeaturingWB.oDefeaturingTools
+                    if self.done is True: #Freecad run execute twice always. a bug in FreeCAD I have to eliminate that
+                        return #Todo:FIXME:Remove these two lines if freecad fix the bug
+                    
+                    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+                    
+                    #TODO FIXME: NOT CORREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEECT
+                    
+                    self.done=True
+                    Gui.Selection.clearSelection()
+                    Gui.Selection.addSelection( App.ActiveDocument.getObject(obj.Name))
+                    DefeaturingWB.oDefeaturingTools.osimplecopy_RH()
+                    self.delOldCoin3dObjects()
+                    self.outer.coinWin.hide()
+                    for i in self.PathPointList:
+                        App.ActiveDocument.removeObject(i.Name)
+                    App.ActiveDocument.removeObject(obj.Name)
+                    App.ActiveDocument.removeObject(self.Section.Name)
+                    App.ActiveDocument.recompute()
+                    return 
 
             except Exception as err:
                 App.Console.PrintError(
