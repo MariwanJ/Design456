@@ -185,7 +185,7 @@ class ViewProviderSmartSweep:
 
     def __setstate__(self, state):
         return None
-
+    
 
 class Design456_SmartSweep:
     def __init__(self):
@@ -421,3 +421,10 @@ class Design456_SmartSweep:
 
 Gui.addCommand("Design456_SmartSweep", Design456_SmartSweep())
 # -----------------------------------------------------------------------------
+
+#dummy class 
+
+class BaseSmartSweep:
+    def ___init__(self):
+        return Design456_SmartSweep.BaseSmartSweep
+
