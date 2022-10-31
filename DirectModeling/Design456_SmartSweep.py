@@ -241,7 +241,7 @@ class Design456_SmartSweep:
                         Part.Wire(base.Edges), WithContact=False, WithCorrection=False
                     )  # Todo check WithContact and WithCorrection
                     tnObj.setTransitionMode(1)  # Round edges
-                    tnObj.setFrenetMode(True)
+                    tnObj.setFrenetMode(False)
                     tnObj.build()  # This will create the shape. Without his the SmartSweep fail since the shape is still not made
                     tnObj.makeSolid()
                     finalObj = tnObj.shape()
