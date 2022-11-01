@@ -271,6 +271,7 @@ class Design456_SmartSweep:
             try:
                 totalWID = len(self.WidgetObj)
                 for jj in range(0, totalWID):
+                    self.WidgetObj[jj].hide()
                     self.WidgetObj[jj].__del__()
                 while(len(self.WidgetObj)>0):
                     del self.WidgetObj[len(self.WidgetObj)-1]
@@ -411,8 +412,8 @@ class Design456_SmartSweep:
                     Gui.Selection.clearSelection()
                     Gui.Selection.addSelection( App.ActiveDocument.getObject(obj.Name))
                     DefeaturingWB.oDefeaturingTools.osimplecopy_RH()
-                    self.delOldCoin3dObjects()
                     self.outer.coinWin.hide()
+                    self.delOldCoin3dObjects()
                     for i in self.PathPointList:
                         App.ActiveDocument.removeObject(i.Name)
                     App.ActiveDocument.removeObject(obj.Name)
