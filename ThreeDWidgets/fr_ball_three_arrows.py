@@ -43,7 +43,7 @@ from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from Design456Pref import Design456pref_var
 import ThreeDWidgets.help as helpp
-__updated__ = '2022-10-30 21:16:00'
+__updated__ = '2022-11-01 22:04:34'
 '''
     This widget will be used with the smart sweep. 
     It should consist of three arrows and a ball. 
@@ -196,7 +196,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
                            [j * 1.5 for j in self.w_color[1]],
                            [k * 1.5 for k in self.w_color[2]]]
         self.w_Scale = _scale
-        self.ballScale=_ballScale
+        self.ballScale=self.w_Scale/6.0
         self.w_inactiveColor = [[i * 0.9 for i in self.w_color[0]],
                                 [j * 0.9 for j in self.w_color[1]],
                                 [k * 0.9 for k in self.w_color[2]]]

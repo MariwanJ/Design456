@@ -39,7 +39,7 @@ import math
 from dataclasses import dataclass
 from pivy import coin
 
-__updated__ = '2022-10-20 20:44:06'
+__updated__ = '2022-11-01 21:51:58'
 
 @dataclass
 class userDataObject:

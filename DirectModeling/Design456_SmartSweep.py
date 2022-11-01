@@ -54,7 +54,7 @@ import ThreeDWidgets.fr_coinwindow as win
 import Part
 
 
-__updated__ = "2022-11-01 19:50:42"
+__updated__ = "2022-11-01 21:52:22"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -217,7 +217,10 @@ class Design456_SmartSweep:
             obj.addProperty("App::PropertyBool", "SimpleCopy","Finalize",
                 QT_TRANSLATE_NOOP("App::Property", "Create Simple Copy"),).SimpleCopy = False
 
+            obj.addProperty("App::PropertyInteger", "CoinScale","Coin",
+                QT_TRANSLATE_NOOP("App::Property", "Coin3D scale"),).CoinScale = 6
 
+         
             obj.addProperty("App::PropertyEnumeration", "PathType", "PathType", 
                             "Path Type").PathType = ["BSplineCurve", "ArcOfThree", "Line"]
             obj.addProperty("App::PropertyBool", "CoinVisible", "Execute",
@@ -310,9 +313,10 @@ class Design456_SmartSweep:
                             ]
                         )
                     )
+                    
                     self.PathPointList[i].Visibility = False
                     self.WidgetObj[i].setFreeCADObj(self.PathPointList[i])
-
+                    self.WidgetObj[i].w_Scale=[self.CoinScale,self.CoinScale,self.CoinScale]
                     self.WidgetObj[i].Activated()
                     self.WidgetObj[i].w_userData.callerObject = self
                     self.outer.coinWin.addWidget(self.WidgetObj[i])
@@ -388,6 +392,7 @@ class Design456_SmartSweep:
             try:
                 self.Section = obj.Section
                 self.Apply = obj.Apply
+                self.CoinScale= obj.CoinScale
                 self.SimpleCopy = obj.SimpleCopy  #used to finalize the object
                 # Create the sweep
 
