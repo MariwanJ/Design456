@@ -54,7 +54,7 @@ import ThreeDWidgets.fr_coinwindow as win
 import Part
 
 
-__updated__ = "2022-11-01 21:52:22"
+__updated__ = "2022-11-01 22:15:39"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -317,6 +317,10 @@ class Design456_SmartSweep:
                     self.PathPointList[i].Visibility = False
                     self.WidgetObj[i].setFreeCADObj(self.PathPointList[i])
                     self.WidgetObj[i].w_Scale=[self.CoinScale,self.CoinScale,self.CoinScale]
+                    self.WidgetObj[i].ballScale=[self.WidgetObj[i].w_Scale[0]/6.0,
+                                                 self.WidgetObj[i].w_Scale[1]/6.0,
+                                                 self.WidgetObj[i].w_Scale[2]/6.0] #there is a diff in scaling ball and arrows
+                    
                     self.WidgetObj[i].Activated()
                     self.WidgetObj[i].w_userData.callerObject = self
                     self.outer.coinWin.addWidget(self.WidgetObj[i])
