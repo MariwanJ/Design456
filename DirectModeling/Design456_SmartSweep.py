@@ -54,7 +54,7 @@ import ThreeDWidgets.fr_coinwindow as win
 import Part
 
 
-__updated__ = "2022-10-31 22:00:19"
+__updated__ = "2022-11-01 19:50:42"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -291,7 +291,9 @@ class Design456_SmartSweep:
                     self.outer.coinWin.hide()
                     return
                 self.delOldCoin3dObjects()
-                   
+                if self.outer.coinWin is None:
+                    return
+                
                 nrOfPoints = len(self.PathPointList)
                 if nrOfPoints < 1:
                     return  # Nothing to do
@@ -412,10 +414,15 @@ class Design456_SmartSweep:
                     Gui.Selection.clearSelection()
                     Gui.Selection.addSelection( App.ActiveDocument.getObject(obj.Name))
                     DefeaturingWB.oDefeaturingTools.osimplecopy_RH()
+                    for i in self.WidgetObj:
+                        i.hide()
+                        i.__del__()
                     self.outer.coinWin.hide()
-                    self.delOldCoin3dObjects()
+                    self.outer.coinWin.redraw()
                     for i in self.PathPointList:
                         App.ActiveDocument.removeObject(i.Name)
+                    del self.outer.coinWin
+                    self.outer.coinWin=None
                     App.ActiveDocument.removeObject(obj.Name)
                     App.ActiveDocument.removeObject(self.Section.Name)
                     App.ActiveDocument.recompute()
