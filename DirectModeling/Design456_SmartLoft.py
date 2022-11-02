@@ -57,6 +57,33 @@ import Part
 __updated__ = "2022-11-01 22:15:39"
 
 """
+Part.BSplineCurve([poles],              #[vector]
+                  [multiplicities],     #[int]
+                  [knots],              #[float]
+                  periodic,             #bool
+                  degree,               #int
+                  [weights],            #[float]
+                  checkRational)        #bool
+
+
+
+import Part
+
+absolutePoints=[]
+absolutePoints.append(FreeCAD.Vector(1065.5057, 1215.3951, 0.0))
+absolutePoints.append(FreeCAD.Vector(1125.6292, 1247.0432, 0.0)) 
+absolutePoints.append(FreeCAD.Vector(1292.6256, 1273.3331, 0.0))
+
+curve=Part.BSplineCurve()
+curve.interpolate(absolutePoints)
+Part.show(curve.toShape())
+Gui.ActiveDocument.ActiveView.fitAll()
+
+"""
+# *********************************************************************************
+
+
+"""
 Instance of the class for this tool. Callbacks will be inside the class.
 """
 
@@ -97,7 +124,7 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
             obj=userData.ballArrows
 
         except Exception as err:
-            App.Console.PrintError("'execute SmartSweep' Failed. " "{err}\n".format(err=str(err)))
+            App.Console.PrintError("'execute SmartLoft' Failed. " "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
@@ -105,15 +132,15 @@ class threeArrowBall(Fr_BallThreeArrows_Widget):
 
 ######################################################################
 
-# Smart Sweep
+# Smart Loft
 
 
-class ViewProviderSmartSweep:
+class ViewProviderSmartLoft:
 
-    obj_name = "SmartSweep"
+    obj_name = "SmartLoft"
 
     def __init__(self, obj, obj_name):
-        self.obj_name = ViewProviderSmartSweep.obj_name
+        self.obj_name = ViewProviderSmartLoft.obj_name
         obj.Proxy = self
 
     def attach(self, obj):
@@ -135,7 +162,7 @@ class ViewProviderSmartSweep:
         pass
 
     def getIcon(self):
-        return Design456Init.ICON_PATH + "SmartSweep.svg"
+        return Design456Init.ICON_PATH + "SmartLoft.svg"
 
     def __getstate__(self):
         return None
@@ -144,12 +171,12 @@ class ViewProviderSmartSweep:
         return None
     
 
-class Design456_SmartSweep:
+class Design456_SmartLoft:
     def __init__(self):
         self.coinWin=None
 
-    class BaseSmartSweep:
-        """SmartSweep shape with a flexible capabilities"""
+    class BaseSmartLoft:
+        """SmartLoft shape with a flexible capabilities"""
         # __slots__ = [
         #     "Apply",
         #     "stepSize",
@@ -165,9 +192,9 @@ class Design456_SmartSweep:
 
         def __init__(self,OuterObject, obj):
 
-            obj.addProperty("App::PropertyLink","Section","Sweep",
-                    QT_TRANSLATE_NOOP("App::Property", "Face to sweep"),).Section = None
-            obj.addProperty("App::PropertyLinkList", "PathPointList", "Sweep",
+            obj.addProperty("App::PropertyLink","Section","Loft",
+                    QT_TRANSLATE_NOOP("App::Property", "Face to Loft"),).Section = None
+            obj.addProperty("App::PropertyLinkList", "PathPointList", "Loft",
                 QT_TRANSLATE_NOOP("App::Property", "Link to Point objects"),).PathPointList = []
             obj.addProperty("App::PropertyBool", "Apply","Execute",
                 QT_TRANSLATE_NOOP("App::Property", "Execute the command"),).Apply = False
@@ -185,33 +212,33 @@ class Design456_SmartSweep:
             obj.PathType = "BSplineCurve"
             self.outer=OuterObject
             self.WidgetObj=[]
-            self.Type="SmartSweep"
+            self.Type="SmartLoft"
             self.done=False
             obj.Proxy = self
 
         def createObject(self):
             try:
                 finalObj = None
-                sweepPath = self.reCreateSweep()
+                LoftPath = self.reCreateLoft()
                 if self.Section is None:
-                    return sweepPath
+                    return LoftPath
 
                 base = self.Section.Shape
                 if base is None:
-                    return sweepPath
+                    return LoftPath
 
                 if self.Apply == True:
-                    tnObj = Part.BRepOffsetAPI.MakePipeShell(sweepPath)
+                    tnObj = Part.BRepOffsetAPI.MakePipeShell(LoftPath)
                     tnObj.add(
                         Part.Wire(base.Edges), WithContact=False, WithCorrection=False
                     )  # Todo check WithContact and WithCorrection
                     tnObj.setTransitionMode(1)  # Round edges
                     tnObj.setFrenetMode(False)
-                    tnObj.build()  # This will create the shape. Without his the SmartSweep fail since the shape is still not made
+                    tnObj.build()  # This will create the shape. Without his the SmartLoft fail since the shape is still not made
                     tnObj.makeSolid()
                     finalObj = tnObj.shape()
                 else:
-                    finalObj = sweepPath
+                    finalObj = LoftPath
                 self.Section.Placement.Base = App.Vector(
                     self.PathPointList[0].X,
                     self.PathPointList[0].Y,
@@ -221,7 +248,7 @@ class Design456_SmartSweep:
 
             except Exception as err:
                 App.Console.PrintError(
-                    "'createObject SmartSweep' Failed. " "{err}\n".format(err=str(err))
+                    "'createObject SmartLoft' Failed. " "{err}\n".format(err=str(err))
                 )
                 exc_type, exc_obj, exc_tb = sys.exc_info()
                 fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -239,7 +266,7 @@ class Design456_SmartSweep:
 
             except Exception as err:
                 App.Console.PrintError(
-                    "'delOldCoin3dObjects SmartSweep' Failed. "
+                    "'delOldCoin3dObjects SmartLoft' Failed. "
                     "{err}\n".format(err=str(err)))
                 exc_type, exc_obj, exc_tb = sys.exc_info()
                 fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -287,14 +314,14 @@ class Design456_SmartSweep:
 
             except Exception as err:
                 App.Console.PrintError(
-                    "'recreateCOIN3DObjects SmartSweep' Failed. "
+                    "'recreateCOIN3DObjects SmartLoft' Failed. "
                     "{err}\n".format(err=str(err))
                 )
                 exc_type, exc_obj, exc_tb = sys.exc_info()
                 fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                 print(exc_type, fname, exc_tb.tb_lineno)
 
-        def reCreateSweep(self):
+        def reCreateLoft(self):
             try:
                 edges = []
                 points = []
@@ -343,7 +370,7 @@ class Design456_SmartSweep:
 
             except Exception as err:
                 App.Console.PrintError(
-                    "'reCreateSweep SmartSweep' Failed. " "{err}\n".format(err=str(err))
+                    "'reCreateLoft SmartLoft' Failed. " "{err}\n".format(err=str(err))
                 )
                 exc_type, exc_obj, exc_tb = sys.exc_info()
                 fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -355,7 +382,7 @@ class Design456_SmartSweep:
                 self.Apply = obj.Apply
                 self.CoinScale= obj.CoinScale
                 self.SimpleCopy = obj.SimpleCopy  #used to finalize the object
-                # Create the sweep
+                # Create the Loft
 
                 self.PathPointList = ( obj.PathPointList )  # We must have the first point always.
                 self.PathType = obj.PathType  # BSplineCurve, Curve, or Line
@@ -396,7 +423,7 @@ class Design456_SmartSweep:
 
             except Exception as err:
                 App.Console.PrintError(
-                    "'execute SmartSweep' Failed. " "{err}\n".format(err=str(err))
+                    "'execute SmartLoft' Failed. " "{err}\n".format(err=str(err))
                 )
                 exc_type, exc_obj, exc_tb = sys.exc_info()
                 fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -404,24 +431,24 @@ class Design456_SmartSweep:
 
     def GetResources(self):
         return {
-            "Pixmap": Design456Init.ICON_PATH + "SmartSweep.svg",
-            "MenuText": "SmartSweep",
-            "ToolTip": "Generate a SmartSweep",
+            "Pixmap": Design456Init.ICON_PATH + "SmartLoft.svg",
+            "MenuText": "SmartLoft",
+            "ToolTip": "Generate a SmartLoft",
         }
 
     def Activated(self):
-        newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartSweep")
+        newObj = App.ActiveDocument.addObject("Part::FeaturePython", "SmartLoft")
         self.coinWin = win.Fr_CoinWindow()
-        self.InnerObject=self.BaseSmartSweep(self,newObj)
-        ViewProviderSmartSweep(newObj.ViewObject, "SmartSweep")
+        self.InnerObject=self.BaseSmartLoft(self,newObj)
+        ViewProviderSmartLoft(newObj.ViewObject, "SmartLoft")
         App.ActiveDocument.recompute()
 
-Gui.addCommand("Design456_SmartSweep", Design456_SmartSweep())
+Gui.addCommand("Design456_SmartLoft", Design456_SmartLoft())
 # -----------------------------------------------------------------------------
 
 #dummy class 
 
-class BaseSmartSweep:
+class BaseSmartLoft:
     def ___init__(self):
-        return Design456_SmartSweep.BaseSmartSweep
+        return Design456_SmartLoft.BaseSmartLoft
 
