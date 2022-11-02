@@ -835,7 +835,7 @@ class Fr_OneArrow_Widget(fr_widget.Fr_Widget):
         if(callbackType == 0):
             # normal callback This represent the whole widget.
             # Use this to finalize the action.
-            self.do_callback()
+            self.do_callback(self.w_userData)
 
         # Move callback - Axis
         elif(callbackType == 1):

@@ -40,7 +40,7 @@ from PySide import QtGui, QtCore
 from draftutils.translate import translate  # for translate
 
 SeperateLinesFromObject = 4
-__updated__ = '2022-02-27 20:21:28'
+__updated__ = '2022-11-02 21:28:10'
 
 
 def smartLinecallback(smartLine, obj, parentlink):
@@ -69,7 +69,14 @@ def smartlbl_callback(smartLine, obj, parentlink):
         side = 'z'
     newValue = 0
     # all lines has a 4 mm more size due to the way we calculate them. Remove that
-    newValue = faced.GetInputValue().getDoubleValue()
+    initialVal=0.0
+    if side=='x':
+        initialVal=deltaX-SeperateLinesFromObject
+    elif side=='y':
+        initialVal=deltaY-SeperateLinesFromObject
+    elif side=='z':
+        initialVal=deltaZ
+    newValue = faced.GetInputValue(initialVal).getDoubleValue()
     if newValue == 0 or newValue is None:
         # User canceled the value
         return -1
@@ -149,11 +156,11 @@ class smartLines(wlin.Fr_Line_Widget):
         # this hold the command class. used to reproduce the whole object.
         self._parentLink = linkToParent
 
-    def do_callback(self):
+    def do_callback(self,userData):
         """ Do widget callback"""
         self.w_callback_(self, self.targetObject, self._parentLink)
 
-    def do_lblcallback(self):
+    def do_lblcallback(self,userData):
         """ Do label callaback"""
         self.w_lbl_calback_(self, self.targetObject, self._parentLink)
 

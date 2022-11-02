@@ -54,7 +54,7 @@ import ThreeDWidgets.fr_coinwindow as win
 import Part
 
 
-__updated__ = "2022-11-01 22:15:39"
+__updated__ = "2022-11-02 20:40:22"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -82,7 +82,15 @@ Gui.ActiveDocument.ActiveView.fitAll()
 """
 # *********************************************************************************
 
+'''
+    Since Loft is not quite similar to Sweep, this tool should do a smart things to be good.
+    1-Scaling of the loft must be possible
+    2-Loft between different objects must be possible
+    3-Sections must be able to rotate
+    4-Chamfer or fillet must be possible
+    6-
 
+'''
 """
 Instance of the class for this tool. Callbacks will be inside the class.
 """

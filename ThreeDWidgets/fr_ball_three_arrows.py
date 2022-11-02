@@ -252,7 +252,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
             if key == coin.SoKeyboardEvent.E and eventState == coin.SoButtonEvent.UP:
                 self.w_parent.w_lastEvent = FR_EVENTS.FR_NO_EVENT
             if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
-                self.do_callback()
+                self.do_callback(self.w_userData)
                 self.XreleaseDragAxis=-1  #drag is finished
                 self.YreleaseDragAxis=-1  #drag is finished
                 self.ZreleaseDragAxis=-1  #drag is finished
@@ -475,7 +475,7 @@ class Fr_BallThreeArrows_Widget(fr_widget.Fr_Widget):
 
             elif self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
                 if self.XreleaseDragAxis==1 or self.YreleaseDragAxis==1 or self.ZreleaseDragAxis==1 or self.AreleaseDragAxis==1:
-                    self.do_callback()
+                    self.do_callback(self.w_userData)
                     self.XreleaseDragAxis=-1  #drag is finished
                     self.YreleaseDragAxis=-1  #drag is finished
                     self.ZreleaseDragAxis=-1  #drag is finished

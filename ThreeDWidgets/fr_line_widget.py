@@ -38,6 +38,8 @@ from ThreeDWidgets import fr_label_draw
 
 from ThreeDWidgets.constant import FR_EVENTS
 import math
+from dataclasses import dataclass
+
 
 """
 Example how to use this widget. 
@@ -57,7 +59,7 @@ wny.show()                    # show the window and it's widgets.
 
 """
 
-__updated__ = '2022-02-10 21:24:44'
+__updated__ = '2022-11-02 21:01:32'
 
 
 def movecallback(userData=None):
@@ -100,6 +102,15 @@ def callback(userData=None):
     print("dummy line-widget callback")
 
 
+@dataclass
+class userDataObject:
+    __slots__ = ['events', 'callerObject']
+
+    def __init__(self):
+
+        self.events       =   None    # events - save handle events here
+        self.callerObject =   None    # 
+        
 class Fr_Line_Widget(fr_widget.Fr_Widget):
 
     """
@@ -119,7 +130,8 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
         self.w_wdgsoSwitch = coin.SoSwitch()
         self.w_wdgsoSwitch.whichChild = coin.SO_SWITCH_ALL  # Show all
         self.w_lbluserData = fr_widget.propertyValues()
-
+        self.w_userData = userDataObject()  #There must be an object even if you don't use it
+        
     def calculateLineSpherical(self):
         # Calculate the three angles we have ref to xyz axis
         # phi - angle to the Z axis
@@ -195,14 +207,14 @@ class Fr_Line_Widget(fr_widget.Fr_Widget):
             if event == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
                 # Double click event.
                 if (clickwdglblNode is not None) or (clickwdgdNode is not None):
-                    self.do_lblcallback()
+                    self.do_lblcallback(self.w_lbluserData)
                     return 1
 
             elif event == FR_EVENTS.FR_MOUSE_LEFT_RELEASE:
                 if (clickwdgdNode is not None) or (clickwdglblNode is not None):
                     if not self.has_focus():
                         self.take_focus()
-                    self.do_callback()
+                    self.do_callback(self.w_userData)
                     return 1
 
             # Don't care events, return the event to other widgets

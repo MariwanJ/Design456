@@ -64,7 +64,7 @@ mywin.addWidget(arrows)
 mywin.show()
 
 """
-__updated__ = '2022-07-04 23:17:05'
+__updated__ = '2022-11-02 20:35:57'
 
 
 @dataclass
@@ -308,7 +308,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         if (self.w_parent.w_lastEvent == FR_EVENTS.FR_ENTER or
             self.w_parent.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
                 self.w_parent.w_lastEvent == FR_EVENTS.FR_E):
-            self.do_callback()
+            self.do_callback(self.w_userData)
             return 1
 
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
@@ -326,7 +326,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
                 self.releaseDrag is False
                 #print("Mouse Release Occurred")
                 # Release callback should be activated even if the wheel != under the mouse
-                self.do_callback()
+                self.do_callback(self.w_userData)
                 return 1
             # TODO FIXME: NOT CORRECT
             if (len(clickwdgdNode) > 0 or clickwdglblNode is not None):
@@ -601,7 +601,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
         if (callbackType == 100):
             # run all
             self.cb_wheelRotate()
-            self.do_callback()
+            self.do_callback(self.w_userData)
             self.w_wheel_cb_(self.w_userData)
             self.w_xAxis_cb_(self.w_userData)
             self.w_yAxis_cb_(self.w_userData)
@@ -609,7 +609,7 @@ class Fr_DegreeWheel_Widget(fr_widget.Fr_Widget):
             self.w_135Axis_cb_(self.w_userData)
         elif(callbackType == 10):
             # normal callback This represent the whole widget. Might not be used here TODO:Do we want this?
-            self.do_callback()
+            self.do_callback(self.w_userData)
             # cylinder callback
         elif(callbackType == 0):
             self.cb_wheelRotate()

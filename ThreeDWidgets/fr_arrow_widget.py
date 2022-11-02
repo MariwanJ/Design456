@@ -60,7 +60,7 @@ wny.addWidget(ln)              # Add it to the window as a child
 wny.show()                    # show the window and it's widgets. 
 
 """
-__updated__ = '2022-10-16 21:12:29'
+__updated__ = '2022-11-02 20:38:50'
 
 
 # class object will be used as object holder between arrow widget and the callback
@@ -147,7 +147,7 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
         if (self.w_parent.w_lastEvent == FR_EVENTS.FR_ENTER or
             self.w_parent.w_lastEvent == FR_EVENTS.FR_PAD_ENTER or
                 self.w_parent.w_lastEvent == FR_EVENTS.FR_E):
-            self.do_callback()
+            self.do_callback(self.w_userData)
             return 1
 
         if self.w_parent.w_lastEvent == FR_EVENTS.FR_MOUSE_LEFT_DOUBLECLICK:
@@ -164,13 +164,13 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             if self.releaseDrag == 1 or self.releaseDrag == 0:
                 self.releaseDrag = -1
                 # Release callback should be activated even if the arrow != under the mouse
-                self.do_callback()
+                self.do_callback(self.w_userData)
                 return 1
 
             if (clickwdgdNode is not None) or (clickwdglblNode is not None):
                 if not self.has_focus():
                     self.take_focus()
-                self.do_callback()
+                self.do_callback(self.w_userData)
                 return 1
             else:
                 self.remove_focus()
@@ -186,14 +186,14 @@ class Fr_Arrow_Widget(fr_widget.Fr_Widget):
             elif ((clickwdgdNode is not None) or (clickwdglblNode is not None)) and self.releaseDrag == 0:
                 self.releaseDrag = 1  # Drag if will continue it will be a drag always
                 self.take_focus()
-                self.do_move_callback()
+                self.do_move_callback(self.w_userData)
                 return 1
 
             elif self.releaseDrag == 1:
                 # As far as we had DRAG before, we will continue run callback.
                 # This is because if the mouse is not exactly on the widget, it should still take the drag.
                 # Continue run the callback as far as it releaseDrag=1
-                self.do_move_callback()        # We use the same callback,
+                self.do_move_callback(self.w_userData)        # We use the same callback,
                 return 1
         # Don't care events, return the event to other widgets
         return 0  # We couldn't use the event .. so return 0

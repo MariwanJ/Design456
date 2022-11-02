@@ -37,7 +37,7 @@ from typing import List
 
 # Group class. Use this to collect several widgets.
 
-__updated__ = '2022-10-09 16:22:16'
+__updated__ = '2022-11-02 19:52:32'
 
 class Fr_Group(fr_widget.Fr_Widget):
     # Any drawing/Everything should be added to this later
@@ -146,6 +146,9 @@ class Fr_Group(fr_widget.Fr_Widget):
         Widgets shouldn't get the event if they are not targeted.
         """
         for wdg in self.w_children:
+            if wdg.w_userData is None:
+                App.Console.PrintError("ERROR:Widgets w_userData is NONE!")
+                continue #skip this widget
             wdg.w_userData.events=  events  #distribute the events to the widgets
             if (wdg.is_active() and wdg.is_visible() and wdg.w_widgetType != constant.FR_WidgetType.FR_WIDGET):
                 results = wdg.handle(events)

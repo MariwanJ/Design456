@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-08-12 21:15:46'
+__updated__ = '2022-11-02 21:22:32'
 
 
 # TODO : FIXME BETTER WAY?
@@ -562,8 +562,8 @@ class SelectTopFace:
 
 class GetInputValue:
 
-    def __init__(self):
-        self.value = 0.0
+    def __init__(self,InitialValue=0.0):
+        self.value = InitialValue
 
     """
     get Input value from user. Either Text, INT or Float

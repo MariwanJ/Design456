@@ -246,13 +246,13 @@ class Fr_Align_Widget(fr_widget.Fr_Widget):
             for i in range(0, 9):
                 if self.w_userData.clickedBTN[i] is True:
                     self.clicked_obj()
-                    self.do_callback()
+                    self.do_callback(self.w_userData)
                     return 1
 
             if (clickwdglblNode is not None):
                 if not self.has_focus():
                     self.take_focus()
-                self.do_callback()
+                self.do_callback(self.w_userData)
                 return 1
             else:
                 self.remove_focus()

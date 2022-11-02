@@ -125,7 +125,7 @@ class Fr_SquareFrame_Widget(fr_widget.Fr_Widget):
 
             if clickwdgdNode is not None or clickwdglblNode is not None:
                 self.take_focus()
-                self.do_callback()
+                self.do_callback(self.w_userData)
                 self.do_lblcallback()
                 return 1
             else:
@@ -345,7 +345,7 @@ class Fr_SquareFace_Widget(fr_widget.Fr_Widget):
 
             if clickwdgdNode is not None or clickwdglblNode is not None:
                 self.take_focus()
-                self.do_callback()
+                self.do_callback(self.w_userData)
                 self.do_lblcallback()
                 return 1
             else:
