@@ -44,7 +44,7 @@ from abc import abstractmethod
 # ********************************************************************************************************
 from dataclasses import dataclass
 
-__updated__ = '2022-10-29 11:17:14'
+__updated__ = '2022-11-03 19:13:51'
 
 
 @dataclass
@@ -363,7 +363,7 @@ class Fr_Widget (object):
         raise NotImplementedError()
 
     # callback related to t
-    def do_lblcallback(self):
+    def do_lblcallback(self, userData):
         """
             This function will run the label-changed 
             event callback. 
@@ -381,7 +381,7 @@ class Fr_Widget (object):
             print(exc_type, fname, exc_tb.tb_lineno)
 
     # call the main callback for the widget
-    def do_callback(self):
+    def do_callback(self, userData):
         """
         This will activate the callback call. 
         Use this function to run the callback.
@@ -403,7 +403,7 @@ class Fr_Widget (object):
 
     # call the main callback for the widget
 
-    def do_move_callback(self):
+    def do_move_callback(self, userData):
         """
         This will activate the move-callback call. 
         Use this function to run the callback.
