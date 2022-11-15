@@ -2,7 +2,7 @@
 
 Video Showcase:
 
-[![](http://img.youtube.com/vi/pmGW4OxVbYw/0.jpg)](https://www.youtube.com/watch?v=pmGW4OxVbYw "Design456 Workbench")
+[![](http://img.youtube.com/vi/BPQyW3EqlOc/0.jpg)](https://youtu.be/BPQyW3EqlOc "Design456 Workbench")
 
 **Important Note:** **WIP!!!** Please feel free to suggest, contribute, join, help, debug etc... I hope you find this workbench useful. Keep in mind that I am still learning FreeCAD API and I might do
 some solution in a way that is not perfect or optimized. FreeCAD contains many libraries that are complex. Developers needs sometime to understand fully how to use them. 
