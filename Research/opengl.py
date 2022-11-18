@@ -11,19 +11,19 @@ from PySide2.QtOpenGL import * #as QtOPENGL
 
 class myOPENGL:
     def __init__(self):
-        self=self.GetQuarterWidget()
-        pass
+        self.mainWindow= self.GetQuarterWidget()[0]
         
     def GetQuarterWidget(self):
 
         views = []
-        mainWindow=Gui.getMainWindow()
-        for w in mainWindow.findChild(QtGui.QMdiArea).findChildren(QtGui.QWidget):
+        self.mainWindow=Gui.getMainWindow()
+        for w in self.mainWindow.findChild(QtGui.QMdiArea).findChildren(QtGui.QWidget):
             if w.inherits("SIM::Coin3D::Quarter::QuarterWidget"):
                 views.append(w)
         return views
     
     def paintGL(self):
+        glClearColor(0.0, 0.0, 0.0, 0.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
         glTranslatef(-2.5, 0.5, -6.0)
@@ -45,7 +45,8 @@ class myOPENGL:
         glLoadIdentity()                    
         gluPerspective(45.0,1.33,0.1, 100.0) 
         glMatrixMode(GL_MODELVIEW)
-        
+
+
 
 f=myOPENGL()
 f.initializeGL()
