@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
-
+""" 
 import os
 import sys
 
@@ -54,7 +54,7 @@ import ThreeDWidgets.fr_coinwindow as win
 import Part
 
 
-__updated__ = "2022-11-02 20:40:22"
+__updated__ = "2022-11-19 18:14:15"
 
 """
 Part.BSplineCurve([poles],              #[vector]
@@ -86,9 +86,9 @@ Gui.ActiveDocument.ActiveView.fitAll()
     Since Loft is not quite similar to Sweep, this tool should do a smart things to be good.
     1-Scaling of the loft must be possible
     2-Loft between different objects must be possible
-    3-Sections must be able to rotate
+    3-SectionBases must be able to rotate
     4-Chamfer or fillet must be possible
-    6-
+    6-I think it will be good to have two list of object as sectionBases that they will be used to make the loft
 
 '''
 """
@@ -191,7 +191,7 @@ class Design456_SmartLoft:
         #     "CoinVisible",
         #     "PathPointList",
         #     "PathType",
-        #     "Section",
+        #     "SectionBase",
         #     "StepSize",
         #     "WidgetObj",
         #     "outer"
@@ -200,8 +200,12 @@ class Design456_SmartLoft:
 
         def __init__(self,OuterObject, obj):
 
-            obj.addProperty("App::PropertyLink","Section","Loft",
-                    QT_TRANSLATE_NOOP("App::Property", "Face to Loft"),).Section = None
+            obj.addProperty("App::PropertyLink","SectionBase","Loft",
+                    QT_TRANSLATE_NOOP("App::Property", "Face to Loft"),).SectionBase = None
+
+            obj.addProperty("App::PropertyLink","SectionTop","Loft",
+                    QT_TRANSLATE_NOOP("App::Property", "Face to Loft"),).SectionTop = None
+            
             obj.addProperty("App::PropertyLinkList", "PathPointList", "Loft",
                 QT_TRANSLATE_NOOP("App::Property", "Link to Point objects"),).PathPointList = []
             obj.addProperty("App::PropertyBool", "Apply","Execute",
@@ -212,12 +216,9 @@ class Design456_SmartLoft:
             obj.addProperty("App::PropertyInteger", "CoinScale","Coin",
                 QT_TRANSLATE_NOOP("App::Property", "Coin3D scale"),).CoinScale = 6
 
-         
-            obj.addProperty("App::PropertyEnumeration", "PathType", "PathType", 
-                            "Path Type").PathType = ["BSplineCurve", "ArcOfThree", "Line"]
             obj.addProperty("App::PropertyBool", "CoinVisible", "Execute",
                 QT_TRANSLATE_NOOP("App::Property", "Hide or show coin widget"),).CoinVisible = True
-            obj.PathType = "BSplineCurve"
+
             self.outer=OuterObject
             self.WidgetObj=[]
             self.Type="SmartLoft"
@@ -228,18 +229,17 @@ class Design456_SmartLoft:
             try:
                 finalObj = None
                 LoftPath = self.reCreateLoft()
-                if self.Section is None:
+                if self.SectionBase is None:
                     return LoftPath
 
-                base = self.Section.Shape
+                base = self.SectionBase.Shape
                 if base is None:
                     return LoftPath
 
                 if self.Apply == True:
                     tnObj = Part.BRepOffsetAPI.MakePipeShell(LoftPath)
                     tnObj.add(
-                        Part.Wire(base.Edges), WithContact=False, WithCorrection=False
-                    )  # Todo check WithContact and WithCorrection
+                        Part.Wire(base.Edges), WithContact=False, WithCorrection=False)  # Todo check WithContact and WithCorrection
                     tnObj.setTransitionMode(1)  # Round edges
                     tnObj.setFrenetMode(False)
                     tnObj.build()  # This will create the shape. Without his the SmartLoft fail since the shape is still not made
@@ -247,7 +247,7 @@ class Design456_SmartLoft:
                     finalObj = tnObj.shape()
                 else:
                     finalObj = LoftPath
-                self.Section.Placement.Base = App.Vector(
+                self.SectionBase.Placement.Base = App.Vector(
                     self.PathPointList[0].X,
                     self.PathPointList[0].Y,
                     self.PathPointList[0].Z,
@@ -316,8 +316,8 @@ class Design456_SmartLoft:
                     self.WidgetObj[i].Activated()
                     self.WidgetObj[i].w_userData.callerObject = self
                     self.outer.coinWin.addWidget(self.WidgetObj[i])
-                if self.Section is not None:
-                    self.Section.Visibility = False
+                if self.SectionBase is not None:
+                    self.SectionBase.Visibility = False
                 self.outer.coinWin.show()
 
             except Exception as err:
@@ -386,7 +386,7 @@ class Design456_SmartLoft:
 
         def execute(self, obj):
             try:
-                self.Section = obj.Section
+                self.SectionBase = obj.SectionBase
                 self.Apply = obj.Apply
                 self.CoinScale= obj.CoinScale
                 self.SimpleCopy = obj.SimpleCopy  #used to finalize the object
@@ -425,7 +425,7 @@ class Design456_SmartLoft:
                     del self.outer.coinWin
                     self.outer.coinWin=None
                     App.ActiveDocument.removeObject(obj.Name)
-                    App.ActiveDocument.removeObject(self.Section.Name)
+                    App.ActiveDocument.removeObject(self.SectionBase.Name)
                     App.ActiveDocument.recompute()
                     return 
 
@@ -460,3 +460,12 @@ class BaseSmartLoft:
     def ___init__(self):
         return Design456_SmartLoft.BaseSmartLoft
 
+
+
+
+
+
+
+
+Developing this tool is delay at the moment.
+ """

@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-11-02 21:22:32'
+__updated__ = '2022-11-07 20:11:44'
 
 
 # TODO : FIXME BETTER WAY?
@@ -1323,7 +1323,18 @@ class reversEngSurface(object):
     def recreateSurface(self):
         pass   
 
-
+def checkTwoEdgesAreParallel(e1,e2):
+    v10=e1.Vertexes[0].Point
+    v11=e1.Vertexes[1].Point
+    delta1=v11.sub(v10)
+    v20=e2.Vertexes[0].Point
+    v21=e2.Vertexes[1].Point
+    delta2=v21.sub(v20)
+    print(e1,e2)
+    
+    
+    
+    
 """
 import math
 s=Gui.Selection.getSelectionEx()[0]
