@@ -24,6 +24,7 @@ from __future__ import unicode_literals
 # *                                                                        *
 # * Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
 # **************************************************************************
+
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import PySide2
@@ -67,11 +68,11 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
         return wglGetCurrentDC() # or return OpenGL.WGL.wglGetCurrentDC()
     
     def getPaintEngine(self):
-        
+
         v=self.GetQuarterWidget()[0]
         #return PySide2.QtGui.QPaintEngine object
         return v.paintEngine
-    
+
     def getBuffer(self):
         buf=0
         glGenBuffers(1,buf)
@@ -79,15 +80,15 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
         glBufferData(GL_ARRAY_BUFFER,6*size(float),pos,GL_STATIC_DRAW)
         glEnableVertexAttribArray(0)
         glVertexAttribPointer(0,2,GL_FLOAT,size(float)*2,8)
-        
+
     def GetQuarterWidget(self):
-        views = []
+        quat = []
         self.mainWindow=Gui.getMainWindow()
         for w in self.mainWindow.findChild(QtGui.QMdiArea).findChildren(QtGui.QWidget):
             if w.inherits("SIM::Coin3D::Quarter::QuarterWidget"):
-                views.append(w)
-        return views
-    
+                quat.append(w)
+        return quat
+
     def getContext(self):
         """ Get OpenGL Context
 
@@ -105,6 +106,7 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
         #return GetQuarterWidget()[0].viewport()
         # or 
         return Gui.ActiveDocument.ActiveView
+
     def getMdiWindow(self):
         mw = Gui.getMainWindow()
         mdi = mw.findChild(PySide2.QtWidgets.QMdiArea)
@@ -132,9 +134,9 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
             
 
     def initializeGL(self):
-        glClearDepth(1.0)              
-        glDepthFunc(GL_LESS)
-        glEnable(GL_DEPTH_TEST)
+        #glClearDepth(1.0)              
+        #glDepthFunc(GL_LESS)
+        #glEnable(GL_DEPTH_TEST)
         glShadeModel(GL_SMOOTH)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()                    
