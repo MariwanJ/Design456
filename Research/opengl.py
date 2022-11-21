@@ -35,6 +35,8 @@ import pivy.coin as coin
 import PySide.QtCore as QtCore
 import PySide.QtGui as QtGui
 from PySide2.QtOpenGL import * #as QtOPENGL
+from OpenGL.WGL import *
+
 
 """
 Class to retrieve all OpenGL related objects
@@ -43,20 +45,35 @@ Returns:
     _type_: _description_
 """
 class myOPENGL(PySide2.QtWidgets.QGraphicsView):
-    def __init__(self):
+    #def __init__(self):
+    #    pos={  -0.5,-0.5,0.0,0.0, 0.5,-0.5 }
+    
+    def setDefaultT(self):
         self= self.GetQuarterWidget()[0]
-        pos[]={-0.5,-0.5,
-                  0.0,0.0,
-                  0.5,-0.5
-                  }
+    # wglGetCurrentContext and wglGetCurrentDC, 
+    
+    def getCurrentContext(self):
+        #http://stackoverflow.com/questions/17532033/qglwidget-get-gl-contextes-for-windows
+        return wglGetCurrentContext()  # or return OpenGL.WGL.wglGetCurrentContext()
+    
+    def makeCurrentContext(self,context):
+        glfwMakeContextCurrent(context)
+    
+    def getQuarterContext(self):
+        qt=self.GetQuarterWidget()[0]
+        return qt.context()
+        
+    def getCurrentDC(self):
+        return wglGetCurrentDC() # or return OpenGL.WGL.wglGetCurrentDC()
+    
     def getPaintEngine(self):
         
         v=self.GetQuarterWidget()[0]
         #return PySide2.QtGui.QPaintEngine object
-        return v.paintEngine()
+        return v.paintEngine
     
     def getBuffer(self):
-        int buf
+        buf=0
         glGenBuffers(1,buf)
         glBindBuffer(GL_ARRAY_BUFFER,buf)
         glBufferData(GL_ARRAY_BUFFER,6*size(float),pos,GL_STATIC_DRAW)
@@ -70,6 +87,7 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
             if w.inherits("SIM::Coin3D::Quarter::QuarterWidget"):
                 views.append(w)
         return views
+    
     def getContext(self):
         """ Get OpenGL Context
 
@@ -84,8 +102,10 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
         Returns:
             _type_: _description_
         """
-        return GetQuarterWidget[0].viewport()
-    def getMdiWindow(self)
+        #return GetQuarterWidget()[0].viewport()
+        # or 
+        return Gui.ActiveDocument.ActiveView
+    def getMdiWindow(self):
         mw = Gui.getMainWindow()
         mdi = mw.findChild(PySide2.QtWidgets.QMdiArea)
         #w = MyNewMainWindow()
@@ -124,6 +144,9 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
 
 
 f=myOPENGL()
+g=f.getCurrentContext()
+c=f.getQuarterContext()
+f.makeCurrentContext(g)
 f.initializeGL()
 f.paintGL()
 
