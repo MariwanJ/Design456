@@ -34,6 +34,9 @@ import FreeCAD as App
 import FreeCADGui as Gui
 from anytree import Node, RenderTree
 from anytree.exporter import DotExporter
+from inspect import getmembers, isfunction
+
+import FreeCAD as App
 
 from pkgutil import iter_modules
 
@@ -54,23 +57,28 @@ MainNoid=Node("FREECAD")
 # 	DotExporter(freecad).to_picture(directory+"freecad.png")
 
 
-from inspect import getmembers, isfunction
-import FreeCAD as App
 
-def retriveOneObj(_objName):
-    _OldNode=_objName
-	try:
-        for objS  in getmembers(App): 
-        Gui.updateGui()
+def retriveOneObj(_objName,nodename):
+    mainNode=nodename
+    _OldNode=nodename
+    try:
+        for objS  in getmembers(_objName): 
+            Gui.updateGui()
             for tobj in getmembers(objS):
-                nObj=Node(tobj.__name__,_OldNode.__name__)
+                if  type(tobj) is tuple:
+                    nObj=Node(str(tobj),_OldNode)
+                else:
+                    nObj=Node(tobj.__name__,_OldNode)
+        return mainNode
     except Exception as err:
-        print error
+        print (err)
+
 
 def retriveAll():		
-	freecad=Node(App.__name__)
-	retriveOneObj(App)
-	DotExporter(freecad).to_picture(directory+"freecad.png")
+    freecad=Node(App.__name__)
+    allNode=retriveOneObj(App,freecad)
+    print(allNode)
+    #DotExporter(freecad).to_picture(directory+"freecad.png")
 
 
 
