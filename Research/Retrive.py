@@ -36,27 +36,10 @@ from anytree import Node, RenderTree
 from anytree.exporter import DotExporter
 from inspect import getmembers, isfunction
 
-import FreeCAD as App
-
 from pkgutil import iter_modules
 
 directory="E:/TEMP/DOC/"
 MainNoid=Node("FREECAD")
-# def retriveOneObj(objName):
-# 	oldNod=objName
-# 	for objS  in iter_modules(App.__path__): 
-# 		Gui.updateGui()
-# 		print(dir(objS))
-# 		retriveOneObj(objS)	
-# 		for tobj in iter_modules(objS):
-# 			nObj=Node(objName.__name__,oldNode.__name__)
-
-# def retriveAll():		
-# 	freecad=Node(App.__name__)
-# 	retriveOneObj(App)
-# 	DotExporter(freecad).to_picture(directory+"freecad.png")
-
-
 
 def retriveOneObj(_objName,nodename):
     mainNode=nodename
@@ -77,8 +60,7 @@ def retriveOneObj(_objName,nodename):
 def retriveAll():		
     freecad=Node(App.__name__)
     allNode=retriveOneObj(App,freecad)
-    print(allNode)
-    #DotExporter(freecad).to_picture(directory+"freecad.png")
+    DotExporter(allNode).to_picture(directory+"freecad.png")
 
 
 
