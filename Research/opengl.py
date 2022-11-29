@@ -145,10 +145,36 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
 
 
 
-f=myOPENGL()
-g=f.getCurrentContext()
-c=f.getQuarterContext()
-f.makeCurrentContext(g)
-f.initializeGL()
-f.paintGL()
+# f=myOPENGL()
+# g=f.getCurrentContext()
+# c=f.getQuarterContext()
+# f.makeCurrentContext(g)
+# f.initializeGL()
+# f.paintGL()
 
+
+
+
+def drawOpenGl(arg1,arg2):
+    """
+        Hello World OpenGL injected to COIN3D
+    
+    """
+    #glClearColor(0.0, 0.0, 0.0, 0.0)
+    #glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glLoadIdentity()
+    glTranslatef(-2.5, 0.5, -6.0)
+    glColor3f( 1.0, 1.5, 0.0 )
+    glPolygonMode(GL_FRONT, GL_FILL)
+    glBegin(GL_TRIANGLES)
+    glVertex3f(2.0,-1.2,0.0)
+    glVertex3f(2.6,0.0,0.0)
+    glVertex3f(2.9,-1.2,0.0)
+    glEnd()
+
+def drawsomething():
+    w_view = Gui.ActiveDocument.ActiveView
+    Root_SceneGraph = w_view.getSceneGraph()
+    calback_=coin.SoCallback()
+    calback_.setCallback(drawOpenGl)
+    Root_SceneGraph.addChild(calback_)
