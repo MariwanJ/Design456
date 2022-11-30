@@ -162,7 +162,7 @@ def drawOpenGl(arg1,arg2):
     """
     #glClearColor(0.0, 0.0, 0.0, 0.0)
     #glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
+    #glLoadIdentity()
     glTranslatef(-2.5, 0.5, -6.0)
     glColor3f( 1.0, 1.5, 0.0 )
     glPolygonMode(GL_FRONT, GL_FILL)
