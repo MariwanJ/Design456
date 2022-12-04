@@ -1,5 +1,6 @@
 import numpy as np
 import Design456Init
+
 class Triangle:
     def __init__(self,app):
         self.app = app
@@ -31,6 +32,7 @@ class Triangle:
         vertex_data=self.get_vertext_data()
         vbo=self.ctx.buffer(vertex_data)
         return vbo
+    
     def get_shader_program(self,shader_name):
         with open(Design456Init.RESEARCH_PATH2+f'\\shaders\\{shader_name}.vert') as file:
             vertex_shader =  file.read()

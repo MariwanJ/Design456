@@ -103,9 +103,9 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
         Returns:
             _type_: _description_
         """
-        #return GetQuarterWidget()[0].viewport()
+        return self.GetQuarterWidget()[0].viewport()
         # or 
-        return Gui.ActiveDocument.ActiveView
+        #return Gui.ActiveDocument.ActiveView
 
     def getMdiWindow(self):
         mw = Gui.getMainWindow()
@@ -132,7 +132,6 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
         glVertex3f(2.9,-1.2,0.0)
         glEnd()
             
-
     def initializeGL(self):
         #glClearDepth(1.0)              
         #glDepthFunc(GL_LESS)
@@ -144,7 +143,6 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
         glMatrixMode(GL_MODELVIEW)
 
 
-
 # f=myOPENGL()
 # g=f.getCurrentContext()
 # c=f.getQuarterContext()
@@ -153,12 +151,9 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
 # f.paintGL()
 
 
-
-
 def drawOpenGl(arg1,arg2):
     """
         Hello World OpenGL injected to COIN3D
-    
     """
     #glClearColor(0.0, 0.0, 0.0, 0.0)
     #glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
