@@ -37,11 +37,11 @@ ICON path should be always added as below
 
 """
 
-__updated__ = '2022-10-05 20:55:16'
+__updated__ = '2022-12-04 13:05:50'
 
 
 #Design456 
-__dir__ = os.path.dirname(__file__)
+__dir__ = os.path.dirname(__file__)[:-1]
 ICON_PATH = os.path.join(__dir__, 'Resources/icons/')
 IMAGE_PATH = os.path.join(__dir__, 'Resources/images/')
 IMPORT_PATH= os.path.join(__dir__, 'Imported/')
@@ -64,6 +64,21 @@ __dirname__ = os.path.join(App.getResourceDir(), "Mod", "Draft")
 DEFEATURING_WB = os.path.join(__dir__,'DefeaturingWB/')
 DefeaturingWB_icons_path =  os.path.join( DEFEATURING_WB, 'Resources', 'icons')
 
+###########################################################################
+#  RESEARCH PART - OPENGL                                                 #
+#   v                                                                       #
+###########################################################################
+
+RESEARCH_PATH1= os.path.join(__dir__,'Research\\Basics')
+RESEARCH_PATH2= os.path.join(__dir__,'Research\\Triangle_helloWorld')
+RESEARCH_PATH3= os.path.join(__dir__,'Research\\Cube_helloWorld')
+
+
+###########################################################################
+#  RESEARCH PART - OPENGL                                                 #
+#   ^                                                                         #
+###########################################################################
+
 # PART
 App.addImportType("BREP format (*.brep *.brp)", "Part")
 App.addExportType("BREP format (*.brep *.brp)", "Part")
@@ -79,3 +94,4 @@ DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the
 pToWorkbench=None
 
 App.__unit_test__ += ["TestPartApp"]
+
