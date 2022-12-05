@@ -95,7 +95,8 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
         Returns:
             _type_: _description_
         """
-        return getViewPort().context()
+        viewport=self.getViewPort()
+        return viewport.context()
 
     def getViewPort(self):
         """Get View Port of the OpenGL window
@@ -104,8 +105,6 @@ class myOPENGL(PySide2.QtWidgets.QGraphicsView):
             _type_: _description_
         """
         return self.GetQuarterWidget()[0].viewport()
-        # or 
-        #return Gui.ActiveDocument.ActiveView
 
     def getMdiWindow(self):
         mw = Gui.getMainWindow()
