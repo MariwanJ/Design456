@@ -37,7 +37,15 @@ class GraphicsEngine:
         self.clock=pg.time.Clock()   #frame rate
         # scene 
         self.scene = Triangle(self )
-     
+    
+    def getViewPort(self):
+        """Get View Port of the OpenGL window
+
+        Returns:
+            _type_: _description_
+        """
+        return self.GetQuarterWidget()[0].viewport()
+         
     def getContext(self):
         """ Get OpenGL Context
 
