@@ -2,6 +2,21 @@ import pygame as pg
 import moderngl as mgl
 import sys
 
+from OpenGL.GL import *
+from OpenGL.GLU import *
+import PySide2
+import FreeCADGui as Gui
+#from PyQt4 import QtGui
+#from PyQt4.QtOpenGL import *
+
+import pivy.coin as coin
+import PySide.QtCore as QtCore
+import PySide.QtGui as QtGui
+from PySide2.QtOpenGL import * #as QtOPENGL
+from OpenGL.WGL import *
+
+
+
 from Research.Triangle_helloWorld.module import *
 
 class GraphicsEngine:
@@ -11,18 +26,35 @@ class GraphicsEngine:
         pg.init()
         # window size 
         self.WIN_SIZE=win_size
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION,3)  #MAJOR OPENGL 
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION,3) #INOR OPENGL 
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK,pg.GL_CONTEXT_PROFILE_CORE) # Depricated functionality will not be used
+        #pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION,3)  #MAJOR OPENGL 
+        #pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION,3) #INOR OPENGL 
+        #pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK,pg.GL_CONTEXT_PROFILE_CORE) # Depricated functionality will not be used
         # create OpenGL context
-        pg.display.set_mode(self.WIN_SIZE,flags=pg.OPENGL | pg.DOUBLEBUF)
-        self.ctx =  Gui.ActiveDocument.ActiveView.getSceneGraph()
+        #pg.display.set_mode(self.WIN_SIZE,flags=pg.OPENGL | pg.DOUBLEBUF)
+        self.ctx =  self.getContext()
         #mgl.create_context()
         # detect an object to help track time
         self.clock=pg.time.Clock()   #frame rate
         # scene 
         self.scene = Triangle(self )
-        
+     
+    def getContext(self):
+        """ Get OpenGL Context
+
+        Returns:
+            _type_: _description_
+        """
+        viewport=self.getViewPort()
+        return viewport.context()
+    
+    def GetQuarterWidget(self):
+        quat = []
+        self.mainWindow=Gui.getMainWindow()
+        for w in self.mainWindow.findChild(QtGui.QMdiArea).findChildren(QtGui.QWidget):
+            if w.inherits("SIM::Coin3D::Quarter::QuarterWidget"):
+                quat.append(w)
+        return quat
+                
     def check_events(self):
         #events to check windows
         for event in pg.event.get():
