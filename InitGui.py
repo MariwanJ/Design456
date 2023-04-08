@@ -61,7 +61,7 @@ class Design456 (Gui.Workbench):
         import Design456_SelectionGate as SelGate
         import DirectModeling.directModelingCommands as dModeling
         import DefeaturingWB.oDefeaturingTools
-        import DefeaturingWB.oDefeaturingCMD  
+        import DefeaturingWB.oDefeaturingCMD
         import DefeaturingWB.oFuzzyTools
         import Design456Init
         from Design456Pref import Design456Preferences
@@ -69,14 +69,14 @@ class Design456 (Gui.Workbench):
         import Design456_ICONPanel  #Side panel for ICONS
         import Design456_Grid as _grid
 
-        # from Part import CommandShapes     
+        # from Part import CommandShapes
         Gui.runCommand('Std_PerspectiveCamera', 1)
 
         self.appendToolbar("Design456Part", designPart.Design456Part.list)
         self.appendToolbar("Design456 2Ddrawing",
                            TwoDDraw.Design456_2Ddrawing.list)
         self.appendToolbar("Design456_Segmented",_segmented.Design456_Segmented.list)
-        
+
         self.appendToolbar("Design456 Tools", _tools.Design456Part_Tools.list)
         self.appendToolbar("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
         self.appendToolbar(
@@ -90,8 +90,8 @@ class Design456 (Gui.Workbench):
                         TwoDDraw.Design456_2Ddrawing.list)
         self.appendMenu("Design456 Tools", _tools.Design456Part_Tools.list)
         self.appendMenu("Design456 Alignment", _alignment.Design456_Alignment_Tools.list)
-        
-        # Defeaturing WB  added to Design456 
+
+        # Defeaturing WB  added to Design456
         self.appendToolbar("Defeaturing Tools", ["oDF_SelectLoop","orefineFeatureTool","oDefeatShapeFeature"])
         #self.appendMenu("ksu Tools", ["ksuTools","ksuToolsEdit"])
         # self.appendMenu("Defeaturing Tools", ["orefineFeatureTool","oDF_SelectLoop"])
@@ -202,9 +202,9 @@ class Design456 (Gui.Workbench):
             from plane import Grid as gr
             from plane import DocObserver
             from Design456Pref import Design456pref_var
-            import Design456Pref            
+            import Design456Pref
             import draftutils
-            
+
             #retrieve preferences from user.cfg
             Design456Pref.Design456Preferences().loadSettings()
             Design456pref_var.PlaneGridEnabled=Design456Pref.getPlaneGrid()
@@ -212,8 +212,8 @@ class Design456 (Gui.Workbench):
             Design456pref_var.Simplified==Design456Pref.getSimplified()
             Design456pref_var.MouseStepSize=Design456Pref.getMouseStepSize()
             Design456pref_var.BKGColor = Design456Pref.getBKGColor()
-            Design456pref_var.pickSize=Design456Pref.getPickSize()         
-             
+            Design456pref_var.pickSize=Design456Pref.getPickSize()
+
             if (self.myDocObserver is None):
                 self.myDocObserver = DocObserver()
                 self.myDocObserver.setLink(self)
@@ -221,14 +221,14 @@ class Design456 (Gui.Workbench):
             if not(App.ActiveDocument):
                 App.newDocument()
                 Gui.ActiveDocument.ActiveView.setCameraType("Perspective")
-                
+
             # FROM DRAFT
             if hasattr(Gui, "draftToolBar"):
                 Gui.draftToolBar.Activated()
-            if hasattr(Gui, "Snapper"):
-                Gui.Snapper.show()
-                import draftutils.init_draft_statusbar as dsb
-                dsb.show_draft_statusbar()
+            #if hasattr(Gui, "Snapper"):
+            #    Gui.Snapper.show()
+            #   import draftutils.init_draft_statusbar as dsb
+            #    dsb.show_draft_statusbar()
             # Fix the view of the grid make it as 123D Design
             App.DraftWorkingPlane.alignToPointAndAxis(
                 App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, 1), 0.0)
@@ -250,8 +250,8 @@ class Design456 (Gui.Workbench):
                 self.runOnce = False
             App.Console.PrintLog(
                 "Draft workbench activated Inside Design456.\n")
-            # Turn OFF grid         
-            Gui.Snapper.grid.off()
+            # Turn OFF grid
+            #Gui.Snapper.grid.off()
             App.Console.PrintMessage('Design456 workbench loaded\n')
             return
 
@@ -303,14 +303,14 @@ class Design456 (Gui.Workbench):
                                    TwoDDraw.Design456_2Ddrawing.list)
             self.appendContextMenu(
                 "Design456 Tools", pTools.Design456Part_Tools.list)
-            self.appendContextMenu("Design456 Alignment", 
+            self.appendContextMenu("Design456 Alignment",
                                         _alignment.Design456_Alignment_Tools.list)
             # from Design456Part
             self.appendContextMenu(
                 "Design456Part", designPart.Design456Part.list)
-            
+
             self.appendContextMenu ("GridSize",_grid.Design456_GridSize.list)
-           
+
             # from DRAFT
             """Define an optional custom context menu."""
             from DraftGui import translate
