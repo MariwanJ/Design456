@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2022-09-08 21:17:37'
+__updated__ = '2023-04-08 13:11:13'
 
 
 # Roof
@@ -2108,14 +2108,14 @@ class BaseHoneycombCylinder:
         try:
             # From this tool, I will create shapes having  origin center in the centerofmass TODO: Good or bad? let me know!
             baseObj = Part.makeCylinder(self.Radius, self.Height,
-                                        App.Vector(BaseHoneycombCylinder.Base.x,
-                                                   BaseHoneycombCylinder.Base.y,
-                                                   BaseHoneycombCylinder.Base.z-self.Height/2))
+                                        App.Vector(BaseHoneycombCylinder.Placement.Base.x,
+                                                   BaseHoneycombCylinder.Placement.Base.y,
+                                                   BaseHoneycombCylinder.Placement.Base.z-self.Height/2))
             # We should have a higher shape to cut the top also
             coreObj = Part.makeCylinder(self.innerRadius, self.Height,
-                                        App.Vector(BaseHoneycombCylinder.Base.x,
-                                                   BaseHoneycombCylinder.Base.y,
-                                                   BaseHoneycombCylinder.Base.z-self.Height/2))
+                                        App.Vector(BaseHoneycombCylinder.Placement.Base.x,
+                                                   BaseHoneycombCylinder.Placement.Base.y,
+                                                   BaseHoneycombCylinder.Placement.Base.z-self.Height/2))
             finalObj = baseObj.cut(coreObj)
 
             z = -self.Height/2
