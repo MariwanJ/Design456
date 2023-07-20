@@ -137,7 +137,7 @@ class Design456 (Gui.Workbench):
             import Draft_rc
             import DraftTools
             import DraftGui
-            import DraftFillet
+            #import DraftFillet         No more this code is valid 20/07/2023
             Gui.addLanguagePath(":/translations")
             Gui.addIconPath(":/icons")
         except Exception as exc:
