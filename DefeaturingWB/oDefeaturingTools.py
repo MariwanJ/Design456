@@ -2402,7 +2402,7 @@ def odock_left_RH():
     oRHDockWidget.activateWindow()
     oRHDockWidget.raise_()
     t = Gui.getMainWindow()
-    cv = t.findChild(QtGui.QDockWidget, "Combo View")
+    cv = t.findChild(QtGui.QDockWidget, "Model")
     if oRHDockWidget and cv:
         dw = t.findChildren(QtGui.QDockWidget)
         try:

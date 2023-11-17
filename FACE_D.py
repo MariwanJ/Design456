@@ -655,7 +655,7 @@ class createActionTab:
             raise Exception("No main window found")
         dw = self.mw.findChildren(QtGui.QDockWidget)
         for i in dw:
-            if str(i.objectName()) == "Combo View":
+            if str(i.objectName()) == "Model":
                 self.tab = i.findChild(QtGui.QTabWidget)
             elif str(i.objectName()) == "Python Console":
                 self.tab = i.findChild(QtGui.QTabWidget)
@@ -1230,7 +1230,7 @@ def showFirstTab():
     mw = Gui.getMainWindow()
     dw = mw.findChildren(QtGui.QDockWidget)
     for i in dw:
-        if i.objectName() == "Combo View":
+        if i.objectName() == "Model":
             tab = i.findChild(QtGui.QTabWidget)
             break
     tab.setCurrentIndex(0)

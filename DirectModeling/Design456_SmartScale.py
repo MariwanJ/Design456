@@ -306,7 +306,7 @@ class Design456_SmartScale:
                 raise Exception("No main window found")
             dw = self.mw.findChildren(QtGui.QDockWidget)
             for i in dw:
-                if str(i.objectName()) == "Combo View":
+                if str(i.objectName()) == "Model":
                     self.tab = i.findChild(QtGui.QTabWidget)
                 elif str(i.objectName()) == "Python Console":
                     self.tab = i.findChild(QtGui.QTabWidget)

@@ -138,7 +138,7 @@ class PrimitivePartsIconList:
         RHmw.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.frmBasicShapes)
         self.frmBasicShapes.setFloating(False)  # dock
         t = Gui.getMainWindow()
-        cv = t.findChild(QtGui.QDockWidget, "Combo View")
+        cv = t.findChild(QtGui.QDockWidget, "Model")
         if self.frmBasicShapes and cv:
             t.tabifyDockWidget(cv, self.frmBasicShapes)
 
