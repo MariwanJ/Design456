@@ -57,11 +57,15 @@ class Design456_Magnet:
             sub1 = s[0]
             sub2 = s[1]
             face1 = faced.getObjectFromFaceName(sub1, sub1.SubElementNames[0])
-            #face2 = faced.getObjectFromFaceName(sub2, sub2.SubElementNames[0])
+            face2 = faced.getObjectFromFaceName(sub2, sub2.SubElementNames[0])
 
 
-            sub2.Object.Placement.Base = face1.Placement.Base
-            sub2.Object.Placement.Base.z= face1.CenterOfMass.z
+            sub2.Object.Placement.Base = face1.Surface.Position # TODO : FIXME : STILL NOT TOTALLY CORRECT
+            face2.Surface.Position = face1.Surface.Position           
+            FaceNormal=face1.normalAt(0.0)
+            sub2.Object.Placement.Base+= FaceNormal*(face1.BoundBox.XLength+face1.BoundBox.YLength)/2
+            
+            sub2.Object.Placement.Base.z= sub1.Object.Shape.BoundBox.ZMax
             # This will fail if the surface doesn't have Rotation 
             if(hasattr(face1.Faces[0].Surface, "Rotation")):
                 sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
