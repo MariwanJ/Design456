@@ -33,7 +33,7 @@ import Part
 import Design456Init
 import FACE_D as faced
 from draftutils.translate import translate   #for translate
-
+import math
 __updated__ = '2022-07-29 09:46:24'
 
 # Move an object to the location of the mouse click on another surface
@@ -58,22 +58,13 @@ class Design456_Magnet:
             sub2 = s[1]
             face1 = faced.getObjectFromFaceName(sub1, sub1.SubElementNames[0])
             face2 = faced.getObjectFromFaceName(sub2, sub2.SubElementNames[0])
-
-
-            sub2.Object.Placement.Base = face1.Surface.Position # TODO : FIXME : STILL NOT TOTALLY CORRECT
-            face2.Surface.Position = face1.Surface.Position           
-            FaceNormal=face1.normalAt(0.0)
-            sub2.Object.Placement.Base+= FaceNormal*(face1.BoundBox.XLength+face1.BoundBox.YLength)/2
-            
-            sub2.Object.Placement.Base.z= sub1.Object.Shape.BoundBox.ZMax
-            # This will fail if the surface doesn't have Rotation 
-            if(hasattr(face1.Faces[0].Surface, "Rotation")):
-                sub2.Object.Placement.Rotation = face1.Faces[0].Surface.Rotation
-            else:
-                # Don't know what todo . Don't leave it empty.
-                # TODO: Find a solution for this.
-                sub2.Object.Placement.Rotation.Axis = App.Vector(0, 0, 1)
-                sub2.Object.Placement.Rotation.Angle = 0
+            norm1 = face1.normalAt(0.0,0.0)*(-1)
+            norm2 = face2.normalAt(0.0,0.0)*(-1)
+            ang= math.degrees(norm1.getAngle(norm2))
+            sub2.Object.Placement.Base = face1.Surface.Position  
+            ROTA= norm2.cross(norm1)
+            rotation = App.Rotation(ROTA,ang)
+            sub2.Object.Placement=App.Placement(face1.Surface.Position,ROTA,ang)
             App.ActiveDocument.commitTransaction() # undo
             App.ActiveDocument.recompute()
             

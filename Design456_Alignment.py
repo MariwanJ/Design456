@@ -351,11 +351,13 @@ class Design456_ResetPlacements:
                         # We need to reset it before doing any action
                         # and we need to keep the old values also
                         distance=sObj.Object.Shape.BoundBox.Center   #Real distance to origin from center
+                        distance.z=0                                #Dont take down the object byt the center length of Z axis - put 0 
                         plOld.Base =  saveTemp.Base.sub(distance)    #if Base was not (0,0,0)
                         sObj.Object.Placement =plOld                 #move original object back to the new position inside the compound        
                         newOBJ.Placement.Base =distance              # set the compound at the position the original object was
                     else: 
                         plOld.Base = sObj.Object.Shape.BoundBox.Center 
+                        plOld.Base.z=0      #dont use boundbox center for z
                         sObj.Object.Placement = plOld.inverse()
                         newOBJ.Placement = plOld 
 
