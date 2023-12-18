@@ -157,42 +157,46 @@ class Design456 (Gui.Workbench):
 
         # Set up toolbars
         it.init_toolbar(self,
-                        QT_TRANSLATE_NOOP("Draft", "Draft creation tools"),
+                        QT_TRANSLATE_NOOP("Workbench", "Draft creation tools"),
                         self.drawing_commands)
         it.init_toolbar(self,
-                        QT_TRANSLATE_NOOP("Draft", "Draft annotation tools"),
+                        QT_TRANSLATE_NOOP("Workbench", "Draft annotation tools"),
                         self.annotation_commands)
         it.init_toolbar(self,
-                        QT_TRANSLATE_NOOP("Draft", "Draft modification tools"),
+                        QT_TRANSLATE_NOOP("Workbench", "Draft modification tools"),
                         self.modification_commands)
         it.init_toolbar(self,
-                        QT_TRANSLATE_NOOP("Draft", "Draft utility tools"),
+                        QT_TRANSLATE_NOOP("Workbench", "Draft utility tools"),
                         self.utility_commands_toolbar)
+        it.init_toolbar(self,
+                        QT_TRANSLATE_NOOP("Workbench", "Draft snap"),
+                        it.get_draft_snap_commands())
 
         # Set up menus
         it.init_menu(self,
-                     [QT_TRANSLATE_NOOP("Draft", "&Drafting")],
+                     [QT_TRANSLATE_NOOP("Workbench", "&Drafting")],
                      self.drawing_commands)
         it.init_menu(self,
-                     [QT_TRANSLATE_NOOP("Draft", "&Annotation")],
+                     [QT_TRANSLATE_NOOP("Workbench", "&Annotation")],
                      self.annotation_commands)
         it.init_menu(self,
-                     [QT_TRANSLATE_NOOP("Draft", "&Modification")],
+                     [QT_TRANSLATE_NOOP("Workbench", "&Modification")],
                      self.modification_commands)
         it.init_menu(self,
-                     [QT_TRANSLATE_NOOP("Draft", "&Utilities")],
+                     [QT_TRANSLATE_NOOP("Workbench", "&Utilities")],
                      self.utility_commands_menu)
 
         # Set up preferences pages
-        if hasattr(Gui, "draftToolBar"):
-            if not hasattr(Gui.draftToolBar, "loadedPreferences"):
-                Gui.addPreferencePage(":/ui/preferences-draft.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                Gui.addPreferencePage(":/ui/preferences-draftinterface.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                Gui.addPreferencePage(":/ui/preferences-draftsnap.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                Gui.addPreferencePage(":/ui/preferences-draftvisual.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                Gui.addPreferencePage(":/ui/preferences-drafttexts.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-                Gui.draftToolBar.loadedPreferences = True
-
+        # if hasattr(Gui, "draftToolBar"):
+        #     if not hasattr(Gui.draftToolBar, "loadedPreferences"):
+        #         Gui.addPreferencePage(":/ui/preferences-draft.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+        #         Gui.addPreferencePage(":/ui/preferences-draftinterface.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+        #         Gui.addPreferencePage(":/ui/preferences-draftsnap.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+        #         Gui.addPreferencePage(":/ui/preferences-draftvisual.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+        #         Gui.addPreferencePage(":/ui/preferences-drafttexts.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
+        #         Gui.draftToolBar.loadedPreferences = True
+        
+        Gui.getMainWindow().mainWindowClosed.connect(self.Deactivated)
         App.Console.PrintLog('Loading Draft workbench, done.\n')
 
     def Activated(self):
@@ -204,6 +208,7 @@ class Design456 (Gui.Workbench):
             from Design456Pref import Design456pref_var
             import Design456Pref
             import draftutils
+            
 
             #retrieve preferences from user.cfg
             Design456Pref.Design456Preferences().loadSettings()
@@ -225,10 +230,10 @@ class Design456 (Gui.Workbench):
             # FROM DRAFT
             if hasattr(Gui, "draftToolBar"):
                 Gui.draftToolBar.Activated()
-            #if hasattr(Gui, "Snapper"):
-            #    Gui.Snapper.show()
-            #   import draftutils.init_draft_statusbar as dsb
-            #    dsb.show_draft_statusbar()
+            if hasattr(Gui, "Snapper"):
+               Gui.Snapper.show()
+               import draftutils.init_draft_statusbar as dsb
+               dsb.show_draft_statusbar()
             # Fix the view of the grid make it as 123D Design
             App.DraftWorkingPlane.alignToPointAndAxis(
                 App.Vector(0.0, 0.0, 0.0), App.Vector(0, 0, 1), 0.0)
