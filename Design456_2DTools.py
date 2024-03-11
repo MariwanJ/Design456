@@ -30,6 +30,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 from PySide import QtGui, QtCore  # https://www.freecadweb.org/wiki/PySide
 import Draft as _draft
+import math
 import Part
 import Design456Init
 import FACE_D as faced
@@ -43,26 +44,34 @@ __updated__ = '2022-10-05 20:45:35'
 
 
 class Design456_MeshCircleToCircle:
-    """[Create a new shape that is a replacement shape of the old mesh circle.]
-
+    """
+    [Create a new shape that is a replacement shape of the old mesh circle.]
     """
     def Activated(self):
         App.ActiveDocument.openTransaction(
             translate("Design456", "MeshCircleToCircle"))
-        s=Gui.Selection.getSelectionEx()
-        if (len(s)<1):
-             return #nothing to do
-        for obj in s:
-            newshape=None
-            shp=Gui.Selection.getSelectionEx()[0].Object.Shape
-            Bound=shp.BoundBox
-            r=(Bound.XMax-Bound.XMin)/2
-            newShp= Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1))
-            t=Part.show(newShp)
-            t.Placement.Base=shp.CenterOfGravity
-            obj.Visibility=False;
+        s=Gui.Selection.getSelectionEx()[0]
+        shp=s.Object.Shape
+        Bound=shp.BoundBox
+        r=(Bound.XMax-Bound.XMin)/2
+        newShp= (Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1)))
+        sub2=Part.Face(Part.Wire(newShp))
+        sub2=Part.show(sub2)
+        sub2.Placement.Base=shp.CenterOfGravity
+        sub1= s.Object
+        face1 = sub1.Shape.Faces[0]
+        face2 = sub2.Shape.Faces[0]
+        norm1 = face1.normalAt(0.0,0.0)*(-1)
+        norm2 = face2.normalAt(0.0,0.0)*(-1)
+        ang= math.degrees(norm1.getAngle(norm2))
+        print(ang)
+        #sub2.Object.Placement.Base = face1.Surface.Position  
+        ROTA= norm2.cross(norm1)
+        print(ROTA)
+        rotation = App.Rotation(ROTA,ang)
+        sub2.Placement=App.Placement(face1.Surface.Position,ROTA,ang)
+        sub1.Visibility=False;
         App.ActiveDocument.recompute()
-
         App.ActiveDocument.commitTransaction()  # undo reg.de here
 
 
@@ -75,6 +84,45 @@ class Design456_MeshCircleToCircle:
 
 
 Gui.addCommand('Design456_MeshCircleToCircle', Design456_MeshCircleToCircle())
+
+
+class Design456_CommonFace:
+    """[Create a new shape that is the common between two other shapes.]
+
+    """
+    def Activated(self):
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "CommonFace"))
+        s=Gui.Selection.getSelectionEx()
+        newshape=None
+        for obj in s:
+            if obj.HasSubObjects:
+                sh1=obj.SubObjects[0]
+            else:
+                sh1=obj.Object.Shape
+            if newshape is not None:
+                newshape= newshape.common(sh1)
+            else:
+                newshape= sh1
+            App.ActiveDocument.recompute()
+        newobj = App.ActiveDocument.addObject("Part::Feature", "CommonFace")
+        newobj.Shape=newshape
+        App.ActiveDocument.recompute()
+        for obj in s:
+            App.ActiveDocument.removeObject(obj.Object.Name)
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction()  # undo reg.de here
+
+
+    def GetResources(self):
+        return{
+            'Pixmap':   Design456Init.ICON_PATH + 'CommonFace.svg',
+            'MenuText': 'CommonFace',
+            'ToolTip':  'CommonFace between 2-2D Faces'
+        }
+
+
+Gui.addCommand('Design456_CommonFace', Design456_CommonFace())
 
 
 # Subtract faces
