@@ -42,8 +42,50 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate  # for translate
 import math
-
+import FACE_D as faced
 __updated__ = "2022-10-01 21:28:49"
+
+
+class Design456_SegmCylinderToCylinder:
+    """
+    [Create a new shape that is a replacement shape of the old mesh Segmented Cylinder.]
+    """
+    def Activated(self):
+        s=Gui.Selection.getSelectionEx()[0]
+        length= s.Object.Shape.BoundBox.ZMax-s.Object.Shape.BoundBox.ZMin
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "SegCylinderToCylinder"))
+        select= faced.SelectTopFace(s.Object)
+        select.Activated()
+        s=Gui.Selection.getSelectionEx()[0]
+        shp=s.Object.Shape
+        Bound=shp.BoundBox
+        r=(Bound.XMax-Bound.XMin)/2
+        newShp= (Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1)))
+        sub2=Part.Face(Part.Wire(newShp))
+        sub2=Part.show(sub2)
+        sub2.Placement.Base=shp.CenterOfGravity
+        sub2.Placement.Base.z=s.Object.Shape.BoundBox.ZMax
+        sub1= s.Object
+        sub2.Placement=s.SubObjects[0].Placement
+        sub1.Visibility=False
+        #TODO FIXME : THIS IS TRUE ONLY IF THE FACE IS PERPONDICULAR TO Z.         
+        norm1 = s.SubObjects[0].normalAt(0.0,0.0)*(-1)*length
+        Part.show(sub2.Shape.extrude(norm1))
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction()  # undo reg.de here
+
+
+    def GetResources(self):
+        return{
+            'Pixmap':   Design456Init.ICON_PATH + 'SegmCylinderToCylinder.svg',
+            'MenuText': 'SegmCylinderToCylinder',
+            'ToolTip':  'Mesh Cylinder To Cylinder '
+        }
+
+
+Gui.addCommand('Design456_SegmCylinderToCylinder', Design456_SegmCylinderToCylinder())
+
 
 # Merge
 class Design456Part_Merge:
@@ -884,6 +926,7 @@ class Design456_3DToolsGroup:
             "Design456Part_Group",
             "Design456Part_Compound",
             "Design456Part_Shell",
+            "Design456_SegmCylinderToCylinder",
             "Design456_DivideObject",
             "Design456_SplitObject",
             "Design456Part_Fillet",
