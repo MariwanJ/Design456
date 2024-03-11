@@ -42,43 +42,39 @@ from Design456_3DTools import Design456_SimplifyCompound
 __updated__ = '2022-10-05 20:45:35'
 
 
-class Design456_CommonFace:
-    """[Create a new shape that is the common between two other shapes.]
+class Design456_MeshCircleToCircle:
+    """[Create a new shape that is a replacement shape of the old mesh circle.]
 
     """
     def Activated(self):
         App.ActiveDocument.openTransaction(
-            translate("Design456", "CommonFace"))
+            translate("Design456", "MeshCircleToCircle"))
         s=Gui.Selection.getSelectionEx()
-        newshape=None
+        if (len(s)<1):
+             return #nothing to do
         for obj in s:
-            if obj.HasSubObjects:
-                sh1=obj.SubObjects[0]
-            else:
-                sh1=obj.Object.Shape
-            if newshape is not None:
-                newshape= newshape.common(sh1)
-            else:
-                newshape= sh1
-            App.ActiveDocument.recompute()
-        newobj = App.ActiveDocument.addObject("Part::Feature", "CommonFace")
-        newobj.Shape=newshape
+            newshape=None
+            shp=Gui.Selection.getSelectionEx()[0].Object.Shape
+            Bound=shp.BoundBox
+            r=(Bound.XMax-Bound.XMin)/2
+            newShp= Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1))
+            t=Part.show(newShp)
+            t.Placement.Base=shp.CenterOfGravity
+            obj.Visibility=False;
         App.ActiveDocument.recompute()
-        for obj in s:
-            App.ActiveDocument.removeObject(obj.Object.Name)
-        App.ActiveDocument.recompute()
+
         App.ActiveDocument.commitTransaction()  # undo reg.de here
 
 
     def GetResources(self):
         return{
-            'Pixmap':   Design456Init.ICON_PATH + 'CommonFace.svg',
-            'MenuText': 'CommonFace',
-            'ToolTip':  'CommonFace between 2-2D Faces'
+            'Pixmap':   Design456Init.ICON_PATH + 'MeshCircleToCircle.svg',
+            'MenuText': 'MeshCircleToCircle',
+            'ToolTip':  'Mesh Circle To Circle '
         }
 
 
-Gui.addCommand('Design456_CommonFace', Design456_CommonFace())
+Gui.addCommand('Design456_MeshCircleToCircle', Design456_MeshCircleToCircle())
 
 
 # Subtract faces
@@ -795,6 +791,7 @@ class Design456_2DToolsGroup:
                 "Design456_SubtractFaces",
                 "Design456_CommonFace",
                 "Design456_SegmentAFace",
+                "Design456_MeshCircleToCircle",
                 #"Design456_EqualizeFaces",
                 )
 
