@@ -52,15 +52,25 @@ class Design456_SegmCylinderToCylinder:
     """
     def Activated(self):
         s=Gui.Selection.getSelectionEx()[0]
-        length= s.Object.Shape.BoundBox.ZMax-s.Object.Shape.BoundBox.ZMin
+        
         App.ActiveDocument.openTransaction(
             translate("Design456", "SegCylinderToCylinder"))
-        select= faced.SelectTopFace(s.Object)
-        select.Activated()
         s=Gui.Selection.getSelectionEx()[0]
+        sub=s.SubObjects[0]
         shp=s.Object.Shape
-        Bound=shp.BoundBox
-        r=(Bound.XMax-Bound.XMin)/2
+        Bound=sub.BoundBox
+        fnormal=sub.normalAt(0,0)
+        fnormal=App.Vector(round(fnormal.x,1), round(fnormal.y,1),round(fnormal.z,1))
+        absFnormal=App.Vector(abs(fnormal.x),abs(fnormal.y),abs(fnormal.z))
+        r=-1
+        if (absFnormal == App.Vector(1,0,0) ):
+            r=(Bound.YMax-Bound.YMin)/2
+        elif (absFnormal == App.Vector(0,1,0) ):
+            r=(Bound.XMax-Bound.XMin)/2
+        elif (absFnormal == App.Vector(0,0,1)):
+            r=(Bound.YMax-Bound.YMin)/2
+        else: 
+            r=Bound.DiagonalLength/2
         newShp= (Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1)))
         sub2=Part.Face(Part.Wire(newShp))
         sub2=Part.show(sub2)
@@ -69,9 +79,22 @@ class Design456_SegmCylinderToCylinder:
         sub1= s.Object
         sub2.Placement=s.SubObjects[0].Placement
         sub1.Visibility=False
-        #TODO FIXME : THIS IS TRUE ONLY IF THE FACE IS PERPONDICULAR TO Z.         
-        norm1 = s.SubObjects[0].normalAt(0.0,0.0)*(-1)*length
+        #TODO FIXME : THIS IS TRUE ONLY IF THE FACE IS PERPENDICULAR TO Z.         
+        length=1
+        norm1 = sub2.Shape.normalAt(0.0,0.0)*(-1)
+        nNoram=App.Vector(abs(norm1.x), abs(norm1.y), abs(norm1.z))
+        if (nNoram== App.Vector(0,0,1)):
+            length= s.Object.Shape.BoundBox.ZMax-s.Object.Shape.BoundBox.ZMin
+        elif (nNoram == App.Vector(0,1,0) ):
+            length= s.Object.Shape.BoundBox.YMax-s.Object.Shape.BoundBox.YMin
+        elif (nNoram== App.Vector(1,0,0) ):
+            length= s.Object.Shape.BoundBox.XMax-s.Object.Shape.BoundBox.XMin
+        else:
+            length = s.Object.Shape.BoundBox.DiagonalLength
+            
+        norm1=norm1*length
         Part.show(sub2.Shape.extrude(norm1))
+        #App.ActiveDocument.removeObject(sub2.Object)
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.de here
 
