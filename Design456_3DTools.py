@@ -70,7 +70,7 @@ class Design456_SegmCylinderToCylinder:
         elif (absFnormal == App.Vector(0,0,1)):
             r=(Bound.YMax-Bound.YMin)/2
         else: 
-            r=Bound.DiagonalLength/2
+            r=(Bound.ZMax-Bound.ZMin)/2
         newShp= (Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1)))
         sub2=Part.Face(Part.Wire(newShp))
         sub2=Part.show(sub2)
@@ -81,20 +81,28 @@ class Design456_SegmCylinderToCylinder:
         sub1.Visibility=False
         #TODO FIXME : THIS IS TRUE ONLY IF THE FACE IS PERPENDICULAR TO Z.         
         length=1
-        norm1 = sub2.Shape.normalAt(0.0,0.0)*(-1)
+        norm1 = fnormal*(-1)
         nNoram=App.Vector(abs(norm1.x), abs(norm1.y), abs(norm1.z))
         if (nNoram== App.Vector(0,0,1)):
             length= s.Object.Shape.BoundBox.ZMax-s.Object.Shape.BoundBox.ZMin
+            print(norm1)
+            print(1)
         elif (nNoram == App.Vector(0,1,0) ):
             length= s.Object.Shape.BoundBox.YMax-s.Object.Shape.BoundBox.YMin
+            print(norm1)
+            print(2)
         elif (nNoram== App.Vector(1,0,0) ):
             length= s.Object.Shape.BoundBox.XMax-s.Object.Shape.BoundBox.XMin
+            print(norm1)
+            print(3)
         else:
             length = s.Object.Shape.BoundBox.DiagonalLength
+            print(norm1)
+            print(4)
             
         norm1=norm1*length
         Part.show(sub2.Shape.extrude(norm1))
-        #App.ActiveDocument.removeObject(sub2.Object)
+        App.ActiveDocument.removeObject(sub2.Name)
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.de here
 
