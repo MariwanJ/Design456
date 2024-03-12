@@ -42,8 +42,91 @@ import Design456_unifySplitFuse
 from PySide import QtCore, QtGui
 from draftutils.translate import translate  # for translate
 import math
-
+import FACE_D as faced
 __updated__ = "2022-10-01 21:28:49"
+
+
+class Design456_SegmCylinderToCylinder:
+    """
+    [Create a new shape that is a replacement shape of the old mesh Segmented Cylinder.]
+    """
+    def Activated(self):
+        s=Gui.Selection.getSelectionEx()[0]
+        
+        App.ActiveDocument.openTransaction(
+            translate("Design456", "SegCylinderToCylinder"))
+        s=Gui.Selection.getSelectionEx()[0]
+        sub=s.SubObjects[0]
+        shp=s.Object.Shape
+        Bound=sub.BoundBox
+        fnormal=sub.normalAt(0,0)
+        fnormal=App.Vector(round(fnormal.x,1), round(fnormal.y,1),round(fnormal.z,1))
+        absFnormal=App.Vector(abs(fnormal.x),abs(fnormal.y),abs(fnormal.z))
+        r=-1
+        if (absFnormal == App.Vector(1,0,0) ):
+            r=(Bound.YMax-Bound.YMin)/2
+        elif (absFnormal == App.Vector(0,1,0) ):
+            r=(Bound.XMax-Bound.XMin)/2
+        elif (absFnormal == App.Vector(0,0,1)):
+            r=(Bound.YMax-Bound.YMin)/2
+        else: 
+            r=(Bound.ZMax-Bound.ZMin)/2
+        #newShp= (Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1)))
+        #sub2=Part.Face(Part.Wire(newShp))
+        #sub2=Part.show(sub2)
+        
+        
+        #sub2.Placement.Base=shp.CenterOfGravity
+        #sub2.Placement.Base.z=s.Object.Shape.BoundBox.ZMax
+        sub1= s.Object
+        #sub2.Placement=s.SubObjects[0].Placement
+        sub1.Visibility=False
+
+        #TODO FIXME : THIS IS TRUE ONLY IF THE FACE IS PERPENDICULAR TO Z.         
+        length=1
+        norm1 = fnormal*(-1)
+        nNoram=App.Vector(abs(norm1.x), abs(norm1.y), abs(norm1.z))
+        if (nNoram== App.Vector(0,0,1)):
+            length= s.Object.Shape.BoundBox.ZMax-s.Object.Shape.BoundBox.ZMin
+            print(norm1)
+            print(1)
+        elif (nNoram == App.Vector(0,1,0) ):
+            length= s.Object.Shape.BoundBox.YMax-s.Object.Shape.BoundBox.YMin
+            print(norm1)
+            print(2)
+        elif (nNoram== App.Vector(1,0,0) ):
+            length= s.Object.Shape.BoundBox.XMax-s.Object.Shape.BoundBox.XMin
+            print(norm1)
+            print(3)
+        else:
+            length = s.Object.Shape.BoundBox.DiagonalLength
+            print(norm1)
+            print(4)
+
+        norm1=norm1*length
+        p= App.ActiveDocument.addObject("Part::Cylinder", "Cylinder") 
+        p.Radius =r
+        p.Height=length
+        p.Placement=s.Object.Placement
+        #g.Placement.Base=shp.CenterOfGravity
+        #g.Placement.Base.z=s.Object.Shape.BoundBox.ZMax
+        
+        #Part.show(sub2.Shape.extrude(norm1))
+        #App.ActiveDocument.removeObject(sub2.Name)
+        App.ActiveDocument.recompute()
+        App.ActiveDocument.commitTransaction()  # undo reg.de here
+
+
+    def GetResources(self):
+        return{
+            'Pixmap':   Design456Init.ICON_PATH + 'SegmCylinderToCylinder.svg',
+            'MenuText': 'SegmCylinderToCylinder',
+            'ToolTip':  'Mesh Cylinder To Cylinder '
+        }
+
+
+Gui.addCommand('Design456_SegmCylinderToCylinder', Design456_SegmCylinderToCylinder())
+
 
 # Merge
 class Design456Part_Merge:
@@ -884,6 +967,7 @@ class Design456_3DToolsGroup:
             "Design456Part_Group",
             "Design456Part_Compound",
             "Design456Part_Shell",
+            "Design456_SegmCylinderToCylinder",
             "Design456_DivideObject",
             "Design456_SplitObject",
             "Design456Part_Fillet",
