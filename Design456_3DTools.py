@@ -71,14 +71,17 @@ class Design456_SegmCylinderToCylinder:
             r=(Bound.YMax-Bound.YMin)/2
         else: 
             r=(Bound.ZMax-Bound.ZMin)/2
-        newShp= (Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1)))
-        sub2=Part.Face(Part.Wire(newShp))
-        sub2=Part.show(sub2)
-        sub2.Placement.Base=shp.CenterOfGravity
-        sub2.Placement.Base.z=s.Object.Shape.BoundBox.ZMax
+        #newShp= (Part.makeCircle(r, App.Vector(0, 0, 0), App.Vector(0, 0, 1)))
+        #sub2=Part.Face(Part.Wire(newShp))
+        #sub2=Part.show(sub2)
+        
+        
+        #sub2.Placement.Base=shp.CenterOfGravity
+        #sub2.Placement.Base.z=s.Object.Shape.BoundBox.ZMax
         sub1= s.Object
-        sub2.Placement=s.SubObjects[0].Placement
+        #sub2.Placement=s.SubObjects[0].Placement
         sub1.Visibility=False
+
         #TODO FIXME : THIS IS TRUE ONLY IF THE FACE IS PERPENDICULAR TO Z.         
         length=1
         norm1 = fnormal*(-1)
@@ -99,10 +102,17 @@ class Design456_SegmCylinderToCylinder:
             length = s.Object.Shape.BoundBox.DiagonalLength
             print(norm1)
             print(4)
-            
+
         norm1=norm1*length
-        Part.show(sub2.Shape.extrude(norm1))
-        App.ActiveDocument.removeObject(sub2.Name)
+        p= App.ActiveDocument.addObject("Part::Cylinder", "Cylinder") 
+        p.Radius =r
+        p.Height=length
+        p.Placement=s.Object.Placement
+        #g.Placement.Base=shp.CenterOfGravity
+        #g.Placement.Base.z=s.Object.Shape.BoundBox.ZMax
+        
+        #Part.show(sub2.Shape.extrude(norm1))
+        #App.ActiveDocument.removeObject(sub2.Name)
         App.ActiveDocument.recompute()
         App.ActiveDocument.commitTransaction()  # undo reg.de here
 
