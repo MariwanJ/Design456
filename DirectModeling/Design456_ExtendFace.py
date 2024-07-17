@@ -39,6 +39,7 @@ from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 from ThreeDWidgets.fr_three_arrows_widget import userDataObject
 from ThreeDWidgets.fr_draw import draw_FaceSet
 from ThreeDWidgets.constant import FR_COLOR
+from ThreeDWidgets.constant import FR_EVENTS
 from draftutils.translate import translate  # for translation
 import Part as _part
 import FACE_D as faced
@@ -476,7 +477,7 @@ class Design456_ExtendFace:
             self.lblTweakResult.setFont(font)
             self.lblTweakResult.setObjectName("lblTweakResult")
             btnOK = QtGui.QDialogButtonBox(self.dialog)
-            btnOK.setGeometry(QtCore.QRect(270, 260, 111, 61))
+            btnOK.setGeometry(QtCore.QRect(175, 175, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
@@ -558,58 +559,66 @@ class Design456_ExtendFace:
         Args:
             userData ([type], optional): [User Data]. Defaults to None.
         """
-        self.StepSize= Design456pref_var.MouseStepSize
-        events = userData.events
-        if type(events) != int:
-            print("event was not int")
-            return
-        if events != FR_EVENTS.FR_MOUSE_DRAG:
-            return #We accept only mouse drag
-                
-        if self.discObj.w_userData.Axis_cb is False:
-            if self.discObj.w_userData.Disc_cb is True:
-                self.RotatingFace_cb(userData)
+        try:
+            self.StepSize= Design456pref_var.MouseStepSize
+            events = userData.events
+            if type(events) != int:
+                print("event was not int")
                 return
+            if events != FR_EVENTS.FR_MOUSE_DRAG:
+                return #We accept only mouse drag
+                    
+            if self.discObj.w_userData.Axis_cb is False:
+                if self.discObj.w_userData.Disc_cb is True:
+                    self.RotatingFace_cb(userData)
+                    return
+                else:
+                    return  # We cannot allow this tool
+
+            self.endVector = App.Vector(self.discObj.w_parent.w_lastEventXYZ.Coin_x,
+                                        self.discObj.w_parent.w_lastEventXYZ.Coin_y,
+                                        self.discObj.w_parent.w_lastEventXYZ.Coin_z)
+            if self.run_Once is False:
+                self.run_Once = True
+                # only once
+                self.startVector = self.endVector
+                self.mouseToArrowDiff = self.endVector.sub(self.discObj.w_vector[0])/self.StepSize
+
+            deltaChange=(self.endVector.sub(self.startVector)).dot(self.normalVector)
+            self.tweakLength = self.StepSize* (int(deltaChange/self.StepSize))
+
+            if abs(self.oldTweakLength-self.tweakLength) < 1:
+                return  # we do nothing
+            self.TweakLBL.setText(
+                "Length = " + str(round(self.tweakLength, 1)))
+            # must be tuple
+            self.discObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
+            self.discObj.lblRedraw()
+            newPos= self.endVector.sub(self.mouseToArrowDiff)
+            self.oldFaceVertexes = self.newFaceVertexes
+            if self.discObj.w_userData.discObj.axisType == 'X':
+                self.newFace.Placement.Base.x = self.StepSize*(int(newPos.x/self.StepSize))
+                self.discObj.w_vector[0].x = self.StepSize*(int(newPos.x/self.StepSize))
+            elif self.discObj.w_userData.discObj.axisType == 'Y':
+                self.newFace.Placement.Base.y = self.StepSize*(int(newPos.y/self.StepSize))
+                self.discObj.w_vector[0].y = self.StepSize*(int(newPos.y/self.StepSize))
+            elif self.discObj.w_userData.discObj.axisType == 'Z':
+                self.newFace.Placement.Base.z = self.StepSize*(int(newPos.z/self.StepSize))
+                self.discObj.w_vector[0].z = self.StepSize*(int(newPos.z/self.StepSize))
             else:
-                return  # We cannot allow this tool
+                # nothing to do here  #TODO : This shouldn't happen
+                return
+            self.newFaceVertexes = self.newFace.Shape.Vertexes
+            self.COIN_recreateObject()
+            self.discObj.redraw()
 
-        self.endVector = App.Vector(self.discObj.w_parent.w_lastEventXYZ.Coin_x,
-                                    self.discObj.w_parent.w_lastEventXYZ.Coin_y,
-                                    self.discObj.w_parent.w_lastEventXYZ.Coin_z)
-        if self.run_Once is False:
-            self.run_Once = True
-            # only once
-            self.startVector = self.endVector
-            self.mouseToArrowDiff = self.endVector.sub(self.discObj.w_vector[0])/self.StepSize
-
-        deltaChange=(self.endVector.sub(self.startVector)).dot(self.normalVector)
-        self.tweakLength = self.StepSize* (int(deltaChange/self.StepSize))
-
-        if abs(self.oldTweakLength-self.tweakLength) < 1:
-            return  # we do nothing
-        self.TweakLBL.setText(
-            "Length = " + str(round(self.tweakLength, 1)))
-        # must be tuple
-        self.discObj.label(["Length = " + str(round(self.tweakLength, 1)), ])
-        self.discObj.lblRedraw()
-        newPos= self.endVector.sub(self.mouseToArrowDiff)
-        self.oldFaceVertexes = self.newFaceVertexes
-        if self.discObj.w_userData.discObj.axisType == 'X':
-            self.newFace.Placement.Base.x = self.StepSize*(int(newPos.x/self.StepSize))
-            self.discObj.w_vector[0].x = self.StepSize*(int(newPos.x/self.StepSize))
-        elif self.discObj.w_userData.discObj.axisType == 'Y':
-            self.newFace.Placement.Base.y = self.StepSize*(int(newPos.y/self.StepSize))
-            self.discObj.w_vector[0].y = self.StepSize*(int(newPos.y/self.StepSize))
-        elif self.discObj.w_userData.discObj.axisType == 'Z':
-            self.newFace.Placement.Base.z = self.StepSize*(int(newPos.z/self.StepSize))
-            self.discObj.w_vector[0].z = self.StepSize*(int(newPos.z/self.StepSize))
-        else:
-            # nothing to do here  #TODO : This shouldn't happen
-            return
-        self.newFaceVertexes = self.newFace.Shape.Vertexes
-        self.COIN_recreateObject()
-        self.discObj.redraw()
-
+        except Exception as err:
+            App.Console.PrintError("'Activated' Release Filed. "
+                                   "{err}\n".format(err=str(err)))
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            
     def callback_release(self, userData: userDataObject = None):
         try:
             events = userData.events
@@ -618,7 +627,7 @@ class Design456_ExtendFace:
             self.run_Once = False
 
         except Exception as err:
-            App.Console.PrintError("'Activated' Release Filed. "
+            App.Console.PrintError("'MouseDragging_cb'  Filed. "
                                    "{err}\n".format(err=str(err)))
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
