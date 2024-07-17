@@ -38,6 +38,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 from ThreeDWidgets.fr_three_arrows_widget import userDataObject
 from ThreeDWidgets.fr_draw import draw_FaceSet
+from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from draftutils.translate import translate  # for translation
 import Part as _part
@@ -476,7 +477,7 @@ class Design456_ExtendFace:
             self.lblTweakResult.setFont(font)
             self.lblTweakResult.setObjectName("lblTweakResult")
             btnOK = QtGui.QDialogButtonBox(self.dialog)
-            btnOK.setGeometry(QtCore.QRect(270, 260, 111, 61))
+            btnOK.setGeometry(QtCore.QRect(175, 175, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
