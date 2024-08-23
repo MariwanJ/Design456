@@ -38,6 +38,7 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 from ThreeDWidgets.fr_three_arrows_widget import Fr_ThreeArrows_Widget
 from ThreeDWidgets.fr_three_arrows_widget import userDataObject
 from ThreeDWidgets.fr_draw import draw_FaceSet
+from ThreeDWidgets.constant import FR_EVENTS
 from ThreeDWidgets.constant import FR_COLOR
 from ThreeDWidgets.constant import FR_EVENTS
 from draftutils.translate import translate  # for translation
