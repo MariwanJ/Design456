@@ -64,13 +64,14 @@ __dirname__ = os.path.join(App.getResourceDir(), "Mod", "Draft")
 DEFEATURING_WB = os.path.join(__dir__,'DefeaturingWB/')
 DefeaturingWB_icons_path =  os.path.join( DEFEATURING_WB, 'Resources', 'icons')
 
-# PART
-App.addImportType("BREP format (*.brep *.brp)", "Part")
-App.addExportType("BREP format (*.brep *.brp)", "Part")
-App.addImportType("IGES format (*.iges *.igs)", "Part")
-App.addExportType("IGES format (*.iges *.igs)", "Part")
-App.addImportType("STEP with colors (*.step *.stp)", "Import")
-App.addExportType("STEP with colors (*.step *.stp)", "Import")
+# PART      #Causes issue  - Reported by luzpaz as per https://github.com/MariwanJ/Design456/issues/81#issuecomment-2306974570
+#App.addImportType("BREP format (*.brep *.brp)", "Part")
+#App.addExportType("BREP format (*.brep *.brp)", "Part")
+#App.addImportType("IGES format (*.iges *.igs)", "Part")
+#App.addExportType("IGES format (*.iges *.igs)", "Part")
+#App.addImportType("STEP with colors (*.step *.stp)", "Import")
+#App.addExportType("STEP with colors (*.step *.stp)", "Import")
+
 #Desing456 WB Default  view 
 #Default Extrusion direction, i.e. 2D/3D objects are placed on XY plane by default.
 DefaultDirectionOfExtrusion='z' # We need to know this always. Any change in the plane should be saved here.
