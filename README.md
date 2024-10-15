@@ -25,10 +25,10 @@ Direct modeling approach has lately become more common in popular CAD solutions.
 
 Result: The Design456 workbench should now be available in the workbench drop-down menu
 
-**Note:** Please keep this workbench up-to-date by pulling changes from this repository via `git`. This can be done before each time Design456 will be used.  
+**Note:** Please keep this workbench up-to-date by pulling changes from this repository via `git`. This can be done before each time Design456 will be used. It seems that sometimes FreeCAD WB manager cannot update my WB. It is better to make a git clone inside the Mod folder as below 
 
-1. `cd  ~/.local/share/FreeCAD/Mod/Design456`
-2. `git pull`
+1. `cd  ~/.local/share/FreeCAD/v1-1/Mod/`
+2. `git clone https://github.com/MariwanJ/Design456.git`
 3. Restart FreeCAD
 
 ### Usage
@@ -64,4 +64,4 @@ Please leave comments, bugs, fixes in the issue queue of this repository.
 * FreeCAD forum thread [progress Design456 workbench](https://forum.freecadweb.org/viewtopic.php?f=10&t=55866&p=480589#p480589) (No more used 2022-01-20)
 ### Developer
 
-Mariwan Jalal 2024-02-09
+Mariwan Jalal 2025-12-31

@@ -8,8 +8,8 @@
   <license file="LICENSE">GPL-3.0-or-later</license>
   <url type="repository" branch="main">https://github.com/MariwanJ/Design456</url>
   <url type="documentation">https://wiki.freecadweb.org/Design456_Workbench</url>
-
-
+  <icon>freecad/Design456/Resources/icons/WorkbenchIcon.svg</icon>
+  
   <content>
     <workbench>
       <name>Design456 workbench</name>
@@ -17,7 +17,6 @@
       <description>Direct Modeling Workbench for FreeCAD</description>
       <version>0.00.1</version>
       <subdirectory>./</subdirectory>
-      <icon>Resources/icons/WorkbenchIcon.svg</icon>
       <freecadmin>0.20.0</freecadmin>
       <tag>direct-modeling</tag>
     </workbench>
