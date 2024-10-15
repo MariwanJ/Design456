@@ -118,11 +118,13 @@ Gui.addCommand('Design456_AlignToPlane', Design456_AlignFlatToPlane())
 # Top
 class Design456_TopSideView:
     def Activated(self):
+        Gui.Snapper.setTrackers(update_grid=True)
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, 1.0), 0.0)
         Gui.activeDocument().activeView().viewTop()
         Design456Init.DefaultDirectionOfExtrusion = 'z'
+        Gui.Snapper.grid.set()
         Gui.Snapper.grid.on()
 
     def GetResources(self):
@@ -141,11 +143,13 @@ Gui.addCommand('Design456_TopSideView', Design456_TopSideView())
 class Design456_BottomView:
 
     def Activated(self):
+        Gui.Snapper.setTrackers(update_grid=True)
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 0.0, -1.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion = 'z'
         Gui.activeDocument().activeView().viewBottom()
+        Gui.Snapper.grid.set()
         Gui.Snapper.grid.on()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
@@ -165,11 +169,13 @@ Gui.addCommand('Design456_BottomView', Design456_BottomView())
 
 class Design456_LeftSideView:
     def Activated(self):
+        Gui.Snapper.setTrackers(update_grid=True)
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(1.0, 0.0, 0.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion = 'x'
         Gui.activeDocument().activeView().viewLeft()
+        Gui.Snapper.grid.set()
         Gui.Snapper.grid.on()
 
     def GetResources(self):
@@ -187,11 +193,13 @@ Gui.addCommand('Design456_LeftSideView', Design456_LeftSideView())
 
 class Design456_RightSideView:
     def Activated(self):
+        Gui.Snapper.setTrackers(update_grid=True)
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(-1.0, 0.0, 0.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion = 'x'
         Gui.activeDocument().activeView().viewRight()
+        Gui.Snapper.grid.set()
         Gui.Snapper.grid.on()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
@@ -211,11 +219,13 @@ Gui.addCommand('Design456_RightSideView', Design456_RightSideView())
 
 class Design456_FrontSideView:
     def Activated(self):
+        Gui.Snapper.setTrackers(update_grid=True)
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, 1.0, 0.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion = 'y'
         Gui.activeDocument().activeView().viewFront()
+        Gui.Snapper.grid.set()
         Gui.Snapper.grid.on()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")
@@ -236,11 +246,13 @@ Gui.addCommand('Design456_FrontSideView', Design456_FrontSideView())
 class Design456_BackSideView:
 
     def Activated(self):
+        Gui.Snapper.setTrackers(update_grid=True)
         Gui.Snapper.grid.off()
         App.DraftWorkingPlane.alignToPointAndAxis(
             App.Vector(0.0, 0.0, 0.0), App.Vector(0.0, -1.0, 0.0), 0.0)
         Design456Init.DefaultDirectionOfExtrusion = 'y'
         Gui.activeDocument().activeView().viewRear()
+        Gui.Snapper.grid.set()
         Gui.Snapper.grid.on()
         Gui.runCommand("Draft_ToggleGrid")
         Gui.runCommand("Draft_ToggleGrid")

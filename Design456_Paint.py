@@ -1135,9 +1135,10 @@ class Design456_Paint:
                 if Average == App.Vector(0.0, 0.0, 0.0):
                     # First time we should accept it without division
                     Average = objBase
-                Average = App.Vector((Average.x+objBase.x)/2,
-                                     (Average.y+objBase.y)/2,
-                                     (Average.z+objBase.z)/2)
+                else:
+                    Average = App.Vector((Average.x+objBase.x)/2,
+                                        (Average.y+objBase.y)/2,
+                                        (Average.z+objBase.z)/2)
             for obj in self.AllObjects:
                 obj.Placement.Base = obj.Placement.Base.sub(Average)
 
@@ -1184,6 +1185,7 @@ class Design456_Paint:
         self.c1 = None
         self.c2 = None
         s = Gui.Selection.getSelectionEx()
+        Gui.Snapper.setTrackers(update_grid=True)
         if (len(s) > 1):
             # One object must be selected at least
             errMessage = "Select Only one face to use the tool"
@@ -1193,8 +1195,10 @@ class Design456_Paint:
             self.SelectedObj = s[0]
             self.workingplane = App.DraftWorkingPlane
             self.workingplane.reset()
+            
             f = self.SelectedObj.SubObjects[0]
             self.workingplane.alignToFace(f)
+            Gui.Snapper.grid.set()  #without this the grid will not be updated
             Gui.Snapper.grid.on()
             Gui.Snapper.forceGridOff = False
 
@@ -1207,6 +1211,7 @@ class Design456_Paint:
             if(self.currentObj is None):
                 print("Why is this None?")
             App.ActiveDocument.recompute()
+            self.oldPosition= App.DraftWorkingPlane.getPlacement().Base
 
             # Start callbacks for mouse events.
             self.callbackMove = self.view.addEventCallbackPivy(
@@ -1240,6 +1245,8 @@ class Design456_Paint:
         """[Python destructor for the object. Otherwise next drawing might get wrong parameters]
         """
         App.DraftWorkingPlane.reset()
+        Gui.Snapper.setTrackers(update_grid=True)
+        Gui.Snapper.grid.set()
         Gui.Snapper.grid.off()
         Gui.Snapper.forceGridOff = True
         self.remove_callbacks()
