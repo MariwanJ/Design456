@@ -125,8 +125,9 @@ class Design456_Hole:
             self.selectedObj = Gui.Selection.getSelectionEx()
 
             for obj in self.selectedObj:
-                obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_LIGHTPINK
-                obj.Object.ViewObject.Transparency = 70
+                if(hasattr(obj,'ShapeColor')):
+                    obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_LIGHTPINK
+                    obj.Object.ViewObject.Transparency = 70
 
                 for nObj in self.FoundObjects:
                     if obj.Object == nObj:
