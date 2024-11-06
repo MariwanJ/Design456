@@ -802,6 +802,9 @@ def Overlapping(Sourceobj1, Targetobj2):
     Returns:
         [type]: [description]
     """
+    if not (hasattr(Sourceobj1, 'Shape') and 
+             hasattr(Targetobj2, 'Shape')):
+        return False            # If the object doesnt have Shape object, we should return false 
     if (Sourceobj1.Shape.Volume == 0 or Targetobj2.Shape.Volume == 0):
         return False
     elif (Sourceobj1 == Targetobj2):
