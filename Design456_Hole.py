@@ -67,9 +67,10 @@ class Design456_Hole:
                 return  # Nothing to do
 
             for obj in self.selectedObj:
-                obj.Object.ViewObject.Transparency = 100
-                obj.Object.ViewObject.Transparency = 0
-                obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_GRAY
+                if (hasattr(obj.Object.ViewObject,'Transparency')):
+                    obj.Object.ViewObject.Transparency = 100
+                    obj.Object.ViewObject.Transparency = 0
+                    obj.Object.ViewObject.ShapeColor = FR_COLOR.FR_GRAY
 
             if(len(self.selectedObj) > 1):
                 fuTool = App.ActiveDocument.addObject(
