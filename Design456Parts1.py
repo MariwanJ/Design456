@@ -468,7 +468,8 @@ class Design_ColorizeObject:
                                    round(random.uniform(base2 , 1),3), 
                                    round(random.uniform(base3 , 1),3),
                                    0.0)) #red, green, blue, transparency
-                selectedObj.ViewObject.DiffuseColor = colors 
+                if (hasattr(selectedObj.ViewObject,'DiffuseColor')):
+                    selectedObj.ViewObject.DiffuseColor = colors 
                 App.ActiveDocument.commitTransaction() #undo reg.
             
         except Exception as err:
