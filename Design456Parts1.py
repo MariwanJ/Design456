@@ -460,7 +460,9 @@ class Design_ColorizeObject:
             for selectedObj in sel:
                 App.ActiveDocument.openTransaction(translate("Design456","Colorize"))
                 colors = []
+                saveTransp=selectedObj.ViewObject.Transparency   #We need to save it and restore it later
                 for ii in range(len(selectedObj.Shape.Faces)):
+                    
                     base1 =round(random.uniform(0.1, 0.5),2)  # Randomize even the lower limit 
                     base2=round(random.uniform(0.1, 0.5),2)  # Randomize even the lower limit 
                     base3=round(random.uniform(0.1, 0.5),2)  # Randomize even the lower limit 
@@ -470,6 +472,7 @@ class Design_ColorizeObject:
                                    0.0)) #red, green, blue, transparency
                 if (hasattr(selectedObj.ViewObject,'DiffuseColor')):
                     selectedObj.ViewObject.DiffuseColor = colors 
+                    selectedObj.ViewObject.Transparency = saveTransp    #We need to restore Transparency 2025-01-24
                 App.ActiveDocument.commitTransaction() #undo reg.
             
         except Exception as err:
