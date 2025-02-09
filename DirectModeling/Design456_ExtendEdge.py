@@ -570,7 +570,7 @@ class Design456_ExtendEdge:
             self.lblTweakResult.setFont(font)
             self.lblTweakResult.setObjectName("lblTweakResult")
             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(150, 360, 111, 61))
+            self.btnOK.setGeometry(QtCore.QRect(110, 200, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
