@@ -149,7 +149,7 @@ class oUi_DockWidget(object):
         self.PB_check_TypeId = QtGui.QPushButton(self.dockWidgetContents)
         self.PB_check_TypeId.setGeometry(QtCore.QRect(124, 468, 32, 32))
         font = QtGui.QFont()
-        font.setWeight(50)
+        font.setWeight(QtGui.QFont.Weight.Normal)
         font.setItalic(False)
         font.setUnderline(False)
         font.setBold(False)
