@@ -40,7 +40,7 @@ import Design456_2Ddrawing
 import FACE_D as faced
 from Design456Pref import Design456pref_var
 
-__updated__ = '2022-07-11 21:49:47'
+__updated__ = '2025-05-26 10:27:02'
 
 class Design456_Paint:
     """[Paint different shapes on any direction and with a custom sizes.
@@ -1503,7 +1503,7 @@ import sys
 
 from PySide.QtCore import Qt
 from PySide import QtGui, QtCore
-from PySide2 import QtWidgets
+from PySide import QtWidgets
 
 class Design456_FreeDraw:
     def __init__(self):
