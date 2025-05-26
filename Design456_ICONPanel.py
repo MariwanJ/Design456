@@ -40,7 +40,7 @@ import glob
 
 from functools import partial
 
-__updated__ = '2022-09-18 19:10:37'
+__updated__ = '2025-05-26 13:36:00'
 
 COMMANDS_Basic=[
     ["Design456Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -215,7 +215,10 @@ class PrimitivePartsIconList:
         self.frmBasicShapes.setObjectName("frmBasicShapes")
         self.frmBasicShapes.setToolTip("Basic Shapes")
         self.frmBasicShapes.setWindowTitle("Basic Shapes")
-        self.frmBasicShapes.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
+        self.frmBasicShapes.setFeatures(QtGui.QDockWidget.DockWidgetMovable | 
+                                        QtGui.QDockWidget.DockWidgetFloatable | 
+                                        QtGui.QDockWidget.DockWidgetClosable)
+        
         self.frmBasicShapes.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
         icon0= QtGui.QIcon()
         icon0.addFile(Design456Init.ICON_PATH+'Part_Box.svg')

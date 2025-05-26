@@ -44,7 +44,7 @@ import Part as _part
 
 # The ration of delta mouse to mm  #TODO :FIXME : Which value we should choose?
 MouseScaleFactor = 1
-__updated__ = '2022-07-05 22:46:26'
+__updated__ = '2025-02-15 21:23:04'
 
 # TODO: FIXME:
 '''
@@ -419,7 +419,7 @@ class Design456_SmartExtrudeRotate:
             return  # We shouldn't be here.
 
         faceRotation = 0
-        # TODO: Lets take only X axis first , then Y ..etc and so on.
+        # TODO: THIS  causes the wheel to rotate in a wrong way ... DEBUGGING REQUIRED!! 2025-02-15
         face1Obj = self.ExtractedFaces[0]
         pl = self.ExtractedFaces[0].Placement
         #if Wheel Obj is not defined, the rest of the code will be ignored 
@@ -544,7 +544,6 @@ class Design456_SmartExtrudeRotate:
         elif self.faceDir == "-z" and Wheelaxis == "135":
             faced.RotateObjectToCenterPoint(s, 0, 0, 135)
             pl = self.ExtractedFaces[1].Object.Placement
-
         return pl
 
     def reCreateRevolveObj(self, angle):
@@ -860,7 +859,7 @@ class Design456_SmartExtrudeRotate:
             self.dialog.resize(200, 450)
             self.frmRotation.setGeometry(QtCore.QRect(10, 240, 231, 181))
             self.frame_2 = QtGui.QFrame(self.dialog)
-            self.frame_2.setGeometry(QtCore.QRect(10, 280, 231, 151))
+            self.frame_2.setGeometry(QtCore.QRect(10, 160, 120, 151))
             self.frame_2.setFrameShape(QtGui.QFrame.StyledPanel)
             self.frame_2.setFrameShadow(QtGui.QFrame.Sunken)
             self.frame_2.setObjectName("frame_2")
@@ -878,13 +877,13 @@ class Design456_SmartExtrudeRotate:
             self.radioMerge.setObjectName("radioMerge")
             self.gridExtrusionResult.addWidget(self.radioMerge, 1, 0, 1, 1)
             self.lblExtrusionResult = QtGui.QLabel(self.frame_2)
-            self.lblExtrusionResult.setGeometry(QtCore.QRect(10, 0, 191, 61))
+            self.lblExtrusionResult.setGeometry(QtCore.QRect(10, 0, 150, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             self.lblExtrusionResult.setFont(font)
             self.lblExtrusionResult.setObjectName("lblExtrusionResult")
             self.btnOK = QtGui.QDialogButtonBox(self.dialog)
-            self.btnOK.setGeometry(QtCore.QRect(150, 430, 111, 61))
+            self.btnOK.setGeometry(QtCore.QRect(150, 200, 111, 61))
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
@@ -893,20 +892,20 @@ class Design456_SmartExtrudeRotate:
             self.btnOK.setObjectName("btnOK")
             self.btnOK.setStandardButtons(QtGui.QDialogButtonBox.Ok)
             self.lblTitle = QtGui.QLabel(self.dialog)
-            self.lblTitle.setGeometry(QtCore.QRect(10, 10, 281, 91))
+            self.lblTitle.setGeometry(QtCore.QRect(2, 2, 281, 50))
             font = QtGui.QFont()
             font.setFamily("Times New Roman")
             font.setPointSize(10)
             self.lblTitle.setFont(font)
             self.lblTitle.setObjectName("lblTitle")
             self.ExtrudeLBL = QtGui.QLabel(self.dialog)
-            self.ExtrudeLBL.setGeometry(QtCore.QRect(10, 145, 321, 40))
+            self.ExtrudeLBL.setGeometry(QtCore.QRect(10, 60, 321, 40))
             font = QtGui.QFont()
             font.setPointSize(10)
             self.ExtrudeLBL.setFont(font)
             self.ExtrudeLBL.setObjectName("ExtrudeLBL")
             self.RotateLBL = QtGui.QLabel(self.dialog)
-            self.RotateLBL.setGeometry(QtCore.QRect(10, 100, 281, 40))
+            self.RotateLBL.setGeometry(QtCore.QRect(10, 80, 281, 40))
             font = QtGui.QFont()
             font.setPointSize(10)
             self.RotateLBL.setFont(font)
@@ -916,10 +915,10 @@ class Design456_SmartExtrudeRotate:
             self.Symmetric.setObjectName("Symmetric")
             self.Symmetric.setText("Symmetric")
             self.Symmetric.setFont(font)
-            self.Symmetric.setGeometry(QtCore.QRect(10, 175, 321, 30))
+            self.Symmetric.setGeometry(QtCore.QRect(10, 130, 150, 30))
             self.Symmetric.stateChanged.connect(self.symmetric_cb)
             
-            #TODO FIXME: Don't at the moment if this is a good thing?? 
+            #TODO FIXME: Don't know at the moment if this is a good thing?? 
             #Aims to freely change angle of the extrusion.
             #self.FreeMoveCheck=QtGui.QCheckBox(self.dialog)
             #self.FreeMoveCheck.setObjectName("Free Move")

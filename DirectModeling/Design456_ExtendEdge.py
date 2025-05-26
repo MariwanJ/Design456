@@ -47,7 +47,7 @@ from Design456Pref import Design456pref_var  #Variable shared between preference
 import Mesh
 import MeshPart
 
-__updated__ = '2022-06-07 20:58:22'
+__updated__ = '2025-02-09 17:37:56'
 
 class Design456_ExtendEdge:
     """[Extend the edge's position to a new position.

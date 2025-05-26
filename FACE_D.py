@@ -41,7 +41,7 @@ from draftutils.translate import translate  # for translation
 #    from OCC.Core.BOPAlgo import BOPAlgo_RemoveFeatures as rf
 #    from OCC.Core.ShapeFix import ShapeFix_Shape,ShapeFix_FixSmallSolid  
 
-__updated__ = '2022-11-02 21:22:32'
+__updated__ = '2025-02-15 20:42:58'
 
 
 # TODO : FIXME BETTER WAY?
@@ -94,7 +94,8 @@ def getDirectionAxis(s=None):
                 if ftt is None:
                     raise Exception("Face not found")
                 direction = ftt.normalAt(0, 0)
-
+        #remove long decimals, round 2 digits only
+        direction = App.Vector(round(direction.x,2) , round(direction.y,2),round(direction.z,2))
         if direction.z == 1:
             return "+z"
         elif direction.z == -1:
@@ -112,11 +113,12 @@ def getDirectionAxis(s=None):
             if(abs(direction.x) == 0):
                 return "+z"
             elif (abs(direction.y) == 0):
-                return "+z"
+                return "+y"
             elif (abs(direction.z) == 0):
                 return "+x"
             else:
-                return "+z"  # this is to avoid having NONE .. Don't know when this happen TODO: FIXME!
+                return "+x"  #"The normal vector is effectively zero." # WE SHOULDN'T BE HERE
+                
 
     except Exception as err:
         App.Console.PrintError("'getDirectionAxis' Failed. "

@@ -45,7 +45,11 @@ class oUi_DockWidget(object):
         DockWidget.setWindowIcon(icon)
         DockWidget.setToolTip("Defeaturing tools")
         DockWidget.setLayoutDirection(QtCore.Qt.LeftToRight)
-        DockWidget.setFeatures(QtGui.QDockWidget.AllDockWidgetFeatures)
+        DockWidget.setFeatures(QtGui.QDockWidget.DockWidgetMovable | 
+                                QtGui.QDockWidget.DockWidgetFloatable |
+                                QtGui.QDockWidget.DockWidgetResizable| 
+                                QtGui.QDockWidget.DockWidgetClosable)
+        
         DockWidget.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea|QtCore.Qt.RightDockWidgetArea)
         DockWidget.setWindowTitle("Defeaturing Tools")
         self.dockWidgetContents = QtGui.QWidget()
