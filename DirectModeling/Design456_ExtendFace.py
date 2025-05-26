@@ -482,7 +482,7 @@ class Design456_ExtendFace:
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
-            font.setWeight(75)
+            font.setWeight(QtGui.QFont.Weight.Normal)
             btnOK.setFont(font)
             btnOK.setObjectName("btnOK")
             btnOK.setStandardButtons(QtGui.QDialogButtonBox.Ok)

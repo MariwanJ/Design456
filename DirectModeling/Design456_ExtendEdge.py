@@ -574,7 +574,7 @@ class Design456_ExtendEdge:
             font = QtGui.QFont()
             font.setPointSize(10)
             font.setBold(True)
-            font.setWeight(75)
+            font.setWeight(QtGui.QFont.Weight.Normal)
             self.btnOK.setFont(font)
             self.btnOK.setObjectName("btnOK")
             self.btnOK.setStandardButtons(QtGui.QDialogButtonBox.Ok)

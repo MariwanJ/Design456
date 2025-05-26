@@ -74,7 +74,7 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         font.setBold(True)
-        font.setWeight(75)
+        font.setWeight(QtGui.QFont.Weight.Normal)
         self.btnOK.setFont(font)
         self.btnOK.setObjectName("btnOK")
         self.lblTitle = QtWidgets.QLabel(self.centralwidget)
