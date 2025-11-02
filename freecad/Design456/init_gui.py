@@ -29,14 +29,17 @@ from PySide.QtCore import QT_TRANSLATE_NOOP
 import Draft_rc
 import FreeCAD as App
 import FreeCADGui as Gui
+import sys
 
-__updated__ = '2022-10-09 21:30:30'
+__updated__ = '2025-11-02 13:10:54'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
 __url__ = "https://www.freecadweb.org"
 
 
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 class Design456 (Gui.Workbench):
     "Design456 Workbench object"
@@ -111,20 +114,20 @@ class Design456 (Gui.Workbench):
         dependencies_OK = False
         try:
             from pivy import coin
-            if FreeCADGui.getSoDBVersion() != coin.SoDB.getVersion():
+            if Gui.getSoDBVersion() != coin.SoDB.getVersion():
                 raise AssertionError("FreeCAD and Pivy use different versions "
                                      "of Coin. "
                                      "This will lead to unexpected behaviour.")
         except AssertionError:
-            FreeCAD.Console.PrintWarning("Error: FreeCAD and Pivy "
+            App.Console.PrintWarning("Error: FreeCAD and Pivy "
                                          "use different versions of Coin. "
                                          "This will lead to unexpected "
                                          "behaviour.\n")
         except ImportError:
-            FreeCAD.Console.PrintWarning("Error: Pivy not found, "
+            App.Console.PrintWarning("Error: Pivy not found, "
                                          "Draft Workbench will be disabled.\n")
         except Exception:
-            FreeCAD.Console.PrintWarning("Error: Unknown error "
+            App.Console.PrintWarning("Error: Unknown error "
                                          "while trying to load Pivy.\n")
         else:
             dependencies_OK = True
@@ -186,16 +189,6 @@ class Design456 (Gui.Workbench):
                      [QT_TRANSLATE_NOOP("Workbench", "&Utilities")],
                      self.utility_commands_menu)
 
-        # Set up preferences pages
-        # if hasattr(Gui, "draftToolBar"):
-        #     if not hasattr(Gui.draftToolBar, "loadedPreferences"):
-        #         Gui.addPreferencePage(":/ui/preferences-draft.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-        #         Gui.addPreferencePage(":/ui/preferences-draftinterface.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-        #         Gui.addPreferencePage(":/ui/preferences-draftsnap.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-        #         Gui.addPreferencePage(":/ui/preferences-draftvisual.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-        #         Gui.addPreferencePage(":/ui/preferences-drafttexts.ui", QT_TRANSLATE_NOOP("Draft", "Draft"))
-        #         Gui.draftToolBar.loadedPreferences = True
-        
         Gui.getMainWindow().mainWindowClosed.connect(self.Deactivated)
         App.Console.PrintLog('Loading Draft workbench, done.\n')
 
@@ -258,6 +251,7 @@ class Design456 (Gui.Workbench):
             # Turn OFF grid
             #Gui.Snapper.grid.off()
             App.Console.PrintMessage('Design456 workbench loaded\n')
+            Gui.runCommand('Design456_GridGroup',2)
             return
 
         except Exception as err:
@@ -340,6 +334,5 @@ class Design456 (Gui.Workbench):
 
     def GetClassName(self):
         return "Gui::PythonWorkbench"
-
 
 Gui.addWorkbench(Design456())

@@ -39,7 +39,7 @@ import DraftGeomUtils
 import math
 import BOPTools.SplitFeatures
 
-__updated__ = '2023-04-08 13:11:13'
+__updated__ = '2025-11-02 14:08:48'
 
 
 # Roof
@@ -592,7 +592,8 @@ class Design456_NonuniformedBoxBase:
             for subObj in s:
                 self.Vertices.append(subObj.Object.Shape.Vertexes[0].Point)
             self.Vertices.append(s[0].Object.Shape.Vertexes[0].Point)
-
+        else:
+            return
     def execute(self, obj):
         self.Height = float(obj.Height)
         self.Radius = float(obj.Radius)
@@ -605,8 +606,11 @@ class Design456_NonuniformedBoxBase:
 
         V1_FSQ = []
         V1_FSQ = self.Vertices
+        if(self.Vertices.count>3):
+            faced.errorDialog("Please draw points, select them, then use the tool")
+            return 
         W1 = Part.makePolygon(V1_FSQ)
-
+       
         if self.Radius > 0:
             W11 = DraftGeomUtils.filletWire(
                 W1, self.Radius, chamfer=self.Chamfer)
@@ -638,6 +642,11 @@ class Design456_NonuniformedBox:
                 'ToolTip': "Generate a NonuniformedBox"}
 
     def Activated(self):
+        s = Gui.Selection.getSelectionEx()
+        if len(s) < 3:
+            faced.errorDialog("Please              \n1)Draw points\n2)Select them\n3) Then use the tool")
+            return 
+
         newObj = App.ActiveDocument.addObject(
             "Part::FeaturePython", "NonuniformedBox")
         Design456_NonuniformedBoxBase(newObj)
