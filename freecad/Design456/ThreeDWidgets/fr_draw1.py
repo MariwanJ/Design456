@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: LGPL-2.1-or-later
+# SPDX-FileNotice: Part of the Design456 addon.
+
 import os
 import sys
 from types import coroutine

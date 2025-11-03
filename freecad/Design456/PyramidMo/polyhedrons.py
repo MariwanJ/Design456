@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-FileNotice: Included in the Design456 addon.
+
 # ***************************************************************************
 # *          Copyright (c) 2019  Eddy Verlinden , Genk Belgium          (eddyverl)                *
 # *                                                                                                                                                        *

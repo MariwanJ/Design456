@@ -1,8 +1,9 @@
+# SPDX-License-Identifier: LGPL-2.1-or-later
+# SPDX-FileNotice: Part of the Design456 addon.
+
 from __future__ import unicode_literals
 #
 # ***************************************************************************
-# *                                                                         *
-# *  This file is a part of the Open Source Design456 Workbench - App.      *
 # *                                                                         *
 # *  Copyright (C) 2025                                                    *
 # *                                                                         *

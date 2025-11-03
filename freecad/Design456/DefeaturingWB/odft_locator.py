@@ -1,3 +1,5 @@
+# SPDX-FileNotice: Part of the Defeaturing addon. Included in the Design456 addon.
+
 from __future__ import unicode_literals
 #
 # ***************************************************************************
