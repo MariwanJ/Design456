@@ -5,7 +5,7 @@
   <version>0.00.1</version>
   <date>2022-01-20</date>
   <maintainer email="mariwan.jalal@gmail.com">Mariwan Jalal</maintainer>
-  <license file="LICENSE">GPL-3.0-or-later</license>
+  <license file="LICENSE-CODE">LGPL-2.1-or-later</license>
   <url type="repository" branch="main">https://github.com/MariwanJ/Design456</url>
   <url type="documentation">https://wiki.freecadweb.org/Design456_Workbench</url>
 
