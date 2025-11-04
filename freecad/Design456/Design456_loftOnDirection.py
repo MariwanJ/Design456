@@ -1,43 +1,24 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
+# SPDX-FileCopyrightText: 2020 Mario ( mario52a )
+# SPDX-FileContributor: Mariwan Jalal ( mariwan.jalal@gmail.com )
 # SPDX-FileNotice: Part of the Design456 addon.
 
-from __future__ import unicode_literals
 #
-# ***************************************************************************
-# *                                                                         *
-# *  Copyright (C) 2025                                                    *
-# *                                                                         *
-# *                                                                         *
-# *  This library is free software; you can redistribute it and/or          *
-# *  modify it under the terms of the GNU Lesser General Public             *
-# *  License as published by the Free Software Foundation; either           *
-# *  version 2 of the License, or (at your option) any later version.       *
-# *                                                                         *
-# *  This library is distributed in the hope that it will be useful,        *
-# *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
-# *  MERCHANTABILITY or FITNESS FOR A PartICULAR PURPOSE.  See the GNU      *
-# *  Lesser General Public License for more details.                        *
-# *                                                                         *
-# *  You should have received a copy of the GNU Lesser General Public       *
-# *  License along with this library; if not, If not, see                   *
-# *  <http://www.gnu.org/licenses/>.                                        *
-# *                                                                         *
-# *  Author : Mariwan Jalal   mariwan.jalal@gmail.com                       *
-# ***************************************************************************
-# *This command is inpired and suggested by Mario52, modified by Mariwan Jalal
-# *https://forum.freecadweb.org/viewtopic.php?f=22&t=46690&sid=18c0765424496ef734ce5b78914f7197
-# *https://forum.freecadweb.org/viewtopic.php?f=13&t=48276&p=413611#p413611
-# *https://forum.freecadweb.org/viewtopic.php?f=13&t=48276&p=414467#p414467
-# *https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
-# *mario52
-# *25/05/2020 03/07/2020 07/07/2020 15/07/2020
-# *
-# *converted the code  to a class and added to Design456 by Mariwan Jalal
-# * as requested by the Macro author (mario52)
-# *Please notice that the usage of this command should be studied.
-# *We need to figure out what is the best way to use it.
-# *https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
-# *https://forum.freecadweb.org/viewtopic.php?f=8&t=54893&start=10
+#   This command is inpired and suggested by Mario52, modified by Mariwan Jalal
+#   https://forum.freecadweb.org/viewtopic.php?f=22&t=46690&sid=18c0765424496ef734ce5b78914f7197
+#   https://forum.freecadweb.org/viewtopic.php?f=13&t=48276&p=413611#p413611
+#   https://forum.freecadweb.org/viewtopic.php?f=13&t=48276&p=414467#p414467
+#   https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
+# 
+#   converted the code  to a class and added to Design456 by Mariwan Jalal
+#   as requested by the Macro author (mario52)
+#   Please notice that the usage of this command should be studied.
+#   We need to figure out what is the best way to use it.
+#   https://forum.freecadweb.org/viewtopic.php?f=22&t=48425
+#   https://forum.freecadweb.org/viewtopic.php?f=8&t=54893&start=10
+#
+
+from __future__ import unicode_literals
 
 import os
 import sys

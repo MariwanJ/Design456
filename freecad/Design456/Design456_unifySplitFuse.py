@@ -1,36 +1,15 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
+# SPDX-FileCopyrightText: 2021 Mario ( mario52a )
+# SPDX-FileContributor: Mariwan Jalal ( mariwan.jalal@gmail.com )
 # SPDX-FileNotice: Part of the Design456 addon.
 
-from __future__ import unicode_literals
 #
-# ***************************************************************************
-# *                                                                        *
-# * Copyright (C) 2025                                                    *
-# *                                                                        *
-# *                                                                        *
-# * This library is free software; you can redistribute it and/or          *
-# * modify it under the terms of the GNU Lesser General Public             *
-# * License as published by the Free Software Foundation; either           *
-# * version 2 of the License, or (at your option) any later version.       *
-# *                                                                        *
-# * This library is distributed in the hope that it will be useful,        *
-# * but WITHOUT ANY WARRANTY; without even the implied warranty of         *
-# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
-# * Lesser General Public License for more details.                        *
-# *                                                                        *
-# * You should have received a copy of the GNU Lesser General Public       *
-# * License along with this library; if not, If not, see                   *
-# * <http://www.gnu.org/licenses/>.                                        *
-# *                                                                        *
-# * Author : Mario52                                                       *
-# * ##Macro_D_Un_Jour_Raccord_2_Objects_By_Its_Faces                       *
-# * #https://forum.freecadweb.org/viewtopic.php?f=3&t=56185&p=483304&hilit=slice#p483304
-# * #12/03/2021
-#                                                                          *
-# * select the faces for raccord                                           *
-# * Modified and added to Design456 WB by :                                *
-# * Author Mariwan Jalal   mariwan.jalal@gmail.com                         *
-# **************************************************************************
+#   Read more:
+#   https://forum.freecadweb.org/viewtopic.php?f=3&t=56185&p=483304&hilit=slice#p483304
+#
+
+from __future__ import unicode_literals
+
 import os
 import sys
 import ImportGui

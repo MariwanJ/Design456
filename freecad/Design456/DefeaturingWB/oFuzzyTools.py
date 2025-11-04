@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
 # SPDX-FileCopyrightText: 2017 Maurice ( easyw@katamail.com )
 # SPDX-FileContributor: Mariwan Jalal ( mariwan.jalal@gmail.com )
-# SPDX-FileNotice: Part of the Defeaturing addon. Included in the Design456 addon.
+# SPDX-FileNotice: Included in the Design456 addon.
+# SPDX-FileNotice: Part of the Defeaturing addon.
 
 from __future__ import unicode_literals
 
