@@ -1,49 +1,9 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
+# SPDX-FileCopyrightText: 2017 Maurice ( easyw@katamail.com )
+# SPDX-FileContributor: Mariwan Jalal ( mariwan.jalal@gmail.com )
 # SPDX-FileNotice: Part of the Defeaturing addon. Included in the Design456 addon.
 
 from __future__ import unicode_literals
-#
-# ***************************************************************************
-# *                                                                         *
-# *  This file is a part of the Open Source Design456 Workbench - App.  *
-# *                                                                         *
-# *  Copyright (C) 2025                                                    *
-# *                                                                         *
-# *                                                                         *
-# *  This library is free software; you can redistribute it and/or          *
-# *  modify it under the terms of the GNU Lesser General Public             *
-# *  License as published by the Free Software Foundation; either           *
-# *  version 2 of the License, or (at your option) any later version.       *
-# *                                                                         *
-# *  This library is distributed in the hope that it will be useful,        *
-# *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
-# *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU      *
-# *  Lesser General Public License for more details.                        *
-# *                                                                         *
-# *  You should have received a copy of the GNU Lesser General Public       *
-# *  License along with this library; if not, If not, see                   *
-# *  <http://www.gnu.org/licenses/>.                                        *
-# *                                                                         *
-# *  Modified and added                                                     *
-# *  to Design456 by : Mariwan Jalal   mariwan.jalal@gmail.com              *
-# ***************************************************************************
-
-
-#****************************************************************************
-#*                                                                          *
-#*  Copyright (c) 2017                                                      *
-#*  Maurice easyw@katamail.com                                              *
-#*                                                                          *
-#                                                                           *
-#   Repair Defeaturing Macro                                 *
-#                                                                           *
-#  (C) Maurice easyw-fc 2018                                               *
-#    This program is free software; you can redistribute it and/or modify   *
-#    it under the terms of the GNU Library General Public License (LGPL)    *
-#    as published by the Free Software Foundation; either version 2 of      *
-#    the License, or (at your option) any later version.                    *
-#    for detail see the LICENCE text file.                                  *
-#****************************************************************************
 
 
 import FreeCAD as App 

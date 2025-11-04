@@ -1,28 +1,7 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-# SPDX-FileNotice: Included in the Design456 addon.
+# SPDX-License-Identifier: LGPL-2.1-or-later
+# SPDX-FileCopyrightText: 2019 Eddy Verlinden ( eddyverl )
+# SPDX-FileNotice: Part of the Polyhedrons addon. Included in the Design456 addon.
 
-# ***************************************************************************
-# *          Copyright (c) 2019  Eddy Verlinden , Genk Belgium          (eddyverl)                *
-# *                                                                                                                                                        *
-# *          This file is a part of the FreeCAD CAx development system.                        *
-# *                                                                                                                                                        *
-# *          This program is free software; you can redistribute it and/or modify        *
-# *          it under the terms of the GNU Lesser General Public License (LGPL)        *
-# *          as published by the Free Software Foundation; either version 2 of                *
-# *          the License, or (at your option) any later version.                                        *
-# *          for detail see the LICENCE text file.                                                                        *
-# *                                                                                                                                                        *
-# *          FreeCAD is distributed in the hope that it will be useful,                        *
-# *          but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-# *          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.        See the                        *
-# *          GNU Lesser General Public License for more details.                                        *
-# *                                                                                                                                                        *
-# *          You should have received a copy of the GNU Library General Public                *
-# *          License along with FreeCAD; if not, write to the Free Software                *
-# *          Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA        02111-1307        *
-# *          USA                                                                                                                                        *
-# *                                                                                                                                                        *
-# ***************************************************************************
 
 # Based on examples at : https://www.freecadweb.org/wiki/Workbench_creation
 
