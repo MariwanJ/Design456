@@ -40,7 +40,7 @@ import glob
 
 from functools import partial
 
-__updated__ = '2025-12-31 22:16:08'
+__updated__ = '2026-05-13 22:34:44'
 
 COMMANDS_Basic=[
     ["Design456Part_Box",Design456Init.ICON_PATH + 'Part_Box.svg'],
@@ -119,7 +119,7 @@ class PrimitivePartsIconList:
         self.currentSelectedItem=self.combo.currentText()
         self.loadIconList(None)
         self.frmBasicShapes.show()
-
+    
     #TODO : FIXME : This doesn't work here. It should be defined with Preferences
     def hideToolbars(self):
         bars=Gui.getMainWindow().findChildren(QtGui.QToolBar)
@@ -276,12 +276,27 @@ class PrimitivePartsIconList:
        
 
         
-        
-f=PrimitivePartsIconList()
-f.Activated()
-f.dock_left()
-f.hideToolbars()
+def Deactivated():
+    ff=None
+    t = Gui.getMainWindow()
+    dw = t.findChildren(QtGui.QDockWidget)
+    for i in dw:
+        if str(i.objectName()) == "frmBasicShapes":
+            ff=i
+            break
+    if ff == None:
+        return 
+    # Remove and destroy the dock widget
+    t = Gui.getMainWindow()
+    t.removeDockWidget(ff)
+    ff.deleteLater()
+    ff = None    
 
+def Activate():
+    f=PrimitivePartsIconList()
+    f.Activated()
+    f.dock_left()
+    f.hideToolbars()
 ###########################################################################################################
 
         

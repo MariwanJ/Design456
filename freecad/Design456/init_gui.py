@@ -31,7 +31,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import sys
 
-__updated__ = '2025-11-02 13:10:54'
+__updated__ = '2026-05-13 22:37:34'
 
 __title__ = "FreeCAD Design456 Workbench - Init file"
 __author__ = "Yorik van Havre <yorik@uncreated.net> DRAFT PART / Mariwan Jalal <mariwan.jalal@gmail.com> for Design456"
@@ -201,7 +201,8 @@ class Design456 (Gui.Workbench):
             from Design456Pref import Design456pref_var
             import Design456Pref
             import draftutils
-            
+            import Design456_ICONPanel as icPanel
+            import  DefeaturingWB.oDefeaturingTools as defeaturing
 
             #retrieve preferences from user.cfg
             Design456Pref.Design456Preferences().loadSettings()
@@ -246,6 +247,8 @@ class Design456 (Gui.Workbench):
                 for TT in range(1, 10):
                     _view.zoomOut()
                 self.runOnce = False
+            icPanel.Activate()              #load basic shape form
+            defeaturing.ActivateDefeature() #load defeaturing wb
             App.Console.PrintLog(
                 "Draft workbench activated Inside Design456.\n")
             # Turn OFF grid
@@ -264,6 +267,8 @@ class Design456 (Gui.Workbench):
 
     def Deactivated(self):
         from plane import Grid as gr
+        import  DefeaturingWB.oDefeaturingTools as defeaturing
+        import Design456_ICONPanel as icPanel
         # from plane import DocObserver
         try:
             "workbench deactivated"
@@ -281,6 +286,8 @@ class Design456 (Gui.Workbench):
             self.planeShow = None
             App.removeDocumentObserver(self.myDocObserver)
             self.myDocObserver = None
+            defeaturing.removeDefeaturingTools()
+            icPanel.Deactivated()
             return
         except Exception as exc:
             App.Console.PrintError(exc)

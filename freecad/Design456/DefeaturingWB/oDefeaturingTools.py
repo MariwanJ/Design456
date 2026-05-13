@@ -80,6 +80,7 @@ global force_recompute, invert
 
 __version__ = "v1.3.5"
 
+global oRHDockWidget
 
 # window GUI dimensions parameters
 wdsRHx = 260
@@ -2431,7 +2432,15 @@ def odock_right_RH():
 
 ##
 
-
+def removeDefeaturingTools():
+    global oRHDockWidget, instance_nbr
+    if oRHDockWidget is not None:
+        t = Gui.getMainWindow()
+        t.removeDockWidget(oRHDockWidget)
+        oRHDockWidget.deleteLater()
+        oRHDockWidget = None
+        instance_nbr = 0
+        
 def odock_left_RH():
     RHmw = Gui.getMainWindow()
     RHmw.addDockWidget(QtCore.Qt.LeftDockWidgetArea, oRHDockWidget)
@@ -2497,38 +2506,58 @@ def oonHelp():
     QtGui.QApplication.restoreOverrideCursor()
     res = QtGui.QMessageBox.question(None, "Help", msg, QtGui.QMessageBox.Ok)
 
-
-if oRH_singleInstance():
+def ActivateDefeature():
+    global oRHDockWidget
     oRHDockWidget = QtGui.QDockWidget()
-    oRHDockWidget.ui = oUi_DockWidget()
-    oRHDockWidget.ui.setupUi(oRHDockWidget)  # setup the ui
-    oRHDockWidget.setObjectName("oDefeaturingTools")
-    oRHDockWidget.raise_()
-    # |QtGui.QDockWidget.DockWidgetClosable )
-    oRHDockWidget.setFeatures(
-        QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
+    if oRH_singleInstance():
+        oRHDockWidget.ui = oUi_DockWidget()
+        oRHDockWidget.ui.setupUi(oRHDockWidget)  # setup the ui
+        oRHDockWidget.setObjectName("oDefeaturingTools")
+        oRHDockWidget.raise_()
+        # |QtGui.QDockWidget.DockWidgetClosable )
+        oRHDockWidget.setFeatures(
+            QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
 
-    def onClickClose():
-        RH_visible = oRHDockWidget.isVisible()
+        def onClickClose():
+            RH_visible = oRHDockWidget.isVisible()
 
-    oRHDockWidget.visibilityChanged.connect(onClickClose)
+        oRHDockWidget.visibilityChanged.connect(onClickClose)
 
-    # PySide # the active qt window, = the App window since we are inside it
-    RHmw = Gui.getMainWindow()
-    RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea, oRHDockWidget)
-    oRHDockWidget.setFloating(True)  # undock
-    oRH_centerOnScreen(oRHDockWidget)
-    oRHDockWidget.ui.Version.setText(__version__)
+        # PySide # the active qt window, = the App window since we are inside it
+        RHmw = Gui.getMainWindow()
+        RHmw.addDockWidget(QtCore.Qt.RightDockWidgetArea, oRHDockWidget)
+        oRHDockWidget.setFloating(True)  # undock
+        oRH_centerOnScreen(oRHDockWidget)
+        oRHDockWidget.ui.Version.setText(__version__)
 
-    if hasattr(Part, "OCC_VERSION"):
-        OCCMV = Part.OCC_VERSION.split('.')[0]
-        OCCmV = Part.OCC_VERSION.split('.')[1]
-        if (int(OCCMV) >= 7) and (int(OCCmV) >= 3):
-            oRHDockWidget.ui.PB_PartDefeaturing.setVisible(True)
-            oRHDockWidget.ui.PB_PartDefeaturing.setEnabled(True)
+        if hasattr(Part, "OCC_VERSION"):
+            OCCMV = Part.OCC_VERSION.split('.')[0]
+            OCCmV = Part.OCC_VERSION.split('.')[1]
+            if (int(OCCMV) >= 7) and (int(OCCmV) >= 3):
+                oRHDockWidget.ui.PB_PartDefeaturing.setVisible(True)
+                oRHDockWidget.ui.PB_PartDefeaturing.setEnabled(True)
 
+        oRHDockWidget.activateWindow()
+        oRHDockWidget.raise_()
+        #odock_left_RH()  # Dock the widget to the left
+        # Dock the widget to the left
+        RHmw = Gui.getMainWindow()
+        RHmw.addDockWidget(QtCore.Qt.LeftDockWidgetArea, oRHDockWidget)
+        oRHDockWidget.setFloating(False)  # dock
 
-# raising up
-oRHDockWidget.activateWindow()
-oRHDockWidget.raise_()
-odock_left_RH()  # Dock the widget to the left
+        oRHDockWidget.activateWindow()
+        oRHDockWidget.raise_()
+
+        oRHDockWidget.setFloating(False)  # dock
+
+        oRHDockWidget.activateWindow()
+        oRHDockWidget.raise_()
+        t = Gui.getMainWindow()
+        cv = t.findChild(QtGui.QDockWidget, "Model")
+        if oRHDockWidget and cv:
+            dw = t.findChildren(QtGui.QDockWidget)
+            try:
+                t.tabifyDockWidget(cv, oRHDockWidget)
+            except:
+                oi_say('exception raised')
+                pass
